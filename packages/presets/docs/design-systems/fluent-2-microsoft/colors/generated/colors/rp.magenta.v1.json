@@ -14,7 +14,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "id": "rp.magenta.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -81,11 +81,11 @@
       "4": "#ffe6ef",
       "5": "#ffdfeb",
       "6": "#ffd9e7",
-      "7": "#ffd2e3",
-      "8": "#ffcadf",
-      "9": "#ffc3da",
-      "10": "#ffbbd6",
-      "12": "#ffb0d0",
+      "7": "#fed3e3",
+      "8": "#fecadf",
+      "9": "#fec3da",
+      "10": "#febcd6",
+      "12": "#feb1d0",
       "14": "#ffa1c9",
       "16": "#ff92c1",
       "18": "#ff84bb",

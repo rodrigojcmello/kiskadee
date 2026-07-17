@@ -14,7 +14,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "id": "yr.orange.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -86,7 +86,7 @@
       "9": "#ffc8b3",
       "10": "#ffc2a9",
       "12": "#ffb89b",
-      "14": "#ffaa88",
+      "14": "#ffaa89",
       "16": "#ff9d75",
       "18": "#ff9163",
       "20": "#ff834d",

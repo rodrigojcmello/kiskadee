@@ -301,7 +301,8 @@
             "source": "generated-anchor",
             "tone": 40
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": null
         },
         "light": {
           "classification": {
@@ -565,7 +566,8 @@
             "source": "generated-anchor",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": null
         }
       }
     },
@@ -820,12 +822,12 @@
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.06667755
+                  "value": 0.0692831
                 },
                 {
                   "fromTone": 95,
                   "toTone": 99,
-                  "value": 0.05526951
+                  "value": 0.05272056
                 }
               ],
               "anchor": {
@@ -847,16 +849,16 @@
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.06667755,
+              "maxAdjacentDeltaE": 0.0692831,
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 3,
+            "gamutMappedCount": 2,
             "maxGamutChromaLoss": 0.01165809,
             "maxLocalChromaProminence": 0.00047267,
             "maxNominalDeviation": 1.17978113,
             "maxProfileChromaReduction": 0.01735537,
-            "meanNominalDeviation": 0.10307892,
+            "meanNominalDeviation": 0.10323652,
             "meanProfileChromaReduction": 0.00678791,
             "minLightnessDelta": 0.95726591,
             "monotonic": true,
@@ -873,7 +875,26 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 2,
+            "adjustedTones": [
+              95,
+              99
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.00886037,
+            "maxRemainingExcess": 0.00011308,
+            "protectedTones": [
+              0,
+              40,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -949,32 +970,32 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.01749751
+                  "value": 0.01451294
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.01435389
+                  "value": 0.01570248
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.0158613
+                  "value": 0.01536109
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01354622
+                  "value": 0.01471818
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01220416
+                  "value": 0.01371645
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01506292
+                  "value": 0.01603055
                 },
                 {
                   "fromTone": 7,
@@ -1135,14 +1156,14 @@
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 3,
+            "gamutMappedCount": 2,
             "maxGamutChromaLoss": 0.01068312,
             "maxLocalChromaProminence": 0.0008716,
             "maxNominalDeviation": 0.96167918,
             "maxProfileChromaReduction": 0.01658874,
-            "meanNominalDeviation": 0.08067247,
+            "meanNominalDeviation": 0.08340093,
             "meanProfileChromaReduction": 0.00282826,
-            "minLightnessDelta": 1.15471215,
+            "minLightnessDelta": 1.1189716,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 9,
@@ -1157,7 +1178,30 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 6,
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.01220915,
+            "maxRemainingExcess": 0.00025014,
+            "protectedTones": [
+              0,
+              40,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -1399,22 +1443,22 @@
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.05670359
+                  "value": 0.05605452
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.05719687
+                  "value": 0.07007549
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.0715147
+                  "value": 0.07618922
                 },
                 {
                   "fromTone": 95,
                   "toTone": 99,
-                  "value": 0.07078535
+                  "value": 0.05518288
                 }
               ],
               "anchor": {
@@ -1436,16 +1480,16 @@
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.0715147,
+              "maxAdjacentDeltaE": 0.07618922,
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 1,
-            "maxGamutChromaLoss": 0.01367558,
+            "gamutMappedCount": 0,
+            "maxGamutChromaLoss": 0,
             "maxLocalChromaProminence": 0.00135951,
             "maxNominalDeviation": 0.24328105,
             "maxProfileChromaReduction": 0.03775809,
-            "meanNominalDeviation": 0.06666122,
+            "meanNominalDeviation": 0.06802014,
             "meanProfileChromaReduction": 0.01378728,
             "minLightnessDelta": 0.84841965,
             "monotonic": true,
@@ -1462,7 +1506,27 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 4,
+            "adjustedTones": [
+              85,
+              90,
+              95,
+              99
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.03795706,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              40,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -1518,57 +1582,57 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.02540496
+                  "value": 0.01466356
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.02185566
+                  "value": 0.01541955
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.01599194
+                  "value": 0.01585843
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01593397
+                  "value": 0.0146706
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01427509
+                  "value": 0.01465943
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01423219
+                  "value": 0.01540178
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.01898365
+                  "value": 0.01973244
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01415056
+                  "value": 0.01869419
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01549363
+                  "value": 0.02069214
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.02256912
+                  "value": 0.02821932
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.0284738
+                  "value": 0.03110887
                 },
                 {
                   "fromTone": 14,
@@ -1704,14 +1768,14 @@
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 2,
-            "maxGamutChromaLoss": 0.01468679,
+            "gamutMappedCount": 0,
+            "maxGamutChromaLoss": 0,
             "maxLocalChromaProminence": 0.00062141,
             "maxNominalDeviation": 1.82345411,
             "maxProfileChromaReduction": 0.03658453,
-            "meanNominalDeviation": 0.15222039,
+            "meanNominalDeviation": 0.1491045,
             "meanProfileChromaReduction": 0.0062546,
-            "minLightnessDelta": 1.21516093,
+            "minLightnessDelta": 1.23849454,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 10,
@@ -1726,7 +1790,35 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 11,
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.0406715,
+            "maxRemainingExcess": 0.00143424,
+            "protectedTones": [
+              0,
+              45,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -1983,22 +2075,22 @@
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.05752027
+                  "value": 0.05999216
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.05972098
+                  "value": 0.08697239
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.07553643
+                  "value": 0.08384999
                 },
                 {
                   "fromTone": 95,
                   "toTone": 99,
-                  "value": 0.08766973
+                  "value": 0.05423525
                 }
               ],
               "anchor": {
@@ -2006,7 +2098,7 @@
                 "chromaSlopeChange": 0.00506154,
                 "incomingChromaSlope": 0.00263894,
                 "incomingDeltaE": 0.07249591,
-                "localRhythmDeltaE": 0.04251823,
+                "localRhythmDeltaE": 0.04375418,
                 "normalizedChromaTurn": 0.15517136,
                 "outgoingChromaSlope": -0.0024226,
                 "outgoingDeltaE": 0.04714119,
@@ -2020,16 +2112,16 @@
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.08766973,
+              "maxAdjacentDeltaE": 0.08697239,
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 7,
+            "gamutMappedCount": 6,
             "maxGamutChromaLoss": 0.11090619,
             "maxLocalChromaProminence": 0.01109914,
             "maxNominalDeviation": 1.24646923,
             "maxProfileChromaReduction": 0.02277149,
-            "meanNominalDeviation": 0.10620079,
+            "meanNominalDeviation": 0.1093843,
             "meanProfileChromaReduction": 0.00977982,
             "minLightnessDelta": 0.82746061,
             "monotonic": true,
@@ -2046,7 +2138,28 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 4,
+            "adjustedTones": [
+              85,
+              90,
+              95,
+              99
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.06463459,
+            "maxRemainingExcess": 0.00119578,
+            "protectedTones": [
+              0,
+              40,
+              75,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -2128,62 +2241,62 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.03367173
+                  "value": 0.01286558
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.02625501
+                  "value": 0.0154043
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.0174588
+                  "value": 0.0156466
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01652111
+                  "value": 0.01567715
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01552029
+                  "value": 0.01372982
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.016429
+                  "value": 0.0154153
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.01780011
+                  "value": 0.02138669
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.0161976
+                  "value": 0.02064913
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01606191
+                  "value": 0.02605818
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.02328331
+                  "value": 0.0369092
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.02908779
+                  "value": 0.0381291
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.02747464
+                  "value": 0.02944728
                 },
                 {
                   "fromTone": 16,
@@ -2314,14 +2427,14 @@
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 7,
+            "gamutMappedCount": 5,
             "maxGamutChromaLoss": 0.05761836,
             "maxLocalChromaProminence": 0.00469682,
             "maxNominalDeviation": 1.82345411,
             "maxProfileChromaReduction": 0.02075509,
-            "meanNominalDeviation": 0.11902256,
+            "meanNominalDeviation": 0.12405064,
             "meanProfileChromaReduction": 0.00448712,
-            "minLightnessDelta": 1.23650821,
+            "minLightnessDelta": 1.15347929,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 12,
@@ -2336,7 +2449,36 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 12,
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.0680606,
+            "maxRemainingExcess": 0.0012248,
+            "protectedTones": [
+              0,
+              22,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -2592,7 +2734,8 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": null
         },
         "light": {
           "classification": null,
@@ -2840,7 +2983,8 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": null
         }
       }
     },
@@ -3094,22 +3238,22 @@
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.05395513
+                  "value": 0.05642657
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.07041605
+                  "value": 0.07977941
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.08061745
+                  "value": 0.07406116
                 },
                 {
                   "fromTone": 95,
                   "toTone": 99,
-                  "value": 0.05418867
+                  "value": 0.04959386
                 }
               ],
               "anchor": {
@@ -3131,16 +3275,16 @@
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.08061745,
+              "maxAdjacentDeltaE": 0.07977941,
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 3,
-            "maxGamutChromaLoss": 0.04357291,
+            "gamutMappedCount": 1,
+            "maxGamutChromaLoss": 0.03237279,
             "maxLocalChromaProminence": 0.01267695,
             "maxNominalDeviation": 0.32471854,
             "maxProfileChromaReduction": 0.05768505,
-            "meanNominalDeviation": 0.07494788,
+            "meanNominalDeviation": 0.07480339,
             "meanProfileChromaReduction": 0.02438641,
             "minLightnessDelta": 1.03072782,
             "monotonic": true,
@@ -3157,7 +3301,26 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 3,
+            "adjustedTones": [
+              85,
+              90,
+              95
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.02029562,
+            "maxRemainingExcess": 0.0001136,
+            "protectedTones": [
+              0,
+              40,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -3219,62 +3382,62 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.01464981
+                  "value": 0.01489229
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.01744797
+                  "value": 0.01473281
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.01708179
+                  "value": 0.01510879
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01732591
+                  "value": 0.01524595
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01724075
+                  "value": 0.01485829
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01713926
+                  "value": 0.01482818
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.02195924
+                  "value": 0.01975894
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01897207
+                  "value": 0.01691665
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01905849
+                  "value": 0.02231319
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.03060221
+                  "value": 0.03678422
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.03838089
+                  "value": 0.04664428
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.02942256
+                  "value": 0.03113274
                 },
                 {
                   "fromTone": 16,
@@ -3405,14 +3568,14 @@
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 12,
-            "maxGamutChromaLoss": 0.05444948,
+            "gamutMappedCount": 1,
+            "maxGamutChromaLoss": 0.03977252,
             "maxLocalChromaProminence": 0.00232379,
             "maxNominalDeviation": 0.56012564,
             "maxProfileChromaReduction": 0.06012803,
-            "meanNominalDeviation": 0.05399218,
+            "meanNominalDeviation": 0.06523447,
             "meanProfileChromaReduction": 0.01509547,
-            "minLightnessDelta": 1.20591967,
+            "minLightnessDelta": 1.26218945,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 13,
@@ -3427,7 +3590,35 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 11,
+            "adjustedTones": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.02544771,
+            "maxRemainingExcess": 0.00086495,
+            "protectedTones": [
+              0,
+              35,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -3735,7 +3926,23 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              30,
+              40,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -4019,7 +4226,23 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              50,
+              55,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -4324,7 +4547,22 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              40,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -4588,7 +4826,23 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              45,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -4896,7 +5150,23 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0,
+            "maxRemainingExcess": 0.00055383,
+            "protectedTones": [
+              0,
+              40,
+              55,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -4997,32 +5267,32 @@
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01667934
+                  "value": 0.01459243
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.01900695
+                  "value": 0.02147719
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01652702
+                  "value": 0.01654902
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01875732
+                  "value": 0.01641786
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.02546785
+                  "value": 0.02554445
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.03410191
+                  "value": 0.03628058
                 },
                 {
                   "fromTone": 14,
@@ -5158,12 +5428,12 @@
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 19,
-            "maxGamutChromaLoss": 0.08662664,
+            "gamutMappedCount": 14,
+            "maxGamutChromaLoss": 0.08529777,
             "maxLocalChromaProminence": 0.00512191,
             "maxNominalDeviation": 1.40190101,
             "maxProfileChromaReduction": 0.03832092,
-            "meanNominalDeviation": 0.08310504,
+            "meanNominalDeviation": 0.08702266,
             "meanProfileChromaReduction": 0.00697223,
             "minLightnessDelta": 1.23036207,
             "monotonic": true,
@@ -5180,7 +5450,29 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 5,
+            "adjustedTones": [
+              7,
+              8,
+              9,
+              10,
+              12
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.00265707,
+            "maxRemainingExcess": 0.0011816,
+            "protectedTones": [
+              0,
+              30,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -5444,12 +5736,12 @@
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.06422337
+                  "value": 0.0680631
                 },
                 {
                   "fromTone": 95,
                   "toTone": 99,
-                  "value": 0.05788895
+                  "value": 0.05229112
                 }
               ],
               "anchor": {
@@ -5471,7 +5763,7 @@
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.06422337,
+              "maxAdjacentDeltaE": 0.0680631,
               "reviewRequired": false
             },
             "error": null,
@@ -5480,7 +5772,7 @@
             "maxLocalChromaProminence": 0.00074193,
             "maxNominalDeviation": 0.16691051,
             "maxProfileChromaReduction": 0.02435736,
-            "meanNominalDeviation": 0.06173642,
+            "meanNominalDeviation": 0.06486811,
             "meanProfileChromaReduction": 0.00983737,
             "minLightnessDelta": 0.90776713,
             "monotonic": true,
@@ -5497,7 +5789,24 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 1,
+            "adjustedTones": [
+              95
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.00888687,
+            "maxRemainingExcess": 0.0002649,
+            "protectedTones": [
+              0,
+              40,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -5559,62 +5868,62 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.01671543
+                  "value": 0.01500153
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.01753418
+                  "value": 0.0157312
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.01938558
+                  "value": 0.01453442
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01716225
+                  "value": 0.01495433
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01692199
+                  "value": 0.01437099
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01864035
+                  "value": 0.01511169
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.02332751
+                  "value": 0.02127558
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01905169
+                  "value": 0.01864641
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.02029547
+                  "value": 0.02387811
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.0236592
+                  "value": 0.03515378
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.02870746
+                  "value": 0.03350816
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.02628521
+                  "value": 0.02655561
                 },
                 {
                   "fromTone": 16,
@@ -5727,7 +6036,7 @@
                 "chromaSlopeChange": 0.00463196,
                 "incomingChromaSlope": 0.00252442,
                 "incomingDeltaE": 0.02555817,
-                "localRhythmDeltaE": 0.02672048,
+                "localRhythmDeltaE": 0.02685568,
                 "normalizedChromaTurn": 0.07148406,
                 "outgoingChromaSlope": -0.00210755,
                 "outgoingDeltaE": 0.02504707,
@@ -5745,14 +6054,14 @@
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 16,
+            "gamutMappedCount": 7,
             "maxGamutChromaLoss": 0.05810531,
             "maxLocalChromaProminence": 0.00516512,
             "maxNominalDeviation": 0.22072987,
             "maxProfileChromaReduction": 0.01660641,
-            "meanNominalDeviation": 0.05764675,
+            "meanNominalDeviation": 0.06314064,
             "meanProfileChromaReduction": 0.00350866,
-            "minLightnessDelta": 1.2405909,
+            "minLightnessDelta": 1.18378221,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 13,
@@ -5767,7 +6076,35 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 11,
+            "adjustedTones": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.0329653,
+            "maxRemainingExcess": 0.00043651,
+            "protectedTones": [
+              0,
+              18,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -6075,7 +6412,22 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              40,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -6166,12 +6518,12 @@
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01585007
+                  "value": 0.01567151
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.0137257
+                  "value": 0.01381061
                 },
                 {
                   "fromTone": 6,
@@ -6337,12 +6689,12 @@
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 5,
+            "gamutMappedCount": 4,
             "maxGamutChromaLoss": 0.01148693,
             "maxLocalChromaProminence": 0.00086532,
             "maxNominalDeviation": 1.69912356,
             "maxProfileChromaReduction": 0.04117214,
-            "meanNominalDeviation": 0.10157793,
+            "meanNominalDeviation": 0.10115779,
             "meanProfileChromaReduction": 0.00710258,
             "minLightnessDelta": 1.21606441,
             "monotonic": true,
@@ -6359,7 +6711,25 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 1,
+            "adjustedTones": [
+              5
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.0016834,
+            "maxRemainingExcess": 0.00003063,
+            "protectedTones": [
+              0,
+              45,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     },
@@ -6664,7 +7034,22 @@
             "source": "harmony-rest",
             "tone": 40
           },
-          "status": "review"
+          "status": "review",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              40,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         },
         "light": {
           "classification": {
@@ -6770,12 +7155,12 @@
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.03425209
+                  "value": 0.03386885
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.03148004
+                  "value": 0.03195974
                 },
                 {
                   "fromTone": 16,
@@ -6911,7 +7296,7 @@
             "maxLocalChromaProminence": 0.00179868,
             "maxNominalDeviation": 0.89274691,
             "maxProfileChromaReduction": 0.02611102,
-            "meanNominalDeviation": 0.07431324,
+            "meanNominalDeviation": 0.07379069,
             "meanProfileChromaReduction": 0.0056286,
             "minLightnessDelta": 1.18218052,
             "monotonic": true,
@@ -6928,7 +7313,25 @@
             "source": "harmony-rest",
             "tone": 50
           },
-          "status": "pass"
+          "status": "pass",
+          "surfaceTrackAlignment": {
+            "adjustedToneCount": 1,
+            "adjustedTones": [
+              14
+            ],
+            "appliedStrength": 1,
+            "contract": "kiskadee-primary-relative-light-v1",
+            "maxChromaReduction": 0.000493,
+            "maxRemainingExcess": 0,
+            "protectedTones": [
+              0,
+              24,
+              50,
+              100
+            ],
+            "referenceFamilyId": "b.blue.v1",
+            "restorationCount": 0
+          }
         }
       }
     }
@@ -6962,7 +7365,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "issues": [
     {

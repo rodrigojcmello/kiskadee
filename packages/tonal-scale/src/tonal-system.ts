@@ -2,6 +2,7 @@ import {
   contrastRatio,
   deltaEOk,
   estimateMaxSrgbChroma,
+  hexToHsl,
   hexToOklch,
   maxSrgbChroma,
   type OklchColor,
@@ -16,7 +17,8 @@ import {
   type KiskadeeScaleColor,
   type KiskadeeScaleResult,
   type KiskadeeTheme,
-  type KiskadeeTone
+  type KiskadeeTone,
+  revalidateKiskadeeScaleResult
 } from './kiskadee-tonal-scale.ts';
 import {
   classifyMunsellHex,
@@ -83,6 +85,19 @@ export const MUNSELL_HARMONY_V1_PARAMETERS = {
   adjacentFamilyMinimumRestDeltaE: 0.05
 } as const;
 
+export const SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS = {
+  contract: 'kiskadee-primary-relative-light-v1',
+  startLightness: 80,
+  fullLightness: 90,
+  chromaToleranceRatio: 0.15,
+  minimumChromaTolerance: 0.005,
+  protectionRadius: 4,
+  restoreScanSteps: 64,
+  restoreBisectionSteps: 16,
+  restoreRefinementPasses: 2,
+  quantizationTolerance: 0.002
+} as const;
+
 const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
   quantizationSafeInset: 0.02
 } as const;
@@ -142,6 +157,18 @@ export type TonalHarmonyMetrics = {
   candidatesEvaluated: number;
 };
 
+export type TonalSurfaceTrackAlignmentDiagnostics = {
+  contract: typeof SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS.contract;
+  referenceFamilyId: TonalFamilyId;
+  adjustedTones: KiskadeeTone[];
+  adjustedToneCount: number;
+  protectedTones: KiskadeeTone[];
+  maxChromaReduction: number;
+  maxRemainingExcess: number;
+  appliedStrength: number;
+  restorationCount: number;
+};
+
 export type ResolvedTonalTheme = {
   theme: KiskadeeTheme;
   policy: TonalSeedPolicy;
@@ -152,6 +179,7 @@ export type ResolvedTonalTheme = {
   restColor: KiskadeeScaleColor;
   scale: KiskadeeScaleResult;
   harmony: TonalHarmonyMetrics | null;
+  surfaceTrackAlignment: TonalSurfaceTrackAlignmentDiagnostics | null;
   status: Exclude<TonalSystemStatus, 'error'>;
 };
 
@@ -1515,7 +1543,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       policy: familySource.policies.dark
     });
 
-    const light =
+    const resolvedLight =
       lightRestProposal.harmonizedAnchorPreview?.resolutions.get(familySource.id) ??
       resolveConfiguredFamilyTheme({
         familyId: familySource.id,
@@ -1530,7 +1558,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
         recipe,
         issues
       });
-    const dark =
+    const resolvedDark =
       darkRestProposal.harmonizedAnchorPreview?.resolutions.get(familySource.id) ??
       resolveConfiguredFamilyTheme({
         familyId: familySource.id,
@@ -1546,7 +1574,28 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
         issues
       });
 
-    if (!light || !dark) continue;
+    if (!resolvedLight || !resolvedDark) continue;
+
+    const light =
+      familyKind === 'chromatic'
+        ? alignSupportThemeToPrimarySurfaceTrack({
+            primaryFamilyId: recipe.primaryReference,
+            supportFamilyId: familySource.id,
+            primary: primaryLight,
+            support: resolvedLight,
+            issues
+          })
+        : resolvedLight;
+    const dark =
+      familyKind === 'chromatic'
+        ? alignSupportThemeToPrimarySurfaceTrack({
+            primaryFamilyId: recipe.primaryReference,
+            supportFamilyId: familySource.id,
+            primary: primaryDark,
+            support: resolvedDark,
+            issues
+          })
+        : resolvedDark;
 
     validateResolvedFamilyIdentity(
       familySource.id,
@@ -1627,6 +1676,318 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     families: families.sort((left, right) => compareStrings(left.id, right.id)),
     issues: sortIssues(issues)
   };
+}
+
+type SurfaceTrackChromaTarget = {
+  index: number;
+  tone: KiskadeeTone;
+  referenceLightness: number;
+  originalChroma: number;
+  targetChroma: number;
+};
+
+type SurfaceTrackScaleTransformation = {
+  scale: KiskadeeScaleResult;
+  appliedStrength: number;
+  restoredTones: KiskadeeTone[];
+};
+
+/**
+ * What
+ *     Reduces excess support-family chroma near physical white using the Primary at the same
+ *     theme position as the one-sided reference.
+ * Why
+ *     sRGB compresses blue and red much earlier than green near white, so equal low-level curves
+ *     can otherwise make one semantic family dominate shared light-surface positions.
+ */
+function alignSupportThemeToPrimarySurfaceTrack(params: {
+  primaryFamilyId: TonalFamilyId;
+  supportFamilyId: TonalFamilyId;
+  primary: ResolvedTonalTheme;
+  support: ResolvedTonalTheme;
+  issues: TonalSystemIssue[];
+}): ResolvedTonalTheme {
+  const { primaryFamilyId, supportFamilyId, primary, support, issues } = params;
+  const supportAnchorTone = support.scale.anchorTone;
+  if (supportAnchorTone === null) return support;
+
+  const protectedTones = [
+    ...new Set<KiskadeeTone>([0, 100, supportAnchorTone, support.restTone])
+  ].sort((left, right) => left - right);
+  const protectedWindowIndices = [...new Set([supportAnchorTone, support.restTone])].map((tone) =>
+    KISKADEE_TONES.indexOf(tone)
+  );
+  const protectedExcessTones: KiskadeeTone[] = [];
+  const protectedExcesses: number[] = [];
+  const targets: SurfaceTrackChromaTarget[] = [];
+
+  for (let index = 0; index < support.scale.colors.length; index += 1) {
+    const supportColor = support.scale.colors[index];
+    const primaryColor = primary.scale.colors[index];
+    if (!supportColor || !primaryColor || supportColor.flags.isCap) continue;
+
+    const physicalLightWeight = resolveSurfaceTrackPhysicalLightWeight(primaryColor.oklch.l);
+    if (physicalLightWeight <= 0) continue;
+
+    const fullCap = resolveSurfaceTrackChromaCap(primaryColor.oklch.c);
+    const fullExcess = Math.max(0, supportColor.oklch.c - fullCap);
+    if (fullExcess <= 0) continue;
+
+    if (supportColor.tone === supportAnchorTone || supportColor.tone === support.restTone) {
+      const protectedExcess = fullExcess * physicalLightWeight;
+      protectedExcesses.push(protectedExcess);
+      if (protectedExcess > SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS.quantizationTolerance) {
+        protectedExcessTones.push(supportColor.tone);
+      }
+      continue;
+    }
+
+    const protectionWeight = protectedWindowIndices.reduce((weight, protectedIndex) => {
+      const distance = Math.abs(index - protectedIndex);
+      const candidate = resolveSmoothstepUnit(
+        distance / SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS.protectionRadius
+      );
+      return Math.min(weight, candidate);
+    }, 1);
+    const alignmentWeight = physicalLightWeight * protectionWeight;
+    const targetChroma = supportColor.oklch.c - fullExcess * alignmentWeight;
+    if (supportColor.oklch.c - targetChroma <= 1e-7) continue;
+
+    targets.push({
+      index,
+      tone: supportColor.tone,
+      referenceLightness: primaryColor.oklch.l,
+      originalChroma: supportColor.oklch.c,
+      targetChroma
+    });
+  }
+
+  const transformed = transformSurfaceTrackScale({
+    baseline: support.scale,
+    theme: support.theme,
+    targets
+  });
+  const targetByTone = new Map(targets.map((target) => [target.tone, target]));
+  const adjustedTones = transformed.scale.colors
+    .filter((color, index) => color.hex !== support.scale.colors[index]?.hex)
+    .map((color) => color.tone);
+  const reductions = transformed.scale.colors.map((color, index) =>
+    Math.max(0, (support.scale.colors[index]?.oklch.c ?? color.oklch.c) - color.oklch.c)
+  );
+  const remainingExcesses = transformed.scale.colors.map((color) => {
+    const target = targetByTone.get(color.tone);
+    return target ? Math.max(0, color.oklch.c - target.targetChroma) : 0;
+  });
+  const maxRemainingExcess = Math.max(0, ...protectedExcesses, ...remainingExcesses);
+  const relaxed = transformed.restoredTones.length > 0;
+
+  if (protectedExcessTones.length > 0) {
+    issues.push({
+      severity: 'review',
+      code: 'SURFACE_TRACK_ALIGNMENT_PROTECTED',
+      path: `/families/${supportFamilyId}/${support.theme}`,
+      message: `${supportFamilyId} ${support.theme} preserves exact protected tones ${protectedExcessTones.join(', ')} above the Primary-relative light-surface chroma cap.`,
+      familyId: supportFamilyId,
+      theme: support.theme
+    });
+  }
+  if (relaxed) {
+    issues.push({
+      severity: 'review',
+      code: 'SURFACE_TRACK_ALIGNMENT_RELAXED',
+      path: `/families/${supportFamilyId}/${support.theme}`,
+      message: `${supportFamilyId} ${support.theme} restored tones ${transformed.restoredTones.join(', ')} toward their baseline chroma to preserve canonical scale invariants.`,
+      familyId: supportFamilyId,
+      theme: support.theme
+    });
+  }
+
+  const restColor = resolveTone(transformed.scale, support.restTone);
+  if (!restColor) {
+    throw new Error(`${supportFamilyId} ${support.theme} lost its protected harmony rest.`);
+  }
+
+  return {
+    ...support,
+    restColor,
+    scale: transformed.scale,
+    surfaceTrackAlignment: {
+      contract: SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS.contract,
+      referenceFamilyId: primaryFamilyId,
+      adjustedTones,
+      adjustedToneCount: adjustedTones.length,
+      protectedTones,
+      maxChromaReduction: Math.max(0, ...reductions),
+      maxRemainingExcess,
+      appliedStrength: transformed.appliedStrength,
+      restorationCount: transformed.restoredTones.length
+    },
+    status:
+      support.status === 'review' || protectedExcessTones.length > 0 || relaxed ? 'review' : 'pass'
+  };
+}
+
+function transformSurfaceTrackScale(params: {
+  baseline: KiskadeeScaleResult;
+  theme: KiskadeeTheme;
+  targets: SurfaceTrackChromaTarget[];
+}): SurfaceTrackScaleTransformation {
+  const { baseline, theme, targets } = params;
+  if (targets.length === 0) {
+    return { scale: baseline, appliedStrength: 1, restoredTones: [] };
+  }
+
+  const targetByIndex = new Map(targets.map((target) => [target.index, target]));
+  const render = (strengthByIndex: ReadonlyMap<number, number>): KiskadeeScaleResult => {
+    if ([...strengthByIndex.values()].every((strength) => strength <= 0)) return baseline;
+
+    const colors = baseline.colors.map((color, index): KiskadeeScaleColor => {
+      const target = targetByIndex.get(index);
+      if (!target) return color;
+      const strength = strengthByIndex.get(index) ?? 0;
+      if (strength <= 0) return color;
+
+      const requestedChroma =
+        target.originalChroma - (target.originalChroma - target.targetChroma) * strength;
+      const rendered = oklchToSrgbHex({
+        l: color.targetLightness,
+        c: requestedChroma,
+        h: color.oklch.h
+      });
+      if (rendered.hex === color.hex) return color;
+
+      return {
+        ...color,
+        hex: rendered.hex,
+        hsl: hexToHsl(rendered.hex),
+        oklch: hexToOklch(rendered.hex),
+        gamutChromaLoss: rendered.chromaLoss,
+        flags: {
+          ...color.flags,
+          gamutMapped: rendered.chromaLoss > 1e-6
+        }
+      };
+    });
+
+    return revalidateKiskadeeScaleResult({ baseline, colors, theme });
+  };
+  const fullStrengths = new Map(targets.map((target) => [target.index, 1]));
+  const full = render(fullStrengths);
+  if (isSurfaceTrackTransformationAccepted(baseline, full)) {
+    return { scale: full, appliedStrength: 1, restoredTones: [] };
+  }
+
+  const orderedTargets = [...targets].sort(
+    (left, right) => left.referenceLightness - right.referenceLightness || left.index - right.index
+  );
+  const strengthByIndex = new Map(targets.map((target) => [target.index, 0]));
+  let validScale = baseline;
+
+  const maximizeTarget = (target: SurfaceTrackChromaTarget): boolean => {
+    const initialStrength = strengthByIndex.get(target.index) ?? 0;
+    strengthByIndex.set(target.index, 1);
+    const fullCandidate = render(strengthByIndex);
+    if (isSurfaceTrackTransformationAccepted(baseline, fullCandidate)) {
+      validScale = fullCandidate;
+      return initialStrength < 1 - 1e-7;
+    }
+
+    let invalidStrength = 1;
+    let validStrength = initialStrength;
+    let targetValidScale = validScale;
+    const { restoreScanSteps, restoreBisectionSteps } =
+      SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS;
+
+    for (let step = restoreScanSteps - 1; step >= 1; step -= 1) {
+      const strength = initialStrength + ((1 - initialStrength) * step) / restoreScanSteps;
+      strengthByIndex.set(target.index, strength);
+      const candidate = render(strengthByIndex);
+      if (isSurfaceTrackTransformationAccepted(baseline, candidate)) {
+        validStrength = strength;
+        targetValidScale = candidate;
+        break;
+      }
+      invalidStrength = strength;
+    }
+
+    for (let iteration = 0; iteration < restoreBisectionSteps; iteration += 1) {
+      const strength = (validStrength + invalidStrength) / 2;
+      strengthByIndex.set(target.index, strength);
+      const candidate = render(strengthByIndex);
+      if (isSurfaceTrackTransformationAccepted(baseline, candidate)) {
+        validStrength = strength;
+        targetValidScale = candidate;
+      } else {
+        invalidStrength = strength;
+      }
+    }
+
+    strengthByIndex.set(target.index, validStrength);
+    validScale = targetValidScale;
+    return validStrength > initialStrength + 1e-7;
+  };
+
+  for (const target of orderedTargets) maximizeTarget(target);
+  for (
+    let pass = 0;
+    pass < SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS.restoreRefinementPasses;
+    pass += 1
+  ) {
+    let improved = false;
+    for (const target of orderedTargets) {
+      if ((strengthByIndex.get(target.index) ?? 0) >= 1 - 1e-7) continue;
+      improved = maximizeTarget(target) || improved;
+    }
+    if (!improved) break;
+  }
+
+  const restoredTones = orderedTargets
+    .filter((target) => validScale.colors[target.index]?.hex !== full.colors[target.index]?.hex)
+    .map((target) => target.tone);
+  const appliedStrength = Math.min(...strengthByIndex.values());
+  return { scale: validScale, appliedStrength, restoredTones };
+}
+
+function isSurfaceTrackTransformationAccepted(
+  baseline: KiskadeeScaleResult,
+  candidate: KiskadeeScaleResult
+): boolean {
+  if (!candidate.diagnostics.valid) return false;
+  if (
+    !baseline.diagnostics.chromaContinuityRelaxed &&
+    candidate.diagnostics.chromaContinuityRelaxed
+  ) {
+    return false;
+  }
+  if (
+    baseline.diagnostics.chromaContinuityRelaxed &&
+    candidate.diagnostics.maxLocalChromaProminence >
+      baseline.diagnostics.maxLocalChromaProminence + 1e-7
+  ) {
+    return false;
+  }
+  return (
+    baseline.diagnostics.emittedContinuity.reviewRequired ||
+    !candidate.diagnostics.emittedContinuity.reviewRequired
+  );
+}
+
+function resolveSurfaceTrackPhysicalLightWeight(lightness: number): number {
+  const { startLightness, fullLightness } = SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS;
+  if (lightness <= startLightness) return 0;
+  if (lightness >= fullLightness) return 1;
+  return resolveSmoothstepUnit((lightness - startLightness) / (fullLightness - startLightness));
+}
+
+function resolveSurfaceTrackChromaCap(primaryChroma: number): number {
+  const { chromaToleranceRatio, minimumChromaTolerance } =
+    SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS;
+  return primaryChroma + Math.max(minimumChromaTolerance, primaryChroma * chromaToleranceRatio);
+}
+
+function resolveSmoothstepUnit(value: number): number {
+  const clamped = clamp(value, 0, 1);
+  return clamped * clamped * (3 - 2 * clamped);
 }
 
 function validateResolvedFamilyIdentity(
@@ -1849,6 +2210,7 @@ function resolveSourceExactTheme(params: {
     restColor,
     scale,
     harmony: null,
+    surfaceTrackAlignment: null,
     status: scaleNeedsReview(scale) ? 'review' : 'pass'
   };
 }
@@ -1932,6 +2294,7 @@ function resolveAdaptiveTheme(params: {
       restColor: projectedRest,
       scale: projectedScale,
       harmony: metrics,
+      surfaceTrackAlignment: null,
       status
     };
   }
@@ -2198,6 +2561,7 @@ function resolveCandidateTheme(params: {
     restColor,
     scale: resolution.scale,
     harmony: metrics,
+    surfaceTrackAlignment: null,
     status
   };
 }

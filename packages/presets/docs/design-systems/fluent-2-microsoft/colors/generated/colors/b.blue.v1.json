@@ -14,7 +14,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "id": "b.blue.v1",
   "kind": "kiskadee.primitive-tonal-family",

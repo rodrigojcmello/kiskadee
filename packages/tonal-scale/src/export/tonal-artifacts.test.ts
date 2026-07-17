@@ -1,7 +1,11 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { KISKADEE_TONES } from '../kiskadee-tonal-scale';
-import { generateKiskadeeTonalSystem, type ResolvedKiskadeeTonalSystem } from '../tonal-system';
+import {
+  generateKiskadeeTonalSystem,
+  type ResolvedKiskadeeTonalSystem,
+  SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS
+} from '../tonal-system';
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
@@ -45,7 +49,7 @@ describe('tonal artifact bundle v3', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.3.0');
+    expect(bundle.manifest.generator.version).toBe('0.3.1');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
@@ -63,6 +67,7 @@ describe('tonal artifact bundle v3', () => {
       expect(asset).not.toHaveProperty('familyKind');
       expect(asset).not.toHaveProperty('sourceSeedHex');
       expect(asset).not.toHaveProperty('classification');
+      expect(asset).not.toHaveProperty('surfaceTrackAlignment');
       expect(Object.keys(asset.scales.light).map(Number)).toEqual(KISKADEE_TONES);
       expect(Object.keys(asset.scales.dark).map(Number)).toEqual(KISKADEE_TONES);
       expect(asset.scales.light['0']).toBe('#ffffff');
@@ -123,6 +128,25 @@ describe('tonal artifact bundle v3', () => {
     expect(black?.classification).toBeNull();
     expect(black?.themes.light.classification).toBeNull();
     expect(black?.themes.dark.classification).toBeNull();
+
+    expect(blue?.themes.light.surfaceTrackAlignment).toBeNull();
+    expect(blue?.themes.dark.surfaceTrackAlignment).toBeNull();
+    expect(black?.themes.light.surfaceTrackAlignment).toBeNull();
+    expect(black?.themes.dark.surfaceTrackAlignment).toBeNull();
+
+    const green = bundle.diagnostics.families.find((family) => family.familyId === 'g.green.v1');
+    for (const theme of ['light', 'dark'] as const) {
+      const alignment = green?.themes[theme].surfaceTrackAlignment;
+      expect(alignment).toMatchObject({
+        contract: SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS.contract,
+        referenceFamilyId: 'b.blue.v1'
+      });
+      expect(alignment?.adjustedToneCount).toBe(alignment?.adjustedTones.length);
+      expect(alignment?.protectedTones).toEqual(expect.arrayContaining([0, 100]));
+      expect(alignment?.maxChromaReduction).toBeGreaterThanOrEqual(0);
+      expect(alignment?.maxRemainingExcess).toBeGreaterThanOrEqual(0);
+      expect(alignment?.restorationCount).toBeGreaterThanOrEqual(0);
+    }
   });
 
   it('keeps hashes centralized in the manifest', () => {

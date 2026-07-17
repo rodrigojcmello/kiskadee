@@ -14,7 +14,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "id": "yr.brown.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -79,7 +79,7 @@
       "2": "#fff4ed",
       "3": "#ffeee4",
       "4": "#ffe9da",
-      "5": "#ffe3d1",
+      "5": "#fee3d2",
       "6": "#fddeca",
       "7": "#fad9c4",
       "8": "#f7d3bc",

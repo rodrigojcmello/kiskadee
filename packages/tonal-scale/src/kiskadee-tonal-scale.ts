@@ -1,3 +1,4 @@
+import { KISKADEE_TONES, type KiskadeeTone } from '@kiskadee/core';
 import {
   contrastRatio,
   type HslColor,
@@ -15,7 +16,6 @@ import {
   type EmittedSample,
   fairEmittedAnchorNeighborhood
 } from './emitted-curve-continuity.ts';
-import { KISKADEE_TONES, type KiskadeeTone } from '@kiskadee/core';
 
 export { KISKADEE_TONES, type KiskadeeTone } from '@kiskadee/core';
 export type KiskadeeTheme = 'light' | 'dark';
@@ -183,6 +183,12 @@ export type KiskadeeScaleResult = {
   colors: KiskadeeScaleColor[];
   anchorTone: KiskadeeTone | null;
   diagnostics: KiskadeeScaleDiagnostics;
+};
+
+export type RevalidateKiskadeeScaleResultInput = {
+  baseline: KiskadeeScaleResult;
+  colors: KiskadeeScaleColor[];
+  theme: KiskadeeTheme;
 };
 
 type AnchorSelection = {
@@ -663,6 +669,79 @@ function applyMutedDarksProfile(params: {
   });
 
   return { colors, anchorTone: balancedResult.anchorTone, diagnostics };
+}
+
+/**
+ * What
+ *     Rebuilds diagnostics for a system-level chroma transformation while preserving the
+ *     canonical scale grid, input anchor, and low-level profile metadata.
+ * Why
+ *     Multi-family harmony may reduce emitted chroma after scale generation and must validate
+ *     the resulting colors through the same invariant implementation as the canonical generator.
+ * @internal
+ */
+export function revalidateKiskadeeScaleResult({
+  baseline,
+  colors: candidateColors,
+  theme
+}: RevalidateKiskadeeScaleResultInput): KiskadeeScaleResult {
+  const baselineAnchor = baseline.diagnostics.anchor;
+  const profile = baseline.diagnostics.profile;
+  const anchorTone = baseline.anchorTone;
+
+  if (!baseline.diagnostics.valid || !baselineAnchor || !profile || anchorTone === null) {
+    throw new Error('Cannot revalidate an invalid or anchorless Kiskadee scale.');
+  }
+  if (
+    candidateColors.length !== KISKADEE_TONES.length ||
+    candidateColors.some((color, index) => color.tone !== KISKADEE_TONES[index])
+  ) {
+    throw new Error('System-level chroma transformations must preserve the canonical tone grid.');
+  }
+
+  const anchorIndex = KISKADEE_TONES.indexOf(anchorTone);
+  const anchorColor = candidateColors[anchorIndex];
+  if (anchorIndex < 0 || !anchorColor?.flags.isAnchor || anchorColor.hex !== baselineAnchor.hex) {
+    throw new Error('System-level chroma transformations must preserve the exact input anchor.');
+  }
+
+  const actualOriented = candidateColors.map((color) => orientLightness(color.oklch.l, theme));
+  const actualDeltas = actualOriented.slice(1).map((value, index) => value - actualOriented[index]);
+  const colors = candidateColors.map(
+    (color, index): KiskadeeScaleColor => ({
+      ...color,
+      flags: {
+        ...color.flags,
+        separationRelaxed:
+          color.flags.separationRelaxed ||
+          (actualDeltas[index - 1] ?? Number.POSITIVE_INFINITY) <
+            PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON ||
+          (actualDeltas[index] ?? Number.POSITIVE_INFINITY) <
+            PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON
+      }
+    })
+  );
+  const anchorSelection: AnchorSelection = {
+    index: anchorIndex,
+    nominalNearestIndex: KISKADEE_TONES.indexOf(baselineAnchor.nominalNearestTone),
+    relocationReason: baselineAnchor.relocationReason
+  };
+  const diagnostics = createDiagnostics({
+    profile,
+    colors,
+    anchorIndex,
+    normalizedSeed: baselineAnchor.hex,
+    foregroundHex: theme === 'light' ? '#ffffff' : '#000000',
+    theme,
+    anchorSelection,
+    fairing: baseline.diagnostics.emittedContinuity.fairing,
+    separationRelaxed:
+      baseline.diagnostics.separationRelaxed ||
+      actualDeltas.some((delta) => delta < PREFERRED_LIGHTNESS_DELTA - NUMERIC_EPSILON),
+    anchorChromaProtected: baseline.diagnostics.anchorChromaProtected
+  });
+
+  return { colors, anchorTone, diagnostics };
 }
 
 function resolveMutedDarksEnvelopeRatio(lightness: number, anchorLightness: number): number {

@@ -3,7 +3,7 @@
   "formatVersion": 1,
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "sourceEvidence": "./figma-color-scales.json",
   "generatedBundle": "./generated/tonal-system.json",
@@ -1943,8 +1943,8 @@
           "light": {
             "token": "L14",
             "tone": 14,
-            "hex": "#f6b544",
-            "deltaE": 0.016796,
+            "hex": "#f6b545",
+            "deltaE": 0.0173,
             "exact": false
           },
           "dark": {
@@ -1961,8 +1961,8 @@
           "light": {
             "token": "L12",
             "tone": 12,
-            "hex": "#fcbf5a",
-            "deltaE": 0.020728,
+            "hex": "#f7c068",
+            "deltaE": 0.019963,
             "exact": false
           },
           "dark": {
@@ -1977,17 +1977,17 @@
           "sourceToken": "Tint 40",
           "sourceHex": "#f9e2ae",
           "light": {
-            "token": "L6",
-            "tone": 6,
-            "hex": "#ffe0b2",
-            "deltaE": 0.012049,
+            "token": "L7",
+            "tone": 7,
+            "hex": "#f5ddba",
+            "deltaE": 0.02371,
             "exact": false
           },
           "dark": {
-            "token": "D95",
-            "tone": 95,
-            "hex": "#fce9cc",
-            "deltaE": 0.037114,
+            "token": "D90",
+            "tone": 90,
+            "hex": "#eed3ac",
+            "deltaE": 0.042755,
             "exact": false
           }
         },
@@ -1995,17 +1995,17 @@
           "sourceToken": "Tint 50",
           "sourceHex": "#fcefd3",
           "light": {
-            "token": "L3",
-            "tone": 3,
-            "hex": "#fff0da",
-            "deltaE": 0.010119,
+            "token": "L4",
+            "tone": 4,
+            "hex": "#faebd7",
+            "deltaE": 0.013501,
             "exact": false
           },
           "dark": {
             "token": "D95",
             "tone": 95,
-            "hex": "#fce9cc",
-            "deltaE": 0.014969,
+            "hex": "#f9ead3",
+            "deltaE": 0.013951,
             "exact": false
           }
         },
@@ -2224,15 +2224,15 @@
           "light": {
             "token": "L12",
             "tone": 12,
-            "hex": "#9ddf98",
-            "deltaE": 0.023962,
+            "hex": "#a1dd9c",
+            "deltaE": 0.015867,
             "exact": false
           },
           "dark": {
             "token": "D85",
             "tone": 85,
-            "hex": "#96d890",
-            "deltaE": 0.023167,
+            "hex": "#97d791",
+            "deltaE": 0.020967,
             "exact": false
           }
         },
@@ -2240,17 +2240,17 @@
           "sourceToken": "Tint 50",
           "sourceHex": "#c9eac9",
           "light": {
-            "token": "L6",
-            "tone": 6,
-            "hex": "#c4f4c0",
-            "deltaE": 0.033208,
+            "token": "L7",
+            "tone": 7,
+            "hex": "#cdeaca",
+            "deltaE": 0.005273,
             "exact": false
           },
           "dark": {
-            "token": "D95",
-            "tone": 95,
-            "hex": "#d0f8cc",
-            "deltaE": 0.038343,
+            "token": "D90",
+            "tone": 90,
+            "hex": "#bae3b6",
+            "deltaE": 0.034863,
             "exact": false
           }
         },
@@ -2258,17 +2258,17 @@
           "sourceToken": "Tint 60",
           "sourceHex": "#f1faf1",
           "light": {
-            "token": "L1",
-            "tone": 1,
-            "hex": "#f2fff1",
-            "deltaE": 0.01318,
+            "token": "L2",
+            "tone": 2,
+            "hex": "#f0faef",
+            "deltaE": 0.003113,
             "exact": false
           },
           "dark": {
             "token": "D99",
             "tone": 99,
-            "hex": "#f4fff2",
-            "deltaE": 0.013598,
+            "hex": "#f8fdf7",
+            "deltaE": 0.014003,
             "exact": false
           }
         }
@@ -2469,15 +2469,15 @@
           "light": {
             "token": "L10",
             "tone": 10,
-            "hex": "#a7e5a2",
-            "deltaE": 0.007672,
+            "hex": "#afe2ab",
+            "deltaE": 0.013524,
             "exact": false
           },
           "dark": {
             "token": "D90",
             "tone": 90,
-            "hex": "#afe7aa",
-            "deltaE": 0.015443,
+            "hex": "#bae3b6",
+            "deltaE": 0.033726,
             "exact": false
           }
         },
@@ -2485,17 +2485,17 @@
           "sourceToken": "Tint 50",
           "sourceHex": "#cef0cd",
           "light": {
-            "token": "L5",
-            "tone": 5,
-            "hex": "#cbf7c7",
-            "deltaE": 0.022819,
+            "token": "L6",
+            "tone": 6,
+            "hex": "#d4edd2",
+            "deltaE": 0.014174,
             "exact": false
           },
           "dark": {
             "token": "D95",
             "tone": 95,
-            "hex": "#d0f8cc",
-            "deltaE": 0.022221,
+            "hex": "#dff1dc",
+            "deltaE": 0.030784,
             "exact": false
           }
         },
@@ -2503,17 +2503,17 @@
           "sourceToken": "Tint 60",
           "sourceHex": "#f2fbf2",
           "light": {
-            "token": "L1",
-            "tone": 1,
-            "hex": "#f2fff1",
-            "deltaE": 0.010911,
+            "token": "L2",
+            "tone": 2,
+            "hex": "#f0faef",
+            "deltaE": 0.005131,
             "exact": false
           },
           "dark": {
             "token": "D99",
             "tone": 99,
-            "hex": "#f4fff2",
-            "deltaE": 0.010948,
+            "hex": "#f8fdf7",
+            "deltaE": 0.011344,
             "exact": false
           }
         }
@@ -2712,17 +2712,17 @@
           "sourceToken": "Tint 40",
           "sourceHex": "#edbbe7",
           "light": {
-            "token": "L9",
-            "tone": 9,
-            "hex": "#ffbef3",
-            "deltaE": 0.03324,
+            "token": "L10",
+            "tone": 10,
+            "hex": "#f7bcec",
+            "deltaE": 0.017181,
             "exact": false
           },
           "dark": {
             "token": "D90",
             "tone": 90,
-            "hex": "#ffc2f4",
-            "deltaE": 0.036619,
+            "hex": "#f7c7ee",
+            "deltaE": 0.034065,
             "exact": false
           }
         },
@@ -2730,17 +2730,17 @@
           "sourceToken": "Tint 50",
           "sourceHex": "#f5daf2",
           "light": {
-            "token": "L5",
-            "tone": 5,
-            "hex": "#ffddf8",
-            "deltaE": 0.018117,
+            "token": "L6",
+            "tone": 6,
+            "hex": "#f8daf2",
+            "deltaE": 0.004245,
             "exact": false
           },
           "dark": {
             "token": "D95",
             "tone": 95,
-            "hex": "#ffe3f9",
-            "deltaE": 0.027605,
+            "hex": "#fbe5f6",
+            "deltaE": 0.029088,
             "exact": false
           }
         },
@@ -2750,8 +2750,8 @@
           "light": {
             "token": "L2",
             "tone": 2,
-            "hex": "#fff2fc",
-            "deltaE": 0.00785,
+            "hex": "#fef2fc",
+            "deltaE": 0.00765,
             "exact": false
           },
           "dark": {

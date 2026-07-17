@@ -1,2 +1,25 @@
 export * from './color-math.ts';
-export * from './kiskadee-tonal-scale.ts';
+export {
+  type GenerateKiskadeeScaleInput,
+  generateKiskadeeScale,
+  isKiskadeeTonalProfile,
+  KISKADEE_LIGHT_NOMINAL_LIGHTNESS,
+  KISKADEE_TONAL_PROFILES,
+  KISKADEE_TONES,
+  type KiskadeeAdjacentContrastFailure,
+  type KiskadeeAdjacentDeltaE,
+  type KiskadeeAdjacentDuplicate,
+  type KiskadeeAnchorDiagnostics,
+  type KiskadeeColorFlags,
+  type KiskadeeContrastFailure,
+  type KiskadeeEmittedContinuityDiagnostics,
+  type KiskadeeScaleColor,
+  type KiskadeeScaleDiagnostics,
+  type KiskadeeScaleError,
+  type KiskadeeScaleResult,
+  type KiskadeeTheme,
+  type KiskadeeTonalProfile,
+  type KiskadeeTone,
+  MUTED_DARKS_PARAMETERS,
+  resolveCanonicalNominalLightness
+} from './kiskadee-tonal-scale.ts';

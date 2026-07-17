@@ -14,7 +14,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "id": "bg.teal.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -69,18 +69,18 @@
       "80": "#73c3c5",
       "85": "#8dd3d5",
       "90": "#a8e3e5",
-      "95": "#cbf5f6",
-      "99": "#f0ffff",
+      "95": "#d2f3f4",
+      "99": "#f4fdfd",
       "100": "#ffffff"
     },
     "light": {
       "0": "#ffffff",
-      "1": "#eeffff",
-      "2": "#e1fdfe",
-      "3": "#d8fafb",
-      "4": "#cff6f8",
-      "5": "#c7f3f4",
-      "6": "#c0f0f1",
+      "1": "#f3fdfd",
+      "2": "#eafafb",
+      "3": "#e0f7f8",
+      "4": "#d6f4f6",
+      "5": "#cdf1f2",
+      "6": "#c3eff0",
       "7": "#b8eced",
       "8": "#b0e7e9",
       "9": "#a8e3e5",

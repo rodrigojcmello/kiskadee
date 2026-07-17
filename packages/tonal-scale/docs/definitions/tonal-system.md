@@ -224,6 +224,41 @@ before comparing it with the fixed companion set.
 themes, and does not participate in chromatic harmony. Achromatic chroma above
 `0.04` requires review and above `0.08` fails.
 
+## Physical-Light Surface Alignment
+
+Harmony-rest and vivid-peak equivalence do not guarantee equal behavior near
+physical white. At the same OKL lightness, sRGB can compress Blue or Red to a
+small chroma while allowing Green or Lime to preserve much more color. A shared
+surface position can consequently make one support family dominate even though
+all families follow the same low-level curve.
+
+The multi-family system therefore applies
+`kiskadee-primary-relative-light-v1` after every family scale is resolved:
+
+- the complete Primary scale remains byte-identical and is the per-position
+  reference;
+- `n.black.*` is excluded, while Brown remains eligible for one-sided
+  reduction;
+- support chroma is never increased;
+- alignment is inactive at physical OKL `L <= 80`, complete at `L >= 90`, and
+  follows a smoothstep transition between those limits;
+- at complete strength, support chroma is limited to Primary chroma plus the
+  greater of `0.005` or `15%` of Primary chroma;
+- caps, generated anchors, and harmony-rest colors remain exact. A four-public-
+  position smoothstep window protects continuity around generated anchors and
+  harmony rest.
+
+The transformation keeps the existing target lightness and emitted hue as its
+OKLCH conversion inputs, then revalidates the quantized sRGB scale through the
+canonical monotonicity, uniqueness, contrast, gamut, and continuity
+diagnostics. If complete reduction would add a new continuity review or
+invalidate the scale, the system restores only the conflicting public
+positions toward the baseline and reports those restorations. Valid reductions
+at other positions remain applied. Exact protected colors that exceed the
+alignment envelope also remain valid but require review, and their measurable
+excess remains visible in diagnostics. Alignment details do not expand the
+primitive color asset contract.
+
 ## Generated Anchor, Harmony Rest, And State Anchor
 
 `seedHex`, generated anchor, harmony rest, and state anchor are separate
@@ -365,7 +400,7 @@ colors/
 
 The required system contains 12 color assets and 15 files total. Additional
 authored variants add one color file each. All artifacts identify
-`@kiskadee/tonal-scale@0.3.0`.
+`@kiskadee/tonal-scale@0.3.1`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, and contract identifiers. The manifest centralizes
@@ -393,6 +428,11 @@ The `kiskadee-munsell-rest-v1` system has not yet crossed its explicit visual
 approval and systemic-golden milestone. Corrections before that milestone
 refine the draft V1 behavior. After the golden is approved, any byte-changing
 harmony algorithm requires a new harmony contract or generator version.
+
+Generator `0.3.1` adds the physical-light surface alignment above without
+changing format V3, the harmony V1 recipe, or the low-level tonal grid. Existing
+`0.3.0` bundles must be regenerated because atomic verification includes the
+generator version and all emitted family bytes.
 
 This package produces Layer 1 artifacts only. It does not write presets,
 external types, semantic aliases, or component state mappings. In particular,
