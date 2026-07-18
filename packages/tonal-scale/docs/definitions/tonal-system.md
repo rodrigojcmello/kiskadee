@@ -259,6 +259,55 @@ alignment envelope also remain valid but require review, and their measurable
 excess remains visible in diagnostics. Alignment details do not expand the
 primitive color asset contract.
 
+## Isolated Harmony-Peak Alignment
+
+Equal hue-global gamut utilization can still create a single dominant family
+in the physical middle of a system. The available sRGB chroma near the Indigo
+cusp is one example: the same relative utilization may produce substantially
+more absolute OKL chroma than its Blue and Purple neighbors. A global cap based
+only on the Primary would also weaken valid warm systems in which several
+families intentionally form a vivid cohort.
+
+The multi-family harmonizer therefore applies
+`kiskadee-isolated-harmony-peak-v1` as a conditional second selection pass. It
+does not contain an Indigo-specific multiplier. A harmonized support family is
+eligible only when all of the following are true in one theme:
+
+- its harmony-rest chroma exceeds both the adjacent-sector average envelope
+  (`25%` plus a minimum `0.012`) and the complete-family median envelope (`50%`
+  plus a minimum `0.012`);
+- the rest exceeds that combined envelope by at least `0.015` OKL chroma;
+- its maximum chroma between physical OKL `L=40` and `L=65` is at least `0.2`;
+- at the peak's physical lightness, its chroma exceeds every other family
+  (linearly interpolated between emitted stops) by the greater of `0.022` or
+  `9%`.
+
+When those conditions identify a singleton, candidate selection is repeated
+with a peak target no higher than either the independent runner-up plus the
+greater of `0.01` or `4%`, or the original peak minus `0.01`. Comparing
+families at the same physical lightness prevents a peak elsewhere in another
+curve from hiding the local imbalance, while the independent runner-up keeps
+the final reduction intentionally modest.
+This detection/target hysteresis avoids reacting to harmless quantization while
+still producing a visible correction. Candidate search, rather than a visual
+post-process, owns the reduction, so effective seed, generated anchor,
+harmony-rest color, state reference, scale diagnostics, and exported bytes stay
+coherent.
+
+All candidates are measured from the same immutable system snapshot. If
+different families qualify at different lightnesses in one theme, only the one
+with the greatest excess above its local detection threshold is aligned. This
+keeps the contract unilateral and prevents correction cascades.
+
+The Primary and `n.black.*` are never reduced. Authored `source-exact` and
+`adaptive` supports are also preserved and reported for review when they form
+an isolated peak. A harmonized family keeps its prior result with review if no
+lower candidate can satisfy sector identity, gamut, monotonicity, uniqueness,
+contrast, and continuity. The contract is intentionally limited to one
+isolated leader; it does not flatten a vivid cohort such as the Orange system.
+Measurements before and after selection are emitted only in system
+diagnostics, not in primitive color assets.
+
 ## Generated Anchor, Harmony Rest, And State Anchor
 
 `seedHex`, generated anchor, harmony rest, and state anchor are separate

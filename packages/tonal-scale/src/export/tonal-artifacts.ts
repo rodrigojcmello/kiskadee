@@ -124,6 +124,7 @@ type ThemeDiagnostics = {
   classification: MunsellColorClassification | null;
   harmony: ResolvedTonalFamily['themes']['light']['harmony'];
   surfaceTrackAlignment: ResolvedTonalFamily['themes']['light']['surfaceTrackAlignment'];
+  isolatedHarmonyPeakAlignment: ResolvedTonalFamily['themes']['light']['isolatedHarmonyPeakAlignment'];
   scale: ResolvedTonalFamily['themes']['light']['scale']['diagnostics'];
 };
 
@@ -434,6 +435,7 @@ function createThemeDiagnostics(
       family.colorKind === 'chromatic' ? classifyMunsellHex(theme.effectiveSeedHex) : null,
     harmony: theme.harmony,
     surfaceTrackAlignment: theme.surfaceTrackAlignment,
+    isolatedHarmonyPeakAlignment: theme.isolatedHarmonyPeakAlignment,
     scale: theme.scale.diagnostics
   };
 }

@@ -8,6 +8,7 @@ import {
   getMunsellOklchSectorDefinition,
   MUNSELL_OKLCH_PRIMARY_CHROMA,
   MUNSELL_OKLCH_PROJECTION,
+  MUNSELL_OKLCH_RED_YELLOW_RED_BOUNDARY_HUE,
   MUNSELL_OKLCH_SAFE_CORE,
   MUNSELL_OKLCH_SECTOR_CENTERS,
   MUNSELL_OKLCH_SECTOR_DEFINITIONS,
@@ -53,7 +54,7 @@ describe('Munsell OKLCH projection', () => {
     });
   });
 
-  it('derives contiguous midpoint boundaries, including the circular wrap', () => {
+  it('derives contiguous boundaries, including the calibrated red/yellow-red split and circular wrap', () => {
     expect(MUNSELL_OKLCH_SECTOR_DEFINITIONS).toHaveLength(10);
 
     for (const [index, definition] of MUNSELL_OKLCH_SECTOR_DEFINITIONS.entries()) {
@@ -67,8 +68,8 @@ describe('Munsell OKLCH projection', () => {
 
     expect(getMunsellOklchSectorDefinition('red')).toMatchObject({
       startHue: 7.5,
-      endHue: 42,
-      spanDegrees: 34.5
+      endHue: MUNSELL_OKLCH_RED_YELLOW_RED_BOUNDARY_HUE,
+      spanDegrees: 26.5
     });
     expect(getMunsellOklchSectorDefinition('red-purple')).toMatchObject({
       startHue: 336.5,
@@ -77,6 +78,12 @@ describe('Munsell OKLCH projection', () => {
     });
     expect(classifyMunsellHue(0).sector).toBe('red-purple');
     expect(classifyMunsellHue(360).sector).toBe('red-purple');
+  });
+
+  it('keeps red-biased Orange on the yellow-red side of the calibrated boundary', () => {
+    expect(classifyMunsellHue(MUNSELL_OKLCH_RED_YELLOW_RED_BOUNDARY_HUE - 1e-9).sector).toBe('red');
+    expect(classifyMunsellHue(MUNSELL_OKLCH_RED_YELLOW_RED_BOUNDARY_HUE).sector).toBe('yellow-red');
+    expect(classifyMunsellHex('#f4511e').sector).toBe('yellow-red');
   });
 
   it('classifies every approved center in its own sector', () => {
