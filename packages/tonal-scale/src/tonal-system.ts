@@ -115,6 +115,17 @@ export const ISOLATED_HARMONY_PEAK_ALIGNMENT_V1_PARAMETERS = {
   peakTargetTolerance: 0.001
 } as const;
 
+export const ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS = {
+  contract: 'kiskadee-achromatic-surface-distance-v1',
+  reference: 'chromatic-base-family-median-delta-e-ok',
+  protectionRadius: 4,
+  restoreScanSteps: 64,
+  restoreBisectionSteps: 16,
+  restoreRefinementPasses: 2,
+  distanceTolerance: 0.002,
+  chromaQuantizationTolerance: 0.002
+} as const;
+
 const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
   quantizationSafeInset: 0.02
 } as const;
@@ -211,6 +222,28 @@ export type TonalIsolatedHarmonyPeakAlignmentDiagnostics = {
   remainingExcess: number;
 };
 
+export type TonalAchromaticSurfaceDistanceAlignmentDiagnostics = {
+  contract: typeof ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract;
+  reference: typeof ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference;
+  referenceFamilyIds: TonalFamilyId[];
+  surfaceHex: '#ffffff' | '#000000';
+  adjustedTones: KiskadeeTone[];
+  adjustedToneCount: number;
+  protectedTones: KiskadeeTone[];
+  maxLightnessAdjustment: number;
+  maxRemainingDistanceDeficit: number;
+  appliedStrength: number;
+  restorationCount: number;
+  rest: {
+    canonicalTargetDistance: number;
+    effectiveTargetDistance: number;
+    baselineDistance: number;
+    finalDistance: number;
+    baselineLightness: number;
+    finalLightness: number;
+  };
+};
+
 export type ResolvedTonalTheme = {
   theme: KiskadeeTheme;
   policy: TonalSeedPolicy;
@@ -223,6 +256,7 @@ export type ResolvedTonalTheme = {
   harmony: TonalHarmonyMetrics | null;
   surfaceTrackAlignment: TonalSurfaceTrackAlignmentDiagnostics | null;
   isolatedHarmonyPeakAlignment: TonalIsolatedHarmonyPeakAlignmentDiagnostics | null;
+  achromaticSurfaceDistanceAlignment: TonalAchromaticSurfaceDistanceAlignmentDiagnostics | null;
   status: Exclude<TonalSystemStatus, 'error'>;
 };
 
@@ -1726,6 +1760,8 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     issues
   });
 
+  alignAchromaticSurfaceDistances({ families, issues });
+
   validateAdjacentFamilyRestSeparation(primaryFamily, families, recipe, issues);
 
   if (issues.some((issue) => issue.severity === 'error')) {
@@ -1909,6 +1945,378 @@ function alignIsolatedHarmonyPeaks(params: {
     };
     family.status = combineStatuses(family.themes.light.status, family.themes.dark.status);
   }
+}
+
+type AchromaticSurfaceDistanceTarget = {
+  index: number;
+  tone: KiskadeeTone;
+  originalLightness: number;
+  targetLightness: number;
+  targetDistance: number;
+};
+
+type AchromaticSurfaceDistanceTransformation = {
+  scale: KiskadeeScaleResult;
+  appliedStrength: number;
+  restoredTones: KiskadeeTone[];
+};
+
+/**
+ * What
+ *     Moves achromatic families away from the physical theme surface until they carry the
+ *     median OKLab surface distance of the ten canonical chromatic families at the same slot.
+ * Why
+ *     Equal OKL lightness does not give a low-chroma neutral the same visual weight as a
+ *     chromatic color. Black therefore needs a lightness-only system alignment instead of
+ *     chroma harmonization or a component-specific tone offset.
+ */
+function alignAchromaticSurfaceDistances(params: {
+  families: ResolvedTonalFamily[];
+  issues: TonalSystemIssue[];
+}): void {
+  const { families, issues } = params;
+  const referenceFamilies = families
+    .filter((family) => family.colorKind === 'chromatic' && BASE_FAMILY_IDS.has(family.id))
+    .sort((left, right) => compareStrings(left.id, right.id));
+  if (referenceFamilies.length === 0) return;
+
+  for (const family of families) {
+    if (family.colorKind !== 'achromatic') continue;
+
+    for (const theme of ['light', 'dark'] as const) {
+      family.themes[theme] = alignAchromaticThemeSurfaceDistance({
+        familyId: family.id,
+        theme: family.themes[theme],
+        referenceFamilies,
+        issues
+      });
+    }
+    family.status = combineStatuses(family.themes.light.status, family.themes.dark.status);
+  }
+}
+
+function alignAchromaticThemeSurfaceDistance(params: {
+  familyId: TonalFamilyId;
+  theme: ResolvedTonalTheme;
+  referenceFamilies: ResolvedTonalFamily[];
+  issues: TonalSystemIssue[];
+}): ResolvedTonalTheme {
+  const { familyId, theme, referenceFamilies, issues } = params;
+  const anchorTone = theme.scale.anchorTone;
+  if (anchorTone === null) return theme;
+
+  const surfaceHex: '#ffffff' | '#000000' = theme.theme === 'light' ? '#ffffff' : '#000000';
+  const surfaceOklch = hexToOklch(surfaceHex);
+  const referenceFamilyIds = referenceFamilies.map((family) => family.id);
+  const protectedTones = [...new Set<KiskadeeTone>([0, anchorTone, 100])].sort(
+    (left, right) => left - right
+  );
+  const protectedIndices = protectedTones.map((tone) => KISKADEE_TONES.indexOf(tone));
+  const protectedDeficitTones: KiskadeeTone[] = [];
+  const protectedDeficits: number[] = [];
+  const effectiveTargetDistanceByTone = new Map<KiskadeeTone, number>();
+  const targets: AchromaticSurfaceDistanceTarget[] = [];
+
+  const targetDistanceAt = (index: number): number =>
+    resolveMedian(
+      referenceFamilies.map((family) =>
+        deltaEOk(surfaceOklch, family.themes[theme.theme].scale.colors[index].oklch)
+      )
+    );
+
+  for (let index = 0; index < theme.scale.colors.length; index += 1) {
+    const color = theme.scale.colors[index];
+    if (!color) continue;
+
+    const targetDistance = targetDistanceAt(index);
+    const baselineDistance = deltaEOk(surfaceOklch, color.oklch);
+    const fullDeficit = Math.max(0, targetDistance - baselineDistance);
+    if (fullDeficit <= ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.distanceTolerance) {
+      effectiveTargetDistanceByTone.set(color.tone, targetDistance);
+      continue;
+    }
+
+    if (protectedTones.includes(color.tone)) {
+      effectiveTargetDistanceByTone.set(color.tone, baselineDistance);
+      protectedDeficits.push(fullDeficit);
+      protectedDeficitTones.push(color.tone);
+      continue;
+    }
+
+    const protectionWeight = protectedIndices.reduce((weight, protectedIndex) => {
+      const distance = Math.abs(index - protectedIndex);
+      const candidate = resolveSmoothstepUnit(
+        distance / ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.protectionRadius
+      );
+      return Math.min(weight, candidate);
+    }, 1);
+    const effectiveTargetDistance = baselineDistance + fullDeficit * protectionWeight;
+    effectiveTargetDistanceByTone.set(color.tone, effectiveTargetDistance);
+    if (
+      effectiveTargetDistance - baselineDistance <=
+      ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.distanceTolerance
+    ) {
+      continue;
+    }
+
+    const targetLightness = resolveAchromaticSurfaceTargetLightness({
+      color,
+      surfaceOklch,
+      theme: theme.theme,
+      targetDistance: effectiveTargetDistance
+    });
+    if (Math.abs(targetLightness - color.oklch.l) <= 1e-7) continue;
+
+    targets.push({
+      index,
+      tone: color.tone,
+      originalLightness: color.oklch.l,
+      targetLightness,
+      targetDistance: effectiveTargetDistance
+    });
+  }
+
+  const transformed = transformAchromaticSurfaceDistanceScale({
+    baseline: theme.scale,
+    theme: theme.theme,
+    targets
+  });
+  const targetByTone = new Map(targets.map((target) => [target.tone, target]));
+  const adjustedTones = transformed.scale.colors
+    .filter((color, index) => color.hex !== theme.scale.colors[index]?.hex)
+    .map((color) => color.tone);
+  const lightnessAdjustments = transformed.scale.colors.map((color, index) =>
+    Math.abs(color.oklch.l - (theme.scale.colors[index]?.oklch.l ?? color.oklch.l))
+  );
+  const remainingDeficits = transformed.scale.colors.map((color) => {
+    const target = targetByTone.get(color.tone);
+    return target ? Math.max(0, target.targetDistance - deltaEOk(surfaceOklch, color.oklch)) : 0;
+  });
+  const maxRemainingDistanceDeficit = Math.max(0, ...protectedDeficits, ...remainingDeficits);
+  const relaxed = transformed.restoredTones.length > 0;
+
+  if (protectedDeficitTones.length > 0) {
+    issues.push({
+      severity: 'review',
+      code: 'ACHROMATIC_SURFACE_DISTANCE_PROTECTED',
+      path: `/families/${familyId}/${theme.theme}`,
+      message: `${familyId} ${theme.theme} preserves exact protected tones ${protectedDeficitTones.join(', ')} below the canonical chromatic surface-distance reference.`,
+      familyId,
+      theme: theme.theme
+    });
+  }
+  if (relaxed) {
+    issues.push({
+      severity: 'review',
+      code: 'ACHROMATIC_SURFACE_DISTANCE_RELAXED',
+      path: `/families/${familyId}/${theme.theme}`,
+      message: `${familyId} ${theme.theme} restored tones ${transformed.restoredTones.join(', ')} toward their baseline lightness to preserve canonical scale invariants.`,
+      familyId,
+      theme: theme.theme
+    });
+  }
+
+  const restColor = resolveTone(transformed.scale, theme.restTone);
+  const baselineRestColor = resolveTone(theme.scale, theme.restTone);
+  if (!restColor || !baselineRestColor) {
+    throw new Error(
+      `${familyId} ${theme.theme} lost its harmony rest during achromatic alignment.`
+    );
+  }
+  const restIndex = KISKADEE_TONES.indexOf(theme.restTone);
+  const canonicalRestTargetDistance = targetDistanceAt(restIndex);
+  const effectiveRestTargetDistance =
+    effectiveTargetDistanceByTone.get(theme.restTone) ?? canonicalRestTargetDistance;
+
+  return {
+    ...theme,
+    restColor,
+    scale: transformed.scale,
+    achromaticSurfaceDistanceAlignment: {
+      contract: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract,
+      reference: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference,
+      referenceFamilyIds,
+      surfaceHex,
+      adjustedTones,
+      adjustedToneCount: adjustedTones.length,
+      protectedTones,
+      maxLightnessAdjustment: Math.max(0, ...lightnessAdjustments),
+      maxRemainingDistanceDeficit,
+      appliedStrength: transformed.appliedStrength,
+      restorationCount: transformed.restoredTones.length,
+      rest: {
+        canonicalTargetDistance: canonicalRestTargetDistance,
+        effectiveTargetDistance: effectiveRestTargetDistance,
+        baselineDistance: deltaEOk(surfaceOklch, baselineRestColor.oklch),
+        finalDistance: deltaEOk(surfaceOklch, restColor.oklch),
+        baselineLightness: baselineRestColor.oklch.l,
+        finalLightness: restColor.oklch.l
+      }
+    },
+    status:
+      theme.status === 'review' ||
+      protectedDeficitTones.length > 0 ||
+      relaxed ||
+      scaleNeedsReview(transformed.scale)
+        ? 'review'
+        : 'pass'
+  };
+}
+
+function resolveAchromaticSurfaceTargetLightness(params: {
+  color: KiskadeeScaleColor;
+  surfaceOklch: OklchColor;
+  theme: KiskadeeTheme;
+  targetDistance: number;
+}): number {
+  const { color, surfaceOklch, theme, targetDistance } = params;
+  const renderDistance = (lightness: number): number => {
+    const rendered = oklchToSrgbHex({ l: lightness, c: color.oklch.c, h: color.oklch.h });
+    return deltaEOk(surfaceOklch, hexToOklch(rendered.hex));
+  };
+  const boundaryLightness = theme === 'light' ? 0 : 100;
+  if (renderDistance(boundaryLightness) < targetDistance) return boundaryLightness;
+
+  if (theme === 'light') {
+    let matching = boundaryLightness;
+    let insufficient = color.oklch.l;
+    for (let iteration = 0; iteration < 24; iteration += 1) {
+      const candidate = (matching + insufficient) / 2;
+      if (renderDistance(candidate) >= targetDistance) matching = candidate;
+      else insufficient = candidate;
+    }
+    return matching;
+  }
+
+  let insufficient = color.oklch.l;
+  let matching = boundaryLightness;
+  for (let iteration = 0; iteration < 24; iteration += 1) {
+    const candidate = (insufficient + matching) / 2;
+    if (renderDistance(candidate) >= targetDistance) matching = candidate;
+    else insufficient = candidate;
+  }
+  return matching;
+}
+
+function transformAchromaticSurfaceDistanceScale(params: {
+  baseline: KiskadeeScaleResult;
+  theme: KiskadeeTheme;
+  targets: AchromaticSurfaceDistanceTarget[];
+}): AchromaticSurfaceDistanceTransformation {
+  const { baseline, theme, targets } = params;
+  if (targets.length === 0) {
+    return { scale: baseline, appliedStrength: 1, restoredTones: [] };
+  }
+
+  const targetByIndex = new Map(targets.map((target) => [target.index, target]));
+  const render = (strengthByIndex: ReadonlyMap<number, number>): KiskadeeScaleResult => {
+    if ([...strengthByIndex.values()].every((strength) => strength <= 0)) return baseline;
+
+    const colors = baseline.colors.map((color, index): KiskadeeScaleColor => {
+      const target = targetByIndex.get(index);
+      if (!target) return color;
+      const strength = strengthByIndex.get(index) ?? 0;
+      if (strength <= 0) return color;
+
+      const requestedLightness =
+        target.originalLightness + (target.targetLightness - target.originalLightness) * strength;
+      const requestedChroma = color.hsl.s <= 1e-7 ? 0 : color.oklch.c;
+      const rendered = oklchToSrgbHex({
+        l: requestedLightness,
+        c: requestedChroma,
+        h: color.oklch.h
+      });
+      if (rendered.hex === color.hex) return color;
+
+      return {
+        ...color,
+        hex: rendered.hex,
+        hsl: hexToHsl(rendered.hex),
+        oklch: hexToOklch(rendered.hex),
+        targetLightness: requestedLightness,
+        gamutChromaLoss: rendered.chromaLoss,
+        flags: {
+          ...color.flags,
+          gamutMapped: rendered.chromaLoss > 1e-6
+        }
+      };
+    });
+
+    return revalidateKiskadeeScaleResult({ baseline, colors, theme });
+  };
+  const fullStrengths = new Map(targets.map((target) => [target.index, 1]));
+  const full = render(fullStrengths);
+  if (isAchromaticSurfaceDistanceTransformationAccepted(baseline, full)) {
+    return { scale: full, appliedStrength: 1, restoredTones: [] };
+  }
+
+  const orderedTargets = [...targets].sort((left, right) => left.index - right.index);
+  const strengthByIndex = new Map(targets.map((target) => [target.index, 0]));
+  let validScale = baseline;
+
+  const maximizeTarget = (target: AchromaticSurfaceDistanceTarget): boolean => {
+    const initialStrength = strengthByIndex.get(target.index) ?? 0;
+    strengthByIndex.set(target.index, 1);
+    const fullCandidate = render(strengthByIndex);
+    if (isAchromaticSurfaceDistanceTransformationAccepted(baseline, fullCandidate)) {
+      validScale = fullCandidate;
+      return initialStrength < 1 - 1e-7;
+    }
+
+    let invalidStrength = 1;
+    let validStrength = initialStrength;
+    let targetValidScale = validScale;
+    const { restoreScanSteps, restoreBisectionSteps } =
+      ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS;
+
+    for (let step = restoreScanSteps - 1; step >= 1; step -= 1) {
+      const strength = initialStrength + ((1 - initialStrength) * step) / restoreScanSteps;
+      strengthByIndex.set(target.index, strength);
+      const candidate = render(strengthByIndex);
+      if (isAchromaticSurfaceDistanceTransformationAccepted(baseline, candidate)) {
+        validStrength = strength;
+        targetValidScale = candidate;
+        break;
+      }
+      invalidStrength = strength;
+    }
+
+    for (let iteration = 0; iteration < restoreBisectionSteps; iteration += 1) {
+      const strength = (validStrength + invalidStrength) / 2;
+      strengthByIndex.set(target.index, strength);
+      const candidate = render(strengthByIndex);
+      if (isAchromaticSurfaceDistanceTransformationAccepted(baseline, candidate)) {
+        validStrength = strength;
+        targetValidScale = candidate;
+      } else {
+        invalidStrength = strength;
+      }
+    }
+
+    strengthByIndex.set(target.index, validStrength);
+    validScale = targetValidScale;
+    return validStrength > initialStrength + 1e-7;
+  };
+
+  for (const target of orderedTargets) maximizeTarget(target);
+  for (
+    let pass = 0;
+    pass < ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.restoreRefinementPasses;
+    pass += 1
+  ) {
+    let improved = false;
+    for (const target of orderedTargets) {
+      if ((strengthByIndex.get(target.index) ?? 0) >= 1 - 1e-7) continue;
+      improved = maximizeTarget(target) || improved;
+    }
+    if (!improved) break;
+  }
+
+  const restoredTones = orderedTargets
+    .filter((target) => validScale.colors[target.index]?.hex !== full.colors[target.index]?.hex)
+    .map((target) => target.tone);
+  const appliedStrength = Math.min(...strengthByIndex.values());
+  return { scale: validScale, appliedStrength, restoredTones };
 }
 
 function resolveIsolatedHarmonyPeakTargets(
@@ -2335,7 +2743,7 @@ function transformSurfaceTrackScale(params: {
   };
   const fullStrengths = new Map(targets.map((target) => [target.index, 1]));
   const full = render(fullStrengths);
-  if (isSurfaceTrackTransformationAccepted(baseline, full)) {
+  if (isSystemScaleTransformationAccepted(baseline, full)) {
     return { scale: full, appliedStrength: 1, restoredTones: [] };
   }
 
@@ -2349,7 +2757,7 @@ function transformSurfaceTrackScale(params: {
     const initialStrength = strengthByIndex.get(target.index) ?? 0;
     strengthByIndex.set(target.index, 1);
     const fullCandidate = render(strengthByIndex);
-    if (isSurfaceTrackTransformationAccepted(baseline, fullCandidate)) {
+    if (isSystemScaleTransformationAccepted(baseline, fullCandidate)) {
       validScale = fullCandidate;
       return initialStrength < 1 - 1e-7;
     }
@@ -2364,7 +2772,7 @@ function transformSurfaceTrackScale(params: {
       const strength = initialStrength + ((1 - initialStrength) * step) / restoreScanSteps;
       strengthByIndex.set(target.index, strength);
       const candidate = render(strengthByIndex);
-      if (isSurfaceTrackTransformationAccepted(baseline, candidate)) {
+      if (isSystemScaleTransformationAccepted(baseline, candidate)) {
         validStrength = strength;
         targetValidScale = candidate;
         break;
@@ -2376,7 +2784,7 @@ function transformSurfaceTrackScale(params: {
       const strength = (validStrength + invalidStrength) / 2;
       strengthByIndex.set(target.index, strength);
       const candidate = render(strengthByIndex);
-      if (isSurfaceTrackTransformationAccepted(baseline, candidate)) {
+      if (isSystemScaleTransformationAccepted(baseline, candidate)) {
         validStrength = strength;
         targetValidScale = candidate;
       } else {
@@ -2410,7 +2818,7 @@ function transformSurfaceTrackScale(params: {
   return { scale: validScale, appliedStrength, restoredTones };
 }
 
-function isSurfaceTrackTransformationAccepted(
+function isSystemScaleTransformationAccepted(
   baseline: KiskadeeScaleResult,
   candidate: KiskadeeScaleResult
 ): boolean {
@@ -2431,6 +2839,38 @@ function isSurfaceTrackTransformationAccepted(
   return (
     baseline.diagnostics.emittedContinuity.reviewRequired ||
     !candidate.diagnostics.emittedContinuity.reviewRequired
+  );
+}
+
+function isAchromaticSurfaceDistanceTransformationAccepted(
+  baseline: KiskadeeScaleResult,
+  candidate: KiskadeeScaleResult
+): boolean {
+  if (!isSystemScaleTransformationAccepted(baseline, candidate)) return false;
+
+  const baselineDiagnostics = baseline.diagnostics;
+  const candidateDiagnostics = candidate.diagnostics;
+  if (!baselineDiagnostics.separationRelaxed && candidateDiagnostics.separationRelaxed) {
+    return false;
+  }
+  if (candidateDiagnostics.minLightnessDelta < baselineDiagnostics.minLightnessDelta - 1e-7) {
+    return false;
+  }
+  if (!scaleNeedsReview(baseline) && scaleNeedsReview(candidate)) return false;
+  if (
+    candidate.colors.some(
+      (color, index) =>
+        color.oklch.c >
+        (baseline.colors[index]?.oklch.c ?? color.oklch.c) +
+          ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.chromaQuantizationTolerance
+    )
+  ) {
+    return false;
+  }
+
+  return (
+    candidateDiagnostics.emittedContinuity.maxAdjacentDeltaE <=
+    baselineDiagnostics.emittedContinuity.maxAdjacentDeltaE + 1e-7
   );
 }
 
@@ -2674,6 +3114,7 @@ function resolveSourceExactTheme(params: {
     harmony: null,
     surfaceTrackAlignment: null,
     isolatedHarmonyPeakAlignment: null,
+    achromaticSurfaceDistanceAlignment: null,
     status: scaleNeedsReview(scale) ? 'review' : 'pass'
   };
 }
@@ -2759,6 +3200,7 @@ function resolveAdaptiveTheme(params: {
       harmony: metrics,
       surfaceTrackAlignment: null,
       isolatedHarmonyPeakAlignment: null,
+      achromaticSurfaceDistanceAlignment: null,
       status
     };
   }
@@ -3034,6 +3476,7 @@ function resolveCandidateTheme(params: {
     harmony: metrics,
     surfaceTrackAlignment: null,
     isolatedHarmonyPeakAlignment: null,
+    achromaticSurfaceDistanceAlignment: null,
     status
   };
 }

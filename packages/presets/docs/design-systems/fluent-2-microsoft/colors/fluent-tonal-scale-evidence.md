@@ -65,7 +65,7 @@ recipe. The generated system uses:
   stops by theme;
 - exact Light and Dark `n.black.v1`, preserving `Grey-14` as the neutral scale
   reference;
-- automatic harmony rest, resolved and locked by generator `0.3.1` to L50/D40.
+- automatic harmony rest, resolved and locked by generator `0.3.2` to L50/D40.
 
 ### Shared viewer
 
@@ -75,18 +75,19 @@ The link encodes the complete editable recipe and can be saved as a browser
 bookmark. It requires the local `@kiskadee/tonal-scale` application on port
 `3001`.
 
-### Generator 0.3.1 light-surface candidate
+### Generator 0.3.2 system-alignment candidate
 
-The Shared Viewer also exposes the first candidate for the canonical
+The Shared Viewer exposes the current candidate for the canonical
 Primary-relative physical-light alignment. The prior low-level curves assigned
 the same L4 physical lightness to Blue, Red, and Green, but sRGB gamut fitting
 compressed Blue and Red while Green retained substantially more chroma. That
 made the Positive Medium Button more visually dominant even though its schema
 used the same tonal recipe as the other intents.
 
-Generator `0.3.1` leaves the complete Primary scale and the low-level Balanced
-and Muted Darks contracts unchanged. It only reduces excess support-family
-chroma close to physical white:
+Generator `0.3.2` leaves the complete Primary scale and the low-level Balanced
+and Muted Darks contracts unchanged. It retains the approved physical-light
+alignment from `0.3.1`, which reduces excess support-family chroma close to
+physical white:
 
 | Fluent family | Previous L4 | Candidate L4 | Candidate OKL chroma |
 | --- | --- | --- | --- |
@@ -94,16 +95,48 @@ chroma close to physical white:
 | Cranberry | `#ffe7e4` | `#ffe7e4` | `0.0267` |
 | Green | `#d3facf` | `#e2f3e0` | `0.0310` |
 
-The Green candidate now remains within the Primary-relative ceiling of Primary
+The Green candidate remains within the Primary-relative ceiling of Primary
 chroma plus the greater of `0.005` or `15%`. The same comparison follows
 physical lightness on Dark instead of assuming that low numeric Dark positions
-are light. Generated anchors and L50/D40 harmony rest remain exact.
+are light. Generated anchors remain exact.
+
+The same pre-golden calibration also limits an isolated chromatic peak. Indigo
+was the only family whose middle-track chroma remained visibly above its
+nearest peers for this Fluent recipe. The correction reduces chroma without
+changing its sector or physical lightness:
+
+| Indigo checkpoint | Previous | Generator 0.3.2 |
+| --- | --- | --- |
+| Light L50 | `#333af3` | `#333eed` |
+| Dark D40 | `#3848f5` | `#394bee` |
+| Light peak OKL chroma | `0.2643` | `0.2540` |
+| Dark peak OKL chroma | `0.2528` | `0.2410` |
+
+Finally, `n.black.v1` now aligns perceptual distance from the physical surface
+with the median of the ten canonical chromatic families. A chromatic color can
+derive visual weight from both lightness and chroma; an achromatic color must
+derive nearly all of it from lightness. Therefore the prior neutral looked
+weaker even at a similar public position. This is corrected in the generator,
+not by assigning a special Button tone:
+
+| Black checkpoint | Previous | Generator 0.3.2 | Chromatic median target |
+| --- | --- | --- | --- |
+| Light L50 | `#5c616d` | `#565a66` | Delta E OK `0.5301` from white |
+| Light rest distance | `0.5079` | `0.5320` | `0.5301` |
+| Dark D40 | `#5d616d` | `#666a76` | Delta E OK `0.5247` from black |
+| Dark rest distance | `0.4938` | `0.5254` | `0.5247` |
+
+The authored `#21242d` remains byte-exact at L85 and D7. Caps remain absolute,
+the transformation holds target chroma and hue constant, and only
+non-protected lightness positions move. The small Dark deficit at the exact D7
+anchor is intentionally preserved and disclosed as review instead of silently
+altering the Fluent source color.
 
 The verified canonical export is under [`generated/`](./generated/). It contains
 twelve primitive family assets plus source, manifest, and diagnostics.
 The seven family identities backed by explicit Fluent seeds remain approved:
 `b.blue.v1`, `n.black.v1`, `r.red.v1`, `yr.orange.v1`, `y.yellow.v1`,
-`g.green.v1`, and `p.purple.v1`. Their generator `0.3.1` bytes remain a visual
+`g.green.v1`, and `p.purple.v1`. Their generator `0.3.2` bytes remain a visual
 candidate and are not promoted into the preset until explicit approval. The
 five harmony-derived companions (`bg.teal.v1`, `gy.lime.v1`, `pb.indigo.v1`,
 `rp.magenta.v1`, and `yr.brown.v1`) remain evidence candidates as before.
@@ -116,7 +149,7 @@ semantic aliases to their closest generated Kiskadee positions.
 | Fluent role | Official Light value | Kiskadee Light | Official Dark value | Kiskadee Dark |
 | --- | --- | --- | --- | --- |
 | Brand background rest | Brand-80 `#0064b4` | L50 `#0064b4` | Brand-70 `#0055a4` | D35 `#005ba4` |
-| Neutral background rest | White `#ffffff` | L0 `#ffffff` | Grey-16 `#262932` | D9 `#262a33` |
+| Neutral background rest | White `#ffffff` | L0 `#ffffff` | Grey-16 `#262932` | D9 `#262b34` |
 | Neutral foreground rest | Grey-14 `#21242d` | L85 `#21242d` | White `#ffffff` | D100 `#ffffff` |
 | Danger | Cranberry Primary `#c50f1f` | L45 `#c50f1f` | Cranberry Tint 30 `#dc626d` | D65 `#ee4f4b` |
 | Warning | Orange Primary `#f7630c` | L24 `#f7630c` | Orange Tint 20 `#f98845` | D75 `#e68962` |
@@ -190,6 +223,6 @@ authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
 `yellowLike.v1`, and Orange to `yellowLike.v2`. Berry remains available as the
 Purple primitive because its official role is Out of office, not a generic
 Kiskadee `secondary` semantic. These promoted assets still use the previously
-approved bytes while generator `0.3.1` awaits visual approval in the Shared
+approved bytes while generator `0.3.2` awaits visual approval in the Shared
 Viewer; no Button schema compensation was introduced. Other components remain
 deferred.

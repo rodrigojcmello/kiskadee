@@ -673,10 +673,10 @@ function applyMutedDarksProfile(params: {
 
 /**
  * What
- *     Rebuilds diagnostics for a system-level chroma transformation while preserving the
+ *     Rebuilds diagnostics for a system-level color transformation while preserving the
  *     canonical scale grid, input anchor, and low-level profile metadata.
  * Why
- *     Multi-family harmony may reduce emitted chroma after scale generation and must validate
+ *     Multi-family harmony may adjust emitted chroma or lightness after scale generation and must validate
  *     the resulting colors through the same invariant implementation as the canonical generator.
  * @internal
  */
@@ -696,13 +696,13 @@ export function revalidateKiskadeeScaleResult({
     candidateColors.length !== KISKADEE_TONES.length ||
     candidateColors.some((color, index) => color.tone !== KISKADEE_TONES[index])
   ) {
-    throw new Error('System-level chroma transformations must preserve the canonical tone grid.');
+    throw new Error('System-level color transformations must preserve the canonical tone grid.');
   }
 
   const anchorIndex = KISKADEE_TONES.indexOf(anchorTone);
   const anchorColor = candidateColors[anchorIndex];
   if (anchorIndex < 0 || !anchorColor?.flags.isAnchor || anchorColor.hex !== baselineAnchor.hex) {
-    throw new Error('System-level chroma transformations must preserve the exact input anchor.');
+    throw new Error('System-level color transformations must preserve the exact input anchor.');
   }
 
   const actualOriented = candidateColors.map((color) => orientLightness(color.oklch.l, theme));

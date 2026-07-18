@@ -27,7 +27,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.3.1'
+  version: '0.3.2'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -125,6 +125,7 @@ type ThemeDiagnostics = {
   harmony: ResolvedTonalFamily['themes']['light']['harmony'];
   surfaceTrackAlignment: ResolvedTonalFamily['themes']['light']['surfaceTrackAlignment'];
   isolatedHarmonyPeakAlignment: ResolvedTonalFamily['themes']['light']['isolatedHarmonyPeakAlignment'];
+  achromaticSurfaceDistanceAlignment: ResolvedTonalFamily['themes']['light']['achromaticSurfaceDistanceAlignment'];
   scale: ResolvedTonalFamily['themes']['light']['scale']['diagnostics'];
 };
 
@@ -436,6 +437,7 @@ function createThemeDiagnostics(
     harmony: theme.harmony,
     surfaceTrackAlignment: theme.surfaceTrackAlignment,
     isolatedHarmonyPeakAlignment: theme.isolatedHarmonyPeakAlignment,
+    achromaticSurfaceDistanceAlignment: theme.achromaticSurfaceDistanceAlignment,
     scale: theme.scale.diagnostics
   };
 }

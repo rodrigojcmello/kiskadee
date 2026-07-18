@@ -3,62 +3,62 @@
     {
       "familyId": "b.blue.v1",
       "path": "colors/b.blue.v1.json",
-      "sha256": "519ae89e9169fe3a99cfcb4993ca2088cd35dcc820c1546aa6ea6bb32a4c4530"
+      "sha256": "13d025ac4d570e1878f900f301a00036a41cd6ad68be2f9c18f4d9fab0e553a5"
     },
     {
       "familyId": "bg.teal.v1",
       "path": "colors/bg.teal.v1.json",
-      "sha256": "2bf3aba984cdc9e0161636ef9bbff1fb572347840e21d111c4cb4bdab504da43"
+      "sha256": "4b0927bfe68efd46963e750a2f655e03f1a4fc596c7617d1afb10b7cb82ac61f"
     },
     {
       "familyId": "g.green.v1",
       "path": "colors/g.green.v1.json",
-      "sha256": "175402c7b4df64ef259d4a48445527038c5570bd2c58f4f76a8730e64332240e"
+      "sha256": "fee6e4c5e78408008588e3ea25a01c893db36a7f85583457d784db7d95aec219"
     },
     {
       "familyId": "gy.lime.v1",
       "path": "colors/gy.lime.v1.json",
-      "sha256": "1402412939c71a0dd512cb9134d21250bbf67662633837f5c02fe4481d95739f"
+      "sha256": "6f7c7519437b8033e87e6179ff79a27bb95e82cb2cafa83fddbcab0075bab973"
     },
     {
       "familyId": "n.black.v1",
       "path": "colors/n.black.v1.json",
-      "sha256": "3b4181bf81b211b0b9bd1b787f995a3e8786db6f4c8505e5b83c4a586f5d4280"
+      "sha256": "c2c5bc5065ea9e975df02b3bda3a3c1d4dd55d055d56bbf16703e33afc3a11e9"
     },
     {
       "familyId": "p.purple.v1",
       "path": "colors/p.purple.v1.json",
-      "sha256": "c3b82d271bfba8d0a8ef2a296f83ade34003c19a92615a24d8c667ae0e711382"
+      "sha256": "75f7e0f7b5e5a282bbd700217441902a2b8e19412d59cc374ecd4fa8b5b10882"
     },
     {
       "familyId": "pb.indigo.v1",
       "path": "colors/pb.indigo.v1.json",
-      "sha256": "83cc9ad956f91b78aa756ec02ac8b88649c9a576e7836a2246c3db4d815f155a"
+      "sha256": "42b6cbf296eabfe265f685daae9d4ca534d43dfeb18efe5c08896cf8fc50e5e8"
     },
     {
       "familyId": "r.red.v1",
       "path": "colors/r.red.v1.json",
-      "sha256": "6e85d29417e8781c037efc3d442daad9d159eb54939ec554c116daed825b1382"
+      "sha256": "89abf9afe2bd3a9eea35164bd5d05dc6fdc199fc55b071935238fa18d8d14b7e"
     },
     {
       "familyId": "rp.magenta.v1",
       "path": "colors/rp.magenta.v1.json",
-      "sha256": "2d3a5658d1387e3528bfb72b5000f048d3eef111b1f4e3a1086482f0f9c67e28"
+      "sha256": "4500f0e12d4c5d4933c5782cec370ed6fe4879b47ec6d79ed56578f3ddbe0e68"
     },
     {
       "familyId": "y.yellow.v1",
       "path": "colors/y.yellow.v1.json",
-      "sha256": "69a4cee7499a9ead2a6d20f751cce3409f8a9c5f568cee5d4b812c74cae730ae"
+      "sha256": "c9e6c45eba3f17a2f61a1f0da2731edabc72608068ba4217b9306a1467db42b3"
     },
     {
       "familyId": "yr.brown.v1",
       "path": "colors/yr.brown.v1.json",
-      "sha256": "864dd31af4e7c047e5b7ada978301ad1a0bcc0fc64f4e7f30597c4785fce49b5"
+      "sha256": "fbd799e26c237f5c1eec333b4413b601a66de13e03babd639d6d2dd9528c89b3"
     },
     {
       "familyId": "yr.orange.v1",
       "path": "colors/yr.orange.v1.json",
-      "sha256": "d8ac3e4d80bf6373c95a0ec92987e035cb31029b0cf98cbe125d26b97b9a68ff"
+      "sha256": "3dc7119f58036968c9781f8c3d685fa9910ee5f7bf8470212891cd4af26e7b2a"
     }
   ],
   "diagnostics": {
@@ -67,7 +67,7 @@
   "formatVersion": 3,
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.1"
+    "version": "0.3.2"
   },
   "kind": "kiskadee.tonal-system",
   "primaryReference": "b.blue.v1",

@@ -221,8 +221,10 @@ primary, the harmony reference normalizes its utilization by the same ratio
 before comparing it with the fixed companion set.
 
 `n.black.v1` uses the fixed reference `#20252b`, remains `source-exact` in both
-themes, and does not participate in chromatic harmony. Achromatic chroma above
-`0.04` requires review and above `0.08` fails.
+themes, and does not participate in chromatic harmony. Its exact seed anchor
+remains immutable, but emitted non-anchor positions may receive the
+system-level achromatic surface-distance alignment defined below. Achromatic
+chroma above `0.04` requires review and above `0.08` fails.
 
 ## Physical-Light Surface Alignment
 
@@ -307,6 +309,44 @@ contrast, and continuity. The contract is intentionally limited to one
 isolated leader; it does not flatten a vivid cohort such as the Orange system.
 Measurements before and after selection are emitted only in system
 diagnostics, not in primitive color assets.
+
+## Achromatic Surface-Distance Alignment
+
+Equal OKL lightness does not give an achromatic family the same visual weight
+as a chromatic family on the same surface. Chroma contributes additional
+perceptual separation from white or black, while an achromatic family must
+express nearly all of that separation through lightness. Assigning every
+family the same public position can therefore leave `n.black.*` visibly weaker
+even when its luminance contrast is comparable.
+
+After physical-light chroma alignment and isolated-peak alignment are final,
+the multi-family system applies
+`kiskadee-achromatic-surface-distance-v1`:
+
+- the reference at each public position is the median Delta E OK from the
+  physical theme surface across the ten canonical chromatic base families;
+- Light uses white as its surface and may only lower achromatic lightness;
+- Dark uses black as its surface and may only raise achromatic lightness;
+- target chroma and hue are held constant, so a deliberately tinted Black
+  remains tinted rather than being converted to a chromatic harmony;
+- an emitted sRGB gray remains exactly on the achromatic axis instead of
+  carrying numerical OKLCH chroma into the next quantized color;
+- the alignment never moves an achromatic color closer to the theme surface;
+- absolute caps and the exact generated seed anchor remain immutable;
+- harmony rest is intentionally eligible because it is the shared checkpoint
+  whose visual weight must align across families;
+- four public positions of smoothstep protection surround each immutable tone
+  to avoid a local discontinuity.
+
+The transformation revalidates the complete quantized sRGB scale and rejects
+chroma growth beyond quantization tolerance. When a full lightness adjustment
+would violate monotonicity, uniqueness, contrast, gamut, spacing, or
+continuity, only the conflicting positions are restored deterministically
+toward the baseline. A distance deficit retained by an exact anchor or a
+restoration requires review. Canonical target, protection-adjusted target,
+baseline, and final rest distances, adjusted positions, maximum lightness
+movement, protected tones, and restorations are emitted only in
+`tonal-system.diagnostics.json`; primitive family assets remain concise.
 
 ## Generated Anchor, Harmony Rest, And State Anchor
 
@@ -449,7 +489,7 @@ colors/
 
 The required system contains 12 color assets and 15 files total. Additional
 authored variants add one color file each. All artifacts identify
-`@kiskadee/tonal-scale@0.3.1`.
+`@kiskadee/tonal-scale@0.3.2`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, and contract identifiers. The manifest centralizes
@@ -478,10 +518,12 @@ approval and systemic-golden milestone. Corrections before that milestone
 refine the draft V1 behavior. After the golden is approved, any byte-changing
 harmony algorithm requires a new harmony contract or generator version.
 
-Generator `0.3.1` adds the physical-light surface alignment above without
-changing format V3, the harmony V1 recipe, or the low-level tonal grid. Existing
-`0.3.0` bundles must be regenerated because atomic verification includes the
-generator version and all emitted family bytes.
+Generator `0.3.2` adds the achromatic surface-distance alignment above without
+changing format V3, the harmony V1 recipe, or the low-level tonal grid. It
+retains the physical-light and isolated-peak calibrations introduced during
+the same pre-golden Harmony V1 period. Existing `0.3.1` bundles must be
+regenerated because atomic verification includes the generator version and all
+emitted family bytes.
 
 This package produces Layer 1 artifacts only. It does not write presets,
 external types, semantic aliases, or component state mappings. In particular,
