@@ -179,6 +179,18 @@ export type LockedRest = {
   dark: KiskadeeTone;
 };
 
+export type TonalStateAnchorRule =
+  | { mode: 'auto' }
+  | { mode: 'generated-anchor' }
+  | { mode: 'harmony-rest' }
+  | { mode: 'locked'; tone: KiskadeeTone };
+
+export type TonalFamilyStateAnchorsV3 = {
+  id: TonalFamilyId;
+  light: TonalStateAnchorRule;
+  dark: TonalStateAnchorRule;
+};
+
 type TonalSystemContractBase = {
   formatVersion: typeof TONAL_SYSTEM_FORMAT_VERSION;
   gridContract: typeof TONAL_GRID_CONTRACT;
@@ -191,6 +203,7 @@ export type TonalSystemRecipeV3 = TonalSystemContractBase & {
   primary: TonalPrimaryDraftV3;
   tonalAnchors: {
     rest: AutoRest | LockedRest;
+    states?: TonalFamilyStateAnchorsV3[];
   };
 };
 
@@ -198,6 +211,7 @@ export type LockedTonalSystemSourceV3 = TonalSystemContractBase & {
   primary: TonalPrimaryLockedV3;
   tonalAnchors: {
     rest: LockedRest;
+    states?: TonalFamilyStateAnchorsV3[];
   };
 };
 
@@ -225,7 +239,8 @@ export const DEFAULT_TONAL_SYSTEM_RECIPE = {
   tonalAnchors: {
     rest: {
       mode: 'auto'
-    }
+    },
+    states: []
   },
   overrides: []
 } as const satisfies TonalSystemRecipeV3;
@@ -243,9 +258,12 @@ const PRIMARY_DRAFT_KEYS = ['seedHex', 'appearance', 'variant', 'policies'] as c
 const PRIMARY_LOCKED_KEYS = ['id', 'seedHex', 'policies'] as const;
 const OVERRIDE_KEYS = ['id', 'seedHex', 'policies'] as const;
 const FAMILY_POLICY_KEYS = ['light', 'dark'] as const;
-const TONAL_ANCHOR_KEYS = ['rest'] as const;
+const TONAL_ANCHOR_KEYS = ['rest', 'states'] as const;
 const AUTO_REST_KEYS = ['mode'] as const;
 const LOCKED_REST_KEYS = ['mode', 'light', 'dark'] as const;
+const STATE_ANCHOR_KEYS = ['id', 'light', 'dark'] as const;
+const STATE_ANCHOR_RULE_KEYS = ['mode'] as const;
+const LOCKED_STATE_ANCHOR_RULE_KEYS = ['mode', 'tone'] as const;
 
 export type ParsedTonalFamilyId = {
   stem: TonalFamilyStem;
@@ -360,7 +378,12 @@ export function lockTonalSystemRecipe(
         mode: 'locked',
         light: rest.light,
         dark: rest.dark
-      }
+      },
+      states: (normalizedRecipe.tonalAnchors.states ?? []).map((stateAnchors) => ({
+        id: stateAnchors.id,
+        light: { ...stateAnchors.light },
+        dark: { ...stateAnchors.dark }
+      }))
     },
     overrides: normalizedRecipe.overrides.map((override) => ({
       ...override,
@@ -418,6 +441,7 @@ function validateContract(
       ? validateDraftPrimary(input.primary, issue)
       : validateLockedPrimary(input.primary, issue);
   const rest = validateRest(input.tonalAnchors, stage, issue);
+  const states = validateStateAnchors(input.tonalAnchors, issue);
   const overrides = validateOverrides(input.overrides, issue);
 
   if (
@@ -437,7 +461,7 @@ function validateContract(
       ? compareStrings(left.code, right.code)
       : compareStrings(left.path, right.path)
   );
-  if (issues.length > 0 || !tonalProfile || !primary || !rest || !overrides) {
+  if (issues.length > 0 || !tonalProfile || !primary || !rest || states === null || !overrides) {
     return { valid: false, value: null, issues };
   }
 
@@ -452,7 +476,11 @@ function validateContract(
   if (stage === 'draft') {
     return {
       valid: true,
-      value: { ...base, primary: primary as TonalPrimaryDraftV3, tonalAnchors: { rest } },
+      value: {
+        ...base,
+        primary: primary as TonalPrimaryDraftV3,
+        tonalAnchors: { rest, states }
+      },
       issues: []
     };
   }
@@ -462,7 +490,7 @@ function validateContract(
     value: {
       ...base,
       primary: primary as TonalPrimaryLockedV3,
-      tonalAnchors: { rest: rest as LockedRest }
+      tonalAnchors: { rest: rest as LockedRest, states }
     },
     issues: []
   };
@@ -687,6 +715,71 @@ function validateRest(
   return light !== null && dark !== null ? { mode: 'locked', light, dark } : null;
 }
 
+function validateStateAnchors(
+  input: unknown,
+  issue: (code: string, path: string, message: string) => void
+): TonalFamilyStateAnchorsV3[] | null {
+  if (!isPlainObject(input)) return null;
+  if (input.states === undefined) return [];
+  if (!Array.isArray(input.states)) {
+    issue('INVALID_STATE_ANCHORS', '/tonalAnchors/states', 'State anchors must be an array.');
+    return null;
+  }
+
+  const stateAnchors: TonalFamilyStateAnchorsV3[] = [];
+  const seen = new Set<TonalFamilyId>();
+  input.states.forEach((rawStateAnchors, index) => {
+    const path = `/tonalAnchors/states/${index}`;
+    if (!isPlainObject(rawStateAnchors)) {
+      issue('INVALID_STATE_ANCHOR', path, 'Family state anchors must be a plain object.');
+      return;
+    }
+
+    reportUnknownKeys(rawStateAnchors, STATE_ANCHOR_KEYS, path, issue);
+    const id = validateFamilyId(rawStateAnchors.id, `${path}/id`, issue);
+    const light = validateStateAnchorRule(rawStateAnchors.light, `${path}/light`, issue);
+    const dark = validateStateAnchorRule(rawStateAnchors.dark, `${path}/dark`, issue);
+
+    if (id && seen.has(id)) {
+      issue('DUPLICATE_STATE_ANCHOR_ID', `${path}/id`, `Duplicate state anchor id: ${id}.`);
+    }
+    if (id) seen.add(id);
+    if (!id || !light || !dark || (light.mode === 'auto' && dark.mode === 'auto')) return;
+    stateAnchors.push({ id, light, dark });
+  });
+
+  return stateAnchors.sort((left, right) => compareStrings(left.id, right.id));
+}
+
+function validateStateAnchorRule(
+  input: unknown,
+  path: string,
+  issue: (code: string, path: string, message: string) => void
+): TonalStateAnchorRule | null {
+  if (!isPlainObject(input)) {
+    issue('INVALID_STATE_ANCHOR_RULE', path, 'State anchor rule must be a plain object.');
+    return null;
+  }
+
+  if (input.mode === 'locked') {
+    reportUnknownKeys(input, LOCKED_STATE_ANCHOR_RULE_KEYS, path, issue);
+    const tone = validateStateAnchorTone(input.tone, `${path}/tone`, issue);
+    return tone === null ? null : { mode: 'locked', tone };
+  }
+
+  reportUnknownKeys(input, STATE_ANCHOR_RULE_KEYS, path, issue);
+  if (input.mode === 'auto' || input.mode === 'generated-anchor' || input.mode === 'harmony-rest') {
+    return { mode: input.mode };
+  }
+
+  issue(
+    'INVALID_STATE_ANCHOR_MODE',
+    `${path}/mode`,
+    'State anchor mode must be auto, generated-anchor, harmony-rest, or locked.'
+  );
+  return null;
+}
+
 function validateThemePolicy(
   value: unknown,
   path: string,
@@ -728,6 +821,22 @@ function validateRestTone(
 ): KiskadeeTone | null {
   if (!isRestTone(value)) {
     issue('INVALID_REST_TONE', path, 'rest must be a chromatic public tone from 1 through 99.');
+    return null;
+  }
+  return value;
+}
+
+function validateStateAnchorTone(
+  value: unknown,
+  path: string,
+  issue: (code: string, path: string, message: string) => void
+): KiskadeeTone | null {
+  if (!isRestTone(value)) {
+    issue(
+      'INVALID_STATE_ANCHOR_TONE',
+      path,
+      'State anchor must be a non-cap public tone from 1 through 99.'
+    );
     return null;
   }
   return value;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { maxSrgbChroma, oklchToSrgbHex } from './color-math';
+import { contrastRatio, maxSrgbChroma, oklchToSrgbHex } from './color-math';
 import {
   generateKiskadeeScale,
   KISKADEE_TONES,
@@ -11,11 +11,11 @@ import {
 } from './kiskadee-tonal-scale';
 import { classifyMunsellHex } from './munsell-oklch';
 import {
-  ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type KiskadeeTonalSystemResult,
   MUNSELL_HARMONY_V1_PARAMETERS,
   type ResolvedKiskadeeTonalSystem,
+  resolveTonalStateReference,
   SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS
 } from './tonal-system';
 import {
@@ -101,63 +101,9 @@ function expectSupportAlignmentContract(result: ResolvedKiskadeeTonalSystem): vo
         profile: result.source.tonalProfile
       });
 
-      if (family.id === primary.id) {
+      if (family.id === primary.id || family.colorKind === 'achromatic') {
         expect(resolution.surfaceTrackAlignment, `${family.id} ${theme}`).toBeNull();
-        expect(resolution.achromaticSurfaceDistanceAlignment, `${family.id} ${theme}`).toBeNull();
         expect(resolution.scale, `${family.id} ${theme}`).toEqual(baseline);
-        continue;
-      }
-
-      if (family.colorKind === 'achromatic') {
-        const diagnostics = resolution.achromaticSurfaceDistanceAlignment;
-        expect(resolution.surfaceTrackAlignment, `${family.id} ${theme}`).toBeNull();
-        expect(diagnostics, `${family.id} ${theme}`).toMatchObject({
-          contract: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract,
-          reference: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference
-        });
-        expect(diagnostics?.adjustedToneCount).toBe(diagnostics?.adjustedTones.length);
-        expect(diagnostics?.protectedTones).toEqual(expect.arrayContaining([0, 100]));
-
-        for (let index = 0; index < resolution.scale.colors.length; index += 1) {
-          const color = resolution.scale.colors[index];
-          const baselineColor = baseline.colors[index];
-          if (!color || !baselineColor) continue;
-
-          if (theme === 'light') {
-            expect(
-              color.oklch.l,
-              `${family.id} ${theme} ${color.tone} surface direction`
-            ).toBeLessThanOrEqual(baselineColor.oklch.l + 1e-7);
-          } else {
-            expect(
-              color.oklch.l,
-              `${family.id} ${theme} ${color.tone} surface direction`
-            ).toBeGreaterThanOrEqual(baselineColor.oklch.l - 1e-7);
-          }
-          expect(color.oklch.c, `${family.id} ${theme} ${color.tone} chroma`).toBeLessThanOrEqual(
-            baselineColor.oklch.c +
-              ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.chromaQuantizationTolerance
-          );
-          if (baselineColor.hsl.s <= 1e-7) {
-            expect(
-              color.hsl.s,
-              `${family.id} ${theme} ${color.tone} achromatic axis`
-            ).toBeLessThanOrEqual(1e-7);
-          }
-          if (color.flags.isCap || color.tone === resolution.scale.anchorTone) {
-            expect(color.hex, `${family.id} ${theme} ${color.tone} protected byte`).toBe(
-              baselineColor.hex
-            );
-          }
-        }
-
-        expect(resolution.scale.diagnostics.valid, `${family.id} ${theme} valid`).toBe(true);
-        expect(resolution.scale.diagnostics.monotonic, `${family.id} ${theme} monotonic`).toBe(
-          true
-        );
-        expect(resolution.scale.diagnostics.duplicateTones, `${family.id} ${theme} unique`).toEqual(
-          []
-        );
         continue;
       }
 
@@ -296,18 +242,16 @@ describe('generateKiskadeeTonalSystem v3', () => {
       );
       expect(primary.themes[theme].surfaceTrackAlignment).toBeNull();
       expect(black.themes[theme].surfaceTrackAlignment).toBeNull();
-      expect(black.themes[theme].achromaticSurfaceDistanceAlignment).toMatchObject({
-        contract: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract,
-        reference: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference,
-        restorationCount: 0
-      });
+      expect(black.themes[theme].scale).toEqual(
+        generateKiskadeeScale({ seedHex: '#21242d', theme, profile: 'muted-darks' })
+      );
       const blackAnchorTone = black.themes[theme].scale.anchorTone;
       if (blackAnchorTone === null) throw new Error(`Expected a Black ${theme} anchor.`);
       expect(resolveScaleTone(black.themes[theme].scale, blackAnchorTone).hex).toBe('#21242d');
     }
 
-    expect(black.themes.light.restColor).toMatchObject({ tone: 50, hex: '#565a66' });
-    expect(black.themes.dark.restColor).toMatchObject({ tone: 40, hex: '#666a76' });
+    expect(black.themes.light.restColor).toMatchObject({ tone: 50, hex: '#5c616d' });
+    expect(black.themes.dark.restColor).toMatchObject({ tone: 40, hex: '#5d616d' });
 
     expect(resolveScaleTone(primary.themes.light.scale, 4).hex).toBe('#e1efff');
     expect(resolveScaleTone(red.themes.light.scale, 4).hex).toBe('#ffe7e4');
@@ -436,6 +380,189 @@ describe('generateKiskadeeTonalSystem v3', () => {
     const dark = resolveFamily(locked, 'b.blue.v1').themes.dark;
     expect(dark).toMatchObject({ policy: 'adaptive', restTone: 50, sourceSeedPreserved: false });
     expect(dark.scale.anchorTone).toBe(50);
+  });
+
+  it('resolves automatic state anchors from each theme policy', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe());
+    expectResolved(result);
+
+    const primary = resolveFamily(result, result.primaryReference.familyId);
+    const black = resolveFamily(result, 'n.black.v1');
+    const lime = resolveFamily(result, 'gy.lime.v1');
+
+    for (const theme of THEMES) {
+      expect(primary.stateAnchors[theme]).toEqual({ mode: 'auto' });
+      expect(resolveTonalStateReference(primary, theme)).toMatchObject({
+        tone: primary.themes[theme].scale.anchorTone,
+        source: 'generated-anchor'
+      });
+      expect(lime.themes[theme].policy).toBe('harmonized');
+      expect(resolveTonalStateReference(lime, theme)).toMatchObject({
+        tone: lime.themes[theme].restTone,
+        hex: lime.themes[theme].restColor.hex,
+        source: 'harmony-rest'
+      });
+    }
+
+    expect(black.stateAnchors).toEqual({ light: { mode: 'auto' }, dark: { mode: 'auto' } });
+    const blackLight = resolveTonalStateReference(black, 'light');
+    expect(blackLight).toMatchObject({
+      tone: black.themes.light.scale.anchorTone,
+      hex: black.themes.light.effectiveSeedHex,
+      source: 'generated-anchor'
+    });
+
+    const blackDark = resolveTonalStateReference(black, 'dark');
+    expect(blackDark).toMatchObject({ source: 'contrast-mirror' });
+    expect(blackDark.tone).toBeGreaterThan(0);
+    expect(blackDark.tone).toBeLessThan(100);
+
+    const targetContrast = contrastRatio(blackLight.hex, '#ffffff');
+    const selectedError = Math.abs(contrastRatio(blackDark.hex, '#000000') - targetContrast);
+    for (const color of black.themes.dark.scale.colors.filter(
+      (candidate) => candidate.tone > 0 && candidate.tone < 100
+    )) {
+      const candidateError = Math.abs(contrastRatio(color.hex, '#000000') - targetContrast);
+      expect(selectedError).toBeLessThanOrEqual(candidateError);
+    }
+  });
+
+  it('lets exact and adaptive Fluent supports follow their own anchors automatically', () => {
+    const result = generateKiskadeeTonalSystem(createFluentAlignmentRecipe());
+    expectResolved(result);
+
+    const black = resolveFamily(result, 'n.black.v1');
+    expect(resolveTonalStateReference(black, 'light')).toMatchObject({
+      tone: 85,
+      hex: '#21242d',
+      source: 'generated-anchor'
+    });
+    expect(resolveTonalStateReference(black, 'dark')).toMatchObject({
+      tone: 90,
+      hex: '#d3d6df',
+      source: 'contrast-mirror'
+    });
+    expect(black.themes.dark.scale.anchorTone).toBe(7);
+    expect(resolveScaleTone(black.themes.dark.scale, 7).hex).toBe('#21242d');
+
+    const red = resolveFamily(result, 'r.red.v1');
+    for (const theme of THEMES) {
+      expect(['source-exact', 'adaptive']).toContain(red.themes[theme].policy);
+      expect(resolveTonalStateReference(red, theme)).toMatchObject({
+        tone: red.themes[theme].scale.anchorTone,
+        hex: red.themes[theme].effectiveSeedHex,
+        source: 'generated-anchor'
+      });
+    }
+
+    const indigo = resolveFamily(result, 'pb.indigo.v1');
+    for (const theme of THEMES) {
+      expect(indigo.themes[theme].policy).toBe('harmonized');
+      expect(resolveTonalStateReference(indigo, theme)).toMatchObject({
+        tone: indigo.themes[theme].restTone,
+        source: 'harmony-rest'
+      });
+    }
+  });
+
+  it('lets an explicit Dark rule override the automatic achromatic contrast mirror', () => {
+    const recipe = createFluentAlignmentRecipe();
+    recipe.tonalAnchors.states = [
+      {
+        id: 'n.black.v1',
+        light: { mode: 'auto' },
+        dark: { mode: 'generated-anchor' }
+      }
+    ];
+    const result = generateKiskadeeTonalSystem(recipe);
+    expectResolved(result);
+
+    const black = resolveFamily(result, 'n.black.v1');
+    expect(resolveTonalStateReference(black, 'dark')).toMatchObject({
+      tone: 7,
+      hex: '#21242d',
+      source: 'generated-anchor'
+    });
+  });
+
+  it('resolves independent family and theme state anchors without changing any tonal scale', () => {
+    const baseline = generateKiskadeeTonalSystem(createRecipe());
+    expectResolved(baseline);
+
+    const recipe = createRecipe();
+    recipe.tonalAnchors.states = [
+      {
+        id: 'b.blue.v1',
+        light: { mode: 'harmony-rest' },
+        dark: { mode: 'locked', tone: 70 }
+      },
+      {
+        id: 'n.black.v1',
+        light: { mode: 'locked', tone: 85 },
+        dark: { mode: 'locked', tone: 7 }
+      },
+      {
+        id: 'y.yellow.v1',
+        light: { mode: 'generated-anchor' },
+        dark: { mode: 'harmony-rest' }
+      }
+    ];
+    const configured = generateKiskadeeTonalSystem(recipe);
+    expectResolved(configured);
+
+    expect(configured.families.map((family) => family.themes)).toEqual(
+      baseline.families.map((family) => family.themes)
+    );
+
+    const primary = resolveFamily(configured, 'b.blue.v1');
+    expect(resolveTonalStateReference(primary, 'light')).toMatchObject({
+      tone: primary.themes.light.restTone,
+      source: 'harmony-rest'
+    });
+    expect(resolveTonalStateReference(primary, 'dark')).toMatchObject({
+      tone: 70,
+      hex: resolveScaleTone(primary.themes.dark.scale, 70).hex,
+      source: 'locked'
+    });
+
+    const black = resolveFamily(configured, 'n.black.v1');
+    expect(resolveTonalStateReference(black, 'light')).toMatchObject({
+      tone: 85,
+      source: 'locked'
+    });
+    expect(resolveTonalStateReference(black, 'dark')).toMatchObject({ tone: 7, source: 'locked' });
+
+    const yellow = resolveFamily(configured, 'y.yellow.v1');
+    expect(resolveTonalStateReference(yellow, 'light')).toMatchObject({
+      tone: yellow.themes.light.scale.anchorTone,
+      source: 'generated-anchor'
+    });
+    expect(resolveTonalStateReference(yellow, 'dark')).toMatchObject({
+      tone: yellow.themes.dark.restTone,
+      source: 'harmony-rest'
+    });
+  });
+
+  it('rejects state anchors for families that are not materialized', () => {
+    const recipe = createRecipe();
+    recipe.tonalAnchors.states = [
+      {
+        id: 'n.black.v2',
+        light: { mode: 'locked', tone: 85 },
+        dark: { mode: 'locked', tone: 7 }
+      }
+    ];
+
+    const result = generateKiskadeeTonalSystem(recipe);
+    expect(result.valid).toBe(false);
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'STATE_ANCHOR_FAMILY_NOT_FOUND',
+          familyId: 'n.black.v2'
+        })
+      ])
+    );
   });
 
   it('lets each chromatic override choose Light and Dark policies independently', () => {
@@ -822,7 +949,7 @@ describe('generateKiskadeeTonalSystem v3', () => {
     expect(failed.issues.map((issue) => issue.code)).toContain('ACHROMATIC_CHROMA_TOO_HIGH');
   });
 
-  it('keeps a pure Black override on the achromatic axis after surface-distance alignment', () => {
+  it('keeps a pure Black override byte-identical to the canonical achromatic scale', () => {
     const recipe = createRecipe();
     recipe.overrides = [
       {
@@ -836,7 +963,9 @@ describe('generateKiskadeeTonalSystem v3', () => {
     const black = resolveFamily(result, 'n.black.v1');
 
     for (const theme of THEMES) {
-      expect(black.themes[theme].achromaticSurfaceDistanceAlignment).not.toBeNull();
+      expect(black.themes[theme].scale).toEqual(
+        generateKiskadeeScale({ seedHex: '#000000', theme, profile: recipe.tonalProfile })
+      );
       for (const color of black.themes[theme].scale.colors) {
         expect(color.hsl.s, `${theme} ${color.tone} saturation`).toBeLessThanOrEqual(1e-7);
         expect(color.oklch.c, `${theme} ${color.tone} chroma`).toBeLessThanOrEqual(1e-7);

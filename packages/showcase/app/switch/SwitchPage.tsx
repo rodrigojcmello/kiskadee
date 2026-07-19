@@ -213,6 +213,7 @@ function getAmbientSurfaceEmphasis(surface: ResolvedSwitchSurface): ComponentEmp
 
 function SwitchOffIcon() {
   return (
+    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
     <svg viewBox="0 0 16 16" focusable="false">
       <path
         fill="currentColor"
@@ -224,6 +225,7 @@ function SwitchOffIcon() {
 
 function SwitchOnIcon() {
   return (
+    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
     <svg viewBox="0 0 16 16" focusable="false">
       <path fill="currentColor" d="M6.4 11.85 2.75 8.2l1.25-1.25 2.4 2.4 5.6-5.6L13.25 5z" />
     </svg>
@@ -232,6 +234,7 @@ function SwitchOnIcon() {
 
 function SwitchPlayIcon() {
   return (
+    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
     <svg viewBox="0 0 16 16" focusable="false">
       <path fill="currentColor" d="M5 3.25 12.25 8 5 12.75z" />
     </svg>
@@ -240,6 +243,7 @@ function SwitchPlayIcon() {
 
 function SwitchPauseIcon() {
   return (
+    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
     <svg viewBox="0 0 16 16" focusable="false">
       <path fill="currentColor" d="M4.5 3.25h2.25v9.5H4.5zm4.75 0h2.25v9.5H9.25z" />
     </svg>

@@ -655,6 +655,22 @@ dd {
   transform: translateX(-50%);
 }
 
+.swatch.state-reference {
+  position: relative;
+}
+
+.swatch-state-reference-marker {
+  position: absolute;
+  z-index: 2;
+  top: 17px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid currentcolor;
+  background: color-mix(in srgb, var(--swatch) 36%, currentcolor);
+  transform: translateX(-50%) rotate(45deg);
+}
+
 .swatch-tone,
 .swatch-hex {
   display: block;
@@ -1138,6 +1154,14 @@ dd {
   background: var(--text);
 }
 
+.overview-marker-legend .state-marker {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--text);
+  background: var(--surface);
+  transform: rotate(45deg);
+}
+
 .overview-family {
   overflow: hidden;
   transition:
@@ -1252,6 +1276,18 @@ dd {
   background: var(--overview-marker);
   content: "";
   transform: translateX(-50%);
+}
+
+.overview-strip .state-reference-marker {
+  position: absolute;
+  z-index: 2;
+  bottom: 4px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--overview-marker);
+  background: color-mix(in srgb, var(--overview-color) 36%, var(--overview-marker));
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .family-tabs {

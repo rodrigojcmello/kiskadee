@@ -123,6 +123,51 @@ describe('tonal-system contract v3', () => {
     ]);
   });
 
+  it('normalizes sparse family state anchors and removes redundant auto rules', () => {
+    const recipe = createRecipe();
+    recipe.tonalAnchors.states = [
+      {
+        id: 'yr.orange.v1',
+        light: { mode: 'locked', tone: 24 },
+        dark: { mode: 'harmony-rest' }
+      },
+      {
+        id: 'g.green.v1',
+        light: { mode: 'auto' },
+        dark: { mode: 'auto' }
+      },
+      {
+        id: 'b.blue.v1',
+        light: { mode: 'generated-anchor' },
+        dark: { mode: 'auto' }
+      }
+    ];
+
+    const result = validateTonalSystemRecipe(recipe);
+
+    expect(result.valid).toBe(true);
+    if (!result.valid) return;
+    expect(result.value.tonalAnchors.states).toEqual([
+      {
+        id: 'b.blue.v1',
+        light: { mode: 'generated-anchor' },
+        dark: { mode: 'auto' }
+      },
+      {
+        id: 'yr.orange.v1',
+        light: { mode: 'locked', tone: 24 },
+        dark: { mode: 'harmony-rest' }
+      }
+    ]);
+
+    const recipeWithoutStates = createRecipe();
+    delete recipeWithoutStates.tonalAnchors.states;
+    const absentResult = validateTonalSystemRecipe(recipeWithoutStates);
+    expect(absentResult.valid).toBe(true);
+    if (!absentResult.valid) return;
+    expect(absentResult.value.tonalAnchors.states).toEqual([]);
+  });
+
   it('rejects format 1 recipes explicitly instead of migrating old families', () => {
     const legacy = {
       formatVersion: 1,
@@ -190,6 +235,82 @@ describe('tonal-system contract v3', () => {
     expect(result.issues.filter((issue) => issue.code === 'UNKNOWN_PROPERTY')).toHaveLength(7);
   });
 
+  it('strictly validates state anchor entries, rules, duplicates, and locked tones', () => {
+    const recipe = createRecipe() as unknown as Record<string, unknown>;
+    const tonalAnchors = recipe.tonalAnchors as Record<string, unknown>;
+    tonalAnchors.states = [
+      {
+        id: 'b.blue.v1',
+        light: { mode: 'generated-anchor', tone: 45 },
+        dark: { mode: 'locked', tone: 11, extra: true }
+      },
+      {
+        id: 'b.blue.v1',
+        light: null,
+        dark: { mode: 'source-exact' }
+      },
+      {
+        id: 'g.green.v1',
+        light: { mode: 'auto' },
+        dark: { mode: 'auto' },
+        extra: true
+      }
+    ];
+
+    const result = validateTonalSystemRecipe(recipe);
+
+    expect(result.valid).toBe(false);
+    if (result.valid) return;
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'UNKNOWN_PROPERTY',
+          path: '/tonalAnchors/states/0/light/tone'
+        }),
+        expect.objectContaining({
+          code: 'UNKNOWN_PROPERTY',
+          path: '/tonalAnchors/states/0/dark/extra'
+        }),
+        expect.objectContaining({
+          code: 'INVALID_STATE_ANCHOR_TONE',
+          path: '/tonalAnchors/states/0/dark/tone'
+        }),
+        expect.objectContaining({
+          code: 'DUPLICATE_STATE_ANCHOR_ID',
+          path: '/tonalAnchors/states/1/id'
+        }),
+        expect.objectContaining({
+          code: 'INVALID_STATE_ANCHOR_RULE',
+          path: '/tonalAnchors/states/1/light'
+        }),
+        expect.objectContaining({
+          code: 'INVALID_STATE_ANCHOR_MODE',
+          path: '/tonalAnchors/states/1/dark/mode'
+        }),
+        expect.objectContaining({
+          code: 'UNKNOWN_PROPERTY',
+          path: '/tonalAnchors/states/2/extra'
+        })
+      ])
+    );
+
+    for (const tone of [0, 100] as const) {
+      const invalidTone = createRecipe();
+      invalidTone.tonalAnchors.states = [
+        {
+          id: 'r.red.v1',
+          light: { mode: 'locked', tone } as never,
+          dark: { mode: 'auto' }
+        }
+      ];
+      expect(issueCodes(invalidTone)).toContain('INVALID_STATE_ANCHOR_TONE');
+    }
+
+    const invalidCollection = createRecipe() as unknown as Record<string, unknown>;
+    (invalidCollection.tonalAnchors as Record<string, unknown>).states = {};
+    expect(issueCodes(invalidCollection)).toContain('INVALID_STATE_ANCHORS');
+  });
+
   it('restricts primary policies, appearances, and variants', () => {
     const light = createRecipe();
     light.primary.policies.light = 'adaptive' as 'source-exact';
@@ -248,6 +369,13 @@ describe('tonal-system contract v3', () => {
   it('locks the resolved primary id and rest positions for export', () => {
     const recipe = createRecipe();
     recipe.primary.seedHex = '#1da1f2';
+    recipe.tonalAnchors.states = [
+      {
+        id: 'b.blue.v1',
+        light: { mode: 'locked', tone: 24 },
+        dark: { mode: 'generated-anchor' }
+      }
+    ];
     const locked = lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 24, dark: 70 });
 
     expect(locked).toMatchObject({
@@ -256,8 +384,19 @@ describe('tonal-system contract v3', () => {
         seedHex: '#1da1f2',
         policies: { light: 'source-exact', dark: 'source-exact' }
       },
-      tonalAnchors: { rest: { mode: 'locked', light: 24, dark: 70 } }
+      tonalAnchors: {
+        rest: { mode: 'locked', light: 24, dark: 70 },
+        states: [
+          {
+            id: 'b.blue.v1',
+            light: { mode: 'locked', tone: 24 },
+            dark: { mode: 'generated-anchor' }
+          }
+        ]
+      }
     });
+    recipe.tonalAnchors.states[0].light = { mode: 'auto' };
+    expect(locked.tonalAnchors.states?.[0].light).toEqual({ mode: 'locked', tone: 24 });
     expect(validateLockedTonalSystemSource(locked).valid).toBe(true);
     expect(issueCodes(recipe, validateLockedTonalSystemSource)).toContain(
       'AUTO_REST_NOT_EXPORTABLE'

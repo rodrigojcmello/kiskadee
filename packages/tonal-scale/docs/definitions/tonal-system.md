@@ -54,6 +54,7 @@ Draft format 3 contains:
 - zero or more family overrides;
 - one tonal profile (`balanced` or `muted-darks`);
 - automatic or locked Light/Dark rest positions;
+- optional per-family Light/Dark state-anchor rules;
 - `kiskadee-tonal-v1` grid and `kiskadee-munsell-rest-v1` harmony contracts.
 
 Primary Light is always `source-exact`. Primary Dark may be `source-exact` or
@@ -222,9 +223,9 @@ before comparing it with the fixed companion set.
 
 `n.black.v1` uses the fixed reference `#20252b`, remains `source-exact` in both
 themes, and does not participate in chromatic harmony. Its exact seed anchor
-remains immutable, but emitted non-anchor positions may receive the
-system-level achromatic surface-distance alignment defined below. Achromatic
-chroma above `0.04` requires review and above `0.08` fails.
+and every other emitted scale position remain owned exclusively by the frozen
+low-level generator. Achromatic chroma above `0.04` requires review and above
+`0.08` fails.
 
 ## Physical-Light Surface Alignment
 
@@ -310,44 +311,6 @@ isolated leader; it does not flatten a vivid cohort such as the Orange system.
 Measurements before and after selection are emitted only in system
 diagnostics, not in primitive color assets.
 
-## Achromatic Surface-Distance Alignment
-
-Equal OKL lightness does not give an achromatic family the same visual weight
-as a chromatic family on the same surface. Chroma contributes additional
-perceptual separation from white or black, while an achromatic family must
-express nearly all of that separation through lightness. Assigning every
-family the same public position can therefore leave `n.black.*` visibly weaker
-even when its luminance contrast is comparable.
-
-After physical-light chroma alignment and isolated-peak alignment are final,
-the multi-family system applies
-`kiskadee-achromatic-surface-distance-v1`:
-
-- the reference at each public position is the median Delta E OK from the
-  physical theme surface across the ten canonical chromatic base families;
-- Light uses white as its surface and may only lower achromatic lightness;
-- Dark uses black as its surface and may only raise achromatic lightness;
-- target chroma and hue are held constant, so a deliberately tinted Black
-  remains tinted rather than being converted to a chromatic harmony;
-- an emitted sRGB gray remains exactly on the achromatic axis instead of
-  carrying numerical OKLCH chroma into the next quantized color;
-- the alignment never moves an achromatic color closer to the theme surface;
-- absolute caps and the exact generated seed anchor remain immutable;
-- harmony rest is intentionally eligible because it is the shared checkpoint
-  whose visual weight must align across families;
-- four public positions of smoothstep protection surround each immutable tone
-  to avoid a local discontinuity.
-
-The transformation revalidates the complete quantized sRGB scale and rejects
-chroma growth beyond quantization tolerance. When a full lightness adjustment
-would violate monotonicity, uniqueness, contrast, gamut, spacing, or
-continuity, only the conflicting positions are restored deterministically
-toward the baseline. A distance deficit retained by an exact anchor or a
-restoration requires review. Canonical target, protection-adjusted target,
-baseline, and final rest distances, adjusted positions, maximum lightness
-movement, protected tones, and restorations are emitted only in
-`tonal-system.diagnostics.json`; primitive family assets remain concise.
-
 ## Generated Anchor, Harmony Rest, And State Anchor
 
 `seedHex`, generated anchor, harmony rest, and state anchor are separate
@@ -372,17 +335,43 @@ only the shared checkpoint moves. Harmonized companions preserve a
 primary-equivalent vivid peak at their own hue's natural lightness, then expose
 the color emitted by that scale at the shared harmony-rest slot.
 
-State-anchor resolution is intentionally simple and deterministic:
+State-anchor resolution is intentionally simple and deterministic. Each family
+may select a different rule for Light and Dark:
 
-- the primary family uses its generated anchor in each theme;
-- every support family uses the shared harmony rest in each theme.
+- `auto` follows the generated anchor for Primary, `source-exact`, and
+  `adaptive` themes; only `harmonized` themes follow harmony rest, except for
+  the automatic Dark achromatic rule described below;
+- `generated-anchor` follows the exact/adapted seed position of that family;
+- `harmony-rest` follows the shared cross-family checkpoint;
+- `locked` points to one explicit non-cap public tone from 1 through 99.
 
-Consequently, Yellow `#ffeb3b` remains exact and uses L5/D95 as its primary
-state anchor even when its system's shared harmony rest is L28/D65. Companion
-families in that system continue to use L28/D65 as their state anchors. This
-does not create family-specific harmony-rest slots; it separates the technical
-checkpoint from the position that represents the family's authored primary
-identity.
+Rules are sparse and sorted by family id. An omitted family is equivalent to
+`auto` in both themes, and an explicit `auto/auto` entry is removed during
+normalization. A rule for a family that is not materialized fails explicitly.
+The resolved pointer records its tone, hex, and source in each family asset.
+Changing a state-anchor rule never regenerates or recolors the scale.
+
+An automatic `n.black.*` Dark state anchor mirrors the functional contrast of
+its Light state anchor instead of preserving the same physically dark seed.
+The generator measures the resolved Light reference against absolute white,
+then selects the non-cap Dark tone whose contrast against absolute black is
+closest. Ties prefer the lower contrast and then the lower public tone. The
+result is recorded as `contrast-mirror`. An explicit Dark
+`generated-anchor`, `harmony-rest`, or `locked` rule always takes precedence.
+
+This rule changes only the functional pointer. It does not move the authored
+seed, generated anchor, harmony rest, or any scale color. In the Fluent Black
+case, Light L85 `#21242d` has `15.50:1` contrast against white. Its automatic
+Dark reference therefore resolves to D90 `#d3d6df`, with `14.45:1` against
+black, while the exact source remains preserved at D7 `#21242d`.
+
+Consequently, under `auto`, Yellow `#ffeb3b` remains exact and uses L5/D95 as
+its primary state anchor even when its system's shared harmony rest is
+L28/D65. Companion families in that system continue to use L28/D65 as their
+state anchors when they are harmonized, while authored `source-exact` or
+`adaptive` companions follow their own generated anchors. This does not create
+family-specific harmony-rest slots; it separates the technical checkpoint from
+the position that represents each family's authored identity.
 
 For example, Orange `#ff6200` remains exact and becomes the shared L24/D70
 harmony rest: its raw fixed-reference baselines are imbalanced, but the emitted
@@ -489,18 +478,18 @@ colors/
 
 The required system contains 12 color assets and 15 files total. Additional
 authored variants add one color file each. All artifacts identify
-`@kiskadee/tonal-scale@0.3.2`.
+`@kiskadee/tonal-scale@0.3.5`.
 
 The locked source retains the primary id and seed, policies, overrides,
-profile, rest positions, and contract identifiers. The manifest centralizes
-asset hashes. Each color asset contains `munsellSector`, `appearance`,
-`variant`, `colorKind`, `seedHex`, `seedOrigin`, policies, generated anchors,
-harmony-rest colors,
-per-theme `stateReferences`, and complete Light and Dark tone maps. A state
-reference records its tone, hex, and whether it came from `generated-anchor` or
-`harmony-rest`. The diagnostics identify the
-`fixed-reference` seed model and `kiskadee-munsell-reference-v1` set alongside
-cross-hue balance, classification, harmony metrics, and scale diagnostics.
+profile, rest positions, state-anchor rules, and contract identifiers. The
+manifest centralizes asset hashes. Each color asset contains `munsellSector`,
+`appearance`, `variant`, `colorKind`, `seedHex`, `seedOrigin`, policies,
+generated anchors, harmony-rest colors, per-theme `stateReferences`, and
+complete Light and Dark tone maps. A state reference records its tone, hex, and
+whether it came from `generated-anchor`, `harmony-rest`, `contrast-mirror`, or
+`locked`. The diagnostics identify the `fixed-reference` seed model and
+`kiskadee-munsell-reference-v1` set alongside cross-hue balance,
+classification, harmony metrics, and scale diagnostics.
 
 Verification regenerates the complete bundle and compares canonical JSON byte
 for byte. Missing, extra, non-canonical, or modified files invalidate it
@@ -518,12 +507,24 @@ approval and systemic-golden milestone. Corrections before that milestone
 refine the draft V1 behavior. After the golden is approved, any byte-changing
 harmony algorithm requires a new harmony contract or generator version.
 
-Generator `0.3.2` adds the achromatic surface-distance alignment above without
-changing format V3, the harmony V1 recipe, or the low-level tonal grid. It
-retains the physical-light and isolated-peak calibrations introduced during
-the same pre-golden Harmony V1 period. Existing `0.3.1` bundles must be
-regenerated because atomic verification includes the generator version and all
-emitted family bytes.
+Generator `0.3.3` removes the rejected achromatic whole-curve calibration and
+adds sparse per-family, per-theme state-anchor authoring without changing
+format V3, the harmony V1 recipe, or the low-level tonal grid. Black once again
+matches the frozen low-level scale byte for byte. The approved physical-light
+and isolated-peak calibrations remain active for chromatic support families.
+
+Generator `0.3.4` makes automatic state-anchor resolution policy-aware.
+Primary, `source-exact`, and `adaptive` themes follow their own generated
+anchors; `harmonized` themes continue to follow the shared harmony rest.
+Bundles generated before `0.3.4` must be regenerated because atomic
+verification includes the generator version and resolved state references.
+
+Generator `0.3.5` makes automatic achromatic Dark state anchors mirror the
+resolved Light contrast against the opposite absolute cap. The scale and exact
+Black seed remain unchanged; only the exported functional pointer changes.
+Explicit per-theme state-anchor rules still win. Bundles generated before
+`0.3.5` must be regenerated because their Black Dark state reference and
+generator version differ.
 
 This package produces Layer 1 artifacts only. It does not write presets,
 external types, semantic aliases, or component state mappings. In particular,

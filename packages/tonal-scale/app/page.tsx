@@ -16,7 +16,8 @@ import {
   type ResolvedKiskadeeTonalSystem,
   type ResolvedTonalFamily,
   type ResolvedTonalTheme,
-  resolveTonalStateReference
+  resolveTonalStateReference,
+  type TonalStateReference
 } from '@/src/tonal-system';
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
@@ -323,6 +324,8 @@ function ScaleWorkspace({
 }) {
   const lightResult = family.themes.light.scale;
   const darkResult = family.themes.dark.scale;
+  const lightStateReference = resolveTonalStateReference(family, 'light');
+  const darkStateReference = resolveTonalStateReference(family, 'dark');
 
   return (
     <>
@@ -358,8 +361,9 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="theme-preview-title">Theme previews</h2>
           <p>
-            {family.id} uses its state anchor for the action preview. Exact primary colors can use
-            their generated anchor while support families keep the shared harmony rest.
+            {family.id} uses its state anchor for the action preview. Primary, source-exact, and
+            adaptive themes follow their generated anchor; automatic achromatic Dark mirrors the
+            Light contrast; harmonized themes keep the shared harmony rest.
           </p>
         </div>
         <div className="theme-grid">
@@ -377,8 +381,18 @@ function ScaleWorkspace({
           </p>
         </div>
         <div className="scale-stack">
-          <TonalScalePanel theme="light" result={lightResult} restTone={rest.light} />
-          <TonalScalePanel theme="dark" result={darkResult} restTone={rest.dark} />
+          <TonalScalePanel
+            theme="light"
+            result={lightResult}
+            restTone={rest.light}
+            stateTone={lightStateReference.tone}
+          />
+          <TonalScalePanel
+            theme="dark"
+            result={darkResult}
+            restTone={rest.dark}
+            stateTone={darkStateReference.tone}
+          />
         </div>
       </section>
 
@@ -623,7 +637,8 @@ function ScaleOverview({
         <h2 id="scale-overview-title">System scale overview</h2>
         <p>
           Every row uses the same 36 public positions. The triangle marks the generated vivid
-          anchor; the dot marks the shared harmony-rest checkpoint.
+          anchor; the dot marks the shared harmony-rest checkpoint; the diamond marks the state
+          reference used by previews.
         </p>
       </div>
       <div className="overview-marker-legend">
@@ -633,7 +648,12 @@ function ScaleOverview({
         <span>
           <i className="rest-marker" aria-hidden="true" /> Harmony rest
         </span>
-        <small>The state anchor used by previews can resolve to either marker.</small>
+        <span>
+          <i className="state-marker" aria-hidden="true" /> State reference
+        </span>
+        <small>
+          The state reference may follow either anchor or use an independently locked tone.
+        </small>
       </div>
       <div className="overview-stack">
         {system.families.map((family) => (
@@ -676,10 +696,11 @@ function CompactScaleStrip({ family, theme }: { family: ResolvedTonalFamily; the
         {resolution.scale.colors.map((color) => {
           const isAnchor = color.flags.isAnchor;
           const isHarmonyRest = color.tone === resolution.restTone;
+          const isStateReference = color.tone === stateReference.tone;
           const markerLabels = [
             isAnchor ? 'generated anchor' : null,
             isHarmonyRest ? 'harmony rest' : null,
-            color.tone === stateReference.tone ? 'state anchor' : null
+            isStateReference ? 'state reference' : null
           ].filter((label): label is string => label !== null);
 
           return (
@@ -693,7 +714,9 @@ function CompactScaleStrip({ family, theme }: { family: ResolvedTonalFamily; the
                 } as CSSProperties
               }
               title={`${prefix}${color.tone} · ${color.hex}${markerLabels.length > 0 ? ` · ${markerLabels.join(' + ')}` : ''}`}
-            />
+            >
+              {isStateReference ? <span className="state-reference-marker" /> : null}
+            </i>
           );
         })}
       </div>
@@ -944,11 +967,13 @@ function ThemePanel({ theme, family }: { theme: Theme; family: ResolvedTonalFami
 function TonalScalePanel({
   theme,
   result,
-  restTone
+  restTone,
+  stateTone
 }: {
   theme: Theme;
   result: ScaleResult;
-  restTone: number;
+  restTone: KiskadeeTone;
+  stateTone: KiskadeeTone;
 }) {
   const prefix = resolveThemePrefix(theme);
   const status = resolveIntegrityStatus(result);
@@ -962,7 +987,7 @@ function TonalScalePanel({
       <div className="scale-panel-header">
         <div>
           <span className="theme-kicker">{theme} scale</span>
-          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · harmony rest ${prefix}${restTone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · harmony rest ${prefix}${restTone} · state reference ${prefix}${stateTone}`}</h3>
           <p className="scale-guard-note">
             <strong>{prefix}35</strong>
             {` · ${guardForegroundLabel} 3:1 guard starts${guardRatio === null ? '' : ` (${guardRatio.toFixed(2)}:1)`} · swatch labels use max contrast`}
@@ -972,7 +997,13 @@ function TonalScalePanel({
       </div>
       <div className="scale-strip">
         {result.colors.map((color) => (
-          <Swatch key={color.tone} color={color} prefix={prefix} isRest={color.tone === restTone} />
+          <Swatch
+            key={color.tone}
+            color={color}
+            prefix={prefix}
+            isRest={color.tone === restTone}
+            isStateReference={color.tone === stateTone}
+          />
         ))}
       </div>
     </article>
@@ -982,11 +1013,13 @@ function TonalScalePanel({
 function Swatch({
   color,
   prefix,
-  isRest
+  isRest,
+  isStateReference
 }: {
   color: ScaleColor;
   prefix: 'L' | 'D';
   isRest: boolean;
+  isStateReference: boolean;
 }) {
   const blackContrast = contrastRatio(color.hex, '#000000');
   const whiteContrast = contrastRatio(color.hex, '#ffffff');
@@ -997,10 +1030,13 @@ function Swatch({
 
   return (
     <div
-      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}${isRest ? ' rest' : ''}`}
+      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}${isRest ? ' rest' : ''}${isStateReference ? ' state-reference' : ''}`}
       style={style}
-      title={`${prefix}${color.tone} · ${color.hex} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
+      title={`${prefix}${color.tone} · ${color.hex}${color.flags.isAnchor ? ' · generated anchor' : ''}${isRest ? ' · harmony rest' : ''}${isStateReference ? ' · state reference' : ''} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
     >
+      {isStateReference ? (
+        <span className="swatch-state-reference-marker" aria-hidden="true" />
+      ) : null}
       <span className="swatch-tone">
         {prefix}
         {color.tone}
@@ -1589,8 +1625,11 @@ function formatSignedOffset(offset: number): string {
   return offset > 0 ? `+${offset}` : `${offset}`;
 }
 
-function formatStateSource(source: 'generated-anchor' | 'harmony-rest'): string {
-  return source === 'generated-anchor' ? 'generated anchor' : 'harmony rest';
+function formatStateSource(source: TonalStateReference['source']): string {
+  if (source === 'generated-anchor') return 'generated anchor';
+  if (source === 'harmony-rest') return 'harmony rest';
+  if (source === 'contrast-mirror') return 'contrast mirror';
+  return 'locked position';
 }
 
 function resolveThemePrefix(theme: Theme): 'L' | 'D' {

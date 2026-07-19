@@ -2,7 +2,6 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import { KISKADEE_TONES } from '../kiskadee-tonal-scale';
 import {
-  ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
   SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS
@@ -50,7 +49,7 @@ describe('tonal artifact bundle v3', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.3.2');
+    expect(bundle.manifest.generator.version).toBe('0.3.5');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
@@ -89,7 +88,11 @@ describe('tonal artifact bundle v3', () => {
       appearance: 'black',
       colorKind: 'achromatic',
       seedOrigin: 'canonical',
-      seedHex: '#20252b'
+      seedHex: '#20252b',
+      stateReferences: {
+        light: { source: 'generated-anchor' },
+        dark: { source: 'contrast-mirror' }
+      }
     });
     expect(bundle.assets.find((asset) => asset.id === 'yr.brown.v1')).toMatchObject({
       munsellSector: 'YR',
@@ -134,17 +137,6 @@ describe('tonal artifact bundle v3', () => {
     expect(blue?.themes.dark.surfaceTrackAlignment).toBeNull();
     expect(black?.themes.light.surfaceTrackAlignment).toBeNull();
     expect(black?.themes.dark.surfaceTrackAlignment).toBeNull();
-    for (const theme of ['light', 'dark'] as const) {
-      const alignment = black?.themes[theme].achromaticSurfaceDistanceAlignment;
-      expect(alignment).toMatchObject({
-        contract: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract,
-        reference: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference
-      });
-      expect(alignment?.adjustedToneCount).toBe(alignment?.adjustedTones.length);
-      expect(alignment?.protectedTones).toEqual(expect.arrayContaining([0, 100]));
-      expect(alignment?.rest.canonicalTargetDistance).toBeGreaterThanOrEqual(0);
-      expect(alignment?.rest.effectiveTargetDistance).toBeGreaterThanOrEqual(0);
-    }
 
     const green = bundle.diagnostics.families.find((family) => family.familyId === 'g.green.v1');
     for (const theme of ['light', 'dark'] as const) {
@@ -174,6 +166,74 @@ describe('tonal artifact bundle v3', () => {
     expect(verification.manifest).toEqual(bundle.manifest);
     expect(verification.diagnostics).toEqual(bundle.diagnostics);
     expect(verification.assets).toEqual(bundle.assets);
+  });
+
+  it('exports family state anchors as deterministic references without changing scale colors', async () => {
+    const recipe = createRecipe();
+    recipe.tonalAnchors.states = [
+      {
+        id: 'b.blue.v1',
+        light: { mode: 'harmony-rest' },
+        dark: { mode: 'locked', tone: 70 }
+      },
+      {
+        id: 'n.black.v1',
+        light: { mode: 'locked', tone: 85 },
+        dark: { mode: 'locked', tone: 7 }
+      }
+    ];
+    const result = generateKiskadeeTonalSystem(recipe);
+    expect(result.valid, JSON.stringify(result.issues, null, 2)).toBe(true);
+    if (!result.valid) return;
+
+    const configuredBundle = await createTonalArtifactBundle(result);
+    expect(configuredBundle.source.tonalAnchors.states).toEqual(recipe.tonalAnchors.states);
+
+    const primary = configuredBundle.assets.find((asset) => asset.id === 'b.blue.v1');
+    expect(primary?.stateReferences).toEqual({
+      light: {
+        tone: result.rest.light,
+        hex: primary?.scales.light[`${result.rest.light}`],
+        source: 'harmony-rest'
+      },
+      dark: { tone: 70, hex: primary?.scales.dark['70'], source: 'locked' }
+    });
+    const black = configuredBundle.assets.find((asset) => asset.id === 'n.black.v1');
+    expect(black?.stateReferences).toEqual({
+      light: { tone: 85, hex: black?.scales.light['85'], source: 'locked' },
+      dark: { tone: 7, hex: black?.scales.dark['7'], source: 'locked' }
+    });
+
+    for (const configuredAsset of configuredBundle.assets) {
+      const baselineAsset = bundle.assets.find((asset) => asset.id === configuredAsset.id);
+      expect(configuredAsset.scales, configuredAsset.id).toEqual(baselineAsset?.scales);
+    }
+
+    const verification = await verifyTonalArtifactBundle(new Map(configuredBundle.files));
+    expect(verification.valid, JSON.stringify(verification.issues, null, 2)).toBe(true);
+  });
+
+  it('rejects a resolved family whose state anchor rule differs from its locked source', async () => {
+    const recipe = createRecipe();
+    recipe.tonalAnchors.states = [
+      {
+        id: 'n.black.v1',
+        light: { mode: 'locked', tone: 85 },
+        dark: { mode: 'locked', tone: 7 }
+      }
+    ];
+    const result = generateKiskadeeTonalSystem(recipe);
+    expect(result.valid, JSON.stringify(result.issues, null, 2)).toBe(true);
+    if (!result.valid) return;
+
+    const black = result.families.find((family) => family.id === 'n.black.v1');
+    expect(black).toBeDefined();
+    if (!black) return;
+    black.stateAnchors.light = { mode: 'harmony-rest' };
+
+    await expect(createTonalArtifactBundle(result)).rejects.toThrow(
+      'n.black.v1 light state anchor does not match the locked source.'
+    );
   });
 
   it('rejects tampered, missing, and extra files atomically', async () => {

@@ -19,6 +19,7 @@ import {
   type TonalFamilyId,
   type TonalFamilySectorNotation,
   type TonalFamilyVariant,
+  type TonalStateAnchorRule,
   type TonalThemePolicy,
   validateLockedTonalSystemSource
 } from '../tonal-system-contract.ts';
@@ -27,7 +28,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.3.2'
+  version: '0.3.5'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -125,7 +126,6 @@ type ThemeDiagnostics = {
   harmony: ResolvedTonalFamily['themes']['light']['harmony'];
   surfaceTrackAlignment: ResolvedTonalFamily['themes']['light']['surfaceTrackAlignment'];
   isolatedHarmonyPeakAlignment: ResolvedTonalFamily['themes']['light']['isolatedHarmonyPeakAlignment'];
-  achromaticSurfaceDistanceAlignment: ResolvedTonalFamily['themes']['light']['achromaticSurfaceDistanceAlignment'];
   scale: ResolvedTonalFamily['themes']['light']['scale']['diagnostics'];
 };
 
@@ -437,7 +437,6 @@ function createThemeDiagnostics(
     harmony: theme.harmony,
     surfaceTrackAlignment: theme.surfaceTrackAlignment,
     isolatedHarmonyPeakAlignment: theme.isolatedHarmonyPeakAlignment,
-    achromaticSurfaceDistanceAlignment: theme.achromaticSurfaceDistanceAlignment,
     scale: theme.scale.diagnostics
   };
 }
@@ -490,6 +489,9 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     throw new TonalArtifactError('Export is atomic and requires all twelve core families.');
   }
   const overrideById = new Map(system.source.overrides.map((override) => [override.id, override]));
+  const stateAnchorsById = new Map(
+    (system.source.tonalAnchors.states ?? []).map((stateAnchors) => [stateAnchors.id, stateAnchors])
+  );
   const seen = new Set<TonalFamilyId>();
   for (const family of system.families) {
     if (seen.has(family.id)) {
@@ -527,10 +529,32 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     ) {
       throw new TonalArtifactError(`${family.id} cannot use canonical seed origin.`);
     }
+    const sourceStateAnchors = stateAnchorsById.get(family.id);
+    for (const theme of ['light', 'dark'] as const) {
+      const expectedRule = sourceStateAnchors?.[theme] ?? { mode: 'auto' as const };
+      if (!stateAnchorRulesEqual(family.stateAnchors[theme], expectedRule)) {
+        throw new TonalArtifactError(
+          `${family.id} ${theme} state anchor does not match the locked source.`
+        );
+      }
+    }
     seen.add(family.id);
     assertThemeScale(family, 'light');
     assertThemeScale(family, 'dark');
   }
+  const missingStateFamily = [...stateAnchorsById.keys()].find((id) => !seen.has(id));
+  if (missingStateFamily) {
+    throw new TonalArtifactError(
+      `${missingStateFamily} state anchors do not match a resolved family.`
+    );
+  }
+}
+
+function stateAnchorRulesEqual(left: TonalStateAnchorRule, right: TonalStateAnchorRule): boolean {
+  return (
+    left.mode === right.mode &&
+    (left.mode !== 'locked' || (right.mode === 'locked' && left.tone === right.tone))
+  );
 }
 
 function assertThemeScale(family: ResolvedTonalFamily, theme: 'light' | 'dark'): void {
@@ -550,6 +574,11 @@ function assertThemeScale(family: ResolvedTonalFamily, theme: 'light' | 'dark'):
     resolution.scale.colors.at(-1)?.hex !== expectedCaps[1]
   ) {
     throw new TonalArtifactError(`${family.id} ${theme} scale has invalid absolute caps.`);
+  }
+  const stateReference = resolveTonalStateReference(family, theme);
+  const stateColor = resolution.scale.colors.find((color) => color.tone === stateReference.tone);
+  if (!stateColor || stateColor.hex !== stateReference.hex) {
+    throw new TonalArtifactError(`${family.id} ${theme} state anchor is not part of its scale.`);
   }
 }
 

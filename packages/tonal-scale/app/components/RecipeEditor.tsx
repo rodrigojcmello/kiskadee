@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { normalizeHexColor } from '@/src/color-math';
 import { FIXED_FAMILY_SEEDS_V1 } from '@/src/fixed-family-seeds';
 import {
@@ -17,8 +17,10 @@ import {
 import type {
   KiskadeeTonalSystemResult,
   ResolvedTonalFamily,
+  TonalStateReference,
   TonalSystemIssue
 } from '@/src/tonal-system';
+import { resolveTonalStateReference } from '@/src/tonal-system';
 import {
   type CoreTonalFamilyId,
   createTonalFamilyId,
@@ -31,9 +33,11 @@ import {
   TONAL_FAMILY_VARIANTS,
   type TonalFamilyId,
   type TonalFamilyOverrideV3,
+  type TonalFamilyStateAnchorsV3,
   type TonalFamilyVariant,
   type TonalPrimaryAppearance,
   type TonalPrimaryDraftV3,
+  type TonalStateAnchorRule,
   type TonalSystemRecipeV3,
   type TonalThemePolicy
 } from '@/src/tonal-system-contract';
@@ -52,6 +56,13 @@ const POLICY_LABELS = {
   harmonized: 'Harmonized'
 } as const satisfies Record<TonalThemePolicy, string>;
 
+const STATE_ANCHOR_MODE_LABELS = {
+  auto: 'Auto',
+  'generated-anchor': 'Generated',
+  'harmony-rest': 'Harmony',
+  locked: 'Locked'
+} as const satisfies Record<TonalStateAnchorRule['mode'], string>;
+
 export type RecipeEditorProps = {
   recipe: TonalSystemRecipeV3;
   result: KiskadeeTonalSystemResult;
@@ -62,6 +73,7 @@ export type RecipeEditorProps = {
 export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeEditorProps) {
   const editorId = useId();
   const [requestedExtraId, setRequestedExtraId] = useState<TonalFamilyId | ''>('');
+  const lastValidPrimaryId = useRef<TonalFamilyId | null>(null);
   const classification = classifyPrimary(recipe.primary.seedHex);
   const suggestedAppearance = resolveSuggestedAppearance(classification);
   const appearanceOptions = classification
@@ -69,10 +81,19 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     : [];
   const inferredPrimaryId = resolvePrimaryId(recipe, classification);
   const resolvedPrimaryId = result.valid ? result.primaryReference.familyId : inferredPrimaryId;
+  useEffect(() => {
+    if (resolvedPrimaryId !== null) lastValidPrimaryId.current = resolvedPrimaryId;
+  }, [resolvedPrimaryId]);
   const usedIds = new Set(recipe.overrides.map((override) => override.id));
   const extraOptions = EXTRA_FAMILY_IDS.filter(
     (id) => !usedIds.has(id) && id !== resolvedPrimaryId
   );
+  const additionalVariantIds = [
+    ...(resolvedPrimaryId && !CORE_FAMILY_ID_SET.has(resolvedPrimaryId) ? [resolvedPrimaryId] : []),
+    ...recipe.overrides.map((override) => override.id).filter((id) => !CORE_FAMILY_ID_SET.has(id))
+  ]
+    .filter((id, index, ids) => ids.indexOf(id) === index)
+    .sort((left, right) => left.localeCompare(right));
   const extraId =
     requestedExtraId && extraOptions.includes(requestedExtraId)
       ? requestedExtraId
@@ -95,12 +116,28 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         : primary;
     const nextRecipe: TonalSystemRecipeV3 = { ...recipe, primary: nextPrimary };
     const nextPrimaryId = resolvePrimaryId(nextRecipe, nextClassification);
+    const nextOverrides = nextPrimaryId
+      ? nextRecipe.overrides.filter((override) => override.id !== nextPrimaryId)
+      : nextRecipe.overrides;
+    const previousPrimaryId = inferredPrimaryId ?? resolvedPrimaryId ?? lastValidPrimaryId.current;
+    const shouldRemovePreviousState =
+      nextPrimaryId !== null &&
+      previousPrimaryId !== null &&
+      previousPrimaryId !== nextPrimaryId &&
+      !CORE_FAMILY_ID_SET.has(previousPrimaryId) &&
+      !nextOverrides.some((override) => override.id === previousPrimaryId);
 
     onChange({
       ...nextRecipe,
-      overrides: nextPrimaryId
-        ? nextRecipe.overrides.filter((override) => override.id !== nextPrimaryId)
-        : nextRecipe.overrides
+      overrides: nextOverrides,
+      tonalAnchors: shouldRemovePreviousState
+        ? {
+            ...nextRecipe.tonalAnchors,
+            states: (nextRecipe.tonalAnchors.states ?? []).filter(
+              (stateAnchors) => stateAnchors.id !== previousPrimaryId
+            )
+          }
+        : nextRecipe.tonalAnchors
     });
   };
 
@@ -145,12 +182,50 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     });
   };
 
+  const removeExtraOverride = (id: TonalFamilyId) => {
+    onChange({
+      ...recipe,
+      overrides: recipe.overrides.filter((override) => override.id !== id),
+      tonalAnchors: {
+        ...recipe.tonalAnchors,
+        states: (recipe.tonalAnchors.states ?? []).filter((stateAnchors) => stateAnchors.id !== id)
+      }
+    });
+  };
+
+  const updateStateAnchor = (
+    id: TonalFamilyId,
+    theme: 'light' | 'dark',
+    rule: TonalStateAnchorRule
+  ) => {
+    const current = recipe.tonalAnchors.states?.find((stateAnchors) => stateAnchors.id === id);
+    const nextStateAnchors: TonalFamilyStateAnchorsV3 = {
+      id,
+      light: current?.light ?? { mode: 'auto' },
+      dark: current?.dark ?? { mode: 'auto' },
+      [theme]: rule
+    };
+    const retained = (recipe.tonalAnchors.states ?? []).filter(
+      (stateAnchors) => stateAnchors.id !== id
+    );
+    const states =
+      nextStateAnchors.light.mode === 'auto' && nextStateAnchors.dark.mode === 'auto'
+        ? retained
+        : [...retained, nextStateAnchors].sort((left, right) => left.id.localeCompare(right.id));
+
+    onChange({
+      ...recipe,
+      tonalAnchors: { ...recipe.tonalAnchors, states }
+    });
+  };
+
   const lockProposal = () => {
     if (!proposal) return;
 
     onChange({
       ...recipe,
       tonalAnchors: {
+        ...recipe.tonalAnchors,
         rest: { mode: 'locked', light: proposal.light, dark: proposal.dark }
       }
     });
@@ -162,7 +237,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
 
     onChange({
       ...recipe,
-      tonalAnchors: { rest: { ...rest, [theme]: tone } }
+      tonalAnchors: { ...recipe.tonalAnchors, rest: { ...rest, [theme]: tone } }
     });
   };
 
@@ -344,6 +419,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           <span>Family</span>
           <span>Seed</span>
           <span>Light / Dark policies</span>
+          <span>State anchors</span>
           <span>Override</span>
         </div>
 
@@ -360,10 +436,14 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                 primarySeedHex={id === resolvedPrimaryId ? recipe.primary.seedHex : undefined}
                 override={override}
                 resolved={result.families.find((family) => family.id === id)}
+                stateAnchors={recipe.tonalAnchors.states?.find(
+                  (stateAnchors) => stateAnchors.id === id
+                )}
                 seedIssue={resolveFamilySeedIssue(result.issues, id, overrideIndex)}
                 onEnable={() => addOverride(id)}
                 onChange={updateOverride}
                 onRemove={() => removeOverride(id)}
+                onStateAnchorChange={(theme, rule) => updateStateAnchor(id, theme, rule)}
               />
             );
           })}
@@ -376,35 +456,34 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             <h3 id={`${editorId}-extras-title`}>Additional variants</h3>
             <p>Optional V2–V4 assets require their own explicit seed and may be removed.</p>
           </div>
-          <span>
-            {recipe.overrides.filter((override) => !CORE_FAMILY_ID_SET.has(override.id)).length}{' '}
-            added
-          </span>
+          <span>{additionalVariantIds.length} added</span>
         </div>
 
-        {recipe.overrides.some((override) => !CORE_FAMILY_ID_SET.has(override.id)) ? (
+        {additionalVariantIds.length > 0 ? (
           <div className={styles.familyList}>
-            {recipe.overrides
-              .filter((override) => !CORE_FAMILY_ID_SET.has(override.id))
-              .map((override) => {
-                const overrideIndex = recipe.overrides.findIndex(
-                  (candidate) => candidate.id === override.id
-                );
-                return (
-                  <FamilyRow
-                    key={override.id}
-                    id={override.id}
-                    required={false}
-                    isPrimary={override.id === resolvedPrimaryId}
-                    override={override}
-                    resolved={result.families.find((family) => family.id === override.id)}
-                    seedIssue={resolveFamilySeedIssue(result.issues, override.id, overrideIndex)}
-                    onEnable={() => addOverride(override.id)}
-                    onChange={updateOverride}
-                    onRemove={() => removeOverride(override.id)}
-                  />
-                );
-              })}
+            {additionalVariantIds.map((id) => {
+              const override = recipe.overrides.find((candidate) => candidate.id === id);
+              const overrideIndex = recipe.overrides.findIndex((candidate) => candidate.id === id);
+              return (
+                <FamilyRow
+                  key={id}
+                  id={id}
+                  required={false}
+                  isPrimary={id === resolvedPrimaryId}
+                  primarySeedHex={id === resolvedPrimaryId ? recipe.primary.seedHex : undefined}
+                  override={override}
+                  resolved={result.families.find((family) => family.id === id)}
+                  stateAnchors={recipe.tonalAnchors.states?.find(
+                    (stateAnchors) => stateAnchors.id === id
+                  )}
+                  seedIssue={resolveFamilySeedIssue(result.issues, id, overrideIndex)}
+                  onEnable={() => addOverride(id)}
+                  onChange={updateOverride}
+                  onRemove={() => removeExtraOverride(id)}
+                  onStateAnchorChange={(theme, rule) => updateStateAnchor(id, theme, rule)}
+                />
+              );
+            })}
           </div>
         ) : (
           <p className={styles.emptyExtras}>No additional variants in this recipe.</p>
@@ -507,7 +586,12 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
               <button
                 className={styles.secondaryButton}
                 type="button"
-                onClick={() => onChange({ ...recipe, tonalAnchors: { rest: { mode: 'auto' } } })}
+                onClick={() =>
+                  onChange({
+                    ...recipe,
+                    tonalAnchors: { ...recipe.tonalAnchors, rest: { mode: 'auto' } }
+                  })
+                }
               >
                 Return to auto
               </button>
@@ -565,10 +649,12 @@ type FamilyRowProps = {
   primarySeedHex?: string;
   override: TonalFamilyOverrideV3 | undefined;
   resolved: ResolvedTonalFamily | undefined;
+  stateAnchors: TonalFamilyStateAnchorsV3 | undefined;
   seedIssue: string | undefined;
   onEnable: () => void;
   onChange: (override: TonalFamilyOverrideV3) => void;
   onRemove: () => void;
+  onStateAnchorChange: (theme: 'light' | 'dark', rule: TonalStateAnchorRule) => void;
 };
 
 function FamilyRow({
@@ -578,10 +664,12 @@ function FamilyRow({
   primarySeedHex,
   override,
   resolved,
+  stateAnchors,
   seedIssue,
   onEnable,
   onChange,
-  onRemove
+  onRemove,
+  onStateAnchorChange
 }: FamilyRowProps) {
   const rowId = useId();
   const colorKind = resolveTonalFamilyColorKind(id);
@@ -688,8 +776,81 @@ function FamilyRow({
         )}
       </div>
 
+      <div className={styles.stateAnchorCell}>
+        {(['light', 'dark'] as const).map((theme) => {
+          const rule = stateAnchors?.[theme] ?? { mode: 'auto' as const };
+          const resolvedReference = resolveStateReference(resolved, theme);
+          const lockedTone = rule.mode === 'locked' ? rule.tone : (resolvedReference?.tone ?? 50);
+
+          return (
+            <div className={styles.stateAnchorTheme} key={theme}>
+              <span className={styles.stateThemeLabel}>{theme === 'light' ? 'L' : 'D'}</span>
+              <label htmlFor={`${rowId}-${theme}-state-mode`}>
+                <span className={styles.visuallyHidden}>{capitalize(theme)} state anchor mode</span>
+                <select
+                  id={`${rowId}-${theme}-state-mode`}
+                  value={rule.mode}
+                  aria-label={`${id} ${theme} state anchor mode`}
+                  onChange={(event) => {
+                    const mode = event.target.value as TonalStateAnchorRule['mode'];
+                    onStateAnchorChange(
+                      theme,
+                      mode === 'locked' ? { mode, tone: lockedTone } : { mode }
+                    );
+                  }}
+                >
+                  {Object.entries(STATE_ANCHOR_MODE_LABELS).map(([mode, label]) => (
+                    <option key={mode} value={mode}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {rule.mode === 'locked' ? (
+                <label htmlFor={`${rowId}-${theme}-state-tone`}>
+                  <span className={styles.visuallyHidden}>
+                    {capitalize(theme)} locked state anchor position
+                  </span>
+                  <select
+                    className={styles.stateToneSelect}
+                    id={`${rowId}-${theme}-state-tone`}
+                    value={rule.tone}
+                    aria-label={`${id} ${theme} locked state anchor position`}
+                    onChange={(event) =>
+                      onStateAnchorChange(theme, {
+                        mode: 'locked',
+                        tone: Number(event.target.value) as KiskadeeTone
+                      })
+                    }
+                  >
+                    {REST_TONES.map((tone) => (
+                      <option key={tone} value={tone}>
+                        {theme === 'light' ? 'L' : 'D'}
+                        {tone}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+              <span
+                className={styles.resolvedStateAnchor}
+                title={
+                  resolvedReference
+                    ? `${capitalize(theme)} state resolves from ${formatStateReferenceSource(resolvedReference.source)}`
+                    : 'Generate a valid system to resolve this state anchor.'
+                }
+              >
+                {resolvedReference
+                  ? `${theme === 'light' ? 'L' : 'D'}${resolvedReference.tone}`
+                  : '—'}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
       <div className={styles.actions}>
-        {required ? (
+        {required || isPrimary ? (
           <label
             className={`${styles.overrideToggle}${isPrimary && !override ? ` ${styles.disabledToggle}` : ''}`}
             title={
@@ -713,6 +874,25 @@ function FamilyRow({
       </div>
     </div>
   );
+}
+
+function resolveStateReference(
+  family: ResolvedTonalFamily | undefined,
+  theme: 'light' | 'dark'
+): TonalStateReference | null {
+  if (!family) return null;
+  try {
+    return resolveTonalStateReference(family, theme);
+  } catch {
+    return null;
+  }
+}
+
+function formatStateReferenceSource(source: TonalStateReference['source']): string {
+  if (source === 'generated-anchor') return 'the generated anchor';
+  if (source === 'harmony-rest') return 'the harmony rest';
+  if (source === 'contrast-mirror') return 'the Light contrast mirror';
+  return 'a locked position';
 }
 
 function classifyPrimary(seedHex: string): MunsellHexClassification | null {

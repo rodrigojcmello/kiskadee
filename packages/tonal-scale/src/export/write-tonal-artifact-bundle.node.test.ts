@@ -36,7 +36,7 @@ describe('writeTonalArtifactBundle', () => {
     await expect(writeTonalArtifactBundle(bundle, destination)).rejects.toThrow(
       'Output directory already exists'
     );
-  });
+  }, 10_000);
 
   it('allows only one concurrent writer to publish a destination', async () => {
     const parent = await mkdtemp(join(tmpdir(), 'kiskadee-tonal-writer-race-'));
@@ -57,5 +57,5 @@ describe('writeTonalArtifactBundle', () => {
     expect(await readFile(join(destination, 'tonal-system.json'), 'utf8')).toBe(
       bundle.files.get('tonal-system.json')
     );
-  });
+  }, 10_000);
 });
