@@ -39,7 +39,7 @@ type ButtonThemeRecipe = {
     border: FunctionalToneLocator;
   };
   foreground: KiskadeeTone;
-  highForeground: KiskadeeTone;
+  highForeground: Record<ButtonColorRole, KiskadeeTone>;
   lowestDisabledForeground: KiskadeeTone;
 };
 
@@ -77,7 +77,12 @@ const BUTTON_TONAL_RECIPE = {
       border: { reference: 'vivid', offset: 0 }
     },
     foreground: 65,
-    highForeground: 0,
+    highForeground: {
+      'button.primary': 0,
+      'button.neutral': 0,
+      'button.destructive': 0,
+      'button.positive': 0
+    },
     lowestDisabledForeground: 16
   },
   dark: {
@@ -101,7 +106,12 @@ const BUTTON_TONAL_RECIPE = {
       border: { reference: 'vivid', offset: 0 }
     },
     foreground: 75,
-    highForeground: 100,
+    highForeground: {
+      'button.primary': 100,
+      'button.neutral': 0,
+      'button.destructive': 100,
+      'button.positive': 100
+    },
     lowestDisabledForeground: 35
   },
   darker: {
@@ -125,7 +135,12 @@ const BUTTON_TONAL_RECIPE = {
       border: { reference: 'vivid', offset: -1 }
     },
     foreground: 75,
-    highForeground: 100,
+    highForeground: {
+      'button.primary': 100,
+      'button.neutral': 0,
+      'button.destructive': 100,
+      'button.positive': 100
+    },
     lowestDisabledForeground: 35
   }
 } as const satisfies Record<ButtonRecipeTheme, ButtonThemeRecipe>;
@@ -219,7 +234,7 @@ export function createFluent2MicrosoftButtonSchema({
           }
         },
         high: {
-          rest: c('default', recipe.scale, 'button.neutral', recipe.highForeground),
+          rest: c('default', recipe.scale, 'button.neutral', recipe.highForeground[role]),
           disabled: {
             ref: filledDisabledForeground
           }

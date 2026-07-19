@@ -136,10 +136,11 @@ upstream Fluent token.
 ## Canonical Kiskadee Intent Recipe
 
 The active schema generates `primary`, `neutral`, `destructive`, and `positive` from one tonal
-recipe. The intent changes only the Layer 3 color role; theme, emphasis, state positions, disabled
-policy, and border policy remain identical. This is deliberate diagnostic infrastructure: when a
-new segment replaces the primitive scales, visual differences reveal the behavior of the recipe or
-the tonal family without hidden per-intent compensation.
+recipe. The intent changes the Layer 3 color role while theme, emphasis, state positions, disabled
+policy, and border policy remain identical. The only intent-specific value is the explicit
+Dark/Darker Neutral High foreground polarity documented below. This is deliberate diagnostic
+infrastructure: when a new segment replaces the primitive scales, visual differences reveal the
+behavior of the recipe or the tonal family without hidden surface compensation.
 
 Medium and High are expressed as ordinal offsets from each family's functional reference. The
 offset is an index movement through the irregular public grid, not numeric tone arithmetic.
@@ -158,11 +159,24 @@ Consequently, `L30 + 1` means L35 and `L55 + 1` means L60.
 | Darker Low/Lowest | transparent | D14 | D22 | D18 |
 
 Medium, Low, and Lowest foregrounds use the intent role at L65 in Light and D75 in Dark/Darker.
-High uses the white neutral cap, L0 or D100. Low uses the intent family's vivid reference, shifted
-by -1 only in Darker, with 50% opacity for its border. Lowest is borderless. Focus is intentionally absent
-from every palette map, so it inherits Rest while the global focus ring remains the accessibility
-affordance. Selected stays explicit even when it equals Rest because the schema must declare that
-the component supports the Selected state.
+High uses the white neutral cap, L0 or D100, except for Neutral High in Dark/Darker, which uses the
+absolute-black D0 cap. Low uses the intent family's vivid reference, shifted by -1 only in Darker,
+with 50% opacity for its border. Lowest is borderless. Focus is intentionally absent from every
+palette map, so it inherits Rest while the global focus ring remains the accessibility affordance.
+Selected stays explicit even when it equals Rest because the schema must declare that the component
+supports the Selected state.
+
+### Neutral High Foreground Polarity
+
+Black is the explicit exception to the shared High foreground rule. Its contrast-mirrored Dark
+`vivid` reference is a physically light neutral: D90 `#d3d6df`. Darker shifts that surface one
+public position to D85 `#c1c5cf`. White text would make both appearances visually unreadable, so
+Neutral High uses the absolute-black D0 cap in Dark and Darker. Light retains the white L0 cap over
+the physically dark L85 surface.
+
+This is a fixed preset decision, not a runtime contrast calculation. The authored recipe resolves
+the selected cap to a final HEX before the schema artifact is published. Primary, Destructive, and
+Positive High continue to use white in Dark and Darker.
 
 The recipe is currently canonical for this preset, but it is not claimed as an official Fluent
 cross-intent formula. Primary High is the upstream-calibrated reference; all other intent/emphasis
@@ -218,8 +232,9 @@ transparent with L16/D35 foreground. Every border state is transparent.
 An earlier implementation tuned Neutral independently: Medium used L5/L7/L10 and D16/D20/D10;
 High used L85/L90/L95 and D85/D90/D75; Low and Lowest followed the Secondary/Subtle source tables
 above. That approach was retired because it hid whether visual differences came from the Button
-contract or the neutral tonal scale. The active schema now applies the canonical recipe unchanged
-to `button.neutral`. These historical positions remain here only to preserve the design evidence.
+contract or the neutral tonal scale. The active schema now applies the canonical surface and state
+recipe unchanged to `button.neutral`; only the explicit Dark/Darker High foreground polarity differs.
+These historical positions remain here only to preserve the design evidence.
 
 ## Kiskadee Extensions: Destructive And Positive
 
@@ -328,9 +343,10 @@ changing the asset scales.
 
 ## Schema Mapping
 
-- `BUTTON_TONAL_RECIPE` is the single source of tonal positions for every Button intent.
+- `BUTTON_TONAL_RECIPE` is the single source of tonal positions and explicit High foreground caps
+  for every Button intent.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
-  `button.destructive`, or `button.positive`; it does not contain intent-specific positions.
+  `button.destructive`, or `button.positive`; it does not calculate foreground contrast.
 - `e1.boxColor.*.medium.selected` explicitly reuses Medium Rest in all three themes.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
@@ -359,9 +375,10 @@ changing the asset scales.
 - Dark support in this schema covers Primary, Neutral, Destructive, and Positive Button intents.
   It does not imply Dark support for the preset's other components.
 - Darker is a Kiskadee-only Button theme derived from Dark; it is not an upstream Fluent mode.
-- Every Neutral appearance in the active schema is a Kiskadee extension using the shared recipe.
-  The official Secondary, Outline, Subtle, and Transparent values remain documented as source
-  evidence rather than active intent-specific tuning.
+- Every Neutral appearance in the active schema is a Kiskadee extension using the shared surface
+  and state recipe. Neutral High explicitly uses the D0 foreground cap in Dark/Darker because its
+  contrast-mirrored `vivid` surface is physically light. The official Secondary, Outline, Subtle,
+  and Transparent values remain documented as source evidence rather than active surface tuning.
 - Primary Medium, Low, and Lowest are Kiskadee extensions. Only Primary High maps to an official
   Fluent Primary Button appearance.
 - Destructive and Positive use official Fluent semantic color families, but all four Button
@@ -371,5 +388,6 @@ changing the asset scales.
 
 - Revisit whether Outline, Subtle, and Transparent need separate structural capabilities instead
   of sharing `neutral.lowest`.
-- Exercise the shared recipe with additional segments before introducing any intent-specific tonal
-  exception. A mismatch must first be classified as a recipe defect or a tonal-scale defect.
+- Exercise the shared recipe with additional segments before introducing any intent-specific
+  surface-position exception. A mismatch must first be classified as a recipe defect or a
+  tonal-scale defect.

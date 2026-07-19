@@ -186,7 +186,9 @@ The first integration is the Fluent Button documented in
 Black, Cranberry, and Green generated scales. Primary High anchors the shared
 tonal recipe to each family's `vivid` reference, while Medium begins at each
 family's `subtle` reference. Primary, Neutral, Destructive, and Positive reuse
-the same ordinal state recipe without intent-specific tonal compensation.
+the same ordinal surface-state recipe without intent-specific tonal compensation.
+Neutral High has one component-level foreground exception: its physically light
+Dark/Darker `vivid` surfaces use the absolute-black D0 cap instead of white.
 
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
@@ -194,5 +196,5 @@ authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
 `yellowLike.v1`, and Orange to `yellowLike.v2`. Berry remains available as the
 Purple primitive because its official role is Out of office, not a generic
 Kiskadee `secondary` semantic. The checked-in bundle, mapping, and promoted
-assets all use generator `0.4.0`. No Positive- or Neutral-only Button
+assets all use generator `0.4.0`. No Positive- or Neutral-only surface-track
 compensation was introduced. Other components remain deferred.
