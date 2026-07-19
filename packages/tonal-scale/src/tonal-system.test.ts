@@ -11,6 +11,7 @@ import {
 } from './kiskadee-tonal-scale';
 import { classifyMunsellHex } from './munsell-oklch';
 import {
+  ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type KiskadeeTonalSystemResult,
   MUNSELL_HARMONY_V1_PARAMETERS,
@@ -100,9 +101,63 @@ function expectSupportAlignmentContract(result: ResolvedKiskadeeTonalSystem): vo
         profile: result.source.tonalProfile
       });
 
-      if (family.id === primary.id || family.colorKind === 'achromatic') {
+      if (family.id === primary.id) {
         expect(resolution.surfaceTrackAlignment, `${family.id} ${theme}`).toBeNull();
+        expect(resolution.achromaticSurfaceDistanceAlignment, `${family.id} ${theme}`).toBeNull();
         expect(resolution.scale, `${family.id} ${theme}`).toEqual(baseline);
+        continue;
+      }
+
+      if (family.colorKind === 'achromatic') {
+        const diagnostics = resolution.achromaticSurfaceDistanceAlignment;
+        expect(resolution.surfaceTrackAlignment, `${family.id} ${theme}`).toBeNull();
+        expect(diagnostics, `${family.id} ${theme}`).toMatchObject({
+          contract: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract,
+          reference: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference
+        });
+        expect(diagnostics?.adjustedToneCount).toBe(diagnostics?.adjustedTones.length);
+        expect(diagnostics?.protectedTones).toEqual(expect.arrayContaining([0, 100]));
+
+        for (let index = 0; index < resolution.scale.colors.length; index += 1) {
+          const color = resolution.scale.colors[index];
+          const baselineColor = baseline.colors[index];
+          if (!color || !baselineColor) continue;
+
+          if (theme === 'light') {
+            expect(
+              color.oklch.l,
+              `${family.id} ${theme} ${color.tone} surface direction`
+            ).toBeLessThanOrEqual(baselineColor.oklch.l + 1e-7);
+          } else {
+            expect(
+              color.oklch.l,
+              `${family.id} ${theme} ${color.tone} surface direction`
+            ).toBeGreaterThanOrEqual(baselineColor.oklch.l - 1e-7);
+          }
+          expect(color.oklch.c, `${family.id} ${theme} ${color.tone} chroma`).toBeLessThanOrEqual(
+            baselineColor.oklch.c +
+              ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.chromaQuantizationTolerance
+          );
+          if (baselineColor.hsl.s <= 1e-7) {
+            expect(
+              color.hsl.s,
+              `${family.id} ${theme} ${color.tone} achromatic axis`
+            ).toBeLessThanOrEqual(1e-7);
+          }
+          if (color.flags.isCap || color.tone === resolution.scale.anchorTone) {
+            expect(color.hex, `${family.id} ${theme} ${color.tone} protected byte`).toBe(
+              baselineColor.hex
+            );
+          }
+        }
+
+        expect(resolution.scale.diagnostics.valid, `${family.id} ${theme} valid`).toBe(true);
+        expect(resolution.scale.diagnostics.monotonic, `${family.id} ${theme} monotonic`).toBe(
+          true
+        );
+        expect(resolution.scale.diagnostics.duplicateTones, `${family.id} ${theme} unique`).toEqual(
+          []
+        );
         continue;
       }
 
@@ -239,12 +294,20 @@ describe('generateKiskadeeTonalSystem v3', () => {
       expect(primary.themes[theme].scale, `Primary ${theme}`).toEqual(
         generateKiskadeeScale({ seedHex: '#0064b4', theme, profile: 'muted-darks' })
       );
-      expect(black.themes[theme].scale, `Black ${theme}`).toEqual(
-        generateKiskadeeScale({ seedHex: '#21242d', theme, profile: 'muted-darks' })
-      );
       expect(primary.themes[theme].surfaceTrackAlignment).toBeNull();
       expect(black.themes[theme].surfaceTrackAlignment).toBeNull();
+      expect(black.themes[theme].achromaticSurfaceDistanceAlignment).toMatchObject({
+        contract: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract,
+        reference: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference,
+        restorationCount: 0
+      });
+      const blackAnchorTone = black.themes[theme].scale.anchorTone;
+      if (blackAnchorTone === null) throw new Error(`Expected a Black ${theme} anchor.`);
+      expect(resolveScaleTone(black.themes[theme].scale, blackAnchorTone).hex).toBe('#21242d');
     }
+
+    expect(black.themes.light.restColor).toMatchObject({ tone: 50, hex: '#565a66' });
+    expect(black.themes.dark.restColor).toMatchObject({ tone: 40, hex: '#666a76' });
 
     expect(resolveScaleTone(primary.themes.light.scale, 4).hex).toBe('#e1efff');
     expect(resolveScaleTone(red.themes.light.scale, 4).hex).toBe('#ffe7e4');
@@ -577,9 +640,9 @@ describe('generateKiskadeeTonalSystem v3', () => {
       }
     }
 
-    expect(resolveFamily(result, 'r.red.v1').themes.light.restColor.hex).toBe('#fb7977');
-    expect(resolveFamily(result, 'yr.orange.v1').themes.light.restColor.hex).toBe('#f0891f');
-    expect(resolveFamily(result, 'rp.magenta.v1').themes.light.restColor.hex).toBe('#f96db7');
+    expect(resolveFamily(result, 'r.red.v1').themes.light.restColor.hex).toBe('#ff6d68');
+    expect(resolveFamily(result, 'yr.orange.v1').themes.light.restColor.hex).toBe('#f97740');
+    expect(resolveFamily(result, 'rp.magenta.v1').themes.light.restColor.hex).toBe('#fb63ad');
   });
 
   it.each([
@@ -594,8 +657,8 @@ describe('generateKiskadeeTonalSystem v3', () => {
       label: 'very dark',
       seedHex: '#120000',
       expectedRest: { light: 99, dark: 1 },
-      expectedStatus: 'pass',
-      expectedIssue: null
+      expectedStatus: 'review',
+      expectedIssue: 'HARMONY_REVIEW'
     }
   ])('resolves a $label primary exactly and exposes its expected diagnostics', ({
     seedHex,
@@ -672,9 +735,14 @@ describe('generateKiskadeeTonalSystem v3', () => {
     expect(brown.themes.light.restColor.oklch.c).toBeLessThan(
       orange.themes.light.restColor.oklch.c
     );
-    expect(
-      brown.themes.light.restColor.oklch.c / orange.themes.light.restColor.oklch.c
-    ).toBeCloseTo(MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio, 1);
+    for (const theme of THEMES) {
+      const brownPeak = brown.themes[theme].harmony?.vividPeakGlobalChromaUtilization;
+      const orangePeak = orange.themes[theme].harmony?.vividPeakGlobalChromaUtilization;
+      if (brownPeak === undefined || orangePeak === undefined) {
+        throw new Error(`Expected ${theme} vivid-peak harmony diagnostics.`);
+      }
+      expect(brownPeak / orangePeak).toBeCloseTo(MUNSELL_HARMONY_V1_PARAMETERS.brownChromaRatio, 2);
+    }
   });
 
   it('auto-selects yr.brown.v1 for the Brown prototype and can lock that classification', () => {
@@ -752,6 +820,28 @@ describe('generateKiskadeeTonalSystem v3', () => {
     const failed = generateKiskadeeTonalSystem(invalid);
     expect(failed.valid).toBe(false);
     expect(failed.issues.map((issue) => issue.code)).toContain('ACHROMATIC_CHROMA_TOO_HIGH');
+  });
+
+  it('keeps a pure Black override on the achromatic axis after surface-distance alignment', () => {
+    const recipe = createRecipe();
+    recipe.overrides = [
+      {
+        id: 'n.black.v1',
+        seedHex: '#000000',
+        policies: { light: 'source-exact', dark: 'source-exact' }
+      }
+    ];
+    const result = generateKiskadeeTonalSystem(recipe);
+    expectResolved(result);
+    const black = resolveFamily(result, 'n.black.v1');
+
+    for (const theme of THEMES) {
+      expect(black.themes[theme].achromaticSurfaceDistanceAlignment).not.toBeNull();
+      for (const color of black.themes[theme].scale.colors) {
+        expect(color.hsl.s, `${theme} ${color.tone} saturation`).toBeLessThanOrEqual(1e-7);
+        expect(color.oklch.c, `${theme} ${color.tone} chroma`).toBeLessThanOrEqual(1e-7);
+      }
+    }
   });
 
   it('rejects overrides whose seed belongs to another Munsell sector', () => {

@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import { KISKADEE_TONES } from '../kiskadee-tonal-scale';
 import {
+  ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
   SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS
@@ -49,7 +50,7 @@ describe('tonal artifact bundle v3', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.3.1');
+    expect(bundle.manifest.generator.version).toBe('0.3.2');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
@@ -133,6 +134,17 @@ describe('tonal artifact bundle v3', () => {
     expect(blue?.themes.dark.surfaceTrackAlignment).toBeNull();
     expect(black?.themes.light.surfaceTrackAlignment).toBeNull();
     expect(black?.themes.dark.surfaceTrackAlignment).toBeNull();
+    for (const theme of ['light', 'dark'] as const) {
+      const alignment = black?.themes[theme].achromaticSurfaceDistanceAlignment;
+      expect(alignment).toMatchObject({
+        contract: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.contract,
+        reference: ACHROMATIC_SURFACE_DISTANCE_ALIGNMENT_V1_PARAMETERS.reference
+      });
+      expect(alignment?.adjustedToneCount).toBe(alignment?.adjustedTones.length);
+      expect(alignment?.protectedTones).toEqual(expect.arrayContaining([0, 100]));
+      expect(alignment?.rest.canonicalTargetDistance).toBeGreaterThanOrEqual(0);
+      expect(alignment?.rest.effectiveTargetDistance).toBeGreaterThanOrEqual(0);
+    }
 
     const green = bundle.diagnostics.families.find((family) => family.familyId === 'g.green.v1');
     for (const theme of ['light', 'dark'] as const) {

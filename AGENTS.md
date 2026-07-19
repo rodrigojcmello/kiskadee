@@ -39,7 +39,6 @@ keep task-specific workflows inside skills.
 - Use ASCII by default unless the target file already uses non-ASCII content.
 - Keep code, identifiers, comments, and logs in English.
 - Keep chat responses in Portuguese.
-- Do not add or modify unit tests unless the user explicitly asks for it.
 - Prefer `rg` / `rg --files` for search. If unavailable, use the closest fallback.
 - Prefer minimal edits over broad rewrites.
 - Before editing any `*.structural.scss` file, or any structural Sass/CSS in `packages/components/react`, read
