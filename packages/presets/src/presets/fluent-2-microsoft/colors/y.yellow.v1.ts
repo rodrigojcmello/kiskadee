@@ -1,24 +1,34 @@
-import type { StaticPrimitiveColorAsset } from '@kiskadee/core';
+import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
 // Promoted from the approved Fluent tonal artifact:
 // docs/design-systems/fluent-2-microsoft/colors/generated/colors/y.yellow.v1.json
 export default {
   kind: 'static',
+  functionalReferences: {
+    light: {
+      subtle: 4,
+      vivid: 18
+    },
+    dark: {
+      subtle: 4,
+      vivid: 40
+    }
+  },
   scales: {
     light: {
       0: '#ffffff',
       1: '#fffaf3',
-      2: '#fff5e7',
-      3: '#fff0da',
-      4: '#ffeacc',
-      5: '#ffe5bf',
-      6: '#ffe0b2',
-      7: '#ffdaa4',
-      8: '#ffd391',
-      9: '#ffcd81',
-      10: '#ffc76e',
-      12: '#fcbf5a',
-      14: '#f6b544',
+      2: '#fdf5ea',
+      3: '#fbf0e0',
+      4: '#faebd7',
+      5: '#f8e6ce',
+      6: '#f6e2c4',
+      7: '#f5ddba',
+      8: '#f3d6ac',
+      9: '#f3d19d',
+      10: '#f5ca89',
+      12: '#f7c068',
+      14: '#f6b545',
       16: '#f0ac2b',
       18: '#eaa300',
       20: '#e09c00',
@@ -77,9 +87,9 @@ export default {
       80: '#d1af7c',
       85: '#e0c193',
       90: '#eed3ac',
-      95: '#fce9cc',
+      95: '#f9ead3',
       99: '#fffbf4',
       100: '#ffffff'
     }
   }
-} as const satisfies StaticPrimitiveColorAsset;
+} as const satisfies StaticPrimitiveTonalColorAsset;

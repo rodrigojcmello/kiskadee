@@ -23,7 +23,6 @@
       "status": "pass",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -42,6 +41,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#0064b4",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#0b1929",
+              "source": "surface-relative",
+              "surfaceContrast": 1.18530085,
+              "surfaceContrastError": 0,
+              "surfaceDeltaE": 0.21319429,
+              "surfaceDeltaEError": 0,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#0064b4",
+              "source": "generated-anchor",
+              "surfaceContrast": 3.4819261,
+              "surfaceDeltaE": 0.52164248,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#0064b4",
             "tone": 40
@@ -298,16 +315,10 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#0064b4",
-            "source": "generated-anchor",
-            "tone": 40
-          },
           "status": "pass",
           "surfaceTrackAlignment": null
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -326,6 +337,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#0064b4",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#e1efff",
+              "source": "surface-relative",
+              "surfaceContrast": 1.16717821,
+              "surfaceContrastError": 0,
+              "surfaceDeltaE": 0.0596463,
+              "surfaceDeltaEError": 0,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#0064b4",
+              "source": "generated-anchor",
+              "surfaceContrast": 6.03114466,
+              "surfaceDeltaE": 0.52156701,
+              "tone": 50
+            }
+          },
           "functionalRest": {
             "hex": "#0064b4",
             "tone": 50
@@ -565,11 +594,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#0064b4",
-            "source": "generated-anchor",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": null
         }
@@ -598,7 +622,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -617,6 +640,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#038387",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#091b1c",
+              "source": "surface-relative",
+              "surfaceContrast": 1.18515664,
+              "surfaceContrastError": 0.00012168,
+              "surfaceDeltaE": 0.20867096,
+              "surfaceDeltaEError": 0.00452332,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#006d71",
+              "source": "harmony-rest",
+              "surfaceContrast": 3.42590657,
+              "surfaceDeltaE": 0.49274057,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#006d71",
             "tone": 40
@@ -876,11 +917,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#006d71",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 2,
@@ -903,7 +939,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -922,6 +957,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#038387",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#d6f4f6",
+              "source": "surface-relative",
+              "surfaceContrast": 1.15828417,
+              "surfaceContrastError": 0.0076493,
+              "surfaceDeltaE": 0.06232454,
+              "surfaceDeltaEError": 0.00267824,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#006f72",
+              "source": "harmony-rest",
+              "surfaceContrast": 5.97141093,
+              "surfaceDeltaE": 0.51518396,
+              "tone": 50
+            }
+          },
           "functionalRest": {
             "hex": "#006f72",
             "tone": 50
@@ -1181,11 +1234,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#006f72",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 6,
@@ -1236,7 +1284,6 @@
       "status": "pass",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -1255,6 +1302,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#087209",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#0b1b0a",
+              "source": "surface-relative",
+              "surfaceContrast": 1.17538558,
+              "surfaceContrastError": 0.00840038,
+              "surfaceDeltaE": 0.20605497,
+              "surfaceDeltaEError": 0.00713932,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#087209",
+              "source": "generated-anchor",
+              "surfaceContrast": 3.42119491,
+              "surfaceDeltaE": 0.50512003,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#087209",
             "tone": 40
@@ -1511,11 +1576,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#087209",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 4,
@@ -1539,7 +1599,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -1558,6 +1617,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#107c10",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#e2f3e0",
+              "source": "surface-relative",
+              "surfaceContrast": 1.15827875,
+              "surfaceContrastError": 0.00765398,
+              "surfaceDeltaE": 0.06192136,
+              "surfaceDeltaEError": 0.00227507,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#107c10",
+              "source": "generated-anchor",
+              "surfaceContrast": 5.36730984,
+              "surfaceDeltaE": 0.51682988,
+              "tone": 45
+            }
+          },
           "functionalRest": {
             "hex": "#09760a",
             "tone": 50
@@ -1797,11 +1874,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#09760a",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 11,
@@ -1863,7 +1935,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": "end",
             "diagnostics": [
@@ -1888,6 +1959,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#7fba00",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#101b03",
+              "source": "surface-relative",
+              "surfaceContrast": 1.18011987,
+              "surfaceContrastError": 0.00438061,
+              "surfaceDeltaE": 0.20982031,
+              "surfaceDeltaEError": 0.00337398,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#4a6b14",
+              "source": "harmony-rest",
+              "surfaceContrast": 3.40434857,
+              "surfaceDeltaE": 0.49894033,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#4a6b14",
             "tone": 40
@@ -2147,11 +2236,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#4a6b14",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 4,
@@ -2176,7 +2260,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": "end",
             "diagnostics": [
@@ -2201,6 +2284,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#7fba00",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#e7f2dc",
+              "source": "surface-relative",
+              "surfaceContrast": 1.1581671,
+              "surfaceContrastError": 0.00775038,
+              "surfaceDeltaE": 0.06160081,
+              "surfaceDeltaEError": 0.00195451,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#4b6d13",
+              "source": "harmony-rest",
+              "surfaceContrast": 6.00681299,
+              "surfaceDeltaE": 0.52320181,
+              "tone": 50
+            }
+          },
           "functionalRest": {
             "hex": "#4b6d13",
             "tone": 50
@@ -2460,11 +2561,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#4b6d13",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 12,
@@ -2502,78 +2598,31 @@
       "classification": null,
       "familyId": "n.black.v1",
       "seedOrigin": "override",
-      "status": "review",
+      "status": "pass",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": {
-            "adjustedToneCount": 28,
-            "adjustedTones": [
-              2,
-              3,
-              4,
-              5,
-              9,
-              10,
-              12,
-              14,
-              16,
-              18,
-              20,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              85,
-              90
-            ],
-            "appliedStrength": 1,
-            "contract": "kiskadee-achromatic-surface-distance-v1",
-            "maxLightnessAdjustment": 3.1654158,
-            "maxRemainingDistanceDeficit": 0.00312327,
-            "protectedTones": [
-              0,
-              7,
-              100
-            ],
-            "reference": "chromatic-base-family-median-delta-e-ok",
-            "referenceFamilyIds": [
-              "b.blue.v1",
-              "bg.teal.v1",
-              "g.green.v1",
-              "gy.lime.v1",
-              "p.purple.v1",
-              "pb.indigo.v1",
-              "r.red.v1",
-              "rp.magenta.v1",
-              "y.yellow.v1",
-              "yr.orange.v1"
-            ],
-            "rest": {
-              "baselineDistance": 0.49376369,
-              "baselineLightness": 49.33680513,
-              "canonicalTargetDistance": 0.52468358,
-              "effectiveTargetDistance": 0.52468358,
-              "finalDistance": 0.52538218,
-              "finalLightness": 52.50222093
-            },
-            "restorationCount": 0,
-            "surfaceHex": "#000000"
-          },
           "classification": null,
           "effectiveSeedHex": "#21242d",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#17181b",
+              "source": "surface-relative",
+              "surfaceContrast": 1.18291162,
+              "surfaceContrastError": 0.00201775,
+              "surfaceDeltaE": 0.20932742,
+              "surfaceDeltaEError": 0.00386687,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#d3d6df",
+              "source": "contrast-mirror",
+              "surfaceContrast": 14.45394632,
+              "surfaceDeltaE": 0.8765205,
+              "tone": 90
+            }
+          },
           "functionalRest": {
-            "hex": "#666a76",
+            "hex": "#5d616d",
             "tone": 40
           },
           "generatedAnchor": {
@@ -2598,7 +2647,7 @@
             },
             "anchorChromaProtected": true,
             "chromaContinuityRelaxed": false,
-            "chromaPeakTone": 30,
+            "chromaPeakTone": 65,
             "contrastFailures": [],
             "darkSurfaceContrastFailures": [],
             "darkSurfaceContrastMonotonic": true,
@@ -2608,27 +2657,27 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.03954209
+                  "value": 0.0359902
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.02734623
+                  "value": 0.02749093
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.02259502
+                  "value": 0.01832984
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.0154435
+                  "value": 0.01868876
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01172534
+                  "value": 0.01586625
                 },
                 {
                   "fromTone": 6,
@@ -2643,127 +2692,127 @@
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01542323
+                  "value": 0.01224549
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01308841
+                  "value": 0.00915297
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.02342019
+                  "value": 0.0196105
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.01951358
+                  "value": 0.01576566
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.01416608
+                  "value": 0.01322563
                 },
                 {
                   "fromTone": 16,
                   "toTone": 18,
-                  "value": 0.01442427
+                  "value": 0.01159437
                 },
                 {
                   "fromTone": 18,
                   "toTone": 20,
-                  "value": 0.01136107
+                  "value": 0.01150175
                 },
                 {
                   "fromTone": 20,
                   "toTone": 22,
-                  "value": 0.01550813
+                  "value": 0.01193943
                 },
                 {
                   "fromTone": 22,
                   "toTone": 24,
-                  "value": 0.01116942
+                  "value": 0.01132321
                 },
                 {
                   "fromTone": 24,
                   "toTone": 26,
-                  "value": 0.0147773
+                  "value": 0.01124257
                 },
                 {
                   "fromTone": 26,
                   "toTone": 28,
-                  "value": 0.01354836
+                  "value": 0.01374335
                 },
                 {
                   "fromTone": 28,
                   "toTone": 30,
-                  "value": 0.01301747
+                  "value": 0.0115807
                 },
                 {
                   "fromTone": 30,
                   "toTone": 35,
-                  "value": 0.04266151
+                  "value": 0.04000755
                 },
                 {
                   "fromTone": 35,
                   "toTone": 40,
-                  "value": 0.03165575
+                  "value": 0.02856629
                 },
                 {
                   "fromTone": 40,
                   "toTone": 45,
-                  "value": 0.02389358
+                  "value": 0.02734021
                 },
                 {
                   "fromTone": 45,
                   "toTone": 50,
-                  "value": 0.02714198
+                  "value": 0.02866525
                 },
                 {
                   "fromTone": 50,
                   "toTone": 55,
-                  "value": 0.02836258
+                  "value": 0.03085283
                 },
                 {
                   "fromTone": 55,
                   "toTone": 60,
-                  "value": 0.02500225
+                  "value": 0.02628784
                 },
                 {
                   "fromTone": 60,
                   "toTone": 65,
-                  "value": 0.02446393
+                  "value": 0.02468832
                 },
                 {
                   "fromTone": 65,
                   "toTone": 70,
-                  "value": 0.02359268
+                  "value": 0.02624912
                 },
                 {
                   "fromTone": 70,
                   "toTone": 75,
-                  "value": 0.05837122
+                  "value": 0.05554716
                 },
                 {
                   "fromTone": 75,
                   "toTone": 80,
-                  "value": 0.05063858
+                  "value": 0.05736737
                 },
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.04984179
+                  "value": 0.05320671
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.04604861
+                  "value": 0.05314535
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.05886778
+                  "value": 0.06420519
                 },
                 {
                   "fromTone": 95,
@@ -2776,7 +2825,7 @@
                 "chromaSlopeChange": 0.00261169,
                 "incomingChromaSlope": 0.00283297,
                 "incomingDeltaE": 0.0189728,
-                "localRhythmDeltaE": 0.01425582,
+                "localRhythmDeltaE": 0.01405587,
                 "normalizedChromaTurn": 0.09799517,
                 "outgoingChromaSlope": 0.00022128,
                 "outgoingDeltaE": 0.01150027,
@@ -2790,18 +2839,18 @@
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.05886778,
+              "maxAdjacentDeltaE": 0.06420519,
               "reviewRequired": false
             },
             "error": null,
             "gamutMappedCount": 0,
             "maxGamutChromaLoss": 0,
-            "maxLocalChromaProminence": 0.00205788,
-            "maxNominalDeviation": 3.16826286,
+            "maxLocalChromaProminence": 0.00089979,
+            "maxNominalDeviation": 0.21495786,
             "maxProfileChromaReduction": 0.01067635,
-            "meanNominalDeviation": 1.37169329,
+            "meanNominalDeviation": 0.06845469,
             "meanProfileChromaReduction": 0.00141051,
-            "minLightnessDelta": 1.11684086,
+            "minLightnessDelta": 0.90365729,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 6,
@@ -2811,83 +2860,32 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#666a76",
-            "source": "harmony-rest",
-            "tone": 40
-          },
-          "status": "review",
+          "status": "pass",
           "surfaceTrackAlignment": null
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": {
-            "adjustedToneCount": 27,
-            "adjustedTones": [
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              12,
-              14,
-              16,
-              18,
-              20,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75
-            ],
-            "appliedStrength": 1,
-            "contract": "kiskadee-achromatic-surface-distance-v1",
-            "maxLightnessAdjustment": 4.56882451,
-            "maxRemainingDistanceDeficit": 0,
-            "protectedTones": [
-              0,
-              85,
-              100
-            ],
-            "reference": "chromatic-base-family-median-delta-e-ok",
-            "referenceFamilyIds": [
-              "b.blue.v1",
-              "bg.teal.v1",
-              "g.green.v1",
-              "gy.lime.v1",
-              "p.purple.v1",
-              "pb.indigo.v1",
-              "r.red.v1",
-              "rp.magenta.v1",
-              "y.yellow.v1",
-              "yr.orange.v1"
-            ],
-            "rest": {
-              "baselineDistance": 0.5078858,
-              "baselineLightness": 49.2514049,
-              "canonicalTargetDistance": 0.53012771,
-              "effectiveTargetDistance": 0.53012771,
-              "finalDistance": 0.53197995,
-              "finalLightness": 46.83973048
-            },
-            "restorationCount": 0,
-            "surfaceHex": "#ffffff"
-          },
           "classification": null,
           "effectiveSeedHex": "#21242d",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#ebedf3",
+              "source": "surface-relative",
+              "surfaceContrast": 1.17054761,
+              "surfaceContrastError": 0.00288263,
+              "surfaceDeltaE": 0.05434426,
+              "surfaceDeltaEError": 0.00530204,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#21242d",
+              "source": "generated-anchor",
+              "surfaceContrast": 15.4991908,
+              "surfaceDeltaE": 0.73898331,
+              "tone": 85
+            }
+          },
           "functionalRest": {
-            "hex": "#565a66",
+            "hex": "#5c616d",
             "tone": 50
           },
           "generatedAnchor": {
@@ -2927,142 +2925,142 @@
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.01879242
+                  "value": 0.01279532
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.01712389
+                  "value": 0.01481834
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01570981
+                  "value": 0.01266834
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01296672
+                  "value": 0.0121192
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01502278
+                  "value": 0.01497265
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.02072336
+                  "value": 0.01526773
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01598526
+                  "value": 0.01509736
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01759276
+                  "value": 0.01516075
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.02574289
+                  "value": 0.01937321
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.03460938
+                  "value": 0.02805143
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.02914059
+                  "value": 0.02486779
                 },
                 {
                   "fromTone": 16,
                   "toTone": 18,
-                  "value": 0.02708636
+                  "value": 0.02429691
                 },
                 {
                   "fromTone": 18,
                   "toTone": 20,
-                  "value": 0.02709345
+                  "value": 0.02351555
                 },
                 {
                   "fromTone": 20,
                   "toTone": 22,
-                  "value": 0.0267033
+                  "value": 0.02868983
                 },
                 {
                   "fromTone": 22,
                   "toTone": 24,
-                  "value": 0.02640984
+                  "value": 0.02356828
                 },
                 {
                   "fromTone": 24,
                   "toTone": 26,
-                  "value": 0.02588176
+                  "value": 0.02543857
                 },
                 {
                   "fromTone": 26,
                   "toTone": 28,
-                  "value": 0.02198356
+                  "value": 0.0239961
                 },
                 {
                   "fromTone": 28,
                   "toTone": 30,
-                  "value": 0.01929104
+                  "value": 0.02562979
                 },
                 {
                   "fromTone": 30,
                   "toTone": 35,
-                  "value": 0.02661938
+                  "value": 0.03040065
                 },
                 {
                   "fromTone": 35,
                   "toTone": 40,
-                  "value": 0.02468987
+                  "value": 0.02775065
                 },
                 {
                   "fromTone": 40,
                   "toTone": 45,
-                  "value": 0.03131857
+                  "value": 0.03086876
                 },
                 {
                   "fromTone": 45,
                   "toTone": 50,
-                  "value": 0.02627937
+                  "value": 0.03293122
                 },
                 {
                   "fromTone": 50,
                   "toTone": 55,
-                  "value": 0.02895001
+                  "value": 0.03217736
                 },
                 {
                   "fromTone": 55,
                   "toTone": 60,
-                  "value": 0.02486102
+                  "value": 0.03188804
                 },
                 {
                   "fromTone": 60,
                   "toTone": 65,
-                  "value": 0.03032559
+                  "value": 0.03380058
                 },
                 {
                   "fromTone": 65,
                   "toTone": 70,
-                  "value": 0.02804308
+                  "value": 0.03408686
                 },
                 {
                   "fromTone": 70,
                   "toTone": 75,
-                  "value": 0.0301759
+                  "value": 0.03144948
                 },
                 {
                   "fromTone": 75,
                   "toTone": 80,
-                  "value": 0.0318129
+                  "value": 0.03482778
                 },
                 {
                   "fromTone": 80,
@@ -3090,7 +3088,7 @@
                 "chromaSlopeChange": 0.00204092,
                 "incomingChromaSlope": -0.00037251,
                 "incomingDeltaE": 0.03318996,
-                "localRhythmDeltaE": 0.03161032,
+                "localRhythmDeltaE": 0.03313863,
                 "normalizedChromaTurn": 0.12211639,
                 "outgoingChromaSlope": -0.00241342,
                 "outgoingDeltaE": 0.03129655,
@@ -3110,12 +3108,12 @@
             "error": null,
             "gamutMappedCount": 0,
             "maxGamutChromaLoss": 0,
-            "maxLocalChromaProminence": 0.00104129,
-            "maxNominalDeviation": 4.53973785,
+            "maxLocalChromaProminence": 0.00096462,
+            "maxNominalDeviation": 0.96167918,
             "maxProfileChromaReduction": 0.01055062,
-            "meanNominalDeviation": 1.91496725,
+            "meanNominalDeviation": 0.08130862,
             "meanProfileChromaReduction": 0.00046061,
-            "minLightnessDelta": 1.25807123,
+            "minLightnessDelta": 1.21191574,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 2,
@@ -3125,11 +3123,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#565a66",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": null
         }
@@ -3164,7 +3157,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": "end",
             "diagnostics": [
@@ -3189,6 +3181,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#a62d99",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#230d20",
+              "source": "surface-relative",
+              "surfaceContrast": 1.14989142,
+              "surfaceContrastError": 0.0303291,
+              "surfaceDeltaE": 0.20772694,
+              "surfaceDeltaEError": 0.00546735,
+              "tone": 3
+            },
+            "vivid": {
+              "hex": "#a62d99",
+              "source": "generated-anchor",
+              "surfaceContrast": 3.45673419,
+              "surfaceDeltaE": 0.5582833,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#a62d99",
             "tone": 40
@@ -3445,11 +3455,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#a62d99",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
@@ -3472,7 +3477,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": "end",
             "diagnostics": [
@@ -3497,6 +3501,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#c239b3",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#fbe6f6",
+              "source": "surface-relative",
+              "surfaceContrast": 1.18300956,
+              "surfaceContrastError": 0.01347262,
+              "surfaceDeltaE": 0.06191732,
+              "surfaceDeltaEError": 0.00227103,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#c239b3",
+              "source": "generated-anchor",
+              "surfaceContrast": 4.63570793,
+              "surfaceDeltaE": 0.46406047,
+              "tone": 35
+            }
+          },
           "functionalRest": {
             "hex": "#982b8c",
             "tone": 50
@@ -3736,11 +3758,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#982b8c",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 11,
@@ -3796,7 +3813,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -3815,6 +3831,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#2f39dc",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#0c1334",
+              "source": "surface-relative",
+              "surfaceContrast": 1.15836814,
+              "surfaceContrastError": 0.02298439,
+              "surfaceDeltaE": 0.21340693,
+              "surfaceDeltaEError": 0.00021264,
+              "tone": 3
+            },
+            "vivid": {
+              "hex": "#394bee",
+              "source": "harmony-rest",
+              "surfaceContrast": 3.41501155,
+              "surfaceDeltaE": 0.56770782,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#394bee",
             "tone": 40
@@ -4097,11 +4131,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#394bee",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -4121,7 +4150,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -4140,6 +4168,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#2e33e3",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#e7edff",
+              "source": "surface-relative",
+              "surfaceContrast": 1.16956071,
+              "surfaceContrastError": 0.00203917,
+              "surfaceDeltaE": 0.05873393,
+              "surfaceDeltaEError": 0.00091236,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#333eed",
+              "source": "harmony-rest",
+              "surfaceContrast": 6.87916475,
+              "surfaceDeltaE": 0.56857598,
+              "tone": 50
+            }
+          },
           "functionalRest": {
             "hex": "#333eed",
             "tone": 50
@@ -4422,11 +4468,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#333eed",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -4470,7 +4511,6 @@
       "status": "pass",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -4489,6 +4529,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#c50f1f",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#290a09",
+              "source": "surface-relative",
+              "surfaceContrast": 1.14164449,
+              "surfaceContrastError": 0.03752686,
+              "surfaceDeltaE": 0.20501399,
+              "surfaceDeltaEError": 0.0081803,
+              "tone": 3
+            },
+            "vivid": {
+              "hex": "#c50f1f",
+              "source": "generated-anchor",
+              "surfaceContrast": 3.46217869,
+              "surfaceDeltaE": 0.56196135,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#c50f1f",
             "tone": 40
@@ -4745,11 +4803,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#c50f1f",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -4768,7 +4821,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -4787,6 +4839,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#c50f1f",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#ffe7e4",
+              "source": "surface-relative",
+              "surfaceContrast": 1.17959948,
+              "surfaceContrastError": 0.01058591,
+              "surfaceDeltaE": 0.05978029,
+              "surfaceDeltaEError": 0.000134,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#c50f1f",
+              "source": "generated-anchor",
+              "surfaceContrast": 6.06554482,
+              "surfaceDeltaE": 0.51997253,
+              "tone": 45
+            }
+          },
           "functionalRest": {
             "hex": "#b70419",
             "tone": 50
@@ -5026,11 +5096,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#b70419",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -5074,7 +5139,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -5093,6 +5157,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#e3008c",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#290718",
+              "source": "surface-relative",
+              "surfaceContrast": 1.13786449,
+              "surfaceContrastError": 0.04084338,
+              "surfaceDeltaE": 0.20748931,
+              "surfaceDeltaEError": 0.00570498,
+              "tone": 3
+            },
+            "vivid": {
+              "hex": "#bb0073",
+              "source": "harmony-rest",
+              "surfaceContrast": 3.36052004,
+              "surfaceDeltaE": 0.56161356,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#bb0073",
             "tone": 40
@@ -5352,11 +5434,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#bb0073",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -5376,7 +5453,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -5395,6 +5471,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#e3008c",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#ffe6ef",
+              "source": "surface-relative",
+              "surfaceContrast": 1.17864135,
+              "surfaceContrastError": 0.00977333,
+              "surfaceDeltaE": 0.06015332,
+              "surfaceDeltaEError": 0.00050702,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#ad056a",
+              "source": "harmony-rest",
+              "surfaceContrast": 6.98445474,
+              "surfaceDeltaE": 0.54670396,
+              "tone": 50
+            }
+          },
           "functionalRest": {
             "hex": "#ad056a",
             "tone": 50
@@ -5654,11 +5748,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#ad056a",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 5,
@@ -5714,7 +5803,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": "start",
             "diagnostics": [
@@ -5739,6 +5827,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#805a15",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#1f170c",
+              "source": "surface-relative",
+              "surfaceContrast": 1.1861286,
+              "surfaceContrastError": 0.0006981,
+              "surfaceDeltaE": 0.21244266,
+              "surfaceDeltaEError": 0.00075163,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#805a15",
+              "source": "generated-anchor",
+              "surfaceContrast": 3.3911332,
+              "surfaceDeltaE": 0.50504054,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#805a15",
             "tone": 40
@@ -5995,11 +6101,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#805a15",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 1,
@@ -6020,7 +6121,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": "start",
             "diagnostics": [
@@ -6045,6 +6145,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#eaa300",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#faebd7",
+              "source": "surface-relative",
+              "surfaceContrast": 1.17126124,
+              "surfaceContrastError": 0.0034921,
+              "surfaceDeltaE": 0.06170848,
+              "surfaceDeltaEError": 0.00206218,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#eaa300",
+              "source": "generated-anchor",
+              "surfaceContrast": 2.15664157,
+              "surfaceDeltaE": 0.28440798,
+              "tone": 18
+            }
+          },
           "functionalRest": {
             "hex": "#7e5915",
             "tone": 50
@@ -6284,11 +6402,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#7e5915",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 11,
@@ -6344,7 +6457,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -6363,6 +6475,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#8b5834",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#211710",
+              "source": "surface-relative",
+              "surfaceContrast": 1.19470718,
+              "surfaceContrastError": 0.00790449,
+              "surfaceDeltaE": 0.21595707,
+              "surfaceDeltaEError": 0.00276278,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#8b5834",
+              "source": "harmony-rest",
+              "surfaceContrast": 3.54326959,
+              "surfaceDeltaE": 0.51625947,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#8b5834",
             "tone": 40
@@ -6622,11 +6752,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#8b5834",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -6645,7 +6770,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -6664,6 +6788,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#8b5834",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#ffe9da",
+              "source": "surface-relative",
+              "surfaceContrast": 1.17187784,
+              "surfaceContrastError": 0.00401841,
+              "surfaceDeltaE": 0.06094562,
+              "surfaceDeltaEError": 0.00129932,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#855330",
+              "source": "harmony-rest",
+              "surfaceContrast": 6.40772979,
+              "surfaceDeltaE": 0.51564687,
+              "tone": 50
+            }
+          },
           "functionalRest": {
             "hex": "#855330",
             "tone": 50
@@ -6923,11 +7065,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#855330",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 1,
@@ -6973,7 +7110,6 @@
       "status": "review",
       "themes": {
         "dark": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -6992,6 +7128,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#a5430f",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#28140c",
+              "source": "surface-relative",
+              "surfaceContrast": 1.19559446,
+              "surfaceContrastError": 0.00864689,
+              "surfaceDeltaE": 0.22033211,
+              "surfaceDeltaEError": 0.00713782,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#a5430f",
+              "source": "generated-anchor",
+              "surfaceContrast": 3.40962639,
+              "surfaceDeltaE": 0.52772469,
+              "tone": 40
+            }
+          },
           "functionalRest": {
             "hex": "#a5430f",
             "tone": 40
@@ -7248,11 +7402,6 @@
             "valid": true
           },
           "sourceSeedPreserved": false,
-          "stateReference": {
-            "hex": "#a5430f",
-            "source": "harmony-rest",
-            "tone": 40
-          },
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -7271,7 +7420,6 @@
           }
         },
         "light": {
-          "achromaticSurfaceDistanceAlignment": null,
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
@@ -7290,6 +7438,24 @@
             "validForPrimary": true
           },
           "effectiveSeedHex": "#f7630c",
+          "functionalReferences": {
+            "subtle": {
+              "hex": "#ffe8df",
+              "source": "surface-relative",
+              "surfaceContrast": 1.17579951,
+              "surfaceContrastError": 0.0073593,
+              "surfaceDeltaE": 0.05987341,
+              "surfaceDeltaEError": 0.00022711,
+              "tone": 4
+            },
+            "vivid": {
+              "hex": "#f7630c",
+              "source": "generated-anchor",
+              "surfaceContrast": 3.11347443,
+              "surfaceDeltaE": 0.37633708,
+              "tone": 24
+            }
+          },
           "functionalRest": {
             "hex": "#9d4012",
             "tone": 50
@@ -7529,11 +7695,6 @@
             "valid": true
           },
           "sourceSeedPreserved": true,
-          "stateReference": {
-            "hex": "#9d4012",
-            "source": "harmony-rest",
-            "tone": 50
-          },
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 1,
@@ -7557,7 +7718,7 @@
       }
     }
   ],
-  "formatVersion": 3,
+  "formatVersion": 4,
   "functionalRest": {
     "dark": {
       "balanced": true,
@@ -7586,7 +7747,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.2"
+    "version": "0.4.0"
   },
   "issues": [
     {
@@ -7610,14 +7771,6 @@
       "familyId": "gy.lime.v1",
       "message": "gy.lime.v1 dark requires review: harmony score 1.022, local chroma prominence 0.0111, gamut chroma loss 0.111.",
       "path": "/families/gy.lime.v1/dark",
-      "severity": "review",
-      "theme": "dark"
-    },
-    {
-      "code": "ACHROMATIC_SURFACE_DISTANCE_PROTECTED",
-      "familyId": "n.black.v1",
-      "message": "n.black.v1 dark preserves exact protected tones 7 below the canonical chromatic surface-distance reference.",
-      "path": "/families/n.black.v1/dark",
       "severity": "review",
       "theme": "dark"
     },
@@ -7707,7 +7860,7 @@
       "contrastAgainstBlack": 3.4819261,
       "contrastAgainstWhite": 6.03114466,
       "familyId": "b.blue.v1",
-      "formatVersion": 3,
+      "formatVersion": 4,
       "gridContract": "kiskadee-tonal-v1",
       "harmonyContract": "kiskadee-munsell-rest-v1",
       "hex": "#0064b4",
@@ -7731,7 +7884,7 @@
       "contrastAgainstBlack": 3.4819261,
       "contrastAgainstWhite": 6.03114466,
       "familyId": "b.blue.v1",
-      "formatVersion": 3,
+      "formatVersion": 4,
       "gridContract": "kiskadee-tonal-v1",
       "harmonyContract": "kiskadee-munsell-rest-v1",
       "hex": "#0064b4",

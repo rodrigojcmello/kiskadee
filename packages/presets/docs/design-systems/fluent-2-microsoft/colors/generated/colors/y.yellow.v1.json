@@ -1,7 +1,33 @@
 {
   "appearance": "yellow",
   "colorKind": "chromatic",
-  "formatVersion": 3,
+  "formatVersion": 4,
+  "functionalReferences": {
+    "dark": {
+      "subtle": {
+        "hex": "#1f170c",
+        "source": "surface-relative",
+        "tone": 4
+      },
+      "vivid": {
+        "hex": "#805a15",
+        "source": "generated-anchor",
+        "tone": 40
+      }
+    },
+    "light": {
+      "subtle": {
+        "hex": "#faebd7",
+        "source": "surface-relative",
+        "tone": 4
+      },
+      "vivid": {
+        "hex": "#eaa300",
+        "source": "generated-anchor",
+        "tone": 18
+      }
+    }
+  },
   "generatedAnchors": {
     "dark": {
       "hex": "#805a15",
@@ -14,7 +40,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.2"
+    "version": "0.4.0"
   },
   "id": "y.yellow.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -114,18 +140,6 @@
   },
   "seedHex": "#eaa300",
   "seedOrigin": "override",
-  "stateReferences": {
-    "dark": {
-      "hex": "#805a15",
-      "source": "harmony-rest",
-      "tone": 40
-    },
-    "light": {
-      "hex": "#7e5915",
-      "source": "harmony-rest",
-      "tone": 50
-    }
-  },
   "tonalAnchors": {
     "rest": {
       "dark": 40,

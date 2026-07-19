@@ -47,8 +47,9 @@ Fluent 2 does not define Primary Button equivalents for Kiskadee's `primary.medi
 or `primary.lowest` emphases. Kiskadee still provides them because tonal, outlined, and borderless
 primary actions are common across the design systems supported by the framework. These are
 intentional framework extensions, not claims of upstream Fluent fidelity. Consumers that need
-maximum fidelity to Fluent should use the documented `primary.high` Button and omit the three
-extension emphases.
+maximum fidelity to Fluent should treat the documented source de-para below as the upstream
+reference. The active shared recipe preserves the official Primary Rest identity but deliberately
+normalizes the remaining states across intents.
 
 The extension uses the approved Blue primitive through `button.primary`. Light uses pale Blue
 surfaces with a dark Blue foreground. Dark uses a low-lightness Blue-tinted surface with a lighter
@@ -63,10 +64,10 @@ exercised by the Kiskadee Material 3 preset, recalibrated against the Fluent Blu
 | Light Focus | Inherits Light Rest | `#e1efff` |
 | Light Pressed | `button.primary` L8 | `#c1deff` |
 | Light enabled foreground | `button.primary` L65 | `#0d477e` |
-| Dark Rest | `button.primary` D10 | `#142d48` |
-| Dark Hover | `button.primary` D8 | `#13273e` |
-| Dark Focus | Inherits Dark Rest | `#142d48` |
-| Dark Pressed | `button.primary` D14 | `#14375b` |
+| Dark Rest | `button.primary` subtle D4 | `#0b1929` |
+| Dark Hover | subtle +2 positions, D6 | `#102134` |
+| Dark Focus | Inherits Dark Rest | `#0b1929` |
+| Dark Pressed | subtle +4 positions, D8 | `#13273e` |
 | Dark enabled foreground | `button.primary` D75 | `#61a7f3` |
 
 ### Adaptive Disabled Policy
@@ -96,8 +97,8 @@ acceptable on white but either disappeared into a matching neutral surface or lo
 colored surface. The translucent overlay preserved the disabled shape while allowing the surface
 color to influence it.
 
-Medium exposes Selected explicitly in every theme for every intent. Selected reuses the Medium
-Rest surface: L4 in Light and D10 in Dark/Darker. Its disabled state follows the same adaptive
+Medium exposes Selected explicitly in every theme for every intent. Selected reuses that family's
+Medium subtle reference in Light, Dark, and Darker. Its disabled state follows the same adaptive
 background and foreground policy as High and Low.
 
 Low and Lowest reuse the Medium foreground but use a deliberately light interaction rhythm. The
@@ -112,17 +113,22 @@ border; Lowest keeps every border state transparent.
 | Light Hover | L2 `#f1f7ff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
 | Light Selected | L1 `#f8fbff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
 | Light Pressed | L4 `#e1efff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Dark/Darker Rest and Focus | transparent | D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Dark/Darker Hover | D14 `#14375b` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Dark/Darker Selected | D18 `#133d68` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Dark/Darker Pressed | D22 `#104375` | D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Dark Rest and Focus | transparent | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
+| Dark Hover | D14 `#14375b` | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
+| Dark Selected | D18 `#133d68` | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
+| Dark Pressed | D22 `#104375` | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
+| Darker Rest and Focus | transparent | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Darker Hover | D14 `#14375b` | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Darker Selected | D18 `#133d68` | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Darker Pressed | D22 `#104375` | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
 
 Disabled Low uses the same adaptive 5% neutral overlay and Light L20-at-82%/Dark D35 foreground as
 Medium and High, without a visible border. Lowest remains fully transparent and borderless when
 disabled, preserving its intentionally minimal appearance.
-The enabled Low border uses the current intent family at the component Primary Rest position with
-50% opacity: L50 in Light and D35 in Dark/Darker. This keeps the intent identity while allowing the
-surface beneath it to soften the outline. Two opaque alternatives were explicitly rejected:
+The enabled Low border uses the current intent family's vivid reference with 50% opacity. Darker
+starts one ordinal position below the Dark vivid reference, matching its High Rest shift. This
+keeps the intent identity while allowing the surface beneath it to soften the outline. Two opaque
+alternatives were explicitly rejected:
 matching the foreground at L65/D75 was too dominant, while moving to L14/D50 made the border too
 light. The 50% alpha is an experimental Kiskadee value pending visual approval; it is not an
 upstream Fluent token.
@@ -135,23 +141,25 @@ policy, and border policy remain identical. This is deliberate diagnostic infras
 new segment replaces the primitive scales, visual differences reveal the behavior of the recipe or
 the tonal family without hidden per-intent compensation.
 
-The canonical positions are explicit slots in the irregular Kiskadee grid, not arithmetic offsets:
+Medium and High are expressed as ordinal offsets from each family's functional reference. The
+offset is an index movement through the irregular public grid, not numeric tone arithmetic.
+Consequently, `L30 + 1` means L35 and `L55 + 1` means L60.
 
 | Theme/emphasis | Rest | Hover | Pressed | Selected |
 | --- | --- | --- | --- | --- |
-| Light Medium | L4 | L6 | L8 | L4 |
-| Light High | L50 | L55 | L75 | L60 |
+| Light Medium | subtle +0 | subtle +2 | subtle +4 | subtle +0 |
+| Light High | vivid +0 | vivid +1 | vivid +3 | vivid +2 |
 | Light Low/Lowest | transparent | L2 | L4 | L1 |
-| Dark Medium | D10 | D8 | D14 | D10 |
-| Dark High | D35 | D40 | D14 | D28 |
+| Dark Medium | subtle +0 | subtle +2 | subtle +4 | subtle +0 |
+| Dark High | vivid +0 | vivid +1 | vivid -2 | vivid -1 |
 | Dark Low/Lowest | transparent | D14 | D22 | D18 |
-| Darker Medium | D10 | D8 | D14 | D10 |
-| Darker High | D30 | D35 | D12 | D26 |
+| Darker Medium | subtle +0 | subtle +2 | subtle +4 | subtle +0 |
+| Darker High | vivid -1 | vivid +0 | vivid -3 | vivid -2 |
 | Darker Low/Lowest | transparent | D14 | D22 | D18 |
 
 Medium, Low, and Lowest foregrounds use the intent role at L65 in Light and D75 in Dark/Darker.
-High uses the white neutral cap, L0 or D100. Low uses the intent role at L50 in Light and D35 in
-Dark/Darker with 50% opacity for its border. Lowest is borderless. Focus is intentionally absent
+High uses the white neutral cap, L0 or D100. Low uses the intent family's vivid reference, shifted
+by -1 only in Darker, with 50% opacity for its border. Lowest is borderless. Focus is intentionally absent
 from every palette map, so it inherits Rest while the global focus ring remains the accessibility
 affordance. Selected stays explicit even when it equals Rest because the schema must declare that
 the component supports the Selected state.
@@ -228,23 +236,23 @@ The extensions preserve the approved official families rather than deriving new 
 | `destructive` | Cranberry Primary `#c50f1f` | `r.red.v1` through `button.destructive` |
 | `positive` | Green Primary `#107c10` | `g.green.v1` through `button.positive` |
 
-Both intents use the canonical recipe without semantic-specific tonal compensation. Their Light
-High sequence is L50/L55/L75/L60 for Rest/Hover/Pressed/Selected; Dark is
-D35/D40/D14/D28; Darker is D30/D35/D12/D26. Focus inherits Rest. High uses the white neutral cap
-in every theme. Medium, Low, Lowest, borders, and disabled states follow the same recipe as Primary
-and Neutral.
+Both intents use the canonical functional-reference recipe without semantic-specific tonal
+compensation. Their absolute positions differ because Cranberry and Green own distinct vivid and
+subtle references, but their ordinal state offsets are identical to Primary and Neutral. Focus
+inherits Rest. High uses the white neutral cap in every theme. Medium, Low, Lowest, borders, and
+disabled states follow the same recipe.
 
 ## Kiskadee Darker Theme
 
 Fluent 2 provides Light and Dark references but no separate `darker` Button theme. Kiskadee adds
 `darker` as an explicit framework extension for interfaces rendered on an absolute-black surface.
-It copies the complete Dark Button contract and moves only High-emphasis enabled states one public
-tonal slot toward the physically darker end of each approved scale. Medium, Low, Lowest, text,
-borders, and the shared disabled mapping remain identical to Dark.
+It reuses the Dark tonal scale and moves the High base plus its state sequence one public position
+toward the physically darker end. Medium, Low, Lowest backgrounds, text, and the shared disabled
+mapping remain identical to Dark; the Low border follows the same one-position vivid shift.
 
 | Applies to | Dark High Rest/Hover/Focus/Pressed/Selected | Darker High Rest/Hover/Focus/Pressed/Selected |
 | --- | --- | --- |
-| Every intent | D35 / D40 / inherited Rest / D14 / D28 | D30 / D35 / inherited Rest / D12 / D26 |
+| Every intent | vivid +0 / +1 / inherited Rest / -2 / -1 | vivid -1 / +0 / inherited Rest / -3 / -2 |
 
 The one-slot rule is relative to the canonical Kiskadee grid, not a fixed numeric subtraction.
 This keeps the state rhythm intact when neighboring public tones use different numeric intervals.
@@ -258,15 +266,15 @@ are resolved independently rather than mirroring the numeric positions.
 | --- | --- | --- | --- | --- | --- |
 | Light Rest | `BrandBackground.Rest` / Brand-80 | `#0064b4` | `button.primary` L50 | `#0064b4` | `0` |
 | Light Hover | `BrandBackground.Hover` / Brand-70 | `#0055a4` | `button.primary` L55 | `#0059a1` | `0.012877` |
-| Light Pressed | `BrandBackground.Pressed` / Brand-40 | `#002b6b` | `button.primary` L75 | `#14375a` | `0.053265` |
+| Light Pressed | `BrandBackground.Pressed` / Brand-40 | `#002b6b` | vivid +3, L65 | `#0d477e` | `0.087973` |
 | Light Selected | `BrandBackground.Selected` / Brand-60 | `#004694` | `button.primary` L60 | `#045091` | `0.029862` |
 | Light Focus | `BrandBackground.Rest` / Brand-80 | `#0064b4` | `button.primary` L50 | `#0064b4` | `0` |
 | Light Disabled | `NeutralBackgroundDisabled.Rest` / Grey-94 | `#ebf0fc` | `button.neutral` L3 | `#f0f2f7` | `0.011744` |
-| Dark Rest | `BrandBackground.Rest` / Brand-70 | `#0055a4` | `button.primary` D35 | `#005ba4` | `0.017032` |
-| Dark Hover | `BrandBackground.Hover` / Brand-80 | `#0064b4` | `button.primary` D40 | `#0064b4` | `0` |
-| Dark Pressed | `BrandBackground.Pressed` / Brand-40 | `#002b6b` | `button.primary` D14 | `#14375b` | `0.052062` |
-| Dark Selected | `BrandBackground.Selected` / Brand-60 | `#004694` | `button.primary` D28 | `#074d89` | `0.029039` |
-| Dark Focus | `BrandBackground.Rest` / Brand-70 | `#0055a4` | `button.primary` D35 | `#005ba4` | `0.017032` |
+| Dark Rest | `BrandBackground.Rest` / Brand-70 | `#0055a4` | vivid D40 | `#0064b4` | `0.046895` |
+| Dark Hover | `BrandBackground.Hover` / Brand-80 | `#0064b4` | vivid +1, D45 | `#106bbc` | `0.023423` |
+| Dark Pressed | `BrandBackground.Pressed` / Brand-40 | `#002b6b` | vivid -2, D30 | `#045090` | `0.120551` |
+| Dark Selected | `BrandBackground.Selected` / Brand-60 | `#004694` | vivid -1, D35 | `#005ba4` | `0.062569` |
+| Dark Focus | `BrandBackground.Rest` / Brand-70 | `#0055a4` | inherits vivid D40 | `#0064b4` | `0.046895` |
 | Dark Disabled | unbound Figma instance color | `#141414` | `button.neutral` D3 | `#131416` | `0.004340` |
 
 The Disabled rows preserve the official Fluent sources and their nearest opaque Kiskadee tonal

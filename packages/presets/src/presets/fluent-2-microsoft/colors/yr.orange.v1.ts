@@ -1,9 +1,19 @@
-import type { StaticPrimitiveColorAsset } from '@kiskadee/core';
+import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
 // Promoted from the approved Fluent tonal artifact:
 // docs/design-systems/fluent-2-microsoft/colors/generated/colors/yr.orange.v1.json
 export default {
   kind: 'static',
+  functionalReferences: {
+    light: {
+      subtle: 4,
+      vivid: 24
+    },
+    dark: {
+      subtle: 4,
+      vivid: 40
+    }
+  },
   scales: {
     light: {
       0: '#ffffff',
@@ -18,7 +28,7 @@ export default {
       9: '#ffc8b3',
       10: '#ffc2a9',
       12: '#ffb89b',
-      14: '#ffaa88',
+      14: '#ffaa89',
       16: '#ff9d75',
       18: '#ff9163',
       20: '#ff834d',
@@ -82,4 +92,4 @@ export default {
       100: '#ffffff'
     }
   }
-} as const satisfies StaticPrimitiveColorAsset;
+} as const satisfies StaticPrimitiveTonalColorAsset;

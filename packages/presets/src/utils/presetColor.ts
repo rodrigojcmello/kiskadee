@@ -7,9 +7,10 @@ import type {
   Schema,
   SemanticColor,
   SemanticVariant,
-  SolidColor
+  SolidColor,
+  TonalFunctionalReferenceName
 } from '@kiskadee/core';
-import { color } from '@kiskadee/core';
+import { color, colorByReference } from '@kiskadee/core';
 
 type ThemeShortcut = 'l' | 'd';
 
@@ -75,6 +76,15 @@ export type PresetColorGetter<TSegmentName extends string> = {
     tone: KiskadeeTone | KiskadeeTone[],
     alpha?: number
   ): ResolvedGradient;
+
+  ref(
+    segmentName: TSegmentName,
+    theme: ThemeShortcut,
+    roleOrPrimitive: PrimitiveRole | SolidRole | SemanticRole | IntentRoleWithVariant,
+    reference: TonalFunctionalReferenceName,
+    offset?: number,
+    alpha?: number
+  ): SolidColor;
 };
 
 /**
@@ -87,25 +97,17 @@ export type PresetColorGetter<TSegmentName extends string> = {
 export function createPresetColorGetter<TSegmentName extends string>(schemaContext: {
   colors: NonNullable<Schema['colors']>;
 }): PresetColorGetter<TSegmentName> {
-  const c = (
+  const resolvePresetRole = (
     segmentName: TSegmentName,
     theme: ThemeShortcut,
-    roleOrPrimitive: RoleWithPaint | PrimitiveRole | SemanticRole | IntentRoleWithVariant,
-    tone: KiskadeeTone | KiskadeeTone[],
-    alpha?: number
-  ): SolidColor | ResolvedGradient => {
+    roleOrPrimitive: RoleWithPaint | PrimitiveRole | SemanticRole | IntentRoleWithVariant
+  ): RoleWithPaint | PrimitiveRole => {
     const semanticRole =
       typeof roleOrPrimitive === 'string' ? parseSemanticRole(roleOrPrimitive) : null;
     const intentVariantRole =
       typeof roleOrPrimitive === 'string' ? parseIntentVariantRole(roleOrPrimitive) : null;
 
     if (semanticRole) {
-      if (Array.isArray(tone)) {
-        throw new Error(
-          `Invalid tone. Expected number for semantic role, got array (role=${roleOrPrimitive})`
-        );
-      }
-
       const colors = schemaContext.colors;
       const themeName = theme === 'l' ? 'light' : 'dark';
       const fromSegment =
@@ -123,17 +125,10 @@ export function createPresetColorGetter<TSegmentName extends string>(schemaConte
           `Global semantic not mapped for role=${roleOrPrimitive} theme=${theme} segment=${String(segmentName)}`
         );
       }
-
-      return color(schemaContext, segmentName, theme, primitiveRole as never, tone as never, alpha);
+      return primitiveRole;
     }
 
     if (intentVariantRole) {
-      if (Array.isArray(tone)) {
-        throw new Error(
-          `Invalid tone. Expected number for intent variant role, got array (role=${roleOrPrimitive})`
-        );
-      }
-
       const colors = schemaContext.colors;
       const themeName = theme === 'l' ? 'light' : 'dark';
       const intentValue =
@@ -158,12 +153,44 @@ export function createPresetColorGetter<TSegmentName extends string>(schemaConte
           `Global semantic not mapped for role=${roleOrPrimitive} theme=${theme} segment=${String(segmentName)}`
         );
       }
-
-      return color(schemaContext, segmentName, theme, primitiveRole as never, tone as never, alpha);
+      return primitiveRole;
     }
 
-    return color(schemaContext, segmentName, theme, roleOrPrimitive as never, tone as never, alpha);
+    return roleOrPrimitive as RoleWithPaint | PrimitiveRole;
   };
 
-  return c as PresetColorGetter<TSegmentName>;
+  const c = (
+    segmentName: TSegmentName,
+    theme: ThemeShortcut,
+    roleOrPrimitive: RoleWithPaint | PrimitiveRole | SemanticRole | IntentRoleWithVariant,
+    tone: KiskadeeTone | KiskadeeTone[],
+    alpha?: number
+  ): SolidColor | ResolvedGradient => {
+    const resolvedRole = resolvePresetRole(segmentName, theme, roleOrPrimitive);
+    return color(schemaContext, segmentName, theme, resolvedRole as never, tone as never, alpha);
+  };
+
+  const getter = c as PresetColorGetter<TSegmentName>;
+
+  getter.ref = (
+    segmentName: TSegmentName,
+    theme: ThemeShortcut,
+    roleOrPrimitive: PrimitiveRole | SolidRole | SemanticRole | IntentRoleWithVariant,
+    reference: TonalFunctionalReferenceName,
+    offset = 0,
+    alpha?: number
+  ): SolidColor => {
+    const resolvedRole = resolvePresetRole(segmentName, theme, roleOrPrimitive);
+    return colorByReference(
+      schemaContext,
+      segmentName,
+      theme,
+      resolvedRole as PrimitiveRole | `${string}.${string}` | `${string}.${string}.solid`,
+      reference,
+      offset,
+      alpha
+    );
+  };
+
+  return getter;
 }

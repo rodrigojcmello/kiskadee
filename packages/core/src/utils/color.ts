@@ -11,9 +11,11 @@ import type {
   SemanticColor,
   SolidColor,
   ThemeName,
-  ThemeShortcut
+  ThemeShortcut,
+  TonalFunctionalReferenceName
 } from '../types/colors/colors.types.ts';
 import { assertKiskadeeCssScale, assertKiskadeeHexScale, isKiskadeeTone } from './hexColor.ts';
+import { resolvePrimitiveFunctionalTone } from './tonalReference.ts';
 import { withAlpha } from './withAlpha.ts';
 
 export function color(
@@ -62,6 +64,31 @@ export function color(
  */
 export function primitive(hue: HueName, name: PrimitiveColorName): PrimitiveRole {
   return `primitive.${hue}.${name}` as PrimitiveRole;
+}
+
+export function colorByReference(
+  schema: { colors?: SchemaColors },
+  segmentName: string,
+  theme: ThemeShortcut,
+  roleOrPrimitive: PrimitiveRole | `${string}.${string}` | `${string}.${string}.solid`,
+  reference: TonalFunctionalReferenceName,
+  offset = 0,
+  alpha?: number
+): SolidColor {
+  const themeName: ThemeName = theme === 'l' ? 'light' : 'dark';
+  const colors = requireSchemaColors(schema.colors);
+  const primitiveRole = resolveSolidPrimitiveRole(colors, segmentName, themeName, roleOrPrimitive);
+  const primitiveRef = parsePrimitiveRole(primitiveRole);
+  const asset = colors.primitiveColors?.[primitiveRef.hue]?.[primitiveRef.name];
+  if (!asset) {
+    throw new Error(
+      `Primitive color asset not found for hue=${primitiveRef.hue} name=${primitiveRef.name}`
+    );
+  }
+
+  const tone = resolvePrimitiveFunctionalTone(asset, themeName, reference, offset);
+  const value = resolveSolidFromPrimitiveRef(colors, themeName, primitiveRef, tone);
+  return typeof alpha === 'number' ? (withAlpha(value, alpha) as SolidColor) : value;
 }
 
 function requireSchemaColors(colors: SchemaColors | undefined): Required<SchemaColors> {
@@ -154,6 +181,45 @@ function resolveSolidFromPrimitiveRef(
   }
 
   return value;
+}
+
+function resolveSolidPrimitiveRole(
+  colors: Required<SchemaColors>,
+  segmentName: string,
+  themeName: ThemeName,
+  roleOrPrimitive: PrimitiveRole | `${string}.${string}` | `${string}.${string}.solid`
+): PrimitiveRole {
+  if (roleOrPrimitive.startsWith('primitive.')) {
+    return roleOrPrimitive as PrimitiveRole;
+  }
+
+  const { component, intent, paint } = parseRole(roleOrPrimitive as RoleWithPaint);
+  if (paint !== 'solid') {
+    throw new Error(`Functional tonal references support only solid roles: ${roleOrPrimitive}`);
+  }
+
+  const intentValue = colors.componentIntents?.[component]?.[intent];
+  if (!intentValue) {
+    throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
+  }
+
+  const semanticEntry =
+    colors.globalSemanticsBySegment?.[segmentName]?.themes?.[themeName]?.[
+      intentValue as SemanticColor
+    ] ?? colors.globalSemantics?.[themeName]?.[intentValue as SemanticColor];
+
+  const primitiveRole: PrimitiveRole | undefined = intentValue.startsWith('primitive.')
+    ? (intentValue as PrimitiveRole)
+    : typeof semanticEntry === 'string'
+      ? (semanticEntry as PrimitiveRole)
+      : semanticEntry?.v1;
+
+  if (!primitiveRole) {
+    throw new Error(
+      `Global semantic not mapped for role=${roleOrPrimitive} theme=${themeName} segment=${segmentName}`
+    );
+  }
+  return primitiveRole;
 }
 
 /**

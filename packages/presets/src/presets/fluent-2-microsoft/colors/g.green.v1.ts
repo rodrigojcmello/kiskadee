@@ -1,23 +1,33 @@
-import type { StaticPrimitiveColorAsset } from '@kiskadee/core';
+import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
 // Promoted from the approved Fluent tonal artifact:
 // docs/design-systems/fluent-2-microsoft/colors/generated/colors/g.green.v1.json
 export default {
   kind: 'static',
+  functionalReferences: {
+    light: {
+      subtle: 4,
+      vivid: 45
+    },
+    dark: {
+      subtle: 4,
+      vivid: 40
+    }
+  },
   scales: {
     light: {
       0: '#ffffff',
-      1: '#f2fff1',
-      2: '#e6ffe3',
-      3: '#dbfdd7',
-      4: '#d3facf',
-      5: '#cbf7c7',
-      6: '#c4f4c0',
-      7: '#bdf1b9',
-      8: '#b5ecb0',
-      9: '#aee9a9',
-      10: '#a7e5a2',
-      12: '#9ddf98',
+      1: '#f7fdf6',
+      2: '#f0faef',
+      3: '#e9f7e7',
+      4: '#e2f3e0',
+      5: '#dbf0d9',
+      6: '#d4edd2',
+      7: '#cdeaca',
+      8: '#c3e7c0',
+      9: '#bae4b6',
+      10: '#afe2ab',
+      12: '#a1dd9c',
       14: '#91d78c',
       16: '#86d080',
       18: '#7cc977',
@@ -75,11 +85,11 @@ export default {
       70: '#51a54c',
       75: '#67b661',
       80: '#7ec879',
-      85: '#96d890',
-      90: '#afe7aa',
-      95: '#d0f8cc',
-      99: '#f4fff2',
+      85: '#97d791',
+      90: '#bae3b6',
+      95: '#dff1dc',
+      99: '#f8fdf7',
       100: '#ffffff'
     }
   }
-} as const satisfies StaticPrimitiveColorAsset;
+} as const satisfies StaticPrimitiveTonalColorAsset;

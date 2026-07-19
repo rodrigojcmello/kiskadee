@@ -1,4 +1,9 @@
-import type { KiskadeeTone, Schema, SolidColor } from '@kiskadee/core';
+import type {
+  KiskadeeTone,
+  Schema,
+  SolidColor,
+  TonalFunctionalReferenceName
+} from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
@@ -11,22 +16,27 @@ type ButtonColorRole =
   | 'button.destructive'
   | 'button.positive';
 
-type StatefulTones = {
-  rest: KiskadeeTone;
-  hover: KiskadeeTone;
-  pressed: KiskadeeTone;
-  selected: KiskadeeTone;
+type FunctionalToneLocator = {
+  reference: TonalFunctionalReferenceName;
+  offset: number;
+};
+
+type StatefulFunctionalTones = {
+  rest: FunctionalToneLocator;
+  hover: FunctionalToneLocator;
+  pressed: FunctionalToneLocator;
+  selected: FunctionalToneLocator;
 };
 
 type ButtonThemeRecipe = {
   scale: ThemeShortcut;
-  medium: StatefulTones;
-  high: StatefulTones;
+  medium: StatefulFunctionalTones;
+  high: StatefulFunctionalTones;
   low: {
     hover: KiskadeeTone;
     pressed: KiskadeeTone;
     selected: KiskadeeTone;
-    border: KiskadeeTone;
+    border: FunctionalToneLocator;
   };
   foreground: KiskadeeTone;
   highForeground: KiskadeeTone;
@@ -48,27 +58,72 @@ type CreateFluent2MicrosoftButtonSchemaArgs = {
 const BUTTON_TONAL_RECIPE = {
   light: {
     scale: 'l',
-    medium: { rest: 4, hover: 6, pressed: 8, selected: 4 },
-    high: { rest: 50, hover: 55, pressed: 75, selected: 60 },
-    low: { hover: 2, pressed: 4, selected: 1, border: 50 },
+    medium: {
+      rest: { reference: 'subtle', offset: 0 },
+      hover: { reference: 'subtle', offset: 2 },
+      pressed: { reference: 'subtle', offset: 4 },
+      selected: { reference: 'subtle', offset: 0 }
+    },
+    high: {
+      rest: { reference: 'vivid', offset: 0 },
+      hover: { reference: 'vivid', offset: 1 },
+      pressed: { reference: 'vivid', offset: 3 },
+      selected: { reference: 'vivid', offset: 2 }
+    },
+    low: {
+      hover: 2,
+      pressed: 4,
+      selected: 1,
+      border: { reference: 'vivid', offset: 0 }
+    },
     foreground: 65,
     highForeground: 0,
     lowestDisabledForeground: 16
   },
   dark: {
     scale: 'd',
-    medium: { rest: 10, hover: 8, pressed: 14, selected: 10 },
-    high: { rest: 35, hover: 40, pressed: 14, selected: 28 },
-    low: { hover: 14, pressed: 22, selected: 18, border: 35 },
+    medium: {
+      rest: { reference: 'subtle', offset: 0 },
+      hover: { reference: 'subtle', offset: 2 },
+      pressed: { reference: 'subtle', offset: 4 },
+      selected: { reference: 'subtle', offset: 0 }
+    },
+    high: {
+      rest: { reference: 'vivid', offset: 0 },
+      hover: { reference: 'vivid', offset: 1 },
+      pressed: { reference: 'vivid', offset: -2 },
+      selected: { reference: 'vivid', offset: -1 }
+    },
+    low: {
+      hover: 14,
+      pressed: 22,
+      selected: 18,
+      border: { reference: 'vivid', offset: 0 }
+    },
     foreground: 75,
     highForeground: 100,
     lowestDisabledForeground: 35
   },
   darker: {
     scale: 'd',
-    medium: { rest: 10, hover: 8, pressed: 14, selected: 10 },
-    high: { rest: 30, hover: 35, pressed: 12, selected: 26 },
-    low: { hover: 14, pressed: 22, selected: 18, border: 35 },
+    medium: {
+      rest: { reference: 'subtle', offset: 0 },
+      hover: { reference: 'subtle', offset: 2 },
+      pressed: { reference: 'subtle', offset: 4 },
+      selected: { reference: 'subtle', offset: 0 }
+    },
+    high: {
+      rest: { reference: 'vivid', offset: -1 },
+      hover: { reference: 'vivid', offset: 0 },
+      pressed: { reference: 'vivid', offset: -3 },
+      selected: { reference: 'vivid', offset: -2 }
+    },
+    low: {
+      hover: 14,
+      pressed: 22,
+      selected: 18,
+      border: { reference: 'vivid', offset: -1 }
+    },
     foreground: 75,
     highForeground: 100,
     lowestDisabledForeground: 35
@@ -99,26 +154,28 @@ export function createFluent2MicrosoftButtonSchema({
     const filledDisabledForeground = isLight ? lightAdaptiveDisabledText : disabledForeground;
     const roleColor = (tone: KiskadeeTone, alpha?: number) =>
       c('default', recipe.scale, role, tone, alpha);
+    const roleReferenceColor = (locator: FunctionalToneLocator, alpha?: number) =>
+      c.ref('default', recipe.scale, role, locator.reference, locator.offset, alpha);
 
     return {
       boxColor: {
         medium: {
-          rest: roleColor(recipe.medium.rest),
-          hover: roleColor(recipe.medium.hover),
-          pressed: roleColor(recipe.medium.pressed),
+          rest: roleReferenceColor(recipe.medium.rest),
+          hover: roleReferenceColor(recipe.medium.hover),
+          pressed: roleReferenceColor(recipe.medium.pressed),
           disabled: adaptiveDisabled,
           selected: {
             // Explicitly declares Selected support even when it reuses Rest.
-            rest: roleColor(recipe.medium.selected)
+            rest: roleReferenceColor(recipe.medium.selected)
           }
         },
         high: {
-          rest: roleColor(recipe.high.rest),
-          hover: roleColor(recipe.high.hover),
-          pressed: roleColor(recipe.high.pressed),
+          rest: roleReferenceColor(recipe.high.rest),
+          hover: roleReferenceColor(recipe.high.hover),
+          pressed: roleReferenceColor(recipe.high.pressed),
           disabled: adaptiveDisabled,
           selected: {
-            rest: roleColor(recipe.high.selected)
+            rest: roleReferenceColor(recipe.high.selected)
           }
         },
         low: {
@@ -147,7 +204,7 @@ export function createFluent2MicrosoftButtonSchema({
           rest: transparent
         },
         low: {
-          rest: roleColor(recipe.low.border, 50),
+          rest: roleReferenceColor(recipe.low.border, 50),
           disabled: transparent
         },
         lowest: {

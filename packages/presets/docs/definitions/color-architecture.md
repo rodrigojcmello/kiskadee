@@ -80,6 +80,22 @@ Button.destructive (Layer 3)
 Badge.attention (Layer 3)
 ```
 
+### Functional Tonal References
+
+A reviewed Layer 1 tonal asset may mark `subtle` and `vivid` positions for each
+theme. Layers 2 and 3 do not copy those positions. Resolution follows the
+normal cascade to the primitive family first and reads the reference there:
+
+```text
+button.positive -> greenLike -> primitive.green.v1 -> light.vivid
+button.neutral  -> neutral   -> primitive.black.v1 -> light.vivid
+```
+
+This matters because Green and Black may have different vivid positions while
+sharing the same Button formula. Preset schemas use `c.ref()` for this lookup
+and may apply an ordinal public-grid offset for interaction states. Exact
+source-backed tone decisions continue to use `c()`.
+
 ## Customization Scenarios
 
 | Scenario | Action | Result |

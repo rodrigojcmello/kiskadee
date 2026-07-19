@@ -586,7 +586,9 @@ locked V4 sources contain every resolved family reference so replay never
 depends on re-matching external evidence.
 
 This package produces Layer 1 artifacts only. It does not write presets,
-external types, semantic aliases, or component state mappings. In particular,
-exporting functional references does not authorize a preset to adopt the
-experimental state offsets. Preset integration, including the first Fluent use
-of the subtle reference, remains a separate follow-up.
+external types, semantic aliases, or component state mappings. Exporting
+functional references does not automatically authorize a preset to adopt the
+preview's experimental state offsets. A preset must promote reviewed positions
+and author its own component formula. Fluent 2 Microsoft is the first such
+consumer: it stores V4 reference positions in its primitive assets and defines
+its Button offsets independently in the preset package.

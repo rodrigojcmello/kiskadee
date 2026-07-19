@@ -6,7 +6,7 @@ Each static primitive asset declares `kind: 'static'` and one or more complete `
 theme. Dynamic assets declare `kind: 'dynamic'` and use the same positions with CSS color
 references. Presets may omit a theme they do not support, but a declared theme may not omit tones.
 
-This migration converted the former HSLA `subtle`/`vivid` tracks mechanically:
+The original migration converted the former HSLA `subtle`/`vivid` tracks mechanically:
 
 - source colors at shared positions were preserved as their previously emitted sRGB HEX values;
 - new positions were interpolated in OKLab;
@@ -19,5 +19,33 @@ migration rules, not source evidence or visual approval for an official Design S
 preset reviews must replace provisional ramps with source-backed artifacts and document the mapping
 under `packages/presets/docs/design-systems/<preset>/`.
 
-The existing preset family taxonomy remains unchanged in this phase. Munsell IDs, rest anchors,
-semantic state offsets, and tonal-system bundle imports belong to the later preset-specific review.
+The continuous scale does not reintroduce separate `subtle` and `vivid` tracks. A reviewed tonal
+asset may instead expose two functional pointers into the same scale:
+
+```ts
+functionalReferences: {
+  light: { subtle: 4, vivid: 50 },
+  dark: { subtle: 4, vivid: 40 }
+}
+```
+
+These positions are per family and per theme. They are not semantic colors and they do not define
+component interaction states. `subtle` identifies a low-prominence surface starting point, while
+`vivid` identifies the stronger identity/action starting point. A Black family may therefore use a
+light Dark-theme vivid reference even though its exact dark seed remains elsewhere in the scale.
+
+`createPresetColorGetter()` keeps exact lookup through `c(..., tone)` and exposes functional lookup
+explicitly through `c.ref(..., reference, offset)`. Offsets are ordinal over `KISKADEE_TONES`:
+`L30 + 1` resolves to L35, not L31. Fractional offsets and grid overflow fail; they are never
+rounded or clamped. Layer 2 semantics and Layer 3 intents resolve to their Layer 1 family before the
+reference is read, so one component formula can follow different family anchors without knowing
+their absolute positions.
+
+Functional references are optional on the general primitive asset contract so mechanically
+migrated presets can continue using exact tones. When an asset declares them, both references are
+required for every emitted theme and are validated against the corresponding scale. The Fluent 2
+Microsoft preset is the first adopter; other presets remain unchanged until their own evidence-led
+review.
+
+The existing preset family taxonomy remains unchanged. Munsell IDs remain generator provenance;
+preset runtime assets continue to use the established Layer 1 family names.

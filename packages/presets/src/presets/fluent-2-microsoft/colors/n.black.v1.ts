@@ -1,9 +1,19 @@
-import type { StaticPrimitiveColorAsset } from '@kiskadee/core';
+import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
 // Promoted from the approved Fluent tonal artifact:
 // docs/design-systems/fluent-2-microsoft/colors/generated/colors/n.black.v1.json
 export default {
   kind: 'static',
+  functionalReferences: {
+    light: {
+      subtle: 4,
+      vivid: 85
+    },
+    dark: {
+      subtle: 4,
+      vivid: 90
+    }
+  },
   scales: {
     light: {
       0: '#ffffff',
@@ -82,4 +92,4 @@ export default {
       100: '#ffffff'
     }
   }
-} as const satisfies StaticPrimitiveColorAsset;
+} as const satisfies StaticPrimitiveTonalColorAsset;

@@ -1,7 +1,33 @@
 {
   "appearance": "purple",
   "colorKind": "chromatic",
-  "formatVersion": 3,
+  "formatVersion": 4,
+  "functionalReferences": {
+    "dark": {
+      "subtle": {
+        "hex": "#230d20",
+        "source": "surface-relative",
+        "tone": 3
+      },
+      "vivid": {
+        "hex": "#a62d99",
+        "source": "generated-anchor",
+        "tone": 40
+      }
+    },
+    "light": {
+      "subtle": {
+        "hex": "#fbe6f6",
+        "source": "surface-relative",
+        "tone": 4
+      },
+      "vivid": {
+        "hex": "#c239b3",
+        "source": "generated-anchor",
+        "tone": 35
+      }
+    }
+  },
   "generatedAnchors": {
     "dark": {
       "hex": "#a62d99",
@@ -14,7 +40,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.3.2"
+    "version": "0.4.0"
   },
   "id": "p.purple.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -114,18 +140,6 @@
   },
   "seedHex": "#c239b3",
   "seedOrigin": "override",
-  "stateReferences": {
-    "dark": {
-      "hex": "#a62d99",
-      "source": "harmony-rest",
-      "tone": 40
-    },
-    "light": {
-      "hex": "#982b8c",
-      "source": "harmony-rest",
-      "tone": 50
-    }
-  },
   "tonalAnchors": {
     "rest": {
       "dark": 40,

@@ -12,7 +12,12 @@ import type {
   SchemaFonts,
   ThemeMode
 } from '@kiskadee/core';
-import { assertKiskadeeCssScale, assertKiskadeeHexScale, normalizeHexColor } from '@kiskadee/core';
+import {
+  assertKiskadeeCssScale,
+  assertKiskadeeHexScale,
+  assertPrimitiveFunctionalReferences,
+  normalizeHexColor
+} from '@kiskadee/core';
 import {
   getComponentCoreClassMapArtifactPath,
   getComponentPaletteClassMapArtifactPath
@@ -414,6 +419,11 @@ function validatePublishedPrimitiveAsset(value: unknown): boolean {
     }
   }
 
+  assertPrimitiveFunctionalReferences({
+    scales: value.scales,
+    functionalReferences: value.functionalReferences
+  });
+
   return true;
 }
 
@@ -482,6 +492,11 @@ function collectPrimitiveScales(colors: SchemaColors): Array<{
       if (!scales || typeof scales !== 'object' || Array.isArray(scales)) {
         throw new Error(`Invalid primitive asset ${baseColor}.${variant}: missing scales.`);
       }
+
+      assertPrimitiveFunctionalReferences({
+        scales,
+        functionalReferences: variantValue.functionalReferences
+      });
 
       for (const [theme, scale] of Object.entries(scales)) {
         if (theme !== 'light' && theme !== 'dark') {
