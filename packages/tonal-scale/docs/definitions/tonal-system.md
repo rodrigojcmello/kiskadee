@@ -1,4 +1,4 @@
-# Kiskadee Tonal System v3
+# Kiskadee Tonal System v4
 
 Status: canonical package-level definition.
 
@@ -13,20 +13,22 @@ The family taxonomy and hue boundaries are defined in
 [munsell-family-taxonomy.md](./munsell-family-taxonomy.md). Presets, Core,
 semantic aliases, components, and preset migration remain outside this package.
 
-The multi-family system distinguishes three references that must not be
+The multi-family system distinguishes four references that must not be
 collapsed into one concept:
 
 - the **generated anchor** is the technical slot where the low-level generator
   preserves or adapts the effective seed;
 - the **harmony rest** is the shared Light or Dark checkpoint used to compare
   all families in one system;
-- the **state anchor** is the per-family, per-theme starting slot from which an
-  eventual semantic state projection may be derived.
+- the **vivid reference** is the per-family, per-theme starting slot for
+  strong chromatic actions;
+- the **subtle reference** is the per-family, per-theme starting slot for
+  surface-adjacent chromatic actions.
 
 Existing runtime and artifact fields named `rest`, `restColor`,
 `functionalRest`, or `tonalAnchors.rest` represent the harmony-rest checkpoint.
-They no longer imply that every family must use that slot as its component
-state reference.
+They no longer imply that every family must use that slot as either functional
+reference.
 
 ## Required Family Set
 
@@ -47,14 +49,14 @@ The absolute caps remain part of every scale:
 
 ## Input Contract
 
-Draft format 3 contains:
+Draft format 4 contains:
 
 - one exact primary seed, automatic or explicit natural appearance, explicit
   `v1` through `v4` variant, and Light/Dark policy;
 - zero or more family overrides;
 - one tonal profile (`balanced` or `muted-darks`);
 - automatic or locked Light/Dark rest positions;
-- optional per-family Light/Dark state-anchor rules;
+- sparse per-family Light/Dark vivid and subtle reference rules;
 - `kiskadee-tonal-v1` grid and `kiskadee-munsell-rest-v1` harmony contracts.
 
 Primary Light is always `source-exact`. Primary Dark may be `source-exact` or
@@ -69,9 +71,10 @@ theme. `n.black.*` may use only `source-exact` or `adaptive`. Invalid ids,
 duplicates, sector mismatches, Orange-like Brown overrides, unsupported
 policies, and conflicting primary overrides fail explicitly.
 
-Formats 1 and 2 are not migrated silently. Format 2 encoded Brown as a sector
-variant and used complete sector names as public ids; neither meaning is
-compatible with the format 3 sector, appearance, and variant axes.
+Formats 1 through 3 are not migrated silently. Format 2 encoded Brown as a
+sector variant and used complete sector names as public ids. Format 3 exposed
+one ambiguous state anchor instead of the distinct vivid and subtle functional
+references. Neither meaning is compatible with format 4.
 
 ## Fixed Reference Set
 
@@ -117,7 +120,7 @@ Generation performs these deterministic stages:
 5. Generate family baselines to rank fallback Light and Dark harmony-rest
    positions.
 6. Test the exact primary anchor first with the complete emitted chromatic v1
-   harmony. A harmonized companion receives a free vivid anchor at the natural
+   harmony. A harmonized companion receives a free generated anchor at the natural
    peak lightness of its hue, while its emitted color at the shared slot is
    scored against the primary `rest` behavior.
 7. Keep the primary anchor as harmony rest when every v1 family satisfies the
@@ -201,7 +204,7 @@ harmony ranking preserves perceptual lightness and chromatic character first.
 Candidate ranking is a soft preference and cannot run before hard feasibility.
 The finite coarse grid is traversed in ranked order until enough candidates
 satisfy sector identity, safe-core generation, a valid scale, preservation of
-the selected vivid anchor, and emission at the exact shared rest slot. A
+the selected generated anchor, and emission at the exact shared rest slot. A
 harmonized candidate is not required to place its anchor at `rest`. Only those
 feasible candidates participate in final selection. Exhausting an arbitrary
 top-N window is not evidence that a harmony target is unreachable.
@@ -210,11 +213,11 @@ Functional-rest diagnostics are recalculated from the emitted `restColor` of
 all ten v1 families after harmonization. Raw baseline projections may rank a
 fallback, but they cannot reject the exact source anchor. That decision uses a
 complete harmonized anchor probe and therefore measures the same emitted colors
-that would enter the final system. Vivid-anchor diagnostics are calculated
+that would enter the final system. Generated-anchor diagnostics are calculated
 separately from each generated anchor. Baselines are never exported as evidence
 that the final system is balanced or that its companion peaks are equivalent.
 
-At its free vivid anchor, Brown targets `0.6` of the base Orange hue-global
+At its free generated anchor, Brown targets `0.6` of the base Orange hue-global
 chroma utilization. Its emitted color keeps the same shared rest position and
 the same rest lightness/contrast priority. A light rest may therefore appear
 tan; physically darker positions retain the Brown character. If Brown is
@@ -294,8 +297,8 @@ the final reduction intentionally modest.
 This detection/target hysteresis avoids reacting to harmless quantization while
 still producing a visible correction. Candidate search, rather than a visual
 post-process, owns the reduction, so effective seed, generated anchor,
-harmony-rest color, state reference, scale diagnostics, and exported bytes stay
-coherent.
+harmony-rest color, scale diagnostics, and exported bytes stay coherent.
+Functional references are resolved from that final immutable result.
 
 All candidates are measured from the same immutable system snapshot. If
 different families qualify at different lightnesses in one theme, only the one
@@ -311,10 +314,10 @@ isolated leader; it does not flatten a vivid cohort such as the Orange system.
 Measurements before and after selection are emitted only in system
 diagnostics, not in primitive color assets.
 
-## Generated Anchor, Harmony Rest, And State Anchor
+## Generated Anchor, Harmony Rest, And Functional References
 
-`seedHex`, generated anchor, harmony rest, and state anchor are separate
-concepts:
+`seedHex`, generated anchor, harmony rest, vivid reference, and subtle
+reference are separate concepts:
 
 - `seedHex` is the primary, fixed-reference, or authored source color;
 - the generated anchor is where the low-level scale preserves or adapts the
@@ -322,21 +325,25 @@ concepts:
   peak lightness of that hue;
 - harmony rest is the shared slot used to compare emitted companion colors and
   validate cross-family balance;
-- state anchor is the family/theme reference intended for experiments with
-  semantic interaction states.
+- vivid reference is the family/theme pointer for strong chromatic actions;
+- subtle reference is the family/theme pointer for actions closer to the
+  active theme surface.
 
 All families use the same public harmony-rest positions, but they do not need
-to share generated anchor or state-anchor positions. Harmony rest may be any
-public chromatic slot from 1 through 99. In automatic mode, the exact primary
-anchor is always the first candidate for the shared harmony rest. It becomes
-harmony rest when the complete emitted v1 harmony satisfies the source-anchor
-guard. When that probe fails, the primary itself is never moved or rewritten:
-only the shared checkpoint moves. Harmonized companions preserve a
-primary-equivalent vivid peak at their own hue's natural lightness, then expose
-the color emitted by that scale at the shared harmony-rest slot.
+to share generated-anchor, vivid-reference, or subtle-reference positions.
+Harmony rest may be any public chromatic slot from 1 through 99. In automatic
+mode, the exact primary anchor is always the first candidate for the shared
+harmony rest. It becomes harmony rest when the complete emitted v1 harmony
+satisfies the source-anchor guard. When that probe fails, the primary itself is
+never moved or rewritten: only the shared checkpoint moves. Harmonized
+companions preserve a primary-equivalent vivid peak at their own hue's natural
+lightness, then expose the color emitted by that scale at the shared
+harmony-rest slot.
 
-State-anchor resolution is intentionally simple and deterministic. Each family
-may select a different rule for Light and Dark:
+### Vivid Reference
+
+Vivid resolution preserves the former state-anchor behavior. Each family may
+select a different rule for Light and Dark:
 
 - `auto` follows the generated anchor for Primary, `source-exact`, and
   `adaptive` themes; only `harmonized` themes follow harmony rest, except for
@@ -346,13 +353,14 @@ may select a different rule for Light and Dark:
 - `locked` points to one explicit non-cap public tone from 1 through 99.
 
 Rules are sparse and sorted by family id. An omitted family is equivalent to
-`auto` in both themes, and an explicit `auto/auto` entry is removed during
-normalization. A rule for a family that is not materialized fails explicitly.
-The resolved pointer records its tone, hex, and source in each family asset.
-Changing a state-anchor rule never regenerates or recolors the scale.
+`auto` in both themes, and an entry in which both vivid and subtle rules are
+fully automatic is removed during normalization. A rule for a family that is
+not materialized fails explicitly. The resolved pointer records its tone, hex,
+and source in each family asset. Changing a vivid rule never regenerates or
+recolors the scale.
 
-An automatic `n.black.*` Dark state anchor mirrors the functional contrast of
-its Light state anchor instead of preserving the same physically dark seed.
+An automatic `n.black.*` Dark vivid reference mirrors the functional contrast
+of its Light vivid reference instead of preserving the same physically dark seed.
 The generator measures the resolved Light reference against absolute white,
 then selects the non-cap Dark tone whose contrast against absolute black is
 closest. Ties prefer the lower contrast and then the lower public tone. The
@@ -366,9 +374,9 @@ Dark reference therefore resolves to D90 `#d3d6df`, with `14.45:1` against
 black, while the exact source remains preserved at D7 `#21242d`.
 
 Consequently, under `auto`, Yellow `#ffeb3b` remains exact and uses L5/D95 as
-its primary state anchor even when its system's shared harmony rest is
+its primary vivid reference even when its system's shared harmony rest is
 L28/D65. Companion families in that system continue to use L28/D65 as their
-state anchors when they are harmonized, while authored `source-exact` or
+vivid references when they are harmonized, while authored `source-exact` or
 `adaptive` companions follow their own generated anchors. This does not create
 family-specific harmony-rest slots; it separates the technical checkpoint from
 the position that represents each family's authored identity.
@@ -376,9 +384,50 @@ the position that represents each family's authored identity.
 For example, Orange `#ff6200` remains exact and becomes the shared L24/D70
 harmony rest: its raw fixed-reference baselines are imbalanced, but the emitted
 harmonized chromatic v1 set passes the `0.5` source-anchor guard. Red and Yellow
-may place their generated vivid anchors at different tones while still
+may place their generated anchors at different tones while still
 emitting their harmonized colors at L24/D70. Twitter Blue `#1da1f2` likewise
-keeps its exact L24/D70 anchors as harmony rest and primary state anchor.
+keeps its exact L24/D70 anchors as harmony rest and primary vivid reference.
+
+### Subtle Reference
+
+Subtle is relative to the active theme surface, not an alias for a universally
+light physical color. Light grows away from white as L positions increase;
+Dark grows away from black as D positions increase. A subtle candidate must
+therefore be a non-cap public position on the surface side of the same theme's
+vivid reference. The public L/D labels are never inverted or reinterpreted.
+
+Subtle references are resolved only after all family generation, surface-track
+alignment, and isolated-peak alignment have finished. They select existing
+emitted colors and cannot alter a seed, generated anchor, harmony rest, scale
+position, or HEX value.
+
+Primary subtle rules are:
+
+- `auto` starts from L4 when that position precedes the Light vivid reference;
+  otherwise it uses the nearest preceding public position. Dark auto mirrors
+  the Light surface contrast against absolute black;
+- `reference-match` treats `referenceHex` as calibration evidence and selects
+  the eligible emitted position with the smallest Delta E OK. The reference
+  color is never inserted into the scale;
+- `locked` selects one explicit eligible non-cap public position.
+
+When one Primary theme has authored calibration and the opposite theme remains
+automatic, the automatic theme mirrors the authored theme's contrast against
+its own absolute surface. If no distinct surface-side position exists because
+vivid is already at position 1, subtle reuses position 1 and emits a review
+diagnostic instead of recoloring the scale or silently choosing a cap.
+
+After the Primary subtle positions are known, every automatic support family,
+including `n.black.*`, selects its own eligible emitted position by matching
+the Primary's perceptual distance from the local absolute surface. Surface
+contrast and ordinal proximity are deterministic tie-breakers. This allows a
+luminous Yellow and an achromatic Black to use different public positions while
+remaining equivalent at the surface. It is a functional pointer difference,
+not a second tonal curve.
+
+Locked export materializes both functional references for every family and
+theme. A `reference-match` source also retains its normalized `referenceHex` as
+provenance, but replay uses the locked tone and never performs a new match.
 
 The automatic vividness guard applies only when the source uses at least `0.5`
 of its hue-global chroma potential. An exact source anchor is preserved while
@@ -408,7 +457,7 @@ multi-family orchestration rules above the frozen low-level generator.
 ### Ordinal State Projection
 
 The package may preview interaction states by applying an integer offset to the
-state anchor's index in the canonical public grid. The offset is ordinal, not
+vivid reference's index in the canonical public grid. The offset is ordinal, not
 arithmetic: from L28, `+1` resolves to L30; from L55, `+1` resolves to L60.
 Offsets that leave the chromatic range return no color instead of silently
 clamping to an absolute cap.
@@ -420,7 +469,7 @@ different offset signs for Light and Dark. The current Rest/Hover/Pressed/Focus
 display is an experiment for evaluating slot distance, DeltaE, and contrast;
 it is not yet a preset or component-state contract.
 
-State projection selects colors that already exist in the emitted scale. It
+Vivid state projection selects colors that already exist in the emitted scale. It
 does not recolor a slot, regenerate a family, or change any low-level
 `generateKiskadeeScale` output.
 
@@ -478,18 +527,20 @@ colors/
 
 The required system contains 12 color assets and 15 files total. Additional
 authored variants add one color file each. All artifacts identify
-`@kiskadee/tonal-scale@0.3.5`.
+`@kiskadee/tonal-scale@0.4.0`.
 
 The locked source retains the primary id and seed, policies, overrides,
-profile, rest positions, state-anchor rules, and contract identifiers. The
-manifest centralizes asset hashes. Each color asset contains `munsellSector`,
-`appearance`, `variant`, `colorKind`, `seedHex`, `seedOrigin`, policies,
-generated anchors, harmony-rest colors, per-theme `stateReferences`, and
-complete Light and Dark tone maps. A state reference records its tone, hex, and
-whether it came from `generated-anchor`, `harmony-rest`, `contrast-mirror`, or
-`locked`. The diagnostics identify the `fixed-reference` seed model and
+profile, rest positions, fully resolved functional references, and contract
+identifiers. The manifest centralizes asset hashes. Each color asset contains
+`munsellSector`, `appearance`, `variant`, `colorKind`, `seedHex`, `seedOrigin`,
+policies, generated anchors, harmony-rest colors, per-theme
+`functionalReferences`, and complete Light and Dark tone maps. Each vivid or
+subtle reference records its tone, emitted hex, and source. A
+`reference-match` also keeps the normalized reference hex as provenance. The
+diagnostics identify the `fixed-reference` seed model and
 `kiskadee-munsell-reference-v1` set alongside cross-hue balance,
-classification, harmony metrics, and scale diagnostics.
+classification, harmony metrics, reference matching, surface-relative
+selection, and scale diagnostics.
 
 Verification regenerates the complete bundle and compares canonical JSON byte
 for byte. Missing, extra, non-canonical, or modified files invalidate it
@@ -498,7 +549,7 @@ atomically.
 ## Versioning And External Boundary
 
 Family variant, package version, artifact format, grid contract, harmony
-contract, and tonal profile are independent version axes. The V3 format and
+contract, and tonal profile are independent version axes. The V4 format and
 Munsell harmony contract do not alter the `kiskadee-tonal-v1` low-level grid or
 the canonical Balanced barrier.
 
@@ -526,8 +577,16 @@ Explicit per-theme state-anchor rules still win. Bundles generated before
 `0.3.5` must be regenerated because their Black Dark state reference and
 generator version differ.
 
+Generator `0.4.0` replaces the ambiguous state anchor with explicit vivid and
+subtle functional references and moves the artifact contract to format V4.
+Vivid preserves the approved V3 pointer behavior. Subtle adds post-generation
+surface-relative selection and optional reference matching without changing
+any low-level or multi-family scale bytes. V3 sources are rejected explicitly;
+locked V4 sources contain every resolved family reference so replay never
+depends on re-matching external evidence.
+
 This package produces Layer 1 artifacts only. It does not write presets,
 external types, semantic aliases, or component state mappings. In particular,
-exporting a state anchor does not authorize a preset to adopt the experimental
-state offsets. Preset integration and the definitive Light/Dark mapping require
-a separate approved plan after this generator is visually accepted.
+exporting functional references does not authorize a preset to adopt the
+experimental state offsets. Preset integration, including the first Fluent use
+of the subtle reference, remains a separate follow-up.

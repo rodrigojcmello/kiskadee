@@ -7,7 +7,7 @@ import {
   type KiskadeeTone
 } from './kiskadee-tonal-scale.ts';
 
-export const TONAL_SYSTEM_FORMAT_VERSION = 3 as const;
+export const TONAL_SYSTEM_FORMAT_VERSION = 4 as const;
 export const TONAL_GRID_CONTRACT = 'kiskadee-tonal-v1' as const;
 export const TONAL_HARMONY_CONTRACT = 'kiskadee-munsell-rest-v1' as const;
 
@@ -144,7 +144,7 @@ export const TONAL_BASE_FAMILY_IDS = MUNSELL_SECTORS.map(
   (sector) => TONAL_BASE_FAMILY_ID_BY_SECTOR[sector]
 );
 
-export type TonalPrimaryDraftV3 = {
+export type TonalPrimaryDraftV4 = {
   seedHex: string;
   appearance: TonalPrimaryAppearance;
   variant: TonalFamilyVariant;
@@ -154,13 +154,13 @@ export type TonalPrimaryDraftV3 = {
   };
 };
 
-export type TonalPrimaryLockedV3 = {
+export type TonalPrimaryLockedV4 = {
   id: TonalFamilyId;
   seedHex: string;
-  policies: TonalPrimaryDraftV3['policies'];
+  policies: TonalPrimaryDraftV4['policies'];
 };
 
-export type TonalFamilyOverrideV3 = {
+export type TonalFamilyOverrideV4 = {
   id: TonalFamilyId;
   seedHex: string;
   policies: {
@@ -179,16 +179,55 @@ export type LockedRest = {
   dark: KiskadeeTone;
 };
 
-export type TonalStateAnchorRule =
+export type TonalVividReferenceRule =
   | { mode: 'auto' }
   | { mode: 'generated-anchor' }
   | { mode: 'harmony-rest' }
   | { mode: 'locked'; tone: KiskadeeTone };
 
-export type TonalFamilyStateAnchorsV3 = {
+export type TonalSubtleReferenceRule =
+  | { mode: 'auto' }
+  | { mode: 'reference-match'; referenceHex: string }
+  | { mode: 'locked'; tone: KiskadeeTone };
+
+export type TonalFamilyFunctionalReferenceRulesV4 = {
   id: TonalFamilyId;
-  light: TonalStateAnchorRule;
-  dark: TonalStateAnchorRule;
+  light: {
+    vivid: TonalVividReferenceRule;
+    subtle: TonalSubtleReferenceRule;
+  };
+  dark: {
+    vivid: TonalVividReferenceRule;
+    subtle: TonalSubtleReferenceRule;
+  };
+};
+
+export type LockedTonalFunctionalReferenceV4 =
+  | {
+      tone: KiskadeeTone;
+      source:
+        | 'generated-anchor'
+        | 'harmony-rest'
+        | 'contrast-mirror'
+        | 'surface-relative'
+        | 'locked';
+    }
+  | {
+      tone: KiskadeeTone;
+      source: 'reference-match';
+      referenceHex: string;
+    };
+
+export type LockedTonalFamilyFunctionalReferencesV4 = {
+  id: TonalFamilyId;
+  light: {
+    vivid: LockedTonalFunctionalReferenceV4;
+    subtle: LockedTonalFunctionalReferenceV4;
+  };
+  dark: {
+    vivid: LockedTonalFunctionalReferenceV4;
+    subtle: LockedTonalFunctionalReferenceV4;
+  };
 };
 
 type TonalSystemContractBase = {
@@ -196,23 +235,23 @@ type TonalSystemContractBase = {
   gridContract: typeof TONAL_GRID_CONTRACT;
   harmonyContract: typeof TONAL_HARMONY_CONTRACT;
   tonalProfile: KiskadeeTonalProfile;
-  overrides: TonalFamilyOverrideV3[];
+  overrides: TonalFamilyOverrideV4[];
 };
 
-export type TonalSystemRecipeV3 = TonalSystemContractBase & {
-  primary: TonalPrimaryDraftV3;
+export type TonalSystemRecipeV4 = TonalSystemContractBase & {
+  primary: TonalPrimaryDraftV4;
   tonalAnchors: {
     rest: AutoRest | LockedRest;
-    states?: TonalFamilyStateAnchorsV3[];
   };
+  functionalReferences: TonalFamilyFunctionalReferenceRulesV4[];
 };
 
-export type LockedTonalSystemSourceV3 = TonalSystemContractBase & {
-  primary: TonalPrimaryLockedV3;
+export type LockedTonalSystemSourceV4 = TonalSystemContractBase & {
+  primary: TonalPrimaryLockedV4;
   tonalAnchors: {
     rest: LockedRest;
-    states?: TonalFamilyStateAnchorsV3[];
   };
+  functionalReferences: LockedTonalFamilyFunctionalReferencesV4[];
 };
 
 export type TonalSystemValidationIssue = {
@@ -239,11 +278,11 @@ export const DEFAULT_TONAL_SYSTEM_RECIPE = {
   tonalAnchors: {
     rest: {
       mode: 'auto'
-    },
-    states: []
+    }
   },
+  functionalReferences: [],
   overrides: []
-} as const satisfies TonalSystemRecipeV3;
+} as const satisfies TonalSystemRecipeV4;
 
 const RECIPE_KEYS = [
   'formatVersion',
@@ -252,18 +291,23 @@ const RECIPE_KEYS = [
   'tonalProfile',
   'primary',
   'tonalAnchors',
+  'functionalReferences',
   'overrides'
 ] as const;
 const PRIMARY_DRAFT_KEYS = ['seedHex', 'appearance', 'variant', 'policies'] as const;
 const PRIMARY_LOCKED_KEYS = ['id', 'seedHex', 'policies'] as const;
 const OVERRIDE_KEYS = ['id', 'seedHex', 'policies'] as const;
 const FAMILY_POLICY_KEYS = ['light', 'dark'] as const;
-const TONAL_ANCHOR_KEYS = ['rest', 'states'] as const;
+const TONAL_ANCHOR_KEYS = ['rest'] as const;
 const AUTO_REST_KEYS = ['mode'] as const;
 const LOCKED_REST_KEYS = ['mode', 'light', 'dark'] as const;
-const STATE_ANCHOR_KEYS = ['id', 'light', 'dark'] as const;
-const STATE_ANCHOR_RULE_KEYS = ['mode'] as const;
-const LOCKED_STATE_ANCHOR_RULE_KEYS = ['mode', 'tone'] as const;
+const FUNCTIONAL_REFERENCE_KEYS = ['id', 'light', 'dark'] as const;
+const FUNCTIONAL_REFERENCE_THEME_KEYS = ['vivid', 'subtle'] as const;
+const REFERENCE_RULE_KEYS = ['mode'] as const;
+const LOCKED_REFERENCE_RULE_KEYS = ['mode', 'tone'] as const;
+const REFERENCE_MATCH_RULE_KEYS = ['mode', 'referenceHex'] as const;
+const LOCKED_FUNCTIONAL_REFERENCE_KEYS = ['tone', 'source'] as const;
+const LOCKED_REFERENCE_MATCH_KEYS = ['tone', 'source', 'referenceHex'] as const;
 
 export type ParsedTonalFamilyId = {
   stem: TonalFamilyStem;
@@ -322,21 +366,22 @@ export function resolveTonalFamilyStem(
 
 export function validateTonalSystemRecipe(
   input: unknown
-): TonalSystemValidationResult<TonalSystemRecipeV3> {
+): TonalSystemValidationResult<TonalSystemRecipeV4> {
   return validateContract(input, 'draft');
 }
 
 export function validateLockedTonalSystemSource(
   input: unknown
-): TonalSystemValidationResult<LockedTonalSystemSourceV3> {
+): TonalSystemValidationResult<LockedTonalSystemSourceV4> {
   return validateContract(input, 'locked');
 }
 
 export function lockTonalSystemRecipe(
-  recipe: TonalSystemRecipeV3,
+  recipe: TonalSystemRecipeV4,
   primaryId: TonalFamilyId,
-  rest: { light: KiskadeeTone; dark: KiskadeeTone }
-): LockedTonalSystemSourceV3 {
+  rest: { light: KiskadeeTone; dark: KiskadeeTone },
+  functionalReferences: readonly LockedTonalFamilyFunctionalReferencesV4[]
+): LockedTonalSystemSourceV4 {
   const recipeValidation = validateTonalSystemRecipe(recipe);
   if (!recipeValidation.valid) {
     throw new Error(
@@ -363,7 +408,7 @@ export function lockTonalSystemRecipe(
     throw new Error('Locked rest positions must be public chromatic tones from 1 through 99.');
   }
 
-  const source: LockedTonalSystemSourceV3 = {
+  const source: LockedTonalSystemSourceV4 = {
     formatVersion: normalizedRecipe.formatVersion,
     gridContract: normalizedRecipe.gridContract,
     harmonyContract: normalizedRecipe.harmonyContract,
@@ -378,13 +423,19 @@ export function lockTonalSystemRecipe(
         mode: 'locked',
         light: rest.light,
         dark: rest.dark
-      },
-      states: (normalizedRecipe.tonalAnchors.states ?? []).map((stateAnchors) => ({
-        id: stateAnchors.id,
-        light: { ...stateAnchors.light },
-        dark: { ...stateAnchors.dark }
-      }))
+      }
     },
+    functionalReferences: functionalReferences.map((family) => ({
+      id: family.id,
+      light: {
+        vivid: cloneLockedFunctionalReference(family.light.vivid),
+        subtle: cloneLockedFunctionalReference(family.light.subtle)
+      },
+      dark: {
+        vivid: cloneLockedFunctionalReference(family.dark.vivid),
+        subtle: cloneLockedFunctionalReference(family.dark.subtle)
+      }
+    })),
     overrides: normalizedRecipe.overrides.map((override) => ({
       ...override,
       policies: { ...override.policies }
@@ -405,15 +456,15 @@ export function lockTonalSystemRecipe(
 function validateContract(
   input: unknown,
   stage: 'draft'
-): TonalSystemValidationResult<TonalSystemRecipeV3>;
+): TonalSystemValidationResult<TonalSystemRecipeV4>;
 function validateContract(
   input: unknown,
   stage: 'locked'
-): TonalSystemValidationResult<LockedTonalSystemSourceV3>;
+): TonalSystemValidationResult<LockedTonalSystemSourceV4>;
 function validateContract(
   input: unknown,
   stage: 'draft' | 'locked'
-): TonalSystemValidationResult<TonalSystemRecipeV3 | LockedTonalSystemSourceV3> {
+): TonalSystemValidationResult<TonalSystemRecipeV4 | LockedTonalSystemSourceV4> {
   const issues: TonalSystemValidationIssue[] = [];
   const issue = (code: string, path: string, message: string) => {
     issues.push({ code, path, message });
@@ -441,13 +492,16 @@ function validateContract(
       ? validateDraftPrimary(input.primary, issue)
       : validateLockedPrimary(input.primary, issue);
   const rest = validateRest(input.tonalAnchors, stage, issue);
-  const states = validateStateAnchors(input.tonalAnchors, issue);
   const overrides = validateOverrides(input.overrides, issue);
+  const functionalReferences =
+    stage === 'draft'
+      ? validateDraftFunctionalReferences(input.functionalReferences, issue)
+      : validateLockedFunctionalReferences(input.functionalReferences, issue);
 
   if (
     stage === 'locked' &&
     primary &&
-    overrides?.some((override) => override.id === (primary as TonalPrimaryLockedV3).id)
+    overrides?.some((override) => override.id === (primary as TonalPrimaryLockedV4).id)
   ) {
     issue(
       'PRIMARY_OVERRIDE_CONFLICT',
@@ -456,12 +510,28 @@ function validateContract(
     );
   }
 
+  if (stage === 'locked' && primary && overrides && functionalReferences) {
+    validateLockedFunctionalReferenceCompleteness(
+      primary as TonalPrimaryLockedV4,
+      overrides,
+      functionalReferences as LockedTonalFamilyFunctionalReferencesV4[],
+      issue
+    );
+  }
+
   issues.sort((left, right) =>
     left.path === right.path
       ? compareStrings(left.code, right.code)
       : compareStrings(left.path, right.path)
   );
-  if (issues.length > 0 || !tonalProfile || !primary || !rest || states === null || !overrides) {
+  if (
+    issues.length > 0 ||
+    !tonalProfile ||
+    !primary ||
+    !rest ||
+    !overrides ||
+    !functionalReferences
+  ) {
     return { valid: false, value: null, issues };
   }
 
@@ -478,8 +548,9 @@ function validateContract(
       valid: true,
       value: {
         ...base,
-        primary: primary as TonalPrimaryDraftV3,
-        tonalAnchors: { rest, states }
+        primary: primary as TonalPrimaryDraftV4,
+        tonalAnchors: { rest },
+        functionalReferences: functionalReferences as TonalFamilyFunctionalReferenceRulesV4[]
       },
       issues: []
     };
@@ -489,8 +560,9 @@ function validateContract(
     valid: true,
     value: {
       ...base,
-      primary: primary as TonalPrimaryLockedV3,
-      tonalAnchors: { rest: rest as LockedRest, states }
+      primary: primary as TonalPrimaryLockedV4,
+      tonalAnchors: { rest: rest as LockedRest },
+      functionalReferences: functionalReferences as LockedTonalFamilyFunctionalReferencesV4[]
     },
     issues: []
   };
@@ -502,7 +574,7 @@ function validateContractIdentifiers(
 ): void {
   if (input.formatVersion !== TONAL_SYSTEM_FORMAT_VERSION) {
     const legacy =
-      input.formatVersion === 1 || input.formatVersion === 2
+      input.formatVersion === 1 || input.formatVersion === 2 || input.formatVersion === 3
         ? ` Version ${input.formatVersion} is not migrated automatically.`
         : '';
     issue(
@@ -522,7 +594,7 @@ function validateContractIdentifiers(
 function validateDraftPrimary(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryDraftV3 | null {
+): TonalPrimaryDraftV4 | null {
   const path = '/primary';
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY', path, 'Primary must be a plain object.');
@@ -563,7 +635,7 @@ function validateDraftPrimary(
 function validateLockedPrimary(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryLockedV3 | null {
+): TonalPrimaryLockedV4 | null {
   const path = '/primary';
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY', path, 'Primary must be a plain object.');
@@ -589,7 +661,7 @@ function validatePrimaryPolicies(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryDraftV3['policies'] | null {
+): TonalPrimaryDraftV4['policies'] | null {
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY_POLICIES', path, 'Primary policies must be a plain object.');
     return null;
@@ -619,13 +691,13 @@ function validatePrimaryPolicies(
 function validateOverrides(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyOverrideV3[] | null {
+): TonalFamilyOverrideV4[] | null {
   if (!Array.isArray(input)) {
     issue('INVALID_OVERRIDES', '/overrides', 'Overrides must be an array.');
     return null;
   }
 
-  const overrides: TonalFamilyOverrideV3[] = [];
+  const overrides: TonalFamilyOverrideV4[] = [];
   const seen = new Set<TonalFamilyId>();
   input.forEach((rawOverride, index) => {
     const path = `/overrides/${index}`;
@@ -666,7 +738,7 @@ function validateOverridePolicies(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyOverrideV3['policies'] | null {
+): TonalFamilyOverrideV4['policies'] | null {
   if (!isPlainObject(input)) {
     issue('INVALID_OVERRIDE_POLICIES', path, 'Override policies must be a plain object.');
     return null;
@@ -715,69 +787,348 @@ function validateRest(
   return light !== null && dark !== null ? { mode: 'locked', light, dark } : null;
 }
 
-function validateStateAnchors(
+function validateDraftFunctionalReferences(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyStateAnchorsV3[] | null {
-  if (!isPlainObject(input)) return null;
-  if (input.states === undefined) return [];
-  if (!Array.isArray(input.states)) {
-    issue('INVALID_STATE_ANCHORS', '/tonalAnchors/states', 'State anchors must be an array.');
+): TonalFamilyFunctionalReferenceRulesV4[] | null {
+  const collectionPath = '/functionalReferences';
+  if (!Array.isArray(input)) {
+    issue(
+      'INVALID_FUNCTIONAL_REFERENCES',
+      collectionPath,
+      'Functional references must be an array.'
+    );
     return null;
   }
 
-  const stateAnchors: TonalFamilyStateAnchorsV3[] = [];
+  const references: TonalFamilyFunctionalReferenceRulesV4[] = [];
   const seen = new Set<TonalFamilyId>();
-  input.states.forEach((rawStateAnchors, index) => {
-    const path = `/tonalAnchors/states/${index}`;
-    if (!isPlainObject(rawStateAnchors)) {
-      issue('INVALID_STATE_ANCHOR', path, 'Family state anchors must be a plain object.');
+  input.forEach((rawFamily, index) => {
+    const path = `${collectionPath}/${index}`;
+    if (!isPlainObject(rawFamily)) {
+      issue(
+        'INVALID_FUNCTIONAL_REFERENCE_FAMILY',
+        path,
+        'Family functional references must be a plain object.'
+      );
       return;
     }
 
-    reportUnknownKeys(rawStateAnchors, STATE_ANCHOR_KEYS, path, issue);
-    const id = validateFamilyId(rawStateAnchors.id, `${path}/id`, issue);
-    const light = validateStateAnchorRule(rawStateAnchors.light, `${path}/light`, issue);
-    const dark = validateStateAnchorRule(rawStateAnchors.dark, `${path}/dark`, issue);
+    reportUnknownKeys(rawFamily, FUNCTIONAL_REFERENCE_KEYS, path, issue);
+    const id = validateFamilyId(rawFamily.id, `${path}/id`, issue);
+    const light = validateDraftFunctionalReferenceTheme(rawFamily.light, `${path}/light`, issue);
+    const dark = validateDraftFunctionalReferenceTheme(rawFamily.dark, `${path}/dark`, issue);
 
     if (id && seen.has(id)) {
-      issue('DUPLICATE_STATE_ANCHOR_ID', `${path}/id`, `Duplicate state anchor id: ${id}.`);
+      issue(
+        'DUPLICATE_FUNCTIONAL_REFERENCE_ID',
+        `${path}/id`,
+        `Duplicate functional reference id: ${id}.`
+      );
     }
     if (id) seen.add(id);
-    if (!id || !light || !dark || (light.mode === 'auto' && dark.mode === 'auto')) return;
-    stateAnchors.push({ id, light, dark });
+    if (!id || !light || !dark) return;
+    if (
+      light.vivid.mode === 'auto' &&
+      light.subtle.mode === 'auto' &&
+      dark.vivid.mode === 'auto' &&
+      dark.subtle.mode === 'auto'
+    ) {
+      return;
+    }
+    references.push({ id, light, dark });
   });
 
-  return stateAnchors.sort((left, right) => compareStrings(left.id, right.id));
+  return references.sort((left, right) => compareStrings(left.id, right.id));
 }
 
-function validateStateAnchorRule(
+function validateDraftFunctionalReferenceTheme(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalStateAnchorRule | null {
+): TonalFamilyFunctionalReferenceRulesV4['light'] | null {
   if (!isPlainObject(input)) {
-    issue('INVALID_STATE_ANCHOR_RULE', path, 'State anchor rule must be a plain object.');
+    issue(
+      'INVALID_FUNCTIONAL_REFERENCE_THEME',
+      path,
+      'Theme functional references must be a plain object.'
+    );
+    return null;
+  }
+  reportUnknownKeys(input, FUNCTIONAL_REFERENCE_THEME_KEYS, path, issue);
+  const vivid = validateVividReferenceRule(input.vivid, `${path}/vivid`, issue);
+  const subtle = validateSubtleReferenceRule(input.subtle, `${path}/subtle`, issue);
+  if (vivid?.mode === 'locked' && subtle?.mode === 'locked') {
+    const subtleIndex = KISKADEE_TONES.indexOf(subtle.tone);
+    const vividIndex = KISKADEE_TONES.indexOf(vivid.tone);
+    if (subtleIndex >= vividIndex) {
+      issue(
+        'INVALID_FUNCTIONAL_REFERENCE_ORDER',
+        `${path}/subtle/tone`,
+        'A manually locked subtle reference must be closer to the theme surface than the vivid reference.'
+      );
+    }
+  }
+  return vivid && subtle ? { vivid, subtle } : null;
+}
+
+function validateVividReferenceRule(
+  input: unknown,
+  path: string,
+  issue: (code: string, path: string, message: string) => void
+): TonalVividReferenceRule | null {
+  if (!isPlainObject(input)) {
+    issue('INVALID_VIVID_REFERENCE_RULE', path, 'Vivid reference rule must be a plain object.');
     return null;
   }
 
   if (input.mode === 'locked') {
-    reportUnknownKeys(input, LOCKED_STATE_ANCHOR_RULE_KEYS, path, issue);
-    const tone = validateStateAnchorTone(input.tone, `${path}/tone`, issue);
+    reportUnknownKeys(input, LOCKED_REFERENCE_RULE_KEYS, path, issue);
+    const tone = validateFunctionalReferenceTone(input.tone, `${path}/tone`, issue);
     return tone === null ? null : { mode: 'locked', tone };
   }
 
-  reportUnknownKeys(input, STATE_ANCHOR_RULE_KEYS, path, issue);
+  reportUnknownKeys(input, REFERENCE_RULE_KEYS, path, issue);
   if (input.mode === 'auto' || input.mode === 'generated-anchor' || input.mode === 'harmony-rest') {
     return { mode: input.mode };
   }
 
   issue(
-    'INVALID_STATE_ANCHOR_MODE',
+    'INVALID_VIVID_REFERENCE_MODE',
     `${path}/mode`,
-    'State anchor mode must be auto, generated-anchor, harmony-rest, or locked.'
+    'Vivid reference mode must be auto, generated-anchor, harmony-rest, or locked.'
   );
   return null;
+}
+
+function validateSubtleReferenceRule(
+  input: unknown,
+  path: string,
+  issue: (code: string, path: string, message: string) => void
+): TonalSubtleReferenceRule | null {
+  if (!isPlainObject(input)) {
+    issue('INVALID_SUBTLE_REFERENCE_RULE', path, 'Subtle reference rule must be a plain object.');
+    return null;
+  }
+
+  if (input.mode === 'locked') {
+    reportUnknownKeys(input, LOCKED_REFERENCE_RULE_KEYS, path, issue);
+    const tone = validateFunctionalReferenceTone(input.tone, `${path}/tone`, issue);
+    return tone === null ? null : { mode: 'locked', tone };
+  }
+  if (input.mode === 'reference-match') {
+    reportUnknownKeys(input, REFERENCE_MATCH_RULE_KEYS, path, issue);
+    const referenceHex = validateReferenceHex(input.referenceHex, `${path}/referenceHex`, issue);
+    return referenceHex ? { mode: 'reference-match', referenceHex } : null;
+  }
+
+  reportUnknownKeys(input, REFERENCE_RULE_KEYS, path, issue);
+  if (input.mode === 'auto') return { mode: 'auto' };
+
+  issue(
+    'INVALID_SUBTLE_REFERENCE_MODE',
+    `${path}/mode`,
+    'Subtle reference mode must be auto, reference-match, or locked.'
+  );
+  return null;
+}
+
+function validateLockedFunctionalReferences(
+  input: unknown,
+  issue: (code: string, path: string, message: string) => void
+): LockedTonalFamilyFunctionalReferencesV4[] | null {
+  const collectionPath = '/functionalReferences';
+  if (!Array.isArray(input)) {
+    issue(
+      'INVALID_LOCKED_FUNCTIONAL_REFERENCES',
+      collectionPath,
+      'Locked functional references must be an array.'
+    );
+    return null;
+  }
+
+  const references: LockedTonalFamilyFunctionalReferencesV4[] = [];
+  const seen = new Set<TonalFamilyId>();
+  input.forEach((rawFamily, index) => {
+    const path = `${collectionPath}/${index}`;
+    if (!isPlainObject(rawFamily)) {
+      issue(
+        'INVALID_LOCKED_FUNCTIONAL_REFERENCE_FAMILY',
+        path,
+        'Locked family functional references must be a plain object.'
+      );
+      return;
+    }
+
+    reportUnknownKeys(rawFamily, FUNCTIONAL_REFERENCE_KEYS, path, issue);
+    const id = validateFamilyId(rawFamily.id, `${path}/id`, issue);
+    const light = validateLockedFunctionalReferenceTheme(rawFamily.light, `${path}/light`, issue);
+    const dark = validateLockedFunctionalReferenceTheme(rawFamily.dark, `${path}/dark`, issue);
+
+    if (id && seen.has(id)) {
+      issue(
+        'DUPLICATE_FUNCTIONAL_REFERENCE_ID',
+        `${path}/id`,
+        `Duplicate functional reference id: ${id}.`
+      );
+    }
+    if (id) seen.add(id);
+    if (!id || !light || !dark) return;
+
+    if (light.vivid.source === 'contrast-mirror') {
+      issue(
+        'INVALID_CONTRAST_MIRROR_REFERENCE',
+        `${path}/light/vivid/source`,
+        'Contrast-mirror is available only for an achromatic Dark vivid reference.'
+      );
+    }
+    if (
+      dark.vivid.source === 'contrast-mirror' &&
+      resolveTonalFamilyColorKind(id) !== 'achromatic'
+    ) {
+      issue(
+        'INVALID_CONTRAST_MIRROR_REFERENCE',
+        `${path}/dark/vivid/source`,
+        'Contrast-mirror is available only for an achromatic Dark vivid reference.'
+      );
+    }
+    validateFunctionalReferenceOrder(light, `${path}/light`, issue);
+    validateFunctionalReferenceOrder(dark, `${path}/dark`, issue);
+    references.push({ id, light, dark });
+  });
+
+  return references.sort((left, right) => compareStrings(left.id, right.id));
+}
+
+function validateLockedFunctionalReferenceTheme(
+  input: unknown,
+  path: string,
+  issue: (code: string, path: string, message: string) => void
+): LockedTonalFamilyFunctionalReferencesV4['light'] | null {
+  if (!isPlainObject(input)) {
+    issue(
+      'INVALID_LOCKED_FUNCTIONAL_REFERENCE_THEME',
+      path,
+      'Locked theme functional references must be a plain object.'
+    );
+    return null;
+  }
+  reportUnknownKeys(input, FUNCTIONAL_REFERENCE_THEME_KEYS, path, issue);
+  const vivid = validateLockedFunctionalReference(input.vivid, `${path}/vivid`, 'vivid', issue);
+  const subtle = validateLockedFunctionalReference(input.subtle, `${path}/subtle`, 'subtle', issue);
+  return vivid && subtle ? { vivid, subtle } : null;
+}
+
+function validateLockedFunctionalReference(
+  input: unknown,
+  path: string,
+  kind: 'vivid' | 'subtle',
+  issue: (code: string, path: string, message: string) => void
+): LockedTonalFunctionalReferenceV4 | null {
+  if (!isPlainObject(input)) {
+    issue(
+      'INVALID_LOCKED_FUNCTIONAL_REFERENCE',
+      path,
+      'Locked functional reference must be a plain object.'
+    );
+    return null;
+  }
+
+  const source = input.source;
+  const allowedSources =
+    kind === 'vivid'
+      ? ['generated-anchor', 'harmony-rest', 'contrast-mirror', 'locked']
+      : ['surface-relative', 'reference-match', 'locked'];
+  if (typeof source !== 'string' || !allowedSources.includes(source)) {
+    issue(
+      'INVALID_LOCKED_FUNCTIONAL_REFERENCE_SOURCE',
+      `${path}/source`,
+      `Locked ${kind} reference has an unsupported source.`
+    );
+  }
+
+  const isReferenceMatch = source === 'reference-match';
+  reportUnknownKeys(
+    input,
+    isReferenceMatch ? LOCKED_REFERENCE_MATCH_KEYS : LOCKED_FUNCTIONAL_REFERENCE_KEYS,
+    path,
+    issue
+  );
+  const tone = validateFunctionalReferenceTone(input.tone, `${path}/tone`, issue);
+  const referenceHex = isReferenceMatch
+    ? validateReferenceHex(input.referenceHex, `${path}/referenceHex`, issue)
+    : null;
+
+  if (tone === null || typeof source !== 'string' || !allowedSources.includes(source)) return null;
+  if (source === 'reference-match') {
+    return referenceHex ? { tone, source, referenceHex } : null;
+  }
+  return {
+    tone,
+    source: source as Exclude<LockedTonalFunctionalReferenceV4['source'], 'reference-match'>
+  };
+}
+
+function validateFunctionalReferenceOrder(
+  references: LockedTonalFamilyFunctionalReferencesV4['light'],
+  path: string,
+  issue: (code: string, path: string, message: string) => void
+): void {
+  const subtleIndex = KISKADEE_TONES.indexOf(references.subtle.tone);
+  const vividIndex = KISKADEE_TONES.indexOf(references.vivid.tone);
+  const isSurfaceEdgeFallback =
+    references.subtle.tone === 1 &&
+    references.vivid.tone === 1 &&
+    references.subtle.source !== 'locked';
+  if (subtleIndex >= vividIndex && !isSurfaceEdgeFallback) {
+    issue(
+      'INVALID_FUNCTIONAL_REFERENCE_ORDER',
+      `${path}/subtle/tone`,
+      'Subtle reference must be closer to the theme surface than the vivid reference; equality is reserved for the tone-1 surface-edge fallback.'
+    );
+  }
+}
+
+function validateLockedFunctionalReferenceCompleteness(
+  primary: TonalPrimaryLockedV4,
+  overrides: TonalFamilyOverrideV4[],
+  references: LockedTonalFamilyFunctionalReferencesV4[],
+  issue: (code: string, path: string, message: string) => void
+): void {
+  const expectedIds = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
+  expectedIds.add(primary.id);
+  for (const override of overrides) expectedIds.add(override.id);
+  const actualIds = new Set(references.map((reference) => reference.id));
+
+  for (const id of [...expectedIds].sort(compareStrings)) {
+    if (!actualIds.has(id)) {
+      issue(
+        'MISSING_LOCKED_FUNCTIONAL_REFERENCE',
+        '/functionalReferences',
+        `Locked source is missing functional references for ${id}.`
+      );
+    }
+  }
+  references.forEach((reference, index) => {
+    if (!expectedIds.has(reference.id)) {
+      issue(
+        'UNKNOWN_LOCKED_FUNCTIONAL_REFERENCE_FAMILY',
+        `/functionalReferences/${index}/id`,
+        `${reference.id} is not part of the locked tonal system.`
+      );
+    }
+    if (
+      reference.id !== primary.id &&
+      (reference.light.subtle.source === 'reference-match' ||
+        reference.dark.subtle.source === 'reference-match')
+    ) {
+      issue(
+        'SUPPORT_REFERENCE_MATCH_UNSUPPORTED',
+        `/functionalReferences/${index}`,
+        'Only the Primary may retain a HEX target for its subtle reference.'
+      );
+    }
+  });
 }
 
 function validateThemePolicy(
@@ -800,7 +1151,7 @@ function validateFamilyId(
   issue: (code: string, path: string, message: string) => void
 ): TonalFamilyId | null {
   if (typeof value === 'string' && parseTonalFamilyId(value)) return value as TonalFamilyId;
-  issue('INVALID_FAMILY_ID', path, 'Family id is not supported by tonal-system format 3.');
+  issue('INVALID_FAMILY_ID', path, 'Family id is not supported by tonal-system format 4.');
   return null;
 }
 
@@ -826,20 +1177,48 @@ function validateRestTone(
   return value;
 }
 
-function validateStateAnchorTone(
+function validateFunctionalReferenceTone(
   value: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
 ): KiskadeeTone | null {
   if (!isRestTone(value)) {
     issue(
-      'INVALID_STATE_ANCHOR_TONE',
+      'INVALID_FUNCTIONAL_REFERENCE_TONE',
       path,
-      'State anchor must be a non-cap public tone from 1 through 99.'
+      'Functional reference must be a non-cap public tone from 1 through 99.'
     );
     return null;
   }
   return value;
+}
+
+function validateReferenceHex(
+  value: unknown,
+  path: string,
+  issue: (code: string, path: string, message: string) => void
+): string | null {
+  const referenceHex = typeof value === 'string' ? normalizeHexColor(value) : null;
+  if (!referenceHex) {
+    issue(
+      'INVALID_FUNCTIONAL_REFERENCE_HEX',
+      path,
+      'Functional reference target must be a valid opaque sRGB hex color.'
+    );
+  }
+  return referenceHex;
+}
+
+function cloneLockedFunctionalReference(
+  reference: LockedTonalFunctionalReferenceV4
+): LockedTonalFunctionalReferenceV4 {
+  return reference.source === 'reference-match'
+    ? {
+        tone: reference.tone,
+        source: reference.source,
+        referenceHex: reference.referenceHex
+      }
+    : { tone: reference.tone, source: reference.source };
 }
 
 function isRestTone(value: unknown): value is KiskadeeTone {

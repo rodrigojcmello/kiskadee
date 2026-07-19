@@ -489,18 +489,30 @@ dd {
   opacity: 0.78;
 }
 
+.preview-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
 .preview-button {
   display: inline-flex;
   min-height: 38px;
   align-items: center;
   justify-content: center;
-  margin-top: 18px;
   border: 0;
   border-radius: 9px;
   padding: 0 16px;
-  background: var(--preview-action);
-  color: var(--preview-action-text);
+  background: var(--preview-vivid-action);
+  color: var(--preview-vivid-action-text);
   font-weight: 700;
+}
+
+.preview-button.subtle {
+  background: var(--preview-subtle-action);
+  color: var(--preview-subtle-action-text);
 }
 
 .state-experiment {
@@ -655,11 +667,24 @@ dd {
   transform: translateX(-50%);
 }
 
-.swatch.state-reference {
+.swatch.vivid-reference,
+.swatch.subtle-reference {
   position: relative;
 }
 
-.swatch-state-reference-marker {
+.swatch-vivid-reference-marker {
+  position: absolute;
+  z-index: 2;
+  top: 30px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid currentcolor;
+  background: color-mix(in srgb, var(--swatch) 36%, currentcolor);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.swatch-subtle-reference-marker {
   position: absolute;
   z-index: 2;
   top: 17px;
@@ -667,8 +692,8 @@ dd {
   width: 7px;
   height: 7px;
   border: 1px solid currentcolor;
-  background: color-mix(in srgb, var(--swatch) 36%, currentcolor);
-  transform: translateX(-50%) rotate(45deg);
+  background: var(--swatch);
+  transform: translateX(-50%);
 }
 
 .swatch-tone,
@@ -1154,12 +1179,19 @@ dd {
   background: var(--text);
 }
 
-.overview-marker-legend .state-marker {
+.overview-marker-legend .vivid-marker {
   width: 7px;
   height: 7px;
   border: 1px solid var(--text);
   background: var(--surface);
   transform: rotate(45deg);
+}
+
+.overview-marker-legend .subtle-marker {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--text);
+  background: transparent;
 }
 
 .overview-family {
@@ -1229,7 +1261,7 @@ dd {
 .overview-strip {
   display: grid;
   min-width: 0;
-  height: 28px;
+  height: 34px;
   grid-template-columns: repeat(36, minmax(0, 1fr));
   border: 1px solid var(--border);
   border-radius: 7px;
@@ -1278,16 +1310,28 @@ dd {
   transform: translateX(-50%);
 }
 
-.overview-strip .state-reference-marker {
+.overview-strip .vivid-reference-marker {
   position: absolute;
   z-index: 2;
-  bottom: 4px;
+  bottom: 3px;
   left: 50%;
   width: 7px;
   height: 7px;
   border: 1px solid var(--overview-marker);
   background: color-mix(in srgb, var(--overview-color) 36%, var(--overview-marker));
   transform: translateX(-50%) rotate(45deg);
+}
+
+.overview-strip .subtle-reference-marker {
+  position: absolute;
+  z-index: 2;
+  top: 13px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--overview-marker);
+  background: var(--overview-color);
+  transform: translateX(-50%);
 }
 
 .family-tabs {

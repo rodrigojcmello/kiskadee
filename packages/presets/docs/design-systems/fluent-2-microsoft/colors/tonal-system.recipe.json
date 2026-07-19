@@ -1,5 +1,5 @@
 {
-  "formatVersion": 3,
+  "formatVersion": 4,
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
   "tonalProfile": "muted-darks",
@@ -17,6 +17,7 @@
       "mode": "auto"
     }
   },
+  "functionalReferences": [],
   "overrides": [
     {
       "id": "r.red.v1",

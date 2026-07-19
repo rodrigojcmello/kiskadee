@@ -6,20 +6,20 @@ import {
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
   type ResolvedTonalFamily,
-  resolveTonalStateReference,
-  type TonalStateReference,
+  resolveTonalFunctionalReference,
+  type TonalFunctionalReference,
   type TonalSystemIssue
 } from '../tonal-system.ts';
 import {
   type CoreTonalFamilyId,
-  type LockedTonalSystemSourceV3,
+  type LockedTonalFunctionalReferenceV4,
+  type LockedTonalSystemSourceV4,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyAppearance,
   type TonalFamilyColorKind,
   type TonalFamilyId,
   type TonalFamilySectorNotation,
   type TonalFamilyVariant,
-  type TonalStateAnchorRule,
   type TonalThemePolicy,
   validateLockedTonalSystemSource
 } from '../tonal-system-contract.ts';
@@ -28,7 +28,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.3.5'
+  version: '0.4.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -42,9 +42,9 @@ export type TonalArtifactPath =
 
 export type ToneHexMap = Record<`${KiskadeeTone}`, string>;
 
-export type PrimitiveTonalColorAssetV3 = {
+export type PrimitiveTonalColorAssetV4 = {
   kind: 'kiskadee.primitive-tonal-family';
-  formatVersion: 3;
+  formatVersion: 4;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   id: TonalFamilyId;
   munsellSector: TonalFamilySectorNotation | 'N';
@@ -52,7 +52,7 @@ export type PrimitiveTonalColorAssetV3 = {
   variant: TonalFamilyVariant;
   colorKind: TonalFamilyColorKind;
   role: 'primary' | 'support';
-  tonalProfile: LockedTonalSystemSourceV3['tonalProfile'];
+  tonalProfile: LockedTonalSystemSourceV4['tonalProfile'];
   seedHex: string;
   seedOrigin: ResolvedTonalFamily['seedOrigin'];
   policies: { light: TonalThemePolicy; dark: TonalThemePolicy };
@@ -65,14 +65,29 @@ export type PrimitiveTonalColorAssetV3 = {
     light: { tone: KiskadeeTone; hex: string };
     dark: { tone: KiskadeeTone; hex: string };
   };
-  stateReferences: {
-    light: ArtifactStateReference;
-    dark: ArtifactStateReference;
+  functionalReferences: {
+    light: {
+      vivid: ArtifactFunctionalReference;
+      subtle: ArtifactFunctionalReference;
+    };
+    dark: {
+      vivid: ArtifactFunctionalReference;
+      subtle: ArtifactFunctionalReference;
+    };
   };
   scales: { light: ToneHexMap; dark: ToneHexMap };
 };
 
-type ArtifactStateReference = Pick<TonalStateReference, 'tone' | 'hex' | 'source'>;
+type ArtifactFunctionalReference = Pick<TonalFunctionalReference, 'tone' | 'hex' | 'source'>;
+
+type ArtifactFunctionalReferenceDiagnostics = Pick<
+  TonalFunctionalReference,
+  'tone' | 'hex' | 'source' | 'surfaceContrast' | 'surfaceDeltaE'
+> &
+  Partial<Pick<TonalFunctionalReference, 'referenceHex' | 'deltaE'>> & {
+    surfaceContrastError?: number;
+    surfaceDeltaEError?: number;
+  };
 
 export type TonalManifestAssetEntry = {
   familyId: TonalFamilyId;
@@ -80,11 +95,11 @@ export type TonalManifestAssetEntry = {
   sha256: string;
 };
 
-export type TonalSystemManifestV3 = {
+export type TonalSystemManifestV4 = {
   kind: 'kiskadee.tonal-system';
-  formatVersion: 3;
+  formatVersion: 4;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
-  tonalProfile: LockedTonalSystemSourceV3['tonalProfile'];
+  tonalProfile: LockedTonalSystemSourceV4['tonalProfile'];
   primaryReference: TonalFamilyId;
   tonalAnchors: { rest: { light: KiskadeeTone; dark: KiskadeeTone } };
   source: { path: typeof TONAL_SOURCE_PATH; sha256: string };
@@ -92,9 +107,9 @@ export type TonalSystemManifestV3 = {
   assets: TonalManifestAssetEntry[];
 };
 
-export type TonalSystemDiagnosticsV3 = {
+export type TonalSystemDiagnosticsV4 = {
   kind: 'kiskadee.tonal-system-diagnostics';
-  formatVersion: 3;
+  formatVersion: 4;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   seedModel: 'fixed-reference';
   referenceSet: typeof FIXED_FAMILY_REFERENCE_SET;
@@ -121,7 +136,10 @@ type ThemeDiagnostics = {
   effectiveSeedHex: string;
   generatedAnchor: { tone: KiskadeeTone; hex: string };
   functionalRest: { tone: KiskadeeTone; hex: string };
-  stateReference: ArtifactStateReference;
+  functionalReferences: {
+    vivid: ArtifactFunctionalReferenceDiagnostics;
+    subtle: ArtifactFunctionalReferenceDiagnostics;
+  };
   classification: MunsellColorClassification | null;
   harmony: ResolvedTonalFamily['themes']['light']['harmony'];
   surfaceTrackAlignment: ResolvedTonalFamily['themes']['light']['surfaceTrackAlignment'];
@@ -130,10 +148,10 @@ type ThemeDiagnostics = {
 };
 
 export type TonalArtifactBundle = {
-  source: LockedTonalSystemSourceV3;
-  manifest: TonalSystemManifestV3;
-  diagnostics: TonalSystemDiagnosticsV3;
-  assets: PrimitiveTonalColorAssetV3[];
+  source: LockedTonalSystemSourceV4;
+  manifest: TonalSystemManifestV4;
+  diagnostics: TonalSystemDiagnosticsV4;
+  assets: PrimitiveTonalColorAssetV4[];
   files: ReadonlyMap<TonalArtifactPath, string>;
 };
 
@@ -154,10 +172,10 @@ export type TonalArtifactVerificationResult =
   | {
       valid: true;
       issues: [];
-      source: LockedTonalSystemSourceV3;
-      manifest: TonalSystemManifestV3;
-      diagnostics: TonalSystemDiagnosticsV3;
-      assets: PrimitiveTonalColorAssetV3[];
+      source: LockedTonalSystemSourceV4;
+      manifest: TonalSystemManifestV4;
+      diagnostics: TonalSystemDiagnosticsV4;
+      assets: PrimitiveTonalColorAssetV4[];
     }
   | {
       valid: false;
@@ -189,7 +207,7 @@ export async function createTonalArtifactBundle(
       sha256: await hashCanonicalFile(asset)
     }))
   );
-  const diagnostics = normalizeArtifactNumbers<TonalSystemDiagnosticsV3>({
+  const diagnostics = normalizeArtifactNumbers<TonalSystemDiagnosticsV4>({
     kind: 'kiskadee.tonal-system-diagnostics',
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
@@ -206,13 +224,13 @@ export async function createTonalArtifactBundle(
         classification: family.identity,
         status: family.status,
         themes: {
-          light: createThemeDiagnostics(family, family.themes.light),
-          dark: createThemeDiagnostics(family, family.themes.dark)
+          light: createThemeDiagnostics(system, family, family.themes.light),
+          dark: createThemeDiagnostics(system, family, family.themes.dark)
         }
       }))
       .sort((left, right) => compareStrings(left.familyId, right.familyId))
   });
-  const manifest: TonalSystemManifestV3 = {
+  const manifest: TonalSystemManifestV4 = {
     kind: 'kiskadee.tonal-system',
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
@@ -357,11 +375,9 @@ export async function verifyTonalArtifactBundle(
 function createColorAsset(
   system: ResolvedKiskadeeTonalSystem,
   family: ResolvedTonalFamily
-): PrimitiveTonalColorAssetV3 {
+): PrimitiveTonalColorAssetV4 {
   const lightAnchor = resolveSourceAnchor(family, 'light');
   const darkAnchor = resolveSourceAnchor(family, 'dark');
-  const lightStateReference = resolveArtifactStateReference(family, 'light');
-  const darkStateReference = resolveArtifactStateReference(family, 'dark');
   return {
     kind: 'kiskadee.primitive-tonal-family',
     formatVersion: system.source.formatVersion,
@@ -385,7 +401,16 @@ function createColorAsset(
       light: { tone: family.themes.light.restTone, hex: family.themes.light.restColor.hex },
       dark: { tone: family.themes.dark.restTone, hex: family.themes.dark.restColor.hex }
     },
-    stateReferences: { light: lightStateReference, dark: darkStateReference },
+    functionalReferences: {
+      light: {
+        vivid: resolveArtifactFunctionalReference(system, family, 'light', 'vivid'),
+        subtle: resolveArtifactFunctionalReference(system, family, 'light', 'subtle')
+      },
+      dark: {
+        vivid: resolveArtifactFunctionalReference(system, family, 'dark', 'vivid'),
+        subtle: resolveArtifactFunctionalReference(system, family, 'dark', 'subtle')
+      }
+    },
     scales: {
       light: createToneHexMap(family.themes.light.scale.colors),
       dark: createToneHexMap(family.themes.dark.scale.colors)
@@ -393,12 +418,54 @@ function createColorAsset(
   };
 }
 
-function resolveArtifactStateReference(
+function resolveArtifactFunctionalReference(
+  system: ResolvedKiskadeeTonalSystem,
   family: ResolvedTonalFamily,
-  theme: 'light' | 'dark'
-): ArtifactStateReference {
-  const { tone, hex, source } = resolveTonalStateReference(family, theme);
+  theme: 'light' | 'dark',
+  kind: 'vivid' | 'subtle'
+): ArtifactFunctionalReference {
+  const { tone, hex, source } = resolveTonalFunctionalReference(system, family.id, theme, kind);
   return { tone, hex, source };
+}
+
+function resolveArtifactFunctionalReferenceDiagnostics(
+  system: ResolvedKiskadeeTonalSystem,
+  family: ResolvedTonalFamily,
+  theme: 'light' | 'dark',
+  kind: 'vivid' | 'subtle'
+): ArtifactFunctionalReferenceDiagnostics {
+  const reference = resolveTonalFunctionalReference(system, family.id, theme, kind);
+  const diagnostics: ArtifactFunctionalReferenceDiagnostics = {
+    tone: reference.tone,
+    hex: reference.hex,
+    source: reference.source,
+    surfaceContrast: reference.surfaceContrast,
+    surfaceDeltaE: reference.surfaceDeltaE
+  };
+  if (kind === 'subtle') {
+    const primaryReference = resolveTonalFunctionalReference(
+      system,
+      system.primaryReference.familyId,
+      theme,
+      'subtle'
+    );
+    diagnostics.surfaceContrastError = Math.abs(
+      Math.log(reference.surfaceContrast / primaryReference.surfaceContrast)
+    );
+    diagnostics.surfaceDeltaEError = Math.abs(
+      reference.surfaceDeltaE - primaryReference.surfaceDeltaE
+    );
+  }
+  if (reference.source === 'reference-match') {
+    if (reference.referenceHex === undefined || reference.deltaE === undefined) {
+      throw new TonalArtifactError(
+        `${family.id} ${theme} ${kind} reference is missing reference-match diagnostics.`
+      );
+    }
+    diagnostics.referenceHex = reference.referenceHex;
+    diagnostics.deltaE = reference.deltaE;
+  }
+  return diagnostics;
 }
 
 function resolveSourceAnchor(
@@ -415,6 +482,7 @@ function resolveSourceAnchor(
 }
 
 function createThemeDiagnostics(
+  system: ResolvedKiskadeeTonalSystem,
   family: ResolvedTonalFamily,
   theme: ResolvedTonalFamily['themes']['light']
 ): ThemeDiagnostics {
@@ -431,7 +499,10 @@ function createThemeDiagnostics(
     effectiveSeedHex: theme.effectiveSeedHex,
     generatedAnchor: { tone: anchorTone, hex: anchorColor.hex },
     functionalRest: { tone: theme.restTone, hex: theme.restColor.hex },
-    stateReference: resolveArtifactStateReference(family, theme.theme),
+    functionalReferences: {
+      vivid: resolveArtifactFunctionalReferenceDiagnostics(system, family, theme.theme, 'vivid'),
+      subtle: resolveArtifactFunctionalReferenceDiagnostics(system, family, theme.theme, 'subtle')
+    },
     classification:
       family.colorKind === 'chromatic' ? classifyMunsellHex(theme.effectiveSeedHex) : null,
     harmony: theme.harmony,
@@ -489,8 +560,11 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     throw new TonalArtifactError('Export is atomic and requires all twelve core families.');
   }
   const overrideById = new Map(system.source.overrides.map((override) => [override.id, override]));
-  const stateAnchorsById = new Map(
-    (system.source.tonalAnchors.states ?? []).map((stateAnchors) => [stateAnchors.id, stateAnchors])
+  const sourceReferencesById = new Map(
+    system.source.functionalReferences.map((references) => [references.id, references])
+  );
+  const resolvedReferencesById = new Map(
+    system.functionalReferences.map((references) => [references.id, references])
   );
   const seen = new Set<TonalFamilyId>();
   for (const family of system.families) {
@@ -529,35 +603,60 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     ) {
       throw new TonalArtifactError(`${family.id} cannot use canonical seed origin.`);
     }
-    const sourceStateAnchors = stateAnchorsById.get(family.id);
+    const sourceReferences = sourceReferencesById.get(family.id);
+    const resolvedReferences = resolvedReferencesById.get(family.id);
+    if (!sourceReferences || !resolvedReferences) {
+      throw new TonalArtifactError(`${family.id} is missing locked functional references.`);
+    }
     for (const theme of ['light', 'dark'] as const) {
-      const expectedRule = sourceStateAnchors?.[theme] ?? { mode: 'auto' as const };
-      if (!stateAnchorRulesEqual(family.stateAnchors[theme], expectedRule)) {
-        throw new TonalArtifactError(
-          `${family.id} ${theme} state anchor does not match the locked source.`
-        );
+      for (const kind of ['vivid', 'subtle'] as const) {
+        const resolved = resolveTonalFunctionalReference(system, family.id, theme, kind);
+        if (resolved !== resolvedReferences[theme][kind]) {
+          throw new TonalArtifactError(
+            `${family.id} ${theme} ${kind} reference does not match the resolved system.`
+          );
+        }
+        if (!lockedFunctionalReferenceMatches(sourceReferences[theme][kind], resolved)) {
+          throw new TonalArtifactError(
+            `${family.id} ${theme} ${kind} reference does not match the locked source.`
+          );
+        }
       }
     }
     seen.add(family.id);
-    assertThemeScale(family, 'light');
-    assertThemeScale(family, 'dark');
+    assertThemeScale(system, family, 'light');
+    assertThemeScale(system, family, 'dark');
   }
-  const missingStateFamily = [...stateAnchorsById.keys()].find((id) => !seen.has(id));
-  if (missingStateFamily) {
+  const unmatchedSourceFamily = [...sourceReferencesById.keys()].find((id) => !seen.has(id));
+  if (unmatchedSourceFamily) {
     throw new TonalArtifactError(
-      `${missingStateFamily} state anchors do not match a resolved family.`
+      `${unmatchedSourceFamily} locked functional references do not match a resolved family.`
+    );
+  }
+  const unmatchedResolvedFamily = [...resolvedReferencesById.keys()].find((id) => !seen.has(id));
+  if (unmatchedResolvedFamily) {
+    throw new TonalArtifactError(
+      `${unmatchedResolvedFamily} functional references do not match a resolved family.`
     );
   }
 }
 
-function stateAnchorRulesEqual(left: TonalStateAnchorRule, right: TonalStateAnchorRule): boolean {
+function lockedFunctionalReferenceMatches(
+  locked: LockedTonalFunctionalReferenceV4,
+  resolved: TonalFunctionalReference
+): boolean {
   return (
-    left.mode === right.mode &&
-    (left.mode !== 'locked' || (right.mode === 'locked' && left.tone === right.tone))
+    locked.tone === resolved.tone &&
+    locked.source === resolved.source &&
+    (locked.source !== 'reference-match' || locked.referenceHex === resolved.referenceHex)
   );
 }
 
-function assertThemeScale(family: ResolvedTonalFamily, theme: 'light' | 'dark'): void {
+function assertThemeScale(
+  system: ResolvedKiskadeeTonalSystem,
+  family: ResolvedTonalFamily,
+  theme: 'light' | 'dark'
+): void {
   const resolution = family.themes[theme];
   if (!resolution.scale.diagnostics.valid || resolution.restTone !== resolution.restColor.tone) {
     throw new TonalArtifactError(`${family.id} ${theme} scale is invalid.`);
@@ -575,10 +674,30 @@ function assertThemeScale(family: ResolvedTonalFamily, theme: 'light' | 'dark'):
   ) {
     throw new TonalArtifactError(`${family.id} ${theme} scale has invalid absolute caps.`);
   }
-  const stateReference = resolveTonalStateReference(family, theme);
-  const stateColor = resolution.scale.colors.find((color) => color.tone === stateReference.tone);
-  if (!stateColor || stateColor.hex !== stateReference.hex) {
-    throw new TonalArtifactError(`${family.id} ${theme} state anchor is not part of its scale.`);
+  const vivid = resolveTonalFunctionalReference(system, family.id, theme, 'vivid');
+  const subtle = resolveTonalFunctionalReference(system, family.id, theme, 'subtle');
+  for (const [kind, reference] of [
+    ['vivid', vivid],
+    ['subtle', subtle]
+  ] as const) {
+    const color = resolution.scale.colors.find((candidate) => candidate.tone === reference.tone);
+    if (!color || color.hex !== reference.hex) {
+      throw new TonalArtifactError(
+        `${family.id} ${theme} ${kind} reference is not part of its scale.`
+      );
+    }
+    if (!Number.isFinite(reference.surfaceContrast) || !Number.isFinite(reference.surfaceDeltaE)) {
+      throw new TonalArtifactError(
+        `${family.id} ${theme} ${kind} reference has invalid surface metrics.`
+      );
+    }
+  }
+  const subtleIndex = KISKADEE_TONES.indexOf(subtle.tone);
+  const vividIndex = KISKADEE_TONES.indexOf(vivid.tone);
+  if (subtleIndex >= vividIndex && !(subtle.tone === 1 && vivid.tone === 1)) {
+    throw new TonalArtifactError(
+      `${family.id} ${theme} subtle reference is not closer to the surface than vivid.`
+    );
   }
 }
 

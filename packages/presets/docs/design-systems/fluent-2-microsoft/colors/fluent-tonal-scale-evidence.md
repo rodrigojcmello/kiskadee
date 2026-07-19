@@ -65,22 +65,25 @@ recipe. The generated system uses:
   stops by theme;
 - exact Light and Dark `n.black.v1`, preserving `Grey-14` as the neutral scale
   reference;
-- automatic harmony rest, resolved and locked by generator `0.3.2` to L50/D40.
+- automatic harmony rest, currently resolved by generator `0.4.0` to L50/D40;
+- automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer
+### Shared viewer — generator 0.4.0
 
-[Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A3%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22muted-darks%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v1%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
+[Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A4%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22muted-darks%22%2C%22overrides%22%3A%5B%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v1%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%5D%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%7D).
 
-The link encodes the complete editable recipe and can be saved as a browser
-bookmark. It requires the local `@kiskadee/tonal-scale` application on port
-`3001`.
+The link encodes the complete editable format V4 recipe and can be saved as a
+browser bookmark. It resolves the latest generated scales and functional
+references without changing the stored Fluent evidence. It requires the local
+`@kiskadee/tonal-scale` application on port `3001`.
 
 ### Generator 0.3.2 system-alignment candidate
 
-The Shared Viewer exposes the current candidate for the canonical
-Primary-relative physical-light alignment. The prior low-level curves assigned
-the same L4 physical lightness to Blue, Red, and Green, but sRGB gamut fitting
-compressed Blue and Red while Green retained substantially more chroma. That
+This section records the generator `0.3.2` candidate preserved under
+[`generated/`](./generated/). The Shared Viewer above evaluates the same
+editable Fluent recipe with generator `0.4.0`. The prior low-level curves
+assigned the same L4 physical lightness to Blue, Red, and Green, but sRGB gamut
+fitting compressed Blue and Red while Green retained substantially more chroma. That
 made the Positive Medium Button more visually dominant even though its schema
 used the same tonal recipe as the other intents.
 
@@ -223,6 +226,7 @@ authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
 `yellowLike.v1`, and Orange to `yellowLike.v2`. Berry remains available as the
 Purple primitive because its official role is Out of office, not a generic
 Kiskadee `secondary` semantic. These promoted assets still use the previously
-approved bytes while generator `0.3.2` awaits visual approval in the Shared
-Viewer; no Button schema compensation was introduced. Other components remain
+approved bytes. The Shared Viewer now exposes generator `0.4.0` for the next
+Fluent review; this documentation update does not regenerate or promote preset
+assets. No Button schema compensation was introduced. Other components remain
 deferred.

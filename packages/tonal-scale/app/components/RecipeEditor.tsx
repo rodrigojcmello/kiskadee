@@ -17,10 +17,10 @@ import {
 import type {
   KiskadeeTonalSystemResult,
   ResolvedTonalFamily,
-  TonalStateReference,
+  TonalFunctionalReference,
   TonalSystemIssue
 } from '@/src/tonal-system';
-import { resolveTonalStateReference } from '@/src/tonal-system';
+import { resolveTonalFunctionalReference } from '@/src/tonal-system';
 import {
   type CoreTonalFamilyId,
   createTonalFamilyId,
@@ -31,15 +31,16 @@ import {
   TONAL_CORE_FAMILY_IDS,
   TONAL_FAMILY_IDENTITIES,
   TONAL_FAMILY_VARIANTS,
+  type TonalFamilyFunctionalReferenceRulesV4,
   type TonalFamilyId,
-  type TonalFamilyOverrideV3,
-  type TonalFamilyStateAnchorsV3,
+  type TonalFamilyOverrideV4,
   type TonalFamilyVariant,
   type TonalPrimaryAppearance,
-  type TonalPrimaryDraftV3,
-  type TonalStateAnchorRule,
-  type TonalSystemRecipeV3,
-  type TonalThemePolicy
+  type TonalPrimaryDraftV4,
+  type TonalSubtleReferenceRule,
+  type TonalSystemRecipeV4,
+  type TonalThemePolicy,
+  type TonalVividReferenceRule
 } from '@/src/tonal-system-contract';
 import styles from './RecipeEditor.module.css';
 
@@ -56,18 +57,24 @@ const POLICY_LABELS = {
   harmonized: 'Harmonized'
 } as const satisfies Record<TonalThemePolicy, string>;
 
-const STATE_ANCHOR_MODE_LABELS = {
+const VIVID_REFERENCE_MODE_LABELS = {
   auto: 'Auto',
   'generated-anchor': 'Generated',
   'harmony-rest': 'Harmony',
   locked: 'Locked'
-} as const satisfies Record<TonalStateAnchorRule['mode'], string>;
+} as const satisfies Record<TonalVividReferenceRule['mode'], string>;
+
+const SUBTLE_REFERENCE_MODE_LABELS = {
+  auto: 'Auto',
+  'reference-match': 'Match reference',
+  locked: 'Locked'
+} as const satisfies Record<TonalSubtleReferenceRule['mode'], string>;
 
 export type RecipeEditorProps = {
-  recipe: TonalSystemRecipeV3;
+  recipe: TonalSystemRecipeV4;
   result: KiskadeeTonalSystemResult;
   isGenerating: boolean;
-  onChange: (next: TonalSystemRecipeV3) => void;
+  onChange: (next: TonalSystemRecipeV4) => void;
 };
 
 export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeEditorProps) {
@@ -105,8 +112,26 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
   const resolvedPrimary = result.valid
     ? result.families.find((family) => family.id === result.primaryReference.familyId)
     : undefined;
+  const functionalPrimaryId = resolvedPrimaryId ?? lastValidPrimaryId.current;
+  const configuredPrimaryReferences = functionalPrimaryId
+    ? recipe.functionalReferences.find(
+        (functionalReferences) => functionalReferences.id === functionalPrimaryId
+      )
+    : undefined;
+  const resolvedPrimarySubtleReferences = functionalPrimaryId
+    ? {
+        light: tryResolveFunctionalReference(result, functionalPrimaryId, 'light', 'subtle'),
+        dark: tryResolveFunctionalReference(result, functionalPrimaryId, 'dark', 'subtle')
+      }
+    : { light: null, dark: null };
+  const resolvedPrimaryVividReferences = functionalPrimaryId
+    ? {
+        light: tryResolveFunctionalReference(result, functionalPrimaryId, 'light', 'vivid'),
+        dark: tryResolveFunctionalReference(result, functionalPrimaryId, 'dark', 'vivid')
+      }
+    : { light: null, dark: null };
 
-  const updatePrimary = (primary: TonalPrimaryDraftV3) => {
+  const updatePrimary = (primary: TonalPrimaryDraftV4) => {
     const nextClassification = classifyPrimary(primary.seedHex);
     const nextPrimary =
       nextClassification &&
@@ -114,30 +139,35 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
       !resolveTonalFamilyStem(nextClassification.sector, primary.appearance)
         ? { ...primary, appearance: 'auto' as const }
         : primary;
-    const nextRecipe: TonalSystemRecipeV3 = { ...recipe, primary: nextPrimary };
+    const nextRecipe: TonalSystemRecipeV4 = { ...recipe, primary: nextPrimary };
     const nextPrimaryId = resolvePrimaryId(nextRecipe, nextClassification);
     const nextOverrides = nextPrimaryId
       ? nextRecipe.overrides.filter((override) => override.id !== nextPrimaryId)
       : nextRecipe.overrides;
     const previousPrimaryId = inferredPrimaryId ?? resolvedPrimaryId ?? lastValidPrimaryId.current;
-    const shouldRemovePreviousState =
+    const shouldRemovePreviousReference =
       nextPrimaryId !== null &&
       previousPrimaryId !== null &&
       previousPrimaryId !== nextPrimaryId &&
       !CORE_FAMILY_ID_SET.has(previousPrimaryId) &&
       !nextOverrides.some((override) => override.id === previousPrimaryId);
+    const movedFunctionalReferences =
+      nextPrimaryId && previousPrimaryId && nextPrimaryId !== previousPrimaryId
+        ? movePrimarySubtleReferences(
+            nextRecipe.functionalReferences,
+            previousPrimaryId,
+            nextPrimaryId
+          )
+        : nextRecipe.functionalReferences;
 
     onChange({
       ...nextRecipe,
       overrides: nextOverrides,
-      tonalAnchors: shouldRemovePreviousState
-        ? {
-            ...nextRecipe.tonalAnchors,
-            states: (nextRecipe.tonalAnchors.states ?? []).filter(
-              (stateAnchors) => stateAnchors.id !== previousPrimaryId
-            )
-          }
-        : nextRecipe.tonalAnchors
+      functionalReferences: shouldRemovePreviousReference
+        ? movedFunctionalReferences.filter(
+            (functionalReferences) => functionalReferences.id !== previousPrimaryId
+          )
+        : movedFunctionalReferences
     });
   };
 
@@ -154,7 +184,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     const seedHex =
       resolved?.sourceSeedHex ?? sectorPeer?.sourceSeedHex ?? FIXED_FAMILY_SEEDS_V1[referenceId];
     const colorKind = resolveTonalFamilyColorKind(id);
-    const override: TonalFamilyOverrideV3 = {
+    const override: TonalFamilyOverrideV4 = {
       id,
       seedHex,
       policies:
@@ -166,7 +196,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     onChange({ ...recipe, overrides: [...recipe.overrides, override] });
   };
 
-  const updateOverride = (nextOverride: TonalFamilyOverrideV3) => {
+  const updateOverride = (nextOverride: TonalFamilyOverrideV4) => {
     onChange({
       ...recipe,
       overrides: recipe.overrides.map((override) =>
@@ -186,37 +216,26 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     onChange({
       ...recipe,
       overrides: recipe.overrides.filter((override) => override.id !== id),
-      tonalAnchors: {
-        ...recipe.tonalAnchors,
-        states: (recipe.tonalAnchors.states ?? []).filter((stateAnchors) => stateAnchors.id !== id)
-      }
+      functionalReferences: recipe.functionalReferences.filter(
+        (functionalReferences) => functionalReferences.id !== id
+      )
     });
   };
 
-  const updateStateAnchor = (
+  const updateVividReference = (
     id: TonalFamilyId,
     theme: 'light' | 'dark',
-    rule: TonalStateAnchorRule
+    rule: TonalVividReferenceRule
   ) => {
-    const current = recipe.tonalAnchors.states?.find((stateAnchors) => stateAnchors.id === id);
-    const nextStateAnchors: TonalFamilyStateAnchorsV3 = {
-      id,
-      light: current?.light ?? { mode: 'auto' },
-      dark: current?.dark ?? { mode: 'auto' },
-      [theme]: rule
-    };
-    const retained = (recipe.tonalAnchors.states ?? []).filter(
-      (stateAnchors) => stateAnchors.id !== id
-    );
-    const states =
-      nextStateAnchors.light.mode === 'auto' && nextStateAnchors.dark.mode === 'auto'
-        ? retained
-        : [...retained, nextStateAnchors].sort((left, right) => left.id.localeCompare(right.id));
+    onChange(updateFamilyFunctionalReference(recipe, id, theme, 'vivid', rule));
+  };
 
-    onChange({
-      ...recipe,
-      tonalAnchors: { ...recipe.tonalAnchors, states }
-    });
+  const updateSubtleReference = (
+    id: TonalFamilyId,
+    theme: 'light' | 'dark',
+    rule: TonalSubtleReferenceRule
+  ) => {
+    onChange(updateFamilyFunctionalReference(recipe, id, theme, 'subtle', rule));
   };
 
   const lockProposal = () => {
@@ -246,11 +265,11 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
       <div className={styles.heading}>
         <div>
           <p className={styles.kicker}>Fixed-reference harmony</p>
-          <h2 id={`${editorId}-title`}>Primary color and harmony references</h2>
+          <h2 id={`${editorId}-title`}>Primary color and functional references</h2>
           <p className={styles.intro}>
             The exact primary remains preserved at its generated anchors. Every support family
-            starts from a fixed reference seed so only the harmony response changes while Kiskadee
-            selects shared Light and Dark harmony-rest positions.
+            starts from a fixed reference seed while Kiskadee resolves shared harmony checkpoints
+            and independent vivid and subtle references for Light and Dark.
           </p>
         </div>
 
@@ -385,7 +404,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                   ...recipe.primary,
                   policies: {
                     ...recipe.primary.policies,
-                    dark: event.target.value as TonalPrimaryDraftV3['policies']['dark']
+                    dark: event.target.value as TonalPrimaryDraftV4['policies']['dark']
                   }
                 })
               }
@@ -406,6 +425,146 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         </p>
       </section>
 
+      <section
+        className={styles.functionalReferenceCard}
+        aria-labelledby={`${editorId}-subtle-reference-title`}
+      >
+        <div className={styles.cardHeading}>
+          <div>
+            <p className={styles.kicker}>Functional emphasis calibration</p>
+            <h3 id={`${editorId}-subtle-reference-title`}>Primary subtle reference</h3>
+          </div>
+          <span className={styles.modeTag}>Light / Dark</span>
+        </div>
+        <p className={styles.functionalReferenceIntro}>
+          An optional Design System color can identify the nearest emitted subtle position without
+          changing the generated scale. Light and Dark resolve independently relative to their
+          surfaces; exported sources lock the resulting positions.
+        </p>
+        <div className={styles.subtleReferenceGrid}>
+          {(['light', 'dark'] as const).map((theme) => {
+            const prefix = theme === 'light' ? 'L' : 'D';
+            const rule = configuredPrimaryReferences?.[theme].subtle ?? {
+              mode: 'auto' as const
+            };
+            const resolvedReference = resolvedPrimarySubtleReferences[theme];
+            const resolvedVividReference = resolvedPrimaryVividReferences[theme];
+            const vividIndex = resolvedVividReference
+              ? KISKADEE_TONES.indexOf(resolvedVividReference.tone)
+              : -1;
+            const surfaceSideTones =
+              vividIndex < 0
+                ? REST_TONES
+                : REST_TONES.filter((tone) => KISKADEE_TONES.indexOf(tone) < vividIndex);
+            const lockedTones = surfaceSideTones.length > 0 ? surfaceSideTones : ([1] as const);
+            const fallbackHex =
+              resolvedReference?.hex ?? normalizeHexColor(recipe.primary.seedHex) ?? '#0f6cbd';
+            const fallbackTone = resolvedReference?.tone ?? 4;
+            const invalidReference =
+              rule.mode === 'reference-match' && normalizeHexColor(rule.referenceHex) === null;
+
+            return (
+              <div className={styles.subtleReferenceTheme} key={theme}>
+                <label htmlFor={`${editorId}-${theme}-subtle-mode`}>
+                  <span>{capitalize(theme)} mode</span>
+                  <select
+                    id={`${editorId}-${theme}-subtle-mode`}
+                    value={rule.mode}
+                    disabled={!functionalPrimaryId}
+                    onChange={(event) => {
+                      if (!functionalPrimaryId) return;
+                      const mode = event.target.value as TonalSubtleReferenceRule['mode'];
+                      const nextRule: TonalSubtleReferenceRule =
+                        mode === 'reference-match'
+                          ? { mode, referenceHex: fallbackHex }
+                          : mode === 'locked'
+                            ? { mode, tone: fallbackTone }
+                            : { mode };
+                      updateSubtleReference(functionalPrimaryId, theme, nextRule);
+                    }}
+                  >
+                    {Object.entries(SUBTLE_REFERENCE_MODE_LABELS).map(([mode, label]) => (
+                      <option key={mode} value={mode}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                {rule.mode === 'reference-match' ? (
+                  <label htmlFor={`${editorId}-${theme}-subtle-reference`}>
+                    <span>Reference hex</span>
+                    <input
+                      className={styles.subtleReferenceHex}
+                      id={`${editorId}-${theme}-subtle-reference`}
+                      value={rule.referenceHex}
+                      aria-invalid={invalidReference}
+                      autoComplete="off"
+                      inputMode="text"
+                      spellCheck={false}
+                      onChange={(event) => {
+                        if (!functionalPrimaryId) return;
+                        updateSubtleReference(functionalPrimaryId, theme, {
+                          mode: 'reference-match',
+                          referenceHex: event.target.value
+                        });
+                      }}
+                    />
+                  </label>
+                ) : rule.mode === 'locked' ? (
+                  <label htmlFor={`${editorId}-${theme}-subtle-tone`}>
+                    <span>Locked position</span>
+                    <select
+                      id={`${editorId}-${theme}-subtle-tone`}
+                      value={rule.tone}
+                      onChange={(event) => {
+                        if (!functionalPrimaryId) return;
+                        updateSubtleReference(functionalPrimaryId, theme, {
+                          mode: 'locked',
+                          tone: Number(event.target.value) as KiskadeeTone
+                        });
+                      }}
+                    >
+                      {lockedTones.map((tone) => (
+                        <option key={tone} value={tone}>
+                          {prefix}
+                          {tone}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ) : (
+                  <div className={styles.fixedPolicy}>
+                    <span>Selection</span>
+                    <strong>Surface relative</strong>
+                  </div>
+                )}
+
+                <span className={styles.subtleReferenceResult} aria-live="polite">
+                  <strong>
+                    {resolvedReference
+                      ? `${prefix}${resolvedReference.tone} · ${resolvedReference.hex}`
+                      : isGenerating
+                        ? 'Resolving…'
+                        : 'Unavailable'}
+                  </strong>
+                  <small>
+                    {resolvedReference
+                      ? formatFunctionalReferenceSource(resolvedReference.source)
+                      : invalidReference
+                        ? 'Enter a valid sRGB hex'
+                        : 'Generate a valid system'}
+                  </small>
+                  {resolvedReference?.deltaE !== undefined ? (
+                    <small>Reference ΔE {resolvedReference.deltaE.toFixed(3)}</small>
+                  ) : null}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       <fieldset className={styles.familyFieldset}>
         <legend>Canonical primitive color families</legend>
         <div className={styles.familySectionHeading}>
@@ -419,7 +578,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           <span>Family</span>
           <span>Seed</span>
           <span>Light / Dark policies</span>
-          <span>State anchors</span>
+          <span>Vivid references</span>
           <span>Override</span>
         </div>
 
@@ -436,14 +595,22 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                 primarySeedHex={id === resolvedPrimaryId ? recipe.primary.seedHex : undefined}
                 override={override}
                 resolved={result.families.find((family) => family.id === id)}
-                stateAnchors={recipe.tonalAnchors.states?.find(
-                  (stateAnchors) => stateAnchors.id === id
+                resolvedVividReferences={
+                  result.valid
+                    ? {
+                        light: tryResolveFunctionalReference(result, id, 'light', 'vivid'),
+                        dark: tryResolveFunctionalReference(result, id, 'dark', 'vivid')
+                      }
+                    : undefined
+                }
+                functionalReferences={recipe.functionalReferences.find(
+                  (functionalReferences) => functionalReferences.id === id
                 )}
                 seedIssue={resolveFamilySeedIssue(result.issues, id, overrideIndex)}
                 onEnable={() => addOverride(id)}
                 onChange={updateOverride}
                 onRemove={() => removeOverride(id)}
-                onStateAnchorChange={(theme, rule) => updateStateAnchor(id, theme, rule)}
+                onVividReferenceChange={(theme, rule) => updateVividReference(id, theme, rule)}
               />
             );
           })}
@@ -473,14 +640,22 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                   primarySeedHex={id === resolvedPrimaryId ? recipe.primary.seedHex : undefined}
                   override={override}
                   resolved={result.families.find((family) => family.id === id)}
-                  stateAnchors={recipe.tonalAnchors.states?.find(
-                    (stateAnchors) => stateAnchors.id === id
+                  resolvedVividReferences={
+                    result.valid
+                      ? {
+                          light: tryResolveFunctionalReference(result, id, 'light', 'vivid'),
+                          dark: tryResolveFunctionalReference(result, id, 'dark', 'vivid')
+                        }
+                      : undefined
+                  }
+                  functionalReferences={recipe.functionalReferences.find(
+                    (functionalReferences) => functionalReferences.id === id
                   )}
                   seedIssue={resolveFamilySeedIssue(result.issues, id, overrideIndex)}
                   onEnable={() => addOverride(id)}
                   onChange={updateOverride}
                   onRemove={() => removeExtraOverride(id)}
-                  onStateAnchorChange={(theme, rule) => updateStateAnchor(id, theme, rule)}
+                  onVividReferenceChange={(theme, rule) => updateVividReference(id, theme, rule)}
                 />
               );
             })}
@@ -525,14 +700,14 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           <div className={styles.cardHeading}>
             <div>
               <p className={styles.kicker}>Shared harmony checkpoint</p>
-              <h3 id={`${editorId}-rest-title`}>Rest</h3>
+              <h3 id={`${editorId}-rest-title`}>Harmony rest</h3>
             </div>
             <span className={styles.modeTag}>{recipe.tonalAnchors.rest.mode}</span>
           </div>
           <p className={styles.anchorHelp}>
             The system tests the exact primary anchor as the shared rest first. It moves Light or
             Dark independently only when the ten emitted chromatic v1 sectors cannot remain coherent
-            there. Harmonized support families may keep their vivid anchor at another tone while
+            there. Harmonized support families may keep their generated anchor at another tone while
             still sharing that harmony rest.
           </p>
 
@@ -647,14 +822,17 @@ type FamilyRowProps = {
   required: boolean;
   isPrimary: boolean;
   primarySeedHex?: string;
-  override: TonalFamilyOverrideV3 | undefined;
+  override: TonalFamilyOverrideV4 | undefined;
   resolved: ResolvedTonalFamily | undefined;
-  stateAnchors: TonalFamilyStateAnchorsV3 | undefined;
+  resolvedVividReferences:
+    | { light: TonalFunctionalReference | null; dark: TonalFunctionalReference | null }
+    | undefined;
+  functionalReferences: TonalFamilyFunctionalReferenceRulesV4 | undefined;
   seedIssue: string | undefined;
   onEnable: () => void;
-  onChange: (override: TonalFamilyOverrideV3) => void;
+  onChange: (override: TonalFamilyOverrideV4) => void;
   onRemove: () => void;
-  onStateAnchorChange: (theme: 'light' | 'dark', rule: TonalStateAnchorRule) => void;
+  onVividReferenceChange: (theme: 'light' | 'dark', rule: TonalVividReferenceRule) => void;
 };
 
 function FamilyRow({
@@ -664,12 +842,13 @@ function FamilyRow({
   primarySeedHex,
   override,
   resolved,
-  stateAnchors,
+  resolvedVividReferences,
+  functionalReferences,
   seedIssue,
   onEnable,
   onChange,
   onRemove,
-  onStateAnchorChange
+  onVividReferenceChange
 }: FamilyRowProps) {
   const rowId = useId();
   const colorKind = resolveTonalFamilyColorKind(id);
@@ -776,30 +955,32 @@ function FamilyRow({
         )}
       </div>
 
-      <div className={styles.stateAnchorCell}>
+      <div className={styles.vividReferenceCell}>
         {(['light', 'dark'] as const).map((theme) => {
-          const rule = stateAnchors?.[theme] ?? { mode: 'auto' as const };
-          const resolvedReference = resolveStateReference(resolved, theme);
+          const rule = functionalReferences?.[theme].vivid ?? { mode: 'auto' as const };
+          const resolvedReference = resolvedVividReferences?.[theme] ?? null;
           const lockedTone = rule.mode === 'locked' ? rule.tone : (resolvedReference?.tone ?? 50);
 
           return (
-            <div className={styles.stateAnchorTheme} key={theme}>
-              <span className={styles.stateThemeLabel}>{theme === 'light' ? 'L' : 'D'}</span>
-              <label htmlFor={`${rowId}-${theme}-state-mode`}>
-                <span className={styles.visuallyHidden}>{capitalize(theme)} state anchor mode</span>
+            <div className={styles.vividReferenceTheme} key={theme}>
+              <span className={styles.vividThemeLabel}>{theme === 'light' ? 'L' : 'D'}</span>
+              <label htmlFor={`${rowId}-${theme}-vivid-mode`}>
+                <span className={styles.visuallyHidden}>
+                  {capitalize(theme)} vivid reference mode
+                </span>
                 <select
-                  id={`${rowId}-${theme}-state-mode`}
+                  id={`${rowId}-${theme}-vivid-mode`}
                   value={rule.mode}
-                  aria-label={`${id} ${theme} state anchor mode`}
+                  aria-label={`${id} ${theme} vivid reference mode`}
                   onChange={(event) => {
-                    const mode = event.target.value as TonalStateAnchorRule['mode'];
-                    onStateAnchorChange(
+                    const mode = event.target.value as TonalVividReferenceRule['mode'];
+                    onVividReferenceChange(
                       theme,
                       mode === 'locked' ? { mode, tone: lockedTone } : { mode }
                     );
                   }}
                 >
-                  {Object.entries(STATE_ANCHOR_MODE_LABELS).map(([mode, label]) => (
+                  {Object.entries(VIVID_REFERENCE_MODE_LABELS).map(([mode, label]) => (
                     <option key={mode} value={mode}>
                       {label}
                     </option>
@@ -807,17 +988,17 @@ function FamilyRow({
                 </select>
               </label>
               {rule.mode === 'locked' ? (
-                <label htmlFor={`${rowId}-${theme}-state-tone`}>
+                <label htmlFor={`${rowId}-${theme}-vivid-tone`}>
                   <span className={styles.visuallyHidden}>
-                    {capitalize(theme)} locked state anchor position
+                    {capitalize(theme)} locked vivid reference position
                   </span>
                   <select
-                    className={styles.stateToneSelect}
-                    id={`${rowId}-${theme}-state-tone`}
+                    className={styles.vividToneSelect}
+                    id={`${rowId}-${theme}-vivid-tone`}
                     value={rule.tone}
-                    aria-label={`${id} ${theme} locked state anchor position`}
+                    aria-label={`${id} ${theme} locked vivid reference position`}
                     onChange={(event) =>
-                      onStateAnchorChange(theme, {
+                      onVividReferenceChange(theme, {
                         mode: 'locked',
                         tone: Number(event.target.value) as KiskadeeTone
                       })
@@ -833,11 +1014,11 @@ function FamilyRow({
                 </label>
               ) : null}
               <span
-                className={styles.resolvedStateAnchor}
+                className={styles.resolvedVividReference}
                 title={
                   resolvedReference
-                    ? `${capitalize(theme)} state resolves from ${formatStateReferenceSource(resolvedReference.source)}`
-                    : 'Generate a valid system to resolve this state anchor.'
+                    ? `${capitalize(theme)} vivid reference resolves from ${formatFunctionalReferenceSource(resolvedReference.source)}`
+                    : 'Generate a valid system to resolve this vivid reference.'
                 }
               >
                 {resolvedReference
@@ -876,22 +1057,26 @@ function FamilyRow({
   );
 }
 
-function resolveStateReference(
-  family: ResolvedTonalFamily | undefined,
-  theme: 'light' | 'dark'
-): TonalStateReference | null {
-  if (!family) return null;
+function tryResolveFunctionalReference(
+  result: KiskadeeTonalSystemResult,
+  familyId: TonalFamilyId,
+  theme: 'light' | 'dark',
+  kind: 'vivid' | 'subtle'
+): TonalFunctionalReference | null {
+  if (!result.valid) return null;
   try {
-    return resolveTonalStateReference(family, theme);
+    return resolveTonalFunctionalReference(result, familyId, theme, kind);
   } catch {
     return null;
   }
 }
 
-function formatStateReferenceSource(source: TonalStateReference['source']): string {
+function formatFunctionalReferenceSource(source: TonalFunctionalReference['source']): string {
   if (source === 'generated-anchor') return 'the generated anchor';
   if (source === 'harmony-rest') return 'the harmony rest';
   if (source === 'contrast-mirror') return 'the Light contrast mirror';
+  if (source === 'surface-relative') return 'surface-relative auto';
+  if (source === 'reference-match') return 'reference match';
   return 'a locked position';
 }
 
@@ -918,7 +1103,7 @@ function resolveSuggestedAppearance(
 }
 
 function resolvePrimaryId(
-  recipe: TonalSystemRecipeV3,
+  recipe: TonalSystemRecipeV4,
   classification: MunsellHexClassification | null
 ): TonalFamilyId | null {
   if (!classification) return null;
@@ -929,6 +1114,122 @@ function resolvePrimaryId(
   if (!appearance || appearance === 'auto') return null;
   const stem = resolveTonalFamilyStem(classification.sector, appearance);
   return stem ? createTonalFamilyId(stem, recipe.primary.variant) : null;
+}
+
+function updateFamilyFunctionalReference(
+  recipe: TonalSystemRecipeV4,
+  id: TonalFamilyId,
+  theme: 'light' | 'dark',
+  kind: 'vivid',
+  rule: TonalVividReferenceRule
+): TonalSystemRecipeV4;
+function updateFamilyFunctionalReference(
+  recipe: TonalSystemRecipeV4,
+  id: TonalFamilyId,
+  theme: 'light' | 'dark',
+  kind: 'subtle',
+  rule: TonalSubtleReferenceRule
+): TonalSystemRecipeV4;
+function updateFamilyFunctionalReference(
+  recipe: TonalSystemRecipeV4,
+  id: TonalFamilyId,
+  theme: 'light' | 'dark',
+  kind: 'vivid' | 'subtle',
+  rule: TonalVividReferenceRule | TonalSubtleReferenceRule
+): TonalSystemRecipeV4 {
+  const current =
+    recipe.functionalReferences.find((functionalReferences) => functionalReferences.id === id) ??
+    createAutoFunctionalReferences(id);
+  const nextTheme =
+    kind === 'vivid'
+      ? { ...current[theme], vivid: rule as TonalVividReferenceRule }
+      : { ...current[theme], subtle: rule as TonalSubtleReferenceRule };
+  const next = { ...current, [theme]: nextTheme };
+  const retained = recipe.functionalReferences.filter(
+    (functionalReferences) => functionalReferences.id !== id
+  );
+  const functionalReferences = isAutoFunctionalReferences(next)
+    ? retained
+    : [...retained, next].sort((left, right) => left.id.localeCompare(right.id));
+
+  return { ...recipe, functionalReferences };
+}
+
+function createAutoFunctionalReferences(id: TonalFamilyId): TonalFamilyFunctionalReferenceRulesV4 {
+  return {
+    id,
+    light: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } },
+    dark: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } }
+  };
+}
+
+function movePrimarySubtleReferences(
+  references: TonalFamilyFunctionalReferenceRulesV4[],
+  previousPrimaryId: TonalFamilyId,
+  nextPrimaryId: TonalFamilyId
+): TonalFamilyFunctionalReferenceRulesV4[] {
+  const previous =
+    references.find((entry) => entry.id === previousPrimaryId) ??
+    createAutoFunctionalReferences(previousPrimaryId);
+  if (previous.light.subtle.mode === 'auto' && previous.dark.subtle.mode === 'auto') {
+    return references;
+  }
+
+  const next =
+    references.find((entry) => entry.id === nextPrimaryId) ??
+    createAutoFunctionalReferences(nextPrimaryId);
+  const retained = references.filter(
+    (entry) => entry.id !== previousPrimaryId && entry.id !== nextPrimaryId
+  );
+  const previousAfterMove: TonalFamilyFunctionalReferenceRulesV4 = {
+    ...previous,
+    light: {
+      ...previous.light,
+      subtle:
+        previous.light.subtle.mode === 'reference-match'
+          ? { mode: 'auto' }
+          : { ...previous.light.subtle }
+    },
+    dark: {
+      ...previous.dark,
+      subtle:
+        previous.dark.subtle.mode === 'reference-match'
+          ? { mode: 'auto' }
+          : { ...previous.dark.subtle }
+    }
+  };
+  const nextWithSubtle: TonalFamilyFunctionalReferenceRulesV4 = {
+    ...next,
+    light: {
+      ...next.light,
+      subtle:
+        previous.light.subtle.mode === 'reference-match'
+          ? { ...previous.light.subtle }
+          : { ...next.light.subtle }
+    },
+    dark: {
+      ...next.dark,
+      subtle:
+        previous.dark.subtle.mode === 'reference-match'
+          ? { ...previous.dark.subtle }
+          : { ...next.dark.subtle }
+    }
+  };
+
+  return [
+    ...retained,
+    ...(isAutoFunctionalReferences(previousAfterMove) ? [] : [previousAfterMove]),
+    ...(isAutoFunctionalReferences(nextWithSubtle) ? [] : [nextWithSubtle])
+  ].sort((left, right) => left.id.localeCompare(right.id));
+}
+
+function isAutoFunctionalReferences(references: TonalFamilyFunctionalReferenceRulesV4): boolean {
+  return (
+    references.light.vivid.mode === 'auto' &&
+    references.light.subtle.mode === 'auto' &&
+    references.dark.vivid.mode === 'auto' &&
+    references.dark.subtle.mode === 'auto'
+  );
 }
 
 function resolveSuggestedPrimaryId(

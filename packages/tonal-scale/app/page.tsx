@@ -16,14 +16,14 @@ import {
   type ResolvedKiskadeeTonalSystem,
   type ResolvedTonalFamily,
   type ResolvedTonalTheme,
-  resolveTonalStateReference,
-  type TonalStateReference
+  resolveTonalFunctionalReference,
+  type TonalFunctionalReference
 } from '@/src/tonal-system';
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyId,
-  type TonalSystemRecipeV3,
+  type TonalSystemRecipeV4,
   validateTonalSystemRecipe
 } from '@/src/tonal-system-contract';
 import RecipeEditor from './components/RecipeEditor';
@@ -74,14 +74,14 @@ type StateSample =
     };
 
 export default function TonalScalePage() {
-  const [recipe, setRecipe] = useState<TonalSystemRecipeV3>(
-    () => structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3
+  const [recipe, setRecipe] = useState<TonalSystemRecipeV4>(
+    () => structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4
   );
   const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>('b.blue.v1');
   const [urlReady, setUrlReady] = useState(false);
   const [sharedStateIssue, setSharedStateIssue] = useState<string | null>(null);
   const [system, setSystem] = useState<KiskadeeTonalSystemResult | null>(null);
-  const [generatedRecipe, setGeneratedRecipe] = useState<TonalSystemRecipeV3 | null>(null);
+  const [generatedRecipe, setGeneratedRecipe] = useState<TonalSystemRecipeV4 | null>(null);
   const deferredRecipe = useDeferredValue(recipe);
   const isGenerating =
     !urlReady || system === null || deferredRecipe !== recipe || generatedRecipe !== deferredRecipe;
@@ -120,7 +120,7 @@ export default function TonalScalePage() {
       const color = url.searchParams.get(COLOR_QUERY_PARAM);
       const profile = url.searchParams.get(PROFILE_QUERY_PARAM);
       if (color !== null || profile !== null) {
-        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3;
+        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4;
         if (color !== null) {
           legacy.primary = {
             ...legacy.primary,
@@ -175,7 +175,7 @@ export default function TonalScalePage() {
     }
   }, [recipe, sharedStateIssue, urlReady]);
 
-  const handleRecipeChange = useCallback((next: TonalSystemRecipeV3) => {
+  const handleRecipeChange = useCallback((next: TonalSystemRecipeV4) => {
     setSharedStateIssue(null);
     setRecipe(next);
   }, []);
@@ -186,7 +186,7 @@ export default function TonalScalePage() {
 
       <header className="hero">
         <div>
-          <span className="eyebrow">Kiskadee Munsell tonal system v3</span>
+          <span className="eyebrow">Kiskadee Munsell tonal system v4</span>
           <h1>One primary. A complete color system.</h1>
           <p className="hero-copy">
             Start with the exact primary color. Kiskadee harmonizes one fixed reference in every
@@ -218,7 +218,7 @@ export default function TonalScalePage() {
       {sharedStateIssue ? (
         <aside className="shared-state-error" role="alert">
           <strong>Shared recipe rejected</strong>
-          <p>{sharedStateIssue} Version 1 and 2 recipes are not migrated automatically.</p>
+          <p>{sharedStateIssue} Version 1 through 3 recipes are not migrated automatically.</p>
         </aside>
       ) : null}
 
@@ -259,9 +259,8 @@ export default function TonalScalePage() {
           <ScaleWorkspace
             family={resolvedFamily}
             tonalProfile={recipe.tonalProfile}
-            rest={system.rest}
+            system={system}
             onSelectFamily={setSelectedFamilyId}
-            families={system.families}
           />
           <ArtifactExportPanel system={system} disabled={isGenerating} />
         </>
@@ -312,20 +311,25 @@ function GenerationLoader({ isInitial }: { isInitial: boolean }) {
 function ScaleWorkspace({
   family,
   tonalProfile,
-  rest,
-  families,
+  system,
   onSelectFamily
 }: {
   family: ResolvedTonalFamily;
   tonalProfile: KiskadeeTonalProfile;
-  rest: ResolvedKiskadeeTonalSystem['rest'];
-  families: ResolvedTonalFamily[];
+  system: ResolvedKiskadeeTonalSystem;
   onSelectFamily: (familyId: TonalFamilyId) => void;
 }) {
   const lightResult = family.themes.light.scale;
   const darkResult = family.themes.dark.scale;
-  const lightStateReference = resolveTonalStateReference(family, 'light');
-  const darkStateReference = resolveTonalStateReference(family, 'dark');
+  const lightVividReference = resolveTonalFunctionalReference(system, family.id, 'light', 'vivid');
+  const darkVividReference = resolveTonalFunctionalReference(system, family.id, 'dark', 'vivid');
+  const lightSubtleReference = resolveTonalFunctionalReference(
+    system,
+    family.id,
+    'light',
+    'subtle'
+  );
+  const darkSubtleReference = resolveTonalFunctionalReference(system, family.id, 'dark', 'subtle');
 
   return (
     <>
@@ -339,7 +343,7 @@ function ScaleWorkspace({
         </div>
         <fieldset className="family-tabs">
           <legend className="visually-hidden">Primitive family inspector</legend>
-          {families.map((candidate) => (
+          {system.families.map((candidate) => (
             <button
               key={candidate.id}
               type="button"
@@ -361,14 +365,13 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="theme-preview-title">Theme previews</h2>
           <p>
-            {family.id} uses its state anchor for the action preview. Primary, source-exact, and
-            adaptive themes follow their generated anchor; automatic achromatic Dark mirrors the
-            Light contrast; harmonized themes keep the shared harmony rest.
+            {family.id} previews its vivid and subtle functional references independently. Both
+            point into the emitted scale; neither changes its colors.
           </p>
         </div>
         <div className="theme-grid">
-          <ThemePanel theme="light" family={family} />
-          <ThemePanel theme="dark" family={family} />
+          <ThemePanel theme="light" family={family} system={system} />
+          <ThemePanel theme="dark" family={family} system={system} />
         </div>
       </section>
 
@@ -384,14 +387,16 @@ function ScaleWorkspace({
           <TonalScalePanel
             theme="light"
             result={lightResult}
-            restTone={rest.light}
-            stateTone={lightStateReference.tone}
+            harmonyRestTone={system.rest.light}
+            vividTone={lightVividReference.tone}
+            subtleTone={lightSubtleReference.tone}
           />
           <TonalScalePanel
             theme="dark"
             result={darkResult}
-            restTone={rest.dark}
-            stateTone={darkStateReference.tone}
+            harmonyRestTone={system.rest.dark}
+            vividTone={darkVividReference.tone}
+            subtleTone={darkSubtleReference.tone}
           />
         </div>
       </section>
@@ -453,7 +458,7 @@ function SystemReference({ system }: { system: ResolvedKiskadeeTonalSystem }) {
         <p>
           Light and Dark fingerprints are measured from the primary color at the shared harmony
           rest. The exact source remains preserved at its generated anchor and can remain the
-          primary state anchor.
+          primary vivid reference.
         </p>
       </div>
       <div className="reference-grid">
@@ -519,9 +524,9 @@ function HarmonyComparison({ system }: { system: ResolvedKiskadeeTonalSystem }) 
   return (
     <section className="section-block" aria-labelledby="harmony-comparison-title">
       <div className="section-heading">
-        <h2 id="harmony-comparison-title">Vivid anchor and harmony rest</h2>
+        <h2 id="harmony-comparison-title">Generated anchor and harmony rest</h2>
         <p>
-          Each family may place its vivid anchor where that hue has enough gamut. Harmony rest
+          Each family may place its generated anchor where that hue has enough gamut. Harmony rest
           remains shared and is evaluated independently at the same Light and Dark positions.
         </p>
       </div>
@@ -636,9 +641,9 @@ function ScaleOverview({
       <div className="section-heading">
         <h2 id="scale-overview-title">System scale overview</h2>
         <p>
-          Every row uses the same 36 public positions. The triangle marks the generated vivid
-          anchor; the dot marks the shared harmony-rest checkpoint; the diamond marks the state
-          reference used by previews.
+          Every row uses the same 36 public positions. The triangle marks the generated anchor; the
+          dot marks the shared harmony-rest checkpoint; the diamond marks the vivid reference; the
+          hollow square marks the subtle reference.
         </p>
       </div>
       <div className="overview-marker-legend">
@@ -649,11 +654,12 @@ function ScaleOverview({
           <i className="rest-marker" aria-hidden="true" /> Harmony rest
         </span>
         <span>
-          <i className="state-marker" aria-hidden="true" /> State reference
+          <i className="vivid-marker" aria-hidden="true" /> Vivid reference
         </span>
-        <small>
-          The state reference may follow either anchor or use an independently locked tone.
-        </small>
+        <span>
+          <i className="subtle-marker" aria-hidden="true" /> Subtle reference
+        </span>
+        <small>Functional references point into emitted scales and never recolor them.</small>
       </div>
       <div className="overview-stack">
         {system.families.map((family) => (
@@ -670,8 +676,8 @@ function ScaleOverview({
               </span>
               <span>Inspect family</span>
             </button>
-            <CompactScaleStrip family={family} theme="light" />
-            <CompactScaleStrip family={family} theme="dark" />
+            <CompactScaleStrip system={system} family={family} theme="light" />
+            <CompactScaleStrip system={system} family={family} theme="dark" />
           </article>
         ))}
       </div>
@@ -679,11 +685,20 @@ function ScaleOverview({
   );
 }
 
-function CompactScaleStrip({ family, theme }: { family: ResolvedTonalFamily; theme: Theme }) {
+function CompactScaleStrip({
+  system,
+  family,
+  theme
+}: {
+  system: ResolvedKiskadeeTonalSystem;
+  family: ResolvedTonalFamily;
+  theme: Theme;
+}) {
   const resolution = family.themes[theme];
   const prefix = resolveThemePrefix(theme);
   const generatedAnchorTone = resolution.scale.anchorTone;
-  const stateReference = resolveTonalStateReference(family, theme);
+  const vividReference = resolveTonalFunctionalReference(system, family.id, theme, 'vivid');
+  const subtleReference = resolveTonalFunctionalReference(system, family.id, theme, 'subtle');
 
   return (
     <div className="overview-scale-row">
@@ -691,16 +706,18 @@ function CompactScaleStrip({ family, theme }: { family: ResolvedTonalFamily; the
       <div
         className="overview-strip"
         role="img"
-        aria-label={`${capitalize(theme)} scale. Generated anchor ${generatedAnchorTone === null ? 'unavailable' : `${prefix}${generatedAnchorTone}`}. Harmony rest ${prefix}${resolution.restTone}. State anchor ${prefix}${stateReference.tone}.`}
+        aria-label={`${capitalize(theme)} scale. Generated anchor ${generatedAnchorTone === null ? 'unavailable' : `${prefix}${generatedAnchorTone}`}. Harmony rest ${prefix}${resolution.restTone}. Vivid reference ${prefix}${vividReference.tone}. Subtle reference ${prefix}${subtleReference.tone}.`}
       >
         {resolution.scale.colors.map((color) => {
           const isAnchor = color.flags.isAnchor;
           const isHarmonyRest = color.tone === resolution.restTone;
-          const isStateReference = color.tone === stateReference.tone;
+          const isVividReference = color.tone === vividReference.tone;
+          const isSubtleReference = color.tone === subtleReference.tone;
           const markerLabels = [
             isAnchor ? 'generated anchor' : null,
             isHarmonyRest ? 'harmony rest' : null,
-            isStateReference ? 'state reference' : null
+            isVividReference ? 'vivid reference' : null,
+            isSubtleReference ? 'subtle reference' : null
           ].filter((label): label is string => label !== null);
 
           return (
@@ -715,12 +732,17 @@ function CompactScaleStrip({ family, theme }: { family: ResolvedTonalFamily; the
               }
               title={`${prefix}${color.tone} · ${color.hex}${markerLabels.length > 0 ? ` · ${markerLabels.join(' + ')}` : ''}`}
             >
-              {isStateReference ? <span className="state-reference-marker" /> : null}
+              {isVividReference ? <span className="vivid-reference-marker" /> : null}
+              {isSubtleReference ? <span className="subtle-reference-marker" /> : null}
             </i>
           );
         })}
       </div>
-      <code title={`Harmony rest ${prefix}${resolution.restTone}`}>{resolution.restColor.hex}</code>
+      <code
+        title={`Vivid ${prefix}${vividReference.tone} ${vividReference.hex}; subtle ${prefix}${subtleReference.tone} ${subtleReference.hex}`}
+      >
+        V{vividReference.tone} · S{subtleReference.tone}
+      </code>
     </div>
   );
 }
@@ -836,27 +858,36 @@ function downloadBlob(filename: string, blob: Blob): void {
   URL.revokeObjectURL(url);
 }
 
-function ThemePanel({ theme, family }: { theme: Theme; family: ResolvedTonalFamily }) {
+function ThemePanel({
+  theme,
+  family,
+  system
+}: {
+  theme: Theme;
+  family: ResolvedTonalFamily;
+  system: ResolvedKiskadeeTonalSystem;
+}) {
   const resolution = family.themes[theme];
   const result = resolution.scale;
   const prefix = resolveThemePrefix(theme);
   const surface = resolveTone(result, 0);
-  const surfaceRaised = resolveTone(result, 4);
   const border = resolveTone(result, 10);
   const text = resolveTone(result, 100);
   const muted = resolveTone(result, 70);
-  const stateReference = resolveTonalStateReference(family, theme);
-  const action = stateReference.color;
-  const stateSamples = resolveStateSamples(result, stateReference.tone);
+  const vividReference = resolveTonalFunctionalReference(system, family.id, theme, 'vivid');
+  const subtleReference = resolveTonalFunctionalReference(system, family.id, theme, 'subtle');
+  const stateSamples = resolveStateSamples(result, vividReference.tone);
   const status = resolveIntegrityStatus(result);
   const previewStyle = {
     '--preview-bg': surface?.hex,
-    '--preview-surface': surfaceRaised?.hex,
+    '--preview-surface': subtleReference.hex,
     '--preview-border': border?.hex,
     '--preview-text': text?.hex,
     '--preview-muted': muted?.hex,
-    '--preview-action': action?.hex,
-    '--preview-action-text': action ? bestTextColor(action.hex) : undefined
+    '--preview-vivid-action': vividReference.hex,
+    '--preview-vivid-action-text': bestTextColor(vividReference.hex),
+    '--preview-subtle-action': subtleReference.hex,
+    '--preview-subtle-action-text': bestTextColor(subtleReference.hex)
   } as CSSProperties;
 
   return (
@@ -864,12 +895,13 @@ function ThemePanel({ theme, family }: { theme: Theme; family: ResolvedTonalFami
       <div className="theme-header">
         <div>
           <span className="theme-kicker">{theme} theme</span>
-          <h3>{`${prefix}0 → ${prefix}100 · state anchor ${prefix}${stateReference.tone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · vivid ${prefix}${vividReference.tone} · subtle ${prefix}${subtleReference.tone}`}</h3>
           <p className="scale-guard-note">
             {capitalize(resolution.policy)} · anchor {prefix}
             {resolution.scale.anchorTone} {resolution.effectiveSeedHex} · harmony rest {prefix}
-            {resolution.restTone} {resolution.restColor.hex} · state source{' '}
-            {formatStateSource(stateReference.source)}
+            {resolution.restTone} {resolution.restColor.hex} · vivid source{' '}
+            {formatFunctionalReferenceSource(vividReference.source)} · subtle source{' '}
+            {formatFunctionalReferenceSource(subtleReference.source)}
           </p>
         </div>
         <StatusBadge result={result} label={status.label} className={status.className} />
@@ -902,15 +934,20 @@ function ThemePanel({ theme, family }: { theme: Theme; family: ResolvedTonalFami
               );
             })}
           </ul>
-          <button className="preview-button" type="button">
-            Primary action
-          </button>
+          <div className="preview-actions">
+            <button className="preview-button" type="button">
+              Vivid action
+            </button>
+            <button className="preview-button subtle" type="button">
+              Subtle action
+            </button>
+          </div>
           <section
             className="state-experiment"
             aria-label={`${capitalize(theme)} ordinal state experiment`}
           >
             <div className="state-experiment-heading">
-              <strong>Ordinal state experiment</strong>
+              <strong>Vivid ordinal state experiment</strong>
               <small>Exploration only · not a preset contract</small>
             </div>
             <ul>
@@ -967,13 +1004,15 @@ function ThemePanel({ theme, family }: { theme: Theme; family: ResolvedTonalFami
 function TonalScalePanel({
   theme,
   result,
-  restTone,
-  stateTone
+  harmonyRestTone,
+  vividTone,
+  subtleTone
 }: {
   theme: Theme;
   result: ScaleResult;
-  restTone: KiskadeeTone;
-  stateTone: KiskadeeTone;
+  harmonyRestTone: KiskadeeTone;
+  vividTone: KiskadeeTone;
+  subtleTone: KiskadeeTone;
 }) {
   const prefix = resolveThemePrefix(theme);
   const status = resolveIntegrityStatus(result);
@@ -987,7 +1026,7 @@ function TonalScalePanel({
       <div className="scale-panel-header">
         <div>
           <span className="theme-kicker">{theme} scale</span>
-          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · harmony rest ${prefix}${restTone} · state reference ${prefix}${stateTone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · harmony rest ${prefix}${harmonyRestTone} · vivid ${prefix}${vividTone} · subtle ${prefix}${subtleTone}`}</h3>
           <p className="scale-guard-note">
             <strong>{prefix}35</strong>
             {` · ${guardForegroundLabel} 3:1 guard starts${guardRatio === null ? '' : ` (${guardRatio.toFixed(2)}:1)`} · swatch labels use max contrast`}
@@ -995,14 +1034,19 @@ function TonalScalePanel({
         </div>
         <StatusBadge result={result} label={status.label} className={status.className} />
       </div>
-      <div className="scale-strip">
+      <div
+        className="scale-strip"
+        role="img"
+        aria-label={`${capitalize(theme)} full scale. Generated anchor ${result.anchorTone === null ? 'unavailable' : `${prefix}${result.anchorTone}`}. Harmony rest ${prefix}${harmonyRestTone}. Vivid reference ${prefix}${vividTone}. Subtle reference ${prefix}${subtleTone}.`}
+      >
         {result.colors.map((color) => (
           <Swatch
             key={color.tone}
             color={color}
             prefix={prefix}
-            isRest={color.tone === restTone}
-            isStateReference={color.tone === stateTone}
+            isHarmonyRest={color.tone === harmonyRestTone}
+            isVividReference={color.tone === vividTone}
+            isSubtleReference={color.tone === subtleTone}
           />
         ))}
       </div>
@@ -1013,13 +1057,15 @@ function TonalScalePanel({
 function Swatch({
   color,
   prefix,
-  isRest,
-  isStateReference
+  isHarmonyRest,
+  isVividReference,
+  isSubtleReference
 }: {
   color: ScaleColor;
   prefix: 'L' | 'D';
-  isRest: boolean;
-  isStateReference: boolean;
+  isHarmonyRest: boolean;
+  isVividReference: boolean;
+  isSubtleReference: boolean;
 }) {
   const blackContrast = contrastRatio(color.hex, '#000000');
   const whiteContrast = contrastRatio(color.hex, '#ffffff');
@@ -1030,12 +1076,15 @@ function Swatch({
 
   return (
     <div
-      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}${isRest ? ' rest' : ''}${isStateReference ? ' state-reference' : ''}`}
+      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}${isHarmonyRest ? ' rest' : ''}${isVividReference ? ' vivid-reference' : ''}${isSubtleReference ? ' subtle-reference' : ''}`}
       style={style}
-      title={`${prefix}${color.tone} · ${color.hex}${color.flags.isAnchor ? ' · generated anchor' : ''}${isRest ? ' · harmony rest' : ''}${isStateReference ? ' · state reference' : ''} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
+      title={`${prefix}${color.tone} · ${color.hex}${color.flags.isAnchor ? ' · generated anchor' : ''}${isHarmonyRest ? ' · harmony rest' : ''}${isVividReference ? ' · vivid reference' : ''}${isSubtleReference ? ' · subtle reference' : ''} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
     >
-      {isStateReference ? (
-        <span className="swatch-state-reference-marker" aria-hidden="true" />
+      {isVividReference ? (
+        <span className="swatch-vivid-reference-marker" aria-hidden="true" />
+      ) : null}
+      {isSubtleReference ? (
+        <span className="swatch-subtle-reference-marker" aria-hidden="true" />
       ) : null}
       <span className="swatch-tone">
         {prefix}
@@ -1625,10 +1674,12 @@ function formatSignedOffset(offset: number): string {
   return offset > 0 ? `+${offset}` : `${offset}`;
 }
 
-function formatStateSource(source: TonalStateReference['source']): string {
+function formatFunctionalReferenceSource(source: TonalFunctionalReference['source']): string {
   if (source === 'generated-anchor') return 'generated anchor';
   if (source === 'harmony-rest') return 'harmony rest';
   if (source === 'contrast-mirror') return 'contrast mirror';
+  if (source === 'surface-relative') return 'surface relative';
+  if (source === 'reference-match') return 'reference match';
   return 'locked position';
 }
 

@@ -42,3 +42,7 @@ scale generation, harmony, gamut, monotonicity, contrast, continuity, or the
 low-level goldens. This keeps tonal mathematics canonical while allowing a
 Design System to state explicitly that Black Rest is darker, Yellow Rest is
 lighter, or Light and Dark use different functional positions.
+
+Format V4 preserves this decision but replaces the ambiguous state-anchor name
+with the explicit vivid reference and adds a separate surface-relative subtle
+reference. Both remain pointers into the unchanged emitted scale.

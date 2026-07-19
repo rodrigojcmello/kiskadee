@@ -145,6 +145,7 @@
 
 .primaryCard,
 .extraSection,
+.functionalReferenceCard,
 .anchorCard,
 .statusCard {
   min-width: 0;
@@ -163,6 +164,78 @@
     color-mix(in srgb, var(--editor-brand-soft) 54%, var(--editor-surface)) 0%,
     var(--editor-surface-subtle) 66%
   );
+}
+
+.functionalReferenceCard {
+  display: grid;
+  gap: 14px;
+}
+
+.functionalReferenceIntro {
+  max-width: 820px;
+  margin: 0;
+  color: var(--editor-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.subtleReferenceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.subtleReferenceTheme {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(130px, 0.7fr) minmax(180px, 1fr) auto;
+  gap: 9px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid var(--editor-border);
+  border-radius: 12px;
+  background: var(--editor-surface);
+}
+
+.subtleReferenceTheme label {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.subtleReferenceTheme label > span:first-child {
+  color: var(--editor-muted);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.subtleReferenceHex {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+.subtleReferenceResult {
+  display: grid;
+  min-width: 118px;
+  gap: 2px;
+  align-self: stretch;
+  align-content: center;
+  border-radius: 9px;
+  padding: 7px 9px;
+  background: var(--editor-surface-strong);
+  color: var(--editor-muted);
+  font-size: 10px;
+}
+
+.subtleReferenceResult strong {
+  color: var(--editor-text);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+.subtleReferenceResult small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .classificationBadges {
@@ -434,13 +507,13 @@
   font-size: 12px;
 }
 
-.stateAnchorCell {
+.vividReferenceCell {
   display: grid;
   min-width: 0;
   gap: 6px;
 }
 
-.stateAnchorTheme {
+.vividReferenceTheme {
   display: grid;
   min-width: 0;
   grid-template-columns: 16px minmax(104px, 1fr) auto 38px;
@@ -448,29 +521,29 @@
   align-items: center;
 }
 
-.stateThemeLabel {
+.vividThemeLabel {
   color: var(--editor-muted);
   font-size: 10px;
   font-weight: 800;
 }
 
-.stateAnchorTheme label {
+.vividReferenceTheme label {
   min-width: 0;
 }
 
-.stateAnchorTheme select {
+.vividReferenceTheme select {
   width: 100%;
   height: 32px;
   padding: 0 7px;
   font-size: 11px;
 }
 
-.stateAnchorTheme .stateToneSelect {
+.vividReferenceTheme .vividToneSelect {
   width: 68px;
   font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
-.resolvedStateAnchor {
+.resolvedVividReference {
   display: inline-flex;
   min-width: 34px;
   min-height: 24px;
@@ -733,6 +806,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .subtleReferenceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .familyHeader {
     display: none;
   }
@@ -745,7 +822,7 @@
     grid-column: 1 / 3;
   }
 
-  .stateAnchorCell {
+  .vividReferenceCell {
     grid-column: 1 / 3;
   }
 
@@ -789,8 +866,12 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .subtleReferenceTheme {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .policyCell,
-  .stateAnchorCell,
+  .vividReferenceCell,
   .actions {
     grid-column: 1;
     grid-row: auto;

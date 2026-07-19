@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { contrastRatio, maxSrgbChroma, oklchToSrgbHex } from './color-math';
+import { contrastRatio, deltaEOk, hexToOklch, maxSrgbChroma, oklchToSrgbHex } from './color-math';
 import {
   generateKiskadeeScale,
   KISKADEE_TONES,
@@ -15,7 +15,7 @@ import {
   type KiskadeeTonalSystemResult,
   MUNSELL_HARMONY_V1_PARAMETERS,
   type ResolvedKiskadeeTonalSystem,
-  resolveTonalStateReference,
+  resolveTonalFunctionalReference,
   SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS
 } from './tonal-system';
 import {
@@ -23,11 +23,11 @@ import {
   parseTonalFamilyId,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyId,
-  type TonalSystemRecipeV3
+  type TonalSystemRecipeV4
 } from './tonal-system-contract';
 
-function createRecipe(seedHex = '#0f6cbd'): TonalSystemRecipeV3 {
-  const recipe = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3;
+function createRecipe(seedHex = '#0f6cbd'): TonalSystemRecipeV4 {
+  const recipe = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4;
   recipe.primary.seedHex = seedHex;
   return recipe;
 }
@@ -50,7 +50,7 @@ function resolveScaleTone(scale: KiskadeeScaleResult, tone: KiskadeeTone) {
   return color;
 }
 
-function createFluentAlignmentRecipe(): TonalSystemRecipeV3 {
+function createFluentAlignmentRecipe(): TonalSystemRecipeV4 {
   const recipe = createRecipe('#0064b4');
   recipe.tonalProfile = 'muted-darks';
   recipe.primary.policies.dark = 'adaptive';
@@ -207,7 +207,7 @@ const PRIMARY_IDENTITY_REGRESSION_CASES = TONAL_PROFILES.flatMap((tonalProfile) 
 
 const THEMES = ['light', 'dark'] as const satisfies readonly KiskadeeTheme[];
 
-describe('generateKiskadeeTonalSystem v3', () => {
+describe('generateKiskadeeTonalSystem v4', () => {
   it.each(
     PRIMARY_IDENTITY_REGRESSION_CASES
   )('keeps %s %s primary scales byte-for-byte equal to the canonical low-level generator', (seedHex, tonalProfile) => {
@@ -382,174 +382,325 @@ describe('generateKiskadeeTonalSystem v3', () => {
     expect(dark.scale.anchorTone).toBe(50);
   });
 
-  it('resolves automatic state anchors from each theme policy', () => {
+  it('resolves the automatic Primary subtle reference at L4 and mirrors it against Dark surface', () => {
     const result = generateKiskadeeTonalSystem(createRecipe());
     expectResolved(result);
 
     const primary = resolveFamily(result, result.primaryReference.familyId);
-    const black = resolveFamily(result, 'n.black.v1');
-    const lime = resolveFamily(result, 'gy.lime.v1');
+    const lightVivid = resolveTonalFunctionalReference(result, primary.id, 'light', 'vivid');
+    const darkVivid = resolveTonalFunctionalReference(result, primary.id, 'dark', 'vivid');
+    const lightSubtle = resolveTonalFunctionalReference(result, primary.id, 'light', 'subtle');
+    const darkSubtle = resolveTonalFunctionalReference(result, primary.id, 'dark', 'subtle');
 
-    for (const theme of THEMES) {
-      expect(primary.stateAnchors[theme]).toEqual({ mode: 'auto' });
-      expect(resolveTonalStateReference(primary, theme)).toMatchObject({
-        tone: primary.themes[theme].scale.anchorTone,
-        source: 'generated-anchor'
-      });
-      expect(lime.themes[theme].policy).toBe('harmonized');
-      expect(resolveTonalStateReference(lime, theme)).toMatchObject({
-        tone: lime.themes[theme].restTone,
-        hex: lime.themes[theme].restColor.hex,
-        source: 'harmony-rest'
-      });
-    }
-
-    expect(black.stateAnchors).toEqual({ light: { mode: 'auto' }, dark: { mode: 'auto' } });
-    const blackLight = resolveTonalStateReference(black, 'light');
-    expect(blackLight).toMatchObject({
-      tone: black.themes.light.scale.anchorTone,
-      hex: black.themes.light.effectiveSeedHex,
+    expect(primary.functionalReferenceRules).toEqual({
+      light: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } },
+      dark: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } }
+    });
+    expect(lightVivid).toMatchObject({
+      tone: primary.themes.light.scale.anchorTone,
       source: 'generated-anchor'
     });
+    expect(darkVivid).toMatchObject({
+      tone: primary.themes.dark.scale.anchorTone,
+      source: 'generated-anchor'
+    });
+    expect(lightSubtle).toMatchObject({
+      tone: 4,
+      hex: resolveScaleTone(primary.themes.light.scale, 4).hex,
+      source: 'surface-relative'
+    });
+    expect(darkSubtle.source).toBe('surface-relative');
 
-    const blackDark = resolveTonalStateReference(black, 'dark');
-    expect(blackDark).toMatchObject({ source: 'contrast-mirror' });
-    expect(blackDark.tone).toBeGreaterThan(0);
-    expect(blackDark.tone).toBeLessThan(100);
-
-    const targetContrast = contrastRatio(blackLight.hex, '#ffffff');
-    const selectedError = Math.abs(contrastRatio(blackDark.hex, '#000000') - targetContrast);
-    for (const color of black.themes.dark.scale.colors.filter(
-      (candidate) => candidate.tone > 0 && candidate.tone < 100
+    const darkVividIndex = KISKADEE_TONES.indexOf(darkVivid.tone);
+    const selectedError = Math.abs(
+      Math.log(darkSubtle.surfaceContrast / lightSubtle.surfaceContrast)
+    );
+    for (const color of primary.themes.dark.scale.colors.filter(
+      (candidate) =>
+        candidate.tone > 0 &&
+        candidate.tone < 100 &&
+        KISKADEE_TONES.indexOf(candidate.tone) < darkVividIndex
     )) {
-      const candidateError = Math.abs(contrastRatio(color.hex, '#000000') - targetContrast);
-      expect(selectedError).toBeLessThanOrEqual(candidateError);
+      const candidateError = Math.abs(
+        Math.log(contrastRatio(color.hex, '#000000') / lightSubtle.surfaceContrast)
+      );
+      expect(selectedError).toBeLessThanOrEqual(candidateError + 1e-12);
     }
   });
 
-  it('lets exact and adaptive Fluent supports follow their own anchors automatically', () => {
-    const result = generateKiskadeeTonalSystem(createFluentAlignmentRecipe());
-    expectResolved(result);
-
-    const black = resolveFamily(result, 'n.black.v1');
-    expect(resolveTonalStateReference(black, 'light')).toMatchObject({
-      tone: 85,
-      hex: '#21242d',
-      source: 'generated-anchor'
-    });
-    expect(resolveTonalStateReference(black, 'dark')).toMatchObject({
-      tone: 90,
-      hex: '#d3d6df',
-      source: 'contrast-mirror'
-    });
-    expect(black.themes.dark.scale.anchorTone).toBe(7);
-    expect(resolveScaleTone(black.themes.dark.scale, 7).hex).toBe('#21242d');
-
-    const red = resolveFamily(result, 'r.red.v1');
-    for (const theme of THEMES) {
-      expect(['source-exact', 'adaptive']).toContain(red.themes[theme].policy);
-      expect(resolveTonalStateReference(red, theme)).toMatchObject({
-        tone: red.themes[theme].scale.anchorTone,
-        hex: red.themes[theme].effectiveSeedHex,
-        source: 'generated-anchor'
-      });
-    }
-
-    const indigo = resolveFamily(result, 'pb.indigo.v1');
-    for (const theme of THEMES) {
-      expect(indigo.themes[theme].policy).toBe('harmonized');
-      expect(resolveTonalStateReference(indigo, theme)).toMatchObject({
-        tone: indigo.themes[theme].restTone,
-        source: 'harmony-rest'
-      });
-    }
-  });
-
-  it('lets an explicit Dark rule override the automatic achromatic contrast mirror', () => {
-    const recipe = createFluentAlignmentRecipe();
-    recipe.tonalAnchors.states = [
-      {
-        id: 'n.black.v1',
-        light: { mode: 'auto' },
-        dark: { mode: 'generated-anchor' }
-      }
-    ];
-    const result = generateKiskadeeTonalSystem(recipe);
-    expectResolved(result);
-
-    const black = resolveFamily(result, 'n.black.v1');
-    expect(resolveTonalStateReference(black, 'dark')).toMatchObject({
-      tone: 7,
-      hex: '#21242d',
-      source: 'generated-anchor'
-    });
-  });
-
-  it('resolves independent family and theme state anchors without changing any tonal scale', () => {
-    const baseline = generateKiskadeeTonalSystem(createRecipe());
+  it('matches a Primary subtle reference HEX without changing any generated scale bytes', () => {
+    const baseline = generateKiskadeeTonalSystem(createRecipe('#0064b4'));
     expectResolved(baseline);
 
-    const recipe = createRecipe();
-    recipe.tonalAnchors.states = [
+    const recipe = createRecipe('#0064b4');
+    recipe.functionalReferences = [
       {
         id: 'b.blue.v1',
-        light: { mode: 'harmony-rest' },
-        dark: { mode: 'locked', tone: 70 }
-      },
-      {
-        id: 'n.black.v1',
-        light: { mode: 'locked', tone: 85 },
-        dark: { mode: 'locked', tone: 7 }
-      },
-      {
-        id: 'y.yellow.v1',
-        light: { mode: 'generated-anchor' },
-        dark: { mode: 'harmony-rest' }
+        light: {
+          vivid: { mode: 'auto' },
+          subtle: { mode: 'reference-match', referenceHex: '#d9f1ff' }
+        },
+        dark: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } }
       }
     ];
     const configured = generateKiskadeeTonalSystem(recipe);
     expectResolved(configured);
 
-    expect(configured.families.map((family) => family.themes)).toEqual(
-      baseline.families.map((family) => family.themes)
+    expect(
+      configured.families.map((family) => ({
+        id: family.id,
+        light: family.themes.light.scale,
+        dark: family.themes.dark.scale
+      }))
+    ).toEqual(
+      baseline.families.map((family) => ({
+        id: family.id,
+        light: family.themes.light.scale,
+        dark: family.themes.dark.scale
+      }))
     );
 
-    const primary = resolveFamily(configured, 'b.blue.v1');
-    expect(resolveTonalStateReference(primary, 'light')).toMatchObject({
-      tone: primary.themes.light.restTone,
+    const matched = resolveTonalFunctionalReference(configured, 'b.blue.v1', 'light', 'subtle');
+    expect(matched).toMatchObject({
+      tone: 4,
+      hex: '#e1efff',
+      source: 'reference-match',
+      referenceHex: '#d9f1ff'
+    });
+    expect(matched.deltaE).toBeCloseTo(0.010_751_892, 8);
+  });
+
+  it('resolves support subtle references relative to the Primary surface relationship', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe());
+    expectResolved(result);
+
+    for (const theme of THEMES) {
+      const primarySubtle = resolveTonalFunctionalReference(
+        result,
+        result.primaryReference.familyId,
+        theme,
+        'subtle'
+      );
+      const surface = hexToOklch(theme === 'light' ? '#ffffff' : '#000000');
+
+      for (const family of result.families.filter(
+        (candidate) => candidate.id !== result.primaryReference.familyId
+      )) {
+        const vivid = resolveTonalFunctionalReference(result, family.id, theme, 'vivid');
+        const subtle = resolveTonalFunctionalReference(result, family.id, theme, 'subtle');
+        const vividIndex = KISKADEE_TONES.indexOf(vivid.tone);
+        const selectedError = Math.abs(subtle.surfaceDeltaE - primarySubtle.surfaceDeltaE);
+
+        expect(subtle.source, `${family.id} ${theme}`).toBe('surface-relative');
+        expect(subtle.hex, `${family.id} ${theme}`).toBe(
+          resolveScaleTone(family.themes[theme].scale, subtle.tone).hex
+        );
+        expect(KISKADEE_TONES.indexOf(subtle.tone)).toBeLessThan(vividIndex);
+
+        for (const color of family.themes[theme].scale.colors.filter(
+          (candidate) =>
+            candidate.tone > 0 &&
+            candidate.tone < 100 &&
+            KISKADEE_TONES.indexOf(candidate.tone) < vividIndex
+        )) {
+          const candidateError = Math.abs(
+            deltaEOk(color.oklch, surface) - primarySubtle.surfaceDeltaE
+          );
+          expect(selectedError, `${family.id} ${theme} ${color.tone}`).toBeLessThanOrEqual(
+            candidateError + 1e-12
+          );
+        }
+      }
+    }
+  });
+
+  it('keeps Yellow and Black subtle references family-specific', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe('#ffeb3b'));
+    expectResolved(result);
+
+    const yellowLight = resolveTonalFunctionalReference(result, 'y.yellow.v1', 'light', 'subtle');
+    const yellowDark = resolveTonalFunctionalReference(result, 'y.yellow.v1', 'dark', 'subtle');
+    const blackLight = resolveTonalFunctionalReference(result, 'n.black.v1', 'light', 'subtle');
+    const blackDark = resolveTonalFunctionalReference(result, 'n.black.v1', 'dark', 'subtle');
+
+    expect(yellowLight).toMatchObject({ tone: 4, source: 'surface-relative' });
+    expect(yellowDark).toMatchObject({ tone: 3, source: 'surface-relative' });
+    expect(blackLight).toMatchObject({ tone: 10, source: 'surface-relative' });
+    expect(blackDark).toMatchObject({ tone: 3, source: 'surface-relative' });
+    expect(blackLight.tone).not.toBe(yellowLight.tone);
+    expect(blackLight.hex).not.toBe(yellowLight.hex);
+  });
+
+  it('resolves explicit vivid and subtle rules without changing tonal scale bytes', () => {
+    const baseline = generateKiskadeeTonalSystem(createRecipe());
+    expectResolved(baseline);
+
+    const recipe = createRecipe();
+    recipe.functionalReferences = [
+      {
+        id: 'b.blue.v1',
+        light: {
+          vivid: { mode: 'harmony-rest' },
+          subtle: { mode: 'locked', tone: 4 }
+        },
+        dark: {
+          vivid: { mode: 'locked', tone: 70 },
+          subtle: { mode: 'locked', tone: 3 }
+        }
+      },
+      {
+        id: 'n.black.v1',
+        light: {
+          vivid: { mode: 'locked', tone: 85 },
+          subtle: { mode: 'locked', tone: 10 }
+        },
+        dark: {
+          vivid: { mode: 'generated-anchor' },
+          subtle: { mode: 'locked', tone: 4 }
+        }
+      },
+      {
+        id: 'y.yellow.v1',
+        light: { vivid: { mode: 'generated-anchor' }, subtle: { mode: 'auto' } },
+        dark: { vivid: { mode: 'harmony-rest' }, subtle: { mode: 'auto' } }
+      }
+    ];
+    const configured = generateKiskadeeTonalSystem(recipe);
+    expectResolved(configured);
+
+    expect(
+      configured.families.map((family) => ({
+        id: family.id,
+        light: family.themes.light.scale,
+        dark: family.themes.dark.scale
+      }))
+    ).toEqual(
+      baseline.families.map((family) => ({
+        id: family.id,
+        light: family.themes.light.scale,
+        dark: family.themes.dark.scale
+      }))
+    );
+
+    expect(
+      resolveTonalFunctionalReference(configured, 'b.blue.v1', 'light', 'vivid')
+    ).toMatchObject({
+      tone: resolveFamily(configured, 'b.blue.v1').themes.light.restTone,
       source: 'harmony-rest'
     });
-    expect(resolveTonalStateReference(primary, 'dark')).toMatchObject({
-      tone: 70,
-      hex: resolveScaleTone(primary.themes.dark.scale, 70).hex,
-      source: 'locked'
-    });
-
-    const black = resolveFamily(configured, 'n.black.v1');
-    expect(resolveTonalStateReference(black, 'light')).toMatchObject({
-      tone: 85,
-      source: 'locked'
-    });
-    expect(resolveTonalStateReference(black, 'dark')).toMatchObject({ tone: 7, source: 'locked' });
-
-    const yellow = resolveFamily(configured, 'y.yellow.v1');
-    expect(resolveTonalStateReference(yellow, 'light')).toMatchObject({
-      tone: yellow.themes.light.scale.anchorTone,
+    expect(resolveTonalFunctionalReference(configured, 'b.blue.v1', 'dark', 'vivid')).toMatchObject(
+      {
+        tone: 70,
+        source: 'locked'
+      }
+    );
+    expect(
+      resolveTonalFunctionalReference(configured, 'b.blue.v1', 'dark', 'subtle')
+    ).toMatchObject({ tone: 3, source: 'locked' });
+    expect(
+      resolveTonalFunctionalReference(configured, 'n.black.v1', 'dark', 'vivid')
+    ).toMatchObject({
+      tone: resolveFamily(configured, 'n.black.v1').themes.dark.scale.anchorTone,
       source: 'generated-anchor'
     });
-    expect(resolveTonalStateReference(yellow, 'dark')).toMatchObject({
-      tone: yellow.themes.dark.restTone,
+    expect(
+      resolveTonalFunctionalReference(configured, 'y.yellow.v1', 'dark', 'vivid')
+    ).toMatchObject({
+      tone: resolveFamily(configured, 'y.yellow.v1').themes.dark.restTone,
       source: 'harmony-rest'
     });
   });
 
-  it('rejects state anchors for families that are not materialized', () => {
+  it('reports the known fallback when vivid occupies the first public tone', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe('#120000'));
+    expectResolved(result);
+
+    expect(resolveTonalFunctionalReference(result, 'r.red.v1', 'dark', 'vivid')).toMatchObject({
+      tone: 1,
+      source: 'generated-anchor'
+    });
+    expect(resolveTonalFunctionalReference(result, 'r.red.v1', 'dark', 'subtle')).toMatchObject({
+      tone: 1,
+      source: 'surface-relative'
+    });
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          severity: 'review',
+          code: 'SUBTLE_REFERENCE_SURFACE_EDGE_FALLBACK',
+          familyId: 'r.red.v1',
+          theme: 'dark'
+        })
+      ])
+    );
+    const red = resolveFamily(result, 'r.red.v1');
+    expect(red.status).toBe('review');
+    expect(red.themes.dark.status).toBe('review');
+  });
+
+  it('locks and replays every functional reference with exact provenance', () => {
+    const recipe = createRecipe('#0064b4');
+    recipe.functionalReferences = [
+      {
+        id: 'b.blue.v1',
+        light: {
+          vivid: { mode: 'generated-anchor' },
+          subtle: { mode: 'reference-match', referenceHex: '#d9f1ff' }
+        },
+        dark: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } }
+      },
+      {
+        id: 'n.black.v1',
+        light: {
+          vivid: { mode: 'locked', tone: 85 },
+          subtle: { mode: 'locked', tone: 4 }
+        },
+        dark: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } }
+      }
+    ];
+    const generated = generateKiskadeeTonalSystem(recipe);
+    expectResolved(generated);
+    const replay = generateKiskadeeTonalSystem(generated.source);
+    expectResolved(replay);
+
+    expect(replay.source).toEqual(generated.source);
+    expect(replay.functionalReferences).toEqual(generated.functionalReferences);
+    expect(
+      replay.families.map((family) => ({
+        id: family.id,
+        light: family.themes.light.scale,
+        dark: family.themes.dark.scale
+      }))
+    ).toEqual(
+      generated.families.map((family) => ({
+        id: family.id,
+        light: family.themes.light.scale,
+        dark: family.themes.dark.scale
+      }))
+    );
+    expect(
+      generated.source.functionalReferences.find((family) => family.id === 'b.blue.v1')?.light
+        .subtle
+    ).toEqual({ tone: 4, source: 'reference-match', referenceHex: '#d9f1ff' });
+    expect(
+      generated.source.functionalReferences.find((family) => family.id === 'n.black.v1')?.light
+        .vivid
+    ).toEqual({ tone: 85, source: 'locked' });
+  });
+
+  it('rejects functional references for families that are not materialized', () => {
     const recipe = createRecipe();
-    recipe.tonalAnchors.states = [
+    recipe.functionalReferences = [
       {
         id: 'n.black.v2',
-        light: { mode: 'locked', tone: 85 },
-        dark: { mode: 'locked', tone: 7 }
+        light: {
+          vivid: { mode: 'locked', tone: 85 },
+          subtle: { mode: 'locked', tone: 4 }
+        },
+        dark: {
+          vivid: { mode: 'locked', tone: 90 },
+          subtle: { mode: 'locked', tone: 4 }
+        }
       }
     ];
 
@@ -558,7 +709,7 @@ describe('generateKiskadeeTonalSystem v3', () => {
     expect(result.issues).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: 'STATE_ANCHOR_FAMILY_NOT_FOUND',
+          code: 'FUNCTIONAL_REFERENCE_FAMILY_NOT_FOUND',
           familyId: 'n.black.v2'
         })
       ])

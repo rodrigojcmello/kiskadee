@@ -34,7 +34,9 @@ import {
 } from './munsell-oklch.ts';
 import {
   createTonalFamilyId,
-  type LockedTonalSystemSourceV3,
+  type LockedTonalFamilyFunctionalReferencesV4,
+  type LockedTonalFunctionalReferenceV4,
+  type LockedTonalSystemSourceV4,
   lockTonalSystemRecipe,
   MUNSELL_SECTORS,
   parseTonalFamilyId,
@@ -46,14 +48,14 @@ import {
   type TonalChromaticAppearance,
   type TonalFamilyAppearance,
   type TonalFamilyColorKind,
+  type TonalFamilyFunctionalReferenceRulesV4,
   type TonalFamilyId,
-  type TonalFamilyOverrideV3,
+  type TonalFamilyOverrideV4,
   type TonalFamilySector,
   type TonalFamilySectorNotation,
-  type TonalFamilyStateAnchorsV3,
   type TonalFamilyVariant,
-  type TonalStateAnchorRule,
-  type TonalSystemRecipeV3,
+  type TonalSubtleReferenceRule,
+  type TonalSystemRecipeV4,
   type TonalSystemValidationIssue,
   type TonalThemePolicy,
   validateLockedTonalSystemSource,
@@ -122,6 +124,7 @@ const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
 } as const;
 
 const REST_TONES = KISKADEE_TONES.filter((tone) => tone > 0 && tone < 100);
+const DEFAULT_SUBTLE_REFERENCE_TONE = 4 satisfies KiskadeeTone;
 const CORE_FAMILY_IDS = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
 const BASE_FAMILY_IDS = new Set<TonalFamilyId>(TONAL_BASE_FAMILY_IDS);
 
@@ -135,10 +138,10 @@ export type TonalSystemIssue = TonalSystemValidationIssue & {
 };
 
 export type TonalHarmonyFingerprint = {
-  formatVersion: TonalSystemRecipeV3['formatVersion'];
-  gridContract: TonalSystemRecipeV3['gridContract'];
-  harmonyContract: TonalSystemRecipeV3['harmonyContract'];
-  tonalProfile: TonalSystemRecipeV3['tonalProfile'];
+  formatVersion: TonalSystemRecipeV4['formatVersion'];
+  gridContract: TonalSystemRecipeV4['gridContract'];
+  harmonyContract: TonalSystemRecipeV4['harmonyContract'];
+  tonalProfile: TonalSystemRecipeV4['tonalProfile'];
   familyId: TonalFamilyId;
   theme: KiskadeeTheme;
   tone: KiskadeeTone;
@@ -252,9 +255,9 @@ export type ResolvedTonalFamily = {
   seedOrigin: 'primary' | 'reference' | 'derived' | 'override' | 'canonical';
   sourceSeedHex: string;
   identity: MunsellColorClassification | null;
-  stateAnchors: {
-    light: TonalStateAnchorRule;
-    dark: TonalStateAnchorRule;
+  functionalReferenceRules: {
+    light: TonalFamilyFunctionalReferenceRulesV4['light'];
+    dark: TonalFamilyFunctionalReferenceRulesV4['dark'];
   };
   status: Exclude<TonalSystemStatus, 'error'>;
   themes: {
@@ -263,15 +266,54 @@ export type ResolvedTonalFamily = {
   };
 };
 
-export type TonalStateReference = {
+export type TonalFunctionalReferenceSource = LockedTonalFunctionalReferenceV4['source'];
+
+export type TonalFunctionalReference = {
   tone: KiskadeeTone;
   hex: string;
   color: KiskadeeScaleColor;
-  source: 'generated-anchor' | 'harmony-rest' | 'contrast-mirror' | 'locked';
+  source: TonalFunctionalReferenceSource;
+  surfaceContrast: number;
+  surfaceDeltaE: number;
+  referenceHex?: string;
+  deltaE?: number;
 };
 
-function resolveAchromaticDarkContrastMirror(family: ResolvedTonalFamily): TonalStateReference {
-  const lightReference = resolveTonalStateReference(family, 'light');
+export type ResolvedTonalFamilyFunctionalReferences = {
+  id: TonalFamilyId;
+  light: {
+    vivid: TonalFunctionalReference;
+    subtle: TonalFunctionalReference;
+  };
+  dark: {
+    vivid: TonalFunctionalReference;
+    subtle: TonalFunctionalReference;
+  };
+};
+
+function createFunctionalReference(
+  color: KiskadeeScaleColor,
+  theme: KiskadeeTheme,
+  source: TonalFunctionalReferenceSource,
+  details: Pick<TonalFunctionalReference, 'referenceHex' | 'deltaE'> = {}
+): TonalFunctionalReference {
+  const surfaceHex = resolveThemeSurfaceHex(theme);
+  return {
+    tone: color.tone,
+    hex: color.hex,
+    color,
+    source,
+    surfaceContrast: contrastRatio(color.hex, surfaceHex),
+    surfaceDeltaE: deltaEOk(color.oklch, hexToOklch(surfaceHex)),
+    ...details
+  };
+}
+
+function resolveAchromaticDarkContrastMirror(
+  family: ResolvedTonalFamily,
+  issues: TonalSystemIssue[]
+): TonalFunctionalReference {
+  const lightReference = resolveFamilyVividReference(family, 'light', issues);
   const targetContrast = contrastRatio(lightReference.hex, '#ffffff');
   const candidates = family.themes.dark.scale.colors
     .filter((color) => color.tone > 0 && color.tone < 100)
@@ -296,23 +338,19 @@ function resolveAchromaticDarkContrastMirror(family: ResolvedTonalFamily): Tonal
     throw new Error(`${family.id} dark is missing an internal contrast-mirror tone.`);
   }
 
-  return {
-    tone: best.color.tone,
-    hex: best.color.hex,
-    color: best.color,
-    source: 'contrast-mirror'
-  };
+  return createFunctionalReference(best.color, 'dark', 'contrast-mirror');
 }
 
-export function resolveTonalStateReference(
+function resolveFamilyVividReference(
   family: ResolvedTonalFamily,
-  theme: KiskadeeTheme
-): TonalStateReference {
+  theme: KiskadeeTheme,
+  issues: TonalSystemIssue[]
+): TonalFunctionalReference {
   const resolution = family.themes[theme];
-  const configuredRule = family.stateAnchors[theme];
+  const configuredRule = family.functionalReferenceRules[theme].vivid;
 
   if (configuredRule.mode === 'auto' && family.colorKind === 'achromatic' && theme === 'dark') {
-    return resolveAchromaticDarkContrastMirror(family);
+    return resolveAchromaticDarkContrastMirror(family, issues);
   }
 
   const rule =
@@ -323,44 +361,73 @@ export function resolveTonalStateReference(
       : configuredRule;
 
   if (rule.mode === 'harmony-rest') {
-    return {
-      tone: resolution.restTone,
-      hex: resolution.restColor.hex,
-      color: resolution.restColor,
-      source: 'harmony-rest'
-    };
+    return createFunctionalReference(resolution.restColor, theme, 'harmony-rest');
   }
 
   if (rule.mode === 'locked') {
     const color = resolveTone(resolution.scale, rule.tone);
     if (!color) {
-      throw new Error(`${family.id} ${theme} is missing locked state tone ${rule.tone}.`);
+      throw new Error(`${family.id} ${theme} is missing locked vivid tone ${rule.tone}.`);
     }
-    return { tone: rule.tone, hex: color.hex, color, source: 'locked' };
+    return createFunctionalReference(color, theme, 'locked');
   }
 
   const anchorTone = resolution.scale.anchorTone;
   const anchorColor = anchorTone === null ? undefined : resolveTone(resolution.scale, anchorTone);
   if (anchorTone === null || !anchorColor) {
-    throw new Error(`${family.id} ${theme} is missing its generated state anchor.`);
+    throw new Error(`${family.id} ${theme} is missing its generated anchor.`);
   }
 
-  return {
-    tone: anchorTone,
-    hex: anchorColor.hex,
-    color: anchorColor,
-    source: 'generated-anchor'
-  };
+  if (anchorColor.flags.isCap) {
+    const fallbackTone = anchorTone === 0 ? 1 : 99;
+    const fallback = resolveTone(resolution.scale, fallbackTone);
+    if (!fallback) {
+      throw new Error(`${family.id} ${theme} is missing its internal vivid cap fallback.`);
+    }
+    if (
+      !issues.some(
+        (issue) =>
+          issue.code === 'VIVID_REFERENCE_CAP_FALLBACK' &&
+          issue.familyId === family.id &&
+          issue.theme === theme
+      )
+    ) {
+      markFamilyThemeForReview(family, theme);
+      issues.push({
+        severity: 'review',
+        code: 'VIVID_REFERENCE_CAP_FALLBACK',
+        path: `/functionalReferences/${family.id}/${theme}/vivid`,
+        message: `${family.id} ${theme} anchors at absolute cap ${anchorTone}; internal tone ${fallbackTone} is used as the closest functional vivid reference without recoloring the scale.`,
+        familyId: family.id,
+        theme
+      });
+    }
+    return createFunctionalReference(fallback, theme, 'generated-anchor');
+  }
+
+  return createFunctionalReference(anchorColor, theme, 'generated-anchor');
 }
 
-function resolveFamilyStateAnchors(
-  recipe: Pick<MaterializedTonalSystemRecipe, 'tonalAnchors'>,
+function resolveFamilyFunctionalReferenceRules(
+  recipe: Pick<MaterializedTonalSystemRecipe, 'functionalReferences'>,
   familyId: TonalFamilyId
-): Pick<TonalFamilyStateAnchorsV3, 'light' | 'dark'> {
-  const configured = recipe.tonalAnchors.states?.find((entry) => entry.id === familyId);
+): Pick<TonalFamilyFunctionalReferenceRulesV4, 'light' | 'dark'> {
+  const configured = recipe.functionalReferences.find((entry) => entry.id === familyId);
   return configured
-    ? { light: { ...configured.light }, dark: { ...configured.dark } }
-    : { light: { mode: 'auto' }, dark: { mode: 'auto' } };
+    ? {
+        light: {
+          vivid: { ...configured.light.vivid },
+          subtle: { ...configured.light.subtle }
+        },
+        dark: {
+          vivid: { ...configured.dark.vivid },
+          subtle: { ...configured.dark.subtle }
+        }
+      }
+    : {
+        light: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } },
+        dark: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } }
+      };
 }
 
 export function offsetKiskadeeTone(tone: KiskadeeTone, offset: number): KiskadeeTone | null {
@@ -372,10 +439,388 @@ export function offsetKiskadeeTone(tone: KiskadeeTone, offset: number): Kiskadee
   return target !== undefined && target > 0 && target < 100 ? target : null;
 }
 
+function resolveThemeSurfaceHex(theme: KiskadeeTheme): '#ffffff' | '#000000' {
+  return theme === 'light' ? '#ffffff' : '#000000';
+}
+
+function resolveFunctionalReferenceColor(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  tone: KiskadeeTone
+): KiskadeeScaleColor {
+  const color = resolveTone(family.themes[theme].scale, tone);
+  if (!color || tone === 0 || tone === 100) {
+    throw new Error(`${family.id} ${theme} is missing functional reference tone ${tone}.`);
+  }
+  return color;
+}
+
+function resolveSurfaceSideCandidates(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  vivid: TonalFunctionalReference
+): { candidates: KiskadeeScaleColor[]; surfaceEdgeFallback: boolean } {
+  const vividIndex = KISKADEE_TONES.indexOf(vivid.tone);
+  const candidates = family.themes[theme].scale.colors.filter((color) => {
+    const index = KISKADEE_TONES.indexOf(color.tone);
+    return color.tone > 0 && color.tone < 100 && index < vividIndex;
+  });
+  if (candidates.length > 0) return { candidates, surfaceEdgeFallback: false };
+
+  return {
+    candidates: [resolveFunctionalReferenceColor(family, theme, 1)],
+    surfaceEdgeFallback: true
+  };
+}
+
+function reportSurfaceEdgeFallback(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  issues: TonalSystemIssue[]
+): void {
+  markFamilyThemeForReview(family, theme);
+  issues.push({
+    severity: 'review',
+    code: 'SUBTLE_REFERENCE_SURFACE_EDGE_FALLBACK',
+    path: `/functionalReferences/${family.id}/${theme}/subtle`,
+    message: `${family.id} ${theme} has its vivid reference at tone 1, so no distinct non-cap subtle tone exists; tone 1 is reused without recoloring the scale.`,
+    familyId: family.id,
+    theme
+  });
+}
+
+function markFamilyThemeForReview(family: ResolvedTonalFamily, theme: KiskadeeTheme): void {
+  family.themes[theme].status = 'review';
+  family.status = 'review';
+}
+
+function compareToneGridDistance(
+  left: KiskadeeScaleColor,
+  right: KiskadeeScaleColor,
+  targetTone: KiskadeeTone
+): number {
+  const targetIndex = KISKADEE_TONES.indexOf(targetTone);
+  const leftDistance = Math.abs(KISKADEE_TONES.indexOf(left.tone) - targetIndex);
+  const rightDistance = Math.abs(KISKADEE_TONES.indexOf(right.tone) - targetIndex);
+  return leftDistance - rightDistance || left.tone - right.tone;
+}
+
+function resolveCanonicalPrimarySubtleReference(
+  family: ResolvedTonalFamily,
+  vivid: TonalFunctionalReference,
+  issues: TonalSystemIssue[]
+): TonalFunctionalReference {
+  const { candidates, surfaceEdgeFallback } = resolveSurfaceSideCandidates(family, 'light', vivid);
+  if (surfaceEdgeFallback) reportSurfaceEdgeFallback(family, 'light', issues);
+  const color =
+    candidates.find((candidate) => candidate.tone === DEFAULT_SUBTLE_REFERENCE_TONE) ??
+    candidates[candidates.length - 1];
+  if (!color) throw new Error(`${family.id} light has no canonical subtle reference candidate.`);
+  return createFunctionalReference(color, 'light', 'surface-relative');
+}
+
+function resolveReferenceMatchedSubtleReference(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  vivid: TonalFunctionalReference,
+  referenceHex: string,
+  issues: TonalSystemIssue[]
+): TonalFunctionalReference {
+  const { candidates, surfaceEdgeFallback } = resolveSurfaceSideCandidates(family, theme, vivid);
+  if (surfaceEdgeFallback) reportSurfaceEdgeFallback(family, theme, issues);
+  const referenceOklch = hexToOklch(referenceHex);
+  const referenceContrast = contrastRatio(referenceHex, resolveThemeSurfaceHex(theme));
+  const color = [...candidates].sort((left, right) => {
+    const deltaDifference =
+      deltaEOk(left.oklch, referenceOklch) - deltaEOk(right.oklch, referenceOklch);
+    if (deltaDifference !== 0) return deltaDifference;
+    const leftContrastError = Math.abs(
+      Math.log(contrastRatio(left.hex, resolveThemeSurfaceHex(theme)) / referenceContrast)
+    );
+    const rightContrastError = Math.abs(
+      Math.log(contrastRatio(right.hex, resolveThemeSurfaceHex(theme)) / referenceContrast)
+    );
+    return (
+      leftContrastError - rightContrastError ||
+      compareToneGridDistance(left, right, DEFAULT_SUBTLE_REFERENCE_TONE)
+    );
+  })[0];
+  if (!color) throw new Error(`${family.id} ${theme} has no reference-match candidate.`);
+
+  return createFunctionalReference(color, theme, 'reference-match', {
+    referenceHex,
+    deltaE: deltaEOk(color.oklch, referenceOklch)
+  });
+}
+
+function resolveCrossThemeSurfaceRelativeReference(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  vivid: TonalFunctionalReference,
+  oppositeThemeReference: TonalFunctionalReference,
+  issues: TonalSystemIssue[]
+): TonalFunctionalReference {
+  const { candidates, surfaceEdgeFallback } = resolveSurfaceSideCandidates(family, theme, vivid);
+  if (surfaceEdgeFallback) reportSurfaceEdgeFallback(family, theme, issues);
+  const surfaceHex = resolveThemeSurfaceHex(theme);
+  const color = [...candidates].sort((left, right) => {
+    const leftError = Math.abs(
+      Math.log(contrastRatio(left.hex, surfaceHex) / oppositeThemeReference.surfaceContrast)
+    );
+    const rightError = Math.abs(
+      Math.log(contrastRatio(right.hex, surfaceHex) / oppositeThemeReference.surfaceContrast)
+    );
+    return (
+      leftError - rightError || compareToneGridDistance(left, right, oppositeThemeReference.tone)
+    );
+  })[0];
+  if (!color) throw new Error(`${family.id} ${theme} has no surface-mirror candidate.`);
+
+  return createFunctionalReference(color, theme, 'surface-relative');
+}
+
+function resolveSupportSurfaceRelativeReference(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  vivid: TonalFunctionalReference,
+  primarySubtle: TonalFunctionalReference,
+  issues: TonalSystemIssue[]
+): TonalFunctionalReference {
+  const { candidates, surfaceEdgeFallback } = resolveSurfaceSideCandidates(family, theme, vivid);
+  if (surfaceEdgeFallback) reportSurfaceEdgeFallback(family, theme, issues);
+  const surfaceHex = resolveThemeSurfaceHex(theme);
+  const surfaceOklch = hexToOklch(surfaceHex);
+  const color = [...candidates].sort((left, right) => {
+    const leftDeltaError = Math.abs(
+      deltaEOk(left.oklch, surfaceOklch) - primarySubtle.surfaceDeltaE
+    );
+    const rightDeltaError = Math.abs(
+      deltaEOk(right.oklch, surfaceOklch) - primarySubtle.surfaceDeltaE
+    );
+    if (leftDeltaError !== rightDeltaError) return leftDeltaError - rightDeltaError;
+    const leftContrastError = Math.abs(
+      Math.log(contrastRatio(left.hex, surfaceHex) / primarySubtle.surfaceContrast)
+    );
+    const rightContrastError = Math.abs(
+      Math.log(contrastRatio(right.hex, surfaceHex) / primarySubtle.surfaceContrast)
+    );
+    return (
+      leftContrastError - rightContrastError ||
+      compareToneGridDistance(left, right, primarySubtle.tone)
+    );
+  })[0];
+  if (!color) throw new Error(`${family.id} ${theme} has no surface-relative candidate.`);
+
+  return createFunctionalReference(color, theme, 'surface-relative');
+}
+
+function resolveExplicitSubtleReference(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  vivid: TonalFunctionalReference,
+  rule: TonalSubtleReferenceRule,
+  issues: TonalSystemIssue[]
+): TonalFunctionalReference | null {
+  if (rule.mode === 'auto') return null;
+  if (rule.mode === 'reference-match') {
+    return resolveReferenceMatchedSubtleReference(family, theme, vivid, rule.referenceHex, issues);
+  }
+
+  const reference = createFunctionalReference(
+    resolveFunctionalReferenceColor(family, theme, rule.tone),
+    theme,
+    'locked'
+  );
+  if (KISKADEE_TONES.indexOf(reference.tone) >= KISKADEE_TONES.indexOf(vivid.tone)) {
+    issues.push({
+      severity: 'error',
+      code: 'INVALID_FUNCTIONAL_REFERENCE_ORDER',
+      path: `/functionalReferences/${family.id}/${theme}/subtle/tone`,
+      message: `${family.id} ${theme} locks subtle tone ${reference.tone} at or beyond vivid tone ${vivid.tone}.`,
+      familyId: family.id,
+      theme
+    });
+  }
+  return reference;
+}
+
+function hydrateLockedFunctionalReference(
+  family: ResolvedTonalFamily,
+  theme: KiskadeeTheme,
+  reference: LockedTonalFunctionalReferenceV4
+): TonalFunctionalReference {
+  const color = resolveFunctionalReferenceColor(family, theme, reference.tone);
+  if (reference.source !== 'reference-match') {
+    return createFunctionalReference(color, theme, reference.source);
+  }
+  return createFunctionalReference(color, theme, reference.source, {
+    referenceHex: reference.referenceHex,
+    deltaE: deltaEOk(color.oklch, hexToOklch(reference.referenceHex))
+  });
+}
+
+function resolveLockedFunctionalReferences(
+  families: ResolvedTonalFamily[],
+  lockedReferences: LockedTonalFamilyFunctionalReferencesV4[],
+  issues: TonalSystemIssue[]
+): ResolvedTonalFamilyFunctionalReferences[] {
+  return lockedReferences
+    .map((references) => {
+      const family = families.find((candidate) => candidate.id === references.id);
+      if (!family) throw new Error(`Locked references target missing family ${references.id}.`);
+      const resolved = {
+        id: family.id,
+        light: {
+          vivid: hydrateLockedFunctionalReference(family, 'light', references.light.vivid),
+          subtle: hydrateLockedFunctionalReference(family, 'light', references.light.subtle)
+        },
+        dark: {
+          vivid: hydrateLockedFunctionalReference(family, 'dark', references.dark.vivid),
+          subtle: hydrateLockedFunctionalReference(family, 'dark', references.dark.subtle)
+        }
+      };
+      for (const theme of ['light', 'dark'] as const) {
+        if (
+          resolved[theme].vivid.tone === 1 &&
+          resolved[theme].subtle.tone === 1 &&
+          references[theme].subtle.source !== 'locked'
+        ) {
+          reportSurfaceEdgeFallback(family, theme, issues);
+        }
+      }
+      return resolved;
+    })
+    .sort((left, right) => compareStrings(left.id, right.id));
+}
+
+function resolveGeneratedFunctionalReferences(
+  families: ResolvedTonalFamily[],
+  primaryFamily: ResolvedTonalFamily,
+  issues: TonalSystemIssue[]
+): ResolvedTonalFamilyFunctionalReferences[] {
+  const vividByFamily = new Map(
+    families.map((family) => [
+      family.id,
+      {
+        light: resolveFamilyVividReference(family, 'light', issues),
+        dark: resolveFamilyVividReference(family, 'dark', issues)
+      }
+    ])
+  );
+  const primaryVivid = vividByFamily.get(primaryFamily.id);
+  if (!primaryVivid) throw new Error('Primary vivid references are missing.');
+
+  const primaryLightRule = primaryFamily.functionalReferenceRules.light.subtle;
+  const primaryDarkRule = primaryFamily.functionalReferenceRules.dark.subtle;
+  let primaryLight = resolveExplicitSubtleReference(
+    primaryFamily,
+    'light',
+    primaryVivid.light,
+    primaryLightRule,
+    issues
+  );
+  let primaryDark = resolveExplicitSubtleReference(
+    primaryFamily,
+    'dark',
+    primaryVivid.dark,
+    primaryDarkRule,
+    issues
+  );
+
+  if (!primaryLight && !primaryDark) {
+    primaryLight = resolveCanonicalPrimarySubtleReference(
+      primaryFamily,
+      primaryVivid.light,
+      issues
+    );
+    primaryDark = resolveCrossThemeSurfaceRelativeReference(
+      primaryFamily,
+      'dark',
+      primaryVivid.dark,
+      primaryLight,
+      issues
+    );
+  } else if (!primaryLight && primaryDark) {
+    primaryLight = resolveCrossThemeSurfaceRelativeReference(
+      primaryFamily,
+      'light',
+      primaryVivid.light,
+      primaryDark,
+      issues
+    );
+  } else if (primaryLight && !primaryDark) {
+    primaryDark = resolveCrossThemeSurfaceRelativeReference(
+      primaryFamily,
+      'dark',
+      primaryVivid.dark,
+      primaryLight,
+      issues
+    );
+  }
+  if (!primaryLight || !primaryDark) throw new Error('Primary subtle references are missing.');
+
+  return families
+    .map((family) => {
+      const vivid = vividByFamily.get(family.id);
+      if (!vivid) throw new Error(`${family.id} vivid references are missing.`);
+      if (family.id === primaryFamily.id) {
+        return {
+          id: family.id,
+          light: { vivid: vivid.light, subtle: primaryLight },
+          dark: { vivid: vivid.dark, subtle: primaryDark }
+        };
+      }
+
+      const light =
+        resolveExplicitSubtleReference(
+          family,
+          'light',
+          vivid.light,
+          family.functionalReferenceRules.light.subtle,
+          issues
+        ) ??
+        resolveSupportSurfaceRelativeReference(family, 'light', vivid.light, primaryLight, issues);
+      const dark =
+        resolveExplicitSubtleReference(
+          family,
+          'dark',
+          vivid.dark,
+          family.functionalReferenceRules.dark.subtle,
+          issues
+        ) ??
+        resolveSupportSurfaceRelativeReference(family, 'dark', vivid.dark, primaryDark, issues);
+      return {
+        id: family.id,
+        light: { vivid: vivid.light, subtle: light },
+        dark: { vivid: vivid.dark, subtle: dark }
+      };
+    })
+    .sort((left, right) => compareStrings(left.id, right.id));
+}
+
+function lockFunctionalReferences(
+  references: ResolvedTonalFamilyFunctionalReferences[]
+): LockedTonalFamilyFunctionalReferencesV4[] {
+  const lock = (reference: TonalFunctionalReference): LockedTonalFunctionalReferenceV4 =>
+    reference.source === 'reference-match'
+      ? {
+          tone: reference.tone,
+          source: reference.source,
+          referenceHex: reference.referenceHex ?? reference.hex
+        }
+      : { tone: reference.tone, source: reference.source };
+
+  return references.map((family) => ({
+    id: family.id,
+    light: { vivid: lock(family.light.vivid), subtle: lock(family.light.subtle) },
+    dark: { vivid: lock(family.dark.vivid), subtle: lock(family.dark.subtle) }
+  }));
+}
+
 export type ResolvedKiskadeeTonalSystem = {
   valid: true;
   status: Exclude<TonalSystemStatus, 'error'>;
-  source: LockedTonalSystemSourceV3;
+  source: LockedTonalSystemSourceV4;
   rest: {
     light: KiskadeeTone;
     dark: KiskadeeTone;
@@ -390,6 +835,7 @@ export type ResolvedKiskadeeTonalSystem = {
     light: TonalHarmonyFingerprint;
     dark: TonalHarmonyFingerprint;
   };
+  functionalReferences: ResolvedTonalFamilyFunctionalReferences[];
   families: ResolvedTonalFamily[];
   issues: TonalSystemIssue[];
 };
@@ -405,11 +851,23 @@ export type FailedKiskadeeTonalSystem = {
   } | null;
   functionalRestDiagnostics: null;
   primaryReference: null;
+  functionalReferences: [];
   families: ResolvedTonalFamily[];
   issues: TonalSystemIssue[];
 };
 
 export type KiskadeeTonalSystemResult = ResolvedKiskadeeTonalSystem | FailedKiskadeeTonalSystem;
+
+export function resolveTonalFunctionalReference(
+  system: ResolvedKiskadeeTonalSystem,
+  familyId: TonalFamilyId,
+  theme: KiskadeeTheme,
+  kind: 'vivid' | 'subtle'
+): TonalFunctionalReference {
+  const family = system.functionalReferences.find((candidate) => candidate.id === familyId);
+  if (!family) throw new Error(`Functional references are missing for ${familyId}.`);
+  return family[theme][kind];
+}
 
 type RankedHarmonyCandidate = {
   requestedLightness: number;
@@ -495,10 +953,16 @@ type FunctionalRestCandidateEvaluation = FunctionalRestThemeDiagnostics & {
 };
 
 type MaterializedTonalSystemRecipe = Pick<
-  TonalSystemRecipeV3,
-  'formatVersion' | 'gridContract' | 'harmonyContract' | 'tonalProfile' | 'tonalAnchors'
+  TonalSystemRecipeV4,
+  | 'formatVersion'
+  | 'gridContract'
+  | 'harmonyContract'
+  | 'tonalProfile'
+  | 'tonalAnchors'
+  | 'functionalReferences'
 > & {
-  authoringRecipe: TonalSystemRecipeV3;
+  authoringRecipe: TonalSystemRecipeV4;
+  lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV4[] | null;
   primaryReference: TonalFamilyId;
   useHueGlobalHarmony: boolean;
   families: MaterializedFamilySource[];
@@ -507,8 +971,9 @@ type MaterializedTonalSystemRecipe = Pick<
 type AuthoringRecipeResolution =
   | {
       valid: true;
-      recipe: TonalSystemRecipeV3;
+      recipe: TonalSystemRecipeV4;
       lockedPrimaryId: TonalFamilyId | null;
+      lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV4[] | null;
       issues: [];
     }
   | { valid: false; recipe: null; lockedPrimaryId: null; issues: TonalSystemIssue[] };
@@ -524,7 +989,13 @@ type MaterializedRecipeResolution =
 function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
   const draft = validateTonalSystemRecipe(input);
   if (draft.valid) {
-    return { valid: true, recipe: draft.value, lockedPrimaryId: null, issues: [] };
+    return {
+      valid: true,
+      recipe: draft.value,
+      lockedPrimaryId: null,
+      lockedFunctionalReferences: null,
+      issues: []
+    };
   }
 
   const locked = validateLockedTonalSystemSource(input);
@@ -560,9 +1031,11 @@ function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
           policies: { ...locked.value.primary.policies }
         },
         tonalAnchors: locked.value.tonalAnchors,
+        functionalReferences: [],
         overrides: locked.value.overrides
       },
       lockedPrimaryId: locked.value.primary.id,
+      lockedFunctionalReferences: locked.value.functionalReferences,
       issues: []
     };
   }
@@ -584,8 +1057,9 @@ function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
 }
 
 function materializeTonalSystemRecipe(
-  authoringRecipe: TonalSystemRecipeV3,
-  lockedPrimaryId: TonalFamilyId | null
+  authoringRecipe: TonalSystemRecipeV4,
+  lockedPrimaryId: TonalFamilyId | null,
+  lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV4[] | null
 ): MaterializedRecipeResolution {
   const issues: TonalSystemIssue[] = [];
   const primaryIdentity = classifyMunsellHex(authoringRecipe.primary.seedHex);
@@ -746,15 +1220,30 @@ function materializeTonalSystemRecipe(
     if (resolved) families.set(override.id, resolved);
   }
 
-  for (const [index, stateAnchors] of (authoringRecipe.tonalAnchors.states ?? []).entries()) {
-    if (families.has(stateAnchors.id)) continue;
-    issues.push({
-      severity: 'error',
-      code: 'STATE_ANCHOR_FAMILY_NOT_FOUND',
-      path: `/tonalAnchors/states/${index}/id`,
-      message: `State anchors reference ${stateAnchors.id}, but that family is not part of this tonal system.`,
-      familyId: stateAnchors.id
-    });
+  for (const [index, references] of authoringRecipe.functionalReferences.entries()) {
+    if (!families.has(references.id)) {
+      issues.push({
+        severity: 'error',
+        code: 'FUNCTIONAL_REFERENCE_FAMILY_NOT_FOUND',
+        path: `/functionalReferences/${index}/id`,
+        message: `Functional references target ${references.id}, but that family is not part of this tonal system.`,
+        familyId: references.id
+      });
+      continue;
+    }
+    if (
+      references.id !== primaryId &&
+      (references.light.subtle.mode === 'reference-match' ||
+        references.dark.subtle.mode === 'reference-match')
+    ) {
+      issues.push({
+        severity: 'error',
+        code: 'SUPPORT_REFERENCE_MATCH_UNSUPPORTED',
+        path: `/functionalReferences/${index}`,
+        message: 'Only the Primary may use a HEX target to calibrate its subtle reference.',
+        familyId: references.id
+      });
+    }
   }
 
   if (issues.some((issue) => issue.severity === 'error')) {
@@ -769,7 +1258,9 @@ function materializeTonalSystemRecipe(
       harmonyContract: authoringRecipe.harmonyContract,
       tonalProfile: authoringRecipe.tonalProfile,
       tonalAnchors: authoringRecipe.tonalAnchors,
+      functionalReferences: authoringRecipe.functionalReferences,
       authoringRecipe,
+      lockedFunctionalReferences,
       primaryReference: primaryId,
       useHueGlobalHarmony,
       families: [...families.values()].sort((left, right) => compareStrings(left.id, right.id))
@@ -1382,7 +1873,7 @@ function resolveEmittedFunctionalRestDiagnostics(params: {
 }
 
 function materializeOverride(
-  override: TonalFamilyOverrideV3,
+  override: TonalFamilyOverrideV4,
   issues: TonalSystemIssue[]
 ): MaterializedFamilySource | null {
   const parsed = parseTonalFamilyId(override.id);
@@ -1443,7 +1934,11 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   const authoring = resolveAuthoringRecipe(input);
   if (!authoring.valid) return failedResult(authoring.issues);
 
-  const materialization = materializeTonalSystemRecipe(authoring.recipe, authoring.lockedPrimaryId);
+  const materialization = materializeTonalSystemRecipe(
+    authoring.recipe,
+    authoring.lockedPrimaryId,
+    authoring.lockedFunctionalReferences
+  );
   if (!materialization.valid) return failedResult(materialization.issues);
 
   const recipe = materialization.recipe;
@@ -1600,7 +2095,10 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     seedOrigin: 'primary',
     sourceSeedHex: primarySource.seedHex,
     identity: primarySource.identity,
-    stateAnchors: resolveFamilyStateAnchors(recipe, recipe.primaryReference),
+    functionalReferenceRules: resolveFamilyFunctionalReferenceRules(
+      recipe,
+      recipe.primaryReference
+    ),
     status: combineStatuses(primaryLight.status, primaryDark.status),
     themes: {
       light: primaryLight,
@@ -1789,7 +2287,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       seedOrigin: familySource.seedOrigin,
       sourceSeedHex: familySource.seedHex,
       identity: familySource.identity,
-      stateAnchors: resolveFamilyStateAnchors(recipe, familySource.id),
+      functionalReferenceRules: resolveFamilyFunctionalReferenceRules(recipe, familySource.id),
       status: combineStatuses(light.status, dark.status),
       themes: { light, dark }
     });
@@ -1816,6 +2314,14 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     return failedResult(issues, rest, families);
   }
 
+  const functionalReferences = recipe.lockedFunctionalReferences
+    ? resolveLockedFunctionalReferences(families, recipe.lockedFunctionalReferences, issues)
+    : resolveGeneratedFunctionalReferences(families, primaryFamily, issues);
+
+  if (issues.some((issue) => issue.severity === 'error')) {
+    return failedResult(issues, rest, families);
+  }
+
   const functionalRestDiagnostics = {
     light: resolveEmittedFunctionalRestDiagnostics({
       theme: 'light',
@@ -1833,7 +2339,12 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   reportFunctionalRestReview(issues, functionalRestDiagnostics.light, rest.source);
   reportFunctionalRestReview(issues, functionalRestDiagnostics.dark, rest.source);
 
-  const source = lockTonalSystemRecipe(recipe.authoringRecipe, recipe.primaryReference, rest);
+  const source = lockTonalSystemRecipe(
+    recipe.authoringRecipe,
+    recipe.primaryReference,
+    rest,
+    lockFunctionalReferences(functionalReferences)
+  );
   const status =
     issues.some((issue) => issue.severity === 'review') ||
     families.some((family) => family.status === 'review')
@@ -1851,6 +2362,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       light: lightFingerprint,
       dark: darkFingerprint
     },
+    functionalReferences,
     families: families.sort((left, right) => compareStrings(left.id, right.id)),
     issues: sortIssues(issues)
   };
@@ -3135,7 +3647,7 @@ function findFreeAnchorHarmonyCandidate(params: {
   minimumRestBalanceRatio: number;
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
-  profile: TonalSystemRecipeV3['tonalProfile'];
+  profile: TonalSystemRecipeV4['tonalProfile'];
   chromaModel: TonalHarmonyMetrics['chromaModel'];
 }): CandidateResolution | null {
   const {
@@ -3370,7 +3882,7 @@ function findRestAnchoredHarmonyCandidate(params: {
   reference: TonalHarmonyFingerprint;
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
-  profile: TonalSystemRecipeV3['tonalProfile'];
+  profile: TonalSystemRecipeV4['tonalProfile'];
   chromaModel: TonalHarmonyMetrics['chromaModel'];
 }): CandidateResolution | null {
   const {
@@ -3942,6 +4454,7 @@ function failedResult(
     rest,
     functionalRestDiagnostics: null,
     primaryReference: null,
+    functionalReferences: [],
     families: families.sort((left, right) => compareStrings(left.id, right.id)),
     issues: sortIssues(issues)
   };

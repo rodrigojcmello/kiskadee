@@ -9,7 +9,7 @@ import {
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
-  type TonalSystemRecipeV3
+  type TonalSystemRecipeV4
 } from '../tonal-system-contract';
 import { formatCanonicalJsonFile } from './canonical-json';
 import {
@@ -22,11 +22,11 @@ import {
   verifyTonalArtifactBundle
 } from './tonal-artifacts';
 
-function createRecipe(): TonalSystemRecipeV3 {
-  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV3;
+function createRecipe(): TonalSystemRecipeV4 {
+  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4;
 }
 
-describe('tonal artifact bundle v3', () => {
+describe('tonal artifact bundle v4', () => {
   let system: ResolvedKiskadeeTonalSystem;
   let bundle: TonalArtifactBundle;
 
@@ -49,16 +49,16 @@ describe('tonal artifact bundle v3', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.3.5');
+    expect(bundle.manifest.generator.version).toBe('0.4.0');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
     }
   });
 
-  it('keeps consumer assets concise while recording V3 identity and origin', () => {
+  it('keeps consumer assets concise while recording V4 identity, origin, and functional references', () => {
     for (const asset of bundle.assets) {
-      expect(asset.formatVersion).toBe(3);
+      expect(asset.formatVersion).toBe(4);
       expect(asset.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
       expect(asset).not.toHaveProperty('diagnostics');
       expect(asset).not.toHaveProperty('dependencies');
@@ -68,6 +68,7 @@ describe('tonal artifact bundle v3', () => {
       expect(asset).not.toHaveProperty('sourceSeedHex');
       expect(asset).not.toHaveProperty('classification');
       expect(asset).not.toHaveProperty('surfaceTrackAlignment');
+      expect(asset).not.toHaveProperty('stateReferences');
       expect(Object.keys(asset.scales.light).map(Number)).toEqual(KISKADEE_TONES);
       expect(Object.keys(asset.scales.dark).map(Number)).toEqual(KISKADEE_TONES);
       expect(asset.scales.light['0']).toBe('#ffffff');
@@ -89,9 +90,15 @@ describe('tonal artifact bundle v3', () => {
       colorKind: 'achromatic',
       seedOrigin: 'canonical',
       seedHex: '#20252b',
-      stateReferences: {
-        light: { source: 'generated-anchor' },
-        dark: { source: 'contrast-mirror' }
+      functionalReferences: {
+        light: {
+          vivid: { source: 'generated-anchor' },
+          subtle: { source: 'surface-relative' }
+        },
+        dark: {
+          vivid: { source: 'contrast-mirror' },
+          subtle: { source: 'surface-relative' }
+        }
       }
     });
     expect(bundle.assets.find((asset) => asset.id === 'yr.brown.v1')).toMatchObject({
@@ -138,6 +145,23 @@ describe('tonal artifact bundle v3', () => {
     expect(black?.themes.light.surfaceTrackAlignment).toBeNull();
     expect(black?.themes.dark.surfaceTrackAlignment).toBeNull();
 
+    for (const family of bundle.diagnostics.families) {
+      for (const theme of ['light', 'dark'] as const) {
+        for (const kind of ['vivid', 'subtle'] as const) {
+          const reference = family.themes[theme].functionalReferences[kind];
+          expect(Number.isFinite(reference.surfaceContrast)).toBe(true);
+          expect(Number.isFinite(reference.surfaceDeltaE)).toBe(true);
+          if (kind === 'subtle') {
+            expect(Number.isFinite(reference.surfaceContrastError ?? Number.NaN)).toBe(true);
+            expect(Number.isFinite(reference.surfaceDeltaEError ?? Number.NaN)).toBe(true);
+          } else {
+            expect(reference).not.toHaveProperty('surfaceContrastError');
+            expect(reference).not.toHaveProperty('surfaceDeltaEError');
+          }
+        }
+      }
+    }
+
     const green = bundle.diagnostics.families.find((family) => family.familyId === 'g.green.v1');
     for (const theme of ['light', 'dark'] as const) {
       const alignment = green?.themes[theme].surfaceTrackAlignment;
@@ -168,18 +192,19 @@ describe('tonal artifact bundle v3', () => {
     expect(verification.assets).toEqual(bundle.assets);
   });
 
-  it('exports family state anchors as deterministic references without changing scale colors', async () => {
+  it('locks complete functional references and preserves scale bytes for a reference-matched subtle color', async () => {
     const recipe = createRecipe();
-    recipe.tonalAnchors.states = [
+    recipe.functionalReferences = [
       {
         id: 'b.blue.v1',
-        light: { mode: 'harmony-rest' },
-        dark: { mode: 'locked', tone: 70 }
-      },
-      {
-        id: 'n.black.v1',
-        light: { mode: 'locked', tone: 85 },
-        dark: { mode: 'locked', tone: 7 }
+        light: {
+          vivid: { mode: 'auto' },
+          subtle: { mode: 'reference-match', referenceHex: '#d9f1ff' }
+        },
+        dark: {
+          vivid: { mode: 'auto' },
+          subtle: { mode: 'auto' }
+        }
       }
     ];
     const result = generateKiskadeeTonalSystem(recipe);
@@ -187,21 +212,37 @@ describe('tonal artifact bundle v3', () => {
     if (!result.valid) return;
 
     const configuredBundle = await createTonalArtifactBundle(result);
-    expect(configuredBundle.source.tonalAnchors.states).toEqual(recipe.tonalAnchors.states);
+    expect(configuredBundle.source.functionalReferences).toHaveLength(TONAL_CORE_FAMILY_IDS.length);
+    expect(configuredBundle.source.functionalReferences.map((references) => references.id)).toEqual(
+      [...TONAL_CORE_FAMILY_IDS].sort()
+    );
 
     const primary = configuredBundle.assets.find((asset) => asset.id === 'b.blue.v1');
-    expect(primary?.stateReferences).toEqual({
-      light: {
-        tone: result.rest.light,
-        hex: primary?.scales.light[`${result.rest.light}`],
-        source: 'harmony-rest'
-      },
-      dark: { tone: 70, hex: primary?.scales.dark['70'], source: 'locked' }
+    const sourcePrimary = configuredBundle.source.functionalReferences.find(
+      (references) => references.id === 'b.blue.v1'
+    );
+    expect(primary).toBeDefined();
+    expect(sourcePrimary).toBeDefined();
+    if (!primary || !sourcePrimary) return;
+    expect(sourcePrimary.light.subtle).toMatchObject({
+      source: 'reference-match',
+      referenceHex: '#d9f1ff'
     });
-    const black = configuredBundle.assets.find((asset) => asset.id === 'n.black.v1');
-    expect(black?.stateReferences).toEqual({
-      light: { tone: 85, hex: black?.scales.light['85'], source: 'locked' },
-      dark: { tone: 7, hex: black?.scales.dark['7'], source: 'locked' }
+    expect(primary.functionalReferences.light.subtle).toEqual({
+      tone: sourcePrimary.light.subtle.tone,
+      hex: primary.scales.light[`${sourcePrimary.light.subtle.tone}`],
+      source: 'reference-match'
+    });
+    const primaryDiagnostics = configuredBundle.diagnostics.families.find(
+      (family) => family.familyId === 'b.blue.v1'
+    );
+    expect(primaryDiagnostics?.themes.light.functionalReferences.subtle).toMatchObject({
+      tone: sourcePrimary.light.subtle.tone,
+      source: 'reference-match',
+      referenceHex: '#d9f1ff',
+      surfaceContrast: expect.any(Number),
+      surfaceDeltaE: expect.any(Number),
+      deltaE: expect.any(Number)
     });
 
     for (const configuredAsset of configuredBundle.assets) {
@@ -211,28 +252,25 @@ describe('tonal artifact bundle v3', () => {
 
     const verification = await verifyTonalArtifactBundle(new Map(configuredBundle.files));
     expect(verification.valid, JSON.stringify(verification.issues, null, 2)).toBe(true);
+    if (!verification.valid) return;
+    expect(verification.source.functionalReferences).toEqual(
+      configuredBundle.source.functionalReferences
+    );
+    expect(verification.assets).toEqual(configuredBundle.assets);
   });
 
-  it('rejects a resolved family whose state anchor rule differs from its locked source', async () => {
-    const recipe = createRecipe();
-    recipe.tonalAnchors.states = [
-      {
-        id: 'n.black.v1',
-        light: { mode: 'locked', tone: 85 },
-        dark: { mode: 'locked', tone: 7 }
-      }
-    ];
-    const result = generateKiskadeeTonalSystem(recipe);
+  it('rejects resolved functional references that differ from their locked source', async () => {
+    const result = generateKiskadeeTonalSystem(createRecipe());
     expect(result.valid, JSON.stringify(result.issues, null, 2)).toBe(true);
     if (!result.valid) return;
 
-    const black = result.families.find((family) => family.id === 'n.black.v1');
-    expect(black).toBeDefined();
-    if (!black) return;
-    black.stateAnchors.light = { mode: 'harmony-rest' };
+    const blue = result.functionalReferences.find((family) => family.id === 'b.blue.v1');
+    expect(blue).toBeDefined();
+    if (!blue) return;
+    blue.light.subtle.source = 'locked';
 
     await expect(createTonalArtifactBundle(result)).rejects.toThrow(
-      'n.black.v1 light state anchor does not match the locked source.'
+      'b.blue.v1 light subtle reference does not match the locked source.'
     );
   });
 
@@ -241,9 +279,9 @@ describe('tonal artifact bundle v3', () => {
     files.delete(TONAL_DIAGNOSTICS_PATH);
     const greenPath = 'colors/g.green.v1.json';
     const green = JSON.parse(files.get(greenPath) ?? '{}') as {
-      scales: { light: Record<string, string> };
+      functionalReferences: { light: { subtle: { hex: string } } };
     };
-    green.scales.light['45'] = '#123456';
+    green.functionalReferences.light.subtle.hex = '#123456';
     files.set(greenPath, formatCanonicalJsonFile(green));
     files.set('colors/not-a-family.json', formatCanonicalJsonFile({ extra: true }));
 
@@ -279,5 +317,6 @@ describe('tonal artifact bundle v3', () => {
     const extraBundle = await createTonalArtifactBundle(result);
     expect(extraBundle.files.has('colors/b.blue.v2.json')).toBe(true);
     expect(extraBundle.files.size).toBe(16);
+    expect(extraBundle.source.functionalReferences).toHaveLength(TONAL_CORE_FAMILY_IDS.length + 1);
   });
 });
