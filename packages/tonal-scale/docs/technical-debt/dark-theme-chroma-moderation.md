@@ -1,7 +1,7 @@
 # Dark Theme Chroma Moderation
 
-Status: implemented in generator `0.4.1`; pending explicit visual approval and
-preset promotion.
+Status: implemented and visually approved in generator `0.4.1`; promoted to
+the Fluent 2 Microsoft preset.
 
 ## Context
 
@@ -27,8 +27,9 @@ functional track.
 
 ## Reproduction
 
-The Fluent candidate uses Primary Blue `#0064b4`, Red source `#c50f1f`, Dark
-harmony rest D40, and the `muted-darks` profile.
+The Fluent reproduction uses Primary Blue `#0064b4`, Red source `#c50f1f`,
+Dark harmony rest D40, and the `muted-darks` profile. The following values
+describe generator `0.4.0`, before the correction:
 
 With Red Dark `adaptive`:
 
@@ -138,10 +139,11 @@ Regression coverage must include:
   unnecessary reductions;
 - byte-identical Light assets and unchanged low-level tonal-scale goldens.
 
-Implementation and invariant coverage close the code gap. Promotion remains
-blocked until the generated systems receive explicit visual approval in the
-tonal-scale viewer; no preset asset should be regenerated from the candidate
-before that approval.
+Implementation and invariant coverage closed the code gap. The Fluent system
+received explicit visual approval in the tonal-scale viewer and its bundle,
+de-para, and promoted primitive assets were regenerated with `0.4.1`. In that
+approved system, Cranberry Dark vivid D40 is `#b6302f`; the Primary Blue and
+every Light scale remain byte-identical to the `0.4.0` export.
 
 Moderating an adaptive Primary Dark scale is explicitly deferred. It requires
 a separate contract and an intentional before/after visual revalidation of the

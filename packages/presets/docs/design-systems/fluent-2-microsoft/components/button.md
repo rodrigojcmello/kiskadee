@@ -257,6 +257,11 @@ subtle references, but their ordinal state offsets are identical to Primary and 
 inherits Rest. High uses the white neutral cap in every theme. Medium, Low, Lowest, borders, and
 disabled states follow the same recipe.
 
+The promoted generator `0.4.1` moderates eligible support-family chroma on the Dark track relative
+to the unchanged Primary Blue. Consequently, Destructive High now begins at Cranberry vivid D40
+`#b6302f` instead of preserving the Light seed `#c50f1f` in Dark. This correction belongs to the
+primitive tonal asset: the shared Button recipe and its ordinal state offsets remain unchanged.
+
 ## Kiskadee Darker Theme
 
 Fluent 2 provides Light and Dark references but no separate `darker` Button theme. Kiskadee adds

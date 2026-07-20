@@ -3,7 +3,7 @@
   "formatVersion": 1,
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.4.0"
+    "version": "0.4.1"
   },
   "sourceEvidence": "./figma-color-scales.json",
   "generatedBundle": "./generated/tonal-system.json",
@@ -1329,7 +1329,7 @@
       "seedHex": "#c50f1f",
       "generatedAnchors": {
         "dark": {
-          "hex": "#c50f1f",
+          "hex": "#b6302f",
           "tone": 40
         },
         "light": {
@@ -1340,12 +1340,12 @@
       "functionalReferences": {
         "dark": {
           "subtle": {
-            "hex": "#290a09",
+            "hex": "#260d0b",
             "source": "surface-relative",
             "tone": 3
           },
           "vivid": {
-            "hex": "#c50f1f",
+            "hex": "#b6302f",
             "source": "generated-anchor",
             "tone": 40
           }
@@ -1377,8 +1377,8 @@
           "dark": {
             "token": "D2",
             "tone": 2,
-            "hex": "#210505",
-            "deltaE": 0.012878,
+            "hex": "#1e0706",
+            "deltaE": 0.018167,
             "exact": false
           }
         },
@@ -1395,8 +1395,8 @@
           "dark": {
             "token": "D5",
             "tone": 5,
-            "hex": "#361310",
-            "deltaE": 0.028446,
+            "hex": "#321513",
+            "deltaE": 0.036297,
             "exact": false
           }
         },
@@ -1413,8 +1413,8 @@
           "dark": {
             "token": "D16",
             "tone": 16,
-            "hex": "#6e1b1a",
-            "deltaE": 0.022939,
+            "hex": "#69211f",
+            "deltaE": 0.032634,
             "exact": false
           }
         },
@@ -1429,10 +1429,10 @@
             "exact": false
           },
           "dark": {
-            "token": "D28",
-            "tone": 28,
-            "hex": "#971118",
-            "deltaE": 0.005557,
+            "token": "D30",
+            "tone": 30,
+            "hex": "#942625",
+            "deltaE": 0.027087,
             "exact": false
           }
         },
@@ -1449,8 +1449,8 @@
           "dark": {
             "token": "D35",
             "tone": 35,
-            "hex": "#b60018",
-            "deltaE": 0.010204,
+            "hex": "#a82929",
+            "deltaE": 0.026156,
             "exact": false
           }
         },
@@ -1467,9 +1467,9 @@
           "dark": {
             "token": "D40",
             "tone": 40,
-            "hex": "#c50f1f",
-            "deltaE": 0,
-            "exact": true
+            "hex": "#b6302f",
+            "deltaE": 0.035601,
+            "exact": false
           }
         },
         {
@@ -1485,8 +1485,8 @@
           "dark": {
             "token": "D45",
             "tone": 45,
-            "hex": "#cc1d26",
-            "deltaE": 0.01415,
+            "hex": "#be3836",
+            "deltaE": 0.031011,
             "exact": false
           }
         },
@@ -1503,8 +1503,8 @@
           "dark": {
             "token": "D55",
             "tone": 55,
-            "hex": "#df3a39",
-            "deltaE": 0.029639,
+            "hex": "#d04d47",
+            "deltaE": 0.026574,
             "exact": false
           }
         },
@@ -1521,8 +1521,8 @@
           "dark": {
             "token": "D65",
             "tone": 65,
-            "hex": "#ee4f4b",
-            "deltaE": 0.050745,
+            "hex": "#df5f57",
+            "deltaE": 0.027348,
             "exact": false
           }
         },
@@ -1539,8 +1539,8 @@
           "dark": {
             "token": "D85",
             "tone": 85,
-            "hex": "#ffb1a8",
-            "deltaE": 0.035005,
+            "hex": "#ffb0a8",
+            "deltaE": 0.033634,
             "exact": false
           }
         },
@@ -1557,8 +1557,8 @@
           "dark": {
             "token": "D90",
             "tone": 90,
-            "hex": "#ffcac4",
-            "deltaE": 0.025256,
+            "hex": "#ffc9c3",
+            "deltaE": 0.027006,
             "exact": false
           }
         },
@@ -2624,7 +2624,7 @@
       "seedHex": "#c239b3",
       "generatedAnchors": {
         "dark": {
-          "hex": "#a62d99",
+          "hex": "#9a348e",
           "tone": 40
         },
         "light": {
@@ -2635,12 +2635,12 @@
       "functionalReferences": {
         "dark": {
           "subtle": {
-            "hex": "#230d20",
+            "hex": "#210e1f",
             "source": "surface-relative",
             "tone": 3
           },
           "vivid": {
-            "hex": "#a62d99",
+            "hex": "#9a348e",
             "source": "generated-anchor",
             "tone": 40
           }
@@ -2670,10 +2670,10 @@
             "exact": false
           },
           "dark": {
-            "token": "D2",
-            "tone": 2,
-            "hex": "#1b0719",
-            "deltaE": 0.014268,
+            "token": "D3",
+            "tone": 3,
+            "hex": "#210e1f",
+            "deltaE": 0.016013,
             "exact": false
           }
         },
@@ -2708,8 +2708,8 @@
           "dark": {
             "token": "D20",
             "tone": 20,
-            "hex": "#6c2064",
-            "deltaE": 0.002162,
+            "hex": "#6a2162",
+            "deltaE": 0.007067,
             "exact": false
           }
         },
@@ -2726,8 +2726,8 @@
           "dark": {
             "token": "D35",
             "tone": 35,
-            "hex": "#99268d",
-            "deltaE": 0.0151,
+            "hex": "#942e88",
+            "deltaE": 0.005694,
             "exact": false
           }
         },
@@ -2744,8 +2744,8 @@
           "dark": {
             "token": "D45",
             "tone": 45,
-            "hex": "#ad35a0",
-            "deltaE": 0.004713,
+            "hex": "#a54099",
+            "deltaE": 0.029968,
             "exact": false
           }
         },
@@ -2762,8 +2762,8 @@
           "dark": {
             "token": "D55",
             "tone": 55,
-            "hex": "#bf4ab1",
-            "deltaE": 0.027709,
+            "hex": "#b752aa",
+            "deltaE": 0.04843,
             "exact": false
           }
         },
@@ -2780,8 +2780,8 @@
           "dark": {
             "token": "D60",
             "tone": 60,
-            "hex": "#c753b8",
-            "deltaE": 0.015015,
+            "hex": "#bf5bb1",
+            "deltaE": 0.037885,
             "exact": false
           }
         },
@@ -2796,10 +2796,10 @@
             "exact": false
           },
           "dark": {
-            "token": "D65",
-            "tone": 65,
-            "hex": "#ce5cbf",
-            "deltaE": 0.012957,
+            "token": "D70",
+            "tone": 70,
+            "hex": "#ce6cc0",
+            "deltaE": 0.025013,
             "exact": false
           }
         },
@@ -2816,8 +2816,8 @@
           "dark": {
             "token": "D75",
             "tone": 75,
-            "hex": "#e47ad5",
-            "deltaE": 0.020296,
+            "hex": "#dd80cf",
+            "deltaE": 0.007815,
             "exact": false
           }
         },
@@ -2852,8 +2852,8 @@
           "dark": {
             "token": "D95",
             "tone": 95,
-            "hex": "#fbe5f6",
-            "deltaE": 0.029088,
+            "hex": "#fbe4f6",
+            "deltaE": 0.026717,
             "exact": false
           }
         },

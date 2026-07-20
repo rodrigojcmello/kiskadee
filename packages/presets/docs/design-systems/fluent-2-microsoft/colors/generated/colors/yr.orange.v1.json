@@ -40,7 +40,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.4.0"
+    "version": "0.4.1"
   },
   "id": "yr.orange.v1",
   "kind": "kiskadee.primitive-tonal-family",

@@ -40,6 +40,7 @@
             "sector": "blue",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#0064b4",
           "functionalReferences": {
             "subtle": {
@@ -336,6 +337,7 @@
             "sector": "blue",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#0064b4",
           "functionalReferences": {
             "subtle": {
@@ -638,6 +640,27 @@
             "projection": "munsell-oklch-v1",
             "sector": "blue-green",
             "validForPrimary": true
+          },
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "baselineMaxExcess": 0,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0,
+            "limitingTone": 40,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": false
           },
           "effectiveSeedHex": "#038387",
           "functionalReferences": {
@@ -956,6 +979,7 @@
             "sector": "blue-green",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#038387",
           "functionalReferences": {
             "subtle": {
@@ -1301,6 +1325,27 @@
             "sector": "green",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "baselineMaxExcess": 0,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0,
+            "limitingTone": 40,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": false
+          },
           "effectiveSeedHex": "#087209",
           "functionalReferences": {
             "subtle": {
@@ -1616,6 +1661,7 @@
             "sector": "green",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#107c10",
           "functionalReferences": {
             "subtle": {
@@ -1940,90 +1986,142 @@
             "diagnostics": [
               {
                 "code": "MUNSELL_HUE_NEAR_BOUNDARY",
-                "message": "Hue 128.85725582297903 is in the outer 15% of the green-yellow sector.",
+                "message": "Hue 128.80324535934744 is in the outer 15% of the green-yellow sector.",
                 "severity": "review"
               }
             ],
-            "hex": "#7fba00",
-            "hue": 128.85725582,
+            "hex": "#b3fe31",
+            "hue": 128.80324536,
             "isInSafeCore": false,
             "nearestSafeHue": 126.375,
             "oklch": {
-              "c": 0.19073807,
-              "h": 128.85725582,
-              "l": 72.06656054
+              "c": 0.22870425,
+              "h": 128.80324536,
+              "l": 91.41901518
             },
-            "positionInSector": 0.94026385,
+            "positionInSector": 0.93829983,
             "projection": "munsell-oklch-v1",
             "sector": "green-yellow",
             "validForPrimary": true
           },
-          "effectiveSeedHex": "#7fba00",
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 30,
+            "adjustedTones": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              24,
+              26,
+              28,
+              30,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95,
+              99
+            ],
+            "baselineMaxExcess": 0.010389,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0.00102631,
+            "limitingTone": 70,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0.01564936,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": true
+          },
+          "effectiveSeedHex": "#b3fe31",
           "functionalReferences": {
             "subtle": {
-              "hex": "#101b03",
+              "hex": "#0f1c00",
               "source": "surface-relative",
-              "surfaceContrast": 1.18011987,
-              "surfaceContrastError": 0.00438061,
-              "surfaceDeltaE": 0.20982031,
-              "surfaceDeltaEError": 0.00337398,
+              "surfaceContrast": 1.18641316,
+              "surfaceContrastError": 0.00093798,
+              "surfaceDeltaE": 0.21362057,
+              "surfaceDeltaEError": 0.00042628,
               "tone": 4
             },
             "vivid": {
-              "hex": "#4a6b14",
+              "hex": "#4c6a20",
               "source": "harmony-rest",
-              "surfaceContrast": 3.40434857,
-              "surfaceDeltaE": 0.49894033,
+              "surfaceContrast": 3.38977047,
+              "surfaceDeltaE": 0.49618256,
               "tone": 40
             }
           },
           "functionalRest": {
-            "hex": "#4a6b14",
+            "hex": "#4c6a20",
             "tone": 40
           },
           "generatedAnchor": {
-            "hex": "#7fba00",
-            "tone": 75
+            "hex": "#b3fe31",
+            "tone": 95
           },
           "harmony": {
-            "candidatesEvaluated": 22,
+            "candidatesEvaluated": 30,
             "chromaModel": "hue-global",
-            "chromaUtilizationDelta": -0.0817647,
-            "chromaUtilizationError": 1.02205875,
-            "contrastAgainstBlackDelta": -0.07757753,
-            "contrastAgainstWhiteDelta": 0.13743637,
-            "contrastLogError": 0.45064023,
-            "hueDrift": 0,
+            "chromaUtilizationDelta": -0.16465431,
+            "chromaUtilizationError": 2.05817882,
+            "contrastAgainstBlackDelta": -0.09215563,
+            "contrastAgainstWhiteDelta": 0.16396507,
+            "contrastLogError": 0.53646814,
+            "hueDrift": 0.05401046,
             "hueGlobalBalanceError": 0,
-            "hueGlobalChromaUtilizationDelta": -0.28293792,
-            "lightnessDelta": -1.5192154,
-            "lightnessError": 0.7596077,
-            "relativeLuminanceDelta": -0.00387888,
-            "restHueGlobalChromaUtilization": 0.48706841,
-            "score": 1.02205875,
-            "seedDeltaE": 0,
-            "vividPeakError": 0.23733064,
-            "vividPeakGlobalChromaUtilization": 0.78899278,
-            "vividPeakGlobalChromaUtilizationDelta": 0.01898645
+            "hueGlobalChromaUtilizationDelta": -0.32754519,
+            "lightnessDelta": -1.55233768,
+            "lightnessError": 0.77616884,
+            "relativeLuminanceDelta": -0.00460778,
+            "restHueGlobalChromaUtilization": 0.44246114,
+            "score": 2.20715307,
+            "seedDeltaE": 0.19721364,
+            "vividPeakError": 2.20715307,
+            "vividPeakGlobalChromaUtilization": 0.94657857,
+            "vividPeakGlobalChromaUtilizationDelta": 0.17657225
           },
           "isolatedHarmonyPeakAlignment": null,
           "policy": "harmonized",
           "scale": {
             "adjacentDuplicates": [],
             "anchor": {
-              "hex": "#7fba00",
-              "inputLightness": 72.06656054,
-              "lightnessDeviation": 1.24646923,
-              "nominalLightness": 70.82009131,
-              "nominalNearestTone": 75,
+              "hex": "#b3fe31",
+              "inputLightness": 91.41901518,
+              "lightnessDeviation": 2.59918769,
+              "nominalLightness": 94.01820287,
+              "nominalNearestTone": 95,
               "relocated": false,
               "relocationReason": "none",
-              "tone": 75,
+              "tone": 95,
               "vividEligible": true
             },
             "anchorChromaProtected": true,
             "chromaContinuityRelaxed": true,
-            "chromaPeakTone": 75,
+            "chromaPeakTone": 95,
             "contrastFailures": [],
             "darkSurfaceContrastFailures": [],
             "darkSurfaceContrastMonotonic": true,
@@ -2038,225 +2136,223 @@
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.02153649
+                  "value": 0.02544084
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.02087882
+                  "value": 0.02032226
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.0203623
+                  "value": 0.01683599
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01667054
+                  "value": 0.01583374
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.00827648
+                  "value": 0.01226006
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.01547513
+                  "value": 0.01542426
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01201978
+                  "value": 0.0119637
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01122937
+                  "value": 0.01112979
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.01881631
+                  "value": 0.01563026
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.0185951
+                  "value": 0.01854056
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.01407675
+                  "value": 0.01463005
                 },
                 {
                   "fromTone": 16,
                   "toTone": 18,
-                  "value": 0.01135427
+                  "value": 0.01062083
                 },
                 {
                   "fromTone": 18,
                   "toTone": 20,
-                  "value": 0.01078707
+                  "value": 0.01427345
                 },
                 {
                   "fromTone": 20,
                   "toTone": 22,
-                  "value": 0.01372555
+                  "value": 0.01051116
                 },
                 {
                   "fromTone": 22,
                   "toTone": 24,
-                  "value": 0.01060297
+                  "value": 0.01043953
                 },
                 {
                   "fromTone": 24,
                   "toTone": 26,
-                  "value": 0.01100057
+                  "value": 0.01100142
                 },
                 {
                   "fromTone": 26,
                   "toTone": 28,
-                  "value": 0.01360293
+                  "value": 0.01093225
                 },
                 {
                   "fromTone": 28,
                   "toTone": 30,
-                  "value": 0.01348832
+                  "value": 0.01320912
                 },
                 {
                   "fromTone": 30,
                   "toTone": 35,
-                  "value": 0.04119058
+                  "value": 0.04495915
                 },
                 {
                   "fromTone": 35,
                   "toTone": 40,
-                  "value": 0.02999734
+                  "value": 0.02813755
                 },
                 {
                   "fromTone": 40,
                   "toTone": 45,
-                  "value": 0.02982278
+                  "value": 0.02941947
                 },
                 {
                   "fromTone": 45,
                   "toTone": 50,
-                  "value": 0.031997
+                  "value": 0.03204473
                 },
                 {
                   "fromTone": 50,
                   "toTone": 55,
-                  "value": 0.03229508
+                  "value": 0.03201543
                 },
                 {
                   "fromTone": 55,
                   "toTone": 60,
-                  "value": 0.02809684
+                  "value": 0.02839976
                 },
                 {
                   "fromTone": 60,
                   "toTone": 65,
-                  "value": 0.02501813
+                  "value": 0.02525864
                 },
                 {
                   "fromTone": 65,
                   "toTone": 70,
-                  "value": 0.0275162
+                  "value": 0.03060418
                 },
                 {
                   "fromTone": 70,
                   "toTone": 75,
-                  "value": 0.07249591
+                  "value": 0.05748773
                 },
                 {
                   "fromTone": 75,
                   "toTone": 80,
-                  "value": 0.04714119
+                  "value": 0.06229192
                 },
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.05999216
+                  "value": 0.05358069
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.08697239
+                  "value": 0.06014882
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.08384999
+                  "value": 0.0372628
                 },
                 {
                   "fromTone": 95,
                   "toTone": 99,
-                  "value": 0.05423525
+                  "value": 0.21765988
                 }
               ],
               "anchor": {
-                "chromaExcess": 0.01479854,
-                "chromaSlopeChange": 0.00506154,
-                "incomingChromaSlope": 0.00263894,
-                "incomingDeltaE": 0.07249591,
-                "localRhythmDeltaE": 0.04375418,
-                "normalizedChromaTurn": 0.15517136,
-                "outgoingChromaSlope": -0.0024226,
-                "outgoingDeltaE": 0.04714119,
-                "stepImbalance": 1.53784625
+                "chromaExcess": 0.10399758,
+                "chromaSlopeChange": 0.02838738,
+                "incomingChromaSlope": 0.00094091,
+                "incomingDeltaE": 0.0372628,
+                "localRhythmDeltaE": null,
+                "normalizedChromaTurn": 0.90945031,
+                "outgoingChromaSlope": -0.02744647,
+                "outgoingDeltaE": 0.21765988,
+                "stepImbalance": 5.84121083
               },
               "fairing": {
                 "adjustedTones": [],
-                "beforeChromaExcess": 0.01479854,
-                "beforeChromaSlopeChange": 0.00506154,
-                "beforeStepImbalance": 1.53784625,
+                "beforeChromaExcess": 0.10022931,
+                "beforeChromaSlopeChange": 0.02664802,
+                "beforeStepImbalance": 5.56147301,
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.08697239,
-              "reviewRequired": false
+              "maxAdjacentDeltaE": 0.21765988,
+              "reviewRequired": true
             },
             "error": null,
-            "gamutMappedCount": 6,
-            "maxGamutChromaLoss": 0.11090619,
-            "maxLocalChromaProminence": 0.01109914,
-            "maxNominalDeviation": 1.24646923,
-            "maxProfileChromaReduction": 0.02277149,
-            "meanNominalDeviation": 0.1093843,
-            "meanProfileChromaReduction": 0.00977982,
-            "minLightnessDelta": 0.82746061,
+            "gamutMappedCount": 4,
+            "maxGamutChromaLoss": 0.2803333,
+            "maxLocalChromaProminence": 0.00349068,
+            "maxNominalDeviation": 2.59918769,
+            "maxProfileChromaReduction": 0.0228816,
+            "meanNominalDeviation": 0.16475304,
+            "meanProfileChromaReduction": 0.0110113,
+            "minLightnessDelta": 1.0107878,
             "monotonic": true,
             "profile": "muted-darks",
-            "profileChromaAdjustedCount": 22,
+            "profileChromaAdjustedCount": 28,
             "profileChromaFullyRestoredCount": 0,
             "profileChromaRestoredCount": 1,
             "separationRelaxed": false,
             "valid": true
           },
-          "sourceSeedPreserved": true,
+          "sourceSeedPreserved": false,
           "status": "review",
           "surfaceTrackAlignment": {
-            "adjustedToneCount": 4,
+            "adjustedToneCount": 2,
             "adjustedTones": [
               85,
-              90,
-              95,
               99
             ],
-            "appliedStrength": 1,
+            "appliedStrength": 0.02567506,
             "contract": "kiskadee-primary-relative-light-v1",
-            "maxChromaReduction": 0.06463459,
-            "maxRemainingExcess": 0.00119578,
+            "maxChromaReduction": 0.00882447,
+            "maxRemainingExcess": 0.19450105,
             "protectedTones": [
               0,
               40,
-              75,
+              95,
               100
             ],
             "referenceFamilyId": "b.blue.v1",
-            "restorationCount": 0
+            "restorationCount": 1
           }
         },
         "light": {
@@ -2283,6 +2379,7 @@
             "sector": "green-yellow",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#7fba00",
           "functionalReferences": {
             "subtle": {
@@ -2602,6 +2699,7 @@
       "themes": {
         "dark": {
           "classification": null,
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#21242d",
           "functionalReferences": {
             "subtle": {
@@ -2865,6 +2963,7 @@
         },
         "light": {
           "classification": null,
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#21242d",
           "functionalReferences": {
             "subtle": {
@@ -3162,78 +3261,129 @@
             "diagnostics": [
               {
                 "code": "MUNSELL_HUE_NEAR_BOUNDARY",
-                "message": "Hue 332.7608345484289 is in the outer 15% of the purple sector.",
+                "message": "Hue 332.8044802509661 is in the outer 15% of the purple sector.",
                 "severity": "review"
               }
             ],
-            "hex": "#a62d99",
-            "hue": 332.76083455,
+            "hex": "#9a348e",
+            "hue": 332.80448025,
             "isInSafeCore": false,
             "nearestSafeHue": 330.875,
             "oklch": {
-              "c": 0.19552014,
-              "h": 332.76083455,
-              "l": 52.29264896
+              "c": 0.17138798,
+              "h": 332.80448025,
+              "l": 50.55639569
             },
-            "positionInSector": 0.90028892,
+            "positionInSector": 0.90145281,
             "projection": "munsell-oklch-v1",
             "sector": "purple",
             "validForPrimary": true
           },
-          "effectiveSeedHex": "#a62d99",
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 29,
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9,
+              10,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              95
+            ],
+            "baselineMaxExcess": 0.02489471,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0.00190275,
+            "limitingTone": 70,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0.02519492,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": true
+          },
+          "effectiveSeedHex": "#9a348e",
           "functionalReferences": {
             "subtle": {
-              "hex": "#230d20",
+              "hex": "#210e1f",
               "source": "surface-relative",
-              "surfaceContrast": 1.14989142,
-              "surfaceContrastError": 0.0303291,
-              "surfaceDeltaE": 0.20772694,
-              "surfaceDeltaEError": 0.00546735,
+              "surfaceContrast": 1.1472676,
+              "surfaceContrastError": 0.03261351,
+              "surfaceDeltaE": 0.20466636,
+              "surfaceDeltaEError": 0.00852793,
               "tone": 3
             },
             "vivid": {
-              "hex": "#a62d99",
+              "hex": "#9a348e",
               "source": "generated-anchor",
-              "surfaceContrast": 3.45673419,
-              "surfaceDeltaE": 0.5582833,
+              "surfaceContrast": 3.25580033,
+              "surfaceDeltaE": 0.53382465,
               "tone": 40
             }
           },
           "functionalRest": {
-            "hex": "#a62d99",
+            "hex": "#9a348e",
             "tone": 40
           },
           "generatedAnchor": {
-            "hex": "#a62d99",
+            "hex": "#9a348e",
             "tone": 40
           },
           "harmony": {
-            "candidatesEvaluated": 1,
+            "candidatesEvaluated": 185,
             "chromaModel": "hue-global",
-            "chromaUtilizationDelta": 0,
-            "chromaUtilizationError": 0,
-            "contrastAgainstBlackDelta": 0,
-            "contrastAgainstWhiteDelta": 0,
-            "contrastLogError": 0,
-            "hueDrift": 0.00905552,
+            "chromaUtilizationDelta": -0.07744747,
+            "chromaUtilizationError": 0.96809332,
+            "contrastAgainstBlackDelta": -0.20093385,
+            "contrastAgainstWhiteDelta": 0.37492868,
+            "contrastLogError": 1.19772287,
+            "hueDrift": 0.03459018,
             "hueGlobalBalanceError": 0,
-            "hueGlobalChromaUtilizationDelta": 0.00002323,
-            "lightnessDelta": 0,
-            "lightnessError": 0,
-            "relativeLuminanceDelta": 0,
-            "restHueGlobalChromaUtilization": 0.62993217,
-            "score": 0,
-            "seedDeltaE": 0.06972243
+            "hueGlobalChromaUtilizationDelta": -0.07772643,
+            "lightnessDelta": -1.73625327,
+            "lightnessError": 0.86812664,
+            "relativeLuminanceDelta": -0.01004669,
+            "restHueGlobalChromaUtilization": 0.55218251,
+            "score": 1.19772287,
+            "seedDeltaE": 0.09519052
           },
           "isolatedHarmonyPeakAlignment": null,
           "policy": "adaptive",
           "scale": {
             "adjacentDuplicates": [],
             "anchor": {
-              "hex": "#a62d99",
-              "inputLightness": 52.29264896,
-              "lightnessDeviation": 0.32471854,
-              "nominalLightness": 51.96793042,
+              "hex": "#9a348e",
+              "inputLightness": 50.55639569,
+              "lightnessDeviation": 0.90380813,
+              "nominalLightness": 51.46020382,
               "nominalNearestTone": 40,
               "relocated": false,
               "relocationReason": "none",
@@ -3252,52 +3402,52 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.04067534
+                  "value": 0.03683557
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.03019734
+                  "value": 0.02841648
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.02066919
+                  "value": 0.02270223
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01930233
+                  "value": 0.01956885
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01732079
+                  "value": 0.01597319
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01914023
+                  "value": 0.02562594
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.01731638
+                  "value": 0.02000174
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01876184
+                  "value": 0.01873209
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01639564
+                  "value": 0.02692074
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.0252638
+                  "value": 0.02934884
                 },
                 {
                   "fromTone": 12,
@@ -3307,150 +3457,150 @@
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.01634284
+                  "value": 0.02065383
                 },
                 {
                   "fromTone": 16,
                   "toTone": 18,
-                  "value": 0.01328817
+                  "value": 0.01132068
                 },
                 {
                   "fromTone": 18,
                   "toTone": 20,
-                  "value": 0.01868258
+                  "value": 0.01323844
                 },
                 {
                   "fromTone": 20,
                   "toTone": 22,
-                  "value": 0.01060059
+                  "value": 0.0111889
                 },
                 {
                   "fromTone": 22,
                   "toTone": 24,
-                  "value": 0.01327154
+                  "value": 0.01301636
                 },
                 {
                   "fromTone": 24,
                   "toTone": 26,
-                  "value": 0.01462995
+                  "value": 0.01317757
                 },
                 {
                   "fromTone": 26,
                   "toTone": 28,
-                  "value": 0.01542758
+                  "value": 0.01451961
                 },
                 {
                   "fromTone": 28,
                   "toTone": 30,
-                  "value": 0.01469305
+                  "value": 0.0130099
                 },
                 {
                   "fromTone": 30,
                   "toTone": 35,
-                  "value": 0.04480918
+                  "value": 0.04710167
                 },
                 {
                   "fromTone": 35,
                   "toTone": 40,
-                  "value": 0.033751
+                  "value": 0.01854669
                 },
                 {
                   "fromTone": 40,
                   "toTone": 45,
-                  "value": 0.02161199
+                  "value": 0.03535773
                 },
                 {
                   "fromTone": 45,
                   "toTone": 50,
-                  "value": 0.02741791
+                  "value": 0.0276279
                 },
                 {
                   "fromTone": 50,
                   "toTone": 55,
-                  "value": 0.02943775
+                  "value": 0.0281013
                 },
                 {
                   "fromTone": 55,
                   "toTone": 60,
-                  "value": 0.02507565
+                  "value": 0.0260148
                 },
                 {
                   "fromTone": 60,
                   "toTone": 65,
-                  "value": 0.02399071
+                  "value": 0.02330667
                 },
                 {
                   "fromTone": 65,
                   "toTone": 70,
-                  "value": 0.02575246
+                  "value": 0.02641926
                 },
                 {
                   "fromTone": 70,
                   "toTone": 75,
-                  "value": 0.05353411
+                  "value": 0.05482167
                 },
                 {
                   "fromTone": 75,
                   "toTone": 80,
-                  "value": 0.05455659
+                  "value": 0.05380052
                 },
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.05642657
+                  "value": 0.05620641
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.07977941
+                  "value": 0.06976405
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.07406116
+                  "value": 0.07154117
                 },
                 {
                   "fromTone": 95,
                   "toTone": 99,
-                  "value": 0.04959386
+                  "value": 0.05206566
                 }
               ],
               "anchor": {
-                "chromaExcess": 0.00426542,
-                "chromaSlopeChange": 0.00264516,
-                "incomingChromaSlope": 0.0025343,
-                "incomingDeltaE": 0.033751,
-                "localRhythmDeltaE": 0.02842783,
-                "normalizedChromaTurn": 0.04363152,
-                "outgoingChromaSlope": -0.00011086,
-                "outgoingDeltaE": 0.02161199,
-                "stepImbalance": 1.56167965
+                "chromaExcess": 0.0008369,
+                "chromaSlopeChange": 0.00056905,
+                "incomingChromaSlope": 0.00020042,
+                "incomingDeltaE": 0.01854669,
+                "localRhythmDeltaE": 0.0278646,
+                "normalizedChromaTurn": 0.00976609,
+                "outgoingChromaSlope": -0.00036863,
+                "outgoingDeltaE": 0.03535773,
+                "stepImbalance": 1.9064175
               },
               "fairing": {
                 "adjustedTones": [],
-                "beforeChromaExcess": 0,
-                "beforeChromaSlopeChange": 0.00012621,
-                "beforeStepImbalance": 1.45088302,
+                "beforeChromaExcess": 0.0008369,
+                "beforeChromaSlopeChange": 0.00056905,
+                "beforeStepImbalance": 1.9064175,
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.07977941,
+              "maxAdjacentDeltaE": 0.07154117,
               "reviewRequired": false
             },
             "error": null,
             "gamutMappedCount": 1,
-            "maxGamutChromaLoss": 0.03237279,
-            "maxLocalChromaProminence": 0.01267695,
-            "maxNominalDeviation": 0.32471854,
-            "maxProfileChromaReduction": 0.05768505,
-            "meanNominalDeviation": 0.07480339,
-            "meanProfileChromaReduction": 0.02438641,
-            "minLightnessDelta": 1.03072782,
+            "maxGamutChromaLoss": 0.02743103,
+            "maxLocalChromaProminence": 0.01266918,
+            "maxNominalDeviation": 0.90380813,
+            "maxProfileChromaReduction": 0.06630392,
+            "meanNominalDeviation": 0.09358584,
+            "meanProfileChromaReduction": 0.02373052,
+            "minLightnessDelta": 1.02503427,
             "monotonic": true,
             "profile": "muted-darks",
-            "profileChromaAdjustedCount": 21,
-            "profileChromaFullyRestoredCount": 0,
-            "profileChromaRestoredCount": 9,
+            "profileChromaAdjustedCount": 20,
+            "profileChromaFullyRestoredCount": 1,
+            "profileChromaRestoredCount": 10,
             "separationRelaxed": false,
             "valid": true
           },
@@ -3465,8 +3615,8 @@
             ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
-            "maxChromaReduction": 0.02029562,
-            "maxRemainingExcess": 0.0001136,
+            "maxChromaReduction": 0.02203334,
+            "maxRemainingExcess": 0.00014705,
             "protectedTones": [
               0,
               40,
@@ -3500,6 +3650,7 @@
             "sector": "purple",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#c239b3",
           "functionalReferences": {
             "subtle": {
@@ -3816,21 +3967,74 @@
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
-            "hex": "#2f39dc",
-            "hue": 269.97233336,
+            "hex": "#374cb7",
+            "hue": 270.01914725,
             "isInSafeCore": true,
-            "nearestSafeHue": 269.97233336,
+            "nearestSafeHue": 270.01914725,
             "oklch": {
-              "c": 0.23986936,
-              "h": 269.97233336,
-              "l": 46.48820088
+              "c": 0.17025457,
+              "h": 270.01914725,
+              "l": 46.55706671
             },
-            "positionInSector": 0.19367593,
+            "positionInSector": 0.19497631,
             "projection": "munsell-oklch-v1",
             "sector": "purple-blue",
             "validForPrimary": true
           },
-          "effectiveSeedHex": "#2f39dc",
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 31,
+            "adjustedTones": [
+              1,
+              2,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90
+            ],
+            "baselineMaxExcess": 0.08136169,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0.00085045,
+            "limitingTone": 65,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0.10472055,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": true
+          },
+          "effectiveSeedHex": "#374cb7",
           "functionalReferences": {
             "subtle": {
               "hex": "#0c1334",
@@ -3842,83 +4046,60 @@
               "tone": 3
             },
             "vivid": {
-              "hex": "#394bee",
+              "hex": "#4058c4",
               "source": "harmony-rest",
-              "surfaceContrast": 3.41501155,
-              "surfaceDeltaE": 0.56770782,
+              "surfaceContrast": 3.41099161,
+              "surfaceDeltaE": 0.53206753,
               "tone": 40
             }
           },
           "functionalRest": {
-            "hex": "#394bee",
+            "hex": "#4058c4",
             "tone": 40
           },
           "generatedAnchor": {
-            "hex": "#2f39dc",
+            "hex": "#374cb7",
             "tone": 30
           },
           "harmony": {
-            "candidatesEvaluated": 21,
+            "candidatesEvaluated": 29,
             "chromaModel": "hue-global",
-            "chromaUtilizationDelta": -0.1137011,
-            "chromaUtilizationError": 1.42126369,
-            "contrastAgainstBlackDelta": -0.06691455,
-            "contrastAgainstWhiteDelta": 0.11817568,
-            "contrastLogError": 0.38809483,
-            "hueDrift": 0.00699402,
+            "chromaUtilizationDelta": -0.38801083,
+            "chromaUtilizationError": 4.85013538,
+            "contrastAgainstBlackDelta": -0.07093448,
+            "contrastAgainstWhiteDelta": 0.1254228,
+            "contrastLogError": 0.41165144,
+            "hueDrift": 0.05380791,
             "hueGlobalBalanceError": 0,
-            "hueGlobalChromaUtilizationDelta": 0.02089534,
-            "isolatedPeakChroma": 0.24099294,
-            "isolatedPeakChromaCap": 0.24281884,
-            "isolatedPeakError": 0,
-            "lightnessDelta": 1.39787081,
-            "lightnessError": 0.6989354,
-            "relativeLuminanceDelta": -0.00334573,
-            "restHueGlobalChromaUtilization": 0.79090167,
-            "score": 1.42126369,
-            "seedDeltaE": 0.12210949,
-            "vividPeakError": 0.26143935,
-            "vividPeakGlobalChromaUtilization": 0.79092148,
-            "vividPeakGlobalChromaUtilizationDelta": 0.02091515
+            "hueGlobalChromaUtilizationDelta": -0.21074507,
+            "lightnessDelta": 0.40004103,
+            "lightnessError": 0.20002051,
+            "relativeLuminanceDelta": -0.00354672,
+            "restHueGlobalChromaUtilization": 0.55926126,
+            "score": 4.85013538,
+            "seedDeltaE": 0.11717465,
+            "vividPeakError": 2.62254775,
+            "vividPeakGlobalChromaUtilization": 0.56020251,
+            "vividPeakGlobalChromaUtilizationDelta": -0.20980382
           },
-          "isolatedHarmonyPeakAlignment": {
-            "adjacentRestChromaAverage": 0.17204249,
-            "adjusted": true,
-            "baselinePeakChroma": 0.25281884,
-            "baselinePeakLightness": 48.74056944,
-            "baselinePeakTone": 35,
-            "baselineRestChroma": 0.25255157,
-            "contract": "kiskadee-isolated-harmony-peak-v1",
-            "detectionPeerChroma": 0.19782099,
-            "detectionPeerFamilyId": "rp.magenta.v1",
-            "finalPeakChroma": 0.24099294,
-            "finalPeakLightness": 51.40180707,
-            "finalPeakTone": 40,
-            "medianRestChroma": 0.14856483,
-            "remainingExcess": 0,
-            "restDetectionCap": 0.22284725,
-            "runnerUpFamilyId": "rp.magenta.v1",
-            "runnerUpPeakChroma": 0.2475963,
-            "targetLimitedBy": "minimum-reduction",
-            "targetPeakChroma": 0.24281884
-          },
+          "isolatedHarmonyPeakAlignment": null,
           "policy": "harmonized",
           "scale": {
             "adjacentDuplicates": [],
             "anchor": {
-              "hex": "#2f39dc",
-              "inputLightness": 46.48820088,
-              "lightnessDeviation": 1.98741579,
-              "nominalLightness": 44.50078509,
-              "nominalNearestTone": 30,
-              "relocated": false,
-              "relocationReason": "none",
+              "hex": "#374cb7",
+              "inputLightness": 46.55706671,
+              "lightnessDeviation": 3.08042654,
+              "nominalLightness": 43.47664017,
+              "nominalNearestTone": 35,
+              "relocated": true,
+              "relocationReason": "vivid-contrast",
               "tone": 30,
               "vividEligible": false
             },
             "anchorChromaProtected": true,
             "chromaContinuityRelaxed": true,
-            "chromaPeakTone": 9,
+            "chromaPeakTone": 8,
             "contrastFailures": [],
             "darkSurfaceContrastFailures": [],
             "darkSurfaceContrastMonotonic": true,
@@ -3928,162 +4109,162 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.04307876
+                  "value": 0.04082156
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.02638395
+                  "value": 0.03583445
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.04416941
+                  "value": 0.03141813
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.02185016
+                  "value": 0.01705467
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.02922805
+                  "value": 0.01570786
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.0205559
+                  "value": 0.01355558
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.01809402
+                  "value": 0.01722543
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01761396
+                  "value": 0.01325342
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01897722
+                  "value": 0.02267444
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.03571528
+                  "value": 0.02098218
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.01730406
+                  "value": 0.02642634
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.01214549
+                  "value": 0.0116979
                 },
                 {
                   "fromTone": 16,
                   "toTone": 18,
-                  "value": 0.01527982
+                  "value": 0.01420735
                 },
                 {
                   "fromTone": 18,
                   "toTone": 20,
-                  "value": 0.00957502
+                  "value": 0.013211
                 },
                 {
                   "fromTone": 20,
                   "toTone": 22,
-                  "value": 0.00997496
+                  "value": 0.01278896
                 },
                 {
                   "fromTone": 22,
                   "toTone": 24,
-                  "value": 0.01293317
+                  "value": 0.0130304
                 },
                 {
                   "fromTone": 24,
                   "toTone": 26,
-                  "value": 0.01589614
+                  "value": 0.01262628
                 },
                 {
                   "fromTone": 26,
                   "toTone": 28,
-                  "value": 0.013595
+                  "value": 0.01286175
                 },
                 {
                   "fromTone": 28,
                   "toTone": 30,
-                  "value": 0.035325
+                  "value": 0.0475402
                 },
                 {
                   "fromTone": 30,
                   "toTone": 35,
-                  "value": 0.02046904
+                  "value": 0.0093163
                 },
                 {
                   "fromTone": 35,
                   "toTone": 40,
-                  "value": 0.02871278
+                  "value": 0.02916655
                 },
                 {
                   "fromTone": 40,
                   "toTone": 45,
-                  "value": 0.02625012
+                  "value": 0.02627269
                 },
                 {
                   "fromTone": 45,
                   "toTone": 50,
-                  "value": 0.02787469
+                  "value": 0.02866267
                 },
                 {
                   "fromTone": 50,
                   "toTone": 55,
-                  "value": 0.0347783
+                  "value": 0.02850823
                 },
                 {
                   "fromTone": 55,
                   "toTone": 60,
-                  "value": 0.0293152
+                  "value": 0.02458503
                 },
                 {
                   "fromTone": 60,
                   "toTone": 65,
-                  "value": 0.02856122
+                  "value": 0.02561754
                 },
                 {
                   "fromTone": 65,
                   "toTone": 70,
-                  "value": 0.02920216
+                  "value": 0.02710211
                 },
                 {
                   "fromTone": 70,
                   "toTone": 75,
-                  "value": 0.06106558
+                  "value": 0.05700715
                 },
                 {
                   "fromTone": 75,
                   "toTone": 80,
-                  "value": 0.0635563
+                  "value": 0.06349197
                 },
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.05863326
+                  "value": 0.05939724
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.05639551
+                  "value": 0.05869815
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.06906692
+                  "value": 0.07210645
                 },
                 {
                   "fromTone": 95,
@@ -4092,42 +4273,42 @@
                 }
               ],
               "anchor": {
-                "chromaExcess": 0.00748001,
-                "chromaSlopeChange": 0.00472135,
-                "incomingChromaSlope": 0.00451871,
-                "incomingDeltaE": 0.035325,
-                "localRhythmDeltaE": 0.02107313,
-                "normalizedChromaTurn": 0.06236736,
-                "outgoingChromaSlope": -0.00020264,
-                "outgoingDeltaE": 0.02046904,
-                "stepImbalance": 1.72577693
+                "chromaExcess": 0.00785505,
+                "chromaSlopeChange": 0.00368679,
+                "incomingChromaSlope": 0.00344545,
+                "incomingDeltaE": 0.0475402,
+                "localRhythmDeltaE": 0.01956722,
+                "normalizedChromaTurn": 0.09227423,
+                "outgoingChromaSlope": -0.00024133,
+                "outgoingDeltaE": 0.0093163,
+                "stepImbalance": 5.10290448
               },
               "fairing": {
                 "adjustedTones": [],
-                "beforeChromaExcess": 0.001261,
-                "beforeChromaSlopeChange": 0.00082542,
-                "beforeStepImbalance": 1.65630144,
+                "beforeChromaExcess": 0.00151539,
+                "beforeChromaSlopeChange": 0.0008824,
+                "beforeStepImbalance": 4.70827591,
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.06906692,
-              "reviewRequired": false
+              "maxAdjacentDeltaE": 0.07210645,
+              "reviewRequired": true
             },
             "error": null,
-            "gamutMappedCount": 11,
-            "maxGamutChromaLoss": 0.092328,
-            "maxLocalChromaProminence": 0.01249947,
-            "maxNominalDeviation": 1.98741579,
-            "maxProfileChromaReduction": 0.06942336,
-            "meanNominalDeviation": 0.12299398,
-            "meanProfileChromaReduction": 0.01872501,
-            "minLightnessDelta": 0.91183028,
+            "gamutMappedCount": 6,
+            "maxGamutChromaLoss": 0.04926909,
+            "maxLocalChromaProminence": 0.00695675,
+            "maxNominalDeviation": 3.08042654,
+            "maxProfileChromaReduction": 0.07485651,
+            "meanNominalDeviation": 0.1654625,
+            "meanProfileChromaReduction": 0.02529451,
+            "minLightnessDelta": 0.93061672,
             "monotonic": true,
             "profile": "muted-darks",
             "profileChromaAdjustedCount": 19,
             "profileChromaFullyRestoredCount": 0,
-            "profileChromaRestoredCount": 15,
-            "separationRelaxed": false,
+            "profileChromaRestoredCount": 9,
+            "separationRelaxed": true,
             "valid": true
           },
           "sourceSeedPreserved": false,
@@ -4167,6 +4348,7 @@
             "sector": "purple-blue",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#2e33e3",
           "functionalReferences": {
             "subtle": {
@@ -4508,80 +4690,134 @@
       },
       "familyId": "r.red.v1",
       "seedOrigin": "override",
-      "status": "pass",
+      "status": "review",
       "themes": {
         "dark": {
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
-            "hex": "#c50f1f",
-            "hue": 25.84993888,
+            "hex": "#b6302f",
+            "hue": 25.85114231,
             "isInSafeCore": true,
-            "nearestSafeHue": 25.84993888,
+            "nearestSafeHue": 25.85114231,
             "oklch": {
-              "c": 0.20632512,
-              "h": 25.84993888,
-              "l": 52.27145512
+              "c": 0.17112394,
+              "h": 25.85114231,
+              "l": 51.73909337
             },
-            "positionInSector": 0.69245052,
+            "positionInSector": 0.69249594,
             "projection": "munsell-oklch-v1",
             "sector": "red",
             "validForPrimary": true
           },
-          "effectiveSeedHex": "#c50f1f",
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 32,
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90
+            ],
+            "baselineMaxExcess": 0.03527938,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0.00062797,
+            "limitingTone": 50,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0.03520118,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": true
+          },
+          "effectiveSeedHex": "#b6302f",
           "functionalReferences": {
             "subtle": {
-              "hex": "#290a09",
+              "hex": "#260d0b",
               "source": "surface-relative",
-              "surfaceContrast": 1.14164449,
-              "surfaceContrastError": 0.03752686,
-              "surfaceDeltaE": 0.20501399,
-              "surfaceDeltaEError": 0.0081803,
+              "surfaceContrast": 1.14481575,
+              "surfaceContrastError": 0.03475292,
+              "surfaceDeltaE": 0.20298241,
+              "surfaceDeltaEError": 0.01021188,
               "tone": 3
             },
             "vivid": {
-              "hex": "#c50f1f",
+              "hex": "#b6302f",
               "source": "generated-anchor",
-              "surfaceContrast": 3.46217869,
-              "surfaceDeltaE": 0.56196135,
+              "surfaceContrast": 3.45284486,
+              "surfaceDeltaE": 0.54495576,
               "tone": 40
             }
           },
           "functionalRest": {
-            "hex": "#c50f1f",
+            "hex": "#b6302f",
             "tone": 40
           },
           "generatedAnchor": {
-            "hex": "#c50f1f",
+            "hex": "#b6302f",
             "tone": 40
           },
           "harmony": {
-            "candidatesEvaluated": 1,
+            "candidatesEvaluated": 155,
             "chromaModel": "hue-global",
-            "chromaUtilizationDelta": 0,
-            "chromaUtilizationError": 0,
-            "contrastAgainstBlackDelta": 0,
-            "contrastAgainstWhiteDelta": 0,
-            "contrastLogError": 0,
-            "hueDrift": 0,
+            "chromaUtilizationDelta": -0.15747288,
+            "chromaUtilizationError": 1.96841102,
+            "contrastAgainstBlackDelta": -0.00933383,
+            "contrastAgainstWhiteDelta": 0.01639655,
+            "contrastLogError": 0.05399161,
+            "hueDrift": 0.00120342,
             "hueGlobalBalanceError": 0,
-            "hueGlobalChromaUtilizationDelta": 0,
-            "lightnessDelta": 0,
-            "lightnessError": 0,
-            "relativeLuminanceDelta": 0,
-            "restHueGlobalChromaUtilization": 0.80677335,
-            "score": 0,
-            "seedDeltaE": 0
+            "hueGlobalChromaUtilizationDelta": -0.13764381,
+            "lightnessDelta": -0.53236175,
+            "lightnessError": 0.26618087,
+            "relativeLuminanceDelta": -0.00046669,
+            "restHueGlobalChromaUtilization": 0.66912954,
+            "score": 1.96841102,
+            "seedDeltaE": 0.03560146
           },
           "isolatedHarmonyPeakAlignment": null,
           "policy": "adaptive",
           "scale": {
             "adjacentDuplicates": [],
             "anchor": {
-              "hex": "#c50f1f",
-              "inputLightness": 52.27145512,
-              "lightnessDeviation": 0.62929394,
-              "nominalLightness": 51.64216117,
+              "hex": "#b6302f",
+              "inputLightness": 51.73909337,
+              "lightnessDeviation": 0.38985879,
+              "nominalLightness": 51.34923458,
               "nominalNearestTone": 40,
               "relocated": false,
               "relocationReason": "none",
@@ -4590,7 +4826,7 @@
             },
             "anchorChromaProtected": true,
             "chromaContinuityRelaxed": false,
-            "chromaPeakTone": 40,
+            "chromaPeakTone": 18,
             "contrastFailures": [],
             "darkSurfaceContrastFailures": [],
             "darkSurfaceContrastMonotonic": true,
@@ -4600,162 +4836,162 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.03876381
+                  "value": 0.03730846
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.02810518
+                  "value": 0.02961833
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.02164398
+                  "value": 0.02244536
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.02151235
+                  "value": 0.01790171
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01628801
+                  "value": 0.01758067
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01582889
+                  "value": 0.01571279
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.0155505
+                  "value": 0.01343713
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01440097
+                  "value": 0.01528919
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01146099
+                  "value": 0.01191803
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.02319833
+                  "value": 0.02149481
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.02023398
+                  "value": 0.0204109
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.0178409
+                  "value": 0.01931917
                 },
                 {
                   "fromTone": 16,
                   "toTone": 18,
-                  "value": 0.01737126
+                  "value": 0.01710606
                 },
                 {
                   "fromTone": 18,
                   "toTone": 20,
-                  "value": 0.0129236
+                  "value": 0.01126351
                 },
                 {
                   "fromTone": 20,
                   "toTone": 22,
-                  "value": 0.01509239
+                  "value": 0.01472884
                 },
                 {
                   "fromTone": 22,
                   "toTone": 24,
-                  "value": 0.01265646
+                  "value": 0.01224555
                 },
                 {
                   "fromTone": 24,
                   "toTone": 26,
-                  "value": 0.01481724
+                  "value": 0.01342037
                 },
                 {
                   "fromTone": 26,
                   "toTone": 28,
-                  "value": 0.01461126
+                  "value": 0.0148931
                 },
                 {
                   "fromTone": 28,
                   "toTone": 30,
-                  "value": 0.01668424
+                  "value": 0.01489125
                 },
                 {
                   "fromTone": 30,
                   "toTone": 35,
-                  "value": 0.04779926
+                  "value": 0.04355503
                 },
                 {
                   "fromTone": 35,
                   "toTone": 40,
-                  "value": 0.03488741
+                  "value": 0.03326478
                 },
                 {
                   "fromTone": 40,
                   "toTone": 45,
-                  "value": 0.01984441
+                  "value": 0.02287932
                 },
                 {
                   "fromTone": 45,
                   "toTone": 50,
-                  "value": 0.02682107
+                  "value": 0.02721035
                 },
                 {
                   "fromTone": 50,
                   "toTone": 55,
-                  "value": 0.03003205
+                  "value": 0.02907504
                 },
                 {
                   "fromTone": 55,
                   "toTone": 60,
-                  "value": 0.02508242
+                  "value": 0.02515454
                 },
                 {
                   "fromTone": 60,
                   "toTone": 65,
-                  "value": 0.02324851
+                  "value": 0.02397139
                 },
                 {
                   "fromTone": 65,
                   "toTone": 70,
-                  "value": 0.02651016
+                  "value": 0.02569945
                 },
                 {
                   "fromTone": 70,
                   "toTone": 75,
-                  "value": 0.05639634
+                  "value": 0.05377773
                 },
                 {
                   "fromTone": 75,
                   "toTone": 80,
-                  "value": 0.06966931
+                  "value": 0.05920206
                 },
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.06240247
+                  "value": 0.06260129
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.06056862
+                  "value": 0.06019252
                 },
                 {
                   "fromTone": 90,
                   "toTone": 95,
-                  "value": 0.06899901
+                  "value": 0.07140871
                 },
                 {
                   "fromTone": 95,
@@ -4764,46 +5000,46 @@
                 }
               ],
               "anchor": {
-                "chromaExcess": 0.00410442,
-                "chromaSlopeChange": 0.00250094,
-                "incomingChromaSlope": 0.0022922,
-                "incomingDeltaE": 0.03488741,
-                "localRhythmDeltaE": 0.02842656,
-                "normalizedChromaTurn": 0.03978596,
-                "outgoingChromaSlope": -0.00020874,
-                "outgoingDeltaE": 0.01984441,
-                "stepImbalance": 1.75804769
+                "chromaExcess": 0.00367352,
+                "chromaSlopeChange": 0.00225722,
+                "incomingChromaSlope": 0.0022859,
+                "incomingDeltaE": 0.03326478,
+                "localRhythmDeltaE": 0.0281427,
+                "normalizedChromaTurn": 0.04293407,
+                "outgoingChromaSlope": 0.00002868,
+                "outgoingDeltaE": 0.02287932,
+                "stepImbalance": 1.45392351
               },
               "fairing": {
                 "adjustedTones": [],
-                "beforeChromaExcess": 0.00410442,
-                "beforeChromaSlopeChange": 0.00250094,
-                "beforeStepImbalance": 1.75804769,
+                "beforeChromaExcess": 0,
+                "beforeChromaSlopeChange": 0.00004694,
+                "beforeStepImbalance": 1.38788617,
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.06966931,
+              "maxAdjacentDeltaE": 0.07140871,
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 6,
-            "maxGamutChromaLoss": 0.06623101,
-            "maxLocalChromaProminence": 0.00041413,
-            "maxNominalDeviation": 0.62929394,
-            "maxProfileChromaReduction": 0.04307751,
-            "meanNominalDeviation": 0.06741594,
-            "meanProfileChromaReduction": 0.01568847,
-            "minLightnessDelta": 0.94755211,
+            "gamutMappedCount": 5,
+            "maxGamutChromaLoss": 0.04781145,
+            "maxLocalChromaProminence": 0.0014739,
+            "maxNominalDeviation": 0.38985879,
+            "maxProfileChromaReduction": 0.05500386,
+            "meanNominalDeviation": 0.07013976,
+            "meanProfileChromaReduction": 0.02382,
+            "minLightnessDelta": 1.06310121,
             "monotonic": true,
             "profile": "muted-darks",
-            "profileChromaAdjustedCount": 20,
+            "profileChromaAdjustedCount": 21,
             "profileChromaFullyRestoredCount": 0,
-            "profileChromaRestoredCount": 1,
+            "profileChromaRestoredCount": 5,
             "separationRelaxed": false,
             "valid": true
           },
-          "sourceSeedPreserved": true,
-          "status": "pass",
+          "sourceSeedPreserved": false,
+          "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
             "adjustedTones": [],
@@ -4838,6 +5074,7 @@
             "sector": "red",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#c50f1f",
           "functionalReferences": {
             "subtle": {
@@ -5142,86 +5379,139 @@
           "classification": {
             "boundarySide": null,
             "diagnostics": [],
-            "hex": "#e3008c",
-            "hue": 353.27519774,
+            "hex": "#d86199",
+            "hue": 353.01710066,
             "isInSafeCore": true,
-            "nearestSafeHue": 353.27519774,
+            "nearestSafeHue": 353.01710066,
             "oklch": {
-              "c": 0.2475963,
-              "h": 353.27519774,
-              "l": 59.99404499
+              "c": 0.16066657,
+              "h": 353.01710066,
+              "l": 65.47296342
             },
-            "positionInSector": 0.54113541,
+            "positionInSector": 0.5328097,
             "projection": "munsell-oklch-v1",
             "sector": "red-purple",
             "validForPrimary": true
           },
-          "effectiveSeedHex": "#e3008c",
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 31,
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85
+            ],
+            "baselineMaxExcess": 0.0801953,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0,
+            "limitingTone": 40,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0.0960867,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": true
+          },
+          "effectiveSeedHex": "#d86199",
           "functionalReferences": {
             "subtle": {
-              "hex": "#290718",
+              "hex": "#230d17",
               "source": "surface-relative",
-              "surfaceContrast": 1.13786449,
-              "surfaceContrastError": 0.04084338,
-              "surfaceDeltaE": 0.20748931,
-              "surfaceDeltaEError": 0.00570498,
+              "surfaceContrast": 1.14140689,
+              "surfaceContrastError": 0.03773501,
+              "surfaceDeltaE": 0.20129491,
+              "surfaceDeltaEError": 0.01189938,
               "tone": 3
             },
             "vivid": {
-              "hex": "#bb0073",
+              "hex": "#9c456e",
               "source": "harmony-rest",
-              "surfaceContrast": 3.36052004,
-              "surfaceDeltaE": 0.56161356,
+              "surfaceContrast": 3.4899905,
+              "surfaceDeltaE": 0.53058082,
               "tone": 40
             }
           },
           "functionalRest": {
-            "hex": "#bb0073",
+            "hex": "#9c456e",
             "tone": 40
           },
           "generatedAnchor": {
-            "hex": "#e3008c",
-            "tone": 55
+            "hex": "#d86199",
+            "tone": 65
           },
           "harmony": {
-            "candidatesEvaluated": 21,
+            "candidatesEvaluated": 30,
             "chromaModel": "hue-global",
-            "chromaUtilizationDelta": 1e-7,
-            "chromaUtilizationError": 0.00000125,
-            "contrastAgainstBlackDelta": -0.12140605,
-            "contrastAgainstWhiteDelta": 0.21788814,
-            "contrastLogError": 0.7097976,
-            "hueDrift": 0,
+            "chromaUtilizationDelta": -0.41387513,
+            "chromaUtilizationError": 5.17343908,
+            "contrastAgainstBlackDelta": 0.0080644,
+            "contrastAgainstWhiteDelta": -0.0139363,
+            "contrastLogError": 0.04626792,
+            "hueDrift": 0.25809708,
             "hueGlobalBalanceError": 0,
-            "hueGlobalChromaUtilizationDelta": 0.02303682,
-            "lightnessDelta": 1.90476937,
-            "lightnessError": 0.95238469,
-            "relativeLuminanceDelta": -0.0060703,
-            "restHueGlobalChromaUtilization": 0.79304315,
-            "score": 1.82394368,
-            "seedDeltaE": 0,
-            "vividPeakError": 1.82394368,
-            "vividPeakGlobalChromaUtilization": 0.91592182,
-            "vividPeakGlobalChromaUtilizationDelta": 0.14591549
+            "hueGlobalChromaUtilizationDelta": -0.30799346,
+            "lightnessDelta": 1.56326495,
+            "lightnessError": 0.78163248,
+            "relativeLuminanceDelta": 0.00040322,
+            "restHueGlobalChromaUtilization": 0.46201286,
+            "score": 5.17343908,
+            "seedDeltaE": 0.10275914,
+            "vividPeakError": 2.20579768,
+            "vividPeakGlobalChromaUtilization": 0.59354251,
+            "vividPeakGlobalChromaUtilizationDelta": -0.17646381
           },
           "isolatedHarmonyPeakAlignment": null,
           "policy": "harmonized",
           "scale": {
             "adjacentDuplicates": [],
             "anchor": {
-              "hex": "#e3008c",
-              "inputLightness": 59.99404499,
-              "lightnessDeviation": 0.12695498,
-              "nominalLightness": 60.12099996,
-              "nominalNearestTone": 55,
+              "hex": "#d86199",
+              "inputLightness": 65.47296342,
+              "lightnessDeviation": 0.82594638,
+              "nominalLightness": 64.64701704,
+              "nominalNearestTone": 65,
               "relocated": false,
               "relocationReason": "none",
-              "tone": 55,
+              "tone": 65,
               "vividEligible": true
             },
             "anchorChromaProtected": true,
-            "chromaContinuityRelaxed": false,
-            "chromaPeakTone": 55,
+            "chromaContinuityRelaxed": true,
+            "chromaPeakTone": 26,
             "contrastFailures": [],
             "darkSurfaceContrastFailures": [],
             "darkSurfaceContrastMonotonic": true,
@@ -5231,157 +5521,157 @@
                 {
                   "fromTone": 1,
                   "toTone": 2,
-                  "value": 0.04191902
+                  "value": 0.04043552
                 },
                 {
                   "fromTone": 2,
                   "toTone": 3,
-                  "value": 0.02555276
+                  "value": 0.02590173
                 },
                 {
                   "fromTone": 3,
                   "toTone": 4,
-                  "value": 0.0239452
+                  "value": 0.0252375
                 },
                 {
                   "fromTone": 4,
                   "toTone": 5,
-                  "value": 0.01869751
+                  "value": 0.01632492
                 },
                 {
                   "fromTone": 5,
                   "toTone": 6,
-                  "value": 0.01778468
+                  "value": 0.01788768
                 },
                 {
                   "fromTone": 6,
                   "toTone": 7,
-                  "value": 0.01450251
+                  "value": 0.01636644
                 },
                 {
                   "fromTone": 7,
                   "toTone": 8,
-                  "value": 0.01633131
+                  "value": 0.01923064
                 },
                 {
                   "fromTone": 8,
                   "toTone": 9,
-                  "value": 0.01280186
+                  "value": 0.01162652
                 },
                 {
                   "fromTone": 9,
                   "toTone": 10,
-                  "value": 0.01269321
+                  "value": 0.01819194
                 },
                 {
                   "fromTone": 10,
                   "toTone": 12,
-                  "value": 0.02304574
+                  "value": 0.02191835
                 },
                 {
                   "fromTone": 12,
                   "toTone": 14,
-                  "value": 0.02167582
+                  "value": 0.03426451
                 },
                 {
                   "fromTone": 14,
                   "toTone": 16,
-                  "value": 0.01650963
+                  "value": 0.01898813
                 },
                 {
                   "fromTone": 16,
                   "toTone": 18,
-                  "value": 0.01441452
+                  "value": 0.01560182
                 },
                 {
                   "fromTone": 18,
                   "toTone": 20,
-                  "value": 0.01355781
+                  "value": 0.01421612
                 },
                 {
                   "fromTone": 20,
                   "toTone": 22,
-                  "value": 0.01423889
+                  "value": 0.01347191
                 },
                 {
                   "fromTone": 22,
                   "toTone": 24,
-                  "value": 0.01339974
+                  "value": 0.01179653
                 },
                 {
                   "fromTone": 24,
                   "toTone": 26,
-                  "value": 0.01576045
+                  "value": 0.01774453
                 },
                 {
                   "fromTone": 26,
                   "toTone": 28,
-                  "value": 0.01378985
+                  "value": 0.0158659
                 },
                 {
                   "fromTone": 28,
                   "toTone": 30,
-                  "value": 0.01754302
+                  "value": 0.0218965
                 },
                 {
                   "fromTone": 30,
                   "toTone": 35,
-                  "value": 0.04836722
+                  "value": 0.04286525
                 },
                 {
                   "fromTone": 35,
                   "toTone": 40,
-                  "value": 0.0310422
+                  "value": 0.03212331
                 },
                 {
                   "fromTone": 40,
                   "toTone": 45,
-                  "value": 0.0286991
+                  "value": 0.02606819
                 },
                 {
                   "fromTone": 45,
                   "toTone": 50,
-                  "value": 0.0283544
+                  "value": 0.0299629
                 },
                 {
                   "fromTone": 50,
                   "toTone": 55,
-                  "value": 0.03036555
+                  "value": 0.03004738
                 },
                 {
                   "fromTone": 55,
                   "toTone": 60,
-                  "value": 0.02556938
+                  "value": 0.02534302
                 },
                 {
                   "fromTone": 60,
                   "toTone": 65,
-                  "value": 0.02503143
+                  "value": 0.03264352
                 },
                 {
                   "fromTone": 65,
                   "toTone": 70,
-                  "value": 0.0248179
+                  "value": 0.01675612
                 },
                 {
                   "fromTone": 70,
                   "toTone": 75,
-                  "value": 0.06593469
+                  "value": 0.05399571
                 },
                 {
                   "fromTone": 75,
                   "toTone": 80,
-                  "value": 0.07342417
+                  "value": 0.05532928
                 },
                 {
                   "fromTone": 80,
                   "toTone": 85,
-                  "value": 0.06416767
+                  "value": 0.05981261
                 },
                 {
                   "fromTone": 85,
                   "toTone": 90,
-                  "value": 0.06273586
+                  "value": 0.06504586
                 },
                 {
                   "fromTone": 90,
@@ -5395,45 +5685,45 @@
                 }
               ],
               "anchor": {
-                "chromaExcess": 0.00756202,
-                "chromaSlopeChange": 0.00552578,
-                "incomingChromaSlope": 0.00413199,
-                "incomingDeltaE": 0.03036555,
-                "localRhythmDeltaE": 0.02669291,
-                "normalizedChromaTurn": 0.06108348,
-                "outgoingChromaSlope": -0.00139379,
-                "outgoingDeltaE": 0.02556938,
-                "stepImbalance": 1.18757482
+                "chromaExcess": 0.00348249,
+                "chromaSlopeChange": 0.00274935,
+                "incomingChromaSlope": 0.00152992,
+                "incomingDeltaE": 0.03264352,
+                "localRhythmDeltaE": 0.04202155,
+                "normalizedChromaTurn": 0.04335057,
+                "outgoingChromaSlope": -0.00121943,
+                "outgoingDeltaE": 0.01675612,
+                "stepImbalance": 1.94815512
               },
               "fairing": {
                 "adjustedTones": [],
-                "beforeChromaExcess": 0.00756202,
-                "beforeChromaSlopeChange": 0.00552578,
-                "beforeStepImbalance": 1.18757482,
+                "beforeChromaExcess": 0,
+                "beforeChromaSlopeChange": 0.00005538,
+                "beforeStepImbalance": 1.99101554,
                 "maxLightnessAdjustment": 0,
                 "status": "not-needed"
               },
-              "maxAdjacentDeltaE": 0.07342417,
+              "maxAdjacentDeltaE": 0.07138457,
               "reviewRequired": false
             },
             "error": null,
-            "gamutMappedCount": 9,
-            "maxGamutChromaLoss": 0.08624687,
-            "maxLocalChromaProminence": 0.003528,
-            "maxNominalDeviation": 0.14039972,
-            "maxProfileChromaReduction": 0.0379796,
-            "meanNominalDeviation": 0.05378045,
-            "meanProfileChromaReduction": 0.01496207,
+            "gamutMappedCount": 4,
+            "maxGamutChromaLoss": 0.04321342,
+            "maxLocalChromaProminence": 0.01084048,
+            "maxNominalDeviation": 0.82594638,
+            "maxProfileChromaReduction": 0.07400783,
+            "meanNominalDeviation": 0.0901683,
+            "meanProfileChromaReduction": 0.03377367,
             "minLightnessDelta": 1.05063322,
             "monotonic": true,
             "profile": "muted-darks",
-            "profileChromaAdjustedCount": 21,
+            "profileChromaAdjustedCount": 26,
             "profileChromaFullyRestoredCount": 0,
-            "profileChromaRestoredCount": 0,
+            "profileChromaRestoredCount": 13,
             "separationRelaxed": false,
             "valid": true
           },
-          "sourceSeedPreserved": true,
+          "sourceSeedPreserved": false,
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 0,
@@ -5441,11 +5731,11 @@
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
-            "maxRemainingExcess": 0.00055383,
+            "maxRemainingExcess": 0.00080804,
             "protectedTones": [
               0,
               40,
-              55,
+              65,
               100
             ],
             "referenceFamilyId": "b.blue.v1",
@@ -5470,6 +5760,7 @@
             "sector": "red-purple",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#e3008c",
           "functionalReferences": {
             "subtle": {
@@ -5826,6 +6117,27 @@
             "sector": "yellow",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "baselineMaxExcess": 0,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0,
+            "limitingTone": 40,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": false
+          },
           "effectiveSeedHex": "#805a15",
           "functionalReferences": {
             "subtle": {
@@ -6144,6 +6456,7 @@
             "sector": "yellow",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#eaa300",
           "functionalReferences": {
             "subtle": {
@@ -6474,6 +6787,27 @@
             "sector": "yellow-red",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "baselineMaxExcess": 0,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0,
+            "limitingTone": 40,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": false
+          },
           "effectiveSeedHex": "#8b5834",
           "functionalReferences": {
             "subtle": {
@@ -6787,6 +7121,7 @@
             "sector": "yellow-red",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#8b5834",
           "functionalReferences": {
             "subtle": {
@@ -7127,6 +7462,27 @@
             "sector": "yellow-red",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": {
+            "adjustedToneCount": 0,
+            "adjustedTones": [],
+            "baselineMaxExcess": 0,
+            "contract": "kiskadee-primary-relative-dark-v1",
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
+            "finalMaxExcess": 0,
+            "limitingTone": 40,
+            "maxChromaIncrease": 0,
+            "maxChromaReduction": 0,
+            "referenceFamilyId": "b.blue.v1",
+            "sourceSeedChanged": false
+          },
           "effectiveSeedHex": "#a5430f",
           "functionalReferences": {
             "subtle": {
@@ -7437,6 +7793,7 @@
             "sector": "yellow-red",
             "validForPrimary": true
           },
+          "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#f7630c",
           "functionalReferences": {
             "subtle": {
@@ -7723,8 +8080,8 @@
     "dark": {
       "balanced": true,
       "functionalRestTone": 40,
-      "maximumFamilyRatio": 1.04774899,
-      "minimumFamilyRatio": 0.63255117,
+      "maximumFamilyRatio": 1,
+      "minimumFamilyRatio": 0.57494674,
       "restGlobalChromaUtilization": 0.77000633,
       "sourceAnchorTone": 40,
       "sourceGlobalChromaUtilization": 0.77000633,
@@ -7747,7 +8104,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.4.0"
+    "version": "0.4.1"
   },
   "issues": [
     {
@@ -7769,7 +8126,23 @@
     {
       "code": "HARMONY_REVIEW",
       "familyId": "gy.lime.v1",
-      "message": "gy.lime.v1 dark requires review: harmony score 1.022, local chroma prominence 0.0111, gamut chroma loss 0.111.",
+      "message": "gy.lime.v1 dark requires review: harmony score 2.207, source distance 0.197 Delta E OK, vivid peak retention 94.7%, emitted curve continuity, gamut chroma loss 0.280.",
+      "path": "/families/gy.lime.v1/dark",
+      "severity": "review",
+      "theme": "dark"
+    },
+    {
+      "code": "SURFACE_TRACK_ALIGNMENT_PROTECTED",
+      "familyId": "gy.lime.v1",
+      "message": "gy.lime.v1 dark preserves exact protected tones 95 above the Primary-relative light-surface chroma cap.",
+      "path": "/families/gy.lime.v1/dark",
+      "severity": "review",
+      "theme": "dark"
+    },
+    {
+      "code": "SURFACE_TRACK_ALIGNMENT_RELAXED",
+      "familyId": "gy.lime.v1",
+      "message": "gy.lime.v1 dark restored tones 90 toward their baseline chroma to preserve canonical scale invariants.",
       "path": "/families/gy.lime.v1/dark",
       "severity": "review",
       "theme": "dark"
@@ -7777,7 +8150,7 @@
     {
       "code": "HARMONY_REVIEW",
       "familyId": "p.purple.v1",
-      "message": "p.purple.v1 dark requires review: local chroma prominence 0.0127.",
+      "message": "p.purple.v1 dark requires review: harmony score 1.198, local chroma prominence 0.0127, 1 fully restored profile slots.",
       "path": "/families/p.purple.v1/dark",
       "severity": "review",
       "theme": "dark"
@@ -7785,7 +8158,7 @@
     {
       "code": "HARMONY_REVIEW",
       "familyId": "pb.indigo.v1",
-      "message": "pb.indigo.v1 dark requires review: harmony score 1.421, local chroma prominence 0.0125, gamut chroma loss 0.092.",
+      "message": "pb.indigo.v1 dark requires review: harmony score 4.850, vivid peak retention 56.0%, relaxed emitted spacing, emitted curve continuity.",
       "path": "/families/pb.indigo.v1/dark",
       "severity": "review",
       "theme": "dark"
@@ -7800,8 +8173,16 @@
     },
     {
       "code": "HARMONY_REVIEW",
+      "familyId": "r.red.v1",
+      "message": "r.red.v1 dark requires review: harmony score 1.968.",
+      "path": "/families/r.red.v1/dark",
+      "severity": "review",
+      "theme": "dark"
+    },
+    {
+      "code": "HARMONY_REVIEW",
       "familyId": "rp.magenta.v1",
-      "message": "rp.magenta.v1 dark requires review: harmony score 1.824, vivid peak retention 91.6%, gamut chroma loss 0.086.",
+      "message": "rp.magenta.v1 dark requires review: harmony score 5.173, vivid peak retention 59.4%, local chroma prominence 0.0108.",
       "path": "/families/rp.magenta.v1/dark",
       "severity": "review",
       "theme": "dark"

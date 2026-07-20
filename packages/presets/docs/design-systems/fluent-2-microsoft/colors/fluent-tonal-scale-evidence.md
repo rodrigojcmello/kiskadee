@@ -78,10 +78,10 @@ references without changing the stored Fluent evidence. It requires the local
 `@kiskadee/tonal-scale` application on port `3001`.
 
 The Shared Viewer currently evaluates this recipe with candidate generator
-`0.4.1`. The stored and promoted Fluent assets remain the visually approved
-`0.4.0` export until the candidate is explicitly approved and regenerated.
+`0.4.1`. The stored bundle, de-para, and promoted Fluent assets now use the
+visually approved `0.4.1` export.
 
-### Approved generator 0.4.0 system
+### Approved generator 0.4.1 system
 
 The verified canonical V4 export is under [`generated/`](./generated/). It
 contains twelve primitive family assets plus source, manifest, and diagnostics.
@@ -90,12 +90,19 @@ the preset: `b.blue.v1`, `n.black.v1`, `r.red.v1`, `yr.orange.v1`,
 `y.yellow.v1`, `g.green.v1`, and `p.purple.v1`. The five harmony-derived
 companions remain evidence-only candidates.
 
-Generator `0.4.0` retains the approved surface-track chroma alignment. In
+Generator `0.4.1` retains the approved surface-track chroma alignment. In
 particular, Green L4 is `#e2f3e0`, preventing the Positive Medium Button from
 dominating Blue and Cranberry near a light surface. It also retains the
 isolated-peak alignment that keeps Indigo from becoming the most prominent
-mid-track family. Primary and all low-level tonal goldens remain unchanged by
-those multifamily guarantees.
+mid-track family.
+
+It additionally applies the canonical Primary-relative Dark moderation to
+chromatic support families using `adaptive` or `harmonized`. Cranberry Dark
+vivid D40 moves from `#c50f1f` to `#b6302f`, removing the excessive red chroma
+observed beside the approved Fluent Blue. Berry receives the same
+hue-independent guarantee. Every Light scale and the complete Primary Blue
+family remain byte-identical to the `0.4.0` export; no Button- or intent-specific
+compensation was introduced.
 
 V4 replaces the former single state checkpoint with two per-family functional
 references. Preset runtime assets store only their positions; the generated
@@ -105,11 +112,11 @@ JSON keeps the corresponding HEX and provenance for integrity and review.
 | --- | --- | --- | --- | --- |
 | Blue | L4 `#e1efff` | L50 `#0064b4` | D4 `#0b1929` | D40 `#0064b4` |
 | Black | L4 `#ebedf3` | L85 `#21242d` | D4 `#17181b` | D90 `#d3d6df` |
-| Cranberry | L4 `#ffe7e4` | L45 `#c50f1f` | D3 `#290a09` | D40 `#c50f1f` |
+| Cranberry | L4 `#ffe7e4` | L45 `#c50f1f` | D3 `#260d0b` | D40 `#b6302f` |
 | Orange | L4 `#ffe8df` | L24 `#f7630c` | D4 `#28140c` | D40 `#a5430f` |
 | Marigold | L4 `#faebd7` | L18 `#eaa300` | D4 `#1f170c` | D40 `#805a15` |
 | Green | L4 `#e2f3e0` | L45 `#107c10` | D4 `#0b1b0a` | D40 `#087209` |
-| Berry | L4 `#fbe6f6` | L35 `#c239b3` | D3 `#230d20` | D40 `#a62d99` |
+| Berry | L4 `#fbe6f6` | L35 `#c239b3` | D3 `#210e1f` | D40 `#9a348e` |
 
 Black demonstrates why the references are per family. Its Light vivid position
 preserves the exact Fluent neutral seed, while Dark uses a contrast-mirrored
@@ -126,12 +133,12 @@ semantic aliases to their closest generated Kiskadee positions.
 | Brand background rest | Brand-80 `#0064b4` | L50 `#0064b4` | Brand-70 `#0055a4` | D35 `#005ba4` |
 | Neutral background rest | White `#ffffff` | L0 `#ffffff` | Grey-16 `#262932` | D9 `#262b34` |
 | Neutral foreground rest | Grey-14 `#21242d` | L85 `#21242d` | White `#ffffff` | D100 `#ffffff` |
-| Danger | Cranberry Primary `#c50f1f` | L45 `#c50f1f` | Cranberry Tint 30 `#dc626d` | D65 `#ee4f4b` |
+| Danger | Cranberry Primary `#c50f1f` | L45 `#c50f1f` | Cranberry Tint 30 `#dc626d` | D65 `#df5f57` |
 | Warning | Orange Primary `#f7630c` | L24 `#f7630c` | Orange Tint 20 `#f98845` | D75 `#e68962` |
 | Success | Green Primary `#107c10` | L45 `#107c10` | Green Tint 30 `#54b054` | D75 `#67b661` |
 | Available | Light green Primary `#13a10e` | `g.green.v1` L30 `#3f9b3b` | Light green Primary `#13a10e` | `g.green.v1` D65 `#469d42` |
 | Away | Marigold Primary `#eaa300` | L18 `#eaa300` | Marigold Primary `#eaa300` | D80 `#d1af7c` |
-| Out of office | Berry Primary `#c239b3` | L35 `#c239b3` | Berry Tint 20 `#d161c4` | D65 `#ce5cbf` |
+| Out of office | Berry Primary `#c239b3` | L35 `#c239b3` | Berry Tint 20 `#d161c4` | D70 `#ce6cc0` |
 
 This table is a future semantic integration guide, not a declaration that the
 system-wide state anchor must equal every Fluent role. For example, the primary
@@ -200,5 +207,7 @@ authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
 `yellowLike.v1`, and Orange to `yellowLike.v2`. Berry remains available as the
 Purple primitive because its official role is Out of office, not a generic
 Kiskadee `secondary` semantic. The checked-in bundle, mapping, and promoted
-assets all use generator `0.4.0`. No Positive- or Neutral-only surface-track
-compensation was introduced. Other components remain deferred.
+assets all use generator `0.4.1`. Dark chroma moderation is owned by the tonal
+system and applies hue-independently to eligible support families; no
+Destructive-, Positive-, or Neutral-only compensation was introduced. Other
+components remain deferred.
