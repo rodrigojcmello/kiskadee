@@ -119,6 +119,16 @@ export const ISOLATED_HARMONY_PEAK_ALIGNMENT_V1_PARAMETERS = {
   peakTargetTolerance: 0.001
 } as const;
 
+export const DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS = {
+  contract: 'kiskadee-primary-relative-dark-v1',
+  startTone: 40,
+  endTone: 70,
+  chromaToleranceRatio: 0.15,
+  minimumChromaTolerance: 0.005,
+  quantizationTolerance: 0.002,
+  harmonySearchRadius: 0.36
+} as const;
+
 const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
   quantizationSafeInset: 0.02
 } as const;
@@ -216,6 +226,20 @@ export type TonalIsolatedHarmonyPeakAlignmentDiagnostics = {
   remainingExcess: number;
 };
 
+export type TonalDarkSupportChromaModerationDiagnostics = {
+  contract: typeof DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.contract;
+  referenceFamilyId: TonalFamilyId;
+  evaluatedTones: KiskadeeTone[];
+  adjustedTones: KiskadeeTone[];
+  adjustedToneCount: number;
+  limitingTone: KiskadeeTone | null;
+  baselineMaxExcess: number;
+  finalMaxExcess: number;
+  maxChromaReduction: number;
+  maxChromaIncrease: number;
+  sourceSeedChanged: boolean;
+};
+
 export type ResolvedTonalTheme = {
   theme: KiskadeeTheme;
   policy: TonalSeedPolicy;
@@ -228,6 +252,7 @@ export type ResolvedTonalTheme = {
   harmony: TonalHarmonyMetrics | null;
   surfaceTrackAlignment: TonalSurfaceTrackAlignmentDiagnostics | null;
   isolatedHarmonyPeakAlignment: TonalIsolatedHarmonyPeakAlignmentDiagnostics | null;
+  darkSupportChromaModeration: TonalDarkSupportChromaModerationDiagnostics | null;
   status: Exclude<TonalSystemStatus, 'error'>;
 };
 
@@ -876,6 +901,7 @@ type RankedHarmonyCandidate = {
   oklch: OklchColor;
   maximumSrgbChroma: number;
   metrics: Omit<TonalHarmonyMetrics, 'candidatesEvaluated'>;
+  darkSupportChromaModeration?: DarkSupportChromaModerationEvaluation;
 };
 
 type HarmonySeedCandidate = Omit<RankedHarmonyCandidate, 'metrics'>;
@@ -884,6 +910,22 @@ type CandidateResolution = {
   candidate: RankedHarmonyCandidate;
   scale: KiskadeeScaleResult;
   candidatesEvaluated: number;
+};
+
+type DarkSupportChromaModerationReference = {
+  primaryFamilyId: TonalFamilyId;
+  primaryScale: KiskadeeScaleResult;
+  baselineScale: KiskadeeScaleResult;
+};
+
+type DarkSupportChromaModerationEvaluation = {
+  evaluatedTones: KiskadeeTone[];
+  limitingTone: KiskadeeTone | null;
+  supportChroma: number;
+  primaryChroma: number;
+  chromaCap: number;
+  maxExcess: number;
+  maxChromaIncrease: number;
 };
 
 type MaterializedFamilySource = {
@@ -2249,7 +2291,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
             issues
           })
         : resolvedLight;
-    const dark =
+    const darkWithSurface =
       familyKind === 'chromatic'
         ? alignSupportThemeToPrimarySurfaceTrack({
             primaryFamilyId: recipe.primaryReference,
@@ -2259,6 +2301,18 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
             issues
           })
         : resolvedDark;
+    const dark =
+      familyKind === 'chromatic' && resolvedDark.policy !== 'source-exact'
+        ? moderateDarkSupportTheme({
+            baseline: darkWithSurface,
+            primaryFamilyId: recipe.primaryReference,
+            primary: primaryDark,
+            familyId: familySource.id,
+            context: supportContextByFamily.get(familySource.id)!,
+            recipe,
+            issues
+          })
+        : darkWithSurface;
 
     validateResolvedFamilyIdentity(
       familySource.id,
@@ -2368,6 +2422,202 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   };
 }
 
+function moderateDarkSupportTheme(params: {
+  baseline: ResolvedTonalTheme;
+  primaryFamilyId: TonalFamilyId;
+  primary: ResolvedTonalTheme;
+  familyId: TonalFamilyId;
+  context: SupportFamilyResolutionContext;
+  recipe: MaterializedTonalSystemRecipe;
+  issues: TonalSystemIssue[];
+  maximumIsolatedPeakChroma?: number;
+  previousDiagnostics?: TonalDarkSupportChromaModerationDiagnostics | null;
+  comparisonScale?: KiskadeeScaleResult;
+}): ResolvedTonalTheme {
+  const {
+    baseline,
+    primaryFamilyId,
+    primary,
+    familyId,
+    context,
+    recipe,
+    issues,
+    maximumIsolatedPeakChroma,
+    previousDiagnostics,
+    comparisonScale
+  } = params;
+  const reference: DarkSupportChromaModerationReference = {
+    primaryFamilyId,
+    primaryScale: primary.scale,
+    baselineScale: comparisonScale ?? baseline.scale
+  };
+  const baselineEvaluation = evaluateDarkSupportChromaModeration(baseline.scale, reference);
+  const priorDiagnostics =
+    previousDiagnostics && baseline.darkSupportChromaModeration
+      ? mergeDarkSupportChromaModerationDiagnostics(
+          previousDiagnostics,
+          baseline.darkSupportChromaModeration
+        )
+      : (baseline.darkSupportChromaModeration ?? previousDiagnostics ?? null);
+
+  if (isDarkSupportChromaModerationAccepted(baselineEvaluation)) {
+    const diagnostics = createDarkSupportChromaModerationDiagnostics({
+      reference,
+      baseline,
+      final: baseline,
+      baselineEvaluation,
+      finalEvaluation: baselineEvaluation
+    });
+    return {
+      ...baseline,
+      darkSupportChromaModeration: priorDiagnostics
+        ? mergeDarkSupportChromaModerationDiagnostics(priorDiagnostics, diagnostics)
+        : diagnostics
+    };
+  }
+
+  const correctionIssues: TonalSystemIssue[] = [];
+  const corrected = resolveConfiguredFamilyTheme({
+    familyId,
+    sourceSeedHex: context.source.seedHex,
+    familyKind: context.familyKind,
+    policy: baseline.policy,
+    theme: 'dark',
+    restTone: baseline.restTone,
+    harmonyTarget: context.darkHarmonyTarget,
+    harmonyHueOverride: context.darkHarmonyHueOverride,
+    enforceSafeCore: context.enforceSafeCore,
+    maximumIsolatedPeakChroma,
+    darkSupportChromaReference: reference,
+    recipe,
+    issues: correctionIssues
+  });
+  const correctedWithSurface = corrected
+    ? alignSupportThemeToPrimarySurfaceTrack({
+        primaryFamilyId,
+        supportFamilyId: familyId,
+        primary,
+        support: corrected,
+        issues: correctionIssues
+      })
+    : null;
+
+  if (correctedWithSurface) {
+    validateResolvedFamilyIdentity(
+      familyId,
+      correctedWithSurface,
+      context.enforceSafeCore,
+      correctionIssues
+    );
+  }
+
+  if (!correctedWithSurface || correctionIssues.some((issue) => issue.severity === 'error')) {
+    issues.push({
+      severity: 'review',
+      code: 'DARK_SUPPORT_CHROMA_MODERATION_RELAXED',
+      path: `/families/${familyId}/dark`,
+      message: `${familyId} dark retains ${baselineEvaluation.maxExcess.toFixed(4)} chroma above the Primary-relative functional-track cap or ${baselineEvaluation.maxChromaIncrease.toFixed(4)} above its baseline track because no moderated seed preserved every canonical invariant.`,
+      familyId,
+      theme: 'dark'
+    });
+    return {
+      ...baseline,
+      darkSupportChromaModeration: mergeDarkSupportChromaModerationDiagnostics(
+        priorDiagnostics,
+        createDarkSupportChromaModerationDiagnostics({
+          reference,
+          baseline,
+          final: baseline,
+          baselineEvaluation,
+          finalEvaluation: baselineEvaluation
+        })
+      ),
+      status: 'review'
+    };
+  }
+
+  const finalEvaluation = evaluateDarkSupportChromaModeration(
+    correctedWithSurface.scale,
+    reference
+  );
+  const relaxed = !isDarkSupportChromaModerationAccepted(finalEvaluation);
+  if (relaxed) {
+    correctionIssues.push({
+      severity: 'review',
+      code: 'DARK_SUPPORT_CHROMA_MODERATION_RELAXED',
+      path: `/families/${familyId}/dark`,
+      message: `${familyId} dark retains ${finalEvaluation.maxExcess.toFixed(4)} chroma above the Primary-relative functional-track cap or ${finalEvaluation.maxChromaIncrease.toFixed(4)} above its baseline track after preserving canonical scale invariants.`,
+      familyId,
+      theme: 'dark'
+    });
+  }
+  replaceFamilyThemeIssues(issues, familyId, 'dark', correctionIssues);
+
+  return {
+    ...correctedWithSurface,
+    darkSupportChromaModeration: mergeDarkSupportChromaModerationDiagnostics(
+      priorDiagnostics,
+      createDarkSupportChromaModerationDiagnostics({
+        reference,
+        baseline,
+        final: correctedWithSurface,
+        baselineEvaluation,
+        finalEvaluation
+      })
+    ),
+    status: correctedWithSurface.status === 'review' || relaxed ? 'review' : 'pass'
+  };
+}
+
+function mergeDarkSupportChromaModerationDiagnostics(
+  previous: TonalDarkSupportChromaModerationDiagnostics | null,
+  next: TonalDarkSupportChromaModerationDiagnostics
+): TonalDarkSupportChromaModerationDiagnostics {
+  if (!previous) return next;
+  const adjustedTones = [...new Set([...previous.adjustedTones, ...next.adjustedTones])].sort(
+    (left, right) => left - right
+  );
+  return {
+    ...next,
+    adjustedTones,
+    adjustedToneCount: adjustedTones.length,
+    baselineMaxExcess: previous.baselineMaxExcess,
+    maxChromaReduction: Math.max(previous.maxChromaReduction, next.maxChromaReduction),
+    maxChromaIncrease: Math.max(previous.maxChromaIncrease, next.maxChromaIncrease),
+    sourceSeedChanged: previous.sourceSeedChanged || next.sourceSeedChanged
+  };
+}
+
+function createDarkSupportChromaModerationDiagnostics(params: {
+  reference: DarkSupportChromaModerationReference;
+  baseline: ResolvedTonalTheme;
+  final: ResolvedTonalTheme;
+  baselineEvaluation: DarkSupportChromaModerationEvaluation;
+  finalEvaluation: DarkSupportChromaModerationEvaluation;
+}): TonalDarkSupportChromaModerationDiagnostics {
+  const { reference, baseline, final, baselineEvaluation, finalEvaluation } = params;
+  const adjustedTones = final.scale.colors
+    .filter((color, index) => color.hex !== baseline.scale.colors[index]?.hex)
+    .map((color) => color.tone);
+  const reductions = final.scale.colors.map((color, index) =>
+    Math.max(0, (baseline.scale.colors[index]?.oklch.c ?? color.oklch.c) - color.oklch.c)
+  );
+
+  return {
+    contract: DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.contract,
+    referenceFamilyId: reference.primaryFamilyId,
+    evaluatedTones: finalEvaluation.evaluatedTones,
+    adjustedTones,
+    adjustedToneCount: adjustedTones.length,
+    limitingTone: finalEvaluation.limitingTone,
+    baselineMaxExcess: baselineEvaluation.maxExcess,
+    finalMaxExcess: finalEvaluation.maxExcess,
+    maxChromaReduction: Math.max(0, ...reductions),
+    maxChromaIncrease: finalEvaluation.maxChromaIncrease,
+    sourceSeedChanged: final.effectiveSeedHex !== baseline.effectiveSeedHex
+  };
+}
+
 function alignIsolatedHarmonyPeaks(params: {
   families: ResolvedTonalFamily[];
   primaryFamily: ResolvedTonalFamily;
@@ -2437,17 +2687,32 @@ function alignIsolatedHarmonyPeaks(params: {
           issues: correctionIssues
         })
       : null;
+    const correctedFinal =
+      correctedWithSurface && target.theme === 'dark' && context.familyKind === 'chromatic'
+        ? moderateDarkSupportTheme({
+            baseline: correctedWithSurface,
+            primaryFamilyId: primaryFamily.id,
+            primary: primaryFamily.themes.dark,
+            familyId: family.id,
+            context,
+            recipe,
+            issues: correctionIssues,
+            maximumIsolatedPeakChroma: target.targetPeakChroma,
+            previousDiagnostics: baseline.darkSupportChromaModeration,
+            comparisonScale: baseline.scale
+          })
+        : correctedWithSurface;
 
-    if (correctedWithSurface) {
+    if (correctedFinal) {
       validateResolvedFamilyIdentity(
         family.id,
-        correctedWithSurface,
+        correctedFinal,
         context.enforceSafeCore,
         correctionIssues
       );
     }
 
-    if (!correctedWithSurface || correctionIssues.some((issue) => issue.severity === 'error')) {
+    if (!correctedFinal || correctionIssues.some((issue) => issue.severity === 'error')) {
       family.themes[target.theme] = {
         ...baseline,
         isolatedHarmonyPeakAlignment: createIsolatedHarmonyPeakDiagnostics({
@@ -2472,7 +2737,7 @@ function alignIsolatedHarmonyPeaks(params: {
       continue;
     }
 
-    const finalPeak = resolvePhysicalMidtrackPeak(correctedWithSurface.scale);
+    const finalPeak = resolvePhysicalMidtrackPeak(correctedFinal.scale);
     const finalPeakChroma = finalPeak?.chroma ?? target.baselinePeakChroma;
     const remainingExcess = Math.max(0, finalPeakChroma - target.targetPeakChroma);
     if (remainingExcess > ISOLATED_HARMONY_PEAK_ALIGNMENT_V1_PARAMETERS.peakTargetTolerance) {
@@ -2488,7 +2753,7 @@ function alignIsolatedHarmonyPeaks(params: {
 
     replaceFamilyThemeIssues(issues, family.id, target.theme, correctionIssues);
     family.themes[target.theme] = {
-      ...correctedWithSurface,
+      ...correctedFinal,
       isolatedHarmonyPeakAlignment: createIsolatedHarmonyPeakDiagnostics({
         target,
         finalPeak: finalPeak ?? {
@@ -2498,7 +2763,7 @@ function alignIsolatedHarmonyPeaks(params: {
         }
       }),
       status:
-        correctedWithSurface.status === 'review' ||
+        correctedFinal.status === 'review' ||
         remainingExcess > ISOLATED_HARMONY_PEAK_ALIGNMENT_V1_PARAMETERS.peakTargetTolerance
           ? 'review'
           : 'pass'
@@ -2686,6 +2951,57 @@ function resolveChromaAtPhysicalLightness(scale: KiskadeeScaleResult, lightness:
   }
 
   return last.oklch.c;
+}
+
+function evaluateDarkSupportChromaModeration(
+  supportScale: KiskadeeScaleResult,
+  reference: DarkSupportChromaModerationReference
+): DarkSupportChromaModerationEvaluation {
+  const { startTone, endTone, chromaToleranceRatio, minimumChromaTolerance } =
+    DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS;
+  const colors = supportScale.colors.filter(
+    (color) => !color.flags.isCap && color.tone >= startTone && color.tone <= endTone
+  );
+  const evaluations = colors.map((color) => {
+    const primaryChroma = resolveChromaAtPhysicalLightness(reference.primaryScale, color.oklch.l);
+    const chromaCap =
+      primaryChroma + Math.max(minimumChromaTolerance, primaryChroma * chromaToleranceRatio);
+    const baselineChroma = resolveChromaAtPhysicalLightness(reference.baselineScale, color.oklch.l);
+    return {
+      tone: color.tone,
+      supportChroma: color.oklch.c,
+      primaryChroma,
+      chromaCap,
+      excess: Math.max(0, color.oklch.c - chromaCap),
+      chromaIncrease: Math.max(0, color.oklch.c - baselineChroma)
+    };
+  });
+  const limiting = [...evaluations].sort((left, right) => {
+    const leftViolation = Math.max(left.excess, left.chromaIncrease);
+    const rightViolation = Math.max(right.excess, right.chromaIncrease);
+    return rightViolation - leftViolation || left.tone - right.tone;
+  })[0];
+
+  return {
+    evaluatedTones: evaluations.map((evaluation) => evaluation.tone),
+    limitingTone: limiting?.tone ?? null,
+    supportChroma: limiting?.supportChroma ?? 0,
+    primaryChroma: limiting?.primaryChroma ?? 0,
+    chromaCap: limiting?.chromaCap ?? 0,
+    maxExcess: limiting?.excess ?? 0,
+    maxChromaIncrease: Math.max(0, ...evaluations.map((evaluation) => evaluation.chromaIncrease))
+  };
+}
+
+function isDarkSupportChromaModerationAccepted(
+  evaluation: DarkSupportChromaModerationEvaluation | undefined
+): boolean {
+  return (
+    evaluation === undefined ||
+    (evaluation.maxExcess <= DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance &&
+      evaluation.maxChromaIncrease <=
+        DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance)
+  );
 }
 
 function resolveMedian(values: number[]): number {
@@ -3270,6 +3586,7 @@ function resolveSourceExactTheme(params: {
     harmony: null,
     surfaceTrackAlignment: null,
     isolatedHarmonyPeakAlignment: null,
+    darkSupportChromaModeration: null,
     status: scaleNeedsReview(scale) ? 'review' : 'pass'
   };
 }
@@ -3283,6 +3600,7 @@ function resolveAdaptiveTheme(params: {
   familyKind: TonalFamilyColorKind;
   enforceSafeCore: boolean;
   chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
+  darkSupportChromaReference?: DarkSupportChromaModerationReference;
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -3295,6 +3613,7 @@ function resolveAdaptiveTheme(params: {
     familyKind,
     enforceSafeCore,
     chromaModelOverride,
+    darkSupportChromaReference,
     recipe,
     issues
   } = params;
@@ -3318,11 +3637,15 @@ function resolveAdaptiveTheme(params: {
     profile: recipe.tonalProfile
   });
   const projectedRest = resolveTone(projectedScale, restTone);
+  const projectedDarkModeration = darkSupportChromaReference
+    ? evaluateDarkSupportChromaModeration(projectedScale, darkSupportChromaReference)
+    : undefined;
 
   if (
     isAcceptedRestAnchorCandidate(projectedScale, projected.hex, restTone) &&
     projectedRest?.hex === projected.hex &&
-    isMunsellCandidateIdentityValid(projected.hex, familyId, enforceSafeCore)
+    isMunsellCandidateIdentityValid(projected.hex, familyId, enforceSafeCore) &&
+    isDarkSupportChromaModerationAccepted(projectedDarkModeration)
   ) {
     const sourceOklch = hexToOklch(sourceSeedHex);
     const projectedFingerprint = fingerprintFromColor({
@@ -3355,6 +3678,7 @@ function resolveAdaptiveTheme(params: {
       harmony: metrics,
       surfaceTrackAlignment: null,
       isolatedHarmonyPeakAlignment: null,
+      darkSupportChromaModeration: null,
       status
     };
   }
@@ -3388,6 +3712,7 @@ function resolveAdaptiveTheme(params: {
     policy: 'adaptive',
     enforceSafeCore,
     chromaModelOverride,
+    darkSupportChromaReference,
     recipe,
     issues
   });
@@ -3405,6 +3730,7 @@ function resolveConfiguredFamilyTheme(params: {
   enforceSafeCore: boolean;
   chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
   maximumIsolatedPeakChroma?: number;
+  darkSupportChromaReference?: DarkSupportChromaModerationReference;
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -3420,6 +3746,7 @@ function resolveConfiguredFamilyTheme(params: {
     enforceSafeCore,
     chromaModelOverride,
     maximumIsolatedPeakChroma,
+    darkSupportChromaReference,
     recipe,
     issues
   } = params;
@@ -3435,6 +3762,7 @@ function resolveConfiguredFamilyTheme(params: {
       enforceSafeCore,
       chromaModelOverride,
       maximumIsolatedPeakChroma,
+      darkSupportChromaReference,
       recipe,
       issues
     });
@@ -3483,6 +3811,7 @@ function resolveConfiguredFamilyTheme(params: {
     familyKind,
     enforceSafeCore,
     chromaModelOverride,
+    darkSupportChromaReference,
     recipe,
     issues
   });
@@ -3498,6 +3827,7 @@ function resolveHarmonizedTheme(params: {
   enforceSafeCore: boolean;
   chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
   maximumIsolatedPeakChroma?: number;
+  darkSupportChromaReference?: DarkSupportChromaModerationReference;
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -3523,6 +3853,7 @@ function resolveCandidateTheme(params: {
   enforceSafeCore: boolean;
   chromaModelOverride?: TonalHarmonyMetrics['chromaModel'];
   maximumIsolatedPeakChroma?: number;
+  darkSupportChromaReference?: DarkSupportChromaModerationReference;
   recipe: MaterializedTonalSystemRecipe;
   issues: TonalSystemIssue[];
 }): ResolvedTonalTheme | null {
@@ -3539,6 +3870,7 @@ function resolveCandidateTheme(params: {
     enforceSafeCore,
     chromaModelOverride,
     maximumIsolatedPeakChroma,
+    darkSupportChromaReference,
     recipe,
     issues
   } = params;
@@ -3566,10 +3898,11 @@ function resolveCandidateTheme(params: {
           includeSourceSeed: harmonyHueOverride === undefined,
           vividPeakGlobalUtilization,
           maximumIsolatedPeakChroma,
+          darkSupportChromaReference,
           minimumRestBalanceRatio:
             minimumRestBalanceRatio ?? MUNSELL_HARMONY_V1_PARAMETERS.functionalRestBalanceRatio
         })
-      : findRestAnchoredHarmonyCandidate(candidateParams);
+      : findRestAnchoredHarmonyCandidate({ ...candidateParams, darkSupportChromaReference });
 
   if (!resolution) {
     issues.push({
@@ -3630,6 +3963,7 @@ function resolveCandidateTheme(params: {
     harmony: metrics,
     surfaceTrackAlignment: null,
     isolatedHarmonyPeakAlignment: null,
+    darkSupportChromaModeration: null,
     status
   };
 }
@@ -3644,6 +3978,7 @@ function findFreeAnchorHarmonyCandidate(params: {
   reference: TonalHarmonyFingerprint;
   vividPeakGlobalUtilization: number;
   maximumIsolatedPeakChroma?: number;
+  darkSupportChromaReference?: DarkSupportChromaModerationReference;
   minimumRestBalanceRatio: number;
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
@@ -3660,6 +3995,7 @@ function findFreeAnchorHarmonyCandidate(params: {
     reference,
     vividPeakGlobalUtilization,
     maximumIsolatedPeakChroma,
+    darkSupportChromaReference,
     minimumRestBalanceRatio,
     familyId,
     enforceSafeCore,
@@ -3677,7 +4013,8 @@ function findFreeAnchorHarmonyCandidate(params: {
       familyId,
       enforceSafeCore,
       profile,
-      chromaModel
+      chromaModel,
+      darkSupportChromaReference
     });
   }
 
@@ -3716,6 +4053,9 @@ function findFreeAnchorHarmonyCandidate(params: {
       seedCandidate.hex,
       minimumRestBalanceRatio
     );
+    const darkSupportChromaModeration = darkSupportChromaReference
+      ? evaluateDarkSupportChromaModeration(scale, darkSupportChromaReference)
+      : undefined;
     const metrics: Omit<TonalHarmonyMetrics, 'candidatesEvaluated'> = {
       ...restMetrics,
       score: Math.max(restMetrics.score, vividPeakError, isolatedPeakError),
@@ -3730,7 +4070,11 @@ function findFreeAnchorHarmonyCandidate(params: {
             isolatedPeakError
           })
     };
-    const candidate: RankedHarmonyCandidate = { ...seedCandidate, metrics };
+    const candidate: RankedHarmonyCandidate = {
+      ...seedCandidate,
+      metrics,
+      darkSupportChromaModeration
+    };
     const resolution = { candidate, scale, candidatesEvaluated: evaluated };
     if (scale.diagnostics.chromaContinuityRelaxed) reviewFallbacks.push(resolution);
     else feasible.push(resolution);
@@ -3740,7 +4084,10 @@ function findFreeAnchorHarmonyCandidate(params: {
   const coarseUtilizations = resolveFreeAnchorSearchUtilizations(
     vividPeakGlobalUtilization,
     sourceVividPeakUtilization,
-    0.04
+    0.04,
+    darkSupportChromaReference === undefined
+      ? 0.16
+      : DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.harmonySearchRadius
   );
   for (const candidate of createFreeAnchorSeedCandidates({
     sourceOklch: searchOklch,
@@ -3884,6 +4231,7 @@ function findRestAnchoredHarmonyCandidate(params: {
   enforceSafeCore: boolean;
   profile: TonalSystemRecipeV4['tonalProfile'];
   chromaModel: TonalHarmonyMetrics['chromaModel'];
+  darkSupportChromaReference?: DarkSupportChromaModerationReference;
 }): CandidateResolution | null {
   const {
     sourceOklch,
@@ -3894,7 +4242,8 @@ function findRestAnchoredHarmonyCandidate(params: {
     familyId,
     enforceSafeCore,
     profile,
-    chromaModel
+    chromaModel,
+    darkSupportChromaReference
   } = params;
   const coarse = rankHarmonyCandidates({
     sourceOklch,
@@ -3917,8 +4266,15 @@ function findRestAnchoredHarmonyCandidate(params: {
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
     if (isAcceptedRestAnchorCandidate(scale, candidate.hex, restTone)) {
-      const resolution = { candidate, scale, candidatesEvaluated: evaluated };
-      if (scale.diagnostics.chromaContinuityRelaxed) {
+      const darkSupportChromaModeration = darkSupportChromaReference
+        ? evaluateDarkSupportChromaModeration(scale, darkSupportChromaReference)
+        : undefined;
+      const evaluatedCandidate = { ...candidate, darkSupportChromaModeration };
+      const resolution = { candidate: evaluatedCandidate, scale, candidatesEvaluated: evaluated };
+      if (
+        scale.diagnostics.chromaContinuityRelaxed ||
+        !isDarkSupportChromaModerationAccepted(darkSupportChromaModeration)
+      ) {
         reviewFallbacks.push(resolution);
         continue;
       }
@@ -3945,13 +4301,25 @@ function findRestAnchoredHarmonyCandidate(params: {
   });
 
   for (const candidate of refined.slice(0, 32)) {
-    if (compareRankedCandidates(candidate, best.candidate) >= 0) break;
+    if (
+      darkSupportChromaReference === undefined &&
+      compareRankedCandidates(candidate, best.candidate) >= 0
+    ) {
+      break;
+    }
     if (!isMunsellCandidateIdentityValid(candidate.hex, familyId, enforceSafeCore)) continue;
     evaluated += 1;
     const scale = generateKiskadeeScale({ seedHex: candidate.hex, theme, profile });
     if (!isAcceptedRestAnchorCandidate(scale, candidate.hex, restTone)) continue;
 
-    const resolution = { candidate, scale, candidatesEvaluated: evaluated };
+    const darkSupportChromaModeration = darkSupportChromaReference
+      ? evaluateDarkSupportChromaModeration(scale, darkSupportChromaReference)
+      : undefined;
+    const resolution = {
+      candidate: { ...candidate, darkSupportChromaModeration },
+      scale,
+      candidatesEvaluated: evaluated
+    };
     if (compareCandidateResolutions(resolution, best) < 0) best = resolution;
   }
 
@@ -4227,6 +4595,24 @@ function compareRankedCandidates(
     rightMetrics.score <= HARMONY_V1_PARAMETERS.hardScoreCeiling &&
     rightMetrics.hueDrift <= HARMONY_V1_PARAMETERS.maximumHueDrift;
   if (leftHardFeasible !== rightHardFeasible) return leftHardFeasible ? -1 : 1;
+
+  const leftDarkModeration = left.darkSupportChromaModeration;
+  const rightDarkModeration = right.darkSupportChromaModeration;
+  const leftDarkAccepted = isDarkSupportChromaModerationAccepted(leftDarkModeration);
+  const rightDarkAccepted = isDarkSupportChromaModerationAccepted(rightDarkModeration);
+  if (leftDarkAccepted !== rightDarkAccepted) return leftDarkAccepted ? -1 : 1;
+  if (!leftDarkAccepted && !rightDarkAccepted) {
+    const leftMaximumViolation = Math.max(
+      leftDarkModeration?.maxExcess ?? 0,
+      leftDarkModeration?.maxChromaIncrease ?? 0
+    );
+    const rightMaximumViolation = Math.max(
+      rightDarkModeration?.maxExcess ?? 0,
+      rightDarkModeration?.maxChromaIncrease ?? 0
+    );
+    const violationDifference = leftMaximumViolation - rightMaximumViolation;
+    if (Math.abs(violationDifference) > 1e-12) return violationDifference;
+  }
 
   const isolatedPeakDifference =
     (leftMetrics.isolatedPeakError ?? 0) - (rightMetrics.isolatedPeakError ?? 0);

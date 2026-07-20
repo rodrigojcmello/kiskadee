@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import { KISKADEE_TONES } from '../kiskadee-tonal-scale';
 import {
+  DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
   SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS
@@ -49,7 +50,7 @@ describe('tonal artifact bundle v4', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.4.0');
+    expect(bundle.manifest.generator.version).toBe('0.4.1');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
@@ -68,6 +69,7 @@ describe('tonal artifact bundle v4', () => {
       expect(asset).not.toHaveProperty('sourceSeedHex');
       expect(asset).not.toHaveProperty('classification');
       expect(asset).not.toHaveProperty('surfaceTrackAlignment');
+      expect(asset).not.toHaveProperty('darkSupportChromaModeration');
       expect(asset).not.toHaveProperty('stateReferences');
       expect(Object.keys(asset.scales.light).map(Number)).toEqual(KISKADEE_TONES);
       expect(Object.keys(asset.scales.dark).map(Number)).toEqual(KISKADEE_TONES);
@@ -106,6 +108,9 @@ describe('tonal artifact bundle v4', () => {
       appearance: 'brown',
       seedOrigin: 'reference'
     });
+    expect(JSON.stringify(bundle.source)).not.toContain('darkSupportChromaModeration');
+    expect(JSON.stringify(bundle.manifest)).not.toContain('darkSupportChromaModeration');
+    expect(JSON.stringify(bundle.assets)).not.toContain('darkSupportChromaModeration');
   });
 
   it('keeps Munsell classification and projection details only in diagnostics', () => {
@@ -142,8 +147,16 @@ describe('tonal artifact bundle v4', () => {
 
     expect(blue?.themes.light.surfaceTrackAlignment).toBeNull();
     expect(blue?.themes.dark.surfaceTrackAlignment).toBeNull();
+    expect(blue?.themes.light.darkSupportChromaModeration).toBeNull();
+    expect(blue?.themes.dark.darkSupportChromaModeration).toBeNull();
     expect(black?.themes.light.surfaceTrackAlignment).toBeNull();
     expect(black?.themes.dark.surfaceTrackAlignment).toBeNull();
+    expect(black?.themes.light.darkSupportChromaModeration).toBeNull();
+    expect(black?.themes.dark.darkSupportChromaModeration).toBeNull();
+
+    for (const family of bundle.diagnostics.families) {
+      expect(family.themes.light.darkSupportChromaModeration).toBeNull();
+    }
 
     for (const family of bundle.diagnostics.families) {
       for (const theme of ['light', 'dark'] as const) {
@@ -175,6 +188,52 @@ describe('tonal artifact bundle v4', () => {
       expect(alignment?.maxRemainingExcess).toBeGreaterThanOrEqual(0);
       expect(alignment?.restorationCount).toBeGreaterThanOrEqual(0);
     }
+
+    expect(green?.themes.dark.darkSupportChromaModeration).toMatchObject({
+      contract: DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.contract,
+      referenceFamilyId: 'b.blue.v1',
+      adjustedToneCount: expect.any(Number),
+      baselineMaxExcess: expect.any(Number),
+      finalMaxExcess: expect.any(Number),
+      maxChromaReduction: expect.any(Number),
+      maxChromaIncrease: expect.any(Number),
+      sourceSeedChanged: expect.any(Boolean)
+    });
+    expect(green?.themes.dark.darkSupportChromaModeration?.adjustedToneCount).toBe(
+      green?.themes.dark.darkSupportChromaModeration?.adjustedTones.length
+    );
+    expect(green?.themes.dark.darkSupportChromaModeration?.evaluatedTones).toEqual(
+      KISKADEE_TONES.filter(
+        (tone) =>
+          tone >= DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.startTone &&
+          tone <= DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.endTone
+      )
+    );
+    expect(green?.themes.dark.darkSupportChromaModeration?.maxChromaIncrease).toBeLessThanOrEqual(
+      DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance
+    );
+  });
+
+  it('keeps Dark source-exact support families outside moderation diagnostics', async () => {
+    const recipe = createRecipe();
+    recipe.overrides.push({
+      id: 'r.red.v1',
+      seedHex: '#d13438',
+      policies: { light: 'source-exact', dark: 'source-exact' }
+    });
+    const result = generateKiskadeeTonalSystem(recipe);
+    expect(result.valid, JSON.stringify(result.issues, null, 2)).toBe(true);
+    if (!result.valid) return;
+
+    const sourceExactBundle = await createTonalArtifactBundle(result);
+    const redDiagnostics = sourceExactBundle.diagnostics.families.find(
+      (family) => family.familyId === 'r.red.v1'
+    );
+    expect(redDiagnostics?.themes.dark.policy).toBe('source-exact');
+    expect(redDiagnostics?.themes.dark.darkSupportChromaModeration).toBeNull();
+    expect(sourceExactBundle.assets.find((asset) => asset.id === 'r.red.v1')).not.toHaveProperty(
+      'darkSupportChromaModeration'
+    );
   });
 
   it('keeps hashes centralized in the manifest', () => {

@@ -76,6 +76,10 @@ keep task-specific workflows inside skills.
 - When a task authors or reviews component interaction-state maps such as Rest, Hover, Pressed,
   Focus, Selected, or Disabled, use `skills/kiskadee-author-interaction-states/SKILL.md`. Keep
   states as sparse visual deltas and document any intentional Rest-equal precedence override.
+- When changing the `@kiskadee/tonal-scale` package or generator version, changing generated
+  multifamily output referenced by a preset Shared Viewer, or promoting regenerated tonal assets,
+  use `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md`. Keep the current candidate version
+  synchronized without rewriting the provenance of older approved assets.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
@@ -89,6 +93,8 @@ keep task-specific workflows inside skills.
   no-literal-color rule for preset schemas.
 - `skills/kiskadee-author-interaction-states/SKILL.md`: sparse state-authoring workflow, compound
   state precedence, and focus-ring ownership.
+- `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md`: tonal-scale version workflow that keeps
+  preset Shared Viewer candidates synchronized while preserving approved asset provenance.
 - `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language
   and label rules.
 

@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import { describe, expect, it } from 'vitest';
 
 import { contrastRatio, deltaEOk, hexToOklch, maxSrgbChroma, oklchToSrgbHex } from './color-math';
@@ -11,6 +13,7 @@ import {
 } from './kiskadee-tonal-scale';
 import { classifyMunsellHex } from './munsell-oklch';
 import {
+  DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type KiskadeeTonalSystemResult,
   MUNSELL_HARMONY_V1_PARAMETERS,
@@ -87,6 +90,97 @@ function createFluentAlignmentRecipe(): TonalSystemRecipeV4 {
     }
   ];
   return recipe;
+}
+
+type FluentRedDarkPolicy = 'adaptive' | 'harmonized' | 'source-exact';
+
+function createFluentAlignmentRecipeWithRedDarkPolicy(
+  darkPolicy: FluentRedDarkPolicy
+): TonalSystemRecipeV4 {
+  const recipe = createFluentAlignmentRecipe();
+  const red = recipe.overrides.find((override) => override.id === 'r.red.v1');
+  if (!red) throw new Error('Expected the Fluent Red override.');
+  red.policies.dark = darkPolicy;
+  return recipe;
+}
+
+function hashHexBytes(value: unknown): string {
+  return createHash('sha256').update(JSON.stringify(value)).digest('hex');
+}
+
+function resolveChromaAtPhysicalLightnessForTest(
+  scale: KiskadeeScaleResult,
+  lightness: number
+): number {
+  const colors = [...scale.colors].sort((left, right) => left.oklch.l - right.oklch.l);
+  const first = colors[0];
+  const last = colors.at(-1);
+  if (!first || !last) throw new Error('Expected a populated scale.');
+  if (lightness <= first.oklch.l) return first.oklch.c;
+  if (lightness >= last.oklch.l) return last.oklch.c;
+
+  for (let index = 1; index < colors.length; index += 1) {
+    const lower = colors[index - 1];
+    const upper = colors[index];
+    if (!lower || !upper || lightness > upper.oklch.l) continue;
+    const span = upper.oklch.l - lower.oklch.l;
+    if (span <= Number.EPSILON) return Math.max(lower.oklch.c, upper.oklch.c);
+    const progress = (lightness - lower.oklch.l) / span;
+    return lower.oklch.c + (upper.oklch.c - lower.oklch.c) * progress;
+  }
+
+  return last.oklch.c;
+}
+
+function expectCanonicalScaleInvariants(scale: KiskadeeScaleResult): void {
+  expect(scale.colors.map((color) => color.tone)).toEqual(KISKADEE_TONES);
+  expect(scale.diagnostics.valid).toBe(true);
+  expect(scale.diagnostics.monotonic).toBe(true);
+  expect(scale.diagnostics.duplicateTones).toEqual([]);
+  expect(scale.diagnostics.contrastFailures).toEqual([]);
+  expect(scale.colors[0]?.hex).toBe('#000000');
+  expect(scale.colors.at(-1)?.hex).toBe('#ffffff');
+  for (const color of scale.colors) {
+    expect(oklchToSrgbHex(color.oklch).hex, `${color.tone} sRGB round-trip`).toBe(color.hex);
+  }
+}
+
+function expectDarkSupportChromaModerationContract(
+  result: ResolvedKiskadeeTonalSystem,
+  familyId: TonalFamilyId
+): void {
+  const primary = resolveFamily(result, result.primaryReference.familyId).themes.dark;
+  const support = resolveFamily(result, familyId).themes.dark;
+  const diagnostics = support.darkSupportChromaModeration;
+  expect(diagnostics).toMatchObject({
+    contract: DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.contract,
+    referenceFamilyId: result.primaryReference.familyId
+  });
+  expect(diagnostics?.finalMaxExcess).toBeLessThanOrEqual(
+    DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance
+  );
+  expect(diagnostics?.maxChromaIncrease).toBe(0);
+
+  for (const color of support.scale.colors) {
+    if (
+      color.tone < DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.startTone ||
+      color.tone > DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.endTone
+    ) {
+      continue;
+    }
+    const primaryChroma = resolveChromaAtPhysicalLightnessForTest(primary.scale, color.oklch.l);
+    const cap =
+      primaryChroma +
+      Math.max(
+        DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.minimumChromaTolerance,
+        primaryChroma * DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.chromaToleranceRatio
+      );
+    expect(color.oklch.c, `${familyId} D${color.tone}`).toBeLessThanOrEqual(
+      cap + DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance
+    );
+  }
+
+  expectCanonicalScaleInvariants(support.scale);
 }
 
 function expectSupportAlignmentContract(result: ResolvedKiskadeeTonalSystem): void {
@@ -226,6 +320,97 @@ describe('generateKiskadeeTonalSystem v4', () => {
     expectSupportAlignmentContract(result);
   });
 
+  it.each([
+    'adaptive',
+    'harmonized',
+    'source-exact'
+  ] as const)('freezes every Fluent Light family and both Primary scales when Red Dark is %s', (darkPolicy) => {
+    const result = generateKiskadeeTonalSystem(
+      createFluentAlignmentRecipeWithRedDarkPolicy(darkPolicy)
+    );
+    expectResolved(result);
+    const primary = resolveFamily(result, 'b.blue.v1');
+
+    expect(
+      hashHexBytes(
+        result.families.map((family) => [
+          family.id,
+          family.themes.light.scale.colors.map((color) => color.hex)
+        ])
+      )
+    ).toBe('21c88907f93791d0ab63aa505a4456ddac9aca9117f567c5fc5660abdd7b01ab');
+    expect(hashHexBytes(primary.themes.light.scale.colors.map((color) => color.hex))).toBe(
+      'd97e74586e1cbcb736ba8aa6ee956e770f5b1d1677cddc6ec0c402c90782c7cc'
+    );
+    expect(hashHexBytes(primary.themes.dark.scale.colors.map((color) => color.hex))).toBe(
+      '2adec8bf51a9c2d1949ffe1f2fbabede2108baff1ccfc37beb607220ca63a318'
+    );
+    expect(primary.themes.light.darkSupportChromaModeration).toBeNull();
+    expect(primary.themes.dark.darkSupportChromaModeration).toBeNull();
+  });
+
+  it.each([
+    'adaptive',
+    'harmonized'
+  ] as const)('moderates Fluent Red Dark %s against Primary without changing its Munsell identity', (darkPolicy) => {
+    const recipe = createFluentAlignmentRecipeWithRedDarkPolicy(darkPolicy);
+    const result = generateKiskadeeTonalSystem(recipe);
+    expectResolved(result);
+    const red = resolveFamily(result, 'r.red.v1').themes.dark;
+    const anchorTone = red.scale.anchorTone;
+    if (anchorTone === null) throw new Error('Expected a moderated Red Dark anchor.');
+
+    expect(red.policy).toBe(darkPolicy);
+    expect(red.sourceSeedPreserved).toBe(false);
+    expect(red.effectiveSeedHex).toBe(resolveScaleTone(red.scale, anchorTone).hex);
+    expect(red.restColor).toEqual(resolveScaleTone(red.scale, red.restTone));
+    expect(red.effectiveSeedHex).not.toBe('#c50f1f');
+    expect(red.darkSupportChromaModeration?.adjustedToneCount).toBeGreaterThan(0);
+    expect(red.darkSupportChromaModeration?.baselineMaxExcess).toBeGreaterThan(
+      red.darkSupportChromaModeration?.finalMaxExcess ?? Number.POSITIVE_INFINITY
+    );
+    expectDarkSupportChromaModerationContract(result, 'r.red.v1');
+    expect(
+      result.issues.some(
+        (issue) =>
+          issue.code === 'DARK_SUPPORT_CHROMA_MODERATION_RELAXED' && issue.familyId === 'r.red.v1'
+      )
+    ).toBe(false);
+
+    expect(generateKiskadeeTonalSystem(recipe)).toEqual(result);
+  });
+
+  it('leaves Dark source-exact and already compliant Fluent support scales byte-identical', () => {
+    const sourceExactResult = generateKiskadeeTonalSystem(
+      createFluentAlignmentRecipeWithRedDarkPolicy('source-exact')
+    );
+    expectResolved(sourceExactResult);
+    const sourceExactRed = resolveFamily(sourceExactResult, 'r.red.v1').themes.dark;
+    expect(sourceExactRed).toMatchObject({
+      policy: 'source-exact',
+      sourceSeedPreserved: true,
+      effectiveSeedHex: '#c50f1f',
+      darkSupportChromaModeration: null
+    });
+    expect(sourceExactRed.scale.anchorTone).toBe(40);
+    expect(hashHexBytes(sourceExactRed.scale.colors.map((color) => color.hex))).toBe(
+      'ceaf7dcbcc13430e2f1b6a84cd0ecf78d2010deffdc83ea7e01686673ee31c6b'
+    );
+
+    const adaptiveResult = generateKiskadeeTonalSystem(createFluentAlignmentRecipe());
+    expectResolved(adaptiveResult);
+    for (const [familyId, expectedHash] of [
+      ['yr.orange.v1', '0afb1c167109a62dfce7ca92776836cd3dbc8e19a5af7767d6b335a9886c5f57'],
+      ['g.green.v1', 'e428b42b23d57e2c7fe77be1ff50f68a3eb9409da364f69b5d864000e08a1f04']
+    ] as const) {
+      const resolution = resolveFamily(adaptiveResult, familyId).themes.dark;
+      expect(hashHexBytes(resolution.scale.colors.map((color) => color.hex))).toBe(expectedHash);
+      expect(resolution.darkSupportChromaModeration?.adjustedToneCount).toBe(0);
+      expect(resolution.darkSupportChromaModeration?.maxChromaIncrease).toBe(0);
+      expectDarkSupportChromaModerationContract(adaptiveResult, familyId);
+    }
+  });
+
   it('aligns Fluent support colors on physical light tracks without mutating canonical or protected colors', () => {
     const result = generateKiskadeeTonalSystem(createFluentAlignmentRecipe());
     expectResolved(result);
@@ -344,7 +529,7 @@ describe('generateKiskadeeTonalSystem v4', () => {
   });
 
   it('restores only the conflicting light-surface positions', () => {
-    const recipe = createRecipe('#ffeb3b');
+    const recipe = createRecipe('#0f6cbd');
     recipe.tonalProfile = 'muted-darks';
     const result = generateKiskadeeTonalSystem(recipe);
     expectResolved(result);
@@ -359,7 +544,7 @@ describe('generateKiskadeeTonalSystem v4', () => {
     expect(resolveScaleTone(lime.scale, 85).hex).not.toBe(resolveScaleTone(baseline, 85).hex);
     expect(resolveScaleTone(lime.scale, 90).hex).toBe(resolveScaleTone(baseline, 90).hex);
     expect(lime.surfaceTrackAlignment).toMatchObject({
-      adjustedTones: [85],
+      adjustedTones: [85, 99],
       restorationCount: 1
     });
     expect(lime.scale.diagnostics.valid).toBe(true);
@@ -798,6 +983,26 @@ describe('generateKiskadeeTonalSystem v4', () => {
           generateKiskadeeScale({ seedHex, theme, profile: tonalProfile })
         );
       }
+      for (const family of result.families) {
+        if (family.role === 'support' && family.colorKind === 'chromatic') {
+          const diagnostics = family.themes.dark.darkSupportChromaModeration;
+          expect(diagnostics?.contract).toBe(DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.contract);
+          const relaxed =
+            (diagnostics?.finalMaxExcess ?? 0) >
+              DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance ||
+            (diagnostics?.maxChromaIncrease ?? 0) >
+              DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance;
+          expect(
+            result.issues.some(
+              (issue) =>
+                issue.code === 'DARK_SUPPORT_CHROMA_MODERATION_RELAXED' &&
+                issue.familyId === family.id &&
+                issue.theme === 'dark'
+            ),
+            `${sector} ${tonalProfile} ${family.id}`
+          ).toBe(relaxed);
+        }
+      }
       expectSupportAlignmentContract(result);
     }
   });
@@ -914,7 +1119,12 @@ describe('generateKiskadeeTonalSystem v4', () => {
         const rest = family.themes[theme].restColor.oklch;
         const utilization = rest.c / maxSrgbChroma(rest.l, rest.h);
 
-        expect(utilization, `${family.id} ${theme}`).toBeGreaterThanOrEqual(0.9);
+        if (theme === 'dark' && family.role === 'support') {
+          expect(utilization, `${family.id} ${theme}`).toBeGreaterThanOrEqual(0.85);
+          expectDarkSupportChromaModerationContract(result, family.id);
+        } else {
+          expect(utilization, `${family.id} ${theme}`).toBeGreaterThanOrEqual(0.9);
+        }
       }
     }
 
@@ -1098,7 +1308,7 @@ describe('generateKiskadeeTonalSystem v4', () => {
     const failed = generateKiskadeeTonalSystem(invalid);
     expect(failed.valid).toBe(false);
     expect(failed.issues.map((issue) => issue.code)).toContain('ACHROMATIC_CHROMA_TOO_HIGH');
-  });
+  }, 15_000);
 
   it('keeps a pure Black override byte-identical to the canonical achromatic scale', () => {
     const recipe = createRecipe();

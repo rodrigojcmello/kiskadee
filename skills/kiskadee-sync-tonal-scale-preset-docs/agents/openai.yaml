@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sync Tonal Scale Preset Docs"
+  short_description: "Keep preset tonal evidence version-aligned"
+  default_prompt: "Use $kiskadee-sync-tonal-scale-preset-docs to update preset evidence whenever the tonal-scale generator version changes."

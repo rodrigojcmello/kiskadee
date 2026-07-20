@@ -10,6 +10,7 @@ import {
   type KiskadeeTone
 } from '@/src/kiskadee-tonal-scale';
 import {
+  DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type KiskadeeTonalSystemResult,
   offsetKiskadeeTone,
@@ -1249,6 +1250,7 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
   const duplicateCount = diagnostics.adjacentDuplicates.length;
   const contrastFailureCount = diagnostics.contrastFailures.length;
   const adaptiveTextCrossover = resolveAdaptiveTextCrossover(result);
+  const darkSupportChromaModeration = resolution.darkSupportChromaModeration;
   const notes: Array<{ text: string; ok: boolean }> = [
     resolution.policy === 'source-exact'
       ? {
@@ -1282,6 +1284,19 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
         ? 'The exact seed anchor is excluded from profile attenuation.'
         : 'The achromatic seed anchor has no chroma to protect from profile attenuation.',
       ok: true
+    });
+  }
+  if (darkSupportChromaModeration) {
+    notes.push({
+      text:
+        darkSupportChromaModeration.adjustedToneCount > 0
+          ? `Primary-relative Dark moderation adjusted ${darkSupportChromaModeration.adjustedToneCount} support slot${darkSupportChromaModeration.adjustedToneCount === 1 ? '' : 's'} with at most ${darkSupportChromaModeration.maxChromaReduction.toFixed(4)} chroma reduction.`
+          : 'The Dark support track already fits the Primary-relative chroma ceiling.',
+      ok:
+        darkSupportChromaModeration.finalMaxExcess <=
+          DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance &&
+        darkSupportChromaModeration.maxChromaIncrease <=
+          DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS.quantizationTolerance
     });
   }
   if (diagnostics.profileChromaRestoredCount > 0) {
@@ -1402,6 +1417,22 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
           label="Source Delta E"
           value={resolution.harmony ? resolution.harmony.seedDeltaE.toFixed(3) : '0.000'}
         />
+        {darkSupportChromaModeration ? (
+          <>
+            <Metric
+              label="Dark support adjusted"
+              value={`${darkSupportChromaModeration.adjustedToneCount}/${darkSupportChromaModeration.evaluatedTones.length}`}
+            />
+            <Metric
+              label="Dark excess ΔC"
+              value={`${darkSupportChromaModeration.baselineMaxExcess.toFixed(4)} → ${darkSupportChromaModeration.finalMaxExcess.toFixed(4)}`}
+            />
+            <Metric
+              label="Dark max increase"
+              value={darkSupportChromaModeration.maxChromaIncrease.toFixed(4)}
+            />
+          </>
+        ) : null}
         <Metric label="Anchor" value={`${prefix}${result.anchorTone}`} />
         <Metric
           label="Nominal anchor"

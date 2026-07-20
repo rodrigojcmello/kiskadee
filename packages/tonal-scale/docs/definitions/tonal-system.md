@@ -71,6 +71,28 @@ theme. `n.black.*` may use only `source-exact` or `adaptive`. Invalid ids,
 duplicates, sector mismatches, Orange-like Brown overrides, unsupported
 policies, and conflicting primary overrides fail explicitly.
 
+The three policies have distinct responsibilities:
+
+- `source-exact` requires the authored seed to remain byte-exact at its
+  generated anchor;
+- `adaptive` treats the authored seed as the family identity and may move the
+  effective seed to the shared harmony-rest position, but does not actively
+  match the Primary fingerprint;
+- `harmonized` treats the authored seed as a hue/identity reference and may
+  change its effective lightness and chroma to align the emitted family with
+  the Primary fingerprint.
+
+These policy meanings are independent from the `muted-darks` tonal profile.
+Generator `0.4.1` additionally applies a hue-independent, Primary-relative
+chroma ceiling to Dark `adaptive` and Dark `harmonized` chromatic support
+families. The guard participates in candidate selection, only reduces chroma,
+and evaluates the public D40 through D70 functional range. Within that guarded
+range, a replacement candidate may not increase chroma over the baseline at
+equivalent physical lightness. It does not modify
+Light, either Primary theme, Dark `source-exact`, or `n.black.*`. Its candidate
+status and visual-approval boundary are documented in
+[dark-theme-chroma-moderation.md](../technical-debt/dark-theme-chroma-moderation.md).
+
 Formats 1 through 3 are not migrated silently. Format 2 encoded Brown as a
 sector variant and used complete sector names as public ids. Format 3 exposed
 one ambiguous state anchor instead of the distinct vivid and subtle functional
@@ -527,7 +549,7 @@ colors/
 
 The required system contains 12 color assets and 15 files total. Additional
 authored variants add one color file each. All artifacts identify
-`@kiskadee/tonal-scale@0.4.0`.
+`@kiskadee/tonal-scale@0.4.1`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -540,7 +562,9 @@ subtle reference records its tone, emitted hex, and source. A
 diagnostics identify the `fixed-reference` seed model and
 `kiskadee-munsell-reference-v1` set alongside cross-hue balance,
 classification, harmony metrics, reference matching, surface-relative
-selection, and scale diagnostics.
+selection, Dark support chroma moderation, and scale diagnostics. Dark
+moderation details are diagnostic-only; primitive color assets expose the
+resulting color bytes without embedding generation or review machinery.
 
 Verification regenerates the complete bundle and compares canonical JSON byte
 for byte. Missing, extra, non-canonical, or modified files invalidate it
@@ -584,6 +608,19 @@ surface-relative selection and optional reference matching without changing
 any low-level or multi-family scale bytes. V3 sources are rejected explicitly;
 locked V4 sources contain every resolved family reference so replay never
 depends on re-matching external evidence.
+
+Generator `0.4.1` adds the `kiskadee-primary-relative-dark-v1` support-family
+guard. For Dark `adaptive` and `harmonized` chromatic support families, D40
+through D70 may not exceed the Primary chroma at equivalent physical
+lightness by more than 15%, with a minimum tolerance of `0.005` and a
+quantization tolerance of `0.002`. Candidate selection may reduce excess
+chroma but never increases guarded-range chroma over the baseline. Light
+output, both Primary scales, Dark
+`source-exact`, `n.black.*`, the grid, and low-level goldens remain unchanged.
+The diagnostics record evaluated and adjusted tones, baseline and remaining
+excess, maximum reduction, maximum guarded-range increase, and whether the effective seed changed. The
+candidate must receive explicit visual approval before its bytes are promoted
+to preset assets.
 
 This package produces Layer 1 artifacts only. It does not write presets,
 external types, semantic aliases, or component state mappings. Exporting
