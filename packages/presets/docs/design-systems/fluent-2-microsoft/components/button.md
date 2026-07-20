@@ -109,38 +109,51 @@ border; Lowest keeps every border state transparent.
 
 | Theme/state | Low and Lowest background | Low border | Enabled foreground |
 | --- | --- | --- | --- |
-| Light Rest and Focus | transparent | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Light Hover | L2 `#f1f7ff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Light Selected | L1 `#f8fbff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Light Pressed | L4 `#e1efff` | L50 at 50% `#0064b480` | L65 `#0d477e` |
-| Dark Rest and Focus | transparent | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
-| Dark Hover | D14 `#14375b` | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
-| Dark Selected | D18 `#133d68` | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
-| Dark Pressed | D22 `#104375` | vivid D40 at 50% `#0064b480` | D75 `#61a7f3` |
-| Darker Rest and Focus | transparent | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Darker Hover | D14 `#14375b` | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Darker Selected | D18 `#133d68` | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
-| Darker Pressed | D22 `#104375` | vivid -1, D35 at 50% `#005ba480` | D75 `#61a7f3` |
+| Light Rest and Focus | transparent | vivid L50, normalized 56% `#0064b48e` | L65 `#0d477e` |
+| Light Hover | L2 `#f1f7ff` | vivid L50, normalized 56% `#0064b48e` | L65 `#0d477e` |
+| Light Selected | L1 `#f8fbff` | vivid L50, normalized 56% `#0064b48e` | L65 `#0d477e` |
+| Light Pressed | L4 `#e1efff` | vivid L50, normalized 56% `#0064b48e` | L65 `#0d477e` |
+| Dark Rest and Focus | transparent | vivid D40, normalized 57% `#0064b492` | D75 `#61a7f3` |
+| Dark Hover | D14 `#14375b` | vivid D40, normalized 57% `#0064b492` | D75 `#61a7f3` |
+| Dark Selected | D18 `#133d68` | vivid D40, normalized 57% `#0064b492` | D75 `#61a7f3` |
+| Dark Pressed | D22 `#104375` | vivid D40, normalized 57% `#0064b492` | D75 `#61a7f3` |
+| Darker Rest and Focus | transparent | vivid -1, D35, normalized 20% `#005ba433` | D75 `#61a7f3` |
+| Darker Hover | D14 `#14375b` | vivid -1, D35, normalized 20% `#005ba433` | D75 `#61a7f3` |
+| Darker Selected | D18 `#133d68` | vivid -1, D35, normalized 20% `#005ba433` | D75 `#61a7f3` |
+| Darker Pressed | D22 `#104375` | vivid -1, D35, normalized 20% `#005ba433` | D75 `#61a7f3` |
 
 Disabled Low uses the same adaptive 5% neutral overlay and Light L20-at-82%/Dark D35 foreground as
 Medium and High, without a visible border. Lowest remains fully transparent and borderless when
 disabled, preserving its intentionally minimal appearance.
-The enabled Low border uses the current intent family's vivid reference with 50% opacity. Darker
-starts one ordinal position below the Dark vivid reference, matching its High Rest shift. This
-keeps the intent identity while allowing the surface beneath it to soften the outline. Two opaque
-alternatives were explicitly rejected:
-matching the foreground at L65/D75 was too dominant, while moving to L14/D50 made the border too
-light. The 50% alpha is an experimental Kiskadee value pending visual approval; it is not an
-upstream Fluent token.
+The enabled Low border keeps the current intent family's vivid reference and solves only its alpha.
+The solver composites that color over the canonical Neutral surface and chooses the nearest alpha
+byte to a shared perceptual-distance target: Delta E OK `0.30` over Light L0, and `0.18` over Dark
+D5 or Darker D0. Darker starts one ordinal position below the Dark vivid reference, matching its
+High Rest shift before opacity is resolved. The schema still publishes a static eight-digit HEX;
+no consumer platform performs this calculation at runtime.
+
+| Theme | Primary | Neutral | Destructive | Positive |
+| --- | --- | --- | --- | --- |
+| Light | 56% `#0064b48e` | 44% `#21242d71` | 50% `#c50f1f80` | 56% `#107c108e` |
+| Dark | 57% `#0064b492` | 24% `#d3d6df3e` | 53% `#b6302f86` | 56% `#08720990` |
+| Darker | 20% `#005ba433` | 9% `#c1c5cf17` | 19% `#a8292930` | 20% `#00690234` |
+
+This normalization replaces the rejected fixed-50% rule. A single alpha made Neutral substantially
+more prominent than the chromatic intents, especially when its contrast-mirrored Dark vivid was
+composited over D5. Lowering that alpha globally would have made Primary and Positive even more
+subtle. Two opaque alternatives remain rejected: matching the foreground at L65/D75 was too
+dominant, while moving to L14/D50 was too light. The perceptual targets are a Kiskadee adaptation,
+not upstream Fluent tokens.
 
 ## Canonical Kiskadee Intent Recipe
 
 The active schema generates `primary`, `neutral`, `destructive`, and `positive` from one tonal
 recipe. The intent changes the Layer 3 color role while theme, emphasis, state positions, disabled
-policy, and border policy remain identical. The only intent-specific value is the explicit
-Dark/Darker Neutral High foreground polarity documented below. This is deliberate diagnostic
-infrastructure: when a new segment replaces the primitive scales, visual differences reveal the
-behavior of the recipe or the tonal family without hidden surface compensation.
+policy, and border formula remain identical. The only authored intent-specific value is the
+explicit Dark/Darker Neutral High foreground polarity documented below. Low border alpha can differ
+by intent because the shared formula measures each resolved vivid color against the same canonical
+surface; those values are derived rather than authored exceptions. This keeps new segments
+diagnostic without fixing their colors to the current Fluent assets.
 
 Medium and High are expressed as ordinal offsets from each family's functional reference. The
 offset is an index movement through the irregular public grid, not numeric tone arithmetic.
@@ -161,10 +174,10 @@ Consequently, `L30 + 1` means L35 and `L55 + 1` means L60.
 Medium, Low, and Lowest foregrounds use the intent role at L65 in Light and D75 in Dark/Darker.
 High uses the white neutral cap, L0 or D100, except for Neutral High in Dark/Darker, which uses the
 absolute-black D0 cap. Low uses the intent family's vivid reference, shifted by -1 only in Darker,
-with 50% opacity for its border. Lowest is borderless. Focus is intentionally absent from every
-palette map, so it inherits Rest while the global focus ring remains the accessibility affordance.
-Selected stays explicit even when it equals Rest because the schema must declare that the component
-supports the Selected state.
+with opacity normalized against the canonical theme surface. Lowest is borderless. Focus is
+intentionally absent from every palette map, so it inherits Rest while the global focus ring remains
+the accessibility affordance. Selected stays explicit even when it equals Rest because the schema
+must declare that the component supports the Selected state.
 
 ### Neutral High Foreground Polarity
 
@@ -268,7 +281,8 @@ Fluent 2 provides Light and Dark references but no separate `darker` Button them
 `darker` as an explicit framework extension for interfaces rendered on an absolute-black surface.
 It reuses the Dark tonal scale and moves the High base plus its state sequence one public position
 toward the physically darker end. Medium, Low, Lowest backgrounds, text, and the shared disabled
-mapping remain identical to Dark; the Low border follows the same one-position vivid shift.
+mapping remain identical to Dark; the Low border follows the same one-position vivid shift, then
+normalizes its opacity against the absolute-black D0 surface.
 
 | Applies to | Dark High Rest/Hover/Focus/Pressed/Selected | Darker High Rest/Hover/Focus/Pressed/Selected |
 | --- | --- | --- |
@@ -361,7 +375,8 @@ changing the asset scales.
   Dark/Darker. Lowest keeps the official solid L16/D35 mapping because it has no disabled fill.
 - Every intent exposes High, Medium, Low, and Lowest in Light, Dark, and Darker.
 - `e1.borderColor.*.low` is the only visible border while enabled; every Low disabled border and
-  all Lowest borders are transparent.
+  all Lowest borders are transparent. Its emitted alpha is resolved from the shared Delta E OK
+  target and the canonical Neutral surface; it is not a per-intent constant or runtime rule.
 - Official Fluent Button surfaces omit `focus` when Focus is visually identical to Rest. The base
   Rest class remains active and the global focus ring provides the focus affordance without
   generating a duplicate surface rule.

@@ -5,6 +5,7 @@ import type {
   TonalFunctionalReferenceName
 } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { createBalancedLowBorder } from './button-low-border.ts';
 
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
 type Fluent2MicrosoftSegmentName = 'default';
@@ -36,7 +37,10 @@ type ButtonThemeRecipe = {
     hover: KiskadeeTone;
     pressed: KiskadeeTone;
     selected: KiskadeeTone;
-    border: FunctionalToneLocator;
+    border: FunctionalToneLocator & {
+      surfaceTone: KiskadeeTone;
+      targetDeltaE: number;
+    };
   };
   foreground: KiskadeeTone;
   highForeground: Record<ButtonColorRole, KiskadeeTone>;
@@ -74,7 +78,7 @@ const BUTTON_TONAL_RECIPE = {
       hover: 2,
       pressed: 4,
       selected: 1,
-      border: { reference: 'vivid', offset: 0 }
+      border: { reference: 'vivid', offset: 0, surfaceTone: 0, targetDeltaE: 0.3 }
     },
     foreground: 65,
     highForeground: {
@@ -103,7 +107,7 @@ const BUTTON_TONAL_RECIPE = {
       hover: 14,
       pressed: 22,
       selected: 18,
-      border: { reference: 'vivid', offset: 0 }
+      border: { reference: 'vivid', offset: 0, surfaceTone: 5, targetDeltaE: 0.18 }
     },
     foreground: 75,
     highForeground: {
@@ -132,7 +136,7 @@ const BUTTON_TONAL_RECIPE = {
       hover: 14,
       pressed: 22,
       selected: 18,
-      border: { reference: 'vivid', offset: -1 }
+      border: { reference: 'vivid', offset: -1, surfaceTone: 0, targetDeltaE: 0.18 }
     },
     foreground: 75,
     highForeground: {
@@ -171,6 +175,11 @@ export function createFluent2MicrosoftButtonSchema({
       c('default', recipe.scale, role, tone, alpha);
     const roleReferenceColor = (locator: FunctionalToneLocator, alpha?: number) =>
       c.ref('default', recipe.scale, role, locator.reference, locator.offset, alpha);
+    const lowBorder = createBalancedLowBorder({
+      color: roleReferenceColor(recipe.low.border),
+      surface: c('default', recipe.scale, 'neutral', recipe.low.border.surfaceTone),
+      targetDeltaE: recipe.low.border.targetDeltaE
+    });
 
     return {
       boxColor: {
@@ -219,7 +228,7 @@ export function createFluent2MicrosoftButtonSchema({
           rest: transparent
         },
         low: {
-          rest: roleReferenceColor(recipe.low.border, 50),
+          rest: lowBorder,
           disabled: transparent
         },
         lowest: {
