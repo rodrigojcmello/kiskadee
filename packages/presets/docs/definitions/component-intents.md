@@ -170,7 +170,7 @@ emphasis = visual strength within the same presentation
 selected = persistent on/checked control state
 ```
 
-For `ios-26-apple`, the default official presentation is still `neutral.medium`
+For `ios-27-apple`, the default official presentation is still `neutral.medium`
 even though the selected/on track is green:
 
 ```txt

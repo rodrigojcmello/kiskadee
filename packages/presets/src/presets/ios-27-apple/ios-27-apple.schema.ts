@@ -1,12 +1,13 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
-import { createIos26AppleButtonSchema } from './components/button.schema.ts';
-import { createIos26AppleCardSchema } from './components/card.schema.ts';
-import { createIos26AppleSliderSchema } from './components/slider.schema.ts';
-import { createIos26AppleSwitchSchema } from './components/switch.schema.ts';
-import { schemaColors } from './ios-26-apple.colors.ts';
+import { createIos27AppleButtonSchema } from './components/button.schema.ts';
+import { createIos27AppleCardSchema } from './components/card.schema.ts';
+import { createIos27AppleSliderSchema } from './components/slider.schema.ts';
+import { createIos27AppleSwitchSchema } from './components/switch.schema.ts';
+import { schemaColors } from './ios-27-apple.colors.ts';
 
-// Kiskadee iOS 26: starts as a copy of Apple iOS 26; can evolve with Kiskadee opinions later
+// The preset identity is iOS 27. Its provisional colors remain isolated until the documented
+// iOS 27 system-color seeds are promoted through the Kiskadee tonal-scale workflow.
 
 const segmentNames = ['default'] as const;
 export type Segment = (typeof segmentNames)[number];
@@ -27,7 +28,7 @@ const sliderTooltipShadow = [
 export const schema: Schema<Segment> = {
   name: 'iOS',
   prefix: 'aos', // Apple OS
-  version: [26, 0, 0],
+  version: [27, 0, 0],
   author: 'Apple',
   breakpoints,
   colors: schemaColors,
@@ -102,20 +103,20 @@ export const schema: Schema<Segment> = {
     }
   },
   components: {
-    button: createIos26AppleButtonSchema({
+    button: createIos27AppleButtonSchema({
       c
     }),
-    card: createIos26AppleCardSchema({
+    card: createIos27AppleCardSchema({
       c,
       segmentNames,
       transparent
     }),
-    slider: createIos26AppleSliderSchema({
+    slider: createIos27AppleSliderSchema({
       c,
       segmentNames,
       transparent
     }),
-    switch: createIos26AppleSwitchSchema({
+    switch: createIos27AppleSwitchSchema({
       c,
       segmentNames,
       transparent

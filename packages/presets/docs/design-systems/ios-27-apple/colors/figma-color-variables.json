@@ -1,0 +1,44 @@
+{
+  "kind": "ios-27-figma-color-variable-evidence",
+  "formatVersion": 1,
+  "source": {
+    "name": "iOS and iPadOS 27 Community",
+    "fileKey": "GeO2lMY65IAFczDmjs6oei",
+    "inspectedOn": "2026-07-20",
+    "collection": "Colors",
+    "modes": ["Light", "Dark"],
+    "nodes": {
+      "buttonPage": "507:24673",
+      "colorsPage": "0:1746",
+      "defaultColorSection": "5707:28659"
+    }
+  },
+  "contract": {
+    "kind": "system-color-seeds",
+    "note": "Apple exposes appearance-aware system colors, not complete multi-stop tonal ramps."
+  },
+  "accents": {
+    "Red": { "light": "#ff383c", "dark": "#ff4245" },
+    "Orange": { "light": "#ff8d28", "dark": "#ff9230" },
+    "Yellow": { "light": "#ffcc00", "dark": "#ffd600" },
+    "Green": { "light": "#34c759", "dark": "#30d158" },
+    "Mint": { "light": "#00c8b3", "dark": "#00dac3" },
+    "Teal": { "light": "#00c3d0", "dark": "#00d2e0" },
+    "Cyan": { "light": "#00c0e8", "dark": "#3cd3fe" },
+    "Blue": { "light": "#0088ff", "dark": "#0091ff" },
+    "Indigo": { "light": "#6155f5", "dark": "#6d7cff" },
+    "Purple": { "light": "#cb30e0", "dark": "#db34f2" },
+    "Pink": { "light": "#ff2d55", "dark": "#ff375f" },
+    "Brown": { "light": "#ac7f5e", "dark": "#b78a66" }
+  },
+  "grays": {
+    "Black": { "light": "#000000", "dark": "#000000" },
+    "White": { "light": "#ffffff", "dark": "#ffffff" },
+    "Gray": { "light": "#8e8e93", "dark": "#8e8e93" },
+    "Gray 2": { "light": "#aeaeb2", "dark": "#636366" },
+    "Gray 3": { "light": "#c7c7cc", "dark": "#48484a" },
+    "Gray 4": { "light": "#d1d1d6", "dark": "#3a3a3c" },
+    "Gray 5": { "light": "#e5e5ea", "dark": "#2c2c2e" },
+    "Gray 6": { "light": "#f2f2f7", "dark": "#1c1c1e" }
+  }
+}

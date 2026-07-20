@@ -1,0 +1,119 @@
+{
+  "formatVersion": 4,
+  "gridContract": "kiskadee-tonal-v1",
+  "harmonyContract": "kiskadee-munsell-rest-v1",
+  "tonalProfile": "balanced",
+  "primary": {
+    "seedHex": "#0088ff",
+    "appearance": "auto",
+    "variant": "v1",
+    "policies": {
+      "light": "source-exact",
+      "dark": "adaptive"
+    }
+  },
+  "tonalAnchors": {
+    "rest": {
+      "mode": "auto"
+    }
+  },
+  "functionalReferences": [],
+  "overrides": [
+    {
+      "id": "r.red.v1",
+      "seedHex": "#ff383c",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "r.red.v2",
+      "seedHex": "#ff2d55",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "yr.orange.v1",
+      "seedHex": "#ff8d28",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "yr.orange.v2",
+      "seedHex": "#ac7f5e",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "y.yellow.v1",
+      "seedHex": "#ffcc00",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "g.green.v1",
+      "seedHex": "#34c759",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "bg.teal.v1",
+      "seedHex": "#00c8b3",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "bg.teal.v2",
+      "seedHex": "#00c3d0",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "bg.teal.v3",
+      "seedHex": "#00c0e8",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "pb.indigo.v1",
+      "seedHex": "#6155f5",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "p.purple.v1",
+      "seedHex": "#cb30e0",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "n.black.v1",
+      "seedHex": "#1c1c1e",
+      "policies": {
+        "light": "source-exact",
+        "dark": "source-exact"
+      }
+    }
+  ]
+}

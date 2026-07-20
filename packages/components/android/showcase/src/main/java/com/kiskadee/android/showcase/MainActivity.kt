@@ -262,9 +262,9 @@ private data class ShowcaseSwitchPreset(
                 assetName = "fluent-2-microsoft-switch.schema.json",
             ),
             ShowcaseSwitchPreset(
-                id = "ios-26-apple",
-                title = "iOS 26 by Apple",
-                assetName = "ios-26-apple-switch.schema.json",
+                id = "ios-27-apple",
+                title = "iOS 27 by Apple",
+                assetName = "ios-27-apple-switch.schema.json",
             ),
             materialGoogle,
             ShowcaseSwitchPreset(

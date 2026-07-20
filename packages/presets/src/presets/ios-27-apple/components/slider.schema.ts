@@ -2,12 +2,12 @@ import { type Schema, withAlpha } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type Ios26AppleSegmentName = 'default';
-type SliderComponent = NonNullable<Schema<Ios26AppleSegmentName>['components']['slider']>;
+type Ios27AppleSegmentName = 'default';
+type SliderComponent = NonNullable<Schema<Ios27AppleSegmentName>['components']['slider']>;
 
-type CreateIos26AppleSliderSchemaArgs = {
-  c: PresetColorGetter<Ios26AppleSegmentName>;
-  segmentNames: readonly Ios26AppleSegmentName[];
+type CreateIos27AppleSliderSchemaArgs = {
+  c: PresetColorGetter<Ios27AppleSegmentName>;
+  segmentNames: readonly Ios27AppleSegmentName[];
   transparent: string;
 };
 
@@ -86,11 +86,11 @@ const layout = {
   helperOffset: 8
 } as const;
 
-export function createIos26AppleSliderSchema({
+export function createIos27AppleSliderSchema({
   c,
   segmentNames,
   transparent
-}: CreateIos26AppleSliderSchemaArgs): SliderComponent {
+}: CreateIos27AppleSliderSchemaArgs): SliderComponent {
   const tint = c('default', 'l', 'primary', 50);
   const tintHover = c('default', 'l', 'primary', 50, 84);
   const tintPressed = c('default', 'l', 'primary', 60);

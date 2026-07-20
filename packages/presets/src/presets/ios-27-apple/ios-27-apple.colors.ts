@@ -1,4 +1,3 @@
-import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -6,12 +5,17 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import greenLight from './colors/green.light.ts';
 import neutralLight from './colors/neutral.light.ts';
 import primaryLight from './colors/primary.light.ts';
 import redLight from './colors/red.light.ts';
 
-// iOS 26 - https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9
+// Provisional scales inherited from the former iOS 26 preset.
+// The official iOS 27 Figma system-color seeds are documented under
+// packages/presets/docs/design-systems/ios-27-apple/colors/ and will replace these scales only
+// after a dedicated tonal-scale generation and visual approval step.
+// Legacy iOS 26 source - https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9
 // iOS 18 - https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766/symbols
 
 // -------------------------------------------------------------------------------------------------

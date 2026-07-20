@@ -1,0 +1,151 @@
+{
+  "appearance": "purple",
+  "colorKind": "chromatic",
+  "formatVersion": 4,
+  "functionalReferences": {
+    "dark": {
+      "subtle": {
+        "hex": "#29002f",
+        "source": "surface-relative",
+        "tone": 3
+      },
+      "vivid": {
+        "hex": "#c162ce",
+        "source": "generated-anchor",
+        "tone": 65
+      }
+    },
+    "light": {
+      "subtle": {
+        "hex": "#f8e7fa",
+        "source": "surface-relative",
+        "tone": 4
+      },
+      "vivid": {
+        "hex": "#cb30e0",
+        "source": "generated-anchor",
+        "tone": 30
+      }
+    }
+  },
+  "generatedAnchors": {
+    "dark": {
+      "hex": "#c162ce",
+      "tone": 65
+    },
+    "light": {
+      "hex": "#cb30e0",
+      "tone": 30
+    }
+  },
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.4.1"
+  },
+  "id": "p.purple.v1",
+  "kind": "kiskadee.primitive-tonal-family",
+  "munsellSector": "P",
+  "policies": {
+    "dark": "adaptive",
+    "light": "source-exact"
+  },
+  "restColors": {
+    "dark": {
+      "hex": "#c162ce",
+      "tone": 65
+    },
+    "light": {
+      "hex": "#d03ae5",
+      "tone": 28
+    }
+  },
+  "role": "support",
+  "scales": {
+    "dark": {
+      "0": "#000000",
+      "1": "#130017",
+      "2": "#200024",
+      "3": "#29002f",
+      "4": "#310037",
+      "5": "#38003f",
+      "6": "#3e0045",
+      "7": "#43004c",
+      "8": "#480052",
+      "9": "#4d0056",
+      "10": "#52005b",
+      "12": "#590064",
+      "14": "#60006c",
+      "16": "#660072",
+      "18": "#6b0077",
+      "20": "#6f007c",
+      "22": "#730380",
+      "24": "#770984",
+      "26": "#7a1088",
+      "28": "#7e158c",
+      "30": "#831b90",
+      "35": "#902a9d",
+      "40": "#9934a6",
+      "45": "#a13dae",
+      "50": "#a946b7",
+      "55": "#b251c0",
+      "60": "#ba59c7",
+      "65": "#c162ce",
+      "70": "#c86bd5",
+      "75": "#d77fe3",
+      "80": "#e694f1",
+      "85": "#f2aafb",
+      "90": "#f0c9f5",
+      "95": "#f8e5fa",
+      "99": "#fefaff",
+      "100": "#ffffff"
+    },
+    "light": {
+      "0": "#ffffff",
+      "1": "#fef9ff",
+      "2": "#fdf3fd",
+      "3": "#faedfc",
+      "4": "#f8e7fa",
+      "5": "#f5e1f8",
+      "6": "#f4dcf6",
+      "7": "#f2d5f5",
+      "8": "#f0cef4",
+      "9": "#efc6f4",
+      "10": "#efbef5",
+      "12": "#f0b0f9",
+      "14": "#f29efe",
+      "16": "#f18dff",
+      "18": "#ef7eff",
+      "20": "#ed6cff",
+      "22": "#e65ff9",
+      "24": "#df53f3",
+      "26": "#d847ec",
+      "28": "#d03ae5",
+      "30": "#cb30e0",
+      "35": "#bf15d5",
+      "40": "#b500ca",
+      "45": "#a800bc",
+      "50": "#9900ab",
+      "55": "#8c009c",
+      "60": "#7f008e",
+      "65": "#71007f",
+      "70": "#640070",
+      "75": "#570062",
+      "80": "#4a0053",
+      "85": "#3e0047",
+      "90": "#330039",
+      "95": "#28002e",
+      "99": "#010001",
+      "100": "#000000"
+    }
+  },
+  "seedHex": "#cb30e0",
+  "seedOrigin": "override",
+  "tonalAnchors": {
+    "rest": {
+      "dark": 65,
+      "light": 28
+    }
+  },
+  "tonalProfile": "balanced",
+  "variant": "v1"
+}

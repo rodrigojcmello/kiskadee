@@ -1,16 +1,16 @@
 import { type Schema, withAlpha } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type Ios26AppleSegmentName = 'default';
-type ButtonComponent = NonNullable<Schema<Ios26AppleSegmentName>['components']['button']>;
+type Ios27AppleSegmentName = 'default';
+type ButtonComponent = NonNullable<Schema<Ios27AppleSegmentName>['components']['button']>;
 
-type CreateIos26AppleButtonSchemaArgs = {
-  c: PresetColorGetter<Ios26AppleSegmentName>;
+type CreateIos27AppleButtonSchemaArgs = {
+  c: PresetColorGetter<Ios27AppleSegmentName>;
 };
 
-export function createIos26AppleButtonSchema({
+export function createIos27AppleButtonSchema({
   c
-}: CreateIos26AppleButtonSchemaArgs): ButtonComponent {
+}: CreateIos27AppleButtonSchemaArgs): ButtonComponent {
   return {
     elements: {
       e1: {

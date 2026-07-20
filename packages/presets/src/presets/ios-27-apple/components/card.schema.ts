@@ -1,21 +1,21 @@
 import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
-import type { Segment } from '../ios-26-apple.schema.ts';
+import type { Segment } from '../ios-27-apple.schema.ts';
 
 type CardComponent = NonNullable<Schema<Segment>['components']['card']>;
 
-type CreateIos26AppleCardSchemaArgs = {
+type CreateIos27AppleCardSchemaArgs = {
   c: PresetColorGetter<Segment>;
   segmentNames: readonly Segment[];
   transparent: string;
 };
 
-export function createIos26AppleCardSchema({
+export function createIos27AppleCardSchema({
   c,
   segmentNames,
   transparent
-}: CreateIos26AppleCardSchemaArgs): CardComponent {
+}: CreateIos27AppleCardSchemaArgs): CardComponent {
   return {
     effects: {
       shadow: {

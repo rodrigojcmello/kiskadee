@@ -3,12 +3,19 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { schema as carbonIbmSchema } from '../../../presets/src/presets/carbon-ibm/carbon-ibm.schema.ts';
 import { schema as fluent2MicrosoftSchema } from '../../../presets/src/presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts';
-import { schema as ios26AppleSchema } from '../../../presets/src/presets/ios-26-apple/ios-26-apple.schema.ts';
+import { schema as ios27AppleSchema } from '../../../presets/src/presets/ios-27-apple/ios-27-apple.schema.ts';
 import { schema as material3GoogleSchema } from '../../../presets/src/presets/material-3-google/material-3-google.schema.ts';
 import { schema as material3KiskadeeSchema } from '../../../presets/src/presets/material-3-kiskadee/material-3-kiskadee.schema.ts';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
-const resourcesDir = resolve(scriptDir, '..', 'Examples', 'KiskadeeIOSShowcase', 'KiskadeeIOSShowcase', 'Resources');
+const resourcesDir = resolve(
+  scriptDir,
+  '..',
+  'Examples',
+  'KiskadeeIOSShowcase',
+  'KiskadeeIOSShowcase',
+  'Resources'
+);
 
 const fixtures = [
   {
@@ -20,8 +27,8 @@ const fixtures = [
     schema: fluent2MicrosoftSchema
   },
   {
-    fileName: 'ios-26-apple-switch.schema.json',
-    schema: ios26AppleSchema
+    fileName: 'ios-27-apple-switch.schema.json',
+    schema: ios27AppleSchema
   },
   {
     fileName: 'material-3-google-switch.schema.json',

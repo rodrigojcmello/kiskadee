@@ -68,32 +68,15 @@ export const cssPaths = {
       'default|light': '/build/ios-18-apple/tokens.default.light.kiskadee.css',
     }
   },
-  'ios-26-apple': {
-    core: '/build/ios-26-apple/core.kiskadee.css',
-    effects: '/build/ios-26-apple/effects.kiskadee.css',
-    tokens: '/build/ios-26-apple/tokens.kiskadee.css',
+  'ios-27-apple': {
+    core: '/build/ios-27-apple/core.kiskadee.css',
+    effects: '/build/ios-27-apple/effects.kiskadee.css',
+    tokens: '/build/ios-27-apple/tokens.kiskadee.css',
     palettes: {
-      'default|light': '/build/ios-26-apple/default.light.kiskadee.css',
+      'default|light': '/build/ios-27-apple/default.light.kiskadee.css',
     },
     tokenPalettes: {
-      'default|light': '/build/ios-26-apple/tokens.default.light.kiskadee.css',
-    }
-  },
-  'ios-26-kiskadee': {
-    core: '/build/ios-26-kiskadee/core.kiskadee.css',
-    effects: '/build/ios-26-kiskadee/effects.kiskadee.css',
-    tokens: '/build/ios-26-kiskadee/tokens.kiskadee.css',
-    palettes: {
-      'default|dark': '/build/ios-26-kiskadee/default.dark.kiskadee.css',
-      'default|darker': '/build/ios-26-kiskadee/default.darker.kiskadee.css',
-      'default|light': '/build/ios-26-kiskadee/default.light.kiskadee.css',
-      'dynamic|dark': '/build/ios-26-kiskadee/dynamic.dark.kiskadee.css',
-      'dynamic|darker': '/build/ios-26-kiskadee/dynamic.darker.kiskadee.css',
-      'dynamic|light': '/build/ios-26-kiskadee/dynamic.light.kiskadee.css',
-    },
-    tokenPalettes: {
-      'default|light': '/build/ios-26-kiskadee/tokens.default.light.kiskadee.css',
-      'dynamic|light': '/build/ios-26-kiskadee/tokens.dynamic.light.kiskadee.css',
+      'default|light': '/build/ios-27-apple/tokens.default.light.kiskadee.css',
     }
   },
   'material-design-3-google': {

@@ -2,12 +2,12 @@ import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type Ios26AppleSegmentName = 'default';
-type SwitchComponent = NonNullable<Schema<Ios26AppleSegmentName>['components']['switch']>;
+type Ios27AppleSegmentName = 'default';
+type SwitchComponent = NonNullable<Schema<Ios27AppleSegmentName>['components']['switch']>;
 
-type CreateIos26AppleSwitchSchemaArgs = {
-  c: PresetColorGetter<Ios26AppleSegmentName>;
-  segmentNames: readonly Ios26AppleSegmentName[];
+type CreateIos27AppleSwitchSchemaArgs = {
+  c: PresetColorGetter<Ios27AppleSegmentName>;
+  segmentNames: readonly Ios27AppleSegmentName[];
   transparent: string;
 };
 
@@ -20,11 +20,11 @@ const iosSwitchOnPrimaryTrackDisabled = '#ffffff1f' as const;
 const iosSwitchOnPrimaryTrackSelected = '#ffffff' as const;
 const iosSwitchOffIcon = '#7878788c' as const;
 
-export function createIos26AppleSwitchSchema({
+export function createIos27AppleSwitchSchema({
   c,
   segmentNames,
   transparent
-}: CreateIos26AppleSwitchSchemaArgs): SwitchComponent {
+}: CreateIos27AppleSwitchSchemaArgs): SwitchComponent {
   const iosSwitchNeutralOnTrack = c('default', 'l', 'greenLike', 50);
   const iosSwitchPrimaryOnTrack = c('default', 'l', 'primary', 50);
   const iosSwitchPolarityOffTrack = c('default', 'l', 'redLike', 50);

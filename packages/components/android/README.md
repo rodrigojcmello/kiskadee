@@ -10,7 +10,7 @@ same first-party Switch fixture set as the iOS showcase.
 - `kiskadee-android`: reusable Android library code.
 - `showcase`: local Android app that consumes the library.
 - `showcase/src/main/assets/*-switch.schema.json`: Switch fixtures copied from the iOS showcase for
-  Carbon IBM, Fluent 2 Microsoft, iOS 26 Apple, Material 3 Google, and Material 3 Kiskadee.
+  Carbon IBM, Fluent 2 Microsoft, iOS 27 Apple, Material 3 Google, and Material 3 Kiskadee.
 
 The fixtures are not a separate Android schema contract. The canonical source remains the Kiskadee
 schema in `packages/presets`.
@@ -65,7 +65,7 @@ dependencies {
 ## Supported MVP surface
 
 - Component: `Switch`.
-- Preset payloads: Carbon IBM, Fluent 2 Microsoft, iOS 26 Apple, Material 3 Google, and Material 3
+- Preset payloads: Carbon IBM, Fluent 2 Microsoft, iOS 27 Apple, Material 3 Google, and Material 3
   Kiskadee, `default` segment, `light` mode.
 - Tokens: track, thumb, label, and icon color roles; width, height, padding, border width, radius,
   label typography, thumb shrink, and activation feedback.

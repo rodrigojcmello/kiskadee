@@ -1,0 +1,936 @@
+{
+  "name": "iOS",
+  "prefix": "aos",
+  "version": [
+    27,
+    0,
+    0
+  ],
+  "author": "Apple",
+  "global": {
+    "fonts": {
+      "body": [
+        "Roboto",
+        "sans-serif"
+      ]
+    },
+    "focus": {
+      "width": 2,
+      "offset": 0
+    },
+    "effects": {
+      "activationFeedback": {
+        "profile": "ripple",
+        "origin": "pointer",
+        "visual": {
+          "layer": "overlay",
+          "paint": "field",
+          "tone": {
+            "default": "subtle"
+          }
+        },
+        "profiles": {
+          "halo": {
+            "animateSize": false,
+            "size": 80,
+            "durationToken": "interaction.instant",
+            "fade": {
+              "delayToken": "interaction.hold.short",
+              "durationToken": "interaction.fade.long",
+              "curveToken": "motion.standard.out"
+            }
+          }
+        }
+      },
+      "shadow": {
+        "outer": {
+          "levels": {
+            "s:sm:1": {
+              "x": 0,
+              "y": 0,
+              "blur": 16,
+              "spread": 0,
+              "color": "#00000033"
+            },
+            "s:sm:2": [
+              {
+                "x": 0,
+                "y": 6,
+                "blur": 13,
+                "spread": 0,
+                "color": "#0000001f"
+              },
+              {
+                "x": 0,
+                "y": 0.5,
+                "blur": 4,
+                "spread": 0,
+                "color": "#0000001f"
+              }
+            ],
+            "s:sm:3": [
+              {
+                "x": 0,
+                "y": 2,
+                "blur": 6,
+                "spread": 0,
+                "color": "#00000014"
+              },
+              {
+                "x": 0,
+                "y": 0.5,
+                "blur": 2,
+                "spread": 0,
+                "color": "#0000000f"
+              }
+            ],
+            "s:md:1": {
+              "x": 0,
+              "y": 5,
+              "blur": 20,
+              "spread": 0,
+              "color": "#0000004d"
+            },
+            "s:lg:1": {
+              "x": 0,
+              "y": 10,
+              "blur": 50,
+              "spread": 0,
+              "color": "#0000004d"
+            },
+            "s:lg:2": {
+              "x": 0,
+              "y": 16,
+              "blur": 48,
+              "spread": 0,
+              "color": "#00000059"
+            },
+            "s:lg:3": {
+              "x": 0,
+              "y": 20,
+              "blur": 76,
+              "spread": 0,
+              "color": "#00000033"
+            }
+          }
+        }
+      }
+    },
+    "radius": "rounded"
+  },
+  "themeTokens": {
+    "palettes": {
+      "default": {
+        "light": {
+          "effects": {
+            "activationFeedback": {
+              "tone": {
+                "subtle": {
+                  "color": "#000000",
+                  "opacity": 0.1
+                },
+                "vivid": {
+                  "color": "#ffffff",
+                  "opacity": 0.2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "switch": {
+      "effects": {
+        "activationFeedback": {
+          "profile": "halo",
+          "origin": "center",
+          "visual": {
+            "layer": "underlay",
+            "paint": "outline",
+            "tone": {
+              "default": "subtle",
+              "byEmphasis": {
+                "low": "vivid"
+              }
+            }
+          },
+          "profiles": {
+            "halo": {
+              "size": 6
+            }
+          }
+        }
+      },
+      "options": {
+        "variant": "standard",
+        "radius": "pill",
+        "activationMotion": "standard"
+      },
+      "variants": {
+        "standard": {
+          "options": {
+            "mode": "base"
+          },
+          "modes": {
+            "base": {
+              "elements": {
+                "e2": {
+                  "name": "track",
+                  "decorations": {
+                    "borderStyle": "none"
+                  },
+                  "scales": {
+                    "boxWidth": {
+                      "s:sm:3": 36,
+                      "s:sm:2": 44,
+                      "s:sm:1": 54,
+                      "s:md:1": 64,
+                      "s:lg:1": 80
+                    },
+                    "boxHeight": {
+                      "s:sm:3": 16,
+                      "s:sm:2": 20,
+                      "s:sm:1": 24,
+                      "s:md:1": 28,
+                      "s:lg:1": 36
+                    },
+                    "borderWidth": 0,
+                    "borderRadius": {
+                      "rounded": 6,
+                      "pill": {
+                        "s:sm:3": 8,
+                        "s:sm:2": 10,
+                        "s:sm:1": 12,
+                        "s:md:1": 14,
+                        "s:lg:1": 18
+                      },
+                      "square": 0
+                    },
+                    "paddingTop": {
+                      "s:sm:3": 1.5,
+                      "s:sm:2": 2,
+                      "s:sm:1": 2,
+                      "s:md:1": 2,
+                      "s:lg:1": 3
+                    },
+                    "paddingRight": {
+                      "s:sm:3": 1.5,
+                      "s:sm:2": 2,
+                      "s:sm:1": 2,
+                      "s:md:1": 2,
+                      "s:lg:1": 3
+                    },
+                    "paddingBottom": {
+                      "s:sm:3": 1.5,
+                      "s:sm:2": 2,
+                      "s:sm:1": 2,
+                      "s:md:1": 2,
+                      "s:lg:1": 3
+                    },
+                    "paddingLeft": {
+                      "s:sm:3": 1.5,
+                      "s:sm:2": 2,
+                      "s:sm:1": 2,
+                      "s:md:1": 2,
+                      "s:lg:1": 3
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#78787833",
+                              "hover": {
+                                "ref": "#78787833"
+                              },
+                              "focus": {
+                                "ref": "#78787833"
+                              },
+                              "pressed": {
+                                "ref": "#78787833"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#34c759"
+                                },
+                                "hover": {
+                                  "ref": "#34c759"
+                                },
+                                "focus": {
+                                  "ref": "#34c759"
+                                },
+                                "pressed": {
+                                  "ref": "#34c759"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#ffffff52",
+                              "hover": {
+                                "ref": "#ffffff66"
+                              },
+                              "focus": {
+                                "ref": "#ffffff52"
+                              },
+                              "pressed": {
+                                "ref": "#ffffff7a"
+                              },
+                              "disabled": {
+                                "ref": "#ffffff1f"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                },
+                                "hover": {
+                                  "ref": "#ffffff"
+                                },
+                                "focus": {
+                                  "ref": "#ffffff"
+                                },
+                                "pressed": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            }
+                          },
+                          "primary": {
+                            "medium": {
+                              "rest": "#78787833",
+                              "hover": {
+                                "ref": "#78787833"
+                              },
+                              "focus": {
+                                "ref": "#78787833"
+                              },
+                              "pressed": {
+                                "ref": "#78787833"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#0091ff"
+                                },
+                                "hover": {
+                                  "ref": "#0091ff"
+                                },
+                                "focus": {
+                                  "ref": "#0091ff"
+                                },
+                                "pressed": {
+                                  "ref": "#0091ff"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#ffffff52",
+                              "hover": {
+                                "ref": "#ffffff66"
+                              },
+                              "focus": {
+                                "ref": "#ffffff52"
+                              },
+                              "pressed": {
+                                "ref": "#ffffff7a"
+                              },
+                              "disabled": {
+                                "ref": "#ffffff1f"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                },
+                                "hover": {
+                                  "ref": "#ffffff"
+                                },
+                                "focus": {
+                                  "ref": "#ffffff"
+                                },
+                                "pressed": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            }
+                          },
+                          "polarity": {
+                            "medium": {
+                              "rest": "#ff0004",
+                              "hover": {
+                                "ref": "#ff0004"
+                              },
+                              "focus": {
+                                "ref": "#ff0004"
+                              },
+                              "pressed": {
+                                "ref": "#ff0004"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#34c759"
+                                },
+                                "hover": {
+                                  "ref": "#34c759"
+                                },
+                                "focus": {
+                                  "ref": "#34c759"
+                                },
+                                "pressed": {
+                                  "ref": "#34c759"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#ffffff52",
+                              "hover": {
+                                "ref": "#ffffff66"
+                              },
+                              "focus": {
+                                "ref": "#ffffff52"
+                              },
+                              "pressed": {
+                                "ref": "#ffffff7a"
+                              },
+                              "disabled": {
+                                "ref": "#ffffff1f"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                },
+                                "hover": {
+                                  "ref": "#ffffff"
+                                },
+                                "focus": {
+                                  "ref": "#ffffff"
+                                },
+                                "pressed": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#00000000",
+                              "hover": {
+                                "ref": "#00000000"
+                              },
+                              "focus": {
+                                "ref": "#00000000"
+                              },
+                              "pressed": {
+                                "ref": "#00000000"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                },
+                                "hover": {
+                                  "ref": "#00000000"
+                                },
+                                "focus": {
+                                  "ref": "#00000000"
+                                },
+                                "pressed": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#00000000",
+                              "hover": {
+                                "ref": "#00000000"
+                              },
+                              "focus": {
+                                "ref": "#00000000"
+                              },
+                              "pressed": {
+                                "ref": "#00000000"
+                              },
+                              "disabled": {
+                                "ref": "#00000000"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                },
+                                "hover": {
+                                  "ref": "#00000000"
+                                },
+                                "focus": {
+                                  "ref": "#00000000"
+                                },
+                                "pressed": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            }
+                          },
+                          "primary": {
+                            "medium": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            }
+                          },
+                          "polarity": {
+                            "medium": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e3": {
+                  "name": "thumb",
+                  "scales": {
+                    "boxWidth": {
+                      "s:sm:3": 21,
+                      "s:sm:2": 26,
+                      "s:sm:1": 32,
+                      "s:md:1": 38,
+                      "s:lg:1": 47
+                    },
+                    "boxHeight": {
+                      "s:sm:3": 13,
+                      "s:sm:2": 16,
+                      "s:sm:1": 20,
+                      "s:md:1": 24,
+                      "s:lg:1": 30
+                    },
+                    "borderRadius": {
+                      "rounded": 6,
+                      "pill": {
+                        "s:sm:3": 6.5,
+                        "s:sm:2": 8,
+                        "s:sm:1": 10,
+                        "s:md:1": 12,
+                        "s:lg:1": 15
+                      },
+                      "square": 0
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "boxColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#ffffff",
+                              "hover": {
+                                "ref": "#ffffff"
+                              },
+                              "focus": {
+                                "ref": "#ffffff"
+                              },
+                              "pressed": {
+                                "ref": "#ffffff"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                },
+                                "hover": {
+                                  "ref": "#ffffff"
+                                },
+                                "focus": {
+                                  "ref": "#ffffff"
+                                },
+                                "pressed": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#ffffff",
+                              "hover": {
+                                "ref": "#ffffff"
+                              },
+                              "focus": {
+                                "ref": "#ffffff"
+                              },
+                              "pressed": {
+                                "ref": "#ffffff"
+                              },
+                              "disabled": {
+                                "ref": "#ffffff1f"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#34c759"
+                                },
+                                "hover": {
+                                  "ref": "#34c759"
+                                },
+                                "focus": {
+                                  "ref": "#34c759"
+                                },
+                                "pressed": {
+                                  "ref": "#34c759"
+                                }
+                              }
+                            }
+                          },
+                          "primary": {
+                            "medium": {
+                              "rest": "#ffffff",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#ffffff",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#0091ff"
+                                }
+                              }
+                            }
+                          },
+                          "polarity": {
+                            "medium": {
+                              "rest": "#ffffff",
+                              "hover": {
+                                "ref": "#ffffff"
+                              },
+                              "focus": {
+                                "ref": "#ffffff"
+                              },
+                              "pressed": {
+                                "ref": "#ffffff"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                },
+                                "hover": {
+                                  "ref": "#ffffff"
+                                },
+                                "focus": {
+                                  "ref": "#ffffff"
+                                },
+                                "pressed": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#ffffff",
+                              "hover": {
+                                "ref": "#ffffff"
+                              },
+                              "focus": {
+                                "ref": "#ffffff"
+                              },
+                              "pressed": {
+                                "ref": "#ffffff"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#34c759"
+                                },
+                                "hover": {
+                                  "ref": "#34c759"
+                                },
+                                "focus": {
+                                  "ref": "#34c759"
+                                },
+                                "pressed": {
+                                  "ref": "#34c759"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "borderColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            }
+                          },
+                          "primary": {
+                            "medium": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            }
+                          },
+                          "polarity": {
+                            "medium": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#00000000",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#00000000"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e6": {
+                  "name": "icon",
+                  "scales": {
+                    "boxWidth": {
+                      "s:sm:3": 8,
+                      "s:sm:2": 10,
+                      "s:sm:1": 12,
+                      "s:md:1": 16,
+                      "s:lg:1": 20
+                    },
+                    "boxHeight": {
+                      "s:sm:3": 8,
+                      "s:sm:2": 10,
+                      "s:sm:1": 12,
+                      "s:md:1": 16,
+                      "s:lg:1": 20
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#7878788c",
+                              "hover": {
+                                "ref": "#7878788c"
+                              },
+                              "focus": {
+                                "ref": "#7878788c"
+                              },
+                              "pressed": {
+                                "ref": "#7878788c"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#34c759"
+                                },
+                                "hover": {
+                                  "ref": "#34c759"
+                                },
+                                "focus": {
+                                  "ref": "#34c759"
+                                },
+                                "pressed": {
+                                  "ref": "#34c759"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#34c759",
+                              "hover": {
+                                "ref": "#34c759"
+                              },
+                              "focus": {
+                                "ref": "#34c759"
+                              },
+                              "pressed": {
+                                "ref": "#34c759"
+                              },
+                              "disabled": {
+                                "ref": "#ffffff1f"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                },
+                                "hover": {
+                                  "ref": "#ffffff"
+                                },
+                                "focus": {
+                                  "ref": "#ffffff"
+                                },
+                                "pressed": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            }
+                          },
+                          "primary": {
+                            "medium": {
+                              "rest": "#7878788c",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#0091ff"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#0091ff",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            }
+                          },
+                          "polarity": {
+                            "medium": {
+                              "rest": "#ff0004",
+                              "hover": {
+                                "ref": "#ff0004"
+                              },
+                              "focus": {
+                                "ref": "#ff0004"
+                              },
+                              "pressed": {
+                                "ref": "#ff0004"
+                              },
+                              "selected": {
+                                "rest": {
+                                  "ref": "#34c759"
+                                },
+                                "hover": {
+                                  "ref": "#34c759"
+                                },
+                                "focus": {
+                                  "ref": "#34c759"
+                                },
+                                "pressed": {
+                                  "ref": "#34c759"
+                                }
+                              }
+                            },
+                            "low": {
+                              "rest": "#ff0004",
+                              "selected": {
+                                "rest": {
+                                  "ref": "#ffffff"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "e4": {
+                  "name": "label",
+                  "decorations": {
+                    "textFont": "body",
+                    "textWeight": "normal"
+                  },
+                  "scales": {
+                    "textSize": {
+                      "s:md:1": 17
+                    },
+                    "textHeight": {
+                      "s:md:1": 22
+                    },
+                    "marginLeft": {
+                      "s:md:1": 12
+                    },
+                    "marginRight": {
+                      "s:md:1": 12
+                    }
+                  },
+                  "palettes": {
+                    "default": {
+                      "light": {
+                        "textColor": {
+                          "neutral": {
+                            "medium": {
+                              "rest": "#000000"
+                            },
+                            "low": {
+                              "rest": "#ffffff"
+                            }
+                          },
+                          "primary": {
+                            "medium": {
+                              "rest": "#000000"
+                            },
+                            "low": {
+                              "rest": "#ffffff"
+                            }
+                          },
+                          "polarity": {
+                            "medium": {
+                              "rest": "#000000"
+                            },
+                            "low": {
+                              "rest": "#ffffff"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

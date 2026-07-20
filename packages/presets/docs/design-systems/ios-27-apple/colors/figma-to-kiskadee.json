@@ -1,0 +1,503 @@
+{
+  "kind": "ios-27-figma-to-kiskadee-tonal-mapping",
+  "formatVersion": 1,
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.4.1"
+  },
+  "sourceEvidence": "./figma-color-variables.json",
+  "generatedBundle": "./generated/tonal-system.json",
+  "methodology": {
+    "colorSpace": "OKLab",
+    "distanceMetric": "Delta E OK",
+    "selection": "Nearest generated tone independently for Light and Dark",
+    "tieBreak": "Lower numeric Kiskadee tone",
+    "notes": [
+      "Apple Light Accent values author the primary and override seeds.",
+      "Apple Dark values are correspondence evidence mapped onto adaptive Dark scales, not second seeds.",
+      "Apple system-color names remain source identities even when Kiskadee Munsell appearance names differ."
+    ]
+  },
+  "tonalSystem": {
+    "formatVersion": 4,
+    "tonalProfile": "balanced",
+    "primaryReference": "b.blue.v1",
+    "rest": {
+      "dark": 65,
+      "light": 28
+    },
+    "candidateStatus": "review"
+  },
+  "families": {
+    "accents": {
+      "Red": {
+        "sourceVariable": "Accents/Red",
+        "kiskadeeFamilyId": "r.red.v1",
+        "seedHex": "#ff383c",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#ff383c",
+            "token": "L26",
+            "tone": 26,
+            "hex": "#ff383c",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#ff4245",
+            "token": "D65",
+            "tone": 65,
+            "hex": "#e85752",
+            "deltaE": 0.045893,
+            "exact": false
+          }
+        }
+      },
+      "Orange": {
+        "sourceVariable": "Accents/Orange",
+        "kiskadeeFamilyId": "yr.orange.v1",
+        "seedHex": "#ff8d28",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#ff8d28",
+            "token": "L18",
+            "tone": 18,
+            "hex": "#ff8d28",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#ff9230",
+            "token": "D80",
+            "tone": 80,
+            "hex": "#f69d5b",
+            "deltaE": 0.03493,
+            "exact": false
+          }
+        }
+      },
+      "Yellow": {
+        "sourceVariable": "Accents/Yellow",
+        "kiskadeeFamilyId": "y.yellow.v1",
+        "seedHex": "#ffcc00",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#ffcc00",
+            "token": "L10",
+            "tone": 10,
+            "hex": "#ffcc00",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#ffd600",
+            "token": "D85",
+            "tone": 85,
+            "hex": "#dfc378",
+            "deltaE": 0.102388,
+            "exact": false
+          }
+        }
+      },
+      "Green": {
+        "sourceVariable": "Accents/Green",
+        "kiskadeeFamilyId": "g.green.v1",
+        "seedHex": "#34c759",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#34c759",
+            "token": "L20",
+            "tone": 20,
+            "hex": "#34c759",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#30d158",
+            "token": "D80",
+            "tone": 80,
+            "hex": "#64cd76",
+            "deltaE": 0.052042,
+            "exact": false
+          }
+        }
+      },
+      "Mint": {
+        "sourceVariable": "Accents/Mint",
+        "kiskadeeFamilyId": "bg.teal.v1",
+        "seedHex": "#00c8b3",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#00c8b3",
+            "token": "L20",
+            "tone": 20,
+            "hex": "#00c8b3",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#00dac3",
+            "token": "D80",
+            "tone": 80,
+            "hex": "#64c7b7",
+            "deltaE": 0.056217,
+            "exact": false
+          }
+        }
+      },
+      "Teal": {
+        "sourceVariable": "Accents/Teal",
+        "kiskadeeFamilyId": "bg.teal.v2",
+        "seedHex": "#00c3d0",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#00c3d0",
+            "token": "L20",
+            "tone": 20,
+            "hex": "#00c3d0",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#00d2e0",
+            "token": "D80",
+            "tone": 80,
+            "hex": "#64c5ce",
+            "deltaE": 0.046101,
+            "exact": false
+          }
+        }
+      },
+      "Cyan": {
+        "sourceVariable": "Accents/Cyan",
+        "kiskadeeFamilyId": "bg.teal.v3",
+        "seedHex": "#00c0e8",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#00c0e8",
+            "token": "L20",
+            "tone": 20,
+            "hex": "#00c0e8",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#3cd3fe",
+            "token": "D85",
+            "tone": 85,
+            "hex": "#80d2ec",
+            "deltaE": 0.048984,
+            "exact": false
+          }
+        },
+        "adaptation": "Apple Cyan remains in BG as an authored variant and carries a near-boundary review diagnostic."
+      },
+      "Blue": {
+        "sourceVariable": "Accents/Blue",
+        "kiskadeeFamilyId": "b.blue.v1",
+        "seedHex": "#0088ff",
+        "seedOrigin": "primary",
+        "mappings": {
+          "light": {
+            "sourceHex": "#0088ff",
+            "token": "L28",
+            "tone": 28,
+            "hex": "#0088ff",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#0091ff",
+            "token": "D70",
+            "tone": 70,
+            "hex": "#2e92ff",
+            "deltaE": 0.013637,
+            "exact": false
+          }
+        }
+      },
+      "Indigo": {
+        "sourceVariable": "Accents/Indigo",
+        "kiskadeeFamilyId": "pb.indigo.v1",
+        "seedHex": "#6155f5",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#6155f5",
+            "token": "L40",
+            "tone": 40,
+            "hex": "#6155f5",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#6d7cff",
+            "token": "D65",
+            "tone": 65,
+            "hex": "#797bf7",
+            "deltaE": 0.019249,
+            "exact": false
+          }
+        }
+      },
+      "Purple": {
+        "sourceVariable": "Accents/Purple",
+        "kiskadeeFamilyId": "p.purple.v1",
+        "seedHex": "#cb30e0",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#cb30e0",
+            "token": "L30",
+            "tone": 30,
+            "hex": "#cb30e0",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#db34f2",
+            "token": "D65",
+            "tone": 65,
+            "hex": "#c162ce",
+            "deltaE": 0.098051,
+            "exact": false
+          }
+        }
+      },
+      "Pink": {
+        "sourceVariable": "Accents/Pink",
+        "kiskadeeFamilyId": "r.red.v2",
+        "seedHex": "#ff2d55",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#ff2d55",
+            "token": "L28",
+            "tone": 28,
+            "hex": "#ff2d55",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#ff375f",
+            "token": "D65",
+            "tone": 65,
+            "hex": "#ec5967",
+            "deltaE": 0.051038,
+            "exact": false
+          }
+        }
+      },
+      "Brown": {
+        "sourceVariable": "Accents/Brown",
+        "kiskadeeFamilyId": "yr.orange.v2",
+        "seedHex": "#ac7f5e",
+        "seedOrigin": "override",
+        "mappings": {
+          "light": {
+            "sourceHex": "#ac7f5e",
+            "token": "L28",
+            "tone": 28,
+            "hex": "#ac7f5e",
+            "deltaE": 0,
+            "exact": true
+          },
+          "dark": {
+            "sourceHex": "#b78a66",
+            "token": "D70",
+            "tone": 70,
+            "hex": "#b48867",
+            "deltaE": 0.007997,
+            "exact": false
+          }
+        },
+        "adaptation": "Apple Brown remains an exact authored YR seed, but the Kiskadee Brown prototype rejects it as Orange-like; it is preserved as yr.orange.v2."
+      }
+    },
+    "grays": {
+      "kiskadeeFamilyId": "n.black.v1",
+      "seed": {
+        "sourceVariable": "Grays/Gray 6",
+        "sourceMode": "Dark",
+        "hex": "#1c1c1e"
+      },
+      "mappings": {
+        "Black": {
+          "sourceVariable": "Grays/Black",
+          "mappings": {
+            "light": {
+              "sourceHex": "#000000",
+              "token": "L100",
+              "tone": 100,
+              "hex": "#000000",
+              "deltaE": 0,
+              "exact": true
+            },
+            "dark": {
+              "sourceHex": "#000000",
+              "token": "D0",
+              "tone": 0,
+              "hex": "#000000",
+              "deltaE": 0,
+              "exact": true
+            }
+          }
+        },
+        "White": {
+          "sourceVariable": "Grays/White",
+          "mappings": {
+            "light": {
+              "sourceHex": "#ffffff",
+              "token": "L0",
+              "tone": 0,
+              "hex": "#ffffff",
+              "deltaE": 0,
+              "exact": true
+            },
+            "dark": {
+              "sourceHex": "#ffffff",
+              "token": "D100",
+              "tone": 100,
+              "hex": "#ffffff",
+              "deltaE": 0,
+              "exact": true
+            }
+          }
+        },
+        "Gray": {
+          "sourceVariable": "Grays/Gray",
+          "mappings": {
+            "light": {
+              "sourceHex": "#8e8e93",
+              "token": "L28",
+              "tone": 28,
+              "hex": "#8b8b8e",
+              "deltaE": 0.011,
+              "exact": false
+            },
+            "dark": {
+              "sourceHex": "#8e8e93",
+              "token": "D70",
+              "tone": 70,
+              "hex": "#919194",
+              "deltaE": 0.009745,
+              "exact": false
+            }
+          }
+        },
+        "Gray 2": {
+          "sourceVariable": "Grays/Gray 2",
+          "mappings": {
+            "light": {
+              "sourceHex": "#aeaeb2",
+              "token": "L18",
+              "tone": 18,
+              "hex": "#b2b2b5",
+              "deltaE": 0.012524,
+              "exact": false
+            },
+            "dark": {
+              "sourceHex": "#636366",
+              "token": "D40",
+              "tone": 40,
+              "hex": "#616164",
+              "deltaE": 0.007082,
+              "exact": false
+            }
+          }
+        },
+        "Gray 3": {
+          "sourceVariable": "Grays/Gray 3",
+          "mappings": {
+            "light": {
+              "sourceHex": "#c7c7cc",
+              "token": "L12",
+              "tone": 12,
+              "hex": "#cacacd",
+              "deltaE": 0.009165,
+              "exact": false
+            },
+            "dark": {
+              "sourceHex": "#48484a",
+              "token": "D26",
+              "tone": 26,
+              "hex": "#47474a",
+              "deltaE": 0.003765,
+              "exact": false
+            }
+          }
+        },
+        "Gray 4": {
+          "sourceVariable": "Grays/Gray 4",
+          "mappings": {
+            "light": {
+              "sourceHex": "#d1d1d6",
+              "token": "L10",
+              "tone": 10,
+              "hex": "#d1d1d4",
+              "deltaE": 0.002799,
+              "exact": false
+            },
+            "dark": {
+              "sourceHex": "#3a3a3c",
+              "token": "D18",
+              "tone": 18,
+              "hex": "#3b3b3e",
+              "deltaE": 0.004569,
+              "exact": false
+            }
+          }
+        },
+        "Gray 5": {
+          "sourceVariable": "Grays/Gray 5",
+          "mappings": {
+            "light": {
+              "sourceHex": "#e5e5ea",
+              "token": "L6",
+              "tone": 6,
+              "hex": "#e5e5e6",
+              "deltaE": 0.005498,
+              "exact": false
+            },
+            "dark": {
+              "sourceHex": "#2c2c2e",
+              "token": "D10",
+              "tone": 10,
+              "hex": "#2c2c2e",
+              "deltaE": 0,
+              "exact": true
+            }
+          }
+        },
+        "Gray 6": {
+          "sourceVariable": "Grays/Gray 6",
+          "mappings": {
+            "light": {
+              "sourceHex": "#f2f2f7",
+              "token": "L3",
+              "tone": 3,
+              "hex": "#f2f2f3",
+              "deltaE": 0.00544,
+              "exact": false
+            },
+            "dark": {
+              "sourceHex": "#1c1c1e",
+              "token": "D5",
+              "tone": 5,
+              "hex": "#1c1c1e",
+              "deltaE": 0,
+              "exact": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

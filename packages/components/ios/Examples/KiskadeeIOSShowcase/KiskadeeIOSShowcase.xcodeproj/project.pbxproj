@@ -13,7 +13,7 @@
 		2A0EAA842CCB4B0300A10001 /* KiskadeeIOS in Frameworks */ = {isa = PBXBuildFile; productRef = 2A0EAA832CCB4B0300A10001 /* KiskadeeIOS */; };
 		CC99B0010000000000000001 /* carbon-ibm-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0010000000000000001 /* carbon-ibm-switch.schema.json */; };
 		CC99B0020000000000000001 /* fluent-2-microsoft-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0020000000000000001 /* fluent-2-microsoft-switch.schema.json */; };
-		CC99B0030000000000000001 /* ios-26-apple-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0030000000000000001 /* ios-26-apple-switch.schema.json */; };
+		CC99B0030000000000000001 /* ios-27-apple-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0030000000000000001 /* ios-27-apple-switch.schema.json */; };
 		CC99B0040000000000000001 /* material-3-kiskadee-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0040000000000000001 /* material-3-kiskadee-switch.schema.json */; };
 		5B6DACB42FDDAC8200E48E57 /* KiskadeeIOSShowcaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0EAA6E2CCB4B0300A10001 /* KiskadeeIOSShowcaseApp.swift */; };
 		5B6DACB52FDDAC8200E48E57 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0EAA702CCB4B0300A10001 /* ContentView.swift */; };
@@ -21,7 +21,7 @@
 		5B6DACB92FDDAC8200E48E57 /* material-3-google-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2A0EAA722CCB4B0300A10001 /* material-3-google-switch.schema.json */; };
 		CC99B1010000000000000001 /* carbon-ibm-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0010000000000000001 /* carbon-ibm-switch.schema.json */; };
 		CC99B1020000000000000001 /* fluent-2-microsoft-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0020000000000000001 /* fluent-2-microsoft-switch.schema.json */; };
-		CC99B1030000000000000001 /* ios-26-apple-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0030000000000000001 /* ios-26-apple-switch.schema.json */; };
+		CC99B1030000000000000001 /* ios-27-apple-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0030000000000000001 /* ios-27-apple-switch.schema.json */; };
 		CC99B1040000000000000001 /* material-3-kiskadee-switch.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = CC99F0040000000000000001 /* material-3-kiskadee-switch.schema.json */; };
 /* End PBXBuildFile section */
 
@@ -32,7 +32,7 @@
 		2A0EAA722CCB4B0300A10001 /* material-3-google-switch.schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "material-3-google-switch.schema.json"; sourceTree = "<group>"; };
 		CC99F0010000000000000001 /* carbon-ibm-switch.schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "carbon-ibm-switch.schema.json"; sourceTree = "<group>"; };
 		CC99F0020000000000000001 /* fluent-2-microsoft-switch.schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "fluent-2-microsoft-switch.schema.json"; sourceTree = "<group>"; };
-		CC99F0030000000000000001 /* ios-26-apple-switch.schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "ios-26-apple-switch.schema.json"; sourceTree = "<group>"; };
+		CC99F0030000000000000001 /* ios-27-apple-switch.schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "ios-27-apple-switch.schema.json"; sourceTree = "<group>"; };
 		CC99F0040000000000000001 /* material-3-kiskadee-switch.schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "material-3-kiskadee-switch.schema.json"; sourceTree = "<group>"; };
 		5B6DACBD2FDDAC8200E48E57 /* KiskadeeIOSShowcase copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KiskadeeIOSShowcase copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -89,7 +89,7 @@
 			children = (
 				CC99F0010000000000000001 /* carbon-ibm-switch.schema.json */,
 				CC99F0020000000000000001 /* fluent-2-microsoft-switch.schema.json */,
-				CC99F0030000000000000001 /* ios-26-apple-switch.schema.json */,
+				CC99F0030000000000000001 /* ios-27-apple-switch.schema.json */,
 				2A0EAA722CCB4B0300A10001 /* material-3-google-switch.schema.json */,
 				CC99F0040000000000000001 /* material-3-kiskadee-switch.schema.json */,
 			);
@@ -183,7 +183,7 @@
 			files = (
 				CC99B0010000000000000001 /* carbon-ibm-switch.schema.json in Resources */,
 				CC99B0020000000000000001 /* fluent-2-microsoft-switch.schema.json in Resources */,
-				CC99B0030000000000000001 /* ios-26-apple-switch.schema.json in Resources */,
+				CC99B0030000000000000001 /* ios-27-apple-switch.schema.json in Resources */,
 				2A0EAA732CCB4B0300A10001 /* material-3-google-switch.schema.json in Resources */,
 				CC99B0040000000000000001 /* material-3-kiskadee-switch.schema.json in Resources */,
 			);
@@ -195,7 +195,7 @@
 			files = (
 				CC99B1010000000000000001 /* carbon-ibm-switch.schema.json in Resources */,
 				CC99B1020000000000000001 /* fluent-2-microsoft-switch.schema.json in Resources */,
-				CC99B1030000000000000001 /* ios-26-apple-switch.schema.json in Resources */,
+				CC99B1030000000000000001 /* ios-27-apple-switch.schema.json in Resources */,
 				5B6DACB92FDDAC8200E48E57 /* material-3-google-switch.schema.json in Resources */,
 				CC99B1040000000000000001 /* material-3-kiskadee-switch.schema.json in Resources */,
 			);

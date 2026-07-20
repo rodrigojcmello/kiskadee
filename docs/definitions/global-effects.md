@@ -313,12 +313,13 @@ records detailed provenance under
 | `s:lg:3` | Shadow 28 | `0 0 8px 0 rgba(0,0,0,.20)`, `0 14px 28px 0 rgba(0,0,0,.24)` |
 | `s:lg:4` | Shadow 64 | `0 0 8px 0 rgba(0,0,0,.20)`, `0 32px 64px 0 rgba(0,0,0,.24)` |
 
-## Apple 26 Shadow Mapping
+## Apple Shadow Mapping
 
-`ios-26-apple` temporarily registers every unique shadow found across the
-provided iOS 26 and macOS 26 Figma nodes so the Showcase can compare them in
-practice. The iOS menu material blur node is intentionally excluded because it
-is material/backdrop blur, not a box-shadow layer.
+`ios-27-apple` temporarily carries the unique shadows previously extracted from
+iOS 26 and macOS 26 Figma nodes so the Showcase can compare them in practice.
+This is preserved source provenance, not proof that those shadows are official
+iOS 27 values. The iOS menu material blur node is intentionally excluded
+because it is material/backdrop blur, not a box-shadow layer.
 
 | Kiskadee level | Source | CSS layer |
 | --- | --- | --- |

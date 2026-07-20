@@ -78,7 +78,7 @@ Why Switch needs it:
 
 - Fluent 2 Microsoft uses a visible `1px` track border and still needs the thumb to sit on the
   intended inner geometry.
-- iOS 26 Apple uses `borderWidth: 0`, but the same track contract keeps the generated artifacts
+- iOS 27 Apple uses `borderWidth: 0`, but the same track contract keeps the generated artifacts
   structurally consistent across presets.
 - The React Switch measures the rendered track padding and thumb size to compute travel distance, so
   the generated web padding must reflect the final visual inset, not a schema value inflated by web

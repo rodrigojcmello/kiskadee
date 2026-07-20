@@ -115,9 +115,9 @@ private struct ShowcaseSwitchPreset: Identifiable, Hashable {
             resourceName: "fluent-2-microsoft-switch.schema"
         ),
         ShowcaseSwitchPreset(
-            id: "ios-26-apple",
-            title: "iOS 26 by Apple",
-            resourceName: "ios-26-apple-switch.schema"
+            id: "ios-27-apple",
+            title: "iOS 27 by Apple",
+            resourceName: "ios-27-apple-switch.schema"
         ),
         materialGoogle,
         ShowcaseSwitchPreset(
