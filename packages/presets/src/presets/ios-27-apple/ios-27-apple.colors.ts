@@ -5,69 +5,94 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import { invertKiskadeeHexScale } from '@kiskadee/core';
-import greenLight from './colors/green.light.ts';
-import neutralLight from './colors/neutral.light.ts';
-import primaryLight from './colors/primary.light.ts';
-import redLight from './colors/red.light.ts';
-
-// Provisional scales inherited from the former iOS 26 preset.
-// The official iOS 27 Figma system-color seeds are documented under
-// packages/presets/docs/design-systems/ios-27-apple/colors/ and will replace these scales only
-// after a dedicated tonal-scale generation and visual approval step.
-// Legacy iOS 26 source - https://www.sketch.com/s/f63aa308-1f82-498c-8019-530f3b846db9
-// iOS 18 - https://www.sketch.com/s/bb57439f-19da-4c7a-bfd2-a196cf51f766/symbols
+import blueV1 from './colors/b.blue.v1.ts';
+import mintV1 from './colors/bg.teal.v1.ts';
+import tealV2 from './colors/bg.teal.v2.ts';
+import cyanV1 from './colors/bg.teal.v3.ts';
+import greenV1 from './colors/g.green.v1.ts';
+import blackV1 from './colors/n.black.v1.ts';
+import purpleV1 from './colors/p.purple.v1.ts';
+import indigoV1 from './colors/pb.indigo.v1.ts';
+import redV1 from './colors/r.red.v1.ts';
+import pinkV1 from './colors/r.red.v2.ts';
+import yellowV1 from './colors/y.yellow.v1.ts';
+import orangeV1 from './colors/yr.orange.v1.ts';
+import brownV1 from './colors/yr.orange.v2.ts';
 
 // -------------------------------------------------------------------------------------------------
-// 3-layer color architecture (Primitive → Global semantics → Component intents)
+// Color architecture overview: Layer 1 → Layer 2 → Layer 3
 // -------------------------------------------------------------------------------------------------
 
-// NOTE: This preset is currently light-only. We keep `dark` keys present as placeholders.
+// -------------------------------------------------------------------------------------------------
+// Layer 1 - Primitive color assets
+// -------------------------------------------------------------------------------------------------
 
 export const primitiveColors = {
-  blue: {
-    v1: {
-      kind: 'static',
-      scales: { light: primaryLight, dark: invertKiskadeeHexScale(primaryLight) }
-    }
-  },
   black: {
-    v1: {
-      kind: 'static',
-      scales: { light: neutralLight, dark: invertKiskadeeHexScale(neutralLight) }
-    }
+    v1: blackV1
+  },
+  blue: {
+    v1: blueV1
+  },
+  brown: {
+    // Apple Brown is the authored `yr.orange.v2` seed, addressed by its natural identity in Core.
+    v1: brownV1
+  },
+  cyan: {
+    // Apple Cyan is an authored Blue-Green variant, addressed as Cyan in Core.
+    v1: cyanV1
   },
   green: {
-    v1: {
-      kind: 'static',
-      scales: { light: greenLight, dark: invertKiskadeeHexScale(greenLight) }
-    }
+    v1: greenV1
+  },
+  orange: {
+    v1: orangeV1
+  },
+  pink: {
+    // Apple Pink classifies in Munsell Red but remains Pink at the public primitive layer.
+    v1: pinkV1
+  },
+  purple: {
+    v1: purpleV1,
+    // Core has no Indigo hue name; the Apple Indigo appearance occupies the second Purple slot.
+    v2: indigoV1
   },
   red: {
-    v1: {
-      kind: 'static',
-      scales: { light: redLight, dark: invertKiskadeeHexScale(redLight) }
-    }
+    v1: redV1
+  },
+  teal: {
+    // Mint and Teal are distinct Apple identities inside the generated Blue-Green sector.
+    v1: mintV1,
+    v2: tealV2
+  },
+  yellow: {
+    v1: yellowV1
   }
 } as const satisfies PrimitiveColors;
+
+// -------------------------------------------------------------------------------------------------
+// Layer 2 - Global semantic colors
+// -------------------------------------------------------------------------------------------------
 
 export const globalSemantics = {
   light: {
     primary: { v1: 'primitive.blue.v1' },
     neutral: { v1: 'primitive.black.v1' },
-    redLike: { v1: 'primitive.red.v1' },
+    redLike: { v1: 'primitive.red.v1', v2: 'primitive.pink.v1' },
+    yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
     greenLike: { v1: 'primitive.green.v1' }
   },
   dark: {
     primary: { v1: 'primitive.blue.v1' },
     neutral: { v1: 'primitive.black.v1' },
-    redLike: { v1: 'primitive.red.v1' },
+    redLike: { v1: 'primitive.red.v1', v2: 'primitive.pink.v1' },
+    yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
     greenLike: { v1: 'primitive.green.v1' }
   }
 } as const satisfies GlobalSemanticsByTheme;
 
 // -------------------------------------------------------------------------------------------------
-// Color Layer 2 - Global semantics by segment (registry + optional overrides)
+// Layer 2 - Segment registry and optional semantic overrides
 // -------------------------------------------------------------------------------------------------
 
 /**
@@ -83,6 +108,10 @@ export const globalSemanticsBySegment = {
     }
   }
 } as const satisfies GlobalSemanticsBySegment;
+
+// -------------------------------------------------------------------------------------------------
+// Layer 3 - Component intents
+// -------------------------------------------------------------------------------------------------
 
 export const componentIntents = {
   button: {

@@ -1,4 +1,4 @@
-import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
+import { breakpoints, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createIos27AppleButtonSchema } from './components/button.schema.ts';
 import { createIos27AppleCardSchema } from './components/card.schema.ts';
@@ -6,16 +6,13 @@ import { createIos27AppleSliderSchema } from './components/slider.schema.ts';
 import { createIos27AppleSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './ios-27-apple.colors.ts';
 
-// The preset identity is iOS 27. Its provisional colors remain isolated until the documented
-// iOS 27 system-color seeds are promoted through the Kiskadee tonal-scale workflow.
-
 const segmentNames = ['default'] as const;
 export type Segment = (typeof segmentNames)[number];
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<Segment>(schemaContext);
-const transparent = '#00000000' as const;
-const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
+const transparent = c('default', 'l', 'neutral', 100, 0);
+const shadowBlack = (alpha: number) => c('default', 'l', 'neutral', 100, alpha * 100);
 const sliderThumbShadow = [
   { x: 0, y: 6, blur: 13, spread: 0, color: shadowBlack(0.12) },
   { x: 0, y: 0.5, blur: 4, spread: 0, color: shadowBlack(0.12) }
@@ -34,7 +31,8 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     fonts: {
-      body: ['Roboto', 'sans-serif']
+      // Native consumers resolve San Francisco directly; web consumers use the platform stack.
+      body: ['-apple-system', 'sans-serif']
     },
     focus: {
       width: 2,
@@ -84,15 +82,33 @@ export const schema: Schema<Segment> = {
     palettes: {
       default: {
         light: {
+          focusColor: c.ref('default', 'l', 'primary', 'vivid'),
           effects: {
             activationFeedback: {
               tone: {
                 subtle: {
-                  color: '#000000',
+                  color: c('default', 'l', 'neutral', 100),
                   opacity: 0.1
                 },
                 vivid: {
-                  color: '#ffffff',
+                  color: c('default', 'l', 'neutral', 0),
+                  opacity: 0.2
+                }
+              }
+            }
+          }
+        },
+        dark: {
+          focusColor: c.ref('default', 'd', 'primary', 'vivid'),
+          effects: {
+            activationFeedback: {
+              tone: {
+                subtle: {
+                  color: c('default', 'd', 'neutral', 100),
+                  opacity: 0.1
+                },
+                vivid: {
+                  color: c('default', 'd', 'neutral', 0),
                   opacity: 0.2
                 }
               }

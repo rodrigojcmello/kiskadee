@@ -1,16 +1,225 @@
-import { type Schema, withAlpha } from '@kiskadee/core';
+import type { KiskadeeTone, Schema, TonalFunctionalReferenceName } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type Ios27AppleSegmentName = 'default';
 type ButtonComponent = NonNullable<Schema<Ios27AppleSegmentName>['components']['button']>;
+type ThemeShortcut = 'l' | 'd';
+type ButtonRecipeTheme = 'light' | 'dark';
+type ButtonColorRole =
+  | 'button.primary'
+  | 'button.neutral'
+  | 'button.destructive'
+  | 'button.positive';
+
+type FunctionalToneLocator = {
+  reference: TonalFunctionalReferenceName;
+  offset: number;
+};
+
+type StatefulFunctionalTones = {
+  rest: FunctionalToneLocator;
+  hover: FunctionalToneLocator;
+  pressed: FunctionalToneLocator;
+  selected: FunctionalToneLocator;
+};
+
+type ButtonThemeRecipe = {
+  scale: ThemeShortcut;
+  high: StatefulFunctionalTones;
+  medium: StatefulFunctionalTones;
+  lowerEmphasis: Omit<StatefulFunctionalTones, 'rest'>;
+  transparentTone: KiskadeeTone;
+  tertiaryFill: {
+    tone: KiskadeeTone;
+    alpha: number;
+  };
+  tertiaryLabel: {
+    tone: KiskadeeTone;
+    alpha: number;
+  };
+  highForeground: Record<ButtonColorRole, KiskadeeTone>;
+};
 
 type CreateIos27AppleButtonSchemaArgs = {
   c: PresetColorGetter<Ios27AppleSegmentName>;
 };
 
+/**
+ * Canonical Kiskadee Button recipe for iOS 27 Apple.
+ *
+ * The recipe is role-agnostic: intents select a color family while every
+ * intent keeps the same functional-reference offsets. Official iOS styles map
+ * to High (Bordered - Prominent), Low (Bordered), and Lowest (Borderless).
+ * Medium is the documented Kiskadee extension built from the subtle reference.
+ */
+const BUTTON_TONAL_RECIPE = {
+  light: {
+    scale: 'l',
+    high: {
+      rest: { reference: 'vivid', offset: 0 },
+      hover: { reference: 'vivid', offset: 1 },
+      pressed: { reference: 'vivid', offset: 2 },
+      selected: { reference: 'vivid', offset: 1 }
+    },
+    medium: {
+      rest: { reference: 'subtle', offset: 0 },
+      hover: { reference: 'subtle', offset: 1 },
+      pressed: { reference: 'subtle', offset: 2 },
+      selected: { reference: 'subtle', offset: 1 }
+    },
+    lowerEmphasis: {
+      hover: { reference: 'subtle', offset: 0 },
+      pressed: { reference: 'subtle', offset: 2 },
+      selected: { reference: 'subtle', offset: 1 }
+    },
+    transparentTone: 0,
+    tertiaryFill: {
+      tone: 40,
+      alpha: 12
+    },
+    tertiaryLabel: {
+      tone: 70,
+      alpha: 30
+    },
+    highForeground: {
+      'button.primary': 0,
+      'button.neutral': 0,
+      'button.destructive': 0,
+      'button.positive': 0
+    }
+  },
+  dark: {
+    scale: 'd',
+    high: {
+      rest: { reference: 'vivid', offset: 0 },
+      hover: { reference: 'vivid', offset: 1 },
+      pressed: { reference: 'vivid', offset: 2 },
+      selected: { reference: 'vivid', offset: 1 }
+    },
+    medium: {
+      rest: { reference: 'subtle', offset: 0 },
+      hover: { reference: 'subtle', offset: 1 },
+      pressed: { reference: 'subtle', offset: 2 },
+      selected: { reference: 'subtle', offset: 1 }
+    },
+    lowerEmphasis: {
+      hover: { reference: 'subtle', offset: 0 },
+      pressed: { reference: 'subtle', offset: 2 },
+      selected: { reference: 'subtle', offset: 1 }
+    },
+    transparentTone: 0,
+    tertiaryFill: {
+      tone: 55,
+      alpha: 24
+    },
+    tertiaryLabel: {
+      tone: 95,
+      alpha: 30
+    },
+    highForeground: {
+      'button.primary': 100,
+      'button.neutral': 0,
+      'button.destructive': 100,
+      'button.positive': 100
+    }
+  }
+} as const satisfies Record<ButtonRecipeTheme, ButtonThemeRecipe>;
+
 export function createIos27AppleButtonSchema({
   c
 }: CreateIos27AppleButtonSchemaArgs): ButtonComponent {
+  const createButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
+    const recipe = BUTTON_TONAL_RECIPE[theme];
+    const roleReferenceColor = (locator: FunctionalToneLocator, alpha?: number) =>
+      c.ref('default', recipe.scale, role, locator.reference, locator.offset, alpha);
+    const neutralColor = (tone: KiskadeeTone, alpha?: number) =>
+      c('default', recipe.scale, 'neutral', tone, alpha);
+    const transparent = neutralColor(recipe.transparentTone, 0);
+    const tertiaryFill = neutralColor(recipe.tertiaryFill.tone, recipe.tertiaryFill.alpha);
+    const tertiaryLabel = neutralColor(recipe.tertiaryLabel.tone, recipe.tertiaryLabel.alpha);
+    const roleForeground = roleReferenceColor(recipe.high.rest);
+
+    return {
+      boxColor: {
+        high: {
+          rest: roleReferenceColor(recipe.high.rest),
+          hover: roleReferenceColor(recipe.high.hover),
+          pressed: roleReferenceColor(recipe.high.pressed),
+          disabled: tertiaryFill,
+          selected: {
+            rest: roleReferenceColor(recipe.high.selected)
+          }
+        },
+        medium: {
+          rest: roleReferenceColor(recipe.medium.rest),
+          hover: roleReferenceColor(recipe.medium.hover),
+          pressed: roleReferenceColor(recipe.medium.pressed),
+          disabled: tertiaryFill,
+          selected: {
+            rest: roleReferenceColor(recipe.medium.selected)
+          }
+        },
+        low: {
+          rest: tertiaryFill,
+          hover: roleReferenceColor(recipe.lowerEmphasis.hover),
+          pressed: roleReferenceColor(recipe.lowerEmphasis.pressed),
+          selected: {
+            rest: roleReferenceColor(recipe.lowerEmphasis.selected)
+          }
+        },
+        lowest: {
+          rest: transparent,
+          hover: roleReferenceColor(recipe.lowerEmphasis.hover),
+          pressed: roleReferenceColor(recipe.lowerEmphasis.pressed),
+          selected: {
+            rest: roleReferenceColor(recipe.lowerEmphasis.selected)
+          }
+        }
+      },
+      textColor: {
+        high: {
+          rest: neutralColor(recipe.highForeground[role]),
+          disabled: {
+            ref: tertiaryLabel
+          }
+        },
+        medium: {
+          rest: roleForeground,
+          disabled: {
+            ref: tertiaryLabel
+          }
+        },
+        low: {
+          rest: roleForeground,
+          disabled: {
+            ref: tertiaryLabel
+          }
+        },
+        lowest: {
+          rest: roleForeground,
+          disabled: {
+            ref: tertiaryLabel
+          }
+        }
+      }
+    };
+  };
+
+  const buttonIntentPalettes = {
+    light: {
+      primary: createButtonIntent('light', 'button.primary'),
+      neutral: createButtonIntent('light', 'button.neutral'),
+      destructive: createButtonIntent('light', 'button.destructive'),
+      positive: createButtonIntent('light', 'button.positive')
+    },
+    dark: {
+      primary: createButtonIntent('dark', 'button.primary'),
+      neutral: createButtonIntent('dark', 'button.neutral'),
+      destructive: createButtonIntent('dark', 'button.destructive'),
+      positive: createButtonIntent('dark', 'button.positive')
+    }
+  };
+
   return {
     elements: {
       e1: {
@@ -20,74 +229,48 @@ export function createIos27AppleButtonSchema({
         },
         scales: {
           paddingTop: {
-            's:md:1': 16
+            's:sm:1': 4,
+            's:md:1': 7,
+            's:lg:1': 14
           },
           paddingBottom: {
-            's:md:1': 16
+            's:sm:1': 4,
+            's:md:1': 7,
+            's:lg:1': 14
           },
           paddingLeft: {
-            's:md:1': 20
+            's:sm:1': 10,
+            's:md:1': 14,
+            's:lg:1': 20
           },
           paddingRight: {
-            's:md:1': 20
+            's:sm:1': 10,
+            's:md:1': 14,
+            's:lg:1': 20
           },
           borderRadius: {
-            rounded: {
-              's:md:1': 25
-            },
-            pill: {
-              's:md:1': 25
-            },
-            square: {
-              's:md:1': 0
-            }
+            rounded: 25,
+            pill: 25,
+            square: 0
           }
         },
         palettes: {
           default: {
             light: {
               boxColor: {
-                primary: {
-                  medium: {
-                    rest: c('default', 'l', 'button.primary', 5),
-                    hover: c('default', 'l', 'button.primary', 3),
-                    focus: c('default', 'l', 'button.primary', 5),
-                    pressed: c('default', 'l', 'button.primary', 8),
-                    disabled: c('default', 'l', 'button.primary', 5, 20),
-                    selected: {
-                      rest: c('default', 'l', 'button.primary', 10),
-                      hover: c('default', 'l', 'button.primary', 8),
-                      pressed: c('default', 'l', 'button.primary', 20)
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'l', 'button.primary', 50),
-                    hover: c('default', 'l', 'button.primary', 50, 80),
-                    pressed: c('default', 'l', 'button.primary', 60),
-                    disabled: c('default', 'l', 'button.primary', 50, 20),
-                    focus: c('default', 'l', 'button.primary', 50),
-                    selected: {
-                      rest: c('default', 'l', 'button.primary', 10),
-                      hover: c('default', 'l', 'button.primary', 8),
-                      pressed: c('default', 'l', 'button.primary', 20)
-                    }
-                  }
-                }
+                primary: buttonIntentPalettes.light.primary.boxColor,
+                neutral: buttonIntentPalettes.light.neutral.boxColor,
+                destructive: buttonIntentPalettes.light.destructive.boxColor,
+                positive: buttonIntentPalettes.light.positive.boxColor
               }
-            }
-          }
-        },
-        effects: {
-          shadow: {
-            x: { rest: 0, hover: 0, pressed: 0, focus: 0, disabled: 0 },
-            y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
-            blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
-            color: {
-              rest: withAlpha('#000000', 28),
-              hover: withAlpha('#000000', 35),
-              pressed: withAlpha('#000000', 32),
-              focus: withAlpha('#000000', 35),
-              disabled: withAlpha('#000000', 0)
+            },
+            dark: {
+              boxColor: {
+                primary: buttonIntentPalettes.dark.primary.boxColor,
+                neutral: buttonIntentPalettes.dark.neutral.boxColor,
+                destructive: buttonIntentPalettes.dark.destructive.boxColor,
+                positive: buttonIntentPalettes.dark.positive.boxColor
+              }
             }
           }
         }
@@ -95,50 +278,38 @@ export function createIos27AppleButtonSchema({
       e2: {
         name: 'button-text',
         decorations: {
-          textWeight: 'medium'
+          textWeight: 'normal'
         },
         palettes: {
           default: {
             light: {
               textColor: {
-                primary: {
-                  medium: {
-                    rest: c('default', 'l', 'button.primary', 50),
-                    hover: {
-                      ref: c('default', 'l', 'button.primary', 50, 80)
-                    },
-                    pressed: { ref: c('default', 'l', 'button.primary', 50) },
-                    disabled: {
-                      ref: c('default', 'l', 'button.neutral', 0, 20)
-                    },
-                    selected: {
-                      rest: {
-                        ref: c('default', 'l', 'button.neutral', 70)
-                      }
-                    }
-                  },
-                  high: {
-                    rest: c('default', 'l', 'button.neutral', 0),
-                    disabled: {
-                      ref: c('default', 'l', 'button.neutral', 0, 20)
-                    },
-                    selected: {
-                      rest: {
-                        ref: c('default', 'l', 'button.neutral', 70)
-                      }
-                    }
-                  }
-                }
+                primary: buttonIntentPalettes.light.primary.textColor,
+                neutral: buttonIntentPalettes.light.neutral.textColor,
+                destructive: buttonIntentPalettes.light.destructive.textColor,
+                positive: buttonIntentPalettes.light.positive.textColor
+              }
+            },
+            dark: {
+              textColor: {
+                primary: buttonIntentPalettes.dark.primary.textColor,
+                neutral: buttonIntentPalettes.dark.neutral.textColor,
+                destructive: buttonIntentPalettes.dark.destructive.textColor,
+                positive: buttonIntentPalettes.dark.positive.textColor
               }
             }
           }
         },
         scales: {
           textSize: {
-            's:md:1': 17
+            's:sm:1': 15,
+            's:md:1': 15,
+            's:lg:1': 17
           },
           textHeight: {
-            's:md:1': 18
+            's:sm:1': 20,
+            's:md:1': 20,
+            's:lg:1': 22
           }
         }
       }

@@ -75,7 +75,16 @@ component evidence document.
   source.
 - Explicitly document adaptations where Kiskadee differs from the upstream design system.
 
-6. Before final response, confirm the evidence docs touched or explain why none were needed.
+6. Separate upstream fidelity from framework completion.
+
+   - Use the canonical statuses in `references/preset-evidence-format.md` for every substantially
+     revised component evidence file.
+   - Record official behavior independently from Kiskadee extensions, deferred capabilities, and
+     source areas that were not inspected.
+   - When a shared formula fills upstream gaps, document the formula once and mark every generated
+     appearance as a Kiskadee extension rather than implying official support.
+
+7. Before final response, confirm the evidence docs touched or explain why none were needed.
 
 ## Format
 

@@ -8,6 +8,32 @@ packages/presets/docs/design-systems/<preset>/
 
 Keep files concise. The goal is provenance and decision traceability, not a full design-system copy.
 
+## Contents
+
+- [Canonical statuses](#canonical-statuses)
+- [`source-evidence.md`](#source-evidencemd)
+- [`components/<component>.md`](#componentscomponentmd)
+- [Minimum acceptable evidence](#minimum-acceptable-evidence)
+- [Naming](#naming)
+
+## Canonical Statuses
+
+Use these terms consistently. Do not replace them with ambiguous labels such as "supported" or
+"custom" without one of these statuses.
+
+- **Official exact**: represented without a meaningful visual or behavioral change.
+- **Official adapted**: derived from an upstream source but translated into Kiskadee's existing
+  schema, scale, or platform-neutral contract.
+- **Kiskadee extension**: supplied by the framework where the upstream design system does not
+  define an equivalent.
+- **Deferred**: confirmed upstream capability that is intentionally outside the current schema or
+  task scope.
+- **Not inspected**: source area whose behavior is still unknown; never infer it as official.
+
+Keep source provenance separate from implementation status. A generated bundle may retain a
+diagnostic status such as `review` while an explicitly selected subset of its source-backed assets
+is approved and promoted into a preset.
+
 ## `source-evidence.md`
 
 Use this for design-system-level evidence.
@@ -31,6 +57,23 @@ This file records source evidence and preset-level decisions for
 
 - <Broad source note or known gap.>
 - <Example: Figma lacks dark mode, so the official site is used for dark treatment.>
+
+## Source Coverage
+
+| Source area | Evidence | Status | Notes |
+| --- | --- | --- | --- |
+| `<page, section, or component>` | `<node ID or URL>` | `<canonical status>` | `<coverage boundary>` |
+
+## Preset-Wide Color And Token Provenance
+
+- <Canonical token source and any local evidence artifact.>
+- <Generated asset/version provenance and which assets are promoted.>
+
+## Supported And Deferred Capabilities
+
+- **Official exact/adapted**: <capabilities represented now.>
+- **Kiskadee extension**: <preset-wide framework additions, if any.>
+- **Deferred**: <confirmed upstream capabilities intentionally omitted.>
 
 ## Preset Decisions
 
@@ -61,22 +104,49 @@ This file records source evidence and schema decisions for
 - Official documentation:
   [<Page title>](<url>)
 
+## Source Coverage
+
+| Source area | Node or reference | Inspected | Status |
+| --- | --- | --- | --- |
+| `<variant group>` | `<node ID>` | `<variants, modes, or states>` | `<canonical status>` |
+
 ## Local Evidence
 
 - `<path to local evidence image, if any>`
 
 ![Short alt text](../evidence/<component>/<source-slug>.png)
 
-## Inspected Variants
+## Official Contract
 
-- `<variant/state/size inspected>`
-- `<variant/state/size inspected>`
+- <Official variants, states, sizes, and behavior actually present upstream.>
+- <Explicit statement for interaction states or variants that are absent upstream.>
 
-## Source-Derived Values
+## Color And Token Provenance
 
 | Source concept | Source value | Kiskadee mapping |
 | --- | --- | --- |
 | `<upstream token or node>` | `<value>` | `<element/option/scale/palette/effect>` |
+
+## Kiskadee Mapping
+
+| Kiskadee appearance | Upstream relationship | Status | Decision |
+| --- | --- | --- | --- |
+| `<intent/emphasis>` | `<upstream style or none>` | `<canonical status>` | `<mapping>` |
+
+## Kiskadee Extensions
+
+- <Framework-provided appearance or state not defined upstream.>
+- <Why the extension exists and how it avoids claiming upstream fidelity.>
+
+## Shared Formula
+
+- <Role-agnostic rule used across intents, themes, emphases, and interaction states.>
+- <Whether values resolve at schema authoring/build time or require runtime behavior.>
+
+## Deferred Or Unsupported
+
+- <Confirmed upstream capability intentionally deferred.>
+- <Current approximation, or "No approximation is emitted.">
 
 ## Schema Mapping
 
@@ -84,10 +154,10 @@ This file records source evidence and schema decisions for
 - `e2`: <meaning for this component/preset, when relevant>
 - `components.<component>.options.<option>`: <why this default exists>
 
-## Adaptations
+## Validation
 
-- <Intentional difference from upstream source.>
-- <Unsupported upstream behavior and current Kiskadee approximation.>
+- <Source/schema checks performed.>
+- <Build, generated-artifact, or visual validation performed.>
 
 ## Open Gaps
 
@@ -101,7 +171,8 @@ For small changes, the document may be shorter, but it must still include:
 - source URL;
 - Figma file key and node ID when available;
 - the concrete schema decision derived from the source;
-- any intentional Kiskadee adaptation.
+- any intentional Kiskadee adaptation;
+- a canonical status for official, adapted, extended, deferred, or uninspected behavior.
 
 ## Naming
 

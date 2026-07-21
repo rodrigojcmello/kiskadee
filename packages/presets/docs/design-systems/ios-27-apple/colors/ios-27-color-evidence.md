@@ -2,7 +2,7 @@
 
 The [iOS and iPadOS 27 Community Figma file](https://www.figma.com/design/GeO2lMY65IAFczDmjs6oei/iOS-and-iPadOS-27--Community-?node-id=507-24673)
 contains a centralized local variable collection named `Colors`, with `Light` and `Dark` modes.
-This is the canonical color-family source for the next iOS 27 tonal-system generation; component
+This is the canonical color-family source for the iOS 27 tonal-system generation; component
 screenshots are supporting evidence, not the seed source.
 
 [`figma-color-variables.json`](figma-color-variables.json) preserves the exact values found in that
@@ -30,21 +30,19 @@ Unlike a Fluent Shared ramp, these are Apple system colors whose values may chan
 Dark. They must be mapped to Kiskadee tones after generation rather than treated as preexisting
 Kiskadee positions.
 
-## Tonal-Scale Input Direction
+## Tonal-Scale Input Contract
 
-- Primary candidate: `Accents/Blue` Light `#0088ff`.
-- Chromatic overrides may use the Light Accent values as authored source seeds.
-- Dark values remain official correspondence evidence. Their eventual policy (`adaptive`,
-  `harmonized`, or an explicit source mapping) must be decided during generation and visual review;
-  they are not automatically a second seed.
-- The `Grays` family will supply the evidence for `n.black.v1`. Its exact seed/reference position is
-  intentionally deferred until the neutral scale is inspected in the tonal generator.
-- Mint, Teal, and Cyan are distinct Apple identities. The future Kiskadee recipe may map them to
-  variants inside the available Munsell sectors, but this evidence file does not collapse them.
+- Primary: `Accents/Blue` Light `#0088ff`.
+- Chromatic overrides use the Light Accent values as authored source seeds.
+- Dark values remain official correspondence evidence. Their policy (`adaptive`, `harmonized`, or
+  an explicit source mapping) is recorded by the recipe; they are not automatically a second seed.
+- `n.black.v1` uses official Dark `Grays/Gray 6` (`#1c1c1e`) as its source-exact seed.
+- Mint, Teal, and Cyan remain distinct variants inside the Blue-Green sector; the preset does not
+  collapse their Apple identities.
 
-## Kiskadee Family Mapping
+## Generator Family Mapping
 
-| Apple identity | Kiskadee candidate |
+| Apple identity | Generator family |
 | --- | --- |
 | Red | `r.red.v1` |
 | Pink | `r.red.v2` |
@@ -65,7 +63,7 @@ preserved as separate variants. Apple Brown is a valid Yellow-Red color, but the
 Brown appearance guard considers `#ac7f5e` Orange-like. The official seed is therefore preserved
 exactly as `yr.orange.v2`; the derived canonical `yr.brown.v1` remains a separate candidate.
 
-## Candidate Tonal System
+## Tonal System And Promotion
 
 The editable [`tonal-system.recipe.json`](tonal-system.recipe.json) and canonical
 [`generated/`](generated/) bundle were produced with `@kiskadee/tonal-scale@0.4.1`:
@@ -80,15 +78,40 @@ The editable [`tonal-system.recipe.json`](tonal-system.recipe.json) and canonica
 - universal companion families without direct Apple Accent seeds: `gy.lime.v1`, `rp.magenta.v1`,
   and the canonical `yr.brown.v1`, generated from the shared harmony contract;
 - output: sixteen family assets and nineteen canonical files;
-- status: `review`, with no generation errors.
+- bundle diagnostic status: `review`, with no generation errors.
 
 The complete perceptual de-para is stored in
 [`figma-to-kiskadee.json`](figma-to-kiskadee.json). It maps every official Accent and Gray value to
 the nearest generated Light/Dark tone independently.
+
+Thirteen assets backed by explicit Apple source seeds are approved and promoted into the preset:
+
+| Generated asset | Preset primitive |
+| --- | --- |
+| `b.blue.v1` | `blue.v1` |
+| `bg.teal.v1` | `teal.v1` |
+| `bg.teal.v2` | `teal.v2` |
+| `bg.teal.v3` | `cyan.v1` |
+| `g.green.v1` | `green.v1` |
+| `n.black.v1` | `black.v1` |
+| `p.purple.v1` | `purple.v1` |
+| `pb.indigo.v1` | `purple.v2` |
+| `r.red.v1` | `red.v1` |
+| `r.red.v2` | `pink.v1` |
+| `y.yellow.v1` | `yellow.v1` |
+| `yr.orange.v1` | `orange.v1` |
+| `yr.orange.v2` | `brown.v1` |
+
+The three harmony-generated companions without direct Apple Accent seeds remain evidence-only:
+`gy.lime.v1`, `rp.magenta.v1`, and canonical `yr.brown.v1`. Promotion is a preset decision about a
+source-backed subset; it does not rewrite the canonical bundle or change its preserved `review`
+diagnostic.
 
 ### Shared viewer — candidate generator 0.4.1
 
 [Open the iOS 27 candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A4%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22balanced%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230088ff%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23ff383c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22r.red.v2%22%2C%22seedHex%22%3A%22%23ff2d55%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23ff8d28%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v2%22%2C%22seedHex%22%3A%22%23ac7f5e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23ffcc00%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%2334c759%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v1%22%2C%22seedHex%22%3A%22%2300c8b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v2%22%2C%22seedHex%22%3A%22%2300c3d0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v3%22%2C%22seedHex%22%3A%22%2300c0e8%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22pb.indigo.v1%22%2C%22seedHex%22%3A%22%236155f5%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23cb30e0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v1%22%2C%22seedHex%22%3A%22%231c1c1e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D)
 
 The link encodes the complete recipe and requires the local `@kiskadee/tonal-scale` application on
-port `3001`. This candidate has not yet been visually approved or promoted into the iOS 27 preset.
+port `3001`. The thirteen source-backed assets listed above are the approved preset inputs. The
+three harmony-generated companions remain available in the same viewer only as evidence and review
+material.
