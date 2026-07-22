@@ -165,284 +165,286 @@ const sizes = {
 const trackPalettes = {
   default: {
     light: {
-      boxColor: {
-        neutral: {
-          high: states({
-            rest: c.canvasInk,
-            hover: '#171926',
-            focus: c.canvasInk,
-            pressed: '#232639',
-            disabled: c.neutralTrackDisabled,
-            selectedRest: c.neutralTrackOn,
-            selectedHover: c.neutralTrackOnHover,
-            selectedFocus: c.neutralTrackOn,
-            selectedPressed: c.neutralTrackOnPressed
-          }),
-          medium: states({
-            rest: c.neutralTrack,
-            hover: c.neutralTrackHover,
-            focus: c.neutralTrack,
-            pressed: c.neutralTrackPressed,
-            disabled: c.neutralTrackDisabled,
-            selectedRest: c.neutralTrackOn,
-            selectedHover: c.neutralTrackOnHover,
-            selectedFocus: c.neutralTrackOn,
-            selectedPressed: c.neutralTrackOnPressed
-          }),
-          low: states({
-            rest: '#f3f4f76b',
-            hover: '#edeff28f',
-            focus: '#f3f4f76b',
-            pressed: '#e1e4eaa3',
-            disabled: '#e2e4e947',
-            selectedRest: '#2856e247',
-            selectedHover: '#2856e25c',
-            selectedFocus: '#2856e247',
-            selectedPressed: '#2856e270'
-          }),
-          lowest: states({
-            rest: transparent,
-            hover: '#e7e9ee38',
-            focus: transparent,
-            pressed: '#cfd4de52',
-            disabled: '#e2e4e92e',
-            selectedRest: '#2856e229',
-            selectedHover: '#2856e23d',
-            selectedFocus: '#2856e229',
-            selectedPressed: '#2856e252'
-          })
+      default: {
+        boxColor: {
+          neutral: {
+            high: states({
+              rest: c.canvasInk,
+              hover: '#171926',
+              focus: c.canvasInk,
+              pressed: '#232639',
+              disabled: c.neutralTrackDisabled,
+              selectedRest: c.neutralTrackOn,
+              selectedHover: c.neutralTrackOnHover,
+              selectedFocus: c.neutralTrackOn,
+              selectedPressed: c.neutralTrackOnPressed
+            }),
+            medium: states({
+              rest: c.neutralTrack,
+              hover: c.neutralTrackHover,
+              focus: c.neutralTrack,
+              pressed: c.neutralTrackPressed,
+              disabled: c.neutralTrackDisabled,
+              selectedRest: c.neutralTrackOn,
+              selectedHover: c.neutralTrackOnHover,
+              selectedFocus: c.neutralTrackOn,
+              selectedPressed: c.neutralTrackOnPressed
+            }),
+            low: states({
+              rest: '#f3f4f76b',
+              hover: '#edeff28f',
+              focus: '#f3f4f76b',
+              pressed: '#e1e4eaa3',
+              disabled: '#e2e4e947',
+              selectedRest: '#2856e247',
+              selectedHover: '#2856e25c',
+              selectedFocus: '#2856e247',
+              selectedPressed: '#2856e270'
+            }),
+            lowest: states({
+              rest: transparent,
+              hover: '#e7e9ee38',
+              focus: transparent,
+              pressed: '#cfd4de52',
+              disabled: '#e2e4e92e',
+              selectedRest: '#2856e229',
+              selectedHover: '#2856e23d',
+              selectedFocus: '#2856e229',
+              selectedPressed: '#2856e252'
+            })
+          },
+          primary: {
+            high: states({
+              rest: c.primaryTrackPressed,
+              hover: c.primaryTrack,
+              focus: c.primaryTrackPressed,
+              pressed: '#0a2385',
+              disabled: c.primaryTrackDisabled,
+              selectedRest: c.primaryTrackOn,
+              selectedHover: c.primaryTrackOnHover,
+              selectedFocus: c.primaryTrackOn,
+              selectedPressed: c.primaryTrackOnPressed
+            }),
+            medium: states({
+              rest: c.primaryTrack,
+              hover: c.primaryTrackHover,
+              focus: c.primaryTrack,
+              pressed: c.primaryTrackPressed,
+              disabled: c.primaryTrackDisabled,
+              selectedRest: c.primaryTrackOn,
+              selectedHover: c.primaryTrackOnHover,
+              selectedFocus: c.primaryTrackOn,
+              selectedPressed: c.primaryTrackOnPressed
+            }),
+            low: states({
+              rest: '#2856e242',
+              hover: '#2856e25c',
+              focus: '#2856e242',
+              pressed: '#2856e275',
+              disabled: '#c2c7d647',
+              selectedRest: '#6124db52',
+              selectedHover: '#6124db6b',
+              selectedFocus: '#6124db52',
+              selectedPressed: '#6124db85'
+            }),
+            lowest: states({
+              rest: transparent,
+              hover: '#2856e22e',
+              focus: transparent,
+              pressed: '#2856e24d',
+              disabled: '#c2c7d629',
+              selectedRest: '#6124db2e',
+              selectedHover: '#6124db47',
+              selectedFocus: '#6124db2e',
+              selectedPressed: '#6124db61'
+            })
+          },
+          polarity: {
+            high: states({
+              rest: c.polarityOffPressed,
+              hover: c.polarityOff,
+              focus: c.polarityOffPressed,
+              pressed: '#740618',
+              disabled: c.polarityDisabled,
+              selectedRest: c.polarityOn,
+              selectedHover: c.polarityOnHover,
+              selectedFocus: c.polarityOn,
+              selectedPressed: c.polarityOnPressed
+            }),
+            medium: states({
+              rest: c.polarityOff,
+              hover: c.polarityOffHover,
+              focus: c.polarityOff,
+              pressed: c.polarityOffPressed,
+              disabled: c.polarityDisabled,
+              selectedRest: c.polarityOn,
+              selectedHover: c.polarityOnHover,
+              selectedFocus: c.polarityOn,
+              selectedPressed: c.polarityOnPressed
+            }),
+            low: states({
+              rest: '#da1b3b47',
+              hover: '#da1b3b61',
+              focus: '#da1b3b47',
+              pressed: '#da1b3b7a',
+              disabled: '#d2bcbf47',
+              selectedRest: '#26ba7a52',
+              selectedHover: '#26ba7a6b',
+              selectedFocus: '#26ba7a52',
+              selectedPressed: '#26ba7a85'
+            }),
+            lowest: states({
+              rest: transparent,
+              hover: '#da1b3b2e',
+              focus: transparent,
+              pressed: '#da1b3b4d',
+              disabled: '#d2bcbf29',
+              selectedRest: '#26ba7a2e',
+              selectedHover: '#26ba7a47',
+              selectedFocus: '#26ba7a2e',
+              selectedPressed: '#26ba7a61'
+            })
+          }
         },
-        primary: {
-          high: states({
-            rest: c.primaryTrackPressed,
-            hover: c.primaryTrack,
-            focus: c.primaryTrackPressed,
-            pressed: '#0a2385',
-            disabled: c.primaryTrackDisabled,
-            selectedRest: c.primaryTrackOn,
-            selectedHover: c.primaryTrackOnHover,
-            selectedFocus: c.primaryTrackOn,
-            selectedPressed: c.primaryTrackOnPressed
-          }),
-          medium: states({
-            rest: c.primaryTrack,
-            hover: c.primaryTrackHover,
-            focus: c.primaryTrack,
-            pressed: c.primaryTrackPressed,
-            disabled: c.primaryTrackDisabled,
-            selectedRest: c.primaryTrackOn,
-            selectedHover: c.primaryTrackOnHover,
-            selectedFocus: c.primaryTrackOn,
-            selectedPressed: c.primaryTrackOnPressed
-          }),
-          low: states({
-            rest: '#2856e242',
-            hover: '#2856e25c',
-            focus: '#2856e242',
-            pressed: '#2856e275',
-            disabled: '#c2c7d647',
-            selectedRest: '#6124db52',
-            selectedHover: '#6124db6b',
-            selectedFocus: '#6124db52',
-            selectedPressed: '#6124db85'
-          }),
-          lowest: states({
-            rest: transparent,
-            hover: '#2856e22e',
-            focus: transparent,
-            pressed: '#2856e24d',
-            disabled: '#c2c7d629',
-            selectedRest: '#6124db2e',
-            selectedHover: '#6124db47',
-            selectedFocus: '#6124db2e',
-            selectedPressed: '#6124db61'
-          })
-        },
-        polarity: {
-          high: states({
-            rest: c.polarityOffPressed,
-            hover: c.polarityOff,
-            focus: c.polarityOffPressed,
-            pressed: '#740618',
-            disabled: c.polarityDisabled,
-            selectedRest: c.polarityOn,
-            selectedHover: c.polarityOnHover,
-            selectedFocus: c.polarityOn,
-            selectedPressed: c.polarityOnPressed
-          }),
-          medium: states({
-            rest: c.polarityOff,
-            hover: c.polarityOffHover,
-            focus: c.polarityOff,
-            pressed: c.polarityOffPressed,
-            disabled: c.polarityDisabled,
-            selectedRest: c.polarityOn,
-            selectedHover: c.polarityOnHover,
-            selectedFocus: c.polarityOn,
-            selectedPressed: c.polarityOnPressed
-          }),
-          low: states({
-            rest: '#da1b3b47',
-            hover: '#da1b3b61',
-            focus: '#da1b3b47',
-            pressed: '#da1b3b7a',
-            disabled: '#d2bcbf47',
-            selectedRest: '#26ba7a52',
-            selectedHover: '#26ba7a6b',
-            selectedFocus: '#26ba7a52',
-            selectedPressed: '#26ba7a85'
-          }),
-          lowest: states({
-            rest: transparent,
-            hover: '#da1b3b2e',
-            focus: transparent,
-            pressed: '#da1b3b4d',
-            disabled: '#d2bcbf29',
-            selectedRest: '#26ba7a2e',
-            selectedHover: '#26ba7a47',
-            selectedFocus: '#26ba7a2e',
-            selectedPressed: '#26ba7a61'
-          })
-        }
-      },
-      borderColor: {
-        neutral: {
-          high: states({
-            rest: c.canvasInk,
-            hover: '#171926',
-            focus: c.canvasInk,
-            pressed: '#232639',
-            disabled: c.neutralTrackDisabled,
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          medium: states({
-            rest: '#a9aebc',
-            hover: '#8d92a5',
-            focus: '#a9aebc',
-            pressed: '#70778f',
-            disabled: c.neutralTrackDisabled,
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          low: states({
-            rest: '#afb3c085',
-            hover: '#9298aa9e',
-            focus: '#afb3c085',
-            pressed: '#70778fb8',
-            disabled: '#e2e4e947',
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          lowest: states({
-            rest: '#afb3c03d',
-            hover: '#9298aa5c',
-            focus: '#afb3c03d',
-            pressed: '#70778f7a',
-            disabled: '#e2e4e92e',
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          })
-        },
-        primary: {
-          high: states({
-            rest: c.primaryTrackPressed,
-            hover: c.primaryTrack,
-            focus: c.primaryTrackPressed,
-            pressed: '#0a2385',
-            disabled: c.primaryTrackDisabled,
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          medium: states({
-            rest: c.primaryTrack,
-            hover: c.primaryTrackHover,
-            focus: c.primaryTrack,
-            pressed: c.primaryTrackPressed,
-            disabled: c.primaryTrackDisabled,
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          low: states({
-            rest: '#2856e270',
-            hover: '#2856e28f',
-            focus: '#2856e270',
-            pressed: '#2856e2ad',
-            disabled: '#c2c7d647',
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          lowest: states({
-            rest: '#2856e242',
-            hover: '#2856e261',
-            focus: '#2856e242',
-            pressed: '#2856e280',
-            disabled: '#c2c7d629',
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          })
-        },
-        polarity: {
-          high: states({
-            rest: c.polarityOffPressed,
-            hover: c.polarityOff,
-            focus: c.polarityOffPressed,
-            pressed: '#740618',
-            disabled: c.polarityDisabled,
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          medium: states({
-            rest: c.polarityOff,
-            hover: c.polarityOffHover,
-            focus: c.polarityOff,
-            pressed: c.polarityOffPressed,
-            disabled: c.polarityDisabled,
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          low: states({
-            rest: '#da1b3b70',
-            hover: '#da1b3b8f',
-            focus: '#da1b3b70',
-            pressed: '#da1b3bad',
-            disabled: '#d2bcbf47',
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          }),
-          lowest: states({
-            rest: '#da1b3b42',
-            hover: '#da1b3b61',
-            focus: '#da1b3b42',
-            pressed: '#da1b3b80',
-            disabled: '#d2bcbf29',
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent,
-            selectedPressed: transparent
-          })
+        borderColor: {
+          neutral: {
+            high: states({
+              rest: c.canvasInk,
+              hover: '#171926',
+              focus: c.canvasInk,
+              pressed: '#232639',
+              disabled: c.neutralTrackDisabled,
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            medium: states({
+              rest: '#a9aebc',
+              hover: '#8d92a5',
+              focus: '#a9aebc',
+              pressed: '#70778f',
+              disabled: c.neutralTrackDisabled,
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            low: states({
+              rest: '#afb3c085',
+              hover: '#9298aa9e',
+              focus: '#afb3c085',
+              pressed: '#70778fb8',
+              disabled: '#e2e4e947',
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            lowest: states({
+              rest: '#afb3c03d',
+              hover: '#9298aa5c',
+              focus: '#afb3c03d',
+              pressed: '#70778f7a',
+              disabled: '#e2e4e92e',
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            })
+          },
+          primary: {
+            high: states({
+              rest: c.primaryTrackPressed,
+              hover: c.primaryTrack,
+              focus: c.primaryTrackPressed,
+              pressed: '#0a2385',
+              disabled: c.primaryTrackDisabled,
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            medium: states({
+              rest: c.primaryTrack,
+              hover: c.primaryTrackHover,
+              focus: c.primaryTrack,
+              pressed: c.primaryTrackPressed,
+              disabled: c.primaryTrackDisabled,
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            low: states({
+              rest: '#2856e270',
+              hover: '#2856e28f',
+              focus: '#2856e270',
+              pressed: '#2856e2ad',
+              disabled: '#c2c7d647',
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            lowest: states({
+              rest: '#2856e242',
+              hover: '#2856e261',
+              focus: '#2856e242',
+              pressed: '#2856e280',
+              disabled: '#c2c7d629',
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            })
+          },
+          polarity: {
+            high: states({
+              rest: c.polarityOffPressed,
+              hover: c.polarityOff,
+              focus: c.polarityOffPressed,
+              pressed: '#740618',
+              disabled: c.polarityDisabled,
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            medium: states({
+              rest: c.polarityOff,
+              hover: c.polarityOffHover,
+              focus: c.polarityOff,
+              pressed: c.polarityOffPressed,
+              disabled: c.polarityDisabled,
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            low: states({
+              rest: '#da1b3b70',
+              hover: '#da1b3b8f',
+              focus: '#da1b3b70',
+              pressed: '#da1b3bad',
+              disabled: '#d2bcbf47',
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            }),
+            lowest: states({
+              rest: '#da1b3b42',
+              hover: '#da1b3b61',
+              focus: '#da1b3b42',
+              pressed: '#da1b3b80',
+              disabled: '#d2bcbf29',
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent,
+              selectedPressed: transparent
+            })
+          }
         }
       }
     }
@@ -452,133 +454,135 @@ const trackPalettes = {
 const thumbPalettes = {
   default: {
     light: {
-      boxColor: {
-        neutral: {
-          high: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.thumbOn,
-            selectedHover: c.thumbOn,
-            selectedFocus: c.thumbOn
-          }),
-          medium: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.thumbOn,
-            selectedHover: c.thumbOn,
-            selectedFocus: c.thumbOn
-          }),
-          low: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          }),
-          lowest: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          })
+      default: {
+        boxColor: {
+          neutral: {
+            high: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.thumbOn,
+              selectedHover: c.thumbOn,
+              selectedFocus: c.thumbOn
+            }),
+            medium: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.thumbOn,
+              selectedHover: c.thumbOn,
+              selectedFocus: c.thumbOn
+            }),
+            low: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            }),
+            lowest: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            })
+          },
+          primary: {
+            high: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            }),
+            medium: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            }),
+            low: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            }),
+            lowest: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            })
+          },
+          polarity: {
+            high: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            }),
+            medium: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            }),
+            low: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            }),
+            lowest: thumbStates({
+              rest: c.white,
+              hover: c.white,
+              focus: c.white,
+              disabled: c.thumbDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white
+            })
+          }
         },
-        primary: {
-          high: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          }),
-          medium: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          }),
-          low: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          }),
-          lowest: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          })
-        },
-        polarity: {
-          high: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          }),
-          medium: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          }),
-          low: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          }),
-          lowest: thumbStates({
-            rest: c.white,
-            hover: c.white,
-            focus: c.white,
-            disabled: c.thumbDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white
-          })
-        }
-      },
-      borderColor: {
-        neutral: {
-          high: thumbStates({
-            rest: transparent,
-            hover: transparent,
-            focus: transparent,
-            disabled: transparent,
-            selectedRest: transparent,
-            selectedHover: transparent,
-            selectedFocus: transparent
-          })
+        borderColor: {
+          neutral: {
+            high: thumbStates({
+              rest: transparent,
+              hover: transparent,
+              focus: transparent,
+              disabled: transparent,
+              selectedRest: transparent,
+              selectedHover: transparent,
+              selectedFocus: transparent
+            })
+          }
         }
       }
     }
@@ -588,71 +592,73 @@ const thumbPalettes = {
 const textPalettes = {
   default: {
     light: {
-      textColor: {
-        neutral: {
-          high: {
-            rest: c.canvasInk,
-            disabled: ref(c.inkDisabled)
-          },
-          medium: {
-            rest: c.inkMuted,
-            disabled: ref(c.inkDisabled)
-          },
-          low: {
-            rest: '#70778fc7',
-            disabled: ref(c.inkDisabled)
-          },
-          lowest: {
-            rest: '#70778f9e',
-            disabled: ref(c.inkDisabled)
-          }
-        },
-        primary: {
-          high: {
-            rest: c.primaryTrackPressed,
-            disabled: ref(c.inkDisabled)
-          },
-          medium: {
-            rest: c.primaryTrack,
-            disabled: ref(c.inkDisabled)
-          },
-          low: {
-            rest: '#2856e2c7',
-            disabled: ref(c.inkDisabled)
-          },
-          lowest: {
-            rest: '#2856e29e',
-            disabled: ref(c.inkDisabled)
-          }
-        },
-        polarity: {
-          high: {
-            rest: c.polarityOffPressed,
-            selected: {
-              rest: ref(c.polarityOnPressed)
+      default: {
+        textColor: {
+          neutral: {
+            high: {
+              rest: c.canvasInk,
+              disabled: ref(c.inkDisabled)
             },
-            disabled: ref(c.inkDisabled)
-          },
-          medium: {
-            rest: c.polarityOff,
-            selected: {
-              rest: ref(c.polarityOn)
+            medium: {
+              rest: c.inkMuted,
+              disabled: ref(c.inkDisabled)
             },
-            disabled: ref(c.inkDisabled)
-          },
-          low: {
-            rest: '#da1b3bc7',
-            selected: {
-              rest: ref('#26ba7ac7' as const)
+            low: {
+              rest: '#70778fc7',
+              disabled: ref(c.inkDisabled)
             },
-            disabled: ref(c.inkDisabled)
+            lowest: {
+              rest: '#70778f9e',
+              disabled: ref(c.inkDisabled)
+            }
           },
-          lowest: {
-            rest: '#da1b3b9e',
-            selected: {
-              rest: ref('#26ba7a9e' as const)
+          primary: {
+            high: {
+              rest: c.primaryTrackPressed,
+              disabled: ref(c.inkDisabled)
             },
-            disabled: ref(c.inkDisabled)
+            medium: {
+              rest: c.primaryTrack,
+              disabled: ref(c.inkDisabled)
+            },
+            low: {
+              rest: '#2856e2c7',
+              disabled: ref(c.inkDisabled)
+            },
+            lowest: {
+              rest: '#2856e29e',
+              disabled: ref(c.inkDisabled)
+            }
+          },
+          polarity: {
+            high: {
+              rest: c.polarityOffPressed,
+              selected: {
+                rest: ref(c.polarityOnPressed)
+              },
+              disabled: ref(c.inkDisabled)
+            },
+            medium: {
+              rest: c.polarityOff,
+              selected: {
+                rest: ref(c.polarityOn)
+              },
+              disabled: ref(c.inkDisabled)
+            },
+            low: {
+              rest: '#da1b3bc7',
+              selected: {
+                rest: ref('#26ba7ac7' as const)
+              },
+              disabled: ref(c.inkDisabled)
+            },
+            lowest: {
+              rest: '#da1b3b9e',
+              selected: {
+                rest: ref('#26ba7a9e' as const)
+              },
+              disabled: ref(c.inkDisabled)
+            }
           }
         }
       }
@@ -663,144 +669,146 @@ const textPalettes = {
 const iconPalettes = {
   default: {
     light: {
-      textColor: {
-        neutral: {
-          high: states({
-            rest: c.iconOff,
-            hover: c.iconOff,
-            focus: c.iconOff,
-            pressed: c.iconOff,
-            disabled: c.inkDisabled,
-            selectedRest: c.iconOn,
-            selectedHover: c.iconOn,
-            selectedFocus: c.iconOn,
-            selectedPressed: c.iconOn
-          }),
-          medium: states({
-            rest: c.iconOff,
-            hover: c.iconOff,
-            focus: c.iconOff,
-            pressed: c.iconOff,
-            disabled: c.inkDisabled,
-            selectedRest: c.iconOn,
-            selectedHover: c.iconOn,
-            selectedFocus: c.iconOn,
-            selectedPressed: c.iconOn
-          }),
-          low: states({
-            rest: '#70778fc7',
-            hover: '#70778fc7',
-            focus: '#70778fc7',
-            pressed: '#70778fc7',
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          }),
-          lowest: states({
-            rest: '#70778f9e',
-            hover: '#70778f9e',
-            focus: '#70778f9e',
-            pressed: '#70778f9e',
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          })
-        },
-        primary: {
-          high: states({
-            rest: c.primaryTrackPressed,
-            hover: c.primaryTrackPressed,
-            focus: c.primaryTrackPressed,
-            pressed: c.primaryTrackPressed,
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          }),
-          medium: states({
-            rest: c.primaryTrack,
-            hover: c.primaryTrack,
-            focus: c.primaryTrack,
-            pressed: c.primaryTrack,
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          }),
-          low: states({
-            rest: '#2856e2c7',
-            hover: '#2856e2c7',
-            focus: '#2856e2c7',
-            pressed: '#2856e2c7',
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          }),
-          lowest: states({
-            rest: '#2856e29e',
-            hover: '#2856e29e',
-            focus: '#2856e29e',
-            pressed: '#2856e29e',
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          })
-        },
-        polarity: {
-          high: states({
-            rest: c.polarityOffPressed,
-            hover: c.polarityOffPressed,
-            focus: c.polarityOffPressed,
-            pressed: c.polarityOffPressed,
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          }),
-          medium: states({
-            rest: c.polarityOff,
-            hover: c.polarityOff,
-            focus: c.polarityOff,
-            pressed: c.polarityOff,
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          }),
-          low: states({
-            rest: '#da1b3bc7',
-            hover: '#da1b3bc7',
-            focus: '#da1b3bc7',
-            pressed: '#da1b3bc7',
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          }),
-          lowest: states({
-            rest: '#da1b3b9e',
-            hover: '#da1b3b9e',
-            focus: '#da1b3b9e',
-            pressed: '#da1b3b9e',
-            disabled: c.inkDisabled,
-            selectedRest: c.white,
-            selectedHover: c.white,
-            selectedFocus: c.white,
-            selectedPressed: c.white
-          })
+      default: {
+        textColor: {
+          neutral: {
+            high: states({
+              rest: c.iconOff,
+              hover: c.iconOff,
+              focus: c.iconOff,
+              pressed: c.iconOff,
+              disabled: c.inkDisabled,
+              selectedRest: c.iconOn,
+              selectedHover: c.iconOn,
+              selectedFocus: c.iconOn,
+              selectedPressed: c.iconOn
+            }),
+            medium: states({
+              rest: c.iconOff,
+              hover: c.iconOff,
+              focus: c.iconOff,
+              pressed: c.iconOff,
+              disabled: c.inkDisabled,
+              selectedRest: c.iconOn,
+              selectedHover: c.iconOn,
+              selectedFocus: c.iconOn,
+              selectedPressed: c.iconOn
+            }),
+            low: states({
+              rest: '#70778fc7',
+              hover: '#70778fc7',
+              focus: '#70778fc7',
+              pressed: '#70778fc7',
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            }),
+            lowest: states({
+              rest: '#70778f9e',
+              hover: '#70778f9e',
+              focus: '#70778f9e',
+              pressed: '#70778f9e',
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            })
+          },
+          primary: {
+            high: states({
+              rest: c.primaryTrackPressed,
+              hover: c.primaryTrackPressed,
+              focus: c.primaryTrackPressed,
+              pressed: c.primaryTrackPressed,
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            }),
+            medium: states({
+              rest: c.primaryTrack,
+              hover: c.primaryTrack,
+              focus: c.primaryTrack,
+              pressed: c.primaryTrack,
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            }),
+            low: states({
+              rest: '#2856e2c7',
+              hover: '#2856e2c7',
+              focus: '#2856e2c7',
+              pressed: '#2856e2c7',
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            }),
+            lowest: states({
+              rest: '#2856e29e',
+              hover: '#2856e29e',
+              focus: '#2856e29e',
+              pressed: '#2856e29e',
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            })
+          },
+          polarity: {
+            high: states({
+              rest: c.polarityOffPressed,
+              hover: c.polarityOffPressed,
+              focus: c.polarityOffPressed,
+              pressed: c.polarityOffPressed,
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            }),
+            medium: states({
+              rest: c.polarityOff,
+              hover: c.polarityOff,
+              focus: c.polarityOff,
+              pressed: c.polarityOff,
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            }),
+            low: states({
+              rest: '#da1b3bc7',
+              hover: '#da1b3bc7',
+              focus: '#da1b3bc7',
+              pressed: '#da1b3bc7',
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            }),
+            lowest: states({
+              rest: '#da1b3b9e',
+              hover: '#da1b3b9e',
+              focus: '#da1b3b9e',
+              pressed: '#da1b3b9e',
+              disabled: c.inkDisabled,
+              selectedRest: c.white,
+              selectedHover: c.white,
+              selectedFocus: c.white,
+              selectedPressed: c.white
+            })
+          }
         }
       }
     }

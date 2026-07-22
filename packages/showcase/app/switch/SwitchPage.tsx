@@ -35,6 +35,7 @@ import {
 } from '@/components/ShowcaseControls';
 import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
 import { SwatchRadioGroup } from '@/k-components';
+import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
 
@@ -317,9 +318,9 @@ export default function SwitchPage() {
   const isThumbShrinkEnabled = hasThumbShrinkEffect && thumbShrinkEnabled;
   const thumbShrinkOverride = isThumbShrinkEnabled ? undefined : false;
   const supportedScales = switchMeta?.scale;
-  const supportedIntents = switchMeta?.state;
+  const supportedIntents = getManifestComponentState(switchMeta, segment, theme);
   const supportedStates = supportedIntents?.[intent];
-  const supportedCardStates = cardMeta?.state;
+  const supportedCardStates = getManifestComponentState(cardMeta, segment, theme);
   const switchIcons = hasActiveIconMode ? switchIconSets[iconMode] : undefined;
   const cardShadow = useMemo(() => {
     const shadowBucket = cardClassesMap?.e1?.e?.h;

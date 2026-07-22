@@ -219,95 +219,97 @@ export function createFluent2MicrosoftCardSchema({
         },
         palettes: buildBySegment(segmentNames, () => ({
           light: {
-            boxColor: {
-              neutral: {
-                lowest: {
-                  ...neutralLowest,
-                  selected: selectedNeutralLow
+            default: {
+              boxColor: {
+                neutral: {
+                  lowest: {
+                    ...neutralLowest,
+                    selected: selectedNeutralLow
+                  },
+                  low: {
+                    ...neutralLow,
+                    selected: selectedNeutralLow
+                  },
+                  medium: {
+                    ...neutralMedium,
+                    selected: selectedNeutralMedium
+                  },
+                  high: {
+                    ...neutralHigh,
+                    selected: selectedPrimaryMedium
+                  },
+                  highest: {
+                    ...neutralHighest,
+                    selected: selectedPrimaryMedium
+                  }
                 },
-                low: {
-                  ...neutralLow,
-                  selected: selectedNeutralLow
-                },
-                medium: {
-                  ...neutralMedium,
-                  selected: selectedNeutralMedium
-                },
-                high: {
-                  ...neutralHigh,
-                  selected: selectedPrimaryMedium
-                },
-                highest: {
-                  ...neutralHighest,
-                  selected: selectedPrimaryMedium
+                primary: {
+                  lowest: {
+                    ...primaryLowest,
+                    selected: selectedPrimaryHigh
+                  },
+                  low: {
+                    ...primaryLow,
+                    selected: selectedPrimaryHigh
+                  },
+                  medium: {
+                    ...primaryMedium,
+                    selected: selectedPrimaryHigh
+                  },
+                  high: {
+                    ...primaryHigh,
+                    selected: selectedPrimaryHighest
+                  },
+                  highest: {
+                    ...primaryHighest,
+                    selected: selectedPrimaryMedium
+                  }
                 }
               },
-              primary: {
-                lowest: {
-                  ...primaryLowest,
-                  selected: selectedPrimaryHigh
+              borderColor: {
+                neutral: {
+                  lowest: {
+                    ...borderlessNeutral,
+                    selected: selectedBorder
+                  },
+                  low: {
+                    ...borderLow,
+                    selected: selectedBorder
+                  },
+                  medium: {
+                    ...borderlessNeutral,
+                    selected: selectedBorder
+                  },
+                  high: {
+                    ...borderHigh,
+                    selected: selectedBorder
+                  },
+                  highest: {
+                    ...borderHighest,
+                    selected: selectedBorder
+                  }
                 },
-                low: {
-                  ...primaryLow,
-                  selected: selectedPrimaryHigh
-                },
-                medium: {
-                  ...primaryMedium,
-                  selected: selectedPrimaryHigh
-                },
-                high: {
-                  ...primaryHigh,
-                  selected: selectedPrimaryHighest
-                },
-                highest: {
-                  ...primaryHighest,
-                  selected: selectedPrimaryMedium
-                }
-              }
-            },
-            borderColor: {
-              neutral: {
-                lowest: {
-                  ...borderlessNeutral,
-                  selected: selectedBorder
-                },
-                low: {
-                  ...borderLow,
-                  selected: selectedBorder
-                },
-                medium: {
-                  ...borderlessNeutral,
-                  selected: selectedBorder
-                },
-                high: {
-                  ...borderHigh,
-                  selected: selectedBorder
-                },
-                highest: {
-                  ...borderHighest,
-                  selected: selectedBorder
-                }
-              },
-              primary: {
-                lowest: {
-                  ...primaryBorderless,
-                  selected: selectedBorder
-                },
-                low: {
-                  ...primaryBorderLow,
-                  selected: selectedBorder
-                },
-                medium: {
-                  ...primaryBorderless,
-                  selected: selectedBorder
-                },
-                high: {
-                  ...primaryBorderHigh,
-                  selected: selectedBorder
-                },
-                highest: {
-                  ...primaryBorderHighest,
-                  selected: selectedBorder
+                primary: {
+                  lowest: {
+                    ...primaryBorderless,
+                    selected: selectedBorder
+                  },
+                  low: {
+                    ...primaryBorderLow,
+                    selected: selectedBorder
+                  },
+                  medium: {
+                    ...primaryBorderless,
+                    selected: selectedBorder
+                  },
+                  high: {
+                    ...primaryBorderHigh,
+                    selected: selectedBorder
+                  },
+                  highest: {
+                    ...primaryBorderHighest,
+                    selected: selectedBorder
+                  }
                 }
               }
             }

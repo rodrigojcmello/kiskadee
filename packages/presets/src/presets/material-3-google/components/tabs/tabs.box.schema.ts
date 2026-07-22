@@ -52,19 +52,23 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'neutral', 4)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'neutral', 4)
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 90)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'neutral', 90)
+                    }
                   }
                 }
               }
@@ -100,34 +104,38 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent,
-                    hover: c('default', 'l', 'neutral', 4),
-                    focus: c('default', 'l', 'neutral', 4),
-                    pressed: c('default', 'l', 'neutral', 10),
-                    selected: {
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
                       rest: transparent,
-                      hover: transparent,
-                      pressed: transparent
+                      hover: c('default', 'l', 'neutral', 4),
+                      focus: c('default', 'l', 'neutral', 4),
+                      pressed: c('default', 'l', 'neutral', 10),
+                      selected: {
+                        rest: transparent,
+                        hover: transparent,
+                        pressed: transparent
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent,
-                    hover: c('default', 'd', 'neutral', 85),
-                    focus: c('default', 'd', 'neutral', 85),
-                    pressed: c('default', 'd', 'neutral', 80),
-                    selected: {
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
                       rest: transparent,
-                      hover: transparent,
-                      pressed: transparent
+                      hover: c('default', 'd', 'neutral', 85),
+                      focus: c('default', 'd', 'neutral', 85),
+                      pressed: c('default', 'd', 'neutral', 80),
+                      selected: {
+                        rest: transparent,
+                        hover: transparent,
+                        pressed: transparent
+                      }
                     }
                   }
                 }
@@ -155,24 +163,28 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'neutral', 40),
-                    selected: {
-                      rest: { ref: c('default', 'l', 'primary.v2', 0) }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'neutral', 40),
+                      selected: {
+                        rest: { ref: c('default', 'l', 'primary.v2', 0) }
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 80),
-                    selected: {
-                      rest: { ref: c('default', 'd', 'primary.v2', 80) }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'neutral', 80),
+                      selected: {
+                        rest: { ref: c('default', 'd', 'primary.v2', 80) }
+                      }
                     }
                   }
                 }
@@ -189,23 +201,27 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'primary', 50),
-                    hover: c('default', 'l', 'primary', 45),
-                    pressed: c('default', 'l', 'primary', 55)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'primary', 50),
+                      hover: c('default', 'l', 'primary', 45),
+                      pressed: c('default', 'l', 'primary', 55)
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'primary', 50),
-                    hover: c('default', 'd', 'primary', 45),
-                    pressed: c('default', 'd', 'primary', 55)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'primary', 50),
+                      hover: c('default', 'd', 'primary', 45),
+                      pressed: c('default', 'd', 'primary', 55)
+                    }
                   }
                 }
               }

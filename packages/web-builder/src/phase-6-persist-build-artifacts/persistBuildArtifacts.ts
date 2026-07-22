@@ -71,8 +71,12 @@ const coreClassMapSchema = {
         },
         c: {
           type: 'object',
-          description: 'Color classes by semantic key.',
-          additionalProperties: { $ref: '#/definitions/colorClasses' }
+          description: 'Color classes by surface context bucket (d = default, i = inverse).',
+          properties: {
+            d: { $ref: '#/definitions/semanticColors' },
+            i: { $ref: '#/definitions/semanticColors' }
+          },
+          additionalProperties: false
         },
         l: {
           type: 'string',
@@ -81,9 +85,14 @@ const coreClassMapSchema = {
       },
       additionalProperties: true
     },
+    semanticColors: {
+      type: 'object',
+      additionalProperties: { $ref: '#/definitions/colorClasses' }
+    },
     colorClasses: {
       type: 'object',
       properties: {
+        hh: { type: 'string', description: 'Highest emphasis classes.' },
         h: { type: 'string', description: 'High emphasis classes.' },
         m: { type: 'string', description: 'Medium emphasis classes.' },
         l: { type: 'string', description: 'Low emphasis classes.' },

@@ -1,12 +1,12 @@
 'use client';
 
 import {
-  elementSizeValues,
   type ButtonIntent,
   type CardIntent,
   type CardRadiusMode,
   type ComponentEmphasis,
   type ElementSizeValue,
+  elementSizeValues,
   type InteractionState,
   type ShadowElementEffectSchema,
   type ShadowGlobalEffectSchema,
@@ -23,7 +23,7 @@ import {
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
-import type { ManifestComponent } from '@kiskadee/web-builder/types';
+import type { ManifestComponent, ManifestComponentState } from '@kiskadee/web-builder/types';
 import React from 'react';
 import {
   ShowcaseBooleanControl,
@@ -34,6 +34,7 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import s from './Card.module.scss';
 
 const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
@@ -275,10 +276,8 @@ const demoButtonIntentOrder: ButtonIntent[] = ['primary', 'neutral', 'destructiv
 const demoButtonEmphasisOrder: ComponentEmphasis[] = ['medium', 'high', 'low', 'lowest'];
 
 function resolveCardSemanticSamples(
-  cardManifest: ManifestComponent | undefined
+  state: ManifestComponentState | undefined
 ): CardSemanticSample[] {
-  const state = cardManifest?.state;
-
   if (!state) return [];
 
   return cardSemanticIntentOrder.flatMap((intent) =>
@@ -298,17 +297,18 @@ function resolveDemoButtonScale(buttonManifest: ManifestComponent | undefined) {
 }
 
 function resolveDemoButtonProfile(
-  buttonManifest: ManifestComponent | undefined
+  buttonManifest: ManifestComponent | undefined,
+  state: ManifestComponentState | undefined
 ): CardDemoButtonProfile {
   const scale = resolveDemoButtonScale(buttonManifest);
 
-  if (!buttonManifest?.state) {
+  if (!state) {
     return { emphasis: 'medium', intent: 'primary', scale };
   }
 
   for (const intent of demoButtonIntentOrder) {
     for (const emphasis of demoButtonEmphasisOrder) {
-      if (buttonManifest.state[intent]?.[emphasis]?.rest) {
+      if (state[intent]?.[emphasis]?.rest) {
         return { emphasis, intent, scale };
       }
     }
@@ -339,11 +339,13 @@ function CardDemoButton({ buttonProfile, disabled = false, label }: CardDemoButt
 }
 
 export function Card() {
-  const { global } = useKiskadee();
+  const { global, segment, theme } = useKiskadee();
   const { manifest } = useShowcase();
   const { cardClassesMap } = useCardArtifactConfig();
   const cardManifest = manifest?.components?.card;
   const buttonManifest = manifest?.components?.button;
+  const cardState = getManifestComponentState(cardManifest, segment, theme);
+  const buttonState = getManifestComponentState(buttonManifest, segment, theme);
   const isCardAvailable = Boolean(cardManifest);
   const supportedScales = cardManifest?.scale;
   const defaultRadius: CardRadiusMode = 'rounded';
@@ -356,8 +358,8 @@ export function Card() {
   const [preserveBorderWithShadow, setPreserveBorderWithShadow] = React.useState(true);
   const resolvedStaticShadow = staticShadow === 'off' ? undefined : staticShadow;
   const demoButtonProfile = React.useMemo(
-    () => resolveDemoButtonProfile(buttonManifest),
-    [buttonManifest]
+    () => resolveDemoButtonProfile(buttonManifest, buttonState),
+    [buttonManifest, buttonState]
   );
   const fixedShadowLevels = React.useMemo(() => {
     const shadowBucket = cardClassesMap?.e1?.e?.h;
@@ -371,10 +373,7 @@ export function Card() {
       return Boolean(key && shadowBucket[key]);
     });
   }, [cardClassesMap]);
-  const semanticSamples = React.useMemo(
-    () => resolveCardSemanticSamples(cardManifest),
-    [cardManifest]
-  );
+  const semanticSamples = React.useMemo(() => resolveCardSemanticSamples(cardState), [cardState]);
 
   const radiusSelectOptions = React.useMemo(
     () =>

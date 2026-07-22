@@ -4,7 +4,8 @@ import {
   type ComponentEmphasis,
   stateActivator as cn,
   type EffectClassBucketJSON,
-  type RadiusMode
+  type RadiusMode,
+  type SurfaceContext
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import {
@@ -21,6 +22,7 @@ export const DEFAULT_BUTTON_SCALE = 's:md:1';
 export const DEFAULT_BUTTON_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_BUTTON_INTENT: ButtonIntent = 'neutral';
 export const DEFAULT_BUTTON_EMPHASIS: ComponentEmphasis = 'medium';
+export const DEFAULT_BUTTON_SURFACE_CONTEXT: SurfaceContext = 'default';
 export const DEFAULT_BUTTON_PRESSED_DURATION_MS = 60;
 
 export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;
@@ -31,11 +33,13 @@ export const normalizeButtonScaleKey = normalizeScaleKey;
 function collectElementClasses(
   element: ClassNameByElementJSON | undefined,
   emphasis: ComponentEmphasis | undefined = DEFAULT_BUTTON_EMPHASIS,
-  intent: ButtonIntent | undefined = DEFAULT_BUTTON_INTENT
+  intent: ButtonIntent | undefined = DEFAULT_BUTTON_INTENT,
+  surfaceContext: SurfaceContext = DEFAULT_BUTTON_SURFACE_CONTEXT
 ): string {
   return resolveSchemaElementClassName(element, {
     intent,
-    emphasis
+    emphasis,
+    surfaceContext
   });
 }
 
@@ -63,6 +67,7 @@ export function resolveButtonClassNames({
   radiusEffect,
   emphasis,
   intent,
+  surfaceContext,
   globalRadius
 }: {
   e1: ClassNameByElementJSON | undefined;
@@ -77,10 +82,12 @@ export function resolveButtonClassNames({
   radiusEffect: boolean;
   emphasis: ComponentEmphasis | undefined;
   intent: ButtonIntent | undefined;
+  surfaceContext: SurfaceContext | undefined;
   globalRadius: RadiusMode | undefined;
 }): NonNullable<HeadlessButtonProps['classNames']> {
   const resolvedIntent = intent ?? DEFAULT_BUTTON_INTENT;
   const resolvedEmphasis = emphasis ?? DEFAULT_BUTTON_EMPHASIS;
+  const resolvedSurfaceContext = surfaceContext ?? DEFAULT_BUTTON_SURFACE_CONTEXT;
   const scaleKey = normalizeButtonScaleKey(scale ?? DEFAULT_BUTTON_SCALE);
   const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
 
@@ -108,7 +115,7 @@ export function resolveButtonClassNames({
   return {
     e1:
       join(
-        collectElementClasses(e1, resolvedEmphasis, resolvedIntent),
+        collectElementClasses(e1, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
         e1?.s?.all,
         classNames.e1,
         e1?.s?.[scaleKey],
@@ -126,12 +133,16 @@ export function resolveButtonClassNames({
       ) ?? '',
     e2:
       join(
-        collectElementClasses(e2, resolvedEmphasis, resolvedIntent),
+        collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
         e2?.s?.all,
         classNames.e2,
         e2?.s?.[scaleKey]
       ) ?? '',
-    e3: join(collectElementClasses(e3, resolvedEmphasis, resolvedIntent), classNames.e3) ?? ''
+    e3:
+      join(
+        collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+        classNames.e3
+      ) ?? ''
   };
 }
 

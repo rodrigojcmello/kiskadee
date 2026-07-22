@@ -192,6 +192,43 @@ Consequence:
 - Web artifacts should not include TextField root width classes.
 - Showcase examples that need bounded fields must constrain their example blocks or wrappers.
 
+### 3.1.5 Surface context ownership
+
+Context:
+
+- A component can appear on the theme's ordinary surface or on a locally strong surface such as a
+  brand fill, without changing the global Light, Dark, or Darker theme.
+- Emphasis describes the component's prominence. It must not be overloaded to mean that the same
+  component is rendered over a different surrounding surface.
+
+Decision:
+
+- Component palettes include the orthogonal `surfaceContext` axis with `default` and `inverse`.
+- The canonical palette path is
+  `segment -> theme -> surfaceContext -> color property -> intent -> emphasis -> state`.
+- `default` is required for every declared segment/theme palette. `inverse` is optional, but when
+  present it must cover the same color-property, intent, and emphasis pairs as `default`.
+- `inverse` is selected explicitly by the visual component. It is not inferred from theme,
+  background color, contrast, DOM ancestry, or runtime color measurement.
+- `on-primary` and similar design-system terms are documented source relationships that map to
+  `inverse`; they are not additional Kiskadee intents, themes, or emphasis levels.
+
+Reason:
+
+- Default and inverse components must coexist in the same page and even in the same local region.
+- Keeping the axis independent preserves the meaning of intent and emphasis while allowing every
+  supported appearance to adapt to a strong surrounding surface.
+- Precompiling both contexts keeps platform artifacts deterministic and avoids runtime color logic.
+
+Consequence:
+
+- Web artifacts keep one file per segment/theme and publish separate compact color buckets for
+  default and inverse inside that file.
+- Omitted `surfaceContext` resolves to `default`. An explicitly requested unsupported `inverse`
+  context must not silently fall back to `default`.
+- Theme and surface-context controls remain independent in inspection tools and consumer APIs.
+- Provider inheritance or automatic surface detection requires a separate future contract.
+
 ### 3.2 `components.<name>.options`
 
 Use `options` for component-specific behavior/structure defaults that are not a DS color/scale token.
@@ -423,6 +460,21 @@ In artifacts:
 
 - segment + theme are primarily encoded in file name (`default.light.kiskadee.css`, `dynamic.dark.kiskadee.json`).
 - `segments.json` keeps explicit segment metadata for tooling.
+
+### 5.2.1 Surface context representation
+
+In schema:
+
+- `default` and optional `inverse` are keys below each declared segment/theme palette.
+
+In web class-map artifacts:
+
+- both contexts remain in the same segment/theme file so instances can coexist;
+- `c.d` stores default semantic color classes;
+- `c.i` stores inverse semantic color classes when the preset authors them.
+
+Runtime selects one precompiled bucket. It does not calculate contrast or synthesize a missing
+context.
 
 ### 5.3 Emphasis representation
 

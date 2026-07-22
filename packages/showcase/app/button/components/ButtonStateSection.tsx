@@ -1,8 +1,8 @@
 'use client';
 
-import type { ButtonIntent, InteractionState } from '@kiskadee/core';
+import type { ButtonIntent, InteractionState, SurfaceContext } from '@kiskadee/core';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
-import type { ManifestComponent } from '@kiskadee/web-builder/types';
+import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import s from '../Button.module.scss';
@@ -13,8 +13,9 @@ type ButtonStateSectionProps = {
   title: string;
   fontName: string;
   align?: 'left' | 'center';
-  buttonMeta?: ManifestComponent;
+  stateCapabilities?: ManifestComponentState;
   simplified?: boolean;
+  surfaceContext: SurfaceContext;
 };
 
 const EMPHASIS_ORDER = ['high', 'medium', 'low', 'lowest'] as const;
@@ -31,8 +32,9 @@ export function ButtonStateSection({
   title,
   fontName,
   align,
-  buttonMeta,
-  simplified = false
+  stateCapabilities,
+  simplified = false,
+  surfaceContext
 }: ButtonStateSectionProps) {
   const [selectedMap, setSelectedMap] = useState<Record<Emphasis, boolean>>(() => {
     const initial = {} as Record<Emphasis, boolean>;
@@ -52,8 +54,8 @@ export function ButtonStateSection({
     }
 
     const isSupported = (() => {
-      if (!buttonMeta?.state) return true;
-      const group = buttonMeta.state[intent]?.[emphasis];
+      if (!stateCapabilities) return true;
+      const group = stateCapabilities[intent]?.[emphasis];
       if (!group) return false;
       return Boolean(group[state]);
     })();
@@ -82,6 +84,7 @@ export function ButtonStateSection({
                 <KButton
                   emphasis={emphasis}
                   intent={intent}
+                  surfaceContext={surfaceContext}
                   aria-label={`${title} ${EMPHASIS_LABELS[emphasis]} emphasis Rest`}
                 >
                   <KButton.Label>
@@ -105,7 +108,7 @@ export function ButtonStateSection({
               {renderState(
                 emphasis,
                 'rest',
-                <KButton emphasis={emphasis} intent={intent}>
+                <KButton emphasis={emphasis} intent={intent} surfaceContext={surfaceContext}>
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={align}>
                       Rest
@@ -116,7 +119,12 @@ export function ButtonStateSection({
               {renderState(
                 emphasis,
                 'hover',
-                <KButton emphasis={emphasis} intent={intent} status="hover">
+                <KButton
+                  emphasis={emphasis}
+                  intent={intent}
+                  surfaceContext={surfaceContext}
+                  status="hover"
+                >
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={align}>
                       Hover
@@ -127,7 +135,12 @@ export function ButtonStateSection({
               {renderState(
                 emphasis,
                 'focus',
-                <KButton emphasis={emphasis} intent={intent} status="focus">
+                <KButton
+                  emphasis={emphasis}
+                  intent={intent}
+                  surfaceContext={surfaceContext}
+                  status="focus"
+                >
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={align}>
                       Focus
@@ -138,7 +151,12 @@ export function ButtonStateSection({
               {renderState(
                 emphasis,
                 'pressed',
-                <KButton emphasis={emphasis} intent={intent} status="pressed">
+                <KButton
+                  emphasis={emphasis}
+                  intent={intent}
+                  surfaceContext={surfaceContext}
+                  status="pressed"
+                >
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={align}>
                       Pressed
@@ -152,6 +170,7 @@ export function ButtonStateSection({
                 <KButton
                   emphasis={emphasis}
                   intent={intent}
+                  surfaceContext={surfaceContext}
                   controlState={selectedMap[emphasis]}
                   radiusEffect={intent === 'primary'}
                   onClick={() => toggleSelected(emphasis)}
@@ -166,7 +185,12 @@ export function ButtonStateSection({
               {renderState(
                 emphasis,
                 'disabled',
-                <KButton emphasis={emphasis} intent={intent} status="disabled">
+                <KButton
+                  emphasis={emphasis}
+                  intent={intent}
+                  surfaceContext={surfaceContext}
+                  status="disabled"
+                >
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={align}>
                       Disabled

@@ -128,142 +128,144 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: iosSwitchOffTrack,
-                          hover: { ref: iosSwitchOffTrack },
-                          focus: { ref: iosSwitchOffTrack },
-                          pressed: { ref: iosSwitchOffTrack },
-                          selected: {
-                            rest: { ref: iosSwitchNeutralOnTrack },
-                            hover: { ref: iosSwitchNeutralOnTrack },
-                            focus: { ref: iosSwitchNeutralOnTrack },
-                            pressed: { ref: iosSwitchNeutralOnTrack }
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: {
+                            rest: iosSwitchOffTrack,
+                            hover: { ref: iosSwitchOffTrack },
+                            focus: { ref: iosSwitchOffTrack },
+                            pressed: { ref: iosSwitchOffTrack },
+                            selected: {
+                              rest: { ref: iosSwitchNeutralOnTrack },
+                              hover: { ref: iosSwitchNeutralOnTrack },
+                              focus: { ref: iosSwitchNeutralOnTrack },
+                              pressed: { ref: iosSwitchNeutralOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchOnPrimaryTrack,
+                            hover: { ref: iosSwitchOnPrimaryTrackHover },
+                            focus: { ref: iosSwitchOnPrimaryTrack },
+                            pressed: { ref: iosSwitchOnPrimaryTrackPressed },
+                            disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                            selected: {
+                              rest: { ref: iosSwitchOnPrimaryTrackSelected },
+                              hover: { ref: iosSwitchOnPrimaryTrackSelected },
+                              focus: { ref: iosSwitchOnPrimaryTrackSelected },
+                              pressed: { ref: iosSwitchOnPrimaryTrackSelected }
+                            }
                           }
                         },
-                        low: {
-                          rest: iosSwitchOnPrimaryTrack,
-                          hover: { ref: iosSwitchOnPrimaryTrackHover },
-                          focus: { ref: iosSwitchOnPrimaryTrack },
-                          pressed: { ref: iosSwitchOnPrimaryTrackPressed },
-                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
-                          selected: {
-                            rest: { ref: iosSwitchOnPrimaryTrackSelected },
-                            hover: { ref: iosSwitchOnPrimaryTrackSelected },
-                            focus: { ref: iosSwitchOnPrimaryTrackSelected },
-                            pressed: { ref: iosSwitchOnPrimaryTrackSelected }
+                        primary: {
+                          medium: {
+                            rest: iosSwitchOffTrack,
+                            hover: { ref: iosSwitchOffTrack },
+                            focus: { ref: iosSwitchOffTrack },
+                            pressed: { ref: iosSwitchOffTrack },
+                            selected: {
+                              rest: { ref: iosSwitchPrimaryOnTrack },
+                              hover: { ref: iosSwitchPrimaryOnTrack },
+                              focus: { ref: iosSwitchPrimaryOnTrack },
+                              pressed: { ref: iosSwitchPrimaryOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchOnPrimaryTrack,
+                            hover: { ref: iosSwitchOnPrimaryTrackHover },
+                            focus: { ref: iosSwitchOnPrimaryTrack },
+                            pressed: { ref: iosSwitchOnPrimaryTrackPressed },
+                            disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                            selected: {
+                              rest: { ref: iosSwitchOnPrimaryTrackSelected },
+                              hover: { ref: iosSwitchOnPrimaryTrackSelected },
+                              focus: { ref: iosSwitchOnPrimaryTrackSelected },
+                              pressed: { ref: iosSwitchOnPrimaryTrackSelected }
+                            }
+                          }
+                        },
+                        polarity: {
+                          medium: {
+                            rest: iosSwitchPolarityOffTrack,
+                            hover: { ref: iosSwitchPolarityOffTrack },
+                            focus: { ref: iosSwitchPolarityOffTrack },
+                            pressed: { ref: iosSwitchPolarityOffTrack },
+                            selected: {
+                              rest: { ref: iosSwitchNeutralOnTrack },
+                              hover: { ref: iosSwitchNeutralOnTrack },
+                              focus: { ref: iosSwitchNeutralOnTrack },
+                              pressed: { ref: iosSwitchNeutralOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchOnPrimaryTrack,
+                            hover: { ref: iosSwitchOnPrimaryTrackHover },
+                            focus: { ref: iosSwitchOnPrimaryTrack },
+                            pressed: { ref: iosSwitchOnPrimaryTrackPressed },
+                            disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                            selected: {
+                              rest: { ref: iosSwitchOnPrimaryTrackSelected },
+                              hover: { ref: iosSwitchOnPrimaryTrackSelected },
+                              focus: { ref: iosSwitchOnPrimaryTrackSelected },
+                              pressed: { ref: iosSwitchOnPrimaryTrackSelected }
+                            }
                           }
                         }
                       },
-                      primary: {
-                        medium: {
-                          rest: iosSwitchOffTrack,
-                          hover: { ref: iosSwitchOffTrack },
-                          focus: { ref: iosSwitchOffTrack },
-                          pressed: { ref: iosSwitchOffTrack },
-                          selected: {
-                            rest: { ref: iosSwitchPrimaryOnTrack },
-                            hover: { ref: iosSwitchPrimaryOnTrack },
-                            focus: { ref: iosSwitchPrimaryOnTrack },
-                            pressed: { ref: iosSwitchPrimaryOnTrack }
-                          }
-                        },
-                        low: {
-                          rest: iosSwitchOnPrimaryTrack,
-                          hover: { ref: iosSwitchOnPrimaryTrackHover },
-                          focus: { ref: iosSwitchOnPrimaryTrack },
-                          pressed: { ref: iosSwitchOnPrimaryTrackPressed },
-                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
-                          selected: {
-                            rest: { ref: iosSwitchOnPrimaryTrackSelected },
-                            hover: { ref: iosSwitchOnPrimaryTrackSelected },
-                            focus: { ref: iosSwitchOnPrimaryTrackSelected },
-                            pressed: { ref: iosSwitchOnPrimaryTrackSelected }
-                          }
-                        }
-                      },
-                      polarity: {
-                        medium: {
-                          rest: iosSwitchPolarityOffTrack,
-                          hover: { ref: iosSwitchPolarityOffTrack },
-                          focus: { ref: iosSwitchPolarityOffTrack },
-                          pressed: { ref: iosSwitchPolarityOffTrack },
-                          selected: {
-                            rest: { ref: iosSwitchNeutralOnTrack },
-                            hover: { ref: iosSwitchNeutralOnTrack },
-                            focus: { ref: iosSwitchNeutralOnTrack },
-                            pressed: { ref: iosSwitchNeutralOnTrack }
-                          }
-                        },
-                        low: {
-                          rest: iosSwitchOnPrimaryTrack,
-                          hover: { ref: iosSwitchOnPrimaryTrackHover },
-                          focus: { ref: iosSwitchOnPrimaryTrack },
-                          pressed: { ref: iosSwitchOnPrimaryTrackPressed },
-                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
-                          selected: {
-                            rest: { ref: iosSwitchOnPrimaryTrackSelected },
-                            hover: { ref: iosSwitchOnPrimaryTrackSelected },
-                            focus: { ref: iosSwitchOnPrimaryTrackSelected },
-                            pressed: { ref: iosSwitchOnPrimaryTrackSelected }
-                          }
-                        }
-                      }
-                    },
-                    borderColor: {
-                      neutral: {
-                        medium: {
-                          rest: transparent,
-                          hover: { ref: transparent },
-                          focus: { ref: transparent },
-                          pressed: { ref: transparent },
-                          selected: {
-                            rest: { ref: transparent },
+                      borderColor: {
+                        neutral: {
+                          medium: {
+                            rest: transparent,
                             hover: { ref: transparent },
                             focus: { ref: transparent },
-                            pressed: { ref: transparent }
-                          }
-                        },
-                        low: {
-                          rest: transparent,
-                          hover: { ref: transparent },
-                          focus: { ref: transparent },
-                          pressed: { ref: transparent },
-                          disabled: { ref: transparent },
-                          selected: {
-                            rest: { ref: transparent },
+                            pressed: { ref: transparent },
+                            selected: {
+                              rest: { ref: transparent },
+                              hover: { ref: transparent },
+                              focus: { ref: transparent },
+                              pressed: { ref: transparent }
+                            }
+                          },
+                          low: {
+                            rest: transparent,
                             hover: { ref: transparent },
                             focus: { ref: transparent },
-                            pressed: { ref: transparent }
-                          }
-                        }
-                      },
-                      primary: {
-                        medium: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
-                          }
-                        },
-                        low: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
-                          }
-                        }
-                      },
-                      polarity: {
-                        medium: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
+                            pressed: { ref: transparent },
+                            disabled: { ref: transparent },
+                            selected: {
+                              rest: { ref: transparent },
+                              hover: { ref: transparent },
+                              focus: { ref: transparent },
+                              pressed: { ref: transparent }
+                            }
                           }
                         },
-                        low: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
+                        primary: {
+                          medium: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          },
+                          low: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          }
+                        },
+                        polarity: {
+                          medium: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          },
+                          low: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
                           }
                         }
                       }
@@ -302,115 +304,117 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: iosSwitchThumb,
-                          hover: { ref: iosSwitchThumb },
-                          focus: { ref: iosSwitchThumb },
-                          pressed: { ref: iosSwitchThumb },
-                          selected: {
-                            rest: { ref: iosSwitchThumb },
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: {
+                            rest: iosSwitchThumb,
                             hover: { ref: iosSwitchThumb },
                             focus: { ref: iosSwitchThumb },
-                            pressed: { ref: iosSwitchThumb }
-                          }
-                        },
-                        low: {
-                          rest: iosSwitchThumb,
-                          hover: { ref: iosSwitchThumb },
-                          focus: { ref: iosSwitchThumb },
-                          pressed: { ref: iosSwitchThumb },
-                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
-                          selected: {
-                            rest: { ref: iosSwitchNeutralOnTrack },
-                            hover: { ref: iosSwitchNeutralOnTrack },
-                            focus: { ref: iosSwitchNeutralOnTrack },
-                            pressed: { ref: iosSwitchNeutralOnTrack }
-                          }
-                        }
-                      },
-                      primary: {
-                        medium: {
-                          rest: iosSwitchThumb,
-                          selected: {
-                            rest: { ref: iosSwitchThumb }
-                          }
-                        },
-                        low: {
-                          rest: iosSwitchThumb,
-                          selected: {
-                            rest: { ref: iosSwitchPrimaryOnTrack }
-                          }
-                        }
-                      },
-                      polarity: {
-                        medium: {
-                          rest: iosSwitchThumb,
-                          hover: { ref: iosSwitchThumb },
-                          focus: { ref: iosSwitchThumb },
-                          pressed: { ref: iosSwitchThumb },
-                          selected: {
-                            rest: { ref: iosSwitchThumb },
+                            pressed: { ref: iosSwitchThumb },
+                            selected: {
+                              rest: { ref: iosSwitchThumb },
+                              hover: { ref: iosSwitchThumb },
+                              focus: { ref: iosSwitchThumb },
+                              pressed: { ref: iosSwitchThumb }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchThumb,
                             hover: { ref: iosSwitchThumb },
                             focus: { ref: iosSwitchThumb },
-                            pressed: { ref: iosSwitchThumb }
+                            pressed: { ref: iosSwitchThumb },
+                            disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                            selected: {
+                              rest: { ref: iosSwitchNeutralOnTrack },
+                              hover: { ref: iosSwitchNeutralOnTrack },
+                              focus: { ref: iosSwitchNeutralOnTrack },
+                              pressed: { ref: iosSwitchNeutralOnTrack }
+                            }
                           }
                         },
-                        low: {
-                          rest: iosSwitchThumb,
-                          hover: { ref: iosSwitchThumb },
-                          focus: { ref: iosSwitchThumb },
-                          pressed: { ref: iosSwitchThumb },
-                          selected: {
-                            rest: { ref: iosSwitchNeutralOnTrack },
-                            hover: { ref: iosSwitchNeutralOnTrack },
-                            focus: { ref: iosSwitchNeutralOnTrack },
-                            pressed: { ref: iosSwitchNeutralOnTrack }
-                          }
-                        }
-                      }
-                    },
-                    borderColor: {
-                      neutral: {
-                        medium: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
+                        primary: {
+                          medium: {
+                            rest: iosSwitchThumb,
+                            selected: {
+                              rest: { ref: iosSwitchThumb }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchThumb,
+                            selected: {
+                              rest: { ref: iosSwitchPrimaryOnTrack }
+                            }
                           }
                         },
-                        low: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
+                        polarity: {
+                          medium: {
+                            rest: iosSwitchThumb,
+                            hover: { ref: iosSwitchThumb },
+                            focus: { ref: iosSwitchThumb },
+                            pressed: { ref: iosSwitchThumb },
+                            selected: {
+                              rest: { ref: iosSwitchThumb },
+                              hover: { ref: iosSwitchThumb },
+                              focus: { ref: iosSwitchThumb },
+                              pressed: { ref: iosSwitchThumb }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchThumb,
+                            hover: { ref: iosSwitchThumb },
+                            focus: { ref: iosSwitchThumb },
+                            pressed: { ref: iosSwitchThumb },
+                            selected: {
+                              rest: { ref: iosSwitchNeutralOnTrack },
+                              hover: { ref: iosSwitchNeutralOnTrack },
+                              focus: { ref: iosSwitchNeutralOnTrack },
+                              pressed: { ref: iosSwitchNeutralOnTrack }
+                            }
                           }
                         }
                       },
-                      primary: {
-                        medium: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
+                      borderColor: {
+                        neutral: {
+                          medium: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          },
+                          low: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
                           }
                         },
-                        low: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
-                          }
-                        }
-                      },
-                      polarity: {
-                        medium: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
+                        primary: {
+                          medium: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          },
+                          low: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
                           }
                         },
-                        low: {
-                          rest: transparent,
-                          selected: {
-                            rest: { ref: transparent }
+                        polarity: {
+                          medium: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
+                          },
+                          low: {
+                            rest: transparent,
+                            selected: {
+                              rest: { ref: transparent }
+                            }
                           }
                         }
                       }
@@ -438,65 +442,67 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    textColor: {
-                      neutral: {
-                        medium: {
-                          rest: iosSwitchOffIcon,
-                          hover: { ref: iosSwitchOffIcon },
-                          focus: { ref: iosSwitchOffIcon },
-                          pressed: { ref: iosSwitchOffIcon },
-                          selected: {
-                            rest: { ref: iosSwitchNeutralOnTrack },
+                    default: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: iosSwitchOffIcon,
+                            hover: { ref: iosSwitchOffIcon },
+                            focus: { ref: iosSwitchOffIcon },
+                            pressed: { ref: iosSwitchOffIcon },
+                            selected: {
+                              rest: { ref: iosSwitchNeutralOnTrack },
+                              hover: { ref: iosSwitchNeutralOnTrack },
+                              focus: { ref: iosSwitchNeutralOnTrack },
+                              pressed: { ref: iosSwitchNeutralOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchNeutralOnTrack,
                             hover: { ref: iosSwitchNeutralOnTrack },
                             focus: { ref: iosSwitchNeutralOnTrack },
-                            pressed: { ref: iosSwitchNeutralOnTrack }
+                            pressed: { ref: iosSwitchNeutralOnTrack },
+                            disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
+                            selected: {
+                              rest: { ref: iosSwitchThumb },
+                              hover: { ref: iosSwitchThumb },
+                              focus: { ref: iosSwitchThumb },
+                              pressed: { ref: iosSwitchThumb }
+                            }
                           }
                         },
-                        low: {
-                          rest: iosSwitchNeutralOnTrack,
-                          hover: { ref: iosSwitchNeutralOnTrack },
-                          focus: { ref: iosSwitchNeutralOnTrack },
-                          pressed: { ref: iosSwitchNeutralOnTrack },
-                          disabled: { ref: iosSwitchOnPrimaryTrackDisabled },
-                          selected: {
-                            rest: { ref: iosSwitchThumb },
-                            hover: { ref: iosSwitchThumb },
-                            focus: { ref: iosSwitchThumb },
-                            pressed: { ref: iosSwitchThumb }
-                          }
-                        }
-                      },
-                      primary: {
-                        medium: {
-                          rest: iosSwitchOffIcon,
-                          selected: {
-                            rest: { ref: iosSwitchPrimaryOnTrack }
+                        primary: {
+                          medium: {
+                            rest: iosSwitchOffIcon,
+                            selected: {
+                              rest: { ref: iosSwitchPrimaryOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchPrimaryOnTrack,
+                            selected: {
+                              rest: { ref: iosSwitchThumb }
+                            }
                           }
                         },
-                        low: {
-                          rest: iosSwitchPrimaryOnTrack,
-                          selected: {
-                            rest: { ref: iosSwitchThumb }
-                          }
-                        }
-                      },
-                      polarity: {
-                        medium: {
-                          rest: iosSwitchPolarityOffTrack,
-                          hover: { ref: iosSwitchPolarityOffTrack },
-                          focus: { ref: iosSwitchPolarityOffTrack },
-                          pressed: { ref: iosSwitchPolarityOffTrack },
-                          selected: {
-                            rest: { ref: iosSwitchNeutralOnTrack },
-                            hover: { ref: iosSwitchNeutralOnTrack },
-                            focus: { ref: iosSwitchNeutralOnTrack },
-                            pressed: { ref: iosSwitchNeutralOnTrack }
-                          }
-                        },
-                        low: {
-                          rest: iosSwitchPolarityOffTrack,
-                          selected: {
-                            rest: { ref: iosSwitchThumb }
+                        polarity: {
+                          medium: {
+                            rest: iosSwitchPolarityOffTrack,
+                            hover: { ref: iosSwitchPolarityOffTrack },
+                            focus: { ref: iosSwitchPolarityOffTrack },
+                            pressed: { ref: iosSwitchPolarityOffTrack },
+                            selected: {
+                              rest: { ref: iosSwitchNeutralOnTrack },
+                              hover: { ref: iosSwitchNeutralOnTrack },
+                              focus: { ref: iosSwitchNeutralOnTrack },
+                              pressed: { ref: iosSwitchNeutralOnTrack }
+                            }
+                          },
+                          low: {
+                            rest: iosSwitchPolarityOffTrack,
+                            selected: {
+                              rest: { ref: iosSwitchThumb }
+                            }
                           }
                         }
                       }
@@ -526,29 +532,31 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    textColor: {
-                      neutral: {
-                        medium: {
-                          rest: iosSwitchLabelText
+                    default: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: iosSwitchLabelText
+                          },
+                          low: {
+                            rest: iosSwitchThumb
+                          }
                         },
-                        low: {
-                          rest: iosSwitchThumb
-                        }
-                      },
-                      primary: {
-                        medium: {
-                          rest: iosSwitchLabelText
+                        primary: {
+                          medium: {
+                            rest: iosSwitchLabelText
+                          },
+                          low: {
+                            rest: iosSwitchThumb
+                          }
                         },
-                        low: {
-                          rest: iosSwitchThumb
-                        }
-                      },
-                      polarity: {
-                        medium: {
-                          rest: iosSwitchLabelText
-                        },
-                        low: {
-                          rest: iosSwitchThumb
+                        polarity: {
+                          medium: {
+                            rest: iosSwitchLabelText
+                          },
+                          low: {
+                            rest: iosSwitchThumb
+                          }
                         }
                       }
                     }

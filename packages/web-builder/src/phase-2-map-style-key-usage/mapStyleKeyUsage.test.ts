@@ -92,17 +92,26 @@ describe('mapStyleKeyUsage', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['pA', 'pB', 'pA'],
-                  disabled: ['pC']
+                default: {
+                  primary: {
+                    rest: ['pA', 'pB', 'pA'],
+                    disabled: ['pC']
+                  },
+                  secondary: {
+                    hover: ['pB']
+                  }
                 },
-                secondary: {
-                  hover: ['pB']
+                inverse: {
+                  primary: {
+                    rest: ['pE']
+                  }
                 }
               },
               dark: {
-                primary: {
-                  rest: ['pD']
+                default: {
+                  primary: {
+                    rest: ['pD']
+                  }
                 }
               }
             }
@@ -116,12 +125,13 @@ describe('mapStyleKeyUsage', () => {
       pA: 2,
       pB: 2,
       pC: 1,
-      pD: 1
+      pD: 1,
+      pE: 1
     };
     expect(result).toEqual(expected);
 
     const keys = Object.keys(result);
-    expect(keys).toEqual(['pA', 'pB', 'pC', 'pD']);
+    expect(keys).toEqual(['pA', 'pB', 'pC', 'pD', 'pE']);
   });
 
   it('skips undefined elements and empty structures', () => {

@@ -94,35 +94,37 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: ios18SwitchTrackOff,
-                          hover: { ref: elegantSwitchTrackOffHover },
-                          pressed: { ref: elegantSwitchTrackOffPressed },
-                          disabled: { ref: ios18SwitchTrackDisabled },
-                          selected: {
-                            rest: { ref: ios18SwitchTrackOn },
-                            hover: { ref: elegantSwitchTrackOnHoverFocus },
-                            focus: { ref: elegantSwitchTrackOnHoverFocus },
-                            pressed: { ref: ios18SwitchTrackOnPressed }
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: {
+                            rest: ios18SwitchTrackOff,
+                            hover: { ref: elegantSwitchTrackOffHover },
+                            pressed: { ref: elegantSwitchTrackOffPressed },
+                            disabled: { ref: ios18SwitchTrackDisabled },
+                            selected: {
+                              rest: { ref: ios18SwitchTrackOn },
+                              hover: { ref: elegantSwitchTrackOnHoverFocus },
+                              focus: { ref: elegantSwitchTrackOnHoverFocus },
+                              pressed: { ref: ios18SwitchTrackOnPressed }
+                            }
                           }
                         }
-                      }
-                    },
-                    borderColor: {
-                      neutral: {
-                        medium: {
-                          rest: transparent,
-                          hover: { ref: transparent },
-                          focus: { ref: transparent },
-                          pressed: { ref: transparent },
-                          disabled: { ref: transparent },
-                          selected: {
-                            rest: { ref: transparent },
+                      },
+                      borderColor: {
+                        neutral: {
+                          medium: {
+                            rest: transparent,
                             hover: { ref: transparent },
                             focus: { ref: transparent },
-                            pressed: { ref: transparent }
+                            pressed: { ref: transparent },
+                            disabled: { ref: transparent },
+                            selected: {
+                              rest: { ref: transparent },
+                              hover: { ref: transparent },
+                              focus: { ref: transparent },
+                              pressed: { ref: transparent }
+                            }
                           }
                         }
                       }
@@ -163,36 +165,38 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: ios18SwitchThumb,
-                          hover: { ref: ios18SwitchThumb },
-                          focus: { ref: ios18SwitchThumb },
-                          pressed: { ref: ios18SwitchThumb },
-                          disabled: ios18SwitchThumbDisabled,
-                          selected: {
-                            rest: { ref: ios18SwitchThumb },
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: {
+                            rest: ios18SwitchThumb,
                             hover: { ref: ios18SwitchThumb },
                             focus: { ref: ios18SwitchThumb },
-                            pressed: { ref: ios18SwitchThumb }
+                            pressed: { ref: ios18SwitchThumb },
+                            disabled: ios18SwitchThumbDisabled,
+                            selected: {
+                              rest: { ref: ios18SwitchThumb },
+                              hover: { ref: ios18SwitchThumb },
+                              focus: { ref: ios18SwitchThumb },
+                              pressed: { ref: ios18SwitchThumb }
+                            }
                           }
                         }
-                      }
-                    },
-                    borderColor: {
-                      neutral: {
-                        medium: {
-                          rest: transparent,
-                          hover: { ref: transparent },
-                          focus: { ref: transparent },
-                          pressed: { ref: transparent },
-                          disabled: { ref: transparent },
-                          selected: {
-                            rest: { ref: transparent },
+                      },
+                      borderColor: {
+                        neutral: {
+                          medium: {
+                            rest: transparent,
                             hover: { ref: transparent },
                             focus: { ref: transparent },
-                            pressed: { ref: transparent }
+                            pressed: { ref: transparent },
+                            disabled: { ref: transparent },
+                            selected: {
+                              rest: { ref: transparent },
+                              hover: { ref: transparent },
+                              focus: { ref: transparent },
+                              pressed: { ref: transparent }
+                            }
                           }
                         }
                       }
@@ -212,18 +216,20 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    textColor: {
-                      neutral: {
-                        medium: {
-                          rest: ios18SwitchOffIcon,
-                          hover: { ref: ios18SwitchOffIcon },
-                          focus: { ref: ios18SwitchOffIcon },
-                          pressed: { ref: ios18SwitchOffIcon },
-                          selected: {
-                            rest: { ref: ios18SwitchTrackOn },
-                            hover: { ref: ios18SwitchTrackOn },
-                            focus: { ref: ios18SwitchTrackOn },
-                            pressed: { ref: ios18SwitchTrackOn }
+                    default: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: ios18SwitchOffIcon,
+                            hover: { ref: ios18SwitchOffIcon },
+                            focus: { ref: ios18SwitchOffIcon },
+                            pressed: { ref: ios18SwitchOffIcon },
+                            selected: {
+                              rest: { ref: ios18SwitchTrackOn },
+                              hover: { ref: ios18SwitchTrackOn },
+                              focus: { ref: ios18SwitchTrackOn },
+                              pressed: { ref: ios18SwitchTrackOn }
+                            }
                           }
                         }
                       }
@@ -253,11 +259,13 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    textColor: {
-                      neutral: {
-                        medium: {
-                          rest: ios18SwitchLabel,
-                          disabled: ios18SwitchLabelDisabled
+                    default: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: ios18SwitchLabel,
+                            disabled: ios18SwitchLabelDisabled
+                          }
                         }
                       }
                     }

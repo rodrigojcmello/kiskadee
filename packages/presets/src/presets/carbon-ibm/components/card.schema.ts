@@ -240,8 +240,12 @@ export function createCarbonIbmCardSchema({
           });
 
           return {
-            light: createPalette(neutralMedium),
-            dark: createPalette(neutralMediumDark)
+            light: {
+              default: createPalette(neutralMedium)
+            },
+            dark: {
+              default: createPalette(neutralMediumDark)
+            }
           };
         })
       }

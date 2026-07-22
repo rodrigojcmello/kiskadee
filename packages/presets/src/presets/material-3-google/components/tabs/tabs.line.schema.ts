@@ -29,33 +29,37 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: transparent
+                    }
                   }
-                }
-              },
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'neutral', 10)
+                },
+                borderColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'neutral', 10)
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: transparent
+                    }
                   }
-                }
-              },
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 80)
+                },
+                borderColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'neutral', 80)
+                    }
                   }
                 }
               }
@@ -91,34 +95,38 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent,
-                    hover: c('default', 'l', 'neutral', 4),
-                    focus: c('default', 'l', 'neutral', 4),
-                    pressed: c('default', 'l', 'neutral', 10),
-                    selected: {
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
                       rest: transparent,
-                      hover: c('default', 'l', 'neutral', 6),
-                      pressed: c('default', 'l', 'neutral', 8)
+                      hover: c('default', 'l', 'neutral', 4),
+                      focus: c('default', 'l', 'neutral', 4),
+                      pressed: c('default', 'l', 'neutral', 10),
+                      selected: {
+                        rest: transparent,
+                        hover: c('default', 'l', 'neutral', 6),
+                        pressed: c('default', 'l', 'neutral', 8)
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent,
-                    hover: c('default', 'd', 'neutral', 85),
-                    focus: c('default', 'd', 'neutral', 85),
-                    pressed: c('default', 'd', 'neutral', 80),
-                    selected: {
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
                       rest: transparent,
                       hover: c('default', 'd', 'neutral', 85),
-                      pressed: c('default', 'd', 'neutral', 80)
+                      focus: c('default', 'd', 'neutral', 85),
+                      pressed: c('default', 'd', 'neutral', 80),
+                      selected: {
+                        rest: transparent,
+                        hover: c('default', 'd', 'neutral', 85),
+                        pressed: c('default', 'd', 'neutral', 80)
+                      }
                     }
                   }
                 }
@@ -146,24 +154,28 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'neutral', 40),
-                    selected: {
-                      rest: { ref: c('default', 'l', 'primary.v2', 40) }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'neutral', 40),
+                      selected: {
+                        rest: { ref: c('default', 'l', 'primary.v2', 40) }
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 80),
-                    selected: {
-                      rest: { ref: c('default', 'd', 'primary.v2', 80) }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'neutral', 80),
+                      selected: {
+                        rest: { ref: c('default', 'd', 'primary.v2', 80) }
+                      }
                     }
                   }
                 }
@@ -189,24 +201,28 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'neutral', 40),
-                    selected: {
-                      rest: { ref: c('default', 'l', 'primary.v2', 40) }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'neutral', 40),
+                      selected: {
+                        rest: { ref: c('default', 'l', 'primary.v2', 40) }
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 80),
-                    selected: {
-                      rest: { ref: c('default', 'd', 'primary.v2', 80) }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'neutral', 80),
+                      selected: {
+                        rest: { ref: c('default', 'd', 'primary.v2', 80) }
+                      }
                     }
                   }
                 }
@@ -233,19 +249,23 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'primary.v2', 40)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'primary.v2', 40)
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'primary.v2', 80)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'primary.v2', 80)
+                    }
                   }
                 }
               }

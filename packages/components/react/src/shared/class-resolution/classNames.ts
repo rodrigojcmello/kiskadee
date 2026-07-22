@@ -4,8 +4,11 @@ import {
   type ComponentEmphasis,
   componentEmphasisBuckets,
   type EffectClassBucketJSON,
-  type RadiusMode
+  type RadiusMode,
+  type SurfaceContext
 } from '@kiskadee/core';
+
+declare const process: { env: { NODE_ENV?: string } };
 
 export type ClassNamePart = string | undefined | false | null;
 
@@ -24,9 +27,32 @@ type ResolveIntentClassNameOptions = {
   useFirstIntentFallback?: boolean;
   emphasisFallbackOrder?: readonly ColorBucketKey[];
   defaultFallbackOrder?: readonly ColorBucketKey[];
+  surfaceContext?: SurfaceContext;
 };
 
 const DEFAULT_COLOR_BUCKET_ORDER = ['hh', 'h', 'm', 'l', 'll'] as const;
+const warnedMissingInverseBuckets = new WeakSet<ClassNameByElementJSON>();
+
+function resolveColorClassesByIntent(
+  element: ClassNameByElementJSON,
+  surfaceContext: SurfaceContext
+): Record<string, ColorClasses> | undefined {
+  const bucket = surfaceContext === 'inverse' ? element.c?.i : element.c?.d;
+
+  if (
+    surfaceContext === 'inverse' &&
+    !bucket &&
+    process.env.NODE_ENV !== 'production' &&
+    !warnedMissingInverseBuckets.has(element)
+  ) {
+    warnedMissingInverseBuckets.add(element);
+    console.warn(
+      '[Kiskadee] surfaceContext="inverse" was requested, but the active palette does not provide inverse color classes.'
+    );
+  }
+
+  return bucket;
+}
 
 function resolveColorBucketClassName(
   colors: ColorClasses,
@@ -47,7 +73,8 @@ export function resolveIntentClassName(
 ): string {
   if (!element?.c || !intent) return '';
 
-  const byIntent = element.c as Record<string, ColorClasses>;
+  const byIntent = resolveColorClassesByIntent(element, options.surfaceContext ?? 'default');
+  if (!byIntent) return '';
   const chosen =
     byIntent[intent] ??
     (options.fallbackIntent ? byIntent[options.fallbackIntent] : undefined) ??
@@ -84,6 +111,7 @@ export function resolveSchemaElementClassName(
     intent: string | undefined;
     emphasis: ComponentEmphasis | undefined;
     intentOptions?: ResolveIntentClassNameOptions;
+    surfaceContext?: SurfaceContext;
   }
 ): string {
   if (!element) return '';
@@ -91,7 +119,10 @@ export function resolveSchemaElementClassName(
   return (
     joinClassNames(
       element.d,
-      resolveIntentClassName(element, options.intent, options.emphasis, options.intentOptions),
+      resolveIntentClassName(element, options.intent, options.emphasis, {
+        ...options.intentOptions,
+        surfaceContext: options.surfaceContext
+      }),
       options.scale ? resolveScaleClassName(element, options.scale) : ''
     ) ?? ''
   );

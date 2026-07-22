@@ -93,8 +93,10 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff']
+                  }
                 }
               }
             }
@@ -114,6 +116,36 @@ describe('generateCssSplit', () => {
     expect(result.palettes['ios.light']).toContain('background');
   });
 
+  it('emits default and inverse surface contexts into the same segment.theme CSS bundle', async () => {
+    const input = {
+      button: {
+        e1: {
+          palettes: {
+            ios: {
+              light: {
+                default: {
+                  primary: { rest: ['boxColor__#0091ff'] }
+                },
+                inverse: {
+                  primary: { rest: ['boxColor__#ffffff'] }
+                }
+              }
+            }
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+
+    const result = await generateCssSplit(input, {
+      'boxColor__#0091ff': 'default-color',
+      'boxColor__#ffffff': 'inverse-color'
+    });
+
+    expect(Object.keys(result.palettes)).toEqual(['ios.light']);
+    expect(result.palettes['ios.light']).toContain('.default-color');
+    expect(result.palettes['ios.light']).toContain('.inverse-color');
+  });
+
   it('generates multiple palette bundles for multiple segment.theme combinations', async () => {
     const input = {
       button: {
@@ -121,20 +153,26 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff']
+                  }
                 }
               },
               dark: {
-                primary: {
-                  rest: ['boxColor__#005799']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#005799']
+                  }
                 }
               }
             },
             youtube: {
               light: {
-                primary: {
-                  rest: ['boxColor__#000000']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#000000']
+                  }
                 }
               }
             }
@@ -165,10 +203,12 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff'],
-                  hover: ['boxColor==hover__#0074cccc'],
-                  pressed: ['boxColor--pressed__#33a7ffcc']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff'],
+                    hover: ['boxColor==hover__#0074cccc'],
+                    pressed: ['boxColor--pressed__#33a7ffcc']
+                  }
                 }
               }
             }
@@ -195,14 +235,16 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff']
-                },
-                secondary: {
-                  rest: ['boxColor__#29a3a3']
-                },
-                redLike: {
-                  rest: ['boxColor__#ec1313']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff']
+                  },
+                  secondary: {
+                    rest: ['boxColor__#29a3a3']
+                  },
+                  redLike: {
+                    rest: ['boxColor__#ec1313']
+                  }
                 }
               }
             }
@@ -237,8 +279,10 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff']
+                  }
                 }
               }
             }
@@ -301,8 +345,10 @@ describe('generateCssSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    neutral: {
-                      rest: ['textColor__#000000']
+                    default: {
+                      neutral: {
+                        rest: ['textColor__#000000']
+                      }
                     }
                   }
                 }
@@ -391,9 +437,11 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff'],
-                  hover: ['boxColor==hover__#0074cccc']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff'],
+                    hover: ['boxColor==hover__#0074cccc']
+                  }
                 }
               }
             }
@@ -445,13 +493,17 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff']
+                  }
                 }
               },
               dark: {
-                primary: {
-                  rest: ['boxColor__#005799']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#005799']
+                  }
                 }
               }
             }
@@ -461,8 +513,10 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['textColor__#ffffff']
+                default: {
+                  primary: {
+                    rest: ['textColor__#ffffff']
+                  }
                 }
               }
             }
@@ -494,8 +548,10 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                primary: {
-                  rest: ['boxColor__#0091ff']
+                default: {
+                  primary: {
+                    rest: ['boxColor__#0091ff']
+                  }
                 }
               }
             }

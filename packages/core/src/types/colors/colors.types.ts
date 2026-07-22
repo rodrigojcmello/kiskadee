@@ -197,7 +197,7 @@ export type SelectedInteractionSubMap = {
 };
 
 export type InteractionStateColorMap = {
-  rest?: Color;
+  rest: Color;
   hover?: ColorValue;
   pressed?: ColorValue;
   focus?: ColorValue;
@@ -501,6 +501,22 @@ export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;
 
 export type ThemeMode = 'light' | 'dark' | 'darker';
 
+export const surfaceContexts = ['default', 'inverse'] as const;
+
+export type SurfaceContext = (typeof surfaceContexts)[number];
+
+export const surfaceContextBuckets = {
+  default: 'd',
+  inverse: 'i'
+} as const satisfies Record<SurfaceContext, string>;
+
+export type SurfaceContextBucket = (typeof surfaceContextBuckets)[SurfaceContext];
+
+export type SurfaceContextPalette<TColorSchema extends ColorSchema = ColorSchema> = {
+  default: TColorSchema;
+  inverse?: TColorSchema;
+};
+
 export type ElementPalettes<TSegmentName extends SegmentName = never> = Partial<
-  Record<TSegmentName | 'default' | 'dynamic', Partial<Record<ThemeMode, ColorSchema>>>
+  Record<TSegmentName | 'default' | 'dynamic', Partial<Record<ThemeMode, SurfaceContextPalette>>>
 >;

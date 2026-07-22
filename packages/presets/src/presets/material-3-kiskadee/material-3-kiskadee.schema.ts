@@ -155,30 +155,32 @@ const patch = {
             // },
             default: {
               light: {
-                boxColor: {
-                  destructive: {
-                    high: {
-                      rest: c('default', 'l', 'button.destructive', 55),
-                      focus: c('default', 'l', 'button.destructive', 55),
-                      hover: c('default', 'l', 'button.destructive', 50),
-                      pressed: c('default', 'l', 'button.destructive', 65),
-                      disabled: c('default', 'l', 'button.neutral', 10),
-                      selected: {
+                default: {
+                  boxColor: {
+                    destructive: {
+                      high: {
+                        rest: c('default', 'l', 'button.destructive', 55),
+                        focus: c('default', 'l', 'button.destructive', 55),
+                        hover: c('default', 'l', 'button.destructive', 50),
+                        pressed: c('default', 'l', 'button.destructive', 65),
+                        disabled: c('default', 'l', 'button.neutral', 10),
+                        selected: {
+                          rest: c('default', 'l', 'button.destructive', 10),
+                          hover: c('default', 'l', 'button.destructive', 8),
+                          pressed: c('default', 'l', 'button.destructive', 20)
+                        }
+                      },
+                      medium: {
                         rest: c('default', 'l', 'button.destructive', 10),
+                        focus: c('default', 'l', 'button.destructive', 10),
                         hover: c('default', 'l', 'button.destructive', 8),
-                        pressed: c('default', 'l', 'button.destructive', 20)
-                      }
-                    },
-                    medium: {
-                      rest: c('default', 'l', 'button.destructive', 10),
-                      focus: c('default', 'l', 'button.destructive', 10),
-                      hover: c('default', 'l', 'button.destructive', 8),
-                      pressed: c('default', 'l', 'button.destructive', 16),
-                      disabled: c('default', 'l', 'button.neutral', 10),
-                      selected: {
-                        rest: c('default', 'l', 'button.destructive', 50),
-                        hover: c('default', 'l', 'button.destructive', 40),
-                        pressed: c('default', 'l', 'button.destructive', 60)
+                        pressed: c('default', 'l', 'button.destructive', 16),
+                        disabled: c('default', 'l', 'button.neutral', 10),
+                        selected: {
+                          rest: c('default', 'l', 'button.destructive', 50),
+                          hover: c('default', 'l', 'button.destructive', 40),
+                          pressed: c('default', 'l', 'button.destructive', 60)
+                        }
                       }
                     }
                   }
@@ -224,51 +226,53 @@ const patch = {
           palettes: {
             modern: {
               light: {
-                textColor: {
-                  primary: {
-                    medium: {
-                      rest: c('modern', 'l', 'button.neutral', 70),
-                      disabled: {
-                        ref: c('modern', 'l', 'button.neutral', 60)
+                default: {
+                  textColor: {
+                    primary: {
+                      medium: {
+                        rest: c('modern', 'l', 'button.neutral', 70),
+                        disabled: {
+                          ref: c('modern', 'l', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'l', 'button.neutral', 0)
+                          }
+                        }
                       },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'l', 'button.neutral', 0)
+                      high: {
+                        rest: c('modern', 'l', primitive('black', 'v1'), 0),
+                        disabled: {
+                          ref: c('modern', 'l', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'l', 'button.neutral', 70)
+                          }
                         }
                       }
                     },
-                    high: {
-                      rest: c('modern', 'l', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c('modern', 'l', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'l', 'button.neutral', 70)
+                    destructive: {
+                      medium: {
+                        rest: c('modern', 'l', 'button.destructive', 70),
+                        disabled: {
+                          ref: c('modern', 'l', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'l', 'button.neutral', 0)
+                          }
                         }
-                      }
-                    }
-                  },
-                  destructive: {
-                    medium: {
-                      rest: c('modern', 'l', 'button.destructive', 70),
-                      disabled: {
-                        ref: c('modern', 'l', 'button.neutral', 60)
                       },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'l', 'button.neutral', 0)
-                        }
-                      }
-                    },
-                    high: {
-                      rest: c('modern', 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: c('modern', 'l', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'l', 'button.neutral', 70)
+                      high: {
+                        rest: c('modern', 'l', 'button.neutral', 0),
+                        disabled: {
+                          ref: c('modern', 'l', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'l', 'button.neutral', 70)
+                          }
                         }
                       }
                     }
@@ -276,51 +280,53 @@ const patch = {
                 }
               },
               dark: {
-                textColor: {
-                  primary: {
-                    medium: {
-                      rest: c('modern', 'd', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c('modern', 'd', 'button.neutral', 60)
+                default: {
+                  textColor: {
+                    primary: {
+                      medium: {
+                        rest: c('modern', 'd', primitive('black', 'v1'), 0),
+                        disabled: {
+                          ref: c('modern', 'd', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'd', 'button.neutral', 70)
+                          }
+                        }
                       },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'd', 'button.neutral', 70)
+                      high: {
+                        rest: c('modern', 'd', primitive('black', 'v1'), 0),
+                        disabled: {
+                          ref: c('modern', 'd', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'd', 'button.neutral', 70)
+                          }
                         }
                       }
                     },
-                    high: {
-                      rest: c('modern', 'd', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c('modern', 'd', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'd', 'button.neutral', 70)
+                    destructive: {
+                      medium: {
+                        rest: c('modern', 'd', 'button.neutral', 0),
+                        disabled: {
+                          ref: c('modern', 'd', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'd', 'button.neutral', 70)
+                          }
                         }
-                      }
-                    }
-                  },
-                  destructive: {
-                    medium: {
-                      rest: c('modern', 'd', 'button.neutral', 0),
-                      disabled: {
-                        ref: c('modern', 'd', 'button.neutral', 60)
                       },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'd', 'button.neutral', 70)
-                        }
-                      }
-                    },
-                    high: {
-                      rest: c('modern', 'd', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c('modern', 'd', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('modern', 'd', 'button.neutral', 70)
+                      high: {
+                        rest: c('modern', 'd', primitive('black', 'v1'), 0),
+                        disabled: {
+                          ref: c('modern', 'd', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('modern', 'd', 'button.neutral', 70)
+                          }
                         }
                       }
                     }
@@ -330,27 +336,29 @@ const patch = {
             },
             default: {
               light: {
-                textColor: {
-                  destructive: {
-                    medium: {
-                      rest: c('default', 'l', 'button.destructive', 70),
-                      disabled: {
-                        ref: c('default', 'l', 'button.neutral', 60)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('default', 'l', 'button.neutral', 0)
+                default: {
+                  textColor: {
+                    destructive: {
+                      medium: {
+                        rest: c('default', 'l', 'button.destructive', 70),
+                        disabled: {
+                          ref: c('default', 'l', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('default', 'l', 'button.neutral', 0)
+                          }
                         }
-                      }
-                    },
-                    high: {
-                      rest: c('default', 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: c('default', 'l', 'button.neutral', 60)
                       },
-                      selected: {
-                        rest: {
-                          ref: c('default', 'l', 'button.neutral', 70)
+                      high: {
+                        rest: c('default', 'l', 'button.neutral', 0),
+                        disabled: {
+                          ref: c('default', 'l', 'button.neutral', 60)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('default', 'l', 'button.neutral', 70)
+                          }
                         }
                       }
                     }

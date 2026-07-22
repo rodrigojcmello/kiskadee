@@ -100,90 +100,92 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      boxColor: {
-                        neutral: {
-                          medium: {
-                            rest: white,
-                            hover: { ref: white },
-                            focus: { ref: white },
-                            pressed: { ref: white },
-                            selected: {
-                              rest: { ref: primary60 },
-                              hover: { ref: primary70 },
-                              focus: { ref: primary60 },
-                              pressed: { ref: primary80 }
-                            },
-                            disabled: { ref: neutral6 }
-                          },
-                          low: {
-                            rest: onPrimaryTrack,
-                            hover: { ref: onPrimaryTrackHover },
-                            focus: { ref: onPrimaryTrack },
-                            pressed: { ref: onPrimaryTrackPressed },
-                            selected: {
-                              rest: { ref: white },
+                      default: {
+                        boxColor: {
+                          neutral: {
+                            medium: {
+                              rest: white,
                               hover: { ref: white },
                               focus: { ref: white },
-                              pressed: { ref: white }
+                              pressed: { ref: white },
+                              selected: {
+                                rest: { ref: primary60 },
+                                hover: { ref: primary70 },
+                                focus: { ref: primary60 },
+                                pressed: { ref: primary80 }
+                              },
+                              disabled: { ref: neutral6 }
                             },
-                            disabled: { ref: onPrimaryTrackDisabled }
+                            low: {
+                              rest: onPrimaryTrack,
+                              hover: { ref: onPrimaryTrackHover },
+                              focus: { ref: onPrimaryTrack },
+                              pressed: { ref: onPrimaryTrackPressed },
+                              selected: {
+                                rest: { ref: white },
+                                hover: { ref: white },
+                                focus: { ref: white },
+                                pressed: { ref: white }
+                              },
+                              disabled: { ref: onPrimaryTrackDisabled }
+                            }
+                          },
+                          polarity: {
+                            medium: {
+                              rest: white,
+                              selected: {
+                                rest: { ref: polarityOnTrack }
+                              }
+                            },
+                            low: {
+                              rest: onPrimaryTrack,
+                              selected: {
+                                rest: { ref: white }
+                              }
+                            }
                           }
                         },
-                        polarity: {
-                          medium: {
-                            rest: white,
-                            selected: {
-                              rest: { ref: polarityOnTrack }
-                            }
-                          },
-                          low: {
-                            rest: onPrimaryTrack,
-                            selected: {
-                              rest: { ref: white }
-                            }
-                          }
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: {
-                            rest: '#616161', // cinza carvão (tom escuro)
-                            hover: { ref: '#575757' }, // cinza carvão (tom muito escuro)
-                            focus: { ref: '#616161' }, // cinza carvão (tom escuro)
-                            pressed: { ref: neutral70 },
-                            selected: {
-                              rest: { ref: transparent },
-                              hover: { ref: transparent },
-                              focus: { ref: transparent },
-                              pressed: { ref: transparent }
+                        borderColor: {
+                          neutral: {
+                            medium: {
+                              rest: '#616161', // cinza carvão (tom escuro)
+                              hover: { ref: '#575757' }, // cinza carvão (tom muito escuro)
+                              focus: { ref: '#616161' }, // cinza carvão (tom escuro)
+                              pressed: { ref: neutral70 },
+                              selected: {
+                                rest: { ref: transparent },
+                                hover: { ref: transparent },
+                                focus: { ref: transparent },
+                                pressed: { ref: transparent }
+                              },
+                              disabled: { ref: '#d1d1d1' } // cinza claro
                             },
-                            disabled: { ref: '#d1d1d1' } // cinza claro
-                          },
-                          low: {
-                            rest: onPrimaryBorder,
-                            hover: { ref: onPrimaryBorderHover },
-                            focus: { ref: onPrimaryBorder },
-                            pressed: { ref: onPrimaryBorderHover },
-                            selected: {
-                              rest: { ref: transparent },
-                              hover: { ref: transparent },
-                              focus: { ref: transparent },
-                              pressed: { ref: transparent }
-                            },
-                            disabled: { ref: onPrimaryBorderDisabled }
-                          }
-                        },
-                        polarity: {
-                          medium: {
-                            rest: '#616161',
-                            selected: {
-                              rest: { ref: transparent }
+                            low: {
+                              rest: onPrimaryBorder,
+                              hover: { ref: onPrimaryBorderHover },
+                              focus: { ref: onPrimaryBorder },
+                              pressed: { ref: onPrimaryBorderHover },
+                              selected: {
+                                rest: { ref: transparent },
+                                hover: { ref: transparent },
+                                focus: { ref: transparent },
+                                pressed: { ref: transparent }
+                              },
+                              disabled: { ref: onPrimaryBorderDisabled }
                             }
                           },
-                          low: {
-                            rest: onPrimaryBorder,
-                            selected: {
-                              rest: { ref: transparent }
+                          polarity: {
+                            medium: {
+                              rest: '#616161',
+                              selected: {
+                                rest: { ref: transparent }
+                              }
+                            },
+                            low: {
+                              rest: onPrimaryBorder,
+                              selected: {
+                                rest: { ref: transparent }
+                              }
                             }
                           }
                         }
@@ -206,78 +208,80 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      boxColor: {
-                        neutral: {
-                          medium: {
-                            rest: '#616161', // cinza carvão (tom escuro)
-                            hover: { ref: '#424242' }, // cinza grafite (tom bem escuro)
-                            focus: { ref: '#616161' }, // cinza carvão (tom escuro)
-                            pressed: { ref: '#424242' }, // cinza grafite (tom bem escuro)
-                            selected: {
-                              rest: { ref: white },
+                      default: {
+                        boxColor: {
+                          neutral: {
+                            medium: {
+                              rest: '#616161', // cinza carvão (tom escuro)
+                              hover: { ref: '#424242' }, // cinza grafite (tom bem escuro)
+                              focus: { ref: '#616161' }, // cinza carvão (tom escuro)
+                              pressed: { ref: '#424242' }, // cinza grafite (tom bem escuro)
+                              selected: {
+                                rest: { ref: white },
+                                hover: { ref: white },
+                                focus: { ref: white },
+                                pressed: { ref: white }
+                              },
+                              disabled: { ref: neutral25 }
+                            },
+                            low: {
+                              rest: white,
                               hover: { ref: white },
                               focus: { ref: white },
-                              pressed: { ref: white }
-                            },
-                            disabled: { ref: neutral25 }
+                              pressed: { ref: white },
+                              selected: {
+                                rest: { ref: primary60 },
+                                hover: { ref: primary70 },
+                                focus: { ref: primary60 },
+                                pressed: { ref: primary80 }
+                              },
+                              disabled: { ref: onPrimaryTextDisabled }
+                            }
                           },
-                          low: {
-                            rest: white,
-                            hover: { ref: white },
-                            focus: { ref: white },
-                            pressed: { ref: white },
-                            selected: {
-                              rest: { ref: primary60 },
-                              hover: { ref: primary70 },
-                              focus: { ref: primary60 },
-                              pressed: { ref: primary80 }
+                          polarity: {
+                            medium: {
+                              rest: polarityOffThumb,
+                              selected: {
+                                rest: { ref: white }
+                              }
                             },
-                            disabled: { ref: onPrimaryTextDisabled }
+                            low: {
+                              rest: white,
+                              selected: {
+                                rest: { ref: polarityOnTrack }
+                              }
+                            }
                           }
                         },
-                        polarity: {
-                          medium: {
-                            rest: polarityOffThumb,
-                            selected: {
-                              rest: { ref: white }
-                            }
-                          },
-                          low: {
-                            rest: white,
-                            selected: {
-                              rest: { ref: polarityOnTrack }
-                            }
-                          }
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: {
-                            rest: transparent,
-                            selected: {
-                              rest: { ref: transparent }
+                        borderColor: {
+                          neutral: {
+                            medium: {
+                              rest: transparent,
+                              selected: {
+                                rest: { ref: transparent }
+                              },
+                              disabled: { ref: transparent }
                             },
-                            disabled: { ref: transparent }
-                          },
-                          low: {
-                            rest: transparent,
-                            selected: {
-                              rest: { ref: transparent }
-                            },
-                            disabled: { ref: transparent }
-                          }
-                        },
-                        polarity: {
-                          medium: {
-                            rest: transparent,
-                            selected: {
-                              rest: { ref: transparent }
+                            low: {
+                              rest: transparent,
+                              selected: {
+                                rest: { ref: transparent }
+                              },
+                              disabled: { ref: transparent }
                             }
                           },
-                          low: {
-                            rest: transparent,
-                            selected: {
-                              rest: { ref: transparent }
+                          polarity: {
+                            medium: {
+                              rest: transparent,
+                              selected: {
+                                rest: { ref: transparent }
+                              }
+                            },
+                            low: {
+                              rest: transparent,
+                              selected: {
+                                rest: { ref: transparent }
+                              }
                             }
                           }
                         }
@@ -295,46 +299,48 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: white,
-                            hover: { ref: white },
-                            focus: { ref: white },
-                            pressed: { ref: white },
-                            selected: {
-                              rest: { ref: primary60 },
-                              hover: { ref: primary70 },
-                              focus: { ref: primary60 },
-                              pressed: { ref: primary80 }
-                            },
-                            disabled: { ref: neutral70 }
-                          },
-                          low: {
-                            rest: primary60,
-                            hover: { ref: primary70 },
-                            focus: { ref: primary60 },
-                            pressed: { ref: primary80 },
-                            selected: {
-                              rest: { ref: white },
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: white,
                               hover: { ref: white },
                               focus: { ref: white },
-                              pressed: { ref: white }
+                              pressed: { ref: white },
+                              selected: {
+                                rest: { ref: primary60 },
+                                hover: { ref: primary70 },
+                                focus: { ref: primary60 },
+                                pressed: { ref: primary80 }
+                              },
+                              disabled: { ref: neutral70 }
                             },
-                            disabled: { ref: onPrimaryTextDisabled }
-                          }
-                        },
-                        polarity: {
-                          medium: {
-                            rest: white,
-                            selected: {
-                              rest: { ref: polarityOnTrack }
+                            low: {
+                              rest: primary60,
+                              hover: { ref: primary70 },
+                              focus: { ref: primary60 },
+                              pressed: { ref: primary80 },
+                              selected: {
+                                rest: { ref: white },
+                                hover: { ref: white },
+                                focus: { ref: white },
+                                pressed: { ref: white }
+                              },
+                              disabled: { ref: onPrimaryTextDisabled }
                             }
                           },
-                          low: {
-                            rest: polarityOffThumb,
-                            selected: {
-                              rest: { ref: white }
+                          polarity: {
+                            medium: {
+                              rest: white,
+                              selected: {
+                                rest: { ref: polarityOnTrack }
+                              }
+                            },
+                            low: {
+                              rest: polarityOffThumb,
+                              selected: {
+                                rest: { ref: white }
+                              }
                             }
                           }
                         }
@@ -358,23 +364,25 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: '#242424', // preto acinzentado (quase preto)
-                            disabled: { ref: neutral25 }
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: '#242424', // preto acinzentado (quase preto)
+                              disabled: { ref: neutral25 }
+                            },
+                            low: {
+                              rest: white,
+                              disabled: { ref: onPrimaryTextDisabled }
+                            }
                           },
-                          low: {
-                            rest: white,
-                            disabled: { ref: onPrimaryTextDisabled }
-                          }
-                        },
-                        polarity: {
-                          medium: {
-                            rest: '#242424' // preto acinzentado (quase preto)
-                          },
-                          low: {
-                            rest: white
+                          polarity: {
+                            medium: {
+                              rest: '#242424' // preto acinzentado (quase preto)
+                            },
+                            low: {
+                              rest: white
+                            }
                           }
                         }
                       }
@@ -397,23 +405,25 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: '#242424',
-                            disabled: { ref: neutral25 }
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: '#242424',
+                              disabled: { ref: neutral25 }
+                            },
+                            low: {
+                              rest: white,
+                              disabled: { ref: onPrimaryTextDisabled }
+                            }
                           },
-                          low: {
-                            rest: white,
-                            disabled: { ref: onPrimaryTextDisabled }
-                          }
-                        },
-                        polarity: {
-                          medium: {
-                            rest: '#242424'
-                          },
-                          low: {
-                            rest: white
+                          polarity: {
+                            medium: {
+                              rest: '#242424'
+                            },
+                            low: {
+                              rest: white
+                            }
                           }
                         }
                       }

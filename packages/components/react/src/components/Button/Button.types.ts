@@ -1,12 +1,13 @@
 import type {
+  ActivationFeedbackOrigin,
+  ActivationFeedbackProfileMode,
   ButtonIntent,
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
-  ActivationFeedbackOrigin,
-  ActivationFeedbackProfileMode,
   ProjectedStateKeys,
-  RadiusMode
+  RadiusMode,
+  SurfaceContext
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 
@@ -54,6 +55,11 @@ export type ButtonProps = HeadlessButtonProps & {
   emphasis?: ComponentEmphasis;
   /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
   intent?: ButtonIntent;
+  /**
+   * Local surface relationship used to resolve palette colors.
+   * `inverse` requires explicit support from the active preset palette.
+   */
+  surfaceContext?: SurfaceContext;
   /** Duration for the pressed visual state (ms). */
   pressedDurationMs?: number;
 };

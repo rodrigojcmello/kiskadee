@@ -3,10 +3,12 @@ import type {
   ColorProperty,
   ColorSchema,
   SegmentName,
+  SurfaceContextPalette,
   ThemeMode
 } from '../types/colors/colors.types.ts';
 import type { ElementEffects } from '../types/effects/index.ts';
 import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types.ts';
+import { getElementPaletteValidationIssues } from './palettes.ts';
 
 export type ElementPalettesByColor<
   TSegmentName extends SegmentName,
@@ -14,7 +16,7 @@ export type ElementPalettesByColor<
 > = Partial<
   Record<
     TSegmentName | 'default' | 'dynamic',
-    Partial<Record<ThemeMode, Partial<Pick<ColorSchema, TColorProperty>>>>
+    Partial<Record<ThemeMode, SurfaceContextPalette<Partial<Pick<ColorSchema, TColorProperty>>>>>
   >
 >;
 
@@ -82,45 +84,12 @@ export function createPalettesSchema<
   return z
     .custom<ElementPalettesByColor<TSegmentName, TColorProperty>>()
     .superRefine((value, ctx) => {
-      if (!isRecord(value)) {
+      for (const issue of getElementPaletteValidationIssues(value, allowedColorKeys)) {
         ctx.addIssue({
           code: 'custom',
-          message: 'expected object'
+          path: issue.path,
+          message: issue.message
         });
-        return;
-      }
-
-      for (const [segment, byTheme] of Object.entries(value)) {
-        if (!isRecord(byTheme)) {
-          ctx.addIssue({
-            code: 'custom',
-            path: [segment],
-            message: 'expected object'
-          });
-          continue;
-        }
-
-        for (const [theme, colorMap] of Object.entries(byTheme)) {
-          if (!isRecord(colorMap)) {
-            ctx.addIssue({
-              code: 'custom',
-              path: [segment, theme],
-              message: 'expected object'
-            });
-            continue;
-          }
-
-          for (const key of Object.keys(colorMap)) {
-            if (key === 'effects') continue;
-            if (!allowedColorKeys.includes(key as TColorProperty)) {
-              ctx.addIssue({
-                code: 'custom',
-                path: [segment, theme, key],
-                message: 'unrecognized key'
-              });
-            }
-          }
-        }
       }
     });
 }

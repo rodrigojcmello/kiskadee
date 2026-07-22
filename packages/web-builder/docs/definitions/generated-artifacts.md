@@ -12,12 +12,18 @@
 - `class-maps/core/<component>.kiskadee.json`: component-scoped core class map.
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped palette class map.
 - Component-scoped class maps use the shape `{ component, classMap }`.
+- Default and inverse surface contexts share the same `<segment>.<theme>` CSS and class-map files.
+  Each element stores its color classes under `c.d` (default) and, when authored, `c.i` (inverse).
+  Style keys and CSS declarations remain globally deduplicated across both buckets.
 
 ## Metadata
 
 Metadata is written per template under `packages/web-builder/build/<template-key>`:
 
 - `manifest.json`: used by the showcase to discover templates, segments and themes.
+  Component interaction capabilities are published under
+  `components.<component>.surfaceContexts["<segment>.<theme>"].default|inverse.state`; there is no
+  context-aggregated state map.
 - `schema.json` / `segments.json`: schema and segment data for inspection or tooling.
 - `global.kiskadee.json`: global metadata consumed by runtime/components, such as fonts, radius,
   and global effects. Component semantic metadata should live in component artifacts.

@@ -65,36 +65,38 @@ export function createMaterial3GoogleCardSchema({
         },
         palettes: buildBySegment(segmentNames, (s) => ({
           light: {
-            boxColor: {
-              neutral: {
-                medium: {
-                  rest: c(s, 'l', 'card.neutral', 0),
-                  hover: c(s, 'l', 'card.neutral', 2),
-                  pressed: c(s, 'l', 'card.neutral', 4),
-                  focus: c(s, 'l', 'card.neutral', 0),
-                  disabled: c(s, 'l', 'card.neutral', 90, 12),
-                  selected: {
-                    rest: c(s, 'l', 'primary.v2', 50),
-                    hover: c(s, 'l', 'primary.v2', 45),
-                    pressed: c(s, 'l', 'primary.v2', 40),
-                    focus: c(s, 'l', 'primary.v2', 50)
+            default: {
+              boxColor: {
+                neutral: {
+                  medium: {
+                    rest: c(s, 'l', 'card.neutral', 0),
+                    hover: c(s, 'l', 'card.neutral', 2),
+                    pressed: c(s, 'l', 'card.neutral', 4),
+                    focus: c(s, 'l', 'card.neutral', 0),
+                    disabled: c(s, 'l', 'card.neutral', 90, 12),
+                    selected: {
+                      rest: c(s, 'l', 'primary.v2', 50),
+                      hover: c(s, 'l', 'primary.v2', 45),
+                      pressed: c(s, 'l', 'primary.v2', 40),
+                      focus: c(s, 'l', 'primary.v2', 50)
+                    }
                   }
                 }
-              }
-            },
-            borderColor: {
-              neutral: {
-                medium: {
-                  rest: c(s, 'l', 'card.neutral.v2', 16),
-                  hover: c(s, 'l', 'card.neutral.v2', 20),
-                  pressed: c(s, 'l', 'card.neutral.v2', 26),
-                  focus: c(s, 'l', 'primary.v2', 50),
-                  disabled: transparent,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
+              },
+              borderColor: {
+                neutral: {
+                  medium: {
+                    rest: c(s, 'l', 'card.neutral.v2', 16),
+                    hover: c(s, 'l', 'card.neutral.v2', 20),
+                    pressed: c(s, 'l', 'card.neutral.v2', 26),
+                    focus: c(s, 'l', 'primary.v2', 50),
+                    disabled: transparent,
+                    selected: {
+                      rest: transparent,
+                      hover: transparent,
+                      pressed: transparent,
+                      focus: transparent
+                    }
                   }
                 }
               }

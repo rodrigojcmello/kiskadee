@@ -10,6 +10,7 @@ import type {
   Schema,
   SchemaColors,
   SchemaFonts,
+  SurfaceContext,
   ThemeMode
 } from '@kiskadee/core';
 import {
@@ -263,44 +264,53 @@ function buildComponentScale(
   return out;
 }
 
-function buildComponentState(
+export function buildComponentSurfaceContexts(
   schema: Schema,
   componentName: ComponentName
-): ManifestComponentState | undefined {
-  const stateMap: ManifestComponentState = {};
+): ManifestComponent['surfaceContexts'] | undefined {
+  type StateSets = Record<string, Record<string, Set<string>>>;
+  type ContextSets = Partial<Record<SurfaceContext, StateSets>>;
 
-  // Temporary accumulator so we can use Set semantics while
-  // computing, then convert to the ManifestComponentState
-  // structure at the end.
-  const tmp: Record<string, Record<string, Set<string>>> = {};
+  const tmp: Record<string, ContextSets> = {};
 
-  const addState = (semantic: string, tone: string, stateKey: string) => {
-    const emphasis = tone;
-    if (!tmp[semantic]) tmp[semantic] = {};
-    if (!tmp[semantic]?.[emphasis]) tmp[semantic]![emphasis] = new Set<string>();
-    tmp[semantic]?.[emphasis]?.add(stateKey);
+  const addState = (
+    paletteKey: string,
+    surfaceContext: SurfaceContext,
+    semantic: string,
+    tone: string,
+    stateKey: string
+  ) => {
+    if (!tmp[paletteKey]) tmp[paletteKey] = {};
+    const byContext = tmp[paletteKey];
+    if (!byContext[surfaceContext]) byContext[surfaceContext] = {};
+    const bySemantic = byContext[surfaceContext];
+    if (!bySemantic[semantic]) bySemantic[semantic] = {};
+    if (!bySemantic[semantic]?.[tone]) bySemantic[semantic]![tone] = new Set<string>();
+    bySemantic[semantic]?.[tone]?.add(stateKey);
   };
 
   for (const elements of collectComponentElements(schema, componentName)) {
     for (const el of Object.values(elements)) {
       const palettes = (el as any).palettes as
-        | Record<string, Record<string, { boxColor?: any; textColor?: any }>>
+        | Record<string, Record<string, Partial<Record<SurfaceContext, Record<string, any>>>>>
         | undefined;
       if (!palettes) continue;
 
-      for (const seg of Object.values(palettes)) {
-        for (const theme of Object.values(seg)) {
-          const colorMaps = [
-            (theme as any).boxColor as Record<string, any> | undefined,
-            (theme as any).textColor as Record<string, any> | undefined
-          ];
+      for (const [segmentName, themes] of Object.entries(palettes)) {
+        for (const [themeName, surfaceContexts] of Object.entries(themes)) {
+          const paletteKey = `${segmentName}.${themeName}`;
 
-          for (const colorMap of colorMaps) {
-            if (!colorMap) continue;
-            for (const [semantic, byTone] of Object.entries(colorMap)) {
-              for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
-                for (const stateKey of Object.keys(statesObj as Record<string, any>)) {
-                  addState(semantic, tone, stateKey);
+          for (const [surfaceContextName, colorSchema] of Object.entries(surfaceContexts)) {
+            const surfaceContext = surfaceContextName as SurfaceContext;
+            if (!colorSchema) continue;
+
+            for (const colorMap of Object.values(colorSchema)) {
+              if (!colorMap || typeof colorMap !== 'object') continue;
+              for (const [semantic, byTone] of Object.entries(colorMap)) {
+                for (const [tone, statesObj] of Object.entries(byTone as Record<string, any>)) {
+                  for (const stateKey of Object.keys(statesObj as Record<string, any>)) {
+                    addState(paletteKey, surfaceContext, semantic, tone, stateKey);
+                  }
                 }
               }
             }
@@ -310,22 +320,31 @@ function buildComponentState(
     }
   }
 
-  // Materialise tmp (with Sets) into the final ManifestComponentState
-  const semanticEntries = Object.entries(tmp);
-  if (!semanticEntries.length) return undefined;
+  const surfaceContextsOut: NonNullable<ManifestComponent['surfaceContexts']> = {};
 
-  for (const [semantic, tones] of semanticEntries) {
-    stateMap[semantic] = stateMap[semantic] || {};
-    for (const [tone, statesSet] of Object.entries(tones)) {
-      const statesRecord: Record<string, true> = {};
-      for (const st of statesSet) {
-        statesRecord[st] = true;
+  for (const [paletteKey, byContext] of Object.entries(tmp)) {
+    const contextsOut: NonNullable<ManifestComponent['surfaceContexts']>[string] = {};
+
+    for (const [surfaceContextName, bySemantic] of Object.entries(byContext)) {
+      const stateMap: ManifestComponentState = {};
+      for (const [semantic, tones] of Object.entries(bySemantic as StateSets)) {
+        stateMap[semantic] = {};
+        for (const [tone, statesSet] of Object.entries(tones)) {
+          const statesRecord: Record<string, true> = {};
+          for (const state of statesSet) statesRecord[state] = true;
+          stateMap[semantic]![tone] = statesRecord;
+        }
       }
-      stateMap[semantic]![tone] = statesRecord;
+
+      if (Object.keys(stateMap).length > 0) {
+        contextsOut[surfaceContextName as SurfaceContext] = { state: stateMap };
+      }
     }
+
+    if (Object.keys(contextsOut).length > 0) surfaceContextsOut[paletteKey] = contextsOut;
   }
 
-  return Object.keys(stateMap).length ? stateMap : undefined;
+  return Object.keys(surfaceContextsOut).length ? surfaceContextsOut : undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -625,14 +644,14 @@ export async function publishMetadata(params: {
   ] as const satisfies readonly ComponentName[];
   for (const componentName of manifestComponentNames) {
     const componentScale = buildComponentScale(schema, componentName);
-    const componentState = buildComponentState(schema, componentName);
+    const componentSurfaceContexts = buildComponentSurfaceContexts(schema, componentName);
 
-    if (componentScale || componentState) {
+    if (componentScale || componentSurfaceContexts) {
       manifest.components = manifest.components ?? {};
       manifest.components[componentName] = {
         ...(manifest.components[componentName] ?? {}),
         ...(componentScale ? { scale: componentScale } : {}),
-        ...(componentState ? { state: componentState } : {})
+        ...(componentSurfaceContexts ? { surfaceContexts: componentSurfaceContexts } : {})
       };
     }
   }

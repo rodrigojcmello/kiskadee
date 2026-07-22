@@ -101,36 +101,40 @@ export const schema: Schema<Segments> = {
               // Gradient support for dynamic segments will be added later.
               return {
                 light: {
-                  boxColor: {
-                    primary: {
-                      high: {
-                        rest: c(segmentName, 'l', 'button.primary', 60),
-                        hover: c(segmentName, 'l', 'button.primary', 70),
-                        focus: c(segmentName, 'l', 'button.primary', 60),
-                        pressed: c(segmentName, 'l', 'button.primary', 90),
-                        disabled: c(segmentName, 'l', 'button.neutral', 6),
-                        selected: {
-                          rest: c(segmentName, 'l', 'button.primary', 80),
+                  default: {
+                    boxColor: {
+                      primary: {
+                        high: {
+                          rest: c(segmentName, 'l', 'button.primary', 60),
                           hover: c(segmentName, 'l', 'button.primary', 70),
-                          pressed: c(segmentName, 'l', 'button.primary', 90)
+                          focus: c(segmentName, 'l', 'button.primary', 60),
+                          pressed: c(segmentName, 'l', 'button.primary', 90),
+                          disabled: c(segmentName, 'l', 'button.neutral', 6),
+                          selected: {
+                            rest: c(segmentName, 'l', 'button.primary', 80),
+                            hover: c(segmentName, 'l', 'button.primary', 70),
+                            pressed: c(segmentName, 'l', 'button.primary', 90)
+                          }
                         }
                       }
                     }
                   }
                 },
                 dark: {
-                  boxColor: {
-                    primary: {
-                      high: {
-                        rest: c(segmentName, 'd', 'button.primary', 70),
-                        hover: c(segmentName, 'd', 'button.primary', 60),
-                        focus: c(segmentName, 'd', 'button.primary', 70),
-                        pressed: c(segmentName, 'd', 'button.primary', 90),
-                        disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
-                        selected: {
-                          rest: c(segmentName, 'd', 'button.primary', 80),
-                          hover: c(segmentName, 'd', 'button.primary', 70),
-                          pressed: c(segmentName, 'd', 'button.primary', 90)
+                  default: {
+                    boxColor: {
+                      primary: {
+                        high: {
+                          rest: c(segmentName, 'd', 'button.primary', 70),
+                          hover: c(segmentName, 'd', 'button.primary', 60),
+                          focus: c(segmentName, 'd', 'button.primary', 70),
+                          pressed: c(segmentName, 'd', 'button.primary', 90),
+                          disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
+                          selected: {
+                            rest: c(segmentName, 'd', 'button.primary', 80),
+                            hover: c(segmentName, 'd', 'button.primary', 70),
+                            pressed: c(segmentName, 'd', 'button.primary', 90)
+                          }
                         }
                       }
                     }
@@ -141,35 +145,39 @@ export const schema: Schema<Segments> = {
             {
               modern: (segmentName) => ({
                 light: {
-                  boxColor: {
-                    primary: {
-                      high: {
-                        rest: c(segmentName, 'l', 'button.primary.gradient', 26),
-                        hover: c(segmentName, 'l', 'button.primary.gradient', 20),
-                        focus: c(segmentName, 'l', 'button.primary.gradient', 5),
-                        pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
-                        disabled: c(segmentName, 'l', 'button.neutral.gradient', [8, 6]),
-                        selected: {
-                          rest: c(segmentName, 'l', 'button.primary.gradient', 80),
-                          hover: c(segmentName, 'l', 'button.primary.gradient', 70),
-                          pressed: c(segmentName, 'l', 'button.primary.gradient', 90)
+                  default: {
+                    boxColor: {
+                      primary: {
+                        high: {
+                          rest: c(segmentName, 'l', 'button.primary.gradient', 26),
+                          hover: c(segmentName, 'l', 'button.primary.gradient', 20),
+                          focus: c(segmentName, 'l', 'button.primary.gradient', 5),
+                          pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
+                          disabled: c(segmentName, 'l', 'button.neutral.gradient', [8, 6]),
+                          selected: {
+                            rest: c(segmentName, 'l', 'button.primary.gradient', 80),
+                            hover: c(segmentName, 'l', 'button.primary.gradient', 70),
+                            pressed: c(segmentName, 'l', 'button.primary.gradient', 90)
+                          }
                         }
                       }
                     }
                   }
                 },
                 dark: {
-                  boxColor: {
-                    primary: {
-                      high: {
-                        rest: c(segmentName, 'd', 'button.primary.gradient', 26),
-                        hover: c(segmentName, 'd', 'button.primary.gradient', 60),
-                        focus: c(segmentName, 'd', 'button.primary.gradient', 70),
-                        pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
-                        selected: {
-                          rest: c(segmentName, 'd', 'button.primary.gradient', 80),
-                          hover: c(segmentName, 'd', 'button.primary.gradient', 70),
-                          pressed: c(segmentName, 'd', 'button.primary.gradient', 90)
+                  default: {
+                    boxColor: {
+                      primary: {
+                        high: {
+                          rest: c(segmentName, 'd', 'button.primary.gradient', 26),
+                          hover: c(segmentName, 'd', 'button.primary.gradient', 60),
+                          focus: c(segmentName, 'd', 'button.primary.gradient', 70),
+                          pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
+                          selected: {
+                            rest: c(segmentName, 'd', 'button.primary.gradient', 80),
+                            hover: c(segmentName, 'd', 'button.primary.gradient', 70),
+                            pressed: c(segmentName, 'd', 'button.primary.gradient', 90)
+                          }
                         }
                       }
                     }
@@ -203,24 +211,28 @@ export const schema: Schema<Segments> = {
             (segmentName) => {
               return {
                 light: {
-                  textColor: {
-                    primary: {
-                      high: {
-                        rest: c(segmentName, 'l', 'button.neutral', 0),
-                        disabled: {
-                          ref: c(segmentName, 'l', 'button.neutral', 26)
+                  default: {
+                    textColor: {
+                      primary: {
+                        high: {
+                          rest: c(segmentName, 'l', 'button.neutral', 0),
+                          disabled: {
+                            ref: c(segmentName, 'l', 'button.neutral', 26)
+                          }
                         }
                       }
                     }
                   }
                 },
                 dark: {
-                  textColor: {
-                    primary: {
-                      high: {
-                        rest: c(segmentName, 'd', 'button.neutral', 100),
-                        disabled: {
-                          ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+                  default: {
+                    textColor: {
+                      primary: {
+                        high: {
+                          rest: c(segmentName, 'd', 'button.neutral', 100),
+                          disabled: {
+                            ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+                          }
                         }
                       }
                     }
@@ -231,21 +243,23 @@ export const schema: Schema<Segments> = {
             {
               modern: (segmentName) => ({
                 light: {
-                  textColor: {
-                    primary: {
-                      high: {
-                        rest: c(segmentName, 'l', 'button.neutral', 0),
-                        hover: {
-                          ref: c(segmentName, 'l', 'button.neutral', 0)
-                        },
-                        focus: {
-                          ref: c(segmentName, 'l', 'primitive.purple.v2', 45)
-                        },
-                        pressed: {
-                          ref: c(segmentName, 'l', 'button.neutral', 0, 80)
-                        },
-                        disabled: {
-                          ref: c(segmentName, 'l', 'button.neutral', 100, 25)
+                  default: {
+                    textColor: {
+                      primary: {
+                        high: {
+                          rest: c(segmentName, 'l', 'button.neutral', 0),
+                          hover: {
+                            ref: c(segmentName, 'l', 'button.neutral', 0)
+                          },
+                          focus: {
+                            ref: c(segmentName, 'l', 'primitive.purple.v2', 45)
+                          },
+                          pressed: {
+                            ref: c(segmentName, 'l', 'button.neutral', 0, 80)
+                          },
+                          disabled: {
+                            ref: c(segmentName, 'l', 'button.neutral', 100, 25)
+                          }
                         }
                       }
                     }

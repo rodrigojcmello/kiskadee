@@ -23,10 +23,22 @@ This file records source evidence and color decisions for the Button currently a
   - inspected Outline state group: `9026:2853`
   - inspected Subtle state group: `9026:2888`
   - inspected Transparent state group: `9026:2923`
+- Official Fluent documentation:
+  - [Button usage](https://fluent2.microsoft.design/components/web/react/core/button/usage)
+  - [Color tokens](https://fluent2.microsoft.design/color-tokens/)
 - Preset-wide tonal evidence:
   [`../colors/fluent-tonal-scale-evidence.md`](../colors/fluent-tonal-scale-evidence.md)
 - Exact primitive de-para:
   [`../colors/figma-to-kiskadee.json`](../colors/figma-to-kiskadee.json)
+
+## Source Coverage
+
+| Source area | Node or reference | Inspected | Status |
+| --- | --- | --- | --- |
+| Light Button component set | `11045:3896` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
+| Dark Button component set | `9026:2684` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
+| Inverse Button appearance | Figma component set and official Button usage | No inverse/on-brand appearance exists | Kiskadee extension |
+| Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 
 ## Inspected Variant
 
@@ -40,6 +52,67 @@ The medium scale declares 6 px of vertical padding per side in the platform-agno
 Web Builder's Button emission policy subtracts the 1 px border from each side, producing 5 px of
 rendered CSS padding. Together with the 20 px label line height and both 1 px borders, the final web
 height remains the official 32 px: `5 + 1 + 20 + 1 + 5`.
+
+## Surface Contexts
+
+Kiskadee authors Button colors under the independent `surfaceContext` axis:
+
+- `default` is the existing Button appearance on the theme's ordinary surfaces;
+- `inverse` is the Button appearance intended for a locally strong surface, such as a Primary vivid
+  fill, without changing the global Light, Dark, or Darker theme.
+
+Fluent's Button component set and official Button documentation do not expose an inverse,
+inverted, or on-brand Button appearance. Every `inverse` combination is therefore a **Kiskadee
+extension**. The extension is not visually arbitrary: it composes the official Fluent
+`BrandBackgroundInverted`, `BrandForegroundOnLight`, `SubtleBackgroundInverted`,
+`NeutralForegroundOnBrand`, `NeutralStrokeOnBrand2`, and inverted disabled-token relationships.
+Those aliases are source material, not evidence that Fluent ships the resulting Button variant.
+
+`on-primary` is an upstream/application relationship that maps to Kiskadee `inverse`. It is not a
+new theme, intent, or emphasis. The surrounding surface remains a consumer decision; neither the
+schema nor the React component detects its color.
+
+### Inverse High
+
+Primary High adapts the official inverted Brand state rhythm. Other intents replace only the color
+family and remain Kiskadee extensions.
+
+| State | Official Primary source | Source value | Kiskadee inverse mapping |
+| --- | --- | --- | --- |
+| Rest background | `BrandBackgroundInverted.Rest` | White | neutral L0 |
+| Hover background | Brand-160 | `#d9f1ff` | current intent L4 |
+| Pressed background | Brand-140 | `#96cfff` | current intent L12 |
+| Selected background | Brand-150 | `#b8e0ff` | current intent L8 |
+| Rest foreground | Brand-80 | `#0064b4` | current intent Light vivid +0 |
+| Hover foreground | Brand-70 | `#0055a4` | current intent Light vivid +1 |
+| Pressed foreground | Brand-50 | `#003881` | current intent Light vivid +3 |
+| Selected foreground | Brand-60 | `#004694` | current intent Light vivid +2 |
+
+The generated Fluent Blue values are L4 `#e1efff`, L12 `#a4cfff`, L8 `#c1deff`, L50
+`#0064b4`, L55 `#0059a1`, L65 `#0d477e`, and L60 `#045091`. Non-Primary intents use the same
+positions in their approved primitive family. The recipe deliberately uses the physically Light
+track for inverse High in Light, Dark, and Darker because the local Button surface itself is light.
+
+### Inverse Medium, Low, And Lowest
+
+The remaining inverse emphases extend Fluent's inverted/on-brand token grammar:
+
+| Emphasis | Rest | Hover | Pressed | Selected | Foreground | Border |
+| --- | --- | --- | --- | --- | --- | --- |
+| Medium | White 28% | White 36% | White 44% | White 36% | White | Transparent |
+| Low | Transparent | Black 10% | Black 30% | Black 20% | White | White |
+| Lowest | Transparent | Black 10% | Black 30% | Black 20% | White | Transparent |
+
+Focus has no palette delta and inherits Rest while the global Button focus ring remains the
+accessibility affordance. Selected stays explicit. High, Medium, and Low disabled states use White
+at 10% for the background and White at 40% for content, with no visible border. Lowest remains
+transparent with White at 40% content. All percentages resolve through `button.neutral` and the
+preset color helper before publication; no platform performs alpha or contrast calculations.
+
+The same inverse recipe is published for all four intents and all three themes. High preserves the
+intent family through its foreground and state tints. Medium, Low, and Lowest intentionally use
+universal on-brand White/Black overlays so their contrast does not depend on the hue of the strong
+surrounding surface.
 
 ## Kiskadee Extensions: Primary Medium, Low, And Lowest
 
@@ -362,10 +435,15 @@ changing the asset scales.
 
 ## Schema Mapping
 
-- `BUTTON_TONAL_RECIPE` is the single source of tonal positions and explicit High foreground caps
+- `BUTTON_DEFAULT_TONAL_RECIPE` is the source of Default tonal positions and explicit High
+  foreground caps
   for every Button intent.
+- `BUTTON_INVERSE_RECIPE` is the static on-strong-surface formula shared by Light, Dark, and
+  Darker.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
   `button.destructive`, or `button.positive`; it does not calculate foreground contrast.
+- `createInverseButtonIntent()` resolves the same four Layer 3 roles through the Light physical
+  track and official Fluent inverted-token rhythm; it does not inspect the surrounding surface.
 - `e1.boxColor.*.medium.selected` explicitly reuses Medium Rest in all three themes.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
@@ -411,3 +489,5 @@ changing the asset scales.
 - Exercise the shared recipe with additional segments before introducing any intent-specific
   surface-position exception. A mismatch must first be classified as a recipe defect or a
   tonal-scale defect.
+- Migrate the existing Switch on-primary appearance from its overloaded Low emphasis to the shared
+  `surfaceContext="inverse"` contract in a separate component-scoped change.

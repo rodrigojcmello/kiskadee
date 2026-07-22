@@ -228,33 +228,41 @@ export async function generateCssSplit(
         }
       }
 
-      // palettes: segmentName -> themeName -> semantic -> interactionState -> string[] (color keys only)
+      // palettes: segmentName -> themeName -> surfaceContext -> semantic -> interactionState -> string[]
+      // (color keys only). Both contexts are emitted into the same segment.theme bundle.
       if (el.palettes) {
         for (const segmentName of Object.keys(el.palettes) as Array<keyof typeof el.palettes>) {
           const themes = el.palettes[segmentName];
           if (!themes) continue;
 
           for (const themeName of Object.keys(themes) as ThemeMode[]) {
-            const bySemantic = themes[themeName];
-            if (!bySemantic) continue;
+            const surfaceContexts = themes[themeName];
+            if (!surfaceContexts) continue;
 
             // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
             const bundleKey = `${String(segmentName)}.${themeName}`;
             if (!paletteRules[bundleKey]) paletteRules[bundleKey] = new Set();
 
-            for (const sem in bySemantic) {
-              const byState = bySemantic[sem as SemanticColor];
-              for (const st in byState) {
-                const arr: string[] = byState[st as InteractionState] ?? [];
-                for (const key of arr) {
-                  const { className, styleEmissionPolicy } = resolveCssClass(key);
-                  // Only color keys are expected here; call color transformer directly with the
-                  // projected-state selector option.
-                  const rule = transformColorKeyToCss(key, className, forceState, {
-                    ...options,
-                    styleEmissionPolicy
-                  });
-                  if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
+            for (const bySemantic of Object.values(surfaceContexts)) {
+              if (!isRecord(bySemantic)) continue;
+              for (const sem in bySemantic) {
+                const byState = bySemantic[sem as SemanticColor];
+                if (!isRecord(byState)) continue;
+                for (const st in byState) {
+                  const raw = byState[st as InteractionState];
+                  const arr = Array.isArray(raw)
+                    ? raw.filter((key): key is string => typeof key === 'string')
+                    : [];
+                  for (const key of arr) {
+                    const { className, styleEmissionPolicy } = resolveCssClass(key);
+                    // Only color keys are expected here; call color transformer directly with the
+                    // projected-state selector option.
+                    const rule = transformColorKeyToCss(key, className, forceState, {
+                      ...options,
+                      styleEmissionPolicy
+                    });
+                    if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
+                  }
                 }
               }
             }

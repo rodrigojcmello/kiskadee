@@ -5,12 +5,14 @@ import type {
   ComponentClassNameMapSplitJSON,
   ComponentEmphasis,
   ComponentName,
-  ComponentStyleKeyMap
+  ComponentStyleKeyMap,
+  SurfaceContext
 } from '@kiskadee/core';
 import {
   componentEmphasisBuckets,
   isActivationFeedbackProfileKey,
-  resolveActivationFeedbackProfileBucket
+  resolveActivationFeedbackProfileBucket,
+  surfaceContextBuckets
 } from '@kiskadee/core';
 import {
   buildScopedToneMetadataKey,
@@ -311,7 +313,7 @@ export function generateClassNamesMapSplit(
         applyRadiusMap(rpMap, el.radiusScales.pill);
         applyRadiusMap(rsMap, el.radiusScales.square);
       }
-      // Palettes split per segment.theme; segregate by emphasis (unique/soft/solid)
+      // Palettes split per segment.theme and then by surface context; segregate by emphasis.
       if (el.palettes) {
         // `el.palettes` is typed with a constrained key union in @kiskadee/core
         // but in practice schemas may use arbitrary segment keys. Treat it as a
@@ -323,26 +325,12 @@ export function generateClassNamesMapSplit(
           if (!isRecord(segmentThemes)) continue;
 
           for (const themeName of Object.keys(segmentThemes)) {
-            const bySemantic = segmentThemes[themeName];
-            if (!isRecord(bySemantic)) continue;
+            const surfaceContexts = segmentThemes[themeName];
+            if (!isRecord(surfaceContexts)) continue;
 
             // Create a composite key: segment.theme (e.g., "ios.light", "ios.dark")
             const bundleKey = `${segmentName}.${themeName}`;
 
-            // IMPORTANT:
-            // `toneMetadataByPalette` is scoped by palette (segment + theme) and element ownership.
-            //
-            // Rationale:
-            // - The same StyleKey can be used across multiple palettes because StyleKey encodes
-            //   the final CSS rule/value and must remain globally deduplicable.
-            // - However, the component emphasis bucket (highest/high/medium/low/lowest) is semantic
-            //   metadata and is allowed to differ per palette and per component element. If we used a single global
-            //   metadata map keyed only by StyleKey, emphasis could "leak" from one consumer to
-            //   another and make the JSON artifact incorrectly classify highest/high/medium/low/lowest classes.
-            //
-            // By resolving metadata through `bundleKey` plus the current component/variant/element,
-            // we keep CSS dedupe intact while producing correct `c[semantic].h|m|l|ll` buckets.
-            const toneMetaForPalette = toneMetadataByPalette.get(bundleKey);
             const elemRecord = ensurePaletteElement(
               bundleKey,
               componentName,
@@ -351,61 +339,89 @@ export function generateClassNamesMapSplit(
               elementName
             );
 
-            // Build color classes per semantic: c[semantic] = { hh, h, m, l, ll }
-            const colorBySemantic: Record<string, ColorClasses> = {};
+            for (const surfaceContextName of Object.keys(surfaceContexts)) {
+              const surfaceContext = surfaceContextName as SurfaceContext;
+              const bySemantic = surfaceContexts[surfaceContext];
+              if (!isRecord(bySemantic)) continue;
 
-            for (const sem of Object.keys(bySemantic)) {
-              const byState = bySemantic[sem];
-              if (!isRecord(byState)) continue;
+              // IMPORTANT:
+              // `toneMetadataByPalette` is scoped by palette (segment + theme + surface context)
+              // and element ownership.
+              //
+              // Rationale:
+              // - The same StyleKey can be used across multiple palettes because StyleKey encodes
+              //   the final CSS rule/value and must remain globally deduplicable.
+              // - However, the component emphasis bucket (highest/high/medium/low/lowest) is semantic
+              //   metadata and is allowed to differ per palette and per component element. If we used a single global
+              //   metadata map keyed only by StyleKey, emphasis could "leak" from one consumer to
+              //   another and make the JSON artifact incorrectly classify highest/high/medium/low/lowest classes.
+              //
+              // By resolving metadata through `bundleKey.surfaceContext` plus the current
+              // component/variant/element, we keep CSS dedupe intact while producing correct
+              // `c[surfaceContext][semantic].h|m|l|ll` buckets.
+              const toneMetaForPalette = toneMetadataByPalette.get(
+                `${bundleKey}.${surfaceContext}`
+              );
 
-              // Segregate classes by emphasis (or unique if no emphasis) per semantic
-              const emphasisSets = new Map<ComponentEmphasis, Set<string>>();
+              // Build color classes per semantic: c[semantic] = { hh, h, m, l, ll }
+              const colorBySemantic: Record<string, ColorClasses> = {};
 
-              for (const rawStyleKeys of Object.values(byState)) {
-                const styleKeys = Array.isArray(rawStyleKeys)
-                  ? rawStyleKeys.filter(
-                      (styleKey): styleKey is string => typeof styleKey === 'string'
-                    )
-                  : undefined;
+              for (const sem of Object.keys(bySemantic)) {
+                const byState = bySemantic[sem];
+                if (!isRecord(byState)) continue;
 
-                styleKeys?.forEach((styleKey: string) => {
-                  const shortenedClass = resolveClassName(styleKey);
-                  const metaKey = buildScopedToneMetadataKey(
-                    {
-                      componentName,
-                      variantName,
-                      modeName,
-                      elementName
-                    },
-                    `${sem}::${styleKey}`
-                  );
-                  const meta = toneMetaForPalette?.get(metaKey);
+                // Segregate classes by emphasis (or unique if no emphasis) per semantic
+                const emphasisSets = new Map<ComponentEmphasis, Set<string>>();
 
-                  const tones = meta?.tones ?? [];
+                for (const rawStyleKeys of Object.values(byState)) {
+                  const styleKeys = Array.isArray(rawStyleKeys)
+                    ? rawStyleKeys.filter(
+                        (styleKey): styleKey is string => typeof styleKey === 'string'
+                      )
+                    : undefined;
 
-                  // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
-                  for (const tone of tones) {
-                    getOrCreateSet(emphasisSets, tone).add(shortenedClass);
-                  }
+                  styleKeys?.forEach((styleKey: string) => {
+                    const shortenedClass = resolveClassName(styleKey);
+                    const metaKey = buildScopedToneMetadataKey(
+                      {
+                        componentName,
+                        variantName,
+                        modeName,
+                        elementName
+                      },
+                      `${sem}::${styleKey}`
+                    );
+                    const meta = toneMetaForPalette?.get(metaKey);
 
-                  // No unique bucket; all component colors must declare emphasis.
-                });
+                    const tones = meta?.tones ?? [];
+
+                    // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
+                    for (const tone of tones) {
+                      getOrCreateSet(emphasisSets, tone).add(shortenedClass);
+                    }
+
+                    // No unique bucket; all component colors must declare emphasis.
+                  });
+                }
+
+                const colorClasses: ColorClasses = {};
+                for (const [tone, set] of emphasisSets.entries()) {
+                  if (set.size === 0) continue;
+                  const bucket = componentEmphasisBuckets[tone];
+                  (colorClasses as Record<string, string>)[bucket] = Array.from(set).join(' ');
+                }
+                if (Object.keys(colorClasses).length > 0) {
+                  colorBySemantic[sem] = colorClasses;
+                }
               }
 
-              const colorClasses: ColorClasses = {};
-              for (const [tone, set] of emphasisSets.entries()) {
-                if (set.size === 0) continue;
-                const bucket = componentEmphasisBuckets[tone];
-                (colorClasses as Record<string, string>)[bucket] = Array.from(set).join(' ');
+              // Add to the element record only if we have color classes.
+              if (Object.keys(colorBySemantic).length > 0) {
+                elemRecord.c = {
+                  ...elemRecord.c,
+                  [surfaceContextBuckets[surfaceContext]]: colorBySemantic
+                };
               }
-              if (Object.keys(colorClasses).length > 0) {
-                colorBySemantic[sem] = colorClasses;
-              }
-            }
-
-            // Add to the element record only if we have color classes
-            if (Object.keys(colorBySemantic).length > 0) {
-              elemRecord.c = colorBySemantic;
             }
           }
         }

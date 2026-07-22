@@ -13,6 +13,8 @@ import type {
   SelectedInteractionStateToken,
   SemanticColor,
   SolidColor,
+  SurfaceContext,
+  SurfaceContextBucket,
   ThemeMode
 } from './types/colors/colors.types.ts';
 import type { DecorationSchema } from './types/decorations/decorations.types.ts';
@@ -36,7 +38,7 @@ export type ElementStyle<TSegmentName extends SegmentName = never> = {
 } & Partial<{
   decorations: DecorationSchema;
   scales: ScaleSchema;
-  // Palettes follow the structure: segmentName → theme → ColorSchema.
+  // Palettes follow the structure: segmentName → theme → surface context → ColorSchema.
   // This ensures consistency and enables proper white-label theming with theme mode support.
   palettes: ElementPalettes<TSegmentName>;
   effects: ElementEffects;
@@ -72,11 +74,11 @@ export interface StyleKeyByElement<TSegmentName extends SegmentName = never> {
   radiusScales?: Partial<
     Record<RadiusMode, Partial<Record<ElementSizeValue | ElementAllSizeValue, StyleKey[]>>>
   >;
-  // Palettes now include theme mode in the structure: segment → theme → semantic color → interaction states
+  // Palettes include segment, theme, and surface context before semantic colors and states.
   palettes: Partial<
     Record<
       TSegmentName | 'default' | 'dynamic',
-      Partial<Record<ThemeMode, InteractionStateBySemanticColor>>
+      Partial<Record<ThemeMode, Partial<Record<SurfaceContext, InteractionStateBySemanticColor>>>>
     >
   >;
 }
@@ -286,8 +288,9 @@ export type ClassNameByElementJSON = {
   rp?: Partial<Record<string, string>>;
   // rs: square border radius scales (size-aware, opt-in at component level).
   rs?: Partial<Record<string, string>>;
-  // c: Map of semantic key -> ColorClasses (semantic-aware colors). No legacy flat format.
-  c?: Record<string, ColorClasses>;
+  // c: Surface-context bucket -> semantic key -> emphasis color classes.
+  // d = default, i = inverse. No legacy flat format.
+  c?: Partial<Record<SurfaceContextBucket, Record<string, ColorClasses>>>;
   // l: control-state specific (selected) — flattened string of utility classes
   l?: string;
 };

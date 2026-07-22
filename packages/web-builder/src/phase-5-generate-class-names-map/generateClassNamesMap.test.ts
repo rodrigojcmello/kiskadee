@@ -102,8 +102,10 @@ describe('generateClassNamesMapSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    neutral: {
-                      rest: [colorKey]
+                    default: {
+                      neutral: {
+                        rest: [colorKey]
+                      }
                     }
                   }
                 }
@@ -115,7 +117,7 @@ describe('generateClassNamesMapSplit', () => {
     } as unknown as ComponentStyleKeyMap;
     const toneMetadataByPalette = new Map([
       [
-        'default.light',
+        'default.light.default',
         new Map([
           [
             buildScopedToneMetadataKey(
@@ -165,7 +167,7 @@ describe('generateClassNamesMapSplit', () => {
       rs: undefined
     });
     expect((coreOutline as any).e3.s?.['md:1']).toBe('tf-height tf-padding');
-    expect((paletteOutline as any).e4.c?.neutral).toEqual({
+    expect((paletteOutline as any).e4.c?.d?.neutral).toEqual({
       m: 'tf-color'
     });
   });
@@ -187,10 +189,12 @@ describe('generateClassNamesMapSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    textColor: {
-                      primary: {
-                        high: {
-                          rest: sharedColor
+                    default: {
+                      textColor: {
+                        primary: {
+                          high: {
+                            rest: sharedColor
+                          }
                         }
                       }
                     }
@@ -203,10 +207,12 @@ describe('generateClassNamesMapSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    textColor: {
-                      primary: {
-                        medium: {
-                          rest: sharedColor
+                    default: {
+                      textColor: {
+                        primary: {
+                          medium: {
+                            rest: sharedColor
+                          }
                         }
                       }
                     }
@@ -229,8 +235,8 @@ describe('generateClassNamesMapSplit', () => {
     );
 
     const button = out.palettes['default.light'].button as Record<string, ClassNameByElementJSON>;
-    const e2Primary = button.e2.c?.primary as ColorClasses;
-    const e3Primary = button.e3.c?.primary as ColorClasses;
+    const e2Primary = button.e2.c?.d?.primary as ColorClasses;
+    const e3Primary = button.e3.c?.d?.primary as ColorClasses;
 
     expect(e2Primary).toEqual({
       h: 'txt'
@@ -238,6 +244,51 @@ describe('generateClassNamesMapSplit', () => {
     expect(e3Primary).toEqual({
       m: 'txt'
     });
+  });
+
+  it('isolates emphasis metadata and class-map buckets by surface context', () => {
+    const schema = {
+      name: 'Surface context test',
+      version: [1, 0, 0],
+      author: 'Kiskadee',
+      breakpoints: { 'bp:all': 0 },
+      components: {
+        button: {
+          elements: {
+            e1: {
+              name: 'button',
+              palettes: {
+                default: {
+                  light: {
+                    default: {
+                      boxColor: {
+                        primary: { high: { rest: '#ffffff' } }
+                      }
+                    },
+                    inverse: {
+                      boxColor: {
+                        primary: { low: { rest: '#ffffff' } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } satisfies Schema;
+
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      { 'boxColor__#ffffff': 'surface' },
+      toneMetadataByPalette
+    );
+    const button = out.palettes['default.light'].button as Record<string, ClassNameByElementJSON>;
+
+    expect(button.e1.c?.d?.primary).toEqual({ h: 'surface' });
+    expect(button.e1.c?.i?.primary).toEqual({ l: 'surface' });
   });
 
   it('groups border radius effects by size inside effect buckets', () => {

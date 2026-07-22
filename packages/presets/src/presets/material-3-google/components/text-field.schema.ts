@@ -104,115 +104,119 @@ function createTextFieldElementPalettes({
   return {
     control: buildBySegment(segmentNames, (s) => ({
       light: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(c(s, 'l', 'neutral', 1)),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8))
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(c(s, 'l', 'neutral', 1)),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8))
+              }
+            },
+            error: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(c(s, 'l', 'redLike', 1)),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8))
+              }
+            },
+            warning: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(c(s, 'l', 'yellowLike', 1)),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8))
+              }
             }
           },
-          error: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(c(s, 'l', 'redLike', 1)),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8))
-            }
-          },
-          warning: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(c(s, 'l', 'yellowLike', 1)),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8))
-            }
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral.v2', 45),
-              hover: fieldStateRef(c(s, 'l', 'neutral.v2', 30)),
-              focus: fieldStateRef(c(s, 'l', 'primary', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 60))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'textField.error', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'textField.warning', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+          borderColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral.v2', 45),
+                hover: fieldStateRef(c(s, 'l', 'neutral.v2', 30)),
+                focus: fieldStateRef(c(s, 'l', 'primary', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 60))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'textField.error', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'textField.warning', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+              }
             }
           }
         }
       },
       dark: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(c(s, 'd', 'neutral', 8)),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16))
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(c(s, 'd', 'neutral', 8)),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16))
+              }
+            },
+            error: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(c(s, 'd', 'redLike', 10)),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16))
+              }
+            },
+            warning: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(c(s, 'd', 'yellowLike', 10)),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16))
+              }
             }
           },
-          error: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(c(s, 'd', 'redLike', 10)),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16))
-            }
-          },
-          warning: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(c(s, 'd', 'yellowLike', 10)),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16))
-            }
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral.v2', 55),
-              hover: fieldStateRef(c(s, 'd', 'neutral.v2', 70)),
-              focus: fieldStateRef(c(s, 'd', 'primary', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 45))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'textField.error', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'textField.warning', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+          borderColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral.v2', 55),
+                hover: fieldStateRef(c(s, 'd', 'neutral.v2', 70)),
+                focus: fieldStateRef(c(s, 'd', 'primary', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 45))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'textField.error', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'textField.warning', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+              }
             }
           }
         }
@@ -220,115 +224,119 @@ function createTextFieldElementPalettes({
     })),
     controlFloatingNotched: buildBySegment(segmentNames, (s) => ({
       light: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral', 0),
-              focus: fieldStateRef(c(s, 'l', 'neutral', 0)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral', 0))
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral', 0),
+                focus: fieldStateRef(c(s, 'l', 'neutral', 0)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral', 0))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'neutral', 0),
+                focus: fieldStateRef(c(s, 'l', 'neutral', 0)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral', 0))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'neutral', 0),
+                focus: fieldStateRef(c(s, 'l', 'neutral', 0)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral', 0))
+              }
             }
           },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'neutral', 0),
-              focus: fieldStateRef(c(s, 'l', 'neutral', 0)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral', 0))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'neutral', 0),
-              focus: fieldStateRef(c(s, 'l', 'neutral', 0)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral', 0))
-            }
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral.v2', 45),
-              hover: fieldStateRef(c(s, 'l', 'neutral.v2', 30)),
-              focus: fieldStateRef(c(s, 'l', 'primary', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 60))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'textField.error', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'textField.warning', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+          borderColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral.v2', 45),
+                hover: fieldStateRef(c(s, 'l', 'neutral.v2', 30)),
+                focus: fieldStateRef(c(s, 'l', 'primary', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 60))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'textField.error', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'textField.warning', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+              }
             }
           }
         }
       },
       dark: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral', 8),
-              focus: fieldStateRef(c(s, 'd', 'neutral', 8)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 8))
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral', 8),
+                focus: fieldStateRef(c(s, 'd', 'neutral', 8)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral', 8))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'redLike', 10),
+                focus: fieldStateRef(c(s, 'd', 'redLike', 10)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                readOnly: fieldStateRef(c(s, 'd', 'redLike', 10))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'yellowLike', 10),
+                focus: fieldStateRef(c(s, 'd', 'yellowLike', 10)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                readOnly: fieldStateRef(c(s, 'd', 'yellowLike', 10))
+              }
             }
           },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'redLike', 10),
-              focus: fieldStateRef(c(s, 'd', 'redLike', 10)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-              readOnly: fieldStateRef(c(s, 'd', 'redLike', 10))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'yellowLike', 10),
-              focus: fieldStateRef(c(s, 'd', 'yellowLike', 10)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-              readOnly: fieldStateRef(c(s, 'd', 'yellowLike', 10))
-            }
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral.v2', 55),
-              hover: fieldStateRef(c(s, 'd', 'neutral.v2', 70)),
-              focus: fieldStateRef(c(s, 'd', 'primary', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 45))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'textField.error', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'textField.warning', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+          borderColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral.v2', 55),
+                hover: fieldStateRef(c(s, 'd', 'neutral.v2', 70)),
+                focus: fieldStateRef(c(s, 'd', 'primary', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 45))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'textField.error', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'textField.warning', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+              }
             }
           }
         }
@@ -336,121 +344,125 @@ function createTextFieldElementPalettes({
     })),
     controlBorderless: buildBySegment(segmentNames, (s) => ({
       light: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: borderlessLightRestBoxColor,
-              hover: fieldStateRef(borderlessLightHoverBoxColor),
-              focus: fieldStateRef(borderlessLightFocusBoxColor),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(borderlessLightRestBoxColor)
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: borderlessLightRestBoxColor,
+                hover: fieldStateRef(borderlessLightHoverBoxColor),
+                focus: fieldStateRef(borderlessLightFocusBoxColor),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                readOnly: fieldStateRef(borderlessLightRestBoxColor)
+              }
+            },
+            error: {
+              medium: {
+                rest: borderlessLightRestBoxColor,
+                hover: fieldStateRef(borderlessLightHoverBoxColor),
+                focus: fieldStateRef(borderlessLightFocusBoxColor),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                readOnly: fieldStateRef(borderlessLightRestBoxColor)
+              }
+            },
+            warning: {
+              medium: {
+                rest: borderlessLightRestBoxColor,
+                hover: fieldStateRef(borderlessLightHoverBoxColor),
+                focus: fieldStateRef(borderlessLightFocusBoxColor),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                readOnly: fieldStateRef(borderlessLightRestBoxColor)
+              }
             }
           },
-          error: {
-            medium: {
-              rest: borderlessLightRestBoxColor,
-              hover: fieldStateRef(borderlessLightHoverBoxColor),
-              focus: fieldStateRef(borderlessLightFocusBoxColor),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(borderlessLightRestBoxColor)
-            }
-          },
-          warning: {
-            medium: {
-              rest: borderlessLightRestBoxColor,
-              hover: fieldStateRef(borderlessLightHoverBoxColor),
-              focus: fieldStateRef(borderlessLightFocusBoxColor),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-              readOnly: fieldStateRef(borderlessLightRestBoxColor)
-            }
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(transparent),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(transparent),
-              readOnly: fieldStateRef(transparent)
-            }
-          },
-          error: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(transparent),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(transparent),
-              readOnly: fieldStateRef(transparent)
-            }
-          },
-          warning: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(transparent),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(transparent),
-              readOnly: fieldStateRef(transparent)
+          borderColor: {
+            neutral: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(transparent),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(transparent),
+                readOnly: fieldStateRef(transparent)
+              }
+            },
+            error: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(transparent),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(transparent),
+                readOnly: fieldStateRef(transparent)
+              }
+            },
+            warning: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(transparent),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(transparent),
+                readOnly: fieldStateRef(transparent)
+              }
             }
           }
         }
       },
       dark: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral', 14),
-              hover: fieldStateRef(c(s, 'd', 'neutral', 18)),
-              focus: fieldStateRef(c(s, 'd', 'primary', 20)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 16))
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral', 14),
+                hover: fieldStateRef(c(s, 'd', 'neutral', 18)),
+                focus: fieldStateRef(c(s, 'd', 'primary', 20)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral', 16))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'redLike', 18),
+                hover: fieldStateRef(c(s, 'd', 'redLike', 22)),
+                focus: fieldStateRef(c(s, 'd', 'redLike', 28)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                readOnly: fieldStateRef(c(s, 'd', 'redLike', 20))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'yellowLike', 18),
+                hover: fieldStateRef(c(s, 'd', 'yellowLike', 24)),
+                focus: fieldStateRef(c(s, 'd', 'yellowLike', 28)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                readOnly: fieldStateRef(c(s, 'd', 'yellowLike', 20))
+              }
             }
           },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'redLike', 18),
-              hover: fieldStateRef(c(s, 'd', 'redLike', 22)),
-              focus: fieldStateRef(c(s, 'd', 'redLike', 28)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-              readOnly: fieldStateRef(c(s, 'd', 'redLike', 20))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'yellowLike', 18),
-              hover: fieldStateRef(c(s, 'd', 'yellowLike', 24)),
-              focus: fieldStateRef(c(s, 'd', 'yellowLike', 28)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-              readOnly: fieldStateRef(c(s, 'd', 'yellowLike', 20))
-            }
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(transparent),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(transparent),
-              readOnly: fieldStateRef(transparent)
-            }
-          },
-          error: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(transparent),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(transparent),
-              readOnly: fieldStateRef(transparent)
-            }
-          },
-          warning: {
-            medium: {
-              rest: transparent,
-              hover: fieldStateRef(transparent),
-              focus: fieldStateRef(transparent),
-              disabled: fieldStateRef(transparent),
-              readOnly: fieldStateRef(transparent)
+          borderColor: {
+            neutral: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(transparent),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(transparent),
+                readOnly: fieldStateRef(transparent)
+              }
+            },
+            error: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(transparent),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(transparent),
+                readOnly: fieldStateRef(transparent)
+              }
+            },
+            warning: {
+              medium: {
+                rest: transparent,
+                hover: fieldStateRef(transparent),
+                focus: fieldStateRef(transparent),
+                disabled: fieldStateRef(transparent),
+                readOnly: fieldStateRef(transparent)
+              }
             }
           }
         }
@@ -458,39 +470,43 @@ function createTextFieldElementPalettes({
     })),
     placeholder: buildBySegment(segmentNames, (s) => ({
       light: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral.v2', 45)
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'textField.error', 60)
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'textField.warning', 60)
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral.v2', 45)
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'textField.error', 60)
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'textField.warning', 60)
+              }
             }
           }
         }
       },
       dark: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral.v2', 70)
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'textField.error', 80)
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'textField.warning', 80)
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral.v2', 70)
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'textField.error', 80)
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'textField.warning', 80)
+              }
             }
           }
         }
@@ -498,63 +514,67 @@ function createTextFieldElementPalettes({
     })),
     label: buildBySegment(segmentNames, (s) => ({
       light: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral.v2', 45),
-              hover: fieldStateRef(c(s, 'l', 'neutral.v2', 35)),
-              focus: fieldStateRef(c(s, 'l', 'primary', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 55))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'textField.error', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'textField.warning', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral.v2', 45),
+                hover: fieldStateRef(c(s, 'l', 'neutral.v2', 35)),
+                focus: fieldStateRef(c(s, 'l', 'primary', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 55))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'textField.error', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'textField.warning', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+              }
             }
           }
         }
       },
       dark: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral.v2', 70),
-              hover: fieldStateRef(c(s, 'd', 'neutral.v2', 80)),
-              focus: fieldStateRef(c(s, 'd', 'primary', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 60))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'textField.error', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'textField.warning', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral.v2', 70),
+                hover: fieldStateRef(c(s, 'd', 'neutral.v2', 80)),
+                focus: fieldStateRef(c(s, 'd', 'primary', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 60))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'textField.error', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'textField.warning', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+              }
             }
           }
         }
@@ -562,51 +582,55 @@ function createTextFieldElementPalettes({
     })),
     input: buildBySegment(segmentNames, (s) => ({
       light: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral', 90),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral', 85))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'neutral', 90),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral', 85))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'neutral', 90),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral', 85))
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral', 90),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral', 85))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'neutral', 90),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral', 85))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'neutral', 90),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral', 85))
+              }
             }
           }
         }
       },
       dark: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral', 90),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'neutral', 90),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'neutral', 90),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral', 90),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'neutral', 90),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'neutral', 90),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 90, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral', 85))
+              }
             }
           }
         }
@@ -614,45 +638,49 @@ function createTextFieldElementPalettes({
     })),
     message: buildBySegment(segmentNames, (s) => ({
       light: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral.v2', 45),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'textField.error', 60),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'textField.warning', 60),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38))
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral.v2', 45),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'textField.error', 60),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'textField.warning', 60),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 38))
+              }
             }
           }
         }
       },
       dark: {
-        textColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral.v2', 70),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'textField.error', 80),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'textField.warning', 80),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38))
+        default: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral.v2', 70),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'textField.error', 80),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'textField.warning', 80),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38))
+              }
             }
           }
         }
@@ -660,63 +688,67 @@ function createTextFieldElementPalettes({
     })),
     indicatorUnderline: buildBySegment(segmentNames, (s) => ({
       light: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'l', 'neutral.v2', 45),
-              hover: fieldStateRef(c(s, 'l', 'neutral.v2', 30)),
-              focus: fieldStateRef(c(s, 'l', 'primary', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 60))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'l', 'textField.error', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'l', 'textField.warning', 60),
-              hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
-              focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
-              disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
-              readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'l', 'neutral.v2', 45),
+                hover: fieldStateRef(c(s, 'l', 'neutral.v2', 30)),
+                focus: fieldStateRef(c(s, 'l', 'primary', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'neutral.v2', 60))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'l', 'textField.error', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.error', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.error', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.error', 65))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'l', 'textField.warning', 60),
+                hover: fieldStateRef(c(s, 'l', 'textField.warning', 55)),
+                focus: fieldStateRef(c(s, 'l', 'textField.warning', 60)),
+                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 20)),
+                readOnly: fieldStateRef(c(s, 'l', 'textField.warning', 65))
+              }
             }
           }
         }
       },
       dark: {
-        boxColor: {
-          neutral: {
-            medium: {
-              rest: c(s, 'd', 'neutral.v2', 55),
-              hover: fieldStateRef(c(s, 'd', 'neutral.v2', 70)),
-              focus: fieldStateRef(c(s, 'd', 'primary', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 45))
-            }
-          },
-          error: {
-            medium: {
-              rest: c(s, 'd', 'textField.error', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
-            }
-          },
-          warning: {
-            medium: {
-              rest: c(s, 'd', 'textField.warning', 80),
-              hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
-              focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
-              disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
-              readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+        default: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: c(s, 'd', 'neutral.v2', 55),
+                hover: fieldStateRef(c(s, 'd', 'neutral.v2', 70)),
+                focus: fieldStateRef(c(s, 'd', 'primary', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'neutral.v2', 45))
+              }
+            },
+            error: {
+              medium: {
+                rest: c(s, 'd', 'textField.error', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.error', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.error', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.error', 75))
+              }
+            },
+            warning: {
+              medium: {
+                rest: c(s, 'd', 'textField.warning', 80),
+                hover: fieldStateRef(c(s, 'd', 'textField.warning', 85)),
+                focus: fieldStateRef(c(s, 'd', 'textField.warning', 80)),
+                disabled: fieldStateRef(c(s, 'd', 'neutral', 30, 38)),
+                readOnly: fieldStateRef(c(s, 'd', 'textField.warning', 75))
+              }
             }
           }
         }

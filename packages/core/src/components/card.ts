@@ -2,10 +2,12 @@ import type {
   ColorProperty,
   ColorSchema,
   SegmentName,
+  SurfaceContextPalette,
   ThemeMode
 } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types.ts';
+import { getElementPaletteValidationIssues } from './palettes.ts';
 
 type ElementPalettesByColor<
   TSegmentName extends SegmentName,
@@ -13,7 +15,7 @@ type ElementPalettesByColor<
 > = Partial<
   Record<
     TSegmentName | 'default' | 'dynamic',
-    Partial<Record<ThemeMode, Partial<Pick<ColorSchema, TColorProperty>>>>
+    Partial<Record<ThemeMode, SurfaceContextPalette<Partial<Pick<ColorSchema, TColorProperty>>>>>
   >
 >;
 
@@ -58,7 +60,7 @@ export type CardElements<TSegmentName extends SegmentName = never> = {
 type ElementContractRules = {
   decorations?: readonly string[];
   scales?: readonly string[];
-  palettes?: readonly string[];
+  palettes?: readonly ColorProperty[];
   radiusModes?: readonly string[];
 };
 
@@ -104,34 +106,13 @@ function validateAllowedKeys(
 
 function validatePalettes(
   value: unknown,
-  allowedColorKeys: readonly string[],
+  allowedColorKeys: readonly ColorProperty[],
   path: string,
   issues: string[]
 ): void {
-  if (!isRecord(value)) {
-    issues.push(`${path}: expected object`);
-    return;
-  }
-
-  for (const [segment, byTheme] of Object.entries(value)) {
-    const themePath = `${path}.${segment}`;
-    if (!isRecord(byTheme)) {
-      issues.push(`${themePath}: expected object`);
-      continue;
-    }
-
-    for (const [theme, colorMap] of Object.entries(byTheme)) {
-      const colorPath = `${themePath}.${theme}`;
-      if (!isRecord(colorMap)) {
-        issues.push(`${colorPath}: expected object`);
-        continue;
-      }
-      for (const key of Object.keys(colorMap)) {
-        if (!allowedColorKeys.includes(key)) {
-          issues.push(`${colorPath}.${key}: unrecognized key`);
-        }
-      }
-    }
+  for (const issue of getElementPaletteValidationIssues(value, allowedColorKeys)) {
+    const issuePath = issue.path.length > 0 ? `${path}.${issue.path.join('.')}` : path;
+    issues.push(`${issuePath}: ${issue.message}`);
   }
 }
 
@@ -234,10 +215,7 @@ function validateComponentEffects(value: unknown, path: string, issues: string[]
       issues.push(`${path}.shadow.e1.states: expected object`);
     }
 
-    if (
-      value.shadow.e1.fixedLevels !== undefined &&
-      !Array.isArray(value.shadow.e1.fixedLevels)
-    ) {
+    if (value.shadow.e1.fixedLevels !== undefined && !Array.isArray(value.shadow.e1.fixedLevels)) {
       issues.push(`${path}.shadow.e1.fixedLevels: expected array`);
     }
   }

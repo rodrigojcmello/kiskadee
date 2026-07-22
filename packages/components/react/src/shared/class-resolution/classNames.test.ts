@@ -1,5 +1,5 @@
 import type { ClassNameByElementJSON, EffectClassBucketJSON } from '@kiskadee/core';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   joinClassNames,
   mergeClassNamePatches,
@@ -14,16 +14,24 @@ import {
 const element: ClassNameByElementJSON = {
   d: 'base',
   c: {
-    primary: {
-      hh: 'primary-highest',
-      h: 'primary-high',
-      m: 'primary-medium',
-      l: 'primary-low',
-      ll: 'primary-lowest'
+    d: {
+      primary: {
+        hh: 'primary-highest',
+        h: 'primary-high',
+        m: 'primary-medium',
+        l: 'primary-low',
+        ll: 'primary-lowest'
+      },
+      neutral: {
+        h: 'neutral-high',
+        m: 'neutral-medium'
+      }
     },
-    neutral: {
-      h: 'neutral-high',
-      m: 'neutral-medium'
+    i: {
+      primary: {
+        h: 'inverse-primary-high',
+        m: 'inverse-primary-medium'
+      }
     }
   },
   s: {
@@ -60,6 +68,32 @@ describe('class name resolution helpers', () => {
     expect(resolveIntentClassName(element, 'primary', 'highest')).toBe('primary-highest');
   });
 
+  it('keeps default and inverse color buckets isolated', () => {
+    expect(resolveIntentClassName(element, 'primary', 'high')).toBe('primary-high');
+    expect(resolveIntentClassName(element, 'primary', 'high', { surfaceContext: 'inverse' })).toBe(
+      'inverse-primary-high'
+    );
+  });
+
+  it('does not fall back to default colors when inverse is missing', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const defaultOnlyElement: ClassNameByElementJSON = {
+      c: {
+        d: {
+          primary: { h: 'primary-high' }
+        }
+      }
+    };
+
+    expect(
+      resolveIntentClassName(defaultOnlyElement, 'primary', 'high', {
+        surfaceContext: 'inverse'
+      })
+    ).toBe('');
+    expect(warn).toHaveBeenCalledOnce();
+    warn.mockRestore();
+  });
+
   it('resolves intent fallbacks explicitly', () => {
     expect(
       resolveIntentClassName(element, 'missing', 'medium', {
@@ -79,8 +113,10 @@ describe('class name resolution helpers', () => {
   it('uses fallback bucket order when an emphasis bucket is missing', () => {
     const sparseElement: ClassNameByElementJSON = {
       c: {
-        primary: {
-          h: 'primary-high'
+        d: {
+          primary: {
+            h: 'primary-high'
+          }
         }
       }
     };
@@ -95,8 +131,10 @@ describe('class name resolution helpers', () => {
   it('uses the default color bucket order when emphasis is not provided', () => {
     const lowOnlyElement: ClassNameByElementJSON = {
       c: {
-        primary: {
-          l: 'primary-low'
+        d: {
+          primary: {
+            l: 'primary-low'
+          }
         }
       }
     };
@@ -113,6 +151,14 @@ describe('class name resolution helpers', () => {
         emphasis: 'medium'
       })
     ).toBe('base primary-medium scale-all scale-medium');
+
+    expect(
+      resolveSchemaElementClassName(element, {
+        intent: 'primary',
+        emphasis: 'medium',
+        surfaceContext: 'inverse'
+      })
+    ).toBe('base inverse-primary-medium');
   });
 
   it('resolves radius classes by radius mode and scale', () => {

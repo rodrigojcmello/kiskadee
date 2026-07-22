@@ -257,19 +257,23 @@ export function createIos27AppleButtonSchema({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                primary: buttonIntentPalettes.light.primary.boxColor,
-                neutral: buttonIntentPalettes.light.neutral.boxColor,
-                destructive: buttonIntentPalettes.light.destructive.boxColor,
-                positive: buttonIntentPalettes.light.positive.boxColor
+              default: {
+                boxColor: {
+                  primary: buttonIntentPalettes.light.primary.boxColor,
+                  neutral: buttonIntentPalettes.light.neutral.boxColor,
+                  destructive: buttonIntentPalettes.light.destructive.boxColor,
+                  positive: buttonIntentPalettes.light.positive.boxColor
+                }
               }
             },
             dark: {
-              boxColor: {
-                primary: buttonIntentPalettes.dark.primary.boxColor,
-                neutral: buttonIntentPalettes.dark.neutral.boxColor,
-                destructive: buttonIntentPalettes.dark.destructive.boxColor,
-                positive: buttonIntentPalettes.dark.positive.boxColor
+              default: {
+                boxColor: {
+                  primary: buttonIntentPalettes.dark.primary.boxColor,
+                  neutral: buttonIntentPalettes.dark.neutral.boxColor,
+                  destructive: buttonIntentPalettes.dark.destructive.boxColor,
+                  positive: buttonIntentPalettes.dark.positive.boxColor
+                }
               }
             }
           }
@@ -283,19 +287,23 @@ export function createIos27AppleButtonSchema({
         palettes: {
           default: {
             light: {
-              textColor: {
-                primary: buttonIntentPalettes.light.primary.textColor,
-                neutral: buttonIntentPalettes.light.neutral.textColor,
-                destructive: buttonIntentPalettes.light.destructive.textColor,
-                positive: buttonIntentPalettes.light.positive.textColor
+              default: {
+                textColor: {
+                  primary: buttonIntentPalettes.light.primary.textColor,
+                  neutral: buttonIntentPalettes.light.neutral.textColor,
+                  destructive: buttonIntentPalettes.light.destructive.textColor,
+                  positive: buttonIntentPalettes.light.positive.textColor
+                }
               }
             },
             dark: {
-              textColor: {
-                primary: buttonIntentPalettes.dark.primary.textColor,
-                neutral: buttonIntentPalettes.dark.neutral.textColor,
-                destructive: buttonIntentPalettes.dark.destructive.textColor,
-                positive: buttonIntentPalettes.dark.positive.textColor
+              default: {
+                textColor: {
+                  primary: buttonIntentPalettes.dark.primary.textColor,
+                  neutral: buttonIntentPalettes.dark.neutral.textColor,
+                  destructive: buttonIntentPalettes.dark.destructive.textColor,
+                  positive: buttonIntentPalettes.dark.positive.textColor
+                }
               }
             }
           }

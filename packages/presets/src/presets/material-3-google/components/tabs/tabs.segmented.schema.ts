@@ -44,19 +44,23 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'primary.v2', 60)
+              default: {
+                borderColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'primary.v2', 60)
+                    }
                   }
                 }
               }
             },
             dark: {
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'primary.v2', 50)
+              default: {
+                borderColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'primary.v2', 50)
+                    }
                   }
                 }
               }
@@ -95,34 +99,38 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'neutral', 0),
-                    hover: c('default', 'l', 'neutral', 4),
-                    focus: c('default', 'l', 'neutral', 4),
-                    pressed: c('default', 'l', 'neutral', 8),
-                    selected: {
-                      rest: transparent,
-                      hover: transparent,
-                      pressed: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'neutral', 0),
+                      hover: c('default', 'l', 'neutral', 4),
+                      focus: c('default', 'l', 'neutral', 4),
+                      pressed: c('default', 'l', 'neutral', 8),
+                      selected: {
+                        rest: transparent,
+                        hover: transparent,
+                        pressed: transparent
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 0),
-                    hover: c('default', 'd', 'neutral', 4),
-                    focus: c('default', 'd', 'neutral', 4),
-                    pressed: c('default', 'd', 'neutral', 8),
-                    selected: {
-                      rest: transparent,
-                      hover: transparent,
-                      pressed: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'neutral', 0),
+                      hover: c('default', 'd', 'neutral', 4),
+                      focus: c('default', 'd', 'neutral', 4),
+                      pressed: c('default', 'd', 'neutral', 8),
+                      selected: {
+                        rest: transparent,
+                        hover: transparent,
+                        pressed: transparent
+                      }
                     }
                   }
                 }
@@ -150,24 +158,28 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'primary.v2', 60),
-                    selected: {
-                      rest: { ref: white }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'primary.v2', 60),
+                      selected: {
+                        rest: { ref: white }
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'primary.v2', 50),
-                    selected: {
-                      rest: { ref: white }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'primary.v2', 50),
+                      selected: {
+                        rest: { ref: white }
+                      }
                     }
                   }
                 }
@@ -189,23 +201,27 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'primary.v2', 60),
-                    hover: c('default', 'l', 'primary.v2', 55),
-                    pressed: c('default', 'l', 'primary.v2', 65)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'primary.v2', 60),
+                      hover: c('default', 'l', 'primary.v2', 55),
+                      pressed: c('default', 'l', 'primary.v2', 65)
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'primary.v2', 50),
-                    hover: c('default', 'd', 'primary.v2', 45),
-                    pressed: c('default', 'd', 'primary.v2', 55)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'primary.v2', 50),
+                      hover: c('default', 'd', 'primary.v2', 45),
+                      pressed: c('default', 'd', 'primary.v2', 55)
+                    }
                   }
                 }
               }
@@ -228,19 +244,23 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'l', 'primary.v2', 60)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'l', 'primary.v2', 60)
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'primary.v2', 50)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'primary.v2', 50)
+                    }
                   }
                 }
               }

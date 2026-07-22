@@ -1,12 +1,12 @@
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ButtonProps, ButtonStatus } from '../Button.types.ts';
 import {
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_PRESSED_DURATION_MS,
   DEFAULT_BUTTON_SCALE,
   resolveButtonClassNames
 } from '../Button.class-names.ts';
+import type { ButtonProps, ButtonStatus } from '../Button.types.ts';
 import { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
 
 export function useButtonCommonProps(props: ButtonProps) {
@@ -23,6 +23,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     radiusEffect = false,
     emphasis,
     intent = DEFAULT_BUTTON_INTENT,
+    surfaceContext,
     tabIndex,
     label,
     pressedDurationMs,
@@ -53,6 +54,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     radiusEffect,
     emphasis,
     intent,
+    surfaceContext,
     tabIndex,
     label,
     pressedDurationMs,
@@ -94,6 +96,7 @@ export function useButtonClassNamesFromCommon(
         radiusEffect: common.radiusEffect,
         emphasis: common.emphasis,
         intent: common.intent,
+        surfaceContext: common.surfaceContext,
         globalRadius: common.options.radius
       }),
     [
@@ -110,6 +113,7 @@ export function useButtonClassNamesFromCommon(
       common.radiusEffect,
       common.emphasis,
       common.intent,
+      common.surfaceContext,
       common.options.radius
     ]
   );

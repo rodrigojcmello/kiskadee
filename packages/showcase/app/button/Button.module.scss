@@ -39,6 +39,61 @@ $height: 64px;
   --k-focus-width: 0;
 }
 
+.contextComparison {
+  margin: 24px 0 32px;
+  width: 100%;
+
+  > h3 {
+    margin-bottom: 4px;
+  }
+}
+
+.contextComparisonDescription {
+  color: currentColor;
+  margin: 0 0 16px;
+  opacity: 0.72;
+}
+
+.contextComparisonGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.contextCard {
+  min-width: 0;
+
+  > h4 {
+    margin: 0 0 8px;
+  }
+}
+
+.contextSurface {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: 120px;
+  padding: 20px;
+
+  :global(.k-btn) {
+    width: 100%;
+  }
+}
+
+.inverseContextSurface {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.contextUnavailable {
+  align-self: center;
+  color: rgba(255, 255, 255, 0.88);
+  grid-column: 1 / -1;
+  margin: 0;
+  text-align: center;
+}
+
 .missingState {
   display: flex;
   justify-content: center;
@@ -105,6 +160,10 @@ $height: 64px;
 }
 
 @media (min-width: 768px) {
+  .contextComparisonGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .example-states {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     height: calc($height * 2);

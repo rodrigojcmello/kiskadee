@@ -24,3 +24,15 @@ axis decisions already documented in component intents and Switch schema rules:
 - selected/on activation color is a control-state color, not a new component
   intent by itself;
 - `low` emphasis is the local strong-surface adaptation, not dark mode.
+
+## Surface Context Migration
+
+The shared schema now models a local strong-surface relationship through
+`surfaceContext="inverse"`. Fluent Button is the first experiment and publishes
+Default and Inverse independently from emphasis.
+
+Fluent Switch still overloads `low` as its on-primary appearance. Preserve that
+behavior until Switch adopts the shared axis in a separate component-scoped
+change. That migration must keep the current visual evidence, remove the
+surface meaning from emphasis, add an explicit Inverse capability, and update
+the Switch Showcase before this debt can be closed.

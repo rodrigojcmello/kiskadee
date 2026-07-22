@@ -56,6 +56,7 @@ import {
 } from '@/components/ShowcaseControls';
 import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
 import { SwatchRadioGroup } from '@/k-components';
+import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Slider.module.scss';
 
@@ -598,9 +599,9 @@ export default function SliderPage() {
   const isCardAvailable = Boolean(cardMeta);
   const defaultRadius = sliderOptions.radius;
   const supportedScales = sliderMeta?.scale;
-  const supportedIntents = sliderMeta?.state;
+  const supportedIntents = getManifestComponentState(sliderMeta, segment, theme);
   const supportedStates = supportedIntents?.[intent];
-  const supportedCardStates = cardMeta?.state;
+  const supportedCardStates = getManifestComponentState(cardMeta, segment, theme);
   const cardShadow = useMemo(() => {
     const shadowBucket = cardClassesMap?.e1?.e?.h;
     if (!shadowBucket || typeof shadowBucket === 'string') return undefined;

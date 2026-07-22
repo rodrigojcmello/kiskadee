@@ -141,14 +141,16 @@ export const schema: Schema<Segments> = {
           palettes: {
             default: {
               light: {
-                boxColor: {
-                  primary: {
-                    high: {
-                      rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
-                      hover: color(schemaContext, 'default', 'l', 'button.primary', 45),
-                      focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
-                      pressed: color(schemaContext, 'default', 'l', 'button.primary', 70),
-                      disabled: color(schemaContext, 'default', 'l', 'button.neutral', 20)
+                default: {
+                  boxColor: {
+                    primary: {
+                      high: {
+                        rest: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                        hover: color(schemaContext, 'default', 'l', 'button.primary', 45),
+                        focus: color(schemaContext, 'default', 'l', 'button.primary', 50),
+                        pressed: color(schemaContext, 'default', 'l', 'button.primary', 70),
+                        disabled: color(schemaContext, 'default', 'l', 'button.neutral', 20)
+                      }
                     }
                   }
                 }
@@ -179,12 +181,14 @@ export const schema: Schema<Segments> = {
           palettes: {
             default: {
               light: {
-                textColor: {
-                  primary: {
-                    high: {
-                      rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: color(schemaContext, 'default', 'l', 'button.neutral', 45)
+                default: {
+                  textColor: {
+                    primary: {
+                      high: {
+                        rest: color(schemaContext, 'default', 'l', 'button.neutral', 0),
+                        disabled: {
+                          ref: color(schemaContext, 'default', 'l', 'button.neutral', 45)
+                        }
                       }
                     }
                   }

@@ -47,19 +47,23 @@ export function createMaterial3GoogleTabsBridgeVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: transparent
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: transparent
+                    }
                   }
                 }
               }
@@ -101,36 +105,40 @@ export function createMaterial3GoogleTabsBridgeVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: '#ffa724',
-                    hover: '#ffbb4d',
-                    focus: '#ffa724',
-                    pressed: '#f2930d',
-                    selected: {
-                      rest: transparent,
-                      hover: transparent,
-                      focus: transparent,
-                      pressed: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: '#ffa724',
+                      hover: '#ffbb4d',
+                      focus: '#ffa724',
+                      pressed: '#f2930d',
+                      selected: {
+                        rest: transparent,
+                        hover: transparent,
+                        focus: transparent,
+                        pressed: transparent
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: '#bf7c18',
-                    hover: '#dc8e18',
-                    focus: '#bf7c18',
-                    pressed: '#a26a16',
-                    selected: {
-                      rest: transparent,
-                      hover: transparent,
-                      focus: transparent,
-                      pressed: transparent
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: '#bf7c18',
+                      hover: '#dc8e18',
+                      focus: '#bf7c18',
+                      pressed: '#a26a16',
+                      selected: {
+                        rest: transparent,
+                        hover: transparent,
+                        focus: transparent,
+                        pressed: transparent
+                      }
                     }
                   }
                 }
@@ -168,24 +176,28 @@ export function createMaterial3GoogleTabsBridgeVariant({
         palettes: {
           default: {
             light: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: '#3d1800',
-                    selected: {
-                      rest: { ref: '#121212' }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: '#3d1800',
+                      selected: {
+                        rest: { ref: '#121212' }
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: '#ffe9c2',
-                    selected: {
-                      rest: { ref: white }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: '#ffe9c2',
+                      selected: {
+                        rest: { ref: white }
+                      }
                     }
                   }
                 }
@@ -211,24 +223,28 @@ export function createMaterial3GoogleTabsBridgeVariant({
         palettes: {
           default: {
             light: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: '#3d1800',
-                    selected: {
-                      rest: { ref: '#121212' }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: '#3d1800',
+                      selected: {
+                        rest: { ref: '#121212' }
+                      }
                     }
                   }
                 }
               }
             },
             dark: {
-              textColor: {
-                neutral: {
-                  medium: {
-                    rest: '#ffe9c2',
-                    selected: {
-                      rest: { ref: white }
+              default: {
+                textColor: {
+                  neutral: {
+                    medium: {
+                      rest: '#ffe9c2',
+                      selected: {
+                        rest: { ref: white }
+                      }
                     }
                   }
                 }
@@ -251,22 +267,26 @@ export function createMaterial3GoogleTabsBridgeVariant({
         palettes: {
           default: {
             light: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: '#fffefa',
-                    hover: '#fff6e5',
-                    focus: '#fffefa',
-                    pressed: '#fff0d6'
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: '#fffefa',
+                      hover: '#fff6e5',
+                      focus: '#fffefa',
+                      pressed: '#fff0d6'
+                    }
                   }
                 }
               }
             },
             dark: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c('default', 'd', 'neutral', 8)
+              default: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      rest: c('default', 'd', 'neutral', 8)
+                    }
                   }
                 }
               }

@@ -98,20 +98,22 @@ export function createIos27AppleSliderSchema({
 
   const textPalettes = buildBySegment(segmentNames, () => ({
     light: {
-      textColor: {
-        neutral: {
-          medium: {
-            rest: iosSliderText,
-            disabled: withAlpha(iosSliderText, 30)
-          }
-        },
-        primary: {
-          medium: {
-            rest: tint,
-            hover: tintHover,
-            focus: tint,
-            pressed: tint,
-            disabled: disabledTint
+      default: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: iosSliderText,
+              disabled: withAlpha(iosSliderText, 30)
+            }
+          },
+          primary: {
+            medium: {
+              rest: tint,
+              hover: tintHover,
+              focus: tint,
+              pressed: tint,
+              disabled: disabledTint
+            }
           }
         }
       }
@@ -120,11 +122,13 @@ export function createIos27AppleSliderSchema({
 
   const optionalIndicatorPalettes = buildBySegment(segmentNames, () => ({
     light: {
-      textColor: {
-        neutral: {
-          medium: {
-            rest: iosSliderOptionalIndicator,
-            disabled: iosSliderOptionalIndicatorDisabled
+      default: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: iosSliderOptionalIndicator,
+              disabled: iosSliderOptionalIndicatorDisabled
+            }
           }
         }
       }
@@ -133,9 +137,11 @@ export function createIos27AppleSliderSchema({
 
   const transparentBorder = buildBySegment(segmentNames, () => ({
     light: {
-      borderColor: {
-        neutral: { medium: { rest: transparent, disabled: transparent } },
-        primary: { medium: { rest: transparent, disabled: transparent } }
+      default: {
+        borderColor: {
+          neutral: { medium: { rest: transparent, disabled: transparent } },
+          primary: { medium: { rest: transparent, disabled: transparent } }
+        }
       }
     }
   }));
@@ -247,21 +253,23 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: iosSliderTrack,
-                          disabled: iosSliderTrackDisabled
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: {
+                            rest: iosSliderTrack,
+                            disabled: iosSliderTrackDisabled
+                          }
+                        },
+                        primary: {
+                          medium: {
+                            rest: iosSliderTrack,
+                            disabled: iosSliderTrackDisabled
+                          }
                         }
                       },
-                      primary: {
-                        medium: {
-                          rest: iosSliderTrack,
-                          disabled: iosSliderTrackDisabled
-                        }
-                      }
-                    },
-                    ...transparentBorder.default.light
+                      ...transparentBorder.default.light.default
+                    }
                   }
                 }))
               },
@@ -279,27 +287,29 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: tint,
-                          hover: tintHover,
-                          focus: tint,
-                          pressed: tintPressed,
-                          disabled: disabledTint
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: {
+                            rest: tint,
+                            hover: tintHover,
+                            focus: tint,
+                            pressed: tintPressed,
+                            disabled: disabledTint
+                          }
+                        },
+                        primary: {
+                          medium: {
+                            rest: tint,
+                            hover: tintHover,
+                            focus: tint,
+                            pressed: tintPressed,
+                            disabled: disabledTint
+                          }
                         }
                       },
-                      primary: {
-                        medium: {
-                          rest: tint,
-                          hover: tintHover,
-                          focus: tint,
-                          pressed: tintPressed,
-                          disabled: disabledTint
-                        }
-                      }
-                    },
-                    ...transparentBorder.default.light
+                      ...transparentBorder.default.light.default
+                    }
                   }
                 }))
               },
@@ -318,16 +328,18 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: { medium: { rest: iosSliderThumb, disabled: iosSliderThumb } },
-                      primary: { medium: { rest: iosSliderThumb, disabled: iosSliderThumb } }
-                    },
-                    borderColor: {
-                      neutral: {
-                        medium: { rest: iosSliderThumbBorder, disabled: iosSliderThumbBorder }
+                    default: {
+                      boxColor: {
+                        neutral: { medium: { rest: iosSliderThumb, disabled: iosSliderThumb } },
+                        primary: { medium: { rest: iosSliderThumb, disabled: iosSliderThumb } }
                       },
-                      primary: {
-                        medium: { rest: iosSliderThumbBorder, disabled: iosSliderThumbBorder }
+                      borderColor: {
+                        neutral: {
+                          medium: { rest: iosSliderThumbBorder, disabled: iosSliderThumbBorder }
+                        },
+                        primary: {
+                          medium: { rest: iosSliderThumbBorder, disabled: iosSliderThumbBorder }
+                        }
                       }
                     }
                   }
@@ -348,11 +360,13 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: { medium: { rest: transparent, disabled: transparent } },
-                      primary: { medium: { rest: transparent, disabled: transparent } }
-                    },
-                    ...transparentBorder.default.light
+                    default: {
+                      boxColor: {
+                        neutral: { medium: { rest: transparent, disabled: transparent } },
+                        primary: { medium: { rest: transparent, disabled: transparent } }
+                      },
+                      ...transparentBorder.default.light.default
+                    }
                   }
                 }))
               },
@@ -377,29 +391,31 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: { rest: iosSliderTooltip, disabled: iosSliderTooltipDisabled }
-                      },
-                      primary: {
-                        medium: { rest: iosSliderTooltip, disabled: iosSliderTooltipDisabled }
-                      }
-                    },
-                    borderColor: {
-                      neutral: { medium: { rest: transparent, disabled: transparent } },
-                      primary: { medium: { rest: transparent, disabled: transparent } }
-                    },
-                    textColor: {
-                      neutral: {
-                        medium: {
-                          rest: iosSliderTooltipText,
-                          disabled: iosSliderTooltipTextDisabled
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: { rest: iosSliderTooltip, disabled: iosSliderTooltipDisabled }
+                        },
+                        primary: {
+                          medium: { rest: iosSliderTooltip, disabled: iosSliderTooltipDisabled }
                         }
                       },
-                      primary: {
-                        medium: {
-                          rest: iosSliderTooltipText,
-                          disabled: iosSliderTooltipTextDisabled
+                      borderColor: {
+                        neutral: { medium: { rest: transparent, disabled: transparent } },
+                        primary: { medium: { rest: transparent, disabled: transparent } }
+                      },
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: iosSliderTooltipText,
+                            disabled: iosSliderTooltipTextDisabled
+                          }
+                        },
+                        primary: {
+                          medium: {
+                            rest: iosSliderTooltipText,
+                            disabled: iosSliderTooltipTextDisabled
+                          }
                         }
                       }
                     }
@@ -423,15 +439,17 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: { rest: iosSliderTick, disabled: withAlpha(iosSliderTick, 30) }
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: { rest: iosSliderTick, disabled: withAlpha(iosSliderTick, 30) }
+                        },
+                        primary: {
+                          medium: { rest: iosSliderTick, disabled: withAlpha(iosSliderTick, 30) }
+                        }
                       },
-                      primary: {
-                        medium: { rest: iosSliderTick, disabled: withAlpha(iosSliderTick, 30) }
-                      }
-                    },
-                    ...transparentBorder.default.light
+                      ...transparentBorder.default.light.default
+                    }
                   }
                 }))
               },
@@ -473,21 +491,23 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    boxColor: {
-                      neutral: {
-                        medium: {
-                          rest: iosSliderOriginTick,
-                          disabled: withAlpha(iosSliderOriginTick, 30)
+                    default: {
+                      boxColor: {
+                        neutral: {
+                          medium: {
+                            rest: iosSliderOriginTick,
+                            disabled: withAlpha(iosSliderOriginTick, 30)
+                          }
+                        },
+                        primary: {
+                          medium: {
+                            rest: iosSliderOriginTick,
+                            disabled: withAlpha(iosSliderOriginTick, 30)
+                          }
                         }
                       },
-                      primary: {
-                        medium: {
-                          rest: iosSliderOriginTick,
-                          disabled: withAlpha(iosSliderOriginTick, 30)
-                        }
-                      }
-                    },
-                    ...transparentBorder.default.light
+                      ...transparentBorder.default.light.default
+                    }
                   }
                 }))
               },

@@ -12,9 +12,11 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          boxColor: {
-            primary: {
-              medium: { rest: '#ffbf00' }
+          default: {
+            boxColor: {
+              primary: {
+                medium: { rest: '#ffbf00' }
+              }
             }
           }
         }
@@ -24,8 +26,10 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          primary: {
-            rest: ['boxColor__#ffbf00']
+          default: {
+            primary: {
+              rest: ['boxColor__#ffbf00']
+            }
           }
         }
       }
@@ -36,11 +40,13 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          borderColor: {
-            primary: {
-              medium: {
-                rest: '#ffffff',
-                hover: { ref: '#ffffff1a' }
+          default: {
+            borderColor: {
+              primary: {
+                medium: {
+                  rest: '#ffffff',
+                  hover: { ref: '#ffffff1a' }
+                }
               }
             }
           }
@@ -51,9 +57,11 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          primary: {
-            rest: ['borderColor__#ffffff'],
-            hover: ['borderColor==hover__#ffffff1a']
+          default: {
+            primary: {
+              rest: ['borderColor__#ffffff'],
+              hover: ['borderColor==hover__#ffffff1a']
+            }
           }
         }
       }
@@ -64,29 +72,31 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          textColor: {
-            primary: {
-              medium: {
-                rest: '#40bf40',
-                hover: { ref: '#4040bf80' }
+          default: {
+            textColor: {
+              primary: {
+                medium: {
+                  rest: '#40bf40',
+                  hover: { ref: '#4040bf80' }
+                }
+              },
+              secondary: {
+                medium: {
+                  rest: '#4040bf80'
+                }
               }
             },
-            secondary: {
-              medium: {
-                rest: '#4040bf80'
-              }
-            }
-          },
-          borderColor: {
-            primary: {
-              medium: {
-                rest: '#40bf40'
-              }
-            },
-            redLike: {
-              medium: {
-                rest: '#00000005',
-                focus: { ref: '#5c423d1a' }
+            borderColor: {
+              primary: {
+                medium: {
+                  rest: '#40bf40'
+                }
+              },
+              redLike: {
+                medium: {
+                  rest: '#00000005',
+                  focus: { ref: '#5c423d1a' }
+                }
               }
             }
           }
@@ -97,16 +107,18 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          primary: {
-            rest: ['textColor__#40bf40', 'borderColor__#40bf40'],
-            hover: ['textColor==hover__#4040bf80']
-          },
-          secondary: {
-            rest: ['textColor__#4040bf80']
-          },
-          redLike: {
-            rest: ['borderColor__#00000005'],
-            focus: ['borderColor==focus__#5c423d1a']
+          default: {
+            primary: {
+              rest: ['textColor__#40bf40', 'borderColor__#40bf40'],
+              hover: ['textColor==hover__#4040bf80']
+            },
+            secondary: {
+              rest: ['textColor__#4040bf80']
+            },
+            redLike: {
+              rest: ['borderColor__#00000005'],
+              focus: ['borderColor==focus__#5c423d1a']
+            }
           }
         }
       }
@@ -117,11 +129,13 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          // Legacy direct interaction‐state map at property level (invalid now)
-          boxColor: {
-            rest: '#90484484',
-            hover: { ref: '#9048448480' }
-          } as any
+          default: {
+            // Legacy direct interaction‐state map at property level (invalid now)
+            boxColor: {
+              rest: '#90484484',
+              hover: { ref: '#9048448480' }
+            } as any
+          }
         }
       }
     };
@@ -134,16 +148,18 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          boxColor: {
-            primary: {
-              medium: {
-                rest: '#5c423de6',
-                hover: '#704e43e6',
-                selected: {
-                  rest: '#4095bf',
-                  hover: { ref: '#4d8ccbcc' }
-                },
-                disabled: '#80808080'
+          default: {
+            boxColor: {
+              primary: {
+                medium: {
+                  rest: '#5c423de6',
+                  hover: '#704e43e6',
+                  selected: {
+                    rest: '#4095bf',
+                    hover: { ref: '#4d8ccbcc' }
+                  },
+                  disabled: '#80808080'
+                }
               }
             }
           }
@@ -156,12 +172,14 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          primary: {
-            rest: ['boxColor__#5c423de6'],
-            hover: ['boxColor--hover__#704e43e6'],
-            'selected:rest': ['boxColor--selected:rest__#4095bf'],
-            'selected:hover': ['boxColor==selected:hover__#4d8ccbcc'],
-            disabled: ['boxColor--disabled__#80808080']
+          default: {
+            primary: {
+              rest: ['boxColor__#5c423de6'],
+              hover: ['boxColor--hover__#704e43e6'],
+              'selected:rest': ['boxColor--selected:rest__#4095bf'],
+              'selected:hover': ['boxColor==selected:hover__#4d8ccbcc'],
+              disabled: ['boxColor--disabled__#80808080']
+            }
           }
         }
       }
@@ -176,10 +194,12 @@ describe('convertElementColorsToStyleKeys – invalid inputs', () => {
     const elementPalettes = {
       default: {
         light: {
-          boxColor: {
-            primary: {
-              medium: {
-                rest: { ref: '#5c423d80' } as unknown as Color
+          default: {
+            boxColor: {
+              primary: {
+                medium: {
+                  rest: { ref: '#5c423d80' } as unknown as Color
+                }
               }
             }
           }

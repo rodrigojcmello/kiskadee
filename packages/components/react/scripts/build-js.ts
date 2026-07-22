@@ -42,6 +42,11 @@ export async function buildAllJavaScript(): Promise<void> {
     target: 'es2022',
     platform: 'browser',
     bundle: false,
+    // Keep environment checks consumer-owned. Esbuild otherwise replaces NODE_ENV with
+    // "development" for non-minified browser builds, which would ship development warnings.
+    define: {
+      'process.env.NODE_ENV': 'process.env.NODE_ENV'
+    },
     jsx: 'automatic',
     sourcemap: false,
     logLevel: 'silent'

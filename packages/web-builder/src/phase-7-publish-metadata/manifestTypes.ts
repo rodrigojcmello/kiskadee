@@ -5,7 +5,7 @@
 // @kiskadee/showcase) through the root "@kiskadee/web-builder/types"
 // entrypoint.
 
-import type { ComponentName } from '@kiskadee/core';
+import type { ComponentName, SurfaceContext } from '@kiskadee/core';
 
 export type ManifestFontStack = readonly [primary: string, fallback: string];
 
@@ -24,15 +24,15 @@ export type ManifestComponentState = Record<
 
 export type ManifestComponent = {
   /**
-   * Interaction states supported by the component, grouped by
-   * semantic (primary/neutral/...) and emphasis (highest/high/medium/low/lowest).
+   * Interaction states supported by the component, grouped by palette and surface context.
    *
-   * Only positive information is stored: if a state key is present
-   * (e.g. "selected": true), the state exists for that
-   * semantic/emphasis. The absence of a key means the state is not
-   * supported or not defined in the schema.
+   * Palette keys use the existing `<segment>.<theme>` convention. Only positive information is
+   * stored: absent contexts or state keys are not supported or not defined in the schema.
    */
-  state?: ManifestComponentState;
+  surfaceContexts?: Record<
+    string,
+    Partial<Record<SurfaceContext, { state?: ManifestComponentState }>>
+  >;
 
   /**
    * Scales (sizes) used by any component element (e1, e2, ...).

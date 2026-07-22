@@ -109,21 +109,23 @@ const layout = {
 const textPalettes = {
   default: {
     light: {
-      textColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralForeground1,
-            disabled: fluent.neutralForegroundDisabled
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.compoundBrandRest,
-            hover: fluent.compoundBrandHover,
-            focus: fluent.compoundBrandRest,
-            pressed: fluent.compoundBrandPressed,
-            disabled: fluent.neutralForegroundDisabled
-          })
+      default: {
+        textColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralForeground1,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.compoundBrandRest,
+              hover: fluent.compoundBrandHover,
+              focus: fluent.compoundBrandRest,
+              pressed: fluent.compoundBrandPressed,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          }
         }
       }
     }
@@ -133,12 +135,14 @@ const textPalettes = {
 const optionalIndicatorPalettes = {
   default: {
     light: {
-      textColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.optionalIndicator,
-            disabled: fluent.optionalIndicatorDisabled
-          })
+      default: {
+        textColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.optionalIndicator,
+              disabled: fluent.optionalIndicatorDisabled
+            })
+          }
         }
       }
     }
@@ -148,21 +152,23 @@ const optionalIndicatorPalettes = {
 const iconPalettes = {
   default: {
     light: {
-      textColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralStrokeAccessible,
-            disabled: fluent.neutralForegroundDisabled
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.compoundBrandRest,
-            hover: fluent.compoundBrandHover,
-            focus: fluent.compoundBrandRest,
-            pressed: fluent.compoundBrandPressed,
-            disabled: fluent.neutralForegroundDisabled
-          })
+      default: {
+        textColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralStrokeAccessible,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.compoundBrandRest,
+              hover: fluent.compoundBrandHover,
+              focus: fluent.compoundBrandRest,
+              pressed: fluent.compoundBrandPressed,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          }
         }
       }
     }
@@ -172,38 +178,40 @@ const iconPalettes = {
 const railPalettes = {
   default: {
     light: {
-      boxColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralStrokeAccessible,
-            hover: fluent.neutralStrokeAccessible,
-            focus: fluent.neutralStrokeAccessible,
-            pressed: fluent.neutralStrokeAccessible,
-            disabled: fluent.transparent
-          })
+      default: {
+        boxColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralStrokeAccessible,
+              hover: fluent.neutralStrokeAccessible,
+              focus: fluent.neutralStrokeAccessible,
+              pressed: fluent.neutralStrokeAccessible,
+              disabled: fluent.transparent
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.neutralStrokeAccessible,
+              hover: fluent.neutralStrokeAccessible,
+              focus: fluent.neutralStrokeAccessible,
+              pressed: fluent.neutralStrokeAccessible,
+              disabled: fluent.transparent
+            })
+          }
         },
-        primary: {
-          medium: states({
-            rest: fluent.neutralStrokeAccessible,
-            hover: fluent.neutralStrokeAccessible,
-            focus: fluent.neutralStrokeAccessible,
-            pressed: fluent.neutralStrokeAccessible,
-            disabled: fluent.transparent
-          })
-        }
-      },
-      borderColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
+        borderColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          }
         }
       }
     }
@@ -213,38 +221,40 @@ const railPalettes = {
 const activeTrackPalettes = {
   default: {
     light: {
-      boxColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.compoundBrandRest,
-            hover: fluent.compoundBrandHover,
-            focus: fluent.compoundBrandRest,
-            pressed: fluent.compoundBrandPressed,
-            disabled: fluent.neutralForegroundDisabled
-          })
+      default: {
+        boxColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.compoundBrandRest,
+              hover: fluent.compoundBrandHover,
+              focus: fluent.compoundBrandRest,
+              pressed: fluent.compoundBrandPressed,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.compoundBrandRest,
+              hover: fluent.compoundBrandHover,
+              focus: fluent.compoundBrandRest,
+              pressed: fluent.compoundBrandPressed,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          }
         },
-        primary: {
-          medium: states({
-            rest: fluent.compoundBrandRest,
-            hover: fluent.compoundBrandHover,
-            focus: fluent.compoundBrandRest,
-            pressed: fluent.compoundBrandPressed,
-            disabled: fluent.neutralForegroundDisabled
-          })
-        }
-      },
-      borderColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
+        borderColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          }
         }
       }
     }
@@ -254,38 +264,40 @@ const activeTrackPalettes = {
 const thumbPalettes = {
   default: {
     light: {
-      boxColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            hover: fluent.neutralBackground1,
-            focus: fluent.neutralBackground1,
-            pressed: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
+      default: {
+        boxColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              hover: fluent.neutralBackground1,
+              focus: fluent.neutralBackground1,
+              pressed: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              hover: fluent.neutralBackground1,
+              focus: fluent.neutralBackground1,
+              pressed: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          }
         },
-        primary: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            hover: fluent.neutralBackground1,
-            focus: fluent.neutralBackground1,
-            pressed: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
-        }
-      },
-      borderColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralStroke1,
-            disabled: fluent.neutralStrokeDisabled
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.neutralStroke1,
-            disabled: fluent.neutralStrokeDisabled
-          })
+        borderColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralStroke1,
+              disabled: fluent.neutralStrokeDisabled
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.neutralStroke1,
+              disabled: fluent.neutralStrokeDisabled
+            })
+          }
         }
       }
     }
@@ -295,38 +307,40 @@ const thumbPalettes = {
 const thumbInnerPalettes = {
   default: {
     light: {
-      boxColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.compoundBrandRest,
-            hover: fluent.compoundBrandHover,
-            focus: fluent.compoundBrandRest,
-            pressed: fluent.compoundBrandPressed,
-            disabled: fluent.neutralForegroundDisabled
-          })
+      default: {
+        boxColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.compoundBrandRest,
+              hover: fluent.compoundBrandHover,
+              focus: fluent.compoundBrandRest,
+              pressed: fluent.compoundBrandPressed,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.compoundBrandRest,
+              hover: fluent.compoundBrandHover,
+              focus: fluent.compoundBrandRest,
+              pressed: fluent.compoundBrandPressed,
+              disabled: fluent.neutralForegroundDisabled
+            })
+          }
         },
-        primary: {
-          medium: states({
-            rest: fluent.compoundBrandRest,
-            hover: fluent.compoundBrandHover,
-            focus: fluent.compoundBrandRest,
-            pressed: fluent.compoundBrandPressed,
-            disabled: fluent.neutralForegroundDisabled
-          })
-        }
-      },
-      borderColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
+        borderColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          }
         }
       }
     }
@@ -336,18 +350,20 @@ const thumbInnerPalettes = {
 const thumbIconPalettes = {
   default: {
     light: {
-      textColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
+      default: {
+        textColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          }
         }
       }
     }
@@ -357,32 +373,34 @@ const thumbIconPalettes = {
 const markPalettes = {
   default: {
     light: {
-      boxColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
+      default: {
+        boxColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          }
         },
-        primary: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
-        }
-      },
-      borderColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.transparent,
-            disabled: fluent.transparent
-          })
+        borderColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.transparent,
+              disabled: fluent.transparent
+            })
+          }
         }
       }
     }
@@ -392,20 +410,22 @@ const markPalettes = {
 const valueIndicatorPalettes = {
   default: {
     light: {
-      boxColor: activeTrackPalettes.default.light.boxColor,
-      borderColor: activeTrackPalettes.default.light.borderColor,
-      textColor: {
-        neutral: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
-        },
-        primary: {
-          medium: states({
-            rest: fluent.neutralBackground1,
-            disabled: fluent.neutralBackground1
-          })
+      default: {
+        boxColor: activeTrackPalettes.default.light.default.boxColor,
+        borderColor: activeTrackPalettes.default.light.default.borderColor,
+        textColor: {
+          neutral: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          },
+          primary: {
+            medium: states({
+              rest: fluent.neutralBackground1,
+              disabled: fluent.neutralBackground1
+            })
+          }
         }
       }
     }

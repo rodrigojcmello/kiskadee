@@ -39,10 +39,12 @@ describe('convertElementSchemaToStyleKeys', () => {
             palettes: {
               default: {
                 light: {
-                  boxColor: {
-                    primary: {
-                      medium: {
-                        rest: '#5c423d'
+                  default: {
+                    boxColor: {
+                      primary: {
+                        medium: {
+                          rest: '#5c423d'
+                        }
                       }
                     }
                   }
@@ -78,8 +80,10 @@ describe('convertElementSchemaToStyleKeys', () => {
     expect(e1.palettes).toEqual({
       default: {
         light: {
-          primary: {
-            rest: ['boxColor__#5c423d']
+          default: {
+            primary: {
+              rest: ['boxColor__#5c423d']
+            }
           }
         }
       }
@@ -95,7 +99,7 @@ describe('convertElementSchemaToStyleKeys', () => {
       'primary::boxColor__#5c423d'
     );
 
-    expect(toneMetadataByPalette.get('default.light')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.default')?.get(metadataKey)).toEqual({
       tones: ['medium']
     });
   });
@@ -142,19 +146,32 @@ describe('convertElementSchemaToStyleKeys', () => {
             palettes: {
               default: {
                 light: {
-                  boxColor: {
-                    primary: {
-                      high: {
-                        rest: sameColor
+                  default: {
+                    boxColor: {
+                      primary: {
+                        high: {
+                          rest: sameColor
+                        }
+                      }
+                    }
+                  },
+                  inverse: {
+                    boxColor: {
+                      primary: {
+                        lowest: {
+                          rest: sameColor
+                        }
                       }
                     }
                   }
                 },
                 dark: {
-                  boxColor: {
-                    primary: {
-                      medium: {
-                        rest: sameColor
+                  default: {
+                    boxColor: {
+                      primary: {
+                        medium: {
+                          rest: sameColor
+                        }
                       }
                     }
                   }
@@ -175,10 +192,13 @@ describe('convertElementSchemaToStyleKeys', () => {
       'primary::boxColor__#000000'
     );
 
-    expect(toneMetadataByPalette.get('default.light')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.default')?.get(metadataKey)).toEqual({
       tones: ['high']
     });
-    expect(toneMetadataByPalette.get('default.dark')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.inverse')?.get(metadataKey)).toEqual({
+      tones: ['lowest']
+    });
+    expect(toneMetadataByPalette.get('default.dark.default')?.get(metadataKey)).toEqual({
       tones: ['medium']
     });
   });

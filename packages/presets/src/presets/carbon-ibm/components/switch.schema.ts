@@ -160,28 +160,32 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      boxColor: {
-                        neutral: {
-                          medium: mediumTrackColor,
-                          low: lowTrackColor
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: transparentBorder,
-                          low: transparentBorder
+                      default: {
+                        boxColor: {
+                          neutral: {
+                            medium: mediumTrackColor,
+                            low: lowTrackColor
+                          }
+                        },
+                        borderColor: {
+                          neutral: {
+                            medium: transparentBorder,
+                            low: transparentBorder
+                          }
                         }
                       }
                     },
                     dark: {
-                      boxColor: {
-                        neutral: {
-                          medium: lowTrackColor
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: transparentBorder
+                      default: {
+                        boxColor: {
+                          neutral: {
+                            medium: lowTrackColor
+                          }
+                        },
+                        borderColor: {
+                          neutral: {
+                            medium: transparentBorder
+                          }
                         }
                       }
                     }
@@ -206,28 +210,32 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      boxColor: {
-                        neutral: {
-                          medium: thumbColor,
-                          low: thumbColor
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: transparentBorder,
-                          low: transparentBorder
+                      default: {
+                        boxColor: {
+                          neutral: {
+                            medium: thumbColor,
+                            low: thumbColor
+                          }
+                        },
+                        borderColor: {
+                          neutral: {
+                            medium: transparentBorder,
+                            low: transparentBorder
+                          }
                         }
                       }
                     },
                     dark: {
-                      boxColor: {
-                        neutral: {
-                          medium: thumbColor
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: transparentBorder
+                      default: {
+                        boxColor: {
+                          neutral: {
+                            medium: thumbColor
+                          }
+                        },
+                        borderColor: {
+                          neutral: {
+                            medium: transparentBorder
+                          }
                         }
                       }
                     }
@@ -243,17 +251,21 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      textColor: {
-                        neutral: {
-                          medium: mediumIconColor,
-                          low: lowIconColor
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: mediumIconColor,
+                            low: lowIconColor
+                          }
                         }
                       }
                     },
                     dark: {
-                      textColor: {
-                        neutral: {
-                          medium: lowIconColor
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: lowIconColor
+                          }
                         }
                       }
                     }
@@ -274,25 +286,29 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.textSecondary,
-                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
-                          },
-                          low: {
-                            rest: carbonSwitchColor.textDisabled,
-                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: carbonSwitchColor.textSecondary,
+                              disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                            },
+                            low: {
+                              rest: carbonSwitchColor.textDisabled,
+                              disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                            }
                           }
                         }
                       }
                     },
                     dark: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.textDisabled,
-                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: carbonSwitchColor.textDisabled,
+                              disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                            }
                           }
                         }
                       }
@@ -314,25 +330,29 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.textPrimary,
-                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
-                          },
-                          low: {
-                            rest: carbonSwitchColor.textOnDark,
-                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: carbonSwitchColor.textPrimary,
+                              disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                            },
+                            low: {
+                              rest: carbonSwitchColor.textOnDark,
+                              disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                            }
                           }
                         }
                       }
                     },
                     dark: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: carbonSwitchColor.textOnDark,
-                            disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                      default: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: carbonSwitchColor.textOnDark,
+                              disabled: switchStateRef(carbonSwitchColor.textDisabled)
+                            }
                           }
                         }
                       }

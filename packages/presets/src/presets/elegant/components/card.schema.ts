@@ -65,36 +65,38 @@ export function createElegantCardSchema({
         },
         palettes: buildBySegment(segmentNames, (s) => ({
           light: {
-            boxColor: {
-              neutral: {
-                medium: {
-                  rest: c(s, 'l', 'card.neutral', 0),
-                  hover: c(s, 'l', 'card.neutral', 1),
-                  pressed: c(s, 'l', 'card.neutral', 2),
-                  focus: c(s, 'l', 'card.neutral', 0),
-                  disabled: c(s, 'l', 'card.neutral', 0, 12),
-                  selected: {
-                    rest: c(s, 'l', 'primary', 50),
-                    hover: c(s, 'l', 'primary', 60),
-                    pressed: c(s, 'l', 'primary', 70),
-                    focus: c(s, 'l', 'primary', 50)
+            default: {
+              boxColor: {
+                neutral: {
+                  medium: {
+                    rest: c(s, 'l', 'card.neutral', 0),
+                    hover: c(s, 'l', 'card.neutral', 1),
+                    pressed: c(s, 'l', 'card.neutral', 2),
+                    focus: c(s, 'l', 'card.neutral', 0),
+                    disabled: c(s, 'l', 'card.neutral', 0, 12),
+                    selected: {
+                      rest: c(s, 'l', 'primary', 50),
+                      hover: c(s, 'l', 'primary', 60),
+                      pressed: c(s, 'l', 'primary', 70),
+                      focus: c(s, 'l', 'primary', 50)
+                    }
                   }
                 }
-              }
-            },
-            borderColor: {
-              neutral: {
-                medium: {
-                  rest: c(s, 'l', 'card.neutral', 10),
-                  hover: c(s, 'l', 'card.neutral', 16),
-                  pressed: c(s, 'l', 'card.neutral', 20),
-                  focus: c(s, 'l', 'primary', 50),
-                  disabled: transparent,
-                  selected: {
-                    rest: transparent,
-                    hover: transparent,
-                    pressed: transparent,
-                    focus: transparent
+              },
+              borderColor: {
+                neutral: {
+                  medium: {
+                    rest: c(s, 'l', 'card.neutral', 10),
+                    hover: c(s, 'l', 'card.neutral', 16),
+                    pressed: c(s, 'l', 'card.neutral', 20),
+                    focus: c(s, 'l', 'primary', 50),
+                    disabled: transparent,
+                    selected: {
+                      rest: transparent,
+                      hover: transparent,
+                      pressed: transparent,
+                      focus: transparent
+                    }
                   }
                 }
               }
