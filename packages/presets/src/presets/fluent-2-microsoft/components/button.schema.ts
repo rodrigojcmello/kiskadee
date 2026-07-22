@@ -498,23 +498,23 @@ export function createFluent2MicrosoftButtonSchema({
         },
         scales: {
           paddingTop: {
-            's:sm:1': 1,
-            's:md:1': 6,
-            's:lg:1': 7
+            's:sm:1': 4,
+            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:lg:1': 9
           },
           paddingBottom: {
-            's:sm:1': 1,
-            's:md:1': 6,
-            's:lg:1': 7
+            's:sm:1': 4,
+            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:lg:1': 9
           },
           paddingLeft: {
             's:sm:1': 8,
-            's:md:1': 12,
+            's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
             's:lg:1': 16
           },
           paddingRight: {
             's:sm:1': 8,
-            's:md:1': 12,
+            's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
             's:lg:1': 16
           },
           borderWidth: {
@@ -565,12 +565,12 @@ export function createFluent2MicrosoftButtonSchema({
         scales: {
           textSize: {
             's:sm:1': 12,
-            's:md:1': 14,
+            's:md:1': { 'bp:all': 16, 'bp:lg:1': 14 },
             's:lg:1': 16
           },
           textHeight: {
             's:sm:1': 16,
-            's:md:1': 20,
+            's:md:1': { 'bp:all': 22, 'bp:lg:1': 20 },
             's:lg:1': 22
           }
         }

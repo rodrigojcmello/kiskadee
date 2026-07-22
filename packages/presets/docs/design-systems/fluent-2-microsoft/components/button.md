@@ -23,6 +23,13 @@ This file records source evidence and color decisions for the Button currently a
   - inspected Outline state group: `9026:2853`
   - inspected Subtle state group: `9026:2888`
   - inspected Transparent state group: `9026:2923`
+- Figma size reference:
+  [Fluent 2 Button Small, Medium, and Large](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=11045-3920&t=fXuzziRQhFGGOlep-11)
+  - file key: `qdtPPQysSX0kHGGcDpEXzw`
+  - size comparison node: `11045:3920`
+  - Small instance: `11045:3921`
+  - Medium instance: `11045:3922`
+  - Large instance: `11045:3923`
 - Official Fluent documentation:
   - [Button usage](https://fluent2.microsoft.design/components/web/react/core/button/usage)
   - [Color tokens](https://fluent2.microsoft.design/color-tokens/)
@@ -37,21 +44,45 @@ This file records source evidence and color decisions for the Button currently a
 | --- | --- | --- | --- |
 | Light Button component set | `11045:3896` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Dark Button component set | `9026:2684` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
+| Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
 | Inverse Button appearance | Figma component set and official Button usage | No inverse/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 
-## Inspected Variant
+## Official Size Contract
 
-- Fluent appearance: `Primary`.
-- Content: text only.
-- Size: medium, 32 px high.
-- States: Rest, Hover, Pressed, Selected, Focus, and Disabled.
-- Kiskadee surface: `primary.high` for the official Fluent mapping.
+| Fluent size | Figma node | Height | Text | Line height | Weight | Horizontal inset |
+| --- | --- | --- | --- | --- | --- | --- |
+| Small | `11045:3921` | 24 px | 12 px | 16 px | Regular | 8 px |
+| Medium (default) | `11045:3922` | 32 px | 14 px | 20 px | Semibold | 12 px |
+| Large | `11045:3923` | 40 px | 16 px | 22 px | Semibold | 16 px |
 
-The medium scale declares 6 px of vertical padding per side in the platform-agnostic schema. The
-Web Builder's Button emission policy subtracts the 1 px border from each side, producing 5 px of
-rendered CSS padding. Together with the 20 px label line height and both 1 px borders, the final web
-height remains the official 32 px: `5 + 1 + 20 + 1 + 5`.
+The Figma Small and Large instances include internal content wrappers that are taller than their
+text line boxes: 20 px around a 16 px Small label and 24 px around a 22 px Large label. Kiskadee's
+Button contract has a container and a label but no separate content-wrapper element, so those
+internal offsets are flattened into the container padding. This preserves the official text metrics
+and final heights without adding a Fluent-specific runtime wrapper.
+
+The Web Builder then applies its standard one-pixel border compensation. The emitted results are
+24 px for `s:sm:1`, 32 px for the desktop `s:md:1`, and 40 px for `s:lg:1`.
+
+## Responsive Default Size
+
+The official Fluent Web evidence inspected here defines the medium 32 px Button, but it does not
+define a responsive Web rule that changes Button size between mobile and desktop. Kiskadee adds
+that behavior as a **Kiskadee extension**: the default logical scale `s:md:1` renders with Large
+geometry below the desktop breakpoint and returns to the official Medium geometry at
+`bp:lg:1` (1152 px).
+
+| Range | Text | Line height | Schema padding | Emitted height | Status |
+| --- | --- | --- | --- | --- | --- |
+| Mobile through tablet | 16 px | 22 px | 9 px vertical / 16 px horizontal | 40 px | Kiskadee extension |
+| Desktop, `bp:lg:1` and above | 14 px | 20 px | 6 px vertical / 12 px horizontal | 32 px | Official adapted |
+
+The Web Builder continues compensating the one-pixel border during emission, so the rendered
+vertical padding is 8 px on mobile and 5 px on desktop. The explicit `s:sm:1` and `s:lg:1` scales
+remain fixed Small and Large choices; only the default `s:md:1` scale carries this responsive
+policy. This follows Kiskadee's broader mobile-legibility premise that interactive controls may be
+slightly larger on touch-first surfaces, without claiming that Fluent Web publishes the same rule.
 
 ## Surface Contexts
 
@@ -484,6 +515,10 @@ changing the asset scales.
 
 ## Open Gaps
 
+- The official size set changes label weight from Regular on Small to Semibold on Medium and Large.
+  Button decorations are currently element-wide rather than scale-aware, so the preset retains its
+  existing shared Medium weight until scale-dependent typography is addressed as a framework
+  contract instead of a Fluent-only selector or CSS override.
 - Revisit whether Outline, Subtle, and Transparent need separate structural capabilities instead
   of sharing `neutral.lowest`.
 - Exercise the shared recipe with additional segments before introducing any intent-specific

@@ -18,6 +18,46 @@ function requireButtonContentElement() {
 }
 
 describe('Fluent 2 Button surface contexts', () => {
+  it('preserves the three official sizes and uses large geometry for the responsive mobile default', () => {
+    const e1 = requireButtonSurfaceElement();
+    const e2 = requireButtonContentElement();
+
+    expect(e1.scales).toMatchObject({
+      paddingTop: {
+        's:sm:1': 4,
+        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:lg:1': 9
+      },
+      paddingBottom: {
+        's:sm:1': 4,
+        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:lg:1': 9
+      },
+      paddingLeft: {
+        's:sm:1': 8,
+        's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
+        's:lg:1': 16
+      },
+      paddingRight: {
+        's:sm:1': 8,
+        's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
+        's:lg:1': 16
+      }
+    });
+    expect(e2.scales).toMatchObject({
+      textSize: {
+        's:sm:1': 12,
+        's:md:1': { 'bp:all': 16, 'bp:lg:1': 14 },
+        's:lg:1': 16
+      },
+      textHeight: {
+        's:sm:1': 16,
+        's:md:1': { 'bp:all': 22, 'bp:lg:1': 20 },
+        's:lg:1': 22
+      }
+    });
+  });
+
   it('preserves the approved default anchors', () => {
     const e1 = requireButtonSurfaceElement();
     const palettes = e1.palettes.default;

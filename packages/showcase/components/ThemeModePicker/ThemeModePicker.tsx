@@ -51,7 +51,6 @@ export default function ThemeModePicker({ className }: { className?: string }) {
         value: opt.key,
         label: opt.label
       }))}
-      showItemLabels
       onValueChange={(value) => {
         setTheme(value as ThemeMode);
       }}

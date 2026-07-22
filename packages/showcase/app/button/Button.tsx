@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentEmphasis, SurfaceContext } from '@kiskadee/core';
+import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
 import {
   Button as KButton,
   SmoothText,
@@ -8,6 +8,10 @@ import {
   useShowcase
 } from '@kiskadee/react-components';
 import React from 'react';
+import {
+  ShowcaseGlobalSemanticControls,
+  ShowcaseTypographyControls
+} from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import { Icon } from '@/components/Icon/Icon';
 import {
   ShowcaseBooleanControl,
@@ -27,10 +31,22 @@ import {
 import s from './Button.module.scss';
 import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
+import {
+  getButtonBackgroundForSurfaceContext,
+  getButtonSurfaceContext
+} from './getButtonSurfaceContext';
 
 const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
   { value: 'default', label: 'Default' },
   { value: 'inverse', label: 'Inverse' }
+];
+const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = [
+  { value: 's:sm:2', label: 'Small 2' },
+  { value: 's:sm:1', label: 'Small' },
+  { value: 's:md:1', label: 'Medium' },
+  { value: 's:lg:1', label: 'Large' },
+  { value: 's:lg:2', label: 'Large 2' },
+  { value: 's:lg:3', label: 'Large 3' }
 ];
 const COMPARISON_EMPHASES: ComponentEmphasis[] = ['high', 'medium', 'low', 'lowest'];
 
@@ -39,12 +55,14 @@ function SurfaceContextComparison({
   fontName,
   inverseBackground,
   inverseSupported,
+  scale,
   textAlign
 }: {
   defaultBackground: string | undefined;
   fontName: string;
   inverseBackground: string | undefined;
   inverseSupported: boolean;
+  scale: ElementSizeValue;
   textAlign: 'left' | 'center';
 }) {
   return (
@@ -61,7 +79,13 @@ function SurfaceContextComparison({
             style={defaultBackground ? { backgroundColor: defaultBackground } : undefined}
           >
             {COMPARISON_EMPHASES.map((emphasis) => (
-              <KButton key={emphasis} intent="primary" emphasis={emphasis} surfaceContext="default">
+              <KButton
+                key={emphasis}
+                intent="primary"
+                emphasis={emphasis}
+                scale={scale}
+                surfaceContext="default"
+              >
                 <KButton.Label>
                   <SmoothText fontName={fontName} align={textAlign}>
                     {emphasis}
@@ -83,6 +107,7 @@ function SurfaceContextComparison({
                   key={emphasis}
                   intent="primary"
                   emphasis={emphasis}
+                  scale={scale}
                   surfaceContext="inverse"
                 >
                   <KButton.Label>
@@ -111,7 +136,7 @@ export function Button() {
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
   const [isSimplified, setIsSimplified] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(true);
-  const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('default');
+  const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
   const [surface, setSurface] = React.useState<BackgroundToneKey>(backgroundTones.defaultToneKey);
 
   React.useEffect(() => {
@@ -143,12 +168,8 @@ export function Button() {
     };
   }, [selectedSurface?.resolvedColor]);
 
-  const isDarkSurface =
-    surface === 'primary' ||
-    surface === 'dark-gray' ||
-    surface === 'dark-primary' ||
-    surface === 'very-dark-primary' ||
-    surface === 'black';
+  const activeSurfaceContext = getButtonSurfaceContext(surface);
+  const isDarkSurface = activeSurfaceContext === 'inverse';
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
@@ -161,27 +182,54 @@ export function Button() {
 
   const buttonMeta = manifest?.components?.button;
   const inverseSupported = supportsManifestSurfaceContext(buttonMeta, segment, theme, 'inverse');
-  const activeSurfaceContext =
-    surfaceContext === 'inverse' && !inverseSupported ? 'default' : surfaceContext;
+  const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
+    (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
+  );
+  const activeButtonScale =
+    availableButtonScaleOptions.find((option) => option.value === buttonScale)?.value ??
+    availableButtonScaleOptions.find((option) => option.value === 's:md:1')?.value ??
+    availableButtonScaleOptions[0]?.value ??
+    's:md:1';
   const buttonState = getManifestComponentState(buttonMeta, segment, theme, activeSurfaceContext);
-  const surfaceContextOptions = inverseSupported
-    ? SURFACE_CONTEXT_OPTIONS
-    : SURFACE_CONTEXT_OPTIONS.slice(0, 1);
   const comparisonDefaultSurface = backgroundTones.tones.find(
     (tone) => tone.key === backgroundTones.defaultToneKey
   );
   const comparisonInverseSurface = backgroundTones.tones.find((tone) => tone.key === 'primary');
 
-  React.useEffect(() => {
-    if (surfaceContext === 'inverse' && !inverseSupported) {
-      setSurfaceContext('default');
-    }
-  }, [inverseSupported, surfaceContext]);
-
   const buttonControls = (
     <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Ambiente">
+        <ShowcaseGlobalSemanticControls />
+        <ShowcaseSelectControl
+          label="Surface context"
+          options={SURFACE_CONTEXT_OPTIONS}
+          value={activeSurfaceContext}
+          onValueChange={(value) => {
+            setSurface(getButtonBackgroundForSurfaceContext(value as SurfaceContext));
+          }}
+          disabled={!inverseSupported}
+        />
+        <ShowcaseControlField fullWidth>
+          <SwatchRadioGroup
+            groupLabel="Background"
+            value={surface}
+            onValueChange={(value) => setSurface(value as BackgroundToneKey)}
+            items={backgroundTones.items}
+            aria-label="Button example background"
+          />
+        </ShowcaseControlField>
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Tipografia">
+        <ShowcaseTypographyControls />
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Visualização">
         <ShowcaseControlStack>
+          <ShowcaseSelectControl
+            label="Button size"
+            options={availableButtonScaleOptions}
+            value={activeButtonScale}
+            onValueChange={(value) => setButtonScale(value as ElementSizeValue)}
+          />
           <ShowcaseBooleanControl
             label="Simplificada"
             checked={isSimplified}
@@ -193,26 +241,6 @@ export function Button() {
             onCheckedChange={setShowFocusRing}
           />
         </ShowcaseControlStack>
-      </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Surface context">
-        <ShowcaseSelectControl
-          label="Context"
-          options={surfaceContextOptions}
-          value={activeSurfaceContext}
-          onValueChange={(value) => setSurfaceContext(value as SurfaceContext)}
-          disabled={!inverseSupported}
-        />
-      </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Surface">
-        <ShowcaseControlField fullWidth>
-          <SwatchRadioGroup
-            groupLabel="Background"
-            value={surface}
-            onValueChange={(value) => setSurface(value as BackgroundToneKey)}
-            items={backgroundTones.items}
-            aria-label="Button example background"
-          />
-        </ShowcaseControlField>
       </ShowcaseControlGroup>
     </ShowcaseControlPanel>
   );
@@ -268,7 +296,12 @@ export function Button() {
   return (
     <section className={routeClassName || undefined}>
       <h2>Button</h2>
-      <ShowcaseRouteControls id="button" eyebrow="Button" title="Controls">
+      <ShowcaseRouteControls
+        id="button"
+        eyebrow="Button"
+        title="Controls"
+        showGlobalControls={false}
+      >
         {buttonControls}
       </ShowcaseRouteControls>
       <SurfaceContextComparison
@@ -276,6 +309,7 @@ export function Button() {
         inverseBackground={comparisonInverseSurface?.resolvedColor}
         inverseSupported={inverseSupported}
         fontName={fontName}
+        scale={activeButtonScale}
         textAlign={alignment}
       />
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -297,6 +331,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
 
@@ -307,6 +342,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
 
@@ -317,6 +353,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
 
@@ -327,6 +364,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
 
@@ -337,6 +375,7 @@ export function Button() {
             <KButton
               intent="primary"
               emphasis="high"
+              scale={activeButtonScale}
               surfaceContext={activeSurfaceContext}
               activationFeedback={{ profile: 'ripple' }}
             >
@@ -349,6 +388,7 @@ export function Button() {
             <KButton
               intent="primary"
               emphasis="high"
+              scale={activeButtonScale}
               surfaceContext={activeSurfaceContext}
               activationFeedback={{ profile: 'ripple', origin: 'center' }}
             >
@@ -361,6 +401,7 @@ export function Button() {
             <KButton
               intent="primary"
               emphasis="high"
+              scale={activeButtonScale}
               surfaceContext={activeSurfaceContext}
               activationFeedback={{ profile: 'ripple-overflow' }}
             >
@@ -373,6 +414,7 @@ export function Button() {
             <KButton
               intent="primary"
               emphasis="high"
+              scale={activeButtonScale}
               surfaceContext={activeSurfaceContext}
               activationFeedback={{ profile: 'halo' }}
             >
@@ -396,6 +438,7 @@ export function Button() {
               <KButton
                 emphasis="medium"
                 intent="primary"
+                scale={activeButtonScale}
                 surfaceContext={activeSurfaceContext}
                 radius="rounded"
                 radiusEffect={true}
@@ -422,6 +465,7 @@ export function Button() {
               <KButton
                 emphasis="high"
                 intent="primary"
+                scale={activeButtonScale}
                 surfaceContext={activeSurfaceContext}
                 radius="rounded"
                 radiusEffect={true}
@@ -440,35 +484,55 @@ export function Button() {
 
         <div>
           <h3>Shadow</h3>
-          <KButton shadow={true} surfaceContext={activeSurfaceContext}>
+          <KButton scale={activeButtonScale} shadow={true} surfaceContext={activeSurfaceContext}>
             <KButton.Label>
               <SmoothText fontName={fontName} align={alignment}>
                 Rest
               </SmoothText>
             </KButton.Label>
           </KButton>
-          <KButton shadow={true} surfaceContext={activeSurfaceContext} status={'hover'}>
+          <KButton
+            scale={activeButtonScale}
+            shadow={true}
+            surfaceContext={activeSurfaceContext}
+            status={'hover'}
+          >
             <KButton.Label>
               <SmoothText fontName={fontName} align={alignment}>
                 Hover
               </SmoothText>
             </KButton.Label>
           </KButton>
-          <KButton shadow={true} surfaceContext={activeSurfaceContext} status={'focus'}>
+          <KButton
+            scale={activeButtonScale}
+            shadow={true}
+            surfaceContext={activeSurfaceContext}
+            status={'focus'}
+          >
             <KButton.Label>
               <SmoothText fontName={fontName} align={alignment}>
                 Focus
               </SmoothText>
             </KButton.Label>
           </KButton>
-          <KButton shadow={true} surfaceContext={activeSurfaceContext} status={'pressed'}>
+          <KButton
+            scale={activeButtonScale}
+            shadow={true}
+            surfaceContext={activeSurfaceContext}
+            status={'pressed'}
+          >
             <KButton.Label>
               <SmoothText fontName={fontName} align={alignment}>
                 Pressed
               </SmoothText>
             </KButton.Label>
           </KButton>
-          <KButton shadow={true} surfaceContext={activeSurfaceContext} status={'disabled'}>
+          <KButton
+            scale={activeButtonScale}
+            shadow={true}
+            surfaceContext={activeSurfaceContext}
+            status={'disabled'}
+          >
             <KButton.Label>
               <SmoothText fontName={fontName} align={alignment}>
                 Disabled
