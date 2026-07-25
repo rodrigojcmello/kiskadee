@@ -1,5 +1,5 @@
 {
-  "formatVersion": 4,
+  "formatVersion": 5,
   "functionalReferences": [
     {
       "dark": {
@@ -101,10 +101,33 @@
         },
         "vivid": {
           "source": "contrast-mirror",
-          "tone": 90
+          "tone": 99
         }
       },
       "id": "n.black.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 99
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "contrast-mirror",
+          "tone": 90
+        }
+      },
+      "id": "n.black.v2",
       "light": {
         "subtle": {
           "source": "surface-relative",
@@ -290,7 +313,7 @@
       "seedHex": "#107c10"
     },
     {
-      "id": "n.black.v1",
+      "id": "n.black.v2",
       "policies": {
         "dark": "source-exact",
         "light": "source-exact"

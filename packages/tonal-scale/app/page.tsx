@@ -24,7 +24,7 @@ import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyId,
-  type TonalSystemRecipeV4,
+  type TonalSystemRecipeV5,
   validateTonalSystemRecipe
 } from '@/src/tonal-system-contract';
 import RecipeEditor from './components/RecipeEditor';
@@ -75,14 +75,14 @@ type StateSample =
     };
 
 export default function TonalScalePage() {
-  const [recipe, setRecipe] = useState<TonalSystemRecipeV4>(
-    () => structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4
+  const [recipe, setRecipe] = useState<TonalSystemRecipeV5>(
+    () => structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV5
   );
   const [selectedFamilyId, setSelectedFamilyId] = useState<TonalFamilyId>('b.blue.v1');
   const [urlReady, setUrlReady] = useState(false);
   const [sharedStateIssue, setSharedStateIssue] = useState<string | null>(null);
   const [system, setSystem] = useState<KiskadeeTonalSystemResult | null>(null);
-  const [generatedRecipe, setGeneratedRecipe] = useState<TonalSystemRecipeV4 | null>(null);
+  const [generatedRecipe, setGeneratedRecipe] = useState<TonalSystemRecipeV5 | null>(null);
   const deferredRecipe = useDeferredValue(recipe);
   const isGenerating =
     !urlReady || system === null || deferredRecipe !== recipe || generatedRecipe !== deferredRecipe;
@@ -121,17 +121,17 @@ export default function TonalScalePage() {
       const color = url.searchParams.get(COLOR_QUERY_PARAM);
       const profile = url.searchParams.get(PROFILE_QUERY_PARAM);
       if (color !== null || profile !== null) {
-        const legacy = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4;
+        const queryRecipe = structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV5;
         if (color !== null) {
-          legacy.primary = {
-            ...legacy.primary,
+          queryRecipe.primary = {
+            ...queryRecipe.primary,
             seedHex: color.startsWith('#') ? color : `#${color}`
           };
         }
         if (profile !== null && KISKADEE_TONAL_PROFILES.some((item) => item.id === profile)) {
-          legacy.tonalProfile = profile as KiskadeeTonalProfile;
+          queryRecipe.tonalProfile = profile as KiskadeeTonalProfile;
         }
-        setRecipe(legacy);
+        setRecipe(queryRecipe);
       }
       setUrlReady(true);
     };
@@ -176,7 +176,7 @@ export default function TonalScalePage() {
     }
   }, [recipe, sharedStateIssue, urlReady]);
 
-  const handleRecipeChange = useCallback((next: TonalSystemRecipeV4) => {
+  const handleRecipeChange = useCallback((next: TonalSystemRecipeV5) => {
     setSharedStateIssue(null);
     setRecipe(next);
   }, []);
@@ -187,7 +187,7 @@ export default function TonalScalePage() {
 
       <header className="hero">
         <div>
-          <span className="eyebrow">Kiskadee Munsell tonal system v4</span>
+          <span className="eyebrow">Kiskadee Munsell tonal system v5</span>
           <h1>One primary. A complete color system.</h1>
           <p className="hero-copy">
             Start with the exact primary color. Kiskadee harmonizes one fixed reference in every

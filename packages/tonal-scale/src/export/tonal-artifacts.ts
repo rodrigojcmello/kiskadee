@@ -1,5 +1,5 @@
 import { compareStrings } from '../deterministic-order.ts';
-import { FIXED_FAMILY_REFERENCE_SET, FIXED_FAMILY_SEEDS_V1 } from '../fixed-family-seeds.ts';
+import { FIXED_FAMILY_REFERENCE_SET, FIXED_FAMILY_SEEDS_V2 } from '../fixed-family-seeds.ts';
 import { KISKADEE_TONES, type KiskadeeTone } from '../kiskadee-tonal-scale.ts';
 import { classifyMunsellHex, type MunsellColorClassification } from '../munsell-oklch.ts';
 import {
@@ -12,8 +12,8 @@ import {
 } from '../tonal-system.ts';
 import {
   type CoreTonalFamilyId,
-  type LockedTonalFunctionalReferenceV4,
-  type LockedTonalSystemSourceV4,
+  type LockedTonalFunctionalReferenceV5,
+  type LockedTonalSystemSourceV5,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyAppearance,
   type TonalFamilyColorKind,
@@ -28,7 +28,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.4.1'
+  version: '0.5.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -42,9 +42,9 @@ export type TonalArtifactPath =
 
 export type ToneHexMap = Record<`${KiskadeeTone}`, string>;
 
-export type PrimitiveTonalColorAssetV4 = {
+export type PrimitiveTonalColorAssetV5 = {
   kind: 'kiskadee.primitive-tonal-family';
-  formatVersion: 4;
+  formatVersion: 5;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   id: TonalFamilyId;
   munsellSector: TonalFamilySectorNotation | 'N';
@@ -52,7 +52,7 @@ export type PrimitiveTonalColorAssetV4 = {
   variant: TonalFamilyVariant;
   colorKind: TonalFamilyColorKind;
   role: 'primary' | 'support';
-  tonalProfile: LockedTonalSystemSourceV4['tonalProfile'];
+  tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   seedHex: string;
   seedOrigin: ResolvedTonalFamily['seedOrigin'];
   policies: { light: TonalThemePolicy; dark: TonalThemePolicy };
@@ -95,11 +95,11 @@ export type TonalManifestAssetEntry = {
   sha256: string;
 };
 
-export type TonalSystemManifestV4 = {
+export type TonalSystemManifestV5 = {
   kind: 'kiskadee.tonal-system';
-  formatVersion: 4;
+  formatVersion: 5;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
-  tonalProfile: LockedTonalSystemSourceV4['tonalProfile'];
+  tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   primaryReference: TonalFamilyId;
   tonalAnchors: { rest: { light: KiskadeeTone; dark: KiskadeeTone } };
   source: { path: typeof TONAL_SOURCE_PATH; sha256: string };
@@ -107,9 +107,9 @@ export type TonalSystemManifestV4 = {
   assets: TonalManifestAssetEntry[];
 };
 
-export type TonalSystemDiagnosticsV4 = {
+export type TonalSystemDiagnosticsV5 = {
   kind: 'kiskadee.tonal-system-diagnostics';
-  formatVersion: 4;
+  formatVersion: 5;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   seedModel: 'fixed-reference';
   referenceSet: typeof FIXED_FAMILY_REFERENCE_SET;
@@ -145,14 +145,15 @@ type ThemeDiagnostics = {
   surfaceTrackAlignment: ResolvedTonalFamily['themes']['light']['surfaceTrackAlignment'];
   isolatedHarmonyPeakAlignment: ResolvedTonalFamily['themes']['light']['isolatedHarmonyPeakAlignment'];
   darkSupportChromaModeration: ResolvedTonalFamily['themes']['light']['darkSupportChromaModeration'];
+  tintedAchromaticChroma: ResolvedTonalFamily['themes']['light']['tintedAchromaticChroma'];
   scale: ResolvedTonalFamily['themes']['light']['scale']['diagnostics'];
 };
 
 export type TonalArtifactBundle = {
-  source: LockedTonalSystemSourceV4;
-  manifest: TonalSystemManifestV4;
-  diagnostics: TonalSystemDiagnosticsV4;
-  assets: PrimitiveTonalColorAssetV4[];
+  source: LockedTonalSystemSourceV5;
+  manifest: TonalSystemManifestV5;
+  diagnostics: TonalSystemDiagnosticsV5;
+  assets: PrimitiveTonalColorAssetV5[];
   files: ReadonlyMap<TonalArtifactPath, string>;
 };
 
@@ -173,10 +174,10 @@ export type TonalArtifactVerificationResult =
   | {
       valid: true;
       issues: [];
-      source: LockedTonalSystemSourceV4;
-      manifest: TonalSystemManifestV4;
-      diagnostics: TonalSystemDiagnosticsV4;
-      assets: PrimitiveTonalColorAssetV4[];
+      source: LockedTonalSystemSourceV5;
+      manifest: TonalSystemManifestV5;
+      diagnostics: TonalSystemDiagnosticsV5;
+      assets: PrimitiveTonalColorAssetV5[];
     }
   | {
       valid: false;
@@ -208,7 +209,7 @@ export async function createTonalArtifactBundle(
       sha256: await hashCanonicalFile(asset)
     }))
   );
-  const diagnostics = normalizeArtifactNumbers<TonalSystemDiagnosticsV4>({
+  const diagnostics = normalizeArtifactNumbers<TonalSystemDiagnosticsV5>({
     kind: 'kiskadee.tonal-system-diagnostics',
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
@@ -231,7 +232,7 @@ export async function createTonalArtifactBundle(
       }))
       .sort((left, right) => compareStrings(left.familyId, right.familyId))
   });
-  const manifest: TonalSystemManifestV4 = {
+  const manifest: TonalSystemManifestV5 = {
     kind: 'kiskadee.tonal-system',
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
@@ -376,7 +377,7 @@ export async function verifyTonalArtifactBundle(
 function createColorAsset(
   system: ResolvedKiskadeeTonalSystem,
   family: ResolvedTonalFamily
-): PrimitiveTonalColorAssetV4 {
+): PrimitiveTonalColorAssetV5 {
   const lightAnchor = resolveSourceAnchor(family, 'light');
   const darkAnchor = resolveSourceAnchor(family, 'dark');
   return {
@@ -510,6 +511,7 @@ function createThemeDiagnostics(
     surfaceTrackAlignment: theme.surfaceTrackAlignment,
     isolatedHarmonyPeakAlignment: theme.isolatedHarmonyPeakAlignment,
     darkSupportChromaModeration: theme.darkSupportChromaModeration,
+    tintedAchromaticChroma: theme.tintedAchromaticChroma,
     scale: theme.scale.diagnostics
   };
 }
@@ -587,8 +589,8 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
       throw new TonalArtifactError(`${family.id} does not match its locked override.`);
     }
     if (family.seedOrigin === 'reference') {
-      const referenceSeed = Object.hasOwn(FIXED_FAMILY_SEEDS_V1, family.id)
-        ? FIXED_FAMILY_SEEDS_V1[family.id as CoreTonalFamilyId]
+      const referenceSeed = Object.hasOwn(FIXED_FAMILY_SEEDS_V2, family.id)
+        ? FIXED_FAMILY_SEEDS_V2[family.id as CoreTonalFamilyId]
         : undefined;
       if (referenceSeed !== family.sourceSeedHex) {
         throw new TonalArtifactError(`${family.id} does not match the fixed reference set.`);
@@ -601,7 +603,7 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     }
     if (
       family.seedOrigin === 'canonical' &&
-      (family.id !== 'n.black.v1' || family.sourceSeedHex !== FIXED_FAMILY_SEEDS_V1['n.black.v1'])
+      (family.id !== 'n.black.v1' || family.sourceSeedHex !== FIXED_FAMILY_SEEDS_V2['n.black.v1'])
     ) {
       throw new TonalArtifactError(`${family.id} cannot use canonical seed origin.`);
     }
@@ -644,7 +646,7 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
 }
 
 function lockedFunctionalReferenceMatches(
-  locked: LockedTonalFunctionalReferenceV4,
+  locked: LockedTonalFunctionalReferenceV5,
   resolved: TonalFunctionalReference
 ): boolean {
   return (

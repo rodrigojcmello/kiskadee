@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   createTonalFamilyId,
   DEFAULT_TONAL_SYSTEM_RECIPE,
-  type LockedTonalFamilyFunctionalReferencesV4,
-  type LockedTonalSystemSourceV4,
+  type LockedTonalFamilyFunctionalReferencesV5,
+  type LockedTonalSystemSourceV5,
   lockTonalSystemRecipe,
   MUNSELL_SECTORS,
   parseTonalFamilyId,
@@ -14,18 +14,18 @@ import {
   TONAL_HARMONY_CONTRACT,
   TONAL_SYSTEM_FORMAT_VERSION,
   type TonalFamilyId,
-  type TonalSystemRecipeV4,
+  type TonalSystemRecipeV5,
   validateLockedTonalSystemSource,
   validateTonalSystemRecipe
 } from './tonal-system-contract';
 
-function createRecipe(): TonalSystemRecipeV4 {
-  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4;
+function createRecipe(): TonalSystemRecipeV5 {
+  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV5;
 }
 
 function createLockedReferences(
   additionalIds: readonly TonalFamilyId[] = []
-): LockedTonalFamilyFunctionalReferencesV4[] {
+): LockedTonalFamilyFunctionalReferencesV5[] {
   return [...new Set<TonalFamilyId>([...TONAL_CORE_FAMILY_IDS, ...additionalIds])]
     .sort((left, right) => left.localeCompare(right))
     .map((id) => ({
@@ -41,7 +41,7 @@ function createLockedReferences(
     }));
 }
 
-function createLockedSource(): LockedTonalSystemSourceV4 {
+function createLockedSource(): LockedTonalSystemSourceV5 {
   return lockTonalSystemRecipe(
     createRecipe(),
     'b.blue.v1',
@@ -60,9 +60,9 @@ function issueCodes(
   return result.valid ? [] : result.issues.map((issue) => issue.code);
 }
 
-describe('tonal-system contract v4', () => {
-  it('defines format 4 with the complete Munsell taxonomy and core family set', () => {
-    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(4);
+describe('tonal-system contract v5', () => {
+  it('defines format 5 with the complete Munsell taxonomy and core family set', () => {
+    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(5);
     expect(TONAL_HARMONY_CONTRACT).toBe('kiskadee-munsell-rest-v1');
     expect(MUNSELL_SECTORS).toEqual([
       'red',
@@ -240,7 +240,7 @@ describe('tonal-system contract v4', () => {
   });
 
   it.each([
-    ['formatVersion', 5, 'UNSUPPORTED_FORMAT'],
+    ['formatVersion', 4, 'UNSUPPORTED_FORMAT'],
     ['gridContract', 'legacy-grid', 'UNSUPPORTED_GRID'],
     ['harmonyContract', 'legacy-harmony', 'UNSUPPORTED_HARMONY'],
     ['tonalProfile', 'unknown-profile', 'UNSUPPORTED_PROFILE']
@@ -251,7 +251,7 @@ describe('tonal-system contract v4', () => {
   });
 
   it('strictly rejects unknown properties at every draft contract layer', () => {
-    const recipe = createRecipe() as TonalSystemRecipeV4 & Record<string, unknown>;
+    const recipe = createRecipe() as TonalSystemRecipeV5 & Record<string, unknown>;
     recipe.extra = true;
     (recipe.primary as unknown as Record<string, unknown>).extra = true;
     (recipe.primary.policies as unknown as Record<string, unknown>).extra = true;
@@ -446,7 +446,22 @@ describe('tonal-system contract v4', () => {
         policies: { light: 'source-exact', dark: 'harmonized' }
       }
     ];
-    expect(issueCodes(black)).toContain('ACHROMATIC_HARMONIZATION_UNSUPPORTED');
+    expect(issueCodes(black)).toEqual(
+      expect.arrayContaining([
+        'CANONICAL_BLACK_OVERRIDE_UNSUPPORTED',
+        'ACHROMATIC_HARMONIZATION_UNSUPPORTED'
+      ])
+    );
+
+    const tintedNeutral = createRecipe();
+    tintedNeutral.overrides = [
+      {
+        id: 'n.black.v2',
+        seedHex: '#20252b',
+        policies: { light: 'source-exact', dark: 'adaptive' }
+      }
+    ];
+    expect(issueCodes(tintedNeutral)).toEqual([]);
   });
 
   it('locks complete resolved functional references and round-trips them deterministically', () => {
@@ -470,7 +485,7 @@ describe('tonal-system contract v4', () => {
     const locked = lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 24, dark: 70 }, references);
 
     expect(locked).toMatchObject({
-      formatVersion: 4,
+      formatVersion: 5,
       primary: {
         id: 'b.blue.v1',
         seedHex: '#1da1f2',
@@ -685,7 +700,7 @@ describe('tonal-system contract v4', () => {
         mode: 'locked',
         light: tone,
         dark: 45
-      } as TonalSystemRecipeV4['tonalAnchors']['rest'];
+      } as TonalSystemRecipeV5['tonalAnchors']['rest'];
       expect(issueCodes(invalid)).toContain('INVALID_REST_TONE');
     }
   });

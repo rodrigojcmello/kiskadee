@@ -1,12 +1,12 @@
 import type { CoreTonalFamilyId } from './tonal-system-contract.ts';
 
-export const FIXED_FAMILY_REFERENCE_SET = 'kiskadee-munsell-reference-v1' as const;
+export const FIXED_FAMILY_REFERENCE_SET = 'kiskadee-munsell-reference-v2' as const;
 
 /**
  * Controlled source colors used to evaluate the harmony stage independently
  * from primary-derived family generation.
  */
-export const FIXED_FAMILY_SEEDS_V1 = {
+export const FIXED_FAMILY_SEEDS_V2 = {
   'r.red.v1': '#d13438',
   'yr.orange.v1': '#ca5010',
   'yr.brown.v1': '#8e562e',
@@ -18,5 +18,5 @@ export const FIXED_FAMILY_SEEDS_V1 = {
   'pb.indigo.v1': '#4f6bed',
   'p.purple.v1': '#8764b8',
   'rp.magenta.v1': '#e3008c',
-  'n.black.v1': '#20252b'
+  'n.black.v1': '#000000'
 } as const satisfies Record<CoreTonalFamilyId, string>;

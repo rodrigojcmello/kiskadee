@@ -1,5 +1,5 @@
 {
-  "formatVersion": 4,
+  "formatVersion": 5,
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
   "tonalProfile": "muted-darks",
@@ -60,7 +60,7 @@
       }
     },
     {
-      "id": "n.black.v1",
+      "id": "n.black.v2",
       "seedHex": "#21242d",
       "policies": {
         "light": "source-exact",

@@ -480,7 +480,10 @@ export function Card() {
               <h3 className={s.sectionTitle}>Semantic surfaces</h3>
               <div className={`${s.grid} k-root`}>
                 {semanticSamples.map(({ emphasis, intent }) => {
-                  const inverse = emphasis === 'high' || emphasis === 'highest';
+                  const inverse =
+                    theme !== 'light' ||
+                    (intent === 'primary' && emphasis === 'high') ||
+                    emphasis === 'highest';
 
                   return (
                     <div className={s.example} key={`${intent}-${emphasis}`}>

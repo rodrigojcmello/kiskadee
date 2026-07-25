@@ -5,12 +5,13 @@ import {
   DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS,
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
-  SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS
+  SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS,
+  TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS
 } from '../tonal-system';
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
-  type TonalSystemRecipeV4
+  type TonalSystemRecipeV5
 } from '../tonal-system-contract';
 import { formatCanonicalJsonFile } from './canonical-json';
 import {
@@ -23,11 +24,11 @@ import {
   verifyTonalArtifactBundle
 } from './tonal-artifacts';
 
-function createRecipe(): TonalSystemRecipeV4 {
-  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV4;
+function createRecipe(): TonalSystemRecipeV5 {
+  return structuredClone(DEFAULT_TONAL_SYSTEM_RECIPE) as TonalSystemRecipeV5;
 }
 
-describe('tonal artifact bundle v4', () => {
+describe('tonal artifact bundle v5', () => {
   let system: ResolvedKiskadeeTonalSystem;
   let bundle: TonalArtifactBundle;
 
@@ -50,16 +51,17 @@ describe('tonal artifact bundle v4', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.4.1');
+    expect(bundle.manifest.generator.version).toBe('0.5.0');
+    expect(bundle.diagnostics.referenceSet).toBe('kiskadee-munsell-reference-v2');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
     }
   });
 
-  it('keeps consumer assets concise while recording V4 identity, origin, and functional references', () => {
+  it('keeps consumer assets concise while recording V5 identity, origin, and functional references', () => {
     for (const asset of bundle.assets) {
-      expect(asset.formatVersion).toBe(4);
+      expect(asset.formatVersion).toBe(5);
       expect(asset.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
       expect(asset).not.toHaveProperty('diagnostics');
       expect(asset).not.toHaveProperty('dependencies');
@@ -91,7 +93,7 @@ describe('tonal artifact bundle v4', () => {
       appearance: 'black',
       colorKind: 'achromatic',
       seedOrigin: 'canonical',
-      seedHex: '#20252b',
+      seedHex: '#000000',
       functionalReferences: {
         light: {
           vivid: { source: 'generated-anchor' },
@@ -234,6 +236,39 @@ describe('tonal artifact bundle v4', () => {
     expect(sourceExactBundle.assets.find((asset) => asset.id === 'r.red.v1')).not.toHaveProperty(
       'darkSupportChromaModeration'
     );
+  });
+
+  it('keeps tinted-neutral generation details in diagnostics only', async () => {
+    const recipe = createRecipe();
+    recipe.overrides.push({
+      id: 'n.black.v2',
+      seedHex: '#21242d',
+      policies: { light: 'source-exact', dark: 'source-exact' }
+    });
+    const result = generateKiskadeeTonalSystem(recipe);
+    expect(result.valid, JSON.stringify(result.issues, null, 2)).toBe(true);
+    if (!result.valid) return;
+
+    const tintedBundle = await createTonalArtifactBundle(result);
+    const asset = tintedBundle.assets.find((candidate) => candidate.id === 'n.black.v2');
+    const diagnostics = tintedBundle.diagnostics.families.find(
+      (family) => family.familyId === 'n.black.v2'
+    );
+
+    expect(asset).toMatchObject({
+      colorKind: 'achromatic',
+      seedHex: '#21242d',
+      seedOrigin: 'override'
+    });
+    expect(asset).not.toHaveProperty('tintedAchromaticChroma');
+    for (const theme of ['light', 'dark'] as const) {
+      expect(diagnostics?.themes[theme].tintedAchromaticChroma).toMatchObject({
+        contract: TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS.contract,
+        seedChroma: expect.any(Number),
+        adjustedTones: expect.any(Array),
+        restoredTones: expect.any(Array)
+      });
+    }
   });
 
   it('keeps hashes centralized in the manifest', () => {

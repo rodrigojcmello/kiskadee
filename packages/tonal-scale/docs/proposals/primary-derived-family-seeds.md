@@ -17,7 +17,7 @@ which stage caused the problem.
 
 ## Current Decision
 
-The runtime now uses `kiskadee-munsell-reference-v1`, a fixed source seed for
+The runtime now uses `kiskadee-munsell-reference-v2`, a fixed source seed for
 each required family. The primary remains exact and replaces only the reference
 of its own resolved id. This creates a controlled baseline in which different
 primary inputs exercise the same companion sources.

@@ -190,7 +190,7 @@ describe('Fluent 2 Button surface contexts', () => {
       positive: content?.textColor?.positive?.low?.rest
     }).toEqual({
       primary: '#c1deff',
-      neutral: '#d8dbe3',
+      neutral: '#d6dbe7',
       destructive: '#ffcdc8',
       positive: '#c3e7c0'
     });

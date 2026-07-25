@@ -36,10 +36,19 @@ The color investigation and generated candidate system live under
 - the reproducible Kiskadee tonal recipe and verified canonical bundle;
 - a per-stop OKLab de-para for both Light and Dark.
 
-The seven generated assets backed by explicit Fluent seeds are promoted into
-the preset: Blue, Black, Cranberry/Red, Orange, Marigold/Yellow, Green, and
-Berry/Purple. The harmony-derived Teal, Lime, Indigo, Magenta, and Brown assets
-remain review inputs until separately approved.
+Generator `0.5.0` is the promoted tonal baseline. Seven generated assets remain
+backed by explicit Fluent seeds: Blue, tinted Neutral, Cranberry/Red, Orange,
+Marigold/Yellow, Green, and Berry/Purple. The preset additionally promotes the
+Kiskadee-owned pure grayscale.
+
+- **Official adapted**: Fluent Neutral `Grey-14 #21242d` is `n.black.v2`.
+  `Neutral/Background/3/Rest` and `Neutral/Background/4/Rest` are positions in
+  that same primitive family, not separate Black variants.
+- **Kiskadee extension**: immutable `n.black.v1` supplies pure grayscale,
+  absolute white/black caps, and the absolute-black Darker surface.
+
+The harmony-derived Teal, Lime, Indigo, Magenta, and Brown assets remain review
+inputs until separately approved.
 
 ## Shadow Scale
 

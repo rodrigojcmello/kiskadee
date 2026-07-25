@@ -28,9 +28,10 @@ a physically darker state anchor without requiring a different curve.
 
 ## Adopted Direction
 
-Generator `0.3.3` removes this transform completely. `n.black.*` once again
-matches `generateKiskadeeScale()` byte for byte. The authoring recipe instead
-supports sparse state-anchor rules per family and theme:
+Generator `0.3.3` removed this transform completely. Under formats V3 and V4,
+`n.black.*` once again matched `generateKiskadeeScale()` byte for byte. The
+authoring recipe instead supported sparse state-anchor rules per family and
+theme:
 
 - `auto`;
 - `generated-anchor`;
@@ -46,3 +47,30 @@ lighter, or Light and Dark use different functional positions.
 Format V4 preserves this decision but replaces the ambiguous state-anchor name
 with the explicit vivid reference and adds a separate surface-relative subtle
 reference. Both remain pointers into the unchanged emitted scale.
+
+## Why The V5 Neutral Trajectory Is Different
+
+Format V5 does not restore surface-distance alignment.
+
+The rejected transform inferred a lightness correction from other chromatic
+families at the same public tone. Its purpose was to make Black appear equally
+prominent in one semantic/component use. It moved many scale lightnesses even
+though the authored Black identity was already valid.
+
+The V5 contract instead separates two primitive identities:
+
+- `n.black.v1` is an immutable zero-chroma gray scale;
+- `n.black.v2` through `n.black.v4` are optional authored neutral variants,
+  each with its own explicit seed.
+
+A seeded neutral trajectory uses the effective seed only to preserve that
+variant's low-chroma identity. It shapes chroma around a seed-derived plateau
+while preserving the canonical lightness inputs and hue, exact caps, and exact
+seed anchor. Gamut fitting may reduce chroma, and deterministic revalidation
+may restore only the minimum needed for caps, anchor, monotonicity, uniqueness,
+contrast, gamut, and continuity. It does not compare the family with chromatic
+surface distance and does not move lightness to fix component salience.
+
+Functional vivid and subtle references remain the mechanism for choosing which
+existing neutral position a component starts from. Primitive neutral identity
+and semantic state prominence therefore stay separate concerns.

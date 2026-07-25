@@ -7,7 +7,7 @@ import {
   type KiskadeeTone
 } from './kiskadee-tonal-scale.ts';
 
-export const TONAL_SYSTEM_FORMAT_VERSION = 4 as const;
+export const TONAL_SYSTEM_FORMAT_VERSION = 5 as const;
 export const TONAL_GRID_CONTRACT = 'kiskadee-tonal-v1' as const;
 export const TONAL_HARMONY_CONTRACT = 'kiskadee-munsell-rest-v1' as const;
 
@@ -144,7 +144,7 @@ export const TONAL_BASE_FAMILY_IDS = MUNSELL_SECTORS.map(
   (sector) => TONAL_BASE_FAMILY_ID_BY_SECTOR[sector]
 );
 
-export type TonalPrimaryDraftV4 = {
+export type TonalPrimaryDraftV5 = {
   seedHex: string;
   appearance: TonalPrimaryAppearance;
   variant: TonalFamilyVariant;
@@ -154,13 +154,13 @@ export type TonalPrimaryDraftV4 = {
   };
 };
 
-export type TonalPrimaryLockedV4 = {
+export type TonalPrimaryLockedV5 = {
   id: TonalFamilyId;
   seedHex: string;
-  policies: TonalPrimaryDraftV4['policies'];
+  policies: TonalPrimaryDraftV5['policies'];
 };
 
-export type TonalFamilyOverrideV4 = {
+export type TonalFamilyOverrideV5 = {
   id: TonalFamilyId;
   seedHex: string;
   policies: {
@@ -190,7 +190,7 @@ export type TonalSubtleReferenceRule =
   | { mode: 'reference-match'; referenceHex: string }
   | { mode: 'locked'; tone: KiskadeeTone };
 
-export type TonalFamilyFunctionalReferenceRulesV4 = {
+export type TonalFamilyFunctionalReferenceRulesV5 = {
   id: TonalFamilyId;
   light: {
     vivid: TonalVividReferenceRule;
@@ -202,7 +202,7 @@ export type TonalFamilyFunctionalReferenceRulesV4 = {
   };
 };
 
-export type LockedTonalFunctionalReferenceV4 =
+export type LockedTonalFunctionalReferenceV5 =
   | {
       tone: KiskadeeTone;
       source:
@@ -218,15 +218,15 @@ export type LockedTonalFunctionalReferenceV4 =
       referenceHex: string;
     };
 
-export type LockedTonalFamilyFunctionalReferencesV4 = {
+export type LockedTonalFamilyFunctionalReferencesV5 = {
   id: TonalFamilyId;
   light: {
-    vivid: LockedTonalFunctionalReferenceV4;
-    subtle: LockedTonalFunctionalReferenceV4;
+    vivid: LockedTonalFunctionalReferenceV5;
+    subtle: LockedTonalFunctionalReferenceV5;
   };
   dark: {
-    vivid: LockedTonalFunctionalReferenceV4;
-    subtle: LockedTonalFunctionalReferenceV4;
+    vivid: LockedTonalFunctionalReferenceV5;
+    subtle: LockedTonalFunctionalReferenceV5;
   };
 };
 
@@ -235,23 +235,23 @@ type TonalSystemContractBase = {
   gridContract: typeof TONAL_GRID_CONTRACT;
   harmonyContract: typeof TONAL_HARMONY_CONTRACT;
   tonalProfile: KiskadeeTonalProfile;
-  overrides: TonalFamilyOverrideV4[];
+  overrides: TonalFamilyOverrideV5[];
 };
 
-export type TonalSystemRecipeV4 = TonalSystemContractBase & {
-  primary: TonalPrimaryDraftV4;
+export type TonalSystemRecipeV5 = TonalSystemContractBase & {
+  primary: TonalPrimaryDraftV5;
   tonalAnchors: {
     rest: AutoRest | LockedRest;
   };
-  functionalReferences: TonalFamilyFunctionalReferenceRulesV4[];
+  functionalReferences: TonalFamilyFunctionalReferenceRulesV5[];
 };
 
-export type LockedTonalSystemSourceV4 = TonalSystemContractBase & {
-  primary: TonalPrimaryLockedV4;
+export type LockedTonalSystemSourceV5 = TonalSystemContractBase & {
+  primary: TonalPrimaryLockedV5;
   tonalAnchors: {
     rest: LockedRest;
   };
-  functionalReferences: LockedTonalFamilyFunctionalReferencesV4[];
+  functionalReferences: LockedTonalFamilyFunctionalReferencesV5[];
 };
 
 export type TonalSystemValidationIssue = {
@@ -282,7 +282,7 @@ export const DEFAULT_TONAL_SYSTEM_RECIPE = {
   },
   functionalReferences: [],
   overrides: []
-} as const satisfies TonalSystemRecipeV4;
+} as const satisfies TonalSystemRecipeV5;
 
 const RECIPE_KEYS = [
   'formatVersion',
@@ -366,22 +366,22 @@ export function resolveTonalFamilyStem(
 
 export function validateTonalSystemRecipe(
   input: unknown
-): TonalSystemValidationResult<TonalSystemRecipeV4> {
+): TonalSystemValidationResult<TonalSystemRecipeV5> {
   return validateContract(input, 'draft');
 }
 
 export function validateLockedTonalSystemSource(
   input: unknown
-): TonalSystemValidationResult<LockedTonalSystemSourceV4> {
+): TonalSystemValidationResult<LockedTonalSystemSourceV5> {
   return validateContract(input, 'locked');
 }
 
 export function lockTonalSystemRecipe(
-  recipe: TonalSystemRecipeV4,
+  recipe: TonalSystemRecipeV5,
   primaryId: TonalFamilyId,
   rest: { light: KiskadeeTone; dark: KiskadeeTone },
-  functionalReferences: readonly LockedTonalFamilyFunctionalReferencesV4[]
-): LockedTonalSystemSourceV4 {
+  functionalReferences: readonly LockedTonalFamilyFunctionalReferencesV5[]
+): LockedTonalSystemSourceV5 {
   const recipeValidation = validateTonalSystemRecipe(recipe);
   if (!recipeValidation.valid) {
     throw new Error(
@@ -408,7 +408,7 @@ export function lockTonalSystemRecipe(
     throw new Error('Locked rest positions must be public chromatic tones from 1 through 99.');
   }
 
-  const source: LockedTonalSystemSourceV4 = {
+  const source: LockedTonalSystemSourceV5 = {
     formatVersion: normalizedRecipe.formatVersion,
     gridContract: normalizedRecipe.gridContract,
     harmonyContract: normalizedRecipe.harmonyContract,
@@ -456,15 +456,15 @@ export function lockTonalSystemRecipe(
 function validateContract(
   input: unknown,
   stage: 'draft'
-): TonalSystemValidationResult<TonalSystemRecipeV4>;
+): TonalSystemValidationResult<TonalSystemRecipeV5>;
 function validateContract(
   input: unknown,
   stage: 'locked'
-): TonalSystemValidationResult<LockedTonalSystemSourceV4>;
+): TonalSystemValidationResult<LockedTonalSystemSourceV5>;
 function validateContract(
   input: unknown,
   stage: 'draft' | 'locked'
-): TonalSystemValidationResult<TonalSystemRecipeV4 | LockedTonalSystemSourceV4> {
+): TonalSystemValidationResult<TonalSystemRecipeV5 | LockedTonalSystemSourceV5> {
   const issues: TonalSystemValidationIssue[] = [];
   const issue = (code: string, path: string, message: string) => {
     issues.push({ code, path, message });
@@ -501,7 +501,7 @@ function validateContract(
   if (
     stage === 'locked' &&
     primary &&
-    overrides?.some((override) => override.id === (primary as TonalPrimaryLockedV4).id)
+    overrides?.some((override) => override.id === (primary as TonalPrimaryLockedV5).id)
   ) {
     issue(
       'PRIMARY_OVERRIDE_CONFLICT',
@@ -512,9 +512,9 @@ function validateContract(
 
   if (stage === 'locked' && primary && overrides && functionalReferences) {
     validateLockedFunctionalReferenceCompleteness(
-      primary as TonalPrimaryLockedV4,
+      primary as TonalPrimaryLockedV5,
       overrides,
-      functionalReferences as LockedTonalFamilyFunctionalReferencesV4[],
+      functionalReferences as LockedTonalFamilyFunctionalReferencesV5[],
       issue
     );
   }
@@ -548,9 +548,9 @@ function validateContract(
       valid: true,
       value: {
         ...base,
-        primary: primary as TonalPrimaryDraftV4,
+        primary: primary as TonalPrimaryDraftV5,
         tonalAnchors: { rest },
-        functionalReferences: functionalReferences as TonalFamilyFunctionalReferenceRulesV4[]
+        functionalReferences: functionalReferences as TonalFamilyFunctionalReferenceRulesV5[]
       },
       issues: []
     };
@@ -560,9 +560,9 @@ function validateContract(
     valid: true,
     value: {
       ...base,
-      primary: primary as TonalPrimaryLockedV4,
+      primary: primary as TonalPrimaryLockedV5,
       tonalAnchors: { rest: rest as LockedRest },
-      functionalReferences: functionalReferences as LockedTonalFamilyFunctionalReferencesV4[]
+      functionalReferences: functionalReferences as LockedTonalFamilyFunctionalReferencesV5[]
     },
     issues: []
   };
@@ -594,7 +594,7 @@ function validateContractIdentifiers(
 function validateDraftPrimary(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryDraftV4 | null {
+): TonalPrimaryDraftV5 | null {
   const path = '/primary';
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY', path, 'Primary must be a plain object.');
@@ -635,7 +635,7 @@ function validateDraftPrimary(
 function validateLockedPrimary(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryLockedV4 | null {
+): TonalPrimaryLockedV5 | null {
   const path = '/primary';
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY', path, 'Primary must be a plain object.');
@@ -661,7 +661,7 @@ function validatePrimaryPolicies(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalPrimaryDraftV4['policies'] | null {
+): TonalPrimaryDraftV5['policies'] | null {
   if (!isPlainObject(input)) {
     issue('INVALID_PRIMARY_POLICIES', path, 'Primary policies must be a plain object.');
     return null;
@@ -691,13 +691,13 @@ function validatePrimaryPolicies(
 function validateOverrides(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyOverrideV4[] | null {
+): TonalFamilyOverrideV5[] | null {
   if (!Array.isArray(input)) {
     issue('INVALID_OVERRIDES', '/overrides', 'Overrides must be an array.');
     return null;
   }
 
-  const overrides: TonalFamilyOverrideV4[] = [];
+  const overrides: TonalFamilyOverrideV5[] = [];
   const seen = new Set<TonalFamilyId>();
   input.forEach((rawOverride, index) => {
     const path = `/overrides/${index}`;
@@ -713,6 +713,13 @@ function validateOverrides(
 
     if (id && seen.has(id)) {
       issue('DUPLICATE_OVERRIDE_ID', `${path}/id`, `Duplicate override id: ${id}.`);
+    }
+    if (id === 'n.black.v1') {
+      issue(
+        'CANONICAL_BLACK_OVERRIDE_UNSUPPORTED',
+        `${path}/id`,
+        'n.black.v1 is the immutable pure-grayscale family. Use n.black.v2 through n.black.v4 for authored tinted neutrals.'
+      );
     }
     if (
       id &&
@@ -738,7 +745,7 @@ function validateOverridePolicies(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyOverrideV4['policies'] | null {
+): TonalFamilyOverrideV5['policies'] | null {
   if (!isPlainObject(input)) {
     issue('INVALID_OVERRIDE_POLICIES', path, 'Override policies must be a plain object.');
     return null;
@@ -790,7 +797,7 @@ function validateRest(
 function validateDraftFunctionalReferences(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyFunctionalReferenceRulesV4[] | null {
+): TonalFamilyFunctionalReferenceRulesV5[] | null {
   const collectionPath = '/functionalReferences';
   if (!Array.isArray(input)) {
     issue(
@@ -801,7 +808,7 @@ function validateDraftFunctionalReferences(
     return null;
   }
 
-  const references: TonalFamilyFunctionalReferenceRulesV4[] = [];
+  const references: TonalFamilyFunctionalReferenceRulesV5[] = [];
   const seen = new Set<TonalFamilyId>();
   input.forEach((rawFamily, index) => {
     const path = `${collectionPath}/${index}`;
@@ -846,7 +853,7 @@ function validateDraftFunctionalReferenceTheme(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): TonalFamilyFunctionalReferenceRulesV4['light'] | null {
+): TonalFamilyFunctionalReferenceRulesV5['light'] | null {
   if (!isPlainObject(input)) {
     issue(
       'INVALID_FUNCTIONAL_REFERENCE_THEME',
@@ -936,7 +943,7 @@ function validateSubtleReferenceRule(
 function validateLockedFunctionalReferences(
   input: unknown,
   issue: (code: string, path: string, message: string) => void
-): LockedTonalFamilyFunctionalReferencesV4[] | null {
+): LockedTonalFamilyFunctionalReferencesV5[] | null {
   const collectionPath = '/functionalReferences';
   if (!Array.isArray(input)) {
     issue(
@@ -947,7 +954,7 @@ function validateLockedFunctionalReferences(
     return null;
   }
 
-  const references: LockedTonalFamilyFunctionalReferencesV4[] = [];
+  const references: LockedTonalFamilyFunctionalReferencesV5[] = [];
   const seen = new Set<TonalFamilyId>();
   input.forEach((rawFamily, index) => {
     const path = `${collectionPath}/${index}`;
@@ -1004,7 +1011,7 @@ function validateLockedFunctionalReferenceTheme(
   input: unknown,
   path: string,
   issue: (code: string, path: string, message: string) => void
-): LockedTonalFamilyFunctionalReferencesV4['light'] | null {
+): LockedTonalFamilyFunctionalReferencesV5['light'] | null {
   if (!isPlainObject(input)) {
     issue(
       'INVALID_LOCKED_FUNCTIONAL_REFERENCE_THEME',
@@ -1024,7 +1031,7 @@ function validateLockedFunctionalReference(
   path: string,
   kind: 'vivid' | 'subtle',
   issue: (code: string, path: string, message: string) => void
-): LockedTonalFunctionalReferenceV4 | null {
+): LockedTonalFunctionalReferenceV5 | null {
   if (!isPlainObject(input)) {
     issue(
       'INVALID_LOCKED_FUNCTIONAL_REFERENCE',
@@ -1065,12 +1072,12 @@ function validateLockedFunctionalReference(
   }
   return {
     tone,
-    source: source as Exclude<LockedTonalFunctionalReferenceV4['source'], 'reference-match'>
+    source: source as Exclude<LockedTonalFunctionalReferenceV5['source'], 'reference-match'>
   };
 }
 
 function validateFunctionalReferenceOrder(
-  references: LockedTonalFamilyFunctionalReferencesV4['light'],
+  references: LockedTonalFamilyFunctionalReferencesV5['light'],
   path: string,
   issue: (code: string, path: string, message: string) => void
 ): void {
@@ -1090,9 +1097,9 @@ function validateFunctionalReferenceOrder(
 }
 
 function validateLockedFunctionalReferenceCompleteness(
-  primary: TonalPrimaryLockedV4,
-  overrides: TonalFamilyOverrideV4[],
-  references: LockedTonalFamilyFunctionalReferencesV4[],
+  primary: TonalPrimaryLockedV5,
+  overrides: TonalFamilyOverrideV5[],
+  references: LockedTonalFamilyFunctionalReferencesV5[],
   issue: (code: string, path: string, message: string) => void
 ): void {
   const expectedIds = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
@@ -1210,8 +1217,8 @@ function validateReferenceHex(
 }
 
 function cloneLockedFunctionalReference(
-  reference: LockedTonalFunctionalReferenceV4
-): LockedTonalFunctionalReferenceV4 {
+  reference: LockedTonalFunctionalReferenceV5
+): LockedTonalFunctionalReferenceV5 {
   return reference.source === 'reference-match'
     ? {
         tone: reference.tone,

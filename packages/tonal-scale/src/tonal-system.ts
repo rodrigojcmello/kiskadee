@@ -10,7 +10,7 @@ import {
   relativeLuminance
 } from './color-math.ts';
 import { compareStrings } from './deterministic-order.ts';
-import { FIXED_FAMILY_SEEDS_V1 } from './fixed-family-seeds.ts';
+import { FIXED_FAMILY_SEEDS_V2 } from './fixed-family-seeds.ts';
 import {
   generateKiskadeeScale,
   KISKADEE_TONES,
@@ -34,9 +34,9 @@ import {
 } from './munsell-oklch.ts';
 import {
   createTonalFamilyId,
-  type LockedTonalFamilyFunctionalReferencesV4,
-  type LockedTonalFunctionalReferenceV4,
-  type LockedTonalSystemSourceV4,
+  type LockedTonalFamilyFunctionalReferencesV5,
+  type LockedTonalFunctionalReferenceV5,
+  type LockedTonalSystemSourceV5,
   lockTonalSystemRecipe,
   MUNSELL_SECTORS,
   parseTonalFamilyId,
@@ -48,14 +48,14 @@ import {
   type TonalChromaticAppearance,
   type TonalFamilyAppearance,
   type TonalFamilyColorKind,
-  type TonalFamilyFunctionalReferenceRulesV4,
+  type TonalFamilyFunctionalReferenceRulesV5,
   type TonalFamilyId,
-  type TonalFamilyOverrideV4,
+  type TonalFamilyOverrideV5,
   type TonalFamilySector,
   type TonalFamilySectorNotation,
   type TonalFamilyVariant,
   type TonalSubtleReferenceRule,
-  type TonalSystemRecipeV4,
+  type TonalSystemRecipeV5,
   type TonalSystemValidationIssue,
   type TonalThemePolicy,
   validateLockedTonalSystemSource,
@@ -129,6 +129,15 @@ export const DARK_SUPPORT_CHROMA_MODERATION_V1_PARAMETERS = {
   harmonySearchRadius: 0.36
 } as const;
 
+export const TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS = {
+  contract: 'kiskadee-tinted-achromatic-chroma-v1',
+  capTaperLightness: 5,
+  capTaperGamma: 0.7,
+  restoreScanSteps: 64,
+  restoreBisectionSteps: 16,
+  restoreRefinementPasses: 2
+} as const;
+
 const DEFERRED_PRIMARY_DERIVATION_V1_PARAMETERS = {
   quantizationSafeInset: 0.02
 } as const;
@@ -148,10 +157,10 @@ export type TonalSystemIssue = TonalSystemValidationIssue & {
 };
 
 export type TonalHarmonyFingerprint = {
-  formatVersion: TonalSystemRecipeV4['formatVersion'];
-  gridContract: TonalSystemRecipeV4['gridContract'];
-  harmonyContract: TonalSystemRecipeV4['harmonyContract'];
-  tonalProfile: TonalSystemRecipeV4['tonalProfile'];
+  formatVersion: TonalSystemRecipeV5['formatVersion'];
+  gridContract: TonalSystemRecipeV5['gridContract'];
+  harmonyContract: TonalSystemRecipeV5['harmonyContract'];
+  tonalProfile: TonalSystemRecipeV5['tonalProfile'];
   familyId: TonalFamilyId;
   theme: KiskadeeTheme;
   tone: KiskadeeTone;
@@ -240,6 +249,21 @@ export type TonalDarkSupportChromaModerationDiagnostics = {
   sourceSeedChanged: boolean;
 };
 
+export type TonalTintedAchromaticChromaDiagnostics = {
+  contract: typeof TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS.contract;
+  seedHue: number;
+  seedChroma: number;
+  adjustedTones: KiskadeeTone[];
+  adjustedToneCount: number;
+  restoredTones: KiskadeeTone[];
+  restorationCount: number;
+  gamutMappedTones: KiskadeeTone[];
+  maxChromaIncrease: number;
+  maxChromaReduction: number;
+  maxHueDrift: number;
+  appliedStrength: number;
+};
+
 export type ResolvedTonalTheme = {
   theme: KiskadeeTheme;
   policy: TonalSeedPolicy;
@@ -253,6 +277,7 @@ export type ResolvedTonalTheme = {
   surfaceTrackAlignment: TonalSurfaceTrackAlignmentDiagnostics | null;
   isolatedHarmonyPeakAlignment: TonalIsolatedHarmonyPeakAlignmentDiagnostics | null;
   darkSupportChromaModeration: TonalDarkSupportChromaModerationDiagnostics | null;
+  tintedAchromaticChroma: TonalTintedAchromaticChromaDiagnostics | null;
   status: Exclude<TonalSystemStatus, 'error'>;
 };
 
@@ -281,8 +306,8 @@ export type ResolvedTonalFamily = {
   sourceSeedHex: string;
   identity: MunsellColorClassification | null;
   functionalReferenceRules: {
-    light: TonalFamilyFunctionalReferenceRulesV4['light'];
-    dark: TonalFamilyFunctionalReferenceRulesV4['dark'];
+    light: TonalFamilyFunctionalReferenceRulesV5['light'];
+    dark: TonalFamilyFunctionalReferenceRulesV5['dark'];
   };
   status: Exclude<TonalSystemStatus, 'error'>;
   themes: {
@@ -291,7 +316,7 @@ export type ResolvedTonalFamily = {
   };
 };
 
-export type TonalFunctionalReferenceSource = LockedTonalFunctionalReferenceV4['source'];
+export type TonalFunctionalReferenceSource = LockedTonalFunctionalReferenceV5['source'];
 
 export type TonalFunctionalReference = {
   tone: KiskadeeTone;
@@ -409,7 +434,9 @@ function resolveFamilyVividReference(
     if (!fallback) {
       throw new Error(`${family.id} ${theme} is missing its internal vivid cap fallback.`);
     }
+    const isCanonicalPureBlackFallback = family.id === 'n.black.v1';
     if (
+      !isCanonicalPureBlackFallback &&
       !issues.some(
         (issue) =>
           issue.code === 'VIVID_REFERENCE_CAP_FALLBACK' &&
@@ -436,7 +463,7 @@ function resolveFamilyVividReference(
 function resolveFamilyFunctionalReferenceRules(
   recipe: Pick<MaterializedTonalSystemRecipe, 'functionalReferences'>,
   familyId: TonalFamilyId
-): Pick<TonalFamilyFunctionalReferenceRulesV4, 'light' | 'dark'> {
+): Pick<TonalFamilyFunctionalReferenceRulesV5, 'light' | 'dark'> {
   const configured = recipe.functionalReferences.find((entry) => entry.id === familyId);
   return configured
     ? {
@@ -672,7 +699,7 @@ function resolveExplicitSubtleReference(
 function hydrateLockedFunctionalReference(
   family: ResolvedTonalFamily,
   theme: KiskadeeTheme,
-  reference: LockedTonalFunctionalReferenceV4
+  reference: LockedTonalFunctionalReferenceV5
 ): TonalFunctionalReference {
   const color = resolveFunctionalReferenceColor(family, theme, reference.tone);
   if (reference.source !== 'reference-match') {
@@ -686,7 +713,7 @@ function hydrateLockedFunctionalReference(
 
 function resolveLockedFunctionalReferences(
   families: ResolvedTonalFamily[],
-  lockedReferences: LockedTonalFamilyFunctionalReferencesV4[],
+  lockedReferences: LockedTonalFamilyFunctionalReferencesV5[],
   issues: TonalSystemIssue[]
 ): ResolvedTonalFamilyFunctionalReferences[] {
   return lockedReferences
@@ -825,8 +852,8 @@ function resolveGeneratedFunctionalReferences(
 
 function lockFunctionalReferences(
   references: ResolvedTonalFamilyFunctionalReferences[]
-): LockedTonalFamilyFunctionalReferencesV4[] {
-  const lock = (reference: TonalFunctionalReference): LockedTonalFunctionalReferenceV4 =>
+): LockedTonalFamilyFunctionalReferencesV5[] {
+  const lock = (reference: TonalFunctionalReference): LockedTonalFunctionalReferenceV5 =>
     reference.source === 'reference-match'
       ? {
           tone: reference.tone,
@@ -845,7 +872,7 @@ function lockFunctionalReferences(
 export type ResolvedKiskadeeTonalSystem = {
   valid: true;
   status: Exclude<TonalSystemStatus, 'error'>;
-  source: LockedTonalSystemSourceV4;
+  source: LockedTonalSystemSourceV5;
   rest: {
     light: KiskadeeTone;
     dark: KiskadeeTone;
@@ -995,7 +1022,7 @@ type FunctionalRestCandidateEvaluation = FunctionalRestThemeDiagnostics & {
 };
 
 type MaterializedTonalSystemRecipe = Pick<
-  TonalSystemRecipeV4,
+  TonalSystemRecipeV5,
   | 'formatVersion'
   | 'gridContract'
   | 'harmonyContract'
@@ -1003,8 +1030,8 @@ type MaterializedTonalSystemRecipe = Pick<
   | 'tonalAnchors'
   | 'functionalReferences'
 > & {
-  authoringRecipe: TonalSystemRecipeV4;
-  lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV4[] | null;
+  authoringRecipe: TonalSystemRecipeV5;
+  lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV5[] | null;
   primaryReference: TonalFamilyId;
   useHueGlobalHarmony: boolean;
   families: MaterializedFamilySource[];
@@ -1013,9 +1040,9 @@ type MaterializedTonalSystemRecipe = Pick<
 type AuthoringRecipeResolution =
   | {
       valid: true;
-      recipe: TonalSystemRecipeV4;
+      recipe: TonalSystemRecipeV5;
       lockedPrimaryId: TonalFamilyId | null;
-      lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV4[] | null;
+      lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV5[] | null;
       issues: [];
     }
   | { valid: false; recipe: null; lockedPrimaryId: null; issues: TonalSystemIssue[] };
@@ -1099,9 +1126,9 @@ function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
 }
 
 function materializeTonalSystemRecipe(
-  authoringRecipe: TonalSystemRecipeV4,
+  authoringRecipe: TonalSystemRecipeV5,
   lockedPrimaryId: TonalFamilyId | null,
-  lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV4[] | null
+  lockedFunctionalReferences: LockedTonalFamilyFunctionalReferencesV5[] | null
 ): MaterializedRecipeResolution {
   const issues: TonalSystemIssue[] = [];
   const primaryIdentity = classifyMunsellHex(authoringRecipe.primary.seedHex);
@@ -1215,7 +1242,7 @@ function materializeTonalSystemRecipe(
       continue;
     }
 
-    const referenceSeedHex = FIXED_FAMILY_SEEDS_V1[id];
+    const referenceSeedHex = FIXED_FAMILY_SEEDS_V2[id];
     if (id === 'n.black.v1') {
       families.set(id, {
         id,
@@ -1915,7 +1942,7 @@ function resolveEmittedFunctionalRestDiagnostics(params: {
 }
 
 function materializeOverride(
-  override: TonalFamilyOverrideV4,
+  override: TonalFamilyOverrideV5,
   issues: TonalSystemIssue[]
 ): MaterializedFamilySource | null {
   const parsed = parseTonalFamilyId(override.id);
@@ -2281,26 +2308,41 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
 
     if (!resolvedLight || !resolvedDark) continue;
 
+    const preserveAuthoredAchromaticTint = familyKind === 'achromatic' && parsedId.variant !== 'v1';
+    const lightWithAchromaticTint = preserveAuthoredAchromaticTint
+      ? preserveTintedAchromaticChroma({
+          familyId: familySource.id,
+          resolution: resolvedLight,
+          issues
+        })
+      : resolvedLight;
+    const darkWithAchromaticTint = preserveAuthoredAchromaticTint
+      ? preserveTintedAchromaticChroma({
+          familyId: familySource.id,
+          resolution: resolvedDark,
+          issues
+        })
+      : resolvedDark;
     const light =
       familyKind === 'chromatic'
         ? alignSupportThemeToPrimarySurfaceTrack({
             primaryFamilyId: recipe.primaryReference,
             supportFamilyId: familySource.id,
             primary: primaryLight,
-            support: resolvedLight,
+            support: lightWithAchromaticTint,
             issues
           })
-        : resolvedLight;
+        : lightWithAchromaticTint;
     const darkWithSurface =
       familyKind === 'chromatic'
         ? alignSupportThemeToPrimarySurfaceTrack({
             primaryFamilyId: recipe.primaryReference,
             supportFamilyId: familySource.id,
             primary: primaryDark,
-            support: resolvedDark,
+            support: darkWithAchromaticTint,
             issues
           })
-        : resolvedDark;
+        : darkWithAchromaticTint;
     const dark =
       familyKind === 'chromatic' && resolvedDark.policy !== 'source-exact'
         ? moderateDarkSupportTheme({
@@ -3364,6 +3406,256 @@ function resolveSmoothstepUnit(value: number): number {
   return clamped * clamped * (3 - 2 * clamped);
 }
 
+type TintedAchromaticChromaTarget = {
+  index: number;
+  tone: KiskadeeTone;
+  referenceLightness: number;
+  originalChroma: number;
+  originalHue: number;
+  targetChroma: number;
+  targetHue: number;
+};
+
+type TintedAchromaticScaleTransformation = {
+  scale: KiskadeeScaleResult;
+  appliedStrength: number;
+  restoredTones: KiskadeeTone[];
+};
+
+/**
+ * What
+ *     Preserves the authored tint of additional achromatic variants across their non-cap
+ *     physical-lightness track while keeping the canonical low-level geometry unchanged.
+ * Why
+ *     Official tinted-neutral ramps keep a stable low chroma near both light and dark surfaces,
+ *     whereas the chromatic low-level envelope intentionally converges toward zero at the caps.
+ */
+function preserveTintedAchromaticChroma(params: {
+  familyId: TonalFamilyId;
+  resolution: ResolvedTonalTheme;
+  issues: TonalSystemIssue[];
+}): ResolvedTonalTheme {
+  const { familyId, resolution, issues } = params;
+  const seed = hexToOklch(resolution.effectiveSeedHex);
+  const anchorTone = resolution.scale.anchorTone;
+  if (anchorTone === null) return resolution;
+
+  const targets = resolution.scale.colors.flatMap(
+    (color, index): TintedAchromaticChromaTarget[] => {
+      if (color.flags.isCap || color.tone === anchorTone) return [];
+
+      const targetChroma = seed.c * resolveTintedAchromaticCapEnvelope(color.targetLightness);
+      return [
+        {
+          index,
+          tone: color.tone,
+          referenceLightness: color.targetLightness,
+          originalChroma: color.oklch.c,
+          originalHue: color.oklch.h,
+          targetChroma,
+          targetHue: seed.h
+        }
+      ];
+    }
+  );
+  const transformed = transformTintedAchromaticScale({
+    baseline: resolution.scale,
+    theme: resolution.theme,
+    targets
+  });
+  const restColor = resolveTone(transformed.scale, resolution.restTone);
+  if (!restColor) {
+    throw new Error(`${familyId} ${resolution.theme} lost its tinted-achromatic rest color.`);
+  }
+
+  const adjustedTones = transformed.scale.colors
+    .filter((color, index) => color.hex !== resolution.scale.colors[index]?.hex)
+    .map((color) => color.tone);
+  const gamutMappedTones = transformed.scale.colors
+    .filter(
+      (color, index) => color.hex !== resolution.scale.colors[index]?.hex && color.flags.gamutMapped
+    )
+    .map((color) => color.tone);
+  const chromaDeltas = transformed.scale.colors.map(
+    (color, index) => color.oklch.c - (resolution.scale.colors[index]?.oklch.c ?? color.oklch.c)
+  );
+  const maxHueDrift = Math.max(
+    0,
+    ...transformed.scale.colors
+      .filter((color) => !color.flags.isCap && color.oklch.c > 1e-6)
+      .map((color) => circularHueDistance(color.oklch.h, seed.h))
+  );
+  const relaxed = transformed.restoredTones.length > 0;
+
+  if (relaxed) {
+    issues.push({
+      severity: 'review',
+      code: 'TINTED_ACHROMATIC_CHROMA_RELAXED',
+      path: `/families/${familyId}/${resolution.theme}`,
+      message: `${familyId} ${resolution.theme} restored tones ${transformed.restoredTones.join(', ')} toward their low-level colors to preserve canonical scale invariants.`,
+      familyId,
+      theme: resolution.theme
+    });
+  }
+
+  return {
+    ...resolution,
+    restColor,
+    scale: transformed.scale,
+    tintedAchromaticChroma: {
+      contract: TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS.contract,
+      seedHue: seed.h,
+      seedChroma: seed.c,
+      adjustedTones,
+      adjustedToneCount: adjustedTones.length,
+      restoredTones: transformed.restoredTones,
+      restorationCount: transformed.restoredTones.length,
+      gamutMappedTones,
+      maxChromaIncrease: Math.max(0, ...chromaDeltas),
+      maxChromaReduction: Math.max(0, ...chromaDeltas.map((delta) => -delta)),
+      maxHueDrift,
+      appliedStrength: transformed.appliedStrength
+    },
+    status: resolution.status === 'review' || relaxed ? 'review' : 'pass'
+  };
+}
+
+function transformTintedAchromaticScale(params: {
+  baseline: KiskadeeScaleResult;
+  theme: KiskadeeTheme;
+  targets: TintedAchromaticChromaTarget[];
+}): TintedAchromaticScaleTransformation {
+  const { baseline, theme, targets } = params;
+  if (targets.length === 0) {
+    return { scale: baseline, appliedStrength: 1, restoredTones: [] };
+  }
+
+  const targetByIndex = new Map(targets.map((target) => [target.index, target]));
+  const render = (strengthByIndex: ReadonlyMap<number, number>): KiskadeeScaleResult => {
+    if ([...strengthByIndex.values()].every((strength) => strength <= 0)) return baseline;
+
+    const colors = baseline.colors.map((color, index): KiskadeeScaleColor => {
+      const target = targetByIndex.get(index);
+      if (!target) return color;
+      const strength = strengthByIndex.get(index) ?? 0;
+      if (strength <= 0) return color;
+
+      const requestedChroma =
+        target.originalChroma + (target.targetChroma - target.originalChroma) * strength;
+      const requestedHue = normalizeMunsellHue(
+        target.originalHue + signedCircularHueDelta(target.originalHue, target.targetHue) * strength
+      );
+      const rendered = oklchToSrgbHex({
+        l: color.targetLightness,
+        c: requestedChroma,
+        h: requestedHue
+      });
+      if (rendered.hex === color.hex) return color;
+
+      return {
+        ...color,
+        hex: rendered.hex,
+        hsl: hexToHsl(rendered.hex),
+        oklch: hexToOklch(rendered.hex),
+        gamutChromaLoss: rendered.chromaLoss,
+        flags: {
+          ...color.flags,
+          gamutMapped: rendered.chromaLoss > 1e-6
+        }
+      };
+    });
+
+    return revalidateKiskadeeScaleResult({ baseline, colors, theme });
+  };
+  const fullStrengths = new Map(targets.map((target) => [target.index, 1]));
+  const full = render(fullStrengths);
+  if (isSystemScaleTransformationAccepted(baseline, full)) {
+    return { scale: full, appliedStrength: 1, restoredTones: [] };
+  }
+
+  const orderedTargets = [...targets].sort(
+    (left, right) => left.referenceLightness - right.referenceLightness || left.index - right.index
+  );
+  const strengthByIndex = new Map(targets.map((target) => [target.index, 0]));
+  let validScale = baseline;
+
+  const maximizeTarget = (target: TintedAchromaticChromaTarget): boolean => {
+    const initialStrength = strengthByIndex.get(target.index) ?? 0;
+    strengthByIndex.set(target.index, 1);
+    const fullCandidate = render(strengthByIndex);
+    if (isSystemScaleTransformationAccepted(baseline, fullCandidate)) {
+      validScale = fullCandidate;
+      return initialStrength < 1 - 1e-7;
+    }
+
+    let invalidStrength = 1;
+    let validStrength = initialStrength;
+    let targetValidScale = validScale;
+    const { restoreScanSteps, restoreBisectionSteps } = TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS;
+
+    for (let step = restoreScanSteps - 1; step >= 1; step -= 1) {
+      const strength = initialStrength + ((1 - initialStrength) * step) / restoreScanSteps;
+      strengthByIndex.set(target.index, strength);
+      const candidate = render(strengthByIndex);
+      if (isSystemScaleTransformationAccepted(baseline, candidate)) {
+        validStrength = strength;
+        targetValidScale = candidate;
+        break;
+      }
+      invalidStrength = strength;
+    }
+
+    for (let iteration = 0; iteration < restoreBisectionSteps; iteration += 1) {
+      const strength = (validStrength + invalidStrength) / 2;
+      strengthByIndex.set(target.index, strength);
+      const candidate = render(strengthByIndex);
+      if (isSystemScaleTransformationAccepted(baseline, candidate)) {
+        validStrength = strength;
+        targetValidScale = candidate;
+      } else {
+        invalidStrength = strength;
+      }
+    }
+
+    strengthByIndex.set(target.index, validStrength);
+    validScale = targetValidScale;
+    return validStrength > initialStrength + 1e-7;
+  };
+
+  for (const target of orderedTargets) maximizeTarget(target);
+  for (
+    let pass = 0;
+    pass < TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS.restoreRefinementPasses;
+    pass += 1
+  ) {
+    let improved = false;
+    for (const target of orderedTargets) {
+      if ((strengthByIndex.get(target.index) ?? 0) >= 1 - 1e-7) continue;
+      improved = maximizeTarget(target) || improved;
+    }
+    if (!improved) break;
+  }
+
+  const restoredTones = orderedTargets
+    .filter((target) => validScale.colors[target.index]?.hex !== full.colors[target.index]?.hex)
+    .map((target) => target.tone);
+  return {
+    scale: validScale,
+    appliedStrength: Math.min(...strengthByIndex.values()),
+    restoredTones
+  };
+}
+
+function resolveTintedAchromaticCapEnvelope(lightness: number): number {
+  const distanceToCap = Math.min(lightness, 100 - lightness);
+  const progress = clamp(
+    distanceToCap / TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS.capTaperLightness,
+    0,
+    1
+  );
+  return progress ** TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS.capTaperGamma;
+}
+
 function validateResolvedFamilyIdentity(
   familyId: TonalFamilyId,
   resolution: ResolvedTonalTheme,
@@ -3587,6 +3879,7 @@ function resolveSourceExactTheme(params: {
     surfaceTrackAlignment: null,
     isolatedHarmonyPeakAlignment: null,
     darkSupportChromaModeration: null,
+    tintedAchromaticChroma: null,
     status: scaleNeedsReview(scale) ? 'review' : 'pass'
   };
 }
@@ -3679,6 +3972,7 @@ function resolveAdaptiveTheme(params: {
       surfaceTrackAlignment: null,
       isolatedHarmonyPeakAlignment: null,
       darkSupportChromaModeration: null,
+      tintedAchromaticChroma: null,
       status
     };
   }
@@ -3964,6 +4258,7 @@ function resolveCandidateTheme(params: {
     surfaceTrackAlignment: null,
     isolatedHarmonyPeakAlignment: null,
     darkSupportChromaModeration: null,
+    tintedAchromaticChroma: null,
     status
   };
 }
@@ -3982,7 +4277,7 @@ function findFreeAnchorHarmonyCandidate(params: {
   minimumRestBalanceRatio: number;
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
-  profile: TonalSystemRecipeV4['tonalProfile'];
+  profile: TonalSystemRecipeV5['tonalProfile'];
   chromaModel: TonalHarmonyMetrics['chromaModel'];
 }): CandidateResolution | null {
   const {
@@ -4229,7 +4524,7 @@ function findRestAnchoredHarmonyCandidate(params: {
   reference: TonalHarmonyFingerprint;
   familyId: TonalFamilyId;
   enforceSafeCore: boolean;
-  profile: TonalSystemRecipeV4['tonalProfile'];
+  profile: TonalSystemRecipeV5['tonalProfile'];
   chromaModel: TonalHarmonyMetrics['chromaModel'];
   darkSupportChromaReference?: DarkSupportChromaModerationReference;
 }): CandidateResolution | null {

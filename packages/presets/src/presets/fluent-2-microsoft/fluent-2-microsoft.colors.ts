@@ -8,6 +8,7 @@ import type {
 import blueV1 from './colors/b.blue.v1.ts';
 import greenV1 from './colors/g.green.v1.ts';
 import blackV1 from './colors/n.black.v1.ts';
+import blackV2 from './colors/n.black.v2.ts';
 import purpleV1 from './colors/p.purple.v1.ts';
 import redV1 from './colors/r.red.v1.ts';
 import yellowV1 from './colors/y.yellow.v1.ts';
@@ -23,8 +24,10 @@ import orangeV1 from './colors/yr.orange.v1.ts';
 
 export const primitiveColors = {
   black: {
-    // Tonal generator asset `n.black.v1` is addressed by its natural appearance in Core.
-    v1: blackV1
+    // Canonical zero-chroma grayscale for absolute/structural white and black.
+    v1: blackV1,
+    // Fluent's authored blue-gray Neutral ramp, seeded from Grey-14 #21242d.
+    v2: blackV2
   },
   blue: {
     // Tonal generator asset `b.blue.v1` is addressed by its natural appearance in Core.
@@ -59,14 +62,15 @@ export const primitiveColors = {
 export const globalSemantics = {
   light: {
     primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v1' },
+    // Fluent semantics use its authored tinted Neutral; pure grayscale remains available directly.
+    neutral: { v1: 'primitive.black.v2' },
     redLike: { v1: 'primitive.red.v1' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
     greenLike: { v1: 'primitive.green.v1' }
   },
   dark: {
     primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v1' },
+    neutral: { v1: 'primitive.black.v2' },
     redLike: { v1: 'primitive.red.v1' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
     greenLike: { v1: 'primitive.green.v1' }

@@ -6,7 +6,7 @@ type Fluent2MicrosoftSegmentName = 'default';
 type CardComponent = NonNullable<Schema<never>['components']['card']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type ThemeShortcut = 'l' | 'd';
-type CardRole = 'card.neutral' | 'card.primary';
+type CardRole = 'card.neutral' | 'card.primary' | 'primitive.black.v1';
 
 type ColorLocator = {
   role: CardRole;
@@ -59,7 +59,13 @@ const p = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
   alpha
 });
 
-const transparent = n(0, 0);
+const k = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
+  role: 'primitive.black.v1',
+  tone,
+  alpha
+});
+
+const transparent = k(0, 0);
 
 const transparentBorder = (selected: ColorLocator): StateRecipe => ({
   rest: transparent,
@@ -78,7 +84,7 @@ const LIGHT_RECIPE = {
         disabled: n(3)
       },
       low: {
-        rest: n(0),
+        rest: k(0),
         hover: n(2),
         pressed: n(7),
         selected: n(5),
@@ -97,13 +103,6 @@ const LIGHT_RECIPE = {
         pressed: n(9),
         selected: n(7),
         disabled: n(3)
-      },
-      highest: {
-        rest: n(3),
-        hover: n(5),
-        pressed: n(10),
-        selected: n(8),
-        disabled: n(3)
       }
     },
     primary: {
@@ -115,7 +114,7 @@ const LIGHT_RECIPE = {
         disabled: n(3)
       },
       low: {
-        rest: n(0),
+        rest: k(0),
         hover: n(2),
         pressed: n(7),
         selected: n(5),
@@ -148,8 +147,7 @@ const LIGHT_RECIPE = {
         disabled: n(7)
       },
       medium: transparentBorder(n(16)),
-      high: transparentBorder(n(16)),
-      highest: transparentBorder(n(16))
+      high: transparentBorder(n(16))
     },
     primary: {
       lowest: transparentBorder(n(16)),
@@ -196,13 +194,6 @@ const DARK_RECIPE = {
         hover: n(9),
         pressed: n(1),
         selected: n(7)
-      },
-      highest: {
-        rest: n(1),
-        hover: n(7),
-        pressed: n(0),
-        selected: n(5),
-        disabled: n(3)
       }
     },
     primary: {
@@ -246,8 +237,7 @@ const DARK_RECIPE = {
         disabled: n(22)
       },
       medium: transparentBorder(n(50)),
-      high: transparentBorder(n(50)),
-      highest: transparentBorder(n(50))
+      high: transparentBorder(n(50))
     },
     primary: {
       lowest: transparentBorder(n(50)),
@@ -271,11 +261,18 @@ const DARKER_RECIPE = {
     neutral: {
       ...DARK_RECIPE.boxColor.neutral,
       highest: {
-        rest: n(0),
+        rest: k(0),
         hover: n(5),
         selected: n(3),
         disabled: n(3)
       }
+    }
+  },
+  borderColor: {
+    ...DARK_RECIPE.borderColor,
+    neutral: {
+      ...DARK_RECIPE.borderColor.neutral,
+      highest: transparentBorder(n(50))
     }
   }
 } as const satisfies CardPaletteRecipe;
@@ -325,7 +322,7 @@ function createCardPalette(
   segmentName: Fluent2MicrosoftSegmentName,
   themeName: ThemeName
 ) {
-  const recipe = CARD_RECIPES[themeName];
+  const recipe: CardPaletteRecipe = CARD_RECIPES[themeName];
   const stateMap = (stateRecipe: StateRecipe) =>
     createStateMap(c, segmentName, recipe.track, stateRecipe);
 
@@ -336,7 +333,9 @@ function createCardPalette(
         low: stateMap(recipe.boxColor.neutral.low),
         medium: stateMap(recipe.boxColor.neutral.medium),
         high: stateMap(recipe.boxColor.neutral.high),
-        highest: stateMap(recipe.boxColor.neutral.highest)
+        ...(recipe.boxColor.neutral.highest
+          ? { highest: stateMap(recipe.boxColor.neutral.highest) }
+          : undefined)
       },
       primary: {
         lowest: stateMap(recipe.boxColor.primary.lowest),
@@ -351,7 +350,9 @@ function createCardPalette(
         low: stateMap(recipe.borderColor.neutral.low),
         medium: stateMap(recipe.borderColor.neutral.medium),
         high: stateMap(recipe.borderColor.neutral.high),
-        highest: stateMap(recipe.borderColor.neutral.highest)
+        ...(recipe.borderColor.neutral.highest
+          ? { highest: stateMap(recipe.borderColor.neutral.highest) }
+          : undefined)
       },
       primary: {
         lowest: stateMap(recipe.borderColor.primary.lowest),

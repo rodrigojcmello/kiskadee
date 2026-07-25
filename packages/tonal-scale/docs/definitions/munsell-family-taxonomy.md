@@ -1,4 +1,4 @@
-# Kiskadee Munsell Family Taxonomy v2
+# Kiskadee Munsell Family Taxonomy v3
 
 Status: canonical package-level definition.
 
@@ -34,11 +34,20 @@ The complete sector names `red`, `yellow-red`, `yellow`, `green-yellow`,
 remain internal classification values and diagnostic terminology. They are not
 public family ids.
 
-`n.black` is the separate achromatic or near-achromatic family. It contains the
-Design System's authored gray trajectory and may be subtly tinted, but it is
-never a chromatic harmony reference. `N` is the Kiskadee namespace for that
-axis, not a promise that every authored Black seed has exactly zero chroma.
-`neutral` is not a Layer 1 family name.
+`n.black` is the separate achromatic or near-achromatic family. It is never a
+chromatic harmony reference. `N` is the Kiskadee namespace for that axis, while
+`neutral` remains outside Layer 1 family naming.
+
+The base and authored variants have distinct identities:
+
+- `n.black.v1` is the immutable Kiskadee pure-gray baseline. Its canonical
+  reference is `#000000`; every emitted scale color has zero chroma;
+- `n.black.v2` through `n.black.v4` are optional, independently seeded
+  neutral variants. Each can preserve a warm, cool, or otherwise subtle tint
+  through its own neutral chroma trajectory.
+
+A tinted neutral therefore never redefines `n.black.v1`. It receives another
+variant id and an explicit seed.
 
 Every complete system contains these family ids:
 
@@ -57,11 +66,16 @@ rp.magenta.v1
 n.black.v1
 ```
 
-`v1` is the base variant of one appearance. Orange and Brown share YR but are
-separate appearances, so both begin at `v1`. A second Blue is `b.blue.v2`; a
-second Brown is `yr.brown.v2`. Optional `v2` through `v4` ids require explicit
-seeds. New appearances are intentionally deferred until the current set proves
-insufficient in real Design System integration.
+`v1` is the base variant of one chromatic appearance. Orange and Brown share YR
+but are separate appearances, so both begin at `v1`. A second Blue is
+`b.blue.v2`; a second Brown is `yr.brown.v2`. Optional chromatic `v2` through
+`v4` ids require explicit seeds.
+
+Black is the deliberate exception to that ordinal reading: `n.black.v1`
+always means pure gray, and `n.black.v2` through `n.black.v4` always mean
+independently authored seeded neutrals. New chromatic appearances are
+intentionally deferred until the current set proves insufficient in real
+Design System integration.
 
 ## OKLCH Projection
 
@@ -140,8 +154,10 @@ initially `0.6` of the Orange appearance. Functional harmony still outranks
 keeping the rest color visibly dark, so a very light rest may appear tan while
 physically darker positions retain the Brown character.
 
-`n.black.v1` uses the fixed reference `#20252b` and is not derived from the
-primary. Authored black seeds above OKL chroma `0.04` require review; values
+`n.black.v1` uses the fixed reference `#000000`, is not derived from the
+primary, and cannot be overridden. Each optional `n.black.v2` through
+`n.black.v4` requires its own seed and is not derived from another Black
+variant. Seeded-neutral chroma above OKL chroma `0.04` requires review; values
 above `0.08` fail.
 
 ## Identity Invariants
@@ -153,6 +169,9 @@ above `0.08` fail.
 - Hue fitting cannot be used to satisfy harmony; lightness and relative chroma
   are the adjustable dimensions.
 - Brown remains Yellow-Red and cannot be replaced by an Orange-like seed.
+- `n.black.v1` remains pure gray and byte-immutable across systems.
+- `n.black.v2` through `n.black.v4` preserve their own authored hue and
+  lightness inputs while their neutral trajectory shapes chroma.
 - The same recipe, contracts, and generator version must emit identical bytes.
 
 Adjacent primary and support families also have a collision guard at their

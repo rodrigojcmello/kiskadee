@@ -1,12 +1,13 @@
-# Kiskadee Tonal System v4
+# Kiskadee Tonal System v5
 
 Status: canonical package-level definition.
 
 The tonal system evaluates one exact sRGB primary against a fixed set of Layer
-1 family references plus optional authored overrides. This controlled model
-isolates harmony behavior from companion-color generation. It composes the
-frozen `generateKiskadeeScale` operation without changing its L/D grid,
-Balanced outputs, profiles, contrast guards, or golden hashes defined in
+1 chromatic family references, one immutable pure-gray Black, and optional
+authored chromatic or tinted-neutral variants. This controlled model isolates
+harmony behavior from companion-color generation. It composes the frozen
+`generateKiskadeeScale` operation without changing its L/D grid, Balanced
+outputs, profiles, contrast guards, or golden hashes defined in
 [tonal-scale.md](./tonal-scale.md).
 
 The family taxonomy and hue boundaries are defined in
@@ -33,14 +34,22 @@ reference.
 ## Required Family Set
 
 Every valid system resolves one `v1` appearance for each of the ten Munsell
-sectors, the additional Brown appearance at `yr.brown.v1`, and Black at
-`n.black.v1`. The primary may occupy one of those ids or an explicit additional
-`v2` through `v4` variant. Optional overrides may replace a required seed or
-add further authored variants of an existing appearance.
+sectors, the additional Brown appearance at `yr.brown.v1`, and the immutable
+pure-gray family at `n.black.v1`. The primary may occupy one chromatic id or an
+explicit additional `v2` through `v4` chromatic variant. Optional overrides may
+replace a required chromatic seed or add further authored variants of an
+existing chromatic appearance.
 
 `n.black.*` is public Layer 1 terminology. Its internal color kind is
-`achromatic`, never `neutral`. A black seed may be a warm, cool, or subtly
-tinted gray, but it cannot be the chromatic primary reference.
+`achromatic`, never `neutral`. The variants have deliberately different
+contracts:
+
+- `n.black.v1` is the package-owned pure-gray baseline. It has zero chroma,
+  cannot be replaced by an override, and cannot be the primary;
+- `n.black.v2` through `n.black.v4` are optional authored neutral variants.
+  Each variant owns one explicit `seedHex` and its own emitted chroma
+  trajectory. They are not derived from `n.black.v1`, from the Primary, or from
+  one another.
 
 The absolute caps remain part of every scale:
 
@@ -49,11 +58,12 @@ The absolute caps remain part of every scale:
 
 ## Input Contract
 
-Draft format 4 contains:
+Format 5 contains:
 
 - one exact primary seed, automatic or explicit natural appearance, explicit
   `v1` through `v4` variant, and Light/Dark policy;
-- zero or more family overrides;
+- zero or more chromatic overrides or explicit `n.black.v2` through
+  `n.black.v4` neutral variants;
 - one tonal profile (`balanced` or `muted-darks`);
 - automatic or locked Light/Dark rest positions;
 - sparse per-family Light/Dark vivid and subtle reference rules;
@@ -67,9 +77,12 @@ id.
 
 Overrides are explicit and ordered semantically by id rather than input order.
 Chromatic overrides may use `source-exact`, `adaptive`, or `harmonized` per
-theme. `n.black.*` may use only `source-exact` or `adaptive`. Invalid ids,
-duplicates, sector mismatches, Orange-like Brown overrides, unsupported
-policies, and conflicting primary overrides fail explicitly.
+theme. Authored `n.black.v2` through `n.black.v4` variants may use only
+`source-exact` or `adaptive`. They require their own explicit seed and never
+inherit one from another. `n.black.v1` rejects overrides and policies because
+its pure-gray bytes are package-owned. Invalid ids, duplicates, sector
+mismatches, Orange-like Brown overrides, unsupported policies, and conflicting
+primary overrides fail explicitly.
 
 The three policies have distinct responsibilities:
 
@@ -83,25 +96,27 @@ The three policies have distinct responsibilities:
   the Primary fingerprint.
 
 These policy meanings are independent from the `muted-darks` tonal profile.
-Generator `0.4.1` additionally applies a hue-independent, Primary-relative
-chroma ceiling to Dark `adaptive` and Dark `harmonized` chromatic support
-families. The guard participates in candidate selection, only reduces chroma,
-and evaluates the public D40 through D70 functional range. Within that guarded
-range, a replacement candidate may not increase chroma over the baseline at
-equivalent physical lightness. It does not modify
-Light, either Primary theme, Dark `source-exact`, or `n.black.*`. Its candidate
-status and visual-approval boundary are documented in
+The Primary-relative guard introduced in generator `0.4.1` remains active in
+`0.5.0`: it applies a hue-independent chroma ceiling to Dark `adaptive` and
+Dark `harmonized` chromatic support families. The guard participates in
+candidate selection, only reduces chroma, and evaluates the public D40 through
+D70 functional range. Within that guarded range, a replacement candidate may
+not increase chroma over the baseline at equivalent physical lightness. It
+does not modify Light, either Primary theme, Dark `source-exact`, or
+`n.black.*`. Its candidate status and visual-approval boundary are documented in
 [dark-theme-chroma-moderation.md](../technical-debt/dark-theme-chroma-moderation.md).
 
-Formats 1 through 3 are not migrated silently. Format 2 encoded Brown as a
+Formats 1 through 4 are not migrated silently. Format 2 encoded Brown as a
 sector variant and used complete sector names as public ids. Format 3 exposed
 one ambiguous state anchor instead of the distinct vivid and subtle functional
-references. Neither meaning is compatible with format 4.
+references. Format 4 allowed the canonical Black to be tinted and did not
+distinguish an immutable pure-gray baseline from authored neutral variants.
+Those meanings are not compatible with format 5.
 
 ## Fixed Reference Set
 
 The active seed model is `fixed-reference`, backed by
-`kiskadee-munsell-reference-v1`:
+`kiskadee-munsell-reference-v2`:
 
 | Family | Reference seed |
 | --- | --- |
@@ -116,15 +131,17 @@ The active seed model is `fixed-reference`, backed by
 | `pb.indigo.v1` | `#4f6bed` |
 | `p.purple.v1` | `#8764b8` |
 | `rp.magenta.v1` | `#e3008c` |
-| `n.black.v1` | `#20252b` |
+| `n.black.v1` | `#000000` |
 
 The primary replaces only the reference whose resolved family id it occupies.
 All other required families start from the same bytes for every primary.
 Overrides remain possible but intentionally leave the controlled baseline.
-Chromatic fixed references use `seedOrigin: reference`; Black retains its
-existing `canonical` origin. They are not described as primary-derived or
-silently clamped to the safe generation region. Sector identity remains
-mandatory.
+Chromatic fixed references use `seedOrigin: reference`; the immutable
+`n.black.v1` uses `seedOrigin: canonical`. Optional `n.black.v2` through
+`n.black.v4` use their own authored seeds and do not change the fixed reference
+set. None of these references is described as primary-derived or silently
+clamped to the safe generation region. Sector identity remains mandatory for
+chromatic families.
 
 ## Derivation And Harmony
 
@@ -137,8 +154,9 @@ Generation performs these deterministic stages:
    effective primary anchor, never from an incidental chroma overshoot in a
    neighboring scale slot, so automatic proposals and their locked replay use
    the same signature.
-4. Materialize the fixed references, replacing only the primary family and any
-   explicit overrides.
+4. Materialize the fixed chromatic references and immutable pure-gray Black,
+   replacing only the primary chromatic family and explicit authored
+   variants.
 5. Generate family baselines to rank fallback Light and Dark harmony-rest
    positions.
 6. Test the exact primary anchor first with the complete emitted chromatic v1
@@ -246,11 +264,77 @@ tan; physically darker positions retain the Brown character. If Brown is
 primary, the harmony reference normalizes its utilization by the same ratio
 before comparing it with the fixed companion set.
 
-`n.black.v1` uses the fixed reference `#20252b`, remains `source-exact` in both
-themes, and does not participate in chromatic harmony. Its exact seed anchor
-and every other emitted scale position remain owned exclusively by the frozen
-low-level generator. Achromatic chroma above `0.04` requires review and above
-`0.08` fails.
+## Pure Gray And Seeded Neutral Variants
+
+`n.black.v1` is the immutable pure-gray baseline. Its canonical reference is
+`#000000`, every emitted non-cap position remains achromatic, and neither a
+recipe nor a preset may tint or replace it. It does not participate in
+chromatic harmony. This gives every system one stable gray axis whose meaning
+does not depend on a brand seed or Design System source.
+
+`n.black.v2` through `n.black.v4` are independent authored neutral variants.
+Each id requires its own explicit `seedHex`. A variant does not inherit the
+seed, hue, chroma, policy, or trajectory of another Black variant. These
+families exist for warm, cool, or otherwise subtly tinted neutral ramps while
+keeping `n.black.v1` genuinely gray.
+
+A seeded neutral variant composes the canonical theme lightness geometry with
+a neutral-specific chroma trajectory,
+`kiskadee-tinted-achromatic-chroma-v1`. For every non-cap, non-anchor color,
+the full-strength requested chroma is:
+
+```txt
+distanceToCap = min(OKL lightness, 100 - OKL lightness)
+envelope = clamp(distanceToCap / 5, 0, 1) ^ 0.7
+requestedChroma = effectiveSeedChroma * envelope
+requestedHue = effectiveSeedHue
+```
+
+The resulting curve tapers only inside five OKL lightness units of either
+absolute cap and otherwise holds the seed-derived chroma plateau. The exported
+implementation parameters are:
+
+```txt
+contract: kiskadee-tinted-achromatic-chroma-v1
+capTaperLightness: 5
+capTaperGamma: 0.7
+restoreScanSteps: 64
+restoreBisectionSteps: 16
+restoreRefinementPasses: 2
+```
+
+The invariants are:
+
+- the effective seed defines the emitted hue and the plateau-like chroma
+  target for that variant;
+- target lightness remains unchanged. The trajectory preserves the authored
+  seed hue instead of inheriting incidental near-achromatic hue drift from the
+  baseline;
+- absolute caps and the exact generated seed anchor remain byte-exact;
+- sRGB fitting may reduce chroma when the requested neutral lies outside gamut,
+  but it does not replace the seed hue or move a lightness target;
+- the complete quantized scale is deterministically revalidated for caps,
+  anchor preservation, gamut, monotonicity, uniqueness, contrast, and
+  continuity. If the requested chroma cannot satisfy those invariants, the
+  implementation restores only the minimum necessary amount toward the valid
+  baseline and reports the restoration. Restoration uses the deterministic
+  scan, bisection, and refinement limits above.
+
+This trajectory is not chromatic harmony and is not the Primary-relative Light
+or Dark support-family alignment. It cannot use a Primary fingerprint to
+recolor a neutral. Authored Black variants remain excluded from cross-hue
+harmony, physical-Light surface alignment, isolated harmony-peak alignment,
+and Primary-relative Dark moderation.
+
+Fluent's subtly tinted neutral ramps and Material's distinct `neutral` and
+`neutral-variant` ramps are conceptual evidence that more than one authored
+neutral axis can be useful. They do not define Kiskadee seeds, public ids,
+trajectory parameters, semantic aliases, or preset mappings. Those decisions
+remain explicit in each recipe and, later, in each consuming preset.
+
+Seeded neutral chroma above `0.04` requires review and above `0.08` fails.
+These guards apply to `n.black.v2` through `n.black.v4`; they are vacuously
+satisfied by the zero-chroma `n.black.v1`.
 
 ## Physical-Light Surface Alignment
 
@@ -369,7 +453,7 @@ select a different rule for Light and Dark:
 
 - `auto` follows the generated anchor for Primary, `source-exact`, and
   `adaptive` themes; only `harmonized` themes follow harmony rest, except for
-  the automatic Dark achromatic rule described below;
+  the automatic Black rules described below;
 - `generated-anchor` follows the exact/adapted seed position of that family;
 - `harmony-rest` follows the shared cross-family checkpoint;
 - `locked` points to one explicit non-cap public tone from 1 through 99.
@@ -381,19 +465,27 @@ not materialized fails explicitly. The resolved pointer records its tone, hex,
 and source in each family asset. Changing a vivid rule never regenerates or
 recolors the scale.
 
-An automatic `n.black.*` Dark vivid reference mirrors the functional contrast
-of its Light vivid reference instead of preserving the same physically dark seed.
-The generator measures the resolved Light reference against absolute white,
-then selects the non-cap Dark tone whose contrast against absolute black is
-closest. Ties prefer the lower contrast and then the lower public tone. The
-result is recorded as `contrast-mirror`. An explicit Dark
-`generated-anchor`, `harmony-rest`, or `locked` rule always takes precedence.
+The canonical `n.black.v1` seed is the absolute cap in both themes, so its
+generated anchors are L100 and D0 rather than eligible chromatic functional
+positions. Its automatic vivid references therefore use the package-owned
+near-cap positions L99 and D99. This is a deliberate fallback, not an anchor
+relocation or review condition.
+
+An automatic authored `n.black.v2` through `n.black.v4` Dark vivid reference
+mirrors the functional contrast of its Light vivid reference instead of
+preserving the same physically dark seed. The generator measures the resolved
+Light reference against absolute white, then selects the non-cap Dark tone
+whose contrast against absolute black is closest. Ties prefer the lower
+contrast and then the lower public tone. The result is recorded as
+`contrast-mirror`. An explicit Dark `generated-anchor`, `harmony-rest`, or
+`locked` rule always takes precedence.
 
 This rule changes only the functional pointer. It does not move the authored
-seed, generated anchor, harmony rest, or any scale color. In the Fluent Black
-case, Light L85 `#21242d` has `15.50:1` contrast against white. Its automatic
-Dark reference therefore resolves to D90 `#d3d6df`, with `14.45:1` against
-black, while the exact source remains preserved at D7 `#21242d`.
+seed, generated anchor, harmony rest, or any scale color. The former Fluent
+Black example with seed `#21242d`, Light L85, and a mirrored Dark D90 now
+describes a possible authored `n.black.v2`, never canonical `n.black.v1`.
+Fluent remains conceptual evidence for the contrast-mirror rule; those bytes
+and positions are not embedded in the generator.
 
 Consequently, under `auto`, Yellow `#ffeb3b` remains exact and uses L5/D95 as
 its primary vivid reference even when its system's shared harmony rest is
@@ -507,7 +599,8 @@ The full system preserves this invariant order:
 2. exact primary and authored generated anchors plus locked harmony-rest
    positions;
 3. per-theme policy;
-4. Munsell sector identity and Brown/Black guards;
+4. Munsell sector identity, Brown identity, immutable pure gray, and
+   seeded-neutral chroma guards;
 5. valid sRGB output;
 6. strict theme-direction lightness monotonicity;
 7. emitted uniqueness;
@@ -548,8 +641,8 @@ colors/
 ```
 
 The required system contains 12 color assets and 15 files total. Additional
-authored variants add one color file each. All artifacts identify
-`@kiskadee/tonal-scale@0.4.1`.
+authored variants add one color file each. Format V5 artifacts identify
+`@kiskadee/tonal-scale@0.5.0`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -560,11 +653,17 @@ policies, generated anchors, harmony-rest colors, per-theme
 subtle reference records its tone, emitted hex, and source. A
 `reference-match` also keeps the normalized reference hex as provenance. The
 diagnostics identify the `fixed-reference` seed model and
-`kiskadee-munsell-reference-v1` set alongside cross-hue balance,
+`kiskadee-munsell-reference-v2` set alongside cross-hue balance,
 classification, harmony metrics, reference matching, surface-relative
 selection, Dark support chroma moderation, and scale diagnostics. Dark
 moderation details are diagnostic-only; primitive color assets expose the
 resulting color bytes without embedding generation or review machinery.
+Seeded-neutral diagnostics additionally identify the applied neutral-trajectory
+contract, effective seed hue and chroma, adjusted and gamut-mapped tones,
+restored tones, maximum chroma increase and reduction, maximum hue drift, and
+the minimum applied strength. Those diagnostics describe how `n.black.v2`
+through `n.black.v4` were generated without turning their primitive assets into
+replay recipes.
 
 Verification regenerates the complete bundle and compares canonical JSON byte
 for byte. Missing, extra, non-canonical, or modified files invalidate it
@@ -573,7 +672,7 @@ atomically.
 ## Versioning And External Boundary
 
 Family variant, package version, artifact format, grid contract, harmony
-contract, and tonal profile are independent version axes. The V4 format and
+contract, and tonal profile are independent version axes. The V5 format and
 Munsell harmony contract do not alter the `kiskadee-tonal-v1` low-level grid or
 the canonical Balanced barrier.
 
@@ -618,14 +717,33 @@ chroma but never increases guarded-range chroma over the baseline. Light
 output, both Primary scales, Dark
 `source-exact`, `n.black.*`, the grid, and low-level goldens remain unchanged.
 The diagnostics record evaluated and adjusted tones, baseline and remaining
-excess, maximum reduction, maximum guarded-range increase, and whether the effective seed changed. The
-candidate must receive explicit visual approval before its bytes are promoted
-to preset assets.
+excess, maximum reduction, maximum guarded-range increase, and whether the
+effective seed changed. The candidate must receive explicit visual approval
+before its bytes are promoted to preset assets.
+
+Generator `0.5.0` moves the artifact contract to format V5 and separates the
+Black baseline from authored neutral variants. `n.black.v1` becomes the
+immutable zero-chroma scale with canonical reference `#000000`.
+`n.black.v2` through `n.black.v4` each require their own explicit seed and use
+the seeded-neutral chroma trajectory defined above. V4 recipes are rejected
+instead of being reinterpreted because a former `n.black.v1` override or tinted
+canonical seed would have a different identity under V5. This change remains
+above the frozen low-level generator: the public grid, Balanced hashes,
+chromatic Primary, chromatic family output, and tonal profiles do not change.
+
+Format V5 remains package-local until its neutral scales receive explicit
+visual approval. Preset Shared Viewer links, approved assets, and preset
+evidence therefore intentionally remain on their last approved generator
+version during this gate. The preset-documentation version audit is expected
+to report that temporary mismatch; promotion and documentation synchronization
+are a separate follow-up after approval.
 
 This package produces Layer 1 artifacts only. It does not write presets,
 external types, semantic aliases, or component state mappings. Exporting
 functional references does not automatically authorize a preset to adopt the
-preview's experimental state offsets. A preset must promote reviewed positions
-and author its own component formula. Fluent 2 Microsoft is the first such
-consumer: it stores V4 reference positions in its primitive assets and defines
-its Button offsets independently in the preset package.
+preview's experimental state offsets. A preset must promote reviewed
+positions, choose any semantic mapping for `n.black.v1` through
+`n.black.v4`, and author its own component formula. Fluent and Material
+evidence motivates the ability to preserve tinted neutral identities, but this
+package does not encode either Design System's semantic roles or asset
+provenance.

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { normalizeHexColor } from '@/src/color-math';
-import { FIXED_FAMILY_SEEDS_V1 } from '@/src/fixed-family-seeds';
+import { FIXED_FAMILY_SEEDS_V2 } from '@/src/fixed-family-seeds';
 import {
   KISKADEE_TONAL_PROFILES,
   KISKADEE_TONES,
@@ -31,14 +31,14 @@ import {
   TONAL_CORE_FAMILY_IDS,
   TONAL_FAMILY_IDENTITIES,
   TONAL_FAMILY_VARIANTS,
-  type TonalFamilyFunctionalReferenceRulesV4,
+  type TonalFamilyFunctionalReferenceRulesV5,
   type TonalFamilyId,
-  type TonalFamilyOverrideV4,
+  type TonalFamilyOverrideV5,
   type TonalFamilyVariant,
   type TonalPrimaryAppearance,
-  type TonalPrimaryDraftV4,
+  type TonalPrimaryDraftV5,
   type TonalSubtleReferenceRule,
-  type TonalSystemRecipeV4,
+  type TonalSystemRecipeV5,
   type TonalThemePolicy,
   type TonalVividReferenceRule
 } from '@/src/tonal-system-contract';
@@ -47,6 +47,7 @@ import styles from './RecipeEditor.module.css';
 const REST_TONES = KISKADEE_TONES.filter((tone): tone is KiskadeeTone => tone > 0 && tone < 100);
 const CORE_FAMILY_ID_SET = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
 const EXTRA_VARIANTS = TONAL_FAMILY_VARIANTS.filter((variant) => variant !== 'v1');
+const TINTED_NEUTRAL_STARTER_SEED = '#20252b';
 const EXTRA_FAMILY_IDS = TONAL_FAMILY_IDENTITIES.flatMap((identity) =>
   EXTRA_VARIANTS.map((variant) => createTonalFamilyId(identity.stem, variant))
 ).filter((id) => !CORE_FAMILY_ID_SET.has(id));
@@ -71,10 +72,10 @@ const SUBTLE_REFERENCE_MODE_LABELS = {
 } as const satisfies Record<TonalSubtleReferenceRule['mode'], string>;
 
 export type RecipeEditorProps = {
-  recipe: TonalSystemRecipeV4;
+  recipe: TonalSystemRecipeV5;
   result: KiskadeeTonalSystemResult;
   isGenerating: boolean;
-  onChange: (next: TonalSystemRecipeV4) => void;
+  onChange: (next: TonalSystemRecipeV5) => void;
 };
 
 export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeEditorProps) {
@@ -131,7 +132,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
       }
     : { light: null, dark: null };
 
-  const updatePrimary = (primary: TonalPrimaryDraftV4) => {
+  const updatePrimary = (primary: TonalPrimaryDraftV5) => {
     const nextClassification = classifyPrimary(primary.seedHex);
     const nextPrimary =
       nextClassification &&
@@ -139,7 +140,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
       !resolveTonalFamilyStem(nextClassification.sector, primary.appearance)
         ? { ...primary, appearance: 'auto' as const }
         : primary;
-    const nextRecipe: TonalSystemRecipeV4 = { ...recipe, primary: nextPrimary };
+    const nextRecipe: TonalSystemRecipeV5 = { ...recipe, primary: nextPrimary };
     const nextPrimaryId = resolvePrimaryId(nextRecipe, nextClassification);
     const nextOverrides = nextPrimaryId
       ? nextRecipe.overrides.filter((override) => override.id !== nextPrimaryId)
@@ -181,10 +182,13 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
       (family) => parsed.sector !== null && family.sector === parsed.sector
     );
     const referenceId = createTonalFamilyId(parsed.stem, 'v1') as CoreTonalFamilyId;
-    const seedHex =
-      resolved?.sourceSeedHex ?? sectorPeer?.sourceSeedHex ?? FIXED_FAMILY_SEEDS_V1[referenceId];
     const colorKind = resolveTonalFamilyColorKind(id);
-    const override: TonalFamilyOverrideV4 = {
+    const seedHex =
+      resolved?.sourceSeedHex ??
+      (colorKind === 'achromatic' && parsed.variant !== 'v1'
+        ? TINTED_NEUTRAL_STARTER_SEED
+        : (sectorPeer?.sourceSeedHex ?? FIXED_FAMILY_SEEDS_V2[referenceId]));
+    const override: TonalFamilyOverrideV5 = {
       id,
       seedHex,
       policies:
@@ -196,7 +200,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     onChange({ ...recipe, overrides: [...recipe.overrides, override] });
   };
 
-  const updateOverride = (nextOverride: TonalFamilyOverrideV4) => {
+  const updateOverride = (nextOverride: TonalFamilyOverrideV5) => {
     onChange({
       ...recipe,
       overrides: recipe.overrides.map((override) =>
@@ -404,7 +408,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                   ...recipe.primary,
                   policies: {
                     ...recipe.primary.policies,
-                    dark: event.target.value as TonalPrimaryDraftV4['policies']['dark']
+                    dark: event.target.value as TonalPrimaryDraftV5['policies']['dark']
                   }
                 })
               }
@@ -621,7 +625,10 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         <div className={styles.familySectionHeading}>
           <div>
             <h3 id={`${editorId}-extras-title`}>Additional variants</h3>
-            <p>Optional V2–V4 assets require their own explicit seed and may be removed.</p>
+            <p>
+              Optional V2–V4 assets require their own explicit seed and may be removed. Achromatic
+              variants represent authored tinted neutrals.
+            </p>
           </div>
           <span>{additionalVariantIds.length} added</span>
         </div>
@@ -822,15 +829,15 @@ type FamilyRowProps = {
   required: boolean;
   isPrimary: boolean;
   primarySeedHex?: string;
-  override: TonalFamilyOverrideV4 | undefined;
+  override: TonalFamilyOverrideV5 | undefined;
   resolved: ResolvedTonalFamily | undefined;
   resolvedVividReferences:
     | { light: TonalFunctionalReference | null; dark: TonalFunctionalReference | null }
     | undefined;
-  functionalReferences: TonalFamilyFunctionalReferenceRulesV4 | undefined;
+  functionalReferences: TonalFamilyFunctionalReferenceRulesV5 | undefined;
   seedIssue: string | undefined;
   onEnable: () => void;
-  onChange: (override: TonalFamilyOverrideV4) => void;
+  onChange: (override: TonalFamilyOverrideV5) => void;
   onRemove: () => void;
   onVividReferenceChange: (theme: 'light' | 'dark', rule: TonalVividReferenceRule) => void;
 };
@@ -852,7 +859,7 @@ function FamilyRow({
 }: FamilyRowProps) {
   const rowId = useId();
   const colorKind = resolveTonalFamilyColorKind(id);
-  const referenceSeed = required ? FIXED_FAMILY_SEEDS_V1[id as CoreTonalFamilyId] : undefined;
+  const referenceSeed = required ? FIXED_FAMILY_SEEDS_V2[id as CoreTonalFamilyId] : undefined;
   const activeSeed =
     primarySeedHex ?? override?.seedHex ?? resolved?.sourceSeedHex ?? referenceSeed;
   const normalizedSeed = activeSeed ? normalizeHexColor(activeSeed) : null;
@@ -885,7 +892,7 @@ function FamilyRow({
                 : resolved?.seedOrigin === 'reference'
                   ? 'Fixed harmony reference'
                   : resolved?.seedOrigin === 'canonical'
-                    ? 'Canonical source'
+                    ? 'Canonical pure grayscale'
                     : required && id === 'n.black.v1'
                       ? 'Canonical source'
                       : required
@@ -1031,7 +1038,9 @@ function FamilyRow({
       </div>
 
       <div className={styles.actions}>
-        {required || isPrimary ? (
+        {id === 'n.black.v1' ? (
+          <span className={styles.policyTag}>Immutable</span>
+        ) : required || isPrimary ? (
           <label
             className={`${styles.overrideToggle}${isPrimary && !override ? ` ${styles.disabledToggle}` : ''}`}
             title={
@@ -1103,7 +1112,7 @@ function resolveSuggestedAppearance(
 }
 
 function resolvePrimaryId(
-  recipe: TonalSystemRecipeV4,
+  recipe: TonalSystemRecipeV5,
   classification: MunsellHexClassification | null
 ): TonalFamilyId | null {
   if (!classification) return null;
@@ -1117,26 +1126,26 @@ function resolvePrimaryId(
 }
 
 function updateFamilyFunctionalReference(
-  recipe: TonalSystemRecipeV4,
+  recipe: TonalSystemRecipeV5,
   id: TonalFamilyId,
   theme: 'light' | 'dark',
   kind: 'vivid',
   rule: TonalVividReferenceRule
-): TonalSystemRecipeV4;
+): TonalSystemRecipeV5;
 function updateFamilyFunctionalReference(
-  recipe: TonalSystemRecipeV4,
+  recipe: TonalSystemRecipeV5,
   id: TonalFamilyId,
   theme: 'light' | 'dark',
   kind: 'subtle',
   rule: TonalSubtleReferenceRule
-): TonalSystemRecipeV4;
+): TonalSystemRecipeV5;
 function updateFamilyFunctionalReference(
-  recipe: TonalSystemRecipeV4,
+  recipe: TonalSystemRecipeV5,
   id: TonalFamilyId,
   theme: 'light' | 'dark',
   kind: 'vivid' | 'subtle',
   rule: TonalVividReferenceRule | TonalSubtleReferenceRule
-): TonalSystemRecipeV4 {
+): TonalSystemRecipeV5 {
   const current =
     recipe.functionalReferences.find((functionalReferences) => functionalReferences.id === id) ??
     createAutoFunctionalReferences(id);
@@ -1155,7 +1164,7 @@ function updateFamilyFunctionalReference(
   return { ...recipe, functionalReferences };
 }
 
-function createAutoFunctionalReferences(id: TonalFamilyId): TonalFamilyFunctionalReferenceRulesV4 {
+function createAutoFunctionalReferences(id: TonalFamilyId): TonalFamilyFunctionalReferenceRulesV5 {
   return {
     id,
     light: { vivid: { mode: 'auto' }, subtle: { mode: 'auto' } },
@@ -1164,10 +1173,10 @@ function createAutoFunctionalReferences(id: TonalFamilyId): TonalFamilyFunctiona
 }
 
 function movePrimarySubtleReferences(
-  references: TonalFamilyFunctionalReferenceRulesV4[],
+  references: TonalFamilyFunctionalReferenceRulesV5[],
   previousPrimaryId: TonalFamilyId,
   nextPrimaryId: TonalFamilyId
-): TonalFamilyFunctionalReferenceRulesV4[] {
+): TonalFamilyFunctionalReferenceRulesV5[] {
   const previous =
     references.find((entry) => entry.id === previousPrimaryId) ??
     createAutoFunctionalReferences(previousPrimaryId);
@@ -1181,7 +1190,7 @@ function movePrimarySubtleReferences(
   const retained = references.filter(
     (entry) => entry.id !== previousPrimaryId && entry.id !== nextPrimaryId
   );
-  const previousAfterMove: TonalFamilyFunctionalReferenceRulesV4 = {
+  const previousAfterMove: TonalFamilyFunctionalReferenceRulesV5 = {
     ...previous,
     light: {
       ...previous.light,
@@ -1198,7 +1207,7 @@ function movePrimarySubtleReferences(
           : { ...previous.dark.subtle }
     }
   };
-  const nextWithSubtle: TonalFamilyFunctionalReferenceRulesV4 = {
+  const nextWithSubtle: TonalFamilyFunctionalReferenceRulesV5 = {
     ...next,
     light: {
       ...next.light,
@@ -1223,7 +1232,7 @@ function movePrimarySubtleReferences(
   ].sort((left, right) => left.id.localeCompare(right.id));
 }
 
-function isAutoFunctionalReferences(references: TonalFamilyFunctionalReferenceRulesV4): boolean {
+function isAutoFunctionalReferences(references: TonalFamilyFunctionalReferenceRulesV5): boolean {
   return (
     references.light.vivid.mode === 'auto' &&
     references.light.subtle.mode === 'auto' &&
@@ -1276,9 +1285,14 @@ function resolveFamilySeedIssue(
 
 function formatFamilyId(id: TonalFamilyId): string {
   const parsed = parseTonalFamilyId(id);
-  return parsed
-    ? `${parsed.munsellSector} · ${capitalize(parsed.appearance)} · ${parsed.variant.toUpperCase()}`
-    : id;
+  if (!parsed) return id;
+  const appearance =
+    parsed.colorKind === 'achromatic'
+      ? parsed.variant === 'v1'
+        ? 'Pure grayscale'
+        : 'Tinted neutral'
+      : capitalize(parsed.appearance);
+  return `${parsed.munsellSector} · ${appearance} · ${parsed.variant.toUpperCase()}`;
 }
 
 function formatMunsellSector(sector: MunsellHexClassification['sector']): string {

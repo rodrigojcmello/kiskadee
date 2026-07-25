@@ -307,6 +307,16 @@ policy and must remain an isolated tonal-profile transformation. Neither
 multi-family generation, harmonization, artifact serialization, nor UI work may
 change Balanced output.
 
+Format V5's Black rules live in the higher-level tonal-system compositor and
+do not redefine `generateKiskadeeScale`. The compositor owns one immutable
+zero-chroma `n.black.v1` scale and may shape only chroma for independently
+seeded `n.black.v2` through `n.black.v4` neutral variants. Their canonical
+lightness inputs, caps, exact anchors, and deterministic revalidation remain
+subject to this low-level contract, while their variant-specific chroma
+trajectory remains defined in [tonal-system.md](./tonal-system.md). The
+Balanced golden hashes above therefore remain unchanged by the V5 artifact
+format.
+
 Package-owned artifact generation is part of the tonal-system contract and is
 no longer deferred. Those artifacts describe primitive color families; they
 are not preset artifacts and are not compatible with the current preset schema

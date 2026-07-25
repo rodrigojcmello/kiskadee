@@ -2,8 +2,10 @@
 
 This directory preserves the official Fluent color ramps inspected in the
 Microsoft Fluent 2 Web Community Figma file and the Kiskadee tonal system
-generated from that evidence. The approved V4 assets are promoted into the
-`fluent-2-microsoft` preset and remain traceable to this source material.
+generated from that evidence. Generator `0.5.0` and its V5 achromatic contract
+are approved and promoted into the `fluent-2-microsoft` preset. The historical
+V4 decisions remain documented below so the previous provenance is not
+rewritten.
 
 ## Sources
 
@@ -41,7 +43,8 @@ determine the Fluent seed used by Kiskadee.
 | Fluent evidence | Kiskadee family | Seed | Reason |
 | --- | --- | --- | --- |
 | Brand `Brand-80` | `b.blue.v1` | `#0064b4` | Official Light brand background rest |
-| Neutral `Grey-14` | `n.black.v1` | `#21242d` | Official Light neutral foreground rest and a structural dark neutral |
+| Canonical grayscale | `n.black.v1` | `#000000` | Kiskadee-owned, immutable zero-chroma scale with absolute white and black caps |
+| Neutral `Grey-14` | `n.black.v2` | `#21242d` | Official Fluent tinted neutral; its authored blue-gray identity no longer replaces the canonical grayscale |
 | Cranberry `Primary` | `r.red.v1` | `#c50f1f` | Fluent danger aliases use Cranberry, not the available Red ramp |
 | Orange `Primary` | `yr.orange.v1` | `#f7630c` | Fluent warning aliases use Orange |
 | Marigold `Primary` | `y.yellow.v1` | `#eaa300` | Fluent away aliases use Marigold, not the available Yellow ramp |
@@ -63,32 +66,75 @@ recipe. The generated system uses:
 - exact Light seeds for the official authored families;
 - adaptive Dark chromatic policies, because Fluent selects different upstream
   stops by theme;
-- exact Light and Dark `n.black.v1`, preserving `Grey-14` as the neutral scale
-  reference;
-- automatic harmony rest, currently resolved by generator `0.4.1` to L50/D40;
+- immutable `n.black.v1` from canonical `#000000`, providing a pure grayscale
+  foundation independently of Fluent;
+- exact Light and Dark `n.black.v2`, preserving Fluent `Grey-14` as an authored
+  tinted-neutral reference from one seed;
+- automatic harmony rest, currently resolved by generator `0.5.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.4.1
+### Shared viewer — candidate generator 0.5.0
 
-[Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A4%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22muted-darks%22%2C%22overrides%22%3A%5B%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v1%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%5D%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%7D).
+[Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22muted-darks%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
 
-The link encodes the complete editable format V4 recipe and can be saved as a
+The link encodes the complete editable format V5 recipe and can be saved as a
 browser bookmark. It resolves the latest generated scales and functional
 references without changing the stored Fluent evidence. It requires the local
 `@kiskadee/tonal-scale` application on port `3001`.
 
-The Shared Viewer currently evaluates this recipe with candidate generator
-`0.4.1`. The stored bundle, de-para, and promoted Fluent assets now use the
-visually approved `0.4.1` export.
+The Shared Viewer currently evaluates this recipe with generator `0.5.0`. It
+generates thirteen primitive families: the twelve mandatory V5 families plus
+authored `n.black.v2`. The eleven chromatic family scales and references are
+unchanged from the approved `0.4.1` export. V5 changes only the achromatic
+architecture:
 
-### Approved generator 0.4.1 system
+| Candidate family | Role | Light subtle | Light vivid | Dark subtle | Dark vivid |
+| --- | --- | --- | --- | --- | --- |
+| `n.black.v1` | Immutable pure grayscale | L4 `#ededed` | L99 `#010101` | D4 `#191919` | D99 `#fbfbfb` |
+| `n.black.v2` | Fluent tinted neutral from `Grey-14 #21242d` | L4 `#e9edfa` | L85 `#21242d` | D4 `#151821` | D90 `#d2d6e3` |
 
-The verified canonical V4 export is under [`generated/`](./generated/). It
-contains twelve primitive family assets plus source, manifest, and diagnostics.
-The seven family identities backed by explicit Fluent seeds are promoted into
-the preset: `b.blue.v1`, `n.black.v1`, `r.red.v1`, `yr.orange.v1`,
-`y.yellow.v1`, `g.green.v1`, and `p.purple.v1`. The five harmony-derived
-companions remain evidence-only candidates.
+`n.black.v2` also preserves its exact seed at generated anchors L85 and D7.
+Its Dark trajectory currently reports one review diagnostic: D35 is partially
+restored toward the low-level curve to preserve the canonical continuity
+invariant. This is visible evidence for review, not a hidden repair or an
+invalid scale.
+
+The `0.5.0` bundle, de-para, and Fluent primitive assets are the promoted V5
+baseline. The upstream Neutral ramp maps to `n.black.v2`; `n.black.v1` remains
+the universal pure grayscale and must not be presented as Fluent `Grey-14`.
+
+### Approved generator 0.5.0 system
+
+The verified canonical V5 export is under [`generated/`](./generated/). It
+contains thirteen primitive family assets plus source, manifest, and
+diagnostics. Eight identities are promoted into the preset:
+
+- source-backed `b.blue.v1`, `n.black.v2`, `r.red.v1`, `yr.orange.v1`,
+  `y.yellow.v1`, `g.green.v1`, and `p.purple.v1`;
+- Kiskadee-owned `n.black.v1`, the immutable pure-grayscale foundation.
+
+The five harmony-derived chromatic companions remain evidence-only candidates.
+This promotion is **Official adapted** for Fluent `n.black.v2` and the other
+source-backed families. Using `n.black.v1` for absolute grayscale caps is a
+**Kiskadee extension**.
+
+The two achromatic families have separate responsibilities:
+
+- `n.black.v2` preserves Fluent `Grey-14 #21242d` and owns every non-absolute
+  Fluent Neutral surface, including `Neutral/Background/3/Rest` and
+  `Neutral/Background/4/Rest`;
+- `n.black.v1` is not a second Fluent Neutral family. It provides pure
+  grayscale, absolute white/black caps, and the absolute-black Darker surface.
+
+Multiple upstream Neutral aliases therefore resolve to different positions of
+the same `n.black.v2` scale. Alias numbering never creates another primitive
+variant.
+
+### Historical generator 0.4.1 system
+
+The following V4 notes preserve the reasoning behind the preceding approved
+export. The active generated directory and promoted preset assets now use
+`0.5.0`.
 
 Generator `0.4.1` retains the approved surface-track chroma alignment. In
 particular, Green L4 is `#e2f3e0`, preventing the Positive Medium Button from
@@ -131,8 +177,8 @@ semantic aliases to their closest generated Kiskadee positions.
 | Fluent role | Official Light value | Kiskadee Light | Official Dark value | Kiskadee Dark |
 | --- | --- | --- | --- | --- |
 | Brand background rest | Brand-80 `#0064b4` | L50 `#0064b4` | Brand-70 `#0055a4` | D35 `#005ba4` |
-| Neutral background rest | White `#ffffff` | L0 `#ffffff` | Grey-16 `#262932` | D9 `#262b34` |
-| Neutral foreground rest | Grey-14 `#21242d` | L85 `#21242d` | White `#ffffff` | D100 `#ffffff` |
+| Neutral background rest | White `#ffffff` | `n.black.v1` L0 `#ffffff` | Grey-16 `#262932` | `n.black.v2` D9 `#262a33` |
+| Neutral foreground rest | Grey-14 `#21242d` | `n.black.v2` L85 `#21242d` | White `#ffffff` | `n.black.v1` D100 `#ffffff` |
 | Danger | Cranberry Primary `#c50f1f` | L45 `#c50f1f` | Cranberry Tint 30 `#dc626d` | D65 `#df5f57` |
 | Warning | Orange Primary `#f7630c` | L24 `#f7630c` | Orange Tint 20 `#f98845` | D75 `#e68962` |
 | Success | Green Primary `#107c10` | L45 `#107c10` | Green Tint 30 `#54b054` | D75 `#67b661` |
@@ -205,12 +251,17 @@ White overlay across intents and uses each family's `subtle +4` foreground to
 carry identity; Dark and Darker retain the role-aware Medium surface candidate.
 
 The preset-wide color foundation also promotes the other five explicitly
-authored Fluent families at Layer 1. Layer 2 maps Blue to `primary`, Black to
-`neutral`, Cranberry to `redLike`, Green to `greenLike`, Marigold to
-`yellowLike.v1`, and Orange to `yellowLike.v2`. Berry remains available as the
-Purple primitive because its official role is Out of office, not a generic
-Kiskadee `secondary` semantic. The checked-in bundle, mapping, and promoted
-assets all use generator `0.4.1`. Dark chroma moderation is owned by the tonal
-system and applies hue-independently to eligible support families; no
-Destructive-, Positive-, or Neutral-only compensation was introduced. Other
-components remain deferred.
+authored Fluent chromatic families at Layer 1. Layer 2 maps Blue to `primary`,
+the Fluent tinted neutral `n.black.v2` to `neutral`, Cranberry to `redLike`,
+Green to `greenLike`, Marigold to `yellowLike.v1`, and Orange to
+`yellowLike.v2`. Pure grayscale `n.black.v1` remains available for absolute
+caps and the Darker surface. Berry remains available as the Purple primitive
+because its official role is Out of office, not a generic Kiskadee `secondary`
+semantic.
+
+The checked-in bundle, mapping, and promoted assets use generator `0.5.0`.
+Card maps its source-backed Neutral surfaces through `n.black.v2`, while
+absolute white/black remain `n.black.v1` caps. Dark chroma moderation is owned
+by the tonal system and applies hue-independently to eligible support families;
+no Destructive-, Positive-, Neutral-, Button-, or Card-only compensation was
+introduced. Components beyond Button and Card remain deferred.
