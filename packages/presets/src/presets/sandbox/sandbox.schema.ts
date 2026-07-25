@@ -1,5 +1,5 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
-import { createFluent2MicrosoftCardSchema } from '../fluent-2-microsoft/components/card.schema.ts';
+import { createSandboxCardSchema } from './components/card.schema.ts';
 import { createSandboxSliderSchema } from './components/slider.schema.ts';
 import { createSandboxSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './sandbox.colors.ts';
@@ -105,7 +105,7 @@ export const schema: Schema<SandboxSegment> = {
     }
   },
   components: {
-    card: createFluent2MicrosoftCardSchema({
+    card: createSandboxCardSchema({
       segmentNames,
       transparent
     }),

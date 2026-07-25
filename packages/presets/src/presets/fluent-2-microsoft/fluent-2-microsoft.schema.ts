@@ -11,7 +11,6 @@ import { schemaColors } from './fluent-2-microsoft.colors.ts';
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 const c = createPresetColorGetter<'default'>(schemaContext);
 const segmentNames = ['default'] as const;
-const transparent = color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100, 0);
 const shadowBlack = (alpha: number) =>
   color(schemaContext, 'default', 'l', primitive('black', 'v1'), 100, alpha * 100);
 const fluentShadow = (
@@ -107,8 +106,8 @@ export const schema: Schema<Segments> = {
     slider: createFluent2MicrosoftSliderSchema(),
     button: createFluent2MicrosoftButtonSchema({ c, shadowBlack }),
     card: createFluent2MicrosoftCardSchema({
-      segmentNames,
-      transparent
+      c,
+      segmentNames
     }),
     switch: createFluent2MicrosoftSwitchSchema({
       c

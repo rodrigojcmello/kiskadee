@@ -1,175 +1,372 @@
-import type { Schema } from '@kiskadee/core';
+import type { InteractionStateColorMap, KiskadeeTone, Schema, SolidColor } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
+import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type Fluent2MicrosoftSegmentName = 'default';
 type CardComponent = NonNullable<Schema<never>['components']['card']>;
+type ThemeName = 'light' | 'dark' | 'darker';
+type ThemeShortcut = 'l' | 'd';
+type CardRole = 'card.neutral' | 'card.primary';
 
-type CreateFluent2MicrosoftCardSchemaArgs = {
-  segmentNames: readonly Fluent2MicrosoftSegmentName[];
-  transparent: string;
+type ColorLocator = {
+  role: CardRole;
+  tone: KiskadeeTone;
+  alpha?: number;
 };
 
-export function createFluent2MicrosoftCardSchema({
-  segmentNames,
-  transparent
-}: CreateFluent2MicrosoftCardSchemaArgs): CardComponent {
-  const neutralLow = {
-    rest: '#ffffff',
-    hover: '#f0f5ff',
-    pressed: '#dbe0ec',
-    focus: '#ffffff',
-    disabled: '#ebf0fc'
-  };
-  const neutralMedium = {
-    rest: '#f5faff',
-    hover: '#ebf0fc',
-    pressed: '#d6dbe7',
-    focus: '#f5faff',
-    disabled: '#ebf0fc'
-  };
-  const neutralLowest = {
-    rest: transparent,
-    hover: '#f0f5ff',
-    pressed: '#dbe0ec',
-    focus: transparent,
-    disabled: '#ebf0fc'
-  };
-  const neutralHigh = {
-    rest: '#262932',
-    hover: '#1c1f28',
-    pressed: '#11141c',
-    focus: '#262932',
-    disabled: '#ffffff1f'
-  };
-  const neutralHighest = {
-    rest: '#000000',
-    hover: '#070a11',
-    pressed: '#000000',
-    focus: '#000000',
-    disabled: '#ffffff1f'
-  };
-  const primaryLow = neutralLow;
-  const primaryLowest = {
-    rest: transparent,
-    hover: '#d9f1ff',
-    pressed: '#c7e9ff',
-    focus: transparent,
-    disabled: '#ebf0fc'
-  };
-  const primaryMedium = {
-    rest: '#d9f1ff',
-    hover: '#c7e9ff',
-    pressed: '#b3dfff',
-    focus: '#d9f1ff',
-    disabled: '#ffffff1f'
-  };
-  const primaryHigh = {
-    rest: '#0064b4',
-    hover: '#0055a4',
-    pressed: '#002b6b',
-    focus: '#0064b4',
-    disabled: '#ffffff1f'
-  };
-  const primaryHighest = {
-    rest: '#001241',
-    hover: '#071a4d',
-    pressed: '#000a2e',
-    focus: '#001241',
-    disabled: '#ffffff1f'
-  };
-  const selectedPrimaryMedium = {
-    rest: primaryMedium.rest,
-    hover: primaryMedium.hover,
-    pressed: primaryMedium.pressed,
-    focus: primaryMedium.focus
-  };
-  const selectedPrimaryHigh = {
-    rest: primaryHigh.rest,
-    hover: primaryHigh.hover,
-    pressed: primaryHigh.pressed,
-    focus: primaryHigh.focus
-  };
-  const selectedPrimaryHighest = {
-    rest: primaryHighest.rest,
-    hover: primaryHighest.hover,
-    pressed: primaryHighest.pressed,
-    focus: primaryHighest.focus
-  };
-  const selectedNeutralLow = {
-    rest: '#e6ebf7',
-    hover: '#e6ebf7',
-    pressed: '#e6ebf7',
-    focus: '#e6ebf7'
-  };
-  const selectedNeutralMedium = {
-    rest: '#e1e6f2',
-    hover: '#e1e6f2',
-    pressed: '#e1e6f2',
-    focus: '#e1e6f2'
-  };
-  const borderLow = {
-    rest: '#ccd1dd',
-    hover: '#c3c7d3',
-    pressed: '#afb3bf',
-    focus: '#0064b4',
-    disabled: '#dbe0ec'
-  };
-  const borderlessNeutral = {
-    rest: transparent,
-    hover: transparent,
-    pressed: transparent,
-    focus: '#0064b4',
-    disabled: transparent
-  };
-  const selectedBorder = {
-    rest: '#b9bdc9',
-    hover: '#b9bdc9',
-    pressed: '#b9bdc9',
-    focus: '#b9bdc9'
-  };
-  const borderHigh = {
-    rest: '#626671',
-    hover: '#a9adb9',
-    pressed: '#ccd1dd',
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const borderHighest = {
-    rest: '#000000',
-    hover: '#626671',
-    pressed: '#000000',
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const primaryBorderLow = {
-    rest: '#0064b4',
-    hover: '#0055a4',
-    pressed: '#002b6b',
-    focus: '#0064b4',
-    disabled: transparent
-  };
-  const primaryBorderless = {
-    rest: transparent,
-    hover: transparent,
-    pressed: transparent,
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const primaryBorderHigh = {
-    rest: '#3387da',
-    hover: '#0064b4',
-    pressed: '#0055a4',
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const primaryBorderHighest = {
-    rest: '#3387da',
-    hover: '#0064b4',
-    pressed: '#0055a4',
-    focus: '#3387da',
-    disabled: transparent
-  };
+type StateRecipe = {
+  rest: ColorLocator;
+  hover?: ColorLocator;
+  pressed?: ColorLocator;
+  selected?: ColorLocator;
+  disabled?: ColorLocator;
+};
 
+type IntentRecipe = {
+  lowest: StateRecipe;
+  low: StateRecipe;
+  medium: StateRecipe;
+  high: StateRecipe;
+  highest?: StateRecipe;
+};
+
+type CardPaletteRecipe = {
+  track: ThemeShortcut;
+  boxColor: {
+    neutral: IntentRecipe;
+    primary: IntentRecipe;
+  };
+  borderColor: {
+    neutral: IntentRecipe;
+    primary: IntentRecipe;
+  };
+};
+
+type CreateFluent2MicrosoftCardSchemaArgs = {
+  c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
+  segmentNames: readonly Fluent2MicrosoftSegmentName[];
+};
+
+const n = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
+  role: 'card.neutral',
+  tone,
+  alpha
+});
+
+const p = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
+  role: 'card.primary',
+  tone,
+  alpha
+});
+
+const transparent = n(0, 0);
+
+const transparentBorder = (selected: ColorLocator): StateRecipe => ({
+  rest: transparent,
+  selected
+});
+
+const LIGHT_RECIPE = {
+  track: 'l',
+  boxColor: {
+    neutral: {
+      lowest: {
+        rest: transparent,
+        hover: n(2),
+        pressed: n(7),
+        selected: n(5),
+        disabled: n(3)
+      },
+      low: {
+        rest: n(0),
+        hover: n(2),
+        pressed: n(7),
+        selected: n(5),
+        disabled: n(3)
+      },
+      medium: {
+        rest: n(1),
+        hover: n(3),
+        pressed: n(8),
+        selected: n(6),
+        disabled: n(3)
+      },
+      high: {
+        rest: n(2),
+        hover: n(4),
+        pressed: n(9),
+        selected: n(7),
+        disabled: n(3)
+      },
+      highest: {
+        rest: n(3),
+        hover: n(5),
+        pressed: n(10),
+        selected: n(8),
+        disabled: n(3)
+      }
+    },
+    primary: {
+      lowest: {
+        rest: transparent,
+        hover: p(4),
+        pressed: p(8),
+        selected: p(6),
+        disabled: n(3)
+      },
+      low: {
+        rest: n(0),
+        hover: n(2),
+        pressed: n(7),
+        selected: n(5),
+        disabled: n(3)
+      },
+      medium: {
+        rest: p(4),
+        hover: p(8),
+        pressed: p(12),
+        selected: p(10),
+        disabled: n(3)
+      },
+      high: {
+        rest: p(50),
+        hover: p(55),
+        pressed: p(75),
+        selected: p(60),
+        disabled: n(3)
+      }
+    }
+  },
+  borderColor: {
+    neutral: {
+      lowest: transparentBorder(n(16)),
+      low: {
+        rest: n(10),
+        hover: n(12),
+        pressed: n(18),
+        selected: n(16),
+        disabled: n(7)
+      },
+      medium: transparentBorder(n(16)),
+      high: transparentBorder(n(16)),
+      highest: transparentBorder(n(16))
+    },
+    primary: {
+      lowest: transparentBorder(n(16)),
+      low: {
+        rest: p(50),
+        hover: p(55),
+        pressed: p(75),
+        selected: p(60),
+        disabled: transparent
+      },
+      medium: transparentBorder(n(16)),
+      high: transparentBorder(n(16))
+    }
+  }
+} as const satisfies CardPaletteRecipe;
+
+const DARK_RECIPE = {
+  track: 'd',
+  boxColor: {
+    neutral: {
+      lowest: {
+        rest: transparent,
+        hover: n(16),
+        pressed: n(10),
+        selected: n(12),
+        disabled: n(3)
+      },
+      low: {
+        rest: n(9),
+        hover: n(20),
+        pressed: n(6),
+        selected: n(16),
+        disabled: n(3)
+      },
+      medium: {
+        rest: n(6),
+        hover: n(12),
+        pressed: n(3),
+        selected: n(10),
+        disabled: n(3)
+      },
+      high: {
+        rest: n(3),
+        hover: n(9),
+        pressed: n(1),
+        selected: n(7)
+      },
+      highest: {
+        rest: n(1),
+        hover: n(7),
+        pressed: n(0),
+        selected: n(5),
+        disabled: n(3)
+      }
+    },
+    primary: {
+      lowest: {
+        rest: transparent,
+        hover: p(9),
+        pressed: p(6),
+        selected: p(7),
+        disabled: n(3)
+      },
+      low: {
+        rest: n(9),
+        hover: n(20),
+        pressed: n(6),
+        selected: n(16),
+        disabled: n(3)
+      },
+      medium: {
+        rest: p(4),
+        hover: p(9),
+        pressed: p(2),
+        selected: p(6),
+        disabled: n(3)
+      },
+      high: {
+        rest: p(35),
+        hover: p(40),
+        pressed: p(14),
+        selected: p(28),
+        disabled: n(3)
+      }
+    }
+  },
+  borderColor: {
+    neutral: {
+      lowest: transparentBorder(n(50)),
+      low: {
+        rest: n(45),
+        hover: n(50),
+        selected: n(50),
+        disabled: n(22)
+      },
+      medium: transparentBorder(n(50)),
+      high: transparentBorder(n(50)),
+      highest: transparentBorder(n(50))
+    },
+    primary: {
+      lowest: transparentBorder(n(50)),
+      low: {
+        rest: p(35),
+        hover: p(40),
+        pressed: p(14),
+        selected: p(28),
+        disabled: transparent
+      },
+      medium: transparentBorder(n(50)),
+      high: transparentBorder(n(50))
+    }
+  }
+} as const satisfies CardPaletteRecipe;
+
+const DARKER_RECIPE = {
+  ...DARK_RECIPE,
+  boxColor: {
+    ...DARK_RECIPE.boxColor,
+    neutral: {
+      ...DARK_RECIPE.boxColor.neutral,
+      highest: {
+        rest: n(0),
+        hover: n(5),
+        selected: n(3),
+        disabled: n(3)
+      }
+    }
+  }
+} as const satisfies CardPaletteRecipe;
+
+const CARD_RECIPES = {
+  light: LIGHT_RECIPE,
+  dark: DARK_RECIPE,
+  darker: DARKER_RECIPE
+} as const satisfies Record<ThemeName, CardPaletteRecipe>;
+
+function resolveColor(
+  c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
+  segmentName: Fluent2MicrosoftSegmentName,
+  track: ThemeShortcut,
+  locator: ColorLocator
+): SolidColor {
+  return c(segmentName, track, locator.role, locator.tone, locator.alpha);
+}
+
+function createStateMap(
+  c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
+  segmentName: Fluent2MicrosoftSegmentName,
+  track: ThemeShortcut,
+  recipe: StateRecipe
+): InteractionStateColorMap {
+  return {
+    rest: resolveColor(c, segmentName, track, recipe.rest),
+    ...(recipe.hover ? { hover: resolveColor(c, segmentName, track, recipe.hover) } : undefined),
+    ...(recipe.pressed
+      ? { pressed: resolveColor(c, segmentName, track, recipe.pressed) }
+      : undefined),
+    ...(recipe.selected
+      ? {
+          selected: {
+            rest: resolveColor(c, segmentName, track, recipe.selected)
+          }
+        }
+      : undefined),
+    ...(recipe.disabled
+      ? { disabled: resolveColor(c, segmentName, track, recipe.disabled) }
+      : undefined)
+  };
+}
+
+function createCardPalette(
+  c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
+  segmentName: Fluent2MicrosoftSegmentName,
+  themeName: ThemeName
+) {
+  const recipe = CARD_RECIPES[themeName];
+  const stateMap = (stateRecipe: StateRecipe) =>
+    createStateMap(c, segmentName, recipe.track, stateRecipe);
+
+  return {
+    boxColor: {
+      neutral: {
+        lowest: stateMap(recipe.boxColor.neutral.lowest),
+        low: stateMap(recipe.boxColor.neutral.low),
+        medium: stateMap(recipe.boxColor.neutral.medium),
+        high: stateMap(recipe.boxColor.neutral.high),
+        highest: stateMap(recipe.boxColor.neutral.highest)
+      },
+      primary: {
+        lowest: stateMap(recipe.boxColor.primary.lowest),
+        low: stateMap(recipe.boxColor.primary.low),
+        medium: stateMap(recipe.boxColor.primary.medium),
+        high: stateMap(recipe.boxColor.primary.high)
+      }
+    },
+    borderColor: {
+      neutral: {
+        lowest: stateMap(recipe.borderColor.neutral.lowest),
+        low: stateMap(recipe.borderColor.neutral.low),
+        medium: stateMap(recipe.borderColor.neutral.medium),
+        high: stateMap(recipe.borderColor.neutral.high),
+        highest: stateMap(recipe.borderColor.neutral.highest)
+      },
+      primary: {
+        lowest: stateMap(recipe.borderColor.primary.lowest),
+        low: stateMap(recipe.borderColor.primary.low),
+        medium: stateMap(recipe.borderColor.primary.medium),
+        high: stateMap(recipe.borderColor.primary.high)
+      }
+    }
+  };
+}
+
+export function createFluent2MicrosoftCardSchema({
+  c,
+  segmentNames
+}: CreateFluent2MicrosoftCardSchemaArgs): CardComponent {
   return {
     effects: {
       shadow: {
@@ -177,10 +374,7 @@ export function createFluent2MicrosoftCardSchema({
           kind: 'outer',
           states: {
             rest: 's:md:1',
-            hover: 's:lg:1',
-            focus: 's:md:1',
-            pressed: 's:md:1',
-            disabled: 's:md:1'
+            hover: 's:lg:1'
           },
           fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3', 's:lg:4']
         }
@@ -217,102 +411,15 @@ export function createFluent2MicrosoftCardSchema({
             }
           }
         },
-        palettes: buildBySegment(segmentNames, () => ({
+        palettes: buildBySegment(segmentNames, (segmentName) => ({
           light: {
-            default: {
-              boxColor: {
-                neutral: {
-                  lowest: {
-                    ...neutralLowest,
-                    selected: selectedNeutralLow
-                  },
-                  low: {
-                    ...neutralLow,
-                    selected: selectedNeutralLow
-                  },
-                  medium: {
-                    ...neutralMedium,
-                    selected: selectedNeutralMedium
-                  },
-                  high: {
-                    ...neutralHigh,
-                    selected: selectedPrimaryMedium
-                  },
-                  highest: {
-                    ...neutralHighest,
-                    selected: selectedPrimaryMedium
-                  }
-                },
-                primary: {
-                  lowest: {
-                    ...primaryLowest,
-                    selected: selectedPrimaryHigh
-                  },
-                  low: {
-                    ...primaryLow,
-                    selected: selectedPrimaryHigh
-                  },
-                  medium: {
-                    ...primaryMedium,
-                    selected: selectedPrimaryHigh
-                  },
-                  high: {
-                    ...primaryHigh,
-                    selected: selectedPrimaryHighest
-                  },
-                  highest: {
-                    ...primaryHighest,
-                    selected: selectedPrimaryMedium
-                  }
-                }
-              },
-              borderColor: {
-                neutral: {
-                  lowest: {
-                    ...borderlessNeutral,
-                    selected: selectedBorder
-                  },
-                  low: {
-                    ...borderLow,
-                    selected: selectedBorder
-                  },
-                  medium: {
-                    ...borderlessNeutral,
-                    selected: selectedBorder
-                  },
-                  high: {
-                    ...borderHigh,
-                    selected: selectedBorder
-                  },
-                  highest: {
-                    ...borderHighest,
-                    selected: selectedBorder
-                  }
-                },
-                primary: {
-                  lowest: {
-                    ...primaryBorderless,
-                    selected: selectedBorder
-                  },
-                  low: {
-                    ...primaryBorderLow,
-                    selected: selectedBorder
-                  },
-                  medium: {
-                    ...primaryBorderless,
-                    selected: selectedBorder
-                  },
-                  high: {
-                    ...primaryBorderHigh,
-                    selected: selectedBorder
-                  },
-                  highest: {
-                    ...primaryBorderHighest,
-                    selected: selectedBorder
-                  }
-                }
-              }
-            }
+            default: createCardPalette(c, segmentName, 'light')
+          },
+          dark: {
+            default: createCardPalette(c, segmentName, 'dark')
+          },
+          darker: {
+            default: createCardPalette(c, segmentName, 'darker')
           }
         }))
       }
