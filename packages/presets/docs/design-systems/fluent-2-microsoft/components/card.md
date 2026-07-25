@@ -179,6 +179,21 @@ semantic surface adaptations. Their colors resolve through documented tonal
 positions rather than schema HEX literals. The source-backed Rest aliases
 remain distinct from the framework-authored interactive deltas.
 
+For Dark and Darker, `primary.medium` intentionally uses D10 `#142d48` instead
+of the nearest-neighbor D4 `#0b1929` recorded for
+`Brand/Background/2/Rest`. The `muted-darks` D4 match preserves the official
+surface lightness but loses too much blue chroma to retain the source's
+dark-blue identity in a Card. This visual adaptation is under review and keeps
+the state progression local to the approved `b.blue.v1` asset:
+
+| State | Dark/Darker position | Generated HEX | Status |
+| --- | --- | --- | --- |
+| Rest | D10 | `#142d48` | Kiskadee visual adaptation under review |
+| Hover | D16 | `#143a61` | Kiskadee extension |
+| Pressed | D8 | `#13273e` | Kiskadee extension |
+| Selected | D12 | `#153251` | Kiskadee extension |
+| Disabled | `n.black.v2` D3 | `#11131c` | Existing shared disabled treatment |
+
 Light and Dark intentionally omit `neutral.highest` rather than exposing
 `Neutral/Background/4/Rest` as a near-duplicate of `neutral.high`. Darker adds
 `neutral.highest` with the absolute-black `n.black.v1` D0 cap `#000000`, a

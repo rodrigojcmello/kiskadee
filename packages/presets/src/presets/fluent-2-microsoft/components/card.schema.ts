@@ -212,10 +212,10 @@ const DARK_RECIPE = {
         disabled: n(3)
       },
       medium: {
-        rest: p(4),
-        hover: p(9),
-        pressed: p(2),
-        selected: p(6),
+        rest: p(10),
+        hover: p(16),
+        pressed: p(8),
+        selected: p(12),
         disabled: n(3)
       },
       high: {
