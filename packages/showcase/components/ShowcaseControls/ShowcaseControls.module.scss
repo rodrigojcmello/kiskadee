@@ -51,6 +51,83 @@
   min-width: 0;
 }
 
+.segmentedField {
+  border: 0;
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.segmentedLabel {
+  color: var(--neutral-100);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0;
+  user-select: none;
+}
+
+.segmentedControl {
+  background: rgba(255, 255, 255, 0.56);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 3px;
+}
+
+.segmentedOption {
+  align-items: center;
+  border-radius: 9px;
+  color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.86rem;
+  font-weight: 600;
+  justify-content: center;
+  min-block-size: 34px;
+  padding-inline: 12px;
+  position: relative;
+  transition: background 140ms ease-out, box-shadow 140ms ease-out, color 140ms ease-out;
+  user-select: none;
+}
+
+.segmentedOption:hover {
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.segmentedOption[data-selected='true'] {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14), inset 0 0 0 2px #3b82f6;
+  color: #174d88;
+}
+
+.segmentedOption:has(.segmentedInput:focus-visible) {
+  outline: 2px solid #174d88;
+  outline-offset: 2px;
+}
+
+.segmentedInput {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.segmentedField:disabled {
+  opacity: 0.5;
+
+  .segmentedOption {
+    cursor: not-allowed;
+  }
+}
+
 .booleanLabel {
   display: grid;
   gap: 3px;

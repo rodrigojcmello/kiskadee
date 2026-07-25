@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useShowcasePanel } from '@/app/ShowcasePanelContext';
 import { Select, type SelectProps, Switch } from '@/k-components';
@@ -112,6 +112,58 @@ export function ShowcaseControlField({
 
 export function ShowcaseSelectControl({ className, width = '100%', ...props }: SelectProps) {
   return <Select {...props} width={width} className={joinClassNames(styles.select, className)} />;
+}
+
+export function ShowcaseSegmentedControl({
+  className,
+  disabled = false,
+  label,
+  onValueChange,
+  options,
+  value
+}: {
+  className?: string;
+  disabled?: boolean;
+  label: ReactNode;
+  onValueChange: (value: string) => void;
+  options: ReadonlyArray<{
+    disabled?: boolean;
+    label: ReactNode;
+    value: string;
+  }>;
+  value: string;
+}) {
+  const groupName = useId();
+
+  return (
+    <fieldset className={joinClassNames(styles.segmentedField, className)} disabled={disabled}>
+      <legend className={styles.segmentedLabel}>{label}</legend>
+      <div className={styles.segmentedControl}>
+        {options.map((option) => {
+          const isSelected = option.value === value;
+
+          return (
+            <label
+              className={styles.segmentedOption}
+              data-selected={isSelected ? 'true' : 'false'}
+              key={option.value}
+            >
+              <input
+                className={styles.segmentedInput}
+                type="radio"
+                name={groupName}
+                value={option.value}
+                checked={isSelected}
+                disabled={option.disabled}
+                onChange={() => onValueChange(option.value)}
+              />
+              <span>{option.label}</span>
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
+  );
 }
 
 export function ShowcaseBooleanControl({

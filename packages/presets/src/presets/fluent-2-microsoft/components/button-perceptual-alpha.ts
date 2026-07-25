@@ -53,20 +53,22 @@ function deltaEOk(left: Oklab, right: Oklab): number {
 }
 
 /**
- * Keeps a translucent Low outline at a stable perceptual distance from the
- * canonical theme surface without changing the resolved tonal reference.
+ * Solves a static alpha that places a resolved tonal color at a stable
+ * perceptual distance from a canonical surface.
  */
-export function createBalancedLowBorder({
+export function createPerceptuallyBalancedAlpha({
   color,
   surface,
-  targetDeltaE
+  targetDeltaE,
+  usage
 }: {
   color: SolidColor;
   surface: SolidColor;
   targetDeltaE: number;
+  usage: string;
 }): SolidColor {
   if (!Number.isFinite(targetDeltaE) || targetDeltaE < 0) {
-    throw new Error(`Invalid Low border Delta E target: ${targetDeltaE}`);
+    throw new Error(`Invalid ${usage} Delta E target: ${targetDeltaE}`);
   }
 
   const sourceRgb = parseOpaqueHex(color);
@@ -87,4 +89,25 @@ export function createBalancedLowBorder({
   }
 
   return withAlpha(color, (bestAlphaByte / MAX_ALPHA_BYTE) * 100);
+}
+
+/**
+ * Keeps a translucent Low outline at a stable perceptual distance from the
+ * canonical theme surface without changing the resolved tonal reference.
+ */
+export function createBalancedLowBorder({
+  color,
+  surface,
+  targetDeltaE
+}: {
+  color: SolidColor;
+  surface: SolidColor;
+  targetDeltaE: number;
+}): SolidColor {
+  return createPerceptuallyBalancedAlpha({
+    color,
+    surface,
+    targetDeltaE,
+    usage: 'Low border'
+  });
 }

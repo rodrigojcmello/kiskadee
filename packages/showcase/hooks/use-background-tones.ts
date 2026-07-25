@@ -23,6 +23,38 @@ export type ResolvedBackgroundTone = {
   resolvedColor: string;
 };
 
+const BUTTON_LIGHT_TONES = ['0', '100', 'subtle', 'vivid'] as const;
+const BUTTON_DARK_TONES = ['5'] as const;
+
+export type ButtonBackgroundToneKey =
+  | 'white'
+  | 'light-neutral'
+  | 'light-blue'
+  | 'light-green'
+  | 'light-red'
+  | 'light-purple'
+  | 'light-orange'
+  | 'vivid-blue'
+  | 'vivid-green'
+  | 'vivid-red'
+  | 'vivid-purple'
+  | 'vivid-orange'
+  | 'vivid-black'
+  | 'dark-blue'
+  | 'dark-green'
+  | 'dark-red'
+  | 'dark-purple'
+  | 'dark-orange'
+  | 'dark-black'
+  | 'black';
+
+export type ResolvedButtonBackgroundTone = {
+  key: ButtonBackgroundToneKey;
+  displayColor: string;
+  aria: string;
+  resolvedColor: string;
+};
+
 export function useBackgroundTones() {
   const { designSystem, theme } = useKiskadee();
 
@@ -104,6 +136,175 @@ export function useBackgroundTones() {
 
   return {
     defaultToneKey,
+    items,
+    tones
+  };
+}
+
+export function useButtonBackgroundTones() {
+  const { designSystem } = useKiskadee();
+  const designSystemKey = String(designSystem ?? '');
+  const enabled = Boolean(designSystemKey);
+
+  const lightBlack = useColorScaleTones({
+    designSystemKey,
+    theme: 'light',
+    selection: 'primitive:black.v1',
+    tones: BUTTON_LIGHT_TONES,
+    enabled
+  });
+  const lightBlue = useColorScaleTones({
+    designSystemKey,
+    theme: 'light',
+    selection: 'primitive:blue.v1',
+    tones: BUTTON_LIGHT_TONES,
+    enabled
+  });
+  const lightGreen = useColorScaleTones({
+    designSystemKey,
+    theme: 'light',
+    selection: 'primitive:green.v1',
+    tones: BUTTON_LIGHT_TONES,
+    enabled
+  });
+  const lightRed = useColorScaleTones({
+    designSystemKey,
+    theme: 'light',
+    selection: 'primitive:red.v1',
+    tones: BUTTON_LIGHT_TONES,
+    enabled
+  });
+  const lightPurple = useColorScaleTones({
+    designSystemKey,
+    theme: 'light',
+    selection: 'primitive:purple.v1',
+    tones: BUTTON_LIGHT_TONES,
+    enabled
+  });
+  const lightOrange = useColorScaleTones({
+    designSystemKey,
+    theme: 'light',
+    selection: 'primitive:orange.v1',
+    tones: BUTTON_LIGHT_TONES,
+    enabled
+  });
+
+  const darkBlack = useColorScaleTones({
+    designSystemKey,
+    theme: 'dark',
+    selection: 'primitive:black.v1',
+    tones: BUTTON_DARK_TONES,
+    enabled
+  });
+  const darkBlue = useColorScaleTones({
+    designSystemKey,
+    theme: 'dark',
+    selection: 'primitive:blue.v1',
+    tones: BUTTON_DARK_TONES,
+    enabled
+  });
+  const darkGreen = useColorScaleTones({
+    designSystemKey,
+    theme: 'dark',
+    selection: 'primitive:green.v1',
+    tones: BUTTON_DARK_TONES,
+    enabled
+  });
+  const darkRed = useColorScaleTones({
+    designSystemKey,
+    theme: 'dark',
+    selection: 'primitive:red.v1',
+    tones: BUTTON_DARK_TONES,
+    enabled
+  });
+  const darkPurple = useColorScaleTones({
+    designSystemKey,
+    theme: 'dark',
+    selection: 'primitive:purple.v1',
+    tones: BUTTON_DARK_TONES,
+    enabled
+  });
+  const darkOrange = useColorScaleTones({
+    designSystemKey,
+    theme: 'dark',
+    selection: 'primitive:orange.v1',
+    tones: BUTTON_DARK_TONES,
+    enabled
+  });
+
+  const tones = useMemo<ResolvedButtonBackgroundTone[]>(() => {
+    const candidates: Array<{
+      key: ButtonBackgroundToneKey;
+      aria: string;
+      resolvedColor: string | undefined;
+    }> = [
+      { key: 'white', aria: 'White', resolvedColor: lightBlack.picked['0'] },
+      {
+        key: 'light-neutral',
+        aria: 'Light neutral',
+        resolvedColor: lightBlack.picked.subtle
+      },
+      { key: 'light-blue', aria: 'Light blue', resolvedColor: lightBlue.picked.subtle },
+      { key: 'light-green', aria: 'Light green', resolvedColor: lightGreen.picked.subtle },
+      { key: 'light-red', aria: 'Light red', resolvedColor: lightRed.picked.subtle },
+      { key: 'light-purple', aria: 'Light purple', resolvedColor: lightPurple.picked.subtle },
+      { key: 'light-orange', aria: 'Light orange', resolvedColor: lightOrange.picked.subtle },
+      { key: 'vivid-blue', aria: 'Vivid blue', resolvedColor: lightBlue.picked.vivid },
+      { key: 'vivid-green', aria: 'Vivid green', resolvedColor: lightGreen.picked.vivid },
+      { key: 'vivid-red', aria: 'Vivid red', resolvedColor: lightRed.picked.vivid },
+      { key: 'vivid-purple', aria: 'Vivid purple', resolvedColor: lightPurple.picked.vivid },
+      { key: 'vivid-orange', aria: 'Vivid orange', resolvedColor: lightOrange.picked.vivid },
+      { key: 'vivid-black', aria: 'Vivid black', resolvedColor: lightBlack.picked.vivid },
+      { key: 'black', aria: 'Absolute black', resolvedColor: lightBlack.picked['100'] },
+      { key: 'dark-black', aria: 'Very dark black', resolvedColor: darkBlack.picked['5'] },
+      { key: 'dark-blue', aria: 'Very dark blue', resolvedColor: darkBlue.picked['5'] },
+      { key: 'dark-green', aria: 'Very dark green', resolvedColor: darkGreen.picked['5'] },
+      { key: 'dark-red', aria: 'Very dark red', resolvedColor: darkRed.picked['5'] },
+      { key: 'dark-purple', aria: 'Very dark purple', resolvedColor: darkPurple.picked['5'] },
+      { key: 'dark-orange', aria: 'Very dark orange', resolvedColor: darkOrange.picked['5'] }
+    ];
+
+    return candidates.flatMap((tone) =>
+      tone.resolvedColor
+        ? [
+            {
+              key: tone.key,
+              aria: tone.aria,
+              resolvedColor: tone.resolvedColor,
+              displayColor: tone.resolvedColor
+            }
+          ]
+        : []
+    );
+  }, [
+    darkBlack.picked,
+    darkBlue.picked,
+    darkGreen.picked,
+    darkOrange.picked,
+    darkPurple.picked,
+    darkRed.picked,
+    lightBlack.picked,
+    lightBlue.picked,
+    lightGreen.picked,
+    lightOrange.picked,
+    lightPurple.picked,
+    lightRed.picked
+  ]);
+
+  const items = useMemo(
+    () =>
+      tones.map((tone) => ({
+        value: tone.key,
+        label: tone.aria,
+        swatch: {
+          color: tone.displayColor
+        }
+      })),
+    [tones]
+  );
+
+  return {
+    defaultToneKey: 'white' as const,
     items,
     tones
   };

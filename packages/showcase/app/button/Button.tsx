@@ -20,9 +20,13 @@ import {
   ShowcaseControlPanel,
   ShowcaseControlStack,
   ShowcaseRouteControls,
+  ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import { type BackgroundToneKey, useBackgroundTones } from '@/hooks/use-background-tones';
+import {
+  type ButtonBackgroundToneKey,
+  useButtonBackgroundTones
+} from '@/hooks/use-background-tones';
 import { SwatchRadioGroup } from '@/k-components';
 import {
   getManifestComponentState,
@@ -31,15 +35,26 @@ import {
 import s from './Button.module.scss';
 import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
-import {
-  getButtonBackgroundForSurfaceContext,
-  getButtonSurfaceContext
-} from './getButtonSurfaceContext';
 
 const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
   { value: 'default', label: 'Default' },
   { value: 'inverse', label: 'Inverse' }
 ];
+const DARK_BACKGROUND_TONES: ReadonlySet<ButtonBackgroundToneKey> = new Set([
+  'vivid-blue',
+  'vivid-green',
+  'vivid-red',
+  'vivid-purple',
+  'vivid-orange',
+  'vivid-black',
+  'dark-blue',
+  'dark-green',
+  'dark-red',
+  'dark-purple',
+  'dark-orange',
+  'dark-black',
+  'black'
+]);
 const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:2', label: 'Small 2' },
   { value: 's:sm:1', label: 'Small' },
@@ -130,18 +145,15 @@ function SurfaceContextComparison({
 export function Button() {
   const { designSystem, segment, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
-  const backgroundTones = useBackgroundTones();
+  const backgroundTones = useButtonBackgroundTones();
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
   const [isSimplified, setIsSimplified] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
-  const [surface, setSurface] = React.useState<BackgroundToneKey>(backgroundTones.defaultToneKey);
-
-  React.useEffect(() => {
-    setSurface(backgroundTones.defaultToneKey);
-  }, [backgroundTones.defaultToneKey]);
+  const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('default');
+  const [surface, setSurface] = React.useState<ButtonBackgroundToneKey>('white');
 
   const selectedSurface = React.useMemo(
     () => backgroundTones.tones.find((tone) => tone.key === surface),
@@ -168,8 +180,8 @@ export function Button() {
     };
   }, [selectedSurface?.resolvedColor]);
 
-  const activeSurfaceContext = getButtonSurfaceContext(surface);
-  const isDarkSurface = activeSurfaceContext === 'inverse';
+  const activeSurfaceContext = surfaceContext;
+  const isDarkSurface = DARK_BACKGROUND_TONES.has(surface);
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
@@ -194,26 +206,25 @@ export function Button() {
   const comparisonDefaultSurface = backgroundTones.tones.find(
     (tone) => tone.key === backgroundTones.defaultToneKey
   );
-  const comparisonInverseSurface = backgroundTones.tones.find((tone) => tone.key === 'primary');
+  const comparisonInverseSurface = backgroundTones.tones.find((tone) => tone.key === 'vivid-blue');
 
   const buttonControls = (
     <ShowcaseControlPanel>
       <ShowcaseControlGroup title="Ambiente">
         <ShowcaseGlobalSemanticControls />
-        <ShowcaseSelectControl
+        <ShowcaseSegmentedControl
           label="Surface context"
           options={SURFACE_CONTEXT_OPTIONS}
           value={activeSurfaceContext}
-          onValueChange={(value) => {
-            setSurface(getButtonBackgroundForSurfaceContext(value as SurfaceContext));
-          }}
+          onValueChange={(value) => setSurfaceContext(value as SurfaceContext)}
           disabled={!inverseSupported}
         />
         <ShowcaseControlField fullWidth>
           <SwatchRadioGroup
+            className={s.backgroundToneGrid}
             groupLabel="Background"
             value={surface}
-            onValueChange={(value) => setSurface(value as BackgroundToneKey)}
+            onValueChange={(value) => setSurface(value as ButtonBackgroundToneKey)}
             items={backgroundTones.items}
             aria-label="Button example background"
           />

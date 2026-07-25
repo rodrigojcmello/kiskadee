@@ -5,7 +5,10 @@ import type {
   TonalFunctionalReferenceName
 } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
-import { createBalancedLowBorder } from './button-low-border.ts';
+import {
+  createBalancedLowBorder,
+  createPerceptuallyBalancedAlpha
+} from './button-perceptual-alpha.ts';
 
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
 type Fluent2MicrosoftSegmentName = 'default';
@@ -26,7 +29,6 @@ type StatefulFunctionalTones = {
   rest: FunctionalToneLocator;
   hover: FunctionalToneLocator;
   pressed: FunctionalToneLocator;
-  selected: FunctionalToneLocator;
 };
 
 type ButtonDefaultThemeRecipe = {
@@ -36,7 +38,6 @@ type ButtonDefaultThemeRecipe = {
   low: {
     hover: KiskadeeTone;
     pressed: KiskadeeTone;
-    selected: KiskadeeTone;
     border: FunctionalToneLocator & {
       surfaceTone: KiskadeeTone;
       targetDeltaE: number;
@@ -65,19 +66,16 @@ const BUTTON_DEFAULT_TONAL_RECIPE = {
     medium: {
       rest: { reference: 'subtle', offset: 0 },
       hover: { reference: 'subtle', offset: 2 },
-      pressed: { reference: 'subtle', offset: 4 },
-      selected: { reference: 'subtle', offset: 0 }
+      pressed: { reference: 'subtle', offset: 4 }
     },
     high: {
       rest: { reference: 'vivid', offset: 0 },
       hover: { reference: 'vivid', offset: 1 },
-      pressed: { reference: 'vivid', offset: 3 },
-      selected: { reference: 'vivid', offset: 2 }
+      pressed: { reference: 'vivid', offset: 3 }
     },
     low: {
       hover: 2,
       pressed: 4,
-      selected: 1,
       border: { reference: 'vivid', offset: 0, surfaceTone: 0, targetDeltaE: 0.3 }
     },
     foreground: 65,
@@ -94,19 +92,16 @@ const BUTTON_DEFAULT_TONAL_RECIPE = {
     medium: {
       rest: { reference: 'subtle', offset: 0 },
       hover: { reference: 'subtle', offset: 2 },
-      pressed: { reference: 'subtle', offset: 4 },
-      selected: { reference: 'subtle', offset: 0 }
+      pressed: { reference: 'subtle', offset: 4 }
     },
     high: {
       rest: { reference: 'vivid', offset: 0 },
       hover: { reference: 'vivid', offset: 1 },
-      pressed: { reference: 'vivid', offset: -2 },
-      selected: { reference: 'vivid', offset: -1 }
+      pressed: { reference: 'vivid', offset: -2 }
     },
     low: {
       hover: 14,
       pressed: 22,
-      selected: 18,
       border: { reference: 'vivid', offset: 0, surfaceTone: 5, targetDeltaE: 0.18 }
     },
     foreground: 75,
@@ -123,19 +118,16 @@ const BUTTON_DEFAULT_TONAL_RECIPE = {
     medium: {
       rest: { reference: 'subtle', offset: 0 },
       hover: { reference: 'subtle', offset: 2 },
-      pressed: { reference: 'subtle', offset: 4 },
-      selected: { reference: 'subtle', offset: 0 }
+      pressed: { reference: 'subtle', offset: 4 }
     },
     high: {
       rest: { reference: 'vivid', offset: -1 },
       hover: { reference: 'vivid', offset: 0 },
-      pressed: { reference: 'vivid', offset: -3 },
-      selected: { reference: 'vivid', offset: -2 }
+      pressed: { reference: 'vivid', offset: -3 }
     },
     low: {
       hover: 14,
       pressed: 22,
-      selected: 18,
       border: { reference: 'vivid', offset: -1, surfaceTone: 0, targetDeltaE: 0.18 }
     },
     foreground: 75,
@@ -153,27 +145,36 @@ const BUTTON_INVERSE_RECIPE = {
   high: {
     hover: 4,
     pressed: 12,
-    selected: 8,
     foreground: {
       rest: { reference: 'vivid', offset: 0 },
       hover: { reference: 'vivid', offset: 1 },
-      pressed: { reference: 'vivid', offset: 3 },
-      selected: { reference: 'vivid', offset: 2 }
+      pressed: { reference: 'vivid', offset: 3 }
     }
   },
   medium: {
-    restAlpha: 28,
-    hoverAlpha: 36,
-    pressedAlpha: 44,
-    selectedAlpha: 36
+    lightSurfaceAlpha: {
+      rest: 7,
+      hover: 10,
+      pressed: 14
+    },
+    roleSurface: {
+      rest: { reference: 'subtle', offset: 4, targetDeltaE: 0.024 },
+      hover: { reference: 'subtle', offset: 6, targetDeltaE: 0.032 },
+      pressed: { reference: 'subtle', offset: 8, targetDeltaE: 0.04 }
+    },
+    roleForeground: { reference: 'subtle', offset: -2 }
   },
   low: {
+    content: { reference: 'subtle', offset: 4 },
     hoverAlpha: 10,
-    pressedAlpha: 30,
-    selectedAlpha: 20
+    pressedAlpha: 30
   },
   disabled: {
-    backgroundAlpha: 10,
+    backgroundAlpha: {
+      light: 4,
+      dark: 10,
+      darker: 10
+    },
     foregroundAlpha: 40
   }
 } as const;
@@ -190,13 +191,6 @@ export function createFluent2MicrosoftButtonSchema({
 
   const inverseWhite = c('default', 'l', 'button.neutral', 0);
   const inverseTransparent = c('default', 'l', 'button.neutral', 0, 0);
-  const inverseDisabledBackground = c(
-    'default',
-    'l',
-    'button.neutral',
-    0,
-    BUTTON_INVERSE_RECIPE.disabled.backgroundAlpha
-  );
   const inverseDisabledForeground = c(
     'default',
     'l',
@@ -204,9 +198,10 @@ export function createFluent2MicrosoftButtonSchema({
     0,
     BUTTON_INVERSE_RECIPE.disabled.foregroundAlpha
   );
-  const inverseMediumBackground = (alpha: number) => c('default', 'l', 'button.neutral', 0, alpha);
   const inverseInteractionBackground = (alpha: number) =>
     c('default', 'l', 'button.neutral', 100, alpha);
+  const inverseMediumBackground = (alpha: number) => c('default', 'l', 'button.neutral', 0, alpha);
+  const inverseCanonicalSurface = c.ref('default', 'l', 'button.primary', 'vivid', 0);
 
   const createButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
     const recipe = BUTTON_DEFAULT_TONAL_RECIPE[theme];
@@ -238,8 +233,8 @@ export function createFluent2MicrosoftButtonSchema({
           pressed: roleReferenceColor(recipe.medium.pressed),
           disabled: adaptiveDisabled,
           selected: {
-            // Explicitly declares Selected support even when it reuses Rest.
-            rest: roleReferenceColor(recipe.medium.selected)
+            // Selected remains explicit while intentionally sharing Pressed.
+            rest: roleReferenceColor(recipe.medium.pressed)
           }
         },
         high: {
@@ -248,7 +243,7 @@ export function createFluent2MicrosoftButtonSchema({
           pressed: roleReferenceColor(recipe.high.pressed),
           disabled: adaptiveDisabled,
           selected: {
-            rest: roleReferenceColor(recipe.high.selected)
+            rest: roleReferenceColor(recipe.high.pressed)
           }
         },
         low: {
@@ -257,7 +252,7 @@ export function createFluent2MicrosoftButtonSchema({
           pressed: roleColor(recipe.low.pressed),
           disabled: adaptiveDisabled,
           selected: {
-            rest: roleColor(recipe.low.selected)
+            rest: roleColor(recipe.low.pressed)
           }
         },
         lowest: {
@@ -265,7 +260,7 @@ export function createFluent2MicrosoftButtonSchema({
           hover: roleColor(recipe.low.hover),
           pressed: roleColor(recipe.low.pressed),
           selected: {
-            rest: roleColor(recipe.low.selected)
+            rest: roleColor(recipe.low.pressed)
           }
         }
       },
@@ -313,20 +308,47 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
-  const createInverseButtonIntent = (role: ButtonColorRole) => {
+  const createInverseButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
+    const usesSharedLightMedium = theme === 'light';
+    const inverseDisabledBackground = c(
+      'default',
+      'l',
+      'button.neutral',
+      0,
+      BUTTON_INVERSE_RECIPE.disabled.backgroundAlpha[theme]
+    );
     const roleColor = (tone: KiskadeeTone) => c('default', 'l', role, tone);
     const roleReferenceColor = (locator: FunctionalToneLocator) =>
       c.ref('default', 'l', role, locator.reference, locator.offset);
+    const mediumSurfaceColor = (locator: FunctionalToneLocator & { targetDeltaE: number }) =>
+      createPerceptuallyBalancedAlpha({
+        color: roleReferenceColor(locator),
+        surface: inverseCanonicalSurface,
+        targetDeltaE: locator.targetDeltaE,
+        usage: 'Inverse Medium surface'
+      });
+    const mediumRest = usesSharedLightMedium
+      ? inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.lightSurfaceAlpha.rest)
+      : mediumSurfaceColor(BUTTON_INVERSE_RECIPE.medium.roleSurface.rest);
+    const mediumHover = usesSharedLightMedium
+      ? inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.lightSurfaceAlpha.hover)
+      : mediumSurfaceColor(BUTTON_INVERSE_RECIPE.medium.roleSurface.hover);
+    const mediumPressed = usesSharedLightMedium
+      ? inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.lightSurfaceAlpha.pressed)
+      : mediumSurfaceColor(BUTTON_INVERSE_RECIPE.medium.roleSurface.pressed);
+    const mediumForeground = usesSharedLightMedium
+      ? BUTTON_INVERSE_RECIPE.low.content
+      : BUTTON_INVERSE_RECIPE.medium.roleForeground;
 
     return {
       boxColor: {
         medium: {
-          rest: inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.restAlpha),
-          hover: inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.hoverAlpha),
-          pressed: inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.pressedAlpha),
+          rest: mediumRest,
+          hover: mediumHover,
+          pressed: mediumPressed,
           disabled: inverseDisabledBackground,
           selected: {
-            rest: inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.selectedAlpha)
+            rest: mediumPressed
           }
         },
         high: {
@@ -335,7 +357,7 @@ export function createFluent2MicrosoftButtonSchema({
           pressed: roleColor(BUTTON_INVERSE_RECIPE.high.pressed),
           disabled: inverseDisabledBackground,
           selected: {
-            rest: roleColor(BUTTON_INVERSE_RECIPE.high.selected)
+            rest: roleColor(BUTTON_INVERSE_RECIPE.high.pressed)
           }
         },
         low: {
@@ -344,7 +366,7 @@ export function createFluent2MicrosoftButtonSchema({
           pressed: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha),
           disabled: inverseDisabledBackground,
           selected: {
-            rest: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.selectedAlpha)
+            rest: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha)
           }
         },
         lowest: {
@@ -352,7 +374,7 @@ export function createFluent2MicrosoftButtonSchema({
           hover: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.hoverAlpha),
           pressed: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha),
           selected: {
-            rest: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.selectedAlpha)
+            rest: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha)
           }
         }
       },
@@ -373,7 +395,7 @@ export function createFluent2MicrosoftButtonSchema({
       },
       textColor: {
         medium: {
-          rest: inverseWhite,
+          rest: roleReferenceColor(mediumForeground),
           disabled: {
             ref: inverseDisabledForeground
           }
@@ -391,18 +413,18 @@ export function createFluent2MicrosoftButtonSchema({
           },
           selected: {
             rest: {
-              ref: roleReferenceColor(BUTTON_INVERSE_RECIPE.high.foreground.selected)
+              ref: roleReferenceColor(BUTTON_INVERSE_RECIPE.high.foreground.pressed)
             }
           }
         },
         low: {
-          rest: inverseWhite,
+          rest: roleReferenceColor(BUTTON_INVERSE_RECIPE.low.content),
           disabled: {
             ref: inverseDisabledForeground
           }
         },
         lowest: {
-          rest: inverseWhite,
+          rest: roleReferenceColor(BUTTON_INVERSE_RECIPE.low.content),
           disabled: {
             ref: inverseDisabledForeground
           }
@@ -432,11 +454,17 @@ export function createFluent2MicrosoftButtonSchema({
     }
   };
 
+  const createInverseThemeIntentPalettes = (theme: ButtonRecipeTheme) => ({
+    primary: createInverseButtonIntent(theme, 'button.primary'),
+    neutral: createInverseButtonIntent(theme, 'button.neutral'),
+    destructive: createInverseButtonIntent(theme, 'button.destructive'),
+    positive: createInverseButtonIntent(theme, 'button.positive')
+  });
+
   const inverseButtonIntentPalettes = {
-    primary: createInverseButtonIntent('button.primary'),
-    neutral: createInverseButtonIntent('button.neutral'),
-    destructive: createInverseButtonIntent('button.destructive'),
-    positive: createInverseButtonIntent('button.positive')
+    light: createInverseThemeIntentPalettes('light'),
+    dark: createInverseThemeIntentPalettes('dark'),
+    darker: createInverseThemeIntentPalettes('darker')
   };
 
   const createBoxAndBorderContextPalettes = (theme: ButtonRecipeTheme) => ({
@@ -456,16 +484,16 @@ export function createFluent2MicrosoftButtonSchema({
     },
     inverse: {
       boxColor: {
-        primary: inverseButtonIntentPalettes.primary.boxColor,
-        neutral: inverseButtonIntentPalettes.neutral.boxColor,
-        destructive: inverseButtonIntentPalettes.destructive.boxColor,
-        positive: inverseButtonIntentPalettes.positive.boxColor
+        primary: inverseButtonIntentPalettes[theme].primary.boxColor,
+        neutral: inverseButtonIntentPalettes[theme].neutral.boxColor,
+        destructive: inverseButtonIntentPalettes[theme].destructive.boxColor,
+        positive: inverseButtonIntentPalettes[theme].positive.boxColor
       },
       borderColor: {
-        primary: inverseButtonIntentPalettes.primary.borderColor,
-        neutral: inverseButtonIntentPalettes.neutral.borderColor,
-        destructive: inverseButtonIntentPalettes.destructive.borderColor,
-        positive: inverseButtonIntentPalettes.positive.borderColor
+        primary: inverseButtonIntentPalettes[theme].primary.borderColor,
+        neutral: inverseButtonIntentPalettes[theme].neutral.borderColor,
+        destructive: inverseButtonIntentPalettes[theme].destructive.borderColor,
+        positive: inverseButtonIntentPalettes[theme].positive.borderColor
       }
     }
   });
@@ -481,10 +509,10 @@ export function createFluent2MicrosoftButtonSchema({
     },
     inverse: {
       textColor: {
-        primary: inverseButtonIntentPalettes.primary.textColor,
-        neutral: inverseButtonIntentPalettes.neutral.textColor,
-        destructive: inverseButtonIntentPalettes.destructive.textColor,
-        positive: inverseButtonIntentPalettes.positive.textColor
+        primary: inverseButtonIntentPalettes[theme].primary.textColor,
+        neutral: inverseButtonIntentPalettes[theme].neutral.textColor,
+        destructive: inverseButtonIntentPalettes[theme].destructive.textColor,
+        positive: inverseButtonIntentPalettes[theme].positive.textColor
       }
     }
   });

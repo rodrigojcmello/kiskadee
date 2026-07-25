@@ -1,6 +1,6 @@
 'use client';
 
-import type { ThemeMode } from '@kiskadee/core';
+import type { ThemeMode, TonalFunctionalReferenceName } from '@kiskadee/core';
 import { useEffect, useMemo, useState } from 'react';
 import {
   type ColorScaleJson,
@@ -15,6 +15,9 @@ export type ColorsJson = {
       string,
       {
         kind?: 'static' | 'dynamic';
+        functionalReferences?: Partial<
+          Record<ThemeMode, Partial<Record<TonalFunctionalReferenceName, number>>>
+        >;
         scales?: Partial<Record<ThemeMode, string>>;
       }
     >
@@ -232,7 +235,7 @@ export function useColorScaleTones(params: {
   designSystemKey: string;
   theme: ThemeMode;
   selection: SelectionValue;
-  tones: readonly string[];
+  tones: readonly (string | TonalFunctionalReferenceName)[];
   enabled?: boolean;
 }): {
   meta: ColorScaleMeta | null;
@@ -241,7 +244,7 @@ export function useColorScaleTones(params: {
   picked: Record<string, string | undefined>;
 } {
   const { designSystemKey, theme, selection, tones, enabled } = params;
-  const { scale, meta, loading, error } = useColorScale({
+  const { colors, scale, meta, loading, error } = useColorScale({
     designSystemKey,
     theme,
     selection,
@@ -254,14 +257,29 @@ export function useColorScaleTones(params: {
     if (!scale) return out;
 
     for (const t of tones) {
+      let resolvedTone = String(t);
+
+      if (t === 'subtle' || t === 'vivid') {
+        const resolvedPrimitive = meta?.resolvedPrimitiveRef
+          ? parsePrimitiveRef(meta.resolvedPrimitiveRef)
+          : null;
+        const functionalTone = resolvedPrimitive
+          ? colors?.primitiveColors?.[resolvedPrimitive.baseColor]?.[resolvedPrimitive.variant]
+              ?.functionalReferences?.[theme]?.[t]
+          : undefined;
+
+        if (functionalTone === undefined) continue;
+        resolvedTone = String(functionalTone);
+      }
+
       out[t] = pickScaleTone({
         scale,
-        tone: String(t)
+        tone: resolvedTone
       });
     }
 
     return out;
-  }, [scale, tones]);
+  }, [colors, meta?.resolvedPrimitiveRef, scale, theme, tones]);
 
   return { meta, loading, error, picked };
 }
