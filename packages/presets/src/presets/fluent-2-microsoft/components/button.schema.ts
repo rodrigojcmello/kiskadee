@@ -166,6 +166,11 @@ const BUTTON_ON_VIVID_RECIPE = {
   },
   low: {
     content: { reference: 'subtle', offset: 4 },
+    borderAlpha: {
+      light: 30,
+      dark: 100,
+      darker: 100
+    },
     hoverAlpha: 10,
     pressedAlpha: 30
   },
@@ -317,6 +322,13 @@ export function createFluent2MicrosoftButtonSchema({
       0,
       BUTTON_ON_VIVID_RECIPE.disabled.backgroundAlpha[theme]
     );
+    const onVividLowBorder = c(
+      'default',
+      'l',
+      'button.neutral',
+      0,
+      BUTTON_ON_VIVID_RECIPE.low.borderAlpha[theme]
+    );
     const roleColor = (tone: KiskadeeTone) => c('default', 'l', role, tone);
     const roleReferenceColor = (locator: FunctionalToneLocator) =>
       c.ref('default', 'l', role, locator.reference, locator.offset);
@@ -386,7 +398,7 @@ export function createFluent2MicrosoftButtonSchema({
           rest: onVividTransparent
         },
         low: {
-          rest: onVividWhite,
+          rest: onVividLowBorder,
           disabled: onVividTransparent
         },
         lowest: {
