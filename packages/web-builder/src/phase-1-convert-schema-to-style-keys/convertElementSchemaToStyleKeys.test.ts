@@ -39,7 +39,7 @@ describe('convertElementSchemaToStyleKeys', () => {
             palettes: {
               default: {
                 light: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         medium: {
@@ -80,7 +80,7 @@ describe('convertElementSchemaToStyleKeys', () => {
     expect(e1.palettes).toEqual({
       default: {
         light: {
-          default: {
+          onSubtle: {
             primary: {
               rest: ['boxColor__#5c423d']
             }
@@ -99,7 +99,7 @@ describe('convertElementSchemaToStyleKeys', () => {
       'primary::boxColor__#5c423d'
     );
 
-    expect(toneMetadataByPalette.get('default.light.default')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.onSubtle')?.get(metadataKey)).toEqual({
       tones: ['medium']
     });
   });
@@ -146,7 +146,7 @@ describe('convertElementSchemaToStyleKeys', () => {
             palettes: {
               default: {
                 light: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         high: {
@@ -155,7 +155,7 @@ describe('convertElementSchemaToStyleKeys', () => {
                       }
                     }
                   },
-                  inverse: {
+                  onVivid: {
                     boxColor: {
                       primary: {
                         lowest: {
@@ -166,7 +166,7 @@ describe('convertElementSchemaToStyleKeys', () => {
                   }
                 },
                 dark: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         medium: {
@@ -192,13 +192,13 @@ describe('convertElementSchemaToStyleKeys', () => {
       'primary::boxColor__#000000'
     );
 
-    expect(toneMetadataByPalette.get('default.light.default')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.onSubtle')?.get(metadataKey)).toEqual({
       tones: ['high']
     });
-    expect(toneMetadataByPalette.get('default.light.inverse')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.onVivid')?.get(metadataKey)).toEqual({
       tones: ['lowest']
     });
-    expect(toneMetadataByPalette.get('default.dark.default')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.dark.onSubtle')?.get(metadataKey)).toEqual({
       tones: ['medium']
     });
   });

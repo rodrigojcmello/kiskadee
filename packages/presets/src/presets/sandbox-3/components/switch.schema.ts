@@ -165,7 +165,7 @@ const sizes = {
 const trackPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             high: states({
@@ -454,7 +454,7 @@ const trackPalettes = {
 const thumbPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             high: thumbStates({
@@ -592,7 +592,7 @@ const thumbPalettes = {
 const textPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             high: {
@@ -669,7 +669,7 @@ const textPalettes = {
 const iconPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             high: states({

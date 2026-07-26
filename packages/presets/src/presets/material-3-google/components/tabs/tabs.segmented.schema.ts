@@ -44,7 +44,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 borderColor: {
                   neutral: {
                     medium: {
@@ -55,7 +55,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 borderColor: {
                   neutral: {
                     medium: {
@@ -99,7 +99,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -118,7 +118,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -158,7 +158,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -172,7 +172,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -201,7 +201,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -214,7 +214,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -244,7 +244,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -255,7 +255,7 @@ export function createMaterial3GoogleTabsSegmentedVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {

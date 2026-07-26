@@ -46,7 +46,7 @@ function createSwitchElementPalettes({
   return {
     track: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -110,7 +110,7 @@ function createSwitchElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -176,7 +176,7 @@ function createSwitchElementPalettes({
     })),
     thumb: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -228,7 +228,7 @@ function createSwitchElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -282,7 +282,7 @@ function createSwitchElementPalettes({
     })),
     label: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -298,7 +298,7 @@ function createSwitchElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -316,7 +316,7 @@ function createSwitchElementPalettes({
     })),
     icon: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -350,7 +350,7 @@ function createSwitchElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {

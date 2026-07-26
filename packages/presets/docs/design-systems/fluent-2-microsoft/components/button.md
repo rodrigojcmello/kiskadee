@@ -45,7 +45,7 @@ This file records source evidence and color decisions for the Button currently a
 | Light Button component set | `11045:3896` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Dark Button component set | `9026:2684` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
-| Inverse Button appearance | Figma component set and official Button usage | No inverse/on-brand appearance exists | Kiskadee extension |
+| On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 
 ## Official Size Contract
@@ -88,27 +88,27 @@ slightly larger on touch-first surfaces, without claiming that Fluent Web publis
 
 Kiskadee authors Button colors under the independent `surfaceContext` axis:
 
-- `default` is the existing Button appearance on the theme's ordinary surfaces;
-- `inverse` is the Button appearance intended for a locally strong surface, such as a Primary vivid
-  fill, without changing the global Light, Dark, or Darker theme.
+- `onSubtle` is the existing Button appearance on an ordinary, physically subtle surface;
+- `onVivid` is the Button appearance intended for a locally strong, physically vivid surface, such
+  as a Primary vivid fill, without changing the global Light, Dark, or Darker theme.
 
-Fluent's Button component set and official Button documentation do not expose an inverse,
-inverted, or on-brand Button appearance. Every `inverse` combination is therefore a **Kiskadee
+Fluent's Button component set and official Button documentation do not expose an inverted or
+on-brand Button appearance. Every `onVivid` combination is therefore a **Kiskadee
 extension**. The extension is not visually arbitrary: it composes the official Fluent
 `BrandBackgroundInverted`, `BrandForegroundOnLight`, `SubtleBackgroundInverted`,
 `NeutralForegroundOnBrand`, `NeutralStrokeOnBrand2`, and inverted disabled-token relationships.
 Those aliases are source material, not evidence that Fluent ships the resulting Button variant.
 
-`on-primary` is an upstream/application relationship that maps to Kiskadee `inverse`. It is not a
+`on-primary` is an upstream/application relationship that maps to Kiskadee `onVivid`. It is not a
 new theme, intent, or emphasis. The surrounding surface remains a consumer decision; neither the
 schema nor the React component detects its color.
 
-### Inverse High
+### On-vivid High
 
 Primary High adapts the official inverted Brand state rhythm. Other intents replace only the color
 family and remain Kiskadee extensions.
 
-| State | Official Primary source | Source value | Kiskadee inverse mapping |
+| State | Official Primary source | Source value | Kiskadee on-vivid mapping |
 | --- | --- | --- | --- |
 | Rest background | `BrandBackgroundInverted.Rest` | White | neutral L0 |
 | Hover background | Brand-160 | `#d9f1ff` | current intent L4 |
@@ -123,12 +123,12 @@ The active generated Fluent Blue values are L4 `#e1efff`, L12 `#a4cfff`, L50 `#0
 `#0059a1`, and L65 `#0d477e`. The upstream-only Selected references remain recorded in the table
 to preserve provenance, but the emitted Selected values now equal Pressed. Non-Primary intents use
 the same positions in their approved primitive family. The recipe deliberately uses the physically
-Light track for inverse High in Light, Dark, and Darker because the local Button surface itself is
+Light track for on-vivid High in Light, Dark, and Darker because the local Button surface itself is
 light.
 
-### Inverse Medium, Low, And Lowest
+### On-vivid Medium, Low, And Lowest
 
-The remaining inverse emphases extend Fluent's inverted/on-brand token grammar while preserving
+The remaining on-vivid emphases extend Fluent's inverted/on-brand token grammar while preserving
 the selected Button intent. Light Medium deliberately uses one shared White overlay across all
 intents; its identity comes from the role-aware foreground instead of a second colored surface.
 Low keeps one shared White border across intents, preserving a stable outline against the strong
@@ -157,7 +157,7 @@ no longer participates in intent differentiation.
 Dark and Darker retain the earlier role-aware Medium candidate: `subtle +4/+6/+8` sources are
 alpha-calibrated against the canonical Primary vivid surface at Delta E OK
 `0.024/0.032/0.04`, and their foreground remains `subtle -2`. The Light physical track remains
-intentional for inverse colors because `inverse` describes a component on a locally strong
+intentional for on-vivid colors because `onVivid` describes a component on a locally strong
 surface, not the global theme orientation. Disabled remains neutral across every theme.
 
 ### Selected State Simplification
@@ -219,7 +219,7 @@ the Button matrix:
 
 Over white, the Light overlay composes to approximately `#f2f2f2`, retaining the appearance of the
 opaque L3 `#f0f2f7`. Over the Light neutral L3 surface, it composes to approximately `#e4e6eb`
-instead of disappearing into the background. The inverse Dark overlay follows the same
+instead of disappearing into the background. The on-vivid Dark overlay follows the same
 surface-relative principle on dark and absolute-black surfaces. After the adaptive Button
 background is composed, the Light foreground resolves to approximately `#b5b8c1` on white,
 `#b2b6c0` on Light neutral L3, and `#aeb4c1` on Light primary. Disabled borders remain transparent.
@@ -498,14 +498,14 @@ changing the asset scales.
 - `BUTTON_DEFAULT_TONAL_RECIPE` is the source of Default tonal positions and explicit High
   foreground caps
   for every Button intent.
-- `BUTTON_INVERSE_RECIPE` owns the on-strong-surface formula. Light Medium uses shared neutral L0
+- `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. Light Medium uses shared neutral L0
   White overlays and differentiates intents only through `subtle +4` foregrounds. Dark and Darker
   retain the role-aware Medium surface calibration. Low/Lowest content uses `subtle +4`, and the
   Low border resolves universally from neutral L0 White. The context-relative interaction overlays
   and disabled treatment also remain neutral.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
   `button.destructive`, or `button.positive`; it does not calculate foreground contrast.
-- `createInverseButtonIntent()` resolves the same four Layer 3 roles through the Light physical
+- `createOnVividButtonIntent()` resolves the same four Layer 3 roles through the Light physical
   track and official Fluent inverted-token rhythm; it does not inspect the surrounding surface.
 - Every Button `selected.rest` remains explicit but resolves from the corresponding Pressed value
   across all themes, contexts, intents, and emphases.
@@ -516,8 +516,8 @@ changing the asset scales.
 - Filled `e2.textColor.*.*.disabled` foregrounds use neutral L20 at 82% in Light and solid D35 in
   Dark/Darker. Lowest keeps the official solid L16/D35 mapping because it has no disabled fill.
 - Every intent exposes High, Medium, Low, and Lowest in Light, Dark, and Darker.
-- `e1.borderColor.*.low` is the only visible border while enabled. In `default`, its emitted alpha
-  is resolved from the shared Delta E OK target and the canonical Neutral surface. In `inverse`,
+- `e1.borderColor.*.low` is the only visible border while enabled. In `onSubtle`, its emitted alpha
+  is resolved from the shared Delta E OK target and the canonical Neutral surface. In `onVivid`,
   every intent uses neutral L0 White. Every Low disabled border and all Lowest borders are
   transparent.
 - Official Fluent Button surfaces omit `focus` when Focus is visually identical to Rest. The base
@@ -563,4 +563,4 @@ changing the asset scales.
   surface-position exception. A mismatch must first be classified as a recipe defect or a
   tonal-scale defect.
 - Migrate the existing Switch on-primary appearance from its overloaded Low emphasis to the shared
-  `surfaceContext="inverse"` contract in a separate component-scoped change.
+  `surfaceContext="onVivid"` contract in a separate component-scoped change.

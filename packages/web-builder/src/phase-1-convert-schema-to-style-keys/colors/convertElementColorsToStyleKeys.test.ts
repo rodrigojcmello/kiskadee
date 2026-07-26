@@ -12,7 +12,7 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          default: {
+          onSubtle: {
             boxColor: {
               primary: {
                 medium: { rest: '#ffbf00' }
@@ -26,7 +26,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          default: {
+          onSubtle: {
             primary: {
               rest: ['boxColor__#ffbf00']
             }
@@ -40,7 +40,7 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          default: {
+          onSubtle: {
             borderColor: {
               primary: {
                 medium: {
@@ -57,7 +57,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          default: {
+          onSubtle: {
             primary: {
               rest: ['borderColor__#ffffff'],
               hover: ['borderColor==hover__#ffffff1a']
@@ -72,7 +72,7 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          default: {
+          onSubtle: {
             textColor: {
               primary: {
                 medium: {
@@ -107,7 +107,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          default: {
+          onSubtle: {
             primary: {
               rest: ['textColor__#40bf40', 'borderColor__#40bf40'],
               hover: ['textColor==hover__#4040bf80']
@@ -129,7 +129,7 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          default: {
+          onSubtle: {
             // Legacy direct interaction‐state map at property level (invalid now)
             boxColor: {
               rest: '#90484484',
@@ -148,7 +148,7 @@ describe('convertElementColorsToStyleKeys', () => {
     const elementPalettes: ElementPalettes = {
       default: {
         light: {
-          default: {
+          onSubtle: {
             boxColor: {
               primary: {
                 medium: {
@@ -172,7 +172,7 @@ describe('convertElementColorsToStyleKeys', () => {
     expect(result.styleKeys).toEqual({
       default: {
         light: {
-          default: {
+          onSubtle: {
             primary: {
               rest: ['boxColor__#5c423de6'],
               hover: ['boxColor--hover__#704e43e6'],
@@ -194,7 +194,7 @@ describe('convertElementColorsToStyleKeys – invalid inputs', () => {
     const elementPalettes = {
       default: {
         light: {
-          default: {
+          onSubtle: {
             boxColor: {
               primary: {
                 medium: {

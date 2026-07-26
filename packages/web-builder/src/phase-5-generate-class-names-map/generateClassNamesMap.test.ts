@@ -102,7 +102,7 @@ describe('generateClassNamesMapSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    default: {
+                    onSubtle: {
                       neutral: {
                         rest: [colorKey]
                       }
@@ -117,7 +117,7 @@ describe('generateClassNamesMapSplit', () => {
     } as unknown as ComponentStyleKeyMap;
     const toneMetadataByPalette = new Map([
       [
-        'default.light.default',
+        'default.light.onSubtle',
         new Map([
           [
             buildScopedToneMetadataKey(
@@ -167,7 +167,7 @@ describe('generateClassNamesMapSplit', () => {
       rs: undefined
     });
     expect((coreOutline as any).e3.s?.['md:1']).toBe('tf-height tf-padding');
-    expect((paletteOutline as any).e4.c?.d?.neutral).toEqual({
+    expect((paletteOutline as any).e4.c?.s?.neutral).toEqual({
       m: 'tf-color'
     });
   });
@@ -189,7 +189,7 @@ describe('generateClassNamesMapSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    default: {
+                    onSubtle: {
                       textColor: {
                         primary: {
                           high: {
@@ -207,7 +207,7 @@ describe('generateClassNamesMapSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    default: {
+                    onSubtle: {
                       textColor: {
                         primary: {
                           medium: {
@@ -235,8 +235,8 @@ describe('generateClassNamesMapSplit', () => {
     );
 
     const button = out.palettes['default.light'].button as Record<string, ClassNameByElementJSON>;
-    const e2Primary = button.e2.c?.d?.primary as ColorClasses;
-    const e3Primary = button.e3.c?.d?.primary as ColorClasses;
+    const e2Primary = button.e2.c?.s?.primary as ColorClasses;
+    const e3Primary = button.e3.c?.s?.primary as ColorClasses;
 
     expect(e2Primary).toEqual({
       h: 'txt'
@@ -260,12 +260,12 @@ describe('generateClassNamesMapSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         primary: { high: { rest: '#ffffff' } }
                       }
                     },
-                    inverse: {
+                    onVivid: {
                       boxColor: {
                         primary: { low: { rest: '#ffffff' } }
                       }
@@ -287,8 +287,8 @@ describe('generateClassNamesMapSplit', () => {
     );
     const button = out.palettes['default.light'].button as Record<string, ClassNameByElementJSON>;
 
-    expect(button.e1.c?.d?.primary).toEqual({ h: 'surface' });
-    expect(button.e1.c?.i?.primary).toEqual({ l: 'surface' });
+    expect(button.e1.c?.s?.primary).toEqual({ h: 'surface' });
+    expect(button.e1.c?.v?.primary).toEqual({ l: 'surface' });
   });
 
   it('groups border radius effects by size inside effect buckets', () => {

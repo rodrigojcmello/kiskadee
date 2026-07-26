@@ -44,7 +44,7 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   primary: {
                     medium: {
@@ -100,7 +100,7 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 textColor: {
                   primary: {
                     medium: {

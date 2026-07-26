@@ -286,26 +286,26 @@ const CARD_RECIPES = {
 const CANONICAL_CARD_SURFACES = {
   default: {
     light: [
-      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
-      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
-      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
-      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
     ],
     dark: [
-      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
-      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
-      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
-      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
     ],
     darker: [
-      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
-      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
-      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
-      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' },
-      { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'default' }
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' },
+      { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onSubtle' }
     ]
   }
 } as const satisfies NonNullable<CardComponent['options']>['canonicalSurfaces'];
@@ -454,13 +454,13 @@ export function createFluent2MicrosoftCardSchema({
         },
         palettes: buildBySegment(segmentNames, (segmentName) => ({
           light: {
-            default: createCardPalette(c, segmentName, 'light')
+            onSubtle: createCardPalette(c, segmentName, 'light')
           },
           dark: {
-            default: createCardPalette(c, segmentName, 'dark')
+            onSubtle: createCardPalette(c, segmentName, 'dark')
           },
           darker: {
-            default: createCardPalette(c, segmentName, 'darker')
+            onSubtle: createCardPalette(c, segmentName, 'darker')
           }
         }))
       }

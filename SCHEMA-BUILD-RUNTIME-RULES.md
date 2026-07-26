@@ -203,19 +203,19 @@ Context:
 
 Decision:
 
-- Component palettes include the orthogonal `surfaceContext` axis with `default` and `inverse`.
+- Component palettes include the orthogonal `surfaceContext` axis with `onSubtle` and `onVivid`.
 - The canonical palette path is
   `segment -> theme -> surfaceContext -> color property -> intent -> emphasis -> state`.
-- `default` is required for every declared segment/theme palette. `inverse` is optional, but when
-  present it must cover the same color-property, intent, and emphasis pairs as `default`.
-- `inverse` is selected explicitly by the visual component. It is not inferred from theme,
+- `onSubtle` is required for every declared segment/theme palette. `onVivid` is optional, but when
+  present it must cover the same color-property, intent, and emphasis pairs as `onSubtle`.
+- `onVivid` is selected explicitly by the visual component. It is not inferred from theme,
   background color, contrast, DOM ancestry, or runtime color measurement.
 - `on-primary` and similar design-system terms are documented source relationships that map to
-  `inverse`; they are not additional Kiskadee intents, themes, or emphasis levels.
+  `onVivid`; they are not additional Kiskadee intents, themes, or emphasis levels.
 
 Reason:
 
-- Default and inverse components must coexist in the same page and even in the same local region.
+- `onSubtle` and `onVivid` components must coexist in the same page and even in the same local region.
 - Keeping the axis independent preserves the meaning of intent and emphasis while allowing every
   supported appearance to adapt to a strong surrounding surface.
 - Precompiling both contexts keeps platform artifacts deterministic and avoids runtime color logic.
@@ -223,9 +223,9 @@ Reason:
 Consequence:
 
 - Web artifacts keep one file per segment/theme and publish separate compact color buckets for
-  default and inverse inside that file.
-- Omitted `surfaceContext` resolves to `default`. An explicitly requested unsupported `inverse`
-  context must not silently fall back to `default`.
+  `onSubtle` and `onVivid` inside that file.
+- Omitted `surfaceContext` resolves to `onSubtle`. An explicitly requested unsupported `onVivid`
+  context must not silently fall back to `onSubtle`.
 - Theme and surface-context controls remain independent in inspection tools and consumer APIs.
 - Provider inheritance or automatic surface detection requires a separate future contract.
 
@@ -343,7 +343,7 @@ Decision:
 - `components.card.options.canonicalSurfaces[segment][theme]` declares an ordered list of
   `{ intent, emphasis, contentSurfaceContext }` references.
 - The referenced visual value remains in
-  `components.card.elements.e1.palettes[segment][theme].default.boxColor`.
+  `components.card.elements.e1.palettes[segment][theme].onSubtle.boxColor`.
 - `contentSurfaceContext` describes the context recommended for descendants placed on that Card.
   It does not change the Card's own palette context.
 - The Web Builder validates every reference, resolves its `rest` color, and publishes
@@ -501,13 +501,13 @@ In artifacts:
 
 In schema:
 
-- `default` and optional `inverse` are keys below each declared segment/theme palette.
+- `onSubtle` and optional `onVivid` are keys below each declared segment/theme palette.
 
 In web class-map artifacts:
 
 - both contexts remain in the same segment/theme file so instances can coexist;
-- `c.d` stores default semantic color classes;
-- `c.i` stores inverse semantic color classes when the preset authors them.
+- `c.s` stores `onSubtle` semantic color classes;
+- `c.v` stores `onVivid` semantic color classes when the preset authors them.
 
 Runtime selects one precompiled bucket. It does not calculate contrast or synthesize a missing
 context.

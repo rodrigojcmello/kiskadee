@@ -252,7 +252,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightBlack.picked['0'],
         availableThemes: ['light'],
         row: 'light',
-        surfaceContexts: ['default']
+        surfaceContexts: ['onSubtle']
       },
       {
         key: 'light-neutral',
@@ -260,7 +260,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightBlack.picked.subtle,
         availableThemes: ['light'],
         row: 'light',
-        surfaceContexts: ['default']
+        surfaceContexts: ['onSubtle']
       },
       {
         key: 'light-blue',
@@ -268,7 +268,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightBlue.picked.subtle,
         availableThemes: ['light'],
         row: 'light',
-        surfaceContexts: ['default']
+        surfaceContexts: ['onSubtle']
       },
       {
         key: 'light-green',
@@ -276,7 +276,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightGreen.picked.subtle,
         availableThemes: ['light'],
         row: 'light',
-        surfaceContexts: ['default']
+        surfaceContexts: ['onSubtle']
       },
       {
         key: 'light-red',
@@ -284,7 +284,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightRed.picked.subtle,
         availableThemes: ['light'],
         row: 'light',
-        surfaceContexts: ['default']
+        surfaceContexts: ['onSubtle']
       },
       {
         key: 'light-purple',
@@ -292,7 +292,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightPurple.picked.subtle,
         availableThemes: ['light'],
         row: 'light',
-        surfaceContexts: ['default']
+        surfaceContexts: ['onSubtle']
       },
       {
         key: 'light-orange',
@@ -300,7 +300,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightOrange.picked.subtle,
         availableThemes: ['light'],
         row: 'light',
-        surfaceContexts: ['default']
+        surfaceContexts: ['onSubtle']
       },
       {
         key: 'vivid-blue',
@@ -308,7 +308,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightBlue.picked.vivid,
         availableThemes: ['light', 'dark', 'darker'],
         row: 'vivid',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'vivid-green',
@@ -316,7 +316,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightGreen.picked.vivid,
         availableThemes: ['light', 'dark', 'darker'],
         row: 'vivid',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'vivid-red',
@@ -324,7 +324,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightRed.picked.vivid,
         availableThemes: ['light', 'dark', 'darker'],
         row: 'vivid',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'vivid-purple',
@@ -332,7 +332,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightPurple.picked.vivid,
         availableThemes: ['light', 'dark', 'darker'],
         row: 'vivid',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'vivid-orange',
@@ -340,7 +340,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightOrange.picked.vivid,
         availableThemes: ['light', 'dark', 'darker'],
         row: 'vivid',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'vivid-black',
@@ -348,7 +348,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightBlack.picked.vivid,
         availableThemes: ['light', 'dark', 'darker'],
         row: 'vivid',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'black',
@@ -356,7 +356,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: lightBlack.picked['100'],
         availableThemes: ['dark', 'darker'],
         row: 'dark',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'dark-black',
@@ -364,7 +364,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: darkBlack.picked['5'],
         availableThemes: ['dark', 'darker'],
         row: 'dark',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'dark-blue',
@@ -372,7 +372,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: darkBlue.picked['5'],
         availableThemes: ['dark', 'darker'],
         row: 'dark',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'dark-green',
@@ -380,7 +380,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: darkGreen.picked['5'],
         availableThemes: ['dark', 'darker'],
         row: 'dark',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'dark-red',
@@ -388,7 +388,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: darkRed.picked['5'],
         availableThemes: ['dark', 'darker'],
         row: 'dark',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'dark-purple',
@@ -396,7 +396,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: darkPurple.picked['5'],
         availableThemes: ['dark', 'darker'],
         row: 'dark',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       },
       {
         key: 'dark-orange',
@@ -404,7 +404,7 @@ export function useButtonStressTestBackgroundTones() {
         resolvedColor: darkOrange.picked['5'],
         availableThemes: ['dark', 'darker'],
         row: 'dark',
-        surfaceContexts: ['default', 'inverse']
+        surfaceContexts: ['onSubtle', 'onVivid']
       }
     ];
 

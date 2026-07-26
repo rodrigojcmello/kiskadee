@@ -39,7 +39,7 @@ const paletteClassMap = {
     outline: {
       e3: {
         c: {
-          d: {
+          s: {
             neutral: {
               m: 'control-color'
             }
@@ -48,7 +48,7 @@ const paletteClassMap = {
       },
       e4: {
         c: {
-          d: {
+          s: {
             neutral: {
               m: 'input-color'
             }
@@ -124,7 +124,7 @@ describe('useComponentClassMap', () => {
         'md:1': 'control-radius'
       },
       c: {
-        d: {
+        s: {
           neutral: {
             m: 'control-color'
           }
@@ -136,7 +136,7 @@ describe('useComponentClassMap', () => {
         'md:1': 'input-size'
       },
       c: {
-        d: {
+        s: {
           neutral: {
             m: 'input-color'
           }

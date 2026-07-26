@@ -62,18 +62,18 @@ describe('Fluent 2 Button surface contexts', () => {
     const e1 = requireButtonSurfaceElement();
     const palettes = e1.palettes.default;
 
-    expect(palettes?.light?.default.boxColor?.primary?.high?.rest).toBe('#0064b4');
-    expect(palettes?.dark?.default.boxColor?.primary?.high?.rest).toBe('#0064b4');
-    expect(palettes?.darker?.default.boxColor?.primary?.high?.rest).toBe('#005ba4');
+    expect(palettes?.light?.onSubtle.boxColor?.primary?.high?.rest).toBe('#0064b4');
+    expect(palettes?.dark?.onSubtle.boxColor?.primary?.high?.rest).toBe('#0064b4');
+    expect(palettes?.darker?.onSubtle.boxColor?.primary?.high?.rest).toBe('#005ba4');
   });
 
-  it('publishes the complete inverse matrix for every Fluent theme', () => {
+  it('publishes the complete onVivid matrix for every Fluent theme', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
 
     for (const theme of THEMES) {
-      const surface = e1.palettes.default?.[theme]?.inverse;
-      const content = e2.palettes.default?.[theme]?.inverse;
+      const surface = e1.palettes.default?.[theme]?.onVivid;
+      const content = e2.palettes.default?.[theme]?.onVivid;
       expect(surface).toBeDefined();
       expect(content).toBeDefined();
 
@@ -87,25 +87,25 @@ describe('Fluent 2 Button surface contexts', () => {
     }
   });
 
-  it('customizes Light inverse surface hierarchy while preserving enabled recipes elsewhere', () => {
+  it('customizes Light onVivid surface hierarchy while preserving enabled recipes elsewhere', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
 
-    expect(e1.palettes.default?.dark?.inverse).toEqual(e1.palettes.default?.darker?.inverse);
-    expect(e2.palettes.default?.dark?.inverse).toEqual(e2.palettes.default?.darker?.inverse);
+    expect(e1.palettes.default?.dark?.onVivid).toEqual(e1.palettes.default?.darker?.onVivid);
+    expect(e2.palettes.default?.dark?.onVivid).toEqual(e2.palettes.default?.darker?.onVivid);
 
     for (const intent of INTENTS) {
       for (const emphasis of ['high', 'low', 'lowest'] as const) {
         for (const state of ['rest', 'hover', 'pressed', 'selected'] as const) {
           expect(
-            e1.palettes.default?.light?.inverse?.boxColor?.[intent]?.[emphasis]?.[state]
-          ).toEqual(e1.palettes.default?.dark?.inverse?.boxColor?.[intent]?.[emphasis]?.[state]);
+            e1.palettes.default?.light?.onVivid?.boxColor?.[intent]?.[emphasis]?.[state]
+          ).toEqual(e1.palettes.default?.dark?.onVivid?.boxColor?.[intent]?.[emphasis]?.[state]);
         }
-        expect(e1.palettes.default?.light?.inverse?.borderColor?.[intent]?.[emphasis]).toEqual(
-          e1.palettes.default?.dark?.inverse?.borderColor?.[intent]?.[emphasis]
+        expect(e1.palettes.default?.light?.onVivid?.borderColor?.[intent]?.[emphasis]).toEqual(
+          e1.palettes.default?.dark?.onVivid?.borderColor?.[intent]?.[emphasis]
         );
-        expect(e2.palettes.default?.light?.inverse?.textColor?.[intent]?.[emphasis]).toEqual(
-          e2.palettes.default?.dark?.inverse?.textColor?.[intent]?.[emphasis]
+        expect(e2.palettes.default?.light?.onVivid?.textColor?.[intent]?.[emphasis]).toEqual(
+          e2.palettes.default?.dark?.onVivid?.textColor?.[intent]?.[emphasis]
         );
       }
     }
@@ -114,8 +114,8 @@ describe('Fluent 2 Button surface contexts', () => {
   it('adapts the official Primary inverted state rhythm without duplicate focus colors', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
-    const surface = e1.palettes.default?.light?.inverse;
-    const content = e2.palettes.default?.light?.inverse;
+    const surface = e1.palettes.default?.light?.onVivid;
+    const content = e2.palettes.default?.light?.onVivid;
 
     expect(surface?.boxColor?.primary?.high).toEqual({
       rest: '#ffffff',
@@ -135,11 +135,11 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(content?.textColor?.primary?.high).not.toHaveProperty('focus');
   });
 
-  it('keeps inverse lower emphases role-aware with a shared white Low border', () => {
+  it('keeps onVivid lower emphases role-aware with a shared white Low border', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
-    const surface = e1.palettes.default?.light?.inverse;
-    const content = e2.palettes.default?.light?.inverse;
+    const surface = e1.palettes.default?.light?.onVivid;
+    const content = e2.palettes.default?.light?.onVivid;
 
     expect(surface?.boxColor?.primary?.medium).toMatchObject({
       rest: '#ffffff12',
@@ -165,11 +165,11 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(content?.textColor?.primary?.lowest?.rest).toBe('#c1deff');
   });
 
-  it('preserves each intent family across every inverse emphasis', () => {
+  it('preserves each intent family across every onVivid emphasis', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
-    const surface = e1.palettes.default?.light?.inverse;
-    const content = e2.palettes.default?.light?.inverse;
+    const surface = e1.palettes.default?.light?.onVivid;
+    const content = e2.palettes.default?.light?.onVivid;
 
     expect({
       primary: surface?.boxColor?.primary?.medium?.rest,
@@ -198,7 +198,7 @@ describe('Fluent 2 Button surface contexts', () => {
     for (const intent of INTENTS) {
       for (const emphasis of ['high', 'medium', 'low'] as const) {
         expect(surface?.boxColor?.[intent]?.[emphasis]?.disabled).toBe('#ffffff0a');
-        expect(e1.palettes.default?.dark?.inverse?.boxColor?.[intent]?.[emphasis]?.disabled).toBe(
+        expect(e1.palettes.default?.dark?.onVivid?.boxColor?.[intent]?.[emphasis]?.disabled).toBe(
           '#ffffff1a'
         );
       }

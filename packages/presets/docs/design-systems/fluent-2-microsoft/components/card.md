@@ -172,7 +172,7 @@ The complete implemented bucket matrix is:
 | `primary.low` | Base Primary treatment | Kiskadee extension |
 | `primary.medium` | `Brand/Background/2/Rest` | Official adapted surface alias; interaction deltas are Kiskadee extensions |
 | `primary.high` | Not emitted | Fluent has no distinct Primary surface between its subtle and vivid aliases |
-| `primary.highest` | `Brand/Background/1/Rest` | Official adapted vivid/inverse surface alias; interaction deltas are Kiskadee extensions |
+| `primary.highest` | `Brand/Background/1/Rest` | Official adapted vivid/on-vivid surface alias; interaction deltas are Kiskadee extensions |
 
 Primary Card buckets and the canonical Highest state progressions are Kiskadee
 semantic surface adaptations. Their colors resolve through documented tonal
@@ -180,7 +180,7 @@ positions rather than schema HEX literals. The source-backed Rest aliases
 remain distinct from the framework-authored interactive deltas.
 
 Card emphasis is intentionally sparse. `primary.medium` represents the source's
-subtle Brand surface and `primary.highest` represents its vivid/inverse Brand
+subtle Brand surface and `primary.highest` represents its vivid/on-vivid Brand
 surface. Fluent does not provide a distinct intermediate Brand surface with a
 comparable role to `neutral.high`, so `primary.high` is omitted instead of
 inventing another blue or assigning the vivid surface to a misleading bucket.
@@ -209,26 +209,26 @@ Light and Dark intentionally omit `neutral.highest` rather than exposing
 visually distinct Kiskadee extension outside the six official sticker-sheet
 aliases.
 
-The Card surface itself remains in `surfaceContext="default"`: its intent and
+The Card surface itself remains in `surfaceContext="onSubtle"`: its intent and
 emphasis select which surface the Card emits. The Card does not become
-`inverse` merely because it owns a strong or dark fill. Descendant components
+`onVivid` merely because it owns a strong or dark fill. Descendant components
 choose their own context independently.
 
 `components.card.options.canonicalSurfaces` publishes the source-backed
 surface catalog in its intended order for every theme:
 
-1. `neutral.low` -> descendant context `default`;
-2. `neutral.medium` -> descendant context `default`;
-3. `primary.medium` -> descendant context `default`;
-4. `neutral.high` -> descendant context `default`;
-5. `primary.highest` -> descendant context `inverse`;
-6. `neutral.highest` -> descendant context `default`, only in Darker.
+1. `neutral.low` -> descendant context `onSubtle`;
+2. `neutral.medium` -> descendant context `onSubtle`;
+3. `primary.medium` -> descendant context `onSubtle`;
+4. `neutral.high` -> descendant context `onSubtle`;
+5. `primary.highest` -> descendant context `onVivid`;
+6. `neutral.highest` -> descendant context `onSubtle`, only in Darker.
 
-The Primary vivid Card is therefore explicitly associated with `inverse` for
+The Primary vivid Card is therefore explicitly associated with `onVivid` for
 descendants without changing the Card's own palette. The Web Builder validates
 these references and publishes their resolved Rest values in
 `components/card.kiskadee.json`. Consumers use that artifact instead of
-duplicating the order or inferring inverse from luminance.
+duplicating the order or inferring surface context from luminance.
 
 This keeps surface ownership with Card and contrast/polarity treatment with the
 child instead of coupling Card appearance to every descendant.

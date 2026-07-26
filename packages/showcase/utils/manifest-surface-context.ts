@@ -5,7 +5,7 @@ export function getManifestSurfaceContext(
   component: ManifestComponent | undefined,
   segment: string,
   theme: ThemeMode,
-  surfaceContext: SurfaceContext = 'default'
+  surfaceContext: SurfaceContext = 'onSubtle'
 ) {
   return component?.surfaceContexts?.[`${segment}.${theme}`]?.[surfaceContext];
 }
@@ -14,7 +14,7 @@ export function getManifestComponentState(
   component: ManifestComponent | undefined,
   segment: string,
   theme: ThemeMode,
-  surfaceContext: SurfaceContext = 'default'
+  surfaceContext: SurfaceContext = 'onSubtle'
 ): ManifestComponentState | undefined {
   return getManifestSurfaceContext(component, segment, theme, surfaceContext)?.state;
 }

@@ -29,7 +29,11 @@ import {
 } from '@/hooks/use-background-tones';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
 import { SwatchRadioGroup } from '@/k-components';
-import { getAvailableButtonStressTestBackgrounds } from '@/utils/button-stress-test-backgrounds';
+import {
+  getAvailableButtonStressTestBackgrounds,
+  getPreferredButtonStressTestBackground,
+  resolveBackgroundSurfaceContext
+} from '@/utils/button-stress-test-backgrounds';
 import { type CanonicalCardSurfaceKey, isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import {
   getManifestComponentState,
@@ -40,8 +44,8 @@ import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
 
 const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
-  { value: 'default', label: 'Default' },
-  { value: 'inverse', label: 'Inverse' }
+  { value: 'onSubtle', label: 'On subtle' },
+  { value: 'onVivid', label: 'On vivid' }
 ];
 const BACKGROUND_MODE_OPTIONS = [
   { value: 'canonical', label: 'Canonical' },
@@ -59,17 +63,17 @@ const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = 
 const COMPARISON_EMPHASES: ComponentEmphasis[] = ['high', 'medium', 'low', 'lowest'];
 
 function SurfaceContextComparison({
-  defaultBackground,
+  onSubtleBackground,
   fontName,
-  inverseBackground,
-  inverseSupported,
+  onVividBackground,
+  onVividSupported,
   scale,
   textAlign
 }: {
-  defaultBackground: string | undefined;
+  onSubtleBackground: string | undefined;
   fontName: string;
-  inverseBackground: string | undefined;
-  inverseSupported: boolean;
+  onVividBackground: string | undefined;
+  onVividSupported: boolean;
   scale: ElementSizeValue;
   textAlign: 'left' | 'center';
 }) {
@@ -77,14 +81,14 @@ function SurfaceContextComparison({
     <section className={s.contextComparison} aria-labelledby="surface-context-comparison-title">
       <h3 id="surface-context-comparison-title">Surface contexts</h3>
       <p className={s.contextComparisonDescription}>
-        The same Primary Rest buttons rendered simultaneously on conventional and strong surfaces.
+        The same Primary Rest buttons rendered simultaneously on subtle and vivid surfaces.
       </p>
       <div className={s.contextComparisonGrid}>
         <article className={s.contextCard}>
-          <h4>Default</h4>
+          <h4>On subtle</h4>
           <div
             className={`${s.contextSurface} k-root`}
-            style={defaultBackground ? { backgroundColor: defaultBackground } : undefined}
+            style={onSubtleBackground ? { backgroundColor: onSubtleBackground } : undefined}
           >
             {COMPARISON_EMPHASES.map((emphasis) => (
               <KButton
@@ -92,7 +96,7 @@ function SurfaceContextComparison({
                 intent="primary"
                 emphasis={emphasis}
                 scale={scale}
-                surfaceContext="default"
+                surfaceContext="onSubtle"
               >
                 <KButton.Label>
                   <SmoothText fontName={fontName} align={textAlign}>
@@ -104,19 +108,19 @@ function SurfaceContextComparison({
           </div>
         </article>
         <article className={s.contextCard}>
-          <h4>Inverse</h4>
+          <h4>On vivid</h4>
           <div
-            className={`${s.contextSurface} ${s.inverseContextSurface} k-root`}
-            style={inverseBackground ? { backgroundColor: inverseBackground } : undefined}
+            className={`${s.contextSurface} ${s.onVividContextSurface} k-root`}
+            style={onVividBackground ? { backgroundColor: onVividBackground } : undefined}
           >
-            {inverseSupported ? (
+            {onVividSupported ? (
               COMPARISON_EMPHASES.map((emphasis) => (
                 <KButton
                   key={emphasis}
                   intent="primary"
                   emphasis={emphasis}
                   scale={scale}
-                  surfaceContext="inverse"
+                  surfaceContext="onVivid"
                 >
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={textAlign}>
@@ -126,7 +130,7 @@ function SurfaceContextComparison({
                 </KButton>
               ))
             ) : (
-              <p className={s.contextUnavailable}>Inverse is not available in this palette.</p>
+              <p className={s.contextUnavailable}>On vivid is not available in this palette.</p>
             )}
           </div>
         </article>
@@ -145,7 +149,7 @@ export function Button() {
   const [isSimplified, setIsSimplified] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
-  const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('default');
+  const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('onSubtle');
   const [backgroundMode, setBackgroundMode] = React.useState<BackgroundMode>('canonical');
   const [canonicalSurface, setCanonicalSurface] =
     React.useState<CanonicalCardSurfaceKey>('neutral.low');
@@ -153,9 +157,8 @@ export function Button() {
     React.useState<ButtonStressTestBackgroundToneKey>('white');
   const stressTestBackgrounds = useButtonStressTestBackgroundTones();
   const availableStressTestTones = React.useMemo(
-    () =>
-      getAvailableButtonStressTestBackgrounds(stressTestBackgrounds.tones, theme, surfaceContext),
-    [stressTestBackgrounds.tones, surfaceContext, theme]
+    () => getAvailableButtonStressTestBackgrounds(stressTestBackgrounds.tones, theme),
+    [stressTestBackgrounds.tones, theme]
   );
   const stressTestBackgroundItems = React.useMemo(
     () =>
@@ -211,11 +214,11 @@ export function Button() {
         return;
       }
 
-      const nextStressTestSurface = getAvailableButtonStressTestBackgrounds(
+      const nextStressTestSurface = getPreferredButtonStressTestBackground(
         stressTestBackgrounds.tones,
         theme,
         nextSurfaceContext
-      )[0];
+      );
       if (nextStressTestSurface) setStressTestSurface(nextStressTestSurface.key);
     },
     [canonicalBackgrounds.tones, stressTestBackgrounds.tones, theme]
@@ -254,7 +257,7 @@ export function Button() {
     .join(' ');
 
   const buttonMeta = manifest?.components?.button;
-  const inverseSupported = supportsManifestSurfaceContext(buttonMeta, segment, theme, 'inverse');
+  const onVividSupported = supportsManifestSurfaceContext(buttonMeta, segment, theme, 'onVivid');
   const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
   );
@@ -264,11 +267,11 @@ export function Button() {
     availableButtonScaleOptions[0]?.value ??
     's:md:1';
   const buttonState = getManifestComponentState(buttonMeta, segment, theme, activeSurfaceContext);
-  const comparisonDefaultSurface = canonicalBackgrounds.tones.find(
-    (tone) => tone.contentSurfaceContext === 'default'
+  const comparisonOnSubtleSurface = canonicalBackgrounds.tones.find(
+    (tone) => tone.contentSurfaceContext === 'onSubtle'
   );
-  const comparisonInverseSurface = canonicalBackgrounds.tones.find(
-    (tone) => tone.contentSurfaceContext === 'inverse'
+  const comparisonOnVividSurface = canonicalBackgrounds.tones.find(
+    (tone) => tone.contentSurfaceContext === 'onVivid'
   );
 
   const buttonControls = (
@@ -282,9 +285,10 @@ export function Button() {
           onValueChange={(value) => {
             const nextSurfaceContext = value as SurfaceContext;
             setSurfaceContext(nextSurfaceContext);
-            selectBackgroundForSurfaceContext(nextSurfaceContext, backgroundMode);
+            setBackgroundMode('canonical');
+            selectBackgroundForSurfaceContext(nextSurfaceContext, 'canonical');
           }}
-          disabled={!inverseSupported}
+          disabled={!onVividSupported}
         />
         <ShowcaseControlField className={s.backgroundControl} fullWidth>
           <ShowcaseSegmentedControl
@@ -303,11 +307,7 @@ export function Button() {
                 backgroundMode === 'canonical'
                   ? s.canonicalBackgroundToneGrid
                   : `${s.stressTestBackgroundToneGrid} ${
-                      theme === 'light'
-                        ? surfaceContext === 'default'
-                          ? s.stressTestLightDefaultToneGrid
-                          : s.stressTestLightInverseToneGrid
-                        : s.stressTestDarkToneGrid
+                      theme === 'light' ? s.stressTestLightToneGrid : s.stressTestDarkToneGrid
                     }`
               }`}
               groupLabel={
@@ -318,11 +318,27 @@ export function Button() {
               value={activeBackgroundKey}
               onValueChange={(value) => {
                 if (backgroundMode === 'canonical') {
-                  setCanonicalSurface(value as CanonicalCardSurfaceKey);
+                  const nextCanonicalSurfaceKey = value as CanonicalCardSurfaceKey;
+                  const nextCanonicalSurface = canonicalBackgrounds.tones.find(
+                    (tone) => tone.key === nextCanonicalSurfaceKey
+                  );
+
+                  setCanonicalSurface(nextCanonicalSurfaceKey);
+                  if (nextCanonicalSurface) {
+                    setSurfaceContext(nextCanonicalSurface.contentSurfaceContext);
+                  }
                   return;
                 }
 
-                setStressTestSurface(value as ButtonStressTestBackgroundToneKey);
+                const nextStressTestSurfaceKey = value as ButtonStressTestBackgroundToneKey;
+                const nextStressTestSurface = stressTestBackgrounds.tones.find(
+                  (tone) => tone.key === nextStressTestSurfaceKey
+                );
+
+                setStressTestSurface(nextStressTestSurfaceKey);
+                if (nextStressTestSurface) {
+                  setSurfaceContext(resolveBackgroundSurfaceContext(nextStressTestSurface.row));
+                }
               }}
               items={backgroundItems}
               aria-label="Button example background"
@@ -425,9 +441,9 @@ export function Button() {
         {buttonControls}
       </ShowcaseRouteControls>
       <SurfaceContextComparison
-        defaultBackground={comparisonDefaultSurface?.resolvedColor}
-        inverseBackground={comparisonInverseSurface?.resolvedColor}
-        inverseSupported={inverseSupported}
+        onSubtleBackground={comparisonOnSubtleSurface?.resolvedColor}
+        onVividBackground={comparisonOnVividSurface?.resolvedColor}
+        onVividSupported={onVividSupported}
         fontName={fontName}
         scale={activeButtonScale}
         textAlign={alignment}

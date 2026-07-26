@@ -29,7 +29,7 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -47,7 +47,7 @@ export function createMaterial3GoogleTabsLineVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -95,7 +95,7 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -114,7 +114,7 @@ export function createMaterial3GoogleTabsLineVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -154,7 +154,7 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -168,7 +168,7 @@ export function createMaterial3GoogleTabsLineVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -201,7 +201,7 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -215,7 +215,7 @@ export function createMaterial3GoogleTabsLineVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -249,7 +249,7 @@ export function createMaterial3GoogleTabsLineVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -260,7 +260,7 @@ export function createMaterial3GoogleTabsLineVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {

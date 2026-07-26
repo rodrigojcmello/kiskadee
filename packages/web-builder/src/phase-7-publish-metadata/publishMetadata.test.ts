@@ -22,7 +22,7 @@ describe('buildComponentSurfaceContexts', () => {
             palettes: {
               default: {
                 light: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         high: {
@@ -32,7 +32,7 @@ describe('buildComponentSurfaceContexts', () => {
                       }
                     }
                   },
-                  inverse: {
+                  onVivid: {
                     boxColor: {
                       primary: {
                         high: {
@@ -52,7 +52,7 @@ describe('buildComponentSurfaceContexts', () => {
                   }
                 },
                 dark: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         high: { rest: '#0064b4' }
@@ -69,14 +69,14 @@ describe('buildComponentSurfaceContexts', () => {
 
     expect(buildComponentSurfaceContexts(schema, 'button')).toEqual({
       'default.light': {
-        default: {
+        onSubtle: {
           state: {
             primary: {
               high: { rest: true, hover: true }
             }
           }
         },
-        inverse: {
+        onVivid: {
           state: {
             primary: {
               high: { rest: true, pressed: true },
@@ -86,7 +86,7 @@ describe('buildComponentSurfaceContexts', () => {
         }
       },
       'default.dark': {
-        default: {
+        onSubtle: {
           state: {
             primary: {
               high: { rest: true }

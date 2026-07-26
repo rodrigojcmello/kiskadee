@@ -94,7 +94,7 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: {
@@ -165,7 +165,7 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: {
@@ -216,7 +216,7 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       textColor: {
                         neutral: {
                           medium: {
@@ -259,7 +259,7 @@ export function createElegantSwitchSchema(): SwitchComponent {
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       textColor: {
                         neutral: {
                           medium: {

@@ -9,37 +9,37 @@ function createCanonicalSurfaces(): CardCanonicalSurfacesPayload {
         {
           intent: 'neutral',
           emphasis: 'low',
-          contentSurfaceContext: 'default',
+          contentSurfaceContext: 'onSubtle',
           rest: '#ffffff'
         },
         {
           intent: 'neutral',
           emphasis: 'medium',
-          contentSurfaceContext: 'default',
+          contentSurfaceContext: 'onSubtle',
           rest: '#f9fbff'
         },
         {
           intent: 'primary',
           emphasis: 'medium',
-          contentSurfaceContext: 'default',
+          contentSurfaceContext: 'onSubtle',
           rest: '#e1efff'
         },
         {
           intent: 'neutral',
           emphasis: 'high',
-          contentSurfaceContext: 'default',
+          contentSurfaceContext: 'onSubtle',
           rest: '#f4f6fe'
         },
         {
           intent: 'primary',
           emphasis: 'highest',
-          contentSurfaceContext: 'inverse',
+          contentSurfaceContext: 'onVivid',
           rest: '#0064b4'
         },
         {
           intent: 'neutral',
           emphasis: 'highest',
-          contentSurfaceContext: 'default',
+          contentSurfaceContext: 'onSubtle',
           rest: '#000000'
         }
       ]
@@ -60,37 +60,37 @@ describe('canonical Card surface resolver', () => {
         key: 'neutral.low',
         label: 'Neutral low',
         resolvedColor: '#ffffff',
-        contentSurfaceContext: 'default'
+        contentSurfaceContext: 'onSubtle'
       },
       {
         key: 'neutral.medium',
         label: 'Neutral medium',
         resolvedColor: '#f9fbff',
-        contentSurfaceContext: 'default'
+        contentSurfaceContext: 'onSubtle'
       },
       {
         key: 'primary.medium',
         label: 'Primary medium',
         resolvedColor: '#e1efff',
-        contentSurfaceContext: 'default'
+        contentSurfaceContext: 'onSubtle'
       },
       {
         key: 'neutral.high',
         label: 'Neutral high',
         resolvedColor: '#f4f6fe',
-        contentSurfaceContext: 'default'
+        contentSurfaceContext: 'onSubtle'
       },
       {
         key: 'primary.highest',
         label: 'Primary highest',
         resolvedColor: '#0064b4',
-        contentSurfaceContext: 'inverse'
+        contentSurfaceContext: 'onVivid'
       },
       {
         key: 'neutral.highest',
         label: 'Neutral highest',
         resolvedColor: '#000000',
-        contentSurfaceContext: 'default'
+        contentSurfaceContext: 'onSubtle'
       }
     ]);
   });

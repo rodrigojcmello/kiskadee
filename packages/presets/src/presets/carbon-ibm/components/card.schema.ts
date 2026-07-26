@@ -241,10 +241,10 @@ export function createCarbonIbmCardSchema({
 
           return {
             light: {
-              default: createPalette(neutralMedium)
+              onSubtle: createPalette(neutralMedium)
             },
             dark: {
-              default: createPalette(neutralMediumDark)
+              onSubtle: createPalette(neutralMediumDark)
             }
           };
         })

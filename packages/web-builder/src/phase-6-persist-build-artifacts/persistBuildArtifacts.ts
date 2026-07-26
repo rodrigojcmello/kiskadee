@@ -71,10 +71,10 @@ const coreClassMapSchema = {
         },
         c: {
           type: 'object',
-          description: 'Color classes by surface context bucket (d = default, i = inverse).',
+          description: 'Color classes by surface context bucket (s = onSubtle, v = onVivid).',
           properties: {
-            d: { $ref: '#/definitions/semanticColors' },
-            i: { $ref: '#/definitions/semanticColors' }
+            s: { $ref: '#/definitions/semanticColors' },
+            v: { $ref: '#/definitions/semanticColors' }
           },
           additionalProperties: false
         },

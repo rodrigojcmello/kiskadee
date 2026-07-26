@@ -98,7 +98,7 @@ export function createIos27AppleSliderSchema({
 
   const textPalettes = buildBySegment(segmentNames, () => ({
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: {
@@ -122,7 +122,7 @@ export function createIos27AppleSliderSchema({
 
   const optionalIndicatorPalettes = buildBySegment(segmentNames, () => ({
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: {
@@ -137,7 +137,7 @@ export function createIos27AppleSliderSchema({
 
   const transparentBorder = buildBySegment(segmentNames, () => ({
     light: {
-      default: {
+      onSubtle: {
         borderColor: {
           neutral: { medium: { rest: transparent, disabled: transparent } },
           primary: { medium: { rest: transparent, disabled: transparent } }
@@ -253,7 +253,7 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: {
@@ -268,7 +268,7 @@ export function createIos27AppleSliderSchema({
                           }
                         }
                       },
-                      ...transparentBorder.default.light.default
+                      ...transparentBorder.default.light.onSubtle
                     }
                   }
                 }))
@@ -287,7 +287,7 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: {
@@ -308,7 +308,7 @@ export function createIos27AppleSliderSchema({
                           }
                         }
                       },
-                      ...transparentBorder.default.light.default
+                      ...transparentBorder.default.light.onSubtle
                     }
                   }
                 }))
@@ -328,7 +328,7 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: { medium: { rest: iosSliderThumb, disabled: iosSliderThumb } },
                         primary: { medium: { rest: iosSliderThumb, disabled: iosSliderThumb } }
@@ -360,12 +360,12 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: { medium: { rest: transparent, disabled: transparent } },
                         primary: { medium: { rest: transparent, disabled: transparent } }
                       },
-                      ...transparentBorder.default.light.default
+                      ...transparentBorder.default.light.onSubtle
                     }
                   }
                 }))
@@ -391,7 +391,7 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: { rest: iosSliderTooltip, disabled: iosSliderTooltipDisabled }
@@ -439,7 +439,7 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: { rest: iosSliderTick, disabled: withAlpha(iosSliderTick, 30) }
@@ -448,7 +448,7 @@ export function createIos27AppleSliderSchema({
                           medium: { rest: iosSliderTick, disabled: withAlpha(iosSliderTick, 30) }
                         }
                       },
-                      ...transparentBorder.default.light.default
+                      ...transparentBorder.default.light.onSubtle
                     }
                   }
                 }))
@@ -491,7 +491,7 @@ export function createIos27AppleSliderSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: {
@@ -506,7 +506,7 @@ export function createIos27AppleSliderSchema({
                           }
                         }
                       },
-                      ...transparentBorder.default.light.default
+                      ...transparentBorder.default.light.onSubtle
                     }
                   }
                 }))

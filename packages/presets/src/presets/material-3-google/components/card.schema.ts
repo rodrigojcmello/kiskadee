@@ -65,7 +65,7 @@ export function createMaterial3GoogleCardSchema({
         },
         palettes: buildBySegment(segmentNames, (s) => ({
           light: {
-            default: {
+            onSubtle: {
               boxColor: {
                 neutral: {
                   medium: {

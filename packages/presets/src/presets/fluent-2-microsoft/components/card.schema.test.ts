@@ -12,26 +12,26 @@ describe('Fluent 2 Card canonical surfaces', () => {
     expect(schema.components.card?.options?.canonicalSurfaces).toEqual({
       default: {
         light: [
-          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
-          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
-          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
-          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
-          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
         ],
         dark: [
-          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
-          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
-          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
-          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
-          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
         ],
         darker: [
-          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
-          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
-          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
-          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
-          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' },
-          { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'default' }
+          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' },
+          { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onSubtle' }
         ]
       }
     });
@@ -40,23 +40,23 @@ describe('Fluent 2 Card canonical surfaces', () => {
   it('uses the tinted Fluent neutral family without replacing absolute white and black', () => {
     const palettes = requireCardSurfaceElement().palettes.default;
 
-    expect(palettes?.light?.default.boxColor?.neutral).toMatchObject({
+    expect(palettes?.light?.onSubtle.boxColor?.neutral).toMatchObject({
       lowest: { rest: '#ffffff00' },
       low: { rest: '#ffffff' },
       medium: { rest: '#f9fbff' },
       high: { rest: '#f4f6fe' }
     });
-    expect(palettes?.light?.default.boxColor?.neutral).not.toHaveProperty('highest');
+    expect(palettes?.light?.onSubtle.boxColor?.neutral).not.toHaveProperty('highest');
 
-    expect(palettes?.dark?.default.boxColor?.neutral).toMatchObject({
+    expect(palettes?.dark?.onSubtle.boxColor?.neutral).toMatchObject({
       lowest: { rest: '#00000000' },
       low: { rest: '#262a33' },
       medium: { rest: '#1d1f28' },
       high: { rest: '#11131c' }
     });
-    expect(palettes?.dark?.default.boxColor?.neutral).not.toHaveProperty('highest');
+    expect(palettes?.dark?.onSubtle.boxColor?.neutral).not.toHaveProperty('highest');
 
-    expect(palettes?.darker?.default.boxColor?.neutral).toMatchObject({
+    expect(palettes?.darker?.onSubtle.boxColor?.neutral).toMatchObject({
       lowest: { rest: '#00000000' },
       low: { rest: '#262a33' },
       medium: { rest: '#1d1f28' },
@@ -66,8 +66,8 @@ describe('Fluent 2 Card canonical surfaces', () => {
   });
 
   it('keeps adjacent Neutral Background stops as state deltas instead of duplicate surfaces', () => {
-    const light = requireCardSurfaceElement().palettes.default?.light?.default.boxColor?.neutral;
-    const dark = requireCardSurfaceElement().palettes.default?.dark?.default.boxColor?.neutral;
+    const light = requireCardSurfaceElement().palettes.default?.light?.onSubtle.boxColor?.neutral;
+    const dark = requireCardSurfaceElement().palettes.default?.dark?.onSubtle.boxColor?.neutral;
 
     expect(light?.high).toMatchObject({
       rest: '#f4f6fe',
@@ -94,8 +94,8 @@ describe('Fluent 2 Card canonical surfaces', () => {
       disabled: '#11131c'
     };
 
-    expect(palettes?.dark?.default.boxColor?.primary?.medium).toMatchObject(expectedPrimaryMedium);
-    expect(palettes?.darker?.default.boxColor?.primary?.medium).toMatchObject(
+    expect(palettes?.dark?.onSubtle.boxColor?.primary?.medium).toMatchObject(expectedPrimaryMedium);
+    expect(palettes?.darker?.onSubtle.boxColor?.primary?.medium).toMatchObject(
       expectedPrimaryMedium
     );
   });
@@ -117,18 +117,18 @@ describe('Fluent 2 Card canonical surfaces', () => {
       disabled: '#11131c'
     };
 
-    expect(palettes?.light?.default.boxColor?.primary).not.toHaveProperty('high');
-    expect(palettes?.light?.default.boxColor?.primary?.highest).toMatchObject(
+    expect(palettes?.light?.onSubtle.boxColor?.primary).not.toHaveProperty('high');
+    expect(palettes?.light?.onSubtle.boxColor?.primary?.highest).toMatchObject(
       expectedLightPrimaryHighest
     );
 
-    expect(palettes?.dark?.default.boxColor?.primary).not.toHaveProperty('high');
-    expect(palettes?.dark?.default.boxColor?.primary?.highest).toMatchObject(
+    expect(palettes?.dark?.onSubtle.boxColor?.primary).not.toHaveProperty('high');
+    expect(palettes?.dark?.onSubtle.boxColor?.primary?.highest).toMatchObject(
       expectedDarkPrimaryHighest
     );
 
-    expect(palettes?.darker?.default.boxColor?.primary).not.toHaveProperty('high');
-    expect(palettes?.darker?.default.boxColor?.primary?.highest).toMatchObject(
+    expect(palettes?.darker?.onSubtle.boxColor?.primary).not.toHaveProperty('high');
+    expect(palettes?.darker?.onSubtle.boxColor?.primary?.highest).toMatchObject(
       expectedDarkPrimaryHighest
     );
   });

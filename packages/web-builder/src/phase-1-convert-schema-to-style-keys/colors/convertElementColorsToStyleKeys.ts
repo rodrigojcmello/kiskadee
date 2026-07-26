@@ -133,7 +133,7 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
  * Converts an element's color palettes schema into nested style keys.
  *
  * High-level behavior:
- * - Iterates over segments, themes, and surface contexts (default/inverse).
+ * - Iterates over segments, themes, and surface contexts (onSubtle/onVivid).
  * - For each color property (textColor, borderColor, boxColor, ...), handles:
  *   - a map of semantic colors (primary, secondary, greenLike, yellowLike, redLike, neutral)
  * - For every interaction state found (rest, hover, focus, ...), it:

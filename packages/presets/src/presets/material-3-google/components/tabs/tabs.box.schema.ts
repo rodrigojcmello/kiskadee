@@ -52,7 +52,7 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -63,7 +63,7 @@ export function createMaterial3GoogleTabsBoxVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -104,7 +104,7 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -123,7 +123,7 @@ export function createMaterial3GoogleTabsBoxVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -163,7 +163,7 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -177,7 +177,7 @@ export function createMaterial3GoogleTabsBoxVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 textColor: {
                   neutral: {
                     medium: {
@@ -201,7 +201,7 @@ export function createMaterial3GoogleTabsBoxVariant({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {
@@ -214,7 +214,7 @@ export function createMaterial3GoogleTabsBoxVariant({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     medium: {

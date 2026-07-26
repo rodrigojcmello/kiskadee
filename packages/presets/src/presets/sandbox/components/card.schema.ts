@@ -219,7 +219,7 @@ export function createSandboxCardSchema({
         },
         palettes: buildBySegment(segmentNames, () => ({
           light: {
-            default: {
+            onSubtle: {
               boxColor: {
                 neutral: {
                   lowest: {

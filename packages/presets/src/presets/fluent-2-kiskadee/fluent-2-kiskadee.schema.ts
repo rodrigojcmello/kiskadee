@@ -101,7 +101,7 @@ export const schema: Schema<Segments> = {
               // Gradient support for dynamic segments will be added later.
               return {
                 light: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         high: {
@@ -121,7 +121,7 @@ export const schema: Schema<Segments> = {
                   }
                 },
                 dark: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         high: {
@@ -145,7 +145,7 @@ export const schema: Schema<Segments> = {
             {
               modern: (segmentName) => ({
                 light: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         high: {
@@ -165,7 +165,7 @@ export const schema: Schema<Segments> = {
                   }
                 },
                 dark: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       primary: {
                         high: {
@@ -211,7 +211,7 @@ export const schema: Schema<Segments> = {
             (segmentName) => {
               return {
                 light: {
-                  default: {
+                  onSubtle: {
                     textColor: {
                       primary: {
                         high: {
@@ -225,7 +225,7 @@ export const schema: Schema<Segments> = {
                   }
                 },
                 dark: {
-                  default: {
+                  onSubtle: {
                     textColor: {
                       primary: {
                         high: {
@@ -243,7 +243,7 @@ export const schema: Schema<Segments> = {
             {
               modern: (segmentName) => ({
                 light: {
-                  default: {
+                  onSubtle: {
                     textColor: {
                       primary: {
                         high: {

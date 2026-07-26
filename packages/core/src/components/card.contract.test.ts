@@ -10,12 +10,12 @@ function createCard() {
             {
               intent: 'neutral',
               emphasis: 'low',
-              contentSurfaceContext: 'default'
+              contentSurfaceContext: 'onSubtle'
             },
             {
               intent: 'primary',
               emphasis: 'highest',
-              contentSurfaceContext: 'inverse'
+              contentSurfaceContext: 'onVivid'
             }
           ]
         }
@@ -27,7 +27,7 @@ function createCard() {
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   neutral: {
                     low: { rest: '#ffffff' }
@@ -55,12 +55,12 @@ describe('validateCardComponentContract', () => {
     card.options.canonicalSurfaces.default.light.push({
       intent: 'primary',
       emphasis: 'highest',
-      contentSurfaceContext: 'inverse'
+      contentSurfaceContext: 'onVivid'
     });
     card.options.canonicalSurfaces.default.light.push({
       intent: 'primary',
       emphasis: 'high',
-      contentSurfaceContext: 'default'
+      contentSurfaceContext: 'onSubtle'
     });
 
     expect(validateCardComponentContract(card)).toEqual(
@@ -83,7 +83,7 @@ describe('validateCardComponentContract', () => {
       expect.arrayContaining([
         expect.stringContaining('.intent: expected Card intent'),
         expect.stringContaining('.emphasis: expected component emphasis'),
-        expect.stringContaining('.contentSurfaceContext: expected "default" or "inverse"')
+        expect.stringContaining('.contentSurfaceContext: expected "onSubtle" or "onVivid"')
       ])
     );
   });

@@ -92,7 +92,7 @@ describe('mapStyleKeyUsage', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['pA', 'pB', 'pA'],
                     disabled: ['pC']
@@ -101,14 +101,14 @@ describe('mapStyleKeyUsage', () => {
                     hover: ['pB']
                   }
                 },
-                inverse: {
+                onVivid: {
                   primary: {
                     rest: ['pE']
                   }
                 }
               },
               dark: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['pD']
                   }

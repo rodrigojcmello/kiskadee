@@ -155,7 +155,7 @@ const patch = {
             // },
             default: {
               light: {
-                default: {
+                onSubtle: {
                   boxColor: {
                     destructive: {
                       high: {
@@ -226,7 +226,7 @@ const patch = {
           palettes: {
             modern: {
               light: {
-                default: {
+                onSubtle: {
                   textColor: {
                     primary: {
                       medium: {
@@ -280,7 +280,7 @@ const patch = {
                 }
               },
               dark: {
-                default: {
+                onSubtle: {
                   textColor: {
                     primary: {
                       medium: {
@@ -336,7 +336,7 @@ const patch = {
             },
             default: {
               light: {
-                default: {
+                onSubtle: {
                   textColor: {
                     destructive: {
                       medium: {

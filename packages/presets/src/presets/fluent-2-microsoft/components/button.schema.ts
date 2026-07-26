@@ -141,7 +141,7 @@ const BUTTON_DEFAULT_TONAL_RECIPE = {
   }
 } as const satisfies Record<ButtonRecipeTheme, ButtonDefaultThemeRecipe>;
 
-const BUTTON_INVERSE_RECIPE = {
+const BUTTON_ON_VIVID_RECIPE = {
   high: {
     hover: 4,
     pressed: 12,
@@ -189,19 +189,19 @@ export function createFluent2MicrosoftButtonSchema({
   const darkTransparent = c('default', 'd', 'button.neutral', 0, 0);
   const darkAdaptiveDisabled = c('default', 'd', 'button.neutral', 100, 5);
 
-  const inverseWhite = c('default', 'l', 'button.neutral', 0);
-  const inverseTransparent = c('default', 'l', 'button.neutral', 0, 0);
-  const inverseDisabledForeground = c(
+  const onVividWhite = c('default', 'l', 'button.neutral', 0);
+  const onVividTransparent = c('default', 'l', 'button.neutral', 0, 0);
+  const onVividDisabledForeground = c(
     'default',
     'l',
     'button.neutral',
     0,
-    BUTTON_INVERSE_RECIPE.disabled.foregroundAlpha
+    BUTTON_ON_VIVID_RECIPE.disabled.foregroundAlpha
   );
-  const inverseInteractionBackground = (alpha: number) =>
+  const onVividInteractionBackground = (alpha: number) =>
     c('default', 'l', 'button.neutral', 100, alpha);
-  const inverseMediumBackground = (alpha: number) => c('default', 'l', 'button.neutral', 0, alpha);
-  const inverseCanonicalSurface = c.ref('default', 'l', 'button.primary', 'vivid', 0);
+  const onVividMediumBackground = (alpha: number) => c('default', 'l', 'button.neutral', 0, alpha);
+  const onVividCanonicalSurface = c.ref('default', 'l', 'button.primary', 'vivid', 0);
 
   const createButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
     const recipe = BUTTON_DEFAULT_TONAL_RECIPE[theme];
@@ -308,14 +308,14 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
-  const createInverseButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
+  const createOnVividButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
     const usesSharedLightMedium = theme === 'light';
-    const inverseDisabledBackground = c(
+    const onVividDisabledBackground = c(
       'default',
       'l',
       'button.neutral',
       0,
-      BUTTON_INVERSE_RECIPE.disabled.backgroundAlpha[theme]
+      BUTTON_ON_VIVID_RECIPE.disabled.backgroundAlpha[theme]
     );
     const roleColor = (tone: KiskadeeTone) => c('default', 'l', role, tone);
     const roleReferenceColor = (locator: FunctionalToneLocator) =>
@@ -323,22 +323,22 @@ export function createFluent2MicrosoftButtonSchema({
     const mediumSurfaceColor = (locator: FunctionalToneLocator & { targetDeltaE: number }) =>
       createPerceptuallyBalancedAlpha({
         color: roleReferenceColor(locator),
-        surface: inverseCanonicalSurface,
+        surface: onVividCanonicalSurface,
         targetDeltaE: locator.targetDeltaE,
-        usage: 'Inverse Medium surface'
+        usage: 'On-vivid Medium surface'
       });
     const mediumRest = usesSharedLightMedium
-      ? inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.lightSurfaceAlpha.rest)
-      : mediumSurfaceColor(BUTTON_INVERSE_RECIPE.medium.roleSurface.rest);
+      ? onVividMediumBackground(BUTTON_ON_VIVID_RECIPE.medium.lightSurfaceAlpha.rest)
+      : mediumSurfaceColor(BUTTON_ON_VIVID_RECIPE.medium.roleSurface.rest);
     const mediumHover = usesSharedLightMedium
-      ? inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.lightSurfaceAlpha.hover)
-      : mediumSurfaceColor(BUTTON_INVERSE_RECIPE.medium.roleSurface.hover);
+      ? onVividMediumBackground(BUTTON_ON_VIVID_RECIPE.medium.lightSurfaceAlpha.hover)
+      : mediumSurfaceColor(BUTTON_ON_VIVID_RECIPE.medium.roleSurface.hover);
     const mediumPressed = usesSharedLightMedium
-      ? inverseMediumBackground(BUTTON_INVERSE_RECIPE.medium.lightSurfaceAlpha.pressed)
-      : mediumSurfaceColor(BUTTON_INVERSE_RECIPE.medium.roleSurface.pressed);
+      ? onVividMediumBackground(BUTTON_ON_VIVID_RECIPE.medium.lightSurfaceAlpha.pressed)
+      : mediumSurfaceColor(BUTTON_ON_VIVID_RECIPE.medium.roleSurface.pressed);
     const mediumForeground = usesSharedLightMedium
-      ? BUTTON_INVERSE_RECIPE.low.content
-      : BUTTON_INVERSE_RECIPE.medium.roleForeground;
+      ? BUTTON_ON_VIVID_RECIPE.low.content
+      : BUTTON_ON_VIVID_RECIPE.medium.roleForeground;
 
     return {
       boxColor: {
@@ -346,94 +346,94 @@ export function createFluent2MicrosoftButtonSchema({
           rest: mediumRest,
           hover: mediumHover,
           pressed: mediumPressed,
-          disabled: inverseDisabledBackground,
+          disabled: onVividDisabledBackground,
           selected: {
             rest: mediumPressed
           }
         },
         high: {
-          rest: inverseWhite,
-          hover: roleColor(BUTTON_INVERSE_RECIPE.high.hover),
-          pressed: roleColor(BUTTON_INVERSE_RECIPE.high.pressed),
-          disabled: inverseDisabledBackground,
+          rest: onVividWhite,
+          hover: roleColor(BUTTON_ON_VIVID_RECIPE.high.hover),
+          pressed: roleColor(BUTTON_ON_VIVID_RECIPE.high.pressed),
+          disabled: onVividDisabledBackground,
           selected: {
-            rest: roleColor(BUTTON_INVERSE_RECIPE.high.pressed)
+            rest: roleColor(BUTTON_ON_VIVID_RECIPE.high.pressed)
           }
         },
         low: {
-          rest: inverseTransparent,
-          hover: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.hoverAlpha),
-          pressed: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha),
-          disabled: inverseDisabledBackground,
+          rest: onVividTransparent,
+          hover: onVividInteractionBackground(BUTTON_ON_VIVID_RECIPE.low.hoverAlpha),
+          pressed: onVividInteractionBackground(BUTTON_ON_VIVID_RECIPE.low.pressedAlpha),
+          disabled: onVividDisabledBackground,
           selected: {
-            rest: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha)
+            rest: onVividInteractionBackground(BUTTON_ON_VIVID_RECIPE.low.pressedAlpha)
           }
         },
         lowest: {
-          rest: inverseTransparent,
-          hover: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.hoverAlpha),
-          pressed: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha),
+          rest: onVividTransparent,
+          hover: onVividInteractionBackground(BUTTON_ON_VIVID_RECIPE.low.hoverAlpha),
+          pressed: onVividInteractionBackground(BUTTON_ON_VIVID_RECIPE.low.pressedAlpha),
           selected: {
-            rest: inverseInteractionBackground(BUTTON_INVERSE_RECIPE.low.pressedAlpha)
+            rest: onVividInteractionBackground(BUTTON_ON_VIVID_RECIPE.low.pressedAlpha)
           }
         }
       },
       borderColor: {
         medium: {
-          rest: inverseTransparent
+          rest: onVividTransparent
         },
         high: {
-          rest: inverseTransparent
+          rest: onVividTransparent
         },
         low: {
-          rest: inverseWhite,
-          disabled: inverseTransparent
+          rest: onVividWhite,
+          disabled: onVividTransparent
         },
         lowest: {
-          rest: inverseTransparent
+          rest: onVividTransparent
         }
       },
       textColor: {
         medium: {
           rest: roleReferenceColor(mediumForeground),
           disabled: {
-            ref: inverseDisabledForeground
+            ref: onVividDisabledForeground
           }
         },
         high: {
-          rest: roleReferenceColor(BUTTON_INVERSE_RECIPE.high.foreground.rest),
+          rest: roleReferenceColor(BUTTON_ON_VIVID_RECIPE.high.foreground.rest),
           hover: {
-            ref: roleReferenceColor(BUTTON_INVERSE_RECIPE.high.foreground.hover)
+            ref: roleReferenceColor(BUTTON_ON_VIVID_RECIPE.high.foreground.hover)
           },
           pressed: {
-            ref: roleReferenceColor(BUTTON_INVERSE_RECIPE.high.foreground.pressed)
+            ref: roleReferenceColor(BUTTON_ON_VIVID_RECIPE.high.foreground.pressed)
           },
           disabled: {
-            ref: inverseDisabledForeground
+            ref: onVividDisabledForeground
           },
           selected: {
             rest: {
-              ref: roleReferenceColor(BUTTON_INVERSE_RECIPE.high.foreground.pressed)
+              ref: roleReferenceColor(BUTTON_ON_VIVID_RECIPE.high.foreground.pressed)
             }
           }
         },
         low: {
-          rest: roleReferenceColor(BUTTON_INVERSE_RECIPE.low.content),
+          rest: roleReferenceColor(BUTTON_ON_VIVID_RECIPE.low.content),
           disabled: {
-            ref: inverseDisabledForeground
+            ref: onVividDisabledForeground
           }
         },
         lowest: {
-          rest: roleReferenceColor(BUTTON_INVERSE_RECIPE.low.content),
+          rest: roleReferenceColor(BUTTON_ON_VIVID_RECIPE.low.content),
           disabled: {
-            ref: inverseDisabledForeground
+            ref: onVividDisabledForeground
           }
         }
       }
     };
   };
 
-  const defaultButtonIntentPalettes = {
+  const onSubtleButtonIntentPalettes = {
     light: {
       primary: createButtonIntent('light', 'button.primary'),
       neutral: createButtonIntent('light', 'button.neutral'),
@@ -454,65 +454,65 @@ export function createFluent2MicrosoftButtonSchema({
     }
   };
 
-  const createInverseThemeIntentPalettes = (theme: ButtonRecipeTheme) => ({
-    primary: createInverseButtonIntent(theme, 'button.primary'),
-    neutral: createInverseButtonIntent(theme, 'button.neutral'),
-    destructive: createInverseButtonIntent(theme, 'button.destructive'),
-    positive: createInverseButtonIntent(theme, 'button.positive')
+  const createOnVividThemeIntentPalettes = (theme: ButtonRecipeTheme) => ({
+    primary: createOnVividButtonIntent(theme, 'button.primary'),
+    neutral: createOnVividButtonIntent(theme, 'button.neutral'),
+    destructive: createOnVividButtonIntent(theme, 'button.destructive'),
+    positive: createOnVividButtonIntent(theme, 'button.positive')
   });
 
-  const inverseButtonIntentPalettes = {
-    light: createInverseThemeIntentPalettes('light'),
-    dark: createInverseThemeIntentPalettes('dark'),
-    darker: createInverseThemeIntentPalettes('darker')
+  const onVividButtonIntentPalettes = {
+    light: createOnVividThemeIntentPalettes('light'),
+    dark: createOnVividThemeIntentPalettes('dark'),
+    darker: createOnVividThemeIntentPalettes('darker')
   };
 
   const createBoxAndBorderContextPalettes = (theme: ButtonRecipeTheme) => ({
-    default: {
+    onSubtle: {
       boxColor: {
-        primary: defaultButtonIntentPalettes[theme].primary.boxColor,
-        neutral: defaultButtonIntentPalettes[theme].neutral.boxColor,
-        destructive: defaultButtonIntentPalettes[theme].destructive.boxColor,
-        positive: defaultButtonIntentPalettes[theme].positive.boxColor
+        primary: onSubtleButtonIntentPalettes[theme].primary.boxColor,
+        neutral: onSubtleButtonIntentPalettes[theme].neutral.boxColor,
+        destructive: onSubtleButtonIntentPalettes[theme].destructive.boxColor,
+        positive: onSubtleButtonIntentPalettes[theme].positive.boxColor
       },
       borderColor: {
-        primary: defaultButtonIntentPalettes[theme].primary.borderColor,
-        neutral: defaultButtonIntentPalettes[theme].neutral.borderColor,
-        destructive: defaultButtonIntentPalettes[theme].destructive.borderColor,
-        positive: defaultButtonIntentPalettes[theme].positive.borderColor
+        primary: onSubtleButtonIntentPalettes[theme].primary.borderColor,
+        neutral: onSubtleButtonIntentPalettes[theme].neutral.borderColor,
+        destructive: onSubtleButtonIntentPalettes[theme].destructive.borderColor,
+        positive: onSubtleButtonIntentPalettes[theme].positive.borderColor
       }
     },
-    inverse: {
+    onVivid: {
       boxColor: {
-        primary: inverseButtonIntentPalettes[theme].primary.boxColor,
-        neutral: inverseButtonIntentPalettes[theme].neutral.boxColor,
-        destructive: inverseButtonIntentPalettes[theme].destructive.boxColor,
-        positive: inverseButtonIntentPalettes[theme].positive.boxColor
+        primary: onVividButtonIntentPalettes[theme].primary.boxColor,
+        neutral: onVividButtonIntentPalettes[theme].neutral.boxColor,
+        destructive: onVividButtonIntentPalettes[theme].destructive.boxColor,
+        positive: onVividButtonIntentPalettes[theme].positive.boxColor
       },
       borderColor: {
-        primary: inverseButtonIntentPalettes[theme].primary.borderColor,
-        neutral: inverseButtonIntentPalettes[theme].neutral.borderColor,
-        destructive: inverseButtonIntentPalettes[theme].destructive.borderColor,
-        positive: inverseButtonIntentPalettes[theme].positive.borderColor
+        primary: onVividButtonIntentPalettes[theme].primary.borderColor,
+        neutral: onVividButtonIntentPalettes[theme].neutral.borderColor,
+        destructive: onVividButtonIntentPalettes[theme].destructive.borderColor,
+        positive: onVividButtonIntentPalettes[theme].positive.borderColor
       }
     }
   });
 
   const createTextContextPalettes = (theme: ButtonRecipeTheme) => ({
-    default: {
+    onSubtle: {
       textColor: {
-        primary: defaultButtonIntentPalettes[theme].primary.textColor,
-        neutral: defaultButtonIntentPalettes[theme].neutral.textColor,
-        destructive: defaultButtonIntentPalettes[theme].destructive.textColor,
-        positive: defaultButtonIntentPalettes[theme].positive.textColor
+        primary: onSubtleButtonIntentPalettes[theme].primary.textColor,
+        neutral: onSubtleButtonIntentPalettes[theme].neutral.textColor,
+        destructive: onSubtleButtonIntentPalettes[theme].destructive.textColor,
+        positive: onSubtleButtonIntentPalettes[theme].positive.textColor
       }
     },
-    inverse: {
+    onVivid: {
       textColor: {
-        primary: inverseButtonIntentPalettes[theme].primary.textColor,
-        neutral: inverseButtonIntentPalettes[theme].neutral.textColor,
-        destructive: inverseButtonIntentPalettes[theme].destructive.textColor,
-        positive: inverseButtonIntentPalettes[theme].positive.textColor
+        primary: onVividButtonIntentPalettes[theme].primary.textColor,
+        neutral: onVividButtonIntentPalettes[theme].neutral.textColor,
+        destructive: onVividButtonIntentPalettes[theme].destructive.textColor,
+        positive: onVividButtonIntentPalettes[theme].positive.textColor
       }
     }
   });

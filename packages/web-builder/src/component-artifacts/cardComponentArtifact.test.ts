@@ -17,12 +17,12 @@ function createSchema(): Schema {
                 {
                   intent: 'neutral',
                   emphasis: 'low',
-                  contentSurfaceContext: 'default'
+                  contentSurfaceContext: 'onSubtle'
                 },
                 {
                   intent: 'primary',
                   emphasis: 'highest',
-                  contentSurfaceContext: 'inverse'
+                  contentSurfaceContext: 'onVivid'
                 }
               ]
             }
@@ -34,7 +34,7 @@ function createSchema(): Schema {
             palettes: {
               default: {
                 light: {
-                  default: {
+                  onSubtle: {
                     boxColor: {
                       neutral: {
                         low: { rest: '#ffffff' }
@@ -65,13 +65,13 @@ describe('buildCardComponentArtifact', () => {
               {
                 intent: 'neutral',
                 emphasis: 'low',
-                contentSurfaceContext: 'default',
+                contentSurfaceContext: 'onSubtle',
                 rest: '#ffffff'
               },
               {
                 intent: 'primary',
                 emphasis: 'highest',
-                contentSurfaceContext: 'inverse',
+                contentSurfaceContext: 'onVivid',
                 rest: '#0064b4'
               }
             ]
@@ -83,7 +83,8 @@ describe('buildCardComponentArtifact', () => {
 
   it('fails explicitly when a canonical surface cannot resolve a solid Rest color', () => {
     const schema = createSchema();
-    const palette = schema.components.card?.elements.e1?.palettes?.default?.light?.default.boxColor;
+    const palette =
+      schema.components.card?.elements.e1?.palettes?.default?.light?.onSubtle.boxColor;
     if (!palette?.primary) throw new Error('Test Card palette is missing');
     palette.primary.highest = { rest: { kind: 'linear', angle: 0, stops: [] } };
 

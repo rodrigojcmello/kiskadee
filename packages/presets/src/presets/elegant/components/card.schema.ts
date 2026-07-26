@@ -65,7 +65,7 @@ export function createElegantCardSchema({
         },
         palettes: buildBySegment(segmentNames, (s) => ({
           light: {
-            default: {
+            onSubtle: {
               boxColor: {
                 neutral: {
                   medium: {

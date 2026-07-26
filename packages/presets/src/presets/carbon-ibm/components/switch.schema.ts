@@ -160,7 +160,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         boxColor: {
                           neutral: {
                             medium: mediumTrackColor,
@@ -176,7 +176,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                       }
                     },
                     dark: {
-                      default: {
+                      onSubtle: {
                         boxColor: {
                           neutral: {
                             medium: lowTrackColor
@@ -210,7 +210,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         boxColor: {
                           neutral: {
                             medium: thumbColor,
@@ -226,7 +226,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                       }
                     },
                     dark: {
-                      default: {
+                      onSubtle: {
                         boxColor: {
                           neutral: {
                             medium: thumbColor
@@ -251,7 +251,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: mediumIconColor,
@@ -261,7 +261,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                       }
                     },
                     dark: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: lowIconColor
@@ -286,7 +286,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: {
@@ -302,7 +302,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                       }
                     },
                     dark: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: {
@@ -330,7 +330,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: {
@@ -346,7 +346,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
                       }
                     },
                     dark: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: {

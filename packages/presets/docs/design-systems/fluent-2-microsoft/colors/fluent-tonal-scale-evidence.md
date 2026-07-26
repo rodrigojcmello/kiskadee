@@ -246,7 +246,7 @@ family's `subtle` reference. Primary, Neutral, Destructive, and Positive reuse
 the same ordinal surface-state recipe without intent-specific tonal compensation.
 Neutral High has one component-level foreground exception: its physically light
 Dark/Darker `vivid` surfaces use the absolute-black D0 cap instead of white.
-In the Kiskadee Inverse extension, Light Medium instead shares one neutral
+In the Kiskadee on-vivid extension, Light Medium instead shares one neutral
 White overlay across intents and uses each family's `subtle +4` foreground to
 carry identity; Dark and Darker retain the role-aware Medium surface candidate.
 

@@ -57,7 +57,7 @@ export type ButtonProps = HeadlessButtonProps & {
   intent?: ButtonIntent;
   /**
    * Local surface relationship used to resolve palette colors.
-   * `inverse` requires explicit support from the active preset palette.
+   * `onVivid` requires explicit support from the active preset palette.
    */
   surfaceContext?: SurfaceContext;
   /** Duration for the pressed visual state (ms). */

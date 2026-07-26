@@ -244,7 +244,7 @@ type CardContentProps = {
   title: string;
   body: string;
   selected?: boolean;
-  tone?: 'default' | 'inverse';
+  tone?: 'onSubtle' | 'onVivid';
   withActionSlot?: boolean;
 };
 
@@ -253,13 +253,13 @@ function CardContent({
   title,
   body,
   selected = false,
-  tone = 'default',
+  tone = 'onSubtle',
   withActionSlot = false
 }: CardContentProps) {
   const toneClassName = selected
     ? s.contentSelected
-    : tone === 'inverse'
-      ? s.contentInverse
+    : tone === 'onVivid'
+      ? s.contentOnVivid
       : s.content;
 
   return (
@@ -480,7 +480,7 @@ export function Card() {
               <h3 className={s.sectionTitle}>Semantic surfaces</h3>
               <div className={`${s.grid} k-root`}>
                 {semanticSamples.map(({ emphasis, intent }) => {
-                  const inverse =
+                  const onVivid =
                     theme !== 'light' ||
                     (intent === 'primary' && emphasis === 'high') ||
                     emphasis === 'highest';
@@ -502,7 +502,7 @@ export function Card() {
                           eyebrow={cardIntentLabels[intent]}
                           title={cardEmphasisLabels[emphasis]}
                           body={`${intent}.${emphasis}`}
-                          tone={inverse ? 'inverse' : 'default'}
+                          tone={onVivid ? 'onVivid' : 'onSubtle'}
                         />
                       </KCard>
                     </div>

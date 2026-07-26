@@ -154,7 +154,7 @@ const layout = {
 const textPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: states({
@@ -197,7 +197,7 @@ const textPalettes = {
 const optionalIndicatorPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: states({
@@ -217,7 +217,7 @@ const optionalIndicatorPalettes = {
 const iconPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: states({
@@ -246,7 +246,7 @@ const iconPalettes = {
 const trackPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -295,7 +295,7 @@ const trackPalettes = {
 const activeTrackPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -344,7 +344,7 @@ const activeTrackPalettes = {
 const thumbPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -393,7 +393,7 @@ const thumbPalettes = {
 const valueIndicatorPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({

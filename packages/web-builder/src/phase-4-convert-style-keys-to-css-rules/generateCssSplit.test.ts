@@ -93,7 +93,7 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff']
                   }
@@ -116,17 +116,17 @@ describe('generateCssSplit', () => {
     expect(result.palettes['ios.light']).toContain('background');
   });
 
-  it('emits default and inverse surface contexts into the same segment.theme CSS bundle', async () => {
+  it('emits onSubtle and onVivid surface contexts into the same segment.theme CSS bundle', async () => {
     const input = {
       button: {
         e1: {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: { rest: ['boxColor__#0091ff'] }
                 },
-                inverse: {
+                onVivid: {
                   primary: { rest: ['boxColor__#ffffff'] }
                 }
               }
@@ -137,13 +137,13 @@ describe('generateCssSplit', () => {
     } as unknown as ComponentStyleKeyMap;
 
     const result = await generateCssSplit(input, {
-      'boxColor__#0091ff': 'default-color',
-      'boxColor__#ffffff': 'inverse-color'
+      'boxColor__#0091ff': 'on-subtle-color',
+      'boxColor__#ffffff': 'on-vivid-color'
     });
 
     expect(Object.keys(result.palettes)).toEqual(['ios.light']);
-    expect(result.palettes['ios.light']).toContain('.default-color');
-    expect(result.palettes['ios.light']).toContain('.inverse-color');
+    expect(result.palettes['ios.light']).toContain('.on-subtle-color');
+    expect(result.palettes['ios.light']).toContain('.on-vivid-color');
   });
 
   it('generates multiple palette bundles for multiple segment.theme combinations', async () => {
@@ -153,14 +153,14 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff']
                   }
                 }
               },
               dark: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#005799']
                   }
@@ -169,7 +169,7 @@ describe('generateCssSplit', () => {
             },
             youtube: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#000000']
                   }
@@ -203,7 +203,7 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff'],
                     hover: ['boxColor==hover__#0074cccc'],
@@ -235,7 +235,7 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff']
                   },
@@ -279,7 +279,7 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff']
                   }
@@ -345,7 +345,7 @@ describe('generateCssSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    default: {
+                    onSubtle: {
                       neutral: {
                         rest: ['textColor__#000000']
                       }
@@ -437,7 +437,7 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff'],
                     hover: ['boxColor==hover__#0074cccc']
@@ -493,14 +493,14 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff']
                   }
                 }
               },
               dark: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#005799']
                   }
@@ -513,7 +513,7 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['textColor__#ffffff']
                   }
@@ -548,7 +548,7 @@ describe('generateCssSplit', () => {
           palettes: {
             ios: {
               light: {
-                default: {
+                onSubtle: {
                   primary: {
                     rest: ['boxColor__#0091ff']
                   }

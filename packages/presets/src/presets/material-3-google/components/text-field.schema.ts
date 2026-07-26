@@ -104,7 +104,7 @@ function createTextFieldElementPalettes({
   return {
     control: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -163,7 +163,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -224,7 +224,7 @@ function createTextFieldElementPalettes({
     })),
     controlFloatingNotched: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -283,7 +283,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -344,7 +344,7 @@ function createTextFieldElementPalettes({
     })),
     controlBorderless: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -406,7 +406,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -470,7 +470,7 @@ function createTextFieldElementPalettes({
     })),
     placeholder: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -491,7 +491,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -514,7 +514,7 @@ function createTextFieldElementPalettes({
     })),
     label: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -547,7 +547,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -582,7 +582,7 @@ function createTextFieldElementPalettes({
     })),
     input: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -609,7 +609,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -638,7 +638,7 @@ function createTextFieldElementPalettes({
     })),
     message: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -662,7 +662,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           textColor: {
             neutral: {
               medium: {
@@ -688,7 +688,7 @@ function createTextFieldElementPalettes({
     })),
     indicatorUnderline: buildBySegment(segmentNames, (s) => ({
       light: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {
@@ -721,7 +721,7 @@ function createTextFieldElementPalettes({
         }
       },
       dark: {
-        default: {
+        onSubtle: {
           boxColor: {
             neutral: {
               medium: {

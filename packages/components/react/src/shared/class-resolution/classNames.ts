@@ -31,23 +31,23 @@ type ResolveIntentClassNameOptions = {
 };
 
 const DEFAULT_COLOR_BUCKET_ORDER = ['hh', 'h', 'm', 'l', 'll'] as const;
-const warnedMissingInverseBuckets = new WeakSet<ClassNameByElementJSON>();
+const warnedMissingOnVividBuckets = new WeakSet<ClassNameByElementJSON>();
 
 function resolveColorClassesByIntent(
   element: ClassNameByElementJSON,
   surfaceContext: SurfaceContext
 ): Record<string, ColorClasses> | undefined {
-  const bucket = surfaceContext === 'inverse' ? element.c?.i : element.c?.d;
+  const bucket = surfaceContext === 'onVivid' ? element.c?.v : element.c?.s;
 
   if (
-    surfaceContext === 'inverse' &&
+    surfaceContext === 'onVivid' &&
     !bucket &&
     process.env.NODE_ENV !== 'production' &&
-    !warnedMissingInverseBuckets.has(element)
+    !warnedMissingOnVividBuckets.has(element)
   ) {
-    warnedMissingInverseBuckets.add(element);
+    warnedMissingOnVividBuckets.add(element);
     console.warn(
-      '[Kiskadee] surfaceContext="inverse" was requested, but the active palette does not provide inverse color classes.'
+      '[Kiskadee] surfaceContext="onVivid" was requested, but the active palette does not provide onVivid color classes.'
     );
   }
 
@@ -73,7 +73,7 @@ export function resolveIntentClassName(
 ): string {
   if (!element?.c || !intent) return '';
 
-  const byIntent = resolveColorClassesByIntent(element, options.surfaceContext ?? 'default');
+  const byIntent = resolveColorClassesByIntent(element, options.surfaceContext ?? 'onSubtle');
   if (!byIntent) return '';
   const chosen =
     byIntent[intent] ??

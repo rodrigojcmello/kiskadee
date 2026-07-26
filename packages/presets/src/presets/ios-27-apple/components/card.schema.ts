@@ -65,7 +65,7 @@ export function createIos27AppleCardSchema({
         },
         palettes: buildBySegment(segmentNames, (s) => ({
           light: {
-            default: {
+            onSubtle: {
               boxColor: {
                 neutral: {
                   medium: {

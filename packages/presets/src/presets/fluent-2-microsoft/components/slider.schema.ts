@@ -109,7 +109,7 @@ const layout = {
 const textPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: states({
@@ -135,7 +135,7 @@ const textPalettes = {
 const optionalIndicatorPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: states({
@@ -152,7 +152,7 @@ const optionalIndicatorPalettes = {
 const iconPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: states({
@@ -178,7 +178,7 @@ const iconPalettes = {
 const railPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -221,7 +221,7 @@ const railPalettes = {
 const activeTrackPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -264,7 +264,7 @@ const activeTrackPalettes = {
 const thumbPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -307,7 +307,7 @@ const thumbPalettes = {
 const thumbInnerPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -350,7 +350,7 @@ const thumbInnerPalettes = {
 const thumbIconPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         textColor: {
           neutral: {
             medium: states({
@@ -373,7 +373,7 @@ const thumbIconPalettes = {
 const markPalettes = {
   default: {
     light: {
-      default: {
+      onSubtle: {
         boxColor: {
           neutral: {
             medium: states({
@@ -410,9 +410,9 @@ const markPalettes = {
 const valueIndicatorPalettes = {
   default: {
     light: {
-      default: {
-        boxColor: activeTrackPalettes.default.light.default.boxColor,
-        borderColor: activeTrackPalettes.default.light.default.borderColor,
+      onSubtle: {
+        boxColor: activeTrackPalettes.default.light.onSubtle.boxColor,
+        borderColor: activeTrackPalettes.default.light.onSubtle.borderColor,
         textColor: {
           neutral: {
             medium: states({

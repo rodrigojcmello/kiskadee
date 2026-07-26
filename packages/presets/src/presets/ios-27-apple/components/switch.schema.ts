@@ -128,7 +128,7 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: {
@@ -304,7 +304,7 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       boxColor: {
                         neutral: {
                           medium: {
@@ -442,7 +442,7 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       textColor: {
                         neutral: {
                           medium: {
@@ -532,7 +532,7 @@ export function createIos27AppleSwitchSchema({
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
-                    default: {
+                    onSubtle: {
                       textColor: {
                         neutral: {
                           medium: {

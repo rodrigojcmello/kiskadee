@@ -14,24 +14,24 @@ function validate(value: unknown) {
 describe('surface-context palettes', () => {
   it('publishes stable compact artifact buckets', () => {
     expect(surfaceContextBuckets).toEqual({
-      default: 'd',
-      inverse: 'i'
+      onSubtle: 's',
+      onVivid: 'v'
     });
   });
 
-  it('accepts default and inverse with equal property, intent, and emphasis coverage', () => {
+  it('accepts onSubtle and onVivid with equal property, intent, and emphasis coverage', () => {
     expect(
       validate({
         default: {
           light: {
-            default: {
+            onSubtle: {
               boxColor: {
                 primary: {
                   high: state
                 }
               }
             },
-            inverse: {
+            onVivid: {
               boxColor: {
                 primary: {
                   high: {
@@ -66,14 +66,14 @@ describe('surface-context palettes', () => {
           message: 'unrecognized surface context'
         }),
         expect.objectContaining({
-          path: ['default', 'light', 'default'],
+          path: ['default', 'light', 'onSubtle'],
           message: 'required surface context'
         })
       ])
     );
   });
 
-  it('rejects a missing default context and an unknown context', () => {
+  it('rejects a missing onSubtle context and an unknown context', () => {
     const issues = validate({
       default: {
         light: {
@@ -95,18 +95,18 @@ describe('surface-context palettes', () => {
           message: 'unrecognized surface context'
         }),
         expect.objectContaining({
-          path: ['default', 'light', 'default'],
+          path: ['default', 'light', 'onSubtle'],
           message: 'required surface context'
         })
       ])
     );
   });
 
-  it('rejects incomplete inverse coverage while allowing sparse states', () => {
+  it('rejects incomplete onVivid coverage while allowing sparse states', () => {
     const issues = validate({
       default: {
         light: {
-          default: {
+          onSubtle: {
             boxColor: {
               primary: {
                 high: state,
@@ -114,7 +114,7 @@ describe('surface-context palettes', () => {
               }
             }
           },
-          inverse: {
+          onVivid: {
             boxColor: {
               primary: {
                 high: {
@@ -128,23 +128,23 @@ describe('surface-context palettes', () => {
     });
 
     expect(issues).toContainEqual({
-      path: ['default', 'light', 'inverse', 'boxColor', 'primary', 'medium'],
-      message: 'must cover the same property, intent, and emphasis as default'
+      path: ['default', 'light', 'onVivid', 'boxColor', 'primary', 'medium'],
+      message: 'must cover the same property, intent, and emphasis as onSubtle'
     });
   });
 
-  it('rejects inverse coverage absent from default', () => {
+  it('rejects onVivid coverage absent from onSubtle', () => {
     const issues = validate({
       default: {
         light: {
-          default: {
+          onSubtle: {
             boxColor: {
               primary: {
                 high: state
               }
             }
           },
-          inverse: {
+          onVivid: {
             boxColor: {
               primary: {
                 high: state,
@@ -157,8 +157,8 @@ describe('surface-context palettes', () => {
     });
 
     expect(issues).toContainEqual({
-      path: ['default', 'light', 'inverse', 'boxColor', 'primary', 'medium'],
-      message: 'must not add a property, intent, or emphasis absent from default'
+      path: ['default', 'light', 'onVivid', 'boxColor', 'primary', 'medium'],
+      message: 'must not add a property, intent, or emphasis absent from onSubtle'
     });
   });
 
@@ -166,7 +166,7 @@ describe('surface-context palettes', () => {
     const issues = validate({
       default: {
         light: {
-          default: {
+          onSubtle: {
             boxColor: {
               primary: {
                 high: {
@@ -180,7 +180,7 @@ describe('surface-context palettes', () => {
     });
 
     expect(issues).toContainEqual({
-      path: ['default', 'light', 'default', 'boxColor', 'primary', 'high', 'rest'],
+      path: ['default', 'light', 'onSubtle', 'boxColor', 'primary', 'high', 'rest'],
       message: 'required state'
     });
   });

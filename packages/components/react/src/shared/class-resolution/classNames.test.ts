@@ -14,7 +14,7 @@ import {
 const element: ClassNameByElementJSON = {
   d: 'base',
   c: {
-    d: {
+    s: {
       primary: {
         hh: 'primary-highest',
         h: 'primary-high',
@@ -27,10 +27,10 @@ const element: ClassNameByElementJSON = {
         m: 'neutral-medium'
       }
     },
-    i: {
+    v: {
       primary: {
-        h: 'inverse-primary-high',
-        m: 'inverse-primary-medium'
+        h: 'on-vivid-primary-high',
+        m: 'on-vivid-primary-medium'
       }
     }
   },
@@ -68,18 +68,18 @@ describe('class name resolution helpers', () => {
     expect(resolveIntentClassName(element, 'primary', 'highest')).toBe('primary-highest');
   });
 
-  it('keeps default and inverse color buckets isolated', () => {
+  it('keeps onSubtle and onVivid color buckets isolated', () => {
     expect(resolveIntentClassName(element, 'primary', 'high')).toBe('primary-high');
-    expect(resolveIntentClassName(element, 'primary', 'high', { surfaceContext: 'inverse' })).toBe(
-      'inverse-primary-high'
+    expect(resolveIntentClassName(element, 'primary', 'high', { surfaceContext: 'onVivid' })).toBe(
+      'on-vivid-primary-high'
     );
   });
 
-  it('does not fall back to default colors when inverse is missing', () => {
+  it('does not fall back to onSubtle colors when onVivid is missing', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const defaultOnlyElement: ClassNameByElementJSON = {
       c: {
-        d: {
+        s: {
           primary: { h: 'primary-high' }
         }
       }
@@ -87,7 +87,7 @@ describe('class name resolution helpers', () => {
 
     expect(
       resolveIntentClassName(defaultOnlyElement, 'primary', 'high', {
-        surfaceContext: 'inverse'
+        surfaceContext: 'onVivid'
       })
     ).toBe('');
     expect(warn).toHaveBeenCalledOnce();
@@ -113,7 +113,7 @@ describe('class name resolution helpers', () => {
   it('uses fallback bucket order when an emphasis bucket is missing', () => {
     const sparseElement: ClassNameByElementJSON = {
       c: {
-        d: {
+        s: {
           primary: {
             h: 'primary-high'
           }
@@ -131,7 +131,7 @@ describe('class name resolution helpers', () => {
   it('uses the default color bucket order when emphasis is not provided', () => {
     const lowOnlyElement: ClassNameByElementJSON = {
       c: {
-        d: {
+        s: {
           primary: {
             l: 'primary-low'
           }
@@ -156,9 +156,9 @@ describe('class name resolution helpers', () => {
       resolveSchemaElementClassName(element, {
         intent: 'primary',
         emphasis: 'medium',
-        surfaceContext: 'inverse'
+        surfaceContext: 'onVivid'
       })
-    ).toBe('base inverse-primary-medium');
+    ).toBe('base on-vivid-primary-medium');
   });
 
   it('resolves radius classes by radius mode and scale', () => {

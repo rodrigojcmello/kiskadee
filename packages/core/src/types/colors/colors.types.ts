@@ -501,20 +501,20 @@ export type ColorSchema = Partial<Record<ColorProperty, ColorEntry>>;
 
 export type ThemeMode = 'light' | 'dark' | 'darker';
 
-export const surfaceContexts = ['default', 'inverse'] as const;
+export const surfaceContexts = ['onSubtle', 'onVivid'] as const;
 
 export type SurfaceContext = (typeof surfaceContexts)[number];
 
 export const surfaceContextBuckets = {
-  default: 'd',
-  inverse: 'i'
+  onSubtle: 's',
+  onVivid: 'v'
 } as const satisfies Record<SurfaceContext, string>;
 
 export type SurfaceContextBucket = (typeof surfaceContextBuckets)[SurfaceContext];
 
 export type SurfaceContextPalette<TColorSchema extends ColorSchema = ColorSchema> = {
-  default: TColorSchema;
-  inverse?: TColorSchema;
+  onSubtle: TColorSchema;
+  onVivid?: TColorSchema;
 };
 
 export type ElementPalettes<TSegmentName extends SegmentName = never> = Partial<

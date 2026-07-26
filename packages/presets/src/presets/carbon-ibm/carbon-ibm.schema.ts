@@ -141,7 +141,7 @@ export const schema: Schema<Segments> = {
           palettes: {
             default: {
               light: {
-                default: {
+                onSubtle: {
                   boxColor: {
                     primary: {
                       high: {
@@ -181,7 +181,7 @@ export const schema: Schema<Segments> = {
           palettes: {
             default: {
               light: {
-                default: {
+                onSubtle: {
                   textColor: {
                     primary: {
                       high: {

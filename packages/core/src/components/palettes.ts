@@ -138,53 +138,53 @@ export function getElementPaletteValidationIssues(
         }
       }
 
-      if (!Object.hasOwn(bySurfaceContext, 'default')) {
+      if (!Object.hasOwn(bySurfaceContext, 'onSubtle')) {
         issues.push({
-          path: [...themePath, 'default'],
+          path: [...themePath, 'onSubtle'],
           message: 'required surface context'
         });
         continue;
       }
 
-      const defaultPath = [...themePath, 'default'];
-      const defaultColorMap = bySurfaceContext.default;
-      const defaultIsValid = validateColorMap(
-        defaultColorMap,
+      const onSubtlePath = [...themePath, 'onSubtle'];
+      const onSubtleColorMap = bySurfaceContext.onSubtle;
+      const onSubtleIsValid = validateColorMap(
+        onSubtleColorMap,
         allowedColorKeys,
-        defaultPath,
+        onSubtlePath,
         issues
       );
 
-      if (!Object.hasOwn(bySurfaceContext, 'inverse')) continue;
+      if (!Object.hasOwn(bySurfaceContext, 'onVivid')) continue;
 
-      const inversePath = [...themePath, 'inverse'];
-      const inverseColorMap = bySurfaceContext.inverse;
-      const inverseIsValid = validateColorMap(
-        inverseColorMap,
+      const onVividPath = [...themePath, 'onVivid'];
+      const onVividColorMap = bySurfaceContext.onVivid;
+      const onVividIsValid = validateColorMap(
+        onVividColorMap,
         allowedColorKeys,
-        inversePath,
+        onVividPath,
         issues
       );
 
-      if (!defaultIsValid || !inverseIsValid) continue;
+      if (!onSubtleIsValid || !onVividIsValid) continue;
 
-      const defaultPairs = getCoveragePairs(defaultColorMap, allowedColorKeys);
-      const inversePairs = getCoveragePairs(inverseColorMap, allowedColorKeys);
+      const onSubtlePairs = getCoveragePairs(onSubtleColorMap, allowedColorKeys);
+      const onVividPairs = getCoveragePairs(onVividColorMap, allowedColorKeys);
 
-      for (const pair of defaultPairs) {
-        if (!inversePairs.has(pair)) {
+      for (const pair of onSubtlePairs) {
+        if (!onVividPairs.has(pair)) {
           issues.push({
-            path: [...inversePath, ...pair.split('.')],
-            message: 'must cover the same property, intent, and emphasis as default'
+            path: [...onVividPath, ...pair.split('.')],
+            message: 'must cover the same property, intent, and emphasis as onSubtle'
           });
         }
       }
 
-      for (const pair of inversePairs) {
-        if (!defaultPairs.has(pair)) {
+      for (const pair of onVividPairs) {
+        if (!onSubtlePairs.has(pair)) {
           issues.push({
-            path: [...inversePath, ...pair.split('.')],
-            message: 'must not add a property, intent, or emphasis absent from default'
+            path: [...onVividPath, ...pair.split('.')],
+            message: 'must not add a property, intent, or emphasis absent from onSubtle'
           });
         }
       }

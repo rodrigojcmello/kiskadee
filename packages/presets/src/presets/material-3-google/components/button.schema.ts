@@ -116,7 +116,7 @@ export function createMaterial3GoogleButtonSchema({
         palettes: buildBySegment(segmentNames, (s) => {
           return {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   primary: {
                     // It matches Material "filled button"
@@ -284,7 +284,7 @@ export function createMaterial3GoogleButtonSchema({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   primary: {
                     medium: {
@@ -415,7 +415,7 @@ export function createMaterial3GoogleButtonSchema({
         palettes: buildBySegment(segmentNames, (s) => {
           return {
             light: {
-              default: {
+              onSubtle: {
                 textColor: {
                   primary: {
                     // It matches Material "filled button"
@@ -475,7 +475,7 @@ export function createMaterial3GoogleButtonSchema({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 textColor: {
                   primary: {
                     medium: {

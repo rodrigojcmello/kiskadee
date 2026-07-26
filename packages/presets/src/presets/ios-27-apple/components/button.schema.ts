@@ -257,7 +257,7 @@ export function createIos27AppleButtonSchema({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   primary: buttonIntentPalettes.light.primary.boxColor,
                   neutral: buttonIntentPalettes.light.neutral.boxColor,
@@ -267,7 +267,7 @@ export function createIos27AppleButtonSchema({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 boxColor: {
                   primary: buttonIntentPalettes.dark.primary.boxColor,
                   neutral: buttonIntentPalettes.dark.neutral.boxColor,
@@ -287,7 +287,7 @@ export function createIos27AppleButtonSchema({
         palettes: {
           default: {
             light: {
-              default: {
+              onSubtle: {
                 textColor: {
                   primary: buttonIntentPalettes.light.primary.textColor,
                   neutral: buttonIntentPalettes.light.neutral.textColor,
@@ -297,7 +297,7 @@ export function createIos27AppleButtonSchema({
               }
             },
             dark: {
-              default: {
+              onSubtle: {
                 textColor: {
                   primary: buttonIntentPalettes.dark.primary.textColor,
                   neutral: buttonIntentPalettes.dark.neutral.textColor,

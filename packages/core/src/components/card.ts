@@ -325,7 +325,7 @@ function validateCanonicalSurfaces(
           issues.push(`${entryPath}.emphasis: expected component emphasis`);
         }
         if (!surfaceContexts.includes(entryValue.contentSurfaceContext as SurfaceContext)) {
-          issues.push(`${entryPath}.contentSurfaceContext: expected "default" or "inverse"`);
+          issues.push(`${entryPath}.contentSurfaceContext: expected "onSubtle" or "onVivid"`);
         }
 
         const referenceKey = `${String(entryValue.intent)}.${String(entryValue.emphasis)}`;
@@ -336,7 +336,7 @@ function validateCanonicalSurfaces(
 
         const palette =
           isRecord(palettes?.[segmentName]) && isRecord(palettes[segmentName][themeName])
-            ? palettes[segmentName][themeName].default
+            ? palettes[segmentName][themeName].onSubtle
             : undefined;
         validateCanonicalSurfaceReference(entryValue, palette, entryPath, issues);
       }

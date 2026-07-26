@@ -22,7 +22,7 @@ export const DEFAULT_BUTTON_SCALE = 's:md:1';
 export const DEFAULT_BUTTON_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_BUTTON_INTENT: ButtonIntent = 'neutral';
 export const DEFAULT_BUTTON_EMPHASIS: ComponentEmphasis = 'medium';
-export const DEFAULT_BUTTON_SURFACE_CONTEXT: SurfaceContext = 'default';
+export const DEFAULT_BUTTON_SURFACE_CONTEXT: SurfaceContext = 'onSubtle';
 export const DEFAULT_BUTTON_PRESSED_DURATION_MS = 60;
 
 export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;

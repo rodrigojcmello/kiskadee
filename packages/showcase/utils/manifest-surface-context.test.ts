@@ -8,14 +8,14 @@ import {
 const component: ManifestComponent = {
   surfaceContexts: {
     'default.light': {
-      default: {
+      onSubtle: {
         state: {
           primary: {
             high: { rest: true }
           }
         }
       },
-      inverse: {
+      onVivid: {
         state: {
           primary: {
             high: { rest: true, hover: true }
@@ -24,7 +24,7 @@ const component: ManifestComponent = {
       }
     },
     'default.dark': {
-      default: {
+      onSubtle: {
         state: {
           neutral: {
             medium: { rest: true }
@@ -37,14 +37,14 @@ const component: ManifestComponent = {
 
 describe('manifest surface-context helpers', () => {
   it('resolves state capabilities from the active palette and context', () => {
-    expect(getManifestComponentState(component, 'default', 'light', 'inverse')).toEqual({
+    expect(getManifestComponentState(component, 'default', 'light', 'onVivid')).toEqual({
       primary: {
         high: { rest: true, hover: true }
       }
     });
   });
 
-  it('defaults capability reads to the default surface context', () => {
+  it('defaults capability reads to the onSubtle surface context', () => {
     expect(getManifestComponentState(component, 'default', 'dark')).toEqual({
       neutral: {
         medium: { rest: true }
@@ -53,8 +53,8 @@ describe('manifest surface-context helpers', () => {
   });
 
   it('reports context support per palette without fallback', () => {
-    expect(supportsManifestSurfaceContext(component, 'default', 'light', 'inverse')).toBe(true);
-    expect(supportsManifestSurfaceContext(component, 'default', 'dark', 'inverse')).toBe(false);
-    expect(getManifestComponentState(component, 'default', 'dark', 'inverse')).toBeUndefined();
+    expect(supportsManifestSurfaceContext(component, 'default', 'light', 'onVivid')).toBe(true);
+    expect(supportsManifestSurfaceContext(component, 'default', 'dark', 'onVivid')).toBe(false);
+    expect(getManifestComponentState(component, 'default', 'dark', 'onVivid')).toBeUndefined();
   });
 });

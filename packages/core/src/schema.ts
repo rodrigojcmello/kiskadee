@@ -290,7 +290,7 @@ export type ClassNameByElementJSON = {
   // rs: square border radius scales (size-aware, opt-in at component level).
   rs?: Partial<Record<string, string>>;
   // c: Surface-context bucket -> semantic key -> emphasis color classes.
-  // d = default, i = inverse. No legacy flat format.
+  // s = onSubtle, v = onVivid. No legacy flat format.
   c?: Partial<Record<SurfaceContextBucket, Record<string, ColorClasses>>>;
   // l: control-state specific (selected) — flattened string of utility classes
   l?: string;

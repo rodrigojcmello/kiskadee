@@ -100,7 +100,7 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         boxColor: {
                           neutral: {
                             medium: {
@@ -208,7 +208,7 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         boxColor: {
                           neutral: {
                             medium: {
@@ -299,7 +299,7 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: {
@@ -364,7 +364,7 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: {
@@ -405,7 +405,7 @@ export function createFluent2MicrosoftSwitchSchema({
                 palettes: {
                   default: {
                     light: {
-                      default: {
+                      onSubtle: {
                         textColor: {
                           neutral: {
                             medium: {

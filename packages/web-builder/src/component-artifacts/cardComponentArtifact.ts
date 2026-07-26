@@ -38,8 +38,8 @@ function resolveCanonicalSurfaceRest({
   const palettes: unknown = cardSchema.elements.e1?.palettes;
   const segmentPalettes = isRecord(palettes) ? palettes[segment] : undefined;
   const themePalette = isRecord(segmentPalettes) ? segmentPalettes[theme] : undefined;
-  const defaultPalette = isRecord(themePalette) ? themePalette.default : undefined;
-  const boxColor = isRecord(defaultPalette) ? defaultPalette.boxColor : undefined;
+  const onSubtlePalette = isRecord(themePalette) ? themePalette.onSubtle : undefined;
+  const boxColor = isRecord(onSubtlePalette) ? onSubtlePalette.boxColor : undefined;
   const intentMap = isRecord(boxColor) ? boxColor[intent] : undefined;
   const emphasisMap = isRecord(intentMap) ? intentMap[emphasis] : undefined;
   const rest = isRecord(emphasisMap) ? emphasisMap.rest : undefined;
