@@ -249,6 +249,9 @@ Dark/Darker `vivid` surfaces use the absolute-black D0 cap instead of white.
 In the Kiskadee on-vivid extension, Light Medium instead shares one neutral
 White overlay across intents and uses each family's `subtle +4` foreground to
 carry identity; Dark and Darker retain the role-aware Medium surface candidate.
+All three themes reuse their existing Medium surfaces in descending
+physical-lightness order from Rest through Hover to Pressed/Selected, matching
+the state direction already used by on-vivid High, Low, and Lowest.
 
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent chromatic families at Layer 1. Layer 2 maps Blue to `primary`,

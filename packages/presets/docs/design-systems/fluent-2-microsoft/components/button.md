@@ -129,37 +129,40 @@ light.
 ### On-vivid Medium, Low, And Lowest
 
 The remaining on-vivid emphases extend Fluent's inverted/on-brand token grammar while preserving
-the selected Button intent. Light Medium deliberately uses one shared White overlay across all
-intents; its identity comes from the role-aware foreground instead of a second colored surface.
+the selected Button intent. Every emphasis now follows the same physically darker interaction
+direction from Rest through Hover to Pressed/Selected. Light Medium deliberately uses one shared
+White overlay across all intents; its identity comes from the role-aware foreground instead of a
+second colored surface.
 Low keeps one shared White border across intents, preserving a stable outline against the strong
 surrounding surface. In Light, that border uses 30% opacity so it does not compete with the Button
 content; Dark and Darker retain opaque White.
 
 | Light emphasis | Rest | Hover | Pressed | Selected | Foreground | Border |
 | --- | --- | --- | --- | --- | --- | --- |
-| Medium | White 7% | White 10% | White 14% | same as Pressed | intent subtle +4 | Transparent |
+| Medium | White 14% | White 10% | White 7% | same as Pressed | intent subtle +4 | Transparent |
 | Low | Transparent | Black 10% | Black 30% | same as Pressed | intent subtle +4 | White 30% |
 | Lowest | Transparent | Black 10% | Black 30% | same as Pressed | intent subtle +4 | Transparent |
 
 Focus has no palette delta and inherits Rest while the global Button focus ring remains the
 accessibility affordance. Selected stays explicit. In Light, High, Medium, and Low disabled states
-use White at 4% for the background so they remain quieter than Medium Rest at 7%. Dark and Darker
-retain White at 10%. All three themes use White at 40% for disabled content, with no visible border.
-Lowest remains transparent with White at 40% content. All percentages resolve through
+use White at 4% for the background so they remain quieter than Medium Pressed at 7%. Dark and
+Darker retain White at 10%. All three themes use White at 40% for disabled content, with no visible
+border. Lowest remains transparent with White at 40% content. All percentages resolve through
 `button.neutral` and the preset color helper before publication; no platform performs alpha or
 contrast calculations.
 
-Light Medium resolves its shared surface from `button.neutral` L0, with fixed `7%/10%/14%`
+Light Medium resolves its shared surface from `button.neutral` L0, with fixed `14%/10%/7%`
 Rest/Hover/Pressed alpha. Selected intentionally equals Pressed. The foreground reuses the exact
 `subtle +4` reference already consumed by Low and Lowest, so Primary resolves Blue, Neutral
 resolves Black/Grey, Destructive resolves Cranberry, and Positive resolves Green. The background
 no longer participates in intent differentiation.
 
-Dark and Darker retain the earlier role-aware Medium candidate: `subtle +4/+6/+8` sources are
-alpha-calibrated against the canonical Primary vivid surface at Delta E OK
-`0.024/0.032/0.04`, and their foreground remains `subtle -2`. The Light physical track remains
-intentional for on-vivid colors because `onVivid` describes a component on a locally strong
-surface, not the global theme orientation. Disabled remains neutral across every theme.
+Dark and Darker retain the role-aware Medium candidate while using the same darker state
+progression: `subtle +8/+6/+4` sources are alpha-calibrated against the canonical Primary vivid
+surface at Delta E OK `0.04/0.032/0.024`, and their foreground remains `subtle -2`. The Light
+physical track remains intentional for on-vivid colors because `onVivid` describes a component on
+a locally strong surface, not the global theme orientation. Disabled remains neutral across every
+theme.
 
 ### Selected State Simplification
 
@@ -500,10 +503,12 @@ changing the asset scales.
   foreground caps
   for every Button intent.
 - `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. Light Medium uses shared neutral L0
-  White overlays and differentiates intents only through `subtle +4` foregrounds. Dark and Darker
-  retain the role-aware Medium surface calibration. Low/Lowest content uses `subtle +4`, and the
-  Low border resolves universally from neutral L0 White, at 30% in Light and 100% in Dark/Darker.
-  The context-relative interaction overlays and disabled treatment also remain neutral.
+  White overlays and differentiates intents only through `subtle +4` foregrounds. Medium reuses
+  the same three approved surfaces in descending physical-lightness order, matching the darker
+  state progression already used by High, Low, and Lowest. Dark and Darker retain the role-aware
+  Medium surface calibration. Low/Lowest content uses `subtle +4`, and the Low border resolves
+  universally from neutral L0 White, at 30% in Light and 100% in Dark/Darker. The context-relative
+  interaction overlays and disabled treatment also remain neutral.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
   `button.destructive`, or `button.positive`; it does not calculate foreground contrast.
 - `createOnVividButtonIntent()` resolves the same four Layer 3 roles through the Light physical

@@ -153,14 +153,14 @@ const BUTTON_ON_VIVID_RECIPE = {
   },
   medium: {
     lightSurfaceAlpha: {
-      rest: 7,
+      rest: 14,
       hover: 10,
-      pressed: 14
+      pressed: 7
     },
     roleSurface: {
-      rest: { reference: 'subtle', offset: 4, targetDeltaE: 0.024 },
+      rest: { reference: 'subtle', offset: 8, targetDeltaE: 0.04 },
       hover: { reference: 'subtle', offset: 6, targetDeltaE: 0.032 },
-      pressed: { reference: 'subtle', offset: 8, targetDeltaE: 0.04 }
+      pressed: { reference: 'subtle', offset: 4, targetDeltaE: 0.024 }
     },
     roleForeground: { reference: 'subtle', offset: -2 }
   },
