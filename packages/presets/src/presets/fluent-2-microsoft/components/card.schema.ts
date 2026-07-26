@@ -26,7 +26,7 @@ type IntentRecipe = {
   lowest: StateRecipe;
   low: StateRecipe;
   medium: StateRecipe;
-  high: StateRecipe;
+  high?: StateRecipe;
   highest?: StateRecipe;
 };
 
@@ -127,7 +127,7 @@ const LIGHT_RECIPE = {
         selected: p(10),
         disabled: n(3)
       },
-      high: {
+      highest: {
         rest: p(50),
         hover: p(55),
         pressed: p(75),
@@ -159,7 +159,7 @@ const LIGHT_RECIPE = {
         disabled: transparent
       },
       medium: transparentBorder(n(16)),
-      high: transparentBorder(n(16))
+      highest: transparentBorder(n(16))
     }
   }
 } as const satisfies CardPaletteRecipe;
@@ -218,7 +218,7 @@ const DARK_RECIPE = {
         selected: p(12),
         disabled: n(3)
       },
-      high: {
+      highest: {
         rest: p(35),
         hover: p(40),
         pressed: p(14),
@@ -249,7 +249,7 @@ const DARK_RECIPE = {
         disabled: transparent
       },
       medium: transparentBorder(n(50)),
-      high: transparentBorder(n(50))
+      highest: transparentBorder(n(50))
     }
   }
 } as const satisfies CardPaletteRecipe;
@@ -341,7 +341,12 @@ function createCardPalette(
         lowest: stateMap(recipe.boxColor.primary.lowest),
         low: stateMap(recipe.boxColor.primary.low),
         medium: stateMap(recipe.boxColor.primary.medium),
-        high: stateMap(recipe.boxColor.primary.high)
+        ...(recipe.boxColor.primary.high
+          ? { high: stateMap(recipe.boxColor.primary.high) }
+          : undefined),
+        ...(recipe.boxColor.primary.highest
+          ? { highest: stateMap(recipe.boxColor.primary.highest) }
+          : undefined)
       }
     },
     borderColor: {
@@ -358,7 +363,12 @@ function createCardPalette(
         lowest: stateMap(recipe.borderColor.primary.lowest),
         low: stateMap(recipe.borderColor.primary.low),
         medium: stateMap(recipe.borderColor.primary.medium),
-        high: stateMap(recipe.borderColor.primary.high)
+        ...(recipe.borderColor.primary.high
+          ? { high: stateMap(recipe.borderColor.primary.high) }
+          : undefined),
+        ...(recipe.borderColor.primary.highest
+          ? { highest: stateMap(recipe.borderColor.primary.highest) }
+          : undefined)
       }
     }
   };

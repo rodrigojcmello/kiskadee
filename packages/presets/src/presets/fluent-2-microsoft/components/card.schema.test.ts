@@ -54,4 +54,53 @@ describe('Fluent 2 Card canonical surfaces', () => {
       selected: { rest: '#21242d' }
     });
   });
+
+  it('keeps the approved dark-blue Primary Medium progression in Dark and Darker', () => {
+    const palettes = requireCardSurfaceElement().palettes.default;
+    const expectedPrimaryMedium = {
+      rest: '#142d48',
+      hover: '#143a61',
+      pressed: '#13273e',
+      selected: { rest: '#153251' },
+      disabled: '#11131c'
+    };
+
+    expect(palettes?.dark?.default.boxColor?.primary?.medium).toMatchObject(expectedPrimaryMedium);
+    expect(palettes?.darker?.default.boxColor?.primary?.medium).toMatchObject(
+      expectedPrimaryMedium
+    );
+  });
+
+  it('publishes the vivid Primary surface as Highest and leaves High intentionally absent', () => {
+    const palettes = requireCardSurfaceElement().palettes.default;
+    const expectedLightPrimaryHighest = {
+      rest: '#0064b4',
+      hover: '#0059a1',
+      pressed: '#14375a',
+      selected: { rest: '#045091' },
+      disabled: '#eef2fc'
+    };
+    const expectedDarkPrimaryHighest = {
+      rest: '#005ba4',
+      hover: '#0064b4',
+      pressed: '#14375b',
+      selected: { rest: '#074d89' },
+      disabled: '#11131c'
+    };
+
+    expect(palettes?.light?.default.boxColor?.primary).not.toHaveProperty('high');
+    expect(palettes?.light?.default.boxColor?.primary?.highest).toMatchObject(
+      expectedLightPrimaryHighest
+    );
+
+    expect(palettes?.dark?.default.boxColor?.primary).not.toHaveProperty('high');
+    expect(palettes?.dark?.default.boxColor?.primary?.highest).toMatchObject(
+      expectedDarkPrimaryHighest
+    );
+
+    expect(palettes?.darker?.default.boxColor?.primary).not.toHaveProperty('high');
+    expect(palettes?.darker?.default.boxColor?.primary?.highest).toMatchObject(
+      expectedDarkPrimaryHighest
+    );
+  });
 });

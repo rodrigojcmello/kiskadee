@@ -13,15 +13,10 @@ export type DesignSystemSchemaArtifact = {
             Record<
               string,
               {
-                boxColor?: Record<
-                  string,
-                  Record<
-                    string,
-                    {
-                      rest?: unknown;
-                    }
-                  >
-                >;
+                default?: DesignSystemCardColorSchema;
+                // Kept typed for existing Showcase consumers that have not yet
+                // migrated their local surface resolver to the canonical context.
+                boxColor?: DesignSystemCardBoxColor;
               }
             >
           >;
@@ -29,6 +24,20 @@ export type DesignSystemSchemaArtifact = {
       };
     };
   };
+};
+
+export type DesignSystemCardBoxColor = Record<
+  string,
+  Record<
+    string,
+    {
+      rest?: unknown;
+    }
+  >
+>;
+
+export type DesignSystemCardColorSchema = {
+  boxColor?: DesignSystemCardBoxColor;
 };
 
 const schemaCache = new Map<string, Promise<DesignSystemSchemaArtifact | undefined>>();

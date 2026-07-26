@@ -24,10 +24,12 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import {
-  type ButtonBackgroundToneKey,
-  useButtonBackgroundTones
+  type ButtonStressTestBackgroundToneKey,
+  useButtonStressTestBackgroundTones
 } from '@/hooks/use-background-tones';
+import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
 import { SwatchRadioGroup } from '@/k-components';
+import { type CanonicalCardSurfaceKey, isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import {
   getManifestComponentState,
   supportsManifestSurfaceContext
@@ -40,21 +42,11 @@ const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> =
   { value: 'default', label: 'Default' },
   { value: 'inverse', label: 'Inverse' }
 ];
-const DARK_BACKGROUND_TONES: ReadonlySet<ButtonBackgroundToneKey> = new Set([
-  'vivid-blue',
-  'vivid-green',
-  'vivid-red',
-  'vivid-purple',
-  'vivid-orange',
-  'vivid-black',
-  'dark-blue',
-  'dark-green',
-  'dark-red',
-  'dark-purple',
-  'dark-orange',
-  'dark-black',
-  'black'
-]);
+const BACKGROUND_MODE_OPTIONS = [
+  { value: 'canonical', label: 'Canonical' },
+  { value: 'stress-test', label: 'Stress test' }
+] as const;
+type BackgroundMode = (typeof BACKGROUND_MODE_OPTIONS)[number]['value'];
 const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:2', label: 'Small 2' },
   { value: 's:sm:1', label: 'Small' },
@@ -145,7 +137,8 @@ function SurfaceContextComparison({
 export function Button() {
   const { designSystem, segment, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
-  const backgroundTones = useButtonBackgroundTones();
+  const canonicalBackgrounds = useCanonicalCardSurfaces();
+  const stressTestBackgrounds = useButtonStressTestBackgroundTones();
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
@@ -153,11 +146,42 @@ export function Button() {
   const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
   const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('default');
-  const [surface, setSurface] = React.useState<ButtonBackgroundToneKey>('white');
+  const [backgroundMode, setBackgroundMode] = React.useState<BackgroundMode>('canonical');
+  const [canonicalSurface, setCanonicalSurface] =
+    React.useState<CanonicalCardSurfaceKey>('neutral.low');
+  const [stressTestSurface, setStressTestSurface] =
+    React.useState<ButtonStressTestBackgroundToneKey>('white');
 
+  const activeCanonicalSurfaceKey = React.useMemo(
+    () =>
+      canonicalBackgrounds.tones.some((tone) => tone.key === canonicalSurface)
+        ? canonicalSurface
+        : canonicalBackgrounds.defaultToneKey,
+    [canonicalBackgrounds.defaultToneKey, canonicalBackgrounds.tones, canonicalSurface]
+  );
+  const activeStressTestSurfaceKey = React.useMemo(
+    () =>
+      stressTestBackgrounds.tones.some((tone) => tone.key === stressTestSurface)
+        ? stressTestSurface
+        : stressTestBackgrounds.defaultToneKey,
+    [stressTestBackgrounds.defaultToneKey, stressTestBackgrounds.tones, stressTestSurface]
+  );
+  const backgroundItems =
+    backgroundMode === 'canonical' ? canonicalBackgrounds.items : stressTestBackgrounds.items;
+  const activeBackgroundKey =
+    backgroundMode === 'canonical' ? activeCanonicalSurfaceKey : activeStressTestSurfaceKey;
   const selectedSurface = React.useMemo(
-    () => backgroundTones.tones.find((tone) => tone.key === surface),
-    [backgroundTones.tones, surface]
+    () =>
+      backgroundMode === 'canonical'
+        ? canonicalBackgrounds.tones.find((tone) => tone.key === activeCanonicalSurfaceKey)
+        : stressTestBackgrounds.tones.find((tone) => tone.key === activeStressTestSurfaceKey),
+    [
+      activeCanonicalSurfaceKey,
+      activeStressTestSurfaceKey,
+      backgroundMode,
+      canonicalBackgrounds.tones,
+      stressTestBackgrounds.tones
+    ]
   );
 
   React.useEffect(() => {
@@ -181,7 +205,7 @@ export function Button() {
   }, [selectedSurface?.resolvedColor]);
 
   const activeSurfaceContext = surfaceContext;
-  const isDarkSurface = DARK_BACKGROUND_TONES.has(surface);
+  const isDarkSurface = selectedSurface ? isDarkSurfaceColor(selectedSurface.resolvedColor) : false;
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
@@ -203,10 +227,12 @@ export function Button() {
     availableButtonScaleOptions[0]?.value ??
     's:md:1';
   const buttonState = getManifestComponentState(buttonMeta, segment, theme, activeSurfaceContext);
-  const comparisonDefaultSurface = backgroundTones.tones.find(
-    (tone) => tone.key === backgroundTones.defaultToneKey
+  const comparisonDefaultSurface = canonicalBackgrounds.tones.find(
+    (tone) => tone.key === 'neutral.low'
   );
-  const comparisonInverseSurface = backgroundTones.tones.find((tone) => tone.key === 'vivid-blue');
+  const comparisonInverseSurface = canonicalBackgrounds.tones.find(
+    (tone) => tone.key === 'primary.highest'
+  );
 
   const buttonControls = (
     <ShowcaseControlPanel>
@@ -219,15 +245,47 @@ export function Button() {
           onValueChange={(value) => setSurfaceContext(value as SurfaceContext)}
           disabled={!inverseSupported}
         />
-        <ShowcaseControlField fullWidth>
-          <SwatchRadioGroup
-            className={s.backgroundToneGrid}
-            groupLabel="Background"
-            value={surface}
-            onValueChange={(value) => setSurface(value as ButtonBackgroundToneKey)}
-            items={backgroundTones.items}
-            aria-label="Button example background"
+        <ShowcaseControlField className={s.backgroundControl} fullWidth>
+          <ShowcaseSegmentedControl
+            label="Background"
+            options={BACKGROUND_MODE_OPTIONS}
+            value={backgroundMode}
+            onValueChange={(value) => setBackgroundMode(value as BackgroundMode)}
           />
+          {backgroundItems.length > 0 ? (
+            <SwatchRadioGroup
+              className={`${s.backgroundToneGrid} ${
+                backgroundMode === 'canonical'
+                  ? s.canonicalBackgroundToneGrid
+                  : s.stressTestBackgroundToneGrid
+              }`}
+              groupLabel={
+                backgroundMode === 'canonical'
+                  ? 'Canonical Card surfaces'
+                  : 'Adversarial stress-test surfaces'
+              }
+              value={activeBackgroundKey}
+              onValueChange={(value) => {
+                if (backgroundMode === 'canonical') {
+                  setCanonicalSurface(value as CanonicalCardSurfaceKey);
+                  return;
+                }
+
+                setStressTestSurface(value as ButtonStressTestBackgroundToneKey);
+              }}
+              items={backgroundItems}
+              aria-label="Button example background"
+            />
+          ) : (
+            <p className={s.backgroundEmptyState} role="status">
+              This preset does not publish canonical Card surfaces for the active palette.
+            </p>
+          )}
+          <p className={s.backgroundModeDescription}>
+            {backgroundMode === 'canonical'
+              ? 'Approved Card surfaces from the active preset, segment, and theme.'
+              : 'Adversarial color combinations for diagnosis; not a preset support guarantee.'}
+          </p>
         </ShowcaseControlField>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Tipografia">

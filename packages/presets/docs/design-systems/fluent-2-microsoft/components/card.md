@@ -171,24 +171,33 @@ The complete implemented bucket matrix is:
 | `primary.lowest` | Transparent Primary treatment | Kiskadee extension |
 | `primary.low` | Base Primary treatment | Kiskadee extension |
 | `primary.medium` | `Brand/Background/2/Rest` | Official adapted surface alias; interaction deltas are Kiskadee extensions |
-| `primary.high` | `Brand/Background/1/Rest` | Official adapted surface alias; interaction deltas are Kiskadee extensions |
-| `primary.highest` | Not emitted | No seventh official surface alias exists in the inspected sticker sheet |
+| `primary.high` | Not emitted | Fluent has no distinct Primary surface between its subtle and vivid aliases |
+| `primary.highest` | `Brand/Background/1/Rest` | Official adapted vivid/inverse surface alias; interaction deltas are Kiskadee extensions |
 
-Primary Card buckets and the canonical High state progressions are Kiskadee
+Primary Card buckets and the canonical Highest state progressions are Kiskadee
 semantic surface adaptations. Their colors resolve through documented tonal
 positions rather than schema HEX literals. The source-backed Rest aliases
 remain distinct from the framework-authored interactive deltas.
+
+Card emphasis is intentionally sparse. `primary.medium` represents the source's
+subtle Brand surface and `primary.highest` represents its vivid/inverse Brand
+surface. Fluent does not provide a distinct intermediate Brand surface with a
+comparable role to `neutral.high`, so `primary.high` is omitted instead of
+inventing another blue or assigning the vivid surface to a misleading bucket.
+Another preset may publish `primary.high` when its source provides a real
+intermediate surface.
 
 For Dark and Darker, `primary.medium` intentionally uses D10 `#142d48` instead
 of the nearest-neighbor D4 `#0b1929` recorded for
 `Brand/Background/2/Rest`. The `muted-darks` D4 match preserves the official
 surface lightness but loses too much blue chroma to retain the source's
-dark-blue identity in a Card. This visual adaptation is under review and keeps
-the state progression local to the approved `b.blue.v1` asset:
+dark-blue identity in a Card. This visual adaptation was approved for Light,
+Dark, and Darker during the KIS-68 review and keeps the state progression local
+to the approved `b.blue.v1` asset:
 
 | State | Dark/Darker position | Generated HEX | Status |
 | --- | --- | --- | --- |
-| Rest | D10 | `#142d48` | Kiskadee visual adaptation under review |
+| Rest | D10 | `#142d48` | Approved Kiskadee visual adaptation |
 | Hover | D16 | `#143a61` | Kiskadee extension |
 | Pressed | D8 | `#13273e` | Kiskadee extension |
 | Selected | D12 | `#153251` | Kiskadee extension |

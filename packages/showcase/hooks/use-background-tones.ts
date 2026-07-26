@@ -26,7 +26,7 @@ export type ResolvedBackgroundTone = {
 const BUTTON_LIGHT_TONES = ['0', '100', 'subtle', 'vivid'] as const;
 const BUTTON_DARK_TONES = ['5'] as const;
 
-export type ButtonBackgroundToneKey =
+export type ButtonStressTestBackgroundToneKey =
   | 'white'
   | 'light-neutral'
   | 'light-blue'
@@ -48,8 +48,8 @@ export type ButtonBackgroundToneKey =
   | 'dark-black'
   | 'black';
 
-export type ResolvedButtonBackgroundTone = {
-  key: ButtonBackgroundToneKey;
+export type ResolvedButtonStressTestBackgroundTone = {
+  key: ButtonStressTestBackgroundToneKey;
   displayColor: string;
   aria: string;
   resolvedColor: string;
@@ -141,7 +141,7 @@ export function useBackgroundTones() {
   };
 }
 
-export function useButtonBackgroundTones() {
+export function useButtonStressTestBackgroundTones() {
   const { designSystem } = useKiskadee();
   const designSystemKey = String(designSystem ?? '');
   const enabled = Boolean(designSystemKey);
@@ -232,9 +232,9 @@ export function useButtonBackgroundTones() {
     enabled
   });
 
-  const tones = useMemo<ResolvedButtonBackgroundTone[]>(() => {
+  const tones = useMemo<ResolvedButtonStressTestBackgroundTone[]>(() => {
     const candidates: Array<{
-      key: ButtonBackgroundToneKey;
+      key: ButtonStressTestBackgroundToneKey;
       aria: string;
       resolvedColor: string | undefined;
     }> = [
