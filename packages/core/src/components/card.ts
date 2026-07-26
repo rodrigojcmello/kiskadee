@@ -1,9 +1,17 @@
 import type {
+  CardIntent,
   ColorProperty,
   ColorSchema,
+  ComponentEmphasis,
   SegmentName,
+  SurfaceContext,
   SurfaceContextPalette,
   ThemeMode
+} from '../types/colors/colors.types.ts';
+import {
+  CardIntentKeys,
+  componentEmphasisBuckets,
+  surfaceContexts
 } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types.ts';
@@ -57,6 +65,21 @@ export type CardElements<TSegmentName extends SegmentName = never> = {
   e1?: CardSurfaceElementStyle<TSegmentName>;
 };
 
+export type CardCanonicalSurface = {
+  intent: CardIntent;
+  emphasis: ComponentEmphasis;
+  contentSurfaceContext: SurfaceContext;
+};
+
+export type CardOptions<TSegmentName extends SegmentName = never> = {
+  canonicalSurfaces?: Partial<
+    Record<
+      TSegmentName | 'default' | 'dynamic',
+      Partial<Record<ThemeMode, readonly CardCanonicalSurface[]>>
+    >
+  >;
+};
+
 type ElementContractRules = {
   decorations?: readonly string[];
   scales?: readonly string[];
@@ -64,12 +87,15 @@ type ElementContractRules = {
   radiusModes?: readonly string[];
 };
 
-const CARD_COMPONENT_KEYS = ['effects', 'elements'] as const;
+const CARD_COMPONENT_KEYS = ['effects', 'options', 'elements'] as const;
 const CARD_COMPONENT_EFFECT_KEYS = ['shadow'] as const;
+const CARD_COMPONENT_OPTION_KEYS = ['canonicalSurfaces'] as const;
+const CARD_CANONICAL_SURFACE_KEYS = ['intent', 'emphasis', 'contentSurfaceContext'] as const;
 const CARD_SHADOW_ELEMENT_KEYS = ['e1'] as const;
 const CARD_SHADOW_RECIPE_KEYS = ['fixedLevels', 'kind', 'states'] as const;
 const CARD_ELEMENTS_KEYS = ['e1'] as const;
 const CARD_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes'] as const;
+const CARD_THEME_KEYS = ['light', 'dark', 'darker'] as const satisfies readonly ThemeMode[];
 
 const CARD_RULES: Record<(typeof CARD_ELEMENTS_KEYS)[number], ElementContractRules> = {
   e1: {
@@ -221,6 +247,126 @@ function validateComponentEffects(value: unknown, path: string, issues: string[]
   }
 }
 
+function validateCanonicalSurfaceReference(
+  entry: Record<string, unknown>,
+  palette: unknown,
+  path: string,
+  issues: string[]
+): void {
+  if (!isRecord(palette)) {
+    issues.push(`${path}: referenced Card palette is missing`);
+    return;
+  }
+
+  const boxColor = palette.boxColor;
+  const intentMap = isRecord(boxColor) ? boxColor[entry.intent as string] : undefined;
+  const emphasisMap = isRecord(intentMap) ? intentMap[entry.emphasis as string] : undefined;
+  const rest = isRecord(emphasisMap) ? emphasisMap.rest : undefined;
+
+  if (rest === undefined) {
+    issues.push(
+      `${path}: referenced boxColor.${String(entry.intent)}.${String(entry.emphasis)}.rest is missing`
+    );
+  }
+}
+
+function validateCanonicalSurfaces(
+  value: unknown,
+  elements: unknown,
+  path: string,
+  issues: string[]
+): void {
+  if (!isRecord(value)) {
+    issues.push(`${path}: expected object`);
+    return;
+  }
+
+  const palettes =
+    isRecord(elements) && isRecord(elements.e1) && isRecord(elements.e1.palettes)
+      ? elements.e1.palettes
+      : undefined;
+
+  for (const [segmentName, segmentValue] of Object.entries(value)) {
+    const segmentPath = `${path}.${segmentName}`;
+    if (!isRecord(segmentValue)) {
+      issues.push(`${segmentPath}: expected object`);
+      continue;
+    }
+
+    validateAllowedKeys(segmentValue, CARD_THEME_KEYS, segmentPath, issues);
+
+    for (const [themeName, themeValue] of Object.entries(segmentValue)) {
+      if (!CARD_THEME_KEYS.includes(themeName as ThemeMode)) continue;
+
+      const themePath = `${segmentPath}.${themeName}`;
+      if (!Array.isArray(themeValue)) {
+        issues.push(`${themePath}: expected array`);
+        continue;
+      }
+      if (themeValue.length === 0) {
+        issues.push(`${themePath}: expected at least one canonical surface`);
+        continue;
+      }
+
+      const seenReferences = new Set<string>();
+      for (const [index, entryValue] of themeValue.entries()) {
+        const entryPath = `${themePath}.${index}`;
+        if (!isRecord(entryValue)) {
+          issues.push(`${entryPath}: expected object`);
+          continue;
+        }
+
+        validateAllowedKeys(entryValue, CARD_CANONICAL_SURFACE_KEYS, entryPath, issues);
+
+        if (!Object.hasOwn(CardIntentKeys, String(entryValue.intent))) {
+          issues.push(`${entryPath}.intent: expected Card intent`);
+        }
+        if (!Object.hasOwn(componentEmphasisBuckets, String(entryValue.emphasis))) {
+          issues.push(`${entryPath}.emphasis: expected component emphasis`);
+        }
+        if (!surfaceContexts.includes(entryValue.contentSurfaceContext as SurfaceContext)) {
+          issues.push(`${entryPath}.contentSurfaceContext: expected "default" or "inverse"`);
+        }
+
+        const referenceKey = `${String(entryValue.intent)}.${String(entryValue.emphasis)}`;
+        if (seenReferences.has(referenceKey)) {
+          issues.push(`${entryPath}: duplicate canonical surface "${referenceKey}"`);
+        }
+        seenReferences.add(referenceKey);
+
+        const palette =
+          isRecord(palettes?.[segmentName]) && isRecord(palettes[segmentName][themeName])
+            ? palettes[segmentName][themeName].default
+            : undefined;
+        validateCanonicalSurfaceReference(entryValue, palette, entryPath, issues);
+      }
+    }
+  }
+}
+
+function validateComponentOptions(
+  value: unknown,
+  elements: unknown,
+  path: string,
+  issues: string[]
+): void {
+  if (!isRecord(value)) {
+    issues.push(`${path}: expected object`);
+    return;
+  }
+
+  validateAllowedKeys(value, CARD_COMPONENT_OPTION_KEYS, path, issues);
+
+  if (value.canonicalSurfaces !== undefined) {
+    validateCanonicalSurfaces(
+      value.canonicalSurfaces,
+      elements,
+      `${path}.canonicalSurfaces`,
+      issues
+    );
+  }
+}
+
 export function validateCardComponentContract(value: unknown, path = 'components.card'): string[] {
   const issues: string[] = [];
 
@@ -238,6 +384,10 @@ export function validateCardComponentContract(value: unknown, path = 'components
   if (!isRecord(elements)) {
     issues.push(`${path}.elements: expected object`);
     return issues;
+  }
+
+  if (value.options !== undefined) {
+    validateComponentOptions(value.options, elements, `${path}.options`, issues);
   }
 
   validateAllowedKeys(elements, CARD_ELEMENTS_KEYS, `${path}.elements`, issues);

@@ -8,6 +8,35 @@ function requireCardSurfaceElement() {
 }
 
 describe('Fluent 2 Card canonical surfaces', () => {
+  it('declares the ordered canonical catalog and its descendant surface contexts', () => {
+    expect(schema.components.card?.options?.canonicalSurfaces).toEqual({
+      default: {
+        light: [
+          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
+          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
+          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
+          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+        ],
+        dark: [
+          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
+          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
+          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
+          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+        ],
+        darker: [
+          { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
+          { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
+          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
+          { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' },
+          { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'default' }
+        ]
+      }
+    });
+  });
+
   it('uses the tinted Fluent neutral family without replacing absolute white and black', () => {
     const palettes = requireCardSurfaceElement().palettes.default;
 

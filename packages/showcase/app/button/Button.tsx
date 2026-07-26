@@ -29,6 +29,7 @@ import {
 } from '@/hooks/use-background-tones';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
 import { SwatchRadioGroup } from '@/k-components';
+import { getAvailableButtonStressTestBackgrounds } from '@/utils/button-stress-test-backgrounds';
 import { type CanonicalCardSurfaceKey, isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import {
   getManifestComponentState,
@@ -138,7 +139,6 @@ export function Button() {
   const { designSystem, segment, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
-  const stressTestBackgrounds = useButtonStressTestBackgroundTones();
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
@@ -151,6 +151,23 @@ export function Button() {
     React.useState<CanonicalCardSurfaceKey>('neutral.low');
   const [stressTestSurface, setStressTestSurface] =
     React.useState<ButtonStressTestBackgroundToneKey>('white');
+  const stressTestBackgrounds = useButtonStressTestBackgroundTones();
+  const availableStressTestTones = React.useMemo(
+    () =>
+      getAvailableButtonStressTestBackgrounds(stressTestBackgrounds.tones, theme, surfaceContext),
+    [stressTestBackgrounds.tones, surfaceContext, theme]
+  );
+  const stressTestBackgroundItems = React.useMemo(
+    () =>
+      availableStressTestTones.map((tone) => ({
+        value: tone.key,
+        label: tone.aria,
+        swatch: {
+          color: tone.displayColor
+        }
+      })),
+    [availableStressTestTones]
+  );
 
   const activeCanonicalSurfaceKey = React.useMemo(
     () =>
@@ -161,27 +178,47 @@ export function Button() {
   );
   const activeStressTestSurfaceKey = React.useMemo(
     () =>
-      stressTestBackgrounds.tones.some((tone) => tone.key === stressTestSurface)
+      availableStressTestTones.some((tone) => tone.key === stressTestSurface)
         ? stressTestSurface
-        : stressTestBackgrounds.defaultToneKey,
-    [stressTestBackgrounds.defaultToneKey, stressTestBackgrounds.tones, stressTestSurface]
+        : (availableStressTestTones[0]?.key ?? stressTestBackgrounds.defaultToneKey),
+    [availableStressTestTones, stressTestBackgrounds.defaultToneKey, stressTestSurface]
   );
   const backgroundItems =
-    backgroundMode === 'canonical' ? canonicalBackgrounds.items : stressTestBackgrounds.items;
+    backgroundMode === 'canonical' ? canonicalBackgrounds.items : stressTestBackgroundItems;
   const activeBackgroundKey =
     backgroundMode === 'canonical' ? activeCanonicalSurfaceKey : activeStressTestSurfaceKey;
   const selectedSurface = React.useMemo(
     () =>
       backgroundMode === 'canonical'
         ? canonicalBackgrounds.tones.find((tone) => tone.key === activeCanonicalSurfaceKey)
-        : stressTestBackgrounds.tones.find((tone) => tone.key === activeStressTestSurfaceKey),
+        : availableStressTestTones.find((tone) => tone.key === activeStressTestSurfaceKey),
     [
       activeCanonicalSurfaceKey,
       activeStressTestSurfaceKey,
       backgroundMode,
       canonicalBackgrounds.tones,
-      stressTestBackgrounds.tones
+      availableStressTestTones
     ]
+  );
+
+  const selectBackgroundForSurfaceContext = React.useCallback(
+    (nextSurfaceContext: SurfaceContext, nextBackgroundMode: BackgroundMode) => {
+      if (nextBackgroundMode === 'canonical') {
+        const nextCanonicalSurface = canonicalBackgrounds.tones.find(
+          (tone) => tone.contentSurfaceContext === nextSurfaceContext
+        );
+        if (nextCanonicalSurface) setCanonicalSurface(nextCanonicalSurface.key);
+        return;
+      }
+
+      const nextStressTestSurface = getAvailableButtonStressTestBackgrounds(
+        stressTestBackgrounds.tones,
+        theme,
+        nextSurfaceContext
+      )[0];
+      if (nextStressTestSurface) setStressTestSurface(nextStressTestSurface.key);
+    },
+    [canonicalBackgrounds.tones, stressTestBackgrounds.tones, theme]
   );
 
   React.useEffect(() => {
@@ -228,10 +265,10 @@ export function Button() {
     's:md:1';
   const buttonState = getManifestComponentState(buttonMeta, segment, theme, activeSurfaceContext);
   const comparisonDefaultSurface = canonicalBackgrounds.tones.find(
-    (tone) => tone.key === 'neutral.low'
+    (tone) => tone.contentSurfaceContext === 'default'
   );
   const comparisonInverseSurface = canonicalBackgrounds.tones.find(
-    (tone) => tone.key === 'primary.highest'
+    (tone) => tone.contentSurfaceContext === 'inverse'
   );
 
   const buttonControls = (
@@ -242,7 +279,11 @@ export function Button() {
           label="Surface context"
           options={SURFACE_CONTEXT_OPTIONS}
           value={activeSurfaceContext}
-          onValueChange={(value) => setSurfaceContext(value as SurfaceContext)}
+          onValueChange={(value) => {
+            const nextSurfaceContext = value as SurfaceContext;
+            setSurfaceContext(nextSurfaceContext);
+            selectBackgroundForSurfaceContext(nextSurfaceContext, backgroundMode);
+          }}
           disabled={!inverseSupported}
         />
         <ShowcaseControlField className={s.backgroundControl} fullWidth>
@@ -250,14 +291,24 @@ export function Button() {
             label="Background"
             options={BACKGROUND_MODE_OPTIONS}
             value={backgroundMode}
-            onValueChange={(value) => setBackgroundMode(value as BackgroundMode)}
+            onValueChange={(value) => {
+              const nextBackgroundMode = value as BackgroundMode;
+              setBackgroundMode(nextBackgroundMode);
+              selectBackgroundForSurfaceContext(surfaceContext, nextBackgroundMode);
+            }}
           />
           {backgroundItems.length > 0 ? (
             <SwatchRadioGroup
               className={`${s.backgroundToneGrid} ${
                 backgroundMode === 'canonical'
                   ? s.canonicalBackgroundToneGrid
-                  : s.stressTestBackgroundToneGrid
+                  : `${s.stressTestBackgroundToneGrid} ${
+                      theme === 'light'
+                        ? surfaceContext === 'default'
+                          ? s.stressTestLightDefaultToneGrid
+                          : s.stressTestLightInverseToneGrid
+                        : s.stressTestDarkToneGrid
+                    }`
               }`}
               groupLabel={
                 backgroundMode === 'canonical'

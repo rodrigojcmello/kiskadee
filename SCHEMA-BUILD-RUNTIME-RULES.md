@@ -328,6 +328,42 @@ Consequence:
   "is this a primary family (`variant`), a named secondary presentation (`mode`), or just styling
   freedom?".
 - `TextField` remains modeled as two real variants (`standard`, `floating`).
+
+### 3.2.3 Canonical Card surface catalogs
+
+Context:
+
+- A preset may expose several Card surfaces, but not every valid Card intent/emphasis pair is a
+  recommended surrounding surface.
+- Consumers need the preset-authored order and need to know which surface context descendant
+  components should use without inferring it from color or luminance.
+
+Decision:
+
+- `components.card.options.canonicalSurfaces[segment][theme]` declares an ordered list of
+  `{ intent, emphasis, contentSurfaceContext }` references.
+- The referenced visual value remains in
+  `components.card.elements.e1.palettes[segment][theme].default.boxColor`.
+- `contentSurfaceContext` describes the context recommended for descendants placed on that Card.
+  It does not change the Card's own palette context.
+- The Web Builder validates every reference, resolves its `rest` color, and publishes
+  `components/card.kiskadee.json`.
+- Artifact consumers must preserve the authored order and must not reconstruct the list from
+  palette density, luminance, or hardcoded intent/emphasis roles.
+
+Reason:
+
+- The schema remains the preset-owned source of truth while colors remain in the palette taxonomy.
+- The generated artifact gives platform consumers a deterministic, already-resolved catalog.
+- Explicit descendant context avoids turning strong Brand surfaces into a runtime contrast
+  heuristic.
+
+Consequence:
+
+- Presets without `canonicalSurfaces` publish no Card metadata artifact and remain valid.
+- A declared reference that lacks a solid `boxColor.<intent>.<emphasis>.rest` fails the build.
+- Background-selection tools may offer arbitrary diagnostic colors separately, but those colors
+  are not part of the canonical Card contract.
 - `TextField.standard` may expose named modes such as `outline`, `underline`, and `borderless`.
 - `TextField.floating` may expose named modes such as `notched` and `inside`.
 - Those named presentations should be described and evaluated as modes, not as extra top-level

@@ -1,26 +1,24 @@
 'use client';
 
-import { useKiskadee } from '@kiskadee/react-components';
+import { useCardArtifactConfig, useKiskadee } from '@kiskadee/react-components';
 import { useMemo } from 'react';
-import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
 import {
   type CanonicalCardSurfaceKey,
   resolveCanonicalCardSurfaces
 } from '@/utils/canonical-card-surfaces';
 
 export function useCanonicalCardSurfaces() {
-  const { designSystem, segment, theme } = useKiskadee();
-  const designSystemKey = String(designSystem ?? '');
-  const schema = useDesignSystemSchema(designSystemKey);
+  const { segment, theme } = useKiskadee();
+  const { options } = useCardArtifactConfig();
 
   const tones = useMemo(
     () =>
       resolveCanonicalCardSurfaces({
-        schema,
+        canonicalSurfaces: options.canonicalSurfaces,
         segment: String(segment ?? 'default'),
-        theme: String(theme ?? 'light')
+        theme
       }),
-    [schema, segment, theme]
+    [options.canonicalSurfaces, segment, theme]
   );
 
   const items = useMemo(

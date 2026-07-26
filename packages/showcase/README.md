@@ -178,8 +178,9 @@ Shared utilities for Showcase.
 ## Important conventions
 
 - Showcase is an artifact consumer: if something is “missing”, run `web-builder build-sync-generate`.
-- Background controls distinguish Card-derived canonical surfaces from diagnostic Stress Test
-  colors. See [Background Surface Catalogs](docs/definitions/background-surface-catalogs.md).
+- Background controls distinguish canonical surfaces published in
+  `components/card.kiskadee.json` from diagnostic Stress Test colors. See
+  [Background Surface Catalogs](docs/definitions/background-surface-catalogs.md).
 - Initial and fallback theme selection prefers `light` whenever the active preset exposes it. A
   valid theme explicitly persisted by the user still takes precedence.
 - Generated registries are outputs: do not edit files under `registry/generated/` manually.

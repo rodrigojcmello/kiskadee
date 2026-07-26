@@ -1,33 +1,17 @@
-import type { DesignSystemSchemaArtifact } from '@/hooks/use-design-system-schema';
+import type { CardIntent, ComponentEmphasis, SurfaceContext, ThemeMode } from '@kiskadee/core';
+import type { CardCanonicalSurfacesPayload } from '@kiskadee/web-builder/types';
 
-export const CANONICAL_CARD_SURFACE_ROLES = [
-  { key: 'neutral.low', intent: 'neutral', emphasis: 'low', label: 'Neutral low' },
-  { key: 'neutral.medium', intent: 'neutral', emphasis: 'medium', label: 'Neutral medium' },
-  { key: 'primary.medium', intent: 'primary', emphasis: 'medium', label: 'Primary medium' },
-  { key: 'neutral.high', intent: 'neutral', emphasis: 'high', label: 'Neutral high' },
-  {
-    key: 'primary.highest',
-    intent: 'primary',
-    emphasis: 'highest',
-    label: 'Primary highest'
-  },
-  { key: 'neutral.highest', intent: 'neutral', emphasis: 'highest', label: 'Neutral highest' }
-] as const;
-
-export type CanonicalCardSurfaceKey = (typeof CANONICAL_CARD_SURFACE_ROLES)[number]['key'];
+export type CanonicalCardSurfaceKey = `${CardIntent}.${ComponentEmphasis}`;
 
 export type ResolvedCanonicalCardSurface = {
   key: CanonicalCardSurfaceKey;
   label: string;
   resolvedColor: string;
+  contentSurfaceContext: SurfaceContext;
 };
 
-function resolveSchemaColor(value: unknown): string | undefined {
-  if (typeof value === 'string') return value;
-  if (typeof value !== 'object' || value === null) return undefined;
-
-  const ref = (value as { ref?: unknown }).ref;
-  return typeof ref === 'string' ? ref : undefined;
+function capitalize(value: string): string {
+  return value.length > 0 ? `${value[0].toUpperCase()}${value.slice(1)}` : value;
 }
 
 export function normalizeSurfaceColor(color: string): string {
@@ -35,33 +19,30 @@ export function normalizeSurfaceColor(color: string): string {
 }
 
 export function resolveCanonicalCardSurfaces({
-  schema,
+  canonicalSurfaces,
   segment,
   theme
 }: {
-  schema: DesignSystemSchemaArtifact | undefined;
+  canonicalSurfaces: CardCanonicalSurfacesPayload | undefined;
   segment: string;
-  theme: string;
+  theme: ThemeMode;
 }): ResolvedCanonicalCardSurface[] {
-  const boxColor =
-    schema?.components?.card?.elements?.e1?.palettes?.[segment]?.[theme]?.default?.boxColor;
-  if (!boxColor) return [];
+  const authoredSurfaces = canonicalSurfaces?.[segment]?.[theme];
+  if (!authoredSurfaces) return [];
 
   const seenColors = new Set<string>();
   const surfaces: ResolvedCanonicalCardSurface[] = [];
 
-  for (const role of CANONICAL_CARD_SURFACE_ROLES) {
-    const resolvedColor = resolveSchemaColor(boxColor[role.intent]?.[role.emphasis]?.rest);
-    if (!resolvedColor) continue;
-
-    const normalizedColor = normalizeSurfaceColor(resolvedColor);
+  for (const surface of authoredSurfaces) {
+    const normalizedColor = normalizeSurfaceColor(surface.rest);
     if (seenColors.has(normalizedColor)) continue;
 
     seenColors.add(normalizedColor);
     surfaces.push({
-      key: role.key,
-      label: role.label,
-      resolvedColor
+      key: `${surface.intent}.${surface.emphasis}`,
+      label: `${capitalize(surface.intent)} ${surface.emphasis}`,
+      resolvedColor: surface.rest,
+      contentSurfaceContext: surface.contentSurfaceContext
     });
   }
 

@@ -283,6 +283,33 @@ const CARD_RECIPES = {
   darker: DARKER_RECIPE
 } as const satisfies Record<ThemeName, CardPaletteRecipe>;
 
+const CANONICAL_CARD_SURFACES = {
+  default: {
+    light: [
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
+      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
+      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
+      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+    ],
+    dark: [
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
+      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
+      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
+      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' }
+    ],
+    darker: [
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'default' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'default' },
+      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'default' },
+      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'default' },
+      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'inverse' },
+      { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'default' }
+    ]
+  }
+} as const satisfies NonNullable<CardComponent['options']>['canonicalSurfaces'];
+
 function resolveColor(
   c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
   segmentName: Fluent2MicrosoftSegmentName,
@@ -379,6 +406,9 @@ export function createFluent2MicrosoftCardSchema({
   segmentNames
 }: CreateFluent2MicrosoftCardSchemaArgs): CardComponent {
   return {
+    options: {
+      canonicalSurfaces: CANONICAL_CARD_SURFACES
+    },
     effects: {
       shadow: {
         e1: {

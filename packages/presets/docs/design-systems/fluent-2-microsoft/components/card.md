@@ -212,11 +212,26 @@ aliases.
 The Card surface itself remains in `surfaceContext="default"`: its intent and
 emphasis select which surface the Card emits. The Card does not become
 `inverse` merely because it owns a strong or dark fill. Descendant components
-choose their own context independently. A child placed on a strong Card
-surface, such as the Primary vivid surface, may request
-`surfaceContext="inverse"` when that component and preset declare support.
-This keeps surface ownership with Card and contrast/polarity treatment with
-the child instead of coupling Card appearance to every descendant.
+choose their own context independently.
+
+`components.card.options.canonicalSurfaces` publishes the source-backed
+surface catalog in its intended order for every theme:
+
+1. `neutral.low` -> descendant context `default`;
+2. `neutral.medium` -> descendant context `default`;
+3. `primary.medium` -> descendant context `default`;
+4. `neutral.high` -> descendant context `default`;
+5. `primary.highest` -> descendant context `inverse`;
+6. `neutral.highest` -> descendant context `default`, only in Darker.
+
+The Primary vivid Card is therefore explicitly associated with `inverse` for
+descendants without changing the Card's own palette. The Web Builder validates
+these references and publishes their resolved Rest values in
+`components/card.kiskadee.json`. Consumers use that artifact instead of
+duplicating the order or inferring inverse from luminance.
+
+This keeps surface ownership with Card and contrast/polarity treatment with the
+child instead of coupling Card appearance to every descendant.
 
 Kiskadee exposes one Card shadow recipe for the root surface. The Fluent preset
 emits only Rest as `Shadow 04` (`s:md:1`) and Hover as `Shadow 08`

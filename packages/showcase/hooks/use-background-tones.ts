@@ -1,8 +1,13 @@
 'use client';
 
+import type { SurfaceContext, ThemeMode } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components';
 import { useMemo } from 'react';
 import { useColorScaleTones } from '@/hooks/use-color-scale';
+import type {
+  ButtonStressTestBackgroundAvailability,
+  ButtonStressTestBackgroundRow
+} from '@/utils/button-stress-test-backgrounds';
 
 const BACKGROUND_TONES = [
   { key: 'white', aria: 'White' },
@@ -48,7 +53,7 @@ export type ButtonStressTestBackgroundToneKey =
   | 'dark-black'
   | 'black';
 
-export type ResolvedButtonStressTestBackgroundTone = {
+export type ResolvedButtonStressTestBackgroundTone = ButtonStressTestBackgroundAvailability & {
   key: ButtonStressTestBackgroundToneKey;
   displayColor: string;
   aria: string;
@@ -237,39 +242,177 @@ export function useButtonStressTestBackgroundTones() {
       key: ButtonStressTestBackgroundToneKey;
       aria: string;
       resolvedColor: string | undefined;
+      availableThemes: readonly ThemeMode[];
+      row: ButtonStressTestBackgroundRow;
+      surfaceContexts: readonly SurfaceContext[];
     }> = [
-      { key: 'white', aria: 'White', resolvedColor: lightBlack.picked['0'] },
+      {
+        key: 'white',
+        aria: 'White',
+        resolvedColor: lightBlack.picked['0'],
+        availableThemes: ['light'],
+        row: 'light',
+        surfaceContexts: ['default']
+      },
       {
         key: 'light-neutral',
         aria: 'Light neutral',
-        resolvedColor: lightBlack.picked.subtle
+        resolvedColor: lightBlack.picked.subtle,
+        availableThemes: ['light'],
+        row: 'light',
+        surfaceContexts: ['default']
       },
-      { key: 'light-blue', aria: 'Light blue', resolvedColor: lightBlue.picked.subtle },
-      { key: 'light-green', aria: 'Light green', resolvedColor: lightGreen.picked.subtle },
-      { key: 'light-red', aria: 'Light red', resolvedColor: lightRed.picked.subtle },
-      { key: 'light-purple', aria: 'Light purple', resolvedColor: lightPurple.picked.subtle },
-      { key: 'light-orange', aria: 'Light orange', resolvedColor: lightOrange.picked.subtle },
-      { key: 'vivid-blue', aria: 'Vivid blue', resolvedColor: lightBlue.picked.vivid },
-      { key: 'vivid-green', aria: 'Vivid green', resolvedColor: lightGreen.picked.vivid },
-      { key: 'vivid-red', aria: 'Vivid red', resolvedColor: lightRed.picked.vivid },
-      { key: 'vivid-purple', aria: 'Vivid purple', resolvedColor: lightPurple.picked.vivid },
-      { key: 'vivid-orange', aria: 'Vivid orange', resolvedColor: lightOrange.picked.vivid },
-      { key: 'vivid-black', aria: 'Vivid black', resolvedColor: lightBlack.picked.vivid },
-      { key: 'black', aria: 'Absolute black', resolvedColor: lightBlack.picked['100'] },
-      { key: 'dark-black', aria: 'Very dark black', resolvedColor: darkBlack.picked['5'] },
-      { key: 'dark-blue', aria: 'Very dark blue', resolvedColor: darkBlue.picked['5'] },
-      { key: 'dark-green', aria: 'Very dark green', resolvedColor: darkGreen.picked['5'] },
-      { key: 'dark-red', aria: 'Very dark red', resolvedColor: darkRed.picked['5'] },
-      { key: 'dark-purple', aria: 'Very dark purple', resolvedColor: darkPurple.picked['5'] },
-      { key: 'dark-orange', aria: 'Very dark orange', resolvedColor: darkOrange.picked['5'] }
+      {
+        key: 'light-blue',
+        aria: 'Light blue',
+        resolvedColor: lightBlue.picked.subtle,
+        availableThemes: ['light'],
+        row: 'light',
+        surfaceContexts: ['default']
+      },
+      {
+        key: 'light-green',
+        aria: 'Light green',
+        resolvedColor: lightGreen.picked.subtle,
+        availableThemes: ['light'],
+        row: 'light',
+        surfaceContexts: ['default']
+      },
+      {
+        key: 'light-red',
+        aria: 'Light red',
+        resolvedColor: lightRed.picked.subtle,
+        availableThemes: ['light'],
+        row: 'light',
+        surfaceContexts: ['default']
+      },
+      {
+        key: 'light-purple',
+        aria: 'Light purple',
+        resolvedColor: lightPurple.picked.subtle,
+        availableThemes: ['light'],
+        row: 'light',
+        surfaceContexts: ['default']
+      },
+      {
+        key: 'light-orange',
+        aria: 'Light orange',
+        resolvedColor: lightOrange.picked.subtle,
+        availableThemes: ['light'],
+        row: 'light',
+        surfaceContexts: ['default']
+      },
+      {
+        key: 'vivid-blue',
+        aria: 'Vivid blue',
+        resolvedColor: lightBlue.picked.vivid,
+        availableThemes: ['light', 'dark', 'darker'],
+        row: 'vivid',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'vivid-green',
+        aria: 'Vivid green',
+        resolvedColor: lightGreen.picked.vivid,
+        availableThemes: ['light', 'dark', 'darker'],
+        row: 'vivid',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'vivid-red',
+        aria: 'Vivid red',
+        resolvedColor: lightRed.picked.vivid,
+        availableThemes: ['light', 'dark', 'darker'],
+        row: 'vivid',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'vivid-purple',
+        aria: 'Vivid purple',
+        resolvedColor: lightPurple.picked.vivid,
+        availableThemes: ['light', 'dark', 'darker'],
+        row: 'vivid',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'vivid-orange',
+        aria: 'Vivid orange',
+        resolvedColor: lightOrange.picked.vivid,
+        availableThemes: ['light', 'dark', 'darker'],
+        row: 'vivid',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'vivid-black',
+        aria: 'Vivid black',
+        resolvedColor: lightBlack.picked.vivid,
+        availableThemes: ['light', 'dark', 'darker'],
+        row: 'vivid',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'black',
+        aria: 'Absolute black',
+        resolvedColor: lightBlack.picked['100'],
+        availableThemes: ['dark', 'darker'],
+        row: 'dark',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'dark-black',
+        aria: 'Very dark black',
+        resolvedColor: darkBlack.picked['5'],
+        availableThemes: ['dark', 'darker'],
+        row: 'dark',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'dark-blue',
+        aria: 'Very dark blue',
+        resolvedColor: darkBlue.picked['5'],
+        availableThemes: ['dark', 'darker'],
+        row: 'dark',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'dark-green',
+        aria: 'Very dark green',
+        resolvedColor: darkGreen.picked['5'],
+        availableThemes: ['dark', 'darker'],
+        row: 'dark',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'dark-red',
+        aria: 'Very dark red',
+        resolvedColor: darkRed.picked['5'],
+        availableThemes: ['dark', 'darker'],
+        row: 'dark',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'dark-purple',
+        aria: 'Very dark purple',
+        resolvedColor: darkPurple.picked['5'],
+        availableThemes: ['dark', 'darker'],
+        row: 'dark',
+        surfaceContexts: ['default', 'inverse']
+      },
+      {
+        key: 'dark-orange',
+        aria: 'Very dark orange',
+        resolvedColor: darkOrange.picked['5'],
+        availableThemes: ['dark', 'darker'],
+        row: 'dark',
+        surfaceContexts: ['default', 'inverse']
+      }
     ];
 
     return candidates.flatMap((tone) =>
       tone.resolvedColor
         ? [
             {
-              key: tone.key,
-              aria: tone.aria,
+              ...tone,
               resolvedColor: tone.resolvedColor,
               displayColor: tone.resolvedColor
             }
@@ -291,21 +434,8 @@ export function useButtonStressTestBackgroundTones() {
     lightRed.picked
   ]);
 
-  const items = useMemo(
-    () =>
-      tones.map((tone) => ({
-        value: tone.key,
-        label: tone.aria,
-        swatch: {
-          color: tone.displayColor
-        }
-      })),
-    [tones]
-  );
-
   return {
     defaultToneKey: 'white' as const,
-    items,
     tones
   };
 }

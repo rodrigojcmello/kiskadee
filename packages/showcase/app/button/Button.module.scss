@@ -93,72 +93,75 @@ $height: 64px;
     grid-template-columns: repeat(7, 22px);
   }
 
-  // Absolute White and Black share the first column. The Black-family neutral
-  // and vivid swatch share the second; chromatic families stay vertically
-  // aligned and reserve the final column for Orange.
-  :global([role='radiogroup'] > :nth-child(8)) {
-    grid-column: 3;
-    grid-row: 2;
-  }
-
-  :global([role='radiogroup'] > :nth-child(9)) {
-    grid-column: 4;
-    grid-row: 2;
-  }
-
-  :global([role='radiogroup'] > :nth-child(10)) {
-    grid-column: 5;
-    grid-row: 2;
-  }
-
-  :global([role='radiogroup'] > :nth-child(11)) {
-    grid-column: 6;
-    grid-row: 2;
-  }
-
-  :global([role='radiogroup'] > :nth-child(12)) {
-    grid-column: 7;
-    grid-row: 2;
-  }
-
-  :global([role='radiogroup'] > :nth-child(13)) {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  :global([role='radiogroup'] > :nth-child(14)) {
+  // Keep color families in stable columns even when theme/context filtering
+  // removes an entire physical-lightness row.
+  :global([role='radiogroup'] > label:has(input[value='white'])),
+  :global([role='radiogroup'] > label:has(input[value='black'])) {
     grid-column: 1;
-    grid-row: 3;
   }
 
-  :global([role='radiogroup'] > :nth-child(15)) {
+  :global([role='radiogroup'] > label:has(input[value='light-neutral'])),
+  :global([role='radiogroup'] > label:has(input[value='vivid-black'])),
+  :global([role='radiogroup'] > label:has(input[value='dark-black'])) {
     grid-column: 2;
-    grid-row: 3;
   }
 
-  :global([role='radiogroup'] > :nth-child(16)) {
+  :global([role='radiogroup'] > label:has(input[value='light-blue'])),
+  :global([role='radiogroup'] > label:has(input[value='vivid-blue'])),
+  :global([role='radiogroup'] > label:has(input[value='dark-blue'])) {
     grid-column: 3;
-    grid-row: 3;
   }
 
-  :global([role='radiogroup'] > :nth-child(17)) {
+  :global([role='radiogroup'] > label:has(input[value='light-green'])),
+  :global([role='radiogroup'] > label:has(input[value='vivid-green'])),
+  :global([role='radiogroup'] > label:has(input[value='dark-green'])) {
     grid-column: 4;
-    grid-row: 3;
   }
 
-  :global([role='radiogroup'] > :nth-child(18)) {
+  :global([role='radiogroup'] > label:has(input[value='light-red'])),
+  :global([role='radiogroup'] > label:has(input[value='vivid-red'])),
+  :global([role='radiogroup'] > label:has(input[value='dark-red'])) {
     grid-column: 5;
-    grid-row: 3;
   }
 
-  :global([role='radiogroup'] > :nth-child(19)) {
+  :global([role='radiogroup'] > label:has(input[value='light-purple'])),
+  :global([role='radiogroup'] > label:has(input[value='vivid-purple'])),
+  :global([role='radiogroup'] > label:has(input[value='dark-purple'])) {
     grid-column: 6;
-    grid-row: 3;
   }
 
-  :global([role='radiogroup'] > :nth-child(20)) {
+  :global([role='radiogroup'] > label:has(input[value='light-orange'])),
+  :global([role='radiogroup'] > label:has(input[value='vivid-orange'])),
+  :global([role='radiogroup'] > label:has(input[value='dark-orange'])) {
     grid-column: 7;
-    grid-row: 3;
+  }
+}
+
+.stressTestLightDefaultToneGrid {
+  :global([role='radiogroup'] > label:has(input[value^='light-'])),
+  :global([role='radiogroup'] > label:has(input[value='white'])) {
+    grid-row: 1;
+  }
+
+  :global([role='radiogroup'] > label:has(input[value^='vivid-'])) {
+    grid-row: 2;
+  }
+}
+
+.stressTestLightInverseToneGrid {
+  :global([role='radiogroup'] > label:has(input[value^='vivid-'])) {
+    grid-row: 1;
+  }
+}
+
+.stressTestDarkToneGrid {
+  :global([role='radiogroup'] > label:has(input[value^='vivid-'])) {
+    grid-row: 1;
+  }
+
+  :global([role='radiogroup'] > label:has(input[value^='dark-'])),
+  :global([role='radiogroup'] > label:has(input[value='black'])) {
+    grid-row: 2;
   }
 }
 

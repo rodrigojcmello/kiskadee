@@ -20,6 +20,10 @@ import {
   normalizeHexColor
 } from '@kiskadee/core';
 import {
+  buildCardComponentArtifact,
+  CARD_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/cardComponentArtifact.ts';
+import {
   getComponentCoreClassMapArtifactPath,
   getComponentPaletteClassMapArtifactPath
 } from '../component-artifacts/componentClassMapArtifacts.ts';
@@ -663,6 +667,17 @@ export async function publishMetadata(params: {
       artifacts: {
         ...(manifest.components.slider?.artifacts ?? {}),
         metadata: SLIDER_COMPONENT_ARTIFACT_PATH
+      }
+    };
+  }
+
+  if (buildCardComponentArtifact(schema)) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.card = {
+      ...(manifest.components.card ?? {}),
+      artifacts: {
+        ...(manifest.components.card?.artifacts ?? {}),
+        metadata: CARD_COMPONENT_ARTIFACT_PATH
       }
     };
   }

@@ -16,6 +16,10 @@ import type {
 } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import {
+  buildCardComponentArtifact,
+  CARD_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/cardComponentArtifact.ts';
+import {
   buildSliderComponentArtifact,
   SLIDER_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/sliderComponentArtifact.ts';
@@ -235,6 +239,7 @@ export async function writeExtraArtifacts(params: {
   }
 
   const sliderComponentArtifact = buildSliderComponentArtifact(schema);
+  const cardComponentArtifact = buildCardComponentArtifact(schema);
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
@@ -307,6 +312,7 @@ export async function writeExtraArtifacts(params: {
   }
 
   const componentArtifacts = [
+    { artifact: cardComponentArtifact, path: CARD_COMPONENT_ARTIFACT_PATH },
     { artifact: sliderComponentArtifact, path: SLIDER_COMPONENT_ARTIFACT_PATH },
     { artifact: switchComponentArtifact, path: SWITCH_COMPONENT_ARTIFACT_PATH },
     { artifact: tabsComponentArtifact, path: TABS_COMPONENT_ARTIFACT_PATH },

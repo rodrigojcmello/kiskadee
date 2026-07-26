@@ -13,6 +13,11 @@ export type {
   ComponentClassNameMapJSON,
   ComponentClassNameMapSplitJSON
 } from '@kiskadee/core';
+export type {
+  CardCanonicalSurfacesPayload,
+  CardComponentArtifactJSON,
+  ResolvedCardCanonicalSurface
+} from './src/component-artifacts/cardComponentArtifact.ts';
 export type { ComponentClassMapArtifactJSON } from './src/component-artifacts/componentClassMapArtifacts.ts';
 export type { SliderComponentArtifactJSON } from './src/component-artifacts/sliderComponentArtifact.ts';
 export type { SwitchComponentArtifactJSON } from './src/component-artifacts/switchComponentArtifact.ts';

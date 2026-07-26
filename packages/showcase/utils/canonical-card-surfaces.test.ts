@@ -1,91 +1,133 @@
+import type { CardCanonicalSurfacesPayload } from '@kiskadee/web-builder/types';
 import { describe, expect, it } from 'vitest';
-import type { DesignSystemSchemaArtifact } from '@/hooks/use-design-system-schema';
 import { isDarkSurfaceColor, resolveCanonicalCardSurfaces } from './canonical-card-surfaces';
 
-function createSchema(
-  boxColor: Record<string, Record<string, { rest?: unknown }>>
-): DesignSystemSchemaArtifact {
+function createCanonicalSurfaces(): CardCanonicalSurfacesPayload {
   return {
-    components: {
-      card: {
-        elements: {
-          e1: {
-            palettes: {
-              default: {
-                light: {
-                  default: {
-                    boxColor
-                  }
-                }
-              }
-            }
-          }
+    default: {
+      light: [
+        {
+          intent: 'neutral',
+          emphasis: 'low',
+          contentSurfaceContext: 'default',
+          rest: '#ffffff'
+        },
+        {
+          intent: 'neutral',
+          emphasis: 'medium',
+          contentSurfaceContext: 'default',
+          rest: '#f9fbff'
+        },
+        {
+          intent: 'primary',
+          emphasis: 'medium',
+          contentSurfaceContext: 'default',
+          rest: '#e1efff'
+        },
+        {
+          intent: 'neutral',
+          emphasis: 'high',
+          contentSurfaceContext: 'default',
+          rest: '#f4f6fe'
+        },
+        {
+          intent: 'primary',
+          emphasis: 'highest',
+          contentSurfaceContext: 'inverse',
+          rest: '#0064b4'
+        },
+        {
+          intent: 'neutral',
+          emphasis: 'highest',
+          contentSurfaceContext: 'default',
+          rest: '#000000'
         }
-      }
+      ]
     }
   };
 }
 
 describe('canonical Card surface resolver', () => {
-  it('reads ordered Rest surfaces from the default Card surface context', () => {
-    const schema = createSchema({
-      neutral: {
-        low: { rest: '#ffffff' },
-        medium: { rest: '#f9fbff' },
-        high: { rest: '#f4f6fe' },
-        highest: { rest: '#000000' }
-      },
-      primary: {
-        medium: { rest: '#e1efff' },
-        highest: { rest: '#0064b4' }
-      }
-    });
-
+  it('preserves the artifact order and descendant surface-context metadata', () => {
     expect(
       resolveCanonicalCardSurfaces({
-        schema,
+        canonicalSurfaces: createCanonicalSurfaces(),
         segment: 'default',
         theme: 'light'
       })
     ).toEqual([
-      { key: 'neutral.low', label: 'Neutral low', resolvedColor: '#ffffff' },
-      { key: 'neutral.medium', label: 'Neutral medium', resolvedColor: '#f9fbff' },
-      { key: 'primary.medium', label: 'Primary medium', resolvedColor: '#e1efff' },
-      { key: 'neutral.high', label: 'Neutral high', resolvedColor: '#f4f6fe' },
-      { key: 'primary.highest', label: 'Primary highest', resolvedColor: '#0064b4' },
-      { key: 'neutral.highest', label: 'Neutral highest', resolvedColor: '#000000' }
+      {
+        key: 'neutral.low',
+        label: 'Neutral low',
+        resolvedColor: '#ffffff',
+        contentSurfaceContext: 'default'
+      },
+      {
+        key: 'neutral.medium',
+        label: 'Neutral medium',
+        resolvedColor: '#f9fbff',
+        contentSurfaceContext: 'default'
+      },
+      {
+        key: 'primary.medium',
+        label: 'Primary medium',
+        resolvedColor: '#e1efff',
+        contentSurfaceContext: 'default'
+      },
+      {
+        key: 'neutral.high',
+        label: 'Neutral high',
+        resolvedColor: '#f4f6fe',
+        contentSurfaceContext: 'default'
+      },
+      {
+        key: 'primary.highest',
+        label: 'Primary highest',
+        resolvedColor: '#0064b4',
+        contentSurfaceContext: 'inverse'
+      },
+      {
+        key: 'neutral.highest',
+        label: 'Neutral highest',
+        resolvedColor: '#000000',
+        contentSurfaceContext: 'default'
+      }
     ]);
   });
 
-  it('filters missing roles and deduplicates equivalent colors', () => {
-    const schema = createSchema({
-      neutral: {
-        low: { rest: '#FFFFFF' },
-        medium: { rest: '#ffffff' },
-        high: { rest: { ref: '#11131c' } }
-      },
-      primary: {
-        medium: { rest: '#e1efff' }
-      }
+  it('deduplicates equivalent colors without changing authored precedence', () => {
+    const canonicalSurfaces = createCanonicalSurfaces();
+    const light = canonicalSurfaces.default?.light;
+    if (!light) throw new Error('Test canonical surfaces are missing');
+    light[0].rest = '#FFFFFF';
+    light[1].rest = '#ffffff';
+
+    const resolved = resolveCanonicalCardSurfaces({
+      canonicalSurfaces,
+      segment: 'default',
+      theme: 'light'
     });
 
+    expect(resolved.map((surface) => surface.key)).toEqual([
+      'neutral.low',
+      'primary.medium',
+      'neutral.high',
+      'primary.highest',
+      'neutral.highest'
+    ]);
     expect(
       resolveCanonicalCardSurfaces({
-        schema,
+        canonicalSurfaces,
         segment: 'default',
         theme: 'light'
       })
-    ).toEqual([
-      { key: 'neutral.low', label: 'Neutral low', resolvedColor: '#FFFFFF' },
-      { key: 'primary.medium', label: 'Primary medium', resolvedColor: '#e1efff' },
-      { key: 'neutral.high', label: 'Neutral high', resolvedColor: '#11131c' }
-    ]);
+    ).not.toEqual(expect.arrayContaining([expect.objectContaining({ key: 'neutral.medium' })]));
   });
 
   it('returns no canonical surfaces when the Card palette is unavailable', () => {
     expect(
       resolveCanonicalCardSurfaces({
-        schema: createSchema({}),
+        canonicalSurfaces: createCanonicalSurfaces(),
         segment: 'default',
         theme: 'dark'
       })
