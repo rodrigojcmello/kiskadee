@@ -22,6 +22,16 @@
       "types": "./dist/families/kiskadee/*.d.ts",
       "import": "./dist/families/kiskadee/*.js",
       "default": "./dist/families/kiskadee/*.js"
+    },
+    "./social": {
+      "types": "./dist/families/social/index.d.ts",
+      "import": "./dist/families/social/index.js",
+      "default": "./dist/families/social/index.js"
+    },
+    "./social/*": {
+      "types": "./dist/families/social/*.d.ts",
+      "import": "./dist/families/social/*.js",
+      "default": "./dist/families/social/*.js"
     }
   },
   "files": [

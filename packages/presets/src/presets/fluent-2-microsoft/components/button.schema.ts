@@ -614,6 +614,33 @@ export function createFluent2MicrosoftButtonSchema({
             's:lg:1': 22
           }
         }
+      },
+      e3: {
+        name: 'button-icon',
+        palettes: {
+          default: {
+            light: createTextContextPalettes('light'),
+            dark: createTextContextPalettes('dark'),
+            darker: createTextContextPalettes('darker')
+          }
+        },
+        scales: {
+          boxWidth: {
+            's:sm:1': 20,
+            's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+            's:lg:1': 24
+          },
+          boxHeight: {
+            's:sm:1': 20,
+            's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+            's:lg:1': 24
+          },
+          paddingRight: {
+            's:sm:1': 4,
+            's:md:1': 6,
+            's:lg:1': 6
+          }
+        }
       }
     }
   };

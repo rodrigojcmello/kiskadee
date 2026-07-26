@@ -116,6 +116,8 @@ Showcase UI components.
 - Can be “product-like” components (pages, panels, viewers)
 - May or may not use components from `k-components/`
 - Usually contains Showcase-specific logic (e.g. loading and rendering artifacts)
+- Does not own reusable SVG icons. Import shared icons from `@kiskadee/icons`; keep a local icon
+  only when its artwork is intrinsically coupled to one Showcase-only visualization.
 
 ### `k-components/`
 
@@ -124,6 +126,8 @@ Project “headless + styled” components.
 - Wrappers around headless components (e.g. `@kiskadee/react-headless`)
 - Provide the Showcase styling/skin and a more ergonomic API for internal use
 - Example: `Select` (consistent selection control in Showcase)
+- Showcase-only selection patterns should stay here or in `components/`; do not add a new Headless
+  primitive when an existing internal control already satisfies the interaction contract.
 
 ### `hooks/`
 
@@ -184,5 +188,7 @@ Shared utilities for Showcase.
 - Initial and fallback theme selection prefers `light` whenever the active preset exposes it. A
   valid theme explicitly persisted by the user still takes precedence.
 - Generated registries are outputs: do not edit files under `registry/generated/` manually.
+- Reusable SVG icons belong to `packages/icons` and should be consumed through direct
+  `@kiskadee/icons/<family>/<Icon>` imports.
 - For deployment builds (for example on Vercel), `pnpm build` inside `packages/showcase`
   already runs `@kiskadee/web-builder` `build-sync-generate` before `next build`.

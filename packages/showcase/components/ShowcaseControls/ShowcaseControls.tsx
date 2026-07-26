@@ -138,7 +138,10 @@ export function ShowcaseSegmentedControl({
   return (
     <fieldset className={joinClassNames(styles.segmentedField, className)} disabled={disabled}>
       <legend className={styles.segmentedLabel}>{label}</legend>
-      <div className={styles.segmentedControl}>
+      <div
+        className={styles.segmentedControl}
+        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
+      >
         {options.map((option) => {
           const isSelected = option.value === value;
 

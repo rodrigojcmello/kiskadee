@@ -6,10 +6,10 @@ import type {
   InteractionState,
   SurfaceContext
 } from '@kiskadee/core';
+import { UnavailableIcon } from '@kiskadee/icons/kiskadee/UnavailableIcon';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
-import { Icon } from '@/components/Icon/Icon';
 import s from '../Button.module.scss';
 import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
 
@@ -73,7 +73,7 @@ export function ButtonStateSection({
 
     return (
       <div className={s.missingState}>
-        <Icon name="NoSign" width={24} height={24} />
+        <UnavailableIcon width={24} height={24} />
       </div>
     );
   };

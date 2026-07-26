@@ -33,6 +33,7 @@ This file records source evidence and color decisions for the Button currently a
 - Official Fluent documentation:
   - [Button usage](https://fluent2.microsoft.design/components/web/react/core/button/usage)
   - [Color tokens](https://fluent2.microsoft.design/color-tokens/)
+  - [Fluent React Button styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts)
 - Preset-wide tonal evidence:
   [`../colors/fluent-tonal-scale-evidence.md`](../colors/fluent-tonal-scale-evidence.md)
 - Exact primitive de-para:
@@ -64,6 +65,26 @@ and final heights without adding a Fluent-specific runtime wrapper.
 
 The Web Builder then applies its standard one-pixel border compensation. The emitted results are
 24 px for `s:sm:1`, 32 px for the desktop `s:md:1`, and 40 px for `s:lg:1`.
+
+## Icon Slot
+
+The official Fluent React Button implementation provides a dedicated icon slot. Its published
+styles use a 20 px icon for Small and Medium Buttons, a 24 px icon for Large Buttons, a 4 px
+icon-to-label gap in Small, and a 6 px gap in Medium and Large. Kiskadee authors those metrics on
+Button `e3` instead of styling SVG children directly:
+
+| Kiskadee scale | Icon box | Gap before label | Status |
+| --- | --- | --- | --- |
+| `s:sm:1` | 20 px | 4 px | Official adapted |
+| `s:md:1`, mobile through tablet | 24 px | 6 px | Kiskadee responsive extension |
+| `s:md:1`, `bp:lg:1` and above | 20 px | 6 px | Official adapted |
+| `s:lg:1` | 24 px | 6 px | Official adapted |
+
+The responsive `s:md:1` icon follows the same policy as the Button container and label: Large
+geometry below the desktop breakpoint, then the official Medium geometry at `bp:lg:1`. Icon color
+reuses the complete label palette for the active theme, surface context, intent, emphasis, and
+state. This makes an icon and its adjacent label one content relationship while keeping the SVG
+asset itself free of preset colors and dimensions.
 
 ## Responsive Default Size
 

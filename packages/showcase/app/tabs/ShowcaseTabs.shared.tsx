@@ -8,10 +8,10 @@ import type {
   TabsLineIndicatorShape,
   TabsTabWidth
 } from '@kiskadee/core';
+import { SunIcon } from '@kiskadee/icons/kiskadee/SunIcon';
 import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
 import Link from 'next/link';
 import type { ComponentType, ReactNode } from 'react';
-import { Icon } from '@/components/Icon/Icon';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
 
 export type TabsShowcaseVariant = 'line' | 'dot' | 'box' | 'segmented' | 'bridge';
@@ -45,14 +45,14 @@ export const tabItems: ReadonlyArray<{
   {
     value: 'home',
     label: 'Home',
-    icon: <Icon name="SunMax" aria-hidden="true" focusable="false" />
+    icon: <SunIcon />
   },
   { value: 'locations', label: 'Locations' },
   { value: 'forms', label: 'Forms' },
   { value: 'services', label: 'Services' },
   {
     value: 'icon-only',
-    icon: <Icon name="SunMax" aria-hidden="true" focusable="false" />,
+    icon: <SunIcon />,
     accessibilityLabel: 'Home'
   },
   { value: 'single-letter', label: 'A' },

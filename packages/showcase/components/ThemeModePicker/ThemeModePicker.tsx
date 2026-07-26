@@ -1,62 +1,47 @@
 'use client';
+
 import type { ThemeMode } from '@kiskadee/core';
+import type { IconProps } from '@kiskadee/icons/kiskadee';
+import { MoonIcon } from '@kiskadee/icons/kiskadee/MoonIcon';
+import { MoonStarsIcon } from '@kiskadee/icons/kiskadee/MoonStarsIcon';
+import { SunIcon } from '@kiskadee/icons/kiskadee/SunIcon';
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
-import { SwatchRadioGroup } from '@/k-components';
-import { Icon, type IconName } from '../Icon/Icon';
+import type { ComponentType } from 'react';
+import { ShowcaseSegmentedControl } from '../ShowcaseControls';
+import styles from './ThemeModePicker.module.scss';
 
-/*
-  ThemeModePicker: mirrors BackgroundTonePicker identity
-  Icons mapping (per request):
-  - light  → sun
-  - dark   → full moon (céu mais claro)
-  - darker → bright crescent moon (lua "mordida")
-*/
-
-const OPTIONS: Array<{
-  key: ThemeMode;
+const OPTIONS: ReadonlyArray<{
+  Icon: ComponentType<IconProps>;
   label: string;
-  aria: string;
+  value: ThemeMode;
 }> = [
-  { key: 'light', label: 'Light', aria: 'Light theme' },
-  { key: 'dark', label: 'Dark', aria: 'Dark theme' },
-  { key: 'darker', label: 'Darker', aria: 'Darker theme' }
+  { value: 'light', label: 'Light', Icon: SunIcon },
+  { value: 'dark', label: 'Dark', Icon: MoonStarsIcon },
+  { value: 'darker', label: 'Darker', Icon: MoonIcon }
 ];
 
 export default function ThemeModePicker({ className }: { className?: string }) {
   const { theme, setTheme } = useKiskadee();
   const { availableThemes } = useShowcase();
-
-  const visibleOptions = OPTIONS.filter((o) => availableThemes.includes(o.key));
-
-  const iconFor = (mode: ThemeMode): IconName => {
-    switch (mode) {
-      case 'light':
-        return 'SunMax';
-      case 'dark':
-        return 'MoonStars';
-      case 'darker':
-        return 'Moon';
-      default:
-        return 'SunMax';
-    }
-  };
+  const options = OPTIONS.filter((option) => availableThemes.includes(option.value)).map(
+    ({ Icon, label, value }) => ({
+      value,
+      label: (
+        <span className={styles.optionContent}>
+          <Icon className={styles.icon} />
+          <span>{label}</span>
+        </span>
+      )
+    })
+  );
 
   return (
-    <SwatchRadioGroup
+    <ShowcaseSegmentedControl
       className={className}
-      groupLabel="Theme"
-      aria-label="Theme mode"
+      label="Theme"
+      options={options}
       value={theme}
-      items={visibleOptions.map((opt) => ({
-        value: opt.key,
-        label: opt.label
-      }))}
-      onValueChange={(value) => {
-        setTheme(value as ThemeMode);
-      }}
-      renderSwatch={(item) => (
-        <Icon name={iconFor(item.value as ThemeMode)} aria-hidden="true" focusable="false" />
-      )}
+      onValueChange={(value) => setTheme(value as ThemeMode)}
     />
   );
 }

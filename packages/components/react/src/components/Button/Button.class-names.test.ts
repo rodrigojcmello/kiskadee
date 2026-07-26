@@ -5,6 +5,10 @@ import { resolveButtonClassNames } from './Button.class-names.ts';
 function createElement(slot: string, includeOnVivid = true): ClassNameByElementJSON {
   return {
     d: `${slot}-base`,
+    s: {
+      all: `${slot}-scale-all`,
+      'md:1': `${slot}-scale-medium`
+    },
     c: {
       s: {
         primary: { h: `${slot}-on-subtle-high` }
@@ -56,6 +60,39 @@ describe('Button surface context class resolution', () => {
     expect(classes.e2).toContain('e2-on-vivid-high');
     expect(classes.e3).toContain('e3-on-vivid-high');
     expect(classes.e1).not.toContain('on-subtle-high');
+  });
+
+  it('applies schema scale and structural classes to the icon slot', () => {
+    const classes = resolve(undefined);
+
+    expect(classes.e3).toContain('e3-scale-all');
+    expect(classes.e3).toContain('e3-scale-medium');
+    expect(classes.e3).toContain('k-btn-e3');
+    expect(classes.e3).not.toContain('k-btn-e3a');
+  });
+
+  it('uses a text-relative icon fallback when the preset has no e3 scale', () => {
+    const classes = resolveButtonClassNames({
+      e1: createElement('e1'),
+      e2: createElement('e2'),
+      e3: undefined,
+      classNames: {},
+      status: 'rest',
+      controlState: undefined,
+      scale: undefined,
+      shadow: false,
+      radius: undefined,
+      radiusEffect: false,
+      emphasis: 'high',
+      intent: 'primary',
+      surfaceContext: undefined,
+      globalRadius: undefined
+    });
+
+    expect(classes.e3).toContain('k-btn-e3');
+    expect(classes.e3).toContain('k-btn-e3a');
+    expect(classes.e3).toContain('e2-scale-all');
+    expect(classes.e3).toContain('e2-scale-medium');
   });
 
   it('keeps structural classes but never falls back to onSubtle colors when onVivid is absent', () => {

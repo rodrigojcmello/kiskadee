@@ -30,10 +30,32 @@ different families may use the same icon names.
 
 ## SVG contract
 
-- Use the shared 24 by 24 view box and `currentColor` unless the artwork requires another contract.
+- Authorial Kiskadee icons use the shared 24 by 24 view box, `currentColor`, rounded line caps
+  and joins, and a 1.75 unit stroke when the icon is stroke-based.
+- Keep authorial artwork optically centered and leave enough edge clearance for focus rings,
+  button padding, and small-size rendering. Do not compensate for one consuming component inside
+  the SVG.
+- Third-party marks live in a separate family. Preserve the source artwork's coordinate system and
+  silhouette; normalize only the React wrapper, external `1em` size, decorative accessibility
+  defaults, and an official monochrome color treatment when the brand permits one.
+- Never redraw a brand mark on the Kiskadee 24 by 24 grid merely to make it resemble an authorial
+  icon. Brand geometry and Kiskadee icon geometry are different contracts.
 - Keep icons decorative by default with `aria-hidden="true"` and `focusable="false"`.
 - Let consumers override SVG presentation and accessibility props through `IconProps`.
 - Name variants by meaning, not by the page or component that first consumes them.
 
 Existing application icons can move into this package incrementally. A migration should preserve
 the consuming UI behavior and should not pull unrelated icons into the same change.
+
+## Brand assets
+
+The `social` family contains third-party trademarks, not Kiskadee-authored artwork:
+
+```tsx
+import { InstagramIcon } from '@kiskadee/icons/social/InstagramIcon';
+```
+
+Every social mark must have first-party provenance recorded in
+[`social-icons.md`](./social-icons.md). A consumer is responsible for applying the trademark
+owner's current usage rules. The package export is a technical convenience and does not grant a
+license, partnership, endorsement, or permission to use a mark.

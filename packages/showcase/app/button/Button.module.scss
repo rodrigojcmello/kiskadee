@@ -8,6 +8,27 @@ $height: 64px;
   }
 }
 
+.showcaseSection {
+  width: 100%;
+}
+
+.showcaseSectionDescription {
+  color: currentColor;
+  margin: -4px 0 16px;
+  opacity: 0.68;
+}
+
+.buttonExampleGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+
+  :global(.k-btn) {
+    width: 100%;
+  }
+}
+
 .example-states {
   align-items: center;
   display: grid;
@@ -289,6 +310,10 @@ $height: 64px;
 }
 
 @media (min-width: 768px) {
+  .buttonExampleGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .contextComparisonGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

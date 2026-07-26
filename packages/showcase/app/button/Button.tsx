@@ -1,6 +1,7 @@
 'use client';
 
 import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
+import { UnavailableIcon } from '@kiskadee/icons/kiskadee/UnavailableIcon';
 import {
   Button as KButton,
   SmoothText,
@@ -12,7 +13,6 @@ import {
   ShowcaseGlobalSemanticControls,
   ShowcaseTypographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
-import { Icon } from '@/components/Icon/Icon';
 import {
   ShowcaseBooleanControl,
   ShowcaseControlField,
@@ -40,8 +40,10 @@ import {
   supportsManifestSurfaceContext
 } from '@/utils/manifest-surface-context';
 import s from './Button.module.scss';
+import { ButtonIconExamples } from './components/ButtonIconExamples';
 import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
+import { SocialButtonExamples } from './components/SocialButtonExamples';
 
 const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
   { value: 'onSubtle', label: 'On subtle' },
@@ -407,7 +409,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <Icon name="NoSign" width={24} height={24} />
+        <UnavailableIcon width={24} height={24} />
       </div>
     );
   };
@@ -424,7 +426,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <Icon name="NoSign" width={24} height={24} />
+        <UnavailableIcon width={24} height={24} />
       </div>
     );
   };
@@ -772,6 +774,18 @@ export function Button() {
             )}
           </div>
         </div>
+        <ButtonIconExamples
+          align={alignment}
+          fontName={fontName}
+          scale={activeButtonScale}
+          surfaceContext={activeSurfaceContext}
+        />
+        <SocialButtonExamples
+          align={alignment}
+          fontName={fontName}
+          scale={activeButtonScale}
+          surfaceContext={activeSurfaceContext}
+        />
       </div>
     </section>
   );

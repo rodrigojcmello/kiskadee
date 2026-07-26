@@ -90,6 +90,7 @@ export function resolveButtonClassNames({
   const resolvedSurfaceContext = surfaceContext ?? DEFAULT_BUTTON_SURFACE_CONTEXT;
   const scaleKey = normalizeButtonScaleKey(scale ?? DEFAULT_BUTTON_SCALE);
   const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
+  const e3HasSchemaScale = Boolean(e3?.s?.all || e3?.s?.[scaleKey]);
 
   const e1Effects = e1?.e;
   const shadowEffect = shadow ? resolveButtonStatefulEffectClassName(e1Effects?.h) : '';
@@ -141,7 +142,11 @@ export function resolveButtonClassNames({
     e3:
       join(
         collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
-        classNames.e3
+        e3HasSchemaScale ? e3?.s?.all : e2?.s?.all,
+        classNames.e3,
+        e3HasSchemaScale ? e3?.s?.[scaleKey] : e2?.s?.[scaleKey],
+        'k-btn-e3',
+        e3HasSchemaScale ? undefined : 'k-btn-e3a'
       ) ?? ''
   };
 }

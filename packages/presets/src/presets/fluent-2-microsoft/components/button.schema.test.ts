@@ -17,10 +17,17 @@ function requireButtonContentElement() {
   return { ...element, palettes: element.palettes };
 }
 
+function requireButtonIconElement() {
+  const element = schema.components.button?.elements.e3;
+  if (!element?.palettes) throw new Error('Fluent Button icon schema is missing');
+  return { ...element, palettes: element.palettes };
+}
+
 describe('Fluent 2 Button surface contexts', () => {
   it('preserves the three official sizes and uses large geometry for the responsive mobile default', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
+    const e3 = requireButtonIconElement();
 
     expect(e1.scales).toMatchObject({
       paddingTop: {
@@ -56,6 +63,23 @@ describe('Fluent 2 Button surface contexts', () => {
         's:lg:1': 22
       }
     });
+    expect(e3.scales).toMatchObject({
+      boxWidth: {
+        's:sm:1': 20,
+        's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+        's:lg:1': 24
+      },
+      boxHeight: {
+        's:sm:1': 20,
+        's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+        's:lg:1': 24
+      },
+      paddingRight: {
+        's:sm:1': 4,
+        's:md:1': 6,
+        's:lg:1': 6
+      }
+    });
   });
 
   it('preserves the approved default anchors', () => {
@@ -65,6 +89,13 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(palettes?.light?.onSubtle.boxColor?.primary?.high?.rest).toBe('#0064b4');
     expect(palettes?.dark?.onSubtle.boxColor?.primary?.high?.rest).toBe('#0064b4');
     expect(palettes?.darker?.onSubtle.boxColor?.primary?.high?.rest).toBe('#005ba4');
+  });
+
+  it('keeps icon colors synchronized with adjacent label colors', () => {
+    const e2 = requireButtonContentElement();
+    const e3 = requireButtonIconElement();
+
+    expect(e3.palettes).toEqual(e2.palettes);
   });
 
   it('publishes the complete onVivid matrix for every Fluent theme', () => {
@@ -101,13 +132,19 @@ describe('Fluent 2 Button surface contexts', () => {
             e1.palettes.default?.light?.onVivid?.boxColor?.[intent]?.[emphasis]?.[state]
           ).toEqual(e1.palettes.default?.dark?.onVivid?.boxColor?.[intent]?.[emphasis]?.[state]);
         }
-        expect(e1.palettes.default?.light?.onVivid?.borderColor?.[intent]?.[emphasis]).toEqual(
-          e1.palettes.default?.dark?.onVivid?.borderColor?.[intent]?.[emphasis]
-        );
+        if (emphasis !== 'low') {
+          expect(e1.palettes.default?.light?.onVivid?.borderColor?.[intent]?.[emphasis]).toEqual(
+            e1.palettes.default?.dark?.onVivid?.borderColor?.[intent]?.[emphasis]
+          );
+        }
         expect(e2.palettes.default?.light?.onVivid?.textColor?.[intent]?.[emphasis]).toEqual(
           e2.palettes.default?.dark?.onVivid?.textColor?.[intent]?.[emphasis]
         );
       }
+      expect(e1.palettes.default?.light?.onVivid?.borderColor?.[intent]?.low?.rest).toBe(
+        '#ffffff4d'
+      );
+      expect(e1.palettes.default?.dark?.onVivid?.borderColor?.[intent]?.low?.rest).toBe('#ffffff');
     }
   });
 
@@ -135,18 +172,18 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(content?.textColor?.primary?.high).not.toHaveProperty('focus');
   });
 
-  it('keeps onVivid lower emphases role-aware with a shared white Low border', () => {
+  it('keeps onVivid lower emphases role-aware with a theme-adjusted white Low border', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
     const surface = e1.palettes.default?.light?.onVivid;
     const content = e2.palettes.default?.light?.onVivid;
 
     expect(surface?.boxColor?.primary?.medium).toMatchObject({
-      rest: '#ffffff12',
+      rest: '#ffffff24',
       hover: '#ffffff1a',
-      pressed: '#ffffff24',
+      pressed: '#ffffff12',
       disabled: '#ffffff0a',
-      selected: { rest: '#ffffff24' }
+      selected: { rest: '#ffffff12' }
     });
     expect(surface?.boxColor?.primary?.low).toMatchObject({
       rest: '#ffffff00',
@@ -157,7 +194,7 @@ describe('Fluent 2 Button surface contexts', () => {
     });
     expect(surface?.boxColor?.primary?.lowest).not.toHaveProperty('disabled');
     expect(surface?.borderColor?.primary?.low).toEqual({
-      rest: '#ffffff',
+      rest: '#ffffff4d',
       disabled: '#ffffff00'
     });
     expect(content?.textColor?.primary?.medium?.rest).toBe('#c1deff');
@@ -177,10 +214,10 @@ describe('Fluent 2 Button surface contexts', () => {
       destructive: surface?.boxColor?.destructive?.medium?.rest,
       positive: surface?.boxColor?.positive?.medium?.rest
     }).toEqual({
-      primary: '#ffffff12',
-      neutral: '#ffffff12',
-      destructive: '#ffffff12',
-      positive: '#ffffff12'
+      primary: '#ffffff24',
+      neutral: '#ffffff24',
+      destructive: '#ffffff24',
+      positive: '#ffffff24'
     });
 
     expect({
@@ -202,7 +239,7 @@ describe('Fluent 2 Button surface contexts', () => {
           '#ffffff1a'
         );
       }
-      expect(surface?.borderColor?.[intent]?.low?.rest).toBe('#ffffff');
+      expect(surface?.borderColor?.[intent]?.low?.rest).toBe('#ffffff4d');
       expect(content?.textColor?.[intent]?.medium?.rest).toBe(
         content?.textColor?.[intent]?.low?.rest
       );

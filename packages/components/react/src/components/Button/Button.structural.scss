@@ -29,3 +29,27 @@
     cursor: not-allowed;
   }
 }
+
+/*
+ * element button icon / e3
+ * Gives schema-owned icon geometry a stable inline box and normalizes SVG descendants.
+ */
+.k-btn-e3 {
+  display: inline-block;
+  vertical-align: middle;
+
+  > svg {
+    block-size: 100%;
+    display: block;
+    inline-size: 100%;
+  }
+}
+
+/*
+ * element button icon fallback / e3a
+ * Keeps the icon aligned to the inherited text size when a preset does not publish e3 geometry.
+ */
+.k-btn-e3a {
+  block-size: 1em;
+  inline-size: 1em;
+}

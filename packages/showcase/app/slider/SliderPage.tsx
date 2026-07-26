@@ -9,6 +9,10 @@ import type {
   SliderValueDisplay
 } from '@kiskadee/core';
 import { DragHandleIcon } from '@kiskadee/icons/kiskadee/DragHandleIcon';
+import { FaceSadIcon } from '@kiskadee/icons/kiskadee/FaceSadIcon';
+import { FaceSmileIcon } from '@kiskadee/icons/kiskadee/FaceSmileIcon';
+import { MoonStarsIcon } from '@kiskadee/icons/kiskadee/MoonStarsIcon';
+import { SunIcon } from '@kiskadee/icons/kiskadee/SunIcon';
 import { VolumeHighIcon } from '@kiskadee/icons/kiskadee/VolumeHighIcon';
 import { VolumeIcon } from '@kiskadee/icons/kiskadee/VolumeIcon';
 import { VolumeLowIcon } from '@kiskadee/icons/kiskadee/VolumeLowIcon';
@@ -314,7 +318,7 @@ const labeledPercentMarks = [
 ] as const;
 
 const ratingMarks = [
-  { value: 0, label: '0', icon: <SadIcon /> },
+  { value: 0, label: '0', icon: <FaceSadIcon /> },
   { value: 1 },
   { value: 2 },
   { value: 3 },
@@ -324,7 +328,7 @@ const ratingMarks = [
   { value: 7 },
   { value: 8 },
   { value: 9 },
-  { value: 10, label: '10', icon: <SmileIcon /> }
+  { value: 10, label: '10', icon: <FaceSmileIcon /> }
 ] as const;
 
 function renderVolumeIcon(value: number) {
@@ -473,50 +477,6 @@ function formatPercent(value: number): string {
 function formatSignedPercent(value: number): string {
   if (value > 0) return `+${value}%`;
   return `${value}%`;
-}
-
-function MoonIcon() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M20 15.7A8.9 8.9 0 0 1 8.3 4a7.1 7.1 0 1 0 11.7 11.7M12.5 3l.8 1.7L15 5.5l-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8zm5 3 1 2 2 1-2 1-1 2-1-2-2-1 2-1z"
-      />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M12 4V1h1v3zm0 19v-3h1v3zM4 13H1v-1h3zm19 0h-3v-1h3zM6.2 6.9 4.1 4.8l.7-.7 2.1 2.1zm13.4 13.4-2.1-2.1.7-.7 2.1 2.1zM17.5 6.2l2.1-2.1.7.7-2.1 2.1zM4.8 20.3l-.7-.7 2.1-2.1.7.7zM12.5 7a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11"
-      />
-    </svg>
-  );
-}
-
-function SadIcon() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm2.1 5.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4m5.8 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4M8 16c.9-1.2 2.2-1.8 4-1.8s3.1.6 4 1.8l-1.4 1.1c-.6-.7-1.4-1.1-2.6-1.1s-2 .4-2.6 1.1z"
-      />
-    </svg>
-  );
-}
-
-function SmileIcon() {
-  return (
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm2.1 5.2a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4m5.8 0a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4M8 14.5h1.8c.5.9 1.2 1.4 2.2 1.4s1.7-.5 2.2-1.4H16c-.6 2-2 3.2-4 3.2s-3.4-1.2-4-3.2"
-      />
-    </svg>
-  );
 }
 
 function SliderExampleCard({
@@ -1424,7 +1384,7 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setBrightness(nextValue);
                   }}
                   marks={[
-                    { value: 0, icon: <MoonIcon /> },
+                    { value: 0, icon: <MoonStarsIcon /> },
                     { value: 100, icon: <SunIcon /> }
                   ]}
                   markInterval={markIntervalProp}

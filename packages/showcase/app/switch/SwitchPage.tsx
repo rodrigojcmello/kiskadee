@@ -7,6 +7,10 @@ import type {
   RadiusMode,
   SwitchIntent
 } from '@kiskadee/core';
+import { CheckIcon } from '@kiskadee/icons/kiskadee/CheckIcon';
+import { CloseIcon } from '@kiskadee/icons/kiskadee/CloseIcon';
+import { PauseIcon } from '@kiskadee/icons/kiskadee/PauseIcon';
+import { PlayIcon } from '@kiskadee/icons/kiskadee/PlayIcon';
 import {
   Card,
   CardAction,
@@ -212,54 +216,15 @@ function getAmbientSurfaceEmphasis(surface: ResolvedSwitchSurface): ComponentEmp
   return 'low';
 }
 
-function SwitchOffIcon() {
-  return (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
-    <svg viewBox="0 0 16 16" focusable="false">
-      <path
-        fill="currentColor"
-        d="M4.35 3.05 8 6.7l3.65-3.65 1.3 1.3L9.3 8l3.65 3.65-1.3 1.3L8 9.3l-3.65 3.65-1.3-1.3L6.7 8 3.05 4.35z"
-      />
-    </svg>
-  );
-}
-
-function SwitchOnIcon() {
-  return (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
-    <svg viewBox="0 0 16 16" focusable="false">
-      <path fill="currentColor" d="M6.4 11.85 2.75 8.2l1.25-1.25 2.4 2.4 5.6-5.6L13.25 5z" />
-    </svg>
-  );
-}
-
-function SwitchPlayIcon() {
-  return (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
-    <svg viewBox="0 0 16 16" focusable="false">
-      <path fill="currentColor" d="M5 3.25 12.25 8 5 12.75z" />
-    </svg>
-  );
-}
-
-function SwitchPauseIcon() {
-  return (
-    // biome-ignore lint/a11y/noSvgWithoutTitle: ...
-    <svg viewBox="0 0 16 16" focusable="false">
-      <path fill="currentColor" d="M4.5 3.25h2.25v9.5H4.5zm4.75 0h2.25v9.5H9.25z" />
-    </svg>
-  );
-}
-
 const switchIconSets = {
   none: undefined,
   'on-off': {
-    rest: <SwitchOffIcon />,
-    selected: <SwitchOnIcon />
+    rest: <CloseIcon />,
+    selected: <CheckIcon />
   },
   'play-pause': {
-    rest: <SwitchPlayIcon />,
-    selected: <SwitchPauseIcon />
+    rest: <PlayIcon />,
+    selected: <PauseIcon />
   }
 } satisfies Record<SwitchIconMode, SwitchIcons | undefined>;
 
