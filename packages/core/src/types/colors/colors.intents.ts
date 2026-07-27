@@ -67,6 +67,23 @@ export type CardIntent = keyof typeof CardIntentKeys;
 export type RoleCard = `card.${CardIntent}`;
 
 /**
+ * Supported intent keys for the `icon` component.
+ */
+export const IconIntentKeys = {
+  /** Default foreground treatment. */
+  neutral: 'neutral',
+
+  /** Brand/primary foreground treatment. */
+  primary: 'primary'
+} as const;
+
+/** Supported intent keys for the `icon` component (Layer 3). */
+export type IconIntent = keyof typeof IconIntentKeys;
+
+/** Qualified role identifier for `icon` intents (e.g. `icon.primary`). */
+export type RoleIcon = `icon.${IconIntent}`;
+
+/**
  * Supported intent keys for the `slider` component.
  */
 export const SliderIntentKeys = {

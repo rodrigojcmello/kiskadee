@@ -110,6 +110,10 @@ export const componentIntents = {
     neutral: 'neutral',
     primary: 'primary'
   },
+  icon: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
   slider: {
     neutral: 'neutral',
     primary: 'primary'

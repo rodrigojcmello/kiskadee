@@ -1,4 +1,4 @@
-import { autoUpdate, offset as floatingOffset, useFloating } from '@floating-ui/react';
+import { autoUpdate, flip, offset as floatingOffset, shift, useFloating } from '@floating-ui/react';
 import type {
   ComponentPropsWithoutRef,
   CSSProperties,
@@ -39,6 +39,8 @@ import { createPortal } from 'react-dom';
 // - `floatingStyles` provides the computed `top/left/position` (we use
 //   `strategy: 'fixed'` so coordinates are viewport-based).
 // - `autoUpdate` keeps it in sync on scroll/resize/layout changes.
+// - `flip` and `shift` keep the list inside the viewport, including triggers
+//   near the lower edge of a scrolling panel.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -519,10 +521,10 @@ function SelectContent({
   //
   // We keep this hook here unconditionally for simplicity; the computed styles
   // are only applied when `portalled` is true.
-  const { refs, floatingStyles, update } = useFloating({
+  const { refs, floatingStyles, update, placement } = useFloating({
     strategy: 'fixed',
     placement: 'bottom-start',
-    middleware: [floatingOffset(offset)],
+    middleware: [floatingOffset(offset), flip({ padding: 8 }), shift({ padding: 8 })],
     // IMPORTANT: Floating UI defaults to positioning via `transform: translate(...)`.
     // Our dropdown animation also uses `transform` (scale/translateY). If we
     // keep Floating UI's transform, it will override the CSS animation.
@@ -576,6 +578,7 @@ function SelectContent({
       aria-labelledby={`${baseId}-trigger`}
       aria-hidden={isOpen ? undefined : true}
       data-open={isOpen || undefined}
+      data-placement={portalled ? placement : undefined}
       className={contentClassName}
       tabIndex={-1}
       style={

@@ -1,3 +1,4 @@
+// Generated from packages/icons/assets and metadata/icons.json. Do not edit manually.
 export type { IconProps } from '../../Icon.types.ts';
 export { CheckIcon } from './CheckIcon.tsx';
 export { ChevronDownIcon } from './ChevronDownIcon.tsx';

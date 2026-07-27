@@ -1,0 +1,20 @@
+/*
+ * element glyph / e1
+ * Establishes a stable inline viewport for generated icon geometry.
+ */
+.k-icn-e1 {
+  display: inline-block;
+  flex: none;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+/*
+ * element glyph / e1
+ * Makes a direct SVG fill the generated viewport without changing asset-owned fills.
+ */
+.k-icn-e1 > svg {
+  block-size: 100%;
+  display: block;
+  inline-size: 100%;
+}

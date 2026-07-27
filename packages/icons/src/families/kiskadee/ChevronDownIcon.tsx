@@ -1,16 +1,12 @@
+// Generated from packages/icons/assets and metadata/icons.json. Do not edit manually.
 import type { IconProps } from '../../Icon.types.ts';
-import { IconBase } from '../../internal/IconBase.tsx';
+
 
 export function ChevronDownIcon(props: IconProps) {
   return (
-    <IconBase {...props}>
-      <path
-        d="m6.5 9.25 5.5 5.5 5.5-5.5"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </IconBase>
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
+      <path d="m6.5 9.25 5.5 5.5 5.5-5.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      </path>
+    </svg>
   );
 }

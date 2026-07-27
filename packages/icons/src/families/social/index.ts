@@ -1,11 +1,17 @@
-export { BlueskyIcon } from './BlueskyIcon.tsx';
+// Generated from packages/icons/assets and metadata/icons.json. Do not edit manually.
+export { AppleIcon } from './AppleIcon.tsx';
+export { ChatGPTIcon } from './ChatGPTIcon.tsx';
+export { ClaudeIcon } from './ClaudeIcon.tsx';
 export { DiscordIcon } from './DiscordIcon.tsx';
 export { FacebookIcon } from './FacebookIcon.tsx';
+export { GeminiIcon } from './GeminiIcon.tsx';
 export { GitHubIcon } from './GitHubIcon.tsx';
+export { GoogleIcon } from './GoogleIcon.tsx';
 export { InstagramIcon } from './InstagramIcon.tsx';
 export { LinkedInIcon } from './LinkedInIcon.tsx';
 export { MastodonIcon } from './MastodonIcon.tsx';
 export { MessengerIcon } from './MessengerIcon.tsx';
+export { MicrosoftIcon } from './MicrosoftIcon.tsx';
 export { PinterestIcon } from './PinterestIcon.tsx';
 export { RedditIcon } from './RedditIcon.tsx';
 export { SnapchatIcon } from './SnapchatIcon.tsx';

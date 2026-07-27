@@ -108,9 +108,11 @@ Next.js App Router.
 
 - Defines `layout`, routes and pages
 - Usually consumes components from `components/` and `k-components/`
-- `/icons` is a runtime gallery of the Kiskadee and Social namespace exports from
-  `@kiskadee/icons`. It intentionally does not introduce a public `Icon` component; adding a
-  component export ending in `Icon` to either family barrel automatically adds it to the gallery.
+- `/icons` exercises the public `@kiskadee/react-components` Icon contract against the Kiskadee
+  and Social namespace exports from `@kiskadee/icons`. Adding a component export ending in `Icon`
+  to either family barrel automatically adds it to the route galleries. The route starts from the
+  canonical `neutral` intent and uses `s:lg:3` as its inspection size; the component default remains
+  `s:md:1`.
 
 ### `components/`
 

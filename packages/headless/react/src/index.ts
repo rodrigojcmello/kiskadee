@@ -14,6 +14,11 @@ export type {
 } from './components/color-radio-group/ColorRadioGroup.tsx';
 export { ColorRadioGroup } from './components/color-radio-group/ColorRadioGroup.tsx';
 export type {
+  IconClassNames,
+  IconProps
+} from './components/icon/Icon.tsx';
+export { Icon } from './components/icon/Icon.tsx';
+export type {
   SelectContentProps,
   SelectOption,
   SelectOptionProps,

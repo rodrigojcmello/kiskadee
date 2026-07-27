@@ -69,7 +69,8 @@ This matters because not every geometric value is always-on. Some values exist i
   - Calculates scales and injects CSS variables in the browser.
 
 - `packages/icons`
-  - Goal: reusable SVG icons for React, organized into independent visual families.
+  - Goal: canonical cross-platform SVG artwork and metadata, organized into visual families.
+  - Generates React adapters while also publishing raw SVG sources for other platform pipelines.
   - Exposes family barrels and direct per-icon imports without coupling icons to component logic.
 
 - `packages/headless`
@@ -108,7 +109,7 @@ This is the baseline end-to-end flow for Web:
 
 5. Runtime consumers
 - `packages/components` consumes generated class maps/CSS and composes headless behavior.
-- `packages/icons` provides family-scoped SVG assets to React consumers.
+- `packages/icons` provides canonical SVG assets plus generated adapters to platform consumers.
 - `packages/showcase` consumes synced artifacts and renders routes/scenarios using those components.
 
 6. Showcase routes

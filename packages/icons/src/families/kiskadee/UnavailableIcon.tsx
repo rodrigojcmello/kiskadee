@@ -1,16 +1,14 @@
+// Generated from packages/icons/assets and metadata/icons.json. Do not edit manually.
 import type { IconProps } from '../../Icon.types.ts';
-import { IconBase } from '../../internal/IconBase.tsx';
+
 
 export function UnavailableIcon(props: IconProps) {
   return (
-    <IconBase {...props}>
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
-      <path
-        d="m5.64 5.64 12.72 12.72"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-      />
-    </IconBase>
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75">
+      </circle>
+      <path d="m5.64 5.64 12.72 12.72" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
+      </path>
+    </svg>
   );
 }

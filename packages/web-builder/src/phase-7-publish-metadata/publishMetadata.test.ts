@@ -96,4 +96,55 @@ describe('buildComponentSurfaceContexts', () => {
       }
     });
   });
+
+  it('publishes the rest-only Icon contract in both surface contexts', () => {
+    const schema = createSchema({
+      icon: {
+        elements: {
+          e1: {
+            name: 'glyph',
+            scales: {
+              boxWidth: { 's:md:1': 20 },
+              boxHeight: { 's:md:1': 20 }
+            },
+            palettes: {
+              default: {
+                light: {
+                  onSubtle: {
+                    textColor: {
+                      neutral: { medium: { rest: '#21242d' } },
+                      primary: { medium: { rest: '#0064b4' } }
+                    }
+                  },
+                  onVivid: {
+                    textColor: {
+                      neutral: { medium: { rest: '#f4f6fe' } },
+                      primary: { medium: { rest: '#c1deff' } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    expect(buildComponentSurfaceContexts(schema, 'icon')).toEqual({
+      'default.light': {
+        onSubtle: {
+          state: {
+            neutral: { medium: { rest: true } },
+            primary: { medium: { rest: true } }
+          }
+        },
+        onVivid: {
+          state: {
+            neutral: { medium: { rest: true } },
+            primary: { medium: { rest: true } }
+          }
+        }
+      }
+    });
+  });
 });

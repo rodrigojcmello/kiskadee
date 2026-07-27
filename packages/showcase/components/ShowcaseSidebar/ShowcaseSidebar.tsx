@@ -14,6 +14,10 @@ const componentEntries = [
     label: 'Card'
   },
   {
+    href: '/icons',
+    label: 'Icon'
+  },
+  {
     href: '/slider',
     label: 'Slider'
   },
@@ -31,14 +35,7 @@ const componentEntries = [
   }
 ] as const;
 
-const resourceEntries = [
-  {
-    href: '/icons',
-    label: 'Icons'
-  }
-] as const;
-
-type ShowcaseSidebarEntry = (typeof componentEntries)[number] | (typeof resourceEntries)[number];
+type ShowcaseSidebarEntry = (typeof componentEntries)[number];
 
 function ShowcaseSidebarLinks({
   entries,
@@ -82,14 +79,6 @@ export default function ShowcaseSidebar({
       <nav className={style.nav}>
         <ShowcaseSidebarLinks
           entries={componentEntries}
-          onNavigate={onNavigate}
-          pathname={pathname}
-        />
-      </nav>
-      <p className={style.sectionLabel}>Resources</p>
-      <nav className={style.nav} aria-label="Resources">
-        <ShowcaseSidebarLinks
-          entries={resourceEntries}
           onNavigate={onNavigate}
           pathname={pathname}
         />

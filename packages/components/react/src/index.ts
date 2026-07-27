@@ -10,6 +10,13 @@ export type {
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export type {
+  IconClassesMap,
+  IconElementName,
+  IconProps,
+  IconVisualProps
+} from './components/Icon';
+export { Icon } from './components/Icon';
+export type {
   RollingNumberFormatValue,
   RollingNumberProps
 } from './components/RollingNumber/RollingNumber.tsx';

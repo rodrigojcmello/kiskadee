@@ -30,6 +30,11 @@
       "import": "./dist/components/card/Card.js",
       "default": "./dist/components/card/Card.js"
     },
+    "./icon": {
+      "types": "./dist/components/icon/Icon.d.ts",
+      "import": "./dist/components/icon/Icon.js",
+      "default": "./dist/components/icon/Icon.js"
+    },
     "./text-field": {
       "types": "./dist/components/text-field/HeadlessTextField.d.ts",
       "import": "./dist/components/text-field/HeadlessTextField.js",

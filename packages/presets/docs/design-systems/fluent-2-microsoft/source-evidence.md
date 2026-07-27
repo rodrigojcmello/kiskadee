@@ -109,4 +109,5 @@ instead of flattening them to the larger offset layer.
 
 - [Button](components/button.md)
 - [Card](components/card.md)
+- [Icon](components/icon.md)
 - [Slider](components/slider.md)

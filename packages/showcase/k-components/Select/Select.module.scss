@@ -77,6 +77,9 @@
   top: calc(100% + 8px);
   left: 0;
   min-width: 180px;
+  max-block-size: min(320px, calc(100dvh - 16px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: saturate(1.5) blur(16px);
@@ -124,6 +127,15 @@
   transition-property: opacity, transform;
   transition-duration: var(--select-open-opacity-duration, 0.2s);
   transition-timing-function: ease-out;
+}
+
+.dropdown[data-placement^='top'] {
+  transform-origin: bottom left;
+  transform: scale(0.95) translateY(24px);
+}
+
+.dropdown[data-placement^='top'][data-open='true'] {
+  transform: scale(1) translateY(0);
 }
 
 .option {

@@ -4,6 +4,7 @@ import type {
   ComponentStyleKeyMap,
   Schema
 } from '@kiskadee/core';
+import { ICON_SIZE_BY_SCALE } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import {
   buildScopedToneMetadataKey,
@@ -16,6 +17,71 @@ import { buildStyleKey } from '../utils/index.ts';
 import { generateClassNamesMapSplit } from './generateClassNamesMap.ts';
 
 describe('generateClassNamesMapSplit', () => {
+  it('carries the Icon scale and both surface-context color branches from schema to class maps', () => {
+    const schema = {
+      name: 'Icon pipeline test',
+      version: [1, 0, 0],
+      author: 'Kiskadee',
+      breakpoints: { 'bp:all': 0 },
+      components: {
+        icon: {
+          elements: {
+            e1: {
+              name: 'glyph',
+              scales: {
+                boxWidth: { ...ICON_SIZE_BY_SCALE },
+                boxHeight: { ...ICON_SIZE_BY_SCALE }
+              },
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      textColor: {
+                        neutral: { medium: { rest: '#21242d' } },
+                        primary: { medium: { rest: '#0064b4' } }
+                      }
+                    },
+                    onVivid: {
+                      textColor: {
+                        neutral: { medium: { rest: '#d6dbe7' } },
+                        primary: { medium: { rest: '#c1deff' } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } satisfies Schema;
+
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {
+        boxWidth__12: 'width-12',
+        boxHeight__12: 'height-12',
+        'textColor__#21242d': 'neutral-subtle',
+        'textColor__#0064b4': 'primary-subtle',
+        'textColor__#d6dbe7': 'neutral-vivid',
+        'textColor__#c1deff': 'primary-vivid'
+      },
+      toneMetadataByPalette
+    );
+
+    const coreIcon = out.core.icon as Record<string, ClassNameByElementJSON>;
+    const lightIcon = out.palettes['default.light'].icon as Record<string, ClassNameByElementJSON>;
+
+    expect(coreIcon.e1.s?.['sm:2']?.split(' ')).toEqual(
+      expect.arrayContaining(['width-12', 'height-12'])
+    );
+    expect(lightIcon.e1.c?.s?.neutral).toEqual({ m: 'neutral-subtle' });
+    expect(lightIcon.e1.c?.s?.primary).toEqual({ m: 'primary-subtle' });
+    expect(lightIcon.e1.c?.v?.neutral).toEqual({ m: 'neutral-vivid' });
+    expect(lightIcon.e1.c?.v?.primary).toEqual({ m: 'primary-vivid' });
+  });
+
   it('reuses the mirrored canonical class name for raw and mirrored scale consumers', () => {
     const styleKeys = {
       button: {

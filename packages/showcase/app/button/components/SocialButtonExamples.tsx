@@ -1,12 +1,17 @@
 import type { ElementSizeValue, SurfaceContext } from '@kiskadee/core';
-import { BlueskyIcon } from '@kiskadee/icons/social/BlueskyIcon';
+import { AppleIcon } from '@kiskadee/icons/social/AppleIcon';
+import { ChatGPTIcon } from '@kiskadee/icons/social/ChatGPTIcon';
+import { ClaudeIcon } from '@kiskadee/icons/social/ClaudeIcon';
 import { DiscordIcon } from '@kiskadee/icons/social/DiscordIcon';
 import { FacebookIcon } from '@kiskadee/icons/social/FacebookIcon';
+import { GeminiIcon } from '@kiskadee/icons/social/GeminiIcon';
 import { GitHubIcon } from '@kiskadee/icons/social/GitHubIcon';
+import { GoogleIcon } from '@kiskadee/icons/social/GoogleIcon';
 import { InstagramIcon } from '@kiskadee/icons/social/InstagramIcon';
 import { LinkedInIcon } from '@kiskadee/icons/social/LinkedInIcon';
 import { MastodonIcon } from '@kiskadee/icons/social/MastodonIcon';
 import { MessengerIcon } from '@kiskadee/icons/social/MessengerIcon';
+import { MicrosoftIcon } from '@kiskadee/icons/social/MicrosoftIcon';
 import { PinterestIcon } from '@kiskadee/icons/social/PinterestIcon';
 import { RedditIcon } from '@kiskadee/icons/social/RedditIcon';
 import { SnapchatIcon } from '@kiskadee/icons/social/SnapchatIcon';
@@ -22,7 +27,13 @@ import { YouTubeIcon } from '@kiskadee/icons/social/YouTubeIcon';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
 import styles from '../Button.module.scss';
 
-const SOCIAL_NETWORKS = [
+const THIRD_PARTY_BRANDS = [
+  { Icon: AppleIcon, label: 'Apple' },
+  { Icon: GoogleIcon, label: 'Google' },
+  { Icon: MicrosoftIcon, label: 'Microsoft' },
+  { Icon: ChatGPTIcon, label: 'ChatGPT' },
+  { Icon: ClaudeIcon, label: 'Claude' },
+  { Icon: GeminiIcon, label: 'Gemini' },
   { Icon: FacebookIcon, label: 'Facebook' },
   { Icon: YouTubeIcon, label: 'YouTube' },
   { Icon: WhatsAppIcon, label: 'WhatsApp' },
@@ -38,7 +49,6 @@ const SOCIAL_NETWORKS = [
   { Icon: DiscordIcon, label: 'Discord' },
   { Icon: TwitchIcon, label: 'Twitch' },
   { Icon: ThreadsIcon, label: 'Threads' },
-  { Icon: BlueskyIcon, label: 'Bluesky' },
   { Icon: MastodonIcon, label: 'Mastodon' },
   { Icon: GitHubIcon, label: 'GitHub' },
   { Icon: VimeoIcon, label: 'Vimeo' },
@@ -56,12 +66,12 @@ export function SocialButtonExamples({
 }) {
   return (
     <section className={styles.showcaseSection} aria-labelledby="social-button-examples-title">
-      <h3 id="social-button-examples-title">Social networks</h3>
+      <h3 id="social-button-examples-title">Brands and platforms</h3>
       <p className={styles.showcaseSectionDescription}>
-        Twenty monochrome brand marks rendered through the public Button.Icon slot.
+        Twenty-five third-party marks rendered through the public Button.Icon slot.
       </p>
       <div className={`${styles.buttonExampleGrid} k-root`}>
-        {SOCIAL_NETWORKS.map(({ Icon, label }) => (
+        {THIRD_PARTY_BRANDS.map(({ Icon, label }) => (
           <KButton
             emphasis="high"
             iconLayout="edge"

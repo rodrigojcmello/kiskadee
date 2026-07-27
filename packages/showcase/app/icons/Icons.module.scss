@@ -1,7 +1,8 @@
 .page {
   display: grid;
-  gap: 40px;
+  gap: 32px;
   width: 100%;
+  color: rgba(0, 0, 0, 0.78);
 }
 
 .header {
@@ -11,25 +12,32 @@
 
 .title {
   margin: 0;
-  color: rgba(0, 0, 0, 0.82);
+  color: currentColor;
   font-size: clamp(2rem, 5vw, 3rem);
   line-height: 1;
 }
 
 .summary {
-  max-width: 680px;
+  max-width: 720px;
   margin: 0;
-  color: rgba(0, 0, 0, 0.58);
+  color: currentColor;
   font-size: 1rem;
   line-height: 1.55;
+  opacity: 0.68;
 }
 
-.family {
+.sections {
+  display: grid;
+  gap: 44px;
+}
+
+.section {
   display: grid;
   gap: 16px;
+  min-width: 0;
 }
 
-.familyHeader {
+.sectionHeader {
   display: flex;
   align-items: end;
   justify-content: space-between;
@@ -38,28 +46,29 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.familyTitle {
+.sectionTitle {
   margin: 0;
-  color: rgba(0, 0, 0, 0.78);
+  color: currentColor;
   font-size: 1.35rem;
   line-height: 1.2;
 }
 
-.familyCount {
-  margin: 0;
-  color: rgba(0, 0, 0, 0.46);
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
+.sectionDescription {
+  max-width: 680px;
+  margin: 6px 0 0;
+  color: currentColor;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  opacity: 0.62;
 }
 
-.grid {
+.galleryGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 144px), 1fr));
   gap: 12px;
 }
 
-.item {
+.galleryItem {
   display: grid;
   min-width: 0;
   min-height: 132px;
@@ -69,37 +78,298 @@
   padding: 20px 12px 14px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.42);
   content-visibility: auto;
   contain-intrinsic-size: 144px 132px;
 }
 
-.icon {
-  width: 36px;
-  height: 36px;
-  color: rgba(0, 0, 0, 0.78);
+.iconPreview {
+  display: grid;
+  min-width: 48px;
+  min-height: 48px;
+  place-items: center;
+}
+
+.socialGalleryItem {
+  --social-divider-color: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--showcase-route-background, #fff) 58%, #fff 42%) 92%,
+    #000 8%
+  );
+
+  min-height: 148px;
+  align-content: stretch;
+  justify-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  contain-intrinsic-size: 164px 148px;
+}
+
+.socialIconPair {
+  display: grid;
+  min-height: 100px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.socialIconPreview {
+  display: grid;
+  min-width: 0;
+  padding: 12px 8px;
+  place-items: center;
+}
+
+.socialBrandPreview {
+  border-inline-end: 1px solid var(--social-divider-color);
+}
+
+.socialIconName {
+  display: grid;
+  min-height: 48px;
+  align-items: center;
+  padding: 10px 8px;
+  border-block-start: 1px solid var(--social-divider-color);
+  background: rgba(255, 255, 255, 0.42);
 }
 
 .iconName {
   max-width: 100%;
-  color: rgba(0, 0, 0, 0.58);
+  color: currentColor;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.72rem;
   line-height: 1.35;
+  opacity: 0.68;
   overflow-wrap: anywhere;
   text-align: center;
 }
 
-@media (max-width: 560px) {
-  .page {
-    gap: 32px;
+.matrix {
+  display: grid;
+  grid-template-columns: minmax(96px, 0.8fr) repeat(var(--icon-scale-count, 3), minmax(96px, 1fr));
+  gap: 1px;
+  overflow-x: auto;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.matrixCorner,
+.matrixColumnLabel,
+.matrixRowLabel,
+.matrixCell {
+  min-width: 96px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.matrixCorner,
+.matrixColumnLabel {
+  min-height: 44px;
+}
+
+.matrixColumnLabel,
+.matrixRowLabel {
+  display: grid;
+  align-items: center;
+  padding: 10px 12px;
+  color: currentColor;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.matrixColumnLabel {
+  justify-items: center;
+  text-align: center;
+}
+
+.matrixRow {
+  display: contents;
+}
+
+.matrixCell {
+  display: grid;
+  min-height: 72px;
+  place-items: center;
+}
+
+.backgroundControl {
+  display: grid;
+  gap: 10px;
+}
+
+.backgroundToneGrid {
+  inline-size: 100%;
+
+  --swatch-size: 22px;
+  --swatch-selected-size: 28px;
+  --swatch-selected-visual-scale: 1.12;
+  --swatch-selected-ring-shadow: 0 0 0 2px #3b82f6;
+
+  :global([role="radiogroup"]) {
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.56);
+    border-radius: 12px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    column-gap: 10px;
+    display: grid;
+    inline-size: max-content;
+    padding: 10px;
+    row-gap: 10px;
+  }
+}
+
+.canonicalBackgroundToneGrid {
+  :global([role="radiogroup"]) {
+    grid-template-columns: repeat(6, 22px);
+  }
+}
+
+.stressTestBackgroundToneGrid {
+  :global([role="radiogroup"]) {
+    grid-template-columns: repeat(7, 22px);
   }
 
-  .grid {
+  :global([role="radiogroup"] > label:has(input[value="white"])),
+  :global([role="radiogroup"] > label:has(input[value="black"])) {
+    grid-column: 1;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value="light-neutral"])),
+  :global([role="radiogroup"] > label:has(input[value="vivid-black"])),
+  :global([role="radiogroup"] > label:has(input[value="dark-black"])) {
+    grid-column: 2;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value="light-blue"])),
+  :global([role="radiogroup"] > label:has(input[value="vivid-blue"])),
+  :global([role="radiogroup"] > label:has(input[value="dark-blue"])) {
+    grid-column: 3;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value="light-green"])),
+  :global([role="radiogroup"] > label:has(input[value="vivid-green"])),
+  :global([role="radiogroup"] > label:has(input[value="dark-green"])) {
+    grid-column: 4;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value="light-red"])),
+  :global([role="radiogroup"] > label:has(input[value="vivid-red"])),
+  :global([role="radiogroup"] > label:has(input[value="dark-red"])) {
+    grid-column: 5;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value="light-purple"])),
+  :global([role="radiogroup"] > label:has(input[value="vivid-purple"])),
+  :global([role="radiogroup"] > label:has(input[value="dark-purple"])) {
+    grid-column: 6;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value="light-orange"])),
+  :global([role="radiogroup"] > label:has(input[value="vivid-orange"])),
+  :global([role="radiogroup"] > label:has(input[value="dark-orange"])) {
+    grid-column: 7;
+  }
+}
+
+.stressTestLightToneGrid {
+  :global([role="radiogroup"] > label:has(input[value^="light-"])),
+  :global([role="radiogroup"] > label:has(input[value="white"])) {
+    grid-row: 1;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value^="vivid-"])) {
+    grid-row: 2;
+  }
+}
+
+.stressTestDarkToneGrid {
+  :global([role="radiogroup"] > label:has(input[value^="vivid-"])) {
+    grid-row: 1;
+  }
+
+  :global([role="radiogroup"] > label:has(input[value^="dark-"])),
+  :global([role="radiogroup"] > label:has(input[value="black"])) {
+    grid-row: 2;
+  }
+}
+
+.backgroundModeDescription {
+  color: rgba(0, 0, 0, 0.56);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.backgroundEmptyState,
+.emptyState {
+  border-radius: 10px;
+  color: currentColor;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.backgroundEmptyState {
+  margin: 0;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.emptyState {
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.54);
+}
+
+.darkSurface {
+  color: rgba(255, 255, 255, 0.9);
+
+  .sectionHeader,
+  .matrix {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .galleryItem,
+  .matrixCorner,
+  .matrixColumnLabel,
+  .matrixRowLabel,
+  .matrixCell {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .socialGalleryItem {
+    --social-divider-color: color-mix(
+      in srgb,
+      color-mix(in srgb, var(--showcase-route-background, #000) 94%, #fff 6%) 86%,
+      #fff 14%
+    );
+
+    background: transparent;
+  }
+
+  .socialIconName {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .matrix {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+@media (max-width: 560px) {
+  .page {
+    gap: 28px;
+  }
+
+  .sections {
+    gap: 36px;
+  }
+
+  .galleryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .item {
+  .galleryItem {
     min-height: 120px;
   }
 }

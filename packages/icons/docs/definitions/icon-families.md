@@ -1,7 +1,21 @@
 # Icon families
 
-`@kiskadee/icons` owns reusable SVG icons for React consumers. Icons are grouped by visual family
-so the package can add families without flattening similarly named assets into one namespace.
+`@kiskadee/icons` owns reusable, cross-platform SVG sources. React components are generated
+adapters, not the artwork's source of truth. Icons are grouped by visual family so the package can
+add families without flattening similarly named assets into one namespace.
+
+## Source and generated artifacts
+
+- Canonical artwork lives in `assets/<family>/` as plain SVG.
+- `metadata/icons.json` owns stable IDs, presentations, color behavior, and provenance.
+- `src/families/<family>/` is generated React source. Never edit those files manually.
+- `dist/svg/` publishes the unchanged canonical SVGs for non-React consumers.
+- `dist/icons.json` publishes the cross-platform manifest.
+- Native iOS and Android adapters are intentionally deferred. They must consume the same SVG
+  sources rather than extracting artwork from React.
+
+Run `pnpm --filter @kiskadee/icons generate` after changing an asset or the manifest. The package
+build performs the same generation automatically, while `check:generated` detects stale adapters.
 
 ## Public imports
 
@@ -23,9 +37,10 @@ different families may use the same icon names.
 
 ## Family structure
 
-- Put public icons in `src/families/<family>/`.
+- Put canonical icons in `assets/<family>/` and describe them in `metadata/icons.json`.
+- Treat `src/families/<family>/` as generated output.
 - Keep shared implementation details in `src/internal/`; they are not public package exports.
-- Export every public icon from its family `index.ts`.
+- The generator exports every public icon from its family `index.ts`.
 - Add a family export and direct-import pattern to `package.json` when introducing a family.
 
 ## SVG contract
@@ -37,7 +52,10 @@ different families may use the same icon names.
   the SVG.
 - Third-party marks live in a separate family. Preserve the source artwork's coordinate system and
   silhouette; normalize only the React wrapper, external `1em` size, decorative accessibility
-  defaults, and an official monochrome color treatment when the brand permits one.
+  defaults, and the Kiskadee monochrome presentation.
+- Every social mark exposes a `monochrome` presentation that renders entirely through
+  `currentColor`. This technical presentation follows the consuming Icon component's semantic
+  color even when the trademark owner requires the official brand artwork in marketing contexts.
 - Never redraw a brand mark on the Kiskadee 24 by 24 grid merely to make it resemble an authorial
   icon. Brand geometry and Kiskadee icon geometry are different contracts.
 - Keep icons decorative by default with `aria-hidden="true"` and `focusable="false"`.
@@ -46,6 +64,15 @@ different families may use the same icon names.
 
 Existing application icons can move into this package incrementally. A migration should preserve
 the consuming UI behavior and should not pull unrelated icons into the same change.
+
+## Platform consumption
+
+- React consumers use the generated named components and retain direct, tree-shakable imports.
+- Web consumers without React can import the corresponding file through `@kiskadee/icons/svg/*`.
+- iOS and Android may later generate platform-native resources from the canonical SVGs. The
+  package does not require SVG loading at native runtime.
+- A generic runtime `Icon` registry is not part of this contract. It may be added later as a
+  convenience without replacing named component imports.
 
 ## Brand assets
 

@@ -32,13 +32,17 @@
       "types": "./dist/families/social/*.d.ts",
       "import": "./dist/families/social/*.js",
       "default": "./dist/families/social/*.js"
-    }
+    },
+    "./icons.json": "./dist/icons.json",
+    "./svg/*": "./dist/svg/*"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "clean": "node ./scripts/clean-dist.ts",
+    "generate": "node ./scripts/generate-react.ts",
+    "check:generated": "node ./scripts/generate-react.ts --check",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build": "node ./scripts/build.ts"
   },

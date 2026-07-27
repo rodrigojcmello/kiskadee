@@ -1,0 +1,696 @@
+{
+  "formatVersion": 1,
+  "sourceContract": "kiskadee-icon-svg-v1",
+  "icons": [
+    {
+      "id": "check",
+      "componentName": "CheckIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/check.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "chevron-down",
+      "componentName": "ChevronDownIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/chevron-down.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "close",
+      "componentName": "CloseIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/close.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "drag-handle",
+      "componentName": "DragHandleIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/drag-handle.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "face-sad",
+      "componentName": "FaceSadIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/face-sad.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "face-smile",
+      "componentName": "FaceSmileIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/face-smile.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "heart",
+      "componentName": "HeartIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/heart.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "like",
+      "componentName": "LikeIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/like.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "moon",
+      "componentName": "MoonIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/moon.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "moon-stars",
+      "componentName": "MoonStarsIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/moon-stars.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "pause",
+      "componentName": "PauseIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/pause.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "play",
+      "componentName": "PlayIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/play.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "share",
+      "componentName": "ShareIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/share.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "sun",
+      "componentName": "SunIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/sun.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "unavailable",
+      "componentName": "UnavailableIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/unavailable.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "volume-high",
+      "componentName": "VolumeHighIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/volume-high.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "volume",
+      "componentName": "VolumeIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/volume.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "volume-low",
+      "componentName": "VolumeLowIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/volume-low.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "volume-medium",
+      "componentName": "VolumeMediumIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/volume-medium.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "volume-off",
+      "componentName": "VolumeOffIcon",
+      "family": "kiskadee",
+      "origin": "kiskadee",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "kiskadee/volume-off.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      }
+    },
+    {
+      "id": "apple",
+      "componentName": "AppleIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "social/apple.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.apple.com/"
+    },
+    {
+      "id": "chat-gpt",
+      "componentName": "ChatGPTIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "social/chat-gpt.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://openai.com/brand/"
+    },
+    {
+      "id": "claude",
+      "componentName": "ClaudeIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/claude.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/claude.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.anthropic.com/press-kit"
+    },
+    {
+      "id": "discord",
+      "componentName": "DiscordIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/discord.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/discord.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://discord.com/branding"
+    },
+    {
+      "id": "facebook",
+      "componentName": "FacebookIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/facebook.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/facebook.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/logo/"
+    },
+    {
+      "id": "gemini",
+      "componentName": "GeminiIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/gemini.brand.svg",
+          "colorBehavior": "gradient"
+        },
+        "monochrome": {
+          "source": "social/gemini.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://gemini.google.com/"
+    },
+    {
+      "id": "git-hub",
+      "componentName": "GitHubIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "social/git-hub.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://brand.github.com/foundations/logo"
+    },
+    {
+      "id": "google",
+      "componentName": "GoogleIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/google.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/google.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://developers.google.com/identity/branding-guidelines"
+    },
+    {
+      "id": "instagram",
+      "componentName": "InstagramIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/instagram.brand.svg",
+          "colorBehavior": "gradient"
+        },
+        "monochrome": {
+          "source": "social/instagram.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/instagram-brand/"
+    },
+    {
+      "id": "linked-in",
+      "componentName": "LinkedInIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/linked-in.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/linked-in.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://brand.linkedin.com/downloads"
+    },
+    {
+      "id": "mastodon",
+      "componentName": "MastodonIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/mastodon.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/mastodon.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://joinmastodon.org/branding"
+    },
+    {
+      "id": "messenger",
+      "componentName": "MessengerIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/messenger.brand.svg",
+          "colorBehavior": "gradient"
+        },
+        "monochrome": {
+          "source": "social/messenger.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/messenger-icon/"
+    },
+    {
+      "id": "microsoft",
+      "componentName": "MicrosoftIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/microsoft.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/microsoft.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-branding-in-apps"
+    },
+    {
+      "id": "pinterest",
+      "componentName": "PinterestIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/pinterest.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/pinterest.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://business.pinterest.com/en-us/brand-guidelines/?change_language=true"
+    },
+    {
+      "id": "reddit",
+      "componentName": "RedditIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/reddit.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/reddit.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://redditbrand.lingoapp.com/s/Logo-d9x3n2"
+    },
+    {
+      "id": "snapchat",
+      "componentName": "SnapchatIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/snapchat.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/snapchat.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.snap.com/brand-guidelines?lang=en-US"
+    },
+    {
+      "id": "substack",
+      "componentName": "SubstackIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/substack.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/substack.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://substack.com/brand"
+    },
+    {
+      "id": "telegram",
+      "componentName": "TelegramIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/telegram.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/telegram.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://telegram.org/press"
+    },
+    {
+      "id": "threads",
+      "componentName": "ThreadsIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "social/threads.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/threads/"
+    },
+    {
+      "id": "tik-tok",
+      "componentName": "TikTokIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/tik-tok.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/tik-tok.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://developers.tiktok.com/doc/getting-started-design-guidelines"
+    },
+    {
+      "id": "twitch",
+      "componentName": "TwitchIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/twitch.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/twitch.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://brand.twitch.com/"
+    },
+    {
+      "id": "vimeo",
+      "componentName": "VimeoIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/vimeo.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/vimeo.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://vimeo.com/press/media-kit"
+    },
+    {
+      "id": "whats-app",
+      "componentName": "WhatsAppIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/whats-app.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/whats-app.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://www.meta.com/brand/resources/whatsapp/whatsapp-brand/"
+    },
+    {
+      "id": "x",
+      "componentName": "XIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "monochrome",
+      "presentations": {
+        "monochrome": {
+          "source": "social/x.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://about.x.com/en/who-we-are/brand-toolkit"
+    },
+    {
+      "id": "you-tube",
+      "componentName": "YouTubeIcon",
+      "family": "social",
+      "origin": "third-party",
+      "defaultPresentation": "brand",
+      "presentations": {
+        "brand": {
+          "source": "social/you-tube.brand.svg",
+          "colorBehavior": "fixed"
+        },
+        "monochrome": {
+          "source": "social/you-tube.monochrome.svg",
+          "colorBehavior": "currentColor"
+        }
+      },
+      "provenanceUrl": "https://brand.youtube/youtube-icon"
+    }
+  ]
+}

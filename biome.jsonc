@@ -49,5 +49,19 @@
         "noTemplateCurlyInString": "off"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "packages/icons/src/families/**/*.tsx",
+        "packages/icons/src/families/**/index.ts"
+      ],
+      "formatter": {
+        "enabled": false
+      },
+      "assist": {
+        "enabled": false
+      }
+    }
+  ]
 }

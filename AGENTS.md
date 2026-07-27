@@ -15,7 +15,7 @@ keep task-specific workflows inside skills.
   - `packages/core`: shared schema types, color utilities, breakpoints.
   - `packages/presets`: official presets and schema/token definitions.
   - `packages/runtime`: runtime theming support.
-  - `packages/icons`: family-scoped SVG icons for React consumers.
+  - `packages/icons`: canonical cross-platform SVG assets and generated platform adapters.
   - `packages/web-builder`: schema-to-web generation and showcase sync scripts.
   - `packages/headless/react`: headless React primitives.
   - `packages/components/react`: styled React components and Sass output.
@@ -101,7 +101,8 @@ keep task-specific workflows inside skills.
 ## Package Guidance
 
 - In `packages/core`, preserve framework-agnostic utilities and types.
-- In `packages/icons`, preserve family-scoped exports and shared SVG/accessibility defaults.
+- In `packages/icons`, preserve canonical SVG sources, generated family exports, and accessibility
+  defaults in platform adapters.
 - In `packages/presets`, preserve design-system fidelity unless the task explicitly targets a
   Kiskadee extension.
 - In `packages/web-builder`, inspect package scripts before changing pipeline behavior.

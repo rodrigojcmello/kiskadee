@@ -359,6 +359,7 @@ function isComponentName(value: string): value is ComponentName {
   return (
     value === 'button' ||
     value === 'card' ||
+    value === 'icon' ||
     value === 'slider' ||
     value === 'switch' ||
     value === 'tabs' ||
@@ -643,6 +644,7 @@ export async function publishMetadata(params: {
   const manifestComponentNames = [
     'button',
     'card',
+    'icon',
     'slider',
     'switch'
   ] as const satisfies readonly ComponentName[];

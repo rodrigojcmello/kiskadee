@@ -1,5 +1,6 @@
 'use client';
 
+import type { ThemeMode } from '@kiskadee/core';
 import { useCardArtifactConfig, useKiskadee } from '@kiskadee/react-components';
 import { useMemo } from 'react';
 import {
@@ -7,9 +8,10 @@ import {
   resolveCanonicalCardSurfaces
 } from '@/utils/canonical-card-surfaces';
 
-export function useCanonicalCardSurfaces() {
-  const { segment, theme } = useKiskadee();
+export function useCanonicalCardSurfaces(themeOverride?: ThemeMode) {
+  const { segment, theme: activeTheme } = useKiskadee();
   const { options } = useCardArtifactConfig();
+  const theme = themeOverride ?? activeTheme;
 
   const tones = useMemo(
     () =>

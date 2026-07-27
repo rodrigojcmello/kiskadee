@@ -1,6 +1,7 @@
 import type {
   ButtonIntent,
   CardIntent,
+  IconIntent,
   RoleButton,
   RoleCard,
   RoleSlider,
@@ -14,8 +15,10 @@ import type {
 export type {
   ButtonIntent,
   CardIntent,
+  IconIntent,
   RoleButton,
   RoleCard,
+  RoleIcon,
   RoleSlider,
   RoleSwitch,
   RoleTextField,
@@ -26,6 +29,7 @@ export type {
 export {
   ButtonIntentKeys,
   CardIntentKeys,
+  IconIntentKeys,
   SliderIntentKeys,
   SwitchIntentKeys,
   TextFieldIntentKeys
@@ -435,6 +439,7 @@ export type ComponentIntents = {
    */
   button?: Partial<Record<ButtonIntent, IntentValue>>;
   card?: Partial<Record<CardIntent, IntentValue>>;
+  icon?: Partial<Record<IconIntent, IntentValue>>;
   slider?: Partial<Record<SliderIntent, IntentValue>>;
   switch?: Partial<Record<SwitchIntent, IntentValue>>;
   textField?: Partial<Record<TextFieldIntent, IntentValue>>;
@@ -471,6 +476,7 @@ export type ComponentPaletteKey =
   | SemanticColor
   | ButtonIntent
   | CardIntent
+  | IconIntent
   | SliderIntent
   | SwitchIntent
   | TextFieldIntent;
