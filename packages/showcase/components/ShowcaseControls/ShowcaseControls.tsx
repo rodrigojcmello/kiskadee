@@ -160,7 +160,7 @@ export function ShowcaseSegmentedControl({
                 disabled={option.disabled}
                 onChange={() => onValueChange(option.value)}
               />
-              <span>{option.label}</span>
+              <span className={styles.segmentedOptionContent}>{option.label}</span>
             </label>
           );
         })}

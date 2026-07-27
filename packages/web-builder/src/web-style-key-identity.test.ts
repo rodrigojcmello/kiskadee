@@ -226,6 +226,25 @@ describe('web-style-key-identity', () => {
       ).toBe('borderRadius__12@@m');
     });
 
+    it('emits only the Button icon right padding as a structural gap token', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingRight__6',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'button',
+          'e3'
+        )
+      ).toBe('paddingRight__6@@t');
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingLeft__6',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'button',
+          'e3'
+        )
+      ).toBe('paddingLeft__6');
+    });
+
     it('uses the textField e3 policy from the builder config for border width', () => {
       expect(
         resolveWebStyleKeyIdentity(

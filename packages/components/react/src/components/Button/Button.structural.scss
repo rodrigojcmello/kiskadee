@@ -31,6 +31,76 @@
 }
 
 /*
+ * element button label / e2
+ * Keeps nested text helpers in the same formatting context as the icon.
+ */
+.k-btn-e2 {
+  align-items: center;
+  display: inline-flex;
+  min-inline-size: 0;
+}
+
+/*
+ * root inline icon composition / e1d
+ * Icon and label form one centered group.
+ */
+.k-btn-e1d:has(> .k-btn-e3) {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+}
+
+/*
+ * root edge icon composition / e1e
+ * The label owns the center track while the icon uses a logical edge track.
+ */
+.k-btn-e1e:has(> .k-btn-e3) {
+  align-items: center;
+  display: inline-grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+
+  > .k-btn-e2 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/*
+ * logical icon placement / e1f leading, e1g trailing
+ * Grid line numbering and inline margins follow the document direction.
+ */
+.k-btn-e1d.k-btn-e1f > .k-btn-e3:not(:only-child) {
+  margin-inline-end: var(--k-pdr, 0);
+  order: 1;
+}
+
+.k-btn-e1d.k-btn-e1g > .k-btn-e3:not(:only-child) {
+  margin-inline-start: var(--k-pdr, 0);
+  order: 3;
+}
+
+.k-btn-e1d > .k-btn-e2 {
+  order: 2;
+}
+
+.k-btn-e1e.k-btn-e1f > .k-btn-e3 {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.k-btn-e1e.k-btn-e1g > .k-btn-e3 {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.k-btn-e1e > .k-btn-e3:only-child {
+  grid-column: 2;
+  justify-self: center;
+}
+
+/*
  * element button icon / e3
  * Gives schema-owned icon geometry a stable inline box and normalizes SVG descendants.
  */

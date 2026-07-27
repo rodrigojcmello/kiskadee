@@ -86,6 +86,13 @@ reuses the complete label palette for the active theme, surface context, intent,
 state. This makes an icon and its adjacent label one content relationship while keeping the SVG
 asset itself free of preset colors and dimensions.
 
+Fluent publishes icon-leading Button examples, so this preset declares `iconLayout: inline` and
+`iconPlacement: leading` as its defaults. Kiskadee additionally exposes `edge` composition and
+logical trailing placement as framework extensions for layouts such as full-width social actions.
+The 4/6 px source-derived gap is still owned by `e3`; the Web Builder exposes it as a structural
+token so `leading` and `trailing` can use the same schema value without hardcoding direction in
+React or Sass.
+
 ## Responsive Default Size
 
 The official Fluent Web evidence inspected here defines the medium 32 px Button, but it does not

@@ -1,4 +1,8 @@
-import type { ActivationFeedbackSetting } from '@kiskadee/core';
+import type {
+  ActivationFeedbackSetting,
+  ButtonIconLayout,
+  ButtonIconPlacement
+} from '@kiskadee/core';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
 import type { ButtonClassesMap } from '../Button.types.ts';
@@ -16,6 +20,8 @@ export type ButtonArtifactConfig = {
   };
   options: {
     radius: NonNullable<ButtonGlobalConfig>['radius'] | undefined;
+    iconLayout: ButtonIconLayout | undefined;
+    iconPlacement: ButtonIconPlacement | undefined;
   };
 };
 
@@ -35,7 +41,9 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
       activationFeedback: global?.effects?.activationFeedback
     },
     options: {
-      radius: global?.radius
+      radius: global?.radius,
+      iconLayout: global?.components?.button?.options?.iconLayout,
+      iconPlacement: global?.components?.button?.options?.iconPlacement
     }
   };
 }

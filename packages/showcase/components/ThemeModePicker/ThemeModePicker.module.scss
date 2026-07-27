@@ -1,13 +1,21 @@
 .optionContent {
   align-items: center;
-  display: inline-flex;
-  gap: 6px;
+  display: inline-grid;
+  gap: 7px;
+  grid-template-columns: 18px max-content;
   justify-content: center;
+  line-height: 1;
   min-width: 0;
 }
 
 .icon {
   block-size: 18px;
+  display: block;
   flex: 0 0 auto;
   inline-size: 18px;
+}
+
+.optionContent > span {
+  display: block;
+  line-height: 1;
 }

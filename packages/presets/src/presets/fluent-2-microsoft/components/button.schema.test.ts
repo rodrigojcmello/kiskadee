@@ -24,6 +24,13 @@ function requireButtonIconElement() {
 }
 
 describe('Fluent 2 Button surface contexts', () => {
+  it('publishes logical icon composition defaults', () => {
+    expect(schema.components.button?.options).toEqual({
+      iconLayout: 'inline',
+      iconPlacement: 'leading'
+    });
+  });
+
   it('preserves the three official sizes and uses large geometry for the responsive mobile default', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();

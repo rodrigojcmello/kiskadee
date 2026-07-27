@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import style from './ShowcaseSidebar.module.scss';
 
-const entries = [
+const componentEntries = [
   {
     href: '/button',
     label: 'Button'
@@ -31,7 +31,40 @@ const entries = [
   }
 ] as const;
 
-type ShowcaseSidebarEntry = (typeof entries)[number];
+const resourceEntries = [
+  {
+    href: '/icons',
+    label: 'Icons'
+  }
+] as const;
+
+type ShowcaseSidebarEntry = (typeof componentEntries)[number] | (typeof resourceEntries)[number];
+
+function ShowcaseSidebarLinks({
+  entries,
+  onNavigate,
+  pathname
+}: {
+  entries: readonly ShowcaseSidebarEntry[];
+  onNavigate?: (href: ShowcaseSidebarEntry['href'], isActive: boolean) => void;
+  pathname: string;
+}) {
+  return entries.map((entry) => {
+    const isActive = pathname === entry.href || pathname.startsWith(`${entry.href}/`);
+
+    return (
+      <Link
+        key={entry.href}
+        href={entry.href}
+        onClick={() => onNavigate?.(entry.href, isActive)}
+        className={`${style.link} ${isActive ? style.active : ''}`.trim()}
+        aria-current={isActive ? 'page' : undefined}
+      >
+        <span className={style.linkLabel}>{entry.label}</span>
+      </Link>
+    );
+  });
+}
 
 export default function ShowcaseSidebar({
   onNavigate
@@ -41,27 +74,25 @@ export default function ShowcaseSidebar({
   const pathname = usePathname();
 
   return (
-    <aside className={style.sidebar} aria-label="Component navigation">
+    <aside className={style.sidebar} aria-label="Showcase navigation">
       <div className={style.header}>
         <p className={style.eyebrow}>Components</p>
         <h2 className={style.title}>Showcase</h2>
       </div>
       <nav className={style.nav}>
-        {entries.map((entry) => {
-          const isActive = pathname === entry.href || pathname.startsWith(`${entry.href}/`);
-
-          return (
-            <Link
-              key={entry.href}
-              href={entry.href}
-              onClick={() => onNavigate?.(entry.href, isActive)}
-              className={`${style.link} ${isActive ? style.active : ''}`.trim()}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              <span className={style.linkLabel}>{entry.label}</span>
-            </Link>
-          );
-        })}
+        <ShowcaseSidebarLinks
+          entries={componentEntries}
+          onNavigate={onNavigate}
+          pathname={pathname}
+        />
+      </nav>
+      <p className={style.sectionLabel}>Resources</p>
+      <nav className={style.nav} aria-label="Resources">
+        <ShowcaseSidebarLinks
+          entries={resourceEntries}
+          onNavigate={onNavigate}
+          pathname={pathname}
+        />
       </nav>
     </aside>
   );

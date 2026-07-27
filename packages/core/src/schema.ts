@@ -1,5 +1,5 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
-import type { ButtonElements } from './components/button.ts';
+import type { ButtonElements, ButtonOptions } from './components/button.ts';
 import type { CardElements, CardOptions } from './components/card.ts';
 import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
@@ -150,6 +150,7 @@ type ComponentEffects = {
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   button: {
     effects?: ComponentEffects;
+    options?: ButtonOptions;
     elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
   };
   card: {

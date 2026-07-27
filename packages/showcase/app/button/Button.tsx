@@ -775,13 +775,11 @@ export function Button() {
           </div>
         </div>
         <ButtonIconExamples
-          align={alignment}
           fontName={fontName}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
         <SocialButtonExamples
-          align={alignment}
           fontName={fontName}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}

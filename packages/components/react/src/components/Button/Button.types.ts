@@ -1,6 +1,8 @@
 import type {
   ActivationFeedbackOrigin,
   ActivationFeedbackProfileMode,
+  ButtonIconLayout,
+  ButtonIconPlacement,
   ButtonIntent,
   ClassNameByElementJSON,
   ComponentEmphasis,
@@ -62,4 +64,11 @@ export type ButtonProps = HeadlessButtonProps & {
   surfaceContext?: SurfaceContext;
   /** Duration for the pressed visual state (ms). */
   pressedDurationMs?: number;
+  /**
+   * Icon/label composition. `inline` centers both as one group; `edge`
+   * pins the icon to a logical edge while centering the label independently.
+   */
+  iconLayout?: ButtonIconLayout;
+  /** Logical icon side. Leading/trailing follow the document direction. */
+  iconPlacement?: ButtonIconPlacement;
 };

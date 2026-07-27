@@ -28,6 +28,19 @@ type ElementNameMetadata = {
   name: string;
 };
 
+export type ButtonIconLayout = 'inline' | 'edge';
+export type ButtonIconPlacement = 'leading' | 'trailing';
+
+export type ButtonOptions = {
+  /**
+   * Controls whether icon and label form one centered group or occupy
+   * independent edge/center tracks.
+   */
+  iconLayout?: ButtonIconLayout;
+  /** Logical icon side. Leading/trailing follow the document direction. */
+  iconPlacement?: ButtonIconPlacement;
+};
+
 /**
  * Button elements canonical mapping:
  * - e1: button container/surface
@@ -93,7 +106,8 @@ type ElementContractRules = {
   palettes?: readonly ColorProperty[];
 };
 
-const BUTTON_COMPONENT_KEYS = ['effects', 'elements'] as const;
+const BUTTON_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
+const BUTTON_OPTION_KEYS = ['iconLayout', 'iconPlacement'] as const;
 const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
 
@@ -207,6 +221,30 @@ export function validateButtonComponentContract(
   }
 
   validateAllowedKeys(value, BUTTON_COMPONENT_KEYS, path, issues);
+
+  if (value.options !== undefined) {
+    if (!isRecord(value.options)) {
+      issues.push(`${path}.options: expected object`);
+    } else {
+      validateAllowedKeys(value.options, BUTTON_OPTION_KEYS, `${path}.options`, issues);
+
+      if (
+        value.options.iconLayout !== undefined &&
+        value.options.iconLayout !== 'inline' &&
+        value.options.iconLayout !== 'edge'
+      ) {
+        issues.push(`${path}.options.iconLayout: expected "inline" or "edge"`);
+      }
+
+      if (
+        value.options.iconPlacement !== undefined &&
+        value.options.iconPlacement !== 'leading' &&
+        value.options.iconPlacement !== 'trailing'
+      ) {
+        issues.push(`${path}.options.iconPlacement: expected "leading" or "trailing"`);
+      }
+    }
+  }
 
   const elements = value.elements;
   if (!isRecord(elements)) {

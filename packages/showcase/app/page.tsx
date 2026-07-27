@@ -23,6 +23,9 @@ export default function HomePage() {
         <li>
           <Link href="/text-field">/text-field</Link>
         </li>
+        <li>
+          <Link href="/icons">/icons</Link>
+        </li>
       </ul>
     </main>
   );

@@ -1,6 +1,8 @@
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
+  ButtonIconLayout,
+  ButtonIconPlacement,
   RadiusMode,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
@@ -21,17 +23,28 @@ type GlobalArtifact = {
     activationFeedback?: ActivationFeedbackEffectSchema;
     shadow?: ShadowGlobalEffectSchema;
   };
-  components?: Partial<
-    Record<
-      'button' | 'card' | 'switch',
-      {
-        effects: {
-          activationFeedback?: ActivationFeedbackSetting;
-          shadow?: ShadowEffectSchema;
-        };
-      }
-    >
-  >;
+  components?: {
+    button?: {
+      options?: {
+        iconLayout?: ButtonIconLayout;
+        iconPlacement?: ButtonIconPlacement;
+      };
+      effects?: {
+        activationFeedback?: ActivationFeedbackSetting;
+        shadow?: ShadowEffectSchema;
+      };
+    };
+    card?: {
+      effects?: {
+        shadow?: ShadowEffectSchema;
+      };
+    };
+    switch?: {
+      effects?: {
+        activationFeedback?: ActivationFeedbackSetting;
+      };
+    };
+  };
 };
 
 const globalArtifactCache: Partial<Record<string, GlobalArtifact | null>> = {};

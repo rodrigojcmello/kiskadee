@@ -530,6 +530,10 @@ export function createFluent2MicrosoftButtonSchema({
   });
 
   return {
+    options: {
+      iconLayout: 'inline',
+      iconPlacement: 'leading'
+    },
     elements: {
       e1: {
         name: 'button',

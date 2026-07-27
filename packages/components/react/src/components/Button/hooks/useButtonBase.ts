@@ -27,6 +27,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     tabIndex,
     label,
     pressedDurationMs,
+    iconLayout: iconLayoutProp,
+    iconPlacement: iconPlacementProp,
     onClick,
     onPointerDown,
     onPointerUp,
@@ -40,6 +42,8 @@ export function useButtonCommonProps(props: ButtonProps) {
   const { buttonClassesMap, componentEffects, globalEffects, options } = useButtonArtifactConfig();
   const { e1, e2, e3 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
+  const iconLayout = iconLayoutProp ?? options.iconLayout;
+  const iconPlacement = iconPlacementProp ?? options.iconPlacement;
 
   return {
     classNames,
@@ -58,6 +62,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     tabIndex,
     label,
     pressedDurationMs,
+    iconLayout,
+    iconPlacement,
     onClick,
     onPointerDown,
     onPointerUp,
@@ -97,6 +103,8 @@ export function useButtonClassNamesFromCommon(
         emphasis: common.emphasis,
         intent: common.intent,
         surfaceContext: common.surfaceContext,
+        iconLayout: common.iconLayout,
+        iconPlacement: common.iconPlacement,
         globalRadius: common.options.radius
       }),
     [
@@ -114,6 +122,8 @@ export function useButtonClassNamesFromCommon(
       common.emphasis,
       common.intent,
       common.surfaceContext,
+      common.iconLayout,
+      common.iconPlacement,
       common.options.radius
     ]
   );

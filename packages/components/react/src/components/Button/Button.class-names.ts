@@ -1,4 +1,6 @@
 import {
+  type ButtonIconLayout,
+  type ButtonIconPlacement,
   type ButtonIntent,
   type ClassNameByElementJSON,
   type ComponentEmphasis,
@@ -23,6 +25,8 @@ export const DEFAULT_BUTTON_RADIUS: RadiusMode = 'rounded';
 export const DEFAULT_BUTTON_INTENT: ButtonIntent = 'neutral';
 export const DEFAULT_BUTTON_EMPHASIS: ComponentEmphasis = 'medium';
 export const DEFAULT_BUTTON_SURFACE_CONTEXT: SurfaceContext = 'onSubtle';
+export const DEFAULT_BUTTON_ICON_LAYOUT: ButtonIconLayout = 'inline';
+export const DEFAULT_BUTTON_ICON_PLACEMENT: ButtonIconPlacement = 'leading';
 export const DEFAULT_BUTTON_PRESSED_DURATION_MS = 60;
 
 export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;
@@ -68,6 +72,8 @@ export function resolveButtonClassNames({
   emphasis,
   intent,
   surfaceContext,
+  iconLayout,
+  iconPlacement,
   globalRadius
 }: {
   e1: ClassNameByElementJSON | undefined;
@@ -83,11 +89,15 @@ export function resolveButtonClassNames({
   emphasis: ComponentEmphasis | undefined;
   intent: ButtonIntent | undefined;
   surfaceContext: SurfaceContext | undefined;
+  iconLayout?: ButtonIconLayout;
+  iconPlacement?: ButtonIconPlacement;
   globalRadius: RadiusMode | undefined;
 }): NonNullable<HeadlessButtonProps['classNames']> {
   const resolvedIntent = intent ?? DEFAULT_BUTTON_INTENT;
   const resolvedEmphasis = emphasis ?? DEFAULT_BUTTON_EMPHASIS;
   const resolvedSurfaceContext = surfaceContext ?? DEFAULT_BUTTON_SURFACE_CONTEXT;
+  const resolvedIconLayout = iconLayout ?? DEFAULT_BUTTON_ICON_LAYOUT;
+  const resolvedIconPlacement = iconPlacement ?? DEFAULT_BUTTON_ICON_PLACEMENT;
   const scaleKey = normalizeButtonScaleKey(scale ?? DEFAULT_BUTTON_SCALE);
   const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
   const e3HasSchemaScale = Boolean(e3?.s?.all || e3?.s?.[scaleKey]);
@@ -129,6 +139,8 @@ export function resolveButtonClassNames({
         shadowEffect ? cn.shadow : undefined,
         activation,
         'k-btn',
+        resolvedIconLayout === 'inline' ? 'k-btn-e1d' : 'k-btn-e1e',
+        resolvedIconPlacement === 'leading' ? 'k-btn-e1f' : 'k-btn-e1g',
         'k-foc',
         'k-trn'
       ) ?? '',
@@ -137,7 +149,8 @@ export function resolveButtonClassNames({
         collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
         e2?.s?.all,
         classNames.e2,
-        e2?.s?.[scaleKey]
+        e2?.s?.[scaleKey],
+        'k-btn-e2'
       ) ?? '',
     e3:
       join(

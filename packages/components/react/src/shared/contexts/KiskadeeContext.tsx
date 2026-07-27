@@ -1,6 +1,8 @@
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
+  ButtonIconLayout,
+  ButtonIconPlacement,
   ComponentClassNameMapJSON,
   RadiusMode,
   ShadowEffectSchema,
@@ -79,6 +81,10 @@ export type KiskadeeContextValue = {
     };
     components?: {
       button?: {
+        options?: {
+          iconLayout?: ButtonIconLayout;
+          iconPlacement?: ButtonIconPlacement;
+        };
         effects?: {
           activationFeedback?: ActivationFeedbackSetting;
           shadow?: ShadowEffectSchema;

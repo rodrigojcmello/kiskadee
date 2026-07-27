@@ -34,3 +34,11 @@ Current Switch decisions:
 - `controlTextVisibility` is not a public Switch prop. Consumers may provide `controlText` content,
   but the selected design system decides whether that content is hidden, shown only on large
   viewports, or always shown through the generated Switch component artifact.
+
+Current Button decisions:
+
+- `iconLayout` and `iconPlacement` are public Button props because icon composition is a supported
+  instance-level choice. Their defaults come from `components.button.options`.
+- `iconLayout="inline"` centers icon and label as one group.
+- `iconLayout="edge"` centers the label independently and pins the icon to the logical
+  `leading` or `trailing` edge.

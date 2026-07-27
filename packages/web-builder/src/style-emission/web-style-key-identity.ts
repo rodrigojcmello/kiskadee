@@ -109,7 +109,6 @@ function resolveStyleKeyEmissionMode(
 
   if (
     styleKey.startsWith('paddingTop') ||
-    styleKey.startsWith('paddingRight') ||
     styleKey.startsWith('paddingBottom') ||
     styleKey.startsWith('paddingLeft')
   ) {
@@ -118,6 +117,18 @@ function resolveStyleKeyEmissionMode(
       : styleEmissionPolicy.paddingEmission === 'mirrored'
         ? 'm'
         : styleEmissionPolicy.paddingEmission === 'compensated'
+          ? 'c'
+          : undefined;
+  }
+
+  if (styleKey.startsWith('paddingRight')) {
+    const paddingRightEmission =
+      styleEmissionPolicy.paddingRightEmission ?? styleEmissionPolicy.paddingEmission;
+    return paddingRightEmission === 'token'
+      ? 't'
+      : paddingRightEmission === 'mirrored'
+        ? 'm'
+        : paddingRightEmission === 'compensated'
           ? 'c'
           : undefined;
   }
@@ -139,6 +150,7 @@ function resolveStyleKeyEmissionFamily(
   | 'marginRight'
   | 'marginBottom'
   | 'marginLeft'
+  | 'paddingRight'
   | 'padding'
   | undefined {
   if (styleKey.startsWith('boxColor')) {
@@ -185,9 +197,12 @@ function resolveStyleKeyEmissionFamily(
     return 'marginLeft';
   }
 
+  if (styleKey.startsWith('paddingRight')) {
+    return 'paddingRight';
+  }
+
   if (
     styleKey.startsWith('paddingTop') ||
-    styleKey.startsWith('paddingRight') ||
     styleKey.startsWith('paddingBottom') ||
     styleKey.startsWith('paddingLeft')
   ) {
@@ -310,6 +325,10 @@ export function applyCanonicalStyleEmissionPolicy(
 
   if (family === 'padding') {
     return { ...styleEmissionPolicy, paddingEmission: 'mirrored' };
+  }
+
+  if (family === 'paddingRight') {
+    return { ...styleEmissionPolicy, paddingRightEmission: 'mirrored' };
   }
 
   return styleEmissionPolicy;

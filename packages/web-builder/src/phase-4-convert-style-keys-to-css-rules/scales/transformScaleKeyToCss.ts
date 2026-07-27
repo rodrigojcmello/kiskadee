@@ -239,13 +239,17 @@ export function transformScaleKeyToCss(
           : scaleProperty === 'paddingBottom'
             ? EMITTED_SCALE_CSS_VARS.paddingBottom
             : EMITTED_SCALE_CSS_VARS.paddingLeft;
+    const paddingEmission =
+      scaleProperty === 'paddingRight'
+        ? (styleEmissionPolicy.paddingRightEmission ?? styleEmissionPolicy.paddingEmission)
+        : styleEmissionPolicy.paddingEmission;
 
-    if (styleEmissionPolicy.paddingEmission === 'compensated') {
+    if (paddingEmission === 'compensated') {
       const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(${EMITTED_SCALE_CSS_VARS.borderWidth}, 0px)))`;
       rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${adjustedPadding} }`;
-    } else if (styleEmissionPolicy.paddingEmission === 'token') {
+    } else if (paddingEmission === 'token') {
       rule = `.${className} { ${paddingVar}: ${cssValue} }`;
-    } else if (styleEmissionPolicy.paddingEmission === 'mirrored') {
+    } else if (paddingEmission === 'mirrored') {
       rule = `.${className} { ${paddingVar}: ${cssValue}; ${cssProperty}: ${cssValue} }`;
     } else {
       rule = `.${className} { ${cssProperty}: ${cssValue} }`;

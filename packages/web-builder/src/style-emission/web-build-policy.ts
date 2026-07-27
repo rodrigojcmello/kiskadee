@@ -42,6 +42,7 @@ export type ElementStyleEmissionPolicy = {
   marginBottomEmission?: MarginEmission;
   marginLeftEmission?: MarginEmission;
   paddingEmission?: PaddingEmission;
+  paddingRightEmission?: PaddingEmission;
   shadowEmission?: ShadowEmission;
 };
 
@@ -59,6 +60,7 @@ export type ResolvedElementStyleEmissionPolicy = {
   marginBottomEmission?: MarginEmission;
   marginLeftEmission?: MarginEmission;
   paddingEmission: PaddingEmission;
+  paddingRightEmission?: PaddingEmission;
   shadowEmission: ShadowEmission;
 };
 
@@ -87,6 +89,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           borderRadiusEmission: 'mirrored',
           borderWidthEmission: 'mirrored',
           paddingEmission: 'compensated'
+        },
+        e3: {
+          paddingRightEmission: 'token'
         }
       }
     },
@@ -297,6 +302,12 @@ export function resolveElementStyleEmissionPolicy(
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.marginLeftEmission,
     paddingEmission:
       variantElementPolicy?.paddingEmission ??
+      elementPolicy?.paddingEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.paddingEmission,
+    paddingRightEmission:
+      variantElementPolicy?.paddingRightEmission ??
+      variantElementPolicy?.paddingEmission ??
+      elementPolicy?.paddingRightEmission ??
       elementPolicy?.paddingEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.paddingEmission,
     shadowEmission:

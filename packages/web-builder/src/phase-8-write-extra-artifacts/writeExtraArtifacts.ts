@@ -5,6 +5,7 @@ import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens,
+  ButtonOptions,
   RadiusMode,
   Schema,
   SchemaFonts,
@@ -41,10 +42,11 @@ type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
 type ComponentEffectArtifact = {
-  effects: {
+  effects?: {
     activationFeedback?: ActivationFeedbackSetting;
     shadow?: ShadowEffectSchema;
   };
+  options?: ButtonOptions;
 };
 type ComponentEffectArtifactName = 'button' | 'card' | 'slider' | 'switch';
 
@@ -205,8 +207,9 @@ export async function writeExtraArtifacts(params: {
   > = {};
   const getComponentEffects = (
     componentName: ComponentEffectArtifactName
-  ): ComponentEffectArtifact['effects'] => {
-    const current = componentEffectOverrides[componentName] ?? { effects: {} };
+  ): NonNullable<ComponentEffectArtifact['effects']> => {
+    const current = componentEffectOverrides[componentName] ?? {};
+    current.effects ??= {};
     componentEffectOverrides[componentName] = current;
     return current.effects;
   };
@@ -218,6 +221,12 @@ export async function writeExtraArtifacts(params: {
 
   if (schema.components?.button?.effects?.shadow !== undefined) {
     getComponentEffects('button').shadow = schema.components.button.effects.shadow;
+  }
+
+  if (schema.components?.button?.options !== undefined) {
+    const buttonArtifact = componentEffectOverrides.button ?? {};
+    buttonArtifact.options = schema.components.button.options;
+    componentEffectOverrides.button = buttonArtifact;
   }
 
   if (schema.components?.card?.effects?.shadow !== undefined) {

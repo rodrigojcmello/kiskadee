@@ -147,6 +147,28 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('padding-right: max(0px, calc(var(--k-pdr) - var(--k-bdw, 0px)))');
       });
 
+      it('supports a right-only padding token without changing the other padding edges', () => {
+        const styleEmissionPolicy = {
+          borderRadiusEmission: 'direct',
+          borderColorEmission: 'direct',
+          borderWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          paddingRightEmission: 'token',
+          shadowEmission: 'direct'
+        } as const;
+
+        expect(
+          transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc', {
+            styleEmissionPolicy
+          })
+        ).toBe('.abc { --k-pdr: 16px }');
+        expect(
+          transformScaleKeyToCss('paddingLeft++s:sm:1__16', breakpoints, 'abc', {
+            styleEmissionPolicy
+          })
+        ).toBe('.abc { padding-left: 16px }');
+      });
+
       it("should convert 'marginLeft++s:sm:1__16' into a valid CSS rule", () => {
         const result = transformScaleKeyToCss('marginLeft++s:sm:1__16', breakpoints, 'abc');
 

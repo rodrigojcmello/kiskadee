@@ -46,12 +46,10 @@ const SOCIAL_NETWORKS = [
 ] as const;
 
 export function SocialButtonExamples({
-  align,
   fontName,
   scale,
   surfaceContext
 }: {
-  align: 'center' | 'left';
   fontName: string;
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
@@ -66,6 +64,8 @@ export function SocialButtonExamples({
         {SOCIAL_NETWORKS.map(({ Icon, label }) => (
           <KButton
             emphasis="high"
+            iconLayout="edge"
+            iconPlacement="leading"
             intent="neutral"
             key={label}
             scale={scale}
@@ -75,7 +75,7 @@ export function SocialButtonExamples({
               <Icon width="100%" height="100%" />
             </KButton.Icon>
             <KButton.Label>
-              <SmoothText fontName={fontName} align={align}>
+              <SmoothText fontName={fontName} align="center">
                 {label}
               </SmoothText>
             </KButton.Label>
