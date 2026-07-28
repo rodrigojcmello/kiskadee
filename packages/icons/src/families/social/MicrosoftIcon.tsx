@@ -13,7 +13,7 @@ export function MicrosoftIcon({
 }: MicrosoftIconProps) {
   if (presentation === 'brand') {
     return (
-      <svg width="1em" height="1em" viewBox="0 0 21 21" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
+      <svg width="1em" height="1em" viewBox="-1.166666666667 -1.166666666667 23.333333333333 23.333333333333" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
         <rect x="1" y="1" width="9" height="9" fill="#f25022">
         </rect>
         <rect x="1" y="11" width="9" height="9" fill="#00a4ef">
@@ -28,7 +28,7 @@ export function MicrosoftIcon({
 
   if (presentation === 'monochrome') {
     return (
-      <svg width="1em" height="1em" viewBox="0 0 21 21" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
+      <svg width="1em" height="1em" viewBox="-1.166666666667 -1.166666666667 23.333333333333 23.333333333333" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
         <rect x="1" y="1" width="9" height="9"/>
         <rect x="1" y="11" width="9" height="9"/>
         <rect x="11" y="1" width="9" height="9"/>

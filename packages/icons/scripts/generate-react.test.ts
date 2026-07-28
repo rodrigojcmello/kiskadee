@@ -2,7 +2,11 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { generateReactComponents, type IconManifest } from './generate-react.ts';
+import {
+  generateReactComponents,
+  type IconManifest,
+  validateIconManifest
+} from './generate-react.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,7 +38,8 @@ describe('canonical icon sources', () => {
     const manifest = await readManifest();
     const sources = new Set<string>();
 
-    expect(manifest.sourceContract).toBe('kiskadee-icon-svg-v1');
+    expect(manifest.formatVersion).toBe(2);
+    expect(manifest.sourceContract).toBe('kiskadee-icon-svg-v2');
     expect(manifest.icons).toHaveLength(45);
 
     for (const icon of manifest.icons) {
@@ -56,6 +61,44 @@ describe('canonical icon sources', () => {
     }
   });
 
+  it('rejects obsolete and structurally invalid optical contracts', async () => {
+    const currentManifest = await readManifest();
+    const obsoleteManifest = structuredClone(currentManifest);
+    const obsoleteContract = obsoleteManifest as unknown as {
+      formatVersion: number;
+      sourceContract: string;
+    };
+    obsoleteContract.formatVersion = 1;
+    obsoleteContract.sourceContract = 'kiskadee-icon-svg-v1';
+
+    expect(() => validateIconManifest(obsoleteManifest)).toThrow(
+      'Unsupported icon manifest contract.'
+    );
+
+    const missingSocialTransform = structuredClone(currentManifest);
+    const socialIcon = missingSocialTransform.icons.find((icon) => icon.family === 'social');
+    delete socialIcon?.opticalTransform;
+    expect(() => validateIconManifest(missingSocialTransform)).toThrow(
+      'must declare an optical transform'
+    );
+
+    const authorialTransform = structuredClone(currentManifest);
+    const authorialIcon = authorialTransform.icons.find((icon) => icon.family === 'kiskadee');
+    if (authorialIcon) {
+      authorialIcon.opticalTransform = { scale: 1, offsetX: 0, offsetY: 0 };
+    }
+    expect(() => validateIconManifest(authorialTransform)).toThrow(
+      'cannot declare a social optical transform'
+    );
+
+    const invalidScale = structuredClone(currentManifest);
+    const calibratedIcon = invalidScale.icons.find((icon) => icon.family === 'social');
+    if (calibratedIcon?.opticalTransform) calibratedIcon.opticalTransform.scale = 2;
+    expect(() => validateIconManifest(invalidScale)).toThrow(
+      'Optical scale must be a finite number'
+    );
+  });
+
   it('records provenance for every third-party mark', async () => {
     const manifest = await readManifest();
     const thirdPartyIcons = manifest.icons.filter((icon) => icon.origin === 'third-party');
@@ -64,6 +107,52 @@ describe('canonical icon sources', () => {
     for (const icon of thirdPartyIcons) {
       expect(icon.provenanceUrl).toMatch(/^https:\/\//);
     }
+  });
+
+  it('records one shared optical calibration for every social mark', async () => {
+    const manifest = await readManifest();
+    const socialIcons = manifest.icons.filter((icon) => icon.family === 'social');
+    const calibrationByIcon = Object.fromEntries(
+      socialIcons.map((icon) => [icon.id, icon.opticalTransform])
+    );
+
+    for (const icon of socialIcons) {
+      expect(icon.opticalTransform, icon.id).toEqual({
+        scale: expect.any(Number),
+        offsetX: expect.any(Number),
+        offsetY: expect.any(Number)
+      });
+    }
+
+    // What: freeze every human-calibrated transform, not only broad geometric limits.
+    // Why: a numerically valid change can still break the perceived balance of the contact sheet.
+    expect(calibrationByIcon).toEqual({
+      apple: { scale: 0.94, offsetX: 0, offsetY: -0.03 },
+      'chat-gpt': { scale: 0.9, offsetX: 0, offsetY: 0 },
+      claude: { scale: 1.1, offsetX: 0, offsetY: 0 },
+      discord: { scale: 0.88, offsetX: 0, offsetY: 0 },
+      facebook: { scale: 0.86, offsetX: 0, offsetY: 0.01 },
+      gemini: { scale: 0.94, offsetX: 0, offsetY: 0 },
+      'git-hub': { scale: 0.88, offsetX: 0, offsetY: 0.02 },
+      google: { scale: 0.88, offsetX: 0.02, offsetY: -0.01 },
+      instagram: { scale: 0.9, offsetX: 0, offsetY: 0 },
+      'linked-in': { scale: 0.84, offsetX: 0, offsetY: 0.01 },
+      mastodon: { scale: 0.86, offsetX: 0.02, offsetY: 0.02 },
+      messenger: { scale: 0.84, offsetX: 0, offsetY: 0 },
+      microsoft: { scale: 0.9, offsetX: 0, offsetY: 0 },
+      pinterest: { scale: 0.9, offsetX: 0, offsetY: 0 },
+      reddit: { scale: 0.9, offsetX: 0, offsetY: 0 },
+      snapchat: { scale: 1.1, offsetX: 0, offsetY: -0.01 },
+      substack: { scale: 1.2, offsetX: 0, offsetY: 0 },
+      telegram: { scale: 0.9, offsetX: 0, offsetY: 0 },
+      threads: { scale: 0.88, offsetX: 0, offsetY: 0 },
+      'tik-tok': { scale: 1.15, offsetX: 0, offsetY: -0.05 },
+      twitch: { scale: 0.88, offsetX: 0.04, offsetY: 0.03 },
+      vimeo: { scale: 0.88, offsetX: -0.02, offsetY: 0.02 },
+      'whats-app': { scale: 0.9, offsetX: 0.02, offsetY: -0.02 },
+      x: { scale: 0.8, offsetX: 0, offsetY: 0 },
+      'you-tube': { scale: 0.94, offsetX: 0, offsetY: 0 }
+    });
   });
 
   it('gives every social icon a currentColor-only monochrome presentation', async () => {
@@ -118,7 +207,7 @@ describe('canonical icon sources', () => {
     }
   });
 
-  it('uses the current official Reddit compact constructions and excludes Bluesky', async () => {
+  it('uses one Reddit construction across presentations and excludes Bluesky', async () => {
     const manifest = await readManifest();
     const reddit = manifest.icons.find((icon) => icon.id === 'reddit');
 
@@ -137,27 +226,39 @@ describe('canonical icon sources', () => {
     expect(brand).not.toContain('stroke=');
 
     expect(readViewBox(monochrome)).toBe(readViewBox(brand));
+    expect(readPathData(monochrome)).toEqual([
+      readPathData(brand).join(' ').replace(' m154.04,60.36', ' M154.04,60.36')
+    ]);
     expect(monochrome).toContain('fill="currentColor"');
+    expect(monochrome).toContain('fill-rule="evenodd"');
+    expect(monochrome).toContain('clip-rule="evenodd"');
     expect(monochrome).not.toMatch(/#[0-9a-f]{3,8}\b/i);
     expect(monochrome).not.toContain('<defs');
   });
 
-  it('preserves the repaired first-party Apple, Claude, and Telegram geometry', async () => {
-    const [apple, claude, telegramBrand, telegramMonochrome] = await Promise.all([
-      readFile(path.resolve(assetsDir, 'social/apple.monochrome.svg'), 'utf8'),
-      readFile(path.resolve(assetsDir, 'social/claude.brand.svg'), 'utf8'),
-      readFile(path.resolve(assetsDir, 'social/telegram.brand.svg'), 'utf8'),
-      readFile(path.resolve(assetsDir, 'social/telegram.monochrome.svg'), 'utf8')
-    ]);
+  it('preserves the repaired Apple, Claude, and Telegram geometry', async () => {
+    const [apple, claudeBrand, claudeMonochrome, telegramBrand, telegramMonochrome] =
+      await Promise.all([
+        readFile(path.resolve(assetsDir, 'social/apple.monochrome.svg'), 'utf8'),
+        readFile(path.resolve(assetsDir, 'social/claude.brand.svg'), 'utf8'),
+        readFile(path.resolve(assetsDir, 'social/claude.monochrome.svg'), 'utf8'),
+        readFile(path.resolve(assetsDir, 'social/telegram.brand.svg'), 'utf8'),
+        readFile(path.resolve(assetsDir, 'social/telegram.monochrome.svg'), 'utf8')
+      ]);
 
     expect(readViewBox(apple)).toBe('0 11 14 18');
     expect(apple).toContain('m13.0729 17.6825');
     expect(apple).not.toContain('clip-path');
 
-    expect(readViewBox(claude)).toBe('0 0 128 128');
-    expect(claude).toContain('<rect width="128" height="128" rx="30"');
-    expect(claude).toContain('M35.0157 79.6937');
-    expect(claude).not.toContain('<polygon');
+    expect(readViewBox(claudeBrand)).toBe('0 0 128 128');
+    expect(readViewBox(claudeMonochrome)).toBe(readViewBox(claudeBrand));
+    expect(readPathData(claudeBrand)).toEqual(readPathData(claudeMonochrome));
+    expect(claudeBrand).toContain('fill="#D97757"');
+    expect(claudeBrand).toContain('M35.0157 79.6937');
+    expect(claudeBrand).not.toContain('<rect');
+    expect(claudeBrand).not.toContain('<defs');
+    expect(claudeMonochrome).toContain('fill="currentColor"');
+    expect(claudeMonochrome).not.toContain('<rect');
 
     expect(readViewBox(telegramBrand)).toBe('0 0 1000 1000');
     expect(telegramBrand).toContain('<circle fill="url(#telegram-gradient)"');

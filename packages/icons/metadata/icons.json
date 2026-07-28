@@ -1,6 +1,6 @@
 {
-  "formatVersion": 1,
-  "sourceContract": "kiskadee-icon-svg-v1",
+  "formatVersion": 2,
+  "sourceContract": "kiskadee-icon-svg-v2",
   "icons": [
     {
       "id": "check",
@@ -274,6 +274,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.94,
+        "offsetX": 0,
+        "offsetY": -0.03
+      },
       "provenanceUrl": "https://www.apple.com/"
     },
     {
@@ -287,6 +292,11 @@
           "source": "social/chat-gpt.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.9,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://openai.com/brand/"
     },
@@ -306,6 +316,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 1.1,
+        "offsetX": 0,
+        "offsetY": 0
+      },
       "provenanceUrl": "https://www.anthropic.com/press-kit"
     },
     {
@@ -323,6 +338,11 @@
           "source": "social/discord.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.88,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://discord.com/branding"
     },
@@ -342,6 +362,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.86,
+        "offsetX": 0,
+        "offsetY": 0.01
+      },
       "provenanceUrl": "https://www.meta.com/brand/resources/facebook/logo/"
     },
     {
@@ -360,6 +385,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.94,
+        "offsetX": 0,
+        "offsetY": 0
+      },
       "provenanceUrl": "https://gemini.google.com/"
     },
     {
@@ -373,6 +403,11 @@
           "source": "social/git-hub.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.88,
+        "offsetX": 0,
+        "offsetY": 0.02
       },
       "provenanceUrl": "https://brand.github.com/foundations/logo"
     },
@@ -392,6 +427,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.88,
+        "offsetX": 0.02,
+        "offsetY": -0.01
+      },
       "provenanceUrl": "https://developers.google.com/identity/branding-guidelines"
     },
     {
@@ -409,6 +449,11 @@
           "source": "social/instagram.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.9,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://www.meta.com/brand/resources/instagram/instagram-brand/"
     },
@@ -428,6 +473,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.84,
+        "offsetX": 0,
+        "offsetY": 0.01
+      },
       "provenanceUrl": "https://brand.linkedin.com/downloads"
     },
     {
@@ -445,6 +495,11 @@
           "source": "social/mastodon.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.86,
+        "offsetX": 0.02,
+        "offsetY": 0.02
       },
       "provenanceUrl": "https://joinmastodon.org/branding"
     },
@@ -464,6 +519,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.84,
+        "offsetX": 0,
+        "offsetY": 0
+      },
       "provenanceUrl": "https://www.meta.com/brand/resources/facebook/messenger-icon/"
     },
     {
@@ -481,6 +541,11 @@
           "source": "social/microsoft.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.9,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-branding-in-apps"
     },
@@ -500,6 +565,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.9,
+        "offsetX": 0,
+        "offsetY": 0
+      },
       "provenanceUrl": "https://business.pinterest.com/en-us/brand-guidelines/?change_language=true"
     },
     {
@@ -517,6 +587,11 @@
           "source": "social/reddit.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.9,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://redditbrand.lingoapp.com/s/Logo-d9x3n2"
     },
@@ -536,6 +611,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 1.1,
+        "offsetX": 0,
+        "offsetY": -0.01
+      },
       "provenanceUrl": "https://www.snap.com/brand-guidelines?lang=en-US"
     },
     {
@@ -553,6 +633,11 @@
           "source": "social/substack.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 1.2,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://substack.com/brand"
     },
@@ -572,6 +657,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.9,
+        "offsetX": 0,
+        "offsetY": 0
+      },
       "provenanceUrl": "https://telegram.org/press"
     },
     {
@@ -585,6 +675,11 @@
           "source": "social/threads.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.88,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://www.meta.com/brand/resources/instagram/threads/"
     },
@@ -604,6 +699,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 1.15,
+        "offsetX": 0,
+        "offsetY": -0.05
+      },
       "provenanceUrl": "https://developers.tiktok.com/doc/getting-started-design-guidelines"
     },
     {
@@ -621,6 +721,11 @@
           "source": "social/twitch.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.88,
+        "offsetX": 0.04,
+        "offsetY": 0.03
       },
       "provenanceUrl": "https://brand.twitch.com/"
     },
@@ -640,6 +745,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.88,
+        "offsetX": -0.02,
+        "offsetY": 0.02
+      },
       "provenanceUrl": "https://vimeo.com/press/media-kit"
     },
     {
@@ -658,6 +768,11 @@
           "colorBehavior": "currentColor"
         }
       },
+      "opticalTransform": {
+        "scale": 0.9,
+        "offsetX": 0.02,
+        "offsetY": -0.02
+      },
       "provenanceUrl": "https://www.meta.com/brand/resources/whatsapp/whatsapp-brand/"
     },
     {
@@ -671,6 +786,11 @@
           "source": "social/x.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.8,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://about.x.com/en/who-we-are/brand-toolkit"
     },
@@ -689,6 +809,11 @@
           "source": "social/you-tube.monochrome.svg",
           "colorBehavior": "currentColor"
         }
+      },
+      "opticalTransform": {
+        "scale": 0.94,
+        "offsetX": 0,
+        "offsetY": 0
       },
       "provenanceUrl": "https://brand.youtube/youtube-icon"
     }

@@ -1,6 +1,11 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import {
+  applyOpticalTransformToSvg,
+  type OpticalTransform,
+  validateOpticalTransform
+} from './icon-optical.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,15 +48,16 @@ export interface IconMetadata {
   defaultPresentation: string;
   family: string;
   id: string;
+  opticalTransform?: OpticalTransform;
   origin: 'kiskadee' | 'third-party';
   presentations: Record<string, IconPresentationMetadata>;
   provenanceUrl?: string;
 }
 
 export interface IconManifest {
-  formatVersion: 1;
+  formatVersion: 2;
   icons: IconMetadata[];
-  sourceContract: 'kiskadee-icon-svg-v1';
+  sourceContract: 'kiskadee-icon-svg-v2';
 }
 
 interface GenerateOptions {
@@ -179,15 +185,16 @@ function renderFamilyIndex(family: string, icons: IconMetadata[]): string {
 
 async function readManifest(): Promise<IconManifest> {
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as IconManifest;
-
-  if (manifest.formatVersion !== 1 || manifest.sourceContract !== 'kiskadee-icon-svg-v1') {
-    throw new Error('Unsupported icon manifest contract.');
-  }
+  validateIconManifest(manifest);
 
   return manifest;
 }
 
-function validateManifest(manifest: IconManifest): void {
+export function validateIconManifest(manifest: IconManifest): void {
+  if (manifest.formatVersion !== 2 || manifest.sourceContract !== 'kiskadee-icon-svg-v2') {
+    throw new Error('Unsupported icon manifest contract.');
+  }
+
   const ids = new Set<string>();
   const componentNames = new Set<string>();
 
@@ -202,6 +209,13 @@ function validateManifest(manifest: IconManifest): void {
     if (!/^[A-Z][A-Za-z0-9]*Icon$/.test(icon.componentName)) {
       throw new Error(`Invalid icon component name "${icon.componentName}".`);
     }
+    if (icon.family === 'social' && !icon.opticalTransform) {
+      throw new Error(`${icon.id} must declare an optical transform.`);
+    }
+    if (icon.family !== 'social' && icon.opticalTransform) {
+      throw new Error(`${icon.id} cannot declare a social optical transform.`);
+    }
+    if (icon.opticalTransform) validateOpticalTransform(icon.opticalTransform);
 
     ids.add(icon.id);
     componentNames.add(icon.componentName);
@@ -210,9 +224,13 @@ function validateManifest(manifest: IconManifest): void {
 
 async function createExpectedOutputs(manifest: IconManifest): Promise<Map<string, string>> {
   const outputs = new Map<string, string>();
-  const iconsByFamily = Map.groupBy(manifest.icons, (icon) => icon.family);
+  const iconsByFamily = new Map<string, IconMetadata[]>();
 
   for (const icon of manifest.icons) {
+    const familyIcons = iconsByFamily.get(icon.family) ?? [];
+    familyIcons.push(icon);
+    iconsByFamily.set(icon.family, familyIcons);
+
     const presentationSvgs = new Map<string, string>();
 
     for (const [presentation, definition] of Object.entries(icon.presentations)) {
@@ -223,7 +241,12 @@ async function createExpectedOutputs(manifest: IconManifest): Promise<Map<string
         throw new Error(`${icon.id}.${presentation} resolves outside the assets directory.`);
       }
 
-      presentationSvgs.set(presentation, await readFile(assetPath, 'utf8'));
+      const sourceSvg = await readFile(assetPath, 'utf8');
+      const renderedSvg = icon.opticalTransform
+        ? applyOpticalTransformToSvg(sourceSvg, icon.opticalTransform)
+        : sourceSvg;
+
+      presentationSvgs.set(presentation, renderedSvg);
     }
 
     outputs.set(
@@ -299,7 +322,6 @@ async function writeGeneratedOutputs(outputs: Map<string, string>): Promise<void
  */
 export async function generateReactComponents(options: GenerateOptions = {}): Promise<void> {
   const manifest = await readManifest();
-  validateManifest(manifest);
   const outputs = await createExpectedOutputs(manifest);
 
   if (options.check) {

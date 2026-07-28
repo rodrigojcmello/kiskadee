@@ -14,6 +14,10 @@ Icon schemas are authored.
 The Icon component does not register glyphs and does not choose an asset. Its
 single child is the SVG supplied by the consumer.
 
+Brand optical calibration is also owned and pre-resolved by `@kiskadee/icons`.
+The component applies one common viewport to every glyph and must not contain
+per-brand scale or position exceptions.
+
 ## Element Map
 
 - `e1` (`glyph`) is required and is both the semantic root and visual glyph

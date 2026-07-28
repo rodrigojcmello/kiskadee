@@ -43,6 +43,7 @@
     "clean": "node ./scripts/clean-dist.ts",
     "generate": "node ./scripts/generate-react.ts",
     "check:generated": "node ./scripts/generate-react.ts --check",
+    "audit:optical": "node ./scripts/audit-optical.ts",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build": "node ./scripts/build.ts"
   },
@@ -53,6 +54,7 @@
     "@types/node": "^25.9.2",
     "@types/react": "^19.2.17",
     "esbuild": "^0.28.0",
+    "sharp": "^0.34.5",
     "typescript": "^6.0.3"
   }
 }
