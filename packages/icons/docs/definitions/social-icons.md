@@ -24,7 +24,7 @@ scope is broader than social networks.
 
 ## Optical calibration
 
-The `kiskadee-icon-svg-v2` manifest requires one icon-level `opticalTransform` for every social
+The `kiskadee-icon-svg-v3` manifest requires one icon-level `opticalTransform` for every social
 mark. It compensates for differences in native artwork bounds and clear space without altering the
 official geometry:
 

@@ -6,10 +6,41 @@ import {
   type IconScale,
   type SurfaceContext
 } from '@kiskadee/core';
-import * as KiskadeeIcons from '@kiskadee/icons/kiskadee';
-import { HeartIcon } from '@kiskadee/icons/kiskadee/HeartIcon';
 import * as SocialIcons from '@kiskadee/icons/social';
 import { Icon as KIcon, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import {
+  BanIcon,
+  BellIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  FrownIcon,
+  GripVerticalIcon,
+  HeartIcon,
+  HouseIcon,
+  type LucideIcon,
+  MailIcon,
+  MenuIcon,
+  MinusIcon,
+  MoonIcon,
+  MoonStarIcon,
+  PauseIcon,
+  PencilIcon,
+  PlayIcon,
+  PlusIcon,
+  SearchIcon,
+  SettingsIcon,
+  Share2Icon,
+  SmileIcon,
+  SunIcon,
+  ThumbsUpIcon,
+  Trash2Icon,
+  UserIcon,
+  Volume1Icon,
+  Volume2Icon,
+  VolumeXIcon,
+  XIcon
+} from 'lucide-react';
 import type { ComponentType, CSSProperties, SVGProps } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
@@ -40,14 +71,19 @@ import {
 } from '@/utils/manifest-surface-context';
 import s from './Icons.module.scss';
 
-type DiscoveredIconComponent = ComponentType<
+type SocialIconComponent = ComponentType<
   SVGProps<SVGSVGElement> & {
     presentation?: 'brand' | 'monochrome';
   }
 >;
 
-type IconEntry = {
-  component: DiscoveredIconComponent;
+type SocialIconEntry = {
+  component: SocialIconComponent;
+  name: string;
+};
+
+type InterfaceIconEntry = {
+  component: LucideIcon;
   name: string;
 };
 
@@ -80,29 +116,58 @@ const ICON_SCALE_OPTIONS = (Object.keys(ICON_SIZE_BY_SCALE) as IconScale[]).map(
   label: formatScaleLabel(value)
 }));
 
-function getIconEntries(iconNamespace: object): IconEntry[] {
+function getSocialIconEntries(iconNamespace: object): SocialIconEntry[] {
   return Object.entries(iconNamespace)
     .filter(
-      (entry): entry is [string, DiscoveredIconComponent] =>
+      (entry): entry is [string, SocialIconComponent] =>
         entry[0].endsWith('Icon') && typeof entry[1] === 'function'
     )
     .map(([name, component]) => ({ component, name }))
     .sort((first, second) => first.name.localeCompare(second.name));
 }
 
-const KISKADEE_ICON_ENTRIES = getIconEntries(KiskadeeIcons);
-const SOCIAL_ICON_ENTRIES = getIconEntries(SocialIcons);
+const INTERFACE_ICON_ENTRIES: InterfaceIconEntry[] = [
+  { name: 'BanIcon', component: BanIcon },
+  { name: 'BellIcon', component: BellIcon },
+  { name: 'CheckIcon', component: CheckIcon },
+  { name: 'ChevronDownIcon', component: ChevronDownIcon },
+  { name: 'ChevronLeftIcon', component: ChevronLeftIcon },
+  { name: 'FrownIcon', component: FrownIcon },
+  { name: 'GripVerticalIcon', component: GripVerticalIcon },
+  { name: 'HeartIcon', component: HeartIcon },
+  { name: 'HouseIcon', component: HouseIcon },
+  { name: 'MailIcon', component: MailIcon },
+  { name: 'MenuIcon', component: MenuIcon },
+  { name: 'MinusIcon', component: MinusIcon },
+  { name: 'MoonIcon', component: MoonIcon },
+  { name: 'MoonStarIcon', component: MoonStarIcon },
+  { name: 'PauseIcon', component: PauseIcon },
+  { name: 'PencilIcon', component: PencilIcon },
+  { name: 'PlayIcon', component: PlayIcon },
+  { name: 'PlusIcon', component: PlusIcon },
+  { name: 'SearchIcon', component: SearchIcon },
+  { name: 'SettingsIcon', component: SettingsIcon },
+  { name: 'Share2Icon', component: Share2Icon },
+  { name: 'SmileIcon', component: SmileIcon },
+  { name: 'SunIcon', component: SunIcon },
+  { name: 'ThumbsUpIcon', component: ThumbsUpIcon },
+  { name: 'Trash2Icon', component: Trash2Icon },
+  { name: 'UserIcon', component: UserIcon },
+  { name: 'Volume1Icon', component: Volume1Icon },
+  { name: 'Volume2Icon', component: Volume2Icon },
+  { name: 'VolumeXIcon', component: VolumeXIcon },
+  { name: 'XIcon', component: XIcon }
+];
+const SOCIAL_ICON_ENTRIES = getSocialIconEntries(SocialIcons);
 
 function IconGallery({
   entries,
   intent,
-  presentation,
   scale,
   surfaceContext
 }: {
-  entries: IconEntry[];
+  entries: InterfaceIconEntry[];
   intent: IconIntent;
-  presentation?: 'brand' | 'monochrome';
   scale: IconScale;
   surfaceContext: SurfaceContext;
 }) {
@@ -112,7 +177,7 @@ function IconGallery({
         <article key={name} className={s.galleryItem}>
           <div className={s.iconPreview}>
             <KIcon intent={intent} label={name} scale={scale} surfaceContext={surfaceContext}>
-              <Glyph presentation={presentation} />
+              <Glyph aria-hidden="true" focusable="false" />
             </KIcon>
           </div>
           <code className={s.iconName}>{name}</code>
@@ -133,7 +198,7 @@ function SocialIconGallery({
 }: {
   brandBackgroundColor?: string;
   brandForegroundColor?: string;
-  entries: IconEntry[];
+  entries: SocialIconEntry[];
   intent: IconIntent;
   monochromeBackgroundColor?: string;
   scale: IconScale;
@@ -464,8 +529,8 @@ export default function IconShowcase() {
       <header className={s.header}>
         <h1 className={s.title}>Icon</h1>
         <p className={s.summary}>
-          Preset-aware icon sizing and color applied to the dynamically discovered Kiskadee and
-          social icon families.
+          Preset-aware icon sizing and color applied to direct Lucide examples and the Kiskadee
+          brand icon family.
         </p>
       </header>
 
@@ -530,20 +595,20 @@ export default function IconShowcase() {
             </div>
           </section>
 
-          <section className={s.section} aria-labelledby="kiskadee-icons-title">
+          <section className={s.section} aria-labelledby="interface-icons-title">
             <div className={s.sectionHeader}>
               <div>
-                <h2 id="kiskadee-icons-title" className={s.sectionTitle}>
-                  Kiskadee
+                <h2 id="interface-icons-title" className={s.sectionTitle}>
+                  Interface icons
                 </h2>
                 <p className={s.sectionDescription}>
-                  {KISKADEE_ICON_ENTRIES.length} authorial icons rendered with the selected scale
-                  and intent.
+                  {INTERFACE_ICON_ENTRIES.length} common Lucide glyphs used locally to exercise the
+                  selected scale and intent.
                 </p>
               </div>
             </div>
             <IconGallery
-              entries={KISKADEE_ICON_ENTRIES}
+              entries={INTERFACE_ICON_ENTRIES}
               intent={activeIntent}
               scale={activeScale}
               surfaceContext={surfaceContext}

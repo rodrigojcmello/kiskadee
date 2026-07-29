@@ -38,9 +38,9 @@ describe('canonical icon sources', () => {
     const manifest = await readManifest();
     const sources = new Set<string>();
 
-    expect(manifest.formatVersion).toBe(2);
-    expect(manifest.sourceContract).toBe('kiskadee-icon-svg-v2');
-    expect(manifest.icons).toHaveLength(45);
+    expect(manifest.formatVersion).toBe(3);
+    expect(manifest.sourceContract).toBe('kiskadee-icon-svg-v3');
+    expect(manifest.icons).toHaveLength(25);
 
     for (const icon of manifest.icons) {
       expect(icon.presentations[icon.defaultPresentation]).toBeDefined();
@@ -50,7 +50,7 @@ describe('canonical icon sources', () => {
         sources.add(presentation.source);
 
         const svg = await readFile(path.resolve(assetsDir, presentation.source), 'utf8');
-        expect(svg).toMatch(/^<svg /);
+        expect(svg).toContain('<svg');
         expect(svg).toContain('</svg>');
         expect(svg).not.toContain('width="1em"');
         expect(svg).not.toContain('height="1em"');
@@ -82,21 +82,47 @@ describe('canonical icon sources', () => {
       'must declare an optical transform'
     );
 
-    const authorialTransform = structuredClone(currentManifest);
-    const authorialIcon = authorialTransform.icons.find((icon) => icon.family === 'kiskadee');
-    if (authorialIcon) {
-      authorialIcon.opticalTransform = { scale: 1, offsetX: 0, offsetY: 0 };
-    }
-    expect(() => validateIconManifest(authorialTransform)).toThrow(
-      'cannot declare a social optical transform'
-    );
-
     const invalidScale = structuredClone(currentManifest);
     const calibratedIcon = invalidScale.icons.find((icon) => icon.family === 'social');
     if (calibratedIcon?.opticalTransform) calibratedIcon.opticalTransform.scale = 2;
     expect(() => validateIconManifest(invalidScale)).toThrow(
       'Optical scale must be a finite number'
     );
+  });
+
+  it('contains only the optically calibrated social brand family', async () => {
+    const manifest = await readManifest();
+
+    expect(manifest.families).toEqual({
+      social: {
+        kind: 'brand',
+        origin: 'third-party',
+        license: 'trademark-owner-terms',
+        provenanceDocument: 'docs/definitions/social-icons.md'
+      }
+    });
+    expect(manifest.icons).toHaveLength(25);
+    for (const icon of manifest.icons) {
+      expect(icon.family).toBe('social');
+      expect(icon.origin).toBe('third-party');
+      expect(icon.opticalTransform).toBeDefined();
+    }
+  });
+
+  it('does not publish an interface icon family', async () => {
+    const packageJson = JSON.parse(
+      await readFile(path.resolve(packageRoot, 'package.json'), 'utf8')
+    ) as {
+      exports: Record<string, unknown>;
+    };
+    const rootSource = await readFile(path.resolve(packageRoot, 'src/index.ts'), 'utf8');
+
+    expect(Object.keys(packageJson.exports)).toContain('./social');
+    expect(Object.keys(packageJson.exports).some((key) => key.includes('kiskadee'))).toBe(false);
+    expect(Object.keys(packageJson.exports).some((key) => key.includes('lucide'))).toBe(false);
+    expect(rootSource).toContain('SocialIcons');
+    expect(rootSource).not.toContain('KiskadeeIcons');
+    expect(rootSource).not.toContain('LucideIcons');
   });
 
   it('records provenance for every third-party mark', async () => {

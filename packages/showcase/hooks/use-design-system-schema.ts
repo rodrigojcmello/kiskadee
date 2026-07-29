@@ -2,43 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
+import type { DesignSystemSchemaArtifact } from '@/utils/design-system-card-surface';
 
-export type DesignSystemSchemaArtifact = {
-  components?: {
-    card?: {
-      elements?: {
-        e1?: {
-          palettes?: Record<
-            string,
-            Record<
-              string,
-              {
-                default?: DesignSystemCardColorSchema;
-                // Kept typed for existing Showcase consumers that have not yet
-                // migrated their local surface resolver to the canonical context.
-                boxColor?: DesignSystemCardBoxColor;
-              }
-            >
-          >;
-        };
-      };
-    };
-  };
-};
-
-export type DesignSystemCardBoxColor = Record<
-  string,
-  Record<
-    string,
-    {
-      rest?: unknown;
-    }
-  >
->;
-
-export type DesignSystemCardColorSchema = {
-  boxColor?: DesignSystemCardBoxColor;
-};
+export type { DesignSystemSchemaArtifact } from '@/utils/design-system-card-surface';
 
 const schemaCache = new Map<string, Promise<DesignSystemSchemaArtifact | undefined>>();
 

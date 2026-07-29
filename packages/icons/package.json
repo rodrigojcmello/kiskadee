@@ -13,16 +13,6 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./kiskadee": {
-      "types": "./dist/families/kiskadee/index.d.ts",
-      "import": "./dist/families/kiskadee/index.js",
-      "default": "./dist/families/kiskadee/index.js"
-    },
-    "./kiskadee/*": {
-      "types": "./dist/families/kiskadee/*.d.ts",
-      "import": "./dist/families/kiskadee/*.js",
-      "default": "./dist/families/kiskadee/*.js"
-    },
     "./social": {
       "types": "./dist/families/social/index.d.ts",
       "import": "./dist/families/social/index.js",

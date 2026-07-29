@@ -1,22 +1,18 @@
 'use client';
 
 import type { ThemeMode } from '@kiskadee/core';
-import type { IconProps } from '@kiskadee/icons/kiskadee';
-import { MoonIcon } from '@kiskadee/icons/kiskadee/MoonIcon';
-import { MoonStarsIcon } from '@kiskadee/icons/kiskadee/MoonStarsIcon';
-import { SunIcon } from '@kiskadee/icons/kiskadee/SunIcon';
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
-import type { ComponentType } from 'react';
+import { type LucideIcon, MoonIcon, MoonStarIcon, SunIcon } from 'lucide-react';
 import { ShowcaseSegmentedControl } from '../ShowcaseControls';
 import styles from './ThemeModePicker.module.scss';
 
 const OPTIONS: ReadonlyArray<{
-  Icon: ComponentType<IconProps>;
+  Icon: LucideIcon;
   label: string;
   value: ThemeMode;
 }> = [
   { value: 'light', label: 'Light', Icon: SunIcon },
-  { value: 'dark', label: 'Dark', Icon: MoonStarsIcon },
+  { value: 'dark', label: 'Dark', Icon: MoonStarIcon },
   { value: 'darker', label: 'Darker', Icon: MoonIcon }
 ];
 

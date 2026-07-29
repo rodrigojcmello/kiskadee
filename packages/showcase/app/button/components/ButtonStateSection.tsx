@@ -6,9 +6,9 @@ import type {
   InteractionState,
   SurfaceContext
 } from '@kiskadee/core';
-import { UnavailableIcon } from '@kiskadee/icons/kiskadee/UnavailableIcon';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
+import { BanIcon } from 'lucide-react';
 import { Fragment, type ReactNode, useState } from 'react';
 import s from '../Button.module.scss';
 import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
@@ -73,7 +73,7 @@ export function ButtonStateSection({
 
     return (
       <div className={s.missingState}>
-        <UnavailableIcon width={24} height={24} />
+        <BanIcon width={24} height={24} />
       </div>
     );
   };

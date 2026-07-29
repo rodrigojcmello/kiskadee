@@ -659,15 +659,17 @@
 }
 
 .editor .addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   flex: 0 0 auto;
   border-color: var(--editor-border-strong);
   background: var(--editor-surface);
   color: var(--editor-brand);
 }
 
-.addButton span {
-  margin-right: 4px;
-  font-size: 16px;
+.addButton svg {
+  flex: 0 0 auto;
 }
 
 .lowerGrid {

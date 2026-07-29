@@ -4,22 +4,20 @@ import type {
   ElementSizeValue,
   SurfaceContext
 } from '@kiskadee/core';
-import { HeartIcon } from '@kiskadee/icons/kiskadee/HeartIcon';
-import { LikeIcon } from '@kiskadee/icons/kiskadee/LikeIcon';
-import { ShareIcon } from '@kiskadee/icons/kiskadee/ShareIcon';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
+import { HeartIcon, Share2Icon, ThumbsUpIcon } from 'lucide-react';
 import styles from '../Button.module.scss';
 
 const EXAMPLES = [
   {
-    Icon: LikeIcon,
+    Icon: ThumbsUpIcon,
     iconLayout: 'inline',
     iconPlacement: 'leading',
     intent: 'primary',
     label: 'Like'
   },
   {
-    Icon: ShareIcon,
+    Icon: Share2Icon,
     iconLayout: 'inline',
     iconPlacement: 'trailing',
     intent: 'neutral',
@@ -33,14 +31,14 @@ const EXAMPLES = [
     label: 'Favorite'
   },
   {
-    Icon: ShareIcon,
+    Icon: Share2Icon,
     iconLayout: 'edge',
     iconPlacement: 'trailing',
     intent: 'positive',
     label: 'Send'
   }
 ] satisfies ReadonlyArray<{
-  Icon: typeof LikeIcon;
+  Icon: typeof ThumbsUpIcon;
   iconLayout: ButtonIconLayout;
   iconPlacement: ButtonIconPlacement;
   intent: 'primary' | 'neutral' | 'destructive' | 'positive';

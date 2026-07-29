@@ -4,15 +4,21 @@ Status: canonical first contract.
 
 ## Ownership
 
-`@kiskadee/icons` owns glyph assets, their SVG paths, view boxes, provenance,
-and presentation-specific fills. `@kiskadee/react-headless` owns the semantic
-`span` and whether that glyph is an accessible image or decorative.
+The consumer owns the interface glyph and may select any compatible icon provider.
+`@kiskadee/icons` owns only third-party brand marks, their SVG paths, view boxes,
+provenance, and presentation-specific fills. `@kiskadee/react-headless` owns the semantic
+`span` and whether the supplied glyph is an accessible image or decorative.
 `@kiskadee/react-components` owns generated class consumption and the structural
 SVG viewport. Presets will own the generated size and foreground classes when
 Icon schemas are authored.
 
 The Icon component does not register glyphs and does not choose an asset. Its
 single child is the SVG supplied by the consumer.
+
+`lucide-react` is the recommended web fallback for general interface glyphs and is consumed
+directly by applications. Kiskadee does not re-export or curate a public Lucide subset.
+Consumers may instead pass a glyph from another library, a product-specific asset, or a
+design-system-specific family through the same `children` contract.
 
 Brand optical calibration is also owned and pre-resolved by `@kiskadee/icons`.
 The component applies one common viewport to every glyph and must not contain
@@ -25,6 +31,8 @@ per-brand scale or position exceptions.
 - It consumes only `boxWidth`, `boxHeight`, and `textColor`.
 - There are no options, interaction states, effects, extra elements, or
   component registry.
+- There is no name-based lookup or dynamic provider registry. Asset selection
+  stays explicit and tree-shakable at the consumer import site.
 
 ## Accessibility
 

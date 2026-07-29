@@ -70,7 +70,7 @@ async function main(): Promise<void> {
     '--',
     '--skip-initial'
   ]);
-  start(next, ['dev']);
+  start(next, ['dev', '--webpack']);
 }
 
 process.on('SIGINT', () => {

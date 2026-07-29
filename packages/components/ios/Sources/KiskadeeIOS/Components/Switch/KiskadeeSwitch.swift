@@ -144,8 +144,17 @@ public struct KiskadeeSwitch: View {
                 .frame(width: thumbWidth, height: thumbHeight)
 
             if showsIcon, let iconColor = style.iconColor {
-                Image(systemName: isOn ? "checkmark" : "minus")
-                    .font(.system(size: iconSize(style: style), weight: .bold))
+                Image(
+                    isOn ? "lucide-check" : "lucide-minus",
+                    bundle: .module
+                )
+                    .resizable()
+                    .renderingMode(.template)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(
+                        width: iconSize(style: style),
+                        height: iconSize(style: style)
+                    )
                     .foregroundStyle(iconColor)
             }
         }

@@ -49,15 +49,24 @@ export interface IconMetadata {
   family: string;
   id: string;
   opticalTransform?: OpticalTransform;
-  origin: 'kiskadee' | 'third-party';
+  origin: 'third-party';
   presentations: Record<string, IconPresentationMetadata>;
   provenanceUrl?: string;
 }
 
+export interface IconFamilyMetadata {
+  kind: 'brand';
+  license: string;
+  origin: 'third-party';
+  provenanceDocument?: string;
+  provenanceUrl?: string;
+}
+
 export interface IconManifest {
-  formatVersion: 2;
+  families: Record<string, IconFamilyMetadata>;
+  formatVersion: 3;
   icons: IconMetadata[];
-  sourceContract: 'kiskadee-icon-svg-v2';
+  sourceContract: 'kiskadee-icon-svg-v3';
 }
 
 interface GenerateOptions {
@@ -75,21 +84,20 @@ function toJsxAttributes(svg: string): string {
 }
 
 function renderSvg(svg: string): string {
-  const source = toJsxAttributes(svg.trim());
+  const source = toJsxAttributes(svg.trim()).replace(/^<!--[\s\S]*?-->\s*/, '');
 
-  if (!source.startsWith('<svg ') || !source.endsWith('</svg>')) {
+  if (!source.startsWith('<svg') || !source.endsWith('</svg>')) {
     throw new Error('Canonical icon sources must contain one complete <svg> root.');
   }
 
-  return source.replace(
-    /^<svg ([^>]*)>/,
-    '<svg width="1em" height="1em" $1 aria-hidden="true" focusable="false" {...props}>'
-  );
+  return source.replace(/^<svg\s+([\s\S]*?)>/, (_root, rawAttributes: string) => {
+    const attributes = rawAttributes.replace(/\b(?:className|height|width)="[^"]*"\s*/g, '').trim();
+
+    return `<svg width="1em" height="1em" ${attributes} aria-hidden="true" focusable="false" {...props}>`;
+  });
 }
 
 function renderPresentationType(icon: IconMetadata, presentations: string[]): string {
-  if (icon.family !== 'social') return '';
-
   const union = presentations.map((presentation) => `'${presentation}'`).join(' | ');
 
   return [
@@ -104,7 +112,7 @@ function renderPresentationType(icon: IconMetadata, presentations: string[]): st
 
 function renderComponent(icon: IconMetadata, presentationSvgs: Map<string, string>): string {
   const presentations = Object.keys(icon.presentations).sort();
-  const propsType = icon.family === 'social' ? `${icon.componentName}Props` : 'IconProps';
+  const propsType = `${icon.componentName}Props`;
   const presentationType = renderPresentationType(icon, presentations);
   const importLine = "import type { IconProps } from '../../Icon.types.ts';";
 
@@ -114,10 +122,7 @@ function renderComponent(icon: IconMetadata, presentationSvgs: Map<string, strin
 
     if (!svg) throw new Error(`Missing rendered SVG for ${icon.id}.${presentation}.`);
 
-    const signature =
-      icon.family === 'social'
-        ? `export function ${icon.componentName}({ presentation: _presentation = '${presentation}', ...props }: ${propsType}) {`
-        : `export function ${icon.componentName}(props: ${propsType}) {`;
+    const signature = `export function ${icon.componentName}({ presentation: _presentation = '${presentation}', ...props }: ${propsType}) {`;
 
     return [
       GENERATED_HEADER,
@@ -173,11 +178,8 @@ function indent(value: string, spaces: number): string {
     .join('\n');
 }
 
-function renderFamilyIndex(family: string, icons: IconMetadata[]): string {
-  const typeExport =
-    family === 'kiskadee' ? "export type { IconProps } from '../../Icon.types.ts';\n" : '';
-
-  return `${GENERATED_HEADER}\n${typeExport}${icons
+function renderFamilyIndex(icons: IconMetadata[]): string {
+  return `${GENERATED_HEADER}\n${icons
     .sort((a, b) => a.componentName.localeCompare(b.componentName))
     .map((icon) => `export { ${icon.componentName} } from './${icon.componentName}.tsx';`)
     .join('\n')}\n`;
@@ -191,17 +193,31 @@ async function readManifest(): Promise<IconManifest> {
 }
 
 export function validateIconManifest(manifest: IconManifest): void {
-  if (manifest.formatVersion !== 2 || manifest.sourceContract !== 'kiskadee-icon-svg-v2') {
+  if (manifest.formatVersion !== 3 || manifest.sourceContract !== 'kiskadee-icon-svg-v3') {
     throw new Error('Unsupported icon manifest contract.');
+  }
+  if (
+    Object.keys(manifest.families).length !== 1 ||
+    !manifest.families.social ||
+    manifest.families.social.kind !== 'brand'
+  ) {
+    throw new Error('The icon manifest must describe only the social brand family.');
   }
 
   const ids = new Set<string>();
   const componentNames = new Set<string>();
 
   for (const icon of manifest.icons) {
-    if (ids.has(icon.id)) throw new Error(`Duplicate icon id "${icon.id}".`);
-    if (componentNames.has(icon.componentName)) {
-      throw new Error(`Duplicate component name "${icon.componentName}".`);
+    const familyId = `${icon.family}:${icon.id}`;
+    const familyComponentName = `${icon.family}:${icon.componentName}`;
+
+    if (ids.has(familyId)) {
+      throw new Error(`Duplicate icon id "${icon.id}" in family "${icon.family}".`);
+    }
+    if (componentNames.has(familyComponentName)) {
+      throw new Error(
+        `Duplicate component name "${icon.componentName}" in family "${icon.family}".`
+      );
     }
     if (!(icon.defaultPresentation in icon.presentations)) {
       throw new Error(`${icon.id} has an unknown default presentation.`);
@@ -209,16 +225,16 @@ export function validateIconManifest(manifest: IconManifest): void {
     if (!/^[A-Z][A-Za-z0-9]*Icon$/.test(icon.componentName)) {
       throw new Error(`Invalid icon component name "${icon.componentName}".`);
     }
-    if (icon.family === 'social' && !icon.opticalTransform) {
-      throw new Error(`${icon.id} must declare an optical transform.`);
+    if (icon.family !== 'social') {
+      throw new Error(`Unsupported icon family "${icon.family}".`);
     }
-    if (icon.family !== 'social' && icon.opticalTransform) {
-      throw new Error(`${icon.id} cannot declare a social optical transform.`);
+    if (!icon.opticalTransform) {
+      throw new Error(`${icon.id} must declare an optical transform.`);
     }
     if (icon.opticalTransform) validateOpticalTransform(icon.opticalTransform);
 
-    ids.add(icon.id);
-    componentNames.add(icon.componentName);
+    ids.add(familyId);
+    componentNames.add(familyComponentName);
   }
 }
 
@@ -256,7 +272,7 @@ async function createExpectedOutputs(manifest: IconManifest): Promise<Map<string
   }
 
   for (const [family, icons] of iconsByFamily) {
-    outputs.set(path.resolve(familiesDir, family, 'index.ts'), renderFamilyIndex(family, icons));
+    outputs.set(path.resolve(familiesDir, family, 'index.ts'), renderFamilyIndex(icons));
   }
 
   return outputs;

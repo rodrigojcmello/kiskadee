@@ -1,13 +1,13 @@
 'use client';
 
 import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
-import { UnavailableIcon } from '@kiskadee/icons/kiskadee/UnavailableIcon';
 import {
   Button as KButton,
   SmoothText,
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
+import { BanIcon } from 'lucide-react';
 import React from 'react';
 import {
   ShowcaseGlobalSemanticControls,
@@ -409,7 +409,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <UnavailableIcon width={24} height={24} />
+        <BanIcon width={24} height={24} />
       </div>
     );
   };
@@ -426,7 +426,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <UnavailableIcon width={24} height={24} />
+        <BanIcon width={24} height={24} />
       </div>
     );
   };

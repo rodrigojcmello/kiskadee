@@ -8,16 +8,6 @@ import type {
   SliderIntent,
   SliderValueDisplay
 } from '@kiskadee/core';
-import { DragHandleIcon } from '@kiskadee/icons/kiskadee/DragHandleIcon';
-import { FaceSadIcon } from '@kiskadee/icons/kiskadee/FaceSadIcon';
-import { FaceSmileIcon } from '@kiskadee/icons/kiskadee/FaceSmileIcon';
-import { MoonStarsIcon } from '@kiskadee/icons/kiskadee/MoonStarsIcon';
-import { SunIcon } from '@kiskadee/icons/kiskadee/SunIcon';
-import { VolumeHighIcon } from '@kiskadee/icons/kiskadee/VolumeHighIcon';
-import { VolumeIcon } from '@kiskadee/icons/kiskadee/VolumeIcon';
-import { VolumeLowIcon } from '@kiskadee/icons/kiskadee/VolumeLowIcon';
-import { VolumeMediumIcon } from '@kiskadee/icons/kiskadee/VolumeMediumIcon';
-import { VolumeOffIcon } from '@kiskadee/icons/kiskadee/VolumeOffIcon';
 import {
   Card,
   Slider,
@@ -42,6 +32,16 @@ import {
   useShowcase,
   useSliderArtifactConfig
 } from '@kiskadee/react-components';
+import {
+  FrownIcon,
+  GripVerticalIcon,
+  MoonStarIcon,
+  SmileIcon,
+  SunIcon,
+  Volume1Icon,
+  Volume2Icon,
+  VolumeXIcon
+} from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -60,6 +60,7 @@ import {
 } from '@/components/ShowcaseControls';
 import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
 import { SwatchRadioGroup } from '@/k-components';
+import { resolveDesignSystemCardSurfaceColor } from '@/utils/design-system-card-surface';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Slider.module.scss';
@@ -318,7 +319,7 @@ const labeledPercentMarks = [
 ] as const;
 
 const ratingMarks = [
-  { value: 0, label: '0', icon: <FaceSadIcon /> },
+  { value: 0, label: '0', icon: <FrownIcon /> },
   { value: 1 },
   { value: 2 },
   { value: 3 },
@@ -328,21 +329,19 @@ const ratingMarks = [
   { value: 7 },
   { value: 8 },
   { value: 9 },
-  { value: 10, label: '10', icon: <FaceSmileIcon /> }
+  { value: 10, label: '10', icon: <SmileIcon /> }
 ] as const;
 
 function renderVolumeIcon(value: number) {
-  if (value <= 0) return <VolumeOffIcon />;
-  if (value < 50) return <VolumeLowIcon />;
-  return <VolumeHighIcon />;
+  if (value <= 0) return <VolumeXIcon />;
+  if (value < 50) return <Volume1Icon />;
+  return <Volume2Icon />;
 }
 
 function renderThumbVolumeIcon(value: number) {
-  if (value <= 0) return <VolumeOffIcon />;
-  if (value < 16) return <VolumeIcon />;
-  if (value < 40) return <VolumeLowIcon />;
-  if (value < 67) return <VolumeMediumIcon />;
-  return <VolumeHighIcon />;
+  if (value <= 0) return <VolumeXIcon />;
+  if (value < 50) return <Volume1Icon />;
+  return <Volume2Icon />;
 }
 
 function normalizeShadowLevelKey(key: ElementSizeValue): string {
@@ -361,35 +360,8 @@ function getAmbientSurfaceEmphasis(surface: ResolvedSliderSurface): ComponentEmp
   return 'low';
 }
 
-function resolveSchemaColor(value: unknown): string | undefined {
-  if (typeof value === 'string') return value;
-  if (typeof value !== 'object' || value === null) return undefined;
-  const ref = (value as { ref?: unknown }).ref;
-  return typeof ref === 'string' ? ref : undefined;
-}
-
 function normalizeSurfaceColor(color: string): string {
   return color.trim().toLowerCase();
-}
-
-function resolveCardSurfaceColor({
-  schema,
-  segment,
-  theme,
-  intent,
-  emphasis
-}: {
-  schema: ReturnType<typeof useDesignSystemSchema>;
-  segment: string;
-  theme: string;
-  intent: CardIntent;
-  emphasis: ComponentEmphasis;
-}): string | undefined {
-  return resolveSchemaColor(
-    schema?.components?.card?.elements?.e1?.palettes?.[segment]?.[theme]?.boxColor?.[intent]?.[
-      emphasis
-    ]?.rest
-  );
 }
 
 function resolveInteractiveMarks(marksMode: SliderMarksMode): SliderMarks {
@@ -608,7 +580,7 @@ export default function SliderPage() {
       );
       if (!hasSliderEmphasis || !hasCardSurface) return [];
 
-      const swatchColor = resolveCardSurfaceColor({
+      const swatchColor = resolveDesignSystemCardSurfaceColor({
         schema: designSystemSchema,
         segment,
         theme,
@@ -655,7 +627,7 @@ export default function SliderPage() {
   const pageBackgroundColor = useMemo(() => {
     if (!selectedSurface) return undefined;
 
-    return resolveCardSurfaceColor({
+    return resolveDesignSystemCardSurfaceColor({
       schema: designSystemSchema,
       segment,
       theme,
@@ -1269,7 +1241,7 @@ export default function SliderPage() {
                       value: 0,
                       icon: renderVolumeIcon(visibleVolume)
                     },
-                    { value: 100, icon: <VolumeHighIcon /> }
+                    { value: 100, icon: <Volume2Icon /> }
                   ]}
                   markInterval={markIntervalProp}
                   edgeMarks="exclude"
@@ -1345,7 +1317,7 @@ export default function SliderPage() {
                     { value: 25, label: formatSquareMeters(25) },
                     { value: 250, label: formatSquareMeters(250) }
                   ]}
-                  thumbIcon={<DragHandleIcon />}
+                  thumbIcon={<GripVerticalIcon />}
                   markInterval={markIntervalProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
@@ -1384,7 +1356,7 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setBrightness(nextValue);
                   }}
                   marks={[
-                    { value: 0, icon: <MoonStarsIcon /> },
+                    { value: 0, icon: <MoonStarIcon /> },
                     { value: 100, icon: <SunIcon /> }
                   ]}
                   markInterval={markIntervalProp}

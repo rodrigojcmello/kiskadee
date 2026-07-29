@@ -1,5 +1,6 @@
 'use client';
 
+import { PlusIcon } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { normalizeHexColor } from '@/src/color-math';
 import { FIXED_FAMILY_SEEDS_V2 } from '@/src/fixed-family-seeds';
@@ -697,7 +698,8 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
               setRequestedExtraId('');
             }}
           >
-            <span aria-hidden="true">+</span> Add variant
+            <PlusIcon aria-hidden="true" width={16} height={16} />
+            Add variant
           </button>
         </div>
       </section>

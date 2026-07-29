@@ -7,10 +7,6 @@ import type {
   RadiusMode,
   SwitchIntent
 } from '@kiskadee/core';
-import { CheckIcon } from '@kiskadee/icons/kiskadee/CheckIcon';
-import { CloseIcon } from '@kiskadee/icons/kiskadee/CloseIcon';
-import { PauseIcon } from '@kiskadee/icons/kiskadee/PauseIcon';
-import { PlayIcon } from '@kiskadee/icons/kiskadee/PlayIcon';
 import {
   Card,
   CardAction,
@@ -21,6 +17,7 @@ import {
   useShowcase,
   useSwitchArtifactConfig
 } from '@kiskadee/react-components';
+import { CheckIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -39,6 +36,7 @@ import {
 } from '@/components/ShowcaseControls';
 import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
 import { SwatchRadioGroup } from '@/k-components';
+import { resolveDesignSystemCardSurfaceColor } from '@/utils/design-system-card-surface';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Switch.module.scss';
@@ -145,35 +143,8 @@ function getSurfaceForEmphasis(emphasis: ComponentEmphasis): SwitchSurface {
   return emphasis === 'low' ? 'primary' : 'white';
 }
 
-function resolveSchemaColor(value: unknown): string | undefined {
-  if (typeof value === 'string') return value;
-  if (typeof value !== 'object' || value === null) return undefined;
-  const ref = (value as { ref?: unknown }).ref;
-  return typeof ref === 'string' ? ref : undefined;
-}
-
 function normalizeSurfaceColor(color: string): string {
   return color.trim().toLowerCase();
-}
-
-function resolveCardSurfaceColor({
-  schema,
-  segment,
-  theme,
-  intent,
-  emphasis
-}: {
-  schema: ReturnType<typeof useDesignSystemSchema>;
-  segment: string;
-  theme: string;
-  intent: CardIntent;
-  emphasis: ComponentEmphasis;
-}): string | undefined {
-  return resolveSchemaColor(
-    schema?.components?.card?.elements?.e1?.palettes?.[segment]?.[theme]?.boxColor?.[intent]?.[
-      emphasis
-    ]?.rest
-  );
 }
 
 const intentLabels: Record<string, string> = {
@@ -219,7 +190,7 @@ function getAmbientSurfaceEmphasis(surface: ResolvedSwitchSurface): ComponentEmp
 const switchIconSets = {
   none: undefined,
   'on-off': {
-    rest: <CloseIcon />,
+    rest: <XIcon />,
     selected: <CheckIcon />
   },
   'play-pause': {
@@ -334,7 +305,7 @@ export default function SwitchPage() {
       );
       if (!hasSwitchEmphasis || !hasCardSurface) return [];
 
-      const swatchColor = resolveCardSurfaceColor({
+      const swatchColor = resolveDesignSystemCardSurfaceColor({
         schema: designSystemSchema,
         segment,
         theme,
@@ -381,7 +352,7 @@ export default function SwitchPage() {
   const pageBackgroundColor = useMemo(() => {
     if (!selectedSurface) return undefined;
 
-    return resolveCardSurfaceColor({
+    return resolveDesignSystemCardSurfaceColor({
       schema: designSystemSchema,
       segment,
       theme,

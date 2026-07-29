@@ -18,14 +18,19 @@ pnpm --filter @kiskadee/showcase dev
 This command is the local development entrypoint. It runs this sequence:
 
 ```txt
-1. Build @kiskadee/react-headless and @kiskadee/react-components once.
+1. Build @kiskadee/icons, @kiskadee/react-headless, and @kiskadee/react-components once,
+   while regenerating the @kiskadee/web-builder artifacts.
 2. Start the @kiskadee/react-components structural style watcher.
-3. Start next dev for the showcase.
+3. Start next dev --webpack for the showcase.
 ```
 
 The showcase consumes `@kiskadee/react-components` from `dist`, matching the production package
 contract. During local development, the style watcher keeps `dist/**/*.css` updated when files under
 `packages/components/react/src/**/*.scss` change.
+
+Webpack is explicit in the Showcase development and production-build entrypoints because Next.js
+16 Turbopack can remain indefinitely in compilation for this monorepo. This affects the compiler
+only; package builds, generated artifacts, and the application runtime contract remain unchanged.
 
 Notes:
 
@@ -71,7 +76,7 @@ This command runs the publication build sequence:
    -> runs @kiskadee/web-builder build-sync-generate
    -> syncs generated artifacts into packages/showcase/public/build
 
-3. next build
+3. next build --webpack
    -> creates the optimized production Next.js build
 ```
 
@@ -108,10 +113,11 @@ Next.js App Router.
 
 - Defines `layout`, routes and pages
 - Usually consumes components from `components/` and `k-components/`
-- `/icons` exercises the public `@kiskadee/react-components` Icon contract against the Kiskadee
-  and Social namespace exports from `@kiskadee/icons`. Adding a component export ending in `Icon`
-  to either family barrel automatically adds it to the route galleries. The route starts from the
-  canonical `neutral` intent and uses `s:lg:3` as its inspection size; the component default remains
+- `/icons` exercises the public `@kiskadee/react-components` Icon contract with a local sample of
+  30 common glyphs imported directly from `lucide-react`, plus the Social brand family from
+  `@kiskadee/icons`. The Lucide sample is documentation data, not a Kiskadee icon library. Social
+  exports ending in `Icon` remain dynamically discoverable. The route starts from the canonical
+  `neutral` intent and uses `s:lg:3` as its inspection size; the component default remains
   `s:md:1`.
 
 ### `components/`
@@ -121,8 +127,9 @@ Showcase UI components.
 - Can be “product-like” components (pages, panels, viewers)
 - May or may not use components from `k-components/`
 - Usually contains Showcase-specific logic (e.g. loading and rendering artifacts)
-- Does not own reusable SVG icons. Import shared icons from `@kiskadee/icons`; keep a local icon
-  only when its artwork is intrinsically coupled to one Showcase-only visualization.
+- Does not own reusable SVG artwork. Import interface glyphs directly from the selected provider
+  and brand marks from `@kiskadee/icons`; keep local artwork only when it is intrinsically coupled
+  to one Showcase-only visualization.
 
 ### `k-components/`
 
@@ -193,7 +200,8 @@ Shared utilities for Showcase.
 - Initial and fallback theme selection prefers `light` whenever the active preset exposes it. A
   valid theme explicitly persisted by the user still takes precedence.
 - Generated registries are outputs: do not edit files under `registry/generated/` manually.
-- Reusable SVG icons belong to `packages/icons` and should be consumed through direct
-  `@kiskadee/icons/<family>/<Icon>` imports.
+- Interface glyphs come directly from the chosen provider, currently `lucide-react`; reusable
+  brand marks belong to `packages/icons` and use direct
+  `@kiskadee/icons/social/<Icon>` imports.
 - For deployment builds (for example on Vercel), `pnpm build` inside `packages/showcase`
   already runs `@kiskadee/web-builder` `build-sync-generate` before `next build`.

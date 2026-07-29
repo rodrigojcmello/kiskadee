@@ -8,8 +8,8 @@ import type {
   TabsLineIndicatorShape,
   TabsTabWidth
 } from '@kiskadee/core';
-import { SunIcon } from '@kiskadee/icons/kiskadee/SunIcon';
 import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
+import { SunIcon } from 'lucide-react';
 import Link from 'next/link';
 import type { ComponentType, ReactNode } from 'react';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';

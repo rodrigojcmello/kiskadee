@@ -19,6 +19,7 @@
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "husky": "^9.1.7",
+    "lucide-static": "1.27.0",
     "vitest": "^4.1.8"
   }
 }

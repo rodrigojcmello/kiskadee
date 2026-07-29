@@ -11,7 +11,7 @@
     "build:headless": "pnpm --filter @kiskadee/react-headless run build",
     "build:components": "pnpm run build:icons && pnpm run build:headless && pnpm --filter @kiskadee/react-components run build:self",
     "build:artifacts": "pnpm --filter @kiskadee/web-builder run build-sync-generate",
-    "build": "pnpm run build:components && pnpm run build:artifacts && next build",
+    "build": "pnpm run build:components && pnpm run build:artifacts && next build --webpack",
     "start": "next start"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "@kiskadee/react-headless": "workspace:*",
     "@kiskadee/runtime": "workspace:*",
     "@kiskadee/web-builder": "workspace:*",
+    "lucide-react": "1.27.0",
     "next": "16.2.7",
     "react": "19.2.7",
     "react-dom": "19.2.7",

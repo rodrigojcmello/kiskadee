@@ -72,3 +72,16 @@ the thumb.
 
 Future native builders can emit smaller per-component payloads such as
 `material-3-google.switch.kiskadee-ios.json` from the canonical schema.
+
+## Lucide Switch resources
+
+The optional Switch state glyphs use Lucide Check and Minus SVGs generated directly from the exact
+`lucide-static` tooling dependency pinned at the repository root. They are compiled as template
+assets in this Swift package; this does not expose a public native Icon component.
+
+Regenerate and verify the native resources:
+
+```bash
+node packages/components/ios/scripts/sync-lucide-switch-icons.mjs
+node packages/components/ios/scripts/sync-lucide-switch-icons.mjs --check
+```

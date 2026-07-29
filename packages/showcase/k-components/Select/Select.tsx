@@ -1,8 +1,8 @@
 'use client';
 
-import { ChevronDownIcon } from '@kiskadee/icons/kiskadee/ChevronDownIcon';
 import type { SelectProps as HeadlessSelectProps } from '@kiskadee/react-headless';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless';
+import { ChevronDownIcon } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import styles from './Select.module.scss';
 

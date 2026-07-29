@@ -69,7 +69,8 @@ This matters because not every geometric value is always-on. Some values exist i
   - Calculates scales and injects CSS variables in the browser.
 
 - `packages/icons`
-  - Goal: canonical cross-platform SVG artwork and metadata, organized into visual families.
+  - Goal: canonical cross-platform SVG distribution and metadata, organized into visual families.
+  - Preserves separately sourced brand artwork and its cross-platform distribution metadata.
   - Generates React adapters while also publishing raw SVG sources for other platform pipelines.
   - Exposes family barrels and direct per-icon imports without coupling icons to component logic.
 

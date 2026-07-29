@@ -110,3 +110,16 @@ To install the showcase when an emulator is available:
 ./gradlew :showcase:installDebug
 adb shell am start -n com.kiskadee.android.showcase/.MainActivity
 ```
+
+### Lucide Switch resources
+
+The optional Switch state glyphs use VectorDrawable resources generated directly from the exact
+`lucide-static` tooling dependency pinned at the repository root. This does not expose a public
+native Icon component.
+
+Regenerate and verify the native resources from the repository root:
+
+```bash
+node packages/components/android/scripts/sync-lucide-switch-icons.mjs
+node packages/components/android/scripts/sync-lucide-switch-icons.mjs --check
+```

@@ -6,7 +6,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -32,13 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.onClick
@@ -48,6 +49,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kiskadee.android.R
 import com.kiskadee.android.theme.KiskadeeSwitchResolvedStyle
 import com.kiskadee.android.theme.KiskadeeSwitchResolver
 import com.kiskadee.android.theme.KiskadeeTheme
@@ -492,34 +494,19 @@ private fun KiskadeeSwitchIcon(
     width: Float,
     height: Float,
 ) {
-    Canvas(modifier = Modifier.size(width = width.dp, height = height.dp)) {
-        val strokeWidth = 2.dp.toPx()
-
-        if (checked) {
-            drawLine(
-                color = color,
-                start = Offset(size.width * 0.24f, size.height * 0.52f),
-                end = Offset(size.width * 0.42f, size.height * 0.70f),
-                strokeWidth = strokeWidth,
-                cap = StrokeCap.Round,
-            )
-            drawLine(
-                color = color,
-                start = Offset(size.width * 0.42f, size.height * 0.70f),
-                end = Offset(size.width * 0.78f, size.height * 0.30f),
-                strokeWidth = strokeWidth,
-                cap = StrokeCap.Round,
-            )
-        } else {
-            drawLine(
-                color = color,
-                start = Offset(size.width * 0.28f, size.height * 0.50f),
-                end = Offset(size.width * 0.72f, size.height * 0.50f),
-                strokeWidth = strokeWidth,
-                cap = StrokeCap.Round,
-            )
-        }
-    }
+    Image(
+        painter = painterResource(
+            id = if (checked) {
+                R.drawable.kiskadee_lucide_check
+            } else {
+                R.drawable.kiskadee_lucide_minus
+            },
+        ),
+        contentDescription = null,
+        modifier = Modifier.size(width = width.dp, height = height.dp),
+        contentScale = ContentScale.Fit,
+        colorFilter = ColorFilter.tint(color),
+    )
 }
 
 public object KiskadeeSwitchSchemaValidator {

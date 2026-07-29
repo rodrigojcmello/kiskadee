@@ -1,5 +1,6 @@
 'use client';
 
+import { ChevronLeftIcon, MenuIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -108,7 +109,7 @@ export default function ShowcaseShell({
       aria-label={`${panelDetail?.title ?? 'Component'} controls`}
     >
       <button type="button" className={style.backButton} onClick={showComponentsPanel}>
-        <span aria-hidden="true">‹</span>
+        <ChevronLeftIcon aria-hidden="true" width="1em" height="1em" />
         <span>Components</span>
       </button>
       <div className={style.routePanelHeader}>
@@ -137,11 +138,7 @@ export default function ShowcaseShell({
               aria-controls="showcase-sidebar-drawer"
               aria-label={menuAriaLabel}
             >
-              <span className={style.menuButtonIcon} aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </span>
+              <MenuIcon className={style.menuButtonIcon} aria-hidden="true" />
               <span>{menuLabel}</span>
             </button>
           </div>
@@ -175,9 +172,7 @@ export default function ShowcaseShell({
                   Close
                 </button>
               </div>
-              <div className={style.mobilePanelContent}>
-                {sidebarContent}
-              </div>
+              <div className={style.mobilePanelContent}>{sidebarContent}</div>
             </div>
           </>
         ) : null}
