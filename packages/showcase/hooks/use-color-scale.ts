@@ -7,25 +7,15 @@ import {
   colorsMaps,
   loadColorScaleFromBuild
 } from '@/registry/colors.registry';
+import {
+  type ColorsArtifact,
+  collectPrimitiveColorDescriptors,
+  collectPrimitiveToneEntries,
+  type LoadedPrimitiveColor,
+  materializePrimitiveColorCatalog
+} from '@/utils/primitive-color-catalog';
 
-export type ColorsJson = {
-  primitiveColors?: Record<
-    string,
-    Record<
-      string,
-      {
-        kind?: 'static' | 'dynamic';
-        functionalReferences?: Partial<
-          Record<ThemeMode, Partial<Record<TonalFunctionalReferenceName, number>>>
-        >;
-        scales?: Partial<Record<ThemeMode, string>>;
-      }
-    >
-  >;
-  globalSemantics?: Partial<
-    Record<ThemeMode, Record<string, string | { v1: string; v2?: string }>>
-  >;
-};
+export type ColorsJson = ColorsArtifact;
 
 export type SelectionValue = `semantic:${string}` | `primitive:${string}.${string}`;
 
@@ -229,6 +219,70 @@ export function useColorScale(params: {
   }, [designSystemKey, theme, selection, enabled]);
 
   return { colors, scale, meta, loading, error };
+}
+
+export function usePrimitiveColorCatalog(params: { designSystemKey: string; enabled?: boolean }): {
+  colors: LoadedPrimitiveColor[];
+  error: string | null;
+  loading: boolean;
+} {
+  const { designSystemKey, enabled = true } = params;
+  const [colors, setColors] = useState<LoadedPrimitiveColor[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function run() {
+      setColors([]);
+      setError(null);
+
+      if (!enabled || !designSystemKey) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const colorsJson = await loadColorsJsonCached(designSystemKey);
+        const descriptors = collectPrimitiveColorDescriptors(colorsJson);
+        const scalePromises = descriptors.flatMap((descriptor) =>
+          descriptor.scales.map(async (scaleDescriptor) => {
+            if (!scaleDescriptor.fileName) {
+              throw new Error(
+                `${descriptor.id} does not publish a ${scaleDescriptor.theme} scale.`
+              );
+            }
+
+            const scale = await loadScaleJsonCached(designSystemKey, scaleDescriptor.fileName);
+            return collectPrimitiveToneEntries(scale);
+          })
+        );
+        const settledScales = await Promise.allSettled(scalePromises);
+
+        if (cancelled) return;
+
+        const loadedColors = materializePrimitiveColorCatalog(descriptors, settledScales);
+
+        setColors(loadedColors);
+        setLoading(false);
+      } catch (cause) {
+        if (cancelled) return;
+        setError(cause instanceof Error ? cause.message : String(cause));
+        setLoading(false);
+      }
+    }
+
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [designSystemKey, enabled]);
+
+  return { colors, error, loading };
 }
 
 export function useColorScaleTones(params: {

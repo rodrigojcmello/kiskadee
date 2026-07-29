@@ -54,6 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname !== '/slider' &&
     pathname !== '/button' &&
     pathname !== '/card' &&
+    pathname !== '/colors' &&
     pathname !== '/icons' &&
     pathname !== '/text-field' &&
     !pathname.startsWith('/tabs');

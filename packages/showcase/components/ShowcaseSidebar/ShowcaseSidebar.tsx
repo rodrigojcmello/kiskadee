@@ -4,6 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import style from './ShowcaseSidebar.module.scss';
 
+const foundationEntries = [
+  {
+    href: '/colors',
+    label: 'Colors'
+  }
+] as const;
+
 const componentEntries = [
   {
     href: '/button',
@@ -35,7 +42,7 @@ const componentEntries = [
   }
 ] as const;
 
-type ShowcaseSidebarEntry = (typeof componentEntries)[number];
+type ShowcaseSidebarEntry = (typeof foundationEntries)[number] | (typeof componentEntries)[number];
 
 function ShowcaseSidebarLinks({
   entries,
@@ -73,16 +80,29 @@ export default function ShowcaseSidebar({
   return (
     <aside className={style.sidebar} aria-label="Showcase navigation">
       <div className={style.header}>
-        <p className={style.eyebrow}>Components</p>
+        <p className={style.eyebrow}>Navigation</p>
         <h2 className={style.title}>Showcase</h2>
       </div>
-      <nav className={style.nav}>
-        <ShowcaseSidebarLinks
-          entries={componentEntries}
-          onNavigate={onNavigate}
-          pathname={pathname}
-        />
-      </nav>
+      <div className={style.section}>
+        <p className={style.sectionTitle}>Foundations</p>
+        <nav className={style.nav} aria-label="Foundations">
+          <ShowcaseSidebarLinks
+            entries={foundationEntries}
+            onNavigate={onNavigate}
+            pathname={pathname}
+          />
+        </nav>
+      </div>
+      <div className={style.section}>
+        <p className={style.sectionTitle}>Components</p>
+        <nav className={style.nav} aria-label="Components">
+          <ShowcaseSidebarLinks
+            entries={componentEntries}
+            onNavigate={onNavigate}
+            pathname={pathname}
+          />
+        </nav>
+      </div>
     </aside>
   );
 }

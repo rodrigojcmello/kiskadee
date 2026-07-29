@@ -113,6 +113,10 @@ Next.js App Router.
 
 - Defines `layout`, routes and pages
 - Usually consumes components from `components/` and `k-components/`
+- `/colors` renders every primitive family and variant discovered in the active Design System's
+  published `colors.json`. It loads the referenced Light and Dark files from `colors/` and never
+  imports preset source modules. Functional `subtle` and `vivid` references are inspection markers;
+  the page does not redefine them.
 - `/icons` exercises the public `@kiskadee/react-components` Icon contract with a local sample of
   30 common glyphs imported directly from `lucide-react`, plus the Social brand family from
   `@kiskadee/icons`. The Lucide sample is documentation data, not a Kiskadee icon library. Social
@@ -194,6 +198,9 @@ Shared utilities for Showcase.
 ## Important conventions
 
 - Showcase is an artifact consumer: if something is “missing”, run `web-builder build-sync-generate`.
+- The Colors foundation route inspects all published primitives, including variants that are not
+  currently mapped to a global semantic or component intent. Darker reuses the primitive Dark
+  scale and is not rendered as a duplicate third track.
 - Background controls distinguish canonical surfaces published in
   `components/card.kiskadee.json` from diagnostic Stress Test colors. See
   [Background Surface Catalogs](docs/definitions/background-surface-catalogs.md).

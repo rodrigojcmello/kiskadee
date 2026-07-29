@@ -86,7 +86,7 @@ export default function ShowcaseShell({
   const isDetailPanelVisible = Boolean(panelDetail && panelMode === 'detail');
   const shouldShowGlobalControls =
     isDetailPanelVisible && panelDetail?.showGlobalControls !== false && Boolean(globalControls);
-  const menuLabel = isDetailPanelVisible ? 'Controls' : 'Components';
+  const menuLabel = isDetailPanelVisible ? 'Controls' : 'Navigation';
   const menuAriaLabel = isSidebarOpen
     ? `Close ${menuLabel.toLowerCase()} panel`
     : `Open ${menuLabel.toLowerCase()} panel`;
@@ -110,7 +110,7 @@ export default function ShowcaseShell({
     >
       <button type="button" className={style.backButton} onClick={showComponentsPanel}>
         <ChevronLeftIcon aria-hidden="true" width="1em" height="1em" />
-        <span>Components</span>
+        <span>Navigation</span>
       </button>
       <div className={style.routePanelHeader}>
         <p className={style.routePanelEyebrow}>{panelDetail?.eyebrow}</p>

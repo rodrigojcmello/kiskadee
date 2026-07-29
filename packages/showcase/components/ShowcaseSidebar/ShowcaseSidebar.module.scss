@@ -11,6 +11,21 @@
   gap: 2px;
 }
 
+.section {
+  display: grid;
+  gap: 6px;
+}
+
+.sectionTitle {
+  margin: 0;
+  padding: 0 12px;
+  color: rgba(0, 0, 0, 0.44);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .header {
   padding: 0 4px 14px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
@@ -63,6 +78,10 @@
 }
 
 @media (max-width: 960px) {
+  .section {
+    gap: 8px;
+  }
+
   .nav {
     gap: 6px;
   }

@@ -58,8 +58,7 @@
 .contentInner {
   max-width: 1040px;
   margin: 0 auto;
-  padding: calc(var(--showcase-toolbar-height) + 24px) 32px
-    calc(var(--showcase-footer-height) + 48px);
+  padding: calc(var(--showcase-toolbar-height) + 24px) 32px 48px;
 }
 
 .menuButton {
@@ -184,7 +183,7 @@
   }
 
   .contentInner {
-    padding: 16px 20px calc(var(--showcase-footer-height) + 40px);
+    padding: 16px 20px 40px;
   }
 
   .mobileBackdrop {

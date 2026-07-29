@@ -6,6 +6,9 @@ export default function HomePage() {
       <h1>Showcase</h1>
       <ul>
         <li>
+          <Link href="/colors">/colors</Link>
+        </li>
+        <li>
           <Link href="/button">/button</Link>
         </li>
         <li>
