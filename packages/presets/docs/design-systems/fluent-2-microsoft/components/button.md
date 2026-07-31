@@ -48,6 +48,7 @@ This file records source evidence and color decisions for the Button currently a
 | Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
 | On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
+| Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
 
 ## Official Size Contract
 
@@ -359,6 +360,76 @@ Positive High continue to use white in Dark and Darker.
 The recipe is currently canonical for this preset, but it is not claimed as an official Fluent
 cross-intent formula. Primary High is the upstream-calibrated reference; all other intent/emphasis
 combinations are Kiskadee extensions used to evaluate the reusable contract.
+
+## Kiskadee Extension: Brand Color Packs
+
+Fluent does not publish a Button matrix for third-party authentication or social brands. The
+optional `auth` and `social` Brand Color Packs are therefore a **Kiskadee extension**, not an
+official Fluent appearance. Brand seed provenance and pack membership are defined by
+[`@kiskadee/brands`](../../../../../brands/docs/definitions/brand-color-packs.md); official Fluent
+Button evidence continues to own only the component formula.
+
+The projection covers every brand currently published by `@kiskadee/brands`:
+
+| Pack | Intents | Seed relationship | Status |
+| --- | --- | --- | --- |
+| `auth` | `brand.apple`, `brand.google`, `brand.microsoft` | Official monochrome, official action background, or documented logo accent | Kiskadee extension |
+| `social` | `brand.chat-gpt`, `brand.claude`, `brand.gemini`, `brand.facebook`, `brand.you-tube`, `brand.whats-app`, `brand.instagram`, `brand.tik-tok`, `brand.messenger`, `brand.telegram`, `brand.snapchat`, `brand.x`, `brand.pinterest`, `brand.reddit`, `brand.linked-in`, `brand.discord`, `brand.twitch`, `brand.threads`, `brand.mastodon`, `brand.git-hub`, `brand.vimeo`, `brand.substack` | Official logo accent, documented gradient stop, or monochrome identity | Kiskadee extension |
+
+`brand.microsoft` deliberately uses Fluent Brand-80 `#0064b4`, the preset's approved Primary vivid
+reference, instead of the Microsoft logo accent `#00a4ef`. The Brand Pack still remains optional
+and external to Fluent's primitive color layers; this projection aligns the Microsoft Button with
+the Fluent formula without claiming an official Microsoft authentication appearance.
+
+These colors do not enter Fluent's primitive `colors.json`, its three color layers, global CSS, or
+normal Button class map. Each official seed generates an independent standalone Light/Dark tonal
+family and is not harmonized with Fluent Blue. This preserves brand identity while the component
+projection reuses the complete Fluent recipe:
+
+- High starts from the brand family's `vivid` reference;
+- Medium starts from its `subtle` reference;
+- Hover, Pressed, and Selected use the same ordinal public-grid shifts as system intents;
+- Low, Lowest, disabled, Light, Dark, Darker, `onSubtle`, and `onVivid` keep the same shared
+  formula;
+- the brand's static `contentPolarity` resolves the enabled on-subtle High foreground for both the
+  Button label and icon during build;
+- a cap-safe Dark `vivid` reference marked `contrast-mirror` reverses that foreground polarity
+  during the same build projection; absolute-black identities therefore use dark content on their
+  light Dark/Darker Rest surface rather than white-on-light content;
+- the logo's `brand` or `monochrome` presentation remains explicit in JSX and never changes the
+  color formula or Button contract.
+
+The Kiskadee Showcase uses `monochrome` for `onSubtle` High because that Button surface is vivid,
+and the official `brand` presentation for `onSubtle` Medium, Low, and Lowest because those Button
+surfaces are subtle or transparent. On `onVivid`, High uses `brand` because its Button surface is
+white or physically light, while Medium, Low, and Lowest use the foreground-following `monochrome`
+presentation over the strong surrounding surface. This is an example-composition recommendation,
+not an additional Fluent appearance or runtime restriction. Consumers may explicitly use either
+presentation in either surface context when brand guidance requires it; brands without a colored
+asset remain monochrome.
+
+YouTube is the source-backed polarity case within that recommendation. Its official monochromatic
+guidance shows White on YouTube Red and other dark surfaces, and Black on White. Accordingly,
+`brand.you-tube` on-subtle High resolves White text at build time; its monochromatic logo inherits
+that same White foreground through `currentColor`. The logo placement is source-derived, while
+applying the same polarity to the adjacent label is a documented Kiskadee composition decision.
+
+Reddit follows the same source-backed Light polarity. Its official icon guidance requires the Snoo
+head to appear over OrangeRed, either inside the conversation-bubble device or over a full-bleed
+OrangeRed field. Accordingly, `brand.reddit` on-subtle High resolves White text at build time and
+its monochromatic logo inherits White through `currentColor`. Applying that icon relationship to
+the adjacent label is a documented Kiskadee composition decision.
+
+Apple, ChatGPT, TikTok, X, Threads, and GitHub preserve their exact black seed at the absolute cap.
+Their standalone artifacts publish a separate cap-safe functional `vivid` reference so High
+remains usable; the seed itself is not moved or recolored. Multicolor identities deliberately use
+one documented accent or gradient stop as a single-color seed because gradient Button backgrounds
+are outside this delivery.
+
+The Web Builder publishes these appearances only under `brand-packs/<pack>/`. A
+`BrandPackBoundary` must explicitly load a pack and its Button class map before rendering
+`intent="brand.<id>"`. Pages without a boundary request no brand resources. Missing packs and
+unsupported brand intents never fall back to Primary or Neutral.
 
 ## Fluent Neutral Source Evidence
 

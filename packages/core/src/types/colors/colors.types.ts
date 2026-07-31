@@ -1,5 +1,4 @@
 import type {
-  ButtonIntent,
   CardIntent,
   IconIntent,
   RoleButton,
@@ -9,12 +8,14 @@ import type {
   RoleTextField,
   SliderIntent,
   SwitchIntent,
+  SystemButtonIntent,
   TextFieldIntent
 } from './colors.intents.ts';
 
 export type {
   ButtonIntent,
   CardIntent,
+  ExternalButtonIntent,
   IconIntent,
   RoleButton,
   RoleCard,
@@ -24,6 +25,7 @@ export type {
   RoleTextField,
   SliderIntent,
   SwitchIntent,
+  SystemButtonIntent,
   TextFieldIntent
 } from './colors.intents.ts';
 export {
@@ -271,29 +273,12 @@ export type ThemeName = 'light' | 'dark';
  */
 export type CorePrimitiveColorName = 'v1' | 'v2' | 'v3' | 'v4' | 'dynamic';
 
-export type SocialPrimitiveColorName =
-  | 'linkedin'
-  | 'microsoft'
-  | 'google'
-  | 'twitter'
-  | 'telegram'
-  | 'facebook'
-  | 'instagram'
-  | 'github'
-  | 'gitlab'
-  | 'whatsapp'
-  | 'youtube'
-  | 'tiktok'
-  | 'discord'
-  | 'slack'
-  | 'reddit';
-
 /**
  * Layer 1 (Primitive) color names.
  *
  * These keys are used to identify a specific primitive color asset within a hue family.
  */
-export type PrimitiveColorName = CorePrimitiveColorName | SocialPrimitiveColorName;
+export type PrimitiveColorName = CorePrimitiveColorName;
 
 /** Layer 1 reference: points to a primitive asset by `hue` and `name`. */
 export type PrimitiveColorRef = {
@@ -327,8 +312,10 @@ export type Role =
  *
  * Supports an optional paint suffix:
  * - `component.intent` (defaults to `solid`)
+ * - `component.qualified.intent` (defaults to `solid`)
  * - `component.intent.solid`
  * - `component.intent.gradient`
+ * - `component.qualified.intent.gradient`
  */
 export type RoleWithPaint =
   | RoleButton
@@ -437,11 +424,12 @@ export type ComponentIntents = {
    *
    * All intents are optional so presets can override selectively.
    */
-  button?: Partial<Record<ButtonIntent, IntentValue>>;
+  button?: Partial<Record<SystemButtonIntent, IntentValue>>;
   card?: Partial<Record<CardIntent, IntentValue>>;
   icon?: Partial<Record<IconIntent, IntentValue>>;
   slider?: Partial<Record<SliderIntent, IntentValue>>;
   switch?: Partial<Record<SwitchIntent, IntentValue>>;
+  tabs?: Record<string, IntentValue>;
   textField?: Partial<Record<TextFieldIntent, IntentValue>>;
 } & Partial<Record<string, Record<string, IntentValue>>>;
 
@@ -474,7 +462,7 @@ export type ComponentEmphasis = keyof typeof componentEmphasisBuckets;
 
 export type ComponentPaletteKey =
   | SemanticColor
-  | ButtonIntent
+  | SystemButtonIntent
   | CardIntent
   | IconIntent
   | SliderIntent

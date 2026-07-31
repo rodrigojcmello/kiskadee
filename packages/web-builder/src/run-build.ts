@@ -2,6 +2,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
+import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import {
   mapStyleKeyUsage,
@@ -80,7 +81,7 @@ export async function runBuild(): Promise<void> {
   await mkdir(baseBuildDir, { recursive: true });
 
   for (const t of presetsToBuild) {
-    const { schema, schemaPath } = t;
+    const { schema, schemaPath, buildExtensions } = t;
 
     // One concise log per preset, e.g. "[web-builder] Material Design 3.0.0 by Google"
     const presetVersion = Array.isArray(schema.version) ? schema.version.join('.') : '';
@@ -155,6 +156,15 @@ export async function runBuild(): Promise<void> {
     await writeExtraArtifacts({
       schema,
       outDirSlug
+    });
+
+    // Optional brand packs are deliberately published outside the preset's
+    // global CSS, colors catalog, and normal component class maps.
+    await buildOptionalBrandPacksForPreset({
+      schema,
+      extension: buildExtensions?.brandPacks,
+      outDirSlug,
+      baseBuildDir
     });
   }
 }

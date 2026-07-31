@@ -779,11 +779,14 @@ export function Button() {
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
-        <SocialButtonExamples
-          fontName={fontName}
-          scale={activeButtonScale}
-          surfaceContext={activeSurfaceContext}
-        />
+        {designSystem === 'fluent-2-microsoft' ? (
+          <SocialButtonExamples
+            fontName={fontName}
+            scale={activeButtonScale}
+            onSubtleBackground={comparisonOnSubtleSurface?.resolvedColor}
+            onVividBackground={comparisonOnVividSurface?.resolvedColor}
+          />
+        ) : null}
       </div>
     </section>
   );

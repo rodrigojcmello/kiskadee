@@ -27,8 +27,30 @@ importers:
         specifier: ^4.1.8
         version: 4.1.8(@types/node@25.9.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.1.5(@types/node@25.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.100.0)(tsx@4.20.6)(yaml@2.8.2))
 
+  packages/brands:
+    dependencies:
+      '@kiskadee/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kiskadee/tonal-scale':
+        specifier: workspace:*
+        version: link:../tonal-scale
+    devDependencies:
+      '@types/node':
+        specifier: ^25.9.2
+        version: 25.9.2
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.8(@types/node@25.9.2)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@7.1.5(@types/node@25.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.2)(sass@1.100.0)(tsx@4.20.6)(yaml@2.8.2))
+
   packages/components/react:
     dependencies:
+      '@kiskadee/brands':
+        specifier: workspace:^
+        version: link:../../brands
       '@kiskadee/core':
         specifier: workspace:^
         version: link:../../core
@@ -209,6 +231,9 @@ importers:
 
   packages/showcase:
     dependencies:
+      '@kiskadee/brands':
+        specifier: workspace:*
+        version: link:../brands
       '@kiskadee/core':
         specifier: workspace:*
         version: link:../core
@@ -295,6 +320,9 @@ importers:
 
   packages/web-builder:
     dependencies:
+      '@kiskadee/brands':
+        specifier: workspace:^
+        version: link:../brands
       '@kiskadee/core':
         specifier: workspace:^
         version: link:../core
@@ -304,6 +332,9 @@ importers:
       '@kiskadee/presets':
         specifier: workspace:^
         version: link:../presets
+      '@kiskadee/tonal-scale':
+        specifier: workspace:^
+        version: link:../tonal-scale
     devDependencies:
       '@types/node':
         specifier: ^25.9.2

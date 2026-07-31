@@ -116,12 +116,30 @@
 .socialIconPreview {
   display: grid;
   min-width: 0;
+  min-height: 100px;
+  grid-template-rows: 1fr auto;
+  gap: 6px;
   padding: 12px 8px;
   place-items: center;
+
+  &:nth-child(even) {
+    border-inline-start: 1px solid var(--social-divider-color);
+  }
+
+  &:nth-child(n + 3) {
+    border-block-start: 1px solid var(--social-divider-color);
+  }
 }
 
-.socialBrandPreview {
-  border-inline-end: 1px solid var(--social-divider-color);
+.socialAppearanceName {
+  max-width: 100%;
+  color: currentColor;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  opacity: 0.58;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .socialIconName {

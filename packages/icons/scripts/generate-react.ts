@@ -22,6 +22,7 @@ const JSX_ATTRIBUTES = new Map([
   ['clip-path', 'clipPath'],
   ['clip-rule', 'clipRule'],
   ['color-interpolation-filters', 'colorInterpolationFilters'],
+  ['enable-background', 'enableBackground'],
   ['fill-opacity', 'fillOpacity'],
   ['fill-rule', 'fillRule'],
   ['font-family', 'fontFamily'],
@@ -35,7 +36,9 @@ const JSX_ATTRIBUTES = new Map([
   ['stroke-miterlimit', 'strokeMiterlimit'],
   ['stroke-opacity', 'strokeOpacity'],
   ['stroke-width', 'strokeWidth'],
-  ['text-anchor', 'textAnchor']
+  ['text-anchor', 'textAnchor'],
+  ['xml:space', 'xmlSpace'],
+  ['xmlns:xlink', 'xmlnsXlink']
 ]);
 
 export interface IconPresentationMetadata {
@@ -43,14 +46,19 @@ export interface IconPresentationMetadata {
   source: string;
 }
 
+export interface IconConstructionMetadata {
+  defaultPresentation: string;
+  opticalTransform: OpticalTransform;
+  presentations: Record<string, IconPresentationMetadata>;
+}
+
 export interface IconMetadata {
   componentName: string;
-  defaultPresentation: string;
+  constructions: Record<string, IconConstructionMetadata>;
+  defaultConstruction: string;
   family: string;
   id: string;
-  opticalTransform?: OpticalTransform;
   origin: 'third-party';
-  presentations: Record<string, IconPresentationMetadata>;
   provenanceUrl?: string;
 }
 
@@ -64,9 +72,9 @@ export interface IconFamilyMetadata {
 
 export interface IconManifest {
   families: Record<string, IconFamilyMetadata>;
-  formatVersion: 3;
+  formatVersion: 4;
   icons: IconMetadata[];
-  sourceContract: 'kiskadee-icon-svg-v3';
+  sourceContract: 'kiskadee-icon-svg-v4';
 }
 
 interface GenerateOptions {
@@ -83,8 +91,18 @@ function toJsxAttributes(svg: string): string {
   return result;
 }
 
+function normalizeSvgSource(svg: string): string {
+  return svg
+    .trim()
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join('\n');
+}
+
 function renderSvg(svg: string): string {
-  const source = toJsxAttributes(svg.trim()).replace(/^<!--[\s\S]*?-->\s*/, '');
+  const source = toJsxAttributes(normalizeSvgSource(svg)).replace(/^<!--[\s\S]*?-->\s*/, '');
 
   if (!source.startsWith('<svg') || !source.endsWith('</svg>')) {
     throw new Error('Canonical icon sources must contain one complete <svg> root.');
@@ -97,74 +115,102 @@ function renderSvg(svg: string): string {
   });
 }
 
-function renderPresentationType(icon: IconMetadata, presentations: string[]): string {
-  const union = presentations.map((presentation) => `'${presentation}'`).join(' | ');
+function renderStringUnion(values: string[]): string {
+  return values.map((value) => `'${value}'`).join(' | ');
+}
+
+function renderIconTypes(icon: IconMetadata): string {
+  const constructions = Object.entries(icon.constructions).sort(([left], [right]) =>
+    left.localeCompare(right)
+  );
+  const constructionType = `export type ${icon.componentName}Construction = ${renderStringUnion(
+    constructions.map(([construction]) => construction)
+  )};`;
+  const presentationNames = [
+    ...new Set(constructions.flatMap(([, construction]) => Object.keys(construction.presentations)))
+  ].sort();
+  const presentationType = `export type ${
+    icon.componentName
+  }Presentation = ${renderStringUnion(presentationNames)};`;
+  const propsBranches = constructions.map(([constructionName, construction]) => {
+    const constructionProperty =
+      constructionName === icon.defaultConstruction
+        ? `construction?: '${constructionName}';`
+        : `construction: '${constructionName}';`;
+
+    return [
+      '  | {',
+      `      ${constructionProperty}`,
+      `      presentation?: ${renderStringUnion(Object.keys(construction.presentations).sort())};`,
+      '    }'
+    ].join('\n');
+  });
 
   return [
-    `export type ${icon.componentName}Presentation = ${union};`,
+    constructionType,
+    presentationType,
     '',
-    `export interface ${icon.componentName}Props extends IconProps {`,
-    `  presentation?: ${icon.componentName}Presentation;`,
-    '}',
+    `export type ${icon.componentName}Props = IconProps & (`,
+    ...propsBranches,
+    ');',
     ''
   ].join('\n');
 }
 
-function renderComponent(icon: IconMetadata, presentationSvgs: Map<string, string>): string {
-  const presentations = Object.keys(icon.presentations).sort();
+function renderComponent(icon: IconMetadata, renderedSvgs: Map<string, string>): string {
   const propsType = `${icon.componentName}Props`;
-  const presentationType = renderPresentationType(icon, presentations);
+  const iconTypes = renderIconTypes(icon);
   const importLine = "import type { IconProps } from '../../Icon.types.ts';";
+  const constructionDefaults = Object.fromEntries(
+    Object.entries(icon.constructions).map(([name, construction]) => [
+      name,
+      construction.defaultPresentation
+    ])
+  );
+  const branches = Object.entries(icon.constructions)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .flatMap(([construction, definition]) =>
+      Object.keys(definition.presentations)
+        .sort()
+        .map((presentation) => {
+          const key = `${construction}.${presentation}`;
+          const svg = renderedSvgs.get(key);
+          if (!svg) throw new Error(`Missing rendered SVG for ${icon.id}.${key}.`);
 
-  if (presentations.length === 1) {
-    const presentation = presentations[0];
-    const svg = presentationSvgs.get(presentation);
-
-    if (!svg) throw new Error(`Missing rendered SVG for ${icon.id}.${presentation}.`);
-
-    const signature = `export function ${icon.componentName}({ presentation: _presentation = '${presentation}', ...props }: ${propsType}) {`;
-
-    return [
-      GENERATED_HEADER,
-      importLine,
-      '',
-      presentationType,
-      signature,
-      '  return (',
-      indent(renderSvg(svg), 4),
-      '  );',
-      '}',
-      ''
-    ].join('\n');
-  }
-
-  const branches = presentations
-    .map((presentation) => {
-      const svg = presentationSvgs.get(presentation);
-      if (!svg) throw new Error(`Missing rendered SVG for ${icon.id}.${presentation}.`);
-
-      return [
-        `  if (presentation === '${presentation}') {`,
-        '    return (',
-        indent(renderSvg(svg), 6),
-        '    );',
-        '  }'
-      ].join('\n');
-    })
+          return [
+            `  if (resolvedConstruction === '${construction}' && resolvedPresentation === '${presentation}') {`,
+            '    return (',
+            indent(renderSvg(svg), 6),
+            '    );',
+            '  }'
+          ].join('\n');
+        })
+    )
     .join('\n\n');
 
   return [
     GENERATED_HEADER,
     importLine,
     '',
-    presentationType,
+    iconTypes,
+    `const DEFAULT_PRESENTATIONS: Record<${icon.componentName}Construction, ${icon.componentName}Presentation> = ${JSON.stringify(
+      constructionDefaults
+    )};`,
+    '',
     `export function ${icon.componentName}({`,
-    `  presentation = '${icon.defaultPresentation}',`,
+    `  construction = '${icon.defaultConstruction}',`,
+    '  presentation,',
     '  ...props',
     `}: ${propsType}) {`,
+    `  const resolvedConstruction = construction as ${icon.componentName}Construction;`,
+    '  const resolvedPresentation =',
+    `    presentation ?? DEFAULT_PRESENTATIONS[resolvedConstruction];`,
+    '',
     branches,
     '',
-    '  return null;',
+    '  throw new Error(',
+    `    \`Unsupported ${icon.componentName} construction/presentation: \${resolvedConstruction}.\${String(resolvedPresentation)}\``,
+    '  );',
     '}',
     ''
   ].join('\n');
@@ -193,7 +239,7 @@ async function readManifest(): Promise<IconManifest> {
 }
 
 export function validateIconManifest(manifest: IconManifest): void {
-  if (manifest.formatVersion !== 3 || manifest.sourceContract !== 'kiskadee-icon-svg-v3') {
+  if (manifest.formatVersion !== 4 || manifest.sourceContract !== 'kiskadee-icon-svg-v4') {
     throw new Error('Unsupported icon manifest contract.');
   }
   if (
@@ -219,8 +265,8 @@ export function validateIconManifest(manifest: IconManifest): void {
         `Duplicate component name "${icon.componentName}" in family "${icon.family}".`
       );
     }
-    if (!(icon.defaultPresentation in icon.presentations)) {
-      throw new Error(`${icon.id} has an unknown default presentation.`);
+    if (!(icon.defaultConstruction in icon.constructions)) {
+      throw new Error(`${icon.id} has an unknown default construction.`);
     }
     if (!/^[A-Z][A-Za-z0-9]*Icon$/.test(icon.componentName)) {
       throw new Error(`Invalid icon component name "${icon.componentName}".`);
@@ -228,10 +274,22 @@ export function validateIconManifest(manifest: IconManifest): void {
     if (icon.family !== 'social') {
       throw new Error(`Unsupported icon family "${icon.family}".`);
     }
-    if (!icon.opticalTransform) {
-      throw new Error(`${icon.id} must declare an optical transform.`);
+    if (Object.keys(icon.constructions).length === 0) {
+      throw new Error(`${icon.id} must declare at least one construction.`);
     }
-    if (icon.opticalTransform) validateOpticalTransform(icon.opticalTransform);
+
+    for (const [constructionName, construction] of Object.entries(icon.constructions)) {
+      if (!(construction.defaultPresentation in construction.presentations)) {
+        throw new Error(`${icon.id}.${constructionName} has an unknown default presentation.`);
+      }
+      if (Object.keys(construction.presentations).length === 0) {
+        throw new Error(`${icon.id}.${constructionName} must declare at least one presentation.`);
+      }
+      if (!construction.opticalTransform) {
+        throw new Error(`${icon.id}.${constructionName} must declare an optical transform.`);
+      }
+      validateOpticalTransform(construction.opticalTransform);
+    }
 
     ids.add(familyId);
     componentNames.add(familyComponentName);
@@ -247,27 +305,29 @@ async function createExpectedOutputs(manifest: IconManifest): Promise<Map<string
     familyIcons.push(icon);
     iconsByFamily.set(icon.family, familyIcons);
 
-    const presentationSvgs = new Map<string, string>();
+    const renderedSvgs = new Map<string, string>();
 
-    for (const [presentation, definition] of Object.entries(icon.presentations)) {
-      const assetPath = path.resolve(assetsDir, definition.source);
-      const relativeAssetPath = path.relative(assetsDir, assetPath);
+    for (const [constructionName, construction] of Object.entries(icon.constructions)) {
+      for (const [presentation, definition] of Object.entries(construction.presentations)) {
+        const assetPath = path.resolve(assetsDir, definition.source);
+        const relativeAssetPath = path.relative(assetsDir, assetPath);
 
-      if (relativeAssetPath.startsWith('..') || path.isAbsolute(relativeAssetPath)) {
-        throw new Error(`${icon.id}.${presentation} resolves outside the assets directory.`);
+        if (relativeAssetPath.startsWith('..') || path.isAbsolute(relativeAssetPath)) {
+          throw new Error(
+            `${icon.id}.${constructionName}.${presentation} resolves outside the assets directory.`
+          );
+        }
+
+        const sourceSvg = await readFile(assetPath, 'utf8');
+        const renderedSvg = applyOpticalTransformToSvg(sourceSvg, construction.opticalTransform);
+
+        renderedSvgs.set(`${constructionName}.${presentation}`, renderedSvg);
       }
-
-      const sourceSvg = await readFile(assetPath, 'utf8');
-      const renderedSvg = icon.opticalTransform
-        ? applyOpticalTransformToSvg(sourceSvg, icon.opticalTransform)
-        : sourceSvg;
-
-      presentationSvgs.set(presentation, renderedSvg);
     }
 
     outputs.set(
       path.resolve(familiesDir, icon.family, `${icon.componentName}.tsx`),
-      renderComponent(icon, presentationSvgs)
+      renderComponent(icon, renderedSvgs)
     );
   }
 

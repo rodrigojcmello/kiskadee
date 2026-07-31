@@ -9,10 +9,14 @@ scope is broader than social networks.
 
 - Source artwork must come from the trademark owner's brand, press, or developer resources.
 - Preserve the official silhouette and native coordinate system.
-- A chromatic brand defaults to `presentation="brand"`. Every export also exposes
-  `presentation="monochrome"` as a Kiskadee technical presentation for semantic component color.
-- Brand and monochrome presentations of the same export must use the exact same `viewBox`. A
-  presentation switch changes color treatment, never the public icon size or optical calibration.
+- A construction represents one official geometry. A presentation represents one paint treatment
+  of that geometry.
+- Chromatic brands normally default to `construction="mark"` and `presentation="brand"`. Reddit
+  deliberately defaults to `construction="contained"` and `presentation="brand"`.
+- Every export exposes at least one `presentation="monochrome"` as a Kiskadee technical
+  presentation for semantic component color.
+- Presentations inside the same construction must use the exact same `viewBox`, footprint, and
+  optical calibration. Different constructions may have different geometry and calibration.
 - Keep platform-neutral SVGs free from React and accessibility defaults. Generated adapters own
   external `1em` sizing and decorative accessibility behavior.
 - Every monochrome presentation renders entirely through `currentColor`, regardless of brand-color
@@ -22,16 +26,15 @@ scope is broader than social networks.
 - Consumers must follow the owner's current trademark and minimum-size rules.
 - These exports do not imply affiliation, endorsement, or a trademark license.
 
-## Optical calibration
+## Constructions and optical calibration
 
-The `kiskadee-icon-svg-v3` manifest requires one icon-level `opticalTransform` for every social
-mark. It compensates for differences in native artwork bounds and clear space without altering the
-official geometry:
+The `kiskadee-icon-svg-v4` manifest requires one `opticalTransform` per construction. It compensates
+for differences in native artwork bounds and clear space without altering the official geometry:
 
 - `scale` changes the perceived size inside the shared icon viewport.
 - `offsetX` and `offsetY` move the artwork by normalized fractions of the final viewport.
-- The same transform applies to `brand` and `monochrome`; presentation-specific optical
-  corrections are not allowed.
+- The same transform applies to every presentation inside the construction; presentation-specific
+  optical corrections are not allowed.
 - Canonical files under `assets/social/` remain intact. Generation adjusts only the output
   `viewBox`, preserving paths, fills, gradients, strokes, and proportions.
 - React adapters and the SVG files published under `dist/svg/social/` use the same calibrated
@@ -40,11 +43,38 @@ official geometry:
   resolved value as `appliedOpticalTransform`. That field is provenance, not an instruction to
   transform the published SVG again.
 
-`pnpm --filter @kiskadee/icons audit:optical` rasterizes the monochrome presentation at high
-resolution and reports raw versus calibrated bounds, alpha coverage, center of mass, and clipping.
-Those measurements make review repeatable and guard against accidental cropping, but they are only
-diagnostic. Perceived weight is not reducible to one geometric metric, so every transform requires
-final visual comparison and explicit human approval.
+`pnpm --filter @kiskadee/icons audit:optical` rasterizes every construction and presentation at
+high resolution and reports raw versus calibrated bounds, alpha coverage, center of mass, and
+clipping. It uses the monochrome presentation as a comparable baseline when available, otherwise
+the construction default. Those measurements make review repeatable and guard against accidental
+cropping, but they are only diagnostic. Perceived weight is not reducible to one geometric metric,
+so every transform requires final visual comparison and explicit human approval.
+
+Construction selection is always explicit. The package does not inspect icon size, component,
+surface, viewport, or platform to choose a logo automatically.
+
+## Reddit constructions
+
+The normalized Reddit source set is the first multi-construction contract:
+
+| Construction | Presentation | Official source | Normalization |
+| --- | --- | --- | --- |
+| `contained` | `brand` | `Reddit_Icon_FullColor` | Platform-neutral SVG only |
+| `contained` | `brandFlat` | `Reddit_Icon_2Color` | Platform-neutral SVG only |
+| `mark` | `brand` | `FullColor_Bleed` | Removes only the OrangeRed field |
+| `mark` | `monochrome` | `2Color_FullBleed` | Removes the OrangeRed field and maps the mark to `currentColor`; eyes, mouth, and internal spaces remain transparent |
+
+The official files are preserved unchanged under `assets/sources/reddit/`. Generated adapters and
+published SVGs consume the normalized files under `assets/social/`.
+
+`contained.brand` is the Reddit default. `brandFlat` is an official flat presentation, not a
+compact logo. `mark` means the official symbol without a framing shape; it does not mean
+responsive, reduced, or optically small artwork.
+
+The two constructions intentionally use different optical scales. The contained speech-bubble
+field carries substantially more visual mass, so it is reduced to `0.76`; the standalone mark is
+raised to `1.10`. This balances the complete logos rather than forcing the Snoo head to occupy the
+same geometric size in both constructions.
 
 The list is a practical July 2026 snapshot of widely used networks, login providers, and AI
 platforms for the Button Showcase. It is not a stable numeric ranking: audience figures published
@@ -71,7 +101,7 @@ by different platforms are not directly comparable. The social selection was che
 | `SnapchatIcon` | Snapchat | [Snap brand guidelines](https://www.snap.com/brand-guidelines?lang=en-US) |
 | `XIcon` | X | [X brand toolkit](https://about.x.com/en/who-we-are/brand-toolkit) |
 | `PinterestIcon` | Pinterest | [Pinterest brand guidelines](https://business.pinterest.com/en-us/brand-guidelines/?change_language=true) |
-| `RedditIcon` | Reddit | [Reddit brand resources](https://redditinc.com/brand) |
+| `RedditIcon` | Reddit | [Reddit Brand System logo](https://redditbrand.lingoapp.com/s/Logo-d9x3n2?v=44) |
 | `LinkedInIcon` | LinkedIn | [LinkedIn brand downloads](https://brand.linkedin.com/downloads) |
 | `DiscordIcon` | Discord | [Discord branding](https://discord.com/branding) |
 | `TwitchIcon` | Twitch | [Twitch brand assets](https://brand.twitch.com/) |
@@ -90,12 +120,12 @@ by different platforms are not directly comparable. The social selection was che
   box removes only the navigation bar's unused vertical area and retains clear space around every
   edge; the mark itself is neither cropped nor redrawn.
 - Every other third-party export defaults to its official brand color treatment. Discord,
-  Facebook, LinkedIn, Mastodon, Pinterest, Reddit, Snapchat, Telegram, Twitch, Vimeo, WhatsApp, and
+  Facebook, LinkedIn, Mastodon, Pinterest, Snapchat, Telegram, Twitch, Vimeo, WhatsApp, and
   YouTube use their official fixed palettes. Instagram, Messenger, and TikTok preserve their
   multicolor or gradient identity.
-- Reddit uses the current conversation-bubble icon from Reddit's brand system. Its technical
-  monochrome presentation reuses the exact same paths and turns the white detail regions into
-  negative space, so switching presentation never changes its silhouette or perceived size.
+- Reddit exposes the official contained and mark geometries described above. Its full-color and
+  flat presentations retain the official treatments. The technical `mark.monochrome` presentation
+  is a true one-color asset whose internal detail is negative space.
 - Google and Microsoft retain their required multicolor identity in `brand`. Claude uses the
   standalone official symbol in Clay, without the rounded application tile. Gemini retains its
   official aurora color direction in a compact vector treatment. Their
@@ -115,10 +145,8 @@ by different platforms are not directly comparable. The social selection was che
   presentation box cropped around the glyph.
 - Telegram uses the complete official circular gradient logo. The monochrome presentation preserves
   the exact circle and paper-plane geometry while following `currentColor`.
-- Reddit's brand presentation preserves the official OrangeRed conversation bubble. Its
-  monochrome presentation composes those same paths with an even-odd fill, using `currentColor` for
-  the bubble and transparent detail regions. The shared optical calibration adds safe clear space
-  without changing construction between presentations.
+- Reddit silhouettes are intentionally not published. The rejected geometry and rationale are
+  recorded in [`silhouette-brand-icons.md`](../rejected/silhouette-brand-icons.md).
 - WeChat and LINE are not in this initial family because a public first-party vector kit suitable
   for redistribution was not found during this pass. Vimeo and Substack fill those two Showcase
   slots; this is a source-integrity decision, not a claim that they have larger audiences.

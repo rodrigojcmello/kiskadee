@@ -91,6 +91,18 @@ export {
   useTextFieldArtifactConfig
 } from './components/TextField';
 export type {
+  BrandPackComponentName,
+  BrandPackContextValue,
+  BrandPackLoader,
+  BrandPackLoadRequest,
+  LoadedBrandPackResources
+} from './shared/contexts/BrandPackContext.tsx';
+export {
+  BrandPackBoundary,
+  createBrandPackResourceKey,
+  useBrandPack
+} from './shared/contexts/BrandPackContext.tsx';
+export type {
   ComponentClassMapScope,
   KiskadeeContextValue,
   KiskadeeInteractionEnvironment,

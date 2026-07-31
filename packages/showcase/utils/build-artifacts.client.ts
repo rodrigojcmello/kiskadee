@@ -32,3 +32,22 @@ export async function loadJsonFromBuild<T>(
 
   return (await response.json()) as T;
 }
+
+export async function loadTextFromBuild(
+  relativePath: string,
+  options: BuildJsonOptions<string>
+): Promise<string> {
+  const response = await fetch(`/build/${relativePath}`, { cache: 'no-store' });
+
+  if (!response.ok) {
+    if (response.status === 404 && !options.required) {
+      return options.fallback;
+    }
+
+    throw new Error(
+      `Failed to load artifact from /build/${relativePath} (status ${response.status})`
+    );
+  }
+
+  return response.text();
+}

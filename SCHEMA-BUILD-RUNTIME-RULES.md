@@ -229,6 +229,53 @@ Consequence:
 - Theme and surface-context controls remain independent in inspection tools and consumer APIs.
 - Provider inheritance or automatic surface detection requires a separate future contract.
 
+### 3.1.6 External brand intent ownership
+
+Context:
+
+- Third-party brand colors are useful for narrow actions such as authentication or social sharing,
+  but they are not part of a design system's primitive, semantic, or component color layers.
+- A branded Button still needs the preset's emphasis, state, theme, and surface-context grammar.
+
+Decision:
+
+- Preset schemas author only their closed set of system intents.
+- External Button intents use the qualified namespace `brand.<id>` and are projected at build time
+  from portable brand tonal assets.
+- Public Button consumers may select either a system intent or `brand.<id>`, while preset schema
+  contracts continue to reject external intents.
+- Qualified role parsing preserves the complete brand ID in `button.brand.<id>`. A final role
+  segment is interpreted as paint only when it is exactly `solid` or `gradient`.
+- A brand ID replaces only the color-family input. It does not introduce `kind`, `action`,
+  `variant`, or `filled` axes and does not replace emphasis or surface context.
+- The preset owns the component projection formula. The brand package owns seed identity,
+  provenance, content polarity, functional references, and pack membership.
+- Brand tonal assets never enter preset `colors.json`, the three color layers, or normal palette
+  CSS.
+
+Reason:
+
+- Keeping brand identity external prevents every preset from duplicating the same third-party
+  colors and avoids loading rarely used brands throughout an application.
+- Reusing the preset formula preserves component behavior while keeping the official brand seed
+  independent from the preset Primary color.
+- A closed preset-authoring intent set prevents external resources from silently becoming part of
+  the canonical design-system contract.
+
+Consequence:
+
+- `@kiskadee/tonal-scale/standalone` generates one portable Light/Dark family per official seed.
+- `@kiskadee/brands` publishes definitions, packs, and standalone tonal assets.
+- A preset projector converts those assets into `brand.*` component palettes without mutating the
+  preset schema.
+- A preset module declares that optional build capability through `buildExtensions.brandPacks`.
+  Generic builders discover the declaration from the already-loaded preset module; they must not
+  identify presets by metadata or import a concrete preset projector.
+- The Web Builder emits optional pack artifacts, and consumers load them only through an explicit
+  resource boundary.
+- Missing packs, unsupported components, and branded intents outside a compatible boundary must
+  fail visibly; they never fall back to a system intent.
+
 ### 3.2 `components.<name>.options`
 
 Use `options` for component-specific behavior/structure defaults that are not a DS color/scale token.
@@ -443,6 +490,14 @@ Main outputs per design system:
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`
 - `segments.json`, `manifest.json`, `schema.json`
 
+Optional brand-pack outputs are deliberately separate:
+
+- `brand-packs/<pack>/manifest.json`
+- `brand-packs/<pack>/<segment>.<theme>.<hash>.kiskadee.css`
+- `brand-packs/<pack>/class-maps/<segment>.<theme>/<component>.<hash>.kiskadee.json`
+
+They are not referenced by normal preset `colors.json`, global CSS, or class maps.
+
 ### 5.1 Artifact responsibilities
 
 Use each artifact for a different level of responsibility:
@@ -512,6 +567,20 @@ In web class-map artifacts:
 Runtime selects one precompiled bucket. It does not calculate contrast or synthesize a missing
 context.
 
+### 5.2.2 Optional brand-pack representation
+
+Brand packs use one CSS file per pack, segment, and theme. Their class maps remain component-scoped.
+The pack manifest binds exact `brand.*` intents, components, hashes, and resource paths.
+
+The pack namespace includes the design system, pack, and projection hash so its classes cannot
+collide with normal preset artifacts or another pack. A page without an explicit brand-pack
+boundary must not request these resources.
+
+The boundary loads CSS and the requested component class map before revealing its children. Its
+cache key includes design system, pack, segment, theme, and requested components. Switching
+segment or theme therefore loads the target palette before the visual change, while identical
+requests reuse the same resource promise.
+
 ### 5.3 Emphasis representation
 
 In palette JSON maps, emphasis is encoded in color buckets:
@@ -550,12 +619,16 @@ Runtime responsibilities:
 - apply control state classes (`selected`, `disabled`, forced interaction states, etc.);
 - apply structural option classes from `components.<name>.options` defaults (or allowed props override);
 - connect headless behavior/accessibility to visual layer.
+- load optional precompiled resources at an explicit feature boundary when the application asks for
+  them.
 
 Runtime should not:
 
 - generate new DS color decisions on the fly;
 - replace schema-defined token values with arbitrary runtime constants (except explicit behavior options);
 - move theme/segment/emphasis logic out of artifacts.
+- infer or automatically request a brand pack from the first `brand.*` component instance;
+- fall back from a missing `brand.*` class to Primary, Neutral, or any other system intent.
 
 ## 7) Decision matrix (quick rule)
 

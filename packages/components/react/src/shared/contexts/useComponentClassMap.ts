@@ -1,5 +1,6 @@
 import type { ComponentClassMapArtifactJSON } from '@kiskadee/web-builder/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useBrandPack } from './BrandPackContext.tsx';
 import { getComponentArtifactCacheKey, loadCachedArtifact } from './componentArtifactCache.ts';
 import { useKiskadee } from './KiskadeeContext.tsx';
 
@@ -11,18 +12,11 @@ type ComponentClassMapState<TClassMap> = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const hasElementClassShape = (value: Record<string, unknown>): boolean => {
-  const elementKeys = ['d', 'e', 's', 'w', 'c', 'l', 'rr', 'rp', 'rs'];
-  return elementKeys.some((key) => key in value);
-};
-
 const isClassElementMap = (value: unknown): value is Record<string, Record<string, unknown>> => {
   if (!isRecord(value)) return false;
   const entries = Object.entries(value);
   if (entries.length === 0) return false;
-  return entries.every(
-    ([key, item]) => isRecord(item) && (/^e\d+$/.test(key) || hasElementClassShape(item))
-  );
+  return entries.every(([key, item]) => /^e\d+$/.test(key) && isRecord(item));
 };
 
 function isComponentClassMapArtifact<TClassMap>(
@@ -45,9 +39,7 @@ function mergeClassElementMaps(
     const mergedElement: Record<string, unknown> = { ...coreElement };
 
     if (paletteElement.c) {
-      const coreColors = (coreElement.c as Record<string, unknown> | undefined) ?? {};
-      const paletteColors = (paletteElement.c as Record<string, unknown> | undefined) ?? {};
-      mergedElement.c = { ...coreColors, ...paletteColors };
+      mergedElement.c = mergeClassMapNode(coreElement.c, paletteElement.c);
     }
 
     for (const key of ['d', 'e', 's', 'w', 'l', 'rr', 'rp', 'rs']) {
@@ -62,7 +54,10 @@ function mergeClassElementMaps(
   return out;
 }
 
-function mergeClassMapNode(coreNode: unknown, paletteNode: unknown): Record<string, unknown> {
+function mergeClassMapNode(coreNode: unknown, paletteNode: unknown): unknown {
+  if (paletteNode === undefined) return coreNode;
+  if (coreNode === undefined) return paletteNode;
+
   const coreIsElementMap = isClassElementMap(coreNode);
   const paletteIsElementMap = isClassElementMap(paletteNode);
 
@@ -73,8 +68,12 @@ function mergeClassMapNode(coreNode: unknown, paletteNode: unknown): Record<stri
     );
   }
 
-  const coreRecord = isRecord(coreNode) ? coreNode : {};
-  const paletteRecord = isRecord(paletteNode) ? paletteNode : {};
+  if (!isRecord(coreNode) || !isRecord(paletteNode)) {
+    return paletteNode;
+  }
+
+  const coreRecord = coreNode;
+  const paletteRecord = paletteNode;
   const keys = new Set([...Object.keys(coreRecord), ...Object.keys(paletteRecord)]);
   const out: Record<string, unknown> = {};
 
@@ -93,11 +92,24 @@ function mergeComponentClassMaps<TClassMap>(
   return mergeClassMapNode(coreClassMap, paletteClassMap) as TClassMap;
 }
 
+function unwrapBrandComponentClassMap<TClassMap>(
+  value: unknown,
+  componentName: string
+): TClassMap | undefined {
+  if (!value) return undefined;
+  if (isRecord(value) && 'component' in value && 'classMap' in value) {
+    const artifact = value as unknown as ComponentClassMapArtifactJSON<TClassMap>;
+    return isComponentClassMapArtifact(artifact, componentName) ? artifact.classMap : undefined;
+  }
+  return value as TClassMap;
+}
+
 export function useComponentClassMap<TClassMap>(
   componentName: string,
   aggregateClassMap: TClassMap | undefined
 ): TClassMap | undefined {
   const { artifactVersion, designSystem, loadComponentClassMap, segment, theme } = useKiskadee();
+  const brandPack = useBrandPack();
   const classMapCacheKey = getComponentArtifactCacheKey({
     designSystem,
     artifactVersion,
@@ -180,5 +192,17 @@ export function useComponentClassMap<TClassMap>(
   ]);
 
   // Preserve the last loaded component map while a provider swaps manifests/design systems.
-  return currentComponentClassMap ?? aggregateClassMap ?? previousLoadedComponentClassMap;
+  const baseClassMap =
+    currentComponentClassMap ?? aggregateClassMap ?? previousLoadedComponentClassMap;
+  const brandComponentClassMap = brandPack?.hasComponent(componentName)
+    ? unwrapBrandComponentClassMap<TClassMap>(
+        brandPack.resources.classMaps[componentName],
+        componentName
+      )
+    : undefined;
+
+  return useMemo(
+    () => mergeComponentClassMaps(baseClassMap, brandComponentClassMap),
+    [baseClassMap, brandComponentClassMap]
+  );
 }

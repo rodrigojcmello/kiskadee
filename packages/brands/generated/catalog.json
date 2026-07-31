@@ -1,0 +1,320 @@
+{
+  "brands": [
+    {
+      "contentPolarity": "light",
+      "iconId": "apple",
+      "id": "apple",
+      "intent": "brand.apple",
+      "provenanceUrl": "https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple",
+      "seedHex": "#000000",
+      "seedSource": "official-monochrome",
+      "tonalAsset": "scales/apple.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "google",
+      "id": "google",
+      "intent": "brand.google",
+      "provenanceUrl": "https://developers.google.com/identity/gsi/web/reference/html-reference",
+      "seedHex": "#0b57d0",
+      "seedSource": "official-action-background",
+      "tonalAsset": "scales/google.json",
+      "tonalIntegritySha256": "5916b5d9c524caf6aba4d6941b22f440b8306578cb3e3d4c575744f1c2723fab"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "microsoft",
+      "id": "microsoft",
+      "intent": "brand.microsoft",
+      "provenanceUrl": "https://fluent2.microsoft.design/color-tokens/",
+      "seedHex": "#0064b4",
+      "seedSource": "official-action-background",
+      "tonalAsset": "scales/microsoft.json",
+      "tonalIntegritySha256": "aa169b5b8ece9474a6f23b8056b463f7655ed3df95f9945b647a0fe3c253883b"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "chat-gpt",
+      "id": "chat-gpt",
+      "intent": "brand.chat-gpt",
+      "provenanceUrl": "https://openai.com/brand/",
+      "seedHex": "#000000",
+      "seedSource": "official-monochrome",
+      "tonalAsset": "scales/chat-gpt.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "claude",
+      "id": "claude",
+      "intent": "brand.claude",
+      "provenanceUrl": "https://www.anthropic.com/press-kit",
+      "seedHex": "#d97757",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/claude.json",
+      "tonalIntegritySha256": "6c1aeb578425bbee3da9326a3a4e7890fa2c6b6149e7cb69cad84eabd87ae37e"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "gemini",
+      "id": "gemini",
+      "intent": "brand.gemini",
+      "provenanceUrl": "https://about.google/company-info/brand-resource-center/",
+      "seedHex": "#078efb",
+      "seedSource": "official-gradient-stop",
+      "tonalAsset": "scales/gemini.json",
+      "tonalIntegritySha256": "03e82a4138e877f938410524de75868620d6e4ce686873a42dee0da3d6371b63"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "facebook",
+      "id": "facebook",
+      "intent": "brand.facebook",
+      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/logo/",
+      "seedHex": "#0866ff",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/facebook.json",
+      "tonalIntegritySha256": "0bc58a8bded5f8e97a3172bac1cf4f52cf67daf24117b714e0bad23976afd990"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "you-tube",
+      "id": "you-tube",
+      "intent": "brand.you-tube",
+      "provenanceUrl": "https://brand.youtube/youtube-icon/#monochromatic-logos",
+      "seedHex": "#ff0033",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/you-tube.json",
+      "tonalIntegritySha256": "4d63c743b39ef5048011408480357f6db38da3e4b59f3701d64c13256961e1ae"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "whats-app",
+      "id": "whats-app",
+      "intent": "brand.whats-app",
+      "provenanceUrl": "https://www.meta.com/brand/resources/whatsapp/whatsapp-brand/",
+      "seedHex": "#25d366",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/whats-app.json",
+      "tonalIntegritySha256": "8c8fd9bce4e0dc322279e688a6886b26efd6444378d1352bb69e6cf525602902"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "instagram",
+      "id": "instagram",
+      "intent": "brand.instagram",
+      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/instagram-brand/",
+      "seedHex": "#d300c5",
+      "seedSource": "official-gradient-stop",
+      "tonalAsset": "scales/instagram.json",
+      "tonalIntegritySha256": "b1e030f31186e6ba0ff646ca5a4fe91e7966144194341496891a1e5324688f6d"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "tik-tok",
+      "id": "tik-tok",
+      "intent": "brand.tik-tok",
+      "provenanceUrl": "https://developers.tiktok.com/doc/getting-started-design-guidelines",
+      "seedHex": "#000000",
+      "seedSource": "official-monochrome",
+      "tonalAsset": "scales/tik-tok.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "messenger",
+      "id": "messenger",
+      "intent": "brand.messenger",
+      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/messenger-icon/",
+      "seedHex": "#006aff",
+      "seedSource": "official-gradient-stop",
+      "tonalAsset": "scales/messenger.json",
+      "tonalIntegritySha256": "57a6061e67d890406401d1ba2d2b7193d20d2ed68816889ab25dcc4a7fefd4d0"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "telegram",
+      "id": "telegram",
+      "intent": "brand.telegram",
+      "provenanceUrl": "https://telegram.org/press",
+      "seedHex": "#229ed9",
+      "seedSource": "official-gradient-stop",
+      "tonalAsset": "scales/telegram.json",
+      "tonalIntegritySha256": "ff0573b19ac6a6504d06c3325f4bfe1d82a058e218eaae7d34db796541485aa1"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "snapchat",
+      "id": "snapchat",
+      "intent": "brand.snapchat",
+      "provenanceUrl": "https://www.snap.com/brand-guidelines?lang=en-US",
+      "seedHex": "#fffc00",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/snapchat.json",
+      "tonalIntegritySha256": "d0cf02eddc4a45805f85cebf97d127b5609c9511526d665a67c93f4d8874f517"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "x",
+      "id": "x",
+      "intent": "brand.x",
+      "provenanceUrl": "https://about.x.com/en/who-we-are/brand-toolkit",
+      "seedHex": "#000000",
+      "seedSource": "official-monochrome",
+      "tonalAsset": "scales/x.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "pinterest",
+      "id": "pinterest",
+      "intent": "brand.pinterest",
+      "provenanceUrl": "https://business.pinterest.com/en-us/brand-guidelines/",
+      "seedHex": "#e60023",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/pinterest.json",
+      "tonalIntegritySha256": "2817e032117b9d8ea1add7c06c06954b6cbd50347f66e2fb6a16c847733ec628"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "reddit",
+      "id": "reddit",
+      "intent": "brand.reddit",
+      "provenanceUrl": "https://redditbrand.lingoapp.com/s/Logo-d9x3n2?v=44",
+      "seedHex": "#ff4500",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/reddit.json",
+      "tonalIntegritySha256": "021590d62631e0f014f27f49d09dccb4e343e98e733410241ddf77e21ebc0b82"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "linked-in",
+      "id": "linked-in",
+      "intent": "brand.linked-in",
+      "provenanceUrl": "https://brand.linkedin.com/downloads",
+      "seedHex": "#0a66c2",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/linked-in.json",
+      "tonalIntegritySha256": "29a38979e1d36a7668b893676a7a34096224b9aabe43e115a519a1a6742b23dd"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "discord",
+      "id": "discord",
+      "intent": "brand.discord",
+      "provenanceUrl": "https://discord.com/branding",
+      "seedHex": "#5865f2",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/discord.json",
+      "tonalIntegritySha256": "8f843cba45dc4a003b5d28f0f3f8bfca9866f0c967546582c036f07ac3800709"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "twitch",
+      "id": "twitch",
+      "intent": "brand.twitch",
+      "provenanceUrl": "https://brand.twitch.com/",
+      "seedHex": "#9146ff",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/twitch.json",
+      "tonalIntegritySha256": "9b3a9538a615d1e9b551093af7e942e06f6189931111c89fbab02585e6d9ef62"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "threads",
+      "id": "threads",
+      "intent": "brand.threads",
+      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/threads/",
+      "seedHex": "#000000",
+      "seedSource": "official-monochrome",
+      "tonalAsset": "scales/threads.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "mastodon",
+      "id": "mastodon",
+      "intent": "brand.mastodon",
+      "provenanceUrl": "https://joinmastodon.org/branding",
+      "seedHex": "#6364ff",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/mastodon.json",
+      "tonalIntegritySha256": "6841b4a73c53313984231a2db2c20dad07bf84850c0c3ebc3759420904773df6"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "git-hub",
+      "id": "git-hub",
+      "intent": "brand.git-hub",
+      "provenanceUrl": "https://brand.github.com/foundations/logo",
+      "seedHex": "#000000",
+      "seedSource": "official-monochrome",
+      "tonalAsset": "scales/git-hub.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "vimeo",
+      "id": "vimeo",
+      "intent": "brand.vimeo",
+      "provenanceUrl": "https://vimeo.com/press/media-kit",
+      "seedHex": "#1ab7ea",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/vimeo.json",
+      "tonalIntegritySha256": "82acfd4670ab809abd25dbadf5e02cbc35b02cac7c9da5b2246956ae5c7e90ba"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "substack",
+      "id": "substack",
+      "intent": "brand.substack",
+      "provenanceUrl": "https://substack.com/brand",
+      "seedHex": "#ff6719",
+      "seedSource": "official-logo-accent",
+      "tonalAsset": "scales/substack.json",
+      "tonalIntegritySha256": "11ced710d3e7069ef6fedef4c7cb40999e7c99c0adf11fb588eb806462d020af"
+    }
+  ],
+  "formatVersion": 1,
+  "generator": {
+    "package": "@kiskadee/brands",
+    "version": "0.2.0"
+  },
+  "kind": "kiskadee-brand-catalog-v1",
+  "packs": [
+    {
+      "asset": "packs/auth.json",
+      "brands": ["apple", "google", "microsoft"],
+      "id": "auth"
+    },
+    {
+      "asset": "packs/social.json",
+      "brands": [
+        "chat-gpt",
+        "claude",
+        "gemini",
+        "facebook",
+        "you-tube",
+        "whats-app",
+        "instagram",
+        "tik-tok",
+        "messenger",
+        "telegram",
+        "snapchat",
+        "x",
+        "pinterest",
+        "reddit",
+        "linked-in",
+        "discord",
+        "twitch",
+        "threads",
+        "mastodon",
+        "git-hub",
+        "vimeo",
+        "substack"
+      ],
+      "id": "social"
+    }
+  ]
+}

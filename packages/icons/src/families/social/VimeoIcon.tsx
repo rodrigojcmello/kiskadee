@@ -1,33 +1,46 @@
 // Generated from packages/icons/assets and metadata/icons.json. Do not edit manually.
 import type { IconProps } from '../../Icon.types.ts';
 
+export type VimeoIconConstruction = 'mark';
 export type VimeoIconPresentation = 'brand' | 'monochrome';
 
-export interface VimeoIconProps extends IconProps {
-  presentation?: VimeoIconPresentation;
-}
+export type VimeoIconProps = IconProps & (
+  | {
+      construction?: 'mark';
+      presentation?: 'brand' | 'monochrome';
+    }
+);
+
+const DEFAULT_PRESENTATIONS: Record<VimeoIconConstruction, VimeoIconPresentation> = {"mark":"brand"};
 
 export function VimeoIcon({
-  presentation = 'brand',
+  construction = 'mark',
+  presentation,
   ...props
 }: VimeoIconProps) {
-  if (presentation === 'brand') {
+  const resolvedConstruction = construction as VimeoIconConstruction;
+  const resolvedPresentation =
+    presentation ?? DEFAULT_PRESENTATIONS[resolvedConstruction];
+
+  if (resolvedConstruction === 'mark' && resolvedPresentation === 'brand') {
     return (
       <svg width="1em" height="1em" viewBox="-15.136363636364 -27.272727272727 378.409090909091 340.909090909091" fill="#1AB7EA" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
-        <path d="M283.836 0c-61.666 0-90.861 79.726-90.861 79.726l4.772 6.924c5.474-3.275 12.024-6.924 19.604-6.924 8.234 0 15.065 6.082 15.065 22.13 0 26.575-30.365 91.89-57.642 91.89-12.118 0-17.545-19.651-25.405-55.162-2.667-10.387-7.346-37.009-14.13-79.772-6.316-39.63-10.808-55.49-33.172-55.49C50.741 3.322.351 74.813.351 74.813L7.65 90.019c5.474-3.275 11.978-6.972 21.522-6.972 18.2 0 20.025 20.213 30.459 57.642 9.404 34.342 18.668 68.076 28.213 103.026C97.435 278.665 117.132 300 141.368 300c36.354 0 71.351-30.833 118.887-92.358 22.13-28.353 45.43-66.438 57.642-93.247 12.352-27.043 14.41-50.063 14.41-60.636C332.307 23.066 320.189 0 283.836 0Z">
-        </path>
+      <path d="M283.836 0c-61.666 0-90.861 79.726-90.861 79.726l4.772 6.924c5.474-3.275 12.024-6.924 19.604-6.924 8.234 0 15.065 6.082 15.065 22.13 0 26.575-30.365 91.89-57.642 91.89-12.118 0-17.545-19.651-25.405-55.162-2.667-10.387-7.346-37.009-14.13-79.772-6.316-39.63-10.808-55.49-33.172-55.49C50.741 3.322.351 74.813.351 74.813L7.65 90.019c5.474-3.275 11.978-6.972 21.522-6.972 18.2 0 20.025 20.213 30.459 57.642 9.404 34.342 18.668 68.076 28.213 103.026C97.435 278.665 117.132 300 141.368 300c36.354 0 71.351-30.833 118.887-92.358 22.13-28.353 45.43-66.438 57.642-93.247 12.352-27.043 14.41-50.063 14.41-60.636C332.307 23.066 320.189 0 283.836 0Z">
+      </path>
       </svg>
     );
   }
 
-  if (presentation === 'monochrome') {
+  if (resolvedConstruction === 'mark' && resolvedPresentation === 'monochrome') {
     return (
       <svg width="1em" height="1em" viewBox="-15.136363636364 -27.272727272727 378.409090909091 340.909090909091" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
-        <path d="M283.836 0c-61.666 0-90.861 79.726-90.861 79.726l4.772 6.924c5.474-3.275 12.024-6.924 19.604-6.924 8.234 0 15.065 6.082 15.065 22.13 0 26.575-30.365 91.89-57.642 91.89-12.118 0-17.545-19.651-25.405-55.162-2.667-10.387-7.346-37.009-14.13-79.772-6.316-39.63-10.808-55.49-33.172-55.49C50.741 3.322.351 74.813.351 74.813L7.65 90.019c5.474-3.275 11.978-6.972 21.522-6.972 18.2 0 20.025 20.213 30.459 57.642 9.404 34.342 18.668 68.076 28.213 103.026C97.435 278.665 117.132 300 141.368 300c36.354 0 71.351-30.833 118.887-92.358 22.13-28.353 45.43-66.438 57.642-93.247 12.352-27.043 14.41-50.063 14.41-60.636C332.307 23.066 320.189 0 283.836 0Z">
-        </path>
+      <path d="M283.836 0c-61.666 0-90.861 79.726-90.861 79.726l4.772 6.924c5.474-3.275 12.024-6.924 19.604-6.924 8.234 0 15.065 6.082 15.065 22.13 0 26.575-30.365 91.89-57.642 91.89-12.118 0-17.545-19.651-25.405-55.162-2.667-10.387-7.346-37.009-14.13-79.772-6.316-39.63-10.808-55.49-33.172-55.49C50.741 3.322.351 74.813.351 74.813L7.65 90.019c5.474-3.275 11.978-6.972 21.522-6.972 18.2 0 20.025 20.213 30.459 57.642 9.404 34.342 18.668 68.076 28.213 103.026C97.435 278.665 117.132 300 141.368 300c36.354 0 71.351-30.833 118.887-92.358 22.13-28.353 45.43-66.438 57.642-93.247 12.352-27.043 14.41-50.063 14.41-60.636C332.307 23.066 320.189 0 283.836 0Z">
+      </path>
       </svg>
     );
   }
 
-  return null;
+  throw new Error(
+    `Unsupported VimeoIcon construction/presentation: ${resolvedConstruction}.${String(resolvedPresentation)}`
+  );
 }

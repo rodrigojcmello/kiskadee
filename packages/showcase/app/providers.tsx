@@ -14,6 +14,7 @@ import { useRuntimePlatformClasses } from '@/hooks/use-runtime-platform-classes'
 import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry';
+import { loadBrandPack } from '@/utils/brand-pack-loader.client';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
@@ -164,6 +165,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         artifactVersion: activeManifest?.version ?? undefined,
         loadComponentArtifact: activeManifest ? loadComponentArtifact : undefined,
         loadComponentClassMap: activeManifest ? loadComponentClassMap : undefined,
+        brandPackLoader: loadBrandPack,
         global: globalConfig
       }}
     >

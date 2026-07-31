@@ -1,6 +1,6 @@
 {
-  "formatVersion": 3,
-  "sourceContract": "kiskadee-icon-svg-v3",
+  "formatVersion": 4,
+  "sourceContract": "kiskadee-icon-svg-v4",
   "families": {
     "social": {
       "kind": "brand",
@@ -15,555 +15,698 @@
       "componentName": "AppleIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "monochrome",
-      "presentations": {
-        "monochrome": {
-          "source": "social/apple.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.apple.com/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "monochrome",
+          "opticalTransform": {
+            "scale": 0.94,
+            "offsetX": 0,
+            "offsetY": -0.03
+          },
+          "presentations": {
+            "monochrome": {
+              "source": "social/apple.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.94,
-        "offsetX": 0,
-        "offsetY": -0.03
-      },
-      "provenanceUrl": "https://www.apple.com/"
+      }
     },
     {
       "id": "chat-gpt",
       "componentName": "ChatGPTIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "monochrome",
-      "presentations": {
-        "monochrome": {
-          "source": "social/chat-gpt.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://openai.com/brand/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "monochrome",
+          "opticalTransform": {
+            "scale": 0.9,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "monochrome": {
+              "source": "social/chat-gpt.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.9,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://openai.com/brand/"
+      }
     },
     {
       "id": "claude",
       "componentName": "ClaudeIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/claude.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/claude.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.anthropic.com/press-kit",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 1.1,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/claude.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/claude.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 1.1,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://www.anthropic.com/press-kit"
+      }
     },
     {
       "id": "discord",
       "componentName": "DiscordIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/discord.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/discord.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://discord.com/branding",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.88,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/discord.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/discord.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.88,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://discord.com/branding"
+      }
     },
     {
       "id": "facebook",
       "componentName": "FacebookIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/facebook.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/facebook.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/logo/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.86,
+            "offsetX": 0,
+            "offsetY": 0.01
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/facebook.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/facebook.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.86,
-        "offsetX": 0,
-        "offsetY": 0.01
-      },
-      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/logo/"
+      }
     },
     {
       "id": "gemini",
       "componentName": "GeminiIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/gemini.brand.svg",
-          "colorBehavior": "gradient"
-        },
-        "monochrome": {
-          "source": "social/gemini.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://gemini.google.com/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.94,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/gemini.brand.svg",
+              "colorBehavior": "gradient"
+            },
+            "monochrome": {
+              "source": "social/gemini.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.94,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://gemini.google.com/"
+      }
     },
     {
       "id": "git-hub",
       "componentName": "GitHubIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "monochrome",
-      "presentations": {
-        "monochrome": {
-          "source": "social/git-hub.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://brand.github.com/foundations/logo",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "monochrome",
+          "opticalTransform": {
+            "scale": 0.88,
+            "offsetX": 0,
+            "offsetY": 0.02
+          },
+          "presentations": {
+            "monochrome": {
+              "source": "social/git-hub.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.88,
-        "offsetX": 0,
-        "offsetY": 0.02
-      },
-      "provenanceUrl": "https://brand.github.com/foundations/logo"
+      }
     },
     {
       "id": "google",
       "componentName": "GoogleIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/google.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/google.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://developers.google.com/identity/branding-guidelines",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.88,
+            "offsetX": 0.02,
+            "offsetY": -0.01
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/google.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/google.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.88,
-        "offsetX": 0.02,
-        "offsetY": -0.01
-      },
-      "provenanceUrl": "https://developers.google.com/identity/branding-guidelines"
+      }
     },
     {
       "id": "instagram",
       "componentName": "InstagramIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/instagram.brand.svg",
-          "colorBehavior": "gradient"
-        },
-        "monochrome": {
-          "source": "social/instagram.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/instagram-brand/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.9,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/instagram.brand.svg",
+              "colorBehavior": "gradient"
+            },
+            "monochrome": {
+              "source": "social/instagram.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.9,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/instagram-brand/"
+      }
     },
     {
       "id": "linked-in",
       "componentName": "LinkedInIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/linked-in.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/linked-in.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://brand.linkedin.com/downloads",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.84,
+            "offsetX": 0,
+            "offsetY": 0.01
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/linked-in.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/linked-in.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.84,
-        "offsetX": 0,
-        "offsetY": 0.01
-      },
-      "provenanceUrl": "https://brand.linkedin.com/downloads"
+      }
     },
     {
       "id": "mastodon",
       "componentName": "MastodonIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/mastodon.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/mastodon.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://joinmastodon.org/branding",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.86,
+            "offsetX": 0.02,
+            "offsetY": 0.02
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/mastodon.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/mastodon.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.86,
-        "offsetX": 0.02,
-        "offsetY": 0.02
-      },
-      "provenanceUrl": "https://joinmastodon.org/branding"
+      }
     },
     {
       "id": "messenger",
       "componentName": "MessengerIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/messenger.brand.svg",
-          "colorBehavior": "gradient"
-        },
-        "monochrome": {
-          "source": "social/messenger.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/messenger-icon/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.84,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/messenger.brand.svg",
+              "colorBehavior": "gradient"
+            },
+            "monochrome": {
+              "source": "social/messenger.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.84,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://www.meta.com/brand/resources/facebook/messenger-icon/"
+      }
     },
     {
       "id": "microsoft",
       "componentName": "MicrosoftIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/microsoft.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/microsoft.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-branding-in-apps",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.9,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/microsoft.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/microsoft.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.9,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-branding-in-apps"
+      }
     },
     {
       "id": "pinterest",
       "componentName": "PinterestIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/pinterest.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/pinterest.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://business.pinterest.com/en-us/brand-guidelines/?change_language=true",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.9,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/pinterest.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/pinterest.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.9,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://business.pinterest.com/en-us/brand-guidelines/?change_language=true"
+      }
     },
     {
       "id": "reddit",
       "componentName": "RedditIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/reddit.brand.svg",
-          "colorBehavior": "fixed"
+      "provenanceUrl": "https://redditbrand.lingoapp.com/s/Logo-d9x3n2",
+      "defaultConstruction": "contained",
+      "constructions": {
+        "contained": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.76,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/reddit.contained.brand.svg",
+              "colorBehavior": "gradient"
+            },
+            "brandFlat": {
+              "source": "social/reddit.contained.brand-flat.svg",
+              "colorBehavior": "fixed"
+            }
+          }
         },
-        "monochrome": {
-          "source": "social/reddit.monochrome.svg",
-          "colorBehavior": "currentColor"
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 1.1,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/reddit.mark.brand.svg",
+              "colorBehavior": "gradient"
+            },
+            "monochrome": {
+              "source": "social/reddit.mark.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.9,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://redditbrand.lingoapp.com/s/Logo-d9x3n2"
+      }
     },
     {
       "id": "snapchat",
       "componentName": "SnapchatIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/snapchat.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/snapchat.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.snap.com/brand-guidelines?lang=en-US",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 1.1,
+            "offsetX": 0,
+            "offsetY": -0.01
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/snapchat.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/snapchat.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 1.1,
-        "offsetX": 0,
-        "offsetY": -0.01
-      },
-      "provenanceUrl": "https://www.snap.com/brand-guidelines?lang=en-US"
+      }
     },
     {
       "id": "substack",
       "componentName": "SubstackIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/substack.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/substack.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://substack.com/brand",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 1.2,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/substack.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/substack.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 1.2,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://substack.com/brand"
+      }
     },
     {
       "id": "telegram",
       "componentName": "TelegramIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/telegram.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/telegram.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://telegram.org/press",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.9,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/telegram.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/telegram.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.9,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://telegram.org/press"
+      }
     },
     {
       "id": "threads",
       "componentName": "ThreadsIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "monochrome",
-      "presentations": {
-        "monochrome": {
-          "source": "social/threads.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/threads/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "monochrome",
+          "opticalTransform": {
+            "scale": 0.88,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "monochrome": {
+              "source": "social/threads.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.88,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://www.meta.com/brand/resources/instagram/threads/"
+      }
     },
     {
       "id": "tik-tok",
       "componentName": "TikTokIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/tik-tok.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/tik-tok.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://developers.tiktok.com/doc/getting-started-design-guidelines",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 1.15,
+            "offsetX": 0,
+            "offsetY": -0.05
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/tik-tok.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/tik-tok.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 1.15,
-        "offsetX": 0,
-        "offsetY": -0.05
-      },
-      "provenanceUrl": "https://developers.tiktok.com/doc/getting-started-design-guidelines"
+      }
     },
     {
       "id": "twitch",
       "componentName": "TwitchIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/twitch.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/twitch.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://brand.twitch.com/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.88,
+            "offsetX": 0.04,
+            "offsetY": 0.03
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/twitch.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/twitch.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.88,
-        "offsetX": 0.04,
-        "offsetY": 0.03
-      },
-      "provenanceUrl": "https://brand.twitch.com/"
+      }
     },
     {
       "id": "vimeo",
       "componentName": "VimeoIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/vimeo.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/vimeo.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://vimeo.com/press/media-kit",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.88,
+            "offsetX": -0.02,
+            "offsetY": 0.02
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/vimeo.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/vimeo.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.88,
-        "offsetX": -0.02,
-        "offsetY": 0.02
-      },
-      "provenanceUrl": "https://vimeo.com/press/media-kit"
+      }
     },
     {
       "id": "whats-app",
       "componentName": "WhatsAppIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/whats-app.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/whats-app.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://www.meta.com/brand/resources/whatsapp/whatsapp-brand/",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.9,
+            "offsetX": 0.02,
+            "offsetY": -0.02
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/whats-app.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/whats-app.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.9,
-        "offsetX": 0.02,
-        "offsetY": -0.02
-      },
-      "provenanceUrl": "https://www.meta.com/brand/resources/whatsapp/whatsapp-brand/"
+      }
     },
     {
       "id": "x",
       "componentName": "XIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "monochrome",
-      "presentations": {
-        "monochrome": {
-          "source": "social/x.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://about.x.com/en/who-we-are/brand-toolkit",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "monochrome",
+          "opticalTransform": {
+            "scale": 0.8,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "monochrome": {
+              "source": "social/x.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.8,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://about.x.com/en/who-we-are/brand-toolkit"
+      }
     },
     {
       "id": "you-tube",
       "componentName": "YouTubeIcon",
       "family": "social",
       "origin": "third-party",
-      "defaultPresentation": "brand",
-      "presentations": {
-        "brand": {
-          "source": "social/you-tube.brand.svg",
-          "colorBehavior": "fixed"
-        },
-        "monochrome": {
-          "source": "social/you-tube.monochrome.svg",
-          "colorBehavior": "currentColor"
+      "provenanceUrl": "https://brand.youtube/youtube-icon",
+      "defaultConstruction": "mark",
+      "constructions": {
+        "mark": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.94,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/you-tube.brand.svg",
+              "colorBehavior": "fixed"
+            },
+            "monochrome": {
+              "source": "social/you-tube.monochrome.svg",
+              "colorBehavior": "currentColor"
+            }
+          }
         }
-      },
-      "opticalTransform": {
-        "scale": 0.94,
-        "offsetX": 0,
-        "offsetY": 0
-      },
-      "provenanceUrl": "https://brand.youtube/youtube-icon"
+      }
     }
   ]
 }

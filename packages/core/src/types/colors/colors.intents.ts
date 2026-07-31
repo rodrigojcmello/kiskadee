@@ -7,7 +7,7 @@
  */
 
 /**
- * Supported intent keys for the `button` component.
+ * System-owned intent keys for the `button` component.
  */
 export const ButtonIntentKeys = {
   /**
@@ -39,8 +39,19 @@ export const ButtonIntentKeys = {
   positive: 'positive'
 } as const;
 
-/** Supported intent keys for the `button` component (Layer 3). */
-export type ButtonIntent = keyof typeof ButtonIntentKeys;
+/**
+ * Preset-authored intent keys for the `button` component (Layer 3).
+ *
+ * External intents are deliberately excluded from preset color schemas. They
+ * are projected into optional artifacts by their owning domain instead.
+ */
+export type SystemButtonIntent = keyof typeof ButtonIntentKeys;
+
+/** External Button intent namespace distributed outside preset color layers. */
+export type ExternalButtonIntent = `brand.${string}`;
+
+/** Public Button intents accepted by component consumers. */
+export type ButtonIntent = SystemButtonIntent | ExternalButtonIntent;
 
 /** Qualified role identifier for `button` intents (e.g. `button.primary`). */
 export type RoleButton = `button.${ButtonIntent}`;

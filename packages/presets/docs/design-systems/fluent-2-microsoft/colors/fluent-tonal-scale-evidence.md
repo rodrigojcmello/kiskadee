@@ -70,10 +70,10 @@ recipe. The generated system uses:
   foundation independently of Fluent;
 - exact Light and Dark `n.black.v2`, preserving Fluent `Grey-14` as an authored
   tinted-neutral reference from one seed;
-- automatic harmony rest, currently resolved by generator `0.5.0` to L50/D40;
+- automatic harmony rest, currently resolved by candidate generator `0.6.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.5.0
+### Shared viewer — candidate generator 0.6.0
 
 [Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22muted-darks%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
 
@@ -82,7 +82,7 @@ browser bookmark. It resolves the latest generated scales and functional
 references without changing the stored Fluent evidence. It requires the local
 `@kiskadee/tonal-scale` application on port `3001`.
 
-The Shared Viewer currently evaluates this recipe with generator `0.5.0`. It
+The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.6.0`. It
 generates thirteen primitive families: the twelve mandatory V5 families plus
 authored `n.black.v2`. The eleven chromatic family scales and references are
 unchanged from the approved `0.4.1` export. V5 changes only the achromatic
@@ -102,6 +102,9 @@ invalid scale.
 The `0.5.0` bundle, de-para, and Fluent primitive assets are the promoted V5
 baseline. The upstream Neutral ramp maps to `n.black.v2`; `n.black.v1` remains
 the universal pure grayscale and must not be presented as Fluent `Grey-14`.
+Generator `0.6.0` adds the independent standalone-family API used by optional
+Brand Color Packs; it does not regenerate, relabel, or promote this checked-in
+multifamily Fluent bundle.
 
 ### Approved generator 0.5.0 system
 

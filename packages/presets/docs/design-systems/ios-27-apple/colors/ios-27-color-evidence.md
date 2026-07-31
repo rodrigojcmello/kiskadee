@@ -67,7 +67,7 @@ exactly as `yr.orange.v2`; the derived canonical `yr.brown.v1` remains a separat
 ## Tonal System And Promotion
 
 The editable [`tonal-system.recipe.json`](tonal-system.recipe.json) is a format V5 candidate
-evaluated locally with `@kiskadee/tonal-scale@0.5.0`. It moves Apple's tinted Gray source from
+evaluated locally with `@kiskadee/tonal-scale@0.6.0`. It moves Apple's tinted Gray source from
 `n.black.v1` to `n.black.v2`, while the new mandatory `n.black.v1` provides an independent pure
 grayscale.
 
@@ -115,7 +115,7 @@ The three harmony-generated companions without direct Apple Accent seeds remain 
 source-backed subset; it does not rewrite the canonical bundle or change its preserved `review`
 diagnostic.
 
-### Shared viewer — candidate generator 0.5.0
+### Shared viewer — candidate generator 0.6.0
 
 [Open the iOS 27 candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22balanced%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230088ff%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23ff383c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22r.red.v2%22%2C%22seedHex%22%3A%22%23ff2d55%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23ff8d28%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v2%22%2C%22seedHex%22%3A%22%23ac7f5e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23ffcc00%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%2334c759%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v1%22%2C%22seedHex%22%3A%22%2300c8b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v2%22%2C%22seedHex%22%3A%22%2300c3d0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v3%22%2C%22seedHex%22%3A%22%2300c0e8%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22pb.indigo.v1%22%2C%22seedHex%22%3A%22%236155f5%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23cb30e0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%231c1c1e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D)
 
@@ -124,3 +124,5 @@ application on port `3001`. The candidate contains the V5 canonical `n.black.v1`
 `n.black.v2`; it does not replace the checked-in bundle or preset inputs. The thirteen source-backed
 assets listed above remain the approved `0.4.1` preset inputs. The three harmony-generated
 companions remain available in the same viewer only as evidence and review material.
+Generator `0.6.0` adds an independent standalone-family API for optional external color domains;
+that additive API does not relabel or regenerate the approved iOS multifamily assets.

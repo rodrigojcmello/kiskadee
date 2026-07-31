@@ -2,38 +2,44 @@ import { describe, expect, it } from 'vitest';
 import { auditSocialIconOptics } from './audit-optical.ts';
 
 describe('social icon optical calibration', () => {
-  it('keeps monochrome weights comparable and every presentation safely centered', async () => {
+  it('keeps every construction and presentation safely centered', async () => {
     const entries = await auditSocialIconOptics();
 
-    expect(entries).toHaveLength(25);
+    expect(entries).toHaveLength(26);
 
-    for (const { calibrated, icon, presentations, raw } of entries) {
+    for (const { calibrated, construction, icon, presentations, raw } of entries) {
+      const constructionDefinition = icon.constructions[construction];
       const maximumDimension = Math.max(calibrated.bboxWidth, calibrated.bboxHeight);
       const rawAspectRatio = Math.max(
         raw.bboxWidth / raw.bboxHeight,
         raw.bboxHeight / raw.bboxWidth
       );
       const maximumAllowedDimension = rawAspectRatio >= 1.35 ? 0.95 : 0.92;
-      const monochrome = presentations.find((presentation) => presentation.name === 'monochrome');
+      const baselineName =
+        'monochrome' in constructionDefinition.presentations
+          ? 'monochrome'
+          : constructionDefinition.defaultPresentation;
+      const baseline = presentations.find((presentation) => presentation.name === baselineName);
+      const entryId = `${icon.id}.${construction}`;
 
-      expect(calibrated.clipped, icon.id).toBe(false);
-      expect(maximumDimension, icon.id).toBeGreaterThanOrEqual(0.72);
+      expect(calibrated.clipped, entryId).toBe(false);
+      expect(maximumDimension, entryId).toBeGreaterThanOrEqual(0.72);
       // Wide marks need more horizontal occupancy to remain comparable in perceived area.
-      expect(maximumDimension, icon.id).toBeLessThanOrEqual(maximumAllowedDimension);
-      expect(calibrated.centerX, icon.id).toBeGreaterThanOrEqual(0.46);
-      expect(calibrated.centerX, icon.id).toBeLessThanOrEqual(0.56);
-      expect(calibrated.centerY, icon.id).toBeGreaterThanOrEqual(0.46);
-      expect(calibrated.centerY, icon.id).toBeLessThanOrEqual(0.56);
+      expect(maximumDimension, entryId).toBeLessThanOrEqual(maximumAllowedDimension);
+      expect(calibrated.centerX, entryId).toBeGreaterThanOrEqual(0.46);
+      expect(calibrated.centerX, entryId).toBeLessThanOrEqual(0.56);
+      expect(calibrated.centerY, entryId).toBeGreaterThanOrEqual(0.46);
+      expect(calibrated.centerY, entryId).toBeLessThanOrEqual(0.56);
 
       expect(
         presentations.map((presentation) => presentation.name),
-        icon.id
-      ).toEqual(Object.keys(icon.presentations));
-      expect(monochrome?.raw, icon.id).toEqual(raw);
-      expect(monochrome?.calibrated, icon.id).toEqual(calibrated);
+        entryId
+      ).toEqual(Object.keys(constructionDefinition.presentations));
+      expect(baseline?.raw, entryId).toEqual(raw);
+      expect(baseline?.calibrated, entryId).toEqual(calibrated);
 
       for (const presentation of presentations) {
-        const presentationId = `${icon.id}.${presentation.name}`;
+        const presentationId = `${entryId}.${presentation.name}`;
 
         if (!presentation.raw.clipped) {
           expect(presentation.calibrated.clipped, presentationId).toBe(false);

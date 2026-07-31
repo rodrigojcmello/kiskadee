@@ -1,7 +1,12 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { IconManifest, IconMetadata } from './generate-react.ts';
+import {
+  type IconConstructionMetadata,
+  type IconManifest,
+  type IconMetadata,
+  validateIconManifest
+} from './generate-react.ts';
 import { applyOpticalTransformToSvg } from './icon-optical.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,8 +19,12 @@ export interface CopyCrossPlatformAssetsOptions {
   manifestPath?: string;
 }
 
-interface PublishedIconMetadata extends Omit<IconMetadata, 'opticalTransform'> {
-  appliedOpticalTransform?: IconMetadata['opticalTransform'];
+interface PublishedIconConstruction extends Omit<IconConstructionMetadata, 'opticalTransform'> {
+  appliedOpticalTransform: IconConstructionMetadata['opticalTransform'];
+}
+
+interface PublishedIconMetadata extends Omit<IconMetadata, 'constructions'> {
+  constructions: Record<string, PublishedIconConstruction>;
 }
 
 interface PublishedIconManifest extends Omit<IconManifest, 'icons'> {
@@ -27,9 +36,19 @@ function createPublishedManifest(manifest: IconManifest): PublishedIconManifest 
   return {
     ...manifest,
     assetState: 'optically-calibrated',
-    icons: manifest.icons.map(({ opticalTransform, ...icon }) => ({
+    icons: manifest.icons.map((icon) => ({
       ...icon,
-      ...(opticalTransform ? { appliedOpticalTransform: opticalTransform } : {})
+      constructions: Object.fromEntries(
+        Object.entries(icon.constructions).map(
+          ([constructionName, { opticalTransform, ...construction }]) => [
+            constructionName,
+            {
+              ...construction,
+              appliedOpticalTransform: opticalTransform
+            }
+          ]
+        )
+      )
     }))
   };
 }
@@ -48,27 +67,28 @@ export async function copyCrossPlatformAssets(
   const svgDir = path.resolve(distDir, 'svg');
   const manifestPath = options.manifestPath ?? path.resolve(packageRoot, 'metadata/icons.json');
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as IconManifest;
+  validateIconManifest(manifest);
 
   await mkdir(distDir, { recursive: true });
   await mkdir(svgDir, { recursive: true });
 
   for (const icon of manifest.icons) {
-    for (const presentation of Object.values(icon.presentations)) {
-      const sourcePath = path.resolve(assetsDir, presentation.source);
-      const relativeSourcePath = path.relative(assetsDir, sourcePath);
+    for (const construction of Object.values(icon.constructions)) {
+      for (const presentation of Object.values(construction.presentations)) {
+        const sourcePath = path.resolve(assetsDir, presentation.source);
+        const relativeSourcePath = path.relative(assetsDir, sourcePath);
 
-      if (relativeSourcePath.startsWith('..') || path.isAbsolute(relativeSourcePath)) {
-        throw new Error(`${icon.id} resolves outside the assets directory.`);
+        if (relativeSourcePath.startsWith('..') || path.isAbsolute(relativeSourcePath)) {
+          throw new Error(`${icon.id} resolves outside the assets directory.`);
+        }
+
+        const sourceSvg = await readFile(sourcePath, 'utf8');
+        const publishedSvg = applyOpticalTransformToSvg(sourceSvg, construction.opticalTransform);
+        const outputPath = path.resolve(svgDir, presentation.source);
+
+        await mkdir(path.dirname(outputPath), { recursive: true });
+        await writeFile(outputPath, publishedSvg);
       }
-
-      const sourceSvg = await readFile(sourcePath, 'utf8');
-      const publishedSvg = icon.opticalTransform
-        ? applyOpticalTransformToSvg(sourceSvg, icon.opticalTransform)
-        : sourceSvg;
-      const outputPath = path.resolve(svgDir, presentation.source);
-
-      await mkdir(path.dirname(outputPath), { recursive: true });
-      await writeFile(outputPath, publishedSvg);
     }
   }
 

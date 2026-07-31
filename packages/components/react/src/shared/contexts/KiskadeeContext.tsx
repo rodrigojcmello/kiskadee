@@ -43,6 +43,7 @@ import type {
   ThemeMode
 } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
+import type { BrandPackLoader, LoadedBrandPackResources } from './BrandPackContext.tsx';
 
 export type ComponentClassMapScope =
   | { kind: 'core' }
@@ -71,6 +72,18 @@ export type KiskadeeContextValue = {
     componentName: string,
     scope: ComponentClassMapScope
   ) => Promise<T | undefined>;
+  /**
+   * Resolves optional brand-pack resources. Brand assets are deliberately kept
+   * outside the regular preset artifacts and are loaded only by a
+   * BrandPackBoundary.
+   */
+  brandPackLoader?: BrandPackLoader;
+  /**
+   * Resources already included by an SSR host. Keys must be produced by
+   * createBrandPackResourceKey(); the matching stylesheet must already be in
+   * the rendered document head.
+   */
+  preloadedBrandPacks?: Readonly<Record<string, LoadedBrandPackResources>>;
   interactionEnvironment?: KiskadeeInteractionEnvironment;
   layoutEnvironment?: KiskadeeLayoutEnvironment;
   global?: {

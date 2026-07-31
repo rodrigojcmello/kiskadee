@@ -1,0 +1,38 @@
+{
+  "name": "@kiskadee/brands",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./catalog.json": "./generated/catalog.json",
+    "./packs/*.json": "./generated/packs/*.json",
+    "./scales/*.json": "./generated/scales/*.json"
+  },
+  "files": [
+    "src",
+    "generated",
+    "docs"
+  ],
+  "scripts": {
+    "generate": "node ./scripts/generate-brand-artifacts.ts",
+    "check:generated": "node ./scripts/generate-brand-artifacts.ts --check",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@kiskadee/core": "workspace:*",
+    "@kiskadee/tonal-scale": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

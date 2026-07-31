@@ -14,6 +14,14 @@ export type {
   ComponentClassNameMapSplitJSON
 } from '@kiskadee/core';
 export type {
+  BrandPackBuildManifest,
+  BrandPackPaletteArtifact
+} from './src/brand-packs/brandPackArtifacts.ts';
+export {
+  BRAND_PACK_BUILD_CONTRACT,
+  BRAND_PACK_BUILD_FORMAT_VERSION
+} from './src/brand-packs/brandPackArtifacts.ts';
+export type {
   CardCanonicalSurfacesPayload,
   CardComponentArtifactJSON,
   ResolvedCardCanonicalSurface

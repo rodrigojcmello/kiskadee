@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import type { IconManifest, IconMetadata } from './generate-react.ts';
-import { applyOpticalTransformToSvg } from './icon-optical.ts';
+import { applyOpticalTransformToSvg, type OpticalTransform } from './icon-optical.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,7 +24,9 @@ export interface OpticalMetrics {
 
 export interface OpticalAuditEntry {
   calibrated: OpticalMetrics;
+  construction: string;
   icon: IconMetadata;
+  opticalTransform: OpticalTransform;
   presentations: OpticalPresentationAuditEntry[];
   raw: OpticalMetrics;
 }
@@ -101,51 +103,58 @@ export async function measureOpticalMetrics(svg: string): Promise<OpticalMetrics
  * What
  *     Audits raw and calibrated artwork for every presentation of every social icon.
  * Why
- *     Monochrome remains the comparable weight baseline, while every presentation needs its own
- *     centering and clipping evidence.
+ *     Every construction owns one calibration shared by all of its presentations.
  */
 export async function auditSocialIconOptics(): Promise<OpticalAuditEntry[]> {
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as IconManifest;
   const socialIcons = manifest.icons.filter((icon) => icon.family === 'social');
 
   return Promise.all(
-    socialIcons.map(async (icon) => {
-      const monochrome = icon.presentations.monochrome;
-      const opticalTransform = icon.opticalTransform;
-      if (!monochrome || !opticalTransform) {
-        throw new Error(`${icon.id} is missing monochrome artwork or optical calibration.`);
-      }
+    socialIcons.flatMap((icon) =>
+      Object.entries(icon.constructions).map(async ([constructionName, construction]) => {
+        const presentations = await Promise.all(
+          Object.entries(construction.presentations).map(
+            async ([name, presentation]): Promise<OpticalPresentationAuditEntry> => {
+              const sourceSvg = await readFile(
+                path.resolve(assetsDir, presentation.source),
+                'utf8'
+              );
+              const calibratedSvg = applyOpticalTransformToSvg(
+                sourceSvg,
+                construction.opticalTransform
+              );
 
-      const presentations = await Promise.all(
-        Object.entries(icon.presentations).map(
-          async ([name, presentation]): Promise<OpticalPresentationAuditEntry> => {
-            const sourceSvg = await readFile(path.resolve(assetsDir, presentation.source), 'utf8');
-            const calibratedSvg = applyOpticalTransformToSvg(sourceSvg, opticalTransform);
+              return {
+                calibrated: await measureOpticalMetrics(calibratedSvg),
+                name,
+                raw: await measureOpticalMetrics(sourceSvg)
+              };
+            }
+          )
+        );
+        const baselineName =
+          'monochrome' in construction.presentations
+            ? 'monochrome'
+            : construction.defaultPresentation;
+        const baselineAudit = presentations.find(
+          (presentation) => presentation.name === baselineName
+        );
 
-            return {
-              calibrated: await measureOpticalMetrics(calibratedSvg),
-              name,
-              raw: await measureOpticalMetrics(sourceSvg)
-            };
-          }
-        )
-      );
-      const monochromeAudit = presentations.find(
-        (presentation) => presentation.name === 'monochrome'
-      );
+        if (!baselineAudit) {
+          throw new Error(`${icon.id}.${constructionName} is missing its optical baseline.`);
+        }
 
-      if (!monochromeAudit) {
-        throw new Error(`${icon.id} is missing its monochrome optical audit.`);
-      }
-
-      return {
-        calibrated: monochromeAudit.calibrated,
-        icon,
-        presentations,
-        raw: monochromeAudit.raw
-      };
-    })
-  );
+        return {
+          calibrated: baselineAudit.calibrated,
+          construction: constructionName,
+          icon,
+          opticalTransform: construction.opticalTransform,
+          presentations,
+          raw: baselineAudit.raw
+        };
+      })
+    )
+  ).then((entries) => entries.flat());
 }
 
 function printAudit(entries: OpticalAuditEntry[]): void {
@@ -154,13 +163,10 @@ function printAudit(entries: OpticalAuditEntry[]): void {
   );
   console.log('| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |');
 
-  for (const { calibrated, icon, raw } of entries) {
-    const transform = icon.opticalTransform;
-    if (!transform) continue;
-
+  for (const { calibrated, construction, icon, opticalTransform, raw } of entries) {
     console.log(
-      `| ${icon.id} | ${transform.scale.toFixed(2)} | ` +
-        `${transform.offsetX.toFixed(2)}, ${transform.offsetY.toFixed(2)} | ` +
+      `| ${icon.id}.${construction} | ${opticalTransform.scale.toFixed(2)} | ` +
+        `${opticalTransform.offsetX.toFixed(2)}, ${opticalTransform.offsetY.toFixed(2)} | ` +
         `${percentage(raw.bboxWidth)} × ${percentage(raw.bboxHeight)} | ` +
         `${percentage(calibrated.bboxWidth)} × ${percentage(calibrated.bboxHeight)} | ` +
         `${percentage(calibrated.alphaArea)} | ` +
@@ -173,10 +179,10 @@ function printAudit(entries: OpticalAuditEntry[]): void {
   console.log('| Icon | Presentation | Raw edge contact | Calibrated edge contact | Center |');
   console.log('| --- | --- | --- | --- | ---: |');
 
-  for (const { icon, presentations } of entries) {
+  for (const { construction, icon, presentations } of entries) {
     for (const { calibrated, name, raw } of presentations) {
       console.log(
-        `| ${icon.id} | ${name} | ${raw.clipped ? 'yes' : 'no'} | ` +
+        `| ${icon.id}.${construction} | ${name} | ${raw.clipped ? 'yes' : 'no'} | ` +
           `${calibrated.clipped ? 'yes' : 'no'} | ` +
           `${percentage(calibrated.centerX)}, ${percentage(calibrated.centerY)} |`
       );
@@ -189,10 +195,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     .then((entries) => {
       printAudit(entries);
 
-      const newlyClipped = entries.flatMap(({ icon, presentations }) =>
+      const newlyClipped = entries.flatMap(({ construction, icon, presentations }) =>
         presentations
           .filter(({ calibrated, raw }) => !raw.clipped && calibrated.clipped)
-          .map(({ name }) => `${icon.id}.${name}`)
+          .map(({ name }) => `${icon.id}.${construction}.${name}`)
       );
       if (newlyClipped.length > 0) {
         throw new Error(

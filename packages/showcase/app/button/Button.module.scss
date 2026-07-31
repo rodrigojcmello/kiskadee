@@ -29,6 +29,75 @@ $height: 64px;
   }
 }
 
+.brandPackGroup {
+  margin-block: 24px 32px;
+
+  > h4 {
+    margin: 0 0 12px;
+  }
+}
+
+.brandPackFallback {
+  background: color-mix(in srgb, currentColor 5%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 12px;
+  margin: 16px 0;
+  padding: 16px;
+}
+
+.brandExampleGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.brandExample {
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 14px;
+  min-width: 0;
+  overflow: hidden;
+
+  > h5 {
+    margin: 0;
+    padding: 12px 16px;
+  }
+}
+
+.brandContextGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.brandContextSurface {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 16px;
+
+  > span {
+    color: currentColor;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.72;
+  }
+}
+
+.brandContextSurfaceVivid {
+  > span {
+    color: #fff;
+  }
+}
+
+.brandEmphasisGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  :global(.k-btn) {
+    width: 100%;
+  }
+}
+
 .example-states {
   align-items: center;
   display: grid;
@@ -325,6 +394,10 @@ $height: 64px;
 }
 
 @media (min-width: 1024px) {
+  .brandExampleGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .example-states {
     grid-template-columns: repeat(6, minmax(0, 1fr));
     height: $height;

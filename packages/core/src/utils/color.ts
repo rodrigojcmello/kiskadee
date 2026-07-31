@@ -1,6 +1,7 @@
 import type {
   Color,
   HueName,
+  IntentValue,
   KiskadeeTone,
   PrimitiveColorName,
   PrimitiveColorRef,
@@ -60,7 +61,7 @@ export function color(
  * Escape hatch for direct Layer 1 usage.
  *
  * This stays intentionally tiny so call sites remain ergonomic:
- * `color(schema, 'default', 'l', primitive('blue', 'linkedin'), 50)`.
+ * `color(schema, 'default', 'l', primitive('blue', 'v1'), 50)`.
  */
 export function primitive(hue: HueName, name: PrimitiveColorName): PrimitiveRole {
   return `primitive.${hue}.${name}` as PrimitiveRole;
@@ -107,32 +108,43 @@ function requireSchemaColors(colors: SchemaColors | undefined): Required<SchemaC
   return colors as Required<SchemaColors>;
 }
 
+function resolveComponentIntent(
+  colors: Required<SchemaColors>,
+  component: string,
+  intent: string
+): IntentValue | undefined {
+  const componentIntents = colors.componentIntents as Partial<
+    Record<string, Partial<Record<string, IntentValue>>>
+  >;
+  return componentIntents[component]?.[intent];
+}
+
 type PaintKind = 'solid' | 'gradient';
 
 function parseRole(role: RoleWithPaint): { component: string; intent: string; paint: PaintKind } {
   const parts = role.split('.');
-  if (parts.length === 2) {
-    const [component, intent] = parts;
-    if (!component || !intent) {
-      throw new Error(`Invalid role format. Expected "component.intent[.paint]", got: ${role}`);
-    }
-    return { component, intent, paint: 'solid' };
+  if (parts.length < 2 || parts.some((part) => part.length === 0)) {
+    throw new Error(
+      `Invalid role format. Expected "component.intent[.intent...][.paint]", got: ${role}`
+    );
   }
 
-  if (parts.length === 3) {
-    const [component, intent, paintRaw] = parts;
-    if (!component || !intent || !paintRaw) {
-      throw new Error(`Invalid role format. Expected "component.intent[.paint]", got: ${role}`);
-    }
-    if (paintRaw !== 'solid' && paintRaw !== 'gradient') {
-      throw new Error(
-        `Invalid role paint. Expected "solid" or "gradient", got: ${paintRaw} (role=${role})`
-      );
-    }
-    return { component, intent, paint: paintRaw };
+  const component = parts[0] as string;
+  const possiblePaint = parts.at(-1);
+  const hasExplicitPaint = possiblePaint === 'solid' || possiblePaint === 'gradient';
+  const intentParts = parts.slice(1, hasExplicitPaint ? -1 : undefined);
+
+  if (intentParts.length === 0) {
+    throw new Error(
+      `Invalid role format. Expected "component.intent[.intent...][.paint]", got: ${role}`
+    );
   }
 
-  throw new Error(`Invalid role format. Expected "component.intent[.paint]", got: ${role}`);
+  return {
+    component,
+    intent: intentParts.join('.'),
+    paint: hasExplicitPaint ? possiblePaint : 'solid'
+  };
 }
 
 function parsePrimitiveRole(role: PrimitiveRole): PrimitiveColorRef {
@@ -198,7 +210,7 @@ function resolveSolidPrimitiveRole(
     throw new Error(`Functional tonal references support only solid roles: ${roleOrPrimitive}`);
   }
 
-  const intentValue = colors.componentIntents?.[component]?.[intent];
+  const intentValue = resolveComponentIntent(colors, component, intent);
   if (!intentValue) {
     throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
   }
@@ -255,7 +267,7 @@ export function resolveColor(
   }
 
   const { component, intent, paint } = parseRole(roleOrPrimitive as RoleWithPaint);
-  const intentValue = colors.componentIntents?.[component]?.[intent];
+  const intentValue = resolveComponentIntent(colors, component, intent);
   if (!intentValue) {
     throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
   }

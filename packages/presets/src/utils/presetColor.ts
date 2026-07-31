@@ -1,5 +1,6 @@
 import type {
   GlobalSemanticsByTheme,
+  IntentValue,
   KiskadeeTone,
   PrimitiveRole,
   ResolvedGradient,
@@ -131,8 +132,10 @@ export function createPresetColorGetter<TSegmentName extends string>(schemaConte
     if (intentVariantRole) {
       const colors = schemaContext.colors;
       const themeName = theme === 'l' ? 'light' : 'dark';
-      const intentValue =
-        colors.componentIntents?.[intentVariantRole.component]?.[intentVariantRole.intent];
+      const componentIntents = colors.componentIntents as Partial<
+        Record<string, Partial<Record<string, IntentValue>>>
+      >;
+      const intentValue = componentIntents[intentVariantRole.component]?.[intentVariantRole.intent];
       if (!intentValue) {
         throw new Error(`Intent not mapped for role=${roleOrPrimitive}`);
       }

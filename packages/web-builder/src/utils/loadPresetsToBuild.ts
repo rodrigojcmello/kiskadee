@@ -1,8 +1,13 @@
 import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Schema } from '@kiskadee/core';
+import type { PresetBuildExtensions } from '@kiskadee/presets/src/preset-build-extensions.ts';
 
-export type PresetToBuild = { schema: Schema; schemaPath: string };
+export type PresetToBuild = {
+  schema: Schema;
+  schemaPath: string;
+  buildExtensions?: PresetBuildExtensions;
+};
 
 export async function loadPresetsToBuild(baseDir: string): Promise<PresetToBuild[]> {
   // Presets live under packages/presets/src/presets. We only want to iterate
@@ -18,6 +23,7 @@ export async function loadPresetsToBuild(baseDir: string): Promise<PresetToBuild
   for (const dir of dirs) {
     const mod = (await import(`@kiskadee/presets/src/presets/${dir}/index.ts`)) as {
       schema?: Schema;
+      buildExtensions?: PresetBuildExtensions;
     };
 
     if (!mod?.schema) {
@@ -25,10 +31,14 @@ export async function loadPresetsToBuild(baseDir: string): Promise<PresetToBuild
       continue;
     }
 
-    items.push({
+    const item: PresetToBuild = {
       schema: mod.schema,
       schemaPath: resolve(baseDir, '..', '..', 'presets', 'src', 'presets', dir, `${dir}.schema.ts`)
-    });
+    };
+    if (mod.buildExtensions) {
+      item.buildExtensions = mod.buildExtensions;
+    }
+    items.push(item);
   }
 
   return items;

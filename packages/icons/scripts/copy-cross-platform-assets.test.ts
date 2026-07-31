@@ -32,16 +32,14 @@ describe('copyCrossPlatformAssets', () => {
     const distDir = path.resolve(temporaryRoot, 'dist');
     const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as IconManifest;
     const substack = manifest.icons.find((icon) => icon.id === 'substack');
+    const mark = substack?.constructions.mark;
 
-    expect(substack?.opticalTransform).toBeDefined();
-    expect(substack?.presentations.brand).toBeDefined();
-    expect(substack?.presentations.monochrome).toBeDefined();
+    expect(mark?.opticalTransform).toBeDefined();
+    expect(mark?.presentations.brand).toBeDefined();
+    expect(mark?.presentations.monochrome).toBeDefined();
 
-    const brandSourcePath = path.resolve(assetsDir, substack!.presentations.brand!.source);
-    const monochromeSourcePath = path.resolve(
-      assetsDir,
-      substack!.presentations.monochrome!.source
-    );
+    const brandSourcePath = path.resolve(assetsDir, mark!.presentations.brand!.source);
+    const monochromeSourcePath = path.resolve(assetsDir, mark!.presentations.monochrome!.source);
     const [brandSourceBefore, monochromeSourceBefore] = await Promise.all([
       readFile(brandSourcePath, 'utf8'),
       readFile(monochromeSourcePath, 'utf8')
@@ -53,20 +51,17 @@ describe('copyCrossPlatformAssets', () => {
       await Promise.all([
         readFile(brandSourcePath, 'utf8'),
         readFile(monochromeSourcePath, 'utf8'),
-        readFile(path.resolve(distDir, 'svg', substack!.presentations.brand!.source), 'utf8'),
-        readFile(path.resolve(distDir, 'svg', substack!.presentations.monochrome!.source), 'utf8')
+        readFile(path.resolve(distDir, 'svg', mark!.presentations.brand!.source), 'utf8'),
+        readFile(path.resolve(distDir, 'svg', mark!.presentations.monochrome!.source), 'utf8')
       ]);
 
     expect(brandSourceAfter).toBe(brandSourceBefore);
     expect(monochromeSourceAfter).toBe(monochromeSourceBefore);
 
-    const expectedBrand = applyOpticalTransformToSvg(
-      brandSourceBefore,
-      substack!.opticalTransform!
-    );
+    const expectedBrand = applyOpticalTransformToSvg(brandSourceBefore, mark!.opticalTransform);
     const expectedMonochrome = applyOpticalTransformToSvg(
       monochromeSourceBefore,
-      substack!.opticalTransform!
+      mark!.opticalTransform
     );
 
     expect(publishedBrand).toBe(expectedBrand);
@@ -100,11 +95,16 @@ describe('copyCrossPlatformAssets', () => {
     };
     const sourceSubstack = sourceManifest.icons.find((icon) => icon.id === 'substack');
     const publishedSubstack = publishedManifest.icons.find((icon) => icon.id === 'substack');
+    const sourceMark = sourceSubstack?.constructions.mark;
+    const publishedConstructions = publishedSubstack?.constructions as
+      | Record<string, Record<string, unknown>>
+      | undefined;
+    const publishedMark = publishedConstructions?.mark;
 
     expect(publishedManifest.assetState).toBe('optically-calibrated');
     expect(publishedManifestText).not.toContain('"opticalTransform"');
     expect(publishedSubstack).not.toHaveProperty('opticalTransform');
-    expect(publishedSubstack?.appliedOpticalTransform).toEqual(sourceSubstack?.opticalTransform);
+    expect(publishedMark?.appliedOpticalTransform).toEqual(sourceMark?.opticalTransform);
     expect(JSON.parse(await readFile(manifestPath, 'utf8'))).toEqual(sourceManifest);
   });
 });

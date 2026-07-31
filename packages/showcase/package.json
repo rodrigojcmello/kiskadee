@@ -15,6 +15,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@kiskadee/brands": "workspace:*",
     "@kiskadee/core": "workspace:*",
     "@kiskadee/icons": "workspace:*",
     "@kiskadee/react-components": "workspace:*",

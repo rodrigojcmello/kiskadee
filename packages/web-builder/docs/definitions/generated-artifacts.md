@@ -17,6 +17,27 @@
   (`onVivid`).
   Style keys and CSS declarations remain globally deduplicated across both buckets.
 
+## Optional brand packs
+
+Third-party brand colors are published outside the normal design-system artifacts:
+
+```text
+brand-packs/<pack>/manifest.json
+brand-packs/<pack>/<segment>.<theme>.<hash>.kiskadee.css
+brand-packs/<pack>/class-maps/<segment>.<theme>/<component>.<hash>.kiskadee.json
+```
+
+- One stylesheet contains every brand projected for that pack, segment, and theme.
+- Class maps remain component-scoped so a boundary can request only supported components.
+- The manifest records exact resource paths, integrity hashes, supported `brand.*` intents, and
+  content polarity.
+- Consumers validate class-map bytes against the manifest and attach the stylesheet with the
+  published SHA-256 as Subresource Integrity before revealing branded content.
+- Generated class namespaces include the design system, pack, and projection hash.
+- Brand packs never modify `colors.json`, normal palette CSS, or normal component class maps.
+- No pack is part of the baseline page load. An explicit consumer boundary owns loading and cache
+  reuse.
+
 ## Metadata
 
 Metadata is written per template under `packages/web-builder/build/<template-key>`:
@@ -49,6 +70,11 @@ metadata role.
 1. Choose a preset from `@kiskadee/presets` and run the web-builder to generate CSS and class maps.
 2. Consume `core` and palette CSS in the app, and apply classes from `classNamesMapSplit`.
 3. Keep layout/structure in component code; the builder should only own visual identity.
+
+Optional branded appearances add a second, explicit path: load a pack manifest at the feature
+boundary, then load its palette stylesheet and requested component class map before rendering
+`brand.*`. Absence of that boundary is an error for a branded component, not permission to use a
+system-intent fallback.
 
 Component hooks such as `useSwitchArtifactConfig` are the component-facing entry
 points for generated component metadata. `KiskadeeContext` provides the loading

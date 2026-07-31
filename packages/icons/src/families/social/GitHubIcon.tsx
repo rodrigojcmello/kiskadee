@@ -1,17 +1,37 @@
 // Generated from packages/icons/assets and metadata/icons.json. Do not edit manually.
 import type { IconProps } from '../../Icon.types.ts';
 
+export type GitHubIconConstruction = 'mark';
 export type GitHubIconPresentation = 'monochrome';
 
-export interface GitHubIconProps extends IconProps {
-  presentation?: GitHubIconPresentation;
-}
+export type GitHubIconProps = IconProps & (
+  | {
+      construction?: 'mark';
+      presentation?: 'monochrome';
+    }
+);
 
-export function GitHubIcon({ presentation: _presentation = 'monochrome', ...props }: GitHubIconProps) {
-  return (
-    <svg width="1em" height="1em" viewBox="-6.681818181818 -8.727272727273 111.363636363636 109.090909090909" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
+const DEFAULT_PRESENTATIONS: Record<GitHubIconConstruction, GitHubIconPresentation> = {"mark":"monochrome"};
+
+export function GitHubIcon({
+  construction = 'mark',
+  presentation,
+  ...props
+}: GitHubIconProps) {
+  const resolvedConstruction = construction as GitHubIconConstruction;
+  const resolvedPresentation =
+    presentation ?? DEFAULT_PRESENTATIONS[resolvedConstruction];
+
+  if (resolvedConstruction === 'mark' && resolvedPresentation === 'monochrome') {
+    return (
+      <svg width="1em" height="1em" viewBox="-6.681818181818 -8.727272727273 111.363636363636 109.090909090909" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" {...props}>
       <path d="M41.44 69.385C28.807 67.854 19.906 58.762 19.906 46.99c0-4.785 1.723-9.953 4.594-13.398-1.244-3.158-1.053-9.858.383-12.633 3.828-.479 8.996 1.531 12.058 4.307 3.637-1.149 7.465-1.723 12.155-1.723s8.517.574 11.963 1.627c2.966-2.68 8.23-4.69 12.058-4.211 1.34 2.584 1.531 9.283.287 12.537 3.063 3.637 4.69 8.518 4.69 13.494 0 11.772-8.901 20.672-21.725 22.299 3.254 2.106 5.455 6.7 5.455 11.963v9.953c0 2.871 2.393 4.498 5.264 3.35C84.41 87.95 98 70.63 98 49.19 98 22.107 75.988 0 48.904 0 21.82 0 0 22.107 0 49.191 0 70.438 13.494 88.047 31.678 94.65c2.584.957 5.072-.765 5.072-3.35v-7.656c-1.34.575-3.063.958-4.594.958-6.316 0-10.049-3.446-12.728-9.858-1.053-2.584-2.201-4.115-4.403-4.402-1.148-.096-1.53-.574-1.53-1.149 0-1.148 1.913-2.01 3.827-2.01 2.776 0 5.168 1.723 7.657 5.264 1.914 2.776 3.923 4.02 6.316 4.02 2.392 0 3.924-.861 6.125-3.062 1.627-1.627 2.871-3.063 4.02-4.02Z">
       </path>
-    </svg>
+      </svg>
+    );
+  }
+
+  throw new Error(
+    `Unsupported GitHubIcon construction/presentation: ${resolvedConstruction}.${String(resolvedPresentation)}`
   );
 }

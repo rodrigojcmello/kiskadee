@@ -6,6 +6,7 @@ import {
   type IconScale,
   type SurfaceContext
 } from '@kiskadee/core';
+import iconManifest from '@kiskadee/icons/icons.json';
 import * as SocialIcons from '@kiskadee/icons/social';
 import { Icon as KIcon, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import {
@@ -73,13 +74,39 @@ import s from './Icons.module.scss';
 
 type SocialIconComponent = ComponentType<
   SVGProps<SVGSVGElement> & {
-    presentation?: 'brand' | 'monochrome';
+    construction?: string;
+    presentation?: string;
   }
 >;
 
+type SocialIconAppearance = {
+  colorBehavior: 'currentColor' | 'fixed' | 'gradient';
+  construction: string;
+  presentation: string;
+};
+
 type SocialIconEntry = {
+  appearances: SocialIconAppearance[];
   component: SocialIconComponent;
   name: string;
+};
+
+type PublishedIconManifest = {
+  icons: Array<{
+    componentName: string;
+    constructions: Record<
+      string,
+      {
+        presentations: Record<
+          string,
+          {
+            colorBehavior: SocialIconAppearance['colorBehavior'];
+          }
+        >;
+      }
+    >;
+    family: string;
+  }>;
 };
 
 type InterfaceIconEntry = {
@@ -116,14 +143,32 @@ const ICON_SCALE_OPTIONS = (Object.keys(ICON_SIZE_BY_SCALE) as IconScale[]).map(
   label: formatScaleLabel(value)
 }));
 
-function getSocialIconEntries(iconNamespace: object): SocialIconEntry[] {
-  return Object.entries(iconNamespace)
-    .filter(
-      (entry): entry is [string, SocialIconComponent] =>
-        entry[0].endsWith('Icon') && typeof entry[1] === 'function'
-    )
-    .map(([name, component]) => ({ component, name }))
-    .sort((first, second) => first.name.localeCompare(second.name));
+function getSocialIconEntries(
+  iconNamespace: Record<string, unknown>,
+  manifest: PublishedIconManifest
+): SocialIconEntry[] {
+  return manifest.icons
+    .filter((icon) => icon.family === 'social')
+    .map((icon) => {
+      const component = iconNamespace[icon.componentName];
+      if (typeof component !== 'function') {
+        throw new Error(`Published social icon component "${icon.componentName}" is unavailable.`);
+      }
+
+      return {
+        appearances: Object.entries(icon.constructions).flatMap(([construction, definition]) =>
+          Object.entries(definition.presentations).map(
+            ([presentation, presentationDefinition]) => ({
+              colorBehavior: presentationDefinition.colorBehavior,
+              construction,
+              presentation
+            })
+          )
+        ),
+        component: component as SocialIconComponent,
+        name: icon.componentName
+      };
+    });
 }
 
 const INTERFACE_ICON_ENTRIES: InterfaceIconEntry[] = [
@@ -158,7 +203,10 @@ const INTERFACE_ICON_ENTRIES: InterfaceIconEntry[] = [
   { name: 'VolumeXIcon', component: VolumeXIcon },
   { name: 'XIcon', component: XIcon }
 ];
-const SOCIAL_ICON_ENTRIES = getSocialIconEntries(SocialIcons);
+const SOCIAL_ICON_ENTRIES = getSocialIconEntries(
+  SocialIcons,
+  iconManifest as PublishedIconManifest
+);
 
 function IconGallery({
   entries,
@@ -206,40 +254,40 @@ function SocialIconGallery({
 }) {
   return (
     <div className={s.galleryGrid}>
-      {entries.map(({ component: Glyph, name }) => (
+      {entries.map(({ appearances, component: Glyph, name }) => (
         <article
           key={name}
           className={`${s.galleryItem} ${s.socialGalleryItem}`}
           data-social-icon={name}
         >
           <div className={s.socialIconPair}>
-            <div
-              className={`${s.socialIconPreview} ${s.socialBrandPreview}`}
-              style={{ backgroundColor: brandBackgroundColor }}
-            >
-              <KIcon
-                intent="neutral"
-                label={`${name}, brand`}
-                scale={scale}
-                style={{ color: brandForegroundColor }}
-                surfaceContext="onSubtle"
-              >
-                <Glyph presentation="brand" />
-              </KIcon>
-            </div>
-            <div
-              className={s.socialIconPreview}
-              style={{ backgroundColor: monochromeBackgroundColor }}
-            >
-              <KIcon
-                intent={intent}
-                label={`${name}, monochrome`}
-                scale={scale}
-                surfaceContext={surfaceContext}
-              >
-                <Glyph presentation="monochrome" />
-              </KIcon>
-            </div>
+            {appearances.map(({ colorBehavior, construction, presentation }) => {
+              const usesCurrentColor = colorBehavior === 'currentColor';
+              const appearanceName = `${construction}.${presentation}`;
+
+              return (
+                <div
+                  className={s.socialIconPreview}
+                  key={appearanceName}
+                  style={{
+                    backgroundColor: usesCurrentColor
+                      ? monochromeBackgroundColor
+                      : brandBackgroundColor
+                  }}
+                >
+                  <KIcon
+                    intent={usesCurrentColor ? intent : 'neutral'}
+                    label={`${name}, ${appearanceName}`}
+                    scale={scale}
+                    style={usesCurrentColor ? undefined : { color: brandForegroundColor }}
+                    surfaceContext={usesCurrentColor ? surfaceContext : 'onSubtle'}
+                  >
+                    <Glyph construction={construction} presentation={presentation} />
+                  </KIcon>
+                  <span className={s.socialAppearanceName}>{appearanceName}</span>
+                </div>
+              );
+            })}
           </div>
           <code className={`${s.iconName} ${s.socialIconName}`}>{name}</code>
         </article>
@@ -622,8 +670,9 @@ export default function IconShowcase() {
                   Social
                 </h2>
                 <p className={s.sectionDescription}>
-                  Each block pairs the official brand presentation on a fixed subtle surface with
-                  the monochrome presentation on the selected background and surface context.
+                  Every construction and presentation is discovered from the published icon
+                  manifest. Brand artwork uses a fixed subtle surface; currentColor artwork follows
+                  the selected background and surface context.
                 </p>
               </div>
             </div>

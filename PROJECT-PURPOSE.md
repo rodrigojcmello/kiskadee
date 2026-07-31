@@ -68,6 +68,11 @@ This matters because not every geometric value is always-on. Some values exist i
   - Goal: color runtime for dynamic segments.
   - Calculates scales and injects CSS variables in the browser.
 
+- `packages/brands`
+  - Goal: portable third-party brand definitions, provenance, optional packs, and standalone tonal
+    assets.
+  - Keeps brand identity outside preset primitive colors and the three-layer color architecture.
+
 - `packages/icons`
   - Goal: canonical cross-platform SVG distribution and metadata, organized into visual families.
   - Preserves separately sourced brand artwork and its cross-platform distribution metadata.
@@ -103,6 +108,8 @@ This is the baseline end-to-end flow for Web:
 - Converts preset schemas into web artifacts (CSS + JSON maps + metadata).
 - Writes build output to `packages/web-builder/build/<designSystemKey>/...`.
 - May split generated classes into dedicated artifact buckets when runtime/components need conditional opt-in behavior beyond the generic `s` scale bucket.
+- May project optional `packages/brands` tonal assets through a preset-owned component formula and
+  publish them outside the normal preset artifacts under `brand-packs/`.
 
 4. `packages/web-builder` sync/generate steps
 - `sync`: copies artifacts to `packages/showcase/public/build/<designSystemKey>/...`.
@@ -120,6 +127,8 @@ This is the baseline end-to-end flow for Web:
 Practical reading:
 
 - `core -> presets -> web-builder` defines and compiles visual identity.
+- `tonal-scale -> brands -> preset projector -> web-builder` defines optional third-party brand
+  appearances without adding them to the preset's primitive or global color layers.
 - `sync/generate -> showcase` exposes artifacts for inspection.
 - `headless + components + showcase route` validates component usability end-to-end.
 

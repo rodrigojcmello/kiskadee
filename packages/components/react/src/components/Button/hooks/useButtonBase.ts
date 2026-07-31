@@ -1,5 +1,6 @@
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useBrandPack } from '../../../shared/contexts/BrandPackContext.tsx';
 import {
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_PRESSED_DURATION_MS,
@@ -8,6 +9,8 @@ import {
 } from '../Button.class-names.ts';
 import type { ButtonProps, ButtonStatus } from '../Button.types.ts';
 import { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
+
+declare const process: { env: { NODE_ENV?: string } };
 
 export function useButtonCommonProps(props: ButtonProps) {
   const {
@@ -39,11 +42,23 @@ export function useButtonCommonProps(props: ButtonProps) {
     ...restProps
   } = props;
 
+  const brandPack = useBrandPack();
   const { buttonClassesMap, componentEffects, globalEffects, options } = useButtonArtifactConfig();
   const { e1, e2, e3 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
   const iconLayout = iconLayoutProp ?? options.iconLayout;
   const iconPlacement = iconPlacementProp ?? options.iconPlacement;
+  const isBrandIntent = intent.startsWith('brand.');
+  const supportsBrandIntent =
+    !isBrandIntent || Boolean(brandPack?.hasComponent('button') && brandPack.hasIntent(intent));
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production' || supportsBrandIntent) return;
+
+    console.error(
+      `[Kiskadee] Button intent="${intent}" requires a compatible BrandPackBoundary. No brand color classes were applied.`
+    );
+  }, [intent, supportsBrandIntent]);
 
   return {
     classNames,

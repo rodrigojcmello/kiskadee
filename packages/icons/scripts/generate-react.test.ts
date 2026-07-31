@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { RedditIcon } from '../src/families/social/RedditIcon.tsx';
 import {
   generateReactComponents,
   type IconManifest,
@@ -38,25 +39,29 @@ describe('canonical icon sources', () => {
     const manifest = await readManifest();
     const sources = new Set<string>();
 
-    expect(manifest.formatVersion).toBe(3);
-    expect(manifest.sourceContract).toBe('kiskadee-icon-svg-v3');
+    expect(manifest.formatVersion).toBe(4);
+    expect(manifest.sourceContract).toBe('kiskadee-icon-svg-v4');
     expect(manifest.icons).toHaveLength(25);
 
     for (const icon of manifest.icons) {
-      expect(icon.presentations[icon.defaultPresentation]).toBeDefined();
+      expect(icon.constructions[icon.defaultConstruction]).toBeDefined();
 
-      for (const presentation of Object.values(icon.presentations)) {
-        expect(sources.has(presentation.source)).toBe(false);
-        sources.add(presentation.source);
+      for (const construction of Object.values(icon.constructions)) {
+        expect(construction.presentations[construction.defaultPresentation]).toBeDefined();
 
-        const svg = await readFile(path.resolve(assetsDir, presentation.source), 'utf8');
-        expect(svg).toContain('<svg');
-        expect(svg).toContain('</svg>');
-        expect(svg).not.toContain('width="1em"');
-        expect(svg).not.toContain('height="1em"');
-        expect(svg).not.toContain('aria-hidden=');
-        expect(svg).not.toContain('focusable=');
-        expect(svg).not.toContain('strokeWidth=');
+        for (const presentation of Object.values(construction.presentations)) {
+          expect(sources.has(presentation.source)).toBe(false);
+          sources.add(presentation.source);
+
+          const svg = await readFile(path.resolve(assetsDir, presentation.source), 'utf8');
+          expect(svg).toContain('<svg');
+          expect(svg).toContain('</svg>');
+          expect(svg).not.toContain('width="1em"');
+          expect(svg).not.toContain('height="1em"');
+          expect(svg).not.toContain('aria-hidden=');
+          expect(svg).not.toContain('focusable=');
+          expect(svg).not.toContain('strokeWidth=');
+        }
       }
     }
   });
@@ -68,8 +73,8 @@ describe('canonical icon sources', () => {
       formatVersion: number;
       sourceContract: string;
     };
-    obsoleteContract.formatVersion = 1;
-    obsoleteContract.sourceContract = 'kiskadee-icon-svg-v1';
+    obsoleteContract.formatVersion = 3;
+    obsoleteContract.sourceContract = 'kiskadee-icon-svg-v3';
 
     expect(() => validateIconManifest(obsoleteManifest)).toThrow(
       'Unsupported icon manifest contract.'
@@ -77,14 +82,19 @@ describe('canonical icon sources', () => {
 
     const missingSocialTransform = structuredClone(currentManifest);
     const socialIcon = missingSocialTransform.icons.find((icon) => icon.family === 'social');
-    delete socialIcon?.opticalTransform;
+    const socialConstruction = socialIcon?.constructions[socialIcon.defaultConstruction];
+    if (socialConstruction) {
+      delete (socialConstruction as Partial<typeof socialConstruction>).opticalTransform;
+    }
     expect(() => validateIconManifest(missingSocialTransform)).toThrow(
       'must declare an optical transform'
     );
 
     const invalidScale = structuredClone(currentManifest);
     const calibratedIcon = invalidScale.icons.find((icon) => icon.family === 'social');
-    if (calibratedIcon?.opticalTransform) calibratedIcon.opticalTransform.scale = 2;
+    const calibratedConstruction =
+      calibratedIcon?.constructions[calibratedIcon.defaultConstruction];
+    if (calibratedConstruction) calibratedConstruction.opticalTransform.scale = 2;
     expect(() => validateIconManifest(invalidScale)).toThrow(
       'Optical scale must be a finite number'
     );
@@ -105,7 +115,27 @@ describe('canonical icon sources', () => {
     for (const icon of manifest.icons) {
       expect(icon.family).toBe('social');
       expect(icon.origin).toBe('third-party');
-      expect(icon.opticalTransform).toBeDefined();
+      expect(Object.keys(icon.constructions).length).toBeGreaterThan(0);
+      for (const construction of Object.values(icon.constructions)) {
+        expect(construction.opticalTransform).toBeDefined();
+      }
+    }
+  });
+
+  it('migrates every non-Reddit brand to mark without changing its canonical assets', async () => {
+    const manifest = await readManifest();
+
+    for (const icon of manifest.icons.filter((candidate) => candidate.id !== 'reddit')) {
+      expect(icon.defaultConstruction, icon.id).toBe('mark');
+      expect(Object.keys(icon.constructions), icon.id).toEqual(['mark']);
+
+      for (const [presentationName, presentation] of Object.entries(
+        icon.constructions.mark.presentations
+      )) {
+        expect(presentation.source, `${icon.id}.${presentationName}`).toBe(
+          `social/${icon.id}.${presentationName}.svg`
+        );
+      }
     }
   });
 
@@ -135,49 +165,62 @@ describe('canonical icon sources', () => {
     }
   });
 
-  it('records one shared optical calibration for every social mark', async () => {
+  it('records one shared optical calibration per construction', async () => {
     const manifest = await readManifest();
     const socialIcons = manifest.icons.filter((icon) => icon.family === 'social');
     const calibrationByIcon = Object.fromEntries(
-      socialIcons.map((icon) => [icon.id, icon.opticalTransform])
+      socialIcons.map((icon) => [
+        icon.id,
+        Object.fromEntries(
+          Object.entries(icon.constructions).map(([name, construction]) => [
+            name,
+            construction.opticalTransform
+          ])
+        )
+      ])
     );
 
     for (const icon of socialIcons) {
-      expect(icon.opticalTransform, icon.id).toEqual({
-        scale: expect.any(Number),
-        offsetX: expect.any(Number),
-        offsetY: expect.any(Number)
-      });
+      for (const [constructionName, construction] of Object.entries(icon.constructions)) {
+        expect(construction.opticalTransform, `${icon.id}.${constructionName}`).toEqual({
+          scale: expect.any(Number),
+          offsetX: expect.any(Number),
+          offsetY: expect.any(Number)
+        });
+      }
     }
 
     // What: freeze every human-calibrated transform, not only broad geometric limits.
     // Why: a numerically valid change can still break the perceived balance of the contact sheet.
     expect(calibrationByIcon).toEqual({
-      apple: { scale: 0.94, offsetX: 0, offsetY: -0.03 },
-      'chat-gpt': { scale: 0.9, offsetX: 0, offsetY: 0 },
-      claude: { scale: 1.1, offsetX: 0, offsetY: 0 },
-      discord: { scale: 0.88, offsetX: 0, offsetY: 0 },
-      facebook: { scale: 0.86, offsetX: 0, offsetY: 0.01 },
-      gemini: { scale: 0.94, offsetX: 0, offsetY: 0 },
-      'git-hub': { scale: 0.88, offsetX: 0, offsetY: 0.02 },
-      google: { scale: 0.88, offsetX: 0.02, offsetY: -0.01 },
-      instagram: { scale: 0.9, offsetX: 0, offsetY: 0 },
-      'linked-in': { scale: 0.84, offsetX: 0, offsetY: 0.01 },
-      mastodon: { scale: 0.86, offsetX: 0.02, offsetY: 0.02 },
-      messenger: { scale: 0.84, offsetX: 0, offsetY: 0 },
-      microsoft: { scale: 0.9, offsetX: 0, offsetY: 0 },
-      pinterest: { scale: 0.9, offsetX: 0, offsetY: 0 },
-      reddit: { scale: 0.9, offsetX: 0, offsetY: 0 },
-      snapchat: { scale: 1.1, offsetX: 0, offsetY: -0.01 },
-      substack: { scale: 1.2, offsetX: 0, offsetY: 0 },
-      telegram: { scale: 0.9, offsetX: 0, offsetY: 0 },
-      threads: { scale: 0.88, offsetX: 0, offsetY: 0 },
-      'tik-tok': { scale: 1.15, offsetX: 0, offsetY: -0.05 },
-      twitch: { scale: 0.88, offsetX: 0.04, offsetY: 0.03 },
-      vimeo: { scale: 0.88, offsetX: -0.02, offsetY: 0.02 },
-      'whats-app': { scale: 0.9, offsetX: 0.02, offsetY: -0.02 },
-      x: { scale: 0.8, offsetX: 0, offsetY: 0 },
-      'you-tube': { scale: 0.94, offsetX: 0, offsetY: 0 }
+      apple: { mark: { scale: 0.94, offsetX: 0, offsetY: -0.03 } },
+      'chat-gpt': { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
+      claude: { mark: { scale: 1.1, offsetX: 0, offsetY: 0 } },
+      discord: { mark: { scale: 0.88, offsetX: 0, offsetY: 0 } },
+      facebook: { mark: { scale: 0.86, offsetX: 0, offsetY: 0.01 } },
+      gemini: { mark: { scale: 0.94, offsetX: 0, offsetY: 0 } },
+      'git-hub': { mark: { scale: 0.88, offsetX: 0, offsetY: 0.02 } },
+      google: { mark: { scale: 0.88, offsetX: 0.02, offsetY: -0.01 } },
+      instagram: { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
+      'linked-in': { mark: { scale: 0.84, offsetX: 0, offsetY: 0.01 } },
+      mastodon: { mark: { scale: 0.86, offsetX: 0.02, offsetY: 0.02 } },
+      messenger: { mark: { scale: 0.84, offsetX: 0, offsetY: 0 } },
+      microsoft: { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
+      pinterest: { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
+      reddit: {
+        contained: { scale: 0.76, offsetX: 0, offsetY: 0 },
+        mark: { scale: 1.1, offsetX: 0, offsetY: 0 }
+      },
+      snapchat: { mark: { scale: 1.1, offsetX: 0, offsetY: -0.01 } },
+      substack: { mark: { scale: 1.2, offsetX: 0, offsetY: 0 } },
+      telegram: { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
+      threads: { mark: { scale: 0.88, offsetX: 0, offsetY: 0 } },
+      'tik-tok': { mark: { scale: 1.15, offsetX: 0, offsetY: -0.05 } },
+      twitch: { mark: { scale: 0.88, offsetX: 0.04, offsetY: 0.03 } },
+      vimeo: { mark: { scale: 0.88, offsetX: -0.02, offsetY: 0.02 } },
+      'whats-app': { mark: { scale: 0.9, offsetX: 0.02, offsetY: -0.02 } },
+      x: { mark: { scale: 0.8, offsetX: 0, offsetY: 0 } },
+      'you-tube': { mark: { scale: 0.94, offsetX: 0, offsetY: 0 } }
     });
   });
 
@@ -188,7 +231,9 @@ describe('canonical icon sources', () => {
     expect(socialIcons).toHaveLength(25);
 
     for (const icon of socialIcons) {
-      const monochrome = icon.presentations.monochrome;
+      const monochrome = Object.values(icon.constructions)
+        .map((construction) => construction.presentations.monochrome)
+        .find(Boolean);
 
       expect(monochrome, icon.id).toBeDefined();
       expect(monochrome?.colorBehavior, icon.id).toBe('currentColor');
@@ -205,14 +250,16 @@ describe('canonical icon sources', () => {
     const thirdPartyIcons = manifest.icons.filter((icon) => icon.origin === 'third-party');
 
     for (const icon of thirdPartyIcons) {
+      const defaultConstruction = icon.constructions[icon.defaultConstruction];
+
       if (MONOCHROME_BRAND_IDS.has(icon.id)) {
-        expect(icon.defaultPresentation).toBe('monochrome');
-        expect(icon.presentations.brand).toBeUndefined();
+        expect(defaultConstruction.defaultPresentation).toBe('monochrome');
+        expect(defaultConstruction.presentations.brand).toBeUndefined();
         continue;
       }
 
-      expect(icon.defaultPresentation).toBe('brand');
-      expect(icon.presentations.brand).toBeDefined();
+      expect(defaultConstruction.defaultPresentation).toBe('brand');
+      expect(defaultConstruction.presentations.brand).toBeDefined();
     }
   });
 
@@ -220,46 +267,119 @@ describe('canonical icon sources', () => {
     const manifest = await readManifest();
 
     for (const icon of manifest.icons) {
-      const brand = icon.presentations.brand;
-      const monochrome = icon.presentations.monochrome;
-      if (!brand || !monochrome) continue;
+      for (const [constructionName, construction] of Object.entries(icon.constructions)) {
+        const presentations = Object.values(construction.presentations);
+        const viewBoxes = await Promise.all(
+          presentations.map(async (presentation) =>
+            readViewBox(await readFile(path.resolve(assetsDir, presentation.source), 'utf8'))
+          )
+        );
 
-      const [brandSvg, monochromeSvg] = await Promise.all([
-        readFile(path.resolve(assetsDir, brand.source), 'utf8'),
-        readFile(path.resolve(assetsDir, monochrome.source), 'utf8')
-      ]);
-
-      expect(readViewBox(brandSvg), icon.id).toBe(readViewBox(monochromeSvg));
+        expect(new Set(viewBoxes).size, `${icon.id}.${constructionName}`).toBe(1);
+      }
     }
   });
 
-  it('uses one Reddit construction across presentations and excludes Bluesky', async () => {
+  it('publishes the four approved Reddit construction/presentation pairs', async () => {
     const manifest = await readManifest();
     const reddit = manifest.icons.find((icon) => icon.id === 'reddit');
 
     expect(manifest.icons.some((icon) => icon.id === 'bluesky')).toBe(false);
     expect(reddit?.provenanceUrl).toBe('https://redditbrand.lingoapp.com/s/Logo-d9x3n2');
-
-    const [brand, monochrome] = await Promise.all([
-      readFile(path.resolve(assetsDir, reddit!.presentations.brand!.source), 'utf8'),
-      readFile(path.resolve(assetsDir, reddit!.presentations.monochrome!.source), 'utf8')
+    expect(reddit?.defaultConstruction).toBe('contained');
+    expect(Object.keys(reddit!.constructions).sort()).toEqual(['contained', 'mark']);
+    expect(Object.keys(reddit!.constructions.contained.presentations).sort()).toEqual([
+      'brand',
+      'brandFlat'
+    ]);
+    expect(Object.keys(reddit!.constructions.mark.presentations).sort()).toEqual([
+      'brand',
+      'monochrome'
     ]);
 
-    expect(readViewBox(brand)).toBe('0 0 256 256');
-    expect(brand).toContain('fill="#ff4500"');
-    expect(brand).toContain('fill="#ffffff"');
-    expect(brand).not.toContain('<defs');
-    expect(brand).not.toContain('stroke=');
-
-    expect(readViewBox(monochrome)).toBe(readViewBox(brand));
-    expect(readPathData(monochrome)).toEqual([
-      readPathData(brand).join(' ').replace(' m154.04,60.36', ' M154.04,60.36')
+    const [containedBrand, containedBrandFlat, markBrand, markMonochrome] = await Promise.all([
+      readFile(
+        path.resolve(assetsDir, reddit!.constructions.contained.presentations.brand.source),
+        'utf8'
+      ),
+      readFile(
+        path.resolve(assetsDir, reddit!.constructions.contained.presentations.brandFlat.source),
+        'utf8'
+      ),
+      readFile(
+        path.resolve(assetsDir, reddit!.constructions.mark.presentations.brand.source),
+        'utf8'
+      ),
+      readFile(
+        path.resolve(assetsDir, reddit!.constructions.mark.presentations.monochrome.source),
+        'utf8'
+      )
     ]);
-    expect(monochrome).toContain('fill="currentColor"');
-    expect(monochrome).toContain('fill-rule="evenodd"');
-    expect(monochrome).toContain('clip-rule="evenodd"');
-    expect(monochrome).not.toMatch(/#[0-9a-f]{3,8}\b/i);
-    expect(monochrome).not.toContain('<defs');
+
+    expect(readViewBox(containedBrand)).toBe('0 0 256 256');
+    expect(readViewBox(containedBrandFlat)).toBe(readViewBox(containedBrand));
+    expect(containedBrand).toContain('fill="#FF4500"');
+    expect(containedBrandFlat).toContain('fill="#ff4500"');
+
+    expect(readViewBox(markBrand)).toBe('0 0 256 256');
+    expect(readViewBox(markMonochrome)).toBe(readViewBox(markBrand));
+    expect(markBrand).not.toContain('<rect');
+    expect(markMonochrome).not.toContain('<rect');
+    expect(markMonochrome).toContain('fill="currentColor"');
+    expect(markMonochrome).toContain('fill-rule="evenodd"');
+    expect(markMonochrome).toContain('clip-rule="evenodd"');
+    expect(markMonochrome).not.toMatch(/#[0-9a-f]{3,8}\b/i);
+    expect(markMonochrome).not.toContain('url(');
+
+    const socialSources = await Promise.all(
+      Object.values(reddit!.constructions).flatMap((construction) =>
+        Object.values(construction.presentations).map((presentation) =>
+          readFile(path.resolve(assetsDir, presentation.source), 'utf8')
+        )
+      )
+    );
+    expect(socialSources.join('\n')).not.toContain('silhouette');
+  });
+
+  it('generates a discriminated Reddit API and rejects invalid runtime pairs', async () => {
+    const component = await readFile(
+      path.resolve(packageRoot, 'src/families/social/RedditIcon.tsx'),
+      'utf8'
+    );
+
+    expect(component).toContain("construction?: 'contained'");
+    expect(component).toContain("presentation?: 'brand' | 'brandFlat'");
+    expect(component).toContain("construction: 'mark'");
+    expect(component).toContain("presentation?: 'brand' | 'monochrome'");
+    expect(() =>
+      RedditIcon({
+        construction: 'contained',
+        presentation: 'monochrome'
+      } as never)
+    ).toThrow('Unsupported RedditIcon construction/presentation: contained.monochrome');
+    expect(() =>
+      RedditIcon({
+        construction: 'mark',
+        presentation: 'brandFlat'
+      } as never)
+    ).toThrow('Unsupported RedditIcon construction/presentation: mark.brandFlat');
+  });
+
+  it('preserves the official Reddit originals as source evidence', async () => {
+    const sourcesDir = path.resolve(assetsDir, 'sources/reddit');
+    const originals = await Promise.all([
+      readFile(path.resolve(sourcesDir, 'Reddit_Icon_FullColor.svg'), 'utf8'),
+      readFile(path.resolve(sourcesDir, 'Reddit_Icon_FullColor_Bleed.svg'), 'utf8'),
+      readFile(path.resolve(sourcesDir, 'Reddit_Icon_2Color.svg'), 'utf8'),
+      readFile(path.resolve(sourcesDir, 'Reddit_Icon_2Color_FullBleed.svg'), 'utf8')
+    ]);
+
+    for (const original of originals) {
+      expect(original).toContain('<?xml');
+      expect(readViewBox(original)).toBe('0 0 256 256');
+    }
+    expect(originals[0]).toContain('Adobe Illustrator');
+    expect(originals[1]).toContain('Adobe Illustrator');
   });
 
   it('preserves the repaired Apple, Claude, and Telegram geometry', async () => {
@@ -319,12 +439,13 @@ describe('canonical icon sources', () => {
   it('uses one official Substack geometry for brand and monochrome', async () => {
     const manifest = await readManifest();
     const substack = manifest.icons.find((icon) => icon.id === 'substack');
+    const mark = substack!.constructions.mark;
     const [brand, monochrome] = await Promise.all([
-      readFile(path.resolve(assetsDir, substack!.presentations.brand!.source), 'utf8'),
-      readFile(path.resolve(assetsDir, substack!.presentations.monochrome!.source), 'utf8')
+      readFile(path.resolve(assetsDir, mark.presentations.brand!.source), 'utf8'),
+      readFile(path.resolve(assetsDir, mark.presentations.monochrome!.source), 'utf8')
     ]);
 
-    expect(substack?.presentations.brand?.colorBehavior).toBe('fixed');
+    expect(mark.presentations.brand?.colorBehavior).toBe('fixed');
     expect(readViewBox(brand)).toBe('0 0 1000 1000');
     expect(readViewBox(monochrome)).toBe(readViewBox(brand));
     expect(readPathData(brand)).toEqual(readPathData(monochrome));

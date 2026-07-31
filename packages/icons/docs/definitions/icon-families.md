@@ -11,8 +11,8 @@ size, semantic color, surface context, and accessibility.
 
 - Canonical brand artwork lives in `assets/social/` as plain SVG and is never rewritten by a
   package build.
-- `metadata/icons.json` owns stable IDs, presentations, provenance, color behavior, and shared
-  cross-platform optical calibration.
+- `metadata/icons.json` owns stable IDs, constructions, presentations, provenance, color behavior,
+  and cross-platform optical calibration per construction.
 - `src/families/social/` is generated, optically calibrated React source. Never edit those files
   manually.
 - `dist/svg/` publishes the optically calibrated brand SVGs for non-React consumers.
@@ -38,11 +38,25 @@ cases such as the Showcase brand gallery.
 ## Shared brand contract
 
 - Preserve the source artwork's coordinate system and silhouette.
-- Calibrate perceived size and placement only through the manifest's `opticalTransform`.
-- Apply one transform to every presentation so `brand` and `monochrome` share a footprint.
-- Every mark exposes a `monochrome` presentation through `currentColor`.
+- A construction is one official geometry, such as Reddit `contained` or `mark`.
+- A presentation changes the paint of that geometry, such as `brand`, `brandFlat`, or
+  `monochrome`.
+- Calibrate perceived size and placement only through each construction's `opticalTransform`.
+- Apply one transform to every presentation in the same construction so those presentations share
+  a footprint.
+- Every brand exposes at least one `monochrome` presentation through `currentColor`; a construction
+  that exists only for official color artwork does not need to duplicate it.
+- `defaultConstruction` and each construction's `defaultPresentation` are deterministic API
+  defaults, not responsive or size-dependent rules.
 - Keep generated SVG components presentation-only; the consuming Kiskadee `Icon` wrapper owns
   accessible-image versus decorative semantics.
+
+No construction is selected automatically from icon size, component, surface, or viewport. A
+consumer that needs a non-default construction must request it explicitly:
+
+```tsx
+<RedditIcon construction="mark" presentation="monochrome" />
+```
 
 Every mark must have first-party provenance recorded in
 [`social-icons.md`](./social-icons.md). Distribution is a technical convenience and does not grant

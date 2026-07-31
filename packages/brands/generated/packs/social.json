@@ -1,0 +1,187 @@
+{
+  "brands": [
+    {
+      "contentPolarity": "light",
+      "iconId": "chat-gpt",
+      "id": "chat-gpt",
+      "intent": "brand.chat-gpt",
+      "tonalAsset": "scales/chat-gpt.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "claude",
+      "id": "claude",
+      "intent": "brand.claude",
+      "tonalAsset": "scales/claude.json",
+      "tonalIntegritySha256": "6c1aeb578425bbee3da9326a3a4e7890fa2c6b6149e7cb69cad84eabd87ae37e"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "gemini",
+      "id": "gemini",
+      "intent": "brand.gemini",
+      "tonalAsset": "scales/gemini.json",
+      "tonalIntegritySha256": "03e82a4138e877f938410524de75868620d6e4ce686873a42dee0da3d6371b63"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "facebook",
+      "id": "facebook",
+      "intent": "brand.facebook",
+      "tonalAsset": "scales/facebook.json",
+      "tonalIntegritySha256": "0bc58a8bded5f8e97a3172bac1cf4f52cf67daf24117b714e0bad23976afd990"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "you-tube",
+      "id": "you-tube",
+      "intent": "brand.you-tube",
+      "tonalAsset": "scales/you-tube.json",
+      "tonalIntegritySha256": "4d63c743b39ef5048011408480357f6db38da3e4b59f3701d64c13256961e1ae"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "whats-app",
+      "id": "whats-app",
+      "intent": "brand.whats-app",
+      "tonalAsset": "scales/whats-app.json",
+      "tonalIntegritySha256": "8c8fd9bce4e0dc322279e688a6886b26efd6444378d1352bb69e6cf525602902"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "instagram",
+      "id": "instagram",
+      "intent": "brand.instagram",
+      "tonalAsset": "scales/instagram.json",
+      "tonalIntegritySha256": "b1e030f31186e6ba0ff646ca5a4fe91e7966144194341496891a1e5324688f6d"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "tik-tok",
+      "id": "tik-tok",
+      "intent": "brand.tik-tok",
+      "tonalAsset": "scales/tik-tok.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "messenger",
+      "id": "messenger",
+      "intent": "brand.messenger",
+      "tonalAsset": "scales/messenger.json",
+      "tonalIntegritySha256": "57a6061e67d890406401d1ba2d2b7193d20d2ed68816889ab25dcc4a7fefd4d0"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "telegram",
+      "id": "telegram",
+      "intent": "brand.telegram",
+      "tonalAsset": "scales/telegram.json",
+      "tonalIntegritySha256": "ff0573b19ac6a6504d06c3325f4bfe1d82a058e218eaae7d34db796541485aa1"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "snapchat",
+      "id": "snapchat",
+      "intent": "brand.snapchat",
+      "tonalAsset": "scales/snapchat.json",
+      "tonalIntegritySha256": "d0cf02eddc4a45805f85cebf97d127b5609c9511526d665a67c93f4d8874f517"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "x",
+      "id": "x",
+      "intent": "brand.x",
+      "tonalAsset": "scales/x.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "pinterest",
+      "id": "pinterest",
+      "intent": "brand.pinterest",
+      "tonalAsset": "scales/pinterest.json",
+      "tonalIntegritySha256": "2817e032117b9d8ea1add7c06c06954b6cbd50347f66e2fb6a16c847733ec628"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "reddit",
+      "id": "reddit",
+      "intent": "brand.reddit",
+      "tonalAsset": "scales/reddit.json",
+      "tonalIntegritySha256": "021590d62631e0f014f27f49d09dccb4e343e98e733410241ddf77e21ebc0b82"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "linked-in",
+      "id": "linked-in",
+      "intent": "brand.linked-in",
+      "tonalAsset": "scales/linked-in.json",
+      "tonalIntegritySha256": "29a38979e1d36a7668b893676a7a34096224b9aabe43e115a519a1a6742b23dd"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "discord",
+      "id": "discord",
+      "intent": "brand.discord",
+      "tonalAsset": "scales/discord.json",
+      "tonalIntegritySha256": "8f843cba45dc4a003b5d28f0f3f8bfca9866f0c967546582c036f07ac3800709"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "twitch",
+      "id": "twitch",
+      "intent": "brand.twitch",
+      "tonalAsset": "scales/twitch.json",
+      "tonalIntegritySha256": "9b3a9538a615d1e9b551093af7e942e06f6189931111c89fbab02585e6d9ef62"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "threads",
+      "id": "threads",
+      "intent": "brand.threads",
+      "tonalAsset": "scales/threads.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "mastodon",
+      "id": "mastodon",
+      "intent": "brand.mastodon",
+      "tonalAsset": "scales/mastodon.json",
+      "tonalIntegritySha256": "6841b4a73c53313984231a2db2c20dad07bf84850c0c3ebc3759420904773df6"
+    },
+    {
+      "contentPolarity": "light",
+      "iconId": "git-hub",
+      "id": "git-hub",
+      "intent": "brand.git-hub",
+      "tonalAsset": "scales/git-hub.json",
+      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "vimeo",
+      "id": "vimeo",
+      "intent": "brand.vimeo",
+      "tonalAsset": "scales/vimeo.json",
+      "tonalIntegritySha256": "82acfd4670ab809abd25dbadf5e02cbc35b02cac7c9da5b2246956ae5c7e90ba"
+    },
+    {
+      "contentPolarity": "dark",
+      "iconId": "substack",
+      "id": "substack",
+      "intent": "brand.substack",
+      "tonalAsset": "scales/substack.json",
+      "tonalIntegritySha256": "11ced710d3e7069ef6fedef4c7cb40999e7c99c0adf11fb588eb806462d020af"
+    }
+  ],
+  "formatVersion": 1,
+  "generator": {
+    "package": "@kiskadee/brands",
+    "version": "0.2.0"
+  },
+  "id": "social",
+  "kind": "kiskadee-brand-pack-v1"
+}

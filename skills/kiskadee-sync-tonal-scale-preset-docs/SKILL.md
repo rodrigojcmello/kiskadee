@@ -10,7 +10,14 @@ Keep the current Shared Viewer candidate distinct from previously approved prese
 ## Required Workflow
 
 1. Read `../kiskadee-preset-evidence/SKILL.md` completely before editing official preset evidence.
-2. Read the version from `packages/tonal-scale/package.json` and confirm that the exported generator version in `packages/tonal-scale/src/export/tonal-artifacts.ts` matches it.
+2. Read the version from `packages/tonal-scale/package.json` and inventory every exported artifact
+   generator.
+   - A newly introduced generator must identify the package version that introduced its contract.
+   - An existing generator may intentionally retain an older version when its serialized bytes and
+     verifier contract are frozen. Do not bump it merely because the package gained an additive API.
+   - Confirm the relevant source of truth explicitly; today the multifamily generator lives in
+     `packages/tonal-scale/src/export/tonal-artifacts.ts`, while the standalone generator lives in
+     `packages/tonal-scale/src/standalone.ts`.
 3. Run the audit before editing:
 
 ```sh
@@ -34,6 +41,8 @@ Treat versions as two separate facts:
 
 - **Candidate version:** the current local generator used when opening the Shared Viewer link.
 - **Approved version:** the generator that produced the stored, visually approved preset assets.
+- **Artifact-generator version:** the serializer/verifier identity stored in a particular artifact
+  contract. It may remain older than the package when a new, independent generator is added.
 
 These versions may differ. Make that difference explicit instead of performing a global version replacement.
 

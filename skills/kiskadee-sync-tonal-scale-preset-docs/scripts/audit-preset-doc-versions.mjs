@@ -9,12 +9,20 @@ const generatorSourcePath = path.join(
   repositoryRoot,
   'packages/tonal-scale/src/export/tonal-artifacts.ts'
 );
+const standaloneGeneratorSourcePath = path.join(
+  repositoryRoot,
+  'packages/tonal-scale/src/standalone.ts'
+);
 const presetEvidenceRoot = path.join(repositoryRoot, 'packages/presets/docs/design-systems');
 
 const packageVersion = JSON.parse(fs.readFileSync(tonalScalePackagePath, 'utf8')).version;
 const generatorSource = fs.readFileSync(generatorSourcePath, 'utf8');
+const standaloneGeneratorSource = fs.readFileSync(standaloneGeneratorSourcePath, 'utf8');
 const generatorVersionMatch = generatorSource.match(
   /TONAL_ARTIFACT_GENERATOR\s*=\s*\{[\s\S]*?version:\s*['"]([^'"]+)['"]/
+);
+const standaloneGeneratorVersionMatch = standaloneGeneratorSource.match(
+  /STANDALONE_TONAL_ARTIFACT_GENERATOR\s*=\s*\{[\s\S]*?version:\s*['"]([^'"]+)['"]/
 );
 
 const failures = [];
@@ -23,9 +31,15 @@ if (!generatorVersionMatch) {
   failures.push(
     `Could not read the exported generator version from ${path.relative(repositoryRoot, generatorSourcePath)}.`
   );
-} else if (generatorVersionMatch[1] !== packageVersion) {
+}
+
+if (!standaloneGeneratorVersionMatch) {
   failures.push(
-    `Package version ${packageVersion} does not match exported generator version ${generatorVersionMatch[1]}.`
+    `Could not read the standalone generator version from ${path.relative(repositoryRoot, standaloneGeneratorSourcePath)}.`
+  );
+} else if (standaloneGeneratorVersionMatch[1] !== packageVersion) {
+  failures.push(
+    `Package version ${packageVersion} does not match standalone generator version ${standaloneGeneratorVersionMatch[1]}.`
   );
 }
 
@@ -78,7 +92,9 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Tonal-scale preset documentation audit passed for generator ${packageVersion}.`);
+  console.log(`Tonal-scale preset documentation audit passed for package ${packageVersion}.`);
+  console.log(`- standalone generator: ${standaloneGeneratorVersionMatch?.[1] ?? 'unavailable'}`);
+  console.log(`- multifamily artifact generator: ${generatorVersionMatch?.[1] ?? 'unavailable'}`);
   for (const { filePath } of viewerDocuments) {
     console.log(`- ${path.relative(repositoryRoot, filePath)}`);
   }

@@ -267,8 +267,12 @@ one intent when the color represents a control state, activation treatment,
 surface role, or structural role rather than a user-selectable semantic variant.
 
 ```typescript
-// Button intents
-type ButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
+// Button intents authored by presets
+type SystemButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
+
+// External intents are distributed by their own optional artifact domain.
+type ExternalButtonIntent = `brand.${string}`;
+type ButtonIntent = SystemButtonIntent | ExternalButtonIntent;
 
 // Badge intents
 type BadgeIntent = 'primary' | 'neutral' | 'attention' | 'new';

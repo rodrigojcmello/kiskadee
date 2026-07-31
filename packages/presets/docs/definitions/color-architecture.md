@@ -142,8 +142,13 @@ type BaseColor =
 // Layer 2: Global semantics (already in @kiskadee/core)
 type SemanticColor = 'primary' | 'neutral' | 'redLike' | 'greenLike' | 'yellowLike' | 'purpleLike';
 
-// Layer 3: Component intents (defined per component)
-type ButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
+// Layer 3: preset-authored Button intents
+type SystemButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
+
+// Optional external domains can extend the public component API without
+// entering the preset's three color layers.
+type ExternalButtonIntent = `brand.${string}`;
+type ButtonIntent = SystemButtonIntent | ExternalButtonIntent;
 type BadgeIntent = 'primary' | 'neutral' | 'attention' | 'new';
 
 // Intent values can reference either layer
@@ -151,7 +156,7 @@ type IntentValue = SemanticColor | BaseColor;
 
 // Configurable mapping per preset
 type IntentMapping = {
-  button: Record<ButtonIntent, SemanticColor>;
+  button: Record<SystemButtonIntent, SemanticColor>;
   badge: Record<BadgeIntent, SemanticColor>;
 };
 ```

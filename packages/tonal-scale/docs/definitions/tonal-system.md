@@ -731,6 +731,14 @@ canonical seed would have a different identity under V5. This change remains
 above the frozen low-level generator: the public grid, Balanced hashes,
 chromatic Primary, chromatic family output, and tonal profiles do not change.
 
+Generator `0.6.0` adds the independent `kiskadee.single-tonal-family` format
+for color domains that do not belong to the Munsell multi-family system. It
+generates one source-exact Light/Dark family, functional references,
+diagnostics, canonical integrity, and deterministic replay. The addition does
+not change the low-level scale algorithm, grid, profiles, or Balanced goldens.
+The standalone format is documented in
+[standalone-tonal-family.md](standalone-tonal-family.md).
+
 Format V5 remains package-local until its neutral scales receive explicit
 visual approval. Preset Shared Viewer links, approved assets, and preset
 evidence therefore intentionally remain on their last approved generator

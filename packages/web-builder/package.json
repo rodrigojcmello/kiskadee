@@ -22,9 +22,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@kiskadee/brands": "workspace:^",
     "@kiskadee/core": "workspace:^",
     "@kiskadee/css-build": "workspace:^",
-    "@kiskadee/presets": "workspace:^"
+    "@kiskadee/presets": "workspace:^",
+    "@kiskadee/tonal-scale": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",
