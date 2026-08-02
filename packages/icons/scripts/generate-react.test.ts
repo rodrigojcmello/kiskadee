@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { RedditIcon } from '../src/families/social/RedditIcon.tsx';
+import { SnapchatIcon } from '../src/families/social/SnapchatIcon.tsx';
 import {
   generateReactComponents,
   type IconManifest,
@@ -14,7 +15,7 @@ const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..');
 const assetsDir = path.resolve(packageRoot, 'assets');
 const manifestPath = path.resolve(packageRoot, 'metadata/icons.json');
-const MONOCHROME_BRAND_IDS = new Set(['apple', 'chat-gpt', 'git-hub', 'threads', 'x']);
+const OFFICIAL_BLACK_BRAND_IDS = ['apple', 'chat-gpt', 'git-hub', 'threads', 'x'] as const;
 
 async function readManifest(): Promise<IconManifest> {
   return JSON.parse(await readFile(manifestPath, 'utf8')) as IconManifest;
@@ -122,10 +123,12 @@ describe('canonical icon sources', () => {
     }
   });
 
-  it('migrates every non-Reddit brand to mark without changing its canonical assets', async () => {
+  it('keeps only the approved multi-construction brands outside the mark-only contract', async () => {
     const manifest = await readManifest();
 
-    for (const icon of manifest.icons.filter((candidate) => candidate.id !== 'reddit')) {
+    for (const icon of manifest.icons.filter(
+      (candidate) => candidate.id !== 'reddit' && candidate.id !== 'snapchat'
+    )) {
       expect(icon.defaultConstruction, icon.id).toBe('mark');
       expect(Object.keys(icon.constructions), icon.id).toEqual(['mark']);
 
@@ -137,6 +140,10 @@ describe('canonical icon sources', () => {
         );
       }
     }
+
+    const snapchat = manifest.icons.find((icon) => icon.id === 'snapchat');
+    expect(snapchat?.defaultConstruction).toBe('contained');
+    expect(Object.keys(snapchat!.constructions).sort()).toEqual(['contained', 'mark']);
   });
 
   it('does not publish an interface icon family', async () => {
@@ -198,7 +205,7 @@ describe('canonical icon sources', () => {
       claude: { mark: { scale: 1.1, offsetX: 0, offsetY: 0 } },
       discord: { mark: { scale: 0.88, offsetX: 0, offsetY: 0 } },
       facebook: { mark: { scale: 0.86, offsetX: 0, offsetY: 0.01 } },
-      gemini: { mark: { scale: 0.94, offsetX: 0, offsetY: 0 } },
+      gemini: { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
       'git-hub': { mark: { scale: 0.88, offsetX: 0, offsetY: 0.02 } },
       google: { mark: { scale: 0.88, offsetX: 0.02, offsetY: -0.01 } },
       instagram: { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
@@ -211,7 +218,10 @@ describe('canonical icon sources', () => {
         contained: { scale: 0.76, offsetX: 0, offsetY: 0 },
         mark: { scale: 1.1, offsetX: 0, offsetY: 0 }
       },
-      snapchat: { mark: { scale: 1.1, offsetX: 0, offsetY: -0.01 } },
+      snapchat: {
+        contained: { scale: 0.9, offsetX: 0, offsetY: 0 },
+        mark: { scale: 1.1, offsetX: 0, offsetY: -0.01 }
+      },
       substack: { mark: { scale: 1.2, offsetX: 0, offsetY: 0 } },
       telegram: { mark: { scale: 0.9, offsetX: 0, offsetY: 0 } },
       threads: { mark: { scale: 0.88, offsetX: 0, offsetY: 0 } },
@@ -245,21 +255,42 @@ describe('canonical icon sources', () => {
     }
   });
 
-  it('defaults chromatic third-party marks to their brand presentation', async () => {
+  it('defaults every third-party icon to its brand presentation', async () => {
     const manifest = await readManifest();
     const thirdPartyIcons = manifest.icons.filter((icon) => icon.origin === 'third-party');
 
     for (const icon of thirdPartyIcons) {
       const defaultConstruction = icon.constructions[icon.defaultConstruction];
 
-      if (MONOCHROME_BRAND_IDS.has(icon.id)) {
-        expect(defaultConstruction.defaultPresentation).toBe('monochrome');
-        expect(defaultConstruction.presentations.brand).toBeUndefined();
-        continue;
-      }
-
       expect(defaultConstruction.defaultPresentation).toBe('brand');
       expect(defaultConstruction.presentations.brand).toBeDefined();
+    }
+  });
+
+  it('separates official black brand paint from recolorable monochrome paint', async () => {
+    const manifest = await readManifest();
+
+    for (const iconId of OFFICIAL_BLACK_BRAND_IDS) {
+      const icon = manifest.icons.find((candidate) => candidate.id === iconId);
+      const defaultConstruction = icon?.constructions[icon.defaultConstruction];
+      const brand = defaultConstruction?.presentations.brand;
+      const monochrome = defaultConstruction?.presentations.monochrome;
+
+      expect(defaultConstruction?.defaultPresentation, iconId).toBe('brand');
+      expect(brand?.colorBehavior, iconId).toBe('fixed');
+      expect(monochrome?.colorBehavior, iconId).toBe('currentColor');
+
+      const [brandSvg, monochromeSvg] = await Promise.all([
+        readFile(path.resolve(assetsDir, brand!.source), 'utf8'),
+        readFile(path.resolve(assetsDir, monochrome!.source), 'utf8')
+      ]);
+
+      expect(readViewBox(brandSvg), iconId).toBe(readViewBox(monochromeSvg));
+      expect(readPathData(brandSvg), iconId).toEqual(readPathData(monochromeSvg));
+      expect(brandSvg, iconId).toContain('#000000');
+      expect(brandSvg, iconId).not.toContain('currentColor');
+      expect(monochromeSvg, iconId).toContain('currentColor');
+      expect(monochromeSvg, iconId).not.toMatch(/#[0-9a-f]{3,8}\b/i);
     }
   });
 
@@ -290,20 +321,20 @@ describe('canonical icon sources', () => {
     expect(Object.keys(reddit!.constructions).sort()).toEqual(['contained', 'mark']);
     expect(Object.keys(reddit!.constructions.contained.presentations).sort()).toEqual([
       'brand',
-      'brandFlat'
+      'monochrome'
     ]);
     expect(Object.keys(reddit!.constructions.mark.presentations).sort()).toEqual([
       'brand',
       'monochrome'
     ]);
 
-    const [containedBrand, containedBrandFlat, markBrand, markMonochrome] = await Promise.all([
+    const [containedBrand, containedMonochrome, markBrand, markMonochrome] = await Promise.all([
       readFile(
         path.resolve(assetsDir, reddit!.constructions.contained.presentations.brand.source),
         'utf8'
       ),
       readFile(
-        path.resolve(assetsDir, reddit!.constructions.contained.presentations.brandFlat.source),
+        path.resolve(assetsDir, reddit!.constructions.contained.presentations.monochrome.source),
         'utf8'
       ),
       readFile(
@@ -317,9 +348,13 @@ describe('canonical icon sources', () => {
     ]);
 
     expect(readViewBox(containedBrand)).toBe('0 0 256 256');
-    expect(readViewBox(containedBrandFlat)).toBe(readViewBox(containedBrand));
+    expect(readViewBox(containedMonochrome)).toBe(readViewBox(containedBrand));
     expect(containedBrand).toContain('fill="#FF4500"');
-    expect(containedBrandFlat).toContain('fill="#ff4500"');
+    expect(containedMonochrome).toContain('fill="currentColor"');
+    expect(containedMonochrome).toContain('fill-rule="evenodd"');
+    expect(containedMonochrome).toContain('clip-rule="evenodd"');
+    expect(containedMonochrome).not.toMatch(/#[0-9a-f]{3,8}\b/i);
+    expect(containedMonochrome).not.toContain('url(');
 
     expect(readViewBox(markBrand)).toBe('0 0 256 256');
     expect(readViewBox(markMonochrome)).toBe(readViewBox(markBrand));
@@ -341,14 +376,14 @@ describe('canonical icon sources', () => {
     expect(socialSources.join('\n')).not.toContain('silhouette');
   });
 
-  it('generates a discriminated Reddit API and rejects invalid runtime pairs', async () => {
+  it('generates a consistent Reddit API for contained and mark constructions', async () => {
     const component = await readFile(
       path.resolve(packageRoot, 'src/families/social/RedditIcon.tsx'),
       'utf8'
     );
 
     expect(component).toContain("construction?: 'contained'");
-    expect(component).toContain("presentation?: 'brand' | 'brandFlat'");
+    expect(component).toContain("presentation?: 'brand' | 'monochrome'");
     expect(component).toContain("construction: 'mark'");
     expect(component).toContain("presentation?: 'brand' | 'monochrome'");
     expect(() =>
@@ -356,13 +391,13 @@ describe('canonical icon sources', () => {
         construction: 'contained',
         presentation: 'monochrome'
       } as never)
-    ).toThrow('Unsupported RedditIcon construction/presentation: contained.monochrome');
+    ).not.toThrow();
     expect(() =>
       RedditIcon({
         construction: 'mark',
-        presentation: 'brandFlat'
+        presentation: 'monochrome'
       } as never)
-    ).toThrow('Unsupported RedditIcon construction/presentation: mark.brandFlat');
+    ).not.toThrow();
   });
 
   it('preserves the official Reddit originals as source evidence', async () => {
@@ -414,26 +449,108 @@ describe('canonical icon sources', () => {
     expect(telegramMonochrome).toContain('M226.328419 494.722069');
   });
 
-  it('preserves the official Snapchat Ghost geometry in both presentations', async () => {
-    const [brand, monochrome] = await Promise.all([
-      readFile(path.resolve(assetsDir, 'social/snapchat.brand.svg'), 'utf8'),
-      readFile(path.resolve(assetsDir, 'social/snapchat.monochrome.svg'), 'utf8')
+  it('publishes the approved Snapchat construction and presentation pairs', async () => {
+    const manifest = await readManifest();
+    const snapchat = manifest.icons.find((icon) => icon.id === 'snapchat');
+
+    expect(snapchat?.defaultConstruction).toBe('contained');
+    expect(Object.keys(snapchat!.constructions).sort()).toEqual(['contained', 'mark']);
+    expect(Object.keys(snapchat!.constructions.contained.presentations)).toEqual(['brand']);
+    expect(Object.keys(snapchat!.constructions.mark.presentations).sort()).toEqual([
+      'adaptiveOutline',
+      'brand',
+      'monochrome'
     ]);
 
-    expect(readViewBox(brand)).toBe('0 0 500 500');
+    const [containedBrand, markBrand, markMonochrome, markAdaptiveOutline] = await Promise.all([
+      readFile(
+        path.resolve(assetsDir, snapchat!.constructions.contained.presentations.brand.source),
+        'utf8'
+      ),
+      readFile(
+        path.resolve(assetsDir, snapchat!.constructions.mark.presentations.brand.source),
+        'utf8'
+      ),
+      readFile(
+        path.resolve(assetsDir, snapchat!.constructions.mark.presentations.monochrome.source),
+        'utf8'
+      ),
+      readFile(
+        path.resolve(assetsDir, snapchat!.constructions.mark.presentations.adaptiveOutline.source),
+        'utf8'
+      )
+    ]);
+
+    expect(readViewBox(containedBrand)).toBe('0 0 500 500');
+    expect(readViewBox(markBrand)).toBe(readViewBox(containedBrand));
+    expect(readViewBox(markMonochrome)).toBe(readViewBox(containedBrand));
+    expect(readViewBox(markAdaptiveOutline)).toBe(readViewBox(containedBrand));
+
+    expect(containedBrand).toContain('<rect');
+    expect(containedBrand).toContain('fill="#FFFC00"');
+    expect(containedBrand).toContain('fill="#FFFFFF"');
+    expect(containedBrand).toContain('fill="#000000"');
+
+    expect(markBrand).not.toContain('<rect');
+    expect(markBrand).toContain('fill="#FFFFFF"');
+    expect(markBrand).toContain('fill="#000000"');
+
+    expect(markMonochrome).not.toContain('<rect');
+    expect(markMonochrome).toContain('fill="currentColor"');
+    expect(markMonochrome).not.toMatch(/#[0-9a-f]{3,8}\b/i);
+
+    expect(snapchat!.constructions.mark.presentations.adaptiveOutline.colorBehavior).toBe(
+      'adaptive'
+    );
+    expect(markAdaptiveOutline).not.toContain('<rect');
+    expect(markAdaptiveOutline).toContain('fill="#FFFFFF"');
+    expect(markAdaptiveOutline).toContain('fill="currentColor"');
+    expect(markAdaptiveOutline).not.toContain('fill="#000000"');
+
+    for (const svg of [containedBrand, markBrand, markMonochrome, markAdaptiveOutline]) {
+      expect(svg).toContain('M444.3,337.26');
+      expect(svg).not.toContain('M12.206 0');
+    }
+    for (const svg of [containedBrand, markBrand, markAdaptiveOutline]) {
+      expect(svg).toContain('M417.93,340.71');
+    }
+  });
+
+  it('generates the complete Snapchat API', async () => {
+    const component = await readFile(
+      path.resolve(packageRoot, 'src/families/social/SnapchatIcon.tsx'),
+      'utf8'
+    );
+
+    expect(component).toContain("construction?: 'contained'");
+    expect(component).toContain("presentation?: 'brand'");
+    expect(component).toContain("construction: 'mark'");
+    expect(component).toContain("presentation?: 'adaptiveOutline' | 'brand' | 'monochrome'");
+    expect(() => SnapchatIcon({} as never)).not.toThrow();
+    expect(() =>
+      SnapchatIcon({
+        construction: 'mark',
+        presentation: 'adaptiveOutline'
+      } as never)
+    ).not.toThrow();
+  });
+
+  it('uses the current four-color Gemini Spark from the official Gemini surface', async () => {
+    const [brand, monochrome] = await Promise.all([
+      readFile(path.resolve(assetsDir, 'social/gemini.brand.svg'), 'utf8'),
+      readFile(path.resolve(assetsDir, 'social/gemini.monochrome.svg'), 'utf8')
+    ]);
+
+    expect(readViewBox(brand)).toBe('0 0 65 65');
     expect(readViewBox(monochrome)).toBe(readViewBox(brand));
-
-    expect(brand).toContain('fill="#FFFC00"');
-    expect(brand).toContain('fill="#FFFFFF"');
-    expect(brand).toContain('fill="#000000"');
-    expect(brand).toContain('M417.93,340.71');
-    expect(brand).toContain('M444.3,337.26');
-
+    expect(brand).toContain('fill="#FC413D"');
+    expect(brand).toContain('fill="#FBBC04"');
+    expect(brand).toContain('fill="#00B95C"');
+    expect(brand).toContain('fill="#3186FF"');
+    expect(brand).toContain('mask="url(#gemini-spark-mask)"');
     expect(monochrome).toContain('fill="currentColor"');
-    expect(monochrome).toContain('M444.3,337.26');
+    expect(monochrome).toContain('M57.8647 29.0109');
     expect(monochrome).not.toMatch(/#[0-9a-f]{3,8}\b/i);
-    expect(brand).not.toContain('M12.206 0');
-    expect(monochrome).not.toContain('M12.206 0');
   });
 
   it('uses one official Substack geometry for brand and monochrome', async () => {

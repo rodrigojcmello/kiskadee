@@ -14,7 +14,7 @@ import styles from '../Button.module.scss';
 type BrandIcon = ComponentType<
   IconProps & {
     construction?: 'contained' | 'mark';
-    presentation?: 'brand' | 'monochrome';
+    presentation?: 'adaptiveOutline' | 'brand' | 'monochrome';
   }
 >;
 
@@ -41,7 +41,7 @@ const SHOWCASE_BRANDS = {
   apple: {
     icon: icon(SocialIcons.AppleIcon),
     label: 'Apple',
-    hasBrandPresentation: false
+    hasBrandPresentation: true
   },
   google: {
     icon: icon(SocialIcons.GoogleIcon),
@@ -56,7 +56,7 @@ const SHOWCASE_BRANDS = {
   'chat-gpt': {
     icon: icon(SocialIcons.ChatGPTIcon),
     label: 'ChatGPT',
-    hasBrandPresentation: false
+    hasBrandPresentation: true
   },
   claude: {
     icon: icon(SocialIcons.ClaudeIcon),
@@ -111,7 +111,7 @@ const SHOWCASE_BRANDS = {
   x: {
     icon: icon(SocialIcons.XIcon),
     label: 'X',
-    hasBrandPresentation: false
+    hasBrandPresentation: true
   },
   pinterest: {
     icon: icon(SocialIcons.PinterestIcon),
@@ -141,7 +141,7 @@ const SHOWCASE_BRANDS = {
   threads: {
     icon: icon(SocialIcons.ThreadsIcon),
     label: 'Threads',
-    hasBrandPresentation: false
+    hasBrandPresentation: true
   },
   mastodon: {
     icon: icon(SocialIcons.MastodonIcon),
@@ -151,7 +151,7 @@ const SHOWCASE_BRANDS = {
   'git-hub': {
     icon: icon(SocialIcons.GitHubIcon),
     label: 'GitHub',
-    hasBrandPresentation: false
+    hasBrandPresentation: true
   },
   vimeo: {
     icon: icon(SocialIcons.VimeoIcon),
@@ -288,6 +288,7 @@ function BrandActionColumn({
   emphasis,
   fontName,
   scale,
+  surfaceContext,
   title
 }: {
   buttonIntent: 'brand' | 'primary';
@@ -295,6 +296,7 @@ function BrandActionColumn({
   emphasis: 'high' | 'low';
   fontName: string;
   scale: ElementSizeValue;
+  surfaceContext: SurfaceContext;
   title: string;
 }) {
   return (
@@ -320,7 +322,7 @@ function BrandActionColumn({
                     const { icon: BrandIcon, hasBrandPresentation } = SHOWCASE_BRANDS[brandId];
                     const appearance = getRecommendedBrandIconAppearance(
                       brandId,
-                      'onSubtle',
+                      surfaceContext,
                       emphasis,
                       hasBrandPresentation
                     );
@@ -333,7 +335,7 @@ function BrandActionColumn({
                           iconPlacement="leading"
                           intent={buttonIntent === 'brand' ? brandIntent(brandId) : 'primary'}
                           scale={scale}
-                          surfaceContext="onSubtle"
+                          surfaceContext={surfaceContext}
                         >
                           <KButton.Icon>
                             <BrandIcon
@@ -366,12 +368,14 @@ export function SocialButtonExamples({
   fontName,
   scale,
   onSubtleBackground,
-  onVividBackground
+  onVividBackground,
+  surfaceContext
 }: {
   fontName: string;
   scale: ElementSizeValue;
   onSubtleBackground?: string;
   onVividBackground?: string;
+  surfaceContext: SurfaceContext;
 }) {
   return (
     <section className={styles.showcaseSection} aria-labelledby="social-button-examples-title">
@@ -393,6 +397,7 @@ export function SocialButtonExamples({
                 fontName={fontName}
                 key={column.id}
                 scale={scale}
+                surfaceContext={surfaceContext}
                 title={column.title}
               />
             ))}

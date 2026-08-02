@@ -5,7 +5,7 @@ describe('social icon optical calibration', () => {
   it('keeps every construction and presentation safely centered', async () => {
     const entries = await auditSocialIconOptics();
 
-    expect(entries).toHaveLength(26);
+    expect(entries).toHaveLength(27);
 
     for (const { calibrated, construction, icon, presentations, raw } of entries) {
       const constructionDefinition = icon.constructions[construction];

@@ -10,7 +10,7 @@ export const BRAND_DEFINITIONS = [
     id: 'apple',
     iconId: 'apple',
     seedHex: '#000000',
-    seedSource: 'official-monochrome',
+    seedSource: 'official-black',
     contentPolarity: 'light',
     provenanceUrl:
       'https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple'
@@ -35,7 +35,7 @@ export const BRAND_DEFINITIONS = [
     id: 'chat-gpt',
     iconId: 'chat-gpt',
     seedHex: '#000000',
-    seedSource: 'official-monochrome',
+    seedSource: 'official-black',
     contentPolarity: 'light',
     provenanceUrl: 'https://openai.com/brand/'
   },
@@ -91,7 +91,7 @@ export const BRAND_DEFINITIONS = [
     id: 'tik-tok',
     iconId: 'tik-tok',
     seedHex: '#000000',
-    seedSource: 'official-monochrome',
+    seedSource: 'official-black',
     contentPolarity: 'light',
     provenanceUrl: 'https://developers.tiktok.com/doc/getting-started-design-guidelines'
   },
@@ -123,7 +123,7 @@ export const BRAND_DEFINITIONS = [
     id: 'x',
     iconId: 'x',
     seedHex: '#000000',
-    seedSource: 'official-monochrome',
+    seedSource: 'official-black',
     contentPolarity: 'light',
     provenanceUrl: 'https://about.x.com/en/who-we-are/brand-toolkit'
   },
@@ -171,7 +171,7 @@ export const BRAND_DEFINITIONS = [
     id: 'threads',
     iconId: 'threads',
     seedHex: '#000000',
-    seedSource: 'official-monochrome',
+    seedSource: 'official-black',
     contentPolarity: 'light',
     provenanceUrl: 'https://www.meta.com/brand/resources/instagram/threads/'
   },
@@ -187,7 +187,7 @@ export const BRAND_DEFINITIONS = [
     id: 'git-hub',
     iconId: 'git-hub',
     seedHex: '#000000',
-    seedSource: 'official-monochrome',
+    seedSource: 'official-black',
     contentPolarity: 'light',
     provenanceUrl: 'https://brand.github.com/foundations/logo'
   },

@@ -27,6 +27,7 @@ const JSX_ATTRIBUTES = new Map([
   ['fill-rule', 'fillRule'],
   ['font-family', 'fontFamily'],
   ['font-size', 'fontSize'],
+  ['flood-opacity', 'floodOpacity'],
   ['stop-color', 'stopColor'],
   ['stop-opacity', 'stopOpacity'],
   ['stroke-dasharray', 'strokeDasharray'],
@@ -42,7 +43,7 @@ const JSX_ATTRIBUTES = new Map([
 ]);
 
 export interface IconPresentationMetadata {
-  colorBehavior: 'currentColor' | 'fixed' | 'gradient';
+  colorBehavior: 'adaptive' | 'currentColor' | 'fixed' | 'gradient';
   source: string;
 }
 

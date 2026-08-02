@@ -39,15 +39,21 @@ cases such as the Showcase brand gallery.
 
 - Preserve the source artwork's coordinate system and silhouette.
 - A construction is one official geometry, such as Reddit `contained` or `mark`.
-- A presentation changes the paint of that geometry, such as `brand`, `brandFlat`, or
-  `monochrome`.
+- A presentation changes the paint of that geometry, such as `brand`, `monochrome`, or a
+  brand-specific adaptive treatment.
+- `brand` means the trademark holder owns the paint. It remains fixed even when the official
+  artwork uses only Black.
+- `monochrome` means the consumer owns one paint through `currentColor`.
+- An adaptive presentation must name the owned and contextual parts explicitly. It does not weaken
+  the rule that `monochrome` is entirely consumer-owned.
 - Calibrate perceived size and placement only through each construction's `opticalTransform`.
 - Apply one transform to every presentation in the same construction so those presentations share
   a footprint.
 - Every brand exposes at least one `monochrome` presentation through `currentColor`; a construction
   that exists only for official color artwork does not need to duplicate it.
 - `defaultConstruction` and each construction's `defaultPresentation` are deterministic API
-  defaults, not responsive or size-dependent rules.
+  defaults, not responsive or size-dependent rules. The default construction always defaults to
+  its `brand` presentation.
 - Keep generated SVG components presentation-only; the consuming Kiskadee `Icon` wrapper owns
   accessible-image versus decorative semantics.
 

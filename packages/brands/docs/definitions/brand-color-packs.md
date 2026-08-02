@@ -31,29 +31,29 @@ reference so a component Rest does not disappear into a black surface.
 
 | ID | Seed | Source policy | Content polarity | Evidence |
 | --- | --- | --- | --- | --- |
-| `apple` | `#000000` | Official monochrome identity | Light | [Sign in with Apple](https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple) |
+| `apple` | `#000000` | Official Black identity | Light | [Sign in with Apple](https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple) |
 | `google` | `#0b57d0` | Official filled action background | Light | [Google Identity HTML reference](https://developers.google.com/identity/gsi/web/reference/html-reference) |
 | `microsoft` | `#0064b4` | Fluent Brand-80 official action background | Light | [Fluent color tokens](https://fluent2.microsoft.design/color-tokens/) |
-| `chat-gpt` | `#000000` | Official monochrome identity | Light | [OpenAI design guidelines](https://openai.com/brand/) |
+| `chat-gpt` | `#000000` | Official Black identity | Light | [OpenAI design guidelines](https://openai.com/brand/) |
 | `claude` | `#d97757` | Official logo accent | Dark | [Anthropic press kit](https://www.anthropic.com/press-kit) |
 | `gemini` | `#078efb` | Official gradient stop | Light | [Google brand resource center](https://about.google/company-info/brand-resource-center/) |
 | `facebook` | `#0866ff` | Official logo accent | Light | [Facebook brand resources](https://www.meta.com/brand/resources/facebook/logo/) |
 | `you-tube` | `#ff0033` | Official logo accent | Light | [YouTube monochromatic icon guidance](https://brand.youtube/youtube-icon/#monochromatic-logos) |
 | `whats-app` | `#25d366` | Official logo accent | Dark | [WhatsApp brand resources](https://www.meta.com/brand/resources/whatsapp/whatsapp-brand/) |
 | `instagram` | `#d300c5` | Official gradient stop used as a single-color seed | Light | [Instagram brand resources](https://www.meta.com/brand/resources/instagram/instagram-brand/) |
-| `tik-tok` | `#000000` | Official monochrome base | Light | [TikTok design guidelines](https://developers.tiktok.com/doc/getting-started-design-guidelines) |
+| `tik-tok` | `#000000` | Official Black base | Light | [TikTok design guidelines](https://developers.tiktok.com/doc/getting-started-design-guidelines) |
 | `messenger` | `#006aff` | Official gradient stop | Light | [Messenger icon resources](https://www.meta.com/brand/resources/facebook/messenger-icon/) |
 | `telegram` | `#229ed9` | Official gradient stop | Light | [Telegram press resources](https://telegram.org/press) |
 | `snapchat` | `#fffc00` | Official logo accent | Dark | [Snap brand guidelines](https://www.snap.com/brand-guidelines?lang=en-US) |
-| `x` | `#000000` | Official monochrome identity | Light | [X brand toolkit](https://about.x.com/en/who-we-are/brand-toolkit) |
+| `x` | `#000000` | Official Black identity | Light | [X brand toolkit](https://about.x.com/en/who-we-are/brand-toolkit) |
 | `pinterest` | `#e60023` | Official logo accent | Light | [Pinterest brand guidelines](https://business.pinterest.com/en-us/brand-guidelines/) |
 | `reddit` | `#ff4500` | Official logo accent | Light | [Reddit Brand System logo](https://redditbrand.lingoapp.com/s/Logo-d9x3n2?v=44) |
 | `linked-in` | `#0a66c2` | Official logo accent | Light | [LinkedIn downloads](https://brand.linkedin.com/downloads) |
 | `discord` | `#5865f2` | Official logo accent | Light | [Discord branding](https://discord.com/branding) |
 | `twitch` | `#9146ff` | Official logo accent | Light | [Twitch brand resources](https://brand.twitch.com/) |
-| `threads` | `#000000` | Official monochrome identity | Light | [Threads brand resources](https://www.meta.com/brand/resources/instagram/threads/) |
+| `threads` | `#000000` | Official Black identity | Light | [Threads brand resources](https://www.meta.com/brand/resources/instagram/threads/) |
 | `mastodon` | `#6364ff` | Official logo accent | Light | [Mastodon branding](https://joinmastodon.org/branding) |
-| `git-hub` | `#000000` | Official monochrome identity | Light | [GitHub logo guidance](https://brand.github.com/foundations/logo) |
+| `git-hub` | `#000000` | Official Black identity | Light | [GitHub logo guidance](https://brand.github.com/foundations/logo) |
 | `vimeo` | `#1ab7ea` | Official logo accent | Dark | [Vimeo media kit](https://vimeo.com/press/media-kit) |
 | `substack` | `#ff6719` | Official logo accent | Dark | [Substack brand resources](https://substack.com/brand) |
 

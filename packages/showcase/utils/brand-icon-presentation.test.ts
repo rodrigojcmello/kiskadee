@@ -45,6 +45,22 @@ describe('recommended brand icon presentation', () => {
     });
   });
 
+  it.each([
+    ['onSubtle', 'high', 'mark', 'adaptiveOutline'],
+    ['onSubtle', 'medium', 'contained', 'brand'],
+    ['onSubtle', 'low', 'contained', 'brand'],
+    ['onSubtle', 'lowest', 'contained', 'brand'],
+    ['onVivid', 'high', 'mark', 'adaptiveOutline'],
+    ['onVivid', 'medium', 'mark', 'monochrome'],
+    ['onVivid', 'low', 'mark', 'monochrome'],
+    ['onVivid', 'lowest', 'mark', 'monochrome']
+  ] as const)('uses Snapchat %s/%s as %s.%s', (surfaceContext, emphasis, construction, presentation) => {
+    expect(getRecommendedBrandIconAppearance('snapchat', surfaceContext, emphasis, true)).toEqual({
+      construction,
+      presentation
+    });
+  });
+
   it('keeps single-construction brands on mark', () => {
     expect(getRecommendedBrandIconAppearance('google', 'onSubtle', 'medium', true)).toEqual({
       construction: 'mark',

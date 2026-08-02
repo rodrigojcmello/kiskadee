@@ -80,14 +80,17 @@ type SocialIconComponent = ComponentType<
 >;
 
 type SocialIconAppearance = {
-  colorBehavior: 'currentColor' | 'fixed' | 'gradient';
+  colorBehavior: 'adaptive' | 'currentColor' | 'fixed' | 'gradient';
   construction: string;
+  label?: string;
   presentation: string;
 };
 
 type SocialIconEntry = {
   appearances: SocialIconAppearance[];
+  cardKey: string;
   component: SocialIconComponent;
+  constructions: string[];
   name: string;
 };
 
@@ -115,6 +118,10 @@ type InterfaceIconEntry = {
 };
 
 type BackgroundMode = 'canonical' | 'stress-test';
+const SNAPCHAT_SHOWCASE_APPEARANCES = new Map([
+  ['contained.brand', 'brand'],
+  ['mark.monochrome', 'monochrome']
+]);
 
 const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
   { value: 'onSubtle', label: 'On subtle' },
@@ -149,25 +156,47 @@ function getSocialIconEntries(
 ): SocialIconEntry[] {
   return manifest.icons
     .filter((icon) => icon.family === 'social')
-    .map((icon) => {
+    .flatMap((icon) => {
       const component = iconNamespace[icon.componentName];
       if (typeof component !== 'function') {
         throw new Error(`Published social icon component "${icon.componentName}" is unavailable.`);
       }
 
-      return {
-        appearances: Object.entries(icon.constructions).flatMap(([construction, definition]) =>
-          Object.entries(definition.presentations).map(
-            ([presentation, presentationDefinition]) => ({
-              colorBehavior: presentationDefinition.colorBehavior,
-              construction,
-              presentation
-            })
-          )
+      const constructions = Object.entries(icon.constructions);
+      const constructionEntries = constructions.map(([construction, definition]) => ({
+        appearances: Object.entries(definition.presentations).map(
+          ([presentation, presentationDefinition]) => ({
+            colorBehavior: presentationDefinition.colorBehavior,
+            construction,
+            presentation
+          })
         ),
+        cardKey: `${icon.componentName}.${construction}`,
         component: component as SocialIconComponent,
+        constructions: [construction],
         name: icon.componentName
-      };
+      }));
+
+      if (icon.componentName !== 'SnapchatIcon') return constructionEntries;
+
+      const appearances = constructionEntries
+        .flatMap(({ appearances }) => appearances)
+        .flatMap((appearance) => {
+          const appearanceKey = `${appearance.construction}.${appearance.presentation}`;
+          const label = SNAPCHAT_SHOWCASE_APPEARANCES.get(appearanceKey);
+
+          return label ? [{ ...appearance, label }] : [];
+        });
+
+      return [
+        {
+          appearances,
+          cardKey: icon.componentName,
+          component: component as SocialIconComponent,
+          constructions: [...new Set(appearances.map(({ construction }) => construction))],
+          name: icon.componentName
+        }
+      ];
     });
 }
 
@@ -205,7 +234,7 @@ const INTERFACE_ICON_ENTRIES: InterfaceIconEntry[] = [
 ];
 const SOCIAL_ICON_ENTRIES = getSocialIconEntries(
   SocialIcons,
-  iconManifest as PublishedIconManifest
+  iconManifest as unknown as PublishedIconManifest
 );
 
 function IconGallery({
@@ -254,37 +283,41 @@ function SocialIconGallery({
 }) {
   return (
     <div className={s.galleryGrid}>
-      {entries.map(({ appearances, component: Glyph, name }) => (
+      {entries.map(({ appearances, cardKey, component: Glyph, constructions, name }) => (
         <article
-          key={name}
+          key={cardKey}
           className={`${s.galleryItem} ${s.socialGalleryItem}`}
+          data-social-constructions={constructions.join(' ')}
           data-social-icon={name}
         >
           <div className={s.socialIconPair}>
-            {appearances.map(({ colorBehavior, construction, presentation }) => {
-              const usesCurrentColor = colorBehavior === 'currentColor';
-              const appearanceName = `${construction}.${presentation}`;
+            {appearances.map(({ colorBehavior, construction, label, presentation }) => {
+              const usesContextualColor =
+                colorBehavior === 'adaptive' || colorBehavior === 'currentColor';
+              const appearanceLabel =
+                label ??
+                (constructions.length > 1 ? `${construction}.${presentation}` : presentation);
 
               return (
                 <div
                   className={s.socialIconPreview}
-                  key={appearanceName}
+                  key={`${construction}.${presentation}`}
                   style={{
-                    backgroundColor: usesCurrentColor
+                    backgroundColor: usesContextualColor
                       ? monochromeBackgroundColor
                       : brandBackgroundColor
                   }}
                 >
                   <KIcon
-                    intent={usesCurrentColor ? intent : 'neutral'}
-                    label={`${name}, ${appearanceName}`}
+                    intent={usesContextualColor ? intent : 'neutral'}
+                    label={`${name}, ${construction}.${presentation}`}
                     scale={scale}
-                    style={usesCurrentColor ? undefined : { color: brandForegroundColor }}
-                    surfaceContext={usesCurrentColor ? surfaceContext : 'onSubtle'}
+                    style={usesContextualColor ? undefined : { color: brandForegroundColor }}
+                    surfaceContext={usesContextualColor ? surfaceContext : 'onSubtle'}
                   >
                     <Glyph construction={construction} presentation={presentation} />
                   </KIcon>
-                  <span className={s.socialAppearanceName}>{appearanceName}</span>
+                  <span className={s.socialAppearanceName}>{appearanceLabel}</span>
                 </div>
               );
             })}

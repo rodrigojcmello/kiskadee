@@ -803,6 +803,7 @@ export function Button() {
             scale={activeButtonScale}
             onSubtleBackground={comparisonOnSubtleSurface?.resolvedColor}
             onVividBackground={comparisonOnVividSurface?.resolvedColor}
+            surfaceContext={activeSurfaceContext}
           />
         ) : null}
       </div>

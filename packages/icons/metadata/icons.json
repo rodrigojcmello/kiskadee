@@ -19,13 +19,17 @@
       "defaultConstruction": "mark",
       "constructions": {
         "mark": {
-          "defaultPresentation": "monochrome",
+          "defaultPresentation": "brand",
           "opticalTransform": {
             "scale": 0.94,
             "offsetX": 0,
             "offsetY": -0.03
           },
           "presentations": {
+            "brand": {
+              "source": "social/apple.brand.svg",
+              "colorBehavior": "fixed"
+            },
             "monochrome": {
               "source": "social/apple.monochrome.svg",
               "colorBehavior": "currentColor"
@@ -43,13 +47,17 @@
       "defaultConstruction": "mark",
       "constructions": {
         "mark": {
-          "defaultPresentation": "monochrome",
+          "defaultPresentation": "brand",
           "opticalTransform": {
             "scale": 0.9,
             "offsetX": 0,
             "offsetY": 0
           },
           "presentations": {
+            "brand": {
+              "source": "social/chat-gpt.brand.svg",
+              "colorBehavior": "fixed"
+            },
             "monochrome": {
               "source": "social/chat-gpt.monochrome.svg",
               "colorBehavior": "currentColor"
@@ -153,7 +161,7 @@
         "mark": {
           "defaultPresentation": "brand",
           "opticalTransform": {
-            "scale": 0.94,
+            "scale": 0.9,
             "offsetX": 0,
             "offsetY": 0
           },
@@ -179,13 +187,17 @@
       "defaultConstruction": "mark",
       "constructions": {
         "mark": {
-          "defaultPresentation": "monochrome",
+          "defaultPresentation": "brand",
           "opticalTransform": {
             "scale": 0.88,
             "offsetX": 0,
             "offsetY": 0.02
           },
           "presentations": {
+            "brand": {
+              "source": "social/git-hub.brand.svg",
+              "colorBehavior": "fixed"
+            },
             "monochrome": {
               "source": "social/git-hub.monochrome.svg",
               "colorBehavior": "currentColor"
@@ -410,9 +422,9 @@
               "source": "social/reddit.contained.brand.svg",
               "colorBehavior": "gradient"
             },
-            "brandFlat": {
-              "source": "social/reddit.contained.brand-flat.svg",
-              "colorBehavior": "fixed"
+            "monochrome": {
+              "source": "social/reddit.contained.monochrome.svg",
+              "colorBehavior": "currentColor"
             }
           }
         },
@@ -442,8 +454,22 @@
       "family": "social",
       "origin": "third-party",
       "provenanceUrl": "https://www.snap.com/brand-guidelines?lang=en-US",
-      "defaultConstruction": "mark",
+      "defaultConstruction": "contained",
       "constructions": {
+        "contained": {
+          "defaultPresentation": "brand",
+          "opticalTransform": {
+            "scale": 0.9,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "presentations": {
+            "brand": {
+              "source": "social/snapchat.contained.brand.svg",
+              "colorBehavior": "fixed"
+            }
+          }
+        },
         "mark": {
           "defaultPresentation": "brand",
           "opticalTransform": {
@@ -453,12 +479,16 @@
           },
           "presentations": {
             "brand": {
-              "source": "social/snapchat.brand.svg",
+              "source": "social/snapchat.mark.brand.svg",
               "colorBehavior": "fixed"
             },
             "monochrome": {
-              "source": "social/snapchat.monochrome.svg",
+              "source": "social/snapchat.mark.monochrome.svg",
               "colorBehavior": "currentColor"
+            },
+            "adaptiveOutline": {
+              "source": "social/snapchat.mark.adaptive-outline.svg",
+              "colorBehavior": "adaptive"
             }
           }
         }
@@ -529,13 +559,17 @@
       "defaultConstruction": "mark",
       "constructions": {
         "mark": {
-          "defaultPresentation": "monochrome",
+          "defaultPresentation": "brand",
           "opticalTransform": {
             "scale": 0.88,
             "offsetX": 0,
             "offsetY": 0
           },
           "presentations": {
+            "brand": {
+              "source": "social/threads.brand.svg",
+              "colorBehavior": "fixed"
+            },
             "monochrome": {
               "source": "social/threads.monochrome.svg",
               "colorBehavior": "currentColor"
@@ -665,13 +699,17 @@
       "defaultConstruction": "mark",
       "constructions": {
         "mark": {
-          "defaultPresentation": "monochrome",
+          "defaultPresentation": "brand",
           "opticalTransform": {
             "scale": 0.8,
             "offsetX": 0,
             "offsetY": 0
           },
           "presentations": {
+            "brand": {
+              "source": "social/x.brand.svg",
+              "colorBehavior": "fixed"
+            },
             "monochrome": {
               "source": "social/x.monochrome.svg",
               "colorBehavior": "currentColor"

@@ -7,7 +7,7 @@
       "intent": "brand.apple",
       "provenanceUrl": "https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple",
       "seedHex": "#000000",
-      "seedSource": "official-monochrome",
+      "seedSource": "official-black",
       "tonalAsset": "scales/apple.json",
       "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
     },
@@ -40,7 +40,7 @@
       "intent": "brand.chat-gpt",
       "provenanceUrl": "https://openai.com/brand/",
       "seedHex": "#000000",
-      "seedSource": "official-monochrome",
+      "seedSource": "official-black",
       "tonalAsset": "scales/chat-gpt.json",
       "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
     },
@@ -117,7 +117,7 @@
       "intent": "brand.tik-tok",
       "provenanceUrl": "https://developers.tiktok.com/doc/getting-started-design-guidelines",
       "seedHex": "#000000",
-      "seedSource": "official-monochrome",
+      "seedSource": "official-black",
       "tonalAsset": "scales/tik-tok.json",
       "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
     },
@@ -161,7 +161,7 @@
       "intent": "brand.x",
       "provenanceUrl": "https://about.x.com/en/who-we-are/brand-toolkit",
       "seedHex": "#000000",
-      "seedSource": "official-monochrome",
+      "seedSource": "official-black",
       "tonalAsset": "scales/x.json",
       "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
     },
@@ -227,7 +227,7 @@
       "intent": "brand.threads",
       "provenanceUrl": "https://www.meta.com/brand/resources/instagram/threads/",
       "seedHex": "#000000",
-      "seedSource": "official-monochrome",
+      "seedSource": "official-black",
       "tonalAsset": "scales/threads.json",
       "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
     },
@@ -249,7 +249,7 @@
       "intent": "brand.git-hub",
       "provenanceUrl": "https://brand.github.com/foundations/logo",
       "seedHex": "#000000",
-      "seedSource": "official-monochrome",
+      "seedSource": "official-black",
       "tonalAsset": "scales/git-hub.json",
       "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
     },

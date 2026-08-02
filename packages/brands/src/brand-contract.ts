@@ -34,7 +34,7 @@ export const BRAND_SEED_SOURCES = [
   'official-action-background',
   'official-logo-accent',
   'official-gradient-stop',
-  'official-monochrome'
+  'official-black'
 ] as const;
 
 export type BrandSeedSource = (typeof BRAND_SEED_SOURCES)[number];

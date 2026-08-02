@@ -11,10 +11,12 @@ scope is broader than social networks.
 - Preserve the official silhouette and native coordinate system.
 - A construction represents one official geometry. A presentation represents one paint treatment
   of that geometry.
-- Chromatic brands normally default to `construction="mark"` and `presentation="brand"`. Reddit
-  deliberately defaults to `construction="contained"` and `presentation="brand"`.
+- Every export defaults to `presentation="brand"`. Most use `construction="mark"`; Reddit and
+  Snapchat deliberately default to `construction="contained"`.
+- A `brand` presentation preserves paint owned by the trademark holder. It may be multicolor,
+  gradient, or a single fixed Black.
 - Every export exposes at least one `presentation="monochrome"` as a Kiskadee technical
-  presentation for semantic component color.
+  presentation for semantic component color through `currentColor`.
 - Presentations inside the same construction must use the exact same `viewBox`, footprint, and
   optical calibration. Different constructions may have different geometry and calibration.
 - Keep platform-neutral SVGs free from React and accessibility defaults. Generated adapters own
@@ -22,6 +24,9 @@ scope is broader than social networks.
 - Every monochrome presentation renders entirely through `currentColor`, regardless of brand-color
   restrictions. Preserve fixed brand colors or an official gradient in the default `brand`
   presentation when color is part of the mark's identity.
+- A brand-specific adaptive presentation may combine fixed and contextual paint only when that
+  composition is required to preserve recognition across component surfaces. Its name must state
+  what adapts; it is not another monochrome mode.
 - Do not optically redraw, round, or restroke a mark to match the Kiskadee family.
 - Consumers must follow the owner's current trademark and minimum-size rules.
 - These exports do not imply affiliation, endorsement, or a trademark license.
@@ -60,21 +65,44 @@ The normalized Reddit source set is the first multi-construction contract:
 | Construction | Presentation | Official source | Normalization |
 | --- | --- | --- | --- |
 | `contained` | `brand` | `Reddit_Icon_FullColor` | Platform-neutral SVG only |
-| `contained` | `brandFlat` | `Reddit_Icon_2Color` | Platform-neutral SVG only |
+| `contained` | `monochrome` | `Reddit_Icon_2Color` | Maps the OrangeRed field to `currentColor` and cuts the White mark out as transparent negative space |
 | `mark` | `brand` | `FullColor_Bleed` | Removes only the OrangeRed field |
 | `mark` | `monochrome` | `2Color_FullBleed` | Removes the OrangeRed field and maps the mark to `currentColor`; eyes, mouth, and internal spaces remain transparent |
 
 The official files are preserved unchanged under `assets/sources/reddit/`. Generated adapters and
 published SVGs consume the normalized files under `assets/social/`.
 
-`contained.brand` is the Reddit default. `brandFlat` is an official flat presentation, not a
-compact logo. `mark` means the official symbol without a framing shape; it does not mean
-responsive, reduced, or optically small artwork.
+`contained.brand` is the Reddit default. Its `monochrome` counterpart is a Kiskadee technical
+presentation derived from the official two-color construction: the field follows `currentColor`
+and the source's White artwork becomes transparent negative space. `mark` means the official symbol
+without a framing shape; it does not mean responsive, reduced, or optically small artwork.
 
 The two constructions intentionally use different optical scales. The contained speech-bubble
 field carries substantially more visual mass, so it is reduced to `0.76`; the standalone mark is
 raised to `1.10`. This balances the complete logos rather than forcing the Snoo head to occupy the
 same geometric size in both constructions.
+
+## Snapchat constructions
+
+Snapchat uses one official Ghost geometry with surface-specific paint treatments:
+
+| Construction | Presentation | Paint contract |
+| --- | --- | --- |
+| `contained` | `brand` | Snap Yellow container, fixed White Ghost, and fixed Black outline |
+| `mark` | `brand` | Fixed White Ghost and fixed Black outline, without the container |
+| `mark` | `monochrome` | `currentColor` outline with transparent interior |
+| `mark` | `adaptiveOutline` | Fixed White Ghost with a `currentColor` outline |
+
+`contained.brand` remains the default so the no-prop rendering preserves the established Snapchat
+identity. `mark.adaptiveOutline` is a Kiskadee composition treatment for high-emphasis component
+surfaces: the component supplies the field color, White remains part of the Ghost, and only its
+outline follows contextual content color. It is intentionally not classified as `monochrome`.
+
+The `/icons` Showcase keeps Snapchat in one card because the underlying Ghost does not change, but
+samples only `contained.brand` and `mark.monochrome`, labeled `brand` and `monochrome`. The second
+sample uses only the contextual Ghost outline with a transparent interior so it remains legible
+across subtle and vivid surfaces. Reddit remains split by construction because its contained
+speech bubble and standalone Snoo are distinct logos.
 
 The list is a practical July 2026 snapshot of widely used networks, login providers, and AI
 platforms for the Button Showcase. It is not a stable numeric ranking: audience figures published
@@ -90,7 +118,7 @@ by different platforms are not directly comparable. The social selection was che
 | `MicrosoftIcon` | Microsoft | [Microsoft identity platform branding](https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-branding-in-apps) |
 | `ChatGPTIcon` | ChatGPT | [OpenAI brand guidelines](https://openai.com/brand/) |
 | `ClaudeIcon` | Claude | [Anthropic press kit](https://www.anthropic.com/press-kit) (standalone Claude symbol) |
-| `GeminiIcon` | Gemini | [Google Gemini](https://gemini.google.com/) |
+| `GeminiIcon` | Gemini | [Current Gemini product surface](https://gemini.google/about/) and [Google's four-color Spark announcement](https://blog.google/company-news/inside-google/company-announcements/gradient-g-logo-design/) |
 | `FacebookIcon` | Facebook | [Meta Facebook logo resources](https://www.meta.com/brand/resources/facebook/logo/) |
 | `YouTubeIcon` | YouTube | [YouTube icon guidelines and downloads](https://brand.youtube/youtube-icon) |
 | `WhatsAppIcon` | WhatsApp | [Meta WhatsApp brand resources](https://www.meta.com/brand/resources/whatsapp/whatsapp-brand/) |
@@ -113,9 +141,9 @@ by different platforms are not directly comparable. The social selection was che
 
 ## Known constraints
 
-- Apple, ChatGPT, GitHub, Threads, and X use their owner-supported black/monochrome identity and
-  therefore default to `currentColor`. Every other social export defaults to `brand`, while still
-  exposing a Kiskadee `monochrome` presentation driven exclusively by `currentColor`.
+- Apple, ChatGPT, GitHub, Threads, and X expose their owner-supported Black identity as a fixed
+  `brand` presentation and default to it. Their separate Kiskadee `monochrome` presentation uses
+  the same geometry but follows `currentColor`, just like every other social export.
 - Apple's path is the unmodified regular-navigation mark published inline by Apple. Its coordinate
   box removes only the navigation bar's unused vertical area and retains clear space around every
   edge; the mark itself is neither cropped nor redrawn.
@@ -123,18 +151,19 @@ by different platforms are not directly comparable. The social selection was che
   Facebook, LinkedIn, Mastodon, Pinterest, Snapchat, Telegram, Twitch, Vimeo, WhatsApp, and
   YouTube use their official fixed palettes. Instagram, Messenger, and TikTok preserve their
   multicolor or gradient identity.
-- Reddit exposes the official contained and mark geometries described above. Its full-color and
-  flat presentations retain the official treatments. The technical `mark.monochrome` presentation
-  is a true one-color asset whose internal detail is negative space.
+- Reddit exposes the official contained and mark geometries described above. Each construction has
+  an official full-color `brand` presentation and a technical `monochrome` presentation driven by
+  `currentColor`. Both monochrome assets use transparent negative space for their internal detail.
 - Google and Microsoft retain their required multicolor identity in `brand`. Claude uses the
-  standalone official symbol in Clay, without the rounded application tile. Gemini retains its
-  official aurora color direction in a compact vector treatment. Their
+  standalone official symbol in Clay, without the rounded application tile. Gemini uses the
+  four-color Spark published on the official Gemini surface after Google introduced the brighter
+  gradient treatment in 2025. Its normalized asset removes only the Gemini wordmark. Their
   monochrome presentations preserve the same coordinate boxes and source geometry while following
   the consuming component's `currentColor`.
 - Snapchat preserves the exact two-path Ghost construction distributed in Snap's official logo
-  suite. Its brand presentation places the white Ghost and black outline on Snap Yellow; its
-  monochrome presentation keeps the official outline geometry and follows the consuming
-  component's `currentColor`.
+  suite. The contained brand asset owns Snap Yellow, while the three mark presentations separate
+  fixed brand paint, transparent one-color paint, and the White-plus-contextual
+  `adaptiveOutline` treatment.
 - Substack uses the exact three-path mark published by Substack in both presentations. `brand`
   renders those paths in official Orange `#FF6719`; `monochrome` changes only the color treatment
   to `currentColor`, without adding a tile, gradient, or alternate silhouette.

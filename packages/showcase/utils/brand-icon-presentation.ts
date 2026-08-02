@@ -1,7 +1,7 @@
 import type { BrandId } from '@kiskadee/brands';
 import type { ComponentEmphasis, SurfaceContext } from '@kiskadee/core';
 
-export type RecommendedBrandIconPresentation = 'brand' | 'monochrome';
+export type RecommendedBrandIconPresentation = 'adaptiveOutline' | 'brand' | 'monochrome';
 export type RecommendedBrandIconAppearance = {
   construction: 'contained' | 'mark';
   presentation: RecommendedBrandIconPresentation;
@@ -33,6 +33,16 @@ export function getRecommendedBrandIconAppearance(
     return {
       construction: usesContainedBrand ? 'contained' : 'mark',
       presentation: usesContainedBrand ? 'brand' : 'monochrome'
+    };
+  }
+
+  if (brandId === 'snapchat') {
+    const usesContainedBrand = surfaceContext === 'onSubtle' && emphasis !== 'high';
+
+    return {
+      construction: usesContainedBrand ? 'contained' : 'mark',
+      presentation:
+        emphasis === 'high' ? 'adaptiveOutline' : usesContainedBrand ? 'brand' : 'monochrome'
     };
   }
 
