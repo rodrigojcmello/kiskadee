@@ -1,6 +1,6 @@
 ---
 name: kiskadee-author-interaction-states
-description: Author and review Kiskadee component interaction states as sparse visual deltas over Rest. Use whenever editing or reviewing preset component palettes, stateful effects, or schema maps containing rest, hover, pressed, focus, selected, disabled, readOnly, or filled; translating Figma or official design-system state matrices; or diagnosing duplicate state values, focus-ring ownership, and overlapping state precedence.
+description: Author and review Kiskadee component interaction states as sparse visual deltas over Rest. Use whenever editing or reviewing preset component palettes, stateful effects, or schema maps containing rest, hover, pressed, focus, selected, pending, disabled, readOnly, or filled; translating Figma or official design-system state matrices; or diagnosing duplicate state values, focus-ring ownership, and overlapping state precedence.
 ---
 
 # Author Kiskadee Interaction States
@@ -50,6 +50,8 @@ Read before editing:
    - Hover plus focus-visible: prefer Hover plus focus ring unless the source documents a surface
      reset.
    - Selected plus Hover, Pressed, or Focus: author only documented selected substates.
+   - Pending: treat it as a projected terminal state, remove the native interaction activator, and
+     keep it below Disabled in precedence.
    - Disabled: prevent native or projected interactions from leaking through.
 6. Keep the focus ring or component-owned focus indicator in its proper global/structural contract.
 7. Update component evidence with every retained exception and its source or Kiskadee adaptation.
@@ -75,7 +77,7 @@ output.
 1. Search the touched schema for state declarations and justify every Rest-equal exception:
 
 ```sh
-rg -n "rest:|hover:|pressed:|focus:|disabled:|readOnly:|filled:" <schema-path>
+rg -n "rest:|hover:|pressed:|focus:|pending:|disabled:|readOnly:|filled:" <schema-path>
 ```
 
 2. After generating the preset, audit resolved palette values. The command fails when the requested

@@ -1,8 +1,10 @@
 import type {
   CardIntent,
   IconIntent,
+  ProgressIntent,
   RoleButton,
   RoleCard,
+  RoleProgress,
   RoleSlider,
   RoleSwitch,
   RoleTextField,
@@ -17,9 +19,11 @@ export type {
   CardIntent,
   ExternalButtonIntent,
   IconIntent,
+  ProgressIntent,
   RoleButton,
   RoleCard,
   RoleIcon,
+  RoleProgress,
   RoleSlider,
   RoleSwitch,
   RoleTextField,
@@ -32,6 +36,7 @@ export {
   ButtonIntentKeys,
   CardIntentKeys,
   IconIntentKeys,
+  ProgressIntentKeys,
   SliderIntentKeys,
   SwitchIntentKeys,
   TextFieldIntentKeys
@@ -110,6 +115,7 @@ export type InteractionState =
   | 'pressed'
   | 'selected'
   | 'focus'
+  | 'pending'
   | 'disabled'
   | 'readOnly'
   | 'filled';
@@ -123,6 +129,7 @@ export const interactionStateKeys = [
   'pressed',
   'selected',
   'focus',
+  'pending',
   'disabled',
   'readOnly',
   'filled'
@@ -133,6 +140,7 @@ export const nonSelectedInteractionStateKeys = [
   'hover',
   'pressed',
   'focus',
+  'pending',
   'disabled',
   'readOnly',
   'filled'
@@ -143,6 +151,7 @@ export const projectedStateKeys = [
   'pressed',
   'selected',
   'focus',
+  'pending',
   'disabled',
   'readOnly',
   'filled'
@@ -154,6 +163,7 @@ export const InteractionStateCssPseudoSelector: Record<InteractionState, string>
   pressed: ':active',
   selected: '',
   focus: ':focus-visible',
+  pending: '',
   disabled: '',
   readOnly: '',
   filled: ''
@@ -166,10 +176,35 @@ export const projectedStateActivator = {
   pressed: '-p',
   selected: '-s',
   focus: '-f',
+  pending: '-g',
   disabled: '-d',
   readOnly: '-r',
   filled: '-v'
 } as const satisfies Record<ProjectedStateKeys, string>;
+
+/**
+ * States without a reliable native selector that must always emit their projected branch.
+ */
+export const alwaysProjectedStateKeys = [
+  'pending',
+  'disabled',
+  'readOnly'
+] as const satisfies readonly ProjectedStateKeys[];
+
+export type AlwaysProjectedStateKey = (typeof alwaysProjectedStateKeys)[number];
+
+/**
+ * Terminal visual states in ascending CSS precedence.
+ *
+ * Pending suppresses ordinary interaction deltas. Disabled remains the final authority when both
+ * states are accidentally projected at the same time.
+ */
+export const terminalInteractionStateKeys = [
+  'pending',
+  'disabled'
+] as const satisfies readonly ProjectedStateKeys[];
+
+export type TerminalInteractionStateKey = (typeof terminalInteractionStateKeys)[number];
 
 export const stateActivatorMeta = {
   shadow: '-e',
@@ -207,6 +242,7 @@ export type InteractionStateColorMap = {
   hover?: ColorValue;
   pressed?: ColorValue;
   focus?: ColorValue;
+  pending?: ColorValue;
   selected?: SelectedInteractionSubMap;
   disabled?: ColorValue;
   readOnly?: ColorValue;
@@ -302,6 +338,7 @@ export type IntentValue = SemanticColor | PrimitiveRole;
 export type Role =
   | RoleButton
   | RoleCard
+  | RoleProgress
   | RoleSlider
   | RoleSwitch
   | RoleTextField
@@ -320,6 +357,7 @@ export type Role =
 export type RoleWithPaint =
   | RoleButton
   | RoleCard
+  | RoleProgress
   | RoleSlider
   | RoleSwitch
   | RoleTextField
@@ -427,6 +465,7 @@ export type ComponentIntents = {
   button?: Partial<Record<SystemButtonIntent, IntentValue>>;
   card?: Partial<Record<CardIntent, IntentValue>>;
   icon?: Partial<Record<IconIntent, IntentValue>>;
+  progress?: Partial<Record<ProgressIntent, IntentValue>>;
   slider?: Partial<Record<SliderIntent, IntentValue>>;
   switch?: Partial<Record<SwitchIntent, IntentValue>>;
   tabs?: Record<string, IntentValue>;
@@ -465,6 +504,7 @@ export type ComponentPaletteKey =
   | SystemButtonIntent
   | CardIntent
   | IconIntent
+  | ProgressIntent
   | SliderIntent
   | SwitchIntent
   | TextFieldIntent;

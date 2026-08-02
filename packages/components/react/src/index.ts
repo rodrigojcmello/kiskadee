@@ -1,4 +1,10 @@
-export type { ButtonArtifactConfig } from './components/Button';
+export type {
+  ButtonActivationFeedbackEffect,
+  ButtonArtifactConfig,
+  ButtonProgressProps,
+  ButtonProps,
+  ButtonStatus
+} from './components/Button';
 export { Button, useButtonArtifactConfig } from './components/Button';
 export type {
   CardActionInteractionStateSource,
@@ -16,6 +22,18 @@ export type {
   IconVisualProps
 } from './components/Icon';
 export { Icon } from './components/Icon';
+export type {
+  DeterminateDecorativeProgressProps,
+  DeterminateProgressProps,
+  IndeterminateProgressProps,
+  ProgressClassesMap,
+  ProgressClassNames,
+  ProgressElementName,
+  ProgressMode,
+  ProgressProps,
+  ProgressVisualProps
+} from './components/Progress';
+export { Progress } from './components/Progress';
 export type {
   RollingNumberFormatValue,
   RollingNumberProps

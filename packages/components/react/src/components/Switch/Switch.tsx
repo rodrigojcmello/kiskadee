@@ -42,23 +42,31 @@ function resolveSwitchEffectTargetStateClassName(states: {
   disabled?: boolean;
   readOnly?: boolean;
 }): string {
-  const isHovered = states.hovered || states.status === 'hover';
-  const isPressed = states.status === 'pressed';
-  const isFocused = states.status === 'focus';
   const isDisabled = states.disabled || states.status === 'disabled';
+  const isPending = !isDisabled && states.status === 'pending';
+  const isHovered = !isPending && (states.hovered || states.status === 'hover');
+  const isPressed = !isPending && states.status === 'pressed';
+  const isFocused = states.status === 'focus';
   const isReadOnly = states.readOnly || states.status === 'readOnly';
   const hasProjectedState =
-    states.controlState || isHovered || isPressed || isFocused || isDisabled || isReadOnly;
+    states.controlState ||
+    isHovered ||
+    isPressed ||
+    isFocused ||
+    isPending ||
+    isDisabled ||
+    isReadOnly;
 
   return (
     join(
       cn.interactive,
-      cn.nativeInteraction,
+      !isPending && cn.nativeInteraction,
       isHovered && cn.hover,
       isPressed && cn.pressed,
       states.controlState && cn.selected,
       isFocused && cn.focus,
       isFocused && cn.focusVisible,
+      isPending && cn.pending,
       isDisabled && cn.disabled,
       isReadOnly && cn.readOnly,
       hasProjectedState && cn.activator
@@ -235,8 +243,9 @@ function SwitchRoot(props: SwitchProps) {
     onClickCapture,
     geometryKey: switchGeometryKey
   });
+  const activationFeedbackEnabled = Boolean(activationFeedbackEffect) && status !== 'pending';
   const activationFeedbackController = useSwitchActivationFeedbackController({
-    enabled: Boolean(activationFeedbackEffect),
+    enabled: activationFeedbackEnabled,
     config: activationFeedbackConfig,
     disabled,
     forcedActive: activationFeedback === 'active',

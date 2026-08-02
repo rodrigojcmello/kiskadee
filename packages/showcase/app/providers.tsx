@@ -57,6 +57,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname !== '/card' &&
     pathname !== '/colors' &&
     pathname !== '/icons' &&
+    pathname !== '/progress' &&
     pathname !== '/text-field' &&
     !pathname.startsWith('/tabs');
   const classesMap = useClassMapLoader({

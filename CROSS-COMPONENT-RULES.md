@@ -58,3 +58,29 @@ Consequence:
   without changing padding or text layout.
 - Future input-like controls should be evaluated against this same rule before copying Button focus
   behavior by default.
+
+## 2) Pending, disabled, and interaction locking
+
+Context:
+
+- Async-capable controls sometimes need to reject repeated activation after accepting an action.
+- Reusing disabled for this period erases the distinction between an unavailable action and an
+  accepted action that is still processing.
+
+Decision:
+
+- `pending` is the global visual state for accepted work that is still processing.
+- `disabled` remains the state for unavailable actions.
+- `interactionLocked` remains a visual- and semantic-neutral activation gate.
+- A component with operational pending behavior may imply `interactionLocked`; the inverse is never
+  automatic.
+- Forced `status="pending"` is visual-only.
+- Progress, loading copy, and spinner icons are optional presentations that never create pending by
+  themselves.
+
+Consequence:
+
+- Pending is projected after transient interaction states and before disabled.
+- Components must suppress transient native interaction leakage while pending.
+- Each component adopts operational pending independently; Button is the first adopter.
+- Presets author pending as sparse per-element deltas instead of root opacity.

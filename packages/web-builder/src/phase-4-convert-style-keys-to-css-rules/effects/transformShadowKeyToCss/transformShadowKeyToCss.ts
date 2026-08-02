@@ -1,11 +1,11 @@
 import {
   InteractionStateCssPseudoSelector,
+  normalizeHexColor,
   type ProjectedStateKeys,
   type PseudoSelectorKeys,
   projectedStateActivator,
   stateActivator
 } from '@kiskadee/core';
-import { normalizeHexColor } from '@kiskadee/core';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
@@ -16,6 +16,7 @@ import {
   UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
 } from '../../errorMessages.ts';
+import { hasAlwaysProjectedState } from '../../utils/stateSelectors.ts';
 
 export type TransformShadowKeyToCssOptions = {
   styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
@@ -223,8 +224,7 @@ export function transformShadowKeyToCss(
   // Projected branch uses projectedStateActivator + activator (.-a), and is also gated by shadow activation.
   const suffix = getProjectedStateSuffix(interactionState);
   const allowForced =
-    suffix !== '' &&
-    (forceState === true || interactionState === 'disabled' || interactionState === 'readOnly');
+    suffix !== '' && (forceState === true || hasAlwaysProjectedState([interactionState]));
   if (allowForced) {
     const activator = stateActivator.activator;
     selectors.push(`.${className}.${eSuffix}.${suffix}.${activator}`);

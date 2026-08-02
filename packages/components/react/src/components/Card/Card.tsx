@@ -114,7 +114,12 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
   );
 
   return (
-    <HeadlessCardAction {...restProps} ref={ref} classNames={resolvedClasses.classNames}>
+    <HeadlessCardAction
+      {...restProps}
+      ref={ref}
+      status={status}
+      classNames={resolvedClasses.classNames}
+    >
       {children}
     </HeadlessCardAction>
   );

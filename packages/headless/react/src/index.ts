@@ -1,8 +1,13 @@
-export type { ButtonProps } from './components/button/Button.tsx';
-export { Button } from './components/button/Button.tsx';
+export type {
+  ButtonProps,
+  ButtonResolvedInteractionState,
+  ResolveButtonInteractionStateOptions
+} from './components/button/Button.tsx';
+export { Button, resolveButtonInteractionState } from './components/button/Button.tsx';
 export type {
   CardActionInteractionStateSource,
   CardActionProps,
+  CardActionStatus,
   CardClassNames,
   CardProps
 } from './components/card/Card.tsx';
@@ -18,6 +23,23 @@ export type {
   IconProps
 } from './components/icon/Icon.tsx';
 export { Icon } from './components/icon/Icon.tsx';
+export type {
+  ProgressClassNames,
+  ProgressDecorativeRootProps,
+  ProgressDeterminateDecorativeRootProps,
+  ProgressDeterminateRootProps,
+  ProgressDeterminateSemanticRootProps,
+  ProgressElementName,
+  ProgressIndeterminateDecorativeRootProps,
+  ProgressIndeterminateRootProps,
+  ProgressIndeterminateSemanticRootProps,
+  ProgressIndicatorProps,
+  ProgressMode,
+  ProgressRootProps,
+  ProgressSemanticRootProps,
+  ProgressTrackProps
+} from './components/progress/HeadlessProgress.tsx';
+export { HeadlessProgress } from './components/progress/HeadlessProgress.tsx';
 export type {
   SelectContentProps,
   SelectOption,

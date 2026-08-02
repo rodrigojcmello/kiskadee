@@ -1,0 +1,93 @@
+/*
+ * element progress root / e1
+ * Gives the semantic root the available inline measure.
+ */
+.k-prg-e1 {
+  display: block;
+  inline-size: 100%;
+}
+
+/*
+ * element progress track / e2
+ * Clips the indicator to the generated track geometry.
+ */
+.k-prg-e2 {
+  display: block;
+  inline-size: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/*
+ * element progress indicator / e3
+ * Converts the runtime progress value into a logical-start fill.
+ */
+.k-prg-e3 {
+  block-size: 100%;
+  display: block;
+  inline-size: var(--k-prg-v, 100%);
+  margin-inline-end: auto;
+  transition: inline-size 300ms ease;
+}
+
+/*
+ * Progress indeterminate mode / e1 state projection
+ * Moves a 33% segment from logical start to logical end without relying on physical sides.
+ */
+.k-prg-e1[data-progress-mode='indeterminate'] .k-prg-e3 {
+  inline-size: 33%;
+  inset-block: 0;
+  inset-inline-start: -33%;
+  position: absolute;
+  animation: k-prg-indeterminate 3s linear infinite;
+}
+
+/*
+ * Progress reduced-motion fallback / e3
+ * Keeps indeterminate progress visible without directional movement when motion is reduced.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .k-prg-e3 {
+    transition: none;
+  }
+
+  .k-prg-e1[data-progress-mode='indeterminate'] .k-prg-e3 {
+    animation: k-prg-reduced-pulse 1.5s ease-in-out infinite alternate;
+    inline-size: 100%;
+    inset-inline-start: 0;
+  }
+}
+
+/*
+ * Progress forced-colors fallback / e2 and e3
+ * Replaces tonal paint with system colors while preserving track and indicator contrast.
+ */
+@media (forced-colors: active) {
+  .k-prg-e2 {
+    background-color: CanvasText;
+  }
+
+  .k-prg-e3 {
+    background-color: Highlight;
+  }
+}
+
+@keyframes k-prg-indeterminate {
+  from {
+    inset-inline-start: -33%;
+  }
+
+  to {
+    inset-inline-start: 100%;
+  }
+}
+
+@keyframes k-prg-reduced-pulse {
+  from {
+    opacity: 0.48;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

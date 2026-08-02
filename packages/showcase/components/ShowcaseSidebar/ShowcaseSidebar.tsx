@@ -1,5 +1,6 @@
 'use client';
 
+import { useShowcase } from '@kiskadee/react-components';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import style from './ShowcaseSidebar.module.scss';
@@ -23,6 +24,10 @@ const componentEntries = [
   {
     href: '/icons',
     label: 'Icon'
+  },
+  {
+    href: '/progress',
+    label: 'Progress'
   },
   {
     href: '/slider',
@@ -76,6 +81,10 @@ export default function ShowcaseSidebar({
   onNavigate?: (href: ShowcaseSidebarEntry['href'], isActive: boolean) => void;
 }) {
   const pathname = usePathname();
+  const { manifest } = useShowcase();
+  const visibleComponentEntries = componentEntries.filter(
+    (entry) => entry.href !== '/progress' || Boolean(manifest?.components?.progress)
+  );
 
   return (
     <aside className={style.sidebar} aria-label="Showcase navigation">
@@ -97,7 +106,7 @@ export default function ShowcaseSidebar({
         <p className={style.sectionTitle}>Components</p>
         <nav className={style.nav} aria-label="Components">
           <ShowcaseSidebarLinks
-            entries={componentEntries}
+            entries={visibleComponentEntries}
             onNavigate={onNavigate}
             pathname={pathname}
           />

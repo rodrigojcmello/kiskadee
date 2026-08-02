@@ -1,4 +1,4 @@
-import { stateActivator as cn } from '@kiskadee/core';
+import { stateActivator as cn, type ProjectedStateKeys } from '@kiskadee/core';
 import type {
   ButtonHTMLAttributes,
   FocusEvent,
@@ -12,6 +12,7 @@ import { useControlState } from '../../hooks/control-state/useControlState.ts';
 
 export type CardClassNames = Partial<Record<'e1', string>>;
 export type CardActionInteractionStateSource = 'native' | 'bounds';
+export type CardActionStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
 type CardDataAttributes = {
   [key: `data-${string}`]: string | number | boolean | undefined;
@@ -34,6 +35,7 @@ export type CardActionProps = {
   onControlStateChange?: (controlState: boolean) => void;
   interactionStateSource?: CardActionInteractionStateSource;
   interactionLocked?: boolean;
+  status?: CardActionStatus;
   unsafeAttrs?: CardUnsafeAttributes;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> &
   CardDataAttributes;
@@ -71,17 +73,34 @@ function cardActionStateClassName(states: {
   disabled?: boolean;
   projectedHover?: boolean;
   projectedPressed?: boolean;
+  status?: CardActionStatus;
 }): string | undefined {
+  const isDisabled = states.disabled || states.status === 'disabled';
+  const isPending = !isDisabled && states.status === 'pending';
+  const isHovered = !isPending && (states.projectedHover || states.status === 'hover');
+  const isPressed = !isPending && (states.projectedPressed || states.status === 'pressed');
+  const isFocused = states.status === 'focus';
+  const isReadOnly = states.status === 'readOnly';
   const hasProjectedState =
-    states.controlState || states.disabled || states.projectedHover || states.projectedPressed;
+    states.controlState ||
+    isHovered ||
+    isPressed ||
+    isFocused ||
+    isPending ||
+    isDisabled ||
+    isReadOnly;
 
   return join(
     cn.interactive,
-    cn.nativeInteraction,
-    states.projectedHover && cn.hover,
-    states.projectedPressed && cn.pressed,
+    !isPending && cn.nativeInteraction,
+    isHovered && cn.hover,
+    isPressed && cn.pressed,
     states.controlState && cn.selected,
-    states.disabled && cn.disabled,
+    isFocused && cn.focus,
+    isFocused && cn.focusVisible,
+    isPending && cn.pending,
+    isDisabled && cn.disabled,
+    isReadOnly && cn.readOnly,
     hasProjectedState && cn.activator
   );
 }
@@ -107,6 +126,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
     onControlStateChange,
     interactionStateSource = 'native',
     interactionLocked,
+    status,
     disabled,
     type = 'button',
     onClick,
@@ -132,10 +152,12 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
     interactionLocked,
     onControlStateChange
   });
-  const shouldProjectBoundsState = interactionStateSource === 'bounds' && !disabled;
+  const shouldProjectBoundsState =
+    interactionStateSource === 'bounds' && !disabled && status !== 'pending';
   const stateClassName = cardActionStateClassName({
     controlState,
     disabled,
+    status,
     projectedHover: shouldProjectBoundsState && isBoundsHovered,
     projectedPressed: shouldProjectBoundsState && isBoundsPressed
   });

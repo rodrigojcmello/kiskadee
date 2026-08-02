@@ -1,0 +1,174 @@
+'use client';
+
+import type {
+  ComponentEmphasis,
+  ElementSizeValue,
+  SurfaceContext,
+  SystemButtonIntent
+} from '@kiskadee/core';
+import { Button as KButton, SmoothText } from '@kiskadee/react-components';
+import type { ManifestComponentState } from '@kiskadee/web-builder/types';
+import { LoaderCircleIcon } from 'lucide-react';
+import { useEffect, useId, useState } from 'react';
+import { ShowcaseSegmentedControl } from '@/components/ShowcaseControls';
+import styles from '../Button.module.scss';
+
+type PendingPresentation = 'text' | 'spinner' | 'progress';
+
+type PendingButtonProfile = {
+  emphasis: ComponentEmphasis;
+  intent: SystemButtonIntent;
+};
+
+const PENDING_INTENT_ORDER: SystemButtonIntent[] = [
+  'primary',
+  'neutral',
+  'positive',
+  'destructive'
+];
+const PENDING_EMPHASIS_ORDER: ComponentEmphasis[] = ['high', 'medium', 'low', 'lowest', 'highest'];
+
+function resolvePendingButtonProfile(
+  buttonState: ManifestComponentState | undefined
+): PendingButtonProfile | undefined {
+  for (const intent of PENDING_INTENT_ORDER) {
+    for (const emphasis of PENDING_EMPHASIS_ORDER) {
+      if (buttonState?.[intent]?.[emphasis]?.pending) {
+        return { emphasis, intent };
+      }
+    }
+  }
+
+  return undefined;
+}
+
+export function ButtonAsyncExample({
+  buttonState,
+  fontName,
+  progressAvailable,
+  progressSurfaceContext,
+  scale,
+  surfaceContext
+}: {
+  buttonState: ManifestComponentState | undefined;
+  fontName: string;
+  progressAvailable: boolean;
+  progressSurfaceContext: SurfaceContext;
+  scale: ElementSizeValue;
+  surfaceContext: SurfaceContext;
+}) {
+  const statusId = useId();
+  const [presentation, setPresentation] = useState<PendingPresentation>('text');
+  const [pending, setPending] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const [progressValue, setProgressValue] = useState(0);
+  const pendingProfile = resolvePendingButtonProfile(buttonState);
+  const activePresentation =
+    presentation === 'progress' && !progressAvailable ? 'text' : presentation;
+  const presentationOptions = [
+    { value: 'text', label: 'Text' },
+    { value: 'spinner', label: 'Spinner' },
+    ...(progressAvailable ? [{ value: 'progress', label: 'Progress' }] : [])
+  ];
+
+  useEffect(() => {
+    if (!pending) return;
+
+    const intervalId =
+      activePresentation === 'progress'
+        ? window.setInterval(() => {
+            setProgressValue((currentValue) => Math.min(currentValue + 15, 90));
+          }, 450)
+        : undefined;
+    const timeoutId = window.setTimeout(() => {
+      setProgressValue(100);
+      setPending(false);
+      setCompleted(true);
+    }, 3000);
+
+    return () => {
+      if (intervalId !== undefined) {
+        window.clearInterval(intervalId);
+      }
+      window.clearTimeout(timeoutId);
+    };
+  }, [activePresentation, pending]);
+
+  if (!pendingProfile) return null;
+
+  const statusMessage = pending
+    ? activePresentation === 'progress'
+      ? `Submitting order: ${progressValue}% complete.`
+      : 'Submitting order.'
+    : completed
+      ? 'Order submitted.'
+      : 'Ready to submit.';
+  const pendingLabel = pending && activePresentation === 'text' ? 'Submitting…' : 'Submit order';
+
+  return (
+    <section className={styles.asyncSection} aria-labelledby="button-async-example-title">
+      <div>
+        <h3 id="button-async-example-title">Async pending</h3>
+        <p className={styles.showcaseSectionDescription}>
+          One pending state, three optional feedback presentations. Start the request to inspect the
+          interaction lock and focus-preserving lifecycle.
+        </p>
+      </div>
+      <div className={styles.asyncLayout}>
+        <div className={styles.asyncControls}>
+          <ShowcaseSegmentedControl
+            label="Pending content"
+            options={presentationOptions}
+            value={activePresentation}
+            onValueChange={(value) => setPresentation(value as PendingPresentation)}
+            disabled={pending}
+          />
+        </div>
+        <div className={`${styles.asyncPreview} k-root`}>
+          <div className={styles.asyncButton}>
+            <KButton
+              aria-describedby={statusId}
+              emphasis={pendingProfile.emphasis}
+              intent={pendingProfile.intent}
+              onClick={() => {
+                setCompleted(false);
+                setProgressValue(0);
+                setPending(true);
+              }}
+              pending={pending}
+              scale={scale}
+              surfaceContext={surfaceContext}
+            >
+              {pending && activePresentation === 'progress' ? (
+                <KButton.Progress
+                  intent={pendingProfile.intent}
+                  max={100}
+                  surfaceContext={progressSurfaceContext}
+                  value={progressValue}
+                />
+              ) : null}
+              {pending && activePresentation === 'spinner' ? (
+                <KButton.Icon>
+                  <LoaderCircleIcon
+                    aria-hidden="true"
+                    className={styles.asyncSpinner}
+                    width="100%"
+                    height="100%"
+                  />
+                </KButton.Icon>
+              ) : null}
+              <KButton.Label>
+                <SmoothText fontName={fontName} align="center">
+                  {pendingLabel}
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+          </div>
+          <p className={styles.asyncStatus} id={statusId} role="status" aria-atomic="true">
+            {statusMessage}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -21,7 +21,7 @@ disabled behavior, and semantic button accessibility.
 
 `CardAction` follows the Kiskadee cursor policy for generic controls: it uses the
 default cursor, not `cursor: pointer`. Interactivity should be communicated by
-hover, pressed, focus, disabled, and shadow states. Disabled CardAction
+hover, pressed, focus, pending, disabled, and shadow states. Disabled CardAction
 instances may use the unavailable-state cursor.
 
 ## Visual Props
@@ -68,6 +68,10 @@ schema still owns the generated border and shadow tokens.
 
 When `CardAction` represents a selected card, it exposes the selected state
 through `aria-pressed`.
+
+`status="pending"` is a terminal visual projection. On CardAction it remains
+actionable and does not add busy, disabled, or other ARIA semantics; operational
+pending behavior is currently owned only by Button.
 
 Use selected state only when the card itself is the selectable item. Do not make
 `CardAction` selected only because a child control inside the card is on. In

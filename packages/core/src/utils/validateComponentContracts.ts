@@ -1,6 +1,7 @@
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
 import { validateIconComponentContract } from '../components/icon.ts';
+import { validateProgressComponentContract } from '../components/progress.ts';
 import { validateSliderComponentContract } from '../components/slider.zod.ts';
 import { validateSwitchComponentContract } from '../components/switch.zod.ts';
 import { validateTabsComponentContract } from '../components/tabs.zod.ts';
@@ -13,6 +14,7 @@ import { validateTextFieldComponentContract } from '../components/text-field.zod
  * - button
  * - card
  * - icon
+ * - progress
  * - slider
  * - switch
  * - tabs
@@ -51,6 +53,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for icon. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.progress !== undefined) {
+    const issues = validateProgressComponentContract(byName.progress, 'components.progress');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for progress. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
   }

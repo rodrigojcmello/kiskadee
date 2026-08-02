@@ -24,6 +24,14 @@ This file records source evidence and preset-level decisions for
   scale. The mapping is explicit because the two grids and theme orientations
   are not identical.
 
+## ProgressBar Evidence
+
+ProgressBar evidence is recorded at static node `9121:5771` and animated node `9121:5796`. Those
+variants establish the 2px/4px scales, circular geometry, and Default/Success/Warning/Error
+semantic anchors. The source does not expose a Progress emphasis axis, so Kiskadee publishes one
+canonical `medium` profile per intent. Fluent's Dark Orange Warning anchor is temporarily mapped
+to the existing `primitive.orange.v1`; no new Orange v2 asset is introduced for this preset.
+
 ## Color Scale Evidence
 
 The color investigation and generated candidate system live under
@@ -110,4 +118,5 @@ instead of flattening them to the larger offset layer.
 - [Button](components/button.md)
 - [Card](components/card.md)
 - [Icon](components/icon.md)
+- [Progress](components/progress.md)
 - [Slider](components/slider.md)

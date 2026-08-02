@@ -12,6 +12,7 @@ import {
   type ResolvedElementStyleEmissionPolicy
 } from '../../../style-emission/web-build-policy.ts';
 import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss.ts';
+import { hasAlwaysProjectedState } from '../../utils/stateSelectors.ts';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
   'Invalid key format. Expected numeric value in square brackets at the end.';
@@ -50,10 +51,12 @@ function getProjectedStateSuffix(state: string): string {
  * - Inline (no "==")
  *   • Native branch: emits .<className>.-n<pseudo(s)> plus any non-native forced suffixes as classes on the same element.
  *     Never add the activator class (.-a) in this branch.
- *   • Forced branch: emits .<className>.<all forced suffixes>.-a when forceState === true OR when one state is "disabled" or "readOnly".
+ *   • Forced branch: emits .<className>.<all forced suffixes>.-a when forceState === true OR when
+ *     Core marks one state as always projected.
  * - Reference (with "==")
  *   • Native parent branch: emits .-n<pseudo(s)><non-native classes> .<className> when there is at least one native pseudo.
- *   • Forced parent branch: emits .-a.<all forced suffixes> .<className> when forceState === true OR when one state is "disabled" or "readOnly".
+ *   • Forced parent branch: emits .-a.<all forced suffixes> .<className> when forceState === true
+ *     OR when Core marks one state as always projected.
  *
  * Examples (simplified for className="abc"):
  * - "--hover__10" => ".abc.-n:hover, .abc.-h.-a { border-radius: 10px }" (when forceState=true)
@@ -113,9 +116,6 @@ export function transformBorderRadiusKeyToCss(
 
   // Remove explicit "rest" and empty tokens if provided.
   const states = extractStates().filter((s) => s !== 'rest' && s !== '');
-  const hasAlwaysProjectedState = (stateList: string[]): boolean =>
-    stateList.some((state) => state === 'disabled' || state === 'readOnly');
-
   // Build selectors that apply to the same element (.abc ...)
   const buildInlineSelectors = (): string[] => {
     if (states.length === 0) return [`.${className}`];

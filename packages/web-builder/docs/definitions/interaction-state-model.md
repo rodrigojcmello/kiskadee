@@ -116,6 +116,7 @@ existing runtime call sites.
 - `-s`: selected
 - `-f`: focus
 - `-d`: disabled
+- `-g`: pending
 - `-r`: read-only
 - `-v`: filled / has value
 - `-a`: activator gate for projected state selectors
@@ -127,7 +128,7 @@ existing runtime call sites.
 The projected state keys are intentionally separate from the meta classes:
 
 - Projected states describe component or interaction state: hover, pressed, selected, focus,
-  disabled, read-only, and filled.
+  pending, disabled, read-only, and filled.
 - Meta classes modify selector behavior, qualify focus, or opt into effects: activator, interactive
   anchor, highlighted focus qualifier, and shadow/elevation.
 
@@ -413,6 +414,10 @@ and runtime already have a clear state scope owner.
   state explicitly models highlighted focus.
 - Disabled and read-only also emit projected `-d` / `-r` + `-a` variants through the same projected
   selector channel.
+- Pending emits the projected `-g` + `-a` branch. It has no trustworthy native pseudo and therefore
+  never emits a native branch.
+- Pending is ordered after transient Hover, Focus, and Pressed branches. Disabled remains later and
+  wins when both states are present.
 - Child classes should only receive their own projected state classes when the child owns that state.
   If the child reacts to a parent/component state, the generated selector should come from a reference
   key and target the child from the scope owner.

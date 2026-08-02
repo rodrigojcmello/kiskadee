@@ -2,6 +2,7 @@ import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './break
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
 import type { CardElements, CardOptions } from './components/card.ts';
 import type { IconElements } from './components/icon.ts';
+import type { ProgressElements } from './components/progress.ts';
 import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
@@ -32,7 +33,15 @@ import type {
 import type { ScaleSchema } from './types/scales/scales.types.ts';
 
 // Names of all supported components
-export type ComponentName = 'button' | 'card' | 'icon' | 'slider' | 'switch' | 'tabs' | 'textField';
+export type ComponentName =
+  | 'button'
+  | 'card'
+  | 'icon'
+  | 'progress'
+  | 'slider'
+  | 'switch'
+  | 'tabs'
+  | 'textField';
 
 export type ElementStyle<TSegmentName extends SegmentName = never> = {
   name: string; // human-readable element label, for example "button-text"
@@ -103,6 +112,7 @@ export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Par
   button: ComponentElementsStyleKeyMap<TSegmentName>;
   card: ComponentElementsStyleKeyMap<TSegmentName>;
   icon: ComponentElementsStyleKeyMap<TSegmentName>;
+  progress: ComponentElementsStyleKeyMap<TSegmentName>;
   slider: ComponentVariantModesStyleKeyMap<TSegmentName>;
   switch: ComponentVariantModesStyleKeyMap<TSegmentName>;
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
@@ -162,6 +172,9 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
   };
   icon: {
     elements: IconElements<TSegmentName> & Elements<TSegmentName>;
+  };
+  progress: {
+    elements: ProgressElements<TSegmentName>;
   };
   slider: SliderComponent<TSegmentName>;
   switch: SwitchComponent<TSegmentName>;

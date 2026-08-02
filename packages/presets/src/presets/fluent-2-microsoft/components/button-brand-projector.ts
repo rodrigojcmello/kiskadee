@@ -19,7 +19,8 @@ import {
   FLUENT_BUTTON_DEFAULT_TONAL_RECIPE,
   type FluentButtonFormulaScale,
   type FluentButtonFormulaTheme,
-  type FluentButtonTonalFamily
+  type FluentButtonTonalFamily,
+  omitFluentButtonPendingTextState
 } from './button-color-formula.ts';
 
 export type FluentBrandContentPolarity = PresetBrandContentPolarity;
@@ -176,12 +177,19 @@ export function createFluent2MicrosoftBrandButtonProjection(
       borderColor: selectProperty(onVivid[theme], 'borderColor')
     }
   });
-  const createContentTheme = (theme: FluentButtonFormulaTheme) => ({
+  const createContentTheme = (
+    theme: FluentButtonFormulaTheme,
+    options: { omitPending?: boolean } = {}
+  ) => ({
     onSubtle: {
-      textColor: selectProperty(onSubtle[theme], 'textColor')
+      textColor: options.omitPending
+        ? omitFluentButtonPendingTextState(selectProperty(onSubtle[theme], 'textColor'))
+        : selectProperty(onSubtle[theme], 'textColor')
     },
     onVivid: {
-      textColor: selectProperty(onVivid[theme], 'textColor')
+      textColor: options.omitPending
+        ? omitFluentButtonPendingTextState(selectProperty(onVivid[theme], 'textColor'))
+        : selectProperty(onVivid[theme], 'textColor')
     }
   });
 
@@ -211,9 +219,9 @@ export function createFluent2MicrosoftBrandButtonProjection(
         name: 'button-icon',
         palettes: {
           default: {
-            light: createContentTheme('light'),
-            dark: createContentTheme('dark'),
-            darker: createContentTheme('darker')
+            light: createContentTheme('light', { omitPending: true }),
+            dark: createContentTheme('dark', { omitPending: true }),
+            darker: createContentTheme('darker', { omitPending: true })
           }
         }
       }

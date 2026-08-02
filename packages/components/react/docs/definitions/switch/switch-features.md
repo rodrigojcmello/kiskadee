@@ -44,7 +44,7 @@ prefer the canonical docs:
 | `controlState` | Controlled boolean state. |
 | `defaultControlState` | Initial uncontrolled state. Defaults to `false` through the headless state hook. |
 | `onControlStateChange` | Called when the semantic state changes. It is not called for no-op changes, disabled controls, or read-only controls. |
-| `status` | Optional projected visual status. Supported values come from `SwitchStatus`: `hover`, `pressed`, `focus`, `disabled`, and `readOnly`. `selected` and `filled` are excluded because selection is owned by `controlState`. |
+| `status` | Optional projected visual status. Supported values come from `SwitchStatus`: `hover`, `pressed`, `focus`, `pending`, `disabled`, and `readOnly`. `pending` is visual-only for Switch and does not block state changes or add ARIA semantics. `selected` and `filled` are excluded because selection is owned by `controlState`. |
 | `disabled` | Disables the native input and blocks state changes, drag, and activation feedback. |
 | `readOnly` | Keeps the control focusable/readable, blocks state changes, drag, and activation feedback, and sets `aria-readonly`. |
 | `required`, `name`, `value` | Forwarded to the native checkbox input. |
@@ -214,11 +214,14 @@ Switch projects visual states through the root state class model:
 - `selected`
 - `focus`
 - `focusVisible`
+- `pending`
 - `disabled`
 - `readOnly`
 
 `selected` is derived from `controlState`. `focusVisible` is a qualifier used for
-keyboard-visible focus styling.
+keyboard-visible focus styling. `pending` is a forced terminal visual projection
+for Switch; it does not provide asynchronous behavior, interaction blocking, or
+ARIA semantics.
 
 The component must preserve both controlled and uncontrolled state:
 

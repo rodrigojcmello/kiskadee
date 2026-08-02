@@ -246,16 +246,21 @@ function buildComponentScale(
 ): ManifestComponent['scale'] | undefined {
   const scaleKeys = new Set<string>();
 
+  const collectPublishedScaleKeys = (value: unknown): void => {
+    if (!isRecord(value)) return;
+
+    for (const [key, child] of Object.entries(value)) {
+      if (key.startsWith('s:')) {
+        scaleKeys.add(key);
+        continue;
+      }
+      collectPublishedScaleKeys(child);
+    }
+  };
+
   for (const elements of collectComponentElements(schema, componentName)) {
     for (const el of Object.values(elements)) {
-      const scales = (el as any).scales as Record<string, Record<string, number>> | undefined;
-      if (!scales) continue;
-
-      for (const scaleMap of Object.values(scales)) {
-        for (const key of Object.keys(scaleMap)) {
-          scaleKeys.add(key);
-        }
-      }
+      collectPublishedScaleKeys((el as any).scales);
     }
   }
 
@@ -360,6 +365,7 @@ function isComponentName(value: string): value is ComponentName {
     value === 'button' ||
     value === 'card' ||
     value === 'icon' ||
+    value === 'progress' ||
     value === 'slider' ||
     value === 'switch' ||
     value === 'tabs' ||
@@ -645,6 +651,7 @@ export async function publishMetadata(params: {
     'button',
     'card',
     'icon',
+    'progress',
     'slider',
     'switch'
   ] as const satisfies readonly ComponentName[];

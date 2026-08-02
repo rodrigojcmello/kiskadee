@@ -1,4 +1,10 @@
-import type { KiskadeeTone, SolidColor, TonalFunctionalReferenceName } from '@kiskadee/core';
+import {
+  type KiskadeeTone,
+  normalizeHexColor,
+  type SolidColor,
+  type TonalFunctionalReferenceName,
+  withAlpha
+} from '@kiskadee/core';
 import {
   createBalancedLowBorder,
   createPerceptuallyBalancedAlpha
@@ -163,6 +169,61 @@ export const FLUENT_BUTTON_ON_VIVID_RECIPE = {
   }
 } as const;
 
+/**
+ * Kiskadee pending is a per-slot visibility treatment, not root opacity.
+ *
+ * Keeping these factors separate lets the Button surface, outline, and label recede while a
+ * spinner in the icon slot and a composed Progress remain fully legible.
+ */
+export const FLUENT_BUTTON_PENDING_VISIBILITY = {
+  surface: 60,
+  border: 60,
+  content: 70
+} as const;
+
+function applySlotVisibility(color: SolidColor, visibility: number): SolidColor {
+  if (!color.startsWith('#')) {
+    return withAlpha(color, visibility);
+  }
+
+  const normalized = normalizeHexColor(color);
+  const sourceVisibility =
+    normalized.length === 9 ? (Number.parseInt(normalized.slice(7, 9), 16) / 255) * 100 : 100;
+
+  return withAlpha(normalized, (sourceVisibility * visibility) / 100);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Removes only the pending delta from a Button text-color intent map.
+ *
+ * Button icon slots use this projection so arbitrary spinner artwork keeps Rest strength while the
+ * adjacent label uses the pending content treatment.
+ */
+export function omitFluentButtonPendingTextState(
+  intentMap: Record<string, unknown>
+): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(intentMap).map(([intent, emphasisValue]) => {
+      if (!isRecord(emphasisValue)) return [intent, emphasisValue];
+
+      const emphasisMap = Object.fromEntries(
+        Object.entries(emphasisValue).map(([emphasis, stateValue]) => {
+          if (!isRecord(stateValue)) return [emphasis, stateValue];
+          const { pending: _pending, ...restStates } = stateValue;
+          void _pending;
+          return [emphasis, restStates];
+        })
+      );
+
+      return [intent, emphasisMap];
+    })
+  );
+}
+
 export function createFluentButtonOnSubtleIntent({
   theme,
   family,
@@ -204,6 +265,10 @@ export function createFluentButtonOnSubtleIntent({
         rest: roleReferenceColor(recipe.medium.rest),
         hover: roleReferenceColor(recipe.medium.hover),
         pressed: roleReferenceColor(recipe.medium.pressed),
+        pending: applySlotVisibility(
+          roleReferenceColor(recipe.medium.rest),
+          FLUENT_BUTTON_PENDING_VISIBILITY.surface
+        ),
         disabled: adaptiveDisabled,
         selected: {
           rest: roleReferenceColor(recipe.medium.pressed)
@@ -213,6 +278,10 @@ export function createFluentButtonOnSubtleIntent({
         rest: roleReferenceColor(recipe.high.rest),
         hover: roleReferenceColor(recipe.high.hover),
         pressed: roleReferenceColor(recipe.high.pressed),
+        pending: applySlotVisibility(
+          roleReferenceColor(recipe.high.rest),
+          FLUENT_BUTTON_PENDING_VISIBILITY.surface
+        ),
         disabled: adaptiveDisabled,
         selected: {
           rest: roleReferenceColor(recipe.high.pressed)
@@ -245,6 +314,7 @@ export function createFluentButtonOnSubtleIntent({
       },
       low: {
         rest: lowBorder,
+        pending: applySlotVisibility(lowBorder, FLUENT_BUTTON_PENDING_VISIBILITY.border),
         disabled: transparent
       },
       lowest: {
@@ -254,24 +324,45 @@ export function createFluentButtonOnSubtleIntent({
     textColor: {
       medium: {
         rest: roleColor(recipe.foreground),
+        pending: {
+          ref: applySlotVisibility(
+            roleColor(recipe.foreground),
+            FLUENT_BUTTON_PENDING_VISIBILITY.content
+          )
+        },
         disabled: {
           ref: filledDisabledForeground
         }
       },
       high: {
         rest: highForeground,
+        pending: {
+          ref: applySlotVisibility(highForeground, FLUENT_BUTTON_PENDING_VISIBILITY.content)
+        },
         disabled: {
           ref: filledDisabledForeground
         }
       },
       low: {
         rest: roleColor(recipe.foreground),
+        pending: {
+          ref: applySlotVisibility(
+            roleColor(recipe.foreground),
+            FLUENT_BUTTON_PENDING_VISIBILITY.content
+          )
+        },
         disabled: {
           ref: filledDisabledForeground
         }
       },
       lowest: {
         rest: roleColor(recipe.foreground),
+        pending: {
+          ref: applySlotVisibility(
+            roleColor(recipe.foreground),
+            FLUENT_BUTTON_PENDING_VISIBILITY.content
+          )
+        },
         disabled: {
           ref: disabledForeground
         }
@@ -341,6 +432,7 @@ export function createFluentButtonOnVividIntent({
         rest: mediumRest,
         hover: mediumHover,
         pressed: mediumPressed,
+        pending: applySlotVisibility(mediumRest, FLUENT_BUTTON_PENDING_VISIBILITY.surface),
         disabled: onVividDisabledBackground,
         selected: {
           rest: mediumPressed
@@ -350,6 +442,7 @@ export function createFluentButtonOnVividIntent({
         rest: onVividWhite,
         hover: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.hover),
         pressed: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.pressed),
+        pending: applySlotVisibility(onVividWhite, FLUENT_BUTTON_PENDING_VISIBILITY.surface),
         disabled: onVividDisabledBackground,
         selected: {
           rest: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.pressed)
@@ -382,6 +475,7 @@ export function createFluentButtonOnVividIntent({
       },
       low: {
         rest: onVividLowBorder,
+        pending: applySlotVisibility(onVividLowBorder, FLUENT_BUTTON_PENDING_VISIBILITY.border),
         disabled: onVividTransparent
       },
       lowest: {
@@ -391,12 +485,24 @@ export function createFluentButtonOnVividIntent({
     textColor: {
       medium: {
         rest: roleReferenceColor(mediumForeground),
+        pending: {
+          ref: applySlotVisibility(
+            roleReferenceColor(mediumForeground),
+            FLUENT_BUTTON_PENDING_VISIBILITY.content
+          )
+        },
         disabled: {
           ref: onVividDisabledForeground
         }
       },
       high: {
         rest: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.rest),
+        pending: {
+          ref: applySlotVisibility(
+            roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.rest),
+            FLUENT_BUTTON_PENDING_VISIBILITY.content
+          )
+        },
         hover: {
           ref: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.hover)
         },
@@ -414,12 +520,24 @@ export function createFluentButtonOnVividIntent({
       },
       low: {
         rest: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+        pending: {
+          ref: applySlotVisibility(
+            roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+            FLUENT_BUTTON_PENDING_VISIBILITY.content
+          )
+        },
         disabled: {
           ref: onVividDisabledForeground
         }
       },
       lowest: {
         rest: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+        pending: {
+          ref: applySlotVisibility(
+            roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+            FLUENT_BUTTON_PENDING_VISIBILITY.content
+          )
+        },
         disabled: {
           ref: onVividDisabledForeground
         }

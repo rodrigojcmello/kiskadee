@@ -2,17 +2,18 @@ import {
   type ColorProperty,
   CssColorProperty,
   InteractionStateCssPseudoSelector,
+  normalizeHexColor,
   type ProjectedStateKeys,
   type PseudoSelectorKeys,
   projectedStateActivator,
   type StyleKey,
   stateActivator
 } from '@kiskadee/core';
-import { normalizeHexColor } from '@kiskadee/core';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
 } from '../../style-emission/web-build-policy.ts';
+import { hasAlwaysProjectedState } from '../utils/stateSelectors.ts';
 import { toShortHex } from '../utils/toShortHex.ts';
 
 export type TransformColorKeyToCssOptions = {
@@ -91,8 +92,8 @@ function getProjectedStateSuffix(state: string): string {
  *                     "hover" and its projected suffix is "-h", the generated selector list can
  *                     include ".abc.-n:hover, .abc.-h.-a" for inline rules or
  *                     ".-n:hover .abc, .-a.-h .abc" for parent-ref rules. Component states
- *                     without a safe native pseudo, such as disabled/readOnly, always emit the
- *                     projected selector.
+ *                     listed by Core as always projected, such as pending, disabled, and readOnly,
+ *                     emit the projected selector even when this flag is false.
  * @param options
  * @returns GeneratedCss containing:
  *   - className: token without a dot prefix, for use in HTML
@@ -241,8 +242,6 @@ export function transformColorKeyToCss(
   // Preserve the "hover does not compete with active" rule without increasing hover specificity.
   const normalizeNativePseudo = (pseudo: string): string =>
     pseudo === ':hover' ? ':hover:where(:not(:active))' : pseudo;
-  const hasAlwaysProjectedState = (stateList: string[]): boolean =>
-    stateList.some((state) => state === 'disabled' || state === 'readOnly');
 
   if (!isRef) {
     if (filteredStates.length === 0) {

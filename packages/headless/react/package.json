@@ -35,6 +35,11 @@
       "import": "./dist/components/icon/Icon.js",
       "default": "./dist/components/icon/Icon.js"
     },
+    "./progress": {
+      "types": "./dist/components/progress/HeadlessProgress.d.ts",
+      "import": "./dist/components/progress/HeadlessProgress.js",
+      "default": "./dist/components/progress/HeadlessProgress.js"
+    },
     "./text-field": {
       "types": "./dist/components/text-field/HeadlessTextField.d.ts",
       "import": "./dist/components/text-field/HeadlessTextField.js",

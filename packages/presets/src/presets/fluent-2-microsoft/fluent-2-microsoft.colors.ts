@@ -114,6 +114,14 @@ export const componentIntents = {
     neutral: 'neutral',
     primary: 'primary'
   },
+  progress: {
+    neutral: 'neutral',
+    primary: 'primary',
+    positive: 'greenLike',
+    // Temporary Fluent warning adaptation: keep the existing Orange v1 asset.
+    warning: 'primitive.orange.v1',
+    destructive: 'redLike'
+  },
   slider: {
     neutral: 'neutral',
     primary: 'primary'

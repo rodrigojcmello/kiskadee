@@ -1,11 +1,13 @@
-import type {
-  ComponentName,
-  ComponentStyleKeyMap,
-  ElementAllSizeValue,
-  ElementSizeValue,
-  InteractionState,
-  SemanticColor,
-  ThemeMode
+import {
+  type ComponentName,
+  type ComponentStyleKeyMap,
+  type ElementAllSizeValue,
+  type ElementSizeValue,
+  type InteractionState,
+  projectedStateActivator,
+  type SemanticColor,
+  type ThemeMode,
+  terminalInteractionStateKeys
 } from '@kiskadee/core';
 import { createKiskadeePostcssPlugins } from '@kiskadee/css-build';
 import postcss from 'postcss';
@@ -39,7 +41,8 @@ export type SplitCssBundles = {
 };
 
 // Policy switch: whether to emit passive (non-gated) effects rules.
-// Default false — effects must be gated by class activator (.-a, .-h, .-f, .-p, .-s, .-d, .-r)
+// Default false — effects must be gated by class activator
+// (.-a, .-h, .-f, .-p, .-s, .-g, .-d, .-r)
 // or a native pseudo (:hover, :focus, :active, etc.). Passive effects are ignored to avoid dead CSS.
 const EMIT_PASSIVE_EFFECTS = false;
 
@@ -318,17 +321,27 @@ export async function generateCssSplit(
   // - Always emit forced-only class rules (no native pseudos) first.
   // - Then emit native pseudo rules ordered by ascending precedence: hover < focus < active.
   //   This guarantees focus and active rules are printed later and therefore win ties in specificity.
-  // - Disabled rules must be printed last because a disabled control can also carry persistent
-  //   state classes such as selected.
+  // - Terminal states are emitted after native interactions. Pending wins over hover/focus/active,
+  //   while disabled remains the final authority if both terminal states are projected.
   // - If multiple pseudos appear in the same selector, take the highest-precedence one.
   //
   // Note: This ordering is applied identically to both effects and palette bundles.
   const precedenceOf = (rule: string): number => {
-    // 0 = forced-only/no native; 1 = hover; 2 = focus; 3 = active; 4 = disabled (printed last)
+    // 0 = forced-only/no native; 1 = hover; 2 = focus; 3 = active;
+    // 4+ = terminal states in their Core-defined precedence order.
     // We match within @media wrappers as well.
     const ruleForPrecedence = rule.replace(/:not\([^)]*\)/g, '');
-    const isDisabled = /:(disabled)\b|\.-d\b/.test(ruleForPrecedence);
-    if (isDisabled) return 4;
+    let terminalPrecedence = 0;
+    for (const [index, state] of terminalInteractionStateKeys.entries()) {
+      const projectedStateClass = new RegExp(`\\.${projectedStateActivator[state]}\\b`);
+      if (projectedStateClass.test(ruleForPrecedence)) {
+        terminalPrecedence = Math.max(terminalPrecedence, 4 + index);
+      }
+    }
+    if (/:(disabled)\b/.test(ruleForPrecedence)) {
+      terminalPrecedence = Math.max(terminalPrecedence, 3 + terminalInteractionStateKeys.length);
+    }
+    if (terminalPrecedence > 0) return terminalPrecedence;
     const isActive = /:(active)\b/.test(ruleForPrecedence);
     if (isActive) return 3;
     const isFocus = /:(focus|focus-visible|focus-within)\b/.test(ruleForPrecedence);

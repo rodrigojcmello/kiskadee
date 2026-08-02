@@ -241,7 +241,7 @@ different primitive color identities.
 
 ## Integration Status
 
-The first integration is the Fluent Button documented in
+The first integration was the Fluent Button documented in
 [`../components/button.md`](../components/button.md). It promotes the Blue,
 Black, Cranberry, and Green generated scales. Primary High anchors the shared
 tonal recipe to each family's `vivid` reference, while Medium begins at each
@@ -255,6 +255,10 @@ carry identity; Dark and Darker retain the role-aware Medium surface candidate.
 All three themes reuse their existing Medium surfaces in descending
 physical-lightness order from Rest through Hover to Pressed/Selected, matching
 the state direction already used by on-vivid High, Low, and Lowest.
+
+Progress is documented in [`../components/progress.md`](../components/progress.md). It reuses Brand,
+Green, Orange, Cranberry, and Neutral through one canonical `medium` profile per intent. Warning
+uses the existing Orange v1 family at L50/D55; no second Orange primitive is introduced.
 
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent chromatic families at Layer 1. Layer 2 maps Blue to `primary`,
@@ -270,4 +274,4 @@ Card maps its source-backed Neutral surfaces through `n.black.v2`, while
 absolute white/black remain `n.black.v1` caps. Dark chroma moderation is owned
 by the tonal system and applies hue-independently to eligible support families;
 no Destructive-, Positive-, Neutral-, Button-, or Card-only compensation was
-introduced. Components beyond Button and Card remain deferred.
+introduced. Components beyond Button, Card, and Progress remain deferred.

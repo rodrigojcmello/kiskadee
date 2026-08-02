@@ -1,4 +1,7 @@
-import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
+import {
+  type ButtonProps as HeadlessButtonProps,
+  resolveButtonInteractionState
+} from '@kiskadee/react-headless';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBrandPack } from '../../../shared/contexts/BrandPackContext.tsx';
 import {
@@ -18,6 +21,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     status: statusProp = 'rest',
     toggle,
     controlState,
+    pending,
+    interactionLocked,
     scale = DEFAULT_BUTTON_SCALE,
     disabled,
     shadow = false,
@@ -29,6 +34,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     surfaceContext,
     tabIndex,
     label,
+    icon,
     pressedDurationMs,
     iconLayout: iconLayoutProp,
     iconPlacement: iconPlacementProp,
@@ -65,6 +71,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     status,
     toggle,
     controlState,
+    pending,
+    interactionLocked,
     scale,
     disabled,
     shadow,
@@ -76,6 +84,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     surfaceContext,
     tabIndex,
     label,
+    icon,
     pressedDurationMs,
     iconLayout,
     iconPlacement,
@@ -147,6 +156,9 @@ export function useButtonClassNamesFromCommon(
 type ResolveButtonAccessibilityStateArgs = {
   disabled: boolean | undefined;
   status: ButtonStatus | 'rest';
+  pending: boolean | undefined;
+  interactionLocked: boolean | undefined;
+  ariaBusyProp: HeadlessButtonProps['aria-busy'];
   ariaDisabledProp: HeadlessButtonProps['aria-disabled'];
   ariaPressedProp: HeadlessButtonProps['aria-pressed'];
   toggle: boolean | undefined;
@@ -156,38 +168,67 @@ type ResolveButtonAccessibilityStateArgs = {
 function resolveButtonAccessibilityState({
   disabled,
   status,
+  pending,
+  interactionLocked,
+  ariaBusyProp,
   ariaDisabledProp,
   ariaPressedProp,
   toggle,
   controlState
 }: ResolveButtonAccessibilityStateArgs): {
-  isDisabled: boolean | undefined;
+  activationBlocked: boolean;
+  nativeDisabled: boolean;
+  pending: boolean;
+  visualStatus: ButtonStatus | 'rest';
+  ariaBusy: HeadlessButtonProps['aria-busy'];
   ariaDisabled: HeadlessButtonProps['aria-disabled'];
   ariaPressed: HeadlessButtonProps['aria-pressed'];
 } {
-  let isDisabled: boolean | undefined;
-  if (disabled !== undefined) {
-    isDisabled = disabled;
-  } else if (status === 'disabled') {
-    isDisabled = ariaDisabledProp === true ? undefined : true;
-  } else {
-    isDisabled = undefined;
-  }
+  const statusDisabled = status === 'disabled';
+  const usesAriaDisabled = ariaDisabledProp === true || ariaDisabledProp === 'true';
+  const shouldUseNativeDisabled = disabled === true || (statusDisabled && !usesAriaDisabled);
+  const interactionState = resolveButtonInteractionState({
+    disabled: shouldUseNativeDisabled,
+    interactionLocked,
+    pending: statusDisabled ? false : pending,
+    ariaBusy: ariaBusyProp,
+    ariaDisabled: ariaDisabledProp
+  });
 
   const ariaPressed =
     ariaPressedProp ?? (toggle ? (controlState === true ? true : undefined) : undefined);
+  const visualStatus: ButtonStatus | 'rest' = interactionState.nativeDisabled
+    ? 'disabled'
+    : interactionState.pending
+      ? 'pending'
+      : status;
 
-  return { isDisabled, ariaDisabled: ariaDisabledProp, ariaPressed };
+  return {
+    activationBlocked: interactionState.activationBlocked,
+    nativeDisabled: interactionState.nativeDisabled,
+    pending: interactionState.pending,
+    visualStatus,
+    ariaBusy: interactionState.ariaBusy,
+    ariaDisabled: interactionState.ariaDisabled,
+    ariaPressed
+  };
 }
 
 export function resolveButtonAccessibilityFromCommon(common: ButtonCommonProps): {
-  isDisabled: boolean | undefined;
+  activationBlocked: boolean;
+  nativeDisabled: boolean;
+  pending: boolean;
+  visualStatus: ButtonStatus | 'rest';
+  ariaBusy: HeadlessButtonProps['aria-busy'];
   ariaDisabled: HeadlessButtonProps['aria-disabled'];
   ariaPressed: HeadlessButtonProps['aria-pressed'];
 } {
   return resolveButtonAccessibilityState({
     disabled: common.disabled,
     status: common.status,
+    pending: common.pending,
+    interactionLocked: common.interactionLocked,
+    ariaBusyProp: common.restProps['aria-busy'],
     ariaDisabledProp: common.restProps['aria-disabled'],
     ariaPressedProp: common.restProps['aria-pressed'],
     toggle: common.toggle,

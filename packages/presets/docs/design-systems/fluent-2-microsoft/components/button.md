@@ -34,6 +34,11 @@ This file records source evidence and color decisions for the Button currently a
   - [Button usage](https://fluent2.microsoft.design/components/web/react/core/button/usage)
   - [Color tokens](https://fluent2.microsoft.design/color-tokens/)
   - [Fluent React Button styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts)
+- Product observation:
+  - a Microsoft sign-in flow observed on 2026-07-31 kept its Primary Button recognizable while
+    making the accepted action translucent during asynchronous processing;
+  - this observation motivates Kiskadee's pending representation, but is not treated as evidence
+    that Fluent publishes a documented `pending` Button API or token.
 - Preset-wide tonal evidence:
   [`../colors/fluent-tonal-scale-evidence.md`](../colors/fluent-tonal-scale-evidence.md)
 - Exact primitive de-para:
@@ -46,6 +51,7 @@ This file records source evidence and color decisions for the Button currently a
 | Light Button component set | `11045:3896` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Dark Button component set | `9026:2684` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
+| Microsoft sign-in pending treatment | Product observation, 2026-07-31 | Translucent Primary action while processing | Kiskadee extension; motivational evidence only |
 | On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 | Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
@@ -112,6 +118,39 @@ vertical padding is 8 px on mobile and 5 px on desktop. The explicit `s:sm:1` an
 remain fixed Small and Large choices; only the default `s:md:1` scale carries this responsive
 policy. This follows Kiskadee's broader mobile-legibility premise that interactive controls may be
 slightly larger on touch-first surfaces, without claiming that Fluent Web publishes the same rule.
+
+## Pending State
+
+Fluent's inspected Figma Button set and public React Button contract do not publish a distinct
+pending state. Kiskadee therefore authors pending as an explicit framework extension: the action
+has already been accepted, remains focusable, and recedes visually while the application owns the
+asynchronous lifecycle.
+
+The Microsoft sign-in observation above establishes that this visual language exists in Microsoft
+product UI. It does not establish a reusable Fluent token, a documented API, or an exact opacity
+value. The active preset consequently derives pending from the already approved Rest colors instead
+of introducing a new literal source color:
+
+| Slot | Pending mapping |
+| --- | --- |
+| `e1` filled surface | Existing Rest alpha multiplied by 60% |
+| `e1` Low outline | Existing Rest alpha multiplied by 60% |
+| `e2` label | Existing Rest alpha multiplied by 70% |
+| `e3` icon | Inherits Rest with no pending delta |
+| Optional Button shadow | Collapses to zero |
+| `Button.Progress` | Keeps the independent Progress palette |
+
+Low and Lowest surfaces are already transparent at Rest, so they intentionally omit a redundant
+pending surface value. Medium and High emit the reduced surface value. The same multiplicative
+rule applies to `onSubtle` and `onVivid`; for example, an already translucent on-vivid Medium
+surface becomes quieter rather than being replaced by a more opaque absolute alpha.
+
+The treatment is authored per color slot, never with `opacity` on the Button root. This keeps an
+arbitrary spinner rendered through `Button.Icon` fully legible and prevents a composed
+`Button.Progress` from being dimmed together with the Button. The label still recedes, preserving
+the product-observed sense that the accepted action is temporarily unavailable. Pending remains a
+sparse terminal delta: Focus can keep its accessibility ring, while hover and pressed no longer
+leak into properties omitted by the pending recipe.
 
 ## Surface Contexts
 
@@ -391,6 +430,8 @@ projection reuses the complete Fluent recipe:
 - Hover, Pressed, and Selected use the same ordinal public-grid shifts as system intents;
 - Low, Lowest, disabled, Light, Dark, Darker, `onSubtle`, and `onVivid` keep the same shared
   formula;
+- pending uses the same per-slot visibility factors as system intents; the label recedes while the
+  icon omits the pending delta so brand artwork or a spinner remains at Rest strength;
 - the brand's static `contentPolarity` resolves the enabled on-subtle High foreground for both the
   Button label and icon during build;
 - a cap-safe Dark `vivid` reference marked `contrast-mirror` reverses that foreground polarity
@@ -614,6 +655,9 @@ changing the asset scales.
   track and official Fluent inverted-token rhythm; it does not inspect the surrounding surface.
 - Every Button `selected.rest` remains explicit but resolves from the corresponding Pressed value
   across all themes, contexts, intents, and emphases.
+- Pending is a Kiskadee extension derived from each resolved Rest color. Filled surfaces and the
+  Low outline retain 60% of their Rest alpha, labels retain 70%, the icon omits pending so spinners
+  remain at Rest strength, and the optional shadow resolves to zero.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
   treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official

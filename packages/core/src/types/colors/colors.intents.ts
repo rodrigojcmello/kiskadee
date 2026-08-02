@@ -95,6 +95,32 @@ export type IconIntent = keyof typeof IconIntentKeys;
 export type RoleIcon = `icon.${IconIntent}`;
 
 /**
+ * Supported intent keys for the `progress` component.
+ */
+export const ProgressIntentKeys = {
+  /** Default progress treatment. */
+  neutral: 'neutral',
+
+  /** Brand/primary progress treatment. */
+  primary: 'primary',
+
+  /** Positive/successful progress treatment. */
+  positive: 'positive',
+
+  /** Warning or attention progress treatment. */
+  warning: 'warning',
+
+  /** Destructive or critical progress treatment. */
+  destructive: 'destructive'
+} as const;
+
+/** Supported intent keys for the `progress` component (Layer 3). */
+export type ProgressIntent = keyof typeof ProgressIntentKeys;
+
+/** Qualified role identifier for `progress` intents (e.g. `progress.primary`). */
+export type RoleProgress = `progress.${ProgressIntent}`;
+
+/**
  * Supported intent keys for the `slider` component.
  */
 export const SliderIntentKeys = {

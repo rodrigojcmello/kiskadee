@@ -12,12 +12,19 @@ import type {
   SurfaceContext
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
+import type { DeterminateDecorativeProgressProps } from '../Progress/Progress.types.ts';
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
 export type ButtonElementName = 'e1' | 'e2' | 'e3';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
+
+/** Determinate decorative progress paint rendered across the Button surface. */
+export type ButtonProgressProps = Omit<
+  DeterminateDecorativeProgressProps,
+  'decorative' | 'children' | 'classNames' | 'mode' | 'scale'
+>;
 
 export type ButtonActivationFeedbackEffect = {
   /** Override activation-feedback profile for this button. */
@@ -27,7 +34,10 @@ export type ButtonActivationFeedbackEffect = {
 };
 
 export type ButtonProps = HeadlessButtonProps & {
-  /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected' and 'shadow'. */
+  /**
+   * Forces a projected Kiskadee state on the root element (e1).
+   * `pending` is visual-only; `disabled` preserves the existing activation block.
+   */
   status?: ButtonStatus;
   /** Marks this button as an intent toggle (Following vs. Follow). */
   toggle?: boolean;

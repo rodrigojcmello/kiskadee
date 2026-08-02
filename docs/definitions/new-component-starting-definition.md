@@ -184,6 +184,7 @@ At minimum, decide which of these states are required:
 - `pressed`;
 - `focus`;
 - `disabled`;
+- `pending`;
 - `readOnly`;
 - `selected`;
 - `filled`.
@@ -197,6 +198,10 @@ Native pseudo states are gated by the native interaction scope class `-n`
 (`stateActivator.nativeInteraction`). Add `-n` only to elements that own native interaction states
 such as `:hover`, `:active`, or `:focus-visible`. Keep static surfaces without `-n`, even when they
 share generated visual classes with an interactive companion.
+
+Pending is a terminal projected state with no native pseudo. A component that projects pending must
+remove its native interaction gate so omitted pending deltas continue to resolve from Rest instead
+of leaking Hover or Pressed values.
 
 For persistent binary controls, prefer the existing `selected` control state for checked/on visuals.
 Do not encode persistent state as `pressed`; pressed is an interaction state.

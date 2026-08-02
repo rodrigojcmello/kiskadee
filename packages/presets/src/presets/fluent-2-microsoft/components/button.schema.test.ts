@@ -23,6 +23,17 @@ function requireButtonIconElement() {
   return { ...element, palettes: element.palettes };
 }
 
+function omitPending(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(omitPending);
+  if (typeof value !== 'object' || value === null) return value;
+
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => key !== 'pending')
+      .map(([key, child]) => [key, omitPending(child)])
+  );
+}
+
 describe('Fluent 2 Button surface contexts', () => {
   it('publishes logical icon composition defaults', () => {
     expect(schema.components.button?.options).toEqual({
@@ -98,11 +109,11 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(palettes?.darker?.onSubtle.boxColor?.primary?.high?.rest).toBe('#005ba4');
   });
 
-  it('keeps icon colors synchronized with adjacent label colors', () => {
+  it('keeps icon colors synchronized with Rest while leaving pending spinners undimmed', () => {
     const e2 = requireButtonContentElement();
     const e3 = requireButtonIconElement();
 
-    expect(e3.palettes).toEqual(e2.palettes);
+    expect(e3.palettes).toEqual(omitPending(e2.palettes));
   });
 
   it('publishes the complete onVivid matrix for every Fluent theme', () => {
@@ -165,11 +176,13 @@ describe('Fluent 2 Button surface contexts', () => {
       rest: '#ffffff',
       hover: '#e1efff',
       pressed: '#a4cfff',
+      pending: '#ffffff99',
       disabled: '#ffffff0a',
       selected: { rest: '#a4cfff' }
     });
     expect(content?.textColor?.primary?.high).toEqual({
       rest: '#0064b4',
+      pending: { ref: '#0064b4b3' },
       hover: { ref: '#0059a1' },
       pressed: { ref: '#0d477e' },
       disabled: { ref: '#ffffff66' },
@@ -202,6 +215,7 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(surface?.boxColor?.primary?.lowest).not.toHaveProperty('disabled');
     expect(surface?.borderColor?.primary?.low).toEqual({
       rest: '#ffffff4d',
+      pending: '#ffffff2e',
       disabled: '#ffffff00'
     });
     expect(content?.textColor?.primary?.medium?.rest).toBe('#c1deff');

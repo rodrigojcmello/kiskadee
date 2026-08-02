@@ -1,0 +1,127 @@
+.page {
+  display: grid;
+  gap: 24px;
+}
+
+.header {
+  display: grid;
+  gap: 10px;
+}
+
+.header h2,
+.valueHeader h3 {
+  margin: 0;
+}
+
+.summary {
+  color: rgba(0, 0, 0, 0.56);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 680px;
+}
+
+.preview {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  color: #202020;
+  display: grid;
+  gap: 20px;
+  inline-size: min(100%, 720px);
+  margin-inline: auto;
+  padding: 28px;
+}
+
+.preview[data-surface-context='onVivid'] {
+  background: #174d88;
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+
+.preview[data-surface-context='onSubtle'][data-theme='dark'],
+.preview[data-surface-context='onSubtle'][data-theme='darker'] {
+  background: #202020;
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.valueHeader {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.valueHeader output {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.valueControl {
+  display: grid;
+  font-size: 0.82rem;
+  font-weight: 650;
+  gap: 8px;
+}
+
+.valueControlHeader {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.valueControlHeader output {
+  font-variant-numeric: tabular-nums;
+}
+
+.valueControl input {
+  accent-color: currentColor;
+  inline-size: 100%;
+}
+
+.referenceGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.referenceGrid legend {
+  font-size: 0.78rem;
+  font-weight: 650;
+  margin-block-end: 4px;
+}
+
+.referenceItem {
+  display: grid;
+  gap: 8px;
+  min-inline-size: 0;
+}
+
+.referenceItem > span {
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.emptyState {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  color: rgba(0, 0, 0, 0.64);
+  padding: 20px;
+}
+
+@media (max-width: 720px) {
+  .summary {
+    display: none;
+  }
+
+  .preview {
+    padding: 22px;
+  }
+
+  .referenceGrid {
+    grid-template-columns: 1fr;
+  }
+}

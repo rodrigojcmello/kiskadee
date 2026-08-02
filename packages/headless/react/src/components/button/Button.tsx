@@ -1,5 +1,12 @@
-import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from 'react';
-import { createContext, forwardRef, useContext, useMemo } from 'react';
+import type {
+  ButtonHTMLAttributes,
+  HTMLAttributes,
+  KeyboardEvent,
+  MouseEvent,
+  PointerEvent,
+  ReactNode
+} from 'react';
+import { createContext, forwardRef, useCallback, useContext, useMemo } from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -25,6 +32,16 @@ export type ButtonProps = {
   label?: ReactNode;
   /** Optional icon element. Rendered before the label by default. */
   icon?: ReactNode;
+  /**
+   * Blocks new activation attempts without applying native disabled semantics.
+   * This low-level gate does not add pending ARIA state by itself.
+   */
+  interactionLocked?: boolean;
+  /**
+   * Marks an accepted action as in progress.
+   * Pending buttons remain focusable, expose busy/disabled ARIA state, and block reactivation.
+   */
+  pending?: boolean;
   children?: ReactNode;
   /**
    * Escape hatch for uncommon attributes not covered by native button typings.
@@ -37,12 +54,66 @@ export type ButtonProps = {
 export type ButtonLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type ButtonIconProps = HTMLAttributes<HTMLSpanElement>;
 
+export type ButtonResolvedInteractionState = {
+  /** Whether the native disabled attribute owns the interaction gate. */
+  nativeDisabled: boolean;
+  /** Resolved pending state. Native disabled takes precedence over pending. */
+  pending: boolean;
+  /** Resolved temporary gate, including the gate implied by pending. */
+  interactionLocked: boolean;
+  /** Whether user activation must be blocked by either native or temporary semantics. */
+  activationBlocked: boolean;
+  /** Final aria-busy value forwarded to the native button. */
+  ariaBusy: ButtonHTMLAttributes<HTMLButtonElement>['aria-busy'];
+  /** Final aria-disabled value forwarded to the native button. */
+  ariaDisabled: ButtonHTMLAttributes<HTMLButtonElement>['aria-disabled'];
+};
+
+export type ResolveButtonInteractionStateOptions = {
+  disabled?: boolean;
+  interactionLocked?: boolean;
+  pending?: boolean;
+  ariaBusy?: ButtonHTMLAttributes<HTMLButtonElement>['aria-busy'];
+  ariaDisabled?: ButtonHTMLAttributes<HTMLButtonElement>['aria-disabled'];
+};
+
+/**
+ * Resolves Button interaction semantics independently from styled state projection.
+ * Styled adapters can reuse this resolver so native behavior and visual projection
+ * observe the same disabled-over-pending precedence.
+ */
+export function resolveButtonInteractionState({
+  disabled,
+  interactionLocked,
+  pending,
+  ariaBusy,
+  ariaDisabled
+}: ResolveButtonInteractionStateOptions): ButtonResolvedInteractionState {
+  const nativeDisabled = disabled === true;
+  const resolvedPending = !nativeDisabled && pending === true;
+  const resolvedInteractionLocked =
+    !nativeDisabled && (interactionLocked === true || resolvedPending);
+  const resolvedAriaDisabled = resolvedPending ? true : ariaDisabled;
+  const ariaDisabledBlocksActivation =
+    resolvedAriaDisabled === true || resolvedAriaDisabled === 'true';
+
+  return {
+    nativeDisabled,
+    pending: resolvedPending,
+    interactionLocked: resolvedInteractionLocked,
+    activationBlocked: nativeDisabled || resolvedInteractionLocked || ariaDisabledBlocksActivation,
+    ariaBusy: resolvedPending ? true : ariaBusy,
+    ariaDisabled: resolvedAriaDisabled
+  };
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Context
 // ─────────────────────────────────────────────────────────────────────────────
 
 type ButtonContextValue = {
   classNames: ButtonClassNames;
+  interactionState: ButtonResolvedInteractionState;
 };
 
 const ButtonContext = createContext<ButtonContextValue | null>(null);
@@ -53,6 +124,10 @@ function useButtonContext() {
     throw new Error('Button compound components must be used within a Button');
   }
   return context;
+}
+
+function isButtonActivationKey(key: string): boolean {
+  return key === 'Enter' || key === ' ' || key === 'Spacebar';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -99,16 +174,138 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
  * - Accepts native attributes like disabled and ARIA props (aria-pressed, aria-disabled) directly.
  */
 const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { classNames = {}, label, icon, type = 'button', children, unsafeAttrs, ...rest },
+  {
+    classNames = {},
+    label,
+    icon,
+    interactionLocked,
+    pending,
+    type = 'button',
+    children,
+    disabled,
+    unsafeAttrs,
+    onClick,
+    onKeyDown,
+    onKeyUp,
+    onPointerDown,
+    onPointerUp,
+    onPointerCancel,
+    'aria-busy': ariaBusy,
+    'aria-disabled': ariaDisabled,
+    ...rest
+  },
   ref
 ) {
   const { e1, e2, e3 } = classNames;
+  const interactionState = useMemo(
+    () =>
+      resolveButtonInteractionState({
+        disabled,
+        interactionLocked,
+        pending,
+        ariaBusy,
+        ariaDisabled
+      }),
+    [ariaBusy, ariaDisabled, disabled, interactionLocked, pending]
+  );
 
-  const contextValue = useMemo<ButtonContextValue>(() => ({ classNames: { e2, e3 } }), [e2, e3]);
+  const contextValue = useMemo<ButtonContextValue>(
+    () => ({
+      classNames: { e2, e3 },
+      interactionState
+    }),
+    [e2, e3, interactionState]
+  );
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      if (interactionState.activationBlocked) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      onClick?.(event);
+    },
+    [interactionState.activationBlocked, onClick]
+  );
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>) => {
+      if (interactionState.activationBlocked && isButtonActivationKey(event.key)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      onKeyDown?.(event);
+    },
+    [interactionState.activationBlocked, onKeyDown]
+  );
+  const handleKeyUp = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>) => {
+      if (interactionState.activationBlocked && isButtonActivationKey(event.key)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      onKeyUp?.(event);
+    },
+    [interactionState.activationBlocked, onKeyUp]
+  );
+  const handlePointerDown = useCallback(
+    (event: PointerEvent<HTMLButtonElement>) => {
+      if (interactionState.activationBlocked) {
+        event.stopPropagation();
+        return;
+      }
+
+      onPointerDown?.(event);
+    },
+    [interactionState.activationBlocked, onPointerDown]
+  );
+  const handlePointerUp = useCallback(
+    (event: PointerEvent<HTMLButtonElement>) => {
+      if (interactionState.activationBlocked) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      onPointerUp?.(event);
+    },
+    [interactionState.activationBlocked, onPointerUp]
+  );
+  const handlePointerCancel = useCallback(
+    (event: PointerEvent<HTMLButtonElement>) => {
+      if (interactionState.activationBlocked) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      onPointerCancel?.(event);
+    },
+    [interactionState.activationBlocked, onPointerCancel]
+  );
 
   return (
     <ButtonContext.Provider value={contextValue}>
-      <button {...rest} {...unsafeAttrs} ref={ref} type={type} className={e1}>
+      <button
+        {...rest}
+        {...unsafeAttrs}
+        ref={ref}
+        type={type}
+        disabled={interactionState.nativeDisabled}
+        aria-busy={interactionState.ariaBusy}
+        aria-disabled={interactionState.ariaDisabled}
+        className={e1}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+      >
         {children ? (
           children
         ) : (

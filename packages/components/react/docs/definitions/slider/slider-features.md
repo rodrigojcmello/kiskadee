@@ -59,7 +59,7 @@ primitive.
 | `disabled` | Blocks pointer and keyboard value changes and removes thumb tab stops. |
 | `readOnly` | Keeps the control focusable/readable but blocks value changes. |
 | `required` | Projects required semantics. It does not inject a visual required or optional indicator. |
-| `status` | Optional projected visual status. Supported values come from `SliderStatus`: `hover`, `pressed`, `focus`, `disabled`, and `readOnly`. `selected` and `filled` are excluded because Slider selection is numeric range state, not a boolean state. |
+| `status` | Optional projected visual status. Supported values come from `SliderStatus`: `hover`, `pressed`, `focus`, `pending`, `disabled`, and `readOnly`. `pending` is visual-only for Slider and does not block value changes or add ARIA semantics. `selected` and `filled` are excluded because Slider selection is numeric range state, not a boolean state. |
 | `formatValue` | Formats visible value summary and value indicators. Receives the thumb value and thumb index. |
 | `getAriaValueText` | Formats `aria-valuetext` for each thumb. |
 | `aria-label` / `aria-labelledby` | When no visible `label` is rendered, these inherited props are forwarded to the rendered thumb instead of naming only the wrapper. |

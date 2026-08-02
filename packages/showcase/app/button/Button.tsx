@@ -40,6 +40,7 @@ import {
   supportsManifestSurfaceContext
 } from '@/utils/manifest-surface-context';
 import s from './Button.module.scss';
+import { ButtonAsyncExample } from './components/ButtonAsyncExample';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
 import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
@@ -449,6 +450,23 @@ export function Button() {
         fontName={fontName}
         scale={activeButtonScale}
         textAlign={alignment}
+      />
+      <ButtonAsyncExample
+        buttonState={buttonState}
+        fontName={fontName}
+        progressAvailable={Boolean(manifest?.components?.progress)}
+        progressSurfaceContext={
+          supportsManifestSurfaceContext(
+            manifest?.components?.progress,
+            segment,
+            theme,
+            activeSurfaceContext
+          )
+            ? activeSurfaceContext
+            : 'onSubtle'
+        }
+        scale={activeButtonScale}
+        surfaceContext={activeSurfaceContext}
       />
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
         {/*<KiskadeeButton label="Button" onClick={() => alert('Button clicado!')} />*/}

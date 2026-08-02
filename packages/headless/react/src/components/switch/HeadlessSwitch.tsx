@@ -128,23 +128,31 @@ function switchStateClassName(states: {
   disabled?: boolean;
   readOnly?: boolean;
 }): string | undefined {
-  const isHovered = states.status === 'hover';
-  const isPressed = states.status === 'pressed';
-  const isFocused = states.focused || states.status === 'focus';
-  const isFocusVisible = isFocused && (states.focusVisible || states.status === 'focus');
   const isDisabled = states.disabled || states.status === 'disabled';
+  const isPending = !isDisabled && states.status === 'pending';
+  const isHovered = !isPending && states.status === 'hover';
+  const isPressed = !isPending && states.status === 'pressed';
+  const isFocused = !isPending && (states.focused || states.status === 'focus');
+  const isFocusVisible = isFocused && (states.focusVisible || states.status === 'focus');
   const isReadOnly = states.readOnly || states.status === 'readOnly';
   const hasProjectedState =
-    states.controlState || isHovered || isPressed || isFocused || isDisabled || isReadOnly;
+    states.controlState ||
+    isHovered ||
+    isPressed ||
+    isFocused ||
+    isPending ||
+    isDisabled ||
+    isReadOnly;
 
   return mergeClassNames(
     cn.interactive,
-    cn.nativeInteraction,
+    !isPending && cn.nativeInteraction,
     isHovered && cn.hover,
     isPressed && cn.pressed,
     states.controlState && cn.selected,
     isFocused && cn.focus,
     isFocusVisible && cn.focusVisible,
+    isPending && cn.pending,
     isDisabled && cn.disabled,
     isReadOnly && cn.readOnly,
     hasProjectedState && cn.activator

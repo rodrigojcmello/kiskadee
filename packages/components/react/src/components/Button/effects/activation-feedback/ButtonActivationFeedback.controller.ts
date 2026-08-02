@@ -18,9 +18,7 @@ import {
   useMemo,
   useRef
 } from 'react';
-import {
-  resolveActivationFeedbackProfileAvailability
-} from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
+import { resolveActivationFeedbackProfileAvailability } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import { useActivationFeedbackHalo } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackHalo.ts';
 import {
   type ActivationFeedbackRadialRuntimeConfig,
@@ -29,15 +27,17 @@ import {
   useActivationFeedbackRadialStateMachine
 } from '../../../../hooks/effects/activation-feedback/useActivationFeedbackRadialStateMachine.ts';
 import {
-  resolveButtonAccessibilityFromCommon,
   type ButtonCommonProps,
+  resolveButtonAccessibilityFromCommon,
   useTransientPressedState
 } from '../../hooks/useButtonBase.ts';
 import type { ButtonFeedbackKind } from './ButtonFeedback.types.ts';
 
 type ButtonActivationFeedbackControllerResult = {
+  activationBlocked: ReturnType<typeof resolveButtonAccessibilityFromCommon>['activationBlocked'];
   activationFeedbackConfig: ActivationFeedbackEffectSchema | undefined;
   activationFeedbackProfile: ActivationFeedbackProfileMode | null;
+  ariaBusy: ReturnType<typeof resolveButtonAccessibilityFromCommon>['ariaBusy'];
   ariaDisabled: ReturnType<typeof resolveButtonAccessibilityFromCommon>['ariaDisabled'];
   ariaPressed: ReturnType<typeof resolveButtonAccessibilityFromCommon>['ariaPressed'];
   feedbackKind: ButtonFeedbackKind | null;
@@ -51,12 +51,14 @@ type ButtonActivationFeedbackControllerResult = {
     onPointerUp: (event: PointerEvent<HTMLButtonElement>) => void;
   };
   hostRef: RefObject<HTMLButtonElement | null>;
-  isDisabled: ReturnType<typeof resolveButtonAccessibilityFromCommon>['isDisabled'];
   isFeedbackActive: boolean;
   isFeedbackFading: boolean;
+  nativeDisabled: ReturnType<typeof resolveButtonAccessibilityFromCommon>['nativeDisabled'];
+  pending: ReturnType<typeof resolveButtonAccessibilityFromCommon>['pending'];
   shouldForceOverlayPressed: boolean;
   shouldUsePressedFeedback: boolean;
   shouldUsePressedProfile: boolean;
+  visualStatus: ReturnType<typeof resolveButtonAccessibilityFromCommon>['visualStatus'];
 };
 
 function resolveModernActivationFeedbackProfile({
@@ -106,6 +108,8 @@ export function useButtonActivationFeedbackController(
 
   const accessibility = resolveButtonAccessibilityFromCommon(common);
   const feedbackEnabled = options.feedbackEnabled ?? true;
+  const isTerminalVisualStatus =
+    accessibility.visualStatus === 'pending' || accessibility.visualStatus === 'disabled';
   const localActivationFeedback =
     activationFeedback && typeof activationFeedback === 'object' ? activationFeedback : undefined;
   const componentActivationFeedbackConfig = useMemo(
@@ -133,7 +137,7 @@ export function useButtonActivationFeedbackController(
       resolveModernActivationFeedbackProfile({
         activationFeedback,
         availableProfiles: availableActivationFeedbackProfiles,
-        feedbackEnabled,
+        feedbackEnabled: feedbackEnabled && !isTerminalVisualStatus,
         globalProfile: activationFeedbackConfig?.profile,
         localProfile: localActivationFeedback?.profile
       }),
@@ -142,6 +146,7 @@ export function useButtonActivationFeedbackController(
       activationFeedbackConfig?.profile,
       availableActivationFeedbackProfiles,
       feedbackEnabled,
+      isTerminalVisualStatus,
       localActivationFeedback?.profile
     ]
   );
@@ -173,16 +178,15 @@ export function useButtonActivationFeedbackController(
       });
     }, [activationFeedbackConfig, activationFeedbackProfile, usesRadialRuntime]);
 
-  const pressedActivationFeedbackRuntimeConfig = useMemo<ActivationFeedbackRadialRuntimeConfig>(
-    () => {
+  const pressedActivationFeedbackRuntimeConfig =
+    useMemo<ActivationFeedbackRadialRuntimeConfig>(() => {
       return resolvePressedActivationFeedbackRadialRuntimeConfig({
         config: activationFeedbackConfig
       });
-    },
-    [activationFeedbackConfig]
-  );
+    }, [activationFeedbackConfig]);
 
   const shouldForceOverlayPressed =
+    !accessibility.activationBlocked &&
     !usesStaticRuntime &&
     status === 'pressed' &&
     Boolean(effectProfile) &&
@@ -190,13 +194,13 @@ export function useButtonActivationFeedbackController(
   const activationFeedbackMachine = useActivationFeedbackRadialStateMachine<HTMLButtonElement>({
     effectProfile: usesRadialRuntime ? effectProfile : null,
     hostRef,
-    isDisabled: accessibility.isDisabled,
+    isDisabled: accessibility.activationBlocked,
     localActivationFeedbackOrigin,
     globalActivationFeedbackOrigin,
     modeActivationFeedbackRadialRuntimeConfig: modeActivationFeedbackRuntimeConfig,
     pressedActivationFeedbackRadialRuntimeConfig: pressedActivationFeedbackRuntimeConfig,
     shouldForceOverlayPressed,
-    allowPressedFeedback: controlState !== true,
+    allowPressedFeedback: controlState !== true && !isTerminalVisualStatus,
     triggerPressed,
     onClick,
     onPointerDown,
@@ -211,7 +215,7 @@ export function useButtonActivationFeedbackController(
     HTMLButtonElement
   >({
     config: activationFeedbackConfig,
-    disabled: accessibility.isDisabled,
+    disabled: accessibility.activationBlocked,
     enabled: Boolean(effectProfile) && usesStaticRuntime,
     geometry: 'profile-size',
     hostRef,
@@ -225,16 +229,21 @@ export function useButtonActivationFeedbackController(
   });
   const handleStaticClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
-      if (accessibility.isDisabled === true) return;
+      if (accessibility.activationBlocked) return;
       onClick?.(event);
     },
-    [accessibility.isDisabled, onClick]
+    [accessibility.activationBlocked, onClick]
   );
   const activeFeedbackMachine = usesStaticRuntime
     ? staticActivationFeedbackMachine
     : activationFeedbackMachine;
 
-  const shouldUsePressedFeedback = !usesStaticRuntime && isPressed && controlState !== true;
+  const shouldUsePressedFeedback =
+    !accessibility.activationBlocked &&
+    !isTerminalVisualStatus &&
+    !usesStaticRuntime &&
+    isPressed &&
+    controlState !== true;
   const isActive =
     Boolean(effectProfile) && (activeFeedbackMachine.isActive || shouldForceOverlayPressed);
   const shouldUsePressedProfile =

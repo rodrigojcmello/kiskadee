@@ -101,6 +101,7 @@ export function resolveButtonClassNames({
   const scaleKey = normalizeButtonScaleKey(scale ?? DEFAULT_BUTTON_SCALE);
   const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
   const e3HasSchemaScale = Boolean(e3?.s?.all || e3?.s?.[scaleKey]);
+  const isTerminalInteractionStatus = status === 'pending' || status === 'disabled';
 
   const e1Effects = e1?.e;
   const shadowEffect = shadow ? resolveButtonStatefulEffectClassName(e1Effects?.h) : '';
@@ -135,7 +136,7 @@ export function resolveButtonClassNames({
         radiusEffectClass,
         controlState ? resolveButtonEffectBucketClassName(e1?.l, scaleKey) : undefined,
         cn.interactive,
-        cn.nativeInteraction,
+        isTerminalInteractionStatus ? undefined : cn.nativeInteraction,
         shadowEffect ? cn.shadow : undefined,
         activation,
         'k-btn',

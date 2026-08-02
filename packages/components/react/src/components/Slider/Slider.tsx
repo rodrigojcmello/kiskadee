@@ -312,6 +312,7 @@ function SliderRoot(props: SliderProps) {
     thumbAriaLabelledBy,
     disabled,
     readOnly,
+    status,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
@@ -486,7 +487,7 @@ function SliderRoot(props: SliderProps) {
   const activationFeedbackController = useSliderActivationFeedbackController({
     config: activationFeedbackConfig,
     disabled,
-    enabled: Boolean(activationFeedbackEffect),
+    enabled: Boolean(activationFeedbackEffect) && status !== 'pending',
     forcedActive: activationFeedback === 'active',
     geometryKey: `${scale}:${resolvedRadius}:${resolvedSelectionMode}:${headlessClassNames.e10}:${headlessClassNames.e11}`,
     isRange: resolvedSelectionMode === 'range',
@@ -619,6 +620,7 @@ function SliderRoot(props: SliderProps) {
       fillOrigin={resolvedFillOrigin}
       disabled={disabled}
       readOnly={readOnly}
+      status={status}
       required={required}
       formatValue={formatValue}
       aria-describedby={describedBy}

@@ -6,7 +6,8 @@ import {
   FLUENT_BUTTON_DEFAULT_TONAL_RECIPE,
   type FluentButtonFormulaScale,
   type FluentButtonFormulaTheme,
-  type FluentButtonTonalFamily
+  type FluentButtonTonalFamily,
+  omitFluentButtonPendingTextState
 } from './button-color-formula.ts';
 
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
@@ -52,8 +53,7 @@ export function createFluent2MicrosoftButtonSchema({
   const toThemeShortcut = (theme: FluentButtonFormulaScale): ThemeShortcut =>
     theme === 'light' ? 'l' : 'd';
   const createPresetFamily = (role: ButtonColorRole): FluentButtonTonalFamily => ({
-    color: (theme, tone, alpha) =>
-      c('default', toThemeShortcut(theme), role, tone, alpha),
+    color: (theme, tone, alpha) => c('default', toThemeShortcut(theme), role, tone, alpha),
     reference: (theme, reference, offset = 0, alpha) =>
       c.ref('default', toThemeShortcut(theme), role, reference, offset, alpha)
   });
@@ -69,11 +69,7 @@ export function createFluent2MicrosoftButtonSchema({
     tone: KiskadeeTone,
     alpha?: number
   ) => c('default', toThemeShortcut(theme), 'neutral', tone, alpha);
-  const onVividCanonicalSurface = families['button.primary'].reference(
-    'light',
-    'vivid',
-    0
-  );
+  const onVividCanonicalSurface = families['button.primary'].reference('light', 'vivid', 0);
 
   const createButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
     const recipe = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme];
@@ -181,6 +177,19 @@ export function createFluent2MicrosoftButtonSchema({
     }
   });
 
+  const createIconTextContextPalettes = (theme: ButtonRecipeTheme) => {
+    const textPalettes = createTextContextPalettes(theme);
+
+    return {
+      onSubtle: {
+        textColor: omitFluentButtonPendingTextState(textPalettes.onSubtle.textColor)
+      },
+      onVivid: {
+        textColor: omitFluentButtonPendingTextState(textPalettes.onVivid.textColor)
+      }
+    };
+  };
+
   return {
     options: {
       iconLayout: 'inline',
@@ -233,14 +242,15 @@ export function createFluent2MicrosoftButtonSchema({
         },
         effects: {
           shadow: {
-            x: { rest: 0, hover: 0, pressed: 0, focus: 0, disabled: 0 },
-            y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
-            blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
+            x: { rest: 0, hover: 0, pressed: 0, focus: 0, pending: 0, disabled: 0 },
+            y: { rest: 2, hover: 4, pressed: 0, focus: 4, pending: 0, disabled: 0 },
+            blur: { rest: 6, hover: 10, pressed: 0, focus: 10, pending: 0, disabled: 0 },
             color: {
               rest: shadowBlack(0.28),
               hover: shadowBlack(0.35),
               pressed: shadowBlack(0.32),
               focus: shadowBlack(0.35),
+              pending: shadowBlack(0),
               disabled: shadowBlack(0)
             }
           }
@@ -275,9 +285,9 @@ export function createFluent2MicrosoftButtonSchema({
         name: 'button-icon',
         palettes: {
           default: {
-            light: createTextContextPalettes('light'),
-            dark: createTextContextPalettes('dark'),
-            darker: createTextContextPalettes('darker')
+            light: createIconTextContextPalettes('light'),
+            dark: createIconTextContextPalettes('dark'),
+            darker: createIconTextContextPalettes('darker')
           }
         },
         scales: {

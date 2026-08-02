@@ -22,8 +22,9 @@ Preset authoring rules:
 - Use `low` only when the same component needs a white/base own surface. In the
   current light-theme presets, `low` should resolve to that same base surface
   across intents unless the component has a documented exception.
-- Treat `lowest` as an unresolved transparent/no-own-surface emphasis until the
-  ambient-contrast decision is made.
+- Treat `lowest` as the weakest perceptible presentation supported by the component. For
+  own-surface components it can remain a transparent/no-own-surface treatment; components whose
+  visual itself carries information may instead use a visible translucent treatment.
 - If a component cannot reasonably expose `neutral.medium`, document that as an
   explicit exception in the preset instead of silently choosing another
   baseline.
@@ -45,7 +46,7 @@ For Button and Card, the canonical surface mapping is:
 | `high` | Vivid, strong, or high-contrast surface. | Dark primary Button, dark primary Card. |
 | `medium` | Light tonal surface. | Light primary Button, light neutral Card. |
 | `low` | Solid white/base surface. | White outlined Button, classic white Card. |
-| `lowest` | Unresolved; currently represents no own surface / transparent treatment. | Text/ghost-like Button cases, pending ambient support. |
+| `lowest` | Weakest perceptible presentation; often no own surface. | Text/ghost-like Button cases. |
 
 This rule is intentionally shared by Button and Card so the same emphasis name
 means the same kind of surface across components. A white Card may feel like the
@@ -90,10 +91,9 @@ are restrictive and require contrast checks.
 
 ### Open Decision: Lowest And Ambient Contrast
 
-`lowest` remains intentionally undecided. The current concern is semantic:
-`lowest` often means a transparent/no-own-surface treatment, but transparent
-components do not carry their own contrast. They depend on the ambient surface
-behind them.
+For own-surface components, `lowest` remains intentionally undecided. The current concern is
+semantic: `lowest` often means a transparent/no-own-surface treatment, but transparent components do
+not carry their own contrast. They depend on the ambient surface behind them.
 
 Open questions:
 

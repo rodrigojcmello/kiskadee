@@ -23,6 +23,8 @@ Kiskadee should not solve that by reusing `disabled` or `readOnly`:
 - `readOnly` is an official interaction state and may have its own visual treatment.
 - `interactionLocked` means the control is temporarily ignoring activation attempts while the value
   remains visible and semantically available.
+- `pending` is the higher-level state for an accepted action that is still processing. Pending may
+  imply `interactionLocked`, but the lock alone must not imply pending.
 
 ## Contract
 
@@ -35,8 +37,9 @@ Kiskadee should not solve that by reusing `disabled` or `readOnly`:
   intermediate positions.
 - `interactionLocked` blocks new tap, drag, keyboard, or accessibility activation attempts.
 - `interactionLocked` must not automatically apply `disabled`, `readOnly`, or their visual states.
+- `interactionLocked` must not automatically apply `pending`, `aria-busy`, or `aria-disabled`.
 - If a product needs a visible pending message, spinner, error, or retry affordance, that belongs to
-  the consuming UI or to a separate explicit feature, not to the base lock state.
+  the consuming UI, the explicit `pending` state, or a separate feature, not to the base lock state.
 
 ## Cooldown
 

@@ -12,6 +12,17 @@ function createScale(hex: string): Record<KiskadeeTone, string> {
   >;
 }
 
+function omitPending(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(omitPending);
+  if (typeof value !== 'object' || value === null) return value;
+
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => key !== 'pending')
+      .map(([key, child]) => [key, omitPending(child)])
+  );
+}
+
 function readHighForeground(
   projection: ReturnType<typeof createFluent2MicrosoftBrandButtonProjection>,
   theme: 'light' | 'dark' | 'darker',
@@ -71,11 +82,11 @@ describe('createFluent2MicrosoftBrandButtonProjection', () => {
     expect(readHighForeground(projection, 'dark', 'brand.regular')).toBe('#ffffff');
   });
 
-  it('shares the resolved high foreground between the label and icon elements', () => {
+  it('shares content colors while leaving pending icon feedback undimmed', () => {
     const projection = createFluent2MicrosoftBrandButtonProjection([
       createBrand({ id: 'light-content', darkVividSource: 'generated-anchor' })
     ]);
 
-    expect(projection.elements.e3.palettes).toEqual(projection.elements.e2.palettes);
+    expect(projection.elements.e3.palettes).toEqual(omitPending(projection.elements.e2.palettes));
   });
 });
