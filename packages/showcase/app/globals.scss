@@ -2,7 +2,6 @@
 
 :root {
   color-scheme: light dark;
-  --font-name: "Fira Sans", sans-serif;
   --showcase-toolbar-height: 82px;
 }
 
@@ -71,7 +70,7 @@ html, body {
 }
 
 body {
-  font-family: var(--font-name), sans-serif;
+  font-family: var(--k-font-body, system-ui, sans-serif);
   color: var(--neutral-70);
 
   & button {

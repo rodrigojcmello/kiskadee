@@ -190,17 +190,23 @@ export type SchemaMetadata = {
   prefix?: string;
 };
 
-// Global, descriptive font tokens for a design system.
-//
-// These values represent the intended font-family stacks for the schema as a whole
-// and are not meant to be strictly enforced. Consumers are free to override fonts
-// at the application level (for example, by redefining CSS variables such as
-// --k-font-body / --k-font-heading).
-export type SchemaFontStack = readonly [primary: string, fallback: string];
+export type FontFamilyId = string;
 
+export type FontStack = readonly [primary: string, ...fallbacks: string[]];
+
+export type SchemaFontFamily = {
+  stack: FontStack;
+};
+
+// Global font recommendations are split into a reusable family catalog and semantic roles.
+// Availability and loading remain consumer concerns and are intentionally absent from the schema.
 export type SchemaFonts = {
-  body: SchemaFontStack;
-  heading?: SchemaFontStack;
+  families: Readonly<Record<FontFamilyId, SchemaFontFamily>>;
+  roles: {
+    body: FontFamilyId;
+    heading?: FontFamilyId;
+    code?: FontFamilyId;
+  };
 };
 
 // [EFFECTS] START: Global effect schema section.

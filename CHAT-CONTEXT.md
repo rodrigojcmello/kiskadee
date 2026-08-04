@@ -26,6 +26,7 @@ headless + visual React components with a Next.js showcase.
 - `packages/core`: schema contracts, types, and framework-agnostic utilities.
 - `packages/presets`: official design-system presets and token mappings.
 - `packages/runtime`: browser/runtime theming support.
+- `packages/fonts`: opt-in online font providers and preset integrations.
 - `packages/icons`: canonical cross-platform SVG assets and generated platform adapters.
 - `packages/web-builder`: CSS/JSON generation and showcase sync flow.
 - `packages/headless/react`: headless React behavior and accessibility primitives.

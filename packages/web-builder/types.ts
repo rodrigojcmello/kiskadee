@@ -11,7 +11,8 @@ export type {
   ClassNameByElementJSON,
   ColorClasses,
   ComponentClassNameMapJSON,
-  ComponentClassNameMapSplitJSON
+  ComponentClassNameMapSplitJSON,
+  FontStack
 } from '@kiskadee/core';
 export type {
   BrandPackBuildManifest,
@@ -31,8 +32,10 @@ export type { SliderComponentArtifactJSON } from './src/component-artifacts/slid
 export type { SwitchComponentArtifactJSON } from './src/component-artifacts/switchComponentArtifact.ts';
 export type { TabsComponentArtifactJSON } from './src/component-artifacts/tabsComponentArtifact.ts';
 export type { TextFieldComponentArtifactJSON } from './src/component-artifacts/textFieldComponentArtifact.ts';
-export type { FontStack } from './src/utils/fontFamily.ts';
-export { toCssFontFamily } from './src/utils/fontFamily.ts';
+export {
+  SYSTEM_MONOSPACE_FONT_STACK,
+  toCssFontFamily
+} from './src/utils/fontFamily.ts';
 
 export type DesignSystemListEntry = {
   key: string;
@@ -52,5 +55,6 @@ export type ExtraArtifactsJSON = {
 export type {
   Manifest,
   ManifestComponent,
-  ManifestComponentState
+  ManifestComponentState,
+  ManifestFonts
 } from './src/phase-7-publish-metadata/manifestTypes.ts';

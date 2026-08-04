@@ -5,9 +5,9 @@ import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessage
  *
  * It interprets the textFont value as a **semantic token** when it matches one of
  * the supported keywords:
- * - 'heading' -> var(--k-font-heading)
- * - 'body' -> var(--k-font-body)
- * - 'code' -> var(--k-font-code)
+ * - 'heading' -> heading, then body, then host inheritance
+ * - 'body' -> body, then host inheritance
+ * - 'code' -> code, then the canonical system monospace stack
  *
  * Any other value is treated as unsupported and results in an error. This enforces
  * the contract that text fonts are expressed via semantic tokens, not raw stacks.
@@ -15,7 +15,7 @@ import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessage
  * @example
  * ```ts
  * transformTextFontKeyToCss('textFont__heading', 'abc')
- * // -> .abc { font-family: var(--k-font-heading) }
+ * // -> .abc { font-family: var(--k-font-heading, var(--k-font-body, inherit)) }
  * ```
  */
 export function transformTextFontKeyToCss(styleKey: string, className: string): string {
@@ -31,11 +31,13 @@ export function transformTextFontKeyToCss(styleKey: string, className: string): 
   let cssValue: string | undefined;
 
   if (token === 'heading') {
-    cssValue = 'var(--k-font-heading)';
+    cssValue = 'var(--k-font-heading, var(--k-font-body, inherit))';
   } else if (token === 'body') {
-    cssValue = 'var(--k-font-body)';
+    cssValue = 'var(--k-font-body, inherit)';
   } else if (token === 'code') {
-    cssValue = 'var(--k-font-code)';
+    cssValue =
+      'var(--k-font-code, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, ' +
+      '"Liberation Mono", "Courier New", monospace)';
   }
 
   if (!cssValue) {

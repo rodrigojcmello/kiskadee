@@ -21,6 +21,7 @@ Practical chain:
 - `packages/core` -> contracts
 - `packages/presets` -> DS-specific schema values
 - `packages/web-builder` -> `*.css` + `*.json`
+- `packages/fonts` -> optional online font providers + preset integrations
 - `packages/components` + `packages/showcase` -> consume artifacts
 
 ## 3) What belongs in schema
@@ -431,6 +432,47 @@ Rule:
 - If a value is shared by multiple components, use `global`.
 - If a value is specific to one component, keep it in `components.<name>.options` or
   `components.<name>.effects`, depending on whether it is behavior/structure or an effect recipe.
+
+### 3.3.1 Font recommendation vs resource ownership
+
+Context:
+
+- A preset's typography is part of its design-system recommendation, but font availability and
+  online delivery have separate platform, privacy, and reliability concerns.
+- Applications may prefer a Kiskadee-curated online source or supply the same family themselves.
+- Registering many available families must not request every font or add them to an application's
+  initial browser transfer.
+
+Decision:
+
+- `global.fonts` owns only serializable family stacks and semantic role selection.
+- `@kiskadee/fonts` owns optional online provider adapters and preset-specific runtime descriptors.
+- Kiskadee does not redistribute font binaries; local and corporate resources belong to the host.
+- Preset schemas never import font resources or contain URLs, file paths, packages, or callbacks.
+- Online integrations use explicit package subpaths. A dedicated lightweight catalog may expose
+  metadata and lazy loaders, but reading it must not import or prepare every family descriptor.
+- Registering a managed descriptor is inert. Only selecting its family may execute `prepare`.
+- Official online sources must have documented public Web availability and free use; Google Fonts
+  is the initial provider, not a permanent provider restriction.
+- Showcase consumes the same public online integrations as any other application.
+
+Reason:
+
+- This preserves platform-neutral presets while centralizing reusable delivery adapters.
+- Explicit subpaths let one package scale to many preset families without coupling their browser
+  request graphs.
+- Separating recommendation from availability preserves Kiskadee's performance-first model.
+
+Consequence:
+
+- Consumers may register a managed online integration or provide a family through native CSS,
+  `@font-face`, packages, or framework tooling.
+- Applications remain free to host or replace any font without modifying the preset or registering
+  an online adapter.
+- Importing and registering several descriptors remains network-inert; only selected adapters may
+  cause browser requests.
+- A preparation result may explain which local or online family satisfied an integration policy;
+  it must not be presented as a per-glyph rendered-font inspection.
 
 ## 4) What belongs in structural Sass
 

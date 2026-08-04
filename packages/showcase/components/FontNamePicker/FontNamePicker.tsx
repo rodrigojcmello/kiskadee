@@ -1,9 +1,8 @@
 'use client';
 
-import { useShowcase } from '@kiskadee/react-components';
-import { toCssFontFamily } from '@kiskadee/web-builder/types';
+import { useFontFamilyStatus, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { Select } from '@/k-components';
-import { FONTS } from '@/registry/fonts.registry';
+import { createFontSelectionOptions, MIXED_FONT_KEY } from '@/utils/font-family-selection';
 
 export default function FontNamePicker({
   className,
@@ -13,16 +12,15 @@ export default function FontNamePicker({
   width?: number | string;
 }) {
   const { fontName, setFontName } = useShowcase();
+  const { global } = useKiskadee();
+  const { familyResolutions } = useFontFamilyStatus();
 
-  // Convert FONTS to SelectOption format
-  const options = FONTS.map((font) => ({
-    value: font.key,
-    label: (
-      <span style={{ fontFamily: toCssFontFamily(font.family), fontWeight: 500 }}>
-        {font.label}
-      </span>
-    )
-  }));
+  const options = [
+    ...(fontName === MIXED_FONT_KEY
+      ? [{ value: MIXED_FONT_KEY, label: 'Mixed roles', disabled: true }]
+      : []),
+    ...createFontSelectionOptions('body', global?.fonts, familyResolutions)
+  ];
 
   return (
     <Select

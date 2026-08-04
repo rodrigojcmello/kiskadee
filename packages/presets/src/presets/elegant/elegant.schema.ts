@@ -24,7 +24,14 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     fonts: {
-      body: ['system-ui', 'sans-serif']
+      families: {
+        'system-ui': {
+          stack: ['system-ui', 'sans-serif']
+        }
+      },
+      roles: {
+        body: 'system-ui'
+      }
     },
     focus: {
       width: 2,

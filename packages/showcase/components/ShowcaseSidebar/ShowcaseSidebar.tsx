@@ -9,6 +9,10 @@ const foundationEntries = [
   {
     href: '/colors',
     label: 'Colors'
+  },
+  {
+    href: '/typography',
+    label: 'Typography'
   }
 ] as const;
 

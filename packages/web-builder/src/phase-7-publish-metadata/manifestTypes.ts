@@ -7,11 +7,10 @@
 
 import type { ComponentName, SurfaceContext } from '@kiskadee/core';
 
-export type ManifestFontStack = readonly [primary: string, fallback: string];
-
 export type ManifestFonts = {
-  body: ManifestFontStack;
-  heading: ManifestFontStack;
+  body: string;
+  heading?: string;
+  code?: string;
 };
 
 export type ManifestComponentState = Record<
@@ -65,12 +64,12 @@ export type Manifest = {
   segments: string[];
   themes: Record<string, string[]>;
   /**
-   * Optional, global font metadata for the schema.
+   * Optional, compact font-role metadata for the schema.
    *
-   * When present, `body` is required and `heading` is always published (it
-   * mirrors `body` when the schema doesn't define it).
+   * Family catalogs and stacks live in `global.kiskadee.json`; the manifest only
+   * exposes the selected family ID for each explicitly declared role.
    */
-  font?: ManifestFonts;
+  fonts?: ManifestFonts;
   /**
    * Optional component-level metadata derived from the schema.
    *

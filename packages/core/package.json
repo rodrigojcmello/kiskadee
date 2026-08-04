@@ -8,6 +8,12 @@
     ".": {
       "default": "./src/index.ts"
     },
+    "./font-family": {
+      "default": "./src/fontFamily.ts"
+    },
+    "./font-contract": {
+      "default": "./src/fonts.contract.zod.ts"
+    },
     "./build": {
       "default": "./src/build/index.ts"
     }

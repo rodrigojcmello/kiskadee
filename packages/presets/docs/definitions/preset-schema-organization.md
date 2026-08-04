@@ -21,6 +21,10 @@ The root `<preset>.schema.ts` owns:
 - shared preset helpers such as segment names, color getters, and transparent/white constants;
 - the `components` map that calls `create<Preset><Component>Schema(...)` factories.
 
+Global font recommendations use a reusable family catalog and semantic role references. Follow
+[Font Families](font-families.md) when authoring or migrating `global.fonts`; resource loading does
+not belong in a preset schema.
+
 Each `components/<component>.schema.ts` owns:
 
 - the full schema for that component;

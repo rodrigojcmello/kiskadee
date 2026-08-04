@@ -1,0 +1,235 @@
+.page {
+  color: rgba(0, 0, 0, 0.78);
+  display: grid;
+  gap: 32px;
+  min-inline-size: 0;
+  width: 100%;
+}
+
+.header {
+  display: grid;
+  gap: 8px;
+}
+
+.eyebrow,
+.roleEyebrow {
+  color: currentColor;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0;
+  opacity: 0.48;
+  text-transform: uppercase;
+}
+
+.title {
+  color: currentColor;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1;
+  margin: 0;
+}
+
+.summary {
+  color: currentColor;
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 760px;
+  opacity: 0.68;
+}
+
+.previewGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  min-inline-size: 0;
+}
+
+.roleCard {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.035);
+  display: grid;
+  grid-template-rows: auto minmax(150px, 1fr) auto;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.roleHeader {
+  align-items: start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.familyName {
+  color: currentColor;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.sourceBadge {
+  background: rgba(0, 0, 0, 0.055);
+  border-radius: 999px;
+  color: currentColor;
+  flex: 0 0 auto;
+  font-size: 0.66rem;
+  font-weight: 750;
+  line-height: 1;
+  padding: 6px 8px;
+}
+
+.sample {
+  align-items: center;
+  border-block: 1px solid rgba(0, 0, 0, 0.07);
+  display: grid;
+  min-inline-size: 0;
+  padding: 24px 20px;
+}
+
+.roleCard[data-font-role='body'] .sample {
+  font-family: var(--k-font-body, inherit);
+}
+
+.roleCard[data-font-role='heading'] .sample {
+  font-family: var(--k-font-heading, var(--k-font-body, inherit));
+}
+
+.roleCard[data-font-role='code'] .sample {
+  font-family: var(
+    --k-font-code,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace
+  );
+}
+
+.bodySample {
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.headingSample {
+  font-size: clamp(1.65rem, 4vw, 2.3rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.codeSample {
+  background: rgba(0, 0, 0, 0.045);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin: 0;
+  min-inline-size: 0;
+  overflow-x: auto;
+  padding: 14px;
+}
+
+.roleMeta {
+  display: grid;
+  gap: 5px;
+  padding: 14px 20px 18px;
+}
+
+.roleMeta code {
+  color: currentColor;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  opacity: 0.64;
+  overflow-wrap: anywhere;
+}
+
+.roleMeta span {
+  color: currentColor;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  opacity: 0.52;
+}
+
+.statusPanel {
+  display: grid;
+  gap: 7px;
+}
+
+.statusLine {
+  align-items: baseline;
+  display: flex;
+  font-size: 0.78rem;
+  justify-content: space-between;
+}
+
+.statusLine > span {
+  color: rgba(0, 0, 0, 0.56);
+}
+
+.statusLine strong {
+  color: rgba(0, 0, 0, 0.72);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.statusLine strong[data-status='preparing'] {
+  color: #8a5700;
+}
+
+.statusLine strong[data-status='error'] {
+  color: #b42318;
+}
+
+.statusLine strong[data-status='ready'] {
+  color: #16713a;
+}
+
+.statusDetail,
+.statusError {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.statusDetail {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.statusError {
+  color: #b42318;
+}
+
+.retryButton {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 9px;
+  color: rgba(0, 0, 0, 0.74);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  justify-self: start;
+  min-block-size: 32px;
+  padding: 0 10px;
+}
+
+.retryButton:hover {
+  background: #fff;
+}
+
+@media (max-width: 720px) {
+  .summary {
+    display: none;
+  }
+}

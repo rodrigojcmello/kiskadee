@@ -1,11 +1,15 @@
 'use client';
+import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
 import {
   type ComponentClassMapScope,
+  type DefinedFontFamily,
+  FontFamilyProvider,
+  type FontFamilyRoleSelection,
   KiskadeeContext,
   ShowcaseContext
 } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
@@ -16,6 +20,7 @@ import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry';
 import { loadBrandPack } from '@/utils/brand-pack-loader.client';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
+import { FOLLOW_PRESET_FONT_KEY } from '@/utils/font-family-selection';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
 // Refactored to use custom hooks for separation of concerns.
@@ -79,9 +84,68 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useRuntimePlatformClasses();
 
   // 5. Manifest + font management for the currently selected design system
-  const { manifest, fontName, setFontName } = useFontPreference({
+  const { manifest, fontName, fontRoleNames, setFontName, setFontRoleName } = useFontPreference({
     designSystemKey: String(designSystem)
   });
+  const requestedFontFamilyIds = useMemo(() => {
+    const requested = new Set<string>();
+
+    for (const familyId of Object.values(globalConfig?.fonts?.roles ?? {})) {
+      if (familyId && fontFamilyCatalogById.has(familyId)) requested.add(familyId);
+    }
+
+    for (const selection of Object.values(fontRoleNames)) {
+      if (selection !== FOLLOW_PRESET_FONT_KEY && fontFamilyCatalogById.has(selection)) {
+        requested.add(selection);
+      }
+    }
+
+    return [...requested].sort();
+  }, [fontRoleNames, globalConfig?.fonts?.roles]);
+  const requestedFontFamilyKey = requestedFontFamilyIds.join('|');
+  const [fontFamilyDefinitions, setFontFamilyDefinitions] = useState<readonly DefinedFontFamily[]>(
+    []
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadSelectedDefinitions = async () => {
+      const definitions = await Promise.all(
+        requestedFontFamilyIds.map((familyId) => {
+          const entry = fontFamilyCatalogById.get(familyId);
+          if (!entry) throw new Error(`Missing font catalog entry for "${familyId}".`);
+          return entry.load();
+        })
+      );
+
+      if (!cancelled) setFontFamilyDefinitions(definitions);
+    };
+
+    void loadSelectedDefinitions().catch((error: unknown) => {
+      console.warn('[showcase] Failed to load selected font integrations.', error);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [requestedFontFamilyKey]);
+
+  const loadedFontFamilyIds = useMemo(
+    () => new Set(fontFamilyDefinitions.map((definition) => definition.id)),
+    [fontFamilyDefinitions]
+  );
+  const fontRoles = useMemo<FontFamilyRoleSelection | undefined>(() => {
+    const roles: FontFamilyRoleSelection = {};
+
+    for (const role of ['body', 'heading', 'code'] as const) {
+      const selection = fontRoleNames[role];
+      if (selection === FOLLOW_PRESET_FONT_KEY || !loadedFontFamilyIds.has(selection)) continue;
+      roles[role] = selection;
+    }
+
+    return Object.keys(roles).length > 0 ? roles : undefined;
+  }, [fontRoleNames, loadedFontFamilyIds]);
   const activeManifest = manifest?.key === String(designSystem) ? manifest : undefined;
   const loadComponentArtifact = useCallback(
     <T,>(componentName: string): Promise<T | undefined> => {
@@ -170,20 +234,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
         global: globalConfig
       }}
     >
-      <ShowcaseContext.Provider
-        value={{
-          designSystemKeys,
-          availableSegments,
-          availableThemes,
-          designSystemList,
-          manifest: activeManifest ?? manifest,
-          backgroundsByTheme,
-          fontName,
-          setFontName
-        }}
-      >
-        {children}
-      </ShowcaseContext.Provider>
+      <FontFamilyProvider families={fontFamilyDefinitions} roles={fontRoles}>
+        <ShowcaseContext.Provider
+          value={{
+            designSystemKeys,
+            availableSegments,
+            availableThemes,
+            designSystemList,
+            manifest: activeManifest ?? manifest,
+            backgroundsByTheme,
+            fontName,
+            setFontName,
+            fontRoleNames,
+            setFontRoleName
+          }}
+        >
+          {children}
+        </ShowcaseContext.Provider>
+      </FontFamilyProvider>
     </KiskadeeContext.Provider>
   );
 }

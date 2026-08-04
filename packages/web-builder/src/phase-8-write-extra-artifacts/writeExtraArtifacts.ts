@@ -6,6 +6,7 @@ import type {
   ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens,
   ButtonOptions,
+  FontStack,
   RadiusMode,
   Schema,
   SchemaFonts,
@@ -36,7 +37,7 @@ import {
   buildTextFieldComponentArtifact,
   TEXT_FIELD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/textFieldComponentArtifact.ts';
-import { type FontStack, toCssFontFamily } from '../utils/fontFamily.ts';
+import { SYSTEM_MONOSPACE_FONT_STACK, toCssFontFamily } from '../utils/fontFamily.ts';
 
 type ExtractableSchema = Schema;
 
@@ -122,6 +123,48 @@ function buildRootTokensCss(
 
   const lines = declared.map((entry) => `  ${entry.name}: ${String(entry.value)};`);
   return `:root {\n${lines.join('\n')}\n}\n`;
+}
+
+function requireFontFamilyStack(
+  fonts: SchemaFonts,
+  familyId: string,
+  role: keyof SchemaFonts['roles']
+): FontStack {
+  const family = fonts.families[familyId];
+  if (!Object.hasOwn(fonts.families, familyId) || !family) {
+    throw new Error(`[web-builder] Font role "${role}" references unknown family "${familyId}".`);
+  }
+
+  return family.stack;
+}
+
+/**
+ * What
+ *     Resolves schema font roles into global CSS custom-property declarations.
+ * Why
+ *     CSS consumers need deterministic heading and code fallbacks without synthetic catalog IDs.
+ */
+export function buildFontTokenVariables(
+  fonts: SchemaFonts | undefined
+): ReadonlyArray<{ name: string; value: string }> {
+  if (!fonts) return [];
+
+  const bodyStack = requireFontFamilyStack(fonts, fonts.roles.body, 'body');
+  const headingStack = fonts.roles.heading
+    ? requireFontFamilyStack(fonts, fonts.roles.heading, 'heading')
+    : undefined;
+  const codeStack = fonts.roles.code
+    ? requireFontFamilyStack(fonts, fonts.roles.code, 'code')
+    : SYSTEM_MONOSPACE_FONT_STACK;
+
+  return [
+    { name: '--k-font-body', value: toCssFontFamily(bodyStack) },
+    {
+      name: '--k-font-heading',
+      value: headingStack ? toCssFontFamily(headingStack) : 'var(--k-font-body)'
+    },
+    { name: '--k-font-code', value: toCssFontFamily(codeStack) }
+  ];
 }
 
 async function cleanStaleComponentArtifacts(buildDir: string): Promise<void> {
@@ -253,16 +296,7 @@ export async function writeExtraArtifacts(params: {
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
 
-  function toCssFontFamilyString(value: FontStack): string | null {
-    const css = toCssFontFamily(value);
-    return css.trim() ? css : null;
-  }
-
-  const bodyCss = fonts ? toCssFontFamilyString(fonts.body as FontStack) : null;
-  const headingCssRaw = fonts?.heading ? toCssFontFamilyString(fonts.heading as FontStack) : null;
-  const headingCss = headingCssRaw ?? bodyCss;
-
-  const hasFonts = Boolean(bodyCss);
+  const hasFonts = Boolean(fonts);
   const hasRadius = Boolean(radius);
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
@@ -278,7 +312,7 @@ export async function writeExtraArtifacts(params: {
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
     const globalPayload: {
-      fonts?: { body: string; heading?: string };
+      fonts?: SchemaFonts;
       radius?: RadiusMode;
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
@@ -287,11 +321,8 @@ export async function writeExtraArtifacts(params: {
       components?: Partial<Record<ComponentEffectArtifactName, ComponentEffectArtifact>>;
     } = {};
 
-    if (hasFonts && bodyCss) {
-      globalPayload.fonts = {
-        body: bodyCss,
-        ...(headingCss ? { heading: headingCss } : {})
-      };
+    if (fonts) {
+      globalPayload.fonts = fonts;
     }
 
     if (hasRadius && radius) {
@@ -337,6 +368,7 @@ export async function writeExtraArtifacts(params: {
 
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).
   const globalTokensCss = buildRootTokensCss([
+    ...buildFontTokenVariables(fonts),
     { name: '--k-focus-width', value: focus?.width },
     { name: '--k-focus-offset', value: focus?.offset }
   ]);

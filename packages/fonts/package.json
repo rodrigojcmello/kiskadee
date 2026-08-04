@@ -1,0 +1,84 @@
+{
+  "name": "@kiskadee/fonts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Optional online font integrations for Kiskadee.",
+  "exports": {
+    "./catalog": {
+      "types": "./dist/src/catalog.d.ts",
+      "import": "./dist/src/catalog.js",
+      "default": "./dist/src/catalog.js"
+    },
+    "./google/fira-sans": {
+      "types": "./dist/src/google/fira-sans.d.ts",
+      "import": "./dist/src/google/fira-sans.js",
+      "default": "./dist/src/google/fira-sans.js"
+    },
+    "./google/ibm-plex-sans": {
+      "types": "./dist/src/google/ibm-plex-sans.d.ts",
+      "import": "./dist/src/google/ibm-plex-sans.js",
+      "default": "./dist/src/google/ibm-plex-sans.js"
+    },
+    "./google/inter": {
+      "types": "./dist/src/google/inter.d.ts",
+      "import": "./dist/src/google/inter.js",
+      "default": "./dist/src/google/inter.js"
+    },
+    "./google/lora": {
+      "types": "./dist/src/google/lora.d.ts",
+      "import": "./dist/src/google/lora.js",
+      "default": "./dist/src/google/lora.js"
+    },
+    "./google/noto-sans": {
+      "types": "./dist/src/google/noto-sans.d.ts",
+      "import": "./dist/src/google/noto-sans.js",
+      "default": "./dist/src/google/noto-sans.js"
+    },
+    "./google/open-sans": {
+      "types": "./dist/src/google/open-sans.d.ts",
+      "import": "./dist/src/google/open-sans.js",
+      "default": "./dist/src/google/open-sans.js"
+    },
+    "./google/roboto": {
+      "types": "./dist/src/google/roboto.d.ts",
+      "import": "./dist/src/google/roboto.js",
+      "default": "./dist/src/google/roboto.js"
+    },
+    "./google/ubuntu": {
+      "types": "./dist/src/google/ubuntu.d.ts",
+      "import": "./dist/src/google/ubuntu.js",
+      "default": "./dist/src/google/ubuntu.js"
+    },
+    "./presets/fluent-2-microsoft": {
+      "types": "./dist/src/presets/fluent-2-microsoft.d.ts",
+      "import": "./dist/src/presets/fluent-2-microsoft.js",
+      "default": "./dist/src/presets/fluent-2-microsoft.js"
+    }
+  },
+  "files": [
+    "docs",
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "node ./scripts/build.ts",
+    "build:js": "node ./scripts/build-js.ts",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "clean": "node ./scripts/clean-dist.ts",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@kiskadee/core": "workspace:^",
+    "@kiskadee/runtime": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "esbuild": "^0.28.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

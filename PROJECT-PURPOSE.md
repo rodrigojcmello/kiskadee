@@ -73,6 +73,12 @@ This matters because not every geometric value is always-on. Some values exist i
     assets.
   - Keeps brand identity outside preset primitive colors and the three-layer color architecture.
 
+- `packages/fonts`
+  - Goal: optional online font-provider adapters, preset integrations, and their lazy public
+    catalog.
+  - Keeps online preparation separate from preset recommendations and prepares only explicitly
+    selected families without redistributing font files.
+
 - `packages/icons`
   - Goal: canonical cross-platform SVG distribution and metadata, organized into visual families.
   - Preserves separately sourced brand artwork and its cross-platform distribution metadata.
@@ -117,6 +123,7 @@ This is the baseline end-to-end flow for Web:
 
 5. Runtime consumers
 - `packages/components` consumes generated class maps/CSS and composes headless behavior.
+- `packages/fonts` optionally supplies online selected-family preparation.
 - `packages/icons` provides canonical SVG assets plus generated adapters to platform consumers.
 - `packages/showcase` consumes synced artifacts and renders routes/scenarios using those components.
 

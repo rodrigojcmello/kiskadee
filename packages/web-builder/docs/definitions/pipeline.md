@@ -34,10 +34,12 @@ Location: `packages/web-builder/src/run-build.ts`
    - Function: `publishMetadata({ schema, outDirSlug, schemaPath, baseBuildDir })`.
    - Writes `manifest.json`, `schema.json` and `segments.json` under `build/<template-key>`.
    - `segments.json` is derived from `schema.colors.globalSemanticsBySegment`.
+   - Publishes only semantic font role IDs under the compact `manifest.fonts` capability.
 
 8. Phase 8 - Write extra artifacts
    - Function: `writeExtraArtifacts({ schema, outDirSlug })`.
    - Writes global and theme token artifacts such as `global.kiskadee.json` and tokens CSS.
+   - Preserves the full font catalog in JSON and resolves selected stacks into CSS variables.
 
 ## Package scripts
 

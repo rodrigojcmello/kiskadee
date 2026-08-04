@@ -19,7 +19,14 @@ export const schema: Schema<Sandbox2Segment> = {
   colors: schemaColors,
   global: {
     fonts: {
-      body: ['Inter', 'sans-serif']
+      families: {
+        inter: {
+          stack: ['Inter', 'sans-serif']
+        }
+      },
+      roles: {
+        body: 'inter'
+      }
     },
     focus: {
       width: 2,

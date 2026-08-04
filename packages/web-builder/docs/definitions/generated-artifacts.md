@@ -46,9 +46,15 @@ Metadata is written per template under `packages/web-builder/build/<template-key
   Component interaction capabilities are published under
   `components.<component>.surfaceContexts["<segment>.<theme>"].onSubtle|onVivid.state`; there is no
   context-aggregated state map.
+- Font capability is published compactly under `fonts` as semantic role-to-family-ID selections.
+  Catalogs and stacks are not duplicated in the manifest.
 - `schema.json` / `segments.json`: schema and segment data for inspection or tooling.
-- `global.kiskadee.json`: global metadata consumed by runtime/components, such as fonts, radius,
-  and global effects. Component semantic metadata should live in component artifacts.
+- `global.kiskadee.json`: global metadata consumed by runtime/components, including the complete
+  semantic font catalog and role selections, radius, and global effects. Component semantic
+  metadata should live in component artifacts.
+- `tokens.kiskadee.css`: global Web custom properties. When the schema declares fonts, this file
+  resolves `--k-font-body`, `--k-font-heading`, and `--k-font-code`; otherwise it emits no font
+  properties.
 - `components/<component>.kiskadee.json`: component-scoped semantic metadata loaded on demand by
   component runtime hooks. Current emitted metadata artifacts include
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
@@ -64,6 +70,9 @@ The generated `schema.json` remains aggregated. Tooling that needs full schema
 inspection, such as the Showcase surface picker, should read `schema.json`
 directly instead of expanding runtime component artifacts beyond their semantic
 metadata role.
+
+The font artifact shapes and fallback rules are defined in
+[Font family artifacts](font-family-artifacts.md).
 
 ## Typical usage
 

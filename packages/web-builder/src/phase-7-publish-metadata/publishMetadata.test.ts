@@ -1,6 +1,6 @@
-import { ICON_SIZE_BY_SCALE, type Schema } from '@kiskadee/core';
+import { ICON_SIZE_BY_SCALE, type Schema, type SchemaFonts } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { buildComponentSurfaceContexts } from './publishMetadata.ts';
+import { buildComponentSurfaceContexts, buildManifestFonts } from './publishMetadata.ts';
 
 function createSchema(components: Schema['components']): Schema {
   return {
@@ -146,5 +146,44 @@ describe('buildComponentSurfaceContexts', () => {
         }
       }
     });
+  });
+});
+
+describe('buildManifestFonts', () => {
+  it('publishes only explicitly selected role IDs', () => {
+    const fonts = {
+      families: {
+        inter: { stack: ['Inter', 'Arial', 'sans-serif'] },
+        'jetbrains-mono': { stack: ['JetBrains Mono', 'monospace'] }
+      },
+      roles: {
+        body: 'inter',
+        heading: 'inter',
+        code: 'jetbrains-mono'
+      }
+    } as const satisfies SchemaFonts;
+
+    expect(buildManifestFonts(fonts)).toEqual({
+      body: 'inter',
+      heading: 'inter',
+      code: 'jetbrains-mono'
+    });
+  });
+
+  it('does not synthesize omitted optional roles', () => {
+    const fonts = {
+      families: {
+        inter: { stack: ['Inter', 'sans-serif'] }
+      },
+      roles: {
+        body: 'inter'
+      }
+    } as const satisfies SchemaFonts;
+
+    expect(buildManifestFonts(fonts)).toEqual({ body: 'inter' });
+  });
+
+  it('omits font metadata when the schema has no catalog', () => {
+    expect(buildManifestFonts(undefined)).toBeUndefined();
   });
 });

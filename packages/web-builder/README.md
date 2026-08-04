@@ -21,5 +21,7 @@ Build pipeline that converts a Kiskadee `Schema` into Web artifacts (utility CSS
 - [Generated artifacts](docs/definitions/generated-artifacts.md) - CSS, maps, metadata, and high-level usage.
 - [Runtime CSS contract](docs/definitions/runtime-css-contract.md) - ownership split between JSON runtime data and
   CSS presentation.
+- [Font family artifacts](docs/definitions/font-family-artifacts.md) - semantic catalogs, compact manifest roles,
+  CSS stack resolution, and fallback behavior.
 - [Reference files](docs/definitions/reference-files.md) - implementation entry points for the build pipeline.
 - [Future optimizations](docs/proposals/future-optimizations.md) - deferred optimization proposal.

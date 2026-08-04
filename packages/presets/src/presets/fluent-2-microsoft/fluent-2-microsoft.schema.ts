@@ -38,6 +38,29 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    fonts: {
+      families: {
+        'segoe-ui': {
+          stack: [
+            'Segoe UI',
+            'Segoe UI Web (West European)',
+            'Open Sans',
+            '-apple-system',
+            'BlinkMacSystemFont',
+            'Roboto',
+            'Helvetica Neue',
+            'sans-serif'
+          ]
+        },
+        'fluent-monospace': {
+          stack: ['Consolas', 'Courier New', 'Courier', 'monospace']
+        }
+      },
+      roles: {
+        body: 'segoe-ui',
+        code: 'fluent-monospace'
+      }
+    },
     focus: {
       width: 2,
       offset: 1

@@ -1,4 +1,12 @@
 export type {
+  DefinedFontFamily,
+  FontFamilyDefinitionInput,
+  FontFamilyPreparationResult,
+  FontFamilyPreparationStatus,
+  FontFamilyPrepare
+} from '@kiskadee/runtime/font-family';
+export { defineFontFamily } from '@kiskadee/runtime/font-family';
+export type {
   ButtonActivationFeedbackEffect,
   ButtonArtifactConfig,
   ButtonProgressProps,
@@ -121,10 +129,25 @@ export {
   useBrandPack
 } from './shared/contexts/BrandPackContext.tsx';
 export type {
+  FontFamilyProviderProps,
+  FontFamilyProviderStatus,
+  FontFamilyRole,
+  FontFamilyRoleSelection,
+  FontFamilyStatusValue
+} from './shared/contexts/FontFamilyContext.tsx';
+export {
+  FontFamilyProvider,
+  useFontFamilyStatus
+} from './shared/contexts/FontFamilyContext.tsx';
+export type {
   ComponentClassMapScope,
   KiskadeeContextValue,
   KiskadeeInteractionEnvironment,
   KiskadeeLayoutEnvironment
 } from './shared/contexts/KiskadeeContext.tsx';
 export { KiskadeeContext, useKiskadee } from './shared/contexts/KiskadeeContext.tsx';
+export type {
+  ShowcaseContextValue,
+  ShowcaseFontRole
+} from './shared/contexts/ShowcaseContext.tsx';
 export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';

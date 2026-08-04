@@ -10,21 +10,26 @@ describe('transformTextFontKeyToCss', () => {
       const styleKey = 'textFont__heading';
       const className = 'test-class';
       const result = transformTextFontKeyToCss(styleKey, className);
-      expect(result).toBe('.test-class { font-family: var(--k-font-heading) }');
+      expect(result).toBe(
+        '.test-class { font-family: var(--k-font-heading, var(--k-font-body, inherit)) }'
+      );
     });
 
     it('should generate var(--k-font-body) for body token', () => {
       const styleKey = 'textFont__body';
       const className = 'test-class';
       const result = transformTextFontKeyToCss(styleKey, className);
-      expect(result).toBe('.test-class { font-family: var(--k-font-body) }');
+      expect(result).toBe('.test-class { font-family: var(--k-font-body, inherit) }');
     });
 
     it('should generate var(--k-font-code) for code token', () => {
       const styleKey = 'textFont__code';
       const className = 'test-class';
       const result = transformTextFontKeyToCss(styleKey, className);
-      expect(result).toBe('.test-class { font-family: var(--k-font-code) }');
+      expect(result).toBe(
+        '.test-class { font-family: var(--k-font-code, ui-monospace, SFMono-Regular, Menlo, ' +
+          'Monaco, Consolas, "Liberation Mono", "Courier New", monospace) }'
+      );
     });
   });
 

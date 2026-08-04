@@ -7,9 +7,10 @@
     "dev": "node ./scripts/dev.ts",
     "clean:dev": "pnpm --filter @kiskadee/icons run clean && pnpm --filter @kiskadee/react-headless run clean && pnpm --filter @kiskadee/react-components run clean && pnpm --filter @kiskadee/web-builder run clean",
     "dev:fresh": "pnpm run clean:dev && pnpm run dev",
+    "build:fonts": "pnpm --filter @kiskadee/fonts run build",
     "build:icons": "pnpm --filter @kiskadee/icons run build",
     "build:headless": "pnpm --filter @kiskadee/react-headless run build",
-    "build:components": "pnpm run build:icons && pnpm run build:headless && pnpm --filter @kiskadee/react-components run build:self",
+    "build:components": "pnpm run build:fonts && pnpm run build:icons && pnpm run build:headless && pnpm --filter @kiskadee/react-components run build:self",
     "build:artifacts": "pnpm --filter @kiskadee/web-builder run build-sync-generate",
     "build": "pnpm run build:components && pnpm run build:artifacts && next build --webpack",
     "start": "next start"
@@ -17,6 +18,7 @@
   "dependencies": {
     "@kiskadee/brands": "workspace:*",
     "@kiskadee/core": "workspace:*",
+    "@kiskadee/fonts": "workspace:*",
     "@kiskadee/icons": "workspace:*",
     "@kiskadee/react-components": "workspace:*",
     "@kiskadee/react-headless": "workspace:*",

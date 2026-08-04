@@ -15,6 +15,7 @@ keep task-specific workflows inside skills.
   - `packages/core`: shared schema types, color utilities, breakpoints.
   - `packages/presets`: official presets and schema/token definitions.
   - `packages/runtime`: runtime theming support.
+  - `packages/fonts`: opt-in online font providers and preset integrations.
   - `packages/icons`: canonical cross-platform SVG assets and generated platform adapters.
   - `packages/web-builder`: schema-to-web generation and showcase sync scripts.
   - `packages/headless/react`: headless React primitives.
@@ -101,6 +102,8 @@ keep task-specific workflows inside skills.
 ## Package Guidance
 
 - In `packages/core`, preserve framework-agnostic utilities and types.
+- In `packages/fonts`, preserve explicit subpath loading and inert registration; Kiskadee font
+  integrations use documented public online sources and do not redistribute font binaries.
 - In `packages/icons`, preserve canonical SVG sources, generated family exports, and accessibility
   defaults in platform adapters.
 - In `packages/presets`, preserve design-system fidelity unless the task explicitly targets a

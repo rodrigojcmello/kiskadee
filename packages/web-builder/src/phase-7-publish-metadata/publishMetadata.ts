@@ -47,7 +47,6 @@ import type {
   Manifest,
   ManifestComponent,
   ManifestComponentState,
-  ManifestFontStack,
   ManifestFonts
 } from './manifestTypes.ts';
 
@@ -602,6 +601,22 @@ function buildColorsArtifact(
   } as SchemaColors;
 }
 
+/**
+ * What
+ *     Builds the manifest's compact map from semantic font roles to family IDs.
+ * Why
+ *     The manifest advertises selections without duplicating the catalog in the global artifact.
+ */
+export function buildManifestFonts(fonts: SchemaFonts | undefined): ManifestFonts | undefined {
+  if (!fonts) return undefined;
+
+  return {
+    body: fonts.roles.body,
+    ...(fonts.roles.heading ? { heading: fonts.roles.heading } : {}),
+    ...(fonts.roles.code ? { code: fonts.roles.code } : {})
+  };
+}
+
 export async function publishMetadata(params: {
   schema: Schema;
   outDirSlug: string;
@@ -636,11 +651,9 @@ export async function publishMetadata(params: {
   // manifest deterministic and independent from the order in which build phases
   // emit artifacts such as "global.kiskadee.json".
   const fonts = schema.global?.fonts as SchemaFonts | undefined;
-  if (fonts?.body) {
-    const body = fonts.body as ManifestFontStack;
-    const heading = (fonts.heading ?? fonts.body) as ManifestFontStack;
-    const font: ManifestFonts = { body, heading };
-    manifest.font = font;
+  const manifestFonts = buildManifestFonts(fonts);
+  if (manifestFonts) {
+    manifest.fonts = manifestFonts;
   }
 
   // Derive component-level metadata from the schema. This keeps the

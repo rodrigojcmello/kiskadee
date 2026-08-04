@@ -9,6 +9,15 @@ This file records source evidence and preset-level decisions for
   [Microsoft Fluent 2 Web Community](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9230-4927&t=Uzju4AUhin0NMCn2-11)
   - file key: `qdtPPQysSX0kHGGcDpEXzw`
   - top-level page: `1:840`, `Cover`
+- Official documentation:
+  [Fluent 2 typography](https://fluent2.microsoft.design/typography)
+- Official implementation:
+  [Fluent UI Web font-family tokens](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts)
+- Microsoft licensing reference:
+  [Windows typography](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/typography)
+- Kiskadee fallback source:
+  [Open Sans on Google Fonts](https://fonts.google.com/specimen/Open+Sans) and the
+  [official Open Sans repository](https://github.com/googlefonts/opensans)
 
 ## Source Notes
 
@@ -23,6 +32,41 @@ This file records source evidence and preset-level decisions for
   maps each upstream stop to the nearest position in its own canonical L/D
   scale. The mapping is explicit because the two grids and theme orientations
   are not identical.
+
+## Typography Evidence
+
+Fluent 2 identifies Segoe UI as its primary Web typeface and the Fluent UI Web token source
+publishes this base stack:
+
+```text
+Segoe UI
+Segoe UI Web (West European)
+-apple-system
+BlinkMacSystemFont
+Roboto
+Helvetica Neue
+sans-serif
+```
+
+The same token source publishes `Consolas, Courier New, Courier, monospace` for monospaced text.
+Kiskadee maps the base stack to `body`; `heading` reuses `body`; and the monospace stack maps to
+`code`. This is **Official adapted** because Kiskadee translates upstream tokens into semantic
+font roles.
+
+Segoe UI is proprietary and Microsoft's Fabric Assets license limits its downloadable assets to
+specific Microsoft-integrated applications. The preset therefore does not redistribute or
+automatically download Segoe.
+
+Kiskadee inserts `Open Sans` after the two Segoe aliases and before Fluent's platform fallbacks.
+This is a **Kiskadee extension**, not an official Microsoft fallback. It was selected as the public
+portable alternative after visual review; Open Sans remains independently published by its
+authors and is available through Google Fonts.
+
+The optional `@kiskadee/fonts/presets/fluent-2-microsoft` integration probes the two Segoe aliases
+through the browser FontFace API. An installed Segoe produces no Google request. When Segoe is
+unavailable, or the probe API is unavailable, the integration prepares the Open Sans stylesheet
+from Google Fonts. The preset schema still contains no URL or loader. Without that integration,
+applications may provide either family themselves or let the browser continue through the stack.
 
 ## ProgressBar Evidence
 

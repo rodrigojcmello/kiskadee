@@ -9,6 +9,9 @@ export default function HomePage() {
           <Link href="/colors">/colors</Link>
         </li>
         <li>
+          <Link href="/typography">/typography</Link>
+        </li>
+        <li>
           <Link href="/button">/button</Link>
         </li>
         <li>

@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     '@kiskadee/icons',
     '@kiskadee/react-components',
     '@kiskadee/react-headless',
+    '@kiskadee/runtime',
     '@kiskadee/core'
   ]
 };

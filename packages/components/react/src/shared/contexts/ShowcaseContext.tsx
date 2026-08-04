@@ -2,6 +2,8 @@ import type { ThemeMode } from '@kiskadee/core';
 import type { DesignSystemListEntry, Manifest } from '@kiskadee/web-builder/types';
 import { createContext, useContext } from 'react';
 
+export type ShowcaseFontRole = 'body' | 'heading' | 'code';
+
 export type ShowcaseContextValue = {
   designSystemKeys: string[];
   availableSegments: string[];
@@ -32,6 +34,8 @@ export type ShowcaseContextValue = {
    */
   fontName: string;
   setFontName: (value: string) => void;
+  fontRoleNames: Record<ShowcaseFontRole, string>;
+  setFontRoleName: (role: ShowcaseFontRole, value: string) => void;
 };
 
 export const ShowcaseContext = createContext<ShowcaseContextValue | undefined>(undefined);

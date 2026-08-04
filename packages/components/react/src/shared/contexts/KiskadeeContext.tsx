@@ -5,6 +5,7 @@ import type {
   ButtonIconPlacement,
   ComponentClassNameMapJSON,
   RadiusMode,
+  SchemaFonts,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   SliderEdgeLabelAlignment,
@@ -87,6 +88,7 @@ export type KiskadeeContextValue = {
   interactionEnvironment?: KiskadeeInteractionEnvironment;
   layoutEnvironment?: KiskadeeLayoutEnvironment;
   global?: {
+    fonts?: SchemaFonts;
     radius?: RadiusMode;
     effects?: {
       activationFeedback?: ActivationFeedbackEffectSchema;

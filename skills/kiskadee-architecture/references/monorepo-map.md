@@ -17,6 +17,9 @@
 - `packages/runtime`
   - Own browser runtime for dynamic color scales and CSS variable injection.
 
+- `packages/fonts`
+  - Own opt-in online font-provider adapters, preset integrations, and their lazy public catalog.
+
 - `packages/headless`
   - Own unstyled component behavior, semantics, and accessibility.
 
@@ -39,6 +42,7 @@
 - "Preset-specific mapping" -> `presets`
 - "Generated CSS/class-map bug" -> `web-builder`
 - "Dynamic theme/runtime color update" -> `runtime`
+- "Online font provider or preset font loader" -> `fonts`
 - "Keyboard/a11y behavior" -> `headless`
 - "Component visual style" -> `components`
 - "Docs/demo visualization" -> `showcase`

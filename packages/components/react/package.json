@@ -45,6 +45,7 @@
     "@kiskadee/brands": "workspace:^",
     "@kiskadee/core": "workspace:^",
     "@kiskadee/react-headless": "workspace:^",
+    "@kiskadee/runtime": "workspace:^",
     "@kiskadee/web-builder": "workspace:^",
     "motion": "^12.40.0"
   },

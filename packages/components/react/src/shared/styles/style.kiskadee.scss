@@ -32,16 +32,46 @@
   //--k-focus-ring-color: #0059b1;
 }
 
+/*
+ * Global typography role / body.
+ * Falls back to the host's inherited family when no preset or override supplies the role.
+ */
 .k-font-body {
-  font-family: var(--k-font-body);
+  font-family: var(--k-font-body, inherit);
 }
 
+/*
+ * Global typography role / heading.
+ * Follows the body role when a preset does not recommend a distinct heading family.
+ */
 .k-font-heading {
-  font-family: var(--k-font-heading);
+  font-family: var(--k-font-heading, var(--k-font-body, inherit));
 }
 
+/*
+ * Global typography role / code.
+ * Uses a platform monospace stack when neither the preset nor host supplies the role.
+ */
+.k-font-code {
+  font-family: var(
+    --k-font-code,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace
+  );
+}
+
+/*
+ * Global typography root.
+ * Preserves native inheritance when Kiskadee has no active body recommendation.
+ */
 .k-root {
-  font-family: var(--k-font-body);
+  font-family: var(--k-font-body, inherit);
 
   // Ensure form controls inherit the global font stack instead of UA defaults.
   button {

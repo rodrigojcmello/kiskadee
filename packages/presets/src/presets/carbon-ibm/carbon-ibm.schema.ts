@@ -19,7 +19,14 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     fonts: {
-      body: ['IBM Plex Sans', 'sans-serif']
+      families: {
+        'ibm-plex-sans': {
+          stack: ['IBM Plex Sans', 'sans-serif']
+        }
+      },
+      roles: {
+        body: 'ibm-plex-sans'
+      }
     },
     focus: {
       width: 2,

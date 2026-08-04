@@ -31,8 +31,15 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     fonts: {
-      // Native consumers resolve San Francisco directly; web consumers use the platform stack.
-      body: ['-apple-system', 'sans-serif']
+      families: {
+        'apple-system': {
+          // Native consumers resolve San Francisco directly; web consumers use the platform stack.
+          stack: ['-apple-system', 'sans-serif']
+        }
+      },
+      roles: {
+        body: 'apple-system'
+      }
     },
     focus: {
       width: 2,

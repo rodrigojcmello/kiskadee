@@ -38,7 +38,14 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     fonts: {
-      body: ['Roboto', 'sans-serif']
+      families: {
+        roboto: {
+          stack: ['Roboto', 'sans-serif']
+        }
+      },
+      roles: {
+        body: 'roboto'
+      }
     },
     // verified: 2026-02-07 | Figma v1.23
     focus: {

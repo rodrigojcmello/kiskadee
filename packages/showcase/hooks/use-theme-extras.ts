@@ -4,6 +4,7 @@ import type {
   ButtonIconLayout,
   ButtonIconPlacement,
   RadiusMode,
+  SchemaFonts,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   ThemeMode
@@ -18,6 +19,7 @@ type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 
 type GlobalArtifact = {
+  fonts?: SchemaFonts;
   radius?: RadiusMode;
   effects?: {
     activationFeedback?: ActivationFeedbackEffectSchema;

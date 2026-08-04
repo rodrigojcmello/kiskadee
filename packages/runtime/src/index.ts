@@ -1,6 +1,20 @@
 import { generatePrimaryScale } from './generator';
 
 export type {
+  DefinedFontFamily,
+  FontFamilyDefinitionInput,
+  FontFamilyPreparationResult,
+  FontFamilyPreparationStatus,
+  FontFamilyPrepare
+} from './fontFamily';
+export {
+  defineFontFamily,
+  getFontFamilyPreparationResult,
+  getFontFamilyPreparationStatus,
+  prepareFontFamilies,
+  prepareFontFamily
+} from './fontFamily';
+export type {
   ApplyRuntimePlatformClassesOptions,
   RuntimeEngine,
   RuntimeOs,

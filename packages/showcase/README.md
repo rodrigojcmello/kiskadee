@@ -18,8 +18,8 @@ pnpm --filter @kiskadee/showcase dev
 This command is the local development entrypoint. It runs this sequence:
 
 ```txt
-1. Build @kiskadee/icons, @kiskadee/react-headless, and @kiskadee/react-components once,
-   while regenerating the @kiskadee/web-builder artifacts.
+1. Build @kiskadee/fonts, @kiskadee/icons, @kiskadee/react-headless, and
+   @kiskadee/react-components once, while regenerating the @kiskadee/web-builder artifacts.
 2. Start the @kiskadee/react-components structural style watcher.
 3. Start next dev --webpack for the showcase.
 ```
@@ -68,6 +68,7 @@ This command runs the publication build sequence:
 
 ```txt
 1. pnpm run build:components
+   -> builds @kiskadee/fonts online integration JS and types into dist
    -> runs build:headless
    -> builds @kiskadee/react-headless JS/types into dist
    -> builds @kiskadee/react-components JS, types, and component CSS into dist
@@ -198,6 +199,9 @@ Shared utilities for Showcase.
 ## Important conventions
 
 - Showcase is an artifact consumer: if something is “missing”, run `web-builder build-sync-generate`.
+- Online font providers and preset font integrations belong to `@kiskadee/fonts`; the font select
+  is projected from its public lazy catalog rather than a Showcase-owned list. The active artifact
+  supplies the recommendation and preparation outcomes explain local-versus-online resolution.
 - The Colors foundation route inspects all published primitives, including variants that are not
   currently mapped to a global semantic or component intent. Darker reuses the primitive Dark
   scale and is not rendered as a duplicate third track.
