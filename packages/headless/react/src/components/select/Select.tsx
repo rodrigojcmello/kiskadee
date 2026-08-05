@@ -1,9 +1,11 @@
 import { autoUpdate, flip, offset as floatingOffset, shift, useFloating } from '@floating-ui/react';
 import type {
+  ButtonHTMLAttributes,
   ComponentPropsWithoutRef,
   CSSProperties,
   Dispatch,
   KeyboardEvent,
+  MouseEvent as ReactMouseEvent,
   ReactNode,
   SetStateAction
 } from 'react';
@@ -72,8 +74,12 @@ export type SelectProps = SelectRootDivProps & {
    * - e4a: Option (role=option) — selected state
    * - e4d: Option (role=option) — disabled state
    * - e5: Label
+   * - e6: Previous-option button
+   * - e7: Next-option button
    */
-  classNames?: Partial<Record<'e1' | 'e2' | 'e3' | 'e4' | 'e4a' | 'e4d' | 'e5', string>>;
+  classNames?: Partial<
+    Record<'e1' | 'e2' | 'e3' | 'e4' | 'e4a' | 'e4d' | 'e5' | 'e6' | 'e7', string>
+  >;
 };
 
 export type SelectTriggerProps = {
@@ -114,6 +120,14 @@ export type SelectLabelProps = {
   children?: ReactNode;
   className?: string;
   id?: string;
+};
+
+export type SelectStepProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'children' | 'className' | 'type'
+> & {
+  children?: ReactNode;
+  className?: string;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -478,6 +492,66 @@ function SelectTrigger({ children, className }: SelectTriggerProps) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Sequential navigation
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SelectStep({
+  'aria-label': ariaLabel,
+  children,
+  className,
+  disabled: disabledProp,
+  onClick,
+  direction,
+  ...buttonProps
+}: SelectStepProps & { direction: -1 | 1 }) {
+  const { selected, setSelected, options, disabled, classNames } = useSelectContext();
+  const enabledOptions = options.filter((option) => !option.disabled);
+  const selectedIndex = enabledOptions.findIndex((option) => option.value === selected);
+  const adjacentIndex =
+    selectedIndex < 0
+      ? direction === 1
+        ? 0
+        : enabledOptions.length - 1
+      : selectedIndex + direction;
+  const adjacentOption = enabledOptions[adjacentIndex];
+  const isDisabled = disabled || disabledProp || adjacentOption === undefined;
+  const resolvedClassName = className ?? (direction === -1 ? classNames?.e6 : classNames?.e7);
+  const resolvedLabel = ariaLabel ?? (direction === -1 ? 'Previous option' : 'Next option');
+
+  const handleClick = useCallback(
+    (event: ReactMouseEvent<HTMLButtonElement>) => {
+      onClick?.(event);
+      if (!event.defaultPrevented && !isDisabled && adjacentOption) {
+        setSelected(adjacentOption.value);
+      }
+    },
+    [adjacentOption, isDisabled, onClick, setSelected]
+  );
+
+  return (
+    <button
+      {...buttonProps}
+      type="button"
+      aria-label={resolvedLabel}
+      className={resolvedClassName}
+      data-direction={direction === -1 ? 'previous' : 'next'}
+      disabled={isDisabled}
+      onClick={handleClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+function SelectPrevious(props: SelectStepProps) {
+  return <SelectStep {...props} direction={-1} />;
+}
+
+function SelectNext(props: SelectStepProps) {
+  return <SelectStep {...props} direction={1} />;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Label Component
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -692,6 +766,8 @@ function SelectOption({ value, children, className, disabled }: SelectOptionProp
 export const Select = {
   Root: SelectRoot,
   Trigger: SelectTrigger,
+  Previous: SelectPrevious,
+  Next: SelectNext,
   Content: SelectContent,
   Option: SelectOption,
   Label: SelectLabel

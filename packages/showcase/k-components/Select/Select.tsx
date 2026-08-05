@@ -6,12 +6,15 @@ import { Select as HeadlessSelect } from '@kiskadee/react-headless';
 import type { CSSProperties, ReactNode } from 'react';
 import styles from './Select.module.scss';
 
+export type SelectVariant = 'standard' | 'sequential';
+
 export interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames'> {
   className?: string;
   label?: ReactNode;
   width?: number | string;
   minWidth?: number | string;
   maxWidth?: number | string;
+  variant?: SelectVariant;
 }
 
 export function Select({
@@ -23,7 +26,8 @@ export function Select({
   label,
   width,
   minWidth,
-  maxWidth
+  maxWidth,
+  variant = 'standard'
 }: SelectProps) {
   const selectedOption = options.find((o) => o.value === value);
 
@@ -82,6 +86,8 @@ export function Select({
         e1: `${styles.container} ${className}`.trim(),
         e5: styles.label,
         e2: styles.trigger,
+        e6: styles.stepButton,
+        e7: styles.stepButton,
         e3: styles.dropdown,
         e4: styles.option,
         e4a: `${styles.option} ${styles.selected}`,
@@ -89,12 +95,30 @@ export function Select({
       }}
     >
       {label ? <HeadlessSelect.Label>{label}</HeadlessSelect.Label> : null}
-      <HeadlessSelect.Trigger>
-        <span className={styles.value}>{selectedOption?.label || value}</span>
-        <span className={styles.chevron}>
-          <IconGlyph name="chevron-down" />
-        </span>
-      </HeadlessSelect.Trigger>
+      {variant === 'sequential' ? (
+        <div className={styles.sequentialControl}>
+          <HeadlessSelect.Previous>
+            <span className={styles.stepIcon}>
+              <IconGlyph name="chevron-left" />
+            </span>
+          </HeadlessSelect.Previous>
+          <HeadlessSelect.Trigger className={styles.sequentialTrigger}>
+            <span className={styles.value}>{selectedOption?.label || value}</span>
+          </HeadlessSelect.Trigger>
+          <HeadlessSelect.Next>
+            <span className={`${styles.stepIcon} ${styles.stepIconNext}`}>
+              <IconGlyph name="chevron-left" />
+            </span>
+          </HeadlessSelect.Next>
+        </div>
+      ) : (
+        <HeadlessSelect.Trigger>
+          <span className={styles.value}>{selectedOption?.label || value}</span>
+          <span className={styles.chevron}>
+            <IconGlyph name="chevron-down" />
+          </span>
+        </HeadlessSelect.Trigger>
+      )}
       <HeadlessSelect.Content portalled offset={6}>
         {options.map((opt) => (
           <HeadlessSelect.Option key={opt.value} value={opt.value} disabled={opt.disabled}>

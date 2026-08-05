@@ -28,6 +28,7 @@ export default function IconFamilyPicker({
       width={width}
       options={options}
       value={iconFamilyId}
+      variant="sequential"
       onValueChange={setIconFamilyId}
     />
   );

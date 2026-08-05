@@ -45,6 +45,7 @@ export type {
   SelectOption,
   SelectOptionProps,
   SelectProps,
+  SelectStepProps,
   SelectTriggerProps
 } from './components/select/Select.tsx';
 export { Select } from './components/select/Select.tsx';
