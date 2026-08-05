@@ -10,6 +10,7 @@ import type {
   Schema,
   SchemaColors,
   SchemaFonts,
+  SchemaIcons,
   SurfaceContext,
   ThemeMode
 } from '@kiskadee/core';
@@ -47,7 +48,8 @@ import type {
   Manifest,
   ManifestComponent,
   ManifestComponentState,
-  ManifestFonts
+  ManifestFonts,
+  ManifestIcons
 } from './manifestTypes.ts';
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
@@ -617,6 +619,11 @@ export function buildManifestFonts(fonts: SchemaFonts | undefined): ManifestFont
   };
 }
 
+export function buildManifestIcons(icons: SchemaIcons | undefined): ManifestIcons | undefined {
+  if (!icons) return undefined;
+  return { family: icons.family };
+}
+
 export async function publishMetadata(params: {
   schema: Schema;
   outDirSlug: string;
@@ -654,6 +661,12 @@ export async function publishMetadata(params: {
   const manifestFonts = buildManifestFonts(fonts);
   if (manifestFonts) {
     manifest.fonts = manifestFonts;
+  }
+
+  const icons = schema.global?.icons as SchemaIcons | undefined;
+  const manifestIcons = buildManifestIcons(icons);
+  if (manifestIcons) {
+    manifest.icons = manifestIcons;
   }
 
   // Derive component-level metadata from the schema. This keeps the

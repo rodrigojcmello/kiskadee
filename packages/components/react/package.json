@@ -44,6 +44,7 @@
   "dependencies": {
     "@kiskadee/brands": "workspace:^",
     "@kiskadee/core": "workspace:^",
+    "@kiskadee/icons": "workspace:^",
     "@kiskadee/react-headless": "workspace:^",
     "@kiskadee/runtime": "workspace:^",
     "@kiskadee/web-builder": "workspace:^",

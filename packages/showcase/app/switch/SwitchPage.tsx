@@ -10,6 +10,7 @@ import type {
 import {
   Card,
   CardAction,
+  IconGlyph,
   Switch,
   type SwitchIcons,
   useCardArtifactConfig,
@@ -17,11 +18,11 @@ import {
   useShowcase,
   useSwitchArtifactConfig
 } from '@kiskadee/react-components';
-import { CheckIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ShowcaseGlobalSemanticControls,
+  ShowcaseIconographyControls,
   ShowcaseTypographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
@@ -190,12 +191,12 @@ function getAmbientSurfaceEmphasis(surface: ResolvedSwitchSurface): ComponentEmp
 const switchIconSets = {
   none: undefined,
   'on-off': {
-    rest: <XIcon />,
-    selected: <CheckIcon />
+    rest: <IconGlyph name="close" />,
+    selected: <IconGlyph name="check" />
   },
   'play-pause': {
-    rest: <PlayIcon />,
-    selected: <PauseIcon />
+    rest: <IconGlyph name="play" />,
+    selected: <IconGlyph name="pause" />
   }
 } satisfies Record<SwitchIconMode, SwitchIcons | undefined>;
 
@@ -565,6 +566,9 @@ export default function SwitchPage() {
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Tipografia">
         <ShowcaseTypographyControls />
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Iconografia">
+        <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Interaction">
         <ShowcaseControlStack>

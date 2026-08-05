@@ -146,7 +146,7 @@ describe('canonical icon sources', () => {
     expect(Object.keys(snapchat!.constructions).sort()).toEqual(['contained', 'mark']);
   });
 
-  it('does not publish an interface icon family', async () => {
+  it('publishes interface icon families only through explicit subpaths', async () => {
     const packageJson = JSON.parse(
       await readFile(path.resolve(packageRoot, 'package.json'), 'utf8')
     ) as {
@@ -155,9 +155,11 @@ describe('canonical icon sources', () => {
     const rootSource = await readFile(path.resolve(packageRoot, 'src/index.ts'), 'utf8');
 
     expect(Object.keys(packageJson.exports)).toContain('./social');
-    expect(Object.keys(packageJson.exports).some((key) => key.includes('kiskadee'))).toBe(false);
-    expect(Object.keys(packageJson.exports).some((key) => key.includes('lucide'))).toBe(false);
+    expect(Object.keys(packageJson.exports)).toContain('./interface');
+    expect(Object.keys(packageJson.exports)).toContain('./interface/catalog');
+    expect(Object.keys(packageJson.exports)).toContain('./interface/lucide');
     expect(rootSource).toContain('SocialIcons');
+    expect(rootSource).not.toContain("from './interface");
     expect(rootSource).not.toContain('KiskadeeIcons');
     expect(rootSource).not.toContain('LucideIcons');
   });

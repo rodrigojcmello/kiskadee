@@ -6,6 +6,7 @@ import type {
   ComponentClassNameMapJSON,
   RadiusMode,
   SchemaFonts,
+  SchemaIcons,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   SliderEdgeLabelAlignment,
@@ -89,6 +90,7 @@ export type KiskadeeContextValue = {
   layoutEnvironment?: KiskadeeLayoutEnvironment;
   global?: {
     fonts?: SchemaFonts;
+    icons?: SchemaIcons;
     radius?: RadiusMode;
     effects?: {
       activationFeedback?: ActivationFeedbackEffectSchema;

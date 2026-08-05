@@ -14,6 +14,9 @@
     "./font-contract": {
       "default": "./src/fonts.contract.zod.ts"
     },
+    "./icon-contract": {
+      "default": "./src/icons.contract.zod.ts"
+    },
     "./build": {
       "default": "./src/build/index.ts"
     }

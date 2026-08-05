@@ -54,7 +54,8 @@
     {
       "includes": [
         "packages/icons/src/families/**/*.tsx",
-        "packages/icons/src/families/**/index.ts"
+        "packages/icons/src/families/**/index.ts",
+        "packages/icons/src/interface/families/**/*.tsx"
       ],
       "formatter": {
         "enabled": false

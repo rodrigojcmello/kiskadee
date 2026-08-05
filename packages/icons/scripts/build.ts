@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { buildAllJavaScript } from './build-js.ts';
 import { cleanDist } from './clean-dist.ts';
 import { copyCrossPlatformAssets } from './copy-cross-platform-assets.ts';
+import { generateInterfaceFamilies } from './generate-interface-families.ts';
 import { generateReactComponents } from './generate-react.ts';
 import { rewriteDistExtensions } from './rewrite-dist-extensions.ts';
 
@@ -28,7 +29,7 @@ function buildTypes(): Promise<void> {
 }
 
 async function build(): Promise<void> {
-  await generateReactComponents();
+  await Promise.all([generateReactComponents(), generateInterfaceFamilies()]);
   await cleanDist();
   await Promise.all([buildAllJavaScript(), buildTypes(), copyCrossPlatformAssets()]);
   await rewriteDistExtensions();

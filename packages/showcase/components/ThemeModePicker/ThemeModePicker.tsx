@@ -1,30 +1,31 @@
 'use client';
 
 import type { ThemeMode } from '@kiskadee/core';
-import { useKiskadee, useShowcase } from '@kiskadee/react-components';
-import { type LucideIcon, MoonIcon, MoonStarIcon, SunIcon } from 'lucide-react';
+import { IconGlyph, type IconName, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { ShowcaseSegmentedControl } from '../ShowcaseControls';
 import styles from './ThemeModePicker.module.scss';
 
 const OPTIONS: ReadonlyArray<{
-  Icon: LucideIcon;
+  icon: IconName;
   label: string;
   value: ThemeMode;
 }> = [
-  { value: 'light', label: 'Light', Icon: SunIcon },
-  { value: 'dark', label: 'Dark', Icon: MoonStarIcon },
-  { value: 'darker', label: 'Darker', Icon: MoonIcon }
+  { value: 'light', label: 'Light', icon: 'sun' },
+  { value: 'dark', label: 'Dark', icon: 'moon-star' },
+  { value: 'darker', label: 'Darker', icon: 'moon' }
 ];
 
 export default function ThemeModePicker({ className }: { className?: string }) {
   const { theme, setTheme } = useKiskadee();
   const { availableThemes } = useShowcase();
   const options = OPTIONS.filter((option) => availableThemes.includes(option.value)).map(
-    ({ Icon, label, value }) => ({
+    ({ icon, label, value }) => ({
       value,
       label: (
         <span className={styles.optionContent}>
-          <Icon className={styles.icon} />
+          <span className={styles.icon}>
+            <IconGlyph name={icon} />
+          </span>
           <span>{label}</span>
         </span>
       )

@@ -1,6 +1,8 @@
 packages:
   - "packages/**"
 allowBuilds:
+  '@carbon/icon-helpers': false
+  '@carbon/icons-react': false
   '@parcel/watcher': true
   esbuild: true
   sharp: true

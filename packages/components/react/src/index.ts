@@ -1,4 +1,26 @@
 export type {
+  CanonicalIconName,
+  CustomIconName,
+  DefinedIconFamily,
+  IconDirection,
+  IconFamilyCatalogEntry,
+  IconFamilyCatalogItem,
+  IconFamilyFallbackEntry,
+  IconFamilyId,
+  IconGlyphDefinition,
+  IconGlyphDescriptor,
+  IconGlyphMap,
+  IconGlyphRenderer,
+  IconGlyphRendererProps,
+  IconName
+} from '@kiskadee/icons/interface';
+export {
+  CANONICAL_ICON_NAMES,
+  defineIconFamily,
+  defineIconFamilyCatalogEntry,
+  defineIconFamilyFallback
+} from '@kiskadee/icons/interface';
+export type {
   DefinedFontFamily,
   FontFamilyDefinitionInput,
   FontFamilyPreparationResult,
@@ -9,6 +31,7 @@ export { defineFontFamily } from '@kiskadee/runtime/font-family';
 export type {
   ButtonActivationFeedbackEffect,
   ButtonArtifactConfig,
+  ButtonIconProps,
   ButtonProgressProps,
   ButtonProps,
   ButtonStatus
@@ -26,10 +49,11 @@ export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export type {
   IconClassesMap,
   IconElementName,
+  IconGlyphProps,
   IconProps,
   IconVisualProps
 } from './components/Icon';
-export { Icon } from './components/Icon';
+export { Icon, IconGlyph } from './components/Icon';
 export type {
   DeterminateDecorativeProgressProps,
   DeterminateProgressProps,
@@ -139,6 +163,15 @@ export {
   FontFamilyProvider,
   useFontFamilyStatus
 } from './shared/contexts/FontFamilyContext.tsx';
+export type {
+  IconFamilyProviderProps,
+  IconFamilyProviderStatus,
+  IconFamilyStatusValue
+} from './shared/contexts/IconFamilyContext.tsx';
+export {
+  IconFamilyProvider,
+  useIconFamilyStatus
+} from './shared/contexts/IconFamilyContext.tsx';
 export type {
   ComponentClassMapScope,
   KiskadeeContextValue,

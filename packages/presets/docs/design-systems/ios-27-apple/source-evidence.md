@@ -14,6 +14,8 @@ This directory records official source evidence and preset-level decisions for
   - Colors page: `0:1746`;
   - default color section: `5707:28659`;
   - local variable collection: `Colors`, with `Light` and `Dark` modes.
+- [Apple SF Symbols](https://developer.apple.com/sf-symbols/)
+- [Apple Human Interface Guidelines: SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols)
 
 ## Source Notes
 
@@ -73,6 +75,18 @@ This directory records official source evidence and preset-level decisions for
   run color-selection logic.
 - Liquid Glass is documented but emits no approximation. Adding it later requires a separate
   material-capability contract rather than literal textured colors in the current Button schema.
+
+## Interface Icon Evidence
+
+Apple identifies SF Symbols as the symbol family designed to integrate with San Francisco and
+Apple-platform text. Kiskadee therefore recommends the semantic family ID `sf-symbols`. This is
+**Official adapted** at the preset boundary: the recommendation preserves Apple's platform intent,
+but the Web package does not redistribute or claim to implement SF Symbols.
+
+The optional Web catalog declares `sf-symbols -> iconoir` as an explicit **Kiskadee extension**.
+It is a portability fallback, not an Apple-equivalent family, and the UI must identify it as
+`Iconoir (fallback for SF Symbols)`. Native integrations can register a real `sf-symbols`
+implementation under the same recommended ID without changing the preset.
 
 ## Component Evidence
 

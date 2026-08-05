@@ -18,6 +18,9 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    icons: {
+      family: 'carbon'
+    },
     fonts: {
       families: {
         'ibm-plex-sans': {

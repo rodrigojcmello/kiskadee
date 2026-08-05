@@ -1,83 +1,103 @@
-# Brand icon distribution
+# Icon Families
 
-`@kiskadee/icons` owns only reusable third-party brand marks. It does not define a Kiskadee
-interface-icon family and does not mirror Lucide or another general-purpose icon catalog.
+`@kiskadee/icons` owns two deliberately separate capabilities:
 
-Interface glyphs are selected by each platform consumer. React applications use `lucide-react`
-directly as the recommended fallback, while the provider-agnostic Kiskadee `Icon` component owns
-size, semantic color, surface context, and accessibility.
+- social and brand artwork, distributed as canonical SVG-based components;
+- optional interface-icon family definitions, mappings, and lazy catalog entries.
 
-## Source and generated artifacts
+The two capabilities never substitute for one another. A product logo is not resolved through the
+interface family provider, and changing an interface family does not repaint or replace a brand.
 
-- Canonical brand artwork lives in `assets/social/` as plain SVG and is never rewritten by a
-  package build.
-- `metadata/icons.json` owns stable IDs, constructions, presentations, provenance, color behavior,
-  and cross-platform optical calibration per construction.
-- `src/families/social/` is generated, optically calibrated React source. Never edit those files
-  manually.
-- `dist/svg/` publishes the optically calibrated brand SVGs for non-React consumers.
-- `dist/icons.json` publishes the cross-platform brand manifest with
-  `assetState: "optically-calibrated"`.
+## Interface family contract
 
-Run `pnpm --filter @kiskadee/icons generate` after changing a brand asset or the manifest. The
-package build performs adapter generation automatically, while `check:generated` detects stale
-adapters. Run `pnpm --filter @kiskadee/icons audit:optical` to inspect bounds, alpha coverage,
-center of mass, and clipping.
-
-## Public imports
-
-Use direct imports so brand dependencies remain explicit and tree-shakable:
+A family maps semantic `IconName` values to presentation-only glyph renderers:
 
 ```tsx
-import { InstagramIcon } from '@kiskadee/icons/social/InstagramIcon';
+const acmeClassic = defineIconFamily({
+  id: 'acme-classic',
+  label: 'Acme Classic',
+  glyphs: {
+    search: AcmeSearch,
+    'acme:invoice-approved': AcmeInvoiceApproved
+  },
+  prepare: () => import('./acme-icons.css')
+});
 ```
 
-The social family barrel and the `SocialIcons` root namespace exist for deliberate discovery use
-cases such as the Showcase brand gallery.
+Canonical Kiskadee names are unnamespaced. Product-specific concepts use a namespace. Applications
+can register their own families without editing Kiskadee metadata, and the same namespaced concept
+may resolve to different artwork in different families.
 
-## Shared brand contract
+Registration is inert. A catalog entry imports its family module only when selected, and
+`prepare` runs only in the browser after selection. Concurrent loads share work, successful loads
+are reused, and failed loads remain retryable.
 
-- Preserve the source artwork's coordinate system and silhouette.
-- A construction is one official geometry, such as Reddit `contained` or `mark`.
-- A presentation changes the paint of that geometry, such as `brand`, `monochrome`, or a
-  brand-specific adaptive treatment.
-- `brand` means the trademark holder owns the paint. It remains fixed even when the official
-  artwork uses only Black.
-- `monochrome` means the consumer owns one paint through `currentColor`.
-- An adaptive presentation must name the owned and contextual parts explicitly. It does not weaken
-  the rule that `monochrome` is entirely consumer-owned.
-- Calibrate perceived size and placement only through each construction's `opticalTransform`.
-- Apply one transform to every presentation in the same construction so those presentations share
-  a footprint.
-- Every brand exposes at least one `monochrome` presentation through `currentColor`; a construction
-  that exists only for official color artwork does not need to duplicate it.
-- `defaultConstruction` and each construction's `defaultPresentation` are deterministic API
-  defaults, not responsive or size-dependent rules. The default construction always defaults to
-  its `brand` presentation.
-- Keep generated SVG components presentation-only; the consuming Kiskadee `Icon` wrapper owns
-  accessible-image versus decorative semantics.
+The public broad catalog is opt-in. Direct family subpaths support static applications that want
+one family and one upstream dependency.
 
-No construction is selected automatically from icon size, component, surface, or viewport. A
-consumer that needs a non-default construction must request it explicitly:
+## Canonical coverage
 
-```tsx
-<RedditIcon construction="mark" presentation="monochrome" />
+`src/interface/canonical.ts` owns the public canonical-name union.
+`metadata/interface-families.json` maps every canonical name across every official Web family and
+records `fixed`, `mirror`, or explicit RTL geometry per family.
+`scripts/generate-interface-families.ts` validates complete coverage and requires a separate RTL
+mapping whenever a family classifies a concept as `unique`, then generates the adapters in
+`src/interface/families/`.
+
+When an upstream family publishes distinct left-to-right and right-to-left artwork, Kiskadee uses
+`unique` with both mappings rather than mirroring glyphs that contain numbers or other asymmetric
+details.
+
+Do not hand-edit generated family files. Run:
+
+```sh
+pnpm --filter @kiskadee/icons generate
+pnpm --filter @kiskadee/icons check:generated
 ```
 
-Every mark must have first-party provenance recorded in
-[`social-icons.md`](./social-icons.md). Distribution is a technical convenience and does not grant
-trademark permission, partnership, or endorsement.
+The initial official Web adapters are Lucide, Fluent UI System Icons Regular, Material Symbols
+Outlined, Carbon Icons, Iconoir Regular, Phosphor Regular, and Font Awesome Classic Free Solid.
+Material Symbols is the only font-backed adapter; its preparation requests an alphabetically
+subsetted Google Fonts stylesheet for the canonical ligatures.
 
-## Interface glyphs
+## Preset and runtime boundary
 
-General interface pictograms do not belong to this package:
+A preset stores only:
 
-- Web consumers import them directly from `lucide-react` or another chosen provider.
-- The `/icons` Showcase route keeps a local 30-icon Lucide sample solely to demonstrate the
-  Kiskadee `Icon` component across sizes, intents, and surfaces.
-- Native components may generate implementation resources directly from a pinned upstream icon
-  source when a platform primitive needs a fixed glyph. Those resources do not become a public
-  Kiskadee icon family.
+```ts
+global: {
+  icons: {
+    family: 'fluent-system'
+  }
+}
+```
 
-This boundary prevents a small documentation sample from becoming an incomplete Kiskadee-owned
-icon catalog.
+It contains no imports, glyphs, URLs, or loaders. `IconFamilyProvider` resolves the recommendation
+against application definitions and catalog entries. The selected family changes glyph geometry
+only. The consuming component continues to own size, color, surface relation, accessible name,
+padding, background, border, divider, and interaction behavior.
+
+`sf-symbols` is a semantic Apple-platform recommendation. The Web catalog's explicit
+`sf-symbols -> iconoir` policy is a Kiskadee portability fallback and must be labeled as such.
+Iconoir is never presented as Apple's official family.
+
+## Direct glyphs
+
+Named resolution is optional. `Icon` and component icon slots continue to accept arbitrary
+presentation nodes directly. This is the escape hatch for one-off artwork, upstream concepts not
+in the canonical subset, and custom application orchestration.
+
+Missing named glyphs never silently fall back to Lucide or mix families. A consumer must provide
+an explicit fallback or fix the mapping.
+
+## Brand sources and generated artifacts
+
+Brand artwork remains governed by [`social-icons.md`](./social-icons.md):
+
+- canonical SVGs live in `assets/social/`;
+- `metadata/icons.json` owns constructions, presentations, provenance, and optical calibration;
+- `src/families/social/` and `dist/svg/` are generated;
+- fixed brand paint remains asset-owned, while monochrome presentations use `currentColor`.
+
+Distribution is a technical convenience and does not grant trademark permission, partnership, or
+endorsement.

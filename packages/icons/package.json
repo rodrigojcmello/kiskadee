@@ -23,6 +23,51 @@
       "import": "./dist/families/social/*.js",
       "default": "./dist/families/social/*.js"
     },
+    "./interface": {
+      "types": "./dist/interface/index.d.ts",
+      "import": "./dist/interface/index.js",
+      "default": "./dist/interface/index.js"
+    },
+    "./interface/catalog": {
+      "types": "./dist/interface/catalog.d.ts",
+      "import": "./dist/interface/catalog.js",
+      "default": "./dist/interface/catalog.js"
+    },
+    "./interface/lucide": {
+      "types": "./dist/interface/families/lucide.d.ts",
+      "import": "./dist/interface/families/lucide.js",
+      "default": "./dist/interface/families/lucide.js"
+    },
+    "./interface/fluent-system": {
+      "types": "./dist/interface/families/fluent-system.d.ts",
+      "import": "./dist/interface/families/fluent-system.js",
+      "default": "./dist/interface/families/fluent-system.js"
+    },
+    "./interface/material-symbols-outlined": {
+      "types": "./dist/interface/families/material-symbols-outlined.d.ts",
+      "import": "./dist/interface/families/material-symbols-outlined.js",
+      "default": "./dist/interface/families/material-symbols-outlined.js"
+    },
+    "./interface/carbon": {
+      "types": "./dist/interface/families/carbon.d.ts",
+      "import": "./dist/interface/families/carbon.js",
+      "default": "./dist/interface/families/carbon.js"
+    },
+    "./interface/iconoir": {
+      "types": "./dist/interface/families/iconoir.d.ts",
+      "import": "./dist/interface/families/iconoir.js",
+      "default": "./dist/interface/families/iconoir.js"
+    },
+    "./interface/phosphor": {
+      "types": "./dist/interface/families/phosphor.d.ts",
+      "import": "./dist/interface/families/phosphor.js",
+      "default": "./dist/interface/families/phosphor.js"
+    },
+    "./interface/font-awesome-classic-solid": {
+      "types": "./dist/interface/families/font-awesome-classic-solid.d.ts",
+      "import": "./dist/interface/families/font-awesome-classic-solid.js",
+      "default": "./dist/interface/families/font-awesome-classic-solid.js"
+    },
     "./icons.json": "./dist/icons.json",
     "./svg/*": "./dist/svg/*"
   },
@@ -31,19 +76,51 @@
   ],
   "scripts": {
     "clean": "node ./scripts/clean-dist.ts",
-    "generate": "node ./scripts/generate-react.ts",
-    "check:generated": "node ./scripts/generate-react.ts --check",
+    "generate": "node ./scripts/generate-react.ts && node ./scripts/generate-interface-families.ts",
+    "check:generated": "node ./scripts/generate-react.ts --check && node ./scripts/generate-interface-families.ts --check",
     "audit:optical": "node ./scripts/audit-optical.ts",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build": "node ./scripts/build.ts"
   },
   "peerDependencies": {
+    "@carbon/icons-react": "11.85.0",
+    "@fluentui/react-icons": "2.0.334",
+    "@fortawesome/free-solid-svg-icons": "7.3.1",
+    "@phosphor-icons/react": "2.1.10",
+    "iconoir-react": "7.11.1",
+    "lucide-react": "1.27.0",
     "react": ">=18"
   },
+  "peerDependenciesMeta": {
+    "@carbon/icons-react": {
+      "optional": true
+    },
+    "@fluentui/react-icons": {
+      "optional": true
+    },
+    "@fortawesome/free-solid-svg-icons": {
+      "optional": true
+    },
+    "@phosphor-icons/react": {
+      "optional": true
+    },
+    "iconoir-react": {
+      "optional": true
+    },
+    "lucide-react": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@carbon/icons-react": "11.85.0",
+    "@fluentui/react-icons": "2.0.334",
+    "@fortawesome/free-solid-svg-icons": "7.3.1",
+    "@phosphor-icons/react": "2.1.10",
     "@types/node": "^25.9.2",
     "@types/react": "^19.2.17",
     "esbuild": "^0.28.0",
+    "iconoir-react": "7.11.1",
+    "lucide-react": "1.27.0",
     "sharp": "^0.34.5",
     "typescript": "^6.0.3"
   }

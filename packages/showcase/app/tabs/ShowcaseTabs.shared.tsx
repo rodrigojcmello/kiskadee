@@ -8,8 +8,11 @@ import type {
   TabsLineIndicatorShape,
   TabsTabWidth
 } from '@kiskadee/core';
-import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
-import { SunIcon } from 'lucide-react';
+import {
+  IconGlyph,
+  type TabsIndicatorMotionStyle,
+  type TabsSpringPreset
+} from '@kiskadee/react-components';
 import Link from 'next/link';
 import type { ComponentType, ReactNode } from 'react';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
@@ -45,14 +48,14 @@ export const tabItems: ReadonlyArray<{
   {
     value: 'home',
     label: 'Home',
-    icon: <SunIcon />
+    icon: <IconGlyph name="sun" />
   },
   { value: 'locations', label: 'Locations' },
   { value: 'forms', label: 'Forms' },
   { value: 'services', label: 'Services' },
   {
     value: 'icon-only',
-    icon: <SunIcon />,
+    icon: <IconGlyph name="sun" />,
     accessibilityLabel: 'Home'
   },
   { value: 'single-letter', label: 'A' },

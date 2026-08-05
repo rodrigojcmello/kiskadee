@@ -11,7 +11,9 @@ import type {
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
+import type { IconName } from '@kiskadee/icons/interface';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
+import type { HTMLAttributes, ReactNode } from 'react';
 import type { DeterminateDecorativeProgressProps } from '../Progress/Progress.types.ts';
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
@@ -25,6 +27,20 @@ export type ButtonProgressProps = Omit<
   DeterminateDecorativeProgressProps,
   'decorative' | 'children' | 'classNames' | 'mode' | 'scale'
 >;
+
+export type ButtonIconProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> &
+  (
+    | {
+        name: IconName;
+        children?: never;
+        fallback?: ReactNode;
+      }
+    | {
+        children: ReactNode;
+        name?: never;
+        fallback?: never;
+      }
+  );
 
 export type ButtonActivationFeedbackEffect = {
   /** Override activation-feedback profile for this button. */

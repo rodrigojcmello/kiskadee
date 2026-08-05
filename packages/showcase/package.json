@@ -16,6 +16,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@carbon/icons-react": "11.85.0",
+    "@fluentui/react-icons": "2.0.334",
+    "@fortawesome/free-solid-svg-icons": "7.3.1",
     "@kiskadee/brands": "workspace:*",
     "@kiskadee/core": "workspace:*",
     "@kiskadee/fonts": "workspace:*",
@@ -24,6 +27,8 @@
     "@kiskadee/react-headless": "workspace:*",
     "@kiskadee/runtime": "workspace:*",
     "@kiskadee/web-builder": "workspace:*",
+    "@phosphor-icons/react": "2.1.10",
+    "iconoir-react": "7.11.1",
     "lucide-react": "1.27.0",
     "next": "16.2.7",
     "react": "19.2.7",

@@ -118,12 +118,10 @@ Next.js App Router.
   published `colors.json`. It loads the referenced Light and Dark files from `colors/` and never
   imports preset source modules. Functional `subtle` and `vivid` references are inspection markers;
   the page does not redefine them.
-- `/icons` exercises the public `@kiskadee/react-components` Icon contract with a local sample of
-  30 common glyphs imported directly from `lucide-react`, plus the Social brand family from
-  `@kiskadee/icons`. The Lucide sample is documentation data, not a Kiskadee icon library. Social
-  exports ending in `Icon` remain dynamically discoverable. The route starts from the canonical
-  `neutral` intent and uses `s:lg:3` as its inspection size; the component default remains
-  `s:md:1`.
+- `/icons` renders all 47 canonical interface concepts through the globally selected family, plus
+  the independent Social brand family from `@kiskadee/icons`. Social exports ending in `Icon`
+  remain dynamically discoverable. The route starts from the canonical `neutral` intent and uses
+  `s:lg:3` as its inspection size; the component default remains `s:md:1`.
 
 ### `components/`
 
@@ -211,8 +209,9 @@ Shared utilities for Showcase.
 - Initial and fallback theme selection prefers `light` whenever the active preset exposes it. A
   valid theme explicitly persisted by the user still takes precedence.
 - Generated registries are outputs: do not edit files under `registry/generated/` manually.
-- Interface glyphs come directly from the chosen provider, currently `lucide-react`; reusable
-  brand marks belong to `packages/icons` and use direct
-  `@kiskadee/icons/social/<Icon>` imports.
+- Interface glyphs resolve through the public `IconFamilyProvider` and semantic names. The lateral
+  selector is projected from `@kiskadee/icons`' public lazy catalog; preset changes restore their
+  recommendation, while presets without one use Lucide as the Showcase default. Reusable brand
+  marks remain direct `@kiskadee/icons/social/<Icon>` imports and never change family.
 - For deployment builds (for example on Vercel), `pnpm build` inside `packages/showcase`
   already runs `@kiskadee/web-builder` `build-sync-generate` before `next build`.

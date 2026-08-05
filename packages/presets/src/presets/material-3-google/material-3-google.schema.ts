@@ -37,6 +37,9 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    icons: {
+      family: 'material-symbols-outlined'
+    },
     fonts: {
       families: {
         roboto: {

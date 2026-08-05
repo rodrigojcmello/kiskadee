@@ -26,6 +26,21 @@ Figma reference:
 
 - [Switch](components/switch.md)
 
+## Interface Icon Evidence
+
+Primary source:
+[Material Symbols guide](https://developers.google.com/fonts/docs/material_symbols).
+
+Google identifies Material Symbols as the current Material icon family and exposes Outlined,
+Rounded, and Sharp styles with variable fill, weight, grade, and optical-size axes. Kiskadee
+recommends `material-symbols-outlined` for this preset with Fill `0`, Weight `400`, Grade `0`, and
+Optical Size `24`.
+
+This is **Official adapted**: the upstream family and axis values are official, while Kiskadee
+maps its canonical semantic names to Material ligatures and loads an alphabetically subsetted
+Google Fonts stylesheet only when this family is selected. No icon-font URL or loader is stored
+in the preset schema.
+
 ## Inconsistencies
 
 This section documents mismatches observed between different official Material channels. These notes exist to explain why a Kiskadee preset may need to pick a single reference source.

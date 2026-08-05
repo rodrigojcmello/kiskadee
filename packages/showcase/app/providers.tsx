@@ -1,12 +1,17 @@
 'use client';
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
+import { interfaceIconFamilyCatalog } from '@kiskadee/icons/interface/catalog';
+import { lucideIconFamily } from '@kiskadee/icons/interface/lucide';
 import {
   type ComponentClassMapScope,
   type DefinedFontFamily,
   FontFamilyProvider,
   type FontFamilyRoleSelection,
+  IconFamilyProvider,
   KiskadeeContext,
-  ShowcaseContext
+  ShowcaseContext,
+  type ShowcaseContextValue,
+  useIconFamilyStatus
 } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -35,6 +40,32 @@ function useInitialTransitionGate() {
       window.clearTimeout(timeoutId);
     };
   }, []);
+}
+
+const EAGER_ICON_FAMILIES = [lucideIconFamily] as const;
+
+function ShowcaseIconContextBridge({
+  children,
+  value,
+  setIconFamilyId
+}: {
+  children: React.ReactNode;
+  value: Omit<ShowcaseContextValue, 'iconFamilyId' | 'setIconFamilyId'>;
+  setIconFamilyId: (value: string) => void;
+}) {
+  const iconFamily = useIconFamilyStatus();
+
+  return (
+    <ShowcaseContext.Provider
+      value={{
+        ...value,
+        iconFamilyId: iconFamily.effectiveFamilyId ?? 'lucide',
+        setIconFamilyId
+      }}
+    >
+      {children}
+    </ShowcaseContext.Provider>
+  );
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -147,6 +178,27 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return Object.keys(roles).length > 0 ? roles : undefined;
   }, [fontRoleNames, loadedFontFamilyIds]);
   const activeManifest = manifest?.key === String(designSystem) ? manifest : undefined;
+  const [iconFamilySelection, setIconFamilySelection] = useState<{
+    designSystem: string;
+    family?: string;
+  }>({ designSystem: String(designSystem) });
+  const selectedIconFamily =
+    iconFamilySelection.designSystem === String(designSystem)
+      ? iconFamilySelection.family
+      : undefined;
+  const setShowcaseDesignSystem = useCallback(
+    (value: string) => {
+      setIconFamilySelection({ designSystem: value });
+      setDesignSystem(value);
+    },
+    [setDesignSystem]
+  );
+  const setIconFamilyId = useCallback(
+    (value: string) => {
+      setIconFamilySelection({ designSystem: String(designSystem), family: value });
+    },
+    [designSystem]
+  );
   const loadComponentArtifact = useCallback(
     <T,>(componentName: string): Promise<T | undefined> => {
       const artifactPath = (
@@ -226,7 +278,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setSegment,
         setTheme,
         designSystem: String(designSystem),
-        setDesignSystem: (v) => setDesignSystem(v),
+        setDesignSystem: setShowcaseDesignSystem,
         artifactVersion: activeManifest?.version ?? undefined,
         loadComponentArtifact: activeManifest ? loadComponentArtifact : undefined,
         loadComponentClassMap: activeManifest ? loadComponentClassMap : undefined,
@@ -235,22 +287,30 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }}
     >
       <FontFamilyProvider families={fontFamilyDefinitions} roles={fontRoles}>
-        <ShowcaseContext.Provider
-          value={{
-            designSystemKeys,
-            availableSegments,
-            availableThemes,
-            designSystemList,
-            manifest: activeManifest ?? manifest,
-            backgroundsByTheme,
-            fontName,
-            setFontName,
-            fontRoleNames,
-            setFontRoleName
-          }}
+        <IconFamilyProvider
+          families={EAGER_ICON_FAMILIES}
+          catalog={interfaceIconFamilyCatalog}
+          defaultFamily="lucide"
+          family={selectedIconFamily}
         >
-          {children}
-        </ShowcaseContext.Provider>
+          <ShowcaseIconContextBridge
+            value={{
+              designSystemKeys,
+              availableSegments,
+              availableThemes,
+              designSystemList,
+              manifest: activeManifest ?? manifest,
+              backgroundsByTheme,
+              fontName,
+              setFontName,
+              fontRoleNames,
+              setFontRoleName
+            }}
+            setIconFamilyId={setIconFamilyId}
+          >
+            {children}
+          </ShowcaseIconContextBridge>
+        </IconFamilyProvider>
       </FontFamilyProvider>
     </KiskadeeContext.Provider>
   );

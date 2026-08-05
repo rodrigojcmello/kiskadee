@@ -38,6 +38,9 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    icons: {
+      family: 'fluent-system'
+    },
     fonts: {
       families: {
         'segoe-ui': {

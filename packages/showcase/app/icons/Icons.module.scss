@@ -90,6 +90,10 @@
   place-items: center;
 }
 
+.rawIcon {
+  display: inline-flex;
+}
+
 .socialGalleryItem {
   --social-divider-color: color-mix(
     in srgb,

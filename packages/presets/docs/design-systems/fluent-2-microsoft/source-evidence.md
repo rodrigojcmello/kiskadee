@@ -18,6 +18,8 @@ This file records source evidence and preset-level decisions for
 - Kiskadee fallback source:
   [Open Sans on Google Fonts](https://fonts.google.com/specimen/Open+Sans) and the
   [official Open Sans repository](https://github.com/googlefonts/opensans)
+- Official interface-icon source:
+  [Microsoft Fluent UI System Icons](https://github.com/microsoft/fluentui-system-icons)
 
 ## Source Notes
 
@@ -67,6 +69,18 @@ through the browser FontFace API. An installed Segoe produces no Google request.
 unavailable, or the probe API is unavailable, the integration prepares the Open Sans stylesheet
 from Google Fonts. The preset schema still contains no URL or loader. Without that integration,
 applications may provide either family themselves or let the browser continue through the stack.
+
+## Interface Icon Evidence
+
+Microsoft publishes Fluent UI System Icons as its familiar, friendly, and modern interface-icon
+collection. The upstream repository provides Regular and Filled variants and explicit direction
+metadata for mirrored and direction-specific glyphs.
+
+Kiskadee recommends `fluent-system` for the Fluent 2 Microsoft preset and uses the Regular family
+in its Web adapter. This is **Official adapted**: the family is official, while Kiskadee maps its
+canonical semantic names to upstream glyphs and normalizes their presentation through the shared
+Icon contract. The schema records only the family ID; it does not import the React package or
+embed glyphs.
 
 ## ProgressBar Evidence
 

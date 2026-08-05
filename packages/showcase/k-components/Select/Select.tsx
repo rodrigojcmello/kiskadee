@@ -1,8 +1,8 @@
 'use client';
 
+import { IconGlyph } from '@kiskadee/react-components';
 import type { SelectProps as HeadlessSelectProps } from '@kiskadee/react-headless';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless';
-import { ChevronDownIcon } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import styles from './Select.module.scss';
 
@@ -91,7 +91,9 @@ export function Select({
       {label ? <HeadlessSelect.Label>{label}</HeadlessSelect.Label> : null}
       <HeadlessSelect.Trigger>
         <span className={styles.value}>{selectedOption?.label || value}</span>
-        <ChevronDownIcon className={styles.chevron} />
+        <span className={styles.chevron}>
+          <IconGlyph name="chevron-down" />
+        </span>
       </HeadlessSelect.Trigger>
       <HeadlessSelect.Content portalled offset={6}>
         {options.map((opt) => (

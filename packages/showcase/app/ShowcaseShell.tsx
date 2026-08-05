@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeftIcon, MenuIcon } from 'lucide-react';
+import { IconGlyph } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -109,7 +109,9 @@ export default function ShowcaseShell({
       aria-label={`${panelDetail?.title ?? 'Component'} controls`}
     >
       <button type="button" className={style.backButton} onClick={showComponentsPanel}>
-        <ChevronLeftIcon aria-hidden="true" width="1em" height="1em" />
+        <span className={style.backButtonIcon}>
+          <IconGlyph name="chevron-left" />
+        </span>
         <span>Navigation</span>
       </button>
       <div className={style.routePanelHeader}>
@@ -138,7 +140,9 @@ export default function ShowcaseShell({
               aria-controls="showcase-sidebar-drawer"
               aria-label={menuAriaLabel}
             >
-              <MenuIcon className={style.menuButtonIcon} aria-hidden="true" />
+              <span className={style.menuButtonIcon}>
+                <IconGlyph name="menu" />
+              </span>
               <span>{menuLabel}</span>
             </button>
           </div>

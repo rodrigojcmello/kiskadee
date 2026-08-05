@@ -14,6 +14,8 @@ This file records the source-of-truth evidence used to author the
     this capture
 - Official documentation:
   [Carbon Design System](https://carbondesignsystem.com/)
+  - interface-icon code and package guidance:
+    [Carbon Icons](https://carbondesignsystem.com/elements/icons/code/)
 
 ## Source Notes
 
@@ -34,3 +36,13 @@ This file records the source-of-truth evidence used to author the
 
 - [Switch](components/switch.md)
 - [Card](components/card.md)
+
+## Interface Icon Evidence
+
+Carbon publishes its interface icons through `@carbon/icons-react` and documents 16, 20, 24, and
+32 pixel source sizes. Kiskadee recommends `carbon` and maps its canonical semantic names to
+Carbon's standard React glyphs.
+
+This is **Official adapted**: the icon family is official, while Kiskadee chooses the closest
+semantic glyph and normalizes it to the active Icon scale. The preset schema contains only the
+family recommendation and does not import the upstream package.

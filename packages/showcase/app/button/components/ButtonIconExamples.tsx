@@ -4,34 +4,12 @@ import type {
   ElementSizeValue,
   SurfaceContext
 } from '@kiskadee/core';
-import { Button as KButton, SmoothText } from '@kiskadee/react-components';
-import {
-  AlignCenterIcon,
-  AlignLeftIcon,
-  AlignRightIcon,
-  BoldIcon,
-  CircleCheckIcon,
-  CircleXIcon,
-  HeartIcon,
-  ItalicIcon,
-  LinkIcon,
-  ListIcon,
-  ListOrderedIcon,
-  Redo2Icon,
-  RocketIcon,
-  SendIcon,
-  Share2Icon,
-  StrikethroughIcon,
-  ThumbsUpIcon,
-  Trash2Icon,
-  UnderlineIcon,
-  Undo2Icon
-} from 'lucide-react';
+import { type IconName, Button as KButton, SmoothText } from '@kiskadee/react-components';
 import styles from '../Button.module.scss';
 
 const EXAMPLES = [
   {
-    Icon: ThumbsUpIcon,
+    icon: 'thumbs-up',
     emphasis: 'high',
     iconLayout: 'inline',
     iconPlacement: 'leading',
@@ -39,7 +17,7 @@ const EXAMPLES = [
     label: 'Like'
   },
   {
-    Icon: RocketIcon,
+    icon: 'rocket',
     emphasis: 'low',
     iconLayout: 'edge',
     iconPlacement: 'trailing',
@@ -47,7 +25,7 @@ const EXAMPLES = [
     label: 'Launch'
   },
   {
-    Icon: Share2Icon,
+    icon: 'share',
     emphasis: 'high',
     iconLayout: 'inline',
     iconPlacement: 'trailing',
@@ -55,7 +33,7 @@ const EXAMPLES = [
     label: 'Share'
   },
   {
-    Icon: HeartIcon,
+    icon: 'heart',
     emphasis: 'low',
     iconLayout: 'edge',
     iconPlacement: 'leading',
@@ -63,7 +41,7 @@ const EXAMPLES = [
     label: 'Favorite'
   },
   {
-    Icon: CircleCheckIcon,
+    icon: 'circle-check',
     emphasis: 'high',
     iconLayout: 'inline',
     iconPlacement: 'leading',
@@ -71,7 +49,7 @@ const EXAMPLES = [
     label: 'Approve'
   },
   {
-    Icon: SendIcon,
+    icon: 'send',
     emphasis: 'low',
     iconLayout: 'edge',
     iconPlacement: 'trailing',
@@ -79,7 +57,7 @@ const EXAMPLES = [
     label: 'Send'
   },
   {
-    Icon: Trash2Icon,
+    icon: 'trash',
     emphasis: 'high',
     iconLayout: 'inline',
     iconPlacement: 'trailing',
@@ -87,7 +65,7 @@ const EXAMPLES = [
     label: 'Delete'
   },
   {
-    Icon: CircleXIcon,
+    icon: 'circle-x',
     emphasis: 'low',
     iconLayout: 'edge',
     iconPlacement: 'leading',
@@ -95,7 +73,7 @@ const EXAMPLES = [
     label: 'Reject'
   }
 ] satisfies ReadonlyArray<{
-  Icon: typeof ThumbsUpIcon;
+  icon: IconName;
   emphasis: 'high' | 'low';
   iconLayout: ButtonIconLayout;
   iconPlacement: ButtonIconPlacement;
@@ -105,24 +83,24 @@ const EXAMPLES = [
 
 const RICH_TEXT_ACTION_GROUPS = [
   [
-    { Icon: BoldIcon, label: 'Bold' },
-    { Icon: ItalicIcon, label: 'Italic' },
-    { Icon: UnderlineIcon, label: 'Underline' },
-    { Icon: StrikethroughIcon, label: 'Strikethrough' }
+    { icon: 'bold', label: 'Bold' },
+    { icon: 'italic', label: 'Italic' },
+    { icon: 'underline', label: 'Underline' },
+    { icon: 'strikethrough', label: 'Strikethrough' }
   ],
   [
-    { Icon: AlignLeftIcon, label: 'Align left' },
-    { Icon: AlignCenterIcon, label: 'Align center' },
-    { Icon: AlignRightIcon, label: 'Align right' }
+    { icon: 'align-left', label: 'Align left' },
+    { icon: 'align-center', label: 'Align center' },
+    { icon: 'align-right', label: 'Align right' }
   ],
   [
-    { Icon: ListIcon, label: 'Bulleted list' },
-    { Icon: ListOrderedIcon, label: 'Numbered list' },
-    { Icon: LinkIcon, label: 'Insert link' }
+    { icon: 'list', label: 'Bulleted list' },
+    { icon: 'list-ordered', label: 'Numbered list' },
+    { icon: 'link', label: 'Insert link' }
   ],
   [
-    { Icon: Undo2Icon, label: 'Undo' },
-    { Icon: Redo2Icon, label: 'Redo' }
+    { icon: 'undo', label: 'Undo' },
+    { icon: 'redo', label: 'Redo' }
   ]
 ] as const;
 
@@ -144,7 +122,7 @@ export function ButtonIconExamples({
         also compose compact control groups such as an editing toolbar.
       </p>
       <div className={`${styles.buttonExampleGrid} k-root`}>
-        {EXAMPLES.map(({ Icon, emphasis, iconLayout, iconPlacement, intent, label }) => (
+        {EXAMPLES.map(({ icon, emphasis, iconLayout, iconPlacement, intent, label }) => (
           <KButton
             emphasis={emphasis}
             iconLayout={iconLayout}
@@ -154,9 +132,7 @@ export function ButtonIconExamples({
             scale={scale}
             surfaceContext={surfaceContext}
           >
-            <KButton.Icon>
-              <Icon width="100%" height="100%" />
-            </KButton.Icon>
+            <KButton.Icon name={icon} />
             <KButton.Label>
               <SmoothText fontName={fontName} align="center">
                 {label}
@@ -171,7 +147,7 @@ export function ButtonIconExamples({
           <legend className={styles.richTextToolbarLegend}>Rich text formatting controls</legend>
           {RICH_TEXT_ACTION_GROUPS.map((actions) => (
             <div className={styles.richTextToolbarGroup} key={actions[0].label}>
-              {actions.map(({ Icon, label }) => (
+              {actions.map(({ icon, label }) => (
                 <KButton
                   aria-label={label}
                   emphasis="low"
@@ -181,9 +157,7 @@ export function ButtonIconExamples({
                   surfaceContext={surfaceContext}
                   title={label}
                 >
-                  <KButton.Icon>
-                    <Icon />
-                  </KButton.Icon>
+                  <KButton.Icon name={icon} />
                 </KButton>
               ))}
             </div>

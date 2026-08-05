@@ -10,6 +10,7 @@ import type {
   RadiusMode,
   Schema,
   SchemaFonts,
+  SchemaIcons,
   SegmentName,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
@@ -239,6 +240,7 @@ export async function writeExtraArtifacts(params: {
   //    any global metadata (fonts, radius, effect behavior...). It is meant as descriptive
   //    metadata capturing global design system intentions.
   const fonts = schema.global?.fonts as SchemaFonts | undefined;
+  const icons = schema.global?.icons as SchemaIcons | undefined;
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
   const radius = schema.global?.radius as RadiusMode | undefined;
   const activationFeedback = schema.global?.effects?.activationFeedback as
@@ -297,6 +299,7 @@ export async function writeExtraArtifacts(params: {
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
 
   const hasFonts = Boolean(fonts);
+  const hasIcons = Boolean(icons);
   const hasRadius = Boolean(radius);
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
@@ -307,12 +310,20 @@ export async function writeExtraArtifacts(params: {
         Object.keys(shadow.inner?.levels ?? {}).length > 0)
   );
   const hasComponentEffectOverrides = Object.keys(componentEffectOverrides).length > 0;
-  if (hasFonts || hasRadius || hasActivationFeedback || hasShadow || hasComponentEffectOverrides) {
+  if (
+    hasFonts ||
+    hasIcons ||
+    hasRadius ||
+    hasActivationFeedback ||
+    hasShadow ||
+    hasComponentEffectOverrides
+  ) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
     const globalPayload: {
       fonts?: SchemaFonts;
+      icons?: SchemaIcons;
       radius?: RadiusMode;
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
@@ -323,6 +334,10 @@ export async function writeExtraArtifacts(params: {
 
     if (fonts) {
       globalPayload.fonts = fonts;
+    }
+
+    if (icons) {
+      globalPayload.icons = icons;
     }
 
     if (hasRadius && radius) {

@@ -135,6 +135,32 @@ Rules:
   the effect hook,
 - if an effect host requires component-specific positioning, the component bridge must provide it.
 
+## Shared structural primitive namespace
+
+Reusable presentation primitives may use a shared structural namespace when the same stable DOM
+viewport is composed inside multiple component-owned slots and is not itself a public component,
+schema element, or effect.
+
+Use:
+
+```txt
+k-<primitive>
+k-<primitive>-<role>
+```
+
+Example:
+
+- `k-gly` for the shared interface-glyph viewport;
+- `k-gly-ltr` and `k-gly-rtl` for its direction-specific artwork.
+
+Rules:
+
+- the primitive id must use the compact `k-` prefix and a three-letter id;
+- primitives may own only their internal normalization, viewport, and direction plumbing;
+- primitives must not own component padding, placement, color, tokens, or interaction behavior;
+- the consuming component remains responsible for the slot geometry and schema relationship;
+- do not create a primitive when component-scoped structure can express the same ownership clearly.
+
 ## Canonical naming grammar
 
 ### 1. Namespace

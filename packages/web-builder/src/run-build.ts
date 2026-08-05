@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
+import { validateSchemaGlobalIconContract } from '@kiskadee/core/icon-contract';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import {
@@ -74,6 +75,15 @@ export async function runBuild(): Promise<void> {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(
         `Schema global font contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
+      );
+    }
+
+    try {
+      validateSchemaGlobalIconContract(schema);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Schema global icon contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
       );
     }
 

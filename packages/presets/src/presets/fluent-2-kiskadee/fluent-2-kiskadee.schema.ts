@@ -23,6 +23,9 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    icons: {
+      family: 'fluent-system'
+    },
     focus: {
       width: 2,
       offset: 1

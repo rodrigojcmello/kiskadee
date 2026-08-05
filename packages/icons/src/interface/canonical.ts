@@ -1,0 +1,57 @@
+export const CANONICAL_ICON_NAMES = [
+  'align-center',
+  'align-left',
+  'align-right',
+  'ban',
+  'bell',
+  'bold',
+  'check',
+  'chevron-down',
+  'chevron-left',
+  'circle-check',
+  'circle-x',
+  'close',
+  'frown',
+  'grip-vertical',
+  'heart',
+  'home',
+  'italic',
+  'link',
+  'list',
+  'list-ordered',
+  'loader-circle',
+  'mail',
+  'menu',
+  'minus',
+  'moon',
+  'moon-star',
+  'pause',
+  'pencil',
+  'play',
+  'plus',
+  'redo',
+  'rocket',
+  'search',
+  'send',
+  'settings',
+  'share',
+  'smile',
+  'strikethrough',
+  'sun',
+  'thumbs-up',
+  'trash',
+  'underline',
+  'undo',
+  'user',
+  'volume-high',
+  'volume-low',
+  'volume-muted'
+] as const;
+
+export type CanonicalIconName = (typeof CANONICAL_ICON_NAMES)[number];
+export type CustomIconName = `${string}:${string}`;
+export type IconName = CanonicalIconName | CustomIconName;
+
+export function isCanonicalIconName(value: string): value is CanonicalIconName {
+  return (CANONICAL_ICON_NAMES as readonly string[]).includes(value);
+}

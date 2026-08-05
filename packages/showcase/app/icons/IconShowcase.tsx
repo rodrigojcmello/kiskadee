@@ -7,44 +7,22 @@ import {
   type SurfaceContext
 } from '@kiskadee/core';
 import iconManifest from '@kiskadee/icons/icons.json';
+import { CANONICAL_ICON_NAMES, type CanonicalIconName } from '@kiskadee/icons/interface';
+import { interfaceIconFamilyOptions } from '@kiskadee/icons/interface/catalog';
 import * as SocialIcons from '@kiskadee/icons/social';
-import { Icon as KIcon, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import {
-  BanIcon,
-  BellIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  FrownIcon,
-  GripVerticalIcon,
-  HeartIcon,
-  HouseIcon,
-  type LucideIcon,
-  MailIcon,
-  MenuIcon,
-  MinusIcon,
-  MoonIcon,
-  MoonStarIcon,
-  PauseIcon,
-  PencilIcon,
-  PlayIcon,
-  PlusIcon,
-  SearchIcon,
-  SettingsIcon,
-  Share2Icon,
-  SmileIcon,
-  SunIcon,
-  ThumbsUpIcon,
-  Trash2Icon,
-  UserIcon,
-  Volume1Icon,
-  Volume2Icon,
-  VolumeXIcon,
-  XIcon
-} from 'lucide-react';
+  IconGlyph,
+  Icon as KIcon,
+  useIconFamilyStatus,
+  useKiskadee,
+  useShowcase
+} from '@kiskadee/react-components';
 import type { ComponentType, CSSProperties, SVGProps } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
+import {
+  ShowcaseGlobalSemanticControls,
+  ShowcaseIconographyControls
+} from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
   ShowcaseControlField,
   ShowcaseControlGroup,
@@ -110,11 +88,6 @@ type PublishedIconManifest = {
     >;
     family: string;
   }>;
-};
-
-type InterfaceIconEntry = {
-  component: LucideIcon;
-  name: string;
 };
 
 type BackgroundMode = 'canonical' | 'stress-test';
@@ -200,38 +173,6 @@ function getSocialIconEntries(
     });
 }
 
-const INTERFACE_ICON_ENTRIES: InterfaceIconEntry[] = [
-  { name: 'BanIcon', component: BanIcon },
-  { name: 'BellIcon', component: BellIcon },
-  { name: 'CheckIcon', component: CheckIcon },
-  { name: 'ChevronDownIcon', component: ChevronDownIcon },
-  { name: 'ChevronLeftIcon', component: ChevronLeftIcon },
-  { name: 'FrownIcon', component: FrownIcon },
-  { name: 'GripVerticalIcon', component: GripVerticalIcon },
-  { name: 'HeartIcon', component: HeartIcon },
-  { name: 'HouseIcon', component: HouseIcon },
-  { name: 'MailIcon', component: MailIcon },
-  { name: 'MenuIcon', component: MenuIcon },
-  { name: 'MinusIcon', component: MinusIcon },
-  { name: 'MoonIcon', component: MoonIcon },
-  { name: 'MoonStarIcon', component: MoonStarIcon },
-  { name: 'PauseIcon', component: PauseIcon },
-  { name: 'PencilIcon', component: PencilIcon },
-  { name: 'PlayIcon', component: PlayIcon },
-  { name: 'PlusIcon', component: PlusIcon },
-  { name: 'SearchIcon', component: SearchIcon },
-  { name: 'SettingsIcon', component: SettingsIcon },
-  { name: 'Share2Icon', component: Share2Icon },
-  { name: 'SmileIcon', component: SmileIcon },
-  { name: 'SunIcon', component: SunIcon },
-  { name: 'ThumbsUpIcon', component: ThumbsUpIcon },
-  { name: 'Trash2Icon', component: Trash2Icon },
-  { name: 'UserIcon', component: UserIcon },
-  { name: 'Volume1Icon', component: Volume1Icon },
-  { name: 'Volume2Icon', component: Volume2Icon },
-  { name: 'VolumeXIcon', component: VolumeXIcon },
-  { name: 'XIcon', component: XIcon }
-];
 const SOCIAL_ICON_ENTRIES = getSocialIconEntries(
   SocialIcons,
   iconManifest as unknown as PublishedIconManifest
@@ -240,22 +181,44 @@ const SOCIAL_ICON_ENTRIES = getSocialIconEntries(
 function IconGallery({
   entries,
   intent,
+  isStyled,
   scale,
   surfaceContext
 }: {
-  entries: InterfaceIconEntry[];
+  entries: readonly CanonicalIconName[];
   intent: IconIntent;
+  isStyled: boolean;
   scale: IconScale;
   surfaceContext: SurfaceContext;
 }) {
+  const rawIconSize = ICON_SIZE_BY_SCALE[scale];
+
   return (
     <div className={s.galleryGrid}>
-      {entries.map(({ component: Glyph, name }) => (
+      {entries.map((name) => (
         <article key={name} className={s.galleryItem}>
           <div className={s.iconPreview}>
-            <KIcon intent={intent} label={name} scale={scale} surfaceContext={surfaceContext}>
-              <Glyph aria-hidden="true" focusable="false" />
-            </KIcon>
+            {isStyled ? (
+              <KIcon
+                intent={intent}
+                label={name}
+                name={name}
+                scale={scale}
+                surfaceContext={surfaceContext}
+              />
+            ) : (
+              <span
+                className={s.rawIcon}
+                role="img"
+                aria-label={name}
+                style={{
+                  blockSize: rawIconSize,
+                  inlineSize: rawIconSize
+                }}
+              >
+                <IconGlyph name={name} />
+              </span>
+            )}
           </div>
           <code className={s.iconName}>{name}</code>
         </article>
@@ -331,7 +294,8 @@ function SocialIconGallery({
 
 export default function IconShowcase() {
   const { designSystem, segment, theme } = useKiskadee();
-  const { manifest } = useShowcase();
+  const { iconFamilyId, manifest } = useShowcase();
+  const { fallbackFor } = useIconFamilyStatus();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
   const lightCanonicalBackgrounds = useCanonicalCardSurfaces('light');
   const stressTestBackgrounds = useButtonStressTestBackgroundTones();
@@ -343,6 +307,12 @@ export default function IconShowcase() {
   const [canonicalSurface, setCanonicalSurface] = useState<CanonicalCardSurfaceKey>('neutral.low');
   const [stressTestSurface, setStressTestSurface] =
     useState<ButtonStressTestBackgroundToneKey>('white');
+  const selectedFamilyLabel =
+    interfaceIconFamilyOptions.find((entry) => entry.id === iconFamilyId)?.label ?? iconFamilyId;
+  const renderedFamilyLabel =
+    fallbackFor === 'sf-symbols'
+      ? `${selectedFamilyLabel} (fallback for SF Symbols)`
+      : selectedFamilyLabel;
 
   const iconMeta = manifest?.components?.icon;
   const isIconAvailable = Boolean(iconMeta);
@@ -592,6 +562,9 @@ export default function IconShowcase() {
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Iconografia">
+        <ShowcaseIconographyControls />
+      </ShowcaseControlGroup>
     </ShowcaseControlPanel>
   );
 
@@ -610,27 +583,17 @@ export default function IconShowcase() {
       <header className={s.header}>
         <h1 className={s.title}>Icon</h1>
         <p className={s.summary}>
-          Preset-aware icon sizing and color applied to direct Lucide examples and the Kiskadee
-          brand icon family.
+          Preset-aware icon sizing and color applied to {renderedFamilyLabel} and the independent
+          Kiskadee brand icon family.
         </p>
       </header>
 
-      <ShowcaseRouteControls
-        id="icon"
-        eyebrow="Icon"
-        title="Controls"
-        isAvailable={isIconAvailable}
-        showGlobalControls={false}
-      >
+      <ShowcaseRouteControls id="icon" eyebrow="Icon" title="Controls" showGlobalControls={false}>
         {controls}
       </ShowcaseRouteControls>
 
-      {!isIconAvailable ? (
-        <div className={s.emptyState}>
-          Icon is not available for the selected design system: {designSystem}.
-        </div>
-      ) : (
-        <div className={s.sections}>
+      <div className={s.sections}>
+        {isIconAvailable ? (
           <section className={s.section} aria-labelledby="icon-capability-matrix-title">
             <div className={s.sectionHeader}>
               <div>
@@ -664,38 +627,58 @@ export default function IconShowcase() {
                       <KIcon
                         intent={intentOption.value}
                         label={`${intentOption.label}, ${scaleOption.label}`}
+                        name="heart"
                         scale={scaleOption.value}
                         surfaceContext={surfaceContext}
-                      >
-                        <HeartIcon />
-                      </KIcon>
+                      />
                     </div>
                   ))}
                 </div>
               ))}
             </div>
           </section>
-
-          <section className={s.section} aria-labelledby="interface-icons-title">
+        ) : (
+          <section className={s.section} aria-labelledby="icon-capability-matrix-title">
             <div className={s.sectionHeader}>
               <div>
-                <h2 id="interface-icons-title" className={s.sectionTitle}>
-                  Interface icons
+                <h2 id="icon-capability-matrix-title" className={s.sectionTitle}>
+                  Size and intent
                 </h2>
                 <p className={s.sectionDescription}>
-                  {INTERFACE_ICON_ENTRIES.length} common Lucide glyphs used locally to exercise the
-                  selected scale and intent.
+                  This design system does not publish a styled Icon artifact.
                 </p>
               </div>
             </div>
-            <IconGallery
-              entries={INTERFACE_ICON_ENTRIES}
-              intent={activeIntent}
-              scale={activeScale}
-              surfaceContext={surfaceContext}
-            />
+            <div className={s.emptyState}>
+              Icon styling is not available for the selected design system: {designSystem}.
+            </div>
           </section>
+        )}
 
+        <section className={s.section} aria-labelledby="interface-icons-title">
+          <div className={s.sectionHeader}>
+            <div>
+              <h2 id="interface-icons-title" className={s.sectionTitle}>
+                Interface icons
+              </h2>
+              <p className={s.sectionDescription}>
+                {CANONICAL_ICON_NAMES.length} canonical concepts rendered by {renderedFamilyLabel}
+                {isIconAvailable
+                  ? ' with the selected scale and intent.'
+                  : ' with presentation-only geometry.'}
+              </p>
+            </div>
+          </div>
+          <IconGallery
+            entries={CANONICAL_ICON_NAMES}
+            intent={activeIntent}
+            isStyled={isIconAvailable}
+            scale={activeScale}
+            surfaceContext={surfaceContext}
+          />
+        </section>
+
+        {isIconAvailable ? (
           <section className={s.section} aria-labelledby="social-icons-title">
             <div className={s.sectionHeader}>
               <div>
@@ -719,8 +702,8 @@ export default function IconShowcase() {
               surfaceContext={surfaceContext}
             />
           </section>
-        </div>
-      )}
+        ) : null}
+      </div>
     </main>
   );
 }

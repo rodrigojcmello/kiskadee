@@ -11,12 +11,19 @@ import {
   useEffect,
   useMemo
 } from 'react';
+import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { IconGlyph } from '../Icon/IconGlyph.tsx';
 import { resolveProgressIndicatorClassName } from '../Progress/Progress.class-names.ts';
 import type { ProgressClassesMap } from '../Progress/Progress.types.ts';
 import { join, mergeButtonClassNames } from './Button.class-names.ts';
-import type { ButtonClassesMap, ButtonProgressProps, ButtonProps } from './Button.types.ts';
+import type {
+  ButtonClassesMap,
+  ButtonIconProps,
+  ButtonProgressProps,
+  ButtonProps
+} from './Button.types.ts';
 import {
   resolveButtonFeedbackClassNamePatch,
   resolveButtonFeedbackEffectAvailability,
@@ -29,6 +36,7 @@ declare const process: { env: { NODE_ENV?: string } };
 
 export type {
   ButtonActivationFeedbackEffect,
+  ButtonIconProps,
   ButtonProgressProps,
   ButtonProps,
   ButtonStatus
@@ -40,6 +48,32 @@ type ButtonRuntimeContextValue = {
 };
 
 const ButtonRuntimeContext = createContext<ButtonRuntimeContextValue | null>(null);
+
+const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonIcon(
+  { name, fallback, children, ...props },
+  ref
+) {
+  const resolvedNamedGlyph = useResolvedIconGlyph(name);
+
+  if (name !== undefined && !resolvedNamedGlyph.glyph && fallback === undefined) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(
+        resolvedNamedGlyph.hasProvider
+          ? `[kiskadee/icons] Button.Icon "${name}" is not mapped by family "${
+              resolvedNamedGlyph.familyId ?? 'unknown'
+            }".`
+          : `[kiskadee/icons] Button.Icon "${name}" requires an IconFamilyProvider or an explicit fallback.`
+      );
+    }
+    return null;
+  }
+
+  return (
+    <HeadlessButton.Icon {...props} ref={ref}>
+      {name !== undefined ? <IconGlyph name={name} fallback={fallback} /> : children}
+    </HeadlessButton.Icon>
+  );
+});
 
 function useButtonRuntimeContext(): ButtonRuntimeContextValue {
   const context = useContext(ButtonRuntimeContext);
@@ -266,7 +300,7 @@ function ButtonRoot(props: ButtonProps) {
 const MemoButton = memo(ButtonRoot);
 const CompoundButton = Object.assign(MemoButton, {
   Label: HeadlessButton.Label,
-  Icon: HeadlessButton.Icon,
+  Icon: ButtonIcon,
   Progress: ButtonProgress
 });
 

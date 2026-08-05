@@ -18,3 +18,70 @@
   display: block;
   inline-size: 100%;
 }
+
+/*
+ * shared primitive glyph / gly
+ * Normalizes SVG and icon-font families inside any component-owned icon slot.
+ */
+.k-gly {
+  align-items: center;
+  block-size: 100%;
+  container-type: inline-size;
+  display: inline-flex;
+  flex: none;
+  inline-size: 100%;
+  justify-content: center;
+  line-height: 1;
+}
+
+/*
+ * shared primitive glyph / gly
+ * Makes upstream SVG, font, and direction-specific wrappers use the same viewport.
+ */
+.k-gly > svg,
+.k-gly > span,
+.k-gly-ltr,
+.k-gly-rtl {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+/*
+ * shared primitive glyph / gly
+ * Makes font-backed Material Symbols follow the same component-owned viewport as SVG families.
+ */
+.k-gly > .k-ms {
+  font-size: 100cqi;
+}
+
+/*
+ * shared primitive glyph / gly
+ * Mirrors only concepts explicitly classified as directional by the family metadata.
+ */
+.k-gly[data-k-icon-direction='mirror']:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+/*
+ * shared primitive glyph / gly
+ * Selects an explicit RTL glyph when a family supplies separate directional artwork.
+ */
+.k-gly-rtl {
+  display: none;
+}
+
+/*
+ * shared primitive glyph / gly
+ * Hides the default glyph when an explicit RTL glyph is available.
+ */
+.k-gly:dir(rtl) > .k-gly-ltr {
+  display: none;
+}
+
+/*
+ * shared primitive glyph / gly
+ * Shows the explicit RTL glyph in right-to-left content.
+ */
+.k-gly:dir(rtl) > .k-gly-rtl {
+  display: inline-flex;
+}

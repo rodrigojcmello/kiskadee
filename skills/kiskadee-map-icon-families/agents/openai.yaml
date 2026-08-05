@@ -1,0 +1,4 @@
+interface:
+  display_name: "Map Kiskadee Icon Families"
+  short_description: "Maintain canonical icon-family mappings"
+  default_prompt: "Use $kiskadee-map-icon-families to add or audit a canonical Kiskadee interface icon across every official family."

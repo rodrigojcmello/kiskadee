@@ -8,7 +8,6 @@ import type {
 } from '@kiskadee/core';
 import { Button as KButton, SmoothText } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
-import { LoaderCircleIcon } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
 import { ShowcaseSegmentedControl } from '@/components/ShowcaseControls';
 import styles from '../Button.module.scss';
@@ -148,14 +147,7 @@ export function ButtonAsyncExample({
                 />
               ) : null}
               {pending && activePresentation === 'spinner' ? (
-                <KButton.Icon>
-                  <LoaderCircleIcon
-                    aria-hidden="true"
-                    className={styles.asyncSpinner}
-                    width="100%"
-                    height="100%"
-                  />
-                </KButton.Icon>
+                <KButton.Icon name="loader-circle" className={styles.asyncSpinner} />
               ) : null}
               <KButton.Label>
                 <SmoothText fontName={fontName} align="center">

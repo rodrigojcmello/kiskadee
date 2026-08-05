@@ -14,6 +14,9 @@ export const schema: Schema<Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    icons: {
+      family: 'sf-symbols'
+    },
     fonts: {
       families: {
         'system-ui': {

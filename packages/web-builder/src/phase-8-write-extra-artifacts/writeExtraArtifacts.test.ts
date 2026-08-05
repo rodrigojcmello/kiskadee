@@ -96,4 +96,22 @@ describe('writeExtraArtifacts font artifacts', () => {
     expect(tokensCss).toContain('--k-focus-width:2');
     expect(tokensCss).not.toContain('--k-font-');
   });
+
+  it('publishes icon recommendations without creating CSS variables', async () => {
+    const outDirSlug = createOutputSlug('icons');
+
+    await writeExtraArtifacts({
+      schema: createSchema({ icons: { family: 'fluent-system' }, focus: { width: 2 } }),
+      outDirSlug
+    });
+
+    const outputDirectory = resolve(buildRoot, outDirSlug);
+    const globalArtifact = JSON.parse(
+      await readFile(resolve(outputDirectory, 'global.kiskadee.json'), 'utf8')
+    );
+    const tokensCss = await readFile(resolve(outputDirectory, 'tokens.kiskadee.css'), 'utf8');
+
+    expect(globalArtifact.icons).toEqual({ family: 'fluent-system' });
+    expect(tokensCss).not.toContain('--k-icon');
+  });
 });

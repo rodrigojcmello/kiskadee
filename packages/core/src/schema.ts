@@ -209,6 +209,14 @@ export type SchemaFonts = {
   };
 };
 
+export type IconFamilyId = string;
+
+// Global icon recommendations identify a family without coupling the schema to
+// a renderer, package, URL, glyph catalog, or loading strategy.
+export type SchemaIcons = {
+  family: IconFamilyId;
+};
+
 // [EFFECTS] START: Global effect schema section.
 export type SchemaGlobalEffects = {
   activationFeedback?: ActivationFeedbackEffectSchema;
@@ -227,6 +235,7 @@ export type RadiusMode = 'rounded' | 'square' | 'pill';
 
 export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
+  icons?: SchemaIcons;
   focus?: FocusGlobalTokens;
   radius?: RadiusMode;
   effects?: SchemaGlobalEffects;

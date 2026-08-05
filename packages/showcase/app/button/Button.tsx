@@ -2,15 +2,16 @@
 
 import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
 import {
+  IconGlyph,
   Button as KButton,
   SmoothText,
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
-import { BanIcon } from 'lucide-react';
 import React from 'react';
 import {
   ShowcaseGlobalSemanticControls,
+  ShowcaseIconographyControls,
   ShowcaseTypographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
@@ -361,6 +362,9 @@ export function Button() {
       <ShowcaseControlGroup title="Tipografia">
         <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Iconografia">
+        <ShowcaseIconographyControls />
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Visualização">
         <ShowcaseControlStack>
           <ShowcaseSelectControl
@@ -410,7 +414,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <BanIcon width={24} height={24} />
+        <IconGlyph name="ban" style={{ width: 24, height: 24 }} />
       </div>
     );
   };
@@ -427,7 +431,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <BanIcon width={24} height={24} />
+        <IconGlyph name="ban" style={{ width: 24, height: 24 }} />
       </div>
     );
   };

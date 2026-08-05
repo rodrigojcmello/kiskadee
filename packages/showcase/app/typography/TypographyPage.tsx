@@ -9,6 +9,7 @@ import {
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
+import { ShowcaseIconographyControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
   ShowcaseControlGroup,
   ShowcaseControlPanel,
@@ -210,6 +211,9 @@ function TypographyContent() {
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
       <PreparationStatus />
+      <ShowcaseControlGroup title="Iconografia">
+        <ShowcaseIconographyControls />
+      </ShowcaseControlGroup>
     </ShowcaseControlPanel>
   );
 

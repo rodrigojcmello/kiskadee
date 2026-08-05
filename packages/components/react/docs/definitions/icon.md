@@ -1,61 +1,72 @@
 # Icon Component
 
-Status: canonical first contract.
+Status: canonical definition.
 
-## Ownership
+## Independent responsibilities
 
-The consumer owns the interface glyph and may select any compatible icon provider.
-`@kiskadee/icons` owns only third-party brand marks, their SVG paths, view boxes,
-provenance, and presentation-specific fills. `@kiskadee/react-headless` owns the semantic
-`span` and whether the supplied glyph is an accessible image or decorative.
-`@kiskadee/react-components` owns generated class consumption and the structural
-SVG viewport. Presets will own the generated size and foreground classes when
-Icon schemas are authored.
+Icon behavior is split into five dimensions:
 
-The Icon component does not register glyphs and does not choose an asset. Its
-single child is the SVG supplied by the consumer.
+- the active family selects glyph geometry;
+- `Icon` owns accessible-image versus decorative semantics;
+- the Icon schema owns scale, semantic color, and surface-relative paint;
+- `IconGlyph` normalizes presentation inside component-owned slots;
+- social and brand artwork remains direct, independently versioned content.
 
-`lucide-react` is the recommended web fallback for general interface glyphs and is consumed
-directly by applications. Kiskadee does not re-export or curate a public Lucide subset.
-Consumers may instead pass a glyph from another library, a product-specific asset, or a
-design-system-specific family through the same `children` contract.
+Changing the family does not change color, scale, emphasis, padding, background, divider, border,
+or accessible names.
 
-Brand optical calibration is also owned and pre-resolved by `@kiskadee/icons`.
-The component applies one common viewport to every glyph and must not contain
-per-brand scale or position exceptions.
+## Composition
 
-## Element Map
+The styled Icon accepts exactly one content mode:
 
-- `e1` (`glyph`) is required and is both the semantic root and visual glyph
-  viewport.
-- It consumes only `boxWidth`, `boxHeight`, and `textColor`.
-- There are no options, interaction states, effects, extra elements, or
-  component registry.
-- There is no name-based lookup or dynamic provider registry. Asset selection
-  stays explicit and tree-shakable at the consumer import site.
+```tsx
+<Icon name="search" label="Search" />
+<Icon decorative name="search" />
+
+<Icon decorative>
+  <CustomGlyph />
+</Icon>
+```
+
+`name` resolves through the active `IconFamilyProvider`. `children` preserves direct composition
+and does not require a provider. `fallback` is valid only with `name`; missing mappings never
+silently mix in another family. Without a provider or mapping, a named Icon uses only its explicit
+fallback; otherwise it reports the contract error in development and renders `null`.
+
+`IconGlyph` is a presentation-only resolver:
+
+```tsx
+<IconGlyph name="search" />
+```
+
+It is always hidden from accessibility APIs, is never focusable, and normalizes SVG and icon-font
+geometry to the parent slot. Button, Switch, Slider, Tabs, and Showcase controls use it when the
+parent component already owns semantics.
+
+## Element map
+
+- `e1` (`glyph`) is the semantic root and visual viewport.
+- It consumes `boxWidth`, `boxHeight`, and `textColor`.
+- It exposes no interaction state or emphasis axis.
+- The family provider is runtime selection infrastructure, not a schema element.
 
 ## Accessibility
 
-A meaningful Icon requires `label` and renders a `span` with `role="img"` and
-`aria-label`. A decorative Icon requires `decorative={true}` and hides the
-wrapper from the accessibility tree. The wrapper owns this decision; nested SVG
-assets remain presentation-only.
+A meaningful Icon requires `label` and renders `role="img"` with `aria-label`. A decorative Icon
+requires `decorative={true}` and hides the root. Nested glyphs remain presentation-only.
 
-## Color Ownership
+Component slots do not nest a semantic Icon. For example, `Button.Icon name="send"` renders an
+`IconGlyph` inside the Button's already-hidden icon slot, while Button retains its accessible name.
 
-Monochrome assets use `currentColor`, so the generated `textColor` class on
-`e1` controls their foreground. Brand assets with fixed fills retain those
-asset-owned fills. Structural CSS sizes the SVG but never writes `fill`,
-`stroke`, or a literal color.
+## Color and slot ownership
 
-The only public intent branches are `neutral` and `primary`. `neutral` is the
-default, following the canonical Kiskadee component starting shape. Both use
-`medium.rest` in `onSubtle` or `onVivid`. Icon exposes no interaction-state or
-emphasis prop.
+Monochrome glyphs use `currentColor`; the generated `textColor` on `e1` or the parent component
+controls their paint. Fixed brand paint remains asset-owned.
+
+The component containing an icon owns any background, divider, padding, corner treatment, and
+contrast strategy around that slot. Those concerns never move into the family adapter.
 
 ## Sizes
-
-The public scale is fixed:
 
 | Scale | Pixels |
 | --- | ---: |
@@ -68,7 +79,3 @@ The public scale is fixed:
 | `s:lg:4` | 48 |
 
 `s:md:1` is the default.
-
-The Showcase intentionally starts its icon galleries at `s:lg:3` so glyph
-geometry remains easy to inspect. That presentation choice does not change the
-component default.

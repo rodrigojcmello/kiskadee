@@ -4,6 +4,7 @@ import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { useState } from 'react';
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';
+import IconFamilyPicker from '@/components/IconFamilyPicker/IconFamilyPicker';
 import {
   ShowcaseControlField,
   ShowcaseControlGrid,
@@ -75,6 +76,14 @@ export function ShowcaseTypographyControls() {
   );
 }
 
+export function ShowcaseIconographyControls() {
+  return (
+    <ShowcaseControlGrid>
+      <IconFamilyPicker className={styles.panelSelect} width="100%" />
+    </ShowcaseControlGrid>
+  );
+}
+
 export function ShowcaseGlobalPanelControls() {
   return (
     <ShowcaseControlPanel>
@@ -83,6 +92,9 @@ export function ShowcaseGlobalPanelControls() {
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Tipografia">
         <ShowcaseTypographyControls />
+      </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="Iconografia">
+        <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
     </ShowcaseControlPanel>
   );

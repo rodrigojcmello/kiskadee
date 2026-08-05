@@ -131,6 +131,13 @@
   background: #fff;
 }
 
+.backButtonIcon {
+  block-size: 18px;
+  display: inline-flex;
+  flex: 0 0 18px;
+  inline-size: 18px;
+}
+
 .routePanelHeader {
   display: grid;
   gap: 4px;

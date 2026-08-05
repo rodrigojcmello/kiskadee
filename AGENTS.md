@@ -96,6 +96,8 @@ keep task-specific workflows inside skills.
   state precedence, and focus-ring ownership.
 - `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md`: tonal-scale version workflow that keeps
   preset Shared Viewer candidates synchronized while preserving approved asset provenance.
+- `skills/kiskadee-map-icon-families/SKILL.md`: canonical icon-name, family mapping, RTL, generation,
+  and coverage workflow.
 - `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language
   and label rules.
 

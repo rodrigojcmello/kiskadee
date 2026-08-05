@@ -13,6 +13,10 @@ export type ManifestFonts = {
   code?: string;
 };
 
+export type ManifestIcons = {
+  family: string;
+};
+
 export type ManifestComponentState = Record<
   string, // semantic: primary, neutral, redLike, ...
   Record<
@@ -70,6 +74,12 @@ export type Manifest = {
    * exposes the selected family ID for each explicitly declared role.
    */
   fonts?: ManifestFonts;
+  /**
+   * Optional icon-family recommendation selected by the schema.
+   *
+   * Glyph definitions and loaders remain outside build artifacts.
+   */
+  icons?: ManifestIcons;
   /**
    * Optional component-level metadata derived from the schema.
    *

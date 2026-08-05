@@ -1,6 +1,10 @@
 import { ICON_SIZE_BY_SCALE, type Schema, type SchemaFonts } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { buildComponentSurfaceContexts, buildManifestFonts } from './publishMetadata.ts';
+import {
+  buildComponentSurfaceContexts,
+  buildManifestFonts,
+  buildManifestIcons
+} from './publishMetadata.ts';
 
 function createSchema(components: Schema['components']): Schema {
   return {
@@ -185,5 +189,17 @@ describe('buildManifestFonts', () => {
 
   it('omits font metadata when the schema has no catalog', () => {
     expect(buildManifestFonts(undefined)).toBeUndefined();
+  });
+});
+
+describe('buildManifestIcons', () => {
+  it('publishes only the selected family id', () => {
+    expect(buildManifestIcons({ family: 'fluent-system' })).toEqual({
+      family: 'fluent-system'
+    });
+  });
+
+  it('omits icon metadata without a recommendation', () => {
+    expect(buildManifestIcons(undefined)).toBeUndefined();
   });
 });
