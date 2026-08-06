@@ -79,7 +79,9 @@ export function ShowcaseTypographyControls() {
 export function ShowcaseIconographyControls() {
   return (
     <ShowcaseControlGrid>
-      <IconFamilyPicker className={styles.panelSelect} width="100%" />
+      <ShowcaseControlField fullWidth>
+        <IconFamilyPicker className={styles.panelSelect} width="100%" />
+      </ShowcaseControlField>
     </ShowcaseControlGrid>
   );
 }

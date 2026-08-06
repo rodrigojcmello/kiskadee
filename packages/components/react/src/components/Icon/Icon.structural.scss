@@ -41,9 +41,19 @@
 .k-gly > svg,
 .k-gly > span,
 .k-gly-ltr,
-.k-gly-rtl {
+.k-gly-rtl,
+.k-gly-ltr > svg,
+.k-gly-rtl > svg {
   block-size: 100%;
   inline-size: 100%;
+}
+
+/*
+ * shared primitive glyph / gly
+ * Keeps default direction artwork in the normalized viewport.
+ */
+.k-gly-ltr {
+  display: inline-flex;
 }
 
 /*

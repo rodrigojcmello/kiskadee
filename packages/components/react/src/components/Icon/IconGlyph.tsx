@@ -1,5 +1,7 @@
 'use client';
 
+import './Icon.structural.scss';
+
 import type { IconName } from '@kiskadee/icons/interface';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';

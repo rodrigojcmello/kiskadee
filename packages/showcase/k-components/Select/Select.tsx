@@ -113,7 +113,9 @@ export function Select({
         </div>
       ) : (
         <HeadlessSelect.Trigger>
-          <span className={styles.value}>{selectedOption?.label || value}</span>
+          <span className={styles.standardValue}>
+            <span className={styles.value}>{selectedOption?.label || value}</span>
+          </span>
           <span className={styles.chevron}>
             <IconGlyph name="chevron-down" />
           </span>

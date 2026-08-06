@@ -4,6 +4,7 @@ import { IconGlyph } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ShowcaseIconFamilyBoundary } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import ShowcaseSidebar from '@/components/ShowcaseSidebar/ShowcaseSidebar';
 import style from './layout.module.scss';
 import type { ShowcasePanelDetail } from './ShowcasePanelContext';
@@ -126,33 +127,40 @@ export default function ShowcaseShell({
   ) : (
     <ShowcaseSidebar onNavigate={handleSidebarNavigate} />
   );
+  const fixedFamilySidebarContent = (
+    <ShowcaseIconFamilyBoundary>{sidebarContent}</ShowcaseIconFamilyBoundary>
+  );
 
   return (
     <ShowcasePanelContext.Provider value={contextValue}>
       <div className={style.shell}>
         <div className={style.contentColumn}>
-          <div className={style.mobileHeader}>
-            <button
-              type="button"
-              className={style.menuButton}
-              onClick={() => setIsSidebarOpen((value) => !value)}
-              aria-expanded={isSidebarOpen}
-              aria-controls="showcase-sidebar-drawer"
-              aria-label={menuAriaLabel}
-            >
-              <span className={style.menuButtonIcon}>
-                <IconGlyph name="menu" />
-              </span>
-              <span>{menuLabel}</span>
-            </button>
-          </div>
+          <ShowcaseIconFamilyBoundary>
+            <div className={style.mobileHeader}>
+              <button
+                type="button"
+                className={style.menuButton}
+                onClick={() => setIsSidebarOpen((value) => !value)}
+                aria-expanded={isSidebarOpen}
+                aria-controls="showcase-sidebar-drawer"
+                aria-label={menuAriaLabel}
+              >
+                <span className={style.menuButtonIcon}>
+                  <IconGlyph name="menu" />
+                </span>
+                <span>{menuLabel}</span>
+              </button>
+            </div>
+          </ShowcaseIconFamilyBoundary>
 
           <div className={style.content}>
             <div className={style.contentInner}>{children}</div>
           </div>
         </div>
 
-        {!isNarrowViewport ? <div className={style.desktopSidebar}>{sidebarContent}</div> : null}
+        {!isNarrowViewport ? (
+          <div className={style.desktopSidebar}>{fixedFamilySidebarContent}</div>
+        ) : null}
 
         {isNarrowViewport ? (
           <>
@@ -176,7 +184,7 @@ export default function ShowcaseShell({
                   Close
                 </button>
               </div>
-              <div className={style.mobilePanelContent}>{sidebarContent}</div>
+              <div className={style.mobilePanelContent}>{fixedFamilySidebarContent}</div>
             </div>
           </>
         ) : null}

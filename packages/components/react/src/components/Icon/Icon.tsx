@@ -1,4 +1,3 @@
-import './Icon.structural.scss';
 import { Icon as HeadlessIcon } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
 import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';

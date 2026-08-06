@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useShowcasePanel } from '@/app/ShowcasePanelContext';
+import { ShowcaseIconFamilyBoundary } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import { Select, type SelectProps, Switch } from '@/k-components';
 import styles from './ShowcaseControls.module.scss';
 
@@ -44,7 +45,10 @@ export function ShowcaseRouteControls({
 
   if (!isAvailable || !panelSlotElement) return null;
 
-  return createPortal(children, panelSlotElement);
+  return createPortal(
+    <ShowcaseIconFamilyBoundary>{children}</ShowcaseIconFamilyBoundary>,
+    panelSlotElement
+  );
 }
 
 export function ShowcaseControlPanel({

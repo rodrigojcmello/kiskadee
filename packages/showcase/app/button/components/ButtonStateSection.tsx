@@ -6,9 +6,10 @@ import type {
   InteractionState,
   SurfaceContext
 } from '@kiskadee/core';
-import { IconGlyph, Button as KButton, SmoothText } from '@kiskadee/react-components';
+import { Button as KButton, SmoothText } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
+import { ShowcaseIconGlyph } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import s from '../Button.module.scss';
 import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
 
@@ -72,7 +73,7 @@ export function ButtonStateSection({
 
     return (
       <div className={s.missingState}>
-        <IconGlyph name="ban" style={{ width: 24, height: 24 }} />
+        <ShowcaseIconGlyph name="ban" style={{ width: 24, height: 24 }} />
       </div>
     );
   };

@@ -5,6 +5,7 @@
   --select-accent: #3b82f6;
   --select-accent-text: #174d88;
   --select-control-surface: rgba(255, 255, 255, 0.96);
+  --select-navigation-color: rgba(0, 0, 0, 0.6);
   --select-shell-surface: rgba(255, 255, 255, 0.56);
   --select-soft-border: rgba(0, 0, 0, 0.08);
   --select-soft-shadow: rgba(0, 0, 0, 0.14);
@@ -21,28 +22,28 @@
 }
 
 .trigger {
-  align-items: center;
-  background: var(--select-control-surface);
+  align-items: stretch;
+  background: var(--select-shell-surface);
   border: 0;
   border-radius: 12px;
-  box-shadow: 0 1px 4px var(--select-soft-shadow), inset 0 0 0 2px var(--select-accent);
+  box-shadow: inset 0 0 0 1px var(--select-soft-border);
   color: var(--select-accent-text);
   cursor: pointer;
-  display: inline-flex;
+  display: inline-grid;
   font-size: 0.9rem;
   font-weight: 600;
-  gap: 8px;
+  gap: 3px;
+  grid-template-columns: minmax(0, 1fr) 34px;
   height: 40px;
-  justify-content: space-between;
   max-width: var(--select-trigger-max-width, none);
   min-width: var(--select-trigger-min-width, 140px);
   outline: none;
-  padding: 0 16px;
+  padding: 3px;
   width: var(--select-trigger-width, auto);
 
-  transition: background 140ms ease-out, box-shadow 140ms ease-out, color 140ms ease-out;
+  transition: box-shadow 140ms ease-out, color 140ms ease-out;
 
-  &:hover {
+  &:hover .standardValue {
     background: #fff;
     box-shadow: 0 2px 6px var(--select-soft-shadow), inset 0 0 0 2px var(--select-accent);
   }
@@ -58,6 +59,18 @@
   }
 }
 
+.standardValue {
+  align-items: center;
+  background: var(--select-control-surface);
+  border-radius: 9px;
+  box-shadow: 0 1px 4px var(--select-soft-shadow), inset 0 0 0 2px var(--select-accent);
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  padding-inline: 8px;
+  transition: background 140ms ease-out, box-shadow 140ms ease-out;
+}
+
 .value {
   flex: 1;
   min-width: 0;
@@ -67,8 +80,14 @@
 }
 
 .chevron {
+  align-items: center;
+  align-self: center;
+  color: var(--select-navigation-color);
+  display: flex;
   height: 16px;
-  opacity: 0.7;
+  justify-content: center;
+  justify-self: center;
+  pointer-events: none;
   width: 16px;
 }
 
@@ -124,7 +143,7 @@
   background: transparent;
   border: 0;
   border-radius: 9px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--select-navigation-color);
   cursor: pointer;
   display: inline-flex;
   justify-content: center;

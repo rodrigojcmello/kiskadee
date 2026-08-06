@@ -209,9 +209,10 @@ Shared utilities for Showcase.
 - Initial and fallback theme selection prefers `light` whenever the active preset exposes it. A
   valid theme explicitly persisted by the user still takes precedence.
 - Generated registries are outputs: do not edit files under `registry/generated/` manually.
-- Interface glyphs resolve through the public `IconFamilyProvider` and semantic names. The lateral
-  selector is projected from `@kiskadee/icons`' public lazy catalog; preset changes restore their
-  recommendation, while presets without one use Lucide as the Showcase default. Reusable brand
-  marks remain direct `@kiskadee/icons/social/<Icon>` imports and never change family.
+- Showcase-owned interface glyphs resolve through a nested public `IconFamilyProvider` fixed to
+  Carbon. The lateral selector is projected from `@kiskadee/icons`' public lazy catalog and changes
+  only component examples: preset changes restore their recommendation, while presets without one
+  use Lucide as the Showcase default. Reusable brand marks remain direct
+  `@kiskadee/icons/social/<Icon>` imports and never change family.
 - For deployment builds (for example on Vercel), `pnpm build` inside `packages/showcase`
   already runs `@kiskadee/web-builder` `build-sync-generate` before `next build`.
