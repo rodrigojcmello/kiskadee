@@ -39,7 +39,8 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     icons: {
-      family: 'fluent-system'
+      family: 'fluent-system',
+      variant: 'regular'
     },
     fonts: {
       families: {

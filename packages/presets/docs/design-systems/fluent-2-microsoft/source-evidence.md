@@ -76,11 +76,11 @@ Microsoft publishes Fluent UI System Icons as its familiar, friendly, and modern
 collection. The upstream repository provides Regular and Filled variants and explicit direction
 metadata for mirrored and direction-specific glyphs.
 
-Kiskadee recommends `fluent-system` for the Fluent 2 Microsoft preset and uses the Regular family
-in its Web adapter. This is **Official adapted**: the family is official, while Kiskadee maps its
+Kiskadee recommends family `fluent-system` with variant `regular` for the Fluent 2 Microsoft
+preset. This is **Official adapted**: the family and Regular style are official, while Kiskadee maps its
 canonical semantic names to upstream glyphs and normalizes their presentation through the shared
-Icon contract. The schema records only the family ID; it does not import the React package or
-embed glyphs.
+Icon contract. The schema records only family and variant IDs; it does not import the React
+package or embed glyphs.
 
 ## ProgressBar Evidence
 

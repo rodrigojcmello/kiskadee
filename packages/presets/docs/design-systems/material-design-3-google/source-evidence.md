@@ -33,13 +33,14 @@ Primary source:
 
 Google identifies Material Symbols as the current Material icon family and exposes Outlined,
 Rounded, and Sharp styles with variable fill, weight, grade, and optical-size axes. Kiskadee
-recommends `material-symbols-outlined` for this preset with Fill `0`, Weight `400`, Grade `0`, and
-Optical Size `24`.
+recommends family `material-symbols` with variant `fill-0` for this preset: Outlined, Fill `0`,
+Weight `400`, Grade `0`, and Optical Size `24`.
 
 This is **Official adapted**: the upstream family and axis values are official, while Kiskadee
 maps its canonical semantic names to Material ligatures and loads an alphabetically subsetted
-Google Fonts stylesheet only when this family is selected. No icon-font URL or loader is stored
-in the preset schema.
+Google Fonts variable stylesheet covering the supported Fill 0–1 axis only when this family is
+selected. The `fill-1` variant is available to applications but is not the preset recommendation.
+No icon-font URL or loader is stored in the preset schema.
 
 ## Inconsistencies
 

@@ -6,7 +6,7 @@ system is maintained in
 
 ## Interface Icon Decision
 
-The preset recommends `fluent-system`, matching the upstream Fluent family used by the Microsoft
-preset. This is a **Kiskadee extension** because the preset itself is not an official Microsoft
-distribution, while the selected icon family remains Microsoft's official open-source Fluent UI
-System Icons collection.
+The preset recommends `fluent-system.regular`, matching the upstream Fluent family and variant
+used by the Microsoft preset. This is a **Kiskadee extension** because the preset itself is not an
+official Microsoft distribution, while the selected icon family remains Microsoft's official
+open-source Fluent UI System Icons collection.

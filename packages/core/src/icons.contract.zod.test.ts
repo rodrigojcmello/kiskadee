@@ -6,9 +6,12 @@ import {
 } from './icons.contract.zod.ts';
 
 describe('schemaIconsContractSchema', () => {
-  it('accepts a lowercase kebab-case family id', () => {
-    expect(schemaIconsContractSchema.parse({ family: 'fluent-system' })).toEqual({
-      family: 'fluent-system'
+  it('accepts lowercase kebab-case family and variant ids', () => {
+    expect(
+      schemaIconsContractSchema.parse({ family: 'fluent-system', variant: 'regular' })
+    ).toEqual({
+      family: 'fluent-system',
+      variant: 'regular'
     });
   });
 
@@ -21,6 +24,17 @@ describe('schemaIconsContractSchema', () => {
     'fluent system'
   ])('rejects invalid family id %j', (family) => {
     expect(validateSchemaIconsContract({ family })).not.toEqual([]);
+  });
+
+  it.each([
+    'Fill',
+    'fill_1',
+    '-fill',
+    'fill-',
+    '',
+    'fill 1'
+  ])('rejects invalid variant id %j', (variant) => {
+    expect(validateSchemaIconsContract({ family: 'material-symbols', variant })).not.toEqual([]);
   });
 
   it('rejects missing and extra fields', () => {

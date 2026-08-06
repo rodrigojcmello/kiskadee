@@ -15,6 +15,7 @@ export type ManifestFonts = {
 
 export type ManifestIcons = {
   family: string;
+  variant?: string;
 };
 
 export type ManifestComponentState = Record<
@@ -75,7 +76,7 @@ export type Manifest = {
    */
   fonts?: ManifestFonts;
   /**
-   * Optional icon-family recommendation selected by the schema.
+   * Optional icon-family and local-variant recommendation selected by the schema.
    *
    * Glyph definitions and loaders remain outside build artifacts.
    */

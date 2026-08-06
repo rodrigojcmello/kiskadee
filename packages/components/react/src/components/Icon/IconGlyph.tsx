@@ -4,6 +4,7 @@ import './Icon.structural.scss';
 
 import type { IconName } from '@kiskadee/icons/interface';
 import type { HTMLAttributes, ReactNode } from 'react';
+import { createElement } from 'react';
 import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';
 
 declare const process: { env: { NODE_ENV?: string } };
@@ -26,7 +27,7 @@ function join(...parts: Array<string | undefined>): string | undefined {
  * Accessibility semantics remain owned by Icon or by the parent component.
  */
 export function IconGlyph({ name, fallback, className, ...props }: IconGlyphProps) {
-  const { familyId, glyph, hasProvider } = useResolvedIconGlyph(name);
+  const { familyId, variantId, glyph, hasProvider } = useResolvedIconGlyph(name);
 
   if (!glyph) {
     if (fallback !== undefined) {
@@ -49,6 +50,7 @@ export function IconGlyph({ name, fallback, className, ...props }: IconGlyphProp
 
   const Glyph = glyph.glyph;
   const RtlGlyph = glyph.rtlGlyph;
+  const renderedGlyph = createElement(Glyph, glyph.rendererProps);
 
   return (
     <span
@@ -58,18 +60,15 @@ export function IconGlyph({ name, fallback, className, ...props }: IconGlyphProp
       data-k-icon-direction={glyph.direction}
       data-k-icon-family={familyId}
       data-k-icon-name={name}
+      data-k-icon-variant={variantId}
     >
       {RtlGlyph ? (
         <>
-          <span className="k-gly-ltr">
-            <Glyph />
-          </span>
-          <span className="k-gly-rtl">
-            <RtlGlyph />
-          </span>
+          <span className="k-gly-ltr">{renderedGlyph}</span>
+          <span className="k-gly-rtl">{createElement(RtlGlyph, glyph.rendererProps)}</span>
         </>
       ) : (
-        <Glyph />
+        renderedGlyph
       )}
     </span>
   );

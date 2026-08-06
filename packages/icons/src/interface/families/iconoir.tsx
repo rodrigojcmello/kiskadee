@@ -155,5 +155,11 @@ const glyphMap = {
 export const iconoirIconFamily = defineIconFamily({
   id: "iconoir",
   label: "Iconoir",
-  glyphs: glyphMap
+  defaultVariant: "regular",
+  variants: {
+    "regular": {
+      label: "Regular",
+      glyphs: glyphMap
+    }
+  }
 });

@@ -157,5 +157,11 @@ const glyphMap = {
 export const fluentSystemIconFamily = defineIconFamily({
   id: "fluent-system",
   label: "Fluent UI System Icons",
-  glyphs: glyphMap
+  defaultVariant: "regular",
+  variants: {
+    "regular": {
+      label: "Regular",
+      glyphs: glyphMap
+    }
+  }
 });

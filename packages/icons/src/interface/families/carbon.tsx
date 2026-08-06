@@ -153,5 +153,11 @@ const glyphMap = {
 export const carbonIconFamily = defineIconFamily({
   id: "carbon",
   label: "Carbon Icons",
-  glyphs: glyphMap
+  defaultVariant: "regular",
+  variants: {
+    "regular": {
+      label: "Regular",
+      glyphs: glyphMap
+    }
+  }
 });

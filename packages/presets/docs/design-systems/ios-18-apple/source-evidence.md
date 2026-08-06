@@ -12,10 +12,11 @@ This file records preset-level source evidence for
 
 Apple identifies SF Symbols as the symbol family designed to integrate with San Francisco and
 Apple-platform text. Kiskadee recommends the semantic family ID `sf-symbols` for the iOS 18
-preset. This is **Official adapted**: the preset records the official platform family without
-embedding or redistributing its assets.
+preset with the `regular` variant. This is **Official adapted**: the preset records the official
+platform family and regular weight intent without embedding or redistributing its assets.
 
-The optional Web catalog declares `sf-symbols -> iconoir` as an explicit **Kiskadee extension**.
+The optional Web catalog declares `sf-symbols.regular -> iconoir.regular` as an explicit
+**Kiskadee extension**.
 It is a portability fallback, never an assertion that Iconoir is Apple's family. Consumers with a
 licensed native implementation can register `sf-symbols` directly and take precedence over the
 fallback.

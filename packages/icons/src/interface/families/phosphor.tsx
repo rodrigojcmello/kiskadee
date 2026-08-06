@@ -151,5 +151,27 @@ const glyphMap = {
 export const phosphorIconFamily = defineIconFamily({
   id: "phosphor",
   label: "Phosphor",
-  glyphs: glyphMap
+  defaultVariant: "regular",
+  variants: {
+    "thin": {
+      label: "Thin",
+      glyphs: glyphMap,
+      rendererProps: {"weight":"thin"}
+    },
+    "regular": {
+      label: "Regular",
+      glyphs: glyphMap,
+      rendererProps: {"weight":"regular"}
+    },
+    "fill": {
+      label: "Fill",
+      glyphs: glyphMap,
+      rendererProps: {"weight":"fill"}
+    },
+    "duotone": {
+      label: "Duotone",
+      glyphs: glyphMap,
+      rendererProps: {"weight":"duotone"}
+    }
+  }
 });

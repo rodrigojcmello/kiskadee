@@ -47,11 +47,14 @@ const EAGER_ICON_FAMILIES = [lucideIconFamily] as const;
 function ShowcaseIconContextBridge({
   children,
   value,
-  setIconFamilyId
+  setIconFamilySelection
 }: {
   children: React.ReactNode;
-  value: Omit<ShowcaseContextValue, 'iconFamilyId' | 'setIconFamilyId'>;
-  setIconFamilyId: (value: string) => void;
+  value: Omit<
+    ShowcaseContextValue,
+    'iconFamilyFallbackFor' | 'iconFamilyId' | 'iconVariantId' | 'setIconFamilySelection'
+  >;
+  setIconFamilySelection: (familyId: string, variantId: string) => void;
 }) {
   const iconFamily = useIconFamilyStatus();
 
@@ -59,8 +62,10 @@ function ShowcaseIconContextBridge({
     <ShowcaseContext.Provider
       value={{
         ...value,
+        ...(iconFamily.fallbackFor ? { iconFamilyFallbackFor: iconFamily.fallbackFor } : {}),
         iconFamilyId: iconFamily.effectiveFamilyId ?? 'lucide',
-        setIconFamilyId
+        iconVariantId: iconFamily.effectiveVariantId ?? 'regular',
+        setIconFamilySelection
       }}
     >
       {children}
@@ -181,10 +186,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [iconFamilySelection, setIconFamilySelection] = useState<{
     designSystem: string;
     family?: string;
+    variant?: string;
   }>({ designSystem: String(designSystem) });
   const selectedIconFamily =
     iconFamilySelection.designSystem === String(designSystem)
       ? iconFamilySelection.family
+      : undefined;
+  const selectedIconVariant =
+    iconFamilySelection.designSystem === String(designSystem)
+      ? iconFamilySelection.variant
       : undefined;
   const setShowcaseDesignSystem = useCallback(
     (value: string) => {
@@ -193,9 +203,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     },
     [setDesignSystem]
   );
-  const setIconFamilyId = useCallback(
-    (value: string) => {
-      setIconFamilySelection({ designSystem: String(designSystem), family: value });
+  const setShowcaseIconFamilySelection = useCallback(
+    (family: string, variant: string) => {
+      setIconFamilySelection({
+        designSystem: String(designSystem),
+        family,
+        variant
+      });
     },
     [designSystem]
   );
@@ -292,6 +306,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           catalog={interfaceIconFamilyCatalog}
           defaultFamily="lucide"
           family={selectedIconFamily}
+          variant={selectedIconVariant}
         >
           <ShowcaseIconContextBridge
             value={{
@@ -306,7 +321,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               fontRoleNames,
               setFontRoleName
             }}
-            setIconFamilyId={setIconFamilyId}
+            setIconFamilySelection={setShowcaseIconFamilySelection}
           >
             {children}
           </ShowcaseIconContextBridge>

@@ -38,7 +38,8 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     icons: {
-      family: 'material-symbols-outlined'
+      family: 'material-symbols',
+      variant: 'fill-0'
     },
     fonts: {
       families: {

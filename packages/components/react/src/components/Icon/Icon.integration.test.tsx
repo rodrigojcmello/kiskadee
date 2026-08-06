@@ -2,8 +2,10 @@
 
 import { defineIconFamily } from '@kiskadee/icons/interface';
 import { fluentSystemIconFamily } from '@kiskadee/icons/interface/fluent-system';
-import { fontAwesomeClassicSolidIconFamily } from '@kiskadee/icons/interface/font-awesome-classic-solid';
+import { fontAwesomeClassicIconFamily } from '@kiskadee/icons/interface/font-awesome-classic';
 import { iconoirIconFamily } from '@kiskadee/icons/interface/iconoir';
+import { lucideIconFamily } from '@kiskadee/icons/interface/lucide';
+import { phosphorIconFamily } from '@kiskadee/icons/interface/phosphor';
 import { cleanup, render } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -66,6 +68,9 @@ describe('styled Icon family composition', () => {
     expect(glyph.closest('[data-k-icon-family]')?.getAttribute('data-k-icon-family')).toBe(
       'test-icons'
     );
+    expect(glyph.closest('[data-k-icon-family]')?.getAttribute('data-k-icon-variant')).toBe(
+      'regular'
+    );
     expect(glyph.closest('[data-k-icon-family]')?.getAttribute('aria-hidden')).toBe('true');
   });
 
@@ -118,10 +123,7 @@ describe('styled Icon family composition', () => {
   it('renders Font Awesome definitions as normalized SVG without a global icon runtime', () => {
     const result = render(
       <KiskadeeContext.Provider value={kiskadeeContext}>
-        <IconFamilyProvider
-          families={[fontAwesomeClassicSolidIconFamily]}
-          family="font-awesome-classic-solid"
-        >
+        <IconFamilyProvider families={[fontAwesomeClassicIconFamily]} family="font-awesome-classic">
           <Icon decorative name="search" />
         </IconFamilyProvider>
       </KiskadeeContext.Provider>
@@ -131,6 +133,47 @@ describe('styled Icon family composition', () => {
     expect(svg?.getAttribute('fill')).toBe('currentColor');
     expect(svg?.getAttribute('viewBox')).toBe('0 0 512 512');
     expect(svg?.querySelector('path')?.getAttribute('d')).toBeTruthy();
+  });
+
+  it('applies Lucide stroke profiles through the selected local variant', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={kiskadeeContext}>
+        <IconFamilyProvider families={[lucideIconFamily]} family="lucide" variant="bold">
+          <Icon decorative name="search" />
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+    const glyph = result.container.querySelector('[data-k-icon-name="search"]');
+
+    expect(glyph?.getAttribute('data-k-icon-variant')).toBe('bold');
+    expect(glyph?.querySelector('svg')?.getAttribute('stroke-width')).toBe('2.5');
+  });
+
+  it('applies Phosphor geometry weights without loading another family', () => {
+    const thin = render(
+      <KiskadeeContext.Provider value={kiskadeeContext}>
+        <IconFamilyProvider families={[phosphorIconFamily]} family="phosphor" variant="thin">
+          <Icon decorative name="search" />
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+    const thinPath = thin.container.querySelector('path')?.getAttribute('d');
+    thin.unmount();
+    const filled = render(
+      <KiskadeeContext.Provider value={kiskadeeContext}>
+        <IconFamilyProvider families={[phosphorIconFamily]} family="phosphor" variant="fill">
+          <Icon decorative name="search" />
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(
+      filled.container.querySelector('[data-k-icon-family]')?.getAttribute('data-k-icon-family')
+    ).toBe('phosphor');
+    expect(
+      filled.container.querySelector('[data-k-icon-variant]')?.getAttribute('data-k-icon-variant')
+    ).toBe('fill');
+    expect(filled.container.querySelector('path')?.getAttribute('d')).not.toBe(thinPath);
   });
 
   it('renders explicit Fluent RTL list artwork without mirroring numbers', () => {

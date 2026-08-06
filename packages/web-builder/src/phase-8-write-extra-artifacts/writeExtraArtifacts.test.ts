@@ -101,7 +101,10 @@ describe('writeExtraArtifacts font artifacts', () => {
     const outDirSlug = createOutputSlug('icons');
 
     await writeExtraArtifacts({
-      schema: createSchema({ icons: { family: 'fluent-system' }, focus: { width: 2 } }),
+      schema: createSchema({
+        icons: { family: 'fluent-system', variant: 'regular' },
+        focus: { width: 2 }
+      }),
       outDirSlug
     });
 
@@ -111,7 +114,7 @@ describe('writeExtraArtifacts font artifacts', () => {
     );
     const tokensCss = await readFile(resolve(outputDirectory, 'tokens.kiskadee.css'), 'utf8');
 
-    expect(globalArtifact.icons).toEqual({ family: 'fluent-system' });
+    expect(globalArtifact.icons).toEqual({ family: 'fluent-system', variant: 'regular' });
     expect(tokensCss).not.toContain('--k-icon');
   });
 });

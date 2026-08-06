@@ -193,9 +193,10 @@ describe('buildManifestFonts', () => {
 });
 
 describe('buildManifestIcons', () => {
-  it('publishes only the selected family id', () => {
-    expect(buildManifestIcons({ family: 'fluent-system' })).toEqual({
-      family: 'fluent-system'
+  it('publishes the selected family and variant ids', () => {
+    expect(buildManifestIcons({ family: 'fluent-system', variant: 'regular' })).toEqual({
+      family: 'fluent-system',
+      variant: 'regular'
     });
   });
 

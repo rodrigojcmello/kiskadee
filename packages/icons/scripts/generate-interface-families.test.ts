@@ -15,9 +15,14 @@ describe('interface family metadata', () => {
       families: Record<
         string,
         {
+          defaultVariant: string;
           directions: Record<string, 'fixed' | 'mirror' | 'unique'>;
           mappings: Record<string, string>;
           rtlMappings?: Record<string, string>;
+          variants: Record<
+            string,
+            { label: string; defaults?: Record<string, unknown>; fill?: 0 | 1 }
+          >;
         }
       >;
     };
@@ -31,6 +36,7 @@ describe('interface family metadata', () => {
         send: 'mirror',
         undo: 'mirror'
       });
+      expect(family.variants[family.defaultVariant]).toBeDefined();
     }
 
     expect(metadata.families['fluent-system']).toMatchObject({
@@ -56,6 +62,21 @@ describe('interface family metadata', () => {
         'list-ordered': 'NumberedListRight'
       }
     });
+    expect(metadata.families.lucide?.variants).toEqual({
+      thin: { label: 'Thin', defaults: { strokeWidth: 1.5 } },
+      regular: { label: 'Regular', defaults: { strokeWidth: 2 } },
+      bold: { label: 'Bold', defaults: { strokeWidth: 2.5 } }
+    });
+    expect(metadata.families.phosphor?.variants).toMatchObject({
+      thin: { defaults: { weight: 'thin' } },
+      regular: { defaults: { weight: 'regular' } },
+      fill: { defaults: { weight: 'fill' } },
+      duotone: { defaults: { weight: 'duotone' } }
+    });
+    expect(metadata.families['material-symbols']?.variants).toEqual({
+      'fill-0': { label: 'Fill 0', fill: 0 },
+      'fill-1': { label: 'Fill 1', fill: 1 }
+    });
   });
 
   it('keeps generated adapters synchronized', async () => {
@@ -63,8 +84,13 @@ describe('interface family metadata', () => {
   });
 
   it('uses supported per-glyph subpaths for large upstream packages', async () => {
-    const [fluent, phosphor, fontAwesome] = await Promise.all([
+    const [fluent, lucide, material, phosphor, fontAwesome] = await Promise.all([
       readFile(path.resolve(packageRoot, 'src/interface/families/fluent-system.tsx'), 'utf8'),
+      readFile(path.resolve(packageRoot, 'src/interface/families/lucide.tsx'), 'utf8'),
+      readFile(
+        path.resolve(packageRoot, 'src/interface/families/material-symbols-outlined.tsx'),
+        'utf8'
+      ),
       readFile(path.resolve(packageRoot, 'src/interface/families/phosphor.tsx'), 'utf8'),
       readFile(
         path.resolve(packageRoot, 'src/interface/families/font-awesome-classic-solid.tsx'),
@@ -78,6 +104,10 @@ describe('interface family metadata', () => {
     expect(fluent).not.toContain("from '@fluentui/react-icons';");
     expect(phosphor).toContain("from '@phosphor-icons/react/MagnifyingGlass'");
     expect(phosphor).not.toContain("from '@phosphor-icons/react';");
+    expect(phosphor).toContain('rendererProps: {"weight":"duotone"}');
+    expect(lucide).toContain('rendererProps: {"strokeWidth":2.5}');
+    expect(material).toContain('rendererProps: {"fill":0}');
+    expect(material).toContain('rendererProps: {"fill":1}');
     expect(fontAwesome).toContain("from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass'");
     expect(fontAwesome).not.toContain("from '@fortawesome/free-solid-svg-icons';");
   });

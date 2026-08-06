@@ -621,7 +621,10 @@ export function buildManifestFonts(fonts: SchemaFonts | undefined): ManifestFont
 
 export function buildManifestIcons(icons: SchemaIcons | undefined): ManifestIcons | undefined {
   if (!icons) return undefined;
-  return { family: icons.family };
+  return {
+    family: icons.family,
+    ...(icons.variant ? { variant: icons.variant } : {})
+  };
 }
 
 export async function publishMetadata(params: {

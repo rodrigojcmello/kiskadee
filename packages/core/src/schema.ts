@@ -210,11 +210,14 @@ export type SchemaFonts = {
 };
 
 export type IconFamilyId = string;
+export type IconFamilyVariantId = string;
 
-// Global icon recommendations identify a family without coupling the schema to
-// a renderer, package, URL, glyph catalog, or loading strategy.
+// Global icon recommendations identify a family and, optionally, one of its
+// local variants without coupling the schema to a renderer, package, URL,
+// glyph catalog, or loading strategy.
 export type SchemaIcons = {
   family: IconFamilyId;
+  variant?: IconFamilyVariantId;
 };
 
 // [EFFECTS] START: Global effect schema section.

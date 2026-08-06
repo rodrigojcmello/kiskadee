@@ -38,8 +38,12 @@ export type ShowcaseContextValue = {
   setFontRoleName: (role: ShowcaseFontRole, value: string) => void;
   /** Family currently rendered by the global interface-icon provider. */
   iconFamilyId: string;
-  /** Selects an explicit Showcase family until the design system changes. */
-  setIconFamilyId: (value: string) => void;
+  /** Local variant currently rendered by the global interface-icon provider. */
+  iconVariantId: string;
+  /** Semantic preset family currently resolved through an explicit Web fallback. */
+  iconFamilyFallbackFor?: string;
+  /** Selects one explicit Showcase family and variant until the design system changes. */
+  setIconFamilySelection: (familyId: string, variantId: string) => void;
 };
 
 export const ShowcaseContext = createContext<ShowcaseContextValue | undefined>(undefined);

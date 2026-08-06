@@ -5,8 +5,13 @@ export type {
   IconDirection,
   IconFamilyCatalogEntry,
   IconFamilyCatalogItem,
+  IconFamilyDefinitionInput,
   IconFamilyFallbackEntry,
   IconFamilyId,
+  IconFamilyVariant,
+  IconFamilyVariantCatalogEntry,
+  IconFamilyVariantId,
+  IconFamilyVariantInput,
   IconGlyphDefinition,
   IconGlyphDescriptor,
   IconGlyphMap,
@@ -18,7 +23,8 @@ export {
   CANONICAL_ICON_NAMES,
   defineIconFamily,
   defineIconFamilyCatalogEntry,
-  defineIconFamilyFallback
+  defineIconFamilyFallback,
+  resolveIconFamilyVariant
 } from '@kiskadee/icons/interface';
 export type {
   DefinedFontFamily,

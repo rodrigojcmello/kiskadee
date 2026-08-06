@@ -7,9 +7,14 @@ export const iconFamilyIdContractSchema = z
   .string()
   .regex(ICON_FAMILY_ID_PATTERN, 'expected a lowercase kebab-case family id');
 
+export const iconFamilyVariantIdContractSchema = z
+  .string()
+  .regex(ICON_FAMILY_ID_PATTERN, 'expected a lowercase kebab-case variant id');
+
 export const schemaIconsContractSchema = z
   .object({
-    family: iconFamilyIdContractSchema
+    family: iconFamilyIdContractSchema,
+    variant: iconFamilyVariantIdContractSchema.optional()
   })
   .strict() satisfies z.ZodType<SchemaIcons>;
 

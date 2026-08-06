@@ -43,7 +43,7 @@
       "import": "./dist/interface/families/fluent-system.js",
       "default": "./dist/interface/families/fluent-system.js"
     },
-    "./interface/material-symbols-outlined": {
+    "./interface/material-symbols": {
       "types": "./dist/interface/families/material-symbols-outlined.d.ts",
       "import": "./dist/interface/families/material-symbols-outlined.js",
       "default": "./dist/interface/families/material-symbols-outlined.js"
@@ -63,7 +63,7 @@
       "import": "./dist/interface/families/phosphor.js",
       "default": "./dist/interface/families/phosphor.js"
     },
-    "./interface/font-awesome-classic-solid": {
+    "./interface/font-awesome-classic": {
       "types": "./dist/interface/families/font-awesome-classic-solid.d.ts",
       "import": "./dist/interface/families/font-awesome-classic-solid.js",
       "default": "./dist/interface/families/font-awesome-classic-solid.js"

@@ -9,6 +9,7 @@ export {
   defineIconFamily,
   defineIconFamilyCatalogEntry,
   defineIconFamilyFallback,
+  resolveIconFamilyVariant,
   resolveIconGlyph
 } from './defineIconFamily.ts';
 export type {
@@ -17,8 +18,13 @@ export type {
   IconDirection,
   IconFamilyCatalogEntry,
   IconFamilyCatalogItem,
+  IconFamilyDefinitionInput,
   IconFamilyFallbackEntry,
   IconFamilyId,
+  IconFamilyVariant,
+  IconFamilyVariantCatalogEntry,
+  IconFamilyVariantId,
+  IconFamilyVariantInput,
   IconGlyphDefinition,
   IconGlyphDescriptor,
   IconGlyphMap,

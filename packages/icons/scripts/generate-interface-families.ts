@@ -16,23 +16,37 @@ type ImportStrategy =
   | 'export-subpath-without-icon'
   | 'fluent-headless';
 
-type SvgFamily = FamilyDirectionMetadata & {
+type FamilyVariant = {
   label: string;
-  adapter: 'svg';
+  defaults?: Record<string, unknown>;
+  fill?: 0 | 1;
+};
+
+type FamilyBase = FamilyDirectionMetadata & {
+  label: string;
+  output?: string;
+  defaultVariant: string;
+  variants: Record<string, FamilyVariant>;
   package: string;
-  importStrategy?: ImportStrategy;
-  importSubpathOverrides?: Record<string, string>;
   license: string;
   source: string;
-  defaults?: Record<string, unknown>;
   mappings: Record<CanonicalIconName, string>;
 };
 
-type FontAwesomeFamily = Omit<SvgFamily, 'adapter' | 'defaults'> & {
-  adapter: 'font-awesome';
+type SvgFamily = FamilyBase & {
+  adapter: 'svg';
+  importStrategy?: ImportStrategy;
+  importSubpathOverrides?: Record<string, string>;
+  defaults?: Record<string, unknown>;
 };
 
-type MaterialSymbolsFamily = Omit<SvgFamily, 'adapter' | 'defaults'> & {
+type FontAwesomeFamily = FamilyBase & {
+  adapter: 'font-awesome';
+  importStrategy?: ImportStrategy;
+  importSubpathOverrides?: Record<string, string>;
+};
+
+type MaterialSymbolsFamily = FamilyBase & {
   adapter: 'material-symbols';
 };
 
@@ -43,6 +57,7 @@ type InterfaceFamilyMetadata = {
   families: Record<string, Family>;
 };
 
+const ICON_ID_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..');
@@ -61,7 +76,7 @@ function toKebabCase(value: string): string {
     .toLowerCase();
 }
 
-function importModule(family: SvgFamily, exportName: string): string {
+function importModule(family: SvgFamily | FontAwesomeFamily, exportName: string): string {
   const override = family.importSubpathOverrides?.[exportName];
   if (override) return `${family.package}/${override}`;
 
@@ -79,7 +94,7 @@ function importModule(family: SvgFamily, exportName: string): string {
   }
 }
 
-function renderImports(family: SvgFamily, exports: readonly string[]): string {
+function renderImports(family: SvgFamily | FontAwesomeFamily, exports: readonly string[]): string {
   const exportsByModule = new Map<string, string[]>();
 
   for (const exportName of exports) {
@@ -101,11 +116,12 @@ function renderImports(family: SvgFamily, exports: readonly string[]): string {
     .join('\n');
 }
 
-function renderDefinition(
-  family: Family,
-  iconName: CanonicalIconName,
-  upstreamName: string
-): string {
+function renderDefinition(options: {
+  family: Family;
+  iconName: CanonicalIconName;
+  upstreamName: string;
+}): string {
+  const { family, iconName, upstreamName } = options;
   const glyphExpression =
     family.adapter === 'material-symbols'
       ? `createMaterialSymbolGlyph(${JSON.stringify(upstreamName)})`
@@ -125,6 +141,33 @@ function renderDefinition(
   return `    ${JSON.stringify(iconName)}: ${value}`;
 }
 
+function renderVariantRecord(
+  family: Family,
+  renderGlyphMap: (variantId: string, variant: FamilyVariant) => string
+): string {
+  return Object.entries(family.variants)
+    .map(
+      ([variantId, variant]) => `    ${JSON.stringify(variantId)}: {
+      label: ${JSON.stringify(variant.label)},
+      glyphs: ${renderGlyphMap(variantId, variant)}${
+        family.adapter === 'svg' && variant.defaults
+          ? `,
+      rendererProps: ${JSON.stringify(variant.defaults)}`
+          : family.adapter === 'material-symbols'
+            ? `,
+      rendererProps: ${JSON.stringify({ fill: variant.fill })}`
+            : ''
+      }${
+        family.adapter === 'material-symbols'
+          ? `,
+      prepare: () => prepareMaterialSymbolsOutlined(materialLigatures)`
+          : ''
+      }
+    }`
+    )
+    .join(',\n');
+}
+
 function renderSvgFamily(familyId: string, family: SvgFamily): string {
   const exports = [
     ...new Set([...Object.values(family.mappings), ...Object.values(family.rtlMappings ?? {})])
@@ -135,8 +178,13 @@ function renderSvgFamily(familyId: string, family: SvgFamily): string {
     .map((name) => `const ${variableName(name)} = createSvgGlyph(${name}, ${defaults});`)
     .join('\n');
   const definitions = CANONICAL_ICON_NAMES.map((name) =>
-    renderDefinition(family, name, family.mappings[name])
+    renderDefinition({
+      family,
+      iconName: name,
+      upstreamName: family.mappings[name]
+    })
   ).join(',\n');
+  const variants = renderVariantRecord(family, () => 'glyphMap');
 
   return `${generatedHeader}
 ${imports}
@@ -153,7 +201,10 @@ ${definitions}
 export const ${toIdentifier(familyId)}IconFamily = defineIconFamily({
   id: ${JSON.stringify(familyId)},
   label: ${JSON.stringify(family.label)},
-  glyphs: glyphMap
+  defaultVariant: ${JSON.stringify(family.defaultVariant)},
+  variants: {
+${variants}
+  }
 });
 `;
 }
@@ -167,8 +218,16 @@ function renderFontAwesomeFamily(familyId: string, family: FontAwesomeFamily): s
     .map((name) => `const ${variableName(name)} = createFontAwesomeGlyph(${name});`)
     .join('\n');
   const definitions = CANONICAL_ICON_NAMES.map((name) =>
-    renderDefinition(family, name, family.mappings[name])
+    renderDefinition({ family, iconName: name, upstreamName: family.mappings[name] })
   ).join(',\n');
+  const onlyVariant = Object.keys(family.variants)[0];
+  const variants = renderVariantRecord(family, () => 'glyphMap');
+
+  if (Object.keys(family.variants).length !== 1 || !onlyVariant) {
+    throw new Error(
+      `[icons] ${familyId} Font Awesome generation requires exactly one fully mapped variant.`
+    );
+  }
 
   return `${generatedHeader}
 ${imports}
@@ -185,7 +244,10 @@ ${definitions}
 export const ${toIdentifier(familyId)}IconFamily = defineIconFamily({
   id: ${JSON.stringify(familyId)},
   label: ${JSON.stringify(family.label)},
-  glyphs: glyphMap
+  defaultVariant: ${JSON.stringify(family.defaultVariant)},
+  variants: {
+${variants}
+  }
 });
 `;
 }
@@ -194,9 +256,20 @@ function renderMaterialFamily(familyId: string, family: MaterialSymbolsFamily): 
   const ligatures = [
     ...new Set([...Object.values(family.mappings), ...Object.values(family.rtlMappings ?? {})])
   ].sort();
+  for (const [variantId, variant] of Object.entries(family.variants)) {
+    const fill = variant.fill;
+    if (fill !== 0 && fill !== 1) {
+      throw new Error(`[icons] ${familyId}.${variantId} requires fill 0 or 1.`);
+    }
+  }
   const definitions = CANONICAL_ICON_NAMES.map((name) =>
-    renderDefinition(family, name, family.mappings[name])
+    renderDefinition({
+      family,
+      iconName: name,
+      upstreamName: family.mappings[name]
+    })
   ).join(',\n');
+  const variants = renderVariantRecord(family, () => 'glyphMap');
 
   return `${generatedHeader}
 import { defineIconFamily } from '../defineIconFamily.ts';
@@ -215,8 +288,10 @@ ${definitions}
 export const ${toIdentifier(familyId)}IconFamily = defineIconFamily({
   id: ${JSON.stringify(familyId)},
   label: ${JSON.stringify(family.label)},
-  glyphs: glyphMap,
-  prepare: () => prepareMaterialSymbolsOutlined(materialLigatures)
+  defaultVariant: ${JSON.stringify(family.defaultVariant)},
+  variants: {
+${variants}
+  }
 });
 `;
 }
@@ -227,6 +302,27 @@ function toIdentifier(value: string): string {
 
 function assertCoverage(metadata: InterfaceFamilyMetadata): void {
   for (const [familyId, family] of Object.entries(metadata.families)) {
+    if (!ICON_ID_PATTERN.test(familyId)) {
+      throw new Error(`[icons] Invalid family id: ${familyId}.`);
+    }
+    const variants = Object.entries(family.variants);
+    if (variants.length === 0) {
+      throw new Error(`[icons] ${familyId} requires at least one variant.`);
+    }
+    for (const [variantId, variant] of variants) {
+      if (!ICON_ID_PATTERN.test(variantId)) {
+        throw new Error(`[icons] Invalid variant id: ${familyId}.${variantId}.`);
+      }
+      if (variant.label.trim().length === 0) {
+        throw new Error(`[icons] ${familyId}.${variantId} requires a label.`);
+      }
+    }
+    if (!Object.hasOwn(family.variants, family.defaultVariant)) {
+      throw new Error(
+        `[icons] ${familyId} default variant "${family.defaultVariant}" is not defined.`
+      );
+    }
+
     const mapped = new Set(Object.keys(family.mappings));
     const missing = CANONICAL_ICON_NAMES.filter((name) => !mapped.has(name));
     const unknown = [...mapped].filter(
@@ -306,7 +402,7 @@ export async function generateInterfaceFamilies(options: { check?: boolean } = {
             ? renderFontAwesomeFamily(familyId, family)
             : renderMaterialFamily(familyId, family);
       await writeOrCheckGeneratedFile(
-        path.resolve(outputDirectory, `${familyId}.tsx`),
+        path.resolve(outputDirectory, `${family.output ?? familyId}.tsx`),
         source,
         options.check ?? false
       );

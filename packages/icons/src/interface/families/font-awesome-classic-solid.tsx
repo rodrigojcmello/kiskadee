@@ -148,8 +148,14 @@ const glyphMap = {
     "volume-muted": glyphfaVolumeXmark
 } satisfies CompleteCanonicalGlyphMap;
 
-export const fontAwesomeClassicSolidIconFamily = defineIconFamily({
-  id: "font-awesome-classic-solid",
-  label: "Font Awesome Classic Solid",
-  glyphs: glyphMap
+export const fontAwesomeClassicIconFamily = defineIconFamily({
+  id: "font-awesome-classic",
+  label: "Font Awesome Classic Free",
+  defaultVariant: "solid",
+  variants: {
+    "solid": {
+      label: "Solid",
+      glyphs: glyphMap
+    }
+  }
 });

@@ -66,6 +66,29 @@ describe('defineIconFamily', () => {
     });
   });
 
+  it('resolves local variants without changing the family identity', () => {
+    function ThinSearchGlyph() {
+      return <svg data-weight="thin" />;
+    }
+    function BoldSearchGlyph() {
+      return <svg data-weight="bold" />;
+    }
+
+    const family = defineIconFamily({
+      id: 'acme-interface',
+      label: 'Acme Interface',
+      defaultVariant: 'thin',
+      variants: {
+        thin: { label: 'Thin', glyphs: { search: ThinSearchGlyph } },
+        bold: { label: 'Bold', glyphs: { search: BoldSearchGlyph } }
+      }
+    });
+
+    expect(resolveIconGlyph(family, 'search')?.glyph).toBe(ThinSearchGlyph);
+    expect(resolveIconGlyph(family, 'search', 'bold')?.glyph).toBe(BoldSearchGlyph);
+    expect(resolveIconGlyph(family, 'search', 'missing')).toBeUndefined();
+  });
+
   it('rejects invalid IDs and empty labels', () => {
     expect(() =>
       defineIconFamily({ id: 'Acme', label: 'Acme', glyphs: { search: SearchGlyph } })
@@ -77,6 +100,8 @@ describe('defineIconFamily', () => {
       defineIconFamilyCatalogEntry({
         id: 'acme',
         label: ' ',
+        defaultVariant: 'regular',
+        variants: [{ id: 'regular', label: 'Regular' }],
         load: async () =>
           defineIconFamily({ id: 'acme', label: 'Acme', glyphs: { search: SearchGlyph } })
       })

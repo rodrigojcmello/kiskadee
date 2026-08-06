@@ -41,8 +41,9 @@ This file records the source-of-truth evidence used to author the
 
 Carbon publishes its interface icons through `@carbon/icons-react` and documents 16, 20, 24, and
 32 pixel source sizes. Kiskadee recommends `carbon` and maps its canonical semantic names to
-Carbon's standard React glyphs.
+Carbon's standard React glyphs. The preset records the local variant as `regular`; this is
+Kiskadee's stable name for the single complete Carbon profile currently exposed.
 
 This is **Official adapted**: the icon family is official, while Kiskadee chooses the closest
 semantic glyph and normalizes it to the active Icon scale. The preset schema contains only the
-family recommendation and does not import the upstream package.
+family and variant recommendation and does not import the upstream package.

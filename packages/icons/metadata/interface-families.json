@@ -3,6 +3,12 @@
   "families": {
     "lucide": {
       "label": "Lucide",
+      "defaultVariant": "regular",
+      "variants": {
+        "thin": { "label": "Thin", "defaults": { "strokeWidth": 1.5 } },
+        "regular": { "label": "Regular", "defaults": { "strokeWidth": 2 } },
+        "bold": { "label": "Bold", "defaults": { "strokeWidth": 2.5 } }
+      },
       "adapter": "svg",
       "package": "lucide-react",
       "license": "ISC",
@@ -66,6 +72,10 @@
     },
     "fluent-system": {
       "label": "Fluent UI System Icons",
+      "defaultVariant": "regular",
+      "variants": {
+        "regular": { "label": "Regular" }
+      },
       "adapter": "svg",
       "package": "@fluentui/react-icons",
       "importStrategy": "fluent-headless",
@@ -140,6 +150,10 @@
     },
     "carbon": {
       "label": "Carbon Icons",
+      "defaultVariant": "regular",
+      "variants": {
+        "regular": { "label": "Regular" }
+      },
       "adapter": "svg",
       "package": "@carbon/icons-react",
       "license": "Apache-2.0",
@@ -203,6 +217,10 @@
     },
     "iconoir": {
       "label": "Iconoir",
+      "defaultVariant": "regular",
+      "variants": {
+        "regular": { "label": "Regular" }
+      },
       "adapter": "svg",
       "package": "iconoir-react",
       "license": "MIT",
@@ -271,6 +289,13 @@
     },
     "phosphor": {
       "label": "Phosphor",
+      "defaultVariant": "regular",
+      "variants": {
+        "thin": { "label": "Thin", "defaults": { "weight": "thin" } },
+        "regular": { "label": "Regular", "defaults": { "weight": "regular" } },
+        "fill": { "label": "Fill", "defaults": { "weight": "fill" } },
+        "duotone": { "label": "Duotone", "defaults": { "weight": "duotone" } }
+      },
       "adapter": "svg",
       "package": "@phosphor-icons/react",
       "importStrategy": "export-subpath-without-icon",
@@ -333,8 +358,13 @@
         "volume-muted": "SpeakerXIcon"
       }
     },
-    "font-awesome-classic-solid": {
-      "label": "Font Awesome Classic Solid",
+    "font-awesome-classic": {
+      "label": "Font Awesome Classic Free",
+      "output": "font-awesome-classic-solid",
+      "defaultVariant": "solid",
+      "variants": {
+        "solid": { "label": "Solid" }
+      },
       "adapter": "font-awesome",
       "package": "@fortawesome/free-solid-svg-icons",
       "importStrategy": "export-subpath",
@@ -396,8 +426,14 @@
         "volume-muted": "faVolumeXmark"
       }
     },
-    "material-symbols-outlined": {
+    "material-symbols": {
       "label": "Material Symbols Outlined",
+      "output": "material-symbols-outlined",
+      "defaultVariant": "fill-0",
+      "variants": {
+        "fill-0": { "label": "Fill 0", "fill": 0 },
+        "fill-1": { "label": "Fill 1", "fill": 1 }
+      },
       "adapter": "material-symbols",
       "package": "Google Fonts",
       "license": "Apache-2.0",

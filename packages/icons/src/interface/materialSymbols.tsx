@@ -4,12 +4,17 @@ const MATERIAL_SYMBOLS_FONT_FAMILY = 'Material Symbols Outlined';
 const MATERIAL_SYMBOLS_LINK_ATTRIBUTE = 'data-kiskadee-material-symbols';
 let materialSymbolsPreparation: Promise<void> | undefined;
 
+type MaterialSymbolGlyphProps = IconGlyphRendererProps & {
+  fill?: 0 | 1;
+};
+
 export function createMaterialSymbolGlyph(ligature: string): IconGlyphRenderer {
   function MaterialSymbolGlyph(props: IconGlyphRendererProps) {
+    const { fill = 0, ...glyphProps } = props as MaterialSymbolGlyphProps;
     const className = ['k-ms', props.className].filter(Boolean).join(' ');
     return (
       <span
-        {...props}
+        {...glyphProps}
         aria-hidden="true"
         className={className}
         style={{
@@ -18,7 +23,7 @@ export function createMaterialSymbolGlyph(ligature: string): IconGlyphRenderer {
           fontFamily: `"${MATERIAL_SYMBOLS_FONT_FAMILY}"`,
           fontFeatureSettings: '"liga"',
           fontStyle: 'normal',
-          fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24",
+          fontVariationSettings: `'FILL' ${fill}, 'wght' 400, 'GRAD' 0, 'opsz' 24`,
           fontWeight: 400,
           letterSpacing: 'normal',
           lineHeight: 1,
@@ -48,7 +53,7 @@ export function prepareMaterialSymbolsOutlined(iconNames: readonly string[]): Pr
   if (materialSymbolsPreparation) return materialSymbolsPreparation;
 
   const ligatures = [...new Set(iconNames)].sort();
-  const axes = 'FILL,GRAD,opsz,wght@0,0,24,400';
+  const axes = 'FILL,GRAD,opsz,wght@0..1,0,24,400';
   const query = new URLSearchParams({
     family: `${MATERIAL_SYMBOLS_FONT_FAMILY}:${axes}`,
     icon_names: ligatures.join(','),

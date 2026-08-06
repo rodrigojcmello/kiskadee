@@ -58,9 +58,22 @@ const glyphMap = {
     "volume-muted": createMaterialSymbolGlyph("volume_off")
 } satisfies CompleteCanonicalGlyphMap;
 
-export const materialSymbolsOutlinedIconFamily = defineIconFamily({
-  id: "material-symbols-outlined",
+export const materialSymbolsIconFamily = defineIconFamily({
+  id: "material-symbols",
   label: "Material Symbols Outlined",
-  glyphs: glyphMap,
-  prepare: () => prepareMaterialSymbolsOutlined(materialLigatures)
+  defaultVariant: "fill-0",
+  variants: {
+    "fill-0": {
+      label: "Fill 0",
+      glyphs: glyphMap,
+      rendererProps: {"fill":0},
+      prepare: () => prepareMaterialSymbolsOutlined(materialLigatures)
+    },
+    "fill-1": {
+      label: "Fill 1",
+      glyphs: glyphMap,
+      rendererProps: {"fill":1},
+      prepare: () => prepareMaterialSymbolsOutlined(materialLigatures)
+    }
+  }
 });

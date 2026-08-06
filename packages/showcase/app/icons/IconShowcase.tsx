@@ -294,7 +294,7 @@ function SocialIconGallery({
 
 export default function IconShowcase() {
   const { designSystem, segment, theme } = useKiskadee();
-  const { iconFamilyId, manifest } = useShowcase();
+  const { iconFamilyId, iconVariantId, manifest } = useShowcase();
   const { fallbackFor } = useIconFamilyStatus();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
   const lightCanonicalBackgrounds = useCanonicalCardSurfaces('light');
@@ -307,12 +307,19 @@ export default function IconShowcase() {
   const [canonicalSurface, setCanonicalSurface] = useState<CanonicalCardSurfaceKey>('neutral.low');
   const [stressTestSurface, setStressTestSurface] =
     useState<ButtonStressTestBackgroundToneKey>('white');
-  const selectedFamilyLabel =
-    interfaceIconFamilyOptions.find((entry) => entry.id === iconFamilyId)?.label ?? iconFamilyId;
-  const renderedFamilyLabel =
+  const selectedFamily = interfaceIconFamilyOptions.find((entry) => entry.id === iconFamilyId);
+  const selectedFamilyLabel = selectedFamily?.label ?? iconFamilyId;
+  const selectedVariantLabel =
+    selectedFamily?.variants.find((variant) => variant.id === iconVariantId)?.label ??
+    iconVariantId;
+  const renderedFamilyName =
     fallbackFor === 'sf-symbols'
       ? `${selectedFamilyLabel} (fallback for SF Symbols)`
       : selectedFamilyLabel;
+  const renderedFamilyLabel =
+    selectedFamily && selectedFamily.variants.length > 1
+      ? `${renderedFamilyName}, ${selectedVariantLabel}`
+      : renderedFamilyName;
 
   const iconMeta = manifest?.components?.icon;
   const isIconAvailable = Boolean(iconMeta);

@@ -153,5 +153,22 @@ const glyphMap = {
 export const lucideIconFamily = defineIconFamily({
   id: "lucide",
   label: "Lucide",
-  glyphs: glyphMap
+  defaultVariant: "regular",
+  variants: {
+    "thin": {
+      label: "Thin",
+      glyphs: glyphMap,
+      rendererProps: {"strokeWidth":1.5}
+    },
+    "regular": {
+      label: "Regular",
+      glyphs: glyphMap,
+      rendererProps: {"strokeWidth":2}
+    },
+    "bold": {
+      label: "Bold",
+      glyphs: glyphMap,
+      rendererProps: {"strokeWidth":2.5}
+    }
+  }
 });

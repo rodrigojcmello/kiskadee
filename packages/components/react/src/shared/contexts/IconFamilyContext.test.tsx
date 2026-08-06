@@ -30,7 +30,39 @@ function createFamily(id: string, prepare?: () => void | Promise<void>) {
   });
 }
 
-function createContextValue(family?: string): KiskadeeContextValue {
+function createVariantFamily(id: string) {
+  function ThinSearchGlyph() {
+    return h('svg', { 'data-variant': 'thin' });
+  }
+  function BoldSearchGlyph() {
+    return h('svg', { 'data-variant': 'bold' });
+  }
+  return defineIconFamily({
+    id,
+    label: id,
+    defaultVariant: 'thin',
+    variants: {
+      thin: { label: 'Thin', glyphs: { search: ThinSearchGlyph } },
+      bold: { label: 'Bold', glyphs: { search: BoldSearchGlyph } }
+    }
+  });
+}
+
+function createCatalogEntry(
+  id: string,
+  label: string,
+  load: () => Promise<ReturnType<typeof createFamily>>
+) {
+  return defineIconFamilyCatalogEntry({
+    id,
+    label,
+    defaultVariant: 'regular',
+    variants: [{ id: 'regular', label: 'Regular' }],
+    load
+  });
+}
+
+function createContextValue(family?: string, variant?: string): KiskadeeContextValue {
   return {
     classesMap: {},
     segment: 'default',
@@ -39,7 +71,7 @@ function createContextValue(family?: string): KiskadeeContextValue {
     setTheme: () => {},
     designSystem: 'test',
     setDesignSystem: () => {},
-    global: family ? { icons: { family } } : undefined
+    global: family ? { icons: { family, ...(variant ? { variant } : {}) } } : undefined
   };
 }
 
@@ -51,11 +83,14 @@ function StatusProbe() {
     'button',
     {
       'data-effective': status.effectiveFamilyId ?? '',
+      'data-effective-variant': status.effectiveVariantId ?? '',
       'data-error': status.error?.message ?? '',
       'data-fallback-for': status.fallbackFor ?? '',
       'data-has-glyph': String(Boolean(resolved.glyph)),
       'data-pending': status.pendingFamilyId ?? '',
+      'data-pending-variant': status.pendingVariantId ?? '',
       'data-requested': status.requestedFamilyId ?? '',
+      'data-requested-variant': status.requestedVariantId ?? '',
       'data-status': status.status,
       onClick: status.retry,
       type: 'button'
@@ -171,16 +206,8 @@ describe('IconFamilyProvider', () => {
         IconFamilyProvider,
         {
           catalog: [
-            defineIconFamilyCatalogEntry({
-              id: 'catalog-icons',
-              label: 'Catalog',
-              load: selectedLoad
-            }),
-            defineIconFamilyCatalogEntry({
-              id: 'unused-catalog',
-              label: 'Unused',
-              load: unusedLoad
-            })
+            createCatalogEntry('catalog-icons', 'Catalog', selectedLoad),
+            createCatalogEntry('unused-catalog', 'Unused', unusedLoad)
           ],
           family: 'catalog-icons'
         },
@@ -199,13 +226,7 @@ describe('IconFamilyProvider', () => {
       h(
         IconFamilyProvider,
         {
-          catalog: [
-            defineIconFamilyCatalogEntry({
-              id: 'only-icons',
-              label: 'Only',
-              load
-            })
-          ]
+          catalog: [createCatalogEntry('only-icons', 'Only', load)]
         },
         h(StatusProbe)
       )
@@ -220,16 +241,8 @@ describe('IconFamilyProvider', () => {
     const sharedFamily = createFamily('shared-icons', prepare);
     const firstLoad = vi.fn().mockResolvedValue(sharedFamily);
     const secondLoad = vi.fn().mockResolvedValue(sharedFamily);
-    const firstEntry = defineIconFamilyCatalogEntry({
-      id: 'shared-icons',
-      label: 'Shared',
-      load: firstLoad
-    });
-    const secondEntry = defineIconFamilyCatalogEntry({
-      id: 'shared-icons',
-      label: 'Shared',
-      load: secondLoad
-    });
+    const firstEntry = createCatalogEntry('shared-icons', 'Shared', firstLoad);
+    const secondEntry = createCatalogEntry('shared-icons', 'Shared', secondLoad);
     const result = render(
       h(
         'div',
@@ -306,6 +319,118 @@ describe('IconFamilyProvider', () => {
 
     release?.();
     await waitFor(() => expect(probe.dataset.effective).toBe('second-icons'));
+  });
+
+  it('resolves a preset variant and switches variants without changing family identity', async () => {
+    const variants = createVariantFamily('variant-icons');
+    const result = render(
+      h(
+        KiskadeeContext.Provider,
+        { value: createContextValue('variant-icons', 'bold') },
+        h(IconFamilyProvider, { families: [variants] }, h(StatusProbe))
+      )
+    );
+    const probe = result.getByRole('button');
+
+    await waitFor(() => expect(probe.dataset.effective).toBe('variant-icons'));
+    expect(probe.dataset.effectiveVariant).toBe('bold');
+
+    result.rerender(
+      h(
+        KiskadeeContext.Provider,
+        { value: createContextValue('variant-icons', 'thin') },
+        h(IconFamilyProvider, { families: [variants] }, h(StatusProbe))
+      )
+    );
+
+    await waitFor(() => expect(probe.dataset.effectiveVariant).toBe('thin'));
+    expect(probe.dataset.effective).toBe('variant-icons');
+  });
+
+  it('loads a lazy family once while switching between its local variants', async () => {
+    const family = createVariantFamily('lazy-variant-icons');
+    const load = vi.fn().mockResolvedValue(family);
+    const entry = defineIconFamilyCatalogEntry({
+      id: family.id,
+      label: family.label,
+      defaultVariant: family.defaultVariant,
+      variants: [
+        { id: 'thin', label: 'Thin' },
+        { id: 'bold', label: 'Bold' }
+      ],
+      load
+    });
+    const result = render(
+      h(
+        IconFamilyProvider,
+        { catalog: [entry], family: family.id, variant: 'thin' },
+        h(StatusProbe)
+      )
+    );
+    const probe = result.getByRole('button');
+
+    await waitFor(() => expect(probe.dataset.effectiveVariant).toBe('thin'));
+    result.rerender(
+      h(
+        IconFamilyProvider,
+        { catalog: [entry], family: family.id, variant: 'bold' },
+        h(StatusProbe)
+      )
+    );
+
+    await waitFor(() => expect(probe.dataset.effectiveVariant).toBe('bold'));
+    expect(load).toHaveBeenCalledTimes(1);
+  });
+
+  it('prepares each selected variant independently', async () => {
+    const thinPrepare = vi.fn().mockResolvedValue(undefined);
+    const boldPrepare = vi.fn().mockResolvedValue(undefined);
+    const family = defineIconFamily({
+      id: 'prepared-variant-icons',
+      label: 'Prepared variants',
+      defaultVariant: 'thin',
+      variants: {
+        thin: { label: 'Thin', glyphs: { search: SearchGlyph }, prepare: thinPrepare },
+        bold: { label: 'Bold', glyphs: { search: SearchGlyph }, prepare: boldPrepare }
+      }
+    });
+    const result = render(
+      h(
+        IconFamilyProvider,
+        { families: [family], family: family.id, variant: 'thin' },
+        h(StatusProbe)
+      )
+    );
+    const probe = result.getByRole('button');
+
+    await waitFor(() => expect(probe.dataset.effectiveVariant).toBe('thin'));
+    result.rerender(
+      h(
+        IconFamilyProvider,
+        { families: [family], family: family.id, variant: 'bold' },
+        h(StatusProbe)
+      )
+    );
+
+    await waitFor(() => expect(probe.dataset.effectiveVariant).toBe('bold'));
+    expect(thinPrepare).toHaveBeenCalledTimes(1);
+    expect(boldPrepare).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects an unavailable explicit variant without visual fallback', async () => {
+    const family = createVariantFamily('strict-variant-icons');
+    const result = render(
+      h(
+        IconFamilyProvider,
+        { families: [family], family: family.id, variant: 'missing' },
+        h(StatusProbe)
+      )
+    );
+    const probe = result.getByRole('button');
+
+    await waitFor(() => expect(probe.dataset.status).toBe('error'));
+    expect(probe.dataset.effective).toBe('');
+    expect(probe.dataset.error).toContain('does not provide variant "missing"');
   });
 
   it('resolves the explicit SF Symbols web fallback', async () => {
@@ -395,13 +520,7 @@ describe('IconFamilyProvider', () => {
       h(
         IconFamilyProvider,
         {
-          catalog: [
-            defineIconFamilyCatalogEntry({
-              id: 'load-retry-icons',
-              label: 'Load retry',
-              load
-            })
-          ],
+          catalog: [createCatalogEntry('load-retry-icons', 'Load retry', load)],
           family: 'load-retry-icons'
         },
         h(StatusProbe)

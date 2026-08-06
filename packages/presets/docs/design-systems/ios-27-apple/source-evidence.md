@@ -79,11 +79,13 @@ This directory records official source evidence and preset-level decisions for
 ## Interface Icon Evidence
 
 Apple identifies SF Symbols as the symbol family designed to integrate with San Francisco and
-Apple-platform text. Kiskadee therefore recommends the semantic family ID `sf-symbols`. This is
-**Official adapted** at the preset boundary: the recommendation preserves Apple's platform intent,
-but the Web package does not redistribute or claim to implement SF Symbols.
+Apple-platform text. Kiskadee therefore recommends semantic family `sf-symbols` with variant
+`regular`. This is **Official adapted** at the preset boundary: the recommendation preserves
+Apple's platform family and regular weight intent, but the Web package does not redistribute or
+claim to implement SF Symbols.
 
-The optional Web catalog declares `sf-symbols -> iconoir` as an explicit **Kiskadee extension**.
+The optional Web catalog declares `sf-symbols.regular -> iconoir.regular` as an explicit
+**Kiskadee extension**.
 It is a portability fallback, not an Apple-equivalent family, and the UI must identify it as
 `Iconoir (fallback for SF Symbols)`. Native integrations can register a real `sf-symbols`
 implementation under the same recommended ID without changing the preset.
