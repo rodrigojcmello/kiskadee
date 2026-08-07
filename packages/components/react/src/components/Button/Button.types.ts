@@ -3,6 +3,7 @@ import type {
   ActivationFeedbackProfileMode,
   ButtonIconLayout,
   ButtonIconPlacement,
+  ButtonIconTreatment,
   ButtonIntent,
   ClassNameByElementJSON,
   ComponentEmphasis,
@@ -16,9 +17,11 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import type { HTMLAttributes, ReactNode } from 'react';
 import type { DeterminateDecorativeProgressProps } from '../Progress/Progress.types.ts';
 
+export type { ButtonIconTreatment } from '@kiskadee/core';
+
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
-export type ButtonElementName = 'e1' | 'e2' | 'e3';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
@@ -97,4 +100,9 @@ export type ButtonProps = HeadlessButtonProps & {
   iconLayout?: ButtonIconLayout;
   /** Logical icon side. Leading/trailing follow the document direction. */
   iconPlacement?: ButtonIconPlacement;
+  /**
+   * Optional visual treatment for the icon region.
+   * Surfaced treatments require both an icon and a label and imply edge layout.
+   */
+  iconTreatment?: ButtonIconTreatment;
 };

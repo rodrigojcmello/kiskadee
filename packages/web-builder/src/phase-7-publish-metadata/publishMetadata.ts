@@ -1,6 +1,7 @@
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type {
+  ButtonIconTreatment,
   ComponentClassNameMapSplitJSON,
   ComponentName,
   GlobalSemanticsBySegment,
@@ -51,6 +52,13 @@ import type {
   ManifestFonts,
   ManifestIcons
 } from './manifestTypes.ts';
+
+const BUTTON_PLAIN_ICON_TREATMENTS = ['plain'] as const satisfies readonly ButtonIconTreatment[];
+const BUTTON_SURFACED_ICON_TREATMENTS = [
+  'plain',
+  'surface',
+  'surface-divider'
+] as const satisfies readonly ButtonIconTreatment[];
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
@@ -272,6 +280,13 @@ function buildComponentScale(
     out[key] = true;
   }
   return out;
+}
+
+function buildButtonIconTreatments(schema: Schema): ButtonIconTreatment[] | undefined {
+  const button = schema.components?.button;
+  if (!button) return undefined;
+
+  return [...(button.elements.e4 ? BUTTON_SURFACED_ICON_TREATMENTS : BUTTON_PLAIN_ICON_TREATMENTS)];
 }
 
 export function buildComponentSurfaceContexts(
@@ -696,6 +711,15 @@ export async function publishMetadata(params: {
         ...(componentSurfaceContexts ? { surfaceContexts: componentSurfaceContexts } : {})
       };
     }
+  }
+
+  const buttonIconTreatments = buildButtonIconTreatments(schema);
+  if (buttonIconTreatments) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.button = {
+      ...(manifest.components.button ?? {}),
+      iconTreatments: buttonIconTreatments
+    };
   }
 
   if (buildSliderComponentArtifact(schema)) {

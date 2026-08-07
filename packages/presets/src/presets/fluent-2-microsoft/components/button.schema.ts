@@ -190,10 +190,42 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
+  const createIconRegionContextPalettes = () => {
+    const createContext = () => ({
+      boxColor: {
+        neutral: {
+          medium: {
+            rest: neutralButtonFamily.color('light', 0)
+          }
+        }
+      },
+      textColor: {
+        neutral: {
+          medium: {
+            rest: neutralButtonFamily.color('light', 85)
+          }
+        }
+      },
+      borderColor: {
+        neutral: {
+          medium: {
+            rest: neutralButtonFamily.color('light', 10)
+          }
+        }
+      }
+    });
+
+    return {
+      onSubtle: createContext(),
+      onVivid: createContext()
+    };
+  };
+
   return {
     options: {
       iconLayout: 'inline',
-      iconPlacement: 'leading'
+      iconPlacement: 'leading',
+      iconTreatment: 'plain'
     },
     elements: {
       e1: {
@@ -305,6 +337,28 @@ export function createFluent2MicrosoftButtonSchema({
             's:sm:1': 4,
             's:md:1': 6,
             's:lg:1': 6
+          }
+        }
+      },
+      e4: {
+        name: 'button-icon-region',
+        palettes: {
+          default: {
+            light: createIconRegionContextPalettes(),
+            dark: createIconRegionContextPalettes(),
+            darker: createIconRegionContextPalettes()
+          }
+        },
+        scales: {
+          paddingLeft: {
+            's:sm:1': 2,
+            's:md:1': { 'bp:all': 8, 'bp:lg:1': 6 },
+            's:lg:1': 8
+          },
+          paddingRight: {
+            's:sm:1': 2,
+            's:md:1': { 'bp:all': 8, 'bp:lg:1': 6 },
+            's:lg:1': 8
           }
         }
       }

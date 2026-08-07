@@ -104,10 +104,15 @@ function unwrapBrandComponentClassMap<TClassMap>(
   return value as TClassMap;
 }
 
-export function useComponentClassMap<TClassMap>(
+export type ComponentClassMapResolution<TClassMap> = {
+  classMap: TClassMap | undefined;
+  pending: boolean;
+};
+
+export function useComponentClassMapResolution<TClassMap>(
   componentName: string,
   aggregateClassMap: TClassMap | undefined
-): TClassMap | undefined {
+): ComponentClassMapResolution<TClassMap> {
   const { artifactVersion, designSystem, loadComponentClassMap, segment, theme } = useKiskadee();
   const brandPack = useBrandPack();
   const classMapCacheKey = getComponentArtifactCacheKey({
@@ -201,8 +206,20 @@ export function useComponentClassMap<TClassMap>(
       )
     : undefined;
 
-  return useMemo(
+  const classMap = useMemo(
     () => mergeComponentClassMaps(baseClassMap, brandComponentClassMap),
     [baseClassMap, brandComponentClassMap]
   );
+
+  return {
+    classMap,
+    pending: Boolean(loadComponentClassMap && classMapState?.cacheKey !== classMapCacheKey)
+  };
+}
+
+export function useComponentClassMap<TClassMap>(
+  componentName: string,
+  aggregateClassMap: TClassMap | undefined
+): TClassMap | undefined {
+  return useComponentClassMapResolution(componentName, aggregateClassMap).classMap;
 }

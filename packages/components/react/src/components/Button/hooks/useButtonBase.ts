@@ -5,6 +5,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBrandPack } from '../../../shared/contexts/BrandPackContext.tsx';
 import {
+  DEFAULT_BUTTON_ICON_TREATMENT,
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_PRESSED_DURATION_MS,
   DEFAULT_BUTTON_SCALE,
@@ -38,6 +39,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     pressedDurationMs,
     iconLayout: iconLayoutProp,
     iconPlacement: iconPlacementProp,
+    iconTreatment: iconTreatmentProp,
     onClick,
     onPointerDown,
     onPointerUp,
@@ -49,11 +51,13 @@ export function useButtonCommonProps(props: ButtonProps) {
   } = props;
 
   const brandPack = useBrandPack();
-  const { buttonClassesMap, componentEffects, globalEffects, options } = useButtonArtifactConfig();
-  const { e1, e2, e3 } = buttonClassesMap ?? {};
+  const { buttonClassesMap, buttonClassesMapPending, componentEffects, globalEffects, options } =
+    useButtonArtifactConfig();
+  const { e1, e2, e3, e4 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
   const iconLayout = iconLayoutProp ?? options.iconLayout;
   const iconPlacement = iconPlacementProp ?? options.iconPlacement;
+  const iconTreatment = iconTreatmentProp ?? options.iconTreatment ?? DEFAULT_BUTTON_ICON_TREATMENT;
   const isBrandIntent = intent.startsWith('brand.');
   const supportsBrandIntent =
     !isBrandIntent || Boolean(brandPack?.hasComponent('button') && brandPack.hasIntent(intent));
@@ -88,6 +92,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     pressedDurationMs,
     iconLayout,
     iconPlacement,
+    iconTreatment,
+    iconLayoutWasExplicit: iconLayoutProp !== undefined,
     onClick,
     onPointerDown,
     onPointerUp,
@@ -99,6 +105,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     e1,
     e2,
     e3,
+    e4,
+    buttonClassesMapPending,
     componentEffects,
     globalEffects,
     options
@@ -109,14 +117,19 @@ export type ButtonCommonProps = ReturnType<typeof useButtonCommonProps>;
 
 export function useButtonClassNamesFromCommon(
   common: ButtonCommonProps,
-  options: { statusOverride?: ButtonStatus | 'rest' } = {}
-): NonNullable<HeadlessButtonProps['classNames']> {
+  options: {
+    statusOverride?: ButtonStatus | 'rest';
+    iconLayoutOverride?: ButtonProps['iconLayout'];
+    iconTreatmentOverride?: ButtonProps['iconTreatment'];
+  } = {}
+) {
   return useMemo(
     () =>
       resolveButtonClassNames({
         e1: common.e1,
         e2: common.e2,
         e3: common.e3,
+        e4: common.e4,
         classNames: common.classNames,
         status: options.statusOverride ?? common.status,
         controlState: common.controlState,
@@ -127,14 +140,16 @@ export function useButtonClassNamesFromCommon(
         emphasis: common.emphasis,
         intent: common.intent,
         surfaceContext: common.surfaceContext,
-        iconLayout: common.iconLayout,
+        iconLayout: options.iconLayoutOverride ?? common.iconLayout,
         iconPlacement: common.iconPlacement,
+        iconTreatment: options.iconTreatmentOverride ?? common.iconTreatment,
         globalRadius: common.options.radius
       }),
     [
       common.e1,
       common.e2,
       common.e3,
+      common.e4,
       common.classNames,
       options.statusOverride,
       common.status,
@@ -147,7 +162,10 @@ export function useButtonClassNamesFromCommon(
       common.intent,
       common.surfaceContext,
       common.iconLayout,
+      options.iconLayoutOverride,
       common.iconPlacement,
+      common.iconTreatment,
+      options.iconTreatmentOverride,
       common.options.radius
     ]
   );

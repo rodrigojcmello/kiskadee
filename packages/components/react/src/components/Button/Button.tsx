@@ -1,4 +1,5 @@
 import './Button.structural.scss';
+import type { ButtonIconTreatment } from '@kiskadee/core';
 import { Button as HeadlessButton, HeadlessProgress } from '@kiskadee/react-headless';
 import {
   Children,
@@ -37,12 +38,15 @@ declare const process: { env: { NODE_ENV?: string } };
 export type {
   ButtonActivationFeedbackEffect,
   ButtonIconProps,
+  ButtonIconTreatment,
   ButtonProgressProps,
   ButtonProps,
   ButtonStatus
 } from './Button.types.ts';
 
 type ButtonRuntimeContextValue = {
+  iconRegionClassName: string | undefined;
+  iconTreatment: ButtonIconTreatment;
   progressAllowed: boolean;
   progressWarningRequired: boolean;
 };
@@ -53,6 +57,7 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
   { name, fallback, children, ...props },
   ref
 ) {
+  const { iconRegionClassName, iconTreatment } = useButtonRuntimeContext('Button.Icon');
   const resolvedNamedGlyph = useResolvedIconGlyph(name);
 
   if (name !== undefined && !resolvedNamedGlyph.glyph && fallback === undefined) {
@@ -68,17 +73,23 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
     return null;
   }
 
-  return (
+  const icon = (
     <HeadlessButton.Icon {...props} ref={ref}>
       {name !== undefined ? <IconGlyph name={name} fallback={fallback} /> : children}
     </HeadlessButton.Icon>
   );
+
+  if (iconTreatment === 'plain') {
+    return icon;
+  }
+
+  return <span className={iconRegionClassName}>{icon}</span>;
 });
 
-function useButtonRuntimeContext(): ButtonRuntimeContextValue {
+function useButtonRuntimeContext(componentName = 'Button.Progress'): ButtonRuntimeContextValue {
   const context = useContext(ButtonRuntimeContext);
   if (!context) {
-    throw new Error('Button.Progress must be used within a Button');
+    throw new Error(`${componentName} must be used within a Button`);
   }
   return context;
 }
@@ -178,9 +189,7 @@ function normalizeButtonChildren(
       Boolean(legacyLabel) && (typeof legacyLabel !== 'string' || legacyLabel.trim().length > 0);
 
     if (hasLegacyIcon) {
-      contentChildren.push(
-        <HeadlessButton.Icon key="button-legacy-icon">{legacyIcon}</HeadlessButton.Icon>
-      );
+      contentChildren.push(<ButtonIcon key="button-legacy-icon">{legacyIcon}</ButtonIcon>);
     }
     if (hasLegacyLabel) {
       contentChildren.push(
@@ -193,12 +202,81 @@ function normalizeButtonChildren(
   return normalizedChildren.length > 0 ? normalizedChildren : undefined;
 }
 
+function getButtonContentSlots(children: ReactNode): {
+  hasIcon: boolean;
+  hasLabel: boolean;
+} {
+  let hasIcon = false;
+  let hasLabel = false;
+
+  for (const child of Children.toArray(children)) {
+    if (!isValidElement(child)) continue;
+    if (child.type === ButtonIcon) {
+      hasIcon = true;
+    }
+    if (child.type === HeadlessButton.Label) {
+      hasLabel = true;
+    }
+  }
+
+  return { hasIcon, hasLabel };
+}
+
 function ButtonRoot(props: ButtonProps) {
   const common = useButtonCommonProps(props);
   const normalizedChildren = useMemo(
     () => normalizeButtonChildren(props.children, common.icon, common.label),
     [props.children, common.icon, common.label]
   );
+  const contentSlots = useMemo(
+    () => getButtonContentSlots(normalizedChildren),
+    [normalizedChildren]
+  );
+  const requestedSurfacedIconTreatment = common.iconTreatment !== 'plain';
+  const surfacedIconTreatmentSupported = !common.buttonClassesMapPending && Boolean(common.e4);
+  const activeIconTreatment: ButtonIconTreatment =
+    requestedSurfacedIconTreatment &&
+    surfacedIconTreatmentSupported &&
+    contentSlots.hasIcon &&
+    contentSlots.hasLabel
+      ? common.iconTreatment
+      : 'plain';
+  const activeIconLayout = activeIconTreatment === 'plain' ? common.iconLayout : 'edge';
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production' || !requestedSurfacedIconTreatment) return;
+
+    if (common.buttonClassesMapPending) return;
+
+    if (!surfacedIconTreatmentSupported) {
+      console.warn(
+        `[Kiskadee] Button iconTreatment="${common.iconTreatment}" requires icon-region support from the active preset. Falling back to "plain".`
+      );
+      return;
+    }
+
+    if (!contentSlots.hasIcon || !contentSlots.hasLabel) {
+      console.warn(
+        `[Kiskadee] Button iconTreatment="${common.iconTreatment}" requires both Button.Icon and Button.Label. Falling back to "plain".`
+      );
+      return;
+    }
+
+    if (common.iconLayoutWasExplicit && common.iconLayout === 'inline') {
+      console.warn(
+        `[Kiskadee] Button iconTreatment="${common.iconTreatment}" requires iconLayout="edge". The explicit inline layout was converted to edge.`
+      );
+    }
+  }, [
+    common.iconLayout,
+    common.iconLayoutWasExplicit,
+    common.iconTreatment,
+    common.buttonClassesMapPending,
+    contentSlots.hasIcon,
+    contentSlots.hasLabel,
+    requestedSurfacedIconTreatment,
+    surfacedIconTreatmentSupported
+  ]);
   const feedbackEffectAvailability = useMemo(
     () =>
       resolveButtonFeedbackEffectAvailability({
@@ -249,6 +327,8 @@ function ButtonRoot(props: ButtonProps) {
     ]
   );
   const baseClassNames = useButtonClassNamesFromCommon(common, {
+    iconLayoutOverride: activeIconLayout,
+    iconTreatmentOverride: activeIconTreatment,
     statusOverride: activationFeedbackController.shouldForceOverlayPressed
       ? 'rest'
       : activationFeedbackController.visualStatus
@@ -264,10 +344,18 @@ function ButtonRoot(props: ButtonProps) {
   );
   const runtimeContextValue = useMemo<ButtonRuntimeContextValue>(
     () => ({
+      iconRegionClassName: baseClassNames.e4,
+      iconTreatment: activeIconTreatment,
       progressAllowed: activationFeedbackController.visualStatus === 'pending',
       progressWarningRequired: common.pending !== true && common.status !== 'pending'
     }),
-    [activationFeedbackController.visualStatus, common.pending, common.status]
+    [
+      activationFeedbackController.visualStatus,
+      activeIconTreatment,
+      baseClassNames.e4,
+      common.pending,
+      common.status
+    ]
   );
 
   return (

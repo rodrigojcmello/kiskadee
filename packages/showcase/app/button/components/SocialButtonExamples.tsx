@@ -281,6 +281,26 @@ const EMPHASES = [
   'lowest'
 ] as const satisfies readonly ComponentEmphasis[];
 const SURFACE_CONTEXTS = ['onSubtle', 'onVivid'] as const satisfies readonly SurfaceContext[];
+const ICON_TREATMENT_EXAMPLES = [
+  {
+    id: 'plain',
+    iconTreatment: 'plain',
+    presentation: 'monochrome',
+    title: 'Plain'
+  },
+  {
+    id: 'surface',
+    iconTreatment: 'surface',
+    presentation: 'brand',
+    title: 'Surface'
+  },
+  {
+    id: 'surface-divider',
+    iconTreatment: 'surface-divider',
+    presentation: 'brand',
+    title: 'Surface + divider'
+  }
+] as const;
 
 function BrandActionColumn({
   buttonIntent,
@@ -364,14 +384,68 @@ function BrandActionColumn({
   );
 }
 
+function IconTreatmentComparison({
+  fontName,
+  scale,
+  surfaceContext
+}: {
+  fontName: string;
+  scale: ElementSizeValue;
+  surfaceContext: SurfaceContext;
+}) {
+  const GoogleIcon = SHOWCASE_BRANDS.google.icon;
+
+  return (
+    <section aria-labelledby="brand-icon-treatment-title">
+      <h4 id="brand-icon-treatment-title">Icon region treatments</h4>
+      <p className={styles.iconTreatmentDescription}>
+        The same Primary high action compares a foreground-following logo with a brand mark on a
+        stable light icon surface.
+      </p>
+      <div className={styles.iconTreatmentGrid}>
+        {ICON_TREATMENT_EXAMPLES.map((example) => (
+          <article className={styles.iconTreatmentExample} key={example.id}>
+            <h5>{example.title}</h5>
+            <KButton
+              emphasis="high"
+              iconLayout="edge"
+              iconPlacement="leading"
+              iconTreatment={example.iconTreatment}
+              intent="primary"
+              scale={scale}
+              surfaceContext={surfaceContext}
+            >
+              <KButton.Icon>
+                <GoogleIcon
+                  construction="mark"
+                  presentation={example.presentation}
+                  width="100%"
+                  height="100%"
+                />
+              </KButton.Icon>
+              <KButton.Label>
+                <SmoothText fontName={fontName} align="center">
+                  Continue with Google
+                </SmoothText>
+              </KButton.Label>
+            </KButton>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function SocialButtonExamples({
   fontName,
+  iconRegionAvailable,
   scale,
   onSubtleBackground,
   onVividBackground,
   surfaceContext
 }: {
   fontName: string;
+  iconRegionAvailable: boolean;
   scale: ElementSizeValue;
   onSubtleBackground?: string;
   onVividBackground?: string;
@@ -403,6 +477,14 @@ export function SocialButtonExamples({
             ))}
           </div>
         </section>
+
+        {iconRegionAvailable ? (
+          <IconTreatmentComparison
+            fontName={fontName}
+            scale={scale}
+            surfaceContext={surfaceContext}
+          />
+        ) : null}
 
         <section aria-labelledby="brand-state-references-title">
           <h4 id="brand-state-references-title">State references</h4>

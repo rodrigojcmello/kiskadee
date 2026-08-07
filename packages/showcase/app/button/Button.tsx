@@ -804,6 +804,10 @@ export function Button() {
         {designSystem === 'fluent-2-microsoft' ? (
           <SocialButtonExamples
             fontName={fontName}
+            iconRegionAvailable={Boolean(
+              buttonMeta?.iconTreatments?.includes('surface') &&
+                buttonMeta.iconTreatments.includes('surface-divider')
+            )}
             scale={activeButtonScale}
             onSubtleBackground={comparisonOnSubtleSurface?.resolvedColor}
             onVividBackground={comparisonOnVividSurface?.resolvedColor}

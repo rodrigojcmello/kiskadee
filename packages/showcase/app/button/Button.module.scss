@@ -228,6 +228,33 @@ $height: 64px;
   }
 }
 
+.iconTreatmentDescription {
+  color: currentColor;
+  margin: -4px 0 12px;
+  opacity: 0.68;
+}
+
+.iconTreatmentGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.iconTreatmentExample {
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 14px;
+  min-width: 0;
+  padding: 16px;
+
+  > h5 {
+    margin: 0 0 12px;
+  }
+
+  :global(.k-btn) {
+    width: 100%;
+  }
+}
+
 .brandExampleGrid {
   display: grid;
   gap: 16px;
@@ -578,6 +605,10 @@ $height: 64px;
   }
 
   .brandActionColumns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .iconTreatmentGrid {
     grid-template-columns: minmax(0, 1fr);
   }
 }

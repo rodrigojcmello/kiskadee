@@ -3,6 +3,7 @@ import type {
   ActivationFeedbackSetting,
   ButtonIconLayout,
   ButtonIconPlacement,
+  ButtonIconTreatment,
   RadiusMode,
   SchemaFonts,
   SchemaIcons,
@@ -32,6 +33,7 @@ type GlobalArtifact = {
       options?: {
         iconLayout?: ButtonIconLayout;
         iconPlacement?: ButtonIconPlacement;
+        iconTreatment?: ButtonIconTreatment;
       };
       effects?: {
         activationFeedback?: ActivationFeedbackSetting;

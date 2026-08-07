@@ -30,6 +30,7 @@ type ElementNameMetadata = {
 
 export type ButtonIconLayout = 'inline' | 'edge';
 export type ButtonIconPlacement = 'leading' | 'trailing';
+export type ButtonIconTreatment = 'plain' | 'surface' | 'surface-divider';
 
 export type ButtonOptions = {
   /**
@@ -39,6 +40,8 @@ export type ButtonOptions = {
   iconLayout?: ButtonIconLayout;
   /** Logical icon side. Leading/trailing follow the document direction. */
   iconPlacement?: ButtonIconPlacement;
+  /** Visual treatment applied to the icon region. */
+  iconTreatment?: ButtonIconTreatment;
 };
 
 /**
@@ -46,8 +49,9 @@ export type ButtonOptions = {
  * - e1: button container/surface
  * - e2: button label
  * - e3: button icon
+ * - e4: optional icon region/surface
  */
-export type ButtonElementName = 'e1' | 'e2' | 'e3';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4';
 
 /**
  * e1 — button container/surface
@@ -94,10 +98,22 @@ export type ButtonIconElementStyle<TSegmentName extends SegmentName = never> = P
 }> &
   ElementNameMetadata;
 
+/**
+ * e4 — optional icon region/surface
+ */
+export type ButtonIconRegionElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+  scales: ElementScalesByProperty<
+    'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
+  >;
+  palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'textColor' | 'borderColor'>;
+}> &
+  ElementNameMetadata;
+
 export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e1?: ButtonContainerElementStyle<TSegmentName>;
   e2?: ButtonLabelElementStyle<TSegmentName>;
   e3?: ButtonIconElementStyle<TSegmentName>;
+  e4?: ButtonIconRegionElementStyle<TSegmentName>;
 };
 
 type ElementContractRules = {
@@ -107,8 +123,8 @@ type ElementContractRules = {
 };
 
 const BUTTON_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
-const BUTTON_OPTION_KEYS = ['iconLayout', 'iconPlacement'] as const;
-const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3'] as const;
+const BUTTON_OPTION_KEYS = ['iconLayout', 'iconPlacement', 'iconTreatment'] as const;
+const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
 
 const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContractRules> = {
@@ -132,6 +148,10 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
   e3: {
     scales: ['boxWidth', 'boxHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
     palettes: ['textColor']
+  },
+  e4: {
+    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    palettes: ['boxColor', 'textColor', 'borderColor']
   }
 };
 
@@ -243,6 +263,17 @@ export function validateButtonComponentContract(
       ) {
         issues.push(`${path}.options.iconPlacement: expected "leading" or "trailing"`);
       }
+
+      if (
+        value.options.iconTreatment !== undefined &&
+        value.options.iconTreatment !== 'plain' &&
+        value.options.iconTreatment !== 'surface' &&
+        value.options.iconTreatment !== 'surface-divider'
+      ) {
+        issues.push(
+          `${path}.options.iconTreatment: expected "plain", "surface", or "surface-divider"`
+        );
+      }
     }
   }
 
@@ -258,6 +289,17 @@ export function validateButtonComponentContract(
     const element = elements[key];
     if (element === undefined) continue;
     validateElementContract(element, `${path}.elements.${key}`, BUTTON_RULES[key], issues);
+  }
+
+  if (
+    isRecord(value.options) &&
+    value.options.iconTreatment !== undefined &&
+    value.options.iconTreatment !== 'plain' &&
+    elements.e4 === undefined
+  ) {
+    issues.push(
+      `${path}.options.iconTreatment: surfaced defaults require components.button.elements.e4`
+    );
   }
 
   return issues;

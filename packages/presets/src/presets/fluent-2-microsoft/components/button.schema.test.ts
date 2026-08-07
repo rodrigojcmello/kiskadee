@@ -38,7 +38,8 @@ describe('Fluent 2 Button surface contexts', () => {
   it('publishes logical icon composition defaults', () => {
     expect(schema.components.button?.options).toEqual({
       iconLayout: 'inline',
-      iconPlacement: 'leading'
+      iconPlacement: 'leading',
+      iconTreatment: 'plain'
     });
   });
 

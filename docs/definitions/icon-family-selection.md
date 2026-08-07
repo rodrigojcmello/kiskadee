@@ -11,6 +11,10 @@ styling.
 5. `Icon` or `IconGlyph` resolves a semantic name against the effective family.
 6. The consuming component keeps ownership of all color, size, surface, semantics, and slot style.
 
+For example, Button may place a direct brand mark inside its optional `e4` contrast surface.
+Changing the interface icon family still changes only glyph geometry; it never enables, colors, or
+removes that Button-owned surface.
+
 The schema contains no imports, URLs, components, glyphs, variants, or loaders. Build artifacts
 preserve the recommendation in `global.kiskadee.json` and publish only the selected ID in
 `manifest.icons.family`.

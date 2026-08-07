@@ -52,6 +52,7 @@ This file records source evidence and color decisions for the Button currently a
 | Dark Button component set | `9026:2684` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
 | Microsoft sign-in pending treatment | Product observation, 2026-07-31 | Translucent Primary action while processing | Kiskadee extension; motivational evidence only |
+| Surfaced icon region | No equivalent Fluent Button API was found | Light icon canvas and optional divider inside a vivid Button | Kiskadee extension |
 | On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 | Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
@@ -151,6 +152,38 @@ arbitrary spinner rendered through `Button.Icon` fully legible and prevents a co
 the product-observed sense that the accepted action is temporarily unavailable. Pending remains a
 sparse terminal delta: Focus can keep its accessibility ring, while hover and pressed no longer
 leak into properties omitted by the pending recipe.
+
+## Kiskadee Extension: Surfaced Icon Region
+
+Fluent's inspected Button component and public React contract provide an icon slot, but do not
+publish an equivalent full-height light panel inside a vivid Button. Kiskadee exposes this
+composition as an explicit framework extension through `iconTreatment="surface"` and
+`iconTreatment="surface-divider"`.
+
+The extension preserves multicolor social marks by separating their local canvas from the outer
+Button surface. It does not infer a brand presentation, recolor arbitrary artwork, or add opacity
+or filters to the icon. The consumer still selects the artwork rendered by `Button.Icon`.
+
+The icon region uses one `neutral.medium.rest` profile independent of the outer Button intent and
+emphasis:
+
+| Region role | Fluent source token | Source value | Kiskadee mapping |
+| --- | --- | --- | --- |
+| Background | `NeutralBackground1.Rest` | `#ffffff` | `button.neutral` Light L0 |
+| Foreground | `NeutralForeground1.Rest` | `#21242d` | `button.neutral` Light L85 |
+| Divider | `NeutralStroke1.Rest` | `#ccd1dd` | `button.neutral` Light L10 |
+
+Light, Dark, and Darker intentionally resolve the region from the physical Light track. The local
+canvas must remain visually light even when the surrounding theme is Dark or Darker; this is a
+Kiskadee composition decision, not an official Fluent dark-token substitution.
+
+`e4` publishes only Rest colors. Hover, Pressed, Pending, and Disabled continue to be communicated
+by the Button root and label while the icon canvas and arbitrary artwork stay stable. The region
+uses the Button's three existing scales: its inline padding combines with the `e3` icon viewport to
+form a 24 px Small, responsive 40/32 px Medium, and 40 px Large panel before the optional
+layout-neutral divider is painted. The divider inherits the `e1` border width. The region inherits
+the same root geometry and derives its outer radius as `e1 radius - e1 border width`, keeping the
+inner canvas concentric without duplicating radius or border-width tokens in `e4`.
 
 ## Surface Contexts
 
@@ -658,6 +691,11 @@ changing the asset scales.
 - Pending is a Kiskadee extension derived from each resolved Rest color. Filled surfaces and the
   Low outline retain 60% of their Rest alpha, labels retain 70%, the icon omits pending so spinners
   remain at Rest strength, and the optional shadow resolves to zero.
+- `e4` is the optional Kiskadee icon-region surface. It uses `neutral.medium.rest` with the physical
+  Light L0 background, L85 foreground, and L10 divider in every theme and surface context. Its
+  outer corners and divider width derive from the inherited `e1` radius and border width.
+- `components.button.options.iconTreatment` remains `plain`; surfaced treatments are explicit
+  per-instance extensions and imply edge composition.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
   treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official
@@ -695,6 +733,8 @@ changing the asset scales.
   and state recipe. Neutral High explicitly uses the D0 foreground cap in Dark/Darker because its
   contrast-mirrored `vivid` surface is physically light. The official Secondary, Outline, Subtle,
   and Transparent values remain documented as source evidence rather than active surface tuning.
+- The surfaced icon region is a Kiskadee extension. Its color provenance is Fluent-derived, but the
+  combined internal panel is not presented as an official Fluent Button appearance.
 - Primary Medium, Low, and Lowest are Kiskadee extensions. Only Primary High maps to an official
   Fluent Primary Button appearance.
 - Destructive and Positive use official Fluent semantic color families, but all four Button

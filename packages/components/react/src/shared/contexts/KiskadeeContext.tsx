@@ -3,6 +3,7 @@ import type {
   ActivationFeedbackSetting,
   ButtonIconLayout,
   ButtonIconPlacement,
+  ButtonIconTreatment,
   ComponentClassNameMapJSON,
   RadiusMode,
   SchemaFonts,
@@ -101,6 +102,7 @@ export type KiskadeeContextValue = {
         options?: {
           iconLayout?: ButtonIconLayout;
           iconPlacement?: ButtonIconPlacement;
+          iconTreatment?: ButtonIconTreatment;
         };
         effects?: {
           activationFeedback?: ActivationFeedbackSetting;
