@@ -63,8 +63,8 @@ Component slots do not nest a semantic Icon. For example, `Button.Icon name="sen
 Monochrome glyphs use `currentColor`; the generated `textColor` on `e1` or the parent component
 controls their paint. Fixed brand paint remains asset-owned.
 
-The component containing an icon owns any background, divider, padding, corner treatment, and
-contrast strategy around that slot. Those concerns never move into the family adapter.
+The component containing an icon owns any background, padding, corner treatment, and contrast
+strategy around that slot. Those concerns never move into the family adapter.
 
 ## Sizes
 

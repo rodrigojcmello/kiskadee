@@ -52,7 +52,7 @@ This file records source evidence and color decisions for the Button currently a
 | Dark Button component set | `9026:2684` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
 | Microsoft sign-in pending treatment | Product observation, 2026-07-31 | Translucent Primary action while processing | Kiskadee extension; motivational evidence only |
-| Surfaced icon region | No equivalent Fluent Button API was found | Light icon canvas and optional divider inside a vivid Button | Kiskadee extension |
+| Surfaced icon region | No equivalent Fluent Button API was found | Light icon canvas inside a vivid Button | Kiskadee extension |
 | On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 | Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
@@ -157,8 +157,7 @@ leak into properties omitted by the pending recipe.
 
 Fluent's inspected Button component and public React contract provide an icon slot, but do not
 publish an equivalent full-height light panel inside a vivid Button. Kiskadee exposes this
-composition as an explicit framework extension through `iconTreatment="surface"` and
-`iconTreatment="surface-divider"`.
+composition as an explicit framework extension through `iconTreatment="surface"`.
 
 The extension preserves multicolor social marks by separating their local canvas from the outer
 Button surface. It does not infer a brand presentation, recolor arbitrary artwork, or add opacity
@@ -171,7 +170,6 @@ emphasis:
 | --- | --- | --- | --- |
 | Background | `NeutralBackground1.Rest` | `#ffffff` | `button.neutral` Light L0 |
 | Foreground | `NeutralForeground1.Rest` | `#21242d` | `button.neutral` Light L85 |
-| Divider | `NeutralStroke1.Rest` | `#ccd1dd` | `button.neutral` Light L10 |
 
 Light, Dark, and Darker intentionally resolve the region from the physical Light track. The local
 canvas must remain visually light even when the surrounding theme is Dark or Darker; this is a
@@ -180,10 +178,11 @@ Kiskadee composition decision, not an official Fluent dark-token substitution.
 `e4` publishes only Rest colors. Hover, Pressed, Pending, and Disabled continue to be communicated
 by the Button root and label while the icon canvas and arbitrary artwork stay stable. The region
 uses the Button's three existing scales: its inline padding combines with the `e3` icon viewport to
-form a 24 px Small, responsive 40/32 px Medium, and 40 px Large panel before the optional
-layout-neutral divider is painted. The divider inherits the `e1` border width. The region inherits
-the same root geometry and derives its outer radius as `e1 radius - e1 border width`, keeping the
-inner canvas concentric without duplicating radius or border-width tokens in `e4`.
+form a 36 px Small, responsive 60/48 px Medium, and 60 px Large panel. These totals are a Kiskadee
+visual calibration that enlarges the original panel geometry by 50% without changing the icon
+viewport. The region inherits the same root geometry and derives its outer radius as `e1 radius -
+e1 border width`, keeping the inner canvas concentric without duplicating radius or border-width
+tokens in `e4`.
 
 ## Surface Contexts
 
@@ -692,10 +691,10 @@ changing the asset scales.
   Low outline retain 60% of their Rest alpha, labels retain 70%, the icon omits pending so spinners
   remain at Rest strength, and the optional shadow resolves to zero.
 - `e4` is the optional Kiskadee icon-region surface. It uses `neutral.medium.rest` with the physical
-  Light L0 background, L85 foreground, and L10 divider in every theme and surface context. Its
-  outer corners and divider width derive from the inherited `e1` radius and border width.
-- `components.button.options.iconTreatment` remains `plain`; surfaced treatments are explicit
-  per-instance extensions and imply edge composition.
+  Light L0 background and L85 foreground in every theme and surface context. Its outer corners
+  derive from the inherited `e1` radius and border width.
+- `components.button.options.iconTreatment` remains `plain`; the surfaced treatment is an explicit
+  per-instance extension and implies edge composition.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
   treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official

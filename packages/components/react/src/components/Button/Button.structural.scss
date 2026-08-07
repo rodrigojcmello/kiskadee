@@ -114,17 +114,54 @@
 
 /*
  * root edge icon composition / e1e
- * The label owns the center track while the icon or surfaced region uses a logical edge track.
+ * Establishes the shared grid formatting context for plain and surfaced edge layouts.
  */
 .k-btn-e1e:has(> .k-btn-e3),
 .k-btn-e1e:has(> .k-btn-e4) {
   align-items: center;
   display: inline-grid;
+}
+
+/*
+ * root plain edge icon composition / e1e
+ * The label owns the Button center while the icon uses a logical edge track.
+ */
+.k-btn-e1e:has(> .k-btn-e3) {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 
   > .k-btn-e2 {
     grid-column: 2;
     grid-row: 1;
+  }
+}
+
+/*
+ * root surfaced leading icon composition / e1e + e1f
+ * The icon panel owns the logical leading column and the label centers in the remaining surface.
+ */
+.k-btn-e1e.k-btn-e1f:has(> .k-btn-e4) {
+  grid-template-columns: max-content minmax(0, 1fr);
+
+  > .k-btn-e2 {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: center;
+    justify-self: stretch;
+  }
+}
+
+/*
+ * root surfaced trailing icon composition / e1e + e1g
+ * The label centers in the remaining surface before the logical trailing icon panel.
+ */
+.k-btn-e1e.k-btn-e1g:has(> .k-btn-e4) {
+  grid-template-columns: minmax(0, 1fr) max-content;
+
+  > .k-btn-e2 {
+    grid-column: 1;
+    grid-row: 1;
+    justify-content: center;
+    justify-self: stretch;
   }
 }
 
@@ -207,39 +244,9 @@
 .k-btn-e1e.k-btn-e1g > .k-btn-e4 {
   border-end-start-radius: 0;
   border-start-start-radius: 0;
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
   justify-self: end;
-}
-
-/*
- * element icon region modifier 'a' / e4a
- * Paints the divider with the root width and emitted region color without affecting layout.
- */
-.k-btn-e4a::after {
-  background: var(--k-bdc);
-  block-size: 100%;
-  content: '';
-  inline-size: var(--k-bdw);
-  inset-block: 0;
-  pointer-events: none;
-  position: absolute;
-}
-
-/*
- * element icon region modifier 'a' / e4a
- * Anchors the divider to the inner edge of a logical leading panel.
- */
-.k-btn-e1f > .k-btn-e4a::after {
-  inset-inline-end: 0;
-}
-
-/*
- * element icon region modifier 'a' / e4a
- * Anchors the divider to the inner edge of a logical trailing panel.
- */
-.k-btn-e1g > .k-btn-e4a::after {
-  inset-inline-start: 0;
 }
 
 /*

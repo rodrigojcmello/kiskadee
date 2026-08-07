@@ -92,9 +92,6 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         },
         e3: {
           paddingRightEmission: 'token'
-        },
-        e4: {
-          borderColorEmission: 'token'
         }
       }
     },

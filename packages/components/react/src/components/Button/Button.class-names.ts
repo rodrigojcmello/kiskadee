@@ -184,8 +184,7 @@ export function resolveButtonClassNames({
           collectElementClasses(e4, 'medium', 'neutral', resolvedSurfaceContext),
           e4HasSchemaScale ? e4?.s?.all : undefined,
           e4HasSchemaScale ? e4?.s?.[scaleKey] : undefined,
-          'k-btn-e4',
-          resolvedIconTreatment === 'surface-divider' ? 'k-btn-e4a' : undefined
+          'k-btn-e4'
         ) ?? '')
       : undefined
   };

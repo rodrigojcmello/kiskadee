@@ -9,7 +9,7 @@ Button icon composition has two independent axes:
 
 It also has an independent icon-region treatment:
 
-- `iconTreatment`: `plain | surface | surface-divider`
+- `iconTreatment`: `plain | surface`
 
 `leading` and `trailing` are logical directions and therefore follow the document direction.
 
@@ -20,7 +20,9 @@ between the two slots regardless of placement.
 
 `edge` gives the label an independent center track and pins the icon to a logical edge track. This
 keeps labels visually aligned across a group of full-width buttons even when their icons have
-different shapes.
+different shapes. This layout is intended for Buttons with enough inline space to preserve a
+comfortable separation between the edge icon and the centered label. Compact compositions should
+use `inline`; Kiskadee does not switch layouts automatically from the Button's measured width.
 
 An icon-only Button remains centered in either layout.
 
@@ -32,13 +34,10 @@ the Button icon palette.
 `surface` wraps `e3` in the optional schema element `e4`. The region occupies the full internal
 Button height and touches the logical edge. Its background, foreground, and padding belong to the
 active preset. Its outer corners derive from the Button radius minus the Button border width; its
-inner corners remain square.
+inner corners remain square. Because the panel creates a distinct visual region, the label centers
+within the remaining Button surface instead of the complete Button bounds.
 
-`surface-divider` uses the same region and adds one divider on its logical inner edge. The divider
-inherits the Button border width and uses the color emitted by `e4`; it does not affect Button
-measurement.
-
-Surfaced treatments imply `edge` layout and require both an icon and a label. An explicit
+The surfaced treatment implies `edge` layout and requires both an icon and a label. An explicit
 `iconLayout="inline"` is converted to `edge`. Missing composition or an active preset without
 `e4` falls back to `plain`.
 
@@ -52,16 +51,18 @@ The default is `plain`, including when a preset omits `iconTreatment`.
 - `Button.Icon` also accepts arbitrary direct children for product and brand artwork.
 - Button owns the icon slot's color, accessible relationship, size, spacing, and composition. It
   does not nest a semantic `Icon` component.
-- `e4` owns optional icon-region background, foreground, divider color, and padding. It is a styled
-  React wrapper and does not change the Headless Button topology.
+- `e4` owns optional icon-region background, foreground, and padding. It is a styled React wrapper
+  and does not change the Headless Button topology.
 - `e1` remains the sole source of Button border width and radius. Structural CSS consumes those
-  inherited tokens to keep the inset panel concentric with the Button and to size its divider.
-- In surfaced treatments, `e3` omits its Button palette color and inherits the stable `e4`
+  inherited tokens to keep the inset panel concentric with the Button.
+- In the surfaced treatment, `e3` omits its Button palette color and inherits the stable `e4`
   foreground. Fixed-paint artwork remains unchanged.
 - `e3.paddingRight` remains the schema-owned spacing token. The web build emits it as a structural
   token so the React structural layer can apply it on the correct logical side.
 - Structural CSS owns flex/grid composition, logical ordering, and the derived inner-corner
-  geometry. It does not own icon size, spacing, color, or Button padding tokens.
+  geometry. For the surfaced treatment, it also owns the two-region layout that centers the label
+  within the surface remaining after `e4`. It does not own icon size, spacing, color, or Button
+  padding tokens.
 
 The defaults are `inline`, `leading`, and `plain` when a preset omits the options.
 

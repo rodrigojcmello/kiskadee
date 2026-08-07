@@ -30,7 +30,7 @@ type ElementNameMetadata = {
 
 export type ButtonIconLayout = 'inline' | 'edge';
 export type ButtonIconPlacement = 'leading' | 'trailing';
-export type ButtonIconTreatment = 'plain' | 'surface' | 'surface-divider';
+export type ButtonIconTreatment = 'plain' | 'surface';
 
 export type ButtonOptions = {
   /**
@@ -105,7 +105,7 @@ export type ButtonIconRegionElementStyle<TSegmentName extends SegmentName = neve
   scales: ElementScalesByProperty<
     'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
   >;
-  palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'textColor' | 'borderColor'>;
+  palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'textColor'>;
 }> &
   ElementNameMetadata;
 
@@ -151,7 +151,7 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
   },
   e4: {
     scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
-    palettes: ['boxColor', 'textColor', 'borderColor']
+    palettes: ['boxColor', 'textColor']
   }
 };
 
@@ -267,12 +267,9 @@ export function validateButtonComponentContract(
       if (
         value.options.iconTreatment !== undefined &&
         value.options.iconTreatment !== 'plain' &&
-        value.options.iconTreatment !== 'surface' &&
-        value.options.iconTreatment !== 'surface-divider'
+        value.options.iconTreatment !== 'surface'
       ) {
-        issues.push(
-          `${path}.options.iconTreatment: expected "plain", "surface", or "surface-divider"`
-        );
+        issues.push(`${path}.options.iconTreatment: expected "plain" or "surface"`);
       }
     }
   }

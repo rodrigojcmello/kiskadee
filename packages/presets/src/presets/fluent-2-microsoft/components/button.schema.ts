@@ -205,13 +205,6 @@ export function createFluent2MicrosoftButtonSchema({
             rest: neutralButtonFamily.color('light', 85)
           }
         }
-      },
-      borderColor: {
-        neutral: {
-          medium: {
-            rest: neutralButtonFamily.color('light', 10)
-          }
-        }
       }
     });
 
@@ -351,14 +344,14 @@ export function createFluent2MicrosoftButtonSchema({
         },
         scales: {
           paddingLeft: {
-            's:sm:1': 2,
-            's:md:1': { 'bp:all': 8, 'bp:lg:1': 6 },
-            's:lg:1': 8
+            's:sm:1': 8,
+            's:md:1': { 'bp:all': 18, 'bp:lg:1': 14 },
+            's:lg:1': 18
           },
           paddingRight: {
-            's:sm:1': 2,
-            's:md:1': { 'bp:all': 8, 'bp:lg:1': 6 },
-            's:lg:1': 8
+            's:sm:1': 8,
+            's:md:1': { 'bp:all': 18, 'bp:lg:1': 14 },
+            's:lg:1': 18
           }
         }
       }

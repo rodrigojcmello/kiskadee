@@ -252,6 +252,13 @@ const ACTION_COLUMNS = [
   {
     buttonIntent: 'brand',
     emphasis: 'high',
+    iconTreatment: 'surface',
+    id: 'brand-high-surface',
+    title: 'Brand high + icon surface'
+  },
+  {
+    buttonIntent: 'brand',
+    emphasis: 'high',
     id: 'brand-high',
     title: 'Brand high emphasis'
   },
@@ -260,16 +267,11 @@ const ACTION_COLUMNS = [
     emphasis: 'low',
     id: 'brand-low',
     title: 'Brand low emphasis'
-  },
-  {
-    buttonIntent: 'primary',
-    emphasis: 'low',
-    id: 'primary-low',
-    title: 'Primary low emphasis'
   }
 ] as const satisfies ReadonlyArray<{
   buttonIntent: 'brand' | 'primary';
   emphasis: 'high' | 'low';
+  iconTreatment?: 'surface';
   id: string;
   title: string;
 }>;
@@ -293,12 +295,6 @@ const ICON_TREATMENT_EXAMPLES = [
     iconTreatment: 'surface',
     presentation: 'brand',
     title: 'Surface'
-  },
-  {
-    id: 'surface-divider',
-    iconTreatment: 'surface-divider',
-    presentation: 'brand',
-    title: 'Surface + divider'
   }
 ] as const;
 
@@ -307,6 +303,7 @@ function BrandActionColumn({
   columnId,
   emphasis,
   fontName,
+  iconTreatment,
   scale,
   surfaceContext,
   title
@@ -315,6 +312,7 @@ function BrandActionColumn({
   columnId: string;
   emphasis: 'high' | 'low';
   fontName: string;
+  iconTreatment?: 'surface';
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
   title: string;
@@ -340,12 +338,15 @@ function BrandActionColumn({
                 >
                   {resourceGroup.examples.map(({ action, brandId }) => {
                     const { icon: BrandIcon, hasBrandPresentation } = SHOWCASE_BRANDS[brandId];
-                    const appearance = getRecommendedBrandIconAppearance(
-                      brandId,
-                      surfaceContext,
-                      emphasis,
-                      hasBrandPresentation
-                    );
+                    const appearance =
+                      iconTreatment === 'surface'
+                        ? ({ construction: 'mark', presentation: 'brand' } as const)
+                        : getRecommendedBrandIconAppearance(
+                            brandId,
+                            surfaceContext,
+                            emphasis,
+                            hasBrandPresentation
+                          );
 
                     return (
                       <li key={brandId}>
@@ -353,6 +354,7 @@ function BrandActionColumn({
                           emphasis={emphasis}
                           iconLayout="edge"
                           iconPlacement="leading"
+                          iconTreatment={iconTreatment}
                           intent={buttonIntent === 'brand' ? brandIntent(brandId) : 'primary'}
                           scale={scale}
                           surfaceContext={surfaceContext}
@@ -456,19 +458,22 @@ export function SocialButtonExamples({
       <h3 id="social-button-examples-title">Brand buttons</h3>
       <p className={styles.showcaseSectionDescription}>
         Brand intents reuse the Fluent Button formula without adding brand colors to the preset. The
-        same unified set of practical actions compares brand high, brand low, and primary low
-        Buttons, while every state reference shares one collection.
+        same unified set of practical actions compares brand high with a surfaced mark, brand high,
+        and brand low, while every state reference shares one collection.
       </p>
       <div className={styles.brandCollection}>
         <section aria-labelledby="brand-action-examples-title">
           <h4 id="brand-action-examples-title">Action examples</h4>
           <div className={styles.brandActionColumns}>
-            {ACTION_COLUMNS.map((column) => (
+            {ACTION_COLUMNS.filter(
+              (column) => !('iconTreatment' in column) || iconRegionAvailable
+            ).map((column) => (
               <BrandActionColumn
                 buttonIntent={column.buttonIntent}
                 columnId={column.id}
                 emphasis={column.emphasis}
                 fontName={fontName}
+                iconTreatment={'iconTreatment' in column ? column.iconTreatment : undefined}
                 key={column.id}
                 scale={scale}
                 surfaceContext={surfaceContext}

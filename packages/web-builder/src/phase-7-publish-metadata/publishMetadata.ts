@@ -56,8 +56,7 @@ import type {
 const BUTTON_PLAIN_ICON_TREATMENTS = ['plain'] as const satisfies readonly ButtonIconTreatment[];
 const BUTTON_SURFACED_ICON_TREATMENTS = [
   'plain',
-  'surface',
-  'surface-divider'
+  'surface'
 ] as const satisfies readonly ButtonIconTreatment[];
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
