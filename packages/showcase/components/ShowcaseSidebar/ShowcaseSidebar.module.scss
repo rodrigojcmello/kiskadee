@@ -31,6 +31,16 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+@media (min-width: 961px) {
+  .header {
+    align-content: center;
+    block-size: var(--showcase-toolbar-height);
+    display: grid;
+    margin-inline: -20px;
+    padding: 0 24px;
+  }
+}
+
 .eyebrow {
   margin: 0;
   font-size: 0.75rem;

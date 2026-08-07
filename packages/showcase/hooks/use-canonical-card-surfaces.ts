@@ -36,7 +36,7 @@ export function useCanonicalCardSurfaces(themeOverride?: ThemeMode) {
   );
 
   return {
-    defaultToneKey: (tones[0]?.key ?? 'neutral.low') as CanonicalCardSurfaceKey,
+    defaultToneKey: (tones[1]?.key ?? tones[0]?.key ?? 'neutral.low') as CanonicalCardSurfaceKey,
     items,
     tones
   };

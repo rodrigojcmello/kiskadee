@@ -304,7 +304,7 @@ export default function IconShowcase() {
   const [intent, setIntent] = useState<IconIntent>('neutral');
   const [surfaceContext, setSurfaceContext] = useState<SurfaceContext>('onSubtle');
   const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('canonical');
-  const [canonicalSurface, setCanonicalSurface] = useState<CanonicalCardSurfaceKey>('neutral.low');
+  const [canonicalSurface, setCanonicalSurface] = useState<CanonicalCardSurfaceKey | null>(null);
   const [stressTestSurface, setStressTestSurface] =
     useState<ButtonStressTestBackgroundToneKey>('white');
   const selectedFamily = interfaceIconFamilyOptions.find((entry) => entry.id === iconFamilyId);
@@ -367,7 +367,7 @@ export default function IconShowcase() {
 
   const activeCanonicalSurfaceKey = useMemo(
     () =>
-      canonicalBackgrounds.tones.some((tone) => tone.key === canonicalSurface)
+      canonicalSurface && canonicalBackgrounds.tones.some((tone) => tone.key === canonicalSurface)
         ? canonicalSurface
         : canonicalBackgrounds.defaultToneKey,
     [canonicalBackgrounds.defaultToneKey, canonicalBackgrounds.tones, canonicalSurface]

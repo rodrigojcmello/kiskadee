@@ -1,5 +1,6 @@
 'use client';
 
+import { RightPanelClose, RightPanelOpen } from '@carbon/icons-react';
 import { carbonIconFamily } from '@kiskadee/icons/interface/carbon';
 import { IconFamilyProvider, IconGlyph, type IconGlyphProps } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
@@ -35,4 +36,11 @@ export function ShowcaseIconGlyph(props: IconGlyphProps) {
       <IconGlyph {...props} />
     </ShowcaseIconFamilyBoundary>
   );
+}
+
+/** Carbon affordance kept beside the fixed Showcase icon-family boundary. */
+export function ShowcaseSidebarToggleGlyph({ expanded }: { expanded: boolean }) {
+  const Glyph = expanded ? RightPanelClose : RightPanelOpen;
+
+  return <Glyph aria-hidden="true" size="1em" />;
 }

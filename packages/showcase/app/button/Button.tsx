@@ -155,8 +155,9 @@ export function Button() {
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
   const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('onSubtle');
   const [backgroundMode, setBackgroundMode] = React.useState<BackgroundMode>('canonical');
-  const [canonicalSurface, setCanonicalSurface] =
-    React.useState<CanonicalCardSurfaceKey>('neutral.low');
+  const [canonicalSurface, setCanonicalSurface] = React.useState<CanonicalCardSurfaceKey | null>(
+    null
+  );
   const [stressTestSurface, setStressTestSurface] =
     React.useState<ButtonStressTestBackgroundToneKey>('white');
   const stressTestBackgrounds = useButtonStressTestBackgroundTones();
@@ -178,7 +179,7 @@ export function Button() {
 
   const activeCanonicalSurfaceKey = React.useMemo(
     () =>
-      canonicalBackgrounds.tones.some((tone) => tone.key === canonicalSurface)
+      canonicalSurface && canonicalBackgrounds.tones.some((tone) => tone.key === canonicalSurface)
         ? canonicalSurface
         : canonicalBackgrounds.defaultToneKey,
     [canonicalBackgrounds.defaultToneKey, canonicalBackgrounds.tones, canonicalSurface]

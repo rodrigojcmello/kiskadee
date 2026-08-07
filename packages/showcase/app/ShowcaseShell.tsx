@@ -2,22 +2,31 @@
 
 import { IconGlyph } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+import type { CSSProperties, Dispatch, ReactNode, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ShowcaseIconFamilyBoundary } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
+import {
+  ShowcaseIconFamilyBoundary,
+  ShowcaseSidebarToggleGlyph
+} from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import ShowcaseSidebar from '@/components/ShowcaseSidebar/ShowcaseSidebar';
+import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
 import style from './layout.module.scss';
 import type { ShowcasePanelDetail } from './ShowcasePanelContext';
 import { ShowcasePanelContext } from './ShowcasePanelContext';
 
 export default function ShowcaseShell({
   children,
-  globalControls
+  globalControls,
+  isDesktopSidebarVisible,
+  onDesktopSidebarVisibilityChange
 }: {
   children: ReactNode;
   globalControls?: ReactNode;
+  isDesktopSidebarVisible: boolean;
+  onDesktopSidebarVisibilityChange: Dispatch<SetStateAction<boolean>>;
 }) {
   const pathname = usePathname();
+  const canonicalSurfaces = useCanonicalCardSurfaces();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [panelDetail, setPanelDetail] = useState<ShowcasePanelDetail | null>(null);
   const [panelMode, setPanelMode] = useState<'components' | 'detail'>('detail');
@@ -109,12 +118,14 @@ export default function ShowcaseShell({
       className={style.routePanel}
       aria-label={`${panelDetail?.title ?? 'Component'} controls`}
     >
-      <button type="button" className={style.backButton} onClick={showComponentsPanel}>
-        <span className={style.backButtonIcon}>
-          <IconGlyph name="chevron-left" />
-        </span>
-        <span>Navigation</span>
-      </button>
+      <div className={style.routePanelTopbar}>
+        <button type="button" className={style.backButton} onClick={showComponentsPanel}>
+          <span className={style.backButtonIcon}>
+            <IconGlyph name="chevron-left" />
+          </span>
+          <span>Navigation</span>
+        </button>
+      </div>
       <div className={style.routePanelHeader}>
         <p className={style.routePanelEyebrow}>{panelDetail?.eyebrow}</p>
         <h2 className={style.routePanelTitle}>{panelDetail?.title}</h2>
@@ -130,10 +141,35 @@ export default function ShowcaseShell({
   const fixedFamilySidebarContent = (
     <ShowcaseIconFamilyBoundary>{sidebarContent}</ShowcaseIconFamilyBoundary>
   );
+  const defaultRouteBackground =
+    canonicalSurfaces.tones[1]?.resolvedColor ?? canonicalSurfaces.tones[0]?.resolvedColor;
+  const shellStyle = defaultRouteBackground
+    ? ({ '--showcase-default-route-background': defaultRouteBackground } as CSSProperties)
+    : undefined;
 
   return (
     <ShowcasePanelContext.Provider value={contextValue}>
-      <div className={style.shell}>
+      <div
+        className={`${style.shell} ${
+          isDesktopSidebarVisible ? '' : style.shellWithoutSidebar
+        }`.trim()}
+        style={shellStyle}
+      >
+        {!isNarrowViewport ? (
+          <ShowcaseIconFamilyBoundary>
+            <button
+              type="button"
+              className={style.desktopSidebarToggle}
+              aria-controls="showcase-desktop-sidebar"
+              aria-expanded={isDesktopSidebarVisible}
+              aria-label={isDesktopSidebarVisible ? 'Hide controls panel' : 'Show controls panel'}
+              onClick={() => onDesktopSidebarVisibilityChange((value) => !value)}
+            >
+              <ShowcaseSidebarToggleGlyph expanded={isDesktopSidebarVisible} />
+            </button>
+          </ShowcaseIconFamilyBoundary>
+        ) : null}
+
         <div className={style.contentColumn}>
           <ShowcaseIconFamilyBoundary>
             <div className={style.mobileHeader}>
@@ -159,7 +195,15 @@ export default function ShowcaseShell({
         </div>
 
         {!isNarrowViewport ? (
-          <div className={style.desktopSidebar}>{fixedFamilySidebarContent}</div>
+          <div
+            id="showcase-desktop-sidebar"
+            className={`${style.desktopSidebar} ${
+              isDesktopSidebarVisible ? '' : style.desktopSidebarHidden
+            }`.trim()}
+            aria-hidden={isDesktopSidebarVisible ? undefined : 'true'}
+          >
+            {fixedFamilySidebarContent}
+          </div>
         ) : null}
 
         {isNarrowViewport ? (
