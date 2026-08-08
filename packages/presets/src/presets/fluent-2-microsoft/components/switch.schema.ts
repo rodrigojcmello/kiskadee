@@ -351,13 +351,8 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e4: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:md:1': 'body-1' },
                 scales: {
-                  textSize: { 's:md:1': 14 },
-                  textHeight: { 's:md:1': 20 },
                   marginLeft: { 's:md:1': 8 },
                   marginRight: { 's:md:1': 8 }
                 },
@@ -392,13 +387,8 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e5: {
                 name: 'control text',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:md:1': 'body-1' },
                 scales: {
-                  textSize: { 's:md:1': 14 },
-                  textHeight: { 's:md:1': 20 },
                   marginLeft: { 's:md:1': 8 },
                   marginRight: { 's:md:1': 8 }
                 },

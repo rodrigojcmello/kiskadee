@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
+import { elementTypographyContractSchema } from '../typography.contract.zod.ts';
 import {
   createPalettesSchema,
   createScalesSchema,
@@ -22,16 +23,8 @@ export function createSliderFieldLabelElementStyleSchema<
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
+      typography: elementTypographyContractSchema.optional(),
       scales: createScalesSchema([
-        'textSize',
-        'textHeight',
         'marginTop',
         'marginRight',
         'marginBottom',
@@ -49,14 +42,8 @@ export function createSliderOptionalIndicatorElementStyleSchema<
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
-      scales: createScalesSchema(['textSize', 'textHeight', 'marginLeft']).optional(),
+      typography: elementTypographyContractSchema.optional(),
+      scales: createScalesSchema(['marginLeft']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })
@@ -206,12 +193,11 @@ export function createSliderValueIndicatorElementStyleSchema<
       name: z.string(),
       decorations: z
         .object({
-          borderStyle: z.custom<DecorationSchema['borderStyle']>().optional(),
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
+          borderStyle: z.custom<DecorationSchema['borderStyle']>().optional()
         })
         .strict()
         .optional(),
+      typography: elementTypographyContractSchema.optional(),
       scales: createScalesSchemaWithBorderRadius([
         'boxHeight',
         'borderWidth',
@@ -219,9 +205,7 @@ export function createSliderValueIndicatorElementStyleSchema<
         'paddingTop',
         'paddingRight',
         'paddingBottom',
-        'paddingLeft',
-        'textSize',
-        'textHeight'
+        'paddingLeft'
       ]).optional(),
       palettes: createPalettesSchema<TSegmentName, 'boxColor' | 'borderColor' | 'textColor'>([
         'boxColor',

@@ -53,6 +53,7 @@ export function mapStyleKeyUsage(
   options?: {
     webStyleEmissionPolicy?: WebStyleEmissionPolicy;
     collapseDirectIntoMirrored?: boolean;
+    additionalStyleKeys?: readonly StyleKey[];
   }
 ): StyleKeyUsageMap {
   const usage: StyleKeyUsageMap = {};
@@ -155,6 +156,13 @@ export function mapStyleKeyUsage(
         consumeElements(componentName, modeElements, variantName);
       }
     }
+  }
+
+  // Global catalogs may expose atomic utilities that are real artifact consumers even when no
+  // component references a definition yet. Count each occurrence so shared values still receive
+  // the shortest available class identities.
+  for (const styleKey of options?.additionalStyleKeys ?? []) {
+    increment(styleKey);
   }
 
   const collapsedUsage =

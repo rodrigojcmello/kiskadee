@@ -74,12 +74,12 @@
 
 /*
  * element control row / e4
- * Places endpoint content around the track while letting the track consume remaining width.
+ * Uses the authored height as a floor while text and endpoint content can grow the lane.
  */
 .k-sld-e4-a {
   display: flex;
   align-items: center;
-  block-size: var(--k-bxh, auto);
+  min-block-size: var(--k-bxh, 0px);
   min-inline-size: 0;
   overflow: visible;
 }
@@ -90,13 +90,13 @@
 
 /*
  * structural slot control group / x2
- * Groups endpoint content with the track so control-end summary sizing stays independent.
+ * Stretches to the lane floor while allowing enlarged endpoint text to increase its block size.
  */
 .k-sld-x2-a {
   display: flex;
   align-items: center;
   flex: 1 1 auto;
-  block-size: 100%;
+  min-block-size: 100%;
   min-inline-size: 0;
   overflow: visible;
 }
@@ -328,7 +328,7 @@
 
 /*
  * element value indicator / e14
- * Positions tooltip-style selected values above the corresponding thumb.
+ * Treats authored height as a floor and positions the growing tooltip above its thumb.
  */
 .k-sld-e14-a {
   --k-sld-tooltip-arrow-block-size: 0.375rem;
@@ -349,6 +349,7 @@
   justify-content: center;
   box-sizing: border-box;
   font-variant-numeric: tabular-nums;
+  min-block-size: var(--k-bxh, max-content);
   min-inline-size: var(--k-sld-tooltip-arrow-inline-size);
   pointer-events: none;
   white-space: nowrap;

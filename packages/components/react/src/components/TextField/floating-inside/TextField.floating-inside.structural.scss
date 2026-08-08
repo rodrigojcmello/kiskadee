@@ -25,8 +25,10 @@
 .k-txf-e3-c {
   position: relative;
   display: grid;
+  grid-template-rows: minmax(min-content, 1fr) auto;
   align-items: stretch;
   inline-size: 100%;
+  min-block-size: var(--k-bxh);
   box-sizing: border-box;
   cursor: text;
   isolation: isolate;
@@ -35,6 +37,7 @@
   outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
   --k-txf-phc: var(--k-txc);
+  --k-txf-fbo: 0px;
 }
 
 /*
@@ -142,7 +145,8 @@
   box-sizing: border-box;
   flex: 1 1 auto;
   inline-size: 100%;
-  block-size: 100%;
+  block-size: auto;
+  min-block-size: 1lh;
   min-inline-size: 0;
   border: 0;
   outline: 0;
@@ -153,6 +157,27 @@
   background-clip: padding-box;
   caret-color: var(--k-focus-color);
   font-family: inherit;
+}
+
+/*
+ * element input / e4
+ * Moves the promoted input below the measured inside-label line when enlarged text needs room.
+ */
+.k-txf-e1-c.-f.-a .k-txf-e4-c,
+.k-txf-e1-c.-v.-a .k-txf-e4-c {
+  inset-block-start: var(--k-txf-fbo);
+}
+
+/*
+ * extra structural space for e3
+ * Reserves the same measured block offset after the input so the shell grows with its content.
+ */
+.k-txf-e1-c.-f.-a .k-txf-e3-c::after,
+.k-txf-e1-c.-v.-a .k-txf-e3-c::after {
+  content: '';
+  grid-area: 2 / 1;
+  block-size: var(--k-txf-fbo);
+  pointer-events: none;
 }
 
 /*

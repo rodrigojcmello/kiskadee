@@ -3,6 +3,7 @@ import { createSandboxCardSchema } from './components/card.schema.ts';
 import { createSandboxSliderSchema } from './components/slider.schema.ts';
 import { createSandboxSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './sandbox.colors.ts';
+import { sandboxTypography } from './sandbox.typography.ts';
 
 export type SandboxSegment = 'default';
 
@@ -18,6 +19,7 @@ export const schema: Schema<SandboxSegment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: sandboxTypography,
     fonts: {
       families: {
         inter: {

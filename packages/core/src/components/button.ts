@@ -8,6 +8,8 @@ import type {
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import type { ElementEffects } from '../types/effects/index.ts';
 import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types.ts';
+import { validateElementTypographyContract } from '../typography.contract.zod.ts';
+import type { ElementTypography } from '../typography.ts';
 import { getElementPaletteValidationIssues } from './palettes.ts';
 
 type ElementPalettesByColor<
@@ -76,8 +78,8 @@ export type ButtonContainerElementStyle<TSegmentName extends SegmentName = never
  * e2 — button label
  */
 export type ButtonLabelElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  decorations: Pick<DecorationSchema, 'textFont' | 'textWeight' | 'textItalic' | 'textLineType'>;
-  scales: ElementScalesByProperty<'textSize' | 'textHeight'>;
+  decorations: Pick<DecorationSchema, 'textItalic' | 'textLineType'>;
+  typography: ElementTypography;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
   effects: ElementEffects;
 }> &
@@ -102,9 +104,7 @@ export type ButtonIconElementStyle<TSegmentName extends SegmentName = never> = P
  * e4 — optional icon region/surface
  */
 export type ButtonIconRegionElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  scales: ElementScalesByProperty<
-    'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
-  >;
+  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'textColor'>;
 }> &
   ElementNameMetadata;
@@ -118,6 +118,7 @@ export type ButtonElements<TSegmentName extends SegmentName = never> = {
 
 type ElementContractRules = {
   decorations?: readonly string[];
+  typography?: boolean;
   scales?: readonly string[];
   palettes?: readonly ColorProperty[];
 };
@@ -125,7 +126,14 @@ type ElementContractRules = {
 const BUTTON_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
 const BUTTON_OPTION_KEYS = ['iconLayout', 'iconPlacement', 'iconTreatment'] as const;
 const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4'] as const;
-const BUTTON_ELEMENT_BASE_KEYS = ['name', 'decorations', 'scales', 'palettes', 'effects'] as const;
+const BUTTON_ELEMENT_BASE_KEYS = [
+  'name',
+  'decorations',
+  'typography',
+  'scales',
+  'palettes',
+  'effects'
+] as const;
 
 const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContractRules> = {
   e1: {
@@ -141,8 +149,8 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
     palettes: ['boxColor', 'borderColor']
   },
   e2: {
-    decorations: ['textFont', 'textWeight', 'textItalic', 'textLineType'],
-    scales: ['textSize', 'textHeight'],
+    decorations: ['textItalic', 'textLineType'],
+    typography: true,
     palettes: ['textColor']
   },
   e3: {
@@ -208,6 +216,14 @@ function validateElementContract(
       issues.push(`${path}.decorations: expected object`);
     } else {
       validateAllowedKeys(value.decorations, rules.decorations, `${path}.decorations`, issues);
+    }
+  }
+
+  if (value.typography !== undefined) {
+    if (!rules.typography) {
+      issues.push(`${path}.typography: not allowed for this element`);
+    } else {
+      issues.push(...validateElementTypographyContract(value.typography, `${path}.typography`));
     }
   }
 

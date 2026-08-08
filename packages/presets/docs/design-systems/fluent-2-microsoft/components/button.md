@@ -74,6 +74,18 @@ and final heights without adding a Fluent-specific runtime wrapper.
 The Web Builder then applies its standard one-pixel border compensation. The emitted results are
 24 px for `s:sm:1`, 32 px for the desktop `s:md:1`, and 40 px for `s:lg:1`.
 
+The label selects preset-wide typography profiles instead of declaring text primitives inline:
+
+| Kiskadee selection | Fluent profile | Weight | Status |
+| --- | --- | --- | --- |
+| `s:sm:1` | `caption-1` | Regular | Official exact |
+| `s:md:1` below `bp:lg:1` | `subtitle-2` | Semibold | Kiskadee responsive extension using an official ramp profile |
+| `s:md:1` from `bp:lg:1` | `body-1-strong` | Semibold | Official adapted |
+| `s:lg:1` | `subtitle-2` | Semibold | Official exact |
+
+This closes the former shared-weight gap: Small no longer inherits the old element-wide Medium
+weight, while Medium and Large now use the official Semibold recipes.
+
 ## Icon Slot
 
 The official Fluent React Button implementation provides a dedicated icon slot. Its published
@@ -741,10 +753,6 @@ changing the asset scales.
 
 ## Open Gaps
 
-- The official size set changes label weight from Regular on Small to Semibold on Medium and Large.
-  Button decorations are currently element-wide rather than scale-aware, so the preset retains its
-  existing shared Medium weight until scale-dependent typography is addressed as a framework
-  contract instead of a Fluent-only selector or CSS override.
 - Revisit whether Outline, Subtle, and Transparent need separate structural capabilities instead
   of sharing `neutral.lowest`.
 - Exercise the shared recipe with additional segments before introducing any intent-specific

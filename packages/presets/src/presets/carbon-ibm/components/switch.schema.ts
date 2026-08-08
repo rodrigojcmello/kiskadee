@@ -274,13 +274,8 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
               },
               e4: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:md:1': 'label-01' },
                 scales: {
-                  textSize: { 's:md:1': 12 },
-                  textHeight: { 's:md:1': 16 },
                   marginRight: { 's:md:1': 8 }
                 },
                 palettes: {
@@ -318,13 +313,8 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
               },
               e5: {
                 name: 'control text',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:md:1': 'body-compact-01' },
                 scales: {
-                  textSize: { 's:md:1': 14 },
-                  textHeight: { 's:md:1': 18 },
                   marginRight: { 's:md:1': 8 }
                 },
                 palettes: {

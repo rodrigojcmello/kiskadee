@@ -493,17 +493,8 @@ export function createMaterial3GoogleSwitchSchema(
               },
               e4: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:md:1': 'body-medium' },
                 scales: {
-                  textSize: {
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:md:1': 20
-                  },
                   marginLeft: {
                     's:md:1': 12
                   },

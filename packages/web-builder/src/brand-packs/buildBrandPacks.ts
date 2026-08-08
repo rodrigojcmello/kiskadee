@@ -359,7 +359,8 @@ async function buildBrandPack({
   });
   const css = await generateCssSplit(styleKeys, shortened, {
     forceState: true,
-    webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+    webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+    breakpoints: projectedSchema.breakpoints
   });
   const classMaps = generateClassNamesMapSplit(styleKeys, shortened, toneMetadataByPalette, {
     webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY

@@ -837,6 +837,7 @@ Examples:
 - `--k-txf-riw`
 - `--k-txf-rts`
 - `--k-txf-rth`
+- `--k-txf-fbo`
 
 For compact purpose suffixes, prefer short structural abbreviations that stay understandable in the
 owning branch.
@@ -845,6 +846,7 @@ Example:
 
 - `--k-txf-rts` = `textField` / `rest text size`
 - `--k-txf-rth` = `textField` / `rest text height`
+- `--k-txf-fbo` = `textField` / `floating block offset`
 - `--k-txf-rbt` = `textField` / `rest block top`
 - `--k-txf-ris` = `textField` / `rest inline start`
 - `--k-txf-riw` = `textField` / `rest inline width`

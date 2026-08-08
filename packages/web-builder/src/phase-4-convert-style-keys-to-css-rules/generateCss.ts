@@ -1,4 +1,10 @@
-import { breakpoints, type ColorProperty, CssColorProperty, scaleProperties } from '@kiskadee/core';
+import {
+  type Breakpoints,
+  breakpoints,
+  type ColorProperty,
+  CssColorProperty,
+  scaleProperties
+} from '@kiskadee/core';
 import {
   type TransformShadowKeyToCssOptions,
   transformBorderStyleKeyToCss,
@@ -20,10 +26,13 @@ import {
   type TransformScaleKeyToCssOptions,
   transformScaleKeyToCss
 } from './scales/transformScaleKeyToCss.ts';
+import { transformTypographyMetricKeyToCss } from './typography/transformTypographyMetricKeyToCss.ts';
 
 export type GenerateCssRuleFromStyleKeyOptions = TransformColorKeyToCssOptions &
   TransformScaleKeyToCssOptions &
-  TransformShadowKeyToCssOptions;
+  TransformShadowKeyToCssOptions & {
+    breakpoints?: Breakpoints;
+  };
 
 export function generateCssRuleFromStyleKey(
   styleKey: string,
@@ -52,12 +61,23 @@ export function generateCssRuleFromStyleKey(
     generatedCss = transformTextItalicKeyToCss(styleKey, className);
   } else if (styleKey.startsWith('textWeight')) {
     generatedCss = transformTextWeightKeyToCss(styleKey, className);
+  } else if (styleKey.startsWith('textLineHeight') || styleKey.startsWith('textLetterSpacing')) {
+    generatedCss = transformTypographyMetricKeyToCss(
+      styleKey,
+      className,
+      options?.breakpoints ?? breakpoints
+    );
   } else if (generatedCss === undefined) {
     const isBorderRadiusEffectKey =
       styleKey.startsWith('borderRadius') && (styleKey.includes('--') || styleKey.includes('=='));
     const matchScale = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
     if (matchScale != null && !isBorderRadiusEffectKey) {
-      generatedCss = transformScaleKeyToCss(styleKey, breakpoints, className, options);
+      generatedCss = transformScaleKeyToCss(
+        styleKey,
+        options?.breakpoints ?? breakpoints,
+        className,
+        options
+      );
     } else {
       // Colors ------------------------------------------------------------------------------------
       const colorProperties = Object.keys(CssColorProperty) as ColorProperty[];

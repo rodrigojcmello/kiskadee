@@ -75,4 +75,6 @@ the former leaves typography entirely to the consuming application.
 source. It adds Open Sans after the Segoe aliases so non-Windows applications can opt into a public
 online fallback without redistributing the proprietary Segoe files. This insertion is an explicit
 Kiskadee adaptation recorded in the preset source evidence.
-`fluent-2-kiskadee` remains without a recommendation until its own typography contract is defined.
+`fluent-2-kiskadee` deliberately remains without a font-family recommendation. Its typography
+profiles define semantic roles and metrics, while the consuming application continues to own the
+actual family because no separate source-backed family recommendation has been established.

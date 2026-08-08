@@ -66,6 +66,12 @@ host or preset do not become selectable catalog entries automatically.
 - Browser font binaries remain lazy and are normally requested only when a registered face is used.
 - Adding future providers or catalog entries must not expand an existing integration's request set.
 
+An official preset's recommended integration must include every weight used by that preset's
+typography profiles. The catalog does not inflate every family to the union of weights used by all
+other presets: an arbitrary Showcase family override may therefore use the browser's nearest or
+synthetic weight when that family does not publish the requested face. This keeps each adapter's
+request set faithful and bounded.
+
 Successful preparations may identify the local or online family that satisfied the integration.
 This result supports explanatory UI but does not claim to identify every face used to render every
 glyph.

@@ -2,8 +2,8 @@ import type { RadiusMode } from '../schema.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
   TextFieldControlElementStyleFromSchema,
-  TextFieldFocusRingColorSourceFromSchema,
   TextFieldFloatingVariantOptionsFromSchema,
+  TextFieldFocusRingColorSourceFromSchema,
   TextFieldIndicatorElementStyleFromSchema,
   TextFieldInlineLabelElementStyleFromSchema,
   TextFieldInputElementStyleFromSchema,
@@ -12,8 +12,8 @@ import type {
   TextFieldMessageElementStyleFromSchema,
   TextFieldModeOptionsFromSchema,
   TextFieldOptionsFromSchema,
-  TextFieldStandardVariantOptionsFromSchema,
-  TextFieldRootElementStyleFromSchema
+  TextFieldRootElementStyleFromSchema,
+  TextFieldStandardVariantOptionsFromSchema
 } from './text-field.zod.ts';
 
 /**
@@ -55,7 +55,7 @@ export type TextFieldRootElementStyle = TextFieldRootElementStyleFromSchema;
 /**
  * e2 — label
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - marginBottom for standard spacing
  * - optional marginTop / marginLeft / paddingRight / paddingLeft for floating label geometry
  */
@@ -74,7 +74,7 @@ export type TextFieldControlElementStyle<TSegmentName extends SegmentName = neve
 /**
  * e4 — input text
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - optional paddingTop for floating inside input positioning
  */
 export type TextFieldInputElementStyle<TSegmentName extends SegmentName = never> =
@@ -83,7 +83,7 @@ export type TextFieldInputElementStyle<TSegmentName extends SegmentName = never>
 /**
  * e5 — validation/supporting message
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - marginTop
  */
 export type TextFieldMessageElementStyle<TSegmentName extends SegmentName = never> =
@@ -105,7 +105,7 @@ export type TextFieldIndicatorElementStyle<TSegmentName extends SegmentName = ne
  * e7 — inline label
  * - textColor
  * - boxWidth defines the inline label slot width
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - marginBottom / marginTop / marginLeft / paddingRight / paddingLeft
  */
 export type TextFieldInlineLabelElementStyle<TSegmentName extends SegmentName = never> =

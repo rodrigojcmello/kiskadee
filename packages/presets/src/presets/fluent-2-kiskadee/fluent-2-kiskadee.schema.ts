@@ -2,6 +2,7 @@ import { breakpoints, color, primitive, type Schema, withAlpha } from '@kiskadee
 import { buildBySegment } from '../../utils/buildBySegment.ts';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { schemaColors } from './fluent-2-kiskadee.colors.ts';
+import { fluent2KiskadeeTypography } from './fluent-2-kiskadee.typography.ts';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
@@ -23,6 +24,7 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: fluent2KiskadeeTypography,
     icons: {
       family: 'fluent-system',
       variant: 'regular'
@@ -207,8 +209,10 @@ export const schema: Schema<Segments> = {
         },
         e2: {
           name: 'button-text',
-          decorations: {
-            textWeight: 'medium'
+          typography: {
+            's:sm:1': 'body-small-strong',
+            's:md:1': 'body-medium-strong',
+            's:lg:1': 'body-large-strong'
           },
           palettes: buildBySegment(
             segmentNames,
@@ -271,19 +275,7 @@ export const schema: Schema<Segments> = {
                 }
               })
             }
-          ),
-          scales: {
-            textSize: {
-              's:sm:1': 12,
-              's:md:1': 14,
-              's:lg:1': 16
-            },
-            textHeight: {
-              's:sm:1': 16,
-              's:md:1': 20,
-              's:lg:1': 22
-            }
-          }
+          )
         }
       }
     }

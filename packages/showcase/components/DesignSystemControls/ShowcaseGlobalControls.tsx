@@ -1,7 +1,6 @@
 'use client';
 
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
-import { useState } from 'react';
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';
 import IconFamilyPicker from '@/components/IconFamilyPicker/IconFamilyPicker';
@@ -20,12 +19,6 @@ import styles from './ShowcaseGlobalControls.module.scss';
 type ShowcaseGlobalControlsProps = {
   variant: 'toolbar' | 'panel';
 };
-
-const typographySizeOptions = [
-  { value: 'compact', label: 'Compact' },
-  { value: 'default', label: 'Default' },
-  { value: 'comfortable', label: 'Comfortable' }
-];
 
 export function ShowcaseGlobalSemanticControls() {
   const { segment, setSegment } = useKiskadee();
@@ -61,17 +54,11 @@ export function ShowcaseGlobalSemanticControls() {
 }
 
 export function ShowcaseTypographyControls() {
-  const [typographySize, setTypographySize] = useState('default');
-
   return (
     <ShowcaseControlGrid>
-      <FontNamePicker className={styles.panelSelect} width="100%" />
-      <ShowcaseSelectControl
-        label="Size"
-        options={typographySizeOptions}
-        value={typographySize}
-        onValueChange={setTypographySize}
-      />
+      <ShowcaseControlField fullWidth>
+        <FontNamePicker className={styles.panelSelect} width="100%" />
+      </ShowcaseControlField>
     </ShowcaseControlGrid>
   );
 }

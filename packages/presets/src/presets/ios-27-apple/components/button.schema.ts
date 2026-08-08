@@ -281,8 +281,10 @@ export function createIos27AppleButtonSchema({
       },
       e2: {
         name: 'button-text',
-        decorations: {
-          textWeight: 'normal'
+        typography: {
+          's:sm:1': 'subheadline',
+          's:md:1': 'subheadline',
+          's:lg:1': 'body'
         },
         palettes: {
           default: {
@@ -306,18 +308,6 @@ export function createIos27AppleButtonSchema({
                 }
               }
             }
-          }
-        },
-        scales: {
-          textSize: {
-            's:sm:1': 15,
-            's:md:1': 15,
-            's:lg:1': 17
-          },
-          textHeight: {
-            's:sm:1': 20,
-            's:md:1': 20,
-            's:lg:1': 22
           }
         }
       }

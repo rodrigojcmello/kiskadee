@@ -2,6 +2,10 @@
 
 Kiskadee models font selection independently from font delivery.
 
+Font availability and role selection are also independent from reusable text metrics. See
+[Typography profiles](typography-profiles.md) for the profile, component-scale, HTML-semantics, and
+user-enlargement contract.
+
 ## Ownership
 
 - Core defines serializable family catalogs, semantic `body`, `heading`, and `code` roles, and the
@@ -86,5 +90,5 @@ Reading the catalog cannot request a stylesheet or font, and loading one descrip
 it. Kiskadee does not redistribute font binaries; applications may replace every online integration
 with local CSS, `next/font`, npm packages, or their own `prepare` callbacks.
 
-Families of icons may reuse this lifecycle vocabulary later, but no generic cross-resource provider
-is introduced by the font implementation.
+Icon families reuse parts of this lifecycle vocabulary through their own provider, but Kiskadee
+does not expose a generic cross-resource provider.

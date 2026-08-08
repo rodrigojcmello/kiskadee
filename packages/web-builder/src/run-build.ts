@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
 import { validateSchemaGlobalIconContract } from '@kiskadee/core/icon-contract';
+import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import {
@@ -23,6 +24,7 @@ import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persist
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata.ts';
 import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy.ts';
+import { buildTypographyArtifact } from './typography/compileTypography.ts';
 import { loadPresetsToBuild } from './utils/loadPresetsToBuild.ts';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
@@ -88,6 +90,15 @@ export async function runBuild(): Promise<void> {
     }
 
     try {
+      validateSchemaTypographyContract(schema);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Schema typography contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
+      );
+    }
+
+    try {
       validateSchemaComponentContracts(schema);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -109,13 +120,15 @@ export async function runBuild(): Promise<void> {
     console.log(`[web-builder] ${schema.name} ${presetVersion}${presetAuthor}`);
 
     // Phase 1 - Convert Element Schema to Style Keys
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette, typographyBuild } =
+      convertElementSchemaToStyleKeys(schema);
     // console.log('phase 1', { name: schema.name, styleKeys: JSON.stringify(styleKeys, null, 2) });
 
     // Phase 2 - Map style key usage
     const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys, {
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
-      collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
+      collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED,
+      additionalStyleKeys: typographyBuild?.additionalCoreStyleKeys
     });
     // console.log('phase  2', { name: schema.name, styleKeyUsage });
 
@@ -140,7 +153,9 @@ export async function runBuild(): Promise<void> {
       forceState: true,
       enableSolidBoxColorAsGradient: ENABLE_SOLID_BOX_COLOR_AS_GRADIENT,
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
-      collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
+      collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED,
+      breakpoints: schema.breakpoints,
+      additionalCoreStyleKeys: typographyBuild?.additionalCoreStyleKeys
     });
     // console.log('phase 4', { name: schema.name, cssGenerated });
 
@@ -175,7 +190,10 @@ export async function runBuild(): Promise<void> {
     // Phase 8 - Write extra artifacts
     await writeExtraArtifacts({
       schema,
-      outDirSlug
+      outDirSlug,
+      typographyArtifact: typographyBuild
+        ? buildTypographyArtifact(typographyBuild, shortenCssClassNameMap)
+        : undefined
     });
 
     // Optional brand packs are deliberately published outside the preset's

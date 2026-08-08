@@ -29,6 +29,11 @@ Kiskadee’s schema separates visual concerns so components can opt in to effect
 - **Decorations:** Structural, always-on styling rules that shape the base look (e.g., radius mode, border styles, typography mapping).
 - **Effects:** Opt-in, additive visuals (e.g., shadows, animated corners) that can be toggled per component without changing base colors.
 
+Reusable typography profiles live in `global.typography`: each preset declares complete recipes
+that combine font-role and weight decorations with size, line-height, and optional tracking scales.
+Textual component slots reference those recipes by component scale, and Web builders expand the
+references into the existing atomic decoration and scale utilities.
+
 ## Options vs. Element values
 
 Component schema also has an important split between:

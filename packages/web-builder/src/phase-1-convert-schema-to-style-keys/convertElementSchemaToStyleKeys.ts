@@ -8,17 +8,19 @@ import type {
   ElementAllSizeValue,
   ElementSizeValue,
   ElementStyle,
+  ElementTypography,
   RadiusMode,
   ScaleProperty,
   ScaleSchema,
   Schema,
-  ShadowElementEffectSchema,
   ShadowEffectSchema,
+  ShadowElementEffectSchema,
   StyleKeyByElement,
   StyleKeysByInteractionState,
   ThumbShrinkEffectSchema
 } from '@kiskadee/core';
 import { resolveActivationFeedbackSetting } from '@kiskadee/core';
+import { createTypographyBuild, type TypographyBuild } from '../typography/compileTypography.ts';
 import { buildStyleKey, deepUpdate } from '../utils/index.ts';
 import {
   buildScopedToneMetadataKey,
@@ -38,7 +40,10 @@ import {
   type ScaleValue
 } from './scales/convertElementScalesToStyleKeys.ts';
 
-type ElementSchemaInput = Pick<ElementStyle, 'decorations' | 'effects' | 'palettes' | 'scales'>;
+type ElementSchemaInput = Pick<
+  ElementStyle,
+  'decorations' | 'effects' | 'name' | 'palettes' | 'scales' | 'typography'
+>;
 
 type ComponentSchemaInput = {
   effects?: {
@@ -85,9 +90,11 @@ const ACTIVATION_FEEDBACK_HOST_BY_COMPONENT: Partial<Record<ComponentName, strin
 export function convertElementSchemaToStyleKeys(schema: Schema): {
   styleKeys: ComponentStyleKeyMap;
   toneMetadataByPalette: ToneMetadataByPalette;
+  typographyBuild?: TypographyBuild;
 } {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
+  const typographyBuild = createTypographyBuild(schema.global?.typography, schema.breakpoints);
   const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
   const shadowConfig = schema.global?.effects?.shadow;
 
@@ -140,10 +147,29 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
       elementName: string;
     }
   ) => {
+    if (element.typography && !typographyBuild) {
+      throw new Error(
+        `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references typography without global.typography.`
+      );
+    }
     deepUpdate<StyleKeyByElement>(styleKeysByComponent, path, (prev) => {
       const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};
+      const typographyStyleKeys = element.typography
+        ? typographyBuild?.expandElement(element.typography as ElementTypography, {
+            component: metadataScope.componentName as ComponentName,
+            ...(metadataScope.variantName ? { variant: metadataScope.variantName } : {}),
+            ...(metadataScope.modeName ? { mode: metadataScope.modeName } : {}),
+            element: metadataScope.elementName,
+            elementName: element.name
+          })
+        : undefined;
       if (element.decorations) {
         el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
+      }
+      if (typographyStyleKeys?.decorations.length) {
+        el.decorations = Array.from(
+          new Set([...(el.decorations ?? []), ...typographyStyleKeys.decorations])
+        );
       }
       if (element.scales) {
         const { borderRadius, ...otherScales } = element.scales as ScaleSchema;
@@ -282,6 +308,20 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         }
         if (Object.keys(radiusScales).length > 0) {
           el.radiusScales = radiusScales;
+        }
+      }
+      if (typographyStyleKeys) {
+        const mergedScales: NonNullable<StyleKeyByElement['scales']> = {
+          ...(el.scales ?? {})
+        };
+        for (const [size, keys] of Object.entries(typographyStyleKeys.scales)) {
+          const sizeKey = size as keyof typeof mergedScales;
+          mergedScales[sizeKey] = Array.from(
+            new Set([...(mergedScales[sizeKey] ?? []), ...(keys ?? [])])
+          );
+        }
+        if (Object.keys(mergedScales).length > 0) {
+          el.scales = mergedScales;
         }
       }
       if (element.palettes) {
@@ -432,5 +472,9 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     }
   }
 
-  return { styleKeys: styleKeysByComponent, toneMetadataByPalette };
+  return {
+    styleKeys: styleKeysByComponent,
+    toneMetadataByPalette,
+    ...(typographyBuild ? { typographyBuild } : {})
+  };
 }

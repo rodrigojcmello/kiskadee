@@ -120,7 +120,7 @@ export type SliderRootElementStyle = SliderRootElementStyleFromSchema;
 /**
  * e2 — field label
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - margins
  */
 export type SliderFieldLabelElementStyle<TSegmentName extends SegmentName = never> =
@@ -129,7 +129,7 @@ export type SliderFieldLabelElementStyle<TSegmentName extends SegmentName = neve
 /**
  * e3 — value summary
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - margins
  */
 export type SliderValueSummaryElementStyle<TSegmentName extends SegmentName = never> =
@@ -162,7 +162,7 @@ export type SliderEndpointIconElementStyle<TSegmentName extends SegmentName = ne
 /**
  * e7 — endpoint label
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  */
 export type SliderEndpointLabelElementStyle<TSegmentName extends SegmentName = never> =
   SliderEndpointLabelElementStyleFromSchema<TSegmentName>;
@@ -231,7 +231,7 @@ export type SliderMarkElementStyle<TSegmentName extends SegmentName = never> =
 /**
  * e16 — mark label
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - margins
  */
 export type SliderMarkLabelElementStyle<TSegmentName extends SegmentName = never> =
@@ -240,7 +240,7 @@ export type SliderMarkLabelElementStyle<TSegmentName extends SegmentName = never
 /**
  * e17 — helper text
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - margins
  */
 export type SliderHelperTextElementStyle<TSegmentName extends SegmentName = never> =
@@ -266,7 +266,7 @@ export type SliderThumbIconElementStyle<TSegmentName extends SegmentName = never
 /**
  * e20 — optional indicator
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - marginLeft
  */
 export type SliderOptionalIndicatorElementStyle<TSegmentName extends SegmentName = never> =

@@ -64,6 +64,7 @@ export * from './types/effects/index.ts';
 export * from './types/effects/shadow/shadow.types.ts';
 export * from './types/effects/thumb-shrink/thumb-shrink.types.ts';
 export * from './types/scales/scales.types.ts';
+export * from './typography.ts';
 export * from './utils/color.ts';
 export * from './utils/hexColor.ts';
 export * from './utils/tonalReference.ts';

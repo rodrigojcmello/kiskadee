@@ -103,6 +103,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e3: {
           boxColorEmission: 'mirrored',
           textColorEmission: 'mirrored',
+          boxHeightEmission: 'token',
           borderWidthEmission: 'token',
           borderColorEmission: 'token'
         },
@@ -146,6 +147,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
               boxHeightEmission: 'token'
             },
             e14: {
+              boxHeightEmission: 'token',
               marginTopEmission: 'token'
             },
             e3: {

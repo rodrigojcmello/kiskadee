@@ -26,26 +26,6 @@ const iosSliderTooltipText = '#000000' as const;
 const iosSliderTooltipTextDisabled = '#0000004d' as const;
 
 const sizes = {
-  optionalIndicatorText: {
-    's:sm:1': 12,
-    's:md:1': 12
-  },
-  labelText: {
-    's:sm:1': 13,
-    's:md:1': 17
-  },
-  labelLine: {
-    's:sm:1': 16,
-    's:md:1': 22
-  },
-  tooltipText: {
-    's:sm:1': 11,
-    's:md:1': 14
-  },
-  tooltipLine: {
-    's:sm:1': 14,
-    's:md:1': 18
-  },
   trackHeight: {
     's:sm:1': 6,
     's:md:1': 6
@@ -187,19 +167,19 @@ export function createIos27AppleSliderSchema({
               e1: { name: 'slider-root' },
               e2: {
                 name: 'slider-field-label',
-                decorations: { textFont: 'body', textWeight: 'medium' },
-                scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                typography: {
+                  's:sm:1': 'label-small',
+                  's:md:1': 'label-medium'
                 },
                 palettes: textPalettes
               },
               e3: {
                 name: 'slider-value-summary',
-                decorations: { textFont: 'body', textWeight: 'medium' },
+                typography: {
+                  's:sm:1': 'label-small',
+                  's:md:1': 'label-medium'
+                },
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginLeft: 16
                 },
                 palettes: textPalettes
@@ -231,10 +211,9 @@ export function createIos27AppleSliderSchema({
               },
               e7: {
                 name: 'slider-endpoint-label',
-                decorations: { textFont: 'body', textWeight: 'medium' },
-                scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                typography: {
+                  's:sm:1': 'label-small',
+                  's:md:1': 'label-medium'
                 },
                 palettes: textPalettes
               },
@@ -372,7 +351,11 @@ export function createIos27AppleSliderSchema({
               },
               e14: {
                 name: 'slider-value-indicator',
-                decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'medium' },
+                typography: {
+                  's:sm:1': 'tooltip-small',
+                  's:md:1': 'tooltip-medium'
+                },
+                decorations: { borderStyle: 'solid' },
                 scales: {
                   boxHeight: 28,
                   borderRadius: {
@@ -385,9 +368,7 @@ export function createIos27AppleSliderSchema({
                   paddingLeft: 10,
                   paddingRight: 10,
                   paddingTop: 0,
-                  paddingBottom: 0,
-                  textSize: sizes.tooltipText,
-                  textHeight: sizes.tooltipLine
+                  paddingBottom: 0
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
@@ -455,10 +436,11 @@ export function createIos27AppleSliderSchema({
               },
               e16: {
                 name: 'slider-mark-label',
-                decorations: { textFont: 'body', textWeight: 'medium' },
+                typography: {
+                  's:sm:1': 'label-small',
+                  's:md:1': 'label-medium'
+                },
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginTop: layout.markOffset,
                   marginBottom: layout.markOffset
                 },
@@ -466,10 +448,11 @@ export function createIos27AppleSliderSchema({
               },
               e17: {
                 name: 'slider-helper-text',
-                decorations: { textFont: 'body', textWeight: 'normal' },
+                typography: {
+                  's:sm:1': 'label-small-regular',
+                  's:md:1': 'body'
+                },
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginTop: layout.helperOffset
                 },
                 palettes: textPalettes
@@ -521,8 +504,11 @@ export function createIos27AppleSliderSchema({
               },
               e20: {
                 name: 'slider-optional-indicator',
+                typography: {
+                  's:sm:1': 'caption-strong',
+                  's:md:1': 'caption-strong-relaxed'
+                },
                 scales: {
-                  textSize: sizes.optionalIndicatorText,
                   marginLeft: layout.optionalIndicatorGap
                 },
                 palettes: optionalIndicatorPalettes

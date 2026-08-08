@@ -789,19 +789,11 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e2: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
+                typography: {
+                  's:sm:1': 'label-medium',
+                  's:md:1': 'label-large'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 20
-                  },
                   marginBottom: {
                     's:sm:1': 4,
                     's:md:1': 6
@@ -811,9 +803,9 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e7: {
                 name: 'inline-label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
+                typography: {
+                  's:sm:1': 'label-medium',
+                  's:md:1': 'label-large'
                 },
                 scales: {
                   boxWidth: {
@@ -827,14 +819,6 @@ export function createMaterial3GoogleTextFieldSchema(
                       'bp:md:2': 120,
                       'bp:lg:1': 144
                     }
-                  },
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 20
                   },
                   paddingRight: {
                     's:sm:1': 10,
@@ -892,37 +876,19 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e4: {
                 name: 'input',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
-                scales: {
-                  textSize: {
-                    's:sm:1': 14,
-                    's:md:1': 16
-                  },
-                  textHeight: {
-                    's:sm:1': 20,
-                    's:md:1': 24
-                  }
+                typography: {
+                  's:sm:1': 'body-medium',
+                  's:md:1': 'body-large'
                 },
                 palettes: palettes.input
               },
               e5: {
                 name: 'message',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
+                typography: {
+                  's:sm:1': 'supporting-small-compact',
+                  's:md:1': 'body-small'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 11,
-                    's:md:1': 12
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 16
-                  },
                   marginTop: {
                     's:sm:1': 4,
                     's:md:1': 6
@@ -946,19 +912,11 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e2: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
+                typography: {
+                  's:sm:1': 'label-medium',
+                  's:md:1': 'label-large'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 20
-                  },
                   marginBottom: {
                     's:sm:1': 4,
                     's:md:1': 6
@@ -968,9 +926,9 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e7: {
                 name: 'inline-label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
+                typography: {
+                  's:sm:1': 'label-medium',
+                  's:md:1': 'label-large'
                 },
                 scales: {
                   boxWidth: {
@@ -984,14 +942,6 @@ export function createMaterial3GoogleTextFieldSchema(
                       'bp:md:2': 120,
                       'bp:lg:1': 144
                     }
-                  },
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 20
                   },
                   paddingRight: {
                     's:sm:1': 10,
@@ -1049,37 +999,19 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e4: {
                 name: 'input',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
-                scales: {
-                  textSize: {
-                    's:sm:1': 14,
-                    's:md:1': 16
-                  },
-                  textHeight: {
-                    's:sm:1': 20,
-                    's:md:1': 24
-                  }
+                typography: {
+                  's:sm:1': 'body-medium',
+                  's:md:1': 'body-large'
                 },
                 palettes: palettes.input
               },
               e5: {
                 name: 'message',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
+                typography: {
+                  's:sm:1': 'supporting-small-compact',
+                  's:md:1': 'body-small'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 11,
-                    's:md:1': 12
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 16
-                  },
                   marginTop: {
                     's:sm:1': 4,
                     's:md:1': 6
@@ -1113,19 +1045,11 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e2: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
+                typography: {
+                  's:sm:1': 'label-medium',
+                  's:md:1': 'label-large'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 20
-                  },
                   marginBottom: {
                     's:sm:1': 4,
                     's:md:1': 6
@@ -1135,9 +1059,9 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e7: {
                 name: 'inline-label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
+                typography: {
+                  's:sm:1': 'label-medium',
+                  's:md:1': 'label-large'
                 },
                 scales: {
                   boxWidth: {
@@ -1151,14 +1075,6 @@ export function createMaterial3GoogleTextFieldSchema(
                       'bp:md:2': 120,
                       'bp:lg:1': 144
                     }
-                  },
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 14
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 20
                   },
                   paddingRight: {
                     's:sm:1': 10,
@@ -1216,37 +1132,19 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e4: {
                 name: 'input',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
-                scales: {
-                  textSize: {
-                    's:sm:1': 14,
-                    's:md:1': 16
-                  },
-                  textHeight: {
-                    's:sm:1': 20,
-                    's:md:1': 24
-                  }
+                typography: {
+                  's:sm:1': 'body-medium',
+                  's:md:1': 'body-large'
                 },
                 palettes: palettes.input
               },
               e5: {
                 name: 'message',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
+                typography: {
+                  's:sm:1': 'supporting-small-compact',
+                  's:md:1': 'body-small'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 11,
-                    's:md:1': 12
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 16
-                  },
                   marginTop: {
                     's:sm:1': 4,
                     's:md:1': 6
@@ -1277,19 +1175,8 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e2: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:all': 'floating-label' },
                 scales: {
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 12
-                  },
-                  textHeight: {
-                    's:sm:1': 14,
-                    's:md:1': 14
-                  },
                   marginTop: {
                     's:sm:1': -7,
                     's:md:1': -7
@@ -1361,37 +1248,19 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e4: {
                 name: 'input',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
-                scales: {
-                  textSize: {
-                    's:sm:1': 14,
-                    's:md:1': 16
-                  },
-                  textHeight: {
-                    's:sm:1': 20,
-                    's:md:1': 24
-                  }
+                typography: {
+                  's:sm:1': 'body-medium',
+                  's:md:1': 'body-large'
                 },
                 palettes: palettes.input
               },
               e5: {
                 name: 'message',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
+                typography: {
+                  's:sm:1': 'supporting-small-compact',
+                  's:md:1': 'body-small'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 11,
-                    's:md:1': 12
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 16
-                  },
                   marginTop: {
                     's:sm:1': 4,
                     's:md:1': 6
@@ -1415,19 +1284,8 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e2: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:all': 'floating-label' },
                 scales: {
-                  textSize: {
-                    's:sm:1': 12,
-                    's:md:1': 12
-                  },
-                  textHeight: {
-                    's:sm:1': 14,
-                    's:md:1': 14
-                  },
                   marginTop: 8,
                   marginLeft: 22
                 },
@@ -1482,38 +1340,22 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e4: {
                 name: 'input',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
+                typography: {
+                  's:sm:1': 'body-medium',
+                  's:md:1': 'body-large'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 14,
-                    's:md:1': 16
-                  },
-                  textHeight: {
-                    's:sm:1': 20,
-                    's:md:1': 24
-                  },
                   paddingTop: 10
                 },
                 palettes: palettes.input
               },
               e5: {
                 name: 'message',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
+                typography: {
+                  's:sm:1': 'supporting-small-compact',
+                  's:md:1': 'body-small'
                 },
                 scales: {
-                  textSize: {
-                    's:sm:1': 11,
-                    's:md:1': 12
-                  },
-                  textHeight: {
-                    's:sm:1': 16,
-                    's:md:1': 16
-                  },
                   marginTop: {
                     's:sm:1': 4,
                     's:md:1': 6

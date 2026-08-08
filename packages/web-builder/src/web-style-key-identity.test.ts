@@ -278,6 +278,29 @@ describe('web-style-key-identity', () => {
       ).toBe('textColor__#000000@@m');
     });
 
+    it('emits the textField e3 box height only as a structural minimum-size token', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'boxHeight__40',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'textField',
+          'e3'
+        )
+      ).toBe('boxHeight__40@@t');
+    });
+
+    it('emits the Slider value-indicator height as its own minimum-size token', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'boxHeight__28',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'slider',
+          'e14',
+          'standard'
+        )
+      ).toBe('boxHeight__28@@t');
+    });
+
     it('uses the textField e2 policy from the builder config for margin left', () => {
       expect(
         resolveWebStyleKeyIdentity(

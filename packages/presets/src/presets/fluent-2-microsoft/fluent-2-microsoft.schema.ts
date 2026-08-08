@@ -7,6 +7,7 @@ import { createFluent2MicrosoftProgressSchema } from './components/progress.sche
 import { createFluent2MicrosoftSliderSchema } from './components/slider.schema.ts';
 import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './fluent-2-microsoft.colors.ts';
+import { fluent2MicrosoftTypography } from './fluent-2-microsoft.typography.ts';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
@@ -38,6 +39,7 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: fluent2MicrosoftTypography,
     icons: {
       family: 'fluent-system',
       variant: 'regular'

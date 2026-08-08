@@ -283,26 +283,16 @@ export function createFluent2MicrosoftButtonSchema({
       },
       e2: {
         name: 'button-text',
-        decorations: {
-          textWeight: 'medium'
+        typography: {
+          's:sm:1': 'caption-1',
+          's:md:1': { 'bp:all': 'subtitle-2', 'bp:lg:1': 'body-1-strong' },
+          's:lg:1': 'subtitle-2'
         },
         palettes: {
           default: {
             light: createTextContextPalettes('light'),
             dark: createTextContextPalettes('dark'),
             darker: createTextContextPalettes('darker')
-          }
-        },
-        scales: {
-          textSize: {
-            's:sm:1': 12,
-            's:md:1': { 'bp:all': 16, 'bp:lg:1': 14 },
-            's:lg:1': 16
-          },
-          textHeight: {
-            's:sm:1': 16,
-            's:md:1': { 'bp:all': 22, 'bp:lg:1': 20 },
-            's:lg:1': 22
           }
         }
       },

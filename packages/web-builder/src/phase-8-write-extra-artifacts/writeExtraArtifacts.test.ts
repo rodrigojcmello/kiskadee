@@ -1,4 +1,4 @@
-import { readFile, rm } from 'node:fs/promises';
+import { access, readFile, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Schema, SchemaFonts } from '@kiskadee/core';
@@ -116,5 +116,44 @@ describe('writeExtraArtifacts font artifacts', () => {
 
     expect(globalArtifact.icons).toEqual({ family: 'fluent-system', variant: 'regular' });
     expect(tokensCss).not.toContain('--k-icon');
+  });
+});
+
+describe('writeExtraArtifacts typography artifacts', () => {
+  it('writes typography separately and does not copy the catalog into global metadata', async () => {
+    const outDirSlug = createOutputSlug('typography');
+    const typographyArtifact = {
+      profiles: {
+        'body-medium': {
+          decorations: { textFont: 'body' as const, textWeight: 'normal' as const },
+          scales: { textSize: 16, textHeight: 24 },
+          className: 'k-a k-b k-c k-d'
+        }
+      },
+      usage: { 'body-medium': [] }
+    };
+
+    await writeExtraArtifacts({
+      schema: createSchema({
+        typography: {
+          profiles: {
+            'body-medium': {
+              decorations: { textFont: 'body', textWeight: 'normal' },
+              scales: { textSize: 16, textHeight: 24 }
+            }
+          }
+        }
+      }),
+      outDirSlug,
+      typographyArtifact
+    });
+
+    const outputDirectory = resolve(buildRoot, outDirSlug);
+    expect(
+      JSON.parse(await readFile(resolve(outputDirectory, 'typography.kiskadee.json'), 'utf8'))
+    ).toEqual(typographyArtifact);
+    await expect(access(resolve(outputDirectory, 'global.kiskadee.json'))).rejects.toMatchObject({
+      code: 'ENOENT'
+    });
   });
 });

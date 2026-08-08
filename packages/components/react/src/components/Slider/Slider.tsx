@@ -265,6 +265,35 @@ function resolveThumbKey(index: 0 | 1): 'start' | 'end' {
   return index === 0 ? 'start' : 'end';
 }
 
+function resolveValueIndicatorLane(
+  valueIndicatorElements: readonly HTMLSpanElement[]
+): string | undefined {
+  const firstValueIndicator = valueIndicatorElements[0];
+  if (!firstValueIndicator || typeof window === 'undefined') return undefined;
+
+  const authoredLane = window
+    .getComputedStyle(firstValueIndicator)
+    .getPropertyValue('--k-mgt')
+    .trim();
+  const authoredBlockSize = window
+    .getComputedStyle(firstValueIndicator)
+    .getPropertyValue('--k-bxh')
+    .trim();
+  const renderedBlockSize = Math.max(
+    ...valueIndicatorElements.map((element) => element.getBoundingClientRect().height)
+  );
+  const renderedLane =
+    Number.isFinite(renderedBlockSize) && renderedBlockSize > 0
+      ? `${renderedBlockSize}px`
+      : undefined;
+
+  if (authoredLane && authoredBlockSize && renderedLane) {
+    return `calc(${authoredLane} + max(0px, ${renderedLane} - ${authoredBlockSize}))`;
+  }
+  if (authoredLane && renderedLane) return `max(${authoredLane}, ${renderedLane})`;
+  return authoredLane || renderedLane;
+}
+
 function SliderRoot(props: SliderProps) {
   const {
     id,
@@ -578,15 +607,33 @@ function SliderRoot(props: SliderProps) {
       return;
     }
 
-    const valueIndicatorElement = startValueIndicatorRef.current ?? endValueIndicatorRef.current;
-    if (!valueIndicatorElement || typeof window === 'undefined') return;
+    const valueIndicatorElements = [
+      startValueIndicatorRef.current,
+      endValueIndicatorRef.current
+    ].filter((element): element is HTMLSpanElement => element !== null);
+    if (valueIndicatorElements.length === 0 || typeof window === 'undefined') return;
 
-    const nextValue =
-      window.getComputedStyle(valueIndicatorElement).getPropertyValue('--k-mgt').trim() || '0px';
-    setValueIndicatorLane((currentValue) =>
-      currentValue === nextValue ? currentValue : nextValue
-    );
-  }, [hasPersistentValueIndicator, structuralClassNames.e14]);
+    const syncValueIndicatorLane = () => {
+      const nextValue = resolveValueIndicatorLane(valueIndicatorElements);
+      setValueIndicatorLane((currentValue) =>
+        currentValue === nextValue ? currentValue : nextValue
+      );
+    };
+
+    syncValueIndicatorLane();
+
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(syncValueIndicatorLane);
+    for (const valueIndicatorElement of valueIndicatorElements) {
+      resizeObserver?.observe(valueIndicatorElement);
+    }
+    window.addEventListener('resize', syncValueIndicatorLane);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', syncValueIndicatorLane);
+    };
+  }, [hasPersistentValueIndicator, resolvedSelectionMode, structuralClassNames.e14]);
 
   const rootStyle = useMemo(() => {
     if (!valueIndicatorLane && !valueSummaryInlineSize) return style;

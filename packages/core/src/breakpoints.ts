@@ -27,36 +27,27 @@ export type ElementSizeValue = (typeof ELEMENT_SIZE_VALUES)[number];
 
 export const elementSizeValues: ElementSizeValue[] = [...ELEMENT_SIZE_VALUES];
 
-export const textSizes: Record<ElementSizeValue, PixelValue> = {
-  's:sm:5': 6, //  0.375rem - not recommended
-  's:sm:4': 8, //  0.5rem   - not recommended
-  's:sm:3': 10, // 0.625rem
-  's:sm:2': 12, // 0.75rem
-  's:sm:1': 14, // 0.875rem
-  's:md:1': 16, // 1rem
-  's:lg:1': 20, // 1.25rem
-  's:lg:2': 24, // 1.5rem
-  's:lg:3': 32, // 2rem
-  's:lg:4': 40, // 2.5rem
-  's:lg:5': 48 //  3rem
-};
-
 //--------------------------------------------------------------------------------------------------
 // Breakpoint
 //--------------------------------------------------------------------------------------------------
 
-export type BreakpointValue =
-  | 'bp:all' //   0px    - Must have (mobile)
-  | 'bp:sm:1' //  320px
-  | 'bp:sm:2' //  360px
-  | 'bp:sm:3' //  400px
-  | 'bp:md:1' //  568px
-  | 'bp:md:2' //  768px  - Nice to have (tablet)
-  | 'bp:md:3' //  1024px
-  | 'bp:lg:1' //  1152px - Must have (desktop)
-  | 'bp:lg:2' //  1312px
-  | 'bp:lg:3' //  1792px
-  | 'bp:lg:4'; // 2432px
+const BREAKPOINT_VALUES = [
+  'bp:all',
+  'bp:sm:1',
+  'bp:sm:2',
+  'bp:sm:3',
+  'bp:md:1',
+  'bp:md:2',
+  'bp:md:3',
+  'bp:lg:1',
+  'bp:lg:2',
+  'bp:lg:3',
+  'bp:lg:4'
+] as const;
+
+export type BreakpointValue = (typeof BREAKPOINT_VALUES)[number];
+
+export const breakpointValues: BreakpointValue[] = [...BREAKPOINT_VALUES];
 
 export type Breakpoints = Partial<Record<BreakpointValue, PixelValue>>;
 

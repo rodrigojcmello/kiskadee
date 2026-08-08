@@ -5,6 +5,7 @@ import { createIos27AppleCardSchema } from './components/card.schema.ts';
 import { createIos27AppleSliderSchema } from './components/slider.schema.ts';
 import { createIos27AppleSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './ios-27-apple.colors.ts';
+import { ios27AppleTypography } from './ios-27-apple.typography.ts';
 
 const segmentNames = ['default'] as const;
 export type Segment = (typeof segmentNames)[number];
@@ -30,6 +31,7 @@ export const schema: Schema<Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: ios27AppleTypography,
     icons: {
       family: 'sf-symbols',
       variant: 'regular'

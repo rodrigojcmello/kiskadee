@@ -1,4 +1,5 @@
 import type { Color, Schema } from '@kiskadee/core';
+import { sandboxTypographyReferences } from '../../sandbox/sandbox.typography.ts';
 import type { Sandbox2Segment } from '../sandbox-2.schema.ts';
 
 type SliderComponent = NonNullable<NonNullable<Schema<Sandbox2Segment>['components']>['slider']>;
@@ -48,27 +49,6 @@ const c = {
 } as const;
 
 const sizes = {
-  optionalIndicatorText: {
-    's:sm:3': 12,
-    's:sm:2': 12,
-    's:sm:1': 12,
-    's:md:1': 12,
-    's:lg:1': 12
-  },
-  labelText: {
-    's:sm:3': 12,
-    's:sm:2': 12,
-    's:sm:1': 13,
-    's:md:1': 14,
-    's:lg:1': 16
-  },
-  labelLine: {
-    's:sm:3': 16,
-    's:sm:2': 16,
-    's:sm:1': 18,
-    's:md:1': 20,
-    's:lg:1': 24
-  },
   trackHeight: {
     's:sm:3': 4,
     's:sm:2': 5,
@@ -479,19 +459,13 @@ export function createSandbox2SliderSchema(): SliderComponent {
               e1: { name: 'slider-root' },
               e2: {
                 name: 'slider-field-label',
-                decorations: { textFont: 'body', textWeight: 'medium' },
-                scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
-                },
+                typography: sandboxTypographyReferences.bodyStrong,
                 palettes: textPalettes
               },
               e3: {
                 name: 'slider-value-summary',
-                decorations: { textFont: 'body', textWeight: 'medium' },
+                typography: sandboxTypographyReferences.bodyStrong,
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginLeft: layout.headerSummaryGap
                 },
                 palettes: textPalettes
@@ -523,11 +497,7 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e7: {
                 name: 'slider-endpoint-label',
-                decorations: { textFont: 'body', textWeight: 'medium' },
-                scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
-                },
+                typography: sandboxTypographyReferences.bodyStrong,
                 palettes: textPalettes
               },
               e8: {
@@ -588,7 +558,8 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e14: {
                 name: 'slider-value-indicator',
-                decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'medium' },
+                typography: sandboxTypographyReferences.bodyStrong,
+                decorations: { borderStyle: 'solid' },
                 scales: {
                   boxHeight: sizes.indicatorHeight,
                   borderRadius: {
@@ -601,9 +572,7 @@ export function createSandbox2SliderSchema(): SliderComponent {
                   paddingLeft: sizes.indicatorPadding,
                   paddingRight: sizes.indicatorPadding,
                   paddingTop: 0,
-                  paddingBottom: 0,
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                  paddingBottom: 0
                 },
                 palettes: valueIndicatorPalettes
               },
@@ -624,10 +593,8 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e16: {
                 name: 'slider-mark-label',
-                decorations: { textFont: 'body', textWeight: 'medium' },
+                typography: sandboxTypographyReferences.bodyStrong,
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginTop: layout.markLabelOffset,
                   marginBottom: layout.markLabelOffset
                 },
@@ -635,10 +602,8 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e17: {
                 name: 'slider-helper-text',
-                decorations: { textFont: 'body', textWeight: 'normal' },
+                typography: sandboxTypographyReferences.body,
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginTop: layout.fieldGap
                 },
                 palettes: textPalettes
@@ -653,8 +618,8 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e20: {
                 name: 'slider-optional-indicator',
+                typography: sandboxTypographyReferences.caption,
                 scales: {
-                  textSize: sizes.optionalIndicatorText,
                   marginLeft: layout.optionalIndicatorGap
                 },
                 palettes: optionalIndicatorPalettes

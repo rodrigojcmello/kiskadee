@@ -70,6 +70,23 @@ unavailable, or the probe API is unavailable, the integration prepares the Open 
 from Google Fonts. The preset schema still contains no URL or loader. Without that integration,
 applications may provide either family themselves or let the browser continue through the stack.
 
+The preset-level typography catalog follows the official Fluent Web ramp rather than repeating
+font properties inside every component element:
+
+| Profile | Weight | Size / line height | Status |
+| --- | --- | --- | --- |
+| `caption-1` | Regular | 12 / 16 px | Official exact |
+| `body-1` | Regular | 14 / 20 px | Official exact |
+| `body-1-strong` | Semibold | 14 / 20 px | Official exact |
+| `subtitle-2` | Semibold | 16 / 22 px | Official exact |
+| `caption-1-relaxed` | Regular | 12 / 20 px | Kiskadee extension preserving the optional Slider indicator's inherited line box |
+
+Component elements select these profiles by Kiskadee scale and, where needed, breakpoint. The
+catalog owns font role, weight, size, and line height; component schemas continue to own spacing,
+layout, palettes, and interaction states. The responsive default Button selects `subtitle-2`
+below `bp:lg:1` and `body-1-strong` from that breakpoint onward. Small selects `caption-1`, so the
+official Regular-to-Semibold size transition is represented without a Fluent-only CSS override.
+
 ## Interface Icon Evidence
 
 Microsoft publishes Fluent UI System Icons as its familiar, friendly, and modern interface-icon

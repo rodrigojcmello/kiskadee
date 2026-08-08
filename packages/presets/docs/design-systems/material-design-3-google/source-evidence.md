@@ -22,6 +22,24 @@ Figma reference:
 - Version: 1.23
 - Last updated: 2025-08-12
 
+Official typography reference:
+- [Material 3 type scale tokens](https://m3.material.io/styles/typography/type-scale-tokens)
+
+## Typography Evidence
+
+The preset now publishes a reusable type catalog and component elements select its profiles by
+Kiskadee scale. Source-aligned profiles include Material's `label-medium`, `label-large`,
+`body-small`, `body-medium`, `body-large`, and `title-medium` metrics. The existing 24/32 and
+32/40 Button recipes retain weight 500 as `headline-small-strong` and
+`headline-large-strong`; the `strong` suffix makes that **Kiskadee adaptation** explicit instead
+of presenting the weight as the regular Material headline token.
+
+The existing Tabs, bridge Tabs, compact supporting text, and floating-label recipes do not map
+one-to-one to a published Material ramp entry. They remain named component-semantic profiles and
+are classified as **Kiskadee extensions**. Repeated TextField label, input, and message slots now
+reuse the same catalog entries across modes. This migration preserves all previously authored
+font weights, sizes, and line heights and does not add letter spacing that was not already present.
+
 ## Component Evidence
 
 - [Switch](components/switch.md)

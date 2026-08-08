@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
+import { elementTypographyContractSchema } from '../typography.contract.zod.ts';
 import {
   createPalettesSchema,
   createScalesSchema,
@@ -158,14 +159,7 @@ export function createTabsLabelElementStyleSchema<TSegmentName extends SegmentNa
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
-      scales: createScalesSchema(['textSize', 'textHeight']).optional(),
+      typography: elementTypographyContractSchema.optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })

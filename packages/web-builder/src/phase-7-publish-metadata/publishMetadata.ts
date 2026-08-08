@@ -45,12 +45,14 @@ import {
   buildTextFieldComponentArtifact,
   TEXT_FIELD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/textFieldComponentArtifact.ts';
+import { TYPOGRAPHY_ARTIFACT_PATH } from '../typography/typographyArtifact.ts';
 import type {
   Manifest,
   ManifestComponent,
   ManifestComponentState,
   ManifestFonts,
-  ManifestIcons
+  ManifestIcons,
+  ManifestTypography
 } from './manifestTypes.ts';
 
 const BUTTON_PLAIN_ICON_TREATMENTS = ['plain'] as const satisfies readonly ButtonIconTreatment[];
@@ -641,6 +643,10 @@ export function buildManifestIcons(icons: SchemaIcons | undefined): ManifestIcon
   };
 }
 
+export function buildManifestTypography(hasTypography: boolean): ManifestTypography | undefined {
+  return hasTypography ? { artifact: TYPOGRAPHY_ARTIFACT_PATH } : undefined;
+}
+
 export async function publishMetadata(params: {
   schema: Schema;
   outDirSlug: string;
@@ -684,6 +690,11 @@ export async function publishMetadata(params: {
   const manifestIcons = buildManifestIcons(icons);
   if (manifestIcons) {
     manifest.icons = manifestIcons;
+  }
+
+  const manifestTypography = buildManifestTypography(Boolean(schema.global?.typography));
+  if (manifestTypography) {
+    manifest.typography = manifestTypography;
   }
 
   // Derive component-level metadata from the schema. This keeps the

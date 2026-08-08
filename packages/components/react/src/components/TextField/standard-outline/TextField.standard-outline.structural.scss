@@ -88,6 +88,7 @@
   display: flex;
   align-items: center;
   inline-size: 100%;
+  min-block-size: var(--k-bxh);
   box-sizing: border-box;
   cursor: text;
   isolation: isolate;

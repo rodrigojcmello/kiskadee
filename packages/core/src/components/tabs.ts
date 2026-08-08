@@ -89,13 +89,7 @@ export type TabsTriggerElementStyle<TSegmentName extends SegmentName = never> =
 /**
  * e3 — label
  * - textColor
- * - textSize
- * - textFamily
- * - textWeight
- * - textLineHeight
- *
- * NOTE:
- * `textLineHeight` maps to `textHeight` in the current schema scale model.
+ * - typography profile by component size / breakpoint
  */
 export type TabsLabelElementStyle<TSegmentName extends SegmentName = never> =
   TabsLabelElementStyleFromSchema<TSegmentName>;

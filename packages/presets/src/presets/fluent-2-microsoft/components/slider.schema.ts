@@ -38,18 +38,6 @@ const fluent = {
 } as const satisfies Record<string, Color>;
 
 const sizes = {
-  optionalIndicatorText: {
-    's:sm:1': 12,
-    's:md:1': 12
-  },
-  labelText: {
-    's:sm:1': 12,
-    's:md:1': 14
-  },
-  labelLine: {
-    's:sm:1': 16,
-    's:md:1': 20
-  },
   trackHeight: {
     's:sm:1': 2,
     's:md:1': 4
@@ -474,19 +462,19 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e1: { name: 'slider-root' },
               e2: {
                 name: 'slider-field-label',
-                decorations: { textFont: 'body', textWeight: 'normal' },
-                scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                typography: {
+                  's:sm:1': 'caption-1',
+                  's:md:1': 'body-1'
                 },
                 palettes: textPalettes
               },
               e3: {
                 name: 'slider-value-summary',
-                decorations: { textFont: 'body', textWeight: 'normal' },
+                typography: {
+                  's:sm:1': 'caption-1',
+                  's:md:1': 'body-1'
+                },
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginLeft: layout.headerSummaryGap
                 },
                 palettes: textPalettes
@@ -518,10 +506,9 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               },
               e7: {
                 name: 'slider-endpoint-label',
-                decorations: { textFont: 'body', textWeight: 'normal' },
-                scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                typography: {
+                  's:sm:1': 'caption-1',
+                  's:md:1': 'body-1'
                 },
                 palettes: textPalettes
               },
@@ -589,7 +576,11 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               },
               e14: {
                 name: 'slider-value-indicator',
-                decorations: { borderStyle: 'solid', textFont: 'body', textWeight: 'normal' },
+                typography: {
+                  's:sm:1': 'caption-1',
+                  's:md:1': 'body-1'
+                },
+                decorations: { borderStyle: 'solid' },
                 scales: {
                   boxHeight: sizes.indicatorHeight,
                   borderRadius: {
@@ -602,9 +593,7 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
                   paddingLeft: sizes.indicatorPadding,
                   paddingRight: sizes.indicatorPadding,
                   paddingTop: 0,
-                  paddingBottom: 0,
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine
+                  paddingBottom: 0
                 },
                 palettes: valueIndicatorPalettes
               },
@@ -625,10 +614,11 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               },
               e16: {
                 name: 'slider-mark-label',
-                decorations: { textFont: 'body', textWeight: 'normal' },
+                typography: {
+                  's:sm:1': 'caption-1',
+                  's:md:1': 'body-1'
+                },
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginTop: layout.markLabelOffset,
                   marginBottom: layout.markLabelOffset
                 },
@@ -636,10 +626,11 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               },
               e17: {
                 name: 'slider-helper-text',
-                decorations: { textFont: 'body', textWeight: 'normal' },
+                typography: {
+                  's:sm:1': 'caption-1',
+                  's:md:1': 'body-1'
+                },
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginTop: layout.fieldGap
                 },
                 palettes: textPalettes
@@ -654,8 +645,11 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               },
               e20: {
                 name: 'slider-optional-indicator',
+                typography: {
+                  's:sm:1': 'caption-1',
+                  's:md:1': 'caption-1-relaxed'
+                },
                 scales: {
-                  textSize: sizes.optionalIndicatorText,
                   marginLeft: layout.optionalIndicatorGap
                 },
                 palettes: optionalIndicatorPalettes

@@ -7,10 +7,14 @@ Location: `packages/web-builder/src/run-build.ts`
 1. Phase 1 - Convert schema to style keys
    - Function: `convertElementSchemaToStyleKeys(schema)`.
    - Produces normalized style keys per component and element.
+   - Expands typography profile references into atomic decoration and scale keys before the normal
+     element conversion.
 
 2. Phase 2 - Map style key usage
    - Function: `mapStyleKeyUsage(styleKeys)`.
    - Collects usage to shorten class names.
+   - Includes the atomic utilities for every declared typography profile because the typography
+     catalog is itself a CSS consumer.
 
 3. Phase 3 - Shorten class names
    - Function: `shortenCssClassNames(usageMap)`.
@@ -35,11 +39,13 @@ Location: `packages/web-builder/src/run-build.ts`
    - Writes `manifest.json`, `schema.json` and `segments.json` under `build/<template-key>`.
    - `segments.json` is derived from `schema.colors.globalSemanticsBySegment`.
    - Publishes only semantic font role IDs under the compact `manifest.fonts` capability.
+   - Publishes only the typography artifact path under `manifest.typography`.
 
 8. Phase 8 - Write extra artifacts
-   - Function: `writeExtraArtifacts({ schema, outDirSlug })`.
+   - Function: `writeExtraArtifacts({ schema, outDirSlug, typographyArtifact })`.
    - Writes global and theme token artifacts such as `global.kiskadee.json` and tokens CSS.
    - Preserves the full font catalog in JSON and resolves selected stacks into CSS variables.
+   - Writes the dedicated `typography.kiskadee.json` without copying it into global metadata.
 
 ## Package scripts
 

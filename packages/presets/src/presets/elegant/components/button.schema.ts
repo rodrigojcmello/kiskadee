@@ -94,9 +94,7 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
       },
       e2: {
         name: 'button-text',
-        decorations: {
-          textWeight: 'medium'
-        },
+        typography: { 's:md:1': 'button-label' },
         palettes: {
           default: {
             light: {
@@ -133,14 +131,6 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
                 }
               }
             }
-          }
-        },
-        scales: {
-          textSize: {
-            's:md:1': 17
-          },
-          textHeight: {
-            's:md:1': 18
           }
         }
       }

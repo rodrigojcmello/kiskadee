@@ -16,6 +16,7 @@ This directory records official source evidence and preset-level decisions for
   - local variable collection: `Colors`, with `Light` and `Dark` modes.
 - [Apple SF Symbols](https://developer.apple.com/sf-symbols/)
 - [Apple Human Interface Guidelines: SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols)
+- [Apple Human Interface Guidelines: Typography](https://developer.apple.com/design/human-interface-guidelines/typography)
 
 ## Source Notes
 
@@ -75,6 +76,19 @@ This directory records official source evidence and preset-level decisions for
   run color-selection logic.
 - Liquid Glass is documented but emits no approximation. Adding it later requires a separate
   material-capability contract rather than literal textured colors in the current Button schema.
+
+## Typography Evidence
+
+The preset centralizes its existing Apple-system recipes in `global.typography.profiles`. The
+conventional Button maps Small and Medium to the 15/20 Regular `subheadline` profile and Large to
+the 17/22 Regular `body` profile documented by the inspected component evidence. Switch reuses
+`body`. This is **Official adapted** because the Web preset selects the Apple system stack without
+embedding SF Pro.
+
+Slider typography remains part of the provisional iOS 26/macOS 26 carry-over described in its
+component evidence. Its reusable label, tooltip, caption, and regular-label profiles preserve the
+current numbers but are not claimed as verified iOS 27 tokens. No tracking value is introduced by
+this migration because none existed in the previous Slider schema.
 
 ## Interface Icon Evidence
 

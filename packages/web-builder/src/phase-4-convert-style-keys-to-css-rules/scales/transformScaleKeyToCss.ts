@@ -1,6 +1,7 @@
 import {
   type Breakpoints,
   type BreakpointValue,
+  type ElementAllSizeValue,
   type ElementSizeValue,
   elementSizeValues,
   type ScaleProperty,
@@ -12,6 +13,7 @@ import {
   type ResolvedElementStyleEmissionPolicy
 } from '../../style-emission/web-build-policy.ts';
 import { SEPARATORS } from '../../utils/index.ts';
+import { normalizeCssNumber } from '../../utils/normalizeCssNumber.ts';
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
@@ -121,7 +123,7 @@ export function transformScaleKeyToCss(
 
     if (hasBreakpointSeparator) {
       const [sizeToken, remainder] = withoutPrefix.split(SEPARATORS.BREAKPOINT) as [
-        ElementSizeValue,
+        ElementSizeValue | ElementAllSizeValue,
         string
       ];
       const parts = remainder.split(SEPARATORS.VALUE) as [BreakpointValue, string];
@@ -136,7 +138,9 @@ export function transformScaleKeyToCss(
         throw new Error(ERROR_INVALID_MEDIA_TOKEN);
       }
 
-      const isValidSizeToken = elementSizeValues.includes(sizeToken);
+      const isValidSizeToken =
+        (sizeToken === 's:all' && scaleProperty === 'textSize') ||
+        elementSizeValues.includes(sizeToken as ElementSizeValue);
 
       if (!isValidSizeToken) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
@@ -146,10 +150,13 @@ export function transformScaleKeyToCss(
       scaleValue = value;
     } else {
       const [sizeToken, value] = withoutPrefix.split(SEPARATORS.VALUE) as [
-        ElementSizeValue,
+        ElementSizeValue | ElementAllSizeValue,
         string
       ];
-      const isValidToken = sizeToken != null && elementSizeValues.includes(sizeToken);
+      const isValidToken =
+        sizeToken != null &&
+        ((sizeToken === 's:all' && scaleProperty === 'textSize') ||
+          elementSizeValues.includes(sizeToken as ElementSizeValue));
       const hasValue = value != null;
 
       if (!isValidToken) {
@@ -185,7 +192,7 @@ export function transformScaleKeyToCss(
   const cssProperty = cssPropertyMap[scaleProperty as unknown as ScaleProperty];
   let cssValue: string;
   if (scaleProperty === 'textSize') {
-    cssValue = `${Number(scaleValue) / 16}rem`;
+    cssValue = `${normalizeCssNumber(Number(scaleValue) / 16)}rem`;
   } else {
     cssValue = `${scaleValue}px`;
   }

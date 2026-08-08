@@ -31,6 +31,7 @@ import type {
   ShadowGlobalEffectSchema
 } from './types/effects/shadow/shadow.types.ts';
 import type { ScaleSchema } from './types/scales/scales.types.ts';
+import type { ElementTypography, SchemaTypography } from './typography.ts';
 
 // Names of all supported components
 export type ComponentName =
@@ -47,6 +48,7 @@ export type ElementStyle<TSegmentName extends SegmentName = never> = {
   name: string; // human-readable element label, for example "button-text"
 } & Partial<{
   decorations: DecorationSchema;
+  typography: ElementTypography;
   scales: ScaleSchema;
   // Palettes follow the structure: segmentName → theme → surface context → ColorSchema.
   // This ensures consistency and enables proper white-label theming with theme mode support.
@@ -239,6 +241,7 @@ export type RadiusMode = 'rounded' | 'square' | 'pill';
 export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
   icons?: SchemaIcons;
+  typography?: SchemaTypography;
   focus?: FocusGlobalTokens;
   radius?: RadiusMode;
   effects?: SchemaGlobalEffects;

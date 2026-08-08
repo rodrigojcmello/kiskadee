@@ -105,34 +105,41 @@ describe('convertElementSchemaToStyleKeys', () => {
   });
 
   it('converts variant element maps', () => {
-    const schema = createSchema({
-      tabs: {
-        variants: {
-          line: {
-            elements: {
-              e3: {
-                name: 'label',
-                decorations: {
-                  textWeight: 'medium'
-                },
-                scales: {
-                  textSize: {
-                    's:md:1': 16
+    const schema = createSchema(
+      {
+        tabs: {
+          variants: {
+            line: {
+              elements: {
+                e3: {
+                  name: 'label',
+                  typography: {
+                    's:md:1': 'tab-label'
                   }
                 }
               }
             }
           }
         }
+      },
+      {
+        typography: {
+          profiles: {
+            'tab-label': {
+              decorations: { textFont: 'body', textWeight: 'medium' },
+              scales: { textSize: 16, textHeight: 24 }
+            }
+          }
+        }
       }
-    });
+    );
 
     const { styleKeys } = convertElementSchemaToStyleKeys(schema);
     const tabs = styleKeys.tabs as Record<string, Record<string, StyleKeyByElement>>;
 
-    expect(tabs.line.e3.decorations).toEqual(['textWeight__medium']);
+    expect(tabs.line.e3.decorations).toEqual(['textFont__body', 'textWeight__medium']);
     expect(tabs.line.e3.scales).toEqual({
-      's:md:1': ['textSize__16']
+      's:md:1': ['textSize__16', 'textLineHeight__1.5']
     });
   });
 

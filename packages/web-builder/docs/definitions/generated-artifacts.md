@@ -48,6 +48,8 @@ Metadata is written per template under `packages/web-builder/build/<template-key
   context-aggregated state map.
 - Font capability is published compactly under `fonts` as semantic role-to-family-ID selections.
   Catalogs and stacks are not duplicated in the manifest.
+- Typography capability is published as `typography.artifact`; profile definitions, atomic class
+  lists, and detailed usages live in `typography.kiskadee.json`.
 - `schema.json` / `segments.json`: schema and segment data for inspection or tooling.
 - `global.kiskadee.json`: global metadata consumed by runtime/components, including the complete
   semantic font catalog and role selections, radius, and global effects. Component semantic
@@ -73,6 +75,9 @@ metadata role.
 
 The font artifact shapes and fallback rules are defined in
 [Font family artifacts](font-family-artifacts.md).
+
+Typography lowering and artifact ownership are defined in
+[Typography artifacts](typography-artifacts.md).
 
 ## Typical usage
 

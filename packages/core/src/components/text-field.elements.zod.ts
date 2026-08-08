@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
+import { elementTypographyContractSchema } from '../typography.contract.zod.ts';
 import {
   createPalettesSchema,
   createScalesSchema,
@@ -21,16 +22,8 @@ export function createTextFieldLabelElementStyleSchema<TSegmentName extends Segm
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
+      typography: elementTypographyContractSchema.optional(),
       scales: createScalesSchema([
-        'textSize',
-        'textHeight',
         'marginBottom',
         'marginTop',
         'marginLeft',
@@ -49,17 +42,9 @@ export function createTextFieldInlineLabelElementStyleSchema<
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
+      typography: elementTypographyContractSchema.optional(),
       scales: createScalesSchema([
         'boxWidth',
-        'textSize',
-        'textHeight',
         'marginBottom',
         'marginTop',
         'marginLeft',
@@ -106,14 +91,8 @@ export function createTextFieldInputElementStyleSchema<TSegmentName extends Segm
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
-      scales: createScalesSchema(['textSize', 'textHeight', 'paddingTop']).optional(),
+      typography: elementTypographyContractSchema.optional(),
+      scales: createScalesSchema(['paddingTop']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })
@@ -126,14 +105,8 @@ export function createTextFieldMessageElementStyleSchema<
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
-      scales: createScalesSchema(['textSize', 'textHeight', 'marginTop']).optional(),
+      typography: elementTypographyContractSchema.optional(),
+      scales: createScalesSchema(['marginTop']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })

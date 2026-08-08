@@ -5,6 +5,63 @@ import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-p
 import { generateCssSplit } from './generateCssSplit.ts';
 
 describe('generateCssSplit', () => {
+  it('keeps base rules first and orders min-width utilities from smallest to largest', async () => {
+    const input = {
+      button: {
+        e2: {
+          scales: {
+            's:md:1': [
+              'textSize++s:md:1::bp:lg:1__20',
+              'textSize__16',
+              'textSize++s:md:1::bp:sm:1__17',
+              'textSize++s:md:1::bp:md:1__18'
+            ]
+          }
+        }
+      }
+    } as any;
+    const shortenMap = {
+      'textSize++s:md:1::bp:lg:1__20': 'large',
+      textSize__16: 'base',
+      'textSize++s:md:1::bp:sm:1__17': 'small',
+      'textSize++s:md:1::bp:md:1__18': 'medium'
+    };
+
+    const result = await generateCssSplit(input, shortenMap, {
+      breakpoints: {
+        'bp:all': 0,
+        'bp:sm:1': 320,
+        'bp:md:1': 568,
+        'bp:lg:1': 1152
+      }
+    });
+    const baseIndex = result.coreCss.indexOf('.base');
+    const smallIndex = result.coreCss.indexOf('(min-width: 320px)');
+    const mediumIndex = result.coreCss.indexOf('(min-width: 568px)');
+    const largeIndex = result.coreCss.indexOf('(min-width: 1152px)');
+
+    expect(baseIndex).toBeGreaterThanOrEqual(0);
+    expect(baseIndex).toBeLessThan(smallIndex);
+    expect(smallIndex).toBeLessThan(mediumIndex);
+    expect(mediumIndex).toBeLessThan(largeIndex);
+  });
+
+  it('uses a code-unit tie-break for reproducible core rule ordering', async () => {
+    const input = {
+      button: {
+        e1: {
+          decorations: ['borderStyle__none', 'textWeight__bold']
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const result = await generateCssSplit(input, {
+      borderStyle__none: 'a-b',
+      textWeight__bold: 'a_b'
+    });
+
+    expect(result.coreCss.indexOf('.a-b')).toBeLessThan(result.coreCss.indexOf('.a_b'));
+  });
+
   it('returns empty bundles for empty input', async () => {
     const input = {} as ComponentStyleKeyMap;
     const shortenMap: ShortenCssClassNames = {};

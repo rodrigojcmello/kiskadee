@@ -23,5 +23,7 @@ Build pipeline that converts a Kiskadee `Schema` into Web artifacts (utility CSS
   CSS presentation.
 - [Font family artifacts](docs/definitions/font-family-artifacts.md) - semantic catalogs, compact manifest roles,
   CSS stack resolution, and fallback behavior.
+- [Typography artifacts](docs/definitions/typography-artifacts.md) - profile lowering, atomic classes, usage
+  metadata, and relative Web units.
 - [Reference files](docs/definitions/reference-files.md) - implementation entry points for the build pipeline.
 - [Future optimizations](docs/proposals/future-optimizations.md) - deferred optimization proposal.

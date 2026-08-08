@@ -18,6 +18,10 @@ export type ManifestIcons = {
   variant?: string;
 };
 
+export type ManifestTypography = {
+  artifact: string;
+};
+
 export type ManifestComponentState = Record<
   string, // semantic: primary, neutral, redLike, ...
   Record<
@@ -88,6 +92,10 @@ export type Manifest = {
    * Glyph definitions and loaders remain outside build artifacts.
    */
   icons?: ManifestIcons;
+  /**
+   * Descriptive typography catalog. Definitions and usage stay in the referenced artifact.
+   */
+  typography?: ManifestTypography;
   /**
    * Optional component-level metadata derived from the schema.
    *

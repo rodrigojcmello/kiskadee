@@ -64,8 +64,9 @@ that ring color is a Kiskadee accessibility decision, not a value claimed from t
 
 All sizes use a pill radius. Apple authors SF Pro Regular at weight 400. Kiskadee preserves the
 weight and uses the Apple system-font stack with platform fallbacks; this is an **Official
-adapted** typography mapping. The source letter-spacing detail is not represented by a new Button
-capability in this phase.
+adapted** typography mapping. The source letter-spacing detail is not added during this migration
+because the active Button previously authored no tracking; it can be resolved later in the shared
+typography profile without adding a Button-only capability.
 
 ## Color And Token Provenance
 

@@ -6,6 +6,7 @@ import { createMaterial3GoogleSwitchSchema } from './components/switch.schema.ts
 import { createMaterial3GoogleTabsSchema } from './components/tabs.schema.ts';
 import { createMaterial3GoogleTextFieldSchema } from './components/text-field.schema.ts';
 import { schemaColors } from './material-3-google.colors.ts';
+import { material3GoogleTypography } from './material-3-google.typography.ts';
 
 /**
  * Segments definition for the Material Design 3 design system.
@@ -37,6 +38,7 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: material3GoogleTypography,
     icons: {
       family: 'material-symbols',
       variant: 'fill-0'

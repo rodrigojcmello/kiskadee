@@ -474,6 +474,46 @@ Consequence:
 - A preparation result may explain which local or online family satisfied an integration policy;
   it must not be presented as a per-glyph rendered-font inspection.
 
+### 3.3.2 Shared typography profiles
+
+Context:
+
+- Text recipes recur across component slots, but authoring font family, weight, size, and line
+  height independently in every element makes consistency difficult to preserve.
+- Font-family availability and role selection are already separate from component styling.
+- Browser code should continue composing generated classes instead of resolving design tokens.
+
+Decision:
+
+- `global.typography.profiles` owns complete preset-local typography recipes.
+- A recipe selects a semantic font role and weight under `decorations`, and size, line height, and
+  optional letter spacing under `scales`.
+- Textual component elements reference profiles through a scale-aware `typography` map.
+- A slot using `typography` must not also author `textFont`, `textWeight`, `textSize`, `textHeight`,
+  or `textLetterSpacing` inline.
+- Strong and stronger appearances are independent complete profiles, not runtime weight axes.
+- Responsive profile changes may alter metrics but must preserve the font role and weight within
+  the responsive sequence.
+- Interaction states never select typography profiles.
+
+Reason:
+
+- The preset remains the source of truth for a coherent text scale without coupling visual recipes
+  to HTML semantics or font delivery.
+- Complete recipes prevent accidental partial combinations and keep weight changes deliberate.
+- Build-time expansion preserves atomic CSS reuse and adds no browser lookup or provider.
+
+Consequence:
+
+- The Web Builder expands profile references into the existing `d` and `s` class-map buckets.
+- Family and weight are hoisted to `d` only when invariant across every scale of the slot; metrics
+  remain in `s`.
+- `typography.kiskadee.json` is a lazy descriptive artifact for inspection. The regular global
+  runtime artifact does not carry the catalog.
+- Component `scale` remains the complete public visual choice; components do not gain local
+  typography override props in this contract.
+- Font preparation remains driven only by selected font families, never by a profile.
+
 ## 4) What belongs in structural Sass
 
 Structural Sass is for layout/positioning/interaction structure, not theming.
@@ -528,6 +568,7 @@ Main outputs per design system:
 - `<segment>.<theme>.kiskadee.css` / `<segment>.<theme>.kiskadee.json`
 - `global.kiskadee.json`
 - `components/<component>.kiskadee.json`
+- `typography.kiskadee.json` when the preset declares typography profiles
 - `class-maps/core/<component>.kiskadee.json`
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`
 - `segments.json`, `manifest.json`, `schema.json`
@@ -555,6 +596,9 @@ Use each artifact for a different level of responsibility:
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
   `components/text-field.kiskadee.json`; new artifacts should not add component semantic payloads
   under `global.components.<name>`.
+- `typography.kiskadee.json`: optional, lazy inspection metadata containing authored profile
+  definitions, their atomic class lists, and profile usages. It is not part of normal component
+  runtime loading.
 - `class-maps/core/<component>.kiskadee.json` and
   `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped class resolution
   artifacts. They mirror the component branch from the aggregate class-map files so runtime hooks

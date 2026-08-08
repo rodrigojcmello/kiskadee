@@ -22,6 +22,12 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('font-size: 1rem');
       });
 
+      it('normalizes fractional rem output to six decimal places', () => {
+        const result = transformScaleKeyToCss('textSize__13.333333', breakpoints, 'abc');
+
+        expect(result).toContain('font-size: 0.833333rem');
+      });
+
       it("should convert 'paddingTop__16' into a valid CSS rule", () => {
         const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc', {
           styleEmissionPolicy: {
@@ -93,6 +99,21 @@ describe('transformScaleKeyToCss', () => {
 
         expect(result).toContain('.abc {');
         expect(result).toContain('height: 16px');
+      });
+
+      it('should emit only --k-bxh when box-height emission is token', () => {
+        const result = transformScaleKeyToCss('boxHeight__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            boxHeightEmission: 'token',
+            borderRadiusEmission: 'direct',
+            borderColorEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-bxh: 16px }');
       });
 
       it('should emit only --k-bdr when border-radius emission is token', () => {
@@ -230,6 +251,16 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('.abc {');
         expect(result).toContain('font-size: 1rem');
       });
+
+      it("supports the typography-wide 's:all' token for responsive font size", () => {
+        const result = transformScaleKeyToCss(
+          'textSize++s:all::bp:lg:1__14',
+          { 'bp:all': 0, 'bp:lg:1': 1200 },
+          'abc'
+        );
+
+        expect(result).toBe('@media (min-width: 1200px) { .abc { font-size: 0.875rem } }');
+      });
     });
   });
 
@@ -256,6 +287,15 @@ describe('transformScaleKeyToCss', () => {
       expect(() =>
         transformScaleKeyToCss('paddingTop++foo::bp:lg:1__16', breakpoints, 'abc')
       ).toThrowError(ERROR_INVALID_CUSTOM_TOKEN);
+    });
+
+    it("rejects the typography-wide 's:all' token for unrelated scale properties", () => {
+      expect(() =>
+        transformScaleKeyToCss('boxHeight++s:all::bp:lg:1__16', breakpoints, 'abc')
+      ).toThrowError(ERROR_INVALID_CUSTOM_TOKEN);
+      expect(() => transformScaleKeyToCss('boxHeight++s:all__16', breakpoints, 'abc')).toThrowError(
+        ERROR_INVALID_CUSTOM_TOKEN
+      );
     });
 
     describe('Exception 5 - Invalid Format Cases for Custom Token and Missing Value', () => {

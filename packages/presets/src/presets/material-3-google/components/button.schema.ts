@@ -409,8 +409,12 @@ export function createMaterial3GoogleButtonSchema({
       },
       e2: {
         name: 'button-text',
-        decorations: {
-          textWeight: 'medium'
+        typography: {
+          's:sm:1': 'label-large',
+          's:md:1': 'label-large',
+          's:lg:1': 'title-medium',
+          's:lg:2': 'headline-small-strong',
+          's:lg:3': 'headline-large-strong'
         },
         palettes: buildBySegment(segmentNames, (s) => {
           return {
@@ -511,24 +515,7 @@ export function createMaterial3GoogleButtonSchema({
               }
             }
           };
-        }),
-        scales: {
-          textSize: {
-            's:sm:1': 14,
-            's:md:1': 14,
-            's:lg:1': 16,
-            's:lg:2': 24,
-            's:lg:3': 32
-          },
-          textHeight: {
-            // TODO: Investigate why this key is being emitted twice (likely due to size-based style keys).
-            's:sm:1': 20,
-            's:md:1': 20,
-            's:lg:1': 24,
-            's:lg:2': 32,
-            's:lg:3': 40
-          }
-        }
+        })
       }
     }
   };

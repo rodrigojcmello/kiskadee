@@ -14,6 +14,8 @@ This file records the source-of-truth evidence used to author the
     this capture
 - Official documentation:
   [Carbon Design System](https://carbondesignsystem.com/)
+  - typography tokens:
+    [Carbon type sets](https://carbondesignsystem.com/elements/typography/type-sets/)
   - interface-icon code and package guidance:
     [Carbon Icons](https://carbondesignsystem.com/elements/icons/code/)
 
@@ -36,6 +38,20 @@ This file records the source-of-truth evidence used to author the
 
 - [Switch](components/switch.md)
 - [Card](components/card.md)
+
+## Typography Evidence
+
+Carbon's official productive type set defines `label-01` as IBM Plex Sans Regular at 12/16 and
+`body-compact-01` as IBM Plex Sans Regular at 14/18. The preset publishes both as reusable global
+profiles and maps the two Switch text slots to them. This is **Official adapted** because the
+current schema intentionally preserves its previous output and therefore does not newly introduce
+Carbon's documented letter spacing in this migration.
+
+The existing Button recipe uses 14/18 at weight 500. It is retained as
+`body-compact-01-strong`, a **Kiskadee extension** derived from the compact metrics rather than a
+claim that Carbon publishes that exact weight token. Component spacing and color remain local to
+their schemas; the catalog owns only the font role, weight, size, line height, and any future
+source-backed tracking.
 
 ## Interface Icon Evidence
 

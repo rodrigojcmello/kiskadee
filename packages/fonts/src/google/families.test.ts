@@ -5,7 +5,7 @@ import { interFontFamily } from './inter.ts';
 import { loraFontFamily } from './lora.ts';
 import { notoSansFontFamily } from './noto-sans.ts';
 import { openSansFontFamily } from './open-sans.ts';
-import { robotoFontFamily } from './roboto.ts';
+import { ROBOTO_GOOGLE_FAMILY_PARAMETERS, robotoFontFamily } from './roboto.ts';
 import { ubuntuFontFamily } from './ubuntu.ts';
 
 describe('Google Fonts catalog', () => {
@@ -61,5 +61,9 @@ describe('Google Fonts catalog', () => {
         prepare: expect.any(Function)
       }
     ]);
+  });
+
+  it('requests every Roboto weight used by the Material typography profiles', () => {
+    expect(ROBOTO_GOOGLE_FAMILY_PARAMETERS).toBe('Roboto:wght@400;500;700;800');
   });
 });

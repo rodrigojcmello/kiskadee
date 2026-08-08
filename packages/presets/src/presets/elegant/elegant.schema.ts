@@ -4,6 +4,7 @@ import { createElegantButtonSchema } from './components/button.schema.ts';
 import { createElegantCardSchema } from './components/card.schema.ts';
 import { createElegantSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './elegant.colors.ts';
+import { elegantTypography } from './elegant.typography.ts';
 
 // Elegant starts from Apple-inspired references and can evolve as an opinionated Kiskadee preset.
 
@@ -23,6 +24,7 @@ export const schema: Schema<Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: elegantTypography,
     fonts: {
       families: {
         'system-ui': {

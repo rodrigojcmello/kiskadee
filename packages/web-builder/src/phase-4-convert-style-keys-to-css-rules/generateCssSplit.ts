@@ -31,6 +31,7 @@ import { transformColorKeyToCss } from './palettes/transformColorKeyToCss.ts';
 export type GenerateCssSplitOptions = {
   forceState?: boolean;
   webStyleEmissionPolicy?: WebStyleEmissionPolicy;
+  additionalCoreStyleKeys?: readonly string[];
 } & GenerateCssRuleFromStyleKeyOptions &
   WebStyleIdentityOptimizationOptions;
 
@@ -74,6 +75,21 @@ function isNestedVariantModeMap(value: unknown): value is Record<string, Record<
   const first = Object.values(value).find(Boolean);
   if (!isRecord(first)) return false;
   return isElementMap(first);
+}
+
+function compareCoreRules(a: string, b: string): number {
+  const minWidthPattern = /@media\s*\(min-width:\s*(-?\d+(?:\.\d+)?)px\)/;
+  const aMatch = a.match(minWidthPattern);
+  const bMatch = b.match(minWidthPattern);
+  const aMinWidth = aMatch ? Number(aMatch[1]) : undefined;
+  const bMinWidth = bMatch ? Number(bMatch[1]) : undefined;
+
+  if (aMinWidth === undefined && bMinWidth !== undefined) return -1;
+  if (aMinWidth !== undefined && bMinWidth === undefined) return 1;
+  if (aMinWidth !== undefined && bMinWidth !== undefined && aMinWidth !== bMinWidth) {
+    return aMinWidth - bMinWidth;
+  }
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 export async function generateCssSplit(
@@ -300,8 +316,21 @@ export async function generateCssSplit(
     }
   }
 
+  // Global descriptive catalogs can expose reusable atomic classes through their own artifact
+  // instead of attaching those classes to a synthetic component or a new runtime bucket.
+  for (const key of options?.additionalCoreStyleKeys ?? []) {
+    const className = shortenMap[key];
+    if (!className) {
+      throw new Error(`Missing shortened class name for additional core style key "${key}".`);
+    }
+    const rule = generateCssRuleFromStyleKey(key, className, forceState, options);
+    if (rule.trim() !== '') coreRules.add(rule);
+  }
+
   // Build strings, sort for stability, and post-process media queries per bundle
-  const coreRaw = Array.from(coreRules).sort().join('\n');
+  // Mobile-first min-width overrides must remain in ascending order. Sorting only by the shortened
+  // selector can make a smaller breakpoint override a larger one when both classes are active.
+  const coreRaw = Array.from(coreRules).sort(compareCoreRules).join('\n');
   const mediaQueryPostcssPlugins = createKiskadeePostcssPlugins({
     combineMediaQueries: true
   });

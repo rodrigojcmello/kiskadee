@@ -1,6 +1,6 @@
 'use client';
 
-import type { FontStack, SchemaFonts } from '@kiskadee/core';
+import type { FontStack, SchemaFonts, TextFontValue } from '@kiskadee/core';
 import { SYSTEM_MONOSPACE_FONT_STACK } from '@kiskadee/core/font-family';
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
 import {
@@ -9,6 +9,7 @@ import {
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
+import type { TypographyArtifactUsage } from '@kiskadee/web-builder/types';
 import { ShowcaseIconographyControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
   ShowcaseControlGroup,
@@ -17,6 +18,7 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useTypographyArtifact } from '@/hooks/use-typography-artifact';
 import {
   createFontSelectionOptions,
   FOLLOW_PRESET_FONT_KEY,
@@ -36,6 +38,13 @@ type RoleDisplay = {
 };
 
 const FONT_ROLES: readonly FontFamilyRole[] = ['body', 'heading', 'code'];
+const TYPOGRAPHY_ROLE_ORDER: readonly TextFontValue[] = ['body', 'heading', 'code'];
+
+const PROFILE_SAMPLES: Readonly<Record<TextFontValue, string>> = {
+  body: 'Typography should make every interface clear and comfortable.',
+  heading: 'Build a recognizable voice',
+  code: 'const profile = "semantic";'
+};
 
 function resolveRoleDisplay(
   role: FontFamilyRole,
@@ -156,9 +165,166 @@ function PreparationStatus() {
   );
 }
 
+function formatUsage(usage: TypographyArtifactUsage): string {
+  const branch = [usage.component, usage.variant, usage.mode].filter(Boolean).join('.');
+  const breakpoint = usage.breakpoint ? ` · ${usage.breakpoint}` : '';
+
+  return `${branch} · ${usage.elementName} (${usage.element}) · ${usage.scale}${breakpoint}`;
+}
+
+function TypeScale({ artifactPath }: { artifactPath?: string }) {
+  const { designSystem } = useKiskadee();
+  const { artifact, error, loading } = useTypographyArtifact(designSystem, artifactPath);
+
+  if (!artifactPath) {
+    return (
+      <section className={styles.typeScale} aria-labelledby="type-scale-title">
+        <div className={styles.sectionHeader}>
+          <p className={styles.eyebrow}>Profiles</p>
+          <h2 id="type-scale-title">Type scale</h2>
+        </div>
+        <p className={styles.emptyState}>This preset does not declare typography profiles.</p>
+      </section>
+    );
+  }
+
+  if (loading) {
+    return (
+      <section className={styles.typeScale} aria-labelledby="type-scale-title">
+        <div className={styles.sectionHeader}>
+          <p className={styles.eyebrow}>Profiles</p>
+          <h2 id="type-scale-title">Type scale</h2>
+        </div>
+        <p className={styles.emptyState} aria-live="polite">
+          Loading the preset type scale…
+        </p>
+      </section>
+    );
+  }
+
+  if (error || !artifact) {
+    return (
+      <section className={styles.typeScale} aria-labelledby="type-scale-title">
+        <div className={styles.sectionHeader}>
+          <p className={styles.eyebrow}>Profiles</p>
+          <h2 id="type-scale-title">Type scale</h2>
+        </div>
+        <p className={styles.errorState} role="alert">
+          {error?.message ?? 'The typography artifact could not be loaded.'}
+        </p>
+      </section>
+    );
+  }
+
+  const profiles = Object.entries(artifact.profiles);
+  if (profiles.length === 0) {
+    return (
+      <section className={styles.typeScale} aria-labelledby="type-scale-title">
+        <div className={styles.sectionHeader}>
+          <p className={styles.eyebrow}>Profiles</p>
+          <h2 id="type-scale-title">Type scale</h2>
+        </div>
+        <p className={styles.emptyState}>This preset does not declare typography profiles.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className={styles.typeScale} aria-labelledby="type-scale-title">
+      <div className={styles.sectionHeader}>
+        <p className={styles.eyebrow}>Profiles</p>
+        <h2 id="type-scale-title">Type scale</h2>
+        <p>
+          Complete preset recipes compiled into the same atomic classes used by component slots.
+        </p>
+      </div>
+
+      <div className={styles.profileGroups}>
+        {TYPOGRAPHY_ROLE_ORDER.map((role) => {
+          const roleProfiles = profiles.filter(
+            ([, profile]) => profile.decorations.textFont === role
+          );
+          if (roleProfiles.length === 0) return null;
+
+          return (
+            <section
+              className={styles.profileGroup}
+              key={role}
+              aria-labelledby={`profiles-${role}`}
+            >
+              <header className={styles.profileGroupHeader}>
+                <h3 id={`profiles-${role}`}>{role}</h3>
+                <span>{roleProfiles.length}</span>
+              </header>
+
+              <div className={styles.profileList}>
+                {roleProfiles.map(([profileId, profile]) => {
+                  const usages = artifact.usage[profileId] ?? [];
+                  const tracking = profile.scales.textLetterSpacing;
+
+                  return (
+                    <article className={styles.profileCard} key={profileId}>
+                      <div className={styles.profilePreview}>
+                        <p className={`${styles.profileSample} ${profile.className}`}>
+                          {PROFILE_SAMPLES[role]}
+                        </p>
+                      </div>
+
+                      <div className={styles.profileDetails}>
+                        <code className={styles.profileId}>{profileId}</code>
+                        <dl className={styles.profileMetrics}>
+                          <div>
+                            <dt>Role</dt>
+                            <dd>{profile.decorations.textFont}</dd>
+                          </div>
+                          <div>
+                            <dt>Size</dt>
+                            <dd>{profile.scales.textSize}px</dd>
+                          </div>
+                          <div>
+                            <dt>Line height</dt>
+                            <dd>{profile.scales.textHeight}px</dd>
+                          </div>
+                          <div>
+                            <dt>Weight</dt>
+                            <dd>{profile.decorations.textWeight}</dd>
+                          </div>
+                          <div>
+                            <dt>Tracking</dt>
+                            <dd>{tracking === undefined ? 'default' : `${tracking}px`}</dd>
+                          </div>
+                        </dl>
+
+                        <div className={styles.profileUsage}>
+                          <h4>Used by</h4>
+                          {usages.length > 0 ? (
+                            <ul>
+                              {usages.map((usage) => (
+                                <li key={formatUsage(usage)}>{formatUsage(usage)}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p>
+                              Declared for direct inspection; no component slot currently uses it.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function TypographyContent() {
   const { global } = useKiskadee();
-  const { fontRoleNames, setFontRoleName } = useShowcase();
+  const { fontRoleNames, manifest, setFontRoleName } = useShowcase();
   const { familyResolutions } = useFontFamilyStatus();
   const presetFonts = global?.fonts;
   const headingReusesBody =
@@ -242,6 +408,8 @@ function TypographyContent() {
           <RolePreview key={role} role={role} display={displays[role]} />
         ))}
       </div>
+
+      <TypeScale artifactPath={manifest?.typography?.artifact} />
     </section>
   );
 }

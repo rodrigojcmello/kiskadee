@@ -231,17 +231,8 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
               },
               e4: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'normal'
-                },
+                typography: { 's:md:1': 'body' },
                 scales: {
-                  textSize: {
-                    's:md:1': 17
-                  },
-                  textHeight: {
-                    's:md:1': 22
-                  },
                   marginLeft: {
                     's:md:1': 12
                   },

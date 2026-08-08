@@ -160,18 +160,9 @@ export function createMaterial3GoogleTabsBridgeVariant({
       // e3: label
       e3: {
         name: 'label',
-        decorations: {
-          textWeight: 'extraBold'
-        },
-        scales: {
-          textSize: {
-            's:sm:1': 16,
-            's:md:1': 18
-          },
-          textHeight: {
-            's:sm:1': 20,
-            's:md:1': 24
-          }
+        typography: {
+          's:sm:1': 'tabs-bridge-label-small-stronger',
+          's:md:1': 'tabs-bridge-label-medium-stronger'
         },
         palettes: {
           default: {

@@ -30,6 +30,7 @@ Current scope:
 
 - `slider.variants.standard.elements.e8`, the visual track.
 - `slider.variants.standard.elements.e12`, the visual mark.
+- `slider.variants.standard.elements.e14`, the value indicator.
 
 The policy applies at the `standard` variant level. The current Slider mode is `base`, but emission
 policy resolution is variant-level here, so future `standard` modes should inherit the same mark
@@ -46,6 +47,12 @@ geometry contract unless a new policy is added.
 | Property family | Policy | Default | CSS shape | Reason |
 | --- | --- | --- | --- | --- |
 | `boxWidth` | `mirrored` | `direct` | `--k-bxw: <value>; width: <value>` | Slider structural CSS needs the rendered mark width to clamp the first and last marks without hardcoding preset geometry. |
+
+### Value indicator `e14`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | The authored tooltip height is a minimum. Structural CSS lets enlarged text grow beyond it, while runtime uses the same token to reserve only that excess above the nominal lane. |
 
 ## Switch
 
@@ -129,6 +136,21 @@ These Switch decisions are adjacent, but they are not style-emission policy:
   scale or radius.
 - `stateActivator` classes such as `-s`, `-f`, `-k`, and `-a`: runtime state selector vocabulary,
   documented separately in the interaction-state model.
+
+## TextField
+
+Current scope:
+
+- `textField.elements.e3`, the control shell shared by every structural branch.
+
+### Control `e3`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | TextField structural CSS consumes the authored height as `min-block-size`, preserving the nominal control geometry while allowing enlarged text to grow without clipping. |
+
+The schema value remains the design-system control height. The web structure changes only how that
+height constrains layout: it is a minimum rather than a fixed block size.
 
 ## Future Additions
 

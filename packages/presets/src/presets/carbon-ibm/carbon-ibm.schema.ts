@@ -1,5 +1,6 @@
 import { breakpoints, color, type Schema, withAlpha } from '@kiskadee/core';
 import { schemaColors } from './carbon-ibm.colors.ts';
+import { carbonIbmTypography } from './carbon-ibm.typography.ts';
 import { createCarbonIbmCardSchema } from './components/card.schema.ts';
 import { createCarbonIbmSwitchSchema } from './components/switch.schema.ts';
 
@@ -18,6 +19,7 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: carbonIbmTypography,
     icons: {
       family: 'carbon',
       variant: 'regular'
@@ -185,10 +187,7 @@ export const schema: Schema<Segments> = {
         },
         e2: {
           name: 'button-text',
-          decorations: {
-            textFont: 'body',
-            textWeight: 'medium'
-          },
+          typography: { 's:all': 'body-compact-01-strong' },
           palettes: {
             default: {
               light: {
@@ -205,24 +204,6 @@ export const schema: Schema<Segments> = {
                   }
                 }
               }
-            }
-          },
-          scales: {
-            textSize: {
-              's:sm:2': 14,
-              's:sm:1': 14,
-              's:md:1': 14,
-              's:lg:1': 14,
-              's:lg:2': 14,
-              's:lg:3': 14
-            },
-            textHeight: {
-              's:sm:2': 18,
-              's:sm:1': 18,
-              's:md:1': 18,
-              's:lg:1': 18,
-              's:lg:2': 18,
-              's:lg:3': 18
             }
           }
         }

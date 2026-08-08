@@ -269,7 +269,7 @@ Slider uses twenty canonical schema element slots:
 | `e1` | Root field wrapper and projected state scope. |
 | `e2` | Optional field label. |
 | `e3` | Optional value summary. |
-| `e4` | Control row that groups lateral edge content and track and owns the stable control lane height. |
+| `e4` | Control row that groups lateral edge content and track and owns the minimum control lane height. |
 | `e5` | Internal lateral edge content wrapper. |
 | `e6` | Internal lateral edge icon. |
 | `e7` | Internal lateral edge label/value. |
@@ -329,9 +329,9 @@ Slider structural CSS may consume schema-emitted variables, but spacing values
 belong to schema scales:
 
 - `e3.marginLeft` separates the field label from the value summary.
-- `e4.boxHeight` defines the stable control lane height. Structural CSS consumes
-  it as a token so endpoint icons can overflow visually without moving the
-  track center.
+- `e4.boxHeight` defines the minimum control lane height. Structural CSS consumes
+  it as a token so endpoint text can grow while icons and the track remain
+  centered in the resulting lane.
 - `e4.marginTop` separates the header row from the control row.
 - `e4.paddingTop` reserves an above-track layout lane when persistent mark labels
   render above the track. If persistent tooltips also reserve above-track space,
@@ -349,12 +349,15 @@ belong to schema scales:
   dimensions when `thumbIcon` is present.
 - `e13.boxWidth` and `e13.boxHeight` optionally replace the `e11` inner
   dimensions when `thumbIcon` is present.
-- `e14.boxHeight` sets the value indicator height.
+- `e14.boxHeight` sets the minimum value indicator height. The rendered indicator
+  may grow when its typography needs more block space.
 - `e14.marginTop` reserves the above-track lane for persistent tooltip-style
   value indicators. It is emitted as a token and consumed by the control row; it
-  does not apply CSS `margin-top` to the tooltip itself. If mark labels also
-  reserve above-track space, structural CSS uses the larger of the two reserves
-  instead of adding them.
+  does not apply CSS `margin-top` to the tooltip itself. Runtime preserves that
+  authored reserve at the nominal indicator height and adds only the rendered
+  growth beyond the authored `boxHeight`. If mark labels also reserve
+  above-track space, structural CSS uses the larger of the two reserves instead
+  of adding them.
 - `e14.paddingLeft` and `e14.paddingRight` set the value indicator horizontal
   padding.
 - Tooltip-style value indicators are positioned by fixed structural arrow
@@ -805,6 +808,9 @@ Preserve these rules:
 - `e12` and `e13` are conditional geometry overlays on `e10` and `e11`; they
   do not add DOM layers or own palettes, borders, radius, shadows, or effects.
 - `e14` centers inside the corresponding thumb container and is pointer-inert.
+  Its authored `boxHeight` remains a minimum so enlarged text can grow the
+  tooltip body, and the persistent lane tracks that rendered block size through
+  `ResizeObserver`.
   It owns a fixed-size structural arrow through `::after`; the arrow inherits
   the tooltip background, has a fixed softened tip, overlaps the tooltip body by
   `2px`, and includes a fixed `2px` visual clearance from the thumb. The formula
@@ -875,12 +881,12 @@ generated markup, structural CSS, or regressions.
 | `k-sld-e2-a` | Field label. |
 | `k-sld-e3-a` | Value summary. |
 | `k-sld-e3a-a` | Value summary placed at the end of the control row. |
-| `k-sld-e4-a` | Control row; consumes `e4.boxHeight` as the stable lane height. |
+| `k-sld-e4-a` | Control row; consumes `e4.boxHeight` as the minimum lane height. |
 | `k-sld-e4a-a` | Control row with an above-track mark label reserve lane. |
 | `k-sld-e4b-a` | Control row with a below-track mark label reserve lane. |
 | `k-sld-e4c-a` | Control row with an above-track persistent value indicator reserve source. |
 | `k-sld-e4d-a` | Control row that owns the value summary as its final inline item. |
-| `k-sld-x2-a` | Control group that keeps endpoint icons and the track centered inside the stable lane. |
+| `k-sld-x2-a` | Control group that keeps endpoint content and the track centered inside the growing lane. |
 | `k-sld-e5-a` | Internal lateral edge content wrapper. |
 | `k-sld-e6-a` | Internal lateral edge icon. |
 | `k-sld-e7-a` | Internal lateral edge label/value. |

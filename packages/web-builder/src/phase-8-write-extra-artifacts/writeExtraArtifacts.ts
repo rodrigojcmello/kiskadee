@@ -38,6 +38,10 @@ import {
   buildTextFieldComponentArtifact,
   TEXT_FIELD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/textFieldComponentArtifact.ts';
+import {
+  TYPOGRAPHY_ARTIFACT_PATH,
+  type TypographyArtifact
+} from '../typography/typographyArtifact.ts';
 import { SYSTEM_MONOSPACE_FONT_STACK, toCssFontFamily } from '../utils/fontFamily.ts';
 
 type ExtractableSchema = Schema;
@@ -194,10 +198,12 @@ async function cleanStaleComponentArtifacts(buildDir: string): Promise<void> {
 export async function writeExtraArtifacts(params: {
   schema: Schema;
   outDirSlug: string;
+  typographyArtifact?: TypographyArtifact;
 }): Promise<void> {
-  const { schema, outDirSlug } = params as {
+  const { schema, outDirSlug, typographyArtifact } = params as {
     schema: ExtractableSchema;
     outDirSlug: string;
+    typographyArtifact?: TypographyArtifact;
   };
 
   const buildDir = getBuildDir(outDirSlug);
@@ -208,6 +214,7 @@ export async function writeExtraArtifacts(params: {
     const existingFiles = await readdir(buildDir);
     const isExtraArtifact = (fileName: string): boolean =>
       fileName === 'global.kiskadee.json' ||
+      fileName === TYPOGRAPHY_ARTIFACT_PATH ||
       (fileName.startsWith('extra.') && fileName.endsWith('.kiskadee.json')) ||
       fileName === 'tokens.kiskadee.css' ||
       (fileName.startsWith('tokens.') && fileName.endsWith('.kiskadee.css'));
@@ -379,6 +386,15 @@ export async function writeExtraArtifacts(params: {
     const componentArtifactPath = resolve(buildDir, path);
     await mkdir(dirname(componentArtifactPath), { recursive: true });
     await writeFile(componentArtifactPath, JSON.stringify(artifact, null, 2), 'utf8');
+  }
+
+  if (typographyArtifact) {
+    await mkdir(buildDir, { recursive: true });
+    await writeFile(
+      resolve(buildDir, TYPOGRAPHY_ARTIFACT_PATH),
+      JSON.stringify(typographyArtifact, null, 2),
+      'utf8'
+    );
   }
 
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).

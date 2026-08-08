@@ -142,18 +142,9 @@ export function createMaterial3GoogleTabsSegmentedVariant({
       // e3: label
       e3: {
         name: 'label',
-        decorations: {
-          textWeight: 'medium'
-        },
-        scales: {
-          textSize: {
-            's:sm:1': 13,
-            's:md:1': 14
-          },
-          textHeight: {
-            's:sm:1': 20,
-            's:md:1': 24
-          }
+        typography: {
+          's:sm:1': 'tabs-label-small',
+          's:md:1': 'tabs-label-medium'
         },
         palettes: {
           default: {

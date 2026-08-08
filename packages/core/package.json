@@ -17,6 +17,9 @@
     "./icon-contract": {
       "default": "./src/icons.contract.zod.ts"
     },
+    "./typography-contract": {
+      "default": "./src/typography.contract.zod.ts"
+    },
     "./build": {
       "default": "./src/build/index.ts"
     }

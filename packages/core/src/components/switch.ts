@@ -60,7 +60,7 @@ export type SwitchThumbElementStyle<TSegmentName extends SegmentName = never> =
 /**
  * e4 — optional label text
  * - textColor
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - margins
  */
 export type SwitchLabelElementStyle<TSegmentName extends SegmentName = never> =
@@ -70,7 +70,7 @@ export type SwitchLabelElementStyle<TSegmentName extends SegmentName = never> =
  * e5 — optional control text
  * - textColor
  * - boxWidth / boxHeight
- * - textSize / textHeight
+ * - typography profile by component size / breakpoint
  * - margins
  */
 export type SwitchStateElementStyle<TSegmentName extends SegmentName = never> =

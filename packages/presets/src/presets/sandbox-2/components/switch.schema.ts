@@ -1,4 +1,5 @@
 import type { Color, Schema } from '@kiskadee/core';
+import { sandboxTypographyReferences } from '../../sandbox/sandbox.typography.ts';
 import type { Sandbox2Segment } from '../sandbox-2.schema.ts';
 
 type SwitchComponent = NonNullable<Schema<Sandbox2Segment>['components']['switch']>;
@@ -138,20 +139,6 @@ const sizes = {
     's:sm:1': 12,
     's:md:1': 12,
     's:lg:1': 14
-  },
-  labelText: {
-    's:sm:3': 12,
-    's:sm:2': 12,
-    's:sm:1': 13,
-    's:md:1': 14,
-    's:lg:1': 16
-  },
-  labelLine: {
-    's:sm:3': 16,
-    's:sm:2': 16,
-    's:sm:1': 18,
-    's:md:1': 20,
-    's:lg:1': 24
   },
   controlTextWidth: {
     's:sm:3': 18,
@@ -934,13 +921,8 @@ export function createSandbox2SwitchSchema(): SwitchComponent {
               },
               e4: {
                 name: 'label',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
-                },
+                typography: sandboxTypographyReferences.bodyStrong,
                 scales: {
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginLeft: 10,
                   marginRight: 10
                 },
@@ -948,14 +930,9 @@ export function createSandbox2SwitchSchema(): SwitchComponent {
               },
               e5: {
                 name: 'control text',
-                decorations: {
-                  textFont: 'body',
-                  textWeight: 'medium'
-                },
+                typography: sandboxTypographyReferences.bodyStrong,
                 scales: {
                   boxWidth: sizes.controlTextWidth,
-                  textSize: sizes.labelText,
-                  textHeight: sizes.labelLine,
                   marginLeft: 8,
                   marginRight: 8
                 },

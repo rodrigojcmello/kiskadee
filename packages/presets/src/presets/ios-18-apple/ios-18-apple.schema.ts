@@ -1,6 +1,7 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createIos18AppleSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './ios-18-apple.colors.ts';
+import { ios18AppleTypography } from './ios-18-apple.typography.ts';
 
 export type Segment = 'default';
 
@@ -14,6 +15,7 @@ export const schema: Schema<Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: ios18AppleTypography,
     icons: {
       family: 'sf-symbols',
       variant: 'regular'

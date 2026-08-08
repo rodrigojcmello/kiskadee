@@ -1,5 +1,6 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createSandboxCardSchema } from '../sandbox/components/card.schema.ts';
+import { sandboxTypography } from '../sandbox/sandbox.typography.ts';
 import { createSandbox3SliderSchema } from './components/slider.schema.ts';
 import { createSandbox3SwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './sandbox-3.colors.ts';
@@ -18,6 +19,7 @@ export const schema: Schema<Sandbox3Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    typography: sandboxTypography,
     fonts: {
       families: {
         inter: {

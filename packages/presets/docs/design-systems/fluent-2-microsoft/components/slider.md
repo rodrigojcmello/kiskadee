@@ -38,9 +38,9 @@ official `e10`/`e11` dimensions. This is a Kiskadee composition affordance; the
 inspected Fluent reference does not require a built-in thumb icon.
 
 The optional `e20` label indicator is another Kiskadee form-composition
-affordance, not a Fluent Slider measurement. The preset keeps its text size,
-color alpha, and label spacing in schema so structural Sass does not own those
-visual values.
+affordance, not a Fluent Slider measurement. It selects `caption-1` at Small and
+`caption-1-relaxed` at Medium; its color alpha and label spacing remain owned by
+the Slider schema so structural Sass does not own those visual values.
 
 ## State Colors
 

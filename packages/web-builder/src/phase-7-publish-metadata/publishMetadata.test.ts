@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   buildComponentSurfaceContexts,
   buildManifestFonts,
-  buildManifestIcons
+  buildManifestIcons,
+  buildManifestTypography
 } from './publishMetadata.ts';
 
 function createSchema(components: Schema['components']): Schema {
@@ -189,6 +190,15 @@ describe('buildManifestFonts', () => {
 
   it('omits font metadata when the schema has no catalog', () => {
     expect(buildManifestFonts(undefined)).toBeUndefined();
+  });
+});
+
+describe('buildManifestTypography', () => {
+  it('publishes only the descriptive artifact path', () => {
+    expect(buildManifestTypography(true)).toEqual({
+      artifact: 'typography.kiskadee.json'
+    });
+    expect(buildManifestTypography(false)).toBeUndefined();
   });
 });
 

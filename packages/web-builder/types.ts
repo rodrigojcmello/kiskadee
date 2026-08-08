@@ -56,5 +56,12 @@ export type {
   Manifest,
   ManifestComponent,
   ManifestComponentState,
-  ManifestFonts
+  ManifestFonts,
+  ManifestTypography
 } from './src/phase-7-publish-metadata/manifestTypes.ts';
+export type {
+  TypographyArtifact,
+  TypographyArtifactProfile,
+  TypographyArtifactUsage
+} from './src/typography/typographyArtifact.ts';
+export { TYPOGRAPHY_ARTIFACT_PATH } from './src/typography/typographyArtifact.ts';

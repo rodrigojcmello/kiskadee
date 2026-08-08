@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
+import { elementTypographyContractSchema } from '../typography.contract.zod.ts';
 import {
   createPalettesSchema,
   createScalesSchema,
@@ -76,16 +77,8 @@ export function createSwitchLabelElementStyleSchema<TSegmentName extends Segment
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
+      typography: elementTypographyContractSchema.optional(),
       scales: createScalesSchema([
-        'textSize',
-        'textHeight',
         'marginTop',
         'marginRight',
         'marginBottom',
@@ -101,18 +94,10 @@ export function createSwitchStateElementStyleSchema<TSegmentName extends Segment
   return z
     .object({
       name: z.string(),
-      decorations: z
-        .object({
-          textFont: z.custom<DecorationSchema['textFont']>().optional(),
-          textWeight: z.custom<DecorationSchema['textWeight']>().optional()
-        })
-        .strict()
-        .optional(),
+      typography: elementTypographyContractSchema.optional(),
       scales: createScalesSchema([
         'boxWidth',
         'boxHeight',
-        'textSize',
-        'textHeight',
         'marginTop',
         'marginRight',
         'marginBottom',
