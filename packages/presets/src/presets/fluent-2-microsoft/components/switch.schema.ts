@@ -351,7 +351,7 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e4: {
                 name: 'label',
-                typography: { 's:md:1': 'body-1' },
+                typography: { 's:md:1': 'body-medium' },
                 scales: {
                   marginLeft: { 's:md:1': 8 },
                   marginRight: { 's:md:1': 8 }
@@ -387,7 +387,7 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e5: {
                 name: 'control text',
-                typography: { 's:md:1': 'body-1' },
+                typography: { 's:md:1': 'body-medium' },
                 scales: {
                   marginLeft: { 's:md:1': 8 },
                   marginRight: { 's:md:1': 8 }

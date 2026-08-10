@@ -71,20 +71,20 @@ describe('Fluent 2 Button surface contexts', () => {
       }
     });
     expect(e2.typography).toEqual({
-      's:sm:1': 'caption-1',
-      's:md:1': { 'bp:all': 'subtitle-2', 'bp:lg:1': 'body-1-strong' },
-      's:lg:1': 'subtitle-2'
+      's:sm:1': 'caption-medium',
+      's:md:1': { 'bp:all': 'label-large', 'bp:lg:1': 'body-medium-strong' },
+      's:lg:1': 'label-large'
     });
     expect(schema.global?.typography?.profiles).toMatchObject({
-      'caption-1': {
+      'caption-medium': {
         decorations: { textFont: 'body', textWeight: 'normal' },
         scales: { textSize: 12, textHeight: 16 }
       },
-      'body-1-strong': {
+      'body-medium-strong': {
         decorations: { textFont: 'body', textWeight: 'semiBold' },
         scales: { textSize: 14, textHeight: 20 }
       },
-      'subtitle-2': {
+      'label-large': {
         decorations: { textFont: 'body', textWeight: 'semiBold' },
         scales: { textSize: 16, textHeight: 22 }
       }

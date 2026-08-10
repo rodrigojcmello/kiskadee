@@ -80,15 +80,17 @@ This directory records official source evidence and preset-level decisions for
 ## Typography Evidence
 
 The preset centralizes its existing Apple-system recipes in `global.typography.profiles`. The
-conventional Button maps Small and Medium to the 15/20 Regular `subheadline` profile and Large to
-the 17/22 Regular `body` profile documented by the inspected component evidence. Switch reuses
-`body`. This is **Official adapted** because the Web preset selects the Apple system stack without
+conventional Button maps Small and Medium to normalized 15/20 Regular `body-small` and Large to
+17/22 Regular `body-medium`, as documented by the inspected component evidence. Switch reuses
+`body-medium`. This is **Official adapted** because the Web preset selects the Apple system stack without
 embedding SF Pro.
 
 Slider typography remains part of the provisional iOS 26/macOS 26 carry-over described in its
-component evidence. Its reusable label, tooltip, caption, and regular-label profiles preserve the
-current numbers but are not claimed as verified iOS 27 tokens. No tracking value is introduced by
-this migration because none existed in the previous Slider schema.
+component evidence. Its reusable label, tooltip, and caption profiles preserve the current numbers
+but are not claimed as verified iOS 27 tokens. The former 12/22 caption exception was removed;
+the optional indicator reuses `caption-medium` at every scale and leaves alignment to the component.
+No tracking value is introduced because none existed in the previous Slider schema. A complete
+review of the iOS 27 type ramp remains **Deferred**.
 
 ## Interface Icon Evidence
 

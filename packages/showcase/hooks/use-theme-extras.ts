@@ -4,6 +4,7 @@ import type {
   ButtonIconLayout,
   ButtonIconPlacement,
   ButtonIconTreatment,
+  GlobalClassNameMapJSON,
   RadiusMode,
   SchemaFonts,
   SchemaIcons,
@@ -21,6 +22,7 @@ type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 
 type GlobalArtifact = {
+  classMap?: GlobalClassNameMapJSON;
   fonts?: SchemaFonts;
   icons?: SchemaIcons;
   radius?: RadiusMode;
@@ -55,6 +57,11 @@ type GlobalArtifact = {
 
 const globalArtifactCache: Partial<Record<string, GlobalArtifact | null>> = {};
 
+type GlobalArtifactState = {
+  designSystem?: string;
+  value?: GlobalArtifact;
+};
+
 export function useThemeExtras({
   designSystem,
   segment
@@ -63,7 +70,7 @@ export function useThemeExtras({
   segment: string;
 }) {
   const [backgroundsByTheme, setBackgroundsByTheme] = useState<BackgroundTones>({});
-  const [globalConfig, setGlobalConfig] = useState<GlobalArtifact | undefined>(undefined);
+  const [globalArtifactState, setGlobalArtifactState] = useState<GlobalArtifactState>({});
 
   useEffect(() => {
     let cancelled = false;
@@ -93,7 +100,10 @@ export function useThemeExtras({
       }
 
       if (cancelled) return;
-      setGlobalConfig(globalArtifact ?? undefined);
+      setGlobalArtifactState({
+        designSystem: dsKey,
+        value: globalArtifact ?? undefined
+      });
     };
 
     void loadGlobals();
@@ -156,6 +166,9 @@ export function useThemeExtras({
 
   return {
     backgroundsByTheme,
-    globalConfig
+    globalConfig:
+      globalArtifactState.designSystem === String(designSystem)
+        ? globalArtifactState.value
+        : undefined
   };
 }

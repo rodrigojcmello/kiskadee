@@ -885,7 +885,7 @@ export function createMaterial3GoogleTextFieldSchema(
               e5: {
                 name: 'message',
                 typography: {
-                  's:sm:1': 'supporting-small-compact',
+                  's:sm:1': 'body-small',
                   's:md:1': 'body-small'
                 },
                 scales: {
@@ -1008,7 +1008,7 @@ export function createMaterial3GoogleTextFieldSchema(
               e5: {
                 name: 'message',
                 typography: {
-                  's:sm:1': 'supporting-small-compact',
+                  's:sm:1': 'body-small',
                   's:md:1': 'body-small'
                 },
                 scales: {
@@ -1141,7 +1141,7 @@ export function createMaterial3GoogleTextFieldSchema(
               e5: {
                 name: 'message',
                 typography: {
-                  's:sm:1': 'supporting-small-compact',
+                  's:sm:1': 'body-small',
                   's:md:1': 'body-small'
                 },
                 scales: {
@@ -1175,7 +1175,7 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e2: {
                 name: 'label',
-                typography: { 's:all': 'floating-label' },
+                typography: { 's:all': 'body-small' },
                 scales: {
                   marginTop: {
                     's:sm:1': -7,
@@ -1257,7 +1257,7 @@ export function createMaterial3GoogleTextFieldSchema(
               e5: {
                 name: 'message',
                 typography: {
-                  's:sm:1': 'supporting-small-compact',
+                  's:sm:1': 'body-small',
                   's:md:1': 'body-small'
                 },
                 scales: {
@@ -1284,7 +1284,7 @@ export function createMaterial3GoogleTextFieldSchema(
               },
               e2: {
                 name: 'label',
-                typography: { 's:all': 'floating-label' },
+                typography: { 's:all': 'body-small' },
                 scales: {
                   marginTop: 8,
                   marginLeft: 22
@@ -1352,7 +1352,7 @@ export function createMaterial3GoogleTextFieldSchema(
               e5: {
                 name: 'message',
                 typography: {
-                  's:sm:1': 'supporting-small-compact',
+                  's:sm:1': 'body-small',
                   's:md:1': 'body-small'
                 },
                 scales: {

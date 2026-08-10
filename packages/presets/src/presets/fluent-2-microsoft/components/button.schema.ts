@@ -284,9 +284,9 @@ export function createFluent2MicrosoftButtonSchema({
       e2: {
         name: 'button-text',
         typography: {
-          's:sm:1': 'caption-1',
-          's:md:1': { 'bp:all': 'subtitle-2', 'bp:lg:1': 'body-1-strong' },
-          's:lg:1': 'subtitle-2'
+          's:sm:1': 'caption-medium',
+          's:md:1': { 'bp:all': 'label-large', 'bp:lg:1': 'body-medium-strong' },
+          's:lg:1': 'label-large'
         },
         palettes: {
           default: {

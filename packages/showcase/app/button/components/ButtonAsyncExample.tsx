@@ -6,10 +6,11 @@ import type {
   SurfaceContext,
   SystemButtonIntent
 } from '@kiskadee/core';
-import { Button as KButton, SmoothText } from '@kiskadee/react-components';
+import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { useEffect, useId, useState } from 'react';
 import { ShowcaseSegmentedControl } from '@/components/ShowcaseControls';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
 type PendingPresentation = 'text' | 'spinner' | 'progress';
@@ -57,6 +58,7 @@ export function ButtonAsyncExample({
   surfaceContext: SurfaceContext;
 }) {
   const statusId = useId();
+  const textProfiles = useShowcaseTextProfiles();
   const [presentation, setPresentation] = useState<PendingPresentation>('text');
   const [pending, setPending] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -107,11 +109,13 @@ export function ButtonAsyncExample({
   return (
     <section className={styles.asyncSection} aria-labelledby="button-async-example-title">
       <div>
-        <h3 id="button-async-example-title">Async pending</h3>
-        <p className={styles.showcaseSectionDescription}>
+        <Text as="h3" id="button-async-example-title" profile={textProfiles.sectionTitle}>
+          Async pending
+        </Text>
+        <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
           One pending state, three optional feedback presentations. Start the request to inspect the
           interaction lock and focus-preserving lifecycle.
-        </p>
+        </Text>
       </div>
       <div className={styles.asyncLayout}>
         <div className={styles.asyncControls}>
@@ -156,9 +160,16 @@ export function ButtonAsyncExample({
               </KButton.Label>
             </KButton>
           </div>
-          <p className={styles.asyncStatus} id={statusId} role="status" aria-atomic="true">
+          <Text
+            as="p"
+            profile={textProfiles.caption}
+            className={styles.asyncStatus}
+            id={statusId}
+            role="status"
+            aria-atomic="true"
+          >
             {statusMessage}
-          </p>
+          </Text>
         </div>
       </div>
     </section>

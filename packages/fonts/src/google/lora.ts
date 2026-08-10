@@ -6,5 +6,8 @@ export const LORA_GOOGLE_FAMILY_PARAMETERS = 'Lora:wght@400;500;700';
 export const loraFontFamily = defineFontFamily({
   id: 'lora',
   stack: ['Lora', 'serif'],
-  prepare: () => prepareGoogleFontStylesheet('lora', LORA_GOOGLE_FAMILY_PARAMETERS)
+  prepare: () =>
+    prepareGoogleFontStylesheet('lora', LORA_GOOGLE_FAMILY_PARAMETERS, {
+      weights: [400, 500, 700]
+    })
 });

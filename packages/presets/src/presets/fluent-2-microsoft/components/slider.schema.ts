@@ -463,16 +463,16 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e2: {
                 name: 'slider-field-label',
                 typography: {
-                  's:sm:1': 'caption-1',
-                  's:md:1': 'body-1'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'body-medium'
                 },
                 palettes: textPalettes
               },
               e3: {
                 name: 'slider-value-summary',
                 typography: {
-                  's:sm:1': 'caption-1',
-                  's:md:1': 'body-1'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'body-medium'
                 },
                 scales: {
                   marginLeft: layout.headerSummaryGap
@@ -507,8 +507,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e7: {
                 name: 'slider-endpoint-label',
                 typography: {
-                  's:sm:1': 'caption-1',
-                  's:md:1': 'body-1'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'body-medium'
                 },
                 palettes: textPalettes
               },
@@ -577,8 +577,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e14: {
                 name: 'slider-value-indicator',
                 typography: {
-                  's:sm:1': 'caption-1',
-                  's:md:1': 'body-1'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'body-medium'
                 },
                 decorations: { borderStyle: 'solid' },
                 scales: {
@@ -615,8 +615,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e16: {
                 name: 'slider-mark-label',
                 typography: {
-                  's:sm:1': 'caption-1',
-                  's:md:1': 'body-1'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'body-medium'
                 },
                 scales: {
                   marginTop: layout.markLabelOffset,
@@ -627,8 +627,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e17: {
                 name: 'slider-helper-text',
                 typography: {
-                  's:sm:1': 'caption-1',
-                  's:md:1': 'body-1'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'body-medium'
                 },
                 scales: {
                   marginTop: layout.fieldGap
@@ -646,8 +646,8 @@ export function createFluent2MicrosoftSliderSchema(): SliderComponent {
               e20: {
                 name: 'slider-optional-indicator',
                 typography: {
-                  's:sm:1': 'caption-1',
-                  's:md:1': 'caption-1-relaxed'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'caption-medium'
                 },
                 scales: {
                   marginLeft: layout.optionalIndicatorGap

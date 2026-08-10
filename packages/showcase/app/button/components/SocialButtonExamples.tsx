@@ -6,8 +6,9 @@ import {
 } from '@kiskadee/brands';
 import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
 import { type IconProps, SocialIcons } from '@kiskadee/icons';
-import { BrandPackBoundary, Button as KButton, SmoothText } from '@kiskadee/react-components';
+import { BrandPackBoundary, Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ComponentType } from 'react';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import { getRecommendedBrandIconAppearance } from '../../../utils/brand-icon-presentation';
 import styles from '../Button.module.scss';
 
@@ -317,9 +318,13 @@ function BrandActionColumn({
   surfaceContext: SurfaceContext;
   title: string;
 }) {
+  const textProfiles = useShowcaseTextProfiles();
+
   return (
     <section className={styles.brandActionColumn} aria-labelledby={`brand-action-${columnId}`}>
-      <h5 id={`brand-action-${columnId}`}>{title}</h5>
+      <Text as="h5" id={`brand-action-${columnId}`} profile={textProfiles.groupTitle}>
+        {title}
+      </Text>
       <div className={styles.brandActionSections}>
         {ACTION_RESOURCE_GROUPS.map((actionGroup) => (
           <section
@@ -327,7 +332,13 @@ function BrandActionColumn({
             aria-labelledby={`brand-action-${columnId}-${actionGroup.id}`}
             key={actionGroup.id}
           >
-            <h6 id={`brand-action-${columnId}-${actionGroup.id}`}>{actionGroup.title}</h6>
+            <Text
+              as="h6"
+              id={`brand-action-${columnId}-${actionGroup.id}`}
+              profile={textProfiles.groupTitle}
+            >
+              {actionGroup.title}
+            </Text>
             <ul className={styles.brandActionList}>
               {actionGroup.resources.map((resourceGroup) => (
                 <BrandPackBoundary
@@ -396,18 +407,23 @@ function IconTreatmentComparison({
   surfaceContext: SurfaceContext;
 }) {
   const GoogleIcon = SHOWCASE_BRANDS.google.icon;
+  const textProfiles = useShowcaseTextProfiles();
 
   return (
     <section aria-labelledby="brand-icon-treatment-title">
-      <h4 id="brand-icon-treatment-title">Icon region treatments</h4>
-      <p className={styles.iconTreatmentDescription}>
+      <Text as="h4" id="brand-icon-treatment-title" profile={textProfiles.subsectionTitle}>
+        Icon region treatments
+      </Text>
+      <Text as="p" profile={textProfiles.body} className={styles.iconTreatmentDescription}>
         The same Primary high action compares a foreground-following logo with a brand mark on a
         stable light icon surface.
-      </p>
+      </Text>
       <div className={styles.iconTreatmentGrid}>
         {ICON_TREATMENT_EXAMPLES.map((example) => (
           <article className={styles.iconTreatmentExample} key={example.id}>
-            <h5>{example.title}</h5>
+            <Text as="h5" profile={textProfiles.groupTitle}>
+              {example.title}
+            </Text>
             <KButton
               emphasis="high"
               iconLayout="edge"
@@ -453,17 +469,23 @@ export function SocialButtonExamples({
   onVividBackground?: string;
   surfaceContext: SurfaceContext;
 }) {
+  const textProfiles = useShowcaseTextProfiles();
+
   return (
     <section className={styles.showcaseSection} aria-labelledby="social-button-examples-title">
-      <h3 id="social-button-examples-title">Brand buttons</h3>
-      <p className={styles.showcaseSectionDescription}>
+      <Text as="h3" id="social-button-examples-title" profile={textProfiles.sectionTitle}>
+        Brand buttons
+      </Text>
+      <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
         Brand intents reuse the Fluent Button formula without adding brand colors to the preset. The
         same unified set of practical actions compares brand high with a surfaced mark, brand high,
         and brand low, while every state reference shares one collection.
-      </p>
+      </Text>
       <div className={styles.brandCollection}>
         <section aria-labelledby="brand-action-examples-title">
-          <h4 id="brand-action-examples-title">Action examples</h4>
+          <Text as="h4" id="brand-action-examples-title" profile={textProfiles.subsectionTitle}>
+            Action examples
+          </Text>
           <div className={styles.brandActionColumns}>
             {ACTION_COLUMNS.filter(
               (column) => !('iconTreatment' in column) || iconRegionAvailable
@@ -492,7 +514,9 @@ export function SocialButtonExamples({
         ) : null}
 
         <section aria-labelledby="brand-state-references-title">
-          <h4 id="brand-state-references-title">State references</h4>
+          <Text as="h4" id="brand-state-references-title" profile={textProfiles.subsectionTitle}>
+            State references
+          </Text>
           <div className={styles.brandExampleGrid}>
             {BRAND_RESOURCE_GROUPS.map((resourceGroup) => (
               <BrandPackBoundary
@@ -500,15 +524,17 @@ export function SocialButtonExamples({
                 pack={resourceGroup.id}
                 components={['button']}
                 fallback={
-                  <p className={styles.brandPackFallback}>
+                  <Text as="p" profile={textProfiles.caption} className={styles.brandPackFallback}>
                     Some brand references are unavailable for this Design System.
-                  </p>
+                  </Text>
                 }
               >
                 {resourceGroup.brands.map(
                   ({ id, icon: BrandIcon, label, hasBrandPresentation }) => (
                     <article className={styles.brandExample} key={id}>
-                      <h5>{label}</h5>
+                      <Text as="h5" profile={textProfiles.groupTitle}>
+                        {label}
+                      </Text>
                       <div className={styles.brandContextGrid}>
                         {SURFACE_CONTEXTS.map((surfaceContext) => (
                           <div
@@ -523,7 +549,9 @@ export function SocialButtonExamples({
                                   : onVividBackground
                             }}
                           >
-                            <span>{surfaceContext === 'onSubtle' ? 'On subtle' : 'On vivid'}</span>
+                            <Text as="span" profile={textProfiles.caption}>
+                              {surfaceContext === 'onSubtle' ? 'On subtle' : 'On vivid'}
+                            </Text>
                             <div className={styles.brandEmphasisGrid}>
                               {EMPHASES.map((emphasis) => {
                                 const appearance = getRecommendedBrandIconAppearance(

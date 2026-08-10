@@ -1,4 +1,4 @@
-import { access, readFile, rm } from 'node:fs/promises';
+import { readFile, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Schema, SchemaFonts } from '@kiskadee/core';
@@ -127,6 +127,7 @@ describe('writeExtraArtifacts typography artifacts', () => {
         'body-medium': {
           decorations: { textFont: 'body' as const, textWeight: 'normal' as const },
           scales: { textSize: 16, textHeight: 24 },
+          bucket: 'bm',
           className: 'k-a k-b k-c k-d'
         }
       },
@@ -145,15 +146,24 @@ describe('writeExtraArtifacts typography artifacts', () => {
         }
       }),
       outDirSlug,
-      typographyArtifact
+      typographyArtifact,
+      textTypographyClassMap: {
+        e1: { t: { bm: 'k-a k-b k-c k-d' } }
+      }
     });
 
     const outputDirectory = resolve(buildRoot, outDirSlug);
     expect(
       JSON.parse(await readFile(resolve(outputDirectory, 'typography.kiskadee.json'), 'utf8'))
     ).toEqual(typographyArtifact);
-    await expect(access(resolve(outputDirectory, 'global.kiskadee.json'))).rejects.toMatchObject({
-      code: 'ENOENT'
+    expect(
+      JSON.parse(await readFile(resolve(outputDirectory, 'global.kiskadee.json'), 'utf8'))
+    ).toEqual({
+      classMap: {
+        text: {
+          e1: { t: { bm: 'k-a k-b k-c k-d' } }
+        }
+      }
     });
   });
 });

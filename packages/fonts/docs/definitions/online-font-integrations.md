@@ -63,7 +63,11 @@ host or preset do not become selectable catalog entries automatically.
 - Runtime preparation is deduplicated by family ID; provider stylesheets are deduplicated by URL.
 - A failed stylesheet is removed so preparation can be retried.
 - Google Fonts receives only the explicitly declared family and weights with `display=swap`.
-- Browser font binaries remain lazy and are normally requested only when a registered face is used.
+- A selected Google integration waits up to five seconds for every declared weight before the
+  provider applies its stack; failure preserves the previously selected family and remains
+  retryable.
+- Font binaries remain request-free for unselected families. Selecting a family prepares its
+  declared weights together so later strong text does not introduce a second visual swap.
 - Adding future providers or catalog entries must not expand an existing integration's request set.
 
 An official preset's recommended integration must include every weight used by that preset's

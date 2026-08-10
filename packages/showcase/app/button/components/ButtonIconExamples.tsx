@@ -4,7 +4,8 @@ import type {
   ElementSizeValue,
   SurfaceContext
 } from '@kiskadee/core';
-import { type IconName, Button as KButton, SmoothText } from '@kiskadee/react-components';
+import { type IconName, Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
 const EXAMPLES = [
@@ -113,14 +114,18 @@ export function ButtonIconExamples({
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
+  const textProfiles = useShowcaseTextProfiles();
+
   return (
     <section className={styles.showcaseSection} aria-labelledby="button-icon-examples-title">
-      <h3 id="button-icon-examples-title">Icons</h3>
-      <p className={styles.showcaseSectionDescription}>
+      <Text as="h3" id="button-icon-examples-title" profile={textProfiles.sectionTitle}>
+        Icons
+      </Text>
+      <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
         Each intent is represented at high and low emphasis. Inline composes icon and label as one
         centered group, while Edge keeps the label independently centered. Icon-only buttons can
         also compose compact control groups such as an editing toolbar.
-      </p>
+      </Text>
       <div className={`${styles.buttonExampleGrid} k-root`}>
         {EXAMPLES.map(({ icon, emphasis, iconLayout, iconPlacement, intent, label }) => (
           <KButton
@@ -142,7 +147,9 @@ export function ButtonIconExamples({
         ))}
       </div>
       <article className={`${styles.richTextEditorExample} k-root`}>
-        <h4>Rich text editor</h4>
+        <Text as="h4" profile={textProfiles.subsectionTitle}>
+          Rich text editor
+        </Text>
         <fieldset className={styles.richTextToolbar}>
           <legend className={styles.richTextToolbarLegend}>Rich text formatting controls</legend>
           {RICH_TEXT_ACTION_GROUPS.map((actions) => (
@@ -164,11 +171,13 @@ export function ButtonIconExamples({
           ))}
         </fieldset>
         <div className={styles.richTextEditorCanvas}>
-          <p>
+          <Text as="p" profile={textProfiles.body}>
             <strong>Kiskadee composes familiar editing controls</strong> from the same Button and
             Icon primitives used throughout an interface.
-          </p>
-          <p>This surface is illustrative and does not edit text.</p>
+          </Text>
+          <Text as="p" profile={textProfiles.caption}>
+            This surface is illustrative and does not edit text.
+          </Text>
         </div>
       </article>
     </section>

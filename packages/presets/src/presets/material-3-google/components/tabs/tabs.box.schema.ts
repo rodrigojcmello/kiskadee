@@ -148,8 +148,8 @@ export function createMaterial3GoogleTabsBoxVariant({
       e3: {
         name: 'label',
         typography: {
-          's:sm:1': 'tabs-label-small',
-          's:md:1': 'tabs-label-medium'
+          's:sm:1': 'label-medium',
+          's:md:1': 'label-large'
         },
         palettes: {
           default: {

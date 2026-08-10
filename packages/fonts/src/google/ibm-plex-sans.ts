@@ -7,5 +7,7 @@ export const ibmPlexSansFontFamily = defineFontFamily({
   id: 'ibm-plex-sans',
   stack: ['IBM Plex Sans', 'sans-serif'],
   prepare: () =>
-    prepareGoogleFontStylesheet('ibm-plex-sans', IBM_PLEX_SANS_GOOGLE_FAMILY_PARAMETERS)
+    prepareGoogleFontStylesheet('ibm-plex-sans', IBM_PLEX_SANS_GOOGLE_FAMILY_PARAMETERS, {
+      weights: [400, 500, 700]
+    })
 });

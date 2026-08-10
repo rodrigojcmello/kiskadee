@@ -8,7 +8,8 @@ import {
   resolveIntentClassName,
   resolveRadiusClassName,
   resolveScaleClassName,
-  resolveSchemaElementClassName
+  resolveSchemaElementClassName,
+  resolveTypographyClassName
 } from './classNames.ts';
 
 const element: ClassNameByElementJSON = {
@@ -37,6 +38,9 @@ const element: ClassNameByElementJSON = {
   s: {
     all: 'scale-all',
     'md:1': 'scale-medium'
+  },
+  t: {
+    bm: 'font-body weight-normal size-medium line-medium'
   },
   rr: {
     all: 'radius-rounded-all',
@@ -159,6 +163,13 @@ describe('class name resolution helpers', () => {
         surfaceContext: 'onVivid'
       })
     ).toBe('base on-vivid-primary-medium');
+  });
+
+  it('resolves typography profiles through their compact bucket', () => {
+    expect(resolveTypographyClassName(element, 'body-medium')).toBe(
+      'font-body weight-normal size-medium line-medium'
+    );
+    expect(resolveTypographyClassName(element, 'missing-profile')).toBe('');
   });
 
   it('resolves radius classes by radius mode and scale', () => {

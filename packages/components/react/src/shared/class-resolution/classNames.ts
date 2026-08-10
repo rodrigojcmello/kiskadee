@@ -5,6 +5,7 @@ import {
   componentEmphasisBuckets,
   type EffectClassBucketJSON,
   type RadiusMode,
+  resolveTypographyProfileBucket,
   type SurfaceContext
 } from '@kiskadee/core';
 
@@ -102,6 +103,14 @@ export function resolveScaleClassName(
   if (!element) return '';
   const scaleKey = normalizeScaleKey(scale);
   return joinClassNames(element.s?.all, element.s?.[scaleKey]) ?? '';
+}
+
+export function resolveTypographyClassName(
+  element: ClassNameByElementJSON | undefined,
+  profileId: string
+): string {
+  if (!element?.t) return '';
+  return element.t[resolveTypographyProfileBucket(profileId)] ?? '';
 }
 
 export function resolveSchemaElementClassName(

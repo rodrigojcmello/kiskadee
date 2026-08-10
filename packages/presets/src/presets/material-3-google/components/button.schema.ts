@@ -412,9 +412,9 @@ export function createMaterial3GoogleButtonSchema({
         typography: {
           's:sm:1': 'label-large',
           's:md:1': 'label-large',
-          's:lg:1': 'title-medium',
-          's:lg:2': 'headline-small-strong',
-          's:lg:3': 'headline-large-strong'
+          's:lg:1': 'label-extra-large',
+          's:lg:2': 'label-display-small',
+          's:lg:3': 'label-display-large'
         },
         palettes: buildBySegment(segmentNames, (s) => {
           return {

@@ -161,8 +161,8 @@ export function createMaterial3GoogleTabsBridgeVariant({
       e3: {
         name: 'label',
         typography: {
-          's:sm:1': 'tabs-bridge-label-small-stronger',
-          's:md:1': 'tabs-bridge-label-medium-stronger'
+          's:sm:1': 'label-extra-large',
+          's:md:1': 'label-extra-large'
         },
         palettes: {
           default: {

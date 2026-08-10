@@ -2,7 +2,7 @@ import type { SchemaTypography } from '@kiskadee/core';
 
 export const ios18AppleTypography = {
   profiles: {
-    body: {
+    'body-medium': {
       decorations: { textFont: 'body', textWeight: 'normal' },
       scales: { textSize: 17, textHeight: 22 }
     }

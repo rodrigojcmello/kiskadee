@@ -5,7 +5,9 @@ import { prepareGoogleFontStylesheet } from './prepareGoogleFontStylesheet.ts';
 export const OPEN_SANS_GOOGLE_FAMILY_PARAMETERS = 'Open Sans:wght@400;500;600;700';
 
 export function prepareOpenSansFontFamily(): Promise<FontFamilyPreparationResult> {
-  return prepareGoogleFontStylesheet('open-sans', OPEN_SANS_GOOGLE_FAMILY_PARAMETERS);
+  return prepareGoogleFontStylesheet('open-sans', OPEN_SANS_GOOGLE_FAMILY_PARAMETERS, {
+    weights: [400, 500, 600, 700]
+  });
 }
 
 export const openSansFontFamily = defineFontFamily({

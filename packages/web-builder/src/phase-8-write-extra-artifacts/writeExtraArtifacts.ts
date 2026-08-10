@@ -7,6 +7,7 @@ import type {
   ActivationFeedbackThemeTokens,
   ButtonOptions,
   FontStack,
+  GlobalClassNameMapJSON,
   RadiusMode,
   Schema,
   SchemaFonts,
@@ -199,11 +200,13 @@ export async function writeExtraArtifacts(params: {
   schema: Schema;
   outDirSlug: string;
   typographyArtifact?: TypographyArtifact;
+  textTypographyClassMap?: NonNullable<GlobalClassNameMapJSON['text']>;
 }): Promise<void> {
-  const { schema, outDirSlug, typographyArtifact } = params as {
+  const { schema, outDirSlug, textTypographyClassMap, typographyArtifact } = params as {
     schema: ExtractableSchema;
     outDirSlug: string;
     typographyArtifact?: TypographyArtifact;
+    textTypographyClassMap?: NonNullable<GlobalClassNameMapJSON['text']>;
   };
 
   const buildDir = getBuildDir(outDirSlug);
@@ -317,13 +320,15 @@ export async function writeExtraArtifacts(params: {
         Object.keys(shadow.inner?.levels ?? {}).length > 0)
   );
   const hasComponentEffectOverrides = Object.keys(componentEffectOverrides).length > 0;
+  const hasTextTypographyClassMap = Boolean(textTypographyClassMap);
   if (
     hasFonts ||
     hasIcons ||
     hasRadius ||
     hasActivationFeedback ||
     hasShadow ||
-    hasComponentEffectOverrides
+    hasComponentEffectOverrides ||
+    hasTextTypographyClassMap
   ) {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
@@ -337,6 +342,7 @@ export async function writeExtraArtifacts(params: {
         shadow?: ShadowGlobalEffectSchema;
       };
       components?: Partial<Record<ComponentEffectArtifactName, ComponentEffectArtifact>>;
+      classMap?: GlobalClassNameMapJSON;
     } = {};
 
     if (fonts) {
@@ -367,6 +373,10 @@ export async function writeExtraArtifacts(params: {
 
     if (hasComponentEffectOverrides) {
       globalPayload.components = componentEffectOverrides;
+    }
+
+    if (textTypographyClassMap) {
+      globalPayload.classMap = { text: textTypographyClassMap };
     }
 
     await writeFile(globalFilePath, JSON.stringify(globalPayload, null, 2), 'utf8');

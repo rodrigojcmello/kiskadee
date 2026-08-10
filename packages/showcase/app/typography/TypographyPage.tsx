@@ -5,11 +5,11 @@ import { SYSTEM_MONOSPACE_FONT_STACK } from '@kiskadee/core/font-family';
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
 import {
   type FontFamilyRole,
+  Text,
   useFontFamilyStatus,
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
-import type { TypographyArtifactUsage } from '@kiskadee/web-builder/types';
 import { ShowcaseIconographyControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
   ShowcaseControlGroup,
@@ -28,6 +28,7 @@ import {
   getPresetFamilyId,
   getRecommendedFontLabel
 } from '@/utils/font-family-selection';
+import { type ShowcaseTextProfiles, useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Typography.module.scss';
 
 type RoleDisplay = {
@@ -102,40 +103,125 @@ function resolveRoleDisplay(
   };
 }
 
-function RolePreview({ display, role }: { display: RoleDisplay; role: FontFamilyRole }) {
+function RolePreview({
+  display,
+  role,
+  textProfiles
+}: {
+  display: RoleDisplay;
+  role: FontFamilyRole;
+  textProfiles: ShowcaseTextProfiles;
+}) {
   const stackLabel = display.stack?.join(', ') ?? 'Inherited from the host';
 
   return (
     <article className={styles.roleCard} data-font-role={role}>
       <header className={styles.roleHeader}>
         <div>
-          <p className={styles.roleEyebrow}>{role}</p>
-          <h3 className={styles.familyName}>{display.familyLabel}</h3>
+          <Text as="p" profile={textProfiles.caption} className={styles.roleEyebrow}>
+            {role}
+          </Text>
+          <Text as="h3" profile={textProfiles.subsectionTitle} className={styles.familyName}>
+            {display.familyLabel}
+          </Text>
         </div>
-        <span className={styles.sourceBadge}>{display.sourceLabel}</span>
+        <Text as="span" profile={textProfiles.caption} className={styles.sourceBadge}>
+          {display.sourceLabel}
+        </Text>
       </header>
 
       <div className={styles.sample}>
         {role === 'body' ? (
-          <p className={styles.bodySample}>
+          <Text as="p" profile={textProfiles.body} className={styles.roleSample}>
             Clear typography keeps interfaces comfortable through long reading sessions.
-          </p>
+          </Text>
         ) : null}
         {role === 'heading' ? (
-          <p className={styles.headingSample}>Build a recognizable voice</p>
+          <Text as="p" profile={textProfiles.sectionTitle} className={styles.roleSample}>
+            Build a recognizable voice
+          </Text>
         ) : null}
         {role === 'code' ? (
-          <pre className={styles.codeSample}>
-            <code>{`const family = "${display.familyLabel}";`}</code>
-          </pre>
+          <Text
+            as="pre"
+            profile={textProfiles.caption}
+            className={`${styles.roleSample} ${styles.codeSample}`}
+          >{`const family = "${display.familyLabel}";`}</Text>
         ) : null}
       </div>
 
       <footer className={styles.roleMeta}>
-        <code>{stackLabel}</code>
-        {display.note ? <span>{display.note}</span> : null}
+        <Text as="code" profile={textProfiles.caption} className={styles.roleStack}>
+          {stackLabel}
+        </Text>
+        {display.note ? (
+          <Text as="span" profile={textProfiles.caption}>
+            {display.note}
+          </Text>
+        ) : null}
       </footer>
     </article>
+  );
+}
+
+function TextComponentExamples({ textProfiles }: { textProfiles: ShowcaseTextProfiles }) {
+  return (
+    <section className={styles.textComponent} aria-labelledby="text-component-title">
+      <div className={styles.sectionHeader}>
+        <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+          Component
+        </Text>
+        <Text as="h2" profile={textProfiles.sectionTitle} id="text-component-title">
+          Text
+        </Text>
+        <Text as="p" profile={textProfiles.body}>
+          HTML semantics and visual typography are independent. Every example resolves its profile
+          through the active preset without creating profile-specific CSS.
+        </Text>
+      </div>
+
+      <div className={styles.textExampleGrid}>
+        <article className={styles.textExampleCard}>
+          <Text as="h3" profile={textProfiles.groupTitle}>
+            Inline
+          </Text>
+          <div className={styles.textExamplePreview}>
+            <Text profile={textProfiles.body}>Text defaults to a semantic inline span.</Text>
+          </div>
+          <Text as="code" profile={textProfiles.caption} className={styles.textExampleCode}>
+            {`<Text profile="${textProfiles.body}">`}
+          </Text>
+        </article>
+
+        <article className={styles.textExampleCard}>
+          <Text as="h3" profile={textProfiles.groupTitle}>
+            Paragraph
+          </Text>
+          <div className={styles.textExamplePreview}>
+            <Text as="p" profile={textProfiles.body}>
+              Block semantics are selected through as, while the profile owns the visual recipe.
+            </Text>
+          </div>
+          <Text as="code" profile={textProfiles.caption} className={styles.textExampleCode}>
+            {`<Text as="p" profile="${textProfiles.body}">`}
+          </Text>
+        </article>
+
+        <article className={styles.textExampleCard}>
+          <Text as="h3" profile={textProfiles.groupTitle}>
+            Heading
+          </Text>
+          <div className={styles.textExamplePreview}>
+            <Text as="h4" profile={textProfiles.pageTitle}>
+              Profile does not define heading level
+            </Text>
+          </div>
+          <Text as="code" profile={textProfiles.caption} className={styles.textExampleCode}>
+            {`<Text as="h4" profile="${textProfiles.pageTitle}">`}
+          </Text>
+        </article>
+      </div>
+    </section>
   );
 }
 
@@ -165,14 +251,13 @@ function PreparationStatus() {
   );
 }
 
-function formatUsage(usage: TypographyArtifactUsage): string {
-  const branch = [usage.component, usage.variant, usage.mode].filter(Boolean).join('.');
-  const breakpoint = usage.breakpoint ? ` · ${usage.breakpoint}` : '';
-
-  return `${branch} · ${usage.elementName} (${usage.element}) · ${usage.scale}${breakpoint}`;
-}
-
-function TypeScale({ artifactPath }: { artifactPath?: string }) {
+function TypeScale({
+  artifactPath,
+  textProfiles
+}: {
+  artifactPath?: string;
+  textProfiles: ShowcaseTextProfiles;
+}) {
   const { designSystem } = useKiskadee();
   const { artifact, error, loading } = useTypographyArtifact(designSystem, artifactPath);
 
@@ -180,10 +265,16 @@ function TypeScale({ artifactPath }: { artifactPath?: string }) {
     return (
       <section className={styles.typeScale} aria-labelledby="type-scale-title">
         <div className={styles.sectionHeader}>
-          <p className={styles.eyebrow}>Profiles</p>
-          <h2 id="type-scale-title">Type scale</h2>
+          <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+            Profiles
+          </Text>
+          <Text as="h2" profile={textProfiles.sectionTitle} id="type-scale-title">
+            Type scale
+          </Text>
         </div>
-        <p className={styles.emptyState}>This preset does not declare typography profiles.</p>
+        <Text as="p" profile={textProfiles.caption} className={styles.emptyState}>
+          This preset does not declare typography profiles.
+        </Text>
       </section>
     );
   }
@@ -192,12 +283,21 @@ function TypeScale({ artifactPath }: { artifactPath?: string }) {
     return (
       <section className={styles.typeScale} aria-labelledby="type-scale-title">
         <div className={styles.sectionHeader}>
-          <p className={styles.eyebrow}>Profiles</p>
-          <h2 id="type-scale-title">Type scale</h2>
+          <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+            Profiles
+          </Text>
+          <Text as="h2" profile={textProfiles.sectionTitle} id="type-scale-title">
+            Type scale
+          </Text>
         </div>
-        <p className={styles.emptyState} aria-live="polite">
+        <Text
+          as="p"
+          profile={textProfiles.caption}
+          className={styles.emptyState}
+          aria-live="polite"
+        >
           Loading the preset type scale…
-        </p>
+        </Text>
       </section>
     );
   }
@@ -206,12 +306,16 @@ function TypeScale({ artifactPath }: { artifactPath?: string }) {
     return (
       <section className={styles.typeScale} aria-labelledby="type-scale-title">
         <div className={styles.sectionHeader}>
-          <p className={styles.eyebrow}>Profiles</p>
-          <h2 id="type-scale-title">Type scale</h2>
+          <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+            Profiles
+          </Text>
+          <Text as="h2" profile={textProfiles.sectionTitle} id="type-scale-title">
+            Type scale
+          </Text>
         </div>
-        <p className={styles.errorState} role="alert">
+        <Text as="p" profile={textProfiles.caption} className={styles.errorState} role="alert">
           {error?.message ?? 'The typography artifact could not be loaded.'}
-        </p>
+        </Text>
       </section>
     );
   }
@@ -221,10 +325,16 @@ function TypeScale({ artifactPath }: { artifactPath?: string }) {
     return (
       <section className={styles.typeScale} aria-labelledby="type-scale-title">
         <div className={styles.sectionHeader}>
-          <p className={styles.eyebrow}>Profiles</p>
-          <h2 id="type-scale-title">Type scale</h2>
+          <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+            Profiles
+          </Text>
+          <Text as="h2" profile={textProfiles.sectionTitle} id="type-scale-title">
+            Type scale
+          </Text>
         </div>
-        <p className={styles.emptyState}>This preset does not declare typography profiles.</p>
+        <Text as="p" profile={textProfiles.caption} className={styles.emptyState}>
+          This preset does not declare typography profiles.
+        </Text>
       </section>
     );
   }
@@ -232,11 +342,15 @@ function TypeScale({ artifactPath }: { artifactPath?: string }) {
   return (
     <section className={styles.typeScale} aria-labelledby="type-scale-title">
       <div className={styles.sectionHeader}>
-        <p className={styles.eyebrow}>Profiles</p>
-        <h2 id="type-scale-title">Type scale</h2>
-        <p>
+        <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+          Profiles
+        </Text>
+        <Text as="h2" profile={textProfiles.sectionTitle} id="type-scale-title">
+          Type scale
+        </Text>
+        <Text as="p" profile={textProfiles.body}>
           Complete preset recipes compiled into the same atomic classes used by component slots.
-        </p>
+        </Text>
       </div>
 
       <div className={styles.profileGroups}>
@@ -253,62 +367,72 @@ function TypeScale({ artifactPath }: { artifactPath?: string }) {
               aria-labelledby={`profiles-${role}`}
             >
               <header className={styles.profileGroupHeader}>
-                <h3 id={`profiles-${role}`}>{role}</h3>
-                <span>{roleProfiles.length}</span>
+                <Text as="h3" profile={textProfiles.subsectionTitle} id={`profiles-${role}`}>
+                  {role}
+                </Text>
+                <Text as="span" profile={textProfiles.caption}>
+                  {roleProfiles.length}
+                </Text>
               </header>
 
               <div className={styles.profileList}>
                 {roleProfiles.map(([profileId, profile]) => {
-                  const usages = artifact.usage[profileId] ?? [];
                   const tracking = profile.scales.textLetterSpacing;
 
                   return (
                     <article className={styles.profileCard} key={profileId}>
                       <div className={styles.profilePreview}>
-                        <p className={`${styles.profileSample} ${profile.className}`}>
+                        <Text as="p" profile={profileId} className={styles.profileSample}>
                           {PROFILE_SAMPLES[role]}
-                        </p>
+                        </Text>
                       </div>
 
                       <div className={styles.profileDetails}>
-                        <code className={styles.profileId}>{profileId}</code>
+                        <Text as="code" profile={textProfiles.caption} className={styles.profileId}>
+                          {profileId}
+                        </Text>
                         <dl className={styles.profileMetrics}>
                           <div>
-                            <dt>Role</dt>
-                            <dd>{profile.decorations.textFont}</dd>
+                            <Text as="dt" profile={textProfiles.caption}>
+                              Role
+                            </Text>
+                            <Text as="dd" profile={textProfiles.caption}>
+                              {profile.decorations.textFont}
+                            </Text>
                           </div>
                           <div>
-                            <dt>Size</dt>
-                            <dd>{profile.scales.textSize}px</dd>
+                            <Text as="dt" profile={textProfiles.caption}>
+                              Size
+                            </Text>
+                            <Text as="dd" profile={textProfiles.caption}>
+                              {profile.scales.textSize}px
+                            </Text>
                           </div>
                           <div>
-                            <dt>Line height</dt>
-                            <dd>{profile.scales.textHeight}px</dd>
+                            <Text as="dt" profile={textProfiles.caption}>
+                              Line height
+                            </Text>
+                            <Text as="dd" profile={textProfiles.caption}>
+                              {profile.scales.textHeight}px
+                            </Text>
                           </div>
                           <div>
-                            <dt>Weight</dt>
-                            <dd>{profile.decorations.textWeight}</dd>
+                            <Text as="dt" profile={textProfiles.caption}>
+                              Weight
+                            </Text>
+                            <Text as="dd" profile={textProfiles.caption}>
+                              {profile.decorations.textWeight}
+                            </Text>
                           </div>
                           <div>
-                            <dt>Tracking</dt>
-                            <dd>{tracking === undefined ? 'default' : `${tracking}px`}</dd>
+                            <Text as="dt" profile={textProfiles.caption}>
+                              Tracking
+                            </Text>
+                            <Text as="dd" profile={textProfiles.caption}>
+                              {tracking === undefined ? 'default' : `${tracking}px`}
+                            </Text>
                           </div>
                         </dl>
-
-                        <div className={styles.profileUsage}>
-                          <h4>Used by</h4>
-                          {usages.length > 0 ? (
-                            <ul>
-                              {usages.map((usage) => (
-                                <li key={formatUsage(usage)}>{formatUsage(usage)}</li>
-                              ))}
-                            </ul>
-                          ) : (
-                            <p>
-                              Declared for direct inspection; no component slot currently uses it.
-                            </p>
-                          )}
-                        </div>
                       </div>
                     </article>
                   );
@@ -326,6 +450,7 @@ function TypographyContent() {
   const { global } = useKiskadee();
   const { fontRoleNames, manifest, setFontRoleName } = useShowcase();
   const { familyResolutions } = useFontFamilyStatus();
+  const textProfiles = useShowcaseTextProfiles();
   const presetFonts = global?.fonts;
   const headingReusesBody =
     fontRoleNames.heading === FOLLOW_PRESET_FONT_KEY && presetFonts?.roles.heading === undefined;
@@ -386,17 +511,22 @@ function TypographyContent() {
   return (
     <section className={styles.page}>
       <header className={styles.header}>
-        <p className={styles.eyebrow}>Foundation</p>
-        <h2 className={styles.title}>Typography</h2>
-        <p className={styles.summary}>
+        <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+          Foundation
+        </Text>
+        <Text as="h2" profile={textProfiles.pageTitle} className={styles.title}>
+          Typography / Text
+        </Text>
+        <Text as="p" profile={textProfiles.body} className={styles.summary}>
           Presets recommend semantic font families while applications remain free to provide them
-          natively or prepare only the families that become active.
-        </p>
+          natively or prepare only the families that become active. Text consumes the active
+          preset's profiles without coupling visual recipes to HTML semantics.
+        </Text>
       </header>
 
       <ShowcaseRouteControls
         id="typography"
-        eyebrow="Typography"
+        eyebrow="Typography / Text"
         showGlobalControls={false}
         title="Controls"
       >
@@ -405,11 +535,18 @@ function TypographyContent() {
 
       <div className={styles.previewGrid}>
         {FONT_ROLES.map((role) => (
-          <RolePreview key={role} role={role} display={displays[role]} />
+          <RolePreview
+            key={role}
+            role={role}
+            display={displays[role]}
+            textProfiles={textProfiles}
+          />
         ))}
       </div>
 
-      <TypeScale artifactPath={manifest?.typography?.artifact} />
+      <TextComponentExamples textProfiles={textProfiles} />
+
+      <TypeScale artifactPath={manifest?.typography?.artifact} textProfiles={textProfiles} />
     </section>
   );
 }

@@ -4,6 +4,7 @@ import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiska
 import {
   Button as KButton,
   SmoothText,
+  Text,
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
@@ -40,6 +41,7 @@ import {
   getManifestComponentState,
   supportsManifestSurfaceContext
 } from '@/utils/manifest-surface-context';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Button.module.scss';
 import { ButtonAsyncExample } from './components/ButtonAsyncExample';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
@@ -81,15 +83,21 @@ function SurfaceContextComparison({
   scale: ElementSizeValue;
   textAlign: 'left' | 'center';
 }) {
+  const textProfiles = useShowcaseTextProfiles();
+
   return (
     <section className={s.contextComparison} aria-labelledby="surface-context-comparison-title">
-      <h3 id="surface-context-comparison-title">Surface contexts</h3>
-      <p className={s.contextComparisonDescription}>
+      <Text as="h3" id="surface-context-comparison-title" profile={textProfiles.sectionTitle}>
+        Surface contexts
+      </Text>
+      <Text as="p" profile={textProfiles.body} className={s.contextComparisonDescription}>
         The same Primary Rest buttons rendered simultaneously on subtle and vivid surfaces.
-      </p>
+      </Text>
       <div className={s.contextComparisonGrid}>
         <article className={s.contextCard}>
-          <h4>On subtle</h4>
+          <Text as="h4" profile={textProfiles.subsectionTitle}>
+            On subtle
+          </Text>
           <div
             className={`${s.contextSurface} k-root`}
             style={onSubtleBackground ? { backgroundColor: onSubtleBackground } : undefined}
@@ -112,7 +120,9 @@ function SurfaceContextComparison({
           </div>
         </article>
         <article className={s.contextCard}>
-          <h4>On vivid</h4>
+          <Text as="h4" profile={textProfiles.subsectionTitle}>
+            On vivid
+          </Text>
           <div
             className={`${s.contextSurface} ${s.onVividContextSurface} k-root`}
             style={onVividBackground ? { backgroundColor: onVividBackground } : undefined}
@@ -134,7 +144,9 @@ function SurfaceContextComparison({
                 </KButton>
               ))
             ) : (
-              <p className={s.contextUnavailable}>On vivid is not available in this palette.</p>
+              <Text as="p" profile={textProfiles.caption} className={s.contextUnavailable}>
+                On vivid is not available in this palette.
+              </Text>
             )}
           </div>
         </article>
@@ -147,6 +159,7 @@ export function Button() {
   const { designSystem, segment, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
+  const textProfiles = useShowcaseTextProfiles();
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
@@ -439,7 +452,9 @@ export function Button() {
 
   return (
     <section className={routeClassName || undefined}>
-      <h2>Button</h2>
+      <Text as="h2" profile={textProfiles.pageTitle}>
+        Button
+      </Text>
       <ShowcaseRouteControls
         id="button"
         eyebrow="Button"
@@ -531,7 +546,9 @@ export function Button() {
 
         {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
         <div className={s['interaction-state']}>
-          <h3>Activation Feedback Profiles</h3>
+          <Text as="h3" profile={textProfiles.sectionTitle}>
+            Activation Feedback Profiles
+          </Text>
           <div className={`${s['example-states']} k-root`}>
             <KButton
               intent="primary"
@@ -590,7 +607,9 @@ export function Button() {
         {/* [ACTIVATION FEEDBACK] END: Showcase examples for profile/origin overrides. */}
 
         <div className={s['interaction-state']}>
-          <h3>Selected (Primary / Medium)</h3>
+          <Text as="h3" profile={textProfiles.sectionTitle}>
+            Selected (Primary / Medium)
+          </Text>
           <div className={`${s['example-states']} k-root`}>
             {renderState(
               'primary',
@@ -617,7 +636,9 @@ export function Button() {
         </div>
 
         <div className={s['interaction-state']}>
-          <h3>Selected (Primary / High)</h3>
+          <Text as="h3" profile={textProfiles.sectionTitle}>
+            Selected (Primary / High)
+          </Text>
           <div className={`${s['example-states']} k-root`}>
             {renderState(
               'primary',
@@ -644,7 +665,9 @@ export function Button() {
         </div>
 
         <div>
-          <h3>Shadow</h3>
+          <Text as="h3" profile={textProfiles.sectionTitle}>
+            Shadow
+          </Text>
           <KButton scale={activeButtonScale} shadow={true} surfaceContext={activeSurfaceContext}>
             <KButton.Label>
               <SmoothText fontName={fontName} align={alignment}>
@@ -703,7 +726,9 @@ export function Button() {
         </div>
 
         <div className={s['interaction-state']}>
-          <h3>Size / Scale</h3>
+          <Text as="h3" profile={textProfiles.sectionTitle}>
+            Size / Scale
+          </Text>
           <div className={`${s['example-states']} k-root`}>
             {renderScale(
               's:sm:2',

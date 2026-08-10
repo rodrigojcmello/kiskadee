@@ -34,6 +34,15 @@ that combine font-role and weight decorations with size, line-height, and option
 Textual component slots reference those recipes by component scale, and Web builders expand the
 references into the existing atomic decoration and scale utilities.
 
+Standalone `Text` consumes the same recipes through a dedicated `t` artifact bucket. The bucket
+maps compact, stable profile keys to the existing atomic utilities; it does not create composite
+CSS selectors or turn typography profiles into component scales.
+
+Typography profiles own text metrics, font role, and weight. Component elements continue to own
+their surrounding geometry, including padding, gap, margin, alignment, and height. Presets reuse a
+shared profile instead of creating compact or relaxed recipes solely to reproduce a component's
+previous local line box.
+
 ## Options vs. Element values
 
 Component schema also has an important split between:
@@ -128,6 +137,8 @@ This is the baseline end-to-end flow for Web:
 
 5. Runtime consumers
 - `packages/components` consumes generated class maps/CSS and composes headless behavior.
+- Standalone `Text` resolves profile utilities from the active preset's global `t` bucket without
+  requesting the descriptive typography artifact.
 - `packages/fonts` optionally supplies online selected-family preparation.
 - `packages/icons` provides canonical SVG assets plus generated adapters to platform consumers.
 - `packages/showcase` consumes synced artifacts and renders routes/scenarios using those components.

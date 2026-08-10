@@ -6,10 +6,11 @@ import type {
   InteractionState,
   SurfaceContext
 } from '@kiskadee/core';
-import { Button as KButton, SmoothText } from '@kiskadee/react-components';
+import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
 import { ShowcaseIconGlyph } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from '../Button.module.scss';
 import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
 
@@ -43,6 +44,7 @@ export function ButtonStateSection({
   scale,
   surfaceContext
 }: ButtonStateSectionProps) {
+  const textProfiles = useShowcaseTextProfiles();
   const [selectedMap, setSelectedMap] = useState<Record<Emphasis, boolean>>(() => {
     const initial = {} as Record<Emphasis, boolean>;
     for (const emphasis of EMPHASIS_ORDER) {
@@ -80,7 +82,9 @@ export function ButtonStateSection({
 
   return (
     <div className={s['state-section']}>
-      <h3 className={s['state-title']}>{title}</h3>
+      <Text as="h3" profile={textProfiles.sectionTitle} className={s['state-title']}>
+        {title}
+      </Text>
       {simplified ? (
         <div className={`${s['simplified-states']} k-root`}>
           {EMPHASIS_ORDER.map((emphasis) => (
@@ -108,10 +112,10 @@ export function ButtonStateSection({
       ) : (
         EMPHASIS_ORDER.map((emphasis) => (
           <div key={emphasis} className={s['interaction-state']}>
-            <h4 className={s['emphasis-title']}>
+            <Text as="h4" profile={textProfiles.groupTitle} className={s['emphasis-title']}>
               <span>{EMPHASIS_LABELS[emphasis]} emphasis</span>
               <span className={s['emphasis-divider']} aria-hidden="true" />
-            </h4>
+            </Text>
             <div className={`${s['example-states']} k-root`}>
               {renderState(
                 emphasis,

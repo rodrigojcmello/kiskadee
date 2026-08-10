@@ -24,7 +24,10 @@ import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persist
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata.ts';
 import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy.ts';
-import { buildTypographyArtifact } from './typography/compileTypography.ts';
+import {
+  buildTextTypographyClassMap,
+  buildTypographyArtifact
+} from './typography/compileTypography.ts';
 import { loadPresetsToBuild } from './utils/loadPresetsToBuild.ts';
 
 // Feature flag simples para controlar o uso de prefixo nos nomes de classes CSS
@@ -178,6 +181,10 @@ export async function runBuild(): Promise<void> {
     // Phase 6 - Persist CSS & maps
     await persistBuildArtifacts(cssGenerated, classNamesMapSplit, outDirSlug);
 
+    const typographyArtifact = typographyBuild
+      ? buildTypographyArtifact(typographyBuild, shortenCssClassNameMap)
+      : undefined;
+
     // Phase 7 - Publish manifest + raw schema/segments
     await publishMetadata({
       schema,
@@ -191,8 +198,9 @@ export async function runBuild(): Promise<void> {
     await writeExtraArtifacts({
       schema,
       outDirSlug,
-      typographyArtifact: typographyBuild
-        ? buildTypographyArtifact(typographyBuild, shortenCssClassNameMap)
+      typographyArtifact,
+      textTypographyClassMap: typographyArtifact
+        ? buildTextTypographyClassMap(typographyArtifact)
         : undefined
     });
 

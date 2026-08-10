@@ -14,26 +14,16 @@
 .eyebrow,
 .roleEyebrow {
   color: currentColor;
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  margin: 0;
   opacity: 0.48;
   text-transform: uppercase;
 }
 
 .title {
   color: currentColor;
-  font-size: clamp(2rem, 5vw, 3rem);
-  line-height: 1;
-  margin: 0;
 }
 
 .summary {
   color: currentColor;
-  font-size: 1rem;
-  line-height: 1.55;
-  margin: 0;
   max-width: 760px;
   opacity: 0.68;
 }
@@ -46,6 +36,7 @@
 }
 
 .typeScale,
+.textComponent,
 .profileGroups,
 .profileGroup,
 .profileList {
@@ -62,23 +53,49 @@
   gap: 7px;
 }
 
-.sectionHeader h2,
-.sectionHeader p,
-.profileGroupHeader h3,
-.profileUsage h4,
-.profileUsage p {
-  margin: 0;
-}
-
-.sectionHeader h2 {
-  font-size: 1.65rem;
-  line-height: 1.15;
-}
-
 .sectionHeader > p:last-child:not(.eyebrow) {
-  font-size: 0.86rem;
-  line-height: 1.5;
   opacity: 0.6;
+}
+
+.textComponent {
+  gap: 16px;
+}
+
+.textExampleGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  min-inline-size: 0;
+}
+
+.textExampleCard {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  display: grid;
+  grid-template-rows: auto minmax(128px, 1fr) auto;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.textExampleCard > h3,
+.textExampleCode {
+  padding: 16px 18px;
+}
+
+.textExamplePreview {
+  align-items: center;
+  border-block: 1px solid rgba(0, 0, 0, 0.07);
+  display: flex;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  padding: 20px 18px;
+}
+
+.textExampleCode {
+  background: rgba(0, 0, 0, 0.025);
+  opacity: 0.64;
+  overflow-wrap: anywhere;
 }
 
 .profileGroups {
@@ -96,18 +113,11 @@
   text-transform: capitalize;
 }
 
-.profileGroupHeader h3 {
-  font-size: 1rem;
-  line-height: 1.25;
-}
-
 .profileGroupHeader span {
   align-items: center;
   background: rgba(0, 0, 0, 0.06);
   border-radius: 999px;
   display: inline-flex;
-  font-size: 0.68rem;
-  font-weight: 750;
   justify-content: center;
   min-block-size: 22px;
   min-inline-size: 22px;
@@ -150,9 +160,6 @@
 }
 
 .profileId {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.74rem;
-  font-weight: 700;
   overflow-wrap: anywhere;
 }
 
@@ -168,54 +175,9 @@
   gap: 3px;
 }
 
-.profileMetrics dt,
-.profileMetrics dd {
-  margin: 0;
-}
-
 .profileMetrics dt {
-  font-size: 0.65rem;
-  font-weight: 750;
   opacity: 0.46;
   text-transform: uppercase;
-}
-
-.profileMetrics dd {
-  font-size: 0.76rem;
-  line-height: 1.35;
-}
-
-.profileUsage {
-  display: grid;
-  gap: 7px;
-}
-
-.profileUsage h4 {
-  font-size: 0.7rem;
-  opacity: 0.54;
-  text-transform: uppercase;
-}
-
-.profileUsage ul {
-  display: grid;
-  gap: 5px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.profileUsage li,
-.profileUsage p,
-.emptyState,
-.errorState {
-  font-size: 0.72rem;
-  line-height: 1.45;
-}
-
-.profileUsage li,
-.profileUsage p {
-  opacity: 0.62;
-  overflow-wrap: anywhere;
 }
 
 .emptyState,
@@ -243,18 +205,20 @@
 }
 
 .roleHeader {
-  align-items: start;
-  display: flex;
+  display: grid;
   gap: 12px;
-  justify-content: space-between;
+  justify-items: start;
+  min-inline-size: 0;
   padding: 20px;
+}
+
+.roleHeader > div {
+  min-inline-size: 0;
 }
 
 .familyName {
   color: currentColor;
-  font-size: 1rem;
-  line-height: 1.25;
-  margin: 5px 0 0;
+  margin-block-start: 5px;
   overflow-wrap: anywhere;
 }
 
@@ -262,10 +226,8 @@
   background: rgba(0, 0, 0, 0.055);
   border-radius: 999px;
   color: currentColor;
-  flex: 0 0 auto;
-  font-size: 0.66rem;
-  font-weight: 750;
-  line-height: 1;
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
   padding: 6px 8px;
 }
 
@@ -277,15 +239,16 @@
   padding: 24px 20px;
 }
 
-.roleCard[data-font-role='body'] .sample {
+/* Role previews override only the family so the selected global role remains observable. */
+.roleCard[data-font-role='body'] .roleSample {
   font-family: var(--k-font-body, inherit);
 }
 
-.roleCard[data-font-role='heading'] .sample {
+.roleCard[data-font-role='heading'] .roleSample {
   font-family: var(--k-font-heading, var(--k-font-body, inherit));
 }
 
-.roleCard[data-font-role='code'] .sample {
+.roleCard[data-font-role='code'] .roleSample {
   font-family: var(
     --k-font-code,
     ui-monospace,
@@ -299,27 +262,9 @@
   );
 }
 
-.bodySample {
-  font-size: 1rem;
-  line-height: 1.65;
-  margin: 0;
-}
-
-.headingSample {
-  font-size: clamp(1.65rem, 4vw, 2.3rem);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.08;
-  margin: 0;
-}
-
 .codeSample {
   background: rgba(0, 0, 0, 0.045);
   border-radius: 10px;
-  font: inherit;
-  font-size: 0.82rem;
-  line-height: 1.55;
-  margin: 0;
   min-inline-size: 0;
   overflow-x: auto;
   padding: 14px;
@@ -331,19 +276,14 @@
   padding: 14px 20px 18px;
 }
 
-.roleMeta code {
+.roleStack {
   color: currentColor;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.68rem;
-  line-height: 1.45;
   opacity: 0.64;
   overflow-wrap: anywhere;
 }
 
 .roleMeta span {
   color: currentColor;
-  font-size: 0.72rem;
-  line-height: 1.4;
   opacity: 0.52;
 }
 

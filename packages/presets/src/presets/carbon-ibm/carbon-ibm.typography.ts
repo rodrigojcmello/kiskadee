@@ -2,15 +2,15 @@ import type { SchemaTypography } from '@kiskadee/core';
 
 export const carbonIbmTypography = {
   profiles: {
-    'body-compact-01-strong': {
+    'body-medium-strong': {
       decorations: { textFont: 'body', textWeight: 'medium' },
       scales: { textSize: 14, textHeight: 18 }
     },
-    'label-01': {
+    'label-small': {
       decorations: { textFont: 'body', textWeight: 'normal' },
       scales: { textSize: 12, textHeight: 16 }
     },
-    'body-compact-01': {
+    'body-medium': {
       decorations: { textFont: 'body', textWeight: 'normal' },
       scales: { textSize: 14, textHeight: 18 }
     }

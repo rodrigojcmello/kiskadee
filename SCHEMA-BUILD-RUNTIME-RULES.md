@@ -491,7 +491,11 @@ Decision:
 - Textual component elements reference profiles through a scale-aware `typography` map.
 - A slot using `typography` must not also author `textFont`, `textWeight`, `textSize`, `textHeight`,
   or `textLetterSpacing` inline.
-- Strong and stronger appearances are independent complete profiles, not runtime weight axes.
+- Strong appearances are independent complete profiles, not runtime weight axes. Official preset
+  catalogs do not publish `stronger` profiles in the current normalized vocabulary.
+- Exact duplicate recipes are invalid within one preset. Equal metrics remain valid when font role,
+  weight, or tracking presence differs.
+- Profiles must not use `compact` or `relaxed` variants solely to preserve component geometry.
 - Responsive profile changes may alter metrics but must preserve the font role and weight within
   the responsive sequence.
 - Interaction states never select typography profiles.
@@ -508,11 +512,18 @@ Consequence:
 - The Web Builder expands profile references into the existing `d` and `s` class-map buckets.
 - Family and weight are hoisted to `d` only when invariant across every scale of the slot; metrics
   remain in `s`.
-- `typography.kiskadee.json` is a lazy descriptive artifact for inspection. The regular global
-  runtime artifact does not carry the catalog.
+- `typography.kiskadee.json` is a lazy descriptive artifact for inspection. Each profile records
+  the compact bucket key used by standalone `Text`.
+- `global.kiskadee.json` carries only `classMap.text.e1.t`, which maps compact profile keys to the
+  existing atomic utilities. It does not duplicate profile definitions, author-facing IDs, or
+  usage metadata.
+- Standalone `Text` resolves that `t` bucket directly. It does not reinterpret a profile as scale,
+  create a profile-specific selector, or request `typography.kiskadee.json`.
 - Component `scale` remains the complete public visual choice; components do not gain local
   typography override props in this contract.
 - Font preparation remains driven only by selected font families, never by a profile.
+- Component elements own padding, gap, margin, alignment, and height. Geometry may adapt to a
+  shared profile, but it must not recreate a removed line-height through compensating padding.
 
 ## 4) What belongs in structural Sass
 
@@ -592,13 +603,13 @@ Use each artifact for a different level of responsibility:
   fonts, and high-level component capabilities without loading the full schema.
 - `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
   without traversing full component branches. Use it for global defaults such as fonts, radius,
-  and activation feedback. Component-specific semantic metadata should move toward component artifacts such as
+  activation feedback, and the compact atomic class map used by standalone `Text`. Component-specific semantic metadata should move toward component artifacts such as
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
   `components/text-field.kiskadee.json`; new artifacts should not add component semantic payloads
   under `global.components.<name>`.
 - `typography.kiskadee.json`: optional, lazy inspection metadata containing authored profile
-  definitions, their atomic class lists, and profile usages. It is not part of normal component
-  runtime loading.
+  definitions, compact bucket keys, their atomic class lists, and profile usages. It is not part of
+  normal component runtime loading.
 - `class-maps/core/<component>.kiskadee.json` and
   `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped class resolution
   artifacts. They mirror the component branch from the aggregate class-map files so runtime hooks

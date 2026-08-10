@@ -210,9 +210,9 @@ export const schema: Schema<Segments> = {
         e2: {
           name: 'button-text',
           typography: {
-            's:sm:1': 'body-small-strong',
-            's:md:1': 'body-medium-strong',
-            's:lg:1': 'body-large-strong'
+            's:sm:1': 'label-small',
+            's:md:1': 'label-medium',
+            's:lg:1': 'label-large'
           },
           palettes: buildBySegment(
             segmentNames,

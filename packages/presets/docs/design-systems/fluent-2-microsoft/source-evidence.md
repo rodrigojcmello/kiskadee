@@ -71,21 +71,41 @@ from Google Fonts. The preset schema still contains no URL or loader. Without th
 applications may provide either family themselves or let the browser continue through the stack.
 
 The preset-level typography catalog follows the official Fluent Web ramp rather than repeating
-font properties inside every component element:
+font properties inside every component element. Kiskadee uses normalized function-and-size IDs;
+the upstream names remain evidence rather than schema aliases:
 
-| Profile | Weight | Size / line height | Status |
-| --- | --- | --- | --- |
-| `caption-1` | Regular | 12 / 16 px | Official exact |
-| `body-1` | Regular | 14 / 20 px | Official exact |
-| `body-1-strong` | Semibold | 14 / 20 px | Official exact |
-| `subtitle-2` | Semibold | 16 / 22 px | Official exact |
-| `caption-1-relaxed` | Regular | 12 / 20 px | Kiskadee extension preserving the optional Slider indicator's inherited line box |
+| Fluent Web token | Kiskadee profile | Role | Weight | Size / line height | Status |
+| --- | --- | --- | --- | --- | --- |
+| Caption 2 | `caption-small` | body | Regular | 10 / 14 px | Official adapted |
+| Caption 2 Strong | `caption-small-strong` | body | Semibold | 10 / 14 px | Official adapted |
+| Caption 1 | `caption-medium` | body | Regular | 12 / 16 px | Official adapted |
+| Caption 1 Strong | `caption-medium-strong` | body | Semibold | 12 / 16 px | Official adapted |
+| Body 1 | `body-medium` | body | Regular | 14 / 20 px | Official adapted |
+| Body 1 Strong | `body-medium-strong` | body | Semibold | 14 / 20 px | Official adapted |
+| Subtitle 2 | `subtitle-small` | heading | Semibold | 16 / 22 px | Official adapted |
+| Subtitle 1 | `subtitle-large` | heading | Semibold | 20 / 26 px | Official adapted |
+| Title 3 | `heading-small` | heading | Semibold | 24 / 32 px | Official adapted |
+| Title 2 | `heading-medium` | heading | Semibold | 28 / 36 px | Official adapted |
+| Title 1 | `heading-large` | heading | Semibold | 32 / 40 px | Official adapted |
+| Large Title | `display-small` | heading | Semibold | 40 / 52 px | Official adapted |
+| Display | `display-large` | heading | Semibold | 68 / 92 px | Official adapted |
+
+Fluent also publishes Caption 1 Stronger, Body 1 Stronger, and Subtitle 2 Stronger at Bold. These
+three entries are **Deferred** because the normalized Kiskadee catalog intentionally omits the
+`stronger` modifier in this version.
+
+`label-large` is a **Kiskadee extension** at body Semibold 16/22. It deliberately shares the
+numeric metrics of `subtitle-small` while keeping the Button label on the `body` role, so an
+application may assign a distinct heading family without changing control labels.
 
 Component elements select these profiles by Kiskadee scale and, where needed, breakpoint. The
-catalog owns font role, weight, size, and line height; component schemas continue to own spacing,
-layout, palettes, and interaction states. The responsive default Button selects `subtitle-2`
-below `bp:lg:1` and `body-1-strong` from that breakpoint onward. Small selects `caption-1`, so the
-official Regular-to-Semibold size transition is represented without a Fluent-only CSS override.
+catalog owns font role, weight, size, line height, and optional tracking; component schemas own
+padding, gap, margin, alignment, height, palettes, and interaction states. The official shared
+ramp takes precedence over component-local line boxes: the former `caption-1-relaxed` Slider
+exception was removed instead of encoding component geometry as a typography profile.
+
+The responsive default Button selects `label-large` below `bp:lg:1` and `body-medium-strong` from
+that breakpoint onward. Small selects `caption-medium`; Large selects `label-large`.
 
 ## Interface Icon Evidence
 

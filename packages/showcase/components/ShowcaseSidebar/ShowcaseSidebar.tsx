@@ -12,7 +12,7 @@ const foundationEntries = [
   },
   {
     href: '/typography',
-    label: 'Typography'
+    label: 'Typography / Text'
   }
 ] as const;
 

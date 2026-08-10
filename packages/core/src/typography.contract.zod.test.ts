@@ -36,6 +36,44 @@ describe('typography contract', () => {
     ).toEqual([]);
   });
 
+  it('rejects exact duplicate profiles and identifies the original profile', () => {
+    expect(
+      validateSchemaTypographyDefinitionContract({
+        profiles: {
+          'body-medium': createProfile(),
+          'paragraph-medium': createProfile()
+        }
+      })
+    ).toEqual([
+      'global.typography.profiles.paragraph-medium: duplicates typography profile "body-medium"'
+    ]);
+  });
+
+  it('accepts equal metrics when font role, weight, or tracking presence differs', () => {
+    const withoutTracking = createProfile();
+    delete (withoutTracking.scales as Partial<typeof withoutTracking.scales>).textLetterSpacing;
+
+    expect(
+      validateSchemaTypographyDefinitionContract({
+        profiles: {
+          'body-medium': withoutTracking,
+          'heading-medium': {
+            ...withoutTracking,
+            decorations: { ...withoutTracking.decorations, textFont: 'heading' }
+          },
+          'body-medium-strong': {
+            ...withoutTracking,
+            decorations: { ...withoutTracking.decorations, textWeight: 'semiBold' }
+          },
+          'body-medium-tracked': {
+            ...withoutTracking,
+            scales: { ...withoutTracking.scales, textLetterSpacing: 0 }
+          }
+        }
+      })
+    ).toEqual([]);
+  });
+
   it('accepts omitted, zero, negative, and positive letter spacing', () => {
     const withoutTracking = createProfile();
     delete (withoutTracking.scales as Partial<typeof withoutTracking.scales>).textLetterSpacing;

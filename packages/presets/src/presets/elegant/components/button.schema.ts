@@ -94,7 +94,7 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
       },
       e2: {
         name: 'button-text',
-        typography: { 's:md:1': 'button-label' },
+        typography: { 's:md:1': 'label-medium' },
         palettes: {
           default: {
             light: {

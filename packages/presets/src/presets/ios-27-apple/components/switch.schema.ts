@@ -512,7 +512,7 @@ export function createIos27AppleSwitchSchema({
               },
               e4: {
                 name: 'label',
-                typography: { 's:md:1': 'body' },
+                typography: { 's:md:1': 'body-medium' },
                 scales: {
                   marginLeft: {
                     's:md:1': 12

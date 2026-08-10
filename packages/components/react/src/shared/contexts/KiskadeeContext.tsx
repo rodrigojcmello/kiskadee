@@ -5,6 +5,7 @@ import type {
   ButtonIconPlacement,
   ButtonIconTreatment,
   ComponentClassNameMapJSON,
+  GlobalClassNameMapJSON,
   RadiusMode,
   SchemaFonts,
   SchemaIcons,
@@ -90,6 +91,7 @@ export type KiskadeeContextValue = {
   interactionEnvironment?: KiskadeeInteractionEnvironment;
   layoutEnvironment?: KiskadeeLayoutEnvironment;
   global?: {
+    classMap?: GlobalClassNameMapJSON;
     fonts?: SchemaFonts;
     icons?: SchemaIcons;
     radius?: RadiusMode;

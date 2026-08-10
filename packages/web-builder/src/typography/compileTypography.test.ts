@@ -1,6 +1,10 @@
 import { breakpoints, type ElementTypography, type SchemaTypography } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import { buildTypographyArtifact, createTypographyBuild } from './compileTypography.ts';
+import {
+  buildTextTypographyClassMap,
+  buildTypographyArtifact,
+  createTypographyBuild
+} from './compileTypography.ts';
 
 const typography = {
   profiles: {
@@ -170,11 +174,43 @@ describe('buildTypographyArtifact', () => {
     const artifact = buildTypographyArtifact(build, shortenMap);
 
     expect(Object.keys(artifact.profiles)).toEqual(['body-compact', 'body-regular', 'body-wide']);
+    expect(artifact.profiles['body-compact']?.bucket).toBe('x-body-compact');
     expect(artifact.profiles['body-compact']?.className).toBe('k-0 k-1 k-2 k-3 k-4');
     expect(artifact.usage).toEqual({
       'body-compact': [],
       'body-regular': [],
       'body-wide': []
     });
+    expect(buildTextTypographyClassMap(artifact)).toEqual({
+      e1: {
+        t: {
+          'x-body-compact': 'k-0 k-1 k-2 k-3 k-4',
+          'x-body-regular': 'k-0 k-5 k-6 k-7',
+          'x-body-wide': 'k-0 k-5 k-8 k-9 k-4'
+        }
+      }
+    });
+  });
+
+  it('rejects bucket collisions before publishing the Text class map', () => {
+    expect(() =>
+      buildTextTypographyClassMap({
+        profiles: {
+          first: {
+            decorations: { textFont: 'body', textWeight: 'normal' },
+            scales: { textSize: 14, textHeight: 20 },
+            bucket: 'same',
+            className: 'k-a'
+          },
+          second: {
+            decorations: { textFont: 'body', textWeight: 'normal' },
+            scales: { textSize: 16, textHeight: 24 },
+            bucket: 'same',
+            className: 'k-b'
+          }
+        },
+        usage: { first: [], second: [] }
+      })
+    ).toThrow('resolve to the same bucket "same"');
   });
 });

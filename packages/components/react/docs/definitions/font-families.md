@@ -42,6 +42,11 @@ Preparation is browser-only, concurrent across distinct families, and deduplicat
 transition keeps the last applied inline variables. `useFontFamilyStatus` exposes the transition
 status, a retry callback, and optional `familyResolutions` reported by successful integrations.
 
+The provider treats a resolved `prepare` callback as permission to apply the new role stack. A
+managed integration that needs an atomic visual switch must therefore wait for its renderable font
+faces, not only its stylesheet. Kiskadee Google integrations follow this rule and keep the previous
+selection visible until every declared weight is ready or the preparation fails.
+
 For example, the Fluent integration can report either local Segoe UI or online Open Sans as its
 resolved preparation policy. This result does not inspect which face rendered each glyph.
 

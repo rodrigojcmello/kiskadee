@@ -32,6 +32,18 @@ export const typographyProfileIdContractSchema = z
 const positiveFiniteNumberSchema = z.number().finite().positive();
 const finiteNumberSchema = z.number().finite();
 
+function getTypographyProfileIdentity(profile: TypographyProfile): string {
+  const { textLetterSpacing, textHeight, textSize } = profile.scales;
+
+  return JSON.stringify([
+    profile.decorations.textFont,
+    profile.decorations.textWeight,
+    textSize,
+    textHeight,
+    textLetterSpacing === undefined ? ['omitted'] : ['value', textLetterSpacing]
+  ]);
+}
+
 export const typographyProfileContractSchema = z
   .object({
     decorations: z
@@ -56,17 +68,32 @@ export const schemaTypographyContractSchema = z
       .record(z.string(), typographyProfileContractSchema)
       .refine((profiles) => Object.keys(profiles).length > 0, 'expected at least one profile')
       .superRefine((profiles, ctx) => {
+        const firstProfileIdByIdentity = new Map<string, string>();
+
         for (const profileId of Object.keys(profiles)) {
           const result = typographyProfileIdContractSchema.safeParse(profileId);
-          if (result.success) continue;
+          if (!result.success) {
+            for (const issue of result.error.issues) {
+              ctx.addIssue({
+                code: 'custom',
+                path: [profileId, ...issue.path],
+                message: issue.message
+              });
+            }
+          }
 
-          for (const issue of result.error.issues) {
+          const identity = getTypographyProfileIdentity(profiles[profileId]!);
+          const originalProfileId = firstProfileIdByIdentity.get(identity);
+          if (originalProfileId) {
             ctx.addIssue({
               code: 'custom',
-              path: [profileId, ...issue.path],
-              message: issue.message
+              path: [profileId],
+              message: `duplicates typography profile "${originalProfileId}"`
             });
+            continue;
           }
+
+          firstProfileIdByIdentity.set(identity, profileId);
         }
       })
   })

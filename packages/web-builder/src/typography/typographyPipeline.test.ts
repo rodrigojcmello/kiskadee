@@ -5,7 +5,7 @@ import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsag
 import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { generateCssSplit } from '../phase-4-convert-style-keys-to-css-rules/generateCssSplit.ts';
 import { generateClassNamesMapSplit } from '../phase-5-generate-class-names-map/generateClassNamesMap.ts';
-import { buildTypographyArtifact } from './compileTypography.ts';
+import { buildTextTypographyClassMap, buildTypographyArtifact } from './compileTypography.ts';
 
 const schema = {
   name: 'Typography pipeline',
@@ -73,6 +73,13 @@ describe('typography Web pipeline', () => {
     expect(css.coreCss).toContain('letter-spacing: 0.01em');
 
     const artifact = buildTypographyArtifact(typographyBuild, shortenMap);
+    const textClassMap = buildTextTypographyClassMap(artifact);
+    expect(textClassMap.e1.t).toEqual({
+      ls: artifact.profiles['label-small']?.className,
+      lm: artifact.profiles['label-medium']?.className,
+      hl: artifact.profiles['heading-large']?.className
+    });
+    expect(artifact.profiles['label-small']?.bucket).toBe('ls');
     expect(artifact.profiles['label-small']?.className.split(' ')).toEqual([
       shortenMap.textFont__body,
       shortenMap.textWeight__normal,

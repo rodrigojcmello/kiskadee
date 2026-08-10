@@ -20,6 +20,8 @@ export type TypographyArtifactUsage = {
 };
 
 export type TypographyArtifactProfile = TypographyProfile & {
+  /** Compact key used by the global Text class-map bucket. */
+  bucket: string;
   /** Space-separated atomic utility classes. This is not a composite CSS class. */
   className: string;
 };

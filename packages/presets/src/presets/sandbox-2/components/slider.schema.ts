@@ -618,7 +618,7 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e20: {
                 name: 'slider-optional-indicator',
-                typography: sandboxTypographyReferences.caption,
+                typography: sandboxTypographyReferences.optionalIndicator,
                 scales: {
                   marginLeft: layout.optionalIndicatorGap
                 },

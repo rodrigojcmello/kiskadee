@@ -14,14 +14,13 @@ const bodyMedium = (textSize: number, textHeight: number) =>
 
 export const ios27AppleTypography = {
   profiles: {
-    subheadline: bodyRegular(15, 20),
-    body: bodyRegular(17, 22),
-    'label-small': bodyMedium(13, 16),
+    'body-small': bodyRegular(15, 20),
+    'body-medium': bodyRegular(17, 22),
+    'label-small': bodyRegular(13, 16),
+    'label-small-strong': bodyMedium(13, 16),
     'label-medium': bodyMedium(17, 22),
     'tooltip-small': bodyMedium(11, 14),
     'tooltip-medium': bodyMedium(14, 18),
-    'label-small-regular': bodyRegular(13, 16),
-    'caption-strong': bodyMedium(12, 16),
-    'caption-strong-relaxed': bodyMedium(12, 22)
+    'caption-medium': bodyMedium(12, 16)
   }
 } as const satisfies SchemaTypography;

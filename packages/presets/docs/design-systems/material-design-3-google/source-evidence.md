@@ -27,18 +27,22 @@ Official typography reference:
 
 ## Typography Evidence
 
-The preset now publishes a reusable type catalog and component elements select its profiles by
+The preset publishes a reusable type catalog and component elements select its profiles by
 Kiskadee scale. Source-aligned profiles include Material's `label-medium`, `label-large`,
-`body-small`, `body-medium`, `body-large`, and `title-medium` metrics. The existing 24/32 and
-32/40 Button recipes retain weight 500 as `headline-small-strong` and
-`headline-large-strong`; the `strong` suffix makes that **Kiskadee adaptation** explicit instead
-of presenting the weight as the regular Material headline token.
+`body-small`, `body-medium`, and `body-large` metrics.
 
-The existing Tabs, bridge Tabs, compact supporting text, and floating-label recipes do not map
-one-to-one to a published Material ramp entry. They remain named component-semantic profiles and
-are classified as **Kiskadee extensions**. Repeated TextField label, input, and message slots now
-reuse the same catalog entries across modes. This migration preserves all previously authored
-font weights, sizes, and line heights and does not add letter spacing that was not already present.
+Button-only recipes are normalized as `label-extra-large`, `label-display-small`, and
+`label-display-large`. They remain **Kiskadee adaptations** of the existing 16/24, 24/32, and
+32/40 weight-500 output rather than claims that Material publishes those normalized labels.
+
+Tabs now reuse `label-medium` and `label-large`; Bridge Tabs reuse `label-extra-large`. TextField
+messages and floating labels reuse `body-small`. The former Tabs-only, compact supporting-text,
+and floating-label recipes were removed: a component does not receive a distinct global
+typography profile solely to preserve local geometry. Component alignment, padding, and height
+remain local to the component schema.
+
+This is a minimal normalization. A complete review of the current Material type ramp and its
+tracking values is **Deferred**.
 
 ## Component Evidence
 

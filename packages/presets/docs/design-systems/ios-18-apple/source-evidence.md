@@ -26,5 +26,6 @@ fallback.
 
 Apple defines Body as a system text style and identifies SF Pro as the iOS system family. The
 preset's existing Switch label uses the default 17/22 Regular recipe and now selects the reusable
-`body` profile. This is **Official adapted** for Web: the semantic role and metrics follow the
+`body-medium` profile. This is **Official adapted** for Web: the semantic role and metrics follow the
 Apple reference, while the preset uses the platform `system-ui` stack and does not embed SF Pro.
+A complete review of the wider Apple type ramp remains **Deferred**.

@@ -168,7 +168,7 @@ export function createIos27AppleSliderSchema({
               e2: {
                 name: 'slider-field-label',
                 typography: {
-                  's:sm:1': 'label-small',
+                  's:sm:1': 'label-small-strong',
                   's:md:1': 'label-medium'
                 },
                 palettes: textPalettes
@@ -176,7 +176,7 @@ export function createIos27AppleSliderSchema({
               e3: {
                 name: 'slider-value-summary',
                 typography: {
-                  's:sm:1': 'label-small',
+                  's:sm:1': 'label-small-strong',
                   's:md:1': 'label-medium'
                 },
                 scales: {
@@ -212,7 +212,7 @@ export function createIos27AppleSliderSchema({
               e7: {
                 name: 'slider-endpoint-label',
                 typography: {
-                  's:sm:1': 'label-small',
+                  's:sm:1': 'label-small-strong',
                   's:md:1': 'label-medium'
                 },
                 palettes: textPalettes
@@ -437,7 +437,7 @@ export function createIos27AppleSliderSchema({
               e16: {
                 name: 'slider-mark-label',
                 typography: {
-                  's:sm:1': 'label-small',
+                  's:sm:1': 'label-small-strong',
                   's:md:1': 'label-medium'
                 },
                 scales: {
@@ -449,8 +449,8 @@ export function createIos27AppleSliderSchema({
               e17: {
                 name: 'slider-helper-text',
                 typography: {
-                  's:sm:1': 'label-small-regular',
-                  's:md:1': 'body'
+                  's:sm:1': 'label-small',
+                  's:md:1': 'body-medium'
                 },
                 scales: {
                   marginTop: layout.helperOffset
@@ -505,8 +505,8 @@ export function createIos27AppleSliderSchema({
               e20: {
                 name: 'slider-optional-indicator',
                 typography: {
-                  's:sm:1': 'caption-strong',
-                  's:md:1': 'caption-strong-relaxed'
+                  's:sm:1': 'caption-medium',
+                  's:md:1': 'caption-medium'
                 },
                 scales: {
                   marginLeft: layout.optionalIndicatorGap

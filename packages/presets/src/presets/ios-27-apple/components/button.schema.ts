@@ -282,9 +282,9 @@ export function createIos27AppleButtonSchema({
       e2: {
         name: 'button-text',
         typography: {
-          's:sm:1': 'subheadline',
-          's:md:1': 'subheadline',
-          's:lg:1': 'body'
+          's:sm:1': 'body-small',
+          's:md:1': 'body-small',
+          's:lg:1': 'body-medium'
         },
         palettes: {
           default: {

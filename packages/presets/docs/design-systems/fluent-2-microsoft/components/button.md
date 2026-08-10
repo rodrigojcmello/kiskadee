@@ -76,12 +76,12 @@ The Web Builder then applies its standard one-pixel border compensation. The emi
 
 The label selects preset-wide typography profiles instead of declaring text primitives inline:
 
-| Kiskadee selection | Fluent profile | Weight | Status |
+| Kiskadee selection | Normalized profile | Weight | Status |
 | --- | --- | --- | --- |
-| `s:sm:1` | `caption-1` | Regular | Official exact |
-| `s:md:1` below `bp:lg:1` | `subtitle-2` | Semibold | Kiskadee responsive extension using an official ramp profile |
-| `s:md:1` from `bp:lg:1` | `body-1-strong` | Semibold | Official adapted |
-| `s:lg:1` | `subtitle-2` | Semibold | Official exact |
+| `s:sm:1` | `caption-medium` | body Regular | Official adapted |
+| `s:md:1` below `bp:lg:1` | `label-large` | body Semibold | Kiskadee extension preserving control-label font ownership |
+| `s:md:1` from `bp:lg:1` | `body-medium-strong` | body Semibold | Official adapted |
+| `s:lg:1` | `label-large` | body Semibold | Kiskadee extension preserving control-label font ownership |
 
 This closes the former shared-weight gap: Small no longer inherits the old element-wide Medium
 weight, while Medium and Large now use the official Semibold recipes.

@@ -303,7 +303,8 @@ export type EffectClassBucketJSON = string | EffectClassNamesBySizeJSON;
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
-  // d = decorations, e = effects (segregated), s = scales, w = width scales, c = colors (with hh/h/m/l/ll sub-fields), l = control states
+  // d = decorations, e = effects, s = scales, t = typography profiles, w = width scales,
+  // c = colors (with hh/h/m/l/ll sub-fields), l = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: effect buckets (each bucket is opt-in at component level).
@@ -320,6 +321,9 @@ export type ClassNameByElementJSON = {
   // s: values are pre-joined into a single space-separated string (no arrays) per size key.
   // For web payload optimization, keys are stored without the "s:" prefix (e.g. "s:md:1" -> "md:1", "s:all" -> "all").
   s?: Partial<Record<string, string>>;
+  // t: compact typography-profile bucket -> space-separated atomic utility classes.
+  // Text consumes this independently from component scale; no profile-specific CSS selector exists.
+  t?: Partial<Record<string, string>>;
   // w: width-only scales, kept separate so components can opt into fixed-width behavior.
   // Keys follow the same "s:" stripping as `s`.
   w?: Partial<Record<string, string>>;
@@ -350,6 +354,16 @@ export type ComponentClassNameMapJSON = Partial<
     | ComponentVariantModeClassNameMapJSON
   >
 >;
+
+export type TextClassNameMapJSON = {
+  e1: ClassNameByElementJSON & {
+    t: Record<string, string>;
+  };
+};
+
+export type GlobalClassNameMapJSON = {
+  text?: TextClassNameMapJSON;
+};
 
 export type ComponentClassNameMapSplitJSON = {
   core: ComponentClassNameMapJSON;

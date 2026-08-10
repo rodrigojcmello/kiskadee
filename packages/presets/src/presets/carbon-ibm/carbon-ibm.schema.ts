@@ -187,7 +187,7 @@ export const schema: Schema<Segments> = {
         },
         e2: {
           name: 'button-text',
-          typography: { 's:all': 'body-compact-01-strong' },
+          typography: { 's:all': 'body-medium-strong' },
           palettes: {
             default: {
               light: {

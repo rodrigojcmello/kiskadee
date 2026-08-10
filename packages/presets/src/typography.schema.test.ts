@@ -1,4 +1,4 @@
-import type { Schema, TypographyProfileId } from '@kiskadee/core';
+import { type Schema, type TypographyProfileId, typographyProfileBuckets } from '@kiskadee/core';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { describe, expect, it } from 'vitest';
 import { schema as carbonIbm } from './presets/carbon-ibm/carbon-ibm.schema.ts';
@@ -68,7 +68,7 @@ function collectTypographyReferences(components: Schema<string>['components']) {
 }
 
 describe('preset typography catalogs', () => {
-  it.each(schemas)('$prefix publishes a complete, referenced catalog', (schema) => {
+  it.each(schemas)('$prefix publishes a valid catalog with resolvable references', (schema) => {
     expect(() => validateSchemaTypographyContract(schema)).not.toThrow();
 
     const profiles = schema.global?.typography?.profiles;
@@ -77,10 +77,32 @@ describe('preset typography catalogs', () => {
     const profileIds = Object.keys(profiles ?? {});
     expect(profileIds.length).toBeGreaterThan(0);
     expect(profileIds.every((id) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id))).toBe(true);
+    expect(profileIds.every((id) => Object.hasOwn(typographyProfileBuckets, id))).toBe(true);
 
     const references = collectTypographyReferences(schema.components);
     expect(references.length).toBeGreaterThan(0);
-    expect(new Set(references)).toEqual(new Set(profileIds));
+    expect(references.every((reference) => profileIds.includes(reference))).toBe(true);
+    expect(profileIds.some((id) => id.includes('stronger'))).toBe(false);
+    expect(profileIds.some((id) => id.includes('compact') || id.includes('relaxed'))).toBe(false);
+  });
+
+  it('publishes the supported Fluent Web ramp and the body-owned Button label adaptation', () => {
+    expect(Object.keys(fluent2Microsoft.global?.typography?.profiles ?? {})).toEqual([
+      'caption-small',
+      'caption-small-strong',
+      'caption-medium',
+      'caption-medium-strong',
+      'body-medium',
+      'body-medium-strong',
+      'subtitle-small',
+      'subtitle-large',
+      'heading-small',
+      'heading-medium',
+      'heading-large',
+      'display-small',
+      'display-large',
+      'label-large'
+    ]);
   });
 
   it.each(

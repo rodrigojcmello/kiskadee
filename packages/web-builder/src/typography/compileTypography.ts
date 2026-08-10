@@ -5,11 +5,12 @@ import type {
   ElementAllSizeValue,
   ElementSizeValue,
   ElementTypography,
+  GlobalClassNameMapJSON,
   SchemaTypography,
   TypographyProfile,
   TypographyProfileId
 } from '@kiskadee/core';
-import { breakpointValues } from '@kiskadee/core';
+import { breakpointValues, resolveTypographyProfileBucket } from '@kiskadee/core';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { buildStyleKey } from '../utils/index.ts';
 import { normalizeCssNumber } from '../utils/normalizeCssNumber.ts';
@@ -344,6 +345,7 @@ export function buildTypographyArtifact(
     profiles[profileId] = {
       decorations: { ...profile.decorations },
       scales: { ...profile.scales },
+      bucket: resolveTypographyProfileBucket(profileId),
       className: Array.from(new Set(classes)).join(' ')
     };
   }
@@ -354,4 +356,31 @@ export function buildTypographyArtifact(
       Object.keys(build.profiles).map((profileId) => [profileId, build.usage[profileId] ?? []])
     )
   };
+}
+
+/**
+ * What
+ *     Builds the Text class-map bucket from compiled typography profile utilities.
+ * Why
+ *     Text needs profile lookup in the normal global artifact without adding CSS selectors.
+ */
+export function buildTextTypographyClassMap(
+  artifact: TypographyArtifact
+): NonNullable<GlobalClassNameMapJSON['text']> {
+  const profilesByBucket = new Map<string, TypographyProfileId>();
+  const t: Record<string, string> = {};
+
+  for (const [profileId, profile] of Object.entries(artifact.profiles)) {
+    const previousProfileId = profilesByBucket.get(profile.bucket);
+    if (previousProfileId && previousProfileId !== profileId) {
+      throw new Error(
+        `[web-builder] Typography profiles "${previousProfileId}" and "${profileId}" resolve to the same bucket "${profile.bucket}".`
+      );
+    }
+
+    profilesByBucket.set(profile.bucket, profileId);
+    t[profile.bucket] = profile.className;
+  }
+
+  return { e1: { t } };
 }
