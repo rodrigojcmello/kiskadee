@@ -37,10 +37,6 @@ if (!standaloneGeneratorVersionMatch) {
   failures.push(
     `Could not read the standalone generator version from ${path.relative(repositoryRoot, standaloneGeneratorSourcePath)}.`
   );
-} else if (standaloneGeneratorVersionMatch[1] !== packageVersion) {
-  failures.push(
-    `Package version ${packageVersion} does not match standalone generator version ${standaloneGeneratorVersionMatch[1]}.`
-  );
 }
 
 function collectMarkdownFiles(directory) {

@@ -739,6 +739,13 @@ not change the low-level scale algorithm, grid, profiles, or Balanced goldens.
 The standalone format is documented in
 [standalone-tonal-family.md](standalone-tonal-family.md).
 
+Generator `0.7.0` calibrates the Yellow-Red Orange/Brown appearance distance by
+weighting lightness by `2/3`. The sector boundaries and fixed prototypes remain
+unchanged; lighter muted Browns no longer become Orange solely because their
+tone lies closer to the Orange prototype. This changes the multifamily generator
+identity to `0.7.0`; the independent standalone artifact generator remains
+`0.6.0` because neither its bytes nor its verifier contract changed.
+
 Format V5 remains package-local until its neutral scales receive explicit
 visual approval. Preset Shared Viewer links, approved assets, and preset
 evidence therefore intentionally remain on their last approved generator

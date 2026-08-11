@@ -1,12 +1,13 @@
 {
   "kind": "ios-27-figma-color-variable-evidence",
-  "formatVersion": 1,
+  "formatVersion": 2,
   "source": {
     "name": "iOS and iPadOS 27 Community",
     "fileKey": "GeO2lMY65IAFczDmjs6oei",
-    "inspectedOn": "2026-07-20",
+    "inspectedOn": "2026-08-10",
     "collection": "Colors",
-    "modes": ["Light", "Dark"],
+    "collectionId": "VariableCollectionId:507:29161",
+    "modes": [{ "id": "404:0", "name": "Light" }, { "id": "404:1", "name": "Dark" }],
     "nodes": {
       "buttonPage": "507:24673",
       "colorsPage": "0:1746",
@@ -14,31 +15,241 @@
     }
   },
   "contract": {
-    "kind": "system-color-seeds",
-    "note": "Apple exposes appearance-aware system colors, not complete multi-stop tonal ramps."
+    "kind": "system-color-seeds-and-semantic-colors",
+    "colorVariableCount": 62,
+    "note": "Accents and Grays are source families. Remaining variables are semantic colors mapped to generated tones and alpha without becoming independent tonal families."
   },
   "accents": {
-    "Red": { "light": "#ff383c", "dark": "#ff4245" },
-    "Orange": { "light": "#ff8d28", "dark": "#ff9230" },
-    "Yellow": { "light": "#ffcc00", "dark": "#ffd600" },
-    "Green": { "light": "#34c759", "dark": "#30d158" },
-    "Mint": { "light": "#00c8b3", "dark": "#00dac3" },
-    "Teal": { "light": "#00c3d0", "dark": "#00d2e0" },
-    "Cyan": { "light": "#00c0e8", "dark": "#3cd3fe" },
-    "Blue": { "light": "#0088ff", "dark": "#0091ff" },
-    "Indigo": { "light": "#6155f5", "dark": "#6d7cff" },
-    "Purple": { "light": "#cb30e0", "dark": "#db34f2" },
-    "Pink": { "light": "#ff2d55", "dark": "#ff375f" },
-    "Brown": { "light": "#ac7f5e", "dark": "#b78a66" }
+    "Red": { "light": { "hex": "#ff383c", "alpha": 1 }, "dark": { "hex": "#ff4245", "alpha": 1 } },
+    "Orange": {
+      "light": { "hex": "#ff8d28", "alpha": 1 },
+      "dark": { "hex": "#ff9230", "alpha": 1 }
+    },
+    "Yellow": {
+      "light": { "hex": "#ffcc00", "alpha": 1 },
+      "dark": { "hex": "#ffd600", "alpha": 1 }
+    },
+    "Green": {
+      "light": { "hex": "#34c759", "alpha": 1 },
+      "dark": { "hex": "#30d158", "alpha": 1 }
+    },
+    "Mint": { "light": { "hex": "#00c8b3", "alpha": 1 }, "dark": { "hex": "#00dac3", "alpha": 1 } },
+    "Teal": { "light": { "hex": "#00c3d0", "alpha": 1 }, "dark": { "hex": "#00d2e0", "alpha": 1 } },
+    "Cyan": { "light": { "hex": "#00c0e8", "alpha": 1 }, "dark": { "hex": "#3cd3fe", "alpha": 1 } },
+    "Blue": { "light": { "hex": "#0088ff", "alpha": 1 }, "dark": { "hex": "#0091ff", "alpha": 1 } },
+    "Indigo": {
+      "light": { "hex": "#6155f5", "alpha": 1 },
+      "dark": { "hex": "#6d7cff", "alpha": 1 }
+    },
+    "Purple": {
+      "light": { "hex": "#cb30e0", "alpha": 1 },
+      "dark": { "hex": "#db34f2", "alpha": 1 }
+    },
+    "Pink": { "light": { "hex": "#ff2d55", "alpha": 1 }, "dark": { "hex": "#ff375f", "alpha": 1 } },
+    "Brown": { "light": { "hex": "#ac7f5e", "alpha": 1 }, "dark": { "hex": "#b78a66", "alpha": 1 } }
   },
   "grays": {
-    "Black": { "light": "#000000", "dark": "#000000" },
-    "White": { "light": "#ffffff", "dark": "#ffffff" },
-    "Gray": { "light": "#8e8e93", "dark": "#8e8e93" },
-    "Gray 2": { "light": "#aeaeb2", "dark": "#636366" },
-    "Gray 3": { "light": "#c7c7cc", "dark": "#48484a" },
-    "Gray 4": { "light": "#d1d1d6", "dark": "#3a3a3c" },
-    "Gray 5": { "light": "#e5e5ea", "dark": "#2c2c2e" },
-    "Gray 6": { "light": "#f2f2f7", "dark": "#1c1c1e" }
+    "Black": {
+      "light": { "hex": "#000000", "alpha": 1 },
+      "dark": { "hex": "#000000", "alpha": 1 }
+    },
+    "White": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#ffffff", "alpha": 1 }
+    },
+    "Gray": { "light": { "hex": "#8e8e93", "alpha": 1 }, "dark": { "hex": "#8e8e93", "alpha": 1 } },
+    "Gray 2": {
+      "light": { "hex": "#aeaeb2", "alpha": 1 },
+      "dark": { "hex": "#636366", "alpha": 1 }
+    },
+    "Gray 3": {
+      "light": { "hex": "#c7c7cc", "alpha": 1 },
+      "dark": { "hex": "#48484a", "alpha": 1 }
+    },
+    "Gray 4": {
+      "light": { "hex": "#d1d1d6", "alpha": 1 },
+      "dark": { "hex": "#3a3a3c", "alpha": 1 }
+    },
+    "Gray 5": {
+      "light": { "hex": "#e5e5ea", "alpha": 1 },
+      "dark": { "hex": "#2c2c2e", "alpha": 1 }
+    },
+    "Gray 6": {
+      "light": { "hex": "#f2f2f7", "alpha": 1 },
+      "dark": { "hex": "#1c1c1e", "alpha": 1 }
+    }
+  },
+  "semanticColors": {
+    "Backgrounds/Primary": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#000000", "alpha": 1 }
+    },
+    "Backgrounds/Secondary": {
+      "light": { "hex": "#f2f2f7", "alpha": 1 },
+      "dark": { "hex": "#1c1c1e", "alpha": 1 }
+    },
+    "Backgrounds/Tertiary": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#2c2c2e", "alpha": 1 }
+    },
+    "Backgrounds/Primary - Elevated": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#1c1c1e", "alpha": 1 }
+    },
+    "Backgrounds/Secondary - Elevated": {
+      "light": { "hex": "#f2f2f7", "alpha": 1 },
+      "dark": { "hex": "#2c2c2e", "alpha": 1 }
+    },
+    "Backgrounds/Tertiary - Elevated": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#3a3a3c", "alpha": 1 }
+    },
+    "Backgrounds (Grouped)/Primary": {
+      "light": { "hex": "#f2f2f7", "alpha": 1 },
+      "dark": { "hex": "#000000", "alpha": 1 }
+    },
+    "Backgrounds (Grouped)/Secondary": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#1c1c1e", "alpha": 1 }
+    },
+    "Backgrounds (Grouped)/Tertiary": {
+      "light": { "hex": "#f2f2f7", "alpha": 1 },
+      "dark": { "hex": "#2c2c2e", "alpha": 1 }
+    },
+    "Backgrounds (Grouped)/Primary - Elevated": {
+      "light": { "hex": "#f2f2f7", "alpha": 1 },
+      "dark": { "hex": "#1c1c1e", "alpha": 1 }
+    },
+    "Backgrounds (Grouped)/Secondary - Elevated": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#2c2c2e", "alpha": 1 }
+    },
+    "Backgrounds (Grouped)/Tertiary - Elevated": {
+      "light": { "hex": "#f2f2f7", "alpha": 1 },
+      "dark": { "hex": "#3a3a3c", "alpha": 1 }
+    },
+    "Fills/Primary": {
+      "light": { "hex": "#787878", "alpha": 0.2 },
+      "dark": { "hex": "#787880", "alpha": 0.36 }
+    },
+    "Fills/Secondary": {
+      "light": { "hex": "#787880", "alpha": 0.16 },
+      "dark": { "hex": "#787880", "alpha": 0.32 }
+    },
+    "Fills/Tertiary": {
+      "light": { "hex": "#767680", "alpha": 0.12 },
+      "dark": { "hex": "#767680", "alpha": 0.24 }
+    },
+    "Fills/Quaternary": {
+      "light": { "hex": "#747480", "alpha": 0.08 },
+      "dark": { "hex": "#767680", "alpha": 0.18 }
+    },
+    "Fills - Vibrant/Primary": {
+      "light": { "hex": "#cccccc", "alpha": 1 },
+      "dark": { "hex": "#333333", "alpha": 1 }
+    },
+    "Fills - Vibrant/Secondary": {
+      "light": { "hex": "#e0e0e0", "alpha": 1 },
+      "dark": { "hex": "#1f1f1f", "alpha": 1 }
+    },
+    "Fills - Vibrant/Tertiary": {
+      "light": { "hex": "#ededed", "alpha": 1 },
+      "dark": { "hex": "#121212", "alpha": 1 }
+    },
+    "Labels/Primary": {
+      "light": { "hex": "#000000", "alpha": 1 },
+      "dark": { "hex": "#ffffff", "alpha": 1 }
+    },
+    "Labels - Vibrant/Primary": {
+      "light": { "hex": "#1a1a1a", "alpha": 1 },
+      "dark": { "hex": "#f5f5f5", "alpha": 1 }
+    },
+    "Labels - Vibrant/Secondary": {
+      "light": { "hex": "#727272", "alpha": 1 },
+      "dark": { "hex": "#8a8a8a", "alpha": 1 }
+    },
+    "Labels - Vibrant/Tertiary": {
+      "light": { "hex": "#bfbfbf", "alpha": 1 },
+      "dark": { "hex": "#404040", "alpha": 1 }
+    },
+    "Labels - Vibrant/Quaternary": {
+      "light": { "hex": "#d9d9d9", "alpha": 1 },
+      "dark": { "hex": "#262626", "alpha": 1 }
+    },
+    "Labels/Secondary": {
+      "light": { "hex": "#3c3c43", "alpha": 0.6 },
+      "dark": { "hex": "#ebebf5", "alpha": 0.7 }
+    },
+    "Labels/Tertiary": {
+      "light": { "hex": "#3c3c43", "alpha": 0.3 },
+      "dark": { "hex": "#ebebf5", "alpha": 0.3 }
+    },
+    "Labels/Quaternary": {
+      "light": { "hex": "#3c3c43", "alpha": 0.18 },
+      "dark": { "hex": "#ebebf5", "alpha": 0.16 }
+    },
+    "Labels - Vibrant - Controls/Primary": {
+      "light": { "hex": "#1a1a1a", "alpha": 1 },
+      "dark": { "hex": "#f5f5f5", "alpha": 1 }
+    },
+    "Labels - Vibrant - Controls/Secondary": {
+      "light": { "hex": "#727272", "alpha": 1 },
+      "dark": { "hex": "#8a8a8a", "alpha": 1 }
+    },
+    "Labels - Vibrant - Controls/Tertiary": {
+      "light": { "hex": "#bfbfbf", "alpha": 1 },
+      "dark": { "hex": "#404040", "alpha": 1 }
+    },
+    "Overlays/Default": {
+      "light": { "hex": "#000000", "alpha": 0.2 },
+      "dark": { "hex": "#000000", "alpha": 0.48 }
+    },
+    "Overlays/Activity View Controller": {
+      "light": { "hex": "#000000", "alpha": 0.2 },
+      "dark": { "hex": "#000000", "alpha": 0.29 }
+    },
+    "Separators/Opaque": {
+      "light": { "hex": "#c6c6c8", "alpha": 1 },
+      "dark": { "hex": "#38383a", "alpha": 1 }
+    },
+    "Miscellaneous/Buttons/BG - Destructive": {
+      "light": { "hex": "#ff383c", "alpha": 0.14 },
+      "dark": { "hex": "#ff4245", "alpha": 0.14 }
+    },
+    "Miscellaneous/Keyboards/Emoji + Mic": {
+      "light": { "hex": "#000000", "alpha": 1 },
+      "dark": { "hex": "#ffffff", "alpha": 1 }
+    },
+    "Miscellaneous/Segmented Control - Selected Fill": {
+      "light": { "hex": "#ffffff", "alpha": 1 },
+      "dark": { "hex": "#ffffff", "alpha": 0.27 }
+    },
+    "Miscellaneous/Tab Bar Selection": {
+      "light": { "alias": "Accents/Blue", "resolved": { "hex": "#0088ff", "alpha": 1 } },
+      "dark": { "hex": "#ffffff", "alpha": 1 }
+    },
+    "Miscellaneous/Toggle/AX Label - Off": {
+      "light": { "hex": "#b3b3b3", "alpha": 1 },
+      "dark": { "hex": "#a6a6a6", "alpha": 1 }
+    },
+    "Miscellaneous/Sidebar/Sidebar - BG - Active": {
+      "light": { "hex": "#dae6f2", "alpha": 1 },
+      "dark": { "hex": "#141517", "alpha": 1 }
+    },
+    "Miscellaneous/Sidebar/Sidebar - BG - Inactive": {
+      "light": { "hex": "#edf4fa", "alpha": 1 },
+      "dark": { "hex": "#131414", "alpha": 1 }
+    },
+    "Separators/Non-opaque": {
+      "light": { "hex": "#000000", "alpha": 0.12 },
+      "dark": { "hex": "#ffffff", "alpha": 0.17 }
+    },
+    "Separators/Vibrant": {
+      "light": { "hex": "#e6e6e6", "alpha": 1 },
+      "dark": { "hex": "#1a1a1a", "alpha": 1 }
+    }
+  },
+  "nonColorVariables": {
+    "Mode": { "light": "Light", "dark": "Dark" }
   }
 }

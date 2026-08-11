@@ -1258,6 +1258,26 @@ describe('generateKiskadeeTonalSystem v5', () => {
     expect(replay.families).toEqual(result.families);
   });
 
+  it('accepts Apple Brown as the authored yr.brown.v1 family', () => {
+    const recipe = createRecipe();
+    recipe.overrides = [
+      {
+        id: 'yr.brown.v1',
+        seedHex: '#ac7f5e',
+        policies: { light: 'source-exact', dark: 'adaptive' }
+      }
+    ];
+
+    const result = generateKiskadeeTonalSystem(recipe);
+    expectResolved(result);
+
+    expect(resolveFamily(result, 'yr.brown.v1')).toMatchObject({
+      sourceSeedHex: '#ac7f5e',
+      seedOrigin: 'override'
+    });
+    expect(result.families.some(({ id }) => id === 'yr.orange.v2')).toBe(false);
+  });
+
   it('supports core overrides and explicit extra variants', () => {
     const recipe = createRecipe();
     recipe.overrides = [

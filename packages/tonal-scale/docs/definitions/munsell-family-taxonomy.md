@@ -137,16 +137,25 @@ reliable. Chroma from `0.005` through `0.02` is classifiable but requires review
 
 The primary sector is classified automatically from the normalized primary
 hex. Its appearance defaults to the canonical natural name for that sector and
-its variant defaults to `v1`. Within Yellow-Red, the seed is compared
-perceptually with the frozen Orange `#ca5010` and Brown `#8e562e` prototypes;
-the closer appearance proposes `orange` or `brown`. Authors may correct the
-appearance within the classified sector and select `v1` through `v4`. Export
-locks the resolved three-axis family id.
+its variant defaults to `v1`. Within Yellow-Red, the seed is compared with the
+frozen Orange `#ca5010` and Brown `#8e562e` prototypes. The calibrated
+appearance distance retains the complete OKLab chromatic plane and weights
+lightness by `2/3`; this prevents the tone of a lighter, muted Brown from
+dominating its hue and chroma identity. The closer appearance proposes
+`orange` or `brown`. Authors may correct the appearance within the classified
+sector and select `v1` through `v4`. Export locks the resolved three-axis
+family id.
 
 The prototypes are perceptual comparison references, not exceptions to the
 frozen sector boundaries. Sector classification always runs first. The
 calibrated red/yellow-red boundary classifies the Orange prototype `#ca5010`
 inside yellow-red without requiring a special-case identity override.
+
+The appearance weighting is calibrated against the official iOS 27 Orange
+(`#ff8d28` Light, `#ff9230` Dark) and Brown (`#ac7f5e` Light, `#b78a66` Dark)
+system colors. Both Browns resolve to `yr.brown`, both Oranges resolve to
+`yr.orange`, and the canonical prototypes retain their own identities. This is
+a general Yellow-Red appearance calibration, not a literal-color exception.
 
 Brown uses the fixed `yr.brown.v1` reference and the same shared Light and
 Dark rest positions as every other family. Its target gamut utilization is

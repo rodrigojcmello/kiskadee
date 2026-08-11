@@ -20,8 +20,9 @@ This directory records official source evidence and preset-level decisions for
 
 ## Source Notes
 
-- The Figma file exposes a centralized `Colors` collection. Apple supplies appearance-aware system
-  colors, not complete multi-stop ramps.
+- The Figma file exposes a centralized `Colors` collection with 62 color variables and one
+  non-color mode variable. Apple supplies appearance-aware system colors, not complete multi-stop
+  ramps.
 - The non-glass Button Content Area and Liquid Glass Buttons are separate component sets. This
   distinction lets the preset implement the conventional Button without implying Liquid Glass
   support.
@@ -32,7 +33,7 @@ This directory records official source evidence and preset-level decisions for
 
 | Source area | Evidence | Status | Notes |
 | --- | --- | --- | --- |
-| Central color variables | `Colors`, nodes `0:1746` and `5707:28659` | Official exact | Exact Light/Dark values preserved in JSON. |
+| Central color variables | `Colors`, nodes `0:1746` and `5707:28659` | Official exact | All 12 Accents, 8 Grays, and 42 semantic Light/Dark colors are preserved in JSON. |
 | Button Content Area | component set `40:58696` | Official adapted | Styles, enabled/disabled, destructive, content forms, and three sizes inspected. |
 | Light Button examples | node `2539:14600` | Official adapted | Conventional Light appearances inspected. |
 | Dark Button examples | node `2666:16141` | Official adapted | Conventional Dark appearances inspected. |
@@ -45,13 +46,18 @@ This directory records official source evidence and preset-level decisions for
 - [`colors/figma-color-variables.json`](colors/figma-color-variables.json) preserves the official
   Apple Accent and Gray source values.
 - [`colors/figma-to-kiskadee.json`](colors/figma-to-kiskadee.json) records the perceptual de-para
-  from those values to generated Kiskadee tones.
+  from the previously approved Accent and Gray values to generated Kiskadee tones.
+- [`colors/figma-to-kiskadee.candidate.json`](colors/figma-to-kiskadee.candidate.json) records the
+  complete current candidate mapping for all 62 Figma color variables without replacing the
+  approved bundle.
 - [`colors/generated/`](colors/generated/) is the reproducible
   `@kiskadee/tonal-scale@0.4.1` bundle referenced by the Shared Viewer.
 - Thirteen source-backed assets are approved and promoted into the preset: Blue, Mint, Teal, Cyan,
   Green, Black, Purple, Indigo, Red, Pink, Yellow, Orange, and Apple Brown.
-- Three harmony-generated companions remain evidence-only: Lime (`gy.lime.v1`), Magenta
-  (`rp.magenta.v1`), and canonical Brown (`yr.brown.v1`).
+- The approved `0.4.1` bundle retains three harmony-generated evidence-only companions: Lime
+  (`gy.lime.v1`), Magenta (`rp.magenta.v1`), and canonical Brown (`yr.brown.v1`). In the current
+  `0.7.0` candidate, Apple Brown occupies `yr.brown.v1`, leaving only Lime and Magenta as
+  source-unbacked companions.
 - The generated bundle's diagnostic status remains `review`. Asset promotion is an explicit preset
   decision and does not rewrite the generator's original diagnostic provenance.
 

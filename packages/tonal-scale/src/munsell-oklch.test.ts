@@ -14,6 +14,7 @@ import {
   MUNSELL_OKLCH_SECTOR_DEFINITIONS,
   MUNSELL_OKLCH_SECTOR_ORDER,
   MUNSELL_OKLCH_SIGNATURE_TRANSFER,
+  MUNSELL_YELLOW_RED_APPEARANCE_LIGHTNESS_WEIGHT,
   MUNSELL_YELLOW_RED_PROTOTYPES,
   projectMunsellHue,
   suggestYellowRedAppearance
@@ -196,6 +197,7 @@ describe('Munsell OKLCH projection', () => {
   });
 
   it('keeps Orange and Brown as deterministic yellow-red appearance prototypes', () => {
+    expect(MUNSELL_YELLOW_RED_APPEARANCE_LIGHTNESS_WEIGHT).toBeCloseTo(2 / 3, 12);
     expect(MUNSELL_YELLOW_RED_PROTOTYPES).toEqual({
       orange: { hex: '#ca5010' },
       brown: { hex: '#8e562e' }
@@ -213,5 +215,21 @@ describe('Munsell OKLCH projection', () => {
       inputSector: 'yellow-red',
       appearance: 'orange'
     });
+  });
+
+  it('recognizes Apple system Browns without reclassifying Apple system Oranges', () => {
+    for (const brown of ['#ac7f5e', '#b78a66']) {
+      expect(suggestYellowRedAppearance(brown)).toMatchObject({
+        inputSector: 'yellow-red',
+        appearance: 'brown'
+      });
+    }
+
+    for (const orange of ['#ff8d28', '#ff9230']) {
+      expect(suggestYellowRedAppearance(orange)).toMatchObject({
+        inputSector: 'yellow-red',
+        appearance: 'orange'
+      });
+    }
   });
 });

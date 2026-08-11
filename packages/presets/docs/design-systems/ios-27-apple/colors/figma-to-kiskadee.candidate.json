@@ -1,0 +1,2022 @@
+{
+  "kind": "ios-27-figma-to-kiskadee-tonal-candidate",
+  "formatVersion": 1,
+  "status": "candidate",
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "packageVersion": "0.7.0",
+    "artifactVersion": "0.7.0"
+  },
+  "sourceEvidence": "./figma-color-variables.json",
+  "recipe": "./tonal-system.recipe.json",
+  "methodology": {
+    "colorSpace": "OKLab",
+    "distanceMetric": "Delta E OK",
+    "selection": "Nearest generated tone independently for Light and Dark",
+    "alpha": "Preserved from the Figma variable and excluded from color-distance comparison",
+    "semanticPolicy": [
+      "Accents retain their authored family identity.",
+      "Apple Grays and neutral semantic colors map to the authored n.black.v2 family.",
+      "Figma aliases retain their target family.",
+      "Opaque Sidebar colors without aliases select the nearest source-backed family and remain candidate mappings."
+    ]
+  },
+  "tonalSystem": {
+    "formatVersion": 5,
+    "tonalProfile": "balanced",
+    "primaryReference": "b.blue.v1",
+    "tonalAnchors": {
+      "rest": {
+        "dark": 65,
+        "light": 28
+      }
+    },
+    "sourceSha256": "4f3098ef1699660fc9b269679ac48fec925d44521c35051dcda00bb6c7aca96c",
+    "recipe": {
+      "formatVersion": 5,
+      "functionalReferences": [
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "b.blue.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 28
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 5
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "bg.teal.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 20
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 5
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "bg.teal.v2",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 20
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 5
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "bg.teal.v3",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 20
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "g.green.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 20
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "harmony-rest",
+              "tone": 65
+            }
+          },
+          "id": "gy.lime.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "harmony-rest",
+              "tone": 28
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 5
+            },
+            "vivid": {
+              "source": "contrast-mirror",
+              "tone": 99
+            }
+          },
+          "id": "n.black.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 99
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 5
+            },
+            "vivid": {
+              "source": "contrast-mirror",
+              "tone": 95
+            }
+          },
+          "id": "n.black.v2",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 90
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 3
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "p.purple.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 30
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 2
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "pb.indigo.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 40
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 3
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "r.red.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 26
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 3
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "r.red.v2",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 28
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 3
+            },
+            "vivid": {
+              "source": "harmony-rest",
+              "tone": 65
+            }
+          },
+          "id": "rp.magenta.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "harmony-rest",
+              "tone": 28
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "y.yellow.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 10
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "yr.brown.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 28
+            }
+          }
+        },
+        {
+          "dark": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 65
+            }
+          },
+          "id": "yr.orange.v1",
+          "light": {
+            "subtle": {
+              "source": "surface-relative",
+              "tone": 4
+            },
+            "vivid": {
+              "source": "generated-anchor",
+              "tone": 18
+            }
+          }
+        }
+      ],
+      "gridContract": "kiskadee-tonal-v1",
+      "harmonyContract": "kiskadee-munsell-rest-v1",
+      "overrides": [
+        {
+          "id": "bg.teal.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#00c8b3"
+        },
+        {
+          "id": "bg.teal.v2",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#00c3d0"
+        },
+        {
+          "id": "bg.teal.v3",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#00c0e8"
+        },
+        {
+          "id": "g.green.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#34c759"
+        },
+        {
+          "id": "n.black.v2",
+          "policies": {
+            "dark": "source-exact",
+            "light": "source-exact"
+          },
+          "seedHex": "#1c1c1e"
+        },
+        {
+          "id": "p.purple.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#cb30e0"
+        },
+        {
+          "id": "pb.indigo.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#6155f5"
+        },
+        {
+          "id": "r.red.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#ff383c"
+        },
+        {
+          "id": "r.red.v2",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#ff2d55"
+        },
+        {
+          "id": "y.yellow.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#ffcc00"
+        },
+        {
+          "id": "yr.brown.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#ac7f5e"
+        },
+        {
+          "id": "yr.orange.v1",
+          "policies": {
+            "dark": "adaptive",
+            "light": "source-exact"
+          },
+          "seedHex": "#ff8d28"
+        }
+      ],
+      "primary": {
+        "id": "b.blue.v1",
+        "policies": {
+          "dark": "adaptive",
+          "light": "source-exact"
+        },
+        "seedHex": "#0088ff"
+      },
+      "tonalAnchors": {
+        "rest": {
+          "dark": 65,
+          "light": 28,
+          "mode": "locked"
+        }
+      },
+      "tonalProfile": "balanced"
+    }
+  },
+  "mappings": {
+    "accents": {
+      "Red": {
+        "sourceVariable": "Accents/Red",
+        "familyId": "r.red.v1",
+        "light": {
+          "sourceHex": "#ff383c",
+          "alpha": 1,
+          "familyId": "r.red.v1",
+          "token": "L26",
+          "tone": 26,
+          "hex": "#ff383c",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#ff4245",
+          "alpha": 1,
+          "familyId": "r.red.v1",
+          "token": "D65",
+          "tone": 65,
+          "hex": "#e85752",
+          "deltaE": 0.045893,
+          "exact": false
+        }
+      },
+      "Orange": {
+        "sourceVariable": "Accents/Orange",
+        "familyId": "yr.orange.v1",
+        "light": {
+          "sourceHex": "#ff8d28",
+          "alpha": 1,
+          "familyId": "yr.orange.v1",
+          "token": "L18",
+          "tone": 18,
+          "hex": "#ff8d28",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#ff9230",
+          "alpha": 1,
+          "familyId": "yr.orange.v1",
+          "token": "D80",
+          "tone": 80,
+          "hex": "#f69d5b",
+          "deltaE": 0.03493,
+          "exact": false
+        }
+      },
+      "Yellow": {
+        "sourceVariable": "Accents/Yellow",
+        "familyId": "y.yellow.v1",
+        "light": {
+          "sourceHex": "#ffcc00",
+          "alpha": 1,
+          "familyId": "y.yellow.v1",
+          "token": "L10",
+          "tone": 10,
+          "hex": "#ffcc00",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#ffd600",
+          "alpha": 1,
+          "familyId": "y.yellow.v1",
+          "token": "D85",
+          "tone": 85,
+          "hex": "#dfc378",
+          "deltaE": 0.102388,
+          "exact": false
+        }
+      },
+      "Green": {
+        "sourceVariable": "Accents/Green",
+        "familyId": "g.green.v1",
+        "light": {
+          "sourceHex": "#34c759",
+          "alpha": 1,
+          "familyId": "g.green.v1",
+          "token": "L20",
+          "tone": 20,
+          "hex": "#34c759",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#30d158",
+          "alpha": 1,
+          "familyId": "g.green.v1",
+          "token": "D80",
+          "tone": 80,
+          "hex": "#64cd76",
+          "deltaE": 0.052042,
+          "exact": false
+        }
+      },
+      "Mint": {
+        "sourceVariable": "Accents/Mint",
+        "familyId": "bg.teal.v1",
+        "light": {
+          "sourceHex": "#00c8b3",
+          "alpha": 1,
+          "familyId": "bg.teal.v1",
+          "token": "L20",
+          "tone": 20,
+          "hex": "#00c8b3",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#00dac3",
+          "alpha": 1,
+          "familyId": "bg.teal.v1",
+          "token": "D80",
+          "tone": 80,
+          "hex": "#64c7b7",
+          "deltaE": 0.056217,
+          "exact": false
+        }
+      },
+      "Teal": {
+        "sourceVariable": "Accents/Teal",
+        "familyId": "bg.teal.v2",
+        "light": {
+          "sourceHex": "#00c3d0",
+          "alpha": 1,
+          "familyId": "bg.teal.v2",
+          "token": "L20",
+          "tone": 20,
+          "hex": "#00c3d0",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#00d2e0",
+          "alpha": 1,
+          "familyId": "bg.teal.v2",
+          "token": "D80",
+          "tone": 80,
+          "hex": "#64c5ce",
+          "deltaE": 0.046101,
+          "exact": false
+        }
+      },
+      "Cyan": {
+        "sourceVariable": "Accents/Cyan",
+        "familyId": "bg.teal.v3",
+        "light": {
+          "sourceHex": "#00c0e8",
+          "alpha": 1,
+          "familyId": "bg.teal.v3",
+          "token": "L20",
+          "tone": 20,
+          "hex": "#00c0e8",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#3cd3fe",
+          "alpha": 1,
+          "familyId": "bg.teal.v3",
+          "token": "D85",
+          "tone": 85,
+          "hex": "#80d2ec",
+          "deltaE": 0.048984,
+          "exact": false
+        }
+      },
+      "Blue": {
+        "sourceVariable": "Accents/Blue",
+        "familyId": "b.blue.v1",
+        "light": {
+          "sourceHex": "#0088ff",
+          "alpha": 1,
+          "familyId": "b.blue.v1",
+          "token": "L28",
+          "tone": 28,
+          "hex": "#0088ff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#0091ff",
+          "alpha": 1,
+          "familyId": "b.blue.v1",
+          "token": "D70",
+          "tone": 70,
+          "hex": "#2e92ff",
+          "deltaE": 0.013637,
+          "exact": false
+        }
+      },
+      "Indigo": {
+        "sourceVariable": "Accents/Indigo",
+        "familyId": "pb.indigo.v1",
+        "light": {
+          "sourceHex": "#6155f5",
+          "alpha": 1,
+          "familyId": "pb.indigo.v1",
+          "token": "L40",
+          "tone": 40,
+          "hex": "#6155f5",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#6d7cff",
+          "alpha": 1,
+          "familyId": "pb.indigo.v1",
+          "token": "D65",
+          "tone": 65,
+          "hex": "#797bf7",
+          "deltaE": 0.019249,
+          "exact": false
+        }
+      },
+      "Purple": {
+        "sourceVariable": "Accents/Purple",
+        "familyId": "p.purple.v1",
+        "light": {
+          "sourceHex": "#cb30e0",
+          "alpha": 1,
+          "familyId": "p.purple.v1",
+          "token": "L30",
+          "tone": 30,
+          "hex": "#cb30e0",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#db34f2",
+          "alpha": 1,
+          "familyId": "p.purple.v1",
+          "token": "D65",
+          "tone": 65,
+          "hex": "#c162ce",
+          "deltaE": 0.098051,
+          "exact": false
+        }
+      },
+      "Pink": {
+        "sourceVariable": "Accents/Pink",
+        "familyId": "r.red.v2",
+        "light": {
+          "sourceHex": "#ff2d55",
+          "alpha": 1,
+          "familyId": "r.red.v2",
+          "token": "L28",
+          "tone": 28,
+          "hex": "#ff2d55",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#ff375f",
+          "alpha": 1,
+          "familyId": "r.red.v2",
+          "token": "D65",
+          "tone": 65,
+          "hex": "#ec5967",
+          "deltaE": 0.051038,
+          "exact": false
+        }
+      },
+      "Brown": {
+        "sourceVariable": "Accents/Brown",
+        "familyId": "yr.brown.v1",
+        "light": {
+          "sourceHex": "#ac7f5e",
+          "alpha": 1,
+          "familyId": "yr.brown.v1",
+          "token": "L28",
+          "tone": 28,
+          "hex": "#ac7f5e",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#b78a66",
+          "alpha": 1,
+          "familyId": "yr.brown.v1",
+          "token": "D70",
+          "tone": 70,
+          "hex": "#b48867",
+          "deltaE": 0.007997,
+          "exact": false
+        }
+      }
+    },
+    "grays": {
+      "Black": {
+        "sourceVariable": "Grays/Black",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#000000",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L100",
+          "tone": 100,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#000000",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D0",
+          "tone": 0,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "White": {
+        "sourceVariable": "Grays/White",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D100",
+          "tone": 100,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Gray": {
+        "sourceVariable": "Grays/Gray",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#8e8e93",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L28",
+          "tone": 28,
+          "hex": "#8b8c8e",
+          "deltaE": 0.00958,
+          "exact": false
+        },
+        "dark": {
+          "sourceHex": "#8e8e93",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D70",
+          "tone": 70,
+          "hex": "#919194",
+          "deltaE": 0.009745,
+          "exact": false
+        }
+      },
+      "Gray 2": {
+        "sourceVariable": "Grays/Gray 2",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#aeaeb2",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L18",
+          "tone": 18,
+          "hex": "#b2b2b5",
+          "deltaE": 0.012524,
+          "exact": false
+        },
+        "dark": {
+          "sourceHex": "#636366",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D40",
+          "tone": 40,
+          "hex": "#616163",
+          "deltaE": 0.007585,
+          "exact": false
+        }
+      },
+      "Gray 3": {
+        "sourceVariable": "Grays/Gray 3",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#c7c7cc",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L12",
+          "tone": 12,
+          "hex": "#cacacd",
+          "deltaE": 0.009165,
+          "exact": false
+        },
+        "dark": {
+          "sourceHex": "#48484a",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D26",
+          "tone": 26,
+          "hex": "#47474a",
+          "deltaE": 0.003765,
+          "exact": false
+        }
+      },
+      "Gray 4": {
+        "sourceVariable": "Grays/Gray 4",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#d1d1d6",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L10",
+          "tone": 10,
+          "hex": "#d1d1d4",
+          "deltaE": 0.002799,
+          "exact": false
+        },
+        "dark": {
+          "sourceHex": "#3a3a3c",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D18",
+          "tone": 18,
+          "hex": "#3b3b3e",
+          "deltaE": 0.004569,
+          "exact": false
+        }
+      },
+      "Gray 5": {
+        "sourceVariable": "Grays/Gray 5",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#e5e5ea",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L6",
+          "tone": 6,
+          "hex": "#e4e4e7",
+          "deltaE": 0.004503,
+          "exact": false
+        },
+        "dark": {
+          "sourceHex": "#2c2c2e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D10",
+          "tone": 10,
+          "hex": "#2c2c2e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Gray 6": {
+        "sourceVariable": "Grays/Gray 6",
+        "familyId": "n.black.v2",
+        "light": {
+          "sourceHex": "#f2f2f7",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#f2f2f4",
+          "deltaE": 0.004082,
+          "exact": false
+        },
+        "dark": {
+          "sourceHex": "#1c1c1e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D5",
+          "tone": 5,
+          "hex": "#1c1c1e",
+          "deltaE": 0,
+          "exact": true
+        }
+      }
+    },
+    "semanticColors": {
+      "Backgrounds/Primary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D0",
+          "tone": 0,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds/Secondary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f2f2f7",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#f2f2f4",
+          "deltaE": 0.004082,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1c1c1e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D5",
+          "tone": 5,
+          "hex": "#1c1c1e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds/Tertiary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#2c2c2e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D10",
+          "tone": 10,
+          "hex": "#2c2c2e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds/Primary - Elevated": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1c1c1e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D5",
+          "tone": 5,
+          "hex": "#1c1c1e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds/Secondary - Elevated": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f2f2f7",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#f2f2f4",
+          "deltaE": 0.004082,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#2c2c2e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D10",
+          "tone": 10,
+          "hex": "#2c2c2e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds/Tertiary - Elevated": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#3a3a3c",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D18",
+          "tone": 18,
+          "hex": "#3b3b3e",
+          "deltaE": 0.004569,
+          "exact": false
+        }
+      },
+      "Backgrounds (Grouped)/Primary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f2f2f7",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#f2f2f4",
+          "deltaE": 0.004082,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D0",
+          "tone": 0,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds (Grouped)/Secondary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1c1c1e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D5",
+          "tone": 5,
+          "hex": "#1c1c1e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds (Grouped)/Tertiary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f2f2f7",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#f2f2f4",
+          "deltaE": 0.004082,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#2c2c2e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D10",
+          "tone": 10,
+          "hex": "#2c2c2e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds (Grouped)/Primary - Elevated": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f2f2f7",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#f2f2f4",
+          "deltaE": 0.004082,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1c1c1e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D5",
+          "tone": 5,
+          "hex": "#1c1c1e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds (Grouped)/Secondary - Elevated": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#2c2c2e",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D10",
+          "tone": 10,
+          "hex": "#2c2c2e",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Backgrounds (Grouped)/Tertiary - Elevated": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f2f2f7",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#f2f2f4",
+          "deltaE": 0.004082,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#3a3a3c",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D18",
+          "tone": 18,
+          "hex": "#3b3b3e",
+          "deltaE": 0.004569,
+          "exact": false
+        }
+      },
+      "Fills/Primary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#787878",
+          "alpha": 0.2,
+          "familyId": "n.black.v2",
+          "token": "L35",
+          "tone": 35,
+          "hex": "#7b7b7e",
+          "deltaE": 0.012078,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#787880",
+          "alpha": 0.36,
+          "familyId": "n.black.v2",
+          "token": "D55",
+          "tone": 55,
+          "hex": "#7a7a7c",
+          "deltaE": 0.010313,
+          "exact": false
+        }
+      },
+      "Fills/Secondary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#787880",
+          "alpha": 0.16,
+          "familyId": "n.black.v2",
+          "token": "L35",
+          "tone": 35,
+          "hex": "#7b7b7e",
+          "deltaE": 0.011448,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#787880",
+          "alpha": 0.32,
+          "familyId": "n.black.v2",
+          "token": "D55",
+          "tone": 55,
+          "hex": "#7a7a7c",
+          "deltaE": 0.010313,
+          "exact": false
+        }
+      },
+      "Fills/Tertiary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#767680",
+          "alpha": 0.12,
+          "familyId": "n.black.v2",
+          "token": "L40",
+          "tone": 40,
+          "hex": "#737375",
+          "deltaE": 0.017827,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#767680",
+          "alpha": 0.24,
+          "familyId": "n.black.v2",
+          "token": "D55",
+          "tone": 55,
+          "hex": "#7a7a7c",
+          "deltaE": 0.016407,
+          "exact": false
+        }
+      },
+      "Fills/Quaternary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#747480",
+          "alpha": 0.08,
+          "familyId": "n.black.v2",
+          "token": "L40",
+          "tone": 40,
+          "hex": "#737375",
+          "deltaE": 0.016767,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#767680",
+          "alpha": 0.18,
+          "familyId": "n.black.v2",
+          "token": "D55",
+          "tone": 55,
+          "hex": "#7a7a7c",
+          "deltaE": 0.016407,
+          "exact": false
+        }
+      },
+      "Fills - Vibrant/Primary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#cccccc",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L12",
+          "tone": 12,
+          "hex": "#cacacd",
+          "deltaE": 0.006739,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#333333",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D14",
+          "tone": 14,
+          "hex": "#353537",
+          "deltaE": 0.0093,
+          "exact": false
+        }
+      },
+      "Fills - Vibrant/Secondary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#e0e0e0",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L7",
+          "tone": 7,
+          "hex": "#e0e0e3",
+          "deltaE": 0.004136,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1f1f1f",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D6",
+          "tone": 6,
+          "hex": "#202022",
+          "deltaE": 0.006297,
+          "exact": false
+        }
+      },
+      "Fills - Vibrant/Tertiary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ededed",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L4",
+          "tone": 4,
+          "hex": "#ededf0",
+          "deltaE": 0.004092,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#121212",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D3",
+          "tone": 3,
+          "hex": "#131315",
+          "deltaE": 0.006742,
+          "exact": false
+        }
+      },
+      "Labels/Primary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L100",
+          "tone": 100,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D100",
+          "tone": 100,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Labels - Vibrant/Primary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1a1a1a",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L90",
+          "tone": 90,
+          "hex": "#1c1c1e",
+          "deltaE": 0.010235,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f5f5f5",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D99",
+          "tone": 99,
+          "hex": "#fbfbfc",
+          "deltaE": 0.018264,
+          "exact": false
+        }
+      },
+      "Labels - Vibrant/Secondary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#727272",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L40",
+          "tone": 40,
+          "hex": "#737375",
+          "deltaE": 0.005107,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#8a8a8a",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D65",
+          "tone": 65,
+          "hex": "#89898c",
+          "deltaE": 0.005035,
+          "exact": false
+        }
+      },
+      "Labels - Vibrant/Tertiary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#bfbfbf",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L14",
+          "tone": 14,
+          "hex": "#c2c2c5",
+          "deltaE": 0.011099,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#404040",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D20",
+          "tone": 20,
+          "hex": "#3e3e41",
+          "deltaE": 0.008286,
+          "exact": false
+        }
+      },
+      "Labels - Vibrant/Quaternary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#d9d9d9",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L8",
+          "tone": 8,
+          "hex": "#dbdbdd",
+          "deltaE": 0.007228,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#262626",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D8",
+          "tone": 8,
+          "hex": "#272729",
+          "deltaE": 0.006117,
+          "exact": false
+        }
+      },
+      "Labels/Secondary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#3c3c43",
+          "alpha": 0.6,
+          "familyId": "n.black.v2",
+          "token": "L70",
+          "tone": 70,
+          "hex": "#3d3d3f",
+          "deltaE": 0.008785,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ebebf5",
+          "alpha": 0.7,
+          "familyId": "n.black.v2",
+          "token": "D95",
+          "tone": 95,
+          "hex": "#ebebee",
+          "deltaE": 0.009598,
+          "exact": false
+        }
+      },
+      "Labels/Tertiary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#3c3c43",
+          "alpha": 0.3,
+          "familyId": "n.black.v2",
+          "token": "L70",
+          "tone": 70,
+          "hex": "#3d3d3f",
+          "deltaE": 0.008785,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ebebf5",
+          "alpha": 0.3,
+          "familyId": "n.black.v2",
+          "token": "D95",
+          "tone": 95,
+          "hex": "#ebebee",
+          "deltaE": 0.009598,
+          "exact": false
+        }
+      },
+      "Labels/Quaternary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#3c3c43",
+          "alpha": 0.18,
+          "familyId": "n.black.v2",
+          "token": "L70",
+          "tone": 70,
+          "hex": "#3d3d3f",
+          "deltaE": 0.008785,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ebebf5",
+          "alpha": 0.16,
+          "familyId": "n.black.v2",
+          "token": "D95",
+          "tone": 95,
+          "hex": "#ebebee",
+          "deltaE": 0.009598,
+          "exact": false
+        }
+      },
+      "Labels - Vibrant - Controls/Primary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1a1a1a",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L90",
+          "tone": 90,
+          "hex": "#1c1c1e",
+          "deltaE": 0.010235,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#f5f5f5",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D99",
+          "tone": 99,
+          "hex": "#fbfbfc",
+          "deltaE": 0.018264,
+          "exact": false
+        }
+      },
+      "Labels - Vibrant - Controls/Secondary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#727272",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L40",
+          "tone": 40,
+          "hex": "#737375",
+          "deltaE": 0.005107,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#8a8a8a",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D65",
+          "tone": 65,
+          "hex": "#89898c",
+          "deltaE": 0.005035,
+          "exact": false
+        }
+      },
+      "Labels - Vibrant - Controls/Tertiary": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#bfbfbf",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L14",
+          "tone": 14,
+          "hex": "#c2c2c5",
+          "deltaE": 0.011099,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#404040",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D20",
+          "tone": 20,
+          "hex": "#3e3e41",
+          "deltaE": 0.008286,
+          "exact": false
+        }
+      },
+      "Overlays/Default": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 0.2,
+          "familyId": "n.black.v2",
+          "token": "L100",
+          "tone": 100,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 0.48,
+          "familyId": "n.black.v2",
+          "token": "D0",
+          "tone": 0,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Overlays/Activity View Controller": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 0.2,
+          "familyId": "n.black.v2",
+          "token": "L100",
+          "tone": 100,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 0.29,
+          "familyId": "n.black.v2",
+          "token": "D0",
+          "tone": 0,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Separators/Opaque": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#c6c6c8",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L14",
+          "tone": 14,
+          "hex": "#c2c2c5",
+          "deltaE": 0.012279,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#38383a",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D16",
+          "tone": 16,
+          "hex": "#38383b",
+          "deltaE": 0.00177,
+          "exact": false
+        }
+      },
+      "Miscellaneous/Buttons/BG - Destructive": {
+        "light": {
+          "basis": "component-semantics",
+          "sourceHex": "#ff383c",
+          "alpha": 0.14,
+          "familyId": "r.red.v1",
+          "token": "L26",
+          "tone": 26,
+          "hex": "#ff383c",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "component-semantics",
+          "sourceHex": "#ff4245",
+          "alpha": 0.14,
+          "familyId": "r.red.v1",
+          "token": "D65",
+          "tone": 65,
+          "hex": "#e85752",
+          "deltaE": 0.045893,
+          "exact": false
+        }
+      },
+      "Miscellaneous/Keyboards/Emoji + Mic": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L100",
+          "tone": 100,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D100",
+          "tone": 100,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Miscellaneous/Segmented Control - Selected Fill": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L0",
+          "tone": 0,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 0.27,
+          "familyId": "n.black.v2",
+          "token": "D100",
+          "tone": 100,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Miscellaneous/Tab Bar Selection": {
+        "light": {
+          "alias": "Accents/Blue",
+          "basis": "figma-alias",
+          "sourceHex": "#0088ff",
+          "alpha": 1,
+          "familyId": "b.blue.v1",
+          "token": "L28",
+          "tone": 28,
+          "hex": "#0088ff",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D100",
+          "tone": 100,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Miscellaneous/Toggle/AX Label - Off": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#b3b3b3",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L18",
+          "tone": 18,
+          "hex": "#b2b2b5",
+          "deltaE": 0.004799,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#a6a6a6",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D75",
+          "tone": 75,
+          "hex": "#a2a2a5",
+          "deltaE": 0.012748,
+          "exact": false
+        }
+      },
+      "Miscellaneous/Sidebar/Sidebar - BG - Active": {
+        "light": {
+          "basis": "nearest-source-backed-family",
+          "sourceHex": "#dae6f2",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L6",
+          "tone": 6,
+          "hex": "#e4e4e7",
+          "deltaE": 0.017837,
+          "exact": false
+        },
+        "dark": {
+          "basis": "nearest-source-backed-family",
+          "sourceHex": "#141517",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D3",
+          "tone": 3,
+          "hex": "#131315",
+          "deltaE": 0.008026,
+          "exact": false
+        }
+      },
+      "Miscellaneous/Sidebar/Sidebar - BG - Inactive": {
+        "light": {
+          "basis": "nearest-source-backed-family",
+          "sourceHex": "#edf4fa",
+          "alpha": 1,
+          "familyId": "b.blue.v1",
+          "token": "L3",
+          "tone": 3,
+          "hex": "#eaf3ff",
+          "deltaE": 0.008767,
+          "exact": false
+        },
+        "dark": {
+          "basis": "nearest-source-backed-family",
+          "sourceHex": "#131414",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D3",
+          "tone": 3,
+          "hex": "#131315",
+          "deltaE": 0.00497,
+          "exact": false
+        }
+      },
+      "Separators/Non-opaque": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#000000",
+          "alpha": 0.12,
+          "familyId": "n.black.v2",
+          "token": "L100",
+          "tone": 100,
+          "hex": "#000000",
+          "deltaE": 0,
+          "exact": true
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#ffffff",
+          "alpha": 0.17,
+          "familyId": "n.black.v2",
+          "token": "D100",
+          "tone": 100,
+          "hex": "#ffffff",
+          "deltaE": 0,
+          "exact": true
+        }
+      },
+      "Separators/Vibrant": {
+        "light": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#e6e6e6",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "L6",
+          "tone": 6,
+          "hex": "#e4e4e7",
+          "deltaE": 0.006588,
+          "exact": false
+        },
+        "dark": {
+          "basis": "neutral-system-color",
+          "sourceHex": "#1a1a1a",
+          "alpha": 1,
+          "familyId": "n.black.v2",
+          "token": "D4",
+          "tone": 4,
+          "hex": "#18181a",
+          "deltaE": 0.008812,
+          "exact": false
+        }
+      }
+    }
+  }
+}

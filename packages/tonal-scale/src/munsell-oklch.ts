@@ -1,4 +1,4 @@
-import { deltaEOk, hexToOklch, normalizeHexColor, type OklchColor } from './color-math.ts';
+import { hexToOklch, normalizeHexColor, type OklchColor } from './color-math.ts';
 
 export const MUNSELL_OKLCH_PROJECTION = 'munsell-oklch-v1' as const;
 
@@ -55,6 +55,11 @@ export const MUNSELL_YELLOW_RED_PROTOTYPES = {
     hex: '#8e562e'
   }
 } as const;
+
+// Orange and Brown share the Yellow-Red hue sector. Lightness remains relevant
+// to their appearance, but full OKLab distance lets tone dominate the lower
+// chroma and Brown-like hue of lighter system Browns.
+export const MUNSELL_YELLOW_RED_APPEARANCE_LIGHTNESS_WEIGHT = 2 / 3;
 
 export type MunsellOklchSectorDefinition = {
   sector: MunsellOklchSector;
@@ -296,8 +301,11 @@ export function suggestYellowRedAppearance(
   const oklch = typeof input === 'string' ? resolveHexOklch(input) : normalizeOklch(input);
   const classification = classifyMunsellHue(oklch.h);
   const distances = {
-    orange: deltaEOk(oklch, hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.orange.hex)),
-    brown: deltaEOk(oklch, hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.brown.hex))
+    orange: yellowRedAppearanceDistance(
+      oklch,
+      hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.orange.hex)
+    ),
+    brown: yellowRedAppearanceDistance(oklch, hexToOklch(MUNSELL_YELLOW_RED_PROTOTYPES.brown.hex))
   };
   const appearance = distances.orange <= distances.brown ? 'orange' : 'brown';
 
@@ -306,6 +314,21 @@ export function suggestYellowRedAppearance(
     appearance,
     distances
   };
+}
+
+function yellowRedAppearanceDistance(left: OklchColor, right: OklchColor): number {
+  const leftHue = (left.h * Math.PI) / 180;
+  const rightHue = (right.h * Math.PI) / 180;
+  const leftA = left.c * Math.cos(leftHue);
+  const leftB = left.c * Math.sin(leftHue);
+  const rightA = right.c * Math.cos(rightHue);
+  const rightB = right.c * Math.sin(rightHue);
+
+  return Math.hypot(
+    ((left.l - right.l) / 100) * MUNSELL_YELLOW_RED_APPEARANCE_LIGHTNESS_WEIGHT,
+    leftA - rightA,
+    leftB - rightB
+  );
 }
 
 function hueAtPosition(definition: MunsellOklchSectorDefinition, position: number): number {
