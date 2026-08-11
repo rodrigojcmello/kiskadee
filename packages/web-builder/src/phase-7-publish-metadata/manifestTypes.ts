@@ -22,6 +22,10 @@ export type ManifestTypography = {
   artifact: string;
 };
 
+export type ManifestBrandPacks = {
+  packs: string[];
+};
+
 export type ManifestComponentState = Record<
   string, // semantic: primary, neutral, redLike, ...
   Record<
@@ -96,6 +100,12 @@ export type Manifest = {
    * Descriptive typography catalog. Definitions and usage stay in the referenced artifact.
    */
   typography?: ManifestTypography;
+  /**
+   * Optional Brand Pack IDs published outside the preset's baseline artifacts.
+   *
+   * Detailed resources and supported components remain in each pack manifest.
+   */
+  brandPacks?: ManifestBrandPacks;
   /**
    * Optional component-level metadata derived from the schema.
    *

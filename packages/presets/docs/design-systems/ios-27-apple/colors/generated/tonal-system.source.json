@@ -1,5 +1,5 @@
 {
-  "formatVersion": 4,
+  "formatVersion": 5,
   "functionalReferences": [
     {
       "dark": {
@@ -147,10 +147,33 @@
         },
         "vivid": {
           "source": "contrast-mirror",
-          "tone": 95
+          "tone": 99
         }
       },
       "id": "n.black.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 99
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "contrast-mirror",
+          "tone": 95
+        }
+      },
+      "id": "n.black.v2",
       "light": {
         "subtle": {
           "source": "surface-relative",
@@ -307,7 +330,7 @@
           "tone": 4
         },
         "vivid": {
-          "source": "harmony-rest",
+          "source": "generated-anchor",
           "tone": 65
         }
       },
@@ -318,7 +341,7 @@
           "tone": 4
         },
         "vivid": {
-          "source": "harmony-rest",
+          "source": "generated-anchor",
           "tone": 28
         }
       }
@@ -343,29 +366,6 @@
         "vivid": {
           "source": "generated-anchor",
           "tone": 18
-        }
-      }
-    },
-    {
-      "dark": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "generated-anchor",
-          "tone": 65
-        }
-      },
-      "id": "yr.orange.v2",
-      "light": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "generated-anchor",
-          "tone": 28
         }
       }
     }
@@ -406,7 +406,7 @@
       "seedHex": "#34c759"
     },
     {
-      "id": "n.black.v1",
+      "id": "n.black.v2",
       "policies": {
         "dark": "source-exact",
         "light": "source-exact"
@@ -454,20 +454,20 @@
       "seedHex": "#ffcc00"
     },
     {
+      "id": "yr.brown.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#ac7f5e"
+    },
+    {
       "id": "yr.orange.v1",
       "policies": {
         "dark": "adaptive",
         "light": "source-exact"
       },
       "seedHex": "#ff8d28"
-    },
-    {
-      "id": "yr.orange.v2",
-      "policies": {
-        "dark": "adaptive",
-        "light": "source-exact"
-      },
-      "seedHex": "#ac7f5e"
     }
   ],
   "primary": {

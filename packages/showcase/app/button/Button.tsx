@@ -275,6 +275,9 @@ export function Button() {
     .join(' ');
 
   const buttonMeta = manifest?.components?.button;
+  const brandButtonExamplesAvailable = ['auth', 'social'].every((pack) =>
+    manifest?.brandPacks?.packs.includes(pack)
+  );
   const onVividSupported = supportsManifestSurfaceContext(buttonMeta, segment, theme, 'onVivid');
   const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
@@ -827,7 +830,7 @@ export function Button() {
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
-        {designSystem === 'fluent-2-microsoft' ? (
+        {brandButtonExamplesAvailable ? (
           <SocialButtonExamples
             fontName={fontName}
             iconRegionAvailable={Boolean(buttonMeta?.iconTreatments?.includes('surface'))}

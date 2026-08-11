@@ -3,97 +3,97 @@
     {
       "familyId": "b.blue.v1",
       "path": "colors/b.blue.v1.json",
-      "sha256": "67a9fd26fc99138660a6ff1696e474f5428e2d1b6cfae0a6352f36ca9df92704"
+      "sha256": "88fd03c40b2e87b07ec1761fd52dfe85f14ae605d58a51dc19021f08a9af5957"
     },
     {
       "familyId": "bg.teal.v1",
       "path": "colors/bg.teal.v1.json",
-      "sha256": "86b3ef40ef5ea89105c069e68eb1941ddb9dd3e049fe18a363a768df585ad30c"
+      "sha256": "f9d65a97a80be33d4d1a609df765c29f96ca9d458ff3db4946a0a5fe37cfc5ff"
     },
     {
       "familyId": "bg.teal.v2",
       "path": "colors/bg.teal.v2.json",
-      "sha256": "b36d710477700765e52cae8043ad821c25d1e01561d8c41c63d8753e46e60ab8"
+      "sha256": "20acc654e96043a20d0f86bacf3e43d96db7d85df25134de03fa985761aa8cc7"
     },
     {
       "familyId": "bg.teal.v3",
       "path": "colors/bg.teal.v3.json",
-      "sha256": "ce3003b6e452188a3e4d2f654b96043166afd2c83a854e6a532091b69e72a807"
+      "sha256": "6ca52fba49c49eeac7815ee6c83bd6d41548edbcfbf3a042899a3ea26aa0949c"
     },
     {
       "familyId": "g.green.v1",
       "path": "colors/g.green.v1.json",
-      "sha256": "cdef8a8a0e7fcbf515733d784aa495422d006aae67867861e0cd2dd036097523"
+      "sha256": "3b5b897c07383bdebda856c60dcb148e42abbd28ad0ec161dd50cab537ed8049"
     },
     {
       "familyId": "gy.lime.v1",
       "path": "colors/gy.lime.v1.json",
-      "sha256": "9cfb1a759e92ebc83d306eb792ff49e6ccb0c4eb7972c70c6e77278b780b92a1"
+      "sha256": "3d1c71e0e4763d1b3fd9a1b1b1d4b2f67347597afcb9b22936a092a7c27c5620"
     },
     {
       "familyId": "n.black.v1",
       "path": "colors/n.black.v1.json",
-      "sha256": "9f505d7716956c003e410695a98b7eb42cb6bcf5df41402631f31d0b306d4c83"
+      "sha256": "548e745b38445b1e942a9d727148b6ee2bc5eeb25d2f322429db75c4481fcc22"
+    },
+    {
+      "familyId": "n.black.v2",
+      "path": "colors/n.black.v2.json",
+      "sha256": "52388068e043f55c9ad4daa2ba2d8898af6c0f58267d56e45adb704b8ec0f570"
     },
     {
       "familyId": "p.purple.v1",
       "path": "colors/p.purple.v1.json",
-      "sha256": "80ab8dbe1271c604f3ed45907b7b8fbb0d497176ca52f9d8e4cc9e5cda4e2a5d"
+      "sha256": "af065a5d2afd4cfbe4cc31cf4a1a5ce0d941643d6080edcffe63a0dad2c39602"
     },
     {
       "familyId": "pb.indigo.v1",
       "path": "colors/pb.indigo.v1.json",
-      "sha256": "a1accb41ab2f38d94ca86695b9cc30a3c70e7a3920ea3838112fed8d082b9c5f"
+      "sha256": "525b8c7d0cdbb63f44a88d0e37deffcf7db9381193c541fe345d9d8d2a5a0909"
     },
     {
       "familyId": "r.red.v1",
       "path": "colors/r.red.v1.json",
-      "sha256": "1aeb27286aa3b770ed3ea69953896c3a8d23c6b7e846b630d801cbc203bd56e9"
+      "sha256": "c21715090b86adef2acec0f0caa30a59f06d4bf1ef616cb729011bbaa34b8e53"
     },
     {
       "familyId": "r.red.v2",
       "path": "colors/r.red.v2.json",
-      "sha256": "bfd81e679a2329cedf234643890cc8c8a7cee95724885b73f080f6eafe3ea172"
+      "sha256": "ee3b54cfd2c079939bc5194d83c17471029841051e53621cc81416c7edf7fb46"
     },
     {
       "familyId": "rp.magenta.v1",
       "path": "colors/rp.magenta.v1.json",
-      "sha256": "9782d233cf8fe340ee793f639c6713cdb6ccb8716dd54fb17c44b948c65c20a2"
+      "sha256": "a86aa31c35efef9aecb7d0cefaf55fdecd8174bed6cb1783b5a5ba648003a7f6"
     },
     {
       "familyId": "y.yellow.v1",
       "path": "colors/y.yellow.v1.json",
-      "sha256": "99b488a135dc7d8c62f28146d0e4e97febb9026dbf2f1567eecd929287d95fb1"
+      "sha256": "a9e12fc90a0e33fbb9f3cafa19022f748ad6fe833f69619b1913c0d1e46f637e"
     },
     {
       "familyId": "yr.brown.v1",
       "path": "colors/yr.brown.v1.json",
-      "sha256": "df98473b0d80e407aa9b970fec1f486e1e1e7d612c0b04aa9c31f24022275a92"
+      "sha256": "4cbee1719a9aea7fa1838c6e741450cdb9886d9921c2033373bff72bb6b534ac"
     },
     {
       "familyId": "yr.orange.v1",
       "path": "colors/yr.orange.v1.json",
-      "sha256": "d8e0c29ef08cf42f2e9d6394fd9b53bec337ddf6ab0c9d211b3d0468d3e55d8a"
-    },
-    {
-      "familyId": "yr.orange.v2",
-      "path": "colors/yr.orange.v2.json",
-      "sha256": "0c42fde0db803d784ca8810119a9929ab762fd940769c022113a416c7d335545"
+      "sha256": "b53f67db860c8abcfdd7627e17d129ce4ab4ba3fa64106831969aeece1ba7b74"
     }
   ],
   "diagnostics": {
     "path": "tonal-system.diagnostics.json"
   },
-  "formatVersion": 4,
+  "formatVersion": 5,
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.4.1"
+    "version": "0.7.0"
   },
   "kind": "kiskadee.tonal-system",
   "primaryReference": "b.blue.v1",
   "source": {
     "path": "tonal-system.source.json",
-    "sha256": "5b1edce65804033ca31689d9970f74bdac7923e7e000b70b3a4083d110986dcc"
+    "sha256": "4f3098ef1699660fc9b269679ac48fec925d44521c35051dcda00bb6c7aca96c"
   },
   "tonalAnchors": {
     "rest": {

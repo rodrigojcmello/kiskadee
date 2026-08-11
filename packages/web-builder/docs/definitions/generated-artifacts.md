@@ -31,6 +31,8 @@ brand-packs/<pack>/class-maps/<segment>.<theme>/<component>.<hash>.kiskadee.json
 - Class maps remain component-scoped so a boundary can request only supported components.
 - The manifest records exact resource paths, integrity hashes, supported `brand.*` intents, and
   content polarity.
+- The preset's main `manifest.json` advertises available pack IDs under `brandPacks.packs`; detailed
+  resources and component support remain owned by each pack manifest.
 - Consumers validate class-map bytes against the manifest and attach the stylesheet with the
   published SHA-256 as Subresource Integrity before revealing branded content.
 - Generated class namespaces include the design system, pack, and projection hash.

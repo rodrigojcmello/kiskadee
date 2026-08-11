@@ -18,6 +18,8 @@ This file records source evidence and schema decisions for
   [`../colors/ios-27-color-evidence.md`](../colors/ios-27-color-evidence.md)
 - Exact source-to-tonal de-para:
   [`../colors/figma-to-kiskadee.json`](../colors/figma-to-kiskadee.json)
+- Optional brand scale and pack provenance:
+  [`@kiskadee/brands`](../../../../../brands/docs/definitions/brand-color-packs.md)
 
 ## Source Coverage
 
@@ -29,6 +31,7 @@ This file records source evidence and schema decisions for
 | Liquid Glass Text | `5473:21667` | Capability and material separation confirmed | Deferred |
 | Liquid Glass Symbol | `5522:11866` | Capability and material separation confirmed | Deferred |
 | Hover, Pressed, Focus, Selected | Content Area variants | No official variants are authored | Kiskadee extension |
+| Authentication and social brands | `@kiskadee/brands` pack artifacts | Apple publishes no equivalent matrix | Kiskadee extension |
 
 ## Official Contract
 
@@ -68,6 +71,12 @@ adapted** typography mapping. The source letter-spacing detail is not added duri
 because the active Button previously authored no tracking; it can be resolved later in the shared
 typography profile without adding a Button-only capability.
 
+The inspected source confirms the title-and-icon composition but does not expose a reusable symbol
+viewport token. Kiskadee therefore keeps Small text-relative at 15 px and applies a modest Web
+adaptation of 17 px for Medium and 20 px for Large. This **Kiskadee extension** improves the visual
+ratio between glyph and Button without changing the official Button height, padding, or label
+metrics.
+
 ## Color And Token Provenance
 
 | Source concept | Official Light/Dark value | Kiskadee mapping |
@@ -75,7 +84,7 @@ typography profile without adding a Button-only capability.
 | `Accents/Blue` | `#0088ff` / `#0091ff` | `button.primary`, `b.blue.v1`; vivid L28/D65 |
 | `Accents/Red` | `#ff383c` / `#ff4245` | `button.destructive`, `r.red.v1`; vivid L26/D65 |
 | `Accents/Green` | `#34c759` / `#30d158` | `button.positive`, `g.green.v1`; vivid L20/D65; Kiskadee extension in Button |
-| `Grays/Black` family | centralized Apple Grays | `button.neutral`, `n.black.v1`; vivid L90/D95; Kiskadee extension in Button |
+| `Grays/Black` family | centralized Apple Grays | `button.neutral`, `n.black.v2`; vivid L90/D95; Kiskadee extension in Button |
 | `Grays/White` | `#ffffff` / `#ffffff` | neutral cap L0/D100 |
 | `Fills/Tertiary` | base `#767680` at 12% / 24% | neutral L40 at 12% / D55 at 24% |
 | `Labels/Tertiary` | base `#3c3c43` at 30% / `#ebebf5` at 30% | neutral L70 at 30% / D95 at 30% |
@@ -114,6 +123,43 @@ segments expose tonal-scale differences instead of hiding them in component-spec
 Hover, Pressed, and Selected are also Kiskadee extensions because the inspected Figma variants only
 publish enabled and disabled. Focus is intentionally absent from the palette maps and inherits Rest;
 the external focus ring remains the focus affordance and uses the Primary `vivid` reference.
+
+### Kiskadee Extension: Brand Color Packs
+
+Apple does not publish a conventional Button matrix for Kiskadee's third-party authentication and
+social brand collection. The optional `auth` and `social` Brand Packs are therefore a **Kiskadee
+extension**. Brand membership, official seed provenance, logo construction, and content polarity
+remain owned by `@kiskadee/brands`; none of those colors enters the Apple primitive catalog,
+`colors.json`, global CSS, or normal Button class map.
+
+On a subtle surrounding surface, every brand is projected through the same iOS Button recipe used
+by Primary, Destructive, Positive, and Neutral:
+
+- High uses the brand family's `vivid` reference and its documented content polarity;
+- Medium starts at the brand family's `subtle` reference;
+- Low uses Apple's `Fills/Tertiary` treatment with brand-colored content;
+- Lowest is transparent with brand-colored content;
+- Hover, Pressed, Selected, and Disabled preserve the shared iOS formula;
+- a Dark `contrast-mirror` vivid reference reverses content polarity during build so monochrome
+  black identities never produce white content over a physically light mirrored surface.
+
+For a vivid surrounding surface, the projection uses a separate contrast-safe Kiskadee extension:
+
+| Emphasis | Rest / Hover / Pressed surface | Foreground |
+| --- | --- | --- |
+| High | White 100% / 92% / 84% | Brand Light `vivid` |
+| Medium | White 24% / 32% / 40% | White |
+| Low | White 12% / 20% / 28% | White |
+| Lowest | Transparent / White 12% / 20% | White |
+
+Disabled visible surfaces use White at 12% and disabled content uses White at 30%. Low omits a
+disabled surface delta because its Rest surface already resolves to the same 12% value. Selected
+intentionally resolves to the Pressed surface as the persistent active appearance. Focus remains
+omitted and inherits Rest while the external focus ring remains independently available.
+
+The optional resources are built under `brand-packs/auth` and `brand-packs/social`. Consumers must
+use `BrandPackBoundary`; a missing pack never falls back silently to Primary or Neutral. Brand versus
+monochrome artwork remains an explicit JSX choice and is not inferred by the Button formula.
 
 ## Shared Formula
 
@@ -155,8 +201,12 @@ not execute this formula at runtime.
 
 - `e1`: Button surface; background states and the pill radius. The conventional Apple styles have
   no visible border or shadow.
-- `e2`: label/icon content; role foreground, disabled foreground, Apple-system typography, and
+- `e2`: label content; role foreground, disabled foreground, Apple-system typography, and
   size-specific text metrics.
+- `e3`: icon content; mirrors `e2` foreground states so interface glyphs and monochrome brand marks
+  follow the Button content color. Fixed multicolor marks remain unchanged. Small remains
+  text-relative; Medium and Large publish 17 px and 20 px viewports as the documented Web
+  adaptation.
 - `components.button.options.size`: Small, Medium, and Large map to the official 28, 34, and 50 px
   geometry within the existing schema.
 - Palette intent and emphasis select the Apple relationship or documented Kiskadee extension; no

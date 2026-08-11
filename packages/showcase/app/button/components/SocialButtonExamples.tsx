@@ -477,9 +477,10 @@ export function SocialButtonExamples({
         Brand buttons
       </Text>
       <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
-        Brand intents reuse the Fluent Button formula without adding brand colors to the preset. The
-        same unified set of practical actions compares brand high with a surfaced mark, brand high,
-        and brand low, while every state reference shares one collection.
+        Brand intents reuse this Design System&apos;s Button formula without adding third-party
+        brand colors to its primitive catalog. The same unified set of practical actions compares{' '}
+        {iconRegionAvailable ? 'brand high with a surfaced mark, brand high,' : 'brand high'} and
+        brand low, while every state reference shares one collection.
       </Text>
       <div className={styles.brandCollection}>
         <section aria-labelledby="brand-action-examples-title">

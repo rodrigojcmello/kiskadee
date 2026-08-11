@@ -1,7 +1,7 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
 // Promoted from the approved iOS 27 tonal artifact:
-// docs/design-systems/ios-27-apple/colors/generated/colors/yr.orange.v2.json
+// docs/design-systems/ios-27-apple/colors/generated/colors/yr.brown.v1.json
 export default {
   kind: 'static',
   functionalReferences: {

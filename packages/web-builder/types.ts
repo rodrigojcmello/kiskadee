@@ -54,6 +54,7 @@ export type ExtraArtifactsJSON = {
 // capabilities by design system.
 export type {
   Manifest,
+  ManifestBrandPacks,
   ManifestComponent,
   ManifestComponentState,
   ManifestFonts,

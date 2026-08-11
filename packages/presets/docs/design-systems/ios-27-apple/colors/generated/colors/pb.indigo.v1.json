@@ -1,7 +1,7 @@
 {
   "appearance": "indigo",
   "colorKind": "chromatic",
-  "formatVersion": 4,
+  "formatVersion": 5,
   "functionalReferences": {
     "dark": {
       "subtle": {
@@ -40,7 +40,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.4.1"
+    "version": "0.7.0"
   },
   "id": "pb.indigo.v1",
   "kind": "kiskadee.primitive-tonal-family",

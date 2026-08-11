@@ -48,6 +48,7 @@ import {
 import { TYPOGRAPHY_ARTIFACT_PATH } from '../typography/typographyArtifact.ts';
 import type {
   Manifest,
+  ManifestBrandPacks,
   ManifestComponent,
   ManifestComponentState,
   ManifestFonts,
@@ -647,14 +648,21 @@ export function buildManifestTypography(hasTypography: boolean): ManifestTypogra
   return hasTypography ? { artifact: TYPOGRAPHY_ARTIFACT_PATH } : undefined;
 }
 
+export function buildManifestBrandPacks(
+  packs: readonly string[] | undefined
+): ManifestBrandPacks | undefined {
+  return packs && packs.length > 0 ? { packs: [...packs] } : undefined;
+}
+
 export async function publishMetadata(params: {
   schema: Schema;
   outDirSlug: string;
   schemaPath: string;
   baseBuildDir: string;
   classNamesMap?: ComponentClassNameMapSplitJSON;
+  brandPacks?: readonly string[];
 }): Promise<void> {
-  const { schema, outDirSlug, schemaPath, baseBuildDir, classNamesMap } = params;
+  const { schema, outDirSlug, schemaPath, baseBuildDir, classNamesMap, brandPacks } = params;
 
   // `Schema.colors` is required by presets, but the public type allows it to be optional.
   // At this point we already depend on it (segments, artifacts), so we assert it.
@@ -695,6 +703,11 @@ export async function publishMetadata(params: {
   const manifestTypography = buildManifestTypography(Boolean(schema.global?.typography));
   if (manifestTypography) {
     manifest.typography = manifestTypography;
+  }
+
+  const manifestBrandPacks = buildManifestBrandPacks(brandPacks);
+  if (manifestBrandPacks) {
+    manifest.brandPacks = manifestBrandPacks;
   }
 
   // Derive component-level metadata from the schema. This keeps the
