@@ -1,4 +1,4 @@
-import { ICON_SIZE_BY_SCALE, type Schema, type SchemaFonts } from '@kiskadee/core';
+import type { Schema, SchemaFonts } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import {
   buildComponentSurfaceContexts,
@@ -108,9 +108,9 @@ describe('buildComponentSurfaceContexts', () => {
         elements: {
           e1: {
             name: 'glyph',
-            scales: {
-              boxWidth: ICON_SIZE_BY_SCALE,
-              boxHeight: ICON_SIZE_BY_SCALE
+            iconSize: {
+              's:sm:2': 's:sm:2',
+              's:md:1': 's:md:1'
             },
             palettes: {
               default: {

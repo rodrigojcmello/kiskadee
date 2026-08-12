@@ -44,11 +44,39 @@ export function createIos27AppleButtonSchema({
   });
   const neutralFamily = createPresetFamily('neutral');
 
+  const createIconRegionContextPalettes = () => {
+    const createContext = () => ({
+      boxColor: {
+        neutral: {
+          medium: {
+            rest: neutralFamily.color('l', 0)
+          }
+        }
+      },
+      textColor: {
+        neutral: {
+          medium: {
+            rest: neutralFamily.color('l', 85)
+          }
+        }
+      }
+    });
+
+    return {
+      onSubtle: createContext()
+    };
+  };
+
   const createButtonIntent = (theme: Ios27AppleButtonFormulaTheme, role: ButtonColorRole) => {
     const scale = IOS_27_APPLE_BUTTON_TONAL_RECIPE[theme].scale;
+    const mediumSurface =
+      role === 'button.destructive' || role === 'button.positive'
+        ? 'semantic-tint'
+        : 'tertiary-fill';
     return createIos27AppleButtonOnSubtleIntent({
       theme,
       family: createPresetFamily(role),
+      mediumSurface,
       neutralFamily,
       highForeground: neutralFamily.color(scale, BUTTON_HIGH_FOREGROUND_TONES[theme][role])
     });
@@ -70,11 +98,17 @@ export function createIos27AppleButtonSchema({
   };
 
   return {
+    options: {
+      iconLayout: 'inline',
+      iconPlacement: 'leading',
+      iconSurfaceCorners: 'all',
+      iconTreatment: 'plain'
+    },
     elements: {
       e1: {
         name: 'button',
         decorations: {
-          borderStyle: 'none'
+          borderStyle: 'solid'
         },
         scales: {
           paddingTop: {
@@ -97,6 +131,11 @@ export function createIos27AppleButtonSchema({
             's:md:1': 14,
             's:lg:1': 20
           },
+          borderWidth: {
+            's:sm:1': 1,
+            's:md:1': 1,
+            's:lg:1': 1
+          },
           borderRadius: {
             rounded: 25,
             pill: 25,
@@ -112,6 +151,12 @@ export function createIos27AppleButtonSchema({
                   neutral: buttonIntentPalettes.light.neutral.boxColor,
                   destructive: buttonIntentPalettes.light.destructive.boxColor,
                   positive: buttonIntentPalettes.light.positive.boxColor
+                },
+                borderColor: {
+                  primary: buttonIntentPalettes.light.primary.borderColor,
+                  neutral: buttonIntentPalettes.light.neutral.borderColor,
+                  destructive: buttonIntentPalettes.light.destructive.borderColor,
+                  positive: buttonIntentPalettes.light.positive.borderColor
                 }
               }
             },
@@ -122,6 +167,12 @@ export function createIos27AppleButtonSchema({
                   neutral: buttonIntentPalettes.dark.neutral.boxColor,
                   destructive: buttonIntentPalettes.dark.destructive.boxColor,
                   positive: buttonIntentPalettes.dark.positive.boxColor
+                },
+                borderColor: {
+                  primary: buttonIntentPalettes.dark.primary.borderColor,
+                  neutral: buttonIntentPalettes.dark.neutral.borderColor,
+                  destructive: buttonIntentPalettes.dark.destructive.borderColor,
+                  positive: buttonIntentPalettes.dark.positive.borderColor
                 }
               }
             }
@@ -162,14 +213,16 @@ export function createIos27AppleButtonSchema({
       },
       e3: {
         name: 'button-icon',
+        iconSize: {
+          's:sm:1': 's:sm:1',
+          's:md:1': 's:md:1',
+          's:lg:1': 's:lg:1'
+        },
         scales: {
-          boxWidth: {
-            's:md:1': 17,
-            's:lg:1': 20
-          },
-          boxHeight: {
-            's:md:1': 17,
-            's:lg:1': 20
+          paddingRight: {
+            's:sm:1': 3,
+            's:md:1': 4,
+            's:lg:1': 4
           }
         },
         palettes: {
@@ -194,6 +247,27 @@ export function createIos27AppleButtonSchema({
                 }
               }
             }
+          }
+        }
+      },
+      e4: {
+        name: 'button-icon-region',
+        palettes: {
+          default: {
+            light: createIconRegionContextPalettes(),
+            dark: createIconRegionContextPalettes()
+          }
+        },
+        scales: {
+          paddingLeft: {
+            's:sm:1': 8,
+            's:md:1': 14,
+            's:lg:1': 18
+          },
+          paddingRight: {
+            's:sm:1': 8,
+            's:md:1': 14,
+            's:lg:1': 18
           }
         }
       }

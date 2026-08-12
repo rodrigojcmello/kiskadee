@@ -1,6 +1,8 @@
 import type {
   ButtonIconLayout,
   ButtonIconPlacement,
+  ButtonIconSurfaceCorners,
+  ButtonIconTreatment,
   ClassNameByElementJSON,
   SurfaceContext
 } from '@kiskadee/core';
@@ -33,12 +35,15 @@ function resolve(
   surfaceContext: SurfaceContext | undefined,
   includeOnVivid = true,
   iconLayout?: ButtonIconLayout,
-  iconPlacement?: ButtonIconPlacement
+  iconPlacement?: ButtonIconPlacement,
+  iconSurfaceCorners?: ButtonIconSurfaceCorners,
+  iconTreatment?: ButtonIconTreatment
 ) {
   return resolveButtonClassNames({
     e1: createElement('e1', includeOnVivid),
     e2: createElement('e2', includeOnVivid),
     e3: createElement('e3', includeOnVivid),
+    e4: createElement('e4', includeOnVivid),
     classNames: {},
     status: 'rest',
     controlState: undefined,
@@ -51,6 +56,8 @@ function resolve(
     surfaceContext,
     iconLayout,
     iconPlacement,
+    iconSurfaceCorners,
+    iconTreatment,
     globalRadius: undefined
   });
 }
@@ -93,6 +100,16 @@ describe('Button surface context class resolution', () => {
     expect(classes.e1).toContain('k-btn-e1g');
     expect(classes.e1).not.toContain('k-btn-e1d');
     expect(classes.e1).not.toContain('k-btn-e1f');
+  });
+
+  it('flattens label-facing surfaced corners only for the edge policy', () => {
+    const surfacedDefault = resolve(undefined, true, undefined, undefined, undefined, 'surface');
+    const surfacedEdge = resolve(undefined, true, undefined, undefined, 'edge', 'surface');
+    const surfacedAll = resolve(undefined, true, undefined, undefined, 'all', 'surface');
+
+    expect(surfacedDefault.e1).toContain('k-btn-e1i');
+    expect(surfacedEdge.e1).toContain('k-btn-e1i');
+    expect(surfacedAll.e1).not.toContain('k-btn-e1i');
   });
 
   it('uses a text-relative icon fallback when the preset has no e3 scale', () => {

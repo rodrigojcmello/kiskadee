@@ -5,6 +5,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBrandPack } from '../../../shared/contexts/BrandPackContext.tsx';
 import {
+  DEFAULT_BUTTON_ICON_SURFACE_CORNERS,
   DEFAULT_BUTTON_ICON_TREATMENT,
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_PRESSED_DURATION_MS,
@@ -40,6 +41,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     iconLayout: iconLayoutProp,
     iconPlacement: iconPlacementProp,
     iconTreatment: iconTreatmentProp,
+    iconSurfaceCorners: iconSurfaceCornersProp,
     onClick,
     onPointerDown,
     onPointerUp,
@@ -58,6 +60,8 @@ export function useButtonCommonProps(props: ButtonProps) {
   const iconLayout = iconLayoutProp ?? options.iconLayout;
   const iconPlacement = iconPlacementProp ?? options.iconPlacement;
   const iconTreatment = iconTreatmentProp ?? options.iconTreatment ?? DEFAULT_BUTTON_ICON_TREATMENT;
+  const iconSurfaceCorners =
+    iconSurfaceCornersProp ?? options.iconSurfaceCorners ?? DEFAULT_BUTTON_ICON_SURFACE_CORNERS;
   const isBrandIntent = intent.startsWith('brand.');
   const supportsBrandIntent =
     !isBrandIntent || Boolean(brandPack?.hasComponent('button') && brandPack.hasIntent(intent));
@@ -93,6 +97,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     iconLayout,
     iconPlacement,
     iconTreatment,
+    iconSurfaceCorners,
     iconLayoutWasExplicit: iconLayoutProp !== undefined,
     onClick,
     onPointerDown,
@@ -142,6 +147,7 @@ export function useButtonClassNamesFromCommon(
         surfaceContext: common.surfaceContext,
         iconLayout: options.iconLayoutOverride ?? common.iconLayout,
         iconPlacement: common.iconPlacement,
+        iconSurfaceCorners: common.iconSurfaceCorners,
         iconTreatment: options.iconTreatmentOverride ?? common.iconTreatment,
         globalRadius: common.options.radius
       }),
@@ -164,6 +170,7 @@ export function useButtonClassNamesFromCommon(
       common.iconLayout,
       options.iconLayoutOverride,
       common.iconPlacement,
+      common.iconSurfaceCorners,
       common.iconTreatment,
       options.iconTreatmentOverride,
       common.options.radius

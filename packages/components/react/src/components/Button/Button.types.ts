@@ -3,6 +3,7 @@ import type {
   ActivationFeedbackProfileMode,
   ButtonIconLayout,
   ButtonIconPlacement,
+  ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ButtonIntent,
   ClassNameByElementJSON,
@@ -17,7 +18,7 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import type { HTMLAttributes, ReactNode } from 'react';
 import type { DeterminateDecorativeProgressProps } from '../Progress/Progress.types.ts';
 
-export type { ButtonIconTreatment } from '@kiskadee/core';
+export type { ButtonIconSurfaceCorners, ButtonIconTreatment } from '@kiskadee/core';
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
@@ -105,4 +106,9 @@ export type ButtonProps = HeadlessButtonProps & {
    * Surfaced treatments require both an icon and a label and imply edge layout.
    */
   iconTreatment?: ButtonIconTreatment;
+  /**
+   * Corner policy for a surfaced icon region. `edge` keeps the label-facing
+   * corners straight; `all` preserves the Button-derived radius on all corners.
+   */
+  iconSurfaceCorners?: ButtonIconSurfaceCorners;
 };

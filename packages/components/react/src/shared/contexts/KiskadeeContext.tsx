@@ -3,11 +3,13 @@ import type {
   ActivationFeedbackSetting,
   ButtonIconLayout,
   ButtonIconPlacement,
+  ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ComponentClassNameMapJSON,
   GlobalClassNameMapJSON,
   RadiusMode,
   SchemaFonts,
+  SchemaIconSizes,
   SchemaIcons,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
@@ -93,6 +95,7 @@ export type KiskadeeContextValue = {
   global?: {
     classMap?: GlobalClassNameMapJSON;
     fonts?: SchemaFonts;
+    iconSizes?: SchemaIconSizes;
     icons?: SchemaIcons;
     radius?: RadiusMode;
     effects?: {
@@ -104,6 +107,7 @@ export type KiskadeeContextValue = {
         options?: {
           iconLayout?: ButtonIconLayout;
           iconPlacement?: ButtonIconPlacement;
+          iconSurfaceCorners?: ButtonIconSurfaceCorners;
           iconTreatment?: ButtonIconTreatment;
         };
         effects?: {

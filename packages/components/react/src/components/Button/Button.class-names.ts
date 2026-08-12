@@ -1,6 +1,7 @@
 import {
   type ButtonIconLayout,
   type ButtonIconPlacement,
+  type ButtonIconSurfaceCorners,
   type ButtonIconTreatment,
   type ButtonIntent,
   type ClassNameByElementJSON,
@@ -29,6 +30,7 @@ export const DEFAULT_BUTTON_SURFACE_CONTEXT: SurfaceContext = 'onSubtle';
 export const DEFAULT_BUTTON_ICON_LAYOUT: ButtonIconLayout = 'inline';
 export const DEFAULT_BUTTON_ICON_PLACEMENT: ButtonIconPlacement = 'leading';
 export const DEFAULT_BUTTON_ICON_TREATMENT: ButtonIconTreatment = 'plain';
+export const DEFAULT_BUTTON_ICON_SURFACE_CORNERS: ButtonIconSurfaceCorners = 'edge';
 export const DEFAULT_BUTTON_PRESSED_DURATION_MS = 60;
 
 export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;
@@ -80,6 +82,7 @@ export function resolveButtonClassNames({
   surfaceContext,
   iconLayout,
   iconPlacement,
+  iconSurfaceCorners,
   iconTreatment,
   globalRadius
 }: {
@@ -99,6 +102,7 @@ export function resolveButtonClassNames({
   surfaceContext: SurfaceContext | undefined;
   iconLayout?: ButtonIconLayout;
   iconPlacement?: ButtonIconPlacement;
+  iconSurfaceCorners?: ButtonIconSurfaceCorners;
   iconTreatment?: ButtonIconTreatment;
   globalRadius: RadiusMode | undefined;
 }): ButtonResolvedClassNames {
@@ -106,6 +110,7 @@ export function resolveButtonClassNames({
   const resolvedEmphasis = emphasis ?? DEFAULT_BUTTON_EMPHASIS;
   const resolvedSurfaceContext = surfaceContext ?? DEFAULT_BUTTON_SURFACE_CONTEXT;
   const resolvedIconTreatment = iconTreatment ?? DEFAULT_BUTTON_ICON_TREATMENT;
+  const resolvedIconSurfaceCorners = iconSurfaceCorners ?? DEFAULT_BUTTON_ICON_SURFACE_CORNERS;
   const hasSurfacedIconTreatment = resolvedIconTreatment !== 'plain';
   const resolvedIconLayout = hasSurfacedIconTreatment
     ? 'edge'
@@ -157,6 +162,7 @@ export function resolveButtonClassNames({
         resolvedIconLayout === 'inline' ? 'k-btn-e1d' : 'k-btn-e1e',
         resolvedIconPlacement === 'leading' ? 'k-btn-e1f' : 'k-btn-e1g',
         hasSurfacedIconTreatment ? 'k-btn-e1h' : undefined,
+        hasSurfacedIconTreatment && resolvedIconSurfaceCorners === 'edge' ? 'k-btn-e1i' : undefined,
         'k-foc',
         'k-trn'
       ) ?? '',

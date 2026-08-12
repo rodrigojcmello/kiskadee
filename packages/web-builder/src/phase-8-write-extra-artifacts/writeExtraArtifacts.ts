@@ -11,6 +11,7 @@ import type {
   RadiusMode,
   Schema,
   SchemaFonts,
+  SchemaIconSizes,
   SchemaIcons,
   SegmentName,
   ShadowEffectSchema,
@@ -251,6 +252,7 @@ export async function writeExtraArtifacts(params: {
   //    metadata capturing global design system intentions.
   const fonts = schema.global?.fonts as SchemaFonts | undefined;
   const icons = schema.global?.icons as SchemaIcons | undefined;
+  const iconSizes = schema.global?.iconSizes as SchemaIconSizes | undefined;
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
   const radius = schema.global?.radius as RadiusMode | undefined;
   const activationFeedback = schema.global?.effects?.activationFeedback as
@@ -310,6 +312,7 @@ export async function writeExtraArtifacts(params: {
 
   const hasFonts = Boolean(fonts);
   const hasIcons = Boolean(icons);
+  const hasIconSizes = Boolean(iconSizes);
   const hasRadius = Boolean(radius);
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
@@ -324,6 +327,7 @@ export async function writeExtraArtifacts(params: {
   if (
     hasFonts ||
     hasIcons ||
+    hasIconSizes ||
     hasRadius ||
     hasActivationFeedback ||
     hasShadow ||
@@ -335,6 +339,7 @@ export async function writeExtraArtifacts(params: {
 
     const globalPayload: {
       fonts?: SchemaFonts;
+      iconSizes?: SchemaIconSizes;
       icons?: SchemaIcons;
       radius?: RadiusMode;
       effects?: {
@@ -351,6 +356,10 @@ export async function writeExtraArtifacts(params: {
 
     if (icons) {
       globalPayload.icons = icons;
+    }
+
+    if (iconSizes) {
+      globalPayload.iconSizes = iconSizes;
     }
 
     if (hasRadius && radius) {

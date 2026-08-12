@@ -11,6 +11,10 @@ It also has an independent icon-region treatment:
 
 - `iconTreatment`: `plain | surface`
 
+Surfaced regions have an independent corner policy:
+
+- `iconSurfaceCorners`: `edge | all`
+
 `leading` and `trailing` are logical directions and therefore follow the document direction.
 
 ## Layouts
@@ -33,15 +37,17 @@ the Button icon palette.
 
 `surface` wraps `e3` in the optional schema element `e4`. The region occupies the full internal
 Button height and touches the logical edge. Its background, foreground, and padding belong to the
-active preset. Its outer corners derive from the Button radius minus the Button border width; its
-inner corners remain square. Because the panel creates a distinct visual region, the label centers
-within the remaining Button surface instead of the complete Button bounds.
+active preset. All four corners derive from the Button radius minus the Button border width. The
+`edge` corner policy then flattens the two corners facing the label, while `all` preserves the
+derived radius on every corner. Because the panel creates a distinct visual region, the label
+centers within the remaining Button surface instead of the complete Button bounds.
 
 The surfaced treatment implies `edge` layout and requires both an icon and a label. An explicit
 `iconLayout="inline"` is converted to `edge`. Missing composition or an active preset without
 `e4` falls back to `plain`.
 
-The default is `plain`, including when a preset omits `iconTreatment`.
+The defaults are `plain` and `edge`, including when a preset omits either option. The corner policy
+is inert while the active treatment is `plain`.
 
 ## Ownership
 
@@ -51,6 +57,9 @@ The default is `plain`, including when a preset omits `iconTreatment`.
 - `Button.Icon` also accepts arbitrary direct children for product and brand artwork.
 - Button owns the icon slot's color, accessible relationship, size, spacing, and composition. It
   does not nest a semantic `Icon` component.
+- `global.iconSizes` owns the preset's numeric viewport levels. `e3.iconSize` maps the Button's
+  scale and breakpoints to those levels; the Builder emits the resulting square geometry into the
+  existing scale classes.
 - `e4` owns optional icon-region background, foreground, and padding. It is a styled React wrapper
   and does not change the Headless Button topology.
 - `e1` remains the sole source of Button border width and radius. Structural CSS consumes those
@@ -60,11 +69,11 @@ The default is `plain`, including when a preset omits `iconTreatment`.
 - `e3.paddingRight` remains the schema-owned spacing token. The web build emits it as a structural
   token so the React structural layer can apply it on the correct logical side.
 - Structural CSS owns flex/grid composition, logical ordering, and the derived inner-corner
-  geometry. For the surfaced treatment, it also owns the two-region layout that centers the label
-  within the surface remaining after `e4`. It does not own icon size, spacing, color, or Button
-  padding tokens.
+  geometry selected by `iconSurfaceCorners`. For the surfaced treatment, it also owns the
+  two-region layout that centers the label within the surface remaining after `e4`. It does not own
+  icon size, spacing, color, or Button padding tokens.
 
-The defaults are `inline`, `leading`, and `plain` when a preset omits the options.
+The defaults are `inline`, `leading`, `plain`, and `edge` when a preset omits the options.
 
 Icon-region treatments never choose a brand artwork presentation automatically. Consumers remain
 responsible for choosing `brand`, `mark`, `monochrome`, or another direct icon representation.

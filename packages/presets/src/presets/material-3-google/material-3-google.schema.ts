@@ -39,6 +39,13 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     typography: material3GoogleTypography,
+    iconSizes: {
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24,
+      's:lg:2': 28,
+      's:lg:3': 32
+    },
     icons: {
       family: 'material-symbols',
       variant: 'fill-0'

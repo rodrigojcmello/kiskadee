@@ -39,6 +39,7 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(schema.components.button?.options).toEqual({
       iconLayout: 'inline',
       iconPlacement: 'leading',
+      iconSurfaceCorners: 'edge',
       iconTreatment: 'plain'
     });
   });
@@ -89,17 +90,12 @@ describe('Fluent 2 Button surface contexts', () => {
         scales: { textSize: 16, textHeight: 22 }
       }
     });
+    expect(e3.iconSize).toEqual({
+      's:sm:1': 's:md:1',
+      's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+      's:lg:1': 's:lg:1'
+    });
     expect(e3.scales).toMatchObject({
-      boxWidth: {
-        's:sm:1': 20,
-        's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
-        's:lg:1': 24
-      },
-      boxHeight: {
-        's:sm:1': 20,
-        's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
-        's:lg:1': 24
-      },
       paddingRight: {
         's:sm:1': 4,
         's:md:1': 6,

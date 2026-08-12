@@ -133,6 +133,12 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
             }
           }
         }
+      },
+      e3: {
+        name: 'button-icon',
+        iconSize: {
+          's:md:1': 's:md:1'
+        }
       }
     }
   };

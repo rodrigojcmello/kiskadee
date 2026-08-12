@@ -17,6 +17,9 @@
     "./icon-contract": {
       "default": "./src/icons.contract.zod.ts"
     },
+    "./icon-size-contract": {
+      "default": "./src/icon-sizes.contract.zod.ts"
+    },
     "./typography-contract": {
       "default": "./src/typography.contract.zod.ts"
     },

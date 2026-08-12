@@ -10,12 +10,20 @@ import styles from '../Button.module.scss';
 
 const EXAMPLES = [
   {
-    icon: 'thumbs-up',
+    icon: 'play',
     emphasis: 'high',
     iconLayout: 'inline',
     iconPlacement: 'leading',
     intent: 'primary',
-    label: 'Like'
+    label: 'Play'
+  },
+  {
+    icon: 'pencil',
+    emphasis: 'medium',
+    iconLayout: 'inline',
+    iconPlacement: 'leading',
+    intent: 'primary',
+    label: 'Edit'
   },
   {
     icon: 'rocket',
@@ -34,6 +42,14 @@ const EXAMPLES = [
     label: 'Share'
   },
   {
+    icon: 'settings',
+    emphasis: 'medium',
+    iconLayout: 'inline',
+    iconPlacement: 'leading',
+    intent: 'neutral',
+    label: 'Configure'
+  },
+  {
     icon: 'heart',
     emphasis: 'low',
     iconLayout: 'edge',
@@ -48,6 +64,14 @@ const EXAMPLES = [
     iconPlacement: 'leading',
     intent: 'positive',
     label: 'Approve'
+  },
+  {
+    icon: 'check',
+    emphasis: 'medium',
+    iconLayout: 'inline',
+    iconPlacement: 'leading',
+    intent: 'positive',
+    label: 'Confirm'
   },
   {
     icon: 'send',
@@ -66,6 +90,14 @@ const EXAMPLES = [
     label: 'Delete'
   },
   {
+    icon: 'ban',
+    emphasis: 'medium',
+    iconLayout: 'inline',
+    iconPlacement: 'leading',
+    intent: 'destructive',
+    label: 'Block'
+  },
+  {
     icon: 'circle-x',
     emphasis: 'low',
     iconLayout: 'edge',
@@ -75,7 +107,7 @@ const EXAMPLES = [
   }
 ] satisfies ReadonlyArray<{
   icon: IconName;
-  emphasis: 'high' | 'low';
+  emphasis: 'high' | 'medium' | 'low';
   iconLayout: ButtonIconLayout;
   iconPlacement: ButtonIconPlacement;
   intent: 'primary' | 'neutral' | 'destructive' | 'positive';
@@ -122,9 +154,9 @@ export function ButtonIconExamples({
         Icons
       </Text>
       <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
-        Each intent is represented at high and low emphasis. Inline composes icon and label as one
-        centered group, while Edge keeps the label independently centered. Icon-only buttons can
-        also compose compact control groups such as an editing toolbar.
+        Each intent is represented at high, medium, and low emphasis. Inline composes icon and label
+        as one centered group, while Edge keeps the label independently centered. Icon-only buttons
+        can also compose compact control groups such as an editing toolbar.
       </Text>
       <div className={`${styles.buttonExampleGrid} k-root`}>
         {EXAMPLES.map(({ icon, emphasis, iconLayout, iconPlacement, intent, label }) => (
@@ -157,7 +189,7 @@ export function ButtonIconExamples({
               {actions.map(({ icon, label }) => (
                 <KButton
                   aria-label={label}
-                  emphasis="low"
+                  emphasis="medium"
                   intent="neutral"
                   key={label}
                   scale={scale}

@@ -32,6 +32,11 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     typography: ios27AppleTypography,
+    iconSizes: {
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24
+    },
     icons: {
       family: 'sf-symbols',
       variant: 'regular'

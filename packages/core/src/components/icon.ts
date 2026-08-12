@@ -1,4 +1,6 @@
 import type { ElementSizeValue } from '../breakpoints.ts';
+import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
+import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
   ColorProperty,
   ColorSchema,
@@ -10,24 +12,7 @@ import type {
 import { IconIntentKeys } from '../types/colors/colors.types.ts';
 import { getElementPaletteValidationIssues } from './palettes.ts';
 
-/**
- * Public Icon sizes are deliberately compact and map to fixed pixel geometry.
- */
-export const ICON_SIZE_BY_SCALE = {
-  's:sm:2': 12,
-  's:sm:1': 16,
-  's:md:1': 20,
-  's:lg:1': 24,
-  's:lg:2': 28,
-  's:lg:3': 32,
-  's:lg:4': 48
-} as const satisfies Partial<Record<ElementSizeValue, number>>;
-
-export type IconScale = keyof typeof ICON_SIZE_BY_SCALE;
-
-export type IconScaleSchema = {
-  [TScale in IconScale]: (typeof ICON_SIZE_BY_SCALE)[TScale];
-};
+export type IconScale = ElementSizeValue;
 
 type IconPalettes<TSegmentName extends SegmentName> = Partial<
   Record<
@@ -47,10 +32,7 @@ export type IconElementName = 'e1';
  */
 export type IconGlyphElementStyle<TSegmentName extends SegmentName = never> = {
   name: string;
-  scales: {
-    boxWidth: IconScaleSchema;
-    boxHeight: IconScaleSchema;
-  };
+  iconSize: ElementIconSize;
   palettes: IconPalettes<TSegmentName>;
 };
 
@@ -60,9 +42,7 @@ export type IconElements<TSegmentName extends SegmentName = never> = {
 
 const ICON_COMPONENT_KEYS = ['elements'] as const;
 const ICON_ELEMENTS_KEYS = ['e1'] as const;
-const ICON_ELEMENT_KEYS = ['name', 'scales', 'palettes'] as const;
-const ICON_SCALE_PROPERTIES = ['boxWidth', 'boxHeight'] as const;
-const ICON_SCALE_KEYS = Object.keys(ICON_SIZE_BY_SCALE) as IconScale[];
+const ICON_ELEMENT_KEYS = ['name', 'iconSize', 'palettes'] as const;
 const ICON_COLOR_PROPERTIES = ['textColor'] as const satisfies readonly ColorProperty[];
 const ICON_INTENTS = Object.keys(IconIntentKeys) as IconIntent[];
 
@@ -79,26 +59,6 @@ function validateAllowedKeys(
   for (const key of Object.keys(target)) {
     if (!allowed.includes(key)) {
       issues.push(`${path}.${key}: unrecognized key`);
-    }
-  }
-}
-
-function validateIconScale(value: unknown, path: string, issues: string[]): void {
-  if (!isRecord(value)) {
-    issues.push(`${path}: expected object`);
-    return;
-  }
-
-  validateAllowedKeys(value, ICON_SCALE_KEYS, path, issues);
-
-  for (const scale of ICON_SCALE_KEYS) {
-    const expected = ICON_SIZE_BY_SCALE[scale];
-    if (value[scale] === undefined) {
-      issues.push(`${path}.${scale}: required scale`);
-      continue;
-    }
-    if (value[scale] !== expected) {
-      issues.push(`${path}.${scale}: expected ${expected}`);
     }
   }
 }
@@ -184,19 +144,7 @@ export function validateIconComponentContract(value: unknown, path = 'components
     issues.push(`${path}.elements.e1.name: expected string`);
   }
 
-  if (!isRecord(element.scales)) {
-    issues.push(`${path}.elements.e1.scales: expected object`);
-  } else {
-    validateAllowedKeys(
-      element.scales,
-      ICON_SCALE_PROPERTIES,
-      `${path}.elements.e1.scales`,
-      issues
-    );
-    for (const property of ICON_SCALE_PROPERTIES) {
-      validateIconScale(element.scales[property], `${path}.elements.e1.scales.${property}`, issues);
-    }
-  }
+  issues.push(...validateElementIconSizeContract(element.iconSize, `${path}.elements.e1.iconSize`));
 
   validateIconPalettes(element.palettes, `${path}.elements.e1.palettes`, issues);
 

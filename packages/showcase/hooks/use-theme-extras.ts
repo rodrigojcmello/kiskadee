@@ -7,6 +7,7 @@ import type {
   GlobalClassNameMapJSON,
   RadiusMode,
   SchemaFonts,
+  SchemaIconSizes,
   SchemaIcons,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
@@ -24,6 +25,7 @@ const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 type GlobalArtifact = {
   classMap?: GlobalClassNameMapJSON;
   fonts?: SchemaFonts;
+  iconSizes?: SchemaIconSizes;
   icons?: SchemaIcons;
   radius?: RadiusMode;
   effects?: {

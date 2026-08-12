@@ -38,6 +38,7 @@ declare const process: { env: { NODE_ENV?: string } };
 export type {
   ButtonActivationFeedbackEffect,
   ButtonIconProps,
+  ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ButtonProgressProps,
   ButtonProps,

@@ -46,7 +46,9 @@ parent component already owns semantics.
 ## Element map
 
 - `e1` (`glyph`) is the semantic root and visual viewport.
-- It consumes `boxWidth`, `boxHeight`, and `textColor`.
+- It consumes `textColor` and the square viewport generated from its `iconSize` references.
+- Presets define the numeric levels in `global.iconSizes`; the component scale selects the matching
+  generated scale class and performs no size lookup in the browser.
 - It exposes no interaction state or emphasis axis.
 - The family provider is runtime selection infrastructure, not a schema element.
 

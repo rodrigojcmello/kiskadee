@@ -8,7 +8,7 @@ export type IconElementName = 'e1';
 export type IconClassesMap = Partial<Record<IconElementName, ClassNameByElementJSON>>;
 
 export type IconVisualProps = {
-  /** Fixed Kiskadee glyph size. Defaults to s:md:1 (20px). */
+  /** Preset-owned glyph size reference. Defaults to s:md:1. */
   scale?: IconScale;
   /** Foreground semantic family. Defaults to neutral. */
   intent?: IconIntent;

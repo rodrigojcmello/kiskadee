@@ -7,6 +7,7 @@ import {
 
 export type Ios27AppleButtonFormulaTheme = 'light' | 'dark';
 export type Ios27AppleButtonFormulaScale = 'l' | 'd';
+export type Ios27AppleButtonMediumSurface = 'semantic-tint' | 'tertiary-fill';
 
 export type Ios27AppleButtonTonalFamily = {
   color: (scale: Ios27AppleButtonFormulaScale, tone: KiskadeeTone, alpha?: number) => SolidColor;
@@ -33,13 +34,14 @@ type StatefulFunctionalTones = {
 type ButtonThemeRecipe = {
   scale: Ios27AppleButtonFormulaScale;
   high: StatefulFunctionalTones;
-  medium: StatefulFunctionalTones;
-  lowerEmphasis: Omit<StatefulFunctionalTones, 'rest'>;
+  semanticMedium: Omit<StatefulFunctionalTones, 'rest'>;
+  nonProminent: Omit<StatefulFunctionalTones, 'rest'>;
   transparentTone: KiskadeeTone;
   tertiaryFill: {
     tone: KiskadeeTone;
     alpha: number;
   };
+  semanticTintAlpha: number;
   tertiaryLabel: {
     tone: KiskadeeTone;
     alpha: number;
@@ -49,8 +51,9 @@ type ButtonThemeRecipe = {
 /**
  * Shared iOS 27 Button tonal recipe.
  *
- * Preset intents and optional Brand Packs both resolve through this formula;
- * only the tonal family and the High-emphasis foreground polarity change.
+ * Preset intents and optional Brand Packs both resolve through this formula.
+ * Callers explicitly choose whether Medium uses Apple's neutral tertiary fill
+ * or the semantic 14% tint evidenced by the destructive Button token.
  */
 export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
   light: {
@@ -61,13 +64,12 @@ export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
       pressed: { reference: 'vivid', offset: 2 },
       selected: { reference: 'vivid', offset: 1 }
     },
-    medium: {
-      rest: { reference: 'subtle', offset: 0 },
+    semanticMedium: {
       hover: { reference: 'subtle', offset: 1 },
       pressed: { reference: 'subtle', offset: 2 },
       selected: { reference: 'subtle', offset: 1 }
     },
-    lowerEmphasis: {
+    nonProminent: {
       hover: { reference: 'subtle', offset: 0 },
       pressed: { reference: 'subtle', offset: 2 },
       selected: { reference: 'subtle', offset: 1 }
@@ -77,6 +79,7 @@ export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
       tone: 40,
       alpha: 12
     },
+    semanticTintAlpha: 14,
     tertiaryLabel: {
       tone: 70,
       alpha: 30
@@ -90,13 +93,12 @@ export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
       pressed: { reference: 'vivid', offset: 2 },
       selected: { reference: 'vivid', offset: 1 }
     },
-    medium: {
-      rest: { reference: 'subtle', offset: 0 },
+    semanticMedium: {
       hover: { reference: 'subtle', offset: 1 },
       pressed: { reference: 'subtle', offset: 2 },
       selected: { reference: 'subtle', offset: 1 }
     },
-    lowerEmphasis: {
+    nonProminent: {
       hover: { reference: 'subtle', offset: 0 },
       pressed: { reference: 'subtle', offset: 2 },
       selected: { reference: 'subtle', offset: 1 }
@@ -106,6 +108,7 @@ export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
       tone: 55,
       alpha: 24
     },
+    semanticTintAlpha: 14,
     tertiaryLabel: {
       tone: 95,
       alpha: 30
@@ -116,11 +119,13 @@ export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
 export function createIos27AppleButtonOnSubtleIntent({
   family,
   highForeground,
+  mediumSurface,
   neutralFamily,
   theme
 }: {
   family: Ios27AppleButtonTonalFamily;
   highForeground: SolidColor;
+  mediumSurface: Ios27AppleButtonMediumSurface;
   neutralFamily: Ios27AppleButtonTonalFamily;
   theme: Ios27AppleButtonFormulaTheme;
 }) {
@@ -133,6 +138,12 @@ export function createIos27AppleButtonOnSubtleIntent({
   const tertiaryFill = neutralColor(recipe.tertiaryFill.tone, recipe.tertiaryFill.alpha);
   const tertiaryLabel = neutralColor(recipe.tertiaryLabel.tone, recipe.tertiaryLabel.alpha);
   const roleForeground = roleReferenceColor(recipe.high.rest);
+  const mediumRest =
+    mediumSurface === 'semantic-tint'
+      ? roleReferenceColor(recipe.high.rest, recipe.semanticTintAlpha)
+      : tertiaryFill;
+  const mediumInteraction =
+    mediumSurface === 'semantic-tint' ? recipe.semanticMedium : recipe.nonProminent;
 
   return {
     boxColor: {
@@ -146,29 +157,45 @@ export function createIos27AppleButtonOnSubtleIntent({
         }
       },
       medium: {
-        rest: roleReferenceColor(recipe.medium.rest),
-        hover: roleReferenceColor(recipe.medium.hover),
-        pressed: roleReferenceColor(recipe.medium.pressed),
-        disabled: tertiaryFill,
+        rest: mediumRest,
+        hover: roleReferenceColor(mediumInteraction.hover),
+        pressed: roleReferenceColor(mediumInteraction.pressed),
+        ...(mediumSurface === 'semantic-tint' ? { disabled: tertiaryFill } : {}),
         selected: {
-          rest: roleReferenceColor(recipe.medium.selected)
+          rest: roleReferenceColor(mediumInteraction.selected)
         }
       },
       low: {
-        rest: tertiaryFill,
-        hover: roleReferenceColor(recipe.lowerEmphasis.hover),
-        pressed: roleReferenceColor(recipe.lowerEmphasis.pressed),
+        rest: transparent,
+        hover: roleReferenceColor(recipe.nonProminent.hover),
+        pressed: roleReferenceColor(recipe.nonProminent.pressed),
+        disabled: tertiaryFill,
         selected: {
-          rest: roleReferenceColor(recipe.lowerEmphasis.selected)
+          rest: roleReferenceColor(recipe.nonProminent.selected)
         }
       },
       lowest: {
         rest: transparent,
-        hover: roleReferenceColor(recipe.lowerEmphasis.hover),
-        pressed: roleReferenceColor(recipe.lowerEmphasis.pressed),
+        hover: roleReferenceColor(recipe.nonProminent.hover),
+        pressed: roleReferenceColor(recipe.nonProminent.pressed),
         selected: {
-          rest: roleReferenceColor(recipe.lowerEmphasis.selected)
+          rest: roleReferenceColor(recipe.nonProminent.selected)
         }
+      }
+    },
+    borderColor: {
+      high: {
+        rest: transparent
+      },
+      medium: {
+        rest: transparent
+      },
+      low: {
+        rest: roleForeground,
+        disabled: transparent
+      },
+      lowest: {
+        rest: transparent
       }
     },
     textColor: {
@@ -255,6 +282,20 @@ export function createIos27AppleBrandButtonOnVividIntent({
         selected: {
           rest: overlay(20)
         }
+      }
+    },
+    borderColor: {
+      high: {
+        rest: transparent
+      },
+      medium: {
+        rest: transparent
+      },
+      low: {
+        rest: transparent
+      },
+      lowest: {
+        rest: transparent
       }
     },
     textColor: {

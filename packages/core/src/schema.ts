@@ -7,6 +7,7 @@ import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
+import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type {
   ElementPalettes,
   InteractionState,
@@ -48,6 +49,7 @@ export type ElementStyle<TSegmentName extends SegmentName = never> = {
   name: string; // human-readable element label, for example "button-text"
 } & Partial<{
   decorations: DecorationSchema;
+  iconSize: ElementIconSize;
   typography: ElementTypography;
   scales: ScaleSchema;
   // Palettes follow the structure: segmentName → theme → surface context → ColorSchema.
@@ -240,6 +242,7 @@ export type RadiusMode = 'rounded' | 'square' | 'pill';
 
 export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
+  iconSizes?: SchemaIconSizes;
   icons?: SchemaIcons;
   typography?: SchemaTypography;
   focus?: FocusGlobalTokens;

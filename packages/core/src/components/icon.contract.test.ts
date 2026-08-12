@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { ICON_SIZE_BY_SCALE, validateIconComponentContract } from './icon.ts';
+import { validateIconComponentContract } from './icon.ts';
 
 function createIcon() {
   return {
     elements: {
       e1: {
         name: 'glyph',
-        scales: {
-          boxWidth: { ...ICON_SIZE_BY_SCALE },
-          boxHeight: { ...ICON_SIZE_BY_SCALE }
+        iconSize: {
+          's:sm:1': 's:sm:1',
+          's:md:1': 's:md:1',
+          's:lg:1': 's:lg:1'
         },
         palettes: {
           default: {
@@ -38,12 +39,11 @@ describe('Icon component contract', () => {
     expect(validateIconComponentContract(createIcon())).toEqual([]);
   });
 
-  it('rejects extra elements, options, unsupported sizes and non-rest color branches', () => {
+  it('rejects extra elements, options, invalid icon sizes and non-rest color branches', () => {
     const icon = createIcon() as any;
     icon.options = { decorative: true };
     icon.elements.e2 = { name: 'label' };
-    icon.elements.e1.scales.boxWidth['s:lg:5'] = 64;
-    icon.elements.e1.scales.boxHeight['s:lg:4'] = 40;
+    icon.elements.e1.iconSize['s:all'] = 's:lg:5';
     icon.elements.e1.palettes.default.light.onSubtle.textColor.warning = {
       medium: { rest: '#ffff00' }
     };
@@ -57,8 +57,7 @@ describe('Icon component contract', () => {
       expect.arrayContaining([
         'components.icon.options: unrecognized key',
         'components.icon.elements.e2: unrecognized key',
-        'components.icon.elements.e1.scales.boxWidth.s:lg:5: unrecognized key',
-        'components.icon.elements.e1.scales.boxHeight.s:lg:4: expected 48',
+        'components.icon.elements.e1.iconSize.s:all: "s:all" cannot be combined with another size',
         expect.stringContaining('.warning: unrecognized intent'),
         expect.stringContaining('.neutral.high: unrecognized emphasis'),
         expect.stringContaining('.primary.medium.hover: unrecognized state'),

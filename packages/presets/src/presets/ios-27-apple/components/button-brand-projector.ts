@@ -20,7 +20,11 @@ import {
   type Ios27AppleButtonTonalFamily
 } from './button-color-formula.ts';
 
-type BrandIntentFormula = ReturnType<typeof createIos27AppleButtonOnSubtleIntent>;
+type BrandIntentFormula = {
+  boxColor: Record<string, unknown>;
+  borderColor: Record<string, unknown>;
+  textColor: Record<string, unknown>;
+};
 type BrandIntentFormulaById = Record<string, BrandIntentFormula>;
 type ThemeBrandIntentFormulas = Record<Ios27AppleButtonFormulaTheme, BrandIntentFormulaById>;
 
@@ -88,6 +92,7 @@ function createOnSubtleFormulas(
         createIos27AppleButtonOnSubtleIntent({
           theme,
           family,
+          mediumSurface: 'tertiary-fill',
           neutralFamily: neutralButtonFamily,
           highForeground: resolveContentForeground(scale, resolveVividContentPolarity(brand, scale))
         })
@@ -140,10 +145,12 @@ export function createIos27AppleBrandButtonProjection(
 
   const createContainerTheme = (theme: Ios27AppleButtonFormulaTheme) => ({
     onSubtle: {
-      boxColor: selectProperty(onSubtle[theme], 'boxColor')
+      boxColor: selectProperty(onSubtle[theme], 'boxColor'),
+      borderColor: selectProperty(onSubtle[theme], 'borderColor')
     },
     onVivid: {
-      boxColor: selectProperty(onVivid, 'boxColor')
+      boxColor: selectProperty(onVivid, 'boxColor'),
+      borderColor: selectProperty(onVivid, 'borderColor')
     }
   });
   const createContentTheme = (theme: Ios27AppleButtonFormulaTheme) => ({

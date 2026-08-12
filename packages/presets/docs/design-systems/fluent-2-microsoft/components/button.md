@@ -100,6 +100,11 @@ Button `e3` instead of styling SVG children directly:
 | `s:md:1`, `bp:lg:1` and above | 20 px | 6 px | Official adapted |
 | `s:lg:1` | 24 px | 6 px | Official adapted |
 
+The numeric viewports live once in `global.iconSizes`. Button `e3.iconSize` maps each Button scale
+to that catalog: Small selects icon Medium, responsive Button Medium selects icon Large and then
+icon Medium at `bp:lg:1`, and Button Large selects icon Large. Responsiveness therefore remains a
+Button decision rather than a property of the global icon-size catalog.
+
 The responsive `s:md:1` icon follows the same policy as the Button container and label: Large
 geometry below the desktop breakpoint, then the official Medium geometry at `bp:lg:1`. Icon color
 reuses the complete label palette for the active theme, surface context, intent, emphasis, and
@@ -194,7 +199,9 @@ form a 36 px Small, responsive 60/48 px Medium, and 60 px Large panel. These tot
 visual calibration that enlarges the original panel geometry by 50% without changing the icon
 viewport. The region inherits the same root geometry and derives its outer radius as `e1 radius -
 e1 border width`, keeping the inner canvas concentric without duplicating radius or border-width
-tokens in `e4`.
+tokens in `e4`. Fluent defaults `iconSurfaceCorners` to `edge`: only the corners adjacent to the
+outer Button edge remain rounded, while the two corners facing the label are straight. This is a
+Kiskadee composition decision and not an official Fluent appearance axis.
 
 ## Surface Contexts
 
@@ -707,6 +714,8 @@ changing the asset scales.
   derive from the inherited `e1` radius and border width.
 - `components.button.options.iconTreatment` remains `plain`; the surfaced treatment is an explicit
   per-instance extension and implies edge composition.
+- `components.button.options.iconSurfaceCorners` defaults to `edge`, keeping the region's two
+  label-facing corners straight while its outer corners remain concentric with `e1`.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
   treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official

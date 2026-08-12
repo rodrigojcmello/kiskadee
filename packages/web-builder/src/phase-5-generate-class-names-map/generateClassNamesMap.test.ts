@@ -4,7 +4,6 @@ import type {
   ComponentStyleKeyMap,
   Schema
 } from '@kiskadee/core';
-import { ICON_SIZE_BY_SCALE } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import {
   buildScopedToneMetadataKey,
@@ -23,14 +22,19 @@ describe('generateClassNamesMapSplit', () => {
       version: [1, 0, 0],
       author: 'Kiskadee',
       breakpoints: { 'bp:all': 0 },
+      global: {
+        iconSizes: {
+          's:sm:2': 12,
+          's:md:1': 20
+        }
+      },
       components: {
         icon: {
           elements: {
             e1: {
               name: 'glyph',
-              scales: {
-                boxWidth: { ...ICON_SIZE_BY_SCALE },
-                boxHeight: { ...ICON_SIZE_BY_SCALE }
+              iconSize: {
+                's:sm:2': 's:sm:2'
               },
               palettes: {
                 default: {

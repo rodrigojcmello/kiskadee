@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  ICON_SIZE_BY_SCALE,
-  type IconIntent,
-  type IconScale,
-  type SurfaceContext
-} from '@kiskadee/core';
+import type { IconIntent, IconScale, SchemaIconSizes, SurfaceContext } from '@kiskadee/core';
 import iconManifest from '@kiskadee/icons/icons.json';
 import { CANONICAL_ICON_NAMES, type CanonicalIconName } from '@kiskadee/icons/interface';
 import { interfaceIconFamilyOptions } from '@kiskadee/icons/interface/catalog';
@@ -118,11 +113,6 @@ function formatScaleLabel(scale: IconScale): string {
   return step === '1' ? familyLabel : `${familyLabel} ${step}`;
 }
 
-const ICON_SCALE_OPTIONS = (Object.keys(ICON_SIZE_BY_SCALE) as IconScale[]).map((value) => ({
-  value,
-  label: formatScaleLabel(value)
-}));
-
 function getSocialIconEntries(
   iconNamespace: Record<string, unknown>,
   manifest: PublishedIconManifest
@@ -181,18 +171,18 @@ const SOCIAL_ICON_ENTRIES = getSocialIconEntries(
 function IconGallery({
   entries,
   intent,
+  rawIconSize,
   isStyled,
   scale,
   surfaceContext
 }: {
   entries: readonly CanonicalIconName[];
   intent: IconIntent;
+  rawIconSize: number;
   isStyled: boolean;
   scale: IconScale;
   surfaceContext: SurfaceContext;
 }) {
-  const rawIconSize = ICON_SIZE_BY_SCALE[scale];
-
   return (
     <div className={s.galleryGrid}>
       {entries.map((name) => (
@@ -293,7 +283,7 @@ function SocialIconGallery({
 }
 
 export default function IconShowcase() {
-  const { designSystem, segment, theme } = useKiskadee();
+  const { designSystem, global, segment, theme } = useKiskadee();
   const { iconFamilyId, iconVariantId, manifest } = useShowcase();
   const { fallbackFor } = useIconFamilyStatus();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
@@ -322,22 +312,23 @@ export default function IconShowcase() {
       : renderedFamilyName;
 
   const iconMeta = manifest?.components?.icon;
+  const iconSizes = global?.iconSizes as SchemaIconSizes | undefined;
   const isIconAvailable = Boolean(iconMeta);
   const onVividSupported = supportsManifestSurfaceContext(iconMeta, segment, theme, 'onVivid');
   const iconState = getManifestComponentState(iconMeta, segment, theme, surfaceContext);
 
-  const availableScaleOptions = useMemo(
-    () =>
-      ICON_SCALE_OPTIONS.filter(
-        (option) => !iconMeta?.scale || Boolean(iconMeta.scale[option.value])
-      ),
-    [iconMeta?.scale]
-  );
+  const availableScaleOptions = useMemo(() => {
+    const scaleKeys = Object.keys(iconSizes ?? iconMeta?.scale ?? {}) as IconScale[];
+    return scaleKeys
+      .filter((value) => !iconMeta?.scale || Boolean(iconMeta.scale[value]))
+      .map((value) => ({ value, label: formatScaleLabel(value) }));
+  }, [iconMeta?.scale, iconSizes]);
   const activeScale =
     availableScaleOptions.find((option) => option.value === scale)?.value ??
     availableScaleOptions.find((option) => option.value === 's:lg:3')?.value ??
     availableScaleOptions[0]?.value ??
     's:lg:3';
+  const activeRawIconSize = iconSizes?.[activeScale] ?? iconSizes?.['s:md:1'] ?? 20;
 
   const availableIntentOptions = useMemo(
     () =>
@@ -680,6 +671,7 @@ export default function IconShowcase() {
             entries={CANONICAL_ICON_NAMES}
             intent={activeIntent}
             isStyled={isIconAvailable}
+            rawIconSize={activeRawIconSize}
             scale={activeScale}
             surfaceContext={surfaceContext}
           />

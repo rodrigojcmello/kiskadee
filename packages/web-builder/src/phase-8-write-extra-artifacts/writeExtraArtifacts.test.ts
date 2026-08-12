@@ -1,7 +1,7 @@
 import { readFile, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Schema, SchemaFonts } from '@kiskadee/core';
+import type { Schema, SchemaFonts, SchemaIconSizes } from '@kiskadee/core';
 import { afterEach, describe, expect, it } from 'vitest';
 import { writeExtraArtifacts } from './writeExtraArtifacts.ts';
 
@@ -115,6 +115,29 @@ describe('writeExtraArtifacts font artifacts', () => {
     const tokensCss = await readFile(resolve(outputDirectory, 'tokens.kiskadee.css'), 'utf8');
 
     expect(globalArtifact.icons).toEqual({ family: 'fluent-system', variant: 'regular' });
+    expect(tokensCss).not.toContain('--k-icon');
+  });
+
+  it('publishes the preset icon-size catalog without creating CSS variables', async () => {
+    const outDirSlug = createOutputSlug('icon-sizes');
+    const iconSizes = {
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24
+    } as const satisfies SchemaIconSizes;
+
+    await writeExtraArtifacts({
+      schema: createSchema({ iconSizes, focus: { width: 2 } }),
+      outDirSlug
+    });
+
+    const outputDirectory = resolve(buildRoot, outDirSlug);
+    const globalArtifact = JSON.parse(
+      await readFile(resolve(outputDirectory, 'global.kiskadee.json'), 'utf8')
+    );
+    const tokensCss = await readFile(resolve(outputDirectory, 'tokens.kiskadee.css'), 'utf8');
+
+    expect(globalArtifact.iconSizes).toEqual(iconSizes);
     expect(tokensCss).not.toContain('--k-icon');
   });
 });

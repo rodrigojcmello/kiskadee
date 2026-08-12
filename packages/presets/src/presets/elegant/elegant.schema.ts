@@ -25,6 +25,9 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     typography: elegantTypography,
+    iconSizes: {
+      's:md:1': 20
+    },
     fonts: {
       families: {
         'system-ui': {

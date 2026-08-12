@@ -218,6 +218,7 @@ export function createFluent2MicrosoftButtonSchema({
     options: {
       iconLayout: 'inline',
       iconPlacement: 'leading',
+      iconSurfaceCorners: 'edge',
       iconTreatment: 'plain'
     },
     elements: {
@@ -298,6 +299,11 @@ export function createFluent2MicrosoftButtonSchema({
       },
       e3: {
         name: 'button-icon',
+        iconSize: {
+          's:sm:1': 's:md:1',
+          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:lg:1': 's:lg:1'
+        },
         palettes: {
           default: {
             light: createIconTextContextPalettes('light'),
@@ -306,16 +312,6 @@ export function createFluent2MicrosoftButtonSchema({
           }
         },
         scales: {
-          boxWidth: {
-            's:sm:1': 20,
-            's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
-            's:lg:1': 24
-          },
-          boxHeight: {
-            's:sm:1': 20,
-            's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
-            's:lg:1': 24
-          },
           paddingRight: {
             's:sm:1': 4,
             's:md:1': 6,

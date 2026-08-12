@@ -1,3 +1,5 @@
+import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
+import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
   ColorProperty,
   ColorSchema,
@@ -32,6 +34,7 @@ type ElementNameMetadata = {
 
 export type ButtonIconLayout = 'inline' | 'edge';
 export type ButtonIconPlacement = 'leading' | 'trailing';
+export type ButtonIconSurfaceCorners = 'edge' | 'all';
 export type ButtonIconTreatment = 'plain' | 'surface';
 
 export type ButtonOptions = {
@@ -44,6 +47,8 @@ export type ButtonOptions = {
   iconPlacement?: ButtonIconPlacement;
   /** Visual treatment applied to the icon region. */
   iconTreatment?: ButtonIconTreatment;
+  /** Corner policy applied to a surfaced icon region. */
+  iconSurfaceCorners?: ButtonIconSurfaceCorners;
 };
 
 /**
@@ -92,9 +97,8 @@ export type ButtonLabelElementStyle<TSegmentName extends SegmentName = never> = 
  * `iconColor` maps to `textColor` in the current schema model.
  */
 export type ButtonIconElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  scales: ElementScalesByProperty<
-    'boxWidth' | 'boxHeight' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
-  >;
+  iconSize: ElementIconSize;
+  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
   effects: ElementEffects;
 }> &
@@ -118,17 +122,24 @@ export type ButtonElements<TSegmentName extends SegmentName = never> = {
 
 type ElementContractRules = {
   decorations?: readonly string[];
+  iconSize?: boolean;
   typography?: boolean;
   scales?: readonly string[];
   palettes?: readonly ColorProperty[];
 };
 
 const BUTTON_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
-const BUTTON_OPTION_KEYS = ['iconLayout', 'iconPlacement', 'iconTreatment'] as const;
+const BUTTON_OPTION_KEYS = [
+  'iconLayout',
+  'iconPlacement',
+  'iconTreatment',
+  'iconSurfaceCorners'
+] as const;
 const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
+  'iconSize',
   'typography',
   'scales',
   'palettes',
@@ -154,7 +165,8 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
     palettes: ['textColor']
   },
   e3: {
-    scales: ['boxWidth', 'boxHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    iconSize: true,
+    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
     palettes: ['textColor']
   },
   e4: {
@@ -227,6 +239,14 @@ function validateElementContract(
     }
   }
 
+  if (value.iconSize !== undefined) {
+    if (!rules.iconSize) {
+      issues.push(`${path}.iconSize: not allowed for this element`);
+    } else {
+      issues.push(...validateElementIconSizeContract(value.iconSize, `${path}.iconSize`));
+    }
+  }
+
   if (value.scales !== undefined) {
     if (!rules.scales) {
       issues.push(`${path}.scales: not allowed for this element`);
@@ -287,6 +307,14 @@ export function validateButtonComponentContract(
       ) {
         issues.push(`${path}.options.iconTreatment: expected "plain" or "surface"`);
       }
+
+      if (
+        value.options.iconSurfaceCorners !== undefined &&
+        value.options.iconSurfaceCorners !== 'edge' &&
+        value.options.iconSurfaceCorners !== 'all'
+      ) {
+        issues.push(`${path}.options.iconSurfaceCorners: expected "edge" or "all"`);
+      }
     }
   }
 
@@ -312,6 +340,16 @@ export function validateButtonComponentContract(
   ) {
     issues.push(
       `${path}.options.iconTreatment: surfaced defaults require components.button.elements.e4`
+    );
+  }
+
+  if (
+    isRecord(value.options) &&
+    value.options.iconSurfaceCorners !== undefined &&
+    elements.e4 === undefined
+  ) {
+    issues.push(
+      `${path}.options.iconSurfaceCorners: surfaced corner defaults require components.button.elements.e4`
     );
   }
 

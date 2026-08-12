@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { validateButtonComponentContract } from './button.ts';
 
-function createButton(options?: unknown) {
+function createButton(options?: unknown, includeIconRegion = false) {
   return {
     ...(options === undefined ? {} : { options }),
     elements: {
       e1: {
         name: 'button'
-      }
+      },
+      ...(includeIconRegion ? { e4: { name: 'button-icon-region' } } : {})
     }
   };
 }
@@ -33,6 +34,30 @@ describe('Button component contract', () => {
     ).toEqual([]);
   });
 
+  it('accepts surfaced icon corner policies when the icon region exists', () => {
+    expect(
+      validateButtonComponentContract(
+        createButton(
+          {
+            iconSurfaceCorners: 'edge'
+          },
+          true
+        )
+      )
+    ).toEqual([]);
+
+    expect(
+      validateButtonComponentContract(
+        createButton(
+          {
+            iconSurfaceCorners: 'all'
+          },
+          true
+        )
+      )
+    ).toEqual([]);
+  });
+
   it('rejects unknown icon layout options and values', () => {
     expect(
       validateButtonComponentContract(
@@ -47,5 +72,52 @@ describe('Button component contract', () => {
       'components.button.options.iconLayout: expected "inline" or "edge"',
       'components.button.options.iconPlacement: expected "leading" or "trailing"'
     ]);
+  });
+
+  it('rejects invalid or unsupported surfaced icon corner defaults', () => {
+    expect(
+      validateButtonComponentContract(
+        createButton({
+          iconSurfaceCorners: 'inner'
+        })
+      )
+    ).toEqual([
+      'components.button.options.iconSurfaceCorners: expected "edge" or "all"',
+      'components.button.options.iconSurfaceCorners: surfaced corner defaults require components.button.elements.e4'
+    ]);
+  });
+
+  it('accepts icon-size references only on the icon slot', () => {
+    expect(
+      validateButtonComponentContract({
+        elements: {
+          e1: { name: 'button' },
+          e3: {
+            name: 'button-icon',
+            iconSize: { 's:md:1': 's:md:1' }
+          }
+        }
+      })
+    ).toEqual([]);
+
+    expect(
+      validateButtonComponentContract({
+        elements: {
+          e1: {
+            name: 'button',
+            iconSize: { 's:md:1': 's:md:1' }
+          },
+          e3: {
+            name: 'button-icon',
+            scales: { boxWidth: { 's:md:1': 20 } }
+          }
+        }
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        'components.button.elements.e1.iconSize: not allowed for this element',
+        'components.button.elements.e3.scales.boxWidth: unrecognized key'
+      ])
+    );
   });
 });

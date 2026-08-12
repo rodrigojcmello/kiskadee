@@ -516,6 +516,16 @@ export function createMaterial3GoogleButtonSchema({
             }
           };
         })
+      },
+      e3: {
+        name: 'button-icon',
+        iconSize: {
+          's:sm:1': 's:sm:1',
+          's:md:1': 's:md:1',
+          's:lg:1': 's:lg:1',
+          's:lg:2': 's:lg:2',
+          's:lg:3': 's:lg:3'
+        }
       }
     }
   };

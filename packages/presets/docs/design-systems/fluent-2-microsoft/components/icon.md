@@ -46,7 +46,7 @@ the three-layer color contract.
 
 | Kiskadee appearance | Upstream relationship | Status | Decision |
 | --- | --- | --- | --- |
-| Seven icon scales | Fluent discrete size model | Official adapted | `12`, `16`, `20`, `24`, `28`, `32`, and `48` px |
+| Seven icon scales | Fluent discrete size model | Official adapted | `global.iconSizes` publishes `12`, `16`, `20`, `24`, `28`, `32`, and `48` px |
 | `neutral.medium.rest` | Neutral foreground | Official adapted | Theme-specific neutral vivid reference |
 | `primary.medium.rest` | Brand foreground | Official adapted | Theme-specific Brand vivid reference |
 | `onVivid` | Inverted/on-brand content | Kiskadee extension | Absolute neutral white or a physically light Primary from the Light scale |
@@ -75,7 +75,9 @@ the three-layer color contract.
 
 ## Schema Mapping
 
-- `e1`: glyph wrapper; owns `boxWidth`, `boxHeight`, and `textColor`.
+- `e1`: glyph wrapper; maps each component scale to the matching `global.iconSizes` reference and
+  owns `textColor`. The Web Builder expands the reference into square `boxWidth` and `boxHeight`
+  utilities.
 
 ## Validation
 

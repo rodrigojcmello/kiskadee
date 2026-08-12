@@ -43,6 +43,13 @@ their surrounding geometry, including padding, gap, margin, alignment, and heigh
 shared profile instead of creating compact or relaxed recipes solely to reproduce a component's
 previous local line box.
 
+Icon viewport geometry follows the same schema-to-build principle without introducing a browser
+runtime. Each preset declares numeric levels in `global.iconSizes` using the existing element-size
+IDs. An icon-bearing component slot maps its own scale and breakpoints to those levels through
+`iconSize`; the Web Builder expands the references into the existing atomic `boxWidth` and
+`boxHeight` utilities. The catalog answers how large a level is, while each component remains
+responsible for when that level applies.
+
 ## Options vs. Element values
 
 Component schema also has an important split between:

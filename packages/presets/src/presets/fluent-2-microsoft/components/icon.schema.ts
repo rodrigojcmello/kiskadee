@@ -10,16 +10,6 @@ type CreateFluent2MicrosoftIconSchemaArgs = {
   c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
 };
 
-const ICON_SIZES = {
-  's:sm:2': 12,
-  's:sm:1': 16,
-  's:md:1': 20,
-  's:lg:1': 24,
-  's:lg:2': 28,
-  's:lg:3': 32,
-  's:lg:4': 48
-} as const;
-
 const ICON_THEME_TRACK = {
   light: 'l',
   dark: 'd',
@@ -74,9 +64,14 @@ export function createFluent2MicrosoftIconSchema({
     elements: {
       e1: {
         name: 'glyph',
-        scales: {
-          boxWidth: ICON_SIZES,
-          boxHeight: ICON_SIZES
+        iconSize: {
+          's:sm:2': 's:sm:2',
+          's:sm:1': 's:sm:1',
+          's:md:1': 's:md:1',
+          's:lg:1': 's:lg:1',
+          's:lg:2': 's:lg:2',
+          's:lg:3': 's:lg:3',
+          's:lg:4': 's:lg:4'
         },
         palettes: {
           default: {

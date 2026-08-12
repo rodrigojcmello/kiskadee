@@ -3,7 +3,7 @@ import { schema } from '../fluent-2-microsoft.schema.ts';
 
 function requireIconElement() {
   const element = schema.components.icon?.elements.e1;
-  if (!element?.palettes || !element.scales) {
+  if (!element?.palettes || !element.iconSize) {
     throw new Error('Fluent Icon schema is missing');
   }
   return element;
@@ -11,25 +11,23 @@ function requireIconElement() {
 
 describe('Fluent 2 Icon', () => {
   it('publishes the approved discrete icon sizes', () => {
-    expect(requireIconElement().scales).toEqual({
-      boxWidth: {
-        's:sm:2': 12,
-        's:sm:1': 16,
-        's:md:1': 20,
-        's:lg:1': 24,
-        's:lg:2': 28,
-        's:lg:3': 32,
-        's:lg:4': 48
-      },
-      boxHeight: {
-        's:sm:2': 12,
-        's:sm:1': 16,
-        's:md:1': 20,
-        's:lg:1': 24,
-        's:lg:2': 28,
-        's:lg:3': 32,
-        's:lg:4': 48
-      }
+    expect(schema.global?.iconSizes).toEqual({
+      's:sm:2': 12,
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24,
+      's:lg:2': 28,
+      's:lg:3': 32,
+      's:lg:4': 48
+    });
+    expect(requireIconElement().iconSize).toEqual({
+      's:sm:2': 's:sm:2',
+      's:sm:1': 's:sm:1',
+      's:md:1': 's:md:1',
+      's:lg:1': 's:lg:1',
+      's:lg:2': 's:lg:2',
+      's:lg:3': 's:lg:3',
+      's:lg:4': 's:lg:4'
     });
   });
 

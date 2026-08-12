@@ -6,6 +6,7 @@ import type {
   ComponentName,
   ComponentStyleKeyMap,
   ElementAllSizeValue,
+  ElementIconSize,
   ElementSizeValue,
   ElementStyle,
   ElementTypography,
@@ -13,6 +14,7 @@ import type {
   ScaleProperty,
   ScaleSchema,
   Schema,
+  SchemaIconSizes,
   ShadowEffectSchema,
   ShadowElementEffectSchema,
   StyleKeyByElement,
@@ -35,6 +37,7 @@ import {
   convertElementShadowToStyleKeys
 } from './effects/convertElementShadowToStyleKeys.ts';
 import { convertElementThumbShrinkToStyleKeys } from './effects/convertElementThumbShrinkToStyleKeys.ts';
+import { expandElementIconSize } from './icon-sizes/compileIconSizes.ts';
 import {
   convertElementScalesToStyleKeys,
   type ScaleValue
@@ -42,7 +45,7 @@ import {
 
 type ElementSchemaInput = Pick<
   ElementStyle,
-  'decorations' | 'effects' | 'name' | 'palettes' | 'scales' | 'typography'
+  'decorations' | 'effects' | 'iconSize' | 'name' | 'palettes' | 'scales' | 'typography'
 >;
 
 type ComponentSchemaInput = {
@@ -95,6 +98,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
   const typographyBuild = createTypographyBuild(schema.global?.typography, schema.breakpoints);
+  const iconSizes = schema.global?.iconSizes as SchemaIconSizes | undefined;
   const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
   const shadowConfig = schema.global?.effects?.shadow;
 
@@ -152,6 +156,11 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references typography without global.typography.`
       );
     }
+    if (element.iconSize && !iconSizes) {
+      throw new Error(
+        `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references iconSize without global.iconSizes.`
+      );
+    }
     deepUpdate<StyleKeyByElement>(styleKeysByComponent, path, (prev) => {
       const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};
       const typographyStyleKeys = element.typography
@@ -171,11 +180,16 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           new Set([...(el.decorations ?? []), ...typographyStyleKeys.decorations])
         );
       }
-      if (element.scales) {
-        const { borderRadius, ...otherScales } = element.scales as ScaleSchema;
-        if (Object.keys(otherScales).length > 0) {
+      const iconSizeScales =
+        element.iconSize && iconSizes
+          ? expandElementIconSize(element.iconSize as ElementIconSize, iconSizes)
+          : undefined;
+      if (element.scales || iconSizeScales) {
+        const { borderRadius, ...otherScales } = (element.scales ?? {}) as ScaleSchema;
+        const mergedScales = { ...otherScales, ...iconSizeScales };
+        if (Object.keys(mergedScales).length > 0) {
           el.scales = convertElementScalesToStyleKeys(
-            otherScales as Partial<Record<ScaleProperty, ScaleValue>>
+            mergedScales as Partial<Record<ScaleProperty, ScaleValue>>
           );
         }
         const radiusScales: NonNullable<StyleKeyByElement['radiusScales']> = {};

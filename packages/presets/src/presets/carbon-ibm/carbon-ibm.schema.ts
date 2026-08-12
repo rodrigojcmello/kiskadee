@@ -20,6 +20,14 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     typography: carbonIbmTypography,
+    iconSizes: {
+      's:sm:2': 12,
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24,
+      's:lg:2': 28,
+      's:lg:3': 32
+    },
     icons: {
       family: 'carbon',
       variant: 'regular'
@@ -205,6 +213,17 @@ export const schema: Schema<Segments> = {
                 }
               }
             }
+          }
+        },
+        e3: {
+          name: 'button-icon',
+          iconSize: {
+            's:sm:2': 's:sm:2',
+            's:sm:1': 's:sm:1',
+            's:md:1': 's:md:1',
+            's:lg:1': 's:lg:1',
+            's:lg:2': 's:lg:2',
+            's:lg:3': 's:lg:3'
           }
         }
       }

@@ -272,6 +272,7 @@ function buildComponentScale(
   for (const elements of collectComponentElements(schema, componentName)) {
     for (const el of Object.values(elements)) {
       collectPublishedScaleKeys((el as any).scales);
+      collectPublishedScaleKeys((el as any).iconSize);
     }
   }
 

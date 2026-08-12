@@ -9,11 +9,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // Start with .no-transitions to avoid animations on the first paint.
     <html lang="en" className="no-transitions">
       <body>
-        {process.env.NODE_ENV === 'development' ? (
-          // Browser inspection tooling may claim the first body div before
-          // React hydrates. Isolate that external mutation from the app root.
-          <div hidden aria-hidden="true" suppressHydrationWarning />
-        ) : null}
+        {/*
+         * Browser inspection tooling may claim and rewrite the first body div
+         * before React hydrates. Keep this sentinel in both the server and
+         * client trees so that external attribute changes never reach the app
+         * root. The warning escape hatch is intentionally scoped to this empty
+         * element only.
+         */}
+        <div hidden aria-hidden="true" suppressHydrationWarning />
         <Providers>
           <ShowcaseChrome>{children}</ShowcaseChrome>
         </Providers>

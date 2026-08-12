@@ -7,6 +7,7 @@ export * from './components/slider.ts';
 export * from './components/switch.ts';
 export * from './components/tabs.ts';
 export * from './components/text-field.ts';
+export * from './icon-sizes.ts';
 export * from './schema.ts';
 export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';

@@ -525,6 +525,47 @@ Consequence:
 - Component elements own padding, gap, margin, alignment, and height. Geometry may adapt to a
   shared profile, but it must not recreate a removed line-height through compensating padding.
 
+### 3.3.3 Shared icon-size catalog
+
+Context:
+
+- Icon viewports recur across standalone Icon and icon-bearing component slots.
+- The existing `s:sm:* | s:md:1 | s:lg:*` IDs already express reusable size levels, but their
+  numeric values may differ by preset.
+- Responsive component geometry must remain a component decision rather than behavior hidden in a
+  global token.
+
+Decision:
+
+- `global.iconSizes` maps existing element-size IDs to positive pixel values owned by the preset.
+- An icon-bearing slot references those levels through an `iconSize` map keyed by the component's
+  own scale.
+- A component may select icon levels responsively inside that map; the global catalog itself never
+  contains breakpoint behavior.
+- `iconSize` and direct `scales.boxWidth` or `scales.boxHeight` are mutually exclusive on the same
+  element.
+- Family and variant recommendation remain under `global.icons`; icon geometry is an independent
+  concern.
+
+Reason:
+
+- Presets can share one coherent viewport ramp without assuming universal pixel values.
+- Components preserve control over cases such as Fluent Button Medium using a larger icon below a
+  desktop breakpoint.
+- Build-time expansion preserves the existing atomic scale pipeline and avoids a browser resolver,
+  provider, CSS variable, or new class-map bucket.
+
+Consequence:
+
+- The Web Builder validates references and expands each selected level into equal `boxWidth` and
+  `boxHeight` scale values before normal style-key generation.
+- Generated CSS remains one utility per style key, and component class maps continue to publish the
+  resolved viewport under the existing `s` bucket.
+- `global.kiskadee.json` publishes the small catalog as descriptive metadata for consumers such as
+  the Showcase; styled components do not read it at runtime.
+- Slider, Switch, Tabs, and other specialized icon slots adopt this contract only after their own
+  geometry is audited; they must not be migrated by assuming an identity mapping.
+
 ## 4) What belongs in structural Sass
 
 Structural Sass is for layout/positioning/interaction structure, not theming.

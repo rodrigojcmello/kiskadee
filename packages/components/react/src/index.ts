@@ -38,6 +38,8 @@ export type {
   ButtonActivationFeedbackEffect,
   ButtonArtifactConfig,
   ButtonIconProps,
+  ButtonIconSurfaceCorners,
+  ButtonIconTreatment,
   ButtonProgressProps,
   ButtonProps,
   ButtonStatus

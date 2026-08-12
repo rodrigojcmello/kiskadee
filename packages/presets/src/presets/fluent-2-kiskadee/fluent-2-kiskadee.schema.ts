@@ -25,6 +25,11 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     typography: fluent2KiskadeeTypography,
+    iconSizes: {
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24
+    },
     icons: {
       family: 'fluent-system',
       variant: 'regular'
@@ -276,6 +281,14 @@ export const schema: Schema<Segments> = {
               })
             }
           )
+        },
+        e3: {
+          name: 'button-icon',
+          iconSize: {
+            's:sm:1': 's:sm:1',
+            's:md:1': 's:md:1',
+            's:lg:1': 's:lg:1'
+          }
         }
       }
     }
