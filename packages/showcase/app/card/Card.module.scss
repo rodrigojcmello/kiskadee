@@ -1,5 +1,16 @@
 .route {
+  --card-route-strong: rgba(0, 0, 0, 0.72);
+  --card-route-muted: rgba(0, 0, 0, 0.48);
+  --card-route-soft: rgba(0, 0, 0, 0.56);
+
+  color: var(--card-route-strong);
   width: 100%;
+}
+
+.darkSurface {
+  --card-route-strong: rgba(255, 255, 255, 0.9);
+  --card-route-muted: rgba(255, 255, 255, 0.68);
+  --card-route-soft: rgba(255, 255, 255, 0.74);
 }
 
 .sections {
@@ -15,7 +26,7 @@
 }
 
 .sectionTitle {
-  color: rgba(0, 0, 0, 0.72);
+  color: var(--card-route-strong);
   font-size: 20px;
   font-weight: 700;
   line-height: 1.2;
@@ -40,7 +51,7 @@
 }
 
 .exampleLabel {
-  color: rgba(0, 0, 0, 0.48);
+  color: var(--card-route-muted);
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
@@ -121,7 +132,7 @@
   justify-content: space-between;
   gap: 12px;
   min-width: 0;
-  color: rgba(0, 0, 0, 0.62);
+  color: var(--card-route-strong);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.35;
@@ -218,13 +229,13 @@
 }
 
 .shadowCssValue {
-  color: rgba(0, 0, 0, 0.56);
+  color: var(--card-route-soft);
   font-size: 11px;
   line-height: 1.45;
 }
 
 .shadowLayerCount {
-  color: rgba(0, 0, 0, 0.44);
+  color: var(--card-route-muted);
   font-size: 11px;
   font-weight: 600;
   line-height: 1.35;
@@ -242,7 +253,7 @@
 }
 
 .unavailable {
-  color: rgba(0, 0, 0, 0.56);
+  color: var(--card-route-soft);
   font-size: 14px;
   line-height: 1.5;
 }

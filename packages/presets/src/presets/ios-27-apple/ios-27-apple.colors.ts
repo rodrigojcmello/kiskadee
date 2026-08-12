@@ -10,8 +10,7 @@ import mintV1 from './colors/bg.teal.v1.ts';
 import tealV2 from './colors/bg.teal.v2.ts';
 import cyanV1 from './colors/bg.teal.v3.ts';
 import greenV1 from './colors/g.green.v1.ts';
-import canonicalBlackV1 from './colors/n.black.v1.ts';
-import appleBlackV1 from './colors/n.black.v2.ts';
+import appleGray from './colors/n.black.v2.ts';
 import purpleV1 from './colors/p.purple.v1.ts';
 import indigoV1 from './colors/pb.indigo.v1.ts';
 import redV1 from './colors/r.red.v1.ts';
@@ -30,10 +29,8 @@ import orangeV1 from './colors/yr.orange.v1.ts';
 
 export const primitiveColors = {
   black: {
-    // V1 remains the canonical pure grayscale required by the tonal contract.
-    v1: canonicalBlackV1,
-    // V2 preserves Apple's authored blue-tinted Gray family.
-    v2: appleBlackV1
+    // Generated n.black.v2 is the source-backed Apple Gray promoted as the preset's sole Black.
+    v1: appleGray
   },
   blue: {
     v1: blueV1
@@ -81,14 +78,14 @@ export const primitiveColors = {
 export const globalSemantics = {
   light: {
     primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v2' },
+    neutral: { v1: 'primitive.black.v1' },
     redLike: { v1: 'primitive.red.v1', v2: 'primitive.pink.v1' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
     greenLike: { v1: 'primitive.green.v1' }
   },
   dark: {
     primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v2' },
+    neutral: { v1: 'primitive.black.v1' },
     redLike: { v1: 'primitive.red.v1', v2: 'primitive.pink.v1' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
     greenLike: { v1: 'primitive.green.v1' }
@@ -125,7 +122,8 @@ export const componentIntents = {
     positive: 'greenLike'
   },
   card: {
-    neutral: 'neutral'
+    neutral: 'neutral',
+    primary: 'primary'
   },
   slider: {
     neutral: 'neutral',

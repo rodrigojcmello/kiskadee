@@ -13,6 +13,8 @@ This directory records official source evidence and preset-level decisions for
   - Dark Button examples: `2666:16141`;
   - Colors page: `0:1746`;
   - default color section: `5707:28659`;
+  - standard Backgrounds swatches: `5532:7801`;
+  - Grouped Backgrounds swatches: `5532:8370`;
   - local variable collection: `Colors`, with `Light` and `Dark` modes.
 - [Apple SF Symbols](https://developer.apple.com/sf-symbols/)
 - [Apple Human Interface Guidelines: SF Symbols](https://developer.apple.com/design/human-interface-guidelines/sf-symbols)
@@ -39,6 +41,8 @@ This directory records official source evidence and preset-level decisions for
 | Dark Button examples | node `2666:16141` | Official adapted | Conventional Dark appearances inspected. |
 | Liquid Glass Button Text | component set `5473:21667` | Deferred | Confirmed upstream capability; no current schema/material implementation. |
 | Liquid Glass Button Symbol | component set `5522:11866` | Deferred | Confirmed upstream capability; no current schema/material implementation. |
+| Backgrounds and Card surface catalog | nodes `5532:7801`, `5532:8370`, plus opaque application nodes | Official adapted | Opaque background variables are consolidated into Card Neutral Low/Medium; Accent Blue provides the Kiskadee Primary High vivid canvas. |
+| Liquid Glass and material containers | Alert, Action Sheet, Color Picker, Material, and Activity View nodes | Deferred | Translucency, blur, and scene-relative material are not flattened into opaque Card colors. |
 | Slider | retained iOS 26/macOS 26 evidence | Not inspected | Requires a separate iOS 27 revalidation. |
 
 ## Preset-Wide Color And Token Provenance
@@ -52,9 +56,10 @@ This directory records official source evidence and preset-level decisions for
   approved bundle.
 - [`colors/generated/`](colors/generated/) is the reproducible
   `@kiskadee/tonal-scale@0.7.0` format V5 bundle referenced by the Shared Viewer.
-- Thirteen source-backed assets plus canonical pure grayscale are approved and promoted into the
-  preset: Blue, Mint, Teal, Cyan, Green, Apple Gray, canonical Black, Purple, Indigo, Red, Pink,
-  Yellow, Orange, and Apple Brown.
+- Thirteen source-backed assets are approved and promoted into the preset: Blue, Mint, Teal, Cyan,
+  Green, Apple Gray, Purple, Indigo, Red, Pink, Yellow, Orange, and Apple Brown. Generated
+  `n.black.v2` is published as the preset's only `primitive.black.v1`; the generator's mandatory
+  pure `n.black.v1` remains evidence-only.
 - Apple Brown occupies `yr.brown.v1`; `yr.orange.v2` no longer exists. Lime (`gy.lime.v1`) and
   Magenta (`rp.magenta.v1`) are the only source-unbacked evidence companions.
 - The generated bundle's diagnostic status remains `review`. Asset promotion is an explicit preset
@@ -82,6 +87,12 @@ This directory records official source evidence and preset-level decisions for
   run color-selection logic.
 - Third-party Brand Pack colors remain outside the Apple primitive catalog and normal Button
   artifacts. They are loaded only through an explicit `BrandPackBoundary`.
+- The Card canonical catalog is an **Official adapted** projection of Apple's opaque Elevated
+  backgrounds plus a **Kiskadee extension** that exposes Accent Blue as Primary High for descendants
+  using `onVivid`. It is not presented as an Apple component named Card.
+- Apple Primary, Secondary, and Tertiary backgrounds express nesting, not a monotonic emphasis
+  scale. The preset publishes only distinct surfaces that preserve Kiskadee's Low/Medium/High
+  meaning; complete upstream values remain in the color evidence.
 - Liquid Glass is documented but emits no approximation. Adding it later requires a separate
   material-capability contract rather than literal textured colors in the current Button schema.
 
@@ -117,6 +128,7 @@ implementation under the same recommended ID without changing the preset.
 ## Component Evidence
 
 - [Button](components/button.md)
+- [Card](components/card.md) — opaque background consolidation, canonical surfaces, and deferred glass boundary.
 - [Slider](components/slider.md) — legacy evidence retained until iOS 27 revalidation.
 
 ## Color Evidence

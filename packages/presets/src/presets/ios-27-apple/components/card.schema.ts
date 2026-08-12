@@ -1,15 +1,94 @@
-import type { Schema } from '@kiskadee/core';
+import type { Schema, SolidColor } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 import type { Segment } from '../ios-27-apple.schema.ts';
 
 type CardComponent = NonNullable<Schema<Segment>['components']['card']>;
+type ThemeName = 'light' | 'dark';
+type ThemeShortcut = 'l' | 'd';
 
 type CreateIos27AppleCardSchemaArgs = {
   c: PresetColorGetter<Segment>;
   segmentNames: readonly Segment[];
-  transparent: string;
+  transparent: SolidColor;
 };
+
+const CANONICAL_CARD_SURFACES = {
+  default: {
+    light: [
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'high', contentSurfaceContext: 'onVivid' }
+    ],
+    dark: [
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+      { intent: 'primary', emphasis: 'high', contentSurfaceContext: 'onVivid' }
+    ]
+  }
+} as const satisfies NonNullable<CardComponent['options']>['canonicalSurfaces'];
+
+const CARD_SURFACE_TONES = {
+  light: {
+    track: 'l',
+    neutralLow: 0,
+    neutralMedium: 3,
+    primaryHigh: 28
+  },
+  dark: {
+    track: 'd',
+    neutralLow: 5,
+    neutralMedium: 10,
+    primaryHigh: 70
+  }
+} as const satisfies Record<
+  ThemeName,
+  {
+    track: ThemeShortcut;
+    neutralLow: 0 | 5;
+    neutralMedium: 3 | 10;
+    primaryHigh: 28 | 70;
+  }
+>;
+
+function createCardPalette(
+  c: PresetColorGetter<Segment>,
+  segmentName: Segment,
+  themeName: ThemeName,
+  transparent: SolidColor
+) {
+  const tones = CARD_SURFACE_TONES[themeName];
+  const primaryHigh = c(segmentName, tones.track, 'card.primary', tones.primaryHigh);
+
+  return {
+    boxColor: {
+      neutral: {
+        low: {
+          rest: c(segmentName, tones.track, 'card.neutral', tones.neutralLow),
+          selected: { rest: primaryHigh }
+        },
+        medium: {
+          rest: c(segmentName, tones.track, 'card.neutral', tones.neutralMedium),
+          selected: { rest: primaryHigh }
+        }
+      },
+      primary: {
+        high: {
+          rest: primaryHigh
+        }
+      }
+    },
+    borderColor: {
+      neutral: {
+        low: { rest: transparent },
+        medium: { rest: transparent }
+      },
+      primary: {
+        high: { rest: transparent }
+      }
+    }
+  };
+}
 
 export function createIos27AppleCardSchema({
   c,
@@ -17,6 +96,9 @@ export function createIos27AppleCardSchema({
   transparent
 }: CreateIos27AppleCardSchemaArgs): CardComponent {
   return {
+    options: {
+      canonicalSurfaces: CANONICAL_CARD_SURFACES
+    },
     effects: {
       shadow: {
         e1: {
@@ -24,7 +106,6 @@ export function createIos27AppleCardSchema({
           states: {
             rest: 's:sm:1',
             hover: 's:md:1',
-            focus: 's:sm:1',
             pressed: false,
             disabled: false
           },
@@ -63,44 +144,12 @@ export function createIos27AppleCardSchema({
             }
           }
         },
-        palettes: buildBySegment(segmentNames, (s) => ({
+        palettes: buildBySegment(segmentNames, (segmentName) => ({
           light: {
-            onSubtle: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c(s, 'l', 'card.neutral', 0),
-                    hover: c(s, 'l', 'card.neutral', 1),
-                    pressed: c(s, 'l', 'card.neutral', 2),
-                    focus: c(s, 'l', 'card.neutral', 0),
-                    disabled: c(s, 'l', 'card.neutral', 0, 12),
-                    selected: {
-                      rest: c(s, 'l', 'primary', 50),
-                      hover: c(s, 'l', 'primary', 60),
-                      pressed: c(s, 'l', 'primary', 70),
-                      focus: c(s, 'l', 'primary', 50)
-                    }
-                  }
-                }
-              },
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c(s, 'l', 'card.neutral', 10),
-                    hover: c(s, 'l', 'card.neutral', 16),
-                    pressed: c(s, 'l', 'card.neutral', 20),
-                    focus: c(s, 'l', 'primary', 50),
-                    disabled: transparent,
-                    selected: {
-                      rest: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      focus: transparent
-                    }
-                  }
-                }
-              }
-            }
+            onSubtle: createCardPalette(c, segmentName, 'light', transparent)
+          },
+          dark: {
+            onSubtle: createCardPalette(c, segmentName, 'dark', transparent)
           }
         }))
       }

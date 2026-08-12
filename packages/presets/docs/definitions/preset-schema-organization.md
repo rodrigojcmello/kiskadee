@@ -112,6 +112,10 @@ resulting primitive, semantic role, and exact L/D position. Official preset
 schemas must not contain literal colors; literals belong only in source evidence
 or approved primitive assets.
 
+For the dependency order from evidence and tonal generation through canonical surfaces, component
+surface contexts, artifacts, and Showcase validation, follow
+[Official Preset Authoring Workflow](official-preset-authoring-workflow.md).
+
 ## Numeric Values
 
 Use the simplest schema shape that preserves meaning:

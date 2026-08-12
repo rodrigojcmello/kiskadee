@@ -66,9 +66,10 @@ Theme, Background, and Surface Context remain separate concepts:
 - Surface Context selects the component palette intended for the surrounding surface.
 
 Changing Surface Context directly always resets Background to Canonical and selects the first Card
-surface carrying that `contentSurfaceContext`: currently the first `onSubtle` entry is white and the
-first `onVivid` entry is Primary Highest. This provides a predictable return from exploratory stress
-testing to an approved composition.
+surface carrying that `contentSurfaceContext`. The exact intent and emphasis are preset-authored;
+for example, Fluent may publish Primary Highest while iOS 27 publishes Primary High. This provides
+a predictable return from exploratory stress testing to an approved composition without imposing
+one global emphasis on every design system.
 
 Changing the Background mode also initializes it with the first valid surface for the current
 Surface Context. Selecting a canonical swatch applies its exact published

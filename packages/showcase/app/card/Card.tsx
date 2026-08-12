@@ -34,6 +34,8 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
+import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import s from './Card.module.scss';
 
@@ -342,6 +344,7 @@ export function Card() {
   const { global, segment, theme } = useKiskadee();
   const { manifest } = useShowcase();
   const { cardClassesMap } = useCardArtifactConfig();
+  const canonicalBackgrounds = useCanonicalCardSurfaces();
   const cardManifest = manifest?.components?.card;
   const buttonManifest = manifest?.components?.button;
   const cardState = getManifestComponentState(cardManifest, segment, theme);
@@ -374,6 +377,15 @@ export function Card() {
     });
   }, [cardClassesMap]);
   const semanticSamples = React.useMemo(() => resolveCardSemanticSamples(cardState), [cardState]);
+  const defaultRouteSurface = canonicalBackgrounds.tones[1] ?? canonicalBackgrounds.tones[0];
+  const routeClassName = [
+    s.route,
+    defaultRouteSurface && isDarkSurfaceColor(defaultRouteSurface.resolvedColor)
+      ? s.darkSurface
+      : undefined
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const radiusSelectOptions = React.useMemo(
     () =>
@@ -462,7 +474,7 @@ export function Card() {
   );
 
   return (
-    <section className={s.route}>
+    <section className={routeClassName}>
       <h2>Card</h2>
       <ShowcaseRouteControls
         id="card"

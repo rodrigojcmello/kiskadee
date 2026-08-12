@@ -84,7 +84,7 @@ metrics.
 | `Accents/Blue` | `#0088ff` / `#0091ff` | `button.primary`, `b.blue.v1`; vivid L28/D65 |
 | `Accents/Red` | `#ff383c` / `#ff4245` | `button.destructive`, `r.red.v1`; vivid L26/D65 |
 | `Accents/Green` | `#34c759` / `#30d158` | `button.positive`, `g.green.v1`; vivid L20/D65; Kiskadee extension in Button |
-| `Grays/Black` family | centralized Apple Grays | `button.neutral`, `n.black.v2`; vivid L90/D95; Kiskadee extension in Button |
+| `Grays/Black` family | centralized Apple Grays | `button.neutral`, generated `n.black.v2` → preset `primitive.black.v1`; vivid L90/D95; Kiskadee extension in Button |
 | `Grays/White` | `#ffffff` / `#ffffff` | neutral cap L0/D100 |
 | `Fills/Tertiary` | base `#767680` at 12% / 24% | neutral L40 at 12% / D55 at 24% |
 | `Labels/Tertiary` | base `#3c3c43` at 30% / `#ebebf5` at 30% | neutral L70 at 30% / D95 at 30% |
@@ -192,6 +192,9 @@ not execute this formula at runtime.
 - Liquid Glass Text and Symbol are **Deferred**. Their glass materials, textured or scene-relative
   backgrounds, and authored material/effect paints are real upstream capabilities, but the current
   Kiskadee Button schema has no Liquid Glass contract.
+- The iOS 27 Card now publishes a Primary High canonical canvas whose descendants should use
+  `onVivid`. This fixes background availability for Brand Pack examples, but it does not add an
+  `onVivid` palette to the conventional Button. The two contracts remain independent.
 - No texture is flattened into a literal color and no conventional Button style pretends to be
   glass. A future implementation must introduce a deliberate cross-platform material capability.
 - Label-and-icon, icon-only, and title-only are official content forms. They remain consumer content
@@ -227,3 +230,7 @@ not execute this formula at runtime.
 - Liquid Glass remains intentionally deferred.
 - No upstream interaction-state variants exist in the inspected Content Area set; Kiskadee's state
   rhythm is therefore framework-owned and must not be cited as official Apple behavior.
+- The conventional Button currently authors only `onSubtle`. Brand Pack `onVivid` projection is a
+  separate extension and does not imply conventional Button support.
+- The Card publishes a Primary High canonical canvas, so Brand Pack Buttons that already support
+  `onVivid` can be validated on a preset-owned background. See [Card evidence](card.md).

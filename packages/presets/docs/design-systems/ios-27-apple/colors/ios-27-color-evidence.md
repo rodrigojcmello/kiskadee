@@ -110,8 +110,9 @@ The complete perceptual de-para is stored in
 the nearest generated Light/Dark tone independently and records the approved `0.7.0` promotion.
 The prior `0.4.1` mapping remains historical Git provenance; it is not relabeled as V5.
 
-Thirteen assets backed by explicit Apple source seeds plus canonical pure grayscale are approved
-and promoted into the preset:
+Thirteen assets backed by explicit Apple source seeds are approved and promoted into the preset.
+The generator's mandatory pure grayscale remains in the reproducible evidence bundle, but it is
+not published by the iOS 27 preset because no runtime role consumes it:
 
 | Generated asset | Preset primitive |
 | --- | --- |
@@ -120,8 +121,7 @@ and promoted into the preset:
 | `bg.teal.v2` | `teal.v2` |
 | `bg.teal.v3` | `cyan.v1` |
 | `g.green.v1` | `green.v1` |
-| `n.black.v1` | `black.v1` (canonical pure grayscale) |
-| `n.black.v2` | `black.v2` (Apple Gray; global Neutral) |
+| `n.black.v2` | `black.v1` (Apple Gray; global Neutral) |
 | `p.purple.v1` | `purple.v1` |
 | `pb.indigo.v1` | `purple.v2` |
 | `r.red.v1` | `red.v1` |
@@ -130,9 +130,11 @@ and promoted into the preset:
 | `yr.orange.v1` | `orange.v1` |
 | `yr.brown.v1` | `brown.v1` |
 
-The two harmony-generated companions without direct Apple Accent seeds remain evidence-only:
-`gy.lime.v1` and `rp.magenta.v1`. The generated bundle retains diagnostic status `review`; promotion
-is the explicit preset decision to adopt its source-backed Apple subset and required neutral family.
+The canonical pure grayscale `n.black.v1` and the two harmony-generated companions without direct
+Apple Accent seeds, `gy.lime.v1` and `rp.magenta.v1`, remain evidence-only. Generated family IDs
+preserve tonal provenance; preset primitive variants are a separate publication layer. The generated
+bundle retains diagnostic status `review`; promotion is the explicit preset decision to adopt its
+source-backed Apple subset and required neutral family.
 
 ### Shared viewer — candidate generator 0.7.0
 
@@ -140,9 +142,8 @@ is the explicit preset decision to adopt its source-backed Apple subset and requ
 
 The link encodes the complete format V5 recipe and requires the local `@kiskadee/tonal-scale`
 application on port `3001`. The candidate contains the V5 canonical `n.black.v1` plus authored
-`n.black.v2`; it now matches the checked-in bundle and promoted preset inputs. The current viewer
-retains only the two harmony-generated companions that have no Apple Accent identity: Lime and
-Magenta.
+`n.black.v2` and matches the checked-in evidence bundle. The preset promotes authored `n.black.v2`
+as its single `primitive.black.v1`; canonical `n.black.v1`, Lime, and Magenta remain evidence-only.
 Generator `0.6.0` adds an independent standalone-family API for optional external color domains;
 that additive API remains versioned independently from the promoted multifamily generator.
 
