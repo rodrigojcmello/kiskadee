@@ -340,6 +340,22 @@ export function createFluent2MicrosoftButtonSchema({
             's:lg:1': 18
           }
         }
+      },
+      e5: {
+        name: 'button-disclosure',
+        iconSize: {
+          's:sm:1': 's:sm:1',
+          's:md:1': 's:sm:1',
+          's:lg:1': 's:sm:1'
+        },
+        scales: {
+          paddingRight: {
+            's:sm:1': 3,
+            's:md:1': 4,
+            's:lg:1': 4
+          },
+          borderWidth: 0
+        }
       }
     }
   };

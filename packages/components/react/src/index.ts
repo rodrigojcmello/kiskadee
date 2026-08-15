@@ -37,6 +37,7 @@ export { defineFontFamily } from '@kiskadee/runtime/font-family';
 export type {
   ButtonActivationFeedbackEffect,
   ButtonArtifactConfig,
+  ButtonDisclosureProps,
   ButtonIconProps,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
@@ -46,6 +47,14 @@ export type {
 } from './components/Button';
 export { Button, useButtonArtifactConfig } from './components/Button';
 export type {
+  ButtonMenuActionProps,
+  ButtonMenuContentProps,
+  ButtonMenuItemProps,
+  ButtonMenuRootProps,
+  ButtonMenuTriggerProps
+} from './components/ButtonMenu';
+export { ButtonMenu } from './components/ButtonMenu';
+export type {
   CardActionInteractionStateSource,
   CardActionProps,
   CardActionVisualProps,
@@ -54,6 +63,25 @@ export type {
   CardStatus
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
+export type {
+  DropdownAnchorProps,
+  DropdownClassesMap,
+  DropdownClassNames,
+  DropdownContentProps,
+  DropdownDescriptionProps,
+  DropdownIconProps,
+  DropdownItemProps,
+  DropdownItemsProps,
+  DropdownLabelProps,
+  DropdownPlacement,
+  DropdownRootProps,
+  DropdownSeparatorProps,
+  DropdownSurfaceProps,
+  DropdownTrailingProps,
+  DropdownVisualProps,
+  DropdownVisualProviderProps
+} from './components/Dropdown';
+export { Dropdown } from './components/Dropdown';
 export type {
   IconClassesMap,
   IconElementName,

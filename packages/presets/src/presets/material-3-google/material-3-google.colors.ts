@@ -44,6 +44,10 @@ export const componentIntents = {
   card: {
     neutral: 'neutral'
   },
+  dropdown: {
+    neutral: 'neutral',
+    destructive: 'redLike'
+  },
   tabs: {
     neutral: 'neutral'
   },

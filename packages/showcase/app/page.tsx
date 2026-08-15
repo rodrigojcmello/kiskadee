@@ -18,7 +18,13 @@ export default function HomePage() {
           <Link href="/card">/card</Link>
         </li>
         <li>
+          <Link href="/dropdown">/dropdown</Link>
+        </li>
+        <li>
           <Link href="/slider">/slider</Link>
+        </li>
+        <li>
+          <Link href="/select">/select</Link>
         </li>
         <li>
           <Link href="/tabs">/tabs</Link>

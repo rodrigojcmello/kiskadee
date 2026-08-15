@@ -17,6 +17,10 @@ Surfaced regions have an independent corner policy:
 
 `leading` and `trailing` are logical directions and therefore follow the document direction.
 
+Button also exposes a distinct final disclosure slot, `e5`, through `Button.Disclosure`. It allows
+an initial icon, label, and menu affordance to coexist without treating the disclosure as a second
+action inside the Button.
+
 ## Layouts
 
 `inline` treats the icon and label as one centered group. The schema-owned icon spacing is applied
@@ -62,6 +66,8 @@ is inert while the active treatment is `plain`.
   existing scale classes.
 - `e4` owns optional icon-region background, foreground, and padding. It is a styled React wrapper
   and does not change the Headless Button topology.
+- `e5` owns the size and logical separation of a presentational disclosure glyph. It remains
+  `aria-hidden`; the Button or composing semantic owner supplies accessible expanded/menu state.
 - `e1` remains the sole source of Button border width and radius. Structural CSS consumes those
   inherited tokens to keep the inset panel concentric with the Button.
 - In the surfaced treatment, `e3` omits its Button palette color and inherits the stable `e4`

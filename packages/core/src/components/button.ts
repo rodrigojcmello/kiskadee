@@ -57,8 +57,9 @@ export type ButtonOptions = {
  * - e2: button label
  * - e3: button icon
  * - e4: optional icon region/surface
+ * - e5: optional trailing disclosure indicator
  */
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 
 /**
  * e1 — button container/surface
@@ -113,11 +114,25 @@ export type ButtonIconRegionElementStyle<TSegmentName extends SegmentName = neve
 }> &
   ElementNameMetadata;
 
+/**
+ * e5 — optional trailing disclosure indicator
+ */
+export type ButtonDisclosureElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+  decorations: Pick<DecorationSchema, 'borderStyle'>;
+  iconSize: ElementIconSize;
+  scales: ElementScalesByProperty<
+    'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'borderWidth'
+  >;
+  palettes: ElementPalettesByColor<TSegmentName, 'textColor' | 'borderColor'>;
+}> &
+  ElementNameMetadata;
+
 export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e1?: ButtonContainerElementStyle<TSegmentName>;
   e2?: ButtonLabelElementStyle<TSegmentName>;
   e3?: ButtonIconElementStyle<TSegmentName>;
   e4?: ButtonIconRegionElementStyle<TSegmentName>;
+  e5?: ButtonDisclosureElementStyle<TSegmentName>;
 };
 
 type ElementContractRules = {
@@ -135,7 +150,7 @@ const BUTTON_OPTION_KEYS = [
   'iconTreatment',
   'iconSurfaceCorners'
 ] as const;
-const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4'] as const;
+const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
@@ -172,6 +187,12 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
   e4: {
     scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
     palettes: ['boxColor', 'textColor']
+  },
+  e5: {
+    decorations: ['borderStyle'],
+    iconSize: true,
+    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderWidth'],
+    palettes: ['textColor', 'borderColor']
   }
 };
 

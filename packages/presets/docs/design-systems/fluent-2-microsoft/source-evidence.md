@@ -215,3 +215,4 @@ instead of flattening them to the larger offset layer.
 - [Icon](components/icon.md)
 - [Progress](components/progress.md)
 - [Slider](components/slider.md)
+- [Dropdown and Menu](components/dropdown.md)

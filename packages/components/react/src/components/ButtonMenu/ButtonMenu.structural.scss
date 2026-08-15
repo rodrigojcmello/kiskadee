@@ -1,0 +1,27 @@
+/*
+ * structural ButtonMenu group / bmn
+ * Keeps the one- or two-button trigger composition inline without clipping focus rings.
+ */
+.k-bmn {
+  align-items: stretch;
+  display: inline-flex;
+}
+
+/*
+ * structural ButtonMenu action / a
+ * Removes only the logical end corners when a disclosure trigger follows.
+ */
+.k-bmn:has(> .k-bmn-a) > .k-bmn-a {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
+}
+
+/*
+ * structural ButtonMenu trigger / t
+ * Joins the disclosure trigger to the action while preserving two independent focus targets.
+ */
+.k-bmn:has(> .k-bmn-a) > .k-bmn-t {
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
+  margin-inline-start: calc(var(--k-bdw, 0px) * -1);
+}

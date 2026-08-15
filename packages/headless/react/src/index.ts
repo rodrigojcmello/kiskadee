@@ -1,4 +1,19 @@
 export type {
+  AutocompleteContentProps,
+  AutocompleteEmptyProps,
+  AutocompleteInputProps,
+  AutocompleteInputRenderProps,
+  AutocompleteInputValueChangeDetails,
+  AutocompleteOpenChangeDetails,
+  AutocompleteOpenChangeReason,
+  AutocompleteOption,
+  AutocompleteOptionProps,
+  AutocompleteOptionRenderProps,
+  AutocompleteRootProps
+} from './components/autocomplete/Autocomplete.tsx';
+export { Autocomplete } from './components/autocomplete/Autocomplete.tsx';
+export type {
+  ButtonDisclosureProps,
   ButtonProps,
   ButtonResolvedInteractionState,
   ResolveButtonInteractionStateOptions
@@ -19,10 +34,29 @@ export type {
 } from './components/color-radio-group/ColorRadioGroup.tsx';
 export { ColorRadioGroup } from './components/color-radio-group/ColorRadioGroup.tsx';
 export type {
+  DropdownAnchorProps,
+  DropdownAnchorRenderProps,
+  DropdownContentProps,
+  DropdownOpenChangeDetails,
+  DropdownOpenChangeReason,
+  DropdownRootProps
+} from './components/dropdown/Dropdown.tsx';
+export { Dropdown } from './components/dropdown/Dropdown.tsx';
+export type {
   IconClassNames,
   IconProps
 } from './components/icon/Icon.tsx';
 export { Icon } from './components/icon/Icon.tsx';
+export type {
+  MenuContentProps,
+  MenuItemProps,
+  MenuItemRenderProps,
+  MenuOpenChangeDetails,
+  MenuRootProps,
+  MenuTriggerProps,
+  MenuTriggerRenderProps
+} from './components/menu/Menu.tsx';
+export { Menu } from './components/menu/Menu.tsx';
 export type {
   ProgressClassNames,
   ProgressDecorativeRootProps,
@@ -42,6 +76,8 @@ export type {
 export { HeadlessProgress } from './components/progress/HeadlessProgress.tsx';
 export type {
   SelectContentProps,
+  SelectOpenChangeDetails,
+  SelectOpenChangeReason,
   SelectOption,
   SelectOptionProps,
   SelectProps,

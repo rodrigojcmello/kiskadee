@@ -26,12 +26,20 @@ const componentEntries = [
     label: 'Card'
   },
   {
+    href: '/dropdown',
+    label: 'Dropdown'
+  },
+  {
     href: '/icons',
     label: 'Icon'
   },
   {
     href: '/progress',
     label: 'Progress'
+  },
+  {
+    href: '/select',
+    label: 'Select'
   },
   {
     href: '/slider',

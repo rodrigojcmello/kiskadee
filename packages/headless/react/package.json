@@ -25,6 +25,11 @@
       "import": "./dist/components/button/Button.js",
       "default": "./dist/components/button/Button.js"
     },
+    "./autocomplete": {
+      "types": "./dist/components/autocomplete/Autocomplete.d.ts",
+      "import": "./dist/components/autocomplete/Autocomplete.js",
+      "default": "./dist/components/autocomplete/Autocomplete.js"
+    },
     "./card": {
       "types": "./dist/components/card/Card.d.ts",
       "import": "./dist/components/card/Card.js",
@@ -34,6 +39,21 @@
       "types": "./dist/components/icon/Icon.d.ts",
       "import": "./dist/components/icon/Icon.js",
       "default": "./dist/components/icon/Icon.js"
+    },
+    "./dropdown": {
+      "types": "./dist/components/dropdown/Dropdown.d.ts",
+      "import": "./dist/components/dropdown/Dropdown.js",
+      "default": "./dist/components/dropdown/Dropdown.js"
+    },
+    "./menu": {
+      "types": "./dist/components/menu/Menu.d.ts",
+      "import": "./dist/components/menu/Menu.js",
+      "default": "./dist/components/menu/Menu.js"
+    },
+    "./select": {
+      "types": "./dist/components/select/Select.d.ts",
+      "import": "./dist/components/select/Select.js",
+      "default": "./dist/components/select/Select.js"
     },
     "./progress": {
       "types": "./dist/components/progress/HeadlessProgress.d.ts",

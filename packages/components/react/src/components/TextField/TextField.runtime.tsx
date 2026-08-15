@@ -1,13 +1,13 @@
 import type {
   RadiusMode,
   TextFieldFloatingMode,
-  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
   TextFieldLabelOffsetStrategy,
+  TextFieldLabelPlacement,
   TextFieldStandardMode
 } from '@kiskadee/core';
 import { HeadlessTextField } from '@kiskadee/react-headless';
-import { memo, type RefObject, useEffect, useMemo, useRef } from 'react';
+import { memo, type Ref, type RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
@@ -47,6 +47,11 @@ type TextFieldRuntimeProps = TextFieldProps & {
 
 const loadFloatingRestTypography = () =>
   import('./floatingRestTypography.runtime.ts').then((module) => module.bindFloatingRestTypography);
+
+function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
+  if (typeof ref === 'function') ref(value);
+  else if (ref) ref.current = value;
+}
 
 function resolveLabelOffsetStrategy(
   labelOffset: TextFieldLabelOffsetStrategy | TextFieldLabelOffsetByRadius | undefined,
@@ -135,6 +140,7 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
       label,
       classNames = {},
       inputProps,
+      inputRef: forwardedInputRef,
       placeholder,
       scale = DEFAULT_TEXT_FIELD_SCALE,
       emphasis = DEFAULT_TEXT_FIELD_EMPHASIS,
@@ -229,10 +235,17 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
     });
 
     const { className: inputClassName, ...restInputProps } = inputProps ?? {};
+    const mergedInputRef = useCallback(
+      (node: HTMLInputElement | null) => {
+        inputRef.current = node;
+        assignRef(forwardedInputRef, node);
+      },
+      [forwardedInputRef]
+    );
 
     const input = (
       <HeadlessTextField.Input
-        ref={inputRef}
+        ref={mergedInputRef}
         {...restInputProps}
         placeholder={placeholder}
         className={inputClassName}

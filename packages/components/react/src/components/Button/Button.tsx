@@ -8,6 +8,7 @@ import {
   isValidElement,
   memo,
   type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo
@@ -21,6 +22,7 @@ import type { ProgressClassesMap } from '../Progress/Progress.types.ts';
 import { join, mergeButtonClassNames } from './Button.class-names.ts';
 import type {
   ButtonClassesMap,
+  ButtonDisclosureProps,
   ButtonIconProps,
   ButtonProgressProps,
   ButtonProps
@@ -37,6 +39,7 @@ declare const process: { env: { NODE_ENV?: string } };
 
 export type {
   ButtonActivationFeedbackEffect,
+  ButtonDisclosureProps,
   ButtonIconProps,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
@@ -86,6 +89,31 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
 
   return <span className={iconRegionClassName}>{icon}</span>;
 });
+
+const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
+  function ButtonDisclosure({ name = 'chevron-down', fallback, children, ...props }, ref) {
+    const resolvedNamedGlyph = useResolvedIconGlyph(name);
+
+    if (name !== undefined && !resolvedNamedGlyph.glyph && fallback === undefined) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(
+          resolvedNamedGlyph.hasProvider
+            ? `[kiskadee/icons] Button.Disclosure "${name}" is not mapped by family "${
+                resolvedNamedGlyph.familyId ?? 'unknown'
+              }".`
+            : `[kiskadee/icons] Button.Disclosure "${name}" requires an IconFamilyProvider or an explicit fallback.`
+        );
+      }
+      return null;
+    }
+
+    return (
+      <HeadlessButton.Disclosure {...props} ref={ref}>
+        {name !== undefined ? <IconGlyph name={name} fallback={fallback} /> : children}
+      </HeadlessButton.Disclosure>
+    );
+  }
+);
 
 function useButtonRuntimeContext(componentName = 'Button.Progress'): ButtonRuntimeContextValue {
   const context = useContext(ButtonRuntimeContext);
@@ -223,7 +251,7 @@ function getButtonContentSlots(children: ReactNode): {
   return { hasIcon, hasLabel };
 }
 
-function ButtonRoot(props: ButtonProps) {
+const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoot(props, ref) {
   const common = useButtonCommonProps(props);
   const normalizedChildren = useMemo(
     () => normalizeButtonChildren(props.children, common.icon, common.label),
@@ -294,9 +322,10 @@ function ButtonRoot(props: ButtonProps) {
     () => ({
       e1: common.e1,
       e2: common.e2,
-      e3: common.e3
+      e3: common.e3,
+      e5: common.e5
     }),
-    [common.e1, common.e2, common.e3]
+    [common.e1, common.e2, common.e3, common.e5]
   );
   const feedbackClassNamePatch = useMemo(
     () =>
@@ -358,6 +387,14 @@ function ButtonRoot(props: ButtonProps) {
       common.status
     ]
   );
+  const hostRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      activationFeedbackController.hostRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    },
+    [activationFeedbackController.hostRef, ref]
+  );
 
   return (
     <ButtonRuntimeContext.Provider value={runtimeContextValue}>
@@ -370,7 +407,7 @@ function ButtonRoot(props: ButtonProps) {
         aria-disabled={activationFeedbackController.ariaDisabled}
         aria-pressed={activationFeedbackController.ariaPressed}
         classNames={computedClassNames}
-        ref={activationFeedbackController.hostRef}
+        ref={hostRef}
         onClick={activationFeedbackController.handlers.onClick}
         onPointerDown={activationFeedbackController.handlers.onPointerDown}
         onPointerUp={activationFeedbackController.handlers.onPointerUp}
@@ -384,12 +421,13 @@ function ButtonRoot(props: ButtonProps) {
       </HeadlessButton>
     </ButtonRuntimeContext.Provider>
   );
-}
+});
 
 const MemoButton = memo(ButtonRoot);
 const CompoundButton = Object.assign(MemoButton, {
   Label: HeadlessButton.Label,
   Icon: ButtonIcon,
+  Disclosure: ButtonDisclosure,
   Progress: ButtonProgress
 });
 

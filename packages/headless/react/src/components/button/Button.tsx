@@ -12,7 +12,7 @@ import { createContext, forwardRef, useCallback, useContext, useMemo } from 'rea
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type ButtonClassNames = Partial<Record<'e1' | 'e2' | 'e3', string>>;
+export type ButtonClassNames = Partial<Record<'e1' | 'e2' | 'e3' | 'e5', string>>;
 
 type ButtonDataAttributes = {
   [key: `data-${string}`]: string | number | boolean | undefined;
@@ -53,6 +53,7 @@ export type ButtonProps = {
 
 export type ButtonLabelProps = HTMLAttributes<HTMLSpanElement>;
 export type ButtonIconProps = HTMLAttributes<HTMLSpanElement>;
+export type ButtonDisclosureProps = HTMLAttributes<HTMLSpanElement>;
 
 export type ButtonResolvedInteractionState = {
   /** Whether the native disabled attribute owns the interaction gate. */
@@ -162,6 +163,22 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
   );
 });
 
+const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
+  function ButtonDisclosure(
+    { className, children, 'aria-hidden': ariaHidden = true, ...props },
+    ref
+  ) {
+    const { classNames } = useButtonContext();
+    const finalClassName = classNames.e5 ? `${classNames.e5} ${className || ''}`.trim() : className;
+
+    return (
+      <span ref={ref} className={finalClassName} aria-hidden={ariaHidden} {...props}>
+        {children}
+      </span>
+    );
+  }
+);
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Root Component
 // ─────────────────────────────────────────────────────────────────────────────
@@ -196,7 +213,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   },
   ref
 ) {
-  const { e1, e2, e3 } = classNames;
+  const { e1, e2, e3, e5 } = classNames;
   const interactionState = useMemo(
     () =>
       resolveButtonInteractionState({
@@ -211,10 +228,10 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 
   const contextValue = useMemo<ButtonContextValue>(
     () => ({
-      classNames: { e2, e3 },
+      classNames: { e2, e3, e5 },
       interactionState
     }),
-    [e2, e3, interactionState]
+    [e2, e3, e5, interactionState]
   );
   const handleClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -325,7 +342,8 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
 
 export const Button = Object.assign(ButtonRoot, {
   Label: ButtonLabel,
-  Icon: ButtonIcon
+  Icon: ButtonIcon,
+  Disclosure: ButtonDisclosure
 });
 
 export default Button;

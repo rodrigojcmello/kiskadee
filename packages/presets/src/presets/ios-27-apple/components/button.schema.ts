@@ -270,6 +270,22 @@ export function createIos27AppleButtonSchema({
             's:lg:1': 18
           }
         }
+      },
+      e5: {
+        name: 'button-disclosure',
+        iconSize: {
+          's:sm:1': 's:sm:1',
+          's:md:1': 's:sm:1',
+          's:lg:1': 's:sm:1'
+        },
+        scales: {
+          paddingRight: {
+            's:sm:1': 2,
+            's:md:1': 3,
+            's:lg:1': 3
+          },
+          borderWidth: 0
+        }
       }
     }
   };

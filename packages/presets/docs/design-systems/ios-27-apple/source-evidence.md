@@ -95,6 +95,8 @@ This directory records official source evidence and preset-level decisions for
   meaning; complete upstream values remain in the color evidence.
 - Liquid Glass is documented but emits no approximation. Adding it later requires a separate
   material-capability contract rather than literal textured colors in the current Button schema.
+- The Web Dropdown surface is an opaque **Kiskadee extension** documented separately from Liquid
+  Glass and native Apple menu materials. See [Dropdown evidence](components/dropdown.md).
 
 ## Typography Evidence
 

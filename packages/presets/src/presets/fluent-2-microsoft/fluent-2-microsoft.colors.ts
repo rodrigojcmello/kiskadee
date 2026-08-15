@@ -110,6 +110,10 @@ export const componentIntents = {
     neutral: 'neutral',
     primary: 'primary'
   },
+  dropdown: {
+    neutral: 'neutral',
+    destructive: 'redLike'
+  },
   icon: {
     neutral: 'neutral',
     primary: 'primary'

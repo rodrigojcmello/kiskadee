@@ -1,5 +1,6 @@
 import type {
   CardIntent,
+  DropdownIntent,
   IconIntent,
   ProgressIntent,
   RoleButton,
@@ -17,11 +18,13 @@ import type {
 export type {
   ButtonIntent,
   CardIntent,
+  DropdownIntent,
   ExternalButtonIntent,
   IconIntent,
   ProgressIntent,
   RoleButton,
   RoleCard,
+  RoleDropdown,
   RoleIcon,
   RoleProgress,
   RoleSlider,
@@ -35,6 +38,7 @@ export type {
 export {
   ButtonIntentKeys,
   CardIntentKeys,
+  DropdownIntentKeys,
   IconIntentKeys,
   ProgressIntentKeys,
   SliderIntentKeys,
@@ -464,6 +468,7 @@ export type ComponentIntents = {
    */
   button?: Partial<Record<SystemButtonIntent, IntentValue>>;
   card?: Partial<Record<CardIntent, IntentValue>>;
+  dropdown?: Partial<Record<DropdownIntent, IntentValue>>;
   icon?: Partial<Record<IconIntent, IntentValue>>;
   progress?: Partial<Record<ProgressIntent, IntentValue>>;
   slider?: Partial<Record<SliderIntent, IntentValue>>;

@@ -92,6 +92,31 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         },
         e3: {
           paddingRightEmission: 'token'
+        },
+        e5: {
+          borderColorEmission: 'token',
+          borderWidthEmission: 'token',
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
+          paddingRightEmission: 'token'
+        }
+      }
+    },
+    dropdown: {
+      elements: {
+        e3: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
+          paddingRightEmission: 'token'
+        },
+        e6: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
+        },
+        e7: {
+          boxHeightEmission: 'token',
+          marginTopEmission: 'token',
+          marginBottomEmission: 'token'
         }
       }
     },

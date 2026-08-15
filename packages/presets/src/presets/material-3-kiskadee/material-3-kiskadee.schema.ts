@@ -403,4 +403,12 @@ const patch = {
   }
 } as const satisfies DeepOverride<Schema<Segments>>;
 
-export const schema: Schema<Segments> = deepMerge(baseSchema as Schema<Segments>, patch);
+const mergedSchema = deepMerge(baseSchema as Schema<Segments>, patch);
+
+// Dropdown is source-backed only for the Google preset in this delivery. The Kiskadee variant
+// inherits Material components mechanically, so remove it explicitly until its own palette is
+// authored against this preset's color roles.
+const components = { ...mergedSchema.components };
+delete components.dropdown;
+
+export const schema: Schema<Segments> = { ...mergedSchema, components };

@@ -106,7 +106,8 @@
  * root inline icon composition / e1d
  * Icon and label form one centered group.
  */
-.k-btn-e1d:has(> .k-btn-e3) {
+.k-btn-e1d:has(> .k-btn-e3),
+.k-btn-e1d:has(> .k-btn-e5) {
   align-items: center;
   display: inline-flex;
   justify-content: center;
@@ -117,7 +118,8 @@
  * Establishes the shared grid formatting context for plain and surfaced edge layouts.
  */
 .k-btn-e1e:has(> .k-btn-e3),
-.k-btn-e1e:has(> .k-btn-e4) {
+.k-btn-e1e:has(> .k-btn-e4),
+.k-btn-e1e:has(> .k-btn-e5) {
   align-items: center;
   display: inline-grid;
 }
@@ -127,6 +129,19 @@
  * The label owns the Button center while the icon uses a logical edge track.
  */
 .k-btn-e1e:has(> .k-btn-e3) {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+
+  > .k-btn-e2 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/*
+ * root edge disclosure composition / e1e
+ * Gives the final disclosure its own logical track while keeping the label centered.
+ */
+.k-btn-e1e:has(> .k-btn-e5) {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 
   > .k-btn-e2 {
@@ -185,6 +200,24 @@
 
 .k-btn-e1d > .k-btn-e2 {
   order: 2;
+}
+
+/*
+ * element disclosure / e5
+ * Keeps the final affordance after the label in inline composition.
+ */
+.k-btn-e1d > .k-btn-e5 {
+  order: 3;
+}
+
+/*
+ * element disclosure / e5
+ * Places the final affordance on the logical trailing edge in edge composition.
+ */
+.k-btn-e1e > .k-btn-e5 {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
 }
 
 .k-btn-e1e.k-btn-e1f > .k-btn-e3 {
@@ -288,4 +321,29 @@
 .k-btn-e3a {
   block-size: 1em;
   inline-size: 1em;
+}
+
+/*
+ * element disclosure / e5
+ * Owns the final icon viewport, logical spacing, and optional internal divider.
+ */
+.k-btn-e5 {
+  align-items: center;
+  block-size: var(--k-bxh, 1em);
+  border-inline-start: var(--k-bdw, 0) solid var(--k-bdc, transparent);
+  display: inline-flex;
+  inline-size: var(--k-bxw, 1em);
+  justify-content: center;
+  margin-inline-start: var(--k-pdr, 0);
+  padding-inline-start: var(--k-pdr, 0);
+}
+
+/*
+ * element disclosure / e5
+ * Makes direct and family-resolved glyphs fill the preset viewport.
+ */
+.k-btn-e5 > svg,
+.k-btn-e5 > .k-gly {
+  block-size: 100%;
+  inline-size: 100%;
 }

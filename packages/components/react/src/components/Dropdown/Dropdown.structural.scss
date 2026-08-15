@@ -1,0 +1,160 @@
+/*
+ * element surface / e1
+ * Owns the preset-defined floating surface without imposing an anchor width.
+ */
+.k-ddn-e1 {
+  box-sizing: border-box;
+  min-inline-size: max-content;
+  overflow: clip;
+}
+
+/*
+ * mechanical width policy / Content + e1
+ * Lets an exact-anchor positioner constrain its visual surface instead of being
+ * overruled by the surface's intrinsic content width.
+ */
+[data-width='anchor'] > .k-ddn-e1,
+.k-ddn-e1[data-width='anchor'] {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+/*
+ * mechanical minimum-anchor width policy / Content + e1
+ * Makes nested surfaces cover the whole anchor-sized positioner while still
+ * allowing wider intrinsic content.
+ */
+[data-width='min-anchor'] > .k-ddn-e1 {
+  min-inline-size: 100%;
+}
+
+/*
+ * structural collection / x1
+ * Makes the collection the scope for automatic icon-column detection.
+ */
+.k-ddn-x1 {
+  display: block;
+}
+
+/*
+ * element item / e2
+ * Uses content and trailing columns when the collection has no leading icon.
+ */
+.k-ddn-e2 {
+  align-items: center;
+  cursor: default;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-inline-size: 0;
+  text-align: start;
+}
+
+/*
+ * element item / e2
+ * Mirrors unavailable semantics without turning generic actions into link-like pointers.
+ */
+.k-ddn-e2[data-disabled='true'],
+.k-ddn-e2[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+/*
+ * element item / e2
+ * Reserves one shared leading column only when any sibling item contains an icon.
+ */
+.k-ddn-x1:has(.k-ddn-e3) .k-ddn-e2 {
+  grid-template-columns: calc(var(--k-bxw, 1em) + var(--k-pdr, 0px)) minmax(0, 1fr) auto;
+}
+
+/*
+ * element leading icon / e3
+ * Normalizes the component-owned icon viewport and its logical gap.
+ */
+.k-ddn-e3 {
+  align-items: center;
+  block-size: var(--k-bxh, 1em);
+  display: inline-flex;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  inline-size: var(--k-bxw, 1em);
+  justify-content: center;
+}
+
+/*
+ * element leading icon / e3
+ * Makes direct and family-resolved glyphs fill the preset viewport.
+ */
+.k-ddn-e3 > svg,
+.k-ddn-e3 > .k-gly {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Keep both text rows in the content column.
+ */
+.k-ddn-e4,
+.k-ddn-e5 {
+  grid-column: 1;
+  min-inline-size: 0;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Move text into the shared second column when the collection contains an icon.
+ */
+.k-ddn-x1:has(.k-ddn-e3) :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 2;
+}
+
+/*
+ * element label / e4
+ * Places the principal text in the first content row.
+ */
+.k-ddn-e4 {
+  grid-row: 1;
+}
+
+/*
+ * element description / e5
+ * Places auxiliary text below the principal label without simulating line height.
+ */
+.k-ddn-e5 {
+  grid-row: 2;
+}
+
+/*
+ * element trailing indicator / e6
+ * Keeps checks and submenu affordances in the logical final column.
+ */
+.k-ddn-e6 {
+  align-items: center;
+  block-size: var(--k-bxh, 1em);
+  display: inline-flex;
+  grid-column: -2 / -1;
+  grid-row: 1 / span 2;
+  inline-size: var(--k-bxw, 1em);
+  justify-content: center;
+  margin-inline-start: var(--k-pdr, 0);
+}
+
+/*
+ * element trailing indicator / e6
+ * Makes direct and family-resolved glyphs fill the preset viewport.
+ */
+.k-ddn-e6 > svg,
+.k-ddn-e6 > .k-gly {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+/*
+ * element separator / e7
+ * Renders only when explicitly composed by the consumer.
+ */
+.k-ddn-e7 {
+  block-size: var(--k-bxh, 1px);
+  margin-block-end: var(--k-mgb, 0);
+  margin-block-start: var(--k-mgt, 0);
+}

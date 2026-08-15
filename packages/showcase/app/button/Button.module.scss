@@ -18,6 +18,42 @@ $height: 64px;
   opacity: 0.68;
 }
 
+.buttonMenuSection {
+  display: grid;
+  gap: 12px;
+  margin-block: 28px 32px;
+  width: 100%;
+}
+
+.buttonMenuSection > h3,
+.buttonMenuSection h4,
+.buttonMenuStatus {
+  margin: 0;
+}
+
+.buttonMenuGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.buttonMenuGrid article {
+  align-content: start;
+  background: color-mix(in srgb, currentColor 3%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 14px;
+  display: grid;
+  gap: 16px;
+  min-block-size: 132px;
+  min-inline-size: 0;
+  padding: 18px;
+}
+
+.buttonMenuStatus {
+  min-block-size: 1.4em;
+  opacity: 0.68;
+}
+
 .buttonExampleGrid {
   display: grid;
   gap: 12px;
@@ -593,6 +629,10 @@ $height: 64px;
 
 @media (max-width: 720px) {
   .buttonExampleGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .buttonMenuGrid {
     grid-template-columns: minmax(0, 1fr);
   }
 

@@ -120,4 +120,19 @@ describe('Button component contract', () => {
       ])
     );
   });
+
+  it('accepts the optional trailing disclosure slot', () => {
+    expect(
+      validateButtonComponentContract({
+        elements: {
+          e1: { name: 'button' },
+          e5: {
+            name: 'button-disclosure',
+            iconSize: { 's:all': 's:sm:1' },
+            scales: { paddingRight: 4, borderWidth: 0 }
+          }
+        }
+      })
+    ).toEqual([]);
+  });
 });

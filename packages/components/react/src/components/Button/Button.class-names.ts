@@ -70,6 +70,7 @@ export function resolveButtonClassNames({
   e2,
   e3,
   e4,
+  e5,
   classNames,
   status,
   controlState,
@@ -90,6 +91,7 @@ export function resolveButtonClassNames({
   e2: ClassNameByElementJSON | undefined;
   e3: ClassNameByElementJSON | undefined;
   e4?: ClassNameByElementJSON;
+  e5?: ClassNameByElementJSON;
   classNames: NonNullable<ButtonProps['classNames']>;
   status: ButtonStatus | 'rest';
   controlState: boolean | undefined;
@@ -178,7 +180,9 @@ export function resolveButtonClassNames({
       join(
         hasSurfacedIconTreatment
           ? e3?.d
-          : collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+          : e3?.c
+            ? collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext)
+            : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
         e3HasSchemaScale ? e3?.s?.all : e2?.s?.all,
         classNames.e3,
         e3HasSchemaScale ? e3?.s?.[scaleKey] : e2?.s?.[scaleKey],
@@ -192,7 +196,17 @@ export function resolveButtonClassNames({
           e4HasSchemaScale ? e4?.s?.[scaleKey] : undefined,
           'k-btn-e4'
         ) ?? '')
-      : undefined
+      : undefined,
+    e5:
+      join(
+        e5?.c
+          ? collectElementClasses(e5, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext)
+          : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+        e5?.s?.all,
+        classNames.e5,
+        e5?.s?.[scaleKey],
+        'k-btn-e5'
+      ) ?? ''
   };
 }
 
@@ -200,5 +214,5 @@ export function mergeButtonClassNames(
   baseClassNames: NonNullable<HeadlessButtonProps['classNames']>,
   ...classNamePatches: Array<ButtonClassNamePatch | null | undefined>
 ): NonNullable<HeadlessButtonProps['classNames']> {
-  return mergeClassNamePatches(['e1', 'e2', 'e3'], baseClassNames, ...classNamePatches);
+  return mergeClassNamePatches(['e1', 'e2', 'e3', 'e5'], baseClassNames, ...classNamePatches);
 }

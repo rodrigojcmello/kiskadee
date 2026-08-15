@@ -125,6 +125,10 @@ export const componentIntents = {
     neutral: 'neutral',
     primary: 'primary'
   },
+  dropdown: {
+    neutral: 'neutral',
+    destructive: 'redLike'
+  },
   slider: {
     neutral: 'neutral',
     primary: 'primary'

@@ -22,7 +22,7 @@ export type { ButtonIconSurfaceCorners, ButtonIconTreatment } from '@kiskadee/co
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
@@ -36,6 +36,20 @@ export type ButtonIconProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> 
   (
     | {
         name: IconName;
+        children?: never;
+        fallback?: ReactNode;
+      }
+    | {
+        children: ReactNode;
+        name?: never;
+        fallback?: never;
+      }
+  );
+
+export type ButtonDisclosureProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> &
+  (
+    | {
+        name?: IconName;
         children?: never;
         fallback?: ReactNode;
       }

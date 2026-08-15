@@ -526,6 +526,20 @@ export function createMaterial3GoogleButtonSchema({
           's:lg:2': 's:lg:2',
           's:lg:3': 's:lg:3'
         }
+      },
+      e5: {
+        name: 'button-disclosure',
+        iconSize: {
+          's:sm:1': 's:sm:1',
+          's:md:1': 's:md:1',
+          's:lg:1': 's:md:1',
+          's:lg:2': 's:md:1',
+          's:lg:3': 's:md:1'
+        },
+        scales: {
+          paddingRight: 4,
+          borderWidth: 0
+        }
       }
     }
   };

@@ -37,6 +37,7 @@ import {
 } from '@/hooks/use-background-tones';
 import { SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
+import { TextFieldAutocompleteExample } from './components/TextFieldAutocompleteExample';
 import s from './TextField.module.scss';
 
 const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
@@ -697,6 +698,8 @@ export default function TextFieldPage() {
           </form>
         </div>
       </section>
+
+      <TextFieldAutocompleteExample />
 
       <div className={s.exampleGrid}>
         <div className={s.standardExamplePair}>

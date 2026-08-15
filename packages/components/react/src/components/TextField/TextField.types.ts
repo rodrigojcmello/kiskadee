@@ -5,9 +5,9 @@ import type {
   RadiusMode,
   TextFieldFocusRingColorSource,
   TextFieldIntent,
-  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
   TextFieldLabelOffsetStrategy,
+  TextFieldLabelPlacement,
   TextFieldMode,
   TextFieldModeByVariant,
   TextFieldValidationStatus
@@ -16,7 +16,7 @@ import type {
   TextFieldInputProps as HeadlessTextFieldInputProps,
   TextFieldRootProps as HeadlessTextFieldRootProps
 } from '@kiskadee/react-headless';
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
 
@@ -40,6 +40,8 @@ export type TextFieldProps = Omit<
   inputProps?: Omit<HeadlessTextFieldInputProps, 'className'> & {
     className?: string;
   };
+  /** External ref for anchoring semantic overlays such as Autocomplete. */
+  inputRef?: Ref<HTMLInputElement>;
   placeholder?: string;
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;

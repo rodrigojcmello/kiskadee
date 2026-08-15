@@ -1,5 +1,6 @@
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
+import { validateDropdownComponentContract } from '../components/dropdown.ts';
 import { validateIconComponentContract } from '../components/icon.ts';
 import { validateProgressComponentContract } from '../components/progress.ts';
 import { validateSliderComponentContract } from '../components/slider.zod.ts';
@@ -13,6 +14,7 @@ import { validateTextFieldComponentContract } from '../components/text-field.zod
  * Incremental scope:
  * - button
  * - card
+ * - dropdown
  * - icon
  * - progress
  * - slider
@@ -44,6 +46,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for card. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.dropdown !== undefined) {
+    const issues = validateDropdownComponentContract(byName.dropdown, 'components.dropdown');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for dropdown. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
   }

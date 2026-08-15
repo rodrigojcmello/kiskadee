@@ -2,6 +2,7 @@ import { breakpoints, color, primitive, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createFluent2MicrosoftButtonSchema } from './components/button.schema.ts';
 import { createFluent2MicrosoftCardSchema } from './components/card.schema.ts';
+import { createFluent2MicrosoftDropdownSchema } from './components/dropdown.schema.ts';
 import { createFluent2MicrosoftIconSchema } from './components/icon.schema.ts';
 import { createFluent2MicrosoftProgressSchema } from './components/progress.schema.ts';
 import { createFluent2MicrosoftSliderSchema } from './components/slider.schema.ts';
@@ -149,6 +150,7 @@ export const schema: Schema<Segments> = {
       c,
       segmentNames
     }),
+    dropdown: createFluent2MicrosoftDropdownSchema({ c }),
     icon: createFluent2MicrosoftIconSchema({ c }),
     progress: createFluent2MicrosoftProgressSchema({ c }),
     switch: createFluent2MicrosoftSwitchSchema({

@@ -1,7 +1,9 @@
 /** @vitest-environment jsdom */
 
-import { cleanup, fireEvent, render } from '@testing-library/react';
-import { type MouseEvent as ReactMouseEvent, useState } from 'react';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import { type MouseEvent as ReactMouseEvent, type Ref, useState } from 'react';
+import { hydrateRoot } from 'react-dom/client';
+import { renderToString } from 'react-dom/server';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { Select, type SelectOption } from './Select.tsx';
 
@@ -93,5 +95,145 @@ describe('Headless Select sequential navigation', () => {
 
     expect(onClick).toHaveBeenCalledOnce();
     expect(result.getByRole('combobox').textContent).toBe('First');
+  });
+
+  it('publishes the active option through aria-activedescendant', () => {
+    const result = render(<SequentialSelect />);
+    const trigger = result.getByRole('combobox', { name: 'Family' });
+
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute('aria-activedescendant')).toContain('first');
+    fireEvent.keyDown(trigger, { key: 'ArrowDown' });
+    expect(trigger.getAttribute('aria-activedescendant')).toContain('last');
+  });
+
+  it('reports Escape once even while the shared overlay dismiss listener is active', () => {
+    const onOpenChange = vi.fn();
+    const result = render(
+      <Select.Root options={options} defaultValue="first" onOpenChange={onOpenChange}>
+        <Select.Trigger />
+        <Select.Content portalled />
+      </Select.Root>
+    );
+    const trigger = result.getByRole('combobox');
+
+    fireEvent.click(trigger);
+    onOpenChange.mockClear();
+    fireEvent.keyDown(trigger, { key: 'Escape' });
+
+    expect(onOpenChange).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false, expect.objectContaining({ reason: 'escape' }));
+  });
+
+  it('uses explicit textValue for JSX labels during typeahead', () => {
+    const richOptions: SelectOption[] = [
+      { value: 'alpha', label: <strong>Alpha</strong>, textValue: 'Alpha' },
+      { value: 'beta', label: <em>Beta</em>, textValue: 'Beta' }
+    ];
+    const result = render(
+      <Select.Root options={richOptions} defaultValue="alpha">
+        <Select.Trigger />
+        <Select.Content />
+      </Select.Root>
+    );
+    const trigger = result.getByRole('combobox');
+
+    fireEvent.keyDown(trigger, { key: 'b' });
+    expect(trigger.textContent).toBe('Beta');
+  });
+
+  it('keeps Root option metadata authoritative when an Option disabled prop diverges', () => {
+    const onValueChange = vi.fn();
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = render(
+      <Select.Root options={options} defaultValue="first" onValueChange={onValueChange}>
+        <Select.Trigger />
+        <Select.Content>
+          <Select.Option value="disabled" disabled={false}>
+            Disabled
+          </Select.Option>
+        </Select.Content>
+      </Select.Root>
+    );
+
+    fireEvent.click(result.getByRole('combobox'));
+    fireEvent.click(result.getByRole('option', { name: 'Disabled' }));
+
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining('Root.options wins'));
+    warning.mockRestore();
+  });
+
+  it('composes trigger, content and option render callbacks without nested controls', () => {
+    const result = render(
+      <Select.Root options={options} defaultValue="first">
+        <Select.Trigger
+          render={(props) => {
+            const { ref, ...buttonProps } = props;
+            return <button {...buttonProps} ref={ref} type="button" data-custom-trigger />;
+          }}
+        />
+        <Select.Content
+          render={(props) => {
+            const { ref, children, ...listProps } = props;
+            return (
+              <div {...listProps} ref={ref as Ref<HTMLDivElement>}>
+                {children}
+              </div>
+            );
+          }}
+        >
+          {options.map((option) => (
+            <Select.Option
+              key={option.value}
+              value={option.value}
+              render={(props) => {
+                const { ref, children, ...optionProps } = props;
+                return (
+                  <div {...optionProps} ref={ref as Ref<HTMLDivElement>}>
+                    {children}
+                  </div>
+                );
+              }}
+            >
+              {option.label}
+            </Select.Option>
+          ))}
+        </Select.Content>
+      </Select.Root>
+    );
+    const trigger = result.getByRole('combobox');
+
+    expect(trigger.hasAttribute('data-custom-trigger')).toBe(true);
+    expect(trigger.querySelector('button')).toBeNull();
+    fireEvent.click(trigger);
+    expect(result.getByRole('listbox')).toBeTruthy();
+    fireEvent.click(result.getByRole('option', { name: 'Last' }));
+    expect(trigger.textContent).toBe('Last');
+  });
+
+  it('keeps portalled listbox markup deterministic through hydration', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const tree = (
+      <Select.Root options={options} defaultValue="first" defaultOpen>
+        <Select.Trigger />
+        <Select.Content portalled />
+      </Select.Root>
+    );
+    const container = document.createElement('div');
+    container.innerHTML = renderToString(tree);
+    document.body.append(container);
+
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+    await act(async () => {
+      root = hydrateRoot(container, tree);
+      await Promise.resolve();
+    });
+
+    expect(document.body.querySelector('[role="listbox"]')).toBeTruthy();
+    expect(error.mock.calls.flat().join(' ')).not.toContain('Hydration failed');
+    await act(async () => root?.unmount());
+    container.remove();
+    error.mockRestore();
   });
 });

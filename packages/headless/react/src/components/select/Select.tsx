@@ -1,16 +1,18 @@
-import { autoUpdate, flip, offset as floatingOffset, shift, useFloating } from '@floating-ui/react';
+import type { Placement } from '@floating-ui/react';
 import type {
   ButtonHTMLAttributes,
   ComponentPropsWithoutRef,
-  CSSProperties,
   Dispatch,
   KeyboardEvent,
+  ReactElement,
   MouseEvent as ReactMouseEvent,
   ReactNode,
+  Ref,
   SetStateAction
 } from 'react';
 import {
   createContext,
+  forwardRef,
   useCallback,
   useContext,
   useEffect,
@@ -19,39 +21,39 @@ import {
   useRef,
   useState
 } from 'react';
-import { createPortal } from 'react-dom';
-
-// NOTE ABOUT PORTALS + POSITIONING
-// -----------------------------------------------------------------------------
-// This Select supports an opt-in `portalled` mode on `Select.Content`.
-//
-// Why is JS positioning needed when portalled?
-// - In the default (non-portalled) mode, the dropdown is typically positioned
-//   purely with CSS (e.g. `position: absolute; top: 100%; left: 0`) because it
-//   lives inside the same DOM tree as the trigger, sharing the same containing
-//   block.
-// - When we render the dropdown in a React portal (usually into `document.body`),
-//   it is removed from that local layout context, so CSS-only absolute
-//   positioning no longer anchors it to the trigger.
-//
-// We use `@floating-ui/react` to keep the dropdown anchored to the trigger even
-// when portalled:
-// - `refs.setReference(triggerEl)` defines the anchor (the trigger).
-// - `refs.setFloating(dropdownEl)` defines the floating element (the listbox).
-// - `floatingStyles` provides the computed `top/left/position` (we use
-//   `strategy: 'fixed'` so coordinates are viewport-based).
-// - `autoUpdate` keeps it in sync on scroll/resize/layout changes.
-// - `flip` and `shift` keep the list inside the viewport, including triggers
-//   near the lower edge of a scrolling panel.
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
+import {
+  type AnchoredOverlayDismissDetails,
+  type AnchoredOverlayWidth,
+  useAnchoredOverlay
+} from '../../internal/anchored-overlay.tsx';
+import {
+  assertUniqueCollectionKeys,
+  type CollectionItem,
+  findCollectionKeyByPrefix,
+  getAdjacentCollectionKey,
+  getFirstEnabledCollectionKey,
+  getLastEnabledCollectionKey
+} from '../../internal/collection.ts';
+import { useControllableState } from '../../internal/controllable-state.ts';
 
 export type SelectOption = {
   value: string;
   label: ReactNode;
   disabled?: boolean;
+  textValue?: string;
+};
+
+export type SelectOpenChangeReason =
+  | 'trigger'
+  | 'keyboard'
+  | 'selection'
+  | 'escape'
+  | 'outside-press'
+  | 'programmatic';
+
+export type SelectOpenChangeDetails = {
+  reason: SelectOpenChangeReason;
+  event?: Event;
 };
 
 type SelectRootDivProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'className'>;
@@ -59,68 +61,82 @@ type SelectRootDivProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'cl
 export type SelectProps = SelectRootDivProps & {
   children: ReactNode;
   options: SelectOption[];
-  value?: string; // controlled selected value
-  defaultValue?: string; // initial value for uncontrolled mode
+  value?: string;
+  defaultValue?: string;
   onValueChange?: (value: string) => void;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean, details: SelectOpenChangeDetails) => void;
   disabled?: boolean;
   placeholder?: string;
   idPrefix?: string;
-  /**
-   * Class names by compact element keys:
-   * - e1: Select root container (div)
-   * - e2: Trigger button
-   * - e3: Dropdown content (listbox)
-   * - e4: Option (role=option) — rest state
-   * - e4a: Option (role=option) — selected state
-   * - e4d: Option (role=option) — disabled state
-   * - e5: Label
-   * - e6: Previous-option button
-   * - e7: Next-option button
-   */
   classNames?: Partial<
     Record<'e1' | 'e2' | 'e3' | 'e4' | 'e4a' | 'e4d' | 'e5' | 'e6' | 'e7', string>
   >;
 };
 
-export type SelectTriggerProps = {
+export type SelectTriggerProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'children' | 'type'
+> & {
   children?: ReactNode;
-  className?: string;
+  render?: (
+    props: SelectTriggerRenderProps,
+    state: { open: boolean; selectedValue?: string }
+  ) => ReactElement;
 };
 
-export type SelectContentProps = {
+export type SelectTriggerRenderProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'children' | 'type'
+> & {
+  ref: Ref<HTMLButtonElement>;
   children?: ReactNode;
-  className?: string;
-  /**
-   * When enabled, renders the dropdown in a React portal (defaults to `document.body`).
-   * Useful to avoid clipping/stacking-context issues (e.g. `backdrop-filter`).
-   */
+};
+
+export type SelectContentProps = Omit<ComponentPropsWithoutRef<'ul'>, 'children'> & {
+  children?: ReactNode;
   portalled?: boolean;
-  /**
-   * Gap (in pixels) between the trigger and the dropdown when `portalled` is enabled.
-   *
-   * NOTE: In the non-portalled mode, spacing is typically controlled via CSS
-   * (e.g. `top: calc(100% + 8px)` on the dropdown).
-   */
   offset?: number;
-  /**
-   * Custom portal container. If not provided, defaults to `document.body` on the client.
-   * If `null`, portal rendering is disabled.
-   */
+  collisionPadding?: number;
+  placement?: Placement;
   portalContainer?: HTMLElement | null;
+  width?: AnchoredOverlayWidth;
+  render?: (
+    props: SelectContentRenderProps,
+    state: { open: boolean; activeValue?: string }
+  ) => ReactElement;
 };
 
-export type SelectOptionProps = {
+export type SelectContentRenderProps = Omit<ComponentPropsWithoutRef<'ul'>, 'children'> & {
+  ref: Ref<HTMLElement>;
+  children?: ReactNode;
+  'data-open'?: true;
+  'data-placement'?: Placement;
+  'data-width'?: AnchoredOverlayWidth;
+};
+
+export type SelectOptionProps = Omit<ComponentPropsWithoutRef<'li'>, 'children' | 'value'> & {
   value: string;
   children?: ReactNode;
-  className?: string;
   disabled?: boolean;
+  textValue?: string;
+  render?: (
+    props: SelectOptionRenderProps,
+    state: { active: boolean; selected: boolean; disabled: boolean }
+  ) => ReactElement;
 };
 
-export type SelectLabelProps = {
+export type SelectOptionRenderProps = Omit<ComponentPropsWithoutRef<'li'>, 'children'> & {
+  ref: Ref<HTMLElement>;
   children?: ReactNode;
-  className?: string;
-  id?: string;
+  'data-focused'?: true;
+  'data-selected'?: true;
+  'data-disabled'?: true;
+  'data-text-value'?: string;
 };
+
+export type SelectLabelProps = ComponentPropsWithoutRef<'span'>;
 
 export type SelectStepProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -130,18 +146,15 @@ export type SelectStepProps = Omit<
   className?: string;
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Context
-// ─────────────────────────────────────────────────────────────────────────────
-
 type SelectContextValue = {
   isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+  setIsOpen: (open: boolean, details: SelectOpenChangeDetails) => void;
   selected: string | undefined;
   setSelected: (value: string) => void;
   options: SelectOption[];
-  focusedIndex: number;
-  setFocusedIndex: (index: number) => void;
+  items: CollectionItem<string, SelectOption>[];
+  activeKey: string | undefined;
+  setActiveKey: (key: string | undefined) => void;
   disabled: boolean;
   placeholder: string;
   baseId: string;
@@ -149,23 +162,26 @@ type SelectContextValue = {
   setLabelId: Dispatch<SetStateAction<string | undefined>>;
   classNames?: SelectProps['classNames'];
   triggerRef: React.RefObject<HTMLButtonElement | null>;
-  listRef: React.RefObject<HTMLUListElement | null>;
-  optionRefs: React.MutableRefObject<Map<string, HTMLLIElement | null>>;
+  listRef: React.RefObject<HTMLElement | null>;
+  optionRefs: React.MutableRefObject<Map<string, HTMLElement>>;
 };
 
 const SelectContext = createContext<SelectContextValue | null>(null);
 
-function useSelectContext() {
+function useSelectContext(): SelectContextValue {
   const context = useContext(SelectContext);
-  if (!context) {
-    throw new Error('Select components must be used within a Select.Root');
-  }
+  if (!context) throw new Error('Select components must be used within a Select.Root');
   return context;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Root Component
-// ─────────────────────────────────────────────────────────────────────────────
+function optionId(baseId: string, value: string): string {
+  return `${baseId}-option-${encodeURIComponent(value)}`;
+}
+
+function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
+  if (typeof ref === 'function') ref(value);
+  else if (ref) ref.current = value;
+}
 
 function SelectRoot({
   children,
@@ -173,6 +189,9 @@ function SelectRoot({
   value,
   defaultValue,
   onValueChange,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
   disabled = false,
   placeholder = 'Select an option',
   idPrefix,
@@ -181,82 +200,57 @@ function SelectRoot({
 }: SelectProps) {
   const internalId = useId();
   const baseId = idPrefix ?? `select-${internalId}`;
-
-  const [labelId, setLabelId] = useState<string | undefined>(undefined);
-
-  // Controlled/uncontrolled selected value
-  // - Controlled: `value` is provided, so we never update internal state.
-  // - Uncontrolled: `value` is undefined, so we store selection locally and
-  //   still notify the consumer via `onValueChange`.
-  const isControlled = value !== undefined;
-  const [uncontrolled, setUncontrolled] = useState<string | undefined>(defaultValue ?? undefined);
-  const selected = isControlled ? value : uncontrolled;
-
-  const setSelected = useCallback(
-    (v: string) => {
-      if (!isControlled) setUncontrolled(v);
-      onValueChange?.(v);
+  const [labelId, setLabelId] = useState<string | undefined>();
+  const [selected, setSelectedState] = useControllableState<string | undefined>({
+    value,
+    defaultValue
+  });
+  const [isOpen, setOpenState] = useControllableState({
+    value: openProp,
+    defaultValue: defaultOpen
+  });
+  const [activeKey, setActiveKey] = useState<string | undefined>();
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const listRef = useRef<HTMLElement | null>(null);
+  const optionRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const items = useMemo<CollectionItem<string, SelectOption>[]>(
+    () =>
+      options.map((option) => ({
+        key: option.value,
+        disabled: option.disabled,
+        textValue:
+          option.textValue ?? (typeof option.label === 'string' ? option.label : option.value),
+        data: option
+      })),
+    [options]
+  );
+  const setIsOpen = useCallback(
+    (nextOpen: boolean, details: SelectOpenChangeDetails) => {
+      setOpenState(nextOpen);
+      onOpenChange?.(nextOpen, details);
     },
-    [isControlled, onValueChange]
+    [onOpenChange, setOpenState]
+  );
+  const setSelected = useCallback(
+    (nextValue: string) => {
+      setSelectedState(nextValue);
+      onValueChange?.(nextValue);
+    },
+    [onValueChange, setSelectedState]
   );
 
-  // Dropdown open state
-  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => assertUniqueCollectionKeys(items, 'Select'), [items]);
 
-  // Focus management
-  const [focusedIndex, setFocusedIndex] = useState(-1);
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const listRef = useRef<HTMLUListElement | null>(null);
-  const optionRefs = useRef<Map<string, HTMLLIElement | null>>(new Map());
-
-  // Close on click outside
-  // IMPORTANT: when `Select.Content` is rendered with `portalled`, the listbox
-  // lives outside of `containerRef` (the root div). In that case, a naive
-  // `containerRef.contains(target)` check would treat clicks inside the dropdown
-  // as “outside” and immediately close it.
-  //
-  // To support both modes, we consider both:
-  // - `containerRef` (root subtree)
-  // - `listRef` (the actual listbox element, whether portalled or not)
-  const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      const clickedInsideRoot = containerRef.current?.contains(target) ?? false;
-      const clickedInsideList = listRef.current?.contains(target) ?? false;
-      if (!clickedInsideRoot && !clickedInsideList) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    if (!isOpen) return;
+    const selectedItem = items.find((item) => item.key === selected && !item.disabled);
+    setActiveKey(selectedItem?.key ?? getFirstEnabledCollectionKey(items));
+  }, [isOpen, items, selected]);
 
-  // Reset focused index when dropdown opens
   useEffect(() => {
-    if (isOpen) {
-      const enabledOptions = options.filter((o) => !o.disabled);
-      const selectedOption = enabledOptions.find((o) => o.value === selected);
-      if (selectedOption) {
-        const idx = options.findIndex((o) => o.value === selectedOption.value);
-        setFocusedIndex(idx);
-      } else {
-        const firstEnabledIdx = options.findIndex((o) => !o.disabled);
-        setFocusedIndex(firstEnabledIdx >= 0 ? firstEnabledIdx : -1);
-      }
-    }
-  }, [isOpen, options, selected]);
-
-  // Scroll focused option into view
-  useEffect(() => {
-    if (isOpen && focusedIndex >= 0) {
-      const option = options[focusedIndex];
-      if (option) {
-        const el = optionRefs.current.get(option.value);
-        el?.scrollIntoView({ block: 'nearest' });
-      }
-    }
-  }, [isOpen, focusedIndex, options]);
+    if (!isOpen || !activeKey) return;
+    optionRefs.current.get(activeKey)?.scrollIntoView({ block: 'nearest' });
+  }, [activeKey, isOpen]);
 
   const contextValue = useMemo<SelectContextValue>(
     () => ({
@@ -265,8 +259,9 @@ function SelectRoot({
       selected,
       setSelected,
       options,
-      focusedIndex,
-      setFocusedIndex,
+      items,
+      activeKey,
+      setActiveKey,
       disabled,
       placeholder,
       baseId,
@@ -278,41 +273,43 @@ function SelectRoot({
       optionRefs
     }),
     [
-      isOpen,
-      selected,
-      setSelected,
-      options,
-      focusedIndex,
-      disabled,
-      placeholder,
+      activeKey,
       baseId,
+      classNames,
+      disabled,
+      isOpen,
+      items,
       labelId,
-      classNames
+      options,
+      placeholder,
+      selected,
+      setIsOpen,
+      setSelected
     ]
   );
 
   return (
     <SelectContext.Provider value={contextValue}>
-      <div ref={containerRef} className={classNames?.e1} {...rootDivProps}>
+      <div className={classNames?.e1} {...rootDivProps}>
         {children}
       </div>
     </SelectContext.Provider>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Trigger Component
-// ─────────────────────────────────────────────────────────────────────────────
-
-function SelectTrigger({ children, className }: SelectTriggerProps) {
+const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(function SelectTrigger(
+  { children, className, onClick, onKeyDown, render, ...props },
+  forwardedRef
+) {
   const {
     isOpen,
     setIsOpen,
     selected,
-    options,
-    focusedIndex,
-    setFocusedIndex,
     setSelected,
+    options,
+    items,
+    activeKey,
+    setActiveKey,
     disabled,
     placeholder,
     baseId,
@@ -320,180 +317,140 @@ function SelectTrigger({ children, className }: SelectTriggerProps) {
     classNames,
     triggerRef
   } = useSelectContext();
-
-  const selectedOption = options.find((o) => o.value === selected);
-  const displayLabel = selectedOption?.label ?? placeholder;
-
-  const triggerClassName = className ?? classNames?.e2;
-
-  // Type-ahead search
   const searchBuffer = useRef('');
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const selectedOption = options.find((option) => option.value === selected);
+  const triggerClassName = className ?? classNames?.e2;
 
-  const handleTypeAhead = useCallback(
-    (char: string) => {
+  useEffect(() => () => clearTimeout(searchTimeout.current), []);
+
+  const runTypeahead = useCallback(
+    (character: string) => {
       clearTimeout(searchTimeout.current);
-      searchBuffer.current += char.toLowerCase();
-
-      // Find option starting with the search buffer
-      const enabledOptions = options.map((o, idx) => ({ ...o, idx })).filter((o) => !o.disabled);
-
-      const match = enabledOptions.find((o) => {
-        const label = typeof o.label === 'string' ? o.label : '';
-        return label.toLowerCase().startsWith(searchBuffer.current);
-      });
-
+      searchBuffer.current += character.toLocaleLowerCase();
+      const match = findCollectionKeyByPrefix(items, searchBuffer.current, activeKey);
       if (match) {
-        if (isOpen) {
-          setFocusedIndex(match.idx);
-        } else {
-          setSelected(match.value);
-        }
+        if (isOpen) setActiveKey(match);
+        else setSelected(match);
       }
-
-      // Clear buffer after 500ms of no typing
       searchTimeout.current = setTimeout(() => {
         searchBuffer.current = '';
       }, 500);
     },
-    [options, isOpen, setFocusedIndex, setSelected]
+    [activeKey, isOpen, items, setActiveKey, setSelected]
   );
 
-  const moveFocus = useCallback(
-    (direction: 1 | -1) => {
-      const enabledIndices = options
-        .map((o, idx) => ({ ...o, idx }))
-        .filter((o) => !o.disabled)
-        .map((o) => o.idx);
+  const commitActive = useCallback(() => {
+    const item = items.find((candidate) => candidate.key === activeKey);
+    if (!item || item.disabled) return;
+    setSelected(item.key);
+    setIsOpen(false, { reason: 'selection' });
+    triggerRef.current?.focus();
+  }, [activeKey, items, setIsOpen, setSelected, triggerRef]);
 
-      if (enabledIndices.length === 0) return;
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>) => {
+      onKeyDown?.(event);
+      if (event.defaultPrevented || disabled) return;
 
-      let currentIdx = enabledIndices.indexOf(focusedIndex);
-      if (currentIdx === -1) {
-        currentIdx = direction === 1 ? -1 : enabledIndices.length;
-      }
-
-      const nextIdx =
-        enabledIndices[(currentIdx + direction + enabledIndices.length) % enabledIndices.length];
-      setFocusedIndex(nextIdx);
-    },
-    [options, focusedIndex, setFocusedIndex]
-  );
-
-  const focusFirst = useCallback(() => {
-    const firstEnabled = options.findIndex((o) => !o.disabled);
-    if (firstEnabled >= 0) setFocusedIndex(firstEnabled);
-  }, [options, setFocusedIndex]);
-
-  const focusLast = useCallback(() => {
-    const lastEnabled = [...options].reverse().findIndex((o) => !o.disabled);
-    if (lastEnabled >= 0) setFocusedIndex(options.length - 1 - lastEnabled);
-  }, [options, setFocusedIndex]);
-
-  const selectFocused = useCallback(() => {
-    if (focusedIndex >= 0 && focusedIndex < options.length) {
-      const option = options[focusedIndex];
-      if (option && !option.disabled) {
-        setSelected(option.value);
-        setIsOpen(false);
-        triggerRef.current?.focus();
-      }
-    }
-  }, [focusedIndex, options, setSelected, setIsOpen, triggerRef]);
-
-  const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLButtonElement>) => {
-      if (disabled) return;
-
-      switch (e.key) {
+      switch (event.key) {
         case 'Enter':
         case ' ':
-          e.preventDefault();
-          if (isOpen) {
-            selectFocused();
-          } else {
-            setIsOpen(true);
-          }
+          event.preventDefault();
+          if (isOpen) commitActive();
+          else setIsOpen(true, { reason: 'keyboard', event: event.nativeEvent });
           break;
         case 'ArrowDown':
-          e.preventDefault();
+        case 'ArrowUp': {
+          event.preventDefault();
           if (!isOpen) {
-            setIsOpen(true);
+            setIsOpen(true, { reason: 'keyboard', event: event.nativeEvent });
           } else {
-            moveFocus(1);
+            setActiveKey(
+              getAdjacentCollectionKey(items, activeKey, event.key === 'ArrowDown' ? 1 : -1, true)
+            );
           }
           break;
-        case 'ArrowUp':
-          e.preventDefault();
-          if (!isOpen) {
-            setIsOpen(true);
-          } else {
-            moveFocus(-1);
-          }
-          break;
+        }
         case 'Home':
-          e.preventDefault();
-          if (isOpen) focusFirst();
+          if (isOpen) {
+            event.preventDefault();
+            setActiveKey(getFirstEnabledCollectionKey(items));
+          }
           break;
         case 'End':
-          e.preventDefault();
-          if (isOpen) focusLast();
+          if (isOpen) {
+            event.preventDefault();
+            setActiveKey(getLastEnabledCollectionKey(items));
+          }
           break;
         case 'Escape':
-          e.preventDefault();
-          setIsOpen(false);
-          triggerRef.current?.focus();
+          if (isOpen) {
+            event.preventDefault();
+            event.stopPropagation();
+            setIsOpen(false, { reason: 'escape', event: event.nativeEvent });
+          }
           break;
         case 'Tab':
-          if (isOpen) {
-            setIsOpen(false);
-          }
+          if (isOpen) setIsOpen(false, { reason: 'keyboard', event: event.nativeEvent });
           break;
         default:
-          // Type-ahead: single printable character
-          if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-            handleTypeAhead(e.key);
+          if (event.key.length === 1 && !event.ctrlKey && !event.altKey && !event.metaKey) {
+            runTypeahead(event.key);
           }
-          break;
       }
     },
     [
+      activeKey,
+      commitActive,
       disabled,
       isOpen,
-      setIsOpen,
-      moveFocus,
-      focusFirst,
-      focusLast,
-      selectFocused,
-      handleTypeAhead,
-      triggerRef
+      items,
+      onKeyDown,
+      runTypeahead,
+      setActiveKey,
+      setIsOpen
     ]
   );
-
-  return (
-    <button
-      ref={triggerRef}
-      id={`${baseId}-trigger`}
-      type="button"
-      role="combobox"
-      aria-haspopup="listbox"
-      aria-expanded={isOpen}
-      aria-controls={`${baseId}-listbox`}
-      aria-labelledby={labelId ? `${labelId} ${baseId}-trigger` : `${baseId}-trigger`}
-      aria-disabled={disabled || undefined}
-      disabled={disabled}
-      className={triggerClassName}
-      onClick={() => !disabled && setIsOpen(!isOpen)}
-      onKeyDown={onKeyDown}
-    >
-      {children ?? displayLabel}
-    </button>
+  const handleClick = useCallback(
+    (event: ReactMouseEvent<HTMLButtonElement>) => {
+      onClick?.(event);
+      if (!event.defaultPrevented && !disabled) {
+        setIsOpen(!isOpen, { reason: 'trigger', event: event.nativeEvent });
+      }
+    },
+    [disabled, isOpen, onClick, setIsOpen]
   );
-}
+  const ref = useCallback(
+    (node: HTMLButtonElement | null) => {
+      triggerRef.current = node;
+      assignRef(forwardedRef, node);
+    },
+    [forwardedRef, triggerRef]
+  );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sequential navigation
-// ─────────────────────────────────────────────────────────────────────────────
+  const triggerProps: SelectTriggerRenderProps = {
+    ...props,
+    ref,
+    id: `${baseId}-trigger`,
+    role: 'combobox',
+    'aria-haspopup': 'listbox',
+    'aria-expanded': isOpen,
+    'aria-controls': `${baseId}-listbox`,
+    'aria-activedescendant': isOpen && activeKey ? optionId(baseId, activeKey) : undefined,
+    'aria-labelledby': labelId ? `${labelId} ${baseId}-trigger` : `${baseId}-trigger`,
+    'aria-disabled': disabled || undefined,
+    disabled,
+    className: triggerClassName,
+    onClick: handleClick,
+    onKeyDown: handleKeyDown,
+    children: children ?? selectedOption?.label ?? placeholder
+  };
+
+  if (render) return render(triggerProps, { open: isOpen, selectedValue: selected });
+  const { ref: nativeRef, ...nativeTriggerProps } = triggerProps;
+  return <button {...nativeTriggerProps} ref={nativeRef} type="button" />;
+});
 
 function SelectStep({
   'aria-label': ariaLabel,
@@ -504,28 +461,17 @@ function SelectStep({
   direction,
   ...buttonProps
 }: SelectStepProps & { direction: -1 | 1 }) {
-  const { selected, setSelected, options, disabled, classNames } = useSelectContext();
-  const enabledOptions = options.filter((option) => !option.disabled);
-  const selectedIndex = enabledOptions.findIndex((option) => option.value === selected);
-  const adjacentIndex =
-    selectedIndex < 0
-      ? direction === 1
-        ? 0
-        : enabledOptions.length - 1
-      : selectedIndex + direction;
-  const adjacentOption = enabledOptions[adjacentIndex];
-  const isDisabled = disabled || disabledProp || adjacentOption === undefined;
+  const { selected, setSelected, items, disabled, classNames } = useSelectContext();
+  const adjacentKey = getAdjacentCollectionKey(items, selected, direction, false);
+  const isDisabled = disabled || disabledProp || adjacentKey === undefined;
   const resolvedClassName = className ?? (direction === -1 ? classNames?.e6 : classNames?.e7);
   const resolvedLabel = ariaLabel ?? (direction === -1 ? 'Previous option' : 'Next option');
-
   const handleClick = useCallback(
     (event: ReactMouseEvent<HTMLButtonElement>) => {
       onClick?.(event);
-      if (!event.defaultPrevented && !isDisabled && adjacentOption) {
-        setSelected(adjacentOption.value);
-      }
+      if (!event.defaultPrevented && !isDisabled && adjacentKey) setSelected(adjacentKey);
     },
-    [adjacentOption, isDisabled, onClick, setSelected]
+    [adjacentKey, isDisabled, onClick, setSelected]
   );
 
   return (
@@ -551,217 +497,204 @@ function SelectNext(props: SelectStepProps) {
   return <SelectStep {...props} direction={1} />;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Label Component
-// ─────────────────────────────────────────────────────────────────────────────
-
-function SelectLabel({ children, className, id }: SelectLabelProps) {
+function SelectLabel({ children, className, id, ...props }: SelectLabelProps) {
   const { baseId, setLabelId, classNames } = useSelectContext();
-
   const resolvedId = id ?? `${baseId}-label`;
 
   useEffect(() => {
     setLabelId(resolvedId);
-    return () => {
-      setLabelId((current) => (current === resolvedId ? undefined : current));
-    };
+    return () => setLabelId((current) => (current === resolvedId ? undefined : current));
   }, [resolvedId, setLabelId]);
 
-  const resolvedClassName = className ?? classNames?.e5;
-
   return (
-    <span id={resolvedId} className={resolvedClassName}>
+    <span {...props} id={resolvedId} className={className ?? classNames?.e5}>
       {children}
     </span>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Content Component (Dropdown/Listbox)
-// ─────────────────────────────────────────────────────────────────────────────
-
-function SelectContent({
-  children,
-  className,
-  portalled = false,
-  offset = 8,
-  portalContainer
-}: SelectContentProps) {
-  const { isOpen, options, baseId, classNames, listRef, triggerRef } = useSelectContext();
-
-  // Floating UI is used only to provide robust, anchor-based positioning when
-  // `portalled` is enabled. In the default non-portalled mode, consumers usually
-  // position the dropdown via CSS (e.g. absolute positioning inside `e1`).
-  //
-  // We keep this hook here unconditionally for simplicity; the computed styles
-  // are only applied when `portalled` is true.
-  const { refs, floatingStyles, update, placement } = useFloating({
-    strategy: 'fixed',
-    placement: 'bottom-start',
-    middleware: [floatingOffset(offset), flip({ padding: 8 }), shift({ padding: 8 })],
-    // IMPORTANT: Floating UI defaults to positioning via `transform: translate(...)`.
-    // Our dropdown animation also uses `transform` (scale/translateY). If we
-    // keep Floating UI's transform, it will override the CSS animation.
-    //
-    // By disabling transforms here, Floating UI will output `top/left` instead,
-    // preserving the dropdown's CSS `transform` for the open/close animation.
-    transform: false,
-    whileElementsMounted: autoUpdate
+const SelectContent = forwardRef<HTMLUListElement, SelectContentProps>(function SelectContent(
+  {
+    children,
+    className,
+    portalled = false,
+    offset = 8,
+    collisionPadding = 8,
+    placement = 'bottom-start',
+    portalContainer,
+    width = 'content',
+    render,
+    style,
+    ...props
+  },
+  forwardedRef
+) {
+  const { isOpen, setIsOpen, options, activeKey, baseId, classNames, listRef, triggerRef } =
+    useSelectContext();
+  const handleDismiss = useCallback(
+    (details: AnchoredOverlayDismissDetails) => {
+      setIsOpen(false, { reason: details.reason, event: details.event });
+      if (details.reason === 'escape') triggerRef.current?.focus();
+    },
+    [setIsOpen, triggerRef]
+  );
+  const overlay = useAnchoredOverlay({
+    open: isOpen,
+    referenceElement: triggerRef.current,
+    placement,
+    offset,
+    collisionPadding,
+    portalled,
+    portalContainer,
+    width,
+    onDismiss: handleDismiss
   });
-
-  // Connect the floating anchor to the trigger element.
-  // This is what makes the dropdown follow the trigger even when rendered in a portal.
-  useEffect(() => {
-    if (!portalled) return;
-    if (!triggerRef.current) return;
-    refs.setReference(triggerRef.current);
-  }, [portalled, refs, triggerRef]);
-
-  // When opening, force an immediate position calculation so the first frame of
-  // the open animation starts at the correct coordinates.
-  useEffect(() => {
-    if (!portalled) return;
-    if (!isOpen) return;
-    update();
-  }, [portalled, isOpen, update]);
-
-  const contentClassName = className ?? classNames?.e3;
-
-  // Portal container resolution:
-  // - `portalContainer === undefined`: default to `document.body` on the client.
-  // - `portalContainer === null`: explicitly disable portal usage.
-  // - SSR safety: if `document` is not available, portal is disabled.
-  const resolvedPortalContainer =
-    portalContainer === undefined
-      ? typeof document !== 'undefined'
-        ? document.body
-        : null
-      : portalContainer;
-
-  const ul = (
-    <ul
-      ref={(node) => {
-        listRef.current = node;
-        // Connect the floating element (the listbox) so Floating UI can measure
-        // it and compute the correct viewport coordinates.
-        if (portalled) refs.setFloating(node);
-      }}
-      id={`${baseId}-listbox`}
-      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: ...
-      role="listbox"
-      aria-labelledby={`${baseId}-trigger`}
-      aria-hidden={isOpen ? undefined : true}
-      data-open={isOpen || undefined}
-      data-placement={portalled ? placement : undefined}
-      className={contentClassName}
-      tabIndex={-1}
-      style={
-        portalled
-          ? ({
-              ...floatingStyles,
-              // Ensure the dropdown is above local fixed headers by default.
-              zIndex: 10000
-            } as CSSProperties)
-          : undefined
-      }
-    >
-      {children ??
-        options.map((option) => (
-          <SelectOption key={option.value} value={option.value}>
-            {option.label}
-          </SelectOption>
-        ))}
-    </ul>
+  const ref = useCallback(
+    (node: HTMLElement | null) => {
+      listRef.current = node;
+      overlay.floatingRef(node);
+      assignRef(forwardedRef, node);
+    },
+    [forwardedRef, listRef, overlay]
+  );
+  const resolvedChildren =
+    children ??
+    options.map((option) => (
+      <SelectOption
+        key={option.value}
+        value={option.value}
+        disabled={option.disabled}
+        textValue={option.textValue}
+      >
+        {option.label}
+      </SelectOption>
+    ));
+  const listProps: SelectContentRenderProps = {
+    ...props,
+    ref,
+    id: `${baseId}-listbox`,
+    role: 'listbox',
+    'aria-labelledby': `${baseId}-trigger`,
+    'aria-hidden': isOpen ? undefined : true,
+    'data-open': isOpen || undefined,
+    'data-placement': portalled ? overlay.placement : undefined,
+    'data-width': width,
+    className: className ?? classNames?.e3,
+    tabIndex: -1,
+    style: portalled ? { ...overlay.floatingStyles, ...style } : style,
+    children: resolvedChildren
+  };
+  const list = render ? (
+    render(listProps, { open: isOpen, activeValue: activeKey })
+  ) : (
+    <ul {...listProps} ref={listProps.ref as Ref<HTMLUListElement>} />
   );
 
-  // If we are not in portalled mode, or portal rendering is unavailable/disabled,
-  // render inline and allow consumers to position via CSS.
-  if (!portalled || !resolvedPortalContainer) return ul;
+  return overlay.renderFloating(list);
+});
 
-  // Portalled rendering:
-  // - avoids clipping by overflow/stacking contexts
-  // - helps with cases where `backdrop-filter` and fixed headers interfere
-  // - requires JS positioning (handled by Floating UI above)
-  return createPortal(ul, resolvedPortalContainer);
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Option Component
-// ─────────────────────────────────────────────────────────────────────────────
-
-function SelectOption({ value, children, className, disabled }: SelectOptionProps) {
+const SelectOption = forwardRef<HTMLLIElement, SelectOptionProps>(function SelectOption(
+  {
+    value,
+    children,
+    className,
+    disabled: disabledProp,
+    textValue,
+    render,
+    onClick,
+    onMouseEnter,
+    ...props
+  },
+  forwardedRef
+) {
   const {
     selected,
     setSelected,
     options,
-    focusedIndex,
-    setFocusedIndex,
+    activeKey,
+    setActiveKey,
     setIsOpen,
     baseId,
     classNames,
     triggerRef,
     optionRefs
   } = useSelectContext();
-
-  const option = options.find((o) => o.value === value);
-  const optionIndex = options.findIndex((o) => o.value === value);
+  const option = options.find((candidate) => candidate.value === value);
   const isSelected = selected === value;
-  const isFocused = focusedIndex === optionIndex;
-  const isDisabled = disabled || (option?.disabled ?? false);
+  const isFocused = activeKey === value;
+  const isDisabled = option ? (option.disabled ?? false) : (disabledProp ?? false);
 
-  // Determine class name
-  let optionClassName = className;
-  if (!optionClassName) {
-    if (isDisabled) {
-      optionClassName = classNames?.e4d ?? classNames?.e4;
-    } else if (isSelected) {
-      optionClassName = classNames?.e4a ?? classNames?.e4;
-    } else {
-      optionClassName = classNames?.e4;
+  useEffect(() => {
+    if (
+      (
+        globalThis as typeof globalThis & {
+          process?: { env?: { NODE_ENV?: string } };
+        }
+      ).process?.env?.NODE_ENV !== 'production' &&
+      disabledProp !== undefined &&
+      option !== undefined &&
+      disabledProp !== (option.disabled ?? false)
+    ) {
+      console.warn(
+        `[Kiskadee] Select.Option "${value}" disabled state differs from Root.options metadata. Root.options wins for keyboard navigation.`
+      );
     }
+  }, [disabledProp, option?.disabled, value]);
+
+  let resolvedClassName = className;
+  if (!resolvedClassName) {
+    if (isDisabled) resolvedClassName = classNames?.e4d ?? classNames?.e4;
+    else if (isSelected) resolvedClassName = classNames?.e4a ?? classNames?.e4;
+    else resolvedClassName = classNames?.e4;
   }
-
-  const handleClick = useCallback(() => {
-    if (!isDisabled) {
-      setSelected(value);
-      setIsOpen(false);
-      triggerRef.current?.focus();
-    }
-  }, [isDisabled, value, setSelected, setIsOpen, triggerRef]);
-
-  const handleMouseEnter = useCallback(() => {
-    if (!isDisabled) {
-      setFocusedIndex(optionIndex);
-    }
-  }, [isDisabled, optionIndex, setFocusedIndex]);
-
-  return (
-    // biome-ignore lint/a11y/useFocusableInteractive: ...
-    // biome-ignore lint/a11y/useKeyWithClickEvents: ...
-    <li
-      ref={(el) => {
-        optionRefs.current.set(value, el);
-      }}
-      id={`${baseId}-option-${value}`}
-      // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: this list item acts as a listbox option
-      role="option"
-      aria-selected={isSelected}
-      aria-disabled={isDisabled || undefined}
-      data-focused={isFocused || undefined}
-      data-selected={isSelected || undefined}
-      data-disabled={isDisabled || undefined}
-      className={optionClassName}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-    >
-      {children ?? option?.label}
-    </li>
+  const ref = useCallback(
+    (node: HTMLElement | null) => {
+      if (node) optionRefs.current.set(value, node);
+      else optionRefs.current.delete(value);
+      assignRef(forwardedRef, node);
+    },
+    [forwardedRef, optionRefs, value]
   );
-}
+  const handleClick = useCallback(
+    (event: ReactMouseEvent<HTMLLIElement>) => {
+      onClick?.(event);
+      if (event.defaultPrevented || isDisabled) return;
+      setSelected(value);
+      setIsOpen(false, { reason: 'selection', event: event.nativeEvent });
+      triggerRef.current?.focus();
+    },
+    [isDisabled, onClick, setIsOpen, setSelected, triggerRef, value]
+  );
+  const handleMouseEnter = useCallback(
+    (event: ReactMouseEvent<HTMLLIElement>) => {
+      onMouseEnter?.(event);
+      if (!event.defaultPrevented && !isDisabled) setActiveKey(value);
+    },
+    [isDisabled, onMouseEnter, setActiveKey, value]
+  );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Export
-// ─────────────────────────────────────────────────────────────────────────────
+  const optionProps: SelectOptionRenderProps = {
+    ...props,
+    ref,
+    id: optionId(baseId, value),
+    role: 'option',
+    'aria-selected': isSelected,
+    'aria-disabled': isDisabled || undefined,
+    'data-focused': isFocused || undefined,
+    'data-selected': isSelected || undefined,
+    'data-disabled': isDisabled || undefined,
+    'data-text-value': textValue ?? option?.textValue,
+    className: resolvedClassName,
+    onClick: handleClick,
+    onMouseEnter: handleMouseEnter,
+    children: children ?? option?.label
+  };
+
+  if (render) {
+    return render(optionProps, { active: isFocused, selected: isSelected, disabled: isDisabled });
+  }
+  return <li {...optionProps} ref={optionProps.ref as Ref<HTMLLIElement>} />;
+});
 
 export const Select = {
   Root: SelectRoot,

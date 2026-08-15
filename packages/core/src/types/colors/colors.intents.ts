@@ -95,6 +95,23 @@ export type IconIntent = keyof typeof IconIntentKeys;
 export type RoleIcon = `icon.${IconIntent}`;
 
 /**
+ * Supported intent keys for the `dropdown` component.
+ *
+ * Dropdown items are neutral by default. Destructive is the only semantic
+ * variation in the first contract; selection remains an interaction state.
+ */
+export const DropdownIntentKeys = {
+  neutral: 'neutral',
+  destructive: 'destructive'
+} as const;
+
+/** Supported intent keys for the `dropdown` component (Layer 3). */
+export type DropdownIntent = keyof typeof DropdownIntentKeys;
+
+/** Qualified role identifier for `dropdown` intents. */
+export type RoleDropdown = `dropdown.${DropdownIntent}`;
+
+/**
  * Supported intent keys for the `progress` component.
  */
 export const ProgressIntentKeys = {

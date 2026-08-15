@@ -1,0 +1,242 @@
+'use client';
+
+import { Button, Dropdown, Text, useShowcase } from '@kiskadee/react-components';
+import type { ReactNode, Ref } from 'react';
+import { useState } from 'react';
+import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
+import styles from './Dropdown.module.scss';
+
+type DemoDropdownProps = {
+  buttonLabel: string;
+  children: ReactNode;
+  collection?: boolean;
+  placement?: 'bottom-start' | 'right-start';
+  width?: 'content' | 'min-anchor' | 'anchor';
+};
+
+function DemoDropdown({
+  buttonLabel,
+  children,
+  collection = true,
+  placement = 'bottom-start',
+  width = 'min-anchor'
+}: DemoDropdownProps) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dropdown.Root open={open} onOpenChange={setOpen}>
+      <Dropdown.Anchor
+        render={(anchorProps) => {
+          const { ref, ...props } = anchorProps;
+          return (
+            <Button
+              {...props}
+              ref={ref as Ref<HTMLButtonElement>}
+              intent="neutral"
+              emphasis="medium"
+            >
+              <Button.Label>{buttonLabel}</Button.Label>
+              <Button.Disclosure />
+            </Button>
+          );
+        }}
+      />
+      <Dropdown.Content placement={placement} width={width}>
+        <Dropdown.Surface>
+          {collection ? <Dropdown.Items>{children}</Dropdown.Items> : children}
+        </Dropdown.Surface>
+      </Dropdown.Content>
+    </Dropdown.Root>
+  );
+}
+
+function DemoItem({
+  children,
+  disabled = false,
+  selected = false
+}: {
+  children: ReactNode;
+  disabled?: boolean;
+  selected?: boolean;
+}) {
+  return (
+    <Dropdown.Item
+      disabled={disabled}
+      selected={selected}
+      render={(props) => {
+        const { ref, ...buttonProps } = props;
+        return (
+          <button
+            {...buttonProps}
+            ref={ref as Ref<HTMLButtonElement>}
+            type="button"
+            disabled={disabled}
+          >
+            {children}
+          </button>
+        );
+      }}
+    />
+  );
+}
+
+function Unavailable() {
+  const textProfiles = useShowcaseTextProfiles();
+  return (
+    <div className={styles.unavailable}>
+      <Text as="p" profile={textProfiles.body}>
+        Dropdown is not available in the active design system.
+      </Text>
+    </div>
+  );
+}
+
+export default function DropdownShowcase() {
+  const { manifest } = useShowcase();
+  const textProfiles = useShowcaseTextProfiles();
+  const available = Boolean(manifest?.components?.dropdown && manifest.components.button);
+
+  return (
+    <main className={styles.page}>
+      <Text as="h2" profile={textProfiles.pageTitle}>
+        Dropdown
+      </Text>
+      <Text as="p" profile={textProfiles.body} className={styles.lead}>
+        One visual surface shared by menus, value selection and autocomplete suggestions.
+      </Text>
+      <ShowcaseRouteControls
+        id="dropdown"
+        eyebrow="Dropdown"
+        title="Examples"
+        isAvailable={available}
+      >
+        {null}
+      </ShowcaseRouteControls>
+
+      {!available ? (
+        <Unavailable />
+      ) : (
+        <div className={styles.sections}>
+          <section className={styles.section} aria-labelledby="dropdown-collections-title">
+            <Text as="h3" id="dropdown-collections-title" profile={textProfiles.sectionTitle}>
+              Collections
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              The icon column exists only when at least one item in that collection provides an
+              icon.
+            </Text>
+            <div className={styles.grid}>
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Without icons
+                </Text>
+                <DemoDropdown buttonLabel="Sort by">
+                  <DemoItem selected>
+                    <Dropdown.Label>Most relevant</Dropdown.Label>
+                    <Dropdown.Trailing name="check" />
+                  </DemoItem>
+                  <DemoItem>
+                    <Dropdown.Label>Newest first</Dropdown.Label>
+                  </DemoItem>
+                  <DemoItem disabled>
+                    <Dropdown.Label>Most discussed</Dropdown.Label>
+                  </DemoItem>
+                </DemoDropdown>
+              </article>
+
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Mixed icons
+                </Text>
+                <DemoDropdown buttonLabel="Workspace actions">
+                  <DemoItem>
+                    <Dropdown.Icon name="settings" />
+                    <Dropdown.Label>Settings</Dropdown.Label>
+                  </DemoItem>
+                  <DemoItem>
+                    <Dropdown.Label>Duplicate</Dropdown.Label>
+                  </DemoItem>
+                  <Dropdown.Separator />
+                  <Dropdown.Item
+                    intent="destructive"
+                    render={(props) => {
+                      const { ref, ...buttonProps } = props;
+                      return (
+                        <button {...buttonProps} ref={ref as Ref<HTMLButtonElement>} type="button">
+                          <Dropdown.Icon name="trash" />
+                          <Dropdown.Label>Delete workspace</Dropdown.Label>
+                        </button>
+                      );
+                    }}
+                  />
+                </DemoDropdown>
+              </article>
+
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Rich item
+                </Text>
+                <DemoDropdown buttonLabel="Notification settings" width="content">
+                  <DemoItem>
+                    <Dropdown.Icon name="bell" />
+                    <Dropdown.Label>Product updates</Dropdown.Label>
+                    <Dropdown.Description>
+                      Occasional announcements about new capabilities.
+                    </Dropdown.Description>
+                  </DemoItem>
+                  <DemoItem>
+                    <Dropdown.Label>Security alerts</Dropdown.Label>
+                    <Dropdown.Description>
+                      Important changes to your account and sessions.
+                    </Dropdown.Description>
+                  </DemoItem>
+                </DemoDropdown>
+              </article>
+            </div>
+          </section>
+
+          <section className={styles.section} aria-labelledby="dropdown-free-content-title">
+            <Text as="h3" id="dropdown-free-content-title" profile={textProfiles.sectionTitle}>
+              Free content
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              The shared surface can host non-interactive supporting content without changing the
+              semantics of Menu, Select or Autocomplete.
+            </Text>
+            <div className={`${styles.card} ${styles.edgeStage}`}>
+              <DemoDropdown
+                buttonLabel="Open project summary"
+                collection={false}
+                placement="right-start"
+                width="content"
+              >
+                <div className={styles.richContent}>
+                  <div>
+                    <Text as="p" profile={textProfiles.groupTitle}>
+                      Project Aurora
+                    </Text>
+                    <Text as="p" profile={textProfiles.caption} className={styles.muted}>
+                      12 active collaborators
+                    </Text>
+                  </div>
+                  <div className={styles.metric}>
+                    <Text as="span" profile={textProfiles.caption}>
+                      Progress
+                    </Text>
+                    <Text as="strong" profile={textProfiles.subsectionTitle}>
+                      78%
+                    </Text>
+                  </div>
+                </div>
+              </DemoDropdown>
+              <Text as="p" profile={textProfiles.caption} className={styles.muted}>
+                The preferred right placement flips or shifts when it approaches a viewport edge.
+              </Text>
+            </div>
+          </section>
+        </div>
+      )}
+    </main>
+  );
+}

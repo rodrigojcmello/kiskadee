@@ -45,6 +45,7 @@ import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Button.module.scss';
 import { ButtonAsyncExample } from './components/ButtonAsyncExample';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
+import { ButtonMenuExamples } from './components/ButtonMenuExamples';
 import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
 import { SocialButtonExamples } from './components/SocialButtonExamples';
@@ -163,7 +164,7 @@ export function Button() {
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
-  const [isSimplified, setIsSimplified] = React.useState(false);
+  const [isSimplified, setIsSimplified] = React.useState(true);
   const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
   const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('onSubtle');
@@ -827,6 +828,11 @@ export function Button() {
         </div>
         <ButtonIconExamples
           fontName={fontName}
+          scale={activeButtonScale}
+          surfaceContext={activeSurfaceContext}
+        />
+        <ButtonMenuExamples
+          available={Boolean(manifest?.components?.dropdown && buttonMeta)}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />

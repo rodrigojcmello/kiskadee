@@ -383,6 +383,7 @@ function isComponentName(value: string): value is ComponentName {
   return (
     value === 'button' ||
     value === 'card' ||
+    value === 'dropdown' ||
     value === 'icon' ||
     value === 'progress' ||
     value === 'slider' ||
@@ -718,6 +719,7 @@ export async function publishMetadata(params: {
   const manifestComponentNames = [
     'button',
     'card',
+    'dropdown',
     'icon',
     'progress',
     'slider',

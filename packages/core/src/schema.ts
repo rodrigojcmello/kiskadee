@@ -1,6 +1,7 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
 import type { CardElements, CardOptions } from './components/card.ts';
+import type { DropdownElements } from './components/dropdown.ts';
 import type { IconElements } from './components/icon.ts';
 import type { ProgressElements } from './components/progress.ts';
 import type { SliderOptions, SliderVariants } from './components/slider.ts';
@@ -38,6 +39,7 @@ import type { ElementTypography, SchemaTypography } from './typography.ts';
 export type ComponentName =
   | 'button'
   | 'card'
+  | 'dropdown'
   | 'icon'
   | 'progress'
   | 'slider'
@@ -115,6 +117,7 @@ export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
   button: ComponentElementsStyleKeyMap<TSegmentName>;
   card: ComponentElementsStyleKeyMap<TSegmentName>;
+  dropdown: ComponentElementsStyleKeyMap<TSegmentName>;
   icon: ComponentElementsStyleKeyMap<TSegmentName>;
   progress: ComponentElementsStyleKeyMap<TSegmentName>;
   slider: ComponentVariantModesStyleKeyMap<TSegmentName>;
@@ -173,6 +176,12 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     effects?: ComponentEffects;
     options?: CardOptions<TSegmentName>;
     elements: CardElements<TSegmentName> & Elements<TSegmentName>;
+  };
+  dropdown: {
+    effects?: {
+      shadow?: ShadowEffectSchema;
+    };
+    elements: DropdownElements<TSegmentName> & Elements<TSegmentName>;
   };
   icon: {
     elements: IconElements<TSegmentName> & Elements<TSegmentName>;

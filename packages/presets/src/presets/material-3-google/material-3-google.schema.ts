@@ -2,6 +2,7 @@ import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createMaterial3GoogleButtonSchema } from './components/button.schema.ts';
 import { createMaterial3GoogleCardSchema } from './components/card.schema.ts';
+import { createMaterial3GoogleDropdownSchema } from './components/dropdown.schema.ts';
 import { createMaterial3GoogleSwitchSchema } from './components/switch.schema.ts';
 import { createMaterial3GoogleTabsSchema } from './components/tabs.schema.ts';
 import { createMaterial3GoogleTextFieldSchema } from './components/text-field.schema.ts';
@@ -187,6 +188,7 @@ export const schema: Schema<Segments> = {
       segmentNames,
       transparent
     }),
+    dropdown: createMaterial3GoogleDropdownSchema({ c, segmentNames }),
     switch: createMaterial3GoogleSwitchSchema({
       c,
       segmentNames,

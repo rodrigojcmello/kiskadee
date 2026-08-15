@@ -1,0 +1,107 @@
+.page {
+  display: grid;
+  gap: 12px;
+  min-inline-size: 0;
+}
+
+.page > h2,
+.lead,
+.section h3,
+.section h4,
+.description,
+.muted {
+  margin: 0;
+}
+
+.lead,
+.description,
+.muted {
+  opacity: 0.68;
+}
+
+.sections {
+  display: grid;
+  gap: 40px;
+  margin-block-start: 20px;
+}
+
+.section {
+  display: grid;
+  gap: 12px;
+  min-inline-size: 0;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.card,
+.unavailable {
+  align-content: start;
+  background: color-mix(in srgb, currentColor 3%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 16px;
+  display: grid;
+  gap: 18px;
+  min-block-size: 180px;
+  min-inline-size: 0;
+  padding: 20px;
+}
+
+.card > :global(.k-bmn),
+.card > :global(.k-btn) {
+  justify-self: start;
+}
+
+.unavailable {
+  min-block-size: 120px;
+  place-items: center;
+}
+
+.unavailable p {
+  margin: 0;
+}
+
+.edgeStage {
+  align-content: end;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: end;
+  min-block-size: 260px;
+}
+
+.edgeStage > :global(.k-btn) {
+  justify-self: end;
+}
+
+.edgeStage > p {
+  max-inline-size: 360px;
+  text-align: end;
+}
+
+.richContent {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(190px, 1fr) auto;
+  padding: 16px;
+}
+
+.richContent p,
+.richContent strong {
+  margin: 0;
+}
+
+.metric {
+  align-content: start;
+  display: grid;
+  gap: 4px;
+  text-align: end;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+}
