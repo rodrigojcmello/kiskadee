@@ -43,6 +43,20 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('padding-top: max(0px, calc(var(--k-pdt) - var(--k-bdw, 0px)))');
       });
 
+      it('mirrors Dropdown padding into a structural token without removing the CSS property', () => {
+        const result = transformScaleKeyToCss('paddingTop__16', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            borderRadiusEmission: 'direct',
+            borderColorEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'mirrored',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-pdt: 16px; padding-top: 16px }');
+      });
+
       it("should convert 'marginLeft__16' into a valid CSS rule", () => {
         const result = transformScaleKeyToCss('marginLeft__16', breakpoints, 'abc');
 
@@ -92,6 +106,21 @@ describe('transformScaleKeyToCss', () => {
 
         expect(result).toContain('.abc {');
         expect(result).toContain('width: 16px');
+      });
+
+      it('emits separator thickness only as --k-bxw in token mode', () => {
+        const result = transformScaleKeyToCss('boxWidth__1', breakpoints, 'abc', {
+          styleEmissionPolicy: {
+            boxWidthEmission: 'token',
+            borderRadiusEmission: 'direct',
+            borderColorEmission: 'direct',
+            borderWidthEmission: 'direct',
+            paddingEmission: 'direct',
+            shadowEmission: 'direct'
+          }
+        });
+
+        expect(result).toBe('.abc { --k-bxw: 1px }');
       });
 
       it("should convert 'boxHeight__16' into a valid CSS rule", () => {
@@ -252,7 +281,7 @@ describe('transformScaleKeyToCss', () => {
         expect(result).toContain('font-size: 1rem');
       });
 
-      it("supports the typography-wide 's:all' token for responsive font size", () => {
+      it("supports the component-wide 's:all' token for responsive scales", () => {
         const result = transformScaleKeyToCss(
           'textSize++s:all::bp:lg:1__14',
           { 'bp:all': 0, 'bp:lg:1': 1200 },
@@ -260,6 +289,34 @@ describe('transformScaleKeyToCss', () => {
         );
 
         expect(result).toBe('@media (min-width: 1200px) { .abc { font-size: 0.875rem } }');
+
+        expect(
+          transformScaleKeyToCss(
+            'boxWidth++s:all::bp:lg:1__2',
+            { 'bp:all': 0, 'bp:lg:1': 1200 },
+            'def',
+            {
+              styleEmissionPolicy: {
+                boxWidthEmission: 'token',
+                borderRadiusEmission: 'direct',
+                borderColorEmission: 'direct',
+                borderWidthEmission: 'direct',
+                paddingEmission: 'direct',
+                shadowEmission: 'direct'
+              }
+            }
+          )
+        ).toBe('@media (min-width: 1200px) { .def { --k-bxw: 2px } }');
+      });
+
+      it('rejects s:all for scale properties without a component-wide recipe', () => {
+        expect(() =>
+          transformScaleKeyToCss(
+            'paddingTop++s:all::bp:lg:1__16',
+            { 'bp:all': 0, 'bp:lg:1': 1200 },
+            'abc'
+          )
+        ).toThrowError(ERROR_INVALID_CUSTOM_TOKEN);
       });
     });
   });
@@ -287,15 +344,6 @@ describe('transformScaleKeyToCss', () => {
       expect(() =>
         transformScaleKeyToCss('paddingTop++foo::bp:lg:1__16', breakpoints, 'abc')
       ).toThrowError(ERROR_INVALID_CUSTOM_TOKEN);
-    });
-
-    it("rejects the typography-wide 's:all' token for unrelated scale properties", () => {
-      expect(() =>
-        transformScaleKeyToCss('boxHeight++s:all::bp:lg:1__16', breakpoints, 'abc')
-      ).toThrowError(ERROR_INVALID_CUSTOM_TOKEN);
-      expect(() => transformScaleKeyToCss('boxHeight++s:all__16', breakpoints, 'abc')).toThrowError(
-        ERROR_INVALID_CUSTOM_TOKEN
-      );
     });
 
     describe('Exception 5 - Invalid Format Cases for Custom Token and Missing Value', () => {

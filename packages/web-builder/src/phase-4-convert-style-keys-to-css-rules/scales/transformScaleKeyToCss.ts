@@ -75,6 +75,13 @@ const cssPropertyMap: Record<ScaleProperty, string> = {
   textSize: 'font-size'
 } as const;
 
+function isValidScaleSizeToken(scaleProperty: ScaleProperty, sizeToken: string): boolean {
+  return (
+    elementSizeValues.includes(sizeToken as ElementSizeValue) ||
+    (sizeToken === 's:all' && (scaleProperty === 'textSize' || scaleProperty === 'boxWidth'))
+  );
+}
+
 /**
  * Converts a dimension key into a CSS rule.
  *
@@ -112,9 +119,7 @@ export function transformScaleKeyToCss(
 
   if (hasSizeSeparator) {
     scaleProperty = scaleProperties.find((scaleProperty) => styleKey.startsWith(scaleProperty));
-    const isScalePropertyValid = scaleProperty != null;
-
-    if (!isScalePropertyValid) {
+    if (scaleProperty == null) {
       throw new Error(ERROR_NO_MATCHING_SCALE_PROPERTY);
     }
 
@@ -138,9 +143,7 @@ export function transformScaleKeyToCss(
         throw new Error(ERROR_INVALID_MEDIA_TOKEN);
       }
 
-      const isValidSizeToken =
-        (sizeToken === 's:all' && scaleProperty === 'textSize') ||
-        elementSizeValues.includes(sizeToken as ElementSizeValue);
+      const isValidSizeToken = isValidScaleSizeToken(scaleProperty, sizeToken);
 
       if (!isValidSizeToken) {
         throw new Error(ERROR_INVALID_CUSTOM_TOKEN);
@@ -153,10 +156,7 @@ export function transformScaleKeyToCss(
         ElementSizeValue | ElementAllSizeValue,
         string
       ];
-      const isValidToken =
-        sizeToken != null &&
-        ((sizeToken === 's:all' && scaleProperty === 'textSize') ||
-          elementSizeValues.includes(sizeToken as ElementSizeValue));
+      const isValidToken = sizeToken != null && isValidScaleSizeToken(scaleProperty, sizeToken);
       const hasValue = value != null;
 
       if (!isValidToken) {

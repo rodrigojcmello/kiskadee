@@ -37,18 +37,25 @@ search contract rather than Dropdown.
 
 ## Icon Column
 
-`Dropdown.Items` is the icon-column scope. Structural CSS uses `:has(.k-ddn-e3)` to reserve a
-leading column only when at least one item in that collection renders `Dropdown.Icon`. Items
-without icons render no placeholder but align their labels with icon-bearing siblings. A
-collection without icons remains a single content column.
+`Dropdown.Items` contains explicit `Dropdown.Group` regions. Each Group owns the surface-derived
+padding around its items and is an independent icon-column scope. Structural CSS uses `:has()` to
+reserve a leading column only when at least one item in that Group renders `Dropdown.Icon`. Items
+without icons render no placeholder but align their labels with icon-bearing siblings in the same
+Group. Another Group without icons remains a single content column.
 
 The icon viewport comes from `global.iconSizes` through the normal `iconSize` Builder expansion.
 No browser measurement or icon-presence JavaScript is used.
 
 ## Separators And States
 
-Separators are never inferred between items. `Dropdown.Separator` is rendered only when a consumer
-inserts it and the semantic owner remains responsible for any role appropriate to that context.
+Separators are never inferred between items. Consumers split items into Groups and insert
+`Dropdown.Separator` between them. Each Group keeps the item padding, while the separator is a
+full-bleed line with no margin, padding, or inset of its own. The semantic owner remains responsible
+for any role appropriate to that context; generic Dropdown does not presume separator semantics.
+
+`Dropdown.Separator` and the public neutral `Separator` component consume the same preset recipe,
+but do not share component DOM or class maps. Colored, stateful, or component-specific dividers
+remain local to their owning component.
 
 Items use the component's internal `medium` emphasis. Rest is the base and interaction states are
 sparse deltas. Dropdown exposes neutral and destructive intent in the first contract; it does not
@@ -76,6 +83,8 @@ restored and what an Escape means.
 - only Trigger owns `aria-haspopup`, `aria-expanded`, `aria-controls`, and menu opening;
 - Action may submit a form; Trigger is always `type="button"`;
 - Button classes style Action and Trigger, while Dropdown classes style Content and items.
+- `ButtonMenu.Group` reuses the visual Dropdown group, while `ButtonMenu.Separator` supplies menu
+  separator semantics around the same Dropdown-owned line.
 
 ButtonMenu has no schema of its own. Connected corners and seam geometry are structural composition;
 creating a second Button schema would introduce visual drift.

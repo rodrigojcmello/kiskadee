@@ -131,6 +131,8 @@ implementation under the same recommended ID without changing the preset.
 
 - [Button](components/button.md)
 - [Card](components/card.md) — opaque background consolidation, canonical surfaces, and deferred glass boundary.
+- [Dropdown and Menu](components/dropdown.md)
+- [Separator](components/separator.md)
 - [Slider](components/slider.md) — legacy evidence retained until iOS 27 revalidation.
 
 ## Color Evidence

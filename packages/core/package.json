@@ -20,6 +20,9 @@
     "./icon-size-contract": {
       "default": "./src/icon-sizes.contract.zod.ts"
     },
+    "./separator-contract": {
+      "default": "./src/separator.contract.zod.ts"
+    },
     "./typography-contract": {
       "default": "./src/typography.contract.zod.ts"
     },

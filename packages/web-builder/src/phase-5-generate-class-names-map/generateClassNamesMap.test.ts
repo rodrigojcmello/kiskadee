@@ -16,6 +16,63 @@ import { buildStyleKey } from '../utils/index.ts';
 import { generateClassNamesMapSplit } from './generateClassNamesMap.ts';
 
 describe('generateClassNamesMapSplit', () => {
+  it('reuses the same atomic separator utilities without a dedicated bucket', () => {
+    const profile = {
+      scales: { boxWidth: 1 },
+      palettes: {
+        default: {
+          light: {
+            onSubtle: {
+              boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+            }
+          }
+        }
+      }
+    } as const;
+    const schema = {
+      name: 'Separator pipeline test',
+      version: [1, 0, 0],
+      author: 'Kiskadee',
+      breakpoints: { 'bp:all': 0 },
+      global: { separators: { profiles: { subtle: profile } } },
+      components: {
+        separator: {
+          elements: { e1: { name: 'line', separator: { 's:all': 'subtle' } } }
+        },
+        dropdown: {
+          elements: { e7: { name: 'separator', separator: { 's:all': 'subtle' } } }
+        }
+      }
+    } as unknown as Schema;
+
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {
+        'boxWidth__1@@t': 'thickness-1',
+        'boxColor__#dddddd': 'neutral-line'
+      },
+      toneMetadataByPalette,
+      { webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY }
+    );
+
+    const separatorCore = out.core.separator as Record<string, ClassNameByElementJSON>;
+    const dropdownCore = out.core.dropdown as Record<string, ClassNameByElementJSON>;
+    const separatorPalette = out.palettes['default.light'].separator as Record<
+      string,
+      ClassNameByElementJSON
+    >;
+    const dropdownPalette = out.palettes['default.light'].dropdown as Record<
+      string,
+      ClassNameByElementJSON
+    >;
+
+    expect(separatorCore.e1.s?.all).toBe('thickness-1');
+    expect(dropdownCore.e7.s?.all).toBe('thickness-1');
+    expect(separatorPalette.e1.c?.s?.neutral).toEqual({ m: 'neutral-line' });
+    expect(dropdownPalette.e7.c?.s?.neutral).toEqual({ m: 'neutral-line' });
+  });
+
   it('carries the Icon scale and both surface-context color branches from schema to class maps', () => {
     const schema = {
       name: 'Icon pipeline test',

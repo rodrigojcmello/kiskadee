@@ -49,8 +49,10 @@ export { Button, useButtonArtifactConfig } from './components/Button';
 export type {
   ButtonMenuActionProps,
   ButtonMenuContentProps,
+  ButtonMenuGroupProps,
   ButtonMenuItemProps,
   ButtonMenuRootProps,
+  ButtonMenuSeparatorProps,
   ButtonMenuTriggerProps
 } from './components/ButtonMenu';
 export { ButtonMenu } from './components/ButtonMenu';
@@ -69,6 +71,7 @@ export type {
   DropdownClassNames,
   DropdownContentProps,
   DropdownDescriptionProps,
+  DropdownGroupProps,
   DropdownIconProps,
   DropdownItemProps,
   DropdownItemsProps,
@@ -107,6 +110,13 @@ export type {
   RollingNumberProps
 } from './components/RollingNumber/RollingNumber.tsx';
 export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
+export type {
+  SeparatorClassesMap,
+  SeparatorElementName,
+  SeparatorOrientation,
+  SeparatorProps
+} from './components/Separator';
+export { Separator } from './components/Separator';
 export type {
   SliderActivationFeedback,
   SliderArtifactConfig,

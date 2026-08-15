@@ -27,6 +27,9 @@ export default function HomePage() {
           <Link href="/select">/select</Link>
         </li>
         <li>
+          <Link href="/separator">/separator</Link>
+        </li>
+        <li>
           <Link href="/tabs">/tabs</Link>
         </li>
         <li>

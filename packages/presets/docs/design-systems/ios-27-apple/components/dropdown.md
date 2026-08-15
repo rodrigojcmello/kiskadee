@@ -29,7 +29,12 @@
 - `e4`: `body-small` principal label.
 - `e5`: `label-small` auxiliary content.
 - `e6`: 16 px trailing checkmark or submenu affordance.
-- `e7`: explicit one-pixel separator.
+- `e7`: explicit one-pixel separator using the shared neutral `subtle` separator recipe.
+
+Dropdown groups own their padding and the distance around a separator. `e7` owns only the
+full-bleed line; it does not publish margins or render the standalone Separator component. The
+shared recipe preserves the existing Apple Gray output documented in
+[Separator evidence](separator.md).
 
 The disclosure viewport follows the preset icon-size ramp and the popup remains a separate sibling
 surface. A split composition therefore uses two Buttons rather than nesting a second action inside

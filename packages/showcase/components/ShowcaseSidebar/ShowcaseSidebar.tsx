@@ -42,6 +42,10 @@ const componentEntries = [
     label: 'Select'
   },
   {
+    href: '/separator',
+    label: 'Separator'
+  },
+  {
     href: '/slider',
     label: 'Slider'
   },

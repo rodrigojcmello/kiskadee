@@ -99,18 +99,6 @@ export function createMaterial3GoogleDropdownSchema({
       }
     }
   }));
-  const separatorPalettes = buildBySegment(segmentNames, (segment) => ({
-    light: {
-      onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: { rest: c(segment, 'l', 'dropdown.neutral', 20, 12) }
-          }
-        }
-      }
-    }
-  }));
-
   return {
     effects: {
       shadow: {
@@ -169,8 +157,7 @@ export function createMaterial3GoogleDropdownSchema({
       },
       e7: {
         name: 'dropdown-separator',
-        scales: { boxHeight: 1, marginTop: 8, marginBottom: 8 },
-        palettes: separatorPalettes
+        separator: { 's:all': 'subtle' }
       }
     }
   };

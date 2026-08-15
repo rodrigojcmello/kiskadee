@@ -20,8 +20,7 @@ const THEMES = {
     selected: 5,
     text: 85,
     secondaryText: 60,
-    disabledText: 35,
-    separator: 10
+    disabledText: 35
   },
   dark: {
     track: 'd',
@@ -32,8 +31,7 @@ const THEMES = {
     selected: 12,
     text: 90,
     secondaryText: 65,
-    disabledText: 45,
-    separator: 16
+    disabledText: 45
   }
 } as const satisfies Record<
   ThemeName,
@@ -47,7 +45,6 @@ const THEMES = {
     text: KiskadeeTone;
     secondaryText: KiskadeeTone;
     disabledText: KiskadeeTone;
-    separator: KiskadeeTone;
   }
 >;
 
@@ -138,17 +135,6 @@ export function createIos27AppleDropdownSchema({
             }
           }
         }
-      },
-      separator: {
-        onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: c('default', recipe.track, 'dropdown.neutral', recipe.separator)
-              }
-            }
-          }
-        }
       }
     };
   };
@@ -216,8 +202,7 @@ export function createIos27AppleDropdownSchema({
       },
       e7: {
         name: 'dropdown-separator',
-        scales: { boxHeight: 1, marginTop: 4, marginBottom: 4 },
-        palettes: { default: { light: light.separator, dark: dark.separator } }
+        separator: { 's:all': 'subtle' }
       }
     }
   };

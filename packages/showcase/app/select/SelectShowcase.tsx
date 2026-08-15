@@ -103,7 +103,9 @@ function PreviewSelect({
                   display: state.open ? undefined : 'none'
                 }}
               >
-                <Dropdown.Items>{children}</Dropdown.Items>
+                <Dropdown.Items>
+                  <Dropdown.Group>{children}</Dropdown.Group>
+                </Dropdown.Items>
               </Dropdown.Surface>
             );
           }}

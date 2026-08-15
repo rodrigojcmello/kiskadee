@@ -216,3 +216,4 @@ instead of flattening them to the larger offset layer.
 - [Progress](components/progress.md)
 - [Slider](components/slider.md)
 - [Dropdown and Menu](components/dropdown.md)
+- [Separator](components/separator.md)

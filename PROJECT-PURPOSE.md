@@ -50,6 +50,13 @@ IDs. An icon-bearing component slot maps its own scale and breakpoints to those 
 `boxHeight` utilities. The catalog answers how large a level is, while each component remains
 responsible for when that level applies.
 
+Neutral separators follow the same build-time recipe pattern. Presets declare reusable profiles in
+`global.separators`, and participating visual slots reference them through `separator`. The Web
+Builder expands each reference into ordinary atomic `boxWidth` and `boxColor` utilities; it creates
+no separator-specific artifact or browser runtime. `boxWidth` is emitted as a structural token so a
+horizontal or vertical owner can interpret it as thickness. Orientation, spacing, and inset remain
+responsibilities of component structure and layout rather than the separator recipe.
+
 ## Options vs. Element values
 
 Component schema also has an important split between:

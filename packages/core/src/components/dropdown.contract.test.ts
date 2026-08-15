@@ -19,7 +19,7 @@ function createDropdown() {
       e4: { name: 'label', typography: { 's:all': 'body-medium' } },
       e5: { name: 'description', typography: { 's:all': 'body-small' } },
       e6: { name: 'indicator', iconSize: { 's:all': 's:sm:1' } },
-      e7: { name: 'separator' }
+      e7: { name: 'separator', separator: { 's:all': 'subtle' } }
     }
   };
 }
@@ -67,6 +67,15 @@ describe('Dropdown component contract', () => {
 
     expect(validateDropdownComponentContract(dropdown)).toContain(
       'components.dropdown.elements.e2.iconSize: not allowed for this element'
+    );
+  });
+
+  it('requires the shared separator reference on the separator slot', () => {
+    const dropdown = createDropdown() as any;
+    delete dropdown.elements.e7.separator;
+
+    expect(validateDropdownComponentContract(dropdown)).toContain(
+      'components.dropdown.elements.e7.separator: required reference'
     );
   });
 });

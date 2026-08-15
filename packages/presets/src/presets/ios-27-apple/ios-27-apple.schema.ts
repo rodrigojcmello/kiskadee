@@ -3,9 +3,11 @@ import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createIos27AppleButtonSchema } from './components/button.schema.ts';
 import { createIos27AppleCardSchema } from './components/card.schema.ts';
 import { createIos27AppleDropdownSchema } from './components/dropdown.schema.ts';
+import { createIos27AppleSeparatorSchema } from './components/separator.schema.ts';
 import { createIos27AppleSliderSchema } from './components/slider.schema.ts';
 import { createIos27AppleSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './ios-27-apple.colors.ts';
+import { createIos27AppleSeparators } from './ios-27-apple.separators.ts';
 import { ios27AppleTypography } from './ios-27-apple.typography.ts';
 
 const segmentNames = ['default'] as const;
@@ -33,6 +35,7 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     typography: ios27AppleTypography,
+    separators: createIos27AppleSeparators({ c }),
     iconSizes: {
       's:sm:1': 16,
       's:md:1': 20,
@@ -147,6 +150,7 @@ export const schema: Schema<Segment> = {
       transparent
     }),
     dropdown: createIos27AppleDropdownSchema({ c }),
+    separator: createIos27AppleSeparatorSchema(),
     slider: createIos27AppleSliderSchema({
       c,
       segmentNames,

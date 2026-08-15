@@ -51,6 +51,7 @@ export type DropdownContentProps = ComponentPropsWithoutRef<'div'> & {
 };
 export type DropdownSurfaceProps = ComponentPropsWithoutRef<'div'>;
 export type DropdownItemsProps = ComponentPropsWithoutRef<'div'>;
+export type DropdownGroupProps = ComponentPropsWithoutRef<'div'>;
 
 export type DropdownItemRenderProps = HTMLAttributes<HTMLElement> & {
   ref: Ref<HTMLElement>;
@@ -77,4 +78,9 @@ export type DropdownLabelProps = ComponentPropsWithoutRef<'span'>;
 export type DropdownDescriptionProps = ComponentPropsWithoutRef<'span'>;
 export type DropdownTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> &
   ({ name: IconName; children?: never } | { name?: never; children: ReactNode });
-export type DropdownSeparatorProps = ComponentPropsWithoutRef<'div'>;
+export type DropdownSeparatorProps = Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'aria-orientation' | 'children'
+> & {
+  children?: never;
+};

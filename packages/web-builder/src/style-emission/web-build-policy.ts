@@ -80,6 +80,10 @@ export type WebStyleEmissionPolicy = {
   components?: Record<string, ComponentStyleEmissionPolicy>;
 };
 
+const separatorThicknessEmission = {
+  boxWidthEmission: 'token'
+} as const satisfies ElementStyleEmissionPolicy;
+
 export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
   components: {
     button: {
@@ -104,6 +108,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
     },
     dropdown: {
       elements: {
+        e1: {
+          paddingEmission: 'mirrored'
+        },
         e3: {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token',
@@ -113,11 +120,12 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token'
         },
-        e7: {
-          boxHeightEmission: 'token',
-          marginTopEmission: 'token',
-          marginBottomEmission: 'token'
-        }
+        e7: separatorThicknessEmission
+      }
+    },
+    separator: {
+      elements: {
+        e1: separatorThicknessEmission
       }
     },
     textField: {
@@ -342,4 +350,108 @@ export function resolveElementStyleEmissionPolicy(
       elementPolicy?.shadowEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.shadowEmission
   };
+}
+
+type SeparatorPolicySchemaLike = {
+  components?: unknown;
+};
+
+type SeparatorPolicyLocation = {
+  path: string;
+  componentName: string;
+  elementName: string;
+  variantName?: string;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function collectSeparatorPolicyLocations(
+  schemaLike: SeparatorPolicySchemaLike
+): SeparatorPolicyLocation[] {
+  if (!isRecord(schemaLike.components)) return [];
+  const locations: SeparatorPolicyLocation[] = [];
+
+  const collectElementMap = (
+    value: unknown,
+    path: string,
+    componentName: string,
+    variantName?: string
+  ): void => {
+    if (!isRecord(value)) return;
+    for (const [elementName, element] of Object.entries(value)) {
+      if (!isRecord(element) || !Object.hasOwn(element, 'separator')) continue;
+      locations.push({
+        path: `${path}.${elementName}`,
+        componentName,
+        elementName,
+        ...(variantName ? { variantName } : {})
+      });
+    }
+  };
+
+  for (const [componentName, component] of Object.entries(schemaLike.components)) {
+    if (!isRecord(component)) continue;
+    const componentPath = `components.${componentName}`;
+    collectElementMap(component.elements, `${componentPath}.elements`, componentName);
+
+    if (!isRecord(component.variants)) continue;
+    for (const [variantName, variant] of Object.entries(component.variants)) {
+      if (!isRecord(variant)) continue;
+      const variantPath = `${componentPath}.variants.${variantName}`;
+      collectElementMap(variant.elements, `${variantPath}.elements`, componentName, variantName);
+
+      if (!isRecord(variant.modes)) continue;
+      for (const [modeName, mode] of Object.entries(variant.modes)) {
+        if (!isRecord(mode)) continue;
+        collectElementMap(
+          mode.elements,
+          `${variantPath}.modes.${modeName}.elements`,
+          componentName,
+          variantName
+        );
+      }
+    }
+  }
+
+  return locations;
+}
+
+/**
+ * What
+ *     Validates that every separator recipe consumer emits boxWidth as a structural token.
+ * Why
+ *     Horizontal and vertical structures reinterpret one shared thickness without implicit policy.
+ */
+export function getSeparatorStyleEmissionPolicyIssues(
+  schemaLike: SeparatorPolicySchemaLike,
+  webStyleEmissionPolicy: WebStyleEmissionPolicy | undefined
+): string[] {
+  const issues: string[] = [];
+  for (const location of collectSeparatorPolicyLocations(schemaLike)) {
+    const componentPolicy = webStyleEmissionPolicy?.components?.[location.componentName];
+    const elementPolicy = componentPolicy?.elements?.[location.elementName];
+    const variantElementPolicy = location.variantName
+      ? componentPolicy?.variants?.[location.variantName]?.elements?.[location.elementName]
+      : undefined;
+    const explicitBoxWidthEmission =
+      variantElementPolicy?.boxWidthEmission ?? elementPolicy?.boxWidthEmission;
+
+    if (explicitBoxWidthEmission !== 'token') {
+      issues.push(
+        `${location.path}.separator: requires explicit boxWidthEmission "token" in the Web style-emission policy`
+      );
+    }
+  }
+  return issues;
+}
+
+export function validateSeparatorStyleEmissionPolicy(
+  schemaLike: SeparatorPolicySchemaLike,
+  webStyleEmissionPolicy: WebStyleEmissionPolicy | undefined
+): void {
+  const issues = getSeparatorStyleEmissionPolicyIssues(schemaLike, webStyleEmissionPolicy);
+  if (issues.length === 0) return;
+  throw new Error(`Invalid separator style-emission policy.\n${issues.join('\n')}`);
 }

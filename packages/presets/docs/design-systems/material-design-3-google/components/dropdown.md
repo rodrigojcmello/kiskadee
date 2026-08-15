@@ -30,7 +30,11 @@
 - `e4`: `label-large` principal label.
 - `e5`: `body-small` auxiliary content.
 - `e6`: 24 px trailing indicator.
-- `e7`: explicit one-pixel divider.
+- `e7`: explicit one-pixel divider using the shared neutral `subtle` separator recipe.
+
+Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
+line; it does not publish margins or render the standalone Separator component. The shared recipe
+preserves the existing neutral output documented in [Separator evidence](separator.md).
 
 The first implementation is the minimum official adaptation needed to compose the existing Material
 TextField with Autocomplete. It does not introduce a public Dropdown appearance variant.

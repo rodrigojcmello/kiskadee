@@ -12,7 +12,11 @@ import { forwardRef } from 'react';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonProps } from '../Button/Button.types.ts';
 import { Dropdown } from '../Dropdown/Dropdown.tsx';
-import type { DropdownVisualProps } from '../Dropdown/Dropdown.types.ts';
+import type {
+  DropdownGroupProps,
+  DropdownSeparatorProps,
+  DropdownVisualProps
+} from '../Dropdown/Dropdown.types.ts';
 
 export type ButtonMenuRootProps = MenuRootProps & DropdownVisualProps;
 
@@ -28,6 +32,10 @@ export type ButtonMenuItemProps = Omit<MenuItemProps, 'render'> & {
   intent?: DropdownIntent;
   href?: string;
 };
+
+export type ButtonMenuGroupProps = DropdownGroupProps;
+
+export type ButtonMenuSeparatorProps = Omit<DropdownSeparatorProps, 'role'>;
 
 function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
@@ -164,15 +172,22 @@ const ButtonMenuItem = forwardRef<HTMLElement, ButtonMenuItemProps>(function But
   );
 });
 
+const ButtonMenuSeparator = forwardRef<HTMLDivElement, ButtonMenuSeparatorProps>(
+  function ButtonMenuSeparator(props, ref) {
+    return <Dropdown.Separator {...props} ref={ref} role="separator" />;
+  }
+);
+
 export const ButtonMenu = {
   Root: ButtonMenuRoot,
   Action: ButtonMenuAction,
   Trigger: ButtonMenuTrigger,
   Content: ButtonMenuContent,
+  Group: Dropdown.Group,
   Item: ButtonMenuItem,
   Icon: Dropdown.Icon,
   Label: Dropdown.Label,
   Description: Dropdown.Description,
   Trailing: Dropdown.Trailing,
-  Separator: Dropdown.Separator
+  Separator: ButtonMenuSeparator
 };

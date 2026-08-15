@@ -1,0 +1,23 @@
+/*
+ * element separator / e1
+ * Spans the available inline axis and consumes the preset-owned line thickness.
+ */
+.k-sep-e1 {
+  block-size: var(--k-bxw);
+  border: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  inline-size: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * element separator / e1
+ * A vertical orientation stretches through the parent block axis.
+ */
+.k-sep-e1[aria-orientation='vertical'] {
+  align-self: stretch;
+  block-size: auto;
+  inline-size: var(--k-bxw);
+}

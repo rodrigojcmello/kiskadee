@@ -55,12 +55,17 @@ describe('ButtonMenu', () => {
         </ButtonMenu.Action>
         <ButtonMenu.Trigger aria-label="More save actions" onClick={onTriggerClick} />
         <ButtonMenu.Content>
-          <ButtonMenu.Item textValue="Save as copy">
-            <ButtonMenu.Label>Save as copy</ButtonMenu.Label>
-          </ButtonMenu.Item>
-          <ButtonMenu.Item href="/archive" textValue="Open archive">
-            <ButtonMenu.Label>Open archive</ButtonMenu.Label>
-          </ButtonMenu.Item>
+          <ButtonMenu.Group>
+            <ButtonMenu.Item textValue="Save as copy">
+              <ButtonMenu.Label>Save as copy</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+          <ButtonMenu.Separator />
+          <ButtonMenu.Group>
+            <ButtonMenu.Item href="/archive" textValue="Open archive">
+              <ButtonMenu.Label>Open archive</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
         </ButtonMenu.Content>
       </ButtonMenu.Root>
     );
@@ -82,6 +87,7 @@ describe('ButtonMenu', () => {
     fireEvent.click(trigger);
     expect(onTriggerClick).toHaveBeenCalledOnce();
     await waitFor(() => expect(result.getByRole('menu')).toBeTruthy());
+    expect(result.getByRole('separator')).toBeTruthy();
     expect(result.getByRole('menuitem', { name: 'Open archive' }).getAttribute('href')).toBe(
       '/archive'
     );

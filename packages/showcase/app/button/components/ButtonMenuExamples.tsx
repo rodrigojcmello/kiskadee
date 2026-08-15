@@ -9,22 +9,26 @@ import styles from '../Button.module.scss';
 function MenuContent({ onAction }: { onAction: (label: string) => void }) {
   return (
     <ButtonMenu.Content>
-      <ButtonMenu.Item textValue="Duplicate" onSelect={() => onAction('Duplicate')}>
-        <ButtonMenu.Icon name="plus" />
-        <ButtonMenu.Label>Duplicate</ButtonMenu.Label>
-      </ButtonMenu.Item>
-      <ButtonMenu.Item textValue="Move" onSelect={() => onAction('Move')}>
-        <ButtonMenu.Label>Move to folder</ButtonMenu.Label>
-      </ButtonMenu.Item>
+      <ButtonMenu.Group>
+        <ButtonMenu.Item textValue="Duplicate" onSelect={() => onAction('Duplicate')}>
+          <ButtonMenu.Icon name="plus" />
+          <ButtonMenu.Label>Duplicate</ButtonMenu.Label>
+        </ButtonMenu.Item>
+        <ButtonMenu.Item textValue="Move" onSelect={() => onAction('Move')}>
+          <ButtonMenu.Label>Move to folder</ButtonMenu.Label>
+        </ButtonMenu.Item>
+      </ButtonMenu.Group>
       <ButtonMenu.Separator />
-      <ButtonMenu.Item
-        textValue="Archive"
-        intent="destructive"
-        onSelect={() => onAction('Archive')}
-      >
-        <ButtonMenu.Icon name="trash" />
-        <ButtonMenu.Label>Archive</ButtonMenu.Label>
-      </ButtonMenu.Item>
+      <ButtonMenu.Group>
+        <ButtonMenu.Item
+          textValue="Archive"
+          intent="destructive"
+          onSelect={() => onAction('Archive')}
+        >
+          <ButtonMenu.Icon name="trash" />
+          <ButtonMenu.Label>Archive</ButtonMenu.Label>
+        </ButtonMenu.Item>
+      </ButtonMenu.Group>
     </ButtonMenu.Content>
   );
 }

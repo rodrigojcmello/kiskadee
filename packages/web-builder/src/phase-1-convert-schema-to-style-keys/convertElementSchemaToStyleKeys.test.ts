@@ -238,4 +238,51 @@ describe('convertElementSchemaToStyleKeys', () => {
       hover: ['borderRadiusRounded--hover++s:sm:1__24', 'borderRadiusRounded--hover++s:md:1__20']
     });
   });
+
+  it('expands separator recipes into ordinary atomic scale and palette style keys', () => {
+    const schema = createSchema(
+      {
+        separator: {
+          elements: {
+            e1: {
+              name: 'line',
+              separator: { 's:all': 'subtle' }
+            }
+          }
+        }
+      },
+      {
+        separators: {
+          profiles: {
+            subtle: {
+              scales: { boxWidth: 1 },
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    );
+
+    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+    const separator = styleKeys.separator as Record<string, StyleKeyByElement>;
+
+    expect(separator.e1.scales).toEqual({ 's:all': ['boxWidth__1'] });
+    expect(separator.e1.palettes).toEqual({
+      default: {
+        light: {
+          onSubtle: {
+            neutral: { rest: ['boxColor__#dddddd'] }
+          }
+        }
+      }
+    });
+  });
 });

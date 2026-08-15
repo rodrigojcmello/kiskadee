@@ -32,7 +32,12 @@
 - `e4`: Body 1 (`body-medium`) principal label.
 - `e5`: Caption 1 (`caption-medium`) auxiliary content.
 - `e6`: 16 px trailing checkmark or submenu affordance.
-- `e7`: explicit one-pixel divider with authored group spacing.
+- `e7`: explicit one-pixel divider using the shared neutral `subtle` separator recipe.
+
+Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
+line; it does not publish margins or reuse the standalone Separator component at runtime. The
+shared recipe preserves the existing Fluent Neutral output documented in
+[Separator evidence](separator.md).
 
 Button disclosure uses the shared Fluent icon-size ramp. It does not duplicate Button palettes or
 create a ButtonMenu schema; the single trigger and both split-button halves continue to resolve the

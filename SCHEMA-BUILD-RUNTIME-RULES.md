@@ -277,6 +277,40 @@ Consequence:
 - Missing packs, unsupported components, and branded intents outside a compatible boundary must
   fail visibly; they never fall back to a system intent.
 
+### 3.1.7 Shared neutral separator recipes
+
+Context:
+
+- Neutral dividing lines recur as standalone content and inside components such as Dropdown.
+- Their thickness and color belong to design-system identity, while orientation and surrounding
+  space depend on the owning layout.
+
+Decision:
+
+- `global.separators.profiles` owns reusable neutral recipes containing `scales.boxWidth` and a
+  Rest-only `palettes.boxColor.neutral.medium` value.
+- A participating element references a profile through `separator`, using the same size and
+  breakpoint grammar as `typography` and `iconSize`.
+- Separator recipes contain no orientation, margin, padding, inset, intent, or public emphasis.
+- Stateful, colored, or component-specific dividers remain local to their owning component and do
+  not consume the shared neutral recipe.
+
+Reason:
+
+- One build-time recipe prevents neutral dividers from drifting without forcing every visual seam
+  to become the public Separator component.
+- Keeping spacing and orientation outside the recipe lets horizontal and vertical structures share
+  one thickness value without mixing layout with visual identity.
+
+Consequence:
+
+- The Web Builder expands `separator` into existing atomic `boxWidth` and `boxColor` style keys.
+- Participating Web slots explicitly emit `boxWidth` as `--k-bxw`; structural CSS interprets that
+  token as block size or inline size according to orientation.
+- No separator bucket, selector family, artifact, provider, hook, or browser lookup is introduced.
+- Internal component dividers share the recipe data and atomic utilities, not the standalone
+  Separator component's DOM or class map.
+
 ### 3.2 `components.<name>.options`
 
 Use `options` for component-specific behavior/structure defaults that are not a DS color/scale token.

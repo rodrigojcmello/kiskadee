@@ -48,6 +48,7 @@ tracking values is **Deferred**.
 
 - [Switch](components/switch.md)
 - [Dropdown and Menu](components/dropdown.md)
+- [Separator](components/separator.md)
 
 ## Interface Icon Evidence
 

@@ -7,6 +7,8 @@ import type {
   ComponentStyleKeyMap,
   ElementAllSizeValue,
   ElementIconSize,
+  ElementPalettes,
+  ElementSeparator,
   ElementSizeValue,
   ElementStyle,
   ElementTypography,
@@ -15,6 +17,7 @@ import type {
   ScaleSchema,
   Schema,
   SchemaIconSizes,
+  SchemaSeparators,
   ShadowEffectSchema,
   ShadowElementEffectSchema,
   StyleKeyByElement,
@@ -42,10 +45,18 @@ import {
   convertElementScalesToStyleKeys,
   type ScaleValue
 } from './scales/convertElementScalesToStyleKeys.ts';
+import { expandElementSeparator } from './separators/compileSeparators.ts';
 
 type ElementSchemaInput = Pick<
   ElementStyle,
-  'decorations' | 'effects' | 'iconSize' | 'name' | 'palettes' | 'scales' | 'typography'
+  | 'decorations'
+  | 'effects'
+  | 'iconSize'
+  | 'name'
+  | 'palettes'
+  | 'scales'
+  | 'separator'
+  | 'typography'
 >;
 
 type ComponentSchemaInput = {
@@ -81,6 +92,23 @@ const ACTIVATION_FEEDBACK_HOST_BY_COMPONENT: Partial<Record<ComponentName, strin
   switch: 'e3'
 };
 
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function mergePaletteRecords(
+  base: Record<string, unknown>,
+  override: Record<string, unknown>
+): Record<string, unknown> {
+  const merged = { ...base };
+  for (const [key, value] of Object.entries(override)) {
+    const current = merged[key];
+    merged[key] =
+      isPlainRecord(current) && isPlainRecord(value) ? mergePaletteRecords(current, value) : value;
+  }
+  return merged;
+}
+
 /**
  * Processes a Schema object by iterating over each component's elements.
  * For each style object, it processes the decoration, scales, and colors
@@ -99,6 +127,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
   const typographyBuild = createTypographyBuild(schema.global?.typography, schema.breakpoints);
   const iconSizes = schema.global?.iconSizes as SchemaIconSizes | undefined;
+  const separators = schema.global?.separators as SchemaSeparators | undefined;
   const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
   const shadowConfig = schema.global?.effects?.shadow;
 
@@ -161,6 +190,11 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references iconSize without global.iconSizes.`
       );
     }
+    if (element.separator && !separators) {
+      throw new Error(
+        `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references separator without global.separators.`
+      );
+    }
     deepUpdate<StyleKeyByElement>(styleKeysByComponent, path, (prev) => {
       const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};
       const typographyStyleKeys = element.typography
@@ -184,9 +218,17 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         element.iconSize && iconSizes
           ? expandElementIconSize(element.iconSize as ElementIconSize, iconSizes)
           : undefined;
-      if (element.scales || iconSizeScales) {
+      const separatorRecipe =
+        element.separator && separators
+          ? expandElementSeparator(element.separator as ElementSeparator, separators)
+          : undefined;
+      if (element.scales || iconSizeScales || separatorRecipe) {
         const { borderRadius, ...otherScales } = (element.scales ?? {}) as ScaleSchema;
-        const mergedScales = { ...otherScales, ...iconSizeScales };
+        const mergedScales = {
+          ...otherScales,
+          ...separatorRecipe?.scales,
+          ...iconSizeScales
+        };
         if (Object.keys(mergedScales).length > 0) {
           el.scales = convertElementScalesToStyleKeys(
             mergedScales as Partial<Record<ScaleProperty, ScaleValue>>
@@ -338,9 +380,16 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           el.scales = mergedScales;
         }
       }
-      if (element.palettes) {
+      const mergedPalettes =
+        element.palettes && separatorRecipe?.palettes
+          ? (mergePaletteRecords(
+              separatorRecipe.palettes as Record<string, unknown>,
+              element.palettes as Record<string, unknown>
+            ) as ElementPalettes)
+          : ((element.palettes ?? separatorRecipe?.palettes) as ElementPalettes | undefined);
+      if (mergedPalettes) {
         const { styleKeys: paletteKeys, toneMetadataByPalette: paletteToneMetadataByPalette } =
-          convertElementColorsToStyleKeys(element.palettes);
+          convertElementColorsToStyleKeys(mergedPalettes);
         el.palettes = paletteKeys;
         // Merge element-local emphasis metadata into the global map.
         // Style keys remain globally dedupable; metadata is additionally scoped by component,

@@ -123,8 +123,7 @@ export default function DropdownShowcase() {
               Collections
             </Text>
             <Text as="p" profile={textProfiles.body} className={styles.description}>
-              The icon column exists only when at least one item in that collection provides an
-              icon.
+              The icon column exists only within a group where at least one item provides an icon.
             </Text>
             <div className={styles.grid}>
               <article className={styles.card}>
@@ -132,16 +131,18 @@ export default function DropdownShowcase() {
                   Without icons
                 </Text>
                 <DemoDropdown buttonLabel="Sort by">
-                  <DemoItem selected>
-                    <Dropdown.Label>Most relevant</Dropdown.Label>
-                    <Dropdown.Trailing name="check" />
-                  </DemoItem>
-                  <DemoItem>
-                    <Dropdown.Label>Newest first</Dropdown.Label>
-                  </DemoItem>
-                  <DemoItem disabled>
-                    <Dropdown.Label>Most discussed</Dropdown.Label>
-                  </DemoItem>
+                  <Dropdown.Group>
+                    <DemoItem selected>
+                      <Dropdown.Label>Most relevant</Dropdown.Label>
+                      <Dropdown.Trailing name="check" />
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Label>Newest first</Dropdown.Label>
+                    </DemoItem>
+                    <DemoItem disabled>
+                      <Dropdown.Label>Most discussed</Dropdown.Label>
+                    </DemoItem>
+                  </Dropdown.Group>
                 </DemoDropdown>
               </article>
 
@@ -150,26 +151,33 @@ export default function DropdownShowcase() {
                   Mixed icons
                 </Text>
                 <DemoDropdown buttonLabel="Workspace actions">
-                  <DemoItem>
-                    <Dropdown.Icon name="settings" />
-                    <Dropdown.Label>Settings</Dropdown.Label>
-                  </DemoItem>
-                  <DemoItem>
-                    <Dropdown.Label>Duplicate</Dropdown.Label>
-                  </DemoItem>
+                  <Dropdown.Group>
+                    <DemoItem>
+                      <Dropdown.Icon name="settings" />
+                      <Dropdown.Label>Settings</Dropdown.Label>
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Label>Duplicate</Dropdown.Label>
+                    </DemoItem>
+                  </Dropdown.Group>
                   <Dropdown.Separator />
-                  <Dropdown.Item
-                    intent="destructive"
-                    render={(props) => {
-                      const { ref, ...buttonProps } = props;
-                      return (
-                        <button {...buttonProps} ref={ref as Ref<HTMLButtonElement>} type="button">
-                          <Dropdown.Icon name="trash" />
-                          <Dropdown.Label>Delete workspace</Dropdown.Label>
-                        </button>
-                      );
-                    }}
-                  />
+                  <Dropdown.Group>
+                    <Dropdown.Item
+                      intent="destructive"
+                      render={(props) => {
+                        const { ref, ...buttonProps } = props;
+                        return (
+                          <button
+                            {...buttonProps}
+                            ref={ref as Ref<HTMLButtonElement>}
+                            type="button"
+                          >
+                            <Dropdown.Label>Delete workspace</Dropdown.Label>
+                          </button>
+                        );
+                      }}
+                    />
+                  </Dropdown.Group>
                 </DemoDropdown>
               </article>
 
@@ -178,19 +186,21 @@ export default function DropdownShowcase() {
                   Rich item
                 </Text>
                 <DemoDropdown buttonLabel="Notification settings" width="content">
-                  <DemoItem>
-                    <Dropdown.Icon name="bell" />
-                    <Dropdown.Label>Product updates</Dropdown.Label>
-                    <Dropdown.Description>
-                      Occasional announcements about new capabilities.
-                    </Dropdown.Description>
-                  </DemoItem>
-                  <DemoItem>
-                    <Dropdown.Label>Security alerts</Dropdown.Label>
-                    <Dropdown.Description>
-                      Important changes to your account and sessions.
-                    </Dropdown.Description>
-                  </DemoItem>
+                  <Dropdown.Group>
+                    <DemoItem>
+                      <Dropdown.Icon name="bell" />
+                      <Dropdown.Label>Product updates</Dropdown.Label>
+                      <Dropdown.Description>
+                        Occasional announcements about new capabilities.
+                      </Dropdown.Description>
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Label>Security alerts</Dropdown.Label>
+                      <Dropdown.Description>
+                        Important changes to your account and sessions.
+                      </Dropdown.Description>
+                    </DemoItem>
+                  </Dropdown.Group>
                 </DemoDropdown>
               </article>
             </div>

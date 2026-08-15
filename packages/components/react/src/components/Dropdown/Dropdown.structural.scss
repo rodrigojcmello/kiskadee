@@ -9,6 +9,14 @@
 }
 
 /*
+ * element surface / e1
+ * Transfers mirrored surface padding to explicit collection groups.
+ */
+.k-ddn-e1:has(> .k-ddn-x1 > .k-ddn-x2) {
+  padding: 0;
+}
+
+/*
  * mechanical width policy / Content + e1
  * Lets an exact-anchor positioner constrain its visual surface instead of being
  * overruled by the surface's intrinsic content width.
@@ -29,11 +37,19 @@
 }
 
 /*
- * structural collection / x1
- * Makes the collection the scope for automatic icon-column detection.
+ * extra element for e2 / x1
+ * Contains the ordered groups and explicit separators of one collection.
  */
 .k-ddn-x1 {
   display: block;
+}
+
+/*
+ * extra element for e2 / x2
+ * Owns collection padding and isolates icon-column detection between groups.
+ */
+.k-ddn-x2 {
+  padding: var(--k-pdt) var(--k-pdr) var(--k-pdb) var(--k-pdl);
 }
 
 /*
@@ -60,9 +76,9 @@
 
 /*
  * element item / e2
- * Reserves one shared leading column only when any sibling item contains an icon.
+ * Reserves one shared leading column only when an item in the same group contains an icon.
  */
-.k-ddn-x1:has(.k-ddn-e3) .k-ddn-e2 {
+.k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3) > .k-ddn-e2 {
   grid-template-columns: calc(var(--k-bxw, 1em) + var(--k-pdr, 0px)) minmax(0, 1fr) auto;
 }
 
@@ -102,9 +118,11 @@
 
 /*
  * elements label and description / e4 e5
- * Move text into the shared second column when the collection contains an icon.
+ * Move text into the shared second column when the containing group has an icon.
  */
-.k-ddn-x1:has(.k-ddn-e3) :is(.k-ddn-e4, .k-ddn-e5) {
+.k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 2;
 }
 
@@ -151,10 +169,9 @@
 
 /*
  * element separator / e7
- * Renders only when explicitly composed by the consumer.
+ * Spans the grouped collection without owning surrounding spacing.
  */
 .k-ddn-e7 {
-  block-size: var(--k-bxh, 1px);
-  margin-block-end: var(--k-mgb, 0);
-  margin-block-start: var(--k-mgt, 0);
+  block-size: var(--k-bxw);
+  inline-size: 100%;
 }

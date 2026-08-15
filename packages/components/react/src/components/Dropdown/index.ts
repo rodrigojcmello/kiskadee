@@ -5,6 +5,7 @@ export type {
   DropdownClassNames,
   DropdownContentProps,
   DropdownDescriptionProps,
+  DropdownGroupProps,
   DropdownIconProps,
   DropdownItemProps,
   DropdownItemsProps,

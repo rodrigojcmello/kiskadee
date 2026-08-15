@@ -20,6 +20,7 @@ import type {
   DropdownClassNames,
   DropdownContentProps,
   DropdownDescriptionProps,
+  DropdownGroupProps,
   DropdownIconProps,
   DropdownItemProps,
   DropdownItemsProps,
@@ -134,6 +135,13 @@ const DropdownItems = forwardRef<HTMLDivElement, DropdownItemsProps>(function Dr
   return <div {...props} ref={ref} className={`${resolved.items} ${className ?? ''}`.trim()} />;
 });
 
+const DropdownGroup = forwardRef<HTMLDivElement, DropdownGroupProps>(function DropdownGroup(
+  { className, ...props },
+  ref
+) {
+  return <div {...props} ref={ref} className={`k-ddn-x2 ${className ?? ''}`.trim()} />;
+});
+
 const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function DropdownItem(
   {
     children,
@@ -244,16 +252,9 @@ const DropdownTrailing = forwardRef<HTMLSpanElement, DropdownTrailingProps>(
 );
 
 const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorProps>(
-  function DropdownSeparator({ className, role = 'separator', ...props }, ref) {
+  function DropdownSeparator({ className, ...props }, ref) {
     const { resolved } = useDropdownVisualContext('Dropdown.Separator');
-    return (
-      <div
-        {...props}
-        ref={ref}
-        role={role}
-        className={`${resolved.e7} ${className ?? ''}`.trim()}
-      />
-    );
+    return <div {...props} ref={ref} className={`${resolved.e7} ${className ?? ''}`.trim()} />;
   }
 );
 
@@ -264,6 +265,7 @@ export const Dropdown: {
   Content: typeof DropdownContent;
   Surface: typeof DropdownSurface;
   Items: typeof DropdownItems;
+  Group: typeof DropdownGroup;
   Item: typeof DropdownItem;
   Icon: typeof DropdownIcon;
   Label: typeof DropdownLabel;
@@ -277,6 +279,7 @@ export const Dropdown: {
   Content: DropdownContent,
   Surface: DropdownSurface,
   Items: DropdownItems,
+  Group: DropdownGroup,
   Item: DropdownItem,
   Icon: DropdownIcon,
   Label: DropdownLabel,

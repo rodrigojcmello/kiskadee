@@ -5,6 +5,7 @@ import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
 import { validateSchemaGlobalIconContract } from '@kiskadee/core/icon-contract';
 import { validateSchemaIconSizesContract } from '@kiskadee/core/icon-size-contract';
+import { validateSchemaSeparatorsContract } from '@kiskadee/core/separator-contract';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
@@ -24,7 +25,10 @@ import {
 import { persistBuildArtifacts } from './phase-6-persist-build-artifacts/persistBuildArtifacts.ts';
 import { publishMetadata } from './phase-7-publish-metadata/publishMetadata.ts';
 import { writeExtraArtifacts } from './phase-8-write-extra-artifacts/writeExtraArtifacts.ts';
-import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from './style-emission/web-build-policy.ts';
+import {
+  DEFAULT_WEB_STYLE_EMISSION_POLICY,
+  validateSeparatorStyleEmissionPolicy
+} from './style-emission/web-build-policy.ts';
 import {
   buildTextTypographyClassMap,
   buildTypographyArtifact
@@ -112,11 +116,29 @@ export async function runBuild(): Promise<void> {
     }
 
     try {
+      validateSchemaSeparatorsContract(schema);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Schema separator contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
+      );
+    }
+
+    try {
       validateSchemaComponentContracts(schema);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(
         `Schema component contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
+      );
+    }
+
+    try {
+      validateSeparatorStyleEmissionPolicy(schema, DEFAULT_WEB_STYLE_EMISSION_POLICY);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Separator style-emission policy validation failed for "${schema.name}" (${schemaPath}).\n${message}`
       );
     }
   }

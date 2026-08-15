@@ -4,12 +4,14 @@ export * from './components/card.ts';
 export * from './components/dropdown.ts';
 export * from './components/icon.ts';
 export * from './components/progress.ts';
+export * from './components/separator.ts';
 export * from './components/slider.ts';
 export * from './components/switch.ts';
 export * from './components/tabs.ts';
 export * from './components/text-field.ts';
 export * from './icon-sizes.ts';
 export * from './schema.ts';
+export * from './separator.ts';
 export * from './types/colors/colors.types.ts';
 export * from './types/decorations/decorations.types.ts';
 export {

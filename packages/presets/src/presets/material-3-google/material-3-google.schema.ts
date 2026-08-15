@@ -3,10 +3,12 @@ import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createMaterial3GoogleButtonSchema } from './components/button.schema.ts';
 import { createMaterial3GoogleCardSchema } from './components/card.schema.ts';
 import { createMaterial3GoogleDropdownSchema } from './components/dropdown.schema.ts';
+import { createMaterial3GoogleSeparatorSchema } from './components/separator.schema.ts';
 import { createMaterial3GoogleSwitchSchema } from './components/switch.schema.ts';
 import { createMaterial3GoogleTabsSchema } from './components/tabs.schema.ts';
 import { createMaterial3GoogleTextFieldSchema } from './components/text-field.schema.ts';
 import { schemaColors } from './material-3-google.colors.ts';
+import { createMaterial3GoogleSeparators } from './material-3-google.separators.ts';
 import { material3GoogleTypography } from './material-3-google.typography.ts';
 
 /**
@@ -40,6 +42,7 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     typography: material3GoogleTypography,
+    separators: createMaterial3GoogleSeparators({ c, segmentNames }),
     iconSizes: {
       's:sm:1': 16,
       's:md:1': 20,
@@ -189,6 +192,7 @@ export const schema: Schema<Segments> = {
       transparent
     }),
     dropdown: createMaterial3GoogleDropdownSchema({ c, segmentNames }),
+    separator: createMaterial3GoogleSeparatorSchema(),
     switch: createMaterial3GoogleSwitchSchema({
       c,
       segmentNames,

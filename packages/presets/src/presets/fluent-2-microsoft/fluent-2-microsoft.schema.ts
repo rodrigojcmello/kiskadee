@@ -5,9 +5,11 @@ import { createFluent2MicrosoftCardSchema } from './components/card.schema.ts';
 import { createFluent2MicrosoftDropdownSchema } from './components/dropdown.schema.ts';
 import { createFluent2MicrosoftIconSchema } from './components/icon.schema.ts';
 import { createFluent2MicrosoftProgressSchema } from './components/progress.schema.ts';
+import { createFluent2MicrosoftSeparatorSchema } from './components/separator.schema.ts';
 import { createFluent2MicrosoftSliderSchema } from './components/slider.schema.ts';
 import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './fluent-2-microsoft.colors.ts';
+import { createFluent2MicrosoftSeparators } from './fluent-2-microsoft.separators.ts';
 import { fluent2MicrosoftTypography } from './fluent-2-microsoft.typography.ts';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
@@ -41,6 +43,7 @@ export const schema: Schema<Segments> = {
   colors: schemaColors,
   global: {
     typography: fluent2MicrosoftTypography,
+    separators: createFluent2MicrosoftSeparators({ c }),
     iconSizes: {
       's:sm:2': 12,
       's:sm:1': 16,
@@ -153,6 +156,7 @@ export const schema: Schema<Segments> = {
     dropdown: createFluent2MicrosoftDropdownSchema({ c }),
     icon: createFluent2MicrosoftIconSchema({ c }),
     progress: createFluent2MicrosoftProgressSchema({ c }),
+    separator: createFluent2MicrosoftSeparatorSchema(),
     switch: createFluent2MicrosoftSwitchSchema({
       c
     })

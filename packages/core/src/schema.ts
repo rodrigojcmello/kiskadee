@@ -4,11 +4,13 @@ import type { CardElements, CardOptions } from './components/card.ts';
 import type { DropdownElements } from './components/dropdown.ts';
 import type { IconElements } from './components/icon.ts';
 import type { ProgressElements } from './components/progress.ts';
+import type { SeparatorElements } from './components/separator.ts';
 import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
+import type { ElementSeparator, SchemaSeparators } from './separator.ts';
 import type {
   ElementPalettes,
   InteractionState,
@@ -42,6 +44,7 @@ export type ComponentName =
   | 'dropdown'
   | 'icon'
   | 'progress'
+  | 'separator'
   | 'slider'
   | 'switch'
   | 'tabs'
@@ -52,6 +55,7 @@ export type ElementStyle<TSegmentName extends SegmentName = never> = {
 } & Partial<{
   decorations: DecorationSchema;
   iconSize: ElementIconSize;
+  separator: ElementSeparator;
   typography: ElementTypography;
   scales: ScaleSchema;
   // Palettes follow the structure: segmentName → theme → surface context → ColorSchema.
@@ -120,6 +124,7 @@ export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Par
   dropdown: ComponentElementsStyleKeyMap<TSegmentName>;
   icon: ComponentElementsStyleKeyMap<TSegmentName>;
   progress: ComponentElementsStyleKeyMap<TSegmentName>;
+  separator: ComponentElementsStyleKeyMap<TSegmentName>;
   slider: ComponentVariantModesStyleKeyMap<TSegmentName>;
   switch: ComponentVariantModesStyleKeyMap<TSegmentName>;
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
@@ -189,6 +194,9 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
   progress: {
     elements: ProgressElements<TSegmentName>;
   };
+  separator: {
+    elements: SeparatorElements;
+  };
   slider: SliderComponent<TSegmentName>;
   switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;
@@ -253,6 +261,7 @@ export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
   iconSizes?: SchemaIconSizes;
   icons?: SchemaIcons;
+  separators?: SchemaSeparators;
   typography?: SchemaTypography;
   focus?: FocusGlobalTokens;
   radius?: RadiusMode;

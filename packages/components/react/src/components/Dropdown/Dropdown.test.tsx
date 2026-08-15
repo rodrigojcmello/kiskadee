@@ -55,9 +55,11 @@ afterEach(cleanup);
 describe('styled Dropdown', () => {
   it('resolves one intent palette without retaining neutral color classes', () => {
     const result = renderDropdown(
-      <Dropdown.Item intent="destructive" data-testid="destructive-item">
-        <Dropdown.Label>Delete</Dropdown.Label>
-      </Dropdown.Item>
+      <Dropdown.Group>
+        <Dropdown.Item intent="destructive" data-testid="destructive-item">
+          <Dropdown.Label>Delete</Dropdown.Label>
+        </Dropdown.Item>
+      </Dropdown.Group>
     );
     const item = result.getByTestId('destructive-item');
 
@@ -67,23 +69,34 @@ describe('styled Dropdown', () => {
     expect(item.className).not.toContain('item-neutral');
   });
 
-  it('renders no placeholder icon while keeping one collection scope for CSS alignment', () => {
+  it('renders no placeholder icon while isolating icon alignment by explicit group', () => {
     const result = renderDropdown(
       <>
-        <Dropdown.Item>
-          <Dropdown.Icon>
-            <svg data-testid="glyph" />
-          </Dropdown.Icon>
-          <Dropdown.Label>With icon</Dropdown.Label>
-        </Dropdown.Item>
-        <Dropdown.Item data-testid="without-icon">
-          <Dropdown.Label>Without icon</Dropdown.Label>
-        </Dropdown.Item>
+        <Dropdown.Group>
+          <Dropdown.Item>
+            <Dropdown.Icon>
+              <svg data-testid="glyph" />
+            </Dropdown.Icon>
+            <Dropdown.Label>With icon</Dropdown.Label>
+          </Dropdown.Item>
+          <Dropdown.Item data-testid="without-icon">
+            <Dropdown.Label>Without icon</Dropdown.Label>
+          </Dropdown.Item>
+        </Dropdown.Group>
+        <Dropdown.Separator data-testid="decorative-separator" />
+        <Dropdown.Group data-testid="group-without-icons">
+          <Dropdown.Item>
+            <Dropdown.Label>Another group</Dropdown.Label>
+          </Dropdown.Item>
+        </Dropdown.Group>
       </>
     );
 
     expect(result.container.querySelectorAll('.k-ddn-x1')).toHaveLength(1);
+    expect(result.container.querySelectorAll('.k-ddn-x2')).toHaveLength(2);
     expect(result.container.querySelectorAll('.k-ddn-e3')).toHaveLength(1);
     expect(result.getByTestId('without-icon').querySelector('.k-ddn-e3')).toBeNull();
+    expect(result.getByTestId('group-without-icons').querySelector('.k-ddn-e3')).toBeNull();
+    expect(result.getByTestId('decorative-separator').getAttribute('role')).toBeNull();
   });
 });

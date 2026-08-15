@@ -1,5 +1,7 @@
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
+import { validateElementSeparatorContract } from '../separator.contract.zod.ts';
+import type { ElementSeparator } from '../separator.ts';
 import type {
   ColorProperty,
   ColorSchema,
@@ -83,11 +85,10 @@ export type DropdownIndicatorElementStyle<TSegmentName extends SegmentName = nev
 }> &
   ElementNameMetadata;
 
-export type DropdownSeparatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  scales: ElementScalesByProperty<'boxHeight' | 'marginTop' | 'marginBottom'>;
-  palettes: ElementPalettesByColor<TSegmentName, 'boxColor'>;
-}> &
-  ElementNameMetadata;
+export type DropdownSeparatorElementStyle = {
+  name: string;
+  separator: ElementSeparator;
+};
 
 export type DropdownElements<TSegmentName extends SegmentName = never> = {
   e1: DropdownSurfaceElementStyle<TSegmentName>;
@@ -96,12 +97,13 @@ export type DropdownElements<TSegmentName extends SegmentName = never> = {
   e4: DropdownTextElementStyle<TSegmentName>;
   e5: DropdownTextElementStyle<TSegmentName>;
   e6: DropdownIndicatorElementStyle<TSegmentName>;
-  e7: DropdownSeparatorElementStyle<TSegmentName>;
+  e7: DropdownSeparatorElementStyle;
 };
 
 type ElementContractRules = {
   decorations?: readonly string[];
   iconSize?: boolean;
+  separator?: boolean;
   typography?: boolean;
   scales?: readonly string[];
   palettes?: readonly ColorProperty[];
@@ -117,6 +119,7 @@ const DROPDOWN_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
   'iconSize',
+  'separator',
   'typography',
   'scales',
   'palettes'
@@ -160,8 +163,7 @@ const DROPDOWN_RULES: Record<(typeof DROPDOWN_ELEMENTS_KEYS)[number], ElementCon
     palettes: ['textColor']
   },
   e7: {
-    scales: ['boxHeight', 'marginTop', 'marginBottom'],
-    palettes: ['boxColor']
+    separator: true
   }
 };
 
@@ -267,6 +269,16 @@ function validateElement(
     } else {
       issues.push(...validateElementIconSizeContract(value.iconSize, `${path}.iconSize`));
     }
+  }
+
+  if (value.separator !== undefined) {
+    if (!rules.separator) {
+      issues.push(`${path}.separator: not allowed for this element`);
+    } else {
+      issues.push(...validateElementSeparatorContract(value.separator, `${path}.separator`));
+    }
+  } else if (rules.separator) {
+    issues.push(`${path}.separator: required reference`);
   }
 
   if (value.typography !== undefined) {
