@@ -17,6 +17,39 @@ function createSchema(components: Schema['components'], global?: Schema['global'
 }
 
 describe('convertElementSchemaToStyleKeys', () => {
+  it('keeps Dropdown presence metadata out of style keys', () => {
+    const schema = createSchema(
+      {
+        dropdown: {
+          effects: { presence: { profile: 'fade-translate' } },
+          elements: {
+            e1: { name: 'surface' }
+          }
+        }
+      } as unknown as Schema['components'],
+      {
+        effects: {
+          presence: {
+            profiles: {
+              'fade-translate': {
+                distancePx: 4,
+                enterDurationMs: 120,
+                exitDurationMs: 60,
+                enterEasing: 'ease-out',
+                exitEasing: 'ease-in'
+              }
+            }
+          }
+        }
+      }
+    );
+
+    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+
+    expect(JSON.stringify(styleKeys)).not.toContain('presence');
+    expect(JSON.stringify(styleKeys)).not.toContain('fade-translate');
+  });
+
   it('converts top-level element decorations, scales, radius scales, palettes, and effects', () => {
     const schema = createSchema({
       button: {

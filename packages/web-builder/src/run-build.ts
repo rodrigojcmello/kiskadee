@@ -5,6 +5,7 @@ import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
 import { validateSchemaGlobalIconContract } from '@kiskadee/core/icon-contract';
 import { validateSchemaIconSizesContract } from '@kiskadee/core/icon-size-contract';
+import { validateSchemaPresenceContract } from '@kiskadee/core/presence-contract';
 import { validateSchemaSeparatorsContract } from '@kiskadee/core/separator-contract';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
@@ -121,6 +122,15 @@ export async function runBuild(): Promise<void> {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(
         `Schema separator contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
+      );
+    }
+
+    try {
+      validateSchemaPresenceContract(schema);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Schema presence effect contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
       );
     }
 

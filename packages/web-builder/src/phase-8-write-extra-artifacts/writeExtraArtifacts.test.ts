@@ -1,4 +1,4 @@
-import { readFile, rm } from 'node:fs/promises';
+import { access, readFile, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Schema, SchemaFonts, SchemaIconSizes } from '@kiskadee/core';
@@ -187,6 +187,61 @@ describe('writeExtraArtifacts typography artifacts', () => {
           e1: { t: { bm: 'k-a k-b k-c k-d' } }
         }
       }
+    });
+  });
+});
+
+describe('writeExtraArtifacts presence artifacts', () => {
+  it('publishes one resolved Dropdown object without duplicating the global catalog or CSS', async () => {
+    const outDirSlug = createOutputSlug('presence');
+    const profiles = {
+      'fade-translate': {
+        distancePx: 4,
+        enterDurationMs: 120,
+        exitDurationMs: 60,
+        enterEasing: 'ease-out',
+        exitEasing: 'ease-in'
+      },
+      'grow-height': {
+        enterDurationMs: 180,
+        exitDurationMs: 120,
+        enterEasing: 'ease-out',
+        exitEasing: 'ease-in'
+      }
+    } as const;
+
+    await writeExtraArtifacts({
+      schema: {
+        global: { effects: { presence: { profiles } } },
+        components: {
+          dropdown: {
+            effects: { presence: { profile: 'fade-translate' } }
+          }
+        }
+      } as Schema,
+      outDirSlug
+    });
+
+    const outputDirectory = resolve(buildRoot, outDirSlug);
+    const globalArtifact = JSON.parse(
+      await readFile(resolve(outputDirectory, 'global.kiskadee.json'), 'utf8')
+    );
+
+    expect(globalArtifact).toEqual({
+      components: {
+        dropdown: {
+          effects: {
+            presence: {
+              profile: 'fade-translate',
+              profiles
+            }
+          }
+        }
+      }
+    });
+    expect(globalArtifact.effects?.presence).toBeUndefined();
+    await expect(access(resolve(outputDirectory, 'tokens.kiskadee.css'))).rejects.toMatchObject({
+      code: 'ENOENT'
     });
   });
 });

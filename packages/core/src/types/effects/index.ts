@@ -4,6 +4,8 @@ import type { BorderRadiusEffectSchema } from './border-radius/border-radius.typ
 import type { ShadowSchema } from './shadow/shadow.types.ts';
 import type { ThumbShrinkEffectSchema } from './thumb-shrink/thumb-shrink.types.ts';
 
+export * from './presence/presence.types.ts';
+
 export type ElementEffects = Partial<{
   shadow: Partial<ShadowSchema>;
   borderRadius: BorderRadiusEffectSchema;

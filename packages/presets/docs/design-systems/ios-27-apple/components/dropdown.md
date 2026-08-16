@@ -20,6 +20,9 @@
   Web. Native Apple controls remain semantically distinct.
 - **Kiskadee extension**: rich descriptions, mixed icon alignment, Web hover, and the selected row
   treatment complete the shared cross-platform contract where the inspected source is silent.
+- **Kiskadee extension**: a dedicated leading checkmark slot is inspired by the state column used
+  by macOS menus. It completes the shared Web topology without claiming an exact iOS 27 Menu
+  measurement or native selection behavior.
 
 ## Schema Mapping
 
@@ -28,8 +31,11 @@
 - `e3`: shared 20 px icon viewport and logical gap.
 - `e4`: `body-small` principal label.
 - `e5`: `label-small` auxiliary content.
-- `e6`: 16 px trailing checkmark or submenu affordance.
+- `e6`: 16 px generic trailing icon.
 - `e7`: explicit one-pixel separator using the shared neutral `subtle` separator recipe.
+- `e8`: `label-small` auxiliary end text, reusing the existing auxiliary palette.
+- `e9`: `label-small-strong` group heading with item-aligned padding.
+- `e10`: 16 px leading checkmark with a 10 px logical gap, reusing the existing text palette.
 
 Dropdown groups own their padding and the distance around a separator. `e7` owns only the
 full-bleed line; it does not publish margins or render the standalone Separator component. The
@@ -42,3 +48,7 @@ the first Button.
 
 The schema uses only promoted tonal assets. This opaque Web adaptation must remain separate from any
 future Liquid Glass capability.
+
+The end-text, group-heading, and leading-checkmark slots are **Kiskadee extensions** added to keep
+the shared Dropdown topology complete. They do not claim fidelity to inspected iOS Menu shortcut,
+group-title, or checkmark measurements.

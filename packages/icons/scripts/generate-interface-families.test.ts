@@ -31,6 +31,7 @@ describe('interface family metadata', () => {
     for (const family of Object.values(metadata.families)) {
       expect(Object.keys(family.mappings).sort()).toEqual([...CANONICAL_ICON_NAMES].sort());
       expect(family.directions).toMatchObject({
+        'chevron-end': 'mirror',
         'chevron-left': 'mirror',
         redo: 'mirror',
         send: 'mirror',

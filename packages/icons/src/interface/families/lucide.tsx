@@ -3,19 +3,26 @@ import {
   AlignCenterIcon,
   AlignLeftIcon,
   AlignRightIcon,
+  ArrowLeftRightIcon,
   BanIcon,
   BellIcon,
   BoldIcon,
   CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
+  ChevronRightIcon,
   CircleCheckIcon,
   CircleXIcon,
+  ClipboardCheckIcon,
+  FileSpreadsheetIcon,
+  FolderOutputIcon,
   FrownIcon,
+  GitBranchIcon,
   GripVerticalIcon,
   HeartIcon,
   HomeIcon,
   ItalicIcon,
+  LayoutDashboardIcon,
   LinkIcon,
   ListIcon,
   ListOrderedIcon,
@@ -55,19 +62,26 @@ import type { CompleteCanonicalGlyphMap } from '../types.ts';
 const glyphAlignCenterIcon = createSvgGlyph(AlignCenterIcon, {"size":"1em"});
 const glyphAlignLeftIcon = createSvgGlyph(AlignLeftIcon, {"size":"1em"});
 const glyphAlignRightIcon = createSvgGlyph(AlignRightIcon, {"size":"1em"});
+const glyphArrowLeftRightIcon = createSvgGlyph(ArrowLeftRightIcon, {"size":"1em"});
 const glyphBanIcon = createSvgGlyph(BanIcon, {"size":"1em"});
 const glyphBellIcon = createSvgGlyph(BellIcon, {"size":"1em"});
 const glyphBoldIcon = createSvgGlyph(BoldIcon, {"size":"1em"});
 const glyphCheckIcon = createSvgGlyph(CheckIcon, {"size":"1em"});
 const glyphChevronDownIcon = createSvgGlyph(ChevronDownIcon, {"size":"1em"});
 const glyphChevronLeftIcon = createSvgGlyph(ChevronLeftIcon, {"size":"1em"});
+const glyphChevronRightIcon = createSvgGlyph(ChevronRightIcon, {"size":"1em"});
 const glyphCircleCheckIcon = createSvgGlyph(CircleCheckIcon, {"size":"1em"});
 const glyphCircleXIcon = createSvgGlyph(CircleXIcon, {"size":"1em"});
+const glyphClipboardCheckIcon = createSvgGlyph(ClipboardCheckIcon, {"size":"1em"});
+const glyphFileSpreadsheetIcon = createSvgGlyph(FileSpreadsheetIcon, {"size":"1em"});
+const glyphFolderOutputIcon = createSvgGlyph(FolderOutputIcon, {"size":"1em"});
 const glyphFrownIcon = createSvgGlyph(FrownIcon, {"size":"1em"});
+const glyphGitBranchIcon = createSvgGlyph(GitBranchIcon, {"size":"1em"});
 const glyphGripVerticalIcon = createSvgGlyph(GripVerticalIcon, {"size":"1em"});
 const glyphHeartIcon = createSvgGlyph(HeartIcon, {"size":"1em"});
 const glyphHomeIcon = createSvgGlyph(HomeIcon, {"size":"1em"});
 const glyphItalicIcon = createSvgGlyph(ItalicIcon, {"size":"1em"});
+const glyphLayoutDashboardIcon = createSvgGlyph(LayoutDashboardIcon, {"size":"1em"});
 const glyphLinkIcon = createSvgGlyph(LinkIcon, {"size":"1em"});
 const glyphListIcon = createSvgGlyph(ListIcon, {"size":"1em"});
 const glyphListOrderedIcon = createSvgGlyph(ListOrderedIcon, {"size":"1em"});
@@ -104,16 +118,22 @@ const glyphMap = {
     "align-center": glyphAlignCenterIcon,
     "align-left": glyphAlignLeftIcon,
     "align-right": glyphAlignRightIcon,
+    "arrow-left-right": glyphArrowLeftRightIcon,
     "ban": glyphBanIcon,
     "bell": glyphBellIcon,
     "bold": glyphBoldIcon,
     "check": glyphCheckIcon,
     "chevron-down": glyphChevronDownIcon,
+    "chevron-end": { glyph: glyphChevronRightIcon, direction: 'mirror' },
     "chevron-left": { glyph: glyphChevronLeftIcon, direction: 'mirror' },
     "circle-check": glyphCircleCheckIcon,
     "circle-x": glyphCircleXIcon,
+    "clipboard-check": glyphClipboardCheckIcon,
     "close": glyphXIcon,
+    "dashboard": glyphLayoutDashboardIcon,
+    "folder-move": { glyph: glyphFolderOutputIcon, direction: 'mirror' },
     "frown": glyphFrownIcon,
+    "git-branch": glyphGitBranchIcon,
     "grip-vertical": glyphGripVerticalIcon,
     "heart": glyphHeartIcon,
     "home": glyphHomeIcon,
@@ -138,6 +158,7 @@ const glyphMap = {
     "settings": glyphSettingsIcon,
     "share": glyphShareIcon,
     "smile": glyphSmileIcon,
+    "spreadsheet": glyphFileSpreadsheetIcon,
     "strikethrough": glyphStrikethroughIcon,
     "sun": glyphSunIcon,
     "thumbs-up": glyphThumbsUpIcon,

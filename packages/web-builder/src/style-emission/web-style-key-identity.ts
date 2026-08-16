@@ -107,16 +107,24 @@ function resolveStyleKeyEmissionMode(
         : undefined;
   }
 
-  if (
-    styleKey.startsWith('paddingTop') ||
-    styleKey.startsWith('paddingBottom') ||
-    styleKey.startsWith('paddingLeft')
-  ) {
+  if (styleKey.startsWith('paddingTop') || styleKey.startsWith('paddingBottom')) {
     return styleEmissionPolicy.paddingEmission === 'token'
       ? 't'
       : styleEmissionPolicy.paddingEmission === 'mirrored'
         ? 'm'
         : styleEmissionPolicy.paddingEmission === 'compensated'
+          ? 'c'
+          : undefined;
+  }
+
+  if (styleKey.startsWith('paddingLeft')) {
+    const paddingLeftEmission =
+      styleEmissionPolicy.paddingLeftEmission ?? styleEmissionPolicy.paddingEmission;
+    return paddingLeftEmission === 'token'
+      ? 't'
+      : paddingLeftEmission === 'mirrored'
+        ? 'm'
+        : paddingLeftEmission === 'compensated'
           ? 'c'
           : undefined;
   }
@@ -150,6 +158,7 @@ function resolveStyleKeyEmissionFamily(
   | 'marginRight'
   | 'marginBottom'
   | 'marginLeft'
+  | 'paddingLeft'
   | 'paddingRight'
   | 'padding'
   | undefined {
@@ -201,11 +210,11 @@ function resolveStyleKeyEmissionFamily(
     return 'paddingRight';
   }
 
-  if (
-    styleKey.startsWith('paddingTop') ||
-    styleKey.startsWith('paddingBottom') ||
-    styleKey.startsWith('paddingLeft')
-  ) {
+  if (styleKey.startsWith('paddingLeft')) {
+    return 'paddingLeft';
+  }
+
+  if (styleKey.startsWith('paddingTop') || styleKey.startsWith('paddingBottom')) {
     return 'padding';
   }
 
@@ -329,6 +338,10 @@ export function applyCanonicalStyleEmissionPolicy(
 
   if (family === 'paddingRight') {
     return { ...styleEmissionPolicy, paddingRightEmission: 'mirrored' };
+  }
+
+  if (family === 'paddingLeft') {
+    return { ...styleEmissionPolicy, paddingLeftEmission: 'mirrored' };
   }
 
   return styleEmissionPolicy;

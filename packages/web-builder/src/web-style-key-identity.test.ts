@@ -245,6 +245,82 @@ describe('web-style-key-identity', () => {
       ).toBe('paddingLeft__6');
     });
 
+    it('emits only the Dropdown trailing icon left padding as a structural gap token', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingLeft__4',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e6'
+        )
+      ).toBe('paddingLeft__4@@t');
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingRight__4',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e6'
+        )
+      ).toBe('paddingRight__4');
+    });
+
+    it('isolates both Dropdown item inline padding tokens from physical utilities', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingLeft__6',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e2'
+        )
+      ).toBe('paddingLeft__6@@t');
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingRight__2',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e2'
+        )
+      ).toBe('paddingRight__2@@t');
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingTop__6',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e2'
+        )
+      ).toBe('paddingTop__6');
+    });
+
+    it('isolates both Dropdown end-text padding tokens from direct padding utilities', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingLeft__10',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e8'
+        )
+      ).toBe('paddingLeft__10@@t');
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingRight__6',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e8'
+        )
+      ).toBe('paddingRight__6@@t');
+    });
+
+    it('isolates the Dropdown checkmark gap token from physical padding utilities', () => {
+      expect(
+        resolveWebStyleKeyIdentity(
+          'paddingRight__4',
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'dropdown',
+          'e10'
+        )
+      ).toBe('paddingRight__4@@t');
+    });
+
     it('uses the textField e3 policy from the builder config for border width', () => {
       expect(
         resolveWebStyleKeyIdentity(

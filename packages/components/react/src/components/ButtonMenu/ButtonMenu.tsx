@@ -1,7 +1,18 @@
 import './ButtonMenu.structural.scss';
 import type { DropdownIntent } from '@kiskadee/core';
-import type { MenuContentProps, MenuItemProps, MenuRootProps } from '@kiskadee/react-headless';
-import { Menu as HeadlessMenu } from '@kiskadee/react-headless';
+import {
+  Menu as HeadlessMenu,
+  type MenuContentProps,
+  type MenuGroupLabelProps,
+  type MenuGroupProps,
+  type MenuItemProps,
+  type MenuRadioGroupProps,
+  type MenuRadioItemProps,
+  type MenuRootProps,
+  type MenuSubContentProps,
+  type MenuSubProps,
+  type MenuSubTriggerProps
+} from '@kiskadee/react-headless/menu';
 import type {
   ComponentPropsWithoutRef,
   KeyboardEvent as ReactKeyboardEvent,
@@ -13,7 +24,9 @@ import { Button } from '../Button/Button.tsx';
 import type { ButtonProps } from '../Button/Button.types.ts';
 import { Dropdown } from '../Dropdown/Dropdown.tsx';
 import type {
-  DropdownGroupProps,
+  DropdownEndTextProps,
+  DropdownGroupLabelProps,
+  DropdownItemsLayout,
   DropdownSeparatorProps,
   DropdownVisualProps
 } from '../Dropdown/Dropdown.types.ts';
@@ -22,9 +35,20 @@ export type ButtonMenuRootProps = MenuRootProps & DropdownVisualProps;
 
 export type ButtonMenuActionProps = ButtonProps;
 
-export type ButtonMenuTriggerProps = ButtonProps;
+export type ButtonMenuTriggerProps = Omit<
+  ButtonProps,
+  | 'aria-controls'
+  | 'aria-expanded'
+  | 'aria-haspopup'
+  | 'aria-pressed'
+  | 'controlState'
+  | 'status'
+  | 'toggle'
+  | 'type'
+>;
 
-export type ButtonMenuContentProps = MenuContentProps & {
+export type ButtonMenuContentProps = Omit<MenuContentProps, 'forceMount' | 'render'> & {
+  itemsLayout?: DropdownItemsLayout;
   surfaceProps?: ComponentPropsWithoutRef<'div'>;
 };
 
@@ -33,7 +57,29 @@ export type ButtonMenuItemProps = Omit<MenuItemProps, 'render'> & {
   href?: string;
 };
 
-export type ButtonMenuGroupProps = DropdownGroupProps;
+export type ButtonMenuGroupProps = Omit<MenuGroupProps, 'render'>;
+
+export type ButtonMenuRadioGroupProps = Omit<MenuRadioGroupProps, 'render'>;
+
+export type ButtonMenuRadioItemProps = Omit<MenuRadioItemProps, 'render'> & {
+  intent?: DropdownIntent;
+};
+
+export type ButtonMenuSubProps = MenuSubProps;
+
+export type ButtonMenuSubTriggerProps = Omit<MenuSubTriggerProps, 'render'> & {
+  intent?: DropdownIntent;
+};
+
+export type ButtonMenuSubContentProps = Omit<MenuSubContentProps, 'forceMount' | 'render'> & {
+  itemsLayout?: DropdownItemsLayout;
+  surfaceProps?: ComponentPropsWithoutRef<'div'>;
+};
+
+export type ButtonMenuGroupLabelProps = Omit<MenuGroupLabelProps, 'render'> &
+  Omit<DropdownGroupLabelProps, 'id'>;
+
+export type ButtonMenuShortcutProps = Omit<DropdownEndTextProps, 'aria-hidden'>;
 
 export type ButtonMenuSeparatorProps = Omit<DropdownSeparatorProps, 'role'>;
 
@@ -42,16 +88,35 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   else if (ref) ref.current = value;
 }
 
+function ButtonMenuPopupVisual({
+  children,
+  itemsLayout,
+  surfaceProps
+}: Pick<ButtonMenuContentProps, 'children' | 'itemsLayout' | 'surfaceProps'>) {
+  return (
+    <Dropdown.Surface {...surfaceProps}>
+      <Dropdown.Items layout={itemsLayout}>{children}</Dropdown.Items>
+    </Dropdown.Surface>
+  );
+}
+
 function ButtonMenuRoot({
   children,
   scale,
   radius,
   shadow,
+  presence,
   classNames,
   ...menuProps
 }: ButtonMenuRootProps) {
   return (
-    <Dropdown.VisualProvider scale={scale} radius={radius} shadow={shadow} classNames={classNames}>
+    <Dropdown.VisualProvider
+      scale={scale}
+      radius={radius}
+      shadow={shadow}
+      presence={presence}
+      classNames={classNames}
+    >
       <HeadlessMenu.Root {...menuProps}>
         <div className="k-bmn">{children}</div>
       </HeadlessMenu.Root>
@@ -67,11 +132,12 @@ const ButtonMenuAction = forwardRef<HTMLButtonElement, ButtonMenuActionProps>(
 
 const ButtonMenuTrigger = forwardRef<HTMLButtonElement, ButtonMenuTriggerProps>(
   function ButtonMenuTrigger(
-    { children, className, disabled, onClick, onKeyDown, ...buttonProps },
+    { activationFeedback, children, className, disabled, id, onClick, onKeyDown, ...buttonProps },
     forwardedRef
   ) {
     return (
       <HeadlessMenu.Trigger
+        id={id}
         disabled={disabled}
         onClick={
           onClick ? (event) => onClick(event as ReactMouseEvent<HTMLButtonElement>) : undefined
@@ -81,7 +147,7 @@ const ButtonMenuTrigger = forwardRef<HTMLButtonElement, ButtonMenuTriggerProps>(
             ? (event) => onKeyDown(event as ReactKeyboardEvent<HTMLButtonElement>)
             : undefined
         }
-        render={(triggerProps) => {
+        render={(triggerProps, state) => {
           const { ref: triggerRef, ...behaviorProps } = triggerProps;
           const mergedRef = (node: HTMLButtonElement | null) => {
             assignRef(triggerRef, node);
@@ -93,7 +159,8 @@ const ButtonMenuTrigger = forwardRef<HTMLButtonElement, ButtonMenuTriggerProps>(
               {...(behaviorProps as unknown as ButtonProps)}
               ref={mergedRef}
               type="button"
-              disabled={disabled}
+              status={state.open ? 'pressed' : undefined}
+              activationFeedback={state.open ? false : activationFeedback}
               className={`k-bmn-t ${className ?? ''}`.trim()}
             >
               {children}
@@ -107,13 +174,32 @@ const ButtonMenuTrigger = forwardRef<HTMLButtonElement, ButtonMenuTriggerProps>(
 );
 
 const ButtonMenuContent = forwardRef<HTMLDivElement, ButtonMenuContentProps>(
-  function ButtonMenuContent({ children, surfaceProps, ...props }, ref) {
+  function ButtonMenuContent({ children, itemsLayout, surfaceProps, ...props }, ref) {
     return (
-      <HeadlessMenu.Content {...props} ref={ref}>
-        <Dropdown.Surface {...surfaceProps}>
-          <Dropdown.Items>{children}</Dropdown.Items>
-        </Dropdown.Surface>
-      </HeadlessMenu.Content>
+      <Dropdown.Presence>
+        {({ forceMount, render }) => (
+          <HeadlessMenu.Content
+            {...props}
+            ref={ref}
+            forceMount={forceMount}
+            render={(contentProps, state) =>
+              render(
+                {
+                  ...contentProps,
+                  children: (
+                    <ButtonMenuPopupVisual itemsLayout={itemsLayout} surfaceProps={surfaceProps}>
+                      {children}
+                    </ButtonMenuPopupVisual>
+                  )
+                },
+                state
+              )
+            }
+          >
+            {children}
+          </HeadlessMenu.Content>
+        )}
+      </Dropdown.Presence>
     );
   }
 );
@@ -157,13 +243,13 @@ const ButtonMenuItem = forwardRef<HTMLElement, ButtonMenuItemProps>(function But
           );
         }
 
+        const { ref: menuRef, ...itemProps } = menuProps;
+        const ref = (node: HTMLElement | null) => {
+          assignRef(menuRef, node);
+          assignRef(forwardedRef, node);
+        };
         return (
-          <Dropdown.Item
-            {...menuProps}
-            ref={forwardedRef}
-            intent={intent}
-            disabled={state.disabled}
-          >
+          <Dropdown.Item {...itemProps} ref={ref} intent={intent} disabled={state.disabled}>
             {children}
           </Dropdown.Item>
         );
@@ -178,16 +264,188 @@ const ButtonMenuSeparator = forwardRef<HTMLDivElement, ButtonMenuSeparatorProps>
   }
 );
 
+const ButtonMenuGroup = forwardRef<HTMLDivElement, ButtonMenuGroupProps>(function ButtonMenuGroup(
+  { children, ...props },
+  forwardedRef
+) {
+  return (
+    <HeadlessMenu.Group
+      {...props}
+      render={(menuProps) => {
+        const { ref: menuRef, ...groupProps } = menuProps;
+        const ref = (node: HTMLDivElement | null) => {
+          assignRef(menuRef, node);
+          assignRef(forwardedRef, node);
+        };
+        return (
+          <Dropdown.Group {...groupProps} ref={ref}>
+            {children}
+          </Dropdown.Group>
+        );
+      }}
+    >
+      {children}
+    </HeadlessMenu.Group>
+  );
+});
+
+const ButtonMenuGroupLabel = forwardRef<HTMLSpanElement, ButtonMenuGroupLabelProps>(
+  function ButtonMenuGroupLabel({ children, ...props }, forwardedRef) {
+    return (
+      <HeadlessMenu.GroupLabel
+        {...props}
+        render={(menuProps) => {
+          const { ref: menuRef, ...labelProps } = menuProps;
+          const ref = (node: HTMLSpanElement | null) => {
+            assignRef(menuRef, node);
+            assignRef(forwardedRef, node);
+          };
+          return (
+            <Dropdown.GroupLabel {...labelProps} ref={ref}>
+              {children}
+            </Dropdown.GroupLabel>
+          );
+        }}
+      >
+        {children}
+      </HeadlessMenu.GroupLabel>
+    );
+  }
+);
+
+const ButtonMenuRadioGroup = forwardRef<HTMLElement, ButtonMenuRadioGroupProps>(
+  function ButtonMenuRadioGroup({ children, ...props }, forwardedRef) {
+    return (
+      <HeadlessMenu.RadioGroup
+        {...props}
+        render={(menuProps) => {
+          const { ref: menuRef, ...groupProps } = menuProps;
+          const ref = (node: HTMLDivElement | null) => {
+            assignRef(menuRef, node);
+            assignRef(forwardedRef, node);
+          };
+          return (
+            <Dropdown.Group {...groupProps} ref={ref}>
+              {children}
+            </Dropdown.Group>
+          );
+        }}
+      >
+        {children}
+      </HeadlessMenu.RadioGroup>
+    );
+  }
+);
+
+const ButtonMenuRadioItem = forwardRef<HTMLElement, ButtonMenuRadioItemProps>(
+  function ButtonMenuRadioItem({ children, disabled, intent, onSelect, ...props }, forwardedRef) {
+    return (
+      <HeadlessMenu.RadioItem
+        {...props}
+        disabled={disabled}
+        onSelect={onSelect}
+        render={(menuProps, state) => {
+          const { ref: menuRef, ...itemProps } = menuProps;
+          const ref = (node: HTMLElement | null) => {
+            assignRef(menuRef, node);
+            assignRef(forwardedRef, node);
+          };
+          return (
+            <Dropdown.Item {...itemProps} ref={ref} intent={intent} disabled={state.disabled}>
+              <Dropdown.Checkmark visible={state.checked} />
+              {children}
+            </Dropdown.Item>
+          );
+        }}
+      >
+        {children}
+      </HeadlessMenu.RadioItem>
+    );
+  }
+);
+
+const ButtonMenuSub = HeadlessMenu.Sub;
+
+const ButtonMenuSubTrigger = forwardRef<HTMLElement, ButtonMenuSubTriggerProps>(
+  function ButtonMenuSubTrigger({ children, disabled, intent, ...props }, forwardedRef) {
+    return (
+      <HeadlessMenu.SubTrigger
+        {...props}
+        disabled={disabled}
+        render={(menuProps, state) => {
+          const { ref: menuRef, ...itemProps } = menuProps;
+          const ref = (node: HTMLElement | null) => {
+            assignRef(menuRef, node);
+            assignRef(forwardedRef, node);
+          };
+          return (
+            <Dropdown.Item {...itemProps} ref={ref} intent={intent} disabled={state.disabled}>
+              {children}
+              <Dropdown.Trailing name="chevron-end" />
+            </Dropdown.Item>
+          );
+        }}
+      >
+        {children}
+      </HeadlessMenu.SubTrigger>
+    );
+  }
+);
+
+const ButtonMenuSubContent = forwardRef<HTMLDivElement, ButtonMenuSubContentProps>(
+  function ButtonMenuSubContent({ children, itemsLayout, surfaceProps, ...props }, forwardedRef) {
+    return (
+      <Dropdown.Presence>
+        {({ forceMount, render }) => (
+          <HeadlessMenu.SubContent
+            {...props}
+            ref={forwardedRef}
+            forceMount={forceMount}
+            render={(contentProps, state) =>
+              render(
+                {
+                  ...contentProps,
+                  children: (
+                    <ButtonMenuPopupVisual itemsLayout={itemsLayout} surfaceProps={surfaceProps}>
+                      {children}
+                    </ButtonMenuPopupVisual>
+                  )
+                },
+                state
+              )
+            }
+          >
+            {children}
+          </HeadlessMenu.SubContent>
+        )}
+      </Dropdown.Presence>
+    );
+  }
+);
+
+const ButtonMenuShortcut = forwardRef<HTMLSpanElement, ButtonMenuShortcutProps>(
+  function ButtonMenuShortcut(props, ref) {
+    return <Dropdown.EndText {...props} ref={ref} aria-hidden="true" />;
+  }
+);
+
 export const ButtonMenu = {
   Root: ButtonMenuRoot,
   Action: ButtonMenuAction,
   Trigger: ButtonMenuTrigger,
   Content: ButtonMenuContent,
-  Group: Dropdown.Group,
+  Group: ButtonMenuGroup,
+  GroupLabel: ButtonMenuGroupLabel,
+  RadioGroup: ButtonMenuRadioGroup,
+  RadioItem: ButtonMenuRadioItem,
+  Sub: ButtonMenuSub,
+  SubTrigger: ButtonMenuSubTrigger,
+  SubContent: ButtonMenuSubContent,
   Item: ButtonMenuItem,
   Icon: Dropdown.Icon,
   Label: Dropdown.Label,
   Description: Dropdown.Description,
+  Shortcut: ButtonMenuShortcut,
   Trailing: Dropdown.Trailing,
   Separator: ButtonMenuSeparator
 };

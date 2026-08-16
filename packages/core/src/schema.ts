@@ -31,6 +31,10 @@ import type {
 } from './types/effects/activation-feedback/activation-feedback.types.ts';
 import type { ElementEffects } from './types/effects/index.ts';
 import type {
+  DropdownPresenceEffectSchema,
+  PresenceEffectSchema
+} from './types/effects/presence/presence.types.ts';
+import type {
   ShadowEffectSchema,
   ShadowGlobalEffectSchema
 } from './types/effects/shadow/shadow.types.ts';
@@ -184,6 +188,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
   };
   dropdown: {
     effects?: {
+      presence?: DropdownPresenceEffectSchema;
       shadow?: ShadowEffectSchema;
     };
     elements: DropdownElements<TSegmentName> & Elements<TSegmentName>;
@@ -244,6 +249,7 @@ export type SchemaIcons = {
 // [EFFECTS] START: Global effect schema section.
 export type SchemaGlobalEffects = {
   activationFeedback?: ActivationFeedbackEffectSchema;
+  presence?: PresenceEffectSchema;
   shadow?: ShadowGlobalEffectSchema;
 };
 // [EFFECTS] END: Global effect schema section.

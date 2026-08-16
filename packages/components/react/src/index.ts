@@ -49,10 +49,17 @@ export { Button, useButtonArtifactConfig } from './components/Button';
 export type {
   ButtonMenuActionProps,
   ButtonMenuContentProps,
+  ButtonMenuGroupLabelProps,
   ButtonMenuGroupProps,
   ButtonMenuItemProps,
+  ButtonMenuRadioGroupProps,
+  ButtonMenuRadioItemProps,
   ButtonMenuRootProps,
   ButtonMenuSeparatorProps,
+  ButtonMenuShortcutProps,
+  ButtonMenuSubContentProps,
+  ButtonMenuSubProps,
+  ButtonMenuSubTriggerProps,
   ButtonMenuTriggerProps
 } from './components/ButtonMenu';
 export { ButtonMenu } from './components/ButtonMenu';
@@ -67,16 +74,24 @@ export type {
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export type {
   DropdownAnchorProps,
+  DropdownCheckmarkProps,
   DropdownClassesMap,
   DropdownClassNames,
   DropdownContentProps,
   DropdownDescriptionProps,
+  DropdownEndTextProps,
+  DropdownGroupLabelProps,
   DropdownGroupProps,
   DropdownIconProps,
   DropdownItemProps,
+  DropdownItemsLayout,
   DropdownItemsProps,
   DropdownLabelProps,
   DropdownPlacement,
+  DropdownPresenceAdapter,
+  DropdownPresenceProps,
+  DropdownPresenceRenderProps,
+  DropdownPresenceRenderState,
   DropdownRootProps,
   DropdownSeparatorProps,
   DropdownSurfaceProps,
@@ -223,6 +238,7 @@ export {
 export type {
   ComponentClassMapScope,
   KiskadeeContextValue,
+  KiskadeeGlobalArtifact,
   KiskadeeInteractionEnvironment,
   KiskadeeLayoutEnvironment
 } from './shared/contexts/KiskadeeContext.tsx';

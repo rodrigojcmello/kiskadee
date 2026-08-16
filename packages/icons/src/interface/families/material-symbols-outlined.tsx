@@ -6,22 +6,28 @@ import {
 } from '../materialSymbols.tsx';
 import type { CompleteCanonicalGlyphMap } from '../types.ts';
 
-const materialLigatures = ["add","bedtime","block","cancel","check","check_circle","close","dark_mode","delete","drag_indicator","edit","favorite","format_align_center","format_align_left","format_align_right","format_bold","format_italic","format_list_bulleted","format_list_numbered","format_strikethrough","format_underlined","home","keyboard_arrow_down","keyboard_arrow_left","light_mode","link","mail","menu","notifications","pause","person","play_arrow","progress_activity","redo","remove","rocket_launch","search","send","sentiment_dissatisfied","sentiment_satisfied","settings","share","thumb_up","undo","volume_down","volume_off","volume_up"] as const;
+const materialLigatures = ["account_tree","add","assignment_turned_in","bedtime","block","cancel","check","check_circle","close","dark_mode","dashboard","delete","drag_indicator","drive_file_move","edit","favorite","format_align_center","format_align_left","format_align_right","format_bold","format_italic","format_list_bulleted","format_list_numbered","format_strikethrough","format_underlined","home","keyboard_arrow_down","keyboard_arrow_left","keyboard_arrow_right","light_mode","link","mail","menu","notifications","pause","person","play_arrow","progress_activity","redo","remove","rocket_launch","search","send","sentiment_dissatisfied","sentiment_satisfied","settings","share","swap_horiz","table_view","thumb_up","undo","volume_down","volume_off","volume_up"] as const;
 
 const glyphMap = {
     "align-center": createMaterialSymbolGlyph("format_align_center"),
     "align-left": createMaterialSymbolGlyph("format_align_left"),
     "align-right": createMaterialSymbolGlyph("format_align_right"),
+    "arrow-left-right": createMaterialSymbolGlyph("swap_horiz"),
     "ban": createMaterialSymbolGlyph("block"),
     "bell": createMaterialSymbolGlyph("notifications"),
     "bold": createMaterialSymbolGlyph("format_bold"),
     "check": createMaterialSymbolGlyph("check"),
     "chevron-down": createMaterialSymbolGlyph("keyboard_arrow_down"),
+    "chevron-end": { glyph: createMaterialSymbolGlyph("keyboard_arrow_right"), direction: 'mirror' },
     "chevron-left": { glyph: createMaterialSymbolGlyph("keyboard_arrow_left"), direction: 'mirror' },
     "circle-check": createMaterialSymbolGlyph("check_circle"),
     "circle-x": createMaterialSymbolGlyph("cancel"),
+    "clipboard-check": createMaterialSymbolGlyph("assignment_turned_in"),
     "close": createMaterialSymbolGlyph("close"),
+    "dashboard": createMaterialSymbolGlyph("dashboard"),
+    "folder-move": { glyph: createMaterialSymbolGlyph("drive_file_move"), direction: 'mirror' },
     "frown": createMaterialSymbolGlyph("sentiment_dissatisfied"),
+    "git-branch": createMaterialSymbolGlyph("account_tree"),
     "grip-vertical": createMaterialSymbolGlyph("drag_indicator"),
     "heart": createMaterialSymbolGlyph("favorite"),
     "home": createMaterialSymbolGlyph("home"),
@@ -46,6 +52,7 @@ const glyphMap = {
     "settings": createMaterialSymbolGlyph("settings"),
     "share": createMaterialSymbolGlyph("share"),
     "smile": createMaterialSymbolGlyph("sentiment_satisfied"),
+    "spreadsheet": createMaterialSymbolGlyph("table_view"),
     "strikethrough": createMaterialSymbolGlyph("format_strikethrough"),
     "sun": createMaterialSymbolGlyph("light_mode"),
     "thumbs-up": createMaterialSymbolGlyph("thumb_up"),

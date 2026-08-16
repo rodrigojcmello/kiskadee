@@ -29,8 +29,11 @@
 - `e3`: 24 px leading icon with a 12 px logical gap.
 - `e4`: `label-large` principal label.
 - `e5`: `body-small` auxiliary content.
-- `e6`: 24 px trailing indicator.
+- `e6`: 24 px generic trailing icon.
 - `e7`: explicit one-pixel divider using the shared neutral `subtle` separator recipe.
+- `e8`: `body-small` auxiliary end text, reusing the existing auxiliary palette.
+- `e9`: `label-medium` group heading with item-aligned padding.
+- `e10`: 24 px leading checkmark with a 12 px logical gap, reusing the existing text palette.
 
 Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
 line; it does not publish margins or render the standalone Separator component. The shared recipe
@@ -38,3 +41,7 @@ preserves the existing neutral output documented in [Separator evidence](separat
 
 The first implementation is the minimum official adaptation needed to compose the existing Material
 TextField with Autocomplete. It does not introduce a public Dropdown appearance variant.
+
+The end-text, group-heading, and leading-checkmark slots are a **Kiskadee extension** in this
+minimum migration. Their values reuse existing Material typography, color, icon sizing, and item
+geometry until a dedicated official Menu review is completed.

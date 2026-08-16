@@ -13,34 +13,37 @@ const THEMES = {
   light: {
     track: 'l',
     surface: 0,
-    border: 10,
     hover: 3,
     pressed: 7,
     selected: 5,
     text: 85,
+    groupLabelText: 75,
     secondaryText: 65,
+    endText: 50,
     disabledText: 35
   },
   dark: {
     track: 'd',
     surface: 5,
-    border: 16,
     hover: 16,
     pressed: 10,
     selected: 12,
     text: 90,
+    groupLabelText: 85,
     secondaryText: 70,
+    endText: 70,
     disabledText: 45
   },
   darker: {
     track: 'd',
     surface: 3,
-    border: 12,
     hover: 12,
     pressed: 7,
     selected: 9,
     text: 90,
+    groupLabelText: 85,
     secondaryText: 70,
+    endText: 70,
     disabledText: 45
   }
 } as const satisfies Record<
@@ -48,12 +51,13 @@ const THEMES = {
   {
     track: ThemeShortcut;
     surface: KiskadeeTone;
-    border: KiskadeeTone;
     hover: KiskadeeTone;
     pressed: KiskadeeTone;
     selected: KiskadeeTone;
     text: KiskadeeTone;
+    groupLabelText: KiskadeeTone;
     secondaryText: KiskadeeTone;
+    endText: KiskadeeTone;
     disabledText: KiskadeeTone;
   }
 >;
@@ -65,6 +69,13 @@ export function createFluent2MicrosoftDropdownSchema({
     const recipe = THEMES[theme];
     const transparent = c('default', recipe.track, 'dropdown.neutral', 0, 0);
     const neutralText = c('default', recipe.track, 'dropdown.neutral', recipe.text);
+    const neutralGroupLabelText = c(
+      'default',
+      recipe.track,
+      'dropdown.neutral',
+      recipe.groupLabelText
+    );
+    const neutralEndText = c('default', recipe.track, 'dropdown.neutral', recipe.endText);
     const destructiveText = c.ref('default', recipe.track, 'dropdown.destructive', 'vivid');
     const disabledText = c('default', recipe.track, 'dropdown.neutral', recipe.disabledText);
 
@@ -90,13 +101,6 @@ export function createFluent2MicrosoftDropdownSchema({
             neutral: {
               medium: {
                 rest: c('default', recipe.track, 'dropdown.neutral', recipe.surface)
-              }
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: {
-                rest: c('default', recipe.track, 'dropdown.neutral', recipe.border)
               }
             }
           }
@@ -150,6 +154,42 @@ export function createFluent2MicrosoftDropdownSchema({
             }
           }
         }
+      },
+      endText: {
+        onSubtle: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: neutralEndText,
+                disabled: { ref: disabledText }
+              }
+            },
+            destructive: {
+              medium: {
+                rest: neutralEndText,
+                disabled: { ref: disabledText }
+              }
+            }
+          }
+        }
+      },
+      groupLabelText: {
+        onSubtle: {
+          textColor: {
+            neutral: {
+              medium: {
+                rest: neutralGroupLabelText,
+                disabled: { ref: disabledText }
+              }
+            },
+            destructive: {
+              medium: {
+                rest: destructiveText,
+                disabled: { ref: disabledText }
+              }
+            }
+          }
+        }
       }
     };
   };
@@ -160,6 +200,9 @@ export function createFluent2MicrosoftDropdownSchema({
 
   return {
     effects: {
+      presence: {
+        profile: 'fade-translate'
+      },
       shadow: {
         e1: {
           kind: 'outer',
@@ -171,13 +214,11 @@ export function createFluent2MicrosoftDropdownSchema({
     elements: {
       e1: {
         name: 'dropdown-surface',
-        decorations: { borderStyle: 'solid' },
         scales: {
           paddingTop: 4,
           paddingRight: 4,
           paddingBottom: 4,
           paddingLeft: 4,
-          borderWidth: 1,
           borderRadius: { rounded: 4, pill: 4, square: 0 }
         },
         palettes: {
@@ -192,9 +233,10 @@ export function createFluent2MicrosoftDropdownSchema({
         name: 'dropdown-item',
         scales: {
           paddingTop: 6,
-          paddingRight: 10,
+          paddingRight: 2,
           paddingBottom: 6,
-          paddingLeft: 10,
+          paddingLeft: 6,
+          marginBottom: 2,
           borderRadius: { rounded: 4, pill: 4, square: 0 }
         },
         palettes: {
@@ -204,7 +246,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e3: {
         name: 'dropdown-icon',
         iconSize: { 's:all': 's:md:1' },
-        scales: { paddingRight: 8 },
+        scales: { paddingRight: 4 },
         palettes: {
           default: { light: light.text, dark: dark.text, darker: darker.text }
         }
@@ -212,6 +254,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e4: {
         name: 'dropdown-label',
         typography: { 's:all': 'body-medium' },
+        scales: { paddingRight: 2, paddingLeft: 2 },
         palettes: {
           default: { light: light.text, dark: dark.text, darker: darker.text }
         }
@@ -219,6 +262,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e5: {
         name: 'dropdown-description',
         typography: { 's:all': 'caption-medium' },
+        scales: { paddingRight: 2, paddingLeft: 2 },
         palettes: {
           default: {
             light: light.auxiliaryText,
@@ -228,8 +272,9 @@ export function createFluent2MicrosoftDropdownSchema({
         }
       },
       e6: {
-        name: 'dropdown-indicator',
-        iconSize: { 's:all': 's:sm:1' },
+        name: 'dropdown-trailing-icon',
+        iconSize: { 's:all': 's:md:1' },
+        scales: { paddingLeft: 4 },
         palettes: {
           default: { light: light.text, dark: dark.text, darker: darker.text }
         }
@@ -237,6 +282,43 @@ export function createFluent2MicrosoftDropdownSchema({
       e7: {
         name: 'dropdown-separator',
         separator: { 's:all': 'subtle' }
+      },
+      e8: {
+        name: 'dropdown-end-text',
+        typography: { 's:all': 'caption-medium' },
+        scales: { paddingRight: 6, paddingLeft: 10 },
+        palettes: {
+          default: {
+            light: light.endText,
+            dark: dark.endText,
+            darker: darker.endText
+          }
+        }
+      },
+      e9: {
+        name: 'dropdown-group-label',
+        typography: { 's:all': 'caption-medium-strong' },
+        scales: {
+          paddingTop: 8,
+          paddingRight: 6,
+          paddingBottom: 8,
+          paddingLeft: 6
+        },
+        palettes: {
+          default: {
+            light: light.groupLabelText,
+            dark: dark.groupLabelText,
+            darker: darker.groupLabelText
+          }
+        }
+      },
+      e10: {
+        name: 'dropdown-checkmark',
+        iconSize: { 's:all': 's:md:1' },
+        scales: { paddingRight: 4 },
+        palettes: {
+          default: { light: light.text, dark: dark.text, darker: darker.text }
+        }
       }
     }
   };

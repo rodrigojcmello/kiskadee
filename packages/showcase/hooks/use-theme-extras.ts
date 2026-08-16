@@ -1,18 +1,5 @@
-import type {
-  ActivationFeedbackEffectSchema,
-  ActivationFeedbackSetting,
-  ButtonIconLayout,
-  ButtonIconPlacement,
-  ButtonIconTreatment,
-  GlobalClassNameMapJSON,
-  RadiusMode,
-  SchemaFonts,
-  SchemaIconSizes,
-  SchemaIcons,
-  ShadowEffectSchema,
-  ShadowGlobalEffectSchema,
-  ThemeMode
-} from '@kiskadee/core';
+import type { RadiusMode, ThemeMode } from '@kiskadee/core';
+import type { KiskadeeGlobalArtifact } from '@kiskadee/react-components';
 import { useEffect, useState } from 'react';
 import { extraMaps, paletteIndex } from '@/registry/design-systems.registry';
 import type { DesignSystemKey } from '@/registry/registry-utils';
@@ -22,46 +9,11 @@ type BackgroundTones = Partial<Record<ThemeMode, string | undefined>>;
 
 const radiusGlobalCache: Partial<Record<string, RadiusMode | null>> = {};
 
-type GlobalArtifact = {
-  classMap?: GlobalClassNameMapJSON;
-  fonts?: SchemaFonts;
-  iconSizes?: SchemaIconSizes;
-  icons?: SchemaIcons;
-  radius?: RadiusMode;
-  effects?: {
-    activationFeedback?: ActivationFeedbackEffectSchema;
-    shadow?: ShadowGlobalEffectSchema;
-  };
-  components?: {
-    button?: {
-      options?: {
-        iconLayout?: ButtonIconLayout;
-        iconPlacement?: ButtonIconPlacement;
-        iconTreatment?: ButtonIconTreatment;
-      };
-      effects?: {
-        activationFeedback?: ActivationFeedbackSetting;
-        shadow?: ShadowEffectSchema;
-      };
-    };
-    card?: {
-      effects?: {
-        shadow?: ShadowEffectSchema;
-      };
-    };
-    switch?: {
-      effects?: {
-        activationFeedback?: ActivationFeedbackSetting;
-      };
-    };
-  };
-};
-
-const globalArtifactCache: Partial<Record<string, GlobalArtifact | null>> = {};
+const globalArtifactCache: Partial<Record<string, KiskadeeGlobalArtifact | null>> = {};
 
 type GlobalArtifactState = {
   designSystem?: string;
-  value?: GlobalArtifact;
+  value?: KiskadeeGlobalArtifact;
 };
 
 export function useThemeExtras({
@@ -86,10 +38,13 @@ export function useThemeExtras({
 
       if (!hasGlobalArtifact) {
         try {
-          const json = await loadJsonFromBuild<GlobalArtifact>(`${dsKey}/global.kiskadee.json`, {
-            required: false,
-            fallback: {}
-          });
+          const json = await loadJsonFromBuild<KiskadeeGlobalArtifact>(
+            `${dsKey}/global.kiskadee.json`,
+            {
+              required: false,
+              fallback: {}
+            }
+          );
           globalArtifact = json;
           globalArtifactCache[dsKey] = Object.keys(json).length ? json : null;
           radiusGlobalCache[dsKey] = json.radius ?? null;

@@ -9,6 +9,7 @@ import type {
   FontStack,
   GlobalClassNameMapJSON,
   RadiusMode,
+  ResolvedDropdownPresenceEffect,
   Schema,
   SchemaFonts,
   SchemaIconSizes,
@@ -52,11 +53,12 @@ type SegmentKey = SegmentName | string;
 type ComponentEffectArtifact = {
   effects?: {
     activationFeedback?: ActivationFeedbackSetting;
+    presence?: ResolvedDropdownPresenceEffect;
     shadow?: ShadowEffectSchema;
   };
   options?: ButtonOptions;
 };
-type ComponentEffectArtifactName = 'button' | 'card' | 'slider' | 'switch';
+type ComponentEffectArtifactName = 'button' | 'card' | 'dropdown' | 'slider' | 'switch';
 
 function hasErrnoCode(error: unknown, code: string): boolean {
   return (
@@ -73,6 +75,19 @@ function getBuildDir(outDirSlug: string): string {
   const baseBuildDir = resolve(__dirname, '..', '..', 'build');
 
   return resolve(baseBuildDir, outDirSlug);
+}
+
+function buildDropdownPresenceEffect(
+  schema: ExtractableSchema
+): ResolvedDropdownPresenceEffect | undefined {
+  const presence = schema.global?.effects?.presence;
+  const dropdownPresence = schema.components?.dropdown?.effects?.presence;
+  if (!presence || !dropdownPresence) return undefined;
+
+  return {
+    profile: dropdownPresence.profile,
+    profiles: presence.profiles
+  };
 }
 
 function getSegmentKeys(schema: ExtractableSchema): SegmentKey[] {
@@ -288,6 +303,11 @@ export async function writeExtraArtifacts(params: {
 
   if (schema.components?.card?.effects?.shadow !== undefined) {
     getComponentEffects('card').shadow = schema.components.card.effects.shadow;
+  }
+
+  const dropdownPresence = buildDropdownPresenceEffect(schema);
+  if (dropdownPresence) {
+    getComponentEffects('dropdown').presence = dropdownPresence;
   }
 
   if (schema.components?.slider?.effects?.activationFeedback !== undefined) {

@@ -28,8 +28,11 @@ open state, anchor registry, ID pair, or mechanical context.
 - `e3`: optional leading icon;
 - `e4`: principal label;
 - `e5`: optional supporting description;
-- `e6`: optional trailing indicator;
+- `e6`: optional trailing icon;
 - `e7`: explicit separator.
+- `e8`: optional end text, such as a keyboard shortcut or metadata;
+- `e9`: optional visual group label.
+- `e10`: optional leading checkmark.
 
 The surface may contain arbitrary non-interactive supporting content. Rich content that introduces
 multiple focus targets, dialog behavior, or form controls belongs to a future Popover or advanced
@@ -46,6 +49,35 @@ Group. Another Group without icons remains a single content column.
 The icon viewport comes from `global.iconSizes` through the normal `iconSize` Builder expansion.
 No browser measurement or icon-presence JavaScript is used.
 
+Checkable items keep `e10` mounted even while unchecked. Only the canonical `check` artwork changes
+visibility, so the selection track never collapses between radio values. The track precedes `e3`;
+an item may therefore contain checkmark, ordinary leading icon, end text, and trailing icon at the
+same time. Like ordinary icon alignment, checkmark alignment is scoped to the nearest explicit
+Group and is resolved entirely by structural CSS. The preset keeps authoring the gap as
+`e10.paddingRight`; the Builder emits only `--k-pdr`, and structural CSS consumes it as logical
+`padding-inline-end` so the relationship reverses correctly in RTL.
+
+## Item Layout
+
+`Dropdown.Items` exposes two structural layout policies:
+
+- `independent` keeps one grid per item and is the default for compact collections;
+- `columns` lets items in the same explicit Group share leading, content, end-text, and trailing
+  tracks.
+
+Group remains the sizing boundary in both policies. In `columns`, the widest principal content and
+widest final content inside one Group determine that Group's tracks. Another Group starts a new
+calculation after a separator. The floating surface still takes the intrinsic width of its widest
+Group, so all Groups occupy the same outer width without coupling their internal tracks.
+
+Item horizontal padding remains authored as `e2.paddingLeft` and `e2.paddingRight`. The Builder
+emits these as `--k-pdl` and `--k-pdr`, and structural CSS applies them to logical inline start and
+end. Asymmetric preset values therefore preserve their LTR visual while reversing correctly in RTL.
+
+This separation preserves the existing group-local icon-column rule and prevents unrelated groups
+from reserving empty columns for one another. The implementation uses CSS Grid and subgrid; it does
+not measure content or publish runtime geometry variables.
+
 ## Separators And States
 
 Separators are never inferred between items. Consumers split items into Groups and insert
@@ -61,6 +93,19 @@ Items use the component's internal `medium` emphasis. Rest is the base and inter
 sparse deltas. Dropdown exposes neutral and destructive intent in the first contract; it does not
 copy Button's public emphasis matrix.
 
+`Dropdown.GroupLabel` and `Dropdown.EndText` are visual slots only. Semantic components decide
+whether a group label names a `menu` group and whether end text represents an accessible keyboard
+shortcut. `Dropdown.Trailing` remains iconographic and does not imply submenu behavior.
+
+`Dropdown.EndText` consumes its preset-authored inline start and end padding as logical CSS. The
+start inset is therefore the gap from principal content in both LTR and RTL; it is not a physical
+left margin or a runtime measurement.
+
+`Dropdown.Checkmark` is also visual only. It is always hidden from the accessibility tree and uses
+the canonical `check` glyph; Menu or Select owns the checked state and role. An unchecked wrapper
+remains in layout through `visible={false}` rather than rendering a placeholder or inspecting sibling
+children in JavaScript.
+
 ## Mechanical Overlay
 
 The headless anchored-overlay layer owns only controlled or uncontrolled open state, anchor and
@@ -74,6 +119,62 @@ Portal presence is hydration-stable: a portalled surface remains inline until th
 completed, then moves to its resolved portal container. Semantic components decide how focus is
 restored and what an Escape means.
 
+## Visual Presence
+
+Dropdown visual presence is a preset effect resolved from the global artifact. `Dropdown.Root`,
+`Dropdown.VisualProvider`, and `ButtonMenu.Root` accept `presence`; omission uses the preset,
+`false` keeps the static core path, and an explicit profile selects `fade-translate` or
+`grow-height` when the active preset publishes it.
+
+The shared `Dropdown.Presence` adapter lets Menu, Select, and Autocomplete reuse the same effect
+without importing Motion or duplicating profile lookup. It keeps the Floating UI positioner and
+its transform static, then supplies open state to `Dropdown.Surface`; Motion animates `e1` itself.
+Consequently collision placement remains mechanical, grow-height uses the surface's real
+`0 -> auto` block size, and the surface shadow is not clipped by an additional animation wrapper.
+The effect does not add persistent overflow clipping. `e1` keeps its existing structural
+`overflow: clip` for surface/radius containment independently of presence.
+
+The headless render state distinguishes requested placement from positioning readiness. A surface
+is mounted at its full natural geometry but stays visually hidden until Floating UI finishes its
+first collision pass. Presence then stages its initial frame from the resolved placement before
+animating. This prevents an initial `bottom` request from leaking into a popup that ultimately
+flips to `top`. For `grow-height`, the positioner reserves the measured natural height during the
+cycle; a top-placed surface aligns to the positioner's block end and therefore grows upward from
+the anchor instead of changing sides while its height increases. Lateral submenus also respect
+their resolved alignment: `left-end` and `right-end` align the animated surface to the reserved
+block end, so a collision-flipped submenu grows upward; `left-start` and `right-start` continue to
+grow downward from the block start. This decision follows the final placement rather than the
+initial requested placement.
+
+Each animated Surface registers an opaque identity with the presence lifecycle. Exit retention is
+released after every registered Surface completes; a composition without a Surface releases
+immediately. This explicit registration avoids child inspection and prevents an adapter consumer
+from retaining a closed positioner indefinitely.
+
+The Motion module is one lazy chunk shared by every Dropdown consumer. If it becomes available
+while a popup is already open, that cycle stays static; module and profile changes are adopted only
+after close. A motion-enabled cycle is retained only for its exit and then unmounted, while
+`presence={false}` never force-mounts closed content. Headless Dropdown, Menu, Select, and
+Autocomplete all keep closed content unmounted unless this adapter is retaining that exit.
+Reduced-motion preference,
+`.no-transitions`, and tests use zero-duration transitions with no animated initial frame.
+
+## Width Policy
+
+The shared `content` policy uses intrinsic width with a 138 px minimum and 300 px maximum. These
+initial framework bounds come from Fluent 2 MenuPopover and apply independently of the active
+preset until a demonstrated design-system conflict justifies preset-owned width recipes.
+
+The mechanical alternatives remain explicit overrides:
+
+- `content` follows intrinsic content inside the shared bounds;
+- `min-anchor` measures the anchor and makes the surface at least that wide while allowing wider
+  content;
+- `anchor` measures the anchor and makes the surface exactly that wide.
+
+Only the anchor-relative modes require runtime measurement. Structural CSS owns the shared content
+bounds; no preset schema, generated utility, or browser style lookup is introduced.
+
 ## ButtonMenu
 
 `ButtonMenu` is one public orchestration API over Button, Menu, and Dropdown:
@@ -81,10 +182,30 @@ restored and what an Escape means.
 - without `ButtonMenu.Action`, Trigger is one menu button;
 - with `ButtonMenu.Action`, Action and Trigger are two sibling Buttons and two tab stops;
 - only Trigger owns `aria-haspopup`, `aria-expanded`, `aria-controls`, and menu opening;
+- while open, Trigger projects Button's visual `pressed` status without becoming a toggle or
+  emitting `aria-pressed`;
+- while open, Trigger suppresses only Button's transient activation-feedback overlay so the
+  persistent pressed palette remains authoritative; closing restores the authored/preset feedback;
 - Action may submit a form; Trigger is always `type="button"`;
 - Button classes style Action and Trigger, while Dropdown classes style Content and items.
-- `ButtonMenu.Group` reuses the visual Dropdown group, while `ButtonMenu.Separator` supplies menu
-  separator semantics around the same Dropdown-owned line.
+- `ButtonMenu.Group` composes a Headless Menu `group` and the visual Dropdown group on the same DOM
+  node;
+- `ButtonMenu.GroupLabel` names that semantic group while consuming `Dropdown.e9`;
+- `ButtonMenu.Shortcut` consumes `Dropdown.e8`, stays outside the accessible item name, and relies
+  on `aria-keyshortcuts` authored on the item;
+- `ButtonMenu.Content.itemsLayout` forwards the collection policy to `Dropdown.Items` without
+  changing menu semantics;
+- `ButtonMenu.Separator` supplies menu separator semantics around the Dropdown-owned line.
+
+Radio selection and recursive submenus remain ButtonMenu orchestration, not Dropdown variants:
+
+- `ButtonMenu.RadioGroup` and `ButtonMenu.RadioItem` own `menuitemradio` behavior;
+- every RadioItem injects `Dropdown.Checkmark`, but checked state does not select the Dropdown row or
+  activate its selected background;
+- `ButtonMenu.Sub`, `ButtonMenu.SubTrigger`, and `ButtonMenu.SubContent` own nested menu state,
+  keyboard behavior, focus restoration, and anchored collision handling;
+- SubTrigger injects the canonical logical `chevron-end`; icon-family RTL mirroring supplies the
+  opposite direction without a physical icon name or consumer-authored action.
 
 ButtonMenu has no schema of its own. Connected corners and seam geometry are structural composition;
 creating a second Button schema would introduce visual drift.

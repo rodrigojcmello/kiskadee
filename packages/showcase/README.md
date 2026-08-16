@@ -118,7 +118,7 @@ Next.js App Router.
   published `colors.json`. It loads the referenced Light and Dark files from `colors/` and never
   imports preset source modules. Functional `subtle` and `vivid` references are inspection markers;
   the page does not redefine them.
-- `/icons` renders all 47 canonical interface concepts through the globally selected family, plus
+- `/icons` renders every canonical interface concept through the globally selected family, plus
   the independent Social brand family from `@kiskadee/icons`. Social exports ending in `Icon`
   remain dynamically discoverable. The route starts from the canonical `neutral` intent and uses
   `s:lg:3` as its inspection size; the component default remains `s:md:1`.

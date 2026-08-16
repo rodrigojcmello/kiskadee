@@ -1,11 +1,21 @@
 import {
   autoUpdate,
+  FloatingNode,
+  FloatingTree,
   flip,
   offset as floatingOffset,
+  type OpenChangeReason,
   type Placement,
   shift,
   size,
-  useFloating
+  type UseDismissProps,
+  type UseHoverProps,
+  useDismiss,
+  useFloating,
+  useFloatingNodeId,
+  useFloatingParentNodeId,
+  useHover,
+  useInteractions
 } from '@floating-ui/react';
 import type { CSSProperties, ReactNode, RefCallback } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -28,8 +38,25 @@ export type UseAnchoredOverlayOptions = {
   portalled?: boolean;
   portalContainer?: HTMLElement | null;
   width?: AnchoredOverlayWidth;
-  onDismiss: (details: AnchoredOverlayDismissDetails) => void;
+  dismissBubbles?: UseDismissProps['bubbles'];
+  dismissEscapeKey?: boolean;
+  hover?: Pick<
+    UseHoverProps,
+    'delay' | 'enabled' | 'handleClose' | 'mouseOnly' | 'move' | 'restMs'
+  >;
+  onDismiss?: (details: AnchoredOverlayDismissDetails) => void;
+  onOpenChange?: (open: boolean, event: Event | undefined, reason: OpenChangeReason) => void;
 };
+
+export type AnchoredOverlayTreeProps = {
+  children?: ReactNode;
+};
+
+export function AnchoredOverlayTree({ children }: AnchoredOverlayTreeProps) {
+  const parentNodeId = useFloatingParentNodeId();
+  if (parentNodeId !== null) return children;
+  return <FloatingTree>{children}</FloatingTree>;
+}
 
 export function useAnchoredOverlay({
   open,
@@ -40,14 +67,22 @@ export function useAnchoredOverlay({
   portalled = true,
   portalContainer,
   width = 'content',
-  onDismiss
+  dismissBubbles,
+  dismissEscapeKey = true,
+  hover,
+  onDismiss,
+  onOpenChange
 }: UseAnchoredOverlayOptions): {
   floatingRef: RefCallback<HTMLElement>;
   floatingStyles: CSSProperties;
+  positioned: boolean;
   placement: Placement;
   renderFloating: (node: ReactNode) => ReactNode;
+  getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
+  getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
 } {
   const [mounted, setMounted] = useState(false);
+  const nodeId = useFloatingNodeId();
   const widthMiddleware = useMemo(
     () =>
       size({
@@ -64,12 +99,31 @@ export function useAnchoredOverlay({
       }),
     [collisionPadding, width]
   );
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean, event: Event | undefined, reason: OpenChangeReason) => {
+      if (onOpenChange) {
+        onOpenChange(nextOpen, event, reason);
+        return;
+      }
+      if (!nextOpen && event && (reason === 'escape-key' || reason === 'outside-press')) {
+        onDismiss?.({
+          reason: reason === 'escape-key' ? 'escape' : 'outside-press',
+          event
+        });
+      }
+    },
+    [onDismiss, onOpenChange]
+  );
   const {
+    context,
     refs,
     floatingStyles,
+    isPositioned,
     placement: resolvedPlacement
   } = useFloating({
+    nodeId,
     open,
+    onOpenChange: handleOpenChange,
     placement,
     strategy: 'fixed',
     middleware: [
@@ -81,6 +135,18 @@ export function useAnchoredOverlay({
     transform: false,
     whileElementsMounted: autoUpdate
   });
+  const dismissInteraction = useDismiss(context, {
+    bubbles: dismissBubbles,
+    escapeKey: dismissEscapeKey
+  });
+  const hoverInteraction = useHover(context, {
+    ...hover,
+    enabled: hover?.enabled ?? hover !== undefined
+  });
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    dismissInteraction,
+    hoverInteraction
+  ]);
 
   useEffect(() => setMounted(true), []);
 
@@ -88,45 +154,29 @@ export function useAnchoredOverlay({
     refs.setReference(referenceElement);
   }, [referenceElement, refs]);
 
-  useEffect(() => {
-    if (!open) return;
-
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target;
-      if (!(target instanceof Node)) return;
-      if (referenceElement?.contains(target) || refs.floating.current?.contains(target)) return;
-      onDismiss({ reason: 'outside-press', event });
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      onDismiss({ reason: 'escape', event });
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown, true);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown, true);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onDismiss, open, referenceElement, refs.floating]);
-
   const floatingRef = useCallback<RefCallback<HTMLElement>>(
     (node) => refs.setFloating(node),
     [refs]
   );
   const renderFloating = useCallback(
     (node: ReactNode): ReactNode => {
-      if (!portalled || !mounted) return node;
-      const container = portalContainer === undefined ? document.body : portalContainer;
-      return container ? createPortal(node, container) : node;
+      let renderedNode = node;
+      if (portalled && mounted) {
+        const container = portalContainer === undefined ? document.body : portalContainer;
+        if (container) renderedNode = createPortal(node, container);
+      }
+      return <FloatingNode id={nodeId}>{renderedNode}</FloatingNode>;
     },
-    [mounted, portalContainer, portalled]
+    [mounted, nodeId, portalContainer, portalled]
   );
 
   return {
     floatingRef,
     floatingStyles,
+    positioned: isPositioned,
     placement: resolvedPlacement,
-    renderFloating
+    renderFloating,
+    getReferenceProps,
+    getFloatingProps
   };
 }

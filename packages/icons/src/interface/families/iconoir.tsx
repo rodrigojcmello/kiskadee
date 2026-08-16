@@ -3,14 +3,19 @@ import {
   AlignCenter,
   AlignLeft,
   AlignRight,
+  ArrowSeparate,
   Bell,
   Bold,
   Check,
   CheckCircle,
+  ClipboardCheck,
+  Dashboard,
   Drag,
   EditPencil,
   EmojiSad,
   EmojiTalkingHappy,
+  Folder,
+  GitBranch,
   HalfMoon,
   Heart,
   Home,
@@ -23,6 +28,7 @@ import {
   MoonSat,
   NavArrowDown,
   NavArrowLeft,
+  NavArrowRight,
   NumberedListLeft,
   NumberedListRight,
   Pause,
@@ -41,6 +47,7 @@ import {
   SoundOff,
   Strikethrough,
   SunLight,
+  Table,
   ThumbsUp,
   Trash,
   Underline,
@@ -56,14 +63,19 @@ import type { CompleteCanonicalGlyphMap } from '../types.ts';
 const glyphAlignCenter = createSvgGlyph(AlignCenter, {"width":"1em","height":"1em"});
 const glyphAlignLeft = createSvgGlyph(AlignLeft, {"width":"1em","height":"1em"});
 const glyphAlignRight = createSvgGlyph(AlignRight, {"width":"1em","height":"1em"});
+const glyphArrowSeparate = createSvgGlyph(ArrowSeparate, {"width":"1em","height":"1em"});
 const glyphBell = createSvgGlyph(Bell, {"width":"1em","height":"1em"});
 const glyphBold = createSvgGlyph(Bold, {"width":"1em","height":"1em"});
 const glyphCheck = createSvgGlyph(Check, {"width":"1em","height":"1em"});
 const glyphCheckCircle = createSvgGlyph(CheckCircle, {"width":"1em","height":"1em"});
+const glyphClipboardCheck = createSvgGlyph(ClipboardCheck, {"width":"1em","height":"1em"});
+const glyphDashboard = createSvgGlyph(Dashboard, {"width":"1em","height":"1em"});
 const glyphDrag = createSvgGlyph(Drag, {"width":"1em","height":"1em"});
 const glyphEditPencil = createSvgGlyph(EditPencil, {"width":"1em","height":"1em"});
 const glyphEmojiSad = createSvgGlyph(EmojiSad, {"width":"1em","height":"1em"});
 const glyphEmojiTalkingHappy = createSvgGlyph(EmojiTalkingHappy, {"width":"1em","height":"1em"});
+const glyphFolder = createSvgGlyph(Folder, {"width":"1em","height":"1em"});
+const glyphGitBranch = createSvgGlyph(GitBranch, {"width":"1em","height":"1em"});
 const glyphHalfMoon = createSvgGlyph(HalfMoon, {"width":"1em","height":"1em"});
 const glyphHeart = createSvgGlyph(Heart, {"width":"1em","height":"1em"});
 const glyphHome = createSvgGlyph(Home, {"width":"1em","height":"1em"});
@@ -76,6 +88,7 @@ const glyphMinus = createSvgGlyph(Minus, {"width":"1em","height":"1em"});
 const glyphMoonSat = createSvgGlyph(MoonSat, {"width":"1em","height":"1em"});
 const glyphNavArrowDown = createSvgGlyph(NavArrowDown, {"width":"1em","height":"1em"});
 const glyphNavArrowLeft = createSvgGlyph(NavArrowLeft, {"width":"1em","height":"1em"});
+const glyphNavArrowRight = createSvgGlyph(NavArrowRight, {"width":"1em","height":"1em"});
 const glyphNumberedListLeft = createSvgGlyph(NumberedListLeft, {"width":"1em","height":"1em"});
 const glyphNumberedListRight = createSvgGlyph(NumberedListRight, {"width":"1em","height":"1em"});
 const glyphPause = createSvgGlyph(Pause, {"width":"1em","height":"1em"});
@@ -94,6 +107,7 @@ const glyphSoundLow = createSvgGlyph(SoundLow, {"width":"1em","height":"1em"});
 const glyphSoundOff = createSvgGlyph(SoundOff, {"width":"1em","height":"1em"});
 const glyphStrikethrough = createSvgGlyph(Strikethrough, {"width":"1em","height":"1em"});
 const glyphSunLight = createSvgGlyph(SunLight, {"width":"1em","height":"1em"});
+const glyphTable = createSvgGlyph(Table, {"width":"1em","height":"1em"});
 const glyphThumbsUp = createSvgGlyph(ThumbsUp, {"width":"1em","height":"1em"});
 const glyphTrash = createSvgGlyph(Trash, {"width":"1em","height":"1em"});
 const glyphUnderline = createSvgGlyph(Underline, {"width":"1em","height":"1em"});
@@ -106,16 +120,22 @@ const glyphMap = {
     "align-center": glyphAlignCenter,
     "align-left": glyphAlignLeft,
     "align-right": glyphAlignRight,
+    "arrow-left-right": glyphArrowSeparate,
     "ban": glyphProhibition,
     "bell": glyphBell,
     "bold": glyphBold,
     "check": glyphCheck,
     "chevron-down": glyphNavArrowDown,
+    "chevron-end": { glyph: glyphNavArrowRight, direction: 'mirror' },
     "chevron-left": { glyph: glyphNavArrowLeft, direction: 'mirror' },
     "circle-check": glyphCheckCircle,
     "circle-x": glyphXmarkCircle,
+    "clipboard-check": glyphClipboardCheck,
     "close": glyphXmark,
+    "dashboard": glyphDashboard,
+    "folder-move": glyphFolder,
     "frown": glyphEmojiSad,
+    "git-branch": glyphGitBranch,
     "grip-vertical": glyphDrag,
     "heart": glyphHeart,
     "home": glyphHome,
@@ -140,6 +160,7 @@ const glyphMap = {
     "settings": glyphSettings,
     "share": glyphShareIos,
     "smile": glyphEmojiTalkingHappy,
+    "spreadsheet": glyphTable,
     "strikethrough": glyphStrikethrough,
     "sun": glyphSunLight,
     "thumbs-up": glyphThumbsUp,

@@ -16,3 +16,14 @@ and does not change keyboard navigation.
 The public Trigger, Content, and Option render callbacks allow a styled consumer to apply an
 existing trigger or Dropdown surface without nested buttons or duplicated selection logic. Styling,
 portal decoration, icons, and item geometry remain outside the headless Select.
+
+Without a custom `render`, `Select.Content` preserves its native `<ul role="listbox">` contract and
+its ref is an `HTMLUListElement`. Supplying `render` changes the mechanical positioner contract to a
+`<div>`-compatible element, so both the callback's `ref` and the public forwarded ref are typed as
+`HTMLDivElement`. The overload prevents a rendered div from ever being delivered through a ref
+declared as `HTMLUListElement`.
+
+`Select.Content` is unmounted while closed by default. A visual presence adapter may set
+`forceMount` only while retaining an exit frame; forced closed content remains `aria-hidden` and
+`inert`. Option order, disabled state, typeahead, and the selected value remain available from
+`Root.options`, so collection behavior never depends on a closed listbox staying in the DOM.

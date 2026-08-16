@@ -1,15 +1,20 @@
 // Generated from metadata/interface-families.json. Do not edit manually.
 import { ArrowClockwiseIcon } from '@phosphor-icons/react/ArrowClockwise';
 import { ArrowCounterClockwiseIcon } from '@phosphor-icons/react/ArrowCounterClockwise';
+import { ArrowsLeftRightIcon } from '@phosphor-icons/react/ArrowsLeftRight';
 import { BellIcon } from '@phosphor-icons/react/Bell';
 import { CaretDownIcon } from '@phosphor-icons/react/CaretDown';
 import { CaretLeftIcon } from '@phosphor-icons/react/CaretLeft';
+import { CaretRightIcon } from '@phosphor-icons/react/CaretRight';
 import { CheckIcon } from '@phosphor-icons/react/Check';
 import { CheckCircleIcon } from '@phosphor-icons/react/CheckCircle';
 import { CircleNotchIcon } from '@phosphor-icons/react/CircleNotch';
+import { ClipboardIcon } from '@phosphor-icons/react/Clipboard';
 import { DotsSixVerticalIcon } from '@phosphor-icons/react/DotsSixVertical';
 import { EnvelopeSimpleIcon } from '@phosphor-icons/react/EnvelopeSimple';
+import { FolderIcon } from '@phosphor-icons/react/Folder';
 import { GearIcon } from '@phosphor-icons/react/Gear';
+import { GitBranchIcon } from '@phosphor-icons/react/GitBranch';
 import { HeartIcon } from '@phosphor-icons/react/Heart';
 import { HouseIcon } from '@phosphor-icons/react/House';
 import { LinkIcon } from '@phosphor-icons/react/Link';
@@ -33,7 +38,9 @@ import { SmileySadIcon } from '@phosphor-icons/react/SmileySad';
 import { SpeakerHighIcon } from '@phosphor-icons/react/SpeakerHigh';
 import { SpeakerLowIcon } from '@phosphor-icons/react/SpeakerLow';
 import { SpeakerXIcon } from '@phosphor-icons/react/SpeakerX';
+import { SquaresFourIcon } from '@phosphor-icons/react/SquaresFour';
 import { SunIcon } from '@phosphor-icons/react/Sun';
+import { TableIcon } from '@phosphor-icons/react/Table';
 import { TextAlignCenterIcon } from '@phosphor-icons/react/TextAlignCenter';
 import { TextAlignLeftIcon } from '@phosphor-icons/react/TextAlignLeft';
 import { TextAlignRightIcon } from '@phosphor-icons/react/TextAlignRight';
@@ -52,15 +59,20 @@ import type { CompleteCanonicalGlyphMap } from '../types.ts';
 
 const glyphArrowClockwiseIcon = createSvgGlyph(ArrowClockwiseIcon, {"size":"1em","weight":"regular"});
 const glyphArrowCounterClockwiseIcon = createSvgGlyph(ArrowCounterClockwiseIcon, {"size":"1em","weight":"regular"});
+const glyphArrowsLeftRightIcon = createSvgGlyph(ArrowsLeftRightIcon, {"size":"1em","weight":"regular"});
 const glyphBellIcon = createSvgGlyph(BellIcon, {"size":"1em","weight":"regular"});
 const glyphCaretDownIcon = createSvgGlyph(CaretDownIcon, {"size":"1em","weight":"regular"});
 const glyphCaretLeftIcon = createSvgGlyph(CaretLeftIcon, {"size":"1em","weight":"regular"});
+const glyphCaretRightIcon = createSvgGlyph(CaretRightIcon, {"size":"1em","weight":"regular"});
 const glyphCheckCircleIcon = createSvgGlyph(CheckCircleIcon, {"size":"1em","weight":"regular"});
 const glyphCheckIcon = createSvgGlyph(CheckIcon, {"size":"1em","weight":"regular"});
 const glyphCircleNotchIcon = createSvgGlyph(CircleNotchIcon, {"size":"1em","weight":"regular"});
+const glyphClipboardIcon = createSvgGlyph(ClipboardIcon, {"size":"1em","weight":"regular"});
 const glyphDotsSixVerticalIcon = createSvgGlyph(DotsSixVerticalIcon, {"size":"1em","weight":"regular"});
 const glyphEnvelopeSimpleIcon = createSvgGlyph(EnvelopeSimpleIcon, {"size":"1em","weight":"regular"});
+const glyphFolderIcon = createSvgGlyph(FolderIcon, {"size":"1em","weight":"regular"});
 const glyphGearIcon = createSvgGlyph(GearIcon, {"size":"1em","weight":"regular"});
+const glyphGitBranchIcon = createSvgGlyph(GitBranchIcon, {"size":"1em","weight":"regular"});
 const glyphHeartIcon = createSvgGlyph(HeartIcon, {"size":"1em","weight":"regular"});
 const glyphHouseIcon = createSvgGlyph(HouseIcon, {"size":"1em","weight":"regular"});
 const glyphLinkIcon = createSvgGlyph(LinkIcon, {"size":"1em","weight":"regular"});
@@ -84,7 +96,9 @@ const glyphSmileySadIcon = createSvgGlyph(SmileySadIcon, {"size":"1em","weight":
 const glyphSpeakerHighIcon = createSvgGlyph(SpeakerHighIcon, {"size":"1em","weight":"regular"});
 const glyphSpeakerLowIcon = createSvgGlyph(SpeakerLowIcon, {"size":"1em","weight":"regular"});
 const glyphSpeakerXIcon = createSvgGlyph(SpeakerXIcon, {"size":"1em","weight":"regular"});
+const glyphSquaresFourIcon = createSvgGlyph(SquaresFourIcon, {"size":"1em","weight":"regular"});
 const glyphSunIcon = createSvgGlyph(SunIcon, {"size":"1em","weight":"regular"});
+const glyphTableIcon = createSvgGlyph(TableIcon, {"size":"1em","weight":"regular"});
 const glyphTextAlignCenterIcon = createSvgGlyph(TextAlignCenterIcon, {"size":"1em","weight":"regular"});
 const glyphTextAlignLeftIcon = createSvgGlyph(TextAlignLeftIcon, {"size":"1em","weight":"regular"});
 const glyphTextAlignRightIcon = createSvgGlyph(TextAlignRightIcon, {"size":"1em","weight":"regular"});
@@ -102,16 +116,22 @@ const glyphMap = {
     "align-center": glyphTextAlignCenterIcon,
     "align-left": glyphTextAlignLeftIcon,
     "align-right": glyphTextAlignRightIcon,
+    "arrow-left-right": glyphArrowsLeftRightIcon,
     "ban": glyphProhibitIcon,
     "bell": glyphBellIcon,
     "bold": glyphTextBIcon,
     "check": glyphCheckIcon,
     "chevron-down": glyphCaretDownIcon,
+    "chevron-end": { glyph: glyphCaretRightIcon, direction: 'mirror' },
     "chevron-left": { glyph: glyphCaretLeftIcon, direction: 'mirror' },
     "circle-check": glyphCheckCircleIcon,
     "circle-x": glyphXCircleIcon,
+    "clipboard-check": glyphClipboardIcon,
     "close": glyphXIcon,
+    "dashboard": glyphSquaresFourIcon,
+    "folder-move": glyphFolderIcon,
     "frown": glyphSmileySadIcon,
+    "git-branch": glyphGitBranchIcon,
     "grip-vertical": glyphDotsSixVerticalIcon,
     "heart": glyphHeartIcon,
     "home": glyphHouseIcon,
@@ -136,6 +156,7 @@ const glyphMap = {
     "settings": glyphGearIcon,
     "share": glyphShareNetworkIcon,
     "smile": glyphSmileyIcon,
+    "spreadsheet": glyphTableIcon,
     "strikethrough": glyphTextStrikethroughIcon,
     "sun": glyphSunIcon,
     "thumbs-up": glyphThumbsUpIcon,

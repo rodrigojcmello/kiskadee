@@ -1,10 +1,12 @@
 /*
  * element surface / e1
- * Owns the preset-defined floating surface without imposing an anchor width.
+ * Owns the shared intrinsic content width until an anchor policy overrides it.
  */
 .k-ddn-e1 {
   box-sizing: border-box;
-  min-inline-size: max-content;
+  inline-size: max-content;
+  max-inline-size: 300px;
+  min-inline-size: 138px;
   overflow: clip;
 }
 
@@ -24,6 +26,7 @@
 [data-width='anchor'] > .k-ddn-e1,
 .k-ddn-e1[data-width='anchor'] {
   inline-size: 100%;
+  max-inline-size: none;
   min-inline-size: 0;
 }
 
@@ -33,6 +36,7 @@
  * allowing wider intrinsic content.
  */
 [data-width='min-anchor'] > .k-ddn-e1 {
+  max-inline-size: none;
   min-inline-size: 100%;
 }
 
@@ -53,16 +57,64 @@
 }
 
 /*
+ * extra element for e2 / x2
+ * Shares item-padding, content, and final tracks inside one explicit group.
+ */
+.k-ddn-x1[data-layout='columns'] > .k-ddn-x2 {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+}
+
+/*
+ * extra element for e2 / x2
+ * Inserts one leading track after item padding when the group contains an icon.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3) {
+  grid-template-columns:
+    auto calc(var(--k-bxw, 1em) + var(--k-pdr, 0px)) minmax(0, 1fr) auto auto auto;
+}
+
+/*
+ * extra element for e2 / x2
+ * Inserts one intrinsic checkmark track after item padding for checkable groups.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10) {
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto auto;
+}
+
+/*
+ * extra element for e2 / x2
+ * Keeps checkmark and ordinary leading-icon tracks independent when both exist.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3) {
+  grid-template-columns:
+    auto auto calc(var(--k-bxw, 1em) + var(--k-pdr, 0px)) minmax(0, 1fr) auto auto auto;
+}
+
+/*
  * element item / e2
- * Uses content and trailing columns when the collection has no leading icon.
+ * Uses logical inline padding around content and trailing columns.
  */
 .k-ddn-e2 {
   align-items: center;
   cursor: default;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   min-inline-size: 0;
+  padding-inline-end: var(--k-pdr);
+  padding-inline-start: var(--k-pdl);
   text-align: start;
+}
+
+/*
+ * element item / e2
+ * Removes authored inter-item spacing at the end of each explicit group.
+ */
+.k-ddn-x2 > .k-ddn-e2:last-child {
+  margin-block-end: 0;
 }
 
 /*
@@ -76,10 +128,62 @@
 
 /*
  * element item / e2
- * Reserves one shared leading column only when an item in the same group contains an icon.
+ * Reserves one shared leading column in independent layout when the group contains an icon.
  */
-.k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3) > .k-ddn-e2 {
-  grid-template-columns: calc(var(--k-bxw, 1em) + var(--k-pdr, 0px)) minmax(0, 1fr) auto;
+.k-ddn-x1[data-layout='independent']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
+  > .k-ddn-e2 {
+  grid-template-columns:
+    calc(var(--k-bxw, 1em) + var(--k-pdr, 0px)) minmax(0, 1fr) auto auto;
+}
+
+/*
+ * element item / e2
+ * Adds an intrinsic leading track in independent layout when the group contains a checkmark.
+ */
+.k-ddn-x1[data-layout='independent']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+  > .k-ddn-e2 {
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+}
+
+/*
+ * element item / e2
+ * Preserves separate checkmark and icon tracks in independent layout when both are present.
+ */
+.k-ddn-x1[data-layout='independent']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
+  > .k-ddn-e2 {
+  grid-template-columns:
+    auto calc(var(--k-bxw, 1em) + var(--k-pdr, 0px)) minmax(0, 1fr) auto auto;
+}
+
+/*
+ * element item / e2
+ * Inherits group-owned tracks without coupling column widths across separators.
+ */
+.k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e2 {
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+/*
+ * element leading icon / e3
+ * Follows the shared inline-start padding track in column layout.
+ */
+.k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e2 > .k-ddn-e3 {
+  grid-column: 2;
+}
+
+/*
+ * element leading icon / e3
+ * Follows the checkmark track in checkable column-layout groups.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+  > .k-ddn-e2
+  > .k-ddn-e3 {
+  grid-column: 3;
 }
 
 /*
@@ -94,6 +198,17 @@
   grid-row: 1 / span 2;
   inline-size: var(--k-bxw, 1em);
   justify-content: center;
+}
+
+/*
+ * element leading icon / e3
+ * Follows the checkmark track in checkable independent-layout groups.
+ */
+.k-ddn-x1[data-layout='independent']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+  > .k-ddn-e2
+  > .k-ddn-e3 {
+  grid-column: 2;
 }
 
 /*
@@ -118,12 +233,79 @@
 
 /*
  * elements label and description / e4 e5
- * Move text into the shared second column when the containing group has an icon.
+ * Move text into the shared second column in independent layout when the group has an icon.
  */
-.k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
+.k-ddn-x1[data-layout='independent']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
   > .k-ddn-e2
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 2;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Follow the checkmark track inside a checkable independent-layout group.
+ */
+.k-ddn-x1[data-layout='independent']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 2;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Follow both checkmark and ordinary icon tracks in independent layout when both are present.
+ */
+.k-ddn-x1[data-layout='independent']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 3;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Follow the shared inline-start padding track when no leading icon exists.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 2;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Follow both shared padding and leading-icon tracks in icon-bearing groups.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 3;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Follow shared padding and checkmark tracks in checkable column-layout groups.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 3;
+}
+
+/*
+ * elements label and description / e4 e5
+ * Follow padding, checkmark, and ordinary icon tracks when all are present.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 4;
 }
 
 /*
@@ -144,7 +326,7 @@
 
 /*
  * element trailing indicator / e6
- * Keeps checks and submenu affordances in the logical final column.
+ * Keeps a generic iconographic affordance in the logical final column.
  */
 .k-ddn-e6 {
   align-items: center;
@@ -154,7 +336,15 @@
   grid-row: 1 / span 2;
   inline-size: var(--k-bxw, 1em);
   justify-content: center;
-  margin-inline-start: var(--k-pdr, 0);
+  margin-inline-start: var(--k-pdl, 0);
+}
+
+/*
+ * element trailing indicator / e6
+ * Precedes the shared inline-end padding track in column layout.
+ */
+.k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e2 > .k-ddn-e6 {
+  grid-column: -3 / -2;
 }
 
 /*
@@ -174,4 +364,90 @@
 .k-ddn-e7 {
   block-size: var(--k-bxw);
   inline-size: 100%;
+}
+
+/*
+ * element end text / e8
+ * Keeps secondary trailing text on one line across both content rows.
+ */
+.k-ddn-e8 {
+  grid-column: -3 / -2;
+  grid-row: 1 / span 2;
+  padding-inline-end: var(--k-pdr, 0);
+  padding-inline-start: var(--k-pdl, 0);
+  white-space: nowrap;
+}
+
+/*
+ * element end text / e8
+ * Occupies the shared end-text track before trailing content and item padding.
+ */
+.k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e2 > .k-ddn-e8 {
+  grid-column: -4 / -3;
+}
+
+/*
+ * element end text / e8
+ * Reaches the logical edge when that item does not also render a trailing icon.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2
+  > .k-ddn-e2:not(:has(> .k-ddn-e6))
+  > .k-ddn-e8 {
+  grid-column: -4 / -2;
+  justify-self: end;
+}
+
+/*
+ * element group label / e9
+ * Keeps a visual heading in normal group flow without entering the item grid.
+ */
+.k-ddn-e9 {
+  display: block;
+}
+
+/*
+ * element group label / e9
+ * Spans every group-owned track without contributing a separate item column.
+ */
+.k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e9 {
+  grid-column: 1 / -1;
+}
+
+/*
+ * element checkmark / e10
+ * Keeps the canonical selection glyph and logical end gap in one leading track.
+ */
+.k-ddn-e10 {
+  align-items: center;
+  display: inline-flex;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  justify-content: center;
+  padding-inline-end: var(--k-pdr);
+}
+
+/*
+ * element checkmark / e10
+ * Hides unchecked artwork while retaining the wrapper's intrinsic grid contribution.
+ */
+.k-ddn-e10[data-visible='false'] {
+  visibility: hidden;
+}
+
+/*
+ * element checkmark / e10
+ * Makes the family-resolved canonical glyph fill the preset-owned viewport.
+ */
+.k-ddn-e10 > .k-gly {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+/*
+ * element checkmark / e10
+ * Follows the shared inline-start padding track in column layout.
+ */
+.k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e2 > .k-ddn-e10 {
+  grid-column: 2;
 }

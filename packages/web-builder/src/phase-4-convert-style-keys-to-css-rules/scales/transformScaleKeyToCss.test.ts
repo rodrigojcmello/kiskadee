@@ -219,6 +219,28 @@ describe('transformScaleKeyToCss', () => {
         ).toBe('.abc { padding-left: 16px }');
       });
 
+      it('supports a left-only padding token without changing the other padding edges', () => {
+        const styleEmissionPolicy = {
+          borderRadiusEmission: 'direct',
+          borderColorEmission: 'direct',
+          borderWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          paddingLeftEmission: 'token',
+          shadowEmission: 'direct'
+        } as const;
+
+        expect(
+          transformScaleKeyToCss('paddingLeft++s:sm:1__16', breakpoints, 'abc', {
+            styleEmissionPolicy
+          })
+        ).toBe('.abc { --k-pdl: 16px }');
+        expect(
+          transformScaleKeyToCss('paddingRight++s:sm:1__16', breakpoints, 'abc', {
+            styleEmissionPolicy
+          })
+        ).toBe('.abc { padding-right: 16px }');
+      });
+
       it("should convert 'marginLeft++s:sm:1__16' into a valid CSS rule", () => {
         const result = transformScaleKeyToCss('marginLeft++s:sm:1__16', breakpoints, 'abc');
 

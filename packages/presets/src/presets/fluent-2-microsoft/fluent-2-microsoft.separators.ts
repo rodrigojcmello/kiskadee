@@ -17,14 +17,14 @@ export function createFluent2MicrosoftSeparators({
             light: {
               onSubtle: {
                 boxColor: {
-                  neutral: { medium: { rest: c('default', 'l', 'neutral', 10) } }
+                  neutral: { medium: { rest: c('default', 'l', 'neutral', 7) } }
                 }
               }
             },
             dark: {
               onSubtle: {
                 boxColor: {
-                  neutral: { medium: { rest: c('default', 'd', 'neutral', 16) } }
+                  neutral: { medium: { rest: c('default', 'd', 'neutral', 30) } }
                 }
               }
             },

@@ -87,46 +87,55 @@ function StyledAutocomplete({ rich }: { rich: boolean }) {
             );
           }}
         />
-        <Autocomplete.Content className={styles.positioner} width="anchor">
-          <Dropdown.Surface>
-            <Dropdown.Items>
-              <Dropdown.Group>
-                {filteredOptions.length === 0 ? (
-                  <Autocomplete.Empty className={styles.empty}>
-                    No matching results.
-                  </Autocomplete.Empty>
-                ) : (
-                  filteredOptions.map((option) => (
-                    <Autocomplete.Option
-                      key={option.value}
-                      value={option.value}
-                      textValue={option.textValue}
-                      disabled={option.disabled}
-                      render={(optionProps, state) => {
-                        const { ref, children, ...itemProps } = optionProps;
-                        return (
-                          <Dropdown.Item
-                            {...itemProps}
-                            ref={ref}
-                            disabled={state.disabled}
-                            selected={state.active || state.selected}
-                          >
-                            {rich ? <Dropdown.Icon name={option.icon} /> : null}
-                            <Dropdown.Label>{option.textValue}</Dropdown.Label>
-                            {rich ? (
-                              <Dropdown.Description>{option.description}</Dropdown.Description>
-                            ) : null}
-                            {children}
-                          </Dropdown.Item>
-                        );
-                      }}
-                    />
-                  ))
-                )}
-              </Dropdown.Group>
-            </Dropdown.Items>
-          </Dropdown.Surface>
-        </Autocomplete.Content>
+        <Dropdown.Presence>
+          {({ forceMount, render }) => (
+            <Autocomplete.Content
+              className={styles.positioner}
+              width="anchor"
+              forceMount={forceMount}
+              render={render}
+            >
+              <Dropdown.Surface>
+                <Dropdown.Items>
+                  <Dropdown.Group>
+                    {filteredOptions.length === 0 ? (
+                      <Autocomplete.Empty className={styles.empty}>
+                        No matching results.
+                      </Autocomplete.Empty>
+                    ) : (
+                      filteredOptions.map((option) => (
+                        <Autocomplete.Option
+                          key={option.value}
+                          value={option.value}
+                          textValue={option.textValue}
+                          disabled={option.disabled}
+                          render={(optionProps, state) => {
+                            const { ref, children, ...itemProps } = optionProps;
+                            return (
+                              <Dropdown.Item
+                                {...itemProps}
+                                ref={ref}
+                                disabled={state.disabled}
+                                selected={state.active || state.selected}
+                              >
+                                {rich ? <Dropdown.Icon name={option.icon} /> : null}
+                                <Dropdown.Label>{option.textValue}</Dropdown.Label>
+                                {rich ? (
+                                  <Dropdown.Description>{option.description}</Dropdown.Description>
+                                ) : null}
+                                {children}
+                              </Dropdown.Item>
+                            );
+                          }}
+                        />
+                      ))
+                    )}
+                  </Dropdown.Group>
+                </Dropdown.Items>
+              </Dropdown.Surface>
+            </Autocomplete.Content>
+          )}
+        </Dropdown.Presence>
       </Autocomplete.Root>
     </Dropdown.VisualProvider>
   );

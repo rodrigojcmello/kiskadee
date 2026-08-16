@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
-import { type MouseEvent as ReactMouseEvent, type Ref, useState } from 'react';
+import { createRef, type MouseEvent as ReactMouseEvent, type Ref, useState } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
@@ -59,15 +59,73 @@ describe('Headless Select sequential navigation', () => {
   it('keeps the central trigger responsible for opening the listbox', () => {
     const result = render(<SequentialSelect />);
     const trigger = result.getByRole('combobox', { name: 'Family' });
-    const listbox = result.getByRole('listbox', { hidden: true });
 
     expect(trigger.getAttribute('aria-expanded')).toBe('false');
-    expect(listbox.getAttribute('aria-hidden')).toBe('true');
+    expect(result.queryByRole('listbox', { hidden: true })).toBeNull();
 
     fireEvent.click(trigger);
 
+    const listbox = result.getByRole('listbox');
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
     expect(listbox.getAttribute('aria-hidden')).toBeNull();
+    expect(listbox.hasAttribute('inert')).toBe(false);
+    expect(listbox.hasAttribute('data-open')).toBe(true);
+    expect(listbox.tagName).toBe('UL');
+  });
+
+  it('mounts a closed listbox only when an exit adapter requests it', () => {
+    const result = render(
+      <Select.Root options={options} defaultValue="first">
+        <Select.Trigger />
+        <Select.Content forceMount />
+      </Select.Root>
+    );
+    const listbox = result.getByRole('listbox', { hidden: true });
+
+    expect(listbox.getAttribute('aria-hidden')).toBe('true');
+    expect(listbox.hasAttribute('inert')).toBe(true);
+    expect(listbox.hasAttribute('data-closed')).toBe(true);
+  });
+
+  it('keeps the default Content ref attached to its semantic ul', () => {
+    const contentRef = createRef<HTMLUListElement>();
+
+    render(
+      <Select.Root options={options} defaultValue="first" defaultOpen>
+        <Select.Trigger />
+        <Select.Content ref={contentRef} />
+      </Select.Root>
+    );
+
+    expect(contentRef.current).toBeInstanceOf(HTMLUListElement);
+    expect(contentRef.current?.getAttribute('role')).toBe('listbox');
+  });
+
+  it('exposes placement in render state through div-compatible positioner props', () => {
+    const states: Array<{ open: boolean; placement: string }> = [];
+    const result = render(
+      <Select.Root options={options} defaultValue="first">
+        <Select.Trigger />
+        <Select.Content
+          forceMount
+          placement="top-end"
+          render={(props, state) => {
+            states.push(state);
+            const { ref, ...positionerProps } = props;
+            return <div {...positionerProps} ref={ref} />;
+          }}
+        />
+      </Select.Root>
+    );
+    const trigger = result.getByRole('combobox');
+    const hiddenListbox = result.getByRole('listbox', { hidden: true });
+
+    expect(states.at(-1)).toEqual(expect.objectContaining({ open: false, placement: 'top-end' }));
+    expect(hiddenListbox.hasAttribute('data-closed')).toBe(true);
+
+    fireEvent.click(trigger);
+    expect(states.at(-1)).toEqual(expect.objectContaining({ open: true, placement: 'top-end' }));
+    expect(result.getByRole('listbox')).toBe(hiddenListbox);
   });
 
   it('disables the trigger and both sequential controls with the root', () => {

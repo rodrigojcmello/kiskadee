@@ -30,6 +30,7 @@ import {
   useButtonStressTestBackgroundTones
 } from '@/hooks/use-background-tones';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
+import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
 import { SwatchRadioGroup } from '@/k-components';
 import {
   getAvailableButtonStressTestBackgrounds,
@@ -157,7 +158,7 @@ function SurfaceContextComparison({
 }
 
 export function Button() {
-  const { designSystem, segment, theme } = useKiskadee();
+  const { designSystem, global, segment, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
   const textProfiles = useShowcaseTextProfiles();
@@ -276,6 +277,12 @@ export function Button() {
     .join(' ');
 
   const buttonMeta = manifest?.components?.button;
+  const dropdownAvailable = Boolean(manifest?.components?.dropdown);
+  const { presenceOptions, presenceOverride, presenceSelection, setPresenceSelection } =
+    useDropdownPresenceControl({
+      designSystem,
+      presenceArtifact: global?.components?.dropdown?.effects?.presence
+    });
   const brandButtonExamplesAvailable = ['auth', 'social'].every((pack) =>
     manifest?.brandPacks?.packs.includes(pack)
   );
@@ -383,6 +390,18 @@ export function Button() {
       <ShowcaseControlGroup title="Iconografia">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
+      {dropdownAvailable ? (
+        <ShowcaseControlGroup title="Motion">
+          <ShowcaseControlStack>
+            <ShowcaseSelectControl
+              label="Presence"
+              options={presenceOptions}
+              value={presenceSelection}
+              onValueChange={setPresenceSelection}
+            />
+          </ShowcaseControlStack>
+        </ShowcaseControlGroup>
+      ) : null}
       <ShowcaseControlGroup title="Visualização">
         <ShowcaseControlStack>
           <ShowcaseSelectControl
@@ -832,7 +851,8 @@ export function Button() {
           surfaceContext={activeSurfaceContext}
         />
         <ButtonMenuExamples
-          available={Boolean(manifest?.components?.dropdown && buttonMeta)}
+          available={Boolean(dropdownAvailable && buttonMeta)}
+          presence={presenceOverride}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />

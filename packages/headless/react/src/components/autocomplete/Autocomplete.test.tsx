@@ -82,6 +82,40 @@ describe('Headless Autocomplete', () => {
     expect(result.queryByRole('listbox')).toBeNull();
   });
 
+  it('retains closed content only when forced and exposes render state without keeping semantics', () => {
+    const states: boolean[] = [];
+    const result = render(
+      <Autocomplete.Root options={options}>
+        <Autocomplete.Input aria-label="Search" />
+        <Autocomplete.Content
+          forceMount
+          portalled={false}
+          render={(props, state) => {
+            states.push(state.open);
+            const { ref, ...contentProps } = props;
+            return <div {...contentProps} ref={ref} />;
+          }}
+        />
+      </Autocomplete.Root>
+    );
+    const input = result.getByRole('combobox', { name: 'Search' });
+    const hiddenListbox = result.getByRole('listbox', { hidden: true });
+
+    expect(result.queryByRole('listbox')).toBeNull();
+    expect(hiddenListbox.getAttribute('aria-hidden')).toBe('true');
+    expect(hiddenListbox.hasAttribute('inert')).toBe(true);
+
+    fireEvent.focus(input);
+    expect(result.getByRole('listbox')).toBe(hiddenListbox);
+    expect(hiddenListbox.hasAttribute('data-open')).toBe(true);
+
+    fireEvent.keyDown(input, { key: 'Escape' });
+    expect(result.queryByRole('listbox')).toBeNull();
+    expect(result.getByRole('listbox', { hidden: true })).toBe(hiddenListbox);
+    expect(states).toContain(true);
+    expect(states.at(-1)).toBe(false);
+  });
+
   it('keeps Root option metadata authoritative when a rendered option diverges', () => {
     const onValueChange = vi.fn();
     const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});

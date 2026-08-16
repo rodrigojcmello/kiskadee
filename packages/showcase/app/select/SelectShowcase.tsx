@@ -2,7 +2,6 @@
 
 import { Dropdown, IconGlyph, Text, useShowcase } from '@kiskadee/react-components';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless/select';
-import type { CSSProperties, Ref } from 'react';
 import { useState } from 'react';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
@@ -67,74 +66,47 @@ function PreviewSelect({
             </span>
           </HeadlessSelect.Trigger>
         )}
-        <HeadlessSelect.Content
-          portalled
-          offset={6}
-          width="anchor"
-          render={(contentProps, state) => {
-            const {
-              ref,
-              children,
-              style,
-              id,
-              role,
-              tabIndex,
-              className,
-              'aria-labelledby': ariaLabelledBy,
-              'aria-hidden': ariaHidden,
-              'data-open': dataOpen,
-              'data-placement': dataPlacement,
-              'data-width': dataWidth
-            } = contentProps;
-            return (
-              <Dropdown.Surface
-                ref={ref as Ref<HTMLDivElement>}
-                id={id}
-                role={role}
-                tabIndex={tabIndex}
-                className={className}
-                aria-labelledby={ariaLabelledBy}
-                aria-hidden={ariaHidden}
-                data-open={dataOpen}
-                data-placement={dataPlacement}
-                data-width={dataWidth}
-                style={{
-                  ...(style as CSSProperties),
-                  display: state.open ? undefined : 'none'
-                }}
-              >
+        <Dropdown.Presence>
+          {({ forceMount, render }) => (
+            <HeadlessSelect.Content
+              portalled
+              offset={6}
+              width="anchor"
+              forceMount={forceMount}
+              render={render}
+            >
+              <Dropdown.Surface>
                 <Dropdown.Items>
-                  <Dropdown.Group>{children}</Dropdown.Group>
+                  <Dropdown.Group>
+                    {options.map((option) => (
+                      <HeadlessSelect.Option
+                        key={option.value}
+                        value={option.value}
+                        disabled={option.disabled}
+                        textValue={option.label}
+                        render={(optionProps, state) => {
+                          const { ref, children, ...itemProps } = optionProps;
+                          return (
+                            <Dropdown.Item
+                              {...itemProps}
+                              ref={ref}
+                              disabled={state.disabled}
+                              selected={state.selected || state.active}
+                            >
+                              <Dropdown.Label>{children}</Dropdown.Label>
+                            </Dropdown.Item>
+                          );
+                        }}
+                      >
+                        {option.label}
+                      </HeadlessSelect.Option>
+                    ))}
+                  </Dropdown.Group>
                 </Dropdown.Items>
               </Dropdown.Surface>
-            );
-          }}
-        >
-          {options.map((option) => (
-            <HeadlessSelect.Option
-              key={option.value}
-              value={option.value}
-              disabled={option.disabled}
-              textValue={option.label}
-              render={(optionProps, state) => {
-                const { ref, children, ...itemProps } = optionProps;
-                return (
-                  <Dropdown.Item
-                    {...itemProps}
-                    ref={ref}
-                    disabled={state.disabled}
-                    selected={state.selected || state.active}
-                  >
-                    <Dropdown.Label>{children}</Dropdown.Label>
-                    {state.selected ? <Dropdown.Trailing name="check" /> : null}
-                  </Dropdown.Item>
-                );
-              }}
-            >
-              {option.label}
-            </HeadlessSelect.Option>
-          ))}
-        </HeadlessSelect.Content>
+            </HeadlessSelect.Content>
+          )}
+        </Dropdown.Presence>
       </HeadlessSelect.Root>
     </Dropdown.VisualProvider>
   );

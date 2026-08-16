@@ -196,13 +196,39 @@ export function createIos27AppleDropdownSchema({
         }
       },
       e6: {
-        name: 'dropdown-indicator',
+        name: 'dropdown-trailing-icon',
         iconSize: { 's:all': 's:sm:1' },
         palettes: { default: { light: light.text, dark: dark.text } }
       },
       e7: {
         name: 'dropdown-separator',
         separator: { 's:all': 'subtle' }
+      },
+      e8: {
+        name: 'dropdown-end-text',
+        typography: { 's:all': 'label-small' },
+        palettes: {
+          default: { light: light.auxiliaryText, dark: dark.auxiliaryText }
+        }
+      },
+      e9: {
+        name: 'dropdown-group-label',
+        typography: { 's:all': 'label-small-strong' },
+        scales: {
+          paddingTop: 10,
+          paddingRight: 12,
+          paddingBottom: 10,
+          paddingLeft: 12
+        },
+        palettes: {
+          default: { light: light.auxiliaryText, dark: dark.auxiliaryText }
+        }
+      },
+      e10: {
+        name: 'dropdown-checkmark',
+        iconSize: { 's:all': 's:sm:1' },
+        scales: { paddingRight: 10 },
+        palettes: { default: { light: light.text, dark: dark.text } }
       }
     }
   };

@@ -249,7 +249,9 @@ export function transformScaleKeyToCss(
     const paddingEmission =
       scaleProperty === 'paddingRight'
         ? (styleEmissionPolicy.paddingRightEmission ?? styleEmissionPolicy.paddingEmission)
-        : styleEmissionPolicy.paddingEmission;
+        : scaleProperty === 'paddingLeft'
+          ? (styleEmissionPolicy.paddingLeftEmission ?? styleEmissionPolicy.paddingEmission)
+          : styleEmissionPolicy.paddingEmission;
 
     if (paddingEmission === 'compensated') {
       const adjustedPadding = `max(0px, calc(var(${paddingVar}) - var(${EMITTED_SCALE_CSS_VARS.borderWidth}, 0px)))`;

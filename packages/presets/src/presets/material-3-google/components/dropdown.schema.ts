@@ -151,13 +151,35 @@ export function createMaterial3GoogleDropdownSchema({
         palettes: auxiliaryTextPalettes
       },
       e6: {
-        name: 'dropdown-indicator',
+        name: 'dropdown-trailing-icon',
         iconSize: { 's:all': 's:lg:1' },
         palettes: textPalettes
       },
       e7: {
         name: 'dropdown-separator',
         separator: { 's:all': 'subtle' }
+      },
+      e8: {
+        name: 'dropdown-end-text',
+        typography: { 's:all': 'body-small' },
+        palettes: auxiliaryTextPalettes
+      },
+      e9: {
+        name: 'dropdown-group-label',
+        typography: { 's:all': 'label-medium' },
+        scales: {
+          paddingTop: 14,
+          paddingRight: 12,
+          paddingBottom: 14,
+          paddingLeft: 12
+        },
+        palettes: auxiliaryTextPalettes
+      },
+      e10: {
+        name: 'dropdown-checkmark',
+        iconSize: { 's:all': 's:lg:1' },
+        scales: { paddingRight: 12 },
+        palettes: textPalettes
       }
     }
   };

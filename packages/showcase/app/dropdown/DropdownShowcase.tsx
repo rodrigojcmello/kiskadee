@@ -1,9 +1,17 @@
 'use client';
 
-import { Button, Dropdown, Text, useShowcase } from '@kiskadee/react-components';
+import type { DropdownPresence } from '@kiskadee/core';
+import { Button, Dropdown, Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ReactNode, Ref } from 'react';
 import { useState } from 'react';
-import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
+import {
+  ShowcaseControlGroup,
+  ShowcaseControlPanel,
+  ShowcaseControlStack,
+  ShowcaseRouteControls,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
+import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Dropdown.module.scss';
 
@@ -11,7 +19,9 @@ type DemoDropdownProps = {
   buttonLabel: string;
   children: ReactNode;
   collection?: boolean;
+  layout?: 'independent' | 'columns';
   placement?: 'bottom-start' | 'right-start';
+  presence?: DropdownPresence;
   width?: 'content' | 'min-anchor' | 'anchor';
 };
 
@@ -19,13 +29,15 @@ function DemoDropdown({
   buttonLabel,
   children,
   collection = true,
+  layout = 'independent',
   placement = 'bottom-start',
+  presence,
   width = 'min-anchor'
 }: DemoDropdownProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Dropdown.Root open={open} onOpenChange={setOpen}>
+    <Dropdown.Root open={open} onOpenChange={setOpen} presence={presence}>
       <Dropdown.Anchor
         render={(anchorProps) => {
           const { ref, ...props } = anchorProps;
@@ -44,7 +56,7 @@ function DemoDropdown({
       />
       <Dropdown.Content placement={placement} width={width}>
         <Dropdown.Surface>
-          {collection ? <Dropdown.Items>{children}</Dropdown.Items> : children}
+          {collection ? <Dropdown.Items layout={layout}>{children}</Dropdown.Items> : children}
         </Dropdown.Surface>
       </Dropdown.Content>
     </Dropdown.Root>
@@ -93,9 +105,13 @@ function Unavailable() {
 }
 
 export default function DropdownShowcase() {
+  const { designSystem, global } = useKiskadee();
   const { manifest } = useShowcase();
   const textProfiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.dropdown && manifest.components.button);
+  const presenceArtifact = global?.components?.dropdown?.effects?.presence;
+  const { presenceOptions, presenceOverride, presenceSelection, setPresenceSelection } =
+    useDropdownPresenceControl({ designSystem, presenceArtifact });
 
   return (
     <main className={styles.page}>
@@ -111,7 +127,18 @@ export default function DropdownShowcase() {
         title="Examples"
         isAvailable={available}
       >
-        {null}
+        <ShowcaseControlPanel>
+          <ShowcaseControlGroup title="Motion">
+            <ShowcaseControlStack>
+              <ShowcaseSelectControl
+                label="Presence"
+                options={presenceOptions}
+                value={presenceSelection}
+                onValueChange={setPresenceSelection}
+              />
+            </ShowcaseControlStack>
+          </ShowcaseControlGroup>
+        </ShowcaseControlPanel>
       </ShowcaseRouteControls>
 
       {!available ? (
@@ -123,18 +150,19 @@ export default function DropdownShowcase() {
               Collections
             </Text>
             <Text as="p" profile={textProfiles.body} className={styles.description}>
-              The icon column exists only within a group where at least one item provides an icon.
+              Leading icons and selection checks reserve columns only inside the group that uses
+              them.
             </Text>
             <div className={styles.grid}>
               <article className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Without icons
                 </Text>
-                <DemoDropdown buttonLabel="Sort by">
+                <DemoDropdown buttonLabel="Sort by" presence={presenceOverride}>
                   <Dropdown.Group>
+                    <Dropdown.GroupLabel>Sort order</Dropdown.GroupLabel>
                     <DemoItem selected>
                       <Dropdown.Label>Most relevant</Dropdown.Label>
-                      <Dropdown.Trailing name="check" />
                     </DemoItem>
                     <DemoItem>
                       <Dropdown.Label>Newest first</Dropdown.Label>
@@ -150,18 +178,22 @@ export default function DropdownShowcase() {
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Mixed icons
                 </Text>
-                <DemoDropdown buttonLabel="Workspace actions">
+                <DemoDropdown buttonLabel="Workspace actions" presence={presenceOverride}>
                   <Dropdown.Group>
+                    <Dropdown.GroupLabel>Workspace</Dropdown.GroupLabel>
                     <DemoItem>
                       <Dropdown.Icon name="settings" />
                       <Dropdown.Label>Settings</Dropdown.Label>
+                      <Dropdown.EndText>Ctrl+,</Dropdown.EndText>
                     </DemoItem>
                     <DemoItem>
                       <Dropdown.Label>Duplicate</Dropdown.Label>
+                      <Dropdown.EndText>Ctrl+D</Dropdown.EndText>
                     </DemoItem>
                   </Dropdown.Group>
                   <Dropdown.Separator />
                   <Dropdown.Group>
+                    <Dropdown.GroupLabel>Danger zone</Dropdown.GroupLabel>
                     <Dropdown.Item
                       intent="destructive"
                       render={(props) => {
@@ -185,8 +217,13 @@ export default function DropdownShowcase() {
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Rich item
                 </Text>
-                <DemoDropdown buttonLabel="Notification settings" width="content">
+                <DemoDropdown
+                  buttonLabel="Notification settings"
+                  presence={presenceOverride}
+                  width="content"
+                >
                   <Dropdown.Group>
+                    <Dropdown.GroupLabel>Notifications</Dropdown.GroupLabel>
                     <DemoItem>
                       <Dropdown.Icon name="bell" />
                       <Dropdown.Label>Product updates</Dropdown.Label>
@@ -199,6 +236,42 @@ export default function DropdownShowcase() {
                       <Dropdown.Description>
                         Important changes to your account and sessions.
                       </Dropdown.Description>
+                      <Dropdown.Trailing name="link" />
+                    </DemoItem>
+                  </Dropdown.Group>
+                </DemoDropdown>
+              </article>
+
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Selection anatomy
+                </Text>
+                <DemoDropdown
+                  buttonLabel="View layout"
+                  layout="columns"
+                  presence={presenceOverride}
+                  width="content"
+                >
+                  <Dropdown.Group>
+                    <Dropdown.GroupLabel>View mode</Dropdown.GroupLabel>
+                    <DemoItem>
+                      <Dropdown.Checkmark visible />
+                      <Dropdown.Icon name="dashboard" />
+                      <Dropdown.Label>Dashboard</Dropdown.Label>
+                      <Dropdown.EndText>Default</Dropdown.EndText>
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Checkmark visible={false} />
+                      <Dropdown.Icon name="list" />
+                      <Dropdown.Label>List</Dropdown.Label>
+                    </DemoItem>
+                  </Dropdown.Group>
+                  <Dropdown.Separator />
+                  <Dropdown.Group>
+                    <DemoItem>
+                      <Dropdown.Icon name="spreadsheet" />
+                      <Dropdown.Label>More layouts</Dropdown.Label>
+                      <Dropdown.Trailing name="chevron-end" />
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>
@@ -219,6 +292,7 @@ export default function DropdownShowcase() {
                 buttonLabel="Open project summary"
                 collection={false}
                 placement="right-start"
+                presence={presenceOverride}
                 width="content"
               >
                 <div className={styles.richContent}>

@@ -18,12 +18,12 @@ describe('official preset separator recipes', () => {
     expect(() => validateSchemaSeparatorsContract(schema)).not.toThrow();
   });
 
-  it('preserves the Fluent Dropdown colors in the shared subtle recipe', () => {
+  it('maps the Fluent shared subtle recipe to NeutralStroke2', () => {
     const subtle = fluent2Microsoft.global?.separators?.profiles.subtle;
 
     expect(subtle?.scales).toEqual({ boxWidth: 1 });
-    expect(subtle?.palettes.default?.light?.onSubtle.boxColor.neutral.medium.rest).toBe('#cdd1de');
-    expect(subtle?.palettes.default?.dark?.onSubtle.boxColor.neutral.medium.rest).toBe('#353842');
+    expect(subtle?.palettes.default?.light?.onSubtle.boxColor.neutral.medium.rest).toBe('#dce0ed');
+    expect(subtle?.palettes.default?.dark?.onSubtle.boxColor.neutral.medium.rest).toBe('#4b4e58');
     expect(subtle?.palettes.default?.darker?.onSubtle.boxColor.neutral.medium.rest).toBe('#2e313a');
     expect(fluent2Microsoft.components.separator?.elements.e1.separator).toEqual({
       's:all': 'subtle'

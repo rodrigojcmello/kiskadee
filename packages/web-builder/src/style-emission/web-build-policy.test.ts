@@ -24,6 +24,43 @@ describe('separator Web style-emission policy', () => {
     ).toBe('mirrored');
   });
 
+  it('publishes only Dropdown item inline paddings as structural tokens', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'dropdown',
+      'e2'
+    );
+
+    expect(policy.paddingLeftEmission).toBe('token');
+    expect(policy.paddingRightEmission).toBe('token');
+    expect(policy.paddingEmission).toBe('direct');
+  });
+
+  it('publishes Dropdown trailing spacing as a structural token', () => {
+    expect(
+      resolveElementStyleEmissionPolicy(DEFAULT_WEB_STYLE_EMISSION_POLICY, 'dropdown', 'e6')
+        .paddingLeftEmission
+    ).toBe('token');
+  });
+
+  it('publishes both Dropdown end-text paddings as structural tokens', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'dropdown',
+      'e8'
+    );
+
+    expect(policy.paddingLeftEmission).toBe('token');
+    expect(policy.paddingRightEmission).toBe('token');
+  });
+
+  it('publishes the Dropdown checkmark gap as a structural token', () => {
+    expect(
+      resolveElementStyleEmissionPolicy(DEFAULT_WEB_STYLE_EMISSION_POLICY, 'dropdown', 'e10')
+        .paddingRightEmission
+    ).toBe('token');
+  });
+
   it('fails when a recipe consumer has no explicit token policy', () => {
     const schema = {
       components: {

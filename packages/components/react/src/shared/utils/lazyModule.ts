@@ -1,4 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+
+const subscribeToHydration = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 export type LazyModuleCache<TModule> = {
   load: () => Promise<TModule>;
@@ -32,10 +36,22 @@ export function useLazyModule<TModule>(
   cache: LazyModuleCache<TModule>,
   enabled: boolean
 ): TModule | null {
-  const [module, setModule] = useState<TModule | null>(cache.read());
+  const canReadCache = useSyncExternalStore(
+    subscribeToHydration,
+    getClientSnapshot,
+    getServerSnapshot
+  );
+  const [module, setModule] = useState<TModule | null>(null);
+  const resolvedModule = module ?? (canReadCache ? cache.read() : null);
 
   useEffect(() => {
-    if (!enabled || module) return;
+    if (!enabled || resolvedModule) return;
+
+    const cachedModule = cache.read();
+    if (cachedModule) {
+      setModule(cachedModule);
+      return;
+    }
 
     let isCurrent = true;
 
@@ -46,7 +62,7 @@ export function useLazyModule<TModule>(
     return () => {
       isCurrent = false;
     };
-  }, [cache, enabled, module]);
+  }, [cache, enabled, resolvedModule]);
 
-  return enabled ? module : null;
+  return enabled ? resolvedModule : null;
 }

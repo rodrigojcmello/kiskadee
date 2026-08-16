@@ -42,6 +42,7 @@ export type ElementStyleEmissionPolicy = {
   marginBottomEmission?: MarginEmission;
   marginLeftEmission?: MarginEmission;
   paddingEmission?: PaddingEmission;
+  paddingLeftEmission?: PaddingEmission;
   paddingRightEmission?: PaddingEmission;
   shadowEmission?: ShadowEmission;
 };
@@ -60,6 +61,7 @@ export type ResolvedElementStyleEmissionPolicy = {
   marginBottomEmission?: MarginEmission;
   marginLeftEmission?: MarginEmission;
   paddingEmission: PaddingEmission;
+  paddingLeftEmission?: PaddingEmission;
   paddingRightEmission?: PaddingEmission;
   shadowEmission: ShadowEmission;
 };
@@ -111,6 +113,10 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e1: {
           paddingEmission: 'mirrored'
         },
+        e2: {
+          paddingLeftEmission: 'token',
+          paddingRightEmission: 'token'
+        },
         e3: {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token',
@@ -118,9 +124,17 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         },
         e6: {
           boxHeightEmission: 'token',
-          boxWidthEmission: 'token'
+          boxWidthEmission: 'token',
+          paddingLeftEmission: 'token'
         },
-        e7: separatorThicknessEmission
+        e7: separatorThicknessEmission,
+        e8: {
+          paddingLeftEmission: 'token',
+          paddingRightEmission: 'token'
+        },
+        e10: {
+          paddingRightEmission: 'token'
+        }
       }
     },
     separator: {
@@ -337,6 +351,12 @@ export function resolveElementStyleEmissionPolicy(
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.marginLeftEmission,
     paddingEmission:
       variantElementPolicy?.paddingEmission ??
+      elementPolicy?.paddingEmission ??
+      DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.paddingEmission,
+    paddingLeftEmission:
+      variantElementPolicy?.paddingLeftEmission ??
+      variantElementPolicy?.paddingEmission ??
+      elementPolicy?.paddingLeftEmission ??
       elementPolicy?.paddingEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.paddingEmission,
     paddingRightEmission:

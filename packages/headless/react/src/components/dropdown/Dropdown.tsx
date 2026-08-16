@@ -2,6 +2,7 @@ import type { Placement } from '@floating-ui/react';
 import type {
   ButtonHTMLAttributes,
   HTMLAttributes,
+  HTMLProps,
   KeyboardEvent,
   MouseEvent,
   ReactElement,
@@ -60,13 +61,31 @@ export type DropdownAnchorProps = Omit<
   render?: (props: DropdownAnchorRenderProps, state: { open: boolean }) => ReactElement;
 };
 
-export type DropdownContentProps = HTMLAttributes<HTMLDivElement> & {
+export type DropdownContentRenderState = {
+  open: boolean;
+  positioned: boolean;
+  placement: Placement;
+};
+
+export type DropdownContentRenderProps = HTMLAttributes<HTMLDivElement> & {
+  ref: Ref<HTMLDivElement>;
+  id: string;
+  'data-open'?: true;
+  'data-closed'?: true;
+  'data-placement': Placement;
+  'data-width': AnchoredOverlayWidth;
+};
+
+export type DropdownContentProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
+  children?: ReactNode;
   placement?: Placement;
   offset?: number;
   collisionPadding?: number;
   portalled?: boolean;
   portalContainer?: HTMLElement | null;
   width?: AnchoredOverlayWidth;
+  forceMount?: boolean;
+  render?: (props: DropdownContentRenderProps, state: DropdownContentRenderState) => ReactElement;
 };
 
 type DropdownContextValue = {
@@ -176,6 +195,8 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(functio
     portalled,
     portalContainer,
     width,
+    forceMount = false,
+    render,
     id,
     style,
     ...props
@@ -208,21 +229,35 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(functio
     },
     [forwardedRef, overlay]
   );
+  if (!open && !forceMount) return null;
 
-  if (!open) return null;
+  const floatingProps = overlay.getFloatingProps(
+    props as HTMLProps<HTMLElement>
+  ) as unknown as HTMLAttributes<HTMLDivElement>;
+  const renderProps: DropdownContentRenderProps = {
+    ...floatingProps,
+    ref,
+    id: id ?? contentId,
+    'aria-hidden': open ? props['aria-hidden'] : true,
+    inert: open ? props.inert : true,
+    'data-open': open || undefined,
+    'data-closed': !open || undefined,
+    'data-placement': overlay.placement,
+    'data-width': width ?? 'content',
+    style: { ...overlay.floatingStyles, ...style },
+    children
+  };
+  const state: DropdownContentRenderState = {
+    open,
+    positioned: overlay.positioned,
+    placement: overlay.placement
+  };
+  if (render) return overlay.renderFloating(render(renderProps, state));
 
-  return overlay.renderFloating(
-    <div
-      {...props}
-      ref={ref}
-      id={id ?? contentId}
-      data-placement={overlay.placement}
-      data-width={width ?? 'content'}
-      style={{ ...overlay.floatingStyles, ...style }}
-    >
-      {children}
-    </div>
-  );
+  const { ref: contentRef, ...nativeContentProps } = renderProps;
+  const content = <div {...nativeContentProps} ref={contentRef} />;
+
+  return overlay.renderFloating(content);
 });
 
 export const Dropdown = {

@@ -56,6 +56,10 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 - `global.kiskadee.json`: global metadata consumed by runtime/components, including the complete
   semantic font catalog and role selections, radius, and global effects. Component semantic
   metadata should live in component artifacts.
+- Dropdown presence is the narrow latency-sensitive exception: when a preset authors it, the
+  artifact resolves the global profile catalog and component default once under
+  `components.dropdown.effects.presence`. It does not duplicate the catalog under
+  `effects.presence`, emit CSS/style keys, or introduce another request.
 - `tokens.kiskadee.css`: global Web custom properties. When the schema declares fonts, this file
   resolves `--k-font-body`, `--k-font-heading`, and `--k-font-code`; otherwise it emits no font
   properties.
@@ -66,9 +70,11 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 - `class-maps/**/<component>.kiskadee.json`: component-scoped class maps loaded on demand by
   component runtime hooks. These are class resolution artifacts, not semantic metadata.
 
-`global.kiskadee.json` should not grow new component semantic payloads under
-`global.components.<name>`. Existing fallback data may remain for compatibility,
-but new component-specific metadata should move to component artifacts.
+`global.kiskadee.json` should not ordinarily grow new component semantic payloads under
+`global.components.<name>`. Existing fallback data may remain for compatibility, and any new
+exception must justify why the component needs the metadata before a component artifact can load.
+Dropdown presence is currently that explicit exception; other component-specific metadata should
+move to component artifacts.
 
 The generated `schema.json` remains aggregated. Tooling that needs full schema
 inspection, such as the Showcase surface picker, should read `schema.json`

@@ -10,6 +10,11 @@ export * from './components/switch.ts';
 export * from './components/tabs.ts';
 export * from './components/text-field.ts';
 export * from './icon-sizes.ts';
+export {
+  validateDropdownPresenceEffectContract,
+  validatePresenceEffectContract,
+  validateSchemaPresenceContract
+} from './presence.contract.zod.ts';
 export * from './schema.ts';
 export * from './separator.ts';
 export * from './types/colors/colors.types.ts';

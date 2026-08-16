@@ -33,6 +33,6 @@ Fluent, Phosphor, and Font Awesome adapters import the documented per-glyph subp
 their packages. Font Awesome definitions are rendered by Kiskadee's small presentation-only SVG
 adapter, so selecting that family does not add Font Awesome's React runtime or global library.
 
-Iconoir Solid currently covers 15 of the 47 canonical names, and Font Awesome Classic Free Regular
-covers 14 of 47. Kiskadee requires complete canonical coverage for every exposed official variant,
-so both remain deferred. No visual fallback fills their missing concepts.
+Iconoir Solid and Font Awesome Classic Free Regular remain partial relative to the canonical
+contract. Kiskadee requires complete canonical coverage for every exposed official variant, so
+both remain deferred. No visual fallback fills their missing concepts.

@@ -12,7 +12,11 @@ import {
   resolveRadiusClassName,
   resolveSchemaElementClassName
 } from '../../shared/class-resolution/classNames.ts';
-import type { DropdownClassesMap, DropdownClassNames } from './Dropdown.types.ts';
+import type {
+  DropdownClassesMap,
+  DropdownClassNames,
+  DropdownElementName
+} from './Dropdown.types.ts';
 
 export const DEFAULT_DROPDOWN_SCALE: ElementSizeValue = 's:md:1';
 export const DEFAULT_DROPDOWN_RADIUS: RadiusMode = 'rounded';
@@ -45,7 +49,7 @@ export function resolveDropdownClassNames({
   radius: RadiusMode;
   shadow: boolean | ElementSizeValue;
 }): Record<DropdownElementNameWithItems, string> {
-  const { e1, e3, e4, e5, e6, e7 } = classesMap ?? {};
+  const { e1, e2, e3, e4, e5, e6, e7, e8, e9, e10 } = classesMap ?? {};
   const shadowClass = shadow
     ? resolveEffectBucketClassName(e1?.e?.h, {
         scale: typeof shadow === 'string' ? shadow : undefined
@@ -63,12 +67,17 @@ export function resolveDropdownClassNames({
         'k-ddn-e1',
         'k-trn'
       ) ?? '',
-    e2: joinClassNames(classNames.e2, 'k-ddn-e2') ?? '',
+    e2: joinClassNames(resolveRadiusClassName(e2, scale, radius), classNames.e2, 'k-ddn-e2') ?? '',
     e3: joinClassNames(resolveDropdownElementClassName(e3, scale), classNames.e3, 'k-ddn-e3') ?? '',
     e4: joinClassNames(resolveDropdownElementClassName(e4, scale), classNames.e4, 'k-ddn-e4') ?? '',
     e5: joinClassNames(resolveDropdownElementClassName(e5, scale), classNames.e5, 'k-ddn-e5') ?? '',
     e6: joinClassNames(resolveDropdownElementClassName(e6, scale), classNames.e6, 'k-ddn-e6') ?? '',
     e7: joinClassNames(resolveDropdownElementClassName(e7, scale), classNames.e7, 'k-ddn-e7') ?? '',
+    e8: joinClassNames(resolveDropdownElementClassName(e8, scale), classNames.e8, 'k-ddn-e8') ?? '',
+    e9: joinClassNames(resolveDropdownElementClassName(e9, scale), classNames.e9, 'k-ddn-e9') ?? '',
+    e10:
+      joinClassNames(resolveDropdownElementClassName(e10, scale), classNames.e10, 'k-ddn-e10') ??
+      '',
     items: joinClassNames(e3?.s?.all, e3?.s?.[normalizeScaleKey(scale)], 'k-ddn-x1') ?? ''
   };
 }
@@ -107,4 +116,4 @@ export function resolveDropdownItemClassName({
   );
 }
 
-type DropdownElementNameWithItems = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7' | 'items';
+type DropdownElementNameWithItems = DropdownElementName | 'items';

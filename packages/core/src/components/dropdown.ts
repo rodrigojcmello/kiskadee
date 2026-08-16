@@ -1,5 +1,6 @@
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
+import { validateDropdownPresenceEffectContract } from '../presence.contract.zod.ts';
 import { validateElementSeparatorContract } from '../separator.contract.zod.ts';
 import type { ElementSeparator } from '../separator.ts';
 import type {
@@ -35,7 +36,17 @@ type ElementNameMetadata = {
   name: string;
 };
 
-export type DropdownElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type DropdownElementName =
+  | 'e1'
+  | 'e2'
+  | 'e3'
+  | 'e4'
+  | 'e5'
+  | 'e6'
+  | 'e7'
+  | 'e8'
+  | 'e9'
+  | 'e10';
 
 export type DropdownSurfaceElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   decorations: Pick<DecorationSchema, 'borderStyle'>;
@@ -54,7 +65,7 @@ export type DropdownSurfaceElementStyle<TSegmentName extends SegmentName = never
 
 export type DropdownItemElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   scales: ElementScalesByProperty<
-    'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
+    'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'marginBottom'
   > & {
     borderRadius?: {
       rounded?: ScaleBySize | number;
@@ -75,12 +86,21 @@ export type DropdownIconElementStyle<TSegmentName extends SegmentName = never> =
 
 export type DropdownTextElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   typography: ElementTypography;
+  scales: ElementScalesByProperty<'paddingRight' | 'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
   ElementNameMetadata;
 
 export type DropdownIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   iconSize: ElementIconSize;
+  scales: ElementScalesByProperty<'paddingLeft'>;
+  palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
+}> &
+  ElementNameMetadata;
+
+export type DropdownGroupLabelElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+  typography: ElementTypography;
+  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
   ElementNameMetadata;
@@ -98,6 +118,9 @@ export type DropdownElements<TSegmentName extends SegmentName = never> = {
   e5: DropdownTextElementStyle<TSegmentName>;
   e6: DropdownIndicatorElementStyle<TSegmentName>;
   e7: DropdownSeparatorElementStyle;
+  e8: DropdownTextElementStyle<TSegmentName>;
+  e9: DropdownGroupLabelElementStyle<TSegmentName>;
+  e10: DropdownIconElementStyle<TSegmentName>;
 };
 
 type ElementContractRules = {
@@ -111,10 +134,21 @@ type ElementContractRules = {
 };
 
 const DROPDOWN_COMPONENT_KEYS = ['effects', 'elements'] as const;
-const DROPDOWN_COMPONENT_EFFECT_KEYS = ['shadow'] as const;
+const DROPDOWN_COMPONENT_EFFECT_KEYS = ['presence', 'shadow'] as const;
 const DROPDOWN_SHADOW_ELEMENT_KEYS = ['e1'] as const;
 const DROPDOWN_SHADOW_RECIPE_KEYS = ['fixedLevels', 'kind', 'states'] as const;
-const DROPDOWN_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7'] as const;
+const DROPDOWN_ELEMENTS_KEYS = [
+  'e1',
+  'e2',
+  'e3',
+  'e4',
+  'e5',
+  'e6',
+  'e7',
+  'e8',
+  'e9',
+  'e10'
+] as const;
 const DROPDOWN_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
@@ -141,7 +175,14 @@ const DROPDOWN_RULES: Record<(typeof DROPDOWN_ELEMENTS_KEYS)[number], ElementCon
     radiusModes: ['rounded', 'pill', 'square']
   },
   e2: {
-    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderRadius'],
+    scales: [
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft',
+      'marginBottom',
+      'borderRadius'
+    ],
     palettes: ['boxColor'],
     radiusModes: ['rounded', 'pill', 'square']
   },
@@ -152,18 +193,36 @@ const DROPDOWN_RULES: Record<(typeof DROPDOWN_ELEMENTS_KEYS)[number], ElementCon
   },
   e4: {
     typography: true,
+    scales: ['paddingRight', 'paddingLeft'],
     palettes: ['textColor']
   },
   e5: {
     typography: true,
+    scales: ['paddingRight', 'paddingLeft'],
     palettes: ['textColor']
   },
   e6: {
     iconSize: true,
+    scales: ['paddingLeft'],
     palettes: ['textColor']
   },
   e7: {
     separator: true
+  },
+  e8: {
+    typography: true,
+    scales: ['paddingRight', 'paddingLeft'],
+    palettes: ['textColor']
+  },
+  e9: {
+    typography: true,
+    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    palettes: ['textColor']
+  },
+  e10: {
+    iconSize: true,
+    scales: ['paddingRight'],
+    palettes: ['textColor']
   }
 };
 
@@ -327,6 +386,9 @@ function validateEffects(value: unknown, path: string, issues: string[]): void {
   }
 
   validateAllowedKeys(value, DROPDOWN_COMPONENT_EFFECT_KEYS, path, issues);
+  if (value.presence !== undefined) {
+    issues.push(...validateDropdownPresenceEffectContract(value.presence, `${path}.presence`));
+  }
   if (value.shadow === undefined) return;
   if (!isRecord(value.shadow)) {
     issues.push(`${path}.shadow: expected object`);

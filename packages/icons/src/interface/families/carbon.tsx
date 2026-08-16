@@ -1,18 +1,23 @@
 // Generated from metadata/interface-families.json. Do not edit manually.
 import {
   Add,
+  ArrowsHorizontal,
+  Branch,
   Checkmark,
   CheckmarkOutline,
   ChevronDown,
   ChevronLeft,
+  ChevronRight,
   Close,
   CloseOutline,
+  Dashboard,
   DragVertical,
   Edit,
   Email,
   FaceDissatisfied,
   FaceSatisfied,
   Favorite,
+  FolderMoveTo,
   Home,
   Link,
   ListBulleted,
@@ -33,6 +38,8 @@ import {
   Share,
   Subtract,
   Sun,
+  Table,
+  TaskComplete,
   TextAlignCenter,
   TextAlignLeft,
   TextAlignRight,
@@ -53,18 +60,23 @@ import { defineIconFamily } from '../defineIconFamily.ts';
 import type { CompleteCanonicalGlyphMap } from '../types.ts';
 
 const glyphAdd = createSvgGlyph(Add, {"size":"1em"});
+const glyphArrowsHorizontal = createSvgGlyph(ArrowsHorizontal, {"size":"1em"});
+const glyphBranch = createSvgGlyph(Branch, {"size":"1em"});
 const glyphCheckmark = createSvgGlyph(Checkmark, {"size":"1em"});
 const glyphCheckmarkOutline = createSvgGlyph(CheckmarkOutline, {"size":"1em"});
 const glyphChevronDown = createSvgGlyph(ChevronDown, {"size":"1em"});
 const glyphChevronLeft = createSvgGlyph(ChevronLeft, {"size":"1em"});
+const glyphChevronRight = createSvgGlyph(ChevronRight, {"size":"1em"});
 const glyphClose = createSvgGlyph(Close, {"size":"1em"});
 const glyphCloseOutline = createSvgGlyph(CloseOutline, {"size":"1em"});
+const glyphDashboard = createSvgGlyph(Dashboard, {"size":"1em"});
 const glyphDragVertical = createSvgGlyph(DragVertical, {"size":"1em"});
 const glyphEdit = createSvgGlyph(Edit, {"size":"1em"});
 const glyphEmail = createSvgGlyph(Email, {"size":"1em"});
 const glyphFaceDissatisfied = createSvgGlyph(FaceDissatisfied, {"size":"1em"});
 const glyphFaceSatisfied = createSvgGlyph(FaceSatisfied, {"size":"1em"});
 const glyphFavorite = createSvgGlyph(Favorite, {"size":"1em"});
+const glyphFolderMoveTo = createSvgGlyph(FolderMoveTo, {"size":"1em"});
 const glyphHome = createSvgGlyph(Home, {"size":"1em"});
 const glyphLink = createSvgGlyph(Link, {"size":"1em"});
 const glyphListBulleted = createSvgGlyph(ListBulleted, {"size":"1em"});
@@ -85,6 +97,8 @@ const glyphSettings = createSvgGlyph(Settings, {"size":"1em"});
 const glyphShare = createSvgGlyph(Share, {"size":"1em"});
 const glyphSubtract = createSvgGlyph(Subtract, {"size":"1em"});
 const glyphSun = createSvgGlyph(Sun, {"size":"1em"});
+const glyphTable = createSvgGlyph(Table, {"size":"1em"});
+const glyphTaskComplete = createSvgGlyph(TaskComplete, {"size":"1em"});
 const glyphTextAlignCenter = createSvgGlyph(TextAlignCenter, {"size":"1em"});
 const glyphTextAlignLeft = createSvgGlyph(TextAlignLeft, {"size":"1em"});
 const glyphTextAlignRight = createSvgGlyph(TextAlignRight, {"size":"1em"});
@@ -104,16 +118,22 @@ const glyphMap = {
     "align-center": glyphTextAlignCenter,
     "align-left": glyphTextAlignLeft,
     "align-right": glyphTextAlignRight,
+    "arrow-left-right": glyphArrowsHorizontal,
     "ban": glyphNotAvailable,
     "bell": glyphNotification,
     "bold": glyphTextBold,
     "check": glyphCheckmark,
     "chevron-down": glyphChevronDown,
+    "chevron-end": { glyph: glyphChevronRight, direction: 'mirror' },
     "chevron-left": { glyph: glyphChevronLeft, direction: 'mirror' },
     "circle-check": glyphCheckmarkOutline,
     "circle-x": glyphCloseOutline,
+    "clipboard-check": glyphTaskComplete,
     "close": glyphClose,
+    "dashboard": glyphDashboard,
+    "folder-move": { glyph: glyphFolderMoveTo, direction: 'mirror' },
     "frown": glyphFaceDissatisfied,
+    "git-branch": glyphBranch,
     "grip-vertical": glyphDragVertical,
     "heart": glyphFavorite,
     "home": glyphHome,
@@ -138,6 +158,7 @@ const glyphMap = {
     "settings": glyphSettings,
     "share": glyphShare,
     "smile": glyphFaceSatisfied,
+    "spreadsheet": glyphTable,
     "strikethrough": glyphTextStrikethrough,
     "sun": glyphSun,
     "thumbs-up": glyphThumbsUp,

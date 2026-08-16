@@ -696,4 +696,71 @@ describe('generateCssSplit', () => {
     expect(result.coreCss).toContain('.bw0 { border-width: 2px }');
     expect(result.coreCss).toContain('.bw1 { --k-bdw: 2px; border-width: 2px }');
   });
+
+  it('deduplicates Dropdown leading gaps as one structural padding token', async () => {
+    const input = {
+      dropdown: {
+        e3: {
+          scales: {
+            's:all': ['paddingRight__4']
+          }
+        },
+        e10: {
+          scales: {
+            's:all': ['paddingRight__4']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const shortenMap: ShortenCssClassNames = {
+      'paddingRight__4@@t': 'pdr4'
+    };
+
+    const result = await generateCssSplit(input, shortenMap, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+    });
+
+    expect(result.coreCss).toContain('.pdr4 { --k-pdr: 4px }');
+    expect(result.coreCss).not.toContain('padding-right');
+    expect(result.coreCss.match(/\.pdr4 \{/g)).toHaveLength(1);
+  });
+
+  it('preserves and deduplicates asymmetric Dropdown item padding as logical tokens', async () => {
+    const input = {
+      dropdown: {
+        e2: {
+          scales: {
+            's:all': ['paddingTop__6', 'paddingRight__2', 'paddingLeft__6']
+          }
+        },
+        e3: {
+          scales: {
+            's:all': ['paddingRight__2']
+          }
+        },
+        e8: {
+          scales: {
+            's:all': ['paddingLeft__6']
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const shortenMap: ShortenCssClassNames = {
+      paddingTop__6: 'pdt6',
+      'paddingRight__2@@t': 'pdr2',
+      'paddingLeft__6@@t': 'pdl6'
+    };
+
+    const result = await generateCssSplit(input, shortenMap, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+    });
+
+    expect(result.coreCss).toContain('.pdt6 { padding-top: 6px }');
+    expect(result.coreCss).toContain('.pdr2 { --k-pdr: 2px }');
+    expect(result.coreCss).toContain('.pdl6 { --k-pdl: 6px }');
+    expect(result.coreCss).not.toContain('padding-right');
+    expect(result.coreCss).not.toContain('padding-left');
+    expect(result.coreCss.match(/\.pdr2 \{/g)).toHaveLength(1);
+    expect(result.coreCss.match(/\.pdl6 \{/g)).toHaveLength(1);
+  });
 });

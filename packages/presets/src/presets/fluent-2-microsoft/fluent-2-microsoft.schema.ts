@@ -108,6 +108,23 @@ export const schema: Schema<Segments> = {
           }
         }
       },
+      presence: {
+        profiles: {
+          'fade-translate': {
+            distancePx: 12,
+            enterDurationMs: 240,
+            exitDurationMs: 120,
+            enterEasing: 'ease-out',
+            exitEasing: 'ease-in'
+          },
+          'grow-height': {
+            enterDurationMs: 180,
+            exitDurationMs: 120,
+            enterEasing: 'ease-out',
+            exitEasing: 'ease-in'
+          }
+        }
+      },
       shadow: {
         outer: {
           levels: {

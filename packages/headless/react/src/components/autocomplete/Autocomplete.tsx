@@ -3,6 +3,7 @@ import type {
   ChangeEvent,
   ComponentPropsWithoutRef,
   FocusEvent,
+  HTMLProps,
   KeyboardEvent,
   MouseEvent,
   ReactElement,
@@ -98,6 +99,27 @@ export type AutocompleteContentProps = Omit<ComponentPropsWithoutRef<'div'>, 'ch
   portalled?: boolean;
   portalContainer?: HTMLElement | null;
   width?: AnchoredOverlayWidth;
+  forceMount?: boolean;
+  render?: (
+    props: AutocompleteContentRenderProps,
+    state: AutocompleteContentRenderState
+  ) => ReactElement;
+};
+
+export type AutocompleteContentRenderState = {
+  open: boolean;
+  positioned: boolean;
+  placement: Placement;
+  activeValue?: string;
+};
+
+export type AutocompleteContentRenderProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
+  ref: Ref<HTMLDivElement>;
+  children?: ReactNode;
+  'data-open'?: true;
+  'data-closed'?: true;
+  'data-placement': Placement;
+  'data-width': AnchoredOverlayWidth;
 };
 
 export type AutocompleteOptionRenderProps = ComponentPropsWithoutRef<'div'> & {
@@ -397,13 +419,15 @@ const AutocompleteContent = forwardRef<HTMLDivElement, AutocompleteContentProps>
       portalled = true,
       portalContainer,
       width = 'min-anchor',
+      forceMount = false,
+      render,
       id,
       style,
       ...props
     },
     forwardedRef
   ) {
-    const { open, setOpen, options, baseId, inputElement, inputRef } =
+    const { open, setOpen, options, activeKey, baseId, inputElement, inputRef } =
       useAutocompleteContext('Autocomplete.Content');
     const overlay = useAnchoredOverlay({
       open,
@@ -427,31 +451,47 @@ const AutocompleteContent = forwardRef<HTMLDivElement, AutocompleteContentProps>
       [forwardedRef, overlay]
     );
 
-    if (!open) return null;
-    const content = (
-      <div
-        {...props}
-        ref={ref}
-        id={id ?? `${baseId}-listbox`}
-        role="listbox"
-        aria-labelledby={inputElement?.id || `${baseId}-input`}
-        data-placement={overlay.placement}
-        data-width={width}
-        style={{ ...overlay.floatingStyles, ...style }}
-      >
-        {children ??
-          options.map((option) => (
-            <AutocompleteOptionComponent
-              key={option.value}
-              value={option.value}
-              textValue={option.textValue}
-              disabled={option.disabled}
-            >
-              {option.content ?? option.textValue}
-            </AutocompleteOptionComponent>
-          ))}
-      </div>
-    );
+    if (!open && !forceMount) return null;
+    const childrenContent =
+      children ??
+      options.map((option) => (
+        <AutocompleteOptionComponent
+          key={option.value}
+          value={option.value}
+          textValue={option.textValue}
+          disabled={option.disabled}
+        >
+          {option.content ?? option.textValue}
+        </AutocompleteOptionComponent>
+      ));
+    const floatingProps = overlay.getFloatingProps(
+      props as HTMLProps<HTMLElement>
+    ) as unknown as ComponentPropsWithoutRef<'div'>;
+    const renderProps: AutocompleteContentRenderProps = {
+      ...floatingProps,
+      ref,
+      id: id ?? `${baseId}-listbox`,
+      role: 'listbox',
+      'aria-labelledby': inputElement?.id || `${baseId}-input`,
+      'aria-hidden': open ? props['aria-hidden'] : true,
+      inert: open ? props.inert : true,
+      'data-open': open || undefined,
+      'data-closed': !open || undefined,
+      'data-placement': overlay.placement,
+      'data-width': width,
+      style: { ...overlay.floatingStyles, ...style },
+      children: childrenContent
+    };
+    const state: AutocompleteContentRenderState = {
+      open,
+      positioned: overlay.positioned,
+      placement: overlay.placement,
+      activeValue: activeKey
+    };
+    if (render) return overlay.renderFloating(render(renderProps, state));
+
+    const { ref: contentRef, ...nativeContentProps } = renderProps;
+    const content = <div {...nativeContentProps} ref={contentRef} />;
 
     return overlay.renderFloating(content);
   }

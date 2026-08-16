@@ -12,14 +12,52 @@ import {
 import { Button } from '../Button/Button.tsx';
 import { ButtonMenu } from './ButtonMenu.tsx';
 
+vi.mock('../Button/effects/activation-feedback/ButtonActivationFeedback.loader.ts', () => {
+  const effectModule = {
+    resolveButtonActivationFeedbackEffect: ({
+      elements,
+      shouldForceOverlayPressed
+    }: {
+      elements: { e1?: { e?: Record<string, string> } };
+      shouldForceOverlayPressed: boolean;
+    }) => ({
+      classNamePatch: {
+        e1: [
+          elements.e1?.e?.af,
+          shouldForceOverlayPressed ? elements.e1?.e?.afp : elements.e1?.e?.afs
+        ]
+          .filter(Boolean)
+          .join(' ')
+      }
+    })
+  };
+
+  return {
+    loadButtonActivationFeedbackEffect: () => Promise.resolve(effectModule),
+    useButtonActivationFeedbackEffect: (enabled = true) => (enabled ? effectModule : null)
+  };
+});
+
 function Chevron() {
   return <svg data-testid="chevron" />;
+}
+
+function Check() {
+  return <svg data-testid="check" />;
+}
+
+function ChevronEnd() {
+  return <svg data-testid="chevron-end" />;
 }
 
 const iconFamily = defineIconFamily({
   id: 'test-icons',
   label: 'Test icons',
-  glyphs: { 'chevron-down': Chevron }
+  glyphs: {
+    check: Check,
+    'chevron-down': Chevron,
+    'chevron-end': { glyph: ChevronEnd, direction: 'mirror' }
+  }
 });
 
 const context: KiskadeeContextValue = {
@@ -32,9 +70,38 @@ const context: KiskadeeContextValue = {
   setTheme: () => {}
 };
 
-function renderButtonMenu(children: ReactNode) {
+const fluentFeedbackContext: KiskadeeContextValue = {
+  ...context,
+  classesMap: {
+    button: {
+      e1: {
+        e: {
+          af: 'feedback-base',
+          afp: 'feedback-pressed',
+          afs: 'feedback-ripple'
+        }
+      }
+    },
+    dropdown: {}
+  },
+  global: {
+    effects: {
+      activationFeedback: {
+        profile: 'ripple',
+        visual: { layer: 'overlay' }
+      }
+    },
+    components: {
+      button: {
+        effects: { activationFeedback: true }
+      }
+    }
+  }
+};
+
+function renderButtonMenu(children: ReactNode, contextValue: KiskadeeContextValue = context) {
   return render(
-    <KiskadeeContext.Provider value={context}>
+    <KiskadeeContext.Provider value={contextValue}>
       <IconFamilyProvider families={[iconFamily]} family="test-icons">
         {children}
       </IconFamilyProvider>
@@ -45,6 +112,111 @@ function renderButtonMenu(children: ReactNode) {
 afterEach(cleanup);
 
 describe('ButtonMenu', () => {
+  it('projects open as pressed without exposing toggle semantics', async () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger id="author-trigger">Actions</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Item textValue="Copy">
+              <ButtonMenu.Label>Copy</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>
+    );
+    const trigger = result.getByRole('button', { name: 'Actions' });
+
+    expect(trigger.id).toBe('author-trigger');
+    expect(trigger.classList.contains('-p')).toBe(false);
+    expect(trigger.getAttribute('aria-pressed')).toBeNull();
+
+    fireEvent.click(trigger);
+    await result.findByRole('menu');
+
+    expect(trigger.classList.contains('-p')).toBe(true);
+    expect(trigger.classList.contains('-a')).toBe(true);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger.getAttribute('aria-pressed')).toBeNull();
+  });
+
+  it('suppresses transient activation feedback only while the menu stays open', async () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Item textValue="Copy">
+              <ButtonMenu.Label>Copy</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>,
+      fluentFeedbackContext
+    );
+    const trigger = result.getByRole('button', { name: 'Actions' });
+
+    await waitFor(() => expect(trigger.classList.contains('feedback-ripple')).toBe(true));
+    expect(trigger.classList.contains('feedback-base')).toBe(true);
+
+    fireEvent.click(trigger);
+    await result.findByRole('menu');
+
+    expect(trigger.classList.contains('-p')).toBe(true);
+    expect(trigger.classList.contains('feedback-base')).toBe(false);
+    expect(trigger.classList.contains('feedback-ripple')).toBe(false);
+    expect(trigger.classList.contains('feedback-pressed')).toBe(false);
+    expect(trigger.getAttribute('aria-pressed')).toBeNull();
+
+    fireEvent.click(trigger);
+    await waitFor(() => expect(result.queryByRole('menu')).toBeNull());
+    await waitFor(() => expect(trigger.classList.contains('feedback-ripple')).toBe(true));
+    expect(trigger.classList.contains('-p')).toBe(false);
+  });
+
+  it('keeps pending as the terminal Button state while an open menu suppresses feedback', () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root defaultOpen>
+        <ButtonMenu.Trigger pending>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Item textValue="Copy">
+              <ButtonMenu.Label>Copy</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>,
+      fluentFeedbackContext
+    );
+    const trigger = result.getByRole('button', { name: 'Actions' });
+
+    expect(trigger.getAttribute('aria-busy')).toBe('true');
+    expect(trigger.classList.contains('-g')).toBe(true);
+    expect(trigger.classList.contains('-p')).toBe(false);
+    expect(trigger.classList.contains('feedback-base')).toBe(false);
+  });
+
+  it('preserves disabled authority from ButtonMenu.Root on the styled trigger', () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root disabled>
+        <ButtonMenu.Trigger id="disabled-trigger">Actions</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Item textValue="Copy">
+              <ButtonMenu.Label>Copy</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>
+    );
+    const trigger = result.getByRole('button', { name: 'Actions' });
+
+    expect(trigger.id).toBe('disabled-trigger');
+    expect(trigger).toHaveProperty('disabled', true);
+    fireEvent.click(trigger);
+    expect(result.queryByRole('menu')).toBeNull();
+  });
+
   it('renders split action and menu trigger as sibling buttons with independent semantics', async () => {
     const onAction = vi.fn();
     const onTriggerClick = vi.fn();
@@ -106,5 +278,105 @@ describe('ButtonMenu', () => {
     );
 
     expect(button?.tagName).toBe('BUTTON');
+  });
+
+  it('composes labelled groups and hides visual shortcuts from accessible names', async () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.Content itemsLayout="columns">
+          <ButtonMenu.Group>
+            <ButtonMenu.GroupLabel>Clipboard</ButtonMenu.GroupLabel>
+            <ButtonMenu.Item textValue="Copy" aria-keyshortcuts="Control+C">
+              <ButtonMenu.Label>Copy</ButtonMenu.Label>
+              <ButtonMenu.Shortcut>Ctrl+C</ButtonMenu.Shortcut>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'Actions' }));
+    const group = await result.findByRole('group', { name: 'Clipboard' });
+    const item = result.getByRole('menuitem', { name: 'Copy' });
+
+    expect(result.getByRole('menu').querySelector('.k-ddn-x1')?.getAttribute('data-layout')).toBe(
+      'columns'
+    );
+    expect(group.querySelectorAll('.k-ddn-x2')).toHaveLength(0);
+    expect(group.className).toContain('k-ddn-x2');
+    expect(item.getAttribute('aria-keyshortcuts')).toBe('Control+C');
+    expect(item.querySelector('.k-ddn-e8')?.getAttribute('aria-hidden')).toBe('true');
+    expect(result.queryByRole('menuitem', { name: 'Copy Ctrl+C' })).toBeNull();
+  });
+
+  it('keeps radio checkmark tracks mounted without applying the Dropdown selected state', async () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger>Density</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.RadioGroup defaultValue="comfortable">
+            <ButtonMenu.RadioItem value="compact" textValue="Compact">
+              <ButtonMenu.Label>Compact</ButtonMenu.Label>
+            </ButtonMenu.RadioItem>
+            <ButtonMenu.RadioItem value="comfortable" textValue="Comfortable">
+              <ButtonMenu.Label>Comfortable</ButtonMenu.Label>
+            </ButtonMenu.RadioItem>
+          </ButtonMenu.RadioGroup>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'Density' }));
+    const compact = await result.findByRole('menuitemradio', { name: 'Compact' });
+    const comfortable = result.getByRole('menuitemradio', { name: 'Comfortable' });
+    const compactCheckmark = compact.querySelector('.k-ddn-e10');
+    const comfortableCheckmark = comfortable.querySelector('.k-ddn-e10');
+
+    expect(compact.getAttribute('aria-checked')).toBe('false');
+    expect(comfortable.getAttribute('aria-checked')).toBe('true');
+    expect(compactCheckmark?.getAttribute('data-visible')).toBe('false');
+    expect(comfortableCheckmark?.getAttribute('data-visible')).toBe('true');
+    expect(compact.getAttribute('data-selected')).toBeNull();
+    expect(comfortable.getAttribute('data-selected')).toBeNull();
+    expect(result.getAllByTestId('check')).toHaveLength(2);
+  });
+
+  it('injects a logical submenu chevron and composes nested Dropdown surfaces', async () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Sub>
+              <ButtonMenu.SubTrigger textValue="Export">
+                <ButtonMenu.Label>Export</ButtonMenu.Label>
+              </ButtonMenu.SubTrigger>
+              <ButtonMenu.SubContent>
+                <ButtonMenu.Group>
+                  <ButtonMenu.Item textValue="PDF">
+                    <ButtonMenu.Label>PDF</ButtonMenu.Label>
+                  </ButtonMenu.Item>
+                </ButtonMenu.Group>
+              </ButtonMenu.SubContent>
+            </ButtonMenu.Sub>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'Actions' }));
+    const trigger = await result.findByRole('menuitem', { name: 'Export' });
+    const chevron = trigger.querySelector('[data-k-icon-name="chevron-end"]');
+
+    expect(trigger.getAttribute('href')).toBeNull();
+    expect(trigger.getAttribute('aria-haspopup')).toBe('menu');
+    expect(chevron?.getAttribute('data-k-icon-direction')).toBe('mirror');
+    expect(result.getByTestId('chevron-end')).toBeTruthy();
+
+    fireEvent.keyDown(trigger, { key: 'ArrowRight' });
+    await waitFor(() => expect(result.getAllByRole('menu')).toHaveLength(2));
+    expect(result.getByRole('menuitem', { name: 'PDF' })).toBeTruthy();
+    expect(result.baseElement.querySelectorAll('.k-ddn-e1')).toHaveLength(2);
   });
 });

@@ -143,6 +143,65 @@ describe('generateClassNamesMapSplit', () => {
     expect(lightIcon.e1.c?.v?.primary).toEqual({ m: 'primary-vivid' });
   });
 
+  it('publishes Dropdown checkmark geometry and color through the generic element pipeline', () => {
+    const schema = {
+      name: 'Dropdown checkmark pipeline test',
+      version: [1, 0, 0],
+      author: 'Kiskadee',
+      breakpoints: { 'bp:all': 0 },
+      global: {
+        iconSizes: {
+          's:md:1': 20
+        }
+      },
+      components: {
+        dropdown: {
+          elements: {
+            e10: {
+              name: 'dropdown-checkmark',
+              iconSize: { 's:all': 's:md:1' },
+              scales: { paddingRight: 4 },
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      textColor: {
+                        neutral: { medium: { rest: '#21242d' } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } as unknown as Schema;
+
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {
+        boxWidth__20: 'width-20',
+        boxHeight__20: 'height-20',
+        paddingRight__4: 'inset-4',
+        'textColor__#21242d': 'neutral-text'
+      },
+      toneMetadataByPalette
+    );
+
+    const dropdownCore = out.core.dropdown as Record<string, ClassNameByElementJSON>;
+    const dropdownPalette = out.palettes['default.light'].dropdown as Record<
+      string,
+      ClassNameByElementJSON
+    >;
+
+    expect(dropdownCore.e10.s?.all?.split(' ')).toEqual(
+      expect.arrayContaining(['width-20', 'height-20', 'inset-4'])
+    );
+    expect(dropdownPalette.e10.c?.s?.neutral).toEqual({ m: 'neutral-text' });
+  });
+
   it('reuses the mirrored canonical class name for raw and mirrored scale consumers', () => {
     const styleKeys = {
       button: {

@@ -8,6 +8,7 @@ import type {
   MouseEvent as ReactMouseEvent,
   ReactNode,
   Ref,
+  RefAttributes,
   SetStateAction
 } from 'react';
 import {
@@ -94,26 +95,48 @@ export type SelectTriggerRenderProps = Omit<
   children?: ReactNode;
 };
 
-export type SelectContentProps = Omit<ComponentPropsWithoutRef<'ul'>, 'children'> & {
+type SelectContentBehaviorProps = {
   children?: ReactNode;
+  forceMount?: boolean;
   portalled?: boolean;
   offset?: number;
   collisionPadding?: number;
   placement?: Placement;
   portalContainer?: HTMLElement | null;
   width?: AnchoredOverlayWidth;
-  render?: (
-    props: SelectContentRenderProps,
-    state: { open: boolean; activeValue?: string }
-  ) => ReactElement;
 };
 
-export type SelectContentRenderProps = Omit<ComponentPropsWithoutRef<'ul'>, 'children'> & {
-  ref: Ref<HTMLElement>;
+type SelectDefaultContentProps = Omit<ComponentPropsWithoutRef<'ul'>, 'children'> &
+  SelectContentBehaviorProps & {
+    render?: never;
+  };
+
+type SelectRenderedContentProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> &
+  SelectContentBehaviorProps & {
+    render: (props: SelectContentRenderProps, state: SelectContentRenderState) => ReactElement;
+  };
+
+export type SelectContentProps = SelectDefaultContentProps | SelectRenderedContentProps;
+
+export type SelectContentRenderState = {
+  open: boolean;
+  positioned: boolean;
+  activeValue?: string;
+  placement: Placement;
+};
+
+export type SelectContentRenderProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
+  ref: Ref<HTMLDivElement>;
   children?: ReactNode;
   'data-open'?: true;
+  'data-closed'?: true;
   'data-placement'?: Placement;
   'data-width'?: AnchoredOverlayWidth;
+};
+
+type SelectContentComponent = {
+  (props: SelectDefaultContentProps & RefAttributes<HTMLUListElement>): ReactElement | null;
+  (props: SelectRenderedContentProps & RefAttributes<HTMLDivElement>): ReactElement | null;
 };
 
 export type SelectOptionProps = Omit<ComponentPropsWithoutRef<'li'>, 'children' | 'value'> & {
@@ -513,85 +536,106 @@ function SelectLabel({ children, className, id, ...props }: SelectLabelProps) {
   );
 }
 
-const SelectContent = forwardRef<HTMLUListElement, SelectContentProps>(function SelectContent(
-  {
-    children,
-    className,
-    portalled = false,
-    offset = 8,
-    collisionPadding = 8,
-    placement = 'bottom-start',
-    portalContainer,
-    width = 'content',
-    render,
-    style,
-    ...props
-  },
-  forwardedRef
-) {
-  const { isOpen, setIsOpen, options, activeKey, baseId, classNames, listRef, triggerRef } =
-    useSelectContext();
-  const handleDismiss = useCallback(
-    (details: AnchoredOverlayDismissDetails) => {
-      setIsOpen(false, { reason: details.reason, event: details.event });
-      if (details.reason === 'escape') triggerRef.current?.focus();
+const SelectContentImplementation = forwardRef<HTMLElement, SelectContentProps>(
+  function SelectContent(
+    {
+      children,
+      className,
+      forceMount = false,
+      portalled = false,
+      offset = 8,
+      collisionPadding = 8,
+      placement = 'bottom-start',
+      portalContainer,
+      width = 'content',
+      render,
+      style,
+      ...props
     },
-    [setIsOpen, triggerRef]
-  );
-  const overlay = useAnchoredOverlay({
-    open: isOpen,
-    referenceElement: triggerRef.current,
-    placement,
-    offset,
-    collisionPadding,
-    portalled,
-    portalContainer,
-    width,
-    onDismiss: handleDismiss
-  });
-  const ref = useCallback(
-    (node: HTMLElement | null) => {
-      listRef.current = node;
-      overlay.floatingRef(node);
-      assignRef(forwardedRef, node);
-    },
-    [forwardedRef, listRef, overlay]
-  );
-  const resolvedChildren =
-    children ??
-    options.map((option) => (
-      <SelectOption
-        key={option.value}
-        value={option.value}
-        disabled={option.disabled}
-        textValue={option.textValue}
-      >
-        {option.label}
-      </SelectOption>
-    ));
-  const listProps: SelectContentRenderProps = {
-    ...props,
-    ref,
-    id: `${baseId}-listbox`,
-    role: 'listbox',
-    'aria-labelledby': `${baseId}-trigger`,
-    'aria-hidden': isOpen ? undefined : true,
-    'data-open': isOpen || undefined,
-    'data-placement': portalled ? overlay.placement : undefined,
-    'data-width': width,
-    className: className ?? classNames?.e3,
-    tabIndex: -1,
-    style: portalled ? { ...overlay.floatingStyles, ...style } : style,
-    children: resolvedChildren
-  };
-  const list = render ? (
-    render(listProps, { open: isOpen, activeValue: activeKey })
-  ) : (
-    <ul {...listProps} ref={listProps.ref as Ref<HTMLUListElement>} />
-  );
+    forwardedRef
+  ) {
+    const { isOpen, setIsOpen, options, activeKey, baseId, classNames, listRef, triggerRef } =
+      useSelectContext();
+    const handleDismiss = useCallback(
+      (details: AnchoredOverlayDismissDetails) => {
+        setIsOpen(false, { reason: details.reason, event: details.event });
+        if (details.reason === 'escape') triggerRef.current?.focus();
+      },
+      [setIsOpen, triggerRef]
+    );
+    const overlay = useAnchoredOverlay({
+      open: isOpen,
+      referenceElement: triggerRef.current,
+      placement,
+      offset,
+      collisionPadding,
+      portalled,
+      portalContainer,
+      width,
+      onDismiss: handleDismiss
+    });
+    const contentRef = useCallback(
+      (node: HTMLElement | null) => {
+        listRef.current = node;
+        overlay.floatingRef(node);
+        assignRef(forwardedRef, node);
+      },
+      [forwardedRef, listRef, overlay]
+    );
+    if (!isOpen && !forceMount) return null;
 
-  return overlay.renderFloating(list);
-});
+    const resolvedChildren =
+      children ??
+      options.map((option) => (
+        <SelectOption
+          key={option.value}
+          value={option.value}
+          disabled={option.disabled}
+          textValue={option.textValue}
+        >
+          {option.label}
+        </SelectOption>
+      ));
+    const sharedProps = {
+      id: `${baseId}-listbox`,
+      role: 'listbox' as const,
+      'aria-labelledby': `${baseId}-trigger`,
+      'aria-hidden': isOpen ? undefined : true,
+      inert: isOpen ? props.inert : true,
+      'data-open': isOpen || undefined,
+      'data-closed': !isOpen || undefined,
+      'data-placement': portalled ? overlay.placement : undefined,
+      'data-width': width,
+      className: className ?? classNames?.e3,
+      tabIndex: -1,
+      style: portalled ? { ...overlay.floatingStyles, ...style } : style,
+      children: resolvedChildren
+    };
+    const state: SelectContentRenderState = {
+      open: isOpen,
+      positioned: overlay.positioned,
+      activeValue: activeKey,
+      placement: overlay.placement
+    };
+
+    if (render) {
+      const renderProps: SelectContentRenderProps = {
+        ...(props as ComponentPropsWithoutRef<'div'>),
+        ...sharedProps,
+        ref: contentRef
+      };
+      return overlay.renderFloating(render(renderProps, state));
+    }
+
+    const nativeListProps: ComponentPropsWithoutRef<'ul'> = {
+      ...(props as ComponentPropsWithoutRef<'ul'>),
+      ...sharedProps
+    };
+    return overlay.renderFloating(<ul {...nativeListProps} ref={contentRef} />);
+  }
+);
+
+const SelectContent = SelectContentImplementation as SelectContentComponent;
 
 const SelectOption = forwardRef<HTMLLIElement, SelectOptionProps>(function SelectOption(
   {
