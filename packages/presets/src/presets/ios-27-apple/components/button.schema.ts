@@ -34,6 +34,11 @@ const BUTTON_HIGH_FOREGROUND_TONES = {
   }
 } as const satisfies Record<Ios27AppleButtonFormulaTheme, Record<ButtonColorRole, KiskadeeTone>>;
 
+const BUTTON_DIVIDER_TONES = {
+  light: 10,
+  dark: 16
+} as const satisfies Record<Ios27AppleButtonFormulaTheme, KiskadeeTone>;
+
 export function createIos27AppleButtonSchema({
   c
 }: CreateIos27AppleButtonSchemaArgs): ButtonComponent {
@@ -67,6 +72,21 @@ export function createIos27AppleButtonSchema({
     };
   };
 
+  const createDividerContextPalettes = (theme: Ios27AppleButtonFormulaTheme) => ({
+    onSubtle: {
+      boxColor: {
+        neutral: {
+          medium: {
+            rest: neutralFamily.color(
+              IOS_27_APPLE_BUTTON_TONAL_RECIPE[theme].scale,
+              BUTTON_DIVIDER_TONES[theme]
+            )
+          }
+        }
+      }
+    }
+  });
+
   const createButtonIntent = (theme: Ios27AppleButtonFormulaTheme, role: ButtonColorRole) => {
     const scale = IOS_27_APPLE_BUTTON_TONAL_RECIPE[theme].scale;
     const mediumSurface =
@@ -99,6 +119,8 @@ export function createIos27AppleButtonSchema({
 
   return {
     options: {
+      groupDivider: true,
+      disclosureDivider: false,
       iconLayout: 'inline',
       iconPlacement: 'leading',
       iconSurfaceCorners: 'all',
@@ -283,8 +305,28 @@ export function createIos27AppleButtonSchema({
             's:sm:1': 2,
             's:md:1': 3,
             's:lg:1': 3
+          }
+        }
+      },
+      e6: {
+        name: 'button-divider',
+        scales: {
+          boxWidth: {
+            's:sm:1': 1,
+            's:md:1': 1,
+            's:lg:1': 1
           },
-          borderWidth: 0
+          boxHeight: {
+            's:sm:1': 16,
+            's:md:1': 20,
+            's:lg:1': 24
+          }
+        },
+        palettes: {
+          default: {
+            light: createDividerContextPalettes('light'),
+            dark: createDividerContextPalettes('dark')
+          }
         }
       }
     }

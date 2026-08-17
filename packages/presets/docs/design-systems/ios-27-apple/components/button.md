@@ -30,6 +30,7 @@ This file records source evidence and schema decisions for
 | Light examples | `2539:14600` | Conventional non-glass presentation | Official adapted |
 | Dark examples | `2666:16141` | Conventional non-glass presentation | Official adapted |
 | Title and icon | `5473:20773`, `40:58693`, `40:58695` | Play symbol, label, 3/4/4 px item spacing, 10/14/20 px horizontal padding | Official exact |
+| Connected Button group | Inspected Button component set | No grouped or split composition is authored | Kiskadee extension |
 | Liquid Glass Text | `5473:21667` | Capability and material separation confirmed | Deferred |
 | Liquid Glass Symbol | `5522:11866` | Capability and material separation confirmed | Deferred |
 | Hover, Pressed, Focus, Selected | Content Area variants | No official variants are authored | Kiskadee extension |
@@ -84,6 +85,30 @@ Title-and-icon spacing remains separate from the Button's external horizontal pa
 variants use a 3 px gap at Small and a 4 px gap at Medium and Large. The Button icon slot authors
 those values explicitly so it never inherits the root's 10 px, 14 px, or 20 px padding token as its
 content gap.
+
+### Kiskadee Extension: Connected Button Divider
+
+The inspected iOS 27 Button set does not publish a connected or split Button composition.
+`Button.Group`, its internal seam, and the default use of that seam are therefore a **Kiskadee
+extension**, not a native Apple Button capability inferred from the source.
+
+The first mapping reuses the preset's approved subtle neutral line rather than inventing a new
+literal:
+
+| Theme | Existing role | Primitive and tone | Generated value | Kiskadee mapping |
+| --- | --- | --- | --- | --- |
+| Light | neutral Separator adaptation | Apple Gray `primitive.black.v1`, L10 | `#d1d1d4` | `button.e6.boxColor.neutral.medium.rest` |
+| Dark | neutral Separator adaptation | Apple Gray `primitive.black.v1`, D16 | `#38383b` | `button.e6.boxColor.neutral.medium.rest` |
+
+The schema authors that neutral Rest line once as `neutral.medium.rest`. Button composition uses
+this branch as the divider fallback for every Button intent and emphasis, avoiding 16 duplicated
+paths without narrowing the Core contract's ability to accept future official overrides. The line
+does not acquire Hover, Pressed, Focus, Selected, Pending, or Disabled deltas.
+
+`boxWidth` is 1 px at all three Button scales. `boxHeight` follows the shared icon viewport at
+16 px, 20 px, and 24 px. The divider has no margin, padding, gap, opacity, or semantic role;
+structural Button composition centers it while preserving the existing icon, label, and sibling
+spacing.
 
 ## Color And Token Provenance
 
@@ -266,6 +291,13 @@ not execute this formula at runtime.
 - `e3`: icon content; mirrors `e2` foreground states so interface glyphs and monochrome brand marks
   follow the Button content color. Fixed multicolor marks remain unchanged. Small, Medium, and
   Large reference the shared 16 px, 20 px, and 24 px icon sizes as the documented Web adaptation.
+- `e5`: disclosure icon, viewport, color, and content spacing only; it does not own the optional
+  internal divider.
+- `e6`: decorative Rest-only Button divider with 1 px `boxWidth`, icon-matched `boxHeight`, and one
+  canonical `neutral.medium.rest` color consumed as the fallback for every Button composition.
+- `components.button.options.groupDivider`: `true`, enabling `e6` at connected Button seams.
+- `components.button.options.disclosureDivider`: `false`, so a menu disclosure is not separated
+  unless the preset explicitly adopts that visual language later.
 - `components.button.options.size`: Small, Medium, and Large map to the official 28, 34, and 50 px
   geometry within the existing schema.
 - Palette intent and emphasis select the Apple relationship or documented Kiskadee extension; no

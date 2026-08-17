@@ -38,6 +38,7 @@ export type {
   ButtonActivationFeedbackEffect,
   ButtonArtifactConfig,
   ButtonDisclosureProps,
+  ButtonGroupProps,
   ButtonIconProps,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
@@ -48,6 +49,7 @@ export type {
 export { Button, useButtonArtifactConfig } from './components/Button';
 export type {
   ButtonMenuActionProps,
+  ButtonMenuButtonGroupProps,
   ButtonMenuContentProps,
   ButtonMenuGroupLabelProps,
   ButtonMenuGroupProps,

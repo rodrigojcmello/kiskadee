@@ -16,6 +16,58 @@ import { buildStyleKey } from '../utils/index.ts';
 import { generateClassNamesMapSplit } from './generateClassNamesMap.ts';
 
 describe('generateClassNamesMapSplit', () => {
+  it('publishes Button divider geometry and color through the generic class map', () => {
+    const schema = {
+      name: 'Button divider pipeline test',
+      version: [1, 0, 0],
+      author: 'Kiskadee',
+      breakpoints: { 'bp:all': 0 },
+      components: {
+        button: {
+          options: { groupDivider: true, disclosureDivider: false },
+          elements: {
+            e6: {
+              name: 'button-divider',
+              scales: {
+                boxWidth: { 's:md:1': 1 },
+                boxHeight: { 's:md:1': 20 }
+              },
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } as unknown as Schema;
+
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const out = generateClassNamesMapSplit(
+      styleKeys,
+      {
+        'boxWidth__1@@t': 'divider-width',
+        'boxHeight__20@@t': 'divider-height',
+        'boxColor__#dddddd': 'divider-color'
+      },
+      toneMetadataByPalette,
+      { webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY }
+    );
+
+    const core = out.core.button as Record<string, ClassNameByElementJSON>;
+    const palette = out.palettes['default.light'].button as Record<string, ClassNameByElementJSON>;
+
+    expect(core.e6.s?.['md:1']?.split(' ')).toEqual(
+      expect.arrayContaining(['divider-width', 'divider-height'])
+    );
+    expect(palette.e6.c?.s?.neutral).toEqual({ m: 'divider-color' });
+  });
+
   it('reuses the same atomic separator utilities without a dedicated bucket', () => {
     const profile = {
       scales: { boxWidth: 1 },
@@ -36,6 +88,18 @@ describe('generateClassNamesMapSplit', () => {
       breakpoints: { 'bp:all': 0 },
       global: { separators: { profiles: { subtle: profile } } },
       components: {
+        button: {
+          elements: {
+            e6: {
+              name: 'button-divider',
+              scales: {
+                boxWidth: { 's:md:1': 1 },
+                boxHeight: { 's:md:1': 20 }
+              },
+              palettes: profile.palettes
+            }
+          }
+        },
         separator: {
           elements: { e1: { name: 'line', separator: { 's:all': 'subtle' } } }
         },
@@ -50,6 +114,7 @@ describe('generateClassNamesMapSplit', () => {
       styleKeys,
       {
         'boxWidth__1@@t': 'thickness-1',
+        'boxHeight__20@@t': 'height-20',
         'boxColor__#dddddd': 'neutral-line'
       },
       toneMetadataByPalette,
@@ -58,6 +123,7 @@ describe('generateClassNamesMapSplit', () => {
 
     const separatorCore = out.core.separator as Record<string, ClassNameByElementJSON>;
     const dropdownCore = out.core.dropdown as Record<string, ClassNameByElementJSON>;
+    const buttonCore = out.core.button as Record<string, ClassNameByElementJSON>;
     const separatorPalette = out.palettes['default.light'].separator as Record<
       string,
       ClassNameByElementJSON
@@ -66,11 +132,19 @@ describe('generateClassNamesMapSplit', () => {
       string,
       ClassNameByElementJSON
     >;
+    const buttonPalette = out.palettes['default.light'].button as Record<
+      string,
+      ClassNameByElementJSON
+    >;
 
     expect(separatorCore.e1.s?.all).toBe('thickness-1');
     expect(dropdownCore.e7.s?.all).toBe('thickness-1');
+    expect(buttonCore.e6.s?.['md:1']?.split(' ')).toEqual(
+      expect.arrayContaining(['thickness-1', 'height-20'])
+    );
     expect(separatorPalette.e1.c?.s?.neutral).toEqual({ m: 'neutral-line' });
     expect(dropdownPalette.e7.c?.s?.neutral).toEqual({ m: 'neutral-line' });
+    expect(buttonPalette.e6.c?.s?.neutral).toEqual({ m: 'neutral-line' });
   });
 
   it('carries the Icon scale and both surface-context color branches from schema to class maps', () => {

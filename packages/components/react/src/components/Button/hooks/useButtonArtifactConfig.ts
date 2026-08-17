@@ -27,6 +27,8 @@ export type ButtonArtifactConfig = {
     iconPlacement: ButtonIconPlacement | undefined;
     iconSurfaceCorners: ButtonIconSurfaceCorners | undefined;
     iconTreatment: ButtonIconTreatment | undefined;
+    groupDivider: boolean | undefined;
+    disclosureDivider: boolean | undefined;
   };
 };
 
@@ -51,7 +53,9 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
       iconLayout: global?.components?.button?.options?.iconLayout,
       iconPlacement: global?.components?.button?.options?.iconPlacement,
       iconSurfaceCorners: global?.components?.button?.options?.iconSurfaceCorners,
-      iconTreatment: global?.components?.button?.options?.iconTreatment
+      iconTreatment: global?.components?.button?.options?.iconTreatment,
+      groupDivider: global?.components?.button?.options?.groupDivider,
+      disclosureDivider: global?.components?.button?.options?.disclosureDivider
     }
   };
 }

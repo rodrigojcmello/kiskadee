@@ -325,17 +325,26 @@
 
 /*
  * element disclosure / e5
- * Owns the final icon viewport, logical spacing, and optional internal divider.
+ * Owns the final icon viewport and logical spacing.
  */
 .k-btn-e5 {
   align-items: center;
   block-size: var(--k-bxh, 1em);
-  border-inline-start: var(--k-bdw, 0) solid var(--k-bdc, transparent);
   display: inline-flex;
   inline-size: var(--k-bxw, 1em);
   justify-content: center;
   margin-inline-start: var(--k-pdr, 0);
   padding-inline-start: var(--k-pdr, 0);
+  position: relative;
+}
+
+/*
+ * element disclosure / e5
+ * Removes label-to-disclosure spacing when the disclosure is the Button's only content slot.
+ */
+.k-btn > .k-btn-e5:only-child {
+  margin-inline-start: 0;
+  padding-inline-start: 0;
 }
 
 /*
@@ -346,4 +355,150 @@
 .k-btn-e5 > .k-gly {
   block-size: 100%;
   inline-size: 100%;
+}
+
+/*
+ * extra element for e1 / x3
+ * Connects sibling Button roots without clipping their independent focus rings.
+ */
+.k-btn-x3 {
+  align-items: stretch;
+  align-self: flex-start;
+  display: inline-flex;
+  isolation: isolate;
+  position: relative;
+}
+
+/*
+ * element button root / e1
+ * Overrides the standalone Button alignment so every direct group member shares one height.
+ */
+.k-btn-x3 > .k-btn {
+  align-self: stretch;
+  position: relative;
+}
+
+/*
+ * element button root / e1
+ * Removes logical-start corners only when another Button is connected immediately before it.
+ */
+.k-btn-x3 > .k-btn + .k-btn,
+.k-btn-x3 > .k-btn + .k-btn-e6a + .k-btn {
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
+}
+
+/*
+ * element button root / e1
+ * Removes logical-end corners only when another Button is connected immediately after it.
+ */
+.k-btn-x3 > .k-btn:has(+ .k-btn),
+.k-btn-x3 > .k-btn:has(+ .k-btn-e6a + .k-btn) {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
+}
+
+/*
+ * element button root / e1
+ * Collapses matching authored borders when the preset does not publish a group divider.
+ */
+.k-btn-x3:not(.k-btn-x3a) > .k-btn + .k-btn {
+  margin-inline-start: calc(var(--k-bdw) * -1);
+}
+
+/*
+ * element button root / e1
+ * Removes the logical-start border and restores its compensated padding beside e6.
+ */
+.k-btn-x3a > .k-btn + .k-btn-e6a + .k-btn {
+  border-inline-start-width: 0;
+  padding-inline-start: var(--k-pdl);
+}
+
+/*
+ * element button root / e1
+ * Removes the logical-end border and restores its compensated padding beside e6.
+ */
+.k-btn-x3a > .k-btn:has(+ .k-btn-e6a + .k-btn) {
+  border-inline-end-width: 0;
+  padding-inline-end: var(--k-pdr);
+}
+
+/*
+ * element button root / e1
+ * Lets the final border radius clip activation feedback after internal corners become straight.
+ */
+.k-btn-x3 > .k-btn.k-btn-e1a {
+  clip-path: none;
+  overflow: var(--k-af-overflow, hidden);
+}
+
+/*
+ * element button root modifiers 'b' and 'c' / e1b and e1c
+ * Raises active or fading overflow feedback above sibling Button surfaces but below e6.
+ */
+.k-btn-x3 > .k-btn.k-btn-e1b,
+.k-btn-x3 > .k-btn.k-btn-e1c {
+  z-index: 1;
+}
+
+/*
+ * element button root / e1
+ * Gives a hovered Button ownership only when the group relies on overlapped authored borders.
+ */
+.k-btn-x3:not(.k-btn-x3a) > .k-btn:hover,
+.k-btn-x3:not(.k-btn-x3a) > .k-btn.-h.-a {
+  z-index: 2;
+}
+
+/*
+ * element button root / e1
+ * Raises the focused Button above siblings without displacing an authoritative e6 seam.
+ */
+.k-btn-x3 > .k-btn:focus-visible,
+.k-btn-x3 > .k-btn.-f.-k.-a {
+  z-index: 3;
+}
+
+/*
+ * element button divider modifier 'a' / e6a
+ * Reserves no layout space and stays above every Button interaction surface at the seam.
+ */
+.k-btn-e6a {
+  align-self: stretch;
+  flex: 0 0 0;
+  inline-size: 0;
+  pointer-events: none;
+  position: relative;
+  z-index: 4;
+}
+
+/*
+ * element button divider modifier 'a' / e6a
+ * Paints the preset line only at a real Button-to-Button boundary.
+ */
+.k-btn-x3 > .k-btn + .k-btn-e6a:has(+ .k-btn)::before {
+  background-color: inherit;
+  block-size: var(--k-bxh);
+  content: '';
+  inline-size: var(--k-bxw);
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+/*
+ * element button divider modifier 'b' / e6b
+ * Paints the same preset line inside the disclosure viewport without adding spacing.
+ */
+.k-btn-e6b {
+  background-color: inherit;
+  block-size: var(--k-bxh);
+  inline-size: var(--k-bxw);
+  inset-block-start: 50%;
+  inset-inline-start: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: translateY(-50%);
 }

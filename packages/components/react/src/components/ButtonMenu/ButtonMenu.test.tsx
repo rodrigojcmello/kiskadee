@@ -2,7 +2,7 @@
 
 import { defineIconFamily } from '@kiskadee/icons/interface';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { IconFamilyProvider } from '../../shared/contexts/IconFamilyContext.tsx';
 import {
@@ -99,6 +99,49 @@ const fluentFeedbackContext: KiskadeeContextValue = {
   }
 };
 
+const groupedShadowContext: KiskadeeContextValue = {
+  ...context,
+  classesMap: {
+    button: {
+      e1: {
+        e: {
+          h: 'button-rest-shadow'
+        }
+      }
+    },
+    dropdown: {
+      e1: {
+        e: {
+          h: {
+            all: 'dropdown-shadow',
+            'lg:1': 'dropdown-shadow-large'
+          }
+        }
+      }
+    }
+  }
+};
+
+const groupDividerContext: KiskadeeContextValue = {
+  ...context,
+  classesMap: {
+    button: {
+      e6: {
+        s: { all: 'button-divider-size' },
+        c: { s: { neutral: { m: 'button-divider-color' } } }
+      }
+    },
+    dropdown: {}
+  },
+  global: {
+    components: {
+      button: {
+        options: { groupDivider: true }
+      }
+    }
+  }
+};
+
 function renderButtonMenu(children: ReactNode, contextValue: KiskadeeContextValue = context) {
   return render(
     <KiskadeeContext.Provider value={contextValue}>
@@ -123,11 +166,15 @@ describe('ButtonMenu', () => {
             </ButtonMenu.Item>
           </ButtonMenu.Group>
         </ButtonMenu.Content>
-      </ButtonMenu.Root>
+      </ButtonMenu.Root>,
+      groupDividerContext
     );
     const trigger = result.getByRole('button', { name: 'Actions' });
+    const triggerGroup = trigger.parentElement;
 
     expect(trigger.id).toBe('author-trigger');
+    expect(triggerGroup?.querySelectorAll(':scope > .k-btn')).toHaveLength(1);
+    expect(triggerGroup?.querySelector('.k-btn-e6a')).toBeNull();
     expect(trigger.classList.contains('-p')).toBe(false);
     expect(trigger.getAttribute('aria-pressed')).toBeNull();
 
@@ -239,12 +286,16 @@ describe('ButtonMenu', () => {
             </ButtonMenu.Item>
           </ButtonMenu.Group>
         </ButtonMenu.Content>
-      </ButtonMenu.Root>
+      </ButtonMenu.Root>,
+      groupDividerContext
     );
     const action = result.getByRole('button', { name: 'Save' });
     const trigger = result.getByRole('button', { name: 'More save actions' });
 
     expect(action.parentElement).toBe(trigger.parentElement);
+    expect(action.parentElement?.classList.contains('k-btn-x3')).toBe(true);
+    expect(action.parentElement?.querySelectorAll(':scope > .k-btn-e6a')).toHaveLength(1);
+    expect(result.container.querySelector('.k-bmn')).toBeNull();
     expect(action.querySelector('button')).toBeNull();
     expect(trigger.querySelector('button')).toBeNull();
     expect(action.getAttribute('type')).toBe('submit');
@@ -263,6 +314,69 @@ describe('ButtonMenu', () => {
     expect(result.getByRole('menuitem', { name: 'Open archive' }).getAttribute('href')).toBe(
       '/archive'
     );
+  });
+
+  it('composes split controls nested in Fragments into the same Button.Group', async () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <Fragment key="split-controls">
+          <ButtonMenu.Action>
+            <Button.Label>Save</Button.Label>
+          </ButtonMenu.Action>
+          <Fragment key="nested-trigger">
+            <ButtonMenu.Trigger aria-label="More save actions" />
+          </Fragment>
+        </Fragment>
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Item textValue="Save as copy">
+              <ButtonMenu.Label>Save as copy</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>,
+      groupDividerContext
+    );
+
+    const action = result.getByRole('button', { name: 'Save' });
+    const trigger = result.getByRole('button', { name: 'More save actions' });
+    const group = action.parentElement;
+
+    expect(group).toBe(trigger.parentElement);
+    expect(group?.classList.contains('k-btn-x3')).toBe(true);
+    expect(group?.querySelectorAll(':scope > .k-btn')).toHaveLength(2);
+    expect(group?.querySelectorAll(':scope > .k-btn-e6a')).toHaveLength(1);
+
+    fireEvent.click(trigger);
+    await result.findByRole('menu');
+  });
+
+  it('keeps popup and connected-group shadow ownership independent', () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root buttonGroup={{ shadow: true }} defaultOpen shadow="s:lg:1">
+        <ButtonMenu.Action>
+          <Button.Label>Save</Button.Label>
+        </ButtonMenu.Action>
+        <ButtonMenu.Trigger aria-label="More save actions" />
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Item textValue="Save as copy">
+              <ButtonMenu.Label>Save as copy</ButtonMenu.Label>
+            </ButtonMenu.Item>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>,
+      groupedShadowContext
+    );
+
+    const group = result.container.querySelector('.k-btn-x3');
+    const action = result.getByRole('button', { name: 'Save' });
+    const popup = result.baseElement.querySelector('.k-ddn-e1');
+
+    expect(group?.classList.contains('button-rest-shadow')).toBe(true);
+    expect(action.classList.contains('button-rest-shadow')).toBe(false);
+    expect(popup?.classList.contains('dropdown-shadow')).toBe(true);
+    expect(popup?.classList.contains('dropdown-shadow-large')).toBe(true);
   });
 
   it('forwards the styled Button root ref used by overlay anchors', () => {

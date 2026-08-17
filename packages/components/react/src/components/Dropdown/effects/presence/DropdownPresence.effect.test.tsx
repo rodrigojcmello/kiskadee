@@ -16,14 +16,23 @@ type FakeMotionProps = HTMLAttributes<HTMLDivElement> & {
 vi.mock('motion/react', async () => {
   const React = await import('react');
   const MotionDiv = React.forwardRef<HTMLDivElement, FakeMotionProps>(function MotionDiv(
-    { animate, initial: _initial, onAnimationComplete: _onAnimationComplete, transition, ...props },
+    {
+      animate,
+      initial: _initial,
+      onAnimationComplete: _onAnimationComplete,
+      style,
+      transition,
+      ...props
+    },
     ref
   ) {
     return React.createElement('div', {
       ...props,
       ref,
       'data-animate': JSON.stringify(animate),
-      'data-transition': JSON.stringify(transition)
+      'data-style-owns-opacity': String(Object.hasOwn(style ?? {}, 'opacity')),
+      'data-transition': JSON.stringify(transition),
+      style
     });
   });
 
@@ -100,18 +109,45 @@ describe('DropdownPresenceEffect placement staging', () => {
     const result = render(renderEffect(false, 'bottom-start'));
     const surface = result.getByTestId('surface');
 
-    expect(surface.style.visibility).toBe('hidden');
+    expect(surface.style.opacity).toBe('0');
+    expect(surface.style.pointerEvents).toBe('none');
+    expect(surface.style.visibility).toBe('');
     expect(readAnimation(surface)).toMatchObject({ opacity: 0, x: 0, y: 0 });
 
     result.rerender(renderEffect(true, 'top-start'));
-    expect(surface.style.visibility).toBe('hidden');
+    expect(surface.style.opacity).toBe('0');
     expect(readAnimation(surface)).toMatchObject({ opacity: 0, x: 0, y: 12 });
 
     flushAnimationFrame();
-    expect(surface.style.visibility).toBe('hidden');
+    expect(surface.style.opacity).toBe('0');
     flushAnimationFrame();
-    expect(surface.style.visibility).toBe('');
+    expect(surface.style.opacity).toBe('');
+    expect(surface.style.pointerEvents).toBe('');
     expect(readAnimation(surface)).toMatchObject({ opacity: 1, x: 0, y: 0 });
+  });
+
+  it('returns opacity ownership to Motion before animating the exit', () => {
+    const renderEffect = (open: boolean) => (
+      <DropdownPresenceEffect
+        onExitComplete={vi.fn()}
+        open={open}
+        positioned
+        placement="bottom-start"
+        profile="fade-translate"
+        profiles={profiles}
+        surfaceProps={{ ref: null, 'data-testid': 'surface', children: 'Content' }}
+      />
+    );
+    const result = render(renderEffect(true));
+    const surface = result.getByTestId('surface');
+
+    flushAnimationFrame();
+    flushAnimationFrame();
+    expect(surface.dataset.styleOwnsOpacity).toBe('false');
+
+    result.rerender(renderEffect(false));
+    expect(surface.dataset.styleOwnsOpacity).toBe('false');
+    expect(readAnimation(surface)).toMatchObject({ opacity: 0, x: 0, y: -12 });
   });
 
   it('reserves natural height and grows upward after a top placement resolves', () => {
@@ -132,21 +168,24 @@ describe('DropdownPresenceEffect placement staging', () => {
     expect(positioner).not.toBeNull();
     Object.defineProperty(positioner, 'scrollHeight', { configurable: true, value: 240 });
 
-    expect(surface.style.visibility).toBe('hidden');
+    expect(surface.style.opacity).toBe('0');
+    expect(surface.style.pointerEvents).toBe('none');
+    expect(surface.style.visibility).toBe('');
     expect(readAnimation(surface)).toMatchObject({ height: 'auto' });
 
     result.rerender(renderEffect(true, 'top-start'));
     expect(positioner?.style.minHeight).toBe('240px');
     expect(positioner?.style.display).toBe('flex');
     expect(positioner?.style.justifyContent).toBe('flex-end');
-    expect(surface.style.visibility).toBe('hidden');
+    expect(surface.style.opacity).toBe('0');
     expect(surface.style.height).toBe('0px');
     expect(readAnimation(surface)).toMatchObject({ height: 0 });
 
     flushAnimationFrame();
-    expect(surface.style.visibility).toBe('hidden');
+    expect(surface.style.opacity).toBe('0');
     flushAnimationFrame();
-    expect(surface.style.visibility).toBe('');
+    expect(surface.style.opacity).toBe('');
+    expect(surface.style.pointerEvents).toBe('');
     expect(readAnimation(surface)).toMatchObject({ height: 'auto' });
   });
 

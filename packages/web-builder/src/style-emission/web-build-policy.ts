@@ -100,11 +100,13 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           paddingRightEmission: 'token'
         },
         e5: {
-          borderColorEmission: 'token',
-          borderWidthEmission: 'token',
           boxHeightEmission: 'token',
           boxWidthEmission: 'token',
           paddingRightEmission: 'token'
+        },
+        e6: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
         }
       }
     },

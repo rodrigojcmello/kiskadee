@@ -215,9 +215,10 @@ export function DropdownPresenceEffect({
   const entering = open && visualPhase === 'ready';
   const commonStyle = {
     ...style,
-    pointerEvents: open ? style?.pointerEvents : 'none',
+    ...(preparing ? { opacity: 0 } : {}),
+    pointerEvents: open && !preparing ? style?.pointerEvents : 'none',
     transformOrigin: resolveTransformOrigin(effectivePlacement),
-    visibility: preparing ? 'hidden' : style?.visibility
+    visibility: style?.visibility
   };
 
   if (profile === 'grow-height') {

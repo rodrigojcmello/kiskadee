@@ -1,4 +1,3 @@
-import './ButtonMenu.structural.scss';
 import type { DropdownIntent } from '@kiskadee/core';
 import {
   Menu as HeadlessMenu,
@@ -19,9 +18,10 @@ import type {
   MouseEvent as ReactMouseEvent,
   Ref
 } from 'react';
-import { forwardRef } from 'react';
+import { forwardRef, isValidElement } from 'react';
+import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { Button } from '../Button/Button.tsx';
-import type { ButtonProps } from '../Button/Button.types.ts';
+import type { ButtonGroupProps, ButtonProps } from '../Button/Button.types.ts';
 import { Dropdown } from '../Dropdown/Dropdown.tsx';
 import type {
   DropdownEndTextProps,
@@ -31,12 +31,24 @@ import type {
   DropdownVisualProps
 } from '../Dropdown/Dropdown.types.ts';
 
-export type ButtonMenuRootProps = MenuRootProps & DropdownVisualProps;
+export type ButtonMenuButtonGroupProps = Pick<
+  ButtonGroupProps,
+  'scale' | 'radius' | 'emphasis' | 'intent' | 'surfaceContext' | 'shadow'
+>;
 
-export type ButtonMenuActionProps = ButtonProps;
+type ButtonMenuGroupOwnedButtonProp = keyof ButtonMenuButtonGroupProps | 'radiusEffect';
+
+export type ButtonMenuRootProps = MenuRootProps &
+  DropdownVisualProps & {
+    /** Shared visual contract for the one- or two-button trigger group. */
+    buttonGroup?: ButtonMenuButtonGroupProps;
+  };
+
+export type ButtonMenuActionProps = Omit<ButtonProps, ButtonMenuGroupOwnedButtonProp>;
 
 export type ButtonMenuTriggerProps = Omit<
   ButtonProps,
+  | ButtonMenuGroupOwnedButtonProp
   | 'aria-controls'
   | 'aria-expanded'
   | 'aria-haspopup'
@@ -101,6 +113,7 @@ function ButtonMenuPopupVisual({
 }
 
 function ButtonMenuRoot({
+  buttonGroup,
   children,
   scale,
   radius,
@@ -109,6 +122,19 @@ function ButtonMenuRoot({
   classNames,
   ...menuProps
 }: ButtonMenuRootProps) {
+  const buttonChildren = [];
+  const popupChildren = [];
+  for (const child of flattenFragmentChildren(children)) {
+    if (
+      isValidElement(child) &&
+      (child.type === ButtonMenuAction || child.type === ButtonMenuTrigger)
+    ) {
+      buttonChildren.push(child);
+    } else {
+      popupChildren.push(child);
+    }
+  }
+
   return (
     <Dropdown.VisualProvider
       scale={scale}
@@ -118,15 +144,16 @@ function ButtonMenuRoot({
       classNames={classNames}
     >
       <HeadlessMenu.Root {...menuProps}>
-        <div className="k-bmn">{children}</div>
+        <Button.Group {...buttonGroup}>{buttonChildren}</Button.Group>
+        {popupChildren}
       </HeadlessMenu.Root>
     </Dropdown.VisualProvider>
   );
 }
 
 const ButtonMenuAction = forwardRef<HTMLButtonElement, ButtonMenuActionProps>(
-  function ButtonMenuAction({ className, ...props }, ref) {
-    return <Button {...props} ref={ref} className={`k-bmn-a ${className ?? ''}`.trim()} />;
+  function ButtonMenuAction(props, ref) {
+    return <Button {...props} ref={ref} />;
   }
 );
 
@@ -161,7 +188,7 @@ const ButtonMenuTrigger = forwardRef<HTMLButtonElement, ButtonMenuTriggerProps>(
               type="button"
               status={state.open ? 'pressed' : undefined}
               activationFeedback={state.open ? false : activationFeedback}
-              className={`k-bmn-t ${className ?? ''}`.trim()}
+              className={className}
             >
               {children}
               <Button.Disclosure />

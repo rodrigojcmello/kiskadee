@@ -146,6 +146,10 @@ block end, so a collision-flipped submenu grows upward; `left-start` and `right-
 grow downward from the block start. This decision follows the final placement rather than the
 initial requested placement.
 
+Preparation hides only the paint with opacity and blocks pointer interaction; it never applies
+`visibility: hidden`. Semantic owners can therefore move focus into the popup immediately, before
+the visual entrance completes, without making accessibility depend on Motion timing.
+
 Each animated Surface registers an opaque identity with the presence lifecycle. Exit retention is
 released after every registered Surface completes; a composition without a Surface releases
 immediately. This explicit registration avoids child inspection and prevents an adapter consumer
@@ -181,6 +185,12 @@ bounds; no preset schema, generated utility, or browser style lookup is introduc
 
 - without `ButtonMenu.Action`, Trigger is one menu button;
 - with `ButtonMenu.Action`, Action and Trigger are two sibling Buttons and two tab stops;
+- Action and Trigger are the only children composed into the shared `Button.Group`; popup content
+  remains outside that visual topology, including when it is rendered inline rather than portalled;
+- `ButtonMenu.Root.buttonGroup` owns the trigger group's `scale`, `radius`, `emphasis`, `intent`,
+  `surfaceContext`, and optional static Rest shadow;
+- the Root's top-level `scale`, `radius`, and `shadow` continue to configure the Dropdown surface,
+  so popup elevation is never reinterpreted as Button-group elevation;
 - only Trigger owns `aria-haspopup`, `aria-expanded`, `aria-controls`, and menu opening;
 - while open, Trigger projects Button's visual `pressed` status without becoming a toggle or
   emitting `aria-pressed`;
@@ -207,5 +217,6 @@ Radio selection and recursive submenus remain ButtonMenu orchestration, not Drop
 - SubTrigger injects the canonical logical `chevron-end`; icon-family RTL mirroring supplies the
   opposite direction without a physical icon name or consumer-authored action.
 
-ButtonMenu has no schema of its own. Connected corners and seam geometry are structural composition;
-creating a second Button schema would introduce visual drift.
+ButtonMenu has no schema of its own. It reuses `Button.Group` for connected corners, Rest shadow,
+border collapse, and the optional `Button.e6` seam, while Dropdown remains the sole owner of popup
+appearance. Creating parallel ButtonMenu paint or seam rules would introduce visual drift.

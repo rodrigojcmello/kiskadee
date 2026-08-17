@@ -23,6 +23,12 @@ function requireButtonIconElement() {
   return { ...element, palettes: element.palettes };
 }
 
+function requireButtonDividerElement() {
+  const element = schema.components.button?.elements.e6;
+  if (!element?.palettes) throw new Error('Fluent Button divider schema is missing');
+  return { ...element, palettes: element.palettes };
+}
+
 function omitPending(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(omitPending);
   if (typeof value !== 'object' || value === null) return value;
@@ -37,11 +43,42 @@ function omitPending(value: unknown): unknown {
 describe('Fluent 2 Button surface contexts', () => {
   it('publishes logical icon composition defaults', () => {
     expect(schema.components.button?.options).toEqual({
+      groupDivider: true,
+      disclosureDivider: false,
       iconLayout: 'inline',
       iconPlacement: 'leading',
       iconSurfaceCorners: 'edge',
       iconTreatment: 'plain'
     });
+  });
+
+  it('publishes a Rest-only divider matching the Button icon viewport', () => {
+    const divider = requireButtonDividerElement();
+
+    expect(divider.scales).toEqual({
+      boxWidth: {
+        's:sm:1': 1,
+        's:md:1': 1,
+        's:lg:1': 1
+      },
+      boxHeight: {
+        's:sm:1': 20,
+        's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+        's:lg:1': 24
+      }
+    });
+
+    for (const theme of THEMES) {
+      for (const context of ['onSubtle', 'onVivid'] as const) {
+        expect(divider.palettes.default?.[theme]?.[context]?.boxColor).toEqual({
+          neutral: {
+            medium: {
+              rest: theme === 'light' ? '#dce0ed' : theme === 'dark' ? '#4b4e58' : '#2e313a'
+            }
+          }
+        });
+      }
+    }
   });
 
   it('preserves the three official sizes and uses large geometry for the responsive mobile default', () => {

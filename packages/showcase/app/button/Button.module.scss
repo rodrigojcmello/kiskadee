@@ -18,6 +18,7 @@ $height: 64px;
   opacity: 0.68;
 }
 
+.buttonGroupSection,
 .buttonMenuSection {
   display: grid;
   gap: 12px;
@@ -25,18 +26,29 @@ $height: 64px;
   width: 100%;
 }
 
+.buttonGroupSection > h3,
+.buttonGroupSection h4,
 .buttonMenuSection > h3,
 .buttonMenuSection h4,
 .buttonMenuStatus {
   margin: 0;
 }
 
+.buttonGroupGrid,
 .buttonMenuGrid {
   display: grid;
   gap: 16px;
+}
+
+.buttonGroupGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.buttonMenuGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.buttonGroupGrid article,
 .buttonMenuGrid article {
   align-content: start;
   background: color-mix(in srgb, currentColor 3%, transparent);
@@ -79,12 +91,10 @@ $height: 64px;
 }
 
 .richTextToolbar {
-  align-items: center;
   border: 0;
   border-block: 1px solid color-mix(in srgb, currentColor 10%, transparent);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  gap: 12px;
   margin: 0;
   min-inline-size: 0;
   padding: 10px 12px;
@@ -100,10 +110,21 @@ $height: 64px;
   white-space: nowrap;
 }
 
-.richTextToolbarGroup {
+.richTextToolbarMode {
+  display: grid;
+  gap: 6px;
+  min-inline-size: 0;
+}
+
+.richTextToolbarRow {
   align-items: center;
   display: flex;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.richTextToolbarGroup {
+  align-items: center;
 
   + .richTextToolbarGroup {
     border-inline-start: 1px solid color-mix(in srgb, currentColor 14%, transparent);
@@ -113,6 +134,11 @@ $height: 64px;
   :global(.k-btn) {
     align-self: center;
   }
+}
+
+.richTextToolbarLooseGroup {
+  display: flex;
+  gap: 4px;
 }
 
 .richTextEditorCanvas {
@@ -632,6 +658,7 @@ $height: 64px;
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .buttonGroupGrid,
   .buttonMenuGrid {
     grid-template-columns: minmax(0, 1fr);
   }

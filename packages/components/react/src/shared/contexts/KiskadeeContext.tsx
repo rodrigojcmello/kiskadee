@@ -81,6 +81,8 @@ export type KiskadeeGlobalArtifact = {
         iconPlacement?: ButtonIconPlacement;
         iconSurfaceCorners?: ButtonIconSurfaceCorners;
         iconTreatment?: ButtonIconTreatment;
+        groupDivider?: boolean;
+        disclosureDivider?: boolean;
       };
       effects?: {
         activationFeedback?: ActivationFeedbackSetting;

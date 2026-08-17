@@ -154,6 +154,16 @@ describe('Headless Menu', () => {
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
   });
 
+  it('restores item focus when native click activation leaves focus on the trigger', async () => {
+    const result = render(<Example />);
+    const trigger = result.getByRole('button', { name: 'Actions' });
+
+    fireEvent.click(trigger);
+    trigger.focus();
+
+    await waitFor(() => expect(document.activeElement?.textContent).toBe('Duplicate'));
+  });
+
   it('uses menu semantics, moves real focus and restores it after selection', async () => {
     const onSelect = vi.fn();
     const result = render(<Example onSelect={onSelect} />);

@@ -5,6 +5,27 @@ import {
   resolveElementStyleEmissionPolicy
 } from './web-build-policy.ts';
 
+describe('Button Web style-emission policy', () => {
+  it('publishes divider dimensions as tokens while keeping its color atomic', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'button',
+      'e6'
+    );
+
+    expect(policy.boxWidthEmission).toBe('token');
+    expect(policy.boxHeightEmission).toBe('token');
+    expect(policy.boxColorEmission).toBe('direct');
+  });
+
+  it('keeps border emission out of the disclosure slot', () => {
+    const disclosurePolicy = DEFAULT_WEB_STYLE_EMISSION_POLICY.components?.button?.elements?.e5;
+
+    expect(disclosurePolicy).not.toHaveProperty('borderWidthEmission');
+    expect(disclosurePolicy).not.toHaveProperty('borderColorEmission');
+  });
+});
+
 describe('separator Web style-emission policy', () => {
   it('shares explicit token thickness between Separator and Dropdown', () => {
     expect(

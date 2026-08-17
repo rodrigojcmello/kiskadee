@@ -1,10 +1,13 @@
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
+  Color,
   ColorProperty,
   ColorSchema,
+  ComponentEmphasis,
   SegmentName,
   SurfaceContextPalette,
+  SystemButtonIntent,
   ThemeMode
 } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
@@ -38,6 +41,10 @@ export type ButtonIconSurfaceCorners = 'edge' | 'all';
 export type ButtonIconTreatment = 'plain' | 'surface';
 
 export type ButtonOptions = {
+  /** Draws the preset-authored divider at every connected Button seam. */
+  groupDivider?: boolean;
+  /** Draws the preset-authored divider before the trailing disclosure slot. */
+  disclosureDivider?: boolean;
   /**
    * Controls whether icon and label form one centered group or occupy
    * independent edge/center tracks.
@@ -58,8 +65,9 @@ export type ButtonOptions = {
  * - e3: button icon
  * - e4: optional icon region/surface
  * - e5: optional trailing disclosure indicator
+ * - e6: optional decorative divider used by connected and disclosure compositions
  */
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 /**
  * e1 — button container/surface
@@ -118,14 +126,43 @@ export type ButtonIconRegionElementStyle<TSegmentName extends SegmentName = neve
  * e5 — optional trailing disclosure indicator
  */
 export type ButtonDisclosureElementStyle<TSegmentName extends SegmentName = never> = Partial<{
-  decorations: Pick<DecorationSchema, 'borderStyle'>;
   iconSize: ElementIconSize;
-  scales: ElementScalesByProperty<
-    'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'borderWidth'
-  >;
-  palettes: ElementPalettesByColor<TSegmentName, 'textColor' | 'borderColor'>;
+  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
+  palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
   ElementNameMetadata;
+
+type ButtonDividerStateColorMap = {
+  rest: Color;
+};
+
+type ButtonDividerColorSchema = {
+  boxColor: Partial<
+    Record<SystemButtonIntent, Partial<Record<ComponentEmphasis, ButtonDividerStateColorMap>>>
+  >;
+};
+
+type ButtonDividerPalettes<TSegmentName extends SegmentName> = Partial<
+  Record<
+    TSegmentName | 'default' | 'dynamic',
+    Partial<Record<ThemeMode, SurfaceContextPalette<ButtonDividerColorSchema>>>
+  >
+>;
+
+/**
+ * e6 — optional decorative divider
+ *
+ * The divider owns only its physical line. Composition-specific positioning and spacing remain
+ * structural concerns of Button and Button.Group.
+ */
+export type ButtonDividerElementStyle<TSegmentName extends SegmentName = never> = {
+  name: string;
+  scales: {
+    boxWidth: ScaleBySize;
+    boxHeight: ScaleBySize;
+  };
+  palettes: ButtonDividerPalettes<TSegmentName>;
+};
 
 export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e1?: ButtonContainerElementStyle<TSegmentName>;
@@ -133,6 +170,7 @@ export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e3?: ButtonIconElementStyle<TSegmentName>;
   e4?: ButtonIconRegionElementStyle<TSegmentName>;
   e5?: ButtonDisclosureElementStyle<TSegmentName>;
+  e6?: ButtonDividerElementStyle<TSegmentName>;
 };
 
 type ElementContractRules = {
@@ -145,12 +183,14 @@ type ElementContractRules = {
 
 const BUTTON_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
 const BUTTON_OPTION_KEYS = [
+  'groupDivider',
+  'disclosureDivider',
   'iconLayout',
   'iconPlacement',
   'iconTreatment',
   'iconSurfaceCorners'
 ] as const;
-const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
+const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
@@ -189,10 +229,13 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
     palettes: ['boxColor', 'textColor']
   },
   e5: {
-    decorations: ['borderStyle'],
     iconSize: true,
-    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderWidth'],
-    palettes: ['textColor', 'borderColor']
+    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    palettes: ['textColor']
+  },
+  e6: {
+    scales: ['boxWidth', 'boxHeight'],
+    palettes: ['boxColor']
   }
 };
 
@@ -222,6 +265,88 @@ function validatePalettes(
   for (const issue of getElementPaletteValidationIssues(value, allowedColorKeys)) {
     const issuePath = issue.path.length > 0 ? `${path}.${issue.path.join('.')}` : path;
     issues.push(`${issuePath}: ${issue.message}`);
+  }
+}
+
+function validatePositiveScaleMap(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value) || Object.keys(value).length === 0) {
+    issues.push(`${path}: expected non-empty responsive scale`);
+    return;
+  }
+
+  const validateLeaf = (leaf: unknown, leafPath: string): void => {
+    if (typeof leaf === 'number') {
+      if (!Number.isFinite(leaf) || leaf <= 0) {
+        issues.push(`${leafPath}: expected finite number greater than 0`);
+      }
+      return;
+    }
+
+    if (!isRecord(leaf) || Object.keys(leaf).length === 0) {
+      issues.push(`${leafPath}: expected finite number or non-empty breakpoint map`);
+      return;
+    }
+
+    for (const [breakpoint, responsiveLeaf] of Object.entries(leaf)) {
+      if (
+        typeof responsiveLeaf !== 'number' ||
+        !Number.isFinite(responsiveLeaf) ||
+        responsiveLeaf <= 0
+      ) {
+        issues.push(`${leafPath}.${breakpoint}: expected finite number greater than 0`);
+      }
+    }
+  };
+
+  for (const [scale, leaf] of Object.entries(value)) {
+    validateLeaf(leaf, `${path}.${scale}`);
+  }
+}
+
+function validateRestOnlyPaletteStates(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value)) return;
+
+  if (Object.hasOwn(value, 'rest')) {
+    for (const state of Object.keys(value)) {
+      if (state !== 'rest') {
+        issues.push(`${path}.${state}: only Rest is allowed for the Button divider`);
+      }
+    }
+    return;
+  }
+
+  for (const [key, child] of Object.entries(value)) {
+    validateRestOnlyPaletteStates(child, `${path}.${key}`, issues);
+  }
+}
+
+function hasRestPaletteValue(value: unknown): boolean {
+  if (!isRecord(value)) return false;
+  if (Object.hasOwn(value, 'rest') && value.rest !== undefined) return true;
+  return Object.values(value).some(hasRestPaletteValue);
+}
+
+function validateButtonDividerContract(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value)) return;
+
+  if (value.effects !== undefined) {
+    issues.push(`${path}.effects: not allowed for the Button divider`);
+  }
+
+  if (!isRecord(value.scales)) {
+    issues.push(`${path}.scales: required object`);
+  } else {
+    validatePositiveScaleMap(value.scales.boxWidth, `${path}.scales.boxWidth`, issues);
+    validatePositiveScaleMap(value.scales.boxHeight, `${path}.scales.boxHeight`, issues);
+  }
+
+  if (!isRecord(value.palettes) || Object.keys(value.palettes).length === 0) {
+    issues.push(`${path}.palettes: expected non-empty object`);
+  } else {
+    validateRestOnlyPaletteStates(value.palettes, `${path}.palettes`, issues);
+    if (!hasRestPaletteValue(value.palettes)) {
+      issues.push(`${path}.palettes: expected at least one boxColor Rest value`);
+    }
   }
 }
 
@@ -305,6 +430,12 @@ export function validateButtonComponentContract(
     } else {
       validateAllowedKeys(value.options, BUTTON_OPTION_KEYS, `${path}.options`, issues);
 
+      for (const key of ['groupDivider', 'disclosureDivider'] as const) {
+        if (value.options[key] !== undefined && typeof value.options[key] !== 'boolean') {
+          issues.push(`${path}.options.${key}: expected boolean`);
+        }
+      }
+
       if (
         value.options.iconLayout !== undefined &&
         value.options.iconLayout !== 'inline' &&
@@ -351,6 +482,17 @@ export function validateButtonComponentContract(
     const element = elements[key];
     if (element === undefined) continue;
     validateElementContract(element, `${path}.elements.${key}`, BUTTON_RULES[key], issues);
+    if (key === 'e6') {
+      validateButtonDividerContract(element, `${path}.elements.e6`, issues);
+    }
+  }
+
+  if (
+    isRecord(value.options) &&
+    (value.options.groupDivider === true || value.options.disclosureDivider === true) &&
+    elements.e6 === undefined
+  ) {
+    issues.push(`${path}.options: enabled divider defaults require components.button.elements.e6`);
   }
 
   if (

@@ -184,23 +184,56 @@ export function ButtonIconExamples({
         </Text>
         <fieldset className={styles.richTextToolbar}>
           <legend className={styles.richTextToolbarLegend}>Rich text formatting controls</legend>
-          {RICH_TEXT_ACTION_GROUPS.map((actions) => (
-            <div className={styles.richTextToolbarGroup} key={actions[0].label}>
-              {actions.map(({ icon, label }) => (
-                <KButton
-                  aria-label={label}
-                  emphasis="medium"
-                  intent="neutral"
-                  key={label}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                  title={label}
+          <div className={styles.richTextToolbarMode}>
+            <Text as="span" profile={textProfiles.caption}>
+              Independent buttons
+            </Text>
+            <div className={styles.richTextToolbarRow}>
+              {RICH_TEXT_ACTION_GROUPS.map((actions) => (
+                <div
+                  className={`${styles.richTextToolbarGroup} ${styles.richTextToolbarLooseGroup}`}
+                  key={actions[0].label}
                 >
-                  <KButton.Icon name={icon} />
-                </KButton>
+                  {actions.map(({ icon, label }) => (
+                    <KButton
+                      aria-label={label}
+                      emphasis="medium"
+                      intent="neutral"
+                      key={label}
+                      scale={scale}
+                      surfaceContext={surfaceContext}
+                      title={label}
+                    >
+                      <KButton.Icon name={icon} />
+                    </KButton>
+                  ))}
+                </div>
               ))}
             </div>
-          ))}
+          </div>
+          <div className={styles.richTextToolbarMode}>
+            <Text as="span" profile={textProfiles.caption}>
+              Connected Button groups
+            </Text>
+            <div className={styles.richTextToolbarRow}>
+              {RICH_TEXT_ACTION_GROUPS.map((actions) => (
+                <KButton.Group
+                  className={styles.richTextToolbarGroup}
+                  emphasis="medium"
+                  intent="neutral"
+                  key={actions[0].label}
+                  scale={scale}
+                  surfaceContext={surfaceContext}
+                >
+                  {actions.map(({ icon, label }) => (
+                    <KButton aria-label={label} key={label} title={label}>
+                      <KButton.Icon name={icon} />
+                    </KButton>
+                  ))}
+                </KButton.Group>
+              ))}
+            </div>
+          </div>
         </fieldset>
         <div className={styles.richTextEditorCanvas}>
           <Text as="p" profile={textProfiles.body}>

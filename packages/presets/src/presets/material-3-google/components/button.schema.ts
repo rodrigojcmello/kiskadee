@@ -537,8 +537,7 @@ export function createMaterial3GoogleButtonSchema({
           's:lg:3': 's:md:1'
         },
         scales: {
-          paddingRight: 4,
-          borderWidth: 0
+          paddingRight: 4
         }
       }
     }

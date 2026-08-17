@@ -5,6 +5,7 @@ import {
   Button as KButton,
   SmoothText,
   Text,
+  useButtonArtifactConfig,
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
@@ -45,6 +46,7 @@ import {
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Button.module.scss';
 import { ButtonAsyncExample } from './components/ButtonAsyncExample';
+import { ButtonGroupExamples } from './components/ButtonGroupExamples';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
 import ButtonStateSection from './components/ButtonStateSection';
@@ -160,6 +162,7 @@ function SurfaceContextComparison({
 export function Button() {
   const { designSystem, global, segment, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
+  const { buttonClassesMap } = useButtonArtifactConfig();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
   const textProfiles = useShowcaseTextProfiles();
 
@@ -848,6 +851,11 @@ export function Button() {
         <ButtonIconExamples
           fontName={fontName}
           scale={activeButtonScale}
+          surfaceContext={activeSurfaceContext}
+        />
+        <ButtonGroupExamples
+          scale={activeButtonScale}
+          shadowAvailable={Boolean(buttonClassesMap?.e1?.e?.h)}
           surfaceContext={activeSurfaceContext}
         />
         <ButtonMenuExamples

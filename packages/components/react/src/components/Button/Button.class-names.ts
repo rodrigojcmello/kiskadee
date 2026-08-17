@@ -17,10 +17,16 @@ import {
   mergeClassNamePatches,
   normalizeScaleKey,
   resolveEffectBucketClassName,
+  resolveIntentClassName,
   resolveRadiusClassName,
   resolveSchemaElementClassName
 } from '../../shared/class-resolution/classNames.ts';
-import type { ButtonElementName, ButtonProps, ButtonStatus } from './Button.types.ts';
+import type {
+  ButtonElementName,
+  ButtonGroupProps,
+  ButtonProps,
+  ButtonStatus
+} from './Button.types.ts';
 
 export const DEFAULT_BUTTON_SCALE = 's:md:1';
 export const DEFAULT_BUTTON_RADIUS: RadiusMode = 'rounded';
@@ -36,6 +42,7 @@ export const DEFAULT_BUTTON_PRESSED_DURATION_MS = 60;
 export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;
 export type ButtonResolvedClassNames = NonNullable<HeadlessButtonProps['classNames']> & {
   e4?: string;
+  e6?: string;
 };
 
 export const join = joinClassNames;
@@ -65,12 +72,45 @@ function resolveButtonStatefulEffectClassName(bucket: EffectClassBucketJSON | un
   return resolveEffectBucketClassName(bucket);
 }
 
+export function resolveButtonDividerClassName({
+  e6,
+  scale,
+  emphasis,
+  intent,
+  surfaceContext
+}: {
+  e6: ClassNameByElementJSON | undefined;
+  scale: string;
+  emphasis: ComponentEmphasis | undefined;
+  intent: ButtonIntent | undefined;
+  surfaceContext: SurfaceContext | undefined;
+}): string {
+  if (!e6) return '';
+
+  const scaleKey = normalizeButtonScaleKey(scale);
+  const resolvedSurfaceContext = surfaceContext ?? DEFAULT_BUTTON_SURFACE_CONTEXT;
+  const paintClassName =
+    resolveIntentClassName(
+      e6,
+      intent ?? DEFAULT_BUTTON_INTENT,
+      emphasis ?? DEFAULT_BUTTON_EMPHASIS,
+      { surfaceContext: resolvedSurfaceContext }
+    ) ||
+    resolveIntentClassName(e6, DEFAULT_BUTTON_INTENT, DEFAULT_BUTTON_EMPHASIS, {
+      surfaceContext: resolvedSurfaceContext
+    });
+  if (!paintClassName) return '';
+
+  return join(e6.d, paintClassName, e6.s?.all, e6.s?.[scaleKey], 'k-btn-e6') ?? '';
+}
+
 export function resolveButtonClassNames({
   e1,
   e2,
   e3,
   e4,
   e5,
+  e6,
   classNames,
   status,
   controlState,
@@ -92,6 +132,7 @@ export function resolveButtonClassNames({
   e3: ClassNameByElementJSON | undefined;
   e4?: ClassNameByElementJSON;
   e5?: ClassNameByElementJSON;
+  e6?: ClassNameByElementJSON;
   classNames: NonNullable<ButtonProps['classNames']>;
   status: ButtonStatus | 'rest';
   controlState: boolean | undefined;
@@ -206,13 +247,57 @@ export function resolveButtonClassNames({
         classNames.e5,
         e5?.s?.[scaleKey],
         'k-btn-e5'
-      ) ?? ''
+      ) ?? '',
+    e6:
+      resolveButtonDividerClassName({
+        e6,
+        scale: scaleKey,
+        emphasis: resolvedEmphasis,
+        intent: resolvedIntent,
+        surfaceContext: resolvedSurfaceContext
+      }) || undefined
+  };
+}
+
+export function resolveButtonGroupClassName({
+  e1,
+  className,
+  scale,
+  shadow,
+  radius,
+  globalRadius
+}: {
+  e1: ClassNameByElementJSON | undefined;
+  className: ButtonGroupProps['className'];
+  scale: string;
+  shadow: boolean;
+  radius: RadiusMode;
+  globalRadius: RadiusMode | undefined;
+}): { className: string; hasShadow: boolean } {
+  const scaleKey = normalizeButtonScaleKey(scale);
+  const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
+  const shadowEffect = shadow ? resolveButtonStatefulEffectClassName(e1?.e?.h) : '';
+
+  return {
+    className:
+      join(
+        className,
+        shadowEffect ? resolveRadiusClassName(e1, scaleKey, radiusMode) : undefined,
+        shadowEffect,
+        shadowEffect ? cn.shadow : undefined,
+        'k-btn-x3'
+      ) ?? 'k-btn-x3',
+    hasShadow: Boolean(shadowEffect)
   };
 }
 
 export function mergeButtonClassNames(
-  baseClassNames: NonNullable<HeadlessButtonProps['classNames']>,
+  baseClassNames: ButtonResolvedClassNames,
   ...classNamePatches: Array<ButtonClassNamePatch | null | undefined>
-): NonNullable<HeadlessButtonProps['classNames']> {
-  return mergeClassNamePatches(['e1', 'e2', 'e3', 'e5'], baseClassNames, ...classNamePatches);
+): ButtonResolvedClassNames {
+  return {
+    ...mergeClassNamePatches(['e1', 'e2', 'e3', 'e5'], baseClassNames, ...classNamePatches),
+    e4: baseClassNames.e4,
+    e6: baseClassNames.e6
+  };
 }

@@ -46,6 +46,12 @@ const BUTTON_HIGH_FOREGROUND_TONES = {
   }
 } as const satisfies Record<ButtonRecipeTheme, Record<ButtonColorRole, KiskadeeTone>>;
 
+const BUTTON_DIVIDER_TONES = {
+  light: 7,
+  dark: 30,
+  darker: 12
+} as const satisfies Record<ButtonRecipeTheme, KiskadeeTone>;
+
 export function createFluent2MicrosoftButtonSchema({
   c,
   shadowBlack
@@ -214,8 +220,29 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
+  const createDividerContextPalettes = (theme: ButtonRecipeTheme) => {
+    const rest = neutralSurfaceColor(
+      FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme].scale,
+      BUTTON_DIVIDER_TONES[theme]
+    );
+    const createContext = () => ({
+      boxColor: {
+        neutral: {
+          medium: { rest }
+        }
+      }
+    });
+
+    return {
+      onSubtle: createContext(),
+      onVivid: createContext()
+    };
+  };
+
   return {
     options: {
+      groupDivider: true,
+      disclosureDivider: false,
       iconLayout: 'inline',
       iconPlacement: 'leading',
       iconSurfaceCorners: 'edge',
@@ -353,8 +380,29 @@ export function createFluent2MicrosoftButtonSchema({
             's:sm:1': 3,
             's:md:1': 4,
             's:lg:1': 4
+          }
+        }
+      },
+      e6: {
+        name: 'button-divider',
+        scales: {
+          boxWidth: {
+            's:sm:1': 1,
+            's:md:1': 1,
+            's:lg:1': 1
           },
-          borderWidth: 0
+          boxHeight: {
+            's:sm:1': 20,
+            's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+            's:lg:1': 24
+          }
+        },
+        palettes: {
+          default: {
+            light: createDividerContextPalettes('light'),
+            dark: createDividerContextPalettes('dark'),
+            darker: createDividerContextPalettes('darker')
+          }
         }
       }
     }

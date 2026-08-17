@@ -22,7 +22,7 @@ export type { ButtonIconSurfaceCorners, ButtonIconTreatment } from '@kiskadee/co
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
@@ -125,4 +125,21 @@ export type ButtonProps = HeadlessButtonProps & {
    * corners straight; `all` preserves the Button-derived radius on all corners.
    */
   iconSurfaceCorners?: ButtonIconSurfaceCorners;
+};
+
+/** Shared visual contract for a horizontal set of connected Buttons. */
+export type ButtonGroupProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
+  children?: ReactNode;
+  /** Shared size inherited by every Button in the group. */
+  scale?: ElementSizeValue;
+  /** Shared radius mode. Only the outer Button corners remain rounded. */
+  radius?: RadiusMode;
+  /** Shared emphasis inherited by every Button in the group. */
+  emphasis?: ComponentEmphasis;
+  /** Shared semantic intent inherited by every Button in the group. */
+  intent?: ButtonIntent;
+  /** Shared surface relationship inherited by every Button in the group. */
+  surfaceContext?: SurfaceContext;
+  /** Applies the Button Rest shadow once to the connected group surface. */
+  shadow?: boolean;
 };

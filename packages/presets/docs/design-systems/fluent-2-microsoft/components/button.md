@@ -34,6 +34,7 @@ This file records source evidence and color decisions for the Button currently a
   - [Button usage](https://fluent2.microsoft.design/components/web/react/core/button/usage)
   - [Color tokens](https://fluent2.microsoft.design/color-tokens/)
   - [Fluent React Button styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts)
+  - [Fluent React SplitButton styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/SplitButton/useSplitButtonStyles.styles.ts)
 - Product observation:
   - a Microsoft sign-in flow observed on 2026-07-31 kept its Primary Button recognizable while
     making the accepted action translucent during asynchronous processing;
@@ -51,6 +52,7 @@ This file records source evidence and color decisions for the Button currently a
 | Light Button component set | `11045:3896` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Dark Button component set | `9026:2684` | Primary, Secondary, Outline, Subtle, Transparent | Official adapted |
 | Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
+| Split Button structure | Official Button usage and React source | Adjacent actions, connected corners, and internal stroke | Official adapted |
 | Microsoft sign-in pending treatment | Product observation, 2026-07-31 | Translucent Primary action while processing | Kiskadee extension; motivational evidence only |
 | Surfaced icon region | No equivalent Fluent Button API was found | Light icon canvas inside a vivid Button | Kiskadee extension |
 | On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
@@ -117,6 +119,41 @@ logical trailing placement as framework extensions for layouts such as full-widt
 The 4/6 px source-derived gap is still owned by `e3`; the Web Builder exposes it as a structural
 token so `leading` and `trailing` can use the same schema value without hardcoding direction in
 React or Sass.
+
+## Connected Button Divider
+
+Fluent documents Split Button as two related adjacent actions. Its React implementation flattens
+the connected corners, removes the menu Button's shared-side border, and uses the primary action's
+remaining border as the visual seam. Primary uses `colorNeutralStrokeOnBrand`; Outline and
+Secondary retain the base stroke; Subtle and Transparent change the seam with interaction state.
+That source establishes the connected structure, but it does not map exactly to Kiskadee's shared
+`Button.Group` contract.
+
+Kiskadee therefore authors `e6` as a separate **Kiskadee extension**. The divider is a decorative,
+Rest-only line reused between connected Buttons and optionally before a disclosure. It does not
+inherit either adjacent Button's Hover or Pressed state because two sibling actions can be in
+different states simultaneously.
+
+The first Fluent mapping deliberately reuses the approved NeutralStroke2 tonal positions from the
+preset's neutral Separator evidence:
+
+| Theme | Source relationship | Primitive and tone | Generated value | Status |
+| --- | --- | --- | --- | --- |
+| Light | NeutralStroke2 adaptation | Fluent Neutral `primitive.black.v2`, L7 | `#dce0ed` | Kiskadee extension |
+| Dark | NeutralStroke2 adaptation | Fluent Neutral `primitive.black.v2`, D30 | `#4b4e58` | Kiskadee extension |
+| Darker | No upstream theme | Fluent Neutral `primitive.black.v2`, D12 | `#2e313a` | Kiskadee extension |
+
+The schema authors that neutral Rest line once as `neutral.medium.rest` in each theme and surface
+context. Button composition uses this branch as the divider fallback for every Button intent and
+emphasis. This avoids duplicating an identical decorative value across 16 intent/emphasis paths
+while preserving the Core contract's ability to accept explicit overrides if future official
+evidence requires them. This first-cut mapping is not presented as an exact implementation of
+Fluent's appearance-specific or stateful SplitButton stroke.
+
+`boxWidth` is 1 px at every published Button scale. `boxHeight` follows the icon viewport: 20 px at
+Small, responsive 24/20 px at Medium, and 24 px at Large. The divider owns no margin, padding, gap,
+opacity, or semantics; structural Button composition centers it without changing adjacent content
+spacing.
 
 ## Responsive Default Size
 
@@ -716,6 +753,14 @@ changing the asset scales.
   per-instance extension and implies edge composition.
 - `components.button.options.iconSurfaceCorners` defaults to `edge`, keeping the region's two
   label-facing corners straight while its outer corners remain concentric with `e1`.
+- `e5` owns only the disclosure icon, viewport, color, and content spacing; it no longer owns an
+  optional internal border.
+- `e6` owns the decorative Button divider: one canonical `neutral.medium.rest` `boxColor`, 1 px
+  `boxWidth`, and icon-matched `boxHeight`. Its dimensions are structural tokens and its color
+  remains an atomic utility.
+- `components.button.options.groupDivider` defaults to `true`, so connected Button groups render
+  `e6` at each internal seam. `disclosureDivider` defaults to `false`, preventing a single menu
+  Button from visually implying two separately clickable actions.
 - Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
   treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official
@@ -738,6 +783,8 @@ changing the asset scales.
   Selected hover and pressed substates are not inferred.
 - Existing Kiskadee Button shadow behavior is retained, but its black color now resolves from the
   `primitive.black.v1` absolute cap instead of a schema HEX literal.
+- `e6` contains only Rest. No duplicate or inferred Hover, Pressed, Focus, Selected, Pending, or
+  Disabled palette state is emitted.
 
 ## Adaptations
 

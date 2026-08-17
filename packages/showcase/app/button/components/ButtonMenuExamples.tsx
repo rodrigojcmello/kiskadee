@@ -235,13 +235,17 @@ export function ButtonMenuExamples({
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Menu button
           </Text>
-          <ButtonMenu.Root presence={presence} scale={scale}>
-            <ButtonMenu.Trigger
-              intent="primary"
-              emphasis="high"
-              scale={scale}
-              surfaceContext={surfaceContext}
-            >
+          <ButtonMenu.Root
+            buttonGroup={{
+              emphasis: 'high',
+              intent: 'primary',
+              scale,
+              surfaceContext
+            }}
+            presence={presence}
+            scale={scale}
+          >
+            <ButtonMenu.Trigger>
               <Button.Label>Actions</Button.Label>
             </ButtonMenu.Trigger>
             <WorkItemMenuContent
@@ -256,13 +260,17 @@ export function ButtonMenuExamples({
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Leading icon
           </Text>
-          <ButtonMenu.Root presence={presence} scale={scale}>
-            <ButtonMenu.Trigger
-              intent="neutral"
-              emphasis="medium"
-              scale={scale}
-              surfaceContext={surfaceContext}
-            >
+          <ButtonMenu.Root
+            buttonGroup={{
+              emphasis: 'medium',
+              intent: 'neutral',
+              scale,
+              surfaceContext
+            }}
+            presence={presence}
+            scale={scale}
+          >
+            <ButtonMenu.Trigger>
               <Button.Icon name="settings" />
               <Button.Label>Settings</Button.Label>
             </ButtonMenu.Trigger>
@@ -274,23 +282,20 @@ export function ButtonMenuExamples({
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Split button
           </Text>
-          <ButtonMenu.Root presence={presence} scale={scale}>
-            <ButtonMenu.Action
-              intent="primary"
-              emphasis="high"
-              scale={scale}
-              surfaceContext={surfaceContext}
-              onClick={() => setLastAction('Save')}
-            >
+          <ButtonMenu.Root
+            buttonGroup={{
+              emphasis: 'high',
+              intent: 'primary',
+              scale,
+              surfaceContext
+            }}
+            presence={presence}
+            scale={scale}
+          >
+            <ButtonMenu.Action onClick={() => setLastAction('Save')}>
               <Button.Label>Save</Button.Label>
             </ButtonMenu.Action>
-            <ButtonMenu.Trigger
-              aria-label="More save actions"
-              intent="primary"
-              emphasis="high"
-              scale={scale}
-              surfaceContext={surfaceContext}
-            />
+            <ButtonMenu.Trigger aria-label="More save actions" />
             <MenuContent onAction={setLastAction} />
           </ButtonMenu.Root>
         </article>

@@ -24,6 +24,28 @@ Some non-direct emission is default behavior, not an override. In the current bu
 changes that default or when local runtime/structural behavior depends on the emitted variable in a
 component-specific way.
 
+## Button
+
+Current scope:
+
+- `button.elements.e6`, the decorative divider shared by connected Button seams and optional
+  disclosure composition.
+
+### Divider `e6`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxWidth` | `token` | `direct` | `--k-bxw: <value>` | Button structural CSS applies the authored line thickness as logical `inline-size`, without emitting an unrelated physical `width`. |
+| `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | Button structural CSS applies the authored line extent as logical `block-size` and centers it inside the composition. |
+
+`boxColor` keeps the default `direct` policy. The divider color is therefore a normal atomic
+utility and can deduplicate with any equal authored line color. There is no divider-specific CSS
+bucket or generated artifact. Core also rejects `e6.effects`, so shadow and activation feedback
+cannot create an effect bucket for the decorative line.
+
+The disclosure icon remains `button.elements.e5`. Its contract no longer accepts `borderWidth` or
+`borderColor`; divider geometry and color belong exclusively to `e6`.
+
 ## Slider
 
 Current scope:

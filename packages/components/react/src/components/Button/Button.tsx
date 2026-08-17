@@ -16,13 +16,25 @@ import {
 import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { IconGlyph } from '../Icon/IconGlyph.tsx';
 import { resolveProgressIndicatorClassName } from '../Progress/Progress.class-names.ts';
 import type { ProgressClassesMap } from '../Progress/Progress.types.ts';
-import { join, mergeButtonClassNames } from './Button.class-names.ts';
+import {
+  DEFAULT_BUTTON_EMPHASIS,
+  DEFAULT_BUTTON_INTENT,
+  DEFAULT_BUTTON_RADIUS,
+  DEFAULT_BUTTON_SCALE,
+  DEFAULT_BUTTON_SURFACE_CONTEXT,
+  join,
+  mergeButtonClassNames,
+  resolveButtonDividerClassName,
+  resolveButtonGroupClassName
+} from './Button.class-names.ts';
 import type {
   ButtonClassesMap,
   ButtonDisclosureProps,
+  ButtonGroupProps,
   ButtonIconProps,
   ButtonProgressProps,
   ButtonProps
@@ -33,6 +45,7 @@ import {
   useButtonActivationFeedbackController,
   useButtonFeedbackEffect
 } from './effects/activation-feedback/index.ts';
+import { useButtonArtifactConfig } from './hooks/useButtonArtifactConfig.ts';
 import { useButtonClassNamesFromCommon, useButtonCommonProps } from './hooks/useButtonBase.ts';
 
 declare const process: { env: { NODE_ENV?: string } };
@@ -40,6 +53,7 @@ declare const process: { env: { NODE_ENV?: string } };
 export type {
   ButtonActivationFeedbackEffect,
   ButtonDisclosureProps,
+  ButtonGroupProps,
   ButtonIconProps,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
@@ -49,6 +63,7 @@ export type {
 } from './Button.types.ts';
 
 type ButtonRuntimeContextValue = {
+  disclosureDividerClassName: string | undefined;
   iconRegionClassName: string | undefined;
   iconTreatment: ButtonIconTreatment;
   progressAllowed: boolean;
@@ -56,6 +71,16 @@ type ButtonRuntimeContextValue = {
 };
 
 const ButtonRuntimeContext = createContext<ButtonRuntimeContextValue | null>(null);
+
+type ButtonGroupRuntimeContextValue = {
+  emphasis: NonNullable<ButtonGroupProps['emphasis']>;
+  intent: NonNullable<ButtonGroupProps['intent']>;
+  radius: NonNullable<ButtonGroupProps['radius']>;
+  scale: NonNullable<ButtonGroupProps['scale']>;
+  surfaceContext: NonNullable<ButtonGroupProps['surfaceContext']>;
+};
+
+const ButtonGroupRuntimeContext = createContext<ButtonGroupRuntimeContextValue | null>(null);
 
 const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonIcon(
   { name, fallback, children, ...props },
@@ -92,6 +117,7 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
 
 const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
   function ButtonDisclosure({ name = 'chevron-down', fallback, children, ...props }, ref) {
+    const { disclosureDividerClassName } = useButtonRuntimeContext('Button.Disclosure');
     const resolvedNamedGlyph = useResolvedIconGlyph(name);
 
     if (name !== undefined && !resolvedNamedGlyph.glyph && fallback === undefined) {
@@ -109,6 +135,9 @@ const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
 
     return (
       <HeadlessButton.Disclosure {...props} ref={ref}>
+        {disclosureDividerClassName ? (
+          <span aria-hidden="true" className={join(disclosureDividerClassName, 'k-btn-e6b')} />
+        ) : null}
         {name !== undefined ? <IconGlyph name={name} fallback={fallback} /> : children}
       </HeadlessButton.Disclosure>
     );
@@ -232,9 +261,11 @@ function normalizeButtonChildren(
 }
 
 function getButtonContentSlots(children: ReactNode): {
+  hasDisclosure: boolean;
   hasIcon: boolean;
   hasLabel: boolean;
 } {
+  let hasDisclosure = false;
   let hasIcon = false;
   let hasLabel = false;
 
@@ -246,13 +277,61 @@ function getButtonContentSlots(children: ReactNode): {
     if (child.type === HeadlessButton.Label) {
       hasLabel = true;
     }
+    if (child.type === ButtonDisclosure) {
+      hasDisclosure = true;
+    }
   }
 
-  return { hasIcon, hasLabel };
+  return { hasDisclosure, hasIcon, hasLabel };
 }
 
 const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoot(props, ref) {
-  const common = useButtonCommonProps(props);
+  const group = useContext(ButtonGroupRuntimeContext);
+  const groupedProps: ButtonProps = group
+    ? {
+        ...props,
+        scale: group.scale,
+        radius: group.radius,
+        emphasis: group.emphasis,
+        intent: group.intent,
+        surfaceContext: group.surfaceContext,
+        shadow: false,
+        radiusEffect: false
+      }
+    : props;
+  const common = useButtonCommonProps(groupedProps);
+
+  useEffect(() => {
+    if (!group || process.env.NODE_ENV === 'production') return;
+
+    const ignoredProps: string[] = [];
+    if (props.scale !== undefined && props.scale !== group.scale) ignoredProps.push('scale');
+    if (props.radius !== undefined && props.radius !== group.radius) ignoredProps.push('radius');
+    if (props.emphasis !== undefined && props.emphasis !== group.emphasis) {
+      ignoredProps.push('emphasis');
+    }
+    if (props.intent !== undefined && props.intent !== group.intent) ignoredProps.push('intent');
+    if (props.surfaceContext !== undefined && props.surfaceContext !== group.surfaceContext) {
+      ignoredProps.push('surfaceContext');
+    }
+    if (props.shadow === true) ignoredProps.push('shadow');
+    if (props.radiusEffect === true) ignoredProps.push('radiusEffect');
+
+    if (ignoredProps.length > 0) {
+      console.warn(
+        `[Kiskadee] Button inside Button.Group inherits its shared visual contract. Ignored child props: ${ignoredProps.join(', ')}.`
+      );
+    }
+  }, [
+    group,
+    props.emphasis,
+    props.intent,
+    props.radius,
+    props.radiusEffect,
+    props.scale,
+    props.shadow,
+    props.surfaceContext
+  ]);
   const normalizedChildren = useMemo(
     () => normalizeButtonChildren(props.children, common.icon, common.label),
     [props.children, common.icon, common.label]
@@ -374,6 +453,12 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
   );
   const runtimeContextValue = useMemo<ButtonRuntimeContextValue>(
     () => ({
+      disclosureDividerClassName:
+        common.options.disclosureDivider === true &&
+        contentSlots.hasDisclosure &&
+        contentSlots.hasLabel
+          ? baseClassNames.e6
+          : undefined,
       iconRegionClassName: baseClassNames.e4,
       iconTreatment: activeIconTreatment,
       progressAllowed: activationFeedbackController.visualStatus === 'pending',
@@ -382,11 +467,38 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     [
       activationFeedbackController.visualStatus,
       activeIconTreatment,
+      baseClassNames.e6,
       baseClassNames.e4,
+      common.options.disclosureDivider,
       common.pending,
-      common.status
+      common.status,
+      contentSlots.hasDisclosure,
+      contentSlots.hasLabel
     ]
   );
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      common.buttonClassesMapPending ||
+      common.options.disclosureDivider !== true ||
+      !contentSlots.hasDisclosure ||
+      !contentSlots.hasLabel ||
+      baseClassNames.e6
+    ) {
+      return;
+    }
+
+    console.warn(
+      '[Kiskadee] Button disclosureDivider requires compatible Button.e6 paint from the active preset.'
+    );
+  }, [
+    common.buttonClassesMapPending,
+    baseClassNames.e6,
+    common.options.disclosureDivider,
+    contentSlots.hasDisclosure,
+    contentSlots.hasLabel
+  ]);
   const hostRef = useCallback(
     (node: HTMLButtonElement | null) => {
       activationFeedbackController.hostRef.current = node;
@@ -423,8 +535,115 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
   );
 });
 
+const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function ButtonGroup(
+  {
+    children,
+    className,
+    scale = DEFAULT_BUTTON_SCALE,
+    radius,
+    emphasis = DEFAULT_BUTTON_EMPHASIS,
+    intent = DEFAULT_BUTTON_INTENT,
+    surfaceContext = DEFAULT_BUTTON_SURFACE_CONTEXT,
+    shadow = false,
+    ...props
+  },
+  ref
+) {
+  const { buttonClassesMap, buttonClassesMapPending, options } = useButtonArtifactConfig();
+  const { e1, e6 } = buttonClassesMap ?? {};
+  const resolvedRadius = radius ?? options.radius ?? DEFAULT_BUTTON_RADIUS;
+  const contextValue = useMemo<ButtonGroupRuntimeContextValue>(
+    () => ({ emphasis, intent, radius: resolvedRadius, scale, surfaceContext }),
+    [emphasis, intent, resolvedRadius, scale, surfaceContext]
+  );
+  const groupClassName = useMemo(
+    () =>
+      resolveButtonGroupClassName({
+        e1,
+        className,
+        scale,
+        shadow,
+        radius: resolvedRadius,
+        globalRadius: options.radius
+      }),
+    [className, e1, options.radius, resolvedRadius, scale, shadow]
+  );
+  const dividerClassName = useMemo(
+    () =>
+      resolveButtonDividerClassName({
+        e6,
+        scale,
+        emphasis,
+        intent,
+        surfaceContext
+      }),
+    [e6, emphasis, intent, scale, surfaceContext]
+  );
+  const childArray = flattenFragmentChildren(children);
+  const hasGroupDivider =
+    options.groupDivider === true && dividerClassName.length > 0 && childArray.length > 1;
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      !shadow ||
+      buttonClassesMapPending ||
+      groupClassName.hasShadow
+    ) {
+      return;
+    }
+
+    console.warn(
+      '[Kiskadee] Button.Group shadow requires the active preset to publish a Button.e1 Rest shadow.'
+    );
+  }, [buttonClassesMapPending, groupClassName.hasShadow, shadow]);
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      buttonClassesMapPending ||
+      options.groupDivider !== true ||
+      childArray.length < 2 ||
+      dividerClassName.length > 0
+    ) {
+      return;
+    }
+
+    console.warn(
+      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint from the active preset.'
+    );
+  }, [buttonClassesMapPending, childArray.length, dividerClassName, options.groupDivider]);
+
+  return (
+    <ButtonGroupRuntimeContext.Provider value={contextValue}>
+      <div
+        {...props}
+        ref={ref}
+        className={join(groupClassName.className, hasGroupDivider ? 'k-btn-x3a' : undefined)}
+      >
+        {hasGroupDivider
+          ? childArray.flatMap((child, index) =>
+              index === 0
+                ? [child]
+                : [
+                    <span
+                      aria-hidden="true"
+                      className={join(dividerClassName, 'k-btn-e6a')}
+                      // biome-ignore lint/suspicious/noArrayIndexKey: divider identity is the positional seam between siblings.
+                      key={`button-group-divider-${index}`}
+                    />,
+                    child
+                  ]
+            )
+          : childArray}
+      </div>
+    </ButtonGroupRuntimeContext.Provider>
+  );
+});
+
 const MemoButton = memo(ButtonRoot);
 const CompoundButton = Object.assign(MemoButton, {
+  Group: ButtonGroup,
   Label: HeadlessButton.Label,
   Icon: ButtonIcon,
   Disclosure: ButtonDisclosure,

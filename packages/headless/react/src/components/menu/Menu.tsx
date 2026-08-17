@@ -687,6 +687,7 @@ const MenuItemsContent = forwardRef<HTMLDivElement, MenuItemsContentProps>(
       direction,
       activeKey,
       setActiveKey,
+      triggerRef,
       focusIntentRef,
       focusRequestVersion,
       items
@@ -729,7 +730,19 @@ const MenuItemsContent = forwardRef<HTMLDivElement, MenuItemsContentProps>(
       if (!targetKey) return;
       focusIntentRef.current = 'none';
       focusKey(targetKey);
-    }, [focusIntentRef, focusKey, focusRequestVersion, focusableItems, open]);
+
+      const target = items.find((item) => item.key === targetKey);
+      if (!target) return;
+      queueMicrotask(() => {
+        const activeElement = document.activeElement;
+        if (
+          target.element.isConnected &&
+          (activeElement === triggerRef.current || activeElement === document.body)
+        ) {
+          target.element.focus();
+        }
+      });
+    }, [focusIntentRef, focusKey, focusRequestVersion, focusableItems, items, open, triggerRef]);
 
     const handleKeyDown = useCallback(
       (event: KeyboardEvent<HTMLDivElement>) => {

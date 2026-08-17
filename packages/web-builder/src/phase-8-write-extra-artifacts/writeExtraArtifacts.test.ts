@@ -245,3 +245,43 @@ describe('writeExtraArtifacts presence artifacts', () => {
     });
   });
 });
+
+describe('writeExtraArtifacts Button options', () => {
+  it('publishes divider defaults without a dedicated artifact or CSS token file', async () => {
+    const outDirSlug = createOutputSlug('button-divider-options');
+
+    await writeExtraArtifacts({
+      schema: {
+        components: {
+          button: {
+            options: {
+              groupDivider: true,
+              disclosureDivider: false
+            },
+            elements: {}
+          }
+        }
+      } as Schema,
+      outDirSlug
+    });
+
+    const outputDirectory = resolve(buildRoot, outDirSlug);
+    const globalArtifact = JSON.parse(
+      await readFile(resolve(outputDirectory, 'global.kiskadee.json'), 'utf8')
+    );
+
+    expect(globalArtifact).toEqual({
+      components: {
+        button: {
+          options: {
+            groupDivider: true,
+            disclosureDivider: false
+          }
+        }
+      }
+    });
+    await expect(access(resolve(outputDirectory, 'tokens.kiskadee.css'))).rejects.toMatchObject({
+      code: 'ENOENT'
+    });
+  });
+});
