@@ -16,9 +16,11 @@ Read only what the task needs, in this order:
 2. `references/monorepo-map.md`
 3. `references/taxonomy-rules.md`
 4. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
-5. `../../STRUCTURAL-CSS.md` when structural Sass is involved
-6. `references/headless-react-patterns.md` for headless React work
-7. `references/testing-checklist.md` for validation planning
+5. `../../packages/web-builder/docs/definitions/structural-utility-projections.md` when an existing
+   token-only scale utility may be conditionally reused by a different structural owner
+6. `../../STRUCTURAL-CSS.md` when structural Sass is involved
+7. `references/headless-react-patterns.md` for headless React work
+8. `references/testing-checklist.md` for validation planning
 
 ## Follow this workflow
 
@@ -40,11 +42,16 @@ Read only what the task needs, in this order:
 5. If the task involves schema/build/runtime placement, validate ownership using
    `../../SCHEMA-BUILD-RUNTIME-RULES.md`.
 
-6. If the task involves React headless components, apply `references/headless-react-patterns.md`.
+6. If a generated token-only scale utility may be applied to a wrapper or different structural
+   owner, apply
+   `../kiskadee-structural-utility-projections/SKILL.md` before proposing a new bucket or runtime
+   class reuse.
 
-7. If the task is "new component", apply the rollout checklist below.
+7. If the task involves React headless components, apply `references/headless-react-patterns.md`.
 
-8. End with a verification plan from `references/testing-checklist.md`.
+8. If the task is "new component", apply the rollout checklist below.
+
+9. End with a verification plan from `references/testing-checklist.md`.
 
 ## Hard constraints
 
@@ -61,6 +68,14 @@ Read only what the task needs, in this order:
 - If a schema value must exist but only apply when a runtime/component option enables it, do not
   assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a
   dedicated opt-in bucket.
+- If an already emitted token-only scale utility must be applied independently to a different
+  structural DOM owner, evaluate the Structural Utility Projection Registry before creating another
+  dedicated bucket. Keep it distinct from Style Emission Policy.
+- Structural utility projections use only
+  `element.p[artifactKey][scaleKey] = className`; `p` never stores raw values or semantic metadata.
+- The Structural Utility Projection Registry is currently empty. Projection of
+  `Button.e6.boxWidth` for structural padding compensation and migration of Tabs fixed width are
+  future candidates, not active `p` consumers.
 - For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique
   and prefer narrowing generic schema keys via type-specific Zod/contracts over inventing ad hoc
   schema properties or builder-only exceptions.
@@ -96,15 +111,19 @@ Use these rules before proposing a schema or builder change:
 2. If the change answers "what is the value for that behavior?", prefer the relevant element
    `scales/decorations/palettes/effects`.
 3. If the value is always-on once generated, the generic artifact bucket is usually enough.
-4. If the value must be generated but only conditionally applied by the visual layer, check
-   whether the artifact needs a dedicated bucket instead of merging into generic `s`.
+4. If the value is conditionally applied to its normal schema element, check whether the existing
+   component artifact contract already provides the required opt-in bucket.
+5. If one already emitted token-only scale utility must instead be applied to a different structural
+   owner, apply the Structural Utility Projection Registry eligibility test.
 
-Example:
+Candidate examples, not active projections:
 
-- `tabs.options.tabWidthMode` selects `auto` vs `fixed`.
-- `tabs.variants.<type>.elements.e2.scales.boxWidth` stores the fixed width token.
-- `packages/web-builder` may publish a dedicated width bucket so `packages/components` can opt in
-  only when the mode is `fixed`.
+- Button divider thickness may eventually project `Button.e6.boxWidth` to a structural consumer for
+  padding compensation.
+- Tabs fixed width may eventually migrate from its specialized `w` bucket to the generic `p`
+  contract.
+
+Do not register either candidate without a separate implementation and validation task.
 
 ## New component rollout checklist
 

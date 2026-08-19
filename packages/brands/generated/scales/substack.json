@@ -224,12 +224,7 @@
               "stepImbalance": 1.8488676
             },
             "fairing": {
-              "adjustedTones": [
-                65,
-                70,
-                80,
-                85
-              ],
+              "adjustedTones": [65, 70, 80, 85],
               "beforeChromaExcess": 0.03200211,
               "beforeChromaSlopeChange": 0.00816717,
               "beforeStepImbalance": 3.37317573,

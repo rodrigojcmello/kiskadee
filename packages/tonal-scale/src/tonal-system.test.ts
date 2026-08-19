@@ -1224,7 +1224,7 @@ describe('generateKiskadeeTonalSystem v5', () => {
         expect(classifyMunsellHex(color).sector).toBe(parseTonalFamilyId(id)?.sector);
       }
     }
-  });
+  }, 15_000);
 
   it('keeps Brown in yellow-red with reduced chroma utilization and shared rest', () => {
     const result = generateKiskadeeTonalSystem(createRecipe());

@@ -61,9 +61,7 @@ type SwitchActivationFeedbackControllerResult = {
   };
 };
 
-type SwitchActivationFeedbackPointerHandler = (
-  event: PointerEvent<HTMLLabelElement>
-) => void;
+type SwitchActivationFeedbackPointerHandler = (event: PointerEvent<HTMLLabelElement>) => void;
 
 const SWITCH_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS = 140;
 
@@ -164,8 +162,7 @@ export function useSwitchActivationFeedbackController({
     [isEventInsideTrack]
   );
   const resolveStaticGeometry = useCallback(
-    (thumbElement: HTMLSpanElement) =>
-      resolveSwitchActivationFeedbackStaticGeometry(thumbElement),
+    (thumbElement: HTMLSpanElement) => resolveSwitchActivationFeedbackStaticGeometry(thumbElement),
     []
   );
 
@@ -173,10 +170,7 @@ export function useSwitchActivationFeedbackController({
   const profileDefinition = resolveActivationFeedbackProfileDefinition(profile);
   const usesRadialRuntime = profileDefinition.runtime === 'radial';
   const usesStaticRuntime = usesActivationFeedbackStaticRuntime(profile);
-  const activationFeedbackMachine = useActivationFeedbackHalo<
-    HTMLLabelElement,
-    HTMLSpanElement
-  >({
+  const activationFeedbackMachine = useActivationFeedbackHalo<HTMLLabelElement, HTMLSpanElement>({
     capturePointer: false,
     config,
     disabled: disabled || interactionLocked,
@@ -193,8 +187,7 @@ export function useSwitchActivationFeedbackController({
     onPointerUp,
     onPointerCancel,
     onBlur,
-    shouldSyncGeometryOnTransitionEnd:
-      shouldSyncSwitchActivationFeedbackGeometryOnTransitionEnd,
+    shouldSyncGeometryOnTransitionEnd: shouldSyncSwitchActivationFeedbackGeometryOnTransitionEnd,
     shouldStartPointerFeedback
   });
 
@@ -255,8 +248,9 @@ export function useSwitchActivationFeedbackController({
     ]
   );
 
-  const activeMachine =
-    usesStaticRuntime ? activationFeedbackMachine : radialActivationFeedbackMachine;
+  const activeMachine = usesStaticRuntime
+    ? activationFeedbackMachine
+    : radialActivationFeedbackMachine;
   const pointerHandlers = {
     onPointerDown: pickSwitchActivationFeedbackPointerHandler({
       enabled,

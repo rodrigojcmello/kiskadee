@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import type { ButtonFeedbackEffectAvailability } from './ButtonActivationFeedback.utils.ts';
-import type { ButtonFeedbackKind } from './ButtonFeedback.types.ts';
 import {
   type ButtonActivationFeedbackEffectModule,
   useButtonActivationFeedbackEffect
 } from './ButtonActivationFeedback.loader.ts';
+import type { ButtonFeedbackEffectAvailability } from './ButtonActivationFeedback.utils.ts';
+import type { ButtonFeedbackKind } from './ButtonFeedback.types.ts';
 
 export type ButtonFeedbackEffectState = {
   activationFeedbackEffect: ButtonActivationFeedbackEffectModule | null;

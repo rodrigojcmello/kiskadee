@@ -2,14 +2,14 @@ import {
   type ActivationFeedbackEffectSchema,
   type ActivationFeedbackMotionCurveToken,
   type ActivationFeedbackMotionDurationToken,
-  type ActivationFeedbackProfileKey,
   type ActivationFeedbackProfileConfig,
+  type ActivationFeedbackProfileKey,
   type ActivationFeedbackTone,
   type ActivationFeedbackVisual,
   isActivationFeedbackProfileKey,
   resolveActivationFeedbackDurationMs,
-  resolveActivationFeedbackProfileDefinition,
   resolveActivationFeedbackProfile,
+  resolveActivationFeedbackProfileDefinition,
   resolvePressedActivationFeedbackProfile
 } from '@kiskadee/core';
 import { UNSUPPORTED_PROPERTY_NAME, UNSUPPORTED_VALUE } from '../../errorMessages.ts';
@@ -69,7 +69,10 @@ function toCssDuration(token: string | undefined, fallbackMs: number): string {
   )}ms`;
 }
 
-function resolveProfileConfig(value: ActivationFeedbackProfileValue, styleKey: string): {
+function resolveProfileConfig(
+  value: ActivationFeedbackProfileValue,
+  styleKey: string
+): {
   profile: ActivationFeedbackProfileKey;
   profileConfig: ActivationFeedbackProfileConfig;
   visual?: ActivationFeedbackVisual;

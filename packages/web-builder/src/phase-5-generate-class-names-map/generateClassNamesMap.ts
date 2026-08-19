@@ -19,6 +19,8 @@ import {
   type ToneMetadataByPalette
 } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
+import { compileStructuralUtilityProjections } from '../structural-utility-projection/compileStructuralUtilityProjections.ts';
+import type { WebStructuralUtilityProjectionRegistry } from '../structural-utility-projection/web-structural-utility-projection-registry.ts';
 import type { WebStyleEmissionPolicy } from '../style-emission/web-build-policy.ts';
 import {
   canonicalizeWebStyleKeyIdentity,
@@ -31,6 +33,7 @@ import {
 // e = effects by interaction state (arrays of classes, opt-in at component level)
 // s = scales (size variants only, flattened strings per size)
 // w = width-only scales (opt-in at component level, flattened strings per size)
+// p = named structural utility projections (size-aware references to existing classes)
 // c = color classes (organized by emphasis: hh/h/m/l/ll)
 // cs = control states (selected)
 export type ClassNameByElement = ClassNameByElementJSON;
@@ -130,8 +133,8 @@ function activationFeedbackBucketForKey(key: string): string {
 /**
  * Produces two JSON-friendly maps of class names from the aggregated StyleKeys:
  * - core: decorations in `d` (always-on), effects in `e` per interaction state (opt-in),
- *         scales in `s` (size-only variants), no palettes included.
- * - palettes: one object per palette name, each containing only the flattened `p` string per element.
+ *         scales in `s` (size-only variants), and structural projections in `p`; no palettes included.
+ * - palettes: one object per palette name, containing only color class buckets per element.
  *
  * Policy notes:
  * - Effects are never merged into `d` or `s` — they must be explicitly added by components from `e`.
@@ -145,6 +148,7 @@ export function generateClassNamesMapSplit(
   toneMetadataByPalette: ToneMetadataByPalette,
   options?: {
     webStyleEmissionPolicy?: WebStyleEmissionPolicy;
+    structuralUtilityProjectionRegistry?: WebStructuralUtilityProjectionRegistry;
   } & WebStyleIdentityOptimizationOptions
 ): ComponentClassNameMapSplit {
   const core: ComponentClassNameMap = {};
@@ -549,6 +553,15 @@ export function generateClassNamesMapSplit(
       }
     }
   }
+
+  compileStructuralUtilityProjections({
+    styleKeys,
+    coreClassMap: core,
+    shortenMap,
+    projectionRegistry: options?.structuralUtilityProjectionRegistry,
+    webStyleEmissionPolicy: options?.webStyleEmissionPolicy,
+    collapseDirectIntoMirrored: options?.collapseDirectIntoMirrored
+  });
 
   return { core, palettes };
 }

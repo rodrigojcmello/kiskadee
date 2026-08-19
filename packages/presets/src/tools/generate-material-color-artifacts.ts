@@ -1,16 +1,16 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  KISKADEE_TONES,
-  normalizeHexColor,
   type HexColor,
-  type KiskadeeHexScale
+  KISKADEE_TONES,
+  type KiskadeeHexScale,
+  normalizeHexColor
 } from '@kiskadee/core';
 import {
   argbFromHex,
   CorePalette,
   hexFromArgb,
-  TonalPalette
+  type TonalPalette
 } from '@material/material-color-utilities';
 
 export type MaterialGenerationMode = 'static' | 'static-content';

@@ -83,8 +83,7 @@ export function useSliderActivationFeedbackController({
   const shouldEnableStartThumb = enabled && usesStaticRuntime;
   const shouldEnableEndThumb = enabled && isRange && usesStaticRuntime;
   const resolveStaticGeometry = useCallback(
-    (thumbElement: HTMLSpanElement) =>
-      resolveSliderActivationFeedbackStaticGeometry(thumbElement),
+    (thumbElement: HTMLSpanElement) => resolveSliderActivationFeedbackStaticGeometry(thumbElement),
     []
   );
 
@@ -101,8 +100,7 @@ export function useSliderActivationFeedbackController({
     profile,
     readOnly,
     resolveStaticGeometry,
-    shouldSyncGeometryOnTransitionEnd:
-      shouldSyncSliderActivationFeedbackGeometryOnTransitionEnd
+    shouldSyncGeometryOnTransitionEnd: shouldSyncSliderActivationFeedbackGeometryOnTransitionEnd
   });
 
   const endMachine = useActivationFeedbackHalo<HTMLDivElement, HTMLSpanElement>({
@@ -118,8 +116,7 @@ export function useSliderActivationFeedbackController({
     profile,
     readOnly,
     resolveStaticGeometry,
-    shouldSyncGeometryOnTransitionEnd:
-      shouldSyncSliderActivationFeedbackGeometryOnTransitionEnd
+    shouldSyncGeometryOnTransitionEnd: shouldSyncSliderActivationFeedbackGeometryOnTransitionEnd
   });
 
   const pickMachine = useCallback(

@@ -50,7 +50,7 @@ export function resolveSwitchActivationFeedbackEffect({
           activationFeedbackClassName,
           'k-afx',
           resolveActivationFeedbackToneClass({ config, emphasis }),
-          isActive ? 'k-afxa' : '',
+          isActive ? 'k-afxa' : ''
         ) ?? ''
     }
   };

@@ -42,6 +42,9 @@ headless + visual React components with a Next.js showcase.
   or JS/declaration emission.
 - Read `STRUCTURAL-CSS.md` before changing structural Sass in `packages/components/react`.
 - Apply `skills/kiskadee-architecture/SKILL.md` for architecture-heavy or cross-package tasks.
+- Apply `skills/kiskadee-structural-utility-projections/SKILL.md` when an existing generated
+  token-only scale utility must be conditionally reused by a wrapper or different structural DOM
+  owner, or when discussing the compact `p` class-map bucket.
 - Check package-local `package.json`, `tsconfig.json`, and relevant `README.md` files before bigger
   changes.
 

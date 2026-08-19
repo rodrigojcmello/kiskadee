@@ -37,8 +37,9 @@ export function calculateSwitchRuntimeMotionGeometry(
   const shouldAlignReducedThumb =
     options.alignReducedThumb ??
     (usesThumbShrink || (options.preserveReducedThumbAlignment === true && isReducedThumb));
-  const alignmentBoxWidth =
-    shouldAlignReducedThumb ? Math.max(thumbWidth, trackContentSize.height) : thumbWidth;
+  const alignmentBoxWidth = shouldAlignReducedThumb
+    ? Math.max(thumbWidth, trackContentSize.height)
+    : thumbWidth;
   const translation = Math.max(0, trackContentSize.width - alignmentBoxWidth);
   const inlineStart =
     parseSwitchPixelValue(trackStyles.paddingInlineStart) +

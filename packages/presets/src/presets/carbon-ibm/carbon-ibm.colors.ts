@@ -1,4 +1,3 @@
-import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -6,6 +5,7 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import blackLight from './colors/black.light.ts';
 import blueLight from './colors/blue.light.ts';
 

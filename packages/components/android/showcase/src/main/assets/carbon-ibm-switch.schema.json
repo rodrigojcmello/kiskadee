@@ -1,18 +1,11 @@
 {
   "name": "Carbon",
   "prefix": "ci",
-  "version": [
-    1,
-    0,
-    0
-  ],
+  "version": [1, 0, 0],
   "author": "IBM",
   "global": {
     "fonts": {
-      "body": [
-        "IBM Plex Sans",
-        "sans-serif"
-      ]
+      "body": ["IBM Plex Sans", "sans-serif"]
     },
     "focus": {
       "width": 2,
@@ -49,12 +42,7 @@
     "palettes": {
       "default": {
         "light": {
-          "background": [
-            0,
-            0,
-            96,
-            1
-          ],
+          "background": [0, 0, 96, 1],
           "focusColor": "#0F62FE",
           "effects": {
             "activationFeedback": {
@@ -181,76 +169,31 @@
                         "borderColor": {
                           "neutral": {
                             "medium": {
-                              "rest": [
-                                0,
-                                0,
-                                0,
-                                0
-                              ],
+                              "rest": [0, 0, 0, 0],
                               "hover": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "focus": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "pressed": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "disabled": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "selected": {
                                 "rest": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 },
                                 "hover": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 },
                                 "focus": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 },
                                 "pressed": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 }
                               }
                             }
@@ -318,76 +261,31 @@
                         "borderColor": {
                           "neutral": {
                             "medium": {
-                              "rest": [
-                                0,
-                                0,
-                                0,
-                                0
-                              ],
+                              "rest": [0, 0, 0, 0],
                               "hover": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "focus": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "pressed": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "disabled": {
-                                "ref": [
-                                  0,
-                                  0,
-                                  0,
-                                  0
-                                ]
+                                "ref": [0, 0, 0, 0]
                               },
                               "selected": {
                                 "rest": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 },
                                 "hover": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 },
                                 "focus": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 },
                                 "pressed": {
-                                  "ref": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                  ]
+                                  "ref": [0, 0, 0, 0]
                                 }
                               }
                             }

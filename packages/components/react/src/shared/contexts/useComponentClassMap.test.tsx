@@ -18,6 +18,15 @@ const coreClassMap = {
       e1: {},
       e3: {
         d: 'control-core',
+        p: {
+          connected: {
+            all: 'control-projection-all',
+            'md:1': 'control-projection-medium-core'
+          },
+          disclosure: {
+            all: 'control-disclosure-all'
+          }
+        },
         s: {
           'md:1': 'control-size'
         },
@@ -97,7 +106,7 @@ afterEach(() => {
 });
 
 describe('useComponentClassMap', () => {
-  it('preserves core size buckets and overlays palette colors when the first eN element is empty', async () => {
+  it('preserves core size and projection buckets while overlaying palette colors', async () => {
     render(
       h(
         KiskadeeContext.Provider,
@@ -122,6 +131,15 @@ describe('useComponentClassMap', () => {
       },
       rr: {
         'md:1': 'control-radius'
+      },
+      p: {
+        connected: {
+          all: 'control-projection-all',
+          'md:1': 'control-projection-medium-core'
+        },
+        disclosure: {
+          all: 'control-disclosure-all'
+        }
       },
       c: {
         s: {

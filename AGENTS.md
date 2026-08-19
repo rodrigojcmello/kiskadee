@@ -81,6 +81,10 @@ keep task-specific workflows inside skills.
   multifamily output referenced by a preset Shared Viewer, or promoting regenerated tonal assets,
   use `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md`. Keep the current candidate version
   synchronized without rewriting the provenance of older approved assets.
+- When a generated token-only scale utility must be applied conditionally to a wrapper or different
+  structural DOM owner, or when proposing the compact `p` class-map bucket, use
+  `skills/kiskadee-structural-utility-projections/SKILL.md`. Keep the Structural Utility Projection
+  Registry distinct from Style Emission Policy and never put raw values in `p`.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
@@ -96,6 +100,8 @@ keep task-specific workflows inside skills.
   state precedence, and focus-ring ownership.
 - `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md`: tonal-scale version workflow that keeps
   preset Shared Viewer candidates synchronized while preserving approved asset provenance.
+- `skills/kiskadee-structural-utility-projections/SKILL.md`: explicit registry and artifact workflow
+  for reusing an existing token-only scale utility on a different structural owner.
 - `skills/kiskadee-map-icon-families/SKILL.md`: canonical icon-name, family mapping, RTL, generation,
   and coverage workflow.
 - `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language

@@ -327,11 +327,16 @@ export type ColorClasses = {
 
 export type EffectClassNamesBySizeJSON = Partial<Record<string, string>>;
 export type EffectClassBucketJSON = string | EffectClassNamesBySizeJSON;
+export type StructuralUtilityProjectionClassNamesBySizeJSON = Partial<Record<string, string>>;
+export type StructuralUtilityProjectionClassMapJSON = Partial<
+  Record<string, StructuralUtilityProjectionClassNamesBySizeJSON>
+>;
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
   // d = decorations, e = effects, s = scales, t = typography profiles, w = width scales,
-  // c = colors (with hh/h/m/l/ll sub-fields), l = control states
+  // p = structural utility projections, c = colors (with hh/h/m/l/ll sub-fields),
+  // l = control states
   // d: flattened into a single space-separated string of class names (always-on)
   d?: string;
   // e: effect buckets (each bucket is opt-in at component level).
@@ -354,6 +359,9 @@ export type ClassNameByElementJSON = {
   // w: width-only scales, kept separate so components can opt into fixed-width behavior.
   // Keys follow the same "s:" stripping as `s`.
   w?: Partial<Record<string, string>>;
+  // p: named structural utility projections. Each projection is size-aware and contains only
+  // references to existing atomic utility classes; it does not carry authored token values.
+  p?: StructuralUtilityProjectionClassMapJSON;
   // rr: rounded border radius scales (size-aware, opt-in at component level).
   rr?: Partial<Record<string, string>>;
   // rp: pill border radius scales (size-aware, opt-in at component level).

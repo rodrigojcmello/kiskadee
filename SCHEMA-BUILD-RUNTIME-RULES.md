@@ -713,6 +713,56 @@ Rule:
 - Omit unsupported component effects from component metadata artifacts; do not emit explicit `false`
   values for absent effects.
 
+### 5.1.1 Structural Utility Projection Registry
+
+Context:
+
+- A schema element may already author and emit the correct token-only scale utility while a
+  different structural wrapper needs to apply only that utility conditionally.
+- Reading a child class, copying a raw value into React or Sass, or applying the source element's
+  complete class list would mix visual ownership with DOM composition.
+- Style Emission Policy controls the CSS shape of the source utility; it does not redirect that
+  utility to another structural owner.
+
+Decision:
+
+- The Web Builder owns an explicit Structural Utility Projection Registry.
+- A registered projection reuses an already emitted token-only scale utility and publishes only its
+  class reference under `element.p[artifactKey][scaleKey] = className`.
+- `p` is optional, palette-independent, and omitted when no registry entry targets the element.
+- `scaleKey` is `all` or an existing component scale key. Runtime combines `all` with the active
+  scale and does not invent fallback.
+- `p` never stores raw values, CSS declarations, options, state, intent, emphasis, theme, surface
+  context, or semantic metadata.
+- The Registry is Web-specific build infrastructure. It does not belong in Core or preset schema.
+- Source and target stay in the same component, variant, and mode branch. Cross-component
+  projections and projection chains are invalid.
+- The target must not already emit the projected custom property from another token, mirrored, or
+  compensated scale utility.
+- The canonical Registry is currently empty. Projection of `Button.e6.boxWidth` for structural
+  padding compensation and migration of Tabs fixed width are future candidates, not active
+  projections.
+
+Reason:
+
+- Presets remain the sole owners of visual values.
+- Structural consumers receive a stable, auditable class reference without browser inspection or
+  duplicated CSS.
+- Keeping the Registry distinct from Style Emission Policy prevents CSS-shape decisions from
+  silently becoming DOM-ownership decisions.
+
+Consequence:
+
+- A projection adds no CSS selector, utility rule, effect recipe, artifact file, provider, request,
+  or browser module.
+- Aggregate and component-scoped core class maps are the only publication surfaces for `p`.
+- A missing registry entry must not fall back to raw schema data, a child class, or a hardcoded
+  structural value.
+- Future entries require build validation, atomic-class deduplication evidence, deterministic
+  `all + scale` resolution, and component tests for the intended structural owner.
+- The complete definition and eligibility test live in
+  [Structural utility projections](packages/web-builder/docs/definitions/structural-utility-projections.md).
+
 ### 5.2 Segment and theme representation
 
 In schema:
@@ -788,6 +838,8 @@ Runtime responsibilities:
 
 - read generated class maps;
 - resolve classes by `element + intent + emphasis + scale + state`;
+- resolve an explicitly registered `p` projection as `all + active scale` when a structural owner
+  activates it;
 - apply control state classes (`selected`, `disabled`, forced interaction states, etc.);
 - apply structural option classes from `components.<name>.options` defaults (or allowed props override);
 - connect headless behavior/accessibility to visual layer.
@@ -799,6 +851,8 @@ Runtime should not:
 - generate new DS color decisions on the fly;
 - replace schema-defined token values with arbitrary runtime constants (except explicit behavior options);
 - move theme/segment/emphasis logic out of artifacts.
+- infer a structural projection from descendants, class strings, CSS declarations, or raw schema
+  values;
 - infer or automatically request a brand pack from the first `brand.*` component instance;
 - fall back from a missing `brand.*` class to Primary, Neutral, or any other system intent.
 
@@ -823,6 +877,12 @@ Use this before implementing any new value:
 
 4. Is it only layout mechanics with no DS identity?
 - Yes -> structural Sass.
+
+5. Does a different structural owner need one already emitted token-only scale utility
+   independently?
+- Yes -> apply the Structural Utility Projection Registry eligibility test. Do not add a registry
+  entry when normal element resolution, Style Emission Policy, component options, or structural
+  Sass already owns the problem.
 
 ## 8) Tabs indicator example (applied)
 

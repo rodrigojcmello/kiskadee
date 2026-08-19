@@ -194,11 +194,7 @@ export function useActivationFeedbackRadialStateMachine<
   onKeyUp,
   onBlur,
   onKeyboardBlur
-}: UseActivationFeedbackRadialStateMachineArgs<
-  TPointerElement,
-  THostElement,
-  TKeyboardElement
->) {
+}: UseActivationFeedbackRadialStateMachineArgs<TPointerElement, THostElement, TKeyboardElement>) {
   const [isFeedbackActive, setIsFeedbackActive] = useState(false);
   const [isFeedbackFading, setIsFeedbackFading] = useState(false);
   const [isOverlayFeedbackActive, setIsOverlayFeedbackActive] = useState(false);
@@ -225,14 +221,17 @@ export function useActivationFeedbackRadialStateMachine<
   );
 
   // Pass cssVars as a stable reference; inline objects intentionally produce a new var map.
-  const clearFeedbackInlineVars = useCallback((target: THostElement) => {
-    // Required counterpart for imperative style.setProperty writes.
-    // Prevents stale geometry when the interaction mode changes between pointer/keyboard/programmatic.
-    target.style.removeProperty(resolvedCssVars.x);
-    target.style.removeProperty(resolvedCssVars.y);
-    target.style.removeProperty(resolvedCssVars.endSize);
-    target.style.removeProperty(resolvedCssVars.startSize);
-  }, [resolvedCssVars]);
+  const clearFeedbackInlineVars = useCallback(
+    (target: THostElement) => {
+      // Required counterpart for imperative style.setProperty writes.
+      // Prevents stale geometry when the interaction mode changes between pointer/keyboard/programmatic.
+      target.style.removeProperty(resolvedCssVars.x);
+      target.style.removeProperty(resolvedCssVars.y);
+      target.style.removeProperty(resolvedCssVars.endSize);
+      target.style.removeProperty(resolvedCssVars.startSize);
+    },
+    [resolvedCssVars]
+  );
 
   const resolveFeedbackHost = useCallback(
     (fallbackElement: HTMLElement): THostElement | null => {
@@ -288,7 +287,12 @@ export function useActivationFeedbackRadialStateMachine<
 
       const x = rect.width / 2;
       const y = rect.height / 2;
-      const size = resolveFeedbackEndSize(rect, x, y, pressedActivationFeedbackRadialRuntimeConfig.size);
+      const size = resolveFeedbackEndSize(
+        rect,
+        x,
+        y,
+        pressedActivationFeedbackRadialRuntimeConfig.size
+      );
 
       // Imperative CSS var writes are intentional for per-interaction animation perf.
       target.style.setProperty(resolvedCssVars.x, `${x}px`);
@@ -344,7 +348,12 @@ export function useActivationFeedbackRadialStateMachine<
           ? Math.max(0, Math.min(rect.height, clientY - rect.top))
           : rect.height / 2;
 
-      const size = resolveFeedbackEndSize(rect, x, y, modeActivationFeedbackRadialRuntimeConfig.size);
+      const size = resolveFeedbackEndSize(
+        rect,
+        x,
+        y,
+        modeActivationFeedbackRadialRuntimeConfig.size
+      );
       const startSize = `${modeActivationFeedbackRadialRuntimeConfig.startSizePx}px`;
 
       // Imperative CSS var writes are intentional for per-interaction animation perf.
@@ -505,7 +514,13 @@ export function useActivationFeedbackRadialStateMachine<
 
     const target = hostRef.current;
     if (target) clearFeedbackInlineVars(target);
-  }, [clearAllTimers, clearFeedbackInlineVars, clearUncapturedPointerListeners, effectProfile, hostRef]);
+  }, [
+    clearAllTimers,
+    clearFeedbackInlineVars,
+    clearUncapturedPointerListeners,
+    effectProfile,
+    hostRef
+  ]);
 
   useEffect(() => {
     if (!shouldForceOverlayPressed || !effectProfile) return;
@@ -543,12 +558,7 @@ export function useActivationFeedbackRadialStateMachine<
       hasPreClickFeedbackRef.current = false;
       onClick?.(event);
     },
-    [
-      allowPressedFeedback,
-      isDisabled,
-      onClick,
-      triggerPressed
-    ]
+    [allowPressedFeedback, isDisabled, onClick, triggerPressed]
   );
 
   const handlePointerDown = useCallback(

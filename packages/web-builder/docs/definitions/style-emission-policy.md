@@ -32,6 +32,33 @@ Required pipeline work for a new emission mode:
 The CSS transformer may still branch by property to choose the CSS property name, parse values, or
 format valid CSS. It must not branch by property alone to decide whether to emit a custom property.
 
+## Style Emission Policy versus Structural Utility Projection Registry
+
+Style Emission Policy decides how one authored style key becomes CSS. It does not decide which DOM
+owner conditionally receives the resulting utility.
+
+A structural utility projection instead publishes another reference to an already emitted
+token-only scale class under `element.p[artifactKey][scaleKey]`. It must not:
+
+- change direct, mirrored, token, interpolated, or compensated emission;
+- contain the raw style value or CSS declaration;
+- cause a second utility rule to be generated; or
+- infer ownership from the style property alone.
+
+The source property's Style Emission Policy must resolve to `token`. Direct, mirrored,
+interpolated, and compensated source utilities are not eligible projection sources. The Registry
+cannot override this requirement.
+
+If structural Sass needs a CSS variable, first configure the source element's Style Emission
+Policy. If a different structural node then needs that existing utility independently, evaluate the
+separate Structural Utility Projection Registry contract. Do not use projection to compensate for
+an incorrect emission shape, and do not use Style Emission Policy to redirect a utility to another
+DOM owner.
+
+See
+[`structural-utility-projections.md`](./structural-utility-projections.md) for the Registry and
+artifact rules. The Structural Utility Projection Registry is currently empty.
+
 Current element-specific contracts include:
 
 - `textField.e2.marginLeftEmission = 'mirrored'` so label geometry can expose `--k-mgl`.

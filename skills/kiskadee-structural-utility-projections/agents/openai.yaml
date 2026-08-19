@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kiskadee Structural Utility Projections"
+  short_description: "Model opt-in structural utility projections"
+  default_prompt: "Use $kiskadee-structural-utility-projections to decide whether a token-only scale utility needs an explicit structural projection."

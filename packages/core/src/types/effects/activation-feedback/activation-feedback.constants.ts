@@ -1,7 +1,7 @@
 import type {
   ActivationFeedbackMotionDurationToken,
-  ActivationFeedbackProfileDefinition,
   ActivationFeedbackProfileConfig,
+  ActivationFeedbackProfileDefinition,
   ActivationFeedbackProfileKey,
   ActivationFeedbackProfileMode
 } from './activation-feedback.types.ts';

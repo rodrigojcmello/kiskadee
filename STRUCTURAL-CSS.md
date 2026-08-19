@@ -72,7 +72,7 @@ the child order is intentionally side-aware or reversible, the wrapper may own t
 padding token that structural CSS consumes as `gap`; this keeps the value in schema without coupling
 spacing to one child order.
 
-Style emission policy may expose existing scale attributes as CSS custom properties when structural
+Style Emission Policy may expose existing scale attributes as CSS custom properties when structural
 CSS needs to consume the value indirectly. Margin emission stays side-specific:
 `marginTopEmission`, `marginRightEmission`, `marginBottomEmission`, and `marginLeftEmission`. These
 policies do not imply that the schema has or should gain a shorthand `margin` attribute. Padding
@@ -775,6 +775,41 @@ These shared motion tokens are currently defined in the framework root styleshee
 
 Use these as shared framework motion contracts, not as a signal that arbitrary global variables are
 implicitly approved for structural use.
+
+## Structural utility projections
+
+Structural Sass may style a wrapper or extra node whose token-only scale utility is authored by a
+different schema element. It must not copy that utility's value or reach into another element's
+complete class list.
+
+When normal element class resolution cannot express that relationship, use the structural utility
+projection architecture before adding a hardcoded declaration or a component-specific artifact
+bucket. A registered projection would expose only existing class references through:
+
+```text
+element.p[artifactKey][scaleKey] = className
+```
+
+Structural Sass still owns only the layout relationship. Component runtime owns whether the
+projected class is attached to the approved node. The source schema element remains the visual
+owner.
+
+Rules:
+
+- do not put token values, CSS declarations, colors, options, or state in `p`;
+- do not parse class strings or inspect descendants to discover a utility;
+- do not use projection to replace a required Style Emission Policy;
+- consume any required emitted variable directly after runtime applies the projected utility;
+- keep intent, emphasis, theme, surface context, and interaction state in normal class resolution;
+  and
+- treat absence of a projection as absence of the capability, not permission to add a Sass
+  fallback.
+
+The Structural Utility Projection Registry is currently empty. Projection of
+`Button.e6.boxWidth` for structural padding compensation and migration of Tabs fixed width are only
+future candidates. See
+[`structural-utility-projections.md`](packages/web-builder/docs/definitions/structural-utility-projections.md)
+for the canonical eligibility and artifact contract.
 
 ## Required custom properties
 

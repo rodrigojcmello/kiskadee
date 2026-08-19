@@ -7,12 +7,7 @@ import {
   resolveActivationFeedbackDurationMs,
   resolveActivationFeedbackProfile
 } from '@kiskadee/core';
-import type {
-  FocusEvent,
-  MouseEvent,
-  PointerEvent,
-  RefObject
-} from 'react';
+import type { FocusEvent, MouseEvent, PointerEvent, RefObject } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useIsomorphicLayoutEffect } from '../../../shared/utils/useIsomorphicLayoutEffect.ts';
 import { tryReleasePointerCapture, trySetPointerCapture } from './pointerCapture.ts';
@@ -45,9 +40,7 @@ type UseActivationFeedbackHaloArgs<
   origin?: ActivationFeedbackOrigin;
   profile?: ActivationFeedbackProfileMode;
   readOnly?: boolean;
-  resolveStaticGeometry?: (
-    hostElement: THostElement
-  ) => ActivationFeedbackStaticGeometry | null;
+  resolveStaticGeometry?: (hostElement: THostElement) => ActivationFeedbackStaticGeometry | null;
   shouldSyncGeometryOnTransitionEnd?: (
     event: TransitionEvent,
     hostElement: THostElement
@@ -105,9 +98,7 @@ export function useActivationFeedbackHalo<
       fadeDelayMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.delayToken, 50),
       fadeDurationMs: resolveActivationFeedbackDurationMs(profileConfig.fade?.durationToken, 100),
       sizePx:
-        typeof profileConfig.size === 'number' && profileConfig.size > 0
-          ? profileConfig.size
-          : null
+        typeof profileConfig.size === 'number' && profileConfig.size > 0 ? profileConfig.size : null
     };
   }, [config, profile]);
 
@@ -190,16 +181,15 @@ export function useActivationFeedbackHalo<
     if (rect.width === 0 || rect.height === 0) return null;
 
     const hostStyle = window.getComputedStyle(host);
-    const staticGeometry =
-      resolveStaticGeometry?.(host) ?? {
-        height: rect.height,
-        radius: hostStyle.borderTopLeftRadius,
-        size:
-          geometry === 'profile-size' && runtimeConfig.sizePx !== null
-            ? runtimeConfig.sizePx
-            : Math.max(rect.width, rect.height),
-        width: rect.width
-      };
+    const staticGeometry = resolveStaticGeometry?.(host) ?? {
+      height: rect.height,
+      radius: hostStyle.borderTopLeftRadius,
+      size:
+        geometry === 'profile-size' && runtimeConfig.sizePx !== null
+          ? runtimeConfig.sizePx
+          : Math.max(rect.width, rect.height),
+      width: rect.width
+    };
 
     return isValidStaticGeometry(staticGeometry) ? staticGeometry : null;
   }, [geometry, hostRef, resolveStaticGeometry, runtimeConfig.sizePx]);
@@ -259,13 +249,7 @@ export function useActivationFeedbackHalo<
 
       return true;
     },
-    [
-      applyStaticFeedback,
-      clearTimers,
-      hostRef,
-      isForcedActive,
-      isInteractionDisabled
-    ]
+    [applyStaticFeedback, clearTimers, hostRef, isForcedActive, isInteractionDisabled]
   );
 
   const finish = useCallback(
@@ -316,11 +300,7 @@ export function useActivationFeedbackHalo<
       clearGeometryVars();
       clearOriginVars();
     },
-    [
-      clearGeometryVars,
-      clearOriginVars,
-      clearTimers
-    ]
+    [clearGeometryVars, clearOriginVars, clearTimers]
   );
 
   useEffect(() => {
@@ -357,8 +337,7 @@ export function useActivationFeedbackHalo<
       ) {
         return;
       }
-      const shouldSync =
-        shouldSyncGeometryOnTransitionEnd?.(event, host) ?? event.target === host;
+      const shouldSync = shouldSyncGeometryOnTransitionEnd?.(event, host) ?? event.target === host;
       if (!shouldSync) return;
 
       syncGeometry();
@@ -379,13 +358,7 @@ export function useActivationFeedbackHalo<
         window.cancelAnimationFrame(animationFrame);
       }
     };
-  }, [
-    enabled,
-    geometryKey,
-    hostRef,
-    shouldSyncGeometryOnTransitionEnd,
-    syncStaticGeometryVars
-  ]);
+  }, [enabled, geometryKey, hostRef, shouldSyncGeometryOnTransitionEnd, syncStaticGeometryVars]);
 
   useEffect(() => {
     if (!isForcedActive) return;
@@ -410,14 +383,7 @@ export function useActivationFeedbackHalo<
       setIsActive(false);
       setIsFading(false);
     };
-  }, [
-    applyStaticFeedback,
-    clearOriginVars,
-    clearTimers,
-    geometryKey,
-    hostRef,
-    isForcedActive
-  ]);
+  }, [applyStaticFeedback, clearOriginVars, clearTimers, geometryKey, hostRef, isForcedActive]);
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<TPointerElement>) => {

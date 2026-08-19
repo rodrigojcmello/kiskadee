@@ -1,15 +1,15 @@
 import {
-  ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS,
   ACTIVATION_FEEDBACK_DURATION_TOKEN_TO_MS,
+  ACTIVATION_FEEDBACK_PROFILE_DEFINITIONS,
   DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
   DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE
 } from './activation-feedback.constants.ts';
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackMotionDurationToken,
+  ActivationFeedbackProfileConfig,
   ActivationFeedbackProfileDefinition,
   ActivationFeedbackProfileKey,
-  ActivationFeedbackProfileConfig,
   ActivationFeedbackProfileMode,
   ActivationFeedbackSetting,
   ActivationFeedbackVisual
@@ -19,10 +19,7 @@ export function isActivationFeedbackProfileKey(
   value: unknown
 ): value is ActivationFeedbackProfileKey {
   return (
-    value === 'ripple' ||
-    value === 'ripple-overflow' ||
-    value === 'halo' ||
-    value === 'pressed'
+    value === 'ripple' || value === 'ripple-overflow' || value === 'halo' || value === 'pressed'
   );
 }
 
@@ -186,7 +183,10 @@ export function resolveActivationFeedbackSetting(
 
 export function resolveActivationFeedbackProfile(
   profile: ActivationFeedbackProfileMode,
-  options: { config?: ActivationFeedbackEffectSchema; profile?: ActivationFeedbackProfileConfig } = {}
+  options: {
+    config?: ActivationFeedbackEffectSchema;
+    profile?: ActivationFeedbackProfileConfig;
+  } = {}
 ): ActivationFeedbackProfileConfig {
   if (!isActivationFeedbackProfileMode(profile)) {
     throw new Error(`Unsupported activation feedback profile "${String(profile)}".`);
@@ -199,7 +199,10 @@ export function resolveActivationFeedbackProfile(
 }
 
 export function resolvePressedActivationFeedbackProfile(
-  options: { config?: ActivationFeedbackEffectSchema; profile?: ActivationFeedbackProfileConfig } = {}
+  options: {
+    config?: ActivationFeedbackEffectSchema;
+    profile?: ActivationFeedbackProfileConfig;
+  } = {}
 ): ActivationFeedbackProfileConfig {
   const configured = options.profile ?? options.config?.profiles?.pressed;
   return mergeActivationFeedbackProfile(DEFAULT_PRESSED_ACTIVATION_FEEDBACK_PROFILE, configured);

@@ -19,24 +19,20 @@ function mergeClassNames(...parts: Array<string | undefined | null | false>): st
   return joined.length > 0 ? joined : undefined;
 }
 
-export function RollingNumber({
-  value,
-  formatValue,
-  className,
-  ...props
-}: RollingNumberProps) {
+export function RollingNumber({ value, formatValue, className, ...props }: RollingNumberProps) {
   const formattedValue = String(formatValue ? formatValue(value) : value);
+  const characters = Array.from(formattedValue.matchAll(/./gu), (match) => ({
+    character: match[0],
+    key: `${match.index}:${match[0]}`
+  }));
 
   return (
-    <span
-      {...props}
-      className={mergeClassNames('k-rolling-number', className)}
-    >
+    <span {...props} className={mergeClassNames('k-rolling-number', className)}>
       <span className="k-rolling-number-visual" aria-hidden="true">
-        {Array.from(formattedValue).map((character, index) => {
+        {characters.map(({ character, key }) => {
           if (!isDigit(character)) {
             return (
-              <span key={index} className="k-rolling-number-static">
+              <span key={key} className="k-rolling-number-static">
                 {character}
               </span>
             );
@@ -44,7 +40,7 @@ export function RollingNumber({
 
           return (
             <span
-              key={index}
+              key={key}
               className="k-rolling-number-digit"
               style={{ '--k-rn-digit': Number(character) } as CSSProperties}
             >

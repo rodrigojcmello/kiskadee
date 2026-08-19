@@ -7,11 +7,11 @@ import {
   breakpoints as schemaBreakpoints,
   stateActivator
 } from '@kiskadee/core';
+import { EMITTED_SCALE_CSS_VARS } from '../../../style-emission/emitted-scale-css-vars.ts';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
 } from '../../../style-emission/web-build-policy.ts';
-import { EMITTED_SCALE_CSS_VARS } from '../../scales/transformScaleKeyToCss.ts';
 import { hasAlwaysProjectedState } from '../../utils/stateSelectors.ts';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =

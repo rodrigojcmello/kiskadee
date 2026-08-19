@@ -8,12 +8,15 @@ import {
   type StyleKey,
   scaleProperties
 } from '@kiskadee/core';
+import { EMITTED_SCALE_CSS_VARS } from '../../style-emission/emitted-scale-css-vars.ts';
 import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
 } from '../../style-emission/web-build-policy.ts';
 import { SEPARATORS } from '../../utils/index.ts';
 import { normalizeCssNumber } from '../../utils/normalizeCssNumber.ts';
+
+export { EMITTED_SCALE_CSS_VARS };
 
 export const ERROR_NO_MATCHING_SCALE_PROPERTY = 'No matching scale key found.';
 export const ERROR_INVALID_MEDIA_QUERY_PATTERN =
@@ -29,28 +32,6 @@ export const ERROR_INVALID_KEY_FORMAT = 'Invalid scale key format; missing requi
 export type TransformScaleKeyToCssOptions = {
   styleEmissionPolicy?: ResolvedElementStyleEmissionPolicy;
 };
-
-/**
- * Canonical emitted CSS custom property names for scale-derived structural tokens.
- *
- * Naming grammar:
- * - first two letters identify the attribute group (`bd` = border, `bx` = box, `mg` = margin, `pd` = padding)
- * - last letter identifies the concrete value or edge within that group
- */
-export const EMITTED_SCALE_CSS_VARS = {
-  borderWidth: '--k-bdw',
-  borderRadius: '--k-bdr',
-  boxWidth: '--k-bxw',
-  boxHeight: '--k-bxh',
-  marginTop: '--k-mgt',
-  marginRight: '--k-mgr',
-  marginBottom: '--k-mgb',
-  marginLeft: '--k-mgl',
-  paddingTop: '--k-pdt',
-  paddingRight: '--k-pdr',
-  paddingBottom: '--k-pdb',
-  paddingLeft: '--k-pdl'
-} as const;
 
 /**
  * Map of project scale keys to their corresponding CSS property names.

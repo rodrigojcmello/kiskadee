@@ -1,7 +1,4 @@
-import {
-  createLazyModuleCache,
-  useLazyModule
-} from '../../../../shared/utils/lazyModule.ts';
+import { createLazyModuleCache, useLazyModule } from '../../../../shared/utils/lazyModule.ts';
 
 export type SwitchThumbShrinkEffectModule = typeof import('./SwitchThumbShrink.effect.ts');
 

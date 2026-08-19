@@ -142,6 +142,9 @@ This is the baseline end-to-end flow for Web:
 - Converts preset schemas into web artifacts (CSS + JSON maps + metadata).
 - Writes build output to `packages/web-builder/build/<designSystemKey>/...`.
 - May split generated classes into dedicated artifact buckets when runtime/components need conditional opt-in behavior beyond the generic `s` scale bucket.
+- May expose an existing token-only scale utility to a different structural owner through the
+  optional `p` projection bucket, but only when an explicit Structural Utility Projection Registry
+  entry allows that relationship.
 - May project optional `packages/brands` tonal assets through a preset-owned component formula and
   publish them outside the normal preset artifacts under `brand-packs/`.
 
@@ -172,8 +175,17 @@ Practical reading:
 Artifact note:
 
 - JSON artifact buckets are not only a transport optimization; they also express runtime intent.
-- When a visual value must be applied conditionally by the component layer, it may need a dedicated bucket instead of being merged into the generic scale bucket.
-- Example: Tabs tab fixed width uses `w` (width) as an opt-in artifact bucket instead of merging `boxWidth` into `s`.
+- A component-specific bucket such as the existing Tabs `w` bucket is a specialized artifact
+  contract. It must not become the template for unrelated components by default.
+- A structural utility projection is narrower: it adds only a class reference under
+  `element.p[artifactKey][scaleKey]` so an approved structural owner can reuse an existing
+  token-only scale utility. It never contains a raw visual value or creates CSS.
+- The Structural Utility Projection Registry is currently empty. Projection of
+  `Button.e6.boxWidth` for structural padding compensation and migration of Tabs fixed width are
+  candidates for future evaluation, not active `p` consumers.
+- See
+  [Structural utility projections](packages/web-builder/docs/definitions/structural-utility-projections.md)
+  for the normative boundary.
 
 ## Structural CSS naming convention (components layer)
 
@@ -221,6 +233,10 @@ Practical rule:
 
 - [STRUCTURAL-CSS.md](STRUCTURAL-CSS.md)
   - Canonical naming, scope, and selector rules for structural Sass in `packages/components/react`.
+
+- [Structural utility projections](packages/web-builder/docs/definitions/structural-utility-projections.md)
+  - Structural Utility Projection Registry and compact `p` artifact contract for reusing an
+    existing token-only scale utility on a different structural owner.
 
 - [CROSS-COMPONENT-RULES.md](CROSS-COMPONENT-RULES.md)
   - Durable rules shared across component families, such as focus language, activation feedback,

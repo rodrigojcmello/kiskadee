@@ -1,12 +1,12 @@
-import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
-  KiskadeeHexScale,
   GlobalSemanticsBySegment,
   GlobalSemanticsByTheme,
+  KiskadeeHexScale,
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 
 const primaryScale = {
   0: '#ffffff',

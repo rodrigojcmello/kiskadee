@@ -12,10 +12,22 @@
 - `class-maps/core/<component>.kiskadee.json`: component-scoped core class map.
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped palette class map.
 - Component-scoped class maps use the shape `{ component, classMap }`.
+- An element may expose registered structural utility references under the optional
+  compact shape `element.p[artifactKey][scaleKey] = className`. The `p` bucket contains only
+  references to existing token-only scale utilities and is omitted when no projection is
+  registered.
 - `onSubtle` and `onVivid` surface contexts share the same `<segment>.<theme>` CSS and class-map files.
   Each element stores its color classes under `c.s` (`onSubtle`) and, when authored, `c.v`
   (`onVivid`).
   Style keys and CSS declarations remain globally deduplicated across both buckets.
+
+Structural utility projection does not add another artifact or stylesheet. Its references live in
+the existing aggregate and component-scoped core class maps, and the referenced token-only scale
+utility continues to live in the normal core bundle. The Structural Utility Projection Registry is
+currently empty, so current builds emit no `p` branch. Projection of `Button.e6.boxWidth` for
+structural padding compensation and migration of Tabs fixed width remain future candidates rather
+than active projection consumers. See
+[`structural-utility-projections.md`](./structural-utility-projections.md).
 
 ## Optional brand packs
 
@@ -68,7 +80,9 @@ Metadata is written per template under `packages/web-builder/build/<template-key
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
   `components/text-field.kiskadee.json`.
 - `class-maps/**/<component>.kiskadee.json`: component-scoped class maps loaded on demand by
-  component runtime hooks. These are class resolution artifacts, not semantic metadata.
+  component runtime hooks. These are class resolution artifacts, not semantic metadata. Any
+  registered `p` branch likewise carries class references only; it does not turn a class map
+  into a component-option or token artifact.
 
 `global.kiskadee.json` should not ordinarily grow new component semantic payloads under
 `global.components.<name>`. Existing fallback data may remain for compatibility, and any new

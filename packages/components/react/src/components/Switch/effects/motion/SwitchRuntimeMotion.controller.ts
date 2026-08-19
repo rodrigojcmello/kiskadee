@@ -1,12 +1,5 @@
 import { useControlState } from '@kiskadee/react-headless';
-import {
-  type MouseEvent,
-  type RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import { type MouseEvent, type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useIsomorphicLayoutEffect } from '../../../../shared/utils/useIsomorphicLayoutEffect.ts';
 import {
   applySwitchFocusOffsetExtra,
@@ -132,9 +125,7 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
     if (!trackElement || !thumbElement) return;
 
     const resizeObserver =
-      typeof ResizeObserver !== 'undefined'
-        ? new ResizeObserver(syncThumbTranslation)
-        : null;
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(syncThumbTranslation) : null;
     resizeObserver?.observe(trackElement);
     resizeObserver?.observe(thumbElement);
     window.addEventListener('resize', scheduleThumbTranslationSync);

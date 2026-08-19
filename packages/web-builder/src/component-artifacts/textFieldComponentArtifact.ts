@@ -1,8 +1,8 @@
 import type {
   Schema,
   TextFieldFocusRingColorSource,
-  TextFieldLabelPlacement,
   TextFieldLabelOffsetByRadius,
+  TextFieldLabelPlacement,
   TextFieldMode,
   TextFieldModeByVariant,
   TextFieldVariant

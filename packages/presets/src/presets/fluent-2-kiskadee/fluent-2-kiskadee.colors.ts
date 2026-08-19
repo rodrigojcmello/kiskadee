@@ -1,4 +1,3 @@
-import { invertKiskadeeHexScale } from '@kiskadee/core';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -6,6 +5,7 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
+import { invertKiskadeeHexScale } from '@kiskadee/core';
 import { dynamicDark, dynamicLight } from '../dynamic.color.ts';
 import neutralDark from './colors/neutral.dark.ts';
 import neutralLight from './colors/neutral.light.ts';

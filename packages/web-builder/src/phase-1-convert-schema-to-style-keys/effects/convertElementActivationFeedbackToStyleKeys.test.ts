@@ -37,9 +37,7 @@ describe('convertElementActivationFeedbackToStyleKeys', () => {
     const result = convertElementActivationFeedbackToStyleKeys({ config });
     const rest = result.rest ?? [];
     const profileKeys = rest.filter((key) => key.startsWith('activationFeedbackProfile__'));
-    const profiles = profileKeys.map(
-      (key) => parseStyleKeyValue<{ profile: string }>(key).profile
-    );
+    const profiles = profileKeys.map((key) => parseStyleKeyValue<{ profile: string }>(key).profile);
 
     expect(profiles).toEqual(['ripple-overflow', 'ripple', 'halo']);
   });

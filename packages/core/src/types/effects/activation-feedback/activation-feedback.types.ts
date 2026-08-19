@@ -1,5 +1,4 @@
-import type { ComponentEmphasis } from '../../colors/colors.types.ts';
-import type { SolidColor } from '../../colors/colors.types.ts';
+import type { ComponentEmphasis, SolidColor } from '../../colors/colors.types.ts';
 
 export type ActivationFeedbackMotionDurationToken =
   | 'interaction.instant'

@@ -1,7 +1,4 @@
-import {
-  createLazyModuleCache,
-  useLazyModule
-} from '../../../../shared/utils/lazyModule.ts';
+import { createLazyModuleCache, useLazyModule } from '../../../../shared/utils/lazyModule.ts';
 
 export type ButtonActivationFeedbackEffectModule =
   typeof import('./ButtonActivationFeedback.effect.ts');

@@ -1,7 +1,7 @@
 import {
-  KISKADEE_TONES,
   type CssColorReference,
   type HexColor,
+  KISKADEE_TONES,
   type KiskadeeCssScale,
   type KiskadeeHexScale,
   type KiskadeeTone,
