@@ -4,6 +4,7 @@
 
 - [Fluent 2 Menu usage](https://fluent2.microsoft.design/components/web/react/core/menu/usage)
 - [Fluent UI MenuPopover source](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuPopover/useMenuPopoverStyles.styles.ts)
+- [Fluent UI MenuItem source](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuItem/useMenuItemStyles.styles.ts)
 - [Fluent UI light color aliases](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/lightColor.ts)
 - [Fluent UI dark color aliases](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/darkColor.ts)
 - [Fluent 2 Dropdown usage](https://fluent2.microsoft.design/components/web/react/core/dropdown/usage)
@@ -52,6 +53,9 @@
 - **Official exact**: Figma node `9361:10436` keeps the hovered item's four-pixel radius. The schema
   already declares that value on `e2`; the React resolver must consume the generated radius class
   instead of flattening it structurally.
+- **Official exact**: Fluent MenuItem applies `colorNeutralBackground1Hover` to its root Hover
+  state. The official aliases resolve that token to achromatic Grey 96 `#f5f5f5` in Light and Grey
+  24 `#3d3d3d` in Dark, rather than the blue-gray Neutral ramp used by the other Dropdown roles.
 - **Official adapted**: group headings use Caption 1 Bold at 12/16 with six-pixel inline and
   eight-pixel block padding. Kiskadee intentionally resolves this through
   `caption-medium-strong` Semibold because the typography contract does not support `Stronger`.
@@ -83,19 +87,23 @@
 
 | Source concept | Source value | Kiskadee mapping |
 | --- | --- | --- |
+| `colorNeutralBackground1Hover`, Light | Grey 96 `#f5f5f5` | `primitive.black.v1` L2 `#f6f6f6` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.002995` |
+| `colorNeutralBackground1Hover`, Dark | Grey 24 `#3d3d3d` | `primitive.black.v1` D18 `#3c3c3c` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.003844` |
+| Hover surface, Darker | No upstream Darker theme | `primitive.black.v1` D12 `#313131` on `e2.boxColor.neutral.medium.hover`, preserving the established Darker tone as a Kiskadee adaptation |
 | `colorNeutralForeground3`, Light | Grey 38 `#616161` | `dropdown.neutral` Light L50 `#5d616b` on `e8.textColor.neutral.medium.rest` |
 | `colorNeutralForeground3`, Dark | Grey 68 `#adadad` | `dropdown.neutral` Dark/Darker D70 `#8d919c` on `e8.textColor.neutral.medium.rest` |
 
-The Light mapping closely follows the official value. The darker D70 shortcut color is an explicit
-Kiskadee visual adaptation; it is not presented as an exact Fluent dark-token match. The existing
-approved `n.black.v2` asset supplies both tones, so no primitive color or literal schema color is
-introduced.
+The hover mappings select the closest available tones from the approved zero-chroma `n.black.v1`
+asset. The darker D70 shortcut color is an explicit Kiskadee visual adaptation; it is not presented
+as an exact Fluent dark-token match. Existing approved primitive assets supply every tone, so no
+literal schema color is introduced.
 
 ## Schema Mapping
 
 - `e1`: borderless floating Neutral surface, 4 px rounded corners, 4 px inset, and `Shadow 16`.
 - `e2`: neutral Medium item surface with 6/2/6/6 px top/end/bottom/start padding, 2 px inter-item
-  spacing, and sparse Hover, Pressed, Selected, and Disabled deltas.
+  spacing, and sparse Hover, Pressed, Selected, and Disabled deltas. Only Hover resolves through
+  the achromatic `primitive.black.v1`; the other roles retain the promoted Fluent Neutral family.
 - `e3`: 20 px leading icon and 4 px logical gap.
 - `e4`: Body 1 (`body-medium`) principal label with 2 px horizontal text inset.
 - `e5`: Caption 1 (`caption-medium`) auxiliary description with the same text inset.
@@ -120,7 +128,7 @@ create a ButtonMenu schema; the single trigger and both split-button halves cont
 ordinary Button contract.
 
 No color literal is authored in the component schema. All colors resolve through the preset's
-promoted Fluent Neutral, Brand, and Cranberry tonal families.
+approved pure Black, promoted Fluent Neutral, Brand, and Cranberry tonal families.
 
 ## Presence Profiles
 
@@ -148,5 +156,7 @@ separate artifact, or another request.
 ## Validation
 
 - Verify the solid surface emits no border utility.
+- Verify the generated neutral item Hover resolves to Light `#f6f6f6`, Dark `#3c3c3c`, and Darker
+  `#313131`, with no chromatic channel divergence.
 - Verify full-bleed NeutralStroke2, group heading, shortcut alignment, RTL, and 100%/200% text
   enlargement in generated artifacts and the Showcase.

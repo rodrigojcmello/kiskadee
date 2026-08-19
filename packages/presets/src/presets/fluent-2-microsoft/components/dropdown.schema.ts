@@ -13,7 +13,7 @@ const THEMES = {
   light: {
     track: 'l',
     surface: 0,
-    hover: 3,
+    hover: 2,
     pressed: 7,
     selected: 5,
     text: 85,
@@ -25,7 +25,7 @@ const THEMES = {
   dark: {
     track: 'd',
     surface: 5,
-    hover: 16,
+    hover: 18,
     pressed: 10,
     selected: 12,
     text: 90,
@@ -68,6 +68,7 @@ export function createFluent2MicrosoftDropdownSchema({
   const createTheme = (theme: ThemeName) => {
     const recipe = THEMES[theme];
     const transparent = c('default', recipe.track, 'dropdown.neutral', 0, 0);
+    const neutralHover = c('default', recipe.track, 'primitive.black.v1', recipe.hover);
     const neutralText = c('default', recipe.track, 'dropdown.neutral', recipe.text);
     const neutralGroupLabelText = c(
       'default',
@@ -112,7 +113,7 @@ export function createFluent2MicrosoftDropdownSchema({
             neutral: {
               medium: {
                 rest: transparent,
-                hover: c('default', recipe.track, 'dropdown.neutral', recipe.hover),
+                hover: neutralHover,
                 pressed: c('default', recipe.track, 'dropdown.neutral', recipe.pressed),
                 selected: {
                   rest: c('default', recipe.track, 'dropdown.neutral', recipe.selected)
