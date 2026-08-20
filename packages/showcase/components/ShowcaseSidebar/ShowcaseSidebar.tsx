@@ -22,6 +22,10 @@ const componentEntries = [
     label: 'Button'
   },
   {
+    href: '/bottom-sheet',
+    label: 'BottomSheet'
+  },
+  {
     href: '/card',
     label: 'Card'
   },

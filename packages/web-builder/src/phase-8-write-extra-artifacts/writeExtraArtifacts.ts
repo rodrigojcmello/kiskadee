@@ -5,6 +5,7 @@ import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
   ActivationFeedbackThemeTokens,
+  BottomSheetOptions,
   ButtonOptions,
   FontStack,
   GlobalClassNameMapJSON,
@@ -56,9 +57,15 @@ type ComponentEffectArtifact = {
     presence?: ResolvedDropdownPresenceEffect;
     shadow?: ShadowEffectSchema;
   };
-  options?: ButtonOptions;
+  options?: BottomSheetOptions | ButtonOptions;
 };
-type ComponentEffectArtifactName = 'button' | 'card' | 'dropdown' | 'slider' | 'switch';
+type ComponentEffectArtifactName =
+  | 'bottomSheet'
+  | 'button'
+  | 'card'
+  | 'dropdown'
+  | 'slider'
+  | 'switch';
 
 function hasErrnoCode(error: unknown, code: string): boolean {
   return (
@@ -289,6 +296,16 @@ export async function writeExtraArtifacts(params: {
   if (schema.components?.button?.effects?.activationFeedback !== undefined) {
     getComponentEffects('button').activationFeedback =
       schema.components.button.effects.activationFeedback;
+  }
+
+  if (schema.components?.bottomSheet?.effects?.shadow !== undefined) {
+    getComponentEffects('bottomSheet').shadow = schema.components.bottomSheet.effects.shadow;
+  }
+
+  if (schema.components?.bottomSheet?.options !== undefined) {
+    const bottomSheetArtifact = componentEffectOverrides.bottomSheet ?? {};
+    bottomSheetArtifact.options = schema.components.bottomSheet.options;
+    componentEffectOverrides.bottomSheet = bottomSheetArtifact;
   }
 
   if (schema.components?.button?.effects?.shadow !== undefined) {

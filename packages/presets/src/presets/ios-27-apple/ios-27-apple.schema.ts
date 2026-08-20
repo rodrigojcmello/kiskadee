@@ -1,5 +1,6 @@
 import { breakpoints, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createIos27AppleBottomSheetSchema } from './components/bottom-sheet.schema.ts';
 import { createIos27AppleButtonSchema } from './components/button.schema.ts';
 import { createIos27AppleCardSchema } from './components/card.schema.ts';
 import { createIos27AppleDropdownSchema } from './components/dropdown.schema.ts';
@@ -141,6 +142,7 @@ export const schema: Schema<Segment> = {
     }
   },
   components: {
+    bottomSheet: createIos27AppleBottomSheetSchema({ c }),
     button: createIos27AppleButtonSchema({
       c
     }),

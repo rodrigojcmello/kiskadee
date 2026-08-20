@@ -1,4 +1,5 @@
 import type { DropdownIntent } from '@kiskadee/core';
+import type { IconName } from '@kiskadee/icons/interface';
 import {
   Menu as HeadlessMenu,
   type MenuContentProps,
@@ -13,9 +14,15 @@ import {
   type MenuSubTriggerProps
 } from '@kiskadee/react-headless/menu';
 import type {
+  MenuTree,
+  MenuTreeNode,
+  MenuTreeSelectionDetails
+} from '@kiskadee/react-headless/menu-tree';
+import type {
   ComponentPropsWithoutRef,
   KeyboardEvent as ReactKeyboardEvent,
   MouseEvent as ReactMouseEvent,
+  ReactNode,
   Ref
 } from 'react';
 import { forwardRef, isValidElement } from 'react';
@@ -67,6 +74,13 @@ export type ButtonMenuContentProps = Omit<MenuContentProps, 'forceMount' | 'rend
 export type ButtonMenuItemProps = Omit<MenuItemProps, 'render'> & {
   intent?: DropdownIntent;
   href?: string;
+  target?: string;
+  rel?: string;
+};
+
+export type ButtonMenuTreeContentProps = {
+  tree: MenuTree<IconName>;
+  itemsLayout?: DropdownItemsLayout;
 };
 
 export type ButtonMenuGroupProps = Omit<MenuGroupProps, 'render'>;
@@ -232,7 +246,7 @@ const ButtonMenuContent = forwardRef<HTMLDivElement, ButtonMenuContentProps>(
 );
 
 const ButtonMenuItem = forwardRef<HTMLElement, ButtonMenuItemProps>(function ButtonMenuItem(
-  { children, disabled, intent, href, onSelect, ...props },
+  { children, disabled, intent, href, target, rel, onSelect, ...props },
   forwardedRef
 ) {
   return (
@@ -260,6 +274,8 @@ const ButtonMenuItem = forwardRef<HTMLElement, ButtonMenuItemProps>(function But
                     {...menuRest}
                     ref={ref}
                     href={href}
+                    target={target}
+                    rel={rel}
                     className={`${visualClassName ?? ''} ${menuClassName ?? ''}`.trim()}
                   >
                     {children}
@@ -456,6 +472,124 @@ const ButtonMenuShortcut = forwardRef<HTMLSpanElement, ButtonMenuShortcutProps>(
   }
 );
 
+function ButtonMenuTreeItemContent({
+  description,
+  endText,
+  icon,
+  label,
+  trailingIcon
+}: {
+  description?: string;
+  endText?: string;
+  icon?: IconName;
+  label: string;
+  trailingIcon?: IconName;
+}) {
+  return (
+    <>
+      {icon ? <Dropdown.Icon name={icon} /> : null}
+      <Dropdown.Label>{label}</Dropdown.Label>
+      {description ? <Dropdown.Description>{description}</Dropdown.Description> : null}
+      {endText ? <ButtonMenuShortcut>{endText}</ButtonMenuShortcut> : null}
+      {trailingIcon ? <Dropdown.Trailing name={trailingIcon} /> : null}
+    </>
+  );
+}
+
+function renderButtonMenuTreeNodes(nodes: readonly MenuTreeNode<IconName>[]): ReactNode {
+  return nodes.map((node) => {
+    if (node.type === 'separator') {
+      return <ButtonMenuSeparator key={node.id} />;
+    }
+
+    if (node.type === 'group') {
+      return (
+        <ButtonMenuGroup key={node.id}>
+          {node.label ? <ButtonMenuGroupLabel>{node.label}</ButtonMenuGroupLabel> : null}
+          {renderButtonMenuTreeNodes(node.items)}
+        </ButtonMenuGroup>
+      );
+    }
+
+    if (node.type === 'radio-group') {
+      return (
+        <ButtonMenuRadioGroup
+          key={node.id}
+          id={node.id}
+          value={node.value}
+          defaultValue={node.defaultValue}
+          onValueChange={(value) => {
+            const selectedItem = node.items.find((item) => item.value === value);
+            if (!selectedItem) return;
+            node.onValueChange?.(value, {
+              id: selectedItem.id,
+              type: 'radio',
+              value
+            });
+          }}
+        >
+          {node.label ? <ButtonMenuGroupLabel>{node.label}</ButtonMenuGroupLabel> : null}
+          {node.items.map((item) => (
+            <ButtonMenuRadioItem
+              key={item.id}
+              value={item.value}
+              textValue={item.textValue ?? item.label}
+              disabled={item.disabled}
+              intent={item.intent}
+            >
+              <ButtonMenuTreeItemContent {...item} />
+            </ButtonMenuRadioItem>
+          ))}
+        </ButtonMenuRadioGroup>
+      );
+    }
+
+    if (node.type === 'submenu') {
+      return (
+        <ButtonMenuSub key={node.id}>
+          <ButtonMenuSubTrigger
+            textValue={node.textValue ?? node.label}
+            disabled={node.disabled}
+            intent={node.intent}
+          >
+            <ButtonMenuTreeItemContent {...node} />
+          </ButtonMenuSubTrigger>
+          <ButtonMenuSubContent>{renderButtonMenuTreeNodes(node.items)}</ButtonMenuSubContent>
+        </ButtonMenuSub>
+      );
+    }
+
+    const selectionDetails: MenuTreeSelectionDetails = {
+      id: node.id,
+      type: node.type
+    };
+    return (
+      <ButtonMenuItem
+        key={node.id}
+        value={node.id}
+        textValue={node.textValue ?? node.label}
+        disabled={node.disabled}
+        intent={node.intent}
+        href={node.type === 'link' ? node.href : undefined}
+        target={node.type === 'link' ? node.target : undefined}
+        rel={node.type === 'link' ? node.rel : undefined}
+        closeOnSelect={node.closeOnSelect ?? true}
+        onSelect={() => node.onSelect?.(selectionDetails)}
+      >
+        <ButtonMenuTreeItemContent {...node} />
+      </ButtonMenuItem>
+    );
+  });
+}
+
+function ButtonMenuTreeContent({ tree, itemsLayout }: ButtonMenuTreeContentProps) {
+  return (
+    <ButtonMenuContent aria-label={tree.title} itemsLayout={itemsLayout}>
+      {renderButtonMenuTreeNodes(tree.items)}
+    </ButtonMenuContent>
+  );
+}
+
 export const ButtonMenu = {
   Root: ButtonMenuRoot,
   Action: ButtonMenuAction,
@@ -474,5 +608,6 @@ export const ButtonMenu = {
   Description: Dropdown.Description,
   Shortcut: ButtonMenuShortcut,
   Trailing: Dropdown.Trailing,
-  Separator: ButtonMenuSeparator
+  Separator: ButtonMenuSeparator,
+  TreeContent: ButtonMenuTreeContent
 };

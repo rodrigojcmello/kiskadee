@@ -48,6 +48,17 @@ $height: 64px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.buttonMenuPresentationControl {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  inline-size: fit-content;
+}
+
+.buttonMenuPresentationControl select {
+  font: inherit;
+}
+
 .buttonGroupGrid article,
 .buttonMenuGrid article {
   align-content: start;

@@ -381,6 +381,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isComponentName(value: string): value is ComponentName {
   return (
+    value === 'bottomSheet' ||
     value === 'button' ||
     value === 'card' ||
     value === 'dropdown' ||
@@ -718,6 +719,7 @@ export async function publishMetadata(params: {
   // the full schema structure. Absence of keys means the information is
   // not defined or not applicable.
   const manifestComponentNames = [
+    'bottomSheet',
     'button',
     'card',
     'dropdown',

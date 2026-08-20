@@ -25,6 +25,11 @@
       "import": "./dist/components/button/Button.js",
       "default": "./dist/components/button/Button.js"
     },
+    "./bottom-sheet": {
+      "types": "./dist/components/bottom-sheet/BottomSheet.d.ts",
+      "import": "./dist/components/bottom-sheet/BottomSheet.js",
+      "default": "./dist/components/bottom-sheet/BottomSheet.js"
+    },
     "./autocomplete": {
       "types": "./dist/components/autocomplete/Autocomplete.d.ts",
       "import": "./dist/components/autocomplete/Autocomplete.js",
@@ -49,6 +54,11 @@
       "types": "./dist/components/menu/Menu.d.ts",
       "import": "./dist/components/menu/Menu.js",
       "default": "./dist/components/menu/Menu.js"
+    },
+    "./menu-tree": {
+      "types": "./dist/components/menu-tree/MenuTree.d.ts",
+      "import": "./dist/components/menu-tree/MenuTree.js",
+      "default": "./dist/components/menu-tree/MenuTree.js"
     },
     "./select": {
       "types": "./dist/components/select/Select.d.ts",

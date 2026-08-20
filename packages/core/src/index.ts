@@ -1,4 +1,5 @@
 export * from './breakpoints.ts';
+export * from './components/bottom-sheet.ts';
 export * from './components/button.ts';
 export * from './components/card.ts';
 export * from './components/dropdown.ts';

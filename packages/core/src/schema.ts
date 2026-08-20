@@ -1,4 +1,5 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
+import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
 import type { CardElements, CardOptions } from './components/card.ts';
 import type { DropdownElements } from './components/dropdown.ts';
@@ -43,6 +44,7 @@ import type { ElementTypography, SchemaTypography } from './typography.ts';
 
 // Names of all supported components
 export type ComponentName =
+  | 'bottomSheet'
   | 'button'
   | 'card'
   | 'dropdown'
@@ -123,6 +125,7 @@ export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = 
 >;
 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
+  bottomSheet: ComponentElementsStyleKeyMap<TSegmentName>;
   button: ComponentElementsStyleKeyMap<TSegmentName>;
   card: ComponentElementsStyleKeyMap<TSegmentName>;
   dropdown: ComponentElementsStyleKeyMap<TSegmentName>;
@@ -176,6 +179,13 @@ type ComponentEffects = {
 };
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
+  bottomSheet: {
+    effects?: {
+      shadow?: ShadowEffectSchema;
+    };
+    options?: BottomSheetOptions;
+    elements: BottomSheetElements<TSegmentName> & Elements<TSegmentName>;
+  };
   button: {
     effects?: ComponentEffects;
     options?: ButtonOptions;

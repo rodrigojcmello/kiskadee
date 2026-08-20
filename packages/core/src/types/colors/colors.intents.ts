@@ -112,6 +112,23 @@ export type DropdownIntent = keyof typeof DropdownIntentKeys;
 export type RoleDropdown = `dropdown.${DropdownIntent}`;
 
 /**
+ * Supported intent keys for the `bottomSheet` component.
+ *
+ * BottomSheet is an independent modal surface. Its menu items preserve the
+ * neutral and destructive semantic range without depending on Dropdown roles.
+ */
+export const BottomSheetIntentKeys = {
+  neutral: 'neutral',
+  destructive: 'destructive'
+} as const;
+
+/** Supported intent keys for the `bottomSheet` component (Layer 3). */
+export type BottomSheetIntent = keyof typeof BottomSheetIntentKeys;
+
+/** Qualified role identifier for `bottomSheet` intents. */
+export type RoleBottomSheet = `bottomSheet.${BottomSheetIntent}`;
+
+/**
  * Supported intent keys for the `progress` component.
  */
 export const ProgressIntentKeys = {

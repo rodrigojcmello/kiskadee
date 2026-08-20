@@ -1,4 +1,5 @@
 import type {
+  BottomSheetIntent,
   CardIntent,
   DropdownIntent,
   IconIntent,
@@ -16,12 +17,14 @@ import type {
 } from './colors.intents.ts';
 
 export type {
+  BottomSheetIntent,
   ButtonIntent,
   CardIntent,
   DropdownIntent,
   ExternalButtonIntent,
   IconIntent,
   ProgressIntent,
+  RoleBottomSheet,
   RoleButton,
   RoleCard,
   RoleDropdown,
@@ -36,6 +39,7 @@ export type {
   TextFieldIntent
 } from './colors.intents.ts';
 export {
+  BottomSheetIntentKeys,
   ButtonIntentKeys,
   CardIntentKeys,
   DropdownIntentKeys,
@@ -461,6 +465,7 @@ export type GlobalSemanticsBySegment = Partial<Record<SegmentName, GlobalSemanti
  * - a direct primitive reference (Layer 1).
  */
 export type ComponentIntents = {
+  bottomSheet?: Partial<Record<BottomSheetIntent, IntentValue>>;
   /**
    * Button intents.
    *

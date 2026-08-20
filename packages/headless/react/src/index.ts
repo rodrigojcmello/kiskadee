@@ -22,6 +22,19 @@ export type {
 } from './components/button/Button.tsx';
 export { Button, resolveButtonInteractionState } from './components/button/Button.tsx';
 export type {
+  BottomSheetCloseProps,
+  BottomSheetCloseRenderProps,
+  BottomSheetContentProps,
+  BottomSheetContentRenderProps,
+  BottomSheetContentRenderState,
+  BottomSheetOpenChangeDetails,
+  BottomSheetOpenChangeReason,
+  BottomSheetRootProps,
+  BottomSheetTriggerProps,
+  BottomSheetTriggerRenderProps
+} from './components/bottom-sheet/BottomSheet.tsx';
+export { BottomSheet } from './components/bottom-sheet/BottomSheet.tsx';
+export type {
   CardActionInteractionStateSource,
   CardActionProps,
   CardActionStatus,
@@ -78,6 +91,20 @@ export type {
   MenuTriggerRenderProps
 } from './components/menu/Menu.tsx';
 export { Menu } from './components/menu/Menu.tsx';
+export type {
+  MenuTree,
+  MenuTreeGroup,
+  MenuTreeIntent,
+  MenuTreeItem,
+  MenuTreeLink,
+  MenuTreeNode,
+  MenuTreeRadioGroup,
+  MenuTreeRadioItem,
+  MenuTreeSelectionDetails,
+  MenuTreeSeparator,
+  MenuTreeSubmenu
+} from './components/menu-tree/MenuTree.ts';
+export { defineMenuTree, validateMenuTree } from './components/menu-tree/MenuTree.ts';
 export type {
   ProgressClassNames,
   ProgressDecorativeRootProps,
