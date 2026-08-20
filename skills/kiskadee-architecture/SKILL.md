@@ -73,9 +73,9 @@ Read only what the task needs, in this order:
   dedicated bucket. Keep it distinct from Style Emission Policy.
 - Structural utility projections use only
   `element.p[artifactKey][scaleKey] = className`; `p` never stores raw values or semantic metadata.
-- The Structural Utility Projection Registry is currently empty. Projection of
-  `Button.e6.boxWidth` for structural padding compensation and migration of Tabs fixed width are
-  future candidates, not active `p` consumers.
+- The Structural Utility Projection Registry currently projects optional `Button.e6.boxWidth` to
+  `Button.e1.p.gd` for connected-group seam-overlap compensation.
+- Migration of Tabs fixed width remains a future candidate, not an active `p` consumer.
 - For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique
   and prefer narrowing generic schema keys via type-specific Zod/contracts over inventing ad hoc
   schema properties or builder-only exceptions.
@@ -116,14 +116,14 @@ Use these rules before proposing a schema or builder change:
 5. If one already emitted token-only scale utility must instead be applied to a different structural
    owner, apply the Structural Utility Projection Registry eligibility test.
 
-Candidate examples, not active projections:
+Current example and future candidate:
 
-- Button divider thickness may eventually project `Button.e6.boxWidth` to a structural consumer for
-  padding compensation.
+- Button divider thickness projects optional `Button.e6.boxWidth` to `Button.e1.p.gd` with
+  `retainSource: true`; Button.Group activates it only with an authored divider.
 - Tabs fixed width may eventually migrate from its specialized `w` bucket to the generic `p`
   contract.
 
-Do not register either candidate without a separate implementation and validation task.
+Do not register the Tabs candidate without a separate implementation and validation task.
 
 ## New component rollout checklist
 

@@ -122,7 +122,7 @@ describe('Structural Utility Projection', () => {
     }
   });
 
-  it('keeps the default registry empty', () => {
+  it('omits the default Button projection from unrelated components', () => {
     const out = generate();
     const progress = out.core.progress as Record<string, ClassNameByElementJSON>;
 

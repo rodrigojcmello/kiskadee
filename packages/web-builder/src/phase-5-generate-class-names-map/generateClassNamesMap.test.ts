@@ -26,6 +26,10 @@ describe('generateClassNamesMapSplit', () => {
         button: {
           options: { groupDivider: true, disclosureDivider: false },
           elements: {
+            e1: {
+              name: 'button-root',
+              scales: { boxHeight: { 's:md:1': 32 } }
+            },
             e6: {
               name: 'button-divider',
               scales: {
@@ -53,6 +57,7 @@ describe('generateClassNamesMapSplit', () => {
       {
         'boxWidth__1@@t': 'divider-width',
         'boxHeight__20@@t': 'divider-height',
+        boxHeight__32: 'button-height',
         'boxColor__#dddddd': 'divider-color'
       },
       toneMetadataByPalette,
@@ -65,6 +70,7 @@ describe('generateClassNamesMapSplit', () => {
     expect(core.e6.s?.['md:1']?.split(' ')).toEqual(
       expect.arrayContaining(['divider-width', 'divider-height'])
     );
+    expect(core.e1.p?.gd).toEqual({ 'md:1': 'divider-width' });
     expect(palette.e6.c?.s?.neutral).toEqual({ m: 'divider-color' });
   });
 
@@ -90,6 +96,10 @@ describe('generateClassNamesMapSplit', () => {
       components: {
         button: {
           elements: {
+            e1: {
+              name: 'button-root',
+              scales: { boxHeight: { 's:md:1': 32 } }
+            },
             e6: {
               name: 'button-divider',
               scales: {
@@ -115,6 +125,7 @@ describe('generateClassNamesMapSplit', () => {
       {
         'boxWidth__1@@t': 'thickness-1',
         'boxHeight__20@@t': 'height-20',
+        boxHeight__32: 'button-height',
         'boxColor__#dddddd': 'neutral-line'
       },
       toneMetadataByPalette,
@@ -142,6 +153,7 @@ describe('generateClassNamesMapSplit', () => {
     expect(buttonCore.e6.s?.['md:1']?.split(' ')).toEqual(
       expect.arrayContaining(['thickness-1', 'height-20'])
     );
+    expect(buttonCore.e1.p?.gd).toEqual({ 'md:1': 'thickness-1' });
     expect(separatorPalette.e1.c?.s?.neutral).toEqual({ m: 'neutral-line' });
     expect(dropdownPalette.e7.c?.s?.neutral).toEqual({ m: 'neutral-line' });
     expect(buttonPalette.e6.c?.s?.neutral).toEqual({ m: 'neutral-line' });

@@ -408,19 +408,21 @@
 
 /*
  * element button root / e1
- * Removes the logical-start border and restores its compensated padding beside e6.
+ * Overlaps the fixed seam by half the projected e6 thickness and restores the authored inset.
  */
 .k-btn-x3a > .k-btn + .k-btn-e6a + .k-btn {
   border-inline-start-width: 0;
+  margin-inline-start: calc(var(--k-bxw) * -0.5);
   padding-inline-start: var(--k-pdl);
 }
 
 /*
  * element button root / e1
- * Removes the logical-end border and restores its compensated padding beside e6.
+ * Overlaps the fixed seam by half the projected e6 thickness and restores the authored inset.
  */
 .k-btn-x3a > .k-btn:has(+ .k-btn-e6a + .k-btn) {
   border-inline-end-width: 0;
+  margin-inline-end: calc(var(--k-bxw) * -0.5);
   padding-inline-end: var(--k-pdr);
 }
 
@@ -444,10 +446,15 @@
 
 /*
  * element button root / e1
- * Gives a hovered Button ownership only when the group relies on overlapped authored borders.
+ * Gives an interactive Button ownership of both projected overlap strips.
+ * The fixed e6 divider remains above it, while later Rest siblings can no longer repaint the
+ * Button's background beneath the seam.
  */
-.k-btn-x3:not(.k-btn-x3a) > .k-btn:hover,
-.k-btn-x3:not(.k-btn-x3a) > .k-btn.-h.-a {
+.k-btn-x3 > .k-btn:hover,
+.k-btn-x3 > .k-btn:active,
+.k-btn-x3 > .k-btn.-h.-a,
+.k-btn-x3 > .k-btn.-p.-a,
+.k-btn-x3 > .k-btn.-s.-a {
   z-index: 2;
 }
 

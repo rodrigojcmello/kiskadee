@@ -739,9 +739,9 @@ Decision:
   projections and projection chains are invalid.
 - The target must not already emit the projected custom property from another token, mirrored, or
   compensated scale utility.
-- The canonical Registry is currently empty. Projection of `Button.e6.boxWidth` for structural
-  padding compensation and migration of Tabs fixed width are future candidates, not active
-  projections.
+- The canonical Registry currently projects optional `Button.e6.boxWidth` to `Button.e1.p.gd` for
+  connected-group seam-overlap compensation, retaining the normal source reference.
+- Migration of Tabs fixed width remains a future candidate, not an active projection.
 
 Reason:
 

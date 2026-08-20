@@ -805,9 +805,10 @@ Rules:
 - treat absence of a projection as absence of the capability, not permission to add a Sass
   fallback.
 
-The Structural Utility Projection Registry is currently empty. Projection of
-`Button.e6.boxWidth` for structural padding compensation and migration of Tabs fixed width are only
-future candidates. See
+The Registry currently projects optional `Button.e6.boxWidth` to `Button.e1.p.gd`. `Button.Group`
+applies that utility only to participating Button roots while the `groupDivider` branch is active,
+and structural Sass consumes `--k-bxw` directly as the negative logical overlap of both Buttons
+adjacent to each fixed seam. Migration of Tabs fixed width remains only a future candidate. See
 [`structural-utility-projections.md`](packages/web-builder/docs/definitions/structural-utility-projections.md)
 for the canonical eligibility and artifact contract.
 

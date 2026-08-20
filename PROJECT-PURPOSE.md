@@ -180,9 +180,9 @@ Artifact note:
 - A structural utility projection is narrower: it adds only a class reference under
   `element.p[artifactKey][scaleKey]` so an approved structural owner can reuse an existing
   token-only scale utility. It never contains a raw visual value or creates CSS.
-- The Structural Utility Projection Registry is currently empty. Projection of
-  `Button.e6.boxWidth` for structural padding compensation and migration of Tabs fixed width are
-  candidates for future evaluation, not active `p` consumers.
+- The Structural Utility Projection Registry currently projects optional `Button.e6.boxWidth` to
+  `Button.e1.p.gd` for connected-group seam-overlap compensation. Tabs fixed width remains a
+  candidate for future evaluation, not an active `p` consumer.
 - See
   [Structural utility projections](packages/web-builder/docs/definitions/structural-utility-projections.md)
   for the normative boundary.

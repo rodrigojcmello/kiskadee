@@ -22,13 +22,21 @@ The preset options have separate responsibilities:
 - `disclosureDivider` draws the same `Button.e6` before a trailing disclosure when a label is
   present.
 
-`e6` owns only the line thickness, height, and color. Structural CSS centers the line without
-adding margin, padding, or layout width. The node is decorative (`aria-hidden`) and is not the
-public `Separator` component because connected Button seams do not divide semantic groups.
+`e6` owns only the line thickness, height, and color. The Web Builder projects the existing
+token-only `e6.boxWidth` utility to `e1.p.gd` without duplicating its value or CSS. Structural CSS
+centers the line without adding margin or layout width. The node is decorative (`aria-hidden`) and
+is not the public `Separator` component because connected Button seams do not divide semantic
+groups.
 
 When `groupDivider` is absent, connected borders overlap into one seam. When it is enabled, the
-internal Button borders are removed, their compensated padding is restored, and `e6` becomes the
-authoritative paint. An unsupported external intent may reuse the preset's neutral divider paint;
+internal Button borders are removed and their logical paddings return to the authored values.
+Each Button before a divider overlaps it through
+`margin-inline-end: calc(var(--k-bxw) * -0.5)`, and each Button after a divider overlaps it through
+`margin-inline-start: calc(var(--k-bxw) * -0.5)`. Because the fixed `e6` line is centered on its
+zero-width anchor, both half-thickness overlaps together equal exactly one authored divider width.
+The line therefore covers the complete shared strip without leaving a half-width Button surface
+past either edge, without duplicating its thickness in schema or hardcoding it in Sass, and remains
+the authoritative paint. An unsupported external intent may reuse the preset's neutral divider paint;
 if neither the requested nor neutral paint exists in the active surface context, the divider stays
 inactive and the authored border seam is preserved. Logical border and radius properties preserve
 the same topology in RTL.
@@ -36,7 +44,12 @@ the same topology in RTL.
 Focus rings and activation feedback remain owned by each Button, and the group never clips focus
 painting. Without `e6`, Hover temporarily owns the overlapped authored border. With `e6`, the line
 is the authoritative boundary and remains above every Button surface in Rest, Hover, Pressed, and
-Focus. Its zero-width node preserves layout geometry while its paint stays visible over the seam.
+Focus. It stays centered at the same seam coordinates in every state; Buttons move beneath that
+fixed line from both logical sides through the projected overlap. Logical margins and insets mirror
+the same geometry in RTL. Hover, Pressed, and Selected raise the active Button above both adjacent
+Rest siblings so its paint owns the two overlap strips; Focus remains above those interaction
+surfaces, and `e6` remains above all of them. The zero-width divider node adds no independent layout
+track while its paint stays visible over either adjacent surface when that Button changes state.
 
 A disclosure-only Button, such as the secondary trigger of a split button, does not consume the
 label-to-disclosure spacing authored for a labelled menu button. Its glyph keeps the full `e5`

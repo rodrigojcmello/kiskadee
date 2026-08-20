@@ -12,6 +12,12 @@ import { Button } from './Button.tsx';
 const buttonClassMap = {
   e1: {
     d: 'button-base',
+    p: {
+      gd: {
+        all: 'divider-width-all',
+        'lg:1': 'divider-width-large'
+      }
+    },
     e: {
       h: 'button-rest-shadow',
       rp: 'button-radius-effect-pill'
@@ -69,9 +75,11 @@ function createContext(options?: {
   disclosureDivider?: boolean;
   dividerPaint?: 'default' | 'primary-only';
   withDivider?: boolean;
+  withProjection?: boolean;
   withShadow?: boolean;
 }): KiskadeeContextValue {
   const withDivider = options?.withDivider ?? true;
+  const withProjection = options?.withProjection ?? true;
   const withShadow = options?.withShadow ?? true;
 
   return {
@@ -80,6 +88,7 @@ function createContext(options?: {
         ...buttonClassMap,
         e1: {
           ...buttonClassMap.e1,
+          p: withDivider && withProjection ? buttonClassMap.e1.p : undefined,
           e: withShadow ? buttonClassMap.e1.e : undefined
         },
         e6: withDivider
@@ -220,6 +229,10 @@ describe('Button.Group', () => {
     expect(groupDivider?.className).toContain('button-divider');
     expect(groupDivider?.className).toContain('divider-scale-large');
     expect(groupDivider?.className).toContain('divider-primary-vivid-high');
+    for (const button of screen.getAllByRole('button')) {
+      expect(button.className).toContain('divider-width-all');
+      expect(button.className).toContain('divider-width-large');
+    }
     expect(disclosureDivider?.getAttribute('aria-hidden')).toBe('true');
     expect(disclosureDivider?.className).toContain('button-divider');
     expect(group.querySelector('[role="separator"]')).toBeNull();
@@ -238,6 +251,30 @@ describe('Button.Group', () => {
     expect(group.className).toContain('k-btn-x3');
     expect(group.className).not.toContain('k-btn-x3a');
     expect(group.querySelector('.k-btn-e6a')).toBeNull();
+  });
+
+  it('keeps the border seam when the e6 thickness projection is unavailable', () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderWithContext(
+      <Button.Group data-testid="group">
+        <Button>Previous</Button>
+        <Button>Next</Button>
+      </Button.Group>,
+      createContext({ groupDivider: true, withProjection: false })
+    );
+
+    const group = screen.getByTestId('group');
+    expect(group.className).toContain('k-btn-x3');
+    expect(group.className).not.toContain('k-btn-x3a');
+    expect(group.querySelector('.k-btn-e6a')).toBeNull();
+    for (const button of screen.getAllByRole('button')) {
+      expect(button.className).not.toContain('divider-width-all');
+    }
+    expect(warning).toHaveBeenCalledWith(
+      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint and its ' +
+        'e1.p.gd thickness projection from the active preset.'
+    );
   });
 
   it('falls back to neutral divider paint for external intents', () => {
@@ -313,7 +350,8 @@ describe('Button.Group', () => {
     expect(group.querySelector('.k-btn-e6a')).toBeNull();
     expect(disclosure?.querySelector('.k-btn-e6b')).toBeNull();
     expect(warning).toHaveBeenCalledWith(
-      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint from the active preset.'
+      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint and its ' +
+        'e1.p.gd thickness projection from the active preset.'
     );
     expect(warning).toHaveBeenCalledWith(
       '[Kiskadee] Button disclosureDivider requires compatible Button.e6 paint from the active preset.'

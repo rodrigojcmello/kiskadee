@@ -55,8 +55,9 @@ Read these sources in order:
 - Resolve `all` plus the active scale; do not invent scale fallback.
 - Do not create CSS rules, effect recipes, component artifacts, providers, or runtime dependencies
   for a projection.
-- Treat projection of `Button.e6.boxWidth` for structural padding compensation and migration of
-  Tabs fixed width only as future candidates while the Registry is empty.
+- Preserve `button-group-divider-thickness` as the canonical active example: optional
+  `Button.e6.boxWidth` projects to `Button.e1.p.gd` with `retainSource: true`.
+- Treat migration of Tabs fixed width only as a future candidate until its ownership is reviewed.
 
 ## Decision output
 

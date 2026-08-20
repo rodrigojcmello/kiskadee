@@ -169,6 +169,7 @@ export function Button() {
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
   const [isSimplified, setIsSimplified] = React.useState(true);
+  const [showButtonGroups, setShowButtonGroups] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
   const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('onSubtle');
@@ -419,6 +420,11 @@ export function Button() {
             onCheckedChange={setIsSimplified}
           />
           <ShowcaseBooleanControl
+            label="Button group"
+            checked={showButtonGroups}
+            onCheckedChange={setShowButtonGroups}
+          />
+          <ShowcaseBooleanControl
             label="Focus ring"
             checked={showFocusRing}
             onCheckedChange={setShowFocusRing}
@@ -533,6 +539,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          grouped={showButtonGroups}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
@@ -544,6 +551,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          grouped={showButtonGroups}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
@@ -555,6 +563,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          grouped={showButtonGroups}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
@@ -566,6 +575,7 @@ export function Button() {
           align={alignment}
           stateCapabilities={buttonState}
           simplified={isSimplified}
+          grouped={showButtonGroups}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />

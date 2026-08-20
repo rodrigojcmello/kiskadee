@@ -21,6 +21,7 @@ type ButtonStateSectionProps = {
   align?: 'left' | 'center';
   stateCapabilities?: ManifestComponentState;
   simplified?: boolean;
+  grouped?: boolean;
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
 };
@@ -41,6 +42,7 @@ export function ButtonStateSection({
   align,
   stateCapabilities,
   simplified = false,
+  grouped = false,
   scale,
   surfaceContext
 }: ButtonStateSectionProps) {
@@ -80,6 +82,30 @@ export function ButtonStateSection({
     );
   };
 
+  const renderButtonState = (emphasis: Emphasis, state: InteractionState, button: ReactNode) =>
+    renderState(
+      emphasis,
+      state,
+      grouped ? (
+        <KButton.Group
+          className={s.stateButtonGroup}
+          emphasis={emphasis}
+          intent={intent}
+          scale={scale}
+          surfaceContext={surfaceContext}
+        >
+          {button}
+          <KButton
+            aria-label={`${title} ${EMPHASIS_LABELS[emphasis]} emphasis ${state} additional action`}
+          >
+            <KButton.Disclosure />
+          </KButton>
+        </KButton.Group>
+      ) : (
+        button
+      )
+    );
+
   return (
     <div className={s['state-section']}>
       <Text as="h3" profile={textProfiles.sectionTitle} className={s['state-title']}>
@@ -89,7 +115,7 @@ export function ButtonStateSection({
         <div className={`${s['simplified-states']} k-root`}>
           {EMPHASIS_ORDER.map((emphasis) => (
             <Fragment key={emphasis}>
-              {renderState(
+              {renderButtonState(
                 emphasis,
                 'rest',
                 <KButton
@@ -117,7 +143,7 @@ export function ButtonStateSection({
               <span className={s['emphasis-divider']} aria-hidden="true" />
             </Text>
             <div className={`${s['example-states']} k-root`}>
-              {renderState(
+              {renderButtonState(
                 emphasis,
                 'rest',
                 <KButton
@@ -133,7 +159,7 @@ export function ButtonStateSection({
                   </KButton.Label>
                 </KButton>
               )}
-              {renderState(
+              {renderButtonState(
                 emphasis,
                 'hover',
                 <KButton
@@ -150,7 +176,7 @@ export function ButtonStateSection({
                   </KButton.Label>
                 </KButton>
               )}
-              {renderState(
+              {renderButtonState(
                 emphasis,
                 'focus',
                 <KButton
@@ -167,7 +193,7 @@ export function ButtonStateSection({
                   </KButton.Label>
                 </KButton>
               )}
-              {renderState(
+              {renderButtonState(
                 emphasis,
                 'pressed',
                 <KButton
@@ -184,7 +210,7 @@ export function ButtonStateSection({
                   </KButton.Label>
                 </KButton>
               )}
-              {renderState(
+              {renderButtonState(
                 emphasis,
                 selectedMap[emphasis] ? 'selected' : 'rest',
                 <KButton
@@ -193,7 +219,7 @@ export function ButtonStateSection({
                   scale={scale}
                   surfaceContext={surfaceContext}
                   controlState={selectedMap[emphasis]}
-                  radiusEffect={intent === 'primary'}
+                  radiusEffect={!grouped && intent === 'primary'}
                   onClick={() => toggleSelected(emphasis)}
                 >
                   <KButton.Label>
@@ -203,7 +229,7 @@ export function ButtonStateSection({
                   </KButton.Label>
                 </KButton>
               )}
-              {renderState(
+              {renderButtonState(
                 emphasis,
                 'disabled',
                 <KButton

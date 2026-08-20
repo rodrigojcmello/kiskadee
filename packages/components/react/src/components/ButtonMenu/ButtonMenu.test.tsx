@@ -126,6 +126,9 @@ const groupDividerContext: KiskadeeContextValue = {
   ...context,
   classesMap: {
     button: {
+      e1: {
+        p: { gd: { all: 'button-divider-width' } }
+      },
       e6: {
         s: { all: 'button-divider-size' },
         c: { s: { neutral: { m: 'button-divider-color' } } }

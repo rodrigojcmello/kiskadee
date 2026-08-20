@@ -391,6 +391,22 @@ $height: 64px;
   }
 }
 
+.stateButtonGroup {
+  inline-size: 100%;
+  min-inline-size: 0;
+
+  > :global(.k-btn:first-of-type) {
+    flex: 1 1 auto;
+    inline-size: auto;
+    min-inline-size: 0;
+  }
+
+  > :global(.k-btn:last-of-type) {
+    flex: 0 0 auto;
+    inline-size: auto;
+  }
+}
+
 .focusRingHidden {
   --k-focus-width: 0;
 }

@@ -13,6 +13,7 @@ import {
   useEffect,
   useMemo
 } from 'react';
+import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
@@ -73,6 +74,7 @@ type ButtonRuntimeContextValue = {
 const ButtonRuntimeContext = createContext<ButtonRuntimeContextValue | null>(null);
 
 type ButtonGroupRuntimeContextValue = {
+  dividerThicknessProjectionClassName: string | undefined;
   emphasis: NonNullable<ButtonGroupProps['emphasis']>;
   intent: NonNullable<ButtonGroupProps['intent']>;
   radius: NonNullable<ButtonGroupProps['radius']>;
@@ -447,9 +449,17 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       mergeButtonClassNames(
         baseClassNames,
         feedbackClassNamePatch,
+        group?.dividerThicknessProjectionClassName
+          ? { e1: group.dividerThicknessProjectionClassName }
+          : undefined,
         activationFeedbackController.shouldUsePressedFeedback ? { e1: 'k-pressed' } : undefined
       ),
-    [feedbackClassNamePatch, activationFeedbackController.shouldUsePressedFeedback, baseClassNames]
+    [
+      activationFeedbackController.shouldUsePressedFeedback,
+      baseClassNames,
+      feedbackClassNamePatch,
+      group?.dividerThicknessProjectionClassName
+    ]
   );
   const runtimeContextValue = useMemo<ButtonRuntimeContextValue>(
     () => ({
@@ -552,10 +562,6 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
   const { buttonClassesMap, buttonClassesMapPending, options } = useButtonArtifactConfig();
   const { e1, e6 } = buttonClassesMap ?? {};
   const resolvedRadius = radius ?? options.radius ?? DEFAULT_BUTTON_RADIUS;
-  const contextValue = useMemo<ButtonGroupRuntimeContextValue>(
-    () => ({ emphasis, intent, radius: resolvedRadius, scale, surfaceContext }),
-    [emphasis, intent, resolvedRadius, scale, surfaceContext]
-  );
   const groupClassName = useMemo(
     () =>
       resolveButtonGroupClassName({
@@ -579,9 +585,37 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       }),
     [e6, emphasis, intent, scale, surfaceContext]
   );
+  const dividerThicknessProjectionClassName = useMemo(
+    () => resolveStructuralUtilityProjectionClassName(e1, 'gd', scale),
+    [e1, scale]
+  );
   const childArray = flattenFragmentChildren(children);
   const hasGroupDivider =
-    options.groupDivider === true && dividerClassName.length > 0 && childArray.length > 1;
+    options.groupDivider === true &&
+    dividerClassName.length > 0 &&
+    dividerThicknessProjectionClassName.length > 0 &&
+    childArray.length > 1;
+  const contextValue = useMemo<ButtonGroupRuntimeContextValue>(
+    () => ({
+      dividerThicknessProjectionClassName: hasGroupDivider
+        ? dividerThicknessProjectionClassName
+        : undefined,
+      emphasis,
+      intent,
+      radius: resolvedRadius,
+      scale,
+      surfaceContext
+    }),
+    [
+      dividerThicknessProjectionClassName,
+      emphasis,
+      hasGroupDivider,
+      intent,
+      resolvedRadius,
+      scale,
+      surfaceContext
+    ]
+  );
 
   useEffect(() => {
     if (
@@ -604,15 +638,22 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       buttonClassesMapPending ||
       options.groupDivider !== true ||
       childArray.length < 2 ||
-      dividerClassName.length > 0
+      (dividerClassName.length > 0 && dividerThicknessProjectionClassName.length > 0)
     ) {
       return;
     }
 
     console.warn(
-      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint from the active preset.'
+      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint and its ' +
+        'e1.p.gd thickness projection from the active preset.'
     );
-  }, [buttonClassesMapPending, childArray.length, dividerClassName, options.groupDivider]);
+  }, [
+    buttonClassesMapPending,
+    childArray.length,
+    dividerClassName,
+    dividerThicknessProjectionClassName,
+    options.groupDivider
+  ]);
 
   return (
     <ButtonGroupRuntimeContext.Provider value={contextValue}>

@@ -57,7 +57,8 @@ DOM owner.
 
 See
 [`structural-utility-projections.md`](./structural-utility-projections.md) for the Registry and
-artifact rules. The Structural Utility Projection Registry is currently empty.
+artifact rules. The Registry currently projects the token-emitted `Button.e6.boxWidth` utility to
+`Button.e1.p.gd`; the Style Emission Policy remains responsible only for producing `--k-bxw`.
 
 Current element-specific contracts include:
 

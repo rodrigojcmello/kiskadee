@@ -26,7 +26,24 @@ export type WebStructuralUtilityProjectionRegistry = {
 };
 
 export const DEFAULT_WEB_STRUCTURAL_UTILITY_PROJECTIONS = {
-  projections: []
+  projections: [
+    {
+      id: 'button-group-divider-thickness',
+      artifactKey: 'gd',
+      source: {
+        component: 'button',
+        element: 'e6',
+        channel: 'scales',
+        property: 'boxWidth',
+        optional: true
+      },
+      target: {
+        component: 'button',
+        element: 'e1'
+      },
+      retainSource: true
+    }
+  ]
 } as const satisfies WebStructuralUtilityProjectionRegistry;
 
 function locationKey(location: StructuralUtilityProjectionElementLocation): string {

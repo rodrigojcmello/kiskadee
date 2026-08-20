@@ -71,7 +71,8 @@ A source may be marked optional so presets that omit that element or scale prope
 projection. The target remains required whenever the source exists. The Registry must not discover
 projections by scanning component code, DOM children, class strings, or CSS declarations.
 
-The canonical registry is initially empty. An empty registry emits no projection bucket.
+The canonical registry contains only explicitly reviewed structural relationships. Presets that
+omit an optional source still emit no projection bucket for that relationship.
 
 ## Artifact contract
 
@@ -140,19 +141,20 @@ Policy. If the issue is layout mechanics, solve it in structural Sass. If the is
 active, use component options and runtime composition. A projection is not a shortcut around those
 owners.
 
-## Current status and candidates
+## Current registry and candidates
 
-No structural utility projection is currently registered.
+The canonical Registry currently contains one projection:
 
-Two existing domains may be evaluated in future work:
+- `button-group-divider-thickness` projects optional `Button.e6.scales.boxWidth` to `Button.e1`
+  under artifact key `gd`, with `retainSource: true`.
 
-- Button divider thickness may qualify when `Button.e6.boxWidth` must be projected to a structural
-  consumer for padding compensation.
-- Tabs fixed width may qualify as a migration from its specialized width bucket if the generic
-  projection contract proves clearer and no compatibility boundary prevents the change.
+`Button.e6` remains the only visual author. Its normal `s` bucket continues to size the decorative
+line, while `Button.e1.p.gd` lets grouped Button roots expose the same `--k-bxw` utility for logical
+seam-overlap compensation. Runtime activates that projection only when `groupDivider` has
+compatible paint, the projection exists, and the group contains more than one Button.
 
-These are candidates, not active registry entries. Existing Button and Tabs behavior must not be
-described as using `p` until a dedicated migration is implemented and validated.
+Tabs fixed width remains a future candidate for migration from its specialized width bucket. It
+must not be described as using `p` until a dedicated migration is implemented and validated.
 
 ## Validation for a future entry
 
