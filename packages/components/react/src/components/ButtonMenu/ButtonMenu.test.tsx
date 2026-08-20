@@ -1,6 +1,7 @@
 /** @vitest-environment jsdom */
 
-import { defineIconFamily } from '@kiskadee/icons/interface';
+import { defineIconFamily, type IconName } from '@kiskadee/icons/interface';
+import type { MenuTree } from '@kiskadee/react-headless/menu-tree';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { Fragment, type ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -425,6 +426,46 @@ describe('ButtonMenu', () => {
     expect(item.getAttribute('aria-keyshortcuts')).toBe('Control+C');
     expect(item.querySelector('.k-ddn-e8')?.getAttribute('aria-hidden')).toBe('true');
     expect(result.queryByRole('menuitem', { name: 'Copy Ctrl+C' })).toBeNull();
+  });
+
+  it('gives direct MenuTree rows a visual group without adding group semantics', async () => {
+    const tree: MenuTree<IconName> = {
+      id: 'work-item-actions',
+      title: 'Work item actions',
+      items: [
+        {
+          type: 'group',
+          id: 'primary-actions',
+          label: 'Work item',
+          items: [{ type: 'item', id: 'copy', label: 'Copy' }]
+        },
+        { type: 'separator', id: 'actions-separator' },
+        {
+          type: 'submenu',
+          id: 'dashboard',
+          label: 'Add to dashboard',
+          icon: 'check',
+          items: [{ type: 'item', id: 'team-dashboard', label: 'Team dashboard' }]
+        }
+      ]
+    };
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.TreeContent tree={tree} itemsLayout="columns" />
+      </ButtonMenu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'Actions' }));
+    const menu = await result.findByRole('menu', { name: 'Work item actions' });
+    const dashboard = result.getByRole('menuitem', { name: 'Add to dashboard' });
+    const visualGroup = dashboard.parentElement;
+
+    expect(result.getByRole('group', { name: 'Work item' }).className).toContain('k-ddn-x2');
+    expect(visualGroup?.classList.contains('k-ddn-x2')).toBe(true);
+    expect(visualGroup?.getAttribute('role')).toBeNull();
+    expect(dashboard.querySelector('.k-ddn-e3')).toBeTruthy();
+    expect(menu.querySelector('.k-ddn-x1 > .k-ddn-e2')).toBeNull();
   });
 
   it('keeps radio checkmark tracks mounted without applying the Dropdown selected state', async () => {

@@ -49,19 +49,6 @@ export type {
 } from '@kiskadee/runtime/font-family';
 export { defineFontFamily } from '@kiskadee/runtime/font-family';
 export type {
-  ButtonActivationFeedbackEffect,
-  ButtonArtifactConfig,
-  ButtonDisclosureProps,
-  ButtonGroupProps,
-  ButtonIconProps,
-  ButtonIconSurfaceCorners,
-  ButtonIconTreatment,
-  ButtonProgressProps,
-  ButtonProps,
-  ButtonStatus
-} from './components/Button';
-export { Button, useButtonArtifactConfig } from './components/Button';
-export type {
   AdaptiveButtonMenuActionProps,
   AdaptiveButtonMenuBottomSheetProps,
   AdaptiveButtonMenuDropdownProps,
@@ -109,6 +96,19 @@ export type {
 } from './components/BottomSheetMenu';
 export { BottomSheetMenu } from './components/BottomSheetMenu';
 export type {
+  ButtonActivationFeedbackEffect,
+  ButtonArtifactConfig,
+  ButtonDisclosureProps,
+  ButtonGroupProps,
+  ButtonIconProps,
+  ButtonIconSurfaceCorners,
+  ButtonIconTreatment,
+  ButtonProgressProps,
+  ButtonProps,
+  ButtonStatus
+} from './components/Button';
+export { Button, useButtonArtifactConfig } from './components/Button';
+export type {
   ButtonMenuActionProps,
   ButtonMenuButtonGroupProps,
   ButtonMenuContentProps,
@@ -123,8 +123,8 @@ export type {
   ButtonMenuSubContentProps,
   ButtonMenuSubProps,
   ButtonMenuSubTriggerProps,
-  ButtonMenuTriggerProps,
-  ButtonMenuTreeContentProps
+  ButtonMenuTreeContentProps,
+  ButtonMenuTriggerProps
 } from './components/ButtonMenu';
 export { ButtonMenu } from './components/ButtonMenu';
 export type {

@@ -15,13 +15,6 @@ export type {
 } from './components/autocomplete/Autocomplete.tsx';
 export { Autocomplete } from './components/autocomplete/Autocomplete.tsx';
 export type {
-  ButtonDisclosureProps,
-  ButtonProps,
-  ButtonResolvedInteractionState,
-  ResolveButtonInteractionStateOptions
-} from './components/button/Button.tsx';
-export { Button, resolveButtonInteractionState } from './components/button/Button.tsx';
-export type {
   BottomSheetCloseProps,
   BottomSheetCloseRenderProps,
   BottomSheetContentProps,
@@ -34,6 +27,13 @@ export type {
   BottomSheetTriggerRenderProps
 } from './components/bottom-sheet/BottomSheet.tsx';
 export { BottomSheet } from './components/bottom-sheet/BottomSheet.tsx';
+export type {
+  ButtonDisclosureProps,
+  ButtonProps,
+  ButtonResolvedInteractionState,
+  ResolveButtonInteractionStateOptions
+} from './components/button/Button.tsx';
+export { Button, resolveButtonInteractionState } from './components/button/Button.tsx';
 export type {
   CardActionInteractionStateSource,
   CardActionProps,

@@ -13,7 +13,7 @@ export type {
   ButtonMenuSubContentProps,
   ButtonMenuSubProps,
   ButtonMenuSubTriggerProps,
-  ButtonMenuTriggerProps,
-  ButtonMenuTreeContentProps
+  ButtonMenuTreeContentProps,
+  ButtonMenuTriggerProps
 } from './ButtonMenu.tsx';
 export { ButtonMenu } from './ButtonMenu.tsx';

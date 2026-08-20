@@ -496,7 +496,40 @@ function ButtonMenuTreeItemContent({
   );
 }
 
-function renderButtonMenuTreeNodes(nodes: readonly MenuTreeNode<IconName>[]): ReactNode {
+function isUngroupedButtonMenuTreeRow(node: MenuTreeNode<IconName>): boolean {
+  return node.type === 'item' || node.type === 'link' || node.type === 'submenu';
+}
+
+function renderButtonMenuTreeNodes(
+  nodes: readonly MenuTreeNode<IconName>[],
+  insideExplicitGroup = false
+): ReactNode[] {
+  if (!insideExplicitGroup) {
+    const renderedNodes: ReactNode[] = [];
+    let ungroupedRows: MenuTreeNode<IconName>[] = [];
+    const flushUngroupedRows = () => {
+      if (ungroupedRows.length === 0) return;
+      const rows = ungroupedRows;
+      ungroupedRows = [];
+      renderedNodes.push(
+        <Dropdown.Group key={`menu-tree-visual-group-${rows[0]?.id}`}>
+          {renderButtonMenuTreeNodes(rows, true)}
+        </Dropdown.Group>
+      );
+    };
+
+    for (const node of nodes) {
+      if (isUngroupedButtonMenuTreeRow(node)) {
+        ungroupedRows.push(node);
+        continue;
+      }
+      flushUngroupedRows();
+      renderedNodes.push(...renderButtonMenuTreeNodes([node], true));
+    }
+    flushUngroupedRows();
+    return renderedNodes;
+  }
+
   return nodes.map((node) => {
     if (node.type === 'separator') {
       return <ButtonMenuSeparator key={node.id} />;
@@ -506,7 +539,7 @@ function renderButtonMenuTreeNodes(nodes: readonly MenuTreeNode<IconName>[]): Re
       return (
         <ButtonMenuGroup key={node.id}>
           {node.label ? <ButtonMenuGroupLabel>{node.label}</ButtonMenuGroupLabel> : null}
-          {renderButtonMenuTreeNodes(node.items)}
+          {renderButtonMenuTreeNodes(node.items, true)}
         </ButtonMenuGroup>
       );
     }
