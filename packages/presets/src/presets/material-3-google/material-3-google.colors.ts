@@ -37,6 +37,10 @@ export const globalSemanticsBySegment = {
 } as const satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = {
+  bottomSheet: {
+    neutral: 'neutral',
+    destructive: 'redLike'
+  },
   button: {
     primary: 'primary',
     neutral: 'neutral'

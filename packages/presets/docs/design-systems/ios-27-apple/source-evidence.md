@@ -129,6 +129,7 @@ implementation under the same recommended ID without changing the preset.
 
 ## Component Evidence
 
+- [BottomSheet](components/bottom-sheet.md)
 - [Button](components/button.md)
 - [Card](components/card.md) — opaque background consolidation, canonical surfaces, and deferred glass boundary.
 - [Dropdown and Menu](components/dropdown.md)

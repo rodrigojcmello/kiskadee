@@ -1,5 +1,6 @@
 import { breakpoints, color, primitive, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createFluent2MicrosoftBottomSheetSchema } from './components/bottom-sheet.schema.ts';
 import { createFluent2MicrosoftButtonSchema } from './components/button.schema.ts';
 import { createFluent2MicrosoftCardSchema } from './components/card.schema.ts';
 import { createFluent2MicrosoftDropdownSchema } from './components/dropdown.schema.ts';
@@ -164,6 +165,7 @@ export const schema: Schema<Segments> = {
     }
   },
   components: {
+    bottomSheet: createFluent2MicrosoftBottomSheetSchema({ c }),
     slider: createFluent2MicrosoftSliderSchema(),
     button: createFluent2MicrosoftButtonSchema({ c, shadowBlack }),
     card: createFluent2MicrosoftCardSchema({

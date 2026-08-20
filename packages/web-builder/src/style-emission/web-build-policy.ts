@@ -88,6 +88,41 @@ const separatorThicknessEmission = {
 
 export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
   components: {
+    bottomSheet: {
+      elements: {
+        e3: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
+        },
+        e6: {
+          paddingEmission: 'token'
+        },
+        e7: {
+          paddingLeftEmission: 'token',
+          paddingRightEmission: 'token'
+        },
+        e8: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
+          paddingRightEmission: 'token'
+        },
+        e11: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
+          paddingLeftEmission: 'token'
+        },
+        e12: separatorThicknessEmission,
+        e13: {
+          paddingLeftEmission: 'token',
+          paddingRightEmission: 'token'
+        },
+        e15: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
+          paddingRightEmission: 'token'
+        }
+      }
+    },
     button: {
       elements: {
         e1: {

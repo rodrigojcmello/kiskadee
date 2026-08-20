@@ -210,6 +210,7 @@ instead of flattening them to the larger offset layer.
 
 ## Component Evidence
 
+- [BottomSheet](components/bottom-sheet.md)
 - [Button](components/button.md)
 - [Card](components/card.md)
 - [Icon](components/icon.md)

@@ -282,6 +282,9 @@ export function Button() {
 
   const buttonMeta = manifest?.components?.button;
   const dropdownAvailable = Boolean(manifest?.components?.dropdown);
+  const adaptiveButtonMenuAvailable = Boolean(
+    manifest?.components?.dropdown && manifest?.components?.bottomSheet
+  );
   const { presenceOptions, presenceOverride, presenceSelection, setPresenceSelection } =
     useDropdownPresenceControl({
       designSystem,
@@ -869,7 +872,7 @@ export function Button() {
           surfaceContext={activeSurfaceContext}
         />
         <ButtonMenuExamples
-          available={Boolean(dropdownAvailable && buttonMeta)}
+          available={Boolean(adaptiveButtonMenuAvailable && buttonMeta)}
           presence={presenceOverride}
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}

@@ -119,6 +119,7 @@ export type MenuItemProps = Omit<HTMLAttributes<HTMLElement>, 'children' | 'onSe
   value?: string;
   textValue: string;
   disabled?: boolean;
+  closeOnSelect?: boolean;
   onSelect?: (event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void;
   render?: (
     props: MenuItemRenderProps,
@@ -165,6 +166,7 @@ export type MenuRadioItemProps = Omit<HTMLAttributes<HTMLElement>, 'children' | 
   value: string;
   textValue: string;
   disabled?: boolean;
+  closeOnSelect?: boolean;
   onSelect?: (event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void;
   render?: (
     props: MenuRadioItemRenderProps,
@@ -824,7 +826,16 @@ const MenuItemsContent = forwardRef<HTMLDivElement, MenuItemsContentProps>(
 );
 
 const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(function MenuContent(
-  { children, className, id, onKeyDown, render, ...props },
+  {
+    children,
+    className,
+    id,
+    onKeyDown,
+    render,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
+    ...props
+  },
   forwardedRef
 ) {
   const { registerContentId } = useMenuRootContentContext('Menu.Content');
@@ -847,6 +858,8 @@ const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(function MenuCo
               ref={forwardedRef}
               id={contentId}
               className={className}
+              aria-label={ariaLabel}
+              aria-labelledby={ariaLabelledBy}
               onKeyDown={onKeyDown}
               render={render}
               state={state}
@@ -1014,6 +1027,7 @@ const MenuRadioItem = forwardRef<HTMLElement, MenuRadioItemProps>(function MenuR
     value,
     textValue,
     disabled = false,
+    closeOnSelect = true,
     onSelect,
     onClick,
     onKeyDown,
@@ -1053,9 +1067,11 @@ const MenuRadioItem = forwardRef<HTMLElement, MenuRadioItemProps>(function MenuR
       onSelect?.(event);
       if (event.defaultPrevented) return;
       radioGroup.select(value, event.nativeEvent);
-      closeTree({ reason: 'selection', event: event.nativeEvent }, true);
+      if (closeOnSelect) {
+        closeTree({ reason: 'selection', event: event.nativeEvent }, true);
+      }
     },
-    [closeTree, disabled, onSelect, radioGroup, value]
+    [closeOnSelect, closeTree, disabled, onSelect, radioGroup, value]
   );
   const handleClick = useCallback(
     (event: MouseEvent<HTMLElement>) => {
@@ -1566,6 +1582,7 @@ const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem(
     value,
     textValue,
     disabled = false,
+    closeOnSelect = true,
     onSelect,
     onClick,
     onKeyDown,
@@ -1601,11 +1618,11 @@ const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem(
         return;
       }
       onSelect?.(event);
-      if (!event.defaultPrevented) {
+      if (!event.defaultPrevented && closeOnSelect) {
         closeTree({ reason: 'selection', event: event.nativeEvent }, true);
       }
     },
-    [closeTree, disabled, onSelect]
+    [closeOnSelect, closeTree, disabled, onSelect]
   );
   const handleClick = useCallback(
     (event: MouseEvent<HTMLElement>) => {

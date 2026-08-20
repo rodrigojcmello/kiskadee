@@ -1,3 +1,4 @@
+import { validateBottomSheetComponentContract } from '../components/bottom-sheet.ts';
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
 import { validateDropdownComponentContract } from '../components/dropdown.ts';
@@ -13,6 +14,7 @@ import { validateTextFieldComponentContract } from '../components/text-field.zod
  * Build-time validation for component contracts with strict, element-aware rules.
  *
  * Incremental scope:
+ * - bottomSheet
  * - button
  * - card
  * - dropdown
@@ -33,6 +35,18 @@ export function validateSchemaComponentContracts(schemaLike: {
   if (!components || typeof components !== 'object') return;
 
   const byName = components as Record<string, unknown>;
+
+  if (byName.bottomSheet !== undefined) {
+    const issues = validateBottomSheetComponentContract(
+      byName.bottomSheet,
+      'components.bottomSheet'
+    );
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for bottomSheet. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
 
   if (byName.button !== undefined) {
     const issues = validateButtonComponentContract(byName.button, 'components.button');

@@ -46,6 +46,7 @@ tracking values is **Deferred**.
 
 ## Component Evidence
 
+- [BottomSheet](components/bottom-sheet.md)
 - [Switch](components/switch.md)
 - [Dropdown and Menu](components/dropdown.md)
 - [Separator](components/separator.md)

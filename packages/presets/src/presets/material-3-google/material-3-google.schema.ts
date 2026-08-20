@@ -1,5 +1,6 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createMaterial3GoogleBottomSheetSchema } from './components/bottom-sheet.schema.ts';
 import { createMaterial3GoogleButtonSchema } from './components/button.schema.ts';
 import { createMaterial3GoogleCardSchema } from './components/card.schema.ts';
 import { createMaterial3GoogleDropdownSchema } from './components/dropdown.schema.ts';
@@ -181,6 +182,7 @@ export const schema: Schema<Segments> = {
     }
   },
   components: {
+    bottomSheet: createMaterial3GoogleBottomSheetSchema({ c, segmentNames }),
     button: createMaterial3GoogleButtonSchema({
       c,
       segmentNames,

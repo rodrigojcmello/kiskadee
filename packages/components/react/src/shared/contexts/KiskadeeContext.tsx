@@ -1,6 +1,11 @@
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
+  BottomSheetCenteredIcons,
+  BottomSheetInitialHeight,
+  BottomSheetItemLayout,
+  BottomSheetPageTransition,
+  BottomSheetSwipeBehavior,
   ButtonIconLayout,
   ButtonIconPlacement,
   ButtonIconSurfaceCorners,
@@ -75,6 +80,18 @@ export type KiskadeeGlobalArtifact = {
     shadow?: ShadowGlobalEffectSchema;
   };
   components?: {
+    bottomSheet?: {
+      options?: {
+        initialHeight?: BottomSheetInitialHeight;
+        swipeBehavior?: BottomSheetSwipeBehavior;
+        pageTransition?: BottomSheetPageTransition;
+        itemLayout?: BottomSheetItemLayout;
+        centeredIcons?: BottomSheetCenteredIcons;
+      };
+      effects?: {
+        shadow?: ShadowEffectSchema;
+      };
+    };
     button?: {
       options?: {
         iconLayout?: ButtonIconLayout;
