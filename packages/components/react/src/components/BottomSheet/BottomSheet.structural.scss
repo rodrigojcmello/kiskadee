@@ -114,7 +114,6 @@
 .k-bsh-e5 {
   margin: 0;
   min-inline-size: 0;
-  outline: none;
   text-align: start;
 }
 
@@ -205,7 +204,7 @@
  * Centers the complete content cluster while retaining functional edge tracks.
  */
 .k-bsh-e2[data-item-layout='centered'] .k-bsh-e7 {
-  grid-template-columns: auto minmax(0, auto) auto auto;
+  grid-template-columns: auto auto minmax(0, auto) auto auto;
   justify-content: center;
   text-align: center;
 }
@@ -226,10 +225,10 @@
 
 /*
  * element leading icon / e8
- * Moves the icon to the first centered content track when that layout is active.
+ * Keeps the icon after the stable selection track in centered layout.
  */
 .k-bsh-e2[data-item-layout='centered'] .k-bsh-e8 {
-  grid-column: 1;
+  grid-column: 2;
 }
 
 /*
@@ -262,10 +261,10 @@
 
 /*
  * elements label and description / e9 e10
- * Moves text into the centered cluster after the optional leading icon.
+ * Keeps text after the selection and optional leading-icon tracks.
  */
 .k-bsh-e2[data-item-layout='centered'] :is(.k-bsh-e9, .k-bsh-e10) {
-  grid-column: 2;
+  grid-column: 3;
 }
 
 /*
@@ -303,7 +302,7 @@
  * Places functional and content trailing icons after centered metadata.
  */
 .k-bsh-e2[data-item-layout='centered'] .k-bsh-e11 {
-  grid-column: 4;
+  grid-column: 5;
 }
 
 /*
@@ -348,10 +347,10 @@
 
 /*
  * element end text / e13
- * Keeps metadata inside the third track of the centered content cluster.
+ * Keeps metadata before the final trailing-icon track in centered layout.
  */
 .k-bsh-e2[data-item-layout='centered'] .k-bsh-e13 {
-  grid-column: 3;
+  grid-column: 4;
 }
 
 /*

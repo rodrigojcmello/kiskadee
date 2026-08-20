@@ -103,14 +103,27 @@ function createShowcaseTree(onAction: (label: string) => void): MenuTree<IconNam
                     label: 'Access level',
                     defaultValue: 'view',
                     items: [
-                      { type: 'radio', id: 'permission-view', value: 'view', label: 'Can view' },
+                      {
+                        type: 'radio',
+                        id: 'permission-view',
+                        value: 'view',
+                        label: 'Can view',
+                        icon: 'user'
+                      },
                       {
                         type: 'radio',
                         id: 'permission-comment',
                         value: 'comment',
-                        label: 'Can comment'
+                        label: 'Can comment',
+                        icon: 'mail'
                       },
-                      { type: 'radio', id: 'permission-edit', value: 'edit', label: 'Can edit' }
+                      {
+                        type: 'radio',
+                        id: 'permission-edit',
+                        value: 'edit',
+                        label: 'Can edit',
+                        icon: 'pencil'
+                      }
                     ],
                     onValueChange: (value) => onAction(`Permission: ${value}`)
                   }

@@ -49,7 +49,7 @@ export function resolveBottomSheetClassNames({
   radius: RadiusMode;
   shadow: boolean | ElementSizeValue;
 }): Record<BottomSheetElementName, string> {
-  const { e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15 } = classesMap ?? {};
+  const { e1, e2, e3, e4, e5, e6, e7, e12, e14 } = classesMap ?? {};
   const shadowClass = shadow
     ? resolveEffectBucketClassName(e2?.e?.h, {
         scale: typeof shadow === 'string' ? shadow : undefined
@@ -78,14 +78,14 @@ export function resolveBottomSheetClassNames({
     e5: joinClassNames(resolve(e5, classNames.e5), 'k-bsh-e5') ?? '',
     e6: joinClassNames(resolve(e6, classNames.e6), 'k-bsh-e6') ?? '',
     e7: joinClassNames(resolveRadiusClassName(e7, scale, radius), classNames.e7, 'k-bsh-e7') ?? '',
-    e8: joinClassNames(resolve(e8, classNames.e8), 'k-bsh-e8') ?? '',
-    e9: joinClassNames(resolve(e9, classNames.e9), 'k-bsh-e9') ?? '',
-    e10: joinClassNames(resolve(e10, classNames.e10), 'k-bsh-e10') ?? '',
-    e11: joinClassNames(resolve(e11, classNames.e11), 'k-bsh-e11') ?? '',
+    e8: joinClassNames(classNames.e8, 'k-bsh-e8') ?? '',
+    e9: joinClassNames(classNames.e9, 'k-bsh-e9') ?? '',
+    e10: joinClassNames(classNames.e10, 'k-bsh-e10') ?? '',
+    e11: joinClassNames(classNames.e11, 'k-bsh-e11') ?? '',
     e12: joinClassNames(resolve(e12, classNames.e12), 'k-bsh-e12') ?? '',
-    e13: joinClassNames(resolve(e13, classNames.e13), 'k-bsh-e13') ?? '',
+    e13: joinClassNames(classNames.e13, 'k-bsh-e13') ?? '',
     e14: joinClassNames(resolve(e14, classNames.e14), 'k-bsh-e14') ?? '',
-    e15: joinClassNames(resolve(e15, classNames.e15), 'k-bsh-e15') ?? ''
+    e15: joinClassNames(classNames.e15, 'k-bsh-e15') ?? ''
   };
 }
 

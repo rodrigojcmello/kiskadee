@@ -502,7 +502,7 @@ const BottomSheetTitle = forwardRef<HTMLHeadingElement, BottomSheetTitleProps>(
         {...props}
         ref={ref}
         tabIndex={tabIndex}
-        className={joinClassNames(resolved.e5, className)}
+        className={joinClassNames(resolved.e5, 'k-foc', className)}
       />
     );
   }
@@ -644,13 +644,11 @@ const BottomSheetIcon = forwardRef<HTMLSpanElement, BottomSheetIconProps>(functi
   { className, children, name, ...props },
   ref
 ) {
-  const { classesMap, classNames, resolved, scale } =
-    useBottomSheetVisualContext('BottomSheet.Icon');
+  const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.Icon');
   const intent = useContext(BottomSheetItemIntentContext);
   const resolvedClassName = joinClassNames(
     resolveBottomSheetElementClassName(classesMap?.e8, scale, intent),
     resolved.e8,
-    classNames.e8,
     className
   );
   return (

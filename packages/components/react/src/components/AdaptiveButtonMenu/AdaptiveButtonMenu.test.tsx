@@ -1,8 +1,10 @@
 /** @vitest-environment jsdom */
 
+import type { IconName } from '@kiskadee/icons/interface';
 import { defineIconFamily } from '@kiskadee/icons/interface';
+import type { MenuTree } from '@kiskadee/react-headless/menu-tree';
 import { cleanup, fireEvent, render } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { IconFamilyProvider } from '../../shared/contexts/IconFamilyContext.tsx';
 import {
   KiskadeeContext,
@@ -26,7 +28,7 @@ const iconFamily = defineIconFamily({
   }
 });
 
-const tree = {
+const tree: MenuTree<IconName> = {
   id: 'actions',
   title: 'Actions',
   items: [
@@ -69,11 +71,17 @@ function context(compact: boolean): KiskadeeContextValue {
   };
 }
 
-function Example({ compact }: { compact: boolean }) {
+function Example({
+  compact,
+  menuTree = tree
+}: {
+  compact: boolean;
+  menuTree?: MenuTree<IconName>;
+}) {
   return (
     <KiskadeeContext.Provider value={context(compact)}>
       <IconFamilyProvider families={[iconFamily]} family="adaptive-test-icons">
-        <AdaptiveButtonMenu.Root tree={tree}>
+        <AdaptiveButtonMenu.Root tree={menuTree}>
           <AdaptiveButtonMenu.Trigger>Actions</AdaptiveButtonMenu.Trigger>
         </AdaptiveButtonMenu.Root>
       </IconFamilyProvider>
@@ -89,8 +97,12 @@ describe('AdaptiveButtonMenu', () => {
     fireEvent.click(result.getByRole('button', { name: 'Actions' }));
 
     expect(result.getByRole('dialog', { name: 'Actions' })).toBeTruthy();
+    const rootTitle = result.getByRole('heading', { name: 'Actions' });
+    expect(rootTitle.className).toContain('k-foc');
+
     fireEvent.click(result.getByRole('button', { name: 'Advanced' }));
-    expect(result.getByRole('heading', { name: 'Advanced' })).toBeTruthy();
+    const childTitle = result.getByRole('heading', { name: 'Advanced' });
+    expect(childTitle.className).toContain('k-foc');
 
     fireEvent.click(result.getByRole('button', { name: 'Back to Actions' }));
     expect(result.getByRole('heading', { name: 'Actions' })).toBeTruthy();
@@ -120,5 +132,45 @@ describe('AdaptiveButtonMenu', () => {
     expect(result.getByRole('radio', { name: 'Compact' }).getAttribute('aria-checked')).toBe(
       'true'
     );
+  });
+
+  it('reports the selected radio item id from both presenters', async () => {
+    const onValueChange = vi.fn();
+    const radioTree: MenuTree<IconName> = {
+      id: 'density-menu',
+      title: 'Density',
+      items: [
+        {
+          type: 'radio-group',
+          id: 'density',
+          defaultValue: 'comfortable',
+          onValueChange,
+          items: [
+            { type: 'radio', id: 'comfortable-item', label: 'Comfortable', value: 'comfortable' },
+            { type: 'radio', id: 'compact-item', label: 'Compact', value: 'compact' }
+          ]
+        }
+      ]
+    };
+
+    const dropdown = render(<Example compact={false} menuTree={radioTree} />);
+    fireEvent.click(dropdown.getByRole('button', { name: 'Actions' }));
+    fireEvent.click(await dropdown.findByRole('menuitemradio', { name: 'Compact' }));
+    expect(onValueChange).toHaveBeenLastCalledWith('compact', {
+      id: 'compact-item',
+      type: 'radio',
+      value: 'compact'
+    });
+    dropdown.unmount();
+    onValueChange.mockClear();
+
+    const bottomSheet = render(<Example compact menuTree={radioTree} />);
+    fireEvent.click(bottomSheet.getByRole('button', { name: 'Actions' }));
+    fireEvent.click(bottomSheet.getByRole('radio', { name: 'Compact' }));
+    expect(onValueChange).toHaveBeenLastCalledWith('compact', {
+      id: 'compact-item',
+      type: 'radio',
+      value: 'compact'
+    });
   });
 });

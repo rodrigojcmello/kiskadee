@@ -1,87 +1,55 @@
+# Code Review
+
 ## Scope
 
-Reviewed all current staged, unstaged, and untracked changes for the shared Dropdown,
-ButtonMenu, Select, Autocomplete, preset schemas, Builder publication, and Showcase routes.
-The review prioritized browser/runtime cost and package-domain ownership.
+- Request: correct every pertinent finding previously recorded for `codex/bottom-sheet`
+- Diff source: `master...codex/bottom-sheet`, plus the current worktree fixes
+- Updated: 2026-08-20
 
-Status: all four findings are resolved in the current working tree.
+## Resolved Findings
 
-## Findings
+### [Resolved] Radio selection identity now matches across presenters
 
-### [P1] Split the visual Dropdown provider from the mechanical Dropdown root
+`ButtonMenu.TreeContent` now resolves the selected radio node and reports its item ID in
+`MenuTreeSelectionDetails`, matching `BottomSheetMenu`. A focused AdaptiveButtonMenu regression
+selects the same radio through both presenters and verifies identical details.
 
-`packages/components/react/src/components/Dropdown/Dropdown.tsx:85-88` couples the visual class-map
-provider to `HeadlessDropdown.Root`. Semantic owners already have their own mechanical root:
-`Menu.Root` mounts a headless Dropdown, while Select and Autocomplete own their overlay state. As a
-result, ButtonMenu and both Showcase adapters mount an additional, unused Dropdown state machine,
-ID pair, anchor state, memo, and context solely to access `Dropdown.Surface` and its slots.
+### [Resolved] Nested BottomSheet slots use only the active item intent
 
-Introduce an internal visual-only provider/root for Menu, Select, and Autocomplete adapters, and
-keep the public styled `Dropdown.Root` as the convenient visual + mechanical composition for a
-standalone Dropdown. This preserves the documented semantic boundary and removes duplicated
-browser work.
+The shared BottomSheet class-name map no longer resolves a default neutral palette for the six
+item-owned slots (`e8`, `e9`, `e10`, `e11`, `e13`, and `e15`). Their palette classes are resolved
+once, at render time, from the inherited item intent. A regression verifies that every listed slot
+receives the destructive class without also receiving the neutral class.
 
-### [P2] Keep stacking policy out of the headless overlay primitive
+### [Resolved] Centered radio checkmarks and leading icons use separate tracks
 
-`packages/headless/react/src/internal/anchored-overlay.tsx:126-130` injects `zIndex: 10000` into every
-consumer. This is a visual stacking decision in the Headless package and forces Menu, Select, and
-Autocomplete into one global layer that may sit above dialogs or application overlays.
+Centered rows now keep five functional grid tracks. The radio checkmark stays in column 1, the
+leading icon uses column 2, text uses column 3, end text uses column 4, and the trailing icon uses
+column 5. The BottomSheet Showcase permission radios now include leading icons so the supported
+combination remains directly demonstrable.
 
-Return only Floating UI's positioning styles from the headless hook. Let the styled Dropdown or the
-consumer's overlay system own z-index according to its visual/runtime context.
+Browser geometry for the selected `Can view` row confirmed adjacent, non-overlapping 24 px tracks:
+checkmark column 1 at x=587.8125..611.8125 and icon column 2 at x=611.8125..635.8125.
 
-### [P2] Do not sort menu DOM nodes on every keyboard operation
+### [Resolved] Programmatically focused page titles have a visible focus treatment
 
-`packages/headless/react/src/components/menu/Menu.tsx:138-153` rebuilds and DOM-sorts the item map
-whenever `getItems()` is called. Opening, Arrow/Home/End navigation, and typeahead all call it, and
-`focusAt()` calls it again for the same keystroke. Registration also triggers a root render per item.
-This makes keyboard work repeatedly pay DOM comparisons and leaves Menu with a second collection
-implementation beside `internal/collection.ts`.
-
-Cache the DOM-ordered registry when registration/order changes, then navigate that snapshot. Extend
-or reuse the shared collection helpers with Menu's focusable-disabled policy instead of duplicating
-ordering and prefix-search logic in the component.
-
-### [P2] Delete option refs when dynamic options unmount
-
-`packages/headless/react/src/components/autocomplete/Autocomplete.tsx:498-503` and
-`packages/headless/react/src/components/select/Select.tsx:650-655` store `null` under each option key
-instead of deleting the key. Autocomplete is explicitly designed for filtered or async result sets,
-so a session that sees many unique values leaves an ever-growing map of dead keys.
-
-In both ref callbacks, call `delete(value)` when `node` is null; only call `set(value, node)` for a
-mounted element. This keeps scroll-to-active lookup constant without retaining historical results.
-
-## Resolution
-
-- Added `Dropdown.VisualProvider`; ButtonMenu and the temporary Select/Autocomplete adapters no
-  longer mount an unused mechanical Dropdown root.
-- Removed the hardcoded stacking order from the Headless anchored-overlay primitive and documented
-  stacking as visual/application ownership.
-- Menu now computes DOM order only when item registration changes and reuses the shared Collection
-  navigation/typeahead helpers during interaction.
-- Select and Autocomplete delete option refs on unmount instead of retaining null entries.
+`BottomSheet.Title` now opts into the shared `k-foc` treatment and its structural selector no
+longer suppresses the outline. Browser QA on the `Share workspace` page confirmed that the title
+was the active `:focus-visible` element with a solid 2 px outline.
 
 ## Validation
 
-- Focused Vitest run: 10 files, 40 tests passed for Headless Collection, Dropdown, Menu, Select,
-  Autocomplete, styled Dropdown, ButtonMenu, TextField input ref, and Core Button/Dropdown contracts.
-- `pnpm --filter @kiskadee/react-headless build`: passed.
+- Focused Vitest suite: 4 files, 19 tests passed.
+- Full `pnpm test`: 148 files, 1200 tests passed.
 - `pnpm --filter @kiskadee/react-components run build`: passed.
-- `pnpm --filter @kiskadee/web-builder run build`: passed for all 11 presets.
-- `pnpm --filter @kiskadee/showcase build`: passed; 20 static routes generated.
-- Focused Biome check on the new runtime/Core/Builder files: passed.
-- `git diff --check HEAD`: passed apart from the repository fsmonitor daemon warning.
-- Generated Dropdown class maps exist only for Fluent 2 Microsoft, iOS 27, and Material 3 Google,
-  as intended.
-- Root `pnpm test`: 124/125 files and 1003/1004 tests passed. The sole failure is an unrelated
-  tonal-scale performance test that consistently takes about 5.2 seconds and exceeds its 5-second
-  timeout, including when rerun alone.
+- `pnpm --filter @kiskadee/showcase build`: passed; `/bottom-sheet` remains statically generated.
+- Browser QA at `http://localhost:3001/bottom-sheet`: page and dialog rendered, lazy page navigation
+  reached `Share workspace` and `Share permissions`, centered radio tracks did not overlap,
+  selecting `Can edit` produced `Permission: edit` and closed the sheet, and console warnings/errors
+  were empty.
+- Biome checks for the changed TypeScript/TSX files: passed.
+- `git diff --check`: passed.
 
-## Notes For Follow-up Agents
+## Remaining Findings
 
-- All review fixes were implemented without changing Core, preset, or Builder contracts.
-- Browser visual QA was not started because the user previously requested control of the local
-  development server.
-- The unstaged cursor correction in `Dropdown.structural.scss` was included in the review.
-- Keep `CODE-REVIEW.md` unstaged unless the user explicitly asks to stage it.
+None from this review.

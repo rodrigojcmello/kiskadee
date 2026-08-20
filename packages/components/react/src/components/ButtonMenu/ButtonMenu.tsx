@@ -518,13 +518,15 @@ function renderButtonMenuTreeNodes(nodes: readonly MenuTreeNode<IconName>[]): Re
           id={node.id}
           value={node.value}
           defaultValue={node.defaultValue}
-          onValueChange={(value) =>
+          onValueChange={(value) => {
+            const selectedItem = node.items.find((item) => item.value === value);
+            if (!selectedItem) return;
             node.onValueChange?.(value, {
-              id: node.id,
+              id: selectedItem.id,
               type: 'radio',
               value
-            })
-          }
+            });
+          }}
         >
           {node.label ? <ButtonMenuGroupLabel>{node.label}</ButtonMenuGroupLabel> : null}
           {node.items.map((item) => (
