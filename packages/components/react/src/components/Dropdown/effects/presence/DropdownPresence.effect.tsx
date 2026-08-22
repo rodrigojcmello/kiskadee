@@ -167,10 +167,11 @@ export function DropdownPresenceEffect({
 
     if (entryPhase === 'measuring') {
       if (profile === 'grow-height') {
-        const positioner = surfaceRef.current?.parentElement;
+        const surface = surfaceRef.current;
+        const positioner = surface?.parentElement;
         if (positioner && growPositionerRef.current !== positioner) {
           releaseOwnedGrowPositioner();
-          acquireGrowPositioner(positioner, positioner.scrollHeight);
+          acquireGrowPositioner(positioner, surface.getBoundingClientRect().height);
           growPositionerRef.current = positioner;
         }
         if (positioner) {

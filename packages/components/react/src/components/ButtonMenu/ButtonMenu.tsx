@@ -133,7 +133,9 @@ function ButtonMenuPopupVisual({
 }: Pick<ButtonMenuContentProps, 'children' | 'itemsLayout' | 'surfaceProps'>) {
   return (
     <Dropdown.Surface {...surfaceProps}>
-      <Dropdown.Items layout={itemsLayout}>{children}</Dropdown.Items>
+      <Dropdown.ScrollArea>
+        <Dropdown.Items layout={itemsLayout}>{children}</Dropdown.Items>
+      </Dropdown.ScrollArea>
     </Dropdown.Surface>
   );
 }

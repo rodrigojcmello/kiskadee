@@ -46,7 +46,8 @@ export type DropdownElementName =
   | 'e7'
   | 'e8'
   | 'e9'
-  | 'e10';
+  | 'e10'
+  | 'e11';
 
 export type DropdownSurfaceElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   decorations: Pick<DecorationSchema, 'borderStyle'>;
@@ -100,6 +101,13 @@ export type DropdownIndicatorElementStyle<TSegmentName extends SegmentName = nev
 }> &
   ElementNameMetadata;
 
+export type DropdownScrollAffordanceElementStyle<TSegmentName extends SegmentName = never> = {
+  iconSize: ElementIconSize;
+} & Partial<{
+  palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'textColor'>;
+}> &
+  ElementNameMetadata;
+
 export type DropdownGroupLabelElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   typography: ElementTypography;
   scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -123,6 +131,7 @@ export type DropdownElements<TSegmentName extends SegmentName = never> = {
   e8: DropdownTextElementStyle<TSegmentName>;
   e9: DropdownGroupLabelElementStyle<TSegmentName>;
   e10: DropdownIconElementStyle<TSegmentName>;
+  e11?: DropdownScrollAffordanceElementStyle<TSegmentName>;
 };
 
 type ElementContractRules = {
@@ -149,7 +158,8 @@ const DROPDOWN_ELEMENTS_KEYS = [
   'e7',
   'e8',
   'e9',
-  'e10'
+  'e10',
+  'e11'
 ] as const;
 const DROPDOWN_ELEMENT_BASE_KEYS = [
   'name',
@@ -225,6 +235,10 @@ const DROPDOWN_RULES: Record<(typeof DROPDOWN_ELEMENTS_KEYS)[number], ElementCon
     iconSize: true,
     scales: ['paddingRight'],
     palettes: ['textColor']
+  },
+  e11: {
+    iconSize: true,
+    palettes: ['boxColor', 'textColor']
   }
 };
 
@@ -439,6 +453,7 @@ export function validateDropdownComponentContract(
   for (const key of DROPDOWN_ELEMENTS_KEYS) {
     const element = value.elements[key];
     if (element === undefined) {
+      if (key === 'e11') continue;
       issues.push(`${path}.elements.${key}: required element`);
       continue;
     }

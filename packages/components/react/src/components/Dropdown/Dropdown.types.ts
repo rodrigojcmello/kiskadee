@@ -22,7 +22,8 @@ export type DropdownElementName =
   | 'e7'
   | 'e8'
   | 'e9'
-  | 'e10';
+  | 'e10'
+  | 'e11';
 export type DropdownClassesMap = Partial<Record<DropdownElementName, ClassNameByElementJSON>>;
 export type DropdownClassNames = Partial<Record<DropdownElementName, string>>;
 
@@ -61,6 +62,8 @@ export type DropdownPresenceRenderState = {
   open: boolean;
   positioned: boolean;
   placement: DropdownPlacement;
+  availableHeight: number;
+  availableWidth: number;
 };
 export type DropdownPresenceAdapter = {
   forceMount: boolean;
@@ -74,6 +77,7 @@ export type DropdownItemsLayout = 'independent' | 'columns';
 export type DropdownItemsProps = ComponentPropsWithoutRef<'div'> & {
   layout?: DropdownItemsLayout;
 };
+export type DropdownScrollAreaProps = ComponentPropsWithoutRef<'div'>;
 export type DropdownGroupProps = ComponentPropsWithoutRef<'div'>;
 export type DropdownGroupLabelProps = ComponentPropsWithoutRef<'span'>;
 

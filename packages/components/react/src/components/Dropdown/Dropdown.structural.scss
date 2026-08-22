@@ -1,3 +1,7 @@
+.k-ddn {
+  z-index: 2147483647;
+}
+
 /*
  * element surface / e1
  * Owns the shared intrinsic content width until an anchor policy overrides it.
@@ -11,11 +15,57 @@
 }
 
 /*
+ * mechanical viewport safety / Content + e1
+ * Caps anchored surfaces to the collision middleware's available inline space.
+ */
+[style*='--k-ddn-aw'] > .k-ddn-e1 {
+  max-inline-size: min(300px, var(--k-ddn-aw));
+  min-inline-size: min(138px, var(--k-ddn-aw));
+}
+
+/*
+ * mechanical long-menu sizing / Content + e1
+ * Lets a scroll shell grow naturally until either the framework or collision limit wins.
+ */
+[style*='--k-ddn-ah'] > .k-ddn-e1:has(> .k-ddn-x3) {
+  display: flex;
+  max-block-size: min(80dvh, var(--k-ddn-ah));
+}
+
+/*
  * element surface / e1
  * Transfers mirrored surface padding to explicit collection groups.
  */
-.k-ddn-e1:has(> .k-ddn-x1 > .k-ddn-x2) {
+.k-ddn-e1:has(> .k-ddn-x1 > .k-ddn-x2),
+.k-ddn-e1:has(> .k-ddn-x3 > .k-ddn-x4 > .k-ddn-x1 > .k-ddn-x2) {
   padding: 0;
+}
+
+/*
+ * extra element for scroll affordances / x3
+ * Owns overlay positioning without becoming the consumer-controlled viewport.
+ */
+.k-ddn-x3 {
+  display: flex;
+  inline-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+  position: relative;
+  max-inline-size: 100%;
+}
+
+/*
+ * extra element for scroll affordances / x4
+ * Preserves native scrolling and contains chained overscroll inside the menu.
+ */
+.k-ddn-x4 {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /*
@@ -41,6 +91,14 @@
 }
 
 /*
+ * mechanical viewport safety / Content + e1
+ * Keeps the minimum-anchor policy from overruling the measured clipping boundary.
+ */
+[data-width='min-anchor'][style*='--k-ddn-aw'] > .k-ddn-e1 {
+  max-inline-size: var(--k-ddn-aw);
+}
+
+/*
  * extra element for e2 / x1
  * Contains the ordered groups and explicit separators of one collection.
  */
@@ -54,6 +112,14 @@
  */
 .k-ddn-x2 {
   padding: var(--k-pdt) var(--k-pdr) var(--k-pdb) var(--k-pdl);
+}
+
+/*
+ * nested semantic group / x2
+ * Prevents a RadioGroup inside a visual Group from duplicating collection padding.
+ */
+.k-ddn-x2 > .k-ddn-x2 {
+  padding: 0;
 }
 
 /*
@@ -146,11 +212,24 @@
 
 /*
  * element item / e2
+ * Preserves the selection track inside nested semantic groups such as RadioGroup.
+ */
+.k-ddn-x1[data-layout='independent'] .k-ddn-e2:has(> .k-ddn-e10) {
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+}
+
+/*
+ * element item / e2
  * Preserves separate checkmark and icon tracks in independent layout when both are present.
  */
 .k-ddn-x1[data-layout='independent']
   > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
   > .k-ddn-e2 {
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+}
+
+.k-ddn-x1[data-layout='independent']
+  .k-ddn-e2:has(> .k-ddn-e10):has(> .k-ddn-e3) {
   grid-template-columns: auto auto minmax(0, 1fr) auto auto;
 }
 
@@ -208,6 +287,12 @@
   grid-column: 2;
 }
 
+.k-ddn-x1[data-layout='independent']
+  .k-ddn-e2:has(> .k-ddn-e10)
+  > .k-ddn-e3 {
+  grid-column: 2;
+}
+
 /*
  * element leading icon / e3
  * Makes direct and family-resolved glyphs fill the preset viewport.
@@ -250,6 +335,12 @@
   grid-column: 2;
 }
 
+.k-ddn-x1[data-layout='independent']
+  .k-ddn-e2:has(> .k-ddn-e10)
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 2;
+}
+
 /*
  * elements label and description / e4 e5
  * Follow both checkmark and ordinary icon tracks in independent layout when both are present.
@@ -257,6 +348,12 @@
 .k-ddn-x1[data-layout='independent']
   > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
   > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  grid-column: 3;
+}
+
+.k-ddn-x1[data-layout='independent']
+  .k-ddn-e2:has(> .k-ddn-e10):has(> .k-ddn-e3)
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 3;
 }
@@ -447,4 +544,49 @@
  */
 .k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e2 > .k-ddn-e10 {
   grid-column: 2;
+}
+
+/*
+ * element scroll affordance / e11
+ * Overlays the scroll viewport edge without changing the menu's measured height.
+ */
+.k-ddn-e11 {
+  align-items: center;
+  display: flex;
+  inset-inline: 0;
+  justify-content: center;
+  min-block-size: var(--k-bxh);
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+/*
+ * element scroll affordance / e11
+ * Anchors each directional control to its corresponding logical block edge.
+ */
+.k-ddn-e11[data-edge='start'] {
+  inset-block-start: 0;
+}
+
+.k-ddn-e11[data-edge='end'] {
+  inset-block-end: 0;
+}
+
+/*
+ * extra element for e11 / x5
+ * Applies the preset-owned glyph dimensions independently from the overlay width.
+ */
+.k-ddn-x5 {
+  block-size: var(--k-bxh);
+  inline-size: var(--k-bxw);
+}
+
+/*
+ * extra element for e11 / x5
+ * Makes the family-resolved glyph fill the schema-owned icon viewport.
+ */
+.k-ddn-x5 > .k-gly {
+  block-size: 100%;
+  inline-size: 100%;
 }

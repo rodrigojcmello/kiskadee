@@ -12,7 +12,7 @@ The `EssentialIconProvider` maps concepts to `IconName`; `FamilyResolvedIcon` th
 through the effective Icon Family Provider.
 
 The catalog is global and currently limited to `check`, `radio-selected`, `chevron-down`,
-`chevron-left`, `chevron-end`, and `close`. Components omit the complete affordance wrapper when an
+`chevron-up`, `chevron-left`, `chevron-end`, and `close`. Components omit the complete affordance wrapper when an
 E-I is absent or cannot be resolved. They do not select another family, draw substitute geometry,
 or create an internal glyph fallback.
 
@@ -69,3 +69,7 @@ fallbacks; a missing reference is a contract error rather than permission to inv
 
 The preset keeps `global.icons.family/variant` as its family recommendation and keeps
 `global.iconSizes` as its numeric profile. Neither field stores glyph imports or the E-I map.
+
+Dropdown scroll affordances resolve `chevron-up` and `chevron-down` independently. Missing glyphs
+remove only the corresponding overlay affordance; native scrolling remains available and the
+component never rotates one glyph to synthesize the other.

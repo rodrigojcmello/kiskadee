@@ -82,8 +82,8 @@ Kiskadee separates three responsibilities:
 - an application supplies free icons to public component slots and data models;
 - `EssentialIconProvider` supplies a small global map for built-in component affordances.
 
-The essential catalog contains `check`, `radio-selected`, `chevron-down`, `chevron-left`,
-`chevron-end`, and `close`. Its values are `IconName` strings, never instantiated components or
+The essential catalog contains `check`, `radio-selected`, `chevron-down`, `chevron-up`,
+`chevron-left`, `chevron-end`, and `close`. Its values are `IconName` strings, never instantiated components or
 React nodes. The provider does not accept a family or variant: it is placed below
 `IconFamilyProvider` and resolves every configured name against the current effective family.
 Applications may replace individual mappings or provide a partial map.

@@ -115,6 +115,17 @@ describe('separator Web style-emission policy', () => {
     ).toBe('token');
   });
 
+  it('publishes the Dropdown scroll affordance icon dimensions as structural tokens', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'dropdown',
+      'e11'
+    );
+
+    expect(policy.boxHeightEmission).toBe('token');
+    expect(policy.boxWidthEmission).toBe('token');
+  });
+
   it('fails when a recipe consumer has no explicit token policy', () => {
     const schema = {
       components: {

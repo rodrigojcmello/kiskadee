@@ -137,6 +137,9 @@ literal schema color is introduced.
   Dark/Darker D85, with 6 px inline and 8 px block padding.
 - `e10`: optional 20 px leading selection indicator with a 4 px logical gap. Checkbox uses `check`;
   radio uses `radio-selected`. Selection semantics and visibility remain the owning Menu's job.
+- `e11`: optional 20 px edge-scroll affordance. It independently repeats the `e6` icon-size and
+  foreground references plus the `e1` Rest surface reference. This is a Kiskadee extension for
+  long Web menus, not evidence of an official Fluent Dropdown state.
 
 Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
 line; it does not publish margins or reuse the standalone Separator component at runtime. The

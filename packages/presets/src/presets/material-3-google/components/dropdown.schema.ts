@@ -79,6 +79,22 @@ export function createMaterial3GoogleDropdownSchema({
       }
     }
   }));
+  const scrollAffordancePalettes = buildBySegment(segmentNames, (segment) => ({
+    light: {
+      onSubtle: {
+        boxColor: {
+          neutral: {
+            medium: { rest: c(segment, 'l', 'dropdown.neutral', 0) }
+          }
+        },
+        textColor: {
+          neutral: {
+            medium: { rest: c(segment, 'l', 'dropdown.neutral', 90) }
+          }
+        }
+      }
+    }
+  }));
   const auxiliaryTextPalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
       onSubtle: {
@@ -180,6 +196,11 @@ export function createMaterial3GoogleDropdownSchema({
         iconSize: { 's:all': 's:lg:1' },
         scales: { paddingRight: 12 },
         palettes: textPalettes
+      },
+      e11: {
+        name: 'dropdown-scroll-affordance',
+        iconSize: { 's:all': 's:lg:1' },
+        palettes: scrollAffordancePalettes
       }
     }
   };

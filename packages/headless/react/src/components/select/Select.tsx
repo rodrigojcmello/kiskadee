@@ -121,6 +121,8 @@ export type SelectContentProps = SelectDefaultContentProps | SelectRenderedConte
 export type SelectContentRenderState = {
   open: boolean;
   positioned: boolean;
+  availableHeight: number;
+  availableWidth: number;
   activeValue?: string;
   placement: Placement;
 };
@@ -614,6 +616,8 @@ const SelectContentImplementation = forwardRef<HTMLElement, SelectContentProps>(
     const state: SelectContentRenderState = {
       open: isOpen,
       positioned: overlay.positioned,
+      availableHeight: overlay.availableHeight,
+      availableWidth: overlay.availableWidth,
       activeValue: activeKey,
       placement: overlay.placement
     };

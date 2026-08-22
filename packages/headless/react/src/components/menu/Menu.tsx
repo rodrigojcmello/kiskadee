@@ -1,4 +1,9 @@
-import { type OpenChangeReason, type Placement, safePolygon } from '@floating-ui/react';
+import {
+  type OpenChangeReason,
+  type Placement,
+  safePolygon,
+  type VirtualElement
+} from '@floating-ui/react';
 import type {
   ButtonHTMLAttributes,
   HTMLAttributes,
@@ -7,7 +12,8 @@ import type {
   MouseEvent,
   ReactElement,
   ReactNode,
-  Ref
+  Ref,
+  UIEvent
 } from 'react';
 import {
   createContext,
@@ -45,6 +51,7 @@ import {
 
 export type MenuOpenChangeDetails =
   | DropdownOpenChangeDetails
+  | { reason: 'context-menu'; event?: Event }
   | { reason: 'selection'; event?: Event };
 
 export type MenuRootProps = {
@@ -69,6 +76,28 @@ export type MenuTriggerProps = Omit<
   onClick?: (event: MouseEvent<HTMLElement>) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
   render?: (props: MenuTriggerRenderProps, state: { open: boolean }) => ReactElement;
+};
+
+export type MenuContextTriggerRenderProps = HTMLAttributes<HTMLElement> & {
+  ref: Ref<HTMLElement>;
+  'aria-controls'?: string;
+  'aria-expanded': boolean;
+  'aria-haspopup': 'menu';
+  'aria-disabled'?: true;
+};
+
+export type MenuContextTriggerProps = Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'onContextMenu' | 'onKeyDown'
+> & {
+  children?: ReactNode;
+  disabled?: boolean;
+  onContextMenu?: (event: MouseEvent<HTMLElement>) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
+  render?: (
+    props: MenuContextTriggerRenderProps,
+    state: { open: boolean; disabled: boolean }
+  ) => ReactElement;
 };
 
 export type MenuContentRenderState = DropdownContentRenderState;
@@ -210,6 +239,7 @@ export type MenuSubOpenChangeReason =
   | 'outside-press'
   | 'sibling-open'
   | 'selection'
+  | 'parent-scroll'
   | 'parent-close'
   | 'programmatic';
 
@@ -286,6 +316,7 @@ type MenuContextValue = {
   triggerRef: React.MutableRefObject<HTMLElement | null>;
   focusIntentRef: React.MutableRefObject<'first' | 'last' | 'none'>;
   focusRequestVersion: number;
+  requestFocus: (intent: 'first' | 'last') => void;
   registerItem: (item: MenuRegisteredItem) => () => void;
   items: readonly MenuRegisteredItem[];
   claimRadioGroup: () => number;
@@ -401,6 +432,29 @@ function getElementDirection(element: HTMLElement | null): 'ltr' | 'rtl' {
     : 'ltr';
 }
 
+function createPointReference(x: number, y: number, contextElement: HTMLElement): VirtualElement {
+  return {
+    contextElement,
+    getBoundingClientRect: () => ({
+      x,
+      y,
+      top: y,
+      right: x,
+      bottom: y,
+      left: x,
+      width: 0,
+      height: 0,
+      toJSON: () => ({})
+    })
+  };
+}
+
+function getSubmenuFallbackPlacements(direction: 'ltr' | 'rtl'): Placement[] {
+  return direction === 'rtl'
+    ? ['left-end', 'right-start', 'right-end']
+    : ['right-end', 'left-start', 'left-end'];
+}
+
 function MenuRoot({
   children,
   open: openProp,
@@ -416,6 +470,7 @@ function MenuRoot({
   const [direction, setDirection] = useState<'ltr' | 'rtl'>('ltr');
   const triggerRef = useRef<HTMLElement | null>(null);
   const focusIntentRef = useRef<'first' | 'last' | 'none'>('first');
+  const [focusRequestVersion, setFocusRequestVersion] = useState(0);
   const itemsRef = useRef(new Map<string, MenuRegisteredItem>());
   const activeSubmenuIdRef = useRef<string | undefined>(undefined);
   const submenuClosersRef = useRef(new Map<string, (details: MenuSubOpenChangeDetails) => void>());
@@ -551,6 +606,10 @@ function MenuRoot({
     setContentId(id);
     return () => setContentId((currentId) => (currentId === id ? undefined : currentId));
   }, []);
+  const requestFocus = useCallback((intent: 'first' | 'last') => {
+    focusIntentRef.current = intent;
+    setFocusRequestVersion((version) => version + 1);
+  }, []);
   const rootContentContextValue = useMemo<MenuRootContentContextValue>(
     () => ({ contentId, registerContentId }),
     [contentId, registerContentId]
@@ -570,7 +629,8 @@ function MenuRoot({
       setActiveKey,
       triggerRef,
       focusIntentRef,
-      focusRequestVersion: 0,
+      focusRequestVersion,
+      requestFocus,
       registerItem,
       items,
       claimRadioGroup,
@@ -592,6 +652,7 @@ function MenuRoot({
       closeTree,
       disabled,
       direction,
+      focusRequestVersion,
       getRadioValue,
       items,
       open,
@@ -600,6 +661,7 @@ function MenuRoot({
       registerTreeSubmenuClose,
       releaseRadioGroup,
       releaseSubmenu,
+      requestFocus,
       requestSubmenuOpen,
       setOpen,
       setRadioValue
@@ -631,7 +693,7 @@ const MenuTrigger = forwardRef<HTMLElement, MenuTriggerProps>(function MenuTrigg
     disabled: rootDisabled,
     setOpen,
     triggerRef,
-    focusIntentRef,
+    requestFocus,
     setDirection
   } = useMenuContext('Menu.Trigger');
   const { contentId } = useMenuRootContentContext('Menu.Trigger');
@@ -655,7 +717,7 @@ const MenuTrigger = forwardRef<HTMLElement, MenuTriggerProps>(function MenuTrigg
             event.preventDefault();
             return;
           }
-          focusIntentRef.current = 'first';
+          requestFocus('first');
           anchorProps.onClick(event);
         };
         const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -664,11 +726,11 @@ const MenuTrigger = forwardRef<HTMLElement, MenuTriggerProps>(function MenuTrigg
           if (disabled) return;
           if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown') {
             event.preventDefault();
-            focusIntentRef.current = 'first';
+            requestFocus('first');
             setOpen(true, { reason: 'trigger', event: event.nativeEvent });
           } else if (event.key === 'ArrowUp') {
             event.preventDefault();
-            focusIntentRef.current = 'last';
+            requestFocus('last');
             setOpen(true, { reason: 'trigger', event: event.nativeEvent });
           }
         };
@@ -700,6 +762,104 @@ const MenuTrigger = forwardRef<HTMLElement, MenuTriggerProps>(function MenuTrigg
   );
 });
 
+const MenuContextTrigger = forwardRef<HTMLElement, MenuContextTriggerProps>(
+  function MenuContextTrigger(
+    {
+      children,
+      disabled: disabledProp = false,
+      render,
+      onContextMenu,
+      onKeyDown,
+      tabIndex = 0,
+      ...props
+    },
+    forwardedRef
+  ) {
+    const {
+      open,
+      disabled: rootDisabled,
+      setOpen,
+      triggerRef,
+      requestFocus,
+      setDirection
+    } = useMenuContext('Menu.ContextTrigger');
+    const { contentId } = useMenuRootContentContext('Menu.ContextTrigger');
+    const disabled = rootDisabled || disabledProp;
+    const [positionReference, setPositionReference] = useState<VirtualElement | null>(null);
+    const openAtPoint = useCallback(
+      (element: HTMLElement, x: number, y: number, event: Event) => {
+        setPositionReference(createPointReference(x, y, element));
+        requestFocus('first');
+        setOpen(true, { reason: 'context-menu', event });
+      },
+      [requestFocus, setOpen]
+    );
+    const ref = useCallback(
+      (node: HTMLElement | null) => {
+        triggerRef.current = node;
+        if (node) setDirection(getElementDirection(node));
+        assignRef(forwardedRef, node);
+      },
+      [forwardedRef, setDirection, triggerRef]
+    );
+    const handleContextMenu = useCallback(
+      (event: MouseEvent<HTMLElement>) => {
+        onContextMenu?.(event);
+        if (event.defaultPrevented || disabled) return;
+        event.preventDefault();
+        openAtPoint(event.currentTarget, event.clientX, event.clientY, event.nativeEvent);
+      },
+      [disabled, onContextMenu, openAtPoint]
+    );
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLElement>) => {
+        onKeyDown?.(event);
+        if (event.defaultPrevented || disabled) return;
+        if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return;
+        event.preventDefault();
+        const element = event.currentTarget;
+        const rect = element.getBoundingClientRect();
+        const direction = getElementDirection(element);
+        openAtPoint(
+          element,
+          direction === 'rtl' ? rect.right : rect.left,
+          rect.bottom,
+          event.nativeEvent
+        );
+      },
+      [disabled, onKeyDown, openAtPoint]
+    );
+    const renderProps: MenuContextTriggerRenderProps = {
+      ...props,
+      ref,
+      tabIndex,
+      'aria-controls': contentId,
+      'aria-expanded': open,
+      'aria-haspopup': 'menu',
+      'aria-disabled': disabled || undefined,
+      onContextMenu: handleContextMenu,
+      onKeyDown: handleKeyDown,
+      children
+    };
+
+    return (
+      <Dropdown.Reference
+        positionReference={positionReference}
+        render={(referenceProps) => {
+          const mergedRef = (node: HTMLElement | null) => {
+            assignRef(referenceProps.ref, node);
+            assignRef(renderProps.ref, node);
+          };
+          const propsWithReference = { ...renderProps, ref: mergedRef };
+          if (render) return render(propsWithReference, { open, disabled });
+          const { ref: contextRef, ...nativeProps } = propsWithReference;
+          return <div {...nativeProps} ref={contextRef as Ref<HTMLDivElement>} />;
+        }}
+      />
+    );
+  }
+);
+
 type MenuItemsContentProps = Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'role'> & {
   children?: ReactNode;
   render?: (props: MenuContentRenderProps, state: MenuContentRenderState) => ReactElement;
@@ -707,7 +867,10 @@ type MenuItemsContentProps = Omit<HTMLAttributes<HTMLDivElement>, 'children' | '
 };
 
 const MenuItemsContent = forwardRef<HTMLDivElement, MenuItemsContentProps>(
-  function MenuItemsContent({ children, onKeyDown, render, state, ...props }, forwardedRef) {
+  function MenuItemsContent(
+    { children, onKeyDown, onScrollCapture, render, state, ...props },
+    forwardedRef
+  ) {
     const {
       open,
       closeLevel,
@@ -747,8 +910,17 @@ const MenuItemsContent = forwardRef<HTMLDivElement, MenuItemsContentProps>(
         }
         setActiveKey(target.key);
         target.element.focus();
+        target.element.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
       },
       [activeKey, closeActiveSubmenu, items, setActiveKey]
+    );
+    const handleScrollCapture = useCallback(
+      (event: UIEvent<HTMLDivElement>) => {
+        onScrollCapture?.(event);
+        if (event.defaultPrevented || !event.currentTarget.contains(event.target as Node)) return;
+        closeActiveSubmenu({ reason: 'parent-scroll', event: event.nativeEvent });
+      },
+      [closeActiveSubmenu, onScrollCapture]
     );
 
     useLayoutEffect(() => {
@@ -844,6 +1016,7 @@ const MenuItemsContent = forwardRef<HTMLDivElement, MenuItemsContentProps>(
       'data-open': state.open || undefined,
       'data-closed': !state.open || undefined,
       onKeyDown: handleKeyDown,
+      onScrollCapture: handleScrollCapture,
       children
     };
 
@@ -1374,8 +1547,10 @@ function MenuSub({
     open,
     referenceElement: triggerElement,
     placement: placement ?? (direction === 'rtl' ? 'left-start' : 'right-start'),
+    fallbackPlacements: getSubmenuFallbackPlacements(direction),
     offset,
     collisionPadding,
+    shiftCrossAxis: true,
     portalled,
     portalContainer,
     width,
@@ -1623,6 +1798,13 @@ const MenuSubContent = forwardRef<HTMLDivElement, MenuSubContentProps>(function 
     },
     [closeLevel]
   );
+  const requestFocus = useCallback(
+    (intent: 'first' | 'last') => {
+      sub.focusIntentRef.current = intent;
+      sub.setOpen(true, { reason: 'programmatic' }, intent);
+    },
+    [sub.focusIntentRef, sub.setOpen]
+  );
   const contextValue = useMemo<MenuContextValue>(
     () => ({
       open: sub.open,
@@ -1639,6 +1821,7 @@ const MenuSubContent = forwardRef<HTMLDivElement, MenuSubContentProps>(function 
       triggerRef: sub.triggerRef,
       focusIntentRef: sub.focusIntentRef,
       focusRequestVersion: sub.focusRequestVersion,
+      requestFocus,
       registerItem,
       items,
       claimRadioGroup: parentContext.claimRadioGroup,
@@ -1668,9 +1851,9 @@ const MenuSubContent = forwardRef<HTMLDivElement, MenuSubContentProps>(function 
       registerItem,
       registerSubmenu,
       releaseSubmenu,
+      requestFocus,
       requestSubmenuOpen,
       setOpen,
-      sub.focusIntentRef,
       sub.focusRequestVersion,
       sub.open,
       sub.triggerRef
@@ -1703,7 +1886,9 @@ const MenuSubContent = forwardRef<HTMLDivElement, MenuSubContentProps>(function 
   const state: MenuContentRenderState = {
     open: sub.open,
     positioned: sub.overlay.positioned,
-    placement: sub.overlay.placement
+    placement: sub.overlay.placement,
+    availableHeight: sub.overlay.availableHeight,
+    availableWidth: sub.overlay.availableWidth
   };
 
   return sub.overlay.renderFloating(
@@ -1817,6 +2002,7 @@ const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem(
 export const Menu = {
   Root: MenuRoot,
   Trigger: MenuTrigger,
+  ContextTrigger: MenuContextTrigger,
   Content: MenuContent,
   Group: MenuGroup,
   GroupLabel: MenuGroupLabel,

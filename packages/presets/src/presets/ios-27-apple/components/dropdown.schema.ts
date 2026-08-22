@@ -89,6 +89,18 @@ export function createIos27AppleDropdownSchema({
           }
         }
       },
+      scrollAffordance: {
+        onSubtle: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: c('default', recipe.track, 'dropdown.neutral', recipe.surface)
+              }
+            }
+          },
+          textColor
+        }
+      },
       item: {
         onSubtle: {
           boxColor: {
@@ -229,6 +241,13 @@ export function createIos27AppleDropdownSchema({
         iconSize: { 's:all': 's:sm:1' },
         scales: { paddingRight: 10 },
         palettes: { default: { light: light.text, dark: dark.text } }
+      },
+      e11: {
+        name: 'dropdown-scroll-affordance',
+        iconSize: { 's:all': 's:sm:1' },
+        palettes: {
+          default: { light: light.scrollAffordance, dark: dark.scrollAffordance }
+        }
       }
     }
   };

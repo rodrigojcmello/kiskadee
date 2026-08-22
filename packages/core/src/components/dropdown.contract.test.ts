@@ -28,8 +28,27 @@ function createDropdown() {
 }
 
 describe('Dropdown component contract', () => {
-  it('accepts the shared ten-element visual topology', () => {
+  it('accepts the shared topology without the optional scroll affordance', () => {
     expect(validateDropdownComponentContract(createDropdown())).toEqual([]);
+  });
+
+  it('accepts the optional scroll affordance only with icon size and owned palettes', () => {
+    const dropdown = createDropdown() as any;
+    dropdown.elements.e11 = {
+      name: 'scroll-affordance',
+      iconSize: { 's:all': 's:md:1' },
+      palettes: {}
+    };
+    expect(validateDropdownComponentContract(dropdown)).toEqual([]);
+
+    delete dropdown.elements.e11.iconSize;
+    dropdown.elements.e11.scales = { paddingTop: 2 };
+    expect(validateDropdownComponentContract(dropdown)).toEqual(
+      expect.arrayContaining([
+        'components.dropdown.elements.e11.iconSize: required reference',
+        'components.dropdown.elements.e11.scales: not allowed for this element'
+      ])
+    );
   });
 
   it('accepts only supported component-level presence defaults', () => {

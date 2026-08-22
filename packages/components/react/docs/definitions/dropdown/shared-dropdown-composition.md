@@ -33,6 +33,8 @@ open state, anchor registry, ID pair, or mechanical context.
 - `e8`: optional end text, such as a keyboard shortcut or metadata;
 - `e9`: optional visual group label.
 - `e10`: optional leading selection indicator for checkbox or radio items.
+- `e11`: optional long-menu scroll affordance, with independent icon size and surface/foreground
+  palettes.
 
 The surface may contain arbitrary non-interactive supporting content. Rich content that introduces
 multiple focus targets, dialog behavior, or form controls belongs to a future Popover or advanced
@@ -119,6 +121,33 @@ component or consuming overlay system may establish the appropriate layer for it
 Portal presence is hydration-stable: a portalled surface remains inline until the client mount has
 completed, then moves to its resolved portal container. Semantic components decide how focus is
 restored and what an Escape means.
+
+## Long Menus And Context Menus
+
+`Dropdown.ScrollArea` exposes the actual native scroll viewport through its props and ref. Its
+outer shell and optional edge affordances are framework-owned. ButtonMenu and ContextMenu insert
+it automatically; low-level Dropdown compositions opt in when their content can exceed the
+viewport. The surface keeps natural height up to `min(80dvh, availableHeight)`, preserves the
+system scrollbar, and restricts normal width policies by the collision middleware's available
+width. These limits are structural and do not create schema height profiles.
+
+`e11` is optional for backwards compatibility. When it and the corresponding E-I resolve, the
+start/end affordance overlays the viewport and continuously scrolls after a 150 ms non-touch hover
+delay at 240 px/s. It is not focusable, a menu item, or a substitute for wheel, trackpad, touch, or
+keyboard scrolling. The painted affordance never participates in pointer hit-testing; its shell
+observes non-touch pointer movement bubbling from the viewport so items and native touch remain the
+actual targets. Missing `e11` or glyph coverage removes the whole affordance.
+
+ContextMenu is a public Menu presenter, not a Dropdown behavior. Its consumer-owned trigger opens
+from `contextmenu`, Shift+F10, or the Context Menu key, while the headless layer owns the virtual
+point reference and focus policy. ContextMenu reuses ButtonMenu content, item, selection, submenu,
+and tree parts. Dropdown remains responsible only for their shared appearance.
+
+Every submenu has its own available-size measurement and ScrollArea. Collision fallback prefers
+the logical opening side, then its end alignment, then the opposite side. Cross-axis shift may
+overlap the parent only as the final way to remain inside the clipping boundary. Physical flipping
+never changes logical keyboard direction, and scrolling a parent viewport closes its active child
+submenu.
 
 ## Visual Presence
 

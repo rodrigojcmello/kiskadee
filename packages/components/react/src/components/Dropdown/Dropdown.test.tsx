@@ -3,7 +3,7 @@
 import { DEFAULT_ESSENTIAL_ICONS, defineIconFamily } from '@kiskadee/icons/interface';
 import { Dropdown as HeadlessDropdown } from '@kiskadee/react-headless/dropdown';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless/select';
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { createRef, type ReactNode, type Ref } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { EssentialIconProvider } from '../../shared/contexts/EssentialIconContext.tsx';
@@ -19,10 +19,32 @@ function Check() {
   return <svg data-testid="check-glyph" />;
 }
 
+function installObservers(): void {
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      disconnect() {}
+    }
+  );
+  vi.stubGlobal(
+    'MutationObserver',
+    class {
+      observe() {}
+      disconnect() {}
+    }
+  );
+}
+
 const iconFamily = defineIconFamily({
   id: 'test-icons',
   label: 'Test icons',
-  glyphs: { check: Check, 'radio-selected': Check }
+  glyphs: {
+    check: Check,
+    'radio-selected': Check,
+    'chevron-up': Check,
+    'chevron-down': Check
+  }
 });
 
 const context: KiskadeeContextValue = {
@@ -49,7 +71,8 @@ const context: KiskadeeContextValue = {
       e7: {},
       e8: { d: 'end-text-style' },
       e9: { d: 'group-label-style' },
-      e10: { d: 'checkmark-style' }
+      e10: { d: 'checkmark-style' },
+      e11: { d: 'scroll-affordance-style', s: { all: 'scroll-affordance-size' } }
     }
   },
   designSystem: 'test',
@@ -135,9 +158,121 @@ function renderPresenceSelect(contentRef: Ref<HTMLDivElement>) {
   );
 }
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
 
 describe('styled Dropdown', () => {
+  it('exposes the native scroll viewport and renders only available edge affordances', async () => {
+    installObservers();
+    const viewportRef = createRef<HTMLDivElement>();
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <IconFamilyProvider families={[iconFamily]} family="test-icons">
+          <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+            <Dropdown.VisualProvider>
+              <Dropdown.Surface>
+                <Dropdown.ScrollArea ref={viewportRef} data-testid="viewport">
+                  <Dropdown.Items>Items</Dropdown.Items>
+                </Dropdown.ScrollArea>
+              </Dropdown.Surface>
+            </Dropdown.VisualProvider>
+          </EssentialIconProvider>
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+    const viewport = result.getByTestId('viewport');
+    Object.defineProperty(viewport, 'clientHeight', { configurable: true, value: 100 });
+    Object.defineProperty(viewport, 'scrollHeight', { configurable: true, value: 300 });
+    Object.defineProperty(viewport, 'scrollTop', { configurable: true, writable: true, value: 0 });
+
+    fireEvent.scroll(viewport);
+    await waitFor(() => expect(result.container.querySelector('[data-edge="end"]')).toBeTruthy());
+    expect(result.container.querySelector('[data-edge="start"]')).toBeNull();
+    expect(viewportRef.current).toBe(viewport);
+
+    viewport.scrollTop = 120;
+    fireEvent.scroll(viewport);
+    await waitFor(() => expect(result.container.querySelector('[data-edge="start"]')).toBeTruthy());
+  });
+
+  it('delays pointer hover scrolling and advances at the constant contract speed', () => {
+    installObservers();
+    vi.useFakeTimers();
+    let nextFrame: FrameRequestCallback | undefined;
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      nextFrame = callback;
+      return 1;
+    });
+    vi.stubGlobal('cancelAnimationFrame', () => {
+      nextFrame = undefined;
+    });
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <IconFamilyProvider families={[iconFamily]} family="test-icons">
+          <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+            <Dropdown.VisualProvider>
+              <Dropdown.ScrollArea data-testid="viewport">
+                <Dropdown.Items>Items</Dropdown.Items>
+              </Dropdown.ScrollArea>
+            </Dropdown.VisualProvider>
+          </EssentialIconProvider>
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+    const viewport = result.getByTestId('viewport');
+    Object.defineProperty(viewport, 'clientHeight', { configurable: true, value: 100 });
+    Object.defineProperty(viewport, 'scrollHeight', { configurable: true, value: 500 });
+    Object.defineProperty(viewport, 'scrollTop', { configurable: true, writable: true, value: 0 });
+    fireEvent.scroll(viewport);
+    const endAffordance = result.container.querySelector('[data-edge="end"]');
+    const shell = result.container.querySelector('.k-ddn-x3');
+    expect(endAffordance).toBeTruthy();
+    expect(shell).toBeTruthy();
+    vi.spyOn(endAffordance as Element, 'getBoundingClientRect').mockReturnValue({
+      bottom: 100,
+      height: 20,
+      left: 0,
+      right: 100,
+      top: 80,
+      width: 100,
+      x: 0,
+      y: 80
+    } as DOMRect);
+
+    fireEvent.pointerMove(shell as Element, {
+      clientX: 50,
+      clientY: 90,
+      pointerType: 'touch'
+    });
+    act(() => vi.advanceTimersByTime(150));
+    expect(nextFrame).toBeUndefined();
+
+    fireEvent.pointerMove(shell as Element, {
+      clientX: 50,
+      clientY: 90,
+      pointerType: 'mouse'
+    });
+    act(() => vi.advanceTimersByTime(149));
+    expect(nextFrame).toBeUndefined();
+    act(() => vi.advanceTimersByTime(1));
+    expect(nextFrame).toBeDefined();
+
+    act(() => {
+      nextFrame?.(1000);
+      nextFrame?.(1250);
+    });
+    expect(viewport.scrollTop).toBe(60);
+
+    fireEvent.pointerLeave(shell as Element);
+    expect(nextFrame).toBeUndefined();
+
+    const pointerDown = new Event('pointerdown', { bubbles: true, cancelable: true });
+    expect(endAffordance?.dispatchEvent(pointerDown)).toBe(true);
+    expect(pointerDown.defaultPrevented).toBe(false);
+  });
   it('keeps the core path unmounted while closed when presence is disabled', () => {
     const result = render(
       <KiskadeeContext.Provider value={presenceContext}>

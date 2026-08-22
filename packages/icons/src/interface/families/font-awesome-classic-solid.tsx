@@ -10,6 +10,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
 import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark';
@@ -69,6 +70,7 @@ const glyphfaCheck = createFontAwesomeGlyph(faCheck);
 const glyphfaChevronDown = createFontAwesomeGlyph(faChevronDown);
 const glyphfaChevronLeft = createFontAwesomeGlyph(faChevronLeft);
 const glyphfaChevronRight = createFontAwesomeGlyph(faChevronRight);
+const glyphfaChevronUp = createFontAwesomeGlyph(faChevronUp);
 const glyphfaCircleCheck = createFontAwesomeGlyph(faCircleCheck);
 const glyphfaCircleXmark = createFontAwesomeGlyph(faCircleXmark);
 const glyphfaClipboardCheck = createFontAwesomeGlyph(faClipboardCheck);
@@ -124,6 +126,7 @@ const glyphMap = {
     "bold": glyphfaBold,
     "check": glyphfaCheck,
     "chevron-down": glyphfaChevronDown,
+    "chevron-up": glyphfaChevronUp,
     "chevron-end": { glyph: glyphfaChevronRight, direction: 'mirror' },
     "chevron-left": { glyph: glyphfaChevronLeft, direction: 'mirror' },
     "circle-check": glyphfaCircleCheck,

@@ -49,7 +49,7 @@ export function resolveDropdownClassNames({
   radius: RadiusMode;
   shadow: boolean | ElementSizeValue;
 }): Record<DropdownElementNameWithItems, string> {
-  const { e1, e2, e3, e4, e5, e6, e7, e8, e9, e10 } = classesMap ?? {};
+  const { e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11 } = classesMap ?? {};
   const shadowClass = shadow
     ? resolveEffectBucketClassName(e1?.e?.h, {
         scale: typeof shadow === 'string' ? shadow : undefined
@@ -77,6 +77,9 @@ export function resolveDropdownClassNames({
     e9: joinClassNames(resolveDropdownElementClassName(e9, scale), classNames.e9, 'k-ddn-e9') ?? '',
     e10:
       joinClassNames(resolveDropdownElementClassName(e10, scale), classNames.e10, 'k-ddn-e10') ??
+      '',
+    e11:
+      joinClassNames(resolveDropdownElementClassName(e11, scale), classNames.e11, 'k-ddn-e11') ??
       '',
     items: joinClassNames(e3?.s?.all, e3?.s?.[normalizeScaleKey(scale)], 'k-ddn-x1') ?? ''
   };

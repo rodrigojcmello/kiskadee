@@ -8,6 +8,7 @@ export const CANONICAL_ICON_NAMES = [
   'bold',
   'check',
   'chevron-down',
+  'chevron-up',
   'chevron-end',
   'chevron-left',
   'circle-check',

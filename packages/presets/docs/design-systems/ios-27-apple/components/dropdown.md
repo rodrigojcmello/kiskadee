@@ -36,6 +36,8 @@
 - `e8`: `label-small` auxiliary end text, reusing the existing auxiliary palette.
 - `e9`: `label-small-strong` group heading with item-aligned padding.
 - `e10`: 16 px leading checkmark with a 10 px logical gap, reusing the existing text palette.
+- `e11`: optional 16 px edge-scroll affordance, independently repeating `e6` foreground/size and
+  the `e1` Rest surface. It is a Kiskadee extension for long Web menus, not a native Apple Menu API.
 
 Dropdown groups own their padding and the distance around a separator. `e7` owns only the
 full-bleed line; it does not publish margins or render the standalone Separator component. The
@@ -49,6 +51,6 @@ the first Button.
 The schema uses only promoted tonal assets. This opaque Web adaptation must remain separate from any
 future Liquid Glass capability.
 
-The end-text, group-heading, and leading-checkmark slots are **Kiskadee extensions** added to keep
+The end-text, group-heading, leading-checkmark, and scroll-affordance slots are **Kiskadee extensions** added to keep
 the shared Dropdown topology complete. They do not claim fidelity to inspected iOS Menu shortcut,
 group-title, or checkmark measurements.

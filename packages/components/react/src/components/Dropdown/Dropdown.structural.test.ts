@@ -33,4 +33,37 @@ describe('Dropdown structural CSS', () => {
     expect(iconRule).toContain('margin-inline-end: var(--k-pdr)');
     expect(iconRule).not.toContain('padding-inline-end');
   });
+
+  it('keeps overlays above application chrome and fills the scroll shell width', () => {
+    const css = sass.compile(new URL('./Dropdown.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const positionerRule = css.match(/\.k-ddn\s*\{([^}]*)\}/)?.[1];
+    const scrollShellRule = css.match(/\.k-ddn-x3\s*\{([^}]*)\}/)?.[1];
+    const scrollViewportRule = css.match(/\.k-ddn-x4\s*\{([^}]*)\}/)?.[1];
+
+    expect(positionerRule).toContain('z-index: 2147483647');
+    expect(scrollShellRule).toContain('inline-size: 100%');
+    expect(scrollShellRule).not.toContain('inline-size: max-content');
+    expect(scrollViewportRule).toContain('inline-size: 100%');
+  });
+
+  it('does not duplicate padding for a semantic group nested in a visual group', () => {
+    const css = sass.compile(new URL('./Dropdown.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const nestedGroupRule = css.match(/\.k-ddn-x2 > \.k-ddn-x2\s*\{([^}]*)\}/)?.[1];
+
+    expect(nestedGroupRule).toContain('padding: 0');
+    expect(css).toContain('.k-ddn-x1[data-layout=independent] .k-ddn-e2:has(> .k-ddn-e10)');
+  });
+
+  it('keeps scroll affordances out of pointer hit-testing', () => {
+    const css = sass.compile(new URL('./Dropdown.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const affordanceRule = css.match(/\.k-ddn-e11\s*\{([^}]*)\}/)?.[1];
+
+    expect(affordanceRule).toContain('pointer-events: none');
+  });
 });

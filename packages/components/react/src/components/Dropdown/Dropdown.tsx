@@ -50,6 +50,7 @@ import type {
   DropdownPresenceRenderState,
   DropdownRadioMarkProps,
   DropdownRootProps,
+  DropdownScrollAreaProps,
   DropdownSeparatorProps,
   DropdownSurfaceProps,
   DropdownTrailingProps,
@@ -300,7 +301,17 @@ function DropdownPresenceNode({
     completeExitWhenReady();
   }, [activeRuntime, completeExitWhenReady, onMotionOpen, state.open]);
 
-  const { ref, children, ...props } = positionerProps;
+  const { ref, children, className, style, ...props } = positionerProps;
+  const hasAvailableSize = state.availableHeight > 0 && state.availableWidth > 0;
+  const positionerStyle = {
+    ...style,
+    ...(hasAvailableSize
+      ? {
+          '--k-ddn-ah': `${state.availableHeight}px`,
+          '--k-ddn-aw': `${state.availableWidth}px`
+        }
+      : {})
+  } as React.CSSProperties;
   const contextValue = useMemo<DropdownPresenceRuntimeContextValue>(
     () => ({
       ...activeRuntime,
@@ -311,7 +322,12 @@ function DropdownPresenceNode({
     [activeRuntime, handleSurfaceExitComplete, registerSurface, state]
   );
   return (
-    <div {...props} ref={ref}>
+    <div
+      {...props}
+      ref={ref}
+      className={joinClassNames('k-ddn', className)}
+      style={positionerStyle}
+    >
       <DropdownPresenceRuntimeContext.Provider value={contextValue}>
         {children}
       </DropdownPresenceRuntimeContext.Provider>
@@ -405,6 +421,184 @@ const DropdownItems = forwardRef<HTMLDivElement, DropdownItemsProps>(function Dr
   );
 });
 
+const SCROLL_EDGE_TOLERANCE = 1;
+const SCROLL_HOVER_DELAY_MS = 150;
+const SCROLL_SPEED_PX_PER_SECOND = 240;
+
+const DropdownScrollArea = forwardRef<HTMLDivElement, DropdownScrollAreaProps>(
+  function DropdownScrollArea({ children, className, onScroll, ...props }, forwardedRef) {
+    const { classesMap, resolved } = useDropdownVisualContext('Dropdown.ScrollArea');
+    const scrollStartIcon = useEssentialIcon('chevron-up');
+    const scrollEndIcon = useEssentialIcon('chevron-down');
+    const viewportRef = useRef<HTMLDivElement | null>(null);
+    const delayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const frameRef = useRef<number | null>(null);
+    const lastFrameTimeRef = useRef<number | null>(null);
+    const directionRef = useRef<-1 | 1 | null>(null);
+    const [scrollState, setScrollState] = useState({ start: false, end: false });
+    const updateScrollState = useCallback(() => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      const maxScrollTop = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+      const next = {
+        start: viewport.scrollTop > SCROLL_EDGE_TOLERANCE,
+        end: viewport.scrollTop < maxScrollTop - SCROLL_EDGE_TOLERANCE
+      };
+      setScrollState((current) =>
+        current.start === next.start && current.end === next.end ? current : next
+      );
+    }, []);
+    const stopContinuousScroll = useCallback(() => {
+      directionRef.current = null;
+      lastFrameTimeRef.current = null;
+      if (delayRef.current !== null) clearTimeout(delayRef.current);
+      if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+      delayRef.current = null;
+      frameRef.current = null;
+    }, []);
+    const runContinuousScroll = useCallback(
+      (time: number) => {
+        const viewport = viewportRef.current;
+        const direction = directionRef.current;
+        if (!viewport || direction === null) return;
+        const previousTime = lastFrameTimeRef.current ?? time;
+        lastFrameTimeRef.current = time;
+        viewport.scrollTop +=
+          direction * SCROLL_SPEED_PX_PER_SECOND * ((time - previousTime) / 1000);
+        updateScrollState();
+        const maxScrollTop = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+        if (
+          (direction < 0 && viewport.scrollTop <= SCROLL_EDGE_TOLERANCE) ||
+          (direction > 0 && viewport.scrollTop >= maxScrollTop - SCROLL_EDGE_TOLERANCE)
+        ) {
+          stopContinuousScroll();
+          return;
+        }
+        frameRef.current = requestAnimationFrame(runContinuousScroll);
+      },
+      [stopContinuousScroll, updateScrollState]
+    );
+    const startContinuousScroll = useCallback(
+      (direction: -1 | 1, pointerType: string) => {
+        if (pointerType === 'touch') return;
+        if (
+          directionRef.current === direction &&
+          (delayRef.current !== null || frameRef.current !== null)
+        ) {
+          return;
+        }
+        stopContinuousScroll();
+        directionRef.current = direction;
+        delayRef.current = setTimeout(() => {
+          delayRef.current = null;
+          frameRef.current = requestAnimationFrame(runContinuousScroll);
+        }, SCROLL_HOVER_DELAY_MS);
+      },
+      [runContinuousScroll, stopContinuousScroll]
+    );
+    const handleShellPointerMove = useCallback(
+      (event: React.PointerEvent<HTMLDivElement>) => {
+        if (event.pointerType === 'touch') {
+          stopContinuousScroll();
+          return;
+        }
+        const edgeAtPoint = (edge: 'start' | 'end') => {
+          const affordance = event.currentTarget.querySelector<HTMLElement>(
+            `[data-edge="${edge}"]`
+          );
+          if (!affordance) return false;
+          const rect = affordance.getBoundingClientRect();
+          return (
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom
+          );
+        };
+        if (edgeAtPoint('start')) {
+          startContinuousScroll(-1, event.pointerType);
+        } else if (edgeAtPoint('end')) {
+          startContinuousScroll(1, event.pointerType);
+        } else {
+          stopContinuousScroll();
+        }
+      },
+      [startContinuousScroll, stopContinuousScroll]
+    );
+    useEffect(() => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      updateScrollState();
+      const resizeObserver =
+        typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateScrollState);
+      resizeObserver?.observe(viewport);
+      const observeContent = () => {
+        for (const child of viewport.children) resizeObserver?.observe(child);
+      };
+      observeContent();
+      const mutationObserver =
+        typeof MutationObserver === 'undefined'
+          ? null
+          : new MutationObserver(() => {
+              observeContent();
+              updateScrollState();
+            });
+      mutationObserver?.observe(viewport, { childList: true, subtree: true });
+      return () => {
+        resizeObserver?.disconnect();
+        mutationObserver?.disconnect();
+        stopContinuousScroll();
+      };
+    }, [stopContinuousScroll, updateScrollState]);
+    const ref = useCallback(
+      (node: HTMLDivElement | null) => {
+        viewportRef.current = node;
+        assignRef(forwardedRef, node);
+      },
+      [forwardedRef]
+    );
+    const handleScroll = useCallback(
+      (event: React.UIEvent<HTMLDivElement>) => {
+        onScroll?.(event);
+        updateScrollState();
+      },
+      [onScroll, updateScrollState]
+    );
+    const hasAffordanceStyle = classesMap?.e11 !== undefined;
+    const renderAffordance = (edge: 'start' | 'end') => {
+      const iconName = edge === 'start' ? scrollStartIcon : scrollEndIcon;
+      if (!hasAffordanceStyle || !iconName || !scrollState[edge]) return null;
+      return (
+        <span aria-hidden="true" className={resolved.e11} data-edge={edge}>
+          <span className="k-ddn-x5">
+            <FamilyResolvedIcon name={iconName} />
+          </span>
+        </span>
+      );
+    };
+
+    return (
+      <div
+        className="k-ddn-x3"
+        onPointerMove={handleShellPointerMove}
+        onPointerLeave={stopContinuousScroll}
+        onPointerCancel={stopContinuousScroll}
+      >
+        <div
+          {...props}
+          ref={ref}
+          className={`k-ddn-x4 ${className ?? ''}`.trim()}
+          onScroll={handleScroll}
+        >
+          {children}
+        </div>
+        {renderAffordance('start')}
+        {renderAffordance('end')}
+      </div>
+    );
+  }
+);
+
 const DropdownGroup = forwardRef<HTMLDivElement, DropdownGroupProps>(function DropdownGroup(
   { className, ...props },
   ref
@@ -469,7 +663,7 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
 });
 
 function useDropdownSlotClassName(
-  elementName: 'e3' | 'e4' | 'e5' | 'e6' | 'e8' | 'e9' | 'e10',
+  elementName: 'e3' | 'e4' | 'e5' | 'e6' | 'e8' | 'e9' | 'e10' | 'e11',
   structuralClassName: string,
   consumerClassName?: string
 ): string {
@@ -591,6 +785,7 @@ export const Dropdown: {
   Content: typeof DropdownContent;
   Surface: typeof DropdownSurface;
   Items: typeof DropdownItems;
+  ScrollArea: typeof DropdownScrollArea;
   Group: typeof DropdownGroup;
   GroupLabel: typeof DropdownGroupLabel;
   Checkmark: typeof DropdownCheckmark;
@@ -610,6 +805,7 @@ export const Dropdown: {
   Content: DropdownContent,
   Surface: DropdownSurface,
   Items: DropdownItems,
+  ScrollArea: DropdownScrollArea,
   Group: DropdownGroup,
   GroupLabel: DropdownGroupLabel,
   Checkmark: DropdownCheckmark,

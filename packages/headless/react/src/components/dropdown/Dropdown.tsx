@@ -1,4 +1,4 @@
-import type { Placement } from '@floating-ui/react';
+import type { Placement, ReferenceType } from '@floating-ui/react';
 import type {
   ButtonHTMLAttributes,
   HTMLAttributes,
@@ -15,6 +15,7 @@ import {
   useCallback,
   useContext,
   useId,
+  useLayoutEffect,
   useMemo,
   useState
 } from 'react';
@@ -61,10 +62,22 @@ export type DropdownAnchorProps = Omit<
   render?: (props: DropdownAnchorRenderProps, state: { open: boolean }) => ReactElement;
 };
 
+export type DropdownReferenceRenderProps = HTMLAttributes<HTMLElement> & {
+  ref: Ref<HTMLElement>;
+};
+
+export type DropdownReferenceProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
+  children?: ReactNode;
+  positionReference?: ReferenceType | null;
+  render?: (props: DropdownReferenceRenderProps) => ReactElement;
+};
+
 export type DropdownContentRenderState = {
   open: boolean;
   positioned: boolean;
   placement: Placement;
+  availableHeight: number;
+  availableWidth: number;
 };
 
 export type DropdownContentRenderProps = HTMLAttributes<HTMLDivElement> & {
@@ -93,6 +106,8 @@ type DropdownContextValue = {
   setOpen: (open: boolean, details: DropdownOpenChangeDetails) => void;
   anchorElement: HTMLElement | null;
   setAnchorElement: (element: HTMLElement | null) => void;
+  positionReference: ReferenceType | null;
+  setPositionReference: (reference: ReferenceType | null) => void;
   anchorId: string;
   contentId: string;
 };
@@ -124,6 +139,7 @@ function DropdownRoot({
     defaultValue: defaultOpen
   });
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
+  const [positionReference, setPositionReference] = useState<ReferenceType | null>(null);
   const generatedId = useId();
   const anchorId = `dropdown-${generatedId}-anchor`;
   const contentId = `dropdown-${generatedId}-content`;
@@ -135,8 +151,17 @@ function DropdownRoot({
     [onOpenChange, setOpenState]
   );
   const contextValue = useMemo<DropdownContextValue>(
-    () => ({ open, setOpen, anchorElement, setAnchorElement, anchorId, contentId }),
-    [anchorElement, anchorId, contentId, open, setOpen]
+    () => ({
+      open,
+      setOpen,
+      anchorElement,
+      setAnchorElement,
+      positionReference,
+      setPositionReference,
+      anchorId,
+      contentId
+    }),
+    [anchorElement, anchorId, contentId, open, positionReference, setOpen]
   );
 
   return <DropdownContext.Provider value={contextValue}>{children}</DropdownContext.Provider>;
@@ -146,8 +171,9 @@ const DropdownAnchor = forwardRef<HTMLElement, DropdownAnchorProps>(function Dro
   { children, render, onClick, onKeyDown, id, ...buttonProps },
   forwardedRef
 ) {
-  const { open, setOpen, setAnchorElement, anchorId, contentId } =
+  const { open, setOpen, setAnchorElement, setPositionReference, anchorId, contentId } =
     useDropdownContext('Dropdown.Anchor');
+  useLayoutEffect(() => setPositionReference(null), [setPositionReference]);
   const resolvedId = id ?? anchorId;
   const ref = useCallback(
     (node: HTMLElement | null) => {
@@ -186,6 +212,30 @@ const DropdownAnchor = forwardRef<HTMLElement, DropdownAnchorProps>(function Dro
   );
 });
 
+const DropdownReference = forwardRef<HTMLElement, DropdownReferenceProps>(
+  function DropdownReference(
+    { children, positionReference = null, render, ...props },
+    forwardedRef
+  ) {
+    const { setAnchorElement, setPositionReference } = useDropdownContext('Dropdown.Reference');
+    const ref = useCallback(
+      (node: HTMLElement | null) => {
+        setAnchorElement(node);
+        assignRef(forwardedRef, node);
+      },
+      [forwardedRef, setAnchorElement]
+    );
+    useLayoutEffect(
+      () => setPositionReference(positionReference),
+      [positionReference, setPositionReference]
+    );
+    const renderProps: DropdownReferenceRenderProps = { ...props, ref, children };
+    if (render) return render(renderProps);
+    const { ref: referenceRef, ...nativeProps } = renderProps;
+    return <div {...nativeProps} ref={referenceRef as Ref<HTMLDivElement>} />;
+  }
+);
+
 const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(function DropdownContent(
   {
     children,
@@ -203,7 +253,8 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(functio
   },
   forwardedRef
 ) {
-  const { open, setOpen, anchorElement, contentId } = useDropdownContext('Dropdown.Content');
+  const { open, setOpen, anchorElement, positionReference, contentId } =
+    useDropdownContext('Dropdown.Content');
   const handleDismiss = useCallback(
     (details: AnchoredOverlayDismissDetails) => {
       setOpen(false, { reason: details.reason, event: details.event });
@@ -214,6 +265,7 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(functio
   const overlay = useAnchoredOverlay({
     open,
     referenceElement: anchorElement,
+    positionReference,
     placement,
     offset,
     collisionPadding,
@@ -250,7 +302,9 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(functio
   const state: DropdownContentRenderState = {
     open,
     positioned: overlay.positioned,
-    placement: overlay.placement
+    placement: overlay.placement,
+    availableHeight: overlay.availableHeight,
+    availableWidth: overlay.availableWidth
   };
   if (render) return overlay.renderFloating(render(renderProps, state));
 
@@ -263,5 +317,6 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(functio
 export const Dropdown = {
   Root: DropdownRoot,
   Anchor: DropdownAnchor,
+  Reference: DropdownReference,
   Content: DropdownContent
 };

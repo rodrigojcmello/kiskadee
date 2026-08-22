@@ -7,6 +7,7 @@ describe('essential icon contract', () => {
       check: 'check',
       'radio-selected': 'radio-selected',
       'chevron-down': 'chevron-down',
+      'chevron-up': 'chevron-up',
       'chevron-left': 'chevron-left',
       'chevron-end': 'chevron-end',
       close: 'close'

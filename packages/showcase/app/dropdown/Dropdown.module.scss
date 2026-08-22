@@ -99,9 +99,68 @@
   text-align: end;
 }
 
+.contextCard {
+  min-block-size: 260px;
+}
+
+.contextArea {
+  align-items: center;
+  border: 1px dashed color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 12px;
+  display: flex;
+  min-block-size: 150px;
+  padding: 20px;
+}
+
+.contextArea:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.collisionStage {
+  block-size: min(620px, 72dvh);
+  border: 1px dashed color-mix(in srgb, currentColor 24%, transparent);
+  border-radius: 16px;
+  inline-size: 100%;
+  min-block-size: 360px;
+  min-inline-size: 0;
+  position: relative;
+}
+
+.topStart,
+.topEnd,
+.bottomStart,
+.bottomEnd {
+  position: absolute;
+}
+
+.topStart {
+  inset-block-start: 12px;
+  left: 12px;
+}
+
+.topEnd {
+  inset-block-start: 12px;
+  right: 12px;
+}
+
+.bottomStart {
+  inset-block-end: 12px;
+  left: 12px;
+}
+
+.bottomEnd {
+  inset-block-end: 12px;
+  right: 12px;
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .collisionStage {
+    inline-size: min(100%, 360px);
   }
 
 }

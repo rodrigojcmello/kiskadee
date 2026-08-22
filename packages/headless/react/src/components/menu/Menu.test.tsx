@@ -136,6 +136,100 @@ function DynamicRadioGroups({ includeFirst }: { includeFirst: boolean }) {
 }
 
 describe('Headless Menu', () => {
+  it('opens a context menu at the pointer reference and reports its reason', async () => {
+    const onOpenChange = vi.fn();
+    const result = render(
+      <Menu.Root onOpenChange={onOpenChange}>
+        <Menu.ContextTrigger data-testid="area">Marked area</Menu.ContextTrigger>
+        <Menu.Content portalled={false}>
+          <Menu.Item textValue="Copy">Copy</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+    );
+
+    fireEvent.contextMenu(result.getByTestId('area'), { clientX: 120, clientY: 80 });
+
+    await waitFor(() => expect(result.getByRole('menu')).toBeTruthy());
+    expect(onOpenChange).toHaveBeenCalledWith(
+      true,
+      expect.objectContaining({ reason: 'context-menu' })
+    );
+    expect(document.activeElement).toBe(result.getByRole('menuitem', { name: 'Copy' }));
+  });
+
+  it('preserves the native context menu when disabled or consumer-cancelled', () => {
+    const onOpenChange = vi.fn();
+    const result = render(
+      <Menu.Root onOpenChange={onOpenChange}>
+        <Menu.ContextTrigger disabled data-testid="disabled">
+          Disabled area
+        </Menu.ContextTrigger>
+        <Menu.ContextTrigger
+          data-testid="cancelled"
+          onContextMenu={(event) => event.preventDefault()}
+        >
+          Cancelled area
+        </Menu.ContextTrigger>
+        <Menu.Content portalled={false}>
+          <Menu.Item textValue="Copy">Copy</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+    );
+
+    expect(fireEvent.contextMenu(result.getByTestId('disabled'))).toBe(true);
+    fireEvent.contextMenu(result.getByTestId('cancelled'));
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it('opens from both context-menu keyboard gestures', async () => {
+    const result = render(
+      <Menu.Root>
+        <Menu.ContextTrigger data-testid="area">Marked area</Menu.ContextTrigger>
+        <Menu.Content portalled={false}>
+          <Menu.Item textValue="Copy">Copy</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+    );
+    const area = result.getByTestId('area');
+
+    fireEvent.keyDown(area, { key: 'ContextMenu' });
+    await waitFor(() => expect(result.getByRole('menu')).toBeTruthy());
+    fireEvent.keyDown(result.getByRole('menuitem'), { key: 'Escape' });
+    await waitFor(() => expect(result.queryByRole('menu')).toBeNull());
+
+    fireEvent.keyDown(area, { key: 'F10', shiftKey: true });
+    await waitFor(() => expect(result.getByRole('menu')).toBeTruthy());
+  });
+
+  it('closes the active submenu when its parent viewport scrolls', async () => {
+    const onSubOpenChange = vi.fn();
+    const result = render(
+      <Menu.Root>
+        <Menu.Trigger>Actions</Menu.Trigger>
+        <Menu.Content portalled={false}>
+          <Menu.Sub onOpenChange={onSubOpenChange}>
+            <Menu.SubTrigger textValue="Share">Share</Menu.SubTrigger>
+            <Menu.SubContent>
+              <Menu.Item textValue="Email">Email</Menu.Item>
+            </Menu.SubContent>
+          </Menu.Sub>
+        </Menu.Content>
+      </Menu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'Actions' }));
+    const share = result.getByRole('menuitem', { name: 'Share' });
+    fireEvent.keyDown(share, { key: 'ArrowRight' });
+    await waitFor(() => expect(result.getByRole('menuitem', { name: 'Email' })).toBeTruthy());
+
+    fireEvent.scroll(result.getAllByRole('menu')[0] as HTMLElement);
+
+    await waitFor(() => expect(result.queryByRole('menuitem', { name: 'Email' })).toBeNull());
+    expect(onSubOpenChange).toHaveBeenLastCalledWith(
+      false,
+      expect.objectContaining({ reason: 'parent-scroll' })
+    );
+  });
   it.each([
     ['click', 'first'],
     ['Enter', 'first'],

@@ -6,6 +6,7 @@ import {
   offset as floatingOffset,
   type OpenChangeReason,
   type Placement,
+  type ReferenceType,
   shift,
   size,
   type UseDismissProps,
@@ -32,9 +33,12 @@ export type AnchoredOverlayDismissDetails = {
 export type UseAnchoredOverlayOptions = {
   open: boolean;
   referenceElement: HTMLElement | null;
+  positionReference?: ReferenceType | null;
   placement?: Placement;
+  fallbackPlacements?: Placement[];
   offset?: number;
   collisionPadding?: number;
+  shiftCrossAxis?: boolean;
   portalled?: boolean;
   portalContainer?: HTMLElement | null;
   width?: AnchoredOverlayWidth;
@@ -61,9 +65,12 @@ export function AnchoredOverlayTree({ children }: AnchoredOverlayTreeProps) {
 export function useAnchoredOverlay({
   open,
   referenceElement,
+  positionReference,
   placement = 'bottom-start',
+  fallbackPlacements,
   offset = 6,
   collisionPadding = 8,
+  shiftCrossAxis = false,
   portalled = true,
   portalContainer,
   width = 'content',
@@ -77,23 +84,33 @@ export function useAnchoredOverlay({
   floatingStyles: CSSProperties;
   positioned: boolean;
   placement: Placement;
+  availableHeight: number;
+  availableWidth: number;
   renderFloating: (node: ReactNode) => ReactNode;
   getReferenceProps: ReturnType<typeof useInteractions>['getReferenceProps'];
   getFloatingProps: ReturnType<typeof useInteractions>['getFloatingProps'];
 } {
   const [mounted, setMounted] = useState(false);
+  const [availableSize, setAvailableSize] = useState({ height: 0, width: 0 });
   const nodeId = useFloatingNodeId();
-  const widthMiddleware = useMemo(
+  const sizeMiddleware = useMemo(
     () =>
       size({
         padding: collisionPadding,
-        apply({ elements, rects }) {
+        apply({ availableHeight, availableWidth, elements, rects }) {
+          const height = Math.max(0, availableHeight);
+          const widthLimit = Math.max(0, availableWidth);
+          setAvailableSize((current) =>
+            current.height === height && current.width === widthLimit
+              ? current
+              : { height, width: widthLimit }
+          );
           elements.floating.style.removeProperty('width');
           elements.floating.style.removeProperty('min-width');
           if (width === 'anchor') {
-            elements.floating.style.width = `${rects.reference.width}px`;
+            elements.floating.style.width = `${Math.min(rects.reference.width, widthLimit)}px`;
           } else if (width === 'min-anchor') {
-            elements.floating.style.minWidth = `${rects.reference.width}px`;
+            elements.floating.style.minWidth = `${Math.min(rects.reference.width, widthLimit)}px`;
           }
         }
       }),
@@ -128,9 +145,9 @@ export function useAnchoredOverlay({
     strategy: 'fixed',
     middleware: [
       floatingOffset(offset),
-      flip({ padding: collisionPadding }),
-      shift({ padding: collisionPadding }),
-      widthMiddleware
+      flip({ padding: collisionPadding, fallbackPlacements }),
+      shift({ padding: collisionPadding, crossAxis: shiftCrossAxis }),
+      sizeMiddleware
     ],
     transform: false,
     whileElementsMounted: autoUpdate
@@ -154,6 +171,10 @@ export function useAnchoredOverlay({
     refs.setReference(referenceElement);
   }, [referenceElement, refs]);
 
+  useEffect(() => {
+    refs.setPositionReference(positionReference ?? referenceElement);
+  }, [positionReference, referenceElement, refs]);
+
   const floatingRef = useCallback<RefCallback<HTMLElement>>(
     (node) => refs.setFloating(node),
     [refs]
@@ -175,6 +196,8 @@ export function useAnchoredOverlay({
     floatingStyles,
     positioned: isPositioned,
     placement: resolvedPlacement,
+    availableHeight: availableSize.height,
+    availableWidth: availableSize.width,
     renderFloating,
     getReferenceProps,
     getFloatingProps

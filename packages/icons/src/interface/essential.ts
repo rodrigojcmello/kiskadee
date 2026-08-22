@@ -10,6 +10,7 @@ export type EssentialIconName =
   | 'check'
   | 'radio-selected'
   | 'chevron-down'
+  | 'chevron-up'
   | 'chevron-left'
   | 'chevron-end'
   | 'close';
@@ -20,6 +21,7 @@ export const DEFAULT_ESSENTIAL_ICONS = Object.freeze({
   check: 'check',
   'radio-selected': 'radio-selected',
   'chevron-down': 'chevron-down',
+  'chevron-up': 'chevron-up',
   'chevron-left': 'chevron-left',
   'chevron-end': 'chevron-end',
   close: 'close'

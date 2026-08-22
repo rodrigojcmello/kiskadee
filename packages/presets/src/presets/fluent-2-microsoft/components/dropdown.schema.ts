@@ -142,6 +142,18 @@ export function createFluent2MicrosoftDropdownSchema({
           }
         }
       },
+      scrollAffordance: {
+        onSubtle: {
+          boxColor: {
+            neutral: {
+              medium: {
+                rest: c('default', recipe.track, 'dropdown.neutral', recipe.surface)
+              }
+            }
+          },
+          textColor
+        }
+      },
       item: {
         onSubtle: {
           boxColor: {
@@ -361,6 +373,17 @@ export function createFluent2MicrosoftDropdownSchema({
         scales: { paddingRight: 4 },
         palettes: {
           default: { light: light.text, dark: dark.text, darker: darker.text }
+        }
+      },
+      e11: {
+        name: 'dropdown-scroll-affordance',
+        iconSize: { 's:all': 's:md:1' },
+        palettes: {
+          default: {
+            light: light.scrollAffordance,
+            dark: dark.scrollAffordance,
+            darker: darker.scrollAffordance
+          }
         }
       }
     }

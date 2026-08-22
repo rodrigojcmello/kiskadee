@@ -30,6 +30,7 @@ import {
   NavArrowDown,
   NavArrowLeft,
   NavArrowRight,
+  NavArrowUp,
   NumberedListLeft,
   NumberedListRight,
   Pause,
@@ -90,6 +91,7 @@ const glyphMoonSat = createSvgGlyph(MoonSat, {"width":"1em","height":"1em"});
 const glyphNavArrowDown = createSvgGlyph(NavArrowDown, {"width":"1em","height":"1em"});
 const glyphNavArrowLeft = createSvgGlyph(NavArrowLeft, {"width":"1em","height":"1em"});
 const glyphNavArrowRight = createSvgGlyph(NavArrowRight, {"width":"1em","height":"1em"});
+const glyphNavArrowUp = createSvgGlyph(NavArrowUp, {"width":"1em","height":"1em"});
 const glyphNumberedListLeft = createSvgGlyph(NumberedListLeft, {"width":"1em","height":"1em"});
 const glyphNumberedListRight = createSvgGlyph(NumberedListRight, {"width":"1em","height":"1em"});
 const glyphPause = createSvgGlyph(Pause, {"width":"1em","height":"1em"});
@@ -128,6 +130,7 @@ const glyphMap = {
     "bold": glyphBold,
     "check": glyphCheck,
     "chevron-down": glyphNavArrowDown,
+    "chevron-up": glyphNavArrowUp,
     "chevron-end": { glyph: glyphNavArrowRight, direction: 'mirror' },
     "chevron-left": { glyph: glyphNavArrowLeft, direction: 'mirror' },
     "circle-check": glyphCheckCircle,

@@ -109,6 +109,8 @@ export type AutocompleteContentProps = Omit<ComponentPropsWithoutRef<'div'>, 'ch
 export type AutocompleteContentRenderState = {
   open: boolean;
   positioned: boolean;
+  availableHeight: number;
+  availableWidth: number;
   placement: Placement;
   activeValue?: string;
 };
@@ -485,6 +487,8 @@ const AutocompleteContent = forwardRef<HTMLDivElement, AutocompleteContentProps>
     const state: AutocompleteContentRenderState = {
       open,
       positioned: overlay.positioned,
+      availableHeight: overlay.availableHeight,
+      availableWidth: overlay.availableWidth,
       placement: overlay.placement,
       activeValue: activeKey
     };

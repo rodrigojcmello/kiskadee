@@ -11,6 +11,7 @@ import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronUpIcon,
   CircleCheckIcon,
   CircleSmallIcon,
   CircleXIcon,
@@ -71,6 +72,7 @@ const glyphCheckIcon = createSvgGlyph(CheckIcon, {"size":"1em"});
 const glyphChevronDownIcon = createSvgGlyph(ChevronDownIcon, {"size":"1em"});
 const glyphChevronLeftIcon = createSvgGlyph(ChevronLeftIcon, {"size":"1em"});
 const glyphChevronRightIcon = createSvgGlyph(ChevronRightIcon, {"size":"1em"});
+const glyphChevronUpIcon = createSvgGlyph(ChevronUpIcon, {"size":"1em"});
 const glyphCircleCheckIcon = createSvgGlyph(CircleCheckIcon, {"size":"1em"});
 const glyphCircleXIcon = createSvgGlyph(CircleXIcon, {"size":"1em"});
 const glyphClipboardCheckIcon = createSvgGlyph(ClipboardCheckIcon, {"size":"1em"});
@@ -126,6 +128,7 @@ const glyphMap = {
     "bold": glyphBoldIcon,
     "check": glyphCheckIcon,
     "chevron-down": glyphChevronDownIcon,
+    "chevron-up": glyphChevronUpIcon,
     "chevron-end": { glyph: glyphChevronRightIcon, direction: 'mirror' },
     "chevron-left": { glyph: glyphChevronLeftIcon, direction: 'mirror' },
     "circle-check": glyphCircleCheckIcon,

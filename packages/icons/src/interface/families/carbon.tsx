@@ -8,6 +8,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Close,
   CloseOutline,
   Dashboard,
@@ -68,6 +69,7 @@ const glyphCheckmarkOutline = createSvgGlyph(CheckmarkOutline, {"size":"1em"});
 const glyphChevronDown = createSvgGlyph(ChevronDown, {"size":"1em"});
 const glyphChevronLeft = createSvgGlyph(ChevronLeft, {"size":"1em"});
 const glyphChevronRight = createSvgGlyph(ChevronRight, {"size":"1em"});
+const glyphChevronUp = createSvgGlyph(ChevronUp, {"size":"1em"});
 const glyphClose = createSvgGlyph(Close, {"size":"1em"});
 const glyphCloseOutline = createSvgGlyph(CloseOutline, {"size":"1em"});
 const glyphDashboard = createSvgGlyph(Dashboard, {"size":"1em"});
@@ -126,6 +128,7 @@ const glyphMap = {
     "bold": glyphTextBold,
     "check": glyphCheckmark,
     "chevron-down": glyphChevronDown,
+    "chevron-up": glyphChevronUp,
     "chevron-end": { glyph: glyphChevronRight, direction: 'mirror' },
     "chevron-left": { glyph: glyphChevronLeft, direction: 'mirror' },
     "circle-check": glyphCheckmarkOutline,

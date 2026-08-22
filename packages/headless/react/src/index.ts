@@ -56,6 +56,8 @@ export type {
   DropdownContentRenderState,
   DropdownOpenChangeDetails,
   DropdownOpenChangeReason,
+  DropdownReferenceProps,
+  DropdownReferenceRenderProps,
   DropdownRootProps
 } from './components/dropdown/Dropdown.tsx';
 export { Dropdown } from './components/dropdown/Dropdown.tsx';
@@ -70,6 +72,8 @@ export type {
   MenuContentProps,
   MenuContentRenderProps,
   MenuContentRenderState,
+  MenuContextTriggerProps,
+  MenuContextTriggerRenderProps,
   MenuGroupLabelProps,
   MenuGroupLabelRenderProps,
   MenuGroupProps,

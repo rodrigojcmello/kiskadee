@@ -3,6 +3,8 @@
 import type { DropdownPresence } from '@kiskadee/core';
 import {
   Button,
+  ButtonMenu,
+  ContextMenu,
   Dropdown,
   FamilyResolvedIcon,
   Text,
@@ -108,6 +110,100 @@ function Unavailable() {
         Dropdown is not available in the active design system.
       </Text>
     </div>
+  );
+}
+
+const LONG_MENU_ITEMS = Array.from({ length: 64 }, (_, index) => ({
+  id: `long-menu-${index + 1}`,
+  label: `Workspace command ${index + 1}`
+}));
+
+function LongMenu({ presence }: { presence?: DropdownPresence }) {
+  return (
+    <ButtonMenu.Root presence={presence} buttonGroup={{ intent: 'neutral', emphasis: 'medium' }}>
+      <ButtonMenu.Trigger>
+        <Button.Label>Open long menu</Button.Label>
+      </ButtonMenu.Trigger>
+      <ButtonMenu.Content aria-label="Long workspace menu">
+        <ButtonMenu.Group>
+          <ButtonMenu.GroupLabel>Workspace</ButtonMenu.GroupLabel>
+          {LONG_MENU_ITEMS.slice(0, 24).map((item) => (
+            <ButtonMenu.Item key={item.id} textValue={item.label}>
+              <ButtonMenu.Label>{item.label}</ButtonMenu.Label>
+              {item.id.endsWith('1') ? <ButtonMenu.Shortcut>Ctrl+K</ButtonMenu.Shortcut> : null}
+            </ButtonMenu.Item>
+          ))}
+        </ButtonMenu.Group>
+        <ButtonMenu.Separator />
+        <ButtonMenu.Group>
+          <ButtonMenu.GroupLabel>Options</ButtonMenu.GroupLabel>
+          <ButtonMenu.CheckboxItem defaultControlState textValue="Keep panel open">
+            <ButtonMenu.Label>Keep panel open</ButtonMenu.Label>
+          </ButtonMenu.CheckboxItem>
+          <ButtonMenu.RadioGroup defaultValue="comfortable">
+            <ButtonMenu.RadioItem value="comfortable" textValue="Comfortable density">
+              <ButtonMenu.Label>Comfortable density</ButtonMenu.Label>
+            </ButtonMenu.RadioItem>
+            <ButtonMenu.RadioItem value="compact" textValue="Compact density">
+              <ButtonMenu.Label>Compact density</ButtonMenu.Label>
+            </ButtonMenu.RadioItem>
+          </ButtonMenu.RadioGroup>
+          <ButtonMenu.Sub>
+            <ButtonMenu.SubTrigger textValue="More commands">
+              <ButtonMenu.Label>More commands</ButtonMenu.Label>
+            </ButtonMenu.SubTrigger>
+            <ButtonMenu.SubContent aria-label="More long-menu commands">
+              <ButtonMenu.Group>
+                {LONG_MENU_ITEMS.slice(24).map((item) => (
+                  <ButtonMenu.Item key={item.id} textValue={item.label}>
+                    <ButtonMenu.Label>{item.label}</ButtonMenu.Label>
+                  </ButtonMenu.Item>
+                ))}
+              </ButtonMenu.Group>
+            </ButtonMenu.SubContent>
+          </ButtonMenu.Sub>
+        </ButtonMenu.Group>
+      </ButtonMenu.Content>
+    </ButtonMenu.Root>
+  );
+}
+
+function ContextMenuDemo({ presence }: { presence?: DropdownPresence }) {
+  return (
+    <ContextMenu.Root presence={presence}>
+      <ContextMenu.Trigger>
+        <div className={styles.contextArea}>
+          Right-click here, or focus this area and press Shift+F10 / Menu.
+        </div>
+      </ContextMenu.Trigger>
+      <ContextMenu.Content aria-label="Canvas context menu">
+        <ContextMenu.Group>
+          <ContextMenu.GroupLabel>Canvas</ContextMenu.GroupLabel>
+          <ContextMenu.Item textValue="Copy">
+            <ContextMenu.Label>Copy</ContextMenu.Label>
+            <ContextMenu.Shortcut>Ctrl+C</ContextMenu.Shortcut>
+          </ContextMenu.Item>
+          <ContextMenu.Item textValue="Paste">
+            <ContextMenu.Label>Paste</ContextMenu.Label>
+            <ContextMenu.Shortcut>Ctrl+V</ContextMenu.Shortcut>
+          </ContextMenu.Item>
+          <ContextMenu.Sub>
+            <ContextMenu.SubTrigger textValue="Arrange">
+              <ContextMenu.Label>Arrange</ContextMenu.Label>
+            </ContextMenu.SubTrigger>
+            <ContextMenu.SubContent aria-label="Arrange commands">
+              <ContextMenu.Group>
+                {LONG_MENU_ITEMS.slice(0, 18).map((item) => (
+                  <ContextMenu.Item key={item.id} textValue={item.label}>
+                    <ContextMenu.Label>{item.label}</ContextMenu.Label>
+                  </ContextMenu.Item>
+                ))}
+              </ContextMenu.Group>
+            </ContextMenu.SubContent>
+          </ContextMenu.Sub>
+        </ContextMenu.Group>
+      </ContextMenu.Content>
+    </ContextMenu.Root>
   );
 }
 
@@ -338,6 +434,76 @@ export default function DropdownShowcase() {
               <Text as="p" profile={textProfiles.caption} className={styles.muted}>
                 The preferred right placement flips or shifts when it approaches a viewport edge.
               </Text>
+            </div>
+          </section>
+
+          <section className={styles.section} aria-labelledby="dropdown-long-menu-title">
+            <Text as="h3" id="dropdown-long-menu-title" profile={textProfiles.sectionTitle}>
+              Long menus and native scrolling
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              Sixty-four mounted commands exercise native wheel, trackpad, touch and keyboard
+              scrolling. Edge arrows appear only while more content exists in that direction.
+            </Text>
+            <div className={styles.grid}>
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Extensive ButtonMenu
+                </Text>
+                <LongMenu presence={presenceOverride} />
+              </article>
+              <article className={`${styles.card} ${styles.contextCard}`}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Context Menu
+                </Text>
+                <ContextMenuDemo presence={presenceOverride} />
+              </article>
+            </div>
+          </section>
+
+          <section className={styles.section} aria-labelledby="dropdown-collision-title">
+            <Text as="h3" id="dropdown-collision-title" profile={textProfiles.sectionTitle}>
+              Collision laboratory
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              Open each trigger near a different edge. Submenus preserve logical keyboard direction
+              even when collision handling moves them across their parent.
+            </Text>
+            <div className={styles.collisionStage}>
+              {(['topStart', 'topEnd', 'bottomStart', 'bottomEnd'] as const).map((position) => (
+                <div
+                  key={position}
+                  className={styles[position]}
+                  dir={position.endsWith('End') ? 'rtl' : 'ltr'}
+                >
+                  <ButtonMenu.Root
+                    presence={presenceOverride}
+                    buttonGroup={{ intent: 'neutral', emphasis: 'low' }}
+                  >
+                    <ButtonMenu.Trigger>
+                      <Button.Label>{position}</Button.Label>
+                    </ButtonMenu.Trigger>
+                    <ButtonMenu.Content>
+                      <ButtonMenu.Group>
+                        <ButtonMenu.Sub>
+                          <ButtonMenu.SubTrigger textValue="Open submenu">
+                            <ButtonMenu.Label>Open submenu</ButtonMenu.Label>
+                          </ButtonMenu.SubTrigger>
+                          <ButtonMenu.SubContent>
+                            <ButtonMenu.Group>
+                              {LONG_MENU_ITEMS.slice(0, 12).map((item) => (
+                                <ButtonMenu.Item key={item.id} textValue={item.label}>
+                                  <ButtonMenu.Label>{item.label}</ButtonMenu.Label>
+                                </ButtonMenu.Item>
+                              ))}
+                            </ButtonMenu.Group>
+                          </ButtonMenu.SubContent>
+                        </ButtonMenu.Sub>
+                      </ButtonMenu.Group>
+                    </ButtonMenu.Content>
+                  </ButtonMenu.Root>
+                </div>
+              ))}
             </div>
           </section>
         </div>

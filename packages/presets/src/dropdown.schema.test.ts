@@ -15,6 +15,21 @@ describe('official preset Dropdown schemas', () => {
     expect(schema.components.dropdown?.elements.e8).toBeDefined();
     expect(schema.components.dropdown?.elements.e9).toBeDefined();
     expect(schema.components.dropdown?.elements.e10).toBeDefined();
+    expect(schema.components.dropdown?.elements.e11).toBeDefined();
+  });
+
+  it.each([
+    [fluent2Microsoft, 's:md:1'],
+    [ios27Apple, 's:sm:1'],
+    [material3Google, 's:lg:1']
+  ] as const)('$prefix authors the optional scroll affordance independently', (schema, iconSize) => {
+    const elements = schema.components.dropdown?.elements;
+
+    expect(elements?.e11).toMatchObject({
+      name: 'dropdown-scroll-affordance',
+      iconSize: { 's:all': iconSize }
+    });
+    expect(elements?.e11?.palettes).not.toBe(elements?.e6.palettes);
   });
 
   it.each([

@@ -6,6 +6,7 @@ import { BellIcon } from '@phosphor-icons/react/Bell';
 import { CaretDownIcon } from '@phosphor-icons/react/CaretDown';
 import { CaretLeftIcon } from '@phosphor-icons/react/CaretLeft';
 import { CaretRightIcon } from '@phosphor-icons/react/CaretRight';
+import { CaretUpIcon } from '@phosphor-icons/react/CaretUp';
 import { CheckIcon } from '@phosphor-icons/react/Check';
 import { CheckCircleIcon } from '@phosphor-icons/react/CheckCircle';
 import { CircleNotchIcon } from '@phosphor-icons/react/CircleNotch';
@@ -65,6 +66,7 @@ const glyphBellIcon = createSvgGlyph(BellIcon, {"size":"1em","weight":"regular"}
 const glyphCaretDownIcon = createSvgGlyph(CaretDownIcon, {"size":"1em","weight":"regular"});
 const glyphCaretLeftIcon = createSvgGlyph(CaretLeftIcon, {"size":"1em","weight":"regular"});
 const glyphCaretRightIcon = createSvgGlyph(CaretRightIcon, {"size":"1em","weight":"regular"});
+const glyphCaretUpIcon = createSvgGlyph(CaretUpIcon, {"size":"1em","weight":"regular"});
 const glyphCheckCircleIcon = createSvgGlyph(CheckCircleIcon, {"size":"1em","weight":"regular"});
 const glyphCheckIcon = createSvgGlyph(CheckIcon, {"size":"1em","weight":"regular"});
 const glyphCircleNotchIcon = createSvgGlyph(CircleNotchIcon, {"size":"1em","weight":"regular"});
@@ -124,6 +126,7 @@ const glyphMap = {
     "bold": glyphTextBIcon,
     "check": glyphCheckIcon,
     "chevron-down": glyphCaretDownIcon,
+    "chevron-up": glyphCaretUpIcon,
     "chevron-end": { glyph: glyphCaretRightIcon, direction: 'mirror' },
     "chevron-left": { glyph: glyphCaretLeftIcon, direction: 'mirror' },
     "circle-check": glyphCheckCircleIcon,

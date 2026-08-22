@@ -139,6 +139,8 @@ export type {
   CardStatus
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
+export type { ContextMenuRootProps, ContextMenuTriggerProps } from './components/ContextMenu';
+export { ContextMenu } from './components/ContextMenu';
 export type {
   DropdownAnchorProps,
   DropdownCheckmarkProps,
@@ -160,6 +162,7 @@ export type {
   DropdownPresenceRenderProps,
   DropdownPresenceRenderState,
   DropdownRootProps,
+  DropdownScrollAreaProps,
   DropdownSeparatorProps,
   DropdownSurfaceProps,
   DropdownTrailingProps,

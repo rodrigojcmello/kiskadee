@@ -166,7 +166,7 @@ describe('DropdownPresenceEffect placement staging', () => {
     const surface = result.getByTestId('surface');
     const positioner = surface.parentElement;
     expect(positioner).not.toBeNull();
-    Object.defineProperty(positioner, 'scrollHeight', { configurable: true, value: 240 });
+    vi.spyOn(surface, 'getBoundingClientRect').mockReturnValue({ height: 240 } as DOMRect);
 
     expect(surface.style.opacity).toBe('0');
     expect(surface.style.pointerEvents).toBe('none');
@@ -212,7 +212,7 @@ describe('DropdownPresenceEffect placement staging', () => {
     const surface = result.getByTestId('surface');
     const positioner = surface.parentElement;
     expect(positioner).not.toBeNull();
-    Object.defineProperty(positioner, 'scrollHeight', { configurable: true, value: 180 });
+    vi.spyOn(surface, 'getBoundingClientRect').mockReturnValue({ height: 180 } as DOMRect);
 
     result.rerender(renderEffect(true, resolvedPlacement));
 
