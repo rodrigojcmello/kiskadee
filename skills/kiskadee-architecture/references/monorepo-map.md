@@ -1,62 +1,62 @@
 # Monorepo Map
 
-## Package ownership
+This is a routing aid derived from
+[`docs/definitions/project-governance.md`](../../../docs/definitions/project-governance.md). The
+governance definition is authoritative when this summary is incomplete or stale.
 
-- `packages/core`
-  - Own schema, types, and cross-platform token model.
-  - Avoid platform-specific CSS/layout behavior.
+## Quick ownership map
 
-- `packages/presets`
-  - Own official preset adaptations (Material, iOS, Fluent, Carbon).
-  - Store design-system interpretation decisions here.
-
-- `packages/web-builder`
-  - Own schema-to-web generation (CSS utilities, class maps, JSON artifacts).
-  - Keep dedupe and output optimization logic here.
-
-- `packages/runtime`
-  - Own browser runtime for dynamic color scales and CSS variable injection.
-
-- `packages/fonts`
-  - Own opt-in online font-provider adapters, preset integrations, and their lazy public catalog.
-
-- `packages/headless`
-  - Own unstyled component behavior, semantics, and accessibility.
-
-- `packages/components`
-  - Own visual React components combining generated CSS + headless behavior.
-
-- `packages/showcase`
-  - Own Next.js inspection app and visual validation screens.
+- `packages/core`: platform-agnostic Schema contracts, types, taxonomy, and utilities.
+- `packages/presets`: official design-system instances, evidence, values, and recommendations.
+- `packages/tonal-scale`: deterministic tonal-family generation and its dedicated inspection UI.
+- `packages/brands`: third-party brand identity, provenance, portable tonal assets, and packs.
+- `packages/fonts`: opt-in online font integrations and selected-family preparation.
+- `packages/icons`: canonical icon assets, names, family mappings, metadata, and adapters.
+- `packages/css-build`: shared CSS processing mechanics.
+- `packages/web-builder`: Schema-to-Web generation, Style Keys, emission policy, and artifacts.
+- `packages/runtime`: shared browser runtime infrastructure for dynamic colors, font preparation,
+  and platform classes.
+- `packages/headless/react`: unstyled React behavior, semantics, and accessibility.
+- `packages/components/react` (`p-react`): visual React composition, DOM, and structural Sass.
+- `packages/components/android` (`p-android`): native Android component implementation.
+- `packages/components/ios` (`p-ios`): native iOS component implementation.
+- `packages/showcase` (Showcase): Web consumer, inspection app, and visual-validation scenarios.
 
 ## Boundary rules
 
-- Do not move preset adaptation logic into `core`.
-- Do not move visual structure/layout into `headless`.
-- Do not move web generation internals into `components`.
-- Do not treat showcase-only needs as core architecture constraints.
+- An import or dependency does not transfer authority to the consumer.
+- Do not move preset adaptation into Core.
+- Do not move design-system appearance or generated class maps into Headless React.
+- Do not move Web generation policy into `p-react`.
+- Do not let structural CSS redefine Schema-owned visual values.
+- Do not let `p-android` or `p-ios` create platform-specific design-system schemas.
+- Do not treat Showcase-only needs as framework contracts.
+- Do not manually promote generated artifacts or fixtures into authoring sources.
 
 ## Quick routing guide
 
-- "New token shape/type" -> `core`
-- "Preset-specific mapping" -> `presets`
-- "Generated CSS/class-map bug" -> `web-builder`
-- "Dynamic theme/runtime color update" -> `runtime`
-- "Online font provider or preset font loader" -> `fonts`
-- "Keyboard/a11y behavior" -> `headless`
-- "Component visual style" -> `components`
-- "Docs/demo visualization" -> `showcase`
+- New cross-platform contract or token shape -> `packages/core`
+- Preset-specific value or source mapping -> `packages/presets`
+- Tonal-family mathematics or output contract -> `packages/tonal-scale`
+- Third-party brand identity or pack -> `packages/brands`
+- Font resource integration -> `packages/fonts`
+- Icon asset or family mapping -> `packages/icons`
+- Generic CSS processing -> `packages/css-build`
+- Generated CSS, class map, manifest, or Style Emission Policy -> `packages/web-builder`
+- Browser dynamic colors, font-preparation orchestration, or platform classes -> `packages/runtime`
+- React keyboard, state, semantics, or accessibility -> `packages/headless/react`
+- React visual structure or structural Sass -> `packages/components/react`
+- Native platform implementation -> matching `packages/components/<platform>` project
+- Demo or visual inspection scenario -> `packages/showcase`
 
-## Canonical end-to-end flow
+## Canonical delivery flows
 
-Use this order when reasoning about delivery status:
+```text
+Core -> Presets -> Web Builder -> p-react -> Showcase/application
+                  Headless React -> p-react
 
-1. `core` defines contracts.
-2. `presets` instantiate schemas for each design system.
-3. `web-builder` generates artifacts (`build/<designSystemKey>`).
-4. `web-builder sync/generate` copies artifacts and refreshes showcase registries.
-5. `components` consumes artifacts + headless behavior.
-6. `showcase` routes render real scenarios using synced artifacts and components.
+Core + Presets -> canonical Schema or derived payload -> p-android/p-ios -> local showcase
+```
 
-Rule:
-- Successful schema/build does not mean "component delivered" until component + showcase route are in place.
+Optional resources join only through their documented handoffs. Successful upstream generation does
+not prove delivery until the intended consumer and validation surface are complete.

@@ -12,15 +12,16 @@ Kiskadee's package responsibilities.
 
 Read only what the task needs, in this order:
 
-1. `../../PROJECT-PURPOSE.md`
-2. `references/monorepo-map.md`
-3. `references/taxonomy-rules.md`
-4. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
-5. `../../packages/web-builder/docs/definitions/structural-utility-projections.md` when an existing
+1. `../../docs/definitions/project-governance.md` for project authority and handoffs
+2. `../../PROJECT-PURPOSE.md` for product context and the architecture overview
+3. `references/monorepo-map.md` as a quick routing summary
+4. `references/taxonomy-rules.md`
+5. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
+6. `../../packages/web-builder/docs/definitions/structural-utility-projections.md` when an existing
    token-only scale utility may be conditionally reused by a different structural owner
-6. `../../STRUCTURAL-CSS.md` when structural Sass is involved
-7. `references/headless-react-patterns.md` for headless React work
-8. `references/testing-checklist.md` for validation planning
+7. `../../STRUCTURAL-CSS.md` when structural Sass is involved
+8. `references/headless-react-patterns.md` for headless React work
+9. `references/testing-checklist.md` for validation planning
 
 ## Follow this workflow
 
@@ -31,13 +32,20 @@ Read only what the task needs, in this order:
 - runtime behavior
 - headless behavior/accessibility
 - visual component composition
+- native platform adaptation
+- resource integration
 - showcase integration
 
-2. Determine the correct package boundary before proposing code.
+2. Determine the correct project authority before proposing code. Identify its allowed inputs,
+   published handoff, transformers, and consumers for the concern being changed.
+
+   For repository-governance surfaces, identify the nearest normative definition and verify that
+   summaries, bootstrap documents, agent rules, and skills remain derived from it.
 
 3. Validate taxonomy fit using `references/taxonomy-rules.md`.
 
-4. Validate package ownership using `references/monorepo-map.md` and `../../PROJECT-PURPOSE.md`.
+4. Validate project ownership using `../../docs/definitions/project-governance.md`. Use
+   `references/monorepo-map.md` only for quick routing.
 
 5. If the task involves schema/build/runtime placement, validate ownership using
    `../../SCHEMA-BUILD-RUNTIME-RULES.md`.
@@ -55,7 +63,13 @@ Read only what the task needs, in this order:
 
 ## Hard constraints
 
-- Follow package ownership from `references/monorepo-map.md` and `../../PROJECT-PURPOSE.md`.
+- Follow project authority and handoffs from `../../docs/definitions/project-governance.md`.
+- Treat imports and implementation responsibilities as consumption evidence, not as transfer of
+  authority.
+- Treat cross-project definitions, root architecture documents, agent instructions, and skills as
+  repository-governance surfaces rather than implementation projects. They must preserve the
+  precedence defined in `../../docs/definitions/project-governance.md`.
+- A downstream adapter may translate platform mechanics but must not re-author upstream semantics.
 - Treat schema declaration as necessary but not sufficient for "component done".
 - When evaluating architecture tradeoffs, distinguish build-time tooling/runtime-in-Node from
   browser runtime. Prefer simplicity, correctness, and maintainability in build-only code even if
@@ -162,6 +176,7 @@ When giving architecture recommendations, structure the output as:
 ## Reference files
 
 - `../../PROJECT-PURPOSE.md`
+- `../../docs/definitions/project-governance.md`
 - `../../SCHEMA-BUILD-RUNTIME-RULES.md`
 - `../../STRUCTURAL-CSS.md`
 - `references/monorepo-map.md`

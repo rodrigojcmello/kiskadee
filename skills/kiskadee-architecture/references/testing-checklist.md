@@ -15,7 +15,12 @@ Use this checklist when implementing architecture-related or headless React chan
 
 ## Architecture checks
 
-- Confirm change is in correct package boundary.
+- Identify the concern's authority, transformers, consumers, and published handoff using
+  `docs/definitions/project-governance.md`.
+- Confirm each change is in the correct project boundary and that consumption does not redefine the
+  upstream contract.
+- Confirm generated outputs and fixtures remain derived representations rather than authoring
+  sources.
 - Confirm token classification uses the right taxonomy bucket.
 - Confirm no platform-specific behavior leaked into platform-agnostic layers.
 

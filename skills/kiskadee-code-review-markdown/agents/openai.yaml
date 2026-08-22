@@ -1,4 +1,4 @@
 interface:
   display_name: "Kiskadee Review Markdown"
-  short_description: "Manage review findings and their handoff"
-  default_prompt: "Use $kiskadee-code-review-markdown when reviewing Kiskadee changes or resolving findings from CODE-REVIEW.md."
+  short_description: "Review code, ownership boundaries, and handoff"
+  default_prompt: "Use $kiskadee-code-review-markdown to review Kiskadee changes, verify documented project ownership, write CODE-REVIEW.md, or resolve and clear its findings."

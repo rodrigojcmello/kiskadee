@@ -14,12 +14,18 @@ keep task-specific workflows inside skills.
 - Main package areas:
   - `packages/core`: shared schema types, color utilities, breakpoints.
   - `packages/presets`: official presets and schema/token definitions.
-  - `packages/runtime`: runtime theming support.
+  - `packages/tonal-scale`: deterministic tonal-family generation.
+  - `packages/brands`: portable third-party brand definitions and packs.
+  - `packages/runtime`: shared browser runtime infrastructure for dynamic colors, font preparation,
+    and platform classes.
   - `packages/fonts`: opt-in online font providers and preset integrations.
   - `packages/icons`: canonical cross-platform SVG assets and generated platform adapters.
+  - `packages/css-build`: shared PostCSS processing mechanics.
   - `packages/web-builder`: schema-to-web generation and showcase sync scripts.
   - `packages/headless/react`: headless React primitives.
   - `packages/components/react`: styled React components and Sass output.
+  - `packages/components/android`: native Android components and local showcase.
+  - `packages/components/ios`: native iOS components and local showcase.
   - `packages/showcase`: Next.js playground/consumer app.
 
 ## Tooling
@@ -42,6 +48,9 @@ keep task-specific workflows inside skills.
 - Keep chat responses in Portuguese.
 - Prefer `rg` / `rg --files` for search. If unavailable, use the closest fallback.
 - Prefer minimal edits over broad rewrites.
+- For changes or reviews that cross project boundaries, use
+  `docs/definitions/project-governance.md` to identify the authority, allowed inputs, published
+  handoff, and forbidden ownership for each concern.
 - Before editing any `*.structural.scss` file, or any structural Sass/CSS in `packages/components/react`, read
   `STRUCTURAL-CSS.md` and treat it as the source of truth for structural styling rules.
 
@@ -87,6 +96,8 @@ keep task-specific workflows inside skills.
   Registry distinct from Style Emission Policy and never put raw values in `p`.
 - `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
+- `docs/definitions/project-governance.md`: canonical authority, responsibility, consumption, and
+  handoff boundaries between projects.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
 - `STRUCTURAL-CSS.md`: structural Sass naming and scope rules.
 - `skills/kiskadee-architecture/SKILL.md`: architecture workflow for cross-package decisions.

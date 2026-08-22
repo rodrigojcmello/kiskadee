@@ -2,6 +2,10 @@
 
 This document defines practical ownership rules that already exist in Kiskadee architecture, but were not explicit enough.
 
+Cross-project authority and handoffs are defined canonically in
+[Project governance and responsibility](docs/definitions/project-governance.md). This document
+refines the Schema, Web artifact, and runtime-execution parts of that contract.
+
 ## 1) Architectural intent
 
 Kiskadee optimizes for two goals at the same time:
@@ -699,6 +703,8 @@ Use each artifact for a different level of responsibility:
 
 Rule:
 
+- Builders preserve authored semantics. They may validate, normalize, lower, deduplicate, and
+  package authoritative input, but must not infer or repair missing design-system meaning.
 - Do not treat `manifest.json` as a substitute for `schema.json`.
 - Do not treat `global.kiskadee.json` as the structural source of truth for variant branches.
 - Do not treat `core.kiskadee.json` as semantic capability metadata for UI controls; it remains the
@@ -830,7 +836,15 @@ Practical authoring rules:
 
 This keeps `neutral.medium` as the default mental model when a component is instantiated without explicit semantic or emphasis overrides.
 
-## 6) Runtime responsibilities
+## 6) Runtime execution responsibilities
+
+This section describes the cross-project execution layer: responsibilities may be implemented by
+`p-react`, Headless React, `@kiskadee/runtime`, or the consuming application according to the project
+governance contract. It does not assign every item below to the specific `packages/runtime` project.
+
+`@kiskadee/runtime` specifically owns shared browser infrastructure such as dynamic color
+calculation/injection, explicit font preparation orchestration, and platform detection. It does not
+own React component class resolution, headless behavior, or component DOM composition.
 
 Runtime should compose, not invent design.
 

@@ -1,6 +1,6 @@
 ---
 name: kiskadee-code-review-markdown
-description: Kiskadee code review and follow-up workflow that writes findings to the repository-root CODE-REVIEW.md and clears it after every recorded finding is fixed and validated. Use when reviewing Kiskadee changes or resolving findings from that handoff file.
+description: Review Kiskadee code and project-governance boundaries, persist findings in the repository-root CODE-REVIEW.md, and clear it after every recorded finding is fixed and validated. Use when reviewing Kiskadee changes or resolving findings from that handoff file.
 ---
 
 # Kiskadee Code Review Markdown
@@ -25,13 +25,16 @@ agents and to close that handoff after its findings are resolved.
 - keep the review focused on bugs, regressions, maintainability risks, security, performance,
   accessibility, and missing validation that the author would likely fix.
 
-2. Keep findings sparse and actionable:
+2. Run the required governance review described below.
+
+3. Keep findings sparse and actionable:
 - prefer no finding over speculative feedback;
 - tie every finding to changed code and a concrete scenario;
-- include file paths and line numbers where possible;
+- include repository-relative file paths and line numbers where possible;
+- do not use editor-specific or machine-local links such as `air-file://` in `CODE-REVIEW.md`;
 - keep inline review directives in the chat response when required by the review UI.
 
-3. Before the final response, write `CODE-REVIEW.md` with this structure:
+4. Before the final response, write `CODE-REVIEW.md` with this structure:
 
 ```md
 # Code Review
@@ -41,6 +44,14 @@ agents and to close that handoff after its findings are resolved.
 - Request: <what was reviewed>
 - Diff source: <staged/unstaged/untracked, branch/base, or PR>
 - Generated: <local date/time if available>
+
+## Governance Review
+
+- Projects and governance surfaces inspected: <relevant project roots and repository-level surfaces>
+- Ownership sources: <normative definitions used>
+- Concern flows: <concern>: <authority> -> <transformers> -> <consumers>; result: respected | Finding N
+- Architecture skill: Used — <reason> | Not required — <reason>
+- Result: No responsibility-boundary violations found. | See Finding N.
 
 ## Findings
 
@@ -56,11 +67,63 @@ agents and to close that handoff after its findings are resolved.
 - <Any assumptions, residual risk, or context needed to continue>
 ```
 
-4. In the final chat response:
+5. In the final chat response:
 - lead with the same findings as the Markdown file;
 - mention that the review was saved to `CODE-REVIEW.md`;
 - include inline `::code-comment{...}` directives only for actionable changed-line feedback;
 - do not paste the whole Markdown file unless the user asks.
+
+## Required governance review
+
+Run this review for every diff, including changes confined to one project:
+
+1. Read `docs/definitions/project-governance.md`.
+2. Group changed files by governed project or repository-governance surface, then group them by
+   concern. Treat cross-project definitions, root architecture documents, `AGENTS.md`,
+   `CHAT-CONTEXT.md`, and `skills/**` as governance surfaces rather than implementation projects.
+   Assign their authority through the documentation precedence in the canonical governance
+   definition, not through their directory. Multiple projects changed for unrelated concerns do not
+   form one cross-project flow.
+3. For each concern, identify the authority/source of truth, any transformers, the published handoff,
+   and every affected consumer.
+   Do not use the changed file's location or import direction alone as proof of semantic authority.
+   For a governance-surface concern, trace the normative definition to its derived summaries,
+   instructions, skills, and review behavior.
+4. Verify that:
+   - the authority remains singular and is changed at the owning project when required;
+   - consumers select, adapt, compose, or render the handoff without re-authoring upstream meaning;
+   - generated artifacts and fixtures remain derived instead of becoming authoring sources;
+   - platform adapters change mechanics without creating parallel Schema or design-system meaning;
+   - Showcase remains a consumer and validator rather than a framework authority; and
+   - affected consumers validate the changed handoff.
+5. Record the result in `## Governance Review` even when no violation exists.
+
+Use `$kiskadee-architecture` when any of these conditions applies:
+
+- one concern crosses two or more governed projects;
+- a repository-governance surface changes or enforces project authority, allowed inputs, published
+  handoffs, prohibited ownership, or dependency direction;
+- the diff changes Schema/DSPE, a shared public contract, artifact format or emission, provider or
+  runtime ownership, or dependency direction;
+- the diff creates or duplicates a source of truth;
+- normative documents disagree or leave the owner unclear; or
+- the review would need to claim that a concern belongs in another project.
+
+Architecture review is not required merely because mechanically derived artifacts span projects or
+because unrelated concerns happen to touch different projects. The governance result must still be
+recorded.
+
+A governance finding is actionable only when it:
+
+- points to changed code or a required companion change;
+- cites the normative rule and documented authority;
+- confirms the current producer-to-consumer flow in code or artifacts; and
+- states a concrete consequence such as semantic drift, duplicated sources, inverted dependency,
+  manual generation, or a broken handoff.
+
+Architectural preference without a normative rule and concrete consequence is not a finding. If
+ownership remains ambiguous after architecture analysis, record the documentation gap under
+`Governance Review` or `Notes For Follow-up Agents` instead of accusing the implementation.
 
 ## Post-fix cleanup workflow
 
@@ -68,7 +131,8 @@ Use this workflow when the user explicitly asks to correct findings recorded in 
 
 1. Read the complete file and validate each finding against the current code before editing.
 2. Keep the report intact while implementing and validating the authorized corrections.
-3. Confirm that every actionable finding in the file is resolved in the current working tree.
+3. Confirm that every actionable finding in the file is resolved in the current working tree. For a
+   governance finding, rerun the concern flow and consumer validation before declaring it resolved.
 4. After all relevant validation succeeds, clear the contents of `CODE-REVIEW.md` but keep the
    empty file in place.
 

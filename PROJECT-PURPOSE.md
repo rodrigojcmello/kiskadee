@@ -1,13 +1,20 @@
 # Kiskadee - Purpose and monorepo map
 
-This is the canonical architecture and product-context document for the repository.
+This is the canonical product-context and architecture-overview document for the repository.
+Cross-project authority and handoffs are defined separately in
+`docs/definitions/project-governance.md`.
 
 Use `CHAT-CONTEXT.md` as the lightweight entrypoint for new chats. Keep `AGENTS.md` focused on
 repo rules, and keep task workflows inside skills.
 
 ## Project purpose
 
-Kiskadee defines a platform-agnostic visual identity schema based on a formula of colors, scales, decorations, and effects, built to normalize entire design systems. It includes a headless component foundation with accessibility (still small today, but designed for dozens or hundreds of native, cross-platform components). The current focus is Web (utility CSS + class maps), with lean generation and style dedupe to minimize duplication and keep CSS light; for now, these web differentiators live here until other platforms exist. The monorepo separates visual identity, build, behavior, and UI composition to keep the system scalable.
+Kiskadee defines a platform-agnostic visual identity schema based on a formula of colors, scales,
+decorations, and effects, built to normalize entire design systems. It includes an accessible
+headless component foundation and platform component projects. Web is currently the most mature
+delivery path, using utility CSS, class maps, lean generation, and style deduplication; Android and
+iOS provide native implementation proofs of the same canonical visual contract. The monorepo
+separates visual identity, build, behavior, and UI composition to keep the system scalable.
 
 ## Project description
 
@@ -17,7 +24,7 @@ Kiskadee is a set of packages that:
 - offers official presets (Material, iOS, Fluent, Carbon),
 - generates CSS and JSON for web consumption,
 - enables dynamic color runtime,
-- provides headless components and reference React components,
+- provides headless behavior and Web, Android, and iOS component implementations,
 - includes a showcase for inspection and visual tests.
 
 ## Effects vs. Decorations vs. Scales vs. Palettes (colors)
@@ -78,6 +85,10 @@ This matters because not every geometric value is always-on. Some values exist i
 
 ## Monorepo projects and goals
 
+This section is an orientation map. The normative authority, allowed consumption, forbidden
+ownership, and published handoff for every project are defined in
+[Project governance and responsibility](docs/definitions/project-governance.md).
+
 - `packages/core`
   - Goal: platform-agnostic schema, types, and utilities.
   - Defines tokens for colors, scales, decorations, and effects.
@@ -87,14 +98,20 @@ This matters because not every geometric value is always-on. Some values exist i
   - Goal: official design system presets.
   - Contains adaptation and mapping decisions for colors and styles.
 
+- `packages/tonal-scale`
+  - Goal: deterministic tonal-family generation and standalone tonal outputs.
+  - Provides color-generation mechanics and a dedicated inspection UI without choosing preset
+    semantics or component recipes.
+
 - `packages/web-builder`
   - Goal: web pipeline that converts the schema into utility CSS and JSON maps.
   - Also publishes artifacts and metadata used by the showcase.
   - Does not define layout or structural component rules.
 
 - `packages/runtime`
-  - Goal: color runtime for dynamic segments.
-  - Calculates scales and injects CSS variables in the browser.
+  - Goal: shared browser runtime infrastructure.
+  - Calculates and injects dynamic color scales, coordinates explicit font preparation, and
+    exposes platform-detection classes without owning component behavior.
 
 - `packages/brands`
   - Goal: portable third-party brand definitions, provenance, optional packs, and standalone tonal
@@ -113,14 +130,25 @@ This matters because not every geometric value is always-on. Some values exist i
   - Generates React adapters while also publishing raw SVG sources for other platform pipelines.
   - Exposes family barrels and direct per-icon imports without coupling icons to component logic.
 
-- `packages/headless`
-  - Goal: unstyled components (logic and accessibility).
-  - Foundation for composition in React or other layers.
+- `packages/css-build`
+  - Goal: shared PostCSS processing mechanics for Kiskadee Web outputs.
+  - Does not interpret Schema or choose component Style Emission Policy.
 
-- `packages/components`
-  - Goal: visual components for Web.
+- `packages/headless/react`
+  - Goal: unstyled React behavior, semantics, and accessibility primitives.
+  - Provides the behavioral foundation consumed by visual React components.
+
+- `packages/components/react` (`p-react`)
+  - Goal: visual React components for Web.
   - Composes generated CSS + headless + structural CSS Modules.
-  - Relevant subfolder: `packages/components/react`.
+
+- `packages/components/android` (`p-android`)
+  - Goal: native Android components and platform validation.
+  - Consumes canonical Schema or derived payloads without creating an Android-specific Schema.
+
+- `packages/components/ios` (`p-ios`)
+  - Goal: native iOS components and platform validation.
+  - Consumes canonical Schema or derived payloads without creating an iOS-specific Schema.
 
 - `packages/showcase`
   - Goal: Next.js app to inspect presets and artifacts.
@@ -153,7 +181,8 @@ This is the baseline end-to-end flow for Web:
 - `generate`: regenerates showcase registries based on manifests/artifacts.
 
 5. Runtime consumers
-- `packages/components` consumes generated class maps/CSS and composes headless behavior.
+- `packages/components/react` consumes generated class maps/CSS and composes Headless React
+  behavior.
 - Standalone `Text` resolves profile utilities from the active preset's global `t` bucket without
   requesting the descriptive typography artifact.
 - `packages/fonts` optionally supplies online selected-family preparation.
@@ -227,6 +256,9 @@ Practical rule:
 
 ## Relevant documentation
 
+- [Project governance and responsibility](docs/definitions/project-governance.md)
+  - Canonical authority, consumption, prohibition, and handoff boundaries for every project.
+
 - [SCHEMA-BUILD-RUNTIME-RULES.md](SCHEMA-BUILD-RUNTIME-RULES.md)
   - Operational rules for deciding what belongs in schema, artifacts, runtime, and structural Sass.
   - Includes `components.<name>.options` vs `global` ownership and segment/theme/emphasis artifact mapping.
@@ -253,10 +285,10 @@ Practical rule:
 - [packages/showcase/README.md](packages/showcase/README.md)
   - Build flow and showcase app structure.
 
-- [packages/presets/src/presets/material-3-google/ds-ref/DS-REF.md](packages/presets/src/presets/material-3-google/ds-ref/DS-REF.md)
+- [Material Design 3 source evidence](packages/presets/docs/design-systems/material-design-3-google/source-evidence.md)
   - Material 3 references and decisions due to official inconsistencies.
 
-- [packages/presets/src/presets/fluent-2-microsoft/README.md](packages/presets/src/presets/fluent-2-microsoft/README.md)
+- [Fluent 2 Microsoft source evidence](packages/presets/docs/design-systems/fluent-2-microsoft/source-evidence.md)
   - Notes about the official Fluent 2 adaptation.
 
 - [packages/presets/src/presets/carbon-ibm/README.md](packages/presets/src/presets/carbon-ibm/README.md)

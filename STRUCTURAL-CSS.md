@@ -2,6 +2,10 @@
 
 For structural TypeScript/runtime ownership patterns, see `STRUCTURAL-TS.md`.
 
+This document governs structural CSS in `packages/components/react` (`p-react`). Native structure in
+`p-android` and `p-ios` belongs to each native project and follows the shared native runtime pattern;
+this document does not turn Web DOM or CSS mechanics into cross-platform rules.
+
 ## What structural CSS is
 
 Structural CSS is the layer in `packages/components/react` that defines:

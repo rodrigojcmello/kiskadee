@@ -125,8 +125,10 @@ The iOS component project rooted at `packages/components/ios`.
 
 - [Icon consumption](./icon-consumption.md) defines the complete E-I, CP-I, family-resolution, and
   icon-size ownership contracts.
-- [Project purpose](../../PROJECT-PURPOSE.md) defines the Schema, DSPE domains, package ownership,
-  and platform flow.
+- [Project governance and responsibility](./project-governance.md) defines project authority,
+  allowed consumption, forbidden ownership, and handoffs.
+- [Project purpose](../../PROJECT-PURPOSE.md) defines product context, the Schema, DSPE domains, and
+  the summarized platform flow.
 - [Schema, build artifacts, and runtime rules](../../SCHEMA-BUILD-RUNTIME-RULES.md) defines the
   boundary between Schema ownership and generated or runtime behavior.
 - [Structural utility projections](../../packages/web-builder/docs/definitions/structural-utility-projections.md)

@@ -7,9 +7,10 @@ decisions.
 
 ## Project Summary
 
-`kiskadee` is a PNPM monorepo for a design-system framework. It models design systems as schema,
-ships official presets, generates web artifacts, provides runtime theming support, and exposes
-headless + visual React components with a Next.js showcase.
+`kiskadee` is a PNPM monorepo for a design-system framework. It models design systems as Schema,
+ships official presets, generates Web artifacts, provides shared browser runtime infrastructure,
+and exposes headless behavior plus Web and native visual components. Its canonical Showcase is a
+Next.js consumer and inspection application.
 
 ## Essential Rules
 
@@ -25,17 +26,25 @@ headless + visual React components with a Next.js showcase.
 
 - `packages/core`: schema contracts, types, and framework-agnostic utilities.
 - `packages/presets`: official design-system presets and token mappings.
-- `packages/runtime`: browser/runtime theming support.
+- `packages/tonal-scale`: deterministic tonal-family generation.
+- `packages/brands`: portable third-party brand definitions and packs.
+- `packages/runtime`: dynamic colors, font-preparation orchestration, and platform classes in the
+  browser.
 - `packages/fonts`: opt-in online font providers and preset integrations.
 - `packages/icons`: canonical cross-platform SVG assets and generated platform adapters.
+- `packages/css-build`: shared CSS processing mechanics.
 - `packages/web-builder`: CSS/JSON generation and showcase sync flow.
 - `packages/headless/react`: headless React behavior and accessibility primitives.
 - `packages/components/react`: visual React components and structural Sass.
+- `packages/components/android`: native Android components and local showcase.
+- `packages/components/ios`: native iOS components and local showcase.
 - `packages/showcase`: Next.js consumer/playground app.
 
 ## Read Next When Needed
 
 - Read `PROJECT-PURPOSE.md` for architecture, taxonomy, package boundaries, and delivery flow.
+- Read `docs/definitions/project-governance.md` for project authority, allowed consumption,
+  forbidden ownership, and handoffs.
 - Read `SCHEMA-BUILD-RUNTIME-RULES.md` when deciding whether something belongs in schema, runtime,
   generated artifacts, or structural Sass.
 - Read `ESM-MIGRATION-RULES.md` before changing package build scripts, TS/ESM import conventions,
