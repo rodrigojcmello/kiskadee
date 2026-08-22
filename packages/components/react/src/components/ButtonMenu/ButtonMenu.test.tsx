@@ -1,10 +1,15 @@
 /** @vitest-environment jsdom */
 
-import { defineIconFamily, type IconName } from '@kiskadee/icons/interface';
+import {
+  DEFAULT_ESSENTIAL_ICONS,
+  defineIconFamily,
+  type IconName
+} from '@kiskadee/icons/interface';
 import type { MenuTree } from '@kiskadee/react-headless/menu-tree';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { Fragment, type ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { EssentialIconProvider } from '../../shared/contexts/EssentialIconContext.tsx';
 import { IconFamilyProvider } from '../../shared/contexts/IconFamilyContext.tsx';
 import {
   KiskadeeContext,
@@ -155,7 +160,7 @@ function renderButtonMenu(children: ReactNode, contextValue: KiskadeeContextValu
   return render(
     <KiskadeeContext.Provider value={contextValue}>
       <IconFamilyProvider families={[iconFamily]} family="test-icons">
-        {children}
+        <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>{children}</EssentialIconProvider>
       </IconFamilyProvider>
     </KiskadeeContext.Provider>
   );
@@ -184,6 +189,7 @@ describe('ButtonMenu', () => {
     expect(trigger.id).toBe('author-trigger');
     expect(triggerGroup?.querySelectorAll(':scope > .k-btn')).toHaveLength(1);
     expect(triggerGroup?.querySelector('.k-btn-e6a')).toBeNull();
+    expect(trigger.querySelector('[data-k-icon-name="chevron-down"]')).toBeTruthy();
     expect(trigger.classList.contains('-p')).toBe(false);
     expect(trigger.getAttribute('aria-pressed')).toBeNull();
 
@@ -194,6 +200,25 @@ describe('ButtonMenu', () => {
     expect(trigger.classList.contains('-a')).toBe(true);
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
     expect(trigger.getAttribute('aria-pressed')).toBeNull();
+  });
+
+  it('omits the automatic disclosure slot when essential icons are not provided', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={groupDividerContext}>
+        <IconFamilyProvider families={[iconFamily]} family="test-icons">
+          <ButtonMenu.Root>
+            <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+            <ButtonMenu.Content>
+              <ButtonMenu.Item textValue="Copy">Copy</ButtonMenu.Item>
+            </ButtonMenu.Content>
+          </ButtonMenu.Root>
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+
+    const trigger = result.getByRole('button', { name: 'Actions' });
+    expect(trigger.querySelector('.k-btn-e5')).toBeNull();
+    expect(trigger.querySelector('.k-btn-e6b')).toBeNull();
   });
 
   it('suppresses transient activation feedback only while the menu stays open', async () => {

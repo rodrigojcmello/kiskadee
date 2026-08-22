@@ -1,10 +1,12 @@
 'use client';
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
+import { DEFAULT_ESSENTIAL_ICONS } from '@kiskadee/icons/interface';
 import { interfaceIconFamilyCatalog } from '@kiskadee/icons/interface/catalog';
 import { lucideIconFamily } from '@kiskadee/icons/interface/lucide';
 import {
   type ComponentClassMapScope,
   type DefinedFontFamily,
+  EssentialIconProvider,
   FontFamilyProvider,
   type FontFamilyRoleSelection,
   IconFamilyProvider,
@@ -308,23 +310,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
           family={selectedIconFamily}
           variant={selectedIconVariant}
         >
-          <ShowcaseIconContextBridge
-            value={{
-              designSystemKeys,
-              availableSegments,
-              availableThemes,
-              designSystemList,
-              manifest: activeManifest ?? manifest,
-              backgroundsByTheme,
-              fontName,
-              setFontName,
-              fontRoleNames,
-              setFontRoleName
-            }}
-            setIconFamilySelection={setShowcaseIconFamilySelection}
-          >
-            {children}
-          </ShowcaseIconContextBridge>
+          <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+            <ShowcaseIconContextBridge
+              value={{
+                designSystemKeys,
+                availableSegments,
+                availableThemes,
+                designSystemList,
+                manifest: activeManifest ?? manifest,
+                backgroundsByTheme,
+                fontName,
+                setFontName,
+                fontRoleNames,
+                setFontRoleName
+              }}
+              setIconFamilySelection={setShowcaseIconFamilySelection}
+            >
+              {children}
+            </ShowcaseIconContextBridge>
+          </EssentialIconProvider>
         </IconFamilyProvider>
       </FontFamilyProvider>
     </KiskadeeContext.Provider>

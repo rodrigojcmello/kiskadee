@@ -18,6 +18,7 @@ import {
   useState
 } from 'react';
 import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
+import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
@@ -529,6 +530,8 @@ const DropdownGroupLabel = forwardRef<HTMLSpanElement, DropdownGroupLabelProps>(
 const DropdownCheckmark = forwardRef<HTMLSpanElement, DropdownCheckmarkProps>(
   function DropdownCheckmark({ visible = true, className, ...props }, ref) {
     const resolvedClassName = useDropdownSlotClassName('e10', 'k-ddn-e10', className);
+    const iconName = useEssentialIcon('check');
+    if (!iconName) return null;
     return (
       <span
         {...props}
@@ -537,7 +540,7 @@ const DropdownCheckmark = forwardRef<HTMLSpanElement, DropdownCheckmarkProps>(
         className={resolvedClassName}
         data-visible={visible}
       >
-        <IconGlyph name="check" />
+        <IconGlyph name={iconName} />
       </span>
     );
   }
@@ -546,6 +549,8 @@ const DropdownCheckmark = forwardRef<HTMLSpanElement, DropdownCheckmarkProps>(
 const DropdownRadioMark = forwardRef<HTMLSpanElement, DropdownRadioMarkProps>(
   function DropdownRadioMark({ visible = true, className, ...props }, ref) {
     const resolvedClassName = useDropdownSlotClassName('e10', 'k-ddn-e10', className);
+    const iconName = useEssentialIcon('radio-selected');
+    if (!iconName) return null;
     return (
       <span
         {...props}
@@ -554,7 +559,7 @@ const DropdownRadioMark = forwardRef<HTMLSpanElement, DropdownRadioMarkProps>(
         className={resolvedClassName}
         data-visible={visible}
       >
-        <IconGlyph name="radio-selected" />
+        <IconGlyph name={iconName} />
       </span>
     );
   }

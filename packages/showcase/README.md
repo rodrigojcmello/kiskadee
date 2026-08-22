@@ -215,5 +215,8 @@ Shared utilities for Showcase.
   examples. Preset changes restore both recommendations, and presets
   without one use `lucide.regular` as the Showcase default. Reusable brand marks remain direct
   `@kiskadee/icons/social/<Icon>` imports and never change family.
+- The root `EssentialIconProvider` supplies the small global catalog used by built-in component
+  affordances. It sits below the same `IconFamilyProvider`, so the existing selector changes free
+  example icons and essential component icons together without owning a second family selection.
 - For deployment builds (for example on Vercel), `pnpm build` inside `packages/showcase`
   already runs `@kiskadee/web-builder` `build-sync-generate` before `next build`.

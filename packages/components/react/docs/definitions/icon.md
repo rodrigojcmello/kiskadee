@@ -43,6 +43,21 @@ It is always hidden from accessibility APIs, is never focusable, and normalizes 
 geometry to the parent slot. Button, Switch, Slider, Tabs, and Showcase controls use it when the
 parent component already owns semantics.
 
+## Essential component affordances
+
+`EssentialIconProvider` owns the limited global map used by built-in component affordances such as
+selection marks, disclosures, submenu navigation, back, and close. It accepts `IconName` values
+only and sits below `IconFamilyProvider`; it never selects a family or variant itself.
+
+`useEssentialIcon` returns a configured name only when the active effective family resolves it.
+Provider absence, entry absence, and missing family coverage all return `undefined`. A component
+then omits the complete icon-owned slot, including its wrapper, spacing, or divider. Public direct
+composition and explicit `name`, `icon`, `children`, or `fallback` overrides keep their existing
+behavior and remain consumer-owned.
+
+The map is global rather than component-specific. Free item icons continue to come from component
+composition or data and are not promoted into the essential catalog.
+
 ## Element map
 
 - `e1` (`glyph`) is the semantic root and visual viewport.

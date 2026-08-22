@@ -27,6 +27,7 @@ import type {
   Ref
 } from 'react';
 import { forwardRef, isValidElement } from 'react';
+import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonGroupProps, ButtonProps } from '../Button/Button.types.ts';
@@ -458,6 +459,7 @@ const ButtonMenuSub = HeadlessMenu.Sub;
 
 const ButtonMenuSubTrigger = forwardRef<HTMLElement, ButtonMenuSubTriggerProps>(
   function ButtonMenuSubTrigger({ children, disabled, intent, ...props }, forwardedRef) {
+    const submenuIcon = useEssentialIcon('chevron-end');
     return (
       <HeadlessMenu.SubTrigger
         {...props}
@@ -477,7 +479,7 @@ const ButtonMenuSubTrigger = forwardRef<HTMLElement, ButtonMenuSubTriggerProps>(
               disabled={state.disabled}
             >
               {children}
-              <Dropdown.Trailing name="chevron-end" />
+              {submenuIcon ? <Dropdown.Trailing name={submenuIcon} /> : null}
             </Dropdown.Item>
           );
         }}

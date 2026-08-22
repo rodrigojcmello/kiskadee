@@ -34,6 +34,7 @@ import {
   useState
 } from 'react';
 import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
+import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { Button } from '../Button/Button.tsx';
@@ -746,6 +747,8 @@ const BottomSheetCheckmark = forwardRef<HTMLSpanElement, BottomSheetCheckmarkPro
   function BottomSheetCheckmark({ className, style, visible = true, ...props }, ref) {
     const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.Checkmark');
     const intent = useContext(BottomSheetItemIntentContext);
+    const iconName = useEssentialIcon('check');
+    if (!iconName) return null;
     return (
       <span
         {...props}
@@ -758,7 +761,7 @@ const BottomSheetCheckmark = forwardRef<HTMLSpanElement, BottomSheetCheckmarkPro
         )}
         style={{ ...style, visibility: visible ? style?.visibility : 'hidden' }}
       >
-        <IconGlyph name="check" />
+        <IconGlyph name={iconName} />
       </span>
     );
   }
@@ -768,6 +771,8 @@ const BottomSheetRadioMark = forwardRef<HTMLSpanElement, BottomSheetRadioMarkPro
   function BottomSheetRadioMark({ className, style, visible = true, ...props }, ref) {
     const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.RadioMark');
     const intent = useContext(BottomSheetItemIntentContext);
+    const iconName = useEssentialIcon('radio-selected');
+    if (!iconName) return null;
     return (
       <span
         {...props}
@@ -780,7 +785,7 @@ const BottomSheetRadioMark = forwardRef<HTMLSpanElement, BottomSheetRadioMarkPro
         )}
         style={{ ...style, visibility: visible ? style?.visibility : 'hidden' }}
       >
-        <IconGlyph name="radio-selected" />
+        <IconGlyph name={iconName} />
       </span>
     );
   }
@@ -788,9 +793,14 @@ const BottomSheetRadioMark = forwardRef<HTMLSpanElement, BottomSheetRadioMarkPro
 
 const BottomSheetClose = forwardRef<HTMLButtonElement, BottomSheetCloseProps>(
   function BottomSheetClose(
-    { children, icon = 'close', onClick, 'aria-label': ariaLabel, ...buttonProps },
+    { children, icon, onClick, 'aria-label': ariaLabel, ...buttonProps },
     forwardedRef
   ) {
+    const essentialIcon = useEssentialIcon('close');
+    const resolvedIcon = icon ?? essentialIcon;
+    const content = children ?? (resolvedIcon ? <Button.Icon name={resolvedIcon} /> : null);
+    if (content == null) return null;
+
     return (
       <HeadlessBottomSheet.Close
         onClick={onClick}
@@ -807,7 +817,7 @@ const BottomSheetClose = forwardRef<HTMLButtonElement, BottomSheetCloseProps>(
               ref={ref}
               aria-label={ariaLabel ?? (children ? undefined : 'Close')}
             >
-              {children ?? <Button.Icon name={icon} />}
+              {content}
             </Button>
           );
         }}

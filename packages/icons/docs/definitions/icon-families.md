@@ -74,6 +74,29 @@ for a deliberate one-off glyph.
 The public broad catalog is opt-in. Direct family subpaths support static applications that want
 one family and one upstream dependency.
 
+## Essential component icons
+
+Kiskadee separates three responsibilities:
+
+- a preset recommends one interface family and optional variant;
+- an application supplies free icons to public component slots and data models;
+- `EssentialIconProvider` supplies a small global map for built-in component affordances.
+
+The essential catalog contains `check`, `radio-selected`, `chevron-down`, `chevron-left`,
+`chevron-end`, and `close`. Its values are `IconName` strings, never instantiated components or
+React nodes. The provider does not accept a family or variant: it is placed below
+`IconFamilyProvider` and resolves every configured name against the current effective family.
+Applications may replace individual mappings or provide a partial map.
+
+An absent provider, absent entry, or unavailable glyph resolves to no icon. Components must then
+omit the icon's wrapper, spacing, divider, or affordance instead of choosing another family or an
+internal fallback. An explicit public `name`, `icon`, `children`, or `fallback` remains a deliberate
+consumer override and is not replaced by the essential map.
+
+Unchecked checkbox and radio items may preserve an invisible wrapper only when their essential
+entry resolves, maintaining alignment with selected siblings. The radio indicator always comes
+from the family's `radio-selected` mapping; components do not draw the dot in CSS.
+
 ## Canonical coverage
 
 `src/interface/canonical.ts` owns the public canonical-name union.

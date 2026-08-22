@@ -13,6 +13,7 @@ import type {
 } from '@kiskadee/react-headless/menu-tree';
 import type { ReactElement, MouseEvent as ReactMouseEvent, ReactNode, Ref } from 'react';
 import { forwardRef, isValidElement, useCallback, useEffect, useRef, useState } from 'react';
+import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { BottomSheet, useBottomSheetResolvedOptions } from '../BottomSheet/BottomSheet.tsx';
 import type { BottomSheetRootProps } from '../BottomSheet/BottomSheet.types.ts';
@@ -235,6 +236,7 @@ function BottomSheetMenuPageItems({
   uncontrolledRadioValues: Readonly<Record<string, string>>;
 }) {
   const controller = useBottomSheetController();
+  const submenuIcon = useEssentialIcon('chevron-end');
   return nodes.map((node) => {
     if (node.type === 'separator') return <BottomSheet.Separator key={node.id} />;
 
@@ -312,7 +314,7 @@ function BottomSheetMenuPageItems({
           }}
         >
           <BottomSheetMenuItemContent {...node} />
-          <BottomSheet.Trailing name="chevron-end" functional />
+          {submenuIcon ? <BottomSheet.Trailing name={submenuIcon} functional /> : null}
         </BottomSheet.Item>
       );
     }
@@ -383,6 +385,7 @@ function BottomSheetMenuNavigator({
   tree: MenuTree<IconName>;
 }) {
   const controller = useBottomSheetController();
+  const backIcon = useEssentialIcon('chevron-left');
   const options = useBottomSheetResolvedOptions();
   const transitionModule = useBottomSheetPageTransitionEffect(
     controller.open && options.pageTransition === 'slide'
@@ -487,7 +490,7 @@ function BottomSheetMenuNavigator({
         <BottomSheet.HeaderActions>
           {parentPage ? (
             <Button onClick={goBack} aria-label={`Back to ${parentPage.title}`}>
-              <Button.Icon name="chevron-left" />
+              {backIcon ? <Button.Icon name={backIcon} /> : null}
               {backLabel(parentPage.title)}
             </Button>
           ) : (

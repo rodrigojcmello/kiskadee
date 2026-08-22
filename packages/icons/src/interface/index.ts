@@ -12,6 +12,11 @@ export {
   resolveIconFamilyVariant,
   resolveIconGlyph
 } from './defineIconFamily.ts';
+export {
+  DEFAULT_ESSENTIAL_ICONS,
+  type EssentialIconMap,
+  type EssentialIconName
+} from './essential.ts';
 export type {
   CompleteCanonicalGlyphMap,
   DefinedIconFamily,

@@ -282,6 +282,11 @@ export {
   createBrandPackResourceKey,
   useBrandPack
 } from './shared/contexts/BrandPackContext.tsx';
+export type { EssentialIconProviderProps } from './shared/contexts/EssentialIconContext.tsx';
+export {
+  EssentialIconProvider,
+  useEssentialIcon
+} from './shared/contexts/EssentialIconContext.tsx';
 export type {
   FontFamilyProviderProps,
   FontFamilyProviderStatus,

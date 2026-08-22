@@ -1,9 +1,10 @@
 /** @vitest-environment jsdom */
 
-import { defineIconFamily } from '@kiskadee/icons/interface';
+import { DEFAULT_ESSENTIAL_ICONS, defineIconFamily } from '@kiskadee/icons/interface';
 import { cleanup, render } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
+import { EssentialIconProvider } from '../../shared/contexts/EssentialIconContext.tsx';
 import { IconFamilyProvider } from '../../shared/contexts/IconFamilyContext.tsx';
 import {
   KiskadeeContext,
@@ -18,7 +19,7 @@ function Check() {
 const iconFamily = defineIconFamily({
   id: 'bottom-sheet-test-icons',
   label: 'BottomSheet test icons',
-  glyphs: { check: Check }
+  glyphs: { check: Check, 'radio-selected': Check, close: Check }
 });
 
 const intentClasses = {
@@ -53,7 +54,9 @@ function renderBottomSheetVisual(children: ReactNode) {
   return render(
     <KiskadeeContext.Provider value={context}>
       <IconFamilyProvider families={[iconFamily]} family="bottom-sheet-test-icons">
-        <BottomSheet.VisualProvider>{children}</BottomSheet.VisualProvider>
+        <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+          <BottomSheet.VisualProvider>{children}</BottomSheet.VisualProvider>
+        </EssentialIconProvider>
       </IconFamilyProvider>
     </KiskadeeContext.Provider>
   );

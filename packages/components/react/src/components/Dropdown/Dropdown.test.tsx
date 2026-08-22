@@ -1,11 +1,12 @@
 /** @vitest-environment jsdom */
 
-import { defineIconFamily } from '@kiskadee/icons/interface';
+import { DEFAULT_ESSENTIAL_ICONS, defineIconFamily } from '@kiskadee/icons/interface';
 import { Dropdown as HeadlessDropdown } from '@kiskadee/react-headless/dropdown';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless/select';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
 import { createRef, type ReactNode, type Ref } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { EssentialIconProvider } from '../../shared/contexts/EssentialIconContext.tsx';
 import { IconFamilyProvider } from '../../shared/contexts/IconFamilyContext.tsx';
 import {
   KiskadeeContext,
@@ -21,7 +22,7 @@ function Check() {
 const iconFamily = defineIconFamily({
   id: 'test-icons',
   label: 'Test icons',
-  glyphs: { check: Check }
+  glyphs: { check: Check, 'radio-selected': Check }
 });
 
 const context: KiskadeeContextValue = {
@@ -97,11 +98,13 @@ function renderDropdown(
   return render(
     <KiskadeeContext.Provider value={context}>
       <IconFamilyProvider families={[iconFamily]} family="test-icons">
-        <Dropdown.VisualProvider radius={radius}>
-          <Dropdown.Surface>
-            <Dropdown.Items layout={layout}>{children}</Dropdown.Items>
-          </Dropdown.Surface>
-        </Dropdown.VisualProvider>
+        <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+          <Dropdown.VisualProvider radius={radius}>
+            <Dropdown.Surface>
+              <Dropdown.Items layout={layout}>{children}</Dropdown.Items>
+            </Dropdown.Surface>
+          </Dropdown.VisualProvider>
+        </EssentialIconProvider>
       </IconFamilyProvider>
     </KiskadeeContext.Provider>
   );
@@ -401,5 +404,20 @@ describe('styled Dropdown', () => {
     expect(checkmark.getAttribute('data-visible')).toBe('false');
     expect(checkmark.querySelector('[data-k-icon-name="check"]')).toBeTruthy();
     expect(result.getByTestId('check-glyph')).toBeTruthy();
+  });
+
+  it('omits the complete checkmark slot when no essential icon is configured', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <IconFamilyProvider families={[iconFamily]} family="test-icons">
+          <Dropdown.VisualProvider>
+            <Dropdown.Checkmark data-testid="checkmark" />
+          </Dropdown.VisualProvider>
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.queryByTestId('checkmark')).toBeNull();
+    expect(result.container.querySelector('.k-ddn-e10')).toBeNull();
   });
 });

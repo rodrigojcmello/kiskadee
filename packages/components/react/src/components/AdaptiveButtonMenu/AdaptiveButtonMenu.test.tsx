@@ -1,10 +1,11 @@
 /** @vitest-environment jsdom */
 
 import type { IconName } from '@kiskadee/icons/interface';
-import { defineIconFamily } from '@kiskadee/icons/interface';
+import { DEFAULT_ESSENTIAL_ICONS, defineIconFamily } from '@kiskadee/icons/interface';
 import type { MenuTree } from '@kiskadee/react-headless/menu-tree';
 import { cleanup, fireEvent, render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { EssentialIconProvider } from '../../shared/contexts/EssentialIconContext.tsx';
 import { IconFamilyProvider } from '../../shared/contexts/IconFamilyContext.tsx';
 import {
   KiskadeeContext,
@@ -82,9 +83,11 @@ function Example({
   return (
     <KiskadeeContext.Provider value={context(compact)}>
       <IconFamilyProvider families={[iconFamily]} family="adaptive-test-icons">
-        <AdaptiveButtonMenu.Root tree={menuTree}>
-          <AdaptiveButtonMenu.Trigger>Actions</AdaptiveButtonMenu.Trigger>
-        </AdaptiveButtonMenu.Root>
+        <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+          <AdaptiveButtonMenu.Root tree={menuTree}>
+            <AdaptiveButtonMenu.Trigger>Actions</AdaptiveButtonMenu.Trigger>
+          </AdaptiveButtonMenu.Root>
+        </EssentialIconProvider>
       </IconFamilyProvider>
     </KiskadeeContext.Provider>
   );
@@ -100,10 +103,23 @@ describe('AdaptiveButtonMenu', () => {
     expect(result.getByRole('dialog', { name: 'Actions' })).toBeTruthy();
     const rootTitle = result.getByRole('heading', { name: 'Actions' });
     expect(rootTitle.className).toContain('k-foc');
+    expect(
+      result
+        .getByRole('button', { name: 'Advanced' })
+        .querySelector('[data-k-icon-name="chevron-end"]')
+    ).toBeTruthy();
+    expect(
+      result.getByRole('button', { name: 'Close' }).querySelector('[data-k-icon-name="close"]')
+    ).toBeTruthy();
 
     fireEvent.click(result.getByRole('button', { name: 'Advanced' }));
     const childTitle = result.getByRole('heading', { name: 'Advanced' });
     expect(childTitle.className).toContain('k-foc');
+    expect(
+      result
+        .getByRole('button', { name: 'Back to Actions' })
+        .querySelector('[data-k-icon-name="chevron-left"]')
+    ).toBeTruthy();
 
     fireEvent.click(result.getByRole('button', { name: 'Back to Actions' }));
     expect(result.getByRole('heading', { name: 'Actions' })).toBeTruthy();

@@ -14,6 +14,7 @@ import {
   useMemo
 } from 'react';
 import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
+import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
@@ -118,8 +119,9 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
 });
 
 const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
-  function ButtonDisclosure({ name = 'chevron-down', fallback, children, ...props }, ref) {
+  function ButtonDisclosure({ name, fallback, children, ...props }, ref) {
     const { disclosureDividerClassName } = useButtonRuntimeContext('Button.Disclosure');
+    const essentialName = useEssentialIcon('chevron-down');
     const resolvedNamedGlyph = useResolvedIconGlyph(name);
 
     if (name !== undefined && !resolvedNamedGlyph.glyph && fallback === undefined) {
@@ -135,12 +137,25 @@ const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
       return null;
     }
 
+    const content =
+      children !== undefined ? (
+        children
+      ) : name !== undefined ? (
+        <IconGlyph name={name} fallback={fallback} />
+      ) : essentialName !== undefined ? (
+        <IconGlyph name={essentialName} />
+      ) : (
+        fallback
+      );
+
+    if (content == null) return null;
+
     return (
       <HeadlessButton.Disclosure {...props} ref={ref}>
         {disclosureDividerClassName ? (
           <span aria-hidden="true" className={join(disclosureDividerClassName, 'k-btn-e6b')} />
         ) : null}
-        {name !== undefined ? <IconGlyph name={name} fallback={fallback} /> : children}
+        {content}
       </HeadlessButton.Disclosure>
     );
   }
