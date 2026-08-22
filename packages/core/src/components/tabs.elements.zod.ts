@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { elementIconSizeContractSchema } from '../icon-sizes.contract.zod.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import { elementTypographyContractSchema } from '../typography.contract.zod.ts';
@@ -170,7 +171,8 @@ export function createTabsIconElementStyleSchema<TSegmentName extends SegmentNam
   return z
     .object({
       name: z.string(),
-      scales: createScalesSchema(['boxWidth', 'boxHeight', 'marginRight']).optional(),
+      iconSize: elementIconSizeContractSchema,
+      scales: createScalesSchema(['marginRight']).optional(),
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })

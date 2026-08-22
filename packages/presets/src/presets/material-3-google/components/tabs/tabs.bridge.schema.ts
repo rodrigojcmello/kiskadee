@@ -200,15 +200,11 @@ export function createMaterial3GoogleTabsBridgeVariant({
       // e4: icon
       e4: {
         name: 'icon',
+        iconSize: {
+          's:sm:1': 's:md:1',
+          's:md:1': 's:lg:1'
+        },
         scales: {
-          boxWidth: {
-            's:sm:1': 20,
-            's:md:1': 24
-          },
-          boxHeight: {
-            's:sm:1': 20,
-            's:md:1': 24
-          },
           marginRight: 4
         },
         palettes: {

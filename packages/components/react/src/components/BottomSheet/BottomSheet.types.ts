@@ -9,7 +9,6 @@ import type {
   ElementSizeValue,
   RadiusMode
 } from '@kiskadee/core';
-import type { IconName } from '@kiskadee/icons/interface';
 import type {
   BottomSheetCloseProps as HeadlessBottomSheetCloseProps,
   BottomSheetContentProps as HeadlessBottomSheetContentProps,
@@ -87,7 +86,6 @@ export type BottomSheetCloseProps = Omit<
 > &
   Pick<HeadlessBottomSheetCloseProps, 'onClick'> & {
     children?: ReactNode;
-    icon?: IconName;
   };
 
 export type BottomSheetHandleProps = ComponentPropsWithoutRef<'div'>;
@@ -115,8 +113,9 @@ export type BottomSheetItemProps = Omit<HTMLAttributes<HTMLElement>, 'children'>
   ) => ReactElement;
 };
 
-export type BottomSheetIconProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> &
-  ({ name: IconName; children?: never } | { name?: never; children: ReactNode });
+export type BottomSheetIconProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> & {
+  children: ReactNode;
+};
 
 export type BottomSheetLabelProps = ComponentPropsWithoutRef<'span'>;
 export type BottomSheetDescriptionProps = ComponentPropsWithoutRef<'span'>;
@@ -128,10 +127,10 @@ export type BottomSheetCheckmarkProps = Omit<
   visible?: boolean;
 };
 export type BottomSheetRadioMarkProps = BottomSheetCheckmarkProps;
-export type BottomSheetTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> &
-  ({ name: IconName; children?: never } | { name?: never; children: ReactNode }) & {
-    functional?: boolean;
-  };
+export type BottomSheetTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> & {
+  children: ReactNode;
+  functional?: boolean;
+};
 export type BottomSheetSeparatorProps = Omit<ComponentPropsWithoutRef<'hr'>, 'children'> & {
   children?: never;
 };

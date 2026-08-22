@@ -1,6 +1,6 @@
 'use client';
 
-import { IconGlyph } from '@kiskadee/react-components';
+import { FamilyResolvedIcon, useEssentialIcon } from '@kiskadee/react-components';
 import type { SelectProps as HeadlessSelectProps } from '@kiskadee/react-headless';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless';
 import type { CSSProperties, ReactNode } from 'react';
@@ -30,6 +30,9 @@ export function Select({
   variant = 'standard'
 }: SelectProps) {
   const selectedOption = options.find((o) => o.value === value);
+  const previousIcon = useEssentialIcon('chevron-left');
+  const nextIcon = useEssentialIcon('chevron-end');
+  const disclosureIcon = useEssentialIcon('chevron-down');
 
   // Internal flag to enable/disable dynamic durations based on option count.
   const enableDynamicDurations = true;
@@ -98,17 +101,21 @@ export function Select({
       {variant === 'sequential' ? (
         <div className={styles.sequentialControl}>
           <HeadlessSelect.Previous>
-            <span className={styles.stepIcon}>
-              <IconGlyph name="chevron-left" />
-            </span>
+            {previousIcon ? (
+              <span className={styles.stepIcon}>
+                <FamilyResolvedIcon name={previousIcon} />
+              </span>
+            ) : null}
           </HeadlessSelect.Previous>
           <HeadlessSelect.Trigger className={styles.sequentialTrigger}>
             <span className={styles.value}>{selectedOption?.label || value}</span>
           </HeadlessSelect.Trigger>
           <HeadlessSelect.Next>
-            <span className={`${styles.stepIcon} ${styles.stepIconNext}`}>
-              <IconGlyph name="chevron-left" />
-            </span>
+            {nextIcon ? (
+              <span className={styles.stepIcon}>
+                <FamilyResolvedIcon name={nextIcon} />
+              </span>
+            ) : null}
           </HeadlessSelect.Next>
         </div>
       ) : (
@@ -116,9 +123,11 @@ export function Select({
           <span className={styles.standardValue}>
             <span className={styles.value}>{selectedOption?.label || value}</span>
           </span>
-          <span className={styles.chevron}>
-            <IconGlyph name="chevron-down" />
-          </span>
+          {disclosureIcon ? (
+            <span className={styles.chevron}>
+              <FamilyResolvedIcon name={disclosureIcon} />
+            </span>
+          ) : null}
         </HeadlessSelect.Trigger>
       )}
       <HeadlessSelect.Content portalled offset={6}>

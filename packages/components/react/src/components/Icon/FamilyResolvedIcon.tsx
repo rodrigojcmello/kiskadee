@@ -9,7 +9,7 @@ import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.ts
 
 declare const process: { env: { NODE_ENV?: string } };
 
-export type IconGlyphProps = Omit<
+export type FamilyResolvedIconProps = Omit<
   HTMLAttributes<HTMLSpanElement>,
   'aria-hidden' | 'children' | 'role'
 > & {
@@ -26,7 +26,12 @@ function join(...parts: Array<string | undefined>): string | undefined {
  * Presentation-only resolver for normalized glyph slots.
  * Accessibility semantics remain owned by Icon or by the parent component.
  */
-export function IconGlyph({ name, fallback, className, ...props }: IconGlyphProps) {
+export function FamilyResolvedIcon({
+  name,
+  fallback,
+  className,
+  ...props
+}: FamilyResolvedIconProps) {
   const { familyId, variantId, glyph, hasProvider } = useResolvedIconGlyph(name);
 
   if (!glyph) {

@@ -9,7 +9,7 @@ Icon behavior is split into five dimensions:
 - the active family selects glyph geometry;
 - `Icon` owns accessible-image versus decorative semantics;
 - the Icon schema owns scale, semantic color, and surface-relative paint;
-- `IconGlyph` normalizes presentation inside component-owned slots;
+- `FamilyResolvedIcon` optionally resolves presentation through the active family;
 - social and brand artwork remains direct, independently versioned content.
 
 Changing the family does not change color, scale, emphasis, padding, background, divider, border,
@@ -17,26 +17,19 @@ or accessible names.
 
 ## Composition
 
-The styled Icon accepts exactly one content mode:
+The styled Icon accepts direct content and remains independent of the icon-family provider:
 
 ```tsx
-<Icon name="search" label="Search" />
-<Icon decorative name="search" />
-
-<Icon decorative>
+<Icon label="Search">
   <CustomGlyph />
 </Icon>
 ```
 
-`name` resolves through the active `IconFamilyProvider`. `children` preserves direct composition
-and does not require a provider. `fallback` is valid only with `name`; missing mappings never
-silently mix in another family. Without a provider or mapping, a named Icon uses only its explicit
-fallback; otherwise it reports the contract error in development and renders `null`.
-
-`IconGlyph` is a presentation-only resolver:
+`FamilyResolvedIcon` is a presentation-only resolver that may be composed inside `Icon` or another
+component slot:
 
 ```tsx
-<IconGlyph name="search" />
+<FamilyResolvedIcon name="search" />
 ```
 
 It is always hidden from accessibility APIs, is never focusable, and normalizes SVG and icon-font
@@ -52,8 +45,7 @@ only and sits below `IconFamilyProvider`; it never selects a family or variant i
 `useEssentialIcon` returns a configured name only when the active effective family resolves it.
 Provider absence, entry absence, and missing family coverage all return `undefined`. A component
 then omits the complete icon-owned slot, including its wrapper, spacing, or divider. Public direct
-composition and explicit `name`, `icon`, `children`, or `fallback` overrides keep their existing
-behavior and remain consumer-owned.
+composition through `children` remains consumer-owned.
 
 The map is global rather than component-specific. Free item icons continue to come from component
 composition or data and are not promoted into the essential catalog.
@@ -72,8 +64,8 @@ composition or data and are not promoted into the essential catalog.
 A meaningful Icon requires `label` and renders `role="img"` with `aria-label`. A decorative Icon
 requires `decorative={true}` and hides the root. Nested glyphs remain presentation-only.
 
-Component slots do not nest a semantic Icon. For example, `Button.Icon name="send"` renders an
-`IconGlyph` inside the Button's already-hidden icon slot, while Button retains its accessible name.
+Component slots do not nest a semantic Icon. For example, `Button.Icon` may contain a
+`FamilyResolvedIcon`, while Button retains its accessible name.
 
 ## Color and slot ownership
 

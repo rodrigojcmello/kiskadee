@@ -1,11 +1,4 @@
-export type {
-  DirectIconContentProps,
-  IconClassesMap,
-  IconElementName,
-  IconProps,
-  IconVisualProps,
-  NamedIconContentProps
-} from './Icon.tsx';
+export type { FamilyResolvedIconProps } from './FamilyResolvedIcon.tsx';
+export { FamilyResolvedIcon } from './FamilyResolvedIcon.tsx';
+export type { IconClassesMap, IconElementName, IconProps, IconVisualProps } from './Icon.tsx';
 export { Icon } from './Icon.tsx';
-export type { IconGlyphProps } from './IconGlyph.tsx';
-export { IconGlyph } from './IconGlyph.tsx';

@@ -506,14 +506,7 @@ export function createMaterial3GoogleSwitchSchema(
               },
               e6: {
                 name: 'icon',
-                scales: {
-                  boxWidth: {
-                    's:md:1': 16
-                  },
-                  boxHeight: {
-                    's:md:1': 16
-                  }
-                },
+                iconSize: { 's:md:1': 's:sm:1' },
                 palettes: palettes.icon
               }
             }

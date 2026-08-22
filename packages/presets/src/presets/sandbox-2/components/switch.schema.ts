@@ -940,9 +940,12 @@ export function createSandbox2SwitchSchema(): SwitchComponent {
               },
               e6: {
                 name: 'icon',
-                scales: {
-                  boxWidth: sizes.icon,
-                  boxHeight: sizes.icon
+                iconSize: {
+                  's:sm:3': 's:sm:5',
+                  's:sm:2': 's:sm:5',
+                  's:sm:1': 's:sm:3',
+                  's:md:1': 's:sm:3',
+                  's:lg:1': 's:sm:2'
                 },
                 palettes: iconPalettes
               }

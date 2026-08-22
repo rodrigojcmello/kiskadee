@@ -6,7 +6,7 @@ import { CANONICAL_ICON_NAMES, type CanonicalIconName } from '@kiskadee/icons/in
 import { interfaceIconFamilyOptions } from '@kiskadee/icons/interface/catalog';
 import * as SocialIcons from '@kiskadee/icons/social';
 import {
-  IconGlyph,
+  FamilyResolvedIcon,
   Icon as KIcon,
   useIconFamilyStatus,
   useKiskadee,
@@ -189,13 +189,9 @@ function IconGallery({
         <article key={name} className={s.galleryItem}>
           <div className={s.iconPreview}>
             {isStyled ? (
-              <KIcon
-                intent={intent}
-                label={name}
-                name={name}
-                scale={scale}
-                surfaceContext={surfaceContext}
-              />
+              <KIcon intent={intent} label={name} scale={scale} surfaceContext={surfaceContext}>
+                <FamilyResolvedIcon name={name} />
+              </KIcon>
             ) : (
               <span
                 className={s.rawIcon}
@@ -206,7 +202,7 @@ function IconGallery({
                   inlineSize: rawIconSize
                 }}
               >
-                <IconGlyph name={name} />
+                <FamilyResolvedIcon name={name} />
               </span>
             )}
           </div>
@@ -625,10 +621,11 @@ export default function IconShowcase() {
                       <KIcon
                         intent={intentOption.value}
                         label={`${intentOption.label}, ${scaleOption.label}`}
-                        name="heart"
                         scale={scaleOption.value}
                         surfaceContext={surfaceContext}
-                      />
+                      >
+                        <FamilyResolvedIcon name="heart" />
+                      </KIcon>
                     </div>
                   ))}
                 </div>

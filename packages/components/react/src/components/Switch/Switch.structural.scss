@@ -140,15 +140,18 @@
   position: absolute;
   inset: 50% auto auto 50%;
   display: inline-flex;
+  block-size: var(--k-bxh);
   align-items: center;
   justify-content: center;
+  inline-size: var(--k-bxw);
   box-sizing: border-box;
   flex: 0 0 auto;
   line-height: 0;
   pointer-events: none;
   transform: translate(-50%, -50%);
 
-  > svg {
+  > svg,
+  > .k-gly {
     display: block;
     inline-size: 100%;
     block-size: 100%;

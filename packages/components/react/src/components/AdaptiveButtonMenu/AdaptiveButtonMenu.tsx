@@ -1,10 +1,10 @@
-import type { IconName } from '@kiskadee/icons/interface';
 import type { BottomSheetOpenChangeDetails } from '@kiskadee/react-headless/bottom-sheet';
 import type { MenuOpenChangeDetails } from '@kiskadee/react-headless/menu';
 import type { MenuTree } from '@kiskadee/react-headless/menu-tree';
 import type { ReactElement, ReactNode } from 'react';
 import { isValidElement, useCallback, useRef, useState } from 'react';
 import { useIsCompactViewport } from '../../shared/interaction/useIsCompactViewport.ts';
+import type { MenuTreeIconRenderer } from '../../shared/MenuTreeIconRenderer.ts';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import type {
   BottomSheetMenuActionProps,
@@ -39,18 +39,19 @@ export type AdaptiveButtonMenuDropdownProps = Omit<
   itemsLayout?: Parameters<typeof ButtonMenu.TreeContent>[0]['itemsLayout'];
 };
 
-export type AdaptiveButtonMenuBottomSheetProps = Omit<
-  BottomSheetMenuRootProps,
-  'buttonGroup' | 'children' | 'defaultOpen' | 'onOpenChange' | 'open' | 'tree'
+export type AdaptiveButtonMenuBottomSheetProps<TIcon = unknown> = Omit<
+  BottomSheetMenuRootProps<TIcon>,
+  'buttonGroup' | 'children' | 'defaultOpen' | 'onOpenChange' | 'open' | 'renderIcon' | 'tree'
 >;
 
-export type AdaptiveButtonMenuRootProps = {
-  tree: MenuTree<IconName>;
+export type AdaptiveButtonMenuRootProps<TIcon = unknown> = {
+  tree: MenuTree<TIcon>;
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
   children: ReactNode;
   presentation?: AdaptiveButtonMenuPresentation;
   buttonGroup?: BottomSheetMenuButtonGroupProps;
   dropdown?: AdaptiveButtonMenuDropdownProps;
-  bottomSheet?: AdaptiveButtonMenuBottomSheetProps;
+  bottomSheet?: AdaptiveButtonMenuBottomSheetProps<TIcon>;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean, details: AdaptiveButtonMenuOpenChangeDetails) => void;
@@ -114,8 +115,9 @@ function projectChildren(
   return projected;
 }
 
-function AdaptiveButtonMenuRoot({
+function AdaptiveButtonMenuRoot<TIcon>({
   tree,
+  renderIcon,
   children,
   presentation = 'adaptive',
   buttonGroup,
@@ -124,7 +126,7 @@ function AdaptiveButtonMenuRoot({
   open: openProp,
   defaultOpen = false,
   onOpenChange
-}: AdaptiveButtonMenuRootProps) {
+}: AdaptiveButtonMenuRootProps<TIcon>) {
   const compact = useIsCompactViewport();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
@@ -152,6 +154,7 @@ function AdaptiveButtonMenuRoot({
       <BottomSheetMenu.Root
         {...bottomSheet}
         tree={tree}
+        renderIcon={renderIcon}
         buttonGroup={buttonGroup}
         open={open}
         onOpenChange={handleOpenChange}
@@ -170,7 +173,7 @@ function AdaptiveButtonMenuRoot({
       onOpenChange={handleOpenChange}
     >
       {presenterChildren}
-      <ButtonMenu.TreeContent tree={tree} itemsLayout={itemsLayout} />
+      <ButtonMenu.TreeContent tree={tree} itemsLayout={itemsLayout} renderIcon={renderIcon} />
     </ButtonMenu.Root>
   );
 }

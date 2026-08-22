@@ -210,7 +210,9 @@ describe('Button.Group', () => {
         <Button>Save</Button>
         <Button>
           <Button.Label>Options</Button.Label>
-          <Button.Disclosure fallback={<svg data-testid="disclosure-icon" />} />
+          <Button.Disclosure>
+            <svg data-testid="disclosure-icon" />
+          </Button.Disclosure>
         </Button>
       </Button.Group>,
       createContext({ groupDivider: true, disclosureDivider: true })
@@ -334,7 +336,9 @@ describe('Button.Group', () => {
         <Button>First</Button>
         <Button>
           <Button.Label>Second</Button.Label>
-          <Button.Disclosure fallback={<svg data-testid="unpainted-disclosure" />} />
+          <Button.Disclosure>
+            <svg data-testid="unpainted-disclosure" />
+          </Button.Disclosure>
         </Button>
       </Button.Group>,
       createContext({

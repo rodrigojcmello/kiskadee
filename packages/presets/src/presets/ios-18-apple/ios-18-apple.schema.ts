@@ -16,6 +16,9 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     typography: ios18AppleTypography,
+    iconSizes: {
+      's:md:1': 16
+    },
     icons: {
       family: 'sf-symbols',
       variant: 'regular'

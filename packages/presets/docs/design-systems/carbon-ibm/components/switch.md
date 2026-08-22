@@ -108,6 +108,9 @@ automatic inversion rule.
 
 ## Adaptations
 
+- The optional `e6` icon measurements remain `6px` for `s:sm:1` and `14px` for `s:md:1`, but are
+  now mapped through `e6.iconSize` references into `global.iconSizes`. No Carbon geometry changed.
+
 - Carbon's Figma Toggle has an optional field label above the control. The
   current Kiskadee Switch primitive only has an inline `label`, so `e4` uses the
   Carbon label typography/color as the closest supported representation.

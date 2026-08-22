@@ -185,7 +185,7 @@
  * Applies leading separation only when a label is present, ignoring progress.
  */
 .k-btn-e1d.k-btn-e1f:has(> .k-btn-e2) > .k-btn-e3 {
-  margin-inline-end: var(--k-pdr, 0);
+  margin-inline-end: var(--k-pdr);
   order: 1;
 }
 
@@ -194,7 +194,7 @@
  * Applies trailing separation only when a label is present, ignoring progress.
  */
 .k-btn-e1d.k-btn-e1g:has(> .k-btn-e2) > .k-btn-e3 {
-  margin-inline-start: var(--k-pdr, 0);
+  margin-inline-start: var(--k-pdr);
   order: 3;
 }
 
@@ -304,7 +304,9 @@
  * Gives schema-owned icon geometry a stable inline box and normalizes SVG descendants.
  */
 .k-btn-e3 {
+  block-size: var(--k-bxh);
   display: inline-block;
+  inline-size: var(--k-bxw);
   vertical-align: middle;
 
   > svg {
@@ -315,26 +317,17 @@
 }
 
 /*
- * element button icon fallback / e3a
- * Keeps the icon aligned to the inherited text size when a preset does not publish e3 geometry.
- */
-.k-btn-e3a {
-  block-size: 1em;
-  inline-size: 1em;
-}
-
-/*
  * element disclosure / e5
  * Owns the final icon viewport and logical spacing.
  */
 .k-btn-e5 {
   align-items: center;
-  block-size: var(--k-bxh, 1em);
+  block-size: var(--k-bxh);
   display: inline-flex;
-  inline-size: var(--k-bxw, 1em);
+  inline-size: var(--k-bxw);
   justify-content: center;
-  margin-inline-start: var(--k-pdr, 0);
-  padding-inline-start: var(--k-pdr, 0);
+  margin-inline-start: var(--k-pdr);
+  padding-inline-start: var(--k-pdr);
   position: relative;
 }
 

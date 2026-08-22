@@ -39,7 +39,7 @@ import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonProps } from '../Button/Button.types.ts';
-import { IconGlyph } from '../Icon/IconGlyph.tsx';
+import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
   DEFAULT_BOTTOM_SHEET_INTENT,
   DEFAULT_BOTTOM_SHEET_RADIUS,
@@ -643,7 +643,7 @@ const BottomSheetItem = forwardRef<HTMLElement, BottomSheetItemProps>(function B
 });
 
 const BottomSheetIcon = forwardRef<HTMLSpanElement, BottomSheetIconProps>(function BottomSheetIcon(
-  { className, children, name, ...props },
+  { className, children, ...props },
   ref
 ) {
   const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.Icon');
@@ -655,7 +655,7 @@ const BottomSheetIcon = forwardRef<HTMLSpanElement, BottomSheetIconProps>(functi
   );
   return (
     <span {...props} ref={ref} aria-hidden="true" className={resolvedClassName}>
-      {name ? <IconGlyph name={name} /> : children}
+      {children}
     </span>
   );
 });
@@ -697,7 +697,7 @@ const BottomSheetDescription = forwardRef<HTMLSpanElement, BottomSheetDescriptio
 );
 
 const BottomSheetTrailing = forwardRef<HTMLSpanElement, BottomSheetTrailingProps>(
-  function BottomSheetTrailing({ className, children, functional = false, name, ...props }, ref) {
+  function BottomSheetTrailing({ className, children, functional = false, ...props }, ref) {
     const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.Trailing');
     const intent = useContext(BottomSheetItemIntentContext);
     return (
@@ -712,7 +712,7 @@ const BottomSheetTrailing = forwardRef<HTMLSpanElement, BottomSheetTrailingProps
           className
         )}
       >
-        {name ? <IconGlyph name={name} /> : children}
+        {children}
       </span>
     );
   }
@@ -761,7 +761,7 @@ const BottomSheetCheckmark = forwardRef<HTMLSpanElement, BottomSheetCheckmarkPro
         )}
         style={{ ...style, visibility: visible ? style?.visibility : 'hidden' }}
       >
-        <IconGlyph name={iconName} />
+        <FamilyResolvedIcon name={iconName} />
       </span>
     );
   }
@@ -785,7 +785,7 @@ const BottomSheetRadioMark = forwardRef<HTMLSpanElement, BottomSheetRadioMarkPro
         )}
         style={{ ...style, visibility: visible ? style?.visibility : 'hidden' }}
       >
-        <IconGlyph name={iconName} />
+        <FamilyResolvedIcon name={iconName} />
       </span>
     );
   }
@@ -793,12 +793,17 @@ const BottomSheetRadioMark = forwardRef<HTMLSpanElement, BottomSheetRadioMarkPro
 
 const BottomSheetClose = forwardRef<HTMLButtonElement, BottomSheetCloseProps>(
   function BottomSheetClose(
-    { children, icon, onClick, 'aria-label': ariaLabel, ...buttonProps },
+    { children, onClick, 'aria-label': ariaLabel, ...buttonProps },
     forwardedRef
   ) {
     const essentialIcon = useEssentialIcon('close');
-    const resolvedIcon = icon ?? essentialIcon;
-    const content = children ?? (resolvedIcon ? <Button.Icon name={resolvedIcon} /> : null);
+    const content =
+      children ??
+      (essentialIcon ? (
+        <Button.Icon>
+          <FamilyResolvedIcon name={essentialIcon} />
+        </Button.Icon>
+      ) : null);
     if (content == null) return null;
 
     return (

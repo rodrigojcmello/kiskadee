@@ -1,6 +1,6 @@
 'use client';
 
-import { IconGlyph } from '@kiskadee/react-components';
+import { FamilyResolvedIcon } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
 import type { CSSProperties, Dispatch, ReactNode, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -121,7 +121,7 @@ export default function ShowcaseShell({
       <div className={style.routePanelTopbar}>
         <button type="button" className={style.backButton} onClick={showComponentsPanel}>
           <span className={style.backButtonIcon}>
-            <IconGlyph name="chevron-left" />
+            <FamilyResolvedIcon name="chevron-left" />
           </span>
           <span>Navigation</span>
         </button>
@@ -182,7 +182,7 @@ export default function ShowcaseShell({
                 aria-label={menuAriaLabel}
               >
                 <span className={style.menuButtonIcon}>
-                  <IconGlyph name="menu" />
+                  <FamilyResolvedIcon name="menu" />
                 </span>
                 <span>{menuLabel}</span>
               </button>

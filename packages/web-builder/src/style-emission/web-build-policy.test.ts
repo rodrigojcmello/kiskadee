@@ -6,6 +6,17 @@ import {
 } from './web-build-policy.ts';
 
 describe('Button Web style-emission policy', () => {
+  it('publishes icon dimensions as tokens for structural logical sizing', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'button',
+      'e3'
+    );
+
+    expect(policy.boxWidthEmission).toBe('token');
+    expect(policy.boxHeightEmission).toBe('token');
+  });
+
   it('publishes divider dimensions as tokens while keeping its color atomic', () => {
     const policy = resolveElementStyleEmissionPolicy(
       DEFAULT_WEB_STYLE_EMISSION_POLICY,
@@ -23,6 +34,28 @@ describe('Button Web style-emission policy', () => {
 
     expect(disclosurePolicy).not.toHaveProperty('borderWidthEmission');
     expect(disclosurePolicy).not.toHaveProperty('borderColorEmission');
+  });
+});
+
+describe('Tabs Web style-emission policy', () => {
+  it('publishes Bridge icon dimensions as tokens without changing other variants', () => {
+    const bridgePolicy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'tabs',
+      'e4',
+      'bridge'
+    );
+    const linePolicy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'tabs',
+      'e4',
+      'line'
+    );
+
+    expect(bridgePolicy.boxWidthEmission).toBe('token');
+    expect(bridgePolicy.boxHeightEmission).toBe('token');
+    expect(linePolicy.boxWidthEmission).toBe('direct');
+    expect(linePolicy.boxHeightEmission).toBe('direct');
   });
 });
 

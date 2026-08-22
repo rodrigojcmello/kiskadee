@@ -154,7 +154,7 @@ export type SliderEndpointElementStyle = SliderEndpointElementStyleFromSchema;
 /**
  * e6 — endpoint icon
  * - textColor maps to CSS color for currentColor-driven icons
- * - boxWidth / boxHeight define the icon slot box
+ * - iconSize references global.iconSizes
  */
 export type SliderEndpointIconElementStyle<TSegmentName extends SegmentName = never> =
   SliderEndpointIconElementStyleFromSchema<TSegmentName>;
@@ -258,7 +258,7 @@ export type SliderOriginMarkElementStyle<TSegmentName extends SegmentName = neve
 /**
  * e19 — optional thumb icon
  * - textColor maps to CSS color for currentColor-driven icons
- * - boxWidth / boxHeight define the icon slot box
+ * - iconSize references global.iconSizes
  */
 export type SliderThumbIconElementStyle<TSegmentName extends SegmentName = never> =
   SliderThumbIconElementStyleFromSchema<TSegmentName>;

@@ -5,7 +5,6 @@ import type {
   ElementSizeValue,
   RadiusMode
 } from '@kiskadee/core';
-import type { IconName } from '@kiskadee/icons/interface';
 import type {
   DropdownAnchorProps as HeadlessDropdownAnchorProps,
   DropdownContentProps as HeadlessDropdownContentProps,
@@ -97,8 +96,9 @@ export type DropdownItemProps = Omit<HTMLAttributes<HTMLElement>, 'children'> & 
   ) => ReactElement;
 };
 
-export type DropdownIconProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> &
-  ({ name: IconName; children?: never } | { name?: never; children: ReactNode });
+export type DropdownIconProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> & {
+  children: ReactNode;
+};
 
 export type DropdownLabelProps = ComponentPropsWithoutRef<'span'>;
 export type DropdownDescriptionProps = ComponentPropsWithoutRef<'span'>;
@@ -110,8 +110,9 @@ export type DropdownCheckmarkProps = Omit<
   visible?: boolean;
 };
 export type DropdownRadioMarkProps = DropdownCheckmarkProps;
-export type DropdownTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> &
-  ({ name: IconName; children?: never } | { name?: never; children: ReactNode });
+export type DropdownTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> & {
+  children: ReactNode;
+};
 export type DropdownSeparatorProps = Omit<
   ComponentPropsWithoutRef<'div'>,
   'aria-orientation' | 'children'

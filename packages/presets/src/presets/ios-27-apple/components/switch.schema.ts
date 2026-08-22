@@ -424,21 +424,12 @@ export function createIos27AppleSwitchSchema({
               },
               e6: {
                 name: 'icon',
-                scales: {
-                  boxWidth: {
-                    's:sm:3': 8,
-                    's:sm:2': 10,
-                    's:sm:1': 12,
-                    's:md:1': 16,
-                    's:lg:1': 20
-                  },
-                  boxHeight: {
-                    's:sm:3': 8,
-                    's:sm:2': 10,
-                    's:sm:1': 12,
-                    's:md:1': 16,
-                    's:lg:1': 20
-                  }
+                iconSize: {
+                  's:sm:3': 's:sm:5',
+                  's:sm:2': 's:sm:4',
+                  's:sm:1': 's:sm:3',
+                  's:md:1': 's:sm:1',
+                  's:lg:1': 's:md:1'
                 },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {

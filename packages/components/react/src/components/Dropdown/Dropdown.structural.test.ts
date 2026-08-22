@@ -23,4 +23,14 @@ describe('Dropdown structural CSS', () => {
     expect(checkmarkRule).toContain('padding-inline-end: var(--k-pdr)');
     expect(checkmarkRule).not.toContain('padding-right');
   });
+
+  it('keeps the authored leading-icon gap outside the icon viewport', () => {
+    const css = sass.compile(new URL('./Dropdown.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const iconRule = css.match(/^\.k-ddn-e3\s*\{([^}]*)\}/m)?.[1];
+
+    expect(iconRule).toContain('margin-inline-end: var(--k-pdr)');
+    expect(iconRule).not.toContain('padding-inline-end');
+  });
 });

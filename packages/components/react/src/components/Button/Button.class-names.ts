@@ -224,11 +224,10 @@ export function resolveButtonClassNames({
           : e3?.c
             ? collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext)
             : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
-        e3HasSchemaScale ? e3?.s?.all : e2?.s?.all,
+        e3HasSchemaScale ? e3?.s?.all : undefined,
         classNames.e3,
-        e3HasSchemaScale ? e3?.s?.[scaleKey] : e2?.s?.[scaleKey],
-        'k-btn-e3',
-        e3HasSchemaScale ? undefined : 'k-btn-e3a'
+        e3HasSchemaScale ? e3?.s?.[scaleKey] : undefined,
+        'k-btn-e3'
       ) ?? '',
     e4: hasSurfacedIconTreatment
       ? (join(

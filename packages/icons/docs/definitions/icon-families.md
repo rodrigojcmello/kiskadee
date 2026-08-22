@@ -67,9 +67,9 @@ one family and be meaningless in another. The provider resolves an omitted varia
 family's declared default and rejects an unavailable explicit variant. It never substitutes a
 different variant or mixes glyphs from another family.
 
-Variant selection changes the complete family profile. Individual `Icon` and `IconGlyph`
-instances do not override it in this contract. Arbitrary direct children remain the escape hatch
-for a deliberate one-off glyph.
+Variant selection changes the complete family profile. Individual `FamilyResolvedIcon` instances
+do not override it in this contract. `Icon` and arbitrary component-slot children remain independent
+composition for a deliberate one-off glyph.
 
 The public broad catalog is opt-in. Direct family subpaths support static applications that want
 one family and one upstream dependency.
@@ -90,8 +90,9 @@ Applications may replace individual mappings or provide a partial map.
 
 An absent provider, absent entry, or unavailable glyph resolves to no icon. Components must then
 omit the icon's wrapper, spacing, divider, or affordance instead of choosing another family or an
-internal fallback. An explicit public `name`, `icon`, `children`, or `fallback` remains a deliberate
-consumer override and is not replaced by the essential map.
+internal fallback. Public component slots accept deliberate consumer composition through
+`children`; `FamilyResolvedIcon` separately owns explicit name resolution and its optional glyph
+fallback.
 
 Unchecked checkbox and radio items may preserve an invisible wrapper only when their essential
 entry resolves, maintaining alignment with selected siblings. The radio indicator always comes

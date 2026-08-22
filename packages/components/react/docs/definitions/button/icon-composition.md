@@ -57,8 +57,9 @@ is inert while the active treatment is `plain`.
 
 - `components.button.options` owns the preset defaults.
 - React props with the same names may override those defaults per instance.
-- `Button.Icon name="..."` resolves only glyph geometry through the active interface family.
-- `Button.Icon` also accepts arbitrary direct children for product and brand artwork.
+- `Button.Icon` accepts arbitrary direct children for product and brand artwork.
+- Family resolution is explicit composition through `FamilyResolvedIcon`; Button does not interpret
+  an icon name.
 - Button owns the icon slot's color, accessible relationship, size, spacing, and composition. It
   does not nest a semantic `Icon` component.
 - `global.iconSizes` owns the preset's numeric viewport levels. `e3.iconSize` maps the Button's

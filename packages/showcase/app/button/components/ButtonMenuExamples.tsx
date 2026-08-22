@@ -6,6 +6,7 @@ import {
   AdaptiveButtonMenu,
   type AdaptiveButtonMenuPresentation,
   Button,
+  FamilyResolvedIcon,
   type MenuTree,
   Text
 } from '@kiskadee/react-components';
@@ -232,6 +233,7 @@ export function ButtonMenuExamples({
 
   const common = {
     tree,
+    renderIcon: (name: IconName) => <FamilyResolvedIcon name={name} />,
     presentation,
     dropdown: { presence, scale, itemsLayout: 'columns' as const }
   };
@@ -285,7 +287,9 @@ export function ButtonMenuExamples({
             bottomSheet={{ scale, itemLayout: 'centered', centeredIcons: 'hide' }}
           >
             <AdaptiveButtonMenu.Trigger>
-              <Button.Icon name="settings" />
+              <Button.Icon>
+                <FamilyResolvedIcon name="settings" />
+              </Button.Icon>
               <Button.Label>Settings</Button.Label>
             </AdaptiveButtonMenu.Trigger>
           </AdaptiveButtonMenu.Root>

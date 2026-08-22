@@ -1,12 +1,12 @@
 ---
 name: kiskadee-code-review-markdown
-description: Kiskadee code review workflow that always writes the review result to a Markdown file in the repository root. Use whenever the user asks Codex to review code changes, staged changes, unstaged changes, untracked files, a branch diff, or a pull-request-style diff in the Kiskadee monorepo, especially when the review needs to be reusable by other agents.
+description: Kiskadee code review and follow-up workflow that writes findings to the repository-root CODE-REVIEW.md and clears it after every recorded finding is fixed and validated. Use when reviewing Kiskadee changes or resolving findings from that handoff file.
 ---
 
 # Kiskadee Code Review Markdown
 
 Use this skill to make every Kiskadee code review leave a durable handoff artifact for other
-agents.
+agents and to close that handoff after its findings are resolved.
 
 ## Required output file
 
@@ -61,6 +61,27 @@ agents.
 - mention that the review was saved to `CODE-REVIEW.md`;
 - include inline `::code-comment{...}` directives only for actionable changed-line feedback;
 - do not paste the whole Markdown file unless the user asks.
+
+## Post-fix cleanup workflow
+
+Use this workflow when the user explicitly asks to correct findings recorded in `CODE-REVIEW.md`:
+
+1. Read the complete file and validate each finding against the current code before editing.
+2. Keep the report intact while implementing and validating the authorized corrections.
+3. Confirm that every actionable finding in the file is resolved in the current working tree.
+4. After all relevant validation succeeds, clear the contents of `CODE-REVIEW.md` but keep the
+   empty file in place.
+
+Do not clear the file when:
+
+- only a subset of its findings was authorized or corrected;
+- any finding remains unresolved, blocked, or intentionally deferred;
+- a relevant validation fails or the resolution cannot be confirmed; or
+- the user explicitly asks to preserve the report as history.
+
+Clearing the file is the final handoff-closing action. Never clear it before the corrections and
+their validation are complete. In the final response, state that the recorded findings were
+resolved and that `CODE-REVIEW.md` was cleared.
 
 ## Kiskadee defaults
 

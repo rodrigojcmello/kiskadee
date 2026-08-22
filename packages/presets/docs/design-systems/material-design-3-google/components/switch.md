@@ -66,6 +66,10 @@ Each variant component is `52 x 32` with `cornerRadius: 100`.
 | Pressed handle shape | `28 x 28` | Used for selected and unselected pressed variants. |
 | Icon slot | `16 x 16` | Child instance named `Icon`. |
 
+Kiskadee represents that exact `16px` icon viewport through `e6.iconSize` and the existing
+`global.iconSizes` profile. Local `boxWidth` and `boxHeight` values are intentionally not authored
+on the Switch slot.
+
 ## Icon False Geometry
 
 ### Unselected

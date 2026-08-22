@@ -112,7 +112,7 @@ describe('Button surface context class resolution', () => {
     expect(surfacedAll.e1).not.toContain('k-btn-e1i');
   });
 
-  it('uses a text-relative icon fallback when the preset has no e3 scale', () => {
+  it('does not borrow label geometry when the preset has no e3 scale', () => {
     const classes = resolveButtonClassNames({
       e1: createElement('e1'),
       e2: createElement('e2'),
@@ -131,9 +131,9 @@ describe('Button surface context class resolution', () => {
     });
 
     expect(classes.e3).toContain('k-btn-e3');
-    expect(classes.e3).toContain('k-btn-e3a');
-    expect(classes.e3).toContain('e2-scale-all');
-    expect(classes.e3).toContain('e2-scale-medium');
+    expect(classes.e3).not.toContain('k-btn-e3a');
+    expect(classes.e3).not.toContain('e2-scale-all');
+    expect(classes.e3).not.toContain('e2-scale-medium');
   });
 
   it('keeps structural classes but never falls back to onSubtle colors when onVivid is absent', () => {

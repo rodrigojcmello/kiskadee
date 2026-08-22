@@ -29,3 +29,8 @@ preset's existing Switch label uses the default 17/22 Regular recipe and now sel
 `body-medium` profile. This is **Official adapted** for Web: the semantic role and metrics follow the
 Apple reference, while the preset uses the platform `system-ui` stack and does not embed SF Pro.
 A complete review of the wider Apple type ramp remains **Deferred**.
+
+## Switch Icon Size Representation
+
+The existing `16px` optional Switch icon viewport is preserved through `e6.iconSize` referencing
+`global.iconSizes.s:md:1`. This is a Kiskadee schema ownership change, not new Apple source evidence.

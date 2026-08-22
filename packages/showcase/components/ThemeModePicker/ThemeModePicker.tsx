@@ -1,7 +1,12 @@
 'use client';
 
 import type { ThemeMode } from '@kiskadee/core';
-import { IconGlyph, type IconName, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import {
+  FamilyResolvedIcon,
+  type IconName,
+  useKiskadee,
+  useShowcase
+} from '@kiskadee/react-components';
 import { ShowcaseSegmentedControl } from '../ShowcaseControls';
 import styles from './ThemeModePicker.module.scss';
 
@@ -24,7 +29,7 @@ export default function ThemeModePicker({ className }: { className?: string }) {
       label: (
         <span className={styles.optionContent}>
           <span className={styles.icon}>
-            <IconGlyph name={icon} />
+            <FamilyResolvedIcon name={icon} />
           </span>
           <span>{label}</span>
         </span>

@@ -37,6 +37,11 @@ the compound-brand thumb dot. This preset does not declare the optional
 official `e10`/`e11` dimensions. This is a Kiskadee composition affordance; the
 inspected Fluent reference does not require a built-in thumb icon.
 
+The preserved `8px` and `10px` thumb-icon measurements and the `16px` and `20px` endpoint-icon
+measurements are represented through `e19.iconSize` and `e6.iconSize` references into
+`global.iconSizes`. The migration changes schema ownership only; it does not change the measured
+geometry above.
+
 The optional `e20` label indicator is another Kiskadee form-composition
 affordance, not a Fluent Slider measurement. It selects the shared
 `caption-medium` profile at every Slider scale. Its color alpha and label spacing remain owned by

@@ -26,6 +26,7 @@ export const schema: Schema<Segment> = {
   global: {
     typography: elegantTypography,
     iconSizes: {
+      's:sm:1': 16,
       's:md:1': 20
     },
     fonts: {

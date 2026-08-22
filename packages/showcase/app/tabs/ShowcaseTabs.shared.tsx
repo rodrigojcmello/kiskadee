@@ -9,7 +9,7 @@ import type {
   TabsTabWidth
 } from '@kiskadee/core';
 import {
-  IconGlyph,
+  FamilyResolvedIcon,
   type TabsIndicatorMotionStyle,
   type TabsSpringPreset
 } from '@kiskadee/react-components';
@@ -48,14 +48,14 @@ export const tabItems: ReadonlyArray<{
   {
     value: 'home',
     label: 'Home',
-    icon: <IconGlyph name="sun" />
+    icon: <FamilyResolvedIcon name="sun" />
   },
   { value: 'locations', label: 'Locations' },
   { value: 'forms', label: 'Forms' },
   { value: 'services', label: 'Services' },
   {
     value: 'icon-only',
-    icon: <IconGlyph name="sun" />,
+    icon: <FamilyResolvedIcon name="sun" />,
     accessibilityLabel: 'Home'
   },
   { value: 'single-letter', label: 'A' },

@@ -46,7 +46,7 @@ the three-layer color contract.
 
 | Kiskadee appearance | Upstream relationship | Status | Decision |
 | --- | --- | --- | --- |
-| Seven icon scales | Fluent discrete size model | Official adapted | `global.iconSizes` publishes `12`, `16`, `20`, `24`, `28`, `32`, and `48` px |
+| Nine icon scales | Fluent discrete size model | Official adapted | `global.iconSizes` publishes `8`, `10`, `12`, `16`, `20`, `24`, `28`, `32`, and `48` px; `8` and `10` preserve internal Slider and Switch glyph measurements |
 | `neutral.medium.rest` | Neutral foreground | Official adapted | Theme-specific neutral vivid reference |
 | `primary.medium.rest` | Brand foreground | Official adapted | Theme-specific Brand vivid reference |
 | `onVivid` | Inverted/on-brand content | Kiskadee extension | Absolute neutral white or a physically light Primary from the Light scale |

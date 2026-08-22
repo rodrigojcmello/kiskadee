@@ -482,7 +482,11 @@ describe('ButtonMenu', () => {
     const result = renderButtonMenu(
       <ButtonMenu.Root>
         <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
-        <ButtonMenu.TreeContent tree={tree} itemsLayout="columns" />
+        <ButtonMenu.TreeContent
+          tree={tree}
+          itemsLayout="columns"
+          renderIcon={(icon) => <svg data-icon={icon} />}
+        />
       </ButtonMenu.Root>
     );
 
@@ -496,6 +500,60 @@ describe('ButtonMenu', () => {
     expect(visualGroup?.getAttribute('role')).toBeNull();
     expect(dashboard.querySelector('.k-ddn-e3')).toBeTruthy();
     expect(menu.querySelector('.k-ddn-x1 > .k-ddn-e2')).toBeNull();
+  });
+
+  it('requires an explicit renderer when MenuTree contains consumer-provided icons', () => {
+    const tree: MenuTree<string> = {
+      id: 'renderer-contract',
+      title: 'Renderer contract',
+      items: [{ type: 'item', id: 'copy', label: 'Copy', icon: 'copy' }]
+    };
+
+    expect(() =>
+      renderButtonMenu(
+        <ButtonMenu.Root defaultOpen>
+          <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+          <ButtonMenu.TreeContent tree={tree} />
+        </ButtonMenu.Root>
+      )
+    ).toThrow(/no renderIcon function was provided/);
+  });
+
+  it('passes placement and node details to renderIcon and omits null icon wrappers', async () => {
+    const tree: MenuTree<string> = {
+      id: 'renderer-details',
+      title: 'Renderer details',
+      items: [
+        {
+          type: 'item',
+          id: 'copy',
+          label: 'Copy',
+          icon: 'copy',
+          trailingIcon: 'shortcut'
+        }
+      ]
+    };
+    const renderIcon = vi.fn(() => null);
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.TreeContent tree={tree} renderIcon={renderIcon} />
+      </ButtonMenu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'Actions' }));
+    const item = await result.findByRole('menuitem', { name: 'Copy' });
+
+    expect(renderIcon).toHaveBeenCalledWith('copy', {
+      placement: 'leading',
+      node: tree.items[0]
+    });
+    expect(renderIcon).toHaveBeenCalledWith('shortcut', {
+      placement: 'trailing',
+      node: tree.items[0]
+    });
+    expect(item.querySelector('.k-ddn-e3')).toBeNull();
+    expect(item.querySelector('.k-ddn-e6')).toBeNull();
   });
 
   it('keeps radio mark tracks mounted and projects the checked item as selected', async () => {

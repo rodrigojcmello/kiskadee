@@ -79,7 +79,7 @@ export type SwitchStateElementStyle<TSegmentName extends SegmentName = never> =
 /**
  * e6 — optional thumb icon
  * - textColor maps to CSS color for currentColor-driven icons
- * - boxWidth / boxHeight define the icon slot box
+ * - iconSize references global.iconSizes
  */
 export type SwitchIconElementStyle<TSegmentName extends SegmentName = never> =
   SwitchIconElementStyleFromSchema<TSegmentName>;

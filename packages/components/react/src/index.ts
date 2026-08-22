@@ -168,13 +168,13 @@ export type {
 } from './components/Dropdown';
 export { Dropdown } from './components/Dropdown';
 export type {
+  FamilyResolvedIconProps,
   IconClassesMap,
   IconElementName,
-  IconGlyphProps,
   IconProps,
   IconVisualProps
 } from './components/Icon';
-export { Icon, IconGlyph } from './components/Icon';
+export { FamilyResolvedIcon, Icon } from './components/Icon';
 export type {
   DeterminateDecorativeProgressProps,
   DeterminateProgressProps,
@@ -320,3 +320,7 @@ export type {
   ShowcaseFontRole
 } from './shared/contexts/ShowcaseContext.tsx';
 export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';
+export type {
+  MenuTreeIconNode,
+  MenuTreeIconRenderer
+} from './shared/MenuTreeIconRenderer.ts';

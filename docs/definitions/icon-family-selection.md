@@ -8,7 +8,8 @@ styling.
 3. `IconFamilyProvider` resolves explicit selection, preset recommendation, application default,
    then a sole registered family.
 4. The selected module and optional preparation run only in the browser and only when needed.
-5. `Icon` or `IconGlyph` resolves a semantic name against the effective family.
+5. `FamilyResolvedIcon` resolves a semantic name against the effective family; `Icon` remains
+   independent and accepts composed content.
 6. The consuming component keeps ownership of all color, size, surface, semantics, and slot style.
 
 For example, Button may place a direct brand mark inside its optional `e4` contrast surface.

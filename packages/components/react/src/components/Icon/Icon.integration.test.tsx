@@ -15,6 +15,7 @@ import {
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
 import { Button } from '../Button/Button.tsx';
+import { FamilyResolvedIcon } from './FamilyResolvedIcon.tsx';
 import { Icon } from './Icon.tsx';
 
 function SearchGlyph() {
@@ -60,7 +61,11 @@ afterEach(() => {
 
 describe('styled Icon family composition', () => {
   it('keeps standalone accessibility semantics outside the family glyph', () => {
-    const result = renderWithKiskadee(<Icon name="search" label="Search" />);
+    const result = renderWithKiskadee(
+      <Icon label="Search">
+        <FamilyResolvedIcon name="search" />
+      </Icon>
+    );
     const semanticIcon = result.getByRole('img', { name: 'Search' });
     const glyph = result.getByTestId('search-glyph');
 
@@ -89,7 +94,9 @@ describe('styled Icon family composition', () => {
 
   it('uses an explicit fallback without silently selecting another family', () => {
     const result = renderWithKiskadee(
-      <Icon decorative name="search" fallback={<svg data-testid="explicit-fallback" />} />,
+      <Icon decorative>
+        <FamilyResolvedIcon name="search" fallback={<svg data-testid="explicit-fallback" />} />
+      </Icon>,
       false
     );
 
@@ -97,18 +104,26 @@ describe('styled Icon family composition', () => {
     expect(result.container.querySelector('[data-k-icon-family]')).toBeNull();
   });
 
-  it('returns null and reports a missing provider when no fallback exists', () => {
+  it('omits the family-resolved child and reports a missing provider when no fallback exists', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const result = renderWithKiskadee(<Icon decorative name="search" />, false);
+    const result = renderWithKiskadee(
+      <Icon decorative>
+        <FamilyResolvedIcon name="search" />
+      </Icon>,
+      false
+    );
 
-    expect(result.container.innerHTML).toBe('');
+    expect(result.container.querySelector('.k-icn')).not.toBeNull();
+    expect(result.container.querySelector('.k-gly')).toBeNull();
     expect(error).toHaveBeenCalledWith(expect.stringContaining('requires an IconFamilyProvider'));
   });
 
   it('keeps Button.Icon presentational while the Button label owns the accessible name', () => {
     const result = renderWithKiskadee(
       <Button activationFeedback={false}>
-        <Button.Icon name="search" />
+        <Button.Icon>
+          <FamilyResolvedIcon name="search" />
+        </Button.Icon>
         <Button.Label>Search</Button.Label>
       </Button>
     );
@@ -124,7 +139,9 @@ describe('styled Icon family composition', () => {
     const result = render(
       <KiskadeeContext.Provider value={kiskadeeContext}>
         <IconFamilyProvider families={[fontAwesomeClassicIconFamily]} family="font-awesome-classic">
-          <Icon decorative name="search" />
+          <Icon decorative>
+            <FamilyResolvedIcon name="search" />
+          </Icon>
         </IconFamilyProvider>
       </KiskadeeContext.Provider>
     );
@@ -139,7 +156,9 @@ describe('styled Icon family composition', () => {
     const result = render(
       <KiskadeeContext.Provider value={kiskadeeContext}>
         <IconFamilyProvider families={[lucideIconFamily]} family="lucide" variant="bold">
-          <Icon decorative name="search" />
+          <Icon decorative>
+            <FamilyResolvedIcon name="search" />
+          </Icon>
         </IconFamilyProvider>
       </KiskadeeContext.Provider>
     );
@@ -153,7 +172,9 @@ describe('styled Icon family composition', () => {
     const thin = render(
       <KiskadeeContext.Provider value={kiskadeeContext}>
         <IconFamilyProvider families={[phosphorIconFamily]} family="phosphor" variant="thin">
-          <Icon decorative name="search" />
+          <Icon decorative>
+            <FamilyResolvedIcon name="search" />
+          </Icon>
         </IconFamilyProvider>
       </KiskadeeContext.Provider>
     );
@@ -162,7 +183,9 @@ describe('styled Icon family composition', () => {
     const filled = render(
       <KiskadeeContext.Provider value={kiskadeeContext}>
         <IconFamilyProvider families={[phosphorIconFamily]} family="phosphor" variant="fill">
-          <Icon decorative name="search" />
+          <Icon decorative>
+            <FamilyResolvedIcon name="search" />
+          </Icon>
         </IconFamilyProvider>
       </KiskadeeContext.Provider>
     );
@@ -181,7 +204,9 @@ describe('styled Icon family composition', () => {
       <KiskadeeContext.Provider value={kiskadeeContext}>
         <IconFamilyProvider families={[fluentSystemIconFamily]} family="fluent-system">
           <div dir="rtl">
-            <Icon decorative name="list-ordered" />
+            <Icon decorative>
+              <FamilyResolvedIcon name="list-ordered" />
+            </Icon>
           </div>
         </IconFamilyProvider>
       </KiskadeeContext.Provider>
@@ -198,8 +223,12 @@ describe('styled Icon family composition', () => {
       <KiskadeeContext.Provider value={kiskadeeContext}>
         <IconFamilyProvider families={[iconoirIconFamily]} family="iconoir">
           <div dir="rtl">
-            <Icon decorative name="list" />
-            <Icon decorative name="list-ordered" />
+            <Icon decorative>
+              <FamilyResolvedIcon name="list" />
+            </Icon>
+            <Icon decorative>
+              <FamilyResolvedIcon name="list-ordered" />
+            </Icon>
           </div>
         </IconFamilyProvider>
       </KiskadeeContext.Provider>

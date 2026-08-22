@@ -10,7 +10,7 @@ import type {
 } from '@kiskadee/core';
 import {
   Card,
-  IconGlyph,
+  FamilyResolvedIcon,
   Slider,
   type SliderActivationFeedback,
   type SliderEdgeLabelAlignmentOption,
@@ -311,7 +311,7 @@ const labeledPercentMarks = [
 ] as const;
 
 const ratingMarks = [
-  { value: 0, label: '0', icon: <IconGlyph name="frown" /> },
+  { value: 0, label: '0', icon: <FamilyResolvedIcon name="frown" /> },
   { value: 1 },
   { value: 2 },
   { value: 3 },
@@ -321,19 +321,19 @@ const ratingMarks = [
   { value: 7 },
   { value: 8 },
   { value: 9 },
-  { value: 10, label: '10', icon: <IconGlyph name="smile" /> }
+  { value: 10, label: '10', icon: <FamilyResolvedIcon name="smile" /> }
 ] as const;
 
 function renderVolumeIcon(value: number) {
-  if (value <= 0) return <IconGlyph name="volume-muted" />;
-  if (value < 50) return <IconGlyph name="volume-low" />;
-  return <IconGlyph name="volume-high" />;
+  if (value <= 0) return <FamilyResolvedIcon name="volume-muted" />;
+  if (value < 50) return <FamilyResolvedIcon name="volume-low" />;
+  return <FamilyResolvedIcon name="volume-high" />;
 }
 
 function renderThumbVolumeIcon(value: number) {
-  if (value <= 0) return <IconGlyph name="volume-muted" />;
-  if (value < 50) return <IconGlyph name="volume-low" />;
-  return <IconGlyph name="volume-high" />;
+  if (value <= 0) return <FamilyResolvedIcon name="volume-muted" />;
+  if (value < 50) return <FamilyResolvedIcon name="volume-low" />;
+  return <FamilyResolvedIcon name="volume-high" />;
 }
 
 function normalizeShadowLevelKey(key: ElementSizeValue): string {
@@ -1236,7 +1236,7 @@ export default function SliderPage() {
                       value: 0,
                       icon: renderVolumeIcon(visibleVolume)
                     },
-                    { value: 100, icon: <IconGlyph name="volume-high" /> }
+                    { value: 100, icon: <FamilyResolvedIcon name="volume-high" /> }
                   ]}
                   markInterval={markIntervalProp}
                   edgeMarks="exclude"
@@ -1312,7 +1312,7 @@ export default function SliderPage() {
                     { value: 25, label: formatSquareMeters(25) },
                     { value: 250, label: formatSquareMeters(250) }
                   ]}
-                  thumbIcon={<IconGlyph name="grip-vertical" />}
+                  thumbIcon={<FamilyResolvedIcon name="grip-vertical" />}
                   markInterval={markIntervalProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
@@ -1351,8 +1351,8 @@ export default function SliderPage() {
                     if (typeof nextValue === 'number') setBrightness(nextValue);
                   }}
                   marks={[
-                    { value: 0, icon: <IconGlyph name="moon-star" /> },
-                    { value: 100, icon: <IconGlyph name="sun" /> }
+                    { value: 0, icon: <FamilyResolvedIcon name="moon-star" /> },
+                    { value: 100, icon: <FamilyResolvedIcon name="sun" /> }
                   ]}
                   markInterval={markIntervalProp}
                   edgeMarks="exclude"

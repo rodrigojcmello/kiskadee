@@ -15,11 +15,10 @@ import {
 } from 'react';
 import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
-import { useResolvedIconGlyph } from '../../shared/contexts/IconFamilyContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
-import { IconGlyph } from '../Icon/IconGlyph.tsx';
+import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import { resolveProgressIndicatorClassName } from '../Progress/Progress.class-names.ts';
 import type { ProgressClassesMap } from '../Progress/Progress.types.ts';
 import {
@@ -41,6 +40,9 @@ import type {
   ButtonProgressProps,
   ButtonProps
 } from './Button.types.ts';
+
+declare const process: { env: { NODE_ENV?: string } };
+
 import {
   resolveButtonFeedbackClassNamePatch,
   resolveButtonFeedbackEffectAvailability,
@@ -49,8 +51,6 @@ import {
 } from './effects/activation-feedback/index.ts';
 import { useButtonArtifactConfig } from './hooks/useButtonArtifactConfig.ts';
 import { useButtonClassNamesFromCommon, useButtonCommonProps } from './hooks/useButtonBase.ts';
-
-declare const process: { env: { NODE_ENV?: string } };
 
 export type {
   ButtonActivationFeedbackEffect,
@@ -86,28 +86,14 @@ type ButtonGroupRuntimeContextValue = {
 const ButtonGroupRuntimeContext = createContext<ButtonGroupRuntimeContextValue | null>(null);
 
 const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonIcon(
-  { name, fallback, children, ...props },
+  { children, ...props },
   ref
 ) {
   const { iconRegionClassName, iconTreatment } = useButtonRuntimeContext('Button.Icon');
-  const resolvedNamedGlyph = useResolvedIconGlyph(name);
-
-  if (name !== undefined && !resolvedNamedGlyph.glyph && fallback === undefined) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(
-        resolvedNamedGlyph.hasProvider
-          ? `[kiskadee/icons] Button.Icon "${name}" is not mapped by family "${
-              resolvedNamedGlyph.familyId ?? 'unknown'
-            }".`
-          : `[kiskadee/icons] Button.Icon "${name}" requires an IconFamilyProvider or an explicit fallback.`
-      );
-    }
-    return null;
-  }
 
   const icon = (
     <HeadlessButton.Icon {...props} ref={ref}>
-      {name !== undefined ? <IconGlyph name={name} fallback={fallback} /> : children}
+      {children}
     </HeadlessButton.Icon>
   );
 
@@ -119,34 +105,16 @@ const ButtonIcon = forwardRef<HTMLSpanElement, ButtonIconProps>(function ButtonI
 });
 
 const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
-  function ButtonDisclosure({ name, fallback, children, ...props }, ref) {
+  function ButtonDisclosure({ children, ...props }, ref) {
     const { disclosureDividerClassName } = useButtonRuntimeContext('Button.Disclosure');
     const essentialName = useEssentialIcon('chevron-down');
-    const resolvedNamedGlyph = useResolvedIconGlyph(name);
-
-    if (name !== undefined && !resolvedNamedGlyph.glyph && fallback === undefined) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.error(
-          resolvedNamedGlyph.hasProvider
-            ? `[kiskadee/icons] Button.Disclosure "${name}" is not mapped by family "${
-                resolvedNamedGlyph.familyId ?? 'unknown'
-              }".`
-            : `[kiskadee/icons] Button.Disclosure "${name}" requires an IconFamilyProvider or an explicit fallback.`
-        );
-      }
-      return null;
-    }
 
     const content =
       children !== undefined ? (
         children
-      ) : name !== undefined ? (
-        <IconGlyph name={name} fallback={fallback} />
       ) : essentialName !== undefined ? (
-        <IconGlyph name={essentialName} />
-      ) : (
-        fallback
-      );
+        <FamilyResolvedIcon name={essentialName} />
+      ) : null;
 
     if (content == null) return null;
 

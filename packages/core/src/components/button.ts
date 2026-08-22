@@ -105,8 +105,9 @@ export type ButtonLabelElementStyle<TSegmentName extends SegmentName = never> = 
  * NOTE:
  * `iconColor` maps to `textColor` in the current schema model.
  */
-export type ButtonIconElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+export type ButtonIconElementStyle<TSegmentName extends SegmentName = never> = {
   iconSize: ElementIconSize;
+} & Partial<{
   scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
   effects: ElementEffects;
@@ -125,8 +126,9 @@ export type ButtonIconRegionElementStyle<TSegmentName extends SegmentName = neve
 /**
  * e5 — optional trailing disclosure indicator
  */
-export type ButtonDisclosureElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+export type ButtonDisclosureElementStyle<TSegmentName extends SegmentName = never> = {
   iconSize: ElementIconSize;
+} & Partial<{
   scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
@@ -391,6 +393,8 @@ function validateElementContract(
     } else {
       issues.push(...validateElementIconSizeContract(value.iconSize, `${path}.iconSize`));
     }
+  } else if (rules.iconSize) {
+    issues.push(`${path}.iconSize: required reference`);
   }
 
   if (value.scales !== undefined) {

@@ -132,6 +132,8 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           paddingEmission: 'compensated'
         },
         e3: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
           paddingRightEmission: 'token'
         },
         e5: {
@@ -291,6 +293,10 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
             },
             e2: {
               paddingEmission: 'token'
+            },
+            e4: {
+              boxHeightEmission: 'token',
+              boxWidthEmission: 'token'
             }
           }
         },

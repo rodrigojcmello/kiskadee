@@ -28,8 +28,16 @@ component-specific way.
 
 Current scope:
 
+- `button.elements.e3`, the consumer-provided icon slot.
 - `button.elements.e6`, the decorative divider shared by connected Button seams and optional
   disclosure composition.
+
+### Icon `e3`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxWidth` | `token` | `direct` | `--k-bxw: <value>` | Button structural CSS applies the schema-owned icon width as logical `inline-size` without inheriting another element's token. |
+| `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | Button structural CSS applies the schema-owned icon height as logical `block-size` without inheriting another element's token. |
 
 ### Divider `e6`
 
@@ -45,6 +53,22 @@ cannot create an effect bucket for the decorative line.
 
 The disclosure icon remains `button.elements.e5`. Its contract no longer accepts `borderWidth` or
 `borderColor`; divider geometry and color belong exclusively to `e6`.
+
+## Tabs
+
+Current scope:
+
+- `tabs.variants.bridge.elements.e4`, the Bridge icon slot.
+
+### Bridge icon `e4`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxWidth` | `token` | `direct` | `--k-bxw: <value>` | Bridge structural CSS applies the schema-owned icon width as logical `inline-size` instead of inheriting the tab trigger width token. |
+| `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | Bridge structural CSS applies the schema-owned icon height as logical `block-size`. |
+
+The override is intentionally variant-specific. Other Tabs variants keep direct icon dimensions
+because their structural wrappers do not consume `--k-bxw` or `--k-bxh`.
 
 ## Slider
 

@@ -1,7 +1,7 @@
 'use client';
 
 import type { ElementSizeValue, SurfaceContext } from '@kiskadee/core';
-import { Button, Text } from '@kiskadee/react-components';
+import { Button, FamilyResolvedIcon, Text } from '@kiskadee/react-components';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -83,7 +83,9 @@ export function ButtonGroupExamples({
               surfaceContext={surfaceContext}
             >
               <Button>
-                <Button.Icon name="share" />
+                <Button.Icon>
+                  <FamilyResolvedIcon name="share" />
+                </Button.Icon>
                 <Button.Label>Share</Button.Label>
               </Button>
               <Button aria-label="More sharing options">

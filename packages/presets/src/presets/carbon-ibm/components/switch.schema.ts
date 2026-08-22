@@ -244,10 +244,7 @@ export function createCarbonIbmSwitchSchema(): SwitchComponent {
               },
               e6: {
                 name: 'icon',
-                scales: {
-                  boxWidth: { 's:sm:1': 6, 's:md:1': 14 },
-                  boxHeight: { 's:sm:1': 6, 's:md:1': 14 }
-                },
+                iconSize: { 's:sm:1': 's:sm:5', 's:md:1': 's:sm:4' },
                 palettes: {
                   default: {
                     light: {

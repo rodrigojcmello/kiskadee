@@ -22,7 +22,7 @@ import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
-import { IconGlyph } from '../Icon/IconGlyph.tsx';
+import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
   DEFAULT_DROPDOWN_INTENT,
   DEFAULT_DROPDOWN_RADIUS,
@@ -486,13 +486,13 @@ function useDropdownSlotClassName(
 }
 
 const DropdownIcon = forwardRef<HTMLSpanElement, DropdownIconProps>(function DropdownIcon(
-  { name, className, children, ...props },
+  { className, children, ...props },
   ref
 ) {
   const resolvedClassName = useDropdownSlotClassName('e3', 'k-ddn-e3', className);
   return (
     <span {...props} ref={ref} aria-hidden="true" className={resolvedClassName}>
-      {name ? <IconGlyph name={name} /> : children}
+      {children}
     </span>
   );
 });
@@ -540,7 +540,7 @@ const DropdownCheckmark = forwardRef<HTMLSpanElement, DropdownCheckmarkProps>(
         className={resolvedClassName}
         data-visible={visible}
       >
-        <IconGlyph name={iconName} />
+        <FamilyResolvedIcon name={iconName} />
       </span>
     );
   }
@@ -559,18 +559,18 @@ const DropdownRadioMark = forwardRef<HTMLSpanElement, DropdownRadioMarkProps>(
         className={resolvedClassName}
         data-visible={visible}
       >
-        <IconGlyph name={iconName} />
+        <FamilyResolvedIcon name={iconName} />
       </span>
     );
   }
 );
 
 const DropdownTrailing = forwardRef<HTMLSpanElement, DropdownTrailingProps>(
-  function DropdownTrailing({ name, className, children, ...props }, ref) {
+  function DropdownTrailing({ className, children, ...props }, ref) {
     const resolvedClassName = useDropdownSlotClassName('e6', 'k-ddn-e6', className);
     return (
       <span {...props} ref={ref} aria-hidden="true" className={resolvedClassName}>
-        {name ? <IconGlyph name={name} /> : children}
+        {children}
       </span>
     );
   }

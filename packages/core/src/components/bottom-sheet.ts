@@ -116,8 +116,9 @@ export type BottomSheetItemElementStyle<TSegmentName extends SegmentName = never
 }> &
   ElementNameMetadata;
 
-export type BottomSheetIconElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+export type BottomSheetIconElementStyle<TSegmentName extends SegmentName = never> = {
   iconSize: ElementIconSize;
+} & Partial<{
   scales: ElementScalesByProperty<'paddingRight' | 'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
@@ -361,6 +362,8 @@ function validateElement(
   if (value.iconSize !== undefined) {
     if (!rules.iconSize) issues.push(`${path}.iconSize: not allowed for this element`);
     else issues.push(...validateElementIconSizeContract(value.iconSize, `${path}.iconSize`));
+  } else if (rules.iconSize) {
+    issues.push(`${path}.iconSize: required reference`);
   }
 
   if (value.separator !== undefined) {

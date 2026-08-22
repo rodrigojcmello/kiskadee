@@ -1,7 +1,14 @@
 'use client';
 
 import type { DropdownPresence } from '@kiskadee/core';
-import { Button, Dropdown, Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import {
+  Button,
+  Dropdown,
+  FamilyResolvedIcon,
+  Text,
+  useKiskadee,
+  useShowcase
+} from '@kiskadee/react-components';
 import type { ReactNode, Ref } from 'react';
 import { useState } from 'react';
 import {
@@ -182,7 +189,9 @@ export default function DropdownShowcase() {
                   <Dropdown.Group>
                     <Dropdown.GroupLabel>Workspace</Dropdown.GroupLabel>
                     <DemoItem>
-                      <Dropdown.Icon name="settings" />
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="settings" />
+                      </Dropdown.Icon>
                       <Dropdown.Label>Settings</Dropdown.Label>
                       <Dropdown.EndText>Ctrl+,</Dropdown.EndText>
                     </DemoItem>
@@ -225,7 +234,9 @@ export default function DropdownShowcase() {
                   <Dropdown.Group>
                     <Dropdown.GroupLabel>Notifications</Dropdown.GroupLabel>
                     <DemoItem>
-                      <Dropdown.Icon name="bell" />
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="bell" />
+                      </Dropdown.Icon>
                       <Dropdown.Label>Product updates</Dropdown.Label>
                       <Dropdown.Description>
                         Occasional announcements about new capabilities.
@@ -236,7 +247,9 @@ export default function DropdownShowcase() {
                       <Dropdown.Description>
                         Important changes to your account and sessions.
                       </Dropdown.Description>
-                      <Dropdown.Trailing name="link" />
+                      <Dropdown.Trailing>
+                        <FamilyResolvedIcon name="link" />
+                      </Dropdown.Trailing>
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>
@@ -256,22 +269,30 @@ export default function DropdownShowcase() {
                     <Dropdown.GroupLabel>View mode</Dropdown.GroupLabel>
                     <DemoItem>
                       <Dropdown.Checkmark visible />
-                      <Dropdown.Icon name="dashboard" />
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="dashboard" />
+                      </Dropdown.Icon>
                       <Dropdown.Label>Dashboard</Dropdown.Label>
                       <Dropdown.EndText>Default</Dropdown.EndText>
                     </DemoItem>
                     <DemoItem>
                       <Dropdown.Checkmark visible={false} />
-                      <Dropdown.Icon name="list" />
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="list" />
+                      </Dropdown.Icon>
                       <Dropdown.Label>List</Dropdown.Label>
                     </DemoItem>
                   </Dropdown.Group>
                   <Dropdown.Separator />
                   <Dropdown.Group>
                     <DemoItem>
-                      <Dropdown.Icon name="spreadsheet" />
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="spreadsheet" />
+                      </Dropdown.Icon>
                       <Dropdown.Label>More layouts</Dropdown.Label>
-                      <Dropdown.Trailing name="chevron-end" />
+                      <Dropdown.Trailing>
+                        <FamilyResolvedIcon name="chevron-end" />
+                      </Dropdown.Trailing>
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>

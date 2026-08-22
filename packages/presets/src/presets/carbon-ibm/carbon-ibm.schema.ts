@@ -21,6 +21,8 @@ export const schema: Schema<Segments> = {
   global: {
     typography: carbonIbmTypography,
     iconSizes: {
+      's:sm:5': 6,
+      's:sm:4': 14,
       's:sm:2': 12,
       's:sm:1': 16,
       's:md:1': 20,

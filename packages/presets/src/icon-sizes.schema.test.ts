@@ -40,11 +40,16 @@ describe('preset icon-size catalogs', () => {
     });
   });
 
-  it('uses the calibrated 16, 20 and 24 pixel iOS 27 Button ramp', () => {
+  it('preserves the calibrated iOS 27 Button ramp while adding exact component profiles', () => {
     expect(ios27Apple.global?.iconSizes).toEqual({
+      's:sm:5': 8,
+      's:sm:4': 10,
+      's:sm:3': 12,
+      's:sm:2': 14,
       's:sm:1': 16,
       's:md:1': 20,
-      's:lg:1': 24
+      's:lg:1': 24,
+      's:lg:2': 32
     });
     expect(ios27Apple.components.button?.elements.e3?.iconSize).toEqual({
       's:sm:1': 's:sm:1',

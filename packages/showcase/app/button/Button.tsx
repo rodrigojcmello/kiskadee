@@ -25,7 +25,7 @@ import {
   ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import { ShowcaseIconGlyph } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
+import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import {
   type ButtonStressTestBackgroundToneKey,
   useButtonStressTestBackgroundTones
@@ -463,7 +463,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <ShowcaseIconGlyph name="ban" style={{ width: 24, height: 24 }} />
+        <ShowcaseFamilyResolvedIcon name="ban" style={{ width: 24, height: 24 }} />
       </div>
     );
   };
@@ -480,7 +480,7 @@ export function Button() {
 
     return (
       <div className={s.missingState}>
-        <ShowcaseIconGlyph name="ban" style={{ width: 24, height: 24 }} />
+        <ShowcaseFamilyResolvedIcon name="ban" style={{ width: 24, height: 24 }} />
       </div>
     );
   };

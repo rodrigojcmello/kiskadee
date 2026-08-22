@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { elementIconSizeContractSchema } from '../icon-sizes.contract.zod.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import { elementTypographyContractSchema } from '../typography.contract.zod.ts';
@@ -85,7 +86,7 @@ export function createSliderEndpointIconElementStyleSchema<
   return z
     .object({
       name: z.string(),
-      scales: createScalesSchema(['boxWidth', 'boxHeight']).optional(),
+      iconSize: elementIconSizeContractSchema,
       palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional(),
       effects: elementEffectsSchema.optional()
     })

@@ -20,6 +20,17 @@ export const schema: Schema<Sandbox3Segment> = {
   colors: schemaColors,
   global: {
     typography: sandboxTypography,
+    iconSizes: {
+      's:sm:5': 10,
+      's:sm:4': 12,
+      's:sm:3': 14,
+      's:sm:2': 16,
+      's:sm:1': 18,
+      's:md:1': 19,
+      's:lg:1': 20,
+      's:lg:2': 22,
+      's:lg:3': 24
+    },
     fonts: {
       families: {
         inter: {

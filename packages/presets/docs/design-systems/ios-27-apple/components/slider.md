@@ -25,3 +25,7 @@ iOS 27 Slider source before its styling is called official.
 The optional `e19` thumb icon and `e20` label indicator are Kiskadee composition affordances, not
 Apple measurements. The Liquid Glass thumb material remains approximated by a white surface,
 border, and the global `s:sm:2` shadow extracted from the older iOS 26 reference.
+
+The carried `10px`/`14px` thumb-icon and `20px`/`32px` endpoint-icon measurements now use
+`e19.iconSize` and `e6.iconSize` references into `global.iconSizes`. This is a schema ownership
+migration and does not upgrade the provisional evidence status above.

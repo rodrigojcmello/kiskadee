@@ -2,6 +2,7 @@
 
 import {
   Dropdown,
+  FamilyResolvedIcon,
   Text,
   TextFieldStandardOutline,
   useKiskadee,
@@ -118,7 +119,11 @@ function StyledAutocomplete({ rich }: { rich: boolean }) {
                                 disabled={state.disabled}
                                 selected={state.active || state.selected}
                               >
-                                {rich ? <Dropdown.Icon name={option.icon} /> : null}
+                                {rich ? (
+                                  <Dropdown.Icon>
+                                    <FamilyResolvedIcon name={option.icon} />
+                                  </Dropdown.Icon>
+                                ) : null}
                                 <Dropdown.Label>{option.textValue}</Dropdown.Label>
                                 {rich ? (
                                   <Dropdown.Description>{option.description}</Dropdown.Description>

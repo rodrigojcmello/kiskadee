@@ -10,7 +10,7 @@ import type {
 import {
   Card,
   CardAction,
-  IconGlyph,
+  FamilyResolvedIcon,
   Switch,
   type SwitchIcons,
   useCardArtifactConfig,
@@ -191,12 +191,12 @@ function getAmbientSurfaceEmphasis(surface: ResolvedSwitchSurface): ComponentEmp
 const switchIconSets = {
   none: undefined,
   'on-off': {
-    rest: <IconGlyph name="close" />,
-    selected: <IconGlyph name="check" />
+    rest: <FamilyResolvedIcon name="close" />,
+    selected: <FamilyResolvedIcon name="check" />
   },
   'play-pause': {
-    rest: <IconGlyph name="play" />,
-    selected: <IconGlyph name="pause" />
+    rest: <FamilyResolvedIcon name="play" />,
+    selected: <FamilyResolvedIcon name="pause" />
   }
 } satisfies Record<SwitchIconMode, SwitchIcons | undefined>;
 

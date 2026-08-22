@@ -489,9 +489,12 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e6: {
                 name: 'slider-endpoint-icon',
-                scales: {
-                  boxWidth: sizes.endpointIcon,
-                  boxHeight: sizes.endpointIcon
+                iconSize: {
+                  's:sm:3': 's:sm:1',
+                  's:sm:2': 's:md:1',
+                  's:sm:1': 's:lg:1',
+                  's:md:1': 's:lg:2',
+                  's:lg:1': 's:lg:3'
                 },
                 palettes: iconPalettes
               },
@@ -610,9 +613,12 @@ export function createSandbox2SliderSchema(): SliderComponent {
               },
               e19: {
                 name: 'slider-thumb-icon',
-                scales: {
-                  boxWidth: sizes.thumbIcon,
-                  boxHeight: sizes.thumbIcon
+                iconSize: {
+                  's:sm:3': 's:sm:5',
+                  's:sm:2': 's:sm:4',
+                  's:sm:1': 's:sm:3',
+                  's:md:1': 's:sm:2',
+                  's:lg:1': 's:sm:1'
                 },
                 palettes: iconPalettes
               },

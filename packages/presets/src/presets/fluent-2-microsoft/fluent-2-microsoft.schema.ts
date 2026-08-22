@@ -46,6 +46,8 @@ export const schema: Schema<Segments> = {
     typography: fluent2MicrosoftTypography,
     separators: createFluent2MicrosoftSeparators({ c }),
     iconSizes: {
+      's:sm:4': 8,
+      's:sm:3': 10,
       's:sm:2': 12,
       's:sm:1': 16,
       's:md:1': 20,

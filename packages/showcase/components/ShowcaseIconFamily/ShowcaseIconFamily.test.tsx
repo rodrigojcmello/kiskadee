@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 import { defineIconFamily } from '@kiskadee/icons/interface';
-import { IconFamilyProvider, IconGlyph } from '@kiskadee/react-components';
+import { FamilyResolvedIcon, IconFamilyProvider } from '@kiskadee/react-components';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -38,9 +38,9 @@ describe('ShowcaseIconFamilyBoundary', () => {
     act(() => {
       root.render(
         <IconFamilyProvider families={[dynamicFamily]} family={dynamicFamily.id}>
-          <IconGlyph name="search" />
+          <FamilyResolvedIcon name="search" />
           <ShowcaseIconFamilyBoundary>
-            <IconGlyph name="search" />
+            <FamilyResolvedIcon name="search" />
           </ShowcaseIconFamilyBoundary>
         </IconFamilyProvider>
       );

@@ -1,6 +1,12 @@
 'use client';
 
-import { Dropdown, IconGlyph, Text, useShowcase } from '@kiskadee/react-components';
+import {
+  Dropdown,
+  FamilyResolvedIcon,
+  Text,
+  useEssentialIcon,
+  useShowcase
+} from '@kiskadee/react-components';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless/select';
 import { useState } from 'react';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
@@ -39,6 +45,9 @@ function PreviewSelect({
   sequential = false
 }: PreviewSelectProps) {
   const selectedOption = options.find((option) => option.value === value);
+  const previousIcon = useEssentialIcon('chevron-left');
+  const nextIcon = useEssentialIcon('chevron-end');
+  const disclosureIcon = useEssentialIcon('chevron-down');
 
   return (
     <Dropdown.VisualProvider>
@@ -47,23 +56,23 @@ function PreviewSelect({
         {sequential ? (
           <div className={styles.sequential}>
             <HeadlessSelect.Previous className={styles.stepButton}>
-              <IconGlyph name="chevron-left" />
+              {previousIcon ? <FamilyResolvedIcon name={previousIcon} /> : null}
             </HeadlessSelect.Previous>
             <HeadlessSelect.Trigger className={`${styles.trigger} ${styles.sequentialTrigger}`}>
               <span className={styles.value}>{selectedOption?.label}</span>
             </HeadlessSelect.Trigger>
             <HeadlessSelect.Next className={styles.stepButton}>
-              <span className={styles.nextIcon}>
-                <IconGlyph name="chevron-left" />
-              </span>
+              {nextIcon ? <FamilyResolvedIcon name={nextIcon} /> : null}
             </HeadlessSelect.Next>
           </div>
         ) : (
           <HeadlessSelect.Trigger className={styles.trigger}>
             <span className={styles.value}>{selectedOption?.label}</span>
-            <span className={styles.disclosure} aria-hidden="true">
-              <IconGlyph name="chevron-down" />
-            </span>
+            {disclosureIcon ? (
+              <span className={styles.disclosure} aria-hidden="true">
+                <FamilyResolvedIcon name={disclosureIcon} />
+              </span>
+            ) : null}
           </HeadlessSelect.Trigger>
         )}
         <Dropdown.Presence>

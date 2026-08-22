@@ -11,6 +11,7 @@ import type { IconName } from '@kiskadee/icons/interface';
 import {
   BottomSheetMenu,
   Button,
+  FamilyResolvedIcon,
   type MenuTree,
   Text,
   useShowcase
@@ -235,6 +236,7 @@ export default function BottomSheetShowcase() {
           <div className={styles.stage}>
             <BottomSheetMenu.Root
               tree={tree}
+              renderIcon={(name) => <FamilyResolvedIcon name={name} />}
               initialHeight={initialHeight}
               swipeBehavior={swipeBehavior}
               pageTransition={pageTransition}

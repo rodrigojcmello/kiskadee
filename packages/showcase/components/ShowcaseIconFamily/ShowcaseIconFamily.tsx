@@ -2,7 +2,11 @@
 
 import { RightPanelClose, RightPanelOpen } from '@carbon/icons-react';
 import { carbonIconFamily } from '@kiskadee/icons/interface/carbon';
-import { IconFamilyProvider, IconGlyph, type IconGlyphProps } from '@kiskadee/react-components';
+import {
+  FamilyResolvedIcon,
+  type FamilyResolvedIconProps,
+  IconFamilyProvider
+} from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 
 const SHOWCASE_ICON_FAMILY = carbonIconFamily;
@@ -30,10 +34,10 @@ export function ShowcaseIconFamilyBoundary({ children }: { children: ReactNode }
  * Fixed-family glyph for isolated Showcase affordances rendered inside a
  * dynamic component-example tree.
  */
-export function ShowcaseIconGlyph(props: IconGlyphProps) {
+export function ShowcaseFamilyResolvedIcon(props: FamilyResolvedIconProps) {
   return (
     <ShowcaseIconFamilyBoundary>
-      <IconGlyph {...props} />
+      <FamilyResolvedIcon {...props} />
     </ShowcaseIconFamilyBoundary>
   );
 }

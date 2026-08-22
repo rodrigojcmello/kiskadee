@@ -1,5 +1,4 @@
 import type { BottomSheetIntent } from '@kiskadee/core';
-import type { IconName } from '@kiskadee/icons/interface';
 import {
   type BottomSheetOpenChangeDetails,
   useBottomSheetController
@@ -8,17 +7,23 @@ import type {
   MenuTree,
   MenuTreeNode,
   MenuTreeRadioGroup,
+  MenuTreeRadioItem,
   MenuTreeSelectionDetails,
   MenuTreeSubmenu
 } from '@kiskadee/react-headless/menu-tree';
 import type { ReactElement, MouseEvent as ReactMouseEvent, ReactNode, Ref } from 'react';
 import { forwardRef, isValidElement, useCallback, useEffect, useRef, useState } from 'react';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
+import {
+  type MenuTreeIconRenderer,
+  renderMenuTreeIcon
+} from '../../shared/MenuTreeIconRenderer.ts';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { BottomSheet, useBottomSheetResolvedOptions } from '../BottomSheet/BottomSheet.tsx';
 import type { BottomSheetRootProps } from '../BottomSheet/BottomSheet.types.ts';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonGroupProps, ButtonProps } from '../Button/Button.types.ts';
+import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import { useBottomSheetPageTransitionEffect } from './effects/page-transition/BottomSheetPageTransition.loader.ts';
 
 export type BottomSheetMenuButtonGroupProps = Pick<
@@ -28,11 +33,12 @@ export type BottomSheetMenuButtonGroupProps = Pick<
 
 type BottomSheetMenuGroupOwnedButtonProp = keyof BottomSheetMenuButtonGroupProps | 'radiusEffect';
 
-export type BottomSheetMenuRootProps = Omit<
+export type BottomSheetMenuRootProps<TIcon = unknown> = Omit<
   BottomSheetRootProps,
   'children' | 'open' | 'defaultOpen' | 'onOpenChange'
 > & {
-  tree: MenuTree<IconName>;
+  tree: MenuTree<TIcon>;
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
   children: ReactNode;
   buttonGroup?: BottomSheetMenuButtonGroupProps;
   open?: boolean;
@@ -58,16 +64,16 @@ export type BottomSheetMenuTriggerProps = Omit<
   | 'type'
 >;
 
-type BottomSheetMenuPage = {
+type BottomSheetMenuPage<TIcon> = {
   id: string;
   title: string;
-  items: readonly MenuTreeNode<IconName>[];
+  items: readonly MenuTreeNode<TIcon>[];
 };
 
-function findSubmenu(
-  nodes: readonly MenuTreeNode<IconName>[],
+function findSubmenu<TIcon>(
+  nodes: readonly MenuTreeNode<TIcon>[],
   id: string
-): MenuTreeSubmenu<IconName> | undefined {
+): MenuTreeSubmenu<TIcon> | undefined {
   for (const node of nodes) {
     if (node.type === 'submenu' && node.id === id) return node;
     if (node.type === 'group') {
@@ -78,11 +84,13 @@ function findSubmenu(
   return undefined;
 }
 
-function refreshPages(
-  tree: MenuTree<IconName>,
-  currentPages: readonly BottomSheetMenuPage[]
-): BottomSheetMenuPage[] {
-  const pages: BottomSheetMenuPage[] = [{ id: tree.id, title: tree.title, items: tree.items }];
+function refreshPages<TIcon>(
+  tree: MenuTree<TIcon>,
+  currentPages: readonly BottomSheetMenuPage<TIcon>[]
+): BottomSheetMenuPage<TIcon>[] {
+  const pages: BottomSheetMenuPage<TIcon>[] = [
+    { id: tree.id, title: tree.title, items: tree.items }
+  ];
   let items = tree.items;
 
   for (const currentPage of currentPages.slice(1)) {
@@ -150,36 +158,38 @@ const BottomSheetMenuTrigger = forwardRef<HTMLButtonElement, BottomSheetMenuTrig
   }
 );
 
-function BottomSheetMenuItemContent({
-  description,
-  endText,
-  icon,
-  label,
-  trailingIcon
+function BottomSheetMenuItemContent<TIcon>({
+  node,
+  renderIcon
 }: {
-  description?: string;
-  endText?: string;
-  icon?: IconName;
-  label: string;
-  trailingIcon?: IconName;
+  node:
+    | Extract<MenuTreeNode<TIcon>, { type: 'item' | 'link' | 'checkbox' | 'submenu' }>
+    | MenuTreeRadioItem<TIcon>;
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
 }) {
+  const leadingIcon = renderMenuTreeIcon(node.icon, 'leading', node, renderIcon);
+  const trailingIcon = renderMenuTreeIcon(node.trailingIcon, 'trailing', node, renderIcon);
   return (
     <>
-      {icon ? <BottomSheet.Icon name={icon} /> : null}
-      <BottomSheet.Label>{label}</BottomSheet.Label>
-      {description ? <BottomSheet.Description>{description}</BottomSheet.Description> : null}
-      {endText ? <BottomSheet.EndText>{endText}</BottomSheet.EndText> : null}
-      {trailingIcon ? <BottomSheet.Trailing name={trailingIcon} /> : null}
+      {leadingIcon != null ? <BottomSheet.Icon>{leadingIcon}</BottomSheet.Icon> : null}
+      <BottomSheet.Label>{node.label}</BottomSheet.Label>
+      {node.description ? (
+        <BottomSheet.Description>{node.description}</BottomSheet.Description>
+      ) : null}
+      {node.endText ? <BottomSheet.EndText>{node.endText}</BottomSheet.EndText> : null}
+      {trailingIcon != null ? <BottomSheet.Trailing>{trailingIcon}</BottomSheet.Trailing> : null}
     </>
   );
 }
 
-function BottomSheetMenuRadioGroupView({
+function BottomSheetMenuRadioGroupView<TIcon>({
   node,
+  renderIcon,
   uncontrolledValue,
   onUncontrolledValueChange
 }: {
-  node: MenuTreeRadioGroup<IconName>;
+  node: MenuTreeRadioGroup<TIcon>;
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
   uncontrolledValue: string | undefined;
   onUncontrolledValueChange: (groupId: string, value: string) => void;
 }) {
@@ -212,7 +222,7 @@ function BottomSheetMenuRadioGroupView({
             }}
           >
             <BottomSheet.RadioMark visible={selected} />
-            <BottomSheetMenuItemContent {...item} />
+            <BottomSheetMenuItemContent node={item} renderIcon={renderIcon} />
           </BottomSheet.Item>
         );
       })}
@@ -220,16 +230,18 @@ function BottomSheetMenuRadioGroupView({
   );
 }
 
-function BottomSheetMenuPageItems({
+function BottomSheetMenuPageItems<TIcon>({
   nodes,
+  renderIcon,
   onNavigate,
   onUncontrolledCheckboxValueChange,
   onUncontrolledRadioValueChange,
   uncontrolledCheckboxValues,
   uncontrolledRadioValues
 }: {
-  nodes: readonly MenuTreeNode<IconName>[];
-  onNavigate: (submenu: MenuTreeSubmenu<IconName>) => void;
+  nodes: readonly MenuTreeNode<TIcon>[];
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
+  onNavigate: (submenu: MenuTreeSubmenu<TIcon>) => void;
   onUncontrolledCheckboxValueChange: (itemId: string, controlState: boolean) => void;
   onUncontrolledRadioValueChange: (groupId: string, value: string) => void;
   uncontrolledCheckboxValues: Readonly<Record<string, boolean>>;
@@ -246,6 +258,7 @@ function BottomSheetMenuPageItems({
           {node.label ? <BottomSheet.GroupLabel>{node.label}</BottomSheet.GroupLabel> : null}
           <BottomSheetMenuPageItems
             nodes={node.items}
+            renderIcon={renderIcon}
             onNavigate={onNavigate}
             onUncontrolledCheckboxValueChange={onUncontrolledCheckboxValueChange}
             onUncontrolledRadioValueChange={onUncontrolledRadioValueChange}
@@ -261,6 +274,7 @@ function BottomSheetMenuPageItems({
         <BottomSheetMenuRadioGroupView
           key={node.id}
           node={node}
+          renderIcon={renderIcon}
           uncontrolledValue={uncontrolledRadioValues[node.id]}
           onUncontrolledValueChange={onUncontrolledRadioValueChange}
         />
@@ -298,7 +312,7 @@ function BottomSheetMenuPageItems({
           }}
         >
           <BottomSheet.Checkmark visible={controlState} />
-          <BottomSheetMenuItemContent {...node} />
+          <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
         </BottomSheet.Item>
       );
     }
@@ -313,8 +327,12 @@ function BottomSheetMenuPageItems({
             if (!node.disabled) onNavigate(node);
           }}
         >
-          <BottomSheetMenuItemContent {...node} />
-          {submenuIcon ? <BottomSheet.Trailing name={submenuIcon} functional /> : null}
+          <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
+          {submenuIcon ? (
+            <BottomSheet.Trailing functional>
+              <FamilyResolvedIcon name={submenuIcon} />
+            </BottomSheet.Trailing>
+          ) : null}
         </BottomSheet.Item>
       );
     }
@@ -352,7 +370,7 @@ function BottomSheetMenuPageItems({
                 tabIndex={node.disabled ? -1 : props.tabIndex}
                 onClick={(event) => handleSelection(event)}
               >
-                <BottomSheetMenuItemContent {...node} />
+                <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
               </a>
             );
           }
@@ -364,7 +382,7 @@ function BottomSheetMenuPageItems({
               disabled={node.disabled}
               onClick={(event) => handleSelection(event)}
             >
-              <BottomSheetMenuItemContent {...node} />
+              <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
             </button>
           );
         }}
@@ -373,16 +391,18 @@ function BottomSheetMenuPageItems({
   }) as ReactElement[];
 }
 
-function BottomSheetMenuNavigator({
+function BottomSheetMenuNavigator<TIcon>({
   backLabel,
   closeLabel,
   onPagePathChange,
+  renderIcon,
   tree
 }: {
   backLabel: (parentTitle: string) => ReactNode;
   closeLabel: string;
   onPagePathChange: (path: readonly string[]) => void;
-  tree: MenuTree<IconName>;
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
+  tree: MenuTree<TIcon>;
 }) {
   const controller = useBottomSheetController();
   const backIcon = useEssentialIcon('chevron-left');
@@ -390,7 +410,7 @@ function BottomSheetMenuNavigator({
   const transitionModule = useBottomSheetPageTransitionEffect(
     controller.open && options.pageTransition === 'slide'
   );
-  const [pages, setPages] = useState<BottomSheetMenuPage[]>([
+  const [pages, setPages] = useState<BottomSheetMenuPage<TIcon>[]>([
     { id: tree.id, title: tree.title, items: tree.items }
   ]);
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
@@ -431,7 +451,7 @@ function BottomSheetMenuNavigator({
   }, [controller.open, currentPage.id, onPagePathChange, pagePath]);
 
   const navigate = useCallback(
-    (submenu: MenuTreeSubmenu<IconName>) => {
+    (submenu: MenuTreeSubmenu<TIcon>) => {
       if (bodyRef.current) {
         scrollPositionsRef.current.set(currentPage.id, bodyRef.current.scrollTop);
       }
@@ -469,6 +489,7 @@ function BottomSheetMenuNavigator({
   const pageItems = (
     <BottomSheetMenuPageItems
       nodes={currentPage.items}
+      renderIcon={renderIcon}
       onNavigate={navigate}
       onUncontrolledCheckboxValueChange={handleUncontrolledCheckboxValueChange}
       onUncontrolledRadioValueChange={handleUncontrolledRadioValueChange}
@@ -490,7 +511,11 @@ function BottomSheetMenuNavigator({
         <BottomSheet.HeaderActions>
           {parentPage ? (
             <Button onClick={goBack} aria-label={`Back to ${parentPage.title}`}>
-              {backIcon ? <Button.Icon name={backIcon} /> : null}
+              {backIcon ? (
+                <Button.Icon>
+                  <FamilyResolvedIcon name={backIcon} />
+                </Button.Icon>
+              ) : null}
               {backLabel(parentPage.title)}
             </Button>
           ) : (
@@ -507,8 +532,9 @@ function BottomSheetMenuNavigator({
   );
 }
 
-function BottomSheetMenuRoot({
+function BottomSheetMenuRoot<TIcon>({
   tree,
+  renderIcon,
   children,
   buttonGroup,
   open: openProp,
@@ -518,7 +544,7 @@ function BottomSheetMenuRoot({
   closeLabel = 'Close',
   onPageChange = noopPageChange,
   ...bottomSheetProps
-}: BottomSheetMenuRootProps) {
+}: BottomSheetMenuRootProps<TIcon>) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = openProp ?? uncontrolledOpen;
   const buttonChildren: ReactElement[] = [];
@@ -544,6 +570,7 @@ function BottomSheetMenuRoot({
       <BottomSheet.Content aria-label={tree.title}>
         <BottomSheetMenuNavigator
           tree={tree}
+          renderIcon={renderIcon}
           backLabel={backLabel}
           closeLabel={closeLabel}
           onPagePathChange={onPageChange}

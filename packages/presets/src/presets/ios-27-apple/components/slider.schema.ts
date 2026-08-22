@@ -203,9 +203,9 @@ export function createIos27AppleSliderSchema({
               },
               e6: {
                 name: 'slider-endpoint-icon',
-                scales: {
-                  boxWidth: sizes.endpointIcon,
-                  boxHeight: sizes.endpointIcon
+                iconSize: {
+                  's:sm:1': 's:md:1',
+                  's:md:1': 's:lg:2'
                 },
                 palettes: textPalettes
               },
@@ -496,9 +496,9 @@ export function createIos27AppleSliderSchema({
               },
               e19: {
                 name: 'slider-thumb-icon',
-                scales: {
-                  boxWidth: sizes.thumbIcon,
-                  boxHeight: sizes.thumbIcon
+                iconSize: {
+                  's:sm:1': 's:sm:4',
+                  's:md:1': 's:sm:2'
                 },
                 palettes: textPalettes
               },

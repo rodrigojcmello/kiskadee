@@ -12,6 +12,8 @@ function requireIconElement() {
 describe('Fluent 2 Icon', () => {
   it('publishes the approved discrete icon sizes', () => {
     expect(schema.global?.iconSizes).toEqual({
+      's:sm:4': 8,
+      's:sm:3': 10,
       's:sm:2': 12,
       's:sm:1': 16,
       's:md:1': 20,

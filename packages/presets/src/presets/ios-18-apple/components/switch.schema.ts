@@ -198,14 +198,7 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
               },
               e6: {
                 name: 'icon',
-                scales: {
-                  boxWidth: {
-                    's:md:1': 16
-                  },
-                  boxHeight: {
-                    's:md:1': 16
-                  }
-                },
+                iconSize: { 's:md:1': 's:md:1' },
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
                     onSubtle: {

@@ -38,9 +38,14 @@ export const schema: Schema<Segment> = {
     typography: ios27AppleTypography,
     separators: createIos27AppleSeparators({ c }),
     iconSizes: {
+      's:sm:5': 8,
+      's:sm:4': 10,
+      's:sm:3': 12,
+      's:sm:2': 14,
       's:sm:1': 16,
       's:md:1': 20,
-      's:lg:1': 24
+      's:lg:1': 24,
+      's:lg:2': 32
     },
     icons: {
       family: 'sf-symbols',

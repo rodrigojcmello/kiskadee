@@ -6,7 +6,12 @@ import type {
   SurfaceContext,
   SystemButtonIntent
 } from '@kiskadee/core';
-import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
+import {
+  FamilyResolvedIcon,
+  Button as KButton,
+  SmoothText,
+  Text
+} from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { useEffect, useId, useState } from 'react';
 import { ShowcaseSegmentedControl } from '@/components/ShowcaseControls';
@@ -151,7 +156,9 @@ export function ButtonAsyncExample({
                 />
               ) : null}
               {pending && activePresentation === 'spinner' ? (
-                <KButton.Icon name="loader-circle" className={styles.asyncSpinner} />
+                <KButton.Icon className={styles.asyncSpinner}>
+                  <FamilyResolvedIcon name="loader-circle" />
+                </KButton.Icon>
               ) : null}
               <KButton.Label>
                 <SmoothText fontName={fontName} align="center">

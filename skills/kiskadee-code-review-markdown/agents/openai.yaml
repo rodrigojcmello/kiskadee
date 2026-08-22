@@ -1,4 +1,4 @@
 interface:
   display_name: "Kiskadee Review Markdown"
-  short_description: "Save code reviews as root Markdown"
-  default_prompt: "Use $kiskadee-code-review-markdown when reviewing Kiskadee code changes."
+  short_description: "Manage review findings and their handoff"
+  default_prompt: "Use $kiskadee-code-review-markdown when reviewing Kiskadee changes or resolving findings from CODE-REVIEW.md."

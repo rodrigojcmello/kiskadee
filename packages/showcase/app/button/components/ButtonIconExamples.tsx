@@ -4,7 +4,13 @@ import type {
   ElementSizeValue,
   SurfaceContext
 } from '@kiskadee/core';
-import { type IconName, Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
+import {
+  FamilyResolvedIcon,
+  type IconName,
+  Button as KButton,
+  SmoothText,
+  Text
+} from '@kiskadee/react-components';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -169,7 +175,9 @@ export function ButtonIconExamples({
             scale={scale}
             surfaceContext={surfaceContext}
           >
-            <KButton.Icon name={icon} />
+            <KButton.Icon>
+              <FamilyResolvedIcon name={icon} />
+            </KButton.Icon>
             <KButton.Label>
               <SmoothText fontName={fontName} align="center">
                 {label}
@@ -204,7 +212,9 @@ export function ButtonIconExamples({
                       surfaceContext={surfaceContext}
                       title={label}
                     >
-                      <KButton.Icon name={icon} />
+                      <KButton.Icon>
+                        <FamilyResolvedIcon name={icon} />
+                      </KButton.Icon>
                     </KButton>
                   ))}
                 </div>
@@ -227,7 +237,9 @@ export function ButtonIconExamples({
                 >
                   {actions.map(({ icon, label }) => (
                     <KButton aria-label={label} key={label} title={label}>
-                      <KButton.Icon name={icon} />
+                      <KButton.Icon>
+                        <FamilyResolvedIcon name={icon} />
+                      </KButton.Icon>
                     </KButton>
                   ))}
                 </KButton.Group>

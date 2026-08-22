@@ -1,5 +1,4 @@
 import type { DropdownIntent } from '@kiskadee/core';
-import type { IconName } from '@kiskadee/icons/interface';
 import {
   Menu as HeadlessMenu,
   type MenuCheckboxItemProps,
@@ -17,6 +16,7 @@ import {
 import type {
   MenuTree,
   MenuTreeNode,
+  MenuTreeRadioItem,
   MenuTreeSelectionDetails
 } from '@kiskadee/react-headless/menu-tree';
 import type {
@@ -28,6 +28,10 @@ import type {
 } from 'react';
 import { forwardRef, isValidElement } from 'react';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
+import {
+  type MenuTreeIconRenderer,
+  renderMenuTreeIcon
+} from '../../shared/MenuTreeIconRenderer.ts';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonGroupProps, ButtonProps } from '../Button/Button.types.ts';
@@ -39,6 +43,7 @@ import type {
   DropdownSeparatorProps,
   DropdownVisualProps
 } from '../Dropdown/Dropdown.types.ts';
+import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 
 export type ButtonMenuButtonGroupProps = Pick<
   ButtonGroupProps,
@@ -84,9 +89,10 @@ export type ButtonMenuCheckboxItemProps = Omit<MenuCheckboxItemProps, 'render'> 
   intent?: DropdownIntent;
 };
 
-export type ButtonMenuTreeContentProps = {
-  tree: MenuTree<IconName>;
+export type ButtonMenuTreeContentProps<TIcon = unknown> = {
+  tree: MenuTree<TIcon>;
   itemsLayout?: DropdownItemsLayout;
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
 };
 
 export type ButtonMenuGroupProps = Omit<MenuGroupProps, 'render'>;
@@ -479,7 +485,11 @@ const ButtonMenuSubTrigger = forwardRef<HTMLElement, ButtonMenuSubTriggerProps>(
               disabled={state.disabled}
             >
               {children}
-              {submenuIcon ? <Dropdown.Trailing name={submenuIcon} /> : null}
+              {submenuIcon ? (
+                <Dropdown.Trailing>
+                  <FamilyResolvedIcon name={submenuIcon} />
+                </Dropdown.Trailing>
+              ) : null}
             </Dropdown.Item>
           );
         }}
@@ -527,31 +537,29 @@ const ButtonMenuShortcut = forwardRef<HTMLSpanElement, ButtonMenuShortcutProps>(
   }
 );
 
-function ButtonMenuTreeItemContent({
-  description,
-  endText,
-  icon,
-  label,
-  trailingIcon
+function ButtonMenuTreeItemContent<TIcon>({
+  node,
+  renderIcon
 }: {
-  description?: string;
-  endText?: string;
-  icon?: IconName;
-  label: string;
-  trailingIcon?: IconName;
+  node:
+    | Extract<MenuTreeNode<TIcon>, { type: 'item' | 'link' | 'checkbox' | 'submenu' }>
+    | MenuTreeRadioItem<TIcon>;
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
 }) {
+  const leadingIcon = renderMenuTreeIcon(node.icon, 'leading', node, renderIcon);
+  const trailingIcon = renderMenuTreeIcon(node.trailingIcon, 'trailing', node, renderIcon);
   return (
     <>
-      {icon ? <Dropdown.Icon name={icon} /> : null}
-      <Dropdown.Label>{label}</Dropdown.Label>
-      {description ? <Dropdown.Description>{description}</Dropdown.Description> : null}
-      {endText ? <ButtonMenuShortcut>{endText}</ButtonMenuShortcut> : null}
-      {trailingIcon ? <Dropdown.Trailing name={trailingIcon} /> : null}
+      {leadingIcon != null ? <Dropdown.Icon>{leadingIcon}</Dropdown.Icon> : null}
+      <Dropdown.Label>{node.label}</Dropdown.Label>
+      {node.description ? <Dropdown.Description>{node.description}</Dropdown.Description> : null}
+      {node.endText ? <ButtonMenuShortcut>{node.endText}</ButtonMenuShortcut> : null}
+      {trailingIcon != null ? <Dropdown.Trailing>{trailingIcon}</Dropdown.Trailing> : null}
     </>
   );
 }
 
-function isUngroupedButtonMenuTreeRow(node: MenuTreeNode<IconName>): boolean {
+function isUngroupedButtonMenuTreeRow<TIcon>(node: MenuTreeNode<TIcon>): boolean {
   return (
     node.type === 'item' ||
     node.type === 'link' ||
@@ -560,20 +568,21 @@ function isUngroupedButtonMenuTreeRow(node: MenuTreeNode<IconName>): boolean {
   );
 }
 
-function renderButtonMenuTreeNodes(
-  nodes: readonly MenuTreeNode<IconName>[],
+function renderButtonMenuTreeNodes<TIcon>(
+  nodes: readonly MenuTreeNode<TIcon>[],
+  renderIcon: MenuTreeIconRenderer<TIcon> | undefined,
   insideExplicitGroup = false
 ): ReactNode[] {
   if (!insideExplicitGroup) {
     const renderedNodes: ReactNode[] = [];
-    let ungroupedRows: MenuTreeNode<IconName>[] = [];
+    let ungroupedRows: MenuTreeNode<TIcon>[] = [];
     const flushUngroupedRows = () => {
       if (ungroupedRows.length === 0) return;
       const rows = ungroupedRows;
       ungroupedRows = [];
       renderedNodes.push(
         <Dropdown.Group key={`menu-tree-visual-group-${rows[0]?.id}`}>
-          {renderButtonMenuTreeNodes(rows, true)}
+          {renderButtonMenuTreeNodes(rows, renderIcon, true)}
         </Dropdown.Group>
       );
     };
@@ -584,7 +593,7 @@ function renderButtonMenuTreeNodes(
         continue;
       }
       flushUngroupedRows();
-      renderedNodes.push(...renderButtonMenuTreeNodes([node], true));
+      renderedNodes.push(...renderButtonMenuTreeNodes([node], renderIcon, true));
     }
     flushUngroupedRows();
     return renderedNodes;
@@ -599,7 +608,7 @@ function renderButtonMenuTreeNodes(
       return (
         <ButtonMenuGroup key={node.id}>
           {node.label ? <ButtonMenuGroupLabel>{node.label}</ButtonMenuGroupLabel> : null}
-          {renderButtonMenuTreeNodes(node.items, true)}
+          {renderButtonMenuTreeNodes(node.items, renderIcon, true)}
         </ButtonMenuGroup>
       );
     }
@@ -630,7 +639,7 @@ function renderButtonMenuTreeNodes(
               disabled={item.disabled}
               intent={item.intent}
             >
-              <ButtonMenuTreeItemContent {...item} />
+              <ButtonMenuTreeItemContent node={item} renderIcon={renderIcon} />
             </ButtonMenuRadioItem>
           ))}
         </ButtonMenuRadioGroup>
@@ -656,7 +665,7 @@ function renderButtonMenuTreeNodes(
             })
           }
         >
-          <ButtonMenuTreeItemContent {...node} />
+          <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
         </ButtonMenuCheckboxItem>
       );
     }
@@ -669,9 +678,11 @@ function renderButtonMenuTreeNodes(
             disabled={node.disabled}
             intent={node.intent}
           >
-            <ButtonMenuTreeItemContent {...node} />
+            <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
           </ButtonMenuSubTrigger>
-          <ButtonMenuSubContent>{renderButtonMenuTreeNodes(node.items)}</ButtonMenuSubContent>
+          <ButtonMenuSubContent>
+            {renderButtonMenuTreeNodes(node.items, renderIcon)}
+          </ButtonMenuSubContent>
         </ButtonMenuSub>
       );
     }
@@ -693,16 +704,20 @@ function renderButtonMenuTreeNodes(
         closeOnSelect={node.closeOnSelect ?? true}
         onSelect={() => node.onSelect?.(selectionDetails)}
       >
-        <ButtonMenuTreeItemContent {...node} />
+        <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
       </ButtonMenuItem>
     );
   });
 }
 
-function ButtonMenuTreeContent({ tree, itemsLayout }: ButtonMenuTreeContentProps) {
+function ButtonMenuTreeContent<TIcon>({
+  tree,
+  itemsLayout,
+  renderIcon
+}: ButtonMenuTreeContentProps<TIcon>) {
   return (
     <ButtonMenuContent aria-label={tree.title} itemsLayout={itemsLayout}>
-      {renderButtonMenuTreeNodes(tree.items)}
+      {renderButtonMenuTreeNodes(tree.items, renderIcon)}
     </ButtonMenuContent>
   );
 }

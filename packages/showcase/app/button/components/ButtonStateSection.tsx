@@ -9,7 +9,7 @@ import type {
 import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
-import { ShowcaseIconGlyph } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
+import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from '../Button.module.scss';
 import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
@@ -77,7 +77,7 @@ export function ButtonStateSection({
 
     return (
       <div className={s.missingState}>
-        <ShowcaseIconGlyph name="ban" style={{ width: 24, height: 24 }} />
+        <ShowcaseFamilyResolvedIcon name="ban" style={{ width: 24, height: 24 }} />
       </div>
     );
   };

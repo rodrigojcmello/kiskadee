@@ -427,12 +427,15 @@
  * Centers the bridge icon slot and keeps its inline box locked to icon geometry.
  */
 .k-tab-e4-a {
+  block-size: var(--k-bxh);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  inline-size: var(--k-bxw);
   line-height: 0;
 
-  > svg {
+  > svg,
+  > .k-gly {
     display: block;
     inline-size: 100%;
     block-size: 100%;

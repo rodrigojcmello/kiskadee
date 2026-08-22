@@ -292,10 +292,7 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e6: {
                 name: 'icon',
-                scales: {
-                  boxWidth: { 's:md:1': 10 },
-                  boxHeight: { 's:md:1': 10 }
-                },
+                iconSize: { 's:md:1': 's:sm:3' },
                 palettes: {
                   default: {
                     light: {

@@ -77,8 +77,9 @@ export type DropdownItemElementStyle<TSegmentName extends SegmentName = never> =
 }> &
   ElementNameMetadata;
 
-export type DropdownIconElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+export type DropdownIconElementStyle<TSegmentName extends SegmentName = never> = {
   iconSize: ElementIconSize;
+} & Partial<{
   scales: ElementScalesByProperty<'paddingRight'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
@@ -91,8 +92,9 @@ export type DropdownTextElementStyle<TSegmentName extends SegmentName = never> =
 }> &
   ElementNameMetadata;
 
-export type DropdownIndicatorElementStyle<TSegmentName extends SegmentName = never> = Partial<{
+export type DropdownIndicatorElementStyle<TSegmentName extends SegmentName = never> = {
   iconSize: ElementIconSize;
+} & Partial<{
   scales: ElementScalesByProperty<'paddingLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
@@ -328,6 +330,8 @@ function validateElement(
     } else {
       issues.push(...validateElementIconSizeContract(value.iconSize, `${path}.iconSize`));
     }
+  } else if (rules.iconSize) {
+    issues.push(`${path}.iconSize: required reference`);
   }
 
   if (value.separator !== undefined) {
