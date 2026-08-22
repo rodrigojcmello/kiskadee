@@ -21,6 +21,7 @@ import {
   useRef,
   useState
 } from 'react';
+import { useControlState } from '../../hooks/control-state/useControlState.ts';
 import {
   AnchoredOverlayTree,
   type AnchoredOverlayWidth,
@@ -124,6 +125,33 @@ export type MenuItemProps = Omit<HTMLAttributes<HTMLElement>, 'children' | 'onSe
   render?: (
     props: MenuItemRenderProps,
     state: { active: boolean; disabled: boolean }
+  ) => ReactElement;
+};
+
+export type MenuCheckboxItemRenderProps = HTMLAttributes<HTMLElement> & {
+  ref: Ref<HTMLElement>;
+  role: 'menuitemcheckbox';
+  tabIndex: number;
+  'aria-checked': boolean;
+  'aria-disabled'?: true;
+  'data-active'?: true;
+  'data-checked'?: true;
+  'data-disabled'?: true;
+};
+
+export type MenuCheckboxItemProps = Omit<HTMLAttributes<HTMLElement>, 'children' | 'onSelect'> & {
+  children?: ReactNode;
+  value?: string;
+  textValue: string;
+  controlState?: boolean;
+  defaultControlState?: boolean;
+  disabled?: boolean;
+  closeOnSelect?: boolean;
+  onControlStateChange?: (controlState: boolean) => void;
+  onSelect?: (event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void;
+  render?: (
+    props: MenuCheckboxItemRenderProps,
+    state: { active: boolean; controlState: boolean; disabled: boolean }
   ) => ReactElement;
 };
 
@@ -1021,6 +1049,117 @@ const MenuRadioGroup = forwardRef<HTMLElement, MenuRadioGroupProps>(function Men
   );
 });
 
+const MenuCheckboxItem = forwardRef<HTMLElement, MenuCheckboxItemProps>(function MenuCheckboxItem(
+  {
+    children,
+    value,
+    textValue,
+    controlState: controlStateProp,
+    defaultControlState,
+    disabled = false,
+    closeOnSelect = true,
+    onControlStateChange,
+    onSelect,
+    onClick,
+    onKeyDown,
+    onMouseMove,
+    render,
+    ...props
+  },
+  forwardedRef
+) {
+  const generatedId = useId();
+  const itemKey = value ?? `menu-checkbox-item-${generatedId}`;
+  const { closeTree, activeKey, setActiveKey, registerItem } = useMenuContext('Menu.CheckboxItem');
+  const localRef = useRef<HTMLElement | null>(null);
+  const active = activeKey === itemKey;
+  const { controlState, toggle } = useControlState({
+    controlState: controlStateProp,
+    defaultControlState,
+    disabled,
+    onControlStateChange
+  });
+
+  useLayoutEffect(() => {
+    const element = localRef.current;
+    if (!element) return;
+    return registerItem({ key: itemKey, element, disabled, textValue });
+  }, [disabled, itemKey, registerItem, textValue]);
+
+  const ref = useCallback(
+    (node: HTMLElement | null) => {
+      localRef.current = node;
+      assignRef(forwardedRef, node);
+    },
+    [forwardedRef]
+  );
+  const activate = useCallback(
+    (event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => {
+      if (disabled) {
+        event.preventDefault();
+        return;
+      }
+      onSelect?.(event);
+      if (event.defaultPrevented) return;
+      toggle();
+      if (closeOnSelect) {
+        closeTree({ reason: 'selection', event: event.nativeEvent }, true);
+      }
+    },
+    [closeOnSelect, closeTree, disabled, onSelect, toggle]
+  );
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      onClick?.(event);
+      if (!event.defaultPrevented) activate(event);
+    },
+    [activate, onClick]
+  );
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLElement>) => {
+      onKeyDown?.(event);
+      if (event.defaultPrevented) return;
+      if (event.key === 'Enter' || event.key === ' ') {
+        activate(event);
+        event.preventDefault();
+      }
+    },
+    [activate, onKeyDown]
+  );
+  const handleMouseMove = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      onMouseMove?.(event);
+      if (!event.defaultPrevented) {
+        setActiveKey(itemKey);
+        event.currentTarget.focus();
+      }
+    },
+    [itemKey, onMouseMove, setActiveKey]
+  );
+  const renderProps: MenuCheckboxItemRenderProps = {
+    ...props,
+    ref,
+    role: 'menuitemcheckbox',
+    tabIndex: active ? 0 : -1,
+    'aria-checked': controlState,
+    'aria-disabled': disabled || undefined,
+    'data-active': active || undefined,
+    'data-checked': controlState || undefined,
+    'data-disabled': disabled || undefined,
+    onClick: handleClick,
+    onKeyDown: handleKeyDown,
+    onMouseMove: handleMouseMove
+  };
+
+  if (render) return render(renderProps, { active, controlState, disabled });
+  const { ref: itemRef, ...nativeItemProps } = renderProps;
+  return (
+    <div {...nativeItemProps} ref={itemRef as Ref<HTMLDivElement>}>
+      {children}
+    </div>
+  );
+});
+
 const MenuRadioItem = forwardRef<HTMLElement, MenuRadioItemProps>(function MenuRadioItem(
   {
     children,
@@ -1682,6 +1821,7 @@ export const Menu = {
   Group: MenuGroup,
   GroupLabel: MenuGroupLabel,
   Item: MenuItem,
+  CheckboxItem: MenuCheckboxItem,
   RadioGroup: MenuRadioGroup,
   RadioItem: MenuRadioItem,
   Sub: MenuSub,

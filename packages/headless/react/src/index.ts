@@ -65,6 +65,8 @@ export type {
 } from './components/icon/Icon.tsx';
 export { Icon } from './components/icon/Icon.tsx';
 export type {
+  MenuCheckboxItemProps,
+  MenuCheckboxItemRenderProps,
   MenuContentProps,
   MenuContentRenderProps,
   MenuContentRenderState,
@@ -93,6 +95,7 @@ export type {
 export { Menu } from './components/menu/Menu.tsx';
 export type {
   MenuTree,
+  MenuTreeCheckboxItem,
   MenuTreeGroup,
   MenuTreeIntent,
   MenuTreeItem,

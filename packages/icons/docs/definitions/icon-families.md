@@ -52,6 +52,11 @@ Canonical Kiskadee names are unnamespaced. Product-specific concepts use a names
 can register their own families without editing Kiskadee metadata, and the same namespaced concept
 may resolve to different artwork in different families.
 
+`radio-selected` is the canonical menu-radio indicator. It resolves to an isolated filled dot from
+each family rather than a checkmark or CSS-drawn circle. Mapping-level renderer defaults may fill or
+optically normalize an upstream circle when the installed family has no native filled-dot export;
+the geometry still comes from the mapped upstream glyph and remains generator-owned.
+
 Registration is inert. A catalog entry imports its family module only when selected, and
 the selected variant's `prepare` runs only in the browser after selection. Concurrent family loads
 share work, variant preparation is keyed by `family + variant`, successful work is reused, and

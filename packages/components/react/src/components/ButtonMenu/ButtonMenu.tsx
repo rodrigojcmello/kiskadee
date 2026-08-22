@@ -2,6 +2,7 @@ import type { DropdownIntent } from '@kiskadee/core';
 import type { IconName } from '@kiskadee/icons/interface';
 import {
   Menu as HeadlessMenu,
+  type MenuCheckboxItemProps,
   type MenuContentProps,
   type MenuGroupLabelProps,
   type MenuGroupProps,
@@ -76,6 +77,10 @@ export type ButtonMenuItemProps = Omit<MenuItemProps, 'render'> & {
   href?: string;
   target?: string;
   rel?: string;
+};
+
+export type ButtonMenuCheckboxItemProps = Omit<MenuCheckboxItemProps, 'render'> & {
+  intent?: DropdownIntent;
 };
 
 export type ButtonMenuTreeContentProps = {
@@ -380,6 +385,42 @@ const ButtonMenuRadioGroup = forwardRef<HTMLElement, ButtonMenuRadioGroupProps>(
   }
 );
 
+const ButtonMenuCheckboxItem = forwardRef<HTMLElement, ButtonMenuCheckboxItemProps>(
+  function ButtonMenuCheckboxItem(
+    { children, disabled, intent, onSelect, ...props },
+    forwardedRef
+  ) {
+    return (
+      <HeadlessMenu.CheckboxItem
+        {...props}
+        disabled={disabled}
+        onSelect={onSelect}
+        render={(menuProps, state) => {
+          const { ref: menuRef, ...itemProps } = menuProps;
+          const ref = (node: HTMLElement | null) => {
+            assignRef(menuRef, node);
+            assignRef(forwardedRef, node);
+          };
+          return (
+            <Dropdown.Item
+              {...itemProps}
+              ref={ref}
+              intent={intent}
+              selected={state.controlState}
+              disabled={state.disabled}
+            >
+              <Dropdown.Checkmark visible={state.controlState} />
+              {children}
+            </Dropdown.Item>
+          );
+        }}
+      >
+        {children}
+      </HeadlessMenu.CheckboxItem>
+    );
+  }
+);
+
 const ButtonMenuRadioItem = forwardRef<HTMLElement, ButtonMenuRadioItemProps>(
   function ButtonMenuRadioItem({ children, disabled, intent, onSelect, ...props }, forwardedRef) {
     return (
@@ -394,8 +435,14 @@ const ButtonMenuRadioItem = forwardRef<HTMLElement, ButtonMenuRadioItemProps>(
             assignRef(forwardedRef, node);
           };
           return (
-            <Dropdown.Item {...itemProps} ref={ref} intent={intent} disabled={state.disabled}>
-              <Dropdown.Checkmark visible={state.checked} />
+            <Dropdown.Item
+              {...itemProps}
+              ref={ref}
+              intent={intent}
+              selected={state.checked}
+              disabled={state.disabled}
+            >
+              <Dropdown.RadioMark visible={state.checked} />
               {children}
             </Dropdown.Item>
           );
@@ -422,7 +469,13 @@ const ButtonMenuSubTrigger = forwardRef<HTMLElement, ButtonMenuSubTriggerProps>(
             assignRef(forwardedRef, node);
           };
           return (
-            <Dropdown.Item {...itemProps} ref={ref} intent={intent} disabled={state.disabled}>
+            <Dropdown.Item
+              {...itemProps}
+              ref={ref}
+              intent={intent}
+              hovered={state.open}
+              disabled={state.disabled}
+            >
               {children}
               <Dropdown.Trailing name="chevron-end" />
             </Dropdown.Item>
@@ -497,7 +550,12 @@ function ButtonMenuTreeItemContent({
 }
 
 function isUngroupedButtonMenuTreeRow(node: MenuTreeNode<IconName>): boolean {
-  return node.type === 'item' || node.type === 'link' || node.type === 'submenu';
+  return (
+    node.type === 'item' ||
+    node.type === 'link' ||
+    node.type === 'checkbox' ||
+    node.type === 'submenu'
+  );
 }
 
 function renderButtonMenuTreeNodes(
@@ -577,6 +635,30 @@ function renderButtonMenuTreeNodes(
       );
     }
 
+    if (node.type === 'checkbox') {
+      return (
+        <ButtonMenuCheckboxItem
+          key={node.id}
+          value={node.id}
+          textValue={node.textValue ?? node.label}
+          controlState={node.controlState}
+          defaultControlState={node.defaultControlState}
+          disabled={node.disabled}
+          intent={node.intent}
+          closeOnSelect={node.closeOnSelect ?? true}
+          onControlStateChange={(controlState) =>
+            node.onControlStateChange?.(controlState, {
+              id: node.id,
+              type: 'checkbox',
+              controlState
+            })
+          }
+        >
+          <ButtonMenuTreeItemContent {...node} />
+        </ButtonMenuCheckboxItem>
+      );
+    }
+
     if (node.type === 'submenu') {
       return (
         <ButtonMenuSub key={node.id}>
@@ -630,6 +712,7 @@ export const ButtonMenu = {
   Content: ButtonMenuContent,
   Group: ButtonMenuGroup,
   GroupLabel: ButtonMenuGroupLabel,
+  CheckboxItem: ButtonMenuCheckboxItem,
   RadioGroup: ButtonMenuRadioGroup,
   RadioItem: ButtonMenuRadioItem,
   Sub: ButtonMenuSub,

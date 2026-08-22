@@ -2,8 +2,9 @@ export type MenuTreeIntent = 'neutral' | 'destructive';
 
 export type MenuTreeSelectionDetails = {
   id: string;
-  type: 'item' | 'link' | 'radio';
+  type: 'item' | 'link' | 'radio' | 'checkbox';
   value?: string;
+  controlState?: boolean;
 };
 
 type MenuTreeNodeBase<TIcon> = {
@@ -38,6 +39,14 @@ export type MenuTreeRadioItem<TIcon = unknown> = MenuTreeNodeBase<TIcon> & {
   value: string;
 };
 
+export type MenuTreeCheckboxItem<TIcon = unknown> = MenuTreeNodeBase<TIcon> & {
+  type: 'checkbox';
+  controlState?: boolean;
+  defaultControlState?: boolean;
+  closeOnSelect?: boolean;
+  onControlStateChange?: (controlState: boolean, details: MenuTreeSelectionDetails) => void;
+};
+
 export type MenuTreeRadioGroup<TIcon = unknown> = {
   type: 'radio-group';
   id: string;
@@ -70,6 +79,7 @@ export type MenuTreeNode<TIcon = unknown> =
   | MenuTreeGroup<TIcon>
   | MenuTreeItem<TIcon>
   | MenuTreeLink<TIcon>
+  | MenuTreeCheckboxItem<TIcon>
   | MenuTreeRadioGroup<TIcon>
   | MenuTreeSeparator
   | MenuTreeSubmenu<TIcon>;

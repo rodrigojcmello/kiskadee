@@ -12,6 +12,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CircleCheckIcon,
+  CircleSmallIcon,
   CircleXIcon,
   ClipboardCheckIcon,
   FileSpreadsheetIcon,
@@ -113,6 +114,7 @@ const glyphVolume1Icon = createSvgGlyph(Volume1Icon, {"size":"1em"});
 const glyphVolume2Icon = createSvgGlyph(Volume2Icon, {"size":"1em"});
 const glyphVolumeXIcon = createSvgGlyph(VolumeXIcon, {"size":"1em"});
 const glyphXIcon = createSvgGlyph(XIcon, {"size":"1em"});
+const glyphCircleSmallIconradioselected = createSvgGlyph(CircleSmallIcon, {"size":"1em","fill":"currentColor"});
 
 const glyphMap = {
     "align-center": glyphAlignCenterIcon,
@@ -152,6 +154,7 @@ const glyphMap = {
     "play": glyphPlayIcon,
     "plus": glyphPlusIcon,
     "redo": { glyph: glyphRedoIcon, direction: 'mirror' },
+    "radio-selected": glyphCircleSmallIconradioselected,
     "rocket": glyphRocketIcon,
     "search": glyphSearchIcon,
     "send": { glyph: glyphSendIcon, direction: 'mirror' },

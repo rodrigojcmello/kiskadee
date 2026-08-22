@@ -1,6 +1,7 @@
 export type {
   ButtonMenuActionProps,
   ButtonMenuButtonGroupProps,
+  ButtonMenuCheckboxItemProps,
   ButtonMenuContentProps,
   ButtonMenuGroupLabelProps,
   ButtonMenuGroupProps,

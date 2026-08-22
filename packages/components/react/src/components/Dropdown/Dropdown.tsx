@@ -47,6 +47,7 @@ import type {
   DropdownPresenceProps,
   DropdownPresenceRenderProps,
   DropdownPresenceRenderState,
+  DropdownRadioMarkProps,
   DropdownRootProps,
   DropdownSeparatorProps,
   DropdownSurfaceProps,
@@ -415,6 +416,7 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
     children,
     intent = DEFAULT_DROPDOWN_INTENT,
     selected = false,
+    hovered = false,
     disabled = false,
     interactive = true,
     render,
@@ -430,6 +432,7 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
     scale,
     intent: intent as DropdownIntent,
     selected,
+    hovered,
     disabled,
     interactive,
     className
@@ -450,7 +453,7 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
   if (render) {
     return (
       <DropdownItemIntentContext.Provider value={intent}>
-        {render(renderProps, { selected, disabled })}
+        {render(renderProps, { selected, hovered, disabled })}
       </DropdownItemIntentContext.Provider>
     );
   }
@@ -540,6 +543,23 @@ const DropdownCheckmark = forwardRef<HTMLSpanElement, DropdownCheckmarkProps>(
   }
 );
 
+const DropdownRadioMark = forwardRef<HTMLSpanElement, DropdownRadioMarkProps>(
+  function DropdownRadioMark({ visible = true, className, ...props }, ref) {
+    const resolvedClassName = useDropdownSlotClassName('e10', 'k-ddn-e10', className);
+    return (
+      <span
+        {...props}
+        ref={ref}
+        aria-hidden="true"
+        className={resolvedClassName}
+        data-visible={visible}
+      >
+        <IconGlyph name="radio-selected" />
+      </span>
+    );
+  }
+);
+
 const DropdownTrailing = forwardRef<HTMLSpanElement, DropdownTrailingProps>(
   function DropdownTrailing({ name, className, children, ...props }, ref) {
     const resolvedClassName = useDropdownSlotClassName('e6', 'k-ddn-e6', className);
@@ -569,6 +589,7 @@ export const Dropdown: {
   Group: typeof DropdownGroup;
   GroupLabel: typeof DropdownGroupLabel;
   Checkmark: typeof DropdownCheckmark;
+  RadioMark: typeof DropdownRadioMark;
   Item: typeof DropdownItem;
   Icon: typeof DropdownIcon;
   Label: typeof DropdownLabel;
@@ -587,6 +608,7 @@ export const Dropdown: {
   Group: DropdownGroup,
   GroupLabel: DropdownGroupLabel,
   Checkmark: DropdownCheckmark,
+  RadioMark: DropdownRadioMark,
   Item: DropdownItem,
   Icon: DropdownIcon,
   Label: DropdownLabel,

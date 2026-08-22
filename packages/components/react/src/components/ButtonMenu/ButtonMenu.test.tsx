@@ -47,6 +47,10 @@ function Check() {
   return <svg data-testid="check" />;
 }
 
+function RadioSelected() {
+  return <svg data-testid="radio-selected" />;
+}
+
 function ChevronEnd() {
   return <svg data-testid="chevron-end" />;
 }
@@ -56,6 +60,7 @@ const iconFamily = defineIconFamily({
   label: 'Test icons',
   glyphs: {
     check: Check,
+    'radio-selected': RadioSelected,
     'chevron-down': Chevron,
     'chevron-end': { glyph: ChevronEnd, direction: 'mirror' }
   }
@@ -468,7 +473,7 @@ describe('ButtonMenu', () => {
     expect(menu.querySelector('.k-ddn-x1 > .k-ddn-e2')).toBeNull();
   });
 
-  it('keeps radio checkmark tracks mounted without applying the Dropdown selected state', async () => {
+  it('keeps radio mark tracks mounted and projects the checked item as selected', async () => {
     const result = renderButtonMenu(
       <ButtonMenu.Root>
         <ButtonMenu.Trigger>Density</ButtonMenu.Trigger>
@@ -496,8 +501,43 @@ describe('ButtonMenu', () => {
     expect(compactCheckmark?.getAttribute('data-visible')).toBe('false');
     expect(comfortableCheckmark?.getAttribute('data-visible')).toBe('true');
     expect(compact.getAttribute('data-selected')).toBeNull();
-    expect(comfortable.getAttribute('data-selected')).toBeNull();
-    expect(result.getAllByTestId('check')).toHaveLength(2);
+    expect(comfortable.getAttribute('data-selected')).toBe('true');
+    expect(result.getAllByTestId('radio-selected')).toHaveLength(2);
+  });
+
+  it('supports independent checkbox items with check marks and selected projection', async () => {
+    const onControlStateChange = vi.fn();
+    const result = renderButtonMenu(
+      <ButtonMenu.Root>
+        <ButtonMenu.Trigger>View</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.CheckboxItem
+            textValue="Descriptions"
+            defaultControlState
+            closeOnSelect={false}
+            onControlStateChange={onControlStateChange}
+          >
+            <ButtonMenu.Label>Descriptions</ButtonMenu.Label>
+          </ButtonMenu.CheckboxItem>
+          <ButtonMenu.CheckboxItem textValue="Shortcuts" closeOnSelect={false}>
+            <ButtonMenu.Label>Shortcuts</ButtonMenu.Label>
+          </ButtonMenu.CheckboxItem>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'View' }));
+    const descriptions = await result.findByRole('menuitemcheckbox', { name: 'Descriptions' });
+    const shortcuts = result.getByRole('menuitemcheckbox', { name: 'Shortcuts' });
+
+    expect(descriptions.getAttribute('data-selected')).toBe('true');
+    expect(shortcuts.getAttribute('data-selected')).toBeNull();
+    fireEvent.click(shortcuts);
+    expect(shortcuts.getAttribute('aria-checked')).toBe('true');
+    expect(shortcuts.getAttribute('data-selected')).toBe('true');
+    expect(result.getAllByRole('menu')).toHaveLength(1);
+    fireEvent.click(descriptions);
+    expect(onControlStateChange).toHaveBeenCalledWith(false);
   });
 
   it('injects a logical submenu chevron and composes nested Dropdown surfaces', async () => {
@@ -534,6 +574,9 @@ describe('ButtonMenu', () => {
 
     fireEvent.keyDown(trigger, { key: 'ArrowRight' });
     await waitFor(() => expect(result.getAllByRole('menu')).toHaveLength(2));
+    expect(trigger.classList.contains('-h')).toBe(true);
+    expect(trigger.classList.contains('-s')).toBe(false);
+    expect(trigger.getAttribute('aria-selected')).toBeNull();
     expect(result.getByRole('menuitem', { name: 'PDF' })).toBeTruthy();
     expect(result.baseElement.querySelectorAll('.k-ddn-e1')).toHaveLength(2);
   });

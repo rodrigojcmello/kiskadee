@@ -60,6 +60,10 @@
         "play": "PlayIcon",
         "plus": "PlusIcon",
         "redo": "RedoIcon",
+        "radio-selected": {
+          "export": "CircleSmallIcon",
+          "defaults": { "fill": "currentColor" }
+        },
         "rocket": "RocketIcon",
         "search": "SearchIcon",
         "send": "SendIcon",
@@ -147,6 +151,7 @@
         "play": "PlayRegular",
         "plus": "AddRegular",
         "redo": "ArrowRedoRegular",
+        "radio-selected": "CircleSmallFilled",
         "rocket": "RocketRegular",
         "search": "SearchRegular",
         "send": "SendRegular",
@@ -223,6 +228,7 @@
         "play": "Play",
         "plus": "Add",
         "redo": "Redo",
+        "radio-selected": "DotMark",
         "rocket": "Rocket",
         "search": "Search",
         "send": "Send",
@@ -303,6 +309,13 @@
         "play": "Play",
         "plus": "Plus",
         "redo": "Redo",
+        "radio-selected": {
+          "export": "Circle",
+          "defaults": {
+            "fill": "currentColor",
+            "style": { "transform": "scale(0.6)", "transformOrigin": "center" }
+          }
+        },
         "rocket": "Rocket",
         "search": "Search",
         "send": "SendDiagonal",
@@ -382,6 +395,7 @@
         "play": "PlayIcon",
         "plus": "PlusIcon",
         "redo": "ArrowClockwiseIcon",
+        "radio-selected": "DotIcon",
         "rocket": "RocketIcon",
         "search": "MagnifyingGlassIcon",
         "send": "PaperPlaneTiltIcon",
@@ -458,6 +472,10 @@
         "play": "faPlay",
         "plus": "faPlus",
         "redo": "faRotateRight",
+        "radio-selected": {
+          "export": "faCircle",
+          "defaults": { "style": { "transform": "scale(0.5)", "transformOrigin": "center" } }
+        },
         "rocket": "faRocket",
         "search": "faMagnifyingGlass",
         "send": "faPaperPlane",
@@ -535,6 +553,10 @@
         "play": "play_arrow",
         "plus": "add",
         "redo": "redo",
+        "radio-selected": {
+          "export": "circle",
+          "defaults": { "style": { "transform": "scale(0.5)", "transformOrigin": "center" } }
+        },
         "rocket": "rocket_launch",
         "search": "search",
         "send": "send",

@@ -88,6 +88,7 @@ export function resolveDropdownItemClassName({
   scale,
   intent,
   selected,
+  hovered,
   disabled,
   interactive,
   className
@@ -97,11 +98,12 @@ export function resolveDropdownItemClassName({
   scale: ElementSizeValue;
   intent: DropdownIntent;
   selected: boolean;
+  hovered: boolean;
   disabled: boolean;
   interactive: boolean;
   className?: string;
 }): string {
-  const stateClass = disabled ? cn.disabled : selected ? cn.selected : undefined;
+  const projectedState = disabled || selected || hovered;
   return (
     joinClassNames(
       resolveDropdownElementClassName(element, scale, intent),
@@ -109,8 +111,10 @@ export function resolveDropdownItemClassName({
       className,
       interactive ? cn.interactive : undefined,
       interactive && !disabled ? cn.nativeInteraction : undefined,
-      stateClass,
-      stateClass ? cn.activator : undefined,
+      disabled ? cn.disabled : undefined,
+      !disabled && selected ? cn.selected : undefined,
+      !disabled && hovered ? cn.hover : undefined,
+      projectedState ? cn.activator : undefined,
       interactive ? 'k-foc' : undefined
     ) ?? ''
   );

@@ -88,11 +88,12 @@ export type DropdownItemProps = Omit<HTMLAttributes<HTMLElement>, 'children'> & 
   children?: ReactNode;
   intent?: DropdownIntent;
   selected?: boolean;
+  hovered?: boolean;
   disabled?: boolean;
   interactive?: boolean;
   render?: (
     props: DropdownItemRenderProps,
-    state: { selected: boolean; disabled: boolean }
+    state: { selected: boolean; hovered: boolean; disabled: boolean }
   ) => ReactElement;
 };
 
@@ -108,6 +109,7 @@ export type DropdownCheckmarkProps = Omit<
 > & {
   visible?: boolean;
 };
+export type DropdownRadioMarkProps = DropdownCheckmarkProps;
 export type DropdownTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> &
   ({ name: IconName; children?: never } | { name?: never; children: ReactNode });
 export type DropdownSeparatorProps = Omit<

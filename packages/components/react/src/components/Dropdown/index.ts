@@ -19,6 +19,7 @@ export type {
   DropdownPresenceProps,
   DropdownPresenceRenderProps,
   DropdownPresenceRenderState,
+  DropdownRadioMarkProps,
   DropdownRootProps,
   DropdownSeparatorProps,
   DropdownSurfaceProps,

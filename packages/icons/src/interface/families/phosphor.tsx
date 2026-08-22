@@ -10,6 +10,7 @@ import { CheckIcon } from '@phosphor-icons/react/Check';
 import { CheckCircleIcon } from '@phosphor-icons/react/CheckCircle';
 import { CircleNotchIcon } from '@phosphor-icons/react/CircleNotch';
 import { ClipboardIcon } from '@phosphor-icons/react/Clipboard';
+import { DotIcon } from '@phosphor-icons/react/Dot';
 import { DotsSixVerticalIcon } from '@phosphor-icons/react/DotsSixVertical';
 import { EnvelopeSimpleIcon } from '@phosphor-icons/react/EnvelopeSimple';
 import { FolderIcon } from '@phosphor-icons/react/Folder';
@@ -68,6 +69,7 @@ const glyphCheckCircleIcon = createSvgGlyph(CheckCircleIcon, {"size":"1em","weig
 const glyphCheckIcon = createSvgGlyph(CheckIcon, {"size":"1em","weight":"regular"});
 const glyphCircleNotchIcon = createSvgGlyph(CircleNotchIcon, {"size":"1em","weight":"regular"});
 const glyphClipboardIcon = createSvgGlyph(ClipboardIcon, {"size":"1em","weight":"regular"});
+const glyphDotIcon = createSvgGlyph(DotIcon, {"size":"1em","weight":"regular"});
 const glyphDotsSixVerticalIcon = createSvgGlyph(DotsSixVerticalIcon, {"size":"1em","weight":"regular"});
 const glyphEnvelopeSimpleIcon = createSvgGlyph(EnvelopeSimpleIcon, {"size":"1em","weight":"regular"});
 const glyphFolderIcon = createSvgGlyph(FolderIcon, {"size":"1em","weight":"regular"});
@@ -150,6 +152,7 @@ const glyphMap = {
     "play": glyphPlayIcon,
     "plus": glyphPlusIcon,
     "redo": { glyph: glyphArrowClockwiseIcon, direction: 'mirror' },
+    "radio-selected": glyphDotIcon,
     "rocket": glyphRocketIcon,
     "search": glyphMagnifyingGlassIcon,
     "send": { glyph: glyphPaperPlaneTiltIcon, direction: 'mirror' },

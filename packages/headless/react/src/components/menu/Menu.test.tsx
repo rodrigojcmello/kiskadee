@@ -434,6 +434,44 @@ describe('Headless Menu', () => {
     );
   });
 
+  it('supports independent checkbox state and keeps the menu open when requested', async () => {
+    const onControlStateChange = vi.fn();
+    const result = render(
+      <Menu.Root>
+        <Menu.Trigger>View</Menu.Trigger>
+        <Menu.Content>
+          <Menu.CheckboxItem
+            textValue="Descriptions"
+            defaultControlState
+            closeOnSelect={false}
+            onControlStateChange={onControlStateChange}
+          >
+            Descriptions
+          </Menu.CheckboxItem>
+          <Menu.CheckboxItem textValue="Shortcuts" closeOnSelect={false}>
+            Shortcuts
+          </Menu.CheckboxItem>
+        </Menu.Content>
+      </Menu.Root>
+    );
+
+    fireEvent.click(result.getByRole('button', { name: 'View' }));
+    const descriptions = await result.findByRole('menuitemcheckbox', { name: 'Descriptions' });
+    const shortcuts = result.getByRole('menuitemcheckbox', { name: 'Shortcuts' });
+    expect(descriptions.getAttribute('aria-checked')).toBe('true');
+    expect(shortcuts.getAttribute('aria-checked')).toBe('false');
+
+    fireEvent.keyDown(shortcuts, { key: ' ' });
+    expect(shortcuts.getAttribute('aria-checked')).toBe('true');
+    expect(descriptions.getAttribute('aria-checked')).toBe('true');
+    expect(onControlStateChange).not.toHaveBeenCalled();
+    expect(result.getByRole('menu')).toBeTruthy();
+
+    fireEvent.click(descriptions);
+    expect(descriptions.getAttribute('aria-checked')).toBe('false');
+    expect(onControlStateChange).toHaveBeenCalledWith(false);
+  });
+
   it('opens recursive submenus with logical arrows and closes one level per Escape', async () => {
     const result = render(<NestedExample />);
     const rootTrigger = result.getByRole('button', { name: 'Actions' });

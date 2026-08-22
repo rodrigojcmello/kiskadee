@@ -8,6 +8,7 @@ import {
   Bold,
   Check,
   CheckCircle,
+  Circle,
   ClipboardCheck,
   Dashboard,
   Drag,
@@ -115,6 +116,7 @@ const glyphUndo = createSvgGlyph(Undo, {"width":"1em","height":"1em"});
 const glyphUser = createSvgGlyph(User, {"width":"1em","height":"1em"});
 const glyphXmark = createSvgGlyph(Xmark, {"width":"1em","height":"1em"});
 const glyphXmarkCircle = createSvgGlyph(XmarkCircle, {"width":"1em","height":"1em"});
+const glyphCircleradioselected = createSvgGlyph(Circle, {"width":"1em","height":"1em","fill":"currentColor","style":{"transform":"scale(0.6)","transformOrigin":"center"}});
 
 const glyphMap = {
     "align-center": glyphAlignCenter,
@@ -154,6 +156,7 @@ const glyphMap = {
     "play": glyphPlay,
     "plus": glyphPlus,
     "redo": { glyph: glyphRedo, direction: 'mirror' },
+    "radio-selected": glyphCircleradioselected,
     "rocket": glyphRocket,
     "search": glyphSearch,
     "send": { glyph: glyphSendDiagonal, direction: 'mirror' },

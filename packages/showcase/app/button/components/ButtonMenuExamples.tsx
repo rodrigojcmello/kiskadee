@@ -24,10 +24,18 @@ const PRESENTATION_OPTIONS: Array<{
 
 function createWorkItemTree({
   onAction,
+  showDescriptions,
+  showShortcuts,
+  onShowDescriptionsChange,
+  onShowShortcutsChange,
   workItemType,
   onWorkItemTypeChange
 }: {
   onAction: (label: string) => void;
+  showDescriptions: boolean;
+  showShortcuts: boolean;
+  onShowDescriptionsChange: (controlState: boolean) => void;
+  onShowShortcutsChange: (controlState: boolean) => void;
   workItemType: string;
   onWorkItemTypeChange: (value: string) => void;
 }): MenuTree<IconName> {
@@ -46,6 +54,31 @@ function createWorkItemTree({
             label: 'New linked work item',
             icon: 'clipboard-check',
             onSelect: () => onAction('New linked work item')
+          },
+          {
+            type: 'submenu',
+            id: 'display-options',
+            label: 'Display options',
+            title: 'Display options',
+            icon: 'settings',
+            items: [
+              {
+                type: 'checkbox',
+                id: 'show-descriptions',
+                label: 'Show descriptions',
+                controlState: showDescriptions,
+                closeOnSelect: false,
+                onControlStateChange: onShowDescriptionsChange
+              },
+              {
+                type: 'checkbox',
+                id: 'show-shortcuts',
+                label: 'Show shortcuts',
+                controlState: showShortcuts,
+                closeOnSelect: false,
+                onControlStateChange: onShowShortcutsChange
+              }
+            ]
           },
           {
             type: 'submenu',
@@ -169,18 +202,30 @@ export function ButtonMenuExamples({
   const textProfiles = useShowcaseTextProfiles();
   const [lastAction, setLastAction] = useState('No action yet');
   const [workItemType, setWorkItemType] = useState('task');
+  const [showDescriptions, setShowDescriptions] = useState(true);
+  const [showShortcuts, setShowShortcuts] = useState(false);
   const [presentation, setPresentation] = useState<AdaptiveButtonMenuPresentation>('adaptive');
   const tree = useMemo(
     () =>
       createWorkItemTree({
         onAction: setLastAction,
+        showDescriptions,
+        showShortcuts,
+        onShowDescriptionsChange: (controlState) => {
+          setShowDescriptions(controlState);
+          setLastAction(`${controlState ? 'Enabled' : 'Disabled'} descriptions`);
+        },
+        onShowShortcutsChange: (controlState) => {
+          setShowShortcuts(controlState);
+          setLastAction(`${controlState ? 'Enabled' : 'Disabled'} shortcuts`);
+        },
         workItemType,
         onWorkItemTypeChange: (value) => {
           setWorkItemType(value);
           setLastAction(`Changed work item type to ${value}`);
         }
       }),
-    [workItemType]
+    [showDescriptions, showShortcuts, workItemType]
   );
 
   if (!available) return null;

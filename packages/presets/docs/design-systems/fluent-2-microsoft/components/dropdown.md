@@ -16,6 +16,8 @@
   - inspected Menu item: `9361:6242`
 - [Fluent Web Community Figma: Menu item states](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9361-10436)
   - inspected state node: `9361:10436`
+- [Fluent Web Community Figma: Menu item interaction matrix](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9121-6483)
+  - inspected state set: `9121:6483`
 - [Fluent Web Community Figma: Menu page](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9121-7573)
   - rich raster reference: `9121:7579`
   - inspectable Divider reference: `9121:6400`
@@ -30,6 +32,7 @@
 | Solid Menu surface | `9361:6145` | Background, padding, radius, item rhythm and Shadow 16 | Official exact |
 | Menu item anatomy | `9361:6242` | Leading icon, label, shortcut and trailing content | Official adapted |
 | Menu item states | `9361:10436` | Hover item radius and selection affordance geometry | Official adapted |
+| Menu interaction matrix | `9121:6483` | Rest, checked, Hover, Pressed, Selected and Disabled variants | Official adapted |
 | Dropdown selection | `9159:2470`, `9183:4601` | Shared anchored selection surface | Official adapted |
 | Divider | `9121:6400` | NeutralStroke2 and one-pixel line | Official adapted |
 | Rich Menu composition | `9121:7579` | Groups, titles, shortcuts and trailing affordances | Official adapted |
@@ -50,6 +53,14 @@
 - **Official adapted**: Fluent exposes check, radio, and submenu affordances as independent Menu
   anatomy. Kiskadee adds a dedicated leading checkmark slot while preserving `e3` for an ordinary
   leading icon and `e6` for trailing content such as a submenu chevron.
+- **Official adapted**: the inspected Light item matrix colors the leading icon with Brand-80 in
+  Selected/checked Rest, Brand-70 in Hover, and Brand-60 in Pressed. Kiskadee projects those states
+  from the item scope owner to `e3` and resolves each source token through the approved Blue ramp.
+- **Kiskadee extension**: selected radio and checkbox rows retain a colored Selected background.
+  Radio renders a family-mapped filled dot and checkbox renders a check; web semantics remain
+  `aria-checked` rather than `aria-selected`.
+- **Kiskadee extension**: an open submenu trigger persists the Hover visual while focus/pointer moves
+  into its submenu. It retains `aria-expanded` and does not become Selected.
 - **Official exact**: Figma node `9361:10436` keeps the hovered item's four-pixel radius. The schema
   already declares that value on `e2`; the React resolver must consume the generated radius class
   instead of flattening it structurally.
@@ -90,6 +101,10 @@
 | `colorNeutralBackground1Hover`, Light | Grey 96 `#f5f5f5` | `primitive.black.v1` L2 `#f6f6f6` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.002995` |
 | `colorNeutralBackground1Hover`, Dark | Grey 24 `#3d3d3d` | `primitive.black.v1` D18 `#3c3c3c` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.003844` |
 | Hover surface, Darker | No upstream Darker theme | `primitive.black.v1` D12 `#313131` on `e2.boxColor.neutral.medium.hover`, preserving the established Darker tone as a Kiskadee adaptation |
+| Destructive Low Hover, Light | Cranberry L2 `#fff4f2` | `dropdown.destructive` L2 on `e2.boxColor.destructive.medium.hover`; shared tonal coordinate with Button Low Hover, independent component role |
+| Leading icon Selected, Light | Brand-80 `#0064b4` | `icon.primary` L50 on `e3.textColor.neutral.medium.selected.rest` |
+| Leading icon Hover, Light | Brand-70 `#0055a4` | `icon.primary` L55 `#0059a1` on `e3.textColor.neutral.medium.hover` |
+| Leading icon Pressed, Light | Brand-60 `#004694` | `icon.primary` L60 `#045091` on `e3.textColor.neutral.medium.pressed` |
 | `colorNeutralForeground3`, Light | Grey 38 `#616161` | `dropdown.neutral` Light L50 `#5d616b` on `e8.textColor.neutral.medium.rest` |
 | `colorNeutralForeground3`, Dark | Grey 68 `#adadad` | `dropdown.neutral` Dark/Darker D70 `#8d919c` on `e8.textColor.neutral.medium.rest` |
 
@@ -104,7 +119,11 @@ literal schema color is introduced.
 - `e2`: neutral Medium item surface with 6/2/6/6 px top/end/bottom/start padding, 2 px inter-item
   spacing, and sparse Hover, Pressed, Selected, and Disabled deltas. Only Hover resolves through
   the achromatic `primitive.black.v1`; the other roles retain the promoted Fluent Neutral family.
-- `e3`: 20 px leading icon and 4 px logical gap.
+  `selected.hover` and `selected.pressed` intentionally repeat Selected Rest to reset the competing
+  top-level Hover/Pressed surface while a checked row remains selected. These are documented
+  compound-state precedence overrides, not redundant standalone states.
+- `e3`: 20 px leading icon and 4 px logical gap. Neutral items use sparse Brand deltas for Hover,
+  Pressed, Selected, Selected+Hover, and Selected+Pressed; destructive items retain Cranberry.
 - `e4`: Body 1 (`body-medium`) principal label with 2 px horizontal text inset.
 - `e5`: Caption 1 (`caption-medium`) auxiliary description with the same text inset.
 - `e6`: optional 20 px iconographic trailing content. It does not imply submenu behavior.
@@ -116,8 +135,8 @@ literal schema color is introduced.
   when the owning action is destructive; the action label and icon continue to carry intent.
 - `e9`: `caption-medium-strong` group heading using NeutralForeground2, mapped to Light L75 and
   Dark/Darker D85, with 6 px inline and 8 px block padding.
-- `e10`: optional 20 px leading checkmark with a 4 px logical gap. It reuses the ordinary text
-  palette; selection semantics and visibility remain the responsibility of the owning Menu.
+- `e10`: optional 20 px leading selection indicator with a 4 px logical gap. Checkbox uses `check`;
+  radio uses `radio-selected`. Selection semantics and visibility remain the owning Menu's job.
 
 Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
 line; it does not publish margins or reuse the standalone Separator component at runtime. The
@@ -146,9 +165,9 @@ separate artifact, or another request.
 ## Deferred Or Unsupported
 
 - Acrylic/blur is tracked by KIS-79 and does not change the solid surface in this revision.
-- Checkbox and multi-select semantics, split menu items, and executable shortcut bindings remain
-  deferred. Exclusive radio selection and recursive submenus are supported by the Menu layer; the
-  Select layer does not yet expose checkmarks or groups.
+- Split menu items and executable shortcut bindings remain deferred. Menu supports exclusive radio
+  selection and independent checkbox multi-selection; the Select layer does not yet expose these
+  menu semantics.
 - Preset-specific Menu width recipes remain deferred. `min-anchor` and `anchor` continue to opt out
   of the shared intrinsic-content bounds when a Select, Autocomplete, or consumer layout requires
   an anchor-relative width.

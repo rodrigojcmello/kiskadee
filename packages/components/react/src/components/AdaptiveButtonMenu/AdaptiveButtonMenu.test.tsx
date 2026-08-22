@@ -21,6 +21,7 @@ const iconFamily = defineIconFamily({
   label: 'Adaptive test icons',
   glyphs: {
     check: Glyph,
+    'radio-selected': Glyph,
     'chevron-down': Glyph,
     'chevron-end': Glyph,
     'chevron-left': Glyph,
@@ -155,6 +156,11 @@ describe('AdaptiveButtonMenu', () => {
 
     const dropdown = render(<Example compact={false} menuTree={radioTree} />);
     fireEvent.click(dropdown.getByRole('button', { name: 'Actions' }));
+    expect(
+      (await dropdown.findByRole('menuitemradio', { name: 'Comfortable' })).querySelector(
+        '[data-k-icon-name="radio-selected"]'
+      )
+    ).toBeTruthy();
     fireEvent.click(await dropdown.findByRole('menuitemradio', { name: 'Compact' }));
     expect(onValueChange).toHaveBeenLastCalledWith('compact', {
       id: 'compact-item',
@@ -166,11 +172,73 @@ describe('AdaptiveButtonMenu', () => {
 
     const bottomSheet = render(<Example compact menuTree={radioTree} />);
     fireEvent.click(bottomSheet.getByRole('button', { name: 'Actions' }));
+    expect(
+      bottomSheet
+        .getByRole('radio', { name: 'Comfortable' })
+        .querySelector('[data-k-icon-name="radio-selected"]')
+    ).toBeTruthy();
     fireEvent.click(bottomSheet.getByRole('radio', { name: 'Compact' }));
     expect(onValueChange).toHaveBeenLastCalledWith('compact', {
       id: 'compact-item',
       type: 'radio',
       value: 'compact'
     });
+  });
+
+  it('reports independent checkbox state from both presenters without closing when configured', async () => {
+    const onControlStateChange = vi.fn();
+    const checkboxTree: MenuTree<IconName> = {
+      id: 'view-menu',
+      title: 'View',
+      items: [
+        {
+          type: 'checkbox',
+          id: 'descriptions',
+          label: 'Descriptions',
+          defaultControlState: true,
+          closeOnSelect: false,
+          onControlStateChange
+        },
+        {
+          type: 'checkbox',
+          id: 'shortcuts',
+          label: 'Shortcuts',
+          closeOnSelect: false,
+          onControlStateChange
+        }
+      ]
+    };
+
+    const dropdown = render(<Example compact={false} menuTree={checkboxTree} />);
+    fireEvent.click(dropdown.getByRole('button', { name: 'Actions' }));
+    fireEvent.click(await dropdown.findByRole('menuitemcheckbox', { name: 'Shortcuts' }));
+    expect(onControlStateChange).toHaveBeenLastCalledWith(true, {
+      id: 'shortcuts',
+      type: 'checkbox',
+      controlState: true
+    });
+    expect(dropdown.getByRole('menu')).toBeTruthy();
+    dropdown.unmount();
+    onControlStateChange.mockClear();
+
+    const controlledCheckboxTree = (controlState: boolean): MenuTree<IconName> => ({
+      ...checkboxTree,
+      items: checkboxTree.items.map((item) =>
+        item.id === 'shortcuts' ? { ...item, controlState } : item
+      )
+    });
+    const bottomSheet = render(<Example compact menuTree={controlledCheckboxTree(false)} />);
+    fireEvent.click(bottomSheet.getByRole('button', { name: 'Actions' }));
+    fireEvent.click(bottomSheet.getByRole('checkbox', { name: 'Shortcuts' }));
+    expect(onControlStateChange).toHaveBeenLastCalledWith(true, {
+      id: 'shortcuts',
+      type: 'checkbox',
+      controlState: true
+    });
+    bottomSheet.rerender(<Example compact menuTree={controlledCheckboxTree(true)} />);
+    expect(
+      bottomSheet.getByRole('checkbox', { name: 'Shortcuts' }).getAttribute('aria-checked')
+    ).toBe('true');
+    expect(bottomSheet.getByRole('dialog', { name: 'View' })).toBeTruthy();
   });
 });

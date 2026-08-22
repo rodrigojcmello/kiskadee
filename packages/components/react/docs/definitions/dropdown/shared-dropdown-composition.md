@@ -32,7 +32,7 @@ open state, anchor registry, ID pair, or mechanical context.
 - `e7`: explicit separator.
 - `e8`: optional end text, such as a keyboard shortcut or metadata;
 - `e9`: optional visual group label.
-- `e10`: optional leading checkmark.
+- `e10`: optional leading selection indicator for checkbox or radio items.
 
 The surface may contain arbitrary non-interactive supporting content. Rich content that introduces
 multiple focus targets, dialog behavior, or form controls belongs to a future Popover or advanced
@@ -49,10 +49,11 @@ Group. Another Group without icons remains a single content column.
 The icon viewport comes from `global.iconSizes` through the normal `iconSize` Builder expansion.
 No browser measurement or icon-presence JavaScript is used.
 
-Checkable items keep `e10` mounted even while unchecked. Only the canonical `check` artwork changes
-visibility, so the selection track never collapses between radio values. The track precedes `e3`;
-an item may therefore contain checkmark, ordinary leading icon, end text, and trailing icon at the
-same time. Like ordinary icon alignment, checkmark alignment is scoped to the nearest explicit
+Checkable items keep `e10` mounted even while unchecked. Only its artwork changes visibility, so
+the selection track never collapses between values. Checkbox items use the canonical `check`;
+radio items use the canonical `radio-selected` filled dot. The track precedes `e3`; an item may
+therefore contain a selection indicator, ordinary leading icon, end text, and trailing icon at the
+same time. Like ordinary icon alignment, indicator alignment is scoped to the nearest explicit
 Group and is resolved entirely by structural CSS. The preset keeps authoring the gap as
 `e10.paddingRight`; the Builder emits only `--k-pdr`, and structural CSS consumes it as logical
 `padding-inline-end` so the relationship reverses correctly in RTL.
@@ -101,10 +102,10 @@ shortcut. `Dropdown.Trailing` remains iconographic and does not imply submenu be
 start inset is therefore the gap from principal content in both LTR and RTL; it is not a physical
 left margin or a runtime measurement.
 
-`Dropdown.Checkmark` is also visual only. It is always hidden from the accessibility tree and uses
-the canonical `check` glyph; Menu or Select owns the checked state and role. An unchecked wrapper
-remains in layout through `visible={false}` rather than rendering a placeholder or inspecting sibling
-children in JavaScript.
+`Dropdown.Checkmark` and `Dropdown.RadioMark` are visual only. Both are hidden from the
+accessibility tree; Menu or Select owns checked state and role. An unchecked wrapper remains in
+layout through `visible={false}` rather than rendering a placeholder or inspecting sibling children
+in JavaScript.
 
 ## Mechanical Overlay
 
@@ -207,13 +208,17 @@ bounds; no preset schema, generated utility, or browser style lookup is introduc
   changing menu semantics;
 - `ButtonMenu.Separator` supplies menu separator semantics around the Dropdown-owned line.
 
-Radio selection and recursive submenus remain ButtonMenu orchestration, not Dropdown variants:
+Selection and recursive submenus remain ButtonMenu orchestration, not Dropdown variants:
 
 - `ButtonMenu.RadioGroup` and `ButtonMenu.RadioItem` own `menuitemradio` behavior;
-- every RadioItem injects `Dropdown.Checkmark`, but checked state does not select the Dropdown row or
-  activate its selected background;
+- `ButtonMenu.CheckboxItem` owns independent `menuitemcheckbox` state through `controlState`,
+  `defaultControlState`, and `onControlStateChange`;
+- checked radio and checkbox items project the generic visual Selected state on the Dropdown row;
+  radio uses `Dropdown.RadioMark`, while checkbox uses `Dropdown.Checkmark`;
 - `ButtonMenu.Sub`, `ButtonMenu.SubTrigger`, and `ButtonMenu.SubContent` own nested menu state,
   keyboard behavior, focus restoration, and anchored collision handling;
+- while a submenu is open, SubTrigger projects Hover, keeps `aria-expanded`, and never emits
+  Selected or `aria-selected`;
 - SubTrigger injects the canonical logical `chevron-end`; icon-family RTL mirroring supplies the
   opposite direction without a physical icon name or consumer-authored action.
 

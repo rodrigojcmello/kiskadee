@@ -11,6 +11,7 @@ import {
   Close,
   CloseOutline,
   Dashboard,
+  DotMark,
   DragVertical,
   Edit,
   Email,
@@ -70,6 +71,7 @@ const glyphChevronRight = createSvgGlyph(ChevronRight, {"size":"1em"});
 const glyphClose = createSvgGlyph(Close, {"size":"1em"});
 const glyphCloseOutline = createSvgGlyph(CloseOutline, {"size":"1em"});
 const glyphDashboard = createSvgGlyph(Dashboard, {"size":"1em"});
+const glyphDotMark = createSvgGlyph(DotMark, {"size":"1em"});
 const glyphDragVertical = createSvgGlyph(DragVertical, {"size":"1em"});
 const glyphEdit = createSvgGlyph(Edit, {"size":"1em"});
 const glyphEmail = createSvgGlyph(Email, {"size":"1em"});
@@ -152,6 +154,7 @@ const glyphMap = {
     "play": glyphPlay,
     "plus": glyphAdd,
     "redo": { glyph: glyphRedo, direction: 'mirror' },
+    "radio-selected": glyphDotMark,
     "rocket": glyphRocket,
     "search": glyphSearch,
     "send": { glyph: glyphSend, direction: 'mirror' },

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { defineMenuTree, validateMenuTree } from './MenuTree.ts';
 
 describe('MenuTree', () => {
-  it('accepts recursive groups, radio choices, and submenus with stable IDs', () => {
+  it('accepts recursive groups, radio choices, checkboxes, and submenus with stable IDs', () => {
     const tree = defineMenuTree({
       id: 'actions',
       title: 'Actions',
@@ -18,6 +18,12 @@ describe('MenuTree', () => {
           id: 'share',
           label: 'Share',
           items: [
+            {
+              type: 'checkbox',
+              id: 'notify',
+              label: 'Notify people',
+              defaultControlState: true
+            },
             {
               type: 'radio-group',
               id: 'access',

@@ -63,6 +63,7 @@ import type {
   BottomSheetIconProps,
   BottomSheetItemProps,
   BottomSheetLabelProps,
+  BottomSheetRadioMarkProps,
   BottomSheetRootProps,
   BottomSheetSeparatorProps,
   BottomSheetSnapPoint,
@@ -763,6 +764,28 @@ const BottomSheetCheckmark = forwardRef<HTMLSpanElement, BottomSheetCheckmarkPro
   }
 );
 
+const BottomSheetRadioMark = forwardRef<HTMLSpanElement, BottomSheetRadioMarkProps>(
+  function BottomSheetRadioMark({ className, style, visible = true, ...props }, ref) {
+    const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.RadioMark');
+    const intent = useContext(BottomSheetItemIntentContext);
+    return (
+      <span
+        {...props}
+        ref={ref}
+        aria-hidden="true"
+        className={joinClassNames(
+          resolveBottomSheetElementClassName(classesMap?.e15, scale, intent),
+          resolved.e15,
+          className
+        )}
+        style={{ ...style, visibility: visible ? style?.visibility : 'hidden' }}
+      >
+        <IconGlyph name="radio-selected" />
+      </span>
+    );
+  }
+);
+
 const BottomSheetClose = forwardRef<HTMLButtonElement, BottomSheetCloseProps>(
   function BottomSheetClose(
     { children, icon = 'close', onClick, 'aria-label': ariaLabel, ...buttonProps },
@@ -828,5 +851,6 @@ export const BottomSheet = {
   Trailing: BottomSheetTrailing,
   Separator: BottomSheetSeparator,
   EndText: BottomSheetEndText,
-  Checkmark: BottomSheetCheckmark
+  Checkmark: BottomSheetCheckmark,
+  RadioMark: BottomSheetRadioMark
 };

@@ -63,6 +63,41 @@ type BottomSheetMenuPage = {
   items: readonly MenuTreeNode<IconName>[];
 };
 
+function findSubmenu(
+  nodes: readonly MenuTreeNode<IconName>[],
+  id: string
+): MenuTreeSubmenu<IconName> | undefined {
+  for (const node of nodes) {
+    if (node.type === 'submenu' && node.id === id) return node;
+    if (node.type === 'group') {
+      const submenu = findSubmenu(node.items, id);
+      if (submenu) return submenu;
+    }
+  }
+  return undefined;
+}
+
+function refreshPages(
+  tree: MenuTree<IconName>,
+  currentPages: readonly BottomSheetMenuPage[]
+): BottomSheetMenuPage[] {
+  const pages: BottomSheetMenuPage[] = [{ id: tree.id, title: tree.title, items: tree.items }];
+  let items = tree.items;
+
+  for (const currentPage of currentPages.slice(1)) {
+    const submenu = findSubmenu(items, currentPage.id);
+    if (!submenu) break;
+    pages.push({
+      id: submenu.id,
+      title: submenu.title ?? submenu.label,
+      items: submenu.items
+    });
+    items = submenu.items;
+  }
+
+  return pages;
+}
+
 const noopPageChange = (_path: readonly string[]): void => {};
 
 function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
@@ -175,7 +210,7 @@ function BottomSheetMenuRadioGroupView({
               controller.dismiss('selection', event.nativeEvent);
             }}
           >
-            <BottomSheet.Checkmark visible={selected} />
+            <BottomSheet.RadioMark visible={selected} />
             <BottomSheetMenuItemContent {...item} />
           </BottomSheet.Item>
         );
@@ -187,12 +222,16 @@ function BottomSheetMenuRadioGroupView({
 function BottomSheetMenuPageItems({
   nodes,
   onNavigate,
+  onUncontrolledCheckboxValueChange,
   onUncontrolledRadioValueChange,
+  uncontrolledCheckboxValues,
   uncontrolledRadioValues
 }: {
   nodes: readonly MenuTreeNode<IconName>[];
   onNavigate: (submenu: MenuTreeSubmenu<IconName>) => void;
+  onUncontrolledCheckboxValueChange: (itemId: string, controlState: boolean) => void;
   onUncontrolledRadioValueChange: (groupId: string, value: string) => void;
+  uncontrolledCheckboxValues: Readonly<Record<string, boolean>>;
   uncontrolledRadioValues: Readonly<Record<string, string>>;
 }) {
   const controller = useBottomSheetController();
@@ -206,7 +245,9 @@ function BottomSheetMenuPageItems({
           <BottomSheetMenuPageItems
             nodes={node.items}
             onNavigate={onNavigate}
+            onUncontrolledCheckboxValueChange={onUncontrolledCheckboxValueChange}
             onUncontrolledRadioValueChange={onUncontrolledRadioValueChange}
+            uncontrolledCheckboxValues={uncontrolledCheckboxValues}
             uncontrolledRadioValues={uncontrolledRadioValues}
           />
         </BottomSheet.Group>
@@ -221,6 +262,42 @@ function BottomSheetMenuPageItems({
           uncontrolledValue={uncontrolledRadioValues[node.id]}
           onUncontrolledValueChange={onUncontrolledRadioValueChange}
         />
+      );
+    }
+
+    if (node.type === 'checkbox') {
+      const controlState =
+        node.controlState ??
+        uncontrolledCheckboxValues[node.id] ??
+        node.defaultControlState ??
+        false;
+      return (
+        <BottomSheet.Item
+          key={node.id}
+          role="checkbox"
+          aria-checked={controlState}
+          selected={controlState}
+          disabled={node.disabled}
+          intent={node.intent as BottomSheetIntent | undefined}
+          onClick={(event) => {
+            if (node.disabled) return;
+            const nextControlState = !controlState;
+            if (node.controlState === undefined) {
+              onUncontrolledCheckboxValueChange(node.id, nextControlState);
+            }
+            node.onControlStateChange?.(nextControlState, {
+              id: node.id,
+              type: 'checkbox',
+              controlState: nextControlState
+            });
+            if (node.closeOnSelect ?? true) {
+              controller.dismiss('selection', event.nativeEvent);
+            }
+          }}
+        >
+          <BottomSheet.Checkmark visible={controlState} />
+          <BottomSheetMenuItemContent {...node} />
+        </BottomSheet.Item>
       );
     }
 
@@ -317,22 +394,29 @@ function BottomSheetMenuNavigator({
   const [uncontrolledRadioValues, setUncontrolledRadioValues] = useState<Record<string, string>>(
     {}
   );
+  const [uncontrolledCheckboxValues, setUncontrolledCheckboxValues] = useState<
+    Record<string, boolean>
+  >({});
   const bodyRef = useRef<HTMLDivElement | null>(null);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const scrollPositionsRef = useRef(new Map<string, number>());
   const currentPage = pages.at(-1) ?? pages[0];
   const parentPage = pages.at(-2);
+  const pagePath = JSON.stringify(pages.map((page) => page.id));
 
   useEffect(() => {
     if (!controller.open) {
       setPages([{ id: tree.id, title: tree.title, items: tree.items }]);
       setDirection('forward');
       scrollPositionsRef.current.clear();
+      return;
     }
+
+    setPages((current) => refreshPages(tree, current));
   }, [controller.open, tree.id, tree.items, tree.title]);
 
   useEffect(() => {
-    onPagePathChange(pages.map((page) => page.id));
+    onPagePathChange(JSON.parse(pagePath) as string[]);
     if (!controller.open) return;
     const frame = requestAnimationFrame(() => {
       if (bodyRef.current) {
@@ -341,7 +425,7 @@ function BottomSheetMenuNavigator({
       titleRef.current?.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(frame);
-  }, [controller.open, currentPage.id, onPagePathChange, pages]);
+  }, [controller.open, currentPage.id, onPagePathChange, pagePath]);
 
   const navigate = useCallback(
     (submenu: MenuTreeSubmenu<IconName>) => {
@@ -372,12 +456,20 @@ function BottomSheetMenuNavigator({
   const handleUncontrolledRadioValueChange = useCallback((groupId: string, value: string) => {
     setUncontrolledRadioValues((current) => ({ ...current, [groupId]: value }));
   }, []);
+  const handleUncontrolledCheckboxValueChange = useCallback(
+    (itemId: string, controlState: boolean) => {
+      setUncontrolledCheckboxValues((current) => ({ ...current, [itemId]: controlState }));
+    },
+    []
+  );
 
   const pageItems = (
     <BottomSheetMenuPageItems
       nodes={currentPage.items}
       onNavigate={navigate}
+      onUncontrolledCheckboxValueChange={handleUncontrolledCheckboxValueChange}
       onUncontrolledRadioValueChange={handleUncontrolledRadioValueChange}
+      uncontrolledCheckboxValues={uncontrolledCheckboxValues}
       uncontrolledRadioValues={uncontrolledRadioValues}
     />
   );

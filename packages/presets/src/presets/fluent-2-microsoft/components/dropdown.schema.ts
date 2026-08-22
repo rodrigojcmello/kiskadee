@@ -20,7 +20,11 @@ const THEMES = {
     groupLabelText: 75,
     secondaryText: 65,
     endText: 50,
-    disabledText: 35
+    disabledText: 35,
+    brandSelected: 50,
+    brandHover: 55,
+    brandPressed: 60,
+    destructiveHover: 2
   },
   dark: {
     track: 'd',
@@ -32,7 +36,11 @@ const THEMES = {
     groupLabelText: 85,
     secondaryText: 70,
     endText: 70,
-    disabledText: 45
+    disabledText: 45,
+    brandSelected: 40,
+    brandHover: 35,
+    brandPressed: 28,
+    destructiveHover: 14
   },
   darker: {
     track: 'd',
@@ -44,7 +52,11 @@ const THEMES = {
     groupLabelText: 85,
     secondaryText: 70,
     endText: 70,
-    disabledText: 45
+    disabledText: 45,
+    brandSelected: 40,
+    brandHover: 35,
+    brandPressed: 28,
+    destructiveHover: 14
   }
 } as const satisfies Record<
   ThemeName,
@@ -59,6 +71,10 @@ const THEMES = {
     secondaryText: KiskadeeTone;
     endText: KiskadeeTone;
     disabledText: KiskadeeTone;
+    brandSelected: KiskadeeTone;
+    brandHover: KiskadeeTone;
+    brandPressed: KiskadeeTone;
+    destructiveHover: KiskadeeTone;
   }
 >;
 
@@ -79,6 +95,9 @@ export function createFluent2MicrosoftDropdownSchema({
     const neutralEndText = c('default', recipe.track, 'dropdown.neutral', recipe.endText);
     const destructiveText = c.ref('default', recipe.track, 'dropdown.destructive', 'vivid');
     const disabledText = c('default', recipe.track, 'dropdown.neutral', recipe.disabledText);
+    const brandSelected = c('default', recipe.track, 'icon.primary', recipe.brandSelected);
+    const brandHover = c('default', recipe.track, 'icon.primary', recipe.brandHover);
+    const brandPressed = c('default', recipe.track, 'icon.primary', recipe.brandPressed);
 
     const textColor = {
       neutral: {
@@ -93,6 +112,22 @@ export function createFluent2MicrosoftDropdownSchema({
           disabled: { ref: disabledText }
         }
       }
+    };
+    const iconTextColor = {
+      neutral: {
+        medium: {
+          rest: neutralText,
+          hover: { ref: brandHover },
+          pressed: { ref: brandPressed },
+          selected: {
+            rest: { ref: brandSelected },
+            hover: { ref: brandHover },
+            pressed: { ref: brandPressed }
+          },
+          disabled: { ref: disabledText }
+        }
+      },
+      destructive: textColor.destructive
     };
 
     return {
@@ -116,7 +151,9 @@ export function createFluent2MicrosoftDropdownSchema({
                 hover: neutralHover,
                 pressed: c('default', recipe.track, 'dropdown.neutral', recipe.pressed),
                 selected: {
-                  rest: c('default', recipe.track, 'dropdown.neutral', recipe.selected)
+                  rest: c('default', recipe.track, 'dropdown.neutral', recipe.selected),
+                  hover: c('default', recipe.track, 'dropdown.neutral', recipe.selected),
+                  pressed: c('default', recipe.track, 'dropdown.neutral', recipe.selected)
                 },
                 disabled: transparent
               }
@@ -124,10 +161,12 @@ export function createFluent2MicrosoftDropdownSchema({
             destructive: {
               medium: {
                 rest: transparent,
-                hover: c('default', recipe.track, 'dropdown.destructive', 5),
+                hover: c('default', recipe.track, 'dropdown.destructive', recipe.destructiveHover),
                 pressed: c('default', recipe.track, 'dropdown.destructive', 9),
                 selected: {
-                  rest: c('default', recipe.track, 'dropdown.destructive', 7)
+                  rest: c('default', recipe.track, 'dropdown.destructive', 7),
+                  hover: c('default', recipe.track, 'dropdown.destructive', 7),
+                  pressed: c('default', recipe.track, 'dropdown.destructive', 7)
                 },
                 disabled: transparent
               }
@@ -137,6 +176,9 @@ export function createFluent2MicrosoftDropdownSchema({
       },
       text: {
         onSubtle: { textColor }
+      },
+      iconText: {
+        onSubtle: { textColor: iconTextColor }
       },
       auxiliaryText: {
         onSubtle: {
@@ -249,7 +291,7 @@ export function createFluent2MicrosoftDropdownSchema({
         iconSize: { 's:all': 's:md:1' },
         scales: { paddingRight: 4 },
         palettes: {
-          default: { light: light.text, dark: dark.text, darker: darker.text }
+          default: { light: light.iconText, dark: dark.iconText, darker: darker.iconText }
         }
       },
       e4: {
@@ -314,7 +356,7 @@ export function createFluent2MicrosoftDropdownSchema({
         }
       },
       e10: {
-        name: 'dropdown-checkmark',
+        name: 'dropdown-selection-indicator',
         iconSize: { 's:all': 's:md:1' },
         scales: { paddingRight: 4 },
         palettes: {

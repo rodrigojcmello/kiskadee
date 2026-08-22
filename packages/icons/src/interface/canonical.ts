@@ -36,6 +36,7 @@ export const CANONICAL_ICON_NAMES = [
   'play',
   'plus',
   'redo',
+  'radio-selected',
   'rocket',
   'search',
   'send',

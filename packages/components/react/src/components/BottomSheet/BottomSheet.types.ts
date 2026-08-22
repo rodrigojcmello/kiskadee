@@ -127,6 +127,7 @@ export type BottomSheetCheckmarkProps = Omit<
 > & {
   visible?: boolean;
 };
+export type BottomSheetRadioMarkProps = BottomSheetCheckmarkProps;
 export type BottomSheetTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> &
   ({ name: IconName; children?: never } | { name?: never; children: ReactNode }) & {
     functional?: boolean;

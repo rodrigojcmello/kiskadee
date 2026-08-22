@@ -12,6 +12,7 @@ import { CheckmarkCircleRegular } from '@fluentui/react-icons/headless/svg/check
 import { ChevronDownRegular } from '@fluentui/react-icons/headless/svg/chevron-down';
 import { ChevronLeftRegular } from '@fluentui/react-icons/headless/svg/chevron-left';
 import { ChevronRightRegular } from '@fluentui/react-icons/headless/svg/chevron-right';
+import { CircleSmallFilled } from '@fluentui/react-icons/headless/svg/circle-small';
 import { ClipboardCheckmarkRegular } from '@fluentui/react-icons/headless/svg/clipboard-checkmark';
 import { DeleteRegular } from '@fluentui/react-icons/headless/svg/delete';
 import { DismissRegular } from '@fluentui/react-icons/headless/svg/dismiss';
@@ -74,6 +75,7 @@ const glyphCheckmarkRegular = createSvgGlyph(CheckmarkRegular, {"fontSize":"1em"
 const glyphChevronDownRegular = createSvgGlyph(ChevronDownRegular, {"fontSize":"1em"});
 const glyphChevronLeftRegular = createSvgGlyph(ChevronLeftRegular, {"fontSize":"1em"});
 const glyphChevronRightRegular = createSvgGlyph(ChevronRightRegular, {"fontSize":"1em"});
+const glyphCircleSmallFilled = createSvgGlyph(CircleSmallFilled, {"fontSize":"1em"});
 const glyphClipboardCheckmarkRegular = createSvgGlyph(ClipboardCheckmarkRegular, {"fontSize":"1em"});
 const glyphDeleteRegular = createSvgGlyph(DeleteRegular, {"fontSize":"1em"});
 const glyphDismissCircleRegular = createSvgGlyph(DismissCircleRegular, {"fontSize":"1em"});
@@ -156,6 +158,7 @@ const glyphMap = {
     "play": glyphPlayRegular,
     "plus": glyphAddRegular,
     "redo": { glyph: glyphArrowRedoRegular, direction: 'mirror' },
+    "radio-selected": glyphCircleSmallFilled,
     "rocket": glyphRocketRegular,
     "search": glyphSearchRegular,
     "send": { glyph: glyphSendRegular, direction: 'mirror' },

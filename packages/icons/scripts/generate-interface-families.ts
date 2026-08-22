@@ -22,6 +22,13 @@ type FamilyVariant = {
   fill?: 0 | 1;
 };
 
+type FamilyMapping =
+  | string
+  | {
+      export: string;
+      defaults?: Record<string, unknown>;
+    };
+
 type FamilyBase = FamilyDirectionMetadata & {
   label: string;
   output?: string;
@@ -30,7 +37,7 @@ type FamilyBase = FamilyDirectionMetadata & {
   package: string;
   license: string;
   source: string;
-  mappings: Record<CanonicalIconName, string>;
+  mappings: Record<CanonicalIconName, FamilyMapping>;
 };
 
 type SvgFamily = FamilyBase & {
@@ -67,6 +74,18 @@ const generatedHeader = '// Generated from metadata/interface-families.json. Do 
 
 function variableName(exportName: string): string {
   return `glyph${exportName.replace(/[^A-Za-z0-9_$]/g, '')}`;
+}
+
+function mappingExport(mapping: FamilyMapping): string {
+  return typeof mapping === 'string' ? mapping : mapping.export;
+}
+
+function mappingDefaults(mapping: FamilyMapping): Record<string, unknown> {
+  return typeof mapping === 'string' ? {} : (mapping.defaults ?? {});
+}
+
+function mappingVariableName(iconName: CanonicalIconName, mapping: FamilyMapping): string {
+  return variableName(typeof mapping === 'string' ? mapping : `${mapping.export}-${iconName}`);
 }
 
 function toKebabCase(value: string): string {
@@ -119,13 +138,16 @@ function renderImports(family: SvgFamily | FontAwesomeFamily, exports: readonly 
 function renderDefinition(options: {
   family: Family;
   iconName: CanonicalIconName;
-  upstreamName: string;
+  mapping: FamilyMapping;
 }): string {
-  const { family, iconName, upstreamName } = options;
+  const { family, iconName, mapping } = options;
+  const upstreamName = mappingExport(mapping);
   const glyphExpression =
     family.adapter === 'material-symbols'
-      ? `createMaterialSymbolGlyph(${JSON.stringify(upstreamName)})`
-      : variableName(upstreamName);
+      ? `createMaterialSymbolGlyph(${JSON.stringify(upstreamName)}, ${JSON.stringify(
+          mappingDefaults(mapping)
+        )})`
+      : mappingVariableName(iconName, mapping);
   const direction = family.directions?.[iconName];
   const rtlUpstreamName = family.rtlMappings?.[iconName];
   const rtlGlyphExpression = rtlUpstreamName
@@ -169,19 +191,45 @@ function renderVariantRecord(
 }
 
 function renderSvgFamily(familyId: string, family: SvgFamily): string {
+  const baseExports = [
+    ...new Set([
+      ...Object.values(family.mappings).filter(
+        (mapping): mapping is string => typeof mapping === 'string'
+      ),
+      ...Object.values(family.rtlMappings ?? {})
+    ])
+  ].sort();
   const exports = [
-    ...new Set([...Object.values(family.mappings), ...Object.values(family.rtlMappings ?? {})])
+    ...new Set([
+      ...Object.values(family.mappings).map(mappingExport),
+      ...Object.values(family.rtlMappings ?? {})
+    ])
   ].sort();
   const imports = renderImports(family, exports);
-  const defaults = JSON.stringify(family.defaults ?? {});
-  const glyphs = exports
-    .map((name) => `const ${variableName(name)} = createSvgGlyph(${name}, ${defaults});`)
-    .join('\n');
+  const familyDefaults = JSON.stringify(family.defaults ?? {});
+  const baseGlyphs = baseExports.map(
+    (upstreamName) =>
+      `const ${variableName(upstreamName)} = createSvgGlyph(${upstreamName}, ${familyDefaults});`
+  );
+  const specializedGlyphs = Object.entries(family.mappings)
+    .filter(([, mapping]) => typeof mapping !== 'string')
+    .map(([iconName, mapping]) => {
+      const upstreamName = mappingExport(mapping);
+      const defaults = JSON.stringify({
+        ...(family.defaults ?? {}),
+        ...mappingDefaults(mapping)
+      });
+      return `const ${mappingVariableName(
+        iconName as CanonicalIconName,
+        mapping
+      )} = createSvgGlyph(${upstreamName}, ${defaults});`;
+    });
+  const glyphs = [...baseGlyphs, ...specializedGlyphs].join('\n');
   const definitions = CANONICAL_ICON_NAMES.map((name) =>
     renderDefinition({
       family,
       iconName: name,
-      upstreamName: family.mappings[name]
+      mapping: family.mappings[name]
     })
   ).join(',\n');
   const variants = renderVariantRecord(family, () => 'glyphMap');
@@ -210,15 +258,37 @@ ${variants}
 }
 
 function renderFontAwesomeFamily(familyId: string, family: FontAwesomeFamily): string {
+  const baseExports = [
+    ...new Set([
+      ...Object.values(family.mappings).filter(
+        (mapping): mapping is string => typeof mapping === 'string'
+      ),
+      ...Object.values(family.rtlMappings ?? {})
+    ])
+  ].sort();
   const exports = [
-    ...new Set([...Object.values(family.mappings), ...Object.values(family.rtlMappings ?? {})])
+    ...new Set([
+      ...Object.values(family.mappings).map(mappingExport),
+      ...Object.values(family.rtlMappings ?? {})
+    ])
   ].sort();
   const imports = renderImports(family, exports);
-  const glyphs = exports
-    .map((name) => `const ${variableName(name)} = createFontAwesomeGlyph(${name});`)
-    .join('\n');
+  const baseGlyphs = baseExports.map(
+    (upstreamName) =>
+      `const ${variableName(upstreamName)} = createFontAwesomeGlyph(${upstreamName});`
+  );
+  const specializedGlyphs = Object.entries(family.mappings)
+    .filter(([, mapping]) => typeof mapping !== 'string')
+    .map(([iconName, mapping]) => {
+      const upstreamName = mappingExport(mapping);
+      return `const ${mappingVariableName(
+        iconName as CanonicalIconName,
+        mapping
+      )} = createFontAwesomeGlyph(${upstreamName}, ${JSON.stringify(mappingDefaults(mapping))});`;
+    });
+  const glyphs = [...baseGlyphs, ...specializedGlyphs].join('\n');
   const definitions = CANONICAL_ICON_NAMES.map((name) =>
-    renderDefinition({ family, iconName: name, upstreamName: family.mappings[name] })
+    renderDefinition({ family, iconName: name, mapping: family.mappings[name] })
   ).join(',\n');
   const onlyVariant = Object.keys(family.variants)[0];
   const variants = renderVariantRecord(family, () => 'glyphMap');
@@ -254,7 +324,10 @@ ${variants}
 
 function renderMaterialFamily(familyId: string, family: MaterialSymbolsFamily): string {
   const ligatures = [
-    ...new Set([...Object.values(family.mappings), ...Object.values(family.rtlMappings ?? {})])
+    ...new Set([
+      ...Object.values(family.mappings).map(mappingExport),
+      ...Object.values(family.rtlMappings ?? {})
+    ])
   ].sort();
   for (const [variantId, variant] of Object.entries(family.variants)) {
     const fill = variant.fill;
@@ -266,7 +339,7 @@ function renderMaterialFamily(familyId: string, family: MaterialSymbolsFamily): 
     renderDefinition({
       family,
       iconName: name,
-      upstreamName: family.mappings[name]
+      mapping: family.mappings[name]
     })
   ).join(',\n');
   const variants = renderVariantRecord(family, () => 'glyphMap');

@@ -18,18 +18,42 @@ describe('official preset Dropdown schemas', () => {
   });
 
   it.each([
-    [fluent2Microsoft, 's:md:1', 4],
-    [ios27Apple, 's:sm:1', 10],
-    [material3Google, 's:lg:1', 12]
-  ] as const)('$prefix publishes the dedicated selected-item checkmark geometry', (schema, iconSize, paddingRight) => {
+    [fluent2Microsoft, 's:md:1', 4, 'dropdown-selection-indicator'],
+    [ios27Apple, 's:sm:1', 10, 'dropdown-checkmark'],
+    [material3Google, 's:lg:1', 12, 'dropdown-checkmark']
+  ] as const)('$prefix publishes the dedicated selected-item indicator geometry', (schema, iconSize, paddingRight, name) => {
     const elements = schema.components.dropdown?.elements;
 
     expect(elements?.e10).toMatchObject({
-      name: 'dropdown-checkmark',
+      name,
       iconSize: { 's:all': iconSize },
       scales: { paddingRight }
     });
-    expect(elements?.e10.palettes).toEqual(elements?.e3.palettes);
+    if (schema !== fluent2Microsoft) {
+      expect(elements?.e10.palettes).toEqual(elements?.e3.palettes);
+    }
+  });
+
+  it('maps Fluent item and leading-icon interaction states through approved tonal roles', () => {
+    const elements = fluent2Microsoft.components.dropdown?.elements;
+    const lightItem = elements?.e2.palettes?.default?.light?.onSubtle.boxColor;
+    const lightIcon = elements?.e3.palettes?.default?.light?.onSubtle.textColor;
+
+    expect(lightItem?.destructive?.medium?.hover).toBe('#fff4f2');
+    expect(lightItem?.neutral?.medium?.selected).toEqual({
+      rest: '#e4e9f5',
+      hover: '#e4e9f5',
+      pressed: '#e4e9f5'
+    });
+    expect(lightIcon?.neutral?.medium).toMatchObject({
+      hover: { ref: '#0059a1' },
+      pressed: { ref: '#045091' },
+      selected: {
+        rest: { ref: '#0064b4' },
+        hover: { ref: '#0059a1' },
+        pressed: { ref: '#045091' }
+      }
+    });
   });
 
   it('keeps the solid Fluent surface borderless and maps the source geometry', () => {

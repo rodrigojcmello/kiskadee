@@ -10,6 +10,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight';
+import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark';
 import { faClipboardCheck } from '@fortawesome/free-solid-svg-icons/faClipboardCheck';
@@ -111,6 +112,7 @@ const glyphfaVolumeHigh = createFontAwesomeGlyph(faVolumeHigh);
 const glyphfaVolumeLow = createFontAwesomeGlyph(faVolumeLow);
 const glyphfaVolumeXmark = createFontAwesomeGlyph(faVolumeXmark);
 const glyphfaXmark = createFontAwesomeGlyph(faXmark);
+const glyphfaCircleradioselected = createFontAwesomeGlyph(faCircle, {"style":{"transform":"scale(0.5)","transformOrigin":"center"}});
 
 const glyphMap = {
     "align-center": glyphfaAlignCenter,
@@ -150,6 +152,7 @@ const glyphMap = {
     "play": glyphfaPlay,
     "plus": glyphfaPlus,
     "redo": { glyph: glyphfaRotateRight, direction: 'mirror' },
+    "radio-selected": glyphfaCircleradioselected,
     "rocket": glyphfaRocket,
     "search": glyphfaMagnifyingGlass,
     "send": { glyph: glyphfaPaperPlane, direction: 'mirror' },

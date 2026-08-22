@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { IconGlyphRenderer, IconGlyphRendererProps } from './types.ts';
 
 type FontAwesomeIconDefinition = {
@@ -11,7 +12,10 @@ type FontAwesomeIconDefinition = {
   ];
 };
 
-export function createFontAwesomeGlyph(icon: FontAwesomeIconDefinition): IconGlyphRenderer {
+export function createFontAwesomeGlyph(
+  icon: FontAwesomeIconDefinition,
+  defaults: Readonly<{ style?: CSSProperties }> = {}
+): IconGlyphRenderer {
   function FontAwesomeGlyph(props: IconGlyphRendererProps) {
     const [width, height, , , svgPathData] = icon.icon;
     const paths = typeof svgPathData === 'string' ? [svgPathData] : svgPathData;
@@ -24,7 +28,7 @@ export function createFontAwesomeGlyph(icon: FontAwesomeIconDefinition): IconGly
         fill="currentColor"
         focusable="false"
         height="1em"
-        style={props.style}
+        style={{ ...defaults.style, ...props.style }}
         viewBox={`0 0 ${width} ${height}`}
         width="1em"
       >

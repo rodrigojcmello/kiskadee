@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { IconGlyphRenderer, IconGlyphRendererProps } from './types.ts';
 
 const MATERIAL_SYMBOLS_FONT_FAMILY = 'Material Symbols Outlined';
@@ -8,7 +9,10 @@ type MaterialSymbolGlyphProps = IconGlyphRendererProps & {
   fill?: 0 | 1;
 };
 
-export function createMaterialSymbolGlyph(ligature: string): IconGlyphRenderer {
+export function createMaterialSymbolGlyph(
+  ligature: string,
+  defaults: Readonly<{ style?: CSSProperties }> = {}
+): IconGlyphRenderer {
   function MaterialSymbolGlyph(props: IconGlyphRendererProps) {
     const { fill = 0, ...glyphProps } = props as MaterialSymbolGlyphProps;
     const className = ['k-ms', props.className].filter(Boolean).join(' ');
@@ -30,6 +34,7 @@ export function createMaterialSymbolGlyph(ligature: string): IconGlyphRenderer {
           overflowWrap: 'normal',
           textTransform: 'none',
           whiteSpace: 'nowrap',
+          ...defaults.style,
           ...props.style
         }}
       >

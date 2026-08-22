@@ -36,3 +36,9 @@ adapter, so selecting that family does not add Font Awesome's React runtime or g
 Iconoir Solid and Font Awesome Classic Free Regular remain partial relative to the canonical
 contract. Kiskadee requires complete canonical coverage for every exposed official variant, so
 both remain deferred. No visual fallback fills their missing concepts.
+
+The canonical `radio-selected` mapping uses `CircleSmallIcon`, `CircleSmallFilled`, `DotMark`,
+`Circle`, `DotIcon`, `faCircle`, and Material Symbols `circle` for Lucide, Fluent, Carbon, Iconoir,
+Phosphor, Font Awesome, and Material respectively. Iconoir, Font Awesome, and Material apply
+mapping-local fill or optical defaults in generated adapters; no CSS pseudo-element supplies the
+radio dot.
