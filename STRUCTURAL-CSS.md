@@ -809,12 +809,22 @@ Rules:
 - treat absence of a projection as absence of the capability, not permission to add a Sass
   fallback.
 
-The Registry currently projects optional `Button.e6.boxWidth` to `Button.e1.p.gd`. `Button.Group`
-applies that utility only to participating Button roots while the `groupDivider` branch is active,
-and structural Sass consumes `--k-bxw` directly as the negative logical overlap of both Buttons
-adjacent to each fixed seam. Migration of Tabs fixed width remains only a future candidate. See
+The Registry currently serves Button connected-divider overlap and Dropdown independent empty
+leading tracks. Runtime applies only the approved width/gap subsets, and structural Sass consumes
+their emitted variables on the approved structural nodes. Migration of Tabs fixed width remains
+only a future candidate. See
 [`structural-utility-projections.md`](packages/web-builder/docs/definitions/structural-utility-projections.md)
 for the canonical eligibility and artifact contract.
+
+## Complementary spacing composition
+
+Structural CSS may conditionally combine one element's base spacing with a second spacing authored
+by that same element. This is **Complementary Spacing Composition (CSC)**.
+
+CSC must consume the complementary value as an emitted token. Structural CSS owns only the local
+activation condition and logical-axis application; it must not calculate the complement, borrow a
+different element's token, or add a fallback. See
+[`schema-to-web-composition-patterns.md`](docs/definitions/schema-to-web-composition-patterns.md).
 
 ## Required custom properties
 

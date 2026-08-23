@@ -143,15 +143,21 @@ owners.
 
 ## Current registry and candidates
 
-The canonical Registry currently contains one projection:
+The canonical Registry currently contains these projection families:
 
 - `button-group-divider-thickness` projects optional `Button.e6.scales.boxWidth` to `Button.e1`
   under artifact key `gd`, with `retainSource: true`.
+- Dropdown independent leading-track projections expose `e3` icon width/gap under `e3.p.iw/ig`
+  and `e10` selection width/gap under `e10.p.sw/sg`, all with `retainSource: true`.
 
 `Button.e6` remains the only visual author. Its normal `s` bucket continues to size the decorative
 line, while `Button.e1.p.gd` lets grouped Button roots expose the same `--k-bxw` utility for logical
 seam-overlap compensation. Runtime activates that projection only when `groupDivider` has
 compatible paint, the projection exists, and the group contains more than one Button.
+
+Dropdown keeps `e3` and `e10` as the only visual authors. p-react applies the projected width and
+gap utilities to empty structural track nodes only when another direct item in the same independent
+group renders the corresponding leading slot. The projection emits no placeholder glyph or value.
 
 Tabs fixed width remains a future candidate for migration from its specialized width bucket. It
 must not be described as using `p` until a dedicated migration is implemented and validated.

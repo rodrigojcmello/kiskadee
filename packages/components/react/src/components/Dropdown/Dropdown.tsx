@@ -8,6 +8,7 @@ import type {
 } from '@kiskadee/core';
 import { Dropdown as HeadlessDropdown } from '@kiskadee/react-headless/dropdown';
 import {
+  cloneElement,
   createContext,
   forwardRef,
   useCallback,
@@ -18,6 +19,7 @@ import {
   useState
 } from 'react';
 import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
+import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
@@ -435,6 +437,7 @@ const DropdownScrollArea = forwardRef<HTMLDivElement, DropdownScrollAreaProps>(
     const frameRef = useRef<number | null>(null);
     const lastFrameTimeRef = useRef<number | null>(null);
     const directionRef = useRef<-1 | 1 | null>(null);
+    const [activeScrollEdge, setActiveScrollEdge] = useState<'start' | 'end' | null>(null);
     const [scrollState, setScrollState] = useState({ start: false, end: false });
     const updateScrollState = useCallback(() => {
       const viewport = viewportRef.current;
@@ -451,6 +454,7 @@ const DropdownScrollArea = forwardRef<HTMLDivElement, DropdownScrollAreaProps>(
     const stopContinuousScroll = useCallback(() => {
       directionRef.current = null;
       lastFrameTimeRef.current = null;
+      setActiveScrollEdge(null);
       if (delayRef.current !== null) clearTimeout(delayRef.current);
       if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
       delayRef.current = null;
@@ -491,6 +495,7 @@ const DropdownScrollArea = forwardRef<HTMLDivElement, DropdownScrollAreaProps>(
         directionRef.current = direction;
         delayRef.current = setTimeout(() => {
           delayRef.current = null;
+          setActiveScrollEdge(direction < 0 ? 'start' : 'end');
           frameRef.current = requestAnimationFrame(runContinuousScroll);
         }, SCROLL_HOVER_DELAY_MS);
       },
@@ -569,7 +574,12 @@ const DropdownScrollArea = forwardRef<HTMLDivElement, DropdownScrollAreaProps>(
       const iconName = edge === 'start' ? scrollStartIcon : scrollEndIcon;
       if (!hasAffordanceStyle || !iconName || !scrollState[edge]) return null;
       return (
-        <span aria-hidden="true" className={resolved.e11} data-edge={edge}>
+        <span
+          aria-hidden="true"
+          className={resolved.e11}
+          data-active={activeScrollEdge === edge || undefined}
+          data-edge={edge}
+        >
           <span className="k-ddn-x5">
             <FamilyResolvedIcon name={iconName} />
           </span>
@@ -605,6 +615,30 @@ const DropdownGroup = forwardRef<HTMLDivElement, DropdownGroupProps>(function Dr
 ) {
   return <div {...props} ref={ref} className={`k-ddn-x2 ${className ?? ''}`.trim()} />;
 });
+
+function resolveDropdownLeadingTrackPlaceholders(
+  classesMap: DropdownClassesMap | undefined,
+  scale: ElementSizeValue
+): React.ReactNode {
+  const iconWidth = resolveStructuralUtilityProjectionClassName(classesMap?.e3, 'iw', scale);
+  const iconGap = resolveStructuralUtilityProjectionClassName(classesMap?.e3, 'ig', scale);
+  const selectionWidth = resolveStructuralUtilityProjectionClassName(classesMap?.e10, 'sw', scale);
+  const selectionGap = resolveStructuralUtilityProjectionClassName(classesMap?.e10, 'sg', scale);
+
+  return (
+    <>
+      {selectionWidth && selectionGap ? (
+        <span
+          aria-hidden="true"
+          className={joinClassNames('k-ddn-x7', selectionWidth, selectionGap)}
+        />
+      ) : null}
+      {iconWidth && iconGap ? (
+        <span aria-hidden="true" className={joinClassNames('k-ddn-x6', iconWidth, iconGap)} />
+      ) : null}
+    </>
+  );
+}
 
 const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function DropdownItem(
   {
@@ -644,11 +678,14 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
     'data-selected': selected || undefined,
     'data-disabled': disabled || undefined
   } as const;
+  const leadingTrackPlaceholders = resolveDropdownLeadingTrackPlaceholders(classesMap, scale);
 
   if (render) {
+    const renderedItem = render(renderProps, { selected, hovered, disabled });
+    const renderedChildren = (renderedItem.props as { children?: React.ReactNode }).children;
     return (
       <DropdownItemIntentContext.Provider value={intent}>
-        {render(renderProps, { selected, hovered, disabled })}
+        {cloneElement(renderedItem, undefined, leadingTrackPlaceholders, renderedChildren)}
       </DropdownItemIntentContext.Provider>
     );
   }
@@ -656,6 +693,7 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
   return (
     <DropdownItemIntentContext.Provider value={intent}>
       <div {...nativeProps} ref={nativeRef as React.Ref<HTMLDivElement>}>
+        {leadingTrackPlaceholders}
         {children}
       </div>
     </DropdownItemIntentContext.Provider>

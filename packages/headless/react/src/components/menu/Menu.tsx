@@ -1053,21 +1053,24 @@ const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(function MenuCo
           id: contentId,
           ...nativeContentProps
         } = contentProps;
+        const ref = (node: HTMLDivElement | null) => {
+          assignRef(contentRef, node);
+          assignRef(forwardedRef, node);
+        };
         return (
-          <div {...nativeContentProps} ref={contentRef}>
-            <MenuItemsContent
-              ref={forwardedRef}
-              id={contentId}
-              className={className}
-              aria-label={ariaLabel}
-              aria-labelledby={ariaLabelledBy}
-              onKeyDown={onKeyDown}
-              render={render}
-              state={state}
-            >
-              {children}
-            </MenuItemsContent>
-          </div>
+          <MenuItemsContent
+            {...nativeContentProps}
+            ref={ref}
+            id={contentId}
+            className={className}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            onKeyDown={onKeyDown}
+            render={render}
+            state={state}
+          >
+            {children}
+          </MenuItemsContent>
         );
       }}
     />

@@ -82,6 +82,7 @@ the upstream names remain evidence rather than schema aliases:
 | Caption 1 Strong | `caption-medium-strong` | body | Semibold | 12 / 16 px | Official adapted |
 | Body 1 | `body-medium` | body | Regular | 14 / 20 px | Official adapted |
 | Body 1 Strong | `body-medium-strong` | body | Semibold | 14 / 20 px | Official adapted |
+| Body Large | `body-large` | body | Regular | 16 / 22 px | Kiskadee extension |
 | Subtitle 2 | `subtitle-small` | heading | Semibold | 16 / 22 px | Official adapted |
 | Subtitle 1 | `subtitle-large` | heading | Semibold | 20 / 26 px | Official adapted |
 | Title 3 | `heading-small` | heading | Semibold | 24 / 32 px | Official adapted |
@@ -98,6 +99,9 @@ three entries are **Deferred** because the normalized Kiskadee catalog intention
 numeric metrics of `subtitle-small` while keeping the Button label on the `body` role, so an
 application may assign a distinct heading family without changing control labels.
 
+`body-large` is a **Kiskadee extension** at body Regular 16/22. It supplies the Large Dropdown label
+without conflating ordinary menu text with the Semibold Button-oriented `label-large` profile.
+
 Component elements select these profiles by Kiskadee scale and, where needed, breakpoint. The
 catalog owns font role, weight, size, line height, and optional tracking; component schemas own
 padding, gap, margin, alignment, height, palettes, and interaction states. The official shared
@@ -106,6 +110,8 @@ exception was removed instead of encoding component geometry as a typography pro
 
 The responsive default Button selects `label-large` below `bp:lg:1` and `body-medium-strong` from
 that breakpoint onward. Small selects `caption-medium`; Large selects `label-large`.
+The responsive default Dropdown similarly selects `body-large` below `bp:lg:1` and `body-medium`
+from that breakpoint onward; explicit Large remains on `body-large`.
 
 ## Interface Icon Evidence
 

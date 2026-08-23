@@ -22,6 +22,12 @@ Arbitrary icon content deliberately supplied by the consumer through composition
 renderer. A Kiskadee component owns the slot, but does not interpret the artwork or choose its icon
 family.
 
+### CSC — Complementary Spacing Composition
+
+The composition of an element's always-on spacing with a second, independently authored spacing
+that Structural CSS applies only under a local structural condition. CSC never borrows another
+element's value or calculates the complement at runtime.
+
 ### DSPE — Decorations, Scales, Palettes, and Effects
 
 The four fundamental visual domains available under a schema element. Use **DSPE taxonomy** as the
@@ -83,6 +89,18 @@ deduplicated and carried into generated CSS and class-map artifacts.
 A Style Key is not a Schema property name, generated CSS class name, component prop, or public
 runtime API.
 
+### Structural CSS
+
+The p-react styling layer that owns Web DOM composition, layout and flow, stacking and clipping,
+structural geometry, and browser-specific rendering mechanics. Structural CSS may decide where and
+how a Schema-generated value is consumed, but it is not the authority for design tokens, semantic
+colors, responsive thresholds, or preset-authored spacing and dimensions.
+
+Use **Structural CSS** when distinguishing framework-owned Web mechanics from Schema-authored
+visual values. A value does not become structural merely because Sass consumes it: for example, a
+Dropdown scroll affordance may use Structural CSS to apply an `iconSize` variable as its minimum
+block size, while the dimension itself remains owned by the Schema.
+
 ### Showcase
 
 The Kiskadee consumer and visual-validation application located at `packages/showcase`. Showcase
@@ -118,11 +136,14 @@ The iOS component project rooted at `packages/components/ios`.
 - Use **DSPE taxonomy** when discussing the four visual domains collectively; use the individual
   domain name when ownership or behavior differs between them.
 - Capitalize **Schema**, **Style Key**, and **Showcase** when invoking their canonical Kiskadee
-  meanings. Lowercase remains appropriate for ordinary generic usage.
+  meanings. Capitalize **Structural CSS** when invoking the canonical p-react layer. Lowercase
+  remains appropriate for ordinary generic usage.
 - Keep the project aliases lowercase and hyphenated: `p-react`, `p-android`, and `p-ios`.
 
 ## Related definitions
 
+- [Schema-to-Web composition patterns](./schema-to-web-composition-patterns.md) centralizes CSC,
+  SEP, and SUP and defines when each pattern applies.
 - [Icon consumption](./icon-consumption.md) defines the complete E-I, CP-I, family-resolution, and
   icon-size ownership contracts.
 - [Project governance and responsibility](./project-governance.md) defines project authority,
@@ -131,5 +152,7 @@ The iOS component project rooted at `packages/components/ios`.
   the summarized platform flow.
 - [Schema, build artifacts, and runtime rules](../../SCHEMA-BUILD-RUNTIME-RULES.md) defines the
   boundary between Schema ownership and generated or runtime behavior.
+- [Structural CSS](../../STRUCTURAL-CSS.md) defines the complete ownership, naming, and consumption
+  rules for the p-react structural styling layer.
 - [Structural utility projections](../../packages/web-builder/docs/definitions/structural-utility-projections.md)
   defines the SUP eligibility, registry, and artifact contracts.

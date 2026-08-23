@@ -287,9 +287,15 @@ export function createFluent2MicrosoftDropdownSchema({
       e2: {
         name: 'dropdown-item',
         scales: {
-          paddingTop: 6,
+          paddingTop: {
+            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:lg:1': 9
+          },
           paddingRight: 2,
-          paddingBottom: 6,
+          paddingBottom: {
+            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:lg:1': 9
+          },
           paddingLeft: 6,
           marginBottom: 2,
           borderRadius: { rounded: 4, pill: 4, square: 0 }
@@ -300,16 +306,22 @@ export function createFluent2MicrosoftDropdownSchema({
       },
       e3: {
         name: 'dropdown-icon',
-        iconSize: { 's:all': 's:md:1' },
-        scales: { paddingRight: 4 },
+        iconSize: {
+          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:lg:1': 's:lg:1'
+        },
+        scales: { paddingRight: 6 },
         palettes: {
           default: { light: light.iconText, dark: dark.iconText, darker: darker.iconText }
         }
       },
       e4: {
         name: 'dropdown-label',
-        typography: { 's:all': 'body-medium' },
-        scales: { paddingRight: 2, paddingLeft: 2 },
+        typography: {
+          's:md:1': { 'bp:all': 'body-large', 'bp:lg:1': 'body-medium' },
+          's:lg:1': 'body-large'
+        },
+        scales: { paddingRight: 10, paddingLeft: 6 },
         palettes: {
           default: { light: light.text, dark: dark.text, darker: darker.text }
         }
@@ -317,7 +329,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e5: {
         name: 'dropdown-description',
         typography: { 's:all': 'caption-medium' },
-        scales: { paddingRight: 2, paddingLeft: 2 },
+        scales: { paddingRight: 10, paddingLeft: 6 },
         palettes: {
           default: {
             light: light.auxiliaryText,
@@ -328,8 +340,11 @@ export function createFluent2MicrosoftDropdownSchema({
       },
       e6: {
         name: 'dropdown-trailing-icon',
-        iconSize: { 's:all': 's:md:1' },
-        scales: { paddingLeft: 4 },
+        iconSize: {
+          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:lg:1': 's:lg:1'
+        },
+        scales: { paddingLeft: 6 },
         palettes: {
           default: { light: light.text, dark: dark.text, darker: darker.text }
         }
@@ -341,7 +356,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e8: {
         name: 'dropdown-end-text',
         typography: { 's:all': 'caption-medium' },
-        scales: { paddingRight: 6, paddingLeft: 10 },
+        scales: { paddingRight: 6, paddingLeft: 12 },
         palettes: {
           default: {
             light: light.endText,
@@ -357,7 +372,8 @@ export function createFluent2MicrosoftDropdownSchema({
           paddingTop: 8,
           paddingRight: 6,
           paddingBottom: 8,
-          paddingLeft: 6
+          paddingLeft: 6,
+          marginLeft: 6
         },
         palettes: {
           default: {
@@ -369,15 +385,21 @@ export function createFluent2MicrosoftDropdownSchema({
       },
       e10: {
         name: 'dropdown-selection-indicator',
-        iconSize: { 's:all': 's:md:1' },
-        scales: { paddingRight: 4 },
+        iconSize: {
+          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:lg:1': 's:lg:1'
+        },
+        scales: { paddingRight: 6 },
         palettes: {
           default: { light: light.text, dark: dark.text, darker: darker.text }
         }
       },
       e11: {
         name: 'dropdown-scroll-affordance',
-        iconSize: { 's:all': 's:md:1' },
+        iconSize: {
+          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:lg:1': 's:lg:1'
+        },
         palettes: {
           default: {
             light: light.scrollAffordance,

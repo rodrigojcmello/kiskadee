@@ -91,7 +91,8 @@ describe('Dropdown component contract', () => {
       paddingTop: 8,
       paddingRight: 6,
       paddingBottom: 8,
-      paddingLeft: 6
+      paddingLeft: 6,
+      marginLeft: 6
     };
 
     expect(validateDropdownComponentContract(dropdown)).toEqual([]);

@@ -110,7 +110,9 @@ export type DropdownScrollAffordanceElementStyle<TSegmentName extends SegmentNam
 
 export type DropdownGroupLabelElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   typography: ElementTypography;
-  scales: ElementScalesByProperty<'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
+  scales: ElementScalesByProperty<
+    'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'marginLeft'
+  >;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 }> &
   ElementNameMetadata;
@@ -228,7 +230,7 @@ const DROPDOWN_RULES: Record<(typeof DROPDOWN_ELEMENTS_KEYS)[number], ElementCon
   },
   e9: {
     typography: true,
-    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    scales: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'marginLeft'],
     palettes: ['textColor']
   },
   e10: {

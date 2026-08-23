@@ -90,6 +90,18 @@ describe('separator Web style-emission policy', () => {
     expect(policy.paddingEmission).toBe('direct');
   });
 
+  it.each(['e4', 'e5'])('publishes Dropdown %s edge insets as structural tokens', (element) => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'dropdown',
+      element
+    );
+
+    expect(policy.paddingLeftEmission).toBe('token');
+    expect(policy.paddingRightEmission).toBe('token');
+    expect(policy.paddingEmission).toBe('direct');
+  });
+
   it('publishes Dropdown trailing spacing as a structural token', () => {
     expect(
       resolveElementStyleEmissionPolicy(DEFAULT_WEB_STYLE_EMISSION_POLICY, 'dropdown', 'e6')
@@ -109,9 +121,21 @@ describe('separator Web style-emission policy', () => {
   });
 
   it('publishes the Dropdown checkmark gap as a structural token', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'dropdown',
+      'e10'
+    );
+
+    expect(policy.boxHeightEmission).toBe('token');
+    expect(policy.boxWidthEmission).toBe('token');
+    expect(policy.paddingRightEmission).toBe('token');
+  });
+
+  it('publishes the Dropdown group-label complementary margin as a structural token', () => {
     expect(
-      resolveElementStyleEmissionPolicy(DEFAULT_WEB_STYLE_EMISSION_POLICY, 'dropdown', 'e10')
-        .paddingRightEmission
+      resolveElementStyleEmissionPolicy(DEFAULT_WEB_STYLE_EMISSION_POLICY, 'dropdown', 'e9')
+        .marginLeftEmission
     ).toBe('token');
   });
 

@@ -23,10 +23,10 @@
 
 Structural utility projection does not add another artifact or stylesheet. Its references live in
 the existing aggregate and component-scoped core class maps, and the referenced token-only scale
-utility continues to live in the normal core bundle. Presets that author `Button.e6.boxWidth` emit
-the same token utility reference under `Button.e1.p.gd` for connected-group seam-overlap
-compensation; presets without that optional source omit the branch. Migration of Tabs fixed width
-remains a future candidate rather than an active projection consumer. See
+utility continues to live in the normal core bundle. Active examples cover Button connected-group
+seam overlap and Dropdown independent leading-track placeholders. Presets without an optional
+source omit its branch. Migration of Tabs fixed width remains a future candidate rather than an
+active projection consumer. See
 [`structural-utility-projections.md`](./structural-utility-projections.md).
 
 ## Optional brand packs

@@ -19,7 +19,6 @@ describe('official preset Dropdown schemas', () => {
   });
 
   it.each([
-    [fluent2Microsoft, 's:md:1'],
     [ios27Apple, 's:sm:1'],
     [material3Google, 's:lg:1']
   ] as const)('$prefix authors the optional scroll affordance independently', (schema, iconSize) => {
@@ -32,8 +31,20 @@ describe('official preset Dropdown schemas', () => {
     expect(elements?.e11?.palettes).not.toBe(elements?.e6.palettes);
   });
 
+  it('authors the Fluent scroll affordance independently at responsive 20/24px sizes', () => {
+    const elements = fluent2Microsoft.components.dropdown?.elements;
+
+    expect(elements?.e11).toMatchObject({
+      name: 'dropdown-scroll-affordance',
+      iconSize: {
+        's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+        's:lg:1': 's:lg:1'
+      }
+    });
+    expect(elements?.e11?.palettes).not.toBe(elements?.e6.palettes);
+  });
+
   it.each([
-    [fluent2Microsoft, 's:md:1', 4, 'dropdown-selection-indicator'],
     [ios27Apple, 's:sm:1', 10, 'dropdown-checkmark'],
     [material3Google, 's:lg:1', 12, 'dropdown-checkmark']
   ] as const)('$prefix publishes the dedicated selected-item indicator geometry', (schema, iconSize, paddingRight, name) => {
@@ -44,9 +55,20 @@ describe('official preset Dropdown schemas', () => {
       iconSize: { 's:all': iconSize },
       scales: { paddingRight }
     });
-    if (schema !== fluent2Microsoft) {
-      expect(elements?.e10.palettes).toEqual(elements?.e3.palettes);
-    }
+    expect(elements?.e10.palettes).toEqual(elements?.e3.palettes);
+  });
+
+  it('publishes the responsive Fluent selected-item indicator geometry', () => {
+    const elements = fluent2Microsoft.components.dropdown?.elements;
+
+    expect(elements?.e10).toMatchObject({
+      name: 'dropdown-selection-indicator',
+      iconSize: {
+        's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+        's:lg:1': 's:lg:1'
+      },
+      scales: { paddingRight: 6 }
+    });
   });
 
   it('maps Fluent item and leading-icon interaction states through approved tonal roles', () => {
@@ -71,23 +93,45 @@ describe('official preset Dropdown schemas', () => {
     });
   });
 
-  it('keeps the solid Fluent surface borderless and maps the source geometry', () => {
+  it('keeps the solid Fluent surface borderless and maps Medium/Large geometry', () => {
     const elements = fluent2Microsoft.components.dropdown?.elements;
 
     expect(elements?.e1.decorations).toBeUndefined();
     expect(elements?.e1.scales?.borderWidth).toBeUndefined();
     expect(elements?.e1.palettes?.default?.light?.onSubtle.borderColor).toBeUndefined();
     expect(elements?.e2.scales).toMatchObject({
-      paddingTop: 6,
+      paddingTop: {
+        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:lg:1': 9
+      },
       paddingRight: 2,
-      paddingBottom: 6,
+      paddingBottom: {
+        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:lg:1': 9
+      },
       paddingLeft: 6,
       marginBottom: 2
     });
-    expect(elements?.e3.scales?.paddingRight).toBe(4);
-    expect(elements?.e6.iconSize).toEqual({ 's:all': 's:md:1' });
+    expect(elements?.e3.scales?.paddingRight).toBe(6);
+    expect(elements?.e4.typography).toEqual({
+      's:md:1': { 'bp:all': 'body-large', 'bp:lg:1': 'body-medium' },
+      's:lg:1': 'body-large'
+    });
+    expect(elements?.e4.scales).toEqual({ paddingRight: 10, paddingLeft: 6 });
+    expect(elements?.e5.scales).toEqual({ paddingRight: 10, paddingLeft: 6 });
+    expect(elements?.e6.iconSize).toEqual({
+      's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+      's:lg:1': 's:lg:1'
+    });
     expect(elements?.e8.typography).toEqual({ 's:all': 'caption-medium' });
-    expect(elements?.e8.scales).toEqual({ paddingRight: 6, paddingLeft: 10 });
+    expect(elements?.e8.scales).toEqual({ paddingRight: 6, paddingLeft: 12 });
+    expect(elements?.e9.scales).toEqual({
+      paddingTop: 8,
+      paddingRight: 6,
+      paddingBottom: 8,
+      paddingLeft: 6,
+      marginLeft: 6
+    });
     expect(elements?.e8.palettes).toMatchObject({
       default: {
         light: {

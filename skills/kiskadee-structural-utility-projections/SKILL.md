@@ -57,6 +57,8 @@ Read these sources in order:
   for a projection.
 - Preserve `button-group-divider-thickness` as the canonical active example: optional
   `Button.e6.boxWidth` projects to `Button.e1.p.gd` with `retainSource: true`.
+- Preserve the Dropdown independent-track entries: `e3` publishes `iw/ig`, `e10` publishes `sw/sg`,
+  and p-react applies them only to empty structural leading-track nodes.
 - Treat migration of Tabs fixed width only as a future candidate until its ownership is reviewed.
 
 ## Decision output

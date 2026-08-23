@@ -64,14 +64,26 @@ const context: KiskadeeContextValue = {
           }
         }
       },
-      e3: { s: { all: 'icon-size' } },
+      e3: {
+        s: { all: 'icon-size' },
+        p: {
+          iw: { all: 'icon-placeholder-width' },
+          ig: { all: 'icon-placeholder-gap' }
+        }
+      },
       e4: { d: 'label-style' },
       e5: { d: 'description-style' },
       e6: { d: 'trailing-style' },
       e7: {},
       e8: { d: 'end-text-style' },
       e9: { d: 'group-label-style' },
-      e10: { d: 'checkmark-style' },
+      e10: {
+        d: 'checkmark-style',
+        p: {
+          sw: { all: 'selection-placeholder-width' },
+          sg: { all: 'selection-placeholder-gap' }
+        }
+      },
       e11: { d: 'scroll-affordance-style', s: { all: 'scroll-affordance-size' } }
     }
   },
@@ -249,6 +261,7 @@ describe('styled Dropdown', () => {
     });
     act(() => vi.advanceTimersByTime(150));
     expect(nextFrame).toBeUndefined();
+    expect(endAffordance?.getAttribute('data-active')).toBeNull();
 
     fireEvent.pointerMove(shell as Element, {
       clientX: 50,
@@ -257,8 +270,10 @@ describe('styled Dropdown', () => {
     });
     act(() => vi.advanceTimersByTime(149));
     expect(nextFrame).toBeUndefined();
+    expect(endAffordance?.getAttribute('data-active')).toBeNull();
     act(() => vi.advanceTimersByTime(1));
     expect(nextFrame).toBeDefined();
+    expect(endAffordance?.getAttribute('data-active')).toBe('true');
 
     act(() => {
       nextFrame?.(1000);
@@ -268,6 +283,7 @@ describe('styled Dropdown', () => {
 
     fireEvent.pointerLeave(shell as Element);
     expect(nextFrame).toBeUndefined();
+    expect(endAffordance?.getAttribute('data-active')).toBeNull();
 
     const pointerDown = new Event('pointerdown', { bubbles: true, cancelable: true });
     expect(endAffordance?.dispatchEvent(pointerDown)).toBe(true);
@@ -421,7 +437,7 @@ describe('styled Dropdown', () => {
     expect(result.getByTestId('item').className).not.toContain('item-rounded');
   });
 
-  it('renders no placeholder icon while isolating icon alignment by explicit group', () => {
+  it('reserves the projected icon track across every group in the collection', () => {
     const result = renderDropdown(
       <>
         <Dropdown.Group>
@@ -437,7 +453,7 @@ describe('styled Dropdown', () => {
         </Dropdown.Group>
         <Dropdown.Separator data-testid="decorative-separator" />
         <Dropdown.Group data-testid="group-without-icons">
-          <Dropdown.Item>
+          <Dropdown.Item data-testid="other-group-item">
             <Dropdown.Label>Another group</Dropdown.Label>
           </Dropdown.Item>
         </Dropdown.Group>
@@ -451,8 +467,64 @@ describe('styled Dropdown', () => {
     expect(result.container.querySelectorAll('.k-ddn-x2')).toHaveLength(2);
     expect(result.container.querySelectorAll('.k-ddn-e3')).toHaveLength(1);
     expect(result.getByTestId('without-icon').querySelector('.k-ddn-e3')).toBeNull();
+    expect(result.getByTestId('without-icon').querySelector('.k-ddn-x6')?.className).toContain(
+      'icon-placeholder-width'
+    );
+    expect(result.getByTestId('without-icon').querySelector('.k-ddn-x6')?.className).toContain(
+      'icon-placeholder-gap'
+    );
     expect(result.getByTestId('group-without-icons').querySelector('.k-ddn-e3')).toBeNull();
+    expect(result.getByTestId('other-group-item').querySelector('.k-ddn-x6')?.className).toContain(
+      'icon-placeholder-width'
+    );
+    expect(result.getByTestId('other-group-item').querySelector('.k-ddn-x6')?.className).toContain(
+      'icon-placeholder-gap'
+    );
     expect(result.getByTestId('decorative-separator').getAttribute('role')).toBeNull();
+  });
+
+  it('reserves a later selection track in every earlier group of the collection', () => {
+    const result = renderDropdown(
+      <>
+        <Dropdown.Group>
+          <Dropdown.Item data-testid="earlier-item">
+            <Dropdown.Label>Earlier action</Dropdown.Label>
+          </Dropdown.Item>
+        </Dropdown.Group>
+        <Dropdown.Separator />
+        <Dropdown.Group>
+          <Dropdown.Item>
+            <Dropdown.Checkmark visible />
+            <Dropdown.Label>Later selection</Dropdown.Label>
+          </Dropdown.Item>
+        </Dropdown.Group>
+      </>
+    );
+
+    expect(result.getByTestId('earlier-item').querySelector('.k-ddn-x7')?.className).toContain(
+      'selection-placeholder-width'
+    );
+    expect(result.getByTestId('earlier-item').querySelector('.k-ddn-x7')?.className).toContain(
+      'selection-placeholder-gap'
+    );
+  });
+
+  it('preserves projected leading-track placeholders through a rendered item root', () => {
+    const result = renderDropdown(
+      <Dropdown.Group>
+        <Dropdown.Item
+          render={(props) => (
+            <a {...props} data-testid="rendered-item" href="#target">
+              Rendered item
+            </a>
+          )}
+        />
+      </Dropdown.Group>
+    );
+
+    expect(result.getByTestId('rendered-item').textContent).toContain('Rendered item');
+    expect(result.getByTestId('rendered-item').querySelector('.k-ddn-x6')).not.toBeNull();
+    expect(result.getByTestId('rendered-item').querySelector('.k-ddn-x7')).not.toBeNull();
   });
 
   it('applies column sharing to the collection while keeping groups as sizing boundaries', () => {

@@ -87,8 +87,8 @@ Read only what the task needs, in this order:
   dedicated bucket. Keep it distinct from Style Emission Policy.
 - Structural utility projections use only
   `element.p[artifactKey][scaleKey] = className`; `p` never stores raw values or semantic metadata.
-- The Structural Utility Projection Registry currently projects optional `Button.e6.boxWidth` to
-  `Button.e1.p.gd` for connected-group seam-overlap compensation.
+- The Structural Utility Projection Registry currently serves Button connected-divider overlap and
+  Dropdown independent empty leading tracks.
 - Migration of Tabs fixed width remains a future candidate, not an active `p` consumer.
 - For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique
   and prefer narrowing generic schema keys via type-specific Zod/contracts over inventing ad hoc
@@ -134,6 +134,8 @@ Current example and future candidate:
 
 - Button divider thickness projects optional `Button.e6.boxWidth` to `Button.e1.p.gd` with
   `retainSource: true`; Button.Group activates it only with an authored divider.
+- Dropdown projects only `e3/e10` width-gap utilities to their empty independent-track nodes; normal
+  icon and selection slots retain their source references.
 - Tabs fixed width may eventually migrate from its specialized `w` bucket to the generic `p`
   contract.
 

@@ -18,18 +18,22 @@ describe('official preset separator recipes', () => {
     expect(() => validateSchemaSeparatorsContract(schema)).not.toThrow();
   });
 
-  it('maps the Fluent shared subtle recipe to NeutralStroke2', () => {
+  it('maps the Fluent shared subtle recipe to the Kiskadee achromatic adaptation', () => {
     const subtle = fluent2Microsoft.global?.separators?.profiles.subtle;
 
     expect(subtle?.scales).toEqual({ boxWidth: 1 });
-    expect(subtle?.palettes.default?.light?.onSubtle.boxColor.neutral.medium.rest).toBe('#dce0ed');
-    expect(subtle?.palettes.default?.dark?.onSubtle.boxColor.neutral.medium.rest).toBe('#4b4e58');
-    expect(subtle?.palettes.default?.darker?.onSubtle.boxColor.neutral.medium.rest).toBe('#2e313a');
+    expect(subtle?.palettes.default?.light?.onSubtle.boxColor.neutral.medium.rest).toBe('#e0e0e0');
+    expect(subtle?.palettes.default?.dark?.onSubtle.boxColor.neutral.medium.rest).toBe('#4f4f4f');
+    expect(subtle?.palettes.default?.darker?.onSubtle.boxColor.neutral.medium.rest).toBe('#313131');
     expect(fluent2Microsoft.components.separator?.elements.e1.separator).toEqual({
       's:all': 'subtle'
     });
     expect(fluent2Microsoft.components.dropdown?.elements.e7).toEqual({
       name: 'dropdown-separator',
+      separator: { 's:all': 'subtle' }
+    });
+    expect(fluent2Microsoft.components.bottomSheet?.elements.e12).toEqual({
+      name: 'bottom-sheet-separator',
       separator: { 's:all': 'subtle' }
     });
   });

@@ -108,7 +108,7 @@
 
 /*
  * extra element for e2 / x2
- * Owns collection padding and isolates icon-column detection between groups.
+ * Owns collection padding while the parent collection coordinates leading tracks.
  */
 .k-ddn-x2 {
   padding: var(--k-pdt) var(--k-pdr) var(--k-pdb) var(--k-pdl);
@@ -133,28 +133,28 @@
 
 /*
  * extra element for e2 / x2
- * Inserts one leading track after item padding when the group contains an icon.
+ * Inserts one leading track in every group when the collection contains an icon.
  */
-.k-ddn-x1[data-layout='columns']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3) {
+.k-ddn-x1[data-layout='columns']:has(.k-ddn-e2 > .k-ddn-e3) > .k-ddn-x2 {
   grid-template-columns: auto auto minmax(0, 1fr) auto auto auto;
 }
 
 /*
  * extra element for e2 / x2
- * Inserts one intrinsic checkmark track after item padding for checkable groups.
+ * Inserts one selection track in every group when the collection contains a checkable item.
  */
-.k-ddn-x1[data-layout='columns']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10) {
+.k-ddn-x1[data-layout='columns']:has(.k-ddn-e2 > .k-ddn-e10) > .k-ddn-x2 {
   grid-template-columns: auto auto minmax(0, 1fr) auto auto auto;
 }
 
 /*
  * extra element for e2 / x2
- * Keeps checkmark and ordinary leading-icon tracks independent when both exist.
+ * Keeps collection-wide selection and ordinary icon tracks independent when both exist.
  */
-.k-ddn-x1[data-layout='columns']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3) {
+.k-ddn-x1[data-layout='columns']:has(.k-ddn-e2 > .k-ddn-e10):has(
+    .k-ddn-e2 > .k-ddn-e3
+  )
+  > .k-ddn-x2 {
   grid-template-columns: auto auto auto minmax(0, 1fr) auto auto auto;
 }
 
@@ -164,13 +164,18 @@
  */
 .k-ddn-e2 {
   align-items: center;
+  appearance: none;
+  border: 0;
+  box-sizing: border-box;
   cursor: default;
   display: grid;
+  font: inherit;
   grid-template-columns: minmax(0, 1fr) auto auto;
   min-inline-size: 0;
   padding-inline-end: var(--k-pdr);
   padding-inline-start: var(--k-pdl);
   text-align: start;
+  text-decoration: none;
 }
 
 /*
@@ -192,45 +197,86 @@
 
 /*
  * element item / e2
- * Reserves one shared leading column in independent layout when the group contains an icon.
+ * Reserves one leading column in every item when the collection contains an icon.
  */
-.k-ddn-x1[data-layout='independent']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e3)
+  .k-ddn-x2
   > .k-ddn-e2 {
   grid-template-columns: auto minmax(0, 1fr) auto auto;
 }
 
 /*
  * element item / e2
- * Adds an intrinsic leading track in independent layout when the group contains a checkmark.
+ * Adds a selection track to every item when the collection contains a checkable item.
  */
-.k-ddn-x1[data-layout='independent']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e10)
+  .k-ddn-x2
   > .k-ddn-e2 {
   grid-template-columns: auto minmax(0, 1fr) auto auto;
 }
 
 /*
  * element item / e2
- * Preserves the selection track inside nested semantic groups such as RadioGroup.
+ * Preserves separate collection-wide selection and icon tracks when both are present.
  */
-.k-ddn-x1[data-layout='independent'] .k-ddn-e2:has(> .k-ddn-e10) {
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
-}
-
-/*
- * element item / e2
- * Preserves separate checkmark and icon tracks in independent layout when both are present.
- */
-.k-ddn-x1[data-layout='independent']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e10):has(
+    .k-ddn-e2 > .k-ddn-e3
+  )
+  .k-ddn-x2
   > .k-ddn-e2 {
   grid-template-columns: auto auto minmax(0, 1fr) auto auto;
 }
 
-.k-ddn-x1[data-layout='independent']
-  .k-ddn-e2:has(> .k-ddn-e10):has(> .k-ddn-e3) {
-  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+/*
+ * extra elements for e2 / x6 x7
+ * Stay absent unless their collection needs an empty independent leading track.
+ */
+.k-ddn-x6,
+.k-ddn-x7 {
+  display: none;
+}
+
+/*
+ * extra element for e2 / x7
+ * Preserves the selection track when another item in the collection owns its affordance.
+ */
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e10)
+  .k-ddn-x2
+  > .k-ddn-e2:not(:has(> .k-ddn-e10))
+  > .k-ddn-x7 {
+  display: block;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  inline-size: var(--k-bxw);
+  margin-inline-end: var(--k-pdr);
+}
+
+/*
+ * extra element for e2 / x6
+ * Preserves the icon track when another item in the collection owns an ordinary leading icon.
+ */
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e3)
+  .k-ddn-x2
+  > .k-ddn-e2:not(:has(> .k-ddn-e3))
+  > .k-ddn-x6 {
+  display: block;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  inline-size: var(--k-bxw);
+  margin-inline-end: var(--k-pdr);
+}
+
+/*
+ * extra element for e2 / x6
+ * Follows the selection track when the collection reserves both leading slots.
+ */
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e10):has(
+    .k-ddn-e2 > .k-ddn-e3
+  )
+  .k-ddn-x2
+  > .k-ddn-e2:not(:has(> .k-ddn-e3))
+  > .k-ddn-x6 {
+  grid-column: 2;
 }
 
 /*
@@ -252,10 +298,10 @@
 
 /*
  * element leading icon / e3
- * Follows the checkmark track in checkable column-layout groups.
+ * Follows the collection-wide selection track in column layout.
  */
-.k-ddn-x1[data-layout='columns']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+.k-ddn-x1[data-layout='columns']:has(.k-ddn-e2 > .k-ddn-e10)
+  > .k-ddn-x2
   > .k-ddn-e2
   > .k-ddn-e3 {
   grid-column: 3;
@@ -278,17 +324,11 @@
 
 /*
  * element leading icon / e3
- * Follows the checkmark track in checkable independent-layout groups.
+ * Follows the collection-wide selection track in independent layout.
  */
-.k-ddn-x1[data-layout='independent']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e10)
+  .k-ddn-x2
   > .k-ddn-e2
-  > .k-ddn-e3 {
-  grid-column: 2;
-}
-
-.k-ddn-x1[data-layout='independent']
-  .k-ddn-e2:has(> .k-ddn-e10)
   > .k-ddn-e3 {
   grid-column: 2;
 }
@@ -315,10 +355,53 @@
 
 /*
  * elements label and description / e4 e5
- * Move text into the shared second column in independent layout when the group has an icon.
+ * Consume the authored start inset only when the independent collection has no leading track.
+ */
+.k-ddn-x1[data-layout='independent']:not(:has(.k-ddn-e2 > :is(.k-ddn-e3, .k-ddn-e10)))
+  .k-ddn-x2
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  padding-inline-start: var(--k-pdl);
+}
+
+/*
+ * elements label and description / e4 e5
+ * Consume the authored end inset only when that independent item has no final accessory.
  */
 .k-ddn-x1[data-layout='independent']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
+  .k-ddn-e2:not(:has(> :is(.k-ddn-e6, .k-ddn-e8)))
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  padding-inline-end: var(--k-pdr);
+}
+
+/*
+ * elements label and description / e4 e5
+ * Consume the authored start inset only when the column collection has no shared leading track.
+ */
+.k-ddn-x1[data-layout='columns']:not(:has(.k-ddn-e2 > :is(.k-ddn-e3, .k-ddn-e10)))
+  > .k-ddn-x2
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  padding-inline-start: var(--k-pdl);
+}
+
+/*
+ * elements label and description / e4 e5
+ * Consume the authored end inset only when a column group reserves no shared final track.
+ */
+.k-ddn-x1[data-layout='columns']
+  > .k-ddn-x2:not(:has(> .k-ddn-e2 > :is(.k-ddn-e6, .k-ddn-e8)))
+  > .k-ddn-e2
+  > :is(.k-ddn-e4, .k-ddn-e5) {
+  padding-inline-end: var(--k-pdr);
+}
+
+/*
+ * elements label and description / e4 e5
+ * Move text into the second column when the independent collection has an icon.
+ */
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e3)
+  .k-ddn-x2
   > .k-ddn-e2
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 2;
@@ -326,34 +409,24 @@
 
 /*
  * elements label and description / e4 e5
- * Follow the checkmark track inside a checkable independent-layout group.
+ * Follow the selection track inside a checkable independent collection.
  */
-.k-ddn-x1[data-layout='independent']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e10)
+  .k-ddn-x2
   > .k-ddn-e2
-  > :is(.k-ddn-e4, .k-ddn-e5) {
-  grid-column: 2;
-}
-
-.k-ddn-x1[data-layout='independent']
-  .k-ddn-e2:has(> .k-ddn-e10)
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 2;
 }
 
 /*
  * elements label and description / e4 e5
- * Follow both checkmark and ordinary icon tracks in independent layout when both are present.
+ * Follow both collection-wide selection and icon tracks when both are present.
  */
-.k-ddn-x1[data-layout='independent']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
+.k-ddn-x1[data-layout='independent']:has(.k-ddn-e2 > .k-ddn-e10):has(
+    .k-ddn-e2 > .k-ddn-e3
+  )
+  .k-ddn-x2
   > .k-ddn-e2
-  > :is(.k-ddn-e4, .k-ddn-e5) {
-  grid-column: 3;
-}
-
-.k-ddn-x1[data-layout='independent']
-  .k-ddn-e2:has(> .k-ddn-e10):has(> .k-ddn-e3)
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 3;
 }
@@ -371,10 +444,10 @@
 
 /*
  * elements label and description / e4 e5
- * Follow both shared padding and leading-icon tracks in icon-bearing groups.
+ * Follow shared padding and the collection-wide leading-icon track.
  */
-.k-ddn-x1[data-layout='columns']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e3)
+.k-ddn-x1[data-layout='columns']:has(.k-ddn-e2 > .k-ddn-e3)
+  > .k-ddn-x2
   > .k-ddn-e2
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 3;
@@ -382,10 +455,10 @@
 
 /*
  * elements label and description / e4 e5
- * Follow shared padding and checkmark tracks in checkable column-layout groups.
+ * Follow shared padding and the collection-wide selection track.
  */
-.k-ddn-x1[data-layout='columns']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10)
+.k-ddn-x1[data-layout='columns']:has(.k-ddn-e2 > .k-ddn-e10)
+  > .k-ddn-x2
   > .k-ddn-e2
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 3;
@@ -393,10 +466,12 @@
 
 /*
  * elements label and description / e4 e5
- * Follow padding, checkmark, and ordinary icon tracks when all are present.
+ * Follow padding and both collection-wide leading tracks when all are present.
  */
-.k-ddn-x1[data-layout='columns']
-  > .k-ddn-x2:has(> .k-ddn-e2 > .k-ddn-e10):has(> .k-ddn-e2 > .k-ddn-e3)
+.k-ddn-x1[data-layout='columns']:has(.k-ddn-e2 > .k-ddn-e10):has(
+    .k-ddn-e2 > .k-ddn-e3
+  )
+  > .k-ddn-x2
   > .k-ddn-e2
   > :is(.k-ddn-e4, .k-ddn-e5) {
   grid-column: 4;
@@ -502,6 +577,16 @@
 
 /*
  * element group label / e9
+ * Adds its complementary start spacing only when the collection reserves no leading track.
+ */
+.k-ddn-x1:not(:has(.k-ddn-e2 > :is(.k-ddn-e3, .k-ddn-e10)))
+  .k-ddn-x2
+  > .k-ddn-e9 {
+  margin-inline-start: var(--k-mgl);
+}
+
+/*
+ * element group label / e9
  * Spans every group-owned track without contributing a separate item column.
  */
 .k-ddn-x1[data-layout='columns'] > .k-ddn-x2 > .k-ddn-e9 {
@@ -514,9 +599,12 @@
  */
 .k-ddn-e10 {
   align-items: center;
+  block-size: var(--k-bxh);
+  box-sizing: content-box;
   display: inline-flex;
   grid-column: 1;
   grid-row: 1 / span 2;
+  inline-size: var(--k-bxw);
   justify-content: center;
   padding-inline-end: var(--k-pdr);
 }
@@ -559,6 +647,14 @@
   pointer-events: none;
   position: absolute;
   z-index: 1;
+}
+
+/*
+ * element scroll affordance / e11
+ * Stabilizes the pointer target only while non-touch continuous scrolling is active.
+ */
+.k-ddn-e11[data-active='true'] {
+  pointer-events: auto;
 }
 
 /*

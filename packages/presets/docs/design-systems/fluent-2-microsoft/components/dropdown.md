@@ -34,7 +34,7 @@
 | Menu item states | `9361:10436` | Hover item radius and selection affordance geometry | Official adapted |
 | Menu interaction matrix | `9121:6483` | Rest, checked, Hover, Pressed, Selected and Disabled variants | Official adapted |
 | Dropdown selection | `9159:2470`, `9183:4601` | Shared anchored selection surface | Official adapted |
-| Divider | `9121:6400` | NeutralStroke2 and one-pixel line | Official adapted |
+| Divider | `9121:6400` | NeutralStroke2 source geometry and one-pixel line | Official adapted geometry; Kiskadee color adaptation |
 | Rich Menu composition | `9121:7579` | Groups, titles, shortcuts and trailing affordances | Official adapted |
 | Acrylic material | `9114:2483` | Blur/material treatment only | Deferred |
 
@@ -47,9 +47,19 @@
   explicit anchor-relative width policies remain mechanical overrides.
 - **Official exact**: the solid Menu surface has no border, uses four-pixel padding and radius,
   `Shadow 16`, and two-pixel spacing between items.
-- **Official adapted**: the one-line item uses Body 1 at 14/20, six-pixel block padding, a 20 px
-  leading icon, and four-pixel icon-to-content spacing. Its nominal 32 px height remains intrinsic
-  so enlarged or multiline content can grow.
+- **Official adapted**: the Medium one-line item uses Body 1 at 14/20, six-pixel block padding, and
+  a 20 px leading icon. Its nominal 32 px height remains intrinsic so enlarged or multiline
+  content can grow.
+- **Kiskadee extension**: Large uses body Regular at 16/22, nine-pixel block padding, and 24 px
+  icons for a nominal 40 px item. The default `s:md:1` resolves to Large below `bp:lg:1` and
+  Medium from that breakpoint onward; explicit `s:lg:1` remains Large at every viewport.
+- **Kiskadee extension**: a principal label or description consumes six pixels at an empty logical
+  start edge and ten pixels at an empty logical end edge. Combined with surface and item padding,
+  either empty edge reaches 16 px. A reserved icon, selection, shortcut, or trailing track owns its
+  own gap instead, so these insets do not stack with auxiliary content.
+- **Kiskadee extension**: a group heading adds its independently authored six-pixel complementary
+  start margin only when no item in that group reserves an ordinary-icon or selection track. This
+  uses Kiskadee's CSC pattern; the value is not calculated from another slot.
 - **Official adapted**: Fluent exposes check, radio, and submenu affordances as independent Menu
   anatomy. Kiskadee adds a dedicated leading checkmark slot while preserving `e3` for an ordinary
   leading icon and `e6` for trailing content such as a submenu chevron.
@@ -90,6 +100,8 @@
 - **Kiskadee extension**: the keyboard-shortcut slot uses the smaller `caption-medium` profile and
   a twelve-pixel visual gap from the principal label. Fluent's rich Menu evidence establishes the
   secondary-content role, but Kiskadee deliberately reduces its prominence.
+- **Kiskadee extension**: the shared `subtle` separator keeps the official one-pixel geometry but
+  replaces the blue-gray NeutralStroke2 color with the approved achromatic Black v1 ramp.
 - **Kiskadee extension**: Fluent Dropdown presence defaults to `fade-translate`. Both that profile
   and the alternative `grow-height` profile are framework-authored because the inspected sources
   do not establish either motion recipe.
@@ -116,34 +128,41 @@ literal schema color is introduced.
 ## Schema Mapping
 
 - `e1`: borderless floating Neutral surface, 4 px rounded corners, 4 px inset, and `Shadow 16`.
-- `e2`: neutral Medium item surface with 6/2/6/6 px top/end/bottom/start padding, 2 px inter-item
-  spacing, and sparse Hover, Pressed, Selected, and Disabled deltas. Only Hover resolves through
+- `e2`: neutral Medium item surface with 6/2/6/6 px top/end/bottom/start padding; Large changes the
+  block padding to 9 px while preserving the inline geometry. Both keep 2 px inter-item spacing
+  and sparse Hover, Pressed, Selected, and Disabled deltas. Only Hover resolves through
   the achromatic `primitive.black.v1`; the other roles retain the promoted Fluent Neutral family.
   `selected.hover` and `selected.pressed` intentionally repeat Selected Rest to reset the competing
   top-level Hover/Pressed surface while a checked row remains selected. These are documented
   compound-state precedence overrides, not redundant standalone states.
-- `e3`: 20 px leading icon and 4 px logical gap. Neutral items use sparse Brand deltas for Hover,
+- `e3`: 20 px Medium or 24 px Large leading icon and 6 px logical gap. Neutral items use sparse Brand deltas for Hover,
   Pressed, Selected, Selected+Hover, and Selected+Pressed; destructive items retain Cranberry.
-- `e4`: Body 1 (`body-medium`) principal label with 2 px horizontal text inset.
-- `e5`: Caption 1 (`caption-medium`) auxiliary description with the same text inset.
-- `e6`: optional 20 px iconographic trailing content. It does not imply submenu behavior.
-- `e7`: explicit one-pixel divider using the shared neutral `subtle` separator recipe.
+- `e4`: Body 1 (`body-medium`) in Medium or body Regular 16/22 (`body-large`) in Large. Its 6 px
+  start and 10 px end insets are token-only and apply only when the corresponding auxiliary track
+  is absent.
+- `e5`: Caption 1 (`caption-medium`) auxiliary description with the same conditional edge insets.
+- `e6`: optional 20 px Medium or 24 px Large iconographic trailing content with a 6 px gap. It does
+  not imply submenu behavior.
+- `e7`: explicit one-pixel divider using the shared achromatic `subtle` separator recipe.
 - `e8`: `caption-medium` end text, such as an informational keyboard shortcut, using the adapted
-  NeutralForeground3 relationship at Light L50 and Dark/Darker D70. Its ten-pixel logical-start
-  padding combines with the label's two-pixel logical-end padding to produce a twelve-pixel visual
-  gap; six pixels remain between the shortcut and trailing icon. This metadata remains neutral even
+  NeutralForeground3 relationship at Light L50 and Dark/Darker D70. Its twelve-pixel logical-start
+  padding produces the complete visual gap because the label's end inset is suppressed when the
+  track is present; six pixels remain between the shortcut and trailing icon. This metadata remains neutral even
   when the owning action is destructive; the action label and icon continue to carry intent.
 - `e9`: `caption-medium-strong` group heading using NeutralForeground2, mapped to Light L75 and
-  Dark/Darker D85, with 6 px inline and 8 px block padding.
-- `e10`: optional 20 px leading selection indicator with a 4 px logical gap. Checkbox uses `check`;
+  Dark/Darker D85, with 6 px inline and 8 px block padding. Its independent 6 px start margin is a
+  token-only CSC complement consumed only by groups without a leading track.
+- `e10`: optional 20 px Medium or 24 px Large leading selection indicator with a 6 px logical gap. Checkbox uses `check`;
   radio uses `radio-selected`. Selection semantics and visibility remain the owning Menu's job.
-- `e11`: optional 20 px edge-scroll affordance. It independently repeats the `e6` icon-size and
+- `e11`: optional 20 px Medium or 24 px Large edge-scroll affordance. Its overlay strip has no
+  independent padding and therefore has exactly the resolved icon height. It independently repeats the `e6` icon-size and
   foreground references plus the `e1` Rest surface reference. This is a Kiskadee extension for
   long Web menus, not evidence of an official Fluent Dropdown state.
 
 Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
 line; it does not publish margins or reuse the standalone Separator component at runtime. The
-shared recipe maps official NeutralStroke2 as documented in [Separator evidence](separator.md).
+shared recipe adapts official NeutralStroke2 geometry to an achromatic color as documented in
+[Separator evidence](separator.md).
 
 Button disclosure uses the shared Fluent icon-size ramp. It does not duplicate Button palettes or
 create a ButtonMenu schema; the single trigger and both split-button halves continue to resolve the
@@ -180,5 +199,11 @@ separate artifact, or another request.
 - Verify the solid surface emits no border utility.
 - Verify the generated neutral item Hover resolves to Light `#f6f6f6`, Dark `#3c3c3c`, and Darker
   `#313131`, with no chromatic channel divergence.
-- Verify full-bleed NeutralStroke2, group heading, shortcut alignment, RTL, and 100%/200% text
+- Verify full-bleed achromatic separators, group heading, shortcut alignment, RTL, and 100%/200% text
   enlargement in generated artifacts and the Showcase.
+- Verify 16 px from the surface edge to text when either logical side has no auxiliary track, while
+  icon, selection, shortcut, and trailing tracks preserve their independent gaps.
+- Verify group headings align to the leading track when one exists and to item text when it does
+  not, in both LTR and RTL.
+- Verify `s:md:1` produces 40 px items below 1152 px and 32 px items from 1152 px onward, while
+  `s:lg:1` stays at 40 px and scroll affordance strips stay at 24/20 px respectively.

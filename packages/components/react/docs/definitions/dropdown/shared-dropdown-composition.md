@@ -42,44 +42,60 @@ search contract rather than Dropdown.
 
 ## Icon Column
 
-`Dropdown.Items` contains explicit `Dropdown.Group` regions. Each Group owns the surface-derived
-padding around its items and is an independent icon-column scope. Structural CSS uses `:has()` to
-reserve a leading column only when at least one item in that Group renders `Dropdown.Icon`. Items
-without icons render no placeholder but align their labels with icon-bearing siblings in the same
-Group. Another Group without icons remains a single content column.
+`Dropdown.Items` is the leading-track alignment scope for the complete collection, including every
+explicit `Dropdown.Group` separated by `Dropdown.Separator`. Structural CSS uses `:has()` to reserve
+a leading column for every item when at least one item anywhere in that collection renders
+`Dropdown.Icon`. Items without icons render an empty structural track, but no icon glyph or
+affordance, and align their labels with every icon-bearing item in the same menu.
 
 The icon viewport comes from `global.iconSizes` through the normal `iconSize` Builder expansion.
-No browser measurement or icon-presence JavaScript is used.
+In `independent`, SUP exposes only the existing `e3/e10` width-gap utilities to the empty structural
+track nodes. No raw value, browser measurement, or icon-presence JavaScript is used. `columns`
+continues sharing intrinsic tracks through subgrid.
 
 Checkable items keep `e10` mounted even while unchecked. Only its artwork changes visibility, so
 the selection track never collapses between values. Checkbox items use the canonical `check`;
 radio items use the canonical `radio-selected` filled dot. The track precedes `e3`; an item may
 therefore contain a selection indicator, ordinary leading icon, end text, and trailing icon at the
-same time. Like ordinary icon alignment, indicator alignment is scoped to the nearest explicit
-Group and is resolved entirely by structural CSS. The preset keeps authoring the gap as
-`e10.paddingRight`; the Builder emits only `--k-pdr`, and structural CSS consumes it as logical
-`padding-inline-end` so the relationship reverses correctly in RTL.
+same time. Like ordinary icon alignment, indicator alignment is scoped to the containing
+`Dropdown.Items` collection and is resolved entirely by structural CSS. The preset keeps authoring
+the gap as `e10.paddingRight`; the Builder emits only `--k-pdr`, and structural CSS consumes it as
+logical `padding-inline-end` so the relationship reverses correctly in RTL.
+`e10` uses `content-box` so that this padding extends the slot instead of reducing the authored
+`iconSize` viewport under the framework-wide border-box reset. Empty projected tracks therefore
+reserve the same icon viewport plus gap as a rendered check or radio indicator.
 
 ## Item Layout
 
 `Dropdown.Items` exposes two structural layout policies:
 
 - `independent` keeps one grid per item and is the default for compact collections;
-- `columns` lets items in the same explicit Group share leading, content, end-text, and trailing
-  tracks.
+- `columns` keeps leading tracks synchronized across the complete collection while items in each
+  explicit Group share content, end-text, and trailing tracks.
 
-Group remains the sizing boundary in both policies. In `columns`, the widest principal content and
-widest final content inside one Group determine that Group's tracks. Another Group starts a new
-calculation after a separator. The floating surface still takes the intrinsic width of its widest
-Group, so all Groups occupy the same outer width without coupling their internal tracks.
+Group remains the sizing boundary for principal and final content in both policies. Leading icon and
+selection occupancy is collection-wide. In `columns`, the widest principal content and widest final
+content inside one Group determine that Group's non-leading tracks. Another Group starts a new
+content calculation after a separator. The floating surface still takes the intrinsic width of its
+widest Group, so all Groups occupy the same outer width without coupling unrelated content widths.
 
 Item horizontal padding remains authored as `e2.paddingLeft` and `e2.paddingRight`. The Builder
 emits these as `--k-pdl` and `--k-pdr`, and structural CSS applies them to logical inline start and
 end. Asymmetric preset values therefore preserve their LTR visual while reversing correctly in RTL.
 
-This separation preserves the existing group-local icon-column rule and prevents unrelated groups
-from reserving empty columns for one another. The implementation uses CSS Grid and subgrid; it does
-not measure content or publish runtime geometry variables.
+Labels and descriptions may additionally publish logical edge insets through their own
+`e4`/`e5` padding tokens. Structural CSS consumes the start token only when the complete collection
+has no leading icon or selection track, and consumes the end token only when the effective layout
+has no end-text or trailing-icon track. Leading occupancy is collection-wide in both layouts. Final
+occupancy remains Group-wide in `columns` and per-item in `independent`. The tokens are inert in
+presets that do not publish them; no `iconless` runtime prop or Sass spacing literal participates in
+the decision.
+
+A group label uses CSC: its normal `e9.paddingLeft` remains always-on, while its independently
+authored `e9.marginLeft` is applied only when the complete collection contains no leading icon or
+selection track. If any Group introduces either track, every Group label uses the shared leading
+alignment context. The implementation uses CSS Grid, subgrid, SUP, and CSC; it does not measure
+content or publish runtime geometry variables.
 
 ## Separators And States
 
@@ -134,9 +150,16 @@ width. These limits are structural and do not create schema height profiles.
 `e11` is optional for backwards compatibility. When it and the corresponding E-I resolve, the
 start/end affordance overlays the viewport and continuously scrolls after a 150 ms non-touch hover
 delay at 240 px/s. It is not focusable, a menu item, or a substitute for wheel, trackpad, touch, or
-keyboard scrolling. The painted affordance never participates in pointer hit-testing; its shell
-observes non-touch pointer movement bubbling from the viewport so items and native touch remain the
-actual targets. Missing `e11` or glyph coverage removes the whole affordance.
+keyboard scrolling. Before activation, the painted affordance stays outside pointer hit-testing so
+items and native touch remain the actual targets. Once the non-touch delay elapses, it becomes the
+stable pointer target for the duration of continuous scrolling, preventing moving items underneath
+it from repeatedly entering and leaving hover. Missing `e11` or glyph coverage removes the whole
+affordance.
+
+The affordance currently has no independent vertical padding or height token. Its minimum block
+size is exactly the icon viewport resolved from `e11.iconSize`; Structural CSS only applies that
+Schema-owned dimension to the overlay. Presets should preserve this relationship until evidence
+from additional design systems justifies separating glyph size from affordance height.
 
 ContextMenu is a public Menu presenter, not a Dropdown behavior. Its consumer-owned trigger opens
 from `contextmenu`, Shift+F10, or the Context Menu key, while the headless layer owns the virtual

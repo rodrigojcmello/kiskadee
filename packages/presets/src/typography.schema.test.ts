@@ -86,7 +86,7 @@ describe('preset typography catalogs', () => {
     expect(profileIds.some((id) => id.includes('compact') || id.includes('relaxed'))).toBe(false);
   });
 
-  it('publishes the supported Fluent Web ramp and the body-owned Button label adaptation', () => {
+  it('publishes the supported Fluent Web ramp and body-owned control adaptations', () => {
     expect(Object.keys(fluent2Microsoft.global?.typography?.profiles ?? {})).toEqual([
       'caption-small',
       'caption-small-strong',
@@ -94,6 +94,7 @@ describe('preset typography catalogs', () => {
       'caption-medium-strong',
       'body-medium',
       'body-medium-strong',
+      'body-large',
       'subtitle-small',
       'subtitle-large',
       'heading-small',

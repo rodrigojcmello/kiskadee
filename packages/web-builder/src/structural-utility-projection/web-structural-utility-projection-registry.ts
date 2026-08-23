@@ -42,6 +42,70 @@ export const DEFAULT_WEB_STRUCTURAL_UTILITY_PROJECTIONS = {
         element: 'e1'
       },
       retainSource: true
+    },
+    {
+      id: 'dropdown-independent-icon-width',
+      artifactKey: 'iw',
+      source: {
+        component: 'dropdown',
+        element: 'e3',
+        channel: 'scales',
+        property: 'boxWidth',
+        optional: true
+      },
+      target: {
+        component: 'dropdown',
+        element: 'e3'
+      },
+      retainSource: true
+    },
+    {
+      id: 'dropdown-independent-icon-gap',
+      artifactKey: 'ig',
+      source: {
+        component: 'dropdown',
+        element: 'e3',
+        channel: 'scales',
+        property: 'paddingRight',
+        optional: true
+      },
+      target: {
+        component: 'dropdown',
+        element: 'e3'
+      },
+      retainSource: true
+    },
+    {
+      id: 'dropdown-independent-selection-width',
+      artifactKey: 'sw',
+      source: {
+        component: 'dropdown',
+        element: 'e10',
+        channel: 'scales',
+        property: 'boxWidth',
+        optional: true
+      },
+      target: {
+        component: 'dropdown',
+        element: 'e10'
+      },
+      retainSource: true
+    },
+    {
+      id: 'dropdown-independent-selection-gap',
+      artifactKey: 'sg',
+      source: {
+        component: 'dropdown',
+        element: 'e10',
+        channel: 'scales',
+        property: 'paddingRight',
+        optional: true
+      },
+      target: {
+        component: 'dropdown',
+        element: 'e10'
+      },
+      retainSource: true
     }
   ]
 } as const satisfies WebStructuralUtilityProjectionRegistry;

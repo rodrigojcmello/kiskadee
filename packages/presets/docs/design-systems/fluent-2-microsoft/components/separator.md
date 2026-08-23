@@ -21,33 +21,37 @@ This file records source evidence and schema decisions for the shared Separator 
 | Source area | Evidence | Status | Notes |
 | --- | --- | --- | --- |
 | Menu grouping | Fluent Menu usage | Official adapted | An explicit divider separates logical groups. |
-| Menu Divider | Figma `9121:6400` | Official adapted | One-pixel NeutralStroke2 line. |
+| Menu Divider | Figma `9121:6400` | Official adapted geometry | One-pixel NeutralStroke2 source line. |
 | Divider in context | Figma raster `9383:30544` | Supporting | Confirms visual usage without replacing inspectable token evidence. |
 | Shared recipe and standalone component | Kiskadee contract | Kiskadee extension | Fluent evidence does not define Kiskadee's cross-component recipe. |
 
 ## Color And Token Provenance
 
-The `subtle` recipe maps official NeutralStroke2 into the approved Fluent Neutral scale:
+The `subtle` recipe keeps the one-pixel official geometry but deliberately replaces the subtly
+blue NeutralStroke2 family with Kiskadee's approved achromatic Black v1 scale:
 
 | Theme | Existing role | Primitive and tone | Generated value | Kiskadee mapping |
 | --- | --- | --- | --- | --- |
-| Light | NeutralStroke2 | Fluent Neutral `primitive.black.v2`, Light 7 | `#dce0ed` | `global.separators.profiles.subtle` |
-| Dark | NeutralStroke2 | Fluent Neutral `primitive.black.v2`, Dark 30 | `#4b4e58` | `global.separators.profiles.subtle` |
-| Darker | No upstream theme | Fluent Neutral `primitive.black.v2`, Dark 12 | `#2e313a` | Kiskadee extension |
+| Light | NeutralStroke2 source | Achromatic `primitive.black.v1`, Light 7 | `#e0e0e0` | Kiskadee color adaptation |
+| Dark | NeutralStroke2 source | Achromatic `primitive.black.v1`, Dark 30 | `#4f4f4f` | Kiskadee color adaptation |
+| Darker | No upstream theme | Achromatic `primitive.black.v1`, Dark 12 | `#313131` | Kiskadee extension |
 
 ## Kiskadee Mapping
 
 - The recipe contains a one-pixel `boxWidth` and Neutral/Medium/Rest `boxColor` only.
-- `components.separator.e1` and `components.dropdown.e7` reference the same build-time recipe.
+- `components.separator.e1`, `components.dropdown.e7`, and `components.bottomSheet.e12` reference
+  the same build-time recipe.
 - Orientation is structural. Spacing and inset belong to the surrounding layout or Dropdown group.
 - Dropdown does not render the standalone Separator component; equal style keys deduplicate in the
   Builder.
 
 ## Validation
 
-- The mapping uses the promoted Fluent Neutral family and introduces no literal in schema code.
-- Light and Dark resolve the documented NeutralStroke2 mapping. Darker remains an explicit
-  Kiskadee extension because Fluent does not define that upstream Menu theme.
+- The mapping uses the approved zero-chroma Black v1 family and introduces no literal in schema
+  code.
+- Light and Dark intentionally diverge from NeutralStroke2 color while preserving its geometry.
+  Darker remains an explicit Kiskadee extension because Fluent does not define that upstream Menu
+  theme.
 
 ## Open Gaps
 

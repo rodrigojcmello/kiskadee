@@ -57,8 +57,9 @@ DOM owner.
 
 See
 [`structural-utility-projections.md`](./structural-utility-projections.md) for the Registry and
-artifact rules. The Registry currently projects the token-emitted `Button.e6.boxWidth` utility to
-`Button.e1.p.gd`; the Style Emission Policy remains responsible only for producing `--k-bxw`.
+artifact rules. Active examples include `Button.e6.boxWidth` to `Button.e1.p.gd` and Dropdown
+leading-track width/gap utilities under `e3.p.iw/ig` and `e10.p.sw/sg`; Style Emission Policy
+remains responsible only for producing the required custom properties.
 
 Current element-specific contracts include:
 

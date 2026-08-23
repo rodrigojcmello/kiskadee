@@ -27,4 +27,11 @@ describe('Fluent 2 Microsoft typography', () => {
       }
     });
   });
+
+  it('publishes the regular 16/22 body-large profile used by large Dropdown items', () => {
+    expect(schema.global?.typography?.profiles['body-large']).toEqual({
+      decorations: { textFont: 'body', textWeight: 'normal' },
+      scales: { textSize: 16, textHeight: 22 }
+    });
+  });
 });

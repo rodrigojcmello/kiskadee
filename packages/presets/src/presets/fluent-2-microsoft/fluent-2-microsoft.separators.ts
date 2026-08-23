@@ -17,21 +17,27 @@ export function createFluent2MicrosoftSeparators({
             light: {
               onSubtle: {
                 boxColor: {
-                  neutral: { medium: { rest: c('default', 'l', 'neutral', 7) } }
+                  neutral: {
+                    medium: { rest: c('default', 'l', 'primitive.black.v1', 7) }
+                  }
                 }
               }
             },
             dark: {
               onSubtle: {
                 boxColor: {
-                  neutral: { medium: { rest: c('default', 'd', 'neutral', 30) } }
+                  neutral: {
+                    medium: { rest: c('default', 'd', 'primitive.black.v1', 30) }
+                  }
                 }
               }
             },
             darker: {
               onSubtle: {
                 boxColor: {
-                  neutral: { medium: { rest: c('default', 'd', 'neutral', 12) } }
+                  neutral: {
+                    medium: { rest: c('default', 'd', 'primitive.black.v1', 12) }
+                  }
                 }
               }
             }

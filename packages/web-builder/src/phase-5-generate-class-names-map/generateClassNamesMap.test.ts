@@ -268,12 +268,13 @@ describe('generateClassNamesMapSplit', () => {
     const out = generateClassNamesMapSplit(
       styleKeys,
       {
-        boxWidth__20: 'width-20',
-        boxHeight__20: 'height-20',
-        paddingRight__4: 'inset-4',
+        'boxWidth__20@@t': 'width-20',
+        'boxHeight__20@@t': 'height-20',
+        'paddingRight__4@@t': 'inset-4',
         'textColor__#21242d': 'neutral-text'
       },
-      toneMetadataByPalette
+      toneMetadataByPalette,
+      { webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY }
     );
 
     const dropdownCore = out.core.dropdown as Record<string, ClassNameByElementJSON>;
@@ -285,6 +286,10 @@ describe('generateClassNamesMapSplit', () => {
     expect(dropdownCore.e10.s?.all?.split(' ')).toEqual(
       expect.arrayContaining(['width-20', 'height-20', 'inset-4'])
     );
+    expect(dropdownCore.e10.p).toEqual({
+      sg: { all: 'inset-4' },
+      sw: { all: 'width-20' }
+    });
     expect(dropdownPalette.e10.c?.s?.neutral).toEqual({ m: 'neutral-text' });
   });
 

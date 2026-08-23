@@ -56,6 +56,9 @@ Darker resolve independently; no literal schema color is used.
 
 - BottomSheet owns independent intents and elements while reusing approved primitive families,
   typography profiles, icon sizes, separators, and shadow levels.
+- Its separator consumes the shared one-pixel `subtle` recipe. The geometry remains Fluent-derived,
+  while the achromatic Black v1 color is the same explicit Kiskadee adaptation used by Dropdown
+  and the standalone Separator.
 - Item states remain sparse deltas over Rest and follow the existing Fluent Menu tonal mapping.
 - The explicit transparent `disabled` item background is a terminal compound-state reset, retained
   so disabled rows cannot inherit hover, pressed, or selected paint.

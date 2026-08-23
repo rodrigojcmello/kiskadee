@@ -1,6 +1,6 @@
 'use client';
 
-import type { DropdownPresence } from '@kiskadee/core';
+import type { DropdownPresence, ElementSizeValue } from '@kiskadee/core';
 import {
   Button,
   ButtonMenu,
@@ -31,6 +31,7 @@ type DemoDropdownProps = {
   layout?: 'independent' | 'columns';
   placement?: 'bottom-start' | 'right-start';
   presence?: DropdownPresence;
+  scale?: ElementSizeValue;
   width?: 'content' | 'min-anchor' | 'anchor';
 };
 
@@ -41,12 +42,13 @@ function DemoDropdown({
   layout = 'independent',
   placement = 'bottom-start',
   presence,
+  scale,
   width = 'min-anchor'
 }: DemoDropdownProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <Dropdown.Root open={open} onOpenChange={setOpen} presence={presence}>
+    <Dropdown.Root open={open} onOpenChange={setOpen} presence={presence} scale={scale}>
       <Dropdown.Anchor
         render={(anchorProps) => {
           const { ref, ...props } = anchorProps;
@@ -253,8 +255,8 @@ export default function DropdownShowcase() {
               Collections
             </Text>
             <Text as="p" profile={textProfiles.body} className={styles.description}>
-              Leading icons and selection checks reserve columns only inside the group that uses
-              them.
+              Leading icons and selection checks reserve their columns across every group in the
+              same menu.
             </Text>
             <div className={styles.grid}>
               <article className={styles.card}>
@@ -396,6 +398,72 @@ export default function DropdownShowcase() {
             </div>
           </section>
 
+          <section className={styles.section} aria-labelledby="dropdown-scale-title">
+            <Text as="h3" id="dropdown-scale-title" profile={textProfiles.sectionTitle}>
+              Responsive scale
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              The default Medium scale becomes Large below the desktop breakpoint. Explicit Large
+              keeps the larger geometry at every viewport.
+            </Text>
+            <div className={styles.grid}>
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Responsive Medium
+                </Text>
+                <DemoDropdown
+                  buttonLabel="Default scale"
+                  presence={presenceOverride}
+                  scale="s:md:1"
+                >
+                  <Dropdown.Group>
+                    <DemoItem>
+                      <Dropdown.Label>Text only</Dropdown.Label>
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="settings" />
+                      </Dropdown.Icon>
+                      <Dropdown.Label>Leading icon</Dropdown.Label>
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Label>Shortcut</Dropdown.Label>
+                      <Dropdown.EndText>Ctrl+K</Dropdown.EndText>
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="dashboard" />
+                      </Dropdown.Icon>
+                      <Dropdown.Label>Both sides</Dropdown.Label>
+                      <Dropdown.Trailing>
+                        <FamilyResolvedIcon name="chevron-end" />
+                      </Dropdown.Trailing>
+                    </DemoItem>
+                  </Dropdown.Group>
+                </DemoDropdown>
+              </article>
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Forced Large
+                </Text>
+                <DemoDropdown buttonLabel="Large scale" presence={presenceOverride} scale="s:lg:1">
+                  <Dropdown.Group>
+                    <DemoItem>
+                      <Dropdown.Label>Always 40px nominal</Dropdown.Label>
+                    </DemoItem>
+                    <DemoItem>
+                      <Dropdown.Icon>
+                        <FamilyResolvedIcon name="settings" />
+                      </Dropdown.Icon>
+                      <Dropdown.Label>24px icon viewport</Dropdown.Label>
+                      <Dropdown.EndText>Large</Dropdown.EndText>
+                    </DemoItem>
+                  </Dropdown.Group>
+                </DemoDropdown>
+              </article>
+            </div>
+          </section>
+
           <section className={styles.section} aria-labelledby="dropdown-free-content-title">
             <Text as="h3" id="dropdown-free-content-title" profile={textProfiles.sectionTitle}>
               Free content
@@ -483,7 +551,7 @@ export default function DropdownShowcase() {
                     <ButtonMenu.Trigger>
                       <Button.Label>{position}</Button.Label>
                     </ButtonMenu.Trigger>
-                    <ButtonMenu.Content>
+                    <ButtonMenu.Content dir={position.endsWith('End') ? 'rtl' : 'ltr'}>
                       <ButtonMenu.Group>
                         <ButtonMenu.Sub>
                           <ButtonMenu.SubTrigger textValue="Open submenu">

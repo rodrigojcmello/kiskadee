@@ -136,6 +136,19 @@ function DynamicRadioGroups({ includeFirst }: { includeFirst: boolean }) {
 }
 
 describe('Headless Menu', () => {
+  it('uses the semantic menu surface as the floating positioner', () => {
+    const result = render(
+      <Menu.Root defaultOpen>
+        <Menu.Trigger>Actions</Menu.Trigger>
+        <Menu.Content data-testid="content-positioner" portalled={false}>
+          <Menu.Item textValue="Copy">Copy</Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
+    );
+
+    expect(result.getByTestId('content-positioner')).toBe(result.getByRole('menu'));
+  });
+
   it('opens a context menu at the pointer reference and reports its reason', async () => {
     const onOpenChange = vi.fn();
     const result = render(

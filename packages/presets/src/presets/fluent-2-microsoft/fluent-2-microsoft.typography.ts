@@ -19,6 +19,7 @@ export const fluent2MicrosoftTypography = {
     'caption-medium-strong': profile('body', 'semiBold', 12, 16),
     'body-medium': profile('body', 'normal', 14, 20),
     'body-medium-strong': profile('body', 'semiBold', 14, 20),
+    'body-large': profile('body', 'normal', 16, 22),
     'subtitle-small': profile('heading', 'semiBold', 16, 22),
     'subtitle-large': profile('heading', 'semiBold', 20, 26),
     'heading-small': profile('heading', 'semiBold', 24, 32),
