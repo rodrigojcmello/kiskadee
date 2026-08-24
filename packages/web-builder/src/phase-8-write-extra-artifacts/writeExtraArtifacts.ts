@@ -7,6 +7,7 @@ import type {
   ActivationFeedbackThemeTokens,
   BottomSheetOptions,
   ButtonOptions,
+  ContentSurfaceContextMap,
   DropdownOptions,
   FontStack,
   GlobalClassNameMapJSON,
@@ -53,6 +54,7 @@ type ExtractableSchema = Schema;
 
 type SegmentKey = SegmentName | string;
 type ComponentEffectArtifact = {
+  contentSurfaceContext?: ContentSurfaceContextMap;
   effects?: {
     activationFeedback?: ActivationFeedbackSetting;
     presence?: ResolvedDropdownPresenceEffect;
@@ -62,8 +64,10 @@ type ComponentEffectArtifact = {
 };
 type ComponentEffectArtifactName =
   | 'bottomSheet'
+  | 'badge'
   | 'button'
   | 'card'
+  | 'chip'
   | 'dropdown'
   | 'slider'
   | 'switch';
@@ -299,6 +303,12 @@ export async function writeExtraArtifacts(params: {
       schema.components.button.effects.activationFeedback;
   }
 
+  if (schema.components?.button?.contentSurfaceContext !== undefined) {
+    const buttonArtifact = componentEffectOverrides.button ?? {};
+    buttonArtifact.contentSurfaceContext = schema.components.button.contentSurfaceContext;
+    componentEffectOverrides.button = buttonArtifact;
+  }
+
   if (schema.components?.bottomSheet?.effects?.shadow !== undefined) {
     getComponentEffects('bottomSheet').shadow = schema.components.bottomSheet.effects.shadow;
   }
@@ -321,6 +331,18 @@ export async function writeExtraArtifacts(params: {
 
   if (schema.components?.card?.effects?.shadow !== undefined) {
     getComponentEffects('card').shadow = schema.components.card.effects.shadow;
+  }
+
+  if (schema.components?.card?.contentSurfaceContext !== undefined) {
+    const cardArtifact = componentEffectOverrides.card ?? {};
+    cardArtifact.contentSurfaceContext = schema.components.card.contentSurfaceContext;
+    componentEffectOverrides.card = cardArtifact;
+  }
+
+  if (schema.components?.chip?.contentSurfaceContext !== undefined) {
+    const chipArtifact = componentEffectOverrides.chip ?? {};
+    chipArtifact.contentSurfaceContext = schema.components.chip.contentSurfaceContext;
+    componentEffectOverrides.chip = chipArtifact;
   }
 
   const dropdownPresence = buildDropdownPresenceEffect(schema);

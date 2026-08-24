@@ -18,6 +18,10 @@ const foundationEntries = [
 
 const componentEntries = [
   {
+    href: '/badge',
+    label: 'Badge'
+  },
+  {
     href: '/button',
     label: 'Button'
   },
@@ -28,6 +32,10 @@ const componentEntries = [
   {
     href: '/card',
     label: 'Card'
+  },
+  {
+    href: '/chip',
+    label: 'Chip'
   },
   {
     href: '/dropdown',

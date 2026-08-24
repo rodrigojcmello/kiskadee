@@ -3,12 +3,14 @@ import { HeadlessProgress } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
 import { resolveProgressClassNames } from './Progress.class-names.ts';
 import type { ProgressClassesMap, ProgressProps } from './Progress.types.ts';
 
 function useResolvedProgressClassNames(props: ProgressProps) {
   const { className, classNames = {}, intent, scale, surfaceContext } = props;
   const { classesMap } = useKiskadee();
+  const resolvedSurfaceContext = useSurfaceContext(surfaceContext);
   const progressClassesMap = useComponentClassMap(
     'progress',
     classesMap.progress as ProgressClassesMap | undefined
@@ -23,7 +25,7 @@ function useResolvedProgressClassNames(props: ProgressProps) {
         classNames,
         intent,
         scale,
-        surfaceContext
+        surfaceContext: resolvedSurfaceContext
       }),
     [
       className,
@@ -33,7 +35,7 @@ function useResolvedProgressClassNames(props: ProgressProps) {
       progressClassesMap?.e2,
       progressClassesMap?.e3,
       scale,
-      surfaceContext
+      resolvedSurfaceContext
     ]
   );
   return resolvedClassNames;

@@ -99,8 +99,19 @@ export type {
 } from './components/BottomSheetMenu';
 export { BottomSheetMenu } from './components/BottomSheetMenu';
 export type {
+  BadgeClassNames,
+  BadgeClassesMap,
+  BadgeDotProps,
+  BadgeProps,
+  BadgeSlotProps,
+  BadgeVisualProps
+} from './components/Badge';
+export { Badge } from './components/Badge';
+export type {
   ButtonActivationFeedbackEffect,
   ButtonArtifactConfig,
+  ButtonBadgePlacement,
+  ButtonBadgeProps,
   ButtonDisclosureProps,
   ButtonGroupProps,
   ButtonIconProps,
@@ -140,6 +151,17 @@ export type {
   CardStatus
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
+export type {
+  ChipClassNames,
+  ChipClassesMap,
+  ChipContentProps,
+  ChipProps,
+  ChipRemoveProps,
+  ChipSelectProps,
+  ChipSlotProps,
+  ChipVisualProps
+} from './components/Chip';
+export { Chip } from './components/Chip';
 export type { ContextMenuRootProps, ContextMenuTriggerProps } from './components/ContextMenu';
 export { ContextMenu } from './components/ContextMenu';
 export type {
@@ -319,6 +341,12 @@ export type {
   KiskadeeLayoutEnvironment
 } from './shared/contexts/KiskadeeContext.tsx';
 export { KiskadeeContext, useKiskadee } from './shared/contexts/KiskadeeContext.tsx';
+export type { SurfaceContextProviderProps } from './shared/contexts/SurfaceContext.tsx';
+export {
+  resolveContentSurfaceContext,
+  SurfaceContextProvider,
+  useSurfaceContext
+} from './shared/contexts/SurfaceContext.tsx';
 export type {
   ShowcaseContextValue,
   ShowcaseFontRole

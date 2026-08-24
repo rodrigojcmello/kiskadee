@@ -11,6 +11,7 @@ import type {
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ComponentClassNameMapJSON,
+  ContentSurfaceContextMap,
   DropdownOptions,
   GlobalClassNameMapJSON,
   RadiusMode,
@@ -81,6 +82,7 @@ export type KiskadeeGlobalArtifact = {
     shadow?: ShadowGlobalEffectSchema;
   };
   components?: {
+    badge?: Record<string, never>;
     bottomSheet?: {
       options?: {
         initialHeight?: BottomSheetInitialHeight;
@@ -95,6 +97,7 @@ export type KiskadeeGlobalArtifact = {
       };
     };
     button?: {
+      contentSurfaceContext?: ContentSurfaceContextMap;
       options?: {
         iconLayout?: ButtonIconLayout;
         iconPlacement?: ButtonIconPlacement;
@@ -109,9 +112,13 @@ export type KiskadeeGlobalArtifact = {
       };
     };
     card?: {
+      contentSurfaceContext?: ContentSurfaceContextMap;
       effects?: {
         shadow?: ShadowEffectSchema;
       };
+    };
+    chip?: {
+      contentSurfaceContext?: ContentSurfaceContextMap;
     };
     dropdown?: {
       options?: DropdownOptions;

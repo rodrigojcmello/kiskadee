@@ -1,7 +1,9 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
 import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
+import type { BadgeElements } from './components/badge.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
 import type { CardElements, CardOptions } from './components/card.ts';
+import type { ChipComponent } from './components/chip.ts';
 import type { DropdownElements, DropdownOptions } from './components/dropdown.ts';
 import type { IconElements } from './components/icon.ts';
 import type { ProgressElements } from './components/progress.ts';
@@ -11,16 +13,19 @@ import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
+import type { ContentSurfaceContextMap } from './content-surface-context.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
 import type {
   ElementPalettes,
   InteractionState,
   SchemaColors,
+  CardIntent,
   SegmentName,
   SelectedInteractionStateToken,
   SemanticColor,
   SolidColor,
   SurfaceContext,
+  SystemButtonIntent,
   SurfaceContextBucket,
   ThemeMode
 } from './types/colors/colors.types.ts';
@@ -45,8 +50,10 @@ import type { ElementTypography, SchemaTypography } from './typography.ts';
 // Names of all supported components
 export type ComponentName =
   | 'bottomSheet'
+  | 'badge'
   | 'button'
   | 'card'
+  | 'chip'
   | 'dropdown'
   | 'icon'
   | 'progress'
@@ -126,8 +133,10 @@ export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = 
 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
   bottomSheet: ComponentElementsStyleKeyMap<TSegmentName>;
+  badge: ComponentElementsStyleKeyMap<TSegmentName>;
   button: ComponentElementsStyleKeyMap<TSegmentName>;
   card: ComponentElementsStyleKeyMap<TSegmentName>;
+  chip: ComponentElementsStyleKeyMap<TSegmentName>;
   dropdown: ComponentElementsStyleKeyMap<TSegmentName>;
   icon: ComponentElementsStyleKeyMap<TSegmentName>;
   progress: ComponentElementsStyleKeyMap<TSegmentName>;
@@ -179,6 +188,9 @@ type ComponentEffects = {
 };
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
+  badge: {
+    elements: BadgeElements<TSegmentName> & Elements<TSegmentName>;
+  };
   bottomSheet: {
     effects?: {
       shadow?: ShadowEffectSchema;
@@ -187,15 +199,18 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     elements: BottomSheetElements<TSegmentName> & Elements<TSegmentName>;
   };
   button: {
+    contentSurfaceContext?: ContentSurfaceContextMap<SystemButtonIntent, TSegmentName>;
     effects?: ComponentEffects;
     options?: ButtonOptions;
     elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
   };
   card: {
+    contentSurfaceContext?: ContentSurfaceContextMap<CardIntent, TSegmentName>;
     effects?: ComponentEffects;
     options?: CardOptions<TSegmentName>;
     elements: CardElements<TSegmentName> & Elements<TSegmentName>;
   };
+  chip: ChipComponent<TSegmentName>;
   dropdown: {
     effects?: {
       presence?: DropdownPresenceEffectSchema;

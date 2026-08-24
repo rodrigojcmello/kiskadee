@@ -39,6 +39,17 @@ export type ButtonDisclosureProps = Omit<HTMLAttributes<HTMLSpanElement>, 'child
   children?: ReactNode;
 };
 
+export type ButtonBadgePlacement =
+  | 'block-start-inline-start'
+  | 'block-start-inline-end'
+  | 'block-end-inline-start'
+  | 'block-end-inline-end';
+
+export type ButtonBadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
+  children: ReactNode;
+  placement?: ButtonBadgePlacement;
+};
+
 export type ButtonActivationFeedbackEffect = {
   /** Override activation-feedback profile for this button. */
   profile?: ActivationFeedbackProfileMode;

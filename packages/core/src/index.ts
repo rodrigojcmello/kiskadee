@@ -1,7 +1,9 @@
 export * from './breakpoints.ts';
 export * from './components/bottom-sheet.ts';
+export * from './components/badge.ts';
 export * from './components/button.ts';
 export * from './components/card.ts';
+export * from './components/chip.ts';
 export * from './components/dropdown.ts';
 export * from './components/icon.ts';
 export * from './components/progress.ts';
@@ -11,6 +13,7 @@ export * from './components/switch.ts';
 export * from './components/tabs.ts';
 export * from './components/text-field.ts';
 export * from './icon-sizes.ts';
+export * from './content-surface-context.ts';
 export {
   validateDropdownPresenceEffectContract,
   validatePresenceEffectContract,

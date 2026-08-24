@@ -65,6 +65,23 @@ structural owner can consume the same class reference without copying its value.
 
 ## Canonical terms without abbreviations
 
+### Badge
+
+A passive component that represents metadata, status, novelty, an icon, or a count associated with
+another entity. Badge owns no activation, selection, removal, or interaction state.
+
+### Chip
+
+A component that represents an entity, filter, choice, or removable value. Chip may be static,
+individually selectable, removable, or both selectable and removable. Compact command-only controls
+remain Button.
+
+### Content Surface Context
+
+The semantic surface (`onSubtle` or `onVivid`) that a component produces for independent
+descendants. It is authored as serializable component metadata and resolved separately from the
+surface the component itself consumes.
+
 ### Composition Strategy
 
 A documented choice among Kiskadee's established mechanisms for representing a concern, such as a
@@ -111,6 +128,12 @@ Use **Structural CSS** when distinguishing framework-owned Web mechanics from Sc
 visual values. A value does not become structural merely because Sass consumes it: for example, a
 Dropdown scroll affordance may use Structural CSS to apply an `iconSize` variable as its minimum
 block size, while the dimension itself remains owned by the Schema.
+
+### Surface Context
+
+The semantic `onSubtle` or `onVivid` surface received by a component. p-react resolves an explicit
+prop, the nearest `SurfaceContextProvider`, and then its portability default in that order. Surface
+Context never carries concrete colors, tokens, or generated classes.
 
 ### Showcase
 

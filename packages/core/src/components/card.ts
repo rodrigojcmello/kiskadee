@@ -8,6 +8,7 @@ import type {
   SurfaceContextPalette,
   ThemeMode
 } from '../types/colors/colors.types.ts';
+import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
 import {
   CardIntentKeys,
   componentEmphasisBuckets,
@@ -87,7 +88,7 @@ type ElementContractRules = {
   radiusModes?: readonly string[];
 };
 
-const CARD_COMPONENT_KEYS = ['effects', 'options', 'elements'] as const;
+const CARD_COMPONENT_KEYS = ['contentSurfaceContext', 'effects', 'options', 'elements'] as const;
 const CARD_COMPONENT_EFFECT_KEYS = ['shadow'] as const;
 const CARD_COMPONENT_OPTION_KEYS = ['canonicalSurfaces'] as const;
 const CARD_CANONICAL_SURFACE_KEYS = ['intent', 'emphasis', 'contentSurfaceContext'] as const;
@@ -375,6 +376,15 @@ export function validateCardComponentContract(value: unknown, path = 'components
   }
 
   validateAllowedKeys(value, CARD_COMPONENT_KEYS, path, issues);
+
+  if (value.contentSurfaceContext !== undefined) {
+    issues.push(
+      ...validateContentSurfaceContextMap(
+        value.contentSurfaceContext,
+        `${path}.contentSurfaceContext`
+      )
+    );
+  }
 
   if (value.effects !== undefined) {
     validateComponentEffects(value.effects, `${path}.effects`, issues);

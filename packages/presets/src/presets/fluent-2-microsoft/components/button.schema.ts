@@ -239,7 +239,33 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
+  const createContentSurfaceContext = () =>
+    Object.fromEntries(
+      (['light', 'dark', 'darker'] as const).map((theme) => [
+        theme,
+        Object.fromEntries(
+          (['onSubtle', 'onVivid'] as const).map((input) => [
+            input,
+            Object.fromEntries(
+              (['primary', 'neutral', 'destructive', 'positive'] as const).map((intent) => [
+                intent,
+                {
+                  high: { rest: 'onVivid', pending: 'onVivid', disabled: 'onSubtle' },
+                  medium: { rest: 'onVivid', pending: 'onVivid', disabled: 'onSubtle' },
+                  low: { rest: 'inherit' },
+                  lowest: { rest: 'inherit' }
+                }
+              ])
+            )
+          ])
+        )
+      ])
+    );
+
   return {
+    contentSurfaceContext: {
+      default: createContentSurfaceContext()
+    },
     options: {
       groupDivider: true,
       disclosureDivider: false,

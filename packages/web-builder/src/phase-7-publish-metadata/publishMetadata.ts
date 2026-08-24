@@ -382,8 +382,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function isComponentName(value: string): value is ComponentName {
   return (
     value === 'bottomSheet' ||
+    value === 'badge' ||
     value === 'button' ||
     value === 'card' ||
+    value === 'chip' ||
     value === 'dropdown' ||
     value === 'icon' ||
     value === 'progress' ||
@@ -720,8 +722,10 @@ export async function publishMetadata(params: {
   // not defined or not applicable.
   const manifestComponentNames = [
     'bottomSheet',
+    'badge',
     'button',
     'card',
+    'chip',
     'dropdown',
     'icon',
     'progress',
@@ -732,13 +736,18 @@ export async function publishMetadata(params: {
   for (const componentName of manifestComponentNames) {
     const componentScale = buildComponentScale(schema, componentName);
     const componentSurfaceContexts = buildComponentSurfaceContexts(schema, componentName);
+    const componentContentSurfaceContext = Boolean(
+      (schema.components?.[componentName] as { contentSurfaceContext?: unknown } | undefined)
+        ?.contentSurfaceContext
+    );
 
-    if (componentScale || componentSurfaceContexts) {
+    if (componentScale || componentSurfaceContexts || componentContentSurfaceContext) {
       manifest.components = manifest.components ?? {};
       manifest.components[componentName] = {
         ...(manifest.components[componentName] ?? {}),
         ...(componentScale ? { scale: componentScale } : {}),
-        ...(componentSurfaceContexts ? { surfaceContexts: componentSurfaceContexts } : {})
+        ...(componentSurfaceContexts ? { surfaceContexts: componentSurfaceContexts } : {}),
+        ...(componentContentSurfaceContext ? { contentSurfaceContext: true } : {})
       };
     }
   }

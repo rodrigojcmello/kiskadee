@@ -5,7 +5,11 @@
 // @kiskadee/showcase) through the root "@kiskadee/web-builder/types"
 // entrypoint.
 
-import type { ButtonIconTreatment, ComponentName, SurfaceContext } from '@kiskadee/core';
+import type {
+  ButtonIconTreatment,
+  ComponentName,
+  SurfaceContext
+} from '@kiskadee/core';
 
 export type ManifestFonts = {
   body: string;
@@ -35,6 +39,8 @@ export type ManifestComponentState = Record<
 >;
 
 export type ManifestComponent = {
+  /** The component publishes a serialized descendant surface-context map. */
+  contentSurfaceContext?: true;
   /**
    * Button icon-region treatments supported by the component schema.
    *

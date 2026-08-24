@@ -43,6 +43,13 @@ export type {
 } from './components/card/Card.tsx';
 export { Card, CardAction } from './components/card/Card.tsx';
 export type {
+  HeadlessChipContentProps,
+  HeadlessChipRemoveProps,
+  HeadlessChipRootProps,
+  HeadlessChipSelectProps
+} from './components/chip/HeadlessChip.tsx';
+export { HeadlessChip } from './components/chip/HeadlessChip.tsx';
+export type {
   ColorRadioGroupClassNames,
   ColorRadioGroupProps,
   ColorRadioItem

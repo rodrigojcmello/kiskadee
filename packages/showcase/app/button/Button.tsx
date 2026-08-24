@@ -46,6 +46,7 @@ import {
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Button.module.scss';
 import { ButtonAsyncExample } from './components/ButtonAsyncExample';
+import { ButtonBadgeExamples } from './components/ButtonBadgeExamples';
 import { ButtonGroupExamples } from './components/ButtonGroupExamples';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
@@ -866,6 +867,12 @@ export function Button() {
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
+        {manifest?.components?.badge ? (
+          <ButtonBadgeExamples
+            scale={activeButtonScale}
+            surfaceContext={activeSurfaceContext}
+          />
+        ) : null}
         <ButtonGroupExamples
           scale={activeButtonScale}
           shadowAvailable={Boolean(buttonClassesMap?.e1?.e?.h)}

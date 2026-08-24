@@ -1,0 +1,27 @@
+.page { display: grid; gap: 12px; min-inline-size: 0; }
+.page h2, .page h3, .page p { margin: 0; }
+.lead, .note { opacity: 0.68; }
+.sections { display: grid; gap: 40px; margin-block-start: 20px; }
+.section { display: grid; gap: 14px; min-inline-size: 0; }
+.stage { align-items: center; display: flex; flex-wrap: wrap; gap: 16px; min-inline-size: 0; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.card, .unavailable, .subtleSurface, .vividSurface {
+  align-items: center;
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 16px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 16px;
+  min-block-size: 112px;
+  min-inline-size: 0;
+  padding: 20px;
+}
+.card { flex-direction: column; justify-content: center; }
+.matrix { display: grid; gap: 16px; }
+.matrixRow { display: grid; gap: 10px; }
+.surfaceGrid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.subtleSurface { background: #fff; color: #242424; }
+.vividSurface { background: #0f6cbd; color: #fff; }
+.unavailable { justify-content: center; }
+@media (max-width: 820px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .surfaceGrid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }

@@ -100,6 +100,16 @@ export const globalSemanticsBySegment = {
 // -------------------------------------------------------------------------------------------------
 
 export const componentIntents = {
+  badge: {
+    neutral: 'neutral',
+    primary: 'primary',
+    informative: 'primary',
+    positive: 'greenLike',
+    warning: 'yellowLike',
+    severe: 'primitive.orange.v1',
+    destructive: 'redLike',
+    important: 'primitive.purple.v1'
+  },
   bottomSheet: {
     neutral: 'neutral',
     destructive: 'redLike'
@@ -111,6 +121,10 @@ export const componentIntents = {
     positive: 'greenLike'
   },
   card: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
+  chip: {
     neutral: 'neutral',
     primary: 'primary'
   },

@@ -1,6 +1,8 @@
 import { validateBottomSheetComponentContract } from '../components/bottom-sheet.ts';
+import { validateBadgeComponentContract } from '../components/badge.ts';
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
+import { validateChipComponentContract } from '../components/chip.ts';
 import { validateDropdownComponentContract } from '../components/dropdown.ts';
 import { validateIconComponentContract } from '../components/icon.ts';
 import { validateProgressComponentContract } from '../components/progress.ts';
@@ -36,6 +38,15 @@ export function validateSchemaComponentContracts(schemaLike: {
 
   const byName = components as Record<string, unknown>;
 
+  if (byName.badge !== undefined) {
+    const issues = validateBadgeComponentContract(byName.badge, 'components.badge');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for badge. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
   if (byName.bottomSheet !== undefined) {
     const issues = validateBottomSheetComponentContract(
       byName.bottomSheet,
@@ -62,6 +73,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for card. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.chip !== undefined) {
+    const issues = validateChipComponentContract(byName.chip, 'components.chip');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for chip. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
   }

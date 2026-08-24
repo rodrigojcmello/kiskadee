@@ -1,8 +1,10 @@
 import { breakpoints, color, primitive, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createFluent2MicrosoftBottomSheetSchema } from './components/bottom-sheet.schema.ts';
+import { createFluent2MicrosoftBadgeSchema } from './components/badge.schema.ts';
 import { createFluent2MicrosoftButtonSchema } from './components/button.schema.ts';
 import { createFluent2MicrosoftCardSchema } from './components/card.schema.ts';
+import { createFluent2MicrosoftChipSchema } from './components/chip.schema.ts';
 import { createFluent2MicrosoftDropdownSchema } from './components/dropdown.schema.ts';
 import { createFluent2MicrosoftIconSchema } from './components/icon.schema.ts';
 import { createFluent2MicrosoftProgressSchema } from './components/progress.schema.ts';
@@ -167,6 +169,7 @@ export const schema: Schema<Segments> = {
     }
   },
   components: {
+    badge: createFluent2MicrosoftBadgeSchema({ c }),
     bottomSheet: createFluent2MicrosoftBottomSheetSchema({ c }),
     slider: createFluent2MicrosoftSliderSchema(),
     button: createFluent2MicrosoftButtonSchema({ c, shadowBlack }),
@@ -174,6 +177,7 @@ export const schema: Schema<Segments> = {
       c,
       segmentNames
     }),
+    chip: createFluent2MicrosoftChipSchema({ c }),
     dropdown: createFluent2MicrosoftDropdownSchema({ c }),
     icon: createFluent2MicrosoftIconSchema({ c }),
     progress: createFluent2MicrosoftProgressSchema({ c }),

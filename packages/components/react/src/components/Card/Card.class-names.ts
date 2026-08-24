@@ -6,7 +6,8 @@ import {
   stateActivator as cn,
   type EffectClassBucketJSON,
   type ElementSizeValue,
-  type RadiusMode
+  type RadiusMode,
+  type SurfaceContext
 } from '@kiskadee/core';
 import type { CardClassNames as HeadlessCardClassNames } from '@kiskadee/react-headless';
 import {
@@ -53,11 +54,13 @@ function resolveCardShadowClassName(
 function collectElementClasses(
   element: ClassNameByElementJSON | undefined,
   emphasis: ComponentEmphasis | undefined = DEFAULT_CARD_EMPHASIS,
-  intent: CardIntent | undefined = DEFAULT_CARD_INTENT
+  intent: CardIntent | undefined = DEFAULT_CARD_INTENT,
+  surfaceContext: SurfaceContext = 'onSubtle'
 ): string {
   return resolveSchemaElementClassName(element, {
     intent,
-    emphasis
+    emphasis,
+    surfaceContext
   });
 }
 
@@ -79,6 +82,7 @@ export function resolveCardClassNames({
   preserveBorderWithShadow,
   emphasis,
   intent,
+  surfaceContext,
   globalRadius,
   action
 }: {
@@ -91,6 +95,7 @@ export function resolveCardClassNames({
   preserveBorderWithShadow: CardVisualProps['preserveBorderWithShadow'];
   emphasis: CardVisualProps['emphasis'];
   intent: CardVisualProps['intent'];
+  surfaceContext: SurfaceContext;
   globalRadius: RadiusMode | undefined;
   action: boolean;
 }): ResolvedCardClassNames {
@@ -113,7 +118,7 @@ export function resolveCardClassNames({
     classNames: {
       e1:
         join(
-          collectElementClasses(e1, resolvedEmphasis, resolvedIntent),
+          collectElementClasses(e1, resolvedEmphasis, resolvedIntent, surfaceContext),
           e1?.s?.all,
           e1?.s?.[scaleKey],
           e1RadiusClassName,

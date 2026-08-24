@@ -293,3 +293,36 @@ describe('writeExtraArtifacts Button options', () => {
     });
   });
 });
+
+describe('writeExtraArtifacts content surface context', () => {
+  it('publishes serializable output maps for nested component consumers', async () => {
+    const outDirSlug = createOutputSlug('content-surface-context');
+    const contentSurfaceContext = {
+      default: {
+        light: {
+          onSubtle: {
+            primary: {
+              high: { rest: 'onVivid', disabled: 'onSubtle' }
+            }
+          }
+        }
+      }
+    } as const;
+
+    await writeExtraArtifacts({
+      schema: {
+        components: {
+          button: { contentSurfaceContext, elements: {} },
+          chip: { contentSurfaceContext, elements: {} }
+        }
+      } as Schema,
+      outDirSlug
+    });
+
+    const globalArtifact = JSON.parse(
+      await readFile(resolve(buildRoot, outDirSlug, 'global.kiskadee.json'), 'utf8')
+    );
+    expect(globalArtifact.components.button.contentSurfaceContext).toEqual(contentSurfaceContext);
+    expect(globalArtifact.components.chip.contentSurfaceContext).toEqual(contentSurfaceContext);
+  });
+});

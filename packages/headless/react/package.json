@@ -40,6 +40,11 @@
       "import": "./dist/components/card/Card.js",
       "default": "./dist/components/card/Card.js"
     },
+    "./chip": {
+      "types": "./dist/components/chip/HeadlessChip.d.ts",
+      "import": "./dist/components/chip/HeadlessChip.js",
+      "default": "./dist/components/chip/HeadlessChip.js"
+    },
     "./icon": {
       "types": "./dist/components/icon/Icon.d.ts",
       "import": "./dist/components/icon/Icon.js",

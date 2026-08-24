@@ -176,6 +176,15 @@ A durable architecture decision should record:
 - Button connected-divider thickness uses SUP because another structural owner needs an existing
   token-only utility. Dropdown group-label spacing uses CSC because one element owns both additive
   spacing values.
+- Badge is an independent Rest-only component because its metadata remains meaningful outside any
+  one host. `Button.Badge` is a compound structural relation: Button owns logical-corner placement,
+  while Badge preserves its identity and does not inherit Button interaction states.
+- Chip composes a primary content or selection control with an optional sibling Remove control.
+  headless-react owns the non-nested interaction contract; p-react owns the Web structure; a nested
+  Badge remains an independent passive component.
+- Surface Context uses a Provider because independent descendants need a subtree-scoped semantic
+  runtime input. Presets still author the serialized produced-surface map; the Provider does not
+  replace Schema data.
 
 ## Related definitions
 

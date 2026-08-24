@@ -359,7 +359,7 @@ function createCardPalette(
         lowest: stateMap(recipe.boxColor.neutral.lowest),
         low: stateMap(recipe.boxColor.neutral.low),
         medium: stateMap(recipe.boxColor.neutral.medium),
-        high: stateMap(recipe.boxColor.neutral.high),
+        high: stateMap(recipe.boxColor.neutral.high!),
         ...(recipe.boxColor.neutral.highest
           ? { highest: stateMap(recipe.boxColor.neutral.highest) }
           : undefined)
@@ -369,7 +369,7 @@ function createCardPalette(
         low: stateMap(recipe.boxColor.primary.low),
         medium: stateMap(recipe.boxColor.primary.medium),
         ...(recipe.boxColor.primary.high
-          ? { high: stateMap(recipe.boxColor.primary.high) }
+          ? { high: stateMap(recipe.boxColor.primary.high!) }
           : undefined),
         ...(recipe.boxColor.primary.highest
           ? { highest: stateMap(recipe.boxColor.primary.highest) }
@@ -381,7 +381,7 @@ function createCardPalette(
         lowest: stateMap(recipe.borderColor.neutral.lowest),
         low: stateMap(recipe.borderColor.neutral.low),
         medium: stateMap(recipe.borderColor.neutral.medium),
-        high: stateMap(recipe.borderColor.neutral.high),
+        high: stateMap(recipe.borderColor.neutral.high!),
         ...(recipe.borderColor.neutral.highest
           ? { highest: stateMap(recipe.borderColor.neutral.highest) }
           : undefined)
@@ -391,7 +391,7 @@ function createCardPalette(
         low: stateMap(recipe.borderColor.primary.low),
         medium: stateMap(recipe.borderColor.primary.medium),
         ...(recipe.borderColor.primary.high
-          ? { high: stateMap(recipe.borderColor.primary.high) }
+          ? { high: stateMap(recipe.borderColor.primary.high!) }
           : undefined),
         ...(recipe.borderColor.primary.highest
           ? { highest: stateMap(recipe.borderColor.primary.highest) }
@@ -406,6 +406,50 @@ export function createFluent2MicrosoftCardSchema({
   segmentNames
 }: CreateFluent2MicrosoftCardSchemaArgs): CardComponent {
   return {
+    contentSurfaceContext: {
+      default: {
+        light: {
+          onSubtle: {
+            neutral: {
+              low: { rest: 'onSubtle' },
+              medium: { rest: 'onSubtle' },
+              high: { rest: 'onSubtle' }
+            },
+            primary: {
+              medium: { rest: 'onSubtle' },
+              highest: { rest: 'onVivid' }
+            }
+          }
+        },
+        dark: {
+          onSubtle: {
+            neutral: {
+              low: { rest: 'onSubtle' },
+              medium: { rest: 'onSubtle' },
+              high: { rest: 'onSubtle' }
+            },
+            primary: {
+              medium: { rest: 'onSubtle' },
+              highest: { rest: 'onVivid' }
+            }
+          }
+        },
+        darker: {
+          onSubtle: {
+            neutral: {
+              low: { rest: 'onSubtle' },
+              medium: { rest: 'onSubtle' },
+              high: { rest: 'onSubtle' },
+              highest: { rest: 'onSubtle' }
+            },
+            primary: {
+              medium: { rest: 'onSubtle' },
+              highest: { rest: 'onVivid' }
+            }
+          }
+        }
+      }
+    },
     options: {
       canonicalSurfaces: CANONICAL_CARD_SURFACES
     },

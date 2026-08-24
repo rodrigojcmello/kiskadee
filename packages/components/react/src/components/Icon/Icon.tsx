@@ -2,6 +2,7 @@ import { Icon as HeadlessIcon } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
 import { resolveIconClassNames } from './Icon.class-names.ts';
 import type { IconClassesMap, IconProps } from './Icon.types.ts';
 
@@ -12,6 +13,7 @@ export const Icon = forwardRef<HTMLSpanElement, IconProps>(function Icon(
   ref
 ) {
   const { classesMap } = useKiskadee();
+  const resolvedSurfaceContext = useSurfaceContext(surfaceContext);
   const iconClassesMap = useComponentClassMap(
     'icon',
     classesMap.icon as IconClassesMap | undefined
@@ -23,9 +25,9 @@ export const Icon = forwardRef<HTMLSpanElement, IconProps>(function Icon(
         classNames,
         scale,
         intent,
-        surfaceContext
+        surfaceContext: resolvedSurfaceContext
       }),
-    [classNames, iconClassesMap?.e1, intent, scale, surfaceContext]
+    [classNames, iconClassesMap?.e1, intent, resolvedSurfaceContext, scale]
   );
 
   return (

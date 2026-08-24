@@ -34,6 +34,14 @@ $height: 64px;
   margin: 0;
 }
 
+.buttonBadgeStage {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 12px;
+}
+
 .buttonGroupGrid,
 .buttonMenuGrid {
   display: grid;

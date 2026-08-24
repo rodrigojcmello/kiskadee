@@ -40,6 +40,97 @@
 }
 
 /*
+ * element button root modifier 'j' / e1j
+ * Establishes an unclipped containing block for the optional Badge overlay.
+ */
+.k-btn-e1j {
+  overflow: visible;
+  position: relative;
+}
+
+/*
+ * extra element for e1 / x4
+ * Anchors passive Badge content to a logical Button corner without intercepting input.
+ */
+.k-btn-x4 {
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+/*
+ * extra element for e1 / x4
+ * Places the Badge at the logical block-start and inline-start corner.
+ */
+.k-btn-x4-block-start-inline-start {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  translate: -50% -50%;
+}
+
+/*
+ * extra element for e1 / x4
+ * Corrects the inline-start outward translation in right-to-left direction.
+ */
+.k-btn-x4-block-start-inline-start:dir(rtl) {
+  translate: 50% -50%;
+}
+
+/*
+ * extra element for e1 / x4
+ * Places the Badge at the logical block-start and inline-end corner.
+ */
+.k-btn-x4-block-start-inline-end {
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  translate: 50% -50%;
+}
+
+/*
+ * extra element for e1 / x4
+ * Corrects the inline-end outward translation in right-to-left direction.
+ */
+.k-btn-x4-block-start-inline-end:dir(rtl) {
+  translate: -50% -50%;
+}
+
+/*
+ * extra element for e1 / x4
+ * Places the Badge at the logical block-end and inline-start corner.
+ */
+.k-btn-x4-block-end-inline-start {
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  translate: -50% 50%;
+}
+
+/*
+ * extra element for e1 / x4
+ * Corrects the inline-start outward translation in right-to-left direction.
+ */
+.k-btn-x4-block-end-inline-start:dir(rtl) {
+  translate: 50% 50%;
+}
+
+/*
+ * extra element for e1 / x4
+ * Places the Badge at the logical block-end and inline-end corner.
+ */
+.k-btn-x4-block-end-inline-end {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  translate: 50% 50%;
+}
+
+/*
+ * extra element for e1 / x4
+ * Corrects the inline-end outward translation in right-to-left direction.
+ */
+.k-btn-x4-block-end-inline-end:dir(rtl) {
+  translate: -50% 50%;
+}
+
+/*
  * Button progress root / x1
  * Keeps focus outlines and activation feedback owned by the button instead of clipping them.
  */

@@ -24,6 +24,7 @@ import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
@@ -236,11 +237,13 @@ const DropdownAnchor = forwardRef<HTMLElement, DropdownAnchorProps>(
 const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
   function DropdownContent(props, ref) {
     return (
-      <DropdownPresence>
-        {({ forceMount, render }) => (
-          <HeadlessDropdown.Content {...props} ref={ref} forceMount={forceMount} render={render} />
-        )}
-      </DropdownPresence>
+      <SurfaceContextProvider value="onSubtle">
+        <DropdownPresence>
+          {({ forceMount, render }) => (
+            <HeadlessDropdown.Content {...props} ref={ref} forceMount={forceMount} render={render} />
+          )}
+        </DropdownPresence>
+      </SurfaceContextProvider>
     );
   }
 );

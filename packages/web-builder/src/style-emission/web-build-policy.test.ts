@@ -37,6 +37,24 @@ describe('Button Web style-emission policy', () => {
   });
 });
 
+describe('Badge and Chip Web style-emission policy', () => {
+  it('publishes every owned icon viewport as structural tokens', () => {
+    for (const [component, element] of [
+      ['badge', 'e3'],
+      ['chip', 'e4'],
+      ['chip', 'e6']
+    ] as const) {
+      const policy = resolveElementStyleEmissionPolicy(
+        DEFAULT_WEB_STYLE_EMISSION_POLICY,
+        component,
+        element
+      );
+      expect(policy.boxWidthEmission).toBe('token');
+      expect(policy.boxHeightEmission).toBe('token');
+    }
+  });
+});
+
 describe('Tabs Web style-emission policy', () => {
   it('publishes Bridge icon dimensions as tokens without changing other variants', () => {
     const bridgePolicy = resolveElementStyleEmissionPolicy(

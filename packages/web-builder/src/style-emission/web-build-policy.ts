@@ -90,6 +90,14 @@ const separatorThicknessEmission = {
 
 export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
   components: {
+    badge: {
+      elements: {
+        e3: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
+        }
+      }
+    },
     bottomSheet: {
       elements: {
         e3: {
@@ -142,6 +150,18 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token',
           paddingRightEmission: 'token'
+        },
+        e6: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
+        }
+      }
+    },
+    chip: {
+      elements: {
+        e4: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
         },
         e6: {
           boxHeightEmission: 'token',

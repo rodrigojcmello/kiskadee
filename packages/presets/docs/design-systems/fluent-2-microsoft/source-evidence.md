@@ -224,3 +224,5 @@ instead of flattening them to the larger offset layer.
 - [Slider](components/slider.md)
 - [Dropdown and Menu](components/dropdown.md)
 - [Separator](components/separator.md)
+- [Badge](components/badge.md)
+- [Chip](components/chip.md)

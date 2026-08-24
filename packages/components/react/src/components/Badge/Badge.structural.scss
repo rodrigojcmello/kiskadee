@@ -1,0 +1,63 @@
+/*
+ * element badge surface / e1
+ * Aligns passive content within the generated badge geometry.
+ */
+.k-bdg-e1 {
+  align-items: center;
+  box-sizing: border-box;
+  display: inline-flex;
+  inline-size: fit-content;
+  justify-content: center;
+  max-inline-size: 100%;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/*
+ * element badge label / e2
+ * Keeps the primary passive content in the badge flow.
+ */
+.k-bdg-e2 {
+  min-inline-size: 0;
+}
+
+/*
+ * element badge icon / e3
+ * Normalizes consumer-provided icon content to the generated viewport.
+ */
+.k-bdg-e3 {
+  align-items: center;
+  block-size: var(--k-bxh);
+  display: inline-flex;
+  flex: 0 0 auto;
+  inline-size: var(--k-bxw);
+  justify-content: center;
+}
+
+/*
+ * element badge icon / e3
+ * Lets direct vector artwork fill the owned icon viewport.
+ */
+.k-bdg-e3 > svg {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+/*
+ * element badge count / e4
+ * Keeps auxiliary count content distinct inside the passive composition.
+ */
+.k-bdg-e4 {
+  flex: 0 0 auto;
+}
+
+/*
+ * element badge dot / e5
+ * Renders the generated circular metadata surface without content.
+ */
+.k-bdg-e5 {
+  box-sizing: border-box;
+  display: inline-block;
+  flex: 0 0 auto;
+  vertical-align: middle;
+}

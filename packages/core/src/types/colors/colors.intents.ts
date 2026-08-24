@@ -78,6 +78,34 @@ export type CardIntent = keyof typeof CardIntentKeys;
 export type RoleCard = `card.${CardIntent}`;
 
 /**
+ * Supported intent keys for the passive `badge` component.
+ */
+export const BadgeIntentKeys = {
+  neutral: 'neutral',
+  primary: 'primary',
+  informative: 'informative',
+  positive: 'positive',
+  warning: 'warning',
+  severe: 'severe',
+  destructive: 'destructive',
+  important: 'important'
+} as const;
+
+export type BadgeIntent = keyof typeof BadgeIntentKeys;
+export type RoleBadge = `badge.${BadgeIntent}`;
+
+/**
+ * Supported intent keys for the entity/filter `chip` component.
+ */
+export const ChipIntentKeys = {
+  neutral: 'neutral',
+  primary: 'primary'
+} as const;
+
+export type ChipIntent = keyof typeof ChipIntentKeys;
+export type RoleChip = `chip.${ChipIntent}`;
+
+/**
  * Supported intent keys for the `icon` component.
  */
 export const IconIntentKeys = {

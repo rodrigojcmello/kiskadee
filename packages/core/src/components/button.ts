@@ -1,4 +1,5 @@
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
+import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
   Color,
@@ -183,7 +184,7 @@ type ElementContractRules = {
   palettes?: readonly ColorProperty[];
 };
 
-const BUTTON_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
+const BUTTON_COMPONENT_KEYS = ['contentSurfaceContext', 'effects', 'elements', 'options'] as const;
 const BUTTON_OPTION_KEYS = [
   'groupDivider',
   'disclosureDivider',
@@ -427,6 +428,15 @@ export function validateButtonComponentContract(
   }
 
   validateAllowedKeys(value, BUTTON_COMPONENT_KEYS, path, issues);
+
+  if (value.contentSurfaceContext !== undefined) {
+    issues.push(
+      ...validateContentSurfaceContextMap(
+        value.contentSurfaceContext,
+        `${path}.contentSurfaceContext`
+      )
+    );
+  }
 
   if (value.options !== undefined) {
     if (!isRecord(value.options)) {

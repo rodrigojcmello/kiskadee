@@ -3,7 +3,8 @@ import type {
   ButtonIconLayout,
   ButtonIconPlacement,
   ButtonIconSurfaceCorners,
-  ButtonIconTreatment
+  ButtonIconTreatment,
+  ContentSurfaceContextMap
 } from '@kiskadee/core';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMapResolution } from '../../../shared/contexts/useComponentClassMap.ts';
@@ -18,6 +19,7 @@ export type ButtonArtifactConfig = {
   componentEffects: {
     activationFeedback: ActivationFeedbackSetting | undefined;
   };
+  contentSurfaceContext: ContentSurfaceContextMap | undefined;
   globalEffects: {
     activationFeedback: ButtonGlobalEffects['activationFeedback'] | undefined;
   };
@@ -42,6 +44,7 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
   return {
     buttonClassesMap: buttonClassMapResolution.classMap,
     buttonClassesMapPending: buttonClassMapResolution.pending,
+    contentSurfaceContext: global?.components?.button?.contentSurfaceContext,
     componentEffects: {
       activationFeedback: global?.components?.button?.effects?.activationFeedback
     },

@@ -1,6 +1,8 @@
 import type {
+  BadgeIntent,
   BottomSheetIntent,
   CardIntent,
+  ChipIntent,
   DropdownIntent,
   IconIntent,
   ProgressIntent,
@@ -17,9 +19,11 @@ import type {
 } from './colors.intents.ts';
 
 export type {
+  BadgeIntent,
   BottomSheetIntent,
   ButtonIntent,
   CardIntent,
+  ChipIntent,
   DropdownIntent,
   ExternalButtonIntent,
   IconIntent,
@@ -27,6 +31,7 @@ export type {
   RoleBottomSheet,
   RoleButton,
   RoleCard,
+  RoleChip,
   RoleDropdown,
   RoleIcon,
   RoleProgress,
@@ -39,9 +44,11 @@ export type {
   TextFieldIntent
 } from './colors.intents.ts';
 export {
+  BadgeIntentKeys,
   BottomSheetIntentKeys,
   ButtonIntentKeys,
   CardIntentKeys,
+  ChipIntentKeys,
   DropdownIntentKeys,
   IconIntentKeys,
   ProgressIntentKeys,
@@ -465,6 +472,7 @@ export type GlobalSemanticsBySegment = Partial<Record<SegmentName, GlobalSemanti
  * - a direct primitive reference (Layer 1).
  */
 export type ComponentIntents = {
+  badge?: Partial<Record<BadgeIntent, IntentValue>>;
   bottomSheet?: Partial<Record<BottomSheetIntent, IntentValue>>;
   /**
    * Button intents.
@@ -473,6 +481,7 @@ export type ComponentIntents = {
    */
   button?: Partial<Record<SystemButtonIntent, IntentValue>>;
   card?: Partial<Record<CardIntent, IntentValue>>;
+  chip?: Partial<Record<ChipIntent, IntentValue>>;
   dropdown?: Partial<Record<DropdownIntent, IntentValue>>;
   icon?: Partial<Record<IconIntent, IntentValue>>;
   progress?: Partial<Record<ProgressIntent, IntentValue>>;
@@ -511,8 +520,10 @@ export type ComponentEmphasis = keyof typeof componentEmphasisBuckets;
 
 export type ComponentPaletteKey =
   | SemanticColor
+  | BadgeIntent
   | SystemButtonIntent
   | CardIntent
+  | ChipIntent
   | IconIntent
   | ProgressIntent
   | SliderIntent

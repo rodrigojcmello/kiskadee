@@ -12,6 +12,9 @@ export default function HomePage() {
           <Link href="/typography">/typography</Link>
         </li>
         <li>
+          <Link href="/badge">/badge</Link>
+        </li>
+        <li>
           <Link href="/button">/button</Link>
         </li>
         <li>
@@ -19,6 +22,9 @@ export default function HomePage() {
         </li>
         <li>
           <Link href="/card">/card</Link>
+        </li>
+        <li>
+          <Link href="/chip">/chip</Link>
         </li>
         <li>
           <Link href="/dropdown">/dropdown</Link>

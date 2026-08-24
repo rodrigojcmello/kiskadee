@@ -2,7 +2,6 @@ import './Button.structural.scss';
 import type { ButtonIconTreatment } from '@kiskadee/core';
 import { Button as HeadlessButton, HeadlessProgress } from '@kiskadee/react-headless';
 import {
-  Children,
   createContext,
   forwardRef,
   isValidElement,
@@ -16,6 +15,11 @@ import {
 import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
+import {
+  resolveContentSurfaceContext,
+  SurfaceContextProvider,
+  useSurfaceContext
+} from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
@@ -26,13 +30,13 @@ import {
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_RADIUS,
   DEFAULT_BUTTON_SCALE,
-  DEFAULT_BUTTON_SURFACE_CONTEXT,
   join,
   mergeButtonClassNames,
   resolveButtonDividerClassName,
   resolveButtonGroupClassName
 } from './Button.class-names.ts';
 import type {
+  ButtonBadgeProps,
   ButtonClassesMap,
   ButtonDisclosureProps,
   ButtonGroupProps,
@@ -54,6 +58,8 @@ import { useButtonClassNamesFromCommon, useButtonCommonProps } from './hooks/use
 
 export type {
   ButtonActivationFeedbackEffect,
+  ButtonBadgePlacement,
+  ButtonBadgeProps,
   ButtonDisclosureProps,
   ButtonGroupProps,
   ButtonIconProps,
@@ -63,6 +69,15 @@ export type {
   ButtonProps,
   ButtonStatus
 } from './Button.types.ts';
+
+const ButtonBadge = forwardRef<HTMLSpanElement, ButtonBadgeProps>(function ButtonBadge(
+  { className, placement = 'block-start-inline-end', ...props },
+  ref
+) {
+  return (
+    <span {...props} ref={ref} className={join('k-btn-x4', `k-btn-x4-${placement}`, className)} />
+  );
+});
 
 type ButtonRuntimeContextValue = {
   disclosureDividerClassName: string | undefined;
@@ -143,6 +158,7 @@ const ButtonProgress = forwardRef<HTMLSpanElement, ButtonProgressProps>(function
 ) {
   const { progressAllowed, progressWarningRequired } = useButtonRuntimeContext();
   const { classesMap } = useKiskadee();
+  const resolvedSurfaceContext = useSurfaceContext(surfaceContext);
   const progressClassesMap = useComponentClassMap(
     'progress',
     classesMap.progress as ProgressClassesMap | undefined
@@ -150,7 +166,7 @@ const ButtonProgress = forwardRef<HTMLSpanElement, ButtonProgressProps>(function
   const indicatorPaintClassName = resolveProgressIndicatorClassName({
     element: progressClassesMap?.e3,
     intent,
-    surfaceContext
+    surfaceContext: resolvedSurfaceContext
   });
 
   useEffect(() => {
@@ -201,7 +217,7 @@ function normalizeButtonChildren(
   const progressChildren: ReactNode[] = [];
   const contentChildren: ReactNode[] = [];
 
-  for (const [index, child] of Children.toArray(children).entries()) {
+  for (const [index, child] of flattenFragmentChildren(children).entries()) {
     if (isValidElement(child) && child.type === ButtonProgress) {
       progressChildren.push(child);
       continue;
@@ -246,16 +262,21 @@ function normalizeButtonChildren(
 }
 
 function getButtonContentSlots(children: ReactNode): {
+  hasBadge: boolean;
   hasDisclosure: boolean;
   hasIcon: boolean;
   hasLabel: boolean;
 } {
+  let hasBadge = false;
   let hasDisclosure = false;
   let hasIcon = false;
   let hasLabel = false;
 
-  for (const child of Children.toArray(children)) {
+  for (const child of flattenFragmentChildren(children)) {
     if (!isValidElement(child)) continue;
+    if (child.type === ButtonBadge) {
+      hasBadge = true;
+    }
     if (child.type === ButtonIcon) {
       hasIcon = true;
     }
@@ -267,10 +288,11 @@ function getButtonContentSlots(children: ReactNode): {
     }
   }
 
-  return { hasDisclosure, hasIcon, hasLabel };
+  return { hasBadge, hasDisclosure, hasIcon, hasLabel };
 }
 
 const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoot(props, ref) {
+  const { segment, theme } = useKiskadee();
   const group = useContext(ButtonGroupRuntimeContext);
   const groupedProps: ButtonProps = group
     ? {
@@ -469,6 +491,17 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       contentSlots.hasLabel
     ]
   );
+  const producedSurfaceContext = resolveContentSurfaceContext({
+    map: common.contentSurfaceContext,
+    segment,
+    theme,
+    consumedSurfaceContext: common.surfaceContext,
+    intent: common.intent,
+    emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
+    selected: common.controlState,
+    pending: activationFeedbackController.pending,
+    disabled: activationFeedbackController.nativeDisabled
+  });
 
   useEffect(() => {
     if (
@@ -511,7 +544,10 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
         aria-busy={activationFeedbackController.ariaBusy}
         aria-disabled={activationFeedbackController.ariaDisabled}
         aria-pressed={activationFeedbackController.ariaPressed}
-        classNames={computedClassNames}
+        classNames={{
+          ...computedClassNames,
+          e1: join(computedClassNames.e1, contentSlots.hasBadge ? 'k-btn-e1j' : undefined)
+        }}
         ref={hostRef}
         onClick={activationFeedbackController.handlers.onClick}
         onPointerDown={activationFeedbackController.handlers.onPointerDown}
@@ -522,7 +558,9 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
         onBlur={activationFeedbackController.handlers.onBlur}
         tabIndex={common.tabIndex ?? 0}
       >
-        {normalizedChildren}
+        <SurfaceContextProvider value={producedSurfaceContext}>
+          {normalizedChildren}
+        </SurfaceContextProvider>
       </HeadlessButton>
     </ButtonRuntimeContext.Provider>
   );
@@ -536,12 +574,13 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
     radius,
     emphasis = DEFAULT_BUTTON_EMPHASIS,
     intent = DEFAULT_BUTTON_INTENT,
-    surfaceContext = DEFAULT_BUTTON_SURFACE_CONTEXT,
+    surfaceContext: surfaceContextProp,
     shadow = false,
     ...props
   },
   ref
 ) {
+  const surfaceContext = useSurfaceContext(surfaceContextProp);
   const { buttonClassesMap, buttonClassesMapPending, options } = useButtonArtifactConfig();
   const { e1, e6 } = buttonClassesMap ?? {};
   const resolvedRadius = radius ?? options.radius ?? DEFAULT_BUTTON_RADIUS;
@@ -667,6 +706,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
 
 const MemoButton = memo(ButtonRoot);
 const CompoundButton = Object.assign(MemoButton, {
+  Badge: ButtonBadge,
   Group: ButtonGroup,
   Label: HeadlessButton.Label,
   Icon: ButtonIcon,

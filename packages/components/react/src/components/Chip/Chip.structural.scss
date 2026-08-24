@@ -1,0 +1,106 @@
+/*
+ * element chip container / e1
+ * Keeps the primary and remove controls as sibling interaction targets.
+ */
+.k-chp-e1 {
+  align-items: stretch;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  vertical-align: middle;
+}
+
+/*
+ * element chip primary surface / e2
+ * Aligns static or selectable entity content without changing its semantics.
+ */
+.k-chp-e2 {
+  align-items: center;
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  text-align: start;
+}
+
+/*
+ * element chip label / e3
+ * Allows the entity label to shrink inside compact layouts.
+ */
+.k-chp-e3 {
+  min-inline-size: 0;
+}
+
+/*
+ * element chip icon / e4
+ * Normalizes consumer-provided leading artwork to the generated viewport.
+ */
+.k-chp-e4 {
+  align-items: center;
+  block-size: var(--k-bxh);
+  display: inline-flex;
+  flex: 0 0 auto;
+  inline-size: var(--k-bxw);
+  justify-content: center;
+}
+
+/*
+ * element chip icon / e4
+ * Lets direct vector artwork fill the leading icon viewport.
+ */
+.k-chp-e4 > svg {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+/*
+ * element chip remove control / e5
+ * Preserves an independent native button beside the primary surface.
+ */
+.k-chp-e5 {
+  align-items: center;
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+}
+
+/*
+ * element chip primary surface / e2 + remove control / e5
+ * Keeps sibling controls visually continuous without nesting either button.
+ */
+.k-chp-e1:has(> .k-chp-e5) > .k-chp-e2 {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.k-chp-e1:has(> .k-chp-e2) > .k-chp-e5 {
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
+}
+
+/*
+ * element chip remove icon / e6
+ * Normalizes the Essential Icon or explicit override to the generated viewport.
+ */
+.k-chp-e6 {
+  align-items: center;
+  block-size: var(--k-bxh);
+  display: inline-flex;
+  inline-size: var(--k-bxw);
+  justify-content: center;
+}
+
+/*
+ * element chip badge relation / e7
+ * Keeps an independent passive Badge in the primary content flow.
+ */
+.k-chp-e7 {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+}

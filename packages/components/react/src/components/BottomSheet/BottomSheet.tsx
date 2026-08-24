@@ -37,6 +37,7 @@ import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonProps } from '../Button/Button.types.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
@@ -439,8 +440,10 @@ function BottomSheetMotionContent({
         onClickCapture={handleSurfaceClickCapture}
       >
         <BottomSheetRuntimeContext.Provider value={runtimeContext}>
-          {options.swipeBehavior === 'none' ? null : <BottomSheetHandle />}
-          {children}
+          <SurfaceContextProvider value="onSubtle">
+            {options.swipeBehavior === 'none' ? null : <BottomSheetHandle />}
+            {children}
+          </SurfaceContextProvider>
         </BottomSheetRuntimeContext.Provider>
       </motion.div>
     </motion.div>

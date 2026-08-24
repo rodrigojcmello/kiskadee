@@ -4,7 +4,8 @@ import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
   ElementSizeValue,
-  ProjectedStateKeys
+  ProjectedStateKeys,
+  SurfaceContext
 } from '@kiskadee/core';
 import type {
   CardActionInteractionStateSource,
@@ -21,6 +22,8 @@ export type CardElementName = 'e1';
 export type CardClassesMap = Partial<Record<CardElementName, ClassNameByElementJSON>>;
 
 export type CardBaseVisualProps = {
+  /** Semantic surface consumed by the Card palette. */
+  surfaceContext?: SurfaceContext;
   /** Border radius mode. Card v1 supports rounded and square only. */
   radius?: CardRadiusMode;
   /** Keep the schema border visible when shadow is active. Defaults to true. */

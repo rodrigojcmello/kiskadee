@@ -137,6 +137,11 @@ For binary controls, selected/on and unchecked/off are control states inside the
 default Switch should remain `neutral.medium`; it can still use Layer 2 global `primary` directly
 for selected/on activation without exposing a separate Layer 3 `primary` component intent.
 
+Badge is an intentional exception with a metadata vocabulary: `informative`, `positive`, `warning`,
+`severe`, `destructive`, and `important` communicate product meaning rather than raw color names.
+Chip remains narrower with `neutral` and `primary`; its selection is still an interaction state,
+not a separate intent.
+
 Other intents and emphasis buckets belong in the follow-up decision pass, not in the default
 component birth.
 

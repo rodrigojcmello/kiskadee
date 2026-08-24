@@ -4,6 +4,7 @@ import {
 } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBrandPack } from '../../../shared/contexts/BrandPackContext.tsx';
+import { useSurfaceContext } from '../../../shared/contexts/SurfaceContext.tsx';
 import {
   DEFAULT_BUTTON_ICON_SURFACE_CORNERS,
   DEFAULT_BUTTON_ICON_TREATMENT,
@@ -33,7 +34,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     radiusEffect = false,
     emphasis,
     intent = DEFAULT_BUTTON_INTENT,
-    surfaceContext,
+    surfaceContext: surfaceContextProp,
     tabIndex,
     label,
     icon,
@@ -53,8 +54,15 @@ export function useButtonCommonProps(props: ButtonProps) {
   } = props;
 
   const brandPack = useBrandPack();
-  const { buttonClassesMap, buttonClassesMapPending, componentEffects, globalEffects, options } =
-    useButtonArtifactConfig();
+  const surfaceContext = useSurfaceContext(surfaceContextProp);
+  const {
+    buttonClassesMap,
+    buttonClassesMapPending,
+    componentEffects,
+    contentSurfaceContext,
+    globalEffects,
+    options
+  } = useButtonArtifactConfig();
   const { e1, e2, e3, e4, e5, e6 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
   const iconLayout = iconLayoutProp ?? options.iconLayout;
@@ -115,6 +123,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     e6,
     buttonClassesMapPending,
     componentEffects,
+    contentSurfaceContext,
     globalEffects,
     options
   };
