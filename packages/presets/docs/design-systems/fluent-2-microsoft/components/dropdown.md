@@ -69,6 +69,9 @@
 - **Kiskadee extension**: selected radio and checkbox rows retain a colored Selected background.
   Radio renders a family-mapped filled dot and checkbox renders a check; web semantics remain
   `aria-checked` rather than `aria-selected`.
+- **Kiskadee extension**: the Light Selected surface uses the lighter `n.black.v2` L3 rather than
+  L5. This reduces the prominence of the persistent selection background while preserving the
+  neutral check/radio indicator and the independently Brand-colored semantic-icon behavior.
 - **Kiskadee extension**: the preset explicitly selects `item-and-selection` leading composition
   and enables the Selected item background. Both are runtime-overridable presentation axes; turning
   off the background leaves checked semantics, indicators, and Selected foreground colors intact.
@@ -120,6 +123,7 @@
 | `colorNeutralBackground1Hover`, Dark | Grey 24 `#3d3d3d` | `primitive.black.v1` D18 `#3c3c3c` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.003844` |
 | Hover surface, Darker | No upstream Darker theme | `primitive.black.v1` D12 `#313131` on `e2.boxColor.neutral.medium.hover`, preserving the established Darker tone as a Kiskadee adaptation |
 | Destructive Low Hover, Light | Cranberry L2 `#fff4f2` | `dropdown.destructive` L2 on `e2.boxColor.destructive.medium.hover`; shared tonal coordinate with Button Low Hover, independent component role |
+| Selected surface, Light | Kiskadee presentation extension | `dropdown.neutral` / `primitive.black.v2` L3 `#eef2fc` on `e2.boxColor.neutral.medium.selected`; intentionally lighter than the previous L5 `#e4e9f5` |
 | Leading icon Selected, Light | Brand-80 `#0064b4` | `icon.primary` L50 on `e3.textColor.neutral.medium.selected.rest` |
 | Leading icon Hover, Light | Brand-70 `#0055a4` | `icon.primary` L55 `#0059a1` on `e3.textColor.neutral.medium.hover` |
 | Leading icon Pressed, Light | Brand-60 `#004694` | `icon.primary` L60 `#045091` on `e3.textColor.neutral.medium.pressed` |

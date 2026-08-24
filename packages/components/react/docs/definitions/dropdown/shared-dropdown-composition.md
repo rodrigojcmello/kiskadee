@@ -52,6 +52,8 @@ The icon viewport comes from `global.iconSizes` through the normal `iconSize` Bu
 In `independent`, SUP exposes only the existing `e3/e10` width-gap utilities to the empty structural
 track nodes. No raw value, browser measurement, or icon-presence JavaScript is used. `columns`
 continues sharing intrinsic tracks through subgrid.
+The collection wrapper never consumes the complete `e3` or `e10` scale class: doing so would let
+slot-local spacing variables override the surface spacing inherited by Groups.
 
 Checkable items keep `e10` mounted even while unchecked. Only its artwork changes visibility, so
 the selection track never collapses between values. Checkbox items use the canonical `check`;

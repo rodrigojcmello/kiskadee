@@ -460,11 +460,12 @@ describe('styled Dropdown', () => {
     );
 
     expect(result.container.querySelectorAll('.k-ddn-x1')).toHaveLength(1);
-    expect(result.container.querySelector('.k-ddn-x1')?.getAttribute('data-layout')).toBe(
-      'independent'
-    );
+    const collection = result.container.querySelector('.k-ddn-x1');
+    expect(collection?.getAttribute('data-layout')).toBe('independent');
+    expect(collection?.className).not.toContain('icon-size');
     expect(result.container.querySelectorAll('.k-ddn-x2')).toHaveLength(2);
     expect(result.container.querySelectorAll('.k-ddn-e3')).toHaveLength(1);
+    expect(result.getByTestId('glyph').closest('.k-ddn-e3')?.className).toContain('icon-size');
     expect(result.getByTestId('without-icon').querySelector('.k-ddn-e3')).toBeNull();
     expect(result.getByTestId('without-icon').querySelector('.k-ddn-x6')?.className).toContain(
       'icon-placeholder-width'

@@ -15,7 +15,7 @@ const THEMES = {
     surface: 0,
     hover: 2,
     pressed: 7,
-    selected: 5,
+    selected: 3,
     text: 85,
     groupLabelText: 75,
     secondaryText: 65,

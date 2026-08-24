@@ -81,7 +81,7 @@ export function resolveDropdownClassNames({
     e11:
       joinClassNames(resolveDropdownElementClassName(e11, scale), classNames.e11, 'k-ddn-e11') ??
       '',
-    items: joinClassNames(e3?.s?.all, e3?.s?.[normalizeScaleKey(scale)], 'k-ddn-x1') ?? ''
+    items: 'k-ddn-x1'
   };
 }
 
