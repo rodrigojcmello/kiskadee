@@ -114,6 +114,32 @@ describe('web-style-key-identity', () => {
       ).toBe('boxColor__#000000@@i');
     });
 
+    it('isolates box-color classes that require a selected-background gate', () => {
+      expect(
+        buildWebStyleKeyIdentity('boxColor__#000000', {
+          borderRadiusEmission: 'direct',
+          borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          selectedBoxColorGateClass: 'k-ddn-sbg',
+          shadowEmission: 'direct'
+        })
+      ).toBe('boxColor__#000000@@g:k-ddn-sbg');
+
+      expect(
+        buildWebStyleKeyIdentity('textColor__#000000', {
+          borderRadiusEmission: 'direct',
+          borderWidthEmission: 'direct',
+          borderColorEmission: 'direct',
+          boxWidthEmission: 'direct',
+          paddingEmission: 'direct',
+          selectedBoxColorGateClass: 'k-ddn-sbg',
+          shadowEmission: 'direct'
+        })
+      ).toBe('textColor__#000000');
+    });
+
     it('keeps shadow keys unchanged when shadow emission stays raw', () => {
       expect(
         buildWebStyleKeyIdentity('shadow__[0,0,4,"#00000038"]', {

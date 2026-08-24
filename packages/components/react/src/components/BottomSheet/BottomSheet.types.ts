@@ -52,6 +52,7 @@ export type BottomSheetBehaviorProps = {
   pageTransition?: BottomSheetPageTransition;
   itemLayout?: BottomSheetItemLayout;
   centeredIcons?: BottomSheetCenteredIcons;
+  groupSeparators?: boolean;
 };
 
 export type BottomSheetVisualProps = BottomSheetBehaviorProps & {
@@ -131,8 +132,4 @@ export type BottomSheetTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'c
   children: ReactNode;
   functional?: boolean;
 };
-export type BottomSheetSeparatorProps = Omit<ComponentPropsWithoutRef<'hr'>, 'children'> & {
-  children?: never;
-};
-
 export type BottomSheetSnapPoint = BottomSheetInitialHeight;

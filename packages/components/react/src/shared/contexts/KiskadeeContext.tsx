@@ -11,6 +11,7 @@ import type {
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ComponentClassNameMapJSON,
+  DropdownOptions,
   GlobalClassNameMapJSON,
   RadiusMode,
   ResolvedDropdownPresenceEffect,
@@ -87,6 +88,7 @@ export type KiskadeeGlobalArtifact = {
         pageTransition?: BottomSheetPageTransition;
         itemLayout?: BottomSheetItemLayout;
         centeredIcons?: BottomSheetCenteredIcons;
+        groupSeparators?: boolean;
       };
       effects?: {
         shadow?: ShadowEffectSchema;
@@ -112,6 +114,7 @@ export type KiskadeeGlobalArtifact = {
       };
     };
     dropdown?: {
+      options?: DropdownOptions;
       effects?: {
         presence?: ResolvedDropdownPresenceEffect;
       };

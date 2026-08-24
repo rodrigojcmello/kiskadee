@@ -26,6 +26,8 @@ function ContextMenuRoot({
   radius,
   shadow,
   presence,
+  leadingIconComposition,
+  selectedItemBackground,
   classNames,
   ...menuProps
 }: ContextMenuRootProps) {
@@ -35,6 +37,8 @@ function ContextMenuRoot({
       radius={radius}
       shadow={shadow}
       presence={presence}
+      leadingIconComposition={leadingIconComposition}
+      selectedItemBackground={selectedItemBackground}
       classNames={classNames}
     >
       <HeadlessMenu.Root {...menuProps}>{children}</HeadlessMenu.Root>
@@ -82,6 +86,7 @@ export const ContextMenu = {
   Trigger: ContextMenuTrigger,
   Content: ButtonMenu.Content,
   Group: ButtonMenu.Group,
+  CheckboxGroup: ButtonMenu.CheckboxGroup,
   GroupLabel: ButtonMenu.GroupLabel,
   CheckboxItem: ButtonMenu.CheckboxItem,
   RadioGroup: ButtonMenu.RadioGroup,
@@ -95,6 +100,5 @@ export const ContextMenu = {
   Description: ButtonMenu.Description,
   Shortcut: ButtonMenu.Shortcut,
   Trailing: ButtonMenu.Trailing,
-  Separator: ButtonMenu.Separator,
   TreeContent: ButtonMenu.TreeContent
 };

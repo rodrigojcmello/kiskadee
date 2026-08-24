@@ -239,6 +239,11 @@ export function transformColorKeyToCss(
 
   const states = extractStates();
   const filteredStates = states.filter((s) => s !== 'rest' && s !== '');
+  const selectedBoxColorGateClass =
+    propertyName === 'boxColor' && filteredStates.includes('selected')
+      ? styleEmissionPolicy.selectedBoxColorGateClass
+      : undefined;
+  const selectedBoxColorGate = selectedBoxColorGateClass ? `.${selectedBoxColorGateClass}` : '';
   // Preserve the "hover does not compete with active" rule without increasing hover specificity.
   const normalizeNativePseudo = (pseudo: string): string =>
     pseudo === ':hover' ? ':hover:where(:not(:active))' : pseudo;
@@ -277,7 +282,9 @@ export function transformColorKeyToCss(
         nonNativeForcedSuffixes.length > 0 ? `.${nonNativeForcedSuffixes.join('.')}` : '';
       const nativeInteraction = stateActivator.nativeInteraction;
       // Do not append activator to the native branch; activator only gates the forced branch
-      selectors.push(`.${className}.${nativeInteraction}${nonNativeChunk}${nativeChunk}`);
+      selectors.push(
+        `.${className}.${nativeInteraction}${nonNativeChunk}${selectedBoxColorGate}${nativeChunk}`
+      );
     }
 
     // Forced branch: include all forced classes for every state, gated by activator
@@ -286,7 +293,9 @@ export function transformColorKeyToCss(
       (forceState === true || hasAlwaysProjectedState(filteredStates));
     if (allowForced) {
       const activator = stateActivator.activator;
-      selectors.push(`.${className}.${allForcedSuffixes.join('.')}.${activator}`);
+      selectors.push(
+        `.${className}.${allForcedSuffixes.join('.')}.${activator}${selectedBoxColorGate}`
+      );
     }
 
     if (selectors.length === 0) {
@@ -336,7 +345,9 @@ export function transformColorKeyToCss(
     {
       // Use native interaction scope for pseudo states (do not mix with -a).
       const nativeInteraction = stateActivator.nativeInteraction;
-      parentSelectors.push(`.${nativeInteraction}${nonNativeChunk}${nativeChunk} .${className}`);
+      parentSelectors.push(
+        `.${nativeInteraction}${nonNativeChunk}${selectedBoxColorGate}${nativeChunk} .${className}`
+      );
     }
   }
 
@@ -346,7 +357,9 @@ export function transformColorKeyToCss(
     (forceState === true || hasAlwaysProjectedState(parentStates))
   ) {
     const activator = stateActivator.activator;
-    parentSelectors.push(`.${activator}.${allForcedSuffixes.join('.')} .${className}`);
+    parentSelectors.push(
+      `.${activator}.${allForcedSuffixes.join('.')}${selectedBoxColorGate} .${className}`
+    );
   }
 
   if (parentSelectors.length === 0) {

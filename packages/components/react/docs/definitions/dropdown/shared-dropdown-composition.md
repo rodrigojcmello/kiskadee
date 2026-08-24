@@ -29,7 +29,7 @@ open state, anchor registry, ID pair, or mechanical context.
 - `e4`: principal label;
 - `e5`: optional supporting description;
 - `e6`: optional trailing icon;
-- `e7`: explicit separator.
+- `e7`: automatic boundary between adjacent groups.
 - `e8`: optional end text, such as a keyboard shortcut or metadata;
 - `e9`: optional visual group label.
 - `e10`: optional leading selection indicator for checkbox or radio items.
@@ -43,7 +43,7 @@ search contract rather than Dropdown.
 ## Icon Column
 
 `Dropdown.Items` is the leading-track alignment scope for the complete collection, including every
-explicit `Dropdown.Group` separated by `Dropdown.Separator`. Structural CSS uses `:has()` to reserve
+explicit `Dropdown.Group`. Structural CSS uses `:has()` to reserve
 a leading column for every item when at least one item anywhere in that collection renders
 `Dropdown.Icon`. Items without icons render an empty structural track, but no icon glyph or
 affordance, and align their labels with every icon-bearing item in the same menu.
@@ -65,6 +65,11 @@ logical `padding-inline-end` so the relationship reverses correctly in RTL.
 `iconSize` viewport under the framework-wide border-box reset. Empty projected tracks therefore
 reserve the same icon viewport plus gap as a rendered check or radio indicator.
 
+The collection may independently choose whether to render both `e10` and `e3` or only `e10` for
+selectable rows. This runtime presentation contract is defined in
+[Dropdown Selection Presentation](selection-presentation.md); it does not change the Schema-owned
+dimensions or selection semantics described here.
+
 ## Item Layout
 
 `Dropdown.Items` exposes two structural layout policies:
@@ -76,7 +81,7 @@ reserve the same icon viewport plus gap as a rendered check or radio indicator.
 Group remains the sizing boundary for principal and final content in both policies. Leading icon and
 selection occupancy is collection-wide. In `columns`, the widest principal content and widest final
 content inside one Group determine that Group's non-leading tracks. Another Group starts a new
-content calculation after a separator. The floating surface still takes the intrinsic width of its
+content calculation after a group boundary. The floating surface still takes the intrinsic width of its
 widest Group, so all Groups occupy the same outer width without coupling unrelated content widths.
 
 Item horizontal padding remains authored as `e2.paddingLeft` and `e2.paddingRight`. The Builder
@@ -97,16 +102,17 @@ selection track. If any Group introduces either track, every Group label uses th
 alignment context. The implementation uses CSS Grid, subgrid, SUP, and CSC; it does not measure
 content or publish runtime geometry variables.
 
-## Separators And States
+## Group Boundaries And States
 
-Separators are never inferred between items. Consumers split items into Groups and insert
-`Dropdown.Separator` between them. Each Group keeps the item padding, while the separator is a
-full-bleed line with no margin, padding, or inset of its own. The semantic owner remains responsible
-for any role appropriate to that context; generic Dropdown does not presume separator semantics.
+Every collection row belongs to exactly one typed group. `Dropdown.Group` emits its own leading
+`e7` boundary and Structural CSS hides only the first boundary in the collection. A collection with
+`n` groups therefore paints `n - 1` full-bleed boundaries without inspecting children or accepting
+manual separator placement. Consumers create another group when they need another contextual
+boundary; Dropdown, ButtonMenu, and ContextMenu do not expose a public Separator part.
 
-`Dropdown.Separator` and the public neutral `Separator` component consume the same preset recipe,
-but do not share component DOM or class maps. Colored, stateful, or component-specific dividers
-remain local to their owning component.
+`Dropdown.e7` and the public neutral `Separator` component may consume the same preset recipe, but
+do not share component DOM or class maps. The standalone Separator remains available between
+independent content regions; it is not a menu-composition escape hatch.
 
 Items use the component's internal `medium` emphasis. Rest is the base and interaction states are
 sparse deltas. Dropdown exposes neutral and destructive intent in the first contract; it does not
@@ -253,17 +259,18 @@ bounds; no preset schema, generated utility, or browser style lookup is introduc
 - Button classes style Action and Trigger, while Dropdown classes style Content and items.
 - `ButtonMenu.Group` composes a Headless Menu `group` and the visual Dropdown group on the same DOM
   node;
+- `ButtonMenu.CheckboxGroup` is the only owner accepted for checkbox items;
 - `ButtonMenu.GroupLabel` names that semantic group while consuming `Dropdown.e9`;
 - `ButtonMenu.Shortcut` consumes `Dropdown.e8`, stays outside the accessible item name, and relies
   on `aria-keyshortcuts` authored on the item;
 - `ButtonMenu.Content.itemsLayout` forwards the collection policy to `Dropdown.Items` without
   changing menu semantics;
-- `ButtonMenu.Separator` supplies menu separator semantics around the Dropdown-owned line.
+- every Group, CheckboxGroup, and RadioGroup supplies one automatic Dropdown-owned boundary.
 
 Selection and recursive submenus remain ButtonMenu orchestration, not Dropdown variants:
 
 - `ButtonMenu.RadioGroup` and `ButtonMenu.RadioItem` own `menuitemradio` behavior;
-- `ButtonMenu.CheckboxItem` owns independent `menuitemcheckbox` state through `controlState`,
+- `ButtonMenu.CheckboxGroup` and `ButtonMenu.CheckboxItem` own independent `menuitemcheckbox` state through `controlState`,
   `defaultControlState`, and `onControlStateChange`;
 - checked radio and checkbox items project the generic visual Selected state on the Dropdown row;
   radio uses `Dropdown.RadioMark`, while checkbox uses `Dropdown.Checkmark`;

@@ -8,7 +8,8 @@ function createBottomSheet() {
       swipeBehavior: 'expand-dismiss',
       pageTransition: 'slide',
       itemLayout: 'centered',
-      centeredIcons: 'hide'
+      centeredIcons: 'hide',
+      groupSeparators: true
     },
     effects: {
       shadow: {
@@ -59,6 +60,15 @@ describe('BottomSheet component contract', () => {
 
     expect(validateBottomSheetComponentContract(bottomSheet)).toContain(
       'components.bottomSheet.options.initialHeight: unsupported value'
+    );
+  });
+
+  it('requires groupSeparators to be boolean when declared', () => {
+    const bottomSheet = createBottomSheet() as any;
+    bottomSheet.options.groupSeparators = 'hide';
+
+    expect(validateBottomSheetComponentContract(bottomSheet)).toContain(
+      'components.bottomSheet.options.groupSeparators: expected boolean'
     );
   });
 

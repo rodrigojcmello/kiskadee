@@ -7,6 +7,7 @@ import type {
   ActivationFeedbackThemeTokens,
   BottomSheetOptions,
   ButtonOptions,
+  DropdownOptions,
   FontStack,
   GlobalClassNameMapJSON,
   RadiusMode,
@@ -57,7 +58,7 @@ type ComponentEffectArtifact = {
     presence?: ResolvedDropdownPresenceEffect;
     shadow?: ShadowEffectSchema;
   };
-  options?: BottomSheetOptions | ButtonOptions;
+  options?: BottomSheetOptions | ButtonOptions | DropdownOptions;
 };
 type ComponentEffectArtifactName =
   | 'bottomSheet'
@@ -325,6 +326,11 @@ export async function writeExtraArtifacts(params: {
   const dropdownPresence = buildDropdownPresenceEffect(schema);
   if (dropdownPresence) {
     getComponentEffects('dropdown').presence = dropdownPresence;
+  }
+  if (schema.components?.dropdown?.options !== undefined) {
+    const dropdownArtifact = componentEffectOverrides.dropdown ?? {};
+    dropdownArtifact.options = schema.components.dropdown.options;
+    componentEffectOverrides.dropdown = dropdownArtifact;
   }
 
   if (schema.components?.slider?.effects?.activationFeedback !== undefined) {

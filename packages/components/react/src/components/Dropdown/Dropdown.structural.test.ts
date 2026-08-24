@@ -12,8 +12,18 @@ describe('Dropdown structural CSS', () => {
     expect(itemRule).toContain('padding-inline-end: var(--k-pdr)');
     expect(itemRule).toContain('appearance: none');
     expect(itemRule).toContain('border: 0');
+    expect(itemRule).toContain('inline-size: 100%');
     expect(itemRule).not.toContain('padding-left');
     expect(itemRule).not.toContain('padding-right');
+  });
+
+  it('hides only the leading automatic group boundary', () => {
+    const css = sass.compile(new URL('./Dropdown.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+
+    expect(css).toContain('.k-ddn-x1 > .k-ddn-e7:first-child');
+    expect(css).toMatch(/\.k-ddn-x1 > \.k-ddn-e7:first-child\s*\{[^}]*display: none/s);
   });
 
   it('consumes the authored checkmark gap on the logical inline end', () => {

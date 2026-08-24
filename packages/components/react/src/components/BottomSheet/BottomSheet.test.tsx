@@ -34,6 +34,7 @@ const intentClasses = {
 const context: KiskadeeContextValue = {
   classesMap: {
     bottomSheet: {
+      e12: { s: { all: 'group-separator' } },
       e8: intentClasses,
       e9: intentClasses,
       e10: intentClasses,
@@ -94,5 +95,39 @@ describe('styled BottomSheet', () => {
     const result = renderBottomSheetVisual(<BottomSheet.Title>Actions</BottomSheet.Title>);
 
     expect(result.getByRole('heading', { name: 'Actions' }).className).toContain('k-foc');
+  });
+
+  it('renders one automatic boundary per group when group separators are enabled', () => {
+    const result = renderBottomSheetVisual(
+      <BottomSheet.Page>
+        <BottomSheet.Group>
+          <BottomSheet.Item>First</BottomSheet.Item>
+        </BottomSheet.Group>
+        <BottomSheet.Group>
+          <BottomSheet.Item>Second</BottomSheet.Item>
+        </BottomSheet.Group>
+      </BottomSheet.Page>
+    );
+
+    expect(result.getAllByRole('separator')).toHaveLength(2);
+  });
+
+  it('omits automatic group boundaries when group separators are disabled', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <BottomSheet.VisualProvider groupSeparators={false}>
+          <BottomSheet.Page>
+            <BottomSheet.Group>
+              <BottomSheet.Item>First</BottomSheet.Item>
+            </BottomSheet.Group>
+            <BottomSheet.Group>
+              <BottomSheet.Item>Second</BottomSheet.Item>
+            </BottomSheet.Group>
+          </BottomSheet.Page>
+        </BottomSheet.VisualProvider>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.queryByRole('separator')).toBeNull();
   });
 });

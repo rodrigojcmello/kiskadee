@@ -1,6 +1,7 @@
 import type {
   ClassNameByElementJSON,
   DropdownIntent,
+  DropdownLeadingIconComposition,
   DropdownPresence,
   ElementSizeValue,
   RadiusMode
@@ -27,7 +28,12 @@ export type DropdownElementName =
 export type DropdownClassesMap = Partial<Record<DropdownElementName, ClassNameByElementJSON>>;
 export type DropdownClassNames = Partial<Record<DropdownElementName, string>>;
 
-export type DropdownVisualProps = {
+export type DropdownPresentationProps = {
+  leadingIconComposition?: DropdownLeadingIconComposition;
+  selectedItemBackground?: boolean;
+};
+
+export type DropdownVisualProps = DropdownPresentationProps & {
   scale?: ElementSizeValue;
   radius?: RadiusMode;
   shadow?: boolean | ElementSizeValue;
@@ -74,9 +80,10 @@ export type DropdownPresenceProps = {
 };
 export type DropdownSurfaceProps = ComponentPropsWithoutRef<'div'>;
 export type DropdownItemsLayout = 'independent' | 'columns';
-export type DropdownItemsProps = ComponentPropsWithoutRef<'div'> & {
-  layout?: DropdownItemsLayout;
-};
+export type DropdownItemsProps = ComponentPropsWithoutRef<'div'> &
+  DropdownPresentationProps & {
+    layout?: DropdownItemsLayout;
+  };
 export type DropdownScrollAreaProps = ComponentPropsWithoutRef<'div'>;
 export type DropdownGroupProps = ComponentPropsWithoutRef<'div'>;
 export type DropdownGroupLabelProps = ComponentPropsWithoutRef<'span'>;
@@ -116,10 +123,4 @@ export type DropdownCheckmarkProps = Omit<
 export type DropdownRadioMarkProps = DropdownCheckmarkProps;
 export type DropdownTrailingProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> & {
   children: ReactNode;
-};
-export type DropdownSeparatorProps = Omit<
-  ComponentPropsWithoutRef<'div'>,
-  'aria-orientation' | 'children'
-> & {
-  children?: never;
 };

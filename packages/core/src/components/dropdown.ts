@@ -49,6 +49,17 @@ export type DropdownElementName =
   | 'e10'
   | 'e11';
 
+export const dropdownLeadingIconCompositions = ['item-and-selection', 'selection-only'] as const;
+
+export type DropdownLeadingIconComposition = (typeof dropdownLeadingIconCompositions)[number];
+
+export type DropdownOptions = {
+  /** Keeps ordinary leading item icons beside the selection-indicator track. */
+  leadingIconComposition?: DropdownLeadingIconComposition;
+  /** Applies the preset-authored selected background to selected items. */
+  selectedItemBackground?: boolean;
+};
+
 export type DropdownSurfaceElementStyle<TSegmentName extends SegmentName = never> = Partial<{
   decorations: Pick<DecorationSchema, 'borderStyle'>;
   scales: ElementScalesByProperty<
@@ -146,8 +157,9 @@ type ElementContractRules = {
   radiusModes?: readonly string[];
 };
 
-const DROPDOWN_COMPONENT_KEYS = ['effects', 'elements'] as const;
+const DROPDOWN_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
 const DROPDOWN_COMPONENT_EFFECT_KEYS = ['presence', 'shadow'] as const;
+const DROPDOWN_OPTION_KEYS = ['leadingIconComposition', 'selectedItemBackground'] as const;
 const DROPDOWN_SHADOW_ELEMENT_KEYS = ['e1'] as const;
 const DROPDOWN_SHADOW_RECIPE_KEYS = ['fixedLevels', 'kind', 'states'] as const;
 const DROPDOWN_ELEMENTS_KEYS = [
@@ -433,6 +445,31 @@ function validateEffects(value: unknown, path: string, issues: string[]): void {
   }
 }
 
+function validateOptions(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value)) {
+    issues.push(`${path}: expected object`);
+    return;
+  }
+
+  validateAllowedKeys(value, DROPDOWN_OPTION_KEYS, path, issues);
+  if (
+    value.leadingIconComposition !== undefined &&
+    !dropdownLeadingIconCompositions.includes(
+      value.leadingIconComposition as DropdownLeadingIconComposition
+    )
+  ) {
+    issues.push(
+      `${path}.leadingIconComposition: expected "item-and-selection" or "selection-only"`
+    );
+  }
+  if (
+    value.selectedItemBackground !== undefined &&
+    typeof value.selectedItemBackground !== 'boolean'
+  ) {
+    issues.push(`${path}.selectedItemBackground: expected boolean`);
+  }
+}
+
 export function validateDropdownComponentContract(
   value: unknown,
   path = 'components.dropdown'
@@ -444,6 +481,9 @@ export function validateDropdownComponentContract(
 
   if (value.effects !== undefined) {
     validateEffects(value.effects, `${path}.effects`, issues);
+  }
+  if (value.options !== undefined) {
+    validateOptions(value.options, `${path}.options`, issues);
   }
 
   if (!isRecord(value.elements)) {

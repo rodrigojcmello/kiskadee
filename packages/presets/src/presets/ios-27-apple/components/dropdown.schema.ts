@@ -164,6 +164,10 @@ export function createIos27AppleDropdownSchema({
         }
       }
     },
+    options: {
+      leadingIconComposition: 'item-and-selection',
+      selectedItemBackground: true
+    },
     elements: {
       e1: {
         name: 'dropdown-surface',

@@ -66,7 +66,6 @@ import type {
   BottomSheetLabelProps,
   BottomSheetRadioMarkProps,
   BottomSheetRootProps,
-  BottomSheetSeparatorProps,
   BottomSheetSnapPoint,
   BottomSheetTitleProps,
   BottomSheetTrailingProps,
@@ -79,6 +78,7 @@ const DEFAULT_SWIPE_BEHAVIOR: BottomSheetSwipeBehavior = 'expand-dismiss';
 const DEFAULT_PAGE_TRANSITION: BottomSheetPageTransition = 'slide';
 const DEFAULT_ITEM_LAYOUT: BottomSheetItemLayout = 'centered';
 const DEFAULT_CENTERED_ICONS: BottomSheetCenteredIcons = 'hide';
+const DEFAULT_GROUP_SEPARATORS = true;
 
 const SHEET_MOTION = {
   type: 'spring',
@@ -98,6 +98,7 @@ type BottomSheetResolvedOptions = {
   pageTransition: BottomSheetPageTransition;
   itemLayout: BottomSheetItemLayout;
   centeredIcons: BottomSheetCenteredIcons;
+  groupSeparators: boolean;
 };
 
 type BottomSheetVisualContextValue = {
@@ -154,6 +155,7 @@ function BottomSheetVisualProvider({
   pageTransition,
   itemLayout,
   centeredIcons,
+  groupSeparators,
   classNames = {},
   children
 }: BottomSheetVisualProviderProps) {
@@ -170,9 +172,19 @@ function BottomSheetVisualProvider({
       swipeBehavior: swipeBehavior ?? artifactOptions?.swipeBehavior ?? DEFAULT_SWIPE_BEHAVIOR,
       pageTransition: pageTransition ?? artifactOptions?.pageTransition ?? DEFAULT_PAGE_TRANSITION,
       itemLayout: itemLayout ?? artifactOptions?.itemLayout ?? DEFAULT_ITEM_LAYOUT,
-      centeredIcons: centeredIcons ?? artifactOptions?.centeredIcons ?? DEFAULT_CENTERED_ICONS
+      centeredIcons: centeredIcons ?? artifactOptions?.centeredIcons ?? DEFAULT_CENTERED_ICONS,
+      groupSeparators:
+        groupSeparators ?? artifactOptions?.groupSeparators ?? DEFAULT_GROUP_SEPARATORS
     }),
-    [artifactOptions, centeredIcons, initialHeight, itemLayout, pageTransition, swipeBehavior]
+    [
+      artifactOptions,
+      centeredIcons,
+      groupSeparators,
+      initialHeight,
+      itemLayout,
+      pageTransition,
+      swipeBehavior
+    ]
   );
   const resolved = useMemo(
     () =>
@@ -212,6 +224,7 @@ function BottomSheetRoot({
   pageTransition,
   itemLayout,
   centeredIcons,
+  groupSeparators,
   classNames,
   children,
   ...props
@@ -226,6 +239,7 @@ function BottomSheetRoot({
       pageTransition={pageTransition}
       itemLayout={itemLayout}
       centeredIcons={centeredIcons}
+      groupSeparators={groupSeparators}
       classNames={classNames}
     >
       <HeadlessBottomSheet.Root {...props}>{children}</HeadlessBottomSheet.Root>
@@ -574,8 +588,16 @@ const BottomSheetBody = forwardRef<HTMLDivElement, BottomSheetBodyProps>(functio
 });
 
 const BottomSheetGroup = forwardRef<HTMLDivElement, BottomSheetGroupProps>(
-  function BottomSheetGroup({ className, ...props }, ref) {
-    return <div {...props} ref={ref} className={joinClassNames('k-bsh-x4', className)} />;
+  function BottomSheetGroup({ className, children, ...props }, ref) {
+    const { options, resolved } = useBottomSheetVisualContext('BottomSheet.Group');
+    return (
+      <>
+        {options.groupSeparators ? <hr className={resolved.e12} /> : null}
+        <div {...props} ref={ref} className={joinClassNames('k-bsh-x4', className)}>
+          {children}
+        </div>
+      </>
+    );
   }
 );
 
@@ -718,13 +740,6 @@ const BottomSheetTrailing = forwardRef<HTMLSpanElement, BottomSheetTrailingProps
   }
 );
 
-const BottomSheetSeparator = forwardRef<HTMLHRElement, BottomSheetSeparatorProps>(
-  function BottomSheetSeparator({ className, ...props }, ref) {
-    const { resolved } = useBottomSheetVisualContext('BottomSheet.Separator');
-    return <hr {...props} ref={ref} className={joinClassNames(resolved.e12, className)} />;
-  }
-);
-
 const BottomSheetEndText = forwardRef<HTMLSpanElement, BottomSheetEndTextProps>(
   function BottomSheetEndText({ className, ...props }, ref) {
     const { classesMap, resolved, scale } = useBottomSheetVisualContext('BottomSheet.EndText');
@@ -864,7 +879,6 @@ export const BottomSheet = {
   Label: BottomSheetLabel,
   Description: BottomSheetDescription,
   Trailing: BottomSheetTrailing,
-  Separator: BottomSheetSeparator,
   EndText: BottomSheetEndText,
   Checkmark: BottomSheetCheckmark,
   RadioMark: BottomSheetRadioMark

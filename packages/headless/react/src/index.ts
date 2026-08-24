@@ -69,6 +69,7 @@ export { Icon } from './components/icon/Icon.tsx';
 export type {
   MenuCheckboxItemProps,
   MenuCheckboxItemRenderProps,
+  MenuCheckboxGroupProps,
   MenuContentProps,
   MenuContentRenderProps,
   MenuContentRenderState,
@@ -100,7 +101,10 @@ export { Menu } from './components/menu/Menu.tsx';
 export type {
   MenuTree,
   MenuTreeCheckboxItem,
+  MenuTreeCheckboxGroup,
+  MenuTreeCommandNode,
   MenuTreeGroup,
+  MenuTreeGroupNode,
   MenuTreeIntent,
   MenuTreeItem,
   MenuTreeLink,
@@ -108,7 +112,6 @@ export type {
   MenuTreeRadioGroup,
   MenuTreeRadioItem,
   MenuTreeSelectionDetails,
-  MenuTreeSeparator,
   MenuTreeSubmenu
 } from './components/menu-tree/MenuTree.ts';
 export { defineMenuTree, validateMenuTree } from './components/menu-tree/MenuTree.ts';

@@ -125,6 +125,8 @@ export type MenuGroupProps = Omit<HTMLAttributes<HTMLDivElement>, 'children' | '
   render?: (props: MenuGroupRenderProps) => ReactElement;
 };
 
+export type MenuCheckboxGroupProps = MenuGroupProps;
+
 export type MenuGroupLabelRenderProps = HTMLAttributes<HTMLElement> & {
   ref: Ref<HTMLElement>;
   id: string;
@@ -346,6 +348,7 @@ type MenuRootContentContextValue = {
 const MenuRootContentContext = createContext<MenuRootContentContextValue | null>(null);
 
 type MenuGroupContextValue = {
+  kind: 'command' | 'checkbox' | 'radio';
   labelId: string;
   setLabelPresent: (present: boolean) => void;
 };
@@ -403,10 +406,28 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   else if (ref) ref.current = value;
 }
 
-function useMenuGroupContext(componentName: string): MenuGroupContextValue {
+function useMenuGroupContext(
+  componentName: string,
+  expectedKind?: MenuGroupContextValue['kind']
+): MenuGroupContextValue {
   const context = useContext(MenuGroupContext);
+  const expectedGroup =
+    expectedKind === 'command'
+      ? 'Menu.Group'
+      : expectedKind === 'checkbox'
+        ? 'Menu.CheckboxGroup'
+        : expectedKind === 'radio'
+          ? 'Menu.RadioGroup'
+          : undefined;
   if (!context) {
-    throw new Error(`${componentName} must be used within Menu.Group or Menu.RadioGroup`);
+    throw new Error(
+      expectedGroup
+        ? `${componentName} must be used within ${expectedGroup}`
+        : `${componentName} must be used within Menu.Group, Menu.CheckboxGroup, or Menu.RadioGroup`
+    );
+  }
+  if (expectedKind !== undefined && context.kind !== expectedKind) {
+    throw new Error(`${componentName} must be used within ${expectedGroup}`);
   }
   return context;
 }
@@ -1069,7 +1090,7 @@ const MenuContent = forwardRef<HTMLDivElement, MenuContentProps>(function MenuCo
             render={render}
             state={state}
           >
-            {children}
+            <MenuGroupContext.Provider value={null}>{children}</MenuGroupContext.Provider>
           </MenuItemsContent>
         );
       }}
@@ -1081,10 +1102,12 @@ const MenuGroup = forwardRef<HTMLElement, MenuGroupProps>(function MenuGroup(
   { children, render, 'aria-labelledby': ariaLabelledBy, ...props },
   forwardedRef
 ) {
+  const parentGroup = useContext(MenuGroupContext);
+  if (parentGroup) throw new Error('Menu.Group cannot be nested within another menu group');
   const generatedLabelId = useId();
   const [labelPresent, setLabelPresent] = useState(false);
   const contextValue = useMemo<MenuGroupContextValue>(
-    () => ({ labelId: `menu-group-label-${generatedLabelId}`, setLabelPresent }),
+    () => ({ kind: 'command', labelId: `menu-group-label-${generatedLabelId}`, setLabelPresent }),
     [generatedLabelId]
   );
   const renderProps: MenuGroupRenderProps = {
@@ -1104,6 +1127,43 @@ const MenuGroup = forwardRef<HTMLElement, MenuGroupProps>(function MenuGroup(
 
   return <MenuGroupContext.Provider value={contextValue}>{group}</MenuGroupContext.Provider>;
 });
+
+const MenuCheckboxGroup = forwardRef<HTMLElement, MenuCheckboxGroupProps>(
+  function MenuCheckboxGroup(
+    { children, render, 'aria-labelledby': ariaLabelledBy, ...props },
+    forwardedRef
+  ) {
+    const parentGroup = useContext(MenuGroupContext);
+    if (parentGroup) {
+      throw new Error('Menu.CheckboxGroup cannot be nested within another menu group');
+    }
+    const generatedLabelId = useId();
+    const [labelPresent, setLabelPresent] = useState(false);
+    const contextValue = useMemo<MenuGroupContextValue>(
+      () => ({
+        kind: 'checkbox',
+        labelId: `menu-checkbox-group-label-${generatedLabelId}`,
+        setLabelPresent
+      }),
+      [generatedLabelId]
+    );
+    const renderProps: MenuGroupRenderProps = {
+      ...props,
+      ref: forwardedRef,
+      role: 'group',
+      'aria-labelledby': labelPresent ? contextValue.labelId : ariaLabelledBy
+    };
+    const group = render ? (
+      render(renderProps)
+    ) : (
+      <div {...renderProps} ref={forwardedRef as Ref<HTMLDivElement>}>
+        {children}
+      </div>
+    );
+
+    return <MenuGroupContext.Provider value={contextValue}>{group}</MenuGroupContext.Provider>;
+  }
+);
 
 const MenuGroupLabel = forwardRef<HTMLElement, MenuGroupLabelProps>(function MenuGroupLabel(
   { children, render, ...props },
@@ -1143,6 +1203,8 @@ const MenuRadioGroup = forwardRef<HTMLElement, MenuRadioGroupProps>(function Men
   },
   forwardedRef
 ) {
+  const parentGroup = useContext(MenuGroupContext);
+  if (parentGroup) throw new Error('Menu.RadioGroup cannot be nested within another menu group');
   const generatedId = useId();
   const groupId = id ?? `menu-radio-group-${generatedId}`;
   const { claimRadioGroup, releaseRadioGroup, getRadioValue, setRadioValue } =
@@ -1183,7 +1245,7 @@ const MenuRadioGroup = forwardRef<HTMLElement, MenuRadioGroupProps>(function Men
     };
   }, []);
   const groupContext = useMemo<MenuGroupContextValue>(
-    () => ({ labelId: `${groupId}-label`, setLabelPresent }),
+    () => ({ kind: 'radio', labelId: `${groupId}-label`, setLabelPresent }),
     [groupId]
   );
   const radioContext = useMemo<MenuRadioGroupContextValue>(
@@ -1244,6 +1306,7 @@ const MenuCheckboxItem = forwardRef<HTMLElement, MenuCheckboxItemProps>(function
   },
   forwardedRef
 ) {
+  useMenuGroupContext('Menu.CheckboxItem', 'checkbox');
   const generatedId = useId();
   const itemKey = value ?? `menu-checkbox-item-${generatedId}`;
   const { closeTree, activeKey, setActiveKey, registerItem } = useMenuContext('Menu.CheckboxItem');
@@ -1352,6 +1415,7 @@ const MenuRadioItem = forwardRef<HTMLElement, MenuRadioItemProps>(function MenuR
   },
   forwardedRef
 ) {
+  useMenuGroupContext('Menu.RadioItem', 'radio');
   const radioGroup = useMenuRadioGroupContext('Menu.RadioItem');
   const itemKey = `${radioGroup.id}-item-${value}`;
   const { closeTree, activeKey, setActiveKey, registerItem } = useMenuContext('Menu.RadioItem');
@@ -1633,6 +1697,7 @@ const MenuSubTrigger = forwardRef<HTMLElement, MenuSubTriggerProps>(function Men
   },
   forwardedRef
 ) {
+  useMenuGroupContext('Menu.SubTrigger', 'command');
   const generatedId = useId();
   const itemKey = value ?? `menu-sub-trigger-${generatedId}`;
   const { direction, activeKey, setActiveKey, registerItem } = useMenuContext('Menu.SubTrigger');
@@ -1897,7 +1962,7 @@ const MenuSubContent = forwardRef<HTMLDivElement, MenuSubContentProps>(function 
   return sub.overlay.renderFloating(
     <MenuContext.Provider value={contextValue}>
       <MenuItemsContent {...floatingProps} ref={ref} render={render} state={state}>
-        {children}
+        <MenuGroupContext.Provider value={null}>{children}</MenuGroupContext.Provider>
       </MenuItemsContent>
     </MenuContext.Provider>
   );
@@ -1919,6 +1984,7 @@ const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem(
   },
   forwardedRef
 ) {
+  useMenuGroupContext('Menu.Item', 'command');
   const generatedId = useId();
   const itemKey = value ?? `menu-item-${generatedId}`;
   const { closeTree, activeKey, setActiveKey, registerItem } = useMenuContext('Menu.Item');
@@ -2008,6 +2074,7 @@ export const Menu = {
   ContextTrigger: MenuContextTrigger,
   Content: MenuContent,
   Group: MenuGroup,
+  CheckboxGroup: MenuCheckboxGroup,
   GroupLabel: MenuGroupLabel,
   Item: MenuItem,
   CheckboxItem: MenuCheckboxItem,

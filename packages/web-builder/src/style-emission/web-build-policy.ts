@@ -31,6 +31,7 @@ export type ShadowEmission = DirectOrTokenEmission;
 export type ElementStyleEmissionPolicy = {
   boxColorEmission?: BoxColorEmission;
   boxColorGradientEmission?: BoxColorGradientEmission;
+  selectedBoxColorGateClass?: string;
   textColorEmission?: TextColorEmission;
   borderWidthEmission?: BorderWidthEmission;
   borderRadiusEmission?: BorderRadiusEmission;
@@ -50,6 +51,7 @@ export type ElementStyleEmissionPolicy = {
 export type ResolvedElementStyleEmissionPolicy = {
   boxColorEmission?: BoxColorEmission;
   boxColorGradientEmission?: BoxColorGradientEmission;
+  selectedBoxColorGateClass?: string;
   textColorEmission?: TextColorEmission;
   borderWidthEmission: BorderWidthEmission;
   borderRadiusEmission: BorderRadiusEmission;
@@ -154,7 +156,8 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         },
         e2: {
           paddingLeftEmission: 'token',
-          paddingRightEmission: 'token'
+          paddingRightEmission: 'token',
+          selectedBoxColorGateClass: 'k-ddn-sbg'
         },
         e3: {
           boxHeightEmission: 'token',
@@ -369,6 +372,8 @@ export function resolveElementStyleEmissionPolicy(
       variantElementPolicy?.boxColorGradientEmission ??
       elementPolicy?.boxColorGradientEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxColorGradientEmission,
+    selectedBoxColorGateClass:
+      variantElementPolicy?.selectedBoxColorGateClass ?? elementPolicy?.selectedBoxColorGateClass,
     textColorEmission:
       variantElementPolicy?.textColorEmission ??
       elementPolicy?.textColorEmission ??

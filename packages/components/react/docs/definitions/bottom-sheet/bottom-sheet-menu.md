@@ -7,7 +7,7 @@ Dropdown variant and never consumes Dropdown schema elements, classes, presence 
 artifacts.
 
 `Dropdown` remains an anchored visual collection. `BottomSheet` remains a modal dialog. They may
-present equivalent actions, groups, radio choices, separators, and recursive navigation through a
+present equivalent actions, typed groups, automatic group boundaries, and recursive navigation through a
 shared `MenuTree`, but capability equivalence does not imply identical DOM, focus, keyboard, or
 ARIA semantics.
 
@@ -61,6 +61,18 @@ sheet instead of popping one page.
 `centered` centers item content horizontally. `centeredIcons="hide"` removes only content-provided
 leading and non-functional trailing icons. It never removes Back, Close, submenu disclosure,
 radio checkmarks, labels, descriptions, or end text.
+
+## Groups And Boundaries
+
+BottomSheetMenu consumes the same typed MenuTree groups as ButtonMenu: command, checkbox, and radio
+rows cannot be mixed in one group, and submenu pages also contain only groups. Each
+`BottomSheet.Group` emits an `e12` boundary before itself; Structural CSS hides the first boundary
+of the current page, so enabled paint produces exactly `n - 1` visible dividers for `n` groups.
+
+`groupSeparators` is a BottomSheet-only visual option. `true` is the portability default and is
+published explicitly by every official preset; `false` suppresses the boundary DOM without merging
+groups or changing their selection semantics. The public BottomSheet composition does not expose a
+manual Separator part. Consumers create another group when another contextual boundary is needed.
 
 ## Modal Contract
 

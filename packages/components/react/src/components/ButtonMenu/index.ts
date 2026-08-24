@@ -1,6 +1,7 @@
 export type {
   ButtonMenuActionProps,
   ButtonMenuButtonGroupProps,
+  ButtonMenuCheckboxGroupProps,
   ButtonMenuCheckboxItemProps,
   ButtonMenuContentProps,
   ButtonMenuGroupLabelProps,
@@ -9,7 +10,6 @@ export type {
   ButtonMenuRadioGroupProps,
   ButtonMenuRadioItemProps,
   ButtonMenuRootProps,
-  ButtonMenuSeparatorProps,
   ButtonMenuShortcutProps,
   ButtonMenuSubContentProps,
   ButtonMenuSubProps,

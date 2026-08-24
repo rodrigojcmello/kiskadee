@@ -1,6 +1,7 @@
 import type { DropdownIntent } from '@kiskadee/core';
 import {
   Menu as HeadlessMenu,
+  type MenuCheckboxGroupProps,
   type MenuCheckboxItemProps,
   type MenuContentProps,
   type MenuGroupLabelProps,
@@ -15,6 +16,9 @@ import {
 } from '@kiskadee/react-headless/menu';
 import type {
   MenuTree,
+  MenuTreeCheckboxItem,
+  MenuTreeCommandNode,
+  MenuTreeGroupNode,
   MenuTreeNode,
   MenuTreeRadioItem,
   MenuTreeSelectionDetails
@@ -35,12 +39,12 @@ import {
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { Button } from '../Button/Button.tsx';
 import type { ButtonGroupProps, ButtonProps } from '../Button/Button.types.ts';
-import { Dropdown } from '../Dropdown/Dropdown.tsx';
+import { Dropdown, useDropdownResolvedOptions } from '../Dropdown/Dropdown.tsx';
 import type {
   DropdownEndTextProps,
   DropdownGroupLabelProps,
   DropdownItemsLayout,
-  DropdownSeparatorProps,
+  DropdownPresentationProps,
   DropdownVisualProps
 } from '../Dropdown/Dropdown.types.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
@@ -73,10 +77,11 @@ export type ButtonMenuTriggerProps = Omit<
   | 'type'
 >;
 
-export type ButtonMenuContentProps = Omit<MenuContentProps, 'forceMount' | 'render'> & {
-  itemsLayout?: DropdownItemsLayout;
-  surfaceProps?: ComponentPropsWithoutRef<'div'>;
-};
+export type ButtonMenuContentProps = Omit<MenuContentProps, 'forceMount' | 'render'> &
+  DropdownPresentationProps & {
+    itemsLayout?: DropdownItemsLayout;
+    surfaceProps?: ComponentPropsWithoutRef<'div'>;
+  };
 
 export type ButtonMenuItemProps = Omit<MenuItemProps, 'render'> & {
   intent?: DropdownIntent;
@@ -89,13 +94,15 @@ export type ButtonMenuCheckboxItemProps = Omit<MenuCheckboxItemProps, 'render'> 
   intent?: DropdownIntent;
 };
 
-export type ButtonMenuTreeContentProps<TIcon = unknown> = {
+export type ButtonMenuTreeContentProps<TIcon = unknown> = DropdownPresentationProps & {
   tree: MenuTree<TIcon>;
   itemsLayout?: DropdownItemsLayout;
   renderIcon?: MenuTreeIconRenderer<TIcon>;
 };
 
 export type ButtonMenuGroupProps = Omit<MenuGroupProps, 'render'>;
+
+export type ButtonMenuCheckboxGroupProps = Omit<MenuCheckboxGroupProps, 'render'>;
 
 export type ButtonMenuRadioGroupProps = Omit<MenuRadioGroupProps, 'render'>;
 
@@ -109,17 +116,16 @@ export type ButtonMenuSubTriggerProps = Omit<MenuSubTriggerProps, 'render'> & {
   intent?: DropdownIntent;
 };
 
-export type ButtonMenuSubContentProps = Omit<MenuSubContentProps, 'forceMount' | 'render'> & {
-  itemsLayout?: DropdownItemsLayout;
-  surfaceProps?: ComponentPropsWithoutRef<'div'>;
-};
+export type ButtonMenuSubContentProps = Omit<MenuSubContentProps, 'forceMount' | 'render'> &
+  DropdownPresentationProps & {
+    itemsLayout?: DropdownItemsLayout;
+    surfaceProps?: ComponentPropsWithoutRef<'div'>;
+  };
 
 export type ButtonMenuGroupLabelProps = Omit<MenuGroupLabelProps, 'render'> &
   Omit<DropdownGroupLabelProps, 'id'>;
 
 export type ButtonMenuShortcutProps = Omit<DropdownEndTextProps, 'aria-hidden'>;
-
-export type ButtonMenuSeparatorProps = Omit<DropdownSeparatorProps, 'role'>;
 
 function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
@@ -129,12 +135,23 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
 function ButtonMenuPopupVisual({
   children,
   itemsLayout,
+  leadingIconComposition,
+  selectedItemBackground,
   surfaceProps
-}: Pick<ButtonMenuContentProps, 'children' | 'itemsLayout' | 'surfaceProps'>) {
+}: Pick<
+  ButtonMenuContentProps,
+  'children' | 'itemsLayout' | 'leadingIconComposition' | 'selectedItemBackground' | 'surfaceProps'
+>) {
   return (
     <Dropdown.Surface {...surfaceProps}>
       <Dropdown.ScrollArea>
-        <Dropdown.Items layout={itemsLayout}>{children}</Dropdown.Items>
+        <Dropdown.Items
+          layout={itemsLayout}
+          leadingIconComposition={leadingIconComposition}
+          selectedItemBackground={selectedItemBackground}
+        >
+          {children}
+        </Dropdown.Items>
       </Dropdown.ScrollArea>
     </Dropdown.Surface>
   );
@@ -147,6 +164,8 @@ function ButtonMenuRoot({
   radius,
   shadow,
   presence,
+  leadingIconComposition,
+  selectedItemBackground,
   classNames,
   ...menuProps
 }: ButtonMenuRootProps) {
@@ -169,6 +188,8 @@ function ButtonMenuRoot({
       radius={radius}
       shadow={shadow}
       presence={presence}
+      leadingIconComposition={leadingIconComposition}
+      selectedItemBackground={selectedItemBackground}
       classNames={classNames}
     >
       <HeadlessMenu.Root {...menuProps}>
@@ -229,7 +250,17 @@ const ButtonMenuTrigger = forwardRef<HTMLButtonElement, ButtonMenuTriggerProps>(
 );
 
 const ButtonMenuContent = forwardRef<HTMLDivElement, ButtonMenuContentProps>(
-  function ButtonMenuContent({ children, itemsLayout, surfaceProps, ...props }, ref) {
+  function ButtonMenuContent(
+    {
+      children,
+      itemsLayout,
+      leadingIconComposition,
+      selectedItemBackground,
+      surfaceProps,
+      ...props
+    },
+    ref
+  ) {
     return (
       <Dropdown.Presence>
         {({ forceMount, render }) => (
@@ -242,8 +273,13 @@ const ButtonMenuContent = forwardRef<HTMLDivElement, ButtonMenuContentProps>(
                 {
                   ...contentProps,
                   children: (
-                    <ButtonMenuPopupVisual itemsLayout={itemsLayout} surfaceProps={surfaceProps}>
-                      {children}
+                    <ButtonMenuPopupVisual
+                      itemsLayout={itemsLayout}
+                      leadingIconComposition={leadingIconComposition}
+                      selectedItemBackground={selectedItemBackground}
+                      surfaceProps={surfaceProps}
+                    >
+                      {contentProps.children}
                     </ButtonMenuPopupVisual>
                   )
                 },
@@ -315,12 +351,6 @@ const ButtonMenuItem = forwardRef<HTMLElement, ButtonMenuItemProps>(function But
   );
 });
 
-const ButtonMenuSeparator = forwardRef<HTMLDivElement, ButtonMenuSeparatorProps>(
-  function ButtonMenuSeparator(props, ref) {
-    return <Dropdown.Separator {...props} ref={ref} role="separator" />;
-  }
-);
-
 const ButtonMenuGroup = forwardRef<HTMLDivElement, ButtonMenuGroupProps>(function ButtonMenuGroup(
   { children, ...props },
   forwardedRef
@@ -345,6 +375,30 @@ const ButtonMenuGroup = forwardRef<HTMLDivElement, ButtonMenuGroupProps>(functio
     </HeadlessMenu.Group>
   );
 });
+
+const ButtonMenuCheckboxGroup = forwardRef<HTMLDivElement, ButtonMenuCheckboxGroupProps>(
+  function ButtonMenuCheckboxGroup({ children, ...props }, forwardedRef) {
+    return (
+      <HeadlessMenu.CheckboxGroup
+        {...props}
+        render={(menuProps) => {
+          const { ref: menuRef, ...groupProps } = menuProps;
+          const ref = (node: HTMLDivElement | null) => {
+            assignRef(menuRef, node);
+            assignRef(forwardedRef, node);
+          };
+          return (
+            <Dropdown.Group {...groupProps} ref={ref}>
+              {children}
+            </Dropdown.Group>
+          );
+        }}
+      >
+        {children}
+      </HeadlessMenu.CheckboxGroup>
+    );
+  }
+);
 
 const ButtonMenuGroupLabel = forwardRef<HTMLSpanElement, ButtonMenuGroupLabelProps>(
   function ButtonMenuGroupLabel({ children, ...props }, forwardedRef) {
@@ -503,7 +557,17 @@ const ButtonMenuSubTrigger = forwardRef<HTMLElement, ButtonMenuSubTriggerProps>(
 );
 
 const ButtonMenuSubContent = forwardRef<HTMLDivElement, ButtonMenuSubContentProps>(
-  function ButtonMenuSubContent({ children, itemsLayout, surfaceProps, ...props }, forwardedRef) {
+  function ButtonMenuSubContent(
+    {
+      children,
+      itemsLayout,
+      leadingIconComposition,
+      selectedItemBackground,
+      surfaceProps,
+      ...props
+    },
+    forwardedRef
+  ) {
     return (
       <Dropdown.Presence>
         {({ forceMount, render }) => (
@@ -516,8 +580,13 @@ const ButtonMenuSubContent = forwardRef<HTMLDivElement, ButtonMenuSubContentProp
                 {
                   ...contentProps,
                   children: (
-                    <ButtonMenuPopupVisual itemsLayout={itemsLayout} surfaceProps={surfaceProps}>
-                      {children}
+                    <ButtonMenuPopupVisual
+                      itemsLayout={itemsLayout}
+                      leadingIconComposition={leadingIconComposition}
+                      selectedItemBackground={selectedItemBackground}
+                      surfaceProps={surfaceProps}
+                    >
+                      {contentProps.children}
                     </ButtonMenuPopupVisual>
                   )
                 },
@@ -548,7 +617,11 @@ function ButtonMenuTreeItemContent<TIcon>({
     | MenuTreeRadioItem<TIcon>;
   renderIcon?: MenuTreeIconRenderer<TIcon>;
 }) {
-  const leadingIcon = renderMenuTreeIcon(node.icon, 'leading', node, renderIcon);
+  const { leadingIconComposition } = useDropdownResolvedOptions();
+  const leadingIcon =
+    leadingIconComposition === 'selection-only'
+      ? null
+      : renderMenuTreeIcon(node.icon, 'leading', node, renderIcon);
   const trailingIcon = renderMenuTreeIcon(node.trailingIcon, 'trailing', node, renderIcon);
   return (
     <>
@@ -561,153 +634,121 @@ function ButtonMenuTreeItemContent<TIcon>({
   );
 }
 
-function isUngroupedButtonMenuTreeRow<TIcon>(node: MenuTreeNode<TIcon>): boolean {
+function renderButtonMenuCheckboxItem<TIcon>(
+  node: MenuTreeCheckboxItem<TIcon>,
+  renderIcon: MenuTreeIconRenderer<TIcon> | undefined
+): ReactNode {
   return (
-    node.type === 'item' ||
-    node.type === 'link' ||
-    node.type === 'checkbox' ||
-    node.type === 'submenu'
+    <ButtonMenuCheckboxItem
+      key={node.id}
+      value={node.id}
+      textValue={node.textValue ?? node.label}
+      controlState={node.controlState}
+      defaultControlState={node.defaultControlState}
+      disabled={node.disabled}
+      intent={node.intent}
+      closeOnSelect={node.closeOnSelect ?? true}
+      onControlStateChange={(controlState) =>
+        node.onControlStateChange?.(controlState, {
+          id: node.id,
+          type: 'checkbox',
+          controlState
+        })
+      }
+    >
+      <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
+    </ButtonMenuCheckboxItem>
   );
 }
 
-function renderButtonMenuTreeNodes<TIcon>(
-  nodes: readonly MenuTreeNode<TIcon>[],
-  renderIcon: MenuTreeIconRenderer<TIcon> | undefined,
-  insideExplicitGroup = false
-): ReactNode[] {
-  if (!insideExplicitGroup) {
-    const renderedNodes: ReactNode[] = [];
-    let ungroupedRows: MenuTreeNode<TIcon>[] = [];
-    const flushUngroupedRows = () => {
-      if (ungroupedRows.length === 0) return;
-      const rows = ungroupedRows;
-      ungroupedRows = [];
-      renderedNodes.push(
-        <Dropdown.Group key={`menu-tree-visual-group-${rows[0]?.id}`}>
-          {renderButtonMenuTreeNodes(rows, renderIcon, true)}
-        </Dropdown.Group>
-      );
-    };
-
-    for (const node of nodes) {
-      if (isUngroupedButtonMenuTreeRow(node)) {
-        ungroupedRows.push(node);
-        continue;
-      }
-      flushUngroupedRows();
-      renderedNodes.push(...renderButtonMenuTreeNodes([node], renderIcon, true));
-    }
-    flushUngroupedRows();
-    return renderedNodes;
+function renderButtonMenuCommand<TIcon>(
+  node: MenuTreeCommandNode<TIcon>,
+  renderIcon: MenuTreeIconRenderer<TIcon> | undefined
+): ReactNode {
+  if (node.type === 'submenu') {
+    return (
+      <ButtonMenuSub key={node.id}>
+        <ButtonMenuSubTrigger
+          textValue={node.textValue ?? node.label}
+          disabled={node.disabled}
+          intent={node.intent}
+        >
+          <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
+        </ButtonMenuSubTrigger>
+        <ButtonMenuSubContent>
+          {renderButtonMenuTreeGroups(node.items, renderIcon)}
+        </ButtonMenuSubContent>
+      </ButtonMenuSub>
+    );
   }
 
-  return nodes.map((node) => {
-    if (node.type === 'separator') {
-      return <ButtonMenuSeparator key={node.id} />;
-    }
+  const selectionDetails: MenuTreeSelectionDetails = { id: node.id, type: node.type };
+  return (
+    <ButtonMenuItem
+      key={node.id}
+      value={node.id}
+      textValue={node.textValue ?? node.label}
+      disabled={node.disabled}
+      intent={node.intent}
+      href={node.type === 'link' ? node.href : undefined}
+      target={node.type === 'link' ? node.target : undefined}
+      rel={node.type === 'link' ? node.rel : undefined}
+      closeOnSelect={node.closeOnSelect ?? true}
+      onSelect={() => node.onSelect?.(selectionDetails)}
+    >
+      <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
+    </ButtonMenuItem>
+  );
+}
 
-    if (node.type === 'group') {
+function renderButtonMenuTreeGroups<TIcon>(
+  groups: readonly MenuTreeGroupNode<TIcon>[],
+  renderIcon: MenuTreeIconRenderer<TIcon> | undefined
+): ReactNode[] {
+  return groups.map((group) => {
+    if (group.type === 'group') {
       return (
-        <ButtonMenuGroup key={node.id}>
-          {node.label ? <ButtonMenuGroupLabel>{node.label}</ButtonMenuGroupLabel> : null}
-          {renderButtonMenuTreeNodes(node.items, renderIcon, true)}
+        <ButtonMenuGroup key={group.id}>
+          {group.label ? <ButtonMenuGroupLabel>{group.label}</ButtonMenuGroupLabel> : null}
+          {group.items.map((node) => renderButtonMenuCommand(node, renderIcon))}
         </ButtonMenuGroup>
       );
     }
 
-    if (node.type === 'radio-group') {
+    if (group.type === 'checkbox-group') {
       return (
-        <ButtonMenuRadioGroup
-          key={node.id}
-          id={node.id}
-          value={node.value}
-          defaultValue={node.defaultValue}
-          onValueChange={(value) => {
-            const selectedItem = node.items.find((item) => item.value === value);
-            if (!selectedItem) return;
-            node.onValueChange?.(value, {
-              id: selectedItem.id,
-              type: 'radio',
-              value
-            });
-          }}
-        >
-          {node.label ? <ButtonMenuGroupLabel>{node.label}</ButtonMenuGroupLabel> : null}
-          {node.items.map((item) => (
-            <ButtonMenuRadioItem
-              key={item.id}
-              value={item.value}
-              textValue={item.textValue ?? item.label}
-              disabled={item.disabled}
-              intent={item.intent}
-            >
-              <ButtonMenuTreeItemContent node={item} renderIcon={renderIcon} />
-            </ButtonMenuRadioItem>
-          ))}
-        </ButtonMenuRadioGroup>
+        <ButtonMenuCheckboxGroup key={group.id}>
+          {group.label ? <ButtonMenuGroupLabel>{group.label}</ButtonMenuGroupLabel> : null}
+          {group.items.map((node) => renderButtonMenuCheckboxItem(node, renderIcon))}
+        </ButtonMenuCheckboxGroup>
       );
     }
 
-    if (node.type === 'checkbox') {
-      return (
-        <ButtonMenuCheckboxItem
-          key={node.id}
-          value={node.id}
-          textValue={node.textValue ?? node.label}
-          controlState={node.controlState}
-          defaultControlState={node.defaultControlState}
-          disabled={node.disabled}
-          intent={node.intent}
-          closeOnSelect={node.closeOnSelect ?? true}
-          onControlStateChange={(controlState) =>
-            node.onControlStateChange?.(controlState, {
-              id: node.id,
-              type: 'checkbox',
-              controlState
-            })
-          }
-        >
-          <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
-        </ButtonMenuCheckboxItem>
-      );
-    }
-
-    if (node.type === 'submenu') {
-      return (
-        <ButtonMenuSub key={node.id}>
-          <ButtonMenuSubTrigger
-            textValue={node.textValue ?? node.label}
-            disabled={node.disabled}
-            intent={node.intent}
-          >
-            <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
-          </ButtonMenuSubTrigger>
-          <ButtonMenuSubContent>
-            {renderButtonMenuTreeNodes(node.items, renderIcon)}
-          </ButtonMenuSubContent>
-        </ButtonMenuSub>
-      );
-    }
-
-    const selectionDetails: MenuTreeSelectionDetails = {
-      id: node.id,
-      type: node.type
-    };
     return (
-      <ButtonMenuItem
-        key={node.id}
-        value={node.id}
-        textValue={node.textValue ?? node.label}
-        disabled={node.disabled}
-        intent={node.intent}
-        href={node.type === 'link' ? node.href : undefined}
-        target={node.type === 'link' ? node.target : undefined}
-        rel={node.type === 'link' ? node.rel : undefined}
-        closeOnSelect={node.closeOnSelect ?? true}
-        onSelect={() => node.onSelect?.(selectionDetails)}
+      <ButtonMenuRadioGroup
+        key={group.id}
+        id={group.id}
+        value={group.value}
+        defaultValue={group.defaultValue}
+        onValueChange={(value) => {
+          const selectedItem = group.items.find((item) => item.value === value);
+          if (!selectedItem) return;
+          group.onValueChange?.(value, { id: selectedItem.id, type: 'radio', value });
+        }}
       >
-        <ButtonMenuTreeItemContent node={node} renderIcon={renderIcon} />
-      </ButtonMenuItem>
+        {group.label ? <ButtonMenuGroupLabel>{group.label}</ButtonMenuGroupLabel> : null}
+        {group.items.map((item) => (
+          <ButtonMenuRadioItem
+            key={item.id}
+            value={item.value}
+            textValue={item.textValue ?? item.label}
+            disabled={item.disabled}
+            intent={item.intent}
+          >
+            <ButtonMenuTreeItemContent node={item} renderIcon={renderIcon} />
+          </ButtonMenuRadioItem>
+        ))}
+      </ButtonMenuRadioGroup>
     );
   });
 }
@@ -715,11 +756,18 @@ function renderButtonMenuTreeNodes<TIcon>(
 function ButtonMenuTreeContent<TIcon>({
   tree,
   itemsLayout,
+  leadingIconComposition,
+  selectedItemBackground,
   renderIcon
 }: ButtonMenuTreeContentProps<TIcon>) {
   return (
-    <ButtonMenuContent aria-label={tree.title} itemsLayout={itemsLayout}>
-      {renderButtonMenuTreeNodes(tree.items, renderIcon)}
+    <ButtonMenuContent
+      aria-label={tree.title}
+      itemsLayout={itemsLayout}
+      leadingIconComposition={leadingIconComposition}
+      selectedItemBackground={selectedItemBackground}
+    >
+      {renderButtonMenuTreeGroups(tree.items, renderIcon)}
     </ButtonMenuContent>
   );
 }
@@ -730,6 +778,7 @@ export const ButtonMenu = {
   Trigger: ButtonMenuTrigger,
   Content: ButtonMenuContent,
   Group: ButtonMenuGroup,
+  CheckboxGroup: ButtonMenuCheckboxGroup,
   GroupLabel: ButtonMenuGroupLabel,
   CheckboxItem: ButtonMenuCheckboxItem,
   RadioGroup: ButtonMenuRadioGroup,
@@ -743,6 +792,5 @@ export const ButtonMenu = {
   Description: Dropdown.Description,
   Shortcut: ButtonMenuShortcut,
   Trailing: Dropdown.Trailing,
-  Separator: ButtonMenuSeparator,
   TreeContent: ButtonMenuTreeContent
 };

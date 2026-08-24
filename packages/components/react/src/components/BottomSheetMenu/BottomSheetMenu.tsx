@@ -5,6 +5,9 @@ import {
 } from '@kiskadee/react-headless/bottom-sheet';
 import type {
   MenuTree,
+  MenuTreeCheckboxItem,
+  MenuTreeCommandNode,
+  MenuTreeGroupNode,
   MenuTreeNode,
   MenuTreeRadioGroup,
   MenuTreeRadioItem,
@@ -67,16 +70,18 @@ export type BottomSheetMenuTriggerProps = Omit<
 type BottomSheetMenuPage<TIcon> = {
   id: string;
   title: string;
-  items: readonly MenuTreeNode<TIcon>[];
+  items: readonly MenuTreeGroupNode<TIcon>[];
 };
 
 function findSubmenu<TIcon>(
-  nodes: readonly MenuTreeNode<TIcon>[],
+  groups: readonly MenuTreeGroupNode<TIcon>[],
   id: string
 ): MenuTreeSubmenu<TIcon> | undefined {
-  for (const node of nodes) {
-    if (node.type === 'submenu' && node.id === id) return node;
-    if (node.type === 'group') {
+  for (const group of groups) {
+    if (group.type !== 'group') continue;
+    for (const node of group.items) {
+      if (node.type !== 'submenu') continue;
+      if (node.id === id) return node;
       const submenu = findSubmenu(node.items, id);
       if (submenu) return submenu;
     }
@@ -230,93 +235,71 @@ function BottomSheetMenuRadioGroupView<TIcon>({
   );
 }
 
-function BottomSheetMenuPageItems<TIcon>({
+function BottomSheetMenuCheckboxGroupView<TIcon>({
+  label,
   nodes,
   renderIcon,
-  onNavigate,
-  onUncontrolledCheckboxValueChange,
-  onUncontrolledRadioValueChange,
-  uncontrolledCheckboxValues,
-  uncontrolledRadioValues
+  onUncontrolledValueChange,
+  uncontrolledValues
 }: {
-  nodes: readonly MenuTreeNode<TIcon>[];
+  label?: string;
+  nodes: readonly MenuTreeCheckboxItem<TIcon>[];
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
+  onUncontrolledValueChange: (itemId: string, controlState: boolean) => void;
+  uncontrolledValues: Readonly<Record<string, boolean>>;
+}) {
+  const controller = useBottomSheetController();
+  return (
+    <BottomSheet.Group role="group" aria-label={label}>
+      {label ? <BottomSheet.GroupLabel>{label}</BottomSheet.GroupLabel> : null}
+      {nodes.map((node) => {
+        const controlState =
+          node.controlState ?? uncontrolledValues[node.id] ?? node.defaultControlState ?? false;
+        return (
+          <BottomSheet.Item
+            key={node.id}
+            role="checkbox"
+            aria-checked={controlState}
+            selected={controlState}
+            disabled={node.disabled}
+            intent={node.intent as BottomSheetIntent | undefined}
+            onClick={(event) => {
+              if (node.disabled) return;
+              const nextControlState = !controlState;
+              if (node.controlState === undefined) {
+                onUncontrolledValueChange(node.id, nextControlState);
+              }
+              node.onControlStateChange?.(nextControlState, {
+                id: node.id,
+                type: 'checkbox',
+                controlState: nextControlState
+              });
+              if (node.closeOnSelect ?? true) {
+                controller.dismiss('selection', event.nativeEvent);
+              }
+            }}
+          >
+            <BottomSheet.Checkmark visible={controlState} />
+            <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
+          </BottomSheet.Item>
+        );
+      })}
+    </BottomSheet.Group>
+  );
+}
+
+function BottomSheetMenuCommandItems<TIcon>({
+  nodes,
+  renderIcon,
+  onNavigate
+}: {
+  nodes: readonly MenuTreeCommandNode<TIcon>[];
   renderIcon?: MenuTreeIconRenderer<TIcon>;
   onNavigate: (submenu: MenuTreeSubmenu<TIcon>) => void;
-  onUncontrolledCheckboxValueChange: (itemId: string, controlState: boolean) => void;
-  onUncontrolledRadioValueChange: (groupId: string, value: string) => void;
-  uncontrolledCheckboxValues: Readonly<Record<string, boolean>>;
-  uncontrolledRadioValues: Readonly<Record<string, string>>;
 }) {
   const controller = useBottomSheetController();
   const submenuIcon = useEssentialIcon('chevron-end');
   return nodes.map((node) => {
-    if (node.type === 'separator') return <BottomSheet.Separator key={node.id} />;
-
-    if (node.type === 'group') {
-      return (
-        <BottomSheet.Group key={node.id}>
-          {node.label ? <BottomSheet.GroupLabel>{node.label}</BottomSheet.GroupLabel> : null}
-          <BottomSheetMenuPageItems
-            nodes={node.items}
-            renderIcon={renderIcon}
-            onNavigate={onNavigate}
-            onUncontrolledCheckboxValueChange={onUncontrolledCheckboxValueChange}
-            onUncontrolledRadioValueChange={onUncontrolledRadioValueChange}
-            uncontrolledCheckboxValues={uncontrolledCheckboxValues}
-            uncontrolledRadioValues={uncontrolledRadioValues}
-          />
-        </BottomSheet.Group>
-      );
-    }
-
-    if (node.type === 'radio-group') {
-      return (
-        <BottomSheetMenuRadioGroupView
-          key={node.id}
-          node={node}
-          renderIcon={renderIcon}
-          uncontrolledValue={uncontrolledRadioValues[node.id]}
-          onUncontrolledValueChange={onUncontrolledRadioValueChange}
-        />
-      );
-    }
-
-    if (node.type === 'checkbox') {
-      const controlState =
-        node.controlState ??
-        uncontrolledCheckboxValues[node.id] ??
-        node.defaultControlState ??
-        false;
-      return (
-        <BottomSheet.Item
-          key={node.id}
-          role="checkbox"
-          aria-checked={controlState}
-          selected={controlState}
-          disabled={node.disabled}
-          intent={node.intent as BottomSheetIntent | undefined}
-          onClick={(event) => {
-            if (node.disabled) return;
-            const nextControlState = !controlState;
-            if (node.controlState === undefined) {
-              onUncontrolledCheckboxValueChange(node.id, nextControlState);
-            }
-            node.onControlStateChange?.(nextControlState, {
-              id: node.id,
-              type: 'checkbox',
-              controlState: nextControlState
-            });
-            if (node.closeOnSelect ?? true) {
-              controller.dismiss('selection', event.nativeEvent);
-            }
-          }}
-        >
-          <BottomSheet.Checkmark visible={controlState} />
-          <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
-        </BottomSheet.Item>
-      );
-    }
-
     if (node.type === 'submenu') {
       return (
         <BottomSheet.Item
@@ -337,19 +320,14 @@ function BottomSheetMenuPageItems<TIcon>({
       );
     }
 
-    const selectionDetails: MenuTreeSelectionDetails = {
-      id: node.id,
-      type: node.type
-    };
+    const selectionDetails: MenuTreeSelectionDetails = { id: node.id, type: node.type };
     const handleSelection = (event: ReactMouseEvent<HTMLElement>) => {
       if (node.disabled) {
         event.preventDefault();
         return;
       }
       node.onSelect?.(selectionDetails);
-      if (node.closeOnSelect ?? true) {
-        controller.dismiss('selection', event.nativeEvent);
-      }
+      if (node.closeOnSelect ?? true) controller.dismiss('selection', event.nativeEvent);
     };
 
     return (
@@ -368,7 +346,7 @@ function BottomSheetMenuPageItems<TIcon>({
                 target={node.target}
                 rel={node.rel}
                 tabIndex={node.disabled ? -1 : props.tabIndex}
-                onClick={(event) => handleSelection(event)}
+                onClick={handleSelection}
               >
                 <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
               </a>
@@ -380,12 +358,66 @@ function BottomSheetMenuPageItems<TIcon>({
               ref={ref as Ref<HTMLButtonElement>}
               type="button"
               disabled={node.disabled}
-              onClick={(event) => handleSelection(event)}
+              onClick={handleSelection}
             >
               <BottomSheetMenuItemContent node={node} renderIcon={renderIcon} />
             </button>
           );
         }}
+      />
+    );
+  });
+}
+
+function BottomSheetMenuPageItems<TIcon>({
+  groups,
+  renderIcon,
+  onNavigate,
+  onUncontrolledCheckboxValueChange,
+  onUncontrolledRadioValueChange,
+  uncontrolledCheckboxValues,
+  uncontrolledRadioValues
+}: {
+  groups: readonly MenuTreeGroupNode<TIcon>[];
+  renderIcon?: MenuTreeIconRenderer<TIcon>;
+  onNavigate: (submenu: MenuTreeSubmenu<TIcon>) => void;
+  onUncontrolledCheckboxValueChange: (itemId: string, controlState: boolean) => void;
+  onUncontrolledRadioValueChange: (groupId: string, value: string) => void;
+  uncontrolledCheckboxValues: Readonly<Record<string, boolean>>;
+  uncontrolledRadioValues: Readonly<Record<string, string>>;
+}) {
+  return groups.map((group) => {
+    if (group.type === 'group') {
+      return (
+        <BottomSheet.Group key={group.id}>
+          {group.label ? <BottomSheet.GroupLabel>{group.label}</BottomSheet.GroupLabel> : null}
+          <BottomSheetMenuCommandItems
+            nodes={group.items}
+            renderIcon={renderIcon}
+            onNavigate={onNavigate}
+          />
+        </BottomSheet.Group>
+      );
+    }
+    if (group.type === 'checkbox-group') {
+      return (
+        <BottomSheetMenuCheckboxGroupView
+          key={group.id}
+          label={group.label}
+          nodes={group.items}
+          renderIcon={renderIcon}
+          onUncontrolledValueChange={onUncontrolledCheckboxValueChange}
+          uncontrolledValues={uncontrolledCheckboxValues}
+        />
+      );
+    }
+    return (
+      <BottomSheetMenuRadioGroupView
+        key={group.id}
+        node={group}
+        renderIcon={renderIcon}
+        uncontrolledValue={uncontrolledRadioValues[group.id]}
+        onUncontrolledValueChange={onUncontrolledRadioValueChange}
       />
     );
   }) as ReactElement[];
@@ -488,7 +520,7 @@ function BottomSheetMenuNavigator<TIcon>({
 
   const pageItems = (
     <BottomSheetMenuPageItems
-      nodes={currentPage.items}
+      groups={currentPage.items}
       renderIcon={renderIcon}
       onNavigate={navigate}
       onUncontrolledCheckboxValueChange={handleUncontrolledCheckboxValueChange}

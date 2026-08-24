@@ -100,10 +100,18 @@
 
 /*
  * extra element for e2 / x1
- * Contains the ordered groups and explicit separators of one collection.
+ * Contains the ordered groups and their automatic boundaries.
  */
 .k-ddn-x1 {
   display: block;
+}
+
+/*
+ * element separator / e7
+ * Suppresses the leading boundary so a collection with n groups renders n - 1 separators.
+ */
+.k-ddn-x1 > .k-ddn-e7:first-child {
+  display: none;
 }
 
 /*
@@ -171,6 +179,7 @@
   display: grid;
   font: inherit;
   grid-template-columns: minmax(0, 1fr) auto auto;
+  inline-size: 100%;
   min-inline-size: 0;
   padding-inline-end: var(--k-pdr);
   padding-inline-start: var(--k-pdl);
@@ -532,7 +541,9 @@
  */
 .k-ddn-e7 {
   block-size: var(--k-bxw);
+  border: 0;
   inline-size: 100%;
+  margin: 0;
 }
 
 /*

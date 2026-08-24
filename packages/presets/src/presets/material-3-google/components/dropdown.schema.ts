@@ -125,6 +125,10 @@ export function createMaterial3GoogleDropdownSchema({
         }
       }
     },
+    options: {
+      leadingIconComposition: 'item-and-selection',
+      selectedItemBackground: true
+    },
     elements: {
       e1: {
         name: 'dropdown-surface',

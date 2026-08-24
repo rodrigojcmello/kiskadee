@@ -21,6 +21,12 @@
   Their ARIA roles, focus policies, value semantics, and keyboard behavior remain independent.
 - **Kiskadee extension**: the first shared contract supports rich two-line items and automatically
   aligns mixed icon/no-icon rows with CSS `:has()`.
+- **Kiskadee extension**: selection presentation is configurable through independent leading-icon
+  composition and Selected-background options. The initial preset explicitly preserves two leading
+  tracks and the highlighted Selected row.
+- **Kiskadee extension**: typed menu groups emit their `e7` boundary automatically. Structural CSS
+  suppresses the leading boundary so a collection with `n` groups paints `n - 1` dividers; consumers
+  cannot insert ad hoc dividers inside a group.
 
 ## Schema Mapping
 
@@ -30,7 +36,7 @@
 - `e4`: `label-large` principal label.
 - `e5`: `body-small` auxiliary content.
 - `e6`: 24 px generic trailing icon.
-- `e7`: explicit one-pixel divider using the shared neutral `subtle` separator recipe.
+- `e7`: automatic one-pixel group boundary using the shared neutral `subtle` separator recipe.
 - `e8`: `body-small` auxiliary end text, reusing the existing auxiliary palette.
 - `e9`: `label-medium` group heading with item-aligned padding.
 - `e10`: 24 px leading checkmark with a 12 px logical gap, reusing the existing text palette.
@@ -38,9 +44,14 @@
   the `e1` Rest surface. It is a Kiskadee extension for long Web menus, not an official Material
   Menu height or scroll-control token.
 
-Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
-line; it does not publish margins or render the standalone Separator component. The shared recipe
-preserves the existing neutral output documented in [Separator evidence](separator.md).
+`options.leadingIconComposition` is `item-and-selection` and
+`options.selectedItemBackground` is `true`. Disabling the background gates only Selected
+`e2.boxColor`; checked semantics, the `e10` indicator, and Selected foreground colors remain.
+
+Dropdown groups own their padding and the distance around a boundary. `e7` owns only the
+full-bleed line automatically emitted before each group; structural CSS suppresses the first one.
+The shared recipe preserves the existing neutral output documented in
+[Separator evidence](separator.md).
 
 The first implementation is the minimum official adaptation needed to compose the existing Material
 TextField with Autocomplete. It does not introduce a public Dropdown appearance variant.

@@ -58,15 +58,22 @@ describe('ContextMenu', () => {
     const onContextMenu = vi.fn();
     const result = render(
       <KiskadeeContext.Provider value={context}>
-        <ContextMenu.Root>
+        <ContextMenu.Root leadingIconComposition="item-and-selection" selectedItemBackground>
           <ContextMenu.Trigger>
             <section data-testid="area" aria-label="Marked area" onContextMenu={onContextMenu}>
               Marked area
             </section>
           </ContextMenu.Trigger>
-          <ContextMenu.Content portalled={false}>
+          <ContextMenu.Content
+            portalled={false}
+            leadingIconComposition="selection-only"
+            selectedItemBackground={false}
+          >
             <ContextMenu.Group>
-              <ContextMenu.Item textValue="Copy">
+              <ContextMenu.Item textValue="Copy" selected>
+                <ContextMenu.Icon data-testid="copy-icon">
+                  <svg />
+                </ContextMenu.Icon>
                 <ContextMenu.Label>Copy</ContextMenu.Label>
               </ContextMenu.Item>
             </ContextMenu.Group>
@@ -82,6 +89,9 @@ describe('ContextMenu', () => {
 
     expect(onContextMenu).toHaveBeenCalledTimes(1);
     await waitFor(() => expect(result.getByRole('menu')).toBeTruthy());
-    expect(result.getByRole('menuitem', { name: 'Copy' })).toBeTruthy();
+    const item = result.getByRole('menuitem', { name: 'Copy' });
+    expect(item.getAttribute('data-selected')).toBe('true');
+    expect(item.classList.contains('k-ddn-sbg')).toBe(false);
+    expect(result.queryByTestId('copy-icon')).toBeNull();
   });
 });

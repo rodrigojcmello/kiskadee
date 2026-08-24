@@ -15,9 +15,10 @@ The component uses the native `hr` separator semantics and publishes its orienta
 padding. A vertical Separator expects its parent layout to provide a block axis through which it can
 stretch.
 
-Internal component dividers do not render this public component automatically. For example,
-`Dropdown.Separator` remains a Dropdown-owned DOM slot and shares only the preset recipe and atomic
-utilities with `Separator`. This avoids a component class-map dependency inside another component.
+Internal component dividers do not render this public component. Dropdown and BottomSheet emit
+their own automatic group boundaries from `e7` and `e12` respectively and may share only the preset
+recipe and atomic utilities with `Separator`. This avoids a component class-map dependency inside
+another component and prevents manual dividers from weakening the group contract.
 
 Colored, interactive, stateful, or component-specific lines remain owned by their component. The
 shared recipe is restricted to neutral separators.

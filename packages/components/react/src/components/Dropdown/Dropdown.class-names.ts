@@ -94,6 +94,7 @@ export function resolveDropdownItemClassName({
   hovered,
   disabled,
   interactive,
+  selectedItemBackground,
   className
 }: {
   baseClassName: string;
@@ -104,6 +105,7 @@ export function resolveDropdownItemClassName({
   hovered: boolean;
   disabled: boolean;
   interactive: boolean;
+  selectedItemBackground: boolean;
   className?: string;
 }): string {
   const projectedState = disabled || selected || hovered;
@@ -116,6 +118,7 @@ export function resolveDropdownItemClassName({
       interactive && !disabled ? cn.nativeInteraction : undefined,
       disabled ? cn.disabled : undefined,
       !disabled && selected ? cn.selected : undefined,
+      selectedItemBackground ? 'k-ddn-sbg' : undefined,
       !disabled && hovered ? cn.hover : undefined,
       projectedState ? cn.activator : undefined,
       interactive ? 'k-foc' : undefined

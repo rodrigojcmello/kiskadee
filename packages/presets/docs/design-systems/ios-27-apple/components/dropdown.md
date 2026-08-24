@@ -23,6 +23,9 @@
 - **Kiskadee extension**: a dedicated leading checkmark slot is inspired by the state column used
   by macOS menus. It completes the shared Web topology without claiming an exact iOS 27 Menu
   measurement or native selection behavior.
+- **Kiskadee extension**: independent options control whether the ordinary leading-icon column is
+  retained beside the selection indicator and whether a Selected row receives its authored
+  background. The initial preset explicitly preserves the current two-track highlighted treatment.
 
 ## Schema Mapping
 
@@ -32,17 +35,21 @@
 - `e4`: `body-small` principal label.
 - `e5`: `label-small` auxiliary content.
 - `e6`: 16 px generic trailing icon.
-- `e7`: explicit one-pixel separator using the shared neutral `subtle` separator recipe.
+- `e7`: automatic one-pixel group boundary using the shared neutral `subtle` separator recipe.
 - `e8`: `label-small` auxiliary end text, reusing the existing auxiliary palette.
 - `e9`: `label-small-strong` group heading with item-aligned padding.
 - `e10`: 16 px leading checkmark with a 10 px logical gap, reusing the existing text palette.
 - `e11`: optional 16 px edge-scroll affordance, independently repeating `e6` foreground/size and
   the `e1` Rest surface. It is a Kiskadee extension for long Web menus, not a native Apple Menu API.
 
-Dropdown groups own their padding and the distance around a separator. `e7` owns only the
-full-bleed line; it does not publish margins or render the standalone Separator component. The
-shared recipe preserves the existing Apple Gray output documented in
-[Separator evidence](separator.md).
+`options.leadingIconComposition` is `item-and-selection` and
+`options.selectedItemBackground` is `true`. The latter gates only Selected `e2.boxColor`; it does
+not remove checked semantics, indicators, or Selected foreground colors.
+
+Typed Dropdown groups emit `e7` automatically. Structural CSS suppresses the leading boundary so a
+collection with `n` groups paints `n - 1` dividers; consumers cannot insert ad hoc dividers inside
+a group. `e7` owns only the full-bleed line and preserves the existing Apple Gray output documented
+in [Separator evidence](separator.md). This automatic-boundary policy is a Kiskadee extension.
 
 The disclosure viewport follows the preset icon-size ramp and the popup remains a separate sibling
 surface. A split composition therefore uses two Buttons rather than nesting a second action inside

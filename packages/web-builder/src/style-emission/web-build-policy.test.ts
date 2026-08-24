@@ -88,6 +88,7 @@ describe('separator Web style-emission policy', () => {
     expect(policy.paddingLeftEmission).toBe('token');
     expect(policy.paddingRightEmission).toBe('token');
     expect(policy.paddingEmission).toBe('direct');
+    expect(policy.selectedBoxColorGateClass).toBe('k-ddn-sbg');
   });
 
   it.each(['e4', 'e5'])('publishes Dropdown %s edge insets as structural tokens', (element) => {

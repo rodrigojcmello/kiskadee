@@ -57,71 +57,145 @@ export type MenuTreeRadioGroup<TIcon = unknown> = {
   onValueChange?: (value: string, details: MenuTreeSelectionDetails) => void;
 };
 
-export type MenuTreeSeparator = {
-  type: 'separator';
-  id: string;
-};
-
 export type MenuTreeSubmenu<TIcon = unknown> = MenuTreeNodeBase<TIcon> & {
   type: 'submenu';
   title?: string;
-  items: readonly MenuTreeNode<TIcon>[];
+  items: readonly MenuTreeGroupNode<TIcon>[];
 };
+
+export type MenuTreeCommandNode<TIcon = unknown> =
+  | MenuTreeItem<TIcon>
+  | MenuTreeLink<TIcon>
+  | MenuTreeSubmenu<TIcon>;
 
 export type MenuTreeGroup<TIcon = unknown> = {
   type: 'group';
   id: string;
   label?: string;
-  items: readonly MenuTreeNode<TIcon>[];
+  items: readonly MenuTreeCommandNode<TIcon>[];
 };
 
-export type MenuTreeNode<TIcon = unknown> =
+export type MenuTreeCheckboxGroup<TIcon = unknown> = {
+  type: 'checkbox-group';
+  id: string;
+  label?: string;
+  items: readonly MenuTreeCheckboxItem<TIcon>[];
+};
+
+export type MenuTreeGroupNode<TIcon = unknown> =
   | MenuTreeGroup<TIcon>
-  | MenuTreeItem<TIcon>
-  | MenuTreeLink<TIcon>
-  | MenuTreeCheckboxItem<TIcon>
-  | MenuTreeRadioGroup<TIcon>
-  | MenuTreeSeparator
-  | MenuTreeSubmenu<TIcon>;
+  | MenuTreeCheckboxGroup<TIcon>
+  | MenuTreeRadioGroup<TIcon>;
+
+export type MenuTreeNode<TIcon = unknown> =
+  | MenuTreeGroupNode<TIcon>
+  | MenuTreeCommandNode<TIcon>
+  | MenuTreeCheckboxItem<TIcon>;
 
 export type MenuTree<TIcon = unknown> = {
   id: string;
   title: string;
-  items: readonly MenuTreeNode<TIcon>[];
+  items: readonly MenuTreeGroupNode<TIcon>[];
 };
 
-function collectNodeIssues<TIcon>(
-  nodes: readonly MenuTreeNode<TIcon>[],
+function collectIdIssue(id: string, path: string, ids: Set<string>, issues: string[]): void {
+  if (id.trim().length === 0) issues.push(`${path}: expected non-empty string`);
+  else if (ids.has(id)) issues.push(`${path}: duplicate id "${id}"`);
+  else ids.add(id);
+}
+
+function collectLabelIssue(label: string | undefined, path: string, issues: string[]): void {
+  if (label !== undefined && label.trim().length === 0) {
+    issues.push(`${path}: expected non-empty string`);
+  }
+}
+
+function collectCommandIssues<TIcon>(
+  nodes: readonly MenuTreeCommandNode<TIcon>[],
   ids: Set<string>,
   path: string,
   issues: string[]
 ): void {
   nodes.forEach((node, index) => {
     const nodePath = `${path}[${index}]`;
-    if (node.id.trim().length === 0) issues.push(`${nodePath}.id: expected non-empty string`);
-    else if (ids.has(node.id)) issues.push(`${nodePath}.id: duplicate id "${node.id}"`);
-    else ids.add(node.id);
-
-    if ('label' in node && node.label !== undefined && node.label.trim().length === 0) {
-      issues.push(`${nodePath}.label: expected non-empty string`);
+    if (node.type !== 'item' && node.type !== 'link' && node.type !== 'submenu') {
+      issues.push(`${nodePath}.type: expected item, link, or submenu`);
+      return;
     }
+    collectIdIssue(node.id, `${nodePath}.id`, ids, issues);
+    collectLabelIssue(node.label, `${nodePath}.label`, issues);
+    if (node.type === 'submenu') {
+      collectGroupIssues(node.items, ids, `${nodePath}.items`, issues);
+    }
+  });
+}
 
-    if (node.type === 'group' || node.type === 'submenu') {
-      collectNodeIssues(node.items, ids, `${nodePath}.items`, issues);
-    } else if (node.type === 'radio-group') {
-      for (const [radioIndex, item] of node.items.entries()) {
-        const radioPath = `${nodePath}.items[${radioIndex}]`;
-        if (item.id.trim().length === 0) {
-          issues.push(`${radioPath}.id: expected non-empty string`);
-        } else if (ids.has(item.id)) {
-          issues.push(`${radioPath}.id: duplicate id "${item.id}"`);
-        } else {
-          ids.add(item.id);
-        }
-        if (item.label.trim().length === 0) {
-          issues.push(`${radioPath}.label: expected non-empty string`);
-        }
-      }
+function collectCheckboxIssues<TIcon>(
+  nodes: readonly MenuTreeCheckboxItem<TIcon>[],
+  ids: Set<string>,
+  path: string,
+  issues: string[]
+): void {
+  nodes.forEach((node, index) => {
+    const nodePath = `${path}[${index}]`;
+    if (node.type !== 'checkbox') {
+      issues.push(`${nodePath}.type: expected checkbox`);
+      return;
+    }
+    collectIdIssue(node.id, `${nodePath}.id`, ids, issues);
+    collectLabelIssue(node.label, `${nodePath}.label`, issues);
+  });
+}
+
+function collectRadioIssues<TIcon>(
+  nodes: readonly MenuTreeRadioItem<TIcon>[],
+  ids: Set<string>,
+  path: string,
+  issues: string[]
+): void {
+  const values = new Set<string>();
+  nodes.forEach((node, index) => {
+    const nodePath = `${path}[${index}]`;
+    if (node.type !== 'radio') {
+      issues.push(`${nodePath}.type: expected radio`);
+      return;
+    }
+    collectIdIssue(node.id, `${nodePath}.id`, ids, issues);
+    collectLabelIssue(node.label, `${nodePath}.label`, issues);
+    if (node.value.trim().length === 0) {
+      issues.push(`${nodePath}.value: expected non-empty string`);
+    } else if (values.has(node.value)) {
+      issues.push(`${nodePath}.value: duplicate value "${node.value}"`);
+    } else {
+      values.add(node.value);
+    }
+  });
+}
+
+function collectGroupIssues<TIcon>(
+  groups: readonly MenuTreeGroupNode<TIcon>[],
+  ids: Set<string>,
+  path: string,
+  issues: string[]
+): void {
+  groups.forEach((group, index) => {
+    const groupPath = `${path}[${index}]`;
+    if (group.type !== 'group' && group.type !== 'checkbox-group' && group.type !== 'radio-group') {
+      issues.push(`${groupPath}.type: expected group, checkbox-group, or radio-group`);
+      return;
+    }
+    collectIdIssue(group.id, `${groupPath}.id`, ids, issues);
+    collectLabelIssue(group.label, `${groupPath}.label`, issues);
+    if (group.items.length === 0) {
+      issues.push(`${groupPath}.items: expected at least one item`);
+      return;
+    }
+    if (group.type === 'group') {
+      collectCommandIssues(group.items, ids, `${groupPath}.items`, issues);
+    } else if (group.type === 'checkbox-group') {
+      collectCheckboxIssues(group.items, ids, `${groupPath}.items`, issues);
+    } else {
+      collectRadioIssues(group.items, ids, `${groupPath}.items`, issues);
     }
   });
 }
@@ -129,10 +203,9 @@ function collectNodeIssues<TIcon>(
 export function validateMenuTree<TIcon>(tree: MenuTree<TIcon>, path = 'menuTree'): string[] {
   const issues: string[] = [];
   const ids = new Set<string>();
-  if (tree.id.trim().length === 0) issues.push(`${path}.id: expected non-empty string`);
-  else ids.add(tree.id);
+  collectIdIssue(tree.id, `${path}.id`, ids, issues);
   if (tree.title.trim().length === 0) issues.push(`${path}.title: expected non-empty string`);
-  collectNodeIssues(tree.items, ids, `${path}.items`, issues);
+  collectGroupIssues(tree.items, ids, `${path}.items`, issues);
   return issues;
 }
 

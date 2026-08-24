@@ -64,20 +64,26 @@ function createWorkItemTree({
             icon: 'settings',
             items: [
               {
-                type: 'checkbox',
-                id: 'show-descriptions',
-                label: 'Show descriptions',
-                controlState: showDescriptions,
-                closeOnSelect: false,
-                onControlStateChange: onShowDescriptionsChange
-              },
-              {
-                type: 'checkbox',
-                id: 'show-shortcuts',
-                label: 'Show shortcuts',
-                controlState: showShortcuts,
-                closeOnSelect: false,
-                onControlStateChange: onShowShortcutsChange
+                type: 'checkbox-group',
+                id: 'display-preferences',
+                items: [
+                  {
+                    type: 'checkbox',
+                    id: 'show-descriptions',
+                    label: 'Show descriptions',
+                    controlState: showDescriptions,
+                    closeOnSelect: false,
+                    onControlStateChange: onShowDescriptionsChange
+                  },
+                  {
+                    type: 'checkbox',
+                    id: 'show-shortcuts',
+                    label: 'Show shortcuts',
+                    controlState: showShortcuts,
+                    closeOnSelect: false,
+                    onControlStateChange: onShowShortcutsChange
+                  }
+                ]
               }
             ]
           },
@@ -145,41 +151,58 @@ function createWorkItemTree({
           }
         ]
       },
-      { type: 'separator', id: 'work-item-separator' },
       {
-        type: 'submenu',
-        id: 'dashboard',
-        label: 'Add to dashboard',
-        title: 'Dashboards',
-        icon: 'dashboard',
+        type: 'group',
+        id: 'dashboard-group',
         items: [
           {
-            type: 'item',
-            id: 'team-dashboard',
-            label: 'Team dashboard',
-            icon: 'dashboard',
-            onSelect: () => onAction('Team dashboard')
-          },
-          {
             type: 'submenu',
-            id: 'dashboard-options',
-            label: 'Dashboard options',
-            title: 'Dashboard options',
-            icon: 'settings',
+            id: 'dashboard',
+            label: 'Add to dashboard',
+            title: 'Dashboards',
+            icon: 'dashboard',
             items: [
               {
-                type: 'item',
-                id: 'manage-widgets',
-                label: 'Manage widgets',
-                icon: 'dashboard',
-                onSelect: () => onAction('Manage widgets')
-              },
-              {
-                type: 'item',
-                id: 'dashboard-settings',
-                label: 'Dashboard settings',
-                icon: 'settings',
-                onSelect: () => onAction('Dashboard settings')
+                type: 'group',
+                id: 'dashboard-actions',
+                items: [
+                  {
+                    type: 'item',
+                    id: 'team-dashboard',
+                    label: 'Team dashboard',
+                    icon: 'dashboard',
+                    onSelect: () => onAction('Team dashboard')
+                  },
+                  {
+                    type: 'submenu',
+                    id: 'dashboard-options',
+                    label: 'Dashboard options',
+                    title: 'Dashboard options',
+                    icon: 'settings',
+                    items: [
+                      {
+                        type: 'group',
+                        id: 'dashboard-option-actions',
+                        items: [
+                          {
+                            type: 'item',
+                            id: 'manage-widgets',
+                            label: 'Manage widgets',
+                            icon: 'dashboard',
+                            onSelect: () => onAction('Manage widgets')
+                          },
+                          {
+                            type: 'item',
+                            id: 'dashboard-settings',
+                            label: 'Dashboard settings',
+                            icon: 'settings',
+                            onSelect: () => onAction('Dashboard settings')
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           }

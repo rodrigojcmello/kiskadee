@@ -13,6 +13,17 @@ export type WebStyleIdentityOptimizationOptions = {
 const STYLE_KEY_MODE_SEPARATOR = '@@';
 const MIRRORED_STYLE_KEY_IDENTITY_SUFFIX = `${STYLE_KEY_MODE_SEPARATOR}m`;
 
+function resolveStyleKeyGateIdentitySuffix(
+  styleKey: string,
+  styleEmissionPolicy: ResolvedElementStyleEmissionPolicy
+): string {
+  if (!styleKey.startsWith('boxColor') || !styleEmissionPolicy.selectedBoxColorGateClass) {
+    return '';
+  }
+
+  return `${STYLE_KEY_MODE_SEPARATOR}g:${styleEmissionPolicy.selectedBoxColorGateClass}`;
+}
+
 function resolveStyleKeyEmissionMode(
   styleKey: string,
   styleEmissionPolicy: ResolvedElementStyleEmissionPolicy
@@ -241,11 +252,10 @@ export function buildWebStyleKeyIdentity(
   styleEmissionPolicy: ResolvedElementStyleEmissionPolicy
 ): WebStyleKeyIdentity {
   const emissionMode = resolveStyleKeyEmissionMode(styleKey, styleEmissionPolicy);
-  if (!emissionMode) {
-    return styleKey;
-  }
+  const emissionSuffix = emissionMode ? `${STYLE_KEY_MODE_SEPARATOR}${emissionMode}` : '';
+  const gateSuffix = resolveStyleKeyGateIdentitySuffix(styleKey, styleEmissionPolicy);
 
-  return `${styleKey}${STYLE_KEY_MODE_SEPARATOR}${emissionMode}`;
+  return `${styleKey}${emissionSuffix}${gateSuffix}`;
 }
 
 export function canonicalizeWebStyleKeyIdentity(

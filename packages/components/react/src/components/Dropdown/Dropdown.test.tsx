@@ -451,7 +451,6 @@ describe('styled Dropdown', () => {
             <Dropdown.Label>Without icon</Dropdown.Label>
           </Dropdown.Item>
         </Dropdown.Group>
-        <Dropdown.Separator data-testid="decorative-separator" />
         <Dropdown.Group data-testid="group-without-icons">
           <Dropdown.Item data-testid="other-group-item">
             <Dropdown.Label>Another group</Dropdown.Label>
@@ -480,7 +479,7 @@ describe('styled Dropdown', () => {
     expect(result.getByTestId('other-group-item').querySelector('.k-ddn-x6')?.className).toContain(
       'icon-placeholder-gap'
     );
-    expect(result.getByTestId('decorative-separator').getAttribute('role')).toBeNull();
+    expect(result.container.querySelectorAll('.k-ddn-e7')).toHaveLength(2);
   });
 
   it('reserves a later selection track in every earlier group of the collection', () => {
@@ -491,7 +490,6 @@ describe('styled Dropdown', () => {
             <Dropdown.Label>Earlier action</Dropdown.Label>
           </Dropdown.Item>
         </Dropdown.Group>
-        <Dropdown.Separator />
         <Dropdown.Group>
           <Dropdown.Item>
             <Dropdown.Checkmark visible />
@@ -539,7 +537,6 @@ describe('styled Dropdown', () => {
             <Dropdown.EndText>Ctrl+A</Dropdown.EndText>
           </Dropdown.Item>
         </Dropdown.Group>
-        <Dropdown.Separator />
         <Dropdown.Group data-testid="second-group">
           <Dropdown.Item>
             <Dropdown.Label>Independent group</Dropdown.Label>
@@ -626,5 +623,106 @@ describe('styled Dropdown', () => {
 
     expect(result.queryByTestId('checkmark')).toBeNull();
     expect(result.container.querySelector('.k-ddn-e10')).toBeNull();
+  });
+
+  it('resolves collection overrides above root, artifact and portability defaults at runtime', () => {
+    const artifactContext: KiskadeeContextValue = {
+      ...context,
+      global: {
+        components: {
+          dropdown: {
+            options: {
+              leadingIconComposition: 'selection-only',
+              selectedItemBackground: false
+            }
+          }
+        }
+      }
+    };
+    const renderExample = (collectionOverride: boolean) => (
+      <KiskadeeContext.Provider value={artifactContext}>
+        <IconFamilyProvider families={[iconFamily]} family="test-icons">
+          <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+            <Dropdown.VisualProvider
+              leadingIconComposition="item-and-selection"
+              selectedItemBackground
+            >
+              <Dropdown.Items
+                leadingIconComposition={collectionOverride ? 'selection-only' : undefined}
+                selectedItemBackground={collectionOverride ? false : undefined}
+              >
+                <Dropdown.Item data-testid="selected-item" selected>
+                  <Dropdown.Checkmark data-testid="selection-indicator" />
+                  <Dropdown.Icon data-testid="consumer-icon">
+                    <svg />
+                  </Dropdown.Icon>
+                  <Dropdown.Label>Selected action</Dropdown.Label>
+                </Dropdown.Item>
+              </Dropdown.Items>
+            </Dropdown.VisualProvider>
+          </EssentialIconProvider>
+        </IconFamilyProvider>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(renderExample(true));
+    const selectedItem = result.getByTestId('selected-item');
+
+    expect(selectedItem.getAttribute('data-selected')).toBe('true');
+    expect(selectedItem.classList.contains('-s')).toBe(true);
+    expect(selectedItem.classList.contains('k-ddn-sbg')).toBe(false);
+    expect(result.queryByTestId('consumer-icon')).toBeNull();
+    expect(result.getByTestId('selection-indicator')).toBeTruthy();
+
+    result.rerender(renderExample(false));
+
+    expect(result.getByTestId('selected-item').classList.contains('k-ddn-sbg')).toBe(true);
+    expect(result.getByTestId('consumer-icon')).toBeTruthy();
+  });
+
+  it('uses artifact options when no public override is supplied', () => {
+    const artifactContext: KiskadeeContextValue = {
+      ...context,
+      global: {
+        components: {
+          dropdown: {
+            options: {
+              leadingIconComposition: 'selection-only',
+              selectedItemBackground: false
+            }
+          }
+        }
+      }
+    };
+    const result = render(
+      <KiskadeeContext.Provider value={artifactContext}>
+        <Dropdown.VisualProvider>
+          <Dropdown.Items>
+            <Dropdown.Item data-testid="artifact-item" selected>
+              <Dropdown.Icon data-testid="artifact-icon">
+                <svg />
+              </Dropdown.Icon>
+              <Dropdown.Label>Artifact action</Dropdown.Label>
+            </Dropdown.Item>
+          </Dropdown.Items>
+        </Dropdown.VisualProvider>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.queryByTestId('artifact-icon')).toBeNull();
+    expect(result.getByTestId('artifact-item').classList.contains('k-ddn-sbg')).toBe(false);
+  });
+
+  it('uses the portability defaults when the artifact and public APIs omit both options', () => {
+    const result = renderDropdown(
+      <Dropdown.Item data-testid="portable-item" selected>
+        <Dropdown.Icon data-testid="portable-icon">
+          <svg />
+        </Dropdown.Icon>
+        <Dropdown.Label>Portable action</Dropdown.Label>
+      </Dropdown.Item>
+    );
+
+    expect(result.getByTestId('portable-item').classList.contains('k-ddn-sbg')).toBe(true);
+    expect(result.getByTestId('portable-icon')).toBeTruthy();
   });
 });

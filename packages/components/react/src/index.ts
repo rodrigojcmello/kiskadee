@@ -29,7 +29,10 @@ export {
 export type {
   MenuTree,
   MenuTreeCheckboxItem,
+  MenuTreeCheckboxGroup,
+  MenuTreeCommandNode,
   MenuTreeGroup,
+  MenuTreeGroupNode,
   MenuTreeIntent,
   MenuTreeItem,
   MenuTreeLink,
@@ -37,7 +40,6 @@ export type {
   MenuTreeRadioGroup,
   MenuTreeRadioItem,
   MenuTreeSelectionDetails,
-  MenuTreeSeparator,
   MenuTreeSubmenu
 } from '@kiskadee/react-headless/menu-tree';
 export { defineMenuTree, validateMenuTree } from '@kiskadee/react-headless/menu-tree';
@@ -81,7 +83,6 @@ export type {
   BottomSheetLabelProps,
   BottomSheetRadioMarkProps,
   BottomSheetRootProps,
-  BottomSheetSeparatorProps,
   BottomSheetSnapPoint,
   BottomSheetTitleProps,
   BottomSheetTrailingProps,
@@ -113,6 +114,7 @@ export { Button, useButtonArtifactConfig } from './components/Button';
 export type {
   ButtonMenuActionProps,
   ButtonMenuButtonGroupProps,
+  ButtonMenuCheckboxGroupProps,
   ButtonMenuCheckboxItemProps,
   ButtonMenuContentProps,
   ButtonMenuGroupLabelProps,
@@ -121,7 +123,6 @@ export type {
   ButtonMenuRadioGroupProps,
   ButtonMenuRadioItemProps,
   ButtonMenuRootProps,
-  ButtonMenuSeparatorProps,
   ButtonMenuShortcutProps,
   ButtonMenuSubContentProps,
   ButtonMenuSubProps,
@@ -161,9 +162,9 @@ export type {
   DropdownPresenceProps,
   DropdownPresenceRenderProps,
   DropdownPresenceRenderState,
+  DropdownPresentationProps,
   DropdownRootProps,
   DropdownScrollAreaProps,
-  DropdownSeparatorProps,
   DropdownSurfaceProps,
   DropdownTrailingProps,
   DropdownVisualProps,

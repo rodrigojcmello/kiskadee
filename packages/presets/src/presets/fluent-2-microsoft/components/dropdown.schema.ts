@@ -266,6 +266,10 @@ export function createFluent2MicrosoftDropdownSchema({
         }
       }
     },
+    options: {
+      leadingIconComposition: 'item-and-selection',
+      selectedItemBackground: true
+    },
     elements: {
       e1: {
         name: 'dropdown-surface',

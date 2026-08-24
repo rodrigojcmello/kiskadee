@@ -210,7 +210,8 @@ export function createMaterial3GoogleBottomSheetSchema({
       swipeBehavior: 'expand-dismiss',
       pageTransition: 'slide',
       itemLayout: 'centered',
-      centeredIcons: 'hide'
+      centeredIcons: 'hide',
+      groupSeparators: true
     },
     effects: {
       shadow: {

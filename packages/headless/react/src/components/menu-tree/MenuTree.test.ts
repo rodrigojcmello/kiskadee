@@ -14,20 +14,32 @@ describe('MenuTree', () => {
           items: [{ type: 'item', id: 'copy', label: 'Copy' }]
         },
         {
-          type: 'submenu',
-          id: 'share',
-          label: 'Share',
+          type: 'group',
+          id: 'sharing',
           items: [
             {
-              type: 'checkbox',
-              id: 'notify',
-              label: 'Notify people',
-              defaultControlState: true
-            },
-            {
-              type: 'radio-group',
-              id: 'access',
-              items: [{ type: 'radio', id: 'private', label: 'Private', value: 'private' }]
+              type: 'submenu',
+              id: 'share',
+              label: 'Share',
+              items: [
+                {
+                  type: 'checkbox-group',
+                  id: 'notifications',
+                  items: [
+                    {
+                      type: 'checkbox',
+                      id: 'notify',
+                      label: 'Notify people',
+                      defaultControlState: true
+                    }
+                  ]
+                },
+                {
+                  type: 'radio-group',
+                  id: 'access',
+                  items: [{ type: 'radio', id: 'private', label: 'Private', value: 'private' }]
+                }
+              ]
             }
           ]
         }
@@ -42,16 +54,46 @@ describe('MenuTree', () => {
       id: 'actions',
       title: 'Actions',
       items: [
-        { type: 'item', id: 'duplicate', label: 'Copy' },
         {
-          type: 'submenu',
-          id: 'share',
-          label: 'Share',
-          items: [{ type: 'item', id: 'duplicate', label: 'Copy link' }]
+          type: 'group',
+          id: 'actions-group',
+          items: [
+            { type: 'item', id: 'duplicate', label: 'Copy' },
+            {
+              type: 'submenu',
+              id: 'share',
+              label: 'Share',
+              items: [
+                {
+                  type: 'group',
+                  id: 'share-actions',
+                  items: [{ type: 'item', id: 'duplicate', label: 'Copy link' }]
+                }
+              ]
+            }
+          ]
         }
       ]
     });
 
-    expect(issues).toContain('menuTree.items[1].items[0].id: duplicate id "duplicate"');
+    expect(issues).toContain(
+      'menuTree.items[0].items[1].items[0].items[0].id: duplicate id "duplicate"'
+    );
+  });
+
+  it('rejects commands and selections assigned to the wrong group kind', () => {
+    const issues = validateMenuTree({
+      id: 'invalid',
+      title: 'Invalid',
+      items: [
+        {
+          type: 'checkbox-group',
+          id: 'preferences',
+          items: [{ type: 'item', id: 'copy', label: 'Copy' }]
+        }
+      ]
+    } as never);
+
+    expect(issues).toContain('menuTree.items[0].items[0].type: expected checkbox');
   });
 });

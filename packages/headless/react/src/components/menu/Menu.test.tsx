@@ -14,13 +14,15 @@ function Example({ onSelect = vi.fn() }: { onSelect?: () => void }) {
     <Menu.Root>
       <Menu.Trigger>Actions</Menu.Trigger>
       <Menu.Content>
-        <Menu.Item textValue="Duplicate" onSelect={onSelect}>
-          Duplicate
-        </Menu.Item>
-        <Menu.Item textValue="Unavailable" disabled>
-          Unavailable
-        </Menu.Item>
-        <Menu.Item textValue="Archive">Archive</Menu.Item>
+        <Menu.Group>
+          <Menu.Item textValue="Duplicate" onSelect={onSelect}>
+            Duplicate
+          </Menu.Item>
+          <Menu.Item textValue="Unavailable" disabled>
+            Unavailable
+          </Menu.Item>
+          <Menu.Item textValue="Archive">Archive</Menu.Item>
+        </Menu.Group>
       </Menu.Content>
     </Menu.Root>
   );
@@ -36,7 +38,6 @@ function GroupedExample() {
           <Menu.Item textValue="Cut">Cut</Menu.Item>
           <Menu.Item textValue="Copy">Copy</Menu.Item>
         </Menu.Group>
-        <hr />
         <Menu.Group>
           <Menu.GroupLabel>Navigation</Menu.GroupLabel>
           <Menu.Item textValue="Search">Search</Menu.Item>
@@ -85,23 +86,29 @@ function NestedExample({
     <Menu.Root>
       <Menu.Trigger>Actions</Menu.Trigger>
       <Menu.Content forceMount={forceMount}>
-        <Menu.Item textValue="Rename">Rename</Menu.Item>
-        <Menu.Sub>
-          <Menu.SubTrigger textValue="Share">Share</Menu.SubTrigger>
-          <Menu.SubContent forceMount={forceMount}>
-            <Menu.Item textValue="Email">Email</Menu.Item>
-            <Menu.Sub>
-              <Menu.SubTrigger textValue="Advanced">Advanced</Menu.SubTrigger>
-              <Menu.SubContent forceMount={forceMount}>
-                <Menu.Item textValue="Copy link" onSelect={onDeepSelect}>
-                  Copy link
-                </Menu.Item>
-                <Menu.Item textValue="Zebra">Zebra</Menu.Item>
-              </Menu.SubContent>
-            </Menu.Sub>
-          </Menu.SubContent>
-        </Menu.Sub>
-        <Menu.Item textValue="Zoom">Zoom</Menu.Item>
+        <Menu.Group>
+          <Menu.Item textValue="Rename">Rename</Menu.Item>
+          <Menu.Sub>
+            <Menu.SubTrigger textValue="Share">Share</Menu.SubTrigger>
+            <Menu.SubContent forceMount={forceMount}>
+              <Menu.Group>
+                <Menu.Item textValue="Email">Email</Menu.Item>
+                <Menu.Sub>
+                  <Menu.SubTrigger textValue="Advanced">Advanced</Menu.SubTrigger>
+                  <Menu.SubContent forceMount={forceMount}>
+                    <Menu.Group>
+                      <Menu.Item textValue="Copy link" onSelect={onDeepSelect}>
+                        Copy link
+                      </Menu.Item>
+                      <Menu.Item textValue="Zebra">Zebra</Menu.Item>
+                    </Menu.Group>
+                  </Menu.SubContent>
+                </Menu.Sub>
+              </Menu.Group>
+            </Menu.SubContent>
+          </Menu.Sub>
+          <Menu.Item textValue="Zoom">Zoom</Menu.Item>
+        </Menu.Group>
       </Menu.Content>
     </Menu.Root>
   );
@@ -136,12 +143,59 @@ function DynamicRadioGroups({ includeFirst }: { includeFirst: boolean }) {
 }
 
 describe('Headless Menu', () => {
+  it('requires command items to belong to Menu.Group', () => {
+    expect(() =>
+      render(
+        <Menu.Root defaultOpen>
+          <Menu.Trigger>Actions</Menu.Trigger>
+          <Menu.Content portalled={false}>
+            <Menu.Item textValue="Loose item">Loose item</Menu.Item>
+          </Menu.Content>
+        </Menu.Root>
+      )
+    ).toThrow('Menu.Item must be used within Menu.Group');
+  });
+
+  it('requires checkbox items to belong to Menu.CheckboxGroup', () => {
+    expect(() =>
+      render(
+        <Menu.Root defaultOpen>
+          <Menu.Trigger>Options</Menu.Trigger>
+          <Menu.Content portalled={false}>
+            <Menu.Group>
+              <Menu.CheckboxItem textValue="Details">Details</Menu.CheckboxItem>
+            </Menu.Group>
+          </Menu.Content>
+        </Menu.Root>
+      )
+    ).toThrow('Menu.CheckboxItem must be used within Menu.CheckboxGroup');
+  });
+
+  it('rejects nested groups', () => {
+    expect(() =>
+      render(
+        <Menu.Root defaultOpen>
+          <Menu.Trigger>Actions</Menu.Trigger>
+          <Menu.Content portalled={false}>
+            <Menu.Group>
+              <Menu.Group>
+                <Menu.Item textValue="Nested">Nested</Menu.Item>
+              </Menu.Group>
+            </Menu.Group>
+          </Menu.Content>
+        </Menu.Root>
+      )
+    ).toThrow('Menu.Group cannot be nested within another menu group');
+  });
+
   it('uses the semantic menu surface as the floating positioner', () => {
     const result = render(
       <Menu.Root defaultOpen>
         <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Content data-testid="content-positioner" portalled={false}>
-          <Menu.Item textValue="Copy">Copy</Menu.Item>
+          <Menu.Group>
+            <Menu.Item textValue="Copy">Copy</Menu.Item>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -155,7 +209,9 @@ describe('Headless Menu', () => {
       <Menu.Root onOpenChange={onOpenChange}>
         <Menu.ContextTrigger data-testid="area">Marked area</Menu.ContextTrigger>
         <Menu.Content portalled={false}>
-          <Menu.Item textValue="Copy">Copy</Menu.Item>
+          <Menu.Group>
+            <Menu.Item textValue="Copy">Copy</Menu.Item>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -184,7 +240,9 @@ describe('Headless Menu', () => {
           Cancelled area
         </Menu.ContextTrigger>
         <Menu.Content portalled={false}>
-          <Menu.Item textValue="Copy">Copy</Menu.Item>
+          <Menu.Group>
+            <Menu.Item textValue="Copy">Copy</Menu.Item>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -199,7 +257,9 @@ describe('Headless Menu', () => {
       <Menu.Root>
         <Menu.ContextTrigger data-testid="area">Marked area</Menu.ContextTrigger>
         <Menu.Content portalled={false}>
-          <Menu.Item textValue="Copy">Copy</Menu.Item>
+          <Menu.Group>
+            <Menu.Item textValue="Copy">Copy</Menu.Item>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -220,12 +280,16 @@ describe('Headless Menu', () => {
       <Menu.Root>
         <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Content portalled={false}>
-          <Menu.Sub onOpenChange={onSubOpenChange}>
-            <Menu.SubTrigger textValue="Share">Share</Menu.SubTrigger>
-            <Menu.SubContent>
-              <Menu.Item textValue="Email">Email</Menu.Item>
-            </Menu.SubContent>
-          </Menu.Sub>
+          <Menu.Group>
+            <Menu.Sub onOpenChange={onSubOpenChange}>
+              <Menu.SubTrigger textValue="Share">Share</Menu.SubTrigger>
+              <Menu.SubContent>
+                <Menu.Group>
+                  <Menu.Item textValue="Email">Email</Menu.Item>
+                </Menu.Group>
+              </Menu.SubContent>
+            </Menu.Sub>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -295,7 +359,9 @@ describe('Headless Menu', () => {
       <Menu.Root defaultOpen>
         <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Content id="actions-menu">
-          <Menu.Item textValue="Duplicate">Duplicate</Menu.Item>
+          <Menu.Group>
+            <Menu.Item textValue="Duplicate">Duplicate</Menu.Item>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -330,7 +396,9 @@ describe('Headless Menu', () => {
           Actions
         </Menu.Trigger>
         <Menu.Content>
-          <Menu.Item textValue="Archive">Archive</Menu.Item>
+          <Menu.Group>
+            <Menu.Item textValue="Archive">Archive</Menu.Item>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -547,17 +615,19 @@ describe('Headless Menu', () => {
       <Menu.Root>
         <Menu.Trigger>View</Menu.Trigger>
         <Menu.Content>
-          <Menu.CheckboxItem
-            textValue="Descriptions"
-            defaultControlState
-            closeOnSelect={false}
-            onControlStateChange={onControlStateChange}
-          >
-            Descriptions
-          </Menu.CheckboxItem>
-          <Menu.CheckboxItem textValue="Shortcuts" closeOnSelect={false}>
-            Shortcuts
-          </Menu.CheckboxItem>
+          <Menu.CheckboxGroup>
+            <Menu.CheckboxItem
+              textValue="Descriptions"
+              defaultControlState
+              closeOnSelect={false}
+              onControlStateChange={onControlStateChange}
+            >
+              Descriptions
+            </Menu.CheckboxItem>
+            <Menu.CheckboxItem textValue="Shortcuts" closeOnSelect={false}>
+              Shortcuts
+            </Menu.CheckboxItem>
+          </Menu.CheckboxGroup>
         </Menu.Content>
       </Menu.Root>
     );
@@ -706,12 +776,16 @@ describe('Headless Menu', () => {
       <Menu.Root onOpenChange={onRootOpenChange}>
         <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Content>
-          <Menu.Sub onOpenChange={onSubOpenChange}>
-            <Menu.SubTrigger textValue="Share">Share</Menu.SubTrigger>
-            <Menu.SubContent>
-              <Menu.Item textValue="Email">Email</Menu.Item>
-            </Menu.SubContent>
-          </Menu.Sub>
+          <Menu.Group>
+            <Menu.Sub onOpenChange={onSubOpenChange}>
+              <Menu.SubTrigger textValue="Share">Share</Menu.SubTrigger>
+              <Menu.SubContent>
+                <Menu.Group>
+                  <Menu.Item textValue="Email">Email</Menu.Item>
+                </Menu.Group>
+              </Menu.SubContent>
+            </Menu.Sub>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -800,14 +874,18 @@ describe('Headless Menu', () => {
       <Menu.Root>
         <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Content>
-          <Menu.Sub>
-            <Menu.SubTrigger id="share-trigger" textValue="Share">
-              Share
-            </Menu.SubTrigger>
-            <Menu.SubContent id="share-content">
-              <Menu.Item textValue="Email">Email</Menu.Item>
-            </Menu.SubContent>
-          </Menu.Sub>
+          <Menu.Group>
+            <Menu.Sub>
+              <Menu.SubTrigger id="share-trigger" textValue="Share">
+                Share
+              </Menu.SubTrigger>
+              <Menu.SubContent id="share-content">
+                <Menu.Group>
+                  <Menu.Item textValue="Email">Email</Menu.Item>
+                </Menu.Group>
+              </Menu.SubContent>
+            </Menu.Sub>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );
@@ -830,18 +908,24 @@ describe('Headless Menu', () => {
       <Menu.Root defaultOpen>
         <Menu.Trigger>Actions</Menu.Trigger>
         <Menu.Content>
-          <Menu.Sub open onOpenChange={onAcceptedOpenChange}>
-            <Menu.SubTrigger textValue="Accepted">Accepted</Menu.SubTrigger>
-            <Menu.SubContent>
-              <Menu.Item textValue="Accepted child">Accepted child</Menu.Item>
-            </Menu.SubContent>
-          </Menu.Sub>
-          <Menu.Sub open={false} onOpenChange={onRequestedOpenChange}>
-            <Menu.SubTrigger textValue="Requested">Requested</Menu.SubTrigger>
-            <Menu.SubContent>
-              <Menu.Item textValue="Requested child">Requested child</Menu.Item>
-            </Menu.SubContent>
-          </Menu.Sub>
+          <Menu.Group>
+            <Menu.Sub open onOpenChange={onAcceptedOpenChange}>
+              <Menu.SubTrigger textValue="Accepted">Accepted</Menu.SubTrigger>
+              <Menu.SubContent>
+                <Menu.Group>
+                  <Menu.Item textValue="Accepted child">Accepted child</Menu.Item>
+                </Menu.Group>
+              </Menu.SubContent>
+            </Menu.Sub>
+            <Menu.Sub open={false} onOpenChange={onRequestedOpenChange}>
+              <Menu.SubTrigger textValue="Requested">Requested</Menu.SubTrigger>
+              <Menu.SubContent>
+                <Menu.Group>
+                  <Menu.Item textValue="Requested child">Requested child</Menu.Item>
+                </Menu.Group>
+              </Menu.SubContent>
+            </Menu.Sub>
+          </Menu.Group>
         </Menu.Content>
       </Menu.Root>
     );

@@ -215,7 +215,11 @@ describe('writeExtraArtifacts presence artifacts', () => {
         global: { effects: { presence: { profiles } } },
         components: {
           dropdown: {
-            effects: { presence: { profile: 'fade-translate' } }
+            effects: { presence: { profile: 'fade-translate' } },
+            options: {
+              leadingIconComposition: 'selection-only',
+              selectedItemBackground: false
+            }
           }
         }
       } as Schema,
@@ -235,6 +239,10 @@ describe('writeExtraArtifacts presence artifacts', () => {
               profile: 'fade-translate',
               profiles
             }
+          },
+          options: {
+            leadingIconComposition: 'selection-only',
+            selectedItemBackground: false
           }
         }
       }

@@ -52,6 +52,8 @@ Light and Dark resolve independently and no literal schema color is introduced.
 - BottomSheetMenu supports long scrollable menus; it is broader than Apple Action sheets.
 - Horizontal page animation is lazy; vertical Sheet animation is eager and mandatory.
 - Centered items without content icons are the default, with structured rows still available.
+- Automatic `e12` boundaries between typed groups and `groupSeparators: true` are Kiskadee
+  extensions; the paint may be suppressed without changing MenuTree semantics.
 
 ## Shared Formula
 
@@ -71,7 +73,7 @@ Light and Dark resolve independently and no literal schema color is introduced.
 - `e1`: scrim; `e2`: surface; `e3`: grabber; `e4`: header; `e5`: title; `e6`: body.
 - `e7` through `e15`: action/menu capability slots.
 - `components.bottomSheet.options`: standard initial detent, expand/dismiss swipe, lazy slide pages,
-  centered items, and hidden content icons.
+  centered items, hidden content icons, and enabled group separators.
 
 ## Validation
 

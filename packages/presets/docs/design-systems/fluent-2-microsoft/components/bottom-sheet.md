@@ -51,12 +51,14 @@ Darker resolve independently; no literal schema color is used.
 - Fixed `60dvh` standard and `90dvh` maximum geometry.
 - Mandatory bottom-entry Motion and optional lazy horizontal page transition.
 - Centered icon-free item layout as the preset default.
+- Automatic `e12` boundaries between typed groups, with `groupSeparators: true`; both the option
+  and the ability to suppress paint at runtime are Kiskadee extensions.
 
 ## Shared Formula
 
 - BottomSheet owns independent intents and elements while reusing approved primitive families,
   typography profiles, icon sizes, separators, and shadow levels.
-- Its separator consumes the shared one-pixel `subtle` recipe. The geometry remains Fluent-derived,
+- Its automatic group boundary consumes the shared one-pixel `subtle` recipe. The geometry remains Fluent-derived,
   while the achromatic Black v1 color is the same explicit Kiskadee adaptation used by Dropdown
   and the standalone Separator.
 - Item states remain sparse deltas over Rest and follow the existing Fluent Menu tonal mapping.
@@ -73,7 +75,7 @@ Darker resolve independently; no literal schema color is used.
 - `e1`: scrim; `e2`: surface; `e3`: handle; `e4`: header; `e5`: title; `e6`: body.
 - `e7` through `e15`: independent menu-capability slots.
 - `components.bottomSheet.options`: standard height, expand/dismiss swipe, lazy slide pages,
-  centered items, and hidden content icons.
+  centered items, hidden content icons, and enabled group separators.
 
 ## Validation
 

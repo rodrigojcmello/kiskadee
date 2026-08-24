@@ -139,6 +139,39 @@ describe('transformColorKeyToCss', () => {
             '.abc.-n.-s:hover:where(:not(:active)), .abc.-s.-h.-a { background: #4040bf80 }'
           );
         });
+        it('gates only selected box-color rules when requested by emission policy', () => {
+          const result = transformColorKeyToCss(
+            'boxColor--selected:hover__#4040bf80',
+            className,
+            true,
+            {
+              styleEmissionPolicy: {
+                borderColorEmission: 'direct',
+                borderRadiusEmission: 'direct',
+                borderWidthEmission: 'direct',
+                paddingEmission: 'direct',
+                selectedBoxColorGateClass: 'k-ddn-sbg',
+                shadowEmission: 'direct'
+              }
+            }
+          );
+
+          expect(result).toEqual(
+            '.abc.-n.-s.k-ddn-sbg:hover:where(:not(:active)), .abc.-s.-h.-a.k-ddn-sbg { background: #4040bf80 }'
+          );
+          expect(
+            transformColorKeyToCss('boxColor--hover__#4040bf80', className, true, {
+              styleEmissionPolicy: {
+                borderColorEmission: 'direct',
+                borderRadiusEmission: 'direct',
+                borderWidthEmission: 'direct',
+                paddingEmission: 'direct',
+                selectedBoxColorGateClass: 'k-ddn-sbg',
+                shadowEmission: 'direct'
+              }
+            })
+          ).toEqual('.abc.-n:hover:where(:not(:active)), .abc.-h.-a { background: #4040bf80 }');
+        });
       });
 
       describe('disabled (forced branch always present)', () => {

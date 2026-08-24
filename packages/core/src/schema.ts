@@ -2,7 +2,7 @@ import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './break
 import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
 import type { CardElements, CardOptions } from './components/card.ts';
-import type { DropdownElements } from './components/dropdown.ts';
+import type { DropdownElements, DropdownOptions } from './components/dropdown.ts';
 import type { IconElements } from './components/icon.ts';
 import type { ProgressElements } from './components/progress.ts';
 import type { SeparatorElements } from './components/separator.ts';
@@ -201,6 +201,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
       presence?: DropdownPresenceEffectSchema;
       shadow?: ShadowEffectSchema;
     };
+    options?: DropdownOptions;
     elements: DropdownElements<TSegmentName> & Elements<TSegmentName>;
   };
   icon: {

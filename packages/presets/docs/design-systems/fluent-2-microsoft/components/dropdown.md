@@ -69,6 +69,9 @@
 - **Kiskadee extension**: selected radio and checkbox rows retain a colored Selected background.
   Radio renders a family-mapped filled dot and checkbox renders a check; web semantics remain
   `aria-checked` rather than `aria-selected`.
+- **Kiskadee extension**: the preset explicitly selects `item-and-selection` leading composition
+  and enables the Selected item background. Both are runtime-overridable presentation axes; turning
+  off the background leaves checked semantics, indicators, and Selected foreground colors intact.
 - **Kiskadee extension**: an open submenu trigger persists the Hover visual while focus/pointer moves
   into its submenu. It retains `aria-expanded` and does not become Selected.
 - **Official exact**: Figma node `9361:10436` keeps the hovered item's four-pixel radius. The schema
@@ -102,6 +105,9 @@
   secondary-content role, but Kiskadee deliberately reduces its prominence.
 - **Kiskadee extension**: the shared `subtle` separator keeps the official one-pixel geometry but
   replaces the blue-gray NeutralStroke2 color with the approved achromatic Black v1 ramp.
+- **Kiskadee extension**: typed menu groups emit their `e7` boundary automatically. Structural CSS
+  suppresses the leading boundary so a collection with `n` groups paints `n - 1` dividers;
+  consumers cannot insert ad hoc dividers inside a group.
 - **Kiskadee extension**: Fluent Dropdown presence defaults to `fade-translate`. Both that profile
   and the alternative `grow-height` profile are framework-authored because the inspected sources
   do not establish either motion recipe.
@@ -143,7 +149,7 @@ literal schema color is introduced.
 - `e5`: Caption 1 (`caption-medium`) auxiliary description with the same conditional edge insets.
 - `e6`: optional 20 px Medium or 24 px Large iconographic trailing content with a 6 px gap. It does
   not imply submenu behavior.
-- `e7`: explicit one-pixel divider using the shared achromatic `subtle` separator recipe.
+- `e7`: automatic one-pixel group boundary using the shared achromatic `subtle` separator recipe.
 - `e8`: `caption-medium` end text, such as an informational keyboard shortcut, using the adapted
   NeutralForeground3 relationship at Light L50 and Dark/Darker D70. Its twelve-pixel logical-start
   padding produces the complete visual gap because the label's end inset is suppressed when the
@@ -159,9 +165,14 @@ literal schema color is introduced.
   foreground references plus the `e1` Rest surface reference. This is a Kiskadee extension for
   long Web menus, not evidence of an official Fluent Dropdown state.
 
-Dropdown groups own their padding and the distance around a divider. `e7` owns only the full-bleed
-line; it does not publish margins or reuse the standalone Separator component at runtime. The
-shared recipe adapts official NeutralStroke2 geometry to an achromatic color as documented in
+`options.leadingIconComposition` is `item-and-selection` and
+`options.selectedItemBackground` is `true`, preserving the current two-track highlighted
+presentation. These options are configurable Kiskadee extensions rather than claims that Fluent
+defines the same runtime matrix.
+
+Dropdown groups own their padding and the distance around a boundary. `e7` owns only the
+full-bleed line automatically emitted before each group; structural CSS suppresses the first one.
+The shared recipe adapts official NeutralStroke2 geometry to an achromatic color as documented in
 [Separator evidence](separator.md).
 
 Button disclosure uses the shared Fluent icon-size ramp. It does not duplicate Button palettes or

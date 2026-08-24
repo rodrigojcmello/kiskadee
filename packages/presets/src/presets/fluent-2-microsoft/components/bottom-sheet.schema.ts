@@ -209,7 +209,8 @@ export function createFluent2MicrosoftBottomSheetSchema({
       swipeBehavior: 'expand-dismiss',
       pageTransition: 'slide',
       itemLayout: 'centered',
-      centeredIcons: 'hide'
+      centeredIcons: 'hide',
+      groupSeparators: true
     },
     effects: {
       shadow: {

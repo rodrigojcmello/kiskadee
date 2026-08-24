@@ -1,6 +1,7 @@
 import './Dropdown.structural.scss';
 import type {
   DropdownIntent,
+  DropdownLeadingIconComposition,
   DropdownPresenceProfile,
   ElementSizeValue,
   PresenceProfiles,
@@ -50,10 +51,10 @@ import type {
   DropdownPresenceProps,
   DropdownPresenceRenderProps,
   DropdownPresenceRenderState,
+  DropdownPresentationProps,
   DropdownRadioMarkProps,
   DropdownRootProps,
   DropdownScrollAreaProps,
-  DropdownSeparatorProps,
   DropdownSurfaceProps,
   DropdownTrailingProps,
   DropdownVisualProviderProps
@@ -83,12 +84,21 @@ type DropdownVisualContextValue = {
   classNames: DropdownClassNames;
   resolved: ReturnType<typeof resolveDropdownClassNames>;
   presence: ResolvedDropdownPresence | null;
+  options: ResolvedDropdownPresentationOptions;
   scale: ElementSizeValue;
 };
+
+type ResolvedDropdownPresentationOptions = Required<DropdownPresentationProps>;
+
+const DEFAULT_LEADING_ICON_COMPOSITION: DropdownLeadingIconComposition = 'item-and-selection';
+const DEFAULT_SELECTED_ITEM_BACKGROUND = true;
 
 const DropdownItemIntentContext = createContext<DropdownIntent>(DEFAULT_DROPDOWN_INTENT);
 
 const DropdownVisualContext = createContext<DropdownVisualContextValue | null>(null);
+const DropdownCollectionOptionsContext = createContext<ResolvedDropdownPresentationOptions | null>(
+  null
+);
 const DropdownPresenceRuntimeContext = createContext<DropdownPresenceRuntimeContextValue | null>(
   null
 );
@@ -103,6 +113,12 @@ function useDropdownVisualContext(componentName: string): DropdownVisualContextV
   return context;
 }
 
+export function useDropdownResolvedOptions(): ResolvedDropdownPresentationOptions {
+  const collectionOptions = useContext(DropdownCollectionOptionsContext);
+  const visualContext = useDropdownVisualContext('useDropdownResolvedOptions');
+  return collectionOptions ?? visualContext.options;
+}
+
 function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null): void {
   if (typeof ref === 'function') ref(value);
   else if (ref) ref.current = value;
@@ -113,6 +129,8 @@ function DropdownVisualProvider({
   radius,
   shadow = true,
   presence,
+  leadingIconComposition,
+  selectedItemBackground,
   classNames = {},
   children
 }: DropdownVisualProviderProps) {
@@ -123,6 +141,7 @@ function DropdownVisualProvider({
   );
   const resolvedRadius: RadiusMode = radius ?? global?.radius ?? DEFAULT_DROPDOWN_RADIUS;
   const presenceArtifact = global?.components?.dropdown?.effects?.presence;
+  const artifactOptions = global?.components?.dropdown?.options;
   const presenceProfile = presence === false ? undefined : (presence ?? presenceArtifact?.profile);
   const resolvedPresence = useMemo<ResolvedDropdownPresence | null>(() => {
     if (!presenceProfile || !presenceArtifact?.profiles[presenceProfile]) return null;
@@ -152,15 +171,29 @@ function DropdownVisualProvider({
       }),
     [classNames, dropdownClassesMap, resolvedRadius, scale, shadow]
   );
+  const options = useMemo<ResolvedDropdownPresentationOptions>(
+    () => ({
+      leadingIconComposition:
+        leadingIconComposition ??
+        artifactOptions?.leadingIconComposition ??
+        DEFAULT_LEADING_ICON_COMPOSITION,
+      selectedItemBackground:
+        selectedItemBackground ??
+        artifactOptions?.selectedItemBackground ??
+        DEFAULT_SELECTED_ITEM_BACKGROUND
+    }),
+    [artifactOptions, leadingIconComposition, selectedItemBackground]
+  );
   const contextValue = useMemo<DropdownVisualContextValue>(
     () => ({
       classesMap: dropdownClassesMap,
       classNames,
+      options,
       presence: resolvedPresence,
       resolved,
       scale
     }),
-    [classNames, dropdownClassesMap, resolved, resolvedPresence, scale]
+    [classNames, dropdownClassesMap, options, resolved, resolvedPresence, scale]
   );
 
   return (
@@ -173,6 +206,8 @@ function DropdownRoot({
   radius,
   shadow,
   presence,
+  leadingIconComposition,
+  selectedItemBackground,
   classNames,
   children,
   ...props
@@ -183,6 +218,8 @@ function DropdownRoot({
       radius={radius}
       shadow={shadow}
       presence={presence}
+      leadingIconComposition={leadingIconComposition}
+      selectedItemBackground={selectedItemBackground}
       classNames={classNames}
     >
       <HeadlessDropdown.Root {...props}>{children}</HeadlessDropdown.Root>
@@ -409,17 +446,27 @@ const DropdownSurface = forwardRef<HTMLDivElement, DropdownSurfaceProps>(functio
 });
 
 const DropdownItems = forwardRef<HTMLDivElement, DropdownItemsProps>(function DropdownItems(
-  { className, layout = 'independent', ...props },
+  { className, layout = 'independent', leadingIconComposition, selectedItemBackground, ...props },
   ref
 ) {
   const { resolved } = useDropdownVisualContext('Dropdown.Items');
+  const inheritedOptions = useDropdownResolvedOptions();
+  const options = useMemo<ResolvedDropdownPresentationOptions>(
+    () => ({
+      leadingIconComposition: leadingIconComposition ?? inheritedOptions.leadingIconComposition,
+      selectedItemBackground: selectedItemBackground ?? inheritedOptions.selectedItemBackground
+    }),
+    [inheritedOptions, leadingIconComposition, selectedItemBackground]
+  );
   return (
-    <div
-      {...props}
-      ref={ref}
-      className={`${resolved.items} ${className ?? ''}`.trim()}
-      data-layout={layout}
-    />
+    <DropdownCollectionOptionsContext.Provider value={options}>
+      <div
+        {...props}
+        ref={ref}
+        className={`${resolved.items} ${className ?? ''}`.trim()}
+        data-layout={layout}
+      />
+    </DropdownCollectionOptionsContext.Provider>
   );
 });
 
@@ -610,10 +657,18 @@ const DropdownScrollArea = forwardRef<HTMLDivElement, DropdownScrollAreaProps>(
 );
 
 const DropdownGroup = forwardRef<HTMLDivElement, DropdownGroupProps>(function DropdownGroup(
-  { className, ...props },
+  { className, children, ...props },
   ref
 ) {
-  return <div {...props} ref={ref} className={`k-ddn-x2 ${className ?? ''}`.trim()} />;
+  const { resolved } = useDropdownVisualContext('Dropdown.Group');
+  return (
+    <>
+      <hr className={resolved.e7} />
+      <div {...props} ref={ref} className={`k-ddn-x2 ${className ?? ''}`.trim()}>
+        {children}
+      </div>
+    </>
+  );
 });
 
 function resolveDropdownLeadingTrackPlaceholders(
@@ -655,6 +710,7 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
   forwardedRef
 ) {
   const { classesMap, resolved, scale } = useDropdownVisualContext('Dropdown.Item');
+  const { selectedItemBackground } = useDropdownResolvedOptions();
   const itemClassName = resolveDropdownItemClassName({
     baseClassName: resolved.e2,
     element: classesMap?.e2,
@@ -664,6 +720,7 @@ const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function Dropdow
     hovered,
     disabled,
     interactive,
+    selectedItemBackground,
     className
   });
   const ref = useCallback(
@@ -721,7 +778,9 @@ const DropdownIcon = forwardRef<HTMLSpanElement, DropdownIconProps>(function Dro
   { className, children, ...props },
   ref
 ) {
+  const { leadingIconComposition } = useDropdownResolvedOptions();
   const resolvedClassName = useDropdownSlotClassName('e3', 'k-ddn-e3', className);
+  if (leadingIconComposition === 'selection-only') return null;
   return (
     <span {...props} ref={ref} aria-hidden="true" className={resolvedClassName}>
       {children}
@@ -808,13 +867,6 @@ const DropdownTrailing = forwardRef<HTMLSpanElement, DropdownTrailingProps>(
   }
 );
 
-const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorProps>(
-  function DropdownSeparator({ className, ...props }, ref) {
-    const { resolved } = useDropdownVisualContext('Dropdown.Separator');
-    return <div {...props} ref={ref} className={`${resolved.e7} ${className ?? ''}`.trim()} />;
-  }
-);
-
 export const Dropdown: {
   Root: typeof DropdownRoot;
   VisualProvider: typeof DropdownVisualProvider;
@@ -834,7 +886,6 @@ export const Dropdown: {
   Description: typeof DropdownDescription;
   EndText: typeof DropdownEndText;
   Trailing: typeof DropdownTrailing;
-  Separator: typeof DropdownSeparator;
 } = {
   Root: DropdownRoot,
   VisualProvider: DropdownVisualProvider,
@@ -853,8 +904,7 @@ export const Dropdown: {
   Label: DropdownLabel,
   Description: DropdownDescription,
   EndText: DropdownEndText,
-  Trailing: DropdownTrailing,
-  Separator: DropdownSeparator
+  Trailing: DropdownTrailing
 };
 
 export type { DropdownClassNames };

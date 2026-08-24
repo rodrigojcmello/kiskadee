@@ -153,6 +153,14 @@
 }
 
 /*
+ * element separator / e12
+ * Suppresses the leading boundary so a page with n groups renders n - 1 separators.
+ */
+.k-bsh-x3 > .k-bsh-e12:first-child {
+  display: none;
+}
+
+/*
  * extra element for e7 / x4
  * Isolates group labels and rows as a semantic collection region.
  */
@@ -330,8 +338,10 @@
  */
 .k-bsh-e12 {
   block-size: var(--k-bxw, 1px);
+  border: 0;
   box-sizing: border-box;
   inline-size: 100%;
+  margin: 0;
 }
 
 /*

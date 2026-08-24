@@ -42,3 +42,24 @@ Current Button decisions:
 - `iconLayout="inline"` centers icon and label as one group.
 - `iconLayout="edge"` centers the label independently and pins the icon to the logical
   `leading` or `trailing` edge.
+
+Current Dropdown decisions:
+
+- `leadingIconComposition` and `selectedItemBackground` are public presentation overrides because
+  applications may choose independently between one or two leading tracks and between a visible
+  Selected background or ordinary Rest/Hover/Pressed backgrounds.
+- The nearest collection override on `Dropdown.Items`, `ButtonMenu.Content`, or
+  `ButtonMenu.SubContent` wins over Root/VisualProvider, which wins over the generated Dropdown
+  options. Portability defaults apply only when all three sources omit a value.
+- These options never change checked semantics. `selectedItemBackground` gates only the generated
+  Selected `boxColor` rules for `e2 (dropdown-item)`, while `leadingIconComposition="selection-only"`
+  omits only `e3 (dropdown-icon)` and its renderer.
+- See [Dropdown Selection Presentation](dropdown/selection-presentation.md) for the complete matrix
+  and presenter scope.
+
+Current BottomSheet decisions:
+
+- `groupSeparators` is a public BottomSheet presentation override. `undefined` inherits the
+  generated BottomSheet option and the portability default is `true`.
+- The option controls only whether automatic `e12` boundaries between adjacent typed groups are
+  painted. It does not remove, merge, or otherwise change the semantic groups.

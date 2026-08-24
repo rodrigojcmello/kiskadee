@@ -1,6 +1,10 @@
 'use client';
 
-import type { DropdownPresence, ElementSizeValue } from '@kiskadee/core';
+import type {
+  DropdownLeadingIconComposition,
+  DropdownPresence,
+  ElementSizeValue
+} from '@kiskadee/core';
 import {
   Button,
   ButtonMenu,
@@ -14,6 +18,7 @@ import {
 import type { ReactNode, Ref } from 'react';
 import { useState } from 'react';
 import {
+  ShowcaseBooleanControl,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
@@ -136,20 +141,21 @@ function LongMenu({ presence }: { presence?: DropdownPresence }) {
             </ButtonMenu.Item>
           ))}
         </ButtonMenu.Group>
-        <ButtonMenu.Separator />
-        <ButtonMenu.Group>
+        <ButtonMenu.CheckboxGroup>
           <ButtonMenu.GroupLabel>Options</ButtonMenu.GroupLabel>
           <ButtonMenu.CheckboxItem defaultControlState textValue="Keep panel open">
             <ButtonMenu.Label>Keep panel open</ButtonMenu.Label>
           </ButtonMenu.CheckboxItem>
-          <ButtonMenu.RadioGroup defaultValue="comfortable">
-            <ButtonMenu.RadioItem value="comfortable" textValue="Comfortable density">
-              <ButtonMenu.Label>Comfortable density</ButtonMenu.Label>
-            </ButtonMenu.RadioItem>
-            <ButtonMenu.RadioItem value="compact" textValue="Compact density">
-              <ButtonMenu.Label>Compact density</ButtonMenu.Label>
-            </ButtonMenu.RadioItem>
-          </ButtonMenu.RadioGroup>
+        </ButtonMenu.CheckboxGroup>
+        <ButtonMenu.RadioGroup defaultValue="comfortable">
+          <ButtonMenu.RadioItem value="comfortable" textValue="Comfortable density">
+            <ButtonMenu.Label>Comfortable density</ButtonMenu.Label>
+          </ButtonMenu.RadioItem>
+          <ButtonMenu.RadioItem value="compact" textValue="Compact density">
+            <ButtonMenu.Label>Compact density</ButtonMenu.Label>
+          </ButtonMenu.RadioItem>
+        </ButtonMenu.RadioGroup>
+        <ButtonMenu.Group>
           <ButtonMenu.Sub>
             <ButtonMenu.SubTrigger textValue="More commands">
               <ButtonMenu.Label>More commands</ButtonMenu.Label>
@@ -209,6 +215,89 @@ function ContextMenuDemo({ presence }: { presence?: DropdownPresence }) {
   );
 }
 
+function SelectionPresentationMenu({
+  buttonLabel,
+  leadingIconComposition,
+  presence,
+  selectedItemBackground,
+  showSubmenuOverride = false
+}: {
+  buttonLabel: string;
+  leadingIconComposition: DropdownLeadingIconComposition;
+  presence?: DropdownPresence;
+  selectedItemBackground: boolean;
+  showSubmenuOverride?: boolean;
+}) {
+  return (
+    <ButtonMenu.Root
+      leadingIconComposition={leadingIconComposition}
+      presence={presence}
+      selectedItemBackground={selectedItemBackground}
+      buttonGroup={{ intent: 'neutral', emphasis: 'medium' }}
+    >
+      <ButtonMenu.Trigger>
+        <Button.Label>{buttonLabel}</Button.Label>
+      </ButtonMenu.Trigger>
+      <ButtonMenu.Content aria-label={`${buttonLabel} selection presentation`}>
+        <ButtonMenu.CheckboxGroup>
+          <ButtonMenu.GroupLabel>View options</ButtonMenu.GroupLabel>
+          <ButtonMenu.CheckboxItem defaultControlState closeOnSelect={false} textValue="Details">
+            <ButtonMenu.Icon>
+              <FamilyResolvedIcon name="settings" />
+            </ButtonMenu.Icon>
+            <ButtonMenu.Label>Details</ButtonMenu.Label>
+          </ButtonMenu.CheckboxItem>
+        </ButtonMenu.CheckboxGroup>
+        <ButtonMenu.RadioGroup defaultValue="comfortable">
+          <ButtonMenu.RadioItem value="comfortable" textValue="Comfortable">
+            <ButtonMenu.Icon>
+              <FamilyResolvedIcon name="dashboard" />
+            </ButtonMenu.Icon>
+            <ButtonMenu.Label>Comfortable</ButtonMenu.Label>
+          </ButtonMenu.RadioItem>
+          <ButtonMenu.RadioItem value="compact" textValue="Compact">
+            <ButtonMenu.Label>Compact</ButtonMenu.Label>
+          </ButtonMenu.RadioItem>
+        </ButtonMenu.RadioGroup>
+        <ButtonMenu.Group>
+          <ButtonMenu.Sub>
+            <ButtonMenu.SubTrigger textValue="More views">
+              <ButtonMenu.Icon>
+                <FamilyResolvedIcon name="list" />
+              </ButtonMenu.Icon>
+              <ButtonMenu.Label>More views</ButtonMenu.Label>
+            </ButtonMenu.SubTrigger>
+            <ButtonMenu.SubContent
+              aria-label="More view options"
+              leadingIconComposition={
+                showSubmenuOverride
+                  ? leadingIconComposition === 'selection-only'
+                    ? 'item-and-selection'
+                    : 'selection-only'
+                  : undefined
+              }
+              selectedItemBackground={showSubmenuOverride ? !selectedItemBackground : undefined}
+            >
+              <ButtonMenu.CheckboxGroup>
+                <ButtonMenu.CheckboxItem
+                  defaultControlState
+                  closeOnSelect={false}
+                  textValue="Timeline"
+                >
+                  <ButtonMenu.Icon>
+                    <FamilyResolvedIcon name="list-ordered" />
+                  </ButtonMenu.Icon>
+                  <ButtonMenu.Label>Timeline</ButtonMenu.Label>
+                </ButtonMenu.CheckboxItem>
+              </ButtonMenu.CheckboxGroup>
+            </ButtonMenu.SubContent>
+          </ButtonMenu.Sub>
+        </ButtonMenu.Group>
+      </ButtonMenu.Content>
+    </ButtonMenu.Root>
+  );
+}
+
 export default function DropdownShowcase() {
   const { designSystem, global } = useKiskadee();
   const { manifest } = useShowcase();
@@ -217,6 +306,9 @@ export default function DropdownShowcase() {
   const presenceArtifact = global?.components?.dropdown?.effects?.presence;
   const { presenceOptions, presenceOverride, presenceSelection, setPresenceSelection } =
     useDropdownPresenceControl({ designSystem, presenceArtifact });
+  const [leadingIconComposition, setLeadingIconComposition] =
+    useState<DropdownLeadingIconComposition>('item-and-selection');
+  const [selectedItemBackground, setSelectedItemBackground] = useState(true);
 
   return (
     <main className={styles.page}>
@@ -240,6 +332,26 @@ export default function DropdownShowcase() {
                 options={presenceOptions}
                 value={presenceSelection}
                 onValueChange={setPresenceSelection}
+              />
+            </ShowcaseControlStack>
+          </ShowcaseControlGroup>
+          <ShowcaseControlGroup title="Selection presentation">
+            <ShowcaseControlStack>
+              <ShowcaseSelectControl
+                label="Leading icons"
+                options={[
+                  { label: 'Item and selection', value: 'item-and-selection' },
+                  { label: 'Selection only', value: 'selection-only' }
+                ]}
+                value={leadingIconComposition}
+                onValueChange={(value) =>
+                  setLeadingIconComposition(value as DropdownLeadingIconComposition)
+                }
+              />
+              <ShowcaseBooleanControl
+                checked={selectedItemBackground}
+                label="Selected background"
+                onCheckedChange={setSelectedItemBackground}
               />
             </ShowcaseControlStack>
           </ShowcaseControlGroup>
@@ -298,7 +410,6 @@ export default function DropdownShowcase() {
                       <Dropdown.EndText>Ctrl+D</Dropdown.EndText>
                     </DemoItem>
                   </Dropdown.Group>
-                  <Dropdown.Separator />
                   <Dropdown.Group>
                     <Dropdown.GroupLabel>Danger zone</Dropdown.GroupLabel>
                     <Dropdown.Item
@@ -381,7 +492,6 @@ export default function DropdownShowcase() {
                       <Dropdown.Label>List</Dropdown.Label>
                     </DemoItem>
                   </Dropdown.Group>
-                  <Dropdown.Separator />
                   <Dropdown.Group>
                     <DemoItem>
                       <Dropdown.Icon>
@@ -395,6 +505,57 @@ export default function DropdownShowcase() {
                   </Dropdown.Group>
                 </DemoDropdown>
               </article>
+            </div>
+          </section>
+
+          <section
+            className={styles.section}
+            aria-labelledby="dropdown-selection-presentation-title"
+          >
+            <Text
+              as="h3"
+              id="dropdown-selection-presentation-title"
+              profile={textProfiles.sectionTitle}
+            >
+              Selection presentation
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              Icon composition and Selected background are independent. The live example inherits
+              both controls, while its submenu deliberately overrides both values.
+            </Text>
+            <div className={styles.grid}>
+              <article className={styles.card}>
+                <Text as="h4" profile={textProfiles.subsectionTitle}>
+                  Runtime controls
+                </Text>
+                <SelectionPresentationMenu
+                  buttonLabel="Open live example"
+                  leadingIconComposition={leadingIconComposition}
+                  presence={presenceOverride}
+                  selectedItemBackground={selectedItemBackground}
+                  showSubmenuOverride
+                />
+              </article>
+              {(
+                [
+                  ['item-and-selection', false, 'Classic'],
+                  ['item-and-selection', true, 'Two columns highlighted'],
+                  ['selection-only', false, 'Slim classic'],
+                  ['selection-only', true, 'Slim highlighted']
+                ] as const
+              ).map(([composition, background, label]) => (
+                <article className={styles.card} key={label}>
+                  <Text as="h4" profile={textProfiles.subsectionTitle}>
+                    {label}
+                  </Text>
+                  <SelectionPresentationMenu
+                    buttonLabel={label}
+                    leadingIconComposition={composition}
+                    presence={presenceOverride}
+                    selectedItemBackground={background}
+                  />
+                </article>
+              ))}
             </div>
           </section>
 

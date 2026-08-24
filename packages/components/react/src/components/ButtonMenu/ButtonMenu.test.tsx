@@ -313,7 +313,6 @@ describe('ButtonMenu', () => {
               <ButtonMenu.Label>Save as copy</ButtonMenu.Label>
             </ButtonMenu.Item>
           </ButtonMenu.Group>
-          <ButtonMenu.Separator />
           <ButtonMenu.Group>
             <ButtonMenu.Item href="/archive" textValue="Open archive">
               <ButtonMenu.Label>Open archive</ButtonMenu.Label>
@@ -344,7 +343,7 @@ describe('ButtonMenu', () => {
     fireEvent.click(trigger);
     expect(onTriggerClick).toHaveBeenCalledOnce();
     await waitFor(() => expect(result.getByRole('menu')).toBeTruthy());
-    expect(result.getByRole('separator')).toBeTruthy();
+    expect(result.getAllByRole('separator')).toHaveLength(2);
     expect(result.getByRole('menuitem', { name: 'Open archive' }).getAttribute('href')).toBe(
       '/archive'
     );
@@ -458,7 +457,7 @@ describe('ButtonMenu', () => {
     expect(result.queryByRole('menuitem', { name: 'Copy Ctrl+C' })).toBeNull();
   });
 
-  it('gives direct MenuTree rows a visual group without adding group semantics', async () => {
+  it('renders every MenuTree row through an explicit semantic group', async () => {
     const tree: MenuTree<IconName> = {
       id: 'work-item-actions',
       title: 'Work item actions',
@@ -469,13 +468,24 @@ describe('ButtonMenu', () => {
           label: 'Work item',
           items: [{ type: 'item', id: 'copy', label: 'Copy' }]
         },
-        { type: 'separator', id: 'actions-separator' },
         {
-          type: 'submenu',
-          id: 'dashboard',
-          label: 'Add to dashboard',
-          icon: 'check',
-          items: [{ type: 'item', id: 'team-dashboard', label: 'Team dashboard' }]
+          type: 'group',
+          id: 'dashboard-actions',
+          items: [
+            {
+              type: 'submenu',
+              id: 'dashboard',
+              label: 'Add to dashboard',
+              icon: 'check',
+              items: [
+                {
+                  type: 'group',
+                  id: 'dashboard-destinations',
+                  items: [{ type: 'item', id: 'team-dashboard', label: 'Team dashboard' }]
+                }
+              ]
+            }
+          ]
         }
       ]
     };
@@ -497,7 +507,7 @@ describe('ButtonMenu', () => {
 
     expect(result.getByRole('group', { name: 'Work item' }).className).toContain('k-ddn-x2');
     expect(visualGroup?.classList.contains('k-ddn-x2')).toBe(true);
-    expect(visualGroup?.getAttribute('role')).toBeNull();
+    expect(visualGroup?.getAttribute('role')).toBe('group');
     expect(dashboard.querySelector('.k-ddn-e3')).toBeTruthy();
     expect(menu.querySelector('.k-ddn-x1 > .k-ddn-e2')).toBeNull();
   });
@@ -506,7 +516,13 @@ describe('ButtonMenu', () => {
     const tree: MenuTree<string> = {
       id: 'renderer-contract',
       title: 'Renderer contract',
-      items: [{ type: 'item', id: 'copy', label: 'Copy', icon: 'copy' }]
+      items: [
+        {
+          type: 'group',
+          id: 'renderer-actions',
+          items: [{ type: 'item', id: 'copy', label: 'Copy', icon: 'copy' }]
+        }
+      ]
     };
 
     expect(() =>
@@ -525,11 +541,17 @@ describe('ButtonMenu', () => {
       title: 'Renderer details',
       items: [
         {
-          type: 'item',
-          id: 'copy',
-          label: 'Copy',
-          icon: 'copy',
-          trailingIcon: 'shortcut'
+          type: 'group',
+          id: 'renderer-actions',
+          items: [
+            {
+              type: 'item',
+              id: 'copy',
+              label: 'Copy',
+              icon: 'copy',
+              trailingIcon: 'shortcut'
+            }
+          ]
         }
       ]
     };
@@ -546,14 +568,103 @@ describe('ButtonMenu', () => {
 
     expect(renderIcon).toHaveBeenCalledWith('copy', {
       placement: 'leading',
-      node: tree.items[0]
+      node: tree.items[0]?.items[0]
     });
     expect(renderIcon).toHaveBeenCalledWith('shortcut', {
       placement: 'trailing',
-      node: tree.items[0]
+      node: tree.items[0]?.items[0]
     });
     expect(item.querySelector('.k-ddn-e3')).toBeNull();
     expect(item.querySelector('.k-ddn-e6')).toBeNull();
+  });
+
+  it('does not resolve leading MenuTree icons in selection-only composition', async () => {
+    const tree: MenuTree<string> = {
+      id: 'selection-only-renderer',
+      title: 'Selection only renderer',
+      items: [
+        {
+          type: 'checkbox-group',
+          id: 'selection-actions',
+          items: [
+            {
+              type: 'checkbox',
+              id: 'copy',
+              label: 'Copy',
+              icon: 'copy',
+              trailingIcon: 'shortcut',
+              defaultControlState: true
+            }
+          ]
+        }
+      ]
+    };
+    const renderIcon = vi.fn((icon: string) => <svg data-icon={icon} />);
+    const result = renderButtonMenu(
+      <ButtonMenu.Root defaultOpen leadingIconComposition="selection-only">
+        <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.TreeContent tree={tree} renderIcon={renderIcon} />
+      </ButtonMenu.Root>
+    );
+    const item = await result.findByRole('menuitemcheckbox', { name: 'Copy' });
+
+    expect(renderIcon).not.toHaveBeenCalledWith('copy', expect.anything());
+    expect(renderIcon).toHaveBeenCalledWith('shortcut', {
+      placement: 'trailing',
+      node: tree.items[0]?.items[0]
+    });
+    expect(item.querySelector('.k-ddn-e3')).toBeNull();
+    expect(item.querySelector('.k-ddn-e10')).toBeTruthy();
+    expect(item.querySelector('.k-ddn-e6')).toBeTruthy();
+  });
+
+  it('lets a submenu collection override the root icon composition and selected background', async () => {
+    const result = renderButtonMenu(
+      <ButtonMenu.Root
+        defaultOpen
+        leadingIconComposition="selection-only"
+        selectedItemBackground={false}
+      >
+        <ButtonMenu.Trigger>Actions</ButtonMenu.Trigger>
+        <ButtonMenu.Content>
+          <ButtonMenu.Group>
+            <ButtonMenu.Sub>
+              <ButtonMenu.SubTrigger textValue="Export">
+                <ButtonMenu.Icon data-testid="root-icon">
+                  <svg />
+                </ButtonMenu.Icon>
+                <ButtonMenu.Label>Export</ButtonMenu.Label>
+              </ButtonMenu.SubTrigger>
+              <ButtonMenu.SubContent
+                leadingIconComposition="item-and-selection"
+                selectedItemBackground
+              >
+                <ButtonMenu.CheckboxGroup>
+                  <ButtonMenu.CheckboxItem
+                    defaultControlState
+                    textValue="PDF"
+                    closeOnSelect={false}
+                  >
+                    <ButtonMenu.Icon data-testid="submenu-icon">
+                      <svg />
+                    </ButtonMenu.Icon>
+                    <ButtonMenu.Label>PDF</ButtonMenu.Label>
+                  </ButtonMenu.CheckboxItem>
+                </ButtonMenu.CheckboxGroup>
+              </ButtonMenu.SubContent>
+            </ButtonMenu.Sub>
+          </ButtonMenu.Group>
+        </ButtonMenu.Content>
+      </ButtonMenu.Root>
+    );
+    const trigger = await result.findByRole('menuitem', { name: 'Export' });
+
+    expect(result.queryByTestId('root-icon')).toBeNull();
+    fireEvent.keyDown(trigger, { key: 'ArrowRight' });
+    const item = await result.findByRole('menuitemcheckbox', { name: 'PDF' });
+
+    expect(result.getByTestId('submenu-icon')).toBeTruthy();
+    expect(item.classList.contains('k-ddn-sbg')).toBe(true);
   });
 
   it('keeps radio mark tracks mounted and projects the checked item as selected', async () => {
@@ -594,17 +705,19 @@ describe('ButtonMenu', () => {
       <ButtonMenu.Root>
         <ButtonMenu.Trigger>View</ButtonMenu.Trigger>
         <ButtonMenu.Content>
-          <ButtonMenu.CheckboxItem
-            textValue="Descriptions"
-            defaultControlState
-            closeOnSelect={false}
-            onControlStateChange={onControlStateChange}
-          >
-            <ButtonMenu.Label>Descriptions</ButtonMenu.Label>
-          </ButtonMenu.CheckboxItem>
-          <ButtonMenu.CheckboxItem textValue="Shortcuts" closeOnSelect={false}>
-            <ButtonMenu.Label>Shortcuts</ButtonMenu.Label>
-          </ButtonMenu.CheckboxItem>
+          <ButtonMenu.CheckboxGroup>
+            <ButtonMenu.CheckboxItem
+              textValue="Descriptions"
+              defaultControlState
+              closeOnSelect={false}
+              onControlStateChange={onControlStateChange}
+            >
+              <ButtonMenu.Label>Descriptions</ButtonMenu.Label>
+            </ButtonMenu.CheckboxItem>
+            <ButtonMenu.CheckboxItem textValue="Shortcuts" closeOnSelect={false}>
+              <ButtonMenu.Label>Shortcuts</ButtonMenu.Label>
+            </ButtonMenu.CheckboxItem>
+          </ButtonMenu.CheckboxGroup>
         </ButtonMenu.Content>
       </ButtonMenu.Root>
     );

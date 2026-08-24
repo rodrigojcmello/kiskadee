@@ -38,6 +38,7 @@ export type BottomSheetOptions = {
   pageTransition?: BottomSheetPageTransition;
   itemLayout?: BottomSheetItemLayout;
   centeredIcons?: BottomSheetCenteredIcons;
+  groupSeparators?: boolean;
 };
 
 type ElementPalettesByColor<
@@ -166,7 +167,7 @@ export type BottomSheetElements<TSegmentName extends SegmentName = never> = {
   e10: BottomSheetTextElementStyle<TSegmentName>;
   /** Optional trailing icon. */
   e11: BottomSheetIconElementStyle<TSegmentName>;
-  /** Explicit separator. */
+  /** Automatic boundary between adjacent groups. */
   e12: BottomSheetSeparatorElementStyle;
   /** Optional end text or shortcut. */
   e13: BottomSheetTextElementStyle<TSegmentName>;
@@ -195,7 +196,8 @@ const BOTTOM_SHEET_OPTION_KEYS = [
   'swipeBehavior',
   'pageTransition',
   'itemLayout',
-  'centeredIcons'
+  'centeredIcons',
+  'groupSeparators'
 ] as const;
 const BOTTOM_SHEET_ELEMENTS_KEYS = [
   'e1',
@@ -422,6 +424,9 @@ function validateOptions(value: unknown, path: string, issues: string[]): void {
     if (value[key] !== undefined && !values.includes(value[key] as never)) {
       issues.push(`${path}.${key}: unsupported value`);
     }
+  }
+  if (value.groupSeparators !== undefined && typeof value.groupSeparators !== 'boolean') {
+    issues.push(`${path}.groupSeparators: expected boolean`);
   }
 }
 

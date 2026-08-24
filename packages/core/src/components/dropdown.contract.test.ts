@@ -62,6 +62,29 @@ describe('Dropdown component contract', () => {
     );
   });
 
+  it('accepts supported presentation options and rejects invalid values', () => {
+    const dropdown = createDropdown() as any;
+    dropdown.options = { selectedItemBackground: true };
+    expect(validateDropdownComponentContract(dropdown)).toEqual([]);
+
+    dropdown.options = {
+      leadingIconComposition: 'selection-only',
+      selectedItemBackground: false
+    };
+    expect(validateDropdownComponentContract(dropdown)).toEqual([]);
+
+    dropdown.options.leadingIconComposition = 'combined';
+    dropdown.options.selectedItemBackground = 'yes';
+    dropdown.options.mode = 'classic';
+    expect(validateDropdownComponentContract(dropdown)).toEqual(
+      expect.arrayContaining([
+        'components.dropdown.options.leadingIconComposition: expected "item-and-selection" or "selection-only"',
+        'components.dropdown.options.selectedItemBackground: expected boolean',
+        'components.dropdown.options.mode: unrecognized key'
+      ])
+    );
+  });
+
   it('requires every visual element', () => {
     const dropdown = createDropdown() as any;
     delete dropdown.elements.e5;

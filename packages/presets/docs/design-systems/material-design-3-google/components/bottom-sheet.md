@@ -50,6 +50,8 @@ assets. No literal color is introduced by BottomSheet.
 - The fixed framework detents are `60dvh` and `90dvh`; they are not Material tokens.
 - Mandatory eager vertical Motion and lazy horizontal page navigation are framework behavior.
 - BottomSheet is modal-only in v1 and stays independent from Dropdown classes and artifacts.
+- Automatic `e12` boundaries between typed groups and `groupSeparators: true` are Kiskadee
+  extensions; applications may suppress their paint without changing group semantics.
 
 ## Shared Formula
 
@@ -67,9 +69,10 @@ assets. No literal color is introduced by BottomSheet.
 ## Schema Mapping
 
 - `e1`: scrim; `e2`: sheet; `e3`: handle; `e4`: header; `e5`: title; `e6`: body.
-- `e7` through `e15`: item, icon, label, description, trailing icon, separator, end text, group
+- `e7` through `e15`: item, icon, label, description, trailing icon, automatic group boundary, end text, group
   label, and checkmark.
-- `components.bottomSheet.options`: `standard`, `expand-dismiss`, `slide`, `centered`, and `hide`.
+- `components.bottomSheet.options`: `standard`, `expand-dismiss`, `slide`, `centered`, `hide`, and
+  `groupSeparators: true`.
 
 ## Validation
 
