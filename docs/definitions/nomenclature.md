@@ -65,6 +65,17 @@ structural owner can consume the same class reference without copying its value.
 
 ## Canonical terms without abbreviations
 
+### Composition Strategy
+
+A documented choice among Kiskadee's established mechanisms for representing a concern, such as a
+component, slot, variant, mode, option, profile, Effect, Headless primitive, Provider, Structural
+CSS, or Schema-to-Web composition pattern. Composition Strategies preserve the authority and
+handoffs of their linked definitions; they do not create new ownership by themselves.
+
+Composition Strategy is not a Schema property, runtime API, or claim that the selected mechanisms
+are mutually exclusive. One concern may combine multiple strategies when each owns a different
+responsibility.
+
 ### Family-resolved Icon
 
 An icon requested by `IconName` and resolved against the effective family and variant selected by
@@ -133,6 +144,8 @@ The iOS component project rooted at `packages/components/ios`.
 - Keep component-local vocabulary in that component's nearest documentation.
 - Keep general technical abbreviations out of this document unless Kiskadee assigns them a narrower
   normative meaning.
+- Do not name a new Composition Strategy until its recurring problem, eligibility, authority, and
+  canonical implementation are documented.
 - Use **DSPE taxonomy** when discussing the four visual domains collectively; use the individual
   domain name when ownership or behavior differs between them.
 - Capitalize **Schema**, **Style Key**, and **Showcase** when invoking their canonical Kiskadee
@@ -142,6 +155,9 @@ The iOS component project rooted at `packages/components/ios`.
 
 ## Related definitions
 
+- [Composition strategies](./composition-strategies.md) defines how to choose among components,
+  slots, variants, modes, profiles, Effects, Providers, platform mechanics, and Web composition
+  patterns.
 - [Schema-to-Web composition patterns](./schema-to-web-composition-patterns.md) centralizes CSC,
   SEP, and SUP and defines when each pattern applies.
 - [Icon consumption](./icon-consumption.md) defines the complete E-I, CP-I, family-resolution, and

@@ -51,6 +51,9 @@ keep task-specific workflows inside skills.
 - For changes or reviews that cross project boundaries, use
   `docs/definitions/project-governance.md` to identify the authority, allowed inputs, published
   handoff, and forbidden ownership for each concern.
+- Before introducing or materially changing a public component or slot, global profile or catalog,
+  Effect, Provider, or named structural pattern, use `docs/definitions/composition-strategies.md` to
+  choose the mechanism without transferring its documented authority.
 - Before editing any `*.structural.scss` file, or any structural Sass/CSS in `packages/components/react`, read
   `STRUCTURAL-CSS.md` and treat it as the source of truth for structural styling rules.
 
@@ -98,6 +101,8 @@ keep task-specific workflows inside skills.
 - `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
 - `docs/definitions/project-governance.md`: canonical authority, responsibility, consumption, and
   handoff boundaries between projects.
+- `docs/definitions/composition-strategies.md`: decision guide for choosing the correct component,
+  profile, Effect, Provider, platform, or build-composition mechanism.
 - `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
 - `STRUCTURAL-CSS.md`: structural Sass naming and scope rules.
 - `skills/kiskadee-architecture/SKILL.md`: architecture workflow for cross-package decisions.

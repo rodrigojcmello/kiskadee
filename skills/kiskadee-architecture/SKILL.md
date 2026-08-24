@@ -14,14 +14,16 @@ Read only what the task needs, in this order:
 
 1. `../../docs/definitions/project-governance.md` for project authority and handoffs
 2. `../../PROJECT-PURPOSE.md` for product context and the architecture overview
-3. `references/monorepo-map.md` as a quick routing summary
-4. `references/taxonomy-rules.md`
-5. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
-6. `../../packages/web-builder/docs/definitions/structural-utility-projections.md` when an existing
+3. `../../docs/definitions/composition-strategies.md` when choosing between a component, slot,
+   variant, mode, option, profile, Effect, Provider, platform mechanic, or Web composition pattern
+4. `references/monorepo-map.md` as a quick routing summary
+5. `references/taxonomy-rules.md`
+6. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
+7. `../../packages/web-builder/docs/definitions/structural-utility-projections.md` when an existing
    token-only scale utility may be conditionally reused by a different structural owner
-7. `../../STRUCTURAL-CSS.md` when structural Sass is involved
-8. `references/headless-react-patterns.md` for headless React work
-9. `references/testing-checklist.md` for validation planning
+8. `../../STRUCTURAL-CSS.md` when structural Sass is involved
+9. `references/headless-react-patterns.md` for headless React work
+10. `references/testing-checklist.md` for validation planning
 
 ## Follow this workflow
 
@@ -42,28 +44,34 @@ Read only what the task needs, in this order:
    For repository-governance surfaces, identify the nearest normative definition and verify that
    summaries, bootstrap documents, agent rules, and skills remain derived from it.
 
-3. Validate taxonomy fit using `references/taxonomy-rules.md`.
+3. Apply `../../docs/definitions/composition-strategies.md` when choosing or materially changing a
+component, slot, variant, mode, option, profile, Effect, Provider, Headless primitive, platform
+mechanic, or Schema-to-Web composition pattern.
 
-4. Validate project ownership using `../../docs/definitions/project-governance.md`. Use
+4. Validate taxonomy fit using `references/taxonomy-rules.md`.
+
+5. Validate project ownership using `../../docs/definitions/project-governance.md`. Use
    `references/monorepo-map.md` only for quick routing.
 
-5. If the task involves schema/build/runtime placement, validate ownership using
+6. If the task involves schema/build/runtime placement, validate ownership using
    `../../SCHEMA-BUILD-RUNTIME-RULES.md`.
 
-6. If a generated token-only scale utility may be applied to a wrapper or different structural
+7. If a generated token-only scale utility may be applied to a wrapper or different structural
    owner, apply
    `../kiskadee-structural-utility-projections/SKILL.md` before proposing a new bucket or runtime
    class reuse.
 
-7. If the task involves React headless components, apply `references/headless-react-patterns.md`.
+8. If the task involves React headless components, apply `references/headless-react-patterns.md`.
 
-8. If the task is "new component", apply the rollout checklist below.
+9. If the task is "new component", apply the rollout checklist below.
 
-9. End with a verification plan from `references/testing-checklist.md`.
+10. End with a verification plan from `references/testing-checklist.md`.
 
 ## Hard constraints
 
 - Follow project authority and handoffs from `../../docs/definitions/project-governance.md`.
+- Treat `../../docs/definitions/composition-strategies.md` as a routing guide. It does not transfer
+  authority or replace the complete contracts in its linked domain definitions.
 - Treat imports and implementation responsibilities as consumption evidence, not as transfer of
   authority.
 - Treat cross-project definitions, root architecture documents, agent instructions, and skills as
@@ -179,6 +187,7 @@ When giving architecture recommendations, structure the output as:
 
 - `../../PROJECT-PURPOSE.md`
 - `../../docs/definitions/project-governance.md`
+- `../../docs/definitions/composition-strategies.md`
 - `../../SCHEMA-BUILD-RUNTIME-RULES.md`
 - `../../STRUCTURAL-CSS.md`
 - `references/monorepo-map.md`

@@ -5,6 +5,10 @@ Status: canonical cross-package definition.
 This document centralizes the named Kiskadee patterns that connect Schema authorship to generated
 Web artifacts and Structural CSS. The patterns are complementary, not interchangeable.
 
+Use [Composition strategies](./composition-strategies.md) before this definition when the broader
+decision is still between a component, slot, profile, Effect, Provider, platform mechanic, or Web
+composition pattern.
+
 ## Pattern selection
 
 | Pattern | Use when | Authority retained by |

@@ -78,8 +78,9 @@ Practical rule:
 
 Example:
 
-- `tabs.options.tabWidthMode = 'auto' | 'fixed'` chooses the tab width behavior.
-- `tabs.variants.<type>.elements.e2.scales.boxWidth` provides the fixed width value.
+- `tabs.options.tabWidth = 'content' | 'fixed' | 'adaptive' | 'distributed'` chooses the tab width
+  behavior.
+- `tabs.variants.<variantName>.elements.e2.scales.boxWidth` provides the fixed width value.
 
 This matters because not every geometric value is always-on. Some values exist in the schema as available design tokens, but only become active when a component/runtime option selects them.
 
@@ -258,6 +259,10 @@ Practical rule:
 
 - [Project governance and responsibility](docs/definitions/project-governance.md)
   - Canonical authority, consumption, prohibition, and handoff boundaries for every project.
+
+- [Composition strategies](docs/definitions/composition-strategies.md)
+  - Decision guide for choosing among components, slots, variants, profiles, Effects, Providers,
+    platform mechanics, and Schema-to-Web composition patterns.
 
 - [SCHEMA-BUILD-RUNTIME-RULES.md](SCHEMA-BUILD-RUNTIME-RULES.md)
   - Operational rules for deciding what belongs in schema, artifacts, runtime, and structural Sass.

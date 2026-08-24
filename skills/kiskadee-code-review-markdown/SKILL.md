@@ -49,6 +49,7 @@ agents and to close that handoff after its findings are resolved.
 
 - Projects and governance surfaces inspected: <relevant project roots and repository-level surfaces>
 - Ownership sources: <normative definitions used>
+- Composition strategy: Used — <reason and selected strategy> | Not required — <reason>
 - Concern flows: <concern>: <authority> -> <transformers> -> <consumers>; result: respected | Finding N
 - Architecture skill: Used — <reason> | Not required — <reason>
 - Result: No responsibility-boundary violations found. | See Finding N.
@@ -78,25 +79,29 @@ agents and to close that handoff after its findings are resolved.
 Run this review for every diff, including changes confined to one project:
 
 1. Read `docs/definitions/project-governance.md`.
-2. Group changed files by governed project or repository-governance surface, then group them by
+2. Read `docs/definitions/composition-strategies.md` when the diff introduces or materially changes
+   a public component or slot, variant, mode, option, global profile or catalog, Effect, Provider,
+   Headless primitive, platform mechanic, or named structural composition pattern. Verify that the
+   selected strategy preserves the authority and handoff of its linked normative definition.
+3. Group changed files by governed project or repository-governance surface, then group them by
    concern. Treat cross-project definitions, root architecture documents, `AGENTS.md`,
    `CHAT-CONTEXT.md`, and `skills/**` as governance surfaces rather than implementation projects.
    Assign their authority through the documentation precedence in the canonical governance
    definition, not through their directory. Multiple projects changed for unrelated concerns do not
    form one cross-project flow.
-3. For each concern, identify the authority/source of truth, any transformers, the published handoff,
+4. For each concern, identify the authority/source of truth, any transformers, the published handoff,
    and every affected consumer.
    Do not use the changed file's location or import direction alone as proof of semantic authority.
    For a governance-surface concern, trace the normative definition to its derived summaries,
    instructions, skills, and review behavior.
-4. Verify that:
+5. Verify that:
    - the authority remains singular and is changed at the owning project when required;
    - consumers select, adapt, compose, or render the handoff without re-authoring upstream meaning;
    - generated artifacts and fixtures remain derived instead of becoming authoring sources;
    - platform adapters change mechanics without creating parallel Schema or design-system meaning;
    - Showcase remains a consumer and validator rather than a framework authority; and
    - affected consumers validate the changed handoff.
-5. Record the result in `## Governance Review` even when no violation exists.
+6. Record the result in `## Governance Review` even when no violation exists.
 
 Use `$kiskadee-architecture` when any of these conditions applies:
 
@@ -105,6 +110,7 @@ Use `$kiskadee-architecture` when any of these conditions applies:
   handoffs, prohibited ownership, or dependency direction;
 - the diff changes Schema/DSPE, a shared public contract, artifact format or emission, provider or
   runtime ownership, or dependency direction;
+- the diff introduces a named Composition Strategy or changes the eligibility of an existing one;
 - the diff creates or duplicates a source of truth;
 - normative documents disagree or leave the owner unclear; or
 - the review would need to claim that a concern belongs in another project.
@@ -124,6 +130,10 @@ A governance finding is actionable only when it:
 Architectural preference without a normative rule and concrete consequence is not a finding. If
 ownership remains ambiguous after architecture analysis, record the documentation gap under
 `Governance Review` or `Notes For Follow-up Agents` instead of accusing the implementation.
+
+A different Composition Strategy is not actionable by preference alone. Record a finding only when
+the chosen strategy violates a linked normative contract or creates a concrete ownership, handoff,
+semantic, artifact, or runtime consequence.
 
 ## Post-fix cleanup workflow
 
