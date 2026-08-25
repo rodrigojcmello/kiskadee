@@ -20,8 +20,11 @@
 .matrix { display: grid; gap: 16px; }
 .matrixRow { display: grid; gap: 10px; }
 .surfaceGrid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ownershipGrid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ownershipCard { border: 1px solid color-mix(in srgb, currentColor 12%, transparent); border-radius: 16px; display: grid; gap: 16px; min-inline-size: 0; padding: 20px; }
+.fixtureGrid { align-items: center; display: grid; gap: 14px; grid-template-columns: repeat(4, minmax(24px, max-content)); }
 .subtleSurface { background: #fff; color: #242424; }
 .vividSurface { background: #0f6cbd; color: #fff; }
 .unavailable { justify-content: center; }
-@media (max-width: 820px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .surfaceGrid { grid-template-columns: 1fr; } }
+@media (max-width: 820px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .surfaceGrid, .ownershipGrid { grid-template-columns: 1fr; } }
 @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }

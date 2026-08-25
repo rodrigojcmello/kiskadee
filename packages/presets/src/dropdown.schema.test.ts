@@ -78,9 +78,9 @@ describe('official preset Dropdown schemas', () => {
 
     expect(lightItem?.destructive?.medium?.hover).toBe('#fff4f2');
     expect(lightItem?.neutral?.medium?.selected).toEqual({
-      rest: '#e4e9f5',
-      hover: '#e4e9f5',
-      pressed: '#e4e9f5'
+      rest: '#eef2fc',
+      hover: '#eef2fc',
+      pressed: '#eef2fc'
     });
     expect(lightIcon?.neutral?.medium).toMatchObject({
       hover: { ref: '#0059a1' },

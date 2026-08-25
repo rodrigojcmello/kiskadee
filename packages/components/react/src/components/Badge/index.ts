@@ -2,8 +2,10 @@ export { Badge } from './Badge.tsx';
 export type {
   BadgeClassesMap,
   BadgeClassNames,
+  BadgeContainedMarkProps,
   BadgeDotProps,
+  BadgeFullBleedMarkProps,
+  BadgeMarkProps,
   BadgeProps,
-  BadgeSlotProps,
   BadgeVisualProps
 } from './Badge.types.ts';

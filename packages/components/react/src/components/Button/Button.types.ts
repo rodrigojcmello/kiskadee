@@ -21,7 +21,7 @@ export type { ButtonIconSurfaceCorners, ButtonIconTreatment } from '@kiskadee/co
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
@@ -40,6 +40,8 @@ export type ButtonDisclosureProps = Omit<HTMLAttributes<HTMLSpanElement>, 'child
 };
 
 export type ButtonBadgePlacement =
+  | 'inline-start'
+  | 'inline-end'
   | 'block-start-inline-start'
   | 'block-start-inline-end'
   | 'block-end-inline-start'

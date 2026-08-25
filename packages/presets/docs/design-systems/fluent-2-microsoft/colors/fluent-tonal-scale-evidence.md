@@ -17,6 +17,10 @@ rewritten.
   - node: `9738:5044`
 - [Badge status colors](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9202-10100)
   - node: `9202:10100`
+- [Badge component frame](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9329-22680)
+  - node: `9329:22680`
+- [Presence-mark inspiration](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9329-24127)
+  - node: `9329:24127`
 - [Presence status colors](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9329-16467)
   - node: `9329:16467`
 - [Field validation](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9159-203)
@@ -51,6 +55,13 @@ determine the Fluent seed used by Kiskadee.
 | Green `Primary` | `g.green.v1` | `#107c10` | Fluent success aliases use Green |
 | Light green `Primary` | `g.green.v1` semantic mapping | `#13a10e` | Evidence-only upstream ramp; Availability uses a lighter position of the single Green primitive |
 | Berry `Primary` | `p.purple.v1` | `#c239b3` | Fluent out-of-office aliases use Berry; OKLCH hue `332.77` classifies it in Munsell P |
+
+Badge uses these existing families without adding primitives: Blue for `primary`, Berry/Purple for
+the Kiskadee `novelty` convention, Green for `positive`, Orange for `warning`, and Cranberry for
+`attention`. `attention` reuses Fluent's red Danger visual without carrying destructive-action
+semantics. Badge intentionally has no second Severe-orange intent. The separation ring and outlined
+Badge surface use the absolute-white caps of `n.black.v1`, not a literal authored in the component
+schema.
 
 Red, Yellow, Pink, and Magenta also exist as complete Fluent Shared ramps, but
 the inspected semantic aliases do not use them for danger, away, or
@@ -264,6 +275,13 @@ Progress is documented in [`../components/progress.md`](../components/progress.m
 Green, Orange, Cranberry, and Neutral through one canonical `medium` profile per intent. Warning
 uses the existing Orange v1 family at L50/D55; no second Orange primitive is introduced.
 
+Badge is documented in [`../components/badge.md`](../components/badge.md). Its High and
+family-colored full-bleed presentations resolve each intent through that family's functional
+`vivid` reference rather than a shared tone. This maps Light Warning to Orange L24 `#f7630c`.
+Fluent's inspected Dark Warning source is an explicit per-theme exception at Orange D75
+`#e68962`; the exception remains preset-owned and does not change the Orange family's global Dark
+vivid reference at D40.
+
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent chromatic families at Layer 1. Layer 2 maps Blue to `primary`,
 the Fluent tinted neutral `n.black.v2` to `neutral`, Cranberry to `redLike`,
@@ -278,4 +296,4 @@ Card maps its source-backed Neutral surfaces through `n.black.v2`, while
 absolute white/black remain `n.black.v1` caps. Dark chroma moderation is owned
 by the tonal system and applies hue-independently to eligible support families;
 no Destructive-, Positive-, Neutral-, Button-, or Card-only compensation was
-introduced. Components beyond Button, Card, and Progress remain deferred.
+introduced. Components without their own source-evidence mapping remain deferred.

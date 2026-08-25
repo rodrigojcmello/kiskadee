@@ -58,6 +58,7 @@ This file records source evidence and color decisions for the Button currently a
 | On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 | Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
+| Passive Badge relation | No equivalent Fluent Button slot was used as source evidence | Inline label relation and external logical-corner overlays | Kiskadee extension |
 
 ## Official Size Contract
 
@@ -119,6 +120,18 @@ logical trailing placement as framework extensions for layouts such as full-widt
 The 4/6 px source-derived gap is still owned by `e3`; the Web Builder exposes it as a structural
 token so `leading` and `trailing` can use the same schema value without hardcoding direction in
 React or Sass.
+
+## Badge Relation
+
+Button `e7` (`button-badge-relation`) is an independently authored Kiskadee extension for passive
+Badge metadata next to a label. Its Small gap is 4 px and its Medium/Large gap is 6 px, matching the
+current content rhythm without reusing the icon slot or its generated classes. Web Builder emits
+both logical-side padding values as structural tokens; p-react selects the correct side for
+`inline-start` and `inline-end`.
+
+External Badge positions do not consume `e7`. Structural CSS anchors the wrapper to one of four
+logical corners and displaces it by half of the rendered Badge size, so no component-by-scale
+position table is introduced. Badge remains an independent Rest-only component in both relations.
 
 ## Connected Button Divider
 

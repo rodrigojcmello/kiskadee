@@ -38,53 +38,72 @@ type ElementScalesByProperty<T extends StandardScaleProperty> = Partial<
 export const badgeScales = ['s:sm:3', 's:sm:2', 's:sm:1', 's:md:1', 's:lg:1', 's:lg:2'] as const;
 export type BadgeScale = (typeof badgeScales)[number];
 export type BadgeEmphasis = 'high' | 'medium' | 'low' | 'lowest';
-export type BadgeElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5';
+export type BadgeSeparation = 'none' | 'ring';
+export type BadgeMarkPresentation = 'contained' | 'full-bleed';
+export type BadgeElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+
+type BadgeRadiusScales = {
+  borderRadius: {
+    square?: ScaleBySize | number;
+    rounded?: ScaleBySize | number;
+    pill?: ScaleBySize | number;
+  };
+};
 
 export type BadgeSurfaceElementStyle<TSegmentName extends SegmentName = never> = {
   name: string;
   decorations?: Pick<DecorationSchema, 'borderStyle'>;
   scales: ElementScalesByProperty<
     'boxHeight' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'borderWidth'
-  > & {
-    borderRadius: {
-      rounded?: ScaleBySize | number;
-      pill?: ScaleBySize | number;
-    };
-  };
+  > &
+    BadgeRadiusScales;
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'borderColor'>;
 };
 
-export type BadgeTextElementStyle<TSegmentName extends SegmentName = never> = {
+export type BadgeContentElementStyle<TSegmentName extends SegmentName = never> = {
   name: string;
   typography: ElementTypography;
-  scales?: ElementScalesByProperty<'marginLeft'>;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 };
 
-export type BadgeIconElementStyle<TSegmentName extends SegmentName = never> = {
+export type BadgeFullBleedMarkElementStyle<TSegmentName extends SegmentName = never> = {
   name: string;
   iconSize: ElementIconSize;
-  scales?: ElementScalesByProperty<'marginRight'>;
+  scales: BadgeRadiusScales;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 };
 
-export type BadgeDotElementStyle<TSegmentName extends SegmentName = never> = {
+export type BadgeContainedMarkElementStyle<TSegmentName extends SegmentName = never> = {
   name: string;
-  scales: ElementScalesByProperty<'boxHeight' | 'boxWidth'> & {
-    borderRadius: { pill: ScaleBySize | number };
-  };
+  iconSize: ElementIconSize;
+  palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
+};
+
+export type BadgeDotSurfaceElementStyle<TSegmentName extends SegmentName = never> = {
+  name: string;
+  decorations?: Pick<DecorationSchema, 'borderStyle'>;
+  scales: ElementScalesByProperty<'boxHeight' | 'boxWidth' | 'borderWidth'> & BadgeRadiusScales;
   palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'borderColor'>;
+};
+
+export type BadgeSeparationRingElementStyle<TSegmentName extends SegmentName = never> = {
+  name: string;
+  decorations?: Pick<DecorationSchema, 'borderStyle'>;
+  scales: ElementScalesByProperty<'borderWidth'> & BadgeRadiusScales;
+  palettes: ElementPalettesByColor<TSegmentName, 'borderColor'>;
 };
 
 export type BadgeElements<TSegmentName extends SegmentName = never> = {
   e1: BadgeSurfaceElementStyle<TSegmentName>;
-  e2: BadgeTextElementStyle<TSegmentName>;
-  e3: BadgeIconElementStyle<TSegmentName>;
-  e4: BadgeTextElementStyle<TSegmentName>;
-  e5: BadgeDotElementStyle<TSegmentName>;
+  e2: BadgeContentElementStyle<TSegmentName>;
+  e3: BadgeFullBleedMarkElementStyle<TSegmentName>;
+  e4: BadgeContainedMarkElementStyle<TSegmentName>;
+  e5: BadgeDotSurfaceElementStyle<TSegmentName>;
+  e6?: BadgeSeparationRingElementStyle<TSegmentName>;
 };
 
-const ELEMENT_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
+const ELEMENT_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
+const REQUIRED_ELEMENT_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
 const BASE_KEYS = ['name', 'decorations', 'iconSize', 'typography', 'scales', 'palettes'] as const;
 const INTENTS = Object.keys(BadgeIntentKeys) as BadgeIntent[];
 const EMPHASES: BadgeEmphasis[] = ['high', 'medium', 'low', 'lowest'];
@@ -101,15 +120,25 @@ const RULES = {
       'borderRadius'
     ],
     colors: ['boxColor', 'borderColor'] as ColorProperty[],
-    radius: ['rounded', 'pill']
+    radius: ['square', 'rounded', 'pill']
   },
-  e2: { scales: ['marginLeft'], colors: ['textColor'] as ColorProperty[], typography: true },
-  e3: { scales: ['marginRight'], colors: ['textColor'] as ColorProperty[], iconSize: true },
-  e4: { scales: ['marginLeft'], colors: ['textColor'] as ColorProperty[], typography: true },
-  e5: {
-    scales: ['boxHeight', 'boxWidth', 'borderRadius'],
-    colors: ['boxColor', 'borderColor'] as ColorProperty[],
+  e2: { scales: [], colors: ['textColor'] as ColorProperty[], typography: true },
+  e3: {
+    scales: ['borderRadius'],
+    colors: ['textColor'] as ColorProperty[],
+    iconSize: true,
     radius: ['pill']
+  },
+  e4: { scales: [], colors: ['textColor'] as ColorProperty[], iconSize: true },
+  e5: {
+    scales: ['boxHeight', 'boxWidth', 'borderWidth', 'borderRadius'],
+    colors: ['boxColor', 'borderColor'] as ColorProperty[],
+    radius: ['square', 'rounded', 'pill']
+  },
+  e6: {
+    scales: ['borderWidth', 'borderRadius'],
+    colors: ['borderColor'] as ColorProperty[],
+    radius: ['square', 'rounded', 'pill']
   }
 } as const;
 
@@ -123,9 +152,16 @@ export function validateBadgeComponentContract(
   if (!isContractRecord(value.elements)) return [...issues, `${path}.elements: expected object`];
   validateContractKeys(value.elements, ELEMENT_KEYS, `${path}.elements`, issues);
 
+  for (const elementName of REQUIRED_ELEMENT_KEYS) {
+    if (value.elements[elementName] === undefined) {
+      issues.push(`${path}.elements.${elementName}: expected object`);
+    }
+  }
+
   for (const elementName of ELEMENT_KEYS) {
     const elementPath = `${path}.elements.${elementName}`;
     const element = value.elements[elementName];
+    if (element === undefined && elementName === 'e6') continue;
     if (!validateNamedElement(element, BASE_KEYS, elementPath, issues)) continue;
     const rule = RULES[elementName];
     if ('iconSize' in rule) {
@@ -147,7 +183,12 @@ export function validateBadgeComponentContract(
         `${elementPath}.scales`,
         issues
       );
-    } else if (elementName === 'e1' || elementName === 'e5') {
+    } else if (
+      elementName === 'e1' ||
+      elementName === 'e3' ||
+      elementName === 'e5' ||
+      elementName === 'e6'
+    ) {
       issues.push(`${elementPath}.scales: expected object`);
     }
     validateComponentPalettes(

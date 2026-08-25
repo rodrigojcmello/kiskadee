@@ -35,12 +35,24 @@ describe('Button Web style-emission policy', () => {
     expect(disclosurePolicy).not.toHaveProperty('borderWidthEmission');
     expect(disclosurePolicy).not.toHaveProperty('borderColorEmission');
   });
+
+  it('publishes inline Badge relation spacing as logical structural tokens', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'button',
+      'e7'
+    );
+
+    expect(policy.paddingLeftEmission).toBe('token');
+    expect(policy.paddingRightEmission).toBe('token');
+  });
 });
 
 describe('Badge and Chip Web style-emission policy', () => {
   it('publishes every owned icon viewport as structural tokens', () => {
     for (const [component, element] of [
       ['badge', 'e3'],
+      ['badge', 'e4'],
       ['chip', 'e4'],
       ['chip', 'e6']
     ] as const) {
@@ -52,6 +64,16 @@ describe('Badge and Chip Web style-emission policy', () => {
       expect(policy.boxWidthEmission).toBe('token');
       expect(policy.boxHeightEmission).toBe('token');
     }
+  });
+
+  it('publishes the Badge separation-ring width as a structural token', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'badge',
+      'e6'
+    );
+
+    expect(policy.borderWidthEmission).toBe('token');
   });
 });
 

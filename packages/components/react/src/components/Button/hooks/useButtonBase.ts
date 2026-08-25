@@ -63,7 +63,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     globalEffects,
     options
   } = useButtonArtifactConfig();
-  const { e1, e2, e3, e4, e5, e6 } = buttonClassesMap ?? {};
+  const { e1, e2, e3, e4, e5, e6, e7 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
   const iconLayout = iconLayoutProp ?? options.iconLayout;
   const iconPlacement = iconPlacementProp ?? options.iconPlacement;
@@ -121,6 +121,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     e4,
     e5,
     e6,
+    e7,
     buttonClassesMapPending,
     componentEffects,
     contentSurfaceContext,
@@ -148,6 +149,7 @@ export function useButtonClassNamesFromCommon(
         e4: common.e4,
         e5: common.e5,
         e6: common.e6,
+        e7: common.e7,
         classNames: common.classNames,
         status: options.statusOverride ?? common.status,
         controlState: common.controlState,
@@ -171,6 +173,7 @@ export function useButtonClassNamesFromCommon(
       common.e4,
       common.e5,
       common.e6,
+      common.e7,
       common.classNames,
       options.statusOverride,
       common.status,

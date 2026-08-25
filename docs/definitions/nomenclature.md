@@ -67,8 +67,20 @@ structural owner can consume the same class reference without copying its value.
 
 ### Badge
 
-A passive component that represents metadata, status, novelty, an icon, or a count associated with
-another entity. Badge owns no activation, selection, removal, or interaction state.
+A passive component that represents metadata associated with another entity as a dot, short text or
+number, or icon-only Mark. Badge owns no activation, selection, removal, or interaction state.
+Icon-plus-label content belongs to Chip, not Badge.
+
+### Badge Mark
+
+The icon-only Badge anatomy. A contained Mark places one Consumer-provided Icon inside an authored
+pill surface; a full-bleed Mark lets one artwork fill the Badge viewport. Mark never includes text
+or a number.
+
+### Badge Separation Ring
+
+An optional Schema-authored outline outside a Badge that separates overlaid metadata from its host.
+Badge owns the ring color and width; Structural CSS owns only its placement and negative inset.
 
 ### Chip
 

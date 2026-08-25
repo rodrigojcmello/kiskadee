@@ -11,11 +11,11 @@ Meaning and behavior determine component identity; visual complexity does not.
 
 | Component | Represents | Interaction ownership |
 | --- | --- | --- |
-| Badge | Passive metadata, status, novelty, icon, or count | None |
+| Badge | Passive metadata as a dot, short text/number, or icon-only Mark | None |
 | Chip | An entity, filter, choice, or removable value | Selection and/or removal |
 | Button | A command or navigation action | Activation |
 
-Badge is adjectival metadata such as `new`, `12`, `verified`, or `critical`. Chip is a represented
+Badge is adjectival metadata such as `new`, `12`, or an icon-only verified mark. Chip is a represented
 noun or value such as `Marketing`, `Brazil`, or `Active`. Button is a verb or command such as
 `Save`, `Open`, or `Add`.
 
@@ -28,10 +28,26 @@ Badge is an independent passive component whose visual state contract is Rest-on
 limits interaction states; it does not limit theme, segment, surface context, intent, emphasis,
 scale, radius, or data updates.
 
-Badge supports a dot, passive icon, count, label, and compound passive content. `Badge.Count` is an
-auxiliary count inside the same composition, not a nested Badge. `Badge.Icon` is a Consumer-provided
-Icon (CP-I). Badge does not own activation, focus, selection, removal, or announcements. Icon-only
-meaning requires an accessible description on the Badge or its associated host.
+Badge supports exactly three public anatomies:
+
+- the root accepts one `string` or `number`;
+- `Badge.Dot` is content-free and always uses filled/high presentation;
+- `Badge.Mark` accepts exactly one Consumer-provided Icon (CP-I).
+
+`Badge.Icon`, `Badge.Label`, and `Badge.Count` do not exist. Icon-plus-label compositions belong to
+Chip. A contained Mark uses an authored pill surface with a smaller icon and supports all four
+emphases. A full-bleed Mark has no authored background, border, or padding; its artwork fills the
+viewport, may be bi-color, and uses the strong intent color without an emphasis option. Icon-only
+meaning requires an accessible description on Badge or its associated host.
+
+Text Badge supports `square`, `rounded`, and `pill`; Dot and Mark are forced to `pill`. All three
+indicator anatomies support the six Badge scales. `attention` is the portability default intent.
+The public intents are `neutral`, `primary`, `novelty`, `positive`, `warning`, and `attention`.
+
+Badge optionally owns a `separation="ring"` outline for overlays. The ring is a distinct visual
+owner: its color, width, and radius are Schema-owned, while Structural CSS owns only positioning and
+negative inset. If the ring element is absent or unresolved, the complete ring is omitted without a
+fallback. Button.Badge never owns this visual treatment.
 
 The initial Badge contract rejects Hover, Pressed, Focus, Selected, Disabled, Pending, Read-only,
 Filled, and Effects. A Badge nested in Button or Chip remains in Rest and does not inherit the
@@ -66,21 +82,28 @@ targets. This composition never produces a button inside another button.
 
 `Chip.Icon` is CP-I. `Chip.Remove` consumes the `close` Essential Icon (E-I), with explicit children
 as an override. When neither is available, the entire Remove affordance is omitted and p-react emits
-a development warning. `Chip.Badge` owns only the Schema-authored relation spacing; the nested Badge
-preserves its own identity and Rest state.
+a development warning. `Chip.Badge` is valid only inside `Chip.Content` or `Chip.Select`; it owns
+only the Schema-authored relation spacing. The nested Badge preserves its own identity and Rest
+state.
 
 Chip does not provide a generic command-only mode. Compact actions remain Button. Chip group
 selection semantics are outside the individual Chip contract.
 
 ## Badge in Button
 
-`Button.Badge` positions an independent Badge at a logical corner of Button. The wrapper is
-Structural CSS, not a Button Schema element. It is non-interactive, has no pointer events, and does
-not project Button interaction states onto Badge. Logical positions work in both LTR and RTL.
+`Button.Badge` composes an independent Badge in one of two relations:
 
-Button establishes the containing block only when a direct `Button.Badge` is present. Badge remains
-visible and in Rest when Button is disabled. Inline Badge content inside Button's regular flow is
-not part of this contract.
+- `inline-start` and `inline-end` stay adjacent to the Button label. Button `e7`
+  (`button-badge-relation`) owns only the logical gap; Structural CSS groups the relation with the
+  label.
+- the four block/inline corner combinations are external overlays. Structural CSS owns their
+  logical anchoring and displacement relative to the rendered Badge size.
+
+The wrapper is non-interactive, has no pointer events, and does not project Button interaction
+states onto Badge. Logical positions work in both LTR and RTL. Button establishes an unclipped
+containing block only for external overlays. Badge remains visible and in Rest when Button is
+disabled. If an active preset omits `e7`, inline Button Badges are omitted as one unsupported
+relation; external placement remains available.
 
 ## Surface Context
 

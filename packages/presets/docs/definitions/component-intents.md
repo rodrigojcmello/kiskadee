@@ -274,8 +274,8 @@ type SystemButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
 type ExternalButtonIntent = `brand.${string}`;
 type ButtonIntent = SystemButtonIntent | ExternalButtonIntent;
 
-// Badge intents
-type BadgeIntent = 'primary' | 'neutral' | 'attention' | 'new';
+// Passive Badge metadata intents
+type BadgeIntent = 'neutral' | 'primary' | 'novelty' | 'positive' | 'warning' | 'attention';
 
 // Avatar status
 type AvatarStatus = 'online' | 'offline' | 'busy' | 'away';
@@ -304,7 +304,8 @@ Carbon):
   (`greenLike`).
 - Buttons: no yellow buttons, no purple buttons, because they are not used in
   practice.
-- Badges: `primary`, `neutral`, `attention` (`redLike` or `purpleLike`).
+- Badges: `neutral`, `primary`, `novelty` (`purpleLike`), `positive` (`greenLike`), `warning`
+  (`yellowLike`, optionally `v2`), and `attention` (`redLike`). Badge has no destructive intent.
 - Inputs: `error` (`redLike`), `success` (`greenLike`).
 
 This is opinion based on real-world usage, not theoretical completeness. If a

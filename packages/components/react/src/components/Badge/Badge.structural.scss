@@ -1,6 +1,6 @@
 /*
  * element badge surface / e1
- * Aligns passive content within the generated badge geometry.
+ * Aligns one passive text or number within the generated badge geometry.
  */
 .k-bdg-e1 {
   align-items: center;
@@ -9,23 +9,49 @@
   inline-size: fit-content;
   justify-content: center;
   max-inline-size: 100%;
+  position: relative;
   vertical-align: middle;
   white-space: nowrap;
 }
 
 /*
- * element badge label / e2
- * Keeps the primary passive content in the badge flow.
+ * element badge content / e2
+ * Owns the single text or number value.
  */
 .k-bdg-e2 {
   min-inline-size: 0;
 }
 
 /*
- * element badge icon / e3
- * Normalizes consumer-provided icon content to the generated viewport.
+ * element full-bleed mark / e3
+ * Lets one consumer-provided artwork fill the complete badge viewport.
  */
 .k-bdg-e3 {
+  align-items: center;
+  block-size: var(--k-bxh);
+  display: inline-flex;
+  flex: 0 0 auto;
+  inline-size: var(--k-bxw);
+  position: relative;
+  vertical-align: middle;
+}
+
+/*
+ * element full-bleed mark / e3
+ * Clips only the artwork so the sibling separation ring can extend past the viewport.
+ */
+.k-bdg-e3 > :not(.k-bdg-e6) {
+  block-size: 100%;
+  border-radius: inherit;
+  inline-size: 100%;
+  overflow: hidden;
+}
+
+/*
+ * element contained mark icon / e4
+ * Centers the smaller icon in the generated pill surface.
+ */
+.k-bdg-e4 {
   align-items: center;
   block-size: var(--k-bxh);
   display: inline-flex;
@@ -34,30 +60,32 @@
   justify-content: center;
 }
 
-/*
- * element badge icon / e3
- * Lets direct vector artwork fill the owned icon viewport.
- */
-.k-bdg-e3 > svg {
+.k-bdg-e4 > :first-child {
   block-size: 100%;
   inline-size: 100%;
 }
 
 /*
- * element badge count / e4
- * Keeps auxiliary count content distinct inside the passive composition.
+ * element dot surface / e5
+ * Owns Dot geometry and the contained Mark surface.
  */
-.k-bdg-e4 {
+.k-bdg-e5 {
+  align-items: center;
+  box-sizing: border-box;
+  display: inline-flex;
   flex: 0 0 auto;
+  justify-content: center;
+  position: relative;
+  vertical-align: middle;
 }
 
 /*
- * element badge dot / e5
- * Renders the generated circular metadata surface without content.
+ * element separation ring / e6
+ * Uses the Schema-emitted width for both its border and external inset.
  */
-.k-bdg-e5 {
-  box-sizing: border-box;
-  display: inline-block;
-  flex: 0 0 auto;
-  vertical-align: middle;
+.k-bdg-e6 {
+  border-width: var(--k-bdw);
+  inset: calc(-1 * var(--k-bdw));
+  pointer-events: none;
+  position: absolute;
 }

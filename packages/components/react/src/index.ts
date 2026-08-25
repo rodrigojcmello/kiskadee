@@ -28,8 +28,8 @@ export {
 } from '@kiskadee/icons/interface';
 export type {
   MenuTree,
-  MenuTreeCheckboxItem,
   MenuTreeCheckboxGroup,
+  MenuTreeCheckboxItem,
   MenuTreeCommandNode,
   MenuTreeGroup,
   MenuTreeGroupNode,
@@ -62,6 +62,17 @@ export type {
   AdaptiveButtonMenuTriggerProps
 } from './components/AdaptiveButtonMenu';
 export { AdaptiveButtonMenu } from './components/AdaptiveButtonMenu';
+export type {
+  BadgeClassesMap,
+  BadgeClassNames,
+  BadgeContainedMarkProps,
+  BadgeDotProps,
+  BadgeFullBleedMarkProps,
+  BadgeMarkProps,
+  BadgeProps,
+  BadgeVisualProps
+} from './components/Badge';
+export { Badge } from './components/Badge';
 export type {
   BottomSheetBehaviorProps,
   BottomSheetBodyProps,
@@ -98,15 +109,6 @@ export type {
   BottomSheetMenuTriggerProps
 } from './components/BottomSheetMenu';
 export { BottomSheetMenu } from './components/BottomSheetMenu';
-export type {
-  BadgeClassNames,
-  BadgeClassesMap,
-  BadgeDotProps,
-  BadgeProps,
-  BadgeSlotProps,
-  BadgeVisualProps
-} from './components/Badge';
-export { Badge } from './components/Badge';
 export type {
   ButtonActivationFeedbackEffect,
   ButtonArtifactConfig,
@@ -152,8 +154,8 @@ export type {
 } from './components/Card';
 export { Card, CardAction, useCardArtifactConfig } from './components/Card';
 export type {
-  ChipClassNames,
   ChipClassesMap,
+  ChipClassNames,
   ChipContentProps,
   ChipProps,
   ChipRemoveProps,
@@ -341,17 +343,17 @@ export type {
   KiskadeeLayoutEnvironment
 } from './shared/contexts/KiskadeeContext.tsx';
 export { KiskadeeContext, useKiskadee } from './shared/contexts/KiskadeeContext.tsx';
+export type {
+  ShowcaseContextValue,
+  ShowcaseFontRole
+} from './shared/contexts/ShowcaseContext.tsx';
+export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';
 export type { SurfaceContextProviderProps } from './shared/contexts/SurfaceContext.tsx';
 export {
   resolveContentSurfaceContext,
   SurfaceContextProvider,
   useSurfaceContext
 } from './shared/contexts/SurfaceContext.tsx';
-export type {
-  ShowcaseContextValue,
-  ShowcaseFontRole
-} from './shared/contexts/ShowcaseContext.tsx';
-export { ShowcaseContext, useShowcase } from './shared/contexts/ShowcaseContext.tsx';
 export type {
   MenuTreeIconNode,
   MenuTreeIconRenderer

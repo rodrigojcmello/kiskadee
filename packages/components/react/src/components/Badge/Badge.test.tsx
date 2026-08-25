@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 import { cleanup, render, screen } from '@testing-library/react';
-import { Fragment } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   KiskadeeContext,
@@ -20,37 +20,42 @@ const context: KiskadeeContextValue = {
   setTheme: () => {}
 };
 
+const ringContext: KiskadeeContextValue = {
+  ...context,
+  classesMap: {
+    badge: {
+      e1: {
+        d: 'badge-surface',
+        rs: { all: 'badge-surface-square' },
+        rr: { all: 'badge-surface-rounded' },
+        rp: { all: 'badge-surface-pill' }
+      },
+      e3: { d: 'badge-full-bleed', rp: { all: 'badge-full-bleed-pill' } },
+      e6: {
+        d: 'badge-ring',
+        rs: { all: 'badge-ring-square' },
+        rr: { all: 'badge-ring-rounded' },
+        rp: { all: 'badge-ring-pill' }
+      }
+    }
+  }
+};
+
 afterEach(cleanup);
 
 describe('Badge', () => {
-  it('normalizes direct passive content and keeps compound slots non-interactive', () => {
+  it('renders one passive text or number value without an interactive role', () => {
     const result = render(
       <KiskadeeContext.Provider value={context}>
-        <Badge data-testid="badge">
-          Verified
-          <Badge.Count>3</Badge.Count>
-        </Badge>
+        <Badge data-testid="badge">Verified</Badge>
+        <Badge data-testid="count">3</Badge>
       </KiskadeeContext.Provider>
     );
 
     expect(result.getByTestId('badge').tagName).toBe('SPAN');
     expect(screen.getByText('Verified').className).toContain('k-bdg-e2');
-    expect(screen.getByText('3').className).toContain('k-bdg-e4');
+    expect(screen.getByText('3').className).toContain('k-bdg-e2');
     expect(result.queryByRole('button')).toBeNull();
-  });
-
-  it('normalizes direct content nested in transparent Fragments', () => {
-    render(
-      <KiskadeeContext.Provider value={context}>
-        <Badge>
-          <Fragment key="outer">
-            <Fragment key="inner">Verified</Fragment>
-          </Fragment>
-        </Badge>
-      </KiskadeeContext.Provider>
-    );
-
-    expect(screen.getByText('Verified').className).toContain('k-bdg-e2');
   });
 
   it('renders a content-free dot and consumes a nested surface context', () => {
@@ -66,5 +71,90 @@ describe('Badge', () => {
     expect(dot.className).toContain('k-bdg-e5');
     expect(dot.childNodes).toHaveLength(0);
     expect(dot.getAttribute('aria-label')).toBe('New notification');
+  });
+
+  it('renders contained and full-bleed Marks as distinct icon-only anatomies', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <Badge.Mark data-testid="contained">
+          <svg data-testid="contained-icon" />
+        </Badge.Mark>
+        <Badge.Mark data-testid="full-bleed" presentation="full-bleed">
+          <svg data-testid="full-bleed-icon" />
+        </Badge.Mark>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.getByTestId('contained').className).toContain('k-bdg-e5');
+    expect(result.getByTestId('contained-icon').parentElement?.className).toContain('k-bdg-e4');
+    expect(result.getByTestId('full-bleed').className).toContain('k-bdg-e3');
+    expect(result.getByTestId('full-bleed-icon').parentElement).toBe(
+      result.getByTestId('full-bleed')
+    );
+  });
+
+  it('omits the separation-ring wrapper when e6 is unavailable', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <Badge.Dot data-testid="dot" separation="ring" />
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.getByTestId('dot').querySelector('.k-bdg-e6')).toBeNull();
+  });
+
+  it('renders a resolved ring around full-bleed Marks and follows the text Badge radius', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={ringContext}>
+        <Badge data-testid="square" radius="square" separation="ring">
+          12
+        </Badge>
+        <Badge data-testid="rounded" radius="rounded" separation="ring">
+          New
+        </Badge>
+        <Badge.Mark data-testid="full-bleed" presentation="full-bleed" separation="ring">
+          <svg />
+        </Badge.Mark>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.getByTestId('square').querySelector('.k-bdg-e6')?.className).toContain(
+      'badge-ring-square'
+    );
+    expect(result.getByTestId('rounded').querySelector('.k-bdg-e6')?.className).toContain(
+      'badge-ring-rounded'
+    );
+    expect(result.getByTestId('full-bleed').querySelector('.k-bdg-e6')?.className).toContain(
+      'badge-ring-pill'
+    );
+  });
+
+  it('rejects compound Badge content and full-bleed emphasis at runtime', () => {
+    const UnsafeBadge = Badge as unknown as ComponentType<{ children: ReactNode }>;
+    const UnsafeMark = Badge.Mark as unknown as ComponentType<{
+      children: ReactNode;
+      emphasis?: string;
+      presentation: string;
+    }>;
+
+    expect(() =>
+      render(
+        <KiskadeeContext.Provider value={context}>
+          <UnsafeBadge>
+            <span>Invalid</span>
+          </UnsafeBadge>
+        </KiskadeeContext.Provider>
+      )
+    ).toThrow('Badge requires exactly one string or number child.');
+
+    expect(() =>
+      render(
+        <KiskadeeContext.Provider value={context}>
+          <UnsafeMark presentation="full-bleed" emphasis="low">
+            <svg />
+          </UnsafeMark>
+        </KiskadeeContext.Provider>
+      )
+    ).toThrow('Badge.Mark does not accept emphasis when presentation is full-bleed.');
   });
 });

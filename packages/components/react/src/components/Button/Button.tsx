@@ -36,6 +36,7 @@ import {
   resolveButtonGroupClassName
 } from './Button.class-names.ts';
 import type {
+  ButtonBadgePlacement,
   ButtonBadgeProps,
   ButtonClassesMap,
   ButtonDisclosureProps,
@@ -74,17 +75,32 @@ const ButtonBadge = forwardRef<HTMLSpanElement, ButtonBadgeProps>(function Butto
   { className, placement = 'block-start-inline-end', ...props },
   ref
 ) {
+  const { badgeRelationClassName, inlineBadgeAllowed } = useButtonRuntimeContext('Button.Badge');
+  const inline = isInlineBadgePlacement(placement);
+
+  if (inline && (!badgeRelationClassName || !inlineBadgeAllowed)) return null;
+
   return (
-    <span {...props} ref={ref} className={join('k-btn-x4', `k-btn-x4-${placement}`, className)} />
+    <span
+      {...props}
+      ref={ref}
+      className={join(
+        inline ? badgeRelationClassName : 'k-btn-x4',
+        inline ? `k-btn-e7-${placement}` : `k-btn-x4-${placement}`,
+        className
+      )}
+    />
   );
 });
 
 type ButtonRuntimeContextValue = {
+  badgeRelationClassName: string | undefined;
   disclosureDividerClassName: string | undefined;
   iconRegionClassName: string | undefined;
   iconTreatment: ButtonIconTreatment;
   progressAllowed: boolean;
   progressWarningRequired: boolean;
+  inlineBadgeAllowed: boolean;
 };
 
 const ButtonRuntimeContext = createContext<ButtonRuntimeContextValue | null>(null);
@@ -261,13 +277,54 @@ function normalizeButtonChildren(
   return normalizedChildren.length > 0 ? normalizedChildren : undefined;
 }
 
+function isInlineBadgePlacement(placement: ButtonBadgePlacement | undefined): boolean {
+  return placement === 'inline-start' || placement === 'inline-end';
+}
+
+function getButtonBadgePlacement(child: ReactNode): ButtonBadgePlacement | undefined {
+  if (!isValidElement<ButtonBadgeProps>(child) || child.type !== ButtonBadge) return undefined;
+  return child.props.placement ?? 'block-start-inline-end';
+}
+
+function composeInlineButtonBadges(children: ReactNode, enabled: boolean): ReactNode {
+  if (!enabled) return children;
+
+  const childArray = flattenFragmentChildren(children);
+  const labels = childArray.filter(
+    (child) => isValidElement(child) && child.type === HeadlessButton.Label
+  );
+  const inlineStartBadges = childArray.filter(
+    (child) => getButtonBadgePlacement(child) === 'inline-start'
+  );
+  const inlineEndBadges = childArray.filter(
+    (child) => getButtonBadgePlacement(child) === 'inline-end'
+  );
+  const grouped = new Set([...labels, ...inlineStartBadges, ...inlineEndBadges]);
+  let inserted = false;
+
+  return childArray.flatMap((child) => {
+    if (!grouped.has(child)) return [child];
+    if (inserted) return [];
+    inserted = true;
+    return [
+      <span className="k-btn-x5" key="button-inline-badge-group">
+        {inlineStartBadges}
+        {labels}
+        {inlineEndBadges}
+      </span>
+    ];
+  });
+}
+
 function getButtonContentSlots(children: ReactNode): {
-  hasBadge: boolean;
+  hasInlineBadge: boolean;
+  hasOverlayBadge: boolean;
   hasDisclosure: boolean;
   hasIcon: boolean;
   hasLabel: boolean;
 } {
-  let hasBadge = false;
+  let hasInlineBadge = false;
+  let hasOverlayBadge = false;
   let hasDisclosure = false;
   let hasIcon = false;
   let hasLabel = false;
@@ -275,7 +332,8 @@ function getButtonContentSlots(children: ReactNode): {
   for (const child of flattenFragmentChildren(children)) {
     if (!isValidElement(child)) continue;
     if (child.type === ButtonBadge) {
-      hasBadge = true;
+      if (isInlineBadgePlacement(getButtonBadgePlacement(child))) hasInlineBadge = true;
+      else hasOverlayBadge = true;
     }
     if (child.type === ButtonIcon) {
       hasIcon = true;
@@ -288,7 +346,7 @@ function getButtonContentSlots(children: ReactNode): {
     }
   }
 
-  return { hasBadge, hasDisclosure, hasIcon, hasLabel };
+  return { hasInlineBadge, hasOverlayBadge, hasDisclosure, hasIcon, hasLabel };
 }
 
 const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoot(props, ref) {
@@ -468,6 +526,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
   );
   const runtimeContextValue = useMemo<ButtonRuntimeContextValue>(
     () => ({
+      badgeRelationClassName: baseClassNames.e7,
       disclosureDividerClassName:
         common.options.disclosureDivider === true &&
         contentSlots.hasDisclosure &&
@@ -476,6 +535,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
           : undefined,
       iconRegionClassName: baseClassNames.e4,
       iconTreatment: activeIconTreatment,
+      inlineBadgeAllowed: contentSlots.hasLabel,
       progressAllowed: activationFeedbackController.visualStatus === 'pending',
       progressWarningRequired: common.pending !== true && common.status !== 'pending'
     }),
@@ -484,12 +544,18 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       activeIconTreatment,
       baseClassNames.e6,
       baseClassNames.e4,
+      baseClassNames.e7,
       common.options.disclosureDivider,
       common.pending,
       common.status,
       contentSlots.hasDisclosure,
       contentSlots.hasLabel
     ]
+  );
+  const inlineBadgesSupported = Boolean(baseClassNames.e7) && contentSlots.hasLabel;
+  const composedChildren = useMemo(
+    () => composeInlineButtonBadges(normalizedChildren, inlineBadgesSupported),
+    [inlineBadgesSupported, normalizedChildren]
   );
   const producedSurfaceContext = resolveContentSurfaceContext({
     map: common.contentSurfaceContext,
@@ -525,6 +591,27 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     contentSlots.hasDisclosure,
     contentSlots.hasLabel
   ]);
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      common.buttonClassesMapPending ||
+      !contentSlots.hasInlineBadge ||
+      inlineBadgesSupported
+    ) {
+      return;
+    }
+
+    console.warn(
+      contentSlots.hasLabel
+        ? '[Kiskadee] Inline Button.Badge requires Button.e7 support from the active preset.'
+        : '[Kiskadee] Inline Button.Badge requires a Button.Label sibling.'
+    );
+  }, [
+    common.buttonClassesMapPending,
+    contentSlots.hasInlineBadge,
+    contentSlots.hasLabel,
+    inlineBadgesSupported
+  ]);
   const hostRef = useCallback(
     (node: HTMLButtonElement | null) => {
       activationFeedbackController.hostRef.current = node;
@@ -546,7 +633,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
         aria-pressed={activationFeedbackController.ariaPressed}
         classNames={{
           ...computedClassNames,
-          e1: join(computedClassNames.e1, contentSlots.hasBadge ? 'k-btn-e1j' : undefined)
+          e1: join(computedClassNames.e1, contentSlots.hasOverlayBadge ? 'k-btn-e1j' : undefined)
         }}
         ref={hostRef}
         onClick={activationFeedbackController.handlers.onClick}
@@ -559,7 +646,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
         tabIndex={common.tabIndex ?? 0}
       >
         <SurfaceContextProvider value={producedSurfaceContext}>
-          {normalizedChildren}
+          {composedChildren}
         </SurfaceContextProvider>
       </HeadlessButton>
     </ButtonRuntimeContext.Provider>

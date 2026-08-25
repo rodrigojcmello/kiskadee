@@ -23,6 +23,7 @@ const semanticKeys = [
   'redLike',
   'yellowLike',
   'greenLike',
+  'purpleLike',
   'neutral'
 ] as const satisfies SemanticColor[];
 

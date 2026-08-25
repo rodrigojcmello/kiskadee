@@ -15,8 +15,8 @@ surfaces. The Chip therefore remains visually continuous without nesting either 
 
 `Chip.Icon` accepts Consumer-provided Icon content. `Chip.Remove` uses the `close` Essential Icon
 unless explicit children are supplied. If neither resolves, p-react omits the complete Remove
-affordance and warns in development. `Chip.Badge` applies only authored relation spacing around an
-independent Rest-only Badge.
+affordance and warns in development. `Chip.Badge` is valid only inside `Chip.Content` or
+`Chip.Select`; it applies only authored relation spacing around an independent Rest-only Badge.
 
 Chip consumes its surrounding Surface Context and publishes the surface authored for descendants
 inside Content or Select. Remove remains a sibling and does not inherit that primary content

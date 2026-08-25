@@ -160,6 +160,36 @@ export default function ChipShowcase() {
 
           <section className={styles.section}>
             <Text as="h3" profile={profiles.sectionTitle}>
+              Inline Badge metadata
+            </Text>
+            <Text as="p" profile={profiles.body} className={styles.note}>
+              Chip owns the inline relation; Badge keeps its passive Rest-only identity.
+            </Text>
+            <div className={styles.stage}>
+              <Chip>
+                <Chip.Content>
+                  <Chip.Label>Pull requests</Chip.Label>
+                  <Chip.Badge>
+                    <Badge intent="neutral">12</Badge>
+                  </Chip.Badge>
+                </Chip.Content>
+              </Chip>
+              <Chip intent="primary">
+                <Chip.Select defaultControlState>
+                  <Chip.Icon>
+                    <FamilyResolvedIcon name="rocket" />
+                  </Chip.Icon>
+                  <Chip.Label>Copilot</Chip.Label>
+                  <Chip.Badge>
+                    <Badge intent="novelty">New</Badge>
+                  </Chip.Badge>
+                </Chip.Select>
+              </Chip>
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <Text as="h3" profile={profiles.sectionTitle}>
               Controlled and uncontrolled selection
             </Text>
             <div className={styles.stage}>

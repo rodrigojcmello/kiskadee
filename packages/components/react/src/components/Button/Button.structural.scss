@@ -131,6 +131,35 @@
 }
 
 /*
+ * extra element for e1 / x5
+ * Keeps inline Badge relations adjacent to the label as one Button content group.
+ */
+.k-btn-x5 {
+  align-items: center;
+  display: inline-flex;
+  min-inline-size: 0;
+}
+
+/*
+ * element inline Badge relation / e7
+ * Keeps passive metadata in normal flow without intercepting Button input.
+ */
+.k-btn-e7 {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  pointer-events: none;
+}
+
+.k-btn-e7-inline-start {
+  padding-inline-end: var(--k-pdr);
+}
+
+.k-btn-e7-inline-end {
+  padding-inline-start: var(--k-pdl);
+}
+
+/*
  * Button progress root / x1
  * Keeps focus outlines and activation feedback owned by the button instead of clipping them.
  */
@@ -222,7 +251,7 @@
 .k-btn-e1e:has(> .k-btn-e3) {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 
-  > .k-btn-e2 {
+  > :is(.k-btn-e2, .k-btn-x5) {
     grid-column: 2;
     grid-row: 1;
   }
@@ -235,7 +264,7 @@
 .k-btn-e1e:has(> .k-btn-e5) {
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
 
-  > .k-btn-e2 {
+  > :is(.k-btn-e2, .k-btn-x5) {
     grid-column: 2;
     grid-row: 1;
   }
@@ -248,7 +277,7 @@
 .k-btn-e1e.k-btn-e1f:has(> .k-btn-e4) {
   grid-template-columns: max-content minmax(0, 1fr);
 
-  > .k-btn-e2 {
+  > :is(.k-btn-e2, .k-btn-x5) {
     grid-column: 2;
     grid-row: 1;
     justify-content: center;
@@ -263,7 +292,7 @@
 .k-btn-e1e.k-btn-e1g:has(> .k-btn-e4) {
   grid-template-columns: minmax(0, 1fr) max-content;
 
-  > .k-btn-e2 {
+  > :is(.k-btn-e2, .k-btn-x5) {
     grid-column: 1;
     grid-row: 1;
     justify-content: center;
@@ -275,7 +304,7 @@
  * element button root modifier 'f' / e1f
  * Applies leading separation only when a label is present, ignoring progress.
  */
-.k-btn-e1d.k-btn-e1f:has(> .k-btn-e2) > .k-btn-e3 {
+.k-btn-e1d.k-btn-e1f:has(> :is(.k-btn-e2, .k-btn-x5)) > .k-btn-e3 {
   margin-inline-end: var(--k-pdr);
   order: 1;
 }
@@ -284,12 +313,12 @@
  * element button root modifier 'g' / e1g
  * Applies trailing separation only when a label is present, ignoring progress.
  */
-.k-btn-e1d.k-btn-e1g:has(> .k-btn-e2) > .k-btn-e3 {
+.k-btn-e1d.k-btn-e1g:has(> :is(.k-btn-e2, .k-btn-x5)) > .k-btn-e3 {
   margin-inline-start: var(--k-pdr);
   order: 3;
 }
 
-.k-btn-e1d > .k-btn-e2 {
+.k-btn-e1d > :is(.k-btn-e2, .k-btn-x5) {
   order: 2;
 }
 
@@ -385,7 +414,7 @@
  * element button icon / e3
  * Centers icon-only edge composition while excluding progress from content detection.
  */
-.k-btn-e1e:not(:has(> .k-btn-e2)) > .k-btn-e3 {
+.k-btn-e1e:not(:has(> :is(.k-btn-e2, .k-btn-x5))) > .k-btn-e3 {
   grid-column: 2;
   justify-self: center;
 }

@@ -177,8 +177,9 @@ A durable architecture decision should record:
   token-only utility. Dropdown group-label spacing uses CSC because one element owns both additive
   spacing values.
 - Badge is an independent Rest-only component because its metadata remains meaningful outside any
-  one host. `Button.Badge` is a compound structural relation: Button owns logical-corner placement,
-  while Badge preserves its identity and does not inherit Button interaction states.
+  one host. `Button.Badge` is a compound relation: Button `e7` owns an inline relation gap, while
+  Structural CSS owns logical-corner overlays. Badge preserves its identity and does not inherit
+  Button interaction states in either composition.
 - Chip composes a primary content or selection control with an optional sibling Remove control.
   headless-react owns the non-nested interaction contract; p-react owns the Web structure; a nested
   Badge remains an independent passive component.

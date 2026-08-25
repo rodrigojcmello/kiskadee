@@ -1,6 +1,12 @@
 'use client';
 
-import type { BadgeEmphasis, BadgeIntent, BadgeScale, RadiusMode } from '@kiskadee/core';
+import type {
+  BadgeEmphasis,
+  BadgeIntent,
+  BadgeScale,
+  BadgeSeparation,
+  RadiusMode
+} from '@kiskadee/core';
 import {
   Badge,
   Button,
@@ -9,8 +15,9 @@ import {
   Text,
   useShowcase
 } from '@kiskadee/react-components';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import {
+  ShowcaseBooleanControl,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
@@ -23,15 +30,23 @@ import styles from './Badge.module.scss';
 const intents: BadgeIntent[] = [
   'neutral',
   'primary',
-  'informative',
+  'novelty',
   'positive',
   'warning',
-  'severe',
-  'destructive',
-  'important'
+  'attention'
 ];
 const emphases: BadgeEmphasis[] = ['high', 'medium', 'low', 'lowest'];
 const scales: BadgeScale[] = ['s:sm:3', 's:sm:2', 's:sm:1', 's:md:1', 's:lg:1', 's:lg:2'];
+const radii = ['square', 'rounded', 'pill'] as const;
+
+const fullBleedMarkFixtures = Array.from(
+  { length: 8 },
+  (_, index) => `/fixtures/badge/fluent-full-bleed-marks/${String(index + 1).padStart(2, '0')}.svg`
+);
+
+function FullBleedArtwork({ index = 0 }: { index?: number }) {
+  return <img alt="" src={fullBleedMarkFixtures[index]} />;
+}
 
 function Unavailable() {
   const profiles = useShowcaseTextProfiles();
@@ -44,14 +59,27 @@ function Unavailable() {
   );
 }
 
+function ScaleRow({ title, render }: { title: string; render: (scale: BadgeScale) => ReactNode }) {
+  const profiles = useShowcaseTextProfiles();
+  return (
+    <div className={styles.matrixRow}>
+      <Text as="strong" profile={profiles.caption}>
+        {title}
+      </Text>
+      <div className={styles.stage}>{scales.map(render)}</div>
+    </div>
+  );
+}
+
 export default function BadgeShowcase() {
   const { manifest } = useShowcase();
   const profiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.badge);
-  const [intent, setIntent] = useState<BadgeIntent>('positive');
+  const [intent, setIntent] = useState<BadgeIntent>('attention');
   const [emphasis, setEmphasis] = useState<BadgeEmphasis>('medium');
   const [scale, setScale] = useState<BadgeScale>('s:md:1');
-  const [radius, setRadius] = useState<Extract<RadiusMode, 'rounded' | 'pill'>>('pill');
+  const [radius, setRadius] = useState<Extract<RadiusMode, 'square' | 'rounded' | 'pill'>>('pill');
+  const [separation, setSeparation] = useState<BadgeSeparation>('none');
   const [count, setCount] = useState(3);
 
   const controls = (
@@ -78,12 +106,14 @@ export default function BadgeShowcase() {
           />
           <ShowcaseSelectControl
             label="Radius"
-            options={[
-              { value: 'rounded', label: 'rounded' },
-              { value: 'pill', label: 'pill' }
-            ]}
+            options={radii.map((value) => ({ value, label: value }))}
             value={radius}
             onValueChange={(value) => setRadius(value as typeof radius)}
+          />
+          <ShowcaseBooleanControl
+            label="Separation ring"
+            checked={separation === 'ring'}
+            onCheckedChange={(checked) => setSeparation(checked ? 'ring' : 'none')}
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
@@ -96,8 +126,8 @@ export default function BadgeShowcase() {
         Badge
       </Text>
       <Text as="p" profile={profiles.body} className={styles.lead}>
-        Passive metadata for status, novelty, icons and counts. Badge remains Rest-only wherever it
-        is composed.
+        Passive dot, text, number, or icon-only metadata. Badge remains Rest-only wherever it is
+        composed.
       </Text>
       <ShowcaseRouteControls id="badge" eyebrow="Badge" title="Controls" isAvailable={available}>
         {controls}
@@ -109,15 +139,17 @@ export default function BadgeShowcase() {
         <div className={styles.sections}>
           <section className={styles.section}>
             <Text as="h3" profile={profiles.sectionTitle}>
-              Runtime composition
+              Runtime text or number
             </Text>
             <div className={styles.stage}>
-              <Badge intent={intent} emphasis={emphasis} scale={scale} radius={radius}>
-                <Badge.Icon>
-                  <FamilyResolvedIcon name="settings" />
-                </Badge.Icon>
-                <Badge.Label>Verified</Badge.Label>
-                <Badge.Count>{count}</Badge.Count>
+              <Badge
+                intent={intent}
+                emphasis={emphasis}
+                scale={scale}
+                radius={radius}
+                separation={separation}
+              >
+                {count}
               </Badge>
               <Button type="button" onClick={() => setCount((value) => value + 1)}>
                 <Button.Label>Increase count</Button.Label>
@@ -127,28 +159,81 @@ export default function BadgeShowcase() {
 
           <section className={styles.section}>
             <Text as="h3" profile={profiles.sectionTitle}>
-              Content anatomy
+              Contained and full-bleed ownership
+            </Text>
+            <Text as="p" profile={profiles.body} className={styles.note}>
+              Contained Marks combine a family-resolved glyph with a Badge-owned surface.
+              Full-bleed Marks are complete consumer-owned artworks; these eight exact Fluent
+              vectors are private Showcase fixtures and do not follow the icon-family selector.
+            </Text>
+            <div className={styles.ownershipGrid}>
+              <article className={styles.ownershipCard}>
+                <Text as="strong" profile={profiles.caption}>
+                  Contained Marks
+                </Text>
+                <div className={styles.stage}>
+                  {(['check', 'bell', 'rocket'] as const).map((name) => (
+                    <Badge.Mark
+                      key={name}
+                      intent={name === 'check' ? 'positive' : 'novelty'}
+                      scale="s:lg:1"
+                      aria-label={`${name} contained Mark`}
+                    >
+                      <FamilyResolvedIcon name={name} />
+                    </Badge.Mark>
+                  ))}
+                </div>
+              </article>
+              <article className={styles.ownershipCard}>
+                <Text as="strong" profile={profiles.caption}>
+                  Fluent full-bleed artworks
+                </Text>
+                <div className={styles.fixtureGrid}>
+                  {fullBleedMarkFixtures.map((fixture, index) => (
+                    <Badge.Mark
+                      key={fixture}
+                      presentation="full-bleed"
+                      intent="attention"
+                      scale="s:lg:1"
+                      aria-label={`Fluent source artwork ${index + 1}`}
+                    >
+                      <FullBleedArtwork index={index} />
+                    </Badge.Mark>
+                  ))}
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <Text as="h3" profile={profiles.sectionTitle}>
+              Four anatomies
             </Text>
             <div className={styles.grid}>
               <article className={styles.card}>
-                <Badge.Dot intent="destructive" aria-label="New notification" />
+                <Badge.Dot intent="attention" scale="s:md:1" separation="ring" aria-label="New" />
                 <span>Dot</span>
               </article>
               <article className={styles.card}>
-                <Badge intent="primary">
-                  <Badge.Icon>
-                    <FamilyResolvedIcon name="settings" />
-                  </Badge.Icon>
-                </Badge>
-                <span>Icon</span>
+                <Badge intent="novelty">New</Badge>
+                <span>Text or number</span>
               </article>
               <article className={styles.card}>
-                <Badge intent="important">12</Badge>
-                <span>Number</span>
+                <Badge.Mark intent="positive" separation="ring" aria-label="Verified">
+                  <FamilyResolvedIcon name="check" />
+                </Badge.Mark>
+                <span>Contained Mark</span>
               </article>
               <article className={styles.card}>
-                <Badge intent="informative">New</Badge>
-                <span>Label</span>
+                <Badge.Mark
+                  presentation="full-bleed"
+                  intent="positive"
+                  separation="ring"
+                  aria-label="Verified"
+                >
+                  <FullBleedArtwork />
+                </Badge.Mark>
+                <span>Full-bleed Mark</span>
               </article>
             </div>
           </section>
@@ -177,25 +262,75 @@ export default function BadgeShowcase() {
 
           <section className={styles.section}>
             <Text as="h3" profile={profiles.sectionTitle}>
-              Six Fluent scales
+              Six scales for every indicator anatomy
+            </Text>
+            <div className={styles.matrix}>
+              <ScaleRow
+                title="Dot"
+                render={(itemScale) => (
+                  <Badge.Dot
+                    key={itemScale}
+                    scale={itemScale}
+                    intent="attention"
+                    aria-label={`Dot ${itemScale}`}
+                  />
+                )}
+              />
+              <ScaleRow
+                title="Contained Mark"
+                render={(itemScale) => (
+                  <Badge.Mark
+                    key={itemScale}
+                    scale={itemScale}
+                    intent="positive"
+                    aria-label="Verified"
+                  >
+                    <FamilyResolvedIcon name="check" />
+                  </Badge.Mark>
+                )}
+              />
+              <ScaleRow
+                title="Full-bleed Mark"
+                render={(itemScale) => (
+                  <Badge.Mark
+                    key={itemScale}
+                    presentation="full-bleed"
+                    scale={itemScale}
+                    intent="positive"
+                    aria-label="Verified"
+                  >
+                    <FullBleedArtwork />
+                  </Badge.Mark>
+                )}
+              />
+              <ScaleRow
+                title="Text or number"
+                render={(itemScale) => (
+                  <Badge key={itemScale} scale={itemScale} intent="novelty">
+                    12
+                  </Badge>
+                )}
+              />
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <Text as="h3" profile={profiles.sectionTitle}>
+              Three text radii and optional separation
             </Text>
             <div className={styles.stage}>
-              <Badge.Dot scale="s:sm:3" intent="positive" aria-label="Tiny" />
-              <Badge scale="s:sm:2" intent="primary">
-                1
-              </Badge>
-              <Badge scale="s:sm:1" intent="informative">
-                S
-              </Badge>
-              <Badge scale="s:md:1" intent="positive">
-                Medium
-              </Badge>
-              <Badge scale="s:lg:1" intent="warning">
-                Large
-              </Badge>
-              <Badge scale="s:lg:2" intent="destructive">
-                Extra large
-              </Badge>
+              {radii.map((itemRadius) => (
+                <Badge key={itemRadius} intent="primary" radius={itemRadius}>
+                  {itemRadius}
+                </Badge>
+              ))}
+              <Badge.Dot intent="attention" scale="s:lg:1" aria-label="Without ring" />
+              <Badge.Dot
+                intent="attention"
+                scale="s:lg:1"
+                separation="ring"
+                aria-label="With ring"
+              />
             </div>
           </section>
 
@@ -213,7 +348,7 @@ export default function BadgeShowcase() {
               </SurfaceContextProvider>
               <SurfaceContextProvider value="onVivid">
                 <article className={styles.vividSurface}>
-                  <Badge intent="primary" emphasis="medium">
+                  <Badge intent="primary" emphasis="low">
                     onVivid
                   </Badge>
                 </article>
@@ -226,16 +361,18 @@ export default function BadgeShowcase() {
               Host state independence
             </Text>
             <div className={styles.stage}>
-              <Button>
-                <Button.Label>Enabled</Button.Label>
+              <Button aria-label="Settings">
+                <Button.Icon>
+                  <FamilyResolvedIcon name="settings" />
+                </Button.Icon>
                 <Button.Badge>
-                  <Badge.Dot intent="destructive" aria-label="New" />
+                  <Badge.Dot intent="attention" separation="ring" aria-label="New" />
                 </Button.Badge>
               </Button>
               <Button disabled>
                 <Button.Label>Disabled</Button.Label>
                 <Button.Badge>
-                  <Badge intent="destructive" emphasis="high">
+                  <Badge intent="attention" emphasis="high">
                     3
                   </Badge>
                 </Button.Badge>

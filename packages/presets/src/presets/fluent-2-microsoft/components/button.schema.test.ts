@@ -29,6 +29,12 @@ function requireButtonDividerElement() {
   return { ...element, palettes: element.palettes };
 }
 
+function requireButtonBadgeRelationElement() {
+  const element = schema.components.button?.elements.e7;
+  if (!element?.scales) throw new Error('Fluent Button Badge relation schema is missing');
+  return element;
+}
+
 function omitPending(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(omitPending);
   if (typeof value !== 'object' || value === null) return value;
@@ -79,6 +85,21 @@ describe('Fluent 2 Button surface contexts', () => {
         });
       }
     }
+  });
+
+  it('authors the inline Badge relation independently from icon spacing', () => {
+    expect(requireButtonBadgeRelationElement().scales).toEqual({
+      paddingLeft: {
+        's:sm:1': 4,
+        's:md:1': 6,
+        's:lg:1': 6
+      },
+      paddingRight: {
+        's:sm:1': 4,
+        's:md:1': 6,
+        's:lg:1': 6
+      }
+    });
   });
 
   it('preserves the three official sizes and uses large geometry for the responsive mobile default', () => {

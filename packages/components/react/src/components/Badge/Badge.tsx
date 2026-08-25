@@ -1,11 +1,10 @@
 'use client';
 
 import './Badge.structural.scss';
-import { Children, createContext, forwardRef, type ReactNode, useContext } from 'react';
+import { Children, forwardRef, isValidElement } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
-import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import {
   DEFAULT_BADGE_EMPHASIS,
   DEFAULT_BADGE_INTENT,
@@ -13,63 +12,40 @@ import {
   DEFAULT_BADGE_SCALE,
   resolveBadgeClassNames
 } from './Badge.class-names.ts';
-import type { BadgeClassesMap, BadgeDotProps, BadgeProps, BadgeSlotProps } from './Badge.types.ts';
+import type { BadgeClassesMap, BadgeDotProps, BadgeMarkProps, BadgeProps } from './Badge.types.ts';
 
-type BadgeSlotContextValue = ReturnType<typeof resolveBadgeClassNames>;
-const BadgeSlotContext = createContext<BadgeSlotContextValue | undefined>(undefined);
-
-function useBadgeSlot(name: keyof BadgeSlotContextValue): string {
-  const context = useContext(BadgeSlotContext);
-  if (!context) throw new Error(`Badge.${name} must be rendered inside Badge.`);
-  return context[name];
+function useResolvedBadgeClasses({
+  className,
+  classNames = {},
+  emphasis,
+  intent,
+  radius,
+  scale,
+  surfaceContext
+}: Pick<BadgeProps, 'className' | 'classNames' | 'surfaceContext'> & {
+  emphasis: NonNullable<BadgeProps['emphasis']>;
+  intent: NonNullable<BadgeProps['intent']>;
+  radius: NonNullable<BadgeProps['radius']>;
+  scale: NonNullable<BadgeProps['scale']>;
+}) {
+  const { classesMap } = useKiskadee();
+  const consumedSurfaceContext = useSurfaceContext(surfaceContext);
+  const elements =
+    useComponentClassMap('badge', classesMap.badge as BadgeClassesMap | undefined) ?? {};
+  return resolveBadgeClassNames({
+    elements,
+    className,
+    classNames,
+    intent,
+    emphasis,
+    scale,
+    radius,
+    surfaceContext: consumedSurfaceContext
+  });
 }
 
-const BadgeLabel = forwardRef<HTMLSpanElement, BadgeSlotProps>(function BadgeLabel(
-  { className, ...props },
-  ref
-) {
-  return (
-    <span
-      {...props}
-      ref={ref}
-      className={[useBadgeSlot('e2'), className].filter(Boolean).join(' ')}
-    />
-  );
-});
-
-const BadgeIcon = forwardRef<HTMLSpanElement, BadgeSlotProps>(function BadgeIcon(
-  { className, ...props },
-  ref
-) {
-  return (
-    <span
-      {...props}
-      ref={ref}
-      className={[useBadgeSlot('e3'), className].filter(Boolean).join(' ')}
-    />
-  );
-});
-
-const BadgeCount = forwardRef<HTMLSpanElement, BadgeSlotProps>(function BadgeCount(
-  { className, ...props },
-  ref
-) {
-  return (
-    <span
-      {...props}
-      ref={ref}
-      className={[useBadgeSlot('e4'), className].filter(Boolean).join(' ')}
-    />
-  );
-});
-
-function normalizeChildren(children: ReactNode): ReactNode {
-  return Children.map(flattenFragmentChildren(children), (child) => {
-    if (typeof child === 'string' || typeof child === 'number' || typeof child === 'bigint') {
-      return <BadgeLabel>{child}</BadgeLabel>;
-    }
-    return child;
-  });
+function SeparationRing({ className, enabled }: { className?: string; enabled: boolean }) {
+  return enabled && className ? <span aria-hidden="true" className={className} /> : null;
 }
 
 const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
@@ -80,33 +56,32 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
     intent = DEFAULT_BADGE_INTENT,
     radius = DEFAULT_BADGE_RADIUS,
     scale = DEFAULT_BADGE_SCALE,
-    surfaceContext: explicitSurfaceContext,
+    separation = 'none',
+    surfaceContext,
     children,
     ...props
   },
   ref
 ) {
-  const { classesMap } = useKiskadee();
-  const surfaceContext = useSurfaceContext(explicitSurfaceContext);
-  const elements =
-    useComponentClassMap('badge', classesMap.badge as BadgeClassesMap | undefined) ?? {};
-  const resolved = resolveBadgeClassNames({
-    elements,
+  if (typeof children !== 'string' && typeof children !== 'number') {
+    throw new Error('Badge requires exactly one string or number child.');
+  }
+
+  const resolved = useResolvedBadgeClasses({
     className,
     classNames,
-    intent,
     emphasis,
-    scale,
+    intent,
     radius,
+    scale,
     surfaceContext
   });
 
   return (
-    <BadgeSlotContext.Provider value={resolved}>
-      <span {...props} ref={ref} className={resolved.e1}>
-        {normalizeChildren(children)}
-      </span>
-    </BadgeSlotContext.Provider>
+    <span {...props} ref={ref} className={resolved.e1}>
+      <span className={resolved.e2}>{children}</span>
+      <SeparationRing enabled={separation === 'ring'} className={resolved.e6} />
+    </span>
   );
 });
 
@@ -114,34 +89,72 @@ const BadgeDot = forwardRef<HTMLSpanElement, BadgeDotProps>(function BadgeDot(
   {
     className,
     classNames = {},
-    emphasis = 'high',
     intent = DEFAULT_BADGE_INTENT,
     scale = 's:sm:3',
-    surfaceContext: explicitSurfaceContext,
+    separation = 'none',
+    surfaceContext,
     ...props
   },
   ref
 ) {
-  const { classesMap } = useKiskadee();
-  const surfaceContext = useSurfaceContext(explicitSurfaceContext);
-  const elements =
-    useComponentClassMap('badge', classesMap.badge as BadgeClassesMap | undefined) ?? {};
-  const resolved = resolveBadgeClassNames({
-    elements,
+  const resolved = useResolvedBadgeClasses({
     className,
     classNames,
+    emphasis: 'high',
     intent,
-    emphasis,
-    scale,
     radius: 'pill',
+    scale,
     surfaceContext
   });
-  return <span {...props} ref={ref} className={resolved.e5} />;
+  return (
+    <span {...props} ref={ref} className={resolved.e5}>
+      <SeparationRing enabled={separation === 'ring'} className={resolved.e6} />
+    </span>
+  );
+});
+
+const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark(
+  {
+    className,
+    classNames = {},
+    emphasis,
+    intent = DEFAULT_BADGE_INTENT,
+    presentation = 'contained',
+    scale = DEFAULT_BADGE_SCALE,
+    separation = 'none',
+    surfaceContext,
+    children,
+    ...props
+  },
+  ref
+) {
+  if (Children.count(children) !== 1 || !isValidElement(children)) {
+    throw new Error('Badge.Mark requires exactly one consumer-provided icon element.');
+  }
+  if (presentation === 'full-bleed' && emphasis !== undefined) {
+    throw new Error('Badge.Mark does not accept emphasis when presentation is full-bleed.');
+  }
+
+  const fullBleed = presentation === 'full-bleed';
+  const resolved = useResolvedBadgeClasses({
+    className,
+    classNames,
+    emphasis: fullBleed ? 'high' : (emphasis ?? 'high'),
+    intent,
+    radius: 'pill',
+    scale,
+    surfaceContext
+  });
+
+  return (
+    <span {...props} ref={ref} className={fullBleed ? resolved.e3 : resolved.e5}>
+      {fullBleed ? children : <span className={resolved.e4}>{children}</span>}
+      <SeparationRing enabled={separation === 'ring'} className={resolved.e6} />
+    </span>
+  );
 });
 
 export const Badge = Object.assign(BadgeRoot, {
-  Count: BadgeCount,
   Dot: BadgeDot,
-  Icon: BadgeIcon,
-  Label: BadgeLabel
+  Mark: BadgeMark
 });

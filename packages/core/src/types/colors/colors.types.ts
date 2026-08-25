@@ -290,6 +290,7 @@ export type SemanticColor =
   | 'redLike'
   | 'yellowLike'
   | 'greenLike'
+  | 'purpleLike'
   | 'neutral';
 
 export type SemanticVariant = 'v1' | 'v2';

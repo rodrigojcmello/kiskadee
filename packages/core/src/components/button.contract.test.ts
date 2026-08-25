@@ -34,6 +34,16 @@ function createDivider() {
   };
 }
 
+function createBadgeRelation() {
+  return {
+    name: 'button-badge-relation',
+    scales: {
+      paddingLeft: { 's:md:1': 6 },
+      paddingRight: { 's:md:1': 6 }
+    }
+  };
+}
+
 describe('Button component contract', () => {
   it('accepts logical icon layout defaults', () => {
     expect(
@@ -170,6 +180,30 @@ describe('Button component contract', () => {
         }
       })
     ).toEqual([]);
+  });
+
+  it('accepts the optional inline Badge relation and rejects incomplete geometry', () => {
+    expect(
+      validateButtonComponentContract({
+        elements: {
+          e1: { name: 'button' },
+          e7: createBadgeRelation()
+        }
+      })
+    ).toEqual([]);
+
+    const incomplete = createBadgeRelation();
+    delete (incomplete.scales as Partial<typeof incomplete.scales>).paddingRight;
+    expect(
+      validateButtonComponentContract({
+        elements: {
+          e1: { name: 'button' },
+          e7: incomplete
+        }
+      })
+    ).toContain(
+      'components.button.elements.e7.scales.paddingRight: expected non-empty responsive scale'
+    );
   });
 
   it('keeps explicit Rest-only intent and emphasis overrides available', () => {

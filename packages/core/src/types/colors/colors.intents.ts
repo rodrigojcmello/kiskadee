@@ -83,12 +83,10 @@ export type RoleCard = `card.${CardIntent}`;
 export const BadgeIntentKeys = {
   neutral: 'neutral',
   primary: 'primary',
-  informative: 'informative',
+  novelty: 'novelty',
   positive: 'positive',
   warning: 'warning',
-  severe: 'severe',
-  destructive: 'destructive',
-  important: 'important'
+  attention: 'attention'
 } as const;
 
 export type BadgeIntent = keyof typeof BadgeIntentKeys;

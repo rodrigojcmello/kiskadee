@@ -29,8 +29,8 @@ const surfacedContext: KiskadeeContextValue = {
     badge: {
       e1: {
         c: {
-          s: { neutral: { m: 'badge-on-subtle' } },
-          v: { neutral: { m: 'badge-on-vivid' } }
+          s: { attention: { m: 'badge-on-subtle' } },
+          v: { attention: { m: 'badge-on-vivid' } }
         }
       }
     },
@@ -49,6 +49,26 @@ const surfacedContext: KiskadeeContextValue = {
               }
             }
           }
+        }
+      }
+    }
+  }
+};
+
+const inlineContext: KiskadeeContextValue = {
+  ...context,
+  classesMap: {
+    ...context.classesMap,
+    button: {
+      e1: {},
+      e2: {},
+      e3: {},
+      e7: {
+        d: 'button-badge-relation',
+        s: {
+          'sm:1': 'button-badge-relation-small',
+          'md:1': 'button-badge-relation-medium',
+          'lg:1': 'button-badge-relation-large'
         }
       }
     }
@@ -109,6 +129,78 @@ describe('Button.Badge', () => {
 
     expect(screen.getByRole<HTMLButtonElement>('button', { name: /Inbox/ }).disabled).toBe(true);
     expect(screen.getByText('3')).toBeTruthy();
+  });
+
+  it('groups logical inline placements next to the label without enabling overlay geometry', () => {
+    render(
+      <KiskadeeContext.Provider value={inlineContext}>
+        <Button>
+          <Button.Badge placement="inline-end">
+            <Badge>New</Badge>
+          </Button.Badge>
+          <Button.Label>Messages</Button.Label>
+          <Button.Badge placement="inline-start">
+            <Badge>12</Badge>
+          </Button.Badge>
+        </Button>
+      </KiskadeeContext.Provider>
+    );
+
+    const button = screen.getByRole('button', { name: /Messages/ });
+    const group = button.querySelector('.k-btn-x5');
+    const relationElements = group?.querySelectorAll('.k-btn-e7');
+
+    expect(button.className.split(' ')).not.toContain('k-btn-e1j');
+    expect(group).toBeTruthy();
+    expect(relationElements).toHaveLength(2);
+    expect(group?.textContent).toBe('12MessagesNew');
+    expect(relationElements?.[0]?.className).toContain('k-btn-e7-inline-start');
+    expect(relationElements?.[1]?.className).toContain('k-btn-e7-inline-end');
+    expect(relationElements?.[0]?.className).toContain('button-badge-relation-medium');
+  });
+
+  it('omits an inline Badge when the active preset has no relation slot', () => {
+    render(
+      <KiskadeeContext.Provider value={context}>
+        <Button>
+          <Button.Label>Messages</Button.Label>
+          <Button.Badge placement="inline-end">
+            <Badge>New</Badge>
+          </Button.Badge>
+        </Button>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(screen.queryByText('New')).toBeNull();
+  });
+
+  it('preserves inline Badge composition with RTL, disabled, icon, disclosure, and Large scale', () => {
+    render(
+      <KiskadeeContext.Provider value={inlineContext}>
+        <Button dir="rtl" disabled iconLayout="edge" scale="s:lg:1">
+          <Button.Icon>
+            <svg aria-hidden="true" />
+          </Button.Icon>
+          <Button.Label>Notifications</Button.Label>
+          <Button.Badge placement="inline-end">
+            <Badge>12</Badge>
+          </Button.Badge>
+          <Button.Disclosure>
+            <svg aria-hidden="true" />
+          </Button.Disclosure>
+        </Button>
+      </KiskadeeContext.Provider>
+    );
+
+    const button = screen.getByRole<HTMLButtonElement>('button');
+    const relation = button.querySelector('.k-btn-e7-inline-end');
+
+    expect(button.disabled).toBe(true);
+    expect(button.getAttribute('dir')).toBe('rtl');
+    expect(button.querySelector('.k-btn-x5')).toBeTruthy();
+    expect(button.querySelector('.k-btn-e3')).toBeTruthy();
+    expect(button.querySelector('.k-btn-e5')).toBeTruthy();
+    expect(relation?.className).toContain('button-badge-relation-large');
   });
 
   it('publishes the authored Button surface to Badge and honors the disabled override', () => {

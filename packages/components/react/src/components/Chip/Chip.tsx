@@ -41,6 +41,7 @@ type ChipContextValue = {
 };
 
 const ChipContext = createContext<ChipContextValue | undefined>(undefined);
+const ChipPrimaryContext = createContext(false);
 
 function useChip(part: string): ChipContextValue {
   const context = useContext(ChipContext);
@@ -74,6 +75,10 @@ const ChipBadge = forwardRef<HTMLSpanElement, ChipSlotProps>(function ChipBadge(
   ref
 ) {
   const chip = useChip('Badge');
+  const insidePrimary = useContext(ChipPrimaryContext);
+  if (!insidePrimary) {
+    throw new Error('Chip.Badge must be rendered inside Chip.Content or Chip.Select.');
+  }
   return <span {...props} ref={ref} className={join(chip.classes.e7, className)} />;
 });
 
@@ -94,7 +99,9 @@ const ChipContent = forwardRef<HTMLSpanElement, ChipContentProps>(function ChipC
         chip.disabled && cn.activator
       )}
     >
-      <SurfaceContextProvider value={producedSurface}>{children}</SurfaceContextProvider>
+      <SurfaceContextProvider value={producedSurface}>
+        <ChipPrimaryContext.Provider value>{children}</ChipPrimaryContext.Provider>
+      </SurfaceContextProvider>
     </HeadlessChip.Content>
   );
 });
@@ -108,7 +115,7 @@ const ChipSelect = forwardRef<HTMLButtonElement, ChipSelectProps>(function ChipS
     <HeadlessChip.Select {...props} ref={ref} className={join(chip.classes.e2, className)}>
       {({ controlState }) => (
         <SurfaceContextProvider value={chip.resolveProducedSurface(controlState)}>
-          {children}
+          <ChipPrimaryContext.Provider value>{children}</ChipPrimaryContext.Provider>
         </SurfaceContextProvider>
       )}
     </HeadlessChip.Select>

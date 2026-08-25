@@ -430,6 +430,21 @@ export function createFluent2MicrosoftButtonSchema({
             darker: createDividerContextPalettes('darker')
           }
         }
+      },
+      e7: {
+        name: 'button-badge-relation',
+        scales: {
+          paddingLeft: {
+            's:sm:1': 4,
+            's:md:1': 6,
+            's:lg:1': 6
+          },
+          paddingRight: {
+            's:sm:1': 4,
+            's:md:1': 6,
+            's:lg:1': 6
+          }
+        }
       }
     }
   };

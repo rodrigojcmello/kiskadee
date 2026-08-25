@@ -80,4 +80,29 @@ describe('Chip', () => {
     expect(warning).toHaveBeenCalledWith(expect.stringContaining('Chip.Remove was omitted'));
     warning.mockRestore();
   });
+
+  it('requires Chip.Badge to belong to the primary Content or Select surface', () => {
+    expect(() =>
+      render(
+        withinContext(
+          <Chip>
+            <Chip.Content>Marketing</Chip.Content>
+            <Chip.Badge>3</Chip.Badge>
+          </Chip>
+        )
+      )
+    ).toThrow('Chip.Badge must be rendered inside Chip.Content or Chip.Select.');
+
+    render(
+      withinContext(
+        <Chip>
+          <Chip.Content>
+            Marketing
+            <Chip.Badge>3</Chip.Badge>
+          </Chip.Content>
+        </Chip>
+      )
+    );
+    expect(screen.getByText('3').className).toContain('k-chp-e7');
+  });
 });

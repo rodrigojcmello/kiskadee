@@ -67,8 +67,9 @@ export type ButtonOptions = {
  * - e4: optional icon region/surface
  * - e5: optional trailing disclosure indicator
  * - e6: optional decorative divider used by connected and disclosure compositions
+ * - e7: optional inline Badge relation spacing
  */
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
 
 /**
  * e1 — button container/surface
@@ -167,6 +168,20 @@ export type ButtonDividerElementStyle<TSegmentName extends SegmentName = never> 
   palettes: ButtonDividerPalettes<TSegmentName>;
 };
 
+/**
+ * e7 — optional inline Badge relation
+ *
+ * The relation owns only the logical spacing between a label and its passive Badge. Placement
+ * and Button layout remain structural concerns.
+ */
+export type ButtonBadgeRelationElementStyle = {
+  name: string;
+  scales: {
+    paddingLeft: ScaleBySize;
+    paddingRight: ScaleBySize;
+  };
+};
+
 export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e1?: ButtonContainerElementStyle<TSegmentName>;
   e2?: ButtonLabelElementStyle<TSegmentName>;
@@ -174,6 +189,7 @@ export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e4?: ButtonIconRegionElementStyle<TSegmentName>;
   e5?: ButtonDisclosureElementStyle<TSegmentName>;
   e6?: ButtonDividerElementStyle<TSegmentName>;
+  e7?: ButtonBadgeRelationElementStyle;
 };
 
 type ElementContractRules = {
@@ -193,7 +209,7 @@ const BUTTON_OPTION_KEYS = [
   'iconTreatment',
   'iconSurfaceCorners'
 ] as const;
-const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
+const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
@@ -239,6 +255,9 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
   e6: {
     scales: ['boxWidth', 'boxHeight'],
     palettes: ['boxColor']
+  },
+  e7: {
+    scales: ['paddingLeft', 'paddingRight']
   }
 };
 
@@ -351,6 +370,18 @@ function validateButtonDividerContract(value: unknown, path: string, issues: str
       issues.push(`${path}.palettes: expected at least one boxColor Rest value`);
     }
   }
+}
+
+function validateButtonBadgeRelationContract(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value)) return;
+
+  if (!isRecord(value.scales)) {
+    issues.push(`${path}.scales: required object`);
+    return;
+  }
+
+  validatePositiveScaleMap(value.scales.paddingLeft, `${path}.scales.paddingLeft`, issues);
+  validatePositiveScaleMap(value.scales.paddingRight, `${path}.scales.paddingRight`, issues);
 }
 
 function validateElementContract(
@@ -498,6 +529,9 @@ export function validateButtonComponentContract(
     validateElementContract(element, `${path}.elements.${key}`, BUTTON_RULES[key], issues);
     if (key === 'e6') {
       validateButtonDividerContract(element, `${path}.elements.e6`, issues);
+    }
+    if (key === 'e7') {
+      validateButtonBadgeRelationContract(element, `${path}.elements.e7`, issues);
     }
   }
 

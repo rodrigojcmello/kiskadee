@@ -43,6 +43,7 @@ export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;
 export type ButtonResolvedClassNames = NonNullable<HeadlessButtonProps['classNames']> & {
   e4?: string;
   e6?: string;
+  e7?: string;
 };
 
 export const join = joinClassNames;
@@ -104,6 +105,19 @@ export function resolveButtonDividerClassName({
   return join(e6.d, paintClassName, e6.s?.all, e6.s?.[scaleKey], 'k-btn-e6') ?? '';
 }
 
+export function resolveButtonBadgeRelationClassName({
+  e7,
+  scale
+}: {
+  e7: ClassNameByElementJSON | undefined;
+  scale: string;
+}): string {
+  if (!e7) return '';
+
+  const scaleKey = normalizeButtonScaleKey(scale);
+  return join(e7.d, e7.s?.all, e7.s?.[scaleKey], 'k-btn-e7') ?? '';
+}
+
 export function resolveButtonClassNames({
   e1,
   e2,
@@ -111,6 +125,7 @@ export function resolveButtonClassNames({
   e4,
   e5,
   e6,
+  e7,
   classNames,
   status,
   controlState,
@@ -133,6 +148,7 @@ export function resolveButtonClassNames({
   e4?: ClassNameByElementJSON;
   e5?: ClassNameByElementJSON;
   e6?: ClassNameByElementJSON;
+  e7?: ClassNameByElementJSON;
   classNames: NonNullable<ButtonProps['classNames']>;
   status: ButtonStatus | 'rest';
   controlState: boolean | undefined;
@@ -254,7 +270,8 @@ export function resolveButtonClassNames({
         emphasis: resolvedEmphasis,
         intent: resolvedIntent,
         surfaceContext: resolvedSurfaceContext
-      }) || undefined
+      }) || undefined,
+    e7: resolveButtonBadgeRelationClassName({ e7, scale: scaleKey }) || undefined
   };
 }
 
@@ -297,6 +314,7 @@ export function mergeButtonClassNames(
   return {
     ...mergeClassNamePatches(['e1', 'e2', 'e3', 'e5'], baseClassNames, ...classNamePatches),
     e4: baseClassNames.e4,
-    e6: baseClassNames.e6
+    e6: baseClassNames.e6,
+    e7: baseClassNames.e7
   };
 }

@@ -15,7 +15,7 @@ red                        ->  redLike                   ->  Button.destructive
 
 green                      ->  greenLike                 ->  Button.positive
 
-purple                     ->  purpleLike                ->  Badge.new
+purple                     ->  purpleLike                ->  Badge.novelty
 
 blue                       ->  primary                   ->  Button.primary
 
@@ -102,8 +102,8 @@ source-backed tone decisions continue to use `c()`.
 |----------|--------|--------|
 | Adjust red tone globally | Modify `red` color value | Everything using `redLike` updates automatically |
 | Use orange instead of red | Set `redLike = orange` | All red-like semantics become orange |
-| Purple badge, red button | Set `badge.attention = purpleLike` | Only badge changes; button stays red |
-| Direct color assignment | Set `badge.attention = purple` | Badge uses purple directly, skipping `-like` layer |
+| Purple novelty badge, red button | Set `badge.novelty = purpleLike` | Only novelty Badge changes; Button stays red |
+| Direct color assignment | Set `badge.novelty = purple` | Badge uses purple directly, skipping `-like` layer |
 
 ## Smart Defaults
 
@@ -115,7 +115,7 @@ red -> redLike -> destructive (Button)
 
 green -> greenLike -> positive (Button)
 
-purple -> purpleLike -> new (Badge)
+purple -> purpleLike -> novelty (Badge)
 ```
 
 Designers and developers can use the system immediately without understanding
@@ -149,7 +149,7 @@ type SystemButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
 // entering the preset's three color layers.
 type ExternalButtonIntent = `brand.${string}`;
 type ButtonIntent = SystemButtonIntent | ExternalButtonIntent;
-type BadgeIntent = 'primary' | 'neutral' | 'attention' | 'new';
+type BadgeIntent = 'primary' | 'novelty' | 'positive' | 'warning' | 'attention';
 
 // Intent values can reference either layer
 type IntentValue = SemanticColor | BaseColor;
@@ -173,7 +173,7 @@ type IntentMapping = {
 |                   |                     |                                  |
 |  green            |  greenLike ---------+--> Button.positive                |
 |                   |                     |                                  |
-|  purple           |  purpleLike --------+--> Badge.new                      |
+|  purple           |  purpleLike --------+--> Badge.novelty                  |
 |                   |                     |                                  |
 |  blue             |  primary -----------+--> Button.primary                 |
 |                   |                     |                                  |

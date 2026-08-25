@@ -95,6 +95,13 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e3: {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token'
+        },
+        e4: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
+        },
+        e6: {
+          borderWidthEmission: 'token'
         }
       }
     },
@@ -154,6 +161,10 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e6: {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token'
+        },
+        e7: {
+          paddingLeftEmission: 'token',
+          paddingRightEmission: 'token'
         }
       }
     },
