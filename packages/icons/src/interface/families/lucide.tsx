@@ -44,6 +44,7 @@ import {
   SendIcon,
   SettingsIcon,
   ShareIcon,
+  ShoppingCartIcon,
   SmileIcon,
   StrikethroughIcon,
   SunIcon,
@@ -104,6 +105,7 @@ const glyphSearchIcon = createSvgGlyph(SearchIcon, {"size":"1em"});
 const glyphSendIcon = createSvgGlyph(SendIcon, {"size":"1em"});
 const glyphSettingsIcon = createSvgGlyph(SettingsIcon, {"size":"1em"});
 const glyphShareIcon = createSvgGlyph(ShareIcon, {"size":"1em"});
+const glyphShoppingCartIcon = createSvgGlyph(ShoppingCartIcon, {"size":"1em"});
 const glyphSmileIcon = createSvgGlyph(SmileIcon, {"size":"1em"});
 const glyphStrikethroughIcon = createSvgGlyph(StrikethroughIcon, {"size":"1em"});
 const glyphSunIcon = createSvgGlyph(SunIcon, {"size":"1em"});
@@ -126,6 +128,7 @@ const glyphMap = {
     "ban": glyphBanIcon,
     "bell": glyphBellIcon,
     "bold": glyphBoldIcon,
+    "cart": glyphShoppingCartIcon,
     "check": glyphCheckIcon,
     "chevron-down": glyphChevronDownIcon,
     "chevron-up": glyphChevronUpIcon,

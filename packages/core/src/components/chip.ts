@@ -62,6 +62,7 @@ export type ChipPrimaryElementStyle<TSegmentName extends SegmentName = never> = 
 
 export type ChipLabelElementStyle<TSegmentName extends SegmentName = never> = {
   name: string;
+  scales?: ElementScalesByProperty<'paddingRight' | 'paddingLeft'>;
   typography: ElementTypography;
   palettes: ElementPalettesByColor<TSegmentName, 'textColor'>;
 };
@@ -127,7 +128,11 @@ const RULES = {
     colors: ['boxColor', 'borderColor'] as ColorProperty[],
     radius: ['rounded', 'pill']
   },
-  e3: { scales: [] as string[], colors: ['textColor'] as ColorProperty[], typography: true },
+  e3: {
+    scales: ['paddingRight', 'paddingLeft'],
+    colors: ['textColor'] as ColorProperty[],
+    typography: true
+  },
   e4: { scales: ['marginRight'], colors: ['textColor'] as ColorProperty[], iconSize: true },
   e5: {
     scales: [

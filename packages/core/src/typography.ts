@@ -13,6 +13,8 @@ export const typographyProfileBuckets = {
   'body-medium-strong': 'bmg',
   'body-large': 'bl',
   'body-large-strong': 'blg',
+  'caption-tiny-strong': 'ctg',
+  'caption-extra-small-strong': 'cxsg',
   'caption-small': 'cs',
   'caption-small-strong': 'csg',
   'caption-medium': 'cm',

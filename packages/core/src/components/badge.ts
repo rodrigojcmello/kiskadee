@@ -1,3 +1,4 @@
+import { type ElementSizeValue, elementSizeValues } from '../breakpoints.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
@@ -41,6 +42,18 @@ export type BadgeEmphasis = 'high' | 'medium' | 'low' | 'lowest';
 export type BadgeSeparation = 'none' | 'ring';
 export type BadgeMarkPresentation = 'contained' | 'full-bleed';
 export type BadgeElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
+export type BadgeShadowElementName = 'e1' | 'e3' | 'e5';
+
+export type BadgeStaticShadowRecipe = {
+  kind: 'outer';
+  states: {
+    rest: ElementSizeValue;
+  };
+};
+
+export type BadgeEffects = {
+  shadow?: Partial<Record<BadgeShadowElementName, BadgeStaticShadowRecipe>>;
+};
 
 type BadgeRadiusScales = {
   borderRadius: {
@@ -103,10 +116,47 @@ export type BadgeElements<TSegmentName extends SegmentName = never> = {
 };
 
 const ELEMENT_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
+const SHADOW_ELEMENT_KEYS = ['e1', 'e3', 'e5'] as const;
 const REQUIRED_ELEMENT_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
 const BASE_KEYS = ['name', 'decorations', 'iconSize', 'typography', 'scales', 'palettes'] as const;
 const INTENTS = Object.keys(BadgeIntentKeys) as BadgeIntent[];
 const EMPHASES: BadgeEmphasis[] = ['high', 'medium', 'low', 'lowest'];
+
+function validateBadgeEffects(value: unknown, path: string, issues: string[]): void {
+  if (!isContractRecord(value)) {
+    issues.push(`${path}: expected object`);
+    return;
+  }
+  validateContractKeys(value, ['shadow'], path, issues);
+  if (value.shadow === undefined) return;
+  if (!isContractRecord(value.shadow)) {
+    issues.push(`${path}.shadow: expected object`);
+    return;
+  }
+  validateContractKeys(value.shadow, SHADOW_ELEMENT_KEYS, `${path}.shadow`, issues);
+
+  for (const elementName of SHADOW_ELEMENT_KEYS) {
+    const recipe = value.shadow[elementName];
+    if (recipe === undefined) continue;
+    const recipePath = `${path}.shadow.${elementName}`;
+    if (!isContractRecord(recipe)) {
+      issues.push(`${recipePath}: expected object`);
+      continue;
+    }
+    validateContractKeys(recipe, ['kind', 'states'], recipePath, issues);
+    if (recipe.kind !== 'outer') {
+      issues.push(`${recipePath}.kind: expected "outer"`);
+    }
+    if (!isContractRecord(recipe.states)) {
+      issues.push(`${recipePath}.states: expected object`);
+      continue;
+    }
+    validateContractKeys(recipe.states, ['rest'], `${recipePath}.states`, issues);
+    if (!elementSizeValues.includes(recipe.states.rest as ElementSizeValue)) {
+      issues.push(`${recipePath}.states.rest: expected element size value`);
+    }
+  }
+}
 
 const RULES = {
   e1: {
@@ -148,7 +198,10 @@ export function validateBadgeComponentContract(
 ): string[] {
   const issues: string[] = [];
   if (!isContractRecord(value)) return [`${path}: expected object`];
-  validateContractKeys(value, ['elements'], path, issues);
+  validateContractKeys(value, ['effects', 'elements'], path, issues);
+  if (value.effects !== undefined) {
+    validateBadgeEffects(value.effects, `${path}.effects`, issues);
+  }
   if (!isContractRecord(value.elements)) return [...issues, `${path}.elements: expected object`];
   validateContractKeys(value.elements, ELEMENT_KEYS, `${path}.elements`, issues);
 

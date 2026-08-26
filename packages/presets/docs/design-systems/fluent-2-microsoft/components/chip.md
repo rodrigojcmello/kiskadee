@@ -6,7 +6,7 @@ This file records source evidence and Kiskadee adaptations for the Chip authored
 ## Sources
 
 - [Fluent 2 Tag usage](https://fluent2.microsoft.design/components/web/react/core/tag/usage)
-- [Fluent React Tag source](https://github.com/microsoft/fluentui/tree/master/packages/react-components/react-tags/library/src)
+- [Fluent React Tag styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-tags/library/src/components/Tag/useTagStyles.styles.ts)
 - [Fluent 2 color tokens](https://fluent2.microsoft.design/color-tokens/)
 - [Preset tonal evidence](../colors/fluent-tonal-scale-evidence.md)
 
@@ -47,10 +47,24 @@ Chip. Each surface authors its own outer radius and border values; Structural CS
 adjacent logical corners. This is a Kiskadee compound-control adaptation that preserves valid
 semantics without visually splitting the entity and its dismiss affordance.
 
-The first scale mapping uses the same compact control range already established by Fluent Button:
-24 px Small, 32 px Medium, and 40 px Large. Label typography reuses the preset-wide Caption/Body
-profiles. Icon and remove glyph sizes select existing `global.iconSizes` references. Spacing between
-Chip and nested Badge belongs to `e7`; the nested Badge preserves its own classes and Rest state.
+The three Kiskadee Chip scales map to Fluent Tag Extra-small, Small, and Medium. They are authored
+independently from Button:
+
+| Kiskadee scale | Fluent Tag size | Chip height | Label profile | Leading icon |
+| --- | --- | --- | --- | --- |
+| `s:sm:1` | Extra-small | 20 px | Caption | 12 px |
+| `s:md:1` | Small | 24 px | Caption | 16 px |
+| `s:lg:1` | Medium | 32 px | Body | 20 px |
+
+The corresponding Fluent Button range is 24/32/40 px. The smaller 20/24/32 px Chip range preserves
+the intended subordinate hierarchy between an entity/value and a command. This is a Kiskadee
+preset-authoring recommendation, not a Core constraint: custom presets may choose other dimensions
+when their source design system requires them, but official Kiskadee-authored presets should follow
+the hierarchy unless their evidence documents an exception.
+
+The Chip never reads Button geometry or derives one scale from another. Icon and remove glyph sizes
+select existing `global.iconSizes` references. Spacing between Chip and nested Badge belongs to
+`e7`; the nested Badge preserves its own classes and Rest state.
 
 ## Surface context
 

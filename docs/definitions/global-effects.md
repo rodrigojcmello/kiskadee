@@ -254,6 +254,11 @@ For Card, the two public modes are intentionally separate:
 <Card shadow="s:lg:1" preserveBorderWithShadow={false} />
 ```
 
+Badge uses a narrower static recipe. A preset may map Rest on the rendered Badge surfaces to one
+global outer-shadow level, and the public `shadow` boolean only enables or disables that authored
+recipe. Badge does not expose a level selector and never gains interaction states from the Effect.
+The portability default remains off; a preset that omits the recipe produces no shadow or fallback.
+
 The static Card uses a fixed catalog level. CardAction uses the component's
 state recipe and native/projected interaction states. A single element should
 not mix a fixed level and a state recipe at runtime.

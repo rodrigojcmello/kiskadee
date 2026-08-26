@@ -13,6 +13,8 @@ const profile = (
 
 export const fluent2MicrosoftTypography = {
   profiles: {
+    'caption-tiny-strong': profile('body', 'semiBold', 6, 6),
+    'caption-extra-small-strong': profile('body', 'semiBold', 8, 8),
     'caption-small': profile('body', 'normal', 10, 14),
     'caption-small-strong': profile('body', 'semiBold', 10, 14),
     'caption-medium': profile('body', 'normal', 12, 16),

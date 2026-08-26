@@ -38,6 +38,7 @@ import {
   Send,
   Settings,
   Share,
+  ShoppingCart,
   Subtract,
   Sun,
   Table,
@@ -99,6 +100,7 @@ const glyphSearch = createSvgGlyph(Search, {"size":"1em"});
 const glyphSend = createSvgGlyph(Send, {"size":"1em"});
 const glyphSettings = createSvgGlyph(Settings, {"size":"1em"});
 const glyphShare = createSvgGlyph(Share, {"size":"1em"});
+const glyphShoppingCart = createSvgGlyph(ShoppingCart, {"size":"1em"});
 const glyphSubtract = createSvgGlyph(Subtract, {"size":"1em"});
 const glyphSun = createSvgGlyph(Sun, {"size":"1em"});
 const glyphTable = createSvgGlyph(Table, {"size":"1em"});
@@ -126,6 +128,7 @@ const glyphMap = {
     "ban": glyphNotAvailable,
     "bell": glyphNotification,
     "bold": glyphTextBold,
+    "cart": glyphShoppingCart,
     "check": glyphCheckmark,
     "chevron-down": glyphChevronDown,
     "chevron-up": glyphChevronUp,

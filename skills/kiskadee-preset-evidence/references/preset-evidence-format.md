@@ -123,9 +123,14 @@ This file records source evidence and schema decisions for
 
 ## Color And Token Provenance
 
-| Source concept | Source value | Kiskadee mapping |
-| --- | --- | --- |
-| `<upstream token or node>` | `<value>` | `<element/option/scale/palette/effect>` |
+| Source concept | Source value | Lookup | Kiskadee mapping | Rationale |
+| --- | --- | --- | --- | --- |
+| `<upstream token or node>` | `<value>` | `functional reference: <subtle|vivid> <offset>` or `exact tone: <L/D>` | `<element/option/scale/palette/effect>` | `<why this lookup kind is correct>` |
+
+Use `functional reference` when a shared or remappable formula follows the participating primitive
+family. Use `exact tone` for an upstream stop selected independently per theme or an explicitly
+documented absolute/structural decision. Do not list the current numeric position of a functional
+reference as if it were an exact-tone decision.
 
 ## Kiskadee Mapping
 

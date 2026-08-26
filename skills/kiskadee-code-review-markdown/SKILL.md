@@ -103,6 +103,11 @@ Run this review for every diff, including changes confined to one project:
    - affected consumers validate the changed handoff.
 6. Record the result in `## Governance Review` even when no violation exists.
 
+For official preset color diffs, apply `kiskadee-resolve-preset-colors` and verify the documented
+`functional reference` versus `exact tone` classification. Absence of `c.ref()` is not a finding by
+itself: report a finding only when a family-relative recipe was encoded as an exact tone, an exact
+lookup lacks evidence/rationale, or the change otherwise breaks the documented color provenance.
+
 Use `$kiskadee-architecture` when any of these conditions applies:
 
 - one concern crosses two or more governed projects;

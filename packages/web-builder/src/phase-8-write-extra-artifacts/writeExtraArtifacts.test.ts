@@ -326,3 +326,28 @@ describe('writeExtraArtifacts content surface context', () => {
     expect(globalArtifact.components.chip.contentSurfaceContext).toEqual(contentSurfaceContext);
   });
 });
+
+describe('writeExtraArtifacts Badge effects', () => {
+  it('publishes the optional static Badge shadow recipe', async () => {
+    const outDirSlug = createOutputSlug('badge-shadow');
+    const shadow = {
+      e1: { kind: 'outer', states: { rest: 's:sm:1' } },
+      e3: { kind: 'outer', states: { rest: 's:sm:1' } },
+      e5: { kind: 'outer', states: { rest: 's:sm:1' } }
+    } as const;
+
+    await writeExtraArtifacts({
+      schema: {
+        components: {
+          badge: { effects: { shadow }, elements: {} }
+        }
+      } as Schema,
+      outDirSlug
+    });
+
+    const globalArtifact = JSON.parse(
+      await readFile(resolve(buildRoot, outDirSlug, 'global.kiskadee.json'), 'utf8')
+    );
+    expect(globalArtifact.components.badge.effects.shadow).toEqual(shadow);
+  });
+});

@@ -35,6 +35,7 @@ import { PlusIcon } from '@phosphor-icons/react/Plus';
 import { ProhibitIcon } from '@phosphor-icons/react/Prohibit';
 import { RocketIcon } from '@phosphor-icons/react/Rocket';
 import { ShareNetworkIcon } from '@phosphor-icons/react/ShareNetwork';
+import { ShoppingCartIcon } from '@phosphor-icons/react/ShoppingCart';
 import { SmileyIcon } from '@phosphor-icons/react/Smiley';
 import { SmileySadIcon } from '@phosphor-icons/react/SmileySad';
 import { SpeakerHighIcon } from '@phosphor-icons/react/SpeakerHigh';
@@ -95,6 +96,7 @@ const glyphPlusIcon = createSvgGlyph(PlusIcon, {"size":"1em","weight":"regular"}
 const glyphProhibitIcon = createSvgGlyph(ProhibitIcon, {"size":"1em","weight":"regular"});
 const glyphRocketIcon = createSvgGlyph(RocketIcon, {"size":"1em","weight":"regular"});
 const glyphShareNetworkIcon = createSvgGlyph(ShareNetworkIcon, {"size":"1em","weight":"regular"});
+const glyphShoppingCartIcon = createSvgGlyph(ShoppingCartIcon, {"size":"1em","weight":"regular"});
 const glyphSmileyIcon = createSvgGlyph(SmileyIcon, {"size":"1em","weight":"regular"});
 const glyphSmileySadIcon = createSvgGlyph(SmileySadIcon, {"size":"1em","weight":"regular"});
 const glyphSpeakerHighIcon = createSvgGlyph(SpeakerHighIcon, {"size":"1em","weight":"regular"});
@@ -124,6 +126,7 @@ const glyphMap = {
     "ban": glyphProhibitIcon,
     "bell": glyphBellIcon,
     "bold": glyphTextBIcon,
+    "cart": glyphShoppingCartIcon,
     "check": glyphCheckIcon,
     "chevron-down": glyphCaretDownIcon,
     "chevron-up": glyphCaretUpIcon,

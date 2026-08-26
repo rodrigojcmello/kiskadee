@@ -3,6 +3,7 @@
 import type { ChipEmphasis, ChipIntent, ChipScale, RadiusMode } from '@kiskadee/core';
 import {
   Badge,
+  Button,
   Chip,
   EssentialIconProvider,
   FamilyResolvedIcon,
@@ -25,6 +26,7 @@ export default function ChipShowcase() {
   const { manifest } = useShowcase();
   const profiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.chip);
+  const buttonAvailable = Boolean(manifest?.components?.button);
   const [intent, setIntent] = useState<ChipIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ChipEmphasis>('medium');
   const [scale, setScale] = useState<ChipScale>('s:md:1');
@@ -90,6 +92,41 @@ export default function ChipShowcase() {
         </div>
       ) : (
         <div className={styles.sections}>
+          <section className={styles.section}>
+            <Text as="h3" profile={profiles.sectionTitle}>
+              Subordinate scale hierarchy
+            </Text>
+            <Text as="p" profile={profiles.body} className={styles.note}>
+              Fluent Chip publishes 20/24/32px independently from the larger Button range. This is a
+              preset recommendation, not a Core constraint.
+            </Text>
+            <div className={styles.scaleComparison}>
+              {(
+                [
+                  ['s:sm:1', 'Small'],
+                  ['s:md:1', 'Medium'],
+                  ['s:lg:1', 'Large']
+                ] as const
+              ).map(([itemScale, label]) => (
+                <div className={styles.scaleComparisonRow} key={itemScale}>
+                  <Text as="span" profile={profiles.caption} className={styles.note}>
+                    {label}
+                  </Text>
+                  <Chip scale={itemScale}>
+                    <Chip.Content>
+                      <Chip.Label>Entity</Chip.Label>
+                    </Chip.Content>
+                  </Chip>
+                  {buttonAvailable ? (
+                    <Button scale={itemScale} intent="primary" emphasis="high">
+                      <Button.Label>Action</Button.Label>
+                    </Button>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </section>
+
           <section className={styles.section}>
             <Text as="h3" profile={profiles.sectionTitle}>
               Four supported compositions

@@ -41,6 +41,18 @@ const ringContext: KiskadeeContextValue = {
   }
 };
 
+const shadowContext: KiskadeeContextValue = {
+  ...context,
+  classesMap: {
+    badge: {
+      e1: { e: { h: 'badge-text-shadow' } },
+      e3: { e: { h: 'badge-full-bleed-shadow' } },
+      e5: { e: { h: 'badge-indicator-shadow' } },
+      e6: { d: 'badge-ring', rp: { all: 'badge-ring-pill' } }
+    }
+  }
+};
+
 afterEach(cleanup);
 
 describe('Badge', () => {
@@ -127,6 +139,45 @@ describe('Badge', () => {
     expect(result.getByTestId('full-bleed').querySelector('.k-bdg-e6')?.className).toContain(
       'badge-ring-pill'
     );
+  });
+
+  it('applies the static shadow only when the preset recipe and prop both resolve', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={shadowContext}>
+        <Badge data-testid="plain">3</Badge>
+        <Badge data-testid="text-shadow" shadow>
+          3
+        </Badge>
+        <Badge.Dot data-testid="dot-shadow" shadow separation="ring" />
+        <Badge.Mark data-testid="contained-shadow" shadow>
+          <svg />
+        </Badge.Mark>
+        <Badge.Mark data-testid="full-bleed-shadow" presentation="full-bleed" shadow>
+          <svg />
+        </Badge.Mark>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.getByTestId('plain').classList.contains('-e')).toBe(false);
+    expect(result.getByTestId('text-shadow').className).toContain('badge-text-shadow');
+    expect(result.getByTestId('text-shadow').classList.contains('-e')).toBe(true);
+    expect(result.getByTestId('dot-shadow').className).toContain('badge-indicator-shadow');
+    expect(result.getByTestId('dot-shadow').classList.contains('-e')).toBe(true);
+    expect(result.getByTestId('dot-shadow').querySelector('.k-bdg-e6')).not.toBeNull();
+    expect(result.getByTestId('contained-shadow').className).toContain('badge-indicator-shadow');
+    expect(result.getByTestId('full-bleed-shadow').className).toContain('badge-full-bleed-shadow');
+  });
+
+  it('does not add a shadow activator when the active preset omits the recipe', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <Badge data-testid="badge" shadow>
+          3
+        </Badge>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.getByTestId('badge').classList.contains('-e')).toBe(false);
   });
 
   it('rejects compound Badge content and full-bleed emphasis at runtime', () => {

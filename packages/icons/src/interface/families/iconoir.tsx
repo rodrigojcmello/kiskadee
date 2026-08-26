@@ -6,6 +6,7 @@ import {
   ArrowSeparate,
   Bell,
   Bold,
+  Cart,
   Check,
   CheckCircle,
   Circle,
@@ -68,6 +69,7 @@ const glyphAlignRight = createSvgGlyph(AlignRight, {"width":"1em","height":"1em"
 const glyphArrowSeparate = createSvgGlyph(ArrowSeparate, {"width":"1em","height":"1em"});
 const glyphBell = createSvgGlyph(Bell, {"width":"1em","height":"1em"});
 const glyphBold = createSvgGlyph(Bold, {"width":"1em","height":"1em"});
+const glyphCart = createSvgGlyph(Cart, {"width":"1em","height":"1em"});
 const glyphCheck = createSvgGlyph(Check, {"width":"1em","height":"1em"});
 const glyphCheckCircle = createSvgGlyph(CheckCircle, {"width":"1em","height":"1em"});
 const glyphClipboardCheck = createSvgGlyph(ClipboardCheck, {"width":"1em","height":"1em"});
@@ -128,6 +130,7 @@ const glyphMap = {
     "ban": glyphProhibition,
     "bell": glyphBell,
     "bold": glyphBold,
+    "cart": glyphCart,
     "check": glyphCheck,
     "chevron-down": glyphNavArrowDown,
     "chevron-up": glyphNavArrowUp,

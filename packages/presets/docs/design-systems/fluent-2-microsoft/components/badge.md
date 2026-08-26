@@ -64,17 +64,31 @@ presented as literal Fluent intent aliases.
 
 The six React Badge sizes are mapped to Kiskadee scales without component-local names:
 
-| Fluent size | Kiskadee scale | Nominal size |
-| --- | --- | --- |
-| Tiny | `s:sm:3` | 6 px |
-| Extra-small | `s:sm:2` | 10 px |
-| Small | `s:sm:1` | 16 px |
-| Medium | `s:md:1` | 20 px |
-| Large | `s:lg:1` | 24 px |
-| Extra-large | `s:lg:2` | 32 px |
+| Fluent size | Kiskadee scale | Text minimum | Dot/Mark viewport | Text profile | Text metrics |
+| --- | --- | --- | --- | --- | --- |
+| Tiny | `s:sm:3` | 8 px | 6 px | `caption-tiny-strong` | Semibold 6/6 px |
+| Extra-small | `s:sm:2` | 12 px | 10 px | `caption-extra-small-strong` | Semibold 8/8 px |
+| Small | `s:sm:1` | 16 px | 16 px | `caption-small-strong` | Semibold 10/14 px |
+| Medium | `s:md:1` | 20 px | 20 px | `caption-medium-strong` | Semibold 12/16 px |
+| Large | `s:lg:1` | 24 px | 24 px | `caption-medium-strong` | Semibold 12/16 px |
+| Extra-large | `s:lg:2` | 32 px | 32 px | `caption-medium-strong` | Semibold 12/16 px |
+
+Fluent supplies 6/10 px Tiny/Extra-small surfaces with 4/4 px and 6/6 px text. Kiskadee preserves
+those dimensions for Dot and Mark but raises only the textual surface and profiles to 8/12 px and
+6/6 px / 8/8 px. This is a Kiskadee legibility adaptation, not an official Fluent value.
+The two adapted textual surfaces also author 2 px and 3 px inline padding respectively. This keeps
+short text from touching the edge while leaving Dot and Mark geometry unchanged.
+
+Text Badge authors only its nominal height. Web structure consumes that token as both the minimum
+block size and minimum inline size, so a short count forms a circle while `12`, `99+`, and short
+text can grow into a pill. The textual surface does not author `boxWidth`; typography, vertical
+padding, and border must fit inside the nominal height. Root-font changes and browser zoom may
+still enlarge content without clipping. Dot and Mark continue authoring equal width and height
+because they own fixed icon-only viewports.
 
 Text Badge supports `square`, `rounded`, and `pill`; `pill` is the default. Dot and Mark are always
-`pill`. The framework does not introduce a separate `circular` radius term.
+`pill`. The framework does not introduce a separate `circular` radius term. Shape remains a
+secondary compatibility capability; `pill` is the recommended and primary Badge presentation.
 
 Dot, contained Mark, and full-bleed Mark support all six scales. Their glyph viewports are authored
 through `global.iconSizes`, including the 6 px `s:sm:5` profile. A contained Mark uses a smaller
@@ -121,6 +135,17 @@ Fluent token copies.
 The on-vivid palettes are independently authored Kiskadee adaptations. Badge consumes the nearest
 Surface Context but remains in Rest even when its host is Hover, Pressed, Selected, or Disabled.
 
+## Optional static shadow
+
+The Fluent preset exposes one opt-in outer-shadow recipe for Text Badge, Dot, contained Mark, and
+full-bleed Mark. It reuses the preset's smallest global shadow profile (`s:sm:1`, Fluent Shadow 02),
+is disabled by default, and remains constant in Rest. It does not add Hover, Pressed, Focus,
+Selected, or Disabled states to Badge.
+
+This recipe is a Kiskadee extension, not a claim that Fluent Badge normatively requires a shadow.
+The motivation includes an observed recent iPad/iOS Badge treatment, but that observation is visual
+inspiration rather than Apple source evidence. Presets remain free to omit the recipe.
+
 ## Kiskadee extensions
 
 - `onVivid` palette authorship.
@@ -128,6 +153,7 @@ Surface Context but remains in Rest even when its host is Hover, Pressed, Select
 - `novelty` as a Berry/Purple passive-metadata convention.
 - `Badge.Mark`, including contained and full-bleed presentation.
 - The optional Schema-authored separation ring.
+- The optional, default-off smallest static shadow recipe.
 - The disabled-host rule: Badge remains visible and in Rest when its host is disabled. This
   preserves information but may leave a vivid Badge over muted host chrome; the known gap remains
   documented in the normative Badge definition.

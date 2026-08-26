@@ -76,6 +76,8 @@ the upstream names remain evidence rather than schema aliases:
 
 | Fluent Web token | Kiskadee profile | Role | Weight | Size / line height | Status |
 | --- | --- | --- | --- | --- | --- |
+| Badge Tiny readable adaptation | `caption-tiny-strong` | body | Semibold | 6 / 6 px | Kiskadee extension |
+| Badge Extra-small readable adaptation | `caption-extra-small-strong` | body | Semibold | 8 / 8 px | Kiskadee extension |
 | Caption 2 | `caption-small` | body | Regular | 10 / 14 px | Official adapted |
 | Caption 2 Strong | `caption-small-strong` | body | Semibold | 10 / 14 px | Official adapted |
 | Caption 1 | `caption-medium` | body | Regular | 12 / 16 px | Official adapted |
@@ -94,6 +96,13 @@ the upstream names remain evidence rather than schema aliases:
 Fluent also publishes Caption 1 Stronger, Body 1 Stronger, and Subtitle 2 Stronger at Bold. These
 three entries are **Deferred** because the normalized Kiskadee catalog intentionally omits the
 `stronger` modifier in this version.
+
+The upstream Badge implementation applies Caption Strong and then overrides Tiny to 4/4 px and
+Extra-small to 6/6 px. Those source values remain evidence, but direct browser inspection showed
+that they do not communicate number or short-text metadata reliably. Kiskadee therefore raises the
+two reusable recipes to 6/6 px and 8/8 px. This is a documented Kiskadee legibility adaptation;
+Badge remains profile-only instead of introducing component-local font metrics. The profiles use
+component-agnostic names even though Badge is their first consumer.
 
 `label-large` is a **Kiskadee extension** at body Semibold 16/22. It deliberately shares the
 numeric metrics of `subtitle-small` while keeping the Button label on the `body` role, so an

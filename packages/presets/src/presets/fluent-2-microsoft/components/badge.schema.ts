@@ -124,14 +124,21 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
   });
 
   return {
+    effects: {
+      shadow: {
+        e1: { kind: 'outer', states: { rest: 's:sm:1' } },
+        e3: { kind: 'outer', states: { rest: 's:sm:1' } },
+        e5: { kind: 'outer', states: { rest: 's:sm:1' } }
+      }
+    },
     elements: {
       e1: {
         name: 'badge-surface',
         decorations: { borderStyle: 'solid' },
         scales: {
           boxHeight: {
-            's:sm:3': 6,
-            's:sm:2': 10,
+            's:sm:3': 8,
+            's:sm:2': 12,
             's:sm:1': 16,
             's:md:1': 20,
             's:lg:1': 24,
@@ -140,33 +147,33 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
           paddingTop: {
             's:sm:3': 0,
             's:sm:2': 0,
-            's:sm:1': 1,
-            's:md:1': 2,
+            's:sm:1': 0,
+            's:md:1': 1,
             's:lg:1': 2,
             's:lg:2': 4
           },
           paddingBottom: {
             's:sm:3': 0,
             's:sm:2': 0,
-            's:sm:1': 1,
-            's:md:1': 2,
+            's:sm:1': 0,
+            's:md:1': 1,
             's:lg:1': 2,
             's:lg:2': 4
           },
           paddingLeft: {
-            's:sm:3': 0,
-            's:sm:2': 0,
+            's:sm:3': 2,
+            's:sm:2': 3,
             's:sm:1': 4,
-            's:md:1': 6,
-            's:lg:1': 8,
+            's:md:1': 5,
+            's:lg:1': 7,
             's:lg:2': 10
           },
           paddingRight: {
-            's:sm:3': 0,
-            's:sm:2': 0,
+            's:sm:3': 2,
+            's:sm:2': 3,
             's:sm:1': 4,
-            's:md:1': 6,
-            's:lg:1': 8,
+            's:md:1': 5,
+            's:lg:1': 7,
             's:lg:2': 10
           },
           borderWidth: {
@@ -184,12 +191,12 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
       e2: {
         name: 'badge-content',
         typography: {
-          's:sm:3': 'caption-small',
-          's:sm:2': 'caption-small',
-          's:sm:1': 'caption-small',
-          's:md:1': 'caption-medium',
+          's:sm:3': 'caption-tiny-strong',
+          's:sm:2': 'caption-extra-small-strong',
+          's:sm:1': 'caption-small-strong',
+          's:md:1': 'caption-medium-strong',
           's:lg:1': 'caption-medium-strong',
-          's:lg:2': 'body-medium-strong'
+          's:lg:2': 'caption-medium-strong'
         },
         palettes: { default: themes((theme) => createTextPalette(theme)) }
       },

@@ -82,6 +82,13 @@ or a number.
 An optional Schema-authored outline outside a Badge that separates overlaid metadata from its host.
 Badge owns the ring color and width; Structural CSS owns only its placement and negative inset.
 
+### Button
+
+An actionable component that represents a command or navigation operation. Button owns activation;
+it is not a passive metadata carrier or a represented entity. When a preset publishes comparable
+scales, Kiskadee-authored official presets should normally keep Chip visually subordinate to Button,
+while custom presets remain free to document another hierarchy.
+
 ### Chip
 
 A component that represents an entity, filter, choice, or removable value. Chip may be static,

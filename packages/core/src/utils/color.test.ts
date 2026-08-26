@@ -10,7 +10,7 @@ import {
   type SchemaColors,
   type SystemButtonIntent
 } from '../types/colors/colors.types.ts';
-import { color, primitive } from './color.ts';
+import { color, colorByReference, primitive } from './color.ts';
 
 const scale = Object.fromEntries(
   KISKADEE_TONES.map((tone) => [
@@ -43,6 +43,107 @@ describe('color exact tone lookup', () => {
   it('rejects the legacy primitive asset shape', () => {
     const colors = colorsFor({ subtle: {}, vivid: {} });
     expect(() => color({ colors }, 'default', 'l', primitive('blue', 'v1'), 24)).toThrow();
+  });
+});
+
+describe('color functional reference lookup', () => {
+  const indexedScale = (theme: 'light' | 'dark') =>
+    Object.fromEntries(
+      KISKADEE_TONES.map((tone, index) => {
+        if (tone === 0) return [tone, theme === 'light' ? '#ffffff' : '#000000'];
+        if (tone === 100) return [tone, theme === 'light' ? '#000000' : '#ffffff'];
+        const channel = index.toString(16).padStart(2, '0');
+        return [tone, `#${channel}${channel}${channel}`];
+      })
+    ) as unknown as KiskadeeHexScale;
+
+  const colors = {
+    primitiveColors: {
+      blue: {
+        v1: {
+          kind: 'static',
+          functionalReferences: {
+            light: { subtle: 4, vivid: 24 },
+            dark: { subtle: 6, vivid: 30 }
+          },
+          scales: { light: indexedScale('light'), dark: indexedScale('dark') }
+        }
+      },
+      purple: {
+        v1: {
+          kind: 'static',
+          functionalReferences: {
+            light: { subtle: 8, vivid: 40 },
+            dark: { subtle: 10, vivid: 45 }
+          },
+          scales: { light: indexedScale('light'), dark: indexedScale('dark') }
+        }
+      }
+    },
+    globalSemantics: {
+      light: { primary: { v1: 'primitive.blue.v1' } },
+      dark: { primary: { v1: 'primitive.blue.v1' } }
+    },
+    globalSemanticsBySegment: {
+      special: {
+        meta: { name: 'Special' },
+        themes: {
+          light: { primary: { v1: 'primitive.purple.v1' } },
+          dark: { primary: { v1: 'primitive.purple.v1' } }
+        }
+      }
+    },
+    componentIntents: { badge: { primary: 'primary' } }
+  } as unknown as SchemaColors;
+
+  it('resolves primitive, semantic, component-intent, segment, and theme references', () => {
+    expect(colorByReference({ colors }, 'default', 'l', primitive('blue', 'v1'), 'subtle')).toBe(
+      '#040404'
+    );
+    expect(colorByReference({ colors }, 'default', 'l', 'badge.primary', 'vivid')).toBe('#111111');
+    expect(colorByReference({ colors }, 'default', 'd', 'badge.primary', 'vivid')).toBe('#141414');
+    expect(colorByReference({ colors }, 'special', 'l', 'badge.primary', 'vivid')).toBe('#161616');
+  });
+
+  it('moves offsets by public-grid position and applies alpha after resolution', () => {
+    expect(colorByReference({ colors }, 'default', 'l', 'badge.primary', 'vivid', 1)).toBe(
+      '#121212'
+    );
+    expect(colorByReference({ colors }, 'default', 'l', 'badge.primary', 'vivid', 0, 50)).toBe(
+      '#11111180'
+    );
+  });
+
+  it('fails when the functional reference is absent or its offset leaves the public grid', () => {
+    const withoutReferences = colorsFor({
+      kind: 'static',
+      scales: { light: indexedScale('light') }
+    });
+    expect(() =>
+      colorByReference(
+        { colors: withoutReferences },
+        'default',
+        'l',
+        primitive('blue', 'v1'),
+        'vivid'
+      )
+    ).toThrow('missing the light.vivid functional reference');
+
+    const terminalReference = colorsFor({
+      kind: 'static',
+      functionalReferences: { light: { subtle: 99, vivid: 100 } },
+      scales: { light: indexedScale('light') }
+    });
+    expect(() =>
+      colorByReference(
+        { colors: terminalReference },
+        'default',
+        'l',
+        primitive('blue', 'v1'),
+        'vivid',
+        1
+      )
+    ).toThrow('leaves the public grid');
   });
 });
 

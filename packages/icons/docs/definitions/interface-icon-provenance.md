@@ -42,3 +42,8 @@ The canonical `radio-selected` mapping uses `CircleSmallIcon`, `CircleSmallFille
 Phosphor, Font Awesome, and Material respectively. Iconoir, Font Awesome, and Material apply
 mapping-local fill or optical defaults in generated adapters; no CSS pseudo-element supplies the
 radio dot.
+
+The canonical `cart` CP-I concept uses `ShoppingCartIcon`, `CartRegular`, `ShoppingCart`, `Cart`,
+`ShoppingCartIcon`, `faCartShopping`, and Material Symbols `shopping_cart` for those same families.
+It remains consumer-provided content: adding complete family coverage does not promote it to the
+limited Essential Icon catalog.

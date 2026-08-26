@@ -44,14 +44,20 @@ Text Badge supports `square`, `rounded`, and `pill`; Dot and Mark are forced to 
 indicator anatomies support the six Badge scales. `attention` is the portability default intent.
 The public intents are `neutral`, `primary`, `novelty`, `positive`, `warning`, and `attention`.
 
+Text Badge authors one nominal height per scale and never authors a duplicate width. Platform
+structure uses that height as the minimum on both axes: short metadata starts square, while wider
+content such as `12`, `99+`, or `New` grows inline into a pill. Dot and Mark keep independent equal
+width and height maps because their viewports are fixed and content-free or icon-only.
+
 Badge optionally owns a `separation="ring"` outline for overlays. The ring is a distinct visual
 owner: its color, width, and radius are Schema-owned, while Structural CSS owns only positioning and
 negative inset. If the ring element is absent or unresolved, the complete ring is omitted without a
 fallback. Button.Badge never owns this visual treatment.
 
 The initial Badge contract rejects Hover, Pressed, Focus, Selected, Disabled, Pending, Read-only,
-Filled, and Effects. A Badge nested in Button or Chip remains in Rest and does not inherit the
-host's interaction activators.
+and Filled. It may opt into one preset-authored static outer Shadow Effect. The Effect is disabled
+by default and constant in Rest; it does not create interaction states. A Badge nested in Button or
+Chip remains in Rest and does not inherit the host's interaction activators.
 
 ### Disabled-host gap
 
@@ -88,6 +94,11 @@ state.
 
 Chip does not provide a generic command-only mode. Compact actions remain Button. Chip group
 selection semantics are outside the individual Chip contract.
+
+Kiskadee-authored official presets should normally keep corresponding Chip scales visually smaller
+than Button scales so entity/value metadata remains subordinate to commands. This is a preset
+authoring recommendation, not a Core validation rule. Each preset authors Chip and Button geometry
+independently and documents any source-driven exception.
 
 ## Badge in Button
 

@@ -88,6 +88,8 @@ describe('preset typography catalogs', () => {
 
   it('publishes the supported Fluent Web ramp and body-owned control adaptations', () => {
     expect(Object.keys(fluent2Microsoft.global?.typography?.profiles ?? {})).toEqual([
+      'caption-tiny-strong',
+      'caption-extra-small-strong',
       'caption-small',
       'caption-small-strong',
       'caption-medium',

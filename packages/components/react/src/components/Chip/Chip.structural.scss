@@ -71,11 +71,12 @@
 
 /*
  * element chip primary surface / e2 + remove control / e5
- * Keeps sibling controls visually continuous without nesting either button.
+ * Keeps sibling controls continuous and avoids a duplicated inline-end inset.
  */
 .k-chp-e1:has(> .k-chp-e5) > .k-chp-e2 {
   border-end-end-radius: 0;
   border-start-end-radius: 0;
+  padding-inline-end: 0;
 }
 
 .k-chp-e1:has(> .k-chp-e2) > .k-chp-e5 {

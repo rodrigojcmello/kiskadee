@@ -9,6 +9,8 @@
   inline-size: fit-content;
   justify-content: center;
   max-inline-size: 100%;
+  min-block-size: var(--k-bxh);
+  min-inline-size: var(--k-bxh);
   position: relative;
   vertical-align: middle;
   white-space: nowrap;

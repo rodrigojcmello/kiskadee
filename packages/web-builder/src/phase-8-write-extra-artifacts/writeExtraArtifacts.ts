@@ -303,6 +303,10 @@ export async function writeExtraArtifacts(params: {
       schema.components.button.effects.activationFeedback;
   }
 
+  if (schema.components?.badge?.effects?.shadow !== undefined) {
+    getComponentEffects('badge').shadow = schema.components.badge.effects.shadow;
+  }
+
   if (schema.components?.button?.contentSurfaceContext !== undefined) {
     const buttonArtifact = componentEffectOverrides.button ?? {};
     buttonArtifact.contentSurfaceContext = schema.components.button.contentSurfaceContext;

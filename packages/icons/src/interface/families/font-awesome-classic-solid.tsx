@@ -6,6 +6,7 @@ import { faBan } from '@fortawesome/free-solid-svg-icons/faBan';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
 import { faBold } from '@fortawesome/free-solid-svg-icons/faBold';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons/faCartShopping';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons/faChevronLeft';
@@ -66,6 +67,7 @@ const glyphfaBan = createFontAwesomeGlyph(faBan);
 const glyphfaBars = createFontAwesomeGlyph(faBars);
 const glyphfaBell = createFontAwesomeGlyph(faBell);
 const glyphfaBold = createFontAwesomeGlyph(faBold);
+const glyphfaCartShopping = createFontAwesomeGlyph(faCartShopping);
 const glyphfaCheck = createFontAwesomeGlyph(faCheck);
 const glyphfaChevronDown = createFontAwesomeGlyph(faChevronDown);
 const glyphfaChevronLeft = createFontAwesomeGlyph(faChevronLeft);
@@ -124,6 +126,7 @@ const glyphMap = {
     "ban": glyphfaBan,
     "bell": glyphfaBell,
     "bold": glyphfaBold,
+    "cart": glyphfaCartShopping,
     "check": glyphfaCheck,
     "chevron-down": glyphfaChevronDown,
     "chevron-up": glyphfaChevronUp,

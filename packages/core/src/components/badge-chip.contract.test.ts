@@ -23,7 +23,10 @@ function badge(states?: Record<string, string>) {
     elements: {
       e1: {
         name: 'badge-surface',
-        scales: { boxHeight: { 's:md:1': 20 }, borderRadius: { pill: 999 } },
+        scales: {
+          boxHeight: { 's:md:1': 20 },
+          borderRadius: { pill: 999 }
+        },
         palettes: palette('boxColor', states, 'attention')
       },
       e2: {
@@ -64,6 +67,16 @@ function badge(states?: Record<string, string>) {
   };
 }
 
+function badgeShadow() {
+  return {
+    shadow: {
+      e1: { kind: 'outer', states: { rest: 's:sm:1' } },
+      e3: { kind: 'outer', states: { rest: 's:sm:1' } },
+      e5: { kind: 'outer', states: { rest: 's:sm:1' } }
+    }
+  };
+}
+
 function chip() {
   return {
     contentSurfaceContext: {
@@ -91,6 +104,10 @@ function chip() {
       },
       e3: {
         name: 'chip-label',
+        scales: {
+          paddingLeft: { 's:md:1': 2 },
+          paddingRight: { 's:md:1': 2 }
+        },
         typography: { 's:md:1': 'body-medium' },
         palettes: palette('textColor')
       },
@@ -126,6 +143,42 @@ describe('Badge and Chip component contracts', () => {
     );
   });
 
+  it('accepts only static Rest outer-shadow recipes on Badge surfaces', () => {
+    const value = badge() as ReturnType<typeof badge> & { effects?: unknown };
+    value.effects = badgeShadow();
+    expect(validateBadgeComponentContract(value)).toEqual([]);
+
+    const invalid = badge() as ReturnType<typeof badge> & { effects?: unknown };
+    invalid.effects = {
+      shadow: {
+        e2: { kind: 'outer', states: { rest: 's:sm:1' } },
+        e3: { kind: 'inner', states: { rest: 's:sm:1', hover: 's:md:1' } },
+        e5: { kind: 'outer', states: { rest: 'unknown' }, fixedLevels: ['s:sm:1'] }
+      }
+    };
+
+    expect(validateBadgeComponentContract(invalid)).toEqual(
+      expect.arrayContaining([
+        'components.badge.effects.shadow.e2: unrecognized key',
+        'components.badge.effects.shadow.e3.kind: expected "outer"',
+        'components.badge.effects.shadow.e3.states.hover: unrecognized key',
+        'components.badge.effects.shadow.e5.fixedLevels: unrecognized key',
+        'components.badge.effects.shadow.e5.states.rest: expected element size value'
+      ])
+    );
+  });
+
+  it('keeps textual Badge width structural and rejects an authored boxWidth', () => {
+    const withWidth = badge();
+    (withWidth.elements.e1.scales as Record<string, unknown>).boxWidth = { 's:md:1': 20 };
+
+    expect(validateBadgeComponentContract(withWidth)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('components.badge.elements.e1.scales.boxWidth: unrecognized key')
+      ])
+    );
+  });
+
   it('allows an absent separation ring, accepts neutral, and rejects removed Badge intents', () => {
     const withoutRing = badge();
     delete (withoutRing.elements as Partial<typeof withoutRing.elements>).e6;
@@ -144,6 +197,15 @@ describe('Badge and Chip component contracts', () => {
 
   it('accepts Chip interaction states and serialized surface output', () => {
     expect(validateChipComponentContract(chip())).toEqual([]);
+  });
+
+  it('limits Chip label geometry to authored inline padding', () => {
+    const value = chip();
+    (value.elements.e3.scales as Record<string, unknown>).marginLeft = { 's:md:1': 2 };
+
+    expect(validateChipComponentContract(value)).toEqual(
+      expect.arrayContaining(['components.chip.elements.e3.scales.marginLeft: unrecognized key'])
+    );
   });
 
   it('rejects unknown Chip elements, states, and incomplete surface state maps', () => {

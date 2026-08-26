@@ -82,7 +82,11 @@ export type KiskadeeGlobalArtifact = {
     shadow?: ShadowGlobalEffectSchema;
   };
   components?: {
-    badge?: Record<string, never>;
+    badge?: {
+      effects?: {
+        shadow?: ShadowEffectSchema;
+      };
+    };
     bottomSheet?: {
       options?: {
         initialHeight?: BottomSheetInitialHeight;

@@ -1,6 +1,6 @@
 import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
+import type { BadgeEffects, BadgeElements } from './components/badge.ts';
 import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
-import type { BadgeElements } from './components/badge.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
 import type { CardElements, CardOptions } from './components/card.ts';
 import type { ChipComponent } from './components/chip.ts';
@@ -12,21 +12,21 @@ import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
-import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ContentSurfaceContextMap } from './content-surface-context.ts';
+import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
 import type {
+  CardIntent,
   ElementPalettes,
   InteractionState,
   SchemaColors,
-  CardIntent,
   SegmentName,
   SelectedInteractionStateToken,
   SemanticColor,
   SolidColor,
   SurfaceContext,
-  SystemButtonIntent,
   SurfaceContextBucket,
+  SystemButtonIntent,
   ThemeMode
 } from './types/colors/colors.types.ts';
 import type { DecorationSchema } from './types/decorations/decorations.types.ts';
@@ -189,6 +189,7 @@ type ComponentEffects = {
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   badge: {
+    effects?: BadgeEffects;
     elements: BadgeElements<TSegmentName> & Elements<TSegmentName>;
   };
   bottomSheet: {

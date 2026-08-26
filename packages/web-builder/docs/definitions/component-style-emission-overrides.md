@@ -24,6 +24,22 @@ Some non-direct emission is default behavior, not an override. In the current bu
 changes that default or when local runtime/structural behavior depends on the emitted variable in a
 component-specific way.
 
+## Badge
+
+Current scope:
+
+- `badge.elements.e1`, the text or number surface.
+
+### Text or number surface `e1`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | Badge structural CSS applies the authored nominal height as both `min-block-size` and `min-inline-size`, preserving circular single-character metadata while allowing longer content to grow into a pill. |
+
+Core intentionally rejects `boxWidth` on `e1`, and presets author only the nominal height. The Web
+structure reuses that one token on both logical axes instead of creating a duplicate width scale;
+`inline-size` remains `fit-content` so text can grow without clipping.
+
 ## Button
 
 Current scope:

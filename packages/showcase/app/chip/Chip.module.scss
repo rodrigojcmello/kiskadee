@@ -4,4 +4,11 @@
 .sections { display: grid; gap: 40px; margin-block-start: 20px; }
 .section { display: grid; gap: 14px; min-inline-size: 0; }
 .stage { align-items: center; display: flex; flex-wrap: wrap; gap: 16px; min-inline-size: 0; padding: 12px; }
+.scaleComparison { display: grid; gap: 12px; }
+.scaleComparisonRow { align-items: center; display: grid; gap: 16px; grid-template-columns: 72px minmax(max-content, 1fr) minmax(max-content, 1fr); }
 .unavailable { align-items: center; border: 1px solid color-mix(in srgb, currentColor 12%, transparent); border-radius: 16px; display: flex; justify-content: center; min-block-size: 120px; padding: 20px; }
+
+@media (max-width: 520px) {
+  .scaleComparisonRow { grid-template-columns: 64px 1fr; }
+  .scaleComparisonRow > :last-child { grid-column: 2; }
+}

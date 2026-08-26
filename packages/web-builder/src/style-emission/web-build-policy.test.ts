@@ -49,6 +49,19 @@ describe('Button Web style-emission policy', () => {
 });
 
 describe('Badge and Chip Web style-emission policy', () => {
+  it('publishes only the Badge text height as its structural minimum token', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'badge',
+      'e1'
+    );
+
+    expect(policy.boxHeightEmission).toBe('token');
+    expect(DEFAULT_WEB_STYLE_EMISSION_POLICY.components?.badge?.elements?.e1).not.toHaveProperty(
+      'boxWidthEmission'
+    );
+  });
+
   it('publishes every owned icon viewport as structural tokens', () => {
     for (const [component, element] of [
       ['badge', 'e3'],

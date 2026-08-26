@@ -21,12 +21,14 @@ function useResolvedBadgeClasses({
   intent,
   radius,
   scale,
+  shadow,
   surfaceContext
 }: Pick<BadgeProps, 'className' | 'classNames' | 'surfaceContext'> & {
   emphasis: NonNullable<BadgeProps['emphasis']>;
   intent: NonNullable<BadgeProps['intent']>;
   radius: NonNullable<BadgeProps['radius']>;
   scale: NonNullable<BadgeProps['scale']>;
+  shadow: boolean;
 }) {
   const { classesMap } = useKiskadee();
   const consumedSurfaceContext = useSurfaceContext(surfaceContext);
@@ -40,6 +42,7 @@ function useResolvedBadgeClasses({
     emphasis,
     scale,
     radius,
+    shadow,
     surfaceContext: consumedSurfaceContext
   });
 }
@@ -57,6 +60,7 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
     radius = DEFAULT_BADGE_RADIUS,
     scale = DEFAULT_BADGE_SCALE,
     separation = 'none',
+    shadow = false,
     surfaceContext,
     children,
     ...props
@@ -74,6 +78,7 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
     intent,
     radius,
     scale,
+    shadow,
     surfaceContext
   });
 
@@ -92,6 +97,7 @@ const BadgeDot = forwardRef<HTMLSpanElement, BadgeDotProps>(function BadgeDot(
     intent = DEFAULT_BADGE_INTENT,
     scale = 's:sm:3',
     separation = 'none',
+    shadow = false,
     surfaceContext,
     ...props
   },
@@ -104,6 +110,7 @@ const BadgeDot = forwardRef<HTMLSpanElement, BadgeDotProps>(function BadgeDot(
     intent,
     radius: 'pill',
     scale,
+    shadow,
     surfaceContext
   });
   return (
@@ -122,6 +129,7 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
     presentation = 'contained',
     scale = DEFAULT_BADGE_SCALE,
     separation = 'none',
+    shadow = false,
     surfaceContext,
     children,
     ...props
@@ -143,6 +151,7 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
     intent,
     radius: 'pill',
     scale,
+    shadow,
     surfaceContext
   });
 

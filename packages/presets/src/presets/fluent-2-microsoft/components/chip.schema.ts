@@ -146,11 +146,11 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
         name: 'chip-primary-surface',
         decorations: { borderStyle: 'solid' },
         scales: {
-          boxHeight: { 's:sm:1': 24, 's:md:1': 32, 's:lg:1': 40 },
-          paddingTop: { 's:sm:1': 2, 's:md:1': 4, 's:lg:1': 6 },
-          paddingBottom: { 's:sm:1': 2, 's:md:1': 4, 's:lg:1': 6 },
-          paddingLeft: { 's:sm:1': 8, 's:md:1': 10, 's:lg:1': 12 },
-          paddingRight: { 's:sm:1': 8, 's:md:1': 10, 's:lg:1': 12 },
+          boxHeight: { 's:sm:1': 20, 's:md:1': 24, 's:lg:1': 32 },
+          paddingTop: { 's:sm:1': 0, 's:md:1': 0, 's:lg:1': 0 },
+          paddingBottom: { 's:sm:1': 0, 's:md:1': 0, 's:lg:1': 0 },
+          paddingLeft: { 's:sm:1': 5, 's:md:1': 5, 's:lg:1': 7 },
+          paddingRight: { 's:sm:1': 5, 's:md:1': 5, 's:lg:1': 7 },
           borderWidth: { 's:sm:1': 1, 's:md:1': 1, 's:lg:1': 1 },
           borderRadius: { rounded: 4, pill: 999 }
         },
@@ -166,8 +166,12 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
         name: 'chip-label',
         typography: {
           's:sm:1': 'caption-medium',
-          's:md:1': 'body-medium',
-          's:lg:1': 'body-large'
+          's:md:1': 'caption-medium',
+          's:lg:1': 'body-medium'
+        },
+        scales: {
+          paddingLeft: { 's:sm:1': 2, 's:md:1': 2, 's:lg:1': 2 },
+          paddingRight: { 's:sm:1': 2, 's:md:1': 2, 's:lg:1': 2 }
         },
         palettes: {
           default: {
@@ -179,8 +183,8 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
       },
       e4: {
         name: 'chip-icon',
-        iconSize: { 's:sm:1': 's:sm:1', 's:md:1': 's:md:1', 's:lg:1': 's:lg:1' },
-        scales: { marginRight: { 's:sm:1': 4, 's:md:1': 6, 's:lg:1': 6 } },
+        iconSize: { 's:sm:1': 's:sm:2', 's:md:1': 's:sm:1', 's:lg:1': 's:md:1' },
+        scales: { marginRight: { 's:sm:1': 2, 's:md:1': 2, 's:lg:1': 4 } },
         palettes: {
           default: {
             light: createTextPalette('light'),
@@ -194,10 +198,10 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
         decorations: { borderStyle: 'solid' },
         scales: {
           marginLeft: { 's:sm:1': 0, 's:md:1': 0, 's:lg:1': 0 },
-          paddingTop: { 's:sm:1': 2, 's:md:1': 4, 's:lg:1': 6 },
-          paddingRight: { 's:sm:1': 4, 's:md:1': 6, 's:lg:1': 8 },
-          paddingBottom: { 's:sm:1': 2, 's:md:1': 4, 's:lg:1': 6 },
-          paddingLeft: { 's:sm:1': 4, 's:md:1': 6, 's:lg:1': 8 },
+          paddingTop: { 's:sm:1': 0, 's:md:1': 0, 's:lg:1': 0 },
+          paddingRight: { 's:sm:1': 5, 's:md:1': 5, 's:lg:1': 7 },
+          paddingBottom: { 's:sm:1': 0, 's:md:1': 0, 's:lg:1': 0 },
+          paddingLeft: { 's:sm:1': 2, 's:md:1': 2, 's:lg:1': 4 },
           borderWidth: { 's:sm:1': 1, 's:md:1': 1, 's:lg:1': 1 },
           borderRadius: { rounded: 4, pill: 999 }
         },
@@ -222,7 +226,7 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
       },
       e7: {
         name: 'chip-badge-relation',
-        scales: { marginLeft: { 's:sm:1': 4, 's:md:1': 6, 's:lg:1': 6 } }
+        scales: { marginLeft: { 's:sm:1': 4, 's:md:1': 4, 's:lg:1': 6 } }
       }
     }
   };

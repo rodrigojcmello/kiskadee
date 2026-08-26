@@ -72,7 +72,13 @@ that as a blocked contract gap and document it instead of adding a fallback.
 6. Author the schema through the color contract.
    - Prefer a component intent or global semantic role when the color expresses meaning.
    - Use a primitive role directly only for genuinely primitive or structural usage.
-   - Pass the documented theme-specific tone to `color()` or the local preset getter.
+   - Classify the lookup before choosing an API: use `c.ref()` for family-relative,
+     semantically remappable, Brand, or shared `subtle`/`vivid` formulas; use `c()` for exact
+     source-backed positions and absolute/structural decisions.
+   - Record whether each lookup is a functional reference or exact tone. Exact tonal-family
+     lookups must include their theme-specific source or Kiskadee rationale.
+   - Never copy the current numeric position of a functional reference into `c()` or repeat one
+     tone across unrelated families merely for convenience.
    - Derive hover, pressed, focus, selected, and disabled positions only from documented upstream
      states or an approved preset state rule. Do not invent numeric offsets silently.
 
@@ -102,10 +108,12 @@ Before finalizing:
 1. Search every touched schema for newly introduced color literals.
 2. Confirm every changed color lookup uses a valid `KiskadeeTone` and resolves in every declared
    theme and segment.
-3. Run `git diff --check`.
-4. Run the narrowest relevant preset or Web Builder validation required by the evidence skill.
-5. Report the exact evidence document, primitive asset, semantic/intent role, and L/D positions
-   used by the schema.
+3. Confirm each changed family-relative recipe uses `c.ref()` and each exact `c()` lookup has
+   documented evidence or rationale.
+4. Run `git diff --check`.
+5. Run the narrowest relevant preset or Web Builder validation required by the evidence skill.
+6. Report the exact evidence document, primitive asset, semantic/intent role, lookup kind, and
+   functional reference/offset or L/D positions used by the schema.
 
 Useful literal scan for a touched preset:
 

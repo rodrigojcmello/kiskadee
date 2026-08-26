@@ -5,7 +5,7 @@ describe('typography profile buckets', () => {
   it('keeps the normalized profile vocabulary compact and collision-free', () => {
     const buckets = Object.values(typographyProfileBuckets);
 
-    expect(Object.keys(typographyProfileBuckets)).toHaveLength(28);
+    expect(Object.keys(typographyProfileBuckets)).toHaveLength(30);
     expect(new Set(buckets).size).toBe(buckets.length);
     expect(typographyProfileBuckets).toMatchInlineSnapshot(`
       {
@@ -17,10 +17,12 @@ describe('typography profile buckets', () => {
         "body-medium-strong": "bmg",
         "body-small": "bs",
         "body-small-strong": "bsg",
+        "caption-extra-small-strong": "cxsg",
         "caption-medium": "cm",
         "caption-medium-strong": "cmg",
         "caption-small": "cs",
         "caption-small-strong": "csg",
+        "caption-tiny-strong": "ctg",
         "display-large": "dl",
         "display-small": "ds",
         "heading-large": "hl",

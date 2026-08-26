@@ -34,4 +34,15 @@ describe('Fluent 2 Microsoft typography', () => {
       scales: { textSize: 16, textHeight: 22 }
     });
   });
+
+  it('publishes legibility-adapted micro Caption Strong profiles for compact metadata', () => {
+    expect(schema.global?.typography?.profiles['caption-tiny-strong']).toEqual({
+      decorations: { textFont: 'body', textWeight: 'semiBold' },
+      scales: { textSize: 6, textHeight: 6 }
+    });
+    expect(schema.global?.typography?.profiles['caption-extra-small-strong']).toEqual({
+      decorations: { textFont: 'body', textWeight: 'semiBold' },
+      scales: { textSize: 8, textHeight: 8 }
+    });
+  });
 });

@@ -96,6 +96,16 @@ sharing the same Button formula. Preset schemas use `c.ref()` for this lookup
 and may apply an ordinal public-grid offset for interaction states. Exact
 source-backed tone decisions continue to use `c()`.
 
+Preset color authorship is **functional-reference-first**, not reference-only:
+
+- use `c.ref()` when a recipe expresses family-relative identity, a remappable semantic or Brand
+  role, or one shared formula that must follow each primitive family's `subtle` or `vivid` anchor;
+- use `c()` when upstream evidence selects an exact token or tonal position independently per
+  theme, or for absolute/structural colors, alpha, disabled, contrast, and gradients;
+- document every exact lookup that could otherwise be mistaken for a functional anchor;
+- never copy the current numeric position of `subtle` or `vivid` into `c()`, repeat one tone across
+  unrelated families for convenience, or invent an interaction offset without evidence.
+
 ## Customization Scenarios
 
 | Scenario | Action | Result |

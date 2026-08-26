@@ -29,6 +29,11 @@ same numeric values, while the Web Builder still deduplicates their atomic CSS u
 representations are independent complete profiles, such as `body-medium` and
 `body-medium-strong`; Kiskadee does not synthesize every possible size and weight combination.
 
+A source-backed, complete, component-agnostic recipe may enter the global catalog with one initial
+consumer when the alternative would be component-local font metrics outside the profile contract.
+Its ID must describe the reusable text recipe rather than the component that first required it,
+and its source or Kiskadee adaptation must be documented by the owning preset.
+
 Letter spacing is optional. Omitting it emits no declaration, while an authored zero remains an
 intentional value.
 

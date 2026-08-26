@@ -41,6 +41,18 @@ rounded or clamped. Layer 2 semantics and Layer 3 intents resolve to their Layer
 reference is read, so one component formula can follow different family anchors without knowing
 their absolute positions.
 
+Choose the lookup before choosing a number:
+
+| Decision | Required lookup | Evidence record |
+| --- | --- | --- |
+| Family-relative `subtle`/`vivid` recipe, remappable semantic, Brand projection, or shared formula | `c.ref(reference, offset)` | Reference, offset, and formula purpose |
+| Exact upstream token or stop selected independently per theme | `c(tone)` | Light/Dark tone and source token |
+| Absolute, structural, alpha, disabled, contrast, or gradient decision | `c(tone)` | Primitive/role and explicit rationale |
+
+An exact lookup must not encode the current numeric value of a functional reference. Repeating one
+tone across different families is valid only when source evidence or an explicit Kiskadee formula
+requires that exact position.
+
 Functional references are optional on the general primitive asset contract so mechanically
 migrated presets can continue using exact tones. When an asset declares them, both references are
 required for every emitted theme and are validated against the corresponding scale. The Fluent 2

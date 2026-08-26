@@ -21,6 +21,8 @@ export type BadgeVisualProps = {
   radius?: Extract<RadiusMode, 'square' | 'rounded' | 'pill'>;
   scale?: BadgeScale;
   separation?: BadgeSeparation;
+  /** Applies the preset-authored static Badge shadow. Defaults to false. */
+  shadow?: boolean;
   surfaceContext?: SurfaceContext;
 };
 
@@ -34,6 +36,8 @@ type BadgeIndicatorProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
   intent?: BadgeIntent;
   scale?: BadgeScale;
   separation?: BadgeSeparation;
+  /** Applies the preset-authored static Badge shadow. Defaults to false. */
+  shadow?: boolean;
   surfaceContext?: SurfaceContext;
 };
 

@@ -6,6 +6,7 @@ export const CANONICAL_ICON_NAMES = [
   'ban',
   'bell',
   'bold',
+  'cart',
   'check',
   'chevron-down',
   'chevron-up',

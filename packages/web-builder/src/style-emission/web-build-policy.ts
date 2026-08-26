@@ -92,6 +92,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
   components: {
     badge: {
       elements: {
+        e1: {
+          boxHeightEmission: 'token'
+        },
         e3: {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token'

@@ -62,7 +62,7 @@ Evaluate a proposal in this order:
 | Variant or mode | One public component identity has a named presentation family or a meaningful presentation branch. | The difference is only one behavioral switch or one visual value. |
 | Component option | The contract must choose which behavior, structure, or canonical mode is active. | The property answers what visual value the active mode uses. |
 | DSPE on an element | A component element owns concrete decorations, scales, palettes, or effects. | The value is runtime behavior, platform mechanics, or a resource import. |
-| Global profile or catalog | Multiple consumers reference the same serializable visual recipe or limited shared catalog without sharing DOM or behavior. | Reuse is speculative, component-specific, or requires a public entity. |
+| Global profile or catalog | Consumers reference the same serializable visual recipe or limited shared catalog without sharing DOM or behavior. A complete source-backed recipe may begin with one consumer when its name and contract remain component-agnostic. | Reuse is merely speculative, the recipe is component-named or incomplete, or the concern requires a public entity. |
 | Effect | A visual treatment is optional and additive without replacing semantic color or base geometry. | The content communicates independent information or is mandatory anatomy. |
 | Headless primitive or hook | The concern owns semantics, native behavior, focus, keyboard flow, state, or accessible event composition. | It is purely visual or platform-specific layout. |
 | Provider | A subtree needs contextual runtime selection of a non-serializable resource or integration. | Static design-system values can be authored in Schema or passed directly by the consumer. |
@@ -179,7 +179,8 @@ A durable architecture decision should record:
 - Badge is an independent Rest-only component because its metadata remains meaningful outside any
   one host. `Button.Badge` is a compound relation: Button `e7` owns an inline relation gap, while
   Structural CSS owns logical-corner overlays. Badge preserves its identity and does not inherit
-  Button interaction states in either composition.
+  Button interaction states in either composition. An optional Badge shadow is a preset-authored
+  static Effect, disabled by default; it does not make Badge interactive.
 - Chip composes a primary content or selection control with an optional sibling Remove control.
   headless-react owns the non-nested interaction contract; p-react owns the Web structure; a nested
   Badge remains an independent passive component.

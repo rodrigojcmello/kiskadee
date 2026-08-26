@@ -7,6 +7,7 @@ import { ArrowSyncCircleRegular } from '@fluentui/react-icons/headless/svg/arrow
 import { ArrowUndoRegular } from '@fluentui/react-icons/headless/svg/arrow-undo';
 import { BoardRegular } from '@fluentui/react-icons/headless/svg/board';
 import { BranchForkRegular } from '@fluentui/react-icons/headless/svg/branch-fork';
+import { CartRegular } from '@fluentui/react-icons/headless/svg/cart';
 import { CheckmarkRegular } from '@fluentui/react-icons/headless/svg/checkmark';
 import { CheckmarkCircleRegular } from '@fluentui/react-icons/headless/svg/checkmark-circle';
 import { ChevronDownRegular } from '@fluentui/react-icons/headless/svg/chevron-down';
@@ -71,6 +72,7 @@ const glyphArrowSyncCircleRegular = createSvgGlyph(ArrowSyncCircleRegular, {"fon
 const glyphArrowUndoRegular = createSvgGlyph(ArrowUndoRegular, {"fontSize":"1em"});
 const glyphBoardRegular = createSvgGlyph(BoardRegular, {"fontSize":"1em"});
 const glyphBranchForkRegular = createSvgGlyph(BranchForkRegular, {"fontSize":"1em"});
+const glyphCartRegular = createSvgGlyph(CartRegular, {"fontSize":"1em"});
 const glyphCheckmarkCircleRegular = createSvgGlyph(CheckmarkCircleRegular, {"fontSize":"1em"});
 const glyphCheckmarkRegular = createSvgGlyph(CheckmarkRegular, {"fontSize":"1em"});
 const glyphChevronDownRegular = createSvgGlyph(ChevronDownRegular, {"fontSize":"1em"});
@@ -130,6 +132,7 @@ const glyphMap = {
     "ban": glyphProhibitedRegular,
     "bell": glyphAlertRegular,
     "bold": glyphTextBoldRegular,
+    "cart": glyphCartRegular,
     "check": glyphCheckmarkRegular,
     "chevron-down": glyphChevronDownRegular,
     "chevron-up": glyphChevronUpRegular,

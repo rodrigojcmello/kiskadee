@@ -6,7 +6,7 @@ import {
 } from '../materialSymbols.tsx';
 import type { CompleteCanonicalGlyphMap } from '../types.ts';
 
-const materialLigatures = ["account_tree","add","assignment_turned_in","bedtime","block","cancel","check","check_circle","circle","close","dark_mode","dashboard","delete","drag_indicator","drive_file_move","edit","favorite","format_align_center","format_align_left","format_align_right","format_bold","format_italic","format_list_bulleted","format_list_numbered","format_strikethrough","format_underlined","home","keyboard_arrow_down","keyboard_arrow_left","keyboard_arrow_right","keyboard_arrow_up","light_mode","link","mail","menu","notifications","pause","person","play_arrow","progress_activity","redo","remove","rocket_launch","search","send","sentiment_dissatisfied","sentiment_satisfied","settings","share","swap_horiz","table_view","thumb_up","undo","volume_down","volume_off","volume_up"] as const;
+const materialLigatures = ["account_tree","add","assignment_turned_in","bedtime","block","cancel","check","check_circle","circle","close","dark_mode","dashboard","delete","drag_indicator","drive_file_move","edit","favorite","format_align_center","format_align_left","format_align_right","format_bold","format_italic","format_list_bulleted","format_list_numbered","format_strikethrough","format_underlined","home","keyboard_arrow_down","keyboard_arrow_left","keyboard_arrow_right","keyboard_arrow_up","light_mode","link","mail","menu","notifications","pause","person","play_arrow","progress_activity","redo","remove","rocket_launch","search","send","sentiment_dissatisfied","sentiment_satisfied","settings","share","shopping_cart","swap_horiz","table_view","thumb_up","undo","volume_down","volume_off","volume_up"] as const;
 
 const glyphMap = {
     "align-center": createMaterialSymbolGlyph("format_align_center", {}),
@@ -16,6 +16,7 @@ const glyphMap = {
     "ban": createMaterialSymbolGlyph("block", {}),
     "bell": createMaterialSymbolGlyph("notifications", {}),
     "bold": createMaterialSymbolGlyph("format_bold", {}),
+    "cart": createMaterialSymbolGlyph("shopping_cart", {}),
     "check": createMaterialSymbolGlyph("check", {}),
     "chevron-down": createMaterialSymbolGlyph("keyboard_arrow_down", {}),
     "chevron-up": createMaterialSymbolGlyph("keyboard_arrow_up", {}),

@@ -22,4 +22,9 @@ Chip consumes its surrounding Surface Context and publishes the surface authored
 inside Content or Select. Remove remains a sibling and does not inherit that primary content
 surface accidentally.
 
+Chip scale values are local to Chip. Kiskadee-authored official presets should normally keep a Chip
+visually smaller than the corresponding Button so represented entities remain subordinate to
+commands; this is a preset recommendation rather than a Core rule. A preset must author and justify
+its own geometry instead of deriving Chip dimensions from Button at runtime.
+
 See the cross-package [Badge and Chip contract](../../../../../../docs/definitions/badge-chip-contract.md).

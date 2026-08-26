@@ -70,6 +70,87 @@ describe('Fluent 2 Badge', () => {
     });
   });
 
+  it('maps all text scales to legibility-adapted Caption Strong profiles and nominal heights', () => {
+    const badge = requireBadge();
+    expect(badge.elements.e1.scales.boxHeight).toEqual({
+      's:sm:3': 8,
+      's:sm:2': 12,
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24,
+      's:lg:2': 32
+    });
+    expect(badge.elements.e1.scales).not.toHaveProperty('boxWidth');
+    expect(badge.elements.e1.scales.paddingTop).toEqual({
+      's:sm:3': 0,
+      's:sm:2': 0,
+      's:sm:1': 0,
+      's:md:1': 1,
+      's:lg:1': 2,
+      's:lg:2': 4
+    });
+    expect(badge.elements.e1.scales.paddingLeft).toEqual({
+      's:sm:3': 2,
+      's:sm:2': 3,
+      's:sm:1': 4,
+      's:md:1': 5,
+      's:lg:1': 7,
+      's:lg:2': 10
+    });
+    expect(badge.elements.e1.scales.paddingRight).toEqual(badge.elements.e1.scales.paddingLeft);
+    expect(badge.elements.e2.typography).toEqual({
+      's:sm:3': 'caption-tiny-strong',
+      's:sm:2': 'caption-extra-small-strong',
+      's:sm:1': 'caption-small-strong',
+      's:md:1': 'caption-medium-strong',
+      's:lg:1': 'caption-medium-strong',
+      's:lg:2': 'caption-medium-strong'
+    });
+    expect(badge.elements.e5.scales.boxHeight).toEqual({
+      's:sm:3': 6,
+      's:sm:2': 10,
+      's:sm:1': 16,
+      's:md:1': 20,
+      's:lg:1': 24,
+      's:lg:2': 32
+    });
+    expect(badge.elements.e5.scales.boxWidth).toEqual(badge.elements.e5.scales.boxHeight);
+  });
+
+  it('publishes the smallest global outer shadow as an opt-in Rest recipe', () => {
+    const badge = requireBadge();
+    expect(badge.effects?.shadow).toEqual({
+      e1: { kind: 'outer', states: { rest: 's:sm:1' } },
+      e3: { kind: 'outer', states: { rest: 's:sm:1' } },
+      e5: { kind: 'outer', states: { rest: 's:sm:1' } }
+    });
+    expect(schema.global?.effects?.shadow?.outer?.levels['s:sm:1']).toBeDefined();
+    expect(badge.effects?.shadow).not.toHaveProperty('e2');
+    expect(badge.effects?.shadow).not.toHaveProperty('e4');
+    expect(badge.effects?.shadow).not.toHaveProperty('e6');
+  });
+
+  it('fits text metrics, vertical padding, and borders inside every nominal height', () => {
+    const badge = requireBadge();
+    const heights = badge.elements.e1.scales.boxHeight as Record<string, number>;
+    const paddingTop = badge.elements.e1.scales.paddingTop as Record<string, number>;
+    const paddingBottom = badge.elements.e1.scales.paddingBottom as Record<string, number>;
+    const borderWidths = badge.elements.e1.scales.borderWidth as Record<string, number>;
+    const typography = badge.elements.e2.typography as Record<string, string>;
+    const profiles = schema.global?.typography?.profiles ?? {};
+
+    for (const [scale, height] of Object.entries(heights)) {
+      const profile = profiles[typography[scale]];
+      expect(profile).toBeDefined();
+      expect(
+        (profile?.scales.textHeight ?? 0) +
+          paddingTop[scale] +
+          paddingBottom[scale] +
+          borderWidths[scale] * 2
+      ).toBeLessThanOrEqual(height);
+    }
+  });
+
   it('uses absolute white for low surfaces and the optional separation ring', () => {
     const badge = requireBadge();
     expect(badge.elements.e1.palettes.default?.light?.onSubtle.boxColor?.attention?.low?.rest).toBe(
