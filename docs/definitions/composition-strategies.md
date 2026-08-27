@@ -109,6 +109,13 @@ Structural CSS and native component projects decide how participating values are
 platform. Presets remain responsible for concrete design-system values. Platform structure may
 consume emitted variables and classes but must not synthesize missing visual authorship.
 
+When an explicit host relation must reserve an independent passive component's inline size without
+letting that component determine host height, the host may keep the relation wrapper in inline flow
+while making its block-size contribution zero. The wrapper owns centering and visible overflow;
+the nested component keeps its intrinsic geometry and semantic identity. Use this pattern only for
+an official host-owned relation, not for arbitrary content in a generic slot. Do not replace it with
+negative margins, clipping, automatic scaling, or a cross-component scale matrix.
+
 For Web-specific artifact relationships, use the complete
 [Schema-to-Web composition patterns](./schema-to-web-composition-patterns.md) definition before
 introducing SEP, SUP, CSC, or another named mechanism.

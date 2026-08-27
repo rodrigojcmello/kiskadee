@@ -142,12 +142,16 @@
 
 /*
  * element inline Badge relation / e7
- * Keeps passive metadata in normal flow without intercepting Button input.
+ * Reserves inline space without letting passive metadata determine Button block size.
  */
 .k-btn-e7 {
   align-items: center;
+  align-self: center;
+  block-size: 0;
   display: inline-flex;
   flex: none;
+  min-block-size: 0;
+  overflow: visible;
   pointer-events: none;
 }
 

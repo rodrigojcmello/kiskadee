@@ -89,8 +89,9 @@ targets. This composition never produces a button inside another button.
 `Chip.Icon` is CP-I. `Chip.Remove` consumes the `close` Essential Icon (E-I), with explicit children
 as an override. When neither is available, the entire Remove affordance is omitted and p-react emits
 a development warning. `Chip.Badge` is valid only inside `Chip.Content` or `Chip.Select`; it owns
-only the Schema-authored relation spacing. The nested Badge preserves its own identity and Rest
-state.
+only the Schema-authored relation spacing. Its relation wrapper preserves the Badge's intrinsic
+inline size while contributing zero block size to the primary surface. The nested Badge therefore
+does not change Chip height and preserves its own identity and Rest state.
 
 Chip does not provide a generic command-only mode. Compact actions remain Button. Chip group
 selection semantics are outside the individual Chip contract.
@@ -106,7 +107,7 @@ independently and documents any source-driven exception.
 
 - `inline-start` and `inline-end` stay adjacent to the Button label. Button `e7`
   (`button-badge-relation`) owns only the logical gap; Structural CSS groups the relation with the
-  label.
+  label, preserves its intrinsic inline size, and makes its block-size contribution zero.
 - the four block/inline corner combinations are external overlays. Structural CSS owns their
   logical anchoring and displacement relative to the rendered Badge size.
 
@@ -115,6 +116,12 @@ states onto Badge. Logical positions work in both LTR and RTL. Button establishe
 containing block only for external overlays. Badge remains visible and in Rest when Button is
 disabled. If an active preset omits `e7`, inline Button Badges are omitted as one unsupported
 relation; external placement remains available.
+
+Adding or removing an inline Badge through an official host relation never changes that host's
+block size. The Badge keeps its requested geometry and may overflow visibly when it is larger than
+the host's available block axis. Hosts do not clamp, rescale, or replace its scale. This guarantee
+does not apply to a Badge placed arbitrarily in a generic content slot. Suitable scale selection is
+consumer authorship; Kiskadee does not maintain a host-by-Badge compatibility matrix.
 
 ## Surface Context
 

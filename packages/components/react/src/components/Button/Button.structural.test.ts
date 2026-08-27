@@ -2,6 +2,29 @@ import * as sass from 'sass';
 import { describe, expect, it } from 'vitest';
 
 describe('Button structural CSS', () => {
+  it('keeps inline Badge relations neutral in the Button block axis', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const relationRule = css.match(/\.k-btn-e7\s*\{([^}]*)\}/)?.[1] ?? '';
+    const inlineStartRule = css.match(/\.k-btn-e7-inline-start\s*\{([^}]*)\}/)?.[1] ?? '';
+    const inlineEndRule = css.match(/\.k-btn-e7-inline-end\s*\{([^}]*)\}/)?.[1] ?? '';
+
+    expect(relationRule).toContain('align-items: center');
+    expect(relationRule).toContain('align-self: center');
+    expect(relationRule).toContain('block-size: 0');
+    expect(relationRule).toContain('display: inline-flex');
+    expect(relationRule).toContain('flex: none');
+    expect(relationRule).toContain('min-block-size: 0');
+    expect(relationRule).toContain('overflow: visible');
+    expect(relationRule).toContain('pointer-events: none');
+    expect(relationRule).not.toContain('position: absolute');
+    expect(relationRule).not.toContain('max-block-size');
+    expect(relationRule).not.toContain('inline-size: 0');
+    expect(inlineStartRule).toContain('padding-inline-end: var(--k-pdr)');
+    expect(inlineEndRule).toContain('padding-inline-start: var(--k-pdl)');
+  });
+
   it('keeps the authored group divider above Button interaction surfaces', () => {
     const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname, {
       style: 'expanded'

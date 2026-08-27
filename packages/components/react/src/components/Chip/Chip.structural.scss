@@ -98,10 +98,14 @@
 
 /*
  * element chip badge relation / e7
- * Keeps an independent passive Badge in the primary content flow.
+ * Reserves inline space without letting an independent Badge determine Chip block size.
  */
 .k-chp-e7 {
   align-items: center;
+  align-self: center;
+  block-size: 0;
   display: inline-flex;
   flex: 0 0 auto;
+  min-block-size: 0;
+  overflow: visible;
 }
