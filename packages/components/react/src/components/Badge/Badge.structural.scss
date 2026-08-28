@@ -34,6 +34,7 @@
   display: inline-flex;
   flex: 0 0 auto;
   inline-size: var(--k-bxw);
+  isolation: isolate;
   position: relative;
   vertical-align: middle;
 }
@@ -47,6 +48,17 @@
   border-radius: inherit;
   inline-size: 100%;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/*
+ * element separation ring / e6
+ * Applies the Schema-authored backing only behind full-bleed artwork.
+ */
+.k-bdg-e3 > .k-bdg-e6 {
+  background-color: var(--k-bgc);
+  z-index: 0;
 }
 
 /*
@@ -83,11 +95,11 @@
 
 /*
  * element separation ring / e6
- * Uses the Schema-emitted width for both its border and external inset.
+ * Paints the Schema-authored ring outside the Badge without changing its visible core or layout.
  */
 .k-bdg-e6 {
-  border-width: var(--k-bdw);
-  inset: calc(-1 * var(--k-bdw));
+  box-shadow: 0 0 0 var(--k-bdw) var(--k-bdc);
+  inset: 0;
   pointer-events: none;
   position: absolute;
 }

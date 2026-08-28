@@ -275,6 +275,38 @@
 }
 
 /*
+ * element button root modifier 'f' / e1f
+ * Removes the unused opposite edge track when a leading plain icon composes an inline Badge.
+ */
+.k-btn-e1e.k-btn-e1f:has(> .k-btn-e3):has(> .k-btn-x5):not(:has(> .k-btn-e5)) {
+  grid-template-columns: max-content max-content;
+}
+
+/*
+ * element button root modifier 'g' / e1g
+ * Removes the unused opposite edge track when a trailing plain icon composes an inline Badge.
+ */
+.k-btn-e1e.k-btn-e1g:has(> .k-btn-e3):has(> .k-btn-x5):not(:has(> .k-btn-e5)) {
+  grid-template-columns: max-content max-content;
+}
+
+/*
+ * extra element for e1 / x5
+ * Moves the label-and-Badge group before a trailing edge icon in the compact two-track grid.
+ */
+.k-btn-e1e.k-btn-e1g:has(> .k-btn-e3):not(:has(> .k-btn-e5)) > .k-btn-x5 {
+  grid-column: 1;
+}
+
+/*
+ * element button icon / e3
+ * Moves a trailing edge icon after the label-and-Badge group in the compact two-track grid.
+ */
+.k-btn-e1e.k-btn-e1g:has(> .k-btn-x5):not(:has(> .k-btn-e5)) > .k-btn-e3 {
+  grid-column: 2;
+}
+
+/*
  * root surfaced leading icon composition / e1e + e1f
  * The icon panel owns the logical leading column and the label centers in the remaining surface.
  */

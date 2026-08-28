@@ -47,7 +47,7 @@ function useResolvedBadgeClasses({
   });
 }
 
-function SeparationRing({ className, enabled }: { className?: string; enabled: boolean }) {
+function SeparationLayer({ className, enabled }: { className?: string; enabled: boolean }) {
   return enabled && className ? <span aria-hidden="true" className={className} /> : null;
 }
 
@@ -60,7 +60,6 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
     radius = DEFAULT_BADGE_RADIUS,
     scale = DEFAULT_BADGE_SCALE,
     separation = 'none',
-    shadow = false,
     surfaceContext,
     children,
     ...props
@@ -78,14 +77,14 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
     intent,
     radius,
     scale,
-    shadow,
+    shadow: false,
     surfaceContext
   });
 
   return (
     <span {...props} ref={ref} className={resolved.e1}>
       <span className={resolved.e2}>{children}</span>
-      <SeparationRing enabled={separation === 'ring'} className={resolved.e6} />
+      <SeparationLayer enabled={separation === 'ring'} className={resolved.e6} />
     </span>
   );
 });
@@ -113,9 +112,12 @@ const BadgeDot = forwardRef<HTMLSpanElement, BadgeDotProps>(function BadgeDot(
     shadow,
     surfaceContext
   });
+  if (separation === 'ring' && shadow) {
+    throw new Error('Badge.Dot does not accept shadow when separation is ring.');
+  }
   return (
     <span {...props} ref={ref} className={resolved.e5}>
-      <SeparationRing enabled={separation === 'ring'} className={resolved.e6} />
+      <SeparationLayer enabled={separation === 'ring'} className={resolved.e6} />
     </span>
   );
 });
@@ -129,7 +131,6 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
     presentation = 'contained',
     scale = DEFAULT_BADGE_SCALE,
     separation = 'none',
-    shadow = false,
     surfaceContext,
     children,
     ...props
@@ -151,14 +152,14 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
     intent,
     radius: 'pill',
     scale,
-    shadow,
+    shadow: false,
     surfaceContext
   });
 
   return (
     <span {...props} ref={ref} className={fullBleed ? resolved.e3 : resolved.e5}>
       {fullBleed ? children : <span className={resolved.e4}>{children}</span>}
-      <SeparationRing enabled={separation === 'ring'} className={resolved.e6} />
+      <SeparationLayer enabled={separation === 'ring'} className={resolved.e6} />
     </span>
   );
 });

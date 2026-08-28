@@ -79,14 +79,16 @@ describe('Badge and Chip Web style-emission policy', () => {
     }
   });
 
-  it('publishes the Badge separation-ring width as a structural token', () => {
+  it('publishes the Badge separation backing, ring width, and ring color as structural tokens', () => {
     const policy = resolveElementStyleEmissionPolicy(
       DEFAULT_WEB_STYLE_EMISSION_POLICY,
       'badge',
       'e6'
     );
 
+    expect(policy.boxColorEmission).toBe('token');
     expect(policy.borderWidthEmission).toBe('token');
+    expect(policy.borderColorEmission).toBe('token');
   });
 });
 

@@ -104,7 +104,9 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
           boxWidthEmission: 'token'
         },
         e6: {
-          borderWidthEmission: 'token'
+          boxColorEmission: 'token',
+          borderWidthEmission: 'token',
+          borderColorEmission: 'token'
         }
       }
     },

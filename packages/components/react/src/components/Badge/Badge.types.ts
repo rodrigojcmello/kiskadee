@@ -21,8 +21,6 @@ export type BadgeVisualProps = {
   radius?: Extract<RadiusMode, 'square' | 'rounded' | 'pill'>;
   scale?: BadgeScale;
   separation?: BadgeSeparation;
-  /** Applies the preset-authored static Badge shadow. Defaults to false. */
-  shadow?: boolean;
   surfaceContext?: SurfaceContext;
 };
 
@@ -35,16 +33,25 @@ type BadgeIndicatorProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
   classNames?: BadgeClassNames;
   intent?: BadgeIntent;
   scale?: BadgeScale;
-  separation?: BadgeSeparation;
-  /** Applies the preset-authored static Badge shadow. Defaults to false. */
-  shadow?: boolean;
   surfaceContext?: SurfaceContext;
 };
 
-export type BadgeDotProps = BadgeIndicatorProps;
+export type BadgeDotProps = BadgeIndicatorProps &
+  (
+    | {
+        separation?: Extract<BadgeSeparation, 'none'>;
+        /** Applies the preset-authored static Dot shadow. Defaults to false. */
+        shadow?: boolean;
+      }
+    | {
+        separation: Extract<BadgeSeparation, 'ring'>;
+        shadow?: never;
+      }
+  );
 
 type BadgeMarkBaseProps = BadgeIndicatorProps & {
   children: ReactElement;
+  separation?: BadgeSeparation;
 };
 
 export type BadgeContainedMarkProps = BadgeMarkBaseProps & {

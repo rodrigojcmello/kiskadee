@@ -280,7 +280,13 @@ family-colored full-bleed presentations resolve each intent through that family'
 `vivid` reference rather than a shared tone. This maps Light Warning to Orange L24 `#f7630c`.
 Fluent's inspected Dark Warning source is an explicit per-theme exception at Orange D75
 `#e68962`; the exception remains preset-owned and does not change the Orange family's global Dark
-vivid reference at D40.
+vivid reference at D40. Badge Medium follows each family's `subtle` reference with a shared
+theme-relative offset. Badge Low instead uses the exact `primitive.black.v1` absolute-black cap at
+8% alpha for every `onSubtle` intent and theme, allowing the surrounding surface to determine the
+composited lightness without introducing an intent tint. Medium remains at `subtle +4` Light and
+`subtle +14` Dark/Darker. The independent `onVivid` High hierarchy uses each intent's Light-track
+`subtle +7`, one position lighter than the preceding `subtle +8` adaptation, while `lowest` remains
+un-authored by the Fluent preset.
 
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent chromatic families at Layer 1. Layer 2 maps Blue to `primary`,

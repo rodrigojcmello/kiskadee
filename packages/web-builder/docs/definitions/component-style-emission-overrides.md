@@ -29,6 +29,8 @@ component-specific way.
 Current scope:
 
 - `badge.elements.e1`, the text or number surface.
+- `badge.elements.e3` and `badge.elements.e4`, the full-bleed and contained Mark viewports.
+- `badge.elements.e6`, the optional separation treatment.
 
 ### Text or number surface `e1`
 
@@ -39,6 +41,26 @@ Current scope:
 Core intentionally rejects `boxWidth` on `e1`, and presets author only the nominal height. The Web
 structure reuses that one token on both logical axes instead of creating a duplicate width scale;
 `inline-size` remains `fit-content` so text can grow without clipping.
+
+### Mark viewports `e3` and `e4`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxWidth` | `token` | `direct` | `--k-bxw: <value>` | Badge structural CSS applies the icon-size profile to the fixed Mark viewport. |
+| `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | Badge structural CSS applies the icon-size profile to the fixed Mark viewport. |
+
+### Separation treatment `e6`
+
+| Property family | Policy | Default | CSS shape | Reason |
+| --- | --- | --- | --- | --- |
+| `boxColor` | `token` | `direct` | `--k-bgc: <value>` | Structural CSS applies the authored backing only behind full-bleed artwork; other Badge anatomies keep a ring-only treatment. |
+| `borderWidth` | `token` | `direct` | `--k-bdw: <value>` | Structural CSS uses the authored width as the spread of an external ring. |
+| `borderColor` | `token` | `direct` | `--k-bdc: <value>` | Structural CSS paints the external ring without consuming the Badge surface box. |
+
+Token-only `boxColor` is intentionally inert until the separation element belongs to a full-bleed
+Mark; it must not fill text, Dot, or contained Mark surfaces. Width and color remain Schema-owned;
+the zero-blur spread is only the Web painting mechanism and is distinct from Badge's optional
+static Shadow Effect.
 
 ## Button
 

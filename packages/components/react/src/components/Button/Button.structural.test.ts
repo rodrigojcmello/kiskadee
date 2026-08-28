@@ -25,6 +25,23 @@ describe('Button structural CSS', () => {
     expect(inlineEndRule).toContain('padding-inline-start: var(--k-pdl)');
   });
 
+  it('removes the empty balancing track from edge-icon Buttons with an inline Badge', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const leadingRule =
+      css.match(
+        /\.k-btn-e1e\.k-btn-e1f:has\(> \.k-btn-e3\):has\(> \.k-btn-x5\):not\(:has\(> \.k-btn-e5\)\)\s*\{([^}]*)\}/
+      )?.[1] ?? '';
+    const trailingRule =
+      css.match(
+        /\.k-btn-e1e\.k-btn-e1g:has\(> \.k-btn-e3\):has\(> \.k-btn-x5\):not\(:has\(> \.k-btn-e5\)\)\s*\{([^}]*)\}/
+      )?.[1] ?? '';
+
+    expect(leadingRule).toContain('grid-template-columns: max-content max-content');
+    expect(trailingRule).toContain('grid-template-columns: max-content max-content');
+  });
+
   it('keeps the authored group divider above Button interaction surfaces', () => {
     const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname, {
       style: 'expanded'

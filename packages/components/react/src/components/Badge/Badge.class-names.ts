@@ -46,8 +46,6 @@ export function resolveBadgeClassNames({
   const ringClassName = resolve(elements.e6);
   const resolveShadow = (element: ClassNameByElementJSON | undefined) =>
     shadow ? resolveEffectBucketClassName(element?.e?.h) : '';
-  const e1Shadow = resolveShadow(elements.e1);
-  const e3Shadow = resolveShadow(elements.e3);
   const e5Shadow = resolveShadow(elements.e5);
 
   return {
@@ -55,8 +53,6 @@ export function resolveBadgeClassNames({
       joinClassNames(
         resolve(elements.e1),
         resolveRadiusClassName(elements.e1, scale, radius),
-        e1Shadow,
-        e1Shadow ? cn.shadow : undefined,
         classNames.e1,
         className,
         'k-bdg',
@@ -67,8 +63,6 @@ export function resolveBadgeClassNames({
       joinClassNames(
         resolve(elements.e3),
         resolveRadiusClassName(elements.e3, scale, 'pill'),
-        e3Shadow,
-        e3Shadow ? cn.shadow : undefined,
         classNames.e3,
         className,
         'k-bdg',

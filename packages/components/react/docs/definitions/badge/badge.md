@@ -13,7 +13,10 @@ accessible description whenever the associated host does not already communicate
 
 Text Badge supports `square`, `rounded`, and `pill`; Dot and Mark use `pill`. Optional
 `separation="ring"` adds the Badge-owned separation outline. If the preset does not publish `e6`,
-the complete ring is omitted. No style fallback is created.
+the complete ring is omitted. No style fallback is created. The Web separation layer matches the
+Badge viewport and paints the ring externally, so the outline does not reduce the visible surface
+or change intrinsic geometry. Full-bleed Mark may additionally use the same layer as a backing
+behind transparent artwork.
 
 Text Badge authors one nominal `boxHeight`. Structural CSS applies it as both minimum block size
 and minimum inline size; the Schema does not author a duplicate `boxWidth`. Short content therefore
@@ -23,10 +26,11 @@ a pill. Dot and Mark keep independent fixed width and height maps.
 Badge resolves its visual classes against `useSurfaceContext`. It never reads the interaction state
 of a parent and never receives parent activator classes. Its Schema supports Rest only.
 
-`shadow` is an opt-in boolean capability. When the active preset publishes the Badge shadow recipe,
-`shadow` applies that static Rest shadow to the rendered surface (`e1`, `e3`, or `e5`); otherwise it
-does nothing and creates no fallback. The default is off. Shadow and separation ring are independent
-visual concerns and may coexist.
+`shadow` is an opt-in `Badge.Dot` capability intended for an externally overlaid Dot. When the
+active preset publishes the Dot shadow recipe, it applies one static Rest shadow to `e5`; otherwise
+it does nothing and creates no fallback. The default is off. Text Badge and both Mark presentations
+never accept `shadow`. A Dot with `separation="ring"` never accepts `shadow`: the opaque ring is the
+only separation treatment in that composition.
 
 When composed through `Button.Badge`, Button owns the relationship. Inline-start/end use the
 Schema-authored Button `e7` gap and stay adjacent to the label; the four external placements use

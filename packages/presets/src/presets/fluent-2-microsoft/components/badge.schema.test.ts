@@ -1,6 +1,45 @@
 import { describe, expect, it } from 'vitest';
 import { schema } from '../fluent-2-microsoft.schema.ts';
 
+const BADGE_INTENTS = [
+  'neutral',
+  'primary',
+  'novelty',
+  'positive',
+  'warning',
+  'attention'
+] as const;
+
+function relativeLuminance(hex: string): number {
+  const channels = [1, 3, 5].map(
+    (offset) => Number.parseInt(hex.slice(offset, offset + 2), 16) / 255
+  );
+  const [red = 0, green = 0, blue = 0] = channels.map((channel) =>
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  );
+  return red * 0.2126 + green * 0.7152 + blue * 0.0722;
+}
+
+function contrastRatio(first: string, second: string): number {
+  const firstLuminance = relativeLuminance(first);
+  const secondLuminance = relativeLuminance(second);
+  return (
+    (Math.max(firstLuminance, secondLuminance) + 0.05) /
+    (Math.min(firstLuminance, secondLuminance) + 0.05)
+  );
+}
+
+function compositeHex(foreground: string, background: string): string {
+  const alpha = foreground.length === 9 ? Number.parseInt(foreground.slice(7, 9), 16) / 255 : 1;
+  const channels = [1, 3, 5].map((offset) => {
+    const foregroundChannel = Number.parseInt(foreground.slice(offset, offset + 2), 16);
+    const backgroundChannel = Number.parseInt(background.slice(offset, offset + 2), 16);
+    return Math.round(foregroundChannel * alpha + backgroundChannel * (1 - alpha));
+  });
+
+  return `#${channels.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
+}
+
 function requireBadge() {
   const badge = schema.components.badge;
   if (!badge) throw new Error('Fluent Badge schema is missing');
@@ -62,11 +101,11 @@ describe('Fluent 2 Badge', () => {
     });
     expect(badge.elements.e4.iconSize).toEqual({
       's:sm:3': 's:sm:5',
-      's:sm:2': 's:sm:4',
-      's:sm:1': 's:sm:2',
-      's:md:1': 's:sm:1',
-      's:lg:1': 's:md:1',
-      's:lg:2': 's:lg:1'
+      's:sm:2': 's:sm:5',
+      's:sm:1': 's:sm:3',
+      's:md:1': 's:sm:2',
+      's:lg:1': 's:sm:1',
+      's:lg:2': 's:md:1'
     });
   });
 
@@ -98,6 +137,8 @@ describe('Fluent 2 Badge', () => {
       's:lg:2': 10
     });
     expect(badge.elements.e1.scales.paddingRight).toEqual(badge.elements.e1.scales.paddingLeft);
+    expect(badge.elements.e1.scales).not.toHaveProperty('borderWidth');
+    expect(badge.elements.e1.palettes.default?.light?.onSubtle).not.toHaveProperty('borderColor');
     expect(badge.elements.e2.typography).toEqual({
       's:sm:3': 'caption-tiny-strong',
       's:sm:2': 'caption-extra-small-strong',
@@ -115,17 +156,19 @@ describe('Fluent 2 Badge', () => {
       's:lg:2': 32
     });
     expect(badge.elements.e5.scales.boxWidth).toEqual(badge.elements.e5.scales.boxHeight);
+    expect(badge.elements.e5.scales).not.toHaveProperty('borderWidth');
+    expect(badge.elements.e5.palettes.default?.light?.onSubtle).not.toHaveProperty('borderColor');
   });
 
-  it('publishes the smallest global outer shadow as an opt-in Rest recipe', () => {
+  it('publishes the smallest global outer shadow only for opt-in Dots', () => {
     const badge = requireBadge();
     expect(badge.effects?.shadow).toEqual({
-      e1: { kind: 'outer', states: { rest: 's:sm:1' } },
-      e3: { kind: 'outer', states: { rest: 's:sm:1' } },
       e5: { kind: 'outer', states: { rest: 's:sm:1' } }
     });
     expect(schema.global?.effects?.shadow?.outer?.levels['s:sm:1']).toBeDefined();
+    expect(badge.effects?.shadow).not.toHaveProperty('e1');
     expect(badge.effects?.shadow).not.toHaveProperty('e2');
+    expect(badge.effects?.shadow).not.toHaveProperty('e3');
     expect(badge.effects?.shadow).not.toHaveProperty('e4');
     expect(badge.effects?.shadow).not.toHaveProperty('e6');
   });
@@ -135,7 +178,7 @@ describe('Fluent 2 Badge', () => {
     const heights = badge.elements.e1.scales.boxHeight as Record<string, number>;
     const paddingTop = badge.elements.e1.scales.paddingTop as Record<string, number>;
     const paddingBottom = badge.elements.e1.scales.paddingBottom as Record<string, number>;
-    const borderWidths = badge.elements.e1.scales.borderWidth as Record<string, number>;
+    const borderWidths = (badge.elements.e1.scales.borderWidth ?? {}) as Record<string, number>;
     const typography = badge.elements.e2.typography as Record<string, string>;
     const profiles = schema.global?.typography?.profiles ?? {};
 
@@ -146,35 +189,136 @@ describe('Fluent 2 Badge', () => {
         (profile?.scales.textHeight ?? 0) +
           paddingTop[scale] +
           paddingBottom[scale] +
-          borderWidths[scale] * 2
+          (borderWidths[scale] ?? 0) * 2
       ).toBeLessThanOrEqual(height);
     }
   });
 
-  it('uses absolute white for low surfaces and the optional separation ring', () => {
+  it('uses a shared transparent-black surface for every onSubtle Low intent', () => {
     const badge = requireBadge();
-    expect(badge.elements.e1.palettes.default?.light?.onSubtle.boxColor?.attention?.low?.rest).toBe(
-      '#ffffff'
-    );
-    expect(
-      badge.elements.e1.palettes.default?.light?.onSubtle.boxColor?.attention?.lowest?.rest
-    ).toBe('#ffffff00');
+
+    for (const theme of ['light', 'dark', 'darker'] as const) {
+      const textSurface = badge.elements.e1.palettes.default?.[theme]?.onSubtle;
+      const dotSurface = badge.elements.e5.palettes.default?.[theme]?.onSubtle;
+      const neutralMedium = textSurface?.boxColor?.neutral?.medium?.rest;
+
+      expect(neutralMedium).toBeDefined();
+      expect(textSurface).not.toHaveProperty('borderColor');
+      expect(dotSurface).not.toHaveProperty('borderColor');
+
+      const expectedLow = '#00000014';
+
+      for (const intent of BADGE_INTENTS) {
+        expect(textSurface?.boxColor?.[intent]?.low?.rest).toBe(expectedLow);
+        expect(dotSurface?.boxColor?.[intent]?.low?.rest).toBe(expectedLow);
+        expect(textSurface?.boxColor?.[intent]?.low?.rest).not.toBe(neutralMedium);
+      }
+    }
+  });
+
+  it('authors a contrast-safe intent hierarchy on the canonical vivid surface', () => {
+    const badge = requireBadge();
+    const expected = {
+      neutral: { high: '#c6cbd7', medium: '#d6dbe7', low: '#e0e5f1', foreground: '#434650' },
+      primary: { high: '#a4cfff', medium: '#c1deff', low: '#e0e5f1', foreground: '#0d477e' },
+      novelty: { high: '#faaded', medium: '#f6ccee', low: '#e0e5f1', foreground: '#6b2762' },
+      positive: { high: '#a1dd9c', medium: '#c3e7c0', low: '#e0e5f1', foreground: '#155513' },
+      warning: { high: '#ffb89b', medium: '#ffcfbc', low: '#e0e5f1', foreground: '#6f3217' },
+      attention: { high: '#ffb5ad', medium: '#ffcdc8', low: '#e0e5f1', foreground: '#811819' }
+    } as const;
+
+    for (const theme of ['light', 'dark', 'darker'] as const) {
+      const textSurface = badge.elements.e1.palettes.default?.[theme]?.onVivid;
+      const dotSurface = badge.elements.e5.palettes.default?.[theme]?.onVivid;
+      const textContent = badge.elements.e2.palettes.default?.[theme]?.onVivid;
+      const markContent = badge.elements.e4.palettes.default?.[theme]?.onVivid;
+      const canonicalSurface =
+        schema.components.card?.elements.e1.palettes.default?.[theme]?.onSubtle.boxColor?.primary
+          ?.highest?.rest;
+
+      expect(canonicalSurface).toBeDefined();
+
+      for (const intent of BADGE_INTENTS) {
+        for (const emphasis of ['high', 'medium', 'low'] as const) {
+          const surface = expected[intent][emphasis];
+          const foreground = expected[intent].foreground;
+
+          expect(textSurface?.boxColor?.[intent]?.[emphasis]?.rest).toBe(surface);
+          expect(dotSurface?.boxColor?.[intent]?.[emphasis]?.rest).toBe(surface);
+          expect(textContent?.textColor?.[intent]?.[emphasis]?.rest).toBe(foreground);
+          expect(markContent?.textColor?.[intent]?.[emphasis]?.rest).toBe(foreground);
+          expect(contrastRatio(surface, canonicalSurface!)).toBeGreaterThanOrEqual(3);
+          expect(contrastRatio(foreground, surface)).toBeGreaterThanOrEqual(4.5);
+        }
+      }
+    }
+  });
+
+  it('keeps the separation backing and external ring absolute white', () => {
+    const badge = requireBadge();
     expect(
       badge.elements.e6?.palettes.default?.dark?.onSubtle.borderColor?.attention?.high?.rest
     ).toBe('#ffffff');
+    expect(
+      badge.elements.e6?.palettes.default?.dark?.onSubtle.boxColor?.attention?.high?.rest
+    ).toBe('#ffffff');
   });
 
-  it('keeps tinted and ghost content legible on dark surfaces', () => {
+  it('derives onSubtle Low foregrounds from vivid intent colors with compact-text contrast', () => {
     const badge = requireBadge();
-    expect(
-      badge.elements.e2.palettes.default?.dark?.onSubtle.textColor?.novelty?.medium?.rest
-    ).toBe('#eb94dd');
-    expect(
-      badge.elements.e2.palettes.default?.dark?.onSubtle.textColor?.novelty?.lowest?.rest
-    ).toBe('#eb94dd');
-    expect(badge.elements.e2.palettes.default?.dark?.onSubtle.textColor?.novelty?.low?.rest).toBe(
-      '#942e88'
-    );
+    const expected = {
+      light: {
+        neutral: '#21242d',
+        primary: '#0064b4',
+        novelty: '#a82d9a',
+        positive: '#09760a',
+        warning: '#ae450c',
+        attention: '#c50f1f'
+      },
+      dark: {
+        neutral: '#d2d6e3',
+        primary: '#79b9ff',
+        novelty: '#eb94dd',
+        positive: '#7ec879',
+        warning: '#f49d79',
+        attention: '#ff958b'
+      },
+      darker: {
+        neutral: '#d2d6e3',
+        primary: '#79b9ff',
+        novelty: '#eb94dd',
+        positive: '#7ec879',
+        warning: '#f49d79',
+        attention: '#ff958b'
+      }
+    } as const;
+
+    for (const theme of ['light', 'dark', 'darker'] as const) {
+      const surface = badge.elements.e1.palettes.default?.[theme]?.onSubtle;
+      const content = badge.elements.e2.palettes.default?.[theme]?.onSubtle;
+      const canonicalSurface =
+        schema.components.card?.elements.e1.palettes.default?.[theme]?.onSubtle.boxColor?.neutral
+          ?.low?.rest;
+
+      expect(canonicalSurface).toBeDefined();
+
+      for (const intent of BADGE_INTENTS) {
+        const background = surface?.boxColor?.[intent]?.low?.rest;
+        const foreground = content?.textColor?.[intent]?.low?.rest;
+
+        expect(foreground).toBe(expected[theme][intent]);
+        expect(background).toBeDefined();
+        expect(
+          contrastRatio(foreground!, compositeHex(background!, canonicalSurface!))
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+  });
+
+  it('does not author Lowest while preserving the Core emphasis vocabulary', () => {
+    const badge = requireBadge();
+
+    expect(JSON.stringify(badge.elements)).not.toContain('"lowest"');
   });
 
   it('resolves each high emphasis from its functional vivid reference', () => {

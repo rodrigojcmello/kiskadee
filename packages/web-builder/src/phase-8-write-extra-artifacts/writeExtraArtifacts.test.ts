@@ -331,8 +331,6 @@ describe('writeExtraArtifacts Badge effects', () => {
   it('publishes the optional static Badge shadow recipe', async () => {
     const outDirSlug = createOutputSlug('badge-shadow');
     const shadow = {
-      e1: { kind: 'outer', states: { rest: 's:sm:1' } },
-      e3: { kind: 'outer', states: { rest: 's:sm:1' } },
       e5: { kind: 'outer', states: { rest: 's:sm:1' } }
     } as const;
 

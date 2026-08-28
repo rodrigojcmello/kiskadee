@@ -2,13 +2,16 @@
 
 import { cleanup, render, screen } from '@testing-library/react';
 import type { ComponentType, ReactNode } from 'react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, expectTypeOf, it } from 'vitest';
 import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
 import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { Badge } from './Badge.tsx';
+import type { BadgeDotProps, BadgeMarkProps, BadgeProps } from './Badge.types.ts';
+
+type HasShadow<T> = 'shadow' extends keyof T ? true : false;
 
 const context: KiskadeeContextValue = {
   classesMap: { badge: {} },
@@ -45,8 +48,6 @@ const shadowContext: KiskadeeContextValue = {
   ...context,
   classesMap: {
     badge: {
-      e1: { e: { h: 'badge-text-shadow' } },
-      e3: { e: { h: 'badge-full-bleed-shadow' } },
       e5: { e: { h: 'badge-indicator-shadow' } },
       e6: { d: 'badge-ring', rp: { all: 'badge-ring-pill' } }
     }
@@ -56,6 +57,16 @@ const shadowContext: KiskadeeContextValue = {
 afterEach(cleanup);
 
 describe('Badge', () => {
+  it('exposes the optional static shadow only on a Dot without a ring', () => {
+    type PlainDot = Extract<BadgeDotProps, { separation?: 'none' }>;
+    type RingDot = Extract<BadgeDotProps, { separation: 'ring' }>;
+
+    expectTypeOf<HasShadow<BadgeProps>>().toEqualTypeOf<false>();
+    expectTypeOf<HasShadow<BadgeMarkProps>>().toEqualTypeOf<false>();
+    expectTypeOf<PlainDot['shadow']>().toEqualTypeOf<boolean | undefined>();
+    expectTypeOf<RingDot['shadow']>().toEqualTypeOf<undefined>();
+  });
+
   it('renders one passive text or number value without an interactive role', () => {
     const result = render(
       <KiskadeeContext.Provider value={context}>
@@ -103,6 +114,7 @@ describe('Badge', () => {
     expect(result.getByTestId('full-bleed-icon').parentElement).toBe(
       result.getByTestId('full-bleed')
     );
+    expect(result.getByTestId('full-bleed').querySelector('.k-bdg-e6')).toBeNull();
   });
 
   it('omits the separation-ring wrapper when e6 is unavailable', () => {
@@ -141,39 +153,23 @@ describe('Badge', () => {
     );
   });
 
-  it('applies the static shadow only when the preset recipe and prop both resolve', () => {
+  it('applies the static shadow only to a Dot without separation', () => {
     const result = render(
       <KiskadeeContext.Provider value={shadowContext}>
-        <Badge data-testid="plain">3</Badge>
-        <Badge data-testid="text-shadow" shadow>
-          3
-        </Badge>
-        <Badge.Dot data-testid="dot-shadow" shadow separation="ring" />
-        <Badge.Mark data-testid="contained-shadow" shadow>
-          <svg />
-        </Badge.Mark>
-        <Badge.Mark data-testid="full-bleed-shadow" presentation="full-bleed" shadow>
-          <svg />
-        </Badge.Mark>
+        <Badge.Dot data-testid="plain" />
+        <Badge.Dot data-testid="dot-shadow" shadow />
       </KiskadeeContext.Provider>
     );
 
     expect(result.getByTestId('plain').classList.contains('-e')).toBe(false);
-    expect(result.getByTestId('text-shadow').className).toContain('badge-text-shadow');
-    expect(result.getByTestId('text-shadow').classList.contains('-e')).toBe(true);
     expect(result.getByTestId('dot-shadow').className).toContain('badge-indicator-shadow');
     expect(result.getByTestId('dot-shadow').classList.contains('-e')).toBe(true);
-    expect(result.getByTestId('dot-shadow').querySelector('.k-bdg-e6')).not.toBeNull();
-    expect(result.getByTestId('contained-shadow').className).toContain('badge-indicator-shadow');
-    expect(result.getByTestId('full-bleed-shadow').className).toContain('badge-full-bleed-shadow');
   });
 
   it('does not add a shadow activator when the active preset omits the recipe', () => {
     const result = render(
       <KiskadeeContext.Provider value={context}>
-        <Badge data-testid="badge" shadow>
-          3
-        </Badge>
+        <Badge.Dot data-testid="badge" shadow />
       </KiskadeeContext.Provider>
     );
 
@@ -186,6 +182,10 @@ describe('Badge', () => {
       children: ReactNode;
       emphasis?: string;
       presentation: string;
+    }>;
+    const UnsafeDot = Badge.Dot as unknown as ComponentType<{
+      separation: string;
+      shadow: boolean;
     }>;
 
     expect(() =>
@@ -207,5 +207,13 @@ describe('Badge', () => {
         </KiskadeeContext.Provider>
       )
     ).toThrow('Badge.Mark does not accept emphasis when presentation is full-bleed.');
+
+    expect(() =>
+      render(
+        <KiskadeeContext.Provider value={shadowContext}>
+          <UnsafeDot separation="ring" shadow />
+        </KiskadeeContext.Provider>
+      )
+    ).toThrow('Badge.Dot does not accept shadow when separation is ring.');
   });
 });

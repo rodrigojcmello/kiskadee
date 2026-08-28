@@ -22,7 +22,35 @@ describe('Badge structural CSS', () => {
     const artworkRule = css.match(/\.k-bdg-e3 > :not\(\.k-bdg-e6\)\s*\{([^}]*)\}/)?.[1] ?? '';
 
     expect(markRule).not.toContain('overflow: hidden');
+    expect(markRule).toContain('isolation: isolate');
     expect(artworkRule).toContain('border-radius: inherit');
     expect(artworkRule).toContain('overflow: hidden');
+    expect(artworkRule).toContain('position: relative');
+    expect(artworkRule).toContain('z-index: 1');
+  });
+
+  it('applies the emitted separation backing only to full-bleed Marks', () => {
+    const css = sass.compile(new URL('./Badge.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const backingRule = css.match(/\.k-bdg-e3 > \.k-bdg-e6\s*\{([^}]*)\}/)?.[1] ?? '';
+    const ringRule = css.match(/(?:^|\n)\.k-bdg-e6\s*\{([^}]*)\}/)?.[1] ?? '';
+
+    expect(backingRule).toContain('background-color: var(--k-bgc)');
+    expect(backingRule).toContain('z-index: 0');
+    expect(ringRule).not.toContain('background-color');
+  });
+
+  it('paints the separation ring outside the Badge viewport', () => {
+    const css = sass.compile(new URL('./Badge.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const ringRule = css.match(/(?:^|\n)\.k-bdg-e6\s*\{([^}]*)\}/)?.[1] ?? '';
+
+    expect(ringRule).toContain('box-shadow: 0 0 0 var(--k-bdw) var(--k-bdc)');
+    expect(ringRule).toContain('inset: 0');
+    expect(ringRule).not.toContain('border-width');
+    expect(ringRule).not.toContain('calc(-1 * var(--k-bdw))');
+    expect(css).not.toContain('background-clip: padding-box');
   });
 });

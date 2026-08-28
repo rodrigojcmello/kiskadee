@@ -42,7 +42,7 @@ export type BadgeEmphasis = 'high' | 'medium' | 'low' | 'lowest';
 export type BadgeSeparation = 'none' | 'ring';
 export type BadgeMarkPresentation = 'contained' | 'full-bleed';
 export type BadgeElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
-export type BadgeShadowElementName = 'e1' | 'e3' | 'e5';
+export type BadgeShadowElementName = 'e5';
 
 export type BadgeStaticShadowRecipe = {
   kind: 'outer';
@@ -103,7 +103,7 @@ export type BadgeSeparationRingElementStyle<TSegmentName extends SegmentName = n
   name: string;
   decorations?: Pick<DecorationSchema, 'borderStyle'>;
   scales: ElementScalesByProperty<'borderWidth'> & BadgeRadiusScales;
-  palettes: ElementPalettesByColor<TSegmentName, 'borderColor'>;
+  palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'borderColor'>;
 };
 
 export type BadgeElements<TSegmentName extends SegmentName = never> = {
@@ -116,7 +116,7 @@ export type BadgeElements<TSegmentName extends SegmentName = never> = {
 };
 
 const ELEMENT_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] as const;
-const SHADOW_ELEMENT_KEYS = ['e1', 'e3', 'e5'] as const;
+const SHADOW_ELEMENT_KEYS = ['e5'] as const;
 const REQUIRED_ELEMENT_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const;
 const BASE_KEYS = ['name', 'decorations', 'iconSize', 'typography', 'scales', 'palettes'] as const;
 const INTENTS = Object.keys(BadgeIntentKeys) as BadgeIntent[];
@@ -187,7 +187,7 @@ const RULES = {
   },
   e6: {
     scales: ['borderWidth', 'borderRadius'],
-    colors: ['borderColor'] as ColorProperty[],
+    colors: ['boxColor', 'borderColor'] as ColorProperty[],
     radius: ['square', 'rounded', 'pill']
   }
 } as const;

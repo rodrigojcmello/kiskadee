@@ -61,7 +61,16 @@ function badge(states?: Record<string, string>) {
           borderWidth: { 's:md:1': 2 },
           borderRadius: { pill: 999 }
         },
-        palettes: palette('borderColor', states, 'attention')
+        palettes: {
+          default: {
+            light: {
+              onSubtle: {
+                boxColor: { attention: { medium: states ?? { rest: '#ffffff' } } },
+                borderColor: { attention: { medium: states ?? { rest: '#ffffff' } } }
+              }
+            }
+          }
+        }
       }
     }
   };
@@ -70,8 +79,6 @@ function badge(states?: Record<string, string>) {
 function badgeShadow() {
   return {
     shadow: {
-      e1: { kind: 'outer', states: { rest: 's:sm:1' } },
-      e3: { kind: 'outer', states: { rest: 's:sm:1' } },
       e5: { kind: 'outer', states: { rest: 's:sm:1' } }
     }
   };
@@ -143,7 +150,7 @@ describe('Badge and Chip component contracts', () => {
     );
   });
 
-  it('accepts only static Rest outer-shadow recipes on Badge surfaces', () => {
+  it('accepts only a static Rest outer-shadow recipe on the Badge Dot surface', () => {
     const value = badge() as ReturnType<typeof badge> & { effects?: unknown };
     value.effects = badgeShadow();
     expect(validateBadgeComponentContract(value)).toEqual([]);
@@ -152,16 +159,21 @@ describe('Badge and Chip component contracts', () => {
     invalid.effects = {
       shadow: {
         e2: { kind: 'outer', states: { rest: 's:sm:1' } },
-        e3: { kind: 'inner', states: { rest: 's:sm:1', hover: 's:md:1' } },
-        e5: { kind: 'outer', states: { rest: 'unknown' }, fixedLevels: ['s:sm:1'] }
+        e3: { kind: 'outer', states: { rest: 's:sm:1' } },
+        e5: {
+          kind: 'inner',
+          states: { rest: 'unknown', hover: 's:md:1' },
+          fixedLevels: ['s:sm:1']
+        }
       }
     };
 
     expect(validateBadgeComponentContract(invalid)).toEqual(
       expect.arrayContaining([
         'components.badge.effects.shadow.e2: unrecognized key',
-        'components.badge.effects.shadow.e3.kind: expected "outer"',
-        'components.badge.effects.shadow.e3.states.hover: unrecognized key',
+        'components.badge.effects.shadow.e3: unrecognized key',
+        'components.badge.effects.shadow.e5.kind: expected "outer"',
+        'components.badge.effects.shadow.e5.states.hover: unrecognized key',
         'components.badge.effects.shadow.e5.fixedLevels: unrecognized key',
         'components.badge.effects.shadow.e5.states.rest: expected element size value'
       ])
@@ -193,6 +205,29 @@ describe('Badge and Chip component contracts', () => {
     expect(validateBadgeComponentContract(withRemovedIntent)).toEqual(
       expect.arrayContaining([expect.stringContaining('.informative: unrecognized intent')])
     );
+  });
+
+  it('keeps Lowest in the Badge contract vocabulary even when a preset omits it', () => {
+    const withLowest = badge();
+    (withLowest.elements.e1 as { palettes: unknown }).palettes = {
+      default: {
+        light: {
+          onSubtle: {
+            boxColor: { attention: { lowest: { rest: '#000000' } } }
+          }
+        }
+      }
+    };
+
+    expect(validateBadgeComponentContract(withLowest)).toEqual([]);
+  });
+
+  it('accepts independent backing and border colors on the Badge separation element', () => {
+    const value = badge();
+
+    expect(validateBadgeComponentContract(value)).toEqual([]);
+    expect(value.elements.e6.palettes.default.light.onSubtle).toHaveProperty('boxColor');
+    expect(value.elements.e6.palettes.default.light.onSubtle).toHaveProperty('borderColor');
   });
 
   it('accepts Chip interaction states and serialized surface output', () => {

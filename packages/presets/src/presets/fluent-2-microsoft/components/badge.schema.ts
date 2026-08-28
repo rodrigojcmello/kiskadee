@@ -25,7 +25,44 @@ const THEME_TRACK = {
   darker: 'd'
 } as const satisfies Record<ThemeName, ThemeShortcut>;
 
-const TRANSPARENT_TONE = 0;
+const MEDIUM_SURFACE_OFFSET = {
+  light: 4,
+  dark: 14,
+  darker: 14
+} as const satisfies Record<ThemeName, number>;
+
+const LOW_SURFACE_ALPHA = 8;
+
+const LOW_FOREGROUND_VIVID_OFFSET = {
+  light: {
+    neutral: 0,
+    primary: 0,
+    novelty: 2,
+    positive: 1,
+    warning: 6,
+    attention: 0
+  },
+  dark: {
+    neutral: 0,
+    primary: 8,
+    novelty: 8,
+    positive: 8,
+    warning: 0,
+    attention: 8
+  },
+  darker: {
+    neutral: 0,
+    primary: 8,
+    novelty: 8,
+    positive: 8,
+    warning: 0,
+    attention: 8
+  }
+} as const satisfies Record<ThemeName, Record<BadgeIntent, number>>;
+
+const DARK_WARNING_LOW_FOREGROUND_TONE: KiskadeeTone = 80;
+const ON_VIVID_HIGH_SURFACE_OFFSET = 7;
+const ON_VIVID_LOW_SURFACE_OFFSET = 2;
 
 export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs): BadgeComponent {
   const role = (intent: BadgeIntent): Role =>
@@ -34,86 +71,119 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
     c('default', THEME_TRACK[theme], role(intent), tone, alpha);
   const absolute = (theme: ThemeName, tone: KiskadeeTone, alpha?: number) =>
     c('default', THEME_TRACK[theme], 'primitive.black.v1', tone, alpha);
-  const transparent = (theme: ThemeName) => absolute(theme, TRANSPARENT_TONE, 0);
   const white = (theme: ThemeName) => absolute(theme, theme === 'light' ? 0 : 100);
-  const black = (theme: ThemeName) => absolute(theme, theme === 'light' ? 100 : 0);
+  const black = (theme: ThemeName, alpha?: number) =>
+    absolute(theme, theme === 'light' ? 100 : 0, alpha);
   const vivid = (theme: ThemeName, intent: BadgeIntent) =>
     intent === 'warning' && theme !== 'light'
       ? color(theme, intent, 75)
       : c.ref('default', THEME_TRACK[theme], role(intent), 'vivid');
+  const mediumSurface = (theme: ThemeName, intent: BadgeIntent) =>
+    c.ref('default', THEME_TRACK[theme], role(intent), 'subtle', MEDIUM_SURFACE_OFFSET[theme]);
+  const lowSurface = (theme: ThemeName) => black(theme, LOW_SURFACE_ALPHA);
+  const lowForeground = (theme: ThemeName, intent: BadgeIntent) =>
+    intent === 'warning' && theme !== 'light'
+      ? color(theme, intent, DARK_WARNING_LOW_FOREGROUND_TONE)
+      : c.ref(
+          'default',
+          THEME_TRACK[theme],
+          role(intent),
+          'vivid',
+          LOW_FOREGROUND_VIVID_OFFSET[theme][intent]
+        );
   const highForeground = (theme: ThemeName, intent: BadgeIntent) =>
     intent === 'warning' || (intent === 'neutral' && theme !== 'light')
       ? black(theme)
       : white(theme);
 
-  const createIntentStates = (
-    theme: ThemeName,
-    colorProperty: 'box' | 'border' | 'text' | 'fullBleedText'
-  ) =>
+  const onVividHighSurface = (intent: BadgeIntent) =>
+    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_HIGH_SURFACE_OFFSET);
+  const onVividMediumSurface = (intent: BadgeIntent) =>
+    c.ref('default', 'l', role(intent), 'subtle', MEDIUM_SURFACE_OFFSET.light);
+  const onVividLowSurface = () =>
+    c.ref('default', 'l', role('neutral'), 'subtle', ON_VIVID_LOW_SURFACE_OFFSET);
+  const onVividForeground = (intent: BadgeIntent) => c('default', 'l', role(intent), 65);
+
+  const createSurfaceIntentStates = (theme: ThemeName) =>
     Object.fromEntries(
       INTENTS.map((intent) => {
-        const subtleForeground = theme === 'light' ? 65 : 80;
-        const absoluteWhiteForeground = theme === 'light' ? 65 : 35;
-        const values =
-          colorProperty === 'box'
-            ? {
-                high: { rest: vivid(theme, intent) },
-                medium: { rest: color(theme, intent, theme === 'light' ? 8 : 18) },
-                low: { rest: white(theme) },
-                lowest: { rest: transparent(theme) }
-              }
-            : colorProperty === 'border'
-              ? {
-                  high: { rest: transparent(theme) },
-                  medium: { rest: transparent(theme) },
-                  low: { rest: color(theme, intent, theme === 'light' ? 45 : 55) },
-                  lowest: { rest: transparent(theme) }
-                }
-              : colorProperty === 'fullBleedText'
-                ? {
-                    high: { rest: vivid(theme, intent) },
-                    medium: { rest: vivid(theme, intent) },
-                    low: { rest: vivid(theme, intent) },
-                    lowest: { rest: vivid(theme, intent) }
-                  }
-                : {
-                    high: { rest: highForeground(theme, intent) },
-                    medium: { rest: color(theme, intent, subtleForeground) },
-                    low: { rest: color(theme, intent, absoluteWhiteForeground) },
-                    lowest: { rest: color(theme, intent, subtleForeground) }
-                  };
-        return [intent, values];
+        return [
+          intent,
+          {
+            high: { rest: vivid(theme, intent) },
+            medium: { rest: mediumSurface(theme, intent) },
+            low: { rest: lowSurface(theme) }
+          }
+        ];
       })
+    );
+
+  const createOnVividSurfaceIntentStates = () =>
+    Object.fromEntries(
+      INTENTS.map((intent) => [
+        intent,
+        {
+          high: { rest: onVividHighSurface(intent) },
+          medium: { rest: onVividMediumSurface(intent) },
+          low: { rest: onVividLowSurface() }
+        }
+      ])
+    );
+
+  const createTextIntentStates = (theme: ThemeName, fullBleed = false) =>
+    Object.fromEntries(
+      INTENTS.map((intent) => [
+        intent,
+        fullBleed
+          ? { high: { rest: vivid(theme, intent) } }
+          : {
+              high: { rest: highForeground(theme, intent) },
+              medium: { rest: color(theme, intent, theme === 'light' ? 65 : 80) },
+              low: { rest: lowForeground(theme, intent) }
+            }
+      ])
+    );
+
+  const createOnVividTextIntentStates = (theme: ThemeName, fullBleed = false) =>
+    Object.fromEntries(
+      INTENTS.map((intent) => [
+        intent,
+        fullBleed
+          ? { high: { rest: vivid(theme, intent) } }
+          : {
+              high: { rest: onVividForeground(intent) },
+              medium: { rest: onVividForeground(intent) },
+              low: { rest: onVividForeground(intent) }
+            }
+      ])
     );
 
   const createSurfacePalette = (theme: ThemeName) => ({
     onSubtle: {
-      boxColor: createIntentStates(theme, 'box'),
-      borderColor: createIntentStates(theme, 'border')
+      boxColor: createSurfaceIntentStates(theme)
     },
     onVivid: {
-      boxColor: createIntentStates(theme, 'box'),
-      borderColor: createIntentStates(theme, 'border')
+      boxColor: createOnVividSurfaceIntentStates()
     }
   });
 
   const createTextPalette = (theme: ThemeName, fullBleed = false) => ({
-    onSubtle: { textColor: createIntentStates(theme, fullBleed ? 'fullBleedText' : 'text') },
-    onVivid: { textColor: createIntentStates(theme, fullBleed ? 'fullBleedText' : 'text') }
+    onSubtle: { textColor: createTextIntentStates(theme, fullBleed) },
+    onVivid: { textColor: createOnVividTextIntentStates(theme, fullBleed) }
   });
 
-  const createRingPalette = (theme: ThemeName) => {
+  const createSeparationPalette = (theme: ThemeName) => {
     const intents = Object.fromEntries(
       INTENTS.map((intent) => [
         intent,
         Object.fromEntries(
-          ['high', 'medium', 'low', 'lowest'].map((emphasis) => [emphasis, { rest: white(theme) }])
+          ['high', 'medium', 'low'].map((emphasis) => [emphasis, { rest: white(theme) }])
         )
       ])
     );
     return {
-      onSubtle: { borderColor: intents },
-      onVivid: { borderColor: intents }
+      onSubtle: { boxColor: intents, borderColor: intents },
+      onVivid: { boxColor: intents, borderColor: intents }
     };
   };
 
@@ -126,15 +196,12 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
   return {
     effects: {
       shadow: {
-        e1: { kind: 'outer', states: { rest: 's:sm:1' } },
-        e3: { kind: 'outer', states: { rest: 's:sm:1' } },
         e5: { kind: 'outer', states: { rest: 's:sm:1' } }
       }
     },
     elements: {
       e1: {
         name: 'badge-surface',
-        decorations: { borderStyle: 'solid' },
         scales: {
           boxHeight: {
             's:sm:3': 8,
@@ -176,14 +243,6 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
             's:lg:1': 7,
             's:lg:2': 10
           },
-          borderWidth: {
-            's:sm:3': 0,
-            's:sm:2': 0,
-            's:sm:1': 1,
-            's:md:1': 1,
-            's:lg:1': 1,
-            's:lg:2': 1
-          },
           borderRadius: { square: 0, rounded: 4, pill: 999 }
         },
         palettes: { default: themes(createSurfacePalette) }
@@ -217,17 +276,16 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
         name: 'badge-contained-mark-icon',
         iconSize: {
           's:sm:3': 's:sm:5',
-          's:sm:2': 's:sm:4',
-          's:sm:1': 's:sm:2',
-          's:md:1': 's:sm:1',
-          's:lg:1': 's:md:1',
-          's:lg:2': 's:lg:1'
+          's:sm:2': 's:sm:5',
+          's:sm:1': 's:sm:3',
+          's:md:1': 's:sm:2',
+          's:lg:1': 's:sm:1',
+          's:lg:2': 's:md:1'
         },
         palettes: { default: themes((theme) => createTextPalette(theme)) }
       },
       e5: {
         name: 'badge-dot-surface',
-        decorations: { borderStyle: 'solid' },
         scales: {
           boxHeight: {
             's:sm:3': 6,
@@ -245,21 +303,12 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
             's:lg:1': 24,
             's:lg:2': 32
           },
-          borderWidth: {
-            's:sm:3': 0,
-            's:sm:2': 0,
-            's:sm:1': 1,
-            's:md:1': 1,
-            's:lg:1': 1,
-            's:lg:2': 1
-          },
           borderRadius: { pill: 999 }
         },
         palettes: { default: themes(createSurfacePalette) }
       },
       e6: {
         name: 'badge-separation-ring',
-        decorations: { borderStyle: 'solid' },
         scales: {
           borderWidth: {
             's:sm:3': 1,
@@ -271,7 +320,7 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
           },
           borderRadius: { square: 0, rounded: 4, pill: 999 }
         },
-        palettes: { default: themes(createRingPalette) }
+        palettes: { default: themes(createSeparationPalette) }
       }
     }
   };

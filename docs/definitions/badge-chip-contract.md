@@ -36,9 +36,10 @@ Badge supports exactly three public anatomies:
 
 `Badge.Icon`, `Badge.Label`, and `Badge.Count` do not exist. Icon-plus-label compositions belong to
 Chip. A contained Mark uses an authored pill surface with a smaller icon and supports all four
-emphases. A full-bleed Mark has no authored background, border, or padding; its artwork fills the
-viewport, may be bi-color, and uses the strong intent color without an emphasis option. Icon-only
-meaning requires an accessible description on Badge or its associated host.
+emphases. A full-bleed Mark has no authored semantic surface, border, or padding; its artwork fills
+the viewport, may be bi-color, and uses the strong intent color without an emphasis option. An
+optional separation treatment may place an opaque backing behind that artwork without becoming the
+Mark surface. Icon-only meaning requires an accessible description on Badge or its associated host.
 
 Text Badge supports `square`, `rounded`, and `pill`; Dot and Mark are forced to `pill`. All three
 indicator anatomies support the six Badge scales. `attention` is the portability default intent.
@@ -49,15 +50,26 @@ structure uses that height as the minimum on both axes: short metadata starts sq
 content such as `12`, `99+`, or `New` grows inline into a pill. Dot and Mark keep independent equal
 width and height maps because their viewports are fixed and content-free or icon-only.
 
-Badge optionally owns a `separation="ring"` outline for overlays. The ring is a distinct visual
-owner: its color, width, and radius are Schema-owned, while Structural CSS owns only positioning and
-negative inset. If the ring element is absent or unresolved, the complete ring is omitted without a
-fallback. Button.Badge never owns this visual treatment.
+Badge optionally owns a `separation="ring"` treatment for overlays. Text Badge, Dot, and contained
+Mark use it only as an external outline because they already own a surface. Full-bleed Mark uses the
+same treatment as an opaque backing plus the external outline: opaque artwork covers the backing,
+while transparent or knocked-out regions reveal its controlled color instead of the host content.
+With `separation="none"`, full-bleed artwork preserves its original transparency.
+
+The separation treatment is a distinct visual owner. Its backing color, outline color, width, and
+radius are Schema-owned, while Structural CSS owns conditional backing application, stacking,
+positioning, and external paint. On Web, the separation layer matches the Badge viewport and its
+ring is painted outside that box, preserving the complete intent surface and intrinsic geometry.
+That structural paint is not the optional Badge Shadow Effect. The backing is not an
+emphasis-bearing Badge surface. If the separation element is absent or unresolved, the complete
+treatment is omitted without a fallback. Button.Badge never owns this visual treatment.
 
 The initial Badge contract rejects Hover, Pressed, Focus, Selected, Disabled, Pending, Read-only,
-and Filled. It may opt into one preset-authored static outer Shadow Effect. The Effect is disabled
-by default and constant in Rest; it does not create interaction states. A Badge nested in Button or
-Chip remains in Rest and does not inherit the host's interaction activators.
+and Filled. Only `Badge.Dot` without `separation="ring"` may opt into one preset-authored static
+outer Shadow Effect. The Effect is disabled by default, constant in Rest, and intended for an
+externally overlaid Dot; it does not create interaction states. Text Badge and both Mark
+presentations never accept it. A Badge nested in Button or Chip remains in Rest and does not inherit
+the host's interaction activators.
 
 ### Disabled-host gap
 
