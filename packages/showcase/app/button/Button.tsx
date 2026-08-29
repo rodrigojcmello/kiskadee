@@ -2,6 +2,7 @@
 
 import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
 import {
+  Card,
   Button as KButton,
   SmoothText,
   Text,
@@ -25,6 +26,7 @@ import {
   ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import {
   type ButtonStressTestBackgroundToneKey,
@@ -52,7 +54,6 @@ import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
 import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
-import { SocialButtonExamples } from './components/SocialButtonExamples';
 
 const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
   { value: 'onSubtle', label: 'On subtle' },
@@ -74,72 +75,55 @@ const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = 
 const COMPARISON_EMPHASES: ComponentEmphasis[] = ['high', 'medium', 'low', 'lowest'];
 
 function SurfaceContextComparison({
-  onSubtleBackground,
   fontName,
-  onVividBackground,
   onVividSupported,
   scale,
   textAlign
 }: {
-  onSubtleBackground: string | undefined;
   fontName: string;
-  onVividBackground: string | undefined;
   onVividSupported: boolean;
   scale: ElementSizeValue;
   textAlign: 'left' | 'center';
 }) {
   const textProfiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
 
   return (
-    <section className={s.contextComparison} aria-labelledby="surface-context-comparison-title">
-      <Text as="h3" id="surface-context-comparison-title" profile={textProfiles.sectionTitle}>
-        Surface contexts
-      </Text>
-      <Text as="p" profile={textProfiles.body} className={s.contextComparisonDescription}>
-        The same Primary Rest buttons rendered simultaneously on subtle and vivid surfaces.
-      </Text>
+    <section
+      className={`${s.contextComparison} ${
+        showDescriptions ? '' : s.contextComparisonWithoutDescription
+      }`.trim()}
+      aria-labelledby="surface-context-comparison-title"
+    >
+      <div className={s.contextComparisonHeader}>
+        <Text as="h3" id="surface-context-comparison-title" profile={textProfiles.sectionTitle}>
+          Surface contexts
+        </Text>
+        {showDescriptions ? (
+          <Text as="p" profile={textProfiles.body} className={s.contextComparisonDescription}>
+            The same Primary Rest buttons rendered simultaneously on subtle and vivid surfaces.
+          </Text>
+        ) : null}
+      </div>
       <div className={s.contextComparisonGrid}>
         <article className={s.contextCard}>
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             On subtle
           </Text>
-          <div
+          <Card
             className={`${s.contextSurface} k-root`}
-            style={onSubtleBackground ? { backgroundColor: onSubtleBackground } : undefined}
+            intent="neutral"
+            emphasis="low"
+            surfaceContext="onSubtle"
           >
-            {COMPARISON_EMPHASES.map((emphasis) => (
-              <KButton
-                key={emphasis}
-                intent="primary"
-                emphasis={emphasis}
-                scale={scale}
-                surfaceContext="onSubtle"
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={textAlign}>
-                    {emphasis}
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            ))}
-          </div>
-        </article>
-        <article className={s.contextCard}>
-          <Text as="h4" profile={textProfiles.subsectionTitle}>
-            On vivid
-          </Text>
-          <div
-            className={`${s.contextSurface} ${s.onVividContextSurface} k-root`}
-            style={onVividBackground ? { backgroundColor: onVividBackground } : undefined}
-          >
-            {onVividSupported ? (
-              COMPARISON_EMPHASES.map((emphasis) => (
+            <div className={s.contextSurfaceGrid}>
+              {COMPARISON_EMPHASES.map((emphasis) => (
                 <KButton
                   key={emphasis}
                   intent="primary"
                   emphasis={emphasis}
                   scale={scale}
-                  surfaceContext="onVivid"
+                  surfaceContext="onSubtle"
                 >
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={textAlign}>
@@ -147,13 +131,44 @@ function SurfaceContextComparison({
                     </SmoothText>
                   </KButton.Label>
                 </KButton>
-              ))
-            ) : (
-              <Text as="p" profile={textProfiles.caption} className={s.contextUnavailable}>
-                On vivid is not available in this palette.
-              </Text>
-            )}
-          </div>
+              ))}
+            </div>
+          </Card>
+        </article>
+        <article className={s.contextCard}>
+          <Text as="h4" profile={textProfiles.subsectionTitle}>
+            On vivid
+          </Text>
+          <Card
+            className={`${s.contextSurface} k-root`}
+            intent="primary"
+            emphasis="highest"
+            surfaceContext="onSubtle"
+          >
+            <div className={s.contextSurfaceGrid}>
+              {onVividSupported ? (
+                COMPARISON_EMPHASES.map((emphasis) => (
+                  <KButton
+                    key={emphasis}
+                    intent="primary"
+                    emphasis={emphasis}
+                    scale={scale}
+                    surfaceContext="onVivid"
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={textAlign}>
+                        {emphasis}
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                ))
+              ) : (
+                <Text as="p" profile={textProfiles.caption} className={s.contextUnavailable}>
+                  On vivid is not available in this palette.
+                </Text>
+              )}
+            </div>
+          </Card>
         </article>
       </div>
     </section>
@@ -163,6 +178,7 @@ function SurfaceContextComparison({
 export function Button() {
   const { designSystem, global, segment, theme } = useKiskadee();
   const { fontName, manifest } = useShowcase();
+  const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();
   const { buttonClassesMap } = useButtonArtifactConfig();
   const canonicalBackgrounds = useCanonicalCardSurfaces();
   const textProfiles = useShowcaseTextProfiles();
@@ -291,9 +307,6 @@ export function Button() {
       designSystem,
       presenceArtifact: global?.components?.dropdown?.effects?.presence
     });
-  const brandButtonExamplesAvailable = ['auth', 'social'].every((pack) =>
-    manifest?.brandPacks?.packs.includes(pack)
-  );
   const onVividSupported = supportsManifestSurfaceContext(buttonMeta, segment, theme, 'onVivid');
   const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
@@ -304,12 +317,6 @@ export function Button() {
     availableButtonScaleOptions[0]?.value ??
     's:md:1';
   const buttonState = getManifestComponentState(buttonMeta, segment, theme, activeSurfaceContext);
-  const comparisonOnSubtleSurface = canonicalBackgrounds.tones.find(
-    (tone) => tone.contentSurfaceContext === 'onSubtle'
-  );
-  const comparisonOnVividSurface = canonicalBackgrounds.tones.find(
-    (tone) => tone.contentSurfaceContext === 'onVivid'
-  );
 
   const buttonControls = (
     <ShowcaseControlPanel>
@@ -419,19 +426,14 @@ export function Button() {
             onValueChange={(value) => setButtonScale(value as ElementSizeValue)}
           />
           <ShowcaseBooleanControl
-            label="Simplificada"
-            checked={isSimplified}
-            onCheckedChange={setIsSimplified}
-          />
-          <ShowcaseBooleanControl
             label="Button group"
             checked={showButtonGroups}
             onCheckedChange={setShowButtonGroups}
           />
           <ShowcaseBooleanControl
-            label="Focus ring"
-            checked={showFocusRing}
-            onCheckedChange={setShowFocusRing}
+            label="Descrições"
+            checked={showDescriptions}
+            onCheckedChange={setShowDescriptions}
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
@@ -488,9 +490,17 @@ export function Button() {
 
   return (
     <section className={routeClassName || undefined}>
-      <Text as="h2" profile={textProfiles.pageTitle}>
-        Button
-      </Text>
+      <header className={s.pageHeader}>
+        <Text as="h2" profile={textProfiles.pageTitle}>
+          Button
+        </Text>
+        {showDescriptions ? (
+          <Text as="p" profile={textProfiles.body} className={s.pageDescription}>
+            Buttons let people trigger an immediate action or make a choice. Intent communicates the
+            action&apos;s meaning, while emphasis establishes its priority on the current surface.
+          </Text>
+        ) : null}
+      </header>
       <ShowcaseRouteControls
         id="button"
         eyebrow="Button"
@@ -500,90 +510,107 @@ export function Button() {
         {buttonControls}
       </ShowcaseRouteControls>
       <SurfaceContextComparison
-        onSubtleBackground={comparisonOnSubtleSurface?.resolvedColor}
-        onVividBackground={comparisonOnVividSurface?.resolvedColor}
         onVividSupported={onVividSupported}
         fontName={fontName}
         scale={activeButtonScale}
         textAlign={alignment}
       />
-      <ButtonAsyncExample
-        buttonState={buttonState}
-        fontName={fontName}
-        progressAvailable={Boolean(manifest?.components?.progress)}
-        progressSurfaceContext={
-          supportsManifestSurfaceContext(
-            manifest?.components?.progress,
-            segment,
-            theme,
-            activeSurfaceContext
-          )
-            ? activeSurfaceContext
-            : 'onSubtle'
-        }
-        scale={activeButtonScale}
-        surfaceContext={activeSurfaceContext}
-      />
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-        {/*<KiskadeeButton label="Button" onClick={() => alert('Button clicado!')} />*/}
-        {/*<KiskadeeButton*/}
-        {/*  label="Com ícone"*/}
-        {/*  icon={<span aria-hidden>⭐</span>}*/}
-        {/*  onClick={() => alert('Com ícone')}*/}
-        {/*/>*/}
-        {/*<KiskadeeButton*/}
-        {/*  aria-label="Icon only"*/}
-        {/*  icon={<span aria-hidden>🔔</span>}*/}
-        {/*  onClick={() => alert('Somente ícone')}*/}
-        {/*/>*/}
-        <ButtonStateSection
-          intent="primary"
-          title="Primary"
-          fontName={fontName}
-          align={alignment}
-          stateCapabilities={buttonState}
-          simplified={isSimplified}
-          grouped={showButtonGroups}
-          scale={activeButtonScale}
-          surfaceContext={activeSurfaceContext}
-        />
+      <section className={s.intentsSection} aria-labelledby="button-intents-title">
+        <div className={s.intentsHeader}>
+          <div className={s.intentsHeadingRow}>
+            <Text as="h3" id="button-intents-title" profile={textProfiles.sectionTitle}>
+              Intents
+            </Text>
+            <div className={s.intentsInlineControls}>
+              <ShowcaseBooleanControl
+                className={s.intentsInlineControl}
+                label="Rest only"
+                checked={isSimplified}
+                onCheckedChange={setIsSimplified}
+              />
+              <ShowcaseBooleanControl
+                className={s.intentsInlineControl}
+                label="Focus ring"
+                checked={showFocusRing}
+                onCheckedChange={setShowFocusRing}
+              />
+            </div>
+          </div>
+          {showDescriptions ? (
+            <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
+              Intent gives an action its semantic role. Primary advances the main task, Neutral
+              supports secondary actions, Destructive signals risk, and Positive communicates a
+              beneficial outcome.
+            </Text>
+          ) : null}
+        </div>
+        <div
+          className={`${s.intentsGrid} ${
+            isSimplified ? s.intentsGridSimplified : s.intentsGridDetailed
+          }`}
+        >
+          <ButtonStateSection
+            intent="primary"
+            title="Primary"
+            description={
+              showDescriptions ? 'The main action that advances the current task.' : undefined
+            }
+            fontName={fontName}
+            align={alignment}
+            stateCapabilities={buttonState}
+            simplified={isSimplified}
+            grouped={showButtonGroups}
+            scale={activeButtonScale}
+            surfaceContext={activeSurfaceContext}
+          />
 
-        <ButtonStateSection
-          intent="neutral"
-          title="Neutral"
-          fontName={fontName}
-          align={alignment}
-          stateCapabilities={buttonState}
-          simplified={isSimplified}
-          grouped={showButtonGroups}
-          scale={activeButtonScale}
-          surfaceContext={activeSurfaceContext}
-        />
+          <ButtonStateSection
+            intent="neutral"
+            title="Neutral"
+            description={
+              showDescriptions ? 'Supporting actions that do not dominate the flow.' : undefined
+            }
+            fontName={fontName}
+            align={alignment}
+            stateCapabilities={buttonState}
+            simplified={isSimplified}
+            grouped={showButtonGroups}
+            scale={activeButtonScale}
+            surfaceContext={activeSurfaceContext}
+          />
 
-        <ButtonStateSection
-          intent="destructive"
-          title="Destructive"
-          fontName={fontName}
-          align={alignment}
-          stateCapabilities={buttonState}
-          simplified={isSimplified}
-          grouped={showButtonGroups}
-          scale={activeButtonScale}
-          surfaceContext={activeSurfaceContext}
-        />
+          <ButtonStateSection
+            intent="destructive"
+            title="Destructive"
+            description={
+              showDescriptions ? 'Actions with harmful or irreversible consequences.' : undefined
+            }
+            fontName={fontName}
+            align={alignment}
+            stateCapabilities={buttonState}
+            simplified={isSimplified}
+            grouped={showButtonGroups}
+            scale={activeButtonScale}
+            surfaceContext={activeSurfaceContext}
+          />
 
-        <ButtonStateSection
-          intent="positive"
-          title="Positive"
-          fontName={fontName}
-          align={alignment}
-          stateCapabilities={buttonState}
-          simplified={isSimplified}
-          grouped={showButtonGroups}
-          scale={activeButtonScale}
-          surfaceContext={activeSurfaceContext}
-        />
-
+          <ButtonStateSection
+            intent="positive"
+            title="Positive"
+            description={
+              showDescriptions ? 'Actions that confirm a safe or beneficial outcome.' : undefined
+            }
+            fontName={fontName}
+            align={alignment}
+            stateCapabilities={buttonState}
+            simplified={isSimplified}
+            grouped={showButtonGroups}
+            scale={activeButtonScale}
+            surfaceContext={activeSurfaceContext}
+          />
+        </div>
+      </section>
+      <div className={s.buttonExamples}>
         {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
         <div className={s['interaction-state']}>
           <Text as="h3" profile={textProfiles.sectionTitle}>
@@ -868,10 +895,7 @@ export function Button() {
           surfaceContext={activeSurfaceContext}
         />
         {manifest?.components?.badge ? (
-          <ButtonBadgeExamples
-            scale={activeButtonScale}
-            surfaceContext={activeSurfaceContext}
-          />
+          <ButtonBadgeExamples scale={activeButtonScale} surfaceContext={activeSurfaceContext} />
         ) : null}
         <ButtonGroupExamples
           scale={activeButtonScale}
@@ -884,17 +908,24 @@ export function Button() {
           scale={activeButtonScale}
           surfaceContext={activeSurfaceContext}
         />
-        {brandButtonExamplesAvailable ? (
-          <SocialButtonExamples
-            fontName={fontName}
-            iconRegionAvailable={Boolean(buttonMeta?.iconTreatments?.includes('surface'))}
-            scale={activeButtonScale}
-            onSubtleBackground={comparisonOnSubtleSurface?.resolvedColor}
-            onVividBackground={comparisonOnVividSurface?.resolvedColor}
-            surfaceContext={activeSurfaceContext}
-          />
-        ) : null}
       </div>
+      <ButtonAsyncExample
+        buttonState={buttonState}
+        fontName={fontName}
+        progressAvailable={Boolean(manifest?.components?.progress)}
+        progressSurfaceContext={
+          supportsManifestSurfaceContext(
+            manifest?.components?.progress,
+            segment,
+            theme,
+            activeSurfaceContext
+          )
+            ? activeSurfaceContext
+            : 'onSubtle'
+        }
+        scale={activeButtonScale}
+        surfaceContext={activeSurfaceContext}
+      />
     </section>
   );
 }

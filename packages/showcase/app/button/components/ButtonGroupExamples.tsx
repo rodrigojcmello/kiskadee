@@ -2,6 +2,7 @@
 
 import type { ElementSizeValue, SurfaceContext } from '@kiskadee/core';
 import { Button, FamilyResolvedIcon, Text } from '@kiskadee/react-components';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -15,16 +16,19 @@ export function ButtonGroupExamples({
   surfaceContext: SurfaceContext;
 }) {
   const textProfiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
 
   return (
     <section className={styles.buttonGroupSection} aria-labelledby="button-group-title">
       <Text as="h3" id="button-group-title" profile={textProfiles.sectionTitle}>
         Button group
       </Text>
-      <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
-        Connected buttons inherit one visual contract from the group. The group may also own one
-        static shadow instead of combining shadows from its individual buttons.
-      </Text>
+      {showDescriptions ? (
+        <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
+          Connected buttons inherit one visual contract from the group. The group may also own one
+          static shadow instead of combining shadows from its individual buttons.
+        </Text>
+      ) : null}
       <div className={styles.buttonGroupGrid}>
         <article>
           <Text as="h4" profile={textProfiles.subsectionTitle}>

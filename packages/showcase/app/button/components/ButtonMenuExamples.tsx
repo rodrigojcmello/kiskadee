@@ -11,6 +11,7 @@ import {
   Text
 } from '@kiskadee/react-components';
 import { useMemo, useState } from 'react';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -224,6 +225,7 @@ export function ButtonMenuExamples({
   surfaceContext: SurfaceContext;
 }) {
   const textProfiles = useShowcaseTextProfiles();
+  const { showDescriptions: showSectionDescriptions } = useShowcaseDisplayPreferences();
   const [lastAction, setLastAction] = useState('No action yet');
   const [workItemType, setWorkItemType] = useState('task');
   const [showDescriptions, setShowDescriptions] = useState(true);
@@ -266,10 +268,12 @@ export function ButtonMenuExamples({
       <Text as="h3" id="button-menu-title" profile={textProfiles.sectionTitle}>
         Adaptive button menu
       </Text>
-      <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
-        The same MenuTree is presented as a Dropdown or BottomSheet. Adaptive mode chooses by
-        viewport and freezes the presenter while it is open.
-      </Text>
+      {showSectionDescriptions ? (
+        <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
+          The same MenuTree is presented as a Dropdown or BottomSheet. Adaptive mode chooses by
+          viewport and freezes the presenter while it is open.
+        </Text>
+      ) : null}
       <label className={styles.buttonMenuPresentationControl}>
         <span>Presentation</span>
         <select

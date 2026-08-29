@@ -26,6 +26,10 @@ const componentEntries = [
     label: 'Button'
   },
   {
+    href: '/brand-buttons',
+    label: 'Brand buttons'
+  },
+  {
     href: '/bottom-sheet',
     label: 'BottomSheet'
   },

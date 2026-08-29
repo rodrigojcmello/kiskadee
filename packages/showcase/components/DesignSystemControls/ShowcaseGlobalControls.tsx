@@ -8,10 +8,10 @@ import {
   ShowcaseControlField,
   ShowcaseControlGrid,
   ShowcaseControlGroup,
-  ShowcaseControlPanel,
-  ShowcaseSelectControl
+  ShowcaseControlPanel
 } from '@/components/ShowcaseControls';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
+import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import DesignSystemControls from './DesignSystemControls';
 import styles from './ShowcaseGlobalControls.module.scss';
@@ -21,26 +21,10 @@ type ShowcaseGlobalControlsProps = {
 };
 
 export function ShowcaseGlobalSemanticControls() {
-  const { segment, setSegment } = useKiskadee();
-  const { availableSegments } = useShowcase();
-
-  const segmentOptions = availableSegments.map((availableSegment) => ({
-    value: availableSegment,
-    label: availableSegment
-  }));
+  const { segment } = useKiskadee();
 
   return (
     <ShowcaseControlGrid>
-      <ShowcaseSelectControl
-        label="Segment"
-        options={segmentOptions}
-        value={segment}
-        onValueChange={(value) => {
-          playWowTransition();
-          setSegment(value);
-        }}
-        disabled={availableSegments.length <= 1}
-      />
       <ShowcaseControlField fullWidth>
         <ThemeModePicker className={styles.panelSwatches} />
       </ShowcaseControlField>
@@ -50,6 +34,33 @@ export function ShowcaseGlobalSemanticControls() {
         </ShowcaseControlField>
       ) : null}
     </ShowcaseControlGrid>
+  );
+}
+
+export function ShowcaseSegmentControl({ className }: { className?: string }) {
+  const { segment, setSegment } = useKiskadee();
+  const { availableSegments } = useShowcase();
+
+  const segmentOptions = availableSegments.map((availableSegment) => ({
+    value: availableSegment,
+    label: availableSegment
+  }));
+
+  return (
+    <Select
+      className={className}
+      label="Segment"
+      width="100%"
+      minWidth={0}
+      maxWidth={180}
+      options={segmentOptions}
+      value={segment}
+      onValueChange={(value) => {
+        playWowTransition();
+        setSegment(value);
+      }}
+      disabled={availableSegments.length <= 1}
+    />
   );
 }
 
@@ -97,6 +108,9 @@ export default function ShowcaseGlobalControls({ variant }: ShowcaseGlobalContro
   return (
     <div className={styles.toolbarLayout}>
       <DesignSystemControls />
+      <div className={styles.toolbarSegment}>
+        <ShowcaseSegmentControl className={styles.toolbarSelect} />
+      </div>
     </div>
   );
 }

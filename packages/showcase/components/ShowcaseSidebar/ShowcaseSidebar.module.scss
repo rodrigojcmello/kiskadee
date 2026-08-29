@@ -34,10 +34,14 @@
 @media (min-width: 961px) {
   .header {
     align-content: center;
+    background: #fff;
     block-size: var(--showcase-toolbar-height);
     display: grid;
+    inset-block-start: 0;
     margin-inline: -20px;
     padding: 0 24px;
+    position: sticky;
+    z-index: 2;
   }
 }
 

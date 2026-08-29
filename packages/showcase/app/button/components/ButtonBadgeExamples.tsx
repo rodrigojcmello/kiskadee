@@ -10,6 +10,7 @@ import {
 } from '@kiskadee/react-components';
 import { useState } from 'react';
 import { ShowcaseSelectControl } from '@/components/ShowcaseControls';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -34,6 +35,7 @@ export function ButtonBadgeExamples({
   surfaceContext: SurfaceContext;
 }) {
   const profiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
   const [placement, setPlacement] = useState<ButtonBadgePlacement>('block-start-inline-end');
 
   return (
@@ -41,10 +43,12 @@ export function ButtonBadgeExamples({
       <Text as="h3" profile={profiles.sectionTitle}>
         Passive Badge composition
       </Text>
-      <Text as="p" profile={profiles.body} className={styles.showcaseSectionDescription}>
-        Inline metadata stays adjacent to the label; external metadata uses logical corners. Both
-        remain in Rest across Button states.
-      </Text>
+      {showDescriptions ? (
+        <Text as="p" profile={profiles.body} className={styles.showcaseSectionDescription}>
+          Inline metadata stays adjacent to the label; external metadata uses logical corners. Both
+          remain in Rest across Button states.
+        </Text>
+      ) : null}
       <div className={styles.buttonMenuGrid}>
         <article>
           <Text as="h4" profile={profiles.subsectionTitle}>

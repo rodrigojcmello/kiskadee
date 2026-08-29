@@ -8,6 +8,7 @@ import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiska
 import { type IconProps, SocialIcons } from '@kiskadee/icons';
 import { BrandPackBoundary, Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ComponentType } from 'react';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import { getRecommendedBrandIconAppearance } from '../../../utils/brand-icon-presentation';
 import styles from '../Button.module.scss';
@@ -408,16 +409,19 @@ function IconTreatmentComparison({
 }) {
   const GoogleIcon = SHOWCASE_BRANDS.google.icon;
   const textProfiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
 
   return (
     <section aria-labelledby="brand-icon-treatment-title">
       <Text as="h4" id="brand-icon-treatment-title" profile={textProfiles.subsectionTitle}>
         Icon region treatments
       </Text>
-      <Text as="p" profile={textProfiles.body} className={styles.iconTreatmentDescription}>
-        The same Primary high action compares a foreground-following logo with a brand mark on a
-        stable light icon surface.
-      </Text>
+      {showDescriptions ? (
+        <Text as="p" profile={textProfiles.body} className={styles.iconTreatmentDescription}>
+          The same Primary high action compares a foreground-following logo with a brand mark on a
+          stable light icon surface.
+        </Text>
+      ) : null}
       <div className={styles.iconTreatmentGrid}>
         {ICON_TREATMENT_EXAMPLES.map((example) => (
           <article className={styles.iconTreatmentExample} key={example.id}>
@@ -470,18 +474,18 @@ export function SocialButtonExamples({
   surfaceContext: SurfaceContext;
 }) {
   const textProfiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
 
   return (
-    <section className={styles.showcaseSection} aria-labelledby="social-button-examples-title">
-      <Text as="h3" id="social-button-examples-title" profile={textProfiles.sectionTitle}>
-        Brand buttons
-      </Text>
-      <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
-        Brand intents reuse this Design System&apos;s Button formula without adding third-party
-        brand colors to its primitive catalog. The same unified set of practical actions compares{' '}
-        {iconRegionAvailable ? 'brand high with a surfaced mark, brand high,' : 'brand high'} and
-        brand low, while every state reference shares one collection.
-      </Text>
+    <div className={styles.showcaseSection}>
+      {showDescriptions ? (
+        <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
+          Brand intents reuse this Design System&apos;s Button formula without adding third-party
+          brand colors to its primitive catalog. The same unified set of practical actions compares{' '}
+          {iconRegionAvailable ? 'brand high with a surfaced mark, brand high,' : 'brand high'} and
+          brand low, while every state reference shares one collection.
+        </Text>
+      ) : null}
       <div className={styles.brandCollection}>
         <section aria-labelledby="brand-action-examples-title">
           <Text as="h4" id="brand-action-examples-title" profile={textProfiles.subsectionTitle}>
@@ -600,6 +604,6 @@ export function SocialButtonExamples({
           </div>
         </section>
       </div>
-    </section>
+    </div>
   );
 }

@@ -6,7 +6,7 @@ import type {
   InteractionState,
   SurfaceContext
 } from '@kiskadee/core';
-import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
+import { Card, Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
 import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
@@ -17,6 +17,7 @@ import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
 type ButtonStateSectionProps = {
   intent: ButtonIntent;
   title: string;
+  description?: string;
   fontName: string;
   align?: 'left' | 'center';
   stateCapabilities?: ManifestComponentState;
@@ -38,6 +39,7 @@ const EMPHASIS_LABELS: Record<Emphasis, string> = {
 export function ButtonStateSection({
   intent,
   title,
+  description,
   fontName,
   align,
   stateCapabilities,
@@ -47,6 +49,7 @@ export function ButtonStateSection({
   surfaceContext
 }: ButtonStateSectionProps) {
   const textProfiles = useShowcaseTextProfiles();
+  const headingId = `button-intent-${intent}-title`;
   const [selectedMap, setSelectedMap] = useState<Record<Emphasis, boolean>>(() => {
     const initial = {} as Record<Emphasis, boolean>;
     for (const emphasis of EMPHASIS_ORDER) {
@@ -107,151 +110,170 @@ export function ButtonStateSection({
     );
 
   return (
-    <div className={s['state-section']}>
-      <Text as="h3" profile={textProfiles.sectionTitle} className={s['state-title']}>
-        {title}
-      </Text>
-      {simplified ? (
-        <div className={`${s['simplified-states']} k-root`}>
-          {EMPHASIS_ORDER.map((emphasis) => (
-            <Fragment key={emphasis}>
-              {renderButtonState(
-                emphasis,
-                'rest',
-                <KButton
-                  emphasis={emphasis}
-                  intent={intent}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                  aria-label={`${title} ${EMPHASIS_LABELS[emphasis]} emphasis Rest`}
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} align={align}>
-                      {EMPHASIS_LABELS[emphasis]}
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              )}
-            </Fragment>
-          ))}
-        </div>
-      ) : (
-        EMPHASIS_ORDER.map((emphasis) => (
-          <div key={emphasis} className={s['interaction-state']}>
-            <Text as="h4" profile={textProfiles.groupTitle} className={s['emphasis-title']}>
-              <span>{EMPHASIS_LABELS[emphasis]} emphasis</span>
-              <span className={s['emphasis-divider']} aria-hidden="true" />
+    <Card
+      className={`${s['state-section']} k-root`}
+      aria-labelledby={headingId}
+      role="group"
+      intent="neutral"
+      emphasis="low"
+      surfaceContext={surfaceContext}
+    >
+      <div className={s['state-content']}>
+        <header className={s['state-header']}>
+          <Text
+            as="h4"
+            id={headingId}
+            profile={textProfiles.subsectionTitle}
+            className={s['state-title']}
+          >
+            {title}
+          </Text>
+          {description ? (
+            <Text as="p" profile={textProfiles.caption} className={s['state-description']}>
+              {description}
             </Text>
-            <div className={`${s['example-states']} k-root`}>
-              {renderButtonState(
-                emphasis,
-                'rest',
-                <KButton
-                  emphasis={emphasis}
-                  intent={intent}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} align={align}>
-                      Rest
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              )}
-              {renderButtonState(
-                emphasis,
-                'hover',
-                <KButton
-                  emphasis={emphasis}
-                  intent={intent}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                  status="hover"
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} align={align}>
-                      Hover
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              )}
-              {renderButtonState(
-                emphasis,
-                'focus',
-                <KButton
-                  emphasis={emphasis}
-                  intent={intent}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                  status="focus"
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} align={align}>
-                      Focus
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              )}
-              {renderButtonState(
-                emphasis,
-                'pressed',
-                <KButton
-                  emphasis={emphasis}
-                  intent={intent}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                  status="pressed"
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} align={align}>
-                      Pressed
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              )}
-              {renderButtonState(
-                emphasis,
-                selectedMap[emphasis] ? 'selected' : 'rest',
-                <KButton
-                  emphasis={emphasis}
-                  intent={intent}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                  controlState={selectedMap[emphasis]}
-                  radiusEffect={!grouped && intent === 'primary'}
-                  onClick={() => toggleSelected(emphasis)}
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} speed="fast" align={align}>
-                      {selectedMap[emphasis] ? 'Selected' : 'Select'}
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              )}
-              {renderButtonState(
-                emphasis,
-                'disabled',
-                <KButton
-                  emphasis={emphasis}
-                  intent={intent}
-                  scale={scale}
-                  surfaceContext={surfaceContext}
-                  status="disabled"
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} align={align}>
-                      Disabled
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              )}
-            </div>
+          ) : null}
+        </header>
+        {simplified ? (
+          <div className={`${s['simplified-states']} k-root`}>
+            {EMPHASIS_ORDER.map((emphasis) => (
+              <Fragment key={emphasis}>
+                {renderButtonState(
+                  emphasis,
+                  'rest',
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    scale={scale}
+                    surfaceContext={surfaceContext}
+                    aria-label={`${title} ${EMPHASIS_LABELS[emphasis]} emphasis Rest`}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={align}>
+                        {EMPHASIS_LABELS[emphasis]}
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+              </Fragment>
+            ))}
           </div>
-        ))
-      )}
-      <div className={s['section-divider']} />
-    </div>
+        ) : (
+          EMPHASIS_ORDER.map((emphasis) => (
+            <div key={emphasis} className={s['interaction-state']}>
+              <Text as="h4" profile={textProfiles.groupTitle} className={s['emphasis-title']}>
+                <span>{EMPHASIS_LABELS[emphasis]} emphasis</span>
+              </Text>
+              <div className={`${s['example-states']} k-root`}>
+                {renderButtonState(
+                  emphasis,
+                  'rest',
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    scale={scale}
+                    surfaceContext={surfaceContext}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={align}>
+                        Rest
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderButtonState(
+                  emphasis,
+                  'hover',
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    scale={scale}
+                    surfaceContext={surfaceContext}
+                    status="hover"
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={align}>
+                        Hover
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderButtonState(
+                  emphasis,
+                  'focus',
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    scale={scale}
+                    surfaceContext={surfaceContext}
+                    status="focus"
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={align}>
+                        Focus
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderButtonState(
+                  emphasis,
+                  'pressed',
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    scale={scale}
+                    surfaceContext={surfaceContext}
+                    status="pressed"
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={align}>
+                        Pressed
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderButtonState(
+                  emphasis,
+                  selectedMap[emphasis] ? 'selected' : 'rest',
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    scale={scale}
+                    surfaceContext={surfaceContext}
+                    controlState={selectedMap[emphasis]}
+                    radiusEffect={!grouped && intent === 'primary'}
+                    onClick={() => toggleSelected(emphasis)}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} speed="fast" align={align}>
+                        {selectedMap[emphasis] ? 'Selected' : 'Select'}
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderButtonState(
+                  emphasis,
+                  'disabled',
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    scale={scale}
+                    surfaceContext={surfaceContext}
+                    status="disabled"
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={align}>
+                        Disabled
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
   );
 }
 

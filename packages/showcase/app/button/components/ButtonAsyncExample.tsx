@@ -15,6 +15,7 @@ import {
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { useEffect, useId, useState } from 'react';
 import { ShowcaseSegmentedControl } from '@/components/ShowcaseControls';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -64,6 +65,7 @@ export function ButtonAsyncExample({
 }) {
   const statusId = useId();
   const textProfiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
   const [presentation, setPresentation] = useState<PendingPresentation>('text');
   const [pending, setPending] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -117,10 +119,12 @@ export function ButtonAsyncExample({
         <Text as="h3" id="button-async-example-title" profile={textProfiles.sectionTitle}>
           Async pending
         </Text>
-        <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
-          One pending state, three optional feedback presentations. Start the request to inspect the
-          interaction lock and focus-preserving lifecycle.
-        </Text>
+        {showDescriptions ? (
+          <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
+            One pending state, three optional feedback presentations. Start the request to inspect
+            the interaction lock and focus-preserving lifecycle.
+          </Text>
+        ) : null}
       </div>
       <div className={styles.asyncLayout}>
         <div className={styles.asyncControls}>

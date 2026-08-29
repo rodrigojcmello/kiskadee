@@ -30,7 +30,7 @@
   min-width: 0;
   height: 100%;
   padding: 0 20px 40px;
-  border-inline-start: 1px solid rgba(0, 0, 0, 0.06);
+  border-inline-start: 1px solid rgba(0, 0, 0, 0.04);
   background: #fff;
   opacity: 1;
   overflow-y: auto;
@@ -198,9 +198,13 @@
 
 @media (min-width: 961px) {
   .routePanelTopbar {
+    background: #fff;
     block-size: var(--showcase-toolbar-height);
+    inset-block-start: 0;
     margin-inline: -20px;
     padding: 0 20px;
+    position: sticky;
+    z-index: 2;
   }
 }
 

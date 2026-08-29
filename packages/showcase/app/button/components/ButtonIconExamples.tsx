@@ -11,6 +11,7 @@ import {
   SmoothText,
   Text
 } from '@kiskadee/react-components';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -153,17 +154,20 @@ export function ButtonIconExamples({
   surfaceContext: SurfaceContext;
 }) {
   const textProfiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
 
   return (
     <section className={styles.showcaseSection} aria-labelledby="button-icon-examples-title">
       <Text as="h3" id="button-icon-examples-title" profile={textProfiles.sectionTitle}>
         Icons
       </Text>
-      <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
-        Each intent is represented at high, medium, and low emphasis. Inline composes icon and label
-        as one centered group, while Edge keeps the label independently centered. Icon-only buttons
-        can also compose compact control groups such as an editing toolbar.
-      </Text>
+      {showDescriptions ? (
+        <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
+          Each intent is represented at high, medium, and low emphasis. Inline composes icon and
+          label as one centered group, while Edge keeps the label independently centered. Icon-only
+          buttons can also compose compact control groups such as an editing toolbar.
+        </Text>
+      ) : null}
       <div className={`${styles.buttonExampleGrid} k-root`}>
         {EXAMPLES.map(({ icon, emphasis, iconLayout, iconPlacement, intent, label }) => (
           <KButton

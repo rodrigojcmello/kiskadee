@@ -1,5 +1,31 @@
 $height: 64px;
 
+.pageHeader {
+  display: grid;
+  gap: 8px;
+  margin-block-end: 40px;
+
+  > h2,
+  > p {
+    margin: 0;
+  }
+}
+
+.pageDescription,
+.intentsDescription {
+  color: currentColor;
+  max-inline-size: 72ch;
+  opacity: 0.72;
+}
+
+.buttonExamples {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
 .interaction-state {
   width: 100%;
 
@@ -387,7 +413,7 @@ $height: 64px;
   align-items: center;
   display: grid;
   column-gap: 16px;
-  row-gap: 8px;
+  row-gap: 12px;
   width: 100%;
   height: calc($height * 3);
 
@@ -402,12 +428,71 @@ $height: 64px;
 .simplified-states {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   width: 100%;
 
   :global(.k-btn) {
     width: 100%;
   }
+}
+
+.intentsSection {
+  display: grid;
+  gap: 32px;
+  margin: 40px 0 48px;
+  width: 100%;
+}
+
+.intentsHeader {
+  display: grid;
+  gap: 10px;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.intentsHeadingRow {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+
+  > h3 {
+    margin: 0;
+  }
+}
+
+.intentsInlineControls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-inline-start: auto;
+}
+
+.intentsInlineControl {
+  --switch-control-width: auto;
+
+  border-radius: 999px;
+  font-size: 0.78rem;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 8px 6px 12px;
+}
+
+.intentsGrid {
+  display: grid;
+  gap: 20px;
+}
+
+.intentsGridSimplified {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.intentsGridDetailed {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .stateButtonGroup {
@@ -551,18 +636,29 @@ $height: 64px;
 }
 
 .contextComparison {
-  margin: 24px 0 32px;
+  display: grid;
+  gap: 32px;
+  margin: 0 0 40px;
   width: 100%;
+}
 
-  > h3 {
-    margin-bottom: 4px;
+.contextComparisonHeader {
+  display: grid;
+  gap: 4px;
+
+  > h3,
+  > p {
+    margin: 0;
   }
 }
 
 .contextComparisonDescription {
   color: currentColor;
-  margin: 0 0 16px;
   opacity: 0.72;
+}
+
+.contextComparisonWithoutDescription {
+  gap: 24px;
 }
 
 .contextComparisonGrid {
@@ -580,21 +676,19 @@ $height: 64px;
 }
 
 .contextSurface {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
+  min-width: 0;
+}
+
+.contextSurfaceGrid {
   display: grid;
-  gap: 12px;
+  gap: 16px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  min-height: 120px;
-  padding: 20px;
+  padding: 8px;
+  width: 100%;
 
   :global(.k-btn) {
     width: 100%;
   }
-}
-
-.onVividContextSurface {
-  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .contextUnavailable {
@@ -614,11 +708,31 @@ $height: 64px;
 }
 
 .state-section {
+  min-width: 0;
   width: 100%;
 }
 
+.state-content {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+  padding: 8px;
+  width: 100%;
+}
+
+.state-header {
+  display: grid;
+  gap: 6px;
+}
+
 .state-title {
-  margin: 0 0 12px;
+  margin: 0;
+}
+
+.state-description {
+  color: currentColor;
+  margin: 0;
+  opacity: 0.62;
 }
 
 .section-note {
@@ -629,23 +743,9 @@ $height: 64px;
 }
 
 .emphasis-title {
-  align-items: center;
-  display: flex;
-  margin: 16px 0;
-  gap: 12px;
-  color: rgba(0, 0, 0, 0.16)
-}
-
-.emphasis-divider {
-  flex: 1;
-  height: 1px;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.section-divider {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  margin: 16px 0 24px;
-  width: 100%;
+  color: currentColor;
+  margin: 0 0 12px;
+  opacity: 0.62;
 }
 
 .darkSurface {
@@ -664,17 +764,6 @@ $height: 64px;
     color: rgba(255, 255, 255, 0.64);
   }
 
-  .emphasis-title {
-    color: rgba(255, 255, 255, 0.32);
-  }
-
-  .emphasis-divider {
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  .section-divider {
-    border-bottom-color: rgba(255, 255, 255, 0.16);
-  }
 }
 
 @media (min-width: 768px) {
@@ -689,6 +778,14 @@ $height: 64px;
 }
 
 @media (max-width: 720px) {
+  .pageHeader {
+    margin-block-end: 32px;
+  }
+
+  .intentsSection {
+    margin-block: 32px 40px;
+  }
+
   .buttonExampleGrid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -707,6 +804,12 @@ $height: 64px;
   }
 
   .iconTreatmentGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1180px) {
+  .intentsGridSimplified {
     grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -1,8 +1,18 @@
 .toolbarLayout {
-  display: flex;
+  display: grid;
   align-items: flex-start;
-  justify-content: flex-start;
   gap: 16px;
+  grid-template-columns: minmax(0, 340px) minmax(120px, 180px);
+  inline-size: min(100%, 536px);
+  min-width: 0;
+}
+
+.toolbarSegment {
+  min-width: 0;
+}
+
+.toolbarSelect {
+  display: block;
   inline-size: 100%;
   min-width: 0;
 }
@@ -15,4 +25,11 @@
 .panelSwatches {
   --swatch-group-inline-size: 100%;
   --swatch-group-justify-content: space-between;
+}
+
+@media (max-width: 480px) {
+  .toolbarLayout {
+    gap: 8px;
+    grid-template-columns: minmax(0, 1.8fr) minmax(96px, 1fr);
+  }
 }
