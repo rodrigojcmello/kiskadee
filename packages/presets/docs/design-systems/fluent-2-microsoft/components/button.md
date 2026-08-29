@@ -35,11 +35,17 @@ This file records source evidence and color decisions for the Button currently a
   - [Color tokens](https://fluent2.microsoft.design/color-tokens/)
   - [Fluent React Button styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts)
   - [Fluent React SplitButton styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/SplitButton/useSplitButtonStyles.styles.ts)
+  - [WinUI Button theme resources](https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Button_themeresources.xaml)
+  - [WinUI common theme resources](https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Common_themeresources_any.xaml)
 - Product observation:
   - a Microsoft sign-in flow observed on 2026-07-31 kept its Primary Button recognizable while
     making the accepted action translucent during asynchronous processing;
   - this observation motivates Kiskadee's pending representation, but is not treated as evidence
     that Fluent publishes a documented `pending` Button API or token.
+  - Windows 11 Quick Settings observed on 2026-08-29 uses a translucent light control fill plus a
+    lighter perimeter over a vivid blue surface. This calibrates a candidate physical Light
+    `onVivid` control treatment; it does not identify a Kiskadee emphasis or intent, nor establish
+    a Fluent Web Button variant.
 - Preset-wide tonal evidence:
   [`../colors/fluent-tonal-scale-evidence.md`](../colors/fluent-tonal-scale-evidence.md)
 - Exact primitive de-para:
@@ -54,11 +60,18 @@ This file records source evidence and color decisions for the Button currently a
 | Button sizes | `11045:3920` | Small, Medium, Large | Official adapted |
 | Split Button structure | Official Button usage and React source | Adjacent actions, connected corners, and internal stroke | Official adapted |
 | Microsoft sign-in pending treatment | Product observation, 2026-07-31 | Translucent Primary action while processing | Kiskadee extension; motivational evidence only |
+| Windows 11 Quick Settings control tiles | Product observation plus WinUI theme resources, 2026-08-29 | Light translucent fill and elevation-style stroke over vivid blue | Kiskadee extension calibrated from Microsoft product and WinUI token grammar |
 | Surfaced icon region | No equivalent Fluent Button API was found | Light icon canvas inside a vivid Button | Kiskadee extension |
 | On-vivid Button appearance | Figma component set and official Button usage | No inverted/on-brand appearance exists | Kiskadee extension |
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 | Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
 | Passive Badge relation | No equivalent Fluent Button slot was used as source evidence | Inline label relation and external logical-corner overlays | Kiskadee extension |
+
+## Local Evidence
+
+- [`windows-11-quick-settings-on-vivid-2026-08-29.png`](../evidence/button/windows-11-quick-settings-on-vivid-2026-08-29.png)
+
+![Windows 11 Quick Settings controls over a vivid blue surface](../evidence/button/windows-11-quick-settings-on-vivid-2026-08-29.png)
 
 ## Official Size Contract
 
@@ -202,14 +215,14 @@ of introducing a new literal source color:
 | Slot | Pending mapping |
 | --- | --- |
 | `e1` filled surface | Existing Rest alpha multiplied by 60% |
-| `e1` Low outline | Existing Rest alpha multiplied by 60% |
+| `e1` authored border | Existing Rest alpha multiplied by 60% |
 | `e2` label | Existing Rest alpha multiplied by 70% |
 | `e3` icon | Inherits Rest with no pending delta |
 | Optional Button shadow | Collapses to zero |
 | `Button.Progress` | Keeps the independent Progress palette |
 
-Low and Lowest surfaces are already transparent at Rest, so they intentionally omit a redundant
-pending surface value. Medium and High emit the reduced surface value. The same multiplicative
+Low and Lowest surfaces are transparent at Rest, so they omit a redundant pending surface value.
+Medium and High emit the reduced surface value. The same multiplicative
 rule applies to `onSubtle` and `onVivid`; for example, an already translucent on-vivid Medium
 surface becomes quieter rather than being replaced by a more opaque absolute alpha.
 
@@ -305,33 +318,53 @@ light.
 ### On-vivid Medium, Low, And Lowest
 
 The remaining on-vivid emphases extend Fluent's inverted/on-brand token grammar while preserving
-the selected Button intent. Every emphasis now follows the same physically darker interaction
-direction from Rest through Hover to Pressed/Selected. Light Medium deliberately uses one shared
-White overlay across all intents; its identity comes from the role-aware foreground instead of a
-second colored surface.
-Low keeps one shared White border across intents, preserving a stable outline against the strong
-surrounding surface. In Light, that border uses 30% opacity so it does not compete with the Button
-content; Dark and Darker retain opaque White.
+the selected Button intent. Light Medium and Low use shared neutral White surfaces across all
+intents; their identity comes from the role-aware foreground instead of a second colored surface.
+
+The adopted Kiskadee Light mapping restores Medium's earlier `14%/10%/7%`
+Rest/Hover/Pressed fill sequence and retains a translucent border. Low keeps the border language
+from the Windows-informed experiment but removes its Rest fill, restoring an outline-only identity.
+The 2026-08-29 Windows 11 Quick Settings observation calibrates the physical control grammar, while
+the stronger Medium fill and transparent Low Rest are Kiskadee hierarchy decisions.
+
+WinUI's `ControlElevationBorderBrush` is a vertical gradient assembled from the default and
+secondary control strokes. Button's current schema exposes one solid border color, so Kiskadee
+adapts the elevation edge to a White stroke. Medium uses `10%` at Rest/Hover; Low restores its
+original `30%` Rest/Hover outline so the transparent control remains legible against the vivid
+surface. Both currently use `7%` at Pressed/Selected/Disabled. This is a Kiskadee adaptation, not a
+claim that Fluent Web publishes either Button appearance. Dark and Darker retain their previous
+role-aware Medium and opaque outlined Low.
 
 | Light emphasis | Rest | Hover | Pressed | Selected | Foreground | Border |
 | --- | --- | --- | --- | --- | --- | --- |
-| Medium | White 14% | White 10% | White 7% | same as Pressed | intent subtle +4 | Transparent |
-| Low | Transparent | Black 10% | Black 30% | same as Pressed | intent subtle +4 | White 30% |
+| Medium | White 14% | White 10% | White 7% | same as Pressed | intent subtle +4 | White 10% Rest/Hover; 7% Pressed/Selected |
+| Low | Transparent | White 8% | White 3% | same as Pressed | intent subtle +4 | White 30% Rest/Hover; 7% Pressed/Selected |
 | Lowest | Transparent | Black 10% | Black 30% | same as Pressed | intent subtle +4 | Transparent |
 
-Focus has no palette delta and inherits Rest while the global Button focus ring remains the
-accessibility affordance. Selected stays explicit. In Light, High, Medium, and Low disabled states
-use White at 4% for the background so they remain quieter than Medium Pressed at 7%. Dark and
-Darker retain White at 10%. All three themes use White at 40% for disabled content, with no visible
-border. Lowest remains transparent with White at 40% content. All percentages resolve through
-`button.neutral` and the preset color helper before publication; no platform performs alpha or
-contrast calculations.
+The Rest hierarchy is now categorical: Medium is filled and bordered, Low is transparent and
+bordered, and Lowest has neither. Low's transferred Hover, Pressed, Selected, and Disabled states
+remain provisional and are not additional WinUI source claims.
 
-Light Medium resolves its shared surface from `button.neutral` L0, with fixed `14%/10%/7%`
-Rest/Hover/Pressed alpha. Selected intentionally equals Pressed. The foreground reuses the exact
-`subtle +4` reference already consumed by Low and Lowest, so Primary resolves Blue, Neutral
-resolves Black/Grey, Destructive resolves Cranberry, and Positive resolves Green. The background
-no longer participates in intent differentiation.
+Focus has no palette delta and inherits Rest while the global Button focus ring remains the
+accessibility affordance. Medium Hover omits a border delta and inherits its `10%` Rest stroke.
+Low Hover does the same. Selected stays explicit for both fill and stroke because it is persistent
+and intentionally reuses Pressed. Pending retains 60% of the Rest fill and border alpha. In Light,
+High, Medium, and Low disabled states use White at 4% for the background; Medium and Low retain a
+White `7%` border in the current mapping.
+
+Dark and Darker retain White at 10% for disabled backgrounds. All three themes use White at 40%
+for disabled content. Lowest remains transparent with White at 40% content. All percentages
+resolve through `button.neutral` and the preset color helper before publication; no platform
+performs alpha or contrast calculations.
+
+Light Medium resolves its fill and stroke from `button.neutral` L0, using
+`14%/10%/7%` Rest/Hover/Pressed fill. Low resolves a transparent Rest plus `8%/3%` White
+Hover/Pressed fills from the same neutral family. Medium uses a `10%` Rest/Hover stroke, while Low
+uses `30%`; both currently use `7%` at Pressed/Selected/Disabled. Selected intentionally equals
+Pressed. Their foreground reuses
+the exact `subtle +4` reference also consumed by Lowest, so Primary resolves Blue, Neutral resolves
+Black/Grey, Destructive resolves Cranberry, and Positive resolves Green. Neither fill nor border
+participates in intent differentiation.
 
 Dark and Darker retain the role-aware Medium candidate while using the same darker state
 progression: `subtle +8/+6/+4` sources are alpha-calibrated against the canonical Primary vivid
@@ -750,22 +783,22 @@ changing the asset scales.
 - `BUTTON_DEFAULT_TONAL_RECIPE` is the source of Default tonal positions and explicit High
   foreground caps
   for every Button intent.
-- `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. Light Medium uses shared neutral L0
-  White overlays and differentiates intents only through `subtle +4` foregrounds. Medium reuses
-  the same three approved surfaces in descending physical-lightness order, matching the darker
-  state progression already used by High, Low, and Lowest. Dark and Darker retain the role-aware
-  Medium surface calibration. Low/Lowest content uses `subtle +4`, and the Low border resolves
-  universally from neutral L0 White, at 30% in Light and 100% in Dark/Darker. The context-relative
-  interaction overlays and disabled treatment also remain neutral.
+- `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. In Light, Medium uses the restored
+  `14%/10%/7%` White fill sequence while Low keeps a transparent Rest and the provisional `8%/3%`
+  Hover/Pressed fills. Medium uses a neutral L0 White stroke at `10%` Rest/Hover, while Low restores
+  its `30%` Rest/Hover stroke; both use `7%` at Pressed/Selected/Disabled and differentiate intents
+  only through `subtle +4` foregrounds. Dark
+  and Darker retain the role-aware Medium surface calibration and opaque outlined Low. Lowest keeps
+  its prior transparent surface and context-relative interaction overlays.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
   `button.destructive`, or `button.positive`; it does not calculate foreground contrast.
 - `createOnVividButtonIntent()` resolves the same four Layer 3 roles through the Light physical
   track and official Fluent inverted-token rhythm; it does not inspect the surrounding surface.
 - Every Button `selected.rest` remains explicit but resolves from the corresponding Pressed value
   across all themes, contexts, intents, and emphases.
-- Pending is a Kiskadee extension derived from each resolved Rest color. Filled surfaces and the
-  Low outline retain 60% of their Rest alpha, labels retain 70%, the icon omits pending so spinners
-  remain at Rest strength, and the optional shadow resolves to zero.
+- Pending is a Kiskadee extension derived from each resolved Rest color. Authored fills and borders
+  retain 60% of their Rest alpha, labels retain 70%, the icon omits pending so spinners remain at
+  Rest strength, and the optional shadow resolves to zero.
 - `e4` is the optional Kiskadee icon-region surface. It uses `neutral.medium.rest` with the physical
   Light L0 background and L85 foreground in every theme and surface context. Its outer corners
   derive from the inherited `e1` radius and border width.
@@ -788,10 +821,11 @@ changing the asset scales.
 - Filled `e2.textColor.*.*.disabled` foregrounds use neutral L20 at 82% in Light and solid D35 in
   Dark/Darker. Lowest keeps the official solid L16/D35 mapping because it has no disabled fill.
 - Every intent exposes High, Medium, Low, and Lowest in Light, Dark, and Darker.
-- `e1.borderColor.*.low` is the only visible border while enabled. In `onSubtle`, its emitted alpha
-  is resolved from the shared Delta E OK target and the canonical Neutral surface. In `onVivid`,
-  every intent uses neutral L0 White at 30% in Light and 100% in Dark/Darker. Every Low disabled
-  border and all Lowest borders are transparent.
+- `e1.borderColor.*.low` remains the outlined Low treatment in `onSubtle`, where its emitted alpha
+  is resolved from the shared Delta E OK target and the canonical Neutral surface. In Light
+  `onVivid`, Medium uses the `10%/7%` control stroke while Low uses `30%` at Rest/Hover and `7%` at
+  Pressed/Selected/Disabled. Dark/Darker `onVivid` Low remains opaque White with a
+  transparent Disabled border. All Lowest borders remain transparent.
 - Official Fluent Button surfaces omit `focus` when Focus is visually identical to Rest. The base
   Rest class remains active and the global focus ring provides the focus affordance without
   generating a duplicate surface rule.
@@ -826,8 +860,18 @@ changing the asset scales.
   Fluent Primary Button appearance.
 - Destructive and Positive use official Fluent semantic color families, but all four Button
   emphasis appearances are Kiskadee extensions rather than official Fluent variants.
+- The Light `onVivid` Medium/Low stroke language is a Kiskadee extension calibrated from Windows 11
+  Quick Settings and official WinUI control resources. Medium's stronger fill, Low's transparent
+  Rest, and Low's stronger `30%` outline are Kiskadee semantic-hierarchy decisions. The product
+  observation defines physical surface grammar only; it does not assign an emphasis. All intents
+  receive the mapping through the shared Button formula.
 
 ## Open Gaps
+
+- The Windows 11 Quick Settings observation calibrates only a physically Light translucent control
+  treatment. The transferred Low interaction and terminal states require separate review; the
+  adopted Rest hierarchy does not approve them automatically. Dark and Darker `onVivid` retain
+  their existing role-aware Medium and outlined Low candidates.
 
 - Revisit whether Outline, Subtle, and Transparent need separate structural capabilities instead
   of sharing `neutral.lowest`.
