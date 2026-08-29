@@ -250,7 +250,11 @@ export function createFluent2MicrosoftButtonSchema({
               (['primary', 'neutral', 'destructive', 'positive'] as const).map((intent) => [
                 intent,
                 {
-                  high: { rest: 'onVivid', pending: 'onVivid', disabled: 'onSubtle' },
+                  high: {
+                    rest: input === 'onVivid' ? 'onSubtle' : 'onVivid',
+                    pending: input === 'onVivid' ? 'onSubtle' : 'onVivid',
+                    disabled: 'onSubtle'
+                  },
                   medium: { rest: 'onVivid', pending: 'onVivid', disabled: 'onSubtle' },
                   low: { rest: 'inherit' },
                   lowest: { rest: 'inherit' }

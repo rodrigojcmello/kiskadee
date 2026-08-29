@@ -285,8 +285,11 @@ theme-relative offset. Badge Low instead uses the exact `primitive.black.v1` abs
 8% alpha for every `onSubtle` intent and theme, allowing the surrounding surface to determine the
 composited lightness without introducing an intent tint. Medium remains at `subtle +4` Light and
 `subtle +14` Dark/Darker. The independent `onVivid` High hierarchy uses each intent's Light-track
-`subtle +7`, one position lighter than the preceding `subtle +8` adaptation, while `lowest` remains
-un-authored by the Fluent preset.
+`subtle +7` for the textual `e1` surface. The shared Dot/contained-Mark `e5` indicator surface uses
+`subtle +8`, one public-grid position darker, retaining compact intent prominence without creating
+a separate anatomy or primitive. On `onVivid`, Medium uses each intent's Light-track `subtle +1`;
+Low uses the exact `primitive.black.v1` absolute-black cap at 12% alpha and carries identity through
+an intent `subtle +2` foreground. `lowest` remains un-authored by the Fluent preset.
 
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent chromatic families at Layer 1. Layer 2 maps Blue to `primary`,

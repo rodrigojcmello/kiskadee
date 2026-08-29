@@ -7,8 +7,18 @@ import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { Badge } from '../Badge/Badge.tsx';
 import { Button } from './Button.tsx';
+
+const badgeRelationClasses = {
+  d: 'button-badge-relation',
+  s: {
+    'sm:1': 'button-badge-relation-small',
+    'md:1': 'button-badge-relation-medium',
+    'lg:1': 'button-badge-relation-large'
+  }
+};
 
 const context: KiskadeeContextValue = {
   classesMap: {
@@ -34,7 +44,7 @@ const surfacedContext: KiskadeeContextValue = {
         }
       }
     },
-    button: { e1: {}, e2: {}, e3: {} }
+    button: { e1: {}, e2: {}, e3: {}, e7: badgeRelationClasses }
   },
   global: {
     components: {
@@ -45,6 +55,11 @@ const surfacedContext: KiskadeeContextValue = {
               onSubtle: {
                 neutral: {
                   medium: { rest: 'onVivid', disabled: 'onSubtle' }
+                }
+              },
+              onVivid: {
+                neutral: {
+                  medium: { rest: 'onSubtle', disabled: 'onVivid' }
                 }
               }
             }
@@ -63,14 +78,7 @@ const inlineContext: KiskadeeContextValue = {
       e1: {},
       e2: {},
       e3: {},
-      e7: {
-        d: 'button-badge-relation',
-        s: {
-          'sm:1': 'button-badge-relation-small',
-          'md:1': 'button-badge-relation-medium',
-          'lg:1': 'button-badge-relation-large'
-        }
-      }
+      e7: badgeRelationClasses
     }
   }
 };
@@ -203,25 +211,59 @@ describe('Button.Badge', () => {
     expect(relation?.className).toContain('button-badge-relation-large');
   });
 
-  it('publishes the authored Button surface to Badge and honors the disabled override', () => {
+  it('uses the consumed surface for overlays and the produced surface for inline Badges', () => {
     const result = render(
       <KiskadeeContext.Provider value={surfacedContext}>
         <Button>
           <Button.Label>Enabled</Button.Label>
           <Button.Badge>
-            <Badge data-testid="enabled-badge">3</Badge>
+            <Badge data-testid="overlay-badge">3</Badge>
+          </Button.Badge>
+          <Button.Badge placement="inline-end">
+            <Badge data-testid="inline-badge">4</Badge>
           </Button.Badge>
         </Button>
         <Button disabled>
           <Button.Label>Disabled</Button.Label>
+          <Button.Badge placement="inline-end">
+            <Badge data-testid="disabled-inline-badge">5</Badge>
+          </Button.Badge>
+        </Button>
+        <Button>
+          <Button.Label>Explicit</Button.Label>
           <Button.Badge>
-            <Badge data-testid="disabled-badge">4</Badge>
+            <Badge data-testid="explicit-overlay-badge" surfaceContext="onVivid">
+              6
+            </Badge>
           </Button.Badge>
         </Button>
       </KiskadeeContext.Provider>
     );
 
-    expect(result.getByTestId('enabled-badge').className).toContain('badge-on-vivid');
-    expect(result.getByTestId('disabled-badge').className).toContain('badge-on-subtle');
+    expect(result.getByTestId('overlay-badge').className).toContain('badge-on-subtle');
+    expect(result.getByTestId('inline-badge').className).toContain('badge-on-vivid');
+    expect(result.getByTestId('disabled-inline-badge').className).toContain('badge-on-subtle');
+    expect(result.getByTestId('explicit-overlay-badge').className).toContain('badge-on-vivid');
+  });
+
+  it('keeps an overlay on the consumed vivid surface instead of hardcoding onSubtle', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={surfacedContext}>
+        <SurfaceContextProvider value="onVivid">
+          <Button>
+            <Button.Label>Vivid host</Button.Label>
+            <Button.Badge>
+              <Badge data-testid="vivid-overlay-badge">3</Badge>
+            </Button.Badge>
+            <Button.Badge placement="inline-end">
+              <Badge data-testid="subtle-inline-badge">4</Badge>
+            </Button.Badge>
+          </Button>
+        </SurfaceContextProvider>
+      </KiskadeeContext.Provider>
+    );
+
+    expect(result.getByTestId('vivid-overlay-badge').className).toContain('badge-on-vivid');
+    expect(result.getByTestId('subtle-inline-badge').className).toContain('badge-on-subtle');
   });
 });

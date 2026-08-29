@@ -219,12 +219,42 @@ describe('Fluent 2 Badge', () => {
   it('authors a contrast-safe intent hierarchy on the canonical vivid surface', () => {
     const badge = requireBadge();
     const expected = {
-      neutral: { high: '#c6cbd7', medium: '#d6dbe7', low: '#e0e5f1', foreground: '#434650' },
-      primary: { high: '#a4cfff', medium: '#c1deff', low: '#e0e5f1', foreground: '#0d477e' },
-      novelty: { high: '#faaded', medium: '#f6ccee', low: '#e0e5f1', foreground: '#6b2762' },
-      positive: { high: '#a1dd9c', medium: '#c3e7c0', low: '#e0e5f1', foreground: '#155513' },
-      warning: { high: '#ffb89b', medium: '#ffcfbc', low: '#e0e5f1', foreground: '#6f3217' },
-      attention: { high: '#ffb5ad', medium: '#ffcdc8', low: '#e0e5f1', foreground: '#811819' }
+      neutral: {
+        high: { text: '#c6cbd7', indicator: '#bec2ce' },
+        medium: '#e4e9f5',
+        low: '#0000001f',
+        foreground: { high: '#434650', medium: '#434650', low: '#e0e5f1' }
+      },
+      primary: {
+        high: { text: '#a4cfff', indicator: '#94c7ff' },
+        medium: '#daebff',
+        low: '#0000001f',
+        foreground: { high: '#0d477e', medium: '#0d477e', low: '#d3e7ff' }
+      },
+      novelty: {
+        high: { text: '#faaded', indicator: '#fe99ee' },
+        medium: '#f9e0f4',
+        low: '#0000001f',
+        foreground: { high: '#6b2762', medium: '#6b2762', low: '#f8daf2' }
+      },
+      positive: {
+        high: { text: '#a1dd9c', indicator: '#91d78c' },
+        medium: '#dbf0d9',
+        low: '#0000001f',
+        foreground: { high: '#155513', medium: '#155513', low: '#d4edd2' }
+      },
+      warning: {
+        high: { text: '#ffb89b', indicator: '#ffaa89' },
+        medium: '#ffe2d7',
+        low: '#0000001f',
+        foreground: { high: '#6f3217', medium: '#6f3217', low: '#ffdccf' }
+      },
+      attention: {
+        high: { text: '#ffb5ad', indicator: '#ffa89f' },
+        medium: '#ffe1de',
+        low: '#0000001f',
+        foreground: { high: '#811819', medium: '#811819', low: '#ffdbd7' }
+      }
     } as const;
 
     for (const theme of ['light', 'dark', 'darker'] as const) {
@@ -240,15 +270,30 @@ describe('Fluent 2 Badge', () => {
 
       for (const intent of BADGE_INTENTS) {
         for (const emphasis of ['high', 'medium', 'low'] as const) {
-          const surface = expected[intent][emphasis];
-          const foreground = expected[intent].foreground;
+          const surface =
+            emphasis === 'high' ? expected[intent].high.text : expected[intent][emphasis];
+          const indicatorSurface =
+            emphasis === 'high' ? expected[intent].high.indicator : expected[intent][emphasis];
+          const foreground = expected[intent].foreground[emphasis];
+          const renderedSurface =
+            surface.length === 9 ? compositeHex(surface, canonicalSurface!) : surface;
+          const renderedIndicatorSurface =
+            indicatorSurface.length === 9
+              ? compositeHex(indicatorSurface, canonicalSurface!)
+              : indicatorSurface;
 
           expect(textSurface?.boxColor?.[intent]?.[emphasis]?.rest).toBe(surface);
-          expect(dotSurface?.boxColor?.[intent]?.[emphasis]?.rest).toBe(surface);
+          expect(dotSurface?.boxColor?.[intent]?.[emphasis]?.rest).toBe(indicatorSurface);
           expect(textContent?.textColor?.[intent]?.[emphasis]?.rest).toBe(foreground);
           expect(markContent?.textColor?.[intent]?.[emphasis]?.rest).toBe(foreground);
-          expect(contrastRatio(surface, canonicalSurface!)).toBeGreaterThanOrEqual(3);
-          expect(contrastRatio(foreground, surface)).toBeGreaterThanOrEqual(4.5);
+          if (emphasis !== 'low') {
+            expect(contrastRatio(renderedSurface, canonicalSurface!)).toBeGreaterThanOrEqual(3);
+            expect(
+              contrastRatio(renderedIndicatorSurface, canonicalSurface!)
+            ).toBeGreaterThanOrEqual(3);
+          }
+          expect(contrastRatio(foreground, renderedSurface)).toBeGreaterThanOrEqual(4.5);
+          expect(contrastRatio(foreground, renderedIndicatorSurface)).toBeGreaterThanOrEqual(4.5);
         }
       }
     }

@@ -186,9 +186,10 @@ A durable architecture decision should record:
 - Badge is an independent Rest-only component because its metadata remains meaningful outside any
   one host. `Button.Badge` is a compound relation: Button `e7` owns an inline relation gap, while
   Structural CSS owns logical-corner overlays. Badge preserves its identity and does not inherit
-  Button interaction states in either composition. An optional shadow is a preset-authored static
-  Effect available only to an unringed `Badge.Dot`, disabled by default; it does not make Badge
-  interactive.
+  Button interaction states in either composition. Inline placements consume Button's produced
+  content surface; external placements consume Button's surrounding input surface, with an explicit
+  Badge override retaining precedence. An optional shadow is a preset-authored static Effect
+  available only to an unringed `Badge.Dot`, disabled by default; it does not make Badge interactive.
 - Chip composes a primary content or selection control with an optional sibling Remove control.
   headless-react owns the non-nested interaction contract; p-react owns the Web structure; a nested
   Badge remains an independent passive component.

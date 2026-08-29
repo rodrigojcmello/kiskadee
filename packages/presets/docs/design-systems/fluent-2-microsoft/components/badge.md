@@ -40,7 +40,7 @@ this preset:
 | Filled | `high` | Official adapted |
 | Tint | `medium` | Official adapted and Kiskadee text default |
 | Outline | — | Deferred; no outline Badge is emitted |
-| — | `low` | Kiskadee extension using a quieter Neutral surface and intent foreground |
+| — | `low` | Kiskadee extension using a quiet black overlay and intent foreground |
 | Ghost | `lowest` | Deferred; the Core vocabulary remains valid but Fluent authors no value |
 
 The upstream React contract exposes Brand, Danger, Important, Informative, Severe, Subtle, Success,
@@ -163,38 +163,44 @@ in every theme:
 
 | Emphasis | Surface recipe | Minimum contrast against the canonical canvas |
 | --- | --- | --- |
-| `high` | each intent `subtle +7` | 3.52:1 Light; 4.04:1 Dark/Darker |
-| `medium` | each intent `subtle +4` | 4.25:1 Light; 4.88:1 Dark/Darker |
-| `low` | Neutral `subtle +2` | 4.78:1 Light; 5.49:1 Dark/Darker |
+| textual `high` (`e1`) | each intent `subtle +7` | 3.52:1 Light; 4.04:1 Dark/Darker |
+| indicator `high` (`e5`) | each intent `subtle +8` | 3.16:1 Light; 3.63:1 Dark/Darker |
+| `medium` | each intent `subtle +1` | 4.88:1 Light; 5.60:1 Dark/Darker |
+| `low` | exact absolute black at 12% alpha | 1.20:1 Light; 1.19:1 Dark/Darker, intentionally discreet |
 
-Text and contained-Mark foregrounds use each intent's Light L65 tone across the three emphases.
-The minimum foreground-to-surface contrast is 5.70:1 for High, 6.63:1 for Medium, and 7.11:1 for
-Low. Dot therefore retains its semantic family without requiring a ring, while text and contained
-Marks remain legible. Full-bleed Mark artwork remains consumer-owned and keeps its existing active
-theme `vivid` color channel; the optional separation backing remains the explicit treatment for
-transparent negative space.
+High and Medium text and contained-Mark foregrounds use each intent's Light L65 tone. The darker
+indicator High keeps at least 5.26:1 between its contained glyph and surface. Low uses the
+same intent's Light-track `subtle +2` as a light foreground over the translucent-black surface. On
+the canonical canvas, Low composites to `#00589e` in Light and `#005090` in Dark/Darker. The minimum
+foreground-to-surface contrast is 5.70:1 for High, 7.47:1 for Medium, and 5.64:1 Light / 6.39:1
+Dark/Darker for Low. Dot therefore retains its semantic family without requiring a ring, while text
+and contained Marks remain legible. Full-bleed Mark artwork remains consumer-owned and keeps its
+existing active-theme `vivid` color channel; the optional separation backing remains the explicit
+treatment for transparent negative space.
 
-| Intent | Low foreground Light | Low foreground Dark/Darker | `onVivid` High | `onVivid` Medium | `onVivid` foreground |
-| --- | --- | --- | --- | --- | --- |
-| Neutral | `#21242d` | `#d2d6e3` | `#c6cbd7` | `#d6dbe7` | `#434650` |
-| Primary | `#0064b4` | `#79b9ff` | `#a4cfff` | `#c1deff` | `#0d477e` |
-| Novelty | `#a82d9a` | `#eb94dd` | `#faaded` | `#f6ccee` | `#6b2762` |
-| Positive | `#09760a` | `#7ec879` | `#a1dd9c` | `#c3e7c0` | `#155513` |
-| Warning | `#ae450c` | `#f49d79` | `#ffb89b` | `#ffcfbc` | `#6f3217` |
-| Attention | `#c50f1f` | `#ff958b` | `#ffb5ad` | `#ffcdc8` | `#811819` |
+| Intent | Low foreground Light | Low foreground Dark/Darker | `onVivid` textual High | `onVivid` indicator High | `onVivid` Medium | `onVivid` High/Medium foreground | `onVivid` Low foreground |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Neutral | `#21242d` | `#d2d6e3` | `#c6cbd7` | `#bec2ce` | `#e4e9f5` | `#434650` | `#e0e5f1` |
+| Primary | `#0064b4` | `#79b9ff` | `#a4cfff` | `#94c7ff` | `#daebff` | `#0d477e` | `#d3e7ff` |
+| Novelty | `#a82d9a` | `#eb94dd` | `#faaded` | `#fe99ee` | `#f9e0f4` | `#6b2762` | `#f8daf2` |
+| Positive | `#09760a` | `#7ec879` | `#a1dd9c` | `#91d78c` | `#dbf0d9` | `#155513` | `#d4edd2` |
+| Warning | `#ae450c` | `#f49d79` | `#ffb89b` | `#ffaa89` | `#ffe2d7` | `#6f3217` | `#ffdccf` |
+| Attention | `#c50f1f` | `#ff958b` | `#ffb5ad` | `#ffa89f` | `#ffe1de` | `#811819` | `#ffdbd7` |
 
 | Source concept | Source value | Lookup | Kiskadee mapping | Rationale |
 | --- | --- | --- | --- | --- |
 | Tint surface | Fluent Tint adapted to the Kiskadee tonal families | functional reference: each intent `subtle +4` Light / `subtle +14` Dark | `e1.boxColor` and `e5.boxColor`, `medium` | The recipe must follow each participating family instead of copying one raw tonal position. |
 | Quiet Low surface | Kiskadee metadata adaptation | exact `primitive.black.v1` absolute-black cap at 8% alpha | `e1.boxColor` and `e5.boxColor`, every `onSubtle` intent `low` | All intents and themes share one neutral translucent surface while their foreground retains semantic identity; no border is authored. |
 | Contrast-safe Low foreground | Kiskadee metadata adaptation | functional reference: each intent `vivid` plus the smallest documented contrast-safe offset; Dark Warning uses exact D80 from its source-backed D75 exception | `e2.textColor` and `e4.textColor`, `low` on `onSubtle` | Preserves the semantic family while maintaining at least 4.5:1 against the composited canonical Low surface. |
-| Inverse vivid-context hierarchy | Kiskadee vivid-surface adaptation | Light-track functional references: intent `subtle +7` High, intent `subtle +4` Medium, Neutral `subtle +2` Low | `e1.boxColor` and `e5.boxColor`, every `onVivid` theme | Keeps every Badge surface distinct from the canonical Primary Highest canvas without making the optional ring a legibility requirement. |
-| Vivid-context foreground | Kiskadee vivid-surface adaptation | exact Light L65 in each intent family | `e2.textColor` and `e4.textColor`, every `onVivid` emphasis and theme | Preserves intent hue and compact-text contrast across the inverse surface hierarchy. |
+| Inverse vivid-context hierarchy | Kiskadee vivid-surface adaptation | intent `subtle +7` textual High, intent `subtle +8` indicator High, intent `subtle +1` Medium, exact `primitive.black.v1` absolute-black cap at 12% alpha Low | `e1.boxColor` and `e5.boxColor`, every `onVivid` theme | Keeps Dot and contained Mark one position more prominent than text without separating their shared `e5`; Medium remains lighter, while Low gains slightly more separation from the vivid host. |
+| Vivid-context foreground | Kiskadee vivid-surface adaptation | exact Light L65 for High/Medium; intent `subtle +2` for Low | `e2.textColor` and `e4.textColor`, every `onVivid` theme | Preserves intent hue and compact-text contrast across opaque light surfaces and the translucent dark Low surface. |
 | Full-bleed negative-space separation | Transparent source artwork inspected over a light Figma stage | exact tone: Light L0 / Dark D100 | `e6.boxColor`, active only for full-bleed with `separation="ring"` | Absolute structural separation must not follow the artwork intent family or expose arbitrary host imagery. |
 | External separation ring | Kiskadee extension | exact tone: Light L0 / Dark D100 | `e6.borderColor` | Uses the same approved absolute-white family as the backing while retaining independent Schema ownership. |
 
 Badge consumes the nearest Surface Context but remains in Rest even when its host is Hover,
-Pressed, Selected, or Disabled.
+Pressed, Selected, or Disabled. `Button.Badge` keeps inline content on Button's produced surface and
+republishes Button's consumed surrounding surface for external placements; an explicit Badge
+override retains precedence.
 
 ## Optional static shadow
 

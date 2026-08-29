@@ -34,8 +34,10 @@ only separation treatment in that composition.
 
 When composed through `Button.Badge`, Button owns the relationship. Inline-start/end use the
 Schema-authored Button `e7` gap and stay adjacent to the label; the four external placements use
-logical-corner Structural CSS. Both wrappers remain pointer-transparent. Badge retains its classes,
-surface resolution, and passive semantics.
+logical-corner Structural CSS. Inline placements inherit Button's produced content surface, while
+external placements inherit the surrounding surface consumed by Button. An explicit Badge
+`surfaceContext` overrides either relation. Both wrappers remain pointer-transparent. Badge retains
+its classes and passive semantics.
 
 The public intents are `neutral`, `primary`, `novelty`, `positive`, `warning`, and `attention`.
 High surfaces resolve the preset-authored functional `vivid` reference for their own tonal family;

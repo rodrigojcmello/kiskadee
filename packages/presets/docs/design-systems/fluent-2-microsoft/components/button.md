@@ -272,6 +272,13 @@ Those aliases are source material, not evidence that Fluent ships the resulting 
 new theme, intent, or emphasis. The surrounding surface remains a consumer decision; neither the
 schema nor the React component detects its color.
 
+Button publishes the semantic surface produced for independent inline descendants without
+inspecting rendered color. High is input-sensitive: the filled High appearance on `onSubtle`
+publishes `onVivid`, while the physically white/light High appearance on `onVivid` publishes
+`onSubtle`. Pending follows the same authored output and Disabled remains `onSubtle`. This prevents
+an inline Badge from selecting light `onVivid` content colors while it is actually rendered over
+the white inverse Button surface.
+
 ### On-vivid High
 
 Primary High adapts the official inverted Brand state rhythm. Other intents replace only the color

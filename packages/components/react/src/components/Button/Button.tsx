@@ -1,5 +1,5 @@
 import './Button.structural.scss';
-import type { ButtonIconTreatment } from '@kiskadee/core';
+import type { ButtonIconTreatment, SurfaceContext } from '@kiskadee/core';
 import { Button as HeadlessButton, HeadlessProgress } from '@kiskadee/react-headless';
 import {
   createContext,
@@ -75,12 +75,13 @@ const ButtonBadge = forwardRef<HTMLSpanElement, ButtonBadgeProps>(function Butto
   { className, placement = 'block-start-inline-end', ...props },
   ref
 ) {
-  const { badgeRelationClassName, inlineBadgeAllowed } = useButtonRuntimeContext('Button.Badge');
+  const { badgeRelationClassName, inlineBadgeAllowed, overlaySurfaceContext } =
+    useButtonRuntimeContext('Button.Badge');
   const inline = isInlineBadgePlacement(placement);
 
   if (inline && (!badgeRelationClassName || !inlineBadgeAllowed)) return null;
 
-  return (
+  const relation = (
     <span
       {...props}
       ref={ref}
@@ -90,6 +91,12 @@ const ButtonBadge = forwardRef<HTMLSpanElement, ButtonBadgeProps>(function Butto
         className
       )}
     />
+  );
+
+  return inline ? (
+    relation
+  ) : (
+    <SurfaceContextProvider value={overlaySurfaceContext}>{relation}</SurfaceContextProvider>
   );
 });
 
@@ -101,6 +108,7 @@ type ButtonRuntimeContextValue = {
   progressAllowed: boolean;
   progressWarningRequired: boolean;
   inlineBadgeAllowed: boolean;
+  overlaySurfaceContext: SurfaceContext;
 };
 
 const ButtonRuntimeContext = createContext<ButtonRuntimeContextValue | null>(null);
@@ -536,6 +544,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       iconRegionClassName: baseClassNames.e4,
       iconTreatment: activeIconTreatment,
       inlineBadgeAllowed: contentSlots.hasLabel,
+      overlaySurfaceContext: common.surfaceContext,
       progressAllowed: activationFeedbackController.visualStatus === 'pending',
       progressWarningRequired: common.pending !== true && common.status !== 'pending'
     }),
@@ -548,6 +557,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       common.options.disclosureDivider,
       common.pending,
       common.status,
+      common.surfaceContext,
       contentSlots.hasDisclosure,
       contentSlots.hasLabel
     ]

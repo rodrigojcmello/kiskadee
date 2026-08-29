@@ -62,7 +62,10 @@ const LOW_FOREGROUND_VIVID_OFFSET = {
 
 const DARK_WARNING_LOW_FOREGROUND_TONE: KiskadeeTone = 80;
 const ON_VIVID_HIGH_SURFACE_OFFSET = 7;
-const ON_VIVID_LOW_SURFACE_OFFSET = 2;
+const ON_VIVID_INDICATOR_HIGH_SURFACE_OFFSET = 8;
+const ON_VIVID_MEDIUM_SURFACE_OFFSET = 1;
+const ON_VIVID_LOW_SURFACE_ALPHA = 12;
+const ON_VIVID_LOW_FOREGROUND_OFFSET = 2;
 
 export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs): BadgeComponent {
   const role = (intent: BadgeIntent): Role =>
@@ -98,11 +101,14 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
 
   const onVividHighSurface = (intent: BadgeIntent) =>
     c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_HIGH_SURFACE_OFFSET);
+  const onVividIndicatorHighSurface = (intent: BadgeIntent) =>
+    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_INDICATOR_HIGH_SURFACE_OFFSET);
   const onVividMediumSurface = (intent: BadgeIntent) =>
-    c.ref('default', 'l', role(intent), 'subtle', MEDIUM_SURFACE_OFFSET.light);
-  const onVividLowSurface = () =>
-    c.ref('default', 'l', role('neutral'), 'subtle', ON_VIVID_LOW_SURFACE_OFFSET);
+    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_MEDIUM_SURFACE_OFFSET);
+  const onVividLowSurface = (theme: ThemeName) => black(theme, ON_VIVID_LOW_SURFACE_ALPHA);
   const onVividForeground = (intent: BadgeIntent) => c('default', 'l', role(intent), 65);
+  const onVividLowForeground = (intent: BadgeIntent) =>
+    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_LOW_FOREGROUND_OFFSET);
 
   const createSurfaceIntentStates = (theme: ThemeName) =>
     Object.fromEntries(
@@ -118,14 +124,16 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
       })
     );
 
-  const createOnVividSurfaceIntentStates = () =>
+  const createOnVividSurfaceIntentStates = (theme: ThemeName, indicator = false) =>
     Object.fromEntries(
       INTENTS.map((intent) => [
         intent,
         {
-          high: { rest: onVividHighSurface(intent) },
+          high: {
+            rest: indicator ? onVividIndicatorHighSurface(intent) : onVividHighSurface(intent)
+          },
           medium: { rest: onVividMediumSurface(intent) },
-          low: { rest: onVividLowSurface() }
+          low: { rest: onVividLowSurface(theme) }
         }
       ])
     );
@@ -153,17 +161,17 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
           : {
               high: { rest: onVividForeground(intent) },
               medium: { rest: onVividForeground(intent) },
-              low: { rest: onVividForeground(intent) }
+              low: { rest: onVividLowForeground(intent) }
             }
       ])
     );
 
-  const createSurfacePalette = (theme: ThemeName) => ({
+  const createSurfacePalette = (theme: ThemeName, indicator = false) => ({
     onSubtle: {
       boxColor: createSurfaceIntentStates(theme)
     },
     onVivid: {
-      boxColor: createOnVividSurfaceIntentStates()
+      boxColor: createOnVividSurfaceIntentStates(theme, indicator)
     }
   });
 
@@ -305,7 +313,7 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
           },
           borderRadius: { pill: 999 }
         },
-        palettes: { default: themes(createSurfacePalette) }
+        palettes: { default: themes((theme) => createSurfacePalette(theme, true)) }
       },
       e6: {
         name: 'badge-separation-ring',

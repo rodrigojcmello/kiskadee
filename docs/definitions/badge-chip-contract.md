@@ -123,6 +123,11 @@ independently and documents any source-driven exception.
 - the four block/inline corner combinations are external overlays. Structural CSS owns their
   logical anchoring and displacement relative to the rendered Badge size.
 
+Surface Context follows the relation geometry without inspecting concrete colors. Inline
+placements consume the surface produced by Button for its content. External placements consume
+the same surrounding surface that Button consumed, because they render outside the Button surface.
+An explicit `surfaceContext` on the nested Badge remains the highest-precedence override.
+
 The wrapper is non-interactive, has no pointer events, and does not project Button interaction
 states onto Badge. Logical positions work in both LTR and RTL. Button establishes an unclipped
 containing block only for external overlays. Badge remains visible and in Rest when Button is
@@ -161,6 +166,8 @@ Unsupported `onVivid` palette authorship remains unsupported and must not fall b
 Only components that create a semantic descendant surface publish a Provider. Button and Chip
 publish their produced surface. Card publishes its authored content surface. Portaled Dropdown and
 BottomSheet surfaces reset descendants to `onSubtle` instead of inheriting the trigger's surface.
+An official relation may republish the host's consumed context when its descendant renders outside
+the produced content surface; `Button.Badge` does this for its four external placements.
 
 ## Project ownership
 

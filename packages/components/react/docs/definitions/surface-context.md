@@ -17,4 +17,9 @@ Button and Chip publish their authored descendant surface. Card publishes its ca
 surface. Dropdown and BottomSheet reset their portaled surfaces to `onSubtle` so trigger ancestry
 does not leak into the overlay.
 
+`Button.Badge` routes context by placement. Inline placements remain inside Button's produced
+surface. External placements republish the surface consumed by Button because their Badge renders
+outside that produced surface. An explicit `surfaceContext` on Badge still wins over either
+Provider; the relation never detects color, luminance, or DOM paint.
+
 See the cross-package [Badge and Chip contract](../../../../../docs/definitions/badge-chip-contract.md).
