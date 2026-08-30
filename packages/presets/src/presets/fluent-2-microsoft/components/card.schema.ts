@@ -75,7 +75,7 @@ const k = (tone: KiskadeeTone, alpha?: number, track?: ThemeShortcut): ColorLoca
 
 const transparent = k(0, 0);
 const onVividTransparent = k(0, 0, 'l');
-const onVividBoundary = k(0, 30, 'l');
+const onVividBoundary = k(0, 15, 'l');
 
 const transparentBorder = (selected: ColorLocator): StateRecipe => ({
   rest: transparent,

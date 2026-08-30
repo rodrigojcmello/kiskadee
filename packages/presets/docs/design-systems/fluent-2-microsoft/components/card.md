@@ -144,14 +144,14 @@ the Rest boundary to the surrounding semantic surface.
 | Consumed context | `neutral.low` Card | `primary.highest` Card |
 | --- | --- | --- |
 | `onSubtle` | Existing source-backed neutral border | Transparent border; the vivid fill provides separation |
-| `onVivid` | Transparent border; the light Card provides separation | Absolute white at 30% alpha; the two vivid surfaces need a boundary |
+| `onVivid` | Transparent border; the light Card provides separation | Absolute white at 15% alpha; the two vivid surfaces need a subtle boundary |
 
 The `onVivid` box recipes intentionally reuse the same Light, Dark, and Darker Card surfaces and
 state deltas as `onSubtle`. Context does not turn a white/base Card into a vivid Card or vice versa.
 Only the border recipe adapts:
 
-- `primary.highest` uses `primitive.black.v1` Light L0 `#ffffff` at 30% alpha, resolving to
-  `#ffffff4d` in every theme;
+- `primary.highest` uses `primitive.black.v1` Light L0 `#ffffff` at 15% alpha, resolving to
+  `#ffffff26` in every theme;
 - every other `onVivid` Rest border is the same absolute-white lookup at 0% alpha;
 - Hover, Pressed, Selected, and Disabled border deltas are intentionally un-authored in this
   extension, so the Rest boundary remains active while those states continue to be expressed by
@@ -284,8 +284,8 @@ stays available through `fixedLevels` for Showcase and static Card examples.
 - The Hover, Pressed, and Disabled sparse-state audits report no Rest-equal deltas.
 - `pnpm --filter @kiskadee/react-components build` and
   `pnpm --filter @kiskadee/showcase build` complete successfully.
-- Browser inspection on `/button` confirms the Rest matrix: neutral Low is
-  `#cdd1de` on `onSubtle` and transparent on `onVivid`; Primary Highest is transparent on
-  `onSubtle` and `rgba(255, 255, 255, 0.3)` on `onVivid`.
+- Generated Fluent CSS confirms the Rest matrix: neutral Low is `#cdd1de` on `onSubtle` and
+  transparent on `onVivid`; Primary Highest is transparent on `onSubtle` and `#ffffff26` on
+  `onVivid`.
 - Switching the Showcase to `onVivid` emits no missing-surface-context warning for Card. Desktop
   and 390px mobile checks show no horizontal overflow or framework error overlay.
