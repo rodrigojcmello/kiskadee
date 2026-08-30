@@ -78,11 +78,13 @@ function SurfaceContextComparison({
   fontName,
   onVividSupported,
   scale,
+  surfaceContext,
   textAlign
 }: {
   fontName: string;
   onVividSupported: boolean;
   scale: ElementSizeValue;
+  surfaceContext: SurfaceContext;
   textAlign: 'left' | 'center';
 }) {
   const textProfiles = useShowcaseTextProfiles();
@@ -114,17 +116,11 @@ function SurfaceContextComparison({
             className={`${s.contextSurface} k-root`}
             intent="neutral"
             emphasis="low"
-            surfaceContext="onSubtle"
+            surfaceContext={surfaceContext}
           >
             <div className={s.contextSurfaceGrid}>
               {COMPARISON_EMPHASES.map((emphasis) => (
-                <KButton
-                  key={emphasis}
-                  intent="primary"
-                  emphasis={emphasis}
-                  scale={scale}
-                  surfaceContext="onSubtle"
-                >
+                <KButton key={emphasis} intent="primary" emphasis={emphasis} scale={scale}>
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={textAlign}>
                       {emphasis}
@@ -143,18 +139,12 @@ function SurfaceContextComparison({
             className={`${s.contextSurface} k-root`}
             intent="primary"
             emphasis="highest"
-            surfaceContext="onSubtle"
+            surfaceContext={surfaceContext}
           >
             <div className={s.contextSurfaceGrid}>
               {onVividSupported ? (
                 COMPARISON_EMPHASES.map((emphasis) => (
-                  <KButton
-                    key={emphasis}
-                    intent="primary"
-                    emphasis={emphasis}
-                    scale={scale}
-                    surfaceContext="onVivid"
-                  >
+                  <KButton key={emphasis} intent="primary" emphasis={emphasis} scale={scale}>
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={textAlign}>
                         {emphasis}
@@ -298,6 +288,7 @@ export function Button() {
     .join(' ');
 
   const buttonMeta = manifest?.components?.button;
+  const cardMeta = manifest?.components?.card;
   const dropdownAvailable = Boolean(manifest?.components?.dropdown);
   const adaptiveButtonMenuAvailable = Boolean(
     manifest?.components?.dropdown && manifest?.components?.bottomSheet
@@ -308,6 +299,14 @@ export function Button() {
       presenceArtifact: global?.components?.dropdown?.effects?.presence
     });
   const onVividSupported = supportsManifestSurfaceContext(buttonMeta, segment, theme, 'onVivid');
+  const activeCardSurfaceContext = supportsManifestSurfaceContext(
+    cardMeta,
+    segment,
+    theme,
+    activeSurfaceContext
+  )
+    ? activeSurfaceContext
+    : 'onSubtle';
   const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
   );
@@ -513,6 +512,7 @@ export function Button() {
         onVividSupported={onVividSupported}
         fontName={fontName}
         scale={activeButtonScale}
+        surfaceContext={activeCardSurfaceContext}
         textAlign={alignment}
       />
       <section className={s.intentsSection} aria-labelledby="button-intents-title">
@@ -561,7 +561,7 @@ export function Button() {
             simplified={isSimplified}
             grouped={showButtonGroups}
             scale={activeButtonScale}
-            surfaceContext={activeSurfaceContext}
+            surfaceContext={activeCardSurfaceContext}
           />
 
           <ButtonStateSection
@@ -576,7 +576,7 @@ export function Button() {
             simplified={isSimplified}
             grouped={showButtonGroups}
             scale={activeButtonScale}
-            surfaceContext={activeSurfaceContext}
+            surfaceContext={activeCardSurfaceContext}
           />
 
           <ButtonStateSection
@@ -591,7 +591,7 @@ export function Button() {
             simplified={isSimplified}
             grouped={showButtonGroups}
             scale={activeButtonScale}
-            surfaceContext={activeSurfaceContext}
+            surfaceContext={activeCardSurfaceContext}
           />
 
           <ButtonStateSection
@@ -606,7 +606,7 @@ export function Button() {
             simplified={isSimplified}
             grouped={showButtonGroups}
             scale={activeButtonScale}
-            surfaceContext={activeSurfaceContext}
+            surfaceContext={activeCardSurfaceContext}
           />
         </div>
       </section>

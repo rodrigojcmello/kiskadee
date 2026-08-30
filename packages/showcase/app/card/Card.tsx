@@ -648,7 +648,7 @@ export function Card() {
                   <CardContent
                     eyebrow="Selected"
                     title="Strong selected"
-                    body="Child contrast is adjusted manually in the consumer for v1."
+                    body="Descendants inherit the surface context published by the selected Card."
                     selected
                     withActionSlot
                   />

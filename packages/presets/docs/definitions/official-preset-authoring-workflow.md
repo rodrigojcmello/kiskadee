@@ -55,16 +55,20 @@ Before documenting components on preset-owned backgrounds, define the surface vo
 Card:
 
 1. Author the required Card Rest surfaces under
-   `components.card.elements.e1.palettes[segment][theme].onSubtle.boxColor`.
-2. Declare their authored order and descendant context through
+   `components.card.elements.e1.palettes[segment][theme].onSubtle.boxColor` and author the matching
+   supported contextual branches.
+2. Author `components.card.contentSurfaceContext` for the runtime transitions a Card publishes to
+   descendants for every supported input context.
+3. Declare the recommended order and associated descendant context through
    `components.card.options.canonicalSurfaces[segment][theme]`.
-3. Include at least one entry whose `contentSurfaceContext` is `onSubtle`.
-4. Include a strong Primary entry whose `contentSurfaceContext` is `onVivid` when components will
+4. Include at least one entry whose `contentSurfaceContext` is `onSubtle`.
+5. Include a strong Primary entry whose `contentSurfaceContext` is `onVivid` when components will
    be demonstrated on a vivid Primary canvas.
 
-The Card itself uses its `onSubtle` palette to paint the surface. The
-`contentSurfaceContext` value tells descendants which palette context to select; it does not change
-the Card's own palette context.
+The canonical catalog resolves its surface swatches from the `onSubtle` Rest branch. At runtime,
+Card consumes its explicit or inherited `surfaceContext` and selects the matching Card palette. The
+runtime `contentSurfaceContext` map tells descendants which palette context to select; the matching
+field in `canonicalSurfaces` documents the catalog entry and does not replace that map.
 
 The Web Builder validates these references and publishes `components/card.kiskadee.json`. The
 Showcase consumes that artifact as the canonical background catalog. Having a Primary color in

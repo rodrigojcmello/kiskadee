@@ -1,12 +1,17 @@
 import './Card.structural.scss';
 import { Card as HeadlessCard, CardAction as HeadlessCardAction } from '@kiskadee/react-headless';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
+import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
+  resolveContentSurfaceContext,
   SurfaceContextProvider,
   useSurfaceContext
 } from '../../shared/contexts/SurfaceContext.tsx';
-import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { DEFAULT_CARD_INTENT, resolveCardClassNames } from './Card.class-names.ts';
+import {
+  DEFAULT_CARD_EMPHASIS,
+  DEFAULT_CARD_INTENT,
+  resolveCardClassNames
+} from './Card.class-names.ts';
 import type { CardActionProps, CardProps, CardStatus } from './Card.types.ts';
 import { useCardArtifactConfig } from './hooks/useCardArtifactConfig.ts';
 
@@ -21,7 +26,10 @@ export type {
 } from './Card.types.ts';
 
 function useCardClassNames(
-  props: Pick<CardProps, 'className' | 'classNames' | 'radius' | 'emphasis' | 'intent' | 'surfaceContext'> & {
+  props: Pick<
+    CardProps,
+    'className' | 'classNames' | 'radius' | 'emphasis' | 'intent' | 'surfaceContext'
+  > & {
     status?: CardStatus | 'rest';
     shadow?: CardProps['shadow'] | CardActionProps['shadow'];
     preserveBorderWithShadow?: CardProps['preserveBorderWithShadow'];
@@ -92,14 +100,27 @@ const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref)
   const { status: _status, ...restProps } = restPropsWithPotentialStatus;
   void _status;
   const resolvedClasses = useCardClassNames(
-    { className, classNames, radius, shadow, preserveBorderWithShadow, emphasis, intent, surfaceContext },
+    {
+      className,
+      classNames,
+      radius,
+      shadow,
+      preserveBorderWithShadow,
+      emphasis,
+      intent,
+      surfaceContext
+    },
     { action: false }
   );
 
-  const producedSurface = useCardProducedSurface({ emphasis, intent, surfaceContext });
+  const resolveProducedSurface = useCardProducedSurfaceResolver({
+    emphasis,
+    intent,
+    surfaceContext
+  });
   return (
     <HeadlessCard {...restProps} ref={ref} classNames={resolvedClasses.classNames}>
-      <SurfaceContextProvider value={producedSurface}>{children}</SurfaceContextProvider>
+      <SurfaceContextProvider value={resolveProducedSurface()}>{children}</SurfaceContextProvider>
     </HeadlessCard>
   );
 });
@@ -116,30 +137,62 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
     intent,
     surfaceContext,
     children,
+    disabled,
     ...restProps
   },
   ref
 ) {
   const resolvedClasses = useCardClassNames(
-    { className, classNames, status, radius, shadow, preserveBorderWithShadow, emphasis, intent, surfaceContext },
+    {
+      className,
+      classNames,
+      status,
+      radius,
+      shadow,
+      preserveBorderWithShadow,
+      emphasis,
+      intent,
+      surfaceContext
+    },
     { action: true }
   );
 
-  const producedSurface = useCardProducedSurface({ emphasis, intent, surfaceContext });
+  const resolveProducedSurface = useCardProducedSurfaceResolver({
+    emphasis,
+    intent,
+    surfaceContext
+  });
   return (
     <HeadlessCardAction
       {...restProps}
       ref={ref}
       status={status}
+      disabled={disabled}
       classNames={resolvedClasses.classNames}
     >
-      <SurfaceContextProvider value={producedSurface}>{children}</SurfaceContextProvider>
+      {({ controlState }) => (
+        <SurfaceContextProvider
+          value={resolveProducedSurface({
+            selected: controlState,
+            pending: status === 'pending',
+            disabled: Boolean(disabled) || status === 'disabled'
+          })}
+        >
+          {children}
+        </SurfaceContextProvider>
+      )}
     </HeadlessCardAction>
   );
 });
 
-function useCardProducedSurface({
-  emphasis = 'medium',
+type CardProducedSurfaceState = {
+  selected?: boolean;
+  pending?: boolean;
+  disabled?: boolean;
+};
+
+function useCardProducedSurfaceResolver({
+  emphasis = DEFAULT_CARD_EMPHASIS,
   intent = DEFAULT_CARD_INTENT,
   surfaceContext
 }: {
@@ -149,11 +202,23 @@ function useCardProducedSurface({
 }) {
   const consumedSurface = useSurfaceContext(surfaceContext);
   const { segment, theme } = useKiskadee();
-  const { options } = useCardArtifactConfig();
-  const authored = options.canonicalSurfaces?.[segment]?.[theme]?.find(
-    (surface) => surface.intent === intent && surface.emphasis === emphasis
+  const { contentSurfaceContext } = useCardArtifactConfig();
+
+  return useCallback(
+    ({ selected, pending, disabled }: CardProducedSurfaceState = {}) =>
+      resolveContentSurfaceContext({
+        map: contentSurfaceContext,
+        segment,
+        theme,
+        consumedSurfaceContext: consumedSurface,
+        intent,
+        emphasis,
+        selected,
+        pending,
+        disabled
+      }),
+    [contentSurfaceContext, consumedSurface, emphasis, intent, segment, theme]
   );
-  return authored?.contentSurfaceContext ?? consumedSurface;
 }
 
 export const Card = CardRoot;

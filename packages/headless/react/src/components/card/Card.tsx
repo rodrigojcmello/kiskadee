@@ -13,6 +13,9 @@ import { useControlState } from '../../hooks/control-state/useControlState.ts';
 export type CardClassNames = Partial<Record<'e1', string>>;
 export type CardActionInteractionStateSource = 'native' | 'bounds';
 export type CardActionStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
+export type CardActionRenderState = {
+  controlState: boolean;
+};
 
 type CardDataAttributes = {
   [key: `data-${string}`]: string | number | boolean | undefined;
@@ -29,7 +32,7 @@ export type CardProps = {
 
 export type CardActionProps = {
   classNames?: CardClassNames;
-  children?: ReactNode;
+  children?: ReactNode | ((state: CardActionRenderState) => ReactNode);
   controlState?: boolean;
   defaultControlState?: boolean;
   onControlStateChange?: (controlState: boolean) => void;
@@ -284,7 +287,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
       onClick={handleClick}
       onBlur={handleBlur}
     >
-      {children}
+      {typeof children === 'function' ? children({ controlState }) : children}
     </button>
   );
 });

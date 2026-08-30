@@ -12,6 +12,7 @@ import type {
   CardActionProps as HeadlessCardActionProps,
   CardProps as HeadlessCardProps
 } from '@kiskadee/react-headless';
+import type { ReactNode } from 'react';
 
 export type { CardActionInteractionStateSource };
 
@@ -51,4 +52,7 @@ export type CardActionVisualProps = CardBaseVisualProps & {
 
 export type CardProps = HeadlessCardProps & CardVisualProps;
 
-export type CardActionProps = HeadlessCardActionProps & CardActionVisualProps;
+export type CardActionProps = Omit<HeadlessCardActionProps, 'children'> &
+  CardActionVisualProps & {
+    children?: ReactNode;
+  };

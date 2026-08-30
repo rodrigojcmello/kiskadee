@@ -215,6 +215,10 @@ Decision:
   present it must cover the same color-property, intent, and emphasis pairs as `onSubtle`.
 - `onVivid` is selected explicitly by the visual component. It is not inferred from theme,
   background color, contrast, DOM ancestry, or runtime color measurement.
+- p-react resolves an explicit `surfaceContext` prop first, then the nearest
+  `SurfaceContextProvider`, then the `onSubtle` portability default. Components that create a
+  semantic descendant surface resolve their preset-authored `contentSurfaceContext` output and
+  publish it through a nested Provider.
 - `on-primary` and similar design-system terms are documented source relationships that map to
   `onVivid`; they are not additional Kiskadee intents, themes, or emphasis levels.
 
@@ -232,7 +236,8 @@ Consequence:
 - Omitted `surfaceContext` resolves to `onSubtle`. An explicitly requested unsupported `onVivid`
   context must not silently fall back to `onSubtle`.
 - Theme and surface-context controls remain independent in inspection tools and consumer APIs.
-- Provider inheritance or automatic surface detection requires a separate future contract.
+- Provider inheritance carries authored semantic context recursively. Automatic color, contrast,
+  luminance, or DOM-based surface detection remains forbidden.
 
 ### 3.1.6 External brand intent ownership
 
@@ -430,8 +435,12 @@ Decision:
   `{ intent, emphasis, contentSurfaceContext }` references.
 - The referenced visual value remains in
   `components.card.elements.e1.palettes[segment][theme].onSubtle.boxColor`.
-- `contentSurfaceContext` describes the context recommended for descendants placed on that Card.
-  It does not change the Card's own palette context.
+- The entry's `contentSurfaceContext` describes the descendant context associated with that
+  catalog surface. It does not change the Card's own consumed palette context and is not the
+  runtime propagation map.
+- `components.card.contentSurfaceContext` separately authors runtime output by segment, theme,
+  consumed context, intent, emphasis, and relevant state. p-react Card resolves this map and
+  publishes the result to descendants.
 - The Web Builder validates every reference, resolves its `rest` color, and publishes
   `components/card.kiskadee.json`.
 - Artifact consumers must preserve the authored order and must not reconstruct the list from
@@ -448,6 +457,8 @@ Consequence:
 
 - Presets without `canonicalSurfaces` publish no Card metadata artifact and remain valid.
 - A declared reference that lacks a solid `boxColor.<intent>.<emphasis>.rest` fails the build.
+- A Card can still propagate `contentSurfaceContext` when it is not listed in the canonical catalog;
+  the catalog controls recommendation and ordering, not runtime eligibility.
 - Background-selection tools may offer arbitrary diagnostic colors separately, but those colors
   are not part of the canonical Card contract.
 - `TextField.standard` may expose named modes such as `outline`, `underline`, and `borderless`.

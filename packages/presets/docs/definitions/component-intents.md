@@ -89,27 +89,21 @@ Do not model this as `child emphasis = parent emphasis - 1`. White/base
 surfaces are permissive and can host many child emphases, while vivid surfaces
 are restrictive and require contrast checks.
 
-### Open Decision: Lowest And Ambient Contrast
+### Lowest And Ambient Surface Context
 
-For own-surface components, `lowest` remains intentionally undecided. The current concern is
-semantic: `lowest` often means a transparent/no-own-surface treatment, but transparent components do
-not carry their own contrast. They depend on the ambient surface behind them.
+`lowest` remains the no-own-surface emphasis. Because a transparent component does not replace the
+surface behind it, its authored `contentSurfaceContext` output should normally be `inherit`.
 
-Open questions:
+The orthogonal `surfaceContext` axis now carries the ambient semantic distinction through
+`onSubtle` and `onVivid`. This removes the need to encode ambient contrast in emphasis names such as
+`high-transparent` or `low-transparent`, and it does not imply automatic light/dark alternation.
+Each surface-owning component authors the context it actually produces; a no-own-surface treatment
+preserves the value it consumed.
 
-- Should `lowest` be renamed to a literal surface name such as `transparent`?
-- Should `lowest` remain an emphasis value but gain ambient-aware foreground,
-  border, focus, and effect tokens?
-- Should Kiskadee introduce a separate ambient/context axis, such as
-  `ambientTone`, `ambientSurface`, or `contrastContext`, instead of splitting the
-  emphasis scale?
-- Should transparent treatments have separate light-ambient and vivid-ambient
-  token values?
-
-Current leaning: keep `lowest` as the no-own-surface emphasis for now and defer
-the ambient-contrast model until there are more component cases. Avoid adding
-`high-transparent` or `low-transparent` as emphasis names before proving that a
-separate ambient axis is insufficient.
+The binary vocabulary intentionally covers uniform semantic regions. Photos, gradients, and mixed
+backgrounds require explicit consumer-authored Provider regions for now. A richer vocabulary should
+be introduced only after concrete component cases prove that `onSubtle` and `onVivid` cannot express
+the required distinctions; runtime luminance or DOM paint detection is not a fallback.
 
 Relevant existing references:
 

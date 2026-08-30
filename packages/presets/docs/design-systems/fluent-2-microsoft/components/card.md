@@ -26,6 +26,7 @@ mapping in `packages/presets/src/presets/fluent-2-microsoft/components/card.sche
 | Theme sticker sheet | `9738:4934` | Six surface aliases and their Light/Dark variable bindings | Official exact |
 | Kiskadee tonal mapping | `figma-to-kiskadee.json`, generator `0.5.0` | Blue, pure grayscale, and Fluent tinted-neutral Light/Dark positions | Official adapted |
 | Absolute-black Darker surface | Black primitive, outside the six sticker-sheet surfaces | L100/D0 exact primitive cap | Kiskadee extension |
+| Ambient surface boundary | Kiskadee Button Showcase review, 2026-08-29 | Rest separation for light and vivid Cards on `onSubtle` and `onVivid` parents | Kiskadee extension |
 
 ## Canonical Surface Evidence
 
@@ -134,6 +135,31 @@ Dark Outline remains transparent and uses:
 Focus is visually Rest-equal in both themes and is omitted from the palette.
 The global focus ring remains the accessibility affordance.
 
+### Kiskadee Ambient Surface Adaptation
+
+The inspected Fluent Card source does not define a complete Card-on-vivid matrix. Kiskadee adds an
+explicit `onVivid` input palette so the Card can preserve its own surface identity while adapting
+the Rest boundary to the surrounding semantic surface.
+
+| Consumed context | `neutral.low` Card | `primary.highest` Card |
+| --- | --- | --- |
+| `onSubtle` | Existing source-backed neutral border | Transparent border; the vivid fill provides separation |
+| `onVivid` | Transparent border; the light Card provides separation | Absolute white at 30% alpha; the two vivid surfaces need a boundary |
+
+The `onVivid` box recipes intentionally reuse the same Light, Dark, and Darker Card surfaces and
+state deltas as `onSubtle`. Context does not turn a white/base Card into a vivid Card or vice versa.
+Only the border recipe adapts:
+
+- `primary.highest` uses `primitive.black.v1` Light L0 `#ffffff` at 30% alpha, resolving to
+  `#ffffff4d` in every theme;
+- every other `onVivid` Rest border is the same absolute-white lookup at 0% alpha;
+- Hover, Pressed, Selected, and Disabled border deltas are intentionally un-authored in this
+  extension, so the Rest boundary remains active while those states continue to be expressed by
+  the existing box-color deltas.
+
+This is a **Kiskadee extension**. The values resolve at schema build time through the approved pure
+grayscale primitive. The React runtime does not inspect DOM color or calculate contrast.
+
 ## Kiskadee Mapping
 
 The Card component set itself is neutral: the rows are component treatments, not
@@ -209,10 +235,21 @@ Light and Dark intentionally omit `neutral.highest` rather than exposing
 visually distinct Kiskadee extension outside the six official sticker-sheet
 aliases.
 
-The Card surface itself remains in `surfaceContext="onSubtle"`: its intent and
-emphasis select which surface the Card emits. The Card does not become
-`onVivid` merely because it owns a strong or dark fill. Descendant components
-choose their own context independently.
+The Card consumes the ambient `surfaceContext`, while intent and emphasis select which surface the
+Card owns. The Fluent schema publishes the same surface recipes under both input contexts and uses
+the contextual branch only for the boundary adaptation described above.
+
+The authored `contentSurfaceContext` map remains a separate output contract for descendants. It is
+published for both input contexts:
+
+- transparent `lowest` surfaces inherit the consumed context;
+- Neutral Low, Medium, High, and Darker Highest produce `onSubtle`;
+- Primary Low and Medium produce `onSubtle`;
+- Primary Highest produces `onVivid`.
+
+The p-react Card resolves this map and republishes the result with `SurfaceContextProvider`.
+`canonicalSurfaces` remains the recommended surface catalog and is not used as a substitute for
+runtime propagation.
 
 `components.card.options.canonicalSurfaces` publishes the source-backed
 surface catalog in its intended order for every theme:
@@ -238,3 +275,17 @@ emits only Rest as `Shadow 04` (`s:md:1`) and Hover as `Shadow 08`
 (`s:lg:1`). Pressed, Focus, and Disabled omit redundant declarations and
 inherit Rest through sparse-state semantics. The complete Fluent shadow scale
 stays available through `fixedLevels` for Showcase and static Card examples.
+
+## Validation
+
+- The focused Fluent Card schema test passes with the existing five assertions.
+- `pnpm --filter @kiskadee/web-builder build` and
+  `pnpm --filter @kiskadee/web-builder run build-sync-generate` complete successfully.
+- The Hover, Pressed, and Disabled sparse-state audits report no Rest-equal deltas.
+- `pnpm --filter @kiskadee/react-components build` and
+  `pnpm --filter @kiskadee/showcase build` complete successfully.
+- Browser inspection on `/button` confirms the Rest matrix: neutral Low is
+  `#cdd1de` on `onSubtle` and transparent on `onVivid`; Primary Highest is transparent on
+  `onSubtle` and `rgba(255, 255, 255, 0.3)` on `onVivid`.
+- Switching the Showcase to `onVivid` emits no missing-surface-context warning for Card. Desktop
+  and 390px mobile checks show no horizontal overflow or framework error overlay.

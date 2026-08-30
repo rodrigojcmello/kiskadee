@@ -1,4 +1,10 @@
-import type { InteractionStateColorMap, KiskadeeTone, Schema, SolidColor } from '@kiskadee/core';
+import type {
+  InteractionStateColorMap,
+  KiskadeeTone,
+  Schema,
+  SolidColor,
+  SurfaceContext
+} from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
@@ -12,6 +18,7 @@ type ColorLocator = {
   role: CardRole;
   tone: KiskadeeTone;
   alpha?: number;
+  track?: ThemeShortcut;
 };
 
 type StateRecipe = {
@@ -59,13 +66,16 @@ const p = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
   alpha
 });
 
-const k = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
+const k = (tone: KiskadeeTone, alpha?: number, track?: ThemeShortcut): ColorLocator => ({
   role: 'primitive.black.v1',
   tone,
-  alpha
+  alpha,
+  track
 });
 
 const transparent = k(0, 0);
+const onVividTransparent = k(0, 0, 'l');
+const onVividBoundary = k(0, 30, 'l');
 
 const transparentBorder = (selected: ColorLocator): StateRecipe => ({
   rest: transparent,
@@ -283,6 +293,31 @@ const CARD_RECIPES = {
   darker: DARKER_RECIPE
 } as const satisfies Record<ThemeName, CardPaletteRecipe>;
 
+function createCardContentSurfaceContext(themeName: ThemeName) {
+  const recipe = CARD_RECIPES[themeName];
+  const createContext = () => ({
+    neutral: {
+      lowest: { rest: 'inherit' as const },
+      low: { rest: 'onSubtle' as const },
+      medium: { rest: 'onSubtle' as const },
+      high: { rest: 'onSubtle' as const },
+      ...(recipe.boxColor.neutral.highest ? { highest: { rest: 'onSubtle' as const } } : undefined)
+    },
+    primary: {
+      lowest: { rest: 'inherit' as const },
+      low: { rest: 'onSubtle' as const },
+      medium: { rest: 'onSubtle' as const },
+      ...(recipe.boxColor.primary.high ? { high: { rest: 'onSubtle' as const } } : undefined),
+      ...(recipe.boxColor.primary.highest ? { highest: { rest: 'onVivid' as const } } : undefined)
+    }
+  });
+
+  return {
+    onSubtle: createContext(),
+    onVivid: createContext()
+  };
+}
+
 const CANONICAL_CARD_SURFACES = {
   default: {
     light: [
@@ -316,7 +351,7 @@ function resolveColor(
   track: ThemeShortcut,
   locator: ColorLocator
 ): SolidColor {
-  return c(segmentName, track, locator.role, locator.tone, locator.alpha);
+  return c(segmentName, locator.track ?? track, locator.role, locator.tone, locator.alpha);
 }
 
 function createStateMap(
@@ -347,11 +382,59 @@ function createStateMap(
 function createCardPalette(
   c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
   segmentName: Fluent2MicrosoftSegmentName,
-  themeName: ThemeName
+  themeName: ThemeName,
+  surfaceContext: SurfaceContext
 ) {
   const recipe: CardPaletteRecipe = CARD_RECIPES[themeName];
   const stateMap = (stateRecipe: StateRecipe) =>
     createStateMap(c, segmentName, recipe.track, stateRecipe);
+  const contextualBoundary = (visible: boolean) =>
+    stateMap({ rest: visible ? onVividBoundary : onVividTransparent });
+
+  const borderColor =
+    surfaceContext === 'onSubtle'
+      ? {
+          neutral: {
+            lowest: stateMap(recipe.borderColor.neutral.lowest),
+            low: stateMap(recipe.borderColor.neutral.low),
+            medium: stateMap(recipe.borderColor.neutral.medium),
+            high: stateMap(recipe.borderColor.neutral.high!),
+            ...(recipe.borderColor.neutral.highest
+              ? { highest: stateMap(recipe.borderColor.neutral.highest) }
+              : undefined)
+          },
+          primary: {
+            lowest: stateMap(recipe.borderColor.primary.lowest),
+            low: stateMap(recipe.borderColor.primary.low),
+            medium: stateMap(recipe.borderColor.primary.medium),
+            ...(recipe.borderColor.primary.high
+              ? { high: stateMap(recipe.borderColor.primary.high!) }
+              : undefined),
+            ...(recipe.borderColor.primary.highest
+              ? { highest: stateMap(recipe.borderColor.primary.highest) }
+              : undefined)
+          }
+        }
+      : {
+          neutral: {
+            lowest: contextualBoundary(false),
+            low: contextualBoundary(false),
+            medium: contextualBoundary(false),
+            high: contextualBoundary(false),
+            ...(recipe.borderColor.neutral.highest
+              ? { highest: contextualBoundary(false) }
+              : undefined)
+          },
+          primary: {
+            lowest: contextualBoundary(false),
+            low: contextualBoundary(false),
+            medium: contextualBoundary(false),
+            ...(recipe.borderColor.primary.high ? { high: contextualBoundary(false) } : undefined),
+            ...(recipe.borderColor.primary.highest
+              ? { highest: contextualBoundary(true) }
+              : undefined)
+          }
+        };
 
   return {
     boxColor: {
@@ -376,28 +459,7 @@ function createCardPalette(
           : undefined)
       }
     },
-    borderColor: {
-      neutral: {
-        lowest: stateMap(recipe.borderColor.neutral.lowest),
-        low: stateMap(recipe.borderColor.neutral.low),
-        medium: stateMap(recipe.borderColor.neutral.medium),
-        high: stateMap(recipe.borderColor.neutral.high!),
-        ...(recipe.borderColor.neutral.highest
-          ? { highest: stateMap(recipe.borderColor.neutral.highest) }
-          : undefined)
-      },
-      primary: {
-        lowest: stateMap(recipe.borderColor.primary.lowest),
-        low: stateMap(recipe.borderColor.primary.low),
-        medium: stateMap(recipe.borderColor.primary.medium),
-        ...(recipe.borderColor.primary.high
-          ? { high: stateMap(recipe.borderColor.primary.high!) }
-          : undefined),
-        ...(recipe.borderColor.primary.highest
-          ? { highest: stateMap(recipe.borderColor.primary.highest) }
-          : undefined)
-      }
-    }
+    borderColor
   };
 }
 
@@ -408,46 +470,9 @@ export function createFluent2MicrosoftCardSchema({
   return {
     contentSurfaceContext: {
       default: {
-        light: {
-          onSubtle: {
-            neutral: {
-              low: { rest: 'onSubtle' },
-              medium: { rest: 'onSubtle' },
-              high: { rest: 'onSubtle' }
-            },
-            primary: {
-              medium: { rest: 'onSubtle' },
-              highest: { rest: 'onVivid' }
-            }
-          }
-        },
-        dark: {
-          onSubtle: {
-            neutral: {
-              low: { rest: 'onSubtle' },
-              medium: { rest: 'onSubtle' },
-              high: { rest: 'onSubtle' }
-            },
-            primary: {
-              medium: { rest: 'onSubtle' },
-              highest: { rest: 'onVivid' }
-            }
-          }
-        },
-        darker: {
-          onSubtle: {
-            neutral: {
-              low: { rest: 'onSubtle' },
-              medium: { rest: 'onSubtle' },
-              high: { rest: 'onSubtle' },
-              highest: { rest: 'onSubtle' }
-            },
-            primary: {
-              medium: { rest: 'onSubtle' },
-              highest: { rest: 'onVivid' }
-            }
-          }
-        }
+        light: createCardContentSurfaceContext('light'),
+        dark: createCardContentSurfaceContext('dark'),
+        darker: createCardContentSurfaceContext('darker')
       }
     },
     options: {
@@ -498,13 +523,16 @@ export function createFluent2MicrosoftCardSchema({
         },
         palettes: buildBySegment(segmentNames, (segmentName) => ({
           light: {
-            onSubtle: createCardPalette(c, segmentName, 'light')
+            onSubtle: createCardPalette(c, segmentName, 'light', 'onSubtle'),
+            onVivid: createCardPalette(c, segmentName, 'light', 'onVivid')
           },
           dark: {
-            onSubtle: createCardPalette(c, segmentName, 'dark')
+            onSubtle: createCardPalette(c, segmentName, 'dark', 'onSubtle'),
+            onVivid: createCardPalette(c, segmentName, 'dark', 'onVivid')
           },
           darker: {
-            onSubtle: createCardPalette(c, segmentName, 'darker')
+            onSubtle: createCardPalette(c, segmentName, 'darker', 'onSubtle'),
+            onVivid: createCardPalette(c, segmentName, 'darker', 'onVivid')
           }
         }))
       }

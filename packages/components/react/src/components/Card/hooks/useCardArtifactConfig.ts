@@ -1,3 +1,4 @@
+import type { ContentSurfaceContextMap } from '@kiskadee/core';
 import type {
   CardCanonicalSurfacesPayload,
   CardComponentArtifactJSON
@@ -11,6 +12,7 @@ type CardGlobalConfig = ReturnType<typeof useKiskadee>['global'];
 
 export type CardArtifactConfig = {
   cardClassesMap: CardClassesMap | undefined;
+  contentSurfaceContext: ContentSurfaceContextMap | undefined;
   options: {
     radius: NonNullable<CardGlobalConfig>['radius'] | undefined;
     canonicalSurfaces: CardCanonicalSurfacesPayload | undefined;
@@ -34,6 +36,7 @@ export function useCardArtifactConfig(): CardArtifactConfig {
 
   return {
     cardClassesMap,
+    contentSurfaceContext: global?.components?.card?.contentSurfaceContext,
     options: {
       radius: global?.radius,
       canonicalSurfaces: cardComponentArtifact?.options.canonicalSurfaces

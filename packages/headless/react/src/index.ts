@@ -37,6 +37,7 @@ export { Button, resolveButtonInteractionState } from './components/button/Butto
 export type {
   CardActionInteractionStateSource,
   CardActionProps,
+  CardActionRenderState,
   CardActionStatus,
   CardClassNames,
   CardProps
