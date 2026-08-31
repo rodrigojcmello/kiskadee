@@ -16,6 +16,9 @@ type CreateFluent2MicrosoftForegroundsArgs = {
 
 const CHROMATIC_LOW_ALPHA = 68;
 const CHROMATIC_LOWEST_ALPHA = 24;
+const CHROMATIC_ON_VIVID_OFFSET = 4;
+const CHROMATIC_ON_VIVID_LOW_ALPHA = 76;
+const CHROMATIC_ON_VIVID_LOWEST_ALPHA = 40;
 
 function createChromaticForegroundProfile(
   c: Fluent2MicrosoftColorResolver,
@@ -43,12 +46,22 @@ function createChromaticForegroundProfile(
     } as const;
   };
   const onVivid = {
-    medium: { rest: c.resolve('default', 'l', referenceColor(role, 'subtle', 2)) },
+    medium: {
+      rest: c.resolve('default', 'l', referenceColor(role, 'subtle', CHROMATIC_ON_VIVID_OFFSET))
+    },
     low: {
-      rest: c.resolve('default', 'l', referenceColor(role, 'subtle', 2, CHROMATIC_LOW_ALPHA))
+      rest: c.resolve(
+        'default',
+        'l',
+        referenceColor(role, 'subtle', CHROMATIC_ON_VIVID_OFFSET, CHROMATIC_ON_VIVID_LOW_ALPHA)
+      )
     },
     lowest: {
-      rest: c.resolve('default', 'l', referenceColor(role, 'subtle', 2, CHROMATIC_LOWEST_ALPHA))
+      rest: c.resolve(
+        'default',
+        'l',
+        referenceColor(role, 'subtle', CHROMATIC_ON_VIVID_OFFSET, CHROMATIC_ON_VIVID_LOWEST_ALPHA)
+      )
     }
   } as const;
 

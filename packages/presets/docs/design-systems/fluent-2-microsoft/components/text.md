@@ -97,28 +97,32 @@ The first shared chromatic formula uses the same source-backed anchors across ev
 | --- | --- | --- | --- | --- |
 | `onSubtle` | Light | Primitive `vivid`, 100% | Same anchor, 68% | Same anchor, 24% |
 | `onSubtle` | Dark/Darker | Primitive `vivid +8`, 100% | Same anchor, 68% | Same anchor, 24% |
-| `onVivid` | All | Light-track `subtle +2`, 100% | Same anchor, 68% | Same anchor, 24% |
+| `onVivid` | All | Light-track `subtle +4`, 100% | Same anchor, 76% | Same anchor, 40% |
 
 The Light value is each primitive family's promoted `vivid` reference, so the family keeps its
 identity even when an anchor moves in a later approved tonal asset. Dark/Darker uses `vivid +8`,
-choosing the passive text D80 rather than Button's action-oriented D75. Light-track `subtle +2` is
-the existing on-vivid Badge foreground anchor. Reusing those positions for standalone Text is a
-**Kiskadee extension**: Fluent does not publish a generic three-level colored Text API.
+choosing the passive text D80 rather than Button's action-oriented D75. On vivid surfaces, Text
+advances the Light-track reference to `subtle +4`: this preserves a light contrasting foreground
+while carrying more of each family's chroma than the earlier `subtle +2` calibration. The stronger
+76% and 40% descendants keep that family identity visible instead of letting the host surface
+dominate through transparency. This shared recipe is a **Kiskadee extension**: Fluent does not
+publish a generic three-level colored Text API.
 
 The resolved normal anchors are:
 
 | Foreground | `onSubtle` Light | `onSubtle` Dark/Darker | `onVivid` all themes |
 | --- | --- | --- | --- |
-| `blue` | `#0064b4` | `#79b9ff` | `#d3e7ff` |
-| `red` | `#c50f1f` | `#ff958b` | `#ffdbd7` |
-| `green` | `#107c10` | `#7ec879` | `#d4edd2` |
-| `purple` | `#c239b3` | `#eb94dd` | `#f8daf2` |
-| `orange` | `#f7630c` | `#f49d79` | `#ffdccf` |
-| `yellow` | `#eaa300` | `#d1af7c` | `#f6e2c4` |
+| `blue` | `#0064b4` | `#79b9ff` | `#c1deff` |
+| `red` | `#c50f1f` | `#ff958b` | `#ffcdc8` |
+| `green` | `#107c10` | `#7ec879` | `#c3e7c0` |
+| `purple` | `#c239b3` | `#eb94dd` | `#f6ccee` |
+| `orange` | `#f7630c` | `#f49d79` | `#ffcfbc` |
+| `yellow` | `#eaa300` | `#d1af7c` | `#f3d6ac` |
 
-`low` appends 68% alpha (`ad`) and `lowest` appends 24% alpha (`3d`) to each resolved anchor. Every
-schema value is authored as a functional-reference locator and resolved by the strict preset
-resolver; no literal color, fixed tone, or component-semantic alias is introduced.
+On subtle surfaces, `low` appends 68% alpha (`ad`) and `lowest` appends 24% alpha (`3d`) to each
+resolved anchor. On vivid surfaces, those descendants use 76% (`c2`) and 40% (`66`). Every schema
+value is authored as a functional-reference locator and resolved by the strict preset resolver; no
+literal color, fixed tone, or component-semantic alias is introduced.
 
 Core also recognizes `teal`, `cyan`, `pink`, and `brown` as possible Text foreground names, but
 this Fluent preset does not publish them. Its similarly named harmony-derived candidates are still

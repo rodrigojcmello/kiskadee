@@ -96,32 +96,32 @@ describe('Fluent 2 Microsoft Text foreground', () => {
       blue: {
         light: '#0064b4',
         dark: '#79b9ff',
-        vivid: '#d3e7ff'
+        vivid: '#c1deff'
       },
       red: {
         light: '#c50f1f',
         dark: '#ff958b',
-        vivid: '#ffdbd7'
+        vivid: '#ffcdc8'
       },
       green: {
         light: '#107c10',
         dark: '#7ec879',
-        vivid: '#d4edd2'
+        vivid: '#c3e7c0'
       },
       purple: {
         light: '#c239b3',
         dark: '#eb94dd',
-        vivid: '#f8daf2'
+        vivid: '#f6ccee'
       },
       orange: {
         light: '#f7630c',
         dark: '#f49d79',
-        vivid: '#ffdccf'
+        vivid: '#ffcfbc'
       },
       yellow: {
         light: '#eaa300',
         dark: '#d1af7c',
-        vivid: '#f6e2c4'
+        vivid: '#f3d6ac'
       }
     } as const;
 
@@ -133,13 +133,15 @@ describe('Fluent 2 Microsoft Text foreground', () => {
 
     for (const [foreground, colors] of Object.entries(expected)) {
       const palettes = schema.global?.foregrounds?.profiles[foreground]?.palettes.default;
-      const light = {
-        onSubtle: emphases(colors.light),
-        onVivid: emphases(colors.vivid)
+      const onVividEmphases = {
+        medium: { rest: colors.vivid },
+        low: { rest: `${colors.vivid}c2` },
+        lowest: { rest: `${colors.vivid}66` }
       };
+      const light = { onSubtle: emphases(colors.light), onVivid: onVividEmphases };
       const dark = {
         onSubtle: emphases(colors.dark),
-        onVivid: emphases(colors.vivid)
+        onVivid: onVividEmphases
       };
 
       expect(palettes?.light).toEqual(light);

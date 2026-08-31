@@ -286,8 +286,9 @@ uses the physical light cap, while `low` and `lowest` project that cap at 68% an
 The same Text catalog now publishes the six approved chromatic primitive families by hue name.
 On subtle surfaces, normal chromatic text follows each family's `vivid` reference in Light and
 `vivid +8` in Dark/Darker; `low` and `lowest` reuse that base at 68% and 24% alpha. On vivid
-surfaces every theme uses the family's Light-track `subtle +2` anchor, again at 100%, 68%, and 24%.
-This shared hierarchy is a Kiskadee extension
+surfaces every theme uses the family's Light-track `subtle +4` anchor at 100%, 76%, and 40%.
+The deeper reference and stronger descendants preserve more chromatic identity against the host
+surface without replacing the family-relative locator with a fixed tone. This shared hierarchy is a Kiskadee extension
 derived from the existing Button/Badge color evidence. It does not rename hues to component
 semantics and does not promote the harmony-derived Teal, Lime, Indigo, Magenta, or Brown candidates.
 
