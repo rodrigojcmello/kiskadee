@@ -1,11 +1,10 @@
-import type {
-  KiskadeeTone,
-  ProgressIntent,
-  ProgressTrackColorMap,
-  Schema,
-  SolidColor
-} from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import type { ProgressIntent, ProgressTrackColorMap, Schema, SolidColor } from '@kiskadee/core';
+import { primitive } from '@kiskadee/core';
+import {
+  absoluteCap,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from '../fluent-2-microsoft.color.ts';
 
 type ProgressComponent = NonNullable<NonNullable<Schema<never>['components']>['progress']>;
 type Fluent2MicrosoftTheme = 'light' | 'dark' | 'darker';
@@ -22,32 +21,32 @@ type ProgressProfileMap = Record<
 >;
 
 type CreateFluent2MicrosoftProgressSchemaArgs = {
-  c: PresetColorGetter<'default'>;
+  c: Fluent2MicrosoftColorResolver;
 };
 
-const ON_SUBTLE_INDICATOR_TONES = {
+const ON_SUBTLE_INDICATOR_OFFSETS = {
   light: {
-    neutral: 85,
-    primary: 50,
-    positive: 45,
-    warning: 50,
-    destructive: 45
+    neutral: 0,
+    primary: 0,
+    positive: 0,
+    warning: 7,
+    destructive: 0
   },
   dark: {
-    neutral: 90,
-    primary: 60,
-    positive: 45,
-    warning: 55,
-    destructive: 40
+    neutral: 0,
+    primary: 4,
+    positive: 1,
+    warning: 3,
+    destructive: 0
   },
   darker: {
-    neutral: 90,
-    primary: 60,
-    positive: 45,
-    warning: 55,
-    destructive: 40
+    neutral: 0,
+    primary: 4,
+    positive: 1,
+    warning: 3,
+    destructive: 0
   }
-} as const satisfies Record<Fluent2MicrosoftTheme, Record<ProgressIntent, KiskadeeTone>>;
+} as const satisfies Record<Fluent2MicrosoftTheme, Record<ProgressIntent, number>>;
 
 const ON_VIVID_INDICATOR_OFFSET = 8;
 const ON_VIVID_TRACK_ALPHA = 18;
@@ -84,11 +83,15 @@ function progressRole(intent: ProgressIntent): ProgressRole {
 
 function createOnSubtleTrackProfiles(
   theme: Fluent2MicrosoftTheme,
-  c: PresetColorGetter<'default'>
+  c: Fluent2MicrosoftColorResolver
 ): ProgressTrackColorMap {
   const themeShortcut = toThemeShortcut(theme);
-  const tone = theme === 'light' ? 6 : 12;
-  const trackColor = c('default', themeShortcut, 'neutral', tone);
+  const offset = theme === 'light' ? 2 : 7;
+  const trackColor = c.resolve(
+    'default',
+    themeShortcut,
+    referenceColor('neutral', 'subtle', offset)
+  );
 
   return {
     neutral: {
@@ -99,18 +102,26 @@ function createOnSubtleTrackProfiles(
 
 function createOnSubtleIndicatorProfiles(
   theme: Fluent2MicrosoftTheme,
-  c: PresetColorGetter<'default'>
+  c: Fluent2MicrosoftColorResolver
 ): ProgressProfileMap {
   const themeShortcut = toThemeShortcut(theme);
 
   return createProgressProfileMap((intent) => {
-    const tone = ON_SUBTLE_INDICATOR_TONES[theme][intent];
-    return c('default', themeShortcut, progressRole(intent), tone);
+    const offset = ON_SUBTLE_INDICATOR_OFFSETS[theme][intent];
+    return c.resolve(
+      'default',
+      themeShortcut,
+      referenceColor(progressRole(intent), 'vivid', offset)
+    );
   });
 }
 
-function createOnVividTrackProfiles(c: PresetColorGetter<'default'>): ProgressTrackColorMap {
-  const trackColor = c('default', 'l', 'primitive.black.v1', 0, ON_VIVID_TRACK_ALPHA);
+function createOnVividTrackProfiles(c: Fluent2MicrosoftColorResolver): ProgressTrackColorMap {
+  const trackColor = c.resolve(
+    'default',
+    'l',
+    absoluteCap(primitive('black', 'v1'), 'light', ON_VIVID_TRACK_ALPHA)
+  );
 
   return {
     neutral: {
@@ -119,13 +130,20 @@ function createOnVividTrackProfiles(c: PresetColorGetter<'default'>): ProgressTr
   };
 }
 
-function createOnVividIndicatorProfiles(c: PresetColorGetter<'default'>): ProgressProfileMap {
+function createOnVividIndicatorProfiles(c: Fluent2MicrosoftColorResolver): ProgressProfileMap {
   return createProgressProfileMap((intent) =>
-    c.ref('default', 'l', progressRole(intent), 'subtle', ON_VIVID_INDICATOR_OFFSET)
+    c.resolve(
+      'default',
+      'l',
+      referenceColor(progressRole(intent), 'subtle', ON_VIVID_INDICATOR_OFFSET)
+    )
   );
 }
 
-function createTrackContextPalettes(theme: Fluent2MicrosoftTheme, c: PresetColorGetter<'default'>) {
+function createTrackContextPalettes(
+  theme: Fluent2MicrosoftTheme,
+  c: Fluent2MicrosoftColorResolver
+) {
   return {
     onSubtle: {
       boxColor: createOnSubtleTrackProfiles(theme, c)
@@ -138,7 +156,7 @@ function createTrackContextPalettes(theme: Fluent2MicrosoftTheme, c: PresetColor
 
 function createIndicatorContextPalettes(
   theme: Fluent2MicrosoftTheme,
-  c: PresetColorGetter<'default'>
+  c: Fluent2MicrosoftColorResolver
 ) {
   return {
     onSubtle: {

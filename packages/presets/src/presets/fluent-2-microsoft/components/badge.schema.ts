@@ -1,5 +1,10 @@
-import type { BadgeIntent, KiskadeeTone, Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { type BadgeIntent, type KiskadeeTone, primitive, type Schema } from '@kiskadee/core';
+import {
+  absoluteCap,
+  exactColor,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from '../fluent-2-microsoft.color.ts';
 
 type BadgeComponent = NonNullable<Schema<never>['components']['badge']>;
 type ThemeName = 'light' | 'dark' | 'darker';
@@ -7,7 +12,7 @@ type ThemeShortcut = 'l' | 'd';
 type Role = `badge.${BadgeIntent}` | 'badge.warning.v2';
 
 type CreateBadgeSchemaArgs = {
-  c: PresetColorGetter<'default'>;
+  c: Fluent2MicrosoftColorResolver;
 };
 
 const INTENTS = [
@@ -71,28 +76,33 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
   const role = (intent: BadgeIntent): Role =>
     intent === 'warning' ? 'badge.warning.v2' : (`badge.${intent}` as Role);
   const color = (theme: ThemeName, intent: BadgeIntent, tone: KiskadeeTone, alpha?: number) =>
-    c('default', THEME_TRACK[theme], role(intent), tone, alpha);
-  const absolute = (theme: ThemeName, tone: KiskadeeTone, alpha?: number) =>
-    c('default', THEME_TRACK[theme], 'primitive.black.v1', tone, alpha);
-  const white = (theme: ThemeName) => absolute(theme, theme === 'light' ? 0 : 100);
+    c.resolve(
+      'default',
+      THEME_TRACK[theme],
+      exactColor(role(intent), tone, 'component.badge', alpha)
+    );
+  const white = (theme: ThemeName) =>
+    c.resolve('default', THEME_TRACK[theme], absoluteCap(primitive('black', 'v1'), 'light'));
   const black = (theme: ThemeName, alpha?: number) =>
-    absolute(theme, theme === 'light' ? 100 : 0, alpha);
+    c.resolve('default', THEME_TRACK[theme], absoluteCap(primitive('black', 'v1'), 'dark', alpha));
   const vivid = (theme: ThemeName, intent: BadgeIntent) =>
     intent === 'warning' && theme !== 'light'
       ? color(theme, intent, 75)
-      : c.ref('default', THEME_TRACK[theme], role(intent), 'vivid');
+      : c.resolve('default', THEME_TRACK[theme], referenceColor(role(intent), 'vivid'));
   const mediumSurface = (theme: ThemeName, intent: BadgeIntent) =>
-    c.ref('default', THEME_TRACK[theme], role(intent), 'subtle', MEDIUM_SURFACE_OFFSET[theme]);
+    c.resolve(
+      'default',
+      THEME_TRACK[theme],
+      referenceColor(role(intent), 'subtle', MEDIUM_SURFACE_OFFSET[theme])
+    );
   const lowSurface = (theme: ThemeName) => black(theme, LOW_SURFACE_ALPHA);
   const lowForeground = (theme: ThemeName, intent: BadgeIntent) =>
     intent === 'warning' && theme !== 'light'
       ? color(theme, intent, DARK_WARNING_LOW_FOREGROUND_TONE)
-      : c.ref(
+      : c.resolve(
           'default',
           THEME_TRACK[theme],
-          role(intent),
-          'vivid',
-          LOW_FOREGROUND_VIVID_OFFSET[theme][intent]
+          referenceColor(role(intent), 'vivid', LOW_FOREGROUND_VIVID_OFFSET[theme][intent])
         );
   const highForeground = (theme: ThemeName, intent: BadgeIntent) =>
     intent === 'warning' || (intent === 'neutral' && theme !== 'light')
@@ -100,15 +110,28 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
       : white(theme);
 
   const onVividHighSurface = (intent: BadgeIntent) =>
-    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_HIGH_SURFACE_OFFSET);
+    c.resolve('default', 'l', referenceColor(role(intent), 'subtle', ON_VIVID_HIGH_SURFACE_OFFSET));
   const onVividIndicatorHighSurface = (intent: BadgeIntent) =>
-    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_INDICATOR_HIGH_SURFACE_OFFSET);
+    c.resolve(
+      'default',
+      'l',
+      referenceColor(role(intent), 'subtle', ON_VIVID_INDICATOR_HIGH_SURFACE_OFFSET)
+    );
   const onVividMediumSurface = (intent: BadgeIntent) =>
-    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_MEDIUM_SURFACE_OFFSET);
+    c.resolve(
+      'default',
+      'l',
+      referenceColor(role(intent), 'subtle', ON_VIVID_MEDIUM_SURFACE_OFFSET)
+    );
   const onVividLowSurface = (theme: ThemeName) => black(theme, ON_VIVID_LOW_SURFACE_ALPHA);
-  const onVividForeground = (intent: BadgeIntent) => c('default', 'l', role(intent), 65);
+  const onVividForeground = (intent: BadgeIntent) =>
+    c.resolve('default', 'l', exactColor(role(intent), 65, 'component.badge'));
   const onVividLowForeground = (intent: BadgeIntent) =>
-    c.ref('default', 'l', role(intent), 'subtle', ON_VIVID_LOW_FOREGROUND_OFFSET);
+    c.resolve(
+      'default',
+      'l',
+      referenceColor(role(intent), 'subtle', ON_VIVID_LOW_FOREGROUND_OFFSET)
+    );
 
   const createSurfaceIntentStates = (theme: ThemeName) =>
     Object.fromEntries(

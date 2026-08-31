@@ -1,4 +1,10 @@
-import type { Color, Schema } from '@kiskadee/core';
+import { type Color, primitive, type Schema } from '@kiskadee/core';
+import {
+  absoluteCap,
+  exactColor,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from '../fluent-2-microsoft.color.ts';
 
 type SliderComponent = NonNullable<NonNullable<Schema<never>['components']>['slider']>;
 
@@ -22,20 +28,25 @@ function states(colors: {
   };
 }
 
-const fluent = {
-  optionalIndicator: '#0000004d',
-  optionalIndicatorDisabled: '#0000002e',
-  transparent: '#ffffff00',
-  neutralForeground1: '#242424',
-  neutralStrokeAccessible: '#5d616b',
-  neutralBackground1: '#ffffff',
-  neutralStroke1: '#ccd1dd',
-  neutralForegroundDisabled: '#b9bdc9',
-  neutralStrokeDisabled: '#dbe0ec',
-  compoundBrandRest: '#0064b4',
-  compoundBrandHover: '#0055a4',
-  compoundBrandPressed: '#004694'
-} as const satisfies Record<string, Color>;
+function createFluentSliderColors(c: Fluent2MicrosoftColorResolver) {
+  const resolve = (locator: Parameters<Fluent2MicrosoftColorResolver['resolve']>[2]) =>
+    c.resolve('default', 'l', locator);
+
+  return {
+    optionalIndicator: resolve(absoluteCap(primitive('black', 'v1'), 'dark', 30)),
+    optionalIndicatorDisabled: resolve(absoluteCap(primitive('black', 'v1'), 'dark', 18)),
+    transparent: resolve(absoluteCap(primitive('black', 'v1'), 'light', 0)),
+    neutralForeground1: resolve(referenceColor('slider.neutral', 'vivid')),
+    neutralStrokeAccessible: resolve(exactColor('slider.neutral', 50, 'component.slider')),
+    neutralBackground1: resolve(absoluteCap(primitive('black', 'v1'), 'light')),
+    neutralStroke1: resolve(exactColor('slider.neutral', 10, 'component.slider')),
+    neutralForegroundDisabled: resolve(exactColor('slider.neutral', 16, 'component.slider')),
+    neutralStrokeDisabled: resolve(exactColor('slider.neutral', 7, 'component.slider')),
+    compoundBrandRest: resolve(referenceColor('slider.primary', 'vivid')),
+    compoundBrandHover: resolve(referenceColor('slider.primary', 'vivid', 1)),
+    compoundBrandPressed: resolve(referenceColor('slider.primary', 'vivid', 2))
+  } as const satisfies Record<string, Color>;
+}
 
 const sizes = {
   trackHeight: {
@@ -94,333 +105,366 @@ const layout = {
   }
 } as const;
 
-const textPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralForeground1,
-              disabled: fluent.neutralForegroundDisabled
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.compoundBrandRest,
-              hover: fluent.compoundBrandHover,
-              focus: fluent.compoundBrandRest,
-              pressed: fluent.compoundBrandPressed,
-              disabled: fluent.neutralForegroundDisabled
-            })
+function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors>) {
+  const textPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralForeground1,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const optionalIndicatorPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.optionalIndicator,
-              disabled: fluent.optionalIndicatorDisabled
-            })
+  const optionalIndicatorPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.optionalIndicator,
+                disabled: fluent.optionalIndicatorDisabled
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const iconPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralStrokeAccessible,
-              disabled: fluent.neutralForegroundDisabled
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.compoundBrandRest,
-              hover: fluent.compoundBrandHover,
-              focus: fluent.compoundBrandRest,
-              pressed: fluent.compoundBrandPressed,
-              disabled: fluent.neutralForegroundDisabled
-            })
+  const iconPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralStrokeAccessible,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const railPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralStrokeAccessible,
-              hover: fluent.neutralStrokeAccessible,
-              focus: fluent.neutralStrokeAccessible,
-              pressed: fluent.neutralStrokeAccessible,
-              disabled: fluent.transparent
-            })
+  const railPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralStrokeAccessible,
+                hover: fluent.neutralStrokeAccessible,
+                focus: fluent.neutralStrokeAccessible,
+                pressed: fluent.neutralStrokeAccessible,
+                disabled: fluent.transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.neutralStrokeAccessible,
+                hover: fluent.neutralStrokeAccessible,
+                focus: fluent.neutralStrokeAccessible,
+                pressed: fluent.neutralStrokeAccessible,
+                disabled: fluent.transparent
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: fluent.neutralStrokeAccessible,
-              hover: fluent.neutralStrokeAccessible,
-              focus: fluent.neutralStrokeAccessible,
-              pressed: fluent.neutralStrokeAccessible,
-              disabled: fluent.transparent
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const activeTrackPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.compoundBrandRest,
-              hover: fluent.compoundBrandHover,
-              focus: fluent.compoundBrandRest,
-              pressed: fluent.compoundBrandPressed,
-              disabled: fluent.neutralForegroundDisabled
-            })
+  const activeTrackPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: fluent.compoundBrandRest,
-              hover: fluent.compoundBrandHover,
-              focus: fluent.compoundBrandRest,
-              pressed: fluent.compoundBrandPressed,
-              disabled: fluent.neutralForegroundDisabled
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const thumbPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              hover: fluent.neutralBackground1,
-              focus: fluent.neutralBackground1,
-              pressed: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
+  const thumbPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                hover: fluent.neutralBackground1,
+                focus: fluent.neutralBackground1,
+                pressed: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                hover: fluent.neutralBackground1,
+                focus: fluent.neutralBackground1,
+                pressed: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              hover: fluent.neutralBackground1,
-              focus: fluent.neutralBackground1,
-              pressed: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralStroke1,
-              disabled: fluent.neutralStrokeDisabled
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.neutralStroke1,
-              disabled: fluent.neutralStrokeDisabled
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralStroke1,
+                disabled: fluent.neutralStrokeDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.neutralStroke1,
+                disabled: fluent.neutralStrokeDisabled
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const thumbInnerPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.compoundBrandRest,
-              hover: fluent.compoundBrandHover,
-              focus: fluent.compoundBrandRest,
-              pressed: fluent.compoundBrandPressed,
-              disabled: fluent.neutralForegroundDisabled
-            })
+  const thumbInnerPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
+                disabled: fluent.neutralForegroundDisabled
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: fluent.compoundBrandRest,
-              hover: fluent.compoundBrandHover,
-              focus: fluent.compoundBrandRest,
-              pressed: fluent.compoundBrandPressed,
-              disabled: fluent.neutralForegroundDisabled
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const thumbIconPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
+  const thumbIconPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-const markPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
+  const markPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.transparent,
-              disabled: fluent.transparent
-            })
-          }
-        }
-      }
-    }
-  }
-} as const;
-
-const valueIndicatorPalettes = {
-  default: {
-    light: {
-      onSubtle: {
-        boxColor: activeTrackPalettes.default.light.onSubtle.boxColor,
-        borderColor: activeTrackPalettes.default.light.onSubtle.borderColor,
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
-          },
-          primary: {
-            medium: states({
-              rest: fluent.neutralBackground1,
-              disabled: fluent.neutralBackground1
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.transparent,
+                disabled: fluent.transparent
+              })
+            }
           }
         }
       }
     }
-  }
-} as const;
+  } as const;
 
-export function createFluent2MicrosoftSliderSchema(): SliderComponent {
+  const valueIndicatorPalettes = {
+    default: {
+      light: {
+        onSubtle: {
+          boxColor: activeTrackPalettes.default.light.onSubtle.boxColor,
+          borderColor: activeTrackPalettes.default.light.onSubtle.borderColor,
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            },
+            primary: {
+              medium: states({
+                rest: fluent.neutralBackground1,
+                disabled: fluent.neutralBackground1
+              })
+            }
+          }
+        }
+      }
+    }
+  } as const;
+
+  return {
+    textPalettes,
+    optionalIndicatorPalettes,
+    iconPalettes,
+    railPalettes,
+    activeTrackPalettes,
+    thumbPalettes,
+    thumbInnerPalettes,
+    thumbIconPalettes,
+    markPalettes,
+    valueIndicatorPalettes
+  };
+}
+
+export function createFluent2MicrosoftSliderSchema({
+  c
+}: {
+  c: Fluent2MicrosoftColorResolver;
+}): SliderComponent {
+  const palettes = createSliderPalettes(createFluentSliderColors(c));
+  const {
+    textPalettes,
+    optionalIndicatorPalettes,
+    iconPalettes,
+    railPalettes,
+    activeTrackPalettes,
+    thumbPalettes,
+    thumbInnerPalettes,
+    thumbIconPalettes,
+    markPalettes,
+    valueIndicatorPalettes
+  } = palettes;
+
   return {
     effects: {
       activationFeedback: {

@@ -4,7 +4,8 @@ import {
   buildComponentSurfaceContexts,
   buildManifestFonts,
   buildManifestIcons,
-  buildManifestTypography
+  buildManifestTypography,
+  isPublishableColorSourceFile
 } from './publishMetadata.ts';
 
 function createSchema(components: Schema['components']): Schema {
@@ -16,6 +17,16 @@ function createSchema(components: Schema['components']): Schema {
     components
   };
 }
+
+describe('isPublishableColorSourceFile', () => {
+  it('accepts color modules and excludes colocated tests, specs, and declarations', () => {
+    expect(isPublishableColorSourceFile('b.blue.v1.ts')).toBe(true);
+    expect(isPublishableColorSourceFile('b.blue.v1.test.ts')).toBe(false);
+    expect(isPublishableColorSourceFile('b.blue.v1.spec.ts')).toBe(false);
+    expect(isPublishableColorSourceFile('b.blue.v1.d.ts')).toBe(false);
+    expect(isPublishableColorSourceFile('README.md')).toBe(false);
+  });
+});
 
 describe('buildComponentSurfaceContexts', () => {
   it('publishes interaction states independently by palette and surface context', () => {
@@ -148,6 +159,126 @@ describe('buildComponentSurfaceContexts', () => {
             neutral: { medium: { rest: true } },
             primary: { medium: { rest: true } }
           }
+        }
+      }
+    });
+  });
+
+  it('computes Text contexts after expanding its global foreground profile', () => {
+    const states = {
+      medium: { rest: '#333333' },
+      low: { rest: '#555555' },
+      lowest: { rest: '#777777' }
+    } as const;
+    const schema: Schema = {
+      ...createSchema({
+        text: {
+          elements: {
+            e1: {
+              name: 'foreground',
+              foreground: { neutral: 'neutral', red: 'red' }
+            }
+          }
+        }
+      }),
+      global: {
+        foregrounds: {
+          profiles: {
+            neutral: {
+              palettes: {
+                default: {
+                  light: { onSubtle: states, onVivid: states }
+                }
+              }
+            },
+            red: {
+              palettes: {
+                default: {
+                  light: { onSubtle: states, onVivid: states }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    expect(buildComponentSurfaceContexts(schema, 'text')).toEqual({
+      'default.light': {
+        onSubtle: {
+          state: {
+            neutral: {
+              medium: { rest: true },
+              low: { rest: true },
+              lowest: { rest: true }
+            },
+            red: {
+              medium: { rest: true },
+              low: { rest: true },
+              lowest: { rest: true }
+            }
+          }
+        },
+        onVivid: {
+          state: {
+            neutral: {
+              medium: { rest: true },
+              low: { rest: true },
+              lowest: { rest: true }
+            },
+            red: {
+              medium: { rest: true },
+              low: { rest: true },
+              lowest: { rest: true }
+            }
+          }
+        }
+      }
+    });
+  });
+
+  it('computes Separator contexts from the same expanded recipe used for style emission', () => {
+    const schema: Schema = {
+      ...createSchema({
+        separator: {
+          elements: {
+            e1: {
+              name: 'line',
+              separator: { 's:all': 'subtle' }
+            }
+          }
+        }
+      }),
+      global: {
+        separators: {
+          profiles: {
+            subtle: {
+              scales: { boxWidth: 1 },
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                    },
+                    onVivid: {
+                      boxColor: { neutral: { medium: { rest: '#ffffff33' } } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    expect(buildComponentSurfaceContexts(schema, 'separator')).toEqual({
+      'default.light': {
+        onSubtle: {
+          state: { neutral: { medium: { rest: true } } }
+        },
+        onVivid: {
+          state: { neutral: { medium: { rest: true } } }
         }
       }
     });

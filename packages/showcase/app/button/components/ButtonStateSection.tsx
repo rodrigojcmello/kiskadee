@@ -128,7 +128,12 @@ export function ButtonStateSection({
             {title}
           </Text>
           {description ? (
-            <Text as="p" profile={textProfiles.caption} className={s['state-description']}>
+            <Text
+              as="p"
+              emphasis="low"
+              profile={textProfiles.caption}
+              className={s['state-description']}
+            >
               {description}
             </Text>
           ) : null}
@@ -159,7 +164,12 @@ export function ButtonStateSection({
         ) : (
           EMPHASIS_ORDER.map((emphasis) => (
             <div key={emphasis} className={s['interaction-state']}>
-              <Text as="h4" profile={textProfiles.groupTitle} className={s['emphasis-title']}>
+              <Text
+                as="h4"
+                emphasis="low"
+                profile={textProfiles.groupTitle}
+                className={s['emphasis-title']}
+              >
                 <span>{EMPHASIS_LABELS[emphasis]} emphasis</span>
               </Text>
               <div className={`${s['example-states']} k-root`}>

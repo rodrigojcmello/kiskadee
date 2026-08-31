@@ -574,7 +574,45 @@ Consequence:
 - Component elements own padding, gap, margin, alignment, and height. Geometry may adapt to a
   shared profile, but it must not recreate a removed line-height through compensating padding.
 
-### 3.3.3 Shared icon-size catalog
+### 3.3.3 Shared foreground profiles
+
+Context:
+
+- Repeated text colors need preset-owned identities just as repeated text metrics need typography
+  profiles.
+- Foreground strength depends on the consumed Surface Context, but profile resolution must remain a
+  build concern rather than a browser token lookup.
+- Standalone Text needs independent typography and color channels.
+
+Decision:
+
+- `global.foregrounds.profiles` owns complete preset-local foreground recipes.
+- Every profile theme publishes exactly `medium`, `low`, and `lowest` Rest colors under `onSubtle`;
+  `onVivid` is an optional capability with the same complete emphasis coverage.
+- Participating elements map local intents to profile IDs through `foreground`.
+- Standalone Text requires `neutral` and may map canonical chromatic names directly. Those names
+  are visual families, not component intents; `red`, for example, does not imply `destructive`.
+- Achromatic Text colors stay under `neutral`; `black` is not a separate foreground name.
+- Presets publish only source-backed families. A missing family remains unsupported and must not
+  fall back to `neutral` at runtime.
+- An element using `foreground` must not also author `palettes.*.textColor`.
+- `inherit` is reserved for the React API and is invalid as a schema profile, local intent, or
+  reference.
+- Standalone Text uses foreground emphasis as paint strength and excludes `high` and `highest`;
+  `medium` is its normal and strongest supported foreground. This does not change own-surface
+  emphasis semantics for Button and Card.
+
+Consequence:
+
+- The Web Builder expands profile references into ordinary `textColor` palettes before color
+  conversion, then emits the existing `c.s` and optional `c.v` class-map branches.
+- Manifest Surface Context capabilities are calculated from the expanded palettes.
+- No foreground-specific bucket, Provider, CSS variable, semantic variable, or browser lookup is
+  created.
+- React Text keeps its global typography class and component color class independent. Pending or
+  absent color artifacts produce inherited color rather than preserving a stale class.
+
+### 3.3.4 Shared icon-size catalog
 
 Context:
 
@@ -659,6 +697,12 @@ Static primitive values are stored as lowercase six- or eight-digit HEX. Dynamic
 are CSS color references such as `var(--k-p-light-24)`. Tone lookup is exact: unsupported positions
 are authoring errors and must never be rounded or snapped.
 
+An FRF preset may author temporary `reference`, evidence-backed `exact`, and physical `cap`
+locators, but `@kiskadee/presets` must resolve them before publishing its Schema. Locator
+provenance, `evidenceId` registries, and documentation JSON are authoring inputs only. Core Schema,
+the Web Builder, generated artifacts, and browser runtimes continue to receive concrete
+`SolidColor` values and must not reproduce preset color lookup.
+
 The former primitive `subtle` and `vivid` tracks no longer exist. Those words may still describe
 activation-feedback profiles; that effect vocabulary is unrelated to primitive tonal storage.
 
@@ -693,7 +737,8 @@ Use each artifact for a different level of responsibility:
   fonts, and high-level component capabilities without loading the full schema.
 - `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
   without traversing full component branches. Use it for global defaults such as fonts, radius,
-  activation feedback, and the compact atomic class map used by standalone `Text`. Component-specific semantic metadata should move toward component artifacts such as
+  activation feedback, and the compact typography class map used by standalone `Text`.
+  Component-specific semantic metadata should move toward component artifacts such as
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
   `components/text-field.kiskadee.json`; new artifacts should not add component semantic payloads
   under `global.components.<name>`.

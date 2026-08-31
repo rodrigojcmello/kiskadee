@@ -1,5 +1,11 @@
-import type { KiskadeeTone, Schema, SolidColor } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { primitive, type Schema, type SolidColor } from '@kiskadee/core';
+import { bindPresetColorRole } from '../../../utils/presetColor.ts';
+import {
+  absoluteCap,
+  type Fluent2MicrosoftColorResolver,
+  type Fluent2MicrosoftFamilyColorLocator,
+  familyReferenceColor
+} from '../fluent-2-microsoft.color.ts';
 import {
   createFluentButtonOnSubtleIntent,
   createFluentButtonOnVividIntent,
@@ -11,7 +17,6 @@ import {
 } from './button-color-formula.ts';
 
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
-type Fluent2MicrosoftSegmentName = 'default';
 type ThemeShortcut = 'l' | 'd';
 type ButtonRecipeTheme = FluentButtonFormulaTheme;
 type ButtonColorRole =
@@ -21,36 +26,36 @@ type ButtonColorRole =
   | 'button.positive';
 
 type CreateFluent2MicrosoftButtonSchemaArgs = {
-  c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
+  c: Fluent2MicrosoftColorResolver;
   shadowBlack: (alpha: number) => SolidColor;
 };
 
-const BUTTON_HIGH_FOREGROUND_TONES = {
+const BUTTON_HIGH_FOREGROUND_POLARITIES = {
   light: {
-    'button.primary': 0,
-    'button.neutral': 0,
-    'button.destructive': 0,
-    'button.positive': 0
+    'button.primary': 'light',
+    'button.neutral': 'light',
+    'button.destructive': 'light',
+    'button.positive': 'light'
   },
   dark: {
-    'button.primary': 100,
-    'button.neutral': 0,
-    'button.destructive': 100,
-    'button.positive': 100
+    'button.primary': 'light',
+    'button.neutral': 'dark',
+    'button.destructive': 'light',
+    'button.positive': 'light'
   },
   darker: {
-    'button.primary': 100,
-    'button.neutral': 0,
-    'button.destructive': 100,
-    'button.positive': 100
+    'button.primary': 'light',
+    'button.neutral': 'dark',
+    'button.destructive': 'light',
+    'button.positive': 'light'
   }
-} as const satisfies Record<ButtonRecipeTheme, Record<ButtonColorRole, KiskadeeTone>>;
+} as const satisfies Record<ButtonRecipeTheme, Record<ButtonColorRole, 'light' | 'dark'>>;
 
-const BUTTON_DIVIDER_TONES = {
-  light: 7,
-  dark: 30,
-  darker: 12
-} as const satisfies Record<ButtonRecipeTheme, KiskadeeTone>;
+const BUTTON_DIVIDER_LOCATORS = {
+  light: familyReferenceColor('subtle', 3),
+  dark: familyReferenceColor('subtle', 16),
+  darker: familyReferenceColor('subtle', 7)
+} as const satisfies Record<ButtonRecipeTheme, Fluent2MicrosoftFamilyColorLocator>;
 
 export function createFluent2MicrosoftButtonSchema({
   c,
@@ -59,9 +64,8 @@ export function createFluent2MicrosoftButtonSchema({
   const toThemeShortcut = (theme: FluentButtonFormulaScale): ThemeShortcut =>
     theme === 'light' ? 'l' : 'd';
   const createPresetFamily = (role: ButtonColorRole): FluentButtonTonalFamily => ({
-    color: (theme, tone, alpha) => c('default', toThemeShortcut(theme), role, tone, alpha),
-    reference: (theme, reference, offset = 0, alpha) =>
-      c.ref('default', toThemeShortcut(theme), role, reference, offset, alpha)
+    resolve: (theme, locator) =>
+      c.resolve('default', toThemeShortcut(theme), bindPresetColorRole(role, locator))
   });
   const families = {
     'button.primary': createPresetFamily('button.primary'),
@@ -72,10 +76,12 @@ export function createFluent2MicrosoftButtonSchema({
   const neutralButtonFamily = families['button.neutral'];
   const neutralSurfaceColor = (
     theme: FluentButtonFormulaScale,
-    tone: KiskadeeTone,
-    alpha?: number
-  ) => c('default', toThemeShortcut(theme), 'neutral', tone, alpha);
-  const onVividCanonicalSurface = families['button.primary'].reference('light', 'vivid', 0);
+    locator: Fluent2MicrosoftFamilyColorLocator
+  ) => c.resolve('default', toThemeShortcut(theme), bindPresetColorRole('neutral', locator));
+  const onVividCanonicalSurface = families['button.primary'].resolve(
+    'light',
+    familyReferenceColor('vivid')
+  );
 
   const createButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
     const recipe = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme];
@@ -84,9 +90,9 @@ export function createFluent2MicrosoftButtonSchema({
       family: families[role],
       neutralButtonFamily,
       neutralSurfaceColor,
-      highForeground: neutralButtonFamily.color(
+      highForeground: neutralButtonFamily.resolve(
         recipe.scale,
-        BUTTON_HIGH_FOREGROUND_TONES[theme][role]
+        absoluteCap(primitive('black', 'v1'), BUTTON_HIGH_FOREGROUND_POLARITIES[theme][role])
       )
     });
   };
@@ -201,14 +207,17 @@ export function createFluent2MicrosoftButtonSchema({
       boxColor: {
         neutral: {
           medium: {
-            rest: neutralButtonFamily.color('light', 0)
+            rest: neutralButtonFamily.resolve(
+              'light',
+              absoluteCap(primitive('black', 'v1'), 'light')
+            )
           }
         }
       },
       textColor: {
         neutral: {
           medium: {
-            rest: neutralButtonFamily.color('light', 85)
+            rest: neutralButtonFamily.resolve('light', familyReferenceColor('vivid'))
           }
         }
       }
@@ -223,7 +232,7 @@ export function createFluent2MicrosoftButtonSchema({
   const createDividerContextPalettes = (theme: ButtonRecipeTheme) => {
     const rest = neutralSurfaceColor(
       FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme].scale,
-      BUTTON_DIVIDER_TONES[theme]
+      BUTTON_DIVIDER_LOCATORS[theme]
     );
     const createContext = () => ({
       boxColor: {

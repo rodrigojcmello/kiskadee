@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
+import { validateSchemaForegroundsContract } from '@kiskadee/core/foreground-contract';
 import { validateSchemaGlobalIconContract } from '@kiskadee/core/icon-contract';
 import { validateSchemaIconSizesContract } from '@kiskadee/core/icon-size-contract';
 import { validateSchemaPresenceContract } from '@kiskadee/core/presence-contract';
@@ -79,6 +80,14 @@ export async function runBuild(): Promise<void> {
 
   for (const t of presetsToBuild) {
     const { schema, schemaPath } = t;
+
+    try {
+      validateSchemaForegroundsContract(schema);
+    } catch (error) {
+      throw new Error(`[web-builder] Invalid foreground contract in ${schemaPath}`, {
+        cause: error
+      });
+    }
 
     try {
       validateSchemaGlobalFontContract(schema);

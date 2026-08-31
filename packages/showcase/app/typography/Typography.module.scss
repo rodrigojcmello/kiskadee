@@ -53,49 +53,93 @@
   gap: 7px;
 }
 
-.sectionHeader > p:last-child:not(.eyebrow) {
-  opacity: 0.6;
+.foregroundEyebrow {
+  text-transform: uppercase;
 }
 
 .textComponent {
+  gap: 24px;
+}
+
+.chromaticSection {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.chromaticSection {
   gap: 16px;
 }
 
-.textExampleGrid {
+.chromaticTable {
+  border-collapse: separate;
+  border-spacing: 0 14px;
+  table-layout: fixed;
+  inline-size: 100%;
+}
+
+.foregroundMatrix,
+.foregroundBehaviorGrid {
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   min-inline-size: 0;
 }
 
-.textExampleCard {
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  display: grid;
-  grid-template-rows: auto minmax(128px, 1fr) auto;
+.foregroundCard {
   min-inline-size: 0;
-  overflow: hidden;
 }
 
-.textExampleCard > h3,
-.textExampleCode {
-  padding: 16px 18px;
+.foregroundCardContent,
+.foregroundCardHeader,
+.foregroundRows,
+.foregroundCases,
+.foregroundCase {
+  display: grid;
+  min-inline-size: 0;
 }
 
-.textExamplePreview {
-  align-items: center;
-  border-block: 1px solid rgba(0, 0, 0, 0.07);
+.foregroundCardContent {
+  gap: 20px;
+  padding: 24px;
+}
+
+.foregroundCardHeader,
+.foregroundCase {
+  gap: 5px;
+}
+
+.foregroundRows,
+.foregroundCases {
+  gap: 16px;
+}
+
+.foregroundRow {
+  align-items: baseline;
   display: flex;
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-  padding: 20px 18px;
+  gap: 16px;
+  justify-content: space-between;
 }
 
-.textExampleCode {
-  background: rgba(0, 0, 0, 0.025);
-  opacity: 0.64;
-  overflow-wrap: anywhere;
+.chromaticRow {
+  vertical-align: baseline;
+}
+
+.chromaticRow > * {
+  padding: 0 6px;
+}
+
+.chromaticRow > :first-child {
+  inline-size: 28%;
+  padding-inline-start: 0;
+  text-align: start;
+}
+
+.chromaticRow > :not(:first-child) {
+  text-align: center;
+}
+
+.chromaticHeaderRow {
+  vertical-align: bottom;
 }
 
 .profileGroups {
@@ -355,6 +399,11 @@
 }
 
 @media (max-width: 720px) {
+  .foregroundMatrix,
+  .foregroundBehaviorGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .summary {
     display: none;
   }

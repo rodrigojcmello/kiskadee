@@ -97,7 +97,7 @@ export function ButtonGroupExamples({
               </Button>
             </Button.Group>
           ) : (
-            <Text as="p" profile={textProfiles.caption}>
+            <Text as="p" emphasis="lowest" profile={textProfiles.caption}>
               The active preset does not publish a Button Rest shadow.
             </Text>
           )}

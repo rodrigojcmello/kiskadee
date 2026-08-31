@@ -7,8 +7,6 @@ import type {
   ComponentStyleKeyMap,
   ElementAllSizeValue,
   ElementIconSize,
-  ElementPalettes,
-  ElementSeparator,
   ElementSizeValue,
   ElementStyle,
   ElementTypography,
@@ -25,6 +23,7 @@ import type {
   ThumbShrinkEffectSchema
 } from '@kiskadee/core';
 import { resolveActivationFeedbackSetting } from '@kiskadee/core';
+import { resolveElementPaletteSources } from '../palettes/resolveElementPaletteSources.ts';
 import { createTypographyBuild, type TypographyBuild } from '../typography/compileTypography.ts';
 import { buildStyleKey, deepUpdate } from '../utils/index.ts';
 import {
@@ -45,12 +44,12 @@ import {
   convertElementScalesToStyleKeys,
   type ScaleValue
 } from './scales/convertElementScalesToStyleKeys.ts';
-import { expandElementSeparator } from './separators/compileSeparators.ts';
 
 type ElementSchemaInput = Pick<
   ElementStyle,
   | 'decorations'
   | 'effects'
+  | 'foreground'
   | 'iconSize'
   | 'name'
   | 'palettes'
@@ -92,23 +91,6 @@ const ACTIVATION_FEEDBACK_HOST_BY_COMPONENT: Partial<Record<ComponentName, strin
   switch: 'e3'
 };
 
-function isPlainRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function mergePaletteRecords(
-  base: Record<string, unknown>,
-  override: Record<string, unknown>
-): Record<string, unknown> {
-  const merged = { ...base };
-  for (const [key, value] of Object.entries(override)) {
-    const current = merged[key];
-    merged[key] =
-      isPlainRecord(current) && isPlainRecord(value) ? mergePaletteRecords(current, value) : value;
-  }
-  return merged;
-}
-
 /**
  * Processes a Schema object by iterating over each component's elements.
  * For each style object, it processes the decoration, scales, and colors
@@ -126,6 +108,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
   const typographyBuild = createTypographyBuild(schema.global?.typography, schema.breakpoints);
+  const foregrounds = schema.global?.foregrounds;
   const iconSizes = schema.global?.iconSizes as SchemaIconSizes | undefined;
   const separators = schema.global?.separators as SchemaSeparators | undefined;
   const activationFeedbackConfig = schema.global?.effects?.activationFeedback;
@@ -190,6 +173,11 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references iconSize without global.iconSizes.`
       );
     }
+    if (element.foreground && !foregrounds) {
+      throw new Error(
+        `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references foreground without global.foregrounds.`
+      );
+    }
     if (element.separator && !separators) {
       throw new Error(
         `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} references separator without global.separators.`
@@ -218,10 +206,10 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         element.iconSize && iconSizes
           ? expandElementIconSize(element.iconSize as ElementIconSize, iconSizes)
           : undefined;
-      const separatorRecipe =
-        element.separator && separators
-          ? expandElementSeparator(element.separator as ElementSeparator, separators)
-          : undefined;
+      const { palettes: mergedPalettes, separatorRecipe } = resolveElementPaletteSources(element, {
+        foregrounds,
+        separators
+      });
       if (element.scales || iconSizeScales || separatorRecipe) {
         const { borderRadius, ...otherScales } = (element.scales ?? {}) as ScaleSchema;
         const mergedScales = {
@@ -380,13 +368,6 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           el.scales = mergedScales;
         }
       }
-      const mergedPalettes =
-        element.palettes && separatorRecipe?.palettes
-          ? (mergePaletteRecords(
-              separatorRecipe.palettes as Record<string, unknown>,
-              element.palettes as Record<string, unknown>
-            ) as ElementPalettes)
-          : ((element.palettes ?? separatorRecipe?.palettes) as ElementPalettes | undefined);
       if (mergedPalettes) {
         const { styleKeys: paletteKeys, toneMetadataByPalette: paletteToneMetadataByPalette } =
           convertElementColorsToStyleKeys(mergedPalettes);

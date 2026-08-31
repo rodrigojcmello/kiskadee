@@ -49,6 +49,17 @@ Map global semantics into component-specific roles such as `button.primary`, `bu
 `card.neutral`. Layer 3 expresses component meaning; it does not define the surrounding surface or
 automatically create component palettes.
 
+## 5a. Classify And Resolve Base Colors
+
+Before authoring palettes in an FRF preset, classify each solid base color:
+
+- use `reference` for a family-relative `subtle`/`vivid` formula;
+- use `exact` only for a fixed source decision already registered under an `evidenceId`;
+- use `cap` for physical white, black, and their alpha variants, including transparency.
+
+Resolve these locators inside the preset. Do not publish provenance locators into the Schema and do
+not bypass the strict resolver with literals or direct tonal lookup helpers.
+
 ## 6. Publish Canonical Surfaces
 
 Before documenting components on preset-owned backgrounds, define the surface vocabulary through

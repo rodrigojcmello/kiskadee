@@ -5,19 +5,21 @@ import type {
   SolidColor,
   SurfaceContext
 } from '@kiskadee/core';
+import { primitive } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import {
+  absoluteCap,
+  exactColor,
+  type Fluent2MicrosoftColorLocator,
+  type Fluent2MicrosoftColorResolver
+} from '../fluent-2-microsoft.color.ts';
 
 type Fluent2MicrosoftSegmentName = 'default';
 type CardComponent = NonNullable<Schema<never>['components']['card']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type ThemeShortcut = 'l' | 'd';
-type CardRole = 'card.neutral' | 'card.primary' | 'primitive.black.v1';
-
 type ColorLocator = {
-  role: CardRole;
-  tone: KiskadeeTone;
-  alpha?: number;
+  color: Fluent2MicrosoftColorLocator;
   track?: ThemeShortcut;
 };
 
@@ -50,34 +52,35 @@ type CardPaletteRecipe = {
 };
 
 type CreateFluent2MicrosoftCardSchemaArgs = {
-  c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
+  c: Fluent2MicrosoftColorResolver;
   segmentNames: readonly Fluent2MicrosoftSegmentName[];
 };
 
 const n = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
-  role: 'card.neutral',
-  tone,
-  alpha
+  color: exactColor('card.neutral', tone, 'component.card', alpha)
 });
 
 const p = (tone: KiskadeeTone, alpha?: number): ColorLocator => ({
-  role: 'card.primary',
-  tone,
-  alpha
+  color: exactColor('card.primary', tone, 'component.card', alpha)
 });
 
-const k = (tone: KiskadeeTone, alpha?: number, track?: ThemeShortcut): ColorLocator => ({
-  role: 'primitive.black.v1',
-  tone,
-  alpha,
-  track
+const physicalCap = (polarity: 'light' | 'dark', alpha?: number): ColorLocator => ({
+  color: absoluteCap(primitive('black', 'v1'), polarity, alpha)
 });
+const lightCap = (alpha?: number) => physicalCap('light', alpha);
+const darkCap = (alpha?: number) => physicalCap('dark', alpha);
+const lightTransparent = lightCap(0);
+const darkTransparent = darkCap(0);
+const onVividTransparent: ColorLocator = {
+  color: absoluteCap(primitive('black', 'v1'), 'light', 0),
+  track: 'l'
+};
+const onVividBoundary: ColorLocator = {
+  color: absoluteCap(primitive('black', 'v1'), 'light', 15),
+  track: 'l'
+};
 
-const transparent = k(0, 0);
-const onVividTransparent = k(0, 0, 'l');
-const onVividBoundary = k(0, 15, 'l');
-
-const transparentBorder = (selected: ColorLocator): StateRecipe => ({
+const transparentBorder = (transparent: ColorLocator, selected: ColorLocator): StateRecipe => ({
   rest: transparent,
   selected
 });
@@ -87,14 +90,14 @@ const LIGHT_RECIPE = {
   boxColor: {
     neutral: {
       lowest: {
-        rest: transparent,
+        rest: lightTransparent,
         hover: n(2),
         pressed: n(7),
         selected: n(5),
         disabled: n(3)
       },
       low: {
-        rest: k(0),
+        rest: lightCap(),
         hover: n(2),
         pressed: n(7),
         selected: n(5),
@@ -117,14 +120,14 @@ const LIGHT_RECIPE = {
     },
     primary: {
       lowest: {
-        rest: transparent,
+        rest: lightTransparent,
         hover: p(4),
         pressed: p(8),
         selected: p(6),
         disabled: n(3)
       },
       low: {
-        rest: k(0),
+        rest: lightCap(),
         hover: n(2),
         pressed: n(7),
         selected: n(5),
@@ -148,7 +151,7 @@ const LIGHT_RECIPE = {
   },
   borderColor: {
     neutral: {
-      lowest: transparentBorder(n(16)),
+      lowest: transparentBorder(lightTransparent, n(16)),
       low: {
         rest: n(10),
         hover: n(12),
@@ -156,20 +159,20 @@ const LIGHT_RECIPE = {
         selected: n(16),
         disabled: n(7)
       },
-      medium: transparentBorder(n(16)),
-      high: transparentBorder(n(16))
+      medium: transparentBorder(lightTransparent, n(16)),
+      high: transparentBorder(lightTransparent, n(16))
     },
     primary: {
-      lowest: transparentBorder(n(16)),
+      lowest: transparentBorder(lightTransparent, n(16)),
       low: {
         rest: p(50),
         hover: p(55),
         pressed: p(75),
         selected: p(60),
-        disabled: transparent
+        disabled: lightTransparent
       },
-      medium: transparentBorder(n(16)),
-      highest: transparentBorder(n(16))
+      medium: transparentBorder(lightTransparent, n(16)),
+      highest: transparentBorder(lightTransparent, n(16))
     }
   }
 } as const satisfies CardPaletteRecipe;
@@ -179,7 +182,7 @@ const DARK_RECIPE = {
   boxColor: {
     neutral: {
       lowest: {
-        rest: transparent,
+        rest: darkTransparent,
         hover: n(16),
         pressed: n(10),
         selected: n(12),
@@ -208,7 +211,7 @@ const DARK_RECIPE = {
     },
     primary: {
       lowest: {
-        rest: transparent,
+        rest: darkTransparent,
         hover: p(9),
         pressed: p(6),
         selected: p(7),
@@ -239,27 +242,27 @@ const DARK_RECIPE = {
   },
   borderColor: {
     neutral: {
-      lowest: transparentBorder(n(50)),
+      lowest: transparentBorder(darkTransparent, n(50)),
       low: {
         rest: n(45),
         hover: n(50),
         selected: n(50),
         disabled: n(22)
       },
-      medium: transparentBorder(n(50)),
-      high: transparentBorder(n(50))
+      medium: transparentBorder(darkTransparent, n(50)),
+      high: transparentBorder(darkTransparent, n(50))
     },
     primary: {
-      lowest: transparentBorder(n(50)),
+      lowest: transparentBorder(darkTransparent, n(50)),
       low: {
         rest: p(35),
         hover: p(40),
         pressed: p(14),
         selected: p(28),
-        disabled: transparent
+        disabled: darkTransparent
       },
-      medium: transparentBorder(n(50)),
-      highest: transparentBorder(n(50))
+      medium: transparentBorder(darkTransparent, n(50)),
+      highest: transparentBorder(darkTransparent, n(50))
     }
   }
 } as const satisfies CardPaletteRecipe;
@@ -271,7 +274,7 @@ const DARKER_RECIPE = {
     neutral: {
       ...DARK_RECIPE.boxColor.neutral,
       highest: {
-        rest: k(0),
+        rest: darkCap(),
         hover: n(5),
         selected: n(3),
         disabled: n(3)
@@ -282,7 +285,7 @@ const DARKER_RECIPE = {
     ...DARK_RECIPE.borderColor,
     neutral: {
       ...DARK_RECIPE.borderColor.neutral,
-      highest: transparentBorder(n(50))
+      highest: transparentBorder(darkTransparent, n(50))
     }
   }
 } as const satisfies CardPaletteRecipe;
@@ -294,7 +297,7 @@ const CARD_RECIPES = {
 } as const satisfies Record<ThemeName, CardPaletteRecipe>;
 
 function createCardContentSurfaceContext(themeName: ThemeName) {
-  const recipe = CARD_RECIPES[themeName];
+  const recipe: CardPaletteRecipe = CARD_RECIPES[themeName];
   const createContext = () => ({
     neutral: {
       lowest: { rest: 'inherit' as const },
@@ -346,16 +349,16 @@ const CANONICAL_CARD_SURFACES = {
 } as const satisfies NonNullable<CardComponent['options']>['canonicalSurfaces'];
 
 function resolveColor(
-  c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
+  c: Fluent2MicrosoftColorResolver,
   segmentName: Fluent2MicrosoftSegmentName,
   track: ThemeShortcut,
   locator: ColorLocator
 ): SolidColor {
-  return c(segmentName, locator.track ?? track, locator.role, locator.tone, locator.alpha);
+  return c.resolve(segmentName, locator.track ?? track, locator.color);
 }
 
 function createStateMap(
-  c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
+  c: Fluent2MicrosoftColorResolver,
   segmentName: Fluent2MicrosoftSegmentName,
   track: ThemeShortcut,
   recipe: StateRecipe
@@ -380,7 +383,7 @@ function createStateMap(
 }
 
 function createCardPalette(
-  c: PresetColorGetter<Fluent2MicrosoftSegmentName>,
+  c: Fluent2MicrosoftColorResolver,
   segmentName: Fluent2MicrosoftSegmentName,
   themeName: ThemeName,
   surfaceContext: SurfaceContext

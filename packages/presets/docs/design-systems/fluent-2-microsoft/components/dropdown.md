@@ -117,23 +117,26 @@
 
 ## Color And Token Provenance
 
-| Source concept | Source value | Kiskadee mapping |
-| --- | --- | --- |
-| `colorNeutralBackground1Hover`, Light | Grey 96 `#f5f5f5` | `primitive.black.v1` L2 `#f6f6f6` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.002995` |
-| `colorNeutralBackground1Hover`, Dark | Grey 24 `#3d3d3d` | `primitive.black.v1` D18 `#3c3c3c` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.003844` |
-| Hover surface, Darker | No upstream Darker theme | `primitive.black.v1` D12 `#313131` on `e2.boxColor.neutral.medium.hover`, preserving the established Darker tone as a Kiskadee adaptation |
-| Destructive Low Hover, Light | Cranberry L2 `#fff4f2` | `dropdown.destructive` L2 on `e2.boxColor.destructive.medium.hover`; shared tonal coordinate with Button Low Hover, independent component role |
-| Selected surface, Light | Kiskadee presentation extension | `dropdown.neutral` / `primitive.black.v2` L3 `#eef2fc` on `e2.boxColor.neutral.medium.selected`; intentionally lighter than the previous L5 `#e4e9f5` |
-| Leading icon Selected, Light | Brand-80 `#0064b4` | `icon.primary` L50 on `e3.textColor.neutral.medium.selected.rest` |
-| Leading icon Hover, Light | Brand-70 `#0055a4` | `icon.primary` L55 `#0059a1` on `e3.textColor.neutral.medium.hover` |
-| Leading icon Pressed, Light | Brand-60 `#004694` | `icon.primary` L60 `#045091` on `e3.textColor.neutral.medium.pressed` |
-| `colorNeutralForeground3`, Light | Grey 38 `#616161` | `dropdown.neutral` Light L50 `#5d616b` on `e8.textColor.neutral.medium.rest` |
-| `colorNeutralForeground3`, Dark | Grey 68 `#adadad` | `dropdown.neutral` Dark/Darker D70 `#8d919c` on `e8.textColor.neutral.medium.rest` |
+| Source concept | Source value | Lookup | Kiskadee mapping |
+| --- | --- | --- | --- |
+| `colorNeutralBackground1Hover`, Light | Grey 96 `#f5f5f5` | `reference(primitive.black.v1, subtle -2)` | L2 `#f6f6f6` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.002995` |
+| `colorNeutralBackground1Hover`, Dark | Grey 24 `#3d3d3d` | `reference(primitive.black.v1, subtle +10)` | D18 `#3c3c3c` on `e2.boxColor.neutral.medium.hover`; Delta E OK `0.003844` |
+| Hover surface, Darker | No upstream Darker theme | `reference(primitive.black.v1, subtle +7)` | D12 `#313131` on `e2.boxColor.neutral.medium.hover`, preserving the established Darker tone as a Kiskadee adaptation |
+| Destructive Low Hover, Light | Cranberry L2 `#fff4f2` | `exact(dropdown.destructive, 2, component.dropdown)` | `e2.boxColor.destructive.medium.hover`; shared tonal coordinate with Button Low Hover, independent component role |
+| Selected surface, Light | Kiskadee presentation extension | `reference(dropdown.neutral, subtle -1)` | L3 `#eef2fc` on `e2.boxColor.neutral.medium.selected`; intentionally lighter than the previous L5 `#e4e9f5` |
+| Leading icon Selected, Light | Brand-80 `#0064b4` | `reference(icon.primary, vivid)` | L50 on `e3.textColor.neutral.medium.selected.rest` |
+| Leading icon Hover, Light | Brand-70 `#0055a4` | `reference(icon.primary, vivid +1)` | L55 `#0059a1` on `e3.textColor.neutral.medium.hover` |
+| Leading icon Pressed, Light | Brand-60 `#004694` | `reference(icon.primary, vivid +2)` | L60 `#045091` on `e3.textColor.neutral.medium.pressed` |
+| `colorNeutralForeground3`, Light | Grey 38 `#616161` | `reference(dropdown.neutral, vivid -7)` | L50 `#5d616b` on `e8.textColor.neutral.medium.rest` |
+| `colorNeutralForeground3`, Dark | Grey 68 `#adadad` | `reference(dropdown.neutral, vivid -4)` | D70 `#8d919c` on `e8.textColor.neutral.medium.rest` |
 
-The hover mappings select the closest available tones from the approved zero-chroma `n.black.v1`
-asset. The darker D70 shortcut color is an explicit Kiskadee visual adaptation; it is not presented
-as an exact Fluent dark-token match. Existing approved primitive assets supply every tone, so no
-literal schema color is introduced.
+The destructive fixed-state catalog is closed under evidence ID `component.dropdown`: Light uses
+tones 2/9/7 for Hover/Pressed/Selected and Dark/Darker uses 14/9/7. These exact stops are not
+reusable functional anchors. All other entries above are functional references or physical caps.
+The hover mappings select the closest available positions from the approved
+zero-chroma `n.black.v1` asset. The darker D70 shortcut color is an explicit Kiskadee visual
+adaptation; it is not presented as an exact Fluent dark-token match. Existing approved primitive
+assets supply every tone, so no literal schema color is introduced.
 
 ## Schema Mapping
 

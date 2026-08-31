@@ -13,9 +13,7 @@ $height: 64px;
 
 .pageDescription,
 .intentsDescription {
-  color: currentColor;
   max-inline-size: 72ch;
-  opacity: 0.72;
 }
 
 .buttonExamples {
@@ -39,9 +37,7 @@ $height: 64px;
 }
 
 .showcaseSectionDescription {
-  color: currentColor;
   margin: -4px 0 16px;
-  opacity: 0.68;
 }
 
 .buttonGroupSection,
@@ -108,7 +104,6 @@ $height: 64px;
 
 .buttonMenuStatus {
   min-block-size: 1.4em;
-  opacity: 0.68;
 }
 
 .buttonExampleGrid {
@@ -247,7 +242,6 @@ $height: 64px;
 .asyncStatus {
   margin: 0;
   min-height: 1.4em;
-  opacity: 0.68;
   text-align: center;
 }
 
@@ -652,11 +646,6 @@ $height: 64px;
   }
 }
 
-.contextComparisonDescription {
-  color: currentColor;
-  opacity: 0.72;
-}
-
 .contextComparisonWithoutDescription {
   gap: 24px;
 }
@@ -693,7 +682,6 @@ $height: 64px;
 
 .contextUnavailable {
   align-self: center;
-  color: rgba(255, 255, 255, 0.88);
   grid-column: 1 / -1;
   margin: 0;
   text-align: center;
@@ -730,9 +718,7 @@ $height: 64px;
 }
 
 .state-description {
-  color: currentColor;
   margin: 0;
-  opacity: 0.62;
 }
 
 .section-note {
@@ -743,9 +729,7 @@ $height: 64px;
 }
 
 .emphasis-title {
-  color: currentColor;
   margin: 0 0 12px;
-  opacity: 0.62;
 }
 
 .darkSurface {

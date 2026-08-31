@@ -1,5 +1,5 @@
-import { validateBottomSheetComponentContract } from '../components/bottom-sheet.ts';
 import { validateBadgeComponentContract } from '../components/badge.ts';
+import { validateBottomSheetComponentContract } from '../components/bottom-sheet.ts';
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
 import { validateChipComponentContract } from '../components/chip.ts';
@@ -10,6 +10,7 @@ import { validateSeparatorComponentContract } from '../components/separator.ts';
 import { validateSliderComponentContract } from '../components/slider.zod.ts';
 import { validateSwitchComponentContract } from '../components/switch.zod.ts';
 import { validateTabsComponentContract } from '../components/tabs.zod.ts';
+import { validateTextComponentContract } from '../components/text.ts';
 import { validateTextFieldComponentContract } from '../components/text-field.zod.ts';
 
 /**
@@ -26,6 +27,7 @@ import { validateTextFieldComponentContract } from '../components/text-field.zod
  * - slider
  * - switch
  * - tabs
+ * - text
  * - textField
  *
  * Other components remain unchecked for now.
@@ -145,6 +147,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for tabs. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.text !== undefined) {
+    const issues = validateTextComponentContract(byName.text, 'components.text');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for text. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
   }

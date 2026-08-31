@@ -1,13 +1,22 @@
 import type { ComponentClassMapArtifactJSON } from '@kiskadee/web-builder/types';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
 import { useBrandPack } from './BrandPackContext.tsx';
-import { getComponentArtifactCacheKey, loadCachedArtifact } from './componentArtifactCache.ts';
+import {
+  getComponentArtifactCacheKey,
+  loadCachedArtifactOrThrow
+} from './componentArtifactCache.ts';
 import { useKiskadee } from './KiskadeeContext.tsx';
 
-type ComponentClassMapState<TClassMap> = {
-  cacheKey: string;
+type ComponentClassMapSnapshot<TClassMap> = {
+  status: 'resolved';
   classMap: TClassMap | undefined;
 };
+
+const EMPTY_COMPONENT_CLASS_MAP_SNAPSHOT = { status: 'pending' } as const;
+const componentClassMapSnapshots = new Map<string, ComponentClassMapSnapshot<unknown>>();
+const componentClassMapLoads = new Set<string>();
+const componentClassMapListeners = new Map<string, Set<() => void>>();
+const readPendingComponentClassMapSnapshot = () => EMPTY_COMPONENT_CLASS_MAP_SNAPSHOT;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -104,6 +113,53 @@ function unwrapBrandComponentClassMap<TClassMap>(
   return value as TClassMap;
 }
 
+function getComponentClassMapSnapshot<TClassMap>(
+  cacheKey: string
+): ComponentClassMapSnapshot<TClassMap> | typeof EMPTY_COMPONENT_CLASS_MAP_SNAPSHOT {
+  return (
+    (componentClassMapSnapshots.get(cacheKey) as
+      | ComponentClassMapSnapshot<TClassMap>
+      | undefined) ?? EMPTY_COMPONENT_CLASS_MAP_SNAPSHOT
+  );
+}
+
+function subscribeToComponentClassMap<TClassMap>({
+  cacheKey,
+  listener,
+  load
+}: {
+  cacheKey: string;
+  listener: () => void;
+  load: () => Promise<TClassMap | undefined>;
+}): () => void {
+  const listeners = componentClassMapListeners.get(cacheKey) ?? new Set<() => void>();
+  listeners.add(listener);
+  componentClassMapListeners.set(cacheKey, listeners);
+
+  if (!componentClassMapSnapshots.has(cacheKey) && !componentClassMapLoads.has(cacheKey)) {
+    componentClassMapLoads.add(cacheKey);
+
+    const settle = (classMap: TClassMap | undefined) => {
+      componentClassMapSnapshots.set(cacheKey, { status: 'resolved', classMap });
+      componentClassMapLoads.delete(cacheKey);
+      for (const notify of componentClassMapListeners.get(cacheKey) ?? []) notify();
+    };
+
+    const reject = () => {
+      componentClassMapLoads.delete(cacheKey);
+      componentClassMapSnapshots.delete(cacheKey);
+    };
+
+    void load().then(settle, reject);
+  }
+
+  return () => {
+    const currentListeners = componentClassMapListeners.get(cacheKey);
+    currentListeners?.delete(listener);
+    if (currentListeners?.size === 0) componentClassMapListeners.delete(cacheKey);
+  };
+}
+
 export type ComponentClassMapResolution<TClassMap> = {
   classMap: TClassMap | undefined;
   pending: boolean;
@@ -111,7 +167,8 @@ export type ComponentClassMapResolution<TClassMap> = {
 
 export function useComponentClassMapResolution<TClassMap>(
   componentName: string,
-  aggregateClassMap: TClassMap | undefined
+  aggregateClassMap: TClassMap | undefined,
+  enabled = true
 ): ComponentClassMapResolution<TClassMap> {
   const { artifactVersion, designSystem, loadComponentClassMap, segment, theme } = useKiskadee();
   const brandPack = useBrandPack();
@@ -123,23 +180,12 @@ export function useComponentClassMapResolution<TClassMap>(
     theme,
     componentName
   });
-  const [classMapState, setClassMapState] = useState<ComponentClassMapState<TClassMap> | undefined>(
-    undefined
-  );
-  const currentComponentClassMap =
-    classMapState?.cacheKey === classMapCacheKey ? classMapState.classMap : undefined;
-  const previousLoadedComponentClassMap =
-    classMapState?.cacheKey !== classMapCacheKey ? classMapState?.classMap : undefined;
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!loadComponentClassMap) {
-      return () => {
-        cancelled = true;
-      };
-    }
-
+  const previousResolvedComponentClassMapRef = useRef<{
+    cacheKey: string;
+    classMap: TClassMap | undefined;
+  } | null>(null);
+  const loadMergedComponentClassMap = useCallback(async (): Promise<TClassMap | undefined> => {
+    if (!loadComponentClassMap) return undefined;
     const coreCacheKey = getComponentArtifactCacheKey({
       designSystem,
       artifactVersion,
@@ -154,13 +200,12 @@ export function useComponentClassMapResolution<TClassMap>(
       theme,
       componentName
     });
-
-    Promise.all([
-      loadCachedArtifact<ComponentClassMapArtifactJSON<TClassMap>>({
+    const [coreArtifact, paletteArtifact] = await Promise.all([
+      loadCachedArtifactOrThrow<ComponentClassMapArtifactJSON<TClassMap>>({
         cacheKey: coreCacheKey,
         load: () => loadComponentClassMap(componentName, { kind: 'core' })
       }),
-      loadCachedArtifact<ComponentClassMapArtifactJSON<TClassMap>>({
+      loadCachedArtifactOrThrow<ComponentClassMapArtifactJSON<TClassMap>>({
         cacheKey: paletteCacheKey,
         load: () =>
           loadComponentClassMap(componentName, {
@@ -169,32 +214,62 @@ export function useComponentClassMapResolution<TClassMap>(
             theme
           })
       })
-    ]).then(([coreArtifact, paletteArtifact]) => {
-      if (cancelled) return;
-      const coreClassMap = isComponentClassMapArtifact(coreArtifact, componentName)
-        ? coreArtifact.classMap
-        : undefined;
-      const paletteClassMap = isComponentClassMapArtifact(paletteArtifact, componentName)
-        ? paletteArtifact.classMap
-        : undefined;
-      setClassMapState({
-        cacheKey: classMapCacheKey,
-        classMap: mergeComponentClassMaps(coreClassMap, paletteClassMap)
-      });
-    });
+    ]);
+    const coreClassMap = isComponentClassMapArtifact(coreArtifact, componentName)
+      ? coreArtifact.classMap
+      : undefined;
+    const paletteClassMap = isComponentClassMapArtifact(paletteArtifact, componentName)
+      ? paletteArtifact.classMap
+      : undefined;
+    return mergeComponentClassMaps(coreClassMap, paletteClassMap);
+  }, [artifactVersion, componentName, designSystem, loadComponentClassMap, segment, theme]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    artifactVersion,
-    classMapCacheKey,
-    componentName,
-    designSystem,
-    loadComponentClassMap,
-    segment,
-    theme
-  ]);
+  const subscribe = useCallback(
+    (listener: () => void) => {
+      if (!enabled) return () => {};
+
+      const captureResolvedSnapshot = () => {
+        const snapshot = getComponentClassMapSnapshot<TClassMap>(classMapCacheKey);
+        if (snapshot.status === 'resolved') {
+          previousResolvedComponentClassMapRef.current = {
+            cacheKey: classMapCacheKey,
+            classMap: snapshot.classMap
+          };
+        }
+      };
+
+      captureResolvedSnapshot();
+      if (!loadComponentClassMap) return () => {};
+
+      return subscribeToComponentClassMap({
+        cacheKey: classMapCacheKey,
+        listener: () => {
+          captureResolvedSnapshot();
+          listener();
+        },
+        load: loadMergedComponentClassMap
+      });
+    },
+    [classMapCacheKey, enabled, loadComponentClassMap, loadMergedComponentClassMap]
+  );
+  const readSnapshot = useCallback(
+    () =>
+      enabled
+        ? getComponentClassMapSnapshot<TClassMap>(classMapCacheKey)
+        : EMPTY_COMPONENT_CLASS_MAP_SNAPSHOT,
+    [classMapCacheKey, enabled]
+  );
+  const loadedSnapshot = useSyncExternalStore(
+    subscribe,
+    readSnapshot,
+    readPendingComponentClassMapSnapshot
+  );
+  const currentComponentClassMap =
+    loadedSnapshot.status === 'resolved' ? loadedSnapshot.classMap : undefined;
+  const previousLoadedComponentClassMap =
+    enabled && loadedSnapshot.status === 'pending'
+      ? previousResolvedComponentClassMapRef.current?.classMap
+      : undefined;
 
   // Preserve the last loaded component map while a provider swaps manifests/design systems.
   const baseClassMap =
@@ -213,7 +288,7 @@ export function useComponentClassMapResolution<TClassMap>(
 
   return {
     classMap,
-    pending: Boolean(loadComponentClassMap && classMapState?.cacheKey !== classMapCacheKey)
+    pending: Boolean(enabled && loadComponentClassMap && loadedSnapshot.status === 'pending')
   };
 }
 

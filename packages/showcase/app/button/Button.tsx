@@ -5,6 +5,7 @@ import {
   Card,
   Button as KButton,
   SmoothText,
+  SurfaceContextProvider,
   Text,
   useButtonArtifactConfig,
   useKiskadee,
@@ -102,7 +103,7 @@ function SurfaceContextComparison({
           Surface contexts
         </Text>
         {showDescriptions ? (
-          <Text as="p" profile={textProfiles.body} className={s.contextComparisonDescription}>
+          <Text as="p" profile={textProfiles.body}>
             The same Primary Rest buttons rendered simultaneously on subtle and vivid surfaces.
           </Text>
         ) : null}
@@ -153,7 +154,12 @@ function SurfaceContextComparison({
                   </KButton>
                 ))
               ) : (
-                <Text as="p" profile={textProfiles.caption} className={s.contextUnavailable}>
+                <Text
+                  as="p"
+                  emphasis="lowest"
+                  profile={textProfiles.caption}
+                  className={s.contextUnavailable}
+                >
                   On vivid is not available in this palette.
                 </Text>
               )}
@@ -488,18 +494,7 @@ export function Button() {
   };
 
   return (
-    <section className={routeClassName || undefined}>
-      <header className={s.pageHeader}>
-        <Text as="h2" profile={textProfiles.pageTitle}>
-          Button
-        </Text>
-        {showDescriptions ? (
-          <Text as="p" profile={textProfiles.body} className={s.pageDescription}>
-            Buttons let people trigger an immediate action or make a choice. Intent communicates the
-            action&apos;s meaning, while emphasis establishes its priority on the current surface.
-          </Text>
-        ) : null}
-      </header>
+    <>
       <ShowcaseRouteControls
         id="button"
         eyebrow="Button"
@@ -508,425 +503,452 @@ export function Button() {
       >
         {buttonControls}
       </ShowcaseRouteControls>
-      <SurfaceContextComparison
-        onVividSupported={onVividSupported}
-        fontName={fontName}
-        scale={activeButtonScale}
-        surfaceContext={activeCardSurfaceContext}
-        textAlign={alignment}
-      />
-      <section className={s.intentsSection} aria-labelledby="button-intents-title">
-        <div className={s.intentsHeader}>
-          <div className={s.intentsHeadingRow}>
-            <Text as="h3" id="button-intents-title" profile={textProfiles.sectionTitle}>
-              Intents
+      <SurfaceContextProvider value={activeSurfaceContext}>
+        <section className={routeClassName || undefined}>
+          <header className={s.pageHeader}>
+            <Text as="h2" profile={textProfiles.pageTitle}>
+              Button
             </Text>
-            <div className={s.intentsInlineControls}>
-              <ShowcaseBooleanControl
-                className={s.intentsInlineControl}
-                label="Rest only"
-                checked={isSimplified}
-                onCheckedChange={setIsSimplified}
+            {showDescriptions ? (
+              <Text as="p" profile={textProfiles.body} className={s.pageDescription}>
+                Buttons let people trigger an immediate action or make a choice. Intent communicates
+                the action&apos;s meaning, while emphasis establishes its priority on the current
+                surface.
+              </Text>
+            ) : null}
+          </header>
+          <SurfaceContextComparison
+            onVividSupported={onVividSupported}
+            fontName={fontName}
+            scale={activeButtonScale}
+            surfaceContext={activeCardSurfaceContext}
+            textAlign={alignment}
+          />
+          <section className={s.intentsSection} aria-labelledby="button-intents-title">
+            <div className={s.intentsHeader}>
+              <div className={s.intentsHeadingRow}>
+                <Text as="h3" id="button-intents-title" profile={textProfiles.sectionTitle}>
+                  Intents
+                </Text>
+                <div className={s.intentsInlineControls}>
+                  <ShowcaseBooleanControl
+                    className={s.intentsInlineControl}
+                    label="Rest only"
+                    checked={isSimplified}
+                    onCheckedChange={setIsSimplified}
+                  />
+                  <ShowcaseBooleanControl
+                    className={s.intentsInlineControl}
+                    label="Focus ring"
+                    checked={showFocusRing}
+                    onCheckedChange={setShowFocusRing}
+                  />
+                </div>
+              </div>
+              {showDescriptions ? (
+                <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
+                  Intent gives an action its semantic role. Primary advances the main task, Neutral
+                  supports secondary actions, Destructive signals risk, and Positive communicates a
+                  beneficial outcome.
+                </Text>
+              ) : null}
+            </div>
+            <div
+              className={`${s.intentsGrid} ${
+                isSimplified ? s.intentsGridSimplified : s.intentsGridDetailed
+              }`}
+            >
+              <ButtonStateSection
+                intent="primary"
+                title="Primary"
+                description={
+                  showDescriptions ? 'The main action that advances the current task.' : undefined
+                }
+                fontName={fontName}
+                align={alignment}
+                stateCapabilities={buttonState}
+                simplified={isSimplified}
+                grouped={showButtonGroups}
+                scale={activeButtonScale}
+                surfaceContext={activeCardSurfaceContext}
               />
-              <ShowcaseBooleanControl
-                className={s.intentsInlineControl}
-                label="Focus ring"
-                checked={showFocusRing}
-                onCheckedChange={setShowFocusRing}
+
+              <ButtonStateSection
+                intent="neutral"
+                title="Neutral"
+                description={
+                  showDescriptions ? 'Supporting actions that do not dominate the flow.' : undefined
+                }
+                fontName={fontName}
+                align={alignment}
+                stateCapabilities={buttonState}
+                simplified={isSimplified}
+                grouped={showButtonGroups}
+                scale={activeButtonScale}
+                surfaceContext={activeCardSurfaceContext}
+              />
+
+              <ButtonStateSection
+                intent="destructive"
+                title="Destructive"
+                description={
+                  showDescriptions
+                    ? 'Actions with harmful or irreversible consequences.'
+                    : undefined
+                }
+                fontName={fontName}
+                align={alignment}
+                stateCapabilities={buttonState}
+                simplified={isSimplified}
+                grouped={showButtonGroups}
+                scale={activeButtonScale}
+                surfaceContext={activeCardSurfaceContext}
+              />
+
+              <ButtonStateSection
+                intent="positive"
+                title="Positive"
+                description={
+                  showDescriptions
+                    ? 'Actions that confirm a safe or beneficial outcome.'
+                    : undefined
+                }
+                fontName={fontName}
+                align={alignment}
+                stateCapabilities={buttonState}
+                simplified={isSimplified}
+                grouped={showButtonGroups}
+                scale={activeButtonScale}
+                surfaceContext={activeCardSurfaceContext}
               />
             </div>
-          </div>
-          {showDescriptions ? (
-            <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
-              Intent gives an action its semantic role. Primary advances the main task, Neutral
-              supports secondary actions, Destructive signals risk, and Positive communicates a
-              beneficial outcome.
-            </Text>
-          ) : null}
-        </div>
-        <div
-          className={`${s.intentsGrid} ${
-            isSimplified ? s.intentsGridSimplified : s.intentsGridDetailed
-          }`}
-        >
-          <ButtonStateSection
-            intent="primary"
-            title="Primary"
-            description={
-              showDescriptions ? 'The main action that advances the current task.' : undefined
-            }
-            fontName={fontName}
-            align={alignment}
-            stateCapabilities={buttonState}
-            simplified={isSimplified}
-            grouped={showButtonGroups}
-            scale={activeButtonScale}
-            surfaceContext={activeCardSurfaceContext}
-          />
+          </section>
+          <div className={s.buttonExamples}>
+            {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
+            <div className={s['interaction-state']}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Activation Feedback Profiles
+              </Text>
+              <div className={`${s['example-states']} k-root`}>
+                <KButton
+                  intent="primary"
+                  emphasis="high"
+                  scale={activeButtonScale}
+                  surfaceContext={activeSurfaceContext}
+                  activationFeedback={{ profile: 'ripple' }}
+                >
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={alignment}>
+                      AF Ripple
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+                <KButton
+                  intent="primary"
+                  emphasis="high"
+                  scale={activeButtonScale}
+                  surfaceContext={activeSurfaceContext}
+                  activationFeedback={{ profile: 'ripple', origin: 'center' }}
+                >
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={alignment}>
+                      AF Ripple Center
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+                <KButton
+                  intent="primary"
+                  emphasis="high"
+                  scale={activeButtonScale}
+                  surfaceContext={activeSurfaceContext}
+                  activationFeedback={{ profile: 'ripple-overflow' }}
+                >
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={alignment}>
+                      AF Ripple Overflow
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+                <KButton
+                  intent="primary"
+                  emphasis="high"
+                  scale={activeButtonScale}
+                  surfaceContext={activeSurfaceContext}
+                  activationFeedback={{ profile: 'halo' }}
+                >
+                  <KButton.Label>
+                    <SmoothText fontName={fontName} align={alignment}>
+                      AF Halo
+                    </SmoothText>
+                  </KButton.Label>
+                </KButton>
+              </div>
+            </div>
+            {/* [ACTIVATION FEEDBACK] END: Showcase examples for profile/origin overrides. */}
 
-          <ButtonStateSection
-            intent="neutral"
-            title="Neutral"
-            description={
-              showDescriptions ? 'Supporting actions that do not dominate the flow.' : undefined
-            }
-            fontName={fontName}
-            align={alignment}
-            stateCapabilities={buttonState}
-            simplified={isSimplified}
-            grouped={showButtonGroups}
-            scale={activeButtonScale}
-            surfaceContext={activeCardSurfaceContext}
-          />
+            <div className={s['interaction-state']}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Selected (Primary / Medium)
+              </Text>
+              <div className={`${s['example-states']} k-root`}>
+                {renderState(
+                  'primary',
+                  'medium',
+                  isSelected ? 'selected' : 'rest',
+                  <KButton
+                    emphasis="medium"
+                    intent="primary"
+                    scale={activeButtonScale}
+                    surfaceContext={activeSurfaceContext}
+                    radius="rounded"
+                    radiusEffect={true}
+                    controlState={isSelected}
+                    onClick={() => setIsSelected((prev) => !prev)}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        {isSelected ? 'Followed' : 'Follow'}
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+              </div>
+            </div>
 
-          <ButtonStateSection
-            intent="destructive"
-            title="Destructive"
-            description={
-              showDescriptions ? 'Actions with harmful or irreversible consequences.' : undefined
-            }
-            fontName={fontName}
-            align={alignment}
-            stateCapabilities={buttonState}
-            simplified={isSimplified}
-            grouped={showButtonGroups}
-            scale={activeButtonScale}
-            surfaceContext={activeCardSurfaceContext}
-          />
+            <div className={s['interaction-state']}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Selected (Primary / High)
+              </Text>
+              <div className={`${s['example-states']} k-root`}>
+                {renderState(
+                  'primary',
+                  'high',
+                  isSelectedVivid ? 'selected' : 'rest',
+                  <KButton
+                    emphasis="high"
+                    intent="primary"
+                    scale={activeButtonScale}
+                    surfaceContext={activeSurfaceContext}
+                    radius="rounded"
+                    radiusEffect={true}
+                    controlState={isSelectedVivid}
+                    onClick={() => setIsSelectedVivid((prev) => !prev)}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        {isSelectedVivid ? 'Followed' : 'Follow'}
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+              </div>
+            </div>
 
-          <ButtonStateSection
-            intent="positive"
-            title="Positive"
-            description={
-              showDescriptions ? 'Actions that confirm a safe or beneficial outcome.' : undefined
-            }
-            fontName={fontName}
-            align={alignment}
-            stateCapabilities={buttonState}
-            simplified={isSimplified}
-            grouped={showButtonGroups}
-            scale={activeButtonScale}
-            surfaceContext={activeCardSurfaceContext}
-          />
-        </div>
-      </section>
-      <div className={s.buttonExamples}>
-        {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
-        <div className={s['interaction-state']}>
-          <Text as="h3" profile={textProfiles.sectionTitle}>
-            Activation Feedback Profiles
-          </Text>
-          <div className={`${s['example-states']} k-root`}>
-            <KButton
-              intent="primary"
-              emphasis="high"
-              scale={activeButtonScale}
-              surfaceContext={activeSurfaceContext}
-              activationFeedback={{ profile: 'ripple' }}
-            >
-              <KButton.Label>
-                <SmoothText fontName={fontName} align={alignment}>
-                  AF Ripple
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton
-              intent="primary"
-              emphasis="high"
-              scale={activeButtonScale}
-              surfaceContext={activeSurfaceContext}
-              activationFeedback={{ profile: 'ripple', origin: 'center' }}
-            >
-              <KButton.Label>
-                <SmoothText fontName={fontName} align={alignment}>
-                  AF Ripple Center
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton
-              intent="primary"
-              emphasis="high"
-              scale={activeButtonScale}
-              surfaceContext={activeSurfaceContext}
-              activationFeedback={{ profile: 'ripple-overflow' }}
-            >
-              <KButton.Label>
-                <SmoothText fontName={fontName} align={alignment}>
-                  AF Ripple Overflow
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-            <KButton
-              intent="primary"
-              emphasis="high"
-              scale={activeButtonScale}
-              surfaceContext={activeSurfaceContext}
-              activationFeedback={{ profile: 'halo' }}
-            >
-              <KButton.Label>
-                <SmoothText fontName={fontName} align={alignment}>
-                  AF Halo
-                </SmoothText>
-              </KButton.Label>
-            </KButton>
-          </div>
-        </div>
-        {/* [ACTIVATION FEEDBACK] END: Showcase examples for profile/origin overrides. */}
-
-        <div className={s['interaction-state']}>
-          <Text as="h3" profile={textProfiles.sectionTitle}>
-            Selected (Primary / Medium)
-          </Text>
-          <div className={`${s['example-states']} k-root`}>
-            {renderState(
-              'primary',
-              'medium',
-              isSelected ? 'selected' : 'rest',
+            <div>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Shadow
+              </Text>
               <KButton
-                emphasis="medium"
-                intent="primary"
+                scale={activeButtonScale}
+                shadow={true}
+                surfaceContext={activeSurfaceContext}
+              >
+                <KButton.Label>
+                  <SmoothText fontName={fontName} align={alignment}>
+                    Rest
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+              <KButton
+                scale={activeButtonScale}
+                shadow={true}
+                surfaceContext={activeSurfaceContext}
+                status={'hover'}
+              >
+                <KButton.Label>
+                  <SmoothText fontName={fontName} align={alignment}>
+                    Hover
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+              <KButton
+                scale={activeButtonScale}
+                shadow={true}
+                surfaceContext={activeSurfaceContext}
+                status={'focus'}
+              >
+                <KButton.Label>
+                  <SmoothText fontName={fontName} align={alignment}>
+                    Focus
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+              <KButton
+                scale={activeButtonScale}
+                shadow={true}
+                surfaceContext={activeSurfaceContext}
+                status={'pressed'}
+              >
+                <KButton.Label>
+                  <SmoothText fontName={fontName} align={alignment}>
+                    Pressed
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+              <KButton
+                scale={activeButtonScale}
+                shadow={true}
+                surfaceContext={activeSurfaceContext}
+                status={'disabled'}
+              >
+                <KButton.Label>
+                  <SmoothText fontName={fontName} align={alignment}>
+                    Disabled
+                  </SmoothText>
+                </KButton.Label>
+              </KButton>
+            </div>
+
+            <div className={s['interaction-state']}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Size / Scale
+              </Text>
+              <div className={`${s['example-states']} k-root`}>
+                {renderScale(
+                  's:sm:2',
+                  <KButton
+                    scale="s:sm:2"
+                    intent="primary"
+                    emphasis="high"
+                    surfaceContext={activeSurfaceContext}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        Small 2
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderScale(
+                  's:sm:1',
+                  <KButton
+                    scale="s:sm:1"
+                    intent="primary"
+                    emphasis="high"
+                    surfaceContext={activeSurfaceContext}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        Small
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderScale(
+                  's:md:1',
+                  <KButton
+                    scale="s:md:1"
+                    intent="primary"
+                    emphasis="high"
+                    surfaceContext={activeSurfaceContext}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        Medium
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderScale(
+                  's:lg:1',
+                  <KButton
+                    scale="s:lg:1"
+                    intent="primary"
+                    emphasis="high"
+                    surfaceContext={activeSurfaceContext}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        Large
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderScale(
+                  's:lg:2',
+                  <KButton
+                    scale="s:lg:2"
+                    intent="primary"
+                    emphasis="high"
+                    surfaceContext={activeSurfaceContext}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        Large 2
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+                {renderScale(
+                  's:lg:3',
+                  <KButton
+                    scale="s:lg:3"
+                    intent="primary"
+                    emphasis="high"
+                    surfaceContext={activeSurfaceContext}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        Large 3
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+              </div>
+            </div>
+            <ButtonIconExamples
+              fontName={fontName}
+              scale={activeButtonScale}
+              surfaceContext={activeSurfaceContext}
+            />
+            {manifest?.components?.badge ? (
+              <ButtonBadgeExamples
                 scale={activeButtonScale}
                 surfaceContext={activeSurfaceContext}
-                radius="rounded"
-                radiusEffect={true}
-                controlState={isSelected}
-                onClick={() => setIsSelected((prev) => !prev)}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    {isSelected ? 'Followed' : 'Follow'}
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
+              />
+            ) : null}
+            <ButtonGroupExamples
+              scale={activeButtonScale}
+              shadowAvailable={Boolean(buttonClassesMap?.e1?.e?.h)}
+              surfaceContext={activeSurfaceContext}
+            />
+            <ButtonMenuExamples
+              available={Boolean(adaptiveButtonMenuAvailable && buttonMeta)}
+              presence={presenceOverride}
+              scale={activeButtonScale}
+              surfaceContext={activeSurfaceContext}
+            />
           </div>
-        </div>
-
-        <div className={s['interaction-state']}>
-          <Text as="h3" profile={textProfiles.sectionTitle}>
-            Selected (Primary / High)
-          </Text>
-          <div className={`${s['example-states']} k-root`}>
-            {renderState(
-              'primary',
-              'high',
-              isSelectedVivid ? 'selected' : 'rest',
-              <KButton
-                emphasis="high"
-                intent="primary"
-                scale={activeButtonScale}
-                surfaceContext={activeSurfaceContext}
-                radius="rounded"
-                radiusEffect={true}
-                controlState={isSelectedVivid}
-                onClick={() => setIsSelectedVivid((prev) => !prev)}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    {isSelectedVivid ? 'Followed' : 'Follow'}
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <Text as="h3" profile={textProfiles.sectionTitle}>
-            Shadow
-          </Text>
-          <KButton scale={activeButtonScale} shadow={true} surfaceContext={activeSurfaceContext}>
-            <KButton.Label>
-              <SmoothText fontName={fontName} align={alignment}>
-                Rest
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-          <KButton
+          <ButtonAsyncExample
+            buttonState={buttonState}
+            fontName={fontName}
+            progressAvailable={Boolean(manifest?.components?.progress)}
+            progressSurfaceContext={
+              supportsManifestSurfaceContext(
+                manifest?.components?.progress,
+                segment,
+                theme,
+                activeSurfaceContext
+              )
+                ? activeSurfaceContext
+                : 'onSubtle'
+            }
             scale={activeButtonScale}
-            shadow={true}
             surfaceContext={activeSurfaceContext}
-            status={'hover'}
-          >
-            <KButton.Label>
-              <SmoothText fontName={fontName} align={alignment}>
-                Hover
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-          <KButton
-            scale={activeButtonScale}
-            shadow={true}
-            surfaceContext={activeSurfaceContext}
-            status={'focus'}
-          >
-            <KButton.Label>
-              <SmoothText fontName={fontName} align={alignment}>
-                Focus
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-          <KButton
-            scale={activeButtonScale}
-            shadow={true}
-            surfaceContext={activeSurfaceContext}
-            status={'pressed'}
-          >
-            <KButton.Label>
-              <SmoothText fontName={fontName} align={alignment}>
-                Pressed
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-          <KButton
-            scale={activeButtonScale}
-            shadow={true}
-            surfaceContext={activeSurfaceContext}
-            status={'disabled'}
-          >
-            <KButton.Label>
-              <SmoothText fontName={fontName} align={alignment}>
-                Disabled
-              </SmoothText>
-            </KButton.Label>
-          </KButton>
-        </div>
-
-        <div className={s['interaction-state']}>
-          <Text as="h3" profile={textProfiles.sectionTitle}>
-            Size / Scale
-          </Text>
-          <div className={`${s['example-states']} k-root`}>
-            {renderScale(
-              's:sm:2',
-              <KButton
-                scale="s:sm:2"
-                intent="primary"
-                emphasis="high"
-                surfaceContext={activeSurfaceContext}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Small 2
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderScale(
-              's:sm:1',
-              <KButton
-                scale="s:sm:1"
-                intent="primary"
-                emphasis="high"
-                surfaceContext={activeSurfaceContext}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Small
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderScale(
-              's:md:1',
-              <KButton
-                scale="s:md:1"
-                intent="primary"
-                emphasis="high"
-                surfaceContext={activeSurfaceContext}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Medium
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderScale(
-              's:lg:1',
-              <KButton
-                scale="s:lg:1"
-                intent="primary"
-                emphasis="high"
-                surfaceContext={activeSurfaceContext}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Large
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderScale(
-              's:lg:2',
-              <KButton
-                scale="s:lg:2"
-                intent="primary"
-                emphasis="high"
-                surfaceContext={activeSurfaceContext}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Large 2
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-            {renderScale(
-              's:lg:3',
-              <KButton
-                scale="s:lg:3"
-                intent="primary"
-                emphasis="high"
-                surfaceContext={activeSurfaceContext}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Large 3
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            )}
-          </div>
-        </div>
-        <ButtonIconExamples
-          fontName={fontName}
-          scale={activeButtonScale}
-          surfaceContext={activeSurfaceContext}
-        />
-        {manifest?.components?.badge ? (
-          <ButtonBadgeExamples scale={activeButtonScale} surfaceContext={activeSurfaceContext} />
-        ) : null}
-        <ButtonGroupExamples
-          scale={activeButtonScale}
-          shadowAvailable={Boolean(buttonClassesMap?.e1?.e?.h)}
-          surfaceContext={activeSurfaceContext}
-        />
-        <ButtonMenuExamples
-          available={Boolean(adaptiveButtonMenuAvailable && buttonMeta)}
-          presence={presenceOverride}
-          scale={activeButtonScale}
-          surfaceContext={activeSurfaceContext}
-        />
-      </div>
-      <ButtonAsyncExample
-        buttonState={buttonState}
-        fontName={fontName}
-        progressAvailable={Boolean(manifest?.components?.progress)}
-        progressSurfaceContext={
-          supportsManifestSurfaceContext(
-            manifest?.components?.progress,
-            segment,
-            theme,
-            activeSurfaceContext
-          )
-            ? activeSurfaceContext
-            : 'onSubtle'
-        }
-        scale={activeButtonScale}
-        surfaceContext={activeSurfaceContext}
-      />
-    </section>
+          />
+        </section>
+      </SurfaceContextProvider>
+    </>
   );
 }
 

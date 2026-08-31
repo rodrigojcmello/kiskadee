@@ -1,13 +1,16 @@
-import type { Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { primitive, type Schema } from '@kiskadee/core';
+import {
+  absoluteCap,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from '../fluent-2-microsoft.color.ts';
 
-type Fluent2MicrosoftSegmentName = 'default';
 type IconComponent = NonNullable<Schema<never>['components']['icon']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type ThemeShortcut = 'l' | 'd';
 
 type CreateFluent2MicrosoftIconSchemaArgs = {
-  c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
+  c: Fluent2MicrosoftColorResolver;
 };
 
 const ICON_THEME_TRACK = {
@@ -22,7 +25,7 @@ const ICON_THEME_TRACK = {
  * Why
  *     Monochrome artwork must resolve through the preset while brand artwork keeps its own paint.
  */
-function createIconPalette(c: PresetColorGetter<Fluent2MicrosoftSegmentName>, theme: ThemeName) {
+function createIconPalette(c: Fluent2MicrosoftColorResolver, theme: ThemeName) {
   const track = ICON_THEME_TRACK[theme];
 
   return {
@@ -30,12 +33,12 @@ function createIconPalette(c: PresetColorGetter<Fluent2MicrosoftSegmentName>, th
       textColor: {
         neutral: {
           medium: {
-            rest: c.ref('default', track, 'icon.neutral', 'vivid')
+            rest: c.resolve('default', track, referenceColor('icon.neutral', 'vivid'))
           }
         },
         primary: {
           medium: {
-            rest: c.ref('default', track, 'icon.primary', 'vivid')
+            rest: c.resolve('default', track, referenceColor('icon.primary', 'vivid'))
           }
         }
       }
@@ -44,12 +47,12 @@ function createIconPalette(c: PresetColorGetter<Fluent2MicrosoftSegmentName>, th
       textColor: {
         neutral: {
           medium: {
-            rest: c('default', 'l', 'icon.neutral', 0)
+            rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light'))
           }
         },
         primary: {
           medium: {
-            rest: c.ref('default', 'l', 'icon.primary', 'subtle', 4)
+            rest: c.resolve('default', 'l', referenceColor('icon.primary', 'subtle', 4))
           }
         }
       }

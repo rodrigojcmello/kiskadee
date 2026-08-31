@@ -1,10 +1,10 @@
+import { normalizeHexColor, primitive, type SolidColor, withAlpha } from '@kiskadee/core';
 import {
-  type KiskadeeTone,
-  normalizeHexColor,
-  type SolidColor,
-  type TonalFunctionalReferenceName,
-  withAlpha
-} from '@kiskadee/core';
+  absoluteCap,
+  type Fluent2MicrosoftFamilyColorLocator,
+  familyExactColor,
+  familyReferenceColor
+} from '../fluent-2-microsoft.color.ts';
 import {
   createBalancedLowBorder,
   createPerceptuallyBalancedAlpha
@@ -14,19 +14,13 @@ export type FluentButtonFormulaTheme = 'light' | 'dark' | 'darker';
 export type FluentButtonFormulaScale = 'light' | 'dark';
 
 export type FluentButtonTonalFamily = {
-  color: (theme: FluentButtonFormulaScale, tone: KiskadeeTone, alpha?: number) => SolidColor;
-  reference: (
+  resolve: (
     theme: FluentButtonFormulaScale,
-    reference: TonalFunctionalReferenceName,
-    offset?: number,
-    alpha?: number
+    locator: Fluent2MicrosoftFamilyColorLocator
   ) => SolidColor;
 };
 
-type FunctionalToneLocator = {
-  reference: TonalFunctionalReferenceName;
-  offset: number;
-};
+type FunctionalToneLocator = Extract<Fluent2MicrosoftFamilyColorLocator, { mode: 'reference' }>;
 
 type StatefulFunctionalTones = {
   rest: FunctionalToneLocator;
@@ -39,15 +33,15 @@ type ButtonDefaultThemeRecipe = {
   medium: StatefulFunctionalTones;
   high: StatefulFunctionalTones;
   low: {
-    hover: KiskadeeTone;
-    pressed: KiskadeeTone;
+    hover: Fluent2MicrosoftFamilyColorLocator;
+    pressed: Fluent2MicrosoftFamilyColorLocator;
     border: FunctionalToneLocator & {
-      surfaceTone: KiskadeeTone;
+      surface: Fluent2MicrosoftFamilyColorLocator;
       targetDeltaE: number;
     };
   };
-  foreground: KiskadeeTone;
-  lowestDisabledForeground: KiskadeeTone;
+  foreground: Fluent2MicrosoftFamilyColorLocator;
+  lowestDisabledForeground: Fluent2MicrosoftFamilyColorLocator;
 };
 
 type FluentButtonIntentFormula = {
@@ -67,73 +61,85 @@ export const FLUENT_BUTTON_DEFAULT_TONAL_RECIPE = {
   light: {
     scale: 'light',
     medium: {
-      rest: { reference: 'subtle', offset: 0 },
-      hover: { reference: 'subtle', offset: 2 },
-      pressed: { reference: 'subtle', offset: 4 }
+      rest: familyReferenceColor('subtle'),
+      hover: familyReferenceColor('subtle', 2),
+      pressed: familyReferenceColor('subtle', 4)
     },
     high: {
-      rest: { reference: 'vivid', offset: 0 },
-      hover: { reference: 'vivid', offset: 1 },
-      pressed: { reference: 'vivid', offset: 3 }
+      rest: familyReferenceColor('vivid'),
+      hover: familyReferenceColor('vivid', 1),
+      pressed: familyReferenceColor('vivid', 3)
     },
     low: {
-      hover: 2,
-      pressed: 4,
-      border: { reference: 'vivid', offset: 0, surfaceTone: 0, targetDeltaE: 0.3 }
+      hover: familyExactColor(2, 'component.button'),
+      pressed: familyExactColor(4, 'component.button'),
+      border: {
+        ...familyReferenceColor('vivid'),
+        surface: absoluteCap(primitive('black', 'v1'), 'light'),
+        targetDeltaE: 0.3
+      }
     },
-    foreground: 65,
-    lowestDisabledForeground: 16
+    foreground: familyExactColor(65, 'component.button'),
+    lowestDisabledForeground: familyExactColor(16, 'component.button')
   },
   dark: {
     scale: 'dark',
     medium: {
-      rest: { reference: 'subtle', offset: 0 },
-      hover: { reference: 'subtle', offset: 2 },
-      pressed: { reference: 'subtle', offset: 4 }
+      rest: familyReferenceColor('subtle'),
+      hover: familyReferenceColor('subtle', 2),
+      pressed: familyReferenceColor('subtle', 4)
     },
     high: {
-      rest: { reference: 'vivid', offset: 0 },
-      hover: { reference: 'vivid', offset: 1 },
-      pressed: { reference: 'vivid', offset: -2 }
+      rest: familyReferenceColor('vivid'),
+      hover: familyReferenceColor('vivid', 1),
+      pressed: familyReferenceColor('vivid', -2)
     },
     low: {
-      hover: 14,
-      pressed: 22,
-      border: { reference: 'vivid', offset: 0, surfaceTone: 5, targetDeltaE: 0.18 }
+      hover: familyExactColor(14, 'component.button'),
+      pressed: familyExactColor(22, 'component.button'),
+      border: {
+        ...familyReferenceColor('vivid'),
+        surface: familyExactColor(5, 'component.button'),
+        targetDeltaE: 0.18
+      }
     },
-    foreground: 75,
-    lowestDisabledForeground: 35
+    foreground: familyExactColor(75, 'component.button'),
+    lowestDisabledForeground: familyExactColor(35, 'component.button')
   },
   darker: {
     scale: 'dark',
     medium: {
-      rest: { reference: 'subtle', offset: 0 },
-      hover: { reference: 'subtle', offset: 2 },
-      pressed: { reference: 'subtle', offset: 4 }
+      rest: familyReferenceColor('subtle'),
+      hover: familyReferenceColor('subtle', 2),
+      pressed: familyReferenceColor('subtle', 4)
     },
     high: {
-      rest: { reference: 'vivid', offset: -1 },
-      hover: { reference: 'vivid', offset: 0 },
-      pressed: { reference: 'vivid', offset: -3 }
+      rest: familyReferenceColor('vivid', -1),
+      hover: familyReferenceColor('vivid'),
+      pressed: familyReferenceColor('vivid', -3)
     },
     low: {
-      hover: 14,
-      pressed: 22,
-      border: { reference: 'vivid', offset: -1, surfaceTone: 0, targetDeltaE: 0.18 }
+      hover: familyExactColor(14, 'component.button'),
+      pressed: familyExactColor(22, 'component.button'),
+      border: {
+        ...familyReferenceColor('vivid', -1),
+        surface: absoluteCap(primitive('black', 'v1'), 'dark'),
+        targetDeltaE: 0.18
+      }
     },
-    foreground: 75,
-    lowestDisabledForeground: 35
+    foreground: familyExactColor(75, 'component.button'),
+    lowestDisabledForeground: familyExactColor(35, 'component.button')
   }
 } as const satisfies Record<FluentButtonFormulaTheme, ButtonDefaultThemeRecipe>;
 
 export const FLUENT_BUTTON_ON_VIVID_RECIPE = {
   high: {
-    hover: 4,
-    pressed: 12,
+    hover: familyExactColor(4, 'component.button'),
+    pressed: familyExactColor(12, 'component.button'),
     foreground: {
-      rest: { reference: 'vivid', offset: 0 },
-      hover: { reference: 'vivid', offset: 1 },
-      pressed: { reference: 'vivid', offset: 3 }
+      rest: familyReferenceColor('vivid'),
+      hover: familyReferenceColor('vivid', 1),
+      pressed: familyReferenceColor('vivid', 3)
     }
   },
   medium: {
@@ -148,14 +154,14 @@ export const FLUENT_BUTTON_ON_VIVID_RECIPE = {
       disabled: 7
     },
     roleSurface: {
-      rest: { reference: 'subtle', offset: 8, targetDeltaE: 0.04 },
-      hover: { reference: 'subtle', offset: 6, targetDeltaE: 0.032 },
-      pressed: { reference: 'subtle', offset: 4, targetDeltaE: 0.024 }
+      rest: { ...familyReferenceColor('subtle', 8), targetDeltaE: 0.04 },
+      hover: { ...familyReferenceColor('subtle', 6), targetDeltaE: 0.032 },
+      pressed: { ...familyReferenceColor('subtle', 4), targetDeltaE: 0.024 }
     },
-    roleForeground: { reference: 'subtle', offset: -2 }
+    roleForeground: familyReferenceColor('subtle', -2)
   },
   low: {
-    content: { reference: 'subtle', offset: 4 },
+    content: familyReferenceColor('subtle', 4),
     lightSurfaceAlpha: {
       hover: 8,
       pressed: 3
@@ -250,55 +256,58 @@ export function createFluentButtonOnSubtleIntent({
   neutralButtonFamily: FluentButtonTonalFamily;
   neutralSurfaceColor: (
     theme: FluentButtonFormulaScale,
-    tone: KiskadeeTone,
-    alpha?: number
+    locator: Fluent2MicrosoftFamilyColorLocator
   ) => SolidColor;
   highForeground: SolidColor;
 }): FluentButtonIntentFormula {
   const recipe = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme];
   const scale = recipe.scale;
   const isLight = scale === 'light';
-  const transparent = neutralButtonFamily.color(scale, 0, 0);
-  const adaptiveDisabled = neutralButtonFamily.color(scale, 100, 5);
-  const disabledForeground = neutralButtonFamily.color(scale, recipe.lowestDisabledForeground);
+  const transparent = neutralButtonFamily.resolve(
+    scale,
+    absoluteCap(primitive('black', 'v1'), isLight ? 'light' : 'dark', 0)
+  );
+  const adaptiveDisabled = neutralButtonFamily.resolve(
+    scale,
+    absoluteCap(primitive('black', 'v1'), isLight ? 'dark' : 'light', 5)
+  );
+  const disabledForeground = neutralButtonFamily.resolve(scale, recipe.lowestDisabledForeground);
   const filledDisabledForeground = isLight
-    ? neutralButtonFamily.color('light', 20, 82)
+    ? neutralButtonFamily.resolve('light', familyExactColor(20, 'component.button', 82))
     : disabledForeground;
-  const roleColor = (tone: KiskadeeTone, alpha?: number) => family.color(scale, tone, alpha);
-  const roleReferenceColor = (locator: FunctionalToneLocator, alpha?: number) =>
-    family.reference(scale, locator.reference, locator.offset, alpha);
+  const roleColor = (locator: Fluent2MicrosoftFamilyColorLocator) => family.resolve(scale, locator);
   const lowBorder = createBalancedLowBorder({
-    color: roleReferenceColor(recipe.low.border),
-    surface: neutralSurfaceColor(scale, recipe.low.border.surfaceTone),
+    color: roleColor(recipe.low.border),
+    surface: neutralSurfaceColor(scale, recipe.low.border.surface),
     targetDeltaE: recipe.low.border.targetDeltaE
   });
 
   return {
     boxColor: {
       medium: {
-        rest: roleReferenceColor(recipe.medium.rest),
-        hover: roleReferenceColor(recipe.medium.hover),
-        pressed: roleReferenceColor(recipe.medium.pressed),
+        rest: roleColor(recipe.medium.rest),
+        hover: roleColor(recipe.medium.hover),
+        pressed: roleColor(recipe.medium.pressed),
         pending: applySlotVisibility(
-          roleReferenceColor(recipe.medium.rest),
+          roleColor(recipe.medium.rest),
           FLUENT_BUTTON_PENDING_VISIBILITY.surface
         ),
         disabled: adaptiveDisabled,
         selected: {
-          rest: roleReferenceColor(recipe.medium.pressed)
+          rest: roleColor(recipe.medium.pressed)
         }
       },
       high: {
-        rest: roleReferenceColor(recipe.high.rest),
-        hover: roleReferenceColor(recipe.high.hover),
-        pressed: roleReferenceColor(recipe.high.pressed),
+        rest: roleColor(recipe.high.rest),
+        hover: roleColor(recipe.high.hover),
+        pressed: roleColor(recipe.high.pressed),
         pending: applySlotVisibility(
-          roleReferenceColor(recipe.high.rest),
+          roleColor(recipe.high.rest),
           FLUENT_BUTTON_PENDING_VISIBILITY.surface
         ),
         disabled: adaptiveDisabled,
         selected: {
-          rest: roleReferenceColor(recipe.high.pressed)
+          rest: roleColor(recipe.high.pressed)
         }
       },
       low: {
@@ -397,32 +406,47 @@ export function createFluentButtonOnVividIntent({
   canonicalSurface: SolidColor;
 }): FluentButtonIntentFormula {
   const usesSharedLightMedium = theme === 'light';
-  const onVividWhite = neutralButtonFamily.color('light', 0);
-  const onVividTransparent = neutralButtonFamily.color('light', 0, 0);
-  const onVividDisabledBackground = neutralButtonFamily.color(
+  const onVividWhite = neutralButtonFamily.resolve(
     'light',
-    0,
-    FLUENT_BUTTON_ON_VIVID_RECIPE.disabled.backgroundAlpha[theme]
+    absoluteCap(primitive('black', 'v1'), 'light')
   );
-  const onVividDisabledForeground = neutralButtonFamily.color(
+  const onVividTransparent = neutralButtonFamily.resolve(
     'light',
-    0,
-    FLUENT_BUTTON_ON_VIVID_RECIPE.disabled.foregroundAlpha
+    absoluteCap(primitive('black', 'v1'), 'light', 0)
   );
-  const onVividLowBorder = neutralButtonFamily.color(
+  const onVividDisabledBackground = neutralButtonFamily.resolve(
     'light',
-    0,
-    FLUENT_BUTTON_ON_VIVID_RECIPE.low.borderAlpha[theme]
+    absoluteCap(
+      primitive('black', 'v1'),
+      'light',
+      FLUENT_BUTTON_ON_VIVID_RECIPE.disabled.backgroundAlpha[theme]
+    )
+  );
+  const onVividDisabledForeground = neutralButtonFamily.resolve(
+    'light',
+    absoluteCap(
+      primitive('black', 'v1'),
+      'light',
+      FLUENT_BUTTON_ON_VIVID_RECIPE.disabled.foregroundAlpha
+    )
+  );
+  const onVividLowBorder = neutralButtonFamily.resolve(
+    'light',
+    absoluteCap(
+      primitive('black', 'v1'),
+      'light',
+      FLUENT_BUTTON_ON_VIVID_RECIPE.low.borderAlpha[theme]
+    )
   );
   const onVividInteractionBackground = (alpha: number) =>
-    neutralButtonFamily.color('light', 100, alpha);
-  const onVividMediumBackground = (alpha: number) => neutralButtonFamily.color('light', 0, alpha);
-  const roleColor = (tone: KiskadeeTone) => family.color('light', tone);
-  const roleReferenceColor = (locator: FunctionalToneLocator) =>
-    family.reference('light', locator.reference, locator.offset);
+    neutralButtonFamily.resolve('light', absoluteCap(primitive('black', 'v1'), 'dark', alpha));
+  const onVividMediumBackground = (alpha: number) =>
+    neutralButtonFamily.resolve('light', absoluteCap(primitive('black', 'v1'), 'light', alpha));
+  const roleColor = (locator: Fluent2MicrosoftFamilyColorLocator) =>
+    family.resolve('light', locator);
   const mediumSurfaceColor = (locator: FunctionalToneLocator & { targetDeltaE: number }) =>
     createPerceptuallyBalancedAlpha({
-      color: roleReferenceColor(locator),
+      color: roleColor(locator),
       surface: canonicalSurface,
       targetDeltaE: locator.targetDeltaE,
       usage: 'On-vivid Medium surface'
@@ -527,10 +551,10 @@ export function createFluentButtonOnVividIntent({
     },
     textColor: {
       medium: {
-        rest: roleReferenceColor(mediumForeground),
+        rest: roleColor(mediumForeground),
         pending: {
           ref: applySlotVisibility(
-            roleReferenceColor(mediumForeground),
+            roleColor(mediumForeground),
             FLUENT_BUTTON_PENDING_VISIBILITY.content
           )
         },
@@ -539,33 +563,33 @@ export function createFluentButtonOnVividIntent({
         }
       },
       high: {
-        rest: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.rest),
+        rest: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.rest),
         pending: {
           ref: applySlotVisibility(
-            roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.rest),
+            roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.rest),
             FLUENT_BUTTON_PENDING_VISIBILITY.content
           )
         },
         hover: {
-          ref: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.hover)
+          ref: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.hover)
         },
         pressed: {
-          ref: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.pressed)
+          ref: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.pressed)
         },
         disabled: {
           ref: onVividDisabledForeground
         },
         selected: {
           rest: {
-            ref: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.pressed)
+            ref: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.high.foreground.pressed)
           }
         }
       },
       low: {
-        rest: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+        rest: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
         pending: {
           ref: applySlotVisibility(
-            roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+            roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
             FLUENT_BUTTON_PENDING_VISIBILITY.content
           )
         },
@@ -574,10 +598,10 @@ export function createFluentButtonOnVividIntent({
         }
       },
       lowest: {
-        rest: roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+        rest: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
         pending: {
           ref: applySlotVisibility(
-            roleReferenceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+            roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
             FLUENT_BUTTON_PENDING_VISIBILITY.content
           )
         },

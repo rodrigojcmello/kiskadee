@@ -196,7 +196,10 @@ semantic aliases to their closest generated Kiskadee positions.
 | --- | --- | --- | --- | --- |
 | Brand background rest | Brand-80 `#0064b4` | L50 `#0064b4` | Brand-70 `#0055a4` | D35 `#005ba4` |
 | Neutral background rest | White `#ffffff` | `n.black.v1` L0 `#ffffff` | Grey-16 `#262932` | `n.black.v2` D9 `#262a33` |
-| Neutral foreground rest | Grey-14 `#21242d` | `n.black.v2` L85 `#21242d` | White `#ffffff` | `n.black.v1` D100 `#ffffff` |
+| Neutral Foreground 1 | Grey-14 `#21242d` | `n.black.v2` L85 `#21242d`, Delta E `0` | White `#ffffff` | `n.black.v2` D100 `#ffffff`, Delta E `0`; the Text recipe reaches it through `reference(neutral, vivid +3)` |
+| Neutral Foreground 2 | Grey-26 `#3e424c` | `n.black.v2` L65 `#434650`, Delta E `0.016023` | Grey-84 `#d1d6e2` | `n.black.v2` D90 `#d2d6e3`, Delta E `0.002029` |
+| Neutral Foreground 3 | Grey-38 `#5d616b` | `n.black.v2` L50 `#5d616b`, Delta E `0` | Grey-68 `#a9adb9` | `n.black.v2` D80 `#b0b4c0`, Delta E `0.022292` |
+| Neutral Foreground 4 | Grey-44 `#6c707b` | `n.black.v2` L40 `#6f737e`, Delta E `0.01035` | Grey-60 `#9599a4` | `n.black.v2` D70 `#8d919c`, Delta E `0.026284` |
 | Danger | Cranberry Primary `#c50f1f` | L45 `#c50f1f` | Cranberry Tint 30 `#dc626d` | D65 `#df5f57` |
 | Warning | Orange Primary `#f7630c` | L24 `#f7630c` | Orange Tint 20 `#f98845` | D75 `#e68962` |
 | Success | Green Primary `#107c10` | L45 `#107c10` | Green Tint 30 `#54b054` | D75 `#67b661` |
@@ -275,21 +278,38 @@ Progress is documented in [`../components/progress.md`](../components/progress.m
 Green, Orange, Cranberry, and Neutral through one canonical `medium` profile per intent. Warning
 uses the existing Orange v1 family at L50/D55; no second Orange primitive is introduced.
 
+Text is documented in [`../components/text.md`](../components/text.md). Its global neutral profile
+uses `vivid +0/-7/-21` in Light and `vivid +3/-2/-11` in Dark/Darker for Medium, Low, and Lowest.
+These references currently resolve to L85/L50/L10 and D100/D80/D35. On vivid surfaces, `medium`
+uses the physical light cap, while `low` and `lowest` project that cap at 68% and 24%.
+
+The same Text catalog now publishes the six approved chromatic primitive families by hue name.
+On subtle surfaces, normal chromatic text follows each family's `vivid` reference in Light and
+`vivid +8` in Dark/Darker; `low` and `lowest` reuse that base at 68% and 24% alpha. On vivid
+surfaces every theme uses the family's Light-track `subtle +2` anchor, again at 100%, 68%, and 24%.
+This shared hierarchy is a Kiskadee extension
+derived from the existing Button/Badge color evidence. It does not rename hues to component
+semantics and does not promote the harmony-derived Teal, Lime, Indigo, Magenta, or Brown candidates.
+
+The productive Fluent preset now resolves every base color through the FRF locator taxonomy. A
+policy test locks the full consumed reference/exact/cap inventory, and a separate Node-only parity test checks the
+eight promoted TypeScript assets against the approved `0.5.0` JSON bundle and manifest hashes.
+
 Badge is documented in [`../components/badge.md`](../components/badge.md). Its High and
 family-colored full-bleed presentations resolve each intent through that family's functional
 `vivid` reference rather than a shared tone. This maps Light Warning to Orange L24 `#f7630c`.
 Fluent's inspected Dark Warning source is an explicit per-theme exception at Orange D75
 `#e68962`; the exception remains preset-owned and does not change the Orange family's global Dark
 vivid reference at D40. Badge Medium follows each family's `subtle` reference with a shared
-theme-relative offset. Badge Low instead uses the exact `primitive.black.v1` absolute-black cap at
-8% alpha for every `onSubtle` intent and theme, allowing the surrounding surface to determine the
+theme-relative offset. Badge Low instead uses `cap(primitive.black.v1, dark, 8%)` for every
+`onSubtle` intent and theme, allowing the surrounding surface to determine the
 composited lightness without introducing an intent tint. Medium remains at `subtle +4` Light and
 `subtle +14` Dark/Darker. The independent `onVivid` High hierarchy uses each intent's Light-track
 `subtle +7` for the textual `e1` surface. The shared Dot/contained-Mark `e5` indicator surface uses
 `subtle +8`, one public-grid position darker, retaining compact intent prominence without creating
 a separate anatomy or primitive. On `onVivid`, Medium uses each intent's Light-track `subtle +1`;
-Low uses the exact `primitive.black.v1` absolute-black cap at 12% alpha and carries identity through
-an intent `subtle +2` foreground. `lowest` remains un-authored by the Fluent preset.
+Low uses `cap(primitive.black.v1, dark, 12%)` and carries identity through an intent `subtle +2`
+foreground. `lowest` remains un-authored by the Fluent preset.
 
 The preset-wide color foundation also promotes the other five explicitly
 authored Fluent chromatic families at Layer 1. Layer 2 maps Blue to `primary`,

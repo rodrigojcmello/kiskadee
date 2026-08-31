@@ -1,68 +1,97 @@
-import type { KiskadeeTone, Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { primitive, type Schema } from '@kiskadee/core';
+import {
+  absoluteCap,
+  exactColor,
+  type Fluent2MicrosoftColorLocator,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from '../fluent-2-microsoft.color.ts';
 
 type BottomSheetComponent = NonNullable<Schema<never>['components']['bottomSheet']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type ThemeShortcut = 'l' | 'd';
 
 type CreateFluent2MicrosoftBottomSheetSchemaArgs = {
-  c: PresetColorGetter<'default'>;
+  c: Fluent2MicrosoftColorResolver;
 };
+
+const neutralReference = (reference: 'subtle' | 'vivid', offset = 0) =>
+  referenceColor('bottomSheet.neutral', reference, offset);
+const neutralExact = (tone: 45 | 50 | 55) =>
+  exactColor('bottomSheet.neutral', tone, 'component.bottom-sheet');
+const destructiveExact = (tone: 5 | 7 | 9) =>
+  exactColor('bottomSheet.destructive', tone, 'component.bottom-sheet');
 
 const THEMES = {
   light: {
     track: 'l',
-    surface: 0,
-    handle: 45,
-    hover: 2,
-    pressed: 7,
-    selected: 5,
-    text: 85,
-    groupLabelText: 75,
-    secondaryText: 65,
-    endText: 50,
-    disabledText: 35
+    transparent: absoluteCap(primitive('black', 'v1'), 'light', 0),
+    surface: absoluteCap(primitive('black', 'v1'), 'light'),
+    handle: neutralExact(45),
+    hover: referenceColor(primitive('black', 'v1'), 'subtle', -2),
+    pressed: neutralReference('subtle', 3),
+    selected: neutralReference('subtle', 1),
+    text: neutralReference('vivid'),
+    groupLabelText: neutralReference('vivid', -2),
+    secondaryText: neutralReference('vivid', -4),
+    endText: neutralReference('vivid', -7),
+    disabledText: neutralReference('vivid', -10),
+    destructiveHover: destructiveExact(5),
+    destructivePressed: destructiveExact(9),
+    destructiveSelected: destructiveExact(7)
   },
   dark: {
     track: 'd',
-    surface: 5,
-    handle: 55,
-    hover: 18,
-    pressed: 10,
-    selected: 12,
-    text: 90,
-    groupLabelText: 85,
-    secondaryText: 70,
-    endText: 70,
-    disabledText: 45
+    transparent: absoluteCap(primitive('black', 'v1'), 'dark', 0),
+    surface: neutralReference('subtle', 1),
+    handle: neutralExact(55),
+    hover: referenceColor(primitive('black', 'v1'), 'subtle', 10),
+    pressed: neutralReference('subtle', 6),
+    selected: neutralReference('subtle', 7),
+    text: neutralReference('vivid'),
+    groupLabelText: neutralReference('vivid', -1),
+    secondaryText: neutralReference('vivid', -4),
+    endText: neutralReference('vivid', -4),
+    disabledText: neutralReference('vivid', -9),
+    destructiveHover: destructiveExact(5),
+    destructivePressed: destructiveExact(9),
+    destructiveSelected: destructiveExact(7)
   },
   darker: {
     track: 'd',
-    surface: 3,
-    handle: 50,
-    hover: 12,
-    pressed: 7,
-    selected: 9,
-    text: 90,
-    groupLabelText: 85,
-    secondaryText: 70,
-    endText: 70,
-    disabledText: 45
+    transparent: absoluteCap(primitive('black', 'v1'), 'dark', 0),
+    surface: neutralReference('subtle', -1),
+    handle: neutralExact(50),
+    hover: referenceColor(primitive('black', 'v1'), 'subtle', 7),
+    pressed: neutralReference('subtle', 3),
+    selected: neutralReference('subtle', 5),
+    text: neutralReference('vivid'),
+    groupLabelText: neutralReference('vivid', -1),
+    secondaryText: neutralReference('vivid', -4),
+    endText: neutralReference('vivid', -4),
+    disabledText: neutralReference('vivid', -9),
+    destructiveHover: destructiveExact(5),
+    destructivePressed: destructiveExact(9),
+    destructiveSelected: destructiveExact(7)
   }
 } as const satisfies Record<
   ThemeName,
   {
     track: ThemeShortcut;
-    surface: KiskadeeTone;
-    handle: KiskadeeTone;
-    hover: KiskadeeTone;
-    pressed: KiskadeeTone;
-    selected: KiskadeeTone;
-    text: KiskadeeTone;
-    groupLabelText: KiskadeeTone;
-    secondaryText: KiskadeeTone;
-    endText: KiskadeeTone;
-    disabledText: KiskadeeTone;
+    transparent: Fluent2MicrosoftColorLocator;
+    surface: Fluent2MicrosoftColorLocator;
+    handle: Fluent2MicrosoftColorLocator;
+    hover: Fluent2MicrosoftColorLocator;
+    pressed: Fluent2MicrosoftColorLocator;
+    selected: Fluent2MicrosoftColorLocator;
+    text: Fluent2MicrosoftColorLocator;
+    groupLabelText: Fluent2MicrosoftColorLocator;
+    secondaryText: Fluent2MicrosoftColorLocator;
+    endText: Fluent2MicrosoftColorLocator;
+    disabledText: Fluent2MicrosoftColorLocator;
+    destructiveHover: Fluent2MicrosoftColorLocator;
+    destructivePressed: Fluent2MicrosoftColorLocator;
+    destructiveSelected: Fluent2MicrosoftColorLocator;
   }
 >;
 
@@ -73,17 +102,21 @@ export function createFluent2MicrosoftBottomSheetSchema({
     onSubtle: {
       boxColor: {
         neutral: {
-          medium: { rest: c('default', 'l', 'primitive.black.v1', 100, 32) }
+          medium: {
+            rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'dark', 32))
+          }
         }
       }
     }
   };
   const createTheme = (theme: ThemeName) => {
     const recipe = THEMES[theme];
-    const transparent = c('default', recipe.track, 'bottomSheet.neutral', 0, 0);
-    const disabledText = c('default', recipe.track, 'bottomSheet.neutral', recipe.disabledText);
-    const neutralText = c('default', recipe.track, 'bottomSheet.neutral', recipe.text);
-    const destructiveText = c.ref('default', recipe.track, 'bottomSheet.destructive', 'vivid');
+    const resolve = (locator: Fluent2MicrosoftColorLocator) =>
+      c.resolve('default', recipe.track, locator);
+    const transparent = resolve(recipe.transparent);
+    const disabledText = resolve(recipe.disabledText);
+    const neutralText = resolve(recipe.text);
+    const destructiveText = resolve(referenceColor('bottomSheet.destructive', 'vivid'));
     const textColor = {
       neutral: {
         medium: { rest: neutralText, disabled: { ref: disabledText } }
@@ -99,7 +132,7 @@ export function createFluent2MicrosoftBottomSheetSchema({
           boxColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'bottomSheet.neutral', recipe.surface)
+                rest: resolve(recipe.surface)
               }
             }
           }
@@ -110,7 +143,7 @@ export function createFluent2MicrosoftBottomSheetSchema({
           boxColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'bottomSheet.neutral', recipe.handle)
+                rest: resolve(recipe.handle)
               }
             }
           }
@@ -122,10 +155,10 @@ export function createFluent2MicrosoftBottomSheetSchema({
             neutral: {
               medium: {
                 rest: transparent,
-                hover: c('default', recipe.track, 'primitive.black.v1', recipe.hover),
-                pressed: c('default', recipe.track, 'bottomSheet.neutral', recipe.pressed),
+                hover: resolve(recipe.hover),
+                pressed: resolve(recipe.pressed),
                 selected: {
-                  rest: c('default', recipe.track, 'bottomSheet.neutral', recipe.selected)
+                  rest: resolve(recipe.selected)
                 },
                 disabled: transparent
               }
@@ -133,10 +166,10 @@ export function createFluent2MicrosoftBottomSheetSchema({
             destructive: {
               medium: {
                 rest: transparent,
-                hover: c('default', recipe.track, 'bottomSheet.destructive', 5),
-                pressed: c('default', recipe.track, 'bottomSheet.destructive', 9),
+                hover: resolve(recipe.destructiveHover),
+                pressed: resolve(recipe.destructivePressed),
                 selected: {
-                  rest: c('default', recipe.track, 'bottomSheet.destructive', 7)
+                  rest: resolve(recipe.destructiveSelected)
                 },
                 disabled: transparent
               }
@@ -150,7 +183,7 @@ export function createFluent2MicrosoftBottomSheetSchema({
           textColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'bottomSheet.neutral', recipe.secondaryText),
+                rest: resolve(recipe.secondaryText),
                 disabled: { ref: disabledText }
               }
             },
@@ -165,13 +198,13 @@ export function createFluent2MicrosoftBottomSheetSchema({
           textColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'bottomSheet.neutral', recipe.endText),
+                rest: resolve(recipe.endText),
                 disabled: { ref: disabledText }
               }
             },
             destructive: {
               medium: {
-                rest: c('default', recipe.track, 'bottomSheet.neutral', recipe.endText),
+                rest: resolve(recipe.endText),
                 disabled: { ref: disabledText }
               }
             }
@@ -183,7 +216,7 @@ export function createFluent2MicrosoftBottomSheetSchema({
           textColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'bottomSheet.neutral', recipe.groupLabelText),
+                rest: resolve(recipe.groupLabelText),
                 disabled: { ref: disabledText }
               }
             },

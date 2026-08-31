@@ -92,19 +92,12 @@ button.neutral  -> neutral   -> primitive.black.v1 -> light.vivid
 ```
 
 This matters because Green and Black may have different vivid positions while
-sharing the same Button formula. Preset schemas use `c.ref()` for this lookup
-and may apply an ordinal public-grid offset for interaction states. Exact
-source-backed tone decisions continue to use `c()`.
+sharing the same Button formula. An FRF preset resolves this lookup through a `reference` locator
+and may apply an ordinal public-grid offset for interaction states. Fixed upstream stops use an
+evidence-backed `exact` locator, and physical endpoints use `cap`.
 
-Preset color authorship is **functional-reference-first**, not reference-only:
-
-- use `c.ref()` when a recipe expresses family-relative identity, a remappable semantic or Brand
-  role, or one shared formula that must follow each primitive family's `subtle` or `vivid` anchor;
-- use `c()` when upstream evidence selects an exact token or tonal position independently per
-  theme, or for absolute/structural colors, alpha, disabled, contrast, and gradients;
-- document every exact lookup that could otherwise be mistaken for a functional anchor;
-- never copy the current numeric position of `subtle` or `vivid` into `c()`, repeat one tone across
-  unrelated families for convenience, or invent an interaction offset without evidence.
+[Preset Tonal Color Contract](tonal-color-contract.md) is the normative definition of Functional
+Reference First, its locator taxonomy, evidence requirements, and allowed derived-color formulas.
 
 ## Customization Scenarios
 

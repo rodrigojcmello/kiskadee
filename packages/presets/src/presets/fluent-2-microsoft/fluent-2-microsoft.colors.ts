@@ -150,6 +150,9 @@ export const componentIntents = {
   },
   switch: {
     neutral: 'neutral'
+  },
+  text: {
+    neutral: 'neutral'
   }
 } as const satisfies ComponentIntents;
 

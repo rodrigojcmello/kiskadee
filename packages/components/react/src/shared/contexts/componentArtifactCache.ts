@@ -2,6 +2,29 @@ type LoadComponentArtifact = <T>(componentName: string) => Promise<T | undefined
 
 const componentArtifactPromiseCache = new Map<string, Promise<unknown | undefined>>();
 
+function getOrCreateCachedArtifactPromise<T>({
+  cacheKey,
+  load
+}: {
+  cacheKey: string;
+  load: () => Promise<T | undefined>;
+}): Promise<T | undefined> {
+  let cached = componentArtifactPromiseCache.get(cacheKey);
+
+  if (!cached) {
+    const pending = Promise.resolve().then(load);
+    componentArtifactPromiseCache.set(cacheKey, pending);
+    void pending.catch(() => {
+      if (componentArtifactPromiseCache.get(cacheKey) === pending) {
+        componentArtifactPromiseCache.delete(cacheKey);
+      }
+    });
+    cached = pending;
+  }
+
+  return cached as Promise<T | undefined>;
+}
+
 export function getComponentArtifactCacheKey({
   designSystem,
   artifactVersion,
@@ -34,17 +57,17 @@ export function loadCachedArtifact<T>({
   cacheKey: string;
   load: () => Promise<T | undefined>;
 }): Promise<T | undefined> {
-  let cached = componentArtifactPromiseCache.get(cacheKey);
+  return getOrCreateCachedArtifactPromise({ cacheKey, load }).catch(() => undefined);
+}
 
-  if (!cached) {
-    cached = load().catch(() => {
-      componentArtifactPromiseCache.delete(cacheKey);
-      return undefined;
-    });
-    componentArtifactPromiseCache.set(cacheKey, cached);
-  }
-
-  return cached as Promise<T | undefined>;
+export function loadCachedArtifactOrThrow<T>({
+  cacheKey,
+  load
+}: {
+  cacheKey: string;
+  load: () => Promise<T | undefined>;
+}): Promise<T | undefined> {
+  return getOrCreateCachedArtifactPromise({ cacheKey, load });
 }
 
 export function loadCachedComponentArtifact<T>({

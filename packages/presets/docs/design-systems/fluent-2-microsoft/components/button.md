@@ -491,6 +491,15 @@ subtle. Two opaque alternatives remain rejected: matching the foreground at L65/
 dominant, while moving to L14/D50 was too light. The perceptual targets are a Kiskadee adaptation,
 not upstream Fluent tokens.
 
+## Color And Token Provenance
+
+The complete Button recipe is FRF. Medium and High surfaces use `subtle`/`vivid` references;
+source-calibrated Low states, foreground stops, and disabled stops use the closed
+`component.button` exact catalog; physical light/dark foregrounds, overlays, and transparency use
+caps. Pending visibility, perceptually balanced on-vivid alpha, and the Low border are derived only
+after those inputs resolve. The Brand projector consumes the same locators and changes only the
+terminal that reads the portable Brand scale.
+
 ## Canonical Kiskadee Intent Recipe
 
 The active schema generates `primary`, `neutral`, `destructive`, and `positive` from one tonal
@@ -760,12 +769,15 @@ L16 because it has no disabled fill, and all Dark/Darker disabled foregrounds re
 
 1. Layer 1 primitives:
    - generator `b.blue.v1` is promoted as Core role `primitive.blue.v1`;
-   - generator `n.black.v1` is promoted as Core role `primitive.black.v1`;
+   - generator `n.black.v1` is promoted as Core role `primitive.black.v1` for grayscale and
+     physical caps;
+   - generator `n.black.v2` is promoted as Core role `primitive.black.v2` for tinted-neutral
+     semantics;
    - generator `r.red.v1` is promoted as Core role `primitive.red.v1`;
    - generator `g.green.v1` is promoted as Core role `primitive.green.v1`.
 2. Layer 2 global semantics:
    - `primary.v1` points to `primitive.blue.v1` in Light and Dark;
-   - `neutral.v1` points to `primitive.black.v1` in Light and Dark;
+   - `neutral.v1` points to `primitive.black.v2` in Light and Dark;
    - `redLike.v1` points to `primitive.red.v1` in Light and Dark;
    - `greenLike.v1` points to `primitive.green.v1` in Light and Dark.
 3. Layer 3 Button intents:

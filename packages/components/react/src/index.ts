@@ -278,7 +278,16 @@ export {
   TabsSegmented,
   useTabsArtifactConfig
 } from './components/Tabs/index.ts';
-export type { TextComponent, TextProps, TextRef } from './components/Text';
+export type {
+  TextClassesMap,
+  TextComponent,
+  TextElementName,
+  TextEmphasis,
+  TextForegroundName,
+  TextForegroundProps,
+  TextProps,
+  TextRef
+} from './components/Text';
 export { Text } from './components/Text';
 export type {
   TextFieldArtifactConfig,

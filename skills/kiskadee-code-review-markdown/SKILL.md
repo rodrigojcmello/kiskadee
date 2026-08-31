@@ -103,10 +103,11 @@ Run this review for every diff, including changes confined to one project:
    - affected consumers validate the changed handoff.
 6. Record the result in `## Governance Review` even when no violation exists.
 
-For official preset color diffs, apply `kiskadee-resolve-preset-colors` and verify the documented
-`functional reference` versus `exact tone` classification. Absence of `c.ref()` is not a finding by
-itself: report a finding only when a family-relative recipe was encoded as an exact tone, an exact
-lookup lacks evidence/rationale, or the change otherwise breaks the documented color provenance.
+For official preset color diffs, apply `kiskadee-resolve-preset-colors`. In an FRF preset, report a
+bypass, a family-relative decision encoded as `exact`, an unregistered or undocumented `exact`, a
+physical endpoint encoded as an ordinary tone, or a derived-color formula whose inputs are not FRF.
+For a preset that has not migrated, review the legacy lookup against its documented provenance
+without claiming FRF compliance.
 
 Use `$kiskadee-architecture` when any of these conditions applies:
 

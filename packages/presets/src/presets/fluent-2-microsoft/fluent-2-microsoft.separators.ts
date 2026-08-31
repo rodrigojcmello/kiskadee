@@ -1,8 +1,8 @@
 import type { SchemaSeparators } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../utils/presetColor.ts';
+import { type Fluent2MicrosoftColorResolver, referenceColor } from './fluent-2-microsoft.color.ts';
 
 type CreateFluent2MicrosoftSeparatorsArgs = {
-  c: PresetColorGetter<'default'>;
+  c: Fluent2MicrosoftColorResolver;
 };
 
 export function createFluent2MicrosoftSeparators({
@@ -18,7 +18,13 @@ export function createFluent2MicrosoftSeparators({
               onSubtle: {
                 boxColor: {
                   neutral: {
-                    medium: { rest: c('default', 'l', 'primitive.black.v1', 7) }
+                    medium: {
+                      rest: c.resolve(
+                        'default',
+                        'l',
+                        referenceColor('primitive.black.v1', 'subtle', 3)
+                      )
+                    }
                   }
                 }
               }
@@ -27,7 +33,13 @@ export function createFluent2MicrosoftSeparators({
               onSubtle: {
                 boxColor: {
                   neutral: {
-                    medium: { rest: c('default', 'd', 'primitive.black.v1', 30) }
+                    medium: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        referenceColor('primitive.black.v1', 'subtle', 16)
+                      )
+                    }
                   }
                 }
               }
@@ -36,7 +48,13 @@ export function createFluent2MicrosoftSeparators({
               onSubtle: {
                 boxColor: {
                   neutral: {
-                    medium: { rest: c('default', 'd', 'primitive.black.v1', 12) }
+                    medium: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        referenceColor('primitive.black.v1', 'subtle', 7)
+                      )
+                    }
                   }
                 }
               }

@@ -45,6 +45,12 @@ Standalone `Text` consumes the same recipes through a dedicated `t` artifact buc
 maps compact, stable profile keys to the existing atomic utilities; it does not create composite
 CSS selectors or turn typography profiles into component scales.
 
+Reusable foreground profiles live in `global.foregrounds`. Participating elements map a local
+intent to a complete, surface-relative profile, and the Web Builder expands the profile into the
+existing `c.s` and optional `c.v` color buckets. Standalone `Text` resolves typography and foreground
+through independent channels, so changing one never removes the other. No foreground-specific
+runtime lookup or artifact bucket exists.
+
 Typography profiles own text metrics, font role, and weight. Component elements continue to own
 their surrounding geometry, including padding, gap, margin, alignment, and height. Presets reuse a
 shared profile instead of creating compact or relaxed recipes solely to reproduce a component's

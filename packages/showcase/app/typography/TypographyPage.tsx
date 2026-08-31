@@ -1,10 +1,19 @@
 'use client';
 
-import type { FontStack, SchemaFonts, TextFontValue } from '@kiskadee/core';
+import {
+  type FontStack,
+  type SchemaFonts,
+  type TextEmphasis,
+  type TextFontValue,
+  type TextForegroundName,
+  textForegroundValues
+} from '@kiskadee/core';
 import { SYSTEM_MONOSPACE_FONT_STACK } from '@kiskadee/core/font-family';
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
 import {
+  Card,
   type FontFamilyRole,
+  SurfaceContextProvider,
   Text,
   useFontFamilyStatus,
   useKiskadee,
@@ -40,6 +49,10 @@ type RoleDisplay = {
 
 const FONT_ROLES: readonly FontFamilyRole[] = ['body', 'heading', 'code'];
 const TYPOGRAPHY_ROLE_ORDER: readonly TextFontValue[] = ['body', 'heading', 'code'];
+const TEXT_FOREGROUND_EMPHASES: readonly TextEmphasis[] = ['medium', 'low', 'lowest'];
+const TEXT_CHROMATIC_FOREGROUNDS = textForegroundValues.filter(
+  (foreground): foreground is Exclude<TextForegroundName, 'neutral'> => foreground !== 'neutral'
+);
 
 const PROFILE_SAMPLES: Readonly<Record<TextFontValue, string>> = {
   body: 'Typography should make every interface clear and comfortable.',
@@ -164,62 +177,273 @@ function RolePreview({
   );
 }
 
-function TextComponentExamples({ textProfiles }: { textProfiles: ShowcaseTextProfiles }) {
+function ChromaticForegroundRows({
+  foregrounds,
+  textProfiles
+}: {
+  foregrounds: readonly TextForegroundName[];
+  textProfiles: ShowcaseTextProfiles;
+}) {
+  return (
+    <table className={styles.chromaticTable} aria-label="Chromatic Text foregrounds by emphasis">
+      <thead>
+        <tr className={`${styles.chromaticRow} ${styles.chromaticHeaderRow}`}>
+          <Text as="th" emphasis="lowest" profile={textProfiles.caption} scope="col">
+            Family
+          </Text>
+          {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
+            <Text
+              as="th"
+              emphasis="lowest"
+              key={emphasis}
+              profile={textProfiles.caption}
+              scope="col"
+            >
+              {emphasis[0].toUpperCase() + emphasis.slice(1)}
+            </Text>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {foregrounds.map((foreground) => (
+          <tr className={styles.chromaticRow} data-text-foreground={foreground} key={foreground}>
+            <Text as="th" foreground={foreground} profile={textProfiles.caption} scope="row">
+              {foreground[0].toUpperCase() + foreground.slice(1)}
+            </Text>
+            {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
+              <Text
+                as="td"
+                data-text-emphasis={emphasis}
+                foreground={foreground}
+                emphasis={emphasis}
+                key={emphasis}
+                profile={textProfiles.body}
+              >
+                Aa
+              </Text>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function TextComponentExamples({
+  chromaticForegrounds,
+  textProfiles
+}: {
+  chromaticForegrounds: readonly TextForegroundName[];
+  textProfiles: ShowcaseTextProfiles;
+}) {
   return (
     <section className={styles.textComponent} aria-labelledby="text-component-title">
       <div className={styles.sectionHeader}>
-        <Text as="p" profile={textProfiles.caption} className={styles.eyebrow}>
+        <Text
+          as="p"
+          emphasis="lowest"
+          profile={textProfiles.caption}
+          className={styles.foregroundEyebrow}
+        >
           Component
         </Text>
         <Text as="h2" profile={textProfiles.sectionTitle} id="text-component-title">
-          Text
+          Text foreground
         </Text>
         <Text as="p" profile={textProfiles.body}>
-          HTML semantics and visual typography are independent. Every example resolves its profile
-          through the active preset without creating profile-specific CSS.
+          Typography and foreground resolve independently. Preset-owned neutral and chromatic
+          profiles adapt three levels of emphasis to the surface behind the Text.
         </Text>
       </div>
 
-      <div className={styles.textExampleGrid}>
-        <article className={styles.textExampleCard}>
-          <Text as="h3" profile={textProfiles.groupTitle}>
-            Inline
-          </Text>
-          <div className={styles.textExamplePreview}>
-            <Text profile={textProfiles.body}>Text defaults to a semantic inline span.</Text>
+      <div className={styles.foregroundMatrix}>
+        <Card
+          className={`${styles.foregroundCard} k-root`}
+          emphasis="low"
+          intent="neutral"
+          surfaceContext="onSubtle"
+        >
+          <div className={styles.foregroundCardContent}>
+            <header className={styles.foregroundCardHeader}>
+              <Text as="h3" profile={textProfiles.groupTitle}>
+                On subtle
+              </Text>
+              <Text as="p" emphasis="low" profile={textProfiles.caption}>
+                Neutral foregrounds over a light or otherwise subtle surface.
+              </Text>
+            </header>
+            <div className={styles.foregroundRows}>
+              {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
+                <div className={styles.foregroundRow} key={emphasis}>
+                  <Text emphasis={emphasis} profile={textProfiles.body}>
+                    {emphasis[0].toUpperCase() + emphasis.slice(1)}
+                  </Text>
+                  <Text emphasis="lowest" profile={textProfiles.caption}>
+                    {`neutral.${emphasis}`}
+                  </Text>
+                </div>
+              ))}
+            </div>
           </div>
-          <Text as="code" profile={textProfiles.caption} className={styles.textExampleCode}>
-            {`<Text profile="${textProfiles.body}">`}
-          </Text>
-        </article>
+        </Card>
 
-        <article className={styles.textExampleCard}>
-          <Text as="h3" profile={textProfiles.groupTitle}>
-            Paragraph
-          </Text>
-          <div className={styles.textExamplePreview}>
-            <Text as="p" profile={textProfiles.body}>
-              Block semantics are selected through as, while the profile owns the visual recipe.
+        <Card
+          className={`${styles.foregroundCard} k-root`}
+          emphasis="highest"
+          intent="primary"
+          surfaceContext="onSubtle"
+        >
+          <div className={styles.foregroundCardContent}>
+            <header className={styles.foregroundCardHeader}>
+              <Text as="h3" profile={textProfiles.groupTitle}>
+                On vivid
+              </Text>
+              <Text as="p" emphasis="low" profile={textProfiles.caption}>
+                The same hierarchy projected over a vivid surface.
+              </Text>
+            </header>
+            <div className={styles.foregroundRows}>
+              {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
+                <div className={styles.foregroundRow} key={emphasis}>
+                  <Text emphasis={emphasis} profile={textProfiles.body}>
+                    {emphasis[0].toUpperCase() + emphasis.slice(1)}
+                  </Text>
+                  <Text emphasis="lowest" profile={textProfiles.caption}>
+                    {`neutral.${emphasis}`}
+                  </Text>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {chromaticForegrounds.length > 0 ? (
+        <section className={styles.chromaticSection} aria-labelledby="chromatic-foregrounds-title">
+          <div className={styles.sectionHeader}>
+            <Text as="h3" id="chromatic-foregrounds-title" profile={textProfiles.groupTitle}>
+              Chromatic foregrounds
+            </Text>
+            <Text as="p" emphasis="low" profile={textProfiles.body}>
+              Color names select a visual family without assigning an action semantic such as
+              destructive or positive.
             </Text>
           </div>
-          <Text as="code" profile={textProfiles.caption} className={styles.textExampleCode}>
-            {`<Text as="p" profile="${textProfiles.body}">`}
-          </Text>
-        </article>
 
-        <article className={styles.textExampleCard}>
-          <Text as="h3" profile={textProfiles.groupTitle}>
-            Heading
-          </Text>
-          <div className={styles.textExamplePreview}>
-            <Text as="h4" profile={textProfiles.pageTitle}>
-              Profile does not define heading level
-            </Text>
+          <div className={styles.foregroundMatrix}>
+            <Card
+              className={`${styles.foregroundCard} k-root`}
+              emphasis="low"
+              intent="neutral"
+              surfaceContext="onSubtle"
+            >
+              <div className={styles.foregroundCardContent}>
+                <Text as="h4" profile={textProfiles.groupTitle}>
+                  On subtle
+                </Text>
+                <ChromaticForegroundRows
+                  foregrounds={chromaticForegrounds}
+                  textProfiles={textProfiles}
+                />
+              </div>
+            </Card>
+
+            <Card
+              className={`${styles.foregroundCard} k-root`}
+              emphasis="highest"
+              intent="primary"
+              surfaceContext="onSubtle"
+            >
+              <div className={styles.foregroundCardContent}>
+                <Text as="h4" profile={textProfiles.groupTitle}>
+                  On vivid
+                </Text>
+                <ChromaticForegroundRows
+                  foregrounds={chromaticForegrounds}
+                  textProfiles={textProfiles}
+                />
+              </div>
+            </Card>
           </div>
-          <Text as="code" profile={textProfiles.caption} className={styles.textExampleCode}>
-            {`<Text as="h4" profile="${textProfiles.pageTitle}">`}
-          </Text>
-        </article>
+        </section>
+      ) : null}
+
+      <div className={styles.foregroundBehaviorGrid}>
+        <Card
+          className={`${styles.foregroundCard} k-root`}
+          emphasis="low"
+          intent="neutral"
+          surfaceContext="onSubtle"
+        >
+          <div className={styles.foregroundCardContent}>
+            <Text as="h3" profile={textProfiles.groupTitle}>
+              Default and inherit
+            </Text>
+            <div className={styles.foregroundCases}>
+              <div className={styles.foregroundCase}>
+                <Text as="h4" profile={textProfiles.caption}>
+                  Default
+                </Text>
+                <Text profile={textProfiles.body}>Neutral medium is applied automatically.</Text>
+                <Text emphasis="lowest" profile={textProfiles.caption}>
+                  No foreground, emphasis, or surface prop.
+                </Text>
+              </div>
+              <div className={styles.foregroundCase}>
+                <Text as="h4" profile={textProfiles.caption}>
+                  Inherit
+                </Text>
+                <Text foreground="inherit" profile={textProfiles.body}>
+                  The parent owns this color while Text keeps its typography.
+                </Text>
+                <Text emphasis="lowest" profile={textProfiles.caption}>
+                  foreground=&quot;inherit&quot;
+                </Text>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card
+          className={`${styles.foregroundCard} k-root`}
+          emphasis="highest"
+          intent="primary"
+          surfaceContext="onSubtle"
+        >
+          <div className={styles.foregroundCardContent}>
+            <Text as="h3" profile={textProfiles.groupTitle}>
+              Context resolution
+            </Text>
+            <div className={styles.foregroundCases}>
+              <SurfaceContextProvider value="onVivid">
+                <div className={styles.foregroundCase}>
+                  <Text as="h4" profile={textProfiles.caption}>
+                    Provider inherited
+                  </Text>
+                  <Text profile={textProfiles.body}>
+                    The nearest Provider selects the vivid branch.
+                  </Text>
+                  <Text emphasis="lowest" profile={textProfiles.caption}>
+                    No surfaceContext prop.
+                  </Text>
+                </div>
+              </SurfaceContextProvider>
+              <SurfaceContextProvider value="onSubtle">
+                <div className={styles.foregroundCase}>
+                  <Text as="h4" profile={textProfiles.caption} surfaceContext="onVivid">
+                    Explicit override
+                  </Text>
+                  <Text profile={textProfiles.body} surfaceContext="onVivid">
+                    The Text prop wins over the inherited Provider.
+                  </Text>
+                  <Text emphasis="lowest" profile={textProfiles.caption} surfaceContext="onVivid">
+                    surfaceContext=&quot;onVivid&quot;
+                  </Text>
+                </div>
+              </SurfaceContextProvider>
+            </div>
+          </div>
+        </Card>
       </div>
     </section>
   );
@@ -447,11 +671,17 @@ function TypeScale({
 }
 
 function TypographyContent() {
-  const { global } = useKiskadee();
+  const { global, segment, theme } = useKiskadee();
   const { fontRoleNames, manifest, setFontRoleName } = useShowcase();
   const { familyResolutions } = useFontFamilyStatus();
   const textProfiles = useShowcaseTextProfiles();
   const presetFonts = global?.fonts;
+  const textSurfaceContexts = manifest?.components?.text?.surfaceContexts?.[`${segment}.${theme}`];
+  const chromaticForegrounds = TEXT_CHROMATIC_FOREGROUNDS.filter((foreground) => {
+    const subtle = textSurfaceContexts?.onSubtle?.state?.[foreground];
+    const vivid = textSurfaceContexts?.onVivid?.state?.[foreground];
+    return Boolean(subtle?.medium?.rest && vivid?.medium?.rest);
+  });
   const headingReusesBody =
     fontRoleNames.heading === FOLLOW_PRESET_FONT_KEY && presetFonts?.roles.heading === undefined;
   const effectiveSelections: Record<FontFamilyRole, string> = {
@@ -544,7 +774,10 @@ function TypographyContent() {
         ))}
       </div>
 
-      <TextComponentExamples textProfiles={textProfiles} />
+      <TextComponentExamples
+        chromaticForegrounds={chromaticForegrounds}
+        textProfiles={textProfiles}
+      />
 
       <TypeScale artifactPath={manifest?.typography?.artifact} textProfiles={textProfiles} />
     </section>

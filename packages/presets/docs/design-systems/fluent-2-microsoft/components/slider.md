@@ -48,21 +48,31 @@ affordance, not a Fluent Slider measurement. It selects the shared
 the Slider schema; typography no longer changes line height to reproduce a component-local line
 box. The existing centered alignment owns the single-line placement.
 
-## State Colors
+## Color And Token Provenance
 
 The inspected node exposes these relevant variables:
 
-| Figma variable | Value | Kiskadee use |
-| --- | --- | --- |
-| `NeutralStrokeAccessible.Rest` | `#5d616b` | inactive rail (`e8`) |
-| `CompoundBrandBackground.Rest` | `#0064b4` | active rail and thumb inner, rest/focus |
-| `CompoundBrandBackground.Hover` | `#0055a4` | active rail and thumb inner, hover |
-| `CompoundBrandBackground.Pressed` | `#004694` | active rail and thumb inner, pressed |
-| `NeutralBackground1.Rest` | `#ffffff` | outer thumb fill and tick marks |
-| `NeutralStroke1.Rest` | `#ccd1dd` | outer thumb stroke |
-| `TransparentStrokeDisabled.Rest` | `#ffffff00` | disabled inactive rail |
-| `NeutralForegroundDisabled.Rest` | `#b9bdc9` | disabled active rail and thumb inner |
-| `NeutralStrokeDisabled.Rest` | `#dbe0ec` | disabled outer thumb stroke |
+| Figma variable | Value | Lookup | Kiskadee use |
+| --- | --- | --- | --- |
+| `NeutralStrokeAccessible.Rest` | `#5d616b` | `exact(slider.neutral, 50, component.slider)` | inactive rail (`e8`) |
+| `CompoundBrandBackground.Rest` | `#0064b4` | `reference(slider.primary, vivid)` | active rail and thumb inner, rest/focus |
+| `CompoundBrandBackground.Hover` | `#0055a4` | `reference(slider.primary, vivid +1)` | active rail and thumb inner, hover |
+| `CompoundBrandBackground.Pressed` | `#004694` | `reference(slider.primary, vivid +2)` | active rail and thumb inner, pressed |
+| `NeutralBackground1.Rest` | `#ffffff` | `cap(primitive.black.v1, light)` | outer thumb fill and tick marks |
+| `NeutralStroke1.Rest` | `#ccd1dd` | `exact(slider.neutral, 10, component.slider)` | outer thumb stroke |
+| `TransparentStrokeDisabled.Rest` | `#ffffff00` | `cap(primitive.black.v1, light, 0%)` | disabled inactive rail |
+| `NeutralForegroundDisabled.Rest` | `#b9bdc9` | `exact(slider.neutral, 16, component.slider)` | disabled active rail and thumb inner |
+| `NeutralStrokeDisabled.Rest` | `#dbe0ec` | `exact(slider.neutral, 7, component.slider)` | disabled outer thumb stroke |
+
+The fixed neutral stops form the evidence-bound `component.slider` catalog. They are source-token
+adaptations, not replacement functional anchors. Brand interaction states remain relative to the
+family's `vivid` anchor, while white, transparent, and optional black overlays use physical caps.
+The optional indicator uses `cap(primitive.black.v1, dark, 30%)`, reduced to 18% when Disabled.
+
+The approved tonal asset does not contain every upstream HEX verbatim. The retained adaptations
+resolve Neutral Foreground 1 to `#21242d`, Disabled foreground to `#b6bac6`, Brand Hover/Pressed to
+`#0059a1`/`#045091`, and thumb Rest/Disabled strokes to `#cdd1de`/`#dce0ed`. These are explicit
+nearest-position adaptations, now frozen by the Slider schema test rather than silent literals.
 
 ## Ticks
 

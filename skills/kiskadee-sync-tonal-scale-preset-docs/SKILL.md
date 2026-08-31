@@ -33,7 +33,10 @@ node skills/kiskadee-sync-tonal-scale-preset-docs/scripts/audit-preset-doc-versi
    - Do not replace an `Approved generator` version unless those assets were actually regenerated, visually approved, and promoted in the same task.
    - Do not relabel stored asset manifests, exported JSON, before/after metrics, or prior decisions as current merely because the package version changed.
 6. When assets are regenerated and promoted, update their generator version, relevant de-para data, diagnostics, and approval text together.
-7. Run the audit again and require it to pass. Then run `git diff --check` and the narrowest validation required by the tonal-scale and preset changes.
+7. When a preset promotes TypeScript tonal assets from an approved JSON bundle, add or update a
+   Node-only parity test for the promoted scales, functional-reference tones, reference HEX values,
+   and manifest SHA-256 entries. Do not import evidence JSON into production code.
+8. Run the audit again and require it to pass. Then run `git diff --check` and the narrowest validation required by the tonal-scale and preset changes.
 
 ## Decision Rule
 

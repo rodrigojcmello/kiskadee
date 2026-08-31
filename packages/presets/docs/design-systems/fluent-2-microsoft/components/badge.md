@@ -131,7 +131,7 @@ published by `@kiskadee/icons`, do not create canonical icon names, and do not i
 `in-office`, `out-of-office`, or presence-status semantics into Kiskadee. Mark and the configurable
 separation ring are Kiskadee extensions.
 
-## Color mapping
+## Color And Token Provenance
 
 All colors use approved tonal families; no source literal is copied into the schema. Rest is the
 only state. Filled and family-colored full-bleed artwork resolve the active intent's functional
@@ -166,7 +166,7 @@ in every theme:
 | textual `high` (`e1`) | each intent `subtle +7` | 3.52:1 Light; 4.04:1 Dark/Darker |
 | indicator `high` (`e5`) | each intent `subtle +8` | 3.16:1 Light; 3.63:1 Dark/Darker |
 | `medium` | each intent `subtle +1` | 4.88:1 Light; 5.60:1 Dark/Darker |
-| `low` | exact absolute black at 12% alpha | 1.20:1 Light; 1.19:1 Dark/Darker, intentionally discreet |
+| `low` | physical dark cap at 12% alpha | 1.20:1 Light; 1.19:1 Dark/Darker, intentionally discreet |
 
 High and Medium text and contained-Mark foregrounds use each intent's Light L65 tone. The darker
 indicator High keeps at least 5.26:1 between its contained glyph and surface. Low uses the
@@ -189,13 +189,13 @@ treatment for transparent negative space.
 
 | Source concept | Source value | Lookup | Kiskadee mapping | Rationale |
 | --- | --- | --- | --- | --- |
-| Tint surface | Fluent Tint adapted to the Kiskadee tonal families | functional reference: each intent `subtle +4` Light / `subtle +14` Dark | `e1.boxColor` and `e5.boxColor`, `medium` | The recipe must follow each participating family instead of copying one raw tonal position. |
-| Quiet Low surface | Kiskadee metadata adaptation | exact `primitive.black.v1` absolute-black cap at 8% alpha | `e1.boxColor` and `e5.boxColor`, every `onSubtle` intent `low` | All intents and themes share one neutral translucent surface while their foreground retains semantic identity; no border is authored. |
-| Contrast-safe Low foreground | Kiskadee metadata adaptation | functional reference: each intent `vivid` plus the smallest documented contrast-safe offset; Dark Warning uses exact D80 from its source-backed D75 exception | `e2.textColor` and `e4.textColor`, `low` on `onSubtle` | Preserves the semantic family while maintaining at least 4.5:1 against the composited canonical Low surface. |
-| Inverse vivid-context hierarchy | Kiskadee vivid-surface adaptation | intent `subtle +7` textual High, intent `subtle +8` indicator High, intent `subtle +1` Medium, exact `primitive.black.v1` absolute-black cap at 12% alpha Low | `e1.boxColor` and `e5.boxColor`, every `onVivid` theme | Keeps Dot and contained Mark one position more prominent than text without separating their shared `e5`; Medium remains lighter, while Low gains slightly more separation from the vivid host. |
-| Vivid-context foreground | Kiskadee vivid-surface adaptation | exact Light L65 for High/Medium; intent `subtle +2` for Low | `e2.textColor` and `e4.textColor`, every `onVivid` theme | Preserves intent hue and compact-text contrast across opaque light surfaces and the translucent dark Low surface. |
-| Full-bleed negative-space separation | Transparent source artwork inspected over a light Figma stage | exact tone: Light L0 / Dark D100 | `e6.boxColor`, active only for full-bleed with `separation="ring"` | Absolute structural separation must not follow the artwork intent family or expose arbitrary host imagery. |
-| External separation ring | Kiskadee extension | exact tone: Light L0 / Dark D100 | `e6.borderColor` | Uses the same approved absolute-white family as the backing while retaining independent Schema ownership. |
+| Tint surface | Fluent Tint adapted to the Kiskadee tonal families | `reference`: each intent `subtle +4` Light / `subtle +14` Dark | `e1.boxColor` and `e5.boxColor`, `medium` | The recipe must follow each participating family instead of copying one raw tonal position. |
+| Quiet Low surface | Kiskadee metadata adaptation | `cap: dark`, 8% alpha | `e1.boxColor` and `e5.boxColor`, every `onSubtle` intent `low` | All intents and themes share one neutral translucent surface while their foreground retains semantic identity; no border is authored. |
+| Contrast-safe Low foreground | Kiskadee metadata adaptation | `reference`: each intent `vivid` plus the smallest documented contrast-safe offset; Dark Warning uses `exact` D80 under `component.badge` | `e2.textColor` and `e4.textColor`, `low` on `onSubtle` | Preserves the semantic family while maintaining at least 4.5:1 against the composited canonical Low surface. |
+| Inverse vivid-context hierarchy | Kiskadee vivid-surface adaptation | `reference`: intent `subtle +7/+8/+1`; `cap: dark`, 12% alpha for Low | `e1.boxColor` and `e5.boxColor`, every `onVivid` theme | Keeps Dot and contained Mark one position more prominent than text without separating their shared `e5`; Medium remains lighter, while Low gains slightly more separation from the vivid host. |
+| Vivid-context foreground | Kiskadee vivid-surface adaptation | `exact`: Light L65 under `component.badge` for High/Medium; `reference: subtle +2` for Low | `e2.textColor` and `e4.textColor`, every `onVivid` theme | Preserves intent hue and compact-text contrast across opaque light surfaces and the translucent dark Low surface. |
+| Full-bleed negative-space separation | Transparent source artwork inspected over a light Figma stage | `cap: light` | `e6.boxColor`, active only for full-bleed with `separation="ring"` | Absolute structural separation must not follow the artwork intent family or expose arbitrary host imagery. |
+| External separation ring | Kiskadee extension | `cap: light` | `e6.borderColor` | Uses the same approved absolute-white family as the backing while retaining independent Schema ownership. |
 
 Badge consumes the nearest Surface Context but remains in Rest even when its host is Hover,
 Pressed, Selected, or Disabled. `Button.Badge` keeps inline content on Button's produced surface and

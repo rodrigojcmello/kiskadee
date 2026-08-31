@@ -30,11 +30,11 @@ This file records source evidence and schema decisions for the shared Separator 
 The `subtle` recipe keeps the one-pixel official geometry but deliberately replaces the subtly
 blue NeutralStroke2 family with Kiskadee's approved achromatic Black v1 scale:
 
-| Theme | Existing role | Primitive and tone | Generated value | Kiskadee mapping |
+| Theme | Existing role | Lookup | Generated value | Kiskadee mapping |
 | --- | --- | --- | --- | --- |
-| Light | NeutralStroke2 source | Achromatic `primitive.black.v1`, Light 7 | `#e0e0e0` | Kiskadee color adaptation |
-| Dark | NeutralStroke2 source | Achromatic `primitive.black.v1`, Dark 30 | `#4f4f4f` | Kiskadee color adaptation |
-| Darker | No upstream theme | Achromatic `primitive.black.v1`, Dark 12 | `#313131` | Kiskadee extension |
+| Light | NeutralStroke2 source | `reference(primitive.black.v1, subtle +3)` | L7 `#e0e0e0` | Kiskadee color adaptation |
+| Dark | NeutralStroke2 source | `reference(primitive.black.v1, subtle +16)` | D30 `#4f4f4f` | Kiskadee color adaptation |
+| Darker | No upstream theme | `reference(primitive.black.v1, subtle +7)` | D12 `#313131` | Kiskadee extension |
 
 ## Kiskadee Mapping
 

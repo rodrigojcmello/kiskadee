@@ -31,13 +31,13 @@ This file records source evidence and schema decisions for
 
 ## Color And Token Provenance
 
-| Source concept | Source value | Kiskadee mapping |
-| --- | --- | --- |
-| Neutral foreground on ordinary surfaces | Fluent Neutral | `icon.neutral`, theme-specific vivid reference |
-| Brand foreground on ordinary surfaces | Fluent Brand | `icon.primary`, theme-specific vivid reference |
-| Neutral content on a strong surface | Fluent on-brand/inverted relationship | Absolute white at neutral Light tone `0` |
-| Primary content on a strong surface | Fluent on-brand/inverted relationship | Primary Light subtle reference with ordinal offset `+4` |
-| Brand artwork | Official asset-owned fills or gradients | Preserved by the SVG; semantic intent is inert |
+| Source concept | Source value | Lookup | Kiskadee mapping |
+| --- | --- | --- | --- |
+| Neutral foreground on ordinary surfaces | Fluent Neutral | `reference(icon.neutral, vivid)` | Theme-specific functional anchor |
+| Brand foreground on ordinary surfaces | Fluent Brand | `reference(icon.primary, vivid)` | Theme-specific functional anchor |
+| Neutral content on a strong surface | Fluent on-brand/inverted relationship | `cap(primitive.black.v1, light)` | Physical white in every theme |
+| Primary content on a strong surface | Fluent on-brand/inverted relationship | `reference(icon.primary, subtle +4)` on the Light track | Physically light Primary content |
+| Brand artwork | Official asset-owned fills or gradients | Not resolved by the semantic palette | Preserved by the SVG; semantic intent is inert |
 
 The schema contains no literal color. It resolves the approved Fluent primitive assets through
 the three-layer color contract.
@@ -61,8 +61,8 @@ the three-layer color contract.
 ## Shared Formula
 
 - `onSubtle`: resolve the selected intent's theme-specific `vivid` reference at offset `0`.
-- `onVivid neutral`: resolve neutral Light tone `0`, preserving absolute white on
-  strong surfaces.
+- `onVivid neutral`: resolve the physically light `primitive.black.v1` cap, preserving absolute
+  white on strong surfaces without hard-coding a track-relative tone.
 - `onVivid primary`: resolve the Primary Light `subtle` reference at offset `+4`,
   preserving the color-family identity.
 - All values are resolved during schema authoring/build; no browser contrast logic is required.

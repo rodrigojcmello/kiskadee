@@ -39,14 +39,17 @@ This file records source evidence and schema decisions for
 
 ## Color And Token Provenance
 
-| Source concept | Source value | Kiskadee mapping |
-| --- | --- | --- |
-| Track | Neutral Background 6 | `e2.boxColor.neutral.medium`, L6/D12 |
-| Default | Brand | `e3.boxColor.primary.medium`, L50/D60 |
-| Success | Green | `e3.boxColor.positive.medium`, L45/D45 |
-| Warning | Dark Orange `#da3b01` | `e3.boxColor.warning.medium`, Orange v1 L50/D55 |
-| Error | Cranberry | `e3.boxColor.destructive.medium`, L45/D40 |
-| Neutral extension | Fluent neutral ramp | `e3.boxColor.neutral.medium`, L85/D90 |
+| Source concept | Source value | Lookup | Kiskadee mapping |
+| --- | --- | --- | --- |
+| Track, Light | Neutral Background 6 | `reference(neutral, subtle +2)` | `e2.boxColor.neutral.medium`, L6 |
+| Track, Dark/Darker | Adapted dark track | `reference(neutral, subtle +7)` | `e2.boxColor.neutral.medium`, D12 |
+| Default | Brand | `reference(progress.primary, vivid)` in Light; `vivid +4` in Dark/Darker | `e3.boxColor.primary.medium`, L50/D60 |
+| Success | Green | `reference(progress.positive, vivid)` in Light; `vivid +1` in Dark/Darker | `e3.boxColor.positive.medium`, L45/D45 |
+| Warning | Dark Orange `#da3b01` | `reference(progress.warning, vivid +7)` in Light; `vivid +3` in Dark/Darker | `e3.boxColor.warning.medium`, Orange v1 L50/D55 |
+| Error | Cranberry | `reference(progress.destructive, vivid)` | `e3.boxColor.destructive.medium`, L45/D40 |
+| Neutral extension | Fluent neutral ramp | `reference(progress.neutral, vivid)` | `e3.boxColor.neutral.medium`, L85/D90 |
+| `onVivid` track | No upstream equivalent | `cap(primitive.black.v1, light, 18%)` | Physical white overlay |
+| `onVivid` indicators | No upstream equivalent | Light-track `reference(progress.<intent>, subtle +8)` | Physically light family-preserving indicators |
 
 The Warning role remains mapped to the existing `primitive.orange.v1` asset. This is an explicit
 adaptation of the source Dark Orange anchor; no `orange.v2` family, recipe, asset, or version is
@@ -72,7 +75,8 @@ answers for the same Progress intent.
 - `neutral.medium` provides the framework's canonical neutral default.
 - `onVivid` keeps Progress usable on strong surrounding surfaces. Its track uses absolute white at
   18% alpha and its indicator uses each Light functional `subtle` reference plus 8.
-- Light, Dark, and Darker remain resolved separately by the preset tonal getter.
+- Light, Dark, and Darker resolve through the strict FRF resolver; no component owns a direct tonal
+  getter.
 
 ## Deferred Or Unsupported
 

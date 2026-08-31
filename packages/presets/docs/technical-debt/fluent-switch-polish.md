@@ -5,8 +5,10 @@ stable Switch schema rules.
 
 ## Open Checks
 
-- Reassess raw Fluent thumb colors observed during earlier extraction:
-  `#616161`, `#575757`, `#424242`, `#D1D1D1`, and `#242424`.
+- Reassess the historical Fluent thumb colors observed during earlier extraction against the
+  current FRF exact catalog. The nearest approved positions resolve the former `#575757`,
+  `#424242`, and `#242424` values to `#585858`, `#464646`, and `#21242d`; determine whether newer
+  upstream evidence justifies different locators.
 - Validate track padding against the current generated geometry.
 - Confirm thumb geometry after the latest schema and runtime motion changes.
 - Revalidate compensated padding emission for the Switch track.

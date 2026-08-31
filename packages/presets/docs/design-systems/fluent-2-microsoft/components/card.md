@@ -25,7 +25,7 @@ mapping in `packages/presets/src/presets/fluent-2-microsoft/components/card.sche
 | Card component set | `9230:4927` | Filled, Filled alt, Outline, and Subtle treatments | Official adapted |
 | Theme sticker sheet | `9738:4934` | Six surface aliases and their Light/Dark variable bindings | Official exact |
 | Kiskadee tonal mapping | `figma-to-kiskadee.json`, generator `0.5.0` | Blue, pure grayscale, and Fluent tinted-neutral Light/Dark positions | Official adapted |
-| Absolute-black Darker surface | Black primitive, outside the six sticker-sheet surfaces | L100/D0 exact primitive cap | Kiskadee extension |
+| Absolute-black Darker surface | Black primitive, outside the six sticker-sheet surfaces | `cap(primitive.black.v1, dark)` | Kiskadee extension |
 | Ambient surface boundary | Kiskadee Button Showcase review, 2026-08-29 | Rest separation for light and vivid Cards on `onSubtle` and `onVivid` parents | Kiskadee extension |
 
 ## Canonical Surface Evidence
@@ -81,7 +81,11 @@ one of the six surfaces shown by `9738:4934`. Kiskadee may expose it as the
 Darker canonical surface through the pure-grayscale `n.black.v1` L100/D0 cap
 `#000000`; that use is a **Kiskadee extension**.
 
-## Card Decisions
+## Color And Token Provenance
+
+The Light, Dark, and Darker surface/state matrices below form the closed `component.card` exact
+catalog because Fluent selects these aliases independently rather than through one shared family
+formula. Physical transparent boundaries and the 15% vivid-context boundary use `cap: light`.
 
 The inspected Card component set uses radius `4` and 1px inside strokes.
 
@@ -150,9 +154,9 @@ The `onVivid` box recipes intentionally reuse the same Light, Dark, and Darker C
 state deltas as `onSubtle`. Context does not turn a white/base Card into a vivid Card or vice versa.
 Only the border recipe adapts:
 
-- `primary.highest` uses `primitive.black.v1` Light L0 `#ffffff` at 15% alpha, resolving to
+- `primary.highest` uses `cap(primitive.black.v1, light, 15%)`, resolving to
   `#ffffff26` in every theme;
-- every other `onVivid` Rest border is the same absolute-white lookup at 0% alpha;
+- every other `onVivid` Rest border uses the same physical light cap at 0% alpha;
 - Hover, Pressed, Selected, and Disabled border deltas are intentionally un-authored in this
   extension, so the Rest boundary remains active while those states continue to be expressed by
   the existing box-color deltas.

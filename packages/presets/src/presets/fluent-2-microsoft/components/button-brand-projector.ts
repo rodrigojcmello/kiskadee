@@ -11,7 +11,18 @@ import type {
   PresetBrandContentPolarity,
   PresetBrandTonalFamilyInput
 } from '../../../preset-build-extensions.ts';
-import { createPresetColorGetter } from '../../../utils/presetColor.ts';
+import {
+  assertPresetColorAlpha,
+  assertPresetColorEvidence,
+  bindPresetColorRole,
+  createStrictPresetColorResolver
+} from '../../../utils/presetColor.ts';
+import {
+  absoluteCap,
+  type Fluent2MicrosoftFamilyColorLocator,
+  familyReferenceColor
+} from '../fluent-2-microsoft.color.ts';
+import { fluent2MicrosoftColorEvidence } from '../fluent-2-microsoft.color-evidence.ts';
 import { schemaColors } from '../fluent-2-microsoft.colors.ts';
 import {
   createFluentButtonOnSubtleIntent,
@@ -30,8 +41,10 @@ type BrandIntentFormula = ReturnType<typeof createFluentButtonOnSubtleIntent>;
 type BrandIntentFormulaById = Record<string, BrandIntentFormula>;
 type ThemeBrandIntentFormulas = Record<FluentButtonFormulaTheme, BrandIntentFormulaById>;
 
-const schemaContext = { colors: schemaColors } as const;
-const c = createPresetColorGetter<'default'>(schemaContext);
+const c = createStrictPresetColorResolver<'default', typeof fluent2MicrosoftColorEvidence>({
+  colors: schemaColors,
+  exactEvidence: fluent2MicrosoftColorEvidence
+});
 
 const toThemeShortcut = (theme: FluentButtonFormulaScale): 'l' | 'd' =>
   theme === 'light' ? 'l' : 'd';
@@ -39,9 +52,8 @@ const toThemeShortcut = (theme: FluentButtonFormulaScale): 'l' | 'd' =>
 const createPresetFamily = (
   role: 'button.neutral' | 'button.primary'
 ): FluentButtonTonalFamily => ({
-  color: (theme, tone, alpha) => c('default', toThemeShortcut(theme), role, tone, alpha),
-  reference: (theme, reference, offset = 0, alpha) =>
-    c.ref('default', toThemeShortcut(theme), role, reference, offset, alpha)
+  resolve: (theme, locator) =>
+    c.resolve('default', toThemeShortcut(theme), bindPresetColorRole(role, locator))
 });
 
 const neutralButtonFamily = createPresetFamily('button.neutral');
@@ -49,11 +61,11 @@ const primaryButtonFamily = createPresetFamily('button.primary');
 
 const neutralSurfaceColor = (
   theme: FluentButtonFormulaScale,
-  tone: KiskadeeTone,
-  alpha?: number
-): SolidColor => c('default', toThemeShortcut(theme), 'neutral', tone, alpha);
+  locator: Fluent2MicrosoftFamilyColorLocator
+): SolidColor =>
+  c.resolve('default', toThemeShortcut(theme), bindPresetColorRole('neutral', locator));
 
-const canonicalOnVividSurface = primaryButtonFamily.reference('light', 'vivid');
+const canonicalOnVividSurface = primaryButtonFamily.resolve('light', familyReferenceColor('vivid'));
 
 function createBrandFamily(input: FluentBrandTonalFamilyInput): FluentButtonTonalFamily {
   const resolveColor = (
@@ -67,10 +79,23 @@ function createBrandFamily(input: FluentBrandTonalFamilyInput): FluentButtonTona
   };
 
   return {
-    color: resolveColor,
-    reference: (theme, reference, offset = 0, alpha) => {
-      const referenceTone = input.functionalReferences[theme][reference].tone;
-      return resolveColor(theme, shiftKiskadeeTone(referenceTone, offset), alpha);
+    resolve(theme, locator) {
+      assertPresetColorAlpha(locator.alpha);
+      if (locator.mode === 'cap') {
+        return c.resolve('default', toThemeShortcut(theme), locator);
+      }
+
+      if (locator.mode === 'reference') {
+        const referenceTone = input.functionalReferences[theme][locator.reference].tone;
+        return resolveColor(
+          theme,
+          shiftKiskadeeTone(referenceTone, locator.offset ?? 0),
+          locator.alpha
+        );
+      }
+
+      assertPresetColorEvidence(fluent2MicrosoftColorEvidence, locator.evidenceId);
+      return resolveColor(theme, locator.tone, locator.alpha);
     }
   };
 }
@@ -79,10 +104,11 @@ function resolveContentForeground(
   theme: FluentButtonFormulaScale,
   polarity: FluentBrandContentPolarity
 ): SolidColor {
-  const tone: KiskadeeTone =
-    polarity === 'light' ? (theme === 'light' ? 0 : 100) : theme === 'light' ? 100 : 0;
-
-  return c('default', toThemeShortcut(theme), primitive('black', 'v1'), tone);
+  return c.resolve(
+    'default',
+    toThemeShortcut(theme),
+    absoluteCap(primitive('black', 'v1'), polarity)
+  );
 }
 
 function resolveVividContentPolarity(

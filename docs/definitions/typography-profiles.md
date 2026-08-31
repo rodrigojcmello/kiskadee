@@ -75,9 +75,17 @@ browser. A separate `typography.kiskadee.json` inspection artifact describes pro
 usages; it is loaded only by consumers that need that information, such as the Showcase typography
 route.
 
+## Standalone Text
+
+The public `Text` component consumes one authored typography profile through its required `profile`
+prop. Foreground selection is an independent color contract; typography profiles never carry
+intent, emphasis, Surface Context, or color.
+
+Text remains optional. Textual slots inside other components may consume typography profiles
+directly and are not required to render the standalone component.
+
 ## Deferred capabilities
 
-- A public `Text` or `Typography` component.
 - Per-instance profile, weight, or text-size overrides on existing components.
 - A provider-controlled global application type scale.
 - Profile changes driven by interaction state.
@@ -85,5 +93,5 @@ route.
 - Profile inheritance, aliases, and partial composition.
 - Font stretch, optical sizing, and other variable-font axes.
 
-A future standalone text component may consume the same preset profiles. It must not become a
-required wrapper for text slots inside other components.
+The standalone `Text` component consumes these preset profiles. It does not become a required
+wrapper for text slots inside other components.

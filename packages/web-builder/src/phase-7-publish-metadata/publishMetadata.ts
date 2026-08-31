@@ -45,6 +45,10 @@ import {
   buildTextFieldComponentArtifact,
   TEXT_FIELD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/textFieldComponentArtifact.ts';
+import {
+  type ElementPaletteSource,
+  resolveElementPaletteSources
+} from '../palettes/resolveElementPaletteSources.ts';
 import { TYPOGRAPHY_ARTIFACT_PATH } from '../typography/typographyArtifact.ts';
 import type {
   Manifest,
@@ -61,6 +65,15 @@ const BUTTON_SURFACED_ICON_TREATMENTS = [
   'plain',
   'surface'
 ] as const satisfies readonly ButtonIconTreatment[];
+
+export function isPublishableColorSourceFile(file: string): boolean {
+  return (
+    file.endsWith('.ts') &&
+    !file.endsWith('.test.ts') &&
+    !file.endsWith('.spec.ts') &&
+    !file.endsWith('.d.ts')
+  );
+}
 
 function majorVersionFromTuple(v: [number, number, number] | number[]): number {
   return Array.isArray(v) && v.length > 0 ? Number(v[0]) : 0;
@@ -147,6 +160,16 @@ function computeDisplayName(schema: Schema, bySegment: GlobalSemanticsBySegment)
   return [left, author && `by ${author}`].filter(Boolean).join(' ').trim();
 }
 
+function getExpandedElementPalettes(
+  schema: Schema,
+  element: Record<string, unknown>
+): Record<string, any> | undefined {
+  return resolveElementPaletteSources(element as ElementPaletteSource, {
+    foregrounds: schema.global?.foregrounds,
+    separators: schema.global?.separators
+  }).palettes as Record<string, any> | undefined;
+}
+
 function discoverSegmentsThemesFromPalettes(
   schema: Schema,
   segmentKeys: string[]
@@ -181,9 +204,7 @@ function discoverSegmentsThemesFromPalettes(
     const visitElements = (elements: Record<string, any> | undefined) => {
       if (!elements) return;
       for (const el of Object.values(elements)) {
-        const palettes = (el as any)?.palettes as
-          | Record<string, Record<string, unknown>>
-          | undefined;
+        const palettes = getExpandedElementPalettes(schema, el);
         if (!palettes) continue;
         for (const seg of Object.keys(palettes)) {
           const byTheme = palettes[seg];
@@ -319,7 +340,7 @@ export function buildComponentSurfaceContexts(
 
   for (const elements of collectComponentElements(schema, componentName)) {
     for (const el of Object.values(elements)) {
-      const palettes = (el as any).palettes as
+      const palettes = getExpandedElementPalettes(schema, el) as
         | Record<string, Record<string, Partial<Record<SurfaceContext, Record<string, any>>>>>
         | undefined;
       if (!palettes) continue;
@@ -393,6 +414,7 @@ function isComponentName(value: string): value is ComponentName {
     value === 'slider' ||
     value === 'switch' ||
     value === 'tabs' ||
+    value === 'text' ||
     value === 'textField'
   );
 }
@@ -731,7 +753,8 @@ export async function publishMetadata(params: {
     'progress',
     'separator',
     'slider',
-    'switch'
+    'switch',
+    'text'
   ] as const satisfies readonly ComponentName[];
   for (const componentName of manifestComponentNames) {
     const componentScale = buildComponentScale(schema, componentName);
@@ -852,7 +875,7 @@ export async function publishMetadata(params: {
       await mkdir(colorsDirTarget, { recursive: true });
 
       for (const file of files) {
-        if (!file.endsWith('.ts')) continue;
+        if (!isPublishableColorSourceFile(file)) continue;
 
         const srcFilePath = resolve(colorsDirSrc, file);
         const targetFilePath = resolve(colorsDirTarget, file.replace(/\.ts$/, '.json'));

@@ -11,8 +11,10 @@ import type { SeparatorElements } from './components/separator.ts';
 import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
+import type { TextElements } from './components/text.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type { ContentSurfaceContextMap } from './content-surface-context.ts';
+import type { ElementForeground, SchemaForegrounds } from './foreground.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
 import type {
@@ -61,12 +63,14 @@ export type ComponentName =
   | 'slider'
   | 'switch'
   | 'tabs'
+  | 'text'
   | 'textField';
 
 export type ElementStyle<TSegmentName extends SegmentName = never> = {
   name: string; // human-readable element label, for example "button-text"
 } & Partial<{
   decorations: DecorationSchema;
+  foreground: ElementForeground;
   iconSize: ElementIconSize;
   separator: ElementSeparator;
   typography: ElementTypography;
@@ -144,6 +148,7 @@ export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Par
   slider: ComponentVariantModesStyleKeyMap<TSegmentName>;
   switch: ComponentVariantModesStyleKeyMap<TSegmentName>;
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
+  text: ComponentElementsStyleKeyMap<TSegmentName>;
   textField: ComponentVariantModesStyleKeyMap<TSegmentName>;
 }>;
 
@@ -232,6 +237,9 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
   slider: SliderComponent<TSegmentName>;
   switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;
+  text: {
+    elements: TextElements & Elements<TSegmentName>;
+  };
   textField: TextFieldComponent<TSegmentName>;
 }>;
 
@@ -292,6 +300,7 @@ export type RadiusMode = 'rounded' | 'square' | 'pill';
 
 export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
+  foregrounds?: SchemaForegrounds;
   iconSizes?: SchemaIconSizes;
   icons?: SchemaIcons;
   separators?: SchemaSeparators;

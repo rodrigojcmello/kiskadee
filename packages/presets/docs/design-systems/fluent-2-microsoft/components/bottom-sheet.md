@@ -28,14 +28,20 @@ This file records source evidence and schema decisions for
 
 ## Color And Token Provenance
 
-| Source concept | Source value | Kiskadee mapping |
-| --- | --- | --- |
-| Modal overlay | Fluent Overlay Drawer modality | `e1.boxColor` from approved absolute black with alpha |
-| Drawer surface/header/body | Existing Neutral de-para | `e2`, `e5`, `e7` through `e15` |
-| Drawer elevation | Approved Fluent shadow catalog | `effects.shadow.e2` |
+| Source concept | Source value | Lookup | Kiskadee mapping |
+| --- | --- | --- | --- |
+| Modal overlay | Fluent Overlay Drawer modality | `cap(primitive.black.v1, dark, 32%)` | `e1.boxColor` scrim |
+| Light surface | Neutral Background 1 | `cap(primitive.black.v1, light)` | `e2` surface |
+| Dark/Darker surfaces | Existing Neutral de-para | `reference(bottomSheet.neutral, subtle +1/-1)` | `e2` surface |
+| Handle | Existing compact neutral stops | `exact(bottomSheet.neutral, 45/55/50, component.bottom-sheet)` | Light/Dark/Darker `e3` handle |
+| Destructive item states | Existing Menu adaptation | `exact(bottomSheet.destructive, 5/9/7, component.bottom-sheet)` | Hover/Pressed/Selected rows |
+| Text hierarchy | Existing Menu adaptation | `reference(bottomSheet.neutral, vivid + offsets)` | `e5`, `e7` through `e15` |
+| Drawer elevation | Approved Fluent shadow catalog | Global shadow profile | `effects.shadow.e2` |
 
-All colors use promoted Fluent primitive assets through the preset color getter. Light, Dark, and
-Darker resolve independently; no literal schema color is used.
+All colors use promoted Fluent primitive assets through the strict FRF resolver. The handle and
+destructive stops above are the complete closed `component.bottom-sheet` exact catalog; they are
+not functional anchors. Light, Dark, and Darker resolve independently; no literal schema color is
+used.
 
 ## Kiskadee Mapping
 

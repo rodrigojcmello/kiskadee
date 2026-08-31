@@ -170,7 +170,12 @@ export function ButtonBadgeExamples({
               </KButton.Badge>
             </KButton>
           </div>
-          <Text as="p" profile={profiles.caption} className={styles.buttonMenuStatus}>
+          <Text
+            as="p"
+            emphasis="lowest"
+            profile={profiles.caption}
+            className={styles.buttonMenuStatus}
+          >
             The Badge stays visible because its metadata is not disabled.
           </Text>
         </article>

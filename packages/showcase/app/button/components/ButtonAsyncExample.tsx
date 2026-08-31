@@ -173,6 +173,7 @@ export function ButtonAsyncExample({
           </div>
           <Text
             as="p"
+            emphasis="lowest"
             profile={textProfiles.caption}
             className={styles.asyncStatus}
             id={statusId}

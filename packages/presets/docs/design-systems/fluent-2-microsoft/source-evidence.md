@@ -11,6 +11,8 @@ This file records source evidence and preset-level decisions for
   - top-level page: `1:840`, `Cover`
 - Official documentation:
   [Fluent 2 typography](https://fluent2.microsoft.design/typography)
+- Official color-token documentation:
+  [Fluent 2 color tokens](https://fluent2.microsoft.design/color-tokens2/)
 - Official implementation:
   [Fluent UI Web font-family tokens](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts)
 - Microsoft licensing reference:
@@ -34,6 +36,43 @@ This file records source evidence and preset-level decisions for
   maps each upstream stop to the nearest position in its own canonical L/D
   scale. The mapping is explicit because the two grids and theme orientations
   are not identical.
+- Fluent publishes `colorNeutralForeground1` through `colorNeutralForeground4` for Light and Dark,
+  plus a white `colorNeutralForegroundOnBrand`. Kiskadee records all four aliases in the tonal
+  de-para, but standalone Text uses Foreground 1 as its normal `medium`, Foreground 3 as `low`, and
+  a deliberately quieter Kiskadee `lowest`. Foreground 2 is intentionally skipped so the reduced
+  hierarchy remains visibly separated. Fluent does not publish that three-level component API,
+  its weakest extension, an on-brand hierarchy, or a Darker theme; those decisions are documented
+  in the Text evidence.
+- Fluent's approved Blue, Cranberry, Green, Berry, Orange, and Marigold primitives are also
+  published as standalone Text foreground families named `blue`, `red`, `green`, `purple`,
+  `orange`, and `yellow`. Their three-level hierarchy is a Kiskadee extension calibrated from the
+  existing Button and Badge foreground recipes, not an upstream generic Text API.
+
+## Preset-Wide Color And Token Provenance
+
+Fluent 2 Microsoft is an FRF preset. Every authored solid base color is classified before schema
+publication:
+
+- `reference` follows a participating family's `subtle` or `vivid` pointer plus an ordinal offset;
+- `exact` preserves a fixed source or Kiskadee adaptation listed in the preset-owned evidence
+  registry and the matching component catalog;
+- `cap` selects the physical light or dark endpoint of `primitive.black.v1`, including alpha-zero
+  transparency.
+
+The strict resolver reduces all three locators to `SolidColor` inside `packages/presets`. Core
+Schema, Web Builder, generated artifacts, p-react, and runtime do not receive locator provenance or
+documentation JSON. The Fluent policy test rejects literal colors, legacy/direct color lookups,
+unregistered exact decisions, and unlisted post-processing paths across the whole productive
+preset.
+
+Button pending visibility, perceptually balanced Medium alpha, and the Low border calculation are
+documented deterministic post-processors. They operate only after their reference/exact/cap inputs
+have resolved and do not introduce another color source. The Brand Button projector consumes the
+same locator recipe; only its terminal reads the portable Brand scale.
+
+The eight promoted TypeScript primitive assets are checked against the approved JSON bundle,
+functional-reference HEX values, and manifest SHA-256 entries in a Node-only test. The approved
+generator provenance remains `0.5.0`; this FRF migration does not regenerate those assets.
 
 ## Typography Evidence
 
@@ -231,7 +270,9 @@ instead of flattening them to the larger offset layer.
 - [Icon](components/icon.md)
 - [Progress](components/progress.md)
 - [Slider](components/slider.md)
+- [Switch](components/switch.md)
 - [Dropdown and Menu](components/dropdown.md)
 - [Separator](components/separator.md)
 - [Badge](components/badge.md)
 - [Chip](components/chip.md)
+- [Text](components/text.md)

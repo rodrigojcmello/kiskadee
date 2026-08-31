@@ -48,6 +48,16 @@ An internal affordance selected from Kiskadee's limited global essential-icon ca
 request the concept from the `EssentialIconProvider` and omit the complete affordance when it cannot
 be resolved.
 
+### FRF — Functional Reference First
+
+Kiskadee's preset-authoring policy for solid base colors. An FRF preset starts from a primitive
+family's `subtle` or `vivid` functional reference and an ordinal offset whenever the visual decision
+is family-relative. A source-mandated fixed stop uses an evidence-backed `exact` locator, while a
+physical white or black endpoint uses a `cap` locator.
+
+FRF is reference-first, not reference-only. It governs preset authorship and is fully resolved to a
+`SolidColor` before the published Schema reaches builders or runtimes.
+
 ### IFP — Icon Family Provider
 
 The optional authority that selects the effective icon family and variant for family-resolved

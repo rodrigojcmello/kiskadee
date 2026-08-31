@@ -1,6 +1,6 @@
 export * from './breakpoints.ts';
-export * from './components/bottom-sheet.ts';
 export * from './components/badge.ts';
+export * from './components/bottom-sheet.ts';
 export * from './components/button.ts';
 export * from './components/card.ts';
 export * from './components/chip.ts';
@@ -11,9 +11,11 @@ export * from './components/separator.ts';
 export * from './components/slider.ts';
 export * from './components/switch.ts';
 export * from './components/tabs.ts';
+export * from './components/text.ts';
 export * from './components/text-field.ts';
-export * from './icon-sizes.ts';
 export * from './content-surface-context.ts';
+export * from './foreground.ts';
+export * from './icon-sizes.ts';
 export {
   validateDropdownPresenceEffectContract,
   validatePresenceEffectContract,

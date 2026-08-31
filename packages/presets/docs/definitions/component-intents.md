@@ -69,6 +69,23 @@ example, `neutral.low` and `primary.low` may both be white/base in a light
 theme; a surface picker should keep one white option instead of showing two
 identical backgrounds just because their semantic paths differ.
 
+### Text Foreground Emphasis
+
+Standalone Text is the deliberate exception to own-surface emphasis semantics because it does not
+paint a surface. Its `medium | low | lowest` axis describes the strength of the foreground itself
+within one profile. `medium` is the normal and strongest supported foreground; `high` and `highest`
+are excluded rather than authoring an exceptional color that would invite accidental overuse.
+
+This is a component-specific interpretation, not a redefinition of `ComponentEmphasis`. Button and
+Card continue using emphasis for own-surface strength. Text defaults to `neutral.medium`, and its
+surface-relative color branch is selected independently through Surface Context.
+
+Text chromatic families are also a deliberate exception to component-intent naming. Standalone
+content is too generic to infer that every `red` string is destructive, every `green` string is
+positive, or every `blue` string is primary. Its `foreground` prop therefore exposes canonical hue
+names directly. Those names select paint families only; standalone Text has no component-intent
+layer, and all achromatic variation remains inside the `neutral` foreground family.
+
 ### Container And Child Emphasis
 
 Container emphasis and child emphasis are independent component decisions. Card

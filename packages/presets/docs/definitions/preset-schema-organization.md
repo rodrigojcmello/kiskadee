@@ -18,7 +18,8 @@ The root `<preset>.schema.ts` owns:
 
 - preset metadata such as `name`, `prefix`, `version`, and `author`;
 - global schema values such as fonts, radius, focus, and theme tokens;
-- shared preset helpers such as segment names, color getters, and transparent/white constants;
+- shared preset helpers such as segment names, a preset-local strict color resolver, and physical
+  cap locators;
 - the `components` map that calls `create<Preset><Component>Schema(...)` factories.
 
 Global font recommendations use a reusable family catalog and semantic role references. Follow
@@ -106,11 +107,16 @@ used when a task includes Figma links, official design-system documentation, or
 source-derived preset decisions.
 
 When source evidence includes colors, also use
-`skills/kiskadee-resolve-preset-colors/SKILL.md`. It requires agents to trace the
-official semantic token through the documented tonal de-para and use the
-resulting primitive, semantic role, and exact L/D position. Official preset
-schemas must not contain literal colors; literals belong only in source evidence
-or approved primitive assets.
+`skills/kiskadee-resolve-preset-colors/SKILL.md`. It requires agents to trace the official semantic
+token through the documented tonal de-para and classify the authored value as a functional
+`reference`, an evidence-backed `exact` stop, or a physical `cap`. An exact L/D position is an
+exception justified by evidence, not the default lookup. Official preset schemas must not contain
+literal colors; literals belong only in source evidence or approved primitive assets.
+
+For an FRF preset, classify every solid base color as `reference`, evidence-backed `exact`, or
+physical `cap` before resolving it. The preset-local strict resolver and evidence registry belong
+beside the preset schema; component schemas, builders, and runtimes must not own or re-resolve that
+provenance.
 
 For the dependency order from evidence and tonal generation through canonical surfaces, component
 surface contexts, artifacts, and Showcase validation, follow

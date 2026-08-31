@@ -78,9 +78,26 @@ The map is authored sparsely. An omitted Selected or Disabled output inherits th
 `inherit` explicitly preserves the consumed surface. No luminance, DOM, or class-name inference is
 permitted.
 
-## Color mapping
+## Color And Token Provenance
 
-All colors use the preset getter and approved tonal families. Neutral uses Fluent's tinted Neutral;
-Primary uses the approved Brand/Blue family. On-vivid branches are independently authored to keep
-foreground and controls legible on vivid ancestors. These branches are Kiskadee adaptations, not a
-claim that Fluent publishes an equivalent surface-context matrix.
+All current state stops form the closed `component.chip` exact catalog because the available
+evidence does not justify replacing their cross-family positions with one relative offset. Neutral
+uses Fluent's tinted Neutral; Primary uses the approved Brand/Blue family. Physical white and
+transparent endpoints use caps. On-vivid branches are independently authored to keep foreground
+and controls legible on vivid ancestors. These branches are Kiskadee adaptations, not a claim that
+Fluent publishes an equivalent surface-context matrix.
+
+| Catalog area | Light exact tones | Dark/Darker exact tones |
+| --- | --- | --- |
+| Regular and Disabled foreground | Intent 65; Neutral 35 | Intent 35; Neutral 70 |
+| High Rest/Hover/Pressed | Intent 55/60/70 | Intent 45/40/30 |
+| High Selected Rest/Hover/Pressed | Intent 65/70/75 | Intent 35/30/24 |
+| Medium Rest; shared Hover/Pressed | Intent 8/10/14 | Intent 18/22/26 |
+| Medium/Low/Lowest Selected Rest/Hover/Pressed | Intent 16/20/24 | Intent 28/30/35 |
+| Low border Rest/Hover/Pressed | Intent 40/50/55 | Intent 60/50/45 |
+| Low border Selected Rest/Hover/Pressed | Intent 55/60/70 | Intent 45/40/30 |
+| Disabled surface/border | Neutral 3/20 | Neutral 18/75 |
+
+Repeated positions are one catalog decision shared by Neutral and Primary roles, not unrelated
+literal choices. The Fluent policy test records the locators actually consumed by all generated
+branches, so a wrapper-call tone change updates the audited inventory.

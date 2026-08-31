@@ -1,5 +1,9 @@
-import type { ChipIntent, KiskadeeTone, Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { type ChipIntent, type KiskadeeTone, primitive, type Schema } from '@kiskadee/core';
+import {
+  absoluteCap,
+  exactColor,
+  type Fluent2MicrosoftColorResolver
+} from '../fluent-2-microsoft.color.ts';
 
 type ChipComponent = NonNullable<Schema<never>['components']['chip']>;
 type ThemeName = 'light' | 'dark' | 'darker';
@@ -7,7 +11,7 @@ type ThemeShortcut = 'l' | 'd';
 type Role = `chip.${ChipIntent}`;
 
 type CreateChipSchemaArgs = {
-  c: PresetColorGetter<'default'>;
+  c: Fluent2MicrosoftColorResolver;
 };
 
 const INTENTS = ['neutral', 'primary'] as const satisfies readonly ChipIntent[];
@@ -19,10 +23,19 @@ const THEME_TRACK = { light: 'l', dark: 'd', darker: 'd' } as const satisfies Re
 
 export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): ChipComponent {
   const color = (theme: ThemeName, intent: ChipIntent, tone: KiskadeeTone, alpha?: number) =>
-    c('default', THEME_TRACK[theme], `chip.${intent}` as Role, tone, alpha);
+    c.resolve(
+      'default',
+      THEME_TRACK[theme],
+      exactColor(`chip.${intent}` as Role, tone, 'component.chip', alpha)
+    );
   const neutral = (theme: ThemeName, tone: KiskadeeTone, alpha?: number) =>
-    c('default', THEME_TRACK[theme], 'neutral', tone, alpha);
-  const transparent = (theme: ThemeName) => neutral(theme, 0, 0);
+    c.resolve('default', THEME_TRACK[theme], exactColor('neutral', tone, 'component.chip', alpha));
+  const transparent = (theme: ThemeName) =>
+    c.resolve(
+      'default',
+      THEME_TRACK[theme],
+      absoluteCap(primitive('black', 'v1'), theme === 'light' ? 'light' : 'dark', 0)
+    );
 
   const createStates = (
     theme: ThemeName,
@@ -30,7 +43,11 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
     emphasis: (typeof EMPHASES)[number],
     property: 'box' | 'border' | 'text'
   ) => {
-    const vividForeground = theme === 'light' ? neutral(theme, 0) : neutral(theme, 100);
+    const vividForeground = c.resolve(
+      'default',
+      THEME_TRACK[theme],
+      absoluteCap(primitive('black', 'v1'), 'light')
+    );
     const regularForeground = color(theme, intent, theme === 'light' ? 65 : 35);
     const disabledForeground = neutral(theme, theme === 'light' ? 35 : 70);
     const disabledSurface = neutral(theme, theme === 'light' ? 3 : 18);

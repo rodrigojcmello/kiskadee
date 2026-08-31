@@ -97,6 +97,8 @@ component formula with a standalone brand family as input.
 The Fluent 2 Microsoft Button projector is the first implementation:
 
 - `brand.<id>` replaces only the tonal family used by the existing Fluent Button formula;
+- the projector consumes the same FRF `reference`, `exact`, and `cap` locators as the preset
+  family; only its terminal resolution reads the portable Brand scale;
 - High begins at `vivid`, Medium begins at `subtle`, and state changes use ordinal public-grid
   shifts;
 - Low, Lowest, disabled, Light, Dark, Darker, `onSubtle`, and `onVivid` keep the same preset-owned
@@ -108,6 +110,10 @@ The Fluent 2 Microsoft Button projector is the first implementation:
   Rest remains readable; this is deterministic artifact metadata, not runtime contrast logic;
 - icon `brand` or `monochrome` presentation remains an explicit component choice and is not encoded
   in the color formula or enforced by a component contract.
+
+Documented post-processing such as pending visibility and perceptual alpha runs after locator
+resolution. It may transform the resolved color, but it may not introduce a literal or parallel
+tonal lookup.
 
 The Kiskadee Showcase uses a composition recommendation based on both surface context and Button
 emphasis:

@@ -40,6 +40,13 @@ function compositeHex(foreground: string, background: string): string {
   return `#${channels.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
 }
 
+function requireSolidColor(value: unknown, label: string): string {
+  if (typeof value !== 'string') {
+    throw new Error(`${label} must resolve to a solid color`);
+  }
+  return value;
+}
+
 function requireBadge() {
   const badge = schema.components.badge;
   if (!badge) throw new Error('Fluent Badge schema is missing');
@@ -262,11 +269,11 @@ describe('Fluent 2 Badge', () => {
       const dotSurface = badge.elements.e5.palettes.default?.[theme]?.onVivid;
       const textContent = badge.elements.e2.palettes.default?.[theme]?.onVivid;
       const markContent = badge.elements.e4.palettes.default?.[theme]?.onVivid;
-      const canonicalSurface =
-        schema.components.card?.elements.e1.palettes.default?.[theme]?.onSubtle.boxColor?.primary
-          ?.highest?.rest;
-
-      expect(canonicalSurface).toBeDefined();
+      const canonicalSurface = requireSolidColor(
+        schema.components.card?.elements.e1?.palettes?.default?.[theme]?.onSubtle.boxColor?.primary
+          ?.highest?.rest,
+        `Card primary highest ${theme}`
+      );
 
       for (const intent of BADGE_INTENTS) {
         for (const emphasis of ['high', 'medium', 'low'] as const) {
@@ -276,10 +283,10 @@ describe('Fluent 2 Badge', () => {
             emphasis === 'high' ? expected[intent].high.indicator : expected[intent][emphasis];
           const foreground = expected[intent].foreground[emphasis];
           const renderedSurface =
-            surface.length === 9 ? compositeHex(surface, canonicalSurface!) : surface;
+            surface.length === 9 ? compositeHex(surface, canonicalSurface) : surface;
           const renderedIndicatorSurface =
             indicatorSurface.length === 9
-              ? compositeHex(indicatorSurface, canonicalSurface!)
+              ? compositeHex(indicatorSurface, canonicalSurface)
               : indicatorSurface;
 
           expect(textSurface?.boxColor?.[intent]?.[emphasis]?.rest).toBe(surface);
@@ -287,9 +294,9 @@ describe('Fluent 2 Badge', () => {
           expect(textContent?.textColor?.[intent]?.[emphasis]?.rest).toBe(foreground);
           expect(markContent?.textColor?.[intent]?.[emphasis]?.rest).toBe(foreground);
           if (emphasis !== 'low') {
-            expect(contrastRatio(renderedSurface, canonicalSurface!)).toBeGreaterThanOrEqual(3);
+            expect(contrastRatio(renderedSurface, canonicalSurface)).toBeGreaterThanOrEqual(3);
             expect(
-              contrastRatio(renderedIndicatorSurface, canonicalSurface!)
+              contrastRatio(renderedIndicatorSurface, canonicalSurface)
             ).toBeGreaterThanOrEqual(3);
           }
           expect(contrastRatio(foreground, renderedSurface)).toBeGreaterThanOrEqual(4.5);
@@ -341,20 +348,25 @@ describe('Fluent 2 Badge', () => {
     for (const theme of ['light', 'dark', 'darker'] as const) {
       const surface = badge.elements.e1.palettes.default?.[theme]?.onSubtle;
       const content = badge.elements.e2.palettes.default?.[theme]?.onSubtle;
-      const canonicalSurface =
-        schema.components.card?.elements.e1.palettes.default?.[theme]?.onSubtle.boxColor?.neutral
-          ?.low?.rest;
-
-      expect(canonicalSurface).toBeDefined();
+      const canonicalSurface = requireSolidColor(
+        schema.components.card?.elements.e1?.palettes?.default?.[theme]?.onSubtle.boxColor?.neutral
+          ?.low?.rest,
+        `Card neutral low ${theme}`
+      );
 
       for (const intent of BADGE_INTENTS) {
-        const background = surface?.boxColor?.[intent]?.low?.rest;
-        const foreground = content?.textColor?.[intent]?.low?.rest;
+        const background = requireSolidColor(
+          surface?.boxColor?.[intent]?.low?.rest,
+          `Badge ${intent} background ${theme}`
+        );
+        const foreground = requireSolidColor(
+          content?.textColor?.[intent]?.low?.rest,
+          `Badge ${intent} foreground ${theme}`
+        );
 
         expect(foreground).toBe(expected[theme][intent]);
-        expect(background).toBeDefined();
         expect(
-          contrastRatio(foreground!, compositeHex(background!, canonicalSurface!))
+          contrastRatio(foreground, compositeHex(background, canonicalSurface))
         ).toBeGreaterThanOrEqual(4.5);
       }
     }

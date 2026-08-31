@@ -1,46 +1,45 @@
-import { type Schema, type SolidColor, withAlpha } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { primitive, type Schema } from '@kiskadee/core';
+import {
+  absoluteCap,
+  exactColor,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from '../fluent-2-microsoft.color.ts';
 
 type SwitchComponent = NonNullable<Schema<never>['components']['switch']>;
-type Fluent2MicrosoftSegmentName = 'default';
 
 type CreateFluent2MicrosoftSwitchSchemaArgs = {
-  c: PresetColorGetter<Fluent2MicrosoftSegmentName>;
+  c: Fluent2MicrosoftColorResolver;
 };
-
-function fluentSwitchColorWithAlpha(color: SolidColor, visibility: number): SolidColor {
-  const alphaColor = withAlpha(color, visibility);
-  if (alphaColor === undefined) {
-    throw new Error('Expected Fluent switch color before applying transparent alpha.');
-  }
-  return alphaColor;
-}
 
 export function createFluent2MicrosoftSwitchSchema({
   c
 }: CreateFluent2MicrosoftSwitchSchemaArgs): SwitchComponent {
-  const white = c('default', 'l', 'switch.neutral', 0);
-  const transparent = withAlpha(c('default', 'l', 'switch.neutral', 100), 0);
-  const neutral6 = c('default', 'l', 'switch.neutral', 6);
-  const neutral25 = c('default', 'l', 'switch.neutral', 26);
-  const neutral70 = c('default', 'l', 'switch.neutral', 70);
-  const primary60 = c('default', 'l', 'primary', 60);
-  const primary70 = c('default', 'l', 'primary', 70);
-  const primary80 = c('default', 'l', 'primary', 80);
-  const polarityOffThumb = '#c50f1f';
-  const polarityOnTrack = '#107c10';
-  const onPrimaryTrack = fluentSwitchColorWithAlpha(white, 28);
-  const onPrimaryTrackHover = fluentSwitchColorWithAlpha(white, 36);
-  const onPrimaryTrackPressed = fluentSwitchColorWithAlpha(white, 44);
-  const onPrimaryTrackDisabled = fluentSwitchColorWithAlpha(white, 12);
-  const onPrimaryBorder = fluentSwitchColorWithAlpha(white, 72);
-  const onPrimaryBorderHover = fluentSwitchColorWithAlpha(white, 88);
-  const onPrimaryBorderDisabled = fluentSwitchColorWithAlpha(white, 20);
-  const onPrimaryTextDisabled = fluentSwitchColorWithAlpha(white, 38);
-
-  if (transparent === undefined) {
-    throw new Error('Expected Fluent switch.neutral tone 100 before applying transparent alpha.');
-  }
+  const resolve = (locator: Parameters<Fluent2MicrosoftColorResolver['resolve']>[2]) =>
+    c.resolve('default', 'l', locator);
+  const white = resolve(absoluteCap(primitive('black', 'v1'), 'light'));
+  const transparent = resolve(absoluteCap(primitive('black', 'v1'), 'light', 0));
+  const neutral6 = resolve(exactColor('switch.neutral', 6, 'component.switch'));
+  const neutral25 = resolve(exactColor('switch.neutral', 26, 'component.switch'));
+  const neutral70 = resolve(exactColor('switch.neutral', 70, 'component.switch'));
+  const primary60 = resolve(referenceColor('primary', 'vivid', 2));
+  const primary70 = resolve(referenceColor('primary', 'vivid', 4));
+  const primary80 = resolve(referenceColor('primary', 'vivid', 6));
+  const polarityOffThumb = resolve(referenceColor('redLike', 'vivid'));
+  const polarityOnTrack = resolve(referenceColor('greenLike', 'vivid'));
+  const charcoalRest = resolve(exactColor(primitive('black', 'v1'), 50, 'component.switch'));
+  const charcoalHover = resolve(exactColor(primitive('black', 'v1'), 55, 'component.switch'));
+  const graphite = resolve(exactColor(primitive('black', 'v1'), 65, 'component.switch'));
+  const disabledStroke = resolve(exactColor(primitive('black', 'v1'), 10, 'component.switch'));
+  const neutralForeground = resolve(referenceColor('switch.neutral', 'vivid'));
+  const onPrimaryTrack = resolve(absoluteCap(primitive('black', 'v1'), 'light', 28));
+  const onPrimaryTrackHover = resolve(absoluteCap(primitive('black', 'v1'), 'light', 36));
+  const onPrimaryTrackPressed = resolve(absoluteCap(primitive('black', 'v1'), 'light', 44));
+  const onPrimaryTrackDisabled = resolve(absoluteCap(primitive('black', 'v1'), 'light', 12));
+  const onPrimaryBorder = resolve(absoluteCap(primitive('black', 'v1'), 'light', 72));
+  const onPrimaryBorderHover = resolve(absoluteCap(primitive('black', 'v1'), 'light', 88));
+  const onPrimaryBorderDisabled = resolve(absoluteCap(primitive('black', 'v1'), 'light', 20));
+  const onPrimaryTextDisabled = resolve(absoluteCap(primitive('black', 'v1'), 'light', 38));
 
   return {
     effects: {
@@ -148,9 +147,9 @@ export function createFluent2MicrosoftSwitchSchema({
                         borderColor: {
                           neutral: {
                             medium: {
-                              rest: '#616161', // cinza carvão (tom escuro)
-                              hover: { ref: '#575757' }, // cinza carvão (tom muito escuro)
-                              focus: { ref: '#616161' }, // cinza carvão (tom escuro)
+                              rest: charcoalRest,
+                              hover: { ref: charcoalHover },
+                              focus: { ref: charcoalRest },
                               pressed: { ref: neutral70 },
                               selected: {
                                 rest: { ref: transparent },
@@ -158,7 +157,7 @@ export function createFluent2MicrosoftSwitchSchema({
                                 focus: { ref: transparent },
                                 pressed: { ref: transparent }
                               },
-                              disabled: { ref: '#d1d1d1' } // cinza claro
+                              disabled: { ref: disabledStroke }
                             },
                             low: {
                               rest: onPrimaryBorder,
@@ -176,7 +175,7 @@ export function createFluent2MicrosoftSwitchSchema({
                           },
                           polarity: {
                             medium: {
-                              rest: '#616161',
+                              rest: charcoalRest,
                               selected: {
                                 rest: { ref: transparent }
                               }
@@ -212,10 +211,10 @@ export function createFluent2MicrosoftSwitchSchema({
                         boxColor: {
                           neutral: {
                             medium: {
-                              rest: '#616161', // cinza carvão (tom escuro)
-                              hover: { ref: '#424242' }, // cinza grafite (tom bem escuro)
-                              focus: { ref: '#616161' }, // cinza carvão (tom escuro)
-                              pressed: { ref: '#424242' }, // cinza grafite (tom bem escuro)
+                              rest: charcoalRest,
+                              hover: { ref: graphite },
+                              focus: { ref: charcoalRest },
+                              pressed: { ref: graphite },
                               selected: {
                                 rest: { ref: white },
                                 hover: { ref: white },
@@ -360,7 +359,7 @@ export function createFluent2MicrosoftSwitchSchema({
                         textColor: {
                           neutral: {
                             medium: {
-                              rest: '#242424', // preto acinzentado (quase preto)
+                              rest: neutralForeground,
                               disabled: { ref: neutral25 }
                             },
                             low: {
@@ -370,7 +369,7 @@ export function createFluent2MicrosoftSwitchSchema({
                           },
                           polarity: {
                             medium: {
-                              rest: '#242424' // preto acinzentado (quase preto)
+                              rest: neutralForeground
                             },
                             low: {
                               rest: white
@@ -396,7 +395,7 @@ export function createFluent2MicrosoftSwitchSchema({
                         textColor: {
                           neutral: {
                             medium: {
-                              rest: '#242424',
+                              rest: neutralForeground,
                               disabled: { ref: neutral25 }
                             },
                             low: {
@@ -406,7 +405,7 @@ export function createFluent2MicrosoftSwitchSchema({
                           },
                           polarity: {
                             medium: {
-                              rest: '#242424'
+                              rest: neutralForeground
                             },
                             low: {
                               rest: white

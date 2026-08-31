@@ -199,4 +199,92 @@ describe('Button brand intents', () => {
     }
     expect(consoleError).not.toHaveBeenCalled();
   });
+
+  it('keeps brand overlays local to sibling boundaries sharing the same base map', () => {
+    const createBoundaryResources = (pack: 'auth' | 'social', className: string) => {
+      const request = {
+        designSystem: 'button-brand-test',
+        pack,
+        segment: 'default',
+        theme: 'light' as const,
+        components: ['button'] as const
+      };
+
+      return {
+        ...request,
+        cacheKey: createBrandPackResourceKey(request),
+        stylesheetHref: `/brand-packs/${pack}/button-boundary-test.css`,
+        stylesheetSha256: '0'.repeat(64),
+        classMaps: {
+          button: {
+            component: 'button',
+            classMap: {
+              e1: {
+                c: {
+                  s: {
+                    'brand.google': {
+                      h: className
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        intents: ['brand.google'] as const
+      } satisfies LoadedBrandPackResources;
+    };
+    const authResources = createBoundaryResources('auth', 'auth-google-box');
+    const socialResources = createBoundaryResources('social', 'social-google-box');
+
+    for (const resources of [authResources, socialResources]) {
+      const stylesheet = document.createElement('link');
+      stylesheet.rel = 'stylesheet';
+      stylesheet.href = resources.stylesheetHref;
+      stylesheet.dataset.kLoaded = 'true';
+      stylesheet.dataset.testBrandPack = 'true';
+      document.head.appendChild(stylesheet);
+    }
+
+    render(
+      h(
+        KiskadeeContext.Provider,
+        {
+          value: createContextValue({
+            [authResources.cacheKey]: authResources,
+            [socialResources.cacheKey]: socialResources
+          })
+        },
+        h(
+          'div',
+          null,
+          h(
+            BrandPackBoundary,
+            { pack: 'auth', components: ['button'] },
+            h(Button, {
+              label: 'Auth Google',
+              intent: 'brand.google',
+              emphasis: 'high'
+            })
+          ),
+          h(
+            BrandPackBoundary,
+            { pack: 'social', components: ['button'] },
+            h(Button, {
+              label: 'Social Google',
+              intent: 'brand.google',
+              emphasis: 'high'
+            })
+          )
+        )
+      )
+    );
+
+    const authButton = screen.getByRole('button', { name: 'Auth Google' });
+    const socialButton = screen.getByRole('button', { name: 'Social Google' });
+    expect(authButton.className).toContain('auth-google-box');
+    expect(authButton.className).not.toContain('social-google-box');
+    expect(socialButton.className).toContain('social-google-box');
+    expect(socialButton.className).not.toContain('auth-google-box');
+  });
 });

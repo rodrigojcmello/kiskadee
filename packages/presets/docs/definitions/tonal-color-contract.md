@@ -34,24 +34,42 @@ component interaction states. `subtle` identifies a low-prominence surface start
 `vivid` identifies the stronger identity/action starting point. A Black family may therefore use a
 light Dark-theme vivid reference even though its exact dark seed remains elsewhere in the scale.
 
-`createPresetColorGetter()` keeps exact lookup through `c(..., tone)` and exposes functional lookup
-explicitly through `c.ref(..., reference, offset)`. Offsets are ordinal over `KISKADEE_TONES`:
-`L30 + 1` resolves to L35, not L31. Fractional offsets and grid overflow fail; they are never
-rounded or clamped. Layer 2 semantics and Layer 3 intents resolve to their Layer 1 family before the
-reference is read, so one component formula can follow different family anchors without knowing
-their absolute positions.
+## Functional Reference First
+
+An FRF preset authors every solid base color with one explicit locator. The locator is resolved
+inside `packages/presets`; the published Schema contains only the resulting `SolidColor`.
+
+| Locator | Meaning | Required evidence |
+| --- | --- | --- |
+| `reference` | A role or family plus `subtle` or `vivid`, an optional ordinal offset, and optional alpha | Reference, offset, and formula purpose |
+| `exact` | A role or family plus one fixed `KiskadeeTone`, an `evidenceId`, and optional alpha | Source token/decision, Light/Dark tone, and rationale |
+| `cap` | A physical `light` or `dark` endpoint of the preset's canonical black primitive, with optional alpha | Endpoint purpose and alpha |
+
+Offsets are ordinal over `KISKADEE_TONES`: `L30 + 1` resolves to L35, not L31. Fractional offsets
+and grid overflow fail; they are never rounded or clamped. Layer 2 semantics and Layer 3 intents
+resolve to their Layer 1 family before a reference or exact position is read, so one component
+formula can follow different family anchors without knowing their absolute positions.
 
 Choose the lookup before choosing a number:
 
-| Decision | Required lookup | Evidence record |
+| Decision | Required locator | Evidence record |
 | --- | --- | --- |
-| Family-relative `subtle`/`vivid` recipe, remappable semantic, Brand projection, or shared formula | `c.ref(reference, offset)` | Reference, offset, and formula purpose |
-| Exact upstream token or stop selected independently per theme | `c(tone)` | Light/Dark tone and source token |
-| Absolute, structural, alpha, disabled, contrast, or gradient decision | `c(tone)` | Primitive/role and explicit rationale |
+| Family-relative `subtle`/`vivid` recipe, remappable semantic, Brand projection, or shared formula | `reference` | Reference, offset, and formula purpose |
+| Exact upstream token or stop selected independently per theme | `exact` | Light/Dark tone, source token, and `evidenceId` |
+| Physical white, black, or transparent endpoint | `cap` | Polarity, alpha, and explicit purpose |
 
 An exact lookup must not encode the current numeric value of a functional reference. Repeating one
 tone across different families is valid only when source evidence or an explicit Kiskadee formula
 requires that exact position.
+
+Transparency is not a fourth locator. Use `alpha: 0` on the reference, exact, or cap that owns the
+underlying RGB. Deterministic post-processing may operate on resolved FRF colors for documented
+purposes such as pending visibility, perceptually balanced alpha, or a balanced border. Such a
+formula must receive only FRF inputs and must not introduce a literal color or another lookup path.
+
+The preset owns its exact-evidence registry. A migrated FRF preset must expose only its strict
+resolver to component recipes; legacy presets may retain `createPresetColorGetter()` until they
+undergo their own evidence-led migration.
 
 Functional references are optional on the general primitive asset contract so mechanically
 migrated presets can continue using exact tones. When an asset declares them, both references are

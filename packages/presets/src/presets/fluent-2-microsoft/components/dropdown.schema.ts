@@ -1,80 +1,103 @@
-import type { KiskadeeTone, Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { primitive, type Schema } from '@kiskadee/core';
+import {
+  absoluteCap,
+  exactColor,
+  type Fluent2MicrosoftColorLocator,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from '../fluent-2-microsoft.color.ts';
 
 type DropdownComponent = NonNullable<Schema<never>['components']['dropdown']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type ThemeShortcut = 'l' | 'd';
 
 type CreateFluent2MicrosoftDropdownSchemaArgs = {
-  c: PresetColorGetter<'default'>;
+  c: Fluent2MicrosoftColorResolver;
 };
+
+const neutralReference = (reference: 'subtle' | 'vivid', offset = 0) =>
+  referenceColor('dropdown.neutral', reference, offset);
+const destructiveExact = (tone: 2 | 7 | 9 | 14) =>
+  exactColor('dropdown.destructive', tone, 'component.dropdown');
 
 const THEMES = {
   light: {
     track: 'l',
-    surface: 0,
-    hover: 2,
-    pressed: 7,
-    selected: 3,
-    text: 85,
-    groupLabelText: 75,
-    secondaryText: 65,
-    endText: 50,
-    disabledText: 35,
-    brandSelected: 50,
-    brandHover: 55,
-    brandPressed: 60,
-    destructiveHover: 2
+    transparent: absoluteCap(primitive('black', 'v1'), 'light', 0),
+    surface: absoluteCap(primitive('black', 'v1'), 'light'),
+    hover: referenceColor(primitive('black', 'v1'), 'subtle', -2),
+    pressed: neutralReference('subtle', 3),
+    selected: neutralReference('subtle', -1),
+    text: neutralReference('vivid'),
+    groupLabelText: neutralReference('vivid', -2),
+    secondaryText: neutralReference('vivid', -4),
+    endText: neutralReference('vivid', -7),
+    disabledText: neutralReference('vivid', -10),
+    brandSelected: referenceColor('icon.primary', 'vivid'),
+    brandHover: referenceColor('icon.primary', 'vivid', 1),
+    brandPressed: referenceColor('icon.primary', 'vivid', 2),
+    destructiveHover: destructiveExact(2),
+    destructivePressed: destructiveExact(9),
+    destructiveSelected: destructiveExact(7)
   },
   dark: {
     track: 'd',
-    surface: 5,
-    hover: 18,
-    pressed: 10,
-    selected: 12,
-    text: 90,
-    groupLabelText: 85,
-    secondaryText: 70,
-    endText: 70,
-    disabledText: 45,
-    brandSelected: 40,
-    brandHover: 35,
-    brandPressed: 28,
-    destructiveHover: 14
+    transparent: absoluteCap(primitive('black', 'v1'), 'dark', 0),
+    surface: neutralReference('subtle', 1),
+    hover: referenceColor(primitive('black', 'v1'), 'subtle', 10),
+    pressed: neutralReference('subtle', 6),
+    selected: neutralReference('subtle', 7),
+    text: neutralReference('vivid'),
+    groupLabelText: neutralReference('vivid', -1),
+    secondaryText: neutralReference('vivid', -4),
+    endText: neutralReference('vivid', -4),
+    disabledText: neutralReference('vivid', -9),
+    brandSelected: referenceColor('icon.primary', 'vivid'),
+    brandHover: referenceColor('icon.primary', 'vivid', -1),
+    brandPressed: referenceColor('icon.primary', 'vivid', -3),
+    destructiveHover: destructiveExact(14),
+    destructivePressed: destructiveExact(9),
+    destructiveSelected: destructiveExact(7)
   },
   darker: {
     track: 'd',
-    surface: 3,
-    hover: 12,
-    pressed: 7,
-    selected: 9,
-    text: 90,
-    groupLabelText: 85,
-    secondaryText: 70,
-    endText: 70,
-    disabledText: 45,
-    brandSelected: 40,
-    brandHover: 35,
-    brandPressed: 28,
-    destructiveHover: 14
+    transparent: absoluteCap(primitive('black', 'v1'), 'dark', 0),
+    surface: neutralReference('subtle', -1),
+    hover: referenceColor(primitive('black', 'v1'), 'subtle', 7),
+    pressed: neutralReference('subtle', 3),
+    selected: neutralReference('subtle', 5),
+    text: neutralReference('vivid'),
+    groupLabelText: neutralReference('vivid', -1),
+    secondaryText: neutralReference('vivid', -4),
+    endText: neutralReference('vivid', -4),
+    disabledText: neutralReference('vivid', -9),
+    brandSelected: referenceColor('icon.primary', 'vivid'),
+    brandHover: referenceColor('icon.primary', 'vivid', -1),
+    brandPressed: referenceColor('icon.primary', 'vivid', -3),
+    destructiveHover: destructiveExact(14),
+    destructivePressed: destructiveExact(9),
+    destructiveSelected: destructiveExact(7)
   }
 } as const satisfies Record<
   ThemeName,
   {
     track: ThemeShortcut;
-    surface: KiskadeeTone;
-    hover: KiskadeeTone;
-    pressed: KiskadeeTone;
-    selected: KiskadeeTone;
-    text: KiskadeeTone;
-    groupLabelText: KiskadeeTone;
-    secondaryText: KiskadeeTone;
-    endText: KiskadeeTone;
-    disabledText: KiskadeeTone;
-    brandSelected: KiskadeeTone;
-    brandHover: KiskadeeTone;
-    brandPressed: KiskadeeTone;
-    destructiveHover: KiskadeeTone;
+    transparent: Fluent2MicrosoftColorLocator;
+    surface: Fluent2MicrosoftColorLocator;
+    hover: Fluent2MicrosoftColorLocator;
+    pressed: Fluent2MicrosoftColorLocator;
+    selected: Fluent2MicrosoftColorLocator;
+    text: Fluent2MicrosoftColorLocator;
+    groupLabelText: Fluent2MicrosoftColorLocator;
+    secondaryText: Fluent2MicrosoftColorLocator;
+    endText: Fluent2MicrosoftColorLocator;
+    disabledText: Fluent2MicrosoftColorLocator;
+    brandSelected: Fluent2MicrosoftColorLocator;
+    brandHover: Fluent2MicrosoftColorLocator;
+    brandPressed: Fluent2MicrosoftColorLocator;
+    destructiveHover: Fluent2MicrosoftColorLocator;
+    destructivePressed: Fluent2MicrosoftColorLocator;
+    destructiveSelected: Fluent2MicrosoftColorLocator;
   }
 >;
 
@@ -83,21 +106,18 @@ export function createFluent2MicrosoftDropdownSchema({
 }: CreateFluent2MicrosoftDropdownSchemaArgs): DropdownComponent {
   const createTheme = (theme: ThemeName) => {
     const recipe = THEMES[theme];
-    const transparent = c('default', recipe.track, 'dropdown.neutral', 0, 0);
-    const neutralHover = c('default', recipe.track, 'primitive.black.v1', recipe.hover);
-    const neutralText = c('default', recipe.track, 'dropdown.neutral', recipe.text);
-    const neutralGroupLabelText = c(
-      'default',
-      recipe.track,
-      'dropdown.neutral',
-      recipe.groupLabelText
-    );
-    const neutralEndText = c('default', recipe.track, 'dropdown.neutral', recipe.endText);
-    const destructiveText = c.ref('default', recipe.track, 'dropdown.destructive', 'vivid');
-    const disabledText = c('default', recipe.track, 'dropdown.neutral', recipe.disabledText);
-    const brandSelected = c('default', recipe.track, 'icon.primary', recipe.brandSelected);
-    const brandHover = c('default', recipe.track, 'icon.primary', recipe.brandHover);
-    const brandPressed = c('default', recipe.track, 'icon.primary', recipe.brandPressed);
+    const resolve = (locator: Fluent2MicrosoftColorLocator) =>
+      c.resolve('default', recipe.track, locator);
+    const transparent = resolve(recipe.transparent);
+    const neutralHover = resolve(recipe.hover);
+    const neutralText = resolve(recipe.text);
+    const neutralGroupLabelText = resolve(recipe.groupLabelText);
+    const neutralEndText = resolve(recipe.endText);
+    const destructiveText = resolve(referenceColor('dropdown.destructive', 'vivid'));
+    const disabledText = resolve(recipe.disabledText);
+    const brandSelected = resolve(recipe.brandSelected);
+    const brandHover = resolve(recipe.brandHover);
+    const brandPressed = resolve(recipe.brandPressed);
 
     const textColor = {
       neutral: {
@@ -136,7 +156,7 @@ export function createFluent2MicrosoftDropdownSchema({
           boxColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'dropdown.neutral', recipe.surface)
+                rest: resolve(recipe.surface)
               }
             }
           }
@@ -147,7 +167,7 @@ export function createFluent2MicrosoftDropdownSchema({
           boxColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'dropdown.neutral', recipe.surface)
+                rest: resolve(recipe.surface)
               }
             }
           },
@@ -161,11 +181,11 @@ export function createFluent2MicrosoftDropdownSchema({
               medium: {
                 rest: transparent,
                 hover: neutralHover,
-                pressed: c('default', recipe.track, 'dropdown.neutral', recipe.pressed),
+                pressed: resolve(recipe.pressed),
                 selected: {
-                  rest: c('default', recipe.track, 'dropdown.neutral', recipe.selected),
-                  hover: c('default', recipe.track, 'dropdown.neutral', recipe.selected),
-                  pressed: c('default', recipe.track, 'dropdown.neutral', recipe.selected)
+                  rest: resolve(recipe.selected),
+                  hover: resolve(recipe.selected),
+                  pressed: resolve(recipe.selected)
                 },
                 disabled: transparent
               }
@@ -173,12 +193,12 @@ export function createFluent2MicrosoftDropdownSchema({
             destructive: {
               medium: {
                 rest: transparent,
-                hover: c('default', recipe.track, 'dropdown.destructive', recipe.destructiveHover),
-                pressed: c('default', recipe.track, 'dropdown.destructive', 9),
+                hover: resolve(recipe.destructiveHover),
+                pressed: resolve(recipe.destructivePressed),
                 selected: {
-                  rest: c('default', recipe.track, 'dropdown.destructive', 7),
-                  hover: c('default', recipe.track, 'dropdown.destructive', 7),
-                  pressed: c('default', recipe.track, 'dropdown.destructive', 7)
+                  rest: resolve(recipe.destructiveSelected),
+                  hover: resolve(recipe.destructiveSelected),
+                  pressed: resolve(recipe.destructiveSelected)
                 },
                 disabled: transparent
               }
@@ -197,7 +217,7 @@ export function createFluent2MicrosoftDropdownSchema({
           textColor: {
             neutral: {
               medium: {
-                rest: c('default', recipe.track, 'dropdown.neutral', recipe.secondaryText),
+                rest: resolve(recipe.secondaryText),
                 disabled: { ref: disabledText }
               }
             },

@@ -19,8 +19,8 @@ official semantic token or component
 ## Non-Negotiable Rules
 
 - Never add a HEX, HSLA tuple, or other literal color to an official preset schema.
-- Resolve schema colors through `color()` or the preset's `createPresetColorGetter()` using an
-  approved role and an exact `KiskadeeTone`.
+- In an FRF preset, resolve schema colors only through its strict locator resolver. In an unmigrated
+  preset, use its established legacy getter until an evidence-led FRF migration is in scope.
 - Keep literal official HEX values only in source-evidence files and literal generated HEX values
   only in primitive color assets.
 - Do not import documentation JSON into runtime code. Promote approved generated assets into the
@@ -30,8 +30,8 @@ official semantic token or component
 - Resolve Light and Dark independently. They may legitimately use different tonal positions.
 
 The no-literal rule includes white, black, transparent colors, overlays, focus colors, and shadow
-colors. Resolve them from `primitive.black.*` or another approved primitive and apply alpha through
-the color API. If the schema contract cannot express the required color without a literal, treat
+colors. In an FRF preset, express them as physical `cap` locators with alpha. If the schema contract
+cannot express the required color without a literal, treat
 that as a blocked contract gap and document it instead of adding a fallback.
 
 ## Required Workflow
@@ -72,13 +72,15 @@ that as a blocked contract gap and document it instead of adding a fallback.
 6. Author the schema through the color contract.
    - Prefer a component intent or global semantic role when the color expresses meaning.
    - Use a primitive role directly only for genuinely primitive or structural usage.
-   - Classify the lookup before choosing an API: use `c.ref()` for family-relative,
-     semantically remappable, Brand, or shared `subtle`/`vivid` formulas; use `c()` for exact
-     source-backed positions and absolute/structural decisions.
-   - Record whether each lookup is a functional reference or exact tone. Exact tonal-family
-     lookups must include their theme-specific source or Kiskadee rationale.
-   - Never copy the current numeric position of a functional reference into `c()` or repeat one
+   - Classify every base color before choosing a helper: `reference` for family-relative,
+     semantically remappable, Brand, or shared `subtle`/`vivid` formulas; evidence-backed `exact`
+     for fixed source positions; `cap` for physical white, black, and their alpha variants.
+   - Record the locator kind. Every `exact` must include its theme-specific source or Kiskadee
+     rationale through the preset-owned `evidenceId` registry.
+   - Never copy the current numeric position of a functional reference into `exact` or repeat one
      tone across unrelated families merely for convenience.
+   - In an FRF preset, use only its strict resolver and locator helpers. Do not re-import the legacy
+     getter, Core color lookup, or a raw color literal.
    - Derive hover, pressed, focus, selected, and disabled positions only from documented upstream
      states or an approved preset state rule. Do not invent numeric offsets silently.
 
@@ -106,14 +108,13 @@ then resume schema work only after the missing decision is explicit.
 Before finalizing:
 
 1. Search every touched schema for newly introduced color literals.
-2. Confirm every changed color lookup uses a valid `KiskadeeTone` and resolves in every declared
-   theme and segment.
-3. Confirm each changed family-relative recipe uses `c.ref()` and each exact `c()` lookup has
-   documented evidence or rationale.
+2. Confirm every changed locator resolves in every declared theme and segment.
+3. Confirm each family-relative recipe uses `reference`, each `exact` has a registered evidence
+   record, and each physical endpoint uses `cap`.
 4. Run `git diff --check`.
 5. Run the narrowest relevant preset or Web Builder validation required by the evidence skill.
-6. Report the exact evidence document, primitive asset, semantic/intent role, lookup kind, and
-   functional reference/offset or L/D positions used by the schema.
+6. Report the exact evidence document, primitive asset, semantic/intent role, locator kind, and
+   functional reference/offset, exact L/D position, or cap polarity used by the schema.
 
 Useful literal scan for a touched preset:
 

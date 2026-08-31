@@ -197,7 +197,7 @@ export function ButtonIconExamples({
         <fieldset className={styles.richTextToolbar}>
           <legend className={styles.richTextToolbarLegend}>Rich text formatting controls</legend>
           <div className={styles.richTextToolbarMode}>
-            <Text as="span" profile={textProfiles.caption}>
+            <Text as="span" emphasis="low" profile={textProfiles.caption}>
               Independent buttons
             </Text>
             <div className={styles.richTextToolbarRow}>
@@ -226,7 +226,7 @@ export function ButtonIconExamples({
             </div>
           </div>
           <div className={styles.richTextToolbarMode}>
-            <Text as="span" profile={textProfiles.caption}>
+            <Text as="span" emphasis="low" profile={textProfiles.caption}>
               Connected Button groups
             </Text>
             <div className={styles.richTextToolbarRow}>
@@ -256,7 +256,7 @@ export function ButtonIconExamples({
             <strong>Kiskadee composes familiar editing controls</strong> from the same Button and
             Icon primitives used throughout an interface.
           </Text>
-          <Text as="p" profile={textProfiles.caption}>
+          <Text as="p" emphasis="lowest" profile={textProfiles.caption}>
             This surface is illustrative and does not edit text.
           </Text>
         </div>

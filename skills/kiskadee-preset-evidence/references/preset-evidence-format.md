@@ -125,12 +125,13 @@ This file records source evidence and schema decisions for
 
 | Source concept | Source value | Lookup | Kiskadee mapping | Rationale |
 | --- | --- | --- | --- | --- |
-| `<upstream token or node>` | `<value>` | `functional reference: <subtle|vivid> <offset>` or `exact tone: <L/D>` | `<element/option/scale/palette/effect>` | `<why this lookup kind is correct>` |
+| `<upstream token or node>` | `<value>` | `reference: <subtle|vivid> <offset>`, `exact: <L/D> (<evidenceId>)`, `cap: <light|dark> <alpha>`, or `derived: <formula and FRF inputs>` | `<element/option/scale/palette/effect>` | `<why this locator kind is correct>` |
 
-Use `functional reference` when a shared or remappable formula follows the participating primitive
-family. Use `exact tone` for an upstream stop selected independently per theme or an explicitly
-documented absolute/structural decision. Do not list the current numeric position of a functional
-reference as if it were an exact-tone decision.
+Use `reference` when a shared or remappable formula follows the participating primitive family.
+Use `exact` for an upstream stop selected independently per theme, always with a registered
+`evidenceId`. Use `cap` for physical white, black, and transparent endpoints. Use `derived` only
+for a documented deterministic transformation whose inputs are already FRF locators. Do not list
+the current numeric position of a functional reference as if it were an exact-tone decision.
 
 ## Kiskadee Mapping
 

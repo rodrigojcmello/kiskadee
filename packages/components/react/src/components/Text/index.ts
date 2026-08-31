@@ -1,2 +1,11 @@
 export { Text } from './Text.tsx';
-export type { TextComponent, TextProps, TextRef } from './Text.types.ts';
+export type {
+  TextClassesMap,
+  TextComponent,
+  TextElementName,
+  TextEmphasis,
+  TextForegroundName,
+  TextForegroundProps,
+  TextProps,
+  TextRef
+} from './Text.types.ts';

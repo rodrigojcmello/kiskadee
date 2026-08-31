@@ -171,6 +171,8 @@ A durable architecture decision should record:
 
 - `global.typography.profiles` shares serializable text recipes; textual component elements retain
   ownership of their local geometry and consume those profiles.
+- `global.foregrounds.profiles` shares surface-relative text colors; elements map local intents to
+  those profiles, and the Builder lowers them into the ordinary color channel.
 - `global.separators.profiles` shares neutral line recipes; the public Separator component and
   internal component dividers do not share DOM.
 - Activation Feedback is an optional shared Effect; components select a recipe and provide the host

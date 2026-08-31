@@ -337,7 +337,13 @@ export function ButtonMenuExamples({
           </AdaptiveButtonMenu.Root>
         </article>
       </div>
-      <Text as="p" role="status" profile={textProfiles.caption} className={styles.buttonMenuStatus}>
+      <Text
+        as="p"
+        emphasis="lowest"
+        role="status"
+        profile={textProfiles.caption}
+        className={styles.buttonMenuStatus}
+      >
         {lastAction}
       </Text>
     </section>

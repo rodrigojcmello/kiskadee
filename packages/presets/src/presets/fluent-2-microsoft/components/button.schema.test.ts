@@ -206,21 +206,23 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(e2.palettes.default?.dark?.onVivid).toEqual(e2.palettes.default?.darker?.onVivid);
 
     for (const intent of INTENTS) {
-      for (const emphasis of ['high', 'low', 'lowest'] as const) {
+      for (const emphasis of ['high', 'lowest'] as const) {
         for (const state of ['rest', 'hover', 'pressed', 'selected'] as const) {
           expect(
             e1.palettes.default?.light?.onVivid?.boxColor?.[intent]?.[emphasis]?.[state]
           ).toEqual(e1.palettes.default?.dark?.onVivid?.boxColor?.[intent]?.[emphasis]?.[state]);
         }
-        if (emphasis !== 'low') {
-          expect(e1.palettes.default?.light?.onVivid?.borderColor?.[intent]?.[emphasis]).toEqual(
-            e1.palettes.default?.dark?.onVivid?.borderColor?.[intent]?.[emphasis]
-          );
-        }
+        expect(e1.palettes.default?.light?.onVivid?.borderColor?.[intent]?.[emphasis]).toEqual(
+          e1.palettes.default?.dark?.onVivid?.borderColor?.[intent]?.[emphasis]
+        );
+      }
+      for (const emphasis of ['high', 'low', 'lowest'] as const) {
         expect(e2.palettes.default?.light?.onVivid?.textColor?.[intent]?.[emphasis]).toEqual(
           e2.palettes.default?.dark?.onVivid?.textColor?.[intent]?.[emphasis]
         );
       }
+      expect(e1.palettes.default?.light?.onVivid?.boxColor?.[intent]?.low?.hover).toBe('#ffffff14');
+      expect(e1.palettes.default?.dark?.onVivid?.boxColor?.[intent]?.low?.hover).toBe('#0000001a');
       expect(e1.palettes.default?.light?.onVivid?.borderColor?.[intent]?.low?.rest).toBe(
         '#ffffff4d'
       );
@@ -269,16 +271,18 @@ describe('Fluent 2 Button surface contexts', () => {
     });
     expect(surface?.boxColor?.primary?.low).toMatchObject({
       rest: '#ffffff00',
-      hover: '#0000001a',
-      pressed: '#0000004d',
+      hover: '#ffffff14',
+      pressed: '#ffffff08',
       disabled: '#ffffff0a',
-      selected: { rest: '#0000004d' }
+      selected: { rest: '#ffffff08' }
     });
     expect(surface?.boxColor?.primary?.lowest).not.toHaveProperty('disabled');
     expect(surface?.borderColor?.primary?.low).toEqual({
       rest: '#ffffff4d',
       pending: '#ffffff2e',
-      disabled: '#ffffff00'
+      pressed: '#ffffff12',
+      selected: { rest: '#ffffff12' },
+      disabled: '#ffffff12'
     });
     expect(content?.textColor?.primary?.medium?.rest).toBe('#c1deff');
     expect(content?.textColor?.primary?.low?.rest).toBe('#c1deff');
