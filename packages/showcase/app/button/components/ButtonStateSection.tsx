@@ -170,7 +170,7 @@ export function ButtonStateSection({
                 profile={textProfiles.groupTitle}
                 className={s['emphasis-title']}
               >
-                <span>{EMPHASIS_LABELS[emphasis]} emphasis</span>
+                {EMPHASIS_LABELS[emphasis]} emphasis
               </Text>
               <div className={`${s['example-states']} k-root`}>
                 {renderButtonState(

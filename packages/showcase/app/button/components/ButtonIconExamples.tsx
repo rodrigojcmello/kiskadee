@@ -195,7 +195,9 @@ export function ButtonIconExamples({
           Rich text editor
         </Text>
         <fieldset className={styles.richTextToolbar}>
-          <legend className={styles.richTextToolbarLegend}>Rich text formatting controls</legend>
+          <Text as="legend" profile={textProfiles.caption} className={styles.richTextToolbarLegend}>
+            Rich text formatting controls
+          </Text>
           <div className={styles.richTextToolbarMode}>
             <Text as="span" emphasis="low" profile={textProfiles.caption}>
               Independent buttons
@@ -253,8 +255,10 @@ export function ButtonIconExamples({
         </fieldset>
         <div className={styles.richTextEditorCanvas}>
           <Text as="p" profile={textProfiles.body}>
-            <strong>Kiskadee composes familiar editing controls</strong> from the same Button and
-            Icon primitives used throughout an interface.
+            <Text as="strong" foreground="inherit" profile={textProfiles.bodyStrong}>
+              Kiskadee composes familiar editing controls
+            </Text>{' '}
+            from the same Button and Icon primitives used throughout an interface.
           </Text>
           <Text as="p" emphasis="lowest" profile={textProfiles.caption}>
             This surface is illustrative and does not edit text.

@@ -55,8 +55,19 @@ export function ButtonBadgeExamples({
             Runtime logical placement
           </Text>
           <ShowcaseSelectControl
-            label="Badge placement"
-            options={placements.map((value) => ({ value, label: value }))}
+            label={
+              <Text as="span" profile={profiles.caption}>
+                Badge placement
+              </Text>
+            }
+            options={placements.map((value) => ({
+              value,
+              label: (
+                <Text as="span" profile={profiles.caption}>
+                  {value}
+                </Text>
+              )
+            }))}
             value={placement}
             onValueChange={(value) => setPlacement(value as ButtonBadgePlacement)}
           />

@@ -79,14 +79,7 @@ $height: 64px;
 }
 
 .buttonMenuPresentationControl {
-  align-items: center;
-  display: flex;
-  gap: 12px;
   inline-size: fit-content;
-}
-
-.buttonMenuPresentationControl select {
-  font: inherit;
 }
 
 .buttonGroupGrid article,
@@ -470,7 +463,6 @@ $height: 64px;
   --switch-control-width: auto;
 
   border-radius: 999px;
-  font-size: 0.78rem;
   gap: 8px;
   min-height: 36px;
   padding: 6px 8px 6px 12px;

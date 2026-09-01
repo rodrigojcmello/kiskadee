@@ -533,13 +533,21 @@ export function Button() {
                 <div className={s.intentsInlineControls}>
                   <ShowcaseBooleanControl
                     className={s.intentsInlineControl}
-                    label="Rest only"
+                    label={
+                      <Text as="span" profile={textProfiles.caption}>
+                        Rest only
+                      </Text>
+                    }
                     checked={isSimplified}
                     onCheckedChange={setIsSimplified}
                   />
                   <ShowcaseBooleanControl
                     className={s.intentsInlineControl}
-                    label="Focus ring"
+                    label={
+                      <Text as="span" profile={textProfiles.caption}>
+                        Focus ring
+                      </Text>
+                    }
                     checked={showFocusRing}
                     onCheckedChange={setShowFocusRing}
                   />

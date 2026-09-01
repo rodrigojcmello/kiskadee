@@ -11,6 +11,7 @@ import {
   Text
 } from '@kiskadee/react-components';
 import { useMemo, useState } from 'react';
+import { ShowcaseSelectControl } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
@@ -274,21 +275,25 @@ export function ButtonMenuExamples({
           viewport and freezes the presenter while it is open.
         </Text>
       ) : null}
-      <label className={styles.buttonMenuPresentationControl}>
-        <span>Presentation</span>
-        <select
-          value={presentation}
-          onChange={(event) =>
-            setPresentation(event.currentTarget.value as AdaptiveButtonMenuPresentation)
-          }
-        >
-          {PRESENTATION_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
+      <ShowcaseSelectControl
+        className={styles.buttonMenuPresentationControl}
+        label={
+          <Text as="span" profile={textProfiles.caption}>
+            Presentation
+          </Text>
+        }
+        options={PRESENTATION_OPTIONS.map((option) => ({
+          value: option.value,
+          label: (
+            <Text as="span" profile={textProfiles.caption}>
               {option.label}
-            </option>
-          ))}
-        </select>
-      </label>
+            </Text>
+          )
+        }))}
+        value={presentation}
+        width="fit-content"
+        onValueChange={(value) => setPresentation(value as AdaptiveButtonMenuPresentation)}
+      />
       <div className={styles.buttonMenuGrid}>
         <article>
           <Text as="h4" profile={textProfiles.subsectionTitle}>

@@ -74,9 +74,34 @@ export function ButtonAsyncExample({
   const activePresentation =
     presentation === 'progress' && !progressAvailable ? 'text' : presentation;
   const presentationOptions = [
-    { value: 'text', label: 'Text' },
-    { value: 'spinner', label: 'Spinner' },
-    ...(progressAvailable ? [{ value: 'progress', label: 'Progress' }] : [])
+    {
+      value: 'text',
+      label: (
+        <Text as="span" profile={textProfiles.caption}>
+          Text
+        </Text>
+      )
+    },
+    {
+      value: 'spinner',
+      label: (
+        <Text as="span" profile={textProfiles.caption}>
+          Spinner
+        </Text>
+      )
+    },
+    ...(progressAvailable
+      ? [
+          {
+            value: 'progress',
+            label: (
+              <Text as="span" profile={textProfiles.caption}>
+                Progress
+              </Text>
+            )
+          }
+        ]
+      : [])
   ];
 
   useEffect(() => {
@@ -129,7 +154,11 @@ export function ButtonAsyncExample({
       <div className={styles.asyncLayout}>
         <div className={styles.asyncControls}>
           <ShowcaseSegmentedControl
-            label="Pending content"
+            label={
+              <Text as="span" profile={textProfiles.caption}>
+                Pending content
+              </Text>
+            }
             options={presentationOptions}
             value={activePresentation}
             onValueChange={(value) => setPresentation(value as PendingPresentation)}
