@@ -275,6 +275,23 @@ In schema terms, a color value with `{ ref: ... }` means "this child style depen
 ancestor/scope state." That reference is what produces a `==` key and allows a component to project
 state once on the state scope owner instead of duplicating state classes across every child.
 
+For new text-slot authoring through `global.foregrounds`, use the more explicit schema helper:
+
+```ts
+fg.parentState('red.deep.light.onSubtle.medium.pending')
+```
+
+Its serializable form is
+`{ parentState: 'fg:red.deep.light.onSubtle.medium.pending' }`. Web Builder validates and resolves
+the global foreground coordinate, then lowers `parentState` to the existing internal `{ ref: HEX }`
+representation before Style Keys are generated. The resulting key and selector remain `==`; no
+new selector grammar or runtime behavior is introduced.
+
+`parentState` describes state ownership. It is not the tonal-system `referenceColor()` operation,
+and an `fg:` token must not be placed inside the legacy `{ ref: ... }` wrapper. Direct `fg()` values
+produce ordinary inline colors, while `fg.parentState()` is used only for a child slot reacting to
+the ancestor state.
+
 ## Native Pseudo Eligibility
 
 Native pseudo selectors are only safe when they describe the same element that owns the native

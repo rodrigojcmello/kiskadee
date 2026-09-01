@@ -8,6 +8,7 @@ export type ShowcaseTextProfiles = {
   subsectionTitle: TypographyProfileId;
   groupTitle: TypographyProfileId;
   body: TypographyProfileId;
+  bodyStrong: TypographyProfileId;
   caption: TypographyProfileId;
 };
 
@@ -18,6 +19,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'body-medium-strong',
     groupTitle: 'label-small',
     body: 'body-medium',
+    bodyStrong: 'body-medium-strong',
     caption: 'label-small'
   },
   'elegant-1-kiskadee': {
@@ -26,6 +28,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'label-medium',
     groupTitle: 'label-medium',
     body: 'body-medium',
+    bodyStrong: 'label-medium',
     caption: 'label-medium'
   },
   'fluent-2-kiskadee': {
@@ -34,6 +37,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'label-medium',
     groupTitle: 'label-small',
     body: 'label-medium',
+    bodyStrong: 'label-medium',
     caption: 'label-small'
   },
   'fluent-2-microsoft': {
@@ -42,6 +46,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'subtitle-large',
     groupTitle: 'subtitle-small',
     body: 'body-medium',
+    bodyStrong: 'body-medium-strong',
     caption: 'caption-medium'
   },
   'ios-18-apple': {
@@ -50,6 +55,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'body-medium',
     groupTitle: 'body-medium',
     body: 'body-medium',
+    bodyStrong: 'body-medium',
     caption: 'body-medium'
   },
   'ios-27-apple': {
@@ -58,6 +64,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'label-small-strong',
     groupTitle: 'label-small',
     body: 'body-medium',
+    bodyStrong: 'label-medium',
     caption: 'caption-medium'
   },
   'material-design-3-google': {
@@ -66,6 +73,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'label-extra-large',
     groupTitle: 'label-large',
     body: 'body-medium',
+    bodyStrong: 'label-large',
     caption: 'body-small'
   },
   'material-design-3-kiskadee': {
@@ -74,6 +82,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'label-extra-large',
     groupTitle: 'label-large',
     body: 'body-medium',
+    bodyStrong: 'label-large',
     caption: 'body-small'
   },
   'sandbox-0-kiskadee': {
@@ -82,6 +91,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'body-small-strong',
     groupTitle: 'body-extra-small-strong',
     body: 'body-medium',
+    bodyStrong: 'body-medium-strong',
     caption: 'body-extra-small'
   },
   'sandbox-2-kiskadee': {
@@ -90,6 +100,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'body-small-strong',
     groupTitle: 'body-extra-small-strong',
     body: 'body-medium',
+    bodyStrong: 'body-medium-strong',
     caption: 'body-extra-small'
   },
   'sandbox-3-kiskadee': {
@@ -98,6 +109,7 @@ export const showcaseTextProfilesByDesignSystem = {
     subsectionTitle: 'body-small-strong',
     groupTitle: 'body-extra-small-strong',
     body: 'body-medium',
+    bodyStrong: 'body-medium-strong',
     caption: 'body-extra-small'
   }
 } as const satisfies Record<DesignSystemKey, ShowcaseTextProfiles>;

@@ -6,6 +6,7 @@ import type {
   SchemaSeparators
 } from '@kiskadee/core';
 import { expandElementForeground } from '../foreground/compileForegrounds.ts';
+import { resolveForegroundReferences } from '../foreground/resolveForegroundReferences.ts';
 import {
   type ExpandedElementSeparator,
   expandElementSeparator
@@ -83,5 +84,8 @@ export function resolveElementPaletteSources(
     undefined
   );
 
-  return { palettes, separatorRecipe };
+  return {
+    palettes: palettes ? resolveForegroundReferences(palettes, catalogs.foregrounds) : undefined,
+    separatorRecipe
+  };
 }

@@ -28,36 +28,58 @@ const schema = {
     foregrounds: {
       profiles: {
         neutral: {
-          palettes: {
-            default: {
-              light: {
-                onSubtle: {
-                  medium: { rest: '#333333' },
-                  low: { rest: '#555555' },
-                  lowest: { rest: '#777777' }
-                },
-                onVivid: {
-                  medium: { rest: '#ffffffd6' },
-                  low: { rest: '#ffffffad' },
-                  lowest: { rest: '#ffffff99' }
+          standard: {
+            palettes: {
+              default: {
+                light: {
+                  onSubtle: {
+                    medium: { rest: '#333333' },
+                    low: { rest: '#555555' },
+                    lowest: { rest: '#777777' }
+                  },
+                  onVivid: {
+                    medium: { rest: '#ffffffd6' },
+                    low: { rest: '#ffffffad' },
+                    lowest: { rest: '#ffffff99' }
+                  }
                 }
               }
             }
           }
         },
         red: {
-          palettes: {
-            default: {
-              light: {
-                onSubtle: {
-                  medium: { rest: '#811819' },
-                  low: { rest: '#811819ad' },
-                  lowest: { rest: '#8118193d' }
-                },
-                onVivid: {
-                  medium: { rest: '#ffdbd7' },
-                  low: { rest: '#ffdbd7ad' },
-                  lowest: { rest: '#ffdbd73d' }
+          standard: {
+            palettes: {
+              default: {
+                light: {
+                  onSubtle: {
+                    medium: { rest: '#811819' },
+                    low: { rest: '#811819ad' },
+                    lowest: { rest: '#8118193d' }
+                  },
+                  onVivid: {
+                    medium: { rest: '#ffdbd7' },
+                    low: { rest: '#ffdbd7ad' },
+                    lowest: { rest: '#ffdbd73d' }
+                  }
+                }
+              }
+            }
+          },
+          deep: {
+            palettes: {
+              default: {
+                light: {
+                  onSubtle: {
+                    medium: { rest: '#611112' },
+                    low: { rest: '#611112ad' },
+                    lowest: { rest: '#6111123d' }
+                  },
+                  onVivid: {
+                    medium: { rest: '#fff4f2' },
+                    low: { rest: '#fff4f2c2' },
+                    lowest: { rest: '#fff4f266' }
+                  }
                 }
               }
             }
@@ -71,7 +93,11 @@ const schema = {
       elements: {
         e1: {
           name: 'foreground',
-          foreground: { neutral: 'neutral', red: 'red' }
+          foreground: {
+            neutral: { family: 'neutral', profile: 'standard' },
+            red: { family: 'red', profile: 'standard' },
+            'red-deep': { family: 'red', profile: 'deep' }
+          }
         }
       }
     }
@@ -116,6 +142,16 @@ describe('foreground Web pipeline', () => {
       m: shortenMap['textColor__#ffdbd7'],
       l: shortenMap['textColor__#ffdbd7ad'],
       ll: shortenMap['textColor__#ffdbd73d']
+    });
+    expect(text?.e1.c?.s?.['red-deep']).toEqual({
+      m: shortenMap['textColor__#611112'],
+      l: shortenMap['textColor__#611112ad'],
+      ll: shortenMap['textColor__#6111123d']
+    });
+    expect(text?.e1.c?.v?.['red-deep']).toEqual({
+      m: shortenMap['textColor__#fff4f2'],
+      l: shortenMap['textColor__#fff4f2c2'],
+      ll: shortenMap['textColor__#fff4f266']
     });
     expect(css.palettes['default.light']).toContain('color: #333');
     expect(text?.e1).not.toHaveProperty('t');

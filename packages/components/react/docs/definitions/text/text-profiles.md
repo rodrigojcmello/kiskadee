@@ -45,7 +45,7 @@ composes the two channels independently.
 `Text` owns:
 
 - the selected typography profile;
-- the required `neutral` foreground plus preset-supported named color families and
+- the required `neutral` foreground plus preset-supported named color-family profiles and
   `medium | low | lowest` strength;
 - explicit or inherited Surface Context selection;
 - the selected HTML element or class-forwarding component;
@@ -68,20 +68,24 @@ whose typography is not already owned by a parent component.
 The public foreground props are a discriminated union:
 
 ```ts
+type TextForegroundFamily =
+  | 'neutral'
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'green'
+  | 'teal'
+  | 'cyan'
+  | 'blue'
+  | 'purple'
+  | 'pink'
+  | 'brown';
+
+type TextForegroundName = TextForegroundFamily | `${TextForegroundFamily}-deep`;
+
 type TextForegroundProps =
   | {
-      foreground?:
-        | 'neutral'
-        | 'red'
-        | 'orange'
-        | 'yellow'
-        | 'green'
-        | 'teal'
-        | 'cyan'
-        | 'blue'
-        | 'purple'
-        | 'pink'
-        | 'brown';
+      foreground?: TextForegroundName;
       emphasis?: 'medium' | 'low' | 'lowest';
       surfaceContext?: 'onSubtle' | 'onVivid';
     }
@@ -96,10 +100,13 @@ Resolution precedence is explicit prop, then the nearest `SurfaceContextProvider
 `onSubtle`. Text consumes that context and does not publish another Provider. A Card or another
 surface-owning ancestor may publish the context produced by its content surface.
 
-The chromatic values are visual family names, not Text intents. A preset may publish any subset of
-them, but `neutral` is always required. `black` is excluded because all achromatic variation stays
-inside `neutral`. If the active preset does not publish the requested family, Text inherits color;
-it does not fall back to `neutral`.
+The chromatic values are visual family names, not Text intents. The unsuffixed name selects the
+preset's local mapping to the family `standard` profile. A `-deep` suffix selects a local mapping to
+that family's optional independent `deep` profile. A preset may publish any subset of those
+capabilities, but unsuffixed `neutral` is always required. `black` is excluded because all
+achromatic variation stays inside `neutral`. If the active preset does not publish the requested
+family profile, Text inherits color; it does not fall back to `neutral` or from `deep` to
+`standard`.
 
 `foreground="inherit"` removes only the generated color class. Typography, polymorphic element,
 native props, `className`, and ref forwarding are preserved. This escape hatch is React-only;

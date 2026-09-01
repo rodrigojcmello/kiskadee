@@ -4,7 +4,18 @@ import { validateTextComponentContract } from './text.ts';
 
 describe('Text component contract', () => {
   it('accepts neutral plus every canonical chromatic foreground reference on e1', () => {
-    const foreground = Object.fromEntries(textForegroundValues.map((value) => [value, value]));
+    const foreground = Object.fromEntries(
+      textForegroundValues.map((value) => {
+        const deep = value.endsWith('-deep');
+        return [
+          value,
+          {
+            family: deep ? value.slice(0, -'-deep'.length) : value,
+            profile: deep ? 'deep' : 'standard'
+          }
+        ];
+      })
+    );
 
     expect(
       validateTextComponentContract({
@@ -24,10 +35,10 @@ describe('Text component contract', () => {
         e1: {
           name: 'foreground',
           foreground: {
-            neutral: 'neutral',
-            primary: 'primary',
-            destructive: 'destructive',
-            black: 'black'
+            neutral: { family: 'neutral', profile: 'standard' },
+            primary: { family: 'primary', profile: 'standard' },
+            destructive: { family: 'destructive', profile: 'standard' },
+            black: { family: 'black', profile: 'standard' }
           },
           palettes: {}
         },
@@ -50,7 +61,7 @@ describe('Text component contract', () => {
         elements: {
           e1: {
             name: 'foreground',
-            foreground: { blue: 'blue' }
+            foreground: { blue: { family: 'blue', profile: 'standard' } }
           }
         }
       })

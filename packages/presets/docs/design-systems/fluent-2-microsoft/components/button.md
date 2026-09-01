@@ -337,9 +337,9 @@ role-aware Medium and opaque outlined Low.
 
 | Light emphasis | Rest | Hover | Pressed | Selected | Foreground | Border |
 | --- | --- | --- | --- | --- | --- | --- |
-| Medium | White 14% | White 10% | White 7% | same as Pressed | intent subtle +4 | White 10% Rest/Hover; 7% Pressed/Selected |
-| Low | Transparent | White 8% | White 3% | same as Pressed | intent subtle +4 | White 30% Rest/Hover; 7% Pressed/Selected |
-| Lowest | Transparent | Black 10% | Black 30% | same as Pressed | intent subtle +4 | Transparent |
+| Medium | White 14% | White 10% | White 7% | same as Pressed | global family Deep, Light `onVivid.medium` | White 10% Rest/Hover; 7% Pressed/Selected |
+| Low | Transparent | White 8% | White 3% | same as Pressed | global family Deep, Light `onVivid.medium` | White 30% Rest/Hover; 7% Pressed/Selected |
+| Lowest | Transparent | Black 10% | Black 30% | same as Pressed | global family Deep, Light `onVivid.medium` | Transparent |
 
 The Rest hierarchy is now categorical: Medium is filled and bordered, Low is transparent and
 bordered, and Lowest has neither. Low's transferred Hover, Pressed, Selected, and Disabled states
@@ -353,25 +353,26 @@ High, Medium, and Low disabled states use White at 4% for the background; Medium
 White `7%` border in the current mapping.
 
 Dark and Darker retain White at 10% for disabled backgrounds. All three themes use White at 40%
-for disabled content. Lowest remains transparent with White at 40% content. All percentages
-resolve through `button.neutral` and the preset color helper before publication; no platform
-performs alpha or contrast calculations.
+for disabled content. Lowest remains transparent with White at 40% content. Surface and border
+percentages resolve through `button.neutral`; content resolves through global foreground
+coordinates. Both paths finish as HEX before publication, so no platform performs alpha or
+contrast calculations.
 
 Light Medium resolves its fill and stroke from `button.neutral` L0, using
 `14%/10%/7%` Rest/Hover/Pressed fill. Low resolves a transparent Rest plus `8%/3%` White
 Hover/Pressed fills from the same neutral family. Medium uses a `10%` Rest/Hover stroke, while Low
 uses `30%`; both currently use `7%` at Pressed/Selected/Disabled. Selected intentionally equals
-Pressed. Their foreground reuses
-the exact `subtle +4` reference also consumed by Lowest, so Primary resolves Blue, Neutral resolves
-Black/Grey, Destructive resolves Cranberry, and Positive resolves Green. Neither fill nor border
-participates in intent differentiation.
+Pressed. Medium, Low, and Lowest deliberately point to the same global Deep `medium` coordinate:
+Blue `#d3e7ff`, Neutral `#d6dbe7`, Cranberry `#ffdbd7`, or Green `#d4edd2`. The chromatic families
+use their Light-track `subtle +2` reference; Neutral retains its approved Light-track `subtle +4`
+coordinate. Neither fill nor border participates in intent differentiation.
 
 Dark and Darker retain the role-aware Medium candidate while using the same darker state
 progression: `subtle +8/+6/+4` sources are alpha-calibrated against the canonical Primary vivid
-surface at Delta E OK `0.04/0.032/0.024`, and their foreground remains `subtle -2`. The Light
-physical track remains intentional for on-vivid colors because `onVivid` describes a component on
-a locally strong surface, not the global theme orientation. Disabled remains neutral across every
-theme.
+surface at Delta E OK `0.04/0.032/0.024`. Their foreground now uses the same global Deep physical
+Light coordinate as the Light theme: chromatic `subtle +2` and Neutral `subtle +4`. The explicit
+Light source track remains intentional because `onVivid` describes a component on a locally strong
+surface, not the global theme orientation. Disabled remains neutral across every theme.
 
 ### Selected State Simplification
 
@@ -384,6 +385,52 @@ avoids a separate Selected offset for every tonal family.
 
 Selected remains explicit in the schema because the Button supports a persistent Selected state.
 Only its visual value is shared with Pressed; Selected is not removed or inferred at runtime.
+
+### Global Foreground Consumption
+
+The canonical Fluent Button no longer authors colors directly in `e2.textColor`, `e3.textColor`,
+or `e4.textColor`. Those slots select atomic coordinates from `global.foregrounds`:
+
+```ts
+fg('red.deep.light.onSubtle.medium')
+fg.parentState('red.deep.light.onSubtle.medium.pending')
+```
+
+Web Builder resolves the first form to an inline HEX and the second to the existing parent-state
+reference before Style Keys are generated. Therefore the emitted artifacts keep their current
+`--` and `==` selector grammar, chromatic buckets, manifests, and runtime behavior. There is no
+foreground lookup in React or the browser.
+
+Button intent maps to a visual family without changing the Button API:
+
+| Button intent | Global foreground family |
+| --- | --- |
+| `primary` | `blue` |
+| `neutral` | `neutral` |
+| `destructive` | `red` |
+| `positive` | `green` |
+
+The selected coordinate is intentionally independent from Button emphasis:
+
+- `onSubtle` High uses the global physical-white coordinate, except Neutral Dark/Darker, which uses
+  `neutral.deep.light.onSubtle.medium`, the agreed absolute-black coordinate;
+- chromatic `onSubtle` Medium, Low, and Lowest all use the family's Deep coordinate for the current
+  theme; Neutral uses the dedicated lower gray in `neutral.deep`;
+- `onVivid` High uses each family's Standard Light `onSubtle.medium` coordinates and their Hover,
+  Pressed, and Pending states;
+- chromatic `onVivid` Medium, Low, and Lowest all use the family's Deep Light
+  `onVivid.medium`; Neutral uses the equivalent neutral coordinate;
+- disabled labels use the promoted Neutral Deep disabled coordinates;
+- High Selected points to the global Pressed coordinate; Focus remains absent and inherits Rest.
+
+`e2` publishes the complete label map. `e3` reuses it without Pending so an icon or spinner stays
+at Rest strength. `e4` consumes Neutral Standard over its physically light icon-region surface.
+`e5` keeps the canonical `e2` fallback instead of duplicating paint.
+
+The global profile may publish `medium`, `low`, and `lowest`, but Button is not required to choose
+the homonymous strength. For example, Button Medium, Low, and Lowest intentionally converge on
+`red.deep.light.onVivid.medium`. Button emphasis still controls the complete control appearance;
+the global coordinate only standardizes the foreground color.
 
 ## Kiskadee Extensions: Primary Medium, Low, And Lowest
 
@@ -590,6 +637,13 @@ projection reuses the complete Fluent recipe:
 - the logo's `brand` or `monochrome` presentation remains explicit in JSX and never changes the
   color formula or Button contract.
 
+Brand Packs do not yet publish entries in `global.foregrounds`. Their build-only projector
+therefore keeps the complete pre-migration Button color formula, including label colors. This
+compatibility boundary is deliberate: migrating Brand Pack labels requires a foreground catalog
+owned by each pack and must not synthesize global Fluent families from third-party seeds. The
+canonical four Fluent intents use atomic global foreground references; Brand Pack artifacts remain
+byte-for-byte on their existing projection path in this phase.
+
 The Kiskadee Showcase uses `monochrome` for `onSubtle` High because that Button surface is vivid,
 and the official `brand` presentation for `onSubtle` Medium, Low, and Lowest because those Button
 surfaces are subtle or transparent. On `onVivid`, High uses `brand` because its Button surface is
@@ -775,16 +829,20 @@ L16 because it has no disabled fill, and all Dark/Darker disabled foregrounds re
      semantics;
    - generator `r.red.v1` is promoted as Core role `primitive.red.v1`;
    - generator `g.green.v1` is promoted as Core role `primitive.green.v1`.
-2. Layer 2 global semantics:
+2. Layer 2 global semantics and reusable foregrounds:
    - `primary.v1` points to `primitive.blue.v1` in Light and Dark;
    - `neutral.v1` points to `primitive.black.v2` in Light and Dark;
    - `redLike.v1` points to `primitive.red.v1` in Light and Dark;
    - `greenLike.v1` points to `primitive.green.v1` in Light and Dark.
+   - `global.foregrounds` publishes Standard and Deep coordinates from those approved families,
+     including the promoted neutral state stops.
 3. Layer 3 Button intents:
    - `button.primary` points to global `primary`;
    - `button.neutral` points to global `neutral`;
    - `button.destructive` points to global `redLike`;
    - `button.positive` points to global `greenLike`.
+   - canonical Button text slots map those intent names to `blue`, `neutral`, `red`, and `green`
+     foreground coordinates without reopening primitive selection.
 
 The Munsell sector prefix remains in generated-artifact provenance. Core currently addresses the
 primitive through its natural appearance name, so `b.blue.v1` becomes `primitive.blue.v1` without
@@ -792,25 +850,25 @@ changing the asset scales.
 
 ## Schema Mapping
 
-- `BUTTON_DEFAULT_TONAL_RECIPE` is the source of Default tonal positions and explicit High
-  foreground caps
-  for every Button intent.
+- `BUTTON_DEFAULT_TONAL_RECIPE` remains the source of Default Button surface and border positions.
+  Canonical text foregrounds are selected separately from `global.foregrounds`.
 - `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. In Light, Medium uses the restored
   `14%/10%/7%` White fill sequence while Low keeps a transparent Rest and the provisional `8%/3%`
   Hover/Pressed fills. Medium uses a neutral L0 White stroke at `10%` Rest/Hover, while Low restores
-  its `30%` Rest/Hover stroke; both use `7%` at Pressed/Selected/Disabled and differentiate intents
-  only through `subtle +4` foregrounds. Dark
-  and Darker retain the role-aware Medium surface calibration and opaque outlined Low. Lowest keeps
-  its prior transparent surface and context-relative interaction overlays.
+  its `30%` Rest/Hover stroke; both use `7%` at Pressed/Selected/Disabled. Dark and Darker retain the
+  role-aware Medium surface calibration and opaque outlined Low. Lowest keeps its prior transparent
+  surface and context-relative interaction overlays. Intent differentiation in canonical text now
+  comes from global family Deep coordinates rather than this surface recipe.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
   `button.destructive`, or `button.positive`; it does not calculate foreground contrast.
 - `createOnVividButtonIntent()` resolves the same four Layer 3 roles through the Light physical
   track and official Fluent inverted-token rhythm; it does not inspect the surrounding surface.
 - Every Button `selected.rest` remains explicit but resolves from the corresponding Pressed value
-  across all themes, contexts, intents, and emphases.
+  across all themes, contexts, intents, and emphases. High text selects the foreground profile's
+  `pressed` state directly.
 - Pending is a Kiskadee extension derived from each resolved Rest color. Authored fills and borders
-  retain 60% of their Rest alpha, labels retain 70%, the icon omits pending so spinners remain at
-  Rest strength, and the optional shadow resolves to zero.
+  retain 60% of their Rest alpha, global label coordinates retain 70%, the icon omits pending so
+  spinners remain at Rest strength, and the optional shadow resolves to zero.
 - `e4` is the optional Kiskadee icon-region surface. It uses `neutral.medium.rest` with the physical
   Light L0 background and L85 foreground in every theme and surface context. Its outer corners
   derive from the inherited `e1` radius and border width.
@@ -830,8 +888,12 @@ changing the asset scales.
   at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
   treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official
   opaque mappings remain documented above.
-- Filled `e2.textColor.*.*.disabled` foregrounds use neutral L20 at 82% in Light and solid D35 in
-  Dark/Darker. Lowest keeps the official solid L16/D35 mapping because it has no disabled fill.
+- `e2.textColor` and `e3.textColor` are authored exclusively with `fg()` and
+  `fg.parentState()` coordinates. `e3` removes Pending from the shared map; no direct color remains
+  in canonical Button text authoring.
+- Filled `e2.textColor.*.*.disabled` foregrounds consume `neutral.deep` L20 at 82% in Light and
+  solid D35 in Dark/Darker. Lowest consumes the solid L16/D35 coordinate because it has no disabled
+  fill.
 - Every intent exposes High, Medium, Low, and Lowest in Light, Dark, and Darker.
 - `e1.borderColor.*.low` remains the outlined Low treatment in `onSubtle`, where its emitted alpha
   is resolved from the shared Delta E OK target and the canonical Neutral surface. In Light

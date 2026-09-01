@@ -32,6 +32,16 @@ export const fluent2MicrosoftColorEvidence = {
   'component.switch': {
     source: 'components/switch.md#color-and-token-provenance',
     rationale: 'Switch fixed stops adapt official track, thumb, and state colors.'
+  },
+  'global.foreground.deep': {
+    source: 'components/text.md#deep-profile-extension',
+    rationale:
+      'Deep foreground stops preserve the documented action-label anchors as reusable color profiles.'
+  },
+  'global.foreground.states': {
+    source: 'components/text.md#stateful-global-coordinates',
+    rationale:
+      'Promoted neutral state stops preserve approved Fluent Button disabled foregrounds in the global catalog.'
   }
 } as const satisfies PresetColorEvidenceRegistry;
 

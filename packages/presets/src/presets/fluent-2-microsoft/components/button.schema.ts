@@ -1,4 +1,14 @@
-import { primitive, type Schema, type SolidColor } from '@kiskadee/core';
+import {
+  type ForegroundCoordinate,
+  type ForegroundProfileName,
+  type ForegroundState,
+  fg,
+  primitive,
+  type Schema,
+  type SolidColor,
+  type SurfaceContext,
+  type TextEmphasis
+} from '@kiskadee/core';
 import { bindPresetColorRole } from '../../../utils/presetColor.ts';
 import {
   absoluteCap,
@@ -24,6 +34,59 @@ type ButtonColorRole =
   | 'button.neutral'
   | 'button.destructive'
   | 'button.positive';
+type ButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
+type ButtonForegroundFamily = 'blue' | 'neutral' | 'red' | 'green';
+
+const BUTTON_FOREGROUND_FAMILY = {
+  primary: 'blue',
+  neutral: 'neutral',
+  destructive: 'red',
+  positive: 'green'
+} as const satisfies Record<ButtonIntent, ButtonForegroundFamily>;
+
+function createForegroundCoordinate({
+  family,
+  profile,
+  theme,
+  surfaceContext,
+  emphasis,
+  state
+}: {
+  family: ButtonForegroundFamily;
+  profile: ForegroundProfileName;
+  theme: ButtonRecipeTheme;
+  surfaceContext: SurfaceContext;
+  emphasis: TextEmphasis;
+  state?: ForegroundState;
+}): ForegroundCoordinate {
+  return `${family}.${profile}.${theme}.${surfaceContext}.${emphasis}${state ? `.${state}` : ''}`;
+}
+
+function foregroundReference(
+  family: ButtonForegroundFamily,
+  profile: ForegroundProfileName,
+  theme: ButtonRecipeTheme,
+  surfaceContext: SurfaceContext,
+  emphasis: TextEmphasis,
+  state?: ForegroundState
+) {
+  return fg(
+    createForegroundCoordinate({ family, profile, theme, surfaceContext, emphasis, state })
+  );
+}
+
+function parentStateForegroundReference(
+  family: ButtonForegroundFamily,
+  profile: ForegroundProfileName,
+  theme: ButtonRecipeTheme,
+  surfaceContext: SurfaceContext,
+  emphasis: TextEmphasis,
+  state: ForegroundState
+) {
+  return fg.parentState(
+    createForegroundCoordinate({ family, profile, theme, surfaceContext, emphasis, state })
+  );
+}
 
 type CreateFluent2MicrosoftButtonSchemaArgs = {
   c: Fluent2MicrosoftColorResolver;
@@ -170,22 +233,171 @@ export function createFluent2MicrosoftButtonSchema({
     }
   });
 
+  const createOnSubtleTextIntent = (theme: ButtonRecipeTheme, intent: ButtonIntent) => {
+    const family = BUTTON_FOREGROUND_FAMILY[intent];
+    const high =
+      intent === 'neutral' && theme !== 'light'
+        ? {
+            family: 'neutral' as const,
+            profile: 'deep' as const,
+            theme: 'light' as const,
+            surfaceContext: 'onSubtle' as const,
+            emphasis: 'medium' as const
+          }
+        : {
+            family: 'neutral' as const,
+            profile: 'standard' as const,
+            theme: 'light' as const,
+            surfaceContext: 'onVivid' as const,
+            emphasis: 'medium' as const
+          };
+    const lower =
+      intent === 'neutral'
+        ? {
+            family,
+            profile: 'deep' as const,
+            theme,
+            surfaceContext: 'onSubtle' as const,
+            emphasis: 'low' as const
+          }
+        : {
+            family,
+            profile: 'deep' as const,
+            theme,
+            surfaceContext: 'onSubtle' as const,
+            emphasis: 'medium' as const
+          };
+    const disabled = {
+      family: 'neutral' as const,
+      profile: 'deep' as const,
+      theme,
+      surfaceContext: 'onSubtle' as const,
+      emphasis: 'low' as const
+    };
+    const lowestDisabled = { ...disabled, emphasis: 'lowest' as const };
+    const direct = (coordinate: typeof high | typeof lower) =>
+      foregroundReference(
+        coordinate.family,
+        coordinate.profile,
+        coordinate.theme,
+        coordinate.surfaceContext,
+        coordinate.emphasis
+      );
+    const parent = (
+      coordinate: typeof high | typeof lower | typeof disabled | typeof lowestDisabled,
+      state: ForegroundState
+    ) =>
+      parentStateForegroundReference(
+        coordinate.family,
+        coordinate.profile,
+        coordinate.theme,
+        coordinate.surfaceContext,
+        coordinate.emphasis,
+        state
+      );
+    const lowerStates = {
+      rest: direct(lower),
+      pending: parent(lower, 'pending'),
+      disabled: parent(disabled, 'disabled')
+    };
+
+    return {
+      high: {
+        rest: direct(high),
+        pending: parent(high, 'pending'),
+        disabled: parent(disabled, 'disabled'),
+        selected: { rest: parent(high, 'pressed') }
+      },
+      medium: lowerStates,
+      low: lowerStates,
+      lowest: {
+        rest: direct(lower),
+        pending: parent(lower, 'pending'),
+        disabled: parent(lowestDisabled, 'disabled')
+      }
+    };
+  };
+
+  const createOnVividTextIntent = (intent: ButtonIntent) => {
+    const family = BUTTON_FOREGROUND_FAMILY[intent];
+    const high = {
+      family,
+      profile: 'standard' as const,
+      theme: 'light' as const,
+      surfaceContext: 'onSubtle' as const,
+      emphasis: 'medium' as const
+    };
+    const lower = {
+      family,
+      profile: 'deep' as const,
+      theme: 'light' as const,
+      surfaceContext: 'onVivid' as const,
+      emphasis: 'medium' as const
+    };
+    const disabled = {
+      family: 'neutral' as const,
+      profile: 'deep' as const,
+      theme: 'light' as const,
+      surfaceContext: 'onVivid' as const,
+      emphasis: 'medium' as const
+    };
+    const direct = (coordinate: typeof high | typeof lower) =>
+      foregroundReference(
+        coordinate.family,
+        coordinate.profile,
+        coordinate.theme,
+        coordinate.surfaceContext,
+        coordinate.emphasis
+      );
+    const parent = (
+      coordinate: typeof high | typeof lower | typeof disabled,
+      state: ForegroundState
+    ) =>
+      parentStateForegroundReference(
+        coordinate.family,
+        coordinate.profile,
+        coordinate.theme,
+        coordinate.surfaceContext,
+        coordinate.emphasis,
+        state
+      );
+    const lowerStates = {
+      rest: direct(lower),
+      pending: parent(lower, 'pending'),
+      disabled: parent(disabled, 'disabled')
+    };
+
+    return {
+      high: {
+        rest: direct(high),
+        hover: parent(high, 'hover'),
+        pressed: parent(high, 'pressed'),
+        pending: parent(high, 'pending'),
+        disabled: parent(disabled, 'disabled'),
+        selected: { rest: parent(high, 'pressed') }
+      },
+      medium: lowerStates,
+      low: lowerStates,
+      lowest: lowerStates
+    };
+  };
+
   const createTextContextPalettes = (theme: ButtonRecipeTheme) => ({
     onSubtle: {
-      textColor: {
-        primary: onSubtleButtonIntentPalettes[theme].primary.textColor,
-        neutral: onSubtleButtonIntentPalettes[theme].neutral.textColor,
-        destructive: onSubtleButtonIntentPalettes[theme].destructive.textColor,
-        positive: onSubtleButtonIntentPalettes[theme].positive.textColor
-      }
+      textColor: Object.fromEntries(
+        (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
+          intent,
+          createOnSubtleTextIntent(theme, intent)
+        ])
+      )
     },
     onVivid: {
-      textColor: {
-        primary: onVividButtonIntentPalettes[theme].primary.textColor,
-        neutral: onVividButtonIntentPalettes[theme].neutral.textColor,
-        destructive: onVividButtonIntentPalettes[theme].destructive.textColor,
-        positive: onVividButtonIntentPalettes[theme].positive.textColor
-      }
+      textColor: Object.fromEntries(
+        (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
+          intent,
+          createOnVividTextIntent(intent)
+        ])
+      )
     }
   });
 
@@ -217,7 +429,7 @@ export function createFluent2MicrosoftButtonSchema({
       textColor: {
         neutral: {
           medium: {
-            rest: neutralButtonFamily.resolve('light', familyReferenceColor('vivid'))
+            rest: foregroundReference('neutral', 'standard', 'light', 'onSubtle', 'medium')
           }
         }
       }

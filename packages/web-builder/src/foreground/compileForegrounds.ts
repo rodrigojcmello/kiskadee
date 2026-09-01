@@ -30,10 +30,16 @@ export function expandElementForeground(
 ): ElementPalettes {
   let expanded: Record<string, unknown> = {};
 
-  for (const [intent, profileId] of Object.entries(foreground)) {
-    const profile = foregrounds.profiles[profileId];
+  for (const [intent, reference] of Object.entries(foreground)) {
+    const family = foregrounds.profiles[reference.family];
+    if (!family) {
+      throw new Error(`[web-builder] Foreground family "${reference.family}" is not defined.`);
+    }
+    const profile = family[reference.profile];
     if (!profile) {
-      throw new Error(`[web-builder] Foreground profile "${profileId}" is not defined.`);
+      throw new Error(
+        `[web-builder] Foreground profile "${reference.family}.${reference.profile}" is not defined.`
+      );
     }
 
     const intentPalettes: Record<string, unknown> = {};
@@ -55,9 +61,15 @@ export function expandElementForeground(
           NonNullable<(typeof byContext)[SurfaceContext]>
         ][]) {
           if (!emphases) continue;
+          const restOnlyEmphases = Object.fromEntries(
+            Object.entries(emphases).map(([emphasis, stateMap]) => [
+              emphasis,
+              { rest: stateMap.rest }
+            ])
+          );
           contexts[context] = {
             textColor: {
-              [intent]: emphases
+              [intent]: restOnlyEmphases
             }
           };
         }

@@ -11,18 +11,35 @@ const emphases = {
 const foregrounds = {
   profiles: {
     neutral: {
-      palettes: {
-        default: {
-          light: { onSubtle: emphases, onVivid: emphases },
-          dark: { onSubtle: emphases }
+      standard: {
+        palettes: {
+          default: {
+            light: { onSubtle: emphases, onVivid: emphases },
+            dark: { onSubtle: emphases }
+          }
         }
       }
     },
     red: {
-      palettes: {
-        default: {
-          light: { onSubtle: emphases, onVivid: emphases },
-          dark: { onSubtle: emphases }
+      standard: {
+        palettes: {
+          default: {
+            light: { onSubtle: emphases, onVivid: emphases },
+            dark: { onSubtle: emphases }
+          }
+        }
+      },
+      deep: {
+        palettes: {
+          default: {
+            light: {
+              onSubtle: {
+                medium: { rest: '#811819' },
+                low: { rest: '#811819ad' },
+                lowest: { rest: '#8118193d' }
+              }
+            }
+          }
         }
       }
     }
@@ -32,7 +49,10 @@ const foregrounds = {
 describe('expandElementForeground', () => {
   it('projects profile values into the local textColor intent', () => {
     expect(
-      expandElementForeground({ neutral: 'neutral' } satisfies ElementForeground, foregrounds)
+      expandElementForeground(
+        { neutral: { family: 'neutral', profile: 'standard' } } satisfies ElementForeground,
+        foregrounds
+      )
     ).toEqual({
       default: {
         light: {
@@ -49,7 +69,10 @@ describe('expandElementForeground', () => {
   it('keeps multiple named color families independent in the same color channel', () => {
     expect(
       expandElementForeground(
-        { neutral: 'neutral', red: 'red' } satisfies ElementForeground,
+        {
+          neutral: { family: 'neutral', profile: 'standard' },
+          red: { family: 'red', profile: 'standard' }
+        } satisfies ElementForeground,
         foregrounds
       )
     ).toEqual({
@@ -65,9 +88,53 @@ describe('expandElementForeground', () => {
     });
   });
 
+  it('keeps standard and deep profiles from the same family independent', () => {
+    expect(
+      expandElementForeground(
+        {
+          red: { family: 'red', profile: 'standard' },
+          'red-deep': { family: 'red', profile: 'deep' }
+        } satisfies ElementForeground,
+        foregrounds
+      )
+    ).toMatchObject({
+      default: {
+        light: {
+          onSubtle: {
+            textColor: {
+              red: emphases,
+              'red-deep': {
+                medium: { rest: '#811819' },
+                low: { rest: '#811819ad' },
+                lowest: { rest: '#8118193d' }
+              }
+            }
+          }
+        }
+      }
+    });
+  });
+
   it('fails defensively when a profile reference is unknown', () => {
-    expect(() => expandElementForeground({ neutral: 'missing' }, foregrounds)).toThrow(
-      '[web-builder] Foreground profile "missing" is not defined.'
-    );
+    expect(() =>
+      expandElementForeground({ neutral: { family: 'missing', profile: 'standard' } }, foregrounds)
+    ).toThrow('[web-builder] Foreground family "missing" is not defined.');
+    expect(() =>
+      expandElementForeground({ neutral: { family: 'neutral', profile: 'deep' } }, foregrounds)
+    ).toThrow('[web-builder] Foreground profile "neutral.deep" is not defined.');
+  });
+
+  it('projects only Rest when a global profile also publishes control states', () => {
+    const stateful = structuredClone(foregrounds) as any;
+    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.medium.hover = '#222222';
+    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.medium.pending =
+      '#333333b3';
+
+    expect(
+      expandElementForeground(
+        { neutral: { family: 'neutral', profile: 'standard' } },
+        stateful
+      ).default?.light?.onSubtle?.textColor?.neutral?.medium
+    ).toEqual({ rest: '#333333' });
   });
 });

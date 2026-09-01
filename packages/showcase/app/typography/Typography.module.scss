@@ -70,6 +70,20 @@
   gap: 16px;
 }
 
+.chromaticProfileGroups,
+.chromaticProfileGroup {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.chromaticProfileGroups {
+  gap: 28px;
+}
+
+.chromaticProfileGroup {
+  gap: 12px;
+}
+
 .chromaticTable {
   border-collapse: separate;
   border-spacing: 0 14px;

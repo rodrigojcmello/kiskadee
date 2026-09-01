@@ -12,7 +12,7 @@ describe('resolveElementPaletteSources', () => {
   it('merges separator, foreground, and authored colors into one effective palette', () => {
     const element = {
       separator: { 's:all': 'subtle' },
-      foreground: { neutral: 'neutral' },
+      foreground: { neutral: { family: 'neutral', profile: 'standard' } },
       palettes: {
         default: {
           light: {
@@ -30,9 +30,11 @@ describe('resolveElementPaletteSources', () => {
       foregrounds: {
         profiles: {
           neutral: {
-            palettes: {
-              default: {
-                light: { onSubtle: foregroundStates }
+            standard: {
+              palettes: {
+                default: {
+                  light: { onSubtle: foregroundStates }
+                }
               }
             }
           }

@@ -245,12 +245,14 @@ describe('Fluent 2 Button surface contexts', () => {
       selected: { rest: '#a4cfff' }
     });
     expect(content?.textColor?.primary?.high).toEqual({
-      rest: '#0064b4',
-      pending: { ref: '#0064b4b3' },
-      hover: { ref: '#0059a1' },
-      pressed: { ref: '#0d477e' },
-      disabled: { ref: '#ffffff66' },
-      selected: { rest: { ref: '#0d477e' } }
+      rest: 'fg:blue.standard.light.onSubtle.medium',
+      pending: { parentState: 'fg:blue.standard.light.onSubtle.medium.pending' },
+      hover: { parentState: 'fg:blue.standard.light.onSubtle.medium.hover' },
+      pressed: { parentState: 'fg:blue.standard.light.onSubtle.medium.pressed' },
+      disabled: { parentState: 'fg:neutral.deep.light.onVivid.medium.disabled' },
+      selected: {
+        rest: { parentState: 'fg:blue.standard.light.onSubtle.medium.pressed' }
+      }
     });
     expect(surface?.boxColor?.primary?.high).not.toHaveProperty('focus');
     expect(content?.textColor?.primary?.high).not.toHaveProperty('focus');
@@ -284,9 +286,9 @@ describe('Fluent 2 Button surface contexts', () => {
       selected: { rest: '#ffffff12' },
       disabled: '#ffffff12'
     });
-    expect(content?.textColor?.primary?.medium?.rest).toBe('#c1deff');
-    expect(content?.textColor?.primary?.low?.rest).toBe('#c1deff');
-    expect(content?.textColor?.primary?.lowest?.rest).toBe('#c1deff');
+    expect(content?.textColor?.primary?.medium?.rest).toBe('fg:blue.deep.light.onVivid.medium');
+    expect(content?.textColor?.primary?.low?.rest).toBe('fg:blue.deep.light.onVivid.medium');
+    expect(content?.textColor?.primary?.lowest?.rest).toBe('fg:blue.deep.light.onVivid.medium');
   });
 
   it('preserves each intent family across every onVivid emphasis', () => {
@@ -313,10 +315,10 @@ describe('Fluent 2 Button surface contexts', () => {
       destructive: content?.textColor?.destructive?.low?.rest,
       positive: content?.textColor?.positive?.low?.rest
     }).toEqual({
-      primary: '#c1deff',
-      neutral: '#d6dbe7',
-      destructive: '#ffcdc8',
-      positive: '#c3e7c0'
+      primary: 'fg:blue.deep.light.onVivid.medium',
+      neutral: 'fg:neutral.deep.light.onVivid.medium',
+      destructive: 'fg:red.deep.light.onVivid.medium',
+      positive: 'fg:green.deep.light.onVivid.medium'
     });
 
     for (const intent of INTENTS) {
@@ -333,6 +335,44 @@ describe('Fluent 2 Button surface contexts', () => {
       expect(content?.textColor?.[intent]?.lowest?.rest).toBe(
         content?.textColor?.[intent]?.low?.rest
       );
+    }
+  });
+
+  it('authors canonical Button textColor exclusively through global foreground references', () => {
+    const e2 = requireButtonContentElement();
+    const e3 = requireButtonIconElement();
+    const e4 = schema.components.button?.elements.e4;
+
+    const assertForegroundOnly = (value: unknown, path: string): void => {
+      if (typeof value === 'string') {
+        expect(value, path).toMatch(/^fg:/);
+        return;
+      }
+      if (Array.isArray(value)) {
+        value.forEach((child, index) => {
+          assertForegroundOnly(child, `${path}.${index}`);
+        });
+        return;
+      }
+      if (typeof value !== 'object' || value === null) return;
+      if ('parentState' in value) {
+        expect(value, path).toEqual({ parentState: expect.stringMatching(/^fg:/) });
+        return;
+      }
+      for (const [key, child] of Object.entries(value)) {
+        assertForegroundOnly(child, `${path}.${key}`);
+      }
+    };
+
+    assertForegroundOnly(e2.palettes, 'button.e2.palettes');
+    assertForegroundOnly(e3.palettes, 'button.e3.palettes');
+    for (const [theme, contexts] of Object.entries(e4?.palettes?.default ?? {})) {
+      for (const [context, palette] of Object.entries(contexts ?? {})) {
+        assertForegroundOnly(
+          palette?.textColor,
+          `button.e4.palettes.default.${theme}.${context}.textColor`
+        );
+      }
     }
   });
 });

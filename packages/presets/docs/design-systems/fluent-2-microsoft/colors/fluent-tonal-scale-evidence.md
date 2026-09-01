@@ -262,17 +262,21 @@ different primitive color identities.
 The first integration was the Fluent Button documented in
 [`../components/button.md`](../components/button.md). It promotes the Blue,
 Black, Cranberry, and Green generated scales. Primary High anchors the shared
-tonal recipe to each family's `vivid` reference, while Medium begins at each
+surface recipe to each family's `vivid` reference, while Medium begins at each
 family's `subtle` reference. Primary, Neutral, Destructive, and Positive reuse
 the same ordinal surface-state recipe without intent-specific tonal compensation.
-Neutral High has one component-level foreground exception: its physically light
-Dark/Darker `vivid` surfaces use the absolute-black D0 cap instead of white.
-In the Kiskadee on-vivid extension, Light Medium instead shares one neutral
-White overlay across intents and uses each family's `subtle +4` foreground to
-carry identity; Dark and Darker retain the role-aware Medium surface candidate.
-All three themes reuse their existing Medium surfaces in descending
-physical-lightness order from Rest through Hover to Pressed/Selected, matching
-the state direction already used by on-vivid High, Low, and Lowest.
+Canonical Button text now consumes the global foreground catalog separately
+from those surfaces and borders. Neutral High has one foreground exception: its
+physically light Dark/Darker `vivid` surfaces use
+`neutral.deep.light.onSubtle.medium`, the absolute-black cap, instead of white.
+In the Kiskadee on-vivid extension, Light Medium shares one neutral White
+overlay across intents while chromatic labels use each family's global Deep
+Light-track `subtle +2` coordinate; Neutral retains its approved `subtle +4`
+coordinate. Dark and Darker retain the role-aware Medium surface candidate but
+consume the same physical-Light foreground coordinates. All three themes reuse
+their existing Medium surfaces in descending physical-lightness order from Rest
+through Hover to Pressed/Selected, matching the state direction already used by
+on-vivid High, Low, and Lowest.
 
 Progress is documented in [`../components/progress.md`](../components/progress.md). It reuses Brand,
 Green, Orange, Cranberry, and Neutral through one canonical `medium` profile per intent. Warning
@@ -286,11 +290,32 @@ uses the physical light cap, while `low` and `lowest` project that cap at 68% an
 The same Text catalog now publishes the six approved chromatic primitive families by hue name.
 On subtle surfaces, normal chromatic text follows each family's `vivid` reference in Light and
 `vivid +8` in Dark/Darker; `low` and `lowest` reuse that base at 68% and 24% alpha. On vivid
-surfaces every theme uses the family's Light-track `subtle +4` anchor at 100%, 76%, and 40%.
-The deeper reference and stronger descendants preserve more chromatic identity against the host
-surface without replacing the family-relative locator with a fixed tone. This shared hierarchy is a Kiskadee extension
+surfaces Standard uses the family's Light-track `subtle +8` anchor in Light and `subtle -2` in
+Dark/Darker at 100%, 76%, and 40%. This shared hierarchy is a Kiskadee extension
 derived from the existing Button/Badge color evidence. It does not rename hues to component
 semantics and does not promote the harmony-derived Teal, Lime, Indigo, Magenta, or Brown candidates.
+
+Each approved chromatic family additionally publishes a complete `deep` Text profile. Its
+`onSubtle` anchor uses the evidence-backed exact family tone L65 in Light and D75 in Dark/Darker;
+its `onVivid` anchor is the family-relative Light-track `subtle +2` reference in every theme.
+Descendants retain the same 68%/24% subtle and 76%/40% vivid alpha hierarchy. This is
+a Kiskadee extension projected consistently across Blue, Cranberry, Green, Berry, Orange, and
+Marigold. Canonical Button Medium, Low, and Lowest may all consume the same Deep `medium`
+coordinate; Button emphasis is intentionally independent from the profile strength name.
+
+The catalog also publishes `neutral.deep` for component-owned text slots. Light
+`onSubtle.medium` is the absolute-black cap, while Light `onSubtle.low` preserves the approved L65
+neutral label. Disabled filled controls use neutral L20 at 82% and borderless controls use solid
+L16; Dark/Darker use solid D35. The all-theme `onVivid.medium` anchor remains the Neutral
+Light-track `subtle +4` reference, with physical white at 40% for disabled content. These exact
+values are promoted from Button evidence under `global.foreground.states`; component schemas no
+longer reopen their primitive or tonal positions.
+
+Global coordinates may publish Hover, Pressed, Pending, and Disabled in addition to Rest. The
+standalone Text pipeline still projects only Rest. Button selects the optional coordinates through
+`fg()` and `fg.parentState()`, and Web Builder resolves both forms to ordinary HEX before Style
+Keys and CSS are generated. Brand Pack projections remain on their existing build-only formula
+until packs own a compatible foreground catalog.
 
 The productive Fluent preset now resolves every base color through the FRF locator taxonomy. A
 policy test locks the full consumed reference/exact/cap inventory, and a separate Node-only parity test checks the

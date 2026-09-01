@@ -176,7 +176,11 @@ describe('buildComponentSurfaceContexts', () => {
           elements: {
             e1: {
               name: 'foreground',
-              foreground: { neutral: 'neutral', red: 'red' }
+              foreground: {
+                neutral: { family: 'neutral', profile: 'standard' },
+                red: { family: 'red', profile: 'standard' },
+                'red-deep': { family: 'red', profile: 'deep' }
+              }
             }
           }
         }
@@ -185,16 +189,27 @@ describe('buildComponentSurfaceContexts', () => {
         foregrounds: {
           profiles: {
             neutral: {
-              palettes: {
-                default: {
-                  light: { onSubtle: states, onVivid: states }
+              standard: {
+                palettes: {
+                  default: {
+                    light: { onSubtle: states, onVivid: states }
+                  }
                 }
               }
             },
             red: {
-              palettes: {
-                default: {
-                  light: { onSubtle: states, onVivid: states }
+              standard: {
+                palettes: {
+                  default: {
+                    light: { onSubtle: states, onVivid: states }
+                  }
+                }
+              },
+              deep: {
+                palettes: {
+                  default: {
+                    light: { onSubtle: states, onVivid: states }
+                  }
                 }
               }
             }
@@ -216,6 +231,11 @@ describe('buildComponentSurfaceContexts', () => {
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }
+            },
+            'red-deep': {
+              medium: { rest: true },
+              low: { rest: true },
+              lowest: { rest: true }
             }
           }
         },
@@ -227,6 +247,11 @@ describe('buildComponentSurfaceContexts', () => {
               lowest: { rest: true }
             },
             red: {
+              medium: { rest: true },
+              low: { rest: true },
+              lowest: { rest: true }
+            },
+            'red-deep': {
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }

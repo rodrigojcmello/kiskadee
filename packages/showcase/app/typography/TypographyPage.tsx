@@ -6,6 +6,7 @@ import {
   type TextEmphasis,
   type TextFontValue,
   type TextForegroundName,
+  textForegroundFamilyValues,
   textForegroundValues
 } from '@kiskadee/core';
 import { SYSTEM_MONOSPACE_FONT_STACK } from '@kiskadee/core/font-family';
@@ -50,8 +51,10 @@ type RoleDisplay = {
 const FONT_ROLES: readonly FontFamilyRole[] = ['body', 'heading', 'code'];
 const TYPOGRAPHY_ROLE_ORDER: readonly TextFontValue[] = ['body', 'heading', 'code'];
 const TEXT_FOREGROUND_EMPHASES: readonly TextEmphasis[] = ['medium', 'low', 'lowest'];
-const TEXT_CHROMATIC_FOREGROUNDS = textForegroundValues.filter(
-  (foreground): foreground is Exclude<TextForegroundName, 'neutral'> => foreground !== 'neutral'
+const TEXT_STANDARD_CHROMATIC_FOREGROUNDS: readonly TextForegroundName[] =
+  textForegroundFamilyValues.filter((foreground) => foreground !== 'neutral');
+const TEXT_DEEP_CHROMATIC_FOREGROUNDS = textForegroundValues.filter(
+  (foreground) => foreground.endsWith('-deep') && foreground !== 'neutral-deep'
 );
 
 const PROFILE_SAMPLES: Readonly<Record<TextFontValue, string>> = {
@@ -59,6 +62,11 @@ const PROFILE_SAMPLES: Readonly<Record<TextFontValue, string>> = {
   heading: 'Build a recognizable voice',
   code: 'const profile = "semantic";'
 };
+
+function formatForegroundFamily(foreground: TextForegroundName): string {
+  const family = foreground.replace(/-deep$/, '');
+  return `${family[0]?.toUpperCase() ?? ''}${family.slice(1)}`;
+}
 
 function resolveRoleDisplay(
   role: FontFamilyRole,
@@ -178,14 +186,16 @@ function RolePreview({
 }
 
 function ChromaticForegroundRows({
+  ariaLabel,
   foregrounds,
   textProfiles
 }: {
+  ariaLabel: string;
   foregrounds: readonly TextForegroundName[];
   textProfiles: ShowcaseTextProfiles;
 }) {
   return (
-    <table className={styles.chromaticTable} aria-label="Chromatic Text foregrounds by emphasis">
+    <table className={styles.chromaticTable} aria-label={ariaLabel}>
       <thead>
         <tr className={`${styles.chromaticRow} ${styles.chromaticHeaderRow}`}>
           <Text as="th" emphasis="lowest" profile={textProfiles.caption} scope="col">
@@ -208,7 +218,7 @@ function ChromaticForegroundRows({
         {foregrounds.map((foreground) => (
           <tr className={styles.chromaticRow} data-text-foreground={foreground} key={foreground}>
             <Text as="th" foreground={foreground} profile={textProfiles.caption} scope="row">
-              {foreground[0].toUpperCase() + foreground.slice(1)}
+              {formatForegroundFamily(foreground)}
             </Text>
             {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
               <Text
@@ -219,7 +229,12 @@ function ChromaticForegroundRows({
                 key={emphasis}
                 profile={textProfiles.body}
               >
-                Aa
+                <Text as="span" foreground="inherit" profile={textProfiles.bodyStrong}>
+                  Aa
+                </Text>{' '}
+                <Text as="span" foreground="inherit" profile={textProfiles.body}>
+                  Aa
+                </Text>
               </Text>
             ))}
           </tr>
@@ -229,11 +244,59 @@ function ChromaticForegroundRows({
   );
 }
 
-function TextComponentExamples({
-  chromaticForegrounds,
+function ChromaticForegroundProfileGroups({
+  deepForegrounds,
+  standardForegrounds,
+  surfaceLabel,
   textProfiles
 }: {
-  chromaticForegrounds: readonly TextForegroundName[];
+  deepForegrounds: readonly TextForegroundName[];
+  standardForegrounds: readonly TextForegroundName[];
+  surfaceLabel: 'subtle' | 'vivid';
+  textProfiles: ShowcaseTextProfiles;
+}) {
+  return (
+    <div className={styles.chromaticProfileGroups}>
+      <section className={styles.chromaticProfileGroup}>
+        <Text as="h5" profile={textProfiles.subsectionTitle}>
+          Standard
+        </Text>
+        <Text as="p" emphasis="low" profile={textProfiles.caption}>
+          family.standard → foreground=&quot;family&quot;
+        </Text>
+        <ChromaticForegroundRows
+          ariaLabel={`Standard foregrounds on ${surfaceLabel}`}
+          foregrounds={standardForegrounds}
+          textProfiles={textProfiles}
+        />
+      </section>
+
+      {deepForegrounds.length > 0 ? (
+        <section className={styles.chromaticProfileGroup}>
+          <Text as="h5" profile={textProfiles.subsectionTitle}>
+            Deep
+          </Text>
+          <Text as="p" emphasis="low" profile={textProfiles.caption}>
+            family.deep → foreground=&quot;family-deep&quot;
+          </Text>
+          <ChromaticForegroundRows
+            ariaLabel={`Deep foregrounds on ${surfaceLabel}`}
+            foregrounds={deepForegrounds}
+            textProfiles={textProfiles}
+          />
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
+function TextComponentExamples({
+  deepChromaticForegrounds,
+  standardChromaticForegrounds,
+  textProfiles
+}: {
+  deepChromaticForegrounds: readonly TextForegroundName[];
+  standardChromaticForegrounds: readonly TextForegroundName[];
   textProfiles: ShowcaseTextProfiles;
 }) {
   return (
@@ -318,15 +381,15 @@ function TextComponentExamples({
         </Card>
       </div>
 
-      {chromaticForegrounds.length > 0 ? (
+      {standardChromaticForegrounds.length > 0 ? (
         <section className={styles.chromaticSection} aria-labelledby="chromatic-foregrounds-title">
           <div className={styles.sectionHeader}>
             <Text as="h3" id="chromatic-foregrounds-title" profile={textProfiles.groupTitle}>
               Chromatic foregrounds
             </Text>
             <Text as="p" emphasis="low" profile={textProfiles.body}>
-              Color names select a visual family without assigning an action semantic such as
-              destructive or positive.
+              Standard preserves the normal chromatic anchor. Deep is an independent family profile
+              calibrated per theme and surface; the public Text API exposes it with a -deep suffix.
             </Text>
           </div>
 
@@ -341,8 +404,10 @@ function TextComponentExamples({
                 <Text as="h4" profile={textProfiles.groupTitle}>
                   On subtle
                 </Text>
-                <ChromaticForegroundRows
-                  foregrounds={chromaticForegrounds}
+                <ChromaticForegroundProfileGroups
+                  deepForegrounds={deepChromaticForegrounds}
+                  standardForegrounds={standardChromaticForegrounds}
+                  surfaceLabel="subtle"
                   textProfiles={textProfiles}
                 />
               </div>
@@ -358,8 +423,10 @@ function TextComponentExamples({
                 <Text as="h4" profile={textProfiles.groupTitle}>
                   On vivid
                 </Text>
-                <ChromaticForegroundRows
-                  foregrounds={chromaticForegrounds}
+                <ChromaticForegroundProfileGroups
+                  deepForegrounds={deepChromaticForegrounds}
+                  standardForegrounds={standardChromaticForegrounds}
+                  surfaceLabel="vivid"
                   textProfiles={textProfiles}
                 />
               </div>
@@ -677,11 +744,14 @@ function TypographyContent() {
   const textProfiles = useShowcaseTextProfiles();
   const presetFonts = global?.fonts;
   const textSurfaceContexts = manifest?.components?.text?.surfaceContexts?.[`${segment}.${theme}`];
-  const chromaticForegrounds = TEXT_CHROMATIC_FOREGROUNDS.filter((foreground) => {
+  const supportsForeground = (foreground: TextForegroundName) => {
     const subtle = textSurfaceContexts?.onSubtle?.state?.[foreground];
     const vivid = textSurfaceContexts?.onVivid?.state?.[foreground];
     return Boolean(subtle?.medium?.rest && vivid?.medium?.rest);
-  });
+  };
+  const standardChromaticForegrounds =
+    TEXT_STANDARD_CHROMATIC_FOREGROUNDS.filter(supportsForeground);
+  const deepChromaticForegrounds = TEXT_DEEP_CHROMATIC_FOREGROUNDS.filter(supportsForeground);
   const headingReusesBody =
     fontRoleNames.heading === FOLLOW_PRESET_FONT_KEY && presetFonts?.roles.heading === undefined;
   const effectiveSelections: Record<FontFamilyRole, string> = {
@@ -775,7 +845,8 @@ function TypographyContent() {
       </div>
 
       <TextComponentExamples
-        chromaticForegrounds={chromaticForegrounds}
+        deepChromaticForegrounds={deepChromaticForegrounds}
+        standardChromaticForegrounds={standardChromaticForegrounds}
         textProfiles={textProfiles}
       />
 

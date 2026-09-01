@@ -63,7 +63,7 @@ export function validateTextComponentContract(value: unknown, path = 'components
       `${path}.elements.e1.foreground`,
       issues
     );
-    if (typeof element.foreground.neutral !== 'string') {
+    if (!isRecord(element.foreground.neutral)) {
       issues.push(`${path}.elements.e1.foreground.neutral: required reference`);
     }
   }

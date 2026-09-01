@@ -52,17 +52,23 @@ describe('Fluent 2 Microsoft Text foreground', () => {
   it('publishes the complete neutral matrix for every theme and Surface Context', () => {
     expect(() => validateSchemaForegroundsContract(schema)).not.toThrow();
     expect(schema.components.text?.elements.e1.foreground).toEqual({
-      neutral: 'neutral',
-      blue: 'blue',
-      red: 'red',
-      green: 'green',
-      purple: 'purple',
-      orange: 'orange',
-      yellow: 'yellow'
+      neutral: { family: 'neutral', profile: 'standard' },
+      blue: { family: 'blue', profile: 'standard' },
+      'blue-deep': { family: 'blue', profile: 'deep' },
+      red: { family: 'red', profile: 'standard' },
+      'red-deep': { family: 'red', profile: 'deep' },
+      green: { family: 'green', profile: 'standard' },
+      'green-deep': { family: 'green', profile: 'deep' },
+      purple: { family: 'purple', profile: 'standard' },
+      'purple-deep': { family: 'purple', profile: 'deep' },
+      orange: { family: 'orange', profile: 'standard' },
+      'orange-deep': { family: 'orange', profile: 'deep' },
+      yellow: { family: 'yellow', profile: 'standard' },
+      'yellow-deep': { family: 'yellow', profile: 'deep' }
     });
 
-    const palettes = schema.global?.foregrounds?.profiles.neutral?.palettes.default;
-    expect(palettes?.light).toEqual({
+    const palettes = schema.global?.foregrounds?.profiles.neutral?.standard.palettes.default;
+    expect(palettes?.light).toMatchObject({
       onSubtle: {
         medium: { rest: '#21242d' },
         low: { rest: '#5d616b' },
@@ -87,8 +93,20 @@ describe('Fluent 2 Microsoft Text foreground', () => {
         lowest: { rest: '#ffffff3d' }
       }
     };
-    expect(palettes?.dark).toEqual(dark);
-    expect(palettes?.darker).toEqual(dark);
+    expect(palettes?.dark).toMatchObject(dark);
+    expect(palettes?.darker).toMatchObject(dark);
+    expect(palettes?.light?.onSubtle.medium).toEqual({
+      rest: '#21242d',
+      hover: '#1a1d25',
+      pressed: '#000001',
+      pending: '#21242db3'
+    });
+    expect(palettes?.light?.onVivid.medium).toEqual({
+      rest: '#ffffff',
+      hover: '#ffffff',
+      pressed: '#ffffff',
+      pending: '#ffffffb3'
+    });
   });
 
   it('publishes every available Fluent hue with one shared three-level formula', () => {
@@ -96,32 +114,38 @@ describe('Fluent 2 Microsoft Text foreground', () => {
       blue: {
         light: '#0064b4',
         dark: '#79b9ff',
-        vivid: '#c1deff'
+        vividLight: '#94c7ff',
+        vividDark: '#f1f7ff'
       },
       red: {
         light: '#c50f1f',
         dark: '#ff958b',
-        vivid: '#ffcdc8'
+        vividLight: '#ffa89f',
+        vividDark: '#fff4f2'
       },
       green: {
         light: '#107c10',
         dark: '#7ec879',
-        vivid: '#c3e7c0'
+        vividLight: '#91d78c',
+        vividDark: '#f0faef'
       },
       purple: {
         light: '#c239b3',
         dark: '#eb94dd',
-        vivid: '#f6ccee'
+        vividLight: '#fe99ee',
+        vividDark: '#fef2fc'
       },
       orange: {
         light: '#f7630c',
         dark: '#f49d79',
-        vivid: '#ffcfbc'
+        vividLight: '#ffaa89',
+        vividDark: '#fff4ef'
       },
       yellow: {
         light: '#eaa300',
         dark: '#d1af7c',
-        vivid: '#f3d6ac'
+        vividLight: '#f6b545',
+        vividDark: '#fdf5ea'
       }
     } as const;
 
@@ -132,21 +156,113 @@ describe('Fluent 2 Microsoft Text foreground', () => {
     });
 
     for (const [foreground, colors] of Object.entries(expected)) {
-      const palettes = schema.global?.foregrounds?.profiles[foreground]?.palettes.default;
-      const onVividEmphases = {
-        medium: { rest: colors.vivid },
-        low: { rest: `${colors.vivid}c2` },
-        lowest: { rest: `${colors.vivid}66` }
+      const palettes = schema.global?.foregrounds?.profiles[foreground]?.standard.palettes.default;
+      const onVividEmphases = (color: string) => ({
+        medium: { rest: color },
+        low: { rest: `${color}c2` },
+        lowest: { rest: `${color}66` }
+      });
+      const light = {
+        onSubtle: emphases(colors.light),
+        onVivid: onVividEmphases(colors.vividLight)
       };
-      const light = { onSubtle: emphases(colors.light), onVivid: onVividEmphases };
       const dark = {
         onSubtle: emphases(colors.dark),
-        onVivid: onVividEmphases
+        onVivid: onVividEmphases(colors.vividDark)
       };
 
-      expect(palettes?.light).toEqual(light);
-      expect(palettes?.dark).toEqual(dark);
-      expect(palettes?.darker).toEqual(dark);
+      expect(palettes?.light).toMatchObject(light);
+      expect(palettes?.dark).toMatchObject(dark);
+      expect(palettes?.darker).toMatchObject(dark);
     }
+  });
+
+  it('publishes every chromatic deep profile through the Button-calibrated formula', () => {
+    const profiles = schema.global?.foregrounds?.profiles;
+    const expected = {
+      blue: {
+        light: '#0d477e',
+        dark: '#61a7f3',
+        vivid: '#d3e7ff'
+      },
+      red: {
+        light: '#811819',
+        dark: '#f67c73',
+        vivid: '#ffdbd7'
+      },
+      green: {
+        light: '#155513',
+        dark: '#67b661',
+        vivid: '#d4edd2'
+      },
+      purple: {
+        light: '#6b2762',
+        dark: '#dd80cf',
+        vivid: '#f8daf2'
+      },
+      orange: {
+        light: '#6f3217',
+        dark: '#e68962',
+        vivid: '#ffdccf'
+      },
+      yellow: {
+        light: '#5a4117',
+        dark: '#c19c65',
+        vivid: '#f6e2c4'
+      }
+    } as const;
+    const onSubtle = (color: string) => ({
+      medium: { rest: color },
+      low: { rest: `${color}ad` },
+      lowest: { rest: `${color}3d` }
+    });
+    const onVivid = (color: string) => ({
+      medium: { rest: color },
+      low: { rest: `${color}c2` },
+      lowest: { rest: `${color}66` }
+    });
+
+    expect(Object.entries(profiles ?? {}).filter(([, family]) => family.deep)).toHaveLength(7);
+
+    for (const [foreground, colors] of Object.entries(expected)) {
+      const palettes = profiles?.[foreground]?.deep?.palettes.default;
+      const dark = { onSubtle: onSubtle(colors.dark), onVivid: onVivid(colors.vivid) };
+
+      expect(palettes?.light).toMatchObject({
+        onSubtle: onSubtle(colors.light),
+        onVivid: onVivid(colors.vivid)
+      });
+      expect(palettes?.dark).toMatchObject(dark);
+      expect(palettes?.darker).toMatchObject(dark);
+    }
+  });
+
+  it('publishes neutral.deep as the shared Button foreground coordinate family', () => {
+    const palettes = schema.global?.foregrounds?.profiles.neutral?.deep?.palettes.default;
+
+    expect(palettes?.light?.onSubtle).toMatchObject({
+      medium: {
+        rest: '#000000',
+        pressed: '#000000',
+        pending: '#000000b3'
+      },
+      low: {
+        rest: '#434650',
+        pending: '#434650b3',
+        disabled: '#a7abb6d1'
+      },
+      lowest: {
+        disabled: '#b6bac6'
+      }
+    });
+    expect(palettes?.dark?.onSubtle.low).toMatchObject({
+      rest: '#9ea2ae',
+      disabled: '#555965'
+    });
+    expect(palettes?.light?.onVivid.medium).toEqual({
+      rest: '#d6dbe7',
+      pending: '#d6dbe7b3',
+      disabled: '#ffffff66'
+    });
   });
 });

@@ -586,26 +586,45 @@ Context:
 
 Decision:
 
-- `global.foregrounds.profiles` owns complete preset-local foreground recipes.
-- Every profile theme publishes exactly `medium`, `low`, and `lowest` Rest colors under `onSubtle`;
-  `onVivid` is an optional capability with the same complete emphasis coverage.
-- Participating elements map local intents to profile IDs through `foreground`.
+- `global.foregrounds.profiles` is organized by color family. Every family owns a required complete
+  `standard` recipe and may publish an independent complete `deep` recipe.
+- Every profile theme publishes exactly `medium`, `low`, and `lowest` strengths under `onSubtle`;
+  `onVivid` is an optional capability with the same complete emphasis coverage. Every strength
+  requires `rest` and may publish `hover`, `pressed`, `pending`, and `disabled` coordinates.
+- Participating elements map local intents to structured `{ family, profile }` references through
+  `foreground`. Profile names are `standard | deep`.
 - Standalone Text requires `neutral` and may map canonical chromatic names directly. Those names
   are visual families, not component intents; `red`, for example, does not imply `destructive`.
 - Achromatic Text colors stay under `neutral`; `black` is not a separate foreground name.
-- Presets publish only source-backed families. A missing family remains unsupported and must not
-  fall back to `neutral` at runtime.
+- Presets publish only source-backed family profiles. A missing family or profile remains
+  unsupported and must not fall back to `neutral` or `standard` at runtime.
 - An element using `foreground` must not also author `palettes.*.textColor`.
 - `inherit` is reserved for the React API and is invalid as a schema profile, local intent, or
   reference.
 - Standalone Text uses foreground emphasis as paint strength and excludes `high` and `highest`;
   `medium` is its normal and strongest supported foreground. This does not change own-surface
   emphasis semantics for Button and Card.
+- React keeps profile selection flat through preset-owned local names: a preset can map `red` to
+  `red.standard` and `red-deep` to `red.deep` without introducing a runtime profile lookup.
+- Component text slots may address one coordinate with
+  `fg('family.profile.theme.surfaceContext.strength[.state]')`. The consuming palette supplies the
+  segment; every other axis is explicit and validated.
+- `fg.parentState()` means the slot reacts to the component state scope owner. It is valid only in
+  `textColor`, is distinct from tonal references, and replaces legacy `{ ref: ... }` authoring for
+  global foreground coordinates.
+- Component emphasis does not imply the homonymous foreground strength. A component owns that
+  mapping explicitly.
 
 Consequence:
 
 - The Web Builder expands profile references into ordinary `textColor` palettes before color
-  conversion, then emits the existing `c.s` and optional `c.v` class-map branches.
+  conversion. Element-profile expansion projects only `rest`, so optional control states do not
+  make Text interactive.
+- After merging palette sources, the Builder resolves direct `fg` coordinates to final colors and
+  `fg.parentState()` to the existing parent-state representation before Style Keys are created.
+  An unresolved `fg:` token is a build error.
+- The resolved colors continue through the existing `--`/`==`, `c.s`/`c.v`, manifest, class-map,
+  and CSS pipeline. Generated artifacts contain final colors and never perform a foreground lookup.
 - Manifest Surface Context capabilities are calculated from the expanded palettes.
 - No foreground-specific bucket, Provider, CSS variable, semantic variable, or browser lookup is
   created.

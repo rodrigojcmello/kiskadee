@@ -14,7 +14,7 @@ import type {
   SurfaceContext,
   ThemeMode
 } from '@kiskadee/core';
-import { interactionStateKeys } from '@kiskadee/core';
+import { interactionStateKeys, isForegroundReferenceCandidate } from '@kiskadee/core';
 import { buildStyleKey, deepUpdate } from '../../utils/index.ts';
 
 // Metadata to track which emphasis track(s) generated each style key.
@@ -129,6 +129,15 @@ function isInteractionStateColorMap(val: unknown): val is InteractionStateColorM
   return interactionStateKeys.some((state) => state in val);
 }
 
+function assertResolvedForegroundReference(value: unknown): void {
+  if (
+    isForegroundReferenceCandidate(value) ||
+    (isPlainObject(value) && Object.hasOwn(value, 'parentState'))
+  ) {
+    throw new Error('Invalid color schema: unresolved fg reference reached Style Key generation.');
+  }
+}
+
 /**
  * Converts an element's color palettes schema into nested style keys.
  *
@@ -217,6 +226,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
                   const isRef = isRefValue(val);
                   const inner = isRef ? (val as { ref?: Color | undefined }).ref : (val as Color);
                   if (inner === undefined) return; // { ref: undefined } -> skip
+                  assertResolvedForegroundReference(inner);
                   const color = inner;
 
                   // For the selected scope, we pass controlState=true and the base interaction (rest/hover/pressed/focus)
@@ -278,6 +288,7 @@ export function convertElementColorsToStyleKeys(palettes: ElementPalettes): {
               const isRef = isRefValue(val);
               const inner = isRef ? (val as { ref?: Color | undefined }).ref : (val as Color);
               if (inner === undefined) continue; // skip { ref: undefined }
+              assertResolvedForegroundReference(inner);
 
               // Build the style key including the interaction state and whether this is a ref.
               // Examples:

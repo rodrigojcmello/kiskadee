@@ -28,7 +28,8 @@ const PROMOTED_ASSET_FILES = new Set([
 const ALLOWED_WITH_ALPHA_FILES = new Set([
   'components/button-brand-projector.ts',
   'components/button-color-formula.ts',
-  'components/button-perceptual-alpha.ts'
+  'components/button-perceptual-alpha.ts',
+  'fluent-2-microsoft.foregrounds.ts'
 ]);
 const ALLOWED_TONE_SHIFT_FILES = new Set(['components/button-brand-projector.ts']);
 const FORBIDDEN_IMPORTS = new Set([

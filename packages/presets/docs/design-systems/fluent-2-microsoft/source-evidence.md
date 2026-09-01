@@ -45,8 +45,13 @@ This file records source evidence and preset-level decisions for
   in the Text evidence.
 - Fluent's approved Blue, Cranberry, Green, Berry, Orange, and Marigold primitives are also
   published as standalone Text foreground families named `blue`, `red`, `green`, `purple`,
-  `orange`, and `yellow`. Their three-level hierarchy is a Kiskadee extension calibrated from the
-  existing Button and Badge foreground recipes, not an upstream generic Text API.
+  `orange`, and `yellow`. Each family exposes complete `standard` and `deep` profiles. Their
+  three-level hierarchies are Kiskadee extensions calibrated from the existing Button and Badge
+  foreground recipes, not an upstream generic Text API.
+- `neutral.deep` promotes the approved absolute-black, lower neutral, and disabled Button
+  foregrounds into the same global catalog. Canonical Fluent Button text slots now consume atomic
+  global foreground coordinates; Button surfaces and borders remain component-owned, and Brand
+  Pack projections remain on their existing build-only formula.
 
 ## Preset-Wide Color And Token Provenance
 

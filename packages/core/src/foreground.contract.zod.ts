@@ -1,8 +1,14 @@
 import { z } from 'zod';
 import {
   type ElementForeground,
+  type ForegroundFamilyProfiles,
   type ForegroundProfile,
   type ForegroundProfilePalettes,
+  type ForegroundProfileReference,
+  type ForegroundState,
+  foregroundStateValues,
+  isForegroundReferenceCandidate,
+  parseForegroundReferenceToken,
   type SchemaForegrounds,
   textEmphasisValues
 } from './foreground.ts';
@@ -10,10 +16,19 @@ import {
 const FOREGROUND_PROFILE_ID_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const themeValues = ['light', 'dark', 'darker'] as const;
 
-export const foregroundProfileIdContractSchema = z
+export const foregroundFamilyIdContractSchema = z
   .string()
-  .regex(FOREGROUND_PROFILE_ID_PATTERN, 'expected a lowercase kebab-case foreground profile id')
+  .regex(FOREGROUND_PROFILE_ID_PATTERN, 'expected a lowercase kebab-case foreground family id')
   .refine((value) => value !== 'inherit', '"inherit" is reserved for the React API');
+
+const foregroundProfileNameContractSchema = z.enum(['standard', 'deep']);
+
+export const foregroundProfileReferenceContractSchema = z
+  .object({
+    family: foregroundFamilyIdContractSchema,
+    profile: foregroundProfileNameContractSchema
+  })
+  .strict() satisfies z.ZodType<ForegroundProfileReference>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -46,7 +61,9 @@ function validateEmphasisMap(
       continue;
     }
     for (const state of Object.keys(stateMap)) {
-      if (state !== 'rest') addIssue(ctx, [...path, emphasis, state], 'unrecognized state');
+      if (!foregroundStateValues.includes(state as ForegroundState)) {
+        addIssue(ctx, [...path, emphasis, state], 'unrecognized state');
+      }
     }
     if (!Object.hasOwn(stateMap, 'rest') || stateMap.rest === undefined) {
       addIssue(ctx, [...path, emphasis, 'rest'], 'required state');
@@ -102,19 +119,26 @@ export const foregroundProfileContractSchema = z
   .object({ palettes: foregroundProfilePalettesContractSchema })
   .strict() satisfies z.ZodType<ForegroundProfile>;
 
+const foregroundFamilyProfilesContractSchema = z
+  .object({
+    standard: foregroundProfileContractSchema,
+    deep: foregroundProfileContractSchema.optional()
+  })
+  .strict() satisfies z.ZodType<ForegroundFamilyProfiles>;
+
 export const schemaForegroundsContractSchema = z
   .object({
     profiles: z
-      .record(z.string(), foregroundProfileContractSchema)
-      .refine((profiles) => Object.keys(profiles).length > 0, 'expected at least one profile')
+      .record(z.string(), foregroundFamilyProfilesContractSchema)
+      .refine((profiles) => Object.keys(profiles).length > 0, 'expected at least one family')
       .superRefine((profiles, ctx) => {
-        for (const profileId of Object.keys(profiles)) {
-          const result = foregroundProfileIdContractSchema.safeParse(profileId);
+        for (const familyId of Object.keys(profiles)) {
+          const result = foregroundFamilyIdContractSchema.safeParse(familyId);
           if (result.success) continue;
           for (const issue of result.error.issues) {
             ctx.addIssue({
               code: 'custom',
-              path: [profileId, ...issue.path],
+              path: [familyId, ...issue.path],
               message: issue.message
             });
           }
@@ -124,11 +148,11 @@ export const schemaForegroundsContractSchema = z
   .strict() satisfies z.ZodType<SchemaForegrounds>;
 
 export const elementForegroundContractSchema = z
-  .record(z.string(), foregroundProfileIdContractSchema)
+  .record(z.string(), foregroundProfileReferenceContractSchema)
   .refine((references) => Object.keys(references).length > 0, 'expected at least one reference')
   .superRefine((references, ctx) => {
     for (const intent of Object.keys(references)) {
-      const result = foregroundProfileIdContractSchema.safeParse(intent);
+      const result = foregroundFamilyIdContractSchema.safeParse(intent);
       if (result.success) continue;
       for (const issue of result.error.issues) {
         ctx.addIssue({ code: 'custom', path: [intent, ...issue.path], message: issue.message });
@@ -166,14 +190,94 @@ type ForegroundElementReference = {
   element: Record<string, unknown>;
 };
 
+type AtomicForegroundReference = {
+  path: string;
+  segment: string;
+  token: unknown;
+  colorProperty: string;
+  kind: 'direct' | 'parentState' | 'legacyRef';
+};
+
+function collectAtomicReferenceValues(
+  value: unknown,
+  path: string,
+  segment: string,
+  colorProperty: string,
+  references: AtomicForegroundReference[]
+): void {
+  if (isForegroundReferenceCandidate(value)) {
+    references.push({ path, segment, token: value, colorProperty, kind: 'direct' });
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => {
+      collectAtomicReferenceValues(item, `${path}.${index}`, segment, colorProperty, references);
+    });
+    return;
+  }
+  if (!isRecord(value)) return;
+
+  if (Object.hasOwn(value, 'parentState')) {
+    references.push({
+      path: `${path}.parentState`,
+      segment,
+      token: value.parentState,
+      colorProperty,
+      kind: 'parentState'
+    });
+    return;
+  }
+  if (Object.hasOwn(value, 'ref') && isForegroundReferenceCandidate(value.ref)) {
+    references.push({
+      path: `${path}.ref`,
+      segment,
+      token: value.ref,
+      colorProperty,
+      kind: 'legacyRef'
+    });
+    return;
+  }
+
+  for (const [key, child] of Object.entries(value)) {
+    collectAtomicReferenceValues(child, `${path}.${key}`, segment, colorProperty, references);
+  }
+}
+
+function collectPaletteAtomicReferences(
+  value: unknown,
+  path: string,
+  references: AtomicForegroundReference[]
+): void {
+  if (!isRecord(value)) return;
+  for (const [segment, byTheme] of Object.entries(value)) {
+    if (!isRecord(byTheme)) continue;
+    for (const [theme, byContext] of Object.entries(byTheme)) {
+      if (!isRecord(byContext)) continue;
+      for (const [surfaceContext, colorSchema] of Object.entries(byContext)) {
+        if (!isRecord(colorSchema)) continue;
+        for (const [colorProperty, colorValue] of Object.entries(colorSchema)) {
+          collectAtomicReferenceValues(
+            colorValue,
+            `${path}.${segment}.${theme}.${surfaceContext}.${colorProperty}`,
+            segment,
+            colorProperty,
+            references
+          );
+        }
+      }
+    }
+  }
+}
+
 function collectForegroundElements(
   value: unknown,
   path: string,
-  references: ForegroundElementReference[]
+  references: ForegroundElementReference[],
+  atomicReferences: AtomicForegroundReference[]
 ): void {
   if (Array.isArray(value)) {
     value.forEach((item, index) => {
-      collectForegroundElements(item, `${path}.${index}`, references);
+      collectForegroundElements(item, `${path}.${index}`, references, atomicReferences);
     });
     return;
   }
@@ -183,8 +287,93 @@ function collectForegroundElements(
 
   for (const [key, child] of Object.entries(value)) {
     if (key === 'foreground') continue;
-    collectForegroundElements(child, `${path}.${key}`, references);
+    if (key === 'palettes') {
+      collectPaletteAtomicReferences(child, `${path}.${key}`, atomicReferences);
+      continue;
+    }
+    collectForegroundElements(child, `${path}.${key}`, references, atomicReferences);
   }
+}
+
+function validateAtomicForegroundReference(
+  reference: AtomicForegroundReference,
+  profiles: Readonly<Record<string, ForegroundFamilyProfiles>>,
+  definitionIsValid: boolean
+): string[] {
+  const issues: string[] = [];
+  if (reference.colorProperty !== 'textColor') {
+    issues.push(`${reference.path}: fg references are accepted only in textColor`);
+  }
+  if (reference.kind === 'legacyRef') {
+    issues.push(`${reference.path}: use fg.parentState() instead of the legacy ref wrapper`);
+  }
+  if (!isForegroundReferenceCandidate(reference.token)) {
+    issues.push(`${reference.path}: parentState requires an fg reference token`);
+    return issues;
+  }
+
+  const parsed = parseForegroundReferenceToken(reference.token);
+  if (!parsed) {
+    issues.push(
+      `${reference.path}: invalid fg coordinate; expected family.profile.theme.surfaceContext.emphasis[.state]`
+    );
+    return issues;
+  }
+
+  const familyResult = foregroundFamilyIdContractSchema.safeParse(parsed.family);
+  if (!familyResult.success) {
+    issues.push(...familyResult.error.issues.map((issue) => formatZodIssue(reference.path, issue)));
+    return issues;
+  }
+  if (!definitionIsValid) return issues;
+
+  const family = profiles[parsed.family];
+  if (!family) {
+    issues.push(`${reference.path}: references unknown foreground family "${parsed.family}"`);
+    return issues;
+  }
+  const profile = family[parsed.profile];
+  if (!profile) {
+    issues.push(
+      `${reference.path}: references unavailable foreground profile "${parsed.family}.${parsed.profile}"`
+    );
+    return issues;
+  }
+  const segment = profile.palettes[reference.segment];
+  if (!segment) {
+    issues.push(
+      `${reference.path}: foreground profile "${parsed.family}.${parsed.profile}" does not publish segment "${reference.segment}"`
+    );
+    return issues;
+  }
+  const theme = segment[parsed.theme];
+  if (!theme) {
+    issues.push(
+      `${reference.path}: foreground profile "${parsed.family}.${parsed.profile}" does not publish theme "${parsed.theme}" for segment "${reference.segment}"`
+    );
+    return issues;
+  }
+  const surfaceContext = theme[parsed.surfaceContext];
+  if (!surfaceContext) {
+    issues.push(
+      `${reference.path}: foreground profile "${parsed.family}.${parsed.profile}" does not publish ${parsed.surfaceContext} for ${reference.segment}.${parsed.theme}`
+    );
+    return issues;
+  }
+  const emphasis = surfaceContext[parsed.emphasis];
+  if (!emphasis) {
+    issues.push(
+      `${reference.path}: foreground profile "${parsed.family}.${parsed.profile}" does not publish emphasis "${parsed.emphasis}"`
+    );
+    return issues;
+  }
+  if (emphasis[parsed.state] === undefined) {
+    issues.push(
+      `${reference.path}: foreground coordinate "${reference.token}" does not publish state "${parsed.state}"`
+    );
+  }
+
+  return issues;
 }
 
 function collectTextColorPaths(value: unknown, path: string, paths: string[]): void {
@@ -213,12 +402,18 @@ export function getSchemaForegroundsContractIssues(
   }
 
   const foregroundElements: ForegroundElementReference[] = [];
-  collectForegroundElements(schemaLike.components, 'components', foregroundElements);
-  if (foregroundElements.length === 0) return issues;
+  const atomicReferences: AtomicForegroundReference[] = [];
+  collectForegroundElements(
+    schemaLike.components,
+    'components',
+    foregroundElements,
+    atomicReferences
+  );
+  if (foregroundElements.length === 0 && atomicReferences.length === 0) return issues;
 
   if (foregroundsDefinition === undefined) {
     issues.push(
-      'global.foregrounds: required when component elements reference foreground profiles'
+      'global.foregrounds: required when component elements reference foreground profiles or coordinates'
     );
   }
 
@@ -234,10 +429,17 @@ export function getSchemaForegroundsContractIssues(
         )
       );
     } else if (definitionResult.success) {
-      for (const [intent, profileId] of Object.entries(foregroundResult.data)) {
-        if (!Object.hasOwn(profiles, profileId)) {
+      for (const [intent, referenceValue] of Object.entries(foregroundResult.data)) {
+        const familyProfiles = profiles[referenceValue.family];
+        if (!familyProfiles) {
           issues.push(
-            `${reference.path}.foreground.${intent}: references unknown foreground profile "${profileId}"`
+            `${reference.path}.foreground.${intent}: references unknown foreground family "${referenceValue.family}"`
+          );
+          continue;
+        }
+        if (!familyProfiles[referenceValue.profile]) {
+          issues.push(
+            `${reference.path}.foreground.${intent}: references unavailable foreground profile "${referenceValue.family}.${referenceValue.profile}"`
           );
         }
       }
@@ -250,6 +452,12 @@ export function getSchemaForegroundsContractIssues(
         `${textColorPath}: cannot be authored together with ${reference.path}.foreground`
       );
     }
+  }
+
+  for (const reference of atomicReferences) {
+    issues.push(
+      ...validateAtomicForegroundReference(reference, profiles, definitionResult.success)
+    );
   }
 
   return issues;

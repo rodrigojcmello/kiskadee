@@ -4,6 +4,7 @@ import {
   validateElementForegroundContract,
   validateSchemaForegroundsDefinitionContract
 } from './foreground.contract.zod.ts';
+import { fg, parseForegroundReferenceToken } from './foreground.ts';
 
 const emphasisMap = () => ({
   medium: { rest: '#333333' },
@@ -14,11 +15,13 @@ const emphasisMap = () => ({
 const foregrounds = () => ({
   profiles: {
     neutral: {
-      palettes: {
-        default: {
-          light: {
-            onSubtle: emphasisMap(),
-            onVivid: emphasisMap()
+      standard: {
+        palettes: {
+          default: {
+            light: {
+              onSubtle: emphasisMap(),
+              onVivid: emphasisMap()
+            }
           }
         }
       }
@@ -27,43 +30,58 @@ const foregrounds = () => ({
 });
 
 describe('foreground profile contract', () => {
-  it('accepts the three Rest-only Text emphases and optional onVivid', () => {
+  it('accepts three strengths, optional foreground states, and optional onVivid', () => {
     const value = foregrounds();
+    value.profiles.neutral.standard.palettes.default.light.onSubtle.medium = {
+      rest: '#333333',
+      hover: '#222222',
+      pressed: '#111111',
+      pending: '#333333b3',
+      disabled: '#777777'
+    };
     expect(validateSchemaForegroundsDefinitionContract(value)).toEqual([]);
 
-    Reflect.deleteProperty(value.profiles.neutral.palettes.default.light, 'onVivid');
+    Reflect.deleteProperty(value.profiles.neutral.standard.palettes.default.light, 'onVivid');
     expect(validateSchemaForegroundsDefinitionContract(value)).toEqual([]);
   });
 
-  it('rejects unsupported strengths, incomplete coverage, and non-Rest states', () => {
+  it('rejects unsupported strengths, incomplete coverage, and unsupported states', () => {
     const value = foregrounds() as any;
-    value.profiles.neutral.palettes.default.light.onSubtle.high = { rest: '#111111' };
-    value.profiles.neutral.palettes.default.light.onSubtle.highest = { rest: '#000000' };
-    delete value.profiles.neutral.palettes.default.light.onSubtle.lowest;
-    value.profiles.neutral.palettes.default.light.onVivid.medium.hover = '#222222';
+    value.profiles.neutral.standard.palettes.default.light.onSubtle.high = {
+      rest: '#111111'
+    };
+    value.profiles.neutral.standard.palettes.default.light.onSubtle.highest = {
+      rest: '#000000'
+    };
+    delete value.profiles.neutral.standard.palettes.default.light.onSubtle.lowest;
+    value.profiles.neutral.standard.palettes.default.light.onVivid.medium.focus = '#222222';
 
     const issues = validateSchemaForegroundsDefinitionContract(value);
     expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.palettes.default.light.onSubtle.high: unrecognized emphasis'
+      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.high: unrecognized emphasis'
     );
     expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.palettes.default.light.onSubtle.highest: unrecognized emphasis'
+      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.highest: unrecognized emphasis'
     );
     expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.palettes.default.light.onSubtle.lowest: required emphasis'
+      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.lowest: required emphasis'
     );
     expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.palettes.default.light.onVivid.medium.hover: unrecognized state'
+      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onVivid.medium.focus: unrecognized state'
     );
   });
 
   it('reserves inherit and validates profile identifiers', () => {
-    expect(validateElementForegroundContract({ neutral: 'inherit' })).toContain(
-      'foreground.neutral: "inherit" is reserved for the React API'
-    );
-    expect(validateElementForegroundContract({ Neutral: 'neutral' })).toContain(
-      'foreground.Neutral: expected a lowercase kebab-case foreground profile id'
-    );
+    expect(
+      validateElementForegroundContract({
+        neutral: { family: 'inherit', profile: 'standard' }
+      })
+    ).toContain('foreground.neutral.family: "inherit" is reserved for the React API');
+    expect(
+      validateElementForegroundContract({
+        Neutral: { family: 'neutral', profile: 'standard' }
+      })
+    ).toContain('foreground.Neutral: expected a lowercase kebab-case foreground family id');
 
     const value = foregrounds() as any;
     value.profiles.inherit = value.profiles.neutral;
@@ -78,13 +96,16 @@ describe('foreground profile contract', () => {
         components: {
           text: {
             elements: {
-              e1: { name: 'foreground', foreground: { neutral: 'missing' } }
+              e1: {
+                name: 'foreground',
+                foreground: { neutral: { family: 'missing', profile: 'standard' } }
+              }
             }
           }
         }
       })
     ).toContain(
-      'global.foregrounds: required when component elements reference foreground profiles'
+      'global.foregrounds: required when component elements reference foreground profiles or coordinates'
     );
 
     const issues = getSchemaForegroundsContractIssues({
@@ -94,7 +115,7 @@ describe('foreground profile contract', () => {
           elements: {
             e1: {
               name: 'foreground',
-              foreground: { neutral: 'missing' },
+              foreground: { neutral: { family: 'missing', profile: 'standard' } },
               palettes: {
                 default: {
                   light: {
@@ -109,10 +130,152 @@ describe('foreground profile contract', () => {
     });
 
     expect(issues).toContain(
-      'components.text.elements.e1.foreground.neutral: references unknown foreground profile "missing"'
+      'components.text.elements.e1.foreground.neutral: references unknown foreground family "missing"'
     );
     expect(issues).toContain(
       'components.text.elements.e1.palettes.default.light.onSubtle.textColor: cannot be authored together with components.text.elements.e1.foreground'
+    );
+  });
+
+  it('serializes and parses direct and parent-state foreground coordinates', () => {
+    expect(fg('neutral.standard.light.onSubtle.medium')).toBe(
+      'fg:neutral.standard.light.onSubtle.medium'
+    );
+    expect(fg.parentState('red.deep.dark.onVivid.low.pending')).toEqual({
+      parentState: 'fg:red.deep.dark.onVivid.low.pending'
+    });
+    expect(parseForegroundReferenceToken('fg:red.deep.dark.onVivid.low.pending')).toEqual({
+      family: 'red',
+      profile: 'deep',
+      theme: 'dark',
+      surfaceContext: 'onVivid',
+      emphasis: 'low',
+      state: 'pending'
+    });
+    expect(parseForegroundReferenceToken('fg:red.deep.dark.onVivid.high')).toBeUndefined();
+  });
+
+  it('validates atomic foreground coordinates and confines them to textColor', () => {
+    const value = foregrounds() as any;
+    value.profiles.neutral.standard.palettes.default.light.onSubtle.medium.hover = '#222222';
+
+    const valid = getSchemaForegroundsContractIssues({
+      global: { foregrounds: value },
+      components: {
+        button: {
+          elements: {
+            e2: {
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: fg('neutral.standard.light.onSubtle.medium'),
+                            hover: fg.parentState(
+                              'neutral.standard.light.onSubtle.medium.hover'
+                            )
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+    expect(valid).toEqual([]);
+
+    const invalid = getSchemaForegroundsContractIssues({
+      global: { foregrounds: value },
+      components: {
+        button: {
+          elements: {
+            e1: {
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      boxColor: {
+                        neutral: {
+                          medium: { rest: fg('neutral.standard.light.onSubtle.medium') }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            e2: {
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: 'fg:missing.standard.light.onSubtle.medium',
+                            hover: {
+                              ref: fg('neutral.standard.light.onSubtle.medium.hover')
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    expect(invalid).toContain(
+      'components.button.elements.e1.palettes.default.light.onSubtle.boxColor.neutral.medium.rest: fg references are accepted only in textColor'
+    );
+    expect(invalid).toContain(
+      'components.button.elements.e2.palettes.default.light.onSubtle.textColor.neutral.medium.rest: references unknown foreground family "missing"'
+    );
+    expect(invalid).toContain(
+      'components.button.elements.e2.palettes.default.light.onSubtle.textColor.neutral.medium.hover.ref: use fg.parentState() instead of the legacy ref wrapper'
+    );
+  });
+
+  it('accepts optional deep profiles and rejects unavailable profile references', () => {
+    const value = foregrounds() as any;
+    value.profiles.neutral.deep = {
+      palettes: {
+        default: {
+          light: {
+            onSubtle: emphasisMap(),
+            onVivid: emphasisMap()
+          }
+        }
+      }
+    };
+
+    expect(validateSchemaForegroundsDefinitionContract(value)).toEqual([]);
+    expect(
+      getSchemaForegroundsContractIssues({
+        global: { foregrounds: foregrounds() },
+        components: {
+          text: {
+            elements: {
+              e1: {
+                name: 'foreground',
+                foreground: { neutral: { family: 'neutral', profile: 'deep' } }
+              }
+            }
+          }
+        }
+      })
+    ).toContain(
+      'components.text.elements.e1.foreground.neutral: references unavailable foreground profile "neutral.deep"'
     );
   });
 });

@@ -15,7 +15,12 @@ const TEXT_COLORS = {
     c: {
       s: {
         neutral: { m: 'fg-medium', l: 'fg-low', ll: 'fg-lowest' },
-        red: { m: 'fg-red-medium', l: 'fg-red-low', ll: 'fg-red-lowest' }
+        red: { m: 'fg-red-medium', l: 'fg-red-low', ll: 'fg-red-lowest' },
+        'red-deep': {
+          m: 'fg-red-deep-medium',
+          l: 'fg-red-deep-low',
+          ll: 'fg-red-deep-lowest'
+        }
       },
       v: {
         neutral: {
@@ -27,6 +32,11 @@ const TEXT_COLORS = {
           m: 'fg-vivid-red-medium',
           l: 'fg-vivid-red-low',
           ll: 'fg-vivid-red-lowest'
+        },
+        'red-deep': {
+          m: 'fg-vivid-red-deep-medium',
+          l: 'fg-vivid-red-deep-low',
+          ll: 'fg-vivid-red-deep-lowest'
         }
       }
     }
@@ -187,11 +197,25 @@ describe('Text', () => {
         >
           Red vivid
         </Text>
+        <Text data-testid="red-deep-subtle" profile="body-medium" foreground="red-deep">
+          Red deep subtle
+        </Text>
+        <Text
+          data-testid="red-deep-vivid"
+          profile="body-medium"
+          foreground="red-deep"
+          emphasis="low"
+          surfaceContext="onVivid"
+        >
+          Red deep vivid
+        </Text>
       </>
     );
 
     expect(screen.getByTestId('red-subtle').className).toContain('fg-red-medium');
     expect(screen.getByTestId('red-vivid').className).toContain('fg-vivid-red-low');
+    expect(screen.getByTestId('red-deep-subtle').className).toContain('fg-red-deep-medium');
+    expect(screen.getByTestId('red-deep-vivid').className).toContain('fg-vivid-red-deep-low');
   });
 
   it('inherits color when the active preset does not publish a requested color family', () => {

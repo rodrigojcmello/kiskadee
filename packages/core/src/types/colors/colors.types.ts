@@ -117,9 +117,10 @@ export type Color = SolidColor | ResolvedGradient;
 /**
  * A color value that can be either:
  *  - a direct Color definition (applied in the element’s own state)
- *  - a ParentColor reference (applied only when the parent’s interaction state is inherited)
+ *  - a legacy ParentColor reference (applied only when the parent’s interaction state is inherited)
+ *  - an authored parent-state foreground reference, lowered by Web Builder before style emission
  */
-export type ColorValue = Color | { ref?: Color | undefined };
+export type ColorValue = Color | { ref?: Color | undefined } | { parentState: Color };
 
 /**
  * Interaction and component states that can be encoded in style keys.
