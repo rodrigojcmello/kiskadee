@@ -207,6 +207,10 @@ Shared utilities for Showcase.
 
 ## Important conventions
 
+- Route documentation and examples outside the top bar and lateral controls panel form Showcase
+  Content (`s-content`). Every visual entity in this region must consume public `p-react`
+  components and active generated artifacts; Showcase CSS is limited to structural composition.
+  See [Showcase Content](docs/definitions/showcase-content.md).
 - Showcase is an artifact consumer: if something is “missing”, run `web-builder build-sync-generate`.
 - Online font providers and preset font integrations belong to `@kiskadee/fonts`; the font select
   is projected from its public lazy catalog rather than a Showcase-owned list. The active artifact

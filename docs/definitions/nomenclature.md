@@ -170,6 +170,23 @@ The Kiskadee consumer and visual-validation application located at `packages/sho
 demonstrates and inspects framework behavior; it is not the architectural owner of behavior that
 belongs to Core, presets, builders, runtimes, or component projects.
 
+### Showcase Content (`s-content`)
+
+The route-owned documentation and example region of Showcase. `s-content` includes the headings,
+descriptions, specimens, and inline controls rendered in the route canvas. It excludes the top bar,
+lateral controls panel, and other Showcase application chrome.
+
+Every visual entity in `s-content` must be composed from public `p-react` components and the active
+Schema-generated artifacts. Component-owned slots, such as `Button.Label`, count as part of their
+owning `p-react` component and must not be restyled by Showcase. Native elements and Showcase CSS
+may provide semantic landmarks, layout, responsive arrangement, and small composition gaps, but
+must not author typography, colors, backgrounds, borders, radii, shadows, or component appearance.
+
+When a required visual capability is absent from `p-react`, `s-content` must expose that gap and
+route the work to the owning framework project instead of creating a Showcase-local substitute.
+The term names a conformance boundary; it is not a public component, CSS class, Schema property, or
+new Composition Strategy. Write the alias exactly as lowercase `s-content`.
+
 ## Project aliases
 
 The `p-` prefix identifies a Kiskadee platform component project in project discussions. These are
@@ -204,6 +221,8 @@ The iOS component project rooted at `packages/components/ios`.
   meanings. Capitalize **Structural CSS** when invoking the canonical p-react layer. Lowercase
   remains appropriate for ordinary generic usage.
 - Keep the project aliases lowercase and hyphenated: `p-react`, `p-android`, and `p-ios`.
+- Use **Showcase Content** on first mention in normative prose and lowercase `s-content` for its
+  canonical region alias.
 
 ## Related definitions
 
