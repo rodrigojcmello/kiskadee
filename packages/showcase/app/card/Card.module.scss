@@ -121,6 +121,10 @@
   gap: 24px;
 }
 
+.controlRow .surfaceControlLabel {
+  margin-inline-start: 0;
+}
+
 .compositionGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

@@ -22,6 +22,7 @@ import {
   Button as KButton,
   Card as KCard,
   CardAction as KCardAction,
+  Separator,
   Switch,
   Text,
   useCardArtifactConfig,
@@ -555,13 +556,16 @@ export function Card() {
                       <Switch
                         id="card-surfaces-borders"
                         label="Borders"
+                        classNames={{ e4: s.surfaceControlLabel }}
                         emphasis="medium"
                         controlState={surfaceBorders}
                         onControlStateChange={setSurfaceBorders}
                       />
+                      <Separator orientation="vertical" />
                       <Switch
                         id="card-surfaces-shadows"
                         label="Shadows"
+                        classNames={{ e4: s.surfaceControlLabel }}
                         emphasis="medium"
                         controlState={surfaceShadows}
                         onControlStateChange={setSurfaceShadows}
@@ -574,7 +578,7 @@ export function Card() {
             />
             {cardSemanticIntentOrder.map((intent) => (
               <div className={s.intentGroup} key={intent}>
-                <Text as="h4" profile={profiles.subsectionTitle} emphasis="low">
+                <Text as="h4" profile={profiles.subsectionTitle} emphasis="medium">
                   {cardIntentLabels[intent]}
                 </Text>
                 <div className={s.surfaceGrid}>
@@ -586,7 +590,7 @@ export function Card() {
                         key={emphasis}
                         aria-label={`${intent} ${emphasis}`}
                       >
-                        <Text as="h5" profile={profiles.bodyStrong}>
+                        <Text as="h5" profile={profiles.bodyStrong} emphasis="low">
                           {cardEmphasisLabels[emphasis]}
                         </Text>
                         {available ? (
