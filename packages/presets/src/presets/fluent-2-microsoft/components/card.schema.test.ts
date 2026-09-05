@@ -12,24 +12,24 @@ describe('Fluent 2 Card canonical surfaces', () => {
     expect(schema.components.card?.options?.canonicalSurfaces).toEqual({
       default: {
         light: [
+          { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
           { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
           { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
           { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
         ],
         dark: [
+          { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
           { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
           { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
           { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
         ],
         darker: [
+          { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
           { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
           { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-          { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+          { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
           { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' },
           { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onSubtle' }
         ]
@@ -41,42 +41,39 @@ describe('Fluent 2 Card canonical surfaces', () => {
     const palettes = requireCardSurfaceElement().palettes.default;
 
     expect(palettes?.light?.onSubtle.boxColor?.neutral).toMatchObject({
-      lowest: { rest: '#ffffff00' },
-      low: { rest: '#ffffff' },
-      medium: { rest: '#f9fbff' },
-      high: { rest: '#f4f6fe' }
+      lowest: { rest: '#ffffff' },
+      low: { rest: '#f9fbff' },
+      medium: { rest: '#eef2fc' }
     });
     expect(palettes?.light?.onSubtle.boxColor?.neutral).not.toHaveProperty('highest');
 
     expect(palettes?.dark?.onSubtle.boxColor?.neutral).toMatchObject({
-      lowest: { rest: '#00000000' },
-      low: { rest: '#262a33' },
-      medium: { rest: '#1d1f28' },
-      high: { rest: '#11131c' }
+      lowest: { rest: '#262a33' },
+      low: { rest: '#1d1f28' },
+      medium: { rest: '#11131c' }
     });
     expect(palettes?.dark?.onSubtle.boxColor?.neutral).not.toHaveProperty('highest');
 
     expect(palettes?.darker?.onSubtle.boxColor?.neutral).toMatchObject({
-      lowest: { rest: '#00000000' },
-      low: { rest: '#262a33' },
-      medium: { rest: '#1d1f28' },
-      high: { rest: '#11131c' },
+      lowest: { rest: '#262a33' },
+      low: { rest: '#1d1f28' },
+      medium: { rest: '#11131c' },
       highest: { rest: '#000000' }
     });
   });
 
-  it('keeps adjacent Neutral Background stops as state deltas instead of duplicate surfaces', () => {
+  it('uses Background 4 for Light Medium while preserving the existing state colors', () => {
     const light = requireCardSurfaceElement().palettes.default?.light?.onSubtle.boxColor?.neutral;
     const dark = requireCardSurfaceElement().palettes.default?.dark?.onSubtle.boxColor?.neutral;
 
-    expect(light?.high).toMatchObject({
-      rest: '#f4f6fe',
+    expect(light?.medium).toMatchObject({
+      rest: '#eef2fc',
       hover: '#e9edfa',
       pressed: '#d2d6e2',
       disabled: '#eef2fc',
       selected: { rest: '#dce0ed' }
     });
-    expect(dark?.high).toMatchObject({
+    expect(dark?.medium).toMatchObject({
       rest: '#11131c',
       hover: '#262a33',
       pressed: '#05060d',
@@ -116,6 +113,32 @@ describe('Fluent 2 Card canonical surfaces', () => {
       selected: { rest: '#074d89' },
       disabled: '#11131c'
     };
+
+    for (const theme of ['light', 'dark', 'darker'] as const) {
+      for (const context of ['onSubtle', 'onVivid'] as const) {
+        const palette = palettes?.[theme]?.[context];
+        expect(Object.keys(palette?.boxColor?.neutral ?? {})).toEqual(
+          theme === 'darker' ? ['lowest', 'low', 'medium', 'highest'] : ['lowest', 'low', 'medium']
+        );
+        expect(Object.keys(palette?.boxColor?.primary ?? {})).toEqual([
+          'lowest',
+          'medium',
+          'highest'
+        ]);
+        expect(palette?.boxColor?.primary?.lowest).toEqual(palette?.boxColor?.neutral?.lowest);
+        expect(palette?.boxColor?.neutral?.lowest?.rest).not.toMatch(/00$/);
+        expect(
+          schema.components.card?.contentSurfaceContext?.default?.[theme]?.[context]?.neutral
+            ?.lowest
+        ).toEqual({ rest: 'onSubtle' });
+        expect(
+          schema.components.card?.contentSurfaceContext?.default?.[theme]?.[context]?.primary
+            ?.lowest
+        ).toEqual({ rest: 'onSubtle' });
+        expect(palette?.borderColor?.neutral).not.toHaveProperty('high');
+        expect(palette?.borderColor?.primary).not.toHaveProperty('low');
+      }
+    }
 
     expect(palettes?.light?.onSubtle.boxColor?.primary).not.toHaveProperty('high');
     expect(palettes?.light?.onSubtle.boxColor?.primary?.highest).toMatchObject(

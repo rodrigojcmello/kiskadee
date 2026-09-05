@@ -4,8 +4,8 @@ import type { ThemeMode } from '@kiskadee/core';
 import { useCardArtifactConfig, useKiskadee } from '@kiskadee/react-components';
 import { useMemo } from 'react';
 import {
-  type CanonicalCardSurfaceKey,
-  resolveCanonicalCardSurfaces
+  resolveCanonicalCardSurfaces,
+  resolveDefaultCanonicalCardSurface
 } from '@/utils/canonical-card-surfaces';
 
 export function useCanonicalCardSurfaces(themeOverride?: ThemeMode) {
@@ -35,8 +35,11 @@ export function useCanonicalCardSurfaces(themeOverride?: ThemeMode) {
     [tones]
   );
 
+  const defaultSurface = resolveDefaultCanonicalCardSurface(tones);
+
   return {
-    defaultToneKey: (tones[1]?.key ?? tones[0]?.key ?? 'neutral.low') as CanonicalCardSurfaceKey,
+    defaultSurface,
+    defaultToneKey: defaultSurface?.key,
     items,
     tones
   };

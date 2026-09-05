@@ -11,6 +11,7 @@ import {
   Text
 } from '@kiskadee/react-components';
 import { useMemo, useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseSelectControl } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
@@ -295,7 +296,7 @@ export function ButtonMenuExamples({
         onValueChange={(value) => setPresentation(value as AdaptiveButtonMenuPresentation)}
       />
       <div className={styles.buttonMenuGrid}>
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Menu button
           </Text>
@@ -308,8 +309,8 @@ export function ButtonMenuExamples({
               <Button.Label>Actions</Button.Label>
             </AdaptiveButtonMenu.Trigger>
           </AdaptiveButtonMenu.Root>
-        </article>
-        <article>
+        </ShowcaseExampleCard>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Leading icon
           </Text>
@@ -325,8 +326,8 @@ export function ButtonMenuExamples({
               <Button.Label>Settings</Button.Label>
             </AdaptiveButtonMenu.Trigger>
           </AdaptiveButtonMenu.Root>
-        </article>
-        <article>
+        </ShowcaseExampleCard>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Split button
           </Text>
@@ -340,7 +341,7 @@ export function ButtonMenuExamples({
             </AdaptiveButtonMenu.Action>
             <AdaptiveButtonMenu.Trigger aria-label="More save actions" />
           </AdaptiveButtonMenu.Root>
-        </article>
+        </ShowcaseExampleCard>
       </div>
       <Text
         as="p"

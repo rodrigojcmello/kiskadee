@@ -6,6 +6,7 @@ import {
   Button as KButton,
   SmoothText,
   SurfaceContextProvider,
+  Switch,
   Text,
   useButtonArtifactConfig,
   useKiskadee,
@@ -17,31 +18,20 @@ import {
   ShowcaseIconographyControls,
   ShowcaseTypographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
-  ShowcaseControlField,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
   ShowcaseRouteControls,
-  ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
-import {
-  type ButtonStressTestBackgroundToneKey,
-  useButtonStressTestBackgroundTones
-} from '@/hooks/use-background-tones';
-import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
 import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
-import { SwatchRadioGroup } from '@/k-components';
-import {
-  getAvailableButtonStressTestBackgrounds,
-  getPreferredButtonStressTestBackground,
-  resolveBackgroundSurfaceContext
-} from '@/utils/button-stress-test-backgrounds';
-import { type CanonicalCardSurfaceKey, isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import {
   getManifestComponentState,
   supportsManifestSurfaceContext
@@ -56,15 +46,6 @@ import { ButtonMenuExamples } from './components/ButtonMenuExamples';
 import ButtonStateSection from './components/ButtonStateSection';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
 
-const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
-  { value: 'onSubtle', label: 'On subtle' },
-  { value: 'onVivid', label: 'On vivid' }
-];
-const BACKGROUND_MODE_OPTIONS = [
-  { value: 'canonical', label: 'Canonical' },
-  { value: 'stress-test', label: 'Stress test' }
-] as const;
-type BackgroundMode = (typeof BACKGROUND_MODE_OPTIONS)[number]['value'];
 const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:2', label: 'Small 2' },
   { value: 's:sm:1', label: 'Small' },
@@ -113,12 +94,7 @@ function SurfaceContextComparison({
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             On subtle
           </Text>
-          <Card
-            className={`${s.contextSurface} k-root`}
-            intent="neutral"
-            emphasis="low"
-            surfaceContext={surfaceContext}
-          >
+          <ShowcaseExampleCard className={`${s.contextSurface} k-root`} context="onSubtle">
             <div className={s.contextSurfaceGrid}>
               {COMPARISON_EMPHASES.map((emphasis) => (
                 <KButton key={emphasis} intent="primary" emphasis={emphasis} scale={scale}>
@@ -130,7 +106,7 @@ function SurfaceContextComparison({
                 </KButton>
               ))}
             </div>
-          </Card>
+          </ShowcaseExampleCard>
         </article>
         <article className={s.contextCard}>
           <Text as="h4" profile={textProfiles.subsectionTitle}>
@@ -176,7 +152,6 @@ export function Button() {
   const { fontName, manifest } = useShowcase();
   const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();
   const { buttonClassesMap } = useButtonArtifactConfig();
-  const canonicalBackgrounds = useCanonicalCardSurfaces();
   const textProfiles = useShowcaseTextProfiles();
 
   const [isSelected, setIsSelected] = React.useState(false);
@@ -185,104 +160,9 @@ export function Button() {
   const [showButtonGroups, setShowButtonGroups] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
-  const [surfaceContext, setSurfaceContext] = React.useState<SurfaceContext>('onSubtle');
-  const [backgroundMode, setBackgroundMode] = React.useState<BackgroundMode>('canonical');
-  const [canonicalSurface, setCanonicalSurface] = React.useState<CanonicalCardSurfaceKey | null>(
-    null
-  );
-  const [stressTestSurface, setStressTestSurface] =
-    React.useState<ButtonStressTestBackgroundToneKey>('white');
-  const stressTestBackgrounds = useButtonStressTestBackgroundTones();
-  const availableStressTestTones = React.useMemo(
-    () => getAvailableButtonStressTestBackgrounds(stressTestBackgrounds.tones, theme),
-    [stressTestBackgrounds.tones, theme]
-  );
-  const stressTestBackgroundItems = React.useMemo(
-    () =>
-      availableStressTestTones.map((tone) => ({
-        value: tone.key,
-        label: tone.aria,
-        swatch: {
-          color: tone.displayColor
-        }
-      })),
-    [availableStressTestTones]
-  );
-
-  const activeCanonicalSurfaceKey = React.useMemo(
-    () =>
-      canonicalSurface && canonicalBackgrounds.tones.some((tone) => tone.key === canonicalSurface)
-        ? canonicalSurface
-        : canonicalBackgrounds.defaultToneKey,
-    [canonicalBackgrounds.defaultToneKey, canonicalBackgrounds.tones, canonicalSurface]
-  );
-  const activeStressTestSurfaceKey = React.useMemo(
-    () =>
-      availableStressTestTones.some((tone) => tone.key === stressTestSurface)
-        ? stressTestSurface
-        : (availableStressTestTones[0]?.key ?? stressTestBackgrounds.defaultToneKey),
-    [availableStressTestTones, stressTestBackgrounds.defaultToneKey, stressTestSurface]
-  );
-  const backgroundItems =
-    backgroundMode === 'canonical' ? canonicalBackgrounds.items : stressTestBackgroundItems;
-  const activeBackgroundKey =
-    backgroundMode === 'canonical' ? activeCanonicalSurfaceKey : activeStressTestSurfaceKey;
-  const selectedSurface = React.useMemo(
-    () =>
-      backgroundMode === 'canonical'
-        ? canonicalBackgrounds.tones.find((tone) => tone.key === activeCanonicalSurfaceKey)
-        : availableStressTestTones.find((tone) => tone.key === activeStressTestSurfaceKey),
-    [
-      activeCanonicalSurfaceKey,
-      activeStressTestSurfaceKey,
-      backgroundMode,
-      canonicalBackgrounds.tones,
-      availableStressTestTones
-    ]
-  );
-
-  const selectBackgroundForSurfaceContext = React.useCallback(
-    (nextSurfaceContext: SurfaceContext, nextBackgroundMode: BackgroundMode) => {
-      if (nextBackgroundMode === 'canonical') {
-        const nextCanonicalSurface = canonicalBackgrounds.tones.find(
-          (tone) => tone.contentSurfaceContext === nextSurfaceContext
-        );
-        if (nextCanonicalSurface) setCanonicalSurface(nextCanonicalSurface.key);
-        return;
-      }
-
-      const nextStressTestSurface = getPreferredButtonStressTestBackground(
-        stressTestBackgrounds.tones,
-        theme,
-        nextSurfaceContext
-      );
-      if (nextStressTestSurface) setStressTestSurface(nextStressTestSurface.key);
-    },
-    [canonicalBackgrounds.tones, stressTestBackgrounds.tones, theme]
-  );
-
-  React.useEffect(() => {
-    const root = document.documentElement;
-    const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
-
-    if (selectedSurface?.resolvedColor) {
-      root.style.setProperty('--showcase-route-background', selectedSurface.resolvedColor);
-    } else {
-      root.style.removeProperty('--showcase-route-background');
-    }
-
-    return () => {
-      if (previousRouteBackground) {
-        root.style.setProperty('--showcase-route-background', previousRouteBackground);
-        return;
-      }
-
-      root.style.removeProperty('--showcase-route-background');
-    };
-  }, [selectedSurface?.resolvedColor]);
-
-  const activeSurfaceContext = surfaceContext;
-  const isDarkSurface = selectedSurface ? isDarkSurfaceColor(selectedSurface.resolvedColor) : false;
+  const background = useShowcaseBackground();
+  const activeSurfaceContext = background.surfaceContext;
+  const isDarkSurface = background.color ? isDarkSurfaceColor(background.color) : false;
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
@@ -295,6 +175,7 @@ export function Button() {
 
   const buttonMeta = manifest?.components?.button;
   const cardMeta = manifest?.components?.card;
+  const switchMeta = manifest?.components?.switch;
   const dropdownAvailable = Boolean(manifest?.components?.dropdown);
   const adaptiveButtonMenuAvailable = Boolean(
     manifest?.components?.dropdown && manifest?.components?.bottomSheet
@@ -313,6 +194,30 @@ export function Button() {
   )
     ? activeSurfaceContext
     : 'onSubtle';
+  const [inlineControlsCardIntent, inlineControlsCardEmphasis] = (
+    background.cardSurface?.key ?? ''
+  ).split('.');
+  const inlineControlsSwitchEmphasis = 'medium';
+  const inlineControlsSurfaceContext =
+    background.cardSurface?.contentSurfaceContext ?? activeSurfaceContext;
+  const inlineControlsCardState = getManifestComponentState(
+    cardMeta,
+    segment,
+    theme,
+    activeCardSurfaceContext
+  );
+  const inlineControlsCardAvailable = Boolean(
+    inlineControlsCardState?.[inlineControlsCardIntent]?.[inlineControlsCardEmphasis]?.rest
+  );
+  const switchState = getManifestComponentState(
+    switchMeta,
+    segment,
+    theme,
+    inlineControlsSurfaceContext
+  );
+  const inlineControlsAvailable = Boolean(
+    inlineControlsCardAvailable && switchState?.neutral?.[inlineControlsSwitchEmphasis]?.rest
+  );
   const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
   );
@@ -327,82 +232,6 @@ export function Button() {
     <ShowcaseControlPanel>
       <ShowcaseControlGroup title="Ambiente">
         <ShowcaseGlobalSemanticControls />
-        <ShowcaseSegmentedControl
-          label="Surface context"
-          options={SURFACE_CONTEXT_OPTIONS}
-          value={activeSurfaceContext}
-          onValueChange={(value) => {
-            const nextSurfaceContext = value as SurfaceContext;
-            setSurfaceContext(nextSurfaceContext);
-            setBackgroundMode('canonical');
-            selectBackgroundForSurfaceContext(nextSurfaceContext, 'canonical');
-          }}
-          disabled={!onVividSupported}
-        />
-        <ShowcaseControlField className={s.backgroundControl} fullWidth>
-          <ShowcaseSegmentedControl
-            label="Background"
-            options={BACKGROUND_MODE_OPTIONS}
-            value={backgroundMode}
-            onValueChange={(value) => {
-              const nextBackgroundMode = value as BackgroundMode;
-              setBackgroundMode(nextBackgroundMode);
-              selectBackgroundForSurfaceContext(surfaceContext, nextBackgroundMode);
-            }}
-          />
-          {backgroundItems.length > 0 ? (
-            <SwatchRadioGroup
-              className={`${s.backgroundToneGrid} ${
-                backgroundMode === 'canonical'
-                  ? s.canonicalBackgroundToneGrid
-                  : `${s.stressTestBackgroundToneGrid} ${
-                      theme === 'light' ? s.stressTestLightToneGrid : s.stressTestDarkToneGrid
-                    }`
-              }`}
-              groupLabel={
-                backgroundMode === 'canonical'
-                  ? 'Canonical Card surfaces'
-                  : 'Adversarial stress-test surfaces'
-              }
-              value={activeBackgroundKey}
-              onValueChange={(value) => {
-                if (backgroundMode === 'canonical') {
-                  const nextCanonicalSurfaceKey = value as CanonicalCardSurfaceKey;
-                  const nextCanonicalSurface = canonicalBackgrounds.tones.find(
-                    (tone) => tone.key === nextCanonicalSurfaceKey
-                  );
-
-                  setCanonicalSurface(nextCanonicalSurfaceKey);
-                  if (nextCanonicalSurface) {
-                    setSurfaceContext(nextCanonicalSurface.contentSurfaceContext);
-                  }
-                  return;
-                }
-
-                const nextStressTestSurfaceKey = value as ButtonStressTestBackgroundToneKey;
-                const nextStressTestSurface = stressTestBackgrounds.tones.find(
-                  (tone) => tone.key === nextStressTestSurfaceKey
-                );
-
-                setStressTestSurface(nextStressTestSurfaceKey);
-                if (nextStressTestSurface) {
-                  setSurfaceContext(resolveBackgroundSurfaceContext(nextStressTestSurface.row));
-                }
-              }}
-              items={backgroundItems}
-              aria-label="Button example background"
-            />
-          ) : (
-            <p className={s.backgroundEmptyState} role="status">
-              This preset does not publish canonical Card surfaces for the active palette.
-            </p>
-          )}
-          <p className={s.backgroundModeDescription}>
-            {backgroundMode === 'canonical'
-              ? 'Approved Card surfaces from the active preset, segment, and theme.'
-              : 'Adversarial color combinations for diagnosis; not a preset support guarantee.'}
-          </p>
-        </ShowcaseControlField>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Tipografia">
         <ShowcaseTypographyControls />
@@ -530,28 +359,34 @@ export function Button() {
                 <Text as="h3" id="button-intents-title" profile={textProfiles.sectionTitle}>
                   Intents
                 </Text>
-                <div className={s.intentsInlineControls}>
-                  <ShowcaseBooleanControl
-                    className={s.intentsInlineControl}
-                    label={
-                      <Text as="span" profile={textProfiles.caption}>
-                        Rest only
-                      </Text>
-                    }
-                    checked={isSimplified}
-                    onCheckedChange={setIsSimplified}
-                  />
-                  <ShowcaseBooleanControl
-                    className={s.intentsInlineControl}
-                    label={
-                      <Text as="span" profile={textProfiles.caption}>
-                        Focus ring
-                      </Text>
-                    }
-                    checked={showFocusRing}
-                    onCheckedChange={setShowFocusRing}
-                  />
-                </div>
+                {inlineControlsAvailable ? (
+                  <ShowcaseExampleCard
+                    aria-label="Intent presentation controls"
+                    className={s.intentsInlineControlsSurface}
+                    role="group"
+                  >
+                    <div className={s.intentsInlineControls}>
+                      <Switch
+                        id="button-rest-only"
+                        label="Rest only"
+                        emphasis={inlineControlsSwitchEmphasis}
+                        controlState={isSimplified}
+                        onControlStateChange={setIsSimplified}
+                      />
+                      <Switch
+                        id="button-focus-ring"
+                        label="Focus ring"
+                        emphasis={inlineControlsSwitchEmphasis}
+                        controlState={showFocusRing}
+                        onControlStateChange={setShowFocusRing}
+                      />
+                    </div>
+                  </ShowcaseExampleCard>
+                ) : (
+                  <Text as="p" emphasis="low" profile={textProfiles.caption} role="status">
+                    Switch controls are not available on this surface.
+                  </Text>
+                )}
               </div>
               {showDescriptions ? (
                 <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>

@@ -17,6 +17,7 @@ import {
   useShowcase
 } from '@kiskadee/react-components';
 import { useMemo, useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseControlGroup,
   ShowcaseControlPanel,
@@ -258,7 +259,7 @@ export default function BottomSheetShowcase() {
           <Text as="p" profile={textProfiles.body} className={styles.description}>
             The long root page exercises scrolling; Share exercises two nested page levels.
           </Text>
-          <div className={styles.stage}>
+          <ShowcaseExampleCard className={styles.stage}>
             <BottomSheetMenu.Root
               tree={tree}
               renderIcon={(name) => <FamilyResolvedIcon name={name} />}
@@ -277,7 +278,7 @@ export default function BottomSheetShowcase() {
             <Text as="p" role="status" profile={textProfiles.caption} className={styles.status}>
               {lastAction}
             </Text>
-          </div>
+          </ShowcaseExampleCard>
         </section>
       )}
     </main>

@@ -19,6 +19,7 @@ import {
   Button as KButton,
   Card as KCard,
   CardAction as KCardAction,
+  Text,
   useCardArtifactConfig,
   useKiskadee,
   useShowcase
@@ -34,10 +35,12 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
-import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
+import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Card.module.scss';
+import { CardComposition } from './CardComposition';
 
 const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
   { value: 'rounded', label: 'Rounded' },
@@ -241,35 +244,48 @@ function buildShadowDocumentationByKind({
   );
 }
 
-type CardContentProps = {
-  eyebrow: string;
-  title: string;
-  body: string;
-  selected?: boolean;
-  tone?: 'onSubtle' | 'onVivid';
-  withActionSlot?: boolean;
-};
-
 function CardContent({
-  eyebrow,
-  title,
-  body,
-  selected = false,
-  tone = 'onSubtle',
-  withActionSlot = false
-}: CardContentProps) {
-  const toneClassName = selected
-    ? s.contentSelected
-    : tone === 'onVivid'
-      ? s.contentOnVivid
-      : s.content;
-
+  title = 'Project overview',
+  body = 'Keep related information together.'
+}: {
+  title?: string;
+  body?: string;
+}) {
+  const profiles = useShowcaseTextProfiles();
   return (
-    <div className={`${toneClassName} ${withActionSlot ? s.contentWithActionSlot : ''}`.trim()}>
-      <p className={s.eyebrow}>{eyebrow}</p>
-      <h3 className={s.title}>{title}</h3>
-      <p className={s.body}>{body}</p>
+    <div className={s.content}>
+      <Text as="span" profile={profiles.groupTitle}>
+        {title}
+      </Text>
+      <Text as="span" profile={profiles.caption} emphasis="low">
+        {body}
+      </Text>
     </div>
+  );
+}
+
+function SectionHeading({
+  id,
+  title,
+  description
+}: {
+  id: string;
+  title: string;
+  description: string;
+}) {
+  const profiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
+  return (
+    <header className={s.sectionHeader}>
+      <Text as="h3" id={id} profile={profiles.sectionTitle}>
+        {title}
+      </Text>
+      {showDescriptions ? (
+        <Text as="p" profile={profiles.body} className={s.description}>
+          {description}
+        </Text>
+      ) : null}
+    </header>
   );
 }
 
@@ -319,40 +335,34 @@ function resolveDemoButtonProfile(
   return { emphasis: 'medium', intent: 'primary', scale };
 }
 
-type CardDemoButtonProps = {
-  buttonProfile: CardDemoButtonProfile;
-  disabled?: boolean;
-  label: string;
-};
-
-function CardDemoButton({ buttonProfile, disabled = false, label }: CardDemoButtonProps) {
-  return (
-    <div className={s.buttonOverlay}>
-      <KButton
-        disabled={disabled}
-        emphasis={buttonProfile.emphasis}
-        intent={buttonProfile.intent}
-        scale={buttonProfile.scale}
-      >
-        <KButton.Label>{label}</KButton.Label>
-      </KButton>
-    </div>
-  );
-}
-
 export function Card() {
   const { global, segment, theme } = useKiskadee();
   const { manifest } = useShowcase();
   const { cardClassesMap } = useCardArtifactConfig();
-  const canonicalBackgrounds = useCanonicalCardSurfaces();
+  const background = useShowcaseBackground();
+  const profiles = useShowcaseTextProfiles();
+  const { showDescriptions } = useShowcaseDisplayPreferences();
   const cardManifest = manifest?.components?.card;
   const buttonManifest = manifest?.components?.button;
-  const cardState = getManifestComponentState(cardManifest, segment, theme);
-  const buttonState = getManifestComponentState(buttonManifest, segment, theme);
+  const cardState = getManifestComponentState(
+    cardManifest,
+    segment,
+    theme,
+    background.surfaceContext
+  );
+  const buttonState = getManifestComponentState(
+    buttonManifest,
+    segment,
+    theme,
+    background.surfaceContext
+  );
   const isCardAvailable = Boolean(cardManifest);
   const supportedScales = cardManifest?.scale;
   const defaultRadius: CardRadiusMode = 'rounded';
+  const [passiveActivations, setPassiveActivations] = React.useState(0);
   const [selected, setSelected] = React.useState(false);
+  const [interactionIntent, setInteractionIntent] = React.useState<CardIntent>('neutral');
+  const [interactionEmphasis, setInteractionEmphasis] = React.useState<ComponentEmphasis>('medium');
   const [lockedSelected, setLockedSelected] = React.useState(false);
   const [interactionLocked, setInteractionLocked] = React.useState(true);
   const [radius, setRadius] = React.useState<CardRadiusMode>(defaultRadius);
@@ -377,15 +387,27 @@ export function Card() {
     });
   }, [cardClassesMap]);
   const semanticSamples = React.useMemo(() => resolveCardSemanticSamples(cardState), [cardState]);
-  const defaultRouteSurface = canonicalBackgrounds.tones[1] ?? canonicalBackgrounds.tones[0];
-  const routeClassName = [
-    s.route,
-    defaultRouteSurface && isDarkSurfaceColor(defaultRouteSurface.resolvedColor)
-      ? s.darkSurface
-      : undefined
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const comparisonSample =
+    semanticSamples.find(
+      (sample) => `${sample.intent}.${sample.emphasis}` === background.surfaces[0]?.key
+    ) ?? semanticSamples[0];
+  const interactionSample =
+    semanticSamples.find(
+      (sample) => sample.intent === interactionIntent && sample.emphasis === interactionEmphasis
+    ) ??
+    semanticSamples.find(
+      (sample) => sample.intent === interactionIntent && sample.emphasis === 'medium'
+    ) ??
+    semanticSamples.find((sample) => sample.intent === interactionIntent) ??
+    semanticSamples[0];
+  const comparisonShadow =
+    resolvedStaticShadow ??
+    fixedShadowLevels.find((level) => level === 's:md:1') ??
+    fixedShadowLevels[0];
+  const contextSurfaces = ['onSubtle', 'onVivid'].flatMap((context) => {
+    const surface = background.surfaces.find((item) => item.contentSurfaceContext === context);
+    return surface ? [surface] : [];
+  });
 
   const radiusSelectOptions = React.useMemo(
     () =>
@@ -474,8 +496,18 @@ export function Card() {
   );
 
   return (
-    <section className={routeClassName}>
-      <h2>Card</h2>
+    <section className={s.route} aria-labelledby="card-page-title">
+      <header className={s.pageHeader}>
+        <Text as="h2" id="card-page-title" profile={profiles.pageTitle}>
+          Card
+        </Text>
+        {showDescriptions ? (
+          <Text as="p" profile={profiles.body} className={s.description}>
+            Compare surfaces, boundaries and elevation. Card groups content; CardAction makes the
+            whole surface interactive.
+          </Text>
+        ) : null}
+      </header>
       <ShowcaseRouteControls
         id="card"
         eyebrow="Card"
@@ -485,139 +517,327 @@ export function Card() {
         {cardControls}
       </ShowcaseRouteControls>
 
-      {isCardAvailable ? (
+      {isCardAvailable && semanticSamples.length ? (
         <div className={s.sections}>
-          {semanticSamples.length > 0 ? (
-            <section className={s.exampleSection}>
-              <h3 className={s.sectionTitle}>Semantic surfaces</h3>
-              <div className={`${s.grid} k-root`}>
-                {semanticSamples.map(({ emphasis, intent }) => {
-                  const onVivid =
-                    theme !== 'light' ||
-                    (intent === 'primary' && emphasis === 'high') ||
-                    emphasis === 'highest';
-
-                  return (
-                    <div className={s.example} key={`${intent}-${emphasis}`}>
-                      <p className={s.exampleLabel}>
-                        {cardIntentLabels[intent]} / {cardEmphasisLabels[emphasis]}
-                      </p>
-                      <KCard
-                        className={s.cardSurface}
-                        emphasis={emphasis}
-                        intent={intent}
-                        radius={radius}
-                        shadow={resolvedStaticShadow}
-                        preserveBorderWithShadow={preserveBorderWithShadow}
+          <section className={s.exampleSection} aria-labelledby="card-surfaces">
+            <SectionHeading
+              id="card-surfaces"
+              title="Surfaces"
+              description="Read each intent from lowest to highest. The same content makes the preset's fill and border choices easier to compare. Empty positions are not published by this preset."
+            />
+            {cardSemanticIntentOrder.map((intent) => (
+              <div className={s.intentGroup} key={intent}>
+                <Text as="h4" profile={profiles.subsectionTitle}>
+                  {cardIntentLabels[intent]}
+                </Text>
+                <div className={s.surfaceGrid}>
+                  {cardSemanticEmphasisOrder.map((emphasis) => {
+                    const available = Boolean(cardState?.[intent]?.[emphasis]?.rest);
+                    return (
+                      <article
+                        className={s.example}
+                        key={emphasis}
+                        aria-label={`${intent} ${emphasis}`}
                       >
-                        <CardContent
-                          eyebrow={cardIntentLabels[intent]}
-                          title={cardEmphasisLabels[emphasis]}
-                          body={`${intent}.${emphasis}`}
-                          tone={onVivid ? 'onVivid' : 'onSubtle'}
-                        />
+                        <Text as="h5" profile={profiles.bodyStrong}>
+                          {cardEmphasisLabels[emphasis]}
+                        </Text>
+                        {available ? (
+                          <KCard
+                            className={s.cardSurface}
+                            intent={intent}
+                            emphasis={emphasis}
+                            radius={radius}
+                            shadow={resolvedStaticShadow}
+                            preserveBorderWithShadow={preserveBorderWithShadow}
+                          >
+                            <CardContent />
+                          </KCard>
+                        ) : (
+                          <div className={s.emptyPosition}>
+                            <Text as="span" profile={profiles.caption} emphasis="low">
+                              Not published
+                            </Text>
+                          </div>
+                        )}
+                        <Text as="code" profile={profiles.caption} emphasis="low">
+                          {intent}.{emphasis}
+                        </Text>
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </section>
+
+          <section className={s.exampleSection} aria-labelledby="card-composition">
+            <SectionHeading
+              id="card-composition"
+              title="Composition"
+              description="Inspired by the Fluent UI Preview: base, light neutral, paired tonal surfaces and a vivid region. Real components inherit the context of each Card."
+            />
+            <CardComposition radius={radius} />
+          </section>
+
+          {contextSurfaces.length === 2 ? (
+            <section className={s.exampleSection} aria-labelledby="card-contexts">
+              <SectionHeading
+                id="card-contexts"
+                title="Surface contexts"
+                description="The same Card recipes on two surrounding surfaces, without shadows. Compare which boundaries remain visible when the surrounding context changes."
+              />
+              <div className={s.contextGrid}>
+                {contextSurfaces.map((surface) => {
+                  const [intent, emphasis] = surface.key.split('.') as [
+                    CardIntent,
+                    ComponentEmphasis
+                  ];
+                  const state = getManifestComponentState(
+                    cardManifest,
+                    segment,
+                    theme,
+                    surface.contentSurfaceContext
+                  );
+                  return (
+                    <article className={s.example} key={surface.key}>
+                      <Text as="h4" profile={profiles.subsectionTitle}>
+                        {surface.contentSurfaceContext === 'onSubtle' ? 'On subtle' : 'On vivid'}
+                      </Text>
+                      <KCard
+                        intent={intent}
+                        emphasis={emphasis}
+                        radius={radius}
+                        className={s.contextHost}
+                      >
+                        <div className={s.contextSamples}>
+                          {semanticSamples
+                            .filter(
+                              (sample) =>
+                                (sample.intent === 'neutral' &&
+                                  ['lowest', 'medium'].includes(sample.emphasis)) ||
+                                (sample.intent === 'primary' && sample.emphasis === 'highest')
+                            )
+                            .filter((sample) => state?.[sample.intent]?.[sample.emphasis]?.rest)
+                            .map((sample) => (
+                              <div
+                                className={s.example}
+                                key={`${sample.intent}.${sample.emphasis}`}
+                              >
+                                <Text as="code" profile={profiles.caption} emphasis="low">
+                                  {sample.intent}.{sample.emphasis}
+                                </Text>
+                                <KCard
+                                  intent={sample.intent}
+                                  emphasis={sample.emphasis}
+                                  radius={radius}
+                                >
+                                  <CardContent
+                                    title="Same surface"
+                                    body="Context-aware boundary."
+                                  />
+                                </KCard>
+                              </div>
+                            ))}
+                        </div>
                       </KCard>
-                    </div>
+                    </article>
                   );
                 })}
+              </div>
+            </section>
+          ) : null}
+
+          {comparisonSample && comparisonShadow ? (
+            <section className={s.exampleSection} aria-labelledby="card-boundaries">
+              <SectionHeading
+                id="card-boundaries"
+                title="Border & shadow"
+                description="One surface, three treatments. Preserving a border keeps the preset's existing stroke; it does not add a stroke to a recipe that has none."
+              />
+              <Text as="p" profile={profiles.caption} emphasis="low">
+                {comparisonSample.intent}.{comparisonSample.emphasis} · Shadow {comparisonShadow}
+              </Text>
+              <div className={s.comparisonGrid}>
+                {[
+                  { title: 'Preset border', shadow: undefined, preserve: true, note: 'Shadow off' },
+                  {
+                    title: 'Shadow only',
+                    shadow: comparisonShadow,
+                    preserve: false,
+                    note: 'Existing border hidden'
+                  },
+                  {
+                    title: 'Border + shadow',
+                    shadow: comparisonShadow,
+                    preserve: true,
+                    note: 'Existing border preserved'
+                  }
+                ].map((sample) => (
+                  <article className={s.example} key={sample.title}>
+                    <Text as="h4" profile={profiles.groupTitle}>
+                      {sample.title}
+                    </Text>
+                    <KCard
+                      className={s.cardSurface}
+                      {...comparisonSample}
+                      radius={radius}
+                      shadow={sample.shadow}
+                      preserveBorderWithShadow={sample.preserve}
+                    >
+                      <CardContent />
+                    </KCard>
+                    <Text as="p" profile={profiles.caption} emphasis="low">
+                      {sample.note}
+                    </Text>
+                  </article>
+                ))}
               </div>
             </section>
           ) : null}
 
           {showShadowDocumentation ? (
-            <section className={s.exampleSection}>
-              <h3 className={s.sectionTitle}>Shadow effect</h3>
-              <div className={s.shadowKindGrid}>
-                {shadowKindOrder.map((kind) => {
-                  const shadowLevels = shadowDocumentationByKind[kind];
-
-                  return (
-                    <div className={s.shadowKindGroup} key={kind}>
-                      <div className={s.shadowKindHeader}>
-                        <span>{shadowKindLabels[kind]}</span>
-                        <span>
-                          {shadowLevels.length} {shadowLevels.length === 1 ? 'level' : 'levels'}
-                        </span>
-                      </div>
-
-                      {shadowLevels.length > 0 ? (
-                        <div className={s.shadowCardGrid}>
-                          {shadowLevels.map((shadowLevel) => (
-                            <article className={s.shadowLevelItem} key={shadowLevel.level}>
-                              {shadowLevel.cardShadow ? (
-                                <KCard
-                                  className={s.shadowPreviewCard}
-                                  radius={radius}
-                                  shadow={shadowLevel.cardShadow}
-                                  preserveBorderWithShadow={false}
-                                >
-                                  <div className={s.shadowPreviewContent}>
-                                    <span>{shadowKindLabels[shadowLevel.kind]}</span>
-                                    <strong>{shadowLevel.label}</strong>
-                                    <code>{shadowLevel.level}</code>
-                                    {shadowLevel.usageLabels.length > 0 ? (
-                                      <div className={s.shadowUsageList}>
-                                        {shadowLevel.usageLabels.map((label) => (
-                                          <span key={label}>{label}</span>
-                                        ))}
-                                      </div>
-                                    ) : null}
-                                  </div>
-                                </KCard>
-                              ) : (
-                                <div
-                                  className={s.shadowRawPreview}
-                                  style={{ boxShadow: shadowLevel.cssValue }}
-                                >
-                                  <div className={s.shadowPreviewContent}>
-                                    <span>{shadowKindLabels[shadowLevel.kind]}</span>
-                                    <strong>{shadowLevel.label}</strong>
-                                    <code>{shadowLevel.level}</code>
-                                  </div>
-                                </div>
-                              )}
-                              <p className={s.shadowCssValue}>{shadowLevel.cssValue}</p>
-                              <p className={s.shadowLayerCount}>
-                                {shadowLevel.layers.length}{' '}
-                                {shadowLevel.layers.length === 1 ? 'layer' : 'layers'}
-                              </p>
-                            </article>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className={s.shadowEmpty}>No {kind} shadow levels in this preset.</div>
-                      )}
+            <section className={s.exampleSection} aria-labelledby="card-shadows">
+              <SectionHeading
+                id="card-shadows"
+                title="Shadow scale"
+                description="Compare the published elevation levels on the same Card surface. Previews hide the existing border so the shadow can be inspected on its own."
+              />
+              {shadowKindOrder
+                .filter((kind) => shadowDocumentationByKind[kind].length)
+                .map((kind) => (
+                  <div className={s.intentGroup} key={kind}>
+                    <Text as="h4" profile={profiles.subsectionTitle}>
+                      {shadowKindLabels[kind]}
+                    </Text>
+                    <div className={s.shadowGrid}>
+                      {shadowDocumentationByKind[kind].map((level) => (
+                        <article className={s.example} key={level.level}>
+                          <Text as="h5" profile={profiles.bodyStrong}>
+                            {level.label}
+                          </Text>
+                          {level.cardShadow && comparisonSample ? (
+                            <KCard
+                              className={s.cardSurface}
+                              {...comparisonSample}
+                              radius={radius}
+                              shadow={level.cardShadow}
+                              preserveBorderWithShadow={false}
+                            >
+                              <CardContent title="Elevation" body={level.level} />
+                            </KCard>
+                          ) : (
+                            <Text as="p" profile={profiles.caption} emphasis="low">
+                              Global recipe, not exposed by Card.
+                            </Text>
+                          )}
+                          <Text as="p" profile={profiles.caption} emphasis="low">
+                            {level.layers.length} {level.layers.length === 1 ? 'layer' : 'layers'}
+                            {level.usageLabels.length ? ` · ${level.usageLabels.join(' / ')}` : ''}
+                          </Text>
+                          <Text
+                            as="code"
+                            profile={profiles.caption}
+                            emphasis="low"
+                            className={s.recipeValue}
+                          >
+                            {level.cssValue}
+                          </Text>
+                        </article>
+                      ))}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                ))}
             </section>
           ) : null}
 
-          <section className={s.exampleSection}>
-            <h3 className={s.sectionTitle}>States</h3>
-            <div className={`${s.grid} k-root`}>
-              <div className={s.example}>
-                <p className={s.exampleLabel}>Static</p>
+          <section className={s.exampleSection} aria-labelledby="card-interaction">
+            <SectionHeading
+              id="card-interaction"
+              title="Interaction"
+              description="A passive Card can contain an independent action. CardAction is itself the action: activate it to inspect selection, or compare disabled and locked behavior."
+            />
+            {buttonManifest ? (
+              <div className={s.interactionControls}>
+                <section className={s.content} aria-label="Card interaction intent">
+                  <Text profile={profiles.bodyStrong}>Intent</Text>
+                  <div className={s.controlRow}>
+                    {cardSemanticIntentOrder
+                      .filter((intent) =>
+                        semanticSamples.some((sample) => sample.intent === intent)
+                      )
+                      .map((intent) => (
+                        <KButton
+                          key={intent}
+                          {...demoButtonProfile}
+                          toggle
+                          controlState={interactionSample?.intent === intent}
+                          onClick={() => setInteractionIntent(intent)}
+                        >
+                          <KButton.Label>{cardIntentLabels[intent]}</KButton.Label>
+                        </KButton>
+                      ))}
+                  </div>
+                </section>
+                <section className={s.content} aria-label="Card interaction emphasis">
+                  <Text profile={profiles.bodyStrong}>Emphasis</Text>
+                  <div className={s.controlRow}>
+                    {semanticSamples
+                      .filter((sample) => sample.intent === interactionSample?.intent)
+                      .map(({ emphasis }) => (
+                        <KButton
+                          key={emphasis}
+                          {...demoButtonProfile}
+                          toggle
+                          controlState={interactionSample?.emphasis === emphasis}
+                          onClick={() => {
+                            setInteractionIntent(interactionSample.intent);
+                            setInteractionEmphasis(emphasis);
+                          }}
+                        >
+                          <KButton.Label>{cardEmphasisLabels[emphasis]}</KButton.Label>
+                        </KButton>
+                      ))}
+                  </div>
+                </section>
+              </div>
+            ) : null}
+            <div className={s.interactionGrid}>
+              <article className={s.example}>
+                <Text as="h4" profile={profiles.groupTitle}>
+                  Passive Card
+                </Text>
                 <KCard
+                  {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
                   shadow={resolvedStaticShadow}
                   preserveBorderWithShadow={preserveBorderWithShadow}
                 >
-                  <CardContent
-                    eyebrow="Surface"
-                    title="Static card"
-                    body="A non-interactive visual container rendered as a div."
-                    withActionSlot
-                  />
+                  <div className={s.passiveContent}>
+                    <CardContent title="Project resources" body="Only the button is interactive." />
+                    {buttonManifest ? (
+                      <KButton
+                        {...demoButtonProfile}
+                        onClick={() => setPassiveActivations((count) => count + 1)}
+                      >
+                        <KButton.Label>Learn more</KButton.Label>
+                      </KButton>
+                    ) : null}
+                  </div>
                 </KCard>
-                <CardDemoButton buttonProfile={demoButtonProfile} label="Learn more" />
-              </div>
-
-              <div className={s.example}>
-                <p className={s.exampleLabel}>Action</p>
+                <Text as="p" profile={profiles.caption} emphasis="low" role="status">
+                  {passiveActivations
+                    ? `Button activated ${passiveActivations} times.`
+                    : 'The surrounding surface stays passive.'}
+                </Text>
+              </article>
+              <article className={s.example}>
+                <Text as="h4" profile={profiles.groupTitle}>
+                  Selectable
+                </Text>
                 <KCardAction
+                  {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
@@ -626,19 +846,20 @@ export function Card() {
                   onControlStateChange={setSelected}
                 >
                   <CardContent
-                    eyebrow="Button"
-                    title={selected ? 'Selected' : 'Rest'}
-                    body="A button-backed card that toggles the selected schema state."
-                    selected={selected}
-                    withActionSlot
+                    title="Project overview"
+                    body={selected ? 'Selected. Activate to clear.' : 'Activate to select.'}
                   />
                 </KCardAction>
-                <CardDemoButton buttonProfile={demoButtonProfile} label="Details" />
-              </div>
-
-              <div className={s.example}>
-                <p className={s.exampleLabel}>Selected</p>
+                <Text as="p" profile={profiles.caption} emphasis="low">
+                  {selected ? 'Selected' : 'Rest'} · Whole surface is interactive
+                </Text>
+              </article>
+              <article className={s.example}>
+                <Text as="h4" profile={profiles.groupTitle}>
+                  Selected
+                </Text>
                 <KCardAction
+                  {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
@@ -646,39 +867,38 @@ export function Card() {
                   controlState
                 >
                   <CardContent
-                    eyebrow="Selected"
-                    title="Strong selected"
-                    body="Descendants inherit the surface context published by the selected Card."
-                    selected
-                    withActionSlot
+                    title="Project overview"
+                    body="A selected surface and its content."
                   />
                 </KCardAction>
-                <CardDemoButton buttonProfile={demoButtonProfile} label="Continue" />
-              </div>
-
-              <div className={s.example}>
-                <p className={s.exampleLabel}>Disabled</p>
+                <Text as="p" profile={profiles.caption} emphasis="low">
+                  Selected state held for comparison
+                </Text>
+              </article>
+              <article className={s.example}>
+                <Text as="h4" profile={profiles.groupTitle}>
+                  Disabled
+                </Text>
                 <KCardAction
+                  {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
                   preserveBorderWithShadow={preserveBorderWithShadow}
                   disabled
-                  defaultControlState={false}
                 >
-                  <CardContent
-                    eyebrow="Disabled"
-                    title="Unavailable action"
-                    body="Native disabled semantics remain separate from interactionLocked."
-                    withActionSlot
-                  />
+                  <CardContent title="Project overview" body="This action is unavailable." />
                 </KCardAction>
-                <CardDemoButton buttonProfile={demoButtonProfile} disabled label="Unavailable" />
-              </div>
-
-              <div className={s.example}>
-                <p className={s.exampleLabel}>Locked</p>
+                <Text as="p" profile={profiles.caption} emphasis="low">
+                  Native disabled behavior
+                </Text>
+              </article>
+              <article className={s.example}>
+                <Text as="h4" profile={profiles.groupTitle}>
+                  Interaction locked
+                </Text>
                 <KCardAction
+                  {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
                   shadow={cardActionShadow}
@@ -688,20 +908,23 @@ export function Card() {
                   onControlStateChange={setLockedSelected}
                 >
                   <CardContent
-                    eyebrow={interactionLocked ? 'Locked' : 'Unlocked'}
-                    title={lockedSelected ? 'Selected' : 'Rest'}
-                    body="Toggle the panel control to allow or block activation."
-                    selected={lockedSelected}
-                    withActionSlot
+                    title="Project overview"
+                    body={lockedSelected ? 'Selected.' : 'Ready to select.'}
                   />
                 </KCardAction>
-                <CardDemoButton buttonProfile={demoButtonProfile} label="Review" />
-              </div>
+                <Text as="p" profile={profiles.caption} emphasis="low">
+                  {interactionLocked
+                    ? 'Activation blocked by the panel control'
+                    : 'Unlocked · Activate to select'}
+                </Text>
+              </article>
             </div>
           </section>
         </div>
       ) : (
-        <div className={s.unavailable}>Card is not available in the current design system.</div>
+        <Text as="p" profile={profiles.body} role="status">
+          Card is not available in the current preset, theme and surface context.
+        </Text>
       )}
     </section>
   );

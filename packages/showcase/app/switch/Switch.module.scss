@@ -3,7 +3,6 @@
   gap: 26px;
 
   --switch-demo-card-min-height: 104px;
-  --switch-surface-primary: #615690;
 }
 
 .header {
@@ -12,37 +11,14 @@
   min-width: 0;
 }
 
-.header h2 {
-  margin: 0;
-  font-size: clamp(1.4rem, 2.8vw, 2rem);
-  line-height: 1.05;
-}
-
 .summary {
   max-width: 680px;
   margin: 10px 0 0;
-  color: rgba(0, 0, 0, 0.56);
-  line-height: 1.5;
-}
-
-.surfaceControl {
-  --swatch-selected-ring-shadow: 0 0 0 3px color-mix(in srgb, var(--switch-surface-primary) 72%, white);
-  --swatch-group-inline-size: 100%;
-  --swatch-group-justify-content: space-between;
-
-  display: block;
-  min-width: 0;
 }
 
 .section {
   display: grid;
   gap: 14px;
-}
-
-.section h3 {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.2;
 }
 
 .previewSection {

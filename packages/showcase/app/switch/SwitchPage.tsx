@@ -5,20 +5,21 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  SurfaceContext,
   SwitchIntent
 } from '@kiskadee/core';
 import {
   Card,
-  CardAction,
   FamilyResolvedIcon,
+  SurfaceContextProvider,
   Switch,
   type SwitchIcons,
-  useCardArtifactConfig,
+  Text,
   useKiskadee,
   useShowcase,
   useSwitchArtifactConfig
 } from '@kiskadee/react-components';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ShowcaseGlobalSemanticControls,
@@ -27,7 +28,6 @@ import {
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
   ShowcaseBooleanControl,
-  ShowcaseControlField,
   ShowcaseControlGrid,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
@@ -35,11 +35,14 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
-import { SwatchRadioGroup } from '@/k-components';
-import { resolveDesignSystemCardSurfaceColor } from '@/utils/design-system-card-surface';
-import { getManifestComponentState } from '@/utils/manifest-surface-context';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import type { CanonicalCardSurfaceKey } from '@/utils/canonical-card-surfaces';
+import {
+  getManifestComponentState,
+  supportsManifestSurfaceContext
+} from '@/utils/manifest-surface-context';
 import { playWowTransition } from '@/utils/playWowTransition';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Switch.module.scss';
 
 const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
@@ -64,92 +67,18 @@ const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'lowest', label: 'Lowest' }
 ];
 
-type SwitchSurface =
-  | 'white'
-  | 'gray'
-  | 'dark-gray'
-  | 'black'
-  | 'light-primary'
-  | 'primary'
-  | 'dark-primary';
-
-type SwitchSurfaceProfile = {
+type ResolvedSwitchSurface = {
+  value: CanonicalCardSurfaceKey;
   label: string;
   cardIntent: CardIntent;
   cardEmphasis: ComponentEmphasis;
-  switchEmphasis: ComponentEmphasis;
-};
-
-type ResolvedSwitchSurface = SwitchSurfaceProfile & {
-  value: SwitchSurface;
   swatchColor: string;
+  contentSurfaceContext: SurfaceContext;
 };
-
-const surfaceToneOrder: SwitchSurface[] = [
-  'white',
-  'light-primary',
-  'gray',
-  'primary',
-  'dark-gray',
-  'dark-primary',
-  'black'
-];
-
-const surfaceProfiles: Record<SwitchSurface, SwitchSurfaceProfile> = {
-  white: {
-    label: 'White',
-    cardIntent: 'neutral',
-    cardEmphasis: 'low',
-    switchEmphasis: 'medium'
-  },
-  gray: {
-    label: 'Gray',
-    cardIntent: 'neutral',
-    cardEmphasis: 'medium',
-    switchEmphasis: 'medium'
-  },
-  'dark-gray': {
-    label: 'Dark gray',
-    cardIntent: 'neutral',
-    cardEmphasis: 'high',
-    switchEmphasis: 'low'
-  },
-  black: {
-    label: 'Black',
-    cardIntent: 'neutral',
-    cardEmphasis: 'highest',
-    switchEmphasis: 'low'
-  },
-  'light-primary': {
-    label: 'Light primary',
-    cardIntent: 'primary',
-    cardEmphasis: 'medium',
-    switchEmphasis: 'medium'
-  },
-  primary: {
-    label: 'Primary',
-    cardIntent: 'primary',
-    cardEmphasis: 'high',
-    switchEmphasis: 'low'
-  },
-  'dark-primary': {
-    label: 'Dark primary',
-    cardIntent: 'primary',
-    cardEmphasis: 'highest',
-    switchEmphasis: 'low'
-  }
-};
-
-function getSurfaceForEmphasis(emphasis: ComponentEmphasis): SwitchSurface {
-  return emphasis === 'low' ? 'primary' : 'white';
-}
-
-function normalizeSurfaceColor(color: string): string {
-  return color.trim().toLowerCase();
-}
 
 const intentLabels: Record<string, string> = {
   neutral: 'Neutral',
+  accent: 'Accent',
   primary: 'Primary',
   polarity: 'Polarity'
 };
@@ -168,24 +97,12 @@ const iconModeOptions: Array<{ value: SwitchIconMode; label: string }> = [
 ];
 
 const THUMB_SHRINK_CHANGE_DELAY_MS = 400;
-const preferredCardShadowLevels: ElementSizeValue[] = [
-  's:md:1',
-  's:sm:1',
-  's:lg:1',
-  's:lg:2',
-  's:lg:3'
-];
-
-function normalizeShadowLevelKey(key: ElementSizeValue): string {
-  return key.slice(2);
-}
-
-function getAmbientSurfaceEmphasis(surface: ResolvedSwitchSurface): ComponentEmphasis {
-  if (surface.cardIntent === 'neutral' && surface.cardEmphasis === 'low') {
-    return 'medium';
-  }
-
-  return 'low';
+function resolveCardCoordinates(key: CanonicalCardSurfaceKey): {
+  cardIntent: CardIntent;
+  cardEmphasis: ComponentEmphasis;
+} {
+  const [cardIntent, cardEmphasis] = key.split('.') as [CardIntent, ComponentEmphasis];
+  return { cardIntent, cardEmphasis };
 }
 
 const switchIconSets = {
@@ -202,22 +119,28 @@ const switchIconSets = {
 
 function StateTile({
   children,
-  cardShadow,
+  surfaceContext,
   surface
 }: {
   children: ReactNode;
-  cardShadow: ElementSizeValue | undefined;
-  surface: ResolvedSwitchSurface;
+  surfaceContext: SurfaceContext;
+  surface?: ResolvedSwitchSurface;
 }) {
+  const content = <div className={s.stateControl}>{children}</div>;
+
+  if (!surface) {
+    return <div className={s.stateTile}>{content}</div>;
+  }
+
   return (
     <Card
       className={s.stateTile}
+      data-showcase-example-card={surface.value}
       intent={surface.cardIntent}
       emphasis={surface.cardEmphasis}
-      shadow={cardShadow}
-      preserveBorderWithShadow={false}
+      surfaceContext={surfaceContext}
     >
-      <div className={s.stateControl}>{children}</div>
+      {content}
     </Card>
   );
 }
@@ -229,24 +152,21 @@ export default function SwitchPage() {
     options: switchOptions,
     switchClassesMap
   } = useSwitchArtifactConfig();
-  const { cardClassesMap } = useCardArtifactConfig();
   const { manifest } = useShowcase();
-  const designSystemSchema = useDesignSystemSchema(designSystem);
+  const background = useShowcaseBackground();
+  const textProfiles = useShowcaseTextProfiles();
   const [controlState, setControlState] = useState(true);
   const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
-  const [surface, setSurface] = useState<SwitchSurface>('white');
   const [interactionLocked, setInteractionLocked] = useState(false);
   const [motionEnabled, setMotionEnabled] = useState(true);
   const [thumbShrinkEnabled, setThumbShrinkEnabled] = useState(true);
   const [iconMode, setIconMode] = useState<SwitchIconMode>('none');
   const thumbShrinkChangeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const switchMeta = manifest?.components?.switch;
-  const cardMeta = manifest?.components?.card;
   const isSwitchAvailable = Boolean(switchMeta);
-  const isCardAvailable = Boolean(cardMeta);
   const defaultRadius = switchOptions.radius;
   const hasThumbShrinkEffect = Boolean(switchEffects.thumbShrinkEffect);
   const motionOverride = motionEnabled ? undefined : false;
@@ -257,16 +177,7 @@ export default function SwitchPage() {
   const supportedScales = switchMeta?.scale;
   const supportedIntents = getManifestComponentState(switchMeta, segment, theme);
   const supportedStates = supportedIntents?.[intent];
-  const supportedCardStates = getManifestComponentState(cardMeta, segment, theme);
   const switchIcons = hasActiveIconMode ? switchIconSets[iconMode] : undefined;
-  const cardShadow = useMemo(() => {
-    const shadowBucket = cardClassesMap?.e1?.e?.h;
-    if (!shadowBucket || typeof shadowBucket === 'string') return undefined;
-
-    return preferredCardShadowLevels.find((level) =>
-      Boolean(shadowBucket[normalizeShadowLevelKey(level)])
-    );
-  }, [cardClassesMap]);
 
   const scaleSelectOptions = useMemo(
     () => scaleOptions.filter((option) => Boolean(supportedScales?.[option.value])),
@@ -293,78 +204,26 @@ export default function SwitchPage() {
     () => emphasisOptions.filter((option) => Boolean(supportedStates?.[option.value])),
     [supportedStates]
   );
-  const surfaceOptions = useMemo<ResolvedSwitchSurface[]>(() => {
-    const seenSurfaceColors = new Set<string>();
-
-    return surfaceToneOrder.flatMap((value) => {
-      if (!isSwitchAvailable || !isCardAvailable) return [];
-
-      const profile = surfaceProfiles[value];
-      const hasSwitchEmphasis = Boolean(supportedStates?.[profile.switchEmphasis]);
-      const hasCardSurface = Boolean(
-        supportedCardStates?.[profile.cardIntent]?.[profile.cardEmphasis]?.rest
-      );
-      if (!hasSwitchEmphasis || !hasCardSurface) return [];
-
-      const swatchColor = resolveDesignSystemCardSurfaceColor({
-        schema: designSystemSchema,
-        segment,
-        theme,
-        intent: profile.cardIntent,
-        emphasis: profile.cardEmphasis
-      });
-      if (!swatchColor) return [];
-      const normalizedSwatchColor = normalizeSurfaceColor(swatchColor);
-      if (seenSurfaceColors.has(normalizedSwatchColor)) return [];
-      seenSurfaceColors.add(normalizedSwatchColor);
-
-      return [
-        {
-          value,
-          ...profile,
-          swatchColor
-        }
-      ];
-    });
-  }, [
-    designSystemSchema,
-    isCardAvailable,
-    isSwitchAvailable,
+  const activeSurfaceContext = background.surfaceContext;
+  const activeCardSurfaceContext = supportsManifestSurfaceContext(
+    manifest?.components?.card,
     segment,
-    supportedCardStates,
-    supportedStates,
-    theme
-  ]);
-  const selectedSurface = useMemo(
-    () => surfaceOptions.find((option) => option.value === surface),
-    [surface, surfaceOptions]
-  );
-  const surfaceItems = useMemo(
-    () =>
-      surfaceOptions.map((option) => ({
-        value: option.value,
-        label: option.label,
-        swatch: {
-          color: option.swatchColor
+    theme,
+    activeSurfaceContext
+  )
+    ? activeSurfaceContext
+    : 'onSubtle';
+  const specimenCardSurface: ResolvedSwitchSurface | undefined =
+    background.mode === 'canonical' && background.cardSurface
+      ? {
+          value: background.cardSurface.key,
+          label: background.cardSurface.label,
+          ...resolveCardCoordinates(background.cardSurface.key),
+          swatchColor: background.cardSurface.resolvedColor,
+          contentSurfaceContext: background.cardSurface.contentSurfaceContext
         }
-      })),
-    [surfaceOptions]
-  );
-  const pageBackgroundColor = useMemo(() => {
-    if (!selectedSurface) return undefined;
-
-    return resolveDesignSystemCardSurfaceColor({
-      schema: designSystemSchema,
-      segment,
-      theme,
-      intent: 'neutral',
-      emphasis: getAmbientSurfaceEmphasis(selectedSurface)
-    });
-  }, [designSystemSchema, segment, selectedSurface, theme]);
-  const pageStyle = {
-    '--switch-surface-primary': selectedSurface?.swatchColor ?? '#0064B4'
-  } as CSSProperties;
-
+      : undefined;
+  const isBackgroundAvailable = Boolean(background.color);
   useEffect(() => {
     setRadius(defaultRadius);
   }, [defaultRadius]);
@@ -420,26 +279,6 @@ export default function SwitchPage() {
   }, [hasIconSupport, iconMode]);
 
   useEffect(() => {
-    if (!surfaceOptions.length) {
-      return;
-    }
-
-    if (selectedSurface) {
-      if (emphasis !== selectedSurface.switchEmphasis) {
-        setEmphasis(selectedSurface.switchEmphasis);
-      }
-      return;
-    }
-
-    const nextSurface =
-      surfaceOptions.find((option) => option.value === 'white') ?? surfaceOptions[0];
-    setSurface(nextSurface.value);
-    if (emphasis !== nextSurface.switchEmphasis) {
-      setEmphasis(nextSurface.switchEmphasis);
-    }
-  }, [emphasis, selectedSurface, surfaceOptions]);
-
-  useEffect(() => {
     return () => {
       if (thumbShrinkChangeTimeoutRef.current) {
         clearTimeout(thumbShrinkChangeTimeoutRef.current);
@@ -447,61 +286,18 @@ export default function SwitchPage() {
     };
   }, []);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
-
-    if (pageBackgroundColor) {
-      root.style.setProperty('--showcase-route-background', pageBackgroundColor);
-    } else {
-      root.style.removeProperty('--showcase-route-background');
-    }
-
-    return () => {
-      if (previousRouteBackground) {
-        root.style.setProperty('--showcase-route-background', previousRouteBackground);
-        return;
-      }
-
-      root.style.removeProperty('--showcase-route-background');
-    };
-  }, [pageBackgroundColor]);
-
-  const handleSurfaceChange = (value: string) => {
-    const nextSurface = value as SwitchSurface;
-    if (nextSurface === surface) return;
-
-    const nextSurfaceOption = surfaceOptions.find((option) => option.value === nextSurface);
-    if (!nextSurfaceOption) return;
-
-    playWowTransition();
-    setSurface(nextSurface);
-    if (emphasis !== nextSurfaceOption.switchEmphasis) {
-      setEmphasis(nextSurfaceOption.switchEmphasis);
-    }
-  };
-
   const handleEmphasisChange = (value: string) => {
     const nextEmphasis = value as ComponentEmphasis;
-    if (nextEmphasis === emphasis) return;
-
-    if (!supportedStates?.[nextEmphasis]) return;
-
-    const preferredSurface = getSurfaceForEmphasis(nextEmphasis);
-    const nextSurface =
-      surfaceOptions.find((option) => option.value === preferredSurface) ??
-      surfaceOptions.find((option) => option.switchEmphasis === nextEmphasis);
-    if (!nextSurface) return;
-
+    if (nextEmphasis === emphasis || !supportedStates?.[nextEmphasis]) return;
     playWowTransition();
     setEmphasis(nextEmphasis);
-    if (surface !== nextSurface.value) {
-      setSurface(nextSurface.value);
-    }
   };
 
   const switchControls = (
     <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Ambiente">
+        <ShowcaseGlobalSemanticControls />
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Shape">
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
@@ -531,7 +327,6 @@ export default function SwitchPage() {
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Semantic">
-        <ShowcaseGlobalSemanticControls />
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
             label="Intent"
@@ -552,16 +347,6 @@ export default function SwitchPage() {
             onValueChange={handleEmphasisChange}
             disabled={!isSwitchAvailable || emphasisSelectOptions.length <= 1}
           />
-          <ShowcaseControlField fullWidth>
-            <SwatchRadioGroup
-              groupLabel="Surface"
-              value={surface}
-              onValueChange={handleSurfaceChange}
-              items={surfaceItems}
-              aria-label="Switch example surface"
-              className={s.surfaceControl}
-            />
-          </ShowcaseControlField>
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Tipografia">
@@ -652,275 +437,289 @@ export default function SwitchPage() {
     </ShowcaseControlPanel>
   );
 
+  const interactiveSwitch = (
+    <Switch
+      id="switch-notifications"
+      label="Notifications"
+      controlText={switchControlText}
+      icons={switchIcons}
+      controlState={controlState}
+      onControlStateChange={setControlState}
+      scale={scale}
+      radius={radius}
+      motion={motionOverride}
+      thumbShrink={thumbShrinkOverride}
+      intent={intent}
+      emphasis={emphasis}
+      interactionLocked={interactionLocked}
+    />
+  );
+
   return (
-    <section className={`${s.page} k-root`} style={pageStyle}>
-      <header className={s.header}>
-        <h2>Switch V2</h2>
-        <p className={s.summary}>
-          Static proof of concept for the generated `standard/base` switch contract.
-        </p>
-      </header>
+    <section className={`${s.page} k-root`}>
+      <ShowcaseRouteControls
+        id="switch"
+        eyebrow="Controls"
+        title="Switch"
+        isAvailable={isSwitchAvailable}
+        showGlobalControls={false}
+      >
+        {switchControls}
+      </ShowcaseRouteControls>
 
-      {!isSwitchAvailable || !isCardAvailable || !selectedSurface ? (
-        <div className={s.emptyState}>
-          Switch/Card surfaces are not available for the selected design system: {designSystem}.
-        </div>
-      ) : (
-        <>
-          <ShowcaseRouteControls
-            id="switch"
-            eyebrow="Controls"
-            title="Switch"
-            isAvailable={isSwitchAvailable}
-            showGlobalControls={false}
-          >
-            {switchControls}
-          </ShowcaseRouteControls>
+      <SurfaceContextProvider value={activeSurfaceContext}>
+        <header className={s.header}>
+          <Text as="h2" profile={textProfiles.pageTitle}>
+            Switch
+          </Text>
+          <Text as="p" profile={textProfiles.body} className={s.summary}>
+            Switches let people turn a setting on or off immediately.
+          </Text>
+        </header>
 
-          <section className={`${s.section} ${s.previewSection}`}>
-            <h3>Interactive</h3>
-            <div className={s.interactiveFrame}>
-              <CardAction
-                className={s.interactivePanel}
-                intent={selectedSurface.cardIntent}
-                emphasis={selectedSurface.cardEmphasis}
-                shadow={Boolean(cardShadow)}
-                preserveBorderWithShadow={false}
-                interactionStateSource="bounds"
-                interactionLocked={interactionLocked}
-                onClick={() => setControlState((current) => !current)}
-                aria-label={`Notifications ${controlState ? switchControlText.on : switchControlText.off}`}
-              />
-              <div className={s.interactiveSwitchVisual} aria-hidden="true">
-                <Switch
-                  id="switch-notifications"
-                  label="Notifications"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState={controlState}
-                  onControlStateChange={setControlState}
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  inputProps={{ tabIndex: -1 }}
-                  aria-hidden="true"
-                />
+        {!isSwitchAvailable || !isBackgroundAvailable ? (
+          <div className={s.emptyState}>
+            <Text as="p" profile={textProfiles.body}>
+              Switch surfaces are not available for the selected design system: {designSystem}.
+            </Text>
+          </div>
+        ) : (
+          <>
+            <section className={`${s.section} ${s.previewSection}`}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Interactive
+              </Text>
+              <div className={s.interactiveFrame}>
+                {specimenCardSurface ? (
+                  <Card
+                    className={s.interactivePanel}
+                    data-showcase-example-card={specimenCardSurface.value}
+                    intent={specimenCardSurface.cardIntent}
+                    emphasis={specimenCardSurface.cardEmphasis}
+                    surfaceContext={activeCardSurfaceContext}
+                  >
+                    <div className={s.interactiveSwitchVisual}>{interactiveSwitch}</div>
+                  </Card>
+                ) : (
+                  <div className={s.interactivePanel}>
+                    <div className={s.interactiveSwitchVisual}>{interactiveSwitch}</div>
+                  </div>
+                )}
               </div>
-            </div>
-          </section>
+            </section>
 
-          <section className={`${s.section} ${s.statesSection}`}>
-            <h3>States</h3>
-            <div className={s.stateGrid}>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-rest"
-                  label="Unselected (rest)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState={false}
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-selected"
-                  label="Selected (rest)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-hover"
-                  label="Unselected (hover)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState={false}
-                  status="hover"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-hover-selected"
-                  label="Selected (hover)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState
-                  status="hover"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-pressed"
-                  label="Unselected (pressed)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState={false}
-                  status="pressed"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-pressed-selected"
-                  label="Selected (pressed)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState
-                  status="pressed"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-activation-feedback"
-                  label="Unselected (activation feedback)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState={false}
-                  status="pressed"
-                  activationFeedback="active"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-activation-feedback-selected"
-                  label="Selected (activation feedback)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState
-                  status="pressed"
-                  activationFeedback="active"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-focus"
-                  label="Unselected (focus)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState={false}
-                  status="focus"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-state-focus-selected"
-                  label="Selected (focus)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState
-                  status="focus"
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  readOnly
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-disabled"
-                  label="Unselected (disabled)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState={false}
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  disabled
-                />
-              </StateTile>
-              <StateTile cardShadow={cardShadow} surface={selectedSurface}>
-                <Switch
-                  id="switch-disabled-selected"
-                  label="Selected (disabled)"
-                  controlText={switchControlText}
-                  icons={switchIcons}
-                  controlState
-                  scale={scale}
-                  radius={radius}
-                  motion={motionOverride}
-                  thumbShrink={thumbShrinkOverride}
-                  intent={intent}
-                  emphasis={emphasis}
-                  disabled
-                />
-              </StateTile>
-            </div>
-          </section>
-        </>
-      )}
+            <section className={`${s.section} ${s.statesSection}`}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                States
+              </Text>
+              <div className={s.stateGrid}>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-rest"
+                    label="Unselected (rest)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState={false}
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-selected"
+                    label="Selected (rest)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-hover"
+                    label="Unselected (hover)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState={false}
+                    status="hover"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-hover-selected"
+                    label="Selected (hover)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState
+                    status="hover"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-pressed"
+                    label="Unselected (pressed)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState={false}
+                    status="pressed"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-pressed-selected"
+                    label="Selected (pressed)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState
+                    status="pressed"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-activation-feedback"
+                    label="Unselected (activation feedback)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState={false}
+                    status="pressed"
+                    activationFeedback="active"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-activation-feedback-selected"
+                    label="Selected (activation feedback)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState
+                    status="pressed"
+                    activationFeedback="active"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-focus"
+                    label="Unselected (focus)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState={false}
+                    status="focus"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-state-focus-selected"
+                    label="Selected (focus)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState
+                    status="focus"
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    readOnly
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-disabled"
+                    label="Unselected (disabled)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState={false}
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    disabled
+                  />
+                </StateTile>
+                <StateTile surfaceContext={activeCardSurfaceContext} surface={specimenCardSurface}>
+                  <Switch
+                    id="switch-disabled-selected"
+                    label="Selected (disabled)"
+                    controlText={switchControlText}
+                    icons={switchIcons}
+                    controlState
+                    scale={scale}
+                    radius={radius}
+                    motion={motionOverride}
+                    thumbShrink={thumbShrinkOverride}
+                    intent={intent}
+                    emphasis={emphasis}
+                    disabled
+                  />
+                </StateTile>
+              </div>
+            </section>
+          </>
+        )}
+      </SurfaceContextProvider>
     </section>
   );
 }

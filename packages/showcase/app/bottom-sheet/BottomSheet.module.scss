@@ -26,17 +26,23 @@
 
 .stage,
 .unavailable {
-  background: color-mix(in srgb, currentColor 3%, transparent);
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-  border-radius: 16px;
+
+
   display: grid;
   gap: 16px;
   min-block-size: 180px;
-  padding: 20px;
+
   place-content: center;
 }
 
 .status {
   min-block-size: 1.4em;
   text-align: center;
+}
+
+.unavailable {
+  background: color-mix(in srgb, currentColor 3%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 16px;
+  padding: 20px;
 }

@@ -1,265 +1,173 @@
 .route {
-  --card-route-strong: rgba(0, 0, 0, 0.72);
-  --card-route-muted: rgba(0, 0, 0, 0.48);
-  --card-route-soft: rgba(0, 0, 0, 0.56);
-
-  color: var(--card-route-strong);
-  width: 100%;
+  container-type: inline-size;
+  display: grid;
+  gap: 40px;
+  min-inline-size: 0;
+  inline-size: 100%;
 }
 
-.darkSurface {
-  --card-route-strong: rgba(255, 255, 255, 0.9);
-  --card-route-muted: rgba(255, 255, 255, 0.68);
-  --card-route-soft: rgba(255, 255, 255, 0.74);
+.pageHeader,
+.sectionHeader {
+  display: grid;
+  gap: 10px;
+}
+
+.description {
+  max-inline-size: 76ch;
 }
 
 .sections {
   display: grid;
-  gap: 32px;
-  width: 100%;
+  gap: 56px;
+  min-inline-size: 0;
 }
 
 .exampleSection {
   display: grid;
-  gap: 12px;
-  min-width: 0;
+  gap: 24px;
+  min-inline-size: 0;
 }
 
-.sectionTitle {
-  color: var(--card-route-strong);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.grid {
-  align-items: stretch;
+.intentGroup {
   display: grid;
-  gap: 20px;
+  gap: 16px;
+  min-inline-size: 0;
+}
+
+.surfaceGrid,
+.contextGrid,
+.comparisonGrid,
+.shadowGrid,
+.interactionGrid {
+  display: grid;
+  align-items: stretch;
+  gap: 24px 16px;
   grid-template-columns: minmax(0, 1fr);
-  width: 100%;
 }
 
 .example {
-  min-width: 0;
-  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-content: start;
+  gap: 10px;
+  min-inline-size: 0;
 }
 
 .cardSurface {
-  aspect-ratio: 16 / 9;
-}
-
-.exampleLabel {
-  color: var(--card-route-muted);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.4;
-  margin: 0 0 8px;
-}
-
-.content,
-.contentSelected,
-.contentOnVivid {
-  min-height: 116px;
-}
-
-.contentWithActionSlot {
-  padding-bottom: 56px;
+  min-block-size: 140px;
 }
 
 .content {
-  color: rgba(0, 0, 0, 0.78);
-}
-
-.contentSelected {
-  color: rgba(255, 255, 255, 0.88);
-}
-
-.contentOnVivid {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.eyebrow {
-  color: currentColor;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.4;
-  margin: 0 0 8px;
-  opacity: 0.72;
-  text-transform: uppercase;
-}
-
-.title {
-  color: currentColor;
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.25;
-  margin: 0;
-}
-
-.body {
-  color: currentColor;
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 8px 0 0;
-  opacity: 0.78;
-}
-
-.buttonOverlay {
-  bottom: 16px;
-  left: 16px;
-  position: absolute;
-  z-index: 1;
-}
-
-.shadowKindGrid {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-  min-width: 0;
-}
-
-.shadowKindGroup {
-  display: grid;
-  gap: 10px;
-  min-width: 0;
-}
-
-.shadowKindHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-width: 0;
-  color: var(--card-route-strong);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.shadowCardGrid {
-  display: grid;
-  gap: 16px 12px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 156px), 1fr));
-  min-width: 0;
-}
-
-.shadowLevelItem {
-  display: grid;
-  gap: 8px;
-  min-width: 0;
-}
-
-.shadowPreviewCard,
-.shadowRawPreview {
-  min-height: 116px;
-}
-
-.shadowRawPreview {
-  display: grid;
-  align-items: stretch;
-  min-width: 0;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.88);
-}
-
-.shadowPreviewContent {
   display: grid;
   align-content: start;
-  gap: 4px;
-  min-width: 0;
-  color: rgba(0, 0, 0, 0.76);
+  gap: 8px;
+  min-inline-size: 0;
 }
 
-.shadowPreviewContent span {
-  color: rgba(0, 0, 0, 0.5);
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1.35;
-  text-transform: uppercase;
+.emptyPosition {
+  display: grid;
+  align-content: center;
+  min-block-size: 140px;
 }
 
-.shadowPreviewContent strong {
-  min-width: 0;
-  color: currentColor;
-  font-size: 15px;
-  line-height: 1.25;
+.contextHost {
+  min-inline-size: 0;
+}
+
+.contextSamples {
+  display: grid;
+  gap: 20px;
+}
+
+.passiveContent {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+}
+
+.recipeValue {
   overflow-wrap: anywhere;
 }
 
-.shadowPreviewContent code,
-.shadowCssValue {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-}
-
-.shadowPreviewContent code {
-  min-width: 0;
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 11px;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.shadowUsageList {
+.controlRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
-  min-width: 0;
+  align-items: center;
+  gap: 12px;
 }
 
-.shadowUsageList span {
-  border-radius: 999px;
-  padding: 2px 7px;
-  color: rgba(0, 0, 0, 0.68);
-  background: rgba(0, 0, 0, 0.07);
-  font-size: 10px;
-  line-height: 1.35;
-  text-transform: none;
+.interactionControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
 }
 
-.shadowCssValue,
-.shadowLayerCount {
-  margin: 0;
-  min-width: 0;
-  overflow-wrap: anywhere;
+.compositionGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
 }
 
-.shadowCssValue {
-  color: var(--card-route-soft);
-  font-size: 11px;
-  line-height: 1.45;
+.compositionSettings {
+  display: grid;
+  align-content: center;
+  gap: 32px;
+  min-block-size: 100%;
+  min-inline-size: 0;
 }
 
-.shadowLayerCount {
-  color: var(--card-route-muted);
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.35;
+.compositionSidebar,
+.compositionTile,
+.compositionWide {
+  min-inline-size: 0;
 }
 
-.shadowEmpty {
-  min-width: 0;
-  padding: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
-  color: rgba(0, 0, 0, 0.54);
-  background: rgba(255, 255, 255, 0.58);
-  font-size: 13px;
-  line-height: 1.45;
+.compositionTile,
+.compositionWide {
+  display: grid;
+  align-content: center;
+  min-block-size: 160px;
 }
 
-.unavailable {
-  color: var(--card-route-soft);
-  font-size: 14px;
-  line-height: 1.5;
+@container (min-width: 480px) {
+  .surfaceGrid,
+  .interactionGrid,
+  .shadowGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-@media (min-width: 768px) {
-  .grid {
+@container (min-width: 680px) {
+  .contextGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .comparisonGrid,
+  .shadowGrid,
+  .interactionGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 840px) {
+  .compositionGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .compositionSidebar {
+    grid-row: span 3;
+  }
+
+  .compositionWide {
+    grid-column: 2 / -1;
+    justify-items: center;
+  }
+
+  .surfaceGrid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .shadowGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

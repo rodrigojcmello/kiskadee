@@ -187,9 +187,8 @@
 }
 
 .profileCard {
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
+
+
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(270px, 0.8fr);
   min-inline-size: 0;
@@ -252,10 +251,9 @@
 }
 
 .roleCard {
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.035);
+
+
+
   display: grid;
   grid-template-rows: auto minmax(150px, 1fr) auto;
   min-inline-size: 0;

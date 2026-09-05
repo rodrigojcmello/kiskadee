@@ -9,6 +9,7 @@ import {
 } from '@kiskadee/react-components';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless/select';
 import { useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Select.module.scss';
@@ -154,7 +155,7 @@ export default function SelectShowcase() {
               Visual preview
             </Text>
             <div className={styles.grid}>
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Standard
                 </Text>
@@ -164,8 +165,8 @@ export default function SelectShowcase() {
                   value={workspace}
                   onValueChange={setWorkspace}
                 />
-              </article>
-              <article className={styles.card}>
+              </ShowcaseExampleCard>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Sequential
                 </Text>
@@ -176,7 +177,7 @@ export default function SelectShowcase() {
                   onValueChange={setDensity}
                   sequential
                 />
-              </article>
+              </ShowcaseExampleCard>
             </div>
           </section>
           <aside className={styles.notice}>

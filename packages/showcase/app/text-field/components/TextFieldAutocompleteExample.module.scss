@@ -21,11 +21,10 @@
 
 .card,
 .unavailable {
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
+
+
   min-inline-size: 0;
-  padding: 18px;
+
 }
 
 .card {
@@ -51,6 +50,15 @@
 
   .card,
   .unavailable {
-    padding: 14px;
   }
+}
+
+.unavailable {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  padding: 18px;
+}
+.unavailable {
+  padding: 14px;
 }

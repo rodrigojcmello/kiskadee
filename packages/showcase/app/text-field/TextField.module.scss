@@ -56,10 +56,10 @@
   inline-size: 100%;
   min-width: 0;
   min-height: 244px;
-  padding: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.72);
+
+
+
+
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
@@ -103,10 +103,10 @@
   align-content: start;
   gap: 18px;
   min-width: 0;
-  padding: 18px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.72);
+
+
+
+
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
@@ -183,7 +183,6 @@
   }
 
   .exampleBlock {
-    padding: 14px;
   }
 }
 
@@ -193,7 +192,6 @@
   }
 
   .interactivePanel {
-    padding: 14px;
   }
 
   .interactiveActions {
@@ -205,6 +203,27 @@
   }
 
   .exampleBlock {
-    padding: 12px;
   }
+}
+
+.interactivePanel:not(:global(.k-crd)) {
+  padding: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+.exampleBlock:not(:global(.k-crd)) {
+  padding: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+.exampleBlock:not(:global(.k-crd)) {
+  padding: 14px;
+}
+.interactivePanel:not(:global(.k-crd)) {
+  padding: 14px;
+}
+.exampleBlock:not(:global(.k-crd)) {
+  padding: 12px;
 }

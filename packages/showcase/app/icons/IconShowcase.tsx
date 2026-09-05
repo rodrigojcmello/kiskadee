@@ -13,36 +13,24 @@ import {
   useShowcase
 } from '@kiskadee/react-components';
 import type { ComponentType, CSSProperties, SVGProps } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   ShowcaseGlobalSemanticControls,
   ShowcaseIconographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
-  ShowcaseControlField,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
   ShowcaseRouteControls,
-  ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import {
-  type ButtonStressTestBackgroundToneKey,
-  useButtonStressTestBackgroundTones
-} from '@/hooks/use-background-tones';
+import { useButtonStressTestBackgroundTones } from '@/hooks/use-background-tones';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
-import { SwatchRadioGroup } from '@/k-components';
-import {
-  getAvailableButtonStressTestBackgrounds,
-  getPreferredButtonStressTestBackground,
-  resolveBackgroundSurfaceContext
-} from '@/utils/button-stress-test-backgrounds';
-import { type CanonicalCardSurfaceKey, isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
-import {
-  getManifestComponentState,
-  supportsManifestSurfaceContext
-} from '@/utils/manifest-surface-context';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
+import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import s from './Icons.module.scss';
 
 type SocialIconComponent = ComponentType<
@@ -85,21 +73,10 @@ type PublishedIconManifest = {
   }>;
 };
 
-type BackgroundMode = 'canonical' | 'stress-test';
 const SNAPCHAT_SHOWCASE_APPEARANCES = new Map([
   ['contained.brand', 'brand'],
   ['mark.monochrome', 'monochrome']
 ]);
-
-const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
-  { value: 'onSubtle', label: 'On subtle' },
-  { value: 'onVivid', label: 'On vivid' }
-];
-
-const BACKGROUND_MODE_OPTIONS: Array<{ value: BackgroundMode; label: string }> = [
-  { value: 'canonical', label: 'Canonical' },
-  { value: 'stress-test', label: 'Stress test' }
-];
 
 const ICON_INTENT_OPTIONS: Array<{ value: IconIntent; label: string }> = [
   { value: 'neutral', label: 'Neutral' },
@@ -186,7 +163,7 @@ function IconGallery({
   return (
     <div className={s.galleryGrid}>
       {entries.map((name) => (
-        <article key={name} className={s.galleryItem}>
+        <ShowcaseExampleCard role="article" key={name} className={s.galleryItem}>
           <div className={s.iconPreview}>
             {isStyled ? (
               <KIcon intent={intent} label={name} scale={scale} surfaceContext={surfaceContext}>
@@ -207,7 +184,7 @@ function IconGallery({
             )}
           </div>
           <code className={s.iconName}>{name}</code>
-        </article>
+        </ShowcaseExampleCard>
       ))}
     </div>
   );
@@ -233,7 +210,8 @@ function SocialIconGallery({
   return (
     <div className={s.galleryGrid}>
       {entries.map(({ appearances, cardKey, component: Glyph, constructions, name }) => (
-        <article
+        <ShowcaseExampleCard
+          role="article"
           key={cardKey}
           className={`${s.galleryItem} ${s.socialGalleryItem}`}
           data-social-constructions={constructions.join(' ')}
@@ -272,7 +250,7 @@ function SocialIconGallery({
             })}
           </div>
           <code className={`${s.iconName} ${s.socialIconName}`}>{name}</code>
-        </article>
+        </ShowcaseExampleCard>
       ))}
     </div>
   );
@@ -282,17 +260,14 @@ export default function IconShowcase() {
   const { designSystem, global, segment, theme } = useKiskadee();
   const { iconFamilyId, iconVariantId, manifest } = useShowcase();
   const { fallbackFor } = useIconFamilyStatus();
-  const canonicalBackgrounds = useCanonicalCardSurfaces();
+  const background = useShowcaseBackground();
+  const surfaceContext = background.surfaceContext;
+  const selectedSurface = background.color ? { resolvedColor: background.color } : undefined;
   const lightCanonicalBackgrounds = useCanonicalCardSurfaces('light');
   const stressTestBackgrounds = useButtonStressTestBackgroundTones();
 
   const [scale, setScale] = useState<IconScale>('s:lg:3');
   const [intent, setIntent] = useState<IconIntent>('neutral');
-  const [surfaceContext, setSurfaceContext] = useState<SurfaceContext>('onSubtle');
-  const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('canonical');
-  const [canonicalSurface, setCanonicalSurface] = useState<CanonicalCardSurfaceKey | null>(null);
-  const [stressTestSurface, setStressTestSurface] =
-    useState<ButtonStressTestBackgroundToneKey>('white');
   const selectedFamily = interfaceIconFamilyOptions.find((entry) => entry.id === iconFamilyId);
   const selectedFamilyLabel = selectedFamily?.label ?? iconFamilyId;
   const selectedVariantLabel =
@@ -310,7 +285,6 @@ export default function IconShowcase() {
   const iconMeta = manifest?.components?.icon;
   const iconSizes = global?.iconSizes as SchemaIconSizes | undefined;
   const isIconAvailable = Boolean(iconMeta);
-  const onVividSupported = supportsManifestSurfaceContext(iconMeta, segment, theme, 'onVivid');
   const iconState = getManifestComponentState(iconMeta, segment, theme, surfaceContext);
 
   const availableScaleOptions = useMemo(() => {
@@ -336,53 +310,6 @@ export default function IconShowcase() {
     availableIntentOptions[0]?.value ??
     'neutral';
 
-  const availableStressTestTones = useMemo(
-    () => getAvailableButtonStressTestBackgrounds(stressTestBackgrounds.tones, theme),
-    [stressTestBackgrounds.tones, theme]
-  );
-  const stressTestBackgroundItems = useMemo(
-    () =>
-      availableStressTestTones.map((tone) => ({
-        value: tone.key,
-        label: tone.aria,
-        swatch: {
-          color: tone.displayColor
-        }
-      })),
-    [availableStressTestTones]
-  );
-
-  const activeCanonicalSurfaceKey = useMemo(
-    () =>
-      canonicalSurface && canonicalBackgrounds.tones.some((tone) => tone.key === canonicalSurface)
-        ? canonicalSurface
-        : canonicalBackgrounds.defaultToneKey,
-    [canonicalBackgrounds.defaultToneKey, canonicalBackgrounds.tones, canonicalSurface]
-  );
-  const activeStressTestSurfaceKey = useMemo(
-    () =>
-      availableStressTestTones.some((tone) => tone.key === stressTestSurface)
-        ? stressTestSurface
-        : (availableStressTestTones[0]?.key ?? stressTestBackgrounds.defaultToneKey),
-    [availableStressTestTones, stressTestBackgrounds.defaultToneKey, stressTestSurface]
-  );
-  const backgroundItems =
-    backgroundMode === 'canonical' ? canonicalBackgrounds.items : stressTestBackgroundItems;
-  const activeBackgroundKey =
-    backgroundMode === 'canonical' ? activeCanonicalSurfaceKey : activeStressTestSurfaceKey;
-  const selectedSurface = useMemo(
-    () =>
-      backgroundMode === 'canonical'
-        ? canonicalBackgrounds.tones.find((tone) => tone.key === activeCanonicalSurfaceKey)
-        : availableStressTestTones.find((tone) => tone.key === activeStressTestSurfaceKey),
-    [
-      activeCanonicalSurfaceKey,
-      activeStressTestSurfaceKey,
-      availableStressTestTones,
-      backgroundMode,
-      canonicalBackgrounds.tones
-    ]
-  );
   const firstLightCanonicalSubtle = lightCanonicalBackgrounds.tones.find(
     (tone) => tone.contentSurfaceContext === 'onSubtle'
   );
@@ -398,147 +325,10 @@ export default function IconShowcase() {
     stressTestBackgrounds.tones.find((tone) => tone.key === 'black')?.resolvedColor ??
     stressTestBackgrounds.tones.find((tone) => tone.key === 'vivid-black')?.resolvedColor;
 
-  const selectBackgroundForSurfaceContext = useCallback(
-    (nextSurfaceContext: SurfaceContext, nextBackgroundMode: BackgroundMode) => {
-      if (nextBackgroundMode === 'canonical') {
-        const nextCanonicalSurface = canonicalBackgrounds.tones.find(
-          (tone) => tone.contentSurfaceContext === nextSurfaceContext
-        );
-        if (nextCanonicalSurface) setCanonicalSurface(nextCanonicalSurface.key);
-        return;
-      }
-
-      const nextStressTestSurface = getPreferredButtonStressTestBackground(
-        stressTestBackgrounds.tones,
-        theme,
-        nextSurfaceContext
-      );
-      if (nextStressTestSurface) setStressTestSurface(nextStressTestSurface.key);
-    },
-    [canonicalBackgrounds.tones, stressTestBackgrounds.tones, theme]
-  );
-
-  useEffect(() => {
-    if (onVividSupported || surfaceContext !== 'onVivid') return;
-
-    setSurfaceContext('onSubtle');
-    setBackgroundMode('canonical');
-    selectBackgroundForSurfaceContext('onSubtle', 'canonical');
-  }, [onVividSupported, selectBackgroundForSurfaceContext, surfaceContext]);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
-
-    if (selectedSurface?.resolvedColor) {
-      root.style.setProperty('--showcase-route-background', selectedSurface.resolvedColor);
-    } else {
-      root.style.removeProperty('--showcase-route-background');
-    }
-
-    return () => {
-      if (previousRouteBackground) {
-        root.style.setProperty('--showcase-route-background', previousRouteBackground);
-        return;
-      }
-
-      root.style.removeProperty('--showcase-route-background');
-    };
-  }, [selectedSurface?.resolvedColor]);
-
   const controls = (
     <ShowcaseControlPanel>
       <ShowcaseControlGroup title="Environment">
         <ShowcaseGlobalSemanticControls />
-        <ShowcaseSegmentedControl
-          label="Surface context"
-          options={SURFACE_CONTEXT_OPTIONS.map((option) => ({
-            ...option,
-            disabled: option.value === 'onVivid' && !onVividSupported
-          }))}
-          value={surfaceContext}
-          onValueChange={(value) => {
-            const nextSurfaceContext = value as SurfaceContext;
-            setSurfaceContext(nextSurfaceContext);
-            setBackgroundMode('canonical');
-            selectBackgroundForSurfaceContext(nextSurfaceContext, 'canonical');
-          }}
-        />
-        <ShowcaseControlField className={s.backgroundControl} fullWidth>
-          <ShowcaseSegmentedControl
-            label="Background"
-            options={BACKGROUND_MODE_OPTIONS}
-            value={backgroundMode}
-            onValueChange={(value) => {
-              const nextBackgroundMode = value as BackgroundMode;
-              setBackgroundMode(nextBackgroundMode);
-              selectBackgroundForSurfaceContext(surfaceContext, nextBackgroundMode);
-            }}
-          />
-          {backgroundItems.length > 0 ? (
-            <SwatchRadioGroup
-              className={`${s.backgroundToneGrid} ${
-                backgroundMode === 'canonical'
-                  ? s.canonicalBackgroundToneGrid
-                  : `${s.stressTestBackgroundToneGrid} ${
-                      theme === 'light' ? s.stressTestLightToneGrid : s.stressTestDarkToneGrid
-                    }`
-              }`}
-              groupLabel={
-                backgroundMode === 'canonical'
-                  ? 'Canonical Card surfaces'
-                  : 'Adversarial stress-test surfaces'
-              }
-              value={activeBackgroundKey}
-              onValueChange={(value) => {
-                if (backgroundMode === 'canonical') {
-                  const nextCanonicalSurfaceKey = value as CanonicalCardSurfaceKey;
-                  const nextCanonicalSurface = canonicalBackgrounds.tones.find(
-                    (tone) => tone.key === nextCanonicalSurfaceKey
-                  );
-
-                  setCanonicalSurface(nextCanonicalSurfaceKey);
-                  if (nextCanonicalSurface) {
-                    setSurfaceContext(
-                      nextCanonicalSurface.contentSurfaceContext === 'onVivid' && !onVividSupported
-                        ? 'onSubtle'
-                        : nextCanonicalSurface.contentSurfaceContext
-                    );
-                  }
-                  return;
-                }
-
-                const nextStressTestSurfaceKey = value as ButtonStressTestBackgroundToneKey;
-                const nextStressTestSurface = stressTestBackgrounds.tones.find(
-                  (tone) => tone.key === nextStressTestSurfaceKey
-                );
-
-                setStressTestSurface(nextStressTestSurfaceKey);
-                if (nextStressTestSurface) {
-                  const nextSurfaceContext = resolveBackgroundSurfaceContext(
-                    nextStressTestSurface.row
-                  );
-                  setSurfaceContext(
-                    nextSurfaceContext === 'onVivid' && !onVividSupported
-                      ? 'onSubtle'
-                      : nextSurfaceContext
-                  );
-                }
-              }}
-              items={backgroundItems}
-              aria-label="Icon example background"
-            />
-          ) : (
-            <p className={s.backgroundEmptyState} role="status">
-              This preset does not publish canonical Card surfaces for the active palette.
-            </p>
-          )}
-          <p className={s.backgroundModeDescription}>
-            {backgroundMode === 'canonical'
-              ? 'Approved Card surfaces from the active preset, segment, and theme.'
-              : 'Adversarial color combinations for diagnosis; not a preset support guarantee.'}
-          </p>
-        </ShowcaseControlField>
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Icon">
         <ShowcaseControlStack>

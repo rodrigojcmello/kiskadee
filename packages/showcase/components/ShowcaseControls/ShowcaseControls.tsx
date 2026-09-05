@@ -121,6 +121,7 @@ export function ShowcaseSelectControl({ className, width = '100%', ...props }: S
 export function ShowcaseSegmentedControl({
   className,
   disabled = false,
+  embedded = false,
   label,
   onValueChange,
   options,
@@ -128,6 +129,7 @@ export function ShowcaseSegmentedControl({
 }: {
   className?: string;
   disabled?: boolean;
+  embedded?: boolean;
   label: ReactNode;
   onValueChange: (value: string) => void;
   options: ReadonlyArray<{
@@ -143,7 +145,7 @@ export function ShowcaseSegmentedControl({
     <fieldset className={joinClassNames(styles.segmentedField, className)} disabled={disabled}>
       <legend className={styles.segmentedLabel}>{label}</legend>
       <div
-        className={styles.segmentedControl}
+        className={joinClassNames(styles.segmentedControl, embedded && styles.segmentedEmbedded)}
         style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
       >
         {options.map((option) => {

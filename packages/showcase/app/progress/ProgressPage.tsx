@@ -4,6 +4,7 @@ import type { ProgressIntent, ProgressScale, SurfaceContext } from '@kiskadee/co
 import { Progress, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { useEffect, useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseControlGrid,
   ShowcaseControlGroup,
@@ -12,6 +13,7 @@ import {
   ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import {
   getManifestComponentState,
   supportsManifestSurfaceContext
@@ -59,7 +61,7 @@ export default function ProgressPage() {
     useState<(typeof VALUE_BEHAVIOR_OPTIONS)[number]['value']>('manual');
   const [scale, setScale] = useState<ProgressScale>('s:md:1');
   const [intent, setIntent] = useState<ProgressIntent>('neutral');
-  const [surfaceContext, setSurfaceContext] = useState<SurfaceContext>('onSubtle');
+  const { surfaceContext } = useShowcaseBackground();
 
   useEffect(() => {
     if (mode !== 'determinate' || valueBehavior !== 'simulated') return;
@@ -137,15 +139,7 @@ export default function ProgressPage() {
             disabled={availableScaleOptions.length <= 1}
           />
         </ShowcaseControlGrid>
-        <ShowcaseSegmentedControl
-          label="Surface context"
-          options={surfaceContextOptions}
-          value={activeSurfaceContext}
-          onValueChange={(nextSurfaceContext) =>
-            setSurfaceContext(nextSurfaceContext as SurfaceContext)
-          }
-          disabled={surfaceContextOptions.length <= 1}
-        />
+
         <ShowcaseSegmentedControl
           label="Mode"
           options={MODE_OPTIONS}
@@ -201,7 +195,7 @@ export default function ProgressPage() {
       </ShowcaseRouteControls>
 
       {isProgressAvailable && hasActiveProfile ? (
-        <section
+        <ShowcaseExampleCard
           className={`${styles.preview} k-root`}
           data-surface-context={activeSurfaceContext}
           data-theme={theme}
@@ -246,7 +240,7 @@ export default function ProgressPage() {
               </div>
             ))}
           </fieldset>
-        </section>
+        </ShowcaseExampleCard>
       ) : (
         <div className={styles.emptyState}>
           {isProgressAvailable

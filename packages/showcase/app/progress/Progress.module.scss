@@ -21,27 +21,24 @@
 }
 
 .preview {
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 16px;
+
+
   color: #202020;
   display: grid;
   gap: 20px;
   inline-size: min(100%, 720px);
   margin-inline: auto;
-  padding: 28px;
+
 }
 
 .preview[data-surface-context='onVivid'] {
-  background: #174d88;
-  border-color: rgba(255, 255, 255, 0.24);
+
   color: #fff;
 }
 
 .preview[data-surface-context='onSubtle'][data-theme='dark'],
 .preview[data-surface-context='onSubtle'][data-theme='darker'] {
-  background: #202020;
-  border-color: rgba(255, 255, 255, 0.16);
+
   color: #fff;
 }
 
@@ -118,7 +115,6 @@
   }
 
   .preview {
-    padding: 22px;
   }
 
   .referenceGrid {

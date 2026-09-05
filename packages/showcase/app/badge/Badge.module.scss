@@ -45,11 +45,10 @@
 .intentCard,
 .ownershipCard,
 .contextCard {
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-  border-radius: 16px;
+
   box-sizing: border-box;
   min-inline-size: 0;
-  padding: 20px;
+
 }
 
 .unavailable {
@@ -278,4 +277,10 @@
   .intentEmphasisRow {
     grid-template-columns: 48px repeat(2, minmax(0, 1fr));
   }
+}
+
+.unavailable {
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 16px;
+  padding: 20px;
 }

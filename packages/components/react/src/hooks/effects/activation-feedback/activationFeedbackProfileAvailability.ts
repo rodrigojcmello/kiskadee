@@ -1,7 +1,8 @@
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackProfileMode,
-  ComponentEmphasis
+  ComponentEmphasis,
+  SurfaceContext
 } from '@kiskadee/core';
 import {
   DEFAULT_ACTIVATION_FEEDBACK_PROFILES,
@@ -50,13 +51,18 @@ export function resolveActivationFeedbackPressedBucketClass(
 
 export function resolveActivationFeedbackToneClass({
   config,
-  emphasis
+  emphasis,
+  surfaceContext
 }: {
   config?: ActivationFeedbackEffectSchema;
   emphasis?: ComponentEmphasis;
+  surfaceContext?: SurfaceContext;
 }): string {
   const toneConfig = config?.visual?.tone;
-  const tone = (emphasis ? toneConfig?.byEmphasis?.[emphasis] : undefined) ?? toneConfig?.default;
+  const tone =
+    (surfaceContext ? toneConfig?.bySurfaceContext?.[surfaceContext] : undefined) ??
+    (emphasis ? toneConfig?.byEmphasis?.[emphasis] : undefined) ??
+    toneConfig?.default;
 
   if (tone === 'vivid') return 'k-aft-v';
   if (tone === 'subtle') return 'k-aft-s';

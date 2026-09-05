@@ -2,6 +2,7 @@
 
 import type { ElementSizeValue, SurfaceContext } from '@kiskadee/core';
 import { Button, FamilyResolvedIcon, Text } from '@kiskadee/react-components';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
@@ -30,7 +31,7 @@ export function ButtonGroupExamples({
         </Text>
       ) : null}
       <div className={styles.buttonGroupGrid}>
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Connected actions
           </Text>
@@ -50,9 +51,9 @@ export function ButtonGroupExamples({
               <Button.Label>Next</Button.Label>
             </Button>
           </Button.Group>
-        </article>
+        </ShowcaseExampleCard>
 
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Low emphasis / outlined
           </Text>
@@ -72,9 +73,9 @@ export function ButtonGroupExamples({
               <Button.Label>Month</Button.Label>
             </Button>
           </Button.Group>
-        </article>
+        </ShowcaseExampleCard>
 
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Group shadow
           </Text>
@@ -101,7 +102,7 @@ export function ButtonGroupExamples({
               The active preset does not publish a Button Rest shadow.
             </Text>
           )}
-        </article>
+        </ShowcaseExampleCard>
       </div>
     </section>
   );

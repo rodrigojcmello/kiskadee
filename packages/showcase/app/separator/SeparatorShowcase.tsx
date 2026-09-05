@@ -1,6 +1,7 @@
 'use client';
 
 import { Separator, Text, useShowcase } from '@kiskadee/react-components';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Separator.module.scss';
@@ -48,16 +49,16 @@ export default function SeparatorShowcase() {
               Orientation
             </Text>
             <div className={styles.grid}>
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Horizontal
                 </Text>
                 <div className={styles.horizontalStage}>
                   <Separator />
                 </div>
-              </article>
+              </ShowcaseExampleCard>
 
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Vertical
                 </Text>
@@ -70,7 +71,7 @@ export default function SeparatorShowcase() {
                     Next
                   </Text>
                 </div>
-              </article>
+              </ShowcaseExampleCard>
             </div>
           </section>
 
@@ -82,7 +83,7 @@ export default function SeparatorShowcase() {
               The surrounding layout creates the distance around the line; Separator itself has no
               margin or padding.
             </Text>
-            <article className={`${styles.card} ${styles.contentCard}`}>
+            <ShowcaseExampleCard role="article" className={`${styles.card} ${styles.contentCard}`}>
               <div className={styles.contentBlock}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Account
@@ -100,7 +101,7 @@ export default function SeparatorShowcase() {
                   Product updates and workspace activity.
                 </Text>
               </div>
-            </article>
+            </ShowcaseExampleCard>
           </section>
         </div>
       )}

@@ -1,0 +1,135 @@
+.controls {
+  display: grid;
+  gap: 10px;
+  min-inline-size: 0;
+}
+
+.background {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.background > legend {
+  font-size: 12px;
+  font-weight: 600;
+  margin-block-end: 6px;
+  padding: 0;
+}
+
+.frame {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.56);
+  border-radius: 12px;
+  min-inline-size: 0;
+}
+
+.mode > legend {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.divider {
+  border: 0;
+  border-block-start: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 4px 10px 0;
+}
+
+.options {
+  padding: 12px;
+}
+
+.description {
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.52);
+  margin: 10px 0 0;
+}
+
+.swatches {
+  display: block;
+  --swatch-size: 24px;
+  --swatch-selected-size: 32px;
+  --swatch-selected-visual-scale: 1.15;
+  --swatch-selected-ring-shadow: 0 0 0 2px #3b82f6;
+
+  > span {
+    display: block;
+    margin-block-end: 12px;
+  }
+
+  fieldset > div {
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    border-radius: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 4px;
+  }
+}
+
+.split {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inherit;
+}
+
+.stress fieldset > div {
+  display: grid;
+  grid-template-columns: repeat(7, 24px);
+  gap: 12px;
+}
+
+.stress {
+  label:has(input[value='white']),
+  label:has(input[value='black']) {
+    grid-column: 1;
+  }
+
+  label:has(input[value='light-neutral']) {
+    grid-column: 2;
+  }
+
+  @each $family, $column in ('black': 2, 'blue': 3, 'green': 4, 'red': 5, 'purple': 6, 'orange': 7) {
+    label:has(input[value='light-#{$family}']),
+    label:has(input[value='vivid-#{$family}']),
+    label:has(input[value='dark-#{$family}']) {
+      grid-column: $column;
+    }
+  }
+}
+
+.light {
+  label:has(input[value='white']),
+  label:has(input[value^='light-']) {
+    grid-row: 1;
+  }
+
+  label:has(input[value^='vivid-']) {
+    grid-row: 2;
+  }
+}
+
+.dark {
+  label:has(input[value^='vivid-']) {
+    grid-row: 1;
+  }
+
+  label:has(input[value='black']),
+  label:has(input[value^='dark-']) {
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 360px) {
+  .stress fieldset > div {
+    gap: 8px;
+  }
+}

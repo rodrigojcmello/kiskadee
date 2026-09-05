@@ -12,7 +12,6 @@ import {
 import { SYSTEM_MONOSPACE_FONT_STACK } from '@kiskadee/core/font-family';
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
 import {
-  Card,
   type FontFamilyRole,
   SurfaceContextProvider,
   Text,
@@ -20,7 +19,11 @@ import {
   useKiskadee,
   useShowcase
 } from '@kiskadee/react-components';
-import { ShowcaseIconographyControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
+import {
+  ShowcaseGlobalSemanticControls,
+  ShowcaseIconographyControls
+} from '@/components/DesignSystemControls/ShowcaseGlobalControls';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseControlGroup,
   ShowcaseControlPanel,
@@ -136,7 +139,7 @@ function RolePreview({
   const stackLabel = display.stack?.join(', ') ?? 'Inherited from the host';
 
   return (
-    <article className={styles.roleCard} data-font-role={role}>
+    <ShowcaseExampleCard role="article" className={styles.roleCard} data-font-role={role}>
       <header className={styles.roleHeader}>
         <div>
           <Text as="p" profile={textProfiles.caption} className={styles.roleEyebrow}>
@@ -181,7 +184,7 @@ function RolePreview({
           </Text>
         ) : null}
       </footer>
-    </article>
+    </ShowcaseExampleCard>
   );
 }
 
@@ -320,12 +323,7 @@ function TextComponentExamples({
       </div>
 
       <div className={styles.foregroundMatrix}>
-        <Card
-          className={`${styles.foregroundCard} k-root`}
-          emphasis="low"
-          intent="neutral"
-          surfaceContext="onSubtle"
-        >
+        <ShowcaseExampleCard context="onSubtle" className={`${styles.foregroundCard} k-root`}>
           <div className={styles.foregroundCardContent}>
             <header className={styles.foregroundCardHeader}>
               <Text as="h3" profile={textProfiles.groupTitle}>
@@ -348,14 +346,9 @@ function TextComponentExamples({
               ))}
             </div>
           </div>
-        </Card>
+        </ShowcaseExampleCard>
 
-        <Card
-          className={`${styles.foregroundCard} k-root`}
-          emphasis="highest"
-          intent="primary"
-          surfaceContext="onSubtle"
-        >
+        <ShowcaseExampleCard context="onVivid" className={`${styles.foregroundCard} k-root`}>
           <div className={styles.foregroundCardContent}>
             <header className={styles.foregroundCardHeader}>
               <Text as="h3" profile={textProfiles.groupTitle}>
@@ -378,7 +371,7 @@ function TextComponentExamples({
               ))}
             </div>
           </div>
-        </Card>
+        </ShowcaseExampleCard>
       </div>
 
       {standardChromaticForegrounds.length > 0 ? (
@@ -394,12 +387,7 @@ function TextComponentExamples({
           </div>
 
           <div className={styles.foregroundMatrix}>
-            <Card
-              className={`${styles.foregroundCard} k-root`}
-              emphasis="low"
-              intent="neutral"
-              surfaceContext="onSubtle"
-            >
+            <ShowcaseExampleCard context="onSubtle" className={`${styles.foregroundCard} k-root`}>
               <div className={styles.foregroundCardContent}>
                 <Text as="h4" profile={textProfiles.groupTitle}>
                   On subtle
@@ -411,14 +399,9 @@ function TextComponentExamples({
                   textProfiles={textProfiles}
                 />
               </div>
-            </Card>
+            </ShowcaseExampleCard>
 
-            <Card
-              className={`${styles.foregroundCard} k-root`}
-              emphasis="highest"
-              intent="primary"
-              surfaceContext="onSubtle"
-            >
+            <ShowcaseExampleCard context="onVivid" className={`${styles.foregroundCard} k-root`}>
               <div className={styles.foregroundCardContent}>
                 <Text as="h4" profile={textProfiles.groupTitle}>
                   On vivid
@@ -430,18 +413,13 @@ function TextComponentExamples({
                   textProfiles={textProfiles}
                 />
               </div>
-            </Card>
+            </ShowcaseExampleCard>
           </div>
         </section>
       ) : null}
 
       <div className={styles.foregroundBehaviorGrid}>
-        <Card
-          className={`${styles.foregroundCard} k-root`}
-          emphasis="low"
-          intent="neutral"
-          surfaceContext="onSubtle"
-        >
+        <ShowcaseExampleCard context="onSubtle" className={`${styles.foregroundCard} k-root`}>
           <div className={styles.foregroundCardContent}>
             <Text as="h3" profile={textProfiles.groupTitle}>
               Default and inherit
@@ -469,14 +447,9 @@ function TextComponentExamples({
               </div>
             </div>
           </div>
-        </Card>
+        </ShowcaseExampleCard>
 
-        <Card
-          className={`${styles.foregroundCard} k-root`}
-          emphasis="highest"
-          intent="primary"
-          surfaceContext="onSubtle"
-        >
+        <ShowcaseExampleCard context="onVivid" className={`${styles.foregroundCard} k-root`}>
           <div className={styles.foregroundCardContent}>
             <Text as="h3" profile={textProfiles.groupTitle}>
               Context resolution
@@ -510,7 +483,7 @@ function TextComponentExamples({
               </SurfaceContextProvider>
             </div>
           </div>
-        </Card>
+        </ShowcaseExampleCard>
       </div>
     </section>
   );
@@ -671,7 +644,11 @@ function TypeScale({
                   const tracking = profile.scales.textLetterSpacing;
 
                   return (
-                    <article className={styles.profileCard} key={profileId}>
+                    <ShowcaseExampleCard
+                      role="article"
+                      className={styles.profileCard}
+                      key={profileId}
+                    >
                       <div className={styles.profilePreview}>
                         <Text as="p" profile={profileId} className={styles.profileSample}>
                           {PROFILE_SAMPLES[role]}
@@ -725,7 +702,7 @@ function TypeScale({
                           </div>
                         </dl>
                       </div>
-                    </article>
+                    </ShowcaseExampleCard>
                   );
                 })}
               </div>
@@ -778,6 +755,9 @@ function TypographyContent() {
 
   const controls = (
     <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Environment">
+        <ShowcaseGlobalSemanticControls />
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Semantic roles">
         <ShowcaseControlStack>
           {FONT_ROLES.map((role) => (

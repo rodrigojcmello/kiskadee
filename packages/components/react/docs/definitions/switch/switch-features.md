@@ -277,9 +277,14 @@ Runtime motion also enables drag:
 - The thumb can be dragged on the x axis.
 - Drag is disabled when the switch is disabled or read-only.
 - Drag uses the measured track/thumb travel as its constraint.
-- Drag preview may project a temporary visual `controlState` before semantic
-  state changes.
-- Release position and velocity decide the next semantic state.
+- Drag preview projects `visualControlState` through the headless root's state classes only.
+  The native input, ARIA state and control text retain the semantic `controlState`.
+- The headless `useControlState` hook owns semantic state; the motion controller receives
+  that state and its setter and owns only the transient preview.
+- Release position relative to the travel midpoint requests the next semantic state once.
+  Controlled consumers remain authoritative if they do not accept the request.
+- Pointer cancellation, disabled/read-only/locked interaction, and disabling motion clear
+  the preview without committing it. Re-enabling motion must not restore a stale preview.
 - A drag suppresses the next click for a short window so the label click does
   not immediately undo the drag result.
 - Drag cancels activation feedback once the user starts moving the thumb.

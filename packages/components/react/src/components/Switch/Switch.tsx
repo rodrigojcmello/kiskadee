@@ -1,9 +1,10 @@
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { stateActivator as cn, resolveActivationFeedbackSetting } from '@kiskadee/core';
-import { HeadlessSwitch } from '@kiskadee/react-headless';
+import { HeadlessSwitch, useControlState } from '@kiskadee/react-headless';
 import { type ElementType, memo, type PointerEvent, useCallback, useMemo, useState } from 'react';
 import { mergeClassNamePatches } from '../../shared/class-resolution/classNames.ts';
+import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
 import {
   hasSwitchActivationFeedbackEffect,
   useSwitchActivationFeedbackController,
@@ -86,6 +87,7 @@ function mergeSwitchClassNames(
 }
 
 function SwitchRoot(props: SwitchProps) {
+  const surfaceContext = useSurfaceContext();
   const {
     id,
     label,
@@ -232,14 +234,22 @@ function SwitchRoot(props: SwitchProps) {
     structuralClassNames.e2,
     structuralClassNames.e3
   ].join('|');
-  const motionController = useSwitchRuntimeMotionController({
-    enabled: Boolean(motionEffect),
+  const { controlState, isControlled, setControlState } = useControlState({
     controlState: controlStateProp,
     defaultControlState,
     disabled,
     interactionLocked,
     readOnly,
-    onControlStateChange,
+    onControlStateChange
+  });
+  const motionController = useSwitchRuntimeMotionController({
+    enabled: Boolean(motionEffect),
+    controlState,
+    isControlled,
+    setControlState,
+    disabled,
+    interactionLocked,
+    readOnly,
     onClickCapture,
     geometryKey: switchGeometryKey
   });
@@ -282,7 +292,7 @@ function SwitchRoot(props: SwitchProps) {
   const statefulClassNames = useMemo(() => {
     const shadowStateClassName = hasShadowEffect
       ? resolveSwitchEffectTargetStateClassName({
-          controlState: motionController.projectedControlState,
+          controlState: motionController.visualControlState,
           status,
           hovered: isShadowHovered,
           disabled,
@@ -298,7 +308,7 @@ function SwitchRoot(props: SwitchProps) {
 
     return mergeSwitchClassNames(
       structuralClassNames,
-      !motionEffect && motionController.projectedControlState ? { e3: 'k-swt-e3e-a' } : undefined,
+      !motionEffect && motionController.visualControlState ? { e3: 'k-swt-e3e-a' } : undefined,
       shadowClassNamePatch
     );
   }, [
@@ -307,7 +317,7 @@ function SwitchRoot(props: SwitchProps) {
     hasTrackShadowEffect,
     hasThumbShadowEffect,
     isShadowHovered,
-    motionController.projectedControlState,
+    motionController.visualControlState,
     motionEffect,
     readOnly,
     status,
@@ -319,6 +329,7 @@ function SwitchRoot(props: SwitchProps) {
     return mergeSwitchClassNames(
       statefulClassNames,
       activationFeedbackEffect.resolveSwitchActivationFeedbackEffect({
+        surfaceContext,
         emphasis,
         config: activationFeedbackConfig,
         elements,
@@ -331,6 +342,7 @@ function SwitchRoot(props: SwitchProps) {
     activationFeedbackController.isFading,
     activationFeedbackEffect,
     activationFeedbackConfig,
+    surfaceContext,
     emphasis,
     activationFeedbackProfile,
     elements,
@@ -351,6 +363,7 @@ function SwitchRoot(props: SwitchProps) {
   const thumbProps = MotionThumb
     ? {
         activationMotion: options.activationMotion,
+        onDragStart: activationFeedbackController.cancel,
         thumbClassName: resolvedClassNames.e3,
         ...motionController.thumbProps
       }
@@ -367,7 +380,8 @@ function SwitchRoot(props: SwitchProps) {
       interactionLocked={interactionLocked}
       readOnly={readOnly}
       status={status}
-      controlState={motionController.projectedControlState}
+      controlState={controlState}
+      visualControlState={motionController.visualControlState}
       onControlStateChange={motionController.setControlState}
       onClickCapture={activationFeedbackController.rootHandlers.onClickCapture}
       onPointerEnter={handlePointerEnter}
@@ -380,7 +394,7 @@ function SwitchRoot(props: SwitchProps) {
     >
       <SwitchControlSide
         controlText={controlText}
-        controlState={motionController.projectedControlState}
+        controlState={controlState}
         shouldRenderControlText={shouldRenderControlText}
       >
         <HeadlessSwitch.Track ref={motionController.thumbProps.trackRefCallback}>

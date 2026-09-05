@@ -1,6 +1,6 @@
 'use client';
 
-import type { ElementSizeValue, SurfaceContext } from '@kiskadee/core';
+import type { ElementSizeValue } from '@kiskadee/core';
 import { Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { useState } from 'react';
 import {
@@ -14,19 +14,14 @@ import {
   ShowcaseControlPanel,
   ShowcaseControlStack,
   ShowcaseRouteControls,
-  ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { supportsManifestSurfaceContext } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import { SocialButtonExamples } from '../button/components/SocialButtonExamples';
-
-const SURFACE_CONTEXT_OPTIONS: Array<{ value: SurfaceContext; label: string }> = [
-  { value: 'onSubtle', label: 'On subtle' },
-  { value: 'onVivid', label: 'On vivid' }
-];
 
 const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:2', label: 'Small 2' },
@@ -44,7 +39,7 @@ export default function BrandButtonsPage() {
   const textProfiles = useShowcaseTextProfiles();
   const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();
   const [buttonScale, setButtonScale] = useState<ElementSizeValue>('s:md:1');
-  const [surfaceContext, setSurfaceContext] = useState<SurfaceContext>('onSubtle');
+  const { surfaceContext } = useShowcaseBackground();
 
   const buttonMeta = manifest?.components?.button;
   const examplesAvailable = ['auth', 'social'].every((pack) =>
@@ -71,13 +66,6 @@ export default function BrandButtonsPage() {
     <ShowcaseControlPanel>
       <ShowcaseControlGroup title="Ambiente">
         <ShowcaseGlobalSemanticControls />
-        <ShowcaseSegmentedControl
-          label="Surface context"
-          options={SURFACE_CONTEXT_OPTIONS}
-          value={activeSurfaceContext}
-          onValueChange={(value) => setSurfaceContext(value as SurfaceContext)}
-          disabled={!onVividSupported}
-        />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Tipografia">
         <ShowcaseTypographyControls />

@@ -12,6 +12,7 @@ import type { AutocompleteInputRenderProps } from '@kiskadee/react-headless/auto
 import { Autocomplete } from '@kiskadee/react-headless/autocomplete';
 import type { Ref } from 'react';
 import { useMemo, useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './TextFieldAutocompleteExample.module.scss';
 
@@ -167,18 +168,18 @@ export function TextFieldAutocompleteExample() {
       </Text>
       {available ? (
         <div className={styles.grid}>
-          <article className={styles.card}>
+          <ShowcaseExampleCard role="article" className={styles.card}>
             <Text as="h4" profile={textProfiles.subsectionTitle}>
               Compact
             </Text>
             <StyledAutocomplete rich={false} />
-          </article>
-          <article className={styles.card}>
+          </ShowcaseExampleCard>
+          <ShowcaseExampleCard role="article" className={styles.card}>
             <Text as="h4" profile={textProfiles.subsectionTitle}>
               Rich results
             </Text>
             <StyledAutocomplete rich />
-          </article>
+          </ShowcaseExampleCard>
         </div>
       ) : (
         <div className={styles.unavailable}>

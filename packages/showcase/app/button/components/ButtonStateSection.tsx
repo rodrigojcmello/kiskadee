@@ -6,9 +6,10 @@ import type {
   InteractionState,
   SurfaceContext
 } from '@kiskadee/core';
-import { Card, Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
+import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from '../Button.module.scss';
@@ -45,8 +46,7 @@ export function ButtonStateSection({
   stateCapabilities,
   simplified = false,
   grouped = false,
-  scale,
-  surfaceContext
+  scale
 }: ButtonStateSectionProps) {
   const textProfiles = useShowcaseTextProfiles();
   const headingId = `button-intent-${intent}-title`;
@@ -109,13 +109,10 @@ export function ButtonStateSection({
     );
 
   return (
-    <Card
+    <ShowcaseExampleCard
       className={`${s['state-section']} k-root`}
       aria-labelledby={headingId}
       role="group"
-      intent={surfaceContext === 'onVivid' ? 'primary' : 'neutral'}
-      emphasis={surfaceContext === 'onVivid' ? 'highest' : 'low'}
-      surfaceContext={surfaceContext}
     >
       <div className={s['state-content']}>
         <header className={s['state-header']}>
@@ -251,7 +248,7 @@ export function ButtonStateSection({
           ))
         )}
       </div>
-    </Card>
+    </ShowcaseExampleCard>
   );
 }
 

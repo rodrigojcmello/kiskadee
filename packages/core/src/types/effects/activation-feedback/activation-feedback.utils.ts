@@ -109,6 +109,10 @@ function mergeActivationFeedbackVisual(
             byEmphasis: {
               ...base?.tone?.byEmphasis,
               ...override?.tone?.byEmphasis
+            },
+            bySurfaceContext: {
+              ...base?.tone?.bySurfaceContext,
+              ...override?.tone?.bySurfaceContext
             }
           }
         : undefined

@@ -17,6 +17,7 @@ import {
 } from '@kiskadee/react-components';
 import type { ReactNode, Ref } from 'react';
 import { useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
   ShowcaseControlGroup,
@@ -371,7 +372,7 @@ export default function DropdownShowcase() {
               same menu.
             </Text>
             <div className={styles.grid}>
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Without icons
                 </Text>
@@ -389,9 +390,9 @@ export default function DropdownShowcase() {
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>
-              </article>
+              </ShowcaseExampleCard>
 
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Mixed icons
                 </Text>
@@ -429,9 +430,9 @@ export default function DropdownShowcase() {
                     />
                   </Dropdown.Group>
                 </DemoDropdown>
-              </article>
+              </ShowcaseExampleCard>
 
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Rich item
                 </Text>
@@ -462,9 +463,9 @@ export default function DropdownShowcase() {
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>
-              </article>
+              </ShowcaseExampleCard>
 
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Selection anatomy
                 </Text>
@@ -504,7 +505,7 @@ export default function DropdownShowcase() {
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>
-              </article>
+              </ShowcaseExampleCard>
             </div>
           </section>
 
@@ -524,7 +525,7 @@ export default function DropdownShowcase() {
               both controls, while its submenu deliberately overrides both values.
             </Text>
             <div className={styles.grid}>
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Runtime controls
                 </Text>
@@ -535,7 +536,7 @@ export default function DropdownShowcase() {
                   selectedItemBackground={selectedItemBackground}
                   showSubmenuOverride
                 />
-              </article>
+              </ShowcaseExampleCard>
               {(
                 [
                   ['item-and-selection', false, 'Classic'],
@@ -544,7 +545,7 @@ export default function DropdownShowcase() {
                   ['selection-only', true, 'Slim highlighted']
                 ] as const
               ).map(([composition, background, label]) => (
-                <article className={styles.card} key={label}>
+                <ShowcaseExampleCard role="article" className={styles.card} key={label}>
                   <Text as="h4" profile={textProfiles.subsectionTitle}>
                     {label}
                   </Text>
@@ -554,7 +555,7 @@ export default function DropdownShowcase() {
                     presence={presenceOverride}
                     selectedItemBackground={background}
                   />
-                </article>
+                </ShowcaseExampleCard>
               ))}
             </div>
           </section>
@@ -568,7 +569,7 @@ export default function DropdownShowcase() {
               keeps the larger geometry at every viewport.
             </Text>
             <div className={styles.grid}>
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Responsive Medium
                 </Text>
@@ -602,8 +603,8 @@ export default function DropdownShowcase() {
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>
-              </article>
-              <article className={styles.card}>
+              </ShowcaseExampleCard>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Forced Large
                 </Text>
@@ -621,7 +622,7 @@ export default function DropdownShowcase() {
                     </DemoItem>
                   </Dropdown.Group>
                 </DemoDropdown>
-              </article>
+              </ShowcaseExampleCard>
             </div>
           </section>
 
@@ -633,7 +634,7 @@ export default function DropdownShowcase() {
               The shared surface can host non-interactive supporting content without changing the
               semantics of Menu, Select or Autocomplete.
             </Text>
-            <div className={`${styles.card} ${styles.edgeStage}`}>
+            <ShowcaseExampleCard className={`${styles.card} ${styles.edgeStage}`}>
               <DemoDropdown
                 buttonLabel="Open project summary"
                 collection={false}
@@ -663,7 +664,7 @@ export default function DropdownShowcase() {
               <Text as="p" profile={textProfiles.caption} className={styles.muted}>
                 The preferred right placement flips or shifts when it approaches a viewport edge.
               </Text>
-            </div>
+            </ShowcaseExampleCard>
           </section>
 
           <section className={styles.section} aria-labelledby="dropdown-long-menu-title">
@@ -675,18 +676,21 @@ export default function DropdownShowcase() {
               scrolling. Edge arrows appear only while more content exists in that direction.
             </Text>
             <div className={styles.grid}>
-              <article className={styles.card}>
+              <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Extensive ButtonMenu
                 </Text>
                 <LongMenu presence={presenceOverride} />
-              </article>
-              <article className={`${styles.card} ${styles.contextCard}`}>
+              </ShowcaseExampleCard>
+              <ShowcaseExampleCard
+                role="article"
+                className={`${styles.card} ${styles.contextCard}`}
+              >
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Context Menu
                 </Text>
                 <ContextMenuDemo presence={presenceOverride} />
-              </article>
+              </ShowcaseExampleCard>
             </div>
           </section>
 

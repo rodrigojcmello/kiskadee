@@ -40,6 +40,7 @@ import {
   ShowcaseIconographyControls,
   ShowcaseTypographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
   ShowcaseControlField,
@@ -344,14 +345,6 @@ function getSurfaceForEmphasis(emphasis: ComponentEmphasis): SliderSurface {
   return emphasis === 'low' ? 'primary' : 'white';
 }
 
-function getAmbientSurfaceEmphasis(surface: ResolvedSliderSurface): ComponentEmphasis {
-  if (surface.cardIntent === 'neutral' && surface.cardEmphasis === 'low') {
-    return 'medium';
-  }
-
-  return 'low';
-}
-
 function normalizeSurfaceColor(color: string): string {
   return color.trim().toLowerCase();
 }
@@ -456,6 +449,14 @@ function SliderExampleCard({
   surface: ResolvedSliderSurface;
   title?: string;
 }) {
+  if (surface.value === 'white') {
+    return (
+      <ShowcaseExampleCard className={className ? `${s.demoCard} ${className}` : s.demoCard}>
+        {title ? <h4 className={s.cardTitle}>{title}</h4> : null}
+        <div className={s.cardContent}>{children}</div>
+      </ShowcaseExampleCard>
+    );
+  }
   return (
     <Card
       className={className ? `${s.demoCard} ${className}` : s.demoCard}
@@ -616,17 +617,6 @@ export default function SliderPage() {
       })),
     [surfaceOptions]
   );
-  const pageBackgroundColor = useMemo(() => {
-    if (!selectedSurface) return undefined;
-
-    return resolveDesignSystemCardSurfaceColor({
-      schema: designSystemSchema,
-      segment,
-      theme,
-      intent: 'neutral',
-      emphasis: getAmbientSurfaceEmphasis(selectedSurface)
-    });
-  }, [designSystemSchema, segment, selectedSurface, theme]);
   const pageStyle = {
     '--slider-surface-primary': selectedSurface?.swatchColor ?? '#0064B4'
   } as CSSProperties;
@@ -755,26 +745,6 @@ export default function SliderPage() {
       setEmphasis(nextSurface.sliderEmphasis);
     }
   }, [emphasis, selectedSurface, surfaceOptions]);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
-
-    if (pageBackgroundColor) {
-      root.style.setProperty('--showcase-route-background', pageBackgroundColor);
-    } else {
-      root.style.removeProperty('--showcase-route-background');
-    }
-
-    return () => {
-      if (previousRouteBackground) {
-        root.style.setProperty('--showcase-route-background', previousRouteBackground);
-        return;
-      }
-
-      root.style.removeProperty('--showcase-route-background');
-    };
-  }, [pageBackgroundColor]);
 
   const handleSurfaceChange = (value: string) => {
     const nextSurface = value as SliderSurface;

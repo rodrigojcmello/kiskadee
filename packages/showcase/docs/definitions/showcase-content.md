@@ -63,8 +63,16 @@ Showcase-local visual implementation rather than layering `p-react` underneath t
 
 ## Surface Context
 
-The route publishes its active Surface Context through `SurfaceContextProvider`. Independent
-`p-react` descendants that support Surface Context consume that context normally.
+All component routes inherit the shared canonical canvas background from `ShowcaseShell`, using
+Button as the visual reference. The second compatible subtle surface is the initial default
+(Fluent Light: light-gray `neutral.medium`). A route needs no background setup to inherit it.
+Manual choices use the shared Showcase background scenario: canvas and supporting Card coordinates
+are independent. The split swatch selects the first subtle canvas with the second subtle Card;
+it does not change the initial default. Explicit specimen comparisons remain independent. See [Background Surface Catalogs](./background-surface-catalogs.md#shared-initial-canvas).
+
+The Shell publishes the active canvas Surface Context through `SurfaceContextProvider`, around
+content only, not the toolbar or side panel. Independent `p-react` descendants that support Surface
+Context consume it normally; explicit specimens can establish a local boundary.
 
 Use a passive `Card` only when the scenario intentionally introduces a distinct surface. Card owns
 that surface and publishes its produced Content Surface Context to descendants. Never use
@@ -85,12 +93,20 @@ The Button route is the first incremental adoption:
 3. remaining visual wrappers migrate by component family without changing the top bar or lateral
    controls panel.
 
-The current Fluent Switch artifact publishes only its `onSubtle` visual track and the public Switch
-API does not consume Surface Context. On a vivid Button-route canvas, the related inline switches
-therefore belong inside one passive Card selected from the active preset's canonical surfaces with
-`contentSurfaceContext: onSubtle`. This is explicit composition of two supported components, not a
-Showcase fallback. If the design later requires one compact capsule per switch, that compact surface
-must first become a supported `p-react` capability instead of being recreated with route CSS.
+The Fluent Switch artifact publishes an explicit `onSubtle`/`onVivid` matrix. The Button route
+composes its inline switches inside passive Card surfaces, and the Switch route uses the generated
+canonical Card catalog for its specimen surfaces. The catalog resolves colors against `onSubtle`;
+the rendered supporting Card consumes the selected background scenario and its surrounding
+supported context for its boundary, as on Button, and publishes its authored Content Surface Context to the nested Switch. Switch specimens use preset
+borders without shadows; selecting the canvas background does not force the Card to use the same
+surface.
+
+The Switch route may also render specimens directly on a generated stress-test route background.
+That mode intentionally omits the Card so its canonical surface cannot mask the adversarial input;
+the route still publishes the selected Surface Context through `SurfaceContextProvider`. Stress-test
+colors come from generated preset tonal assets and remain diagnostic inputs, not local Showcase
+paint or approved component compositions. If a required compact surface is absent from `p-react`, it
+must still be modeled by the framework rather than recreated with route CSS.
 
 ## Related definitions
 

@@ -2,7 +2,8 @@ import './ButtonActivationFeedback.structural.css';
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackProfileMode,
-  ComponentEmphasis
+  ComponentEmphasis,
+  SurfaceContext
 } from '@kiskadee/core';
 import {
   type ActivationFeedbackEffectBuckets,
@@ -15,6 +16,7 @@ import { join } from '../../Button.class-names.ts';
 import type { ButtonClassesMap } from '../../Button.types.ts';
 
 export type ButtonActivationFeedbackEffectOptions = {
+  surfaceContext?: SurfaceContext;
   activationFeedbackConfig: ActivationFeedbackEffectSchema | undefined;
   activationFeedbackProfile: ActivationFeedbackProfileMode | null;
   controlState: boolean | undefined;
@@ -31,6 +33,7 @@ export type ButtonActivationFeedbackEffectResult = {
 };
 
 export type ButtonActivationFeedbackClassNamePatchOptions = {
+  surfaceContext?: SurfaceContext;
   config: ActivationFeedbackEffectSchema | undefined;
   controlState: boolean | undefined;
   elements: ButtonClassesMap;
@@ -43,6 +46,7 @@ export type ButtonActivationFeedbackClassNamePatchOptions = {
 };
 
 export function resolveButtonActivationFeedbackClassNamePatch({
+  surfaceContext,
   config,
   controlState: _controlState,
   elements,
@@ -66,7 +70,7 @@ export function resolveButtonActivationFeedbackClassNamePatch({
       join(
         effects?.af,
         profileBucket,
-        resolveActivationFeedbackToneClass({ config, emphasis }),
+        resolveActivationFeedbackToneClass({ config, emphasis, surfaceContext }),
         'k-btn-e1a',
         isActive ? 'k-btn-e1b' : '',
         isFading && !shouldForceOverlayPressed ? 'k-btn-e1c' : ''
@@ -75,6 +79,7 @@ export function resolveButtonActivationFeedbackClassNamePatch({
 }
 
 export function resolveButtonActivationFeedbackEffect({
+  surfaceContext,
   activationFeedbackConfig,
   activationFeedbackProfile,
   controlState,
@@ -87,6 +92,7 @@ export function resolveButtonActivationFeedbackEffect({
 }: ButtonActivationFeedbackEffectOptions): ButtonActivationFeedbackEffectResult {
   return {
     classNamePatch: resolveButtonActivationFeedbackClassNamePatch({
+      surfaceContext,
       config: activationFeedbackConfig,
       controlState,
       elements,

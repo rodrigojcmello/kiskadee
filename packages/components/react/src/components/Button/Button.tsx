@@ -482,6 +482,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
   const feedbackClassNamePatch = useMemo(
     () =>
       resolveButtonFeedbackClassNamePatch({
+        surfaceContext: common.surfaceContext,
         activationFeedbackEffect: feedbackEffect.activationFeedbackEffect,
         activationFeedbackConfig: activationFeedbackController.activationFeedbackConfig,
         activationFeedbackProfile: activationFeedbackController.activationFeedbackProfile,
@@ -502,6 +503,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       activationFeedbackController.isFeedbackFading,
       activationFeedbackController.shouldForceOverlayPressed,
       activationFeedbackController.shouldUsePressedProfile,
+      common.surfaceContext,
       common.controlState,
       common.emphasis,
       elements,

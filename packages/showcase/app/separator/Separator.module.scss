@@ -40,14 +40,14 @@
 .card,
 .unavailable {
   align-content: start;
-  background: color-mix(in srgb, currentColor 3%, transparent);
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-  border-radius: 16px;
+
+
+
   display: grid;
   gap: 20px;
   min-block-size: 160px;
   min-inline-size: 0;
-  padding: 20px;
+
 }
 
 .unavailable {
@@ -86,4 +86,11 @@
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+.unavailable {
+  background: color-mix(in srgb, currentColor 3%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 16px;
+  padding: 20px;
 }

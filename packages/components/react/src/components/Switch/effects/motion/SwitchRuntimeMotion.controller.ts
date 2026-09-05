@@ -1,4 +1,3 @@
-import { useControlState } from '@kiskadee/react-headless';
 import { type MouseEvent, type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useIsomorphicLayoutEffect } from '../../../../shared/utils/useIsomorphicLayoutEffect.ts';
 import {
@@ -14,19 +13,20 @@ import {
 } from './SwitchRuntimeMotion.geometry.ts';
 
 type SwitchRuntimeMotionControllerOptions = {
-  controlState?: boolean;
-  defaultControlState?: boolean;
+  controlState: boolean;
+  isControlled: boolean;
+  setControlState: (controlState: boolean) => void;
   disabled?: boolean;
   enabled: boolean;
   geometryKey: string;
   interactionLocked?: boolean;
   onClickCapture?: (event: MouseEvent<HTMLLabelElement>) => void;
-  onControlStateChange?: (controlState: boolean) => void;
   readOnly?: boolean;
 };
 
 type SwitchRuntimeMotionThumbRuntimeProps = {
-  controlState: boolean;
+  semanticControlState: boolean;
+  isControlled: boolean;
   disabled?: boolean;
   interactionLocked?: boolean;
   readOnly?: boolean;
@@ -42,7 +42,7 @@ type SwitchRuntimeMotionThumbRuntimeProps = {
 
 type SwitchRuntimeMotionControllerResult = {
   handleClickCapture: (event: MouseEvent<HTMLLabelElement>) => void;
-  projectedControlState: boolean;
+  visualControlState: boolean;
   setControlState: (controlState: boolean) => void;
   thumbProps: SwitchRuntimeMotionThumbRuntimeProps;
 };
@@ -150,24 +150,16 @@ function useSwitchRuntimeMotionThumbTranslation(options: {
 }
 
 export function useSwitchRuntimeMotionController({
-  controlState: controlStateProp,
-  defaultControlState,
+  controlState,
+  isControlled,
+  setControlState,
   disabled,
   enabled,
   geometryKey,
   interactionLocked,
   onClickCapture,
-  onControlStateChange,
   readOnly
 }: SwitchRuntimeMotionControllerOptions): SwitchRuntimeMotionControllerResult {
-  const { controlState, setControlState } = useControlState({
-    controlState: controlStateProp,
-    defaultControlState,
-    disabled,
-    interactionLocked,
-    readOnly,
-    onControlStateChange
-  });
   const trackRef = useRef<HTMLSpanElement | null>(null);
   const thumbRef = useRef<HTMLSpanElement | null>(null);
   const [trackElement, setTrackElement] = useState<HTMLSpanElement | null>(null);
@@ -176,7 +168,11 @@ export function useSwitchRuntimeMotionController({
   const suppressNextClickTimeoutRef = useRef<number | null>(null);
   const [thumbTranslation, setThumbTranslation] = useState(0);
   const [dragPreviewControlState, setDragPreviewControlState] = useState<boolean | null>(null);
-  const projectedControlState = enabled ? (dragPreviewControlState ?? controlState) : controlState;
+  const canPreview = enabled && !disabled && !interactionLocked && !readOnly;
+  const visualControlState = canPreview ? (dragPreviewControlState ?? controlState) : controlState;
+  useIsomorphicLayoutEffect(() => {
+    if (!canPreview) setDragPreviewControlState(null);
+  }, [canPreview]);
   const trackRefCallback = useCallback((element: HTMLSpanElement | null) => {
     trackRef.current = element;
     setTrackElement(element);
@@ -234,10 +230,11 @@ export function useSwitchRuntimeMotionController({
 
   return {
     handleClickCapture,
-    projectedControlState,
+    visualControlState,
     setControlState,
     thumbProps: {
-      controlState: projectedControlState,
+      semanticControlState: controlState,
+      isControlled,
       disabled,
       interactionLocked,
       readOnly,

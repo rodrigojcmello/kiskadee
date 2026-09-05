@@ -4,6 +4,7 @@ import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';
 import IconFamilyPicker from '@/components/IconFamilyPicker/IconFamilyPicker';
+import { ShowcaseBackgroundControls } from '@/components/ShowcaseBackground/ShowcaseBackgroundControls';
 import {
   ShowcaseControlField,
   ShowcaseControlGrid,
@@ -33,6 +34,9 @@ export function ShowcaseGlobalSemanticControls() {
           <DynamicColorPicker className={styles.panelSwatches} />
         </ShowcaseControlField>
       ) : null}
+      <ShowcaseControlField fullWidth>
+        <ShowcaseBackgroundControls />
+      </ShowcaseControlField>
     </ShowcaseControlGrid>
   );
 }

@@ -8,7 +8,9 @@ import {
   Button as KButton,
   Text
 } from '@kiskadee/react-components';
+import Image from 'next/image';
 import { useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseSelectControl } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
@@ -24,7 +26,15 @@ const placements: ButtonBadgePlacement[] = [
 ];
 
 function FullBleedBadgeArtwork() {
-  return <img alt="" src="/fixtures/badge/fluent-full-bleed-marks/01.svg" />;
+  return (
+    <Image
+      alt=""
+      src="/fixtures/badge/fluent-full-bleed-marks/01.svg"
+      width={28}
+      height={28}
+      unoptimized
+    />
+  );
 }
 
 export function ButtonBadgeExamples({
@@ -50,7 +60,7 @@ export function ButtonBadgeExamples({
         </Text>
       ) : null}
       <div className={styles.buttonMenuGrid}>
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={profiles.subsectionTitle}>
             Runtime logical placement
           </Text>
@@ -95,9 +105,9 @@ export function ButtonBadgeExamples({
               </KButton>
             </div>
           </div>
-        </article>
+        </ShowcaseExampleCard>
 
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={profiles.subsectionTitle}>
             Inline number and novelty
           </Text>
@@ -115,9 +125,9 @@ export function ButtonBadgeExamples({
               </KButton.Badge>
             </KButton>
           </div>
-        </article>
+        </ShowcaseExampleCard>
 
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={profiles.subsectionTitle}>
             Number and Mark on labeled or icon-only Buttons
           </Text>
@@ -165,9 +175,9 @@ export function ButtonBadgeExamples({
               </KButton.Badge>
             </KButton>
           </div>
-        </article>
+        </ShowcaseExampleCard>
 
-        <article>
+        <ShowcaseExampleCard role="article">
           <Text as="h4" profile={profiles.subsectionTitle}>
             Disabled host
           </Text>
@@ -189,9 +199,9 @@ export function ButtonBadgeExamples({
           >
             The Badge stays visible because its metadata is not disabled.
           </Text>
-        </article>
+        </ShowcaseExampleCard>
 
-        <article dir="rtl">
+        <ShowcaseExampleCard role="article" dir="rtl">
           <Text as="h4" profile={profiles.subsectionTitle}>
             RTL logical placement
           </Text>
@@ -203,7 +213,7 @@ export function ButtonBadgeExamples({
               </KButton.Badge>
             </KButton>
           </div>
-        </article>
+        </ShowcaseExampleCard>
       </div>
     </section>
   );

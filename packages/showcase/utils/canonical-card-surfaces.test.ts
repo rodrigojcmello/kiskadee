@@ -1,6 +1,10 @@
 import type { CardCanonicalSurfacesPayload } from '@kiskadee/web-builder/types';
 import { describe, expect, it } from 'vitest';
-import { isDarkSurfaceColor, resolveCanonicalCardSurfaces } from './canonical-card-surfaces';
+import {
+  isDarkSurfaceColor,
+  resolveCanonicalCardSurfaces,
+  resolveDefaultCanonicalCardSurface
+} from './canonical-card-surfaces';
 
 function createCanonicalSurfaces(): CardCanonicalSurfacesPayload {
   return {
@@ -48,6 +52,52 @@ function createCanonicalSurfaces(): CardCanonicalSurfacesPayload {
 }
 
 describe('canonical Card surface resolver', () => {
+  it('shares the Button initial canvas surface without hardcoding a color', () => {
+    const surfaces = resolveCanonicalCardSurfaces({
+      canonicalSurfaces: createCanonicalSurfaces(),
+      segment: 'default',
+      theme: 'light'
+    });
+    expect(resolveDefaultCanonicalCardSurface(surfaces)).toBe(surfaces[1]);
+    expect(resolveDefaultCanonicalCardSurface(surfaces, 'onVivid')).toBe(surfaces[4]);
+    // The initial choice is made after filtering unsupported contexts, not by raw array index.
+    expect(resolveDefaultCanonicalCardSurface([surfaces[4], surfaces[0], surfaces[1]])).toBe(
+      surfaces[1]
+    );
+    expect(resolveDefaultCanonicalCardSurface([surfaces[0]])).toBe(surfaces[0]);
+    expect(resolveDefaultCanonicalCardSurface([surfaces[4]])).toBeUndefined();
+    expect(resolveDefaultCanonicalCardSurface([])).toBeUndefined();
+  });
+
+  it('resolves the same default policy from the current segment and theme artifacts', () => {
+    const canonicalSurfaces = createCanonicalSurfaces();
+    canonicalSurfaces.default.dark = [
+      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle', rest: '#292929' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle', rest: '#242424' }
+    ];
+    canonicalSurfaces.alternate = {
+      light: [
+        { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle', rest: '#fffef0' },
+        {
+          intent: 'neutral',
+          emphasis: 'medium',
+          contentSurfaceContext: 'onSubtle',
+          rest: '#eeede0'
+        }
+      ]
+    };
+    expect(
+      resolveDefaultCanonicalCardSurface(
+        resolveCanonicalCardSurfaces({ canonicalSurfaces, segment: 'default', theme: 'dark' })
+      )?.resolvedColor
+    ).toBe('#242424');
+    expect(
+      resolveDefaultCanonicalCardSurface(
+        resolveCanonicalCardSurfaces({ canonicalSurfaces, segment: 'alternate', theme: 'light' })
+      )?.resolvedColor
+    ).toBe('#eeede0');
+  });
+
   it('preserves the artifact order and descendant surface-context metadata', () => {
     expect(
       resolveCanonicalCardSurfaces({

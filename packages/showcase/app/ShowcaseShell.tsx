@@ -1,6 +1,6 @@
 'use client';
 
-import { FamilyResolvedIcon } from '@kiskadee/react-components';
+import { FamilyResolvedIcon, SurfaceContextProvider } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
 import type { CSSProperties, Dispatch, ReactNode, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -9,7 +9,7 @@ import {
   ShowcaseSidebarToggleGlyph
 } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import ShowcaseSidebar from '@/components/ShowcaseSidebar/ShowcaseSidebar';
-import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
+import { useShowcaseBackgroundState } from '@/hooks/use-showcase-background-state';
 import style from './layout.module.scss';
 import type { ShowcasePanelDetail } from './ShowcasePanelContext';
 import { ShowcasePanelContext } from './ShowcasePanelContext';
@@ -26,7 +26,7 @@ export default function ShowcaseShell({
   onDesktopSidebarVisibilityChange: Dispatch<SetStateAction<boolean>>;
 }) {
   const pathname = usePathname();
-  const canonicalSurfaces = useCanonicalCardSurfaces();
+  const background = useShowcaseBackgroundState(pathname);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [panelDetail, setPanelDetail] = useState<ShowcasePanelDetail | null>(null);
   const [panelMode, setPanelMode] = useState<'components' | 'detail'>('detail');
@@ -76,6 +76,7 @@ export default function ShowcaseShell({
 
   const contextValue = useMemo(
     () => ({
+      background,
       panelDetail,
       panelSlotElement,
       registerPanelDetail,
@@ -84,6 +85,7 @@ export default function ShowcaseShell({
       showDetailPanel
     }),
     [
+      background,
       clearPanelDetail,
       panelDetail,
       panelSlotElement,
@@ -141,15 +143,15 @@ export default function ShowcaseShell({
   const fixedFamilySidebarContent = (
     <ShowcaseIconFamilyBoundary>{sidebarContent}</ShowcaseIconFamilyBoundary>
   );
-  const defaultRouteBackground =
-    canonicalSurfaces.tones[1]?.resolvedColor ?? canonicalSurfaces.tones[0]?.resolvedColor;
-  const shellStyle = defaultRouteBackground
-    ? ({ '--showcase-default-route-background': defaultRouteBackground } as CSSProperties)
-    : undefined;
+  const shellStyle = {
+    '--showcase-default-route-background': background.defaultColor,
+    '--showcase-route-background': background.color
+  } as CSSProperties;
 
   return (
     <ShowcasePanelContext.Provider value={contextValue}>
       <div
+        data-showcase-canvas
         className={`${style.shell} ${
           isDesktopSidebarVisible ? '' : style.shellWithoutSidebar
         }`.trim()}
@@ -190,7 +192,11 @@ export default function ShowcaseShell({
           </ShowcaseIconFamilyBoundary>
 
           <div className={style.content}>
-            <div className={style.contentInner}>{children}</div>
+            <div className={style.contentInner}>
+              <SurfaceContextProvider value={background.surfaceContext}>
+                {children}
+              </SurfaceContextProvider>
+            </div>
           </div>
         </div>
 

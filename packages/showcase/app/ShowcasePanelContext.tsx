@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext } from 'react';
+import type { useShowcaseBackgroundState } from '@/hooks/use-showcase-background-state';
 
 export type ShowcasePanelDetail = {
   id: string;
@@ -10,6 +11,7 @@ export type ShowcasePanelDetail = {
 };
 
 type ShowcasePanelContextValue = {
+  background: ReturnType<typeof useShowcaseBackgroundState>;
   panelDetail: ShowcasePanelDetail | null;
   panelSlotElement: HTMLElement | null;
   registerPanelDetail: (detail: ShowcasePanelDetail) => void;

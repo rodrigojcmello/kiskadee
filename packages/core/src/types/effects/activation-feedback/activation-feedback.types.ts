@@ -1,4 +1,4 @@
-import type { ComponentEmphasis, SolidColor } from '../../colors/colors.types.ts';
+import type { ComponentEmphasis, SolidColor, SurfaceContext } from '../../colors/colors.types.ts';
 
 export type ActivationFeedbackMotionDurationToken =
   | 'interaction.instant'
@@ -38,6 +38,7 @@ export type ActivationFeedbackTone = 'subtle' | 'vivid';
 export type ActivationFeedbackToneMap = {
   default?: ActivationFeedbackTone;
   byEmphasis?: Partial<Record<ComponentEmphasis, ActivationFeedbackTone>>;
+  bySurfaceContext?: Partial<Record<SurfaceContext, ActivationFeedbackTone>>;
 };
 
 export type ActivationFeedbackVisual = {

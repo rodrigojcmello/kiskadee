@@ -51,6 +51,11 @@ For this kind of effect:
 the same shared behavior language: profile capability, runtime mode, origin,
 paint, layer, and tone resolution.
 
+Activation Feedback tone selection resolves `bySurfaceContext` first, then `byEmphasis`,
+then `default`. Core owns this serializable contract; merging component overrides preserves
+independent entries in both maps. Web Builder carries the configuration to the artifact;
+p-react selects the tone class using the consumed Surface Context, without inventing colors.
+
 ### Catalog Effects
 
 A catalog effect owns a standardized value library. Its global definition does

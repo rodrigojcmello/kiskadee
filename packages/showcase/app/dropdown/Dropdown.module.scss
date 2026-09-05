@@ -40,14 +40,14 @@
 .card,
 .unavailable {
   align-content: start;
-  background: color-mix(in srgb, currentColor 3%, transparent);
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-  border-radius: 16px;
+
+
+
   display: grid;
   gap: 18px;
   min-block-size: 180px;
   min-inline-size: 0;
-  padding: 20px;
+
 }
 
 .card > :global(.k-btn-x3),
@@ -163,4 +163,11 @@
     inline-size: min(100%, 360px);
   }
 
+}
+
+.unavailable {
+  background: color-mix(in srgb, currentColor 3%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  border-radius: 16px;
+  padding: 20px;
 }

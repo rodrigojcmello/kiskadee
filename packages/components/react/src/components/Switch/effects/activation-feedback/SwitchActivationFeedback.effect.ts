@@ -3,7 +3,8 @@ import './SwitchActivationFeedback.structural.css';
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackProfileMode,
-  ComponentEmphasis
+  ComponentEmphasis,
+  SurfaceContext
 } from '@kiskadee/core';
 import { resolveActivationFeedbackToneClass } from '../../../../hooks/effects/activation-feedback/activationFeedbackProfileAvailability.ts';
 import {
@@ -13,6 +14,7 @@ import {
 import type { SwitchClassesMap, SwitchClassNames } from '../.././Switch.types.ts';
 
 export type SwitchActivationFeedbackEffectOptions = {
+  surfaceContext?: SurfaceContext;
   config?: ActivationFeedbackEffectSchema;
   emphasis: ComponentEmphasis;
   elements: SwitchClassesMap;
@@ -25,6 +27,7 @@ export type SwitchActivationFeedbackEffectResult = {
 };
 
 export function resolveSwitchActivationFeedbackEffect({
+  surfaceContext,
   config,
   emphasis,
   elements,
@@ -49,7 +52,7 @@ export function resolveSwitchActivationFeedbackEffect({
         join(
           activationFeedbackClassName,
           'k-afx',
-          resolveActivationFeedbackToneClass({ config, emphasis }),
+          resolveActivationFeedbackToneClass({ config, emphasis, surfaceContext }),
           isActive ? 'k-afxa' : ''
         ) ?? ''
     }

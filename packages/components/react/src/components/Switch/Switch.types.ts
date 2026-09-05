@@ -51,7 +51,7 @@ export type SwitchActivationFeedback =
 
 export type SwitchProps = Omit<
   HeadlessSwitchRootProps,
-  'children' | 'classNames' | 'inputId' | 'inputProps'
+  'children' | 'classNames' | 'inputId' | 'inputProps' | 'visualControlState'
 > & {
   id?: string;
   label?: ReactNode;

@@ -5,8 +5,7 @@ import type {
   BadgeIntent,
   BadgeScale,
   BadgeSeparation,
-  RadiusMode,
-  SurfaceContext
+  RadiusMode
 } from '@kiskadee/core';
 import {
   Badge,
@@ -21,21 +20,18 @@ import {
 } from '@kiskadee/react-components';
 import Image from 'next/image';
 import { type ReactNode, type Ref, useEffect, useMemo, useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
   ShowcaseRouteControls,
-  ShowcaseSegmentedControl,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
-import {
-  getManifestComponentState,
-  supportsManifestSurfaceContext
-} from '@/utils/manifest-surface-context';
+import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Badge.module.scss';
 
@@ -58,10 +54,6 @@ const separationTreatments = [
   { value: 'shadow', label: 'With shadow' },
   { value: 'ring', label: 'With ring' }
 ] as const;
-const surfaceContexts: Array<{ value: SurfaceContext; label: string }> = [
-  { value: 'onSubtle', label: 'On subtle' },
-  { value: 'onVivid', label: 'On vivid' }
-];
 
 const fullBleedMarkFixtures = Array.from(
   { length: 8 },
@@ -87,14 +79,14 @@ function Unavailable() {
 function UnavailableHost({ name }: { name: string }) {
   const profiles = useShowcaseTextProfiles();
   return (
-    <article className={styles.contextCard}>
+    <ShowcaseExampleCard role="article" className={styles.contextCard}>
       <Text as="strong" profile={profiles.caption}>
         {name}
       </Text>
       <Text as="p" profile={profiles.caption} className={styles.note}>
         This host is unavailable in the active design system.
       </Text>
-    </article>
+    </ShowcaseExampleCard>
   );
 }
 
@@ -280,7 +272,6 @@ export default function BadgeShowcase() {
   const { manifest } = useShowcase();
   const { global, segment, theme } = useKiskadee();
   const profiles = useShowcaseTextProfiles();
-  const canonicalSurfaces = useCanonicalCardSurfaces();
   const available = Boolean(manifest?.components?.badge);
   const buttonAvailable = Boolean(manifest?.components?.button);
   const chipAvailable = Boolean(manifest?.components?.chip);
@@ -290,19 +281,11 @@ export default function BadgeShowcase() {
   const [scale, setScale] = useState<BadgeScale>('s:md:1');
   const [radius, setRadius] = useState<Extract<RadiusMode, 'square' | 'rounded' | 'pill'>>('pill');
   const [separation, setSeparation] = useState<BadgeSeparation>('none');
-  const [surfaceContext, setSurfaceContext] = useState<SurfaceContext>('onSubtle');
+  const { surfaceContext } = useShowcaseBackground();
   const [isSimplified, setIsSimplified] = useState(true);
   const [shadow, setShadow] = useState(false);
   const [count, setCount] = useState(3);
-  const onVividSupported = supportsManifestSurfaceContext(
-    manifest?.components?.badge,
-    String(segment ?? 'default'),
-    theme,
-    'onVivid'
-  );
-  const activeSurface = canonicalSurfaces.tones.find(
-    (surface) => surface.contentSurfaceContext === surfaceContext
-  );
+  const { cardSurface: activeSurface } = useShowcaseBackground();
   const activeSurfaceIsDark = activeSurface
     ? isDarkSurfaceColor(activeSurface.resolvedColor)
     : false;
@@ -340,12 +323,6 @@ export default function BadgeShowcase() {
   const metadataButtonAvailable = metadataButtonEmphases.every((level) =>
     Boolean(metadataButtonState?.primary?.[level]?.rest)
   );
-
-  useEffect(() => {
-    if (!onVividSupported && surfaceContext === 'onVivid') {
-      setSurfaceContext('onSubtle');
-    }
-  }, [onVividSupported, surfaceContext]);
 
   useEffect(() => {
     if (!shadowSupported && shadow) setShadow(false);
@@ -396,13 +373,7 @@ export default function BadgeShowcase() {
             value={radius}
             onValueChange={(value) => setRadius(value as typeof radius)}
           />
-          <ShowcaseSegmentedControl
-            label="Surface context"
-            options={surfaceContexts}
-            value={surfaceContext}
-            onValueChange={(value) => setSurfaceContext(value as SurfaceContext)}
-            disabled={!onVividSupported}
-          />
+
           <ShowcaseBooleanControl
             label="Separation ring"
             checked={separation === 'ring'}
@@ -477,11 +448,10 @@ export default function BadgeShowcase() {
             </Text>
             {activeSurface ? (
               <SurfaceContextProvider value={surfaceContext}>
-                <div
+                <ShowcaseExampleCard
                   className={`${styles.metadataSurface} ${
                     activeSurfaceIsDark ? styles.metadataSurfaceDark : ''
                   }`}
-                  style={{ backgroundColor: activeSurface.resolvedColor }}
                 >
                   <Text as="strong" profile={profiles.caption}>
                     {activeSurface.label} / {surfaceContext}
@@ -494,7 +464,11 @@ export default function BadgeShowcase() {
                         );
 
                         return (
-                          <article className={styles.intentCard} key={itemIntent}>
+                          <ShowcaseExampleCard
+                            role="article"
+                            className={styles.intentCard}
+                            key={itemIntent}
+                          >
                             <Text as="strong" profile={profiles.caption}>
                               {itemIntent}
                             </Text>
@@ -554,7 +528,7 @@ export default function BadgeShowcase() {
                                 </div>
                               ))}
                             </div>
-                          </article>
+                          </ShowcaseExampleCard>
                         );
                       })}
                     </div>
@@ -564,7 +538,7 @@ export default function BadgeShowcase() {
                       system.
                     </Text>
                   )}
-                </div>
+                </ShowcaseExampleCard>
               </SurfaceContextProvider>
             ) : (
               <Text as="p" role="status" profile={profiles.caption} className={styles.note}>
@@ -642,7 +616,7 @@ export default function BadgeShowcase() {
               Showcase fixtures and do not follow the icon-family selector.
             </Text>
             <div className={styles.ownershipGrid}>
-              <article className={styles.ownershipCard}>
+              <ShowcaseExampleCard role="article" className={styles.ownershipCard}>
                 <Text as="strong" profile={profiles.caption}>
                   Contained Marks
                 </Text>
@@ -658,8 +632,8 @@ export default function BadgeShowcase() {
                     </Badge.Mark>
                   ))}
                 </div>
-              </article>
-              <article className={styles.ownershipCard}>
+              </ShowcaseExampleCard>
+              <ShowcaseExampleCard role="article" className={styles.ownershipCard}>
                 <Text as="strong" profile={profiles.caption}>
                   Fluent full-bleed artworks
                 </Text>
@@ -676,7 +650,7 @@ export default function BadgeShowcase() {
                     </Badge.Mark>
                   ))}
                 </div>
-              </article>
+              </ShowcaseExampleCard>
             </div>
             <div className={styles.matrix}>
               <ScaleRow
@@ -796,7 +770,7 @@ export default function BadgeShowcase() {
             </Text>
             <div className={styles.contextGrid}>
               {buttonAvailable ? (
-                <article className={styles.contextCard}>
+                <ShowcaseExampleCard role="article" className={styles.contextCard}>
                   <Text as="strong" profile={profiles.caption}>
                     Button
                   </Text>
@@ -860,13 +834,13 @@ export default function BadgeShowcase() {
                       </Button.Badge>
                     </Button>
                   </div>
-                </article>
+                </ShowcaseExampleCard>
               ) : (
                 <UnavailableHost name="Button" />
               )}
 
               {chipAvailable ? (
-                <article className={styles.contextCard}>
+                <ShowcaseExampleCard role="article" className={styles.contextCard}>
                   <Text as="strong" profile={profiles.caption}>
                     Chip
                   </Text>
@@ -888,23 +862,23 @@ export default function BadgeShowcase() {
                       </Chip.Content>
                     </Chip>
                   </div>
-                </article>
+                </ShowcaseExampleCard>
               ) : (
                 <UnavailableHost name="Chip" />
               )}
 
               {dropdownAvailable ? (
-                <article className={styles.contextCard}>
+                <ShowcaseExampleCard role="article" className={styles.contextCard}>
                   <Text as="strong" profile={profiles.caption}>
                     Dropdown.EndText
                   </Text>
                   <BadgeDropdownExample />
-                </article>
+                </ShowcaseExampleCard>
               ) : (
                 <UnavailableHost name="Dropdown" />
               )}
 
-              <article className={styles.contextCard}>
+              <ShowcaseExampleCard role="article" className={styles.contextCard}>
                 <Text as="strong" profile={profiles.caption}>
                   Synthetic profile fixtures
                 </Text>
@@ -1048,7 +1022,7 @@ export default function BadgeShowcase() {
                 <Text as="p" profile={profiles.caption} className={styles.note}>
                   Local 512 x 512 WebP fixture; this is not an Avatar component contract.
                 </Text>
-              </article>
+              </ShowcaseExampleCard>
             </div>
           </section>
         </div>

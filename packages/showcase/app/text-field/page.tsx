@@ -21,6 +21,7 @@ import {
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseControlField,
   ShowcaseControlGrid,
@@ -145,11 +146,12 @@ function ExampleBlock({
   surface: TextFieldSurface;
   title: string;
 }) {
+  const Surface = surface === 'default' ? ShowcaseExampleCard : 'section';
   return (
-    <section className={getSurfaceClassName(s.exampleBlock, surface)}>
+    <Surface className={getSurfaceClassName(s.exampleBlock, surface)}>
       <h3>{title}</h3>
       <div className={s.fieldStack}>{children}</div>
-    </section>
+    </Surface>
   );
 }
 
@@ -253,10 +255,6 @@ export default function TextFieldPage() {
       : surface === 'primary'
         ? primarySurface.color
         : backgroundToneByKey.get(surface)?.resolvedColor;
-  const pageBackgroundColor =
-    surface === 'gray' || surface === 'light-primary'
-      ? '#ffffff'
-      : (backgroundToneByKey.get('gray')?.resolvedColor ?? '#f5f5f5');
   const pageStyle = {
     '--text-field-surface-primary': primarySurface.color,
     '--text-field-card-surface': selectedSurfaceColor ?? '#ffffff'
@@ -302,22 +300,6 @@ export default function TextFieldPage() {
     if (!isDarkSurface(surface) || supportsDarkSurfaces) return;
     setSurface('default');
   }, [supportsDarkSurfaces, surface]);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const previousRouteBackground = root.style.getPropertyValue('--showcase-route-background');
-
-    root.style.setProperty('--showcase-route-background', pageBackgroundColor);
-
-    return () => {
-      if (previousRouteBackground) {
-        root.style.setProperty('--showcase-route-background', previousRouteBackground);
-        return;
-      }
-
-      root.style.removeProperty('--showcase-route-background');
-    };
-  }, [pageBackgroundColor]);
 
   const handleSurfaceChange = (value: string) => {
     const nextSurface = value as TextFieldSurface;
@@ -403,6 +385,7 @@ export default function TextFieldPage() {
       setInteractiveSubmitState('idle');
     }
   );
+  const InteractiveSurface = surface === 'default' ? ShowcaseExampleCard : 'div';
   const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
   const getStaticStandardLabelOffset = (placement: TextFieldLabelPlacement) =>
     placement === 'inline' ? undefined : labelOffset;
@@ -629,7 +612,7 @@ export default function TextFieldPage() {
 
       <section className={`${s.section} ${s.previewSection}`}>
         <h3>Interactive</h3>
-        <div className={interactivePanelClassName}>
+        <InteractiveSurface className={interactivePanelClassName}>
           <form className={s.interactiveForm} noValidate onSubmit={handleInteractiveSubmit}>
             <Controller
               control={interactiveFormControl}
@@ -696,7 +679,7 @@ export default function TextFieldPage() {
               </p>
             ) : null}
           </form>
-        </div>
+        </InteractiveSurface>
       </section>
 
       <TextFieldAutocompleteExample />

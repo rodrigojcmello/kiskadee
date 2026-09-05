@@ -27,7 +27,9 @@ export type SwitchRuntimeMotionEffectResult = {
 export type SwitchRuntimeMotionThumbProps = {
   activationMotion: SwitchActivationMotion;
   children?: ReactNode;
-  controlState: boolean;
+  semanticControlState: boolean;
+  isControlled: boolean;
+  onDragStart?: () => void;
   disabled?: boolean;
   interactionLocked?: boolean;
   readOnly?: boolean;
@@ -110,7 +112,9 @@ export function resolveSwitchRuntimeMotionEffect(
 export function SwitchRuntimeMotionThumb({
   activationMotion,
   children,
-  controlState,
+  semanticControlState: controlState,
+  isControlled,
+  onDragStart,
   disabled,
   interactionLocked,
   readOnly,
@@ -169,6 +173,13 @@ export function SwitchRuntimeMotionThumb({
 
   const handlePointerIntent = useCallback(
     (event: PointerEvent<HTMLSpanElement>) => {
+      if (event.type === 'pointercancel') {
+        isDraggingRef.current = false;
+        pointerIntentRef.current = null;
+        setDragPreviewControlState(null);
+        animateThumbTo(selectedTarget);
+        return;
+      }
       if (!canDrag) {
         pointerIntentRef.current = null;
         return;
@@ -211,7 +222,14 @@ export function SwitchRuntimeMotionThumb({
 
       pointerIntent.moved = true;
     },
-    [canDrag, dragControls, requestSuppressNextClick]
+    [
+      canDrag,
+      dragControls,
+      requestSuppressNextClick,
+      setDragPreviewControlState,
+      animateThumbTo,
+      selectedTarget
+    ]
   );
 
   useEffect(() => {
@@ -288,13 +306,14 @@ export function SwitchRuntimeMotionThumb({
       onDragStart={() => {
         if (!canDrag) return;
         isDraggingRef.current = true;
+        onDragStart?.();
         dragStartControlStateRef.current = controlState;
         setDragPreviewControlState(null);
         latestDragControlStateRef.current = controlState;
         animationControlsRef.current?.stop();
       }}
       onDrag={() => {
-        if (!canDrag) return;
+        if (!canDrag || !isDraggingRef.current) return;
 
         const constrainedOffset = clamp(thumbX.get(), dragMin, dragMax);
         if (constrainedOffset !== thumbX.get()) {
@@ -316,10 +335,10 @@ export function SwitchRuntimeMotionThumb({
         ) {
           latestDragControlStateRef.current = extremityControlState;
           setDragPreviewControlState(extremityControlState);
-          setControlState(extremityControlState);
         }
       }}
       onDragEnd={() => {
+        if (!isDraggingRef.current) return;
         if (!canDrag) {
           isDraggingRef.current = false;
           setDragPreviewControlState(null);
@@ -338,7 +357,13 @@ export function SwitchRuntimeMotionThumb({
         latestDragControlStateRef.current = nextControlState;
         setControlState(nextControlState);
         setDragPreviewControlState(null);
-        animateThumbTo(resolveThumbTarget(nextControlState, thumbTranslation, inlineDirection));
+        animateThumbTo(
+          resolveThumbTarget(
+            isControlled ? controlState : nextControlState,
+            thumbTranslation,
+            inlineDirection
+          )
+        );
       }}
     >
       {children}

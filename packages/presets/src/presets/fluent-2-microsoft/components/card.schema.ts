@@ -33,20 +33,18 @@ type StateRecipe = {
 
 type IntentRecipe = {
   lowest: StateRecipe;
-  low: StateRecipe;
   medium: StateRecipe;
-  high?: StateRecipe;
   highest?: StateRecipe;
 };
 
 type CardPaletteRecipe = {
   track: ThemeShortcut;
   boxColor: {
-    neutral: IntentRecipe;
+    neutral: IntentRecipe & { low: StateRecipe };
     primary: IntentRecipe;
   };
   borderColor: {
-    neutral: IntentRecipe;
+    neutral: IntentRecipe & { low: StateRecipe };
     primary: IntentRecipe;
   };
 };
@@ -90,28 +88,21 @@ const LIGHT_RECIPE = {
   boxColor: {
     neutral: {
       lowest: {
-        rest: lightTransparent,
-        hover: n(2),
-        pressed: n(7),
-        selected: n(5),
-        disabled: n(3)
-      },
-      low: {
         rest: lightCap(),
         hover: n(2),
         pressed: n(7),
         selected: n(5),
         disabled: n(3)
       },
-      medium: {
+      low: {
         rest: n(1),
         hover: n(3),
         pressed: n(8),
         selected: n(6),
         disabled: n(3)
       },
-      high: {
-        rest: n(2),
+      medium: {
+        rest: n(3),
         hover: n(4),
         pressed: n(9),
         selected: n(7),
@@ -120,13 +111,6 @@ const LIGHT_RECIPE = {
     },
     primary: {
       lowest: {
-        rest: lightTransparent,
-        hover: p(4),
-        pressed: p(8),
-        selected: p(6),
-        disabled: n(3)
-      },
-      low: {
         rest: lightCap(),
         hover: n(2),
         pressed: n(7),
@@ -151,20 +135,18 @@ const LIGHT_RECIPE = {
   },
   borderColor: {
     neutral: {
-      lowest: transparentBorder(lightTransparent, n(16)),
-      low: {
+      lowest: {
         rest: n(10),
         hover: n(12),
         pressed: n(18),
         selected: n(16),
         disabled: n(7)
       },
-      medium: transparentBorder(lightTransparent, n(16)),
-      high: transparentBorder(lightTransparent, n(16))
+      low: transparentBorder(lightTransparent, n(16)),
+      medium: transparentBorder(lightTransparent, n(16))
     },
     primary: {
-      lowest: transparentBorder(lightTransparent, n(16)),
-      low: {
+      lowest: {
         rest: p(50),
         hover: p(55),
         pressed: p(75),
@@ -182,27 +164,20 @@ const DARK_RECIPE = {
   boxColor: {
     neutral: {
       lowest: {
-        rest: darkTransparent,
-        hover: n(16),
-        pressed: n(10),
-        selected: n(12),
-        disabled: n(3)
-      },
-      low: {
         rest: n(9),
         hover: n(20),
         pressed: n(6),
         selected: n(16),
         disabled: n(3)
       },
-      medium: {
+      low: {
         rest: n(6),
         hover: n(12),
         pressed: n(3),
         selected: n(10),
         disabled: n(3)
       },
-      high: {
+      medium: {
         rest: n(3),
         hover: n(9),
         pressed: n(1),
@@ -211,13 +186,6 @@ const DARK_RECIPE = {
     },
     primary: {
       lowest: {
-        rest: darkTransparent,
-        hover: p(9),
-        pressed: p(6),
-        selected: p(7),
-        disabled: n(3)
-      },
-      low: {
         rest: n(9),
         hover: n(20),
         pressed: n(6),
@@ -242,19 +210,17 @@ const DARK_RECIPE = {
   },
   borderColor: {
     neutral: {
-      lowest: transparentBorder(darkTransparent, n(50)),
-      low: {
+      lowest: {
         rest: n(45),
         hover: n(50),
         selected: n(50),
         disabled: n(22)
       },
-      medium: transparentBorder(darkTransparent, n(50)),
-      high: transparentBorder(darkTransparent, n(50))
+      low: transparentBorder(darkTransparent, n(50)),
+      medium: transparentBorder(darkTransparent, n(50))
     },
     primary: {
-      lowest: transparentBorder(darkTransparent, n(50)),
-      low: {
+      lowest: {
         rest: p(35),
         hover: p(40),
         pressed: p(14),
@@ -300,17 +266,14 @@ function createCardContentSurfaceContext(themeName: ThemeName) {
   const recipe: CardPaletteRecipe = CARD_RECIPES[themeName];
   const createContext = () => ({
     neutral: {
-      lowest: { rest: 'inherit' as const },
+      lowest: { rest: 'onSubtle' as const },
       low: { rest: 'onSubtle' as const },
       medium: { rest: 'onSubtle' as const },
-      high: { rest: 'onSubtle' as const },
       ...(recipe.boxColor.neutral.highest ? { highest: { rest: 'onSubtle' as const } } : undefined)
     },
     primary: {
-      lowest: { rest: 'inherit' as const },
-      low: { rest: 'onSubtle' as const },
+      lowest: { rest: 'onSubtle' as const },
       medium: { rest: 'onSubtle' as const },
-      ...(recipe.boxColor.primary.high ? { high: { rest: 'onSubtle' as const } } : undefined),
       ...(recipe.boxColor.primary.highest ? { highest: { rest: 'onVivid' as const } } : undefined)
     }
   });
@@ -324,24 +287,24 @@ function createCardContentSurfaceContext(themeName: ThemeName) {
 const CANONICAL_CARD_SURFACES = {
   default: {
     light: [
+      { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
       { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
       { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
       { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
     ],
     dark: [
+      { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
       { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
       { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
       { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
     ],
     darker: [
+      { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
       { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
       { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
+      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
       { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' },
       { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onSubtle' }
     ]
@@ -401,18 +364,13 @@ function createCardPalette(
             lowest: stateMap(recipe.borderColor.neutral.lowest),
             low: stateMap(recipe.borderColor.neutral.low),
             medium: stateMap(recipe.borderColor.neutral.medium),
-            high: stateMap(recipe.borderColor.neutral.high!),
             ...(recipe.borderColor.neutral.highest
               ? { highest: stateMap(recipe.borderColor.neutral.highest) }
               : undefined)
           },
           primary: {
             lowest: stateMap(recipe.borderColor.primary.lowest),
-            low: stateMap(recipe.borderColor.primary.low),
             medium: stateMap(recipe.borderColor.primary.medium),
-            ...(recipe.borderColor.primary.high
-              ? { high: stateMap(recipe.borderColor.primary.high!) }
-              : undefined),
             ...(recipe.borderColor.primary.highest
               ? { highest: stateMap(recipe.borderColor.primary.highest) }
               : undefined)
@@ -423,16 +381,13 @@ function createCardPalette(
             lowest: contextualBoundary(false),
             low: contextualBoundary(false),
             medium: contextualBoundary(false),
-            high: contextualBoundary(false),
             ...(recipe.borderColor.neutral.highest
               ? { highest: contextualBoundary(false) }
               : undefined)
           },
           primary: {
             lowest: contextualBoundary(false),
-            low: contextualBoundary(false),
             medium: contextualBoundary(false),
-            ...(recipe.borderColor.primary.high ? { high: contextualBoundary(false) } : undefined),
             ...(recipe.borderColor.primary.highest
               ? { highest: contextualBoundary(true) }
               : undefined)
@@ -445,18 +400,13 @@ function createCardPalette(
         lowest: stateMap(recipe.boxColor.neutral.lowest),
         low: stateMap(recipe.boxColor.neutral.low),
         medium: stateMap(recipe.boxColor.neutral.medium),
-        high: stateMap(recipe.boxColor.neutral.high!),
         ...(recipe.boxColor.neutral.highest
           ? { highest: stateMap(recipe.boxColor.neutral.highest) }
           : undefined)
       },
       primary: {
         lowest: stateMap(recipe.boxColor.primary.lowest),
-        low: stateMap(recipe.boxColor.primary.low),
         medium: stateMap(recipe.boxColor.primary.medium),
-        ...(recipe.boxColor.primary.high
-          ? { high: stateMap(recipe.boxColor.primary.high!) }
-          : undefined),
         ...(recipe.boxColor.primary.highest
           ? { highest: stateMap(recipe.boxColor.primary.highest) }
           : undefined)

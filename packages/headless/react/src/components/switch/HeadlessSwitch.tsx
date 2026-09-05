@@ -53,6 +53,8 @@ export type SwitchRootProps = SwitchRootLabelProps & {
   inputProps?: SwitchInputProps;
   inputRef?: Ref<HTMLInputElement>;
   controlState?: boolean;
+  /** Visual-only selection projection; never changes input semantics. */
+  visualControlState?: boolean;
   defaultControlState?: boolean;
   onControlStateChange?: (controlState: boolean) => void;
   status?: SwitchStatus;
@@ -167,6 +169,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
     inputProps,
     inputRef,
     controlState: controlStateProp,
+    visualControlState,
     defaultControlState,
     onControlStateChange,
     status,
@@ -196,7 +199,7 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
 
   const slotProps = useMemo<SwitchSlotProps>(() => {
     const stateClassName = switchStateClassName({
-      controlState,
+      controlState: visualControlState ?? controlState,
       status,
       focused,
       disabled,
@@ -224,7 +227,16 @@ const SwitchRoot = forwardRef<HTMLLabelElement, SwitchRootProps>(function Switch
         className: classNames.e6
       }
     };
-  }, [classNames, controlState, disabled, focused, focusVisible, readOnly, status]);
+  }, [
+    classNames,
+    controlState,
+    visualControlState,
+    disabled,
+    focused,
+    focusVisible,
+    readOnly,
+    status
+  ]);
 
   const contextValue = useMemo<SwitchContextValue>(
     () => ({
