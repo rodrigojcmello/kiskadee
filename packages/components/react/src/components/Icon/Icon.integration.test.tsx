@@ -60,6 +60,42 @@ afterEach(() => {
 });
 
 describe('styled Icon family composition', () => {
+  it('switches inherited paint without changing glyph attributes or accessibility', () => {
+    const context: KiskadeeContextValue = {
+      ...kiskadeeContext,
+      classesMap: {
+        icon: { e1: { s: { 'md:1': 'size' }, c: { s: { neutral: { m: 'own-color' } } } } }
+      }
+    };
+    function Example({ inherit }: { inherit: boolean }) {
+      return (
+        <KiskadeeContext.Provider value={context}>
+          <Icon label="Artwork" {...(inherit ? { foreground: 'inherit' as const } : {})}>
+            <svg aria-hidden="true" fill="none" stroke="currentColor">
+              <path fill="currentColor" d="M0 0h1v1z" />
+              <path fill="#123456" d="M1 1h1v1z" />
+            </svg>
+          </Icon>
+        </KiskadeeContext.Provider>
+      );
+    }
+    const result = render(<Example inherit={false} />);
+    expect(result.getByRole('img', { name: 'Artwork' }).className).toContain('own-color');
+    result.rerender(<Example inherit />);
+    const root = result.getByRole('img', { name: 'Artwork' });
+    expect(root.className).not.toContain('own-color');
+    expect(root.className).toContain('size');
+    expect(root.hasAttribute('foreground')).toBe(false);
+    expect(root.querySelector('svg')?.getAttribute('fill')).toBe('none');
+    expect(root.querySelector('svg')?.getAttribute('stroke')).toBe('currentColor');
+    expect([...root.querySelectorAll('path')].map((path) => path.getAttribute('fill'))).toEqual([
+      'currentColor',
+      '#123456'
+    ]);
+    result.rerender(<Example inherit={false} />);
+    expect(root.className).toContain('own-color');
+  });
+
   it('keeps standalone accessibility semantics outside the family glyph', () => {
     const result = renderWithKiskadee(
       <Icon label="Search">

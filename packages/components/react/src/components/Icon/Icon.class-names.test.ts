@@ -21,6 +21,20 @@ const e1 = {
 };
 
 describe('Icon class-name resolver', () => {
+  it.each([
+    'onSubtle',
+    'onVivid'
+  ] as const)('omits only palette classes when inheriting in %s', (surfaceContext) => {
+    const classes = resolveIconClassNames({
+      e1,
+      classNames: { e1: 'custom' },
+      foreground: 'inherit',
+      scale: 's:lg:4',
+      surfaceContext
+    });
+    expect(classes.e1).toBe('glyph-decoration glyph-48 custom k-icn k-icn-e1');
+  });
+
   it('resolves the default 20px neutral/onSubtle medium branch', () => {
     const classes = resolveIconClassNames({ e1, classNames: {} });
 

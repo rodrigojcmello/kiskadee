@@ -9,7 +9,7 @@ import type { IconClassesMap, IconProps } from './Icon.types.ts';
 export type { IconClassesMap, IconElementName, IconProps, IconVisualProps } from './Icon.types.ts';
 
 export const Icon = forwardRef<HTMLSpanElement, IconProps>(function Icon(
-  { classNames = {}, scale, intent, surfaceContext, children, ...headlessProps },
+  { classNames = {}, scale, intent, surfaceContext, foreground, children, ...headlessProps },
   ref
 ) {
   const { classesMap } = useKiskadee();
@@ -24,10 +24,11 @@ export const Icon = forwardRef<HTMLSpanElement, IconProps>(function Icon(
         e1: iconClassesMap?.e1,
         classNames,
         scale,
+        foreground,
         intent,
         surfaceContext: resolvedSurfaceContext
       }),
-    [classNames, iconClassesMap?.e1, intent, resolvedSurfaceContext, scale]
+    [classNames, foreground, iconClassesMap?.e1, intent, resolvedSurfaceContext, scale]
   );
 
   return (

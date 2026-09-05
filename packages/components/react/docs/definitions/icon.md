@@ -72,6 +72,24 @@ Component slots do not nest a semantic Icon. For example, `Button.Icon` may cont
 Monochrome glyphs use `currentColor`; the generated `textColor` on `e1` or the parent component
 controls their paint. Fixed brand paint remains asset-owned.
 
+`foreground="inherit"` opts out of the Icon palette, following the same CSS-color inheritance
+approach as Text. Omit it to preserve the existing `intent`/`surfaceContext` color selection.
+In inheritance mode those two props are excluded by the type contract: the ancestor owns color
+and its surface-relative strength. Scale, decorations, custom classes, and accessibility remain
+unchanged. No new Schema value, generated artifact, Provider, or browser color lookup is needed.
+
+```tsx
+<Text as="div" profile="caption" emphasis="low">
+  <Icon decorative foreground="inherit"><CustomGlyph /></Icon>
+  <Text profile="caption" foreground="inherit">Not published</Text>
+</Text>
+```
+
+SVG artwork must use `fill="currentColor"` or `stroke="currentColor"` where inherited paint is
+desired. Icon does not rewrite SVG attributes or force fill on descendants: `fill="none"`, fixed
+colors, gradients, and multicolor logos remain intact. Explicit consumer color styles/classes can
+still override CSS inheritance. This option does not add an independent Icon emphasis axis.
+
 The component containing an icon owns any background, padding, corner treatment, and contrast
 strategy around that slot. Those concerns never move into the family adapter.
 

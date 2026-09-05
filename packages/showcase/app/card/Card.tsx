@@ -604,14 +604,19 @@ export function Card() {
                             />
                           </KCard>
                         ) : (
-                          <div className={s.emptyPosition}>
-                            <Icon decorative>
+                          <Text
+                            as="div"
+                            profile={profiles.caption}
+                            emphasis="lowest"
+                            className={s.emptyPosition}
+                          >
+                            <Icon decorative foreground="inherit">
                               <SubtractAlt />
                             </Icon>
-                            <Text as="span" profile={profiles.caption} emphasis="lowest">
+                            <Text as="span" profile={profiles.caption} foreground="inherit">
                               Not published
                             </Text>
-                          </div>
+                          </Text>
                         )}
                       </article>
                     );
