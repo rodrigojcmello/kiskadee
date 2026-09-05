@@ -32,7 +32,8 @@ function useCardClassNames(
   > & {
     status?: CardStatus | 'rest';
     shadow?: CardProps['shadow'] | CardActionProps['shadow'];
-    preserveBorderWithShadow?: CardProps['preserveBorderWithShadow'];
+    preserveBorderWithShadow?: CardActionProps['preserveBorderWithShadow'];
+    border?: boolean;
   },
   options: { action: boolean }
 ) {
@@ -45,6 +46,7 @@ function useCardClassNames(
     intent = DEFAULT_CARD_INTENT,
     surfaceContext: explicitSurfaceContext,
     shadow,
+    border,
     preserveBorderWithShadow
   } = props;
   const { cardClassesMap, options: artifactOptions } = useCardArtifactConfig();
@@ -60,6 +62,7 @@ function useCardClassNames(
         status: statusProp,
         radius,
         shadow,
+        border,
         preserveBorderWithShadow,
         emphasis,
         intent,
@@ -74,6 +77,7 @@ function useCardClassNames(
       statusProp,
       radius,
       shadow,
+      border,
       preserveBorderWithShadow,
       emphasis,
       intent,
@@ -89,7 +93,7 @@ const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref)
     className,
     classNames,
     radius,
-    preserveBorderWithShadow,
+    border,
     shadow,
     emphasis,
     intent,
@@ -105,7 +109,7 @@ const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref)
       classNames,
       radius,
       shadow,
-      preserveBorderWithShadow,
+      border,
       emphasis,
       intent,
       surfaceContext

@@ -141,6 +141,24 @@ The global focus ring remains the accessibility affordance.
 
 ### Kiskadee Ambient Surface Adaptation
 
+### Independent static border (2026-09-05)
+
+This user-approved **Kiskadee extension** supersedes the availability restriction in the
+historical mapping below, without changing surfaces or interactive border deltas.
+Every published combination now provides a Rest border recipe. Non-vivid-producing Cards
+reuse their theme's existing Neutral/Primary Lowest border locator. Primary Highest reuses
+the approved physical white cap at 15% alpha in both consumed contexts. No new source color
+or tonal mapping is introduced.
+
+`options.border` defaults are true only for Lowest onSubtle and Primary Highest onVivid.
+The map is authored explicitly by segment, theme, context, intent and emphasis for readability;
+replacing the former generated boolean map does not change any defaults or source recipes.
+All other published defaults are false. Static Card can override the default independently
+of shadow. CardAction keeps the previous Rest visibility and all existing state declarations;
+the build represents an off Rest with a transparent atomic border class. Transparent RGB
+channels are immaterial to paint. The historical onVivid behavior below describes defaults,
+not the newly available manual recipes.
+
 The inspected Fluent Card source does not define a complete Card-on-vivid matrix. Kiskadee adds an
 explicit `onVivid` input palette so the Card can preserve its own surface identity while adapting
 the Rest boundary to the surrounding semantic surface.
@@ -185,7 +203,7 @@ current Kiskadee Card contract the closest representation is:
 
 - use `neutral.low` for the base/outline family;
 - keep the schema border on `neutral.low` so the outline reading is available;
-- use `preserveBorderWithShadow={false}` when a raised Filled Card should rely
+- use `border={false}` on static Card when a raised Filled Card should rely
   on shadow instead of a visible border;
 - use `neutral.lowest` for the no-surface/no-border rest treatment.
 

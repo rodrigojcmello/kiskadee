@@ -18,7 +18,7 @@ export function ShowcaseExampleCard({
       ? background.cardSurface
       : background.surfaces.find((item) => item.contentSurfaceContext === context);
   if (!surface) {
-    const { shadow, radius, preserveBorderWithShadow, ...contentProps } = props;
+    const { shadow, radius, border, ...contentProps } = props;
     return <div {...contentProps} />;
   }
   const [intent, emphasis] = surface.key.split('.') as [CardIntent, ComponentEmphasis];

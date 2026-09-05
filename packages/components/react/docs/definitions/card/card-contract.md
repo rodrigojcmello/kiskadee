@@ -36,8 +36,8 @@ Card visuals are selected through the normal Kiskadee component axes:
   `square`; `pill` is outside the current Card contract.
 - `shadow`: static or stateful elevation, depending on component and schema
   support.
-- `preserveBorderWithShadow`: local React composition prop that controls whether
-  a Card keeps its border when a shadow is active.
+- `border`: static Card visibility override, independent of emphasis and shadow.
+- `preserveBorderWithShadow`: CardAction-only legacy shadow composition option.
 
 `Card.shadow` accepts `boolean | ElementSizeValue`. A boolean chooses the
 component default shadow behavior; an explicit size value selects a static
@@ -50,13 +50,28 @@ component's stateful shadow recipe.
 
 Card borders and shadows are separate visual concerns.
 
-By default, a preset may define both border and shadow styling. Consumers can
-set `preserveBorderWithShadow={false}` when a raised Card should drop the
-border and rely on elevation instead.
+Static `Card.border` omitted follows the preset's combination-specific default;
+`true` enables the available recipe and `false` hides border paint without changing
+width, padding, content context or dimensions. Shadow remains independent.
 
-This border removal is a composition prop, not a schema axis. It exists because
-border preservation is a local rendering choice for the Card instance, while the
-schema still owns the generated border and shadow tokens.
+```tsx
+<Card />
+<Card border={false} />
+<Card border />
+<Card border={false} shadow />
+<Card border shadow />
+```
+
+The schema owns defaults in `options.border[segment][theme][surfaceContext][intent][emphasis]`.
+Colors stay in palettes, width in scales and style in decorations. Builder publishes
+Rest recipe classes and boolean defaults in the palette-local `b` bucket. React only
+selects classes; it never computes a border color. Presets without this capability
+keep their existing recipe; `border` cannot manufacture an unpublished stroke.
+
+Static Card no longer accepts `preserveBorderWithShadow`: replace suppression with
+`border={false}`. For preservation, omit `border` to retain the preset default rather
+than enabling previously invisible recipes. CardAction retains its API and state
+maps, including its old Rest visibility and optional suppression with shadow.
 
 ## CardAction State
 

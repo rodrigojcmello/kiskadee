@@ -23,8 +23,8 @@ import { joinClassNames } from '../../shared/class-resolution/classNames.ts';
 import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
+import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useIsomorphicLayoutEffect } from '../../shared/utils/useIsomorphicLayoutEffect.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
@@ -240,7 +240,12 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
       <SurfaceContextProvider value="onSubtle">
         <DropdownPresence>
           {({ forceMount, render }) => (
-            <HeadlessDropdown.Content {...props} ref={ref} forceMount={forceMount} render={render} />
+            <HeadlessDropdown.Content
+              {...props}
+              ref={ref}
+              forceMount={forceMount}
+              render={render}
+            />
           )}
         </DropdownPresence>
       </SurfaceContextProvider>

@@ -370,6 +370,25 @@ export type StructuralUtilityProjectionClassMapJSON = Partial<
 
 // Types describing the JSON artifact produced by web-builder (classNamesMap.json)
 export type ClassNameByElementJSON = {
+  // Card Rest border: recipe class, unpainted class, and preset activation default.
+  b?: Partial<
+    Record<
+      SurfaceContextBucket,
+      Record<
+        string,
+        Partial<
+          Record<
+            keyof ColorClasses,
+            {
+              on: string;
+              off: string;
+              default: boolean;
+            }
+          >
+        >
+      >
+    >
+  >;
   // d = decorations, e = effects, s = scales, t = typography profiles, w = width scales,
   // p = structural utility projections, c = colors (with hh/h/m/l/ll sub-fields),
   // l = control states

@@ -412,7 +412,27 @@ function createCardPalette(
           : undefined)
       }
     },
-    borderColor
+    borderColor: Object.fromEntries(
+      Object.entries(borderColor).map(([intent, levels]) => [
+        intent,
+        Object.fromEntries(
+          Object.entries(levels).map(([emphasis, states]) => [
+            emphasis,
+            {
+              ...states,
+              rest: resolveColor(
+                c,
+                segmentName,
+                recipe.track,
+                intent === 'primary' && emphasis === 'highest'
+                  ? onVividBoundary
+                  : recipe.borderColor[intent as 'neutral' | 'primary'].lowest.rest
+              )
+            }
+          ])
+        )
+      ])
+    )
   };
 }
 
@@ -429,6 +449,40 @@ export function createFluent2MicrosoftCardSchema({
       }
     },
     options: {
+      border: {
+        default: {
+          light: {
+            onSubtle: {
+              neutral: { lowest: true, low: false, medium: false },
+              primary: { lowest: true, medium: false, highest: false }
+            },
+            onVivid: {
+              neutral: { lowest: false, low: false, medium: false },
+              primary: { lowest: false, medium: false, highest: true }
+            }
+          },
+          dark: {
+            onSubtle: {
+              neutral: { lowest: true, low: false, medium: false },
+              primary: { lowest: true, medium: false, highest: false }
+            },
+            onVivid: {
+              neutral: { lowest: false, low: false, medium: false },
+              primary: { lowest: false, medium: false, highest: true }
+            }
+          },
+          darker: {
+            onSubtle: {
+              neutral: { lowest: true, low: false, medium: false, highest: false },
+              primary: { lowest: true, medium: false, highest: false }
+            },
+            onVivid: {
+              neutral: { lowest: false, low: false, medium: false, highest: false },
+              primary: { lowest: false, medium: false, highest: true }
+            }
+          }
+        }
+      },
       canonicalSurfaces: CANONICAL_CARD_SURFACES
     },
     effects: {

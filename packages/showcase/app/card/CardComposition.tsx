@@ -72,7 +72,13 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
   return (
     <Card intent="neutral" emphasis="low" radius={radius}>
       <div className={s.compositionGrid}>
-        <Card intent="neutral" emphasis="lowest" radius={radius} className={s.compositionSidebar}>
+        <Card
+          intent="neutral"
+          emphasis="lowest"
+          border={false}
+          radius={radius}
+          className={s.compositionSidebar}
+        >
           <div className={s.compositionSettings}>
             <Text profile={profiles.groupTitle}>Preferences</Text>
             {manifest?.components?.switch ? (

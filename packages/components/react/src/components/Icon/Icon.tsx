@@ -1,8 +1,8 @@
 import { Icon as HeadlessIcon } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
+import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { resolveIconClassNames } from './Icon.class-names.ts';
 import type { IconClassesMap, IconProps } from './Icon.types.ts';
 

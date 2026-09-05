@@ -1,3 +1,4 @@
+import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
 import type {
   CardIntent,
   ColorProperty,
@@ -8,7 +9,6 @@ import type {
   SurfaceContextPalette,
   ThemeMode
 } from '../types/colors/colors.types.ts';
-import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
 import {
   CardIntentKeys,
   componentEmphasisBuckets,
@@ -73,6 +73,7 @@ export type CardCanonicalSurface = {
 };
 
 export type CardOptions<TSegmentName extends SegmentName = never> = {
+  border?: CardBorderDefaults<TSegmentName>;
   canonicalSurfaces?: Partial<
     Record<
       TSegmentName | 'default' | 'dynamic',
@@ -80,6 +81,17 @@ export type CardOptions<TSegmentName extends SegmentName = never> = {
     >
   >;
 };
+
+type CardBorderIntentDefaults = Partial<
+  Record<CardIntent, Partial<Record<ComponentEmphasis, boolean>>>
+>;
+type CardBorderContextDefaults = Partial<Record<SurfaceContext, CardBorderIntentDefaults>>;
+export type CardBorderDefaults<TSegmentName extends string = string> = Partial<
+  Record<
+    TSegmentName | 'default' | 'dynamic',
+    Partial<Record<ThemeMode, CardBorderContextDefaults>>
+  >
+>;
 
 type ElementContractRules = {
   decorations?: readonly string[];
@@ -90,7 +102,7 @@ type ElementContractRules = {
 
 const CARD_COMPONENT_KEYS = ['contentSurfaceContext', 'effects', 'options', 'elements'] as const;
 const CARD_COMPONENT_EFFECT_KEYS = ['shadow'] as const;
-const CARD_COMPONENT_OPTION_KEYS = ['canonicalSurfaces'] as const;
+const CARD_COMPONENT_OPTION_KEYS = ['canonicalSurfaces', 'border'] as const;
 const CARD_CANONICAL_SURFACE_KEYS = ['intent', 'emphasis', 'contentSurfaceContext'] as const;
 const CARD_SHADOW_ELEMENT_KEYS = ['e1'] as const;
 const CARD_SHADOW_RECIPE_KEYS = ['fixedLevels', 'kind', 'states'] as const;
@@ -357,6 +369,69 @@ function validateComponentOptions(
   }
 
   validateAllowedKeys(value, CARD_COMPONENT_OPTION_KEYS, path, issues);
+  if (value.border !== undefined) {
+    const root = isRecord(elements) && isRecord(elements.e1) ? elements.e1 : {};
+    const visit = (entry: unknown, keys: string[], depth: number): void => {
+      const entryPath = `${path}.border.${keys.join('.')}`;
+      if (depth === 5) {
+        if (typeof entry !== 'boolean') issues.push(`${entryPath}: expected boolean`);
+        const [segment, theme, context, intent, emphasis] = keys;
+        const read = (value: unknown, names: string[]): unknown =>
+          names.reduce<unknown>(
+            (current, key) => (isRecord(current) ? current[key] : undefined),
+            value
+          );
+        for (const property of ['boxColor', 'borderColor']) {
+          if (
+            read(root.palettes, [segment, theme, context, property, intent, emphasis, 'rest']) ===
+            undefined
+          ) {
+            issues.push(`${entryPath}: referenced ${property} Rest recipe is missing`);
+          }
+        }
+        const borderRest = read(root.palettes, [
+          segment,
+          theme,
+          context,
+          'borderColor',
+          intent,
+          emphasis,
+          'rest'
+        ]);
+        if (borderRest !== undefined && typeof borderRest !== 'string') {
+          issues.push(
+            `${entryPath}: border Rest must be a direct color, not a parent-state reference`
+          );
+        }
+        const width = read(root, ['scales', 'borderWidth']);
+        if (
+          !(typeof width === 'number'
+            ? width > 0
+            : isRecord(width) && Object.values(width).some((v) => typeof v === 'number' && v > 0))
+        ) {
+          issues.push(`${entryPath}: positive borderWidth is required`);
+        }
+        const style = read(root, ['decorations', 'borderStyle']);
+        if (!style || style === 'none' || style === 'hidden')
+          issues.push(`${entryPath}: visible borderStyle is required`);
+        return;
+      }
+      if (!isRecord(entry)) {
+        issues.push(`${entryPath}: expected object`);
+        return;
+      }
+      const allowed = [
+        undefined,
+        CARD_THEME_KEYS,
+        surfaceContexts,
+        Object.keys(CardIntentKeys),
+        Object.keys(componentEmphasisBuckets)
+      ][depth];
+      if (allowed) validateAllowedKeys(entry, allowed, entryPath, issues);
+      for (const [key, child] of Object.entries(entry)) visit(child, [...keys, key], depth + 1);
+    };
+    visit(value.border, [], 0);
+  }
 
   if (value.canonicalSurfaces !== undefined) {
     validateCanonicalSurfaces(

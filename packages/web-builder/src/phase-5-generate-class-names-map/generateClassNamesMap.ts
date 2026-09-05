@@ -1,4 +1,5 @@
 import type {
+  CardBorderDefaults,
   ClassNameByElementJSON,
   ColorClasses,
   ComponentClassNameMapJSON,
@@ -147,6 +148,7 @@ export function generateClassNamesMapSplit(
   shortenMap: ShortenCssClassNames,
   toneMetadataByPalette: ToneMetadataByPalette,
   options?: {
+    cardBorderDefaults?: CardBorderDefaults;
     webStyleEmissionPolicy?: WebStyleEmissionPolicy;
     structuralUtilityProjectionRegistry?: WebStructuralUtilityProjectionRegistry;
   } & WebStyleIdentityOptimizationOptions
@@ -401,6 +403,31 @@ export function generateClassNamesMapSplit(
 
                     // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
                     for (const tone of tones) {
+                      const borderDefault =
+                        componentName === 'card' && elementName === 'e1'
+                          ? options?.cardBorderDefaults?.[segmentName]?.[
+                              themeName as 'light' | 'dark' | 'darker'
+                            ]?.[surfaceContext]?.[sem as 'neutral' | 'primary']?.[tone]
+                          : undefined;
+                      if (borderDefault !== undefined && styleKey.startsWith('borderColor__')) {
+                        const contextBucket = surfaceContextBuckets[surfaceContext];
+                        elemRecord.b ??= {};
+                        const borders = elemRecord.b;
+                        borders[contextBucket] ??= {};
+                        const intents = borders[contextBucket];
+                        intents[sem] ??= {};
+                        const levels = intents[sem];
+                        const offClass = resolveClassName('borderColor__#00000000');
+                        if (offClass.startsWith('borderColor__')) {
+                          throw new Error('Card border suppression class was not emitted.');
+                        }
+                        levels[componentEmphasisBuckets[tone]] = {
+                          on: shortenedClass,
+                          off: offClass,
+                          default: borderDefault
+                        };
+                        continue;
+                      }
                       getOrCreateSet(emphasisSets, tone).add(shortenedClass);
                     }
 

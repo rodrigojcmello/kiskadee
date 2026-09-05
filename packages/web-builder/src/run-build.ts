@@ -176,13 +176,17 @@ export async function runBuild(): Promise<void> {
     // Phase 1 - Convert Element Schema to Style Keys
     const { styleKeys, toneMetadataByPalette, typographyBuild } =
       convertElementSchemaToStyleKeys(schema);
+    const additionalCoreStyleKeys = [
+      ...(typographyBuild?.additionalCoreStyleKeys ?? []),
+      ...(schema.components.card?.options?.border ? ['borderColor__#00000000'] : [])
+    ];
     // console.log('phase 1', { name: schema.name, styleKeys: JSON.stringify(styleKeys, null, 2) });
 
     // Phase 2 - Map style key usage
     const styleKeyUsage: StyleKeyUsageMap = mapStyleKeyUsage(styleKeys, {
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
       collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED,
-      additionalStyleKeys: typographyBuild?.additionalCoreStyleKeys
+      additionalStyleKeys: additionalCoreStyleKeys
     });
     // console.log('phase  2', { name: schema.name, styleKeyUsage });
 
@@ -209,7 +213,7 @@ export async function runBuild(): Promise<void> {
       webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
       collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED,
       breakpoints: schema.breakpoints,
-      additionalCoreStyleKeys: typographyBuild?.additionalCoreStyleKeys
+      additionalCoreStyleKeys
     });
     // console.log('phase 4', { name: schema.name, cssGenerated });
 
@@ -219,6 +223,7 @@ export async function runBuild(): Promise<void> {
       shortenCssClassNameMap,
       toneMetadataByPalette,
       {
+        cardBorderDefaults: schema.components.card?.options?.border,
         webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
         collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
       }

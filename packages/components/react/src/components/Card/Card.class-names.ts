@@ -4,10 +4,12 @@ import {
   type ClassNameByElementJSON,
   type ComponentEmphasis,
   stateActivator as cn,
+  componentEmphasisBuckets,
   type EffectClassBucketJSON,
   type ElementSizeValue,
   type RadiusMode,
-  type SurfaceContext
+  type SurfaceContext,
+  surfaceContextBuckets
 } from '@kiskadee/core';
 import type { CardClassNames as HeadlessCardClassNames } from '@kiskadee/react-headless';
 import {
@@ -80,6 +82,7 @@ export function resolveCardClassNames({
   radius,
   shadow,
   preserveBorderWithShadow,
+  border,
   emphasis,
   intent,
   surfaceContext,
@@ -92,7 +95,8 @@ export function resolveCardClassNames({
   status: CardStatus | 'rest';
   radius: CardVisualProps['radius'];
   shadow: CardVisualProps['shadow'] | CardActionVisualProps['shadow'];
-  preserveBorderWithShadow: CardVisualProps['preserveBorderWithShadow'];
+  preserveBorderWithShadow?: CardActionVisualProps['preserveBorderWithShadow'];
+  border?: boolean;
   emphasis: CardVisualProps['emphasis'];
   intent: CardVisualProps['intent'];
   surfaceContext: SurfaceContext;
@@ -106,7 +110,19 @@ export function resolveCardClassNames({
 
   const e1RadiusClassName = resolveRadiusClassName(e1, DEFAULT_CARD_SCALE, radiusMode);
   const shadowEffect = resolveCardShadowClassName(e1?.e?.h, shadow);
-  const hideBorderWithShadow = shadowEffect.length > 0 && preserveBorderWithShadow === false;
+  const borderRecipe =
+    e1?.b?.[surfaceContextBuckets[surfaceContext]]?.[resolvedIntent]?.[
+      componentEmphasisBuckets[resolvedEmphasis]
+    ];
+  const borderEnabled = action ? borderRecipe?.default : (border ?? borderRecipe?.default);
+  const borderClass = borderRecipe
+    ? borderEnabled
+      ? borderRecipe.on
+      : borderRecipe.off
+    : undefined;
+  const hideBorderWithShadow = action
+    ? shadowEffect.length > 0 && preserveBorderWithShadow === false
+    : border === false;
 
   const projectedStatus =
     status !== 'rest'
@@ -119,6 +135,7 @@ export function resolveCardClassNames({
       e1:
         join(
           collectElementClasses(e1, resolvedEmphasis, resolvedIntent, surfaceContext),
+          borderClass,
           e1?.s?.all,
           e1?.s?.[scaleKey],
           e1RadiusClassName,

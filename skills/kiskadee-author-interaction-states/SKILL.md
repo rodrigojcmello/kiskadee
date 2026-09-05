@@ -98,7 +98,8 @@ node skills/kiskadee-author-interaction-states/scripts/audit-palette-state-delta
 pnpm --filter @kiskadee/web-builder build
 ```
 
-Do not add or modify unit tests unless the user explicitly requests them.
+Create or update focused tests as a normal part of an authorized implementation or fix.
+Do not request separate permission for test changes. Keep read-only reviews non-mutating.
 
 ## Handoff
 

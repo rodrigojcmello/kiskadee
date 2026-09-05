@@ -463,7 +463,7 @@ function SliderExampleCard({
       intent={surface.cardIntent}
       emphasis={surface.cardEmphasis}
       shadow={cardShadow}
-      preserveBorderWithShadow={false}
+      border={false}
     >
       {title ? <h4 className={s.cardTitle}>{title}</h4> : null}
       <div className={s.cardContent}>{children}</div>

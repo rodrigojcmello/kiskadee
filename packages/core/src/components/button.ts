@@ -1,5 +1,5 @@
-import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
+import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
   Color,

@@ -2,8 +2,8 @@ import './Progress.structural.scss';
 import { HeadlessProgress } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
-import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
+import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
 import { resolveProgressClassNames } from './Progress.class-names.ts';
 import type { ProgressClassesMap, ProgressProps } from './Progress.types.ts';
 

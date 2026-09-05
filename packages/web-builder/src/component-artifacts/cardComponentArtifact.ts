@@ -1,4 +1,10 @@
-import type { CardCanonicalSurface, Schema, SolidColor, ThemeMode } from '@kiskadee/core';
+import type {
+  CardBorderDefaults,
+  CardCanonicalSurface,
+  Schema,
+  SolidColor,
+  ThemeMode
+} from '@kiskadee/core';
 
 export const CARD_COMPONENT_ARTIFACT_PATH = 'components/card.kiskadee.json';
 
@@ -14,6 +20,7 @@ export type CardCanonicalSurfacesPayload = Record<
 export type CardComponentArtifactJSON = {
   component: 'card';
   options: {
+    border?: CardBorderDefaults;
     canonicalSurfaces: CardCanonicalSurfacesPayload;
   };
 };
@@ -57,11 +64,11 @@ function resolveCanonicalSurfaceRest({
 export function buildCardComponentArtifact(schema: Schema): CardComponentArtifactJSON | null {
   const cardSchema = schema.components?.card;
   const canonicalSurfaces = cardSchema?.options?.canonicalSurfaces;
-  if (!cardSchema || !canonicalSurfaces) return null;
+  if (!cardSchema || (!canonicalSurfaces && !cardSchema.options?.border)) return null;
 
   const resolvedCanonicalSurfaces: CardCanonicalSurfacesPayload = {};
 
-  for (const [segment, themes] of Object.entries(canonicalSurfaces)) {
+  for (const [segment, themes] of Object.entries(canonicalSurfaces ?? {})) {
     if (!themes) continue;
 
     const resolvedThemes: Partial<Record<ThemeMode, ResolvedCardCanonicalSurface[]>> = {};
@@ -88,11 +95,13 @@ export function buildCardComponentArtifact(schema: Schema): CardComponentArtifac
     }
   }
 
-  if (Object.keys(resolvedCanonicalSurfaces).length === 0) return null;
+  if (Object.keys(resolvedCanonicalSurfaces).length === 0 && !cardSchema.options?.border)
+    return null;
 
   return {
     component: 'card',
     options: {
+      ...(cardSchema.options?.border ? { border: cardSchema.options.border } : {}),
       canonicalSurfaces: resolvedCanonicalSurfaces
     }
   };

@@ -5,7 +5,7 @@
 }
 
 .k-crd-b {
-  /* Composition: Keep border geometry while shadow owns the visual separation */
+  /* Composition: Suppress border paint without changing the generated geometry. */
   border-color: transparent !important;
 }
 

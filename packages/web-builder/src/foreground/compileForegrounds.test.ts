@@ -127,14 +127,11 @@ describe('expandElementForeground', () => {
   it('projects only Rest when a global profile also publishes control states', () => {
     const stateful = structuredClone(foregrounds) as any;
     stateful.profiles.neutral.standard.palettes.default.light.onSubtle.medium.hover = '#222222';
-    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.medium.pending =
-      '#333333b3';
+    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.medium.pending = '#333333b3';
 
     expect(
-      expandElementForeground(
-        { neutral: { family: 'neutral', profile: 'standard' } },
-        stateful
-      ).default?.light?.onSubtle?.textColor?.neutral?.medium
+      expandElementForeground({ neutral: { family: 'neutral', profile: 'standard' } }, stateful)
+        .default?.light?.onSubtle?.textColor?.neutral?.medium
     ).toEqual({ rest: '#333333' });
   });
 });

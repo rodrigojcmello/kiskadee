@@ -5,6 +5,18 @@ Card components.
 
 ## Elements
 
+## Independent static border
+
+`options.border[segment][theme][surfaceContext][intent][emphasis]` publishes boolean defaults.
+Every declared combination must have an existing box Rest, border Rest, positive border width
+and visible border style. The map controls activation only; colors remain in `e1.palettes`.
+Presets without the map retain legacy behavior. Emphasis suggests the default rather than
+restricting the availability of a border. Static consumers may override visibility independently
+of shadow. CardAction retains the declared default as its legacy Rest visibility and preserves
+its interaction deltas; this extension does not redesign interaction-state recipes.
+
+## Surface ownership
+
 Card uses `e1` as the root surface element.
 
 `e1` owns the Card's visible container styling:

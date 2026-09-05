@@ -173,9 +173,7 @@ describe('foreground profile contract', () => {
                         neutral: {
                           medium: {
                             rest: fg('neutral.standard.light.onSubtle.medium'),
-                            hover: fg.parentState(
-                              'neutral.standard.light.onSubtle.medium.hover'
-                            )
+                            hover: fg.parentState('neutral.standard.light.onSubtle.medium.hover')
                           }
                         }
                       }

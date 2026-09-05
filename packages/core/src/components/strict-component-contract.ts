@@ -56,7 +56,12 @@ export function validateComponentScales(
       }
       validateContractKeys(scaleMap, options.radiusModes ?? [], `${path}.${property}`, issues);
       for (const [radius, radiusValue] of Object.entries(scaleMap)) {
-        validateScaleValue(radiusValue, options.allowedScales, `${path}.${property}.${radius}`, issues);
+        validateScaleValue(
+          radiusValue,
+          options.allowedScales,
+          `${path}.${property}.${radius}`,
+          issues
+        );
       }
       continue;
     }

@@ -50,6 +50,9 @@ function mergeClassElementMaps(
     if (paletteElement.c) {
       mergedElement.c = mergeClassMapNode(coreElement.c, paletteElement.c);
     }
+    if (paletteElement.b) {
+      mergedElement.b = mergeClassMapNode(coreElement.b, paletteElement.b);
+    }
 
     for (const key of ['d', 'e', 's', 'w', 'l', 'rr', 'rp', 'rs']) {
       if (mergedElement[key] === undefined && paletteElement[key] !== undefined) {

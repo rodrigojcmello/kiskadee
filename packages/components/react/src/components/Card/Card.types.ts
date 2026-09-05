@@ -27,8 +27,6 @@ export type CardBaseVisualProps = {
   surfaceContext?: SurfaceContext;
   /** Border radius mode. Card v1 supports rounded and square only. */
   radius?: CardRadiusMode;
-  /** Keep the schema border visible when shadow is active. Defaults to true. */
-  preserveBorderWithShadow?: boolean;
   /**
    * Emphasis level for the card colors.
    * Card v1 starts with `medium`; other buckets render only when the active preset defines them.
@@ -39,11 +37,15 @@ export type CardBaseVisualProps = {
 };
 
 export type CardVisualProps = CardBaseVisualProps & {
+  /** Override border visibility; omitted follows the preset for the current surface. */
+  border?: boolean;
   /** Opt into shadow, or choose a fixed global shadow level for static cards. */
   shadow?: boolean | ElementSizeValue;
 };
 
 export type CardActionVisualProps = CardBaseVisualProps & {
+  /** Keep the schema border visible when shadow is active. Defaults to true. */
+  preserveBorderWithShadow?: boolean;
   /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected'. */
   status?: CardStatus;
   /** Opt into the stateful CardAction shadow recipe. */

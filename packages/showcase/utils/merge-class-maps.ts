@@ -4,7 +4,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const hasElementClassShape = (value: Record<string, unknown>): boolean => {
-  const elementKeys = ['d', 'e', 's', 'w', 'c', 'l', 'rr', 'rp', 'rs'];
+  const elementKeys = ['d', 'e', 's', 'w', 'c', 'b', 'l', 'rr', 'rp', 'rs'];
   return elementKeys.some((key) => key in value);
 };
 
@@ -33,6 +33,7 @@ const mergeElementMaps = (
       mergedEl.c = { ...cElC, ...pElC };
     }
     if (pEl.cs !== undefined) mergedEl.cs = pEl.cs;
+    if (pEl.b !== undefined) mergedEl.b = pEl.b;
     if (mergedEl.d === undefined && pEl.d !== undefined) mergedEl.d = pEl.d;
     if (mergedEl.e === undefined && pEl.e !== undefined) mergedEl.e = pEl.e;
     if (mergedEl.s === undefined && pEl.s !== undefined) mergedEl.s = pEl.s;

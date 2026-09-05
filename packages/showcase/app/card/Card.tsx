@@ -1,5 +1,7 @@
 'use client';
 
+import { SubtractAlt } from '@carbon/icons-react';
+
 import {
   type ButtonIntent,
   type CardIntent,
@@ -16,9 +18,11 @@ import {
   type SolidColor
 } from '@kiskadee/core';
 import {
+  Icon,
   Button as KButton,
   Card as KCard,
   CardAction as KCardAction,
+  Switch,
   Text,
   useCardArtifactConfig,
   useKiskadee,
@@ -26,6 +30,7 @@ import {
 } from '@kiskadee/react-components';
 import type { ManifestComponent, ManifestComponentState } from '@kiskadee/web-builder/types';
 import React from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
   ShowcaseControlGrid,
@@ -267,24 +272,29 @@ function CardContent({
 function SectionHeading({
   id,
   title,
-  description
+  description,
+  actions
 }: {
   id: string;
   title: string;
   description: string;
+  actions?: React.ReactNode;
 }) {
   const profiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
   return (
-    <header className={s.sectionHeader}>
-      <Text as="h3" id={id} profile={profiles.sectionTitle}>
-        {title}
-      </Text>
-      {showDescriptions ? (
-        <Text as="p" profile={profiles.body} className={s.description}>
-          {description}
+    <header className={s.sectionHeadingRow}>
+      <div className={s.sectionHeader}>
+        <Text as="h3" id={id} profile={profiles.sectionTitle}>
+          {title}
         </Text>
-      ) : null}
+        {showDescriptions ? (
+          <Text as="p" profile={profiles.body} className={s.description}>
+            {description}
+          </Text>
+        ) : null}
+      </div>
+      {actions}
     </header>
   );
 }
@@ -341,7 +351,7 @@ export function Card() {
   const { cardClassesMap } = useCardArtifactConfig();
   const background = useShowcaseBackground();
   const profiles = useShowcaseTextProfiles();
-  const { showDescriptions } = useShowcaseDisplayPreferences();
+  const { showDescriptions, setShowDescriptions } = useShowcaseDisplayPreferences();
   const cardManifest = manifest?.components?.card;
   const buttonManifest = manifest?.components?.button;
   const cardState = getManifestComponentState(
@@ -367,6 +377,16 @@ export function Card() {
   const [interactionLocked, setInteractionLocked] = React.useState(true);
   const [radius, setRadius] = React.useState<CardRadiusMode>(defaultRadius);
   const [staticShadow, setStaticShadow] = React.useState<CardShadowOption>('off');
+  const [surfaceBorders, setSurfaceBorders] = React.useState(true);
+  const [surfaceShadows, setSurfaceShadows] = React.useState(false);
+  const surfaceSwitchAvailable = Boolean(
+    getManifestComponentState(
+      manifest?.components?.switch,
+      segment,
+      theme,
+      background.cardSurface?.contentSurfaceContext ?? background.surfaceContext
+    )?.neutral?.medium?.rest
+  );
   const [cardActionShadow, setCardActionShadow] = React.useState(false);
   const [preserveBorderWithShadow, setPreserveBorderWithShadow] = React.useState(true);
   const resolvedStaticShadow = staticShadow === 'off' ? undefined : staticShadow;
@@ -472,6 +492,11 @@ export function Card() {
         </ShowcaseControlGrid>
         <ShowcaseControlStack>
           <ShowcaseBooleanControl
+            label="Descrições"
+            checked={showDescriptions}
+            onCheckedChange={setShowDescriptions}
+          />
+          <ShowcaseBooleanControl
             label="Preserve border with shadow"
             checked={preserveBorderWithShadow}
             onCheckedChange={setPreserveBorderWithShadow}
@@ -523,11 +548,33 @@ export function Card() {
             <SectionHeading
               id="card-surfaces"
               title="Surfaces"
+              actions={
+                surfaceSwitchAvailable && background.cardSurface ? (
+                  <ShowcaseExampleCard role="group" aria-label="Surface presentation controls">
+                    <div className={s.controlRow}>
+                      <Switch
+                        id="card-surfaces-borders"
+                        label="Borders"
+                        emphasis="medium"
+                        controlState={surfaceBorders}
+                        onControlStateChange={setSurfaceBorders}
+                      />
+                      <Switch
+                        id="card-surfaces-shadows"
+                        label="Shadows"
+                        emphasis="medium"
+                        controlState={surfaceShadows}
+                        onControlStateChange={setSurfaceShadows}
+                      />
+                    </div>
+                  </ShowcaseExampleCard>
+                ) : undefined
+              }
               description="Read each intent from lowest to highest. The same content makes the preset's fill and border choices easier to compare. Empty positions are not published by this preset."
             />
             {cardSemanticIntentOrder.map((intent) => (
               <div className={s.intentGroup} key={intent}>
-                <Text as="h4" profile={profiles.subsectionTitle}>
+                <Text as="h4" profile={profiles.subsectionTitle} emphasis="low">
                   {cardIntentLabels[intent]}
                 </Text>
                 <div className={s.surfaceGrid}>
@@ -548,21 +595,24 @@ export function Card() {
                             intent={intent}
                             emphasis={emphasis}
                             radius={radius}
-                            shadow={resolvedStaticShadow}
-                            preserveBorderWithShadow={preserveBorderWithShadow}
+                            shadow={surfaceShadows ? (resolvedStaticShadow ?? true) : false}
+                            border={surfaceBorders}
                           >
-                            <CardContent />
+                            <CardContent
+                              title="Title"
+                              body="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                            />
                           </KCard>
                         ) : (
                           <div className={s.emptyPosition}>
-                            <Text as="span" profile={profiles.caption} emphasis="low">
+                            <Icon decorative>
+                              <SubtractAlt />
+                            </Icon>
+                            <Text as="span" profile={profiles.caption} emphasis="lowest">
                               Not published
                             </Text>
                           </div>
                         )}
-                        <Text as="code" profile={profiles.caption} emphasis="low">
-                          {intent}.{emphasis}
-                        </Text>
                       </article>
                     );
                   })}
@@ -653,24 +703,41 @@ export function Card() {
               <SectionHeading
                 id="card-boundaries"
                 title="Border & shadow"
-                description="One surface, three treatments. Preserving a border keeps the preset's existing stroke; it does not add a stroke to a recipe that has none."
+                description="One surface, independent border and shadow. Emphasis suggests the default; the border option overrides visibility without changing the surface."
               />
               <Text as="p" profile={profiles.caption} emphasis="low">
                 {comparisonSample.intent}.{comparisonSample.emphasis} · Shadow {comparisonShadow}
               </Text>
               <div className={s.comparisonGrid}>
                 {[
-                  { title: 'Preset border', shadow: undefined, preserve: true, note: 'Shadow off' },
+                  {
+                    title: 'Preset default',
+                    shadow: undefined,
+                    border: undefined,
+                    note: 'Preset visibility'
+                  },
+                  {
+                    title: 'Surface only',
+                    shadow: undefined,
+                    border: false,
+                    note: 'No border or shadow'
+                  },
+                  {
+                    title: 'Border only',
+                    shadow: undefined,
+                    border: true,
+                    note: 'Available border recipe'
+                  },
                   {
                     title: 'Shadow only',
                     shadow: comparisonShadow,
-                    preserve: false,
+                    border: false,
                     note: 'Existing border hidden'
                   },
                   {
                     title: 'Border + shadow',
                     shadow: comparisonShadow,
-                    preserve: true,
+                    border: true,
                     note: 'Existing border preserved'
                   }
                 ].map((sample) => (
@@ -683,7 +750,7 @@ export function Card() {
                       {...comparisonSample}
                       radius={radius}
                       shadow={sample.shadow}
-                      preserveBorderWithShadow={sample.preserve}
+                      border={sample.border}
                     >
                       <CardContent />
                     </KCard>
@@ -722,7 +789,7 @@ export function Card() {
                               {...comparisonSample}
                               radius={radius}
                               shadow={level.cardShadow}
-                              preserveBorderWithShadow={false}
+                              border={false}
                             >
                               <CardContent title="Elevation" body={level.level} />
                             </KCard>
@@ -812,7 +879,7 @@ export function Card() {
                   className={s.cardSurface}
                   radius={radius}
                   shadow={resolvedStaticShadow}
-                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  border={resolvedStaticShadow && !preserveBorderWithShadow ? false : undefined}
                 >
                   <div className={s.passiveContent}>
                     <CardContent title="Project resources" body="Only the button is interactive." />

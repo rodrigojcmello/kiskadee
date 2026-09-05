@@ -168,4 +168,5 @@ resolved and that `CODE-REVIEW.md` was cleared.
 - Chat responses stay in Portuguese.
 - Code, identifiers, comments, and logs stay in English.
 - Do not implement fixes during a review unless the user explicitly asks.
-- Do not add or modify tests during review unless the user explicitly asks.
+- Keep read-only reviews non-mutating. When fixes are authorized, create or update focused tests
+  without requesting separate permission.
