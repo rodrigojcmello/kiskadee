@@ -31,6 +31,7 @@ import {
 } from '@kiskadee/react-components';
 import type { ManifestComponent, ManifestComponentState } from '@kiskadee/web-builder/types';
 import React from 'react';
+import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
@@ -52,8 +53,6 @@ const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
   { value: 'rounded', label: 'Rounded' },
   { value: 'square', label: 'Square' }
 ];
-
-type CardShadowOption = 'off' | ElementSizeValue;
 
 type CardDemoButtonProfile = {
   emphasis: ComponentEmphasis;
@@ -368,7 +367,6 @@ export function Card() {
     background.surfaceContext
   );
   const isCardAvailable = Boolean(cardManifest);
-  const supportedScales = cardManifest?.scale;
   const defaultRadius: CardRadiusMode = 'rounded';
   const [passiveActivations, setPassiveActivations] = React.useState(0);
   const [selected, setSelected] = React.useState(false);
@@ -377,7 +375,6 @@ export function Card() {
   const [lockedSelected, setLockedSelected] = React.useState(false);
   const [interactionLocked, setInteractionLocked] = React.useState(true);
   const [radius, setRadius] = React.useState<CardRadiusMode>(defaultRadius);
-  const [staticShadow, setStaticShadow] = React.useState<CardShadowOption>('off');
   const [surfacePresentation, setSurfacePresentation] = React.useState<
     { mode: 'auto' } | { mode: 'manual'; border: boolean; shadow: boolean }
   >({ mode: 'auto' });
@@ -390,9 +387,7 @@ export function Card() {
       background.cardSurface?.contentSurfaceContext ?? background.surfaceContext
     )?.neutral?.medium?.rest
   );
-  const [cardActionShadow, setCardActionShadow] = React.useState(false);
   const [preserveBorderWithShadow, setPreserveBorderWithShadow] = React.useState(true);
-  const resolvedStaticShadow = staticShadow === 'off' ? undefined : staticShadow;
   const demoButtonProfile = React.useMemo(
     () => resolveDemoButtonProfile(buttonManifest, buttonState),
     [buttonManifest, buttonState]
@@ -434,33 +429,21 @@ export function Card() {
     semanticSamples.find((sample) => sample.intent === interactionIntent) ??
     semanticSamples[0];
   const comparisonShadow =
-    resolvedStaticShadow ??
-    fixedShadowLevels.find((level) => level === 's:md:1') ??
-    fixedShadowLevels[0];
+    fixedShadowLevels.find((level) => level === 's:md:1') ?? fixedShadowLevels[0];
   const contextSurfaces = ['onSubtle', 'onVivid'].flatMap((context) => {
     const surface = background.surfaces.find((item) => item.contentSurfaceContext === context);
     return surface ? [surface] : [];
   });
 
-  const radiusSelectOptions = React.useMemo(
-    () =>
-      cardRadiusOptions.map((option) => ({
-        ...option,
-        label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
-        disabled: supportedScales ? !supportedScales[option.value] : false
-      })),
-    [supportedScales]
-  );
-  const staticShadowOptions = React.useMemo(
-    () => [
-      { value: 'off', label: 'Off (default)' },
-      ...fixedShadowLevels.map((level) => ({
-        value: level,
-        label: `${shadowLevelLabels[level]} (${level})`
-      }))
-    ],
-    [fixedShadowLevels]
-  );
+  const radiusSelectOptions = cardRadiusOptions.map((option) => {
+    const radiusClasses =
+      option.value === 'rounded' ? cardClassesMap?.e1?.rr : cardClassesMap?.e1?.rs;
+    return {
+      ...option,
+      label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
+      disabled: !(radiusClasses?.all || radiusClasses?.['md:1'])
+    };
+  });
   const cardShadowUsageByLevel = React.useMemo(
     () => buildCardShadowUsageByLevel(global?.components?.card?.effects?.shadow?.e1),
     [global?.components?.card?.effects?.shadow?.e1]
@@ -478,14 +461,11 @@ export function Card() {
     (kind) => shadowDocumentationByKind[kind].length > 0
   );
 
-  React.useEffect(() => {
-    if (staticShadow === 'off') return;
-    if (fixedShadowLevels.includes(staticShadow)) return;
-    setStaticShadow('off');
-  }, [fixedShadowLevels, staticShadow]);
-
   const cardControls = (
     <ShowcaseControlPanel>
+      <ShowcaseControlGroup title="Semantic">
+        <ShowcaseGlobalSemanticControls />
+      </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Appearance">
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
@@ -494,13 +474,6 @@ export function Card() {
             value={radius}
             onValueChange={(value) => setRadius(value as CardRadiusMode)}
             disabled={!isCardAvailable || radiusSelectOptions.length <= 1}
-          />
-          <ShowcaseSelectControl
-            label="Static shadow"
-            options={staticShadowOptions}
-            value={staticShadow}
-            onValueChange={(value) => setStaticShadow(value as CardShadowOption)}
-            disabled={!isCardAvailable || fixedShadowLevels.length === 0}
           />
         </ShowcaseControlGrid>
         <ShowcaseControlStack>
@@ -518,11 +491,6 @@ export function Card() {
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="CardAction">
         <ShowcaseControlStack>
-          <ShowcaseBooleanControl
-            label="Shadow"
-            checked={cardActionShadow}
-            onCheckedChange={setCardActionShadow}
-          />
           <ShowcaseBooleanControl
             label="Interaction locked"
             checked={interactionLocked}
@@ -551,6 +519,7 @@ export function Card() {
         eyebrow="Card"
         title="Controls"
         isAvailable={isCardAvailable}
+        showGlobalControls={false}
       >
         {cardControls}
       </ShowcaseRouteControls>
@@ -630,13 +599,7 @@ export function Card() {
                             intent={intent}
                             emphasis={emphasis}
                             radius={radius}
-                            shadow={
-                              surfaceAuto
-                                ? undefined
-                                : surfaceShadows
-                                  ? (resolvedStaticShadow ?? true)
-                                  : false
-                            }
+                            shadow={surfaceAuto ? undefined : surfaceShadows}
                             border={surfaceAuto ? undefined : surfaceBorders}
                           >
                             <CardContent
@@ -671,7 +634,7 @@ export function Card() {
             <SectionHeading
               id="card-composition"
               title="Composition"
-              description="Inspired by the Fluent UI Preview: base, light neutral, paired tonal surfaces and a vivid region. Real components inherit the context of each Card."
+              description="Inspired by the Fluent UI Preview: base, paired tonal surfaces and a vivid region. Lorem ipsum text inherits the context of each Card."
             />
             <CardComposition radius={radius} />
           </section>
@@ -757,34 +720,24 @@ export function Card() {
               <div className={s.comparisonGrid}>
                 {[
                   {
-                    title: 'Preset default',
-                    shadow: undefined,
-                    border: undefined,
-                    note: 'Preset visibility'
-                  },
-                  {
                     title: 'Surface only',
                     shadow: undefined,
-                    border: false,
-                    note: 'No border or shadow'
+                    border: false
                   },
                   {
                     title: 'Border only',
                     shadow: undefined,
-                    border: true,
-                    note: 'Available border recipe'
+                    border: true
                   },
                   {
                     title: 'Shadow only',
                     shadow: comparisonShadow,
-                    border: false,
-                    note: 'Existing border hidden'
+                    border: false
                   },
                   {
                     title: 'Border + shadow',
                     shadow: comparisonShadow,
-                    border: true,
-                    note: 'Existing border preserved'
+                    border: true
                   }
                 ].map((sample) => (
                   <article className={s.example} key={sample.title}>
@@ -800,9 +753,6 @@ export function Card() {
                     >
                       <CardContent />
                     </KCard>
-                    <Text as="p" profile={profiles.caption} emphasis="low">
-                      {sample.note}
-                    </Text>
                   </article>
                 ))}
               </div>
@@ -836,26 +786,12 @@ export function Card() {
                               radius={radius}
                               shadow={level.cardShadow}
                               border={false}
-                            >
-                              <CardContent title="Elevation" body={level.level} />
-                            </KCard>
+                            />
                           ) : (
                             <Text as="p" profile={profiles.caption} emphasis="low">
                               Global recipe, not exposed by Card.
                             </Text>
                           )}
-                          <Text as="p" profile={profiles.caption} emphasis="low">
-                            {level.layers.length} {level.layers.length === 1 ? 'layer' : 'layers'}
-                            {level.usageLabels.length ? ` · ${level.usageLabels.join(' / ')}` : ''}
-                          </Text>
-                          <Text
-                            as="code"
-                            profile={profiles.caption}
-                            emphasis="low"
-                            className={s.recipeValue}
-                          >
-                            {level.cssValue}
-                          </Text>
                         </article>
                       ))}
                     </div>
@@ -920,13 +856,7 @@ export function Card() {
                 <Text as="h4" profile={profiles.groupTitle}>
                   Passive Card
                 </Text>
-                <KCard
-                  {...interactionSample}
-                  className={s.cardSurface}
-                  radius={radius}
-                  shadow={resolvedStaticShadow}
-                  border={resolvedStaticShadow && !preserveBorderWithShadow ? false : undefined}
-                >
+                <KCard {...interactionSample} className={s.cardSurface} radius={radius}>
                   <div className={s.passiveContent}>
                     <CardContent title="Project resources" body="Only the button is interactive." />
                     {buttonManifest ? (
@@ -953,7 +883,7 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow={cardActionShadow}
+                  shadow
                   preserveBorderWithShadow={preserveBorderWithShadow}
                   controlState={selected}
                   onControlStateChange={setSelected}
@@ -975,7 +905,7 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow={cardActionShadow}
+                  shadow
                   preserveBorderWithShadow={preserveBorderWithShadow}
                   controlState
                 >
@@ -996,7 +926,7 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow={cardActionShadow}
+                  shadow
                   preserveBorderWithShadow={preserveBorderWithShadow}
                   disabled
                 >
@@ -1014,7 +944,7 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow={cardActionShadow}
+                  shadow
                   preserveBorderWithShadow={preserveBorderWithShadow}
                   controlState={lockedSelected}
                   interactionLocked={interactionLocked}

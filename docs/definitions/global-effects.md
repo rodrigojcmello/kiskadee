@@ -256,7 +256,7 @@ For Card, the two public modes are intentionally separate:
 ```tsx
 <Card shadow="s:lg:1" />
 <CardAction shadow />
-<Card shadow="s:lg:1" preserveBorderWithShadow={false} />
+<Card shadow="s:lg:1" border={false} />
 ```
 
 Badge uses a narrower static recipe. A preset may map Rest on the rendered Badge surfaces to one
@@ -268,12 +268,16 @@ The static Card uses a fixed catalog level. CardAction uses the component's
 state recipe and native/projected interaction states. A single element should
 not mix a fixed level and a state recipe at runtime.
 
-Shadow does not remove the Card border by default. Card exposes
-`preserveBorderWithShadow` as a local React composition prop because border and
-shadow can both act as visual separation in product UI. When this prop is
-`false` and a shadow class is actually resolved, Card applies a structural class
-that preserves the schema border width and makes only the border color
-transparent.
+Shadow does not remove the static Card border by default. Static Card uses `border`
+independently of shadow: omit it to follow the preset default, use `false` to hide
+border paint, or `true` to enable the available border recipe. Hiding border paint
+preserves schema border width and dimensions.
+
+`preserveBorderWithShadow` remains a legacy CardAction-only composition prop.
+When it is `false` and a shadow class is resolved, CardAction hides border paint
+without changing the schema border width. It is no longer accepted by static Card.
+See the [Card contract](../../packages/components/react/docs/definitions/card/card-contract.md)
+for the current border and shadow API.
 
 ## Material 3 Google Elevation Mapping
 

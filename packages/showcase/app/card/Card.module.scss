@@ -74,7 +74,9 @@
   min-block-size: 140px;
 }
 
-.surfaceGrid > .example {
+.surfaceGrid > .example,
+.comparisonGrid > .example,
+.shadowGrid > .example {
   grid-template-rows: auto 1fr;
 }
 
@@ -106,10 +108,6 @@
   display: grid;
   justify-items: start;
   gap: 20px;
-}
-
-.recipeValue {
-  overflow-wrap: anywhere;
 }
 
 .controlRow {
@@ -162,6 +160,7 @@
   }
 
   .surfaceGrid,
+  .comparisonGrid,
   .interactionGrid,
   .shadowGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -173,7 +172,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .comparisonGrid,
   .shadowGrid,
   .interactionGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -198,7 +196,7 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  .shadowGrid {
+  .comparisonGrid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
