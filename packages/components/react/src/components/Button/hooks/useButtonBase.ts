@@ -18,9 +18,11 @@ import { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
 
 declare const process: { env: { NODE_ENV?: string } };
 
+const EMPTY_BUTTON_CLASS_NAMES: NonNullable<ButtonProps['classNames']> = {};
+
 export function useButtonCommonProps(props: ButtonProps) {
   const {
-    classNames = {},
+    classNames = EMPTY_BUTTON_CLASS_NAMES,
     status: statusProp = 'rest',
     toggle,
     controlState,
@@ -238,8 +240,7 @@ function resolveButtonAccessibilityState({
     ariaDisabled: ariaDisabledProp
   });
 
-  const ariaPressed =
-    ariaPressedProp ?? (toggle ? (controlState === true ? true : undefined) : undefined);
+  const ariaPressed = ariaPressedProp ?? (toggle ? controlState === true : undefined);
   const visualStatus: ButtonStatus | 'rest' = interactionState.nativeDisabled
     ? 'disabled'
     : interactionState.pending

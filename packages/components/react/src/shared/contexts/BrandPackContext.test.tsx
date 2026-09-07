@@ -49,6 +49,7 @@ function addLoadedStylesheet(stylesheetHref: string): HTMLLinkElement {
   link.rel = 'stylesheet';
   link.href = stylesheetHref;
   link.dataset.kLoaded = 'true';
+  link.integrity = 'sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
   link.dataset.testBrandPack = 'true';
   document.head.appendChild(link);
   return link;
@@ -236,4 +237,44 @@ describe('BrandPackBoundary', () => {
       expect.any(Error)
     );
   });
+});
+
+it('does not trust a loaded stylesheet with incompatible integrity', async () => {
+  const request: BrandPackLoadRequest = {
+    designSystem: 'integrity-retry',
+    pack: 'auth',
+    segment: 'default',
+    theme: 'light',
+    components: ['button']
+  };
+  const href = '/brand-packs/auth/incompatible.css';
+  const existing = addLoadedStylesheet(href);
+  existing.integrity = 'sha256-wrong';
+  const resources = createResources(request, href);
+  render(
+    h(
+      KiskadeeContext.Provider,
+      {
+        value: createContextValue({
+          designSystem: request.designSystem,
+          brandPackLoader: async () => resources
+        })
+      },
+      h(
+        BrandPackBoundary,
+        { pack: 'auth', components: ['button'], fallback: h('span', null, 'waiting') },
+        h('span', null, 'verified')
+      )
+    )
+  );
+  const replacement = await waitFor(() => {
+    const link = document.querySelector<HTMLLinkElement>(`link[href="${href}"]`);
+    expect(link).not.toBeNull();
+    expect(link).not.toBe(existing);
+    return link!;
+  });
+  expect(screen.queryByText('verified')).toBeNull();
+  expect(replacement.integrity).toBe('sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=');
+  replacement.dispatchEvent(new Event('load'));
+  await waitFor(() => expect(screen.getByText('verified')).toBeTruthy());
 });

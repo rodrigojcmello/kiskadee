@@ -5,6 +5,7 @@ import {
   stateActivator as cn,
   type EffectClassBucketJSON,
   type RadiusMode,
+  type SurfaceContext,
   type SwitchActivationMotion,
   type SwitchControlTextVisibility,
   type SwitchIntent,
@@ -63,9 +64,11 @@ export function resolveVariantElements(
 export function resolveIntentClasses(
   element: ClassNameByElementJSON | undefined,
   intent: SwitchIntent,
-  emphasis: ComponentEmphasis | undefined
+  emphasis: ComponentEmphasis | undefined,
+  surfaceContext?: SurfaceContext
 ): string {
   return resolveIntentClassName(element, intent, emphasis, {
+    surfaceContext,
     fallbackIntent: 'neutral',
     useFirstIntentFallback: true,
     emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
@@ -78,6 +81,7 @@ export function elem(
     scale: string;
     intent: SwitchIntent;
     emphasis: ComponentEmphasis | undefined;
+    surfaceContext?: SurfaceContext;
   }
 ): string {
   if (!element) return '';
@@ -86,7 +90,9 @@ export function elem(
     scale: options.scale,
     intent: options.intent,
     emphasis: options.emphasis,
+    surfaceContext: options.surfaceContext,
     intentOptions: {
+      surfaceContext: options.surfaceContext,
       fallbackIntent: 'neutral',
       useFirstIntentFallback: true,
       emphasisFallbackOrder: ['m', 'h', 'hh', 'l', 'll']
@@ -153,10 +159,16 @@ function resolveVisualClassName(
     scale: string;
     intent: SwitchIntent;
     emphasis: ComponentEmphasis | undefined;
+    surfaceContext?: SurfaceContext;
   }
 ): string {
   if (!element) return '';
-  return join(element.d, resolveIntentClasses(element, options.intent, options.emphasis)) ?? '';
+  return (
+    join(
+      element.d,
+      resolveIntentClasses(element, options.intent, options.emphasis, options.surfaceContext)
+    ) ?? ''
+  );
 }
 
 function resolveThumbRadiusClassName(
@@ -180,6 +192,7 @@ function resolveThumbCarrierClassName(options: {
   scale: string;
   intent: SwitchIntent;
   emphasis: ComponentEmphasis | undefined;
+  surfaceContext?: SurfaceContext;
   radius: RadiusMode;
 }): string {
   const elements = options.elements;
@@ -227,6 +240,7 @@ function resolveThumbShrinkVisualClassName(options: {
   scale: string;
   intent: SwitchIntent;
   emphasis: ComponentEmphasis | undefined;
+  surfaceContext?: SurfaceContext;
 }): string {
   const elements = options.elements;
 
@@ -248,6 +262,7 @@ export function resolveSwitchClassNames(options: {
   scale: string;
   intent: SwitchIntent;
   emphasis: ComponentEmphasis | undefined;
+  surfaceContext?: SurfaceContext;
   radius: RadiusMode;
   activationMotion: SwitchActivationMotion;
   labelPosition: SwitchLabelPosition;
@@ -301,6 +316,7 @@ export function resolveSwitchThumbShrinkClassNames(options: {
   scale: string;
   intent: SwitchIntent;
   emphasis: ComponentEmphasis | undefined;
+  surfaceContext?: SurfaceContext;
   radius: RadiusMode;
   activationMotion: SwitchActivationMotion;
   labelPosition: SwitchLabelPosition;

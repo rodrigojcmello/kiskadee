@@ -16,17 +16,17 @@ import {
   useIconFamilyStatus
 } from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useClassMapLoader } from '@/hooks/use-class-map-loader';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
 import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
+import { usePreparedSelection } from '@/hooks/use-prepared-selection';
 import { useRuntimePlatformClasses } from '@/hooks/use-runtime-platform-classes';
-import { useStylesheetManager } from '@/hooks/use-stylesheet-manager';
 import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry';
 import { loadBrandPack } from '@/utils/brand-pack-loader.client';
-import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
+import { loadSelectedComponentArtifact } from '@/utils/component-artifacts.client';
 import { FOLLOW_PRESET_FONT_KEY } from '@/utils/font-family-selection';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
@@ -81,9 +81,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   // 1. Manage selection state (designSystem, segment, theme) and persistence
   const {
-    designSystem,
-    segment,
-    theme,
+    designSystem: requestedDesignSystem,
+    segment: requestedSegment,
+    theme: requestedTheme,
     setDesignSystem,
     setSegment,
     setTheme,
@@ -91,6 +91,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
     availableThemes,
     designSystemKeys
   } = useDesignSystemSelection();
+  const consumedComponents = useRef(new Set<string>());
+  const {
+    prepared,
+    error: selectionError,
+    retry: retrySelection
+  } = usePreparedSelection(
+    {
+      designSystem: requestedDesignSystem,
+      segment: requestedSegment,
+      theme: requestedTheme
+    },
+    consumedComponents.current
+  );
+  const designSystem = prepared?.designSystem ?? requestedDesignSystem;
+  const segment = prepared?.segment ?? requestedSegment;
+  const theme = prepared?.theme ?? requestedTheme;
+  const globalConfig = prepared?.global;
 
   // 2. Load class maps (core + palette) dynamically
   const shouldLoadAggregateClassMap =
@@ -98,26 +115,31 @@ export function Providers({ children }: { children: React.ReactNode }) {
     pathname !== '/slider' &&
     pathname !== '/button' &&
     pathname !== '/card' &&
+    pathname !== '/badge' &&
+    pathname !== '/typography' &&
     pathname !== '/colors' &&
     pathname !== '/icons' &&
     pathname !== '/progress' &&
     pathname !== '/text-field' &&
     !pathname.startsWith('/tabs');
-  const classesMap = useClassMapLoader({
+  const aggregateClassesMap = useClassMapLoader({
     designSystem,
     segment,
     theme,
     enabled: shouldLoadAggregateClassMap
   });
+  const classesMap = useMemo(
+    () => ({ ...aggregateClassesMap, ...prepared?.classMaps }),
+    [aggregateClassesMap, prepared?.classMaps]
+  );
 
   // 3. Load extra resources (background colors) and global metadata
-  const { backgroundsByTheme, globalConfig } = useThemeExtras({
+  const { backgroundsByTheme } = useThemeExtras({
     designSystem,
     segment
   });
 
   // 4. Manage global CSS and stylesheet injection (side effects)
-  useStylesheetManager({ designSystem, segment, theme });
   useGlobalThemeClasses(theme);
   useRuntimePlatformClasses();
 
@@ -184,7 +206,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
     return Object.keys(roles).length > 0 ? roles : undefined;
   }, [fontRoleNames, loadedFontFamilyIds]);
-  const activeManifest = manifest?.key === String(designSystem) ? manifest : undefined;
+  const activeManifest = prepared?.manifest;
   const [iconFamilySelection, setIconFamilySelection] = useState<{
     designSystem: string;
     family?: string;
@@ -217,6 +239,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
   const loadComponentArtifact = useCallback(
     <T,>(componentName: string): Promise<T | undefined> => {
+      consumedComponents.current.add(componentName);
       const artifactPath = (
         activeManifest?.components as
           | Record<string, { artifacts?: { metadata?: string } } | undefined>
@@ -227,23 +250,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
         return Promise.resolve(undefined);
       }
 
-      return loadJsonFromBuild<T | undefined>(`${String(designSystem)}/${artifactPath}`, {
-        required: false,
-        fallback: undefined
-      }).catch((error) => {
-        console.warn(
-          `[showcase] Failed to load component artifact "${componentName}" for "${String(
-            designSystem
-          )}". Falling back to legacy/default config.`,
-          error
-        );
-        return undefined;
-      });
+      return loadSelectedComponentArtifact<T | undefined>(
+        `${String(designSystem)}/${artifactPath}`,
+        activeManifest?.version
+      );
     },
-    [activeManifest?.components, designSystem]
+    [activeManifest?.components, activeManifest?.version, designSystem]
   );
   const loadComponentClassMap = useCallback(
     <T,>(componentName: string, scope: ComponentClassMapScope): Promise<T | undefined> => {
+      consumedComponents.current.add(componentName);
       const classMaps = (
         activeManifest?.components as
           | Record<
@@ -269,39 +285,68 @@ export function Providers({ children }: { children: React.ReactNode }) {
         return Promise.resolve(undefined);
       }
 
-      return loadJsonFromBuild<T | undefined>(`${String(designSystem)}/${artifactPath}`, {
-        required: false,
-        fallback: undefined
-      }).catch((error) => {
-        console.warn(
-          `[showcase] Failed to load component class map "${componentName}" for "${String(
-            designSystem
-          )}". Falling back to aggregate/default classes.`,
-          error
-        );
-        return undefined;
-      });
+      return loadSelectedComponentArtifact<T | undefined>(
+        `${String(designSystem)}/${artifactPath}`,
+        activeManifest?.version
+      );
     },
-    [activeManifest?.components, designSystem]
+    [activeManifest?.components, activeManifest?.version, designSystem]
   );
 
+  const contextValue = useMemo(
+    () => ({
+      classesMap,
+      segment,
+      theme,
+      setSegment,
+      setTheme,
+      designSystem: String(designSystem),
+      setDesignSystem: setShowcaseDesignSystem,
+      artifactVersion: activeManifest?.version ?? undefined,
+      loadComponentArtifact: activeManifest ? loadComponentArtifact : undefined,
+      loadComponentClassMap: activeManifest ? loadComponentClassMap : undefined,
+      brandPackLoader: loadBrandPack,
+      global: globalConfig
+    }),
+    [
+      classesMap,
+      segment,
+      theme,
+      setSegment,
+      setTheme,
+      designSystem,
+      setShowcaseDesignSystem,
+      activeManifest,
+      loadComponentArtifact,
+      loadComponentClassMap,
+      loadBrandPack,
+      globalConfig
+    ]
+  );
+
+  if (!prepared) {
+    return selectionError ? (
+      <div role="alert">
+        Não foi possível carregar o tema.{' '}
+        <button type="button" onClick={retrySelection}>
+          Tentar novamente
+        </button>
+      </div>
+    ) : (
+      <div role="status">Carregando tema…</div>
+    );
+  }
+
   return (
-    <KiskadeeContext.Provider
-      value={{
-        classesMap,
-        segment,
-        theme,
-        setSegment,
-        setTheme,
-        designSystem: String(designSystem),
-        setDesignSystem: setShowcaseDesignSystem,
-        artifactVersion: activeManifest?.version ?? undefined,
-        loadComponentArtifact: activeManifest ? loadComponentArtifact : undefined,
-        loadComponentClassMap: activeManifest ? loadComponentClassMap : undefined,
-        brandPackLoader: loadBrandPack,
-        global: globalConfig
-      }}
-    >
+    <KiskadeeContext.Provider value={contextValue}>
+      {selectionError ? (
+        <div role="alert">
+          Não foi possível trocar o tema.{' '}
+          <button type="button" onClick={retrySelection}>
+            Tentar novamente
+          </button>
+        </div>
+      ) : null}
       <FontFamilyProvider families={fontFamilyDefinitions} roles={fontRoles}>
         <IconFamilyProvider
           families={EAGER_ICON_FAMILIES}

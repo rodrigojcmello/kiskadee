@@ -64,7 +64,7 @@ as the shared adversarial range. Changing Surface Context never hides either the
 Every component route inherits its initial canvas background from `ShowcaseShell`. Button is the
 visual reference: the default is the second distinct canonical `onSubtle` surface in the preset's
 published order, or the first when only one is available. In Fluent Light this is
-`neutral.medium`, the light-gray surface, rather than the white `neutral.low` surface. The same
+`neutral.low`, the light-gray surface, rather than the white `neutral.lowest` surface. The same
 policy resolves the current preset, segment and theme; no light-gray HEX is authored in Showcase.
 An unavailable catalog yields no invented surface or cross-theme color fallback.
 
@@ -118,6 +118,11 @@ horizontal divider and the active mode's swatches. Neither the segmented row nor
 owns another surrounding frame. The description remains below the frame. Both modes share this
 component on desktop and mobile. Showcase chrome styling is not preset specimen styling.
 
+Control legends use a consistent 6px gap before their option container. The Background divider
+spans the frame width; the segmented row keeps its 3px internal inset on every side. Background
+swatches retain their 24px diameter when selected, with a 2px clear offset before the 2px blue
+selection ring. Selection does not enlarge the color sample.
+
 ## Coordinated controls
 
 Theme, Background, and Surface Context remain separate concepts:
@@ -126,14 +131,13 @@ Theme, Background, and Surface Context remain separate concepts:
 - Background selects the route surface from the active catalog.
 - Surface Context selects the component palette intended for the surrounding surface.
 
-Changing Surface Context directly always resets Background to Canonical and selects the first Card
-surface carrying that `contentSurfaceContext`. The exact intent and emphasis are preset-authored;
+Changing Surface Context directly always resets Background to Canonical and selects the shared default Card
+surface for that `contentSurfaceContext` (second distinct subtle surface, first vivid surface). The exact intent and emphasis are preset-authored;
 for example, Fluent may publish Primary Highest while iOS 27 publishes Primary High. This provides
 a predictable return from exploratory stress testing to an approved composition without imposing
 one global emphasis on every design system.
 
-Changing the Background mode also initializes it with the first valid surface for the current
-Surface Context. Selecting a canonical swatch applies its exact published
+Returning to Canonical also uses that shared default for the current Surface Context. Selecting a canonical swatch applies its exact published
 `contentSurfaceContext`. Selecting a stress-test swatch applies a physical-lightness convention:
 light-row tones select `onSubtle`, while vivid- and dark-row tones select `onVivid`. Vivid and dark
 tones remain available in both contexts for intentional testing, but a fresh click restores their
@@ -149,3 +153,8 @@ of the canvas coordinates. Like Button, these Cards use preset borders without a
 the surrounding supported context for their boundary. They publish their authored child context.
 Stress-test mode keeps Switch specimens directly on the chosen canvas so a canonical Card does not
 mask the adversarial input. Explicit surface comparisons on other routes keep their stated purpose.
+
+The Card route hides only the Background picker (mode and swatches), while retaining Surface
+Context and the Shell-owned canvas selection. It inherits the same generated default as other
+routes; it does not supply a route-local color. Returning to On subtle restores the initial
+subtle canvas, while On vivid selects the preset's default vivid surface.

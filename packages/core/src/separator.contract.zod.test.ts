@@ -22,6 +22,40 @@ function palettes(color = '#d1d1d1') {
 }
 
 describe('separator contract', () => {
+  it('accepts optional emphasis but validates its Rest-only state map', () => {
+    const validate = (low: unknown) => {
+      const palette = palettes();
+      return validateSchemaSeparatorsDefinitionContract({
+        profiles: {
+          subtle: {
+            scales: { boxWidth: 1 },
+            palettes: {
+              default: {
+                light: {
+                  onSubtle: {
+                    boxColor: {
+                      neutral: {
+                        ...palette.default.light.onSubtle.boxColor.neutral,
+                        low
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+    };
+    expect(validate({ rest: '#00000014' })).toEqual([]);
+    expect(validate({ hover: '#00000014' })).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('.low.hover: unrecognized state'),
+        expect.stringContaining('.low.rest: required state')
+      ])
+    );
+  });
+
   it('accepts a neutral profile and responsive element references', () => {
     expect(
       validateSchemaSeparatorsDefinitionContract({
@@ -62,7 +96,7 @@ describe('separator contract', () => {
     );
   });
 
-  it('enforces the neutral medium Rest-only palette vocabulary', () => {
+  it('enforces the neutral Rest-only palette vocabulary', () => {
     const issues = validateSchemaSeparatorsDefinitionContract({
       profiles: {
         subtle: {

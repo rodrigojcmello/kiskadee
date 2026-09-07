@@ -256,6 +256,22 @@ const DARKER_RECIPE = {
   }
 } as const satisfies CardPaletteRecipe;
 
+// Light onVivid adapts only the filled surface progression, preserving the onSubtle recipe.
+const LIGHT_ON_VIVID_RECIPE = {
+  ...LIGHT_RECIPE,
+  boxColor: {
+    neutral: {
+      ...LIGHT_RECIPE.boxColor.neutral,
+      low: { rest: n(2), hover: n(4), pressed: n(9), selected: n(7), disabled: n(3) },
+      medium: { rest: n(7), hover: n(8), pressed: n(14), selected: n(12), disabled: n(3) }
+    },
+    primary: {
+      ...LIGHT_RECIPE.boxColor.primary,
+      medium: { rest: p(9), hover: p(14), pressed: p(18), selected: p(16), disabled: n(3) }
+    }
+  }
+} as const satisfies CardPaletteRecipe;
+
 const CARD_RECIPES = {
   light: LIGHT_RECIPE,
   dark: DARK_RECIPE,
@@ -351,7 +367,10 @@ function createCardPalette(
   themeName: ThemeName,
   surfaceContext: SurfaceContext
 ) {
-  const recipe: CardPaletteRecipe = CARD_RECIPES[themeName];
+  const recipe: CardPaletteRecipe =
+    themeName === 'light' && surfaceContext === 'onVivid'
+      ? LIGHT_ON_VIVID_RECIPE
+      : CARD_RECIPES[themeName];
   const stateMap = (stateRecipe: StateRecipe) =>
     createStateMap(c, segmentName, recipe.track, stateRecipe);
   const contextualBoundary = (visible: boolean) =>

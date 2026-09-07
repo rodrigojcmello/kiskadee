@@ -1,5 +1,9 @@
 import type { SchemaSeparators } from '@kiskadee/core';
-import { type Fluent2MicrosoftColorResolver, referenceColor } from './fluent-2-microsoft.color.ts';
+import {
+  absoluteCap,
+  type Fluent2MicrosoftColorResolver,
+  referenceColor
+} from './fluent-2-microsoft.color.ts';
 
 type CreateFluent2MicrosoftSeparatorsArgs = {
   c: Fluent2MicrosoftColorResolver;
@@ -15,9 +19,32 @@ export function createFluent2MicrosoftSeparators({
         palettes: {
           default: {
             light: {
+              onVivid: {
+                boxColor: {
+                  neutral: {
+                    low: {
+                      rest: c.resolve(
+                        'default',
+                        'l',
+                        absoluteCap('primitive.black.v1', 'light', 15)
+                      )
+                    },
+                    medium: {
+                      rest: c.resolve(
+                        'default',
+                        'l',
+                        absoluteCap('primitive.black.v1', 'light', 30)
+                      )
+                    }
+                  }
+                }
+              },
               onSubtle: {
                 boxColor: {
                   neutral: {
+                    low: {
+                      rest: c.resolve('default', 'l', absoluteCap('primitive.black.v1', 'dark', 8))
+                    },
                     medium: {
                       rest: c.resolve(
                         'default',
@@ -30,9 +57,36 @@ export function createFluent2MicrosoftSeparators({
               }
             },
             dark: {
+              onVivid: {
+                boxColor: {
+                  neutral: {
+                    low: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        absoluteCap('primitive.black.v1', 'light', 15)
+                      )
+                    },
+                    medium: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        absoluteCap('primitive.black.v1', 'light', 30)
+                      )
+                    }
+                  }
+                }
+              },
               onSubtle: {
                 boxColor: {
                   neutral: {
+                    low: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        absoluteCap('primitive.black.v1', 'light', 12)
+                      )
+                    },
                     medium: {
                       rest: c.resolve(
                         'default',
@@ -45,9 +99,36 @@ export function createFluent2MicrosoftSeparators({
               }
             },
             darker: {
+              onVivid: {
+                boxColor: {
+                  neutral: {
+                    low: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        absoluteCap('primitive.black.v1', 'light', 15)
+                      )
+                    },
+                    medium: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        absoluteCap('primitive.black.v1', 'light', 30)
+                      )
+                    }
+                  }
+                }
+              },
               onSubtle: {
                 boxColor: {
                   neutral: {
+                    low: {
+                      rest: c.resolve(
+                        'default',
+                        'd',
+                        absoluteCap('primitive.black.v1', 'light', 12)
+                      )
+                    },
                     medium: {
                       rest: c.resolve(
                         'default',

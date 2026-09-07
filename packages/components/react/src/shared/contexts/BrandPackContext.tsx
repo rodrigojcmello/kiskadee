@@ -132,14 +132,20 @@ function sha256HexToIntegrity(sha256: string): string {
 function ensureStylesheet(stylesheetHref: string, stylesheetSha256: string): Promise<void> {
   if (typeof document === 'undefined') return Promise.resolve();
 
-  const cached = stylesheetPromiseCache.get(stylesheetHref);
+  const stylesheetKey = `${stylesheetHref}::${stylesheetSha256}`;
+  const cached = stylesheetPromiseCache.get(stylesheetKey);
   if (cached) return cached;
 
   const promise = new Promise<void>((resolve, reject) => {
-    const existing = Array.from(
+    let existing = Array.from(
       document.head.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
     ).find((link) => link.href === new URL(stylesheetHref, window.location.href).href);
 
+    const integrity = sha256HexToIntegrity(stylesheetSha256);
+    if (existing && existing.integrity !== integrity) {
+      existing.remove();
+      existing = undefined;
+    }
     if (existing?.dataset.kLoaded === 'true' || existing?.sheet) {
       existing.dataset.kLoaded = 'true';
       resolve();
@@ -162,7 +168,7 @@ function ensureStylesheet(stylesheetHref: string, stylesheetSha256: string): Pro
     link.addEventListener(
       'error',
       () => {
-        stylesheetPromiseCache.delete(stylesheetHref);
+        stylesheetPromiseCache.delete(stylesheetKey);
         if (link.dataset.kBrandPack === 'true') link.remove();
         reject(new Error(`Failed to load Kiskadee brand-pack stylesheet: ${stylesheetHref}`));
       },
@@ -172,7 +178,7 @@ function ensureStylesheet(stylesheetHref: string, stylesheetSha256: string): Pro
     if (!existing) document.head.appendChild(link);
   });
 
-  stylesheetPromiseCache.set(stylesheetHref, promise);
+  stylesheetPromiseCache.set(stylesheetKey, promise);
   return promise;
 }
 

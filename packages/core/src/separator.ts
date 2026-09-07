@@ -1,6 +1,7 @@
 import type { BreakpointValue, ElementSizeValue } from './breakpoints.ts';
 import type {
   Color,
+  ComponentEmphasis,
   InteractionState,
   SegmentName,
   SurfaceContextPalette,
@@ -20,7 +21,7 @@ export type SeparatorColorSchema = {
   boxColor: {
     neutral: {
       medium: SeparatorRestStateColorMap;
-    };
+    } & Partial<Record<Exclude<ComponentEmphasis, 'medium'>, SeparatorRestStateColorMap>>;
   };
   borderColor?: never;
   textColor?: never;

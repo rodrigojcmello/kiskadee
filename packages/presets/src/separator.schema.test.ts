@@ -38,6 +38,19 @@ describe('official preset separator recipes', () => {
     });
   });
 
+  it.each([
+    'light',
+    'dark',
+    'darker'
+  ] as const)('publishes Fluent low in both %s surface contexts', (theme) => {
+    const palette = fluent2Microsoft.global?.separators?.profiles.subtle?.palettes.default?.[theme];
+    expect(palette?.onSubtle.boxColor.neutral.low?.rest).toBe(
+      theme === 'light' ? '#00000014' : '#ffffff1f'
+    );
+    expect(palette?.onVivid?.boxColor.neutral.low?.rest).toBe('#ffffff26');
+    expect(palette?.onVivid?.boxColor.neutral.medium.rest).toBe('#ffffff4d');
+  });
+
   it('preserves the iOS Dropdown colors in the shared subtle recipe', () => {
     const subtle = ios27Apple.global?.separators?.profiles.subtle;
 

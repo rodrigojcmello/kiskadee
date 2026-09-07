@@ -8,8 +8,9 @@ import {
 import { useKiskadee } from './KiskadeeContext.tsx';
 
 type ComponentClassMapSnapshot<TClassMap> = {
-  status: 'resolved';
+  status: 'resolved' | 'absent' | 'error';
   classMap: TClassMap | undefined;
+  error?: unknown;
 };
 
 const EMPTY_COMPONENT_CLASS_MAP_SNAPSHOT = { status: 'pending' } as const;
@@ -139,18 +140,26 @@ function subscribeToComponentClassMap<TClassMap>({
   listeners.add(listener);
   componentClassMapListeners.set(cacheKey, listeners);
 
-  if (!componentClassMapSnapshots.has(cacheKey) && !componentClassMapLoads.has(cacheKey)) {
+  if (
+    (!componentClassMapSnapshots.has(cacheKey) ||
+      componentClassMapSnapshots.get(cacheKey)?.status === 'error') &&
+    !componentClassMapLoads.has(cacheKey)
+  ) {
     componentClassMapLoads.add(cacheKey);
 
     const settle = (classMap: TClassMap | undefined) => {
-      componentClassMapSnapshots.set(cacheKey, { status: 'resolved', classMap });
+      componentClassMapSnapshots.set(cacheKey, {
+        status: classMap === undefined ? 'absent' : 'resolved',
+        classMap
+      });
       componentClassMapLoads.delete(cacheKey);
       for (const notify of componentClassMapListeners.get(cacheKey) ?? []) notify();
     };
 
-    const reject = () => {
+    const reject = (error: unknown) => {
       componentClassMapLoads.delete(cacheKey);
-      componentClassMapSnapshots.delete(cacheKey);
+      componentClassMapSnapshots.set(cacheKey, { status: 'error', classMap: undefined, error });
+      for (const notify of componentClassMapListeners.get(cacheKey) ?? []) notify();
     };
 
     void load().then(settle, reject);
@@ -166,6 +175,8 @@ function subscribeToComponentClassMap<TClassMap>({
 export type ComponentClassMapResolution<TClassMap> = {
   classMap: TClassMap | undefined;
   pending: boolean;
+  error: unknown;
+  retry: () => void;
 };
 
 export function useComponentClassMapResolution<TClassMap>(
@@ -233,7 +244,7 @@ export function useComponentClassMapResolution<TClassMap>(
 
       const captureResolvedSnapshot = () => {
         const snapshot = getComponentClassMapSnapshot<TClassMap>(classMapCacheKey);
-        if (snapshot.status === 'resolved') {
+        if (snapshot.status === 'resolved' || snapshot.status === 'absent') {
           previousResolvedComponentClassMapRef.current = {
             cacheKey: classMapCacheKey,
             classMap: snapshot.classMap
@@ -270,7 +281,7 @@ export function useComponentClassMapResolution<TClassMap>(
   const currentComponentClassMap =
     loadedSnapshot.status === 'resolved' ? loadedSnapshot.classMap : undefined;
   const previousLoadedComponentClassMap =
-    enabled && loadedSnapshot.status === 'pending'
+    enabled && (loadedSnapshot.status === 'pending' || loadedSnapshot.status === 'error')
       ? previousResolvedComponentClassMapRef.current?.classMap
       : undefined;
 
@@ -289,8 +300,22 @@ export function useComponentClassMapResolution<TClassMap>(
     [baseClassMap, brandComponentClassMap]
   );
 
+  const retry = useCallback(() => {
+    if (!enabled || !loadComponentClassMap || componentClassMapLoads.has(classMapCacheKey)) return;
+    componentClassMapSnapshots.delete(classMapCacheKey);
+    const unsubscribe = subscribeToComponentClassMap({
+      cacheKey: classMapCacheKey,
+      listener: () => {},
+      load: loadMergedComponentClassMap
+    });
+    unsubscribe();
+    for (const notify of componentClassMapListeners.get(classMapCacheKey) ?? []) notify();
+  }, [classMapCacheKey, enabled, loadComponentClassMap, loadMergedComponentClassMap]);
+
   return {
     classMap,
+    error: loadedSnapshot.status === 'error' ? loadedSnapshot.error : undefined,
+    retry,
     pending: Boolean(enabled && loadComponentClassMap && loadedSnapshot.status === 'pending')
   };
 }

@@ -125,7 +125,16 @@ describe('shared background selection', () => {
     act(() => value.selectBackground('white'));
     expect(value.surfaceContext).toBe('onSubtle');
     act(() => value.selectMode('canonical'));
-    expect(value.color).toBe('white');
+    expect(value.color).toBe('gray');
+  });
+  it('restores the shared subtle default after a vivid context on Card', () => {
+    render('/card');
+    const initial = value.color;
+    act(() => value.selectContext('onVivid'));
+    expect(value.color).toBe('blue');
+    act(() => value.selectContext('onSubtle'));
+    expect(value.color).toBe(initial);
+    expect(value.cardSurface?.resolvedColor).toBe('white');
   });
   it('ignores invalid selections and renders on the server without document access', () => {
     expect(renderToString(<Harness />)).toContain('data-canvas="gray"');

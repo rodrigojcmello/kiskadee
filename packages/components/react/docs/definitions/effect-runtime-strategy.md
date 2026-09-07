@@ -23,8 +23,10 @@ The core path should avoid:
 - effect-specific dependencies;
 - eager imports of effect implementation modules.
 
-A small availability check against the resolved class map is acceptable. The check decides whether
-the effect path is needed.
+Component metadata owns declared effect availability when present. A small class-map check may
+confirm that its required styling was emitted, or support an explicitly documented legacy fallback.
+It must not override an explicit metadata decision. See the metadata precedence and migration
+boundary in `component-architecture.md`.
 
 ## Lazy Effect Rule
 

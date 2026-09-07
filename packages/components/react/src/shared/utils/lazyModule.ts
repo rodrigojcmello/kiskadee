@@ -18,10 +18,18 @@ export function createLazyModuleCache<TModule>(
   const load = () => {
     if (cachedModule) return Promise.resolve(cachedModule);
 
-    cachedPromise ??= importModule().then((module) => {
-      cachedModule = module;
-      return module;
-    });
+    cachedPromise ??= Promise.resolve()
+      .then(importModule)
+      .then(
+        (module) => {
+          cachedModule = module;
+          return module;
+        },
+        (error) => {
+          cachedPromise = null;
+          throw error;
+        }
+      );
 
     return cachedPromise;
   };
@@ -55,9 +63,14 @@ export function useLazyModule<TModule>(
 
     let isCurrent = true;
 
-    cache.load().then((loadedModule) => {
-      if (isCurrent) setModule(loadedModule);
-    });
+    void cache.load().then(
+      (loadedModule) => {
+        if (isCurrent) setModule(loadedModule);
+      },
+      (error) => {
+        if (isCurrent) console.error('[Kiskadee] Failed to load optional module.', error);
+      }
+    );
 
     return () => {
       isCurrent = false;

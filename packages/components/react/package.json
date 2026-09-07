@@ -18,6 +18,101 @@
     "./style.css": {
       "types": "./dist/style.kiskadee.css.d.ts",
       "default": "./dist/style.kiskadee.css"
+    },
+    "./adaptive-button-menu": {
+      "types": "./dist/components/AdaptiveButtonMenu/index.d.ts",
+      "import": "./dist/components/AdaptiveButtonMenu/index.js",
+      "default": "./dist/components/AdaptiveButtonMenu/index.js"
+    },
+    "./badge": {
+      "types": "./dist/components/Badge/index.d.ts",
+      "import": "./dist/components/Badge/index.js",
+      "default": "./dist/components/Badge/index.js"
+    },
+    "./bottom-sheet": {
+      "types": "./dist/components/BottomSheet/index.d.ts",
+      "import": "./dist/components/BottomSheet/index.js",
+      "default": "./dist/components/BottomSheet/index.js"
+    },
+    "./bottom-sheet-menu": {
+      "types": "./dist/components/BottomSheetMenu/index.d.ts",
+      "import": "./dist/components/BottomSheetMenu/index.js",
+      "default": "./dist/components/BottomSheetMenu/index.js"
+    },
+    "./button": {
+      "types": "./dist/components/Button/index.d.ts",
+      "import": "./dist/components/Button/index.js",
+      "default": "./dist/components/Button/index.js"
+    },
+    "./button-menu": {
+      "types": "./dist/components/ButtonMenu/index.d.ts",
+      "import": "./dist/components/ButtonMenu/index.js",
+      "default": "./dist/components/ButtonMenu/index.js"
+    },
+    "./card": {
+      "types": "./dist/components/Card/index.d.ts",
+      "import": "./dist/components/Card/index.js",
+      "default": "./dist/components/Card/index.js"
+    },
+    "./chip": {
+      "types": "./dist/components/Chip/index.d.ts",
+      "import": "./dist/components/Chip/index.js",
+      "default": "./dist/components/Chip/index.js"
+    },
+    "./context-menu": {
+      "types": "./dist/components/ContextMenu/index.d.ts",
+      "import": "./dist/components/ContextMenu/index.js",
+      "default": "./dist/components/ContextMenu/index.js"
+    },
+    "./dropdown": {
+      "types": "./dist/components/Dropdown/index.d.ts",
+      "import": "./dist/components/Dropdown/index.js",
+      "default": "./dist/components/Dropdown/index.js"
+    },
+    "./icon": {
+      "types": "./dist/components/Icon/index.d.ts",
+      "import": "./dist/components/Icon/index.js",
+      "default": "./dist/components/Icon/index.js"
+    },
+    "./progress": {
+      "types": "./dist/components/Progress/index.d.ts",
+      "import": "./dist/components/Progress/index.js",
+      "default": "./dist/components/Progress/index.js"
+    },
+    "./separator": {
+      "types": "./dist/components/Separator/index.d.ts",
+      "import": "./dist/components/Separator/index.js",
+      "default": "./dist/components/Separator/index.js"
+    },
+    "./slider": {
+      "types": "./dist/components/Slider/index.d.ts",
+      "import": "./dist/components/Slider/index.js",
+      "default": "./dist/components/Slider/index.js"
+    },
+    "./switch": {
+      "types": "./dist/components/Switch/index.d.ts",
+      "import": "./dist/components/Switch/index.js",
+      "default": "./dist/components/Switch/index.js"
+    },
+    "./tabs": {
+      "types": "./dist/components/Tabs/index.d.ts",
+      "import": "./dist/components/Tabs/index.js",
+      "default": "./dist/components/Tabs/index.js"
+    },
+    "./text": {
+      "types": "./dist/components/Text/index.d.ts",
+      "import": "./dist/components/Text/index.js",
+      "default": "./dist/components/Text/index.js"
+    },
+    "./text-field": {
+      "types": "./dist/components/TextField/index.d.ts",
+      "import": "./dist/components/TextField/index.js",
+      "default": "./dist/components/TextField/index.js"
+    },
+    "./resources": {
+      "types": "./dist/resources.d.ts",
+      "import": "./dist/resources.js",
+      "default": "./dist/resources.js"
     }
   },
   "files": [
@@ -33,7 +128,8 @@
     "build:dev:self": "node ./scripts/build.ts --skip-types",
     "build:self": "node ./scripts/build.ts",
     "build:dev": "pnpm --filter @kiskadee/react-headless run build:dev && pnpm run build:dev:self",
-    "build": "pnpm --filter @kiskadee/react-headless run build && pnpm run build:self"
+    "build": "pnpm --filter @kiskadee/react-headless run build && pnpm run build:self",
+    "check:consumer-bundles": "node ./scripts/check-consumer-bundles.ts"
   },
   "author": "Rodrigo J C Mello",
   "license": "MIT",

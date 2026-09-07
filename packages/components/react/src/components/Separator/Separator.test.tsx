@@ -7,6 +7,7 @@ import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { Separator } from './Separator.tsx';
 
 const context: KiskadeeContextValue = {
@@ -15,7 +16,10 @@ const context: KiskadeeContextValue = {
       e1: {
         d: 'separator-default',
         s: { all: 'separator-thickness' },
-        c: { s: { neutral: { m: 'separator-color' } } }
+        c: {
+          s: { neutral: { m: 'separator-color', l: 'separator-low-subtle' } },
+          v: { neutral: { m: 'separator-medium-vivid', l: 'separator-low-vivid' } }
+        }
       }
     }
   },
@@ -30,6 +34,23 @@ const context: KiskadeeContextValue = {
 afterEach(cleanup);
 
 describe('Separator', () => {
+  it('resolves low emphasis from the local surface and allows an explicit override', () => {
+    const renderSeparator = (explicit?: 'onSubtle') => (
+      <KiskadeeContext.Provider value={context}>
+        <SurfaceContextProvider value="onVivid">
+          <Separator emphasis="low" surfaceContext={explicit} />
+        </SurfaceContextProvider>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(renderSeparator());
+    expect(result.getByRole('separator').className).toContain('separator-low-vivid');
+    expect(result.getByRole('separator').hasAttribute('emphasis')).toBe(false);
+    result.rerender(renderSeparator('onSubtle'));
+    expect(result.getByRole('separator').className).toContain('separator-low-subtle');
+    expect(result.getByRole('separator').className).not.toContain('separator-low-vivid');
+    expect(result.getByRole('separator').hasAttribute('surfaceContext')).toBe(false);
+  });
+
   it('renders a horizontal semantic separator with preset and consumer classes', () => {
     const result = render(
       <KiskadeeContext.Provider value={context}>

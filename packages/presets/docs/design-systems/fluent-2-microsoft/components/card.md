@@ -311,3 +311,35 @@ stays available through `fixedLevels` for Showcase and static Card examples.
   `onVivid`.
 - Switching the Showcase to `onVivid` emits no missing-surface-context warning for Card. Desktop
   and 390px mobile checks show no horizontal overflow or framework error overlay.
+
+## Light onVivid Surface Differentiation (2026-09-07)
+
+This user-approved Kiskadee adaptation applies only to Light onVivid Low/Medium surfaces.
+The onSubtle Rest and interaction colors retain their previous positions.
+The original Fluent aliases remain provenance, not claims of exact matching for this adjustment.
+The goal is a visible white -> lightly tinted -> tonal progression on vivid backgrounds,
+without changing onSubtle or turning onVivid into another theme. Lowest stays at the physical light cap
+(`#ffffff`) for both intents; Dark and Darker stay unchanged.
+
+The existing approved primitive assets are reused through `exactColor` with evidence id
+`component.card`; the fixed Light positions below are an explicit visual adaptation.
+Rest, Hover, Pressed, and Selected move by the same ordinal tone offset within each recipe
+(Low +1, Neutral Medium +3, Primary Medium +4). Disabled retains the existing neutral L3,
+Focus keeps the shared ring, and no Rest-equal override is introduced.
+
+| Recipe | Approved family | Rest | Hover | Pressed | Selected |
+| --- | --- | --- | --- | --- | --- |
+| Neutral Low | n.black.v2 | L2 `#f4f6fe` | L4 `#e9edfa` | L9 `#d2d6e2` | L7 `#dce0ed` |
+| Neutral Medium | n.black.v2 | L6 `#e0e5f1` | L7 `#dce0ed` | L12 `#c6cbd7` | L10 `#cdd1de` |
+| Primary Medium | b.blue.v1 | L8 `#c1deff` | L12 `#a4cfff` | L16 `#85bfff` | L14 `#94c7ff` |
+
+### Medium follow-up (2026-09-07)
+
+User screenshot review requests one darker tonal position for both Medium cards in Light onVivid.
+This is a Kiskadee extension using the same approved assets and `exactColor` / `component.card`:
+Neutral (`n.black.v2`) moves Rest L6 -> L7 `#dce0ed`; Primary (`b.blue.v1`) moves
+Rest L8 -> L9 `#b9daff`. Each interactive state also advances one ordinal scale position:
+Neutral Hover L8 `#d6dbe7`, Pressed L14 `#bec2ce`, Selected L12 `#c6cbd7`;
+Primary Hover L14 `#94c7ff`, Pressed L18 `#76b7ff`, Selected L16 `#85bfff`.
+These values supersede the Medium rows above. Disabled, focus ownership, Low, Lowest,
+onSubtle, Dark and Darker remain unchanged. No Rest-equal state override is added.

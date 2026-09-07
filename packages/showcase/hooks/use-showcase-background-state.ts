@@ -9,6 +9,7 @@ import {
   getPreferredButtonStressTestBackground,
   resolveBackgroundSurfaceContext
 } from '../utils/button-stress-test-backgrounds';
+import { resolveDefaultCanonicalCardSurface } from '../utils/canonical-card-surfaces';
 import { useButtonStressTestBackgroundTones } from './use-background-tones';
 import { useCanonicalCardSurfaces } from './use-canonical-card-surfaces';
 
@@ -53,7 +54,7 @@ export function useShowcaseBackgroundState(route: string) {
       : canonical.tones.find((item) => item.contentSurfaceContext === surfaceContext);
 
   function selectContext(context: SurfaceContext) {
-    const next = scenarios.find((item) => item.canvas.contentSurfaceContext === context);
+    const next = resolveDefaultCanonicalCardSurface(canonical.tones, context);
     setSelection({ route, mode: 'canonical', context, key: next?.key });
   }
 
@@ -61,7 +62,7 @@ export function useShowcaseBackgroundState(route: string) {
     if (mode === current.mode) return;
     const next =
       mode === 'canonical'
-        ? scenarios.find((item) => item.canvas.contentSurfaceContext === surfaceContext)
+        ? resolveDefaultCanonicalCardSurface(canonical.tones, surfaceContext)
         : getPreferredButtonStressTestBackground(stress.tones, theme, surfaceContext);
     setSelection({ route, mode, context: surfaceContext, key: next?.key });
   }

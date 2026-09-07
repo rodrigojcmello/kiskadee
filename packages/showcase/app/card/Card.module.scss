@@ -66,6 +66,10 @@
   min-inline-size: 0;
 }
 
+.surfaceGrid > .unpublished {
+  display: none;
+}
+
 .cardSurface {
   min-block-size: 140px;
 }
@@ -153,6 +157,10 @@
 }
 
 @container (min-width: 480px) {
+  .surfaceGrid > .unpublished {
+    display: grid;
+  }
+
   .surfaceGrid,
   .interactionGrid,
   .shadowGrid {

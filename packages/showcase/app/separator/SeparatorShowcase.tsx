@@ -1,8 +1,16 @@
 'use client';
 
-import { Separator, Text, useShowcase } from '@kiskadee/react-components';
+import type { ComponentEmphasis } from '@kiskadee/core';
+import { Separator, Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
-import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
+import {
+  ShowcaseControlGroup,
+  ShowcaseRouteControls,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Separator.module.scss';
 
@@ -20,6 +28,21 @@ function Unavailable() {
 
 export default function SeparatorShowcase() {
   const { manifest } = useShowcase();
+  const { segment, theme } = useKiskadee();
+  const { surfaceContext } = useShowcaseBackground();
+  const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
+  const state = getManifestComponentState(
+    manifest?.components?.separator,
+    String(segment ?? 'default'),
+    theme,
+    surfaceContext
+  );
+  const supportedEmphases = (['lowest', 'low', 'medium', 'high', 'highest'] as const).filter(
+    (value) => state?.neutral?.[value]?.rest
+  );
+  const activeEmphasis = supportedEmphases.includes(emphasis)
+    ? emphasis
+    : (supportedEmphases[0] ?? 'medium');
   const textProfiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.separator);
 
@@ -37,7 +60,14 @@ export default function SeparatorShowcase() {
         title="Examples"
         isAvailable={available}
       >
-        {null}
+        <ShowcaseControlGroup title="Appearance">
+          <ShowcaseSelectControl
+            label="Emphasis"
+            options={supportedEmphases.map((value) => ({ value, label: value }))}
+            value={activeEmphasis}
+            onValueChange={(value) => setEmphasis(value as ComponentEmphasis)}
+          />
+        </ShowcaseControlGroup>
       </ShowcaseRouteControls>
 
       {!available ? (
@@ -54,7 +84,7 @@ export default function SeparatorShowcase() {
                   Horizontal
                 </Text>
                 <div className={styles.horizontalStage}>
-                  <Separator />
+                  <Separator emphasis={activeEmphasis} />
                 </div>
               </ShowcaseExampleCard>
 
@@ -66,7 +96,7 @@ export default function SeparatorShowcase() {
                   <Text as="span" profile={textProfiles.body}>
                     Previous
                   </Text>
-                  <Separator orientation="vertical" />
+                  <Separator orientation="vertical" emphasis={activeEmphasis} />
                   <Text as="span" profile={textProfiles.body}>
                     Next
                   </Text>
@@ -92,7 +122,7 @@ export default function SeparatorShowcase() {
                   Profile, sign-in and security preferences.
                 </Text>
               </div>
-              <Separator />
+              <Separator emphasis={activeEmphasis} />
               <div className={styles.contentBlock}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Notifications

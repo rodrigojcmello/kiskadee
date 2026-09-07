@@ -378,8 +378,10 @@ export function Card() {
   const [interactionLocked, setInteractionLocked] = React.useState(true);
   const [radius, setRadius] = React.useState<CardRadiusMode>(defaultRadius);
   const [staticShadow, setStaticShadow] = React.useState<CardShadowOption>('off');
-  const [surfaceBorders, setSurfaceBorders] = React.useState(true);
-  const [surfaceShadows, setSurfaceShadows] = React.useState(false);
+  const [surfacePresentation, setSurfacePresentation] = React.useState<
+    { mode: 'auto' } | { mode: 'manual'; border: boolean; shadow: boolean }
+  >({ mode: 'auto' });
+  const surfaceAuto = surfacePresentation.mode === 'auto';
   const surfaceSwitchAvailable = Boolean(
     getManifestComponentState(
       manifest?.components?.switch,
@@ -408,6 +410,16 @@ export function Card() {
     });
   }, [cardClassesMap]);
   const semanticSamples = React.useMemo(() => resolveCardSemanticSamples(cardState), [cardState]);
+  const surfaceBorders = surfacePresentation.mode === 'manual' && surfacePresentation.border;
+  const surfaceShadows = surfacePresentation.mode === 'manual' && surfacePresentation.shadow;
+  const setSurfaceManual = (property: 'border' | 'shadow', value: boolean) => {
+    setSurfacePresentation({
+      mode: 'manual',
+      border: surfaceBorders,
+      shadow: surfaceShadows,
+      [property]: value
+    });
+  };
   const comparisonSample =
     semanticSamples.find(
       (sample) => `${sample.intent}.${sample.emphasis}` === background.surfaces[0]?.key
@@ -551,24 +563,43 @@ export function Card() {
               title="Surfaces"
               actions={
                 surfaceSwitchAvailable && background.cardSurface ? (
-                  <ShowcaseExampleCard role="group" aria-label="Surface presentation controls">
+                  <ShowcaseExampleCard
+                    border
+                    role="group"
+                    aria-label="Surface presentation controls"
+                  >
                     <div className={s.controlRow}>
                       <Switch
+                        id="card-surfaces-auto"
+                        label="Auto"
+                        classNames={{ e4: s.surfaceControlLabel }}
+                        emphasis="medium"
+                        controlState={surfaceAuto}
+                        onControlStateChange={(value) => {
+                          setSurfacePresentation(
+                            value
+                              ? { mode: 'auto' }
+                              : { mode: 'manual', border: surfaceBorders, shadow: surfaceShadows }
+                          );
+                        }}
+                      />
+                      <Separator orientation="vertical" emphasis="medium" />
+                      <Switch
                         id="card-surfaces-borders"
-                        label="Borders"
+                        label="Border"
                         classNames={{ e4: s.surfaceControlLabel }}
                         emphasis="medium"
                         controlState={surfaceBorders}
-                        onControlStateChange={setSurfaceBorders}
+                        onControlStateChange={(value) => setSurfaceManual('border', value)}
                       />
-                      <Separator orientation="vertical" />
+                      <Separator orientation="vertical" emphasis="low" />
                       <Switch
                         id="card-surfaces-shadows"
-                        label="Shadows"
+                        label="Shadow"
                         classNames={{ e4: s.surfaceControlLabel }}
                         emphasis="medium"
                         controlState={surfaceShadows}
-                        onControlStateChange={setSurfaceShadows}
+                        onControlStateChange={(value) => setSurfaceManual('shadow', value)}
                       />
                     </div>
                   </ShowcaseExampleCard>
@@ -586,7 +617,7 @@ export function Card() {
                     const available = Boolean(cardState?.[intent]?.[emphasis]?.rest);
                     return (
                       <article
-                        className={s.example}
+                        className={`${s.example} ${available ? '' : s.unpublished}`}
                         key={emphasis}
                         aria-label={`${intent} ${emphasis}`}
                       >
@@ -599,8 +630,14 @@ export function Card() {
                             intent={intent}
                             emphasis={emphasis}
                             radius={radius}
-                            shadow={surfaceShadows ? (resolvedStaticShadow ?? true) : false}
-                            border={surfaceBorders}
+                            shadow={
+                              surfaceAuto
+                                ? undefined
+                                : surfaceShadows
+                                  ? (resolvedStaticShadow ?? true)
+                                  : false
+                            }
+                            border={surfaceAuto ? undefined : surfaceBorders}
                           >
                             <CardContent
                               title="Title"

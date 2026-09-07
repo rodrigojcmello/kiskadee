@@ -1,4 +1,4 @@
-import type { ClassNameByElementJSON } from '@kiskadee/core';
+import type { ClassNameByElementJSON, ComponentEmphasis, SurfaceContext } from '@kiskadee/core';
 import {
   joinClassNames,
   resolveSchemaElementClassName
@@ -6,13 +6,16 @@ import {
 
 export function resolveSeparatorClassName(
   element: ClassNameByElementJSON | undefined,
-  consumerClassName?: string
+  consumerClassName?: string,
+  emphasis: ComponentEmphasis = 'medium',
+  surfaceContext: SurfaceContext = 'onSubtle'
 ): string {
   return (
     joinClassNames(
       resolveSchemaElementClassName(element, {
         intent: 'neutral',
-        emphasis: 'medium'
+        emphasis,
+        surfaceContext
       }),
       element?.s?.all,
       'k-sep',

@@ -13,6 +13,7 @@ import type {
   SeparatorProfileByBreakpoint,
   SeparatorProfilePalettes
 } from './separator.ts';
+import { componentEmphasisBuckets } from './types/colors/colors.types.ts';
 
 const SEPARATOR_PROFILE_ID_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const separatorSizeValues = ['s:all', ...elementSizeValues] as const satisfies readonly (
@@ -81,24 +82,24 @@ function validateSeparatorColorMap(
     addPaletteIssue(ctx, [...path, 'boxColor', 'neutral'], 'required intent');
     return;
   }
-  for (const key of Object.keys(neutral)) {
-    if (key !== 'medium') {
-      addPaletteIssue(ctx, [...path, 'boxColor', 'neutral', key], 'expected "medium" emphasis');
-    }
-  }
-
-  const medium = neutral.medium;
-  if (!isRecord(medium)) {
+  if (!isRecord(neutral.medium)) {
     addPaletteIssue(ctx, [...path, 'boxColor', 'neutral', 'medium'], 'required emphasis');
-    return;
   }
-  for (const key of Object.keys(medium)) {
-    if (key !== 'rest') {
-      addPaletteIssue(ctx, [...path, 'boxColor', 'neutral', 'medium', key], 'unrecognized state');
+  for (const [emphasis, states] of Object.entries(neutral)) {
+    const emphasisPath = [...path, 'boxColor', 'neutral', emphasis];
+    if (!Object.hasOwn(componentEmphasisBuckets, emphasis)) {
+      addPaletteIssue(ctx, emphasisPath, 'unrecognized emphasis');
+      continue;
     }
-  }
-  if (medium.rest === undefined) {
-    addPaletteIssue(ctx, [...path, 'boxColor', 'neutral', 'medium', 'rest'], 'required state');
+    if (!isRecord(states)) {
+      addPaletteIssue(ctx, emphasisPath, 'expected object');
+      continue;
+    }
+    for (const state of Object.keys(states)) {
+      if (state !== 'rest') addPaletteIssue(ctx, [...emphasisPath, state], 'unrecognized state');
+    }
+    if (states.rest === undefined)
+      addPaletteIssue(ctx, [...emphasisPath, 'rest'], 'required state');
   }
 }
 

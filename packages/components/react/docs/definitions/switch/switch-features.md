@@ -71,17 +71,11 @@ headless root generates one and connects the wrapping label to the input.
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for the schema element slots `e1` through `e6`. |
 
-`emphasis="low"` is the Switch treatment for strong local surfaces such as a
-primary Showcase card. It keeps the same intent semantics and adapts contrast
-inside the existing emphasis bucket; it is not a dark-mode switch and does not
-create a new public emphasis value.
-
-When a Switch is shown inside a Card surface in the Showcase, the Card owns the
-container surface and the Switch keeps its own component axes. Strong or dark
-Card surfaces should usually render the child Switch with `emphasis="low"`;
-light/base/tonal Card surfaces can keep the Switch at `emphasis="medium"`.
-This is a contextual Showcase composition rule, not an automatic global
-parent-to-child emphasis formula.
+Switch consumes `surfaceContext="onSubtle" | "onVivid"` independently from emphasis.
+The nearest `SurfaceContextProvider` supplies the default; an explicit Switch prop wins.
+Track, thumb (including thumb-shrink), label, control text, icons and feedback use the same
+resolved input surface. A Card publishes its produced surface for descendants. Consumers
+must not replace surface selection with an automatic `emphasis="low"` override.
 
 `radius`, `activationMotion`, and `controlTextVisibility` are component
 artifact options. Props may override only the options intentionally exposed in
@@ -268,6 +262,9 @@ Current rules:
   - `slow`: slower spring.
 - The motion path measures track/thumb geometry and writes local CSS variables
   for thumb travel.
+- The motion thumb modifier must override static geometry independently of stylesheet
+  insertion order. Lazy loading or reinserting base CSS must not restore static centering
+  while the runtime owns the thumb transform.
 - Measurement updates on geometry-key changes, `ResizeObserver`, and window
   resize.
 - RTL direction is supported by resolving inline direction at runtime.

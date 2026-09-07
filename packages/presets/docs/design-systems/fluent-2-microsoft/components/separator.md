@@ -38,7 +38,7 @@ blue NeutralStroke2 family with Kiskadee's approved achromatic Black v1 scale:
 
 ## Kiskadee Mapping
 
-- The recipe contains a one-pixel `boxWidth` and Neutral/Medium/Rest `boxColor` only.
+- The recipe contains a one-pixel `boxWidth` and Neutral Low/Medium Rest colors.
 - `components.separator.e1`, `components.dropdown.e7`, and `components.bottomSheet.e12` reference
   the same build-time recipe.
 - Orientation is structural. Spacing and inset belong to the surrounding layout or Dropdown group.
@@ -56,3 +56,19 @@ blue NeutralStroke2 family with Kiskadee's approved achromatic Black v1 scale:
 ## Open Gaps
 
 - A complete standalone Fluent divider capability review is not part of this change.
+
+## Low Emphasis Extension
+
+Low is a user-requested Kiskadee hierarchy extension, not an upstream Fluent token mapping.
+It uses the approved `primitive.black.v1` physical caps through `absoluteCap`:
+
+| Context | Light | Dark / Darker | Rationale |
+| --- | --- | --- | --- |
+| onSubtle Low | dark cap, 8% alpha | light cap, 12% alpha | Quiet grouping line over neutral surfaces |
+| onVivid Low | light cap, 15% alpha | light cap, 15% alpha | Matches the existing Card onVivid boundary convention |
+| onVivid Medium | light cap, 30% alpha | light cap, 30% alpha | Stronger separation while remaining below content contrast |
+
+The existing onSubtle Medium tonal mappings remain unchanged. These alpha choices are explicit
+Kiskadee adaptations; no new primitive asset or upstream color claim is introduced. The p-react
+Separator selects emphasis and inherits its local content surface context. The Card Showcase
+controls explicitly select Low in both contexts.

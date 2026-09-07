@@ -7,9 +7,16 @@ missing or similar visual treatments visible before a new border or surface mech
 
 1. **Surfaces** groups Neutral and Primary separately, with the same ordered emphasis positions
    and repeated specimen content. An unavailable position says "Not published" instead of
-   substituting a neighboring emphasis. The active canvas context determines availability.
-   Local p-react Switch controls toggle Borders and Shadows for this matrix only. Borders start
-   on and Shadows off: these are Showcase overrides, not preset defaults. Shadows use the panel's selected level or the preset default when no level is
+   substituting a neighboring emphasis. Unavailable articles are hidden in the single-column layout
+   below 480px of route width. The active canvas context determines availability.
+   Local p-react Switch controls toggle Border and Shadow for this matrix only. Auto starts on and omits both `border` and `shadow` overrides. A published shadow recipe
+   is available for explicit activation; its presence does not enable it automatically.
+   Changing Border or Shadow atomically enters manual mode and preserves the other displayed value.
+   Border and Shadow represent manual overrides, never an aggregate of rendered Card styles.
+   While Auto is on, both switches are off even when schema recipes render borders or shadows.
+   Re-enabling Auto clears manual overrides and restores schema behavior. Turning Auto off starts
+   with both manual switches off. Manual shadows use the panel's selected level or the preset
+   default when no level is
    selected. The controls do not affect Composition, other comparisons or CardAction.
    Controls align with the bottom of the heading/description block. The sidebar's Descrições
    switch uses the shared display preference and hides explanatory copy, not specimen content.
@@ -68,3 +75,8 @@ colors from contrast or implement stroke recipes locally.
 
 See [Showcase Content](./showcase-content.md) and
 [Background Surface Catalogs](./background-surface-catalogs.md).
+
+The Background picker is hidden on `/card`; Surface Context remains available. The Shell still
+resolves the shared preset-derived canvas, including the default subtle surface when returning
+from On vivid. Only the separator between Auto and Border uses Medium emphasis; the separator
+between Border and Shadow stays Low.

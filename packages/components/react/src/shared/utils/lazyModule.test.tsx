@@ -44,3 +44,15 @@ it('adopts a warmed lazy module only after hydration', async () => {
   container.remove();
   consoleError.mockRestore();
 });
+
+it('evicts failed imports so an explicit retry can succeed', async () => {
+  const importer = vi
+    .fn()
+    .mockRejectedValueOnce(new Error('offline'))
+    .mockResolvedValue({ label: 'Recovered' });
+  const cache = createLazyModuleCache(importer);
+  await expect(cache.load()).rejects.toThrow('offline');
+  expect(cache.read()).toBeNull();
+  await expect(cache.load()).resolves.toEqual({ label: 'Recovered' });
+  expect(importer).toHaveBeenCalledTimes(2);
+});

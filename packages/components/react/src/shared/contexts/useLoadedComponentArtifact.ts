@@ -1,14 +1,41 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useRef, useSyncExternalStore } from 'react';
 import {
   getComponentArtifactCacheKey,
-  loadCachedComponentArtifact
+  loadCachedArtifactOrThrow
 } from './componentArtifactCache.ts';
 import { useKiskadee } from './KiskadeeContext.tsx';
 
-type ComponentArtifactState<TArtifact> = {
-  cacheKey: string;
-  artifact: TArtifact | undefined;
+type ArtifactSnapshot = {
+  status: 'pending' | 'ready' | 'absent' | 'error';
+  artifact?: unknown;
+  error?: unknown;
 };
+const PENDING: ArtifactSnapshot = { status: 'pending' };
+const snapshots = new Map<string, ArtifactSnapshot>();
+const listeners = new Map<string, Set<() => void>>();
+const pendingLoads = new Set<string>();
+const serverSnapshot = () => PENDING;
+
+function publish(cacheKey: string, snapshot: ArtifactSnapshot) {
+  snapshots.set(cacheKey, snapshot);
+  for (const notify of listeners.get(cacheKey) ?? []) notify();
+}
+
+function loadArtifact(cacheKey: string, load: () => Promise<unknown>) {
+  if (pendingLoads.has(cacheKey)) return;
+  pendingLoads.add(cacheKey);
+  publish(cacheKey, PENDING);
+  void loadCachedArtifactOrThrow({ cacheKey, load }).then(
+    (artifact) => {
+      pendingLoads.delete(cacheKey);
+      publish(cacheKey, { status: artifact === undefined ? 'absent' : 'ready', artifact });
+    },
+    (error) => {
+      pendingLoads.delete(cacheKey);
+      publish(cacheKey, { status: 'error', error });
+    }
+  );
+}
 
 export type UseLoadedComponentArtifactOptions<TArtifact> = {
   componentName: string;
@@ -21,6 +48,9 @@ export type LoadedComponentArtifact<TArtifact> = {
   cacheKey: string;
   currentArtifact: TArtifact | undefined;
   previousArtifact: TArtifact | undefined;
+  status: ArtifactSnapshot['status'];
+  error: unknown;
+  retry: () => void;
 };
 
 export function useLoadedComponentArtifact<TArtifact>({
@@ -30,50 +60,69 @@ export function useLoadedComponentArtifact<TArtifact>({
   resetWhenLoaderMissing = true
 }: UseLoadedComponentArtifactOptions<TArtifact>): LoadedComponentArtifact<TArtifact> {
   const { artifactVersion, designSystem, loadComponentArtifact } = useKiskadee();
-  const cacheKey = getComponentArtifactCacheKey({
-    designSystem,
-    artifactVersion,
-    componentName
-  });
-  const [artifactState, setArtifactState] = useState<ComponentArtifactState<TArtifact> | undefined>(
-    undefined
+  const cacheKey = getComponentArtifactCacheKey({ designSystem, artifactVersion, componentName });
+  const previous = useRef<{ cacheKey: string; artifact: unknown } | undefined>(undefined);
+  const load = useCallback(
+    () =>
+      loadComponentArtifact ? loadComponentArtifact(componentName) : Promise.resolve(undefined),
+    [componentName, loadComponentArtifact]
   );
-  const currentArtifact = artifactState?.cacheKey === cacheKey ? artifactState.artifact : undefined;
-  const previousArtifact =
-    preservePrevious && artifactState?.cacheKey !== cacheKey ? artifactState?.artifact : undefined;
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!loadComponentArtifact) {
-      if (resetWhenLoaderMissing) {
-        setArtifactState(undefined);
+  const subscribe = useCallback(
+    (notify: () => void) => {
+      if (!loadComponentArtifact) {
+        if (resetWhenLoaderMissing) previous.current = undefined;
+        return () => {};
       }
-      return () => {
-        cancelled = true;
+      const subscribers = listeners.get(cacheKey) ?? new Set<() => void>();
+      const capture = () => {
+        const snapshot = snapshots.get(cacheKey);
+        if (snapshot?.status === 'ready') {
+          previous.current = { cacheKey, artifact: snapshot.artifact };
+        } else if (snapshot?.status === 'absent') {
+          previous.current = undefined;
+        }
+        notify();
       };
-    }
-
-    loadCachedComponentArtifact<unknown>({
-      cacheKey,
-      componentName,
-      loadComponentArtifact
-    }).then((artifact) => {
-      if (cancelled) return;
-      setArtifactState({
-        cacheKey,
-        artifact: isArtifact(artifact) ? artifact : undefined
-      });
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [cacheKey, componentName, isArtifact, loadComponentArtifact, resetWhenLoaderMissing]);
+      subscribers.add(capture);
+      listeners.set(cacheKey, subscribers);
+      const snapshot = snapshots.get(cacheKey);
+      if (!snapshot || snapshot.status === 'error') loadArtifact(cacheKey, load);
+      else capture();
+      return () => {
+        subscribers.delete(capture);
+        if (!subscribers.size) listeners.delete(cacheKey);
+      };
+    },
+    [cacheKey, load, loadComponentArtifact, resetWhenLoaderMissing]
+  );
+  const read = useCallback(() => snapshots.get(cacheKey) ?? PENDING, [cacheKey]);
+  const snapshot = useSyncExternalStore(subscribe, read, serverSnapshot);
+  const canRead = Boolean(loadComponentArtifact) || !resetWhenLoaderMissing;
+  const currentArtifact =
+    canRead && snapshot.status === 'ready' && isArtifact(snapshot.artifact)
+      ? snapshot.artifact
+      : undefined;
+  const retry = useCallback(() => {
+    if (loadComponentArtifact) loadArtifact(cacheKey, load);
+  }, [cacheKey, load, loadComponentArtifact]);
 
   return {
     cacheKey,
     currentArtifact,
-    previousArtifact
+    previousArtifact:
+      canRead &&
+      preservePrevious &&
+      previous.current !== undefined &&
+      previous.current.cacheKey !== cacheKey &&
+      isArtifact(previous.current?.artifact)
+        ? previous.current.artifact
+        : undefined,
+    status: !canRead
+      ? 'absent'
+      : snapshot.status === 'ready' && !currentArtifact
+        ? 'absent'
+        : snapshot.status,
+    error: snapshot.error,
+    retry
   };
 }

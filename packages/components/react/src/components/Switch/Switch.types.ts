@@ -3,6 +3,7 @@ import type {
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
+  SurfaceContext,
   SwitchIntent,
   SwitchMode,
   SwitchVariant
@@ -64,6 +65,7 @@ export type SwitchProps = Omit<
   };
   scale?: ElementSizeValue;
   emphasis?: ComponentEmphasis;
+  surfaceContext?: SurfaceContext;
   intent?: SwitchIntent;
   radius?: RadiusMode;
   thumbShrink?: false;

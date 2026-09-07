@@ -70,7 +70,7 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
     );
 
   return (
-    <Card intent="neutral" emphasis="low" radius={radius}>
+    <Card intent="neutral" emphasis="low" border radius={radius}>
       <div className={s.compositionGrid}>
         <Card
           intent="neutral"

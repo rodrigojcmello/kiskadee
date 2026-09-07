@@ -24,9 +24,9 @@
 
 /*
  * element thumb modifier 'd' / e3d
- * Lets the runtime motion engine own horizontal movement and drag interaction.
+ * Overrides static geometry regardless of stylesheet order while runtime owns movement.
  */
-.k-swt-e3d-a {
+.k-swt-e3-a.k-swt-e3d-a {
   inset-block-start: var(--k-swt-ty);
   inset-inline-start: var(--k-swt-ti);
   pointer-events: auto;

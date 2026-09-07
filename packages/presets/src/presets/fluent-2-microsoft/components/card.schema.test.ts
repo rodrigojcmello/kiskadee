@@ -8,6 +8,30 @@ function requireCardSurfaceElement() {
 }
 
 describe('Fluent 2 Card canonical surfaces', () => {
+  it('keeps the adjusted Light hierarchy exclusive to onVivid', () => {
+    const colors = requireCardSurfaceElement().palettes.default?.light?.onVivid?.boxColor;
+    expect(colors?.neutral?.lowest?.rest).toBe('#ffffff');
+    expect(colors?.primary?.lowest?.rest).toBe('#ffffff');
+    expect(colors?.neutral?.low).toMatchObject({
+      rest: '#f4f6fe',
+      hover: '#e9edfa',
+      pressed: '#d2d6e2',
+      selected: { rest: '#dce0ed' }
+    });
+    expect(colors?.neutral?.medium).toMatchObject({
+      rest: '#dce0ed',
+      hover: '#d6dbe7',
+      pressed: '#bec2ce',
+      selected: { rest: '#c6cbd7' }
+    });
+    expect(colors?.primary?.medium).toMatchObject({
+      rest: '#b9daff',
+      hover: '#94c7ff',
+      pressed: '#76b7ff',
+      selected: { rest: '#85bfff' }
+    });
+  });
+
   it('declares the ordered canonical catalog and its descendant surface contexts', () => {
     expect(schema.components.card?.options?.canonicalSurfaces).toEqual({
       default: {
@@ -62,10 +86,26 @@ describe('Fluent 2 Card canonical surfaces', () => {
     });
   });
 
-  it('uses Background 4 for Light Medium while preserving the existing state colors', () => {
+  it('preserves the original onSubtle Light and Dark state colors', () => {
     const light = requireCardSurfaceElement().palettes.default?.light?.onSubtle.boxColor?.neutral;
     const dark = requireCardSurfaceElement().palettes.default?.dark?.onSubtle.boxColor?.neutral;
 
+    expect(light?.low).toMatchObject({
+      rest: '#f9fbff',
+      hover: '#eef2fc',
+      pressed: '#d6dbe7',
+      selected: { rest: '#e0e5f1' },
+      disabled: '#eef2fc'
+    });
+    expect(
+      requireCardSurfaceElement().palettes.default?.light?.onSubtle.boxColor?.primary?.medium
+    ).toMatchObject({
+      rest: '#e1efff',
+      hover: '#c1deff',
+      pressed: '#a4cfff',
+      selected: { rest: '#b1d5ff' },
+      disabled: '#eef2fc'
+    });
     expect(light?.medium).toMatchObject({
       rest: '#eef2fc',
       hover: '#e9edfa',

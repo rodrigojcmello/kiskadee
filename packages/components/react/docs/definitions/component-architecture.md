@@ -5,9 +5,10 @@ Status: living definition.
 Use this document as the canonical implementation architecture for styled React
 components in `@kiskadee/react-components`.
 
-The current reference implementation is `Switch`. `Button` predates this
-architecture and should be migrated toward it incrementally; it is not the
-reference shape for new components.
+The current reference implementation is `Switch`. `Button` also uses the shared
+single-render-path architecture, artifact hook and lazy effect boundaries. Its additional
+Group, Badge and content-composition relationships are specific to Button; new components
+should adopt only the mechanisms their own contracts need.
 
 This document complements:
 
@@ -244,3 +245,25 @@ Before implementing a new styled component, define:
 If this checklist forces a component to create multiple full render variants,
 revisit the design before implementation. The preferred model is one public
 component with composable feature and effect modules.
+
+## Metadata precedence and migration boundary
+
+Component metadata owns declared options and effect availability when present. Global component
+metadata is a compatibility input for consumers whose producer has not moved that field yet;
+it must not override the same field from a component artifact. Class maps own emitted styling,
+not an alternative option catalog. Keep migration local to one producer/consumer contract.
+A field migration is complete only when its component artifact, React consumer and Showcase
+inspection use it, contract tests cover it, and its legacy global publication/fallback is removed.
+Do not remove global fields still consumed by other components as part of an unrelated cleanup.
+
+## Operational and projected states
+
+| Component | Pending input | Interaction consequence |
+| --- | --- | --- |
+| Button | `pending` (or its documented busy input) | Operational pending is translated by the interaction resolver, including activation blocking and ARIA busy. |
+| CardAction | `status="pending"` | Visual projection; use the documented disabled/interaction controls to block activation. |
+| Switch | `status="pending"` | Visual projection; use disabled, readOnly or interactionLocked according to the intended behavior. |
+
+A matching appearance does not make these operational contracts equivalent. Button toggle always
+publishes `aria-pressed` as a boolean (including false), unless the consumer supplies an explicit
+override. Ordinary action buttons omit the attribute.

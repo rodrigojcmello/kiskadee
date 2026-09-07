@@ -1,6 +1,7 @@
 import type {
   ComponentEmphasis,
   RadiusMode,
+  SurfaceContext,
   SwitchActivationMotion,
   SwitchIntent
 } from '@kiskadee/core';
@@ -18,6 +19,7 @@ export type SwitchThumbShrinkEffectOptions = {
   scale: string;
   intent: SwitchIntent;
   emphasis: ComponentEmphasis;
+  surfaceContext?: SurfaceContext;
   radius: RadiusMode;
   activationMotion: SwitchActivationMotion;
   labelPosition: SwitchLabelPosition;
@@ -39,6 +41,7 @@ export function resolveSwitchThumbShrinkEffect(
     scale: options.scale,
     intent: options.intent,
     emphasis: options.emphasis,
+    surfaceContext: options.surfaceContext,
     radius: options.radius,
     activationMotion: options.activationMotion,
     labelPosition: options.labelPosition,

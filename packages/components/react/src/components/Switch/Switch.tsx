@@ -87,8 +87,9 @@ function mergeSwitchClassNames(
 }
 
 function SwitchRoot(props: SwitchProps) {
-  const surfaceContext = useSurfaceContext();
+  const surfaceContext = useSurfaceContext(props.surfaceContext);
   const {
+    surfaceContext: _surfaceContext,
     id,
     label,
     controlText,
@@ -165,6 +166,7 @@ function SwitchRoot(props: SwitchProps) {
       scale,
       intent,
       emphasis,
+      surfaceContext,
       radius: resolvedRadius,
       activationMotion: options.activationMotion,
       labelPosition,
@@ -180,6 +182,7 @@ function SwitchRoot(props: SwitchProps) {
           scale,
           intent,
           emphasis,
+          surfaceContext,
           radius: resolvedRadius,
           activationMotion: options.activationMotion,
           labelPosition,
@@ -198,7 +201,8 @@ function SwitchRoot(props: SwitchProps) {
           classNames,
           scale,
           intent,
-          emphasis
+          emphasis,
+          surfaceContext
         }).classNamePatch
       : undefined;
 
@@ -215,6 +219,7 @@ function SwitchRoot(props: SwitchProps) {
     classNames,
     elements,
     emphasis,
+    surfaceContext,
     hasLabel,
     intent,
     shouldRenderControlText,

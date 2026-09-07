@@ -1,6 +1,7 @@
 'use client';
 
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { usePathname } from 'next/navigation';
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';
 import IconFamilyPicker from '@/components/IconFamilyPicker/IconFamilyPicker';
@@ -22,6 +23,7 @@ type ShowcaseGlobalControlsProps = {
 };
 
 export function ShowcaseGlobalSemanticControls() {
+  const pathname = usePathname();
   const { segment } = useKiskadee();
 
   return (
@@ -35,7 +37,7 @@ export function ShowcaseGlobalSemanticControls() {
         </ShowcaseControlField>
       ) : null}
       <ShowcaseControlField fullWidth>
-        <ShowcaseBackgroundControls />
+        <ShowcaseBackgroundControls showBackground={pathname !== '/card'} />
       </ShowcaseControlField>
     </ShowcaseControlGrid>
   );

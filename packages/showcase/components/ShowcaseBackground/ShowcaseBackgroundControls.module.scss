@@ -12,6 +12,8 @@
 }
 
 .background > legend {
+  color: var(--neutral-100);
+  line-height: 1;
   font-size: 12px;
   font-weight: 600;
   margin-block-end: 6px;
@@ -26,6 +28,7 @@
 }
 
 .mode > legend {
+  margin: 0;
   position: absolute;
   inline-size: 1px;
   block-size: 1px;
@@ -36,7 +39,7 @@
 .divider {
   border: 0;
   border-block-start: 1px solid rgba(0, 0, 0, 0.08);
-  margin: 4px 10px 0;
+  margin: 0;
 }
 
 .options {
@@ -50,16 +53,18 @@
   margin: 10px 0 0;
 }
 
+.frame .swatches {
+  --swatch-size: 24px;
+  --swatch-selected-size: calc(var(--swatch-size) + 4px);
+  --swatch-selected-visual-scale: 1;
+  --swatch-selected-ring-shadow: 0 0 0 2px #3b82f6;
+}
+
 .swatches {
   display: block;
-  --swatch-size: 24px;
-  --swatch-selected-size: 32px;
-  --swatch-selected-visual-scale: 1.15;
-  --swatch-selected-ring-shadow: 0 0 0 2px #3b82f6;
-
   > span {
     display: block;
-    margin-block-end: 12px;
+    margin-block-end: 6px;
   }
 
   fieldset > div {
@@ -69,6 +74,7 @@
     border-radius: 0;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     gap: 12px;
     padding: 4px;
   }

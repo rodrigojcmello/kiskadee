@@ -370,3 +370,27 @@ describe('useComponentClassMap', () => {
     expect(attempts).toEqual({ core: 2, palette: 2 });
   });
 });
+
+it('publishes a partial transport error and retries without remounting or refetching core', async () => {
+  const attempts = { core: 0, palette: 0 };
+  const context = createContextValue('mounted-class-map-retry', {
+    loadComponentClassMap: async <T,>(component: string, scope: ComponentClassMapScope) => {
+      attempts[scope.kind]++;
+      if (scope.kind === 'palette' && attempts.palette === 1) throw new Error('offline');
+      return { component, classMap: scope.kind === 'core' ? coreClassMap : paletteClassMap } as T;
+    }
+  });
+  function RetryProbe() {
+    const result = useComponentClassMapResolution<TextFieldClassMap>('textField', undefined);
+    return h(
+      'button',
+      { type: 'button', onClick: result.retry },
+      result.error ? 'error' : result.pending ? 'pending' : JSON.stringify(result.classMap)
+    );
+  }
+  render(h(KiskadeeContext.Provider, { value: context }, h(RetryProbe)));
+  await waitFor(() => expect(screen.getByRole('button').textContent).toBe('error'));
+  screen.getByRole('button').click();
+  await waitFor(() => expect(screen.getByRole('button').textContent).toContain('control-color'));
+  expect(attempts).toEqual({ core: 1, palette: 2 });
+});

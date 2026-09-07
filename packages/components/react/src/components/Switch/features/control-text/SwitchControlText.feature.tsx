@@ -2,6 +2,7 @@ import './SwitchControlText.structural.scss';
 import {
   breakpoints,
   type ComponentEmphasis,
+  type SurfaceContext,
   type SwitchControlTextVisibility,
   type SwitchIntent
 } from '@kiskadee/core';
@@ -25,6 +26,7 @@ export type SwitchControlTextFeatureOptions = {
   scale: string;
   intent: SwitchIntent;
   emphasis: ComponentEmphasis;
+  surfaceContext?: SurfaceContext;
 };
 
 export type SwitchControlTextFeatureResult = {
