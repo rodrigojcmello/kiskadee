@@ -215,7 +215,7 @@ const DARK_RECIPE = {
     },
     primary: {
       lowest: {
-        rest: p(35),
+        rest: p(24),
         hover: p(40),
         pressed: p(14),
         selected: p(28),
@@ -230,15 +230,16 @@ const DARK_RECIPE = {
 const DARKER_RECIPE = {
   ...DARK_RECIPE,
   boxColor: {
-    ...DARK_RECIPE.boxColor,
     neutral: {
-      ...DARK_RECIPE.boxColor.neutral,
-      highest: {
-        rest: darkCap(),
-        hover: n(5),
-        selected: n(3),
-        disabled: n(3)
-      }
+      lowest: { rest: n(3), hover: n(7), pressed: n(2), selected: n(5), disabled: n(1) },
+      low: { rest: n(2), hover: n(5), pressed: n(1), selected: n(4), disabled: n(1) },
+      medium: { rest: n(1), hover: n(3), pressed: darkCap(), selected: n(2) },
+      highest: { rest: darkCap(), hover: n(2), selected: n(1), disabled: n(1) }
+    },
+    primary: {
+      lowest: { rest: n(3), hover: n(7), pressed: n(2), selected: n(5), disabled: n(1) },
+      medium: { rest: p(5), hover: p(9), pressed: p(3), selected: p(7), disabled: n(1) },
+      highest: { rest: p(18), hover: p(22), pressed: p(8), selected: p(14), disabled: n(1) }
     }
   },
   borderColor: {
@@ -246,6 +247,10 @@ const DARKER_RECIPE = {
     neutral: {
       ...DARK_RECIPE.borderColor.neutral,
       highest: transparentBorder(darkTransparent, n(50))
+    },
+    primary: {
+      ...DARK_RECIPE.borderColor.primary,
+      lowest: { ...DARK_RECIPE.borderColor.primary.lowest, rest: p(16) }
     }
   }
 } as const satisfies CardPaletteRecipe;
@@ -444,7 +449,13 @@ function createCardPalette(
               ...states,
               rest:
                 intent === 'neutral'
-                  ? contour(`neutral.standard.${themeName}.${surfaceContext}.medium`)
+                  ? themeName === 'darker'
+                    ? resolveColor(c, segmentName, recipe.track, lightCap(10))
+                    : contour(
+                        themeName === 'light'
+                          ? `neutral.standard.${themeName}.${surfaceContext}.medium`
+                          : 'neutral.standard.light.onVivid.medium'
+                      )
                   : emphasis === 'highest'
                     ? contour(`neutral.standard.${themeName}.onVivid.medium`)
                     : resolveColor(

@@ -377,3 +377,127 @@ equivalence between Card and Separator.
 
 Color recipes do not activate borders or shadows. Activation defaults, shadows, and Card
 interaction deltas are unchanged; neutral optional borders follow the revised onVivid recipe.
+
+
+### Experimental dark neutral Card border (2026-09-07)
+
+User-approved Kiskadee experiment, not an upstream Fluent equivalence between Dark and
+onVivid. Neutral Card Rest borders in Dark/Darker, in both surface contexts, reuse
+`contour:neutral.standard.light.onVivid.medium`. This existing contour resolves through
+`absoluteCap(primitive('black', 'v1'), 'light', 15)`: the physical white endpoint at 15%
+alpha (`#ffffff26`). No new primitive asset, tonal position, or global contour change is
+introduced. Primary borders, visibility defaults and interactive state deltas are unchanged.
+The source is the user's September 7 screenshot review and explicit request to experiment
+with the Light/onVivid recipe on dark Cards. Visual acceptance remains pending.
+
+
+### Darker surface recalibration (2026-09-07)
+
+User-approved Kiskadee adaptation following the screenshot review of the black Showcase
+canvas. Darker now has an independent opaque surface recipe instead of inheriting Dark.
+This is not an upstream Fluent theme. Light/Dark, borders and shadow recipes are unchanged.
+Primary Medium was already opaque; this adjustment introduces no alpha or compositing.
+
+All positions use the existing `component.card` exact-color evidence and approved
+`card.neutral` / `card.primary` family mappings on the D track. Neutral Highest Rest and
+Neutral Medium Pressed use the physical black cap. No primitive asset changes are needed.
+
+| Intent / emphasis | Rest | Hover | Pressed | Selected | Disabled |
+| --- | --- | --- | --- | --- | --- |
+| Neutral Lowest / Primary Lowest | neutral D3 | D7 | D2 | D5 | D1 |
+| Neutral Low | neutral D2 | D5 | D1 | D4 | D1 |
+| Neutral Medium | neutral D1 | D3 | black cap | D2 | not authored |
+| Neutral Highest | black cap | neutral D2 | not authored | D1 | D1 |
+| Primary Medium | primary D5 | D9 | D3 | D7 | neutral D1 |
+| Primary Highest | primary D18 | D22 | D8 | D14 | neutral D1 |
+
+The same surface recipe applies in both consumed contexts. Unpublished emphasis buckets
+remain unpublished. Visual acceptance of this darker calibration remains pending.
+
+Generated Rest colors after recalibration: Neutral Lowest / Primary Lowest `#11131c`
+(previously `#262a33`), Neutral Low `#0b0d15` (previously `#1d1f28`), Neutral Medium
+`#05060d` (previously `#11131c`), Primary Medium `#0e1d2e` (previously `#142d48`),
+and Primary Highest `#133d68` (previously `#005ba4`). Neutral Highest stays `#000000`.
+
+
+### Background source comparison and retention decision (2026-09-07)
+
+Status: user-approved retention of the current backgrounds. This comparison does not
+change palettes, the border experiment, or the public component contract.
+
+The Figma node was inspected directly through the Plugin API, including the active mode,
+fill opacity, and variable alias chain:
+
+- [Button Dark reference](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9026-2684),
+  frame `9026:2684`: `Neutral/Background/1/Rest` (`VariableID:8936:883`), Dark mode
+  `8936:72`, aliases `Colors/Neutral/Grey-16` (`VariableID:8947:114613`).
+  The resolved solid fill is `#262932`, opacity 100%, with a blue tint.
+- [Fluent React dark tokens](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/darkColor.ts):
+  `colorNeutralBackground1` uses Grey-16 `#292929`, an achromatic gray. Background 2 is
+  `#1f1f1f`; Background 3 is `#141414`. The corresponding Figma/Web role therefore has
+  a confirmed chromatic difference; its cause/version history was not established.
+- [WinUI solid theme resources](https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Common_themeresources_any.xaml):
+  Dark `SolidBackgroundFillColorBase` is `#202020`, Secondary is `#1c1c1c`, and Tertiary
+  is `#282828`. These are different surface roles, not one universal Fluent background.
+- [Fluent materials](https://fluent2.microsoft.design/material): Mica is affected by the
+  desktop wallpaper when active. A tinted Windows screenshot does not establish a tinted
+  solid background token.
+
+| Surface | Color | CIELAB L* from sRGB |
+| --- | --- | --- |
+| Figma Button Dark frame | `#262932` | 16.64 |
+| Kiskadee Dark Neutral Lowest | `#262a33` | 17.02 |
+| Kiskadee Dark default canvas, Neutral Low | `#1d1f28` | 11.92 |
+| Fluent React Neutral Background 1 | `#292929` | 16.59 |
+| WinUI Dark solid base | `#202020` | 12.25 |
+
+The verified Kiskadee Dark surfaces are coherent with the Figma reference within the
+custom tonal scale's approximation. Lowest is close to the Figma fill; the default
+Showcase canvas deliberately uses the darker Low surface. It is not brighter than the
+inspected Figma background and is close in lightness to WinUI's solid base.
+
+Decision: retain the current backgrounds, including the approved darker calibration and
+absolute-black Darker default. Keep `card.neutral` mapped through `black.v2`; do not switch
+to achromatic `black.v1` merely to match the Web screenshot. Primary Medium/Highest still
+use the blue family, and physical black/white endpoints use `black.v1` caps. This conclusion
+is scoped to the inspected backgrounds, not a blanket claim of complete preset fidelity.
+Future comparisons must distinguish hue from lightness and compare platform, theme,
+material and surface role before proposing changes. Default canvas selection remains a
+centralized Showcase policy; available surface colors remain preset-owned.
+
+
+### Moderated dark Primary borders (2026-09-07)
+
+User-approved trial inspired by the official
+[Fluent React Dark brand stroke tokens](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/darkColor.ts).
+`colorBrandStroke2` uses Brand-50 (the source's example color is `#004c87`), in contrast
+to the stronger Brand-100 `colorBrandStroke1`. This is evidence for a quieter brand border,
+not evidence that Fluent Card prescribes these exact Primary recipes.
+
+Kiskadee adapts that intent through the existing approved `card.primary` mapping to
+`primitive.blue.v1`, D track, using `exactColor` with evidence ID `component.card`:
+
+| Theme | Previous Rest | Adapted Rest | Generated solid color |
+| --- | --- | --- | --- |
+| Dark | D35 | D24 | `#0e467b` |
+| Darker | D35 | D16 | `#143a61` |
+
+D24 is a moderated candidate inspired by BrandStroke2, not an exact upstream color match.
+D16 is a further Kiskadee adaptation for the darker surfaces. Both apply to Primary Lowest
+and Medium Rest borders in onSubtle and onVivid. No alpha, new primitive, or global token
+change is introduced. Light, surface fills, Neutral borders, Primary Highest's contour,
+visibility defaults, and Hover/Pressed/Selected/Disabled recipes remain unchanged.
+Visual acceptance of these candidate borders remains pending.
+
+
+### Darker neutral Card border opacity (2026-09-07)
+
+User requested a quieter neutral Card boundary on Darker's darker surfaces. All published
+Neutral Rest borders in Darker now use physical white at 10% alpha (`#ffffff1a`), via
+`absoluteCap(primitive('black', 'v1'), 'light', 10)`. This component-local cap supersedes the
+15% Light/onVivid contour reuse for Darker only, in both consumed surface contexts.
+Dark keeps its 15% contour. Global contours, Primary borders, surface fills, border visibility
+and interactive state deltas are unchanged. This is a user-approved Kiskadee adaptation.
+
+The user visually approved the preceding Primary border calibration (Dark D24 / Darker D16);
+retain those blue borders. The new Neutral opacity adjustment awaits visual evaluation.

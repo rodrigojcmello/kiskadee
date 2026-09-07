@@ -8,6 +8,80 @@ function requireCardSurfaceElement() {
 }
 
 describe('Fluent 2 Card canonical surfaces', () => {
+  it('uses moderated solid brand borders without changing Highest or interactive deltas', () => {
+    const palettes = requireCardSurfaceElement().palettes.default;
+    for (const [theme, color] of [
+      ['dark', '#0e467b'],
+      ['darker', '#143a61']
+    ] as const) {
+      for (const context of ['onSubtle', 'onVivid'] as const) {
+        const borders = palettes?.[theme]?.[context]?.borderColor?.primary;
+        expect(borders?.lowest?.rest).toBe(color);
+        expect(borders?.medium?.rest).toBe(color);
+        expect(borders?.highest?.rest).toBe(`contour:neutral.standard.${theme}.onVivid.medium`);
+      }
+      expect(palettes?.[theme]?.onSubtle?.borderColor?.primary?.lowest).toMatchObject({
+        hover: '#0064b4',
+        pressed: '#14375b',
+        selected: { rest: '#074d89' }
+      });
+    }
+    expect(palettes?.light?.onSubtle?.borderColor?.primary?.lowest?.rest).toBe('#0064b4');
+  });
+
+  it('keeps Dark neutral contour and reduces only Darker neutral Rest opacity', () => {
+    const palettes = requireCardSurfaceElement().palettes.default;
+    for (const theme of ['dark', 'darker'] as const) {
+      for (const context of ['onSubtle', 'onVivid'] as const) {
+        for (const states of Object.values(
+          palettes?.[theme]?.[context]?.borderColor?.neutral ?? {}
+        )) {
+          expect(states.rest).toBe(
+            theme === 'darker' ? '#ffffff1a' : 'contour:neutral.standard.light.onVivid.medium'
+          );
+        }
+      }
+    }
+    expect(palettes?.light?.onSubtle?.borderColor?.neutral?.lowest?.rest).toBe(
+      'contour:neutral.standard.light.onSubtle.medium'
+    );
+  });
+
+  it('darkens every shared Darker surface state without introducing translucency', () => {
+    const palettes = requireCardSurfaceElement().palettes.default;
+    const luminance = (hex: string) => {
+      expect(hex).toMatch(/^#[0-9a-f]{6}$/i);
+      const rgb = [1, 3, 5].map((offset) => {
+        const channel = Number.parseInt(hex.slice(offset, offset + 2), 16) / 255;
+        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+      });
+      return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+    };
+    for (const context of ['onSubtle', 'onVivid'] as const) {
+      const dark = palettes?.dark?.[context]?.boxColor;
+      const darker = palettes?.darker?.[context]?.boxColor;
+      for (const intent of ['neutral', 'primary'] as const) {
+        for (const emphasis of ['lowest', 'low', 'medium', 'highest'] as const) {
+          const before = dark?.[intent]?.[emphasis];
+          const after = darker?.[intent]?.[emphasis];
+          if (!before || !after) continue;
+          for (const state of ['rest', 'hover', 'pressed', 'disabled'] as const) {
+            if (typeof before[state] === 'string' && typeof after[state] === 'string') {
+              expect(luminance(after[state])).toBeLessThan(luminance(before[state]));
+            }
+          }
+          if (
+            typeof before.selected?.rest === 'string' &&
+            typeof after.selected?.rest === 'string'
+          ) {
+            expect(luminance(after.selected.rest)).toBeLessThan(luminance(before.selected.rest));
+          }
+        }
+      }
+      expect(darker?.neutral?.highest?.rest).toBe('#000000');
+    }
+  });
+
   it('keeps the adjusted Light hierarchy exclusive to onVivid', () => {
     const colors = requireCardSurfaceElement().palettes.default?.light?.onVivid?.boxColor;
     expect(colors?.neutral?.lowest?.rest).toBe('#ffffff');
@@ -79,9 +153,9 @@ describe('Fluent 2 Card canonical surfaces', () => {
     expect(palettes?.dark?.onSubtle.boxColor?.neutral).not.toHaveProperty('highest');
 
     expect(palettes?.darker?.onSubtle.boxColor?.neutral).toMatchObject({
-      lowest: { rest: '#262a33' },
-      low: { rest: '#1d1f28' },
-      medium: { rest: '#11131c' },
+      lowest: { rest: '#11131c' },
+      low: { rest: '#0b0d15' },
+      medium: { rest: '#05060d' },
       highest: { rest: '#000000' }
     });
   });
@@ -121,7 +195,7 @@ describe('Fluent 2 Card canonical surfaces', () => {
     });
   });
 
-  it('keeps the approved dark-blue Primary Medium progression in Dark and Darker', () => {
+  it('keeps Dark Primary Medium and applies the deeper opaque Darker progression', () => {
     const palettes = requireCardSurfaceElement().palettes.default;
     const expectedPrimaryMedium = {
       rest: '#142d48',
@@ -132,9 +206,13 @@ describe('Fluent 2 Card canonical surfaces', () => {
     };
 
     expect(palettes?.dark?.onSubtle.boxColor?.primary?.medium).toMatchObject(expectedPrimaryMedium);
-    expect(palettes?.darker?.onSubtle.boxColor?.primary?.medium).toMatchObject(
-      expectedPrimaryMedium
-    );
+    expect(palettes?.darker?.onSubtle.boxColor?.primary?.medium).toMatchObject({
+      rest: '#0e1d2e',
+      hover: '#142a43',
+      pressed: '#061423',
+      selected: { rest: '#122438' },
+      disabled: '#05060d'
+    });
   });
 
   it('publishes the vivid Primary surface as Highest and leaves High intentionally absent', () => {
@@ -191,8 +269,12 @@ describe('Fluent 2 Card canonical surfaces', () => {
     );
 
     expect(palettes?.darker?.onSubtle.boxColor?.primary).not.toHaveProperty('high');
-    expect(palettes?.darker?.onSubtle.boxColor?.primary?.highest).toMatchObject(
-      expectedDarkPrimaryHighest
-    );
+    expect(palettes?.darker?.onSubtle.boxColor?.primary?.highest).toMatchObject({
+      rest: '#133d68',
+      hover: '#104375',
+      pressed: '#13273e',
+      selected: { rest: '#14375b' },
+      disabled: '#05060d'
+    });
   });
 });

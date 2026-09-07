@@ -10,13 +10,7 @@ export type ResolvedCanonicalCardSurface = {
   contentSurfaceContext: SurfaceContext;
 };
 
-/** The Button canvas is the shared initial surface policy, not a route-local color. */
-export function resolveDefaultCanonicalCardSurface<
-  T extends { contentSurfaceContext: SurfaceContext }
->(surfaces: readonly T[], surfaceContext: SurfaceContext = 'onSubtle'): T | undefined {
-  const compatible = surfaces.filter((surface) => surface.contentSurfaceContext === surfaceContext);
-  return surfaceContext === 'onSubtle' ? (compatible[1] ?? compatible[0]) : compatible[0];
-}
+export { resolveDefaultCanonicalCardSurface } from './showcase-background-defaults';
 
 function capitalize(value: string): string {
   return value.length > 0 ? `${value[0].toUpperCase()}${value.slice(1)}` : value;

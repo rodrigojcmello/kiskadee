@@ -64,17 +64,18 @@ as the shared adversarial range. Changing Surface Context never hides either the
 
 ## Shared initial canvas
 
-Every component route inherits its initial canvas background from `ShowcaseShell`. Button is the
-visual reference: the default is the second distinct canonical `onSubtle` surface in the preset's
-published order, or the first when only one is available. In Fluent Light this is
-`neutral.low`, the light-gray surface, rather than the white `neutral.lowest` surface. The same
-policy resolves the current preset, segment and theme; no light-gray HEX is authored in Showcase.
-An unavailable catalog yields no invented surface or cross-theme color fallback.
+Every component route inherits its initial canvas background from `ShowcaseShell`.
+`utils/showcase-background-defaults.ts` centralizes default selection for canonical and
+stress-test backgrounds by theme and surface context. Canonical defaults select published
+identities, not swatch positions: Light/Dark prefer `neutral.low`; Darker prefers
+`neutral.highest`, then `neutral.medium` when the black surface is unavailable. The vivid
+context prefers `primary.highest`. Other compatible published surfaces are fallbacks.
+No color is authored by this policy and no surface crosses context as a fallback.
 
-`resolveDefaultCanonicalCardSurface` owns that base-surface selection policy. The initial
-scenario is selected by its base surface key, never by its index in the expanded list of swatches.
-Adding the split swatch must not turn the second displayed option into the page default.
-An unavailable catalog yields no invented color or cross-theme fallback.
+Initial load and context changes use automatic defaults, reevaluated for the active theme.
+Explicit background selections remain selected while available; unavailable selections fall
+back to the current theme/context default. The schema owns the available surfaces and colors,
+not the Showcase's initial canvas choice. Applications remain free to choose their own canvas.
 
 ## Canvas and supporting Card combinations
 

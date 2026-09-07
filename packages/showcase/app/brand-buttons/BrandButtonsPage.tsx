@@ -82,7 +82,7 @@ export default function BrandButtonsPage() {
             onValueChange={(value) => setButtonScale(value as ElementSizeValue)}
           />
           <ShowcaseBooleanControl
-            label="Descrições"
+            label="Descriptions"
             checked={showDescriptions}
             onCheckedChange={setShowDescriptions}
           />

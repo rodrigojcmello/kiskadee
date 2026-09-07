@@ -265,7 +265,7 @@ export function Button() {
             onCheckedChange={setShowButtonGroups}
           />
           <ShowcaseBooleanControl
-            label="Descrições"
+            label="Descriptions"
             checked={showDescriptions}
             onCheckedChange={setShowDescriptions}
           />

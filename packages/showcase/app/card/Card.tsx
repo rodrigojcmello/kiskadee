@@ -35,6 +35,7 @@ import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControl
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
+  ShowcaseControlField,
   ShowcaseControlGrid,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
@@ -468,17 +469,19 @@ export function Card() {
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Appearance">
         <ShowcaseControlGrid>
-          <ShowcaseSelectControl
-            label="Radius"
-            options={radiusSelectOptions}
-            value={radius}
-            onValueChange={(value) => setRadius(value as CardRadiusMode)}
-            disabled={!isCardAvailable || radiusSelectOptions.length <= 1}
-          />
+          <ShowcaseControlField fullWidth>
+            <ShowcaseSelectControl
+              label="Radius"
+              options={radiusSelectOptions}
+              value={radius}
+              onValueChange={(value) => setRadius(value as CardRadiusMode)}
+              disabled={!isCardAvailable || radiusSelectOptions.length <= 1}
+            />
+          </ShowcaseControlField>
         </ShowcaseControlGrid>
         <ShowcaseControlStack>
           <ShowcaseBooleanControl
-            label="Descrições"
+            label="Descriptions"
             checked={showDescriptions}
             onCheckedChange={setShowDescriptions}
           />

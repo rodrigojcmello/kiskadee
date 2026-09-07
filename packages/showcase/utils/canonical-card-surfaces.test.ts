@@ -58,15 +58,32 @@ describe('canonical Card surface resolver', () => {
       segment: 'default',
       theme: 'light'
     });
-    expect(resolveDefaultCanonicalCardSurface(surfaces)).toBe(surfaces[1]);
+    expect(resolveDefaultCanonicalCardSurface(surfaces)).toBe(surfaces[0]);
     expect(resolveDefaultCanonicalCardSurface(surfaces, 'onVivid')).toBe(surfaces[4]);
     // The initial choice is made after filtering unsupported contexts, not by raw array index.
     expect(resolveDefaultCanonicalCardSurface([surfaces[4], surfaces[0], surfaces[1]])).toBe(
-      surfaces[1]
+      surfaces[0]
     );
     expect(resolveDefaultCanonicalCardSurface([surfaces[0]])).toBe(surfaces[0]);
     expect(resolveDefaultCanonicalCardSurface([surfaces[4]])).toBeUndefined();
     expect(resolveDefaultCanonicalCardSurface([])).toBeUndefined();
+  });
+
+  it('selects darker black by identity regardless of catalog order and respects context', () => {
+    const surfaces = resolveCanonicalCardSurfaces({
+      canonicalSurfaces: createCanonicalSurfaces(),
+      segment: 'default',
+      theme: 'light'
+    });
+    expect(
+      resolveDefaultCanonicalCardSurface([...surfaces].reverse(), 'onSubtle', 'darker')?.key
+    ).toBe('neutral.highest');
+    expect(resolveDefaultCanonicalCardSurface(surfaces, 'onVivid', 'darker')?.key).toBe(
+      'primary.highest'
+    );
+    expect(
+      resolveDefaultCanonicalCardSurface(surfaces.slice(0, 5), 'onSubtle', 'darker')?.key
+    ).toBe('neutral.medium');
   });
 
   it('resolves the same default policy from the current segment and theme artifacts', () => {
@@ -90,12 +107,12 @@ describe('canonical Card surface resolver', () => {
       resolveDefaultCanonicalCardSurface(
         resolveCanonicalCardSurfaces({ canonicalSurfaces, segment: 'default', theme: 'dark' })
       )?.resolvedColor
-    ).toBe('#242424');
+    ).toBe('#292929');
     expect(
       resolveDefaultCanonicalCardSurface(
         resolveCanonicalCardSurfaces({ canonicalSurfaces, segment: 'alternate', theme: 'light' })
       )?.resolvedColor
-    ).toBe('#eeede0');
+    ).toBe('#fffef0');
   });
 
   it('preserves the artifact order and descendant surface-context metadata', () => {

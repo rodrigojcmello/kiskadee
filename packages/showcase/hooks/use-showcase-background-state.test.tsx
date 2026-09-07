@@ -60,13 +60,13 @@ beforeEach(() => {
   fixtures.theme = 'light';
   fixtures.tones = [
     {
-      key: 'neutral.low',
+      key: 'neutral.lowest',
       label: 'Base',
       contentSurfaceContext: 'onSubtle',
       resolvedColor: 'white'
     },
     {
-      key: 'neutral.medium',
+      key: 'neutral.low',
       label: 'Alternate',
       contentSurfaceContext: 'onSubtle',
       resolvedColor: 'gray'
@@ -84,26 +84,54 @@ beforeEach(() => {
 afterEach(() => act(() => root.unmount()));
 
 describe('shared background selection', () => {
+  it('updates automatic defaults on theme changes and preserves explicit choices', () => {
+    render();
+    fixtures.tones = [
+      ...fixtures.tones,
+      {
+        key: 'neutral.highest',
+        label: 'Black',
+        resolvedColor: 'black',
+        contentSurfaceContext: 'onSubtle'
+      }
+    ];
+    fixtures.theme = 'darker';
+    render();
+    expect(value.color).toBe('black');
+    act(() => value.selectContext('onVivid'));
+    fixtures.theme = 'dark';
+    render();
+    expect(value.color).toBe('blue');
+    act(() => value.selectContext('onSubtle'));
+    expect(value.color).toBe('gray');
+    fixtures.theme = 'darker';
+    render();
+    expect(value.color).toBe('black');
+    act(() => value.selectBackground('neutral.lowest'));
+    fixtures.theme = 'dark';
+    render();
+    expect(value.color).toBe('white');
+  });
   it('keeps gray/white default, and selects white/white and white/gray independently', () => {
     render();
     expect([value.color, value.cardSurface?.resolvedColor]).toEqual(['gray', 'white']);
-    act(() => value.selectBackground('neutral.low'));
+    act(() => value.selectBackground('neutral.lowest'));
     expect([value.color, value.cardSurface?.resolvedColor]).toEqual(['white', 'white']);
-    act(() => value.selectBackground('neutral.low:cards:neutral.medium'));
+    act(() => value.selectBackground('neutral.lowest:cards:neutral.low'));
     expect([value.color, value.cardSurface?.resolvedColor]).toEqual(['white', 'gray']);
     expect(value.surfaceContext).toBe('onSubtle');
   });
   it('resets on navigation and returning to a previous route, without remembering the selection', () => {
     render();
-    act(() => value.selectBackground('neutral.low:cards:neutral.medium'));
+    act(() => value.selectBackground('neutral.lowest:cards:neutral.low'));
     render('/switch');
-    expect(value.key).toBe('neutral.medium');
+    expect(value.key).toBe('neutral.low');
     render('/button');
-    expect(value.key).toBe('neutral.medium');
+    expect(value.key).toBe('neutral.low');
   });
   it('resolves the selected pair again for themes and releases unavailable artifacts', () => {
     render();
-    act(() => value.selectBackground('neutral.low:cards:neutral.medium'));
+    act(() => value.selectBackground('neutral.lowest:cards:neutral.low'));
     fixtures.theme = 'dark';
     fixtures.tones = fixtures.tones.map((tone) => ({
       ...tone,
@@ -140,6 +168,6 @@ describe('shared background selection', () => {
     expect(renderToString(<Harness />)).toContain('data-canvas="gray"');
     render();
     act(() => value.selectBackground('unknown'));
-    expect(value.key).toBe('neutral.medium');
+    expect(value.key).toBe('neutral.low');
   });
 });

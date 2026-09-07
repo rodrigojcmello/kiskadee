@@ -35,7 +35,7 @@ export function useCanonicalCardSurfaces(themeOverride?: ThemeMode) {
     [tones]
   );
 
-  const defaultSurface = resolveDefaultCanonicalCardSurface(tones);
+  const defaultSurface = resolveDefaultCanonicalCardSurface(tones, 'onSubtle', theme);
 
   return {
     defaultSurface,

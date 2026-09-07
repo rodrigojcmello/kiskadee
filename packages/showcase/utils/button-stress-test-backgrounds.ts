@@ -21,13 +21,7 @@ export function getAvailableButtonStressTestBackgrounds<
   return tones.filter((tone) => isButtonStressTestBackgroundAvailable(tone, theme));
 }
 
-export function getPreferredButtonStressTestBackground<
-  TTone extends ButtonStressTestBackgroundAvailability
->(tones: readonly TTone[], theme: ThemeMode, surfaceContext: SurfaceContext): TTone | undefined {
-  return getAvailableButtonStressTestBackgrounds(tones, theme).find((tone) =>
-    tone.surfaceContexts.includes(surfaceContext)
-  );
-}
+export { getPreferredButtonStressTestBackground } from './showcase-background-defaults';
 
 export function resolveBackgroundSurfaceContext(
   row: ButtonStressTestBackgroundRow

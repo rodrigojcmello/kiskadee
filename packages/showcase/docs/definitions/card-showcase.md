@@ -18,7 +18,7 @@ missing or similar visual treatments visible before a new border or surface mech
    with both manual switches off. Manual shadows use the panel's selected level or the preset
    default when no level is
    selected. The controls do not affect Composition, other comparisons or CardAction.
-   Controls align with the bottom of the heading/description block. The sidebar's Descrições
+   Controls align with the bottom of the heading/description block. The sidebar's Descriptions
    switch uses the shared display preference and hides explanatory copy, not specimen content.
    Surfaces specimens use Title and identical Lorem ipsum copy. Missing combinations show a
    circle-minus glyph through p-react Icon alongside Not published, without a fake Card surface.
