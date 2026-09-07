@@ -87,6 +87,7 @@ export function useShowcaseBackgroundState(route: string) {
     color: active?.resolvedColor,
     defaultColor: canonical.defaultSurface?.resolvedColor,
     cardSurface,
+    cardBorder: current.mode === 'canonical' && Boolean(scenario?.cardBorder),
     surfaces: canonical.tones,
     scenarios,
     stressTones,

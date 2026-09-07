@@ -10,10 +10,14 @@ Sequential buttons do not replace the trigger and do not open the listbox. Consu
 them around the trigger to create a stepper-like Select while preserving the complete list as the
 authoritative choice surface.
 
-Navigation is bounded rather than circular. The previous button is disabled at the first enabled
+Navigation is bounded by default (`loop={false}`). The previous button is disabled at the first enabled
 option, the next button is disabled at the last enabled option, and disabled options are skipped.
 The root `disabled` state disables all three controls.
 
 The headless package owns selection, bounds, disabled-option handling, button semantics, and
 accessible default labels. Geometry, icons, borders, focus presentation, and responsive layout
 belong to the styled consumer.
+
+With `loop` enabled on Root, Next wraps from the last enabled option to the first, and Previous
+wraps from the first to the last. Disabled options are skipped. Both buttons are disabled when
+fewer than two options are enabled. This option does not change keyboard navigation in the listbox.

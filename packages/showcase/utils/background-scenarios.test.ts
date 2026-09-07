@@ -44,6 +44,7 @@ describe('Showcase background combinations', () => {
     ]);
     expect(new Set(scenarios.map((item) => item.key)).size).toBe(5);
     expect(scenarios.filter((item) => item.splitSwatch)).toHaveLength(1);
+    expect(scenarios.filter((item) => item.cardBorder)).toEqual([scenarios[1]]);
     expect(
       scenarios.find((item) => item.key === resolveDefaultCanonicalCardSurface(surfaces)?.key)
     ).toBe(scenarios[2]);

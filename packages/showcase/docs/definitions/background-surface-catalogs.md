@@ -29,7 +29,10 @@ in the artifact. The Showcase neither owns an intent/emphasis list nor sorts col
 
 When two surface entries resolve to the same normalized color, only the first is retained in the
 base surface catalog. Background scenarios are separate and must not be deduplicated by canvas
-color: two scenarios can share a canvas while selecting different supporting Cards. Sparse intent
+color: two scenarios can share a canvas while selecting different supporting Cards. The split-swatch
+scenario requests the public Card border to distinguish its supporting Cards from the canvas.
+This is scenario metadata, independent of swatch position; border paint remains preset-owned.
+An explicit border override on an example takes precedence. Sparse intent
 tracks remain valid: a preset may publish `primary.highest` without inventing `primary.high`.
 
 The Card owns the canonical surface vocabulary because it is the framework component that
