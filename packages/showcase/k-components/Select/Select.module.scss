@@ -11,6 +11,10 @@
   --select-soft-shadow: rgba(0, 0, 0, 0.14);
 }
 
+.container[data-disabled='true'] .label {
+  opacity: 0.5;
+}
+
 .label {
   color: rgba(0, 0, 0, 0.78);
   display: block;

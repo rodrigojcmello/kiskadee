@@ -3,6 +3,7 @@
 import type { ComponentEmphasis } from '@kiskadee/core';
 import { Separator, Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { useState } from 'react';
+import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseControlGroup,
@@ -59,10 +60,16 @@ export default function SeparatorShowcase() {
         eyebrow="Separator"
         title="Examples"
         isAvailable={available}
+        showGlobalControls={false}
       >
+        <ShowcaseControlGroup title="Semantic">
+          <ShowcaseGlobalSemanticControls />
+        </ShowcaseControlGroup>
         <ShowcaseControlGroup title="Appearance">
           <ShowcaseSelectControl
             label="Emphasis"
+            variant="sequential"
+            loop
             options={supportedEmphases.map((value) => ({ value, label: value }))}
             value={activeEmphasis}
             onValueChange={(value) => setEmphasis(value as ComponentEmphasis)}

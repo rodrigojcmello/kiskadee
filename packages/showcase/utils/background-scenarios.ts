@@ -6,6 +6,7 @@ export type BackgroundScenario = {
   canvas: ResolvedCanonicalCardSurface;
   card: ResolvedCanonicalCardSurface;
   splitSwatch: boolean;
+  cardBorder: boolean;
 };
 
 /** Compose published surfaces; do not add colors to, or deduplicate, the scenario catalog. */
@@ -21,7 +22,8 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
       label: `${canvas.label} canvas / ${card.label} cards`,
       canvas,
       card,
-      splitSwatch: false
+      splitSwatch: false,
+      cardBorder: false
     };
     if (canvas !== subtle[0] || !subtle[1]) return [scenario];
     return [
@@ -31,7 +33,8 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
         label: `${canvas.label} canvas / ${subtle[1].label} cards`,
         canvas,
         card: subtle[1],
-        splitSwatch: true
+        splitSwatch: true,
+        cardBorder: true
       }
     ];
   });

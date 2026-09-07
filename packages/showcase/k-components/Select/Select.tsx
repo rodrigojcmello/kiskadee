@@ -27,6 +27,7 @@ export function Select({
   width,
   minWidth,
   maxWidth,
+  loop = false,
   variant = 'standard'
 }: SelectProps) {
   const selectedOption = options.find((o) => o.value === value);
@@ -83,6 +84,8 @@ export function Select({
       value={value}
       onValueChange={onValueChange}
       disabled={disabled}
+      loop={loop}
+      data-disabled={disabled || undefined}
       options={options}
       style={mergedStyle}
       classNames={{

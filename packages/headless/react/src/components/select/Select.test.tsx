@@ -19,11 +19,23 @@ beforeAll(() => {
 
 afterEach(cleanup);
 
-function SequentialSelect({ disabled = false }: { disabled?: boolean }) {
+function SequentialSelect({
+  disabled = false,
+  loop = false
+}: {
+  disabled?: boolean;
+  loop?: boolean;
+}) {
   const [value, setValue] = useState('first');
 
   return (
-    <Select.Root disabled={disabled} options={options} value={value} onValueChange={setValue}>
+    <Select.Root
+      disabled={disabled}
+      loop={loop}
+      options={options}
+      value={value}
+      onValueChange={setValue}
+    >
       <Select.Label>Family</Select.Label>
       <Select.Previous>Previous</Select.Previous>
       <Select.Trigger>{options.find((option) => option.value === value)?.label}</Select.Trigger>
@@ -54,6 +66,43 @@ describe('Headless Select sequential navigation', () => {
     expect(trigger.textContent).toBe('Last');
     expect(previous.hasAttribute('disabled')).toBe(false);
     expect(next.hasAttribute('disabled')).toBe(true);
+  });
+
+  it('wraps both ways repeatedly while skipping disabled options and keeping the list closed', () => {
+    const result = render(<SequentialSelect loop />);
+    const previous = result.getByRole('button', { name: 'Previous option' });
+    const next = result.getByRole('button', { name: 'Next option' });
+    const trigger = result.getByRole('combobox');
+    for (let cycle = 0; cycle < 3; cycle++) {
+      fireEvent.click(previous);
+      expect(trigger.textContent).toBe('Last');
+      fireEvent.click(next);
+      expect(trigger.textContent).toBe('First');
+      fireEvent.click(next);
+      expect(trigger.textContent).toBe('Last');
+      fireEvent.click(next);
+      expect(trigger.textContent).toBe('First');
+    }
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it.each([
+    { entries: [] },
+    { entries: [options[1]] },
+    { entries: [options[0], options[1]] }
+  ])('disables looping steps with fewer than two enabled options: %j', ({ entries }) => {
+    const onValueChange = vi.fn();
+    const result = render(
+      <Select.Root loop options={entries} onValueChange={onValueChange}>
+        <Select.Previous />
+        <Select.Next />
+      </Select.Root>
+    );
+    for (const button of result.getAllByRole('button')) {
+      expect(button.hasAttribute('disabled')).toBe(true);
+      fireEvent.click(button);
+    }
+    expect(onValueChange).not.toHaveBeenCalled();
   });
 
   it('keeps the central trigger responsible for opening the listbox', () => {
@@ -129,7 +178,7 @@ describe('Headless Select sequential navigation', () => {
   });
 
   it('disables the trigger and both sequential controls with the root', () => {
-    const result = render(<SequentialSelect disabled />);
+    const result = render(<SequentialSelect disabled loop />);
 
     expect(result.getByRole('button', { name: 'Previous option' }).hasAttribute('disabled')).toBe(
       true

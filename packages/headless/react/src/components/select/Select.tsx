@@ -69,6 +69,8 @@ export type SelectProps = SelectRootDivProps & {
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean, details: SelectOpenChangeDetails) => void;
   disabled?: boolean;
+  /** Wrap Previous/Next navigation between enabled options. Defaults to false. */
+  loop?: boolean;
   placeholder?: string;
   idPrefix?: string;
   classNames?: Partial<
@@ -181,6 +183,7 @@ type SelectContextValue = {
   activeKey: string | undefined;
   setActiveKey: (key: string | undefined) => void;
   disabled: boolean;
+  loop: boolean;
   placeholder: string;
   baseId: string;
   labelId?: string;
@@ -218,6 +221,7 @@ function SelectRoot({
   defaultOpen = false,
   onOpenChange,
   disabled = false,
+  loop = false,
   placeholder = 'Select an option',
   idPrefix,
   classNames,
@@ -288,6 +292,7 @@ function SelectRoot({
       activeKey,
       setActiveKey,
       disabled,
+      loop,
       placeholder,
       baseId,
       labelId,
@@ -305,6 +310,7 @@ function SelectRoot({
       isOpen,
       items,
       labelId,
+      loop,
       options,
       placeholder,
       selected,
@@ -486,15 +492,19 @@ function SelectStep({
   direction,
   ...buttonProps
 }: SelectStepProps & { direction: -1 | 1 }) {
-  const { selected, setSelected, items, disabled, classNames } = useSelectContext();
-  const adjacentKey = getAdjacentCollectionKey(items, selected, direction, false);
+  const { selected, setSelected, items, disabled, loop, classNames } = useSelectContext();
+  const adjacentKey =
+    loop && items.filter((item) => !item.disabled).length <= 1
+      ? undefined
+      : getAdjacentCollectionKey(items, selected, direction, loop);
   const isDisabled = disabled || disabledProp || adjacentKey === undefined;
   const resolvedClassName = className ?? (direction === -1 ? classNames?.e6 : classNames?.e7);
   const resolvedLabel = ariaLabel ?? (direction === -1 ? 'Previous option' : 'Next option');
   const handleClick = useCallback(
     (event: ReactMouseEvent<HTMLButtonElement>) => {
       onClick?.(event);
-      if (!event.defaultPrevented && !isDisabled && adjacentKey) setSelected(adjacentKey);
+      if (!event.defaultPrevented && !isDisabled && adjacentKey !== undefined)
+        setSelected(adjacentKey);
     },
     [adjacentKey, isDisabled, onClick, setSelected]
   );
