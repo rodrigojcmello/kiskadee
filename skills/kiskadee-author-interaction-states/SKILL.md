@@ -1,6 +1,6 @@
 ---
 name: kiskadee-author-interaction-states
-description: Author and review Kiskadee component interaction states as sparse visual deltas over Rest. Use whenever editing or reviewing preset component palettes, stateful effects, or schema maps containing rest, hover, pressed, focus, selected, pending, disabled, readOnly, or filled; translating Figma or official design-system state matrices; or diagnosing duplicate state values, focus-ring ownership, and overlapping state precedence.
+description: Author or review Kiskadee state palettes and effects as sparse deltas; diagnose state precedence and focus ownership.
 ---
 
 # Author Kiskadee Interaction States
@@ -40,6 +40,10 @@ Read before editing:
   still means the child keeps its Rest property.
 
 ## Workflow
+
+For reviews, inspect and report these conditions without modifying schemas or evidence. Apply
+removals and updates below only during authorized implementation. Read-only analysis uses existing
+artifacts with a freshness caveat; generation belongs to authorized validation when outputs change.
 
 1. Inspect the official source and the existing component evidence.
 2. Identify the state scope owner and every affected element/property.

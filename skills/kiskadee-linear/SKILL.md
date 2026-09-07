@@ -1,6 +1,6 @@
 ---
 name: kiskadee-linear
-description: Linear workflow for the Kiskadee monorepo. Use when creating, updating, curating, or reading Kiskadee issues in Linear, especially when turning chat decisions, handoff notes, or implementation follow-ups into backlog items.
+description: Read, create, or update Kiskadee Linear issues with project-specific language, labels, and handoff context.
 ---
 
 # Kiskadee Linear Skill
@@ -79,9 +79,11 @@ copy long conversations into Linear.
 
 ## Creation Workflow
 
-1. Confirm the actual task list with the user before creating issues.
+1. Use the task list already authorized by the user. Ask only when the issue scope is unclear or
+   creation has not been requested; do not reconfirm an explicit creation request.
 2. List the relevant team/project/labels when the current identifiers are not already known.
 3. Create issues in small batches.
 4. After creation, report identifiers, titles, and any labels/project assignment used.
-5. If a Linear tool fails or reveals taxonomy ambiguity, stop and explain before creating more
-   issues.
+5. If a tool fails, check whether the issue was created before retrying to avoid duplicates.
+   Resolve read-only identifier/label lookups when possible. Pause only the ambiguous or unauthorized
+   part and explain what needs user input; do not repeat writes after an uncertain result.

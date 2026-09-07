@@ -19,7 +19,9 @@ Next.js consumer and inspection application.
 - Use `pnpm` and the Node version from `.nvmrc`.
 - Keep changes focused and package-scoped.
 - Prefer minimal edits over broad rewrites.
-- Do not add or modify unit tests unless the user explicitly asks for it.
+- Follow `AGENTS.md` for scope, completion, skill routing, and validation. Explicit analysis-only
+  requests remain non-implementing; authorized fixes include useful regression tests.
+- Load only task-relevant skills and references; do not treat this bootstrap as a mandatory full scan.
 - Prefer the narrowest relevant validation for the edited area.
 
 ## Package Map
@@ -59,7 +61,8 @@ Next.js consumer and inspection application.
 
 ## Practical Default
 
-If the task is small and package-local, this file is usually enough.
+For small package-local tasks, start with `AGENTS.md` and the affected files. This bootstrap is
+a summary, not an alternative source of operating rules.
 
 If the task changes architecture, package ownership, token taxonomy, or cross-package behavior,
 load `PROJECT-PURPOSE.md` and the architecture skill before proposing code.

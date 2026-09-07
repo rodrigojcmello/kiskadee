@@ -1,6 +1,6 @@
 ---
 name: kiskadee-preset-evidence
-description: Kiskadee preset source-evidence workflow. Use whenever a task touches official preset schema files, design-system documentation, Figma links, official design-system docs, visual token extraction, component geometry, state colors, shadows, radius, effects, or any source-derived preset decision under packages/presets.
+description: Document source evidence for official Kiskadee preset changes and distinguish upstream fidelity from approved adaptations.
 ---
 
 # Kiskadee Preset Evidence
@@ -8,6 +8,11 @@ description: Kiskadee preset source-evidence workflow. Use whenever a task touch
 Use this skill to keep official preset source documentation automatic and consistent.
 
 ## Core Rule
+
+A source-evidence review or analysis reports gaps without editing files. The update requirements
+below apply to authorized preset changes. A Showcase-only layout/prop adjustment using an existing
+published recipe does not require reopening upstream design evidence unless source fidelity is in
+question. Preserve all evidence requirements when the preset recipe itself changes.
 
 Do not finish an official preset change without checking whether source evidence needs to be
 created or updated.

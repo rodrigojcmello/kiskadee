@@ -9,24 +9,28 @@ keep task-specific workflows inside skills.
 
 ## Repository Snapshot
 
-- `kiskadee` is a PNPM monorepo for a design-system framework.
-- Workspace packages live under `packages/**`.
-- Main package areas:
-  - `packages/core`: shared schema types, color utilities, breakpoints.
-  - `packages/presets`: official presets and schema/token definitions.
-  - `packages/tonal-scale`: deterministic tonal-family generation.
-  - `packages/brands`: portable third-party brand definitions and packs.
-  - `packages/runtime`: shared browser runtime infrastructure for dynamic colors, font preparation,
-    and platform classes.
-  - `packages/fonts`: opt-in online font providers and preset integrations.
-  - `packages/icons`: canonical cross-platform SVG assets and generated platform adapters.
-  - `packages/css-build`: shared PostCSS processing mechanics.
-  - `packages/web-builder`: schema-to-web generation and showcase sync scripts.
-  - `packages/headless/react`: headless React primitives.
-  - `packages/components/react`: styled React components and Sass output.
-  - `packages/components/android`: native Android components and local showcase.
-  - `packages/components/ios`: native iOS components and local showcase.
-  - `packages/showcase`: Next.js playground/consumer app.
+`kiskadee` is a PNPM design-system monorepo with packages under `packages/**`.
+Use `PROJECT-PURPOSE.md` for the package map and architecture; load only the sections relevant
+to the task.
+
+## Task Scope And Completion
+
+- Follow the user's current request and accepted corrections over skill defaults. Analysis-only
+  requests do not authorize implementation. An implementation request authorizes focused edits,
+  useful regression tests, and the required local validation without another confirmation.
+- For an open-ended architecture analysis with unsettled scope, recap scope and deliverables for
+  agreement first. Do not repeat that gate when the user has already approved the direction or
+  explicitly requested implementation. `cp` means agreement to the current proposed next step.
+- Finish authorized work through implementation, relevant validation, and a clear handoff. Ask only
+  when missing information materially changes the result or an action needs additional authority;
+  continue independent authorized work while waiting.
+- Read a skill's entrypoint when it applies, then only the references needed for the current mode.
+  Reuse instructions already read in the session unless they changed. Merely mentioning a component
+  does not require loading every skill associated with it.
+- If an instruction blocks progress, cite the exact file and rule, distinguish its requirement from
+  your interpretation, and explain what remains possible within the user's scope.
+- Inspect the working-tree state before editing; preserve unrelated staged and unstaged work.
+  Report what changed, what was verified, and material limitations in concise Portuguese.
 
 ## Tooling
 
@@ -59,69 +63,39 @@ keep task-specific workflows inside skills.
 
 ## Documentation
 
-- `docs/` is the root for a project's documentation. In this monorepo, prefer the nearest project-specific
-  `docs/` directory over the repository root. For example, package- or feature-specific documentation should live
-  with that package or feature when it has its own documentation root.
-- The repository root `docs/` directory is for cross-project or cross-package documentation only, and should be
-  updated with care.
-- Within a project's `docs/` root, use `docs/definitions/` for durable definitions, terminology, and concepts that
-  should stay stable over time.
-- Within a project's `docs/` root, use `docs/proposals/` for ideas and proposals that are intentionally deferred
-  but still worth keeping.
-- Within a project's `docs/` root, use `docs/technical-debt/` for known follow-ups, migrations, and cleanup work
-  that is not part of the stable contract yet.
-- Within a project's `docs/` root, use `docs/rejected/` for approaches that were considered and explicitly rejected,
-  so the reasoning is not lost.
-- If a task introduces a new durable decision, document why that decision exists in the nearest appropriate
-  Markdown document. Prefer documentation as the source of truth for intended behavior; code can drift or be
-  incomplete.
-- If a task changes behavior exposed across packages, document the relevant assumptions in the nearest appropriate
-  package docs and promote cross-package rules to the root documentation only when they truly apply across the
-  monorepo.
-- For official preset source evidence, follow `packages/presets/docs/definitions/preset-schema-organization.md`:
-  keep design-system-level source notes and component evidence under `packages/presets/docs/design-systems/<preset>/`.
-- When a task touches official preset schemas, Figma links, official design-system docs, or source-derived
-  visual decisions, use `skills/kiskadee-preset-evidence/SKILL.md` and update the matching source-evidence docs
-  before finalizing.
-- When a task resolves Figma or official colors for a preset, edits preset color mappings, or styles an official
-  preset schema with color, also use `skills/kiskadee-resolve-preset-colors/SKILL.md`. Resolve the documented
-  source-to-tonal mapping before editing the schema; never add literal colors to official preset schemas.
-- When a task authors or reviews component interaction-state maps such as Rest, Hover, Pressed,
-  Focus, Selected, or Disabled, use `skills/kiskadee-author-interaction-states/SKILL.md`. Keep
-  states as sparse visual deltas and document any intentional Rest-equal precedence override.
-- When changing the `@kiskadee/tonal-scale` package or generator version, changing generated
-  multifamily output referenced by a preset Shared Viewer, or promoting regenerated tonal assets,
-  use `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md`. Keep the current candidate version
-  synchronized without rewriting the provenance of older approved assets.
-- When a generated token-only scale utility must be applied conditionally to a wrapper or different
-  structural DOM owner, or when proposing the compact `p` class-map bucket, use
-  `skills/kiskadee-structural-utility-projections/SKILL.md`. Keep the Structural Utility Projection
-  Registry distinct from Style Emission Policy and never put raw values in `p`.
-- `CHAT-CONTEXT.md`: single-file bootstrap for new chats.
-- `PROJECT-PURPOSE.md`: canonical project purpose and architecture map.
-- `docs/definitions/project-governance.md`: canonical authority, responsibility, consumption, and
-  handoff boundaries between projects.
-- `docs/definitions/composition-strategies.md`: decision guide for choosing the correct component,
-  profile, Effect, Provider, platform, or build-composition mechanism.
-- `SCHEMA-BUILD-RUNTIME-RULES.md`: ownership rules for schema, build artifacts, runtime, and Sass.
-- `STRUCTURAL-CSS.md`: structural Sass naming and scope rules.
-- `skills/kiskadee-architecture/SKILL.md`: architecture workflow for cross-package decisions.
-- `skills/kiskadee-code-review-markdown/SKILL.md`: code review workflow that writes `CODE-REVIEW.md`
-  at the repository root for agent handoff.
-- `skills/kiskadee-preset-evidence/SKILL.md`: source-evidence workflow for official presets and
-  design-system-derived schema decisions.
-- `skills/kiskadee-resolve-preset-colors/SKILL.md`: official color-to-tonal mapping workflow and
-  no-literal-color rule for preset schemas.
-- `skills/kiskadee-author-interaction-states/SKILL.md`: sparse state-authoring workflow, compound
-  state precedence, and focus-ring ownership.
-- `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md`: tonal-scale version workflow that keeps
-  preset Shared Viewer candidates synchronized while preserving approved asset provenance.
-- `skills/kiskadee-structural-utility-projections/SKILL.md`: explicit registry and artifact workflow
-  for reusing an existing token-only scale utility on a different structural owner.
-- `skills/kiskadee-map-icon-families/SKILL.md`: canonical icon-name, family mapping, RTL, generation,
-  and coverage workflow.
-- `skills/kiskadee-linear/SKILL.md`: Linear issue workflow, including title/description language
-  and label rules.
+- Use the nearest package/feature `docs/` root; root `docs/` is for cross-project concerns.
+- Within that root, `definitions/` holds durable contracts, `proposals/` deferred ideas,
+  `technical-debt/` known follow-ups, and `rejected/` rejected approaches and their rationale.
+- Document new durable decisions and changed cross-package assumptions with the implementation.
+  Normative documentation is the source of intended behavior; promote a rule to root docs only
+  when it applies across projects.
+- Keep official preset evidence under `packages/presets/docs/design-systems/<preset>/`, following
+  `packages/presets/docs/definitions/preset-schema-organization.md`.
+- See `docs/definitions/agent-instruction-design.md` for the rationale behind instruction routing
+  and validation scope. It does not replace domain ownership rules.
+
+## Task-Specific Routing
+
+Use these entrypoints only for the indicated concern; this is a routing index, not a reading list.
+
+| Concern | Required entrypoint |
+| --- | --- |
+| Ownership, shared contracts, or architecture decisions | `skills/kiskadee-architecture/SKILL.md` |
+| Code review, report assessment, or authorized review fixes | `skills/kiskadee-code-review-markdown/SKILL.md` |
+| Official preset schema or source-derived visual decisions | `skills/kiskadee-preset-evidence/SKILL.md` |
+| Official preset color mapping, authorship, or review | `skills/kiskadee-resolve-preset-colors/SKILL.md` |
+| Rest/Hover/Pressed/Selected/Disabled maps or state precedence | `skills/kiskadee-author-interaction-states/SKILL.md` |
+| Tonal generator/version, Shared Viewer output, or asset promotion | `skills/kiskadee-sync-tonal-scale-preset-docs/SKILL.md` |
+| Token-only utility reuse on another structural owner or `p` bucket | `skills/kiskadee-structural-utility-projections/SKILL.md` |
+| Canonical icon names, family mapping, RTL, or coverage | `skills/kiskadee-map-icon-families/SKILL.md` |
+| Kiskadee Linear issues | `skills/kiskadee-linear/SKILL.md` |
+
+Preserve source evidence with preset changes; never add literal colors to official schemas.
+Keep interaction states sparse and document intentional Rest-equal precedence overrides.
+Keep the Structural Utility Projection Registry separate from Style Emission Policy; `p` never
+contains raw values. Preserve approved tonal asset provenance when updating current candidates.
+`CHAT-CONTEXT.md` is the optional chat bootstrap; `SCHEMA-BUILD-RUNTIME-RULES.md` defines the
+Schema/build/runtime/Sass handoff. These remain derived from the project-governance definition.
 
 ## Package Guidance
 
@@ -139,7 +113,16 @@ keep task-specific workflows inside skills.
 
 ## Validation
 
-- For targeted changes, prefer the narrowest relevant validation first.
+- Match validation to the changed behavior and handoff. Add or update regression tests when they
+  exercise a meaningful failure mode; do not add tests that only repeat a label or implementation.
+- For docs/skill-only edits, check references, instruction consistency, skill metadata, and diff
+  whitespace. Application builds, artifact generation, and browser tests are not required unless
+  executable behavior or its contract also changes.
+- Start with focused tests/typechecking for the affected package. Run broader builds or the full
+  suite when shared impact, a changed pipeline, unresolved failures, or the user requires them.
+  Once relevant checks pass, do not repeat or widen them without new evidence.
+- Verify rendered behavior when it is part of the requested change. Honor an explicit user-owned
+  visual validation boundary; do not claim browser or screenshot validation that was not performed.
 - Treat build-time/runtime-in-Node tooling costs differently from browser/runtime artifact costs:
   heavier validation is acceptable in build-only flows when it improves correctness, but optimize
   generated artifacts and browser code aggressively.

@@ -2,16 +2,21 @@
 
 Use this checklist when implementing architecture-related or headless React changes.
 
-## Mandatory checks
+## Select Relevant Checks
 
-1. Type-check affected package:
-- `cd packages/headless/react && npx tsc -p tsconfig.json --noEmit`
+Follow the validation policy in `AGENTS.md`. Inspect affected package scripts before selecting a
+command; headless-react is not the default target for every architecture task.
 
-2. Run focused tests for edited area:
-- `cd packages/headless/react && npx vitest run src/<path>/<file>.test.tsx`
-
-3. Run repository-level test suite before finalizing:
-- `npm test`
+- Docs and instruction changes: validate links, scope/authority consistency, skill metadata when
+  applicable, and `git diff --check`.
+- Runtime or component changes: focused regression tests and affected-package typechecking.
+  Use `pnpm exec vitest run <test-path>` and the package's existing typecheck script/config.
+- Schema, builder, exports, or shared-contract changes: also verify the affected producer-to-consumer
+  handoff, including required artifact generation or consumer builds.
+- Run root `pnpm test` when shared impact warrants it or the user requests it, rather than for
+  every task. Do not substitute npm/npx for the repository's PNPM workflow.
+- Stop after the required checks pass. Broaden only to resolve new failures or remaining risk.
+  Separate pre-existing failures from regressions and report any unverified part of the result.
 
 ## Architecture checks
 

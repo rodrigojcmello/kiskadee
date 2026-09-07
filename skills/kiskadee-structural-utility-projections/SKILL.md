@@ -1,6 +1,6 @@
 ---
 name: kiskadee-structural-utility-projections
-description: Architecture workflow for Kiskadee structural utility projections. Use when a generated token-only scale utility must be applied conditionally to a wrapper or different structural DOM owner, when proposing or reviewing the compact `p` class-map bucket and the Structural Utility Projection Registry, or when deciding between normal class resolution, Style Emission Policy, a dedicated artifact bucket, runtime composition, and structural Sass.
+description: Evaluate or implement token-only structural utility reuse on another DOM owner through the Kiskadee projection registry and p bucket.
 ---
 
 # Kiskadee Structural Utility Projections

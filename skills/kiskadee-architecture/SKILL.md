@@ -1,6 +1,6 @@
 ---
 name: kiskadee-architecture
-description: Architecture specialist for the Kiskadee monorepo. Use when tasks involve package boundaries, token taxonomy decisions (palettes/scales/decorations/effects), web-builder generation flow, headless React composition patterns, or preserving consistency across core, presets, runtime, components, and showcase.
+description: Choose Kiskadee project ownership, shared contracts, token taxonomy, or composition mechanisms. Use for architectural decisions and cross-project handoff changes.
 ---
 
 # Kiskadee Architecture Skill
@@ -27,16 +27,7 @@ Read only what the task needs, in this order:
 
 ## Follow this workflow
 
-1. Identify the requested change and classify it:
-- token modeling
-- preset adaptation
-- web build/generation
-- runtime behavior
-- headless behavior/accessibility
-- visual component composition
-- native platform adaptation
-- resource integration
-- showcase integration
+1. Identify the requested outcome and affected concern before choosing its owning project.
 
 2. Determine the correct project authority before proposing code. Identify its allowed inputs,
    published handoff, transformers, and consumers for the concern being changed.
@@ -48,7 +39,7 @@ Read only what the task needs, in this order:
 component, slot, variant, mode, option, profile, Effect, Provider, Headless primitive, platform
 mechanic, or Schema-to-Web composition pattern.
 
-4. Validate taxonomy fit using `references/taxonomy-rules.md`.
+4. When token modeling changes, validate taxonomy fit using `references/taxonomy-rules.md`.
 
 5. Validate project ownership using `../../docs/definitions/project-governance.md`. Use
    `references/monorepo-map.md` only for quick routing.
@@ -63,9 +54,10 @@ mechanic, or Schema-to-Web composition pattern.
 
 8. If the task involves React headless components, apply `references/headless-react-patterns.md`.
 
-9. If the task is "new component", apply the rollout checklist below.
+9. For a new component, load `references/new-component-rollout.md`.
 
-10. End with a verification plan from `references/testing-checklist.md`.
+10. Use `references/testing-checklist.md` to select validation for the affected behavior.
+    Execute it for authorized implementation; propose it for analysis-only work.
 
 ## Hard constraints
 
@@ -105,92 +97,14 @@ mechanic, or Schema-to-Web composition pattern.
   participating schema elements themselves and let structural CSS only flatten the corners that
   must be straight; avoid cross-element radius inheritance or arithmetic in the component layer.
 
-## Comment pattern
+## Conditional Detail
 
-When adding explanatory comments above functions, use this exact structure:
+- When adding explanatory function comments, follow [function-comments.md](references/function-comments.md).
+- Before Schema or builder changes, use [schema-artifact-decisions.md](references/schema-artifact-decisions.md).
+- For a new component, use [new-component-rollout.md](references/new-component-rollout.md).
 
-```ts
-/**
- * What
- *     Briefly describe what the function does.
- * Why
- *     Briefly describe why the function exists or where the runtime depends on it.
- */
-```
+## Handoff
 
-- Keep comments in English.
-- Keep the text visually compact and wrap long lines with the same indentation style.
-- Keep each comment line at 100 characters maximum.
-- Keep `What` to 3 lines maximum.
-- Keep `Why` to 3 lines maximum.
-- Prefer one short `What` paragraph and one short `Why` paragraph per function comment.
-
-## Schema and artifact decision rules
-
-Use these rules before proposing a schema or builder change:
-
-1. If the change answers "which behavior/mode is active?", prefer `components.<name>.options`.
-2. If the change answers "what is the value for that behavior?", prefer the relevant element
-   `scales/decorations/palettes/effects`.
-3. If the value is always-on once generated, the generic artifact bucket is usually enough.
-4. If the value is conditionally applied to its normal schema element, check whether the existing
-   component artifact contract already provides the required opt-in bucket.
-5. If one already emitted token-only scale utility must instead be applied to a different structural
-   owner, apply the Structural Utility Projection Registry eligibility test.
-
-Current example and future candidate:
-
-- Button divider thickness projects optional `Button.e6.boxWidth` to `Button.e1.p.gd` with
-  `retainSource: true`; Button.Group activates it only with an authored divider.
-- Dropdown projects only `e3/e10` width-gap utilities to their empty independent-track nodes; normal
-  icon and selection slots retain their source references.
-- Tabs fixed width may eventually migrate from its specialized `w` bucket to the generic `p`
-  contract.
-
-Do not register the Tabs candidate without a separate implementation and validation task.
-
-## New component rollout checklist
-
-When adding a component (for example `tabs`), validate all layers:
-
-1. Schema/preset layer:
-- Add `components.<name>.elements` in the preset schema.
-- Confirm taxonomy usage (palettes/scales/decorations/effects).
-
-2. Build artifacts layer:
-- Confirm class maps/CSS artifacts generate for the component.
-- Confirm any required metadata is published for showcase capability checks.
-
-3. Headless layer:
-- Implement behavior + accessibility primitives in `packages/headless`.
-- Add unit tests for semantics, keyboard flow, and state transitions.
-
-4. Visual component layer:
-- Implement React visual wrapper in `packages/components` consuming class maps + headless API.
-- Expose public exports/types.
-
-5. Showcase layer:
-- Add route/page and practical examples.
-- Validate against manifest-driven capability behavior when applicable.
-
-## Decision output format
-
-When giving architecture recommendations, structure the output as:
-
-1. `Decision`
-2. `Why`
-3. `Where` (exact package/path)
-4. `Impact`
-5. `Validation`
-
-## Reference files
-
-- `../../PROJECT-PURPOSE.md`
-- `../../docs/definitions/project-governance.md`
-- `../../docs/definitions/composition-strategies.md`
-- `../../SCHEMA-BUILD-RUNTIME-RULES.md`
-- `../../STRUCTURAL-CSS.md`
-- `references/monorepo-map.md`
-- `references/taxonomy-rules.md`
-- `references/headless-react-patterns.md`
-- `references/testing-checklist.md`
+Explain the decision, rationale, owning paths, impact, and validation. Use a short paragraph for
+small decisions; add structure only when it helps review. An implementation task ends with verified
+results, not just a verification plan. An analysis-only task ends with findings or a proposal.

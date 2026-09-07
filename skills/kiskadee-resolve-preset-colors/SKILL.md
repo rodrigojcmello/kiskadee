@@ -1,6 +1,6 @@
 ---
 name: kiskadee-resolve-preset-colors
-description: Resolve official design-system and Figma colors into Kiskadee tonal assets and preset schema references. Use whenever a task inspects Figma or official color documentation for an official preset, edits preset primitive colors or semantic mappings, styles a preset component schema with color, maps upstream tokens to Kiskadee L/D tones, or could otherwise introduce a literal color into an official preset schema.
+description: Resolve official preset colors into approved tonal assets and schema locators. Use for color mapping, authorship, or review.
 ---
 
 # Resolve Kiskadee Preset Colors
@@ -35,6 +35,11 @@ cannot express the required color without a literal, treat
 that as a blocked contract gap and document it instead of adding a fallback.
 
 ## Required Workflow
+
+Apply evidence/asset/schema writes only during authorized implementation. Analysis and reviews
+trace the same source chain and report gaps without promoting assets or editing evidence. Load
+linked skills once per session unless changed; the evidence and color skills reference each other
+because their requirements complement each other, not to require recursive rereading.
 
 1. Load the source-evidence workflow.
    - If it is not already loaded, read `../kiskadee-preset-evidence/SKILL.md` completely.

@@ -1,6 +1,6 @@
 ---
 name: kiskadee-sync-tonal-scale-preset-docs
-description: Keep Kiskadee preset tonal evidence synchronized with the current @kiskadee/tonal-scale generator version. Use whenever changing the tonal-scale package or generator version, changing multifamily output that affects a preset Shared Viewer, regenerating or promoting preset tonal assets, or editing preset documentation that records tonal-scale candidate and approved versions.
+description: Synchronize preset tonal candidate evidence after generator, version, or asset changes while preserving approved provenance.
 ---
 
 # Sync Tonal Scale Preset Docs

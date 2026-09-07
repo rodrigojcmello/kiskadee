@@ -1,6 +1,6 @@
 ---
 name: kiskadee-map-icon-families
-description: Maintain Kiskadee interface-icon names and family mappings. Use when adding a canonical icon concept, adding an official family, replacing a direct interface-icon import with a semantic name, changing RTL direction metadata, or diagnosing incomplete family coverage.
+description: Map canonical interface icons to official families; maintain RTL metadata, generated adapters, and coverage.
 ---
 
 # Kiskadee Map Icon Families
