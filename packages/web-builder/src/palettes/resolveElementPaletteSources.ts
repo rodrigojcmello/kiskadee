@@ -2,6 +2,7 @@ import type {
   ElementForeground,
   ElementPalettes,
   ElementSeparator,
+  SchemaContours,
   SchemaForegrounds,
   SchemaSeparators
 } from '@kiskadee/core';
@@ -11,6 +12,7 @@ import {
   type ExpandedElementSeparator,
   expandElementSeparator
 } from '../phase-1-convert-schema-to-style-keys/separators/compileSeparators.ts';
+import { resolveContourReferences } from './resolveContourReferences.ts';
 
 export type ElementPaletteSource = {
   foreground?: ElementForeground;
@@ -50,6 +52,7 @@ export function resolveElementPaletteSources(
   element: ElementPaletteSource,
   catalogs: {
     foregrounds?: SchemaForegrounds;
+    contours?: SchemaContours;
     separators?: SchemaSeparators;
   }
 ): ResolvedElementPaletteSources {
@@ -85,7 +88,12 @@ export function resolveElementPaletteSources(
   );
 
   return {
-    palettes: palettes ? resolveForegroundReferences(palettes, catalogs.foregrounds) : undefined,
+    palettes: palettes
+      ? resolveContourReferences(
+          resolveForegroundReferences(palettes, catalogs.foregrounds),
+          catalogs.contours
+        )
+      : undefined,
     separatorRecipe
   };
 }

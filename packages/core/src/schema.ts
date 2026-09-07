@@ -14,6 +14,7 @@ import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextElements } from './components/text.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type { ContentSurfaceContextMap } from './content-surface-context.ts';
+import type { SchemaContours } from './contour.ts';
 import type { ElementForeground, SchemaForegrounds } from './foreground.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
@@ -301,6 +302,7 @@ export type RadiusMode = 'rounded' | 'square' | 'pill';
 export type SchemaGlobalTokens = {
   fonts?: SchemaFonts;
   foregrounds?: SchemaForegrounds;
+  contours?: SchemaContours;
   iconSizes?: SchemaIconSizes;
   icons?: SchemaIcons;
   separators?: SchemaSeparators;

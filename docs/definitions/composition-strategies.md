@@ -175,6 +175,8 @@ A durable architecture decision should record:
   profile; elements can map local names to complete family-profile references or select one atomic
   coordinate with `fg()` / `fg.parentState()`, and the Builder lowers both forms into the ordinary
   color channel before Style Keys.
+- `global.contours.profiles` shares solid contour colors independently of geometry and activation;
+  see [Contour profiles](./contour-profiles.md).
 - `global.separators.profiles` shares neutral line recipes; the public Separator component and
   internal component dividers do not share DOM.
 - Activation Feedback is an optional shared Effect; components select a recipe and provide the host

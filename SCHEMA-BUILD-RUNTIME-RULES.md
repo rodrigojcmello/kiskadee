@@ -297,7 +297,9 @@ Context:
 Decision:
 
 - `global.separators.profiles` owns reusable neutral recipes containing `scales.boxWidth` and a
-  Rest-only `palettes.boxColor.neutral.medium` value.
+  Rest-only `palettes.boxColor.neutral.medium` value. Colors may reference the optional
+  [shared contour catalog](docs/definitions/contour-profiles.md); width remains owned by the
+  separator recipe. Contour references are resolved before Style Keys and metadata publication.
 - A participating element references a profile through `separator`, using the same size and
   breakpoint grammar as `typography` and `iconSize`.
 - Separator recipes contain no orientation, margin, padding, inset, intent, or public emphasis.

@@ -166,6 +166,7 @@ function getExpandedElementPalettes(
 ): Record<string, any> | undefined {
   return resolveElementPaletteSources(element as ElementPaletteSource, {
     foregrounds: schema.global?.foregrounds,
+    contours: schema.global?.contours,
     separators: schema.global?.separators
   }).palettes as Record<string, any> | undefined;
 }

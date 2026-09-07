@@ -13,6 +13,10 @@ export const fluent2MicrosoftColorEvidence = {
     source: 'components/button.md#color-and-token-provenance',
     rationale: 'Button fixed stops are part of the documented Fluent and Kiskadee state formula.'
   },
+  'global.contours': {
+    source: 'components/card.md#shared-neutral-contours',
+    rationale: 'Preserves Card neutral boundary L10/D45 in a component-independent catalog.'
+  },
   'component.card': {
     source: 'components/card.md#color-and-token-provenance',
     rationale: 'Card fixed stops adapt documented Fluent surface, content, and border tokens.'

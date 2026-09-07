@@ -208,6 +208,7 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
           : undefined;
       const { palettes: mergedPalettes, separatorRecipe } = resolveElementPaletteSources(element, {
         foregrounds,
+        contours: schema.global?.contours,
         separators
       });
       if (element.scales || iconSizeScales || separatorRecipe) {

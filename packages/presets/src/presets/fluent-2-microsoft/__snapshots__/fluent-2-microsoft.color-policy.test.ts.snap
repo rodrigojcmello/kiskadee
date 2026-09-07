@@ -32,6 +32,20 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "theme": "d",
     },
     {
+      "alpha": 12,
+      "polarity": "light",
+      "primitive": "primitive.black.v1",
+      "segmentName": "default",
+      "theme": "d",
+    },
+    {
+      "alpha": 15,
+      "polarity": "light",
+      "primitive": "primitive.black.v1",
+      "segmentName": "default",
+      "theme": "d",
+    },
+    {
       "alpha": 24,
       "polarity": "light",
       "primitive": "primitive.black.v1",
@@ -47,6 +61,13 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
     },
     {
       "alpha": 68,
+      "polarity": "light",
+      "primitive": "primitive.black.v1",
+      "segmentName": "default",
+      "theme": "d",
+    },
+    {
+      "alpha": 8,
       "polarity": "light",
       "primitive": "primitive.black.v1",
       "segmentName": "default",
@@ -568,14 +589,6 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "role": "card.neutral",
       "segmentName": "default",
       "theme": "d",
-      "tone": 45,
-    },
-    {
-      "alpha": null,
-      "evidenceId": "component.card",
-      "role": "card.neutral",
-      "segmentName": "default",
-      "theme": "d",
       "tone": 5,
     },
     {
@@ -889,6 +902,14 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "segmentName": "default",
       "theme": "d",
       "tone": 35,
+    },
+    {
+      "alpha": null,
+      "evidenceId": "global.contours",
+      "role": "neutral",
+      "segmentName": "default",
+      "theme": "d",
+      "tone": 45,
     },
     {
       "alpha": null,
@@ -1352,7 +1373,7 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "role": "card.neutral",
       "segmentName": "default",
       "theme": "l",
-      "tone": 10,
+      "tone": 12,
     },
     {
       "alpha": null,
@@ -1360,7 +1381,7 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "role": "card.neutral",
       "segmentName": "default",
       "theme": "l",
-      "tone": 12,
+      "tone": 14,
     },
     {
       "alpha": null,
@@ -1464,6 +1485,30 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "role": "card.primary",
       "segmentName": "default",
       "theme": "l",
+      "tone": 14,
+    },
+    {
+      "alpha": null,
+      "evidenceId": "component.card",
+      "role": "card.primary",
+      "segmentName": "default",
+      "theme": "l",
+      "tone": 16,
+    },
+    {
+      "alpha": null,
+      "evidenceId": "component.card",
+      "role": "card.primary",
+      "segmentName": "default",
+      "theme": "l",
+      "tone": 18,
+    },
+    {
+      "alpha": null,
+      "evidenceId": "component.card",
+      "role": "card.primary",
+      "segmentName": "default",
+      "theme": "l",
       "tone": 4,
     },
     {
@@ -1505,6 +1550,14 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "segmentName": "default",
       "theme": "l",
       "tone": 8,
+    },
+    {
+      "alpha": null,
+      "evidenceId": "component.card",
+      "role": "card.primary",
+      "segmentName": "default",
+      "theme": "l",
+      "tone": 9,
     },
     {
       "alpha": null,
@@ -1737,6 +1790,14 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
       "segmentName": "default",
       "theme": "l",
       "tone": 9,
+    },
+    {
+      "alpha": null,
+      "evidenceId": "global.contours",
+      "role": "neutral",
+      "segmentName": "default",
+      "theme": "l",
+      "tone": 10,
     },
     {
       "alpha": null,
@@ -2671,14 +2732,6 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
     {
       "alpha": null,
       "offset": 10,
-      "reference": "subtle",
-      "role": "primitive.black.v1",
-      "segmentName": "default",
-      "theme": "d",
-    },
-    {
-      "alpha": null,
-      "offset": 16,
       "reference": "subtle",
       "role": "primitive.black.v1",
       "segmentName": "default",
@@ -3775,14 +3828,6 @@ exports[`Fluent 2 Microsoft Functional Reference First policy > keeps every auth
     {
       "alpha": null,
       "offset": -2,
-      "reference": "subtle",
-      "role": "primitive.black.v1",
-      "segmentName": "default",
-      "theme": "l",
-    },
-    {
-      "alpha": null,
-      "offset": 3,
       "reference": "subtle",
       "role": "primitive.black.v1",
       "segmentName": "default",

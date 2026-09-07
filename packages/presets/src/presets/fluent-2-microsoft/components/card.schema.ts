@@ -5,7 +5,7 @@ import type {
   SolidColor,
   SurfaceContext
 } from '@kiskadee/core';
-import { primitive } from '@kiskadee/core';
+import { contour, primitive } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import {
   absoluteCap,
@@ -44,7 +44,7 @@ type CardPaletteRecipe = {
     primary: IntentRecipe;
   };
   borderColor: {
-    neutral: IntentRecipe & { low: StateRecipe };
+    neutral: Omit<IntentRecipe, 'lowest'> & { lowest: Omit<StateRecipe, 'rest'>; low: StateRecipe };
     primary: IntentRecipe;
   };
 };
@@ -71,10 +71,6 @@ const lightTransparent = lightCap(0);
 const darkTransparent = darkCap(0);
 const onVividTransparent: ColorLocator = {
   color: absoluteCap(primitive('black', 'v1'), 'light', 0),
-  track: 'l'
-};
-const onVividBoundary: ColorLocator = {
-  color: absoluteCap(primitive('black', 'v1'), 'light', 15),
   track: 'l'
 };
 
@@ -136,7 +132,6 @@ const LIGHT_RECIPE = {
   borderColor: {
     neutral: {
       lowest: {
-        rest: n(10),
         hover: n(12),
         pressed: n(18),
         selected: n(16),
@@ -211,7 +206,6 @@ const DARK_RECIPE = {
   borderColor: {
     neutral: {
       lowest: {
-        rest: n(45),
         hover: n(50),
         selected: n(50),
         disabled: n(22)
@@ -340,10 +334,14 @@ function createStateMap(
   c: Fluent2MicrosoftColorResolver,
   segmentName: Fluent2MicrosoftSegmentName,
   track: ThemeShortcut,
-  recipe: StateRecipe
+  recipe: Partial<StateRecipe>,
+  restOverride?: SolidColor
 ): InteractionStateColorMap {
+  const rest =
+    restOverride ?? (recipe.rest ? resolveColor(c, segmentName, track, recipe.rest) : undefined);
+  if (rest === undefined) throw new Error('Card state recipe requires a Rest color.');
   return {
-    rest: resolveColor(c, segmentName, track, recipe.rest),
+    rest,
     ...(recipe.hover ? { hover: resolveColor(c, segmentName, track, recipe.hover) } : undefined),
     ...(recipe.pressed
       ? { pressed: resolveColor(c, segmentName, track, recipe.pressed) }
@@ -371,16 +369,21 @@ function createCardPalette(
     themeName === 'light' && surfaceContext === 'onVivid'
       ? LIGHT_ON_VIVID_RECIPE
       : CARD_RECIPES[themeName];
-  const stateMap = (stateRecipe: StateRecipe) =>
-    createStateMap(c, segmentName, recipe.track, stateRecipe);
+  const stateMap = (stateRecipe: Partial<StateRecipe>, restOverride?: SolidColor) =>
+    createStateMap(c, segmentName, recipe.track, stateRecipe, restOverride);
   const contextualBoundary = (visible: boolean) =>
-    stateMap({ rest: visible ? onVividBoundary : onVividTransparent });
+    visible
+      ? stateMap({}, contour(`neutral.standard.${themeName}.onVivid.medium`))
+      : stateMap({ rest: onVividTransparent });
 
   const borderColor =
     surfaceContext === 'onSubtle'
       ? {
           neutral: {
-            lowest: stateMap(recipe.borderColor.neutral.lowest),
+            lowest: stateMap(
+              recipe.borderColor.neutral.lowest,
+              contour(`neutral.standard.${themeName}.${surfaceContext}.medium`)
+            ),
             low: stateMap(recipe.borderColor.neutral.low),
             medium: stateMap(recipe.borderColor.neutral.medium),
             ...(recipe.borderColor.neutral.highest
@@ -439,14 +442,17 @@ function createCardPalette(
             emphasis,
             {
               ...states,
-              rest: resolveColor(
-                c,
-                segmentName,
-                recipe.track,
-                intent === 'primary' && emphasis === 'highest'
-                  ? onVividBoundary
-                  : recipe.borderColor[intent as 'neutral' | 'primary'].lowest.rest
-              )
+              rest:
+                intent === 'neutral'
+                  ? contour(`neutral.standard.${themeName}.${surfaceContext}.medium`)
+                  : emphasis === 'highest'
+                    ? contour(`neutral.standard.${themeName}.onVivid.medium`)
+                    : resolveColor(
+                        c,
+                        segmentName,
+                        recipe.track,
+                        recipe.borderColor.primary.lowest.rest
+                      )
             }
           ])
         )

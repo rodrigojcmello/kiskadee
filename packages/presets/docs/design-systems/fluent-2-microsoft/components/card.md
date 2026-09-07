@@ -343,3 +343,37 @@ Neutral Hover L8 `#d6dbe7`, Pressed L14 `#bec2ce`, Selected L12 `#c6cbd7`;
 Primary Hover L14 `#94c7ff`, Pressed L18 `#76b7ff`, Selected L16 `#85bfff`.
 These values supersede the Medium rows above. Disabled, focus ownership, Low, Lowest,
 onSubtle, Dark and Darker remain unchanged. No Rest-equal state override is added.
+
+
+## Shared Neutral Contours
+
+On 2026-09-07, the user approved a Kiskadee consistency refinement sharing neutral outline
+and divider colors. The onSubtle medium recipe preserves the Card boundary from the approved
+Fluent tinted neutral asset `colors/n.black.v2.ts`. Its `global.contours` exact locator uses
+global `neutral`, mapped to the same `primitive.black.v2` as the former `card.neutral` boundary.
+Physical black and white caps use `primitive.black.v1`; no primitive asset was replaced.
+
+The table describes the current recipes, including the approved onVivid refinement.
+
+| Coordinate | Locator | Resolved output |
+| --- | --- | --- |
+| Light, onSubtle, medium | exact neutral L10 | `#cdd1de` |
+| Dark/Darker, onSubtle, medium | exact neutral D45 | `#656973` |
+| Light, onSubtle, low | physical black cap 8% | `#00000014` |
+| Dark/Darker, onSubtle, low | physical white cap 12% | `#ffffff1f` |
+| All themes, onVivid, medium | physical white cap 15% | `#ffffff26` |
+| All themes, onVivid, low | physical white cap 8% | `#ffffff14` |
+
+Neutral Card borders select medium for the incoming surface context. Primary highest selects
+neutral onVivid medium even with an onSubtle input, since its painted surface is vivid. This
+preserves its previous border while sharing the color source with Separator. Other chromatic
+border recipes remain local and unchanged.
+
+Separator medium and low, including Dropdown and Bottom Sheet consumers, select these shared
+recipes. OnSubtle colors retain their previous values. The onVivid refinement preserves the
+vivid controls Card boundary as medium and reduces low below it; 8% is the selected Kiskadee
+adaptation, not an upstream Fluent token claim. This alignment does not assert upstream token
+equivalence between Card and Separator.
+
+Color recipes do not activate borders or shadows. Activation defaults, shadows, and Card
+interaction deltas are unchanged; neutral optional borders follow the revised onVivid recipe.

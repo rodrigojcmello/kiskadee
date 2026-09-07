@@ -14,6 +14,7 @@ export * from './components/tabs.ts';
 export * from './components/text.ts';
 export * from './components/text-field.ts';
 export * from './content-surface-context.ts';
+export * from './contour.ts';
 export * from './foreground.ts';
 export * from './icon-sizes.ts';
 export {

@@ -19,6 +19,7 @@ import {
 } from './fluent-2-microsoft.color.ts';
 import { fluent2MicrosoftColorEvidence } from './fluent-2-microsoft.color-evidence.ts';
 import { schemaColors } from './fluent-2-microsoft.colors.ts';
+import { createFluent2MicrosoftContours } from './fluent-2-microsoft.contours.ts';
 import { createFluent2MicrosoftForegrounds } from './fluent-2-microsoft.foregrounds.ts';
 import { createFluent2MicrosoftSeparators } from './fluent-2-microsoft.separators.ts';
 import { fluent2MicrosoftTypography } from './fluent-2-microsoft.typography.ts';
@@ -64,8 +65,9 @@ export function createFluent2MicrosoftSchema(
     colors: schemaColors,
     global: {
       foregrounds: createFluent2MicrosoftForegrounds({ c: colorResolver }),
+      contours: createFluent2MicrosoftContours({ c: colorResolver }),
       typography: fluent2MicrosoftTypography,
-      separators: createFluent2MicrosoftSeparators({ c: colorResolver }),
+      separators: createFluent2MicrosoftSeparators(),
       iconSizes: {
         's:sm:5': 6,
         's:sm:4': 8,
