@@ -1,4 +1,4 @@
-const timers = new WeakMap<Element, ReturnType<typeof window.setTimeout>>();
+const timers = new WeakMap<Element, number>();
 
 export function playWowTransition(durationMs = 900): void {
   if (typeof document === 'undefined') return;
