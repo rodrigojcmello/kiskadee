@@ -18,6 +18,7 @@ const profile = (
 // Apple default Dynamic Type metrics; normalized names preserve cross-preset consumers.
 export const ios27AppleTypography = {
   profiles: {
+    'body-extra-small': profile(13, 16, 'medium', 0),
     'caption-small': profile(11, 13, 'normal', 0.06),
     'caption-small-strong': profile(11, 13, 'semiBold', 0.06),
     'caption-medium': profile(12, 16),

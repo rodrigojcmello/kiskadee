@@ -5,6 +5,11 @@ This directory records source evidence and preset-level decisions for
 
 ## Primary Sources
 
+- [macOS 26 Community — Push Buttons](https://www.figma.com/design/37jpyRzTWznKjRhFSF3GD3/macOS-26--Community-?node-id=121-11922)
+  - file key: `37jpyRzTWznKjRhFSF3GD3`; section `121:11922`, component set `121:11923`;
+  - inspected 2026-09-08: compact geometry and active-window Light Idle/Clicked layers;
+  - Dark rendering and over-glass materials are **Not inspected** for this change.
+
 - [iOS and iPadOS 27 Community](https://www.figma.com/design/GeO2lMY65IAFczDmjs6oei/iOS-and-iPadOS-27--Community-?node-id=507-24673)
   - file key: `GeO2lMY65IAFczDmjs6oei`;
   - Buttons page: `507:24673`;
@@ -21,6 +26,8 @@ This directory records source evidence and preset-level decisions for
 - [Apple Human Interface Guidelines: Typography](https://developer.apple.com/design/human-interface-guidelines/typography)
 
 ## Source Notes
+
+- Apple follows the accepted [one identity, platform adaptations contract](../../definitions/visual-identity-and-platform-adaptations.md). The identifier stays `ios-27-apple`; macOS evidence adds compact geometry and interaction feedback without replacing iOS Rest colors.
 
 - The Figma file exposes a centralized `Colors` collection with 62 color variables and one
   non-color mode variable. Apple supplies appearance-aware system colors, not complete multi-stop

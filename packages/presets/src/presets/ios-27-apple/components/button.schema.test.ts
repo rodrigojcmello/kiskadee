@@ -80,3 +80,48 @@ describe('iOS 27 borderless emphasis hierarchy', () => {
     }
   });
 });
+
+describe('Apple compact Button and macOS feedback', () => {
+  const button = schema.components.button!;
+  const c = createPresetColorGetter({ colors: schema.colors! });
+
+  it('derives compact 24px geometry from typography and padding while preserving larger sizes', () => {
+    const root = button.elements.e1!.scales!;
+    const profiles = schema.global!.typography!.profiles;
+    const typography = button.elements.e2!.typography!;
+    for (const [scale, height] of [
+      ['s:sm:1', 24],
+      ['s:md:1', 34],
+      ['s:lg:1', 50]
+    ] as const) {
+      const profile = profiles[typography[scale] as string]!;
+      const top = (root.paddingTop as Record<string, number>)[scale]!;
+      const bottom = (root.paddingBottom as Record<string, number>)[scale]!;
+      expect(Number(profile.scales.textHeight) + top + bottom).toBe(height);
+    }
+    expect(root.borderRadius).toEqual({ rounded: 6, pill: 25, square: 0 });
+    expect(profiles['body-extra-small']!.scales).toMatchObject({ textSize: 13, textHeight: 16 });
+  });
+
+  it.each([
+    'light',
+    'dark',
+    'darker'
+  ] as const)('keeps %s neutral feedback achromatic across chromatic intents', (theme) => {
+    const palette = button.elements.e1!.palettes!.default![theme]!.onSubtle.boxColor!;
+    const track = theme === 'light' ? 'l' : 'd';
+    for (const intent of ['primary', 'destructive', 'positive'] as const) {
+      for (const state of ['hover', 'pressed'] as const) {
+        expect(palette[intent]!.low![state]).toBe(palette.neutral!.low![state]);
+        expect(palette[intent]!.lowest![state]).toBe(palette.neutral!.lowest![state]);
+        expect(palette[intent]!.low![state]).not.toBe(palette[intent]!.low!.rest);
+      }
+      expect(palette[intent]!.lowest!.pressed).toBe(c('default', track, 'neutral', 100, 15));
+      expect(palette[intent]!.high!.rest).toBe(
+        c.ref('default', track, `button.${intent}`, 'vivid')
+      );
+      expect(palette[intent]!.high!.pressed).not.toBe(palette[intent]!.high!.hover);
+      expect(palette[intent]!.lowest!.disabled).toBe(palette[intent]!.lowest!.rest);
+    }
+  });
+});

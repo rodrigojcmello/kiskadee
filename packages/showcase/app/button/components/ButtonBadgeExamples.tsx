@@ -1,6 +1,6 @@
 'use client';
 
-import type { ElementSizeValue, SurfaceContext } from '@kiskadee/core';
+import type { ElementSizeValue, RadiusMode, SurfaceContext } from '@kiskadee/core';
 import {
   Badge,
   type ButtonBadgePlacement,
@@ -38,9 +38,11 @@ function FullBleedBadgeArtwork() {
 }
 
 export function ButtonBadgeExamples({
+  radius,
   scale,
   surfaceContext
 }: {
+  radius: RadiusMode;
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
@@ -82,7 +84,7 @@ export function ButtonBadgeExamples({
             onValueChange={(value) => setPlacement(value as ButtonBadgePlacement)}
           />
           <div className={styles.buttonBadgeStage}>
-            <KButton scale={scale} surfaceContext={surfaceContext}>
+            <KButton radius={radius} scale={scale} surfaceContext={surfaceContext}>
               <KButton.Label>Inbox</KButton.Label>
               <KButton.Badge placement={placement}>
                 {placement.startsWith('inline') ? (
@@ -93,7 +95,7 @@ export function ButtonBadgeExamples({
               </KButton.Badge>
             </KButton>
             <div dir="rtl">
-              <KButton scale={scale} surfaceContext={surfaceContext}>
+              <KButton radius={radius} scale={scale} surfaceContext={surfaceContext}>
                 <KButton.Label>RTL inbox</KButton.Label>
                 <KButton.Badge placement={placement}>
                   {placement.startsWith('inline') ? (
@@ -112,13 +114,13 @@ export function ButtonBadgeExamples({
             Inline number and novelty
           </Text>
           <div className={styles.buttonBadgeStage}>
-            <KButton scale={scale} surfaceContext={surfaceContext}>
+            <KButton radius={radius} scale={scale} surfaceContext={surfaceContext}>
               <KButton.Label>Pull requests</KButton.Label>
               <KButton.Badge placement="inline-end">
                 <Badge intent="neutral">12</Badge>
               </KButton.Badge>
             </KButton>
-            <KButton scale={scale} surfaceContext={surfaceContext}>
+            <KButton radius={radius} scale={scale} surfaceContext={surfaceContext}>
               <KButton.Label>Copilot</KButton.Label>
               <KButton.Badge placement="inline-end">
                 <Badge intent="novelty">New</Badge>
@@ -135,6 +137,7 @@ export function ButtonBadgeExamples({
             <KButton
               intent="neutral"
               emphasis="medium"
+              radius={radius}
               scale={scale}
               surfaceContext={surfaceContext}
             >
@@ -149,6 +152,7 @@ export function ButtonBadgeExamples({
               aria-label="Camera"
               intent="primary"
               emphasis="high"
+              radius={radius}
               scale={scale}
               surfaceContext={surfaceContext}
             >
@@ -161,7 +165,7 @@ export function ButtonBadgeExamples({
                 </Badge.Mark>
               </KButton.Badge>
             </KButton>
-            <KButton intent="neutral" scale={scale} surfaceContext={surfaceContext}>
+            <KButton intent="neutral" radius={radius} scale={scale} surfaceContext={surfaceContext}>
               <KButton.Label>Profile</KButton.Label>
               <KButton.Badge>
                 <Badge.Mark
@@ -182,7 +186,7 @@ export function ButtonBadgeExamples({
             Disabled host
           </Text>
           <div className={styles.buttonBadgeStage}>
-            <KButton disabled scale={scale} surfaceContext={surfaceContext}>
+            <KButton disabled radius={radius} scale={scale} surfaceContext={surfaceContext}>
               <KButton.Label>Notifications</KButton.Label>
               <KButton.Badge>
                 <Badge intent="novelty" emphasis="high">
@@ -206,7 +210,7 @@ export function ButtonBadgeExamples({
             RTL logical placement
           </Text>
           <div className={styles.buttonBadgeStage}>
-            <KButton scale={scale} surfaceContext={surfaceContext}>
+            <KButton radius={radius} scale={scale} surfaceContext={surfaceContext}>
               <KButton.Label>RTL inbox</KButton.Label>
               <KButton.Badge placement="block-start-inline-end">
                 <Badge.Dot intent="attention" separation="ring" aria-label="New" />

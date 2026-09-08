@@ -5,6 +5,8 @@ This file records source evidence and schema decisions for
 
 ## Sources
 
+- [macOS 26 Push Buttons](https://www.figma.com/design/37jpyRzTWznKjRhFSF3GD3/macOS-26--Community-?node-id=121-11922): file `37jpyRzTWznKjRhFSF3GD3`, section `121:11922`, set `121:11923`. Inspected 2026-09-08.
+
 - Figma Buttons page:
   [iOS and iPadOS 27 Community — Buttons](https://www.figma.com/design/GeO2lMY65IAFczDmjs6oei/iOS-and-iPadOS-27--Community-?node-id=507-24673)
   - file key: `GeO2lMY65IAFczDmjs6oei`;
@@ -70,8 +72,8 @@ that ring color is a Kiskadee accessibility decision, not a value claimed from t
 
 All sizes use a pill radius. Apple authors SF Pro Regular at weight 400. Kiskadee preserves the
 weight and uses the Apple system-font stack with platform fallbacks; this is an **Official
-adapted** typography mapping. Small and Medium consume the shared `body-small` profile at
-15/20 px with -0.23 px tracking; Large consumes `body-medium` at 17/22 px with -0.43 px tracking.
+adapted** typography mapping. The original iOS Small and current Medium consume `body-small` at
+15/20 px with -0.23 px tracking; the current Kiskadee Small mapping is documented below; Large consumes `body-medium` at 17/22 px with -0.43 px tracking.
 The metrics live in `global.typography`, as documented in [Text evidence](text.md).
 
 The inspected source confirms the title-and-icon composition but does not expose a reusable symbol
@@ -157,13 +159,13 @@ arithmetic. All three themes and optional Brand Packs consume the same formula; 
 
 | Emphasis | Rest surface | Hover | Pressed | Selected | Enabled foreground |
 | --- | --- | --- | --- | --- | --- |
-| High | vivid +0 | vivid +1 | vivid +2 | vivid +1 | neutral contrast cap |
-| Medium | subtle +0 | subtle +1 | subtle +2 | subtle +1 | role vivid |
-| Low | neutral `Fills/Tertiary` | subtle +0 | subtle +2 | subtle +1 | role vivid |
-| Lowest | transparent | subtle +0 | subtle +2 | subtle +1 | role vivid |
+| High | vivid +0 | vivid +1 | Light vivid +3 / Dark vivid +2 | vivid +1 | neutral contrast cap |
+| Medium | subtle +0 | subtle +1 | Light subtle +3 / Dark subtle +2 | subtle +1 | role vivid |
+| Low | neutral `Fills/Tertiary` | neutral L40 alpha 20% / D55 alpha 32% | neutral L40 alpha 28% / D55 alpha 40% | subtle +1 | role vivid |
+| Lowest | transparent | neutral cap black/white 8% | neutral cap black/white 15% | subtle +1 | role vivid |
 
-The Low transient states keep the former non-prominent tonal transitions. These and Selected
-are explicit Web extensions; source variants do not prescribe the complete interaction matrix.
+Low and Lowest transient states use neutral feedback derived from macOS bezels. Hover, Dark
+and Selected remain explicit Web extensions; iOS variants do not prescribe this matrix.
 Focus and Pending remain absent from palette maps. The existing focus effect and operational
 Button behavior retain their respective responsibilities.
 
@@ -259,7 +261,7 @@ Figma component.
 
 ## Schema Mapping
 
-- `e1`: Button surface, interaction backgrounds, the pill radius, and a fixed 1 px border. Official
+- `e1`: Button surface, interaction backgrounds, rounded/pill radius choices, and a fixed 1 px border.
   Every emphasis keeps that border transparent; the former Low outline is removed.
   Compensated padding keeps the official outer geometry stable.
 - `e2`: label content; role foreground, disabled foreground, Apple-system typography, and
@@ -274,10 +276,63 @@ Figma component.
 - `components.button.options.groupDivider`: `true`, enabling `e6` at connected Button seams.
 - `components.button.options.disclosureDivider`: `false`, so a menu disclosure is not separated
   unless the preset explicitly adopts that visual language later.
-- `components.button.options.size`: Small, Medium, and Large map to the official 28, 34, and 50 px
-  geometry within the existing schema.
+- Public `scale`: Small, Medium, and Large map to 24, 34, and 50 px geometry.
+  These are explicit scales, not a `components.button.options.size` setting.
 - Palette intent and emphasis select the Apple relationship or documented Kiskadee extension; no
   literal HEX is authored in the component schema.
+
+
+## macOS Compact Geometry And Transient Feedback
+
+Status: **Official adapted**, with the extensions below. The platform boundary is defined in
+[Visual Identity And Platform Adaptations](../../../definitions/visual-identity-and-platform-adaptations.md).
+The iOS geometry table above preserves source evidence; it is not the current Small mapping.
+
+Push Button variants have a 24 px frame, 6 px radius, centered 13/16 SF Pro Medium text
+(variable weight 510), zero tracking and 16 px horizontal padding. The source centers text in a
+fixed frame; Kiskadee derives the same height from 16 px content plus 4 px padding on each side.
+The shared `body-extra-small` profile uses the existing Medium weight token (500), an explicit
+font-weight adaptation. No other typography profile is changed. The 16 px Small icon still fits.
+
+Small replaces the former iOS 28 px mapping. Medium 34 px and Large 50 px remain unchanged.
+`rounded` is 6 px; applying that radius to Medium/Large is a **Kiskadee extension**. `pill` stays
+25 px and `square` stays zero. Material's explicit compact-to-spacious scale ordering is retained;
+there is no automatic OS or breakpoint detection.
+
+### Inspected Light source layers
+
+All rows below are `Active Window=True`, `On=False`. Paints include node opacity, not only fill
+opacity. `Controls/Tint` (`VariableID:697:5166`, Light `1:0`) resolves to `#0d6fff` in this file.
+That macOS base does **not** replace the existing iOS blue or any Rest appearance.
+
+| Style | Idle node | Clicked node | Source feedback | Mapping |
+| --- | --- | --- | --- | --- |
+| Default / Preferred | `502:5866` | `502:5978` | Tint plus black 15%; composite approximately `#0b5ed9` | High pressure: apply darkening direction to preserved iOS vivid; Light vivid +3 |
+| Bordered Secondary | `502:5854` | `502:5984` | Tint 10%, then black 8% | Medium pressure: Light subtle +3, an approximation retaining family chroma |
+| Bordered Neutral | `121:11924` | `502:5915` | Black 5% becomes black 15% | Low retains neutral tertiary pigment and raises alpha to 28% |
+| Borderless (Bezel shows On) | `502:5878` | `502:5972` | Transparent becomes black 15% | Lowest Pressed: physical neutral black cap at 15% |
+| Borderless | `502:5872` | `502:5975` | No background delta | The bezel variant above is the chosen adaptation, not a claim about every Borderless style |
+
+For Primary High, darkening the preserved iOS `#0088ff` by 15% gives `#0074d9`.
+The approved `b.blue.v1` Light vivid +3 is L40 `#0072d7` (RGB delta 0/-2/-2).
+Primary Medium uses the same family's subtle +3, L7 `#cce3ff`, preserving a tonal tint rather than
+flattening the source's stacked translucent paints. Low uses approved neutral L40 `#737375` at
+28%, approximately `#d8d8d8` on white. The source tertiary pigment `#767680` remains
+provenance; the approved neutral ramp provides its mapped counterpart. Lowest uses neutral L100 at 15% (`#00000026`).
+These are legacy family-reference/cap getter lookups; no new primitive assets or literal schema
+colors are introduced. Other intents and optional onSubtle Brand Packs generalize the shared
+recipe and are **Kiskadee extensions**, not individually sampled macOS colors.
+
+The inspected set contains Idle/Clicked/Disabled and On/Off variants, but no Hover variant.
+Hover is an explicitly weaker Web affordance: existing High/Medium +1 offsets, Low neutral alpha
+20% (Light) / 32% (Dark), Lowest neutral cap 8%. Dark and Darker are **Kiskadee extensions**:
+High/Medium retain their existing Dark-track offsets; Low increases approved D55 pigment alpha
+(`#7a7a7c`) from 24% Rest to 32%/40%, while Lowest uses the D100 white cap at 8%/15%. Dark macOS rendering
+is **Not inspected**; no Light offset is copied into Dark as purported official evidence.
+
+Selected, Disabled, the focus ring and every onVivid recipe remain unchanged. The full macOS
+On/Off and inactive-window matrix is **Deferred**. Ordinary Rest surface, text, icon, border,
+icon-region and divider colors remain unchanged across all existing themes and contexts.
 
 ## State Precedence And Validation
 
@@ -295,3 +350,18 @@ presentation are revalidated whenever the shared formula changes.
 The approved hierarchy changes preset definitions and the preset-owned Brand projection only.
 No Builder, runtime, Headless or structural CSS change is needed. See the
 [verification ledger](../polish-verification.md) for rendered checks and remaining consumer limits.
+
+### 2026-09-08 validation
+
+- 26 focused Button, control and foundation tests passed.
+- Web Builder build/sync/registry generation passed, including optional Brand Packs.
+- Showcase production build passed, including Next.js typechecking and static generation.
+- A serialized before/after comparison of every Button element palette confirmed unchanged Rest values.
+- In-app browser at `http://localhost:3000/button`: Small/Medium/Large measured approximately
+  24/34/50 px, rounded radius 6 px; forced state matrix checked in Light and Dark; no console errors.
+- The full preset typecheck reports Fluent errors outside this diff; no iOS 27 diagnostics.
+- Pill remains schema- and artifact-verified; the Button Showcase follows the preset default (pill), with explicit radius overrides.
+  Mobile viewport and native macOS rendering were not validated.
+
+The preset global radius defaults to `pill`. `rounded` remains an explicit 6 px alternative;
+the Showcase defaults to the preset choice rather than overriding it.

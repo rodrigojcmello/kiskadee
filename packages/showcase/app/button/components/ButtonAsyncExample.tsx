@@ -3,6 +3,7 @@
 import type {
   ComponentEmphasis,
   ElementSizeValue,
+  RadiusMode,
   SurfaceContext,
   SystemButtonIntent
 } from '@kiskadee/core';
@@ -53,6 +54,7 @@ export function ButtonAsyncExample({
   fontName,
   progressAvailable,
   progressSurfaceContext,
+  radius,
   scale,
   surfaceContext
 }: {
@@ -60,6 +62,7 @@ export function ButtonAsyncExample({
   fontName: string;
   progressAvailable: boolean;
   progressSurfaceContext: SurfaceContext;
+  radius: RadiusMode;
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
@@ -177,6 +180,7 @@ export function ButtonAsyncExample({
                 setPending(true);
               }}
               pending={pending}
+              radius={radius}
               scale={scale}
               surfaceContext={surfaceContext}
             >

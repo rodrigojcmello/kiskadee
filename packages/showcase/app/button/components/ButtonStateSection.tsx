@@ -4,6 +4,7 @@ import type {
   ButtonIntent,
   ElementSizeValue,
   InteractionState,
+  RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
 import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
@@ -24,6 +25,7 @@ type ButtonStateSectionProps = {
   stateCapabilities?: ManifestComponentState;
   simplified?: boolean;
   grouped?: boolean;
+  radius: RadiusMode;
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
 };
@@ -46,6 +48,7 @@ export function ButtonStateSection({
   stateCapabilities,
   simplified = false,
   grouped = false,
+  radius,
   scale
 }: ButtonStateSectionProps) {
   const textProfiles = useShowcaseTextProfiles();
@@ -94,6 +97,7 @@ export function ButtonStateSection({
           className={s.stateButtonGroup}
           emphasis={emphasis}
           intent={intent}
+          radius={radius}
           scale={scale}
         >
           {button}
@@ -145,6 +149,7 @@ export function ButtonStateSection({
                   <KButton
                     emphasis={emphasis}
                     intent={intent}
+                    radius={radius}
                     scale={scale}
                     aria-label={`${title} ${EMPHASIS_LABELS[emphasis]} emphasis Rest`}
                   >
@@ -173,7 +178,7 @@ export function ButtonStateSection({
                 {renderButtonState(
                   emphasis,
                   'rest',
-                  <KButton emphasis={emphasis} intent={intent} scale={scale}>
+                  <KButton emphasis={emphasis} intent={intent} radius={radius} scale={scale}>
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={align}>
                         Rest
@@ -184,7 +189,13 @@ export function ButtonStateSection({
                 {renderButtonState(
                   emphasis,
                   'hover',
-                  <KButton emphasis={emphasis} intent={intent} scale={scale} status="hover">
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    radius={radius}
+                    scale={scale}
+                    status="hover"
+                  >
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={align}>
                         Hover
@@ -195,7 +206,13 @@ export function ButtonStateSection({
                 {renderButtonState(
                   emphasis,
                   'focus',
-                  <KButton emphasis={emphasis} intent={intent} scale={scale} status="focus">
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    radius={radius}
+                    scale={scale}
+                    status="focus"
+                  >
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={align}>
                         Focus
@@ -206,7 +223,13 @@ export function ButtonStateSection({
                 {renderButtonState(
                   emphasis,
                   'pressed',
-                  <KButton emphasis={emphasis} intent={intent} scale={scale} status="pressed">
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    radius={radius}
+                    scale={scale}
+                    status="pressed"
+                  >
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={align}>
                         Pressed
@@ -220,6 +243,7 @@ export function ButtonStateSection({
                   <KButton
                     emphasis={emphasis}
                     intent={intent}
+                    radius={radius}
                     scale={scale}
                     controlState={selectedMap[emphasis]}
                     radiusEffect={!grouped && intent === 'primary'}
@@ -235,7 +259,13 @@ export function ButtonStateSection({
                 {renderButtonState(
                   emphasis,
                   'disabled',
-                  <KButton emphasis={emphasis} intent={intent} scale={scale} status="disabled">
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    radius={radius}
+                    scale={scale}
+                    status="disabled"
+                  >
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={align}>
                         Disabled

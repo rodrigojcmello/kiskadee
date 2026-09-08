@@ -75,3 +75,9 @@ Native Dynamic Type resizing, vibrancy, semantic quaternary text, and scene-rela
 Verify profile deduplication and references, all three themes and both contexts, label hierarchy,
 and text rendered inside selected Cards. Full rendering results are recorded in
 [the polish verification ledger](../polish-verification.md).
+
+## Compact Apple Control Profile
+
+`body-extra-small` adds the macOS-derived 13/16 px Medium profile with zero tracking, used by
+Small Button. Existing iOS profiles are unchanged. Source node `502:5868` uses variable weight
+510; the existing Medium token maps to 500. See [Button evidence](button.md#macos-compact-geometry-and-transient-feedback).

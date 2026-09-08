@@ -34,7 +34,7 @@ type ButtonThemeRecipe = {
   scale: Ios27AppleButtonFormulaScale;
   high: StatefulFunctionalTones;
   semanticMedium: Omit<StatefulFunctionalTones, 'rest'>;
-  nonProminent: Omit<StatefulFunctionalTones, 'rest'>;
+  nonProminent: Pick<StatefulFunctionalTones, 'selected'>;
   transparentTone: KiskadeeTone;
   tertiaryFill: {
     tone: KiskadeeTone;
@@ -59,17 +59,15 @@ export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
     high: {
       rest: { reference: 'vivid', offset: 0 },
       hover: { reference: 'vivid', offset: 1 },
-      pressed: { reference: 'vivid', offset: 2 },
+      pressed: { reference: 'vivid', offset: 3 },
       selected: { reference: 'vivid', offset: 1 }
     },
     semanticMedium: {
       hover: { reference: 'subtle', offset: 1 },
-      pressed: { reference: 'subtle', offset: 2 },
+      pressed: { reference: 'subtle', offset: 3 },
       selected: { reference: 'subtle', offset: 1 }
     },
     nonProminent: {
-      hover: { reference: 'subtle', offset: 0 },
-      pressed: { reference: 'subtle', offset: 2 },
       selected: { reference: 'subtle', offset: 1 }
     },
     transparentTone: 0,
@@ -96,8 +94,6 @@ export const IOS_27_APPLE_BUTTON_TONAL_RECIPE = {
       selected: { reference: 'subtle', offset: 1 }
     },
     nonProminent: {
-      hover: { reference: 'subtle', offset: 0 },
-      pressed: { reference: 'subtle', offset: 2 },
       selected: { reference: 'subtle', offset: 1 }
     },
     transparentTone: 0,
@@ -134,6 +130,11 @@ export function createIos27AppleButtonOnSubtleIntent({
   const roleForeground = roleReferenceColor(recipe.high.rest);
   const mediumRest = family.reference(recipe.scale, 'subtle');
   const mediumInteraction = recipe.semanticMedium;
+  // macOS neutral bezels retain neutral feedback instead of acquiring an intent tint.
+  // Dark is a Kiskadee extension; the inspected macOS variants resolve in Light.
+  const lowHover = neutralColor(recipe.tertiaryFill.tone, theme === 'light' ? 20 : 32);
+  const lowPressed = neutralColor(recipe.tertiaryFill.tone, theme === 'light' ? 28 : 40);
+  const bezelColor = neutralColor(100);
 
   return {
     boxColor: {
@@ -158,8 +159,8 @@ export function createIos27AppleButtonOnSubtleIntent({
       },
       low: {
         rest: tertiaryFill,
-        hover: roleReferenceColor(recipe.nonProminent.hover),
-        pressed: roleReferenceColor(recipe.nonProminent.pressed),
+        hover: lowHover,
+        pressed: lowPressed,
         disabled: tertiaryFill,
         selected: {
           rest: roleReferenceColor(recipe.nonProminent.selected)
@@ -167,8 +168,8 @@ export function createIos27AppleButtonOnSubtleIntent({
       },
       lowest: {
         rest: transparent,
-        hover: roleReferenceColor(recipe.nonProminent.hover),
-        pressed: roleReferenceColor(recipe.nonProminent.pressed),
+        hover: withAlpha(bezelColor, 8),
+        pressed: withAlpha(bezelColor, 15),
         // Clear the persistent selected fill for the disabled borderless appearance.
         disabled: transparent,
         selected: {

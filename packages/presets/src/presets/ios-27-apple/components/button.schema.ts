@@ -180,12 +180,12 @@ export function createIos27AppleButtonSchema({
             's:lg:1': 14
           },
           paddingLeft: {
-            's:sm:1': 10,
+            's:sm:1': 16,
             's:md:1': 14,
             's:lg:1': 20
           },
           paddingRight: {
-            's:sm:1': 10,
+            's:sm:1': 16,
             's:md:1': 14,
             's:lg:1': 20
           },
@@ -195,7 +195,7 @@ export function createIos27AppleButtonSchema({
             's:lg:1': 1
           },
           borderRadius: {
-            rounded: 25,
+            rounded: 6,
             pill: 25,
             square: 0
           }
@@ -205,7 +205,7 @@ export function createIos27AppleButtonSchema({
       e2: {
         name: 'button-text',
         typography: {
-          's:sm:1': 'body-small',
+          's:sm:1': 'body-extra-small',
           's:md:1': 'body-small',
           's:lg:1': 'body-medium'
         },

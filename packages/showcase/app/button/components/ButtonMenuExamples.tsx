@@ -1,6 +1,11 @@
 'use client';
 
-import type { DropdownPresence, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
+import type {
+  DropdownPresence,
+  ElementSizeValue,
+  RadiusMode,
+  SurfaceContext
+} from '@kiskadee/core';
 import type { IconName } from '@kiskadee/icons/interface';
 import {
   AdaptiveButtonMenu,
@@ -218,11 +223,13 @@ function createWorkItemTree({
 export function ButtonMenuExamples({
   available,
   presence,
+  radius,
   scale,
   surfaceContext
 }: {
   available: boolean;
   presence?: DropdownPresence;
+  radius: RadiusMode;
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
@@ -302,7 +309,7 @@ export function ButtonMenuExamples({
           </Text>
           <AdaptiveButtonMenu.Root
             {...common}
-            buttonGroup={{ emphasis: 'high', intent: 'primary', scale, surfaceContext }}
+            buttonGroup={{ emphasis: 'high', intent: 'primary', radius, scale, surfaceContext }}
             bottomSheet={{ scale }}
           >
             <AdaptiveButtonMenu.Trigger>
@@ -316,7 +323,7 @@ export function ButtonMenuExamples({
           </Text>
           <AdaptiveButtonMenu.Root
             {...common}
-            buttonGroup={{ emphasis: 'medium', intent: 'neutral', scale, surfaceContext }}
+            buttonGroup={{ emphasis: 'medium', intent: 'neutral', radius, scale, surfaceContext }}
             bottomSheet={{ scale, itemLayout: 'centered', centeredIcons: 'hide' }}
           >
             <AdaptiveButtonMenu.Trigger>
@@ -333,7 +340,7 @@ export function ButtonMenuExamples({
           </Text>
           <AdaptiveButtonMenu.Root
             {...common}
-            buttonGroup={{ emphasis: 'high', intent: 'primary', scale, surfaceContext }}
+            buttonGroup={{ emphasis: 'high', intent: 'primary', radius, scale, surfaceContext }}
             bottomSheet={{ scale, itemLayout: 'structured' }}
           >
             <AdaptiveButtonMenu.Action onClick={() => setLastAction('Save')}>

@@ -2,6 +2,7 @@ import type {
   ButtonIconLayout,
   ButtonIconPlacement,
   ElementSizeValue,
+  RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
 import {
@@ -146,10 +147,12 @@ const RICH_TEXT_ACTION_GROUPS = [
 
 export function ButtonIconExamples({
   fontName,
+  radius,
   scale,
   surfaceContext
 }: {
   fontName: string;
+  radius: RadiusMode;
   scale: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
@@ -176,6 +179,7 @@ export function ButtonIconExamples({
             iconPlacement={iconPlacement}
             intent={intent}
             key={`${intent}-${emphasis}`}
+            radius={radius}
             scale={scale}
             surfaceContext={surfaceContext}
           >
@@ -214,6 +218,7 @@ export function ButtonIconExamples({
                       emphasis="medium"
                       intent="neutral"
                       key={label}
+                      radius={radius}
                       scale={scale}
                       surfaceContext={surfaceContext}
                       title={label}
@@ -238,6 +243,7 @@ export function ButtonIconExamples({
                   emphasis="medium"
                   intent="neutral"
                   key={actions[0].label}
+                  radius={radius}
                   scale={scale}
                   surfaceContext={surfaceContext}
                 >

@@ -113,7 +113,7 @@ export const schema: Schema<Segment> = {
         }
       }
     },
-    radius: 'rounded'
+    radius: 'pill'
   },
   themeTokens: {
     palettes: {
