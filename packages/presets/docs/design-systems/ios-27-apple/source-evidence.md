@@ -1,6 +1,6 @@
 # iOS 27 Apple Source Evidence
 
-This directory records official source evidence and preset-level decisions for
+This directory records source evidence and preset-level decisions for
 `packages/presets/src/presets/ios-27-apple/`.
 
 ## Primary Sources
@@ -43,7 +43,13 @@ This directory records official source evidence and preset-level decisions for
 | Liquid Glass Button Symbol | component set `5522:11866` | Deferred | Confirmed upstream capability; no current schema/material implementation. |
 | Backgrounds and Card surface catalog | nodes `5532:7801`, `5532:8370`, plus opaque application nodes | Official adapted | Opaque background variables are consolidated into Card Neutral Low/Medium; Accent Blue provides the Kiskadee Primary High vivid canvas. |
 | Liquid Glass and material containers | Alert, Action Sheet, Color Picker, Material, and Activity View nodes | Deferred | Translucency, blur, and scene-relative material are not flattened into opaque Card colors. |
-| Slider | retained iOS 26/macOS 26 evidence | Not inspected | Requires a separate iOS 27 revalidation. |
+| Default typography | `224:56261`, page `0:2194` | Official adapted | Dynamic Type default role metrics, weight, and tracking mapped to reusable profiles; web system-font substitution remains explicit. |
+| Switch | page `507:24690`, set `29:56814` | Official adapted | Idle track/thumb geometry and source semantic paints; glass transient deformation deferred. |
+| Slider | page `507:24685`, `520:49524`, Dark `5430:2055` | Official adapted | Idle rail, thumb, fills and tick evidence revalidated against iOS 27. |
+| Progress | `5433:20247`, `5433:20646`, set `9:55875` | Official adapted | Conventional linear track/fill source; semantic colors and linear indeterminate presentation are extensions. |
+| Badge | Apple HIG tab bars; Tab Bar page `507:24689` inspected | Official adapted | Attention/count badge role; geometry and broader intent/emphasis matrix explicitly identified as extensions. |
+| Menus and action sheets | Menus page `507:24676`, `5580:104363`, `5446:10266` | Official adapted | Source geometry, typography and selection anatomy mapped to existing Dropdown/BottomSheet. Opaque surfaces are explicit extensions. |
+| Foregrounds, Icon and Separator | Labels, Separators and Accents in the centralized color collection | Official adapted | Shared foreground/contour profiles use approved tonal counterparts; semantic icon recommendation remains SF Symbols. |
 
 ## Preset-Wide Color And Token Provenance
 
@@ -76,7 +82,9 @@ This directory records official source evidence and preset-level decisions for
   social Brand Packs projected through the same Button recipe.
 - **Deferred**: Liquid Glass material, textured backgrounds, material/effect paints, and their
   glass-specific control treatments.
-- **Not inspected**: iOS 27 Slider fidelity and any component not listed below.
+- **Not inspected**: a standalone Apple equivalent for the existing Fluent Action/Toggle Chip;
+  see [Chip boundary](components/chip.md). Components outside the published coverage are not
+  implicitly supported.
 
 ## Preset Decisions
 
@@ -100,18 +108,16 @@ This directory records official source evidence and preset-level decisions for
 
 ## Typography Evidence
 
-The preset centralizes its existing Apple-system recipes in `global.typography.profiles`. The
-conventional Button maps Small and Medium to normalized 15/20 Regular `body-small` and Large to
-17/22 Regular `body-medium`, as documented by the inspected component evidence. Switch reuses
-`body-medium`. This is **Official adapted** because the Web preset selects the Apple system stack without
-embedding SF Pro.
+The default iOS 27 Dynamic Type source at `224:56261` was inspected for font sizes, line
+heights, weights and tracking. These values now populate `global.typography.profiles`, including
+headings and supporting text. Button, Switch, Slider, Badge, menus and sheet actions consume the
+shared profiles instead of maintaining component-local text recipes. Text exposes the existing
+foreground-profile contract across neutral and chromatic families.
 
-Slider typography remains part of the provisional iOS 26/macOS 26 carry-over described in its
-component evidence. Its reusable label, tooltip, and caption profiles preserve the current numbers
-but are not claimed as verified iOS 27 tokens. The former 12/22 caption exception was removed;
-the optional indicator reuses `caption-medium` at every scale and leaves alignment to the component.
-No tracking value is introduced because none existed in the previous Slider schema. A complete
-review of the iOS 27 type ramp remains **Deferred**.
+The source uses SF Pro; the Web preset selects an Apple system stack without embedding SF Pro.
+This is **Official adapted** and can resolve to another platform font outside Apple systems.
+The Showcase's existing iOS profile-selection configuration now consumes the published heading,
+body and label profiles. See [Text evidence](components/text.md) for the complete mapping.
 
 ## Interface Icon Evidence
 
@@ -129,13 +135,50 @@ implementation under the same recommended ID without changing the preset.
 
 ## Component Evidence
 
-- [BottomSheet](components/bottom-sheet.md)
-- [Button](components/button.md)
-- [Card](components/card.md) — opaque background consolidation, canonical surfaces, and deferred glass boundary.
-- [Dropdown and Menu](components/dropdown.md)
+- [Card and surface composition](components/card.md)
+- [Text and typography](components/text.md)
+- [Icon](components/icon.md)
 - [Separator](components/separator.md)
-- [Slider](components/slider.md) — legacy evidence retained until iOS 27 revalidation.
+- [Button](components/button.md)
+- [Switch](components/switch.md)
+- [Slider](components/slider.md)
+- [Badge](components/badge.md)
+- [Progress](components/progress.md)
+- [Dropdown and Menu](components/dropdown.md)
+- [BottomSheet](components/bottom-sheet.md)
+- [Chip coverage boundary](components/chip.md)
 
 ## Color Evidence
 
 - [iOS 27 color variables and tonal promotion](colors/ios-27-color-evidence.md)
+
+## Current Polish Scope And Decisions
+
+The current preset-only polish uses Fluent Microsoft as a coverage and consumption reference;
+Apple evidence remains the authority for iOS appearance. Material is excluded from this stage.
+[The verification ledger](polish-verification.md) records coverage, tests and rendered checks.
+
+- Light and Dark colors continue using the approved V5/0.7.0 assets unchanged.
+- Darker expresses Apple Dark Base; normal Dark uses Elevated Card backgrounds.
+- Text and Icon now consume explicit foreground profiles across all three themes and both
+  surface contexts. Source default Dynamic Type metrics were inspected at `224:56261`.
+- Contours centralize opaque/nonopaque separator paint for optional Card borders and lines.
+- Card's own surface and the context it publishes to descendants are configured independently;
+  Selected surfaces explicitly switch content to onVivid.
+- Menu and sheet source shadow geometry uses the existing `s:lg:4` global slot (0/8/48/0,
+  canonical black at 25% alpha); no new shadow capability or literal schema paint is introduced.
+- Strong blue canvases use family-relative offsets, documented as Kiskadee extensions, rather
+  than treating an Accent source color as a universal text background.
+- Implementation order is foundations, Card/context, text/icons/separators, controls/indicators,
+  and menu/sheet compositions. No Builder, Core, Headless or component runtime capability changes.
+- The existing Showcase typography selection for iOS is updated to consume the published profiles;
+  the app does not reauthor their values.
+
+## Approved Button Hierarchy Revision (2026-09-07)
+
+The user-approved Kiskadee mapping uses a soft tonal-family fill for Medium in every
+intent, moves the former neutral Medium fill to Low, and removes the Low outline.
+High and Lowest retain their roles. This is a source-informed preset extension rather
+than a claim that Apple defines Kiskadee's four emphasis levels. Original source color
+evidence remains preserved; implementation uses only the existing tonal scale.
+See [Button](components/button.md) for theme, surface-context and Brand formulas.

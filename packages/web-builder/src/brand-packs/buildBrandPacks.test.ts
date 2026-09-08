@@ -8,6 +8,10 @@ import {
   buildExtensions as fluent2MicrosoftBuildExtensions,
   schema as fluent2MicrosoftSchema
 } from '@kiskadee/presets/src/presets/fluent-2-microsoft/index.ts';
+import {
+  buildExtensions as ios27BuildExtensions,
+  schema as ios27Schema
+} from '@kiskadee/presets/src/presets/ios-27-apple/index.ts';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { ComponentClassMapArtifactJSON } from '../component-artifacts/componentClassMapArtifacts.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
@@ -114,6 +118,36 @@ describe('buildOptionalBrandPacksForPreset', () => {
     expect(JSON.stringify(styleKeys)).not.toContain('brand.');
   });
 });
+
+it('publishes iOS Darker auth/social artifacts with complete Button matrices', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'kiskadee-ios-brand-darker-'));
+  const outDirSlug = 'ios-27-apple';
+  try {
+    await buildOptionalBrandPacksForPreset({
+      schema: ios27Schema,
+      extension: ios27BuildExtensions.brandPacks,
+      outDirSlug,
+      baseBuildDir: root
+    });
+    for (const [pack, intents] of [
+      ['auth', AUTH_BRANDS],
+      ['social', SOCIAL_BRANDS]
+    ] as const) {
+      const packDir = resolve(root, outDirSlug, 'brand-packs', pack);
+      const manifest = await readJson<BrandPackBuildManifest>(resolve(packDir, 'manifest.json'));
+      expect(Object.keys(manifest.palettes).sort()).toEqual([...PALETTES]);
+      const palette = manifest.palettes['default.darker']!;
+      const css = await readFile(resolve(packDir, palette.css), 'utf8');
+      expect(css.length).toBeGreaterThan(0);
+      expect(sha256(css)).toBe(palette.cssSha256);
+      const classMapJson = await readFile(resolve(packDir, palette.classMaps.button), 'utf8');
+      expect(sha256(classMapJson)).toBe(palette.classMapSha256.button);
+      expectIntentMatrix(JSON.parse(classMapJson), intents);
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+}, 120_000);
 
 describe('Fluent 2 Microsoft brand pack artifacts', () => {
   let firstRoot: string;

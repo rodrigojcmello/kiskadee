@@ -74,10 +74,12 @@ export const cssPaths = {
     tokens: '/build/ios-27-apple/tokens.kiskadee.css',
     palettes: {
       'default|dark': '/build/ios-27-apple/default.dark.kiskadee.css',
+      'default|darker': '/build/ios-27-apple/default.darker.kiskadee.css',
       'default|light': '/build/ios-27-apple/default.light.kiskadee.css',
     },
     tokenPalettes: {
       'default|dark': '/build/ios-27-apple/tokens.default.dark.kiskadee.css',
+      'default|darker': '/build/ios-27-apple/tokens.default.darker.kiskadee.css',
       'default|light': '/build/ios-27-apple/tokens.default.light.kiskadee.css',
     }
   },

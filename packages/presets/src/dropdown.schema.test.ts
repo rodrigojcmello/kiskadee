@@ -45,7 +45,7 @@ describe('official preset Dropdown schemas', () => {
   });
 
   it.each([
-    [ios27Apple, 's:sm:1', 10, 'dropdown-checkmark'],
+    [ios27Apple, 's:sm:1', 8, 'dropdown-checkmark'],
     [material3Google, 's:lg:1', 12, 'dropdown-checkmark']
   ] as const)('$prefix publishes the dedicated selected-item indicator geometry', (schema, iconSize, paddingRight, name) => {
     const elements = schema.components.dropdown?.elements;

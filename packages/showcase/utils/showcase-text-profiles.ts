@@ -59,10 +59,10 @@ export const showcaseTextProfilesByDesignSystem = {
     caption: 'body-medium'
   },
   'ios-27-apple': {
-    pageTitle: 'body-medium',
-    sectionTitle: 'label-medium',
-    subsectionTitle: 'label-small-strong',
-    groupTitle: 'label-small',
+    pageTitle: 'heading-large',
+    sectionTitle: 'heading-small',
+    subsectionTitle: 'label-large',
+    groupTitle: 'label-medium',
     body: 'body-medium',
     bodyStrong: 'label-medium',
     caption: 'caption-medium'

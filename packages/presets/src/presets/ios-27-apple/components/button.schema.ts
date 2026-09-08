@@ -2,12 +2,14 @@ import type { KiskadeeTone, Schema } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 import {
   createIos27AppleButtonOnSubtleIntent,
+  createIos27AppleButtonOnVividIntent,
   IOS_27_APPLE_BUTTON_TONAL_RECIPE,
   type Ios27AppleButtonFormulaTheme,
   type Ios27AppleButtonTonalFamily
 } from './button-color-formula.ts';
 
 type Ios27AppleSegmentName = 'default';
+type ButtonTheme = 'light' | 'dark' | 'darker';
 type ButtonComponent = NonNullable<Schema<Ios27AppleSegmentName>['components']['button']>;
 type ButtonColorRole =
   | 'button.primary'
@@ -68,11 +70,13 @@ export function createIos27AppleButtonSchema({
     });
 
     return {
-      onSubtle: createContext()
+      onSubtle: createContext(),
+      onVivid: createContext()
     };
   };
 
   const createDividerContextPalettes = (theme: Ios27AppleButtonFormulaTheme) => ({
+    onVivid: { boxColor: { neutral: { medium: { rest: neutralFamily.color('l', 0, 30) } } } },
     onSubtle: {
       boxColor: {
         neutral: {
@@ -89,33 +93,65 @@ export function createIos27AppleButtonSchema({
 
   const createButtonIntent = (theme: Ios27AppleButtonFormulaTheme, role: ButtonColorRole) => {
     const scale = IOS_27_APPLE_BUTTON_TONAL_RECIPE[theme].scale;
-    const mediumSurface =
-      role === 'button.destructive' || role === 'button.positive'
-        ? 'semantic-tint'
-        : 'tertiary-fill';
     return createIos27AppleButtonOnSubtleIntent({
       theme,
       family: createPresetFamily(role),
-      mediumSurface,
       neutralFamily,
       highForeground: neutralFamily.color(scale, BUTTON_HIGH_FOREGROUND_TONES[theme][role])
     });
   };
 
-  const buttonIntentPalettes = {
-    light: {
-      primary: createButtonIntent('light', 'button.primary'),
-      neutral: createButtonIntent('light', 'button.neutral'),
-      destructive: createButtonIntent('light', 'button.destructive'),
-      positive: createButtonIntent('light', 'button.positive')
-    },
-    dark: {
-      primary: createButtonIntent('dark', 'button.primary'),
-      neutral: createButtonIntent('dark', 'button.neutral'),
-      destructive: createButtonIntent('dark', 'button.destructive'),
-      positive: createButtonIntent('dark', 'button.positive')
-    }
+  const createIntentPalettes = (theme: ButtonTheme, onVivid: boolean) => {
+    const create = (role: ButtonColorRole) =>
+      onVivid
+        ? createIos27AppleButtonOnVividIntent({
+            family: createPresetFamily(role),
+            neutralFamily,
+            neutral: role === 'button.neutral'
+          })
+        : createButtonIntent(theme === 'darker' ? 'dark' : theme, role);
+    return {
+      primary: create('button.primary'),
+      neutral: create('button.neutral'),
+      destructive: create('button.destructive'),
+      positive: create('button.positive')
+    };
   };
+  const createSurfaceContext = (theme: ButtonTheme, onVivid: boolean) => {
+    const p = createIntentPalettes(theme, onVivid);
+    return {
+      boxColor: {
+        primary: p.primary.boxColor,
+        neutral: p.neutral.boxColor,
+        destructive: p.destructive.boxColor,
+        positive: p.positive.boxColor
+      },
+      borderColor: {
+        primary: p.primary.borderColor,
+        neutral: p.neutral.borderColor,
+        destructive: p.destructive.borderColor,
+        positive: p.positive.borderColor
+      }
+    };
+  };
+  const createTextContext = (theme: ButtonTheme, onVivid: boolean) => {
+    const p = createIntentPalettes(theme, onVivid);
+    return {
+      textColor: {
+        primary: p.primary.textColor,
+        neutral: p.neutral.textColor,
+        destructive: p.destructive.textColor,
+        positive: p.positive.textColor
+      }
+    };
+  };
+  const createPalettes = <T>(createContext: (theme: ButtonTheme, onVivid: boolean) => T) => ({
+    default: {
+      light: { onSubtle: createContext('light', false), onVivid: createContext('light', true) },
+      dark: { onSubtle: createContext('dark', false), onVivid: createContext('dark', true) },
+      darker: { onSubtle: createContext('darker', false), onVivid: createContext('darker', true) }
+    }
+  });
 
   return {
     options: {
@@ -164,42 +200,7 @@ export function createIos27AppleButtonSchema({
             square: 0
           }
         },
-        palettes: {
-          default: {
-            light: {
-              onSubtle: {
-                boxColor: {
-                  primary: buttonIntentPalettes.light.primary.boxColor,
-                  neutral: buttonIntentPalettes.light.neutral.boxColor,
-                  destructive: buttonIntentPalettes.light.destructive.boxColor,
-                  positive: buttonIntentPalettes.light.positive.boxColor
-                },
-                borderColor: {
-                  primary: buttonIntentPalettes.light.primary.borderColor,
-                  neutral: buttonIntentPalettes.light.neutral.borderColor,
-                  destructive: buttonIntentPalettes.light.destructive.borderColor,
-                  positive: buttonIntentPalettes.light.positive.borderColor
-                }
-              }
-            },
-            dark: {
-              onSubtle: {
-                boxColor: {
-                  primary: buttonIntentPalettes.dark.primary.boxColor,
-                  neutral: buttonIntentPalettes.dark.neutral.boxColor,
-                  destructive: buttonIntentPalettes.dark.destructive.boxColor,
-                  positive: buttonIntentPalettes.dark.positive.boxColor
-                },
-                borderColor: {
-                  primary: buttonIntentPalettes.dark.primary.borderColor,
-                  neutral: buttonIntentPalettes.dark.neutral.borderColor,
-                  destructive: buttonIntentPalettes.dark.destructive.borderColor,
-                  positive: buttonIntentPalettes.dark.positive.borderColor
-                }
-              }
-            }
-          }
-        }
+        palettes: createPalettes(createSurfaceContext)
       },
       e2: {
         name: 'button-text',
@@ -208,30 +209,7 @@ export function createIos27AppleButtonSchema({
           's:md:1': 'body-small',
           's:lg:1': 'body-medium'
         },
-        palettes: {
-          default: {
-            light: {
-              onSubtle: {
-                textColor: {
-                  primary: buttonIntentPalettes.light.primary.textColor,
-                  neutral: buttonIntentPalettes.light.neutral.textColor,
-                  destructive: buttonIntentPalettes.light.destructive.textColor,
-                  positive: buttonIntentPalettes.light.positive.textColor
-                }
-              }
-            },
-            dark: {
-              onSubtle: {
-                textColor: {
-                  primary: buttonIntentPalettes.dark.primary.textColor,
-                  neutral: buttonIntentPalettes.dark.neutral.textColor,
-                  destructive: buttonIntentPalettes.dark.destructive.textColor,
-                  positive: buttonIntentPalettes.dark.positive.textColor
-                }
-              }
-            }
-          }
-        }
+        palettes: createPalettes(createTextContext)
       },
       e3: {
         name: 'button-icon',
@@ -247,37 +225,15 @@ export function createIos27AppleButtonSchema({
             's:lg:1': 4
           }
         },
-        palettes: {
-          default: {
-            light: {
-              onSubtle: {
-                textColor: {
-                  primary: buttonIntentPalettes.light.primary.textColor,
-                  neutral: buttonIntentPalettes.light.neutral.textColor,
-                  destructive: buttonIntentPalettes.light.destructive.textColor,
-                  positive: buttonIntentPalettes.light.positive.textColor
-                }
-              }
-            },
-            dark: {
-              onSubtle: {
-                textColor: {
-                  primary: buttonIntentPalettes.dark.primary.textColor,
-                  neutral: buttonIntentPalettes.dark.neutral.textColor,
-                  destructive: buttonIntentPalettes.dark.destructive.textColor,
-                  positive: buttonIntentPalettes.dark.positive.textColor
-                }
-              }
-            }
-          }
-        }
+        palettes: createPalettes(createTextContext)
       },
       e4: {
         name: 'button-icon-region',
         palettes: {
           default: {
             light: createIconRegionContextPalettes(),
-            dark: createIconRegionContextPalettes()
+            dark: createIconRegionContextPalettes(),
+            darker: createIconRegionContextPalettes()
           }
         },
         scales: {
@@ -325,7 +281,8 @@ export function createIos27AppleButtonSchema({
         palettes: {
           default: {
             light: createDividerContextPalettes('light'),
-            dark: createDividerContextPalettes('dark')
+            dark: createDividerContextPalettes('dark'),
+            darker: createDividerContextPalettes('dark')
           }
         }
       }

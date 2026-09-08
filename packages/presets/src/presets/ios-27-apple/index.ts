@@ -10,7 +10,7 @@ export const buildExtensions = {
   brandPacks: {
     projectionContract: 'ios-27-button-brand-projection-v1',
     packs: ['auth', 'social'],
-    palettes: ['default.dark', 'default.light'],
+    palettes: ['default.dark', 'default.darker', 'default.light'],
     project: (brands) =>
       ({
         button: createIos27AppleBrandButtonProjection(brands)

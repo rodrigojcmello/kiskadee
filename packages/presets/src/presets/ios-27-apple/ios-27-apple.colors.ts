@@ -81,14 +81,16 @@ export const globalSemantics = {
     neutral: { v1: 'primitive.black.v1' },
     redLike: { v1: 'primitive.red.v1', v2: 'primitive.pink.v1' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
-    greenLike: { v1: 'primitive.green.v1' }
+    greenLike: { v1: 'primitive.green.v1' },
+    purpleLike: { v1: 'primitive.purple.v1' }
   },
   dark: {
     primary: { v1: 'primitive.blue.v1' },
     neutral: { v1: 'primitive.black.v1' },
     redLike: { v1: 'primitive.red.v1', v2: 'primitive.pink.v1' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
-    greenLike: { v1: 'primitive.green.v1' }
+    greenLike: { v1: 'primitive.green.v1' },
+    purpleLike: { v1: 'primitive.purple.v1' }
   }
 } as const satisfies GlobalSemanticsByTheme;
 
@@ -115,6 +117,22 @@ export const globalSemanticsBySegment = {
 // -------------------------------------------------------------------------------------------------
 
 export const componentIntents = {
+  badge: {
+    neutral: 'neutral',
+    primary: 'primary',
+    novelty: 'purpleLike',
+    positive: 'greenLike',
+    warning: 'yellowLike',
+    attention: 'redLike'
+  },
+  progress: {
+    neutral: 'neutral',
+    primary: 'primary',
+    positive: 'greenLike',
+    warning: 'yellowLike',
+    destructive: 'redLike'
+  },
+  icon: { neutral: 'neutral', primary: 'primary' },
   bottomSheet: {
     neutral: 'neutral',
     destructive: 'redLike'

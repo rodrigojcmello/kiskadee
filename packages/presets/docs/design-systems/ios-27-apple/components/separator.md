@@ -1,46 +1,33 @@
-# iOS 27 Apple Separator Evidence
+# iOS 27 Separator And Contour Evidence
 
-This file records source evidence and schema decisions for the shared Separator recipe and
-`packages/presets/src/presets/ios-27-apple/components/separator.schema.ts`.
+## Sources And Coverage
 
-## Sources
+- [Figma Colors page](https://www.figma.com/design/GeO2lMY65IAFczDmjs6oei/iOS-and-iPadOS-27--Community-?node-id=0-1746), file `GeO2lMY65IAFczDmjs6oei`, page `0:1746`.
+- [Stored semantic variable mapping](../colors/figma-to-kiskadee.candidate.json),
+  `Separators/Opaque` and `Separators/Non-opaque` Light/Dark.
 
-- [Apple Human Interface Guidelines: Menus](https://developer.apple.com/design/human-interface-guidelines/menus)
-- Existing iOS 27 Dropdown mapping documented in [Dropdown evidence](dropdown.md)
-- Promoted Apple Gray tonal evidence in
-  [`ios-27-color-evidence.md`](../colors/ios-27-color-evidence.md)
-
-## Source Coverage
-
-| Source area | Evidence | Status | Notes |
-| --- | --- | --- | --- |
-| Menu grouping | Apple Menus guidance | Official adapted | Separators distinguish explicit logical groups. |
-| Shared recipe and standalone Web component | Kiskadee contract | Kiskadee extension | It is not presented as a native Apple Separator API. |
+**Official adapted:** source separator colors translated to the approved Apple Gray family.
+**Kiskadee extension:** one Web pixel thickness, optional Card boundaries, and on-vivid contours.
 
 ## Color And Token Provenance
 
-The `subtle` recipe preserves the existing `Dropdown.e7` output without changing its color:
+| Concept | Source Light / Dark | Lookup | Output |
+| --- | --- | --- | --- |
+| Opaque | #c6c6c8 / #38383a | exact Apple Gray L14 / D16 | #c2c2c5 / #38383b; Delta E 0.012279 / 0.001770 |
+| Non-opaque | black12% / white17% | physical cap neutral L100@12 / D100@17 | source endpoints and alpha preserved |
+| On vivid medium/low | no global upstream counterpart | physical white L0@30 / L0@17 | Kiskadee extension for dark blue canvas |
 
-| Theme | Existing role | Primitive and tone | Generated value | Kiskadee mapping |
-| --- | --- | --- | --- | --- |
-| Light | `dropdown.neutral` | Apple Gray `primitive.black.v1`, Light 10 | `#d1d1d4` | `global.separators.profiles.subtle` |
-| Dark | `dropdown.neutral` | Apple Gray `primitive.black.v1`, Dark 16 | `#38383b` | `global.separators.profiles.subtle` |
+`global.contours.neutral.standard` owns this paint. `global.separators.subtle` selects its
+medium/low coordinates and owns thickness 1. Separator `e1`, Dropdown `e7` and BottomSheet `e12`
+consume that existing profile. Card consumes contours independently of its own surface.
 
-## Kiskadee Mapping
+Darker keeps Dark contour colors. Both surface contexts publish the same medium/low coordinate
+set, so no on-vivid fallback or hidden missing separator remains. The former Light L10 was only a
+legacy approximation; L14 now follows the source de-para. No interaction states are authored for
+static dividing lines.
 
-- The recipe contains a one-pixel `boxWidth` and Neutral/Medium/Rest `boxColor` only.
-- `components.separator.e1` and `components.dropdown.e7` reference the same build-time recipe.
-- Orientation is structural. Spacing and inset belong to the surrounding layout or Dropdown group.
-- Dropdown does not render the standalone Separator component; equal style keys deduplicate in the
-  Builder.
+## Deferred And Validation
 
-## Validation
-
-- The mapping uses the promoted source-backed Apple Gray family and introduces no literal in schema
-  code.
-- Light and Dark preserve the previous Dropdown tones exactly.
-
-## Open Gaps
-
-- Native Liquid Glass and platform-specific separator materials remain outside this opaque Web
-  adaptation.
+Vibrant/material separator paint and device-dependent native hairline rendering are **Deferred**.
+Validate shared references and resolved colors across themes, horizontal/vertical lines and Card
+boundary controls. See [verification ledger](../polish-verification.md).

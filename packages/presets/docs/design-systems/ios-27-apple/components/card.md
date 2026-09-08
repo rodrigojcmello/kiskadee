@@ -73,67 +73,68 @@ Kiskadee emphasis would create duplicate surfaces and would misuse the emphasis 
 
 ## Source-To-Tonal Mapping
 
-The schema uses the approved Apple Gray and Blue tonal assets. Generated Apple Gray `n.black.v2`
-is published by the preset as its single `primitive.black.v1`. No literal source color appears in
-the official preset schema.
+The approved Apple Gray `n.black.v2` is published as `primitive.black.v1`. Exact background
+stops below follow the inspected variables. Darker maps Apple's Dark Base appearance to the
+existing third Kiskadee theme; it does not invent a third Apple color ramp.
 
-| Kiskadee surface | Source concept | Light mapping | Dark mapping | Status |
+| Surface | Light | Dark (Elevated) | Darker (Base) | Status |
 | --- | --- | --- | --- | --- |
-| `neutral.low` | `Backgrounds/Primary - Elevated`; also matches Grouped Secondary | `n.black.v2` → `primitive.black.v1` L0, exact `#ffffff` | `n.black.v2` → `primitive.black.v1` D5, exact `#1c1c1e` | Official adapted |
-| `neutral.medium` | `Backgrounds/Secondary - Elevated` | `n.black.v2` → `primitive.black.v1` L3, `#f2f2f4`, Delta E `0.004082` | `n.black.v2` → `primitive.black.v1` D10, exact `#2c2c2e` | Official adapted |
-| `primary.high` | `Accents/Blue` used as a local strong canvas | `b.blue.v1` L28, exact `#0088ff` | `b.blue.v1` D70, `#2e92ff`, Delta E `0.013637` from `#0091ff` | Kiskadee extension |
+| neutral.lowest | L0 white | D10 #2c2c2e | D5 #1c1c1e | Official adapted raised container, optional border on by default |
+| neutral.low | L3 #f2f2f4 | D5 #1c1c1e | D0 black | Official adapted grouped/base route canvas |
+| neutral.medium | L0 white | D16 #38383b | D10 #2c2c2e | Official adapted higher opaque content container |
+| primary.medium | Blue Light subtle reference | Blue Dark subtle reference | Blue Dark subtle reference | Kiskadee extension tinted content surface |
+| primary.high | Blue Light vivid +4 | same Light-track reference | same Light-track reference | Kiskadee extension strong surface |
+| primary.highest | Blue Light vivid +8 | same Light-track reference | same Light-track reference | Kiskadee extension strongest surface |
 
-The third Elevated background remains documented but is not emitted as `neutral.high`: its Light
-value returns to white, while Kiskadee `high` means a vivid or strongly contrasted own surface.
-Apple's nesting vocabulary is preserved in evidence instead of being forced into the wrong public
-axis.
+Source Secondary Light #f2f2f7 maps to L3 with Delta E 0.004082. Source Elevated Tertiary
+#3a3a3c maps to D16 #38383b. Both source values remain stored in the color evidence. Light
+lowest/medium intentionally share opaque white but differ in their default boundary. This
+represents a bordered container and a grouped content surface without inventing another gray.
 
-## Canonical Surface Catalog
+Strong Primary no longer uses the raw light Accent L28. The source Accent is designed for tint,
+not a general canvas of white text. `vivid +4` resolves to #0069c8 and `vivid +8` to #004588;
+these family-relative offsets preserve the tonal scale and establish a readable strong canvas.
+Both are explicit extensions, not Apple background tokens. Dark and Darker use the same Light
+track for these surfaces so their descendants consistently use light foregrounds.
 
-The Card publishes the same ordered catalog for Light and Dark:
+## Canonical Surfaces And Content Context
 
-```text
-neutral.low    -> descendants use onSubtle
-neutral.medium -> descendants use onSubtle
-primary.high   -> descendants use onVivid
-```
+Light and Dark publish all six canonical entries. Darker publishes five, omitting Neutral Medium
+from the canonical suggestions while retaining its full palette and runtime support. The existing
+Showcase preference resolves to Neutral Low (black) when Medium is absent; this makes Darker a
+Base canvas without changing Showcase selection logic. Medium remains available to explicitly
+configured nested Cards. Opaque neutral/tinted entries publish `onSubtle`; Primary High/Highest
+publish `onVivid`.
 
-The ordering is intentional. The Showcase uses the second canonical entry as its route background,
-so iOS 27 starts on Apple's Secondary Elevated surface. Choosing `onVivid` selects the blue Primary
-High surface rather than leaving the example container transparent.
-
-The Card surface itself is always authored under `onSubtle`. `contentSurfaceContext` describes the
-palette descendants should use; it does not move the Card into an `onVivid` palette.
+Card explicitly publishes `contentSurfaceContext` in both input contexts. Opaque Neutral and
+Primary Medium reset descendants to `onSubtle`; their Selected state switches to Primary High
+and `onVivid`. High/Highest always publish `onVivid`. The catalog alone does not perform this
+runtime transition. Nested Cards consume the matching contextual border while retaining their
+own opaque source-backed surface.
 
 ## Interaction, Border, And Geometry
 
-The inspected background variables define Rest colors, not Card interaction states. Hover,
-Pressed, Focus, and Disabled therefore do not receive invented color deltas. Existing shadow
-behavior remains the CardAction transient interaction affordance.
+Rest background colors are source-backed; Apple background variables do not define Card states.
+No Hover/Pressed/Focus fill is invented. The existing optional shadow effect supplies transient
+CardAction elevation. Selected promotes Neutral and Primary Medium to Primary High as a
+**Kiskadee extension**, paired with the explicit descendant-context transition.
 
-Selected is one explicit Kiskadee extension retained from the previous Card contract: Neutral Low
-and Neutral Medium promote to the same Primary High surface. This keeps persistent CardAction
-selection visible and preserves the consumer's existing light-on-vivid content treatment. Primary
-High has no Rest-equal Selected override; it already owns that surface.
-
-The inspected opaque surfaces do not establish one reusable border recipe. The structural
-one-pixel border remains for layout compatibility but resolves to transparent in every published
-surface. Padding, 28 px radius, and shadow levels remain explicit Kiskadee extensions until a
-reusable Apple Card component provides stronger evidence.
+The optional border consumes `global.contours.neutral.standard.low`. This shares the inspected
+nonopaque separator paint; its use as a Card boundary is an explicit extension. Lowest enables
+the border by default; other opaque surfaces leave it off. High/Highest enable their boundary
+on a vivid parent to keep equal-color nested surfaces identifiable. Border controls can override
+these defaults without changing the fill. Geometry stays at 16px padding, 28px rounded radius,
+1px border box and the existing shadow scale. These remain Kiskadee extensions.
 
 ## Deferred Or Unsupported
 
-- Liquid Glass, material blur, vibrancy, scene-relative contrast, and effect paints.
-- A separate grouped/elevated axis for Card.
-- Conventional Button `onVivid`; Card background availability and Button palette availability are
-  independent contracts.
-- Apple-specific Card states or geometry beyond the existing Kiskadee extension.
+Liquid Glass, blur, vibrancy, scene-relative materials, and a separate grouped/elevated axis
+remain **Deferred**. No opaque Card claims to render Apple's glass. Square mode, selection and
+optional elevation are existing framework capabilities configured by this preset.
 
 ## Validation
 
-- `components.card.options.canonicalSurfaces` must reference only emitted Rest surfaces.
-- Neutral Selected must resolve to Primary High without redundant selected substates.
-- The generated Card component artifact must contain both themes and all three ordered entries.
-- Light must resolve to `#ffffff`, `#f2f2f4`, and `#0088ff`.
-- Dark must resolve to `#1c1c1e`, `#2c2c2e`, and `#2e92ff`.
-- No glass application may be represented by one of these opaque colors as though it were exact.
+Regression coverage checks canonical entries against emitted palettes, every content transition
+in all themes and input contexts, and neutral foreground contrast on canonical surfaces. Generated
+artifacts and visual inspection must confirm the complete chain. See
+[polish verification ledger](../polish-verification.md) for actual command and browser results.

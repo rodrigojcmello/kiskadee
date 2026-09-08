@@ -92,7 +92,6 @@ function createOnSubtleFormulas(
         createIos27AppleButtonOnSubtleIntent({
           theme,
           family,
-          mediumSurface: 'tertiary-fill',
           neutralFamily: neutralButtonFamily,
           highForeground: resolveContentForeground(scale, resolveVividContentPolarity(brand, scale))
         })
@@ -169,7 +168,8 @@ export function createIos27AppleBrandButtonProjection(
         palettes: {
           default: {
             light: createContainerTheme('light'),
-            dark: createContainerTheme('dark')
+            dark: createContainerTheme('dark'),
+            darker: createContainerTheme('dark')
           }
         }
       },
@@ -178,7 +178,8 @@ export function createIos27AppleBrandButtonProjection(
         palettes: {
           default: {
             light: createContentTheme('light'),
-            dark: createContentTheme('dark')
+            dark: createContentTheme('dark'),
+            darker: createContentTheme('dark')
           }
         }
       },
@@ -187,7 +188,8 @@ export function createIos27AppleBrandButtonProjection(
         palettes: {
           default: {
             light: createContentTheme('light'),
-            dark: createContentTheme('dark')
+            dark: createContentTheme('dark'),
+            darker: createContentTheme('dark')
           }
         }
       }

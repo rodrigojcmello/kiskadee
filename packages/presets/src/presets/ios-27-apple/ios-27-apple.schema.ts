@@ -1,13 +1,19 @@
 import { breakpoints, type Schema } from '@kiskadee/core';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createIos27AppleBadgeSchema } from './components/badge.schema.ts';
 import { createIos27AppleBottomSheetSchema } from './components/bottom-sheet.schema.ts';
 import { createIos27AppleButtonSchema } from './components/button.schema.ts';
 import { createIos27AppleCardSchema } from './components/card.schema.ts';
 import { createIos27AppleDropdownSchema } from './components/dropdown.schema.ts';
+import { createIos27AppleIconSchema } from './components/icon.schema.ts';
+import { createIos27AppleProgressSchema } from './components/progress.schema.ts';
 import { createIos27AppleSeparatorSchema } from './components/separator.schema.ts';
 import { createIos27AppleSliderSchema } from './components/slider.schema.ts';
 import { createIos27AppleSwitchSchema } from './components/switch.schema.ts';
+import { createIos27AppleTextSchema } from './components/text.schema.ts';
 import { schemaColors } from './ios-27-apple.colors.ts';
+import { createIos27AppleContours } from './ios-27-apple.contours.ts';
+import { createIos27AppleForegrounds } from './ios-27-apple.foregrounds.ts';
 import { createIos27AppleSeparators } from './ios-27-apple.separators.ts';
 import { ios27AppleTypography } from './ios-27-apple.typography.ts';
 
@@ -36,7 +42,9 @@ export const schema: Schema<Segment> = {
   colors: schemaColors,
   global: {
     typography: ios27AppleTypography,
-    separators: createIos27AppleSeparators({ c }),
+    separators: createIos27AppleSeparators(),
+    foregrounds: createIos27AppleForegrounds({ c }),
+    contours: createIos27AppleContours({ c }),
     iconSizes: {
       's:sm:5': 8,
       's:sm:4': 10,
@@ -96,6 +104,7 @@ export const schema: Schema<Segment> = {
             's:sm:1': { x: 0, y: 0, blur: 16, spread: 0, color: shadowBlack(0.2) },
             's:sm:2': sliderThumbShadow,
             's:sm:3': sliderTooltipShadow,
+            's:lg:4': { x: 0, y: 8, blur: 48, spread: 0, color: shadowBlack(0.25) },
             's:md:1': { x: 0, y: 5, blur: 20, spread: 0, color: shadowBlack(0.3) },
             's:lg:1': { x: 0, y: 10, blur: 50, spread: 0, color: shadowBlack(0.3) },
             's:lg:2': { x: 0, y: 16, blur: 48, spread: 0, color: shadowBlack(0.35) },
@@ -142,11 +151,30 @@ export const schema: Schema<Segment> = {
               }
             }
           }
+        },
+        darker: {
+          focusColor: c.ref('default', 'd', 'primary', 'vivid'),
+          effects: {
+            activationFeedback: {
+              tone: {
+                subtle: {
+                  color: c('default', 'd', 'neutral', 100),
+                  opacity: 0.1
+                },
+                vivid: {
+                  color: c('default', 'd', 'neutral', 0),
+                  opacity: 0.2
+                }
+              }
+            }
+          }
         }
       }
     }
   },
   components: {
+    badge: createIos27AppleBadgeSchema({ c }),
+    progress: createIos27AppleProgressSchema({ c }),
     bottomSheet: createIos27AppleBottomSheetSchema({ c }),
     button: createIos27AppleButtonSchema({
       c
@@ -157,6 +185,8 @@ export const schema: Schema<Segment> = {
       transparent
     }),
     dropdown: createIos27AppleDropdownSchema({ c }),
+    icon: createIos27AppleIconSchema({ c }),
+    text: createIos27AppleTextSchema(),
     separator: createIos27AppleSeparatorSchema(),
     slider: createIos27AppleSliderSchema({
       c,

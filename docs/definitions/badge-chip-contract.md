@@ -180,9 +180,17 @@ the produced content surface; `Button.Badge` does this for its four external pla
 
 ## Source scope
 
-The first implementation is Web-only and authored only by `fluent-2-microsoft`. The Fluent Badge
-and Tag sources establish the visual starting point. Kiskadee extensions and adaptations are
-identified in the preset evidence documents. Other presets remain explicitly unavailable.
+Badge and Chip are Web-only components. Current official preset availability is:
+
+| Component | Authored presets | Source evidence |
+| --- | --- | --- |
+| Badge | `fluent-2-microsoft`, `ios-27-apple` | Fluent Badge; Apple attention badges and documented Kiskadee extensions |
+| Chip | `fluent-2-microsoft` | Fluent Tag and documented Kiskadee extensions |
+
+The [iOS Badge evidence](../../packages/presets/docs/design-systems/ios-27-apple/components/badge.md)
+distinguishes Apple's passive red-and-white attention badge from the preset's extended intent,
+emphasis, size, Mark, and Dot profiles. iOS does not currently author Chip. Other presets remain
+unavailable for both components until they provide an explicit schema and source evidence.
 
 ## Related definitions
 

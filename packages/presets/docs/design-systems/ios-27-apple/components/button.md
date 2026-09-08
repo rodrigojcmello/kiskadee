@@ -70,9 +70,9 @@ that ring color is a Kiskadee accessibility decision, not a value claimed from t
 
 All sizes use a pill radius. Apple authors SF Pro Regular at weight 400. Kiskadee preserves the
 weight and uses the Apple system-font stack with platform fallbacks; this is an **Official
-adapted** typography mapping. The source letter-spacing detail is not added during this migration
-because the active Button previously authored no tracking; it can be resolved later in the shared
-typography profile without adding a Button-only capability.
+adapted** typography mapping. Small and Medium consume the shared `body-small` profile at
+15/20 px with -0.23 px tracking; Large consumes `body-medium` at 17/22 px with -0.43 px tracking.
+The metrics live in `global.typography`, as documented in [Text evidence](text.md).
 
 The inspected source confirms the title-and-icon composition but does not expose a reusable symbol
 viewport token. Kiskadee therefore applies the preset's shared `global.iconSizes` ramp at 16 px,
@@ -128,83 +128,103 @@ generated family's Dark functional reference, so a value such as official Blue `
 to a nearby canonical tone rather than remain byte-exact. This is an **Official adapted** choice,
 not loss of source provenance.
 
-## Kiskadee Mapping
+## Approved Borderless Hierarchy
 
-| Kiskadee appearance | Apple relationship | Status | Decision |
-| --- | --- | --- | --- |
-| `primary.high` | `Bordered - Prominent`, non-destructive | Official adapted | Primary vivid surface and white foreground. |
-| `primary.medium` | `Bordered`, non-destructive | Official adapted | `Fills/Tertiary` surface and Primary vivid foreground. |
-| `primary.low` | No official equivalent | Kiskadee extension | Transparent surface, Primary vivid foreground, and a Primary vivid outline. |
-| `primary.lowest` | `Borderless`, non-destructive | Official adapted | Transparent surface and Primary vivid foreground. |
-| `destructive.high` | `Bordered - Prominent`, destructive | Official adapted | Destructive vivid surface and white foreground. |
-| `destructive.medium` | `Bordered`, destructive; `BG - Destructive` | Official adapted | Destructive vivid surface at 14% and Destructive vivid foreground. |
-| `destructive.low` | No official equivalent | Kiskadee extension | Transparent surface, Destructive vivid foreground, and a Destructive vivid outline. |
-| `destructive.lowest` | `Borderless`, destructive | Official adapted | Transparent surface and Destructive vivid foreground. |
-| `neutral.*` | No official Content Area intent | Kiskadee extension | Medium reuses `Fills/Tertiary`; the remaining emphases follow the shared formula. |
-| `positive.*` | No official Content Area intent | Kiskadee extension | Medium applies Apple Green at 14%, mirroring the official destructive tint grammar. |
+The approved hierarchy applies to Primary, Neutral, Destructive and Positive in all three themes.
+It is a source-informed **Kiskadee extension**, requested on 2026-09-07, rather than a claim that
+Apple publishes this complete emphasis matrix.
 
-## Kiskadee Extensions
-
-Kiskadee completes the matrix for `primary`, `neutral`, `destructive`, and `positive`, each with
-High, Medium, Low, and Lowest. This gives every preset the same semantic and emphasis vocabulary
-without claiming that Apple publishes all sixteen appearances. Primary Medium maps to Apple's
-neutral `Fills/Tertiary` Bordered surface, while Destructive Medium maps to the dedicated
-`Miscellaneous/Buttons/BG - Destructive` token: Accent Red at 14%. Neutral Medium reuses the neutral
-fill as a Kiskadee extension. Positive Medium is also a Kiskadee extension: it applies the official
-Apple Green accent at 14%, deliberately mirroring the destructive Button grammar Apple does
-publish.
-
-Low is a Kiskadee outline extension. Its Rest surface is transparent, its outline and content use
-the intent family's `vivid` reference, and its interaction surfaces reuse the shared semantic
-`subtle` rhythm. It must never be presented as Apple's `Bordered` style: the official style has a
-neutral translucent fill and no visible stroke. Outside the explicit Medium surface split, all
-roles reuse the same functional-reference offsets so future color segments expose tonal-scale
-differences instead of hiding them in component-specific exceptions.
-
-Hover, Pressed, and Selected are also Kiskadee extensions because the inspected Figma variants only
-publish enabled and disabled. Focus is intentionally absent from the palette maps and inherits Rest;
-the external focus ring remains the focus affordance and uses the Primary `vivid` reference.
-
-### Kiskadee Extension: Brand Color Packs
-
-Apple does not publish a conventional Button matrix for Kiskadee's third-party authentication and
-social brand collection. The optional `auth` and `social` Brand Packs are therefore a **Kiskadee
-extension**. Brand membership, official seed provenance, logo construction, and content polarity
-remain owned by `@kiskadee/brands`; none of those colors enters the Apple primitive catalog,
-`colors.json`, global CSS, or normal Button class map.
-
-On a subtle surrounding surface, every brand is projected through the same iOS Button recipe used
-by Primary, Destructive, Positive, and Neutral:
-
-- High uses the brand family's `vivid` reference and its documented content polarity;
-- Medium uses Apple's neutral `Fills/Tertiary` treatment with brand-colored content;
-- Low is transparent with a brand-colored outline and content;
-- Lowest is transparent with brand-colored content;
-- Hover, Pressed, Selected, and Disabled preserve the shared iOS formula;
-- a Dark `contrast-mirror` vivid reference reverses content polarity during build so monochrome
-  black identities never produce white content over a physically light mirrored surface.
-
-For a vivid surrounding surface, the projection uses a separate contrast-safe Kiskadee extension:
-
-| Emphasis | Rest / Hover / Pressed surface | Foreground |
+| Emphasis | Current onSubtle mapping | Source relationship |
 | --- | --- | --- |
-| High | White 100% / 92% / 84% | Brand Light `vivid` |
-| Medium | White 24% / 32% / 40% | White |
-| Low | White 12% / 20% / 28% | White |
+| High | Strong intent fill and contrasting content | Existing prominent source mapping retained. |
+| Medium | Intent family `subtle` surface with intent-colored content | Tonal adaptation of tinted controls. The preserved destructive 14% source token remains evidence, not the emitted recipe. |
+| Low | Neutral `Fills/Tertiary` with intent-colored content and no visible border | Former neutral Medium treatment moved here; generalization across intents is explicit. |
+| Lowest | Transparent surface and intent-colored content | Existing plain mapping retained. |
+
+Primary Medium is light blue in Light; Destructive is light red and Positive is light green.
+Neutral follows its achromatic family. Dark and Darker resolve their independent Dark-track
+subtle anchors. All values come from the approved tonal assets without literal schema colors.
+
+The former Low outline extension is removed from every intent and both Surface Contexts.
+The physical 1px border reservation remains transparent to preserve measured geometry and the
+existing Builder padding compensation. Keyboard focus is an independent effect and remains
+available. High and Lowest retain their previous behavior.
+
+## Shared onSubtle Formula
+
+Offsets below are ordinal movements through the canonical public tone grid, not numeric tone
+arithmetic. All three themes and optional Brand Packs consume the same formula; Darker uses Dark.
+
+| Emphasis | Rest surface | Hover | Pressed | Selected | Enabled foreground |
+| --- | --- | --- | --- | --- | --- |
+| High | vivid +0 | vivid +1 | vivid +2 | vivid +1 | neutral contrast cap |
+| Medium | subtle +0 | subtle +1 | subtle +2 | subtle +1 | role vivid |
+| Low | neutral `Fills/Tertiary` | subtle +0 | subtle +2 | subtle +1 | role vivid |
+| Lowest | transparent | subtle +0 | subtle +2 | subtle +1 | role vivid |
+
+The Low transient states keep the former non-prominent tonal transitions. These and Selected
+are explicit Web extensions; source variants do not prescribe the complete interaction matrix.
+Focus and Pending remain absent from palette maps. The existing focus effect and operational
+Button behavior retain their respective responsibilities.
+
+`Fills/Tertiary` resolves through neutral L40 at 12% in Light and D55 at 24% in Dark/Darker.
+Disabled High/Medium/Low restore this neutral fill and use `Labels/Tertiary` content. Lowest
+restores transparent and also uses `Labels/Tertiary`. Every border remains transparent.
+
+High keeps the existing white content in both themes, except Neutral High: its dark Light-track
+surface uses white, while its light Dark-track surface uses black. No runtime contrast calculation
+is introduced. The formula resolves to static values during authoring/build.
+
+## Conventional onVivid Formula
+
+The conventional onVivid matrix is a **Kiskadee extension** over the documented strong Card
+canvas. Source materials do not establish this full conventional matrix. Every theme uses the
+Light tonal track for the opaque, light-tinted Medium and its dark content.
+
+| Emphasis | Rest / Hover / Pressed surface | Enabled foreground | Outline |
+| --- | --- | --- | --- |
+| High | White 100% / 92% / 84% | Intent Light vivid +10; Neutral vivid +0 | Transparent |
+| Medium | Intent Light subtle / subtle +1 / subtle +2 | Intent Light vivid +10; Neutral vivid +0 | Transparent |
+| Low | Black 12% / 20% / 28% | White | Transparent |
+| Lowest | Transparent / Black 12% / 20% | White | Transparent |
+
+Medium now exposes the light intent tint in both surrounding contexts. Low receives the former
+Medium neutral overlay, preserving contrast with white content. That achromatic paint composites
+with the vivid parent; it is not an opaque light-gray button on a blue canvas. High and Lowest
+keep their existing treatments. Selected Medium uses subtle +1; Selected Low uses Black 28%.
+
+Disabled High/Medium/Low use White 12% and disabled content uses White 30%. Lowest explicitly
+resets to transparent. Children inherit root-owned disabled state. Decorative connected-group
+lines retain White 30% onVivid and the approved neutral separator onSubtle; they are not external
+Button outlines.
+
+## Optional Brand Color Packs
+
+Third-party colors stay outside Apple's primitive catalog and normal Button artifacts. Brand
+Packs are loaded only through an explicit BrandPackBoundary. The shared onSubtle formula now
+also gives brand actions a tonal Medium and neutral, borderless Low; High/Lowest are unchanged.
+
+The extension explicitly publishes `default.light`, `default.dark` and `default.darker` for
+auth/social. Darker reuses the Dark recipe in container, text and icon projections; consumers
+require an exact palette key and do not infer inheritance from Dark. An artifact regression
+test verifies the Darker manifests, CSS integrity and complete intent matrices for both packs.
+
+| Brand onVivid emphasis | Rest / Hover / Pressed surface | Enabled foreground |
+| --- | --- | --- |
+| High | White 100% / 92% / 84% | Brand Light vivid |
+| Medium | Brand Light subtle / subtle +1 / subtle +2 | Brand Light L85 |
+| Low | White 24% / 32% / 40% | White |
 | Lowest | Transparent / White 12% / 20% | White |
 
-Disabled visible surfaces use White at 12% and disabled content uses White at 30%. Low omits a
-disabled surface delta because its Rest surface already resolves to the same 12% value. Selected
-intentionally resolves to the Pressed surface as the persistent active appearance. Focus remains
-omitted and inherits Rest while the external focus ring remains independently available.
+Brand Low receives its former Medium neutral overlay. Brand Medium uses a deep L85 family tone
+for content: a universal vivid +10 shift is invalid for families whose anchor is already near the
+end of the public grid. The build caught that case, so the family-owned public L85 stop is used
+without clamping, new colors or changes to tonal assets. Fixed multicolor brand marks preserve
+the existing treatment and are not recolored.
 
-This separate Brand Pack `onVivid` projection keeps the fixed 1 px physical border transparent in
-all four emphases. Its current Low remains the documented 12% white-overlay treatment rather than
-the `onSubtle` outline extension; the conventional `onVivid` Button formula is deferred separately.
-
-The optional resources are built under `brand-packs/auth` and `brand-packs/social`. Consumers must
-use `BrandPackBoundary`; a missing pack never falls back silently to Primary or Neutral. Brand versus
-monochrome artwork remains an explicit JSX choice and is not inferred by the Button formula.
+Disabled High/Medium/Low restore White 12%; Lowest restores transparent. Disabled content uses
+White 30%. Every physical border stays transparent. This complete Brand matrix is an explicit
+Kiskadee extension and not an Apple source appearance.
 
 ### Kiskadee Extension: Surfaced Brand Marks
 
@@ -214,9 +234,7 @@ full-color social mark remains legible over vivid Button surfaces:
 
 - the icon region uses the Apple Gray Light cap (`L0`, white) in both Light and Dark themes;
 - its inherited monochrome foreground uses Apple Gray Light `L85`;
-- the stable light region is published for the preset's current conventional `onSubtle` Button
-  context; its future `onVivid` adoption must accompany the complete Button formula rather than
-  advertise a partial surface context;
+- the stable light region is published for both conventional Surface Contexts and all three themes;
 - arbitrary brand artwork is neither recolored nor faded;
 - the region publishes only Rest; interaction states continue to belong to the Button root;
 - `iconSurfaceCorners` defaults to `all`, so the light region keeps the Button-derived radius on
@@ -227,55 +245,13 @@ full-color social mark remains legible over vivid Button surfaces:
 This is a **Kiskadee extension**, not an Apple Button API or an appearance inferred from the source
 Figma component.
 
-## Shared Formula
-
-All offsets below are ordinal movements through the canonical public tone grid, not numeric tone
-arithmetic. For example, `L28 + 1` resolves to the next published position, L30.
-
-| Emphasis | Rest surface | Hover | Pressed | Selected | Rest outline | Enabled foreground |
-| --- | --- | --- | --- | --- | --- | --- |
-| High | vivid +0 | vivid +1 | vivid +2 | vivid +1 | transparent | neutral contrast cap |
-| Medium, Primary/Neutral | `Fills/Tertiary` | subtle +0 | subtle +2 | subtle +1 | transparent | role vivid |
-| Medium, Destructive/Positive | role vivid at 14% | subtle +1 | subtle +2 | subtle +1 | transparent | role vivid |
-| Low | transparent | subtle +0 | subtle +2 | subtle +1 | role vivid | role vivid |
-| Lowest | transparent | subtle +0 | subtle +2 | subtle +1 | transparent | role vivid |
-
-High uses the white cap in both themes, except Neutral High: its Light vivid surface is physically
-dark and uses white L0, while its Dark vivid surface is physically light and uses black D0. This is
-a fixed role exception authored into the preset, not a runtime contrast calculation.
-
-Disabled follows the official Apple treatment for the mapped styles and a matching sparse extension
-for the outline:
-
-- High replaces its vivid surface with `Fills/Tertiary` and uses `Labels/Tertiary` content;
-- Primary and Neutral Medium already rest on `Fills/Tertiary`, so they omit a redundant disabled
-  surface delta and change only their content to `Labels/Tertiary`;
-- Destructive and Positive Medium replace their semantic 14% Rest tint with `Fills/Tertiary` when
-  disabled and use `Labels/Tertiary` content;
-- Low replaces its transparent surface with `Fills/Tertiary`, removes its visible outline, and uses
-  `Labels/Tertiary` content, matching the disabled treatment of High and Medium;
-- Lowest remains transparent and uses `Labels/Tertiary` content.
-
-Pending does not introduce an iOS-specific visual delta in this recipe. It inherits Rest while the
-operational Button contract continues to lock activation and expose its accessibility state.
-
-All four emphases reserve the same 1 px physical border. High, Medium, and Lowest keep it
-transparent; Low paints it visibly. This prevents emphasis and state changes from altering the
-Button's measured geometry. The Web Builder's existing mirrored-border and compensated-padding
-policy preserves the authored 28, 34, and 50 px Apple heights without creating a new emission mode.
-
-The helper resolves functional references, offsets, theme orientation, alpha, and the Neutral High
-polarity exception into static schema colors. Native and web consumers receive final values and do
-not execute this formula at runtime.
-
 ## Deferred Or Unsupported
 
 - Liquid Glass Text and Symbol are **Deferred**. Their glass materials, textured or scene-relative
   backgrounds, and authored material/effect paints are real upstream capabilities, but the current
   Kiskadee Button schema has no Liquid Glass contract.
-- The iOS 27 Card now publishes a Primary High canonical canvas whose descendants should use
-  `onVivid`. This fixes background availability for Brand Pack examples, but it does not add an
-  `onVivid` palette to the conventional Button. The two contracts remain independent.
+- Conventional Button publishes both Surface Contexts. Its onVivid recipe is a Kiskadee
+  contrast adaptation over Card's documented strong Primary canvas, not Liquid Glass.
 - No texture is flattened into a literal color and no conventional Button style pretends to be
   glass. A future implementation must introduce a deliberate cross-platform material capability.
 - Label-and-icon, icon-only, and title-only are official content forms. They remain consumer content
@@ -284,7 +260,7 @@ not execute this formula at runtime.
 ## Schema Mapping
 
 - `e1`: Button surface, interaction backgrounds, the pill radius, and a fixed 1 px border. Official
-  Apple styles keep that border transparent; only the documented Kiskadee Low extension paints it.
+  Every emphasis keeps that border transparent; the former Low outline is removed.
   Compensated padding keeps the official outer geometry stable.
 - `e2`: label content; role foreground, disabled foreground, Apple-system typography, and
   size-specific text metrics.
@@ -303,22 +279,19 @@ not execute this formula at runtime.
 - Palette intent and emphasis select the Apple relationship or documented Kiskadee extension; no
   literal HEX is authored in the component schema.
 
-## Validation
+## State Precedence And Validation
 
-- Source inspection covered the Content Area set and both Light and Dark example sections.
-- Color decisions resolve through promoted tonal assets and the documented de-para; literal schema
-  colors are prohibited.
-- Sparse interaction maps omit Focus and Pending so they inherit Rest, while Hover, Pressed, and
-  Selected remain explicit extensions. Rest-equal Disabled surface values are also omitted.
-- Generated artifacts and browser presentation must be revalidated whenever the shared formula or
-  promoted tonal assets change.
+Generated Selected selectors can remain active on a disabled root. The onSubtle Low and Lowest
+therefore retain explicit Rest-equal Disabled backgrounds; Medium restores the neutral disabled
+fill instead of its new tonal Rest. OnVivid Low has a distinct disabled fill and Lowest retains
+its transparent Rest-equal reset. The shared Brand helpers follow the same terminal-state rule.
 
-## Open Gaps
+The focused Button/control suites passed 14 tests for this revision. They cover source geometry
+contracts, all conventional intents and themes, Medium functional references, neutral Low fills,
+transparent borders, Disabled precedence and readable onVivid content. The normal generation
+pipeline also covers the participating Brand Packs. Generated artifacts and actual Showcase
+presentation are revalidated whenever the shared formula changes.
 
-- Liquid Glass remains intentionally deferred.
-- No upstream interaction-state variants exist in the inspected Content Area set; Kiskadee's state
-  rhythm is therefore framework-owned and must not be cited as official Apple behavior.
-- The conventional Button currently authors only `onSubtle`. Brand Pack `onVivid` projection is a
-  separate extension and does not imply conventional Button support.
-- The Card publishes a Primary High canonical canvas, so Brand Pack Buttons that already support
-  `onVivid` can be validated on a preset-owned background. See [Card evidence](card.md).
+The approved hierarchy changes preset definitions and the preset-owned Brand projection only.
+No Builder, runtime, Headless or structural CSS change is needed. See the
+[verification ledger](../polish-verification.md) for rendered checks and remaining consumer limits.

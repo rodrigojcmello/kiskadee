@@ -51,12 +51,20 @@ describe('official preset separator recipes', () => {
     expect(palette?.onVivid?.boxColor.neutral.medium.rest).toBe('#ffffff4d');
   });
 
-  it('preserves the iOS Dropdown colors in the shared subtle recipe', () => {
+  it('maps iOS opaque separators through the documented tonal source stops', () => {
     const subtle = ios27Apple.global?.separators?.profiles.subtle;
 
     expect(subtle?.scales).toEqual({ boxWidth: 1 });
-    expect(subtle?.palettes.default?.light?.onSubtle.boxColor.neutral.medium.rest).toBe('#d1d1d4');
-    expect(subtle?.palettes.default?.dark?.onSubtle.boxColor.neutral.medium.rest).toBe('#38383b');
+    expect(
+      ios27Apple.global?.contours?.profiles.neutral.standard.palettes.default?.light?.onSubtle
+        .medium.rest
+    ).toBe('#c2c2c5');
+    expect(subtle?.palettes.default?.light?.onSubtle.boxColor.neutral.medium.rest).toBe(
+      'contour:neutral.standard.light.onSubtle.medium'
+    );
+    expect(subtle?.palettes.default?.dark?.onSubtle.boxColor.neutral.medium.rest).toBe(
+      'contour:neutral.standard.dark.onSubtle.medium'
+    );
     expect(ios27Apple.components.separator?.elements.e1.separator).toEqual({
       's:all': 'subtle'
     });
