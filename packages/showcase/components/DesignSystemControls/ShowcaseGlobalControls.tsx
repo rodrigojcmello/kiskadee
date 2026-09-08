@@ -14,7 +14,6 @@ import {
 } from '@/components/ShowcaseControls';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
 import { Select } from '@/k-components';
-import { playWowTransition } from '@/utils/playWowTransition';
 import DesignSystemControls from './DesignSystemControls';
 import styles from './ShowcaseGlobalControls.module.scss';
 
@@ -62,7 +61,6 @@ export function ShowcaseSegmentControl({ className }: { className?: string }) {
       options={segmentOptions}
       value={segment}
       onValueChange={(value) => {
-        playWowTransition();
         setSegment(value);
       }}
       disabled={availableSegments.length <= 1}

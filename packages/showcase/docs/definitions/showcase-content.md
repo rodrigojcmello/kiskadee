@@ -114,3 +114,15 @@ must still be modeled by the framework rather than recreated with route CSS.
 - [Project governance and responsibility](../../../../docs/definitions/project-governance.md)
 - [Composition strategies](../../../../docs/definitions/composition-strategies.md)
 - [Background Surface Catalogs](./background-surface-catalogs.md)
+
+## Preset transformation
+
+The Shell marks the route canvas with `s-content`. Showcase owns the temporary `s-wow`
+class and macro transition rules on this root and its DOM descendants, including specimen
+Cards. Application chrome and portals outside this subtree do not participate.
+
+The prepared-selection commit starts the effect before layout measurements, after resources
+are ready. Initial activation does not start it. Subsequent triggers replace the previous
+expiration timer. The existing 800ms theme duration is preserved within a 900ms activation
+window; `no-transitions` still suppresses transitions. This presentation effect interpolates
+preset values and does not author component paint or interaction-state recipes.

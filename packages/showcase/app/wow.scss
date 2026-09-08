@@ -1,0 +1,8 @@
+/* Showcase-only preset transformation, including the content root itself. */
+html:not(.no-transitions) .s-content.s-wow,
+html:not(.no-transitions) .s-content.s-wow * {
+  transition-property: background-color, width, height, padding, margin, border-color, border-width, color, font-size, border-radius, box-shadow, outline-color, outline-width, outline-offset, grid-template-columns, --k-bg0, --k-bg1, --k-bg2 !important;
+  transition-duration: var(--k-dur-theme) !important;
+  transition-timing-function: var(--k-ease-out) !important;
+}
+

@@ -1,7 +1,6 @@
 'use client';
 import { useKiskadee, useShowcase } from '@kiskadee/react-components';
 import { Select } from '@/k-components';
-import { playWowTransition } from '@/utils/playWowTransition';
 import styles from './DesignSystemControls.module.scss';
 
 export default function DesignSystemControls() {
@@ -29,7 +28,6 @@ export default function DesignSystemControls() {
           options={designSystemOptions}
           value={designSystem}
           onValueChange={(value) => {
-            playWowTransition();
             setDesignSystem(value);
           }}
         />

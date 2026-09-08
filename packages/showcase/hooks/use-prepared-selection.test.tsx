@@ -1,14 +1,18 @@
 /** @vitest-environment jsdom */
 
+import { createElement, useLayoutEffect } from 'react';
+import { createRoot } from 'react-dom/client';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { DesignSystemKey } from '../registry/registry-utils';
 import { act, cleanup, renderHook, waitFor } from '../test-utils/react';
 
 const fixtures = vi.hoisted(() => ({
   prepare: vi.fn(),
+  wow: vi.fn(),
   activate: vi.fn(),
   json: vi.fn(async (path: string): Promise<unknown> => ({ key: path.split('/')[0] }))
 }));
+vi.mock('@/utils/playWowTransition', () => ({ playWowTransition: fixtures.wow }));
 vi.mock('./use-stylesheet-manager', () => ({
   prepareSelectionStylesheets: fixtures.prepare,
   activateSelectionStylesheets: fixtures.activate
@@ -45,6 +49,7 @@ it('keeps the last selection through CSS failure, supports retry and ignores obs
     { initialProps: { designSystem: 'A' } }
   );
   await waitFor(() => expect(view.result.current.prepared?.designSystem).toBe('A'));
+  expect(fixtures.wow).not.toHaveBeenCalled();
   view.rerender({ designSystem: 'B' });
   expect(view.result.current.prepared?.designSystem).toBe('A');
   view.rerender({ designSystem: 'C' });
@@ -52,9 +57,11 @@ it('keeps the last selection through CSS failure, supports retry and ignores obs
   expect(view.result.current.prepared?.designSystem).toBe('A');
   await act(async () => finishB([]));
   expect(view.result.current.prepared?.designSystem).toBe('A');
+  expect(fixtures.wow).not.toHaveBeenCalled();
   act(() => view.result.current.retry());
   await waitFor(() => expect(view.result.current.prepared?.designSystem).toBe('C'));
   expect(fixtures.activate).toHaveBeenCalledTimes(2);
+  expect(fixtures.wow).toHaveBeenCalledTimes(1);
 });
 
 it('waits for consumed component maps and retries only failed transport', async () => {
@@ -114,4 +121,46 @@ it('waits for consumed component maps and retries only failed transport', async 
   expect(
     fixtures.json.mock.calls.filter(([path]) => path.endsWith('button.palette.json'))
   ).toHaveLength(2);
+});
+
+it('activates each selection before descendant layout measurements', async () => {
+  fixtures.json.mockImplementation(async (path: string) => ({ key: path.split('/')[0] }));
+  const links = {
+    A: [document.createElement('link')],
+    B: [document.createElement('link')]
+  };
+  fixtures.prepare.mockImplementation(
+    async ({ designSystem }: { designSystem: 'A' | 'B' }) => links[designSystem]
+  );
+  let activeLinks: HTMLLinkElement[] | undefined;
+  fixtures.activate.mockImplementation((next: HTMLLinkElement[]) => {
+    activeLinks = next;
+  });
+  const measurements: boolean[] = [];
+  function Child({ expected }: { expected: HTMLLinkElement[] }) {
+    useLayoutEffect(() => {
+      measurements.push(activeLinks === expected);
+    }, [expected]);
+    return null;
+  }
+  function Parent({ designSystem }: { designSystem: string }) {
+    const { prepared } = usePreparedSelection({
+      designSystem: designSystem as DesignSystemKey,
+      segment: 'default',
+      theme: 'light'
+    });
+    return prepared ? createElement(Child, { expected: prepared.stylesheets }) : null;
+  }
+  const container = document.createElement('div');
+  document.body.append(container);
+  const root = createRoot(container);
+  try {
+    await act(async () => root.render(createElement(Parent, { designSystem: 'A' })));
+    await waitFor(() => expect(measurements).toEqual([true]));
+    await act(async () => root.render(createElement(Parent, { designSystem: 'B' })));
+    await waitFor(() => expect(measurements).toEqual([true, true]));
+  } finally {
+    act(() => root.unmount());
+    container.remove();
+  }
 });

@@ -1,11 +1,12 @@
 import type { ComponentClassNameMapJSON, ThemeMode } from '@kiskadee/core';
 import type { KiskadeeGlobalArtifact } from '@kiskadee/react-components';
 import type { Manifest } from '@kiskadee/web-builder/types';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useInsertionEffect, useRef, useState } from 'react';
 import type { DesignSystemKey } from '@/registry/registry-utils';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 import { loadSelectedComponentArtifact } from '@/utils/component-artifacts.client';
 import { mergeMaps } from '@/utils/merge-class-maps';
+import { playWowTransition } from '@/utils/playWowTransition';
 import {
   activateSelectionStylesheets,
   prepareSelectionStylesheets
@@ -25,6 +26,7 @@ export function usePreparedSelection(
   { designSystem, segment, theme }: Selection,
   componentNames: ReadonlySet<string> = EMPTY_COMPONENTS
 ) {
+  const hasActivatedSelection = useRef(false);
   const [prepared, setPrepared] = useState<PreparedSelection>();
   const [error, setError] = useState<unknown>();
   const [attempt, setAttempt] = useState(0);
@@ -93,8 +95,12 @@ export function usePreparedSelection(
       cancelled = true;
     };
   }, [designSystem, segment, theme, attempt, componentNames]);
-  useLayoutEffect(() => {
-    if (prepared) activateSelectionStylesheets(prepared.stylesheets);
+  // Activate CSS before descendant layout effects can measure the new class names.
+  useInsertionEffect(() => {
+    if (!prepared) return;
+    if (hasActivatedSelection.current) playWowTransition();
+    activateSelectionStylesheets(prepared.stylesheets);
+    hasActivatedSelection.current = true;
   }, [prepared]);
   return { prepared, error, retry };
 }

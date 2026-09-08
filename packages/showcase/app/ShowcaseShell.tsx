@@ -191,7 +191,7 @@ export default function ShowcaseShell({
             </div>
           </ShowcaseIconFamilyBoundary>
 
-          <div className={style.content}>
+          <div className={`${style.content} s-content`}>
             <div className={style.contentInner}>
               <SurfaceContextProvider value={background.surfaceContext}>
                 {children}
