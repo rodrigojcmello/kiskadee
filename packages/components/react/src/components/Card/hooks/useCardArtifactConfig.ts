@@ -25,10 +25,14 @@ function isCardComponentArtifact(artifact: unknown): artifact is CardComponentAr
 
 export function useCardArtifactConfig(): CardArtifactConfig {
   const { classesMap, global } = useKiskadee();
-  const { currentArtifact: cardComponentArtifact } = useLoadedComponentArtifact({
+  const { currentArtifact, previousArtifact, status } = useLoadedComponentArtifact({
     componentName: 'card',
-    isArtifact: isCardComponentArtifact
+    isArtifact: isCardComponentArtifact,
+    preservePrevious: true
   });
+  // Keep the surface composition mounted while the next metadata snapshot is pending.
+  const cardComponentArtifact =
+    currentArtifact ?? (status === 'pending' || status === 'error' ? previousArtifact : undefined);
   const cardClassesMap = useComponentClassMap(
     'card',
     classesMap.card as CardClassesMap | undefined

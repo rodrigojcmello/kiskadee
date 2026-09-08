@@ -126,3 +126,9 @@ are ready. Initial activation does not start it. Subsequent triggers replace the
 expiration timer. The existing 800ms theme duration is preserved within a 900ms activation
 window; `no-transitions` still suppresses transitions. This presentation effect interpolates
 preset values and does not author component paint or interaction-state recipes.
+
+During a preset change, Card metadata consumers retain the last valid canonical surface
+catalog while the next metadata snapshot is pending (or failed). A pending snapshot is not
+an absent capability: it must not temporarily replace an example Card with a plain div and
+remount its descendants. Once the new snapshot resolves, use its catalog; a confirmed absent
+artifact clears the previous catalog. This preserves DOM continuity for preset transitions.
