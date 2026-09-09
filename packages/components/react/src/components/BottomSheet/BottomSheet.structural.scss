@@ -177,7 +177,7 @@
   appearance: none;
   border: 0;
   box-sizing: border-box;
-  cursor: default;
+  cursor: var(--k-cc);
   display: grid;
   font: inherit;
   grid-template-columns: auto auto minmax(0, 1fr) auto auto;

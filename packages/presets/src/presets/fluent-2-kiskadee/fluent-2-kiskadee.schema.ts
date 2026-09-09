@@ -24,6 +24,7 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
     typography: fluent2KiskadeeTypography,
     iconSizes: {
       's:sm:1': 16,

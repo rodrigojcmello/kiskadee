@@ -1,3 +1,4 @@
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Card.structural.scss';
 import { Card as HeadlessCard, CardAction as HeadlessCardAction } from '@kiskadee/react-headless';
 import { forwardRef, useCallback, useMemo } from 'react';
@@ -152,6 +153,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
   },
   ref
 ) {
+  const cursorStyle = useControlCursorStyle();
   const artifactConfig = useCardArtifactConfig();
   const resolvedClasses = useCardClassNames(
     {
@@ -178,6 +180,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
   return (
     <HeadlessCardAction
       {...restProps}
+      style={{ ...cursorStyle, ...restProps.style }}
       ref={ref}
       status={status}
       disabled={disabled}

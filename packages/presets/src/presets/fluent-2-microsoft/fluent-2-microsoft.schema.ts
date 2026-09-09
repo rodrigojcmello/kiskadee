@@ -64,6 +64,7 @@ export function createFluent2MicrosoftSchema(
     breakpoints,
     colors: schemaColors,
     global: {
+      interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
       foregrounds: createFluent2MicrosoftForegrounds({ c: colorResolver }),
       contours: createFluent2MicrosoftContours({ c: colorResolver }),
       typography: fluent2MicrosoftTypography,

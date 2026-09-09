@@ -32,6 +32,8 @@
 
 /* element: tab */
 .k-tab-e2-c {
+  /* element tab / e2: consume the control cursor preference. */
+  cursor: var(--k-cc);
   position: relative;
   z-index: 1;
   box-sizing: border-box;

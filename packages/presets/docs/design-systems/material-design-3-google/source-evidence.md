@@ -269,3 +269,9 @@ Kiskadee adaptation:
 - Material's `28 x 28` pressed handle and optional on/off icons are reference-only for now.
 - Selected/on track colors stay in `selected.<interaction>` and use references, because selected
   state is owned by the Switch root and track/thumb are child slots.
+
+## Control Cursor Preference
+
+**Kiskadee extension**: the preset explicitly selects `pointer` with `web` scope. This is
+a framework convention, not a cursor value extracted from the upstream design kit. Native
+targets retain their platform cursor. See [cursor policy](../../definitions/cursor-policy.md).

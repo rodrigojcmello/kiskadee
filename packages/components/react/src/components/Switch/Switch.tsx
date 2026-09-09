@@ -1,3 +1,4 @@
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
 import { stateActivator as cn, resolveActivationFeedbackSetting } from '@kiskadee/core';
@@ -87,6 +88,7 @@ function mergeSwitchClassNames(
 }
 
 function SwitchRoot(props: SwitchProps) {
+  const cursorStyle = useControlCursorStyle();
   const surfaceContext = useSurfaceContext(props.surfaceContext);
   const {
     surfaceContext: _surfaceContext,
@@ -379,6 +381,7 @@ function SwitchRoot(props: SwitchProps) {
   return (
     <HeadlessSwitch.Root
       {...rootProps}
+      style={{ ...cursorStyle, ...rootProps.style }}
       inputId={id}
       inputProps={inputProps}
       disabled={disabled}

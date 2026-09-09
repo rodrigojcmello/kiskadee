@@ -16,6 +16,11 @@
   initial-value: transparent;
 }
 
+:where(:root) {
+  /* Global control cursor default; generated :root tokens take precedence regardless of load order. */
+  --k-cc: pointer;
+}
+
 :root {
   --k-dur-int-xfast: 60ms;
   --k-dur-int-fast: 120ms;

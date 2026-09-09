@@ -175,7 +175,7 @@
   appearance: none;
   border: 0;
   box-sizing: border-box;
-  cursor: default;
+  cursor: var(--k-cc);
   display: grid;
   font: inherit;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -197,7 +197,7 @@
 
 /*
  * element item / e2
- * Mirrors unavailable semantics without turning generic actions into link-like pointers.
+ * Unavailable semantics take precedence over the control cursor preference.
  */
 .k-ddn-e2[data-disabled='true'],
 .k-ddn-e2[aria-disabled='true'] {

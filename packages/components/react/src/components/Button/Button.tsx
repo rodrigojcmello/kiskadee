@@ -1,3 +1,4 @@
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Button.structural.scss';
 import type { ButtonIconTreatment, SurfaceContext } from '@kiskadee/core';
 import { Button as HeadlessButton, HeadlessProgress } from '@kiskadee/react-headless';
@@ -358,6 +359,7 @@ function getButtonContentSlots(children: ReactNode): {
 }
 
 const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoot(props, ref) {
+  const cursorStyle = useControlCursorStyle();
   const { segment, theme } = useKiskadee();
   const group = useContext(ButtonGroupRuntimeContext);
   const groupedProps: ButtonProps = group
@@ -637,6 +639,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     <ButtonRuntimeContext.Provider value={runtimeContextValue}>
       <HeadlessButton
         {...common.restProps}
+        style={{ ...cursorStyle, ...common.restProps.style }}
         disabled={activationFeedbackController.nativeDisabled}
         pending={activationFeedbackController.pending}
         interactionLocked={common.interactionLocked}

@@ -1,5 +1,7 @@
 'use client';
 
+import type { ControlCursorValue } from '@kiskadee/core';
+import type { KiskadeeContextValue } from '@kiskadee/react-components';
 import { createContext, useContext } from 'react';
 import type { useShowcaseBackgroundState } from '@/hooks/use-showcase-background-state';
 
@@ -11,6 +13,10 @@ export type ShowcasePanelDetail = {
 };
 
 type ShowcasePanelContextValue = {
+  controlCursorAvailable: boolean;
+  controlCursorOverride: ControlCursorValue | undefined;
+  setControlCursorOverride: (value: ControlCursorValue | undefined) => void;
+  administrativeContext: KiskadeeContextValue;
   background: ReturnType<typeof useShowcaseBackgroundState>;
   panelDetail: ShowcasePanelDetail | null;
   panelSlotElement: HTMLElement | null;

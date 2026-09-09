@@ -14,7 +14,7 @@
   display: inline-flex;
   align-items: center;
   max-inline-size: 100%;
-  cursor: default;
+  cursor: var(--k-cc);
   pointer-events: auto;
   user-select: none;
   -webkit-tap-highlight-color: transparent;

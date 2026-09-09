@@ -97,6 +97,10 @@ Examples:
 - a row or column visual gap should be represented by margin on the relevant schema element instead
   of adding `rowGap` or `columnGap`.
 
+General artifact naming, including global and generated custom properties, follows
+[CSS Artifact Naming](docs/definitions/css-artifact-naming.md). The compact naming requirement
+applies beyond structural Sass; the grammar below specializes it for structural owners.
+
 ## Core naming goals
 
 Structural classes must be:

@@ -19,6 +19,7 @@ export const schema: Schema<Sandbox3Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
     typography: sandboxTypography,
     iconSizes: {
       's:sm:5': 10,

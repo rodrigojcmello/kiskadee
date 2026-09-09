@@ -1,3 +1,4 @@
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './BottomSheet.structural.scss';
 import type {
   BottomSheetCenteredIcons,
@@ -452,6 +453,7 @@ function BottomSheetMotionContent({
 
 const BottomSheetContent = forwardRef<HTMLDivElement, BottomSheetContentProps>(
   function BottomSheetContent({ children, overlayProps = {}, surfaceProps = {}, ...props }, ref) {
+    const cursorStyle = useControlCursorStyle();
     return (
       <HeadlessBottomSheet.Content
         {...props}
@@ -462,7 +464,7 @@ const BottomSheetContent = forwardRef<HTMLDivElement, BottomSheetContentProps>(
             contentRenderProps={contentRenderProps}
             contentState={contentState}
             overlayProps={overlayProps}
-            surfaceProps={surfaceProps}
+            surfaceProps={{ ...surfaceProps, style: { ...cursorStyle, ...surfaceProps.style } }}
           >
             {children}
           </BottomSheetMotionContent>

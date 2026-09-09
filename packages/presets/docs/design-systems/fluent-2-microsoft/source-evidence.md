@@ -281,3 +281,9 @@ instead of flattening them to the larger offset layer.
 - [Badge](components/badge.md)
 - [Chip](components/chip.md)
 - [Text](components/text.md)
+
+## Control Cursor Preference
+
+**Kiskadee extension**: the preset explicitly selects `pointer` with `web` scope. This is
+a framework convention, not a cursor value extracted from the upstream design kit. Native
+targets retain their platform cursor. See [cursor policy](../../definitions/cursor-policy.md).

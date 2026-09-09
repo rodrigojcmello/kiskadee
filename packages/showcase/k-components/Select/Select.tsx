@@ -1,6 +1,10 @@
 'use client';
 
-import { FamilyResolvedIcon, useEssentialIcon } from '@kiskadee/react-components';
+import {
+  FamilyResolvedIcon,
+  useControlCursorStyle,
+  useEssentialIcon
+} from '@kiskadee/react-components';
 import type { SelectProps as HeadlessSelectProps } from '@kiskadee/react-headless';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless';
 import type { CSSProperties, ReactNode } from 'react';
@@ -30,6 +34,7 @@ export function Select({
   loop = false,
   variant = 'standard'
 }: SelectProps) {
+  const cursorStyle = useControlCursorStyle();
   const selectedOption = options.find((o) => o.value === value);
   const previousIcon = useEssentialIcon('chevron-left');
   const nextIcon = useEssentialIcon('chevron-end');
@@ -87,7 +92,7 @@ export function Select({
       loop={loop}
       data-disabled={disabled || undefined}
       options={options}
-      style={mergedStyle}
+      style={{ ...cursorStyle, ...mergedStyle }}
       classNames={{
         e1: `${styles.container} ${className}`.trim(),
         e5: styles.label,
@@ -133,7 +138,7 @@ export function Select({
           ) : null}
         </HeadlessSelect.Trigger>
       )}
-      <HeadlessSelect.Content portalled offset={6}>
+      <HeadlessSelect.Content portalled offset={6} style={cursorStyle}>
         {options.map((opt) => (
           <HeadlessSelect.Option key={opt.value} value={opt.value} disabled={opt.disabled}>
             {opt.label}

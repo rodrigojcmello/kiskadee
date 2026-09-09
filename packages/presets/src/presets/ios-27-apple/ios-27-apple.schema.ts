@@ -41,6 +41,7 @@ export const schema: Schema<Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
     typography: ios27AppleTypography,
     separators: createIos27AppleSeparators(),
     foregrounds: createIos27AppleForegrounds({ c }),

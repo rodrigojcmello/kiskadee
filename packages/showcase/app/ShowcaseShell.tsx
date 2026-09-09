@@ -1,6 +1,12 @@
 'use client';
 
-import { FamilyResolvedIcon, SurfaceContextProvider } from '@kiskadee/react-components';
+import type { ControlCursorValue } from '@kiskadee/core';
+import {
+  FamilyResolvedIcon,
+  KiskadeeContext,
+  SurfaceContextProvider,
+  useKiskadee
+} from '@kiskadee/react-components';
 import { usePathname } from 'next/navigation';
 import type { CSSProperties, Dispatch, ReactNode, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -26,6 +32,28 @@ export default function ShowcaseShell({
   onDesktopSidebarVisibilityChange: Dispatch<SetStateAction<boolean>>;
 }) {
   const pathname = usePathname();
+  const administrativeContext = useKiskadee();
+  const [cursorOverrides, setCursorOverrides] = useState<
+    Record<string, ControlCursorValue | undefined>
+  >({});
+  const controlCursorAvailable =
+    /^\/(button|card|switch|tabs|dropdown|bottom-sheet|select)(?:\/|$)/.test(pathname);
+  const controlCursorOverride = controlCursorAvailable ? cursorOverrides[pathname] : undefined;
+  const setControlCursorOverride = useCallback(
+    (value: ControlCursorValue | undefined) => {
+      setCursorOverrides((current) => ({ ...current, [pathname]: value }));
+    },
+    [pathname]
+  );
+  const contentContext = useMemo(
+    () => ({
+      ...administrativeContext,
+      controlCursor: controlCursorOverride
+        ? { value: controlCursorOverride, scope: 'web' as const }
+        : administrativeContext.controlCursor
+    }),
+    [administrativeContext, controlCursorOverride]
+  );
   const background = useShowcaseBackgroundState(pathname);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [panelDetail, setPanelDetail] = useState<ShowcasePanelDetail | null>(null);
@@ -76,6 +104,10 @@ export default function ShowcaseShell({
 
   const contextValue = useMemo(
     () => ({
+      administrativeContext,
+      controlCursorAvailable,
+      controlCursorOverride,
+      setControlCursorOverride,
       background,
       panelDetail,
       panelSlotElement,
@@ -85,6 +117,10 @@ export default function ShowcaseShell({
       showDetailPanel
     }),
     [
+      administrativeContext,
+      controlCursorAvailable,
+      controlCursorOverride,
+      setControlCursorOverride,
       background,
       clearPanelDetail,
       panelDetail,
@@ -194,7 +230,9 @@ export default function ShowcaseShell({
           <div className={`${style.content} s-content`}>
             <div className={style.contentInner}>
               <SurfaceContextProvider value={background.surfaceContext}>
-                {children}
+                <KiskadeeContext.Provider value={contentContext}>
+                  {children}
+                </KiskadeeContext.Provider>
               </SurfaceContextProvider>
             </div>
           </div>

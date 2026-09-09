@@ -23,6 +23,11 @@ import type {
   SolidColor,
   ThemeMode
 } from '@kiskadee/core';
+import {
+  DEFAULT_CONTROL_CURSOR,
+  resolveControlCursor,
+  type SchemaInteraction
+} from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import {
   buildCardComponentArtifact,
@@ -281,6 +286,9 @@ export async function writeExtraArtifacts(params: {
   const icons = schema.global?.icons as SchemaIcons | undefined;
   const iconSizes = schema.global?.iconSizes as SchemaIconSizes | undefined;
   const focus = schema.global?.focus as { width?: number; offset?: number } | undefined;
+  const interaction: SchemaInteraction = {
+    controlCursor: schema.global?.interaction?.controlCursor ?? DEFAULT_CONTROL_CURSOR
+  };
   const radius = schema.global?.radius as RadiusMode | undefined;
   const activationFeedback = schema.global?.effects?.activationFeedback as
     | ActivationFeedbackEffectSchema
@@ -379,9 +387,6 @@ export async function writeExtraArtifacts(params: {
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
 
-  const hasFonts = Boolean(fonts);
-  const hasIcons = Boolean(icons);
-  const hasIconSizes = Boolean(iconSizes);
   const hasRadius = Boolean(radius);
   const hasActivationFeedback = Boolean(
     activationFeedback && Object.keys(activationFeedback).length > 0
@@ -392,17 +397,8 @@ export async function writeExtraArtifacts(params: {
         Object.keys(shadow.inner?.levels ?? {}).length > 0)
   );
   const hasComponentEffectOverrides = Object.keys(componentEffectOverrides).length > 0;
-  const hasTextTypographyClassMap = Boolean(textTypographyClassMap);
-  if (
-    hasFonts ||
-    hasIcons ||
-    hasIconSizes ||
-    hasRadius ||
-    hasActivationFeedback ||
-    hasShadow ||
-    hasComponentEffectOverrides ||
-    hasTextTypographyClassMap
-  ) {
+  // Every preset publishes the cursor default, even without other global metadata.
+  {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
@@ -410,6 +406,7 @@ export async function writeExtraArtifacts(params: {
       fonts?: SchemaFonts;
       iconSizes?: SchemaIconSizes;
       icons?: SchemaIcons;
+      interaction?: SchemaInteraction;
       radius?: RadiusMode;
       effects?: {
         activationFeedback?: ActivationFeedbackEffectSchema;
@@ -417,7 +414,7 @@ export async function writeExtraArtifacts(params: {
       };
       components?: Partial<Record<ComponentEffectArtifactName, ComponentEffectArtifact>>;
       classMap?: GlobalClassNameMapJSON;
-    } = {};
+    } = { interaction };
 
     if (fonts) {
       globalPayload.fonts = fonts;
@@ -487,6 +484,7 @@ export async function writeExtraArtifacts(params: {
 
   // Global design tokens consumed directly by CSS (no runtime setProperty/removeProperty).
   const globalTokensCss = buildRootTokensCss([
+    { name: '--k-cc', value: resolveControlCursor(interaction.controlCursor) },
     ...buildFontTokenVariables(fonts),
     { name: '--k-focus-width', value: focus?.width },
     { name: '--k-focus-offset', value: focus?.offset }

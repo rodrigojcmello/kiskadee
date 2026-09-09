@@ -1,5 +1,11 @@
 'use client';
 
+import {
+  type ControlCursorValue,
+  DEFAULT_CONTROL_CURSOR,
+  resolveControlCursor
+} from '@kiskadee/core';
+import { KiskadeeContext } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
@@ -28,7 +34,17 @@ export function ShowcaseRouteControls({
   showGlobalControls?: boolean;
   title: string;
 }) {
-  const { panelSlotElement, registerPanelDetail, clearPanelDetail } = useShowcasePanel();
+  const {
+    panelSlotElement,
+    registerPanelDetail,
+    clearPanelDetail,
+    administrativeContext,
+    controlCursorAvailable,
+    controlCursorOverride,
+    setControlCursorOverride
+  } = useShowcasePanel();
+  const presetCursor =
+    administrativeContext.global?.interaction?.controlCursor ?? DEFAULT_CONTROL_CURSOR;
 
   useEffect(() => {
     if (!isAvailable) {
@@ -46,7 +62,32 @@ export function ShowcaseRouteControls({
   if (!isAvailable || !panelSlotElement) return null;
 
   return createPortal(
-    <ShowcaseIconFamilyBoundary>{children}</ShowcaseIconFamilyBoundary>,
+    <KiskadeeContext.Provider value={administrativeContext}>
+      <ShowcaseIconFamilyBoundary>
+        {children}
+        {controlCursorAvailable ? (
+          <ShowcaseControlGroup title="Interaction">
+            <ShowcaseSelectControl
+              label="Control cursor"
+              value={controlCursorOverride ?? 'preset'}
+              options={[
+                {
+                  value: 'preset',
+                  label: `Preset default · ${resolveControlCursor(presetCursor) === 'pointer' ? 'Pointer' : 'Default'} (${presetCursor.scope === 'web' ? 'Web only' : 'All platforms'})`
+                },
+                { value: 'default', label: 'Default (arrow)' },
+                { value: 'pointer', label: 'Pointer (hand)' }
+              ]}
+              onValueChange={(value) =>
+                setControlCursorOverride(
+                  value === 'preset' ? undefined : (value as ControlCursorValue)
+                )
+              }
+            />
+          </ShowcaseControlGroup>
+        ) : null}
+      </ShowcaseIconFamilyBoundary>
+    </KiskadeeContext.Provider>,
     panelSlotElement
   );
 }

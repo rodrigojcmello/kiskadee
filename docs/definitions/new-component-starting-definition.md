@@ -223,9 +223,9 @@ activation attempts without applying `disabled`, `readOnly`, or their visual sta
 
 ## Cursor Policy
 
-Do not use `cursor: pointer` only because a component is clickable. Kiskadee keeps generic controls
-on the default cursor so web output stays aligned with the cross-platform interaction model. Reserve
-`cursor: pointer` for true link semantics, such as an `a` element with navigation intent.
+Generic action owners consume the preset control cursor preference through `--k-cc`.
+The default is pointer on Web; text, links, manipulation handles and unavailable states retain
+their specialized rules. Static components must not acquire an action cursor.
 
 For the durable rule, see [`cursor-policy.md`](./cursor-policy.md).
 

@@ -1,4 +1,6 @@
 .k-btn {
+  /* element button / e1: consume the control cursor preference. */
+  cursor: var(--k-cc);
   /* UX: Prevent accidental text selection when clicking/dragging over the button */
   user-select: none;
 

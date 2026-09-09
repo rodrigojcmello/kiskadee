@@ -42,6 +42,7 @@ export const schema: Schema<Segments> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
     typography: material3GoogleTypography,
     separators: createMaterial3GoogleSeparators({ c, segmentNames }),
     iconSizes: {

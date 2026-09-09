@@ -363,6 +363,7 @@ export {
   SurfaceContextProvider,
   useSurfaceContext
 } from './shared/contexts/SurfaceContext.tsx';
+export { useControlCursorStyle } from './shared/contexts/useControlCursorStyle.ts';
 export type {
   MenuTreeIconNode,
   MenuTreeIconRenderer

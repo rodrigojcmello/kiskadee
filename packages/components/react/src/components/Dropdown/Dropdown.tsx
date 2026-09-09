@@ -1,3 +1,4 @@
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Dropdown.structural.scss';
 import type {
   DropdownIntent,
@@ -350,7 +351,9 @@ function DropdownPresenceNode({
 
   const { ref, children, className, style, ...props } = positionerProps;
   const hasAvailableSize = state.availableHeight > 0 && state.availableWidth > 0;
+  const cursorStyle = useControlCursorStyle();
   const positionerStyle = {
+    ...cursorStyle,
     ...style,
     ...(hasAvailableSize
       ? {

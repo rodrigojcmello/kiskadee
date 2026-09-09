@@ -66,3 +66,9 @@ Kiskadee's stable name for the single complete Carbon profile currently exposed.
 This is **Official adapted**: the icon family is official, while Kiskadee chooses the closest
 semantic glyph and normalizes it to the active Icon scale. The preset schema contains only the
 family and variant recommendation and does not import the upstream package.
+
+## Control Cursor Preference
+
+**Kiskadee extension**: the preset explicitly selects `pointer` with `web` scope. This is
+a framework convention, not a cursor value extracted from the upstream design kit. Native
+targets retain their platform cursor. See [cursor policy](../../definitions/cursor-policy.md).

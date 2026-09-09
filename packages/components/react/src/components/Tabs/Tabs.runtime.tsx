@@ -1,5 +1,6 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { memo, type ReactNode, useEffect, useMemo, useState } from 'react';
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import {
   joinClassNames,
   resolveListClassName,
@@ -183,6 +184,7 @@ export function createTabsComponent<
    *     reach the DOM while still feeding the visual context.
    */
   function TabsRoot(props: TRootProps) {
+    const cursorStyle = useControlCursorStyle();
     const {
       children,
       spring,
@@ -302,6 +304,7 @@ export function createTabsComponent<
       <TabsVisualContextProvider value={visualContext}>
         <HeadlessTabs.Root
           {...headlessRootProps}
+          style={{ ...cursorStyle, ...headlessRootProps.style }}
           orientation="horizontal"
           value={rootState.selected}
           onValueChange={rootState.handleValueChange}

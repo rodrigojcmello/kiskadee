@@ -34,3 +34,9 @@ A complete review of the wider Apple type ramp remains **Deferred**.
 
 The existing `16px` optional Switch icon viewport is preserved through `e6.iconSize` referencing
 `global.iconSizes.s:md:1`. This is a Kiskadee schema ownership change, not new Apple source evidence.
+
+## Control Cursor Preference
+
+**Kiskadee extension**: the preset explicitly selects `pointer` with `web` scope. This is
+a framework convention, not a cursor value extracted from the upstream design kit. Native
+targets retain their platform cursor. See [cursor policy](../../definitions/cursor-policy.md).

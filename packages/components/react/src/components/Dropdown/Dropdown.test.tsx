@@ -352,6 +352,30 @@ describe('styled Dropdown', () => {
     await waitFor(() => expect(result.queryByTestId('motion-surface')).toBeNull());
   });
 
+  it('carries cursor overrides into portalled headless presenters using Presence', () => {
+    const result = render(
+      <KiskadeeContext.Provider
+        value={{ ...context, controlCursor: { value: 'default', scope: 'web' } }}
+      >
+        <Dropdown.VisualProvider presence={null}>
+          <HeadlessDropdown.Root defaultOpen>
+            <HeadlessDropdown.Anchor>Toggle</HeadlessDropdown.Anchor>
+            <Dropdown.Presence>
+              {({ forceMount, render }) => (
+                <HeadlessDropdown.Content forceMount={forceMount} render={render}>
+                  <div data-testid="cursor-portal">Content</div>
+                </HeadlessDropdown.Content>
+              )}
+            </Dropdown.Presence>
+          </HeadlessDropdown.Root>
+        </Dropdown.VisualProvider>
+      </KiskadeeContext.Provider>
+    );
+    const positioner = result.getByTestId('cursor-portal').parentElement;
+    expect(result.container.contains(positioner)).toBe(false);
+    expect(positioner?.style.getPropertyValue('--k-cc')).toBe('default');
+  });
+
   it('releases exit retention when adapter content has no animated surface', async () => {
     await loadDropdownPresenceEffect();
     const result = render(

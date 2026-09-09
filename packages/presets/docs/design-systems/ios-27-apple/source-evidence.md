@@ -189,3 +189,9 @@ High and Lowest retain their roles. This is a source-informed preset extension r
 than a claim that Apple defines Kiskadee's four emphasis levels. Original source color
 evidence remains preserved; implementation uses only the existing tonal scale.
 See [Button](components/button.md) for theme, surface-context and Brand formulas.
+
+## Control Cursor Preference
+
+**Kiskadee extension**: the preset explicitly selects `pointer` with `web` scope. This is
+a framework convention, not a cursor value extracted from the upstream design kit. Native
+targets retain their platform cursor. See [cursor policy](../../definitions/cursor-policy.md).

@@ -1,4 +1,4 @@
-import { access, readFile, rm } from 'node:fs/promises';
+import { readFile, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Schema, SchemaFonts, SchemaIconSizes } from '@kiskadee/core';
@@ -51,7 +51,10 @@ describe('writeExtraArtifacts font artifacts', () => {
     );
     const tokensCss = await readFile(resolve(outputDirectory, 'tokens.kiskadee.css'), 'utf8');
 
-    expect(globalArtifact).toEqual({ fonts });
+    expect(globalArtifact).toEqual({
+      fonts,
+      interaction: { controlCursor: { value: 'pointer', scope: 'web' } }
+    });
     expect(tokensCss).toContain('--k-font-body:Inter,Arial,sans-serif');
     expect(tokensCss).toContain('--k-font-heading:var(--k-font-body)');
     expect(tokensCss).toContain('--k-font-code:"JetBrains Mono",monospace');
@@ -182,6 +185,7 @@ describe('writeExtraArtifacts typography artifacts', () => {
     expect(
       JSON.parse(await readFile(resolve(outputDirectory, 'global.kiskadee.json'), 'utf8'))
     ).toEqual({
+      interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
       classMap: {
         text: {
           e1: { t: { bm: 'k-a k-b k-c k-d' } }
@@ -232,6 +236,7 @@ describe('writeExtraArtifacts presence artifacts', () => {
     );
 
     expect(globalArtifact).toEqual({
+      interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
       components: {
         dropdown: {
           effects: {
@@ -248,14 +253,14 @@ describe('writeExtraArtifacts presence artifacts', () => {
       }
     });
     expect(globalArtifact.effects?.presence).toBeUndefined();
-    await expect(access(resolve(outputDirectory, 'tokens.kiskadee.css'))).rejects.toMatchObject({
-      code: 'ENOENT'
-    });
+    expect(await readFile(resolve(outputDirectory, 'tokens.kiskadee.css'), 'utf8')).toContain(
+      '--k-cc:pointer'
+    );
   });
 });
 
 describe('writeExtraArtifacts Button options', () => {
-  it('publishes divider defaults without a dedicated artifact or CSS token file', async () => {
+  it('publishes divider defaults without a dedicated artifact', async () => {
     const outDirSlug = createOutputSlug('button-divider-options');
 
     await writeExtraArtifacts({
@@ -279,6 +284,7 @@ describe('writeExtraArtifacts Button options', () => {
     );
 
     expect(globalArtifact).toEqual({
+      interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
       components: {
         button: {
           options: {
@@ -288,9 +294,9 @@ describe('writeExtraArtifacts Button options', () => {
         }
       }
     });
-    await expect(access(resolve(outputDirectory, 'tokens.kiskadee.css'))).rejects.toMatchObject({
-      code: 'ENOENT'
-    });
+    expect(await readFile(resolve(outputDirectory, 'tokens.kiskadee.css'), 'utf8')).toContain(
+      '--k-cc:pointer'
+    );
   });
 });
 
@@ -347,5 +353,23 @@ describe('writeExtraArtifacts Badge effects', () => {
       await readFile(resolve(buildRoot, outDirSlug, 'global.kiskadee.json'), 'utf8')
     );
     expect(globalArtifact.components.badge.effects.shadow).toEqual(shadow);
+  });
+});
+
+describe('writeExtraArtifacts cursor policy', () => {
+  it.each([
+    'web',
+    'all'
+  ] as const)('publishes an explicit arrow preference with %s scope', async (scope) => {
+    const outDirSlug = createOutputSlug(`cursor-${scope}`);
+    const interaction = { controlCursor: { value: 'default' as const, scope } };
+    await writeExtraArtifacts({ schema: createSchema({ interaction }), outDirSlug });
+    const output = resolve(buildRoot, outDirSlug);
+    expect(
+      JSON.parse(await readFile(resolve(output, 'global.kiskadee.json'), 'utf8')).interaction
+    ).toEqual(interaction);
+    expect(await readFile(resolve(output, 'tokens.kiskadee.css'), 'utf8')).toContain(
+      '--k-cc:default'
+    );
   });
 });

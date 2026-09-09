@@ -15,6 +15,7 @@ import type { TextElements } from './components/text.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type { ContentSurfaceContextMap } from './content-surface-context.ts';
 import type { SchemaContours } from './contour.ts';
+import type { SchemaInteraction } from './controlCursor.ts';
 import type { ElementForeground, SchemaForegrounds } from './foreground.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
@@ -300,6 +301,7 @@ export type FocusGlobalTokens = {
 export type RadiusMode = 'rounded' | 'square' | 'pill';
 
 export type SchemaGlobalTokens = {
+  interaction?: SchemaInteraction;
   fonts?: SchemaFonts;
   foregrounds?: SchemaForegrounds;
   contours?: SchemaContours;

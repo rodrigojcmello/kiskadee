@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaContoursContract } from '@kiskadee/core/contour-contract';
+import { validateSchemaInteractionContract } from '@kiskadee/core/control-cursor-contract';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
 import { validateSchemaForegroundsContract } from '@kiskadee/core/foreground-contract';
 import { validateSchemaGlobalIconContract } from '@kiskadee/core/icon-contract';
@@ -107,6 +108,7 @@ export async function runBuild(): Promise<void> {
 
     try {
       validateSchemaGlobalIconContract(schema);
+      validateSchemaInteractionContract(schema);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(

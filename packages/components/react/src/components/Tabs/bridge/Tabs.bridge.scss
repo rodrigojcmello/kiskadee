@@ -118,6 +118,8 @@
    * Flush-all tabs remove the lower-curve horizontal padding compensation from both sides.
    */
   .k-tab-e2-a {
+  /* element tab / e2: consume the control cursor preference. */
+  cursor: var(--k-cc);
     padding-right: var(--k-pdr);
     padding-left: var(--k-pdl);
   }

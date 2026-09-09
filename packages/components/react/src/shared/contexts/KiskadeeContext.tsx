@@ -12,6 +12,7 @@ import type {
   ButtonIconTreatment,
   ComponentClassNameMapJSON,
   ContentSurfaceContextMap,
+  ControlCursor,
   DropdownOptions,
   GlobalClassNameMapJSON,
   RadiusMode,
@@ -19,6 +20,7 @@ import type {
   SchemaFonts,
   SchemaIconSizes,
   SchemaIcons,
+  SchemaInteraction,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   SliderEdgeLabelAlignment,
@@ -72,6 +74,7 @@ export type KiskadeeLayoutEnvironment = {
 };
 
 export type KiskadeeGlobalArtifact = {
+  interaction?: SchemaInteraction;
   classMap?: GlobalClassNameMapJSON;
   fonts?: SchemaFonts;
   iconSizes?: SchemaIconSizes;
@@ -245,6 +248,8 @@ export type KiskadeeContextValue = {
    * the rendered document head.
    */
   preloadedBrandPacks?: Readonly<Record<string, LoadedBrandPackResources>>;
+  /** Application preference; overrides the preset for this React subtree, including portals. */
+  controlCursor?: ControlCursor;
   interactionEnvironment?: KiskadeeInteractionEnvironment;
   layoutEnvironment?: KiskadeeLayoutEnvironment;
   global?: KiskadeeGlobalArtifact;
