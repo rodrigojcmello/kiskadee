@@ -1,10 +1,10 @@
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Dropdown.structural.scss';
 import type {
   DropdownIntent,
   DropdownLeadingIconComposition,
   DropdownPresenceProfile,
-  ElementSizeValue,
   PresenceProfiles,
   RadiusMode
 } from '@kiskadee/core';
@@ -31,7 +31,6 @@ import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
   DEFAULT_DROPDOWN_INTENT,
   DEFAULT_DROPDOWN_RADIUS,
-  DEFAULT_DROPDOWN_SCALE,
   resolveDropdownClassNames,
   resolveDropdownElementClassName,
   resolveDropdownItemClassName
@@ -87,7 +86,7 @@ type DropdownVisualContextValue = {
   resolved: ReturnType<typeof resolveDropdownClassNames>;
   presence: ResolvedDropdownPresence | null;
   options: ResolvedDropdownPresentationOptions;
-  scale: ElementSizeValue;
+  scale: string;
 };
 
 type ResolvedDropdownPresentationOptions = Required<DropdownPresentationProps>;
@@ -127,7 +126,7 @@ function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null): void {
 }
 
 function DropdownVisualProvider({
-  scale = DEFAULT_DROPDOWN_SCALE,
+  size,
   radius,
   shadow = true,
   presence,
@@ -136,6 +135,7 @@ function DropdownVisualProvider({
   classNames = {},
   children
 }: DropdownVisualProviderProps) {
+  const scale = useComponentScale('dropdown', size);
   const { classesMap, global } = useKiskadee();
   const dropdownClassesMap = useComponentClassMap(
     'dropdown',
@@ -204,7 +204,7 @@ function DropdownVisualProvider({
 }
 
 function DropdownRoot({
-  scale,
+  size,
   radius,
   shadow,
   presence,
@@ -216,7 +216,7 @@ function DropdownRoot({
 }: DropdownRootProps) {
   return (
     <DropdownVisualProvider
-      scale={scale}
+      size={size}
       radius={radius}
       shadow={shadow}
       presence={presence}
@@ -684,7 +684,7 @@ const DropdownGroup = forwardRef<HTMLDivElement, DropdownGroupProps>(function Dr
 
 function resolveDropdownLeadingTrackPlaceholders(
   classesMap: DropdownClassesMap | undefined,
-  scale: ElementSizeValue
+  scale: string
 ): React.ReactNode {
   const iconWidth = resolveStructuralUtilityProjectionClassName(classesMap?.e3, 'iw', scale);
   const iconGap = resolveStructuralUtilityProjectionClassName(classesMap?.e3, 'ig', scale);

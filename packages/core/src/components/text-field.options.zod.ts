@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { densityScaleMapSchema } from '../density.contract.zod.ts';
 
 export const textFieldVariantSchema = z.enum(['standard', 'floating']);
 export const textFieldStandardModeSchema = z.enum(['outline', 'underline', 'borderless']);
@@ -46,6 +47,7 @@ function isFloatingMode(
 export function createTextFieldOptionsSchema() {
   return z
     .object({
+      density: densityScaleMapSchema.optional(),
       variant: textFieldVariantSchema.optional(),
       mode: textFieldModeSchema.optional(),
       focusRingColorSource: textFieldFocusRingColorSourceSchema.optional()

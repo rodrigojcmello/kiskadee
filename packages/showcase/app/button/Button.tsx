@@ -6,6 +6,7 @@ import type {
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   Card,
   Button as KButton,
@@ -72,7 +73,7 @@ function SurfaceContextComparison({
   fontName: string;
   onVividSupported: boolean;
   radius: RadiusMode;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
   textAlign: 'left' | 'center';
 }) {
@@ -109,7 +110,7 @@ function SurfaceContextComparison({
                   intent="primary"
                   emphasis={emphasis}
                   radius={radius}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                 >
                   <KButton.Label>
                     <SmoothText fontName={fontName} align={textAlign}>
@@ -139,7 +140,7 @@ function SurfaceContextComparison({
                     intent="primary"
                     emphasis={emphasis}
                     radius={radius}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                   >
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={textAlign}>
@@ -180,7 +181,7 @@ export function Button() {
   const [showFocusRing, setShowFocusRing] = React.useState(true);
   const [radiusOverride, setRadiusOverride] = React.useState<RadiusMode>();
   const buttonRadius = radiusOverride ?? global?.radius ?? 'rounded';
-  const [buttonScale, setButtonScale] = React.useState<ElementSizeValue>('s:md:1');
+  const [buttonScale, setButtonScale] = React.useState<ElementSizeValue | undefined>();
   const background = useShowcaseBackground();
   const activeSurfaceContext = background.surfaceContext;
   const isDarkSurface = background.color ? isDarkSurfaceColor(background.color) : false;
@@ -243,10 +244,12 @@ export function Button() {
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
   );
   const activeButtonScale =
-    availableButtonScaleOptions.find((option) => option.value === buttonScale)?.value ??
-    availableButtonScaleOptions.find((option) => option.value === 's:md:1')?.value ??
-    availableButtonScaleOptions[0]?.value ??
-    's:md:1';
+    buttonScale === undefined
+      ? undefined
+      : (availableButtonScaleOptions.find((option) => option.value === buttonScale)?.value ??
+        availableButtonScaleOptions.find((option) => option.value === 's:md:1')?.value ??
+        availableButtonScaleOptions[0]?.value ??
+        's:md:1');
   const buttonState = getManifestComponentState(buttonMeta, segment, theme, activeSurfaceContext);
 
   const buttonControls = (
@@ -276,9 +279,14 @@ export function Button() {
         <ShowcaseControlStack>
           <ShowcaseSelectControl
             label="Button size"
-            options={availableButtonScaleOptions}
-            value={activeButtonScale}
-            onValueChange={(value) => setButtonScale(value as ElementSizeValue)}
+            options={[
+              { value: 'preset', label: 'Follow density (default)' },
+              ...availableButtonScaleOptions
+            ]}
+            value={activeButtonScale ?? 'preset'}
+            onValueChange={(value) =>
+              setButtonScale(value === 'preset' ? undefined : (value as ElementSizeValue))
+            }
           />
           <ShowcaseSelectControl
             label="Button radius"
@@ -516,7 +524,7 @@ export function Button() {
                   intent="primary"
                   emphasis="high"
                   radius={buttonRadius}
-                  scale={activeButtonScale}
+                  size={componentScaleToSize(activeButtonScale)}
                   surfaceContext={activeSurfaceContext}
                   activationFeedback={{ profile: 'ripple' }}
                 >
@@ -530,7 +538,7 @@ export function Button() {
                   intent="primary"
                   emphasis="high"
                   radius={buttonRadius}
-                  scale={activeButtonScale}
+                  size={componentScaleToSize(activeButtonScale)}
                   surfaceContext={activeSurfaceContext}
                   activationFeedback={{ profile: 'ripple', origin: 'center' }}
                 >
@@ -544,7 +552,7 @@ export function Button() {
                   intent="primary"
                   emphasis="high"
                   radius={buttonRadius}
-                  scale={activeButtonScale}
+                  size={componentScaleToSize(activeButtonScale)}
                   surfaceContext={activeSurfaceContext}
                   activationFeedback={{ profile: 'ripple-overflow' }}
                 >
@@ -558,7 +566,7 @@ export function Button() {
                   intent="primary"
                   emphasis="high"
                   radius={buttonRadius}
-                  scale={activeButtonScale}
+                  size={componentScaleToSize(activeButtonScale)}
                   surfaceContext={activeSurfaceContext}
                   activationFeedback={{ profile: 'halo' }}
                 >
@@ -585,7 +593,7 @@ export function Button() {
                     emphasis="medium"
                     intent="primary"
                     radius={buttonRadius}
-                    scale={activeButtonScale}
+                    size={componentScaleToSize(activeButtonScale)}
                     surfaceContext={activeSurfaceContext}
                     radiusEffect={true}
                     controlState={isSelected}
@@ -614,7 +622,7 @@ export function Button() {
                     emphasis="high"
                     intent="primary"
                     radius={buttonRadius}
-                    scale={activeButtonScale}
+                    size={componentScaleToSize(activeButtonScale)}
                     surfaceContext={activeSurfaceContext}
                     radiusEffect={true}
                     controlState={isSelectedVivid}
@@ -636,7 +644,7 @@ export function Button() {
               </Text>
               <KButton
                 radius={buttonRadius}
-                scale={activeButtonScale}
+                size={componentScaleToSize(activeButtonScale)}
                 shadow={true}
                 surfaceContext={activeSurfaceContext}
               >
@@ -648,7 +656,7 @@ export function Button() {
               </KButton>
               <KButton
                 radius={buttonRadius}
-                scale={activeButtonScale}
+                size={componentScaleToSize(activeButtonScale)}
                 shadow={true}
                 surfaceContext={activeSurfaceContext}
                 status={'hover'}
@@ -661,7 +669,7 @@ export function Button() {
               </KButton>
               <KButton
                 radius={buttonRadius}
-                scale={activeButtonScale}
+                size={componentScaleToSize(activeButtonScale)}
                 shadow={true}
                 surfaceContext={activeSurfaceContext}
                 status={'focus'}
@@ -674,7 +682,7 @@ export function Button() {
               </KButton>
               <KButton
                 radius={buttonRadius}
-                scale={activeButtonScale}
+                size={componentScaleToSize(activeButtonScale)}
                 shadow={true}
                 surfaceContext={activeSurfaceContext}
                 status={'pressed'}
@@ -687,7 +695,7 @@ export function Button() {
               </KButton>
               <KButton
                 radius={buttonRadius}
-                scale={activeButtonScale}
+                size={componentScaleToSize(activeButtonScale)}
                 shadow={true}
                 surfaceContext={activeSurfaceContext}
                 status={'disabled'}
@@ -709,7 +717,7 @@ export function Button() {
                   's:sm:2',
                   <KButton
                     radius={buttonRadius}
-                    scale="s:sm:2"
+                    size="sm2"
                     intent="primary"
                     emphasis="high"
                     surfaceContext={activeSurfaceContext}
@@ -725,7 +733,7 @@ export function Button() {
                   's:sm:1',
                   <KButton
                     radius={buttonRadius}
-                    scale="s:sm:1"
+                    size="sm"
                     intent="primary"
                     emphasis="high"
                     surfaceContext={activeSurfaceContext}
@@ -741,7 +749,7 @@ export function Button() {
                   's:md:1',
                   <KButton
                     radius={buttonRadius}
-                    scale="s:md:1"
+                    size="md"
                     intent="primary"
                     emphasis="high"
                     surfaceContext={activeSurfaceContext}
@@ -757,7 +765,7 @@ export function Button() {
                   's:lg:1',
                   <KButton
                     radius={buttonRadius}
-                    scale="s:lg:1"
+                    size="lg"
                     intent="primary"
                     emphasis="high"
                     surfaceContext={activeSurfaceContext}
@@ -773,7 +781,7 @@ export function Button() {
                   's:lg:2',
                   <KButton
                     radius={buttonRadius}
-                    scale="s:lg:2"
+                    size="lg2"
                     intent="primary"
                     emphasis="high"
                     surfaceContext={activeSurfaceContext}
@@ -789,7 +797,7 @@ export function Button() {
                   's:lg:3',
                   <KButton
                     radius={buttonRadius}
-                    scale="s:lg:3"
+                    size="lg3"
                     intent="primary"
                     emphasis="high"
                     surfaceContext={activeSurfaceContext}

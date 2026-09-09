@@ -49,6 +49,7 @@ import {
   buildTextFieldComponentArtifact,
   TEXT_FIELD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/textFieldComponentArtifact.ts';
+import { type CompiledDensityMaps, resolveSchemaDensityMaps } from '../density/compileDensity.ts';
 import {
   TYPOGRAPHY_ARTIFACT_PATH,
   type TypographyArtifact
@@ -402,7 +403,9 @@ export async function writeExtraArtifacts(params: {
     await mkdir(buildDir, { recursive: true });
     const globalFilePath = resolve(buildDir, 'global.kiskadee.json');
 
+    const density = resolveSchemaDensityMaps(schema);
     const globalPayload: {
+      density?: CompiledDensityMaps;
       fonts?: SchemaFonts;
       iconSizes?: SchemaIconSizes;
       icons?: SchemaIcons;
@@ -414,7 +417,7 @@ export async function writeExtraArtifacts(params: {
       };
       components?: Partial<Record<ComponentEffectArtifactName, ComponentEffectArtifact>>;
       classMap?: GlobalClassNameMapJSON;
-    } = { interaction };
+    } = { interaction, ...(Object.keys(density).length ? { density } : {}) };
 
     if (fonts) {
       globalPayload.fonts = fonts;

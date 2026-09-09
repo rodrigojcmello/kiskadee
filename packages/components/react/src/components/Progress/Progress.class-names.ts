@@ -21,7 +21,7 @@ function resolveProgressElementClassName(
   options: {
     intent: ProgressIntent;
     surfaceContext: SurfaceContext;
-    scale: ProgressScale;
+    scale: string;
   }
 ): string {
   return resolveSchemaElementClassName(element, {
@@ -41,7 +41,7 @@ export function resolveProgressIndicatorClassName({
   element: ClassNameByElementJSON | undefined;
   intent?: ProgressIntent;
   surfaceContext?: SurfaceContext;
-  scale?: ProgressScale;
+  scale?: string;
 }): string {
   return resolveProgressElementClassName(element, {
     intent,
@@ -67,7 +67,7 @@ export function resolveProgressClassNames({
   classNames: ProgressClassNames;
   intent?: ProgressIntent;
   surfaceContext?: SurfaceContext;
-  scale?: ProgressScale;
+  scale?: string;
 }): Required<ProgressClassNames> {
   const options = { intent, surfaceContext, scale };
   const trackOptions = {

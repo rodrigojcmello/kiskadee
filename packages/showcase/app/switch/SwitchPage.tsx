@@ -8,6 +8,7 @@ import type {
   SurfaceContext,
   SwitchIntent
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   Card,
   FamilyResolvedIcon,
@@ -156,7 +157,7 @@ export default function SwitchPage() {
   const background = useShowcaseBackground();
   const textProfiles = useShowcaseTextProfiles();
   const [controlState, setControlState] = useState(true);
-  const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
+  const [scale, setScale] = useState<ElementSizeValue | undefined>();
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
@@ -229,7 +230,11 @@ export default function SwitchPage() {
   }, [defaultRadius]);
 
   useEffect(() => {
-    if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {
+    if (
+      scale === undefined ||
+      !scaleSelectOptions.length ||
+      scaleSelectOptions.some((option) => option.value === scale)
+    ) {
       return;
     }
 
@@ -301,16 +306,19 @@ export default function SwitchPage() {
       <ShowcaseControlGroup title="Shape">
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
-            label="Scale"
-            options={scaleSelectOptions}
-            value={scale}
+            label="Size"
+            options={[
+              { value: 'preset', label: 'Follow density (default)' },
+              ...scaleSelectOptions
+            ]}
+            value={scale ?? 'preset'}
             onValueChange={(value) => {
-              const nextScale = value as ElementSizeValue;
+              const nextScale = value === 'preset' ? undefined : (value as ElementSizeValue);
               if (nextScale === scale) return;
               playWowTransition();
               setScale(nextScale);
             }}
-            disabled={!isSwitchAvailable || scaleSelectOptions.length <= 1}
+            disabled={!isSwitchAvailable}
           />
           <ShowcaseSelectControl
             label="Radius"
@@ -445,7 +453,7 @@ export default function SwitchPage() {
       icons={switchIcons}
       controlState={controlState}
       onControlStateChange={setControlState}
-      scale={scale}
+      size={componentScaleToSize(scale)}
       radius={radius}
       motion={motionOverride}
       thumbShrink={thumbShrinkOverride}
@@ -520,7 +528,7 @@ export default function SwitchPage() {
                     controlText={switchControlText}
                     icons={switchIcons}
                     controlState={false}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -536,7 +544,7 @@ export default function SwitchPage() {
                     controlText={switchControlText}
                     icons={switchIcons}
                     controlState
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -553,7 +561,7 @@ export default function SwitchPage() {
                     icons={switchIcons}
                     controlState={false}
                     status="hover"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -570,7 +578,7 @@ export default function SwitchPage() {
                     icons={switchIcons}
                     controlState
                     status="hover"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -587,7 +595,7 @@ export default function SwitchPage() {
                     icons={switchIcons}
                     controlState={false}
                     status="pressed"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -604,7 +612,7 @@ export default function SwitchPage() {
                     icons={switchIcons}
                     controlState
                     status="pressed"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -622,7 +630,7 @@ export default function SwitchPage() {
                     controlState={false}
                     status="pressed"
                     activationFeedback="active"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -640,7 +648,7 @@ export default function SwitchPage() {
                     controlState
                     status="pressed"
                     activationFeedback="active"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -657,7 +665,7 @@ export default function SwitchPage() {
                     icons={switchIcons}
                     controlState={false}
                     status="focus"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -674,7 +682,7 @@ export default function SwitchPage() {
                     icons={switchIcons}
                     controlState
                     status="focus"
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -690,7 +698,7 @@ export default function SwitchPage() {
                     controlText={switchControlText}
                     icons={switchIcons}
                     controlState={false}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}
@@ -706,7 +714,7 @@ export default function SwitchPage() {
                     controlText={switchControlText}
                     icons={switchIcons}
                     controlState
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     radius={radius}
                     motion={motionOverride}
                     thumbShrink={thumbShrinkOverride}

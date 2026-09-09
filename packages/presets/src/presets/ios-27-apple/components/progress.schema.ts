@@ -49,6 +49,7 @@ export function createIos27AppleProgressSchema({
   };
 
   return {
+    options: { density: { compact: 's:md:1', spacious: 's:lg:1' } },
     elements: {
       e1: { name: 'progress-root' },
       e2: {

@@ -1,3 +1,4 @@
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import './Slider.structural.scss';
 import {
   resolveActivationFeedbackSetting,
@@ -22,7 +23,6 @@ import { useSliderArtifactConfig } from './hooks/useSliderArtifactConfig.ts';
 import {
   DEFAULT_SLIDER_EMPHASIS,
   DEFAULT_SLIDER_INTENT,
-  DEFAULT_SLIDER_SCALE,
   join,
   resolveSliderClassNames,
   resolveVariantElements
@@ -304,7 +304,7 @@ function SliderRoot(props: SliderProps) {
     className,
     classNames = EMPTY_SLIDER_CLASS_NAMES,
     style,
-    scale = DEFAULT_SLIDER_SCALE,
+    size,
     emphasis = DEFAULT_SLIDER_EMPHASIS,
     intent = DEFAULT_SLIDER_INTENT,
     radius,
@@ -347,6 +347,7 @@ function SliderRoot(props: SliderProps) {
     'aria-describedby': ariaDescribedBy,
     ...rootProps
   } = props;
+  const scale = useComponentScale('slider', size);
   const isLikelyTouch = useIsLikelyTouch();
   const isCompactViewport = useIsCompactViewport();
   const generatedId = useId();

@@ -6,6 +6,7 @@ import type {
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import type { IconName } from '@kiskadee/icons/interface';
 import {
   AdaptiveButtonMenu,
@@ -230,7 +231,7 @@ export function ButtonMenuExamples({
   available: boolean;
   presence?: DropdownPresence;
   radius: RadiusMode;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
   const textProfiles = useShowcaseTextProfiles();
@@ -269,7 +270,7 @@ export function ButtonMenuExamples({
     tree,
     renderIcon: (name: IconName) => <FamilyResolvedIcon name={name} />,
     presentation,
-    dropdown: { presence, scale, itemsLayout: 'columns' as const }
+    dropdown: { presence, size: componentScaleToSize(scale), itemsLayout: 'columns' as const }
   };
 
   return (
@@ -309,8 +310,14 @@ export function ButtonMenuExamples({
           </Text>
           <AdaptiveButtonMenu.Root
             {...common}
-            buttonGroup={{ emphasis: 'high', intent: 'primary', radius, scale, surfaceContext }}
-            bottomSheet={{ scale }}
+            buttonGroup={{
+              emphasis: 'high',
+              intent: 'primary',
+              radius,
+              size: componentScaleToSize(scale),
+              surfaceContext
+            }}
+            bottomSheet={{ size: componentScaleToSize(scale) }}
           >
             <AdaptiveButtonMenu.Trigger>
               <Button.Label>Actions</Button.Label>
@@ -323,8 +330,18 @@ export function ButtonMenuExamples({
           </Text>
           <AdaptiveButtonMenu.Root
             {...common}
-            buttonGroup={{ emphasis: 'medium', intent: 'neutral', radius, scale, surfaceContext }}
-            bottomSheet={{ scale, itemLayout: 'centered', centeredIcons: 'hide' }}
+            buttonGroup={{
+              emphasis: 'medium',
+              intent: 'neutral',
+              radius,
+              size: componentScaleToSize(scale),
+              surfaceContext
+            }}
+            bottomSheet={{
+              size: componentScaleToSize(scale),
+              itemLayout: 'centered',
+              centeredIcons: 'hide'
+            }}
           >
             <AdaptiveButtonMenu.Trigger>
               <Button.Icon>
@@ -340,8 +357,14 @@ export function ButtonMenuExamples({
           </Text>
           <AdaptiveButtonMenu.Root
             {...common}
-            buttonGroup={{ emphasis: 'high', intent: 'primary', radius, scale, surfaceContext }}
-            bottomSheet={{ scale, itemLayout: 'structured' }}
+            buttonGroup={{
+              emphasis: 'high',
+              intent: 'primary',
+              radius,
+              size: componentScaleToSize(scale),
+              surfaceContext
+            }}
+            bottomSheet={{ size: componentScaleToSize(scale), itemLayout: 'structured' }}
           >
             <AdaptiveButtonMenu.Action onClick={() => setLastAction('Save')}>
               <Button.Label>Save</Button.Label>

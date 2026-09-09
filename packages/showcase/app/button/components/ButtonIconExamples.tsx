@@ -5,6 +5,7 @@ import type {
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   FamilyResolvedIcon,
   type IconName,
@@ -153,7 +154,7 @@ export function ButtonIconExamples({
 }: {
   fontName: string;
   radius: RadiusMode;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
   const textProfiles = useShowcaseTextProfiles();
@@ -180,7 +181,7 @@ export function ButtonIconExamples({
             intent={intent}
             key={`${intent}-${emphasis}`}
             radius={radius}
-            scale={scale}
+            size={componentScaleToSize(scale)}
             surfaceContext={surfaceContext}
           >
             <KButton.Icon>
@@ -219,7 +220,7 @@ export function ButtonIconExamples({
                       intent="neutral"
                       key={label}
                       radius={radius}
-                      scale={scale}
+                      size={componentScaleToSize(scale)}
                       surfaceContext={surfaceContext}
                       title={label}
                     >
@@ -244,7 +245,7 @@ export function ButtonIconExamples({
                   intent="neutral"
                   key={actions[0].label}
                   radius={radius}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   surfaceContext={surfaceContext}
                 >
                   {actions.map(({ icon, label }) => (

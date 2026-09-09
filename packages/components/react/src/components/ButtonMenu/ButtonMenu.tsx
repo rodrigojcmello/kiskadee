@@ -51,7 +51,7 @@ import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 
 export type ButtonMenuButtonGroupProps = Pick<
   ButtonGroupProps,
-  'scale' | 'radius' | 'emphasis' | 'intent' | 'surfaceContext' | 'shadow'
+  'size' | 'radius' | 'emphasis' | 'intent' | 'surfaceContext' | 'shadow'
 >;
 
 type ButtonMenuGroupOwnedButtonProp = keyof ButtonMenuButtonGroupProps | 'radiusEffect';
@@ -160,7 +160,7 @@ function ButtonMenuPopupVisual({
 function ButtonMenuRoot({
   buttonGroup,
   children,
-  scale,
+  size,
   radius,
   shadow,
   presence,
@@ -184,7 +184,7 @@ function ButtonMenuRoot({
 
   return (
     <Dropdown.VisualProvider
-      scale={scale}
+      size={size}
       radius={radius}
       shadow={shadow}
       presence={presence}

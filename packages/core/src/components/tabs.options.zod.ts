@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { densityScaleMapSchema } from '../density.contract.zod.ts';
 
 export const tabsVariantSchema = z.enum(['line', 'box', 'segmented', 'dot', 'bridge']);
 export const tabsIndicatorPositionSchema = z.enum(['top', 'bottom']);
@@ -173,6 +174,7 @@ function refineTabsOptions(
 export function createTabsOptionsSchema() {
   return z
     .object({
+      density: densityScaleMapSchema.optional(),
       variant: tabsVariantSchema.optional(),
       indicatorPosition: tabsIndicatorPositionSchema.optional(),
       indicatorShape: tabsIndicatorShapeSchema.optional(),

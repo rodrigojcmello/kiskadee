@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { densityScaleMapSchema } from '../density.contract.zod.ts';
 
 export const sliderVariantSchema = z.enum(['standard']);
 export const sliderStandardModeSchema = z.enum(['base']);
@@ -43,6 +44,7 @@ export type SliderFillOriginMarkSchemaValue = z.infer<typeof sliderFillOriginMar
 export function createSliderOptionsSchema() {
   return z
     .object({
+      density: densityScaleMapSchema.optional(),
       variant: sliderVariantSchema.optional(),
       valueDisplay: sliderValueDisplaySchema.optional(),
       valueSummaryPlacement: sliderValueSummaryPlacementSchema.optional(),

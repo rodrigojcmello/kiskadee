@@ -16,6 +16,7 @@ import type { TextFieldOptions, TextFieldVariants } from './components/text-fiel
 import type { ContentSurfaceContextMap } from './content-surface-context.ts';
 import type { SchemaContours } from './contour.ts';
 import type { SchemaInteraction } from './controlCursor.ts';
+import type { DensityScaleMap } from './density.ts';
 import type { ElementForeground, SchemaForegrounds } from './foreground.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
@@ -196,6 +197,7 @@ type ComponentEffects = {
 
 type Components<TSegmentName extends SegmentName = never> = Partial<{
   badge: {
+    options?: { density?: DensityScaleMap };
     effects?: BadgeEffects;
     elements: BadgeElements<TSegmentName> & Elements<TSegmentName>;
   };
@@ -228,9 +230,11 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     elements: DropdownElements<TSegmentName> & Elements<TSegmentName>;
   };
   icon: {
+    options?: { density?: DensityScaleMap };
     elements: IconElements<TSegmentName> & Elements<TSegmentName>;
   };
   progress: {
+    options?: { density?: DensityScaleMap };
     elements: ProgressElements<TSegmentName>;
   };
   separator: {
@@ -301,6 +305,7 @@ export type FocusGlobalTokens = {
 export type RadiusMode = 'rounded' | 'square' | 'pill';
 
 export type SchemaGlobalTokens = {
+  density?: DensityScaleMap;
   interaction?: SchemaInteraction;
   fonts?: SchemaFonts;
   foregrounds?: SchemaForegrounds;

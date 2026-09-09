@@ -88,15 +88,14 @@ internal offsets are flattened into the container padding. This preserves the of
 and final heights without adding a Fluent-specific runtime wrapper.
 
 The Web Builder then applies its standard one-pixel border compensation. The emitted results are
-24 px for `s:sm:1`, 32 px for the desktop `s:md:1`, and 40 px for `s:lg:1`.
+24 px for `s:sm:1`, 32 px for the fixed `s:md:1`, and 40 px for `s:lg:1`.
 
 The label selects preset-wide typography profiles instead of declaring text primitives inline:
 
 | Kiskadee selection | Normalized profile | Weight | Status |
 | --- | --- | --- | --- |
 | `s:sm:1` | `caption-medium` | body Regular | Official adapted |
-| `s:md:1` below `bp:lg:1` | `label-large` | body Semibold | Kiskadee extension preserving control-label font ownership |
-| `s:md:1` from `bp:lg:1` | `body-medium-strong` | body Semibold | Official adapted |
+| `s:md:1` | `body-medium-strong` | body Semibold | Official adapted |
 | `s:lg:1` | `label-large` | body Semibold | Kiskadee extension preserving control-label font ownership |
 
 This closes the former shared-weight gap: Small no longer inherits the old element-wide Medium
@@ -112,17 +111,12 @@ Button `e3` instead of styling SVG children directly:
 | Kiskadee scale | Icon box | Gap before label | Status |
 | --- | --- | --- | --- |
 | `s:sm:1` | 20 px | 4 px | Official adapted |
-| `s:md:1`, mobile through tablet | 24 px | 6 px | Kiskadee responsive extension |
-| `s:md:1`, `bp:lg:1` and above | 20 px | 6 px | Official adapted |
+| `s:md:1` | 20 px | 6 px | Official adapted |
 | `s:lg:1` | 24 px | 6 px | Official adapted |
 
 The numeric viewports live once in `global.iconSizes`. Button `e3.iconSize` maps each Button scale
-to that catalog: Small selects icon Medium, responsive Button Medium selects icon Large and then
-icon Medium at `bp:lg:1`, and Button Large selects icon Large. Responsiveness therefore remains a
-Button decision rather than a property of the global icon-size catalog.
-
-The responsive `s:md:1` icon follows the same policy as the Button container and label: Large
-geometry below the desktop breakpoint, then the official Medium geometry at `bp:lg:1`. Icon color
+to that catalog: Small and Medium select icon Medium; Large selects icon Large. The density
+mapping selects the entire Medium or Large recipe, including its icon. Icon color
 reuses the complete label palette for the active theme, surface context, intent, emphasis, and
 state. This makes an icon and its adjacent label one content relationship while keeping the SVG
 asset itself free of preset colors and dimensions.
@@ -177,7 +171,7 @@ evidence requires them. This first-cut mapping is not presented as an exact impl
 Fluent's appearance-specific or stateful SplitButton stroke.
 
 `boxWidth` is 1 px at every published Button scale. `boxHeight` follows the icon viewport: 20 px at
-Small, responsive 24/20 px at Medium, and 24 px at Large. The divider owns no margin, padding, gap,
+Small, 20 px at Medium, and 24 px at Large. The divider owns no margin, padding, gap,
 opacity, or semantics; structural Button composition centers it without changing adjacent content
 spacing.
 
@@ -185,8 +179,8 @@ spacing.
 
 The official Fluent Web evidence inspected here defines the medium 32 px Button, but it does not
 define a responsive Web rule that changes Button size between mobile and desktop. Kiskadee adds
-that behavior as a **Kiskadee extension**: the default logical scale `s:md:1` renders with Large
-geometry below the desktop breakpoint and returns to the official Medium geometry at
+that behavior as a **Kiskadee extension**: the adaptive selection maps spacious to fixed `s:lg:1` below the desktop breakpoint and compact
+to fixed `s:md:1` at
 `bp:lg:1` (1152 px).
 
 | Range | Text | Line height | Schema padding | Emitted height | Status |
@@ -195,10 +189,9 @@ geometry below the desktop breakpoint and returns to the official Medium geometr
 | Desktop, `bp:lg:1` and above | 14 px | 20 px | 6 px vertical / 12 px horizontal | 32 px | Official adapted |
 
 The Web Builder continues compensating the one-pixel border during emission, so the rendered
-vertical padding is 8 px on mobile and 5 px on desktop. The explicit `s:sm:1` and `s:lg:1` scales
-remain fixed Small and Large choices; only the default `s:md:1` scale carries this responsive
-policy. This follows Kiskadee's broader mobile-legibility premise that interactive controls may be
-slightly larger on touch-first surfaces, without claiming that Fluent Web publishes the same rule.
+vertical padding is 8 px in Large and 5 px in Medium. All explicit sizes remain fixed. Only the
+Builder-generated adaptive `a` selection switches recipes. This is a Kiskadee density extension;
+it does not claim that Fluent Web prescribes the same viewport policy.
 
 ## Pending State
 
@@ -258,7 +251,7 @@ Kiskadee composition decision, not an official Fluent dark-token substitution.
 `e4` publishes only Rest colors. Hover, Pressed, Pending, and Disabled continue to be communicated
 by the Button root and label while the icon canvas and arbitrary artwork stay stable. The region
 uses the Button's three existing scales: its inline padding combines with the `e3` icon viewport to
-form a 36 px Small, responsive 60/48 px Medium, and 60 px Large panel. These totals are a Kiskadee
+form a 36 px Small, 48 px Medium, and 60 px Large panel. These totals are a Kiskadee
 visual calibration that enlarges the original panel geometry by 50% without changing the icon
 viewport. The region inherits the same root geometry and derives its outer radius as `e1 radius -
 e1 border width`, keeping the inner canvas concentric without duplicating radius or border-width

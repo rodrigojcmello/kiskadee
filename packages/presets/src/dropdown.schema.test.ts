@@ -31,13 +31,13 @@ describe('official preset Dropdown schemas', () => {
     expect(elements?.e11?.palettes).not.toBe(elements?.e6.palettes);
   });
 
-  it('authors the Fluent scroll affordance independently at responsive 20/24px sizes', () => {
+  it('authors the Fluent scroll affordance independently at fixed 20/24px sizes', () => {
     const elements = fluent2Microsoft.components.dropdown?.elements;
 
     expect(elements?.e11).toMatchObject({
       name: 'dropdown-scroll-affordance',
       iconSize: {
-        's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+        's:md:1': 's:md:1',
         's:lg:1': 's:lg:1'
       }
     });
@@ -58,13 +58,13 @@ describe('official preset Dropdown schemas', () => {
     expect(elements?.e10.palettes).toEqual(elements?.e3.palettes);
   });
 
-  it('publishes the responsive Fluent selected-item indicator geometry', () => {
+  it('publishes the fixed Fluent selected-item indicator geometry', () => {
     const elements = fluent2Microsoft.components.dropdown?.elements;
 
     expect(elements?.e10).toMatchObject({
       name: 'dropdown-selection-indicator',
       iconSize: {
-        's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+        's:md:1': 's:md:1',
         's:lg:1': 's:lg:1'
       },
       scales: { paddingRight: 6 }
@@ -101,12 +101,12 @@ describe('official preset Dropdown schemas', () => {
     expect(elements?.e1.palettes?.default?.light?.onSubtle.borderColor).toBeUndefined();
     expect(elements?.e2.scales).toMatchObject({
       paddingTop: {
-        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:md:1': 6,
         's:lg:1': 9
       },
       paddingRight: 2,
       paddingBottom: {
-        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:md:1': 6,
         's:lg:1': 9
       },
       paddingLeft: 6,
@@ -114,13 +114,13 @@ describe('official preset Dropdown schemas', () => {
     });
     expect(elements?.e3.scales?.paddingRight).toBe(6);
     expect(elements?.e4.typography).toEqual({
-      's:md:1': { 'bp:all': 'body-large', 'bp:lg:1': 'body-medium' },
+      's:md:1': 'body-medium',
       's:lg:1': 'body-large'
     });
     expect(elements?.e4.scales).toEqual({ paddingRight: 10, paddingLeft: 6 });
     expect(elements?.e5.scales).toEqual({ paddingRight: 10, paddingLeft: 6 });
     expect(elements?.e6.iconSize).toEqual({
-      's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+      's:md:1': 's:md:1',
       's:lg:1': 's:lg:1'
     });
     expect(elements?.e8.typography).toEqual({ 's:all': 'caption-medium' });

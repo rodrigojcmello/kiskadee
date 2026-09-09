@@ -1,12 +1,13 @@
 'use client';
 
 import { SubtractAlt } from '@carbon/icons-react';
-
 import {
   type ButtonIntent,
   type CardIntent,
   type CardRadiusMode,
   type ComponentEmphasis,
+  type ComponentSize,
+  componentScaleToSize,
   type ElementSizeValue,
   elementSizeValues,
   type InteractionState,
@@ -58,7 +59,7 @@ const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
 type CardDemoButtonProfile = {
   emphasis: ComponentEmphasis;
   intent: ButtonIntent;
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
 };
 
 type CardSemanticSample = {
@@ -329,21 +330,21 @@ function resolveDemoButtonProfile(
   buttonManifest: ManifestComponent | undefined,
   state: ManifestComponentState | undefined
 ): CardDemoButtonProfile {
-  const scale = resolveDemoButtonScale(buttonManifest);
+  const size = componentScaleToSize(resolveDemoButtonScale(buttonManifest));
 
   if (!state) {
-    return { emphasis: 'medium', intent: 'primary', scale };
+    return { emphasis: 'medium', intent: 'primary', size };
   }
 
   for (const intent of demoButtonIntentOrder) {
     for (const emphasis of demoButtonEmphasisOrder) {
       if (state[intent]?.[emphasis]?.rest) {
-        return { emphasis, intent, scale };
+        return { emphasis, intent, size };
       }
     }
   }
 
-  return { emphasis: 'medium', intent: 'primary', scale };
+  return { emphasis: 'medium', intent: 'primary', size };
 }
 
 export function Card() {

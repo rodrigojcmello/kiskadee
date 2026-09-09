@@ -1,4 +1,5 @@
 import { type ElementSizeValue, elementSizeValues } from '../breakpoints.ts';
+import { validateDensityOnlyOptions } from '../density.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
@@ -198,7 +199,8 @@ export function validateBadgeComponentContract(
 ): string[] {
   const issues: string[] = [];
   if (!isContractRecord(value)) return [`${path}: expected object`];
-  validateContractKeys(value, ['effects', 'elements'], path, issues);
+  validateContractKeys(value, ['effects', 'elements', 'options'], path, issues);
+  issues.push(...validateDensityOnlyOptions(value.options, `${path}.options`));
   if (value.effects !== undefined) {
     validateBadgeEffects(value.effects, `${path}.effects`, issues);
   }

@@ -15,6 +15,7 @@ export const schema: Schema<Segment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    density: { compact: 's:md:1' },
     interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
     typography: ios18AppleTypography,
     iconSizes: {

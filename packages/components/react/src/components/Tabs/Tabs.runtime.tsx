@@ -188,7 +188,7 @@ export function createTabsComponent<
     const {
       children,
       spring,
-      scale: _scale,
+      size: _size,
       emphasis: _emphasis,
       tabWidth: _tabWidth,
       separator: _separator,

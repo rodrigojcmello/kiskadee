@@ -1,10 +1,10 @@
 import type { RadiusMode, TabsVariant } from '@kiskadee/core';
 import { type RefObject, useCallback, useMemo, useRef, useState } from 'react';
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_EMPHASIS,
   DEFAULT_INTENT,
-  DEFAULT_SCALE,
   resolveTabWidth,
   resolveVariantElements
 } from './Tabs.class-names';
@@ -42,7 +42,7 @@ export type ResolvedTabsRootState = TabsRuntimeRootState & {
  */
 export function useTabsRuntimeRootState({
   classNames = {},
-  scale = DEFAULT_SCALE,
+  size,
   emphasis = DEFAULT_EMPHASIS,
   intent = DEFAULT_INTENT,
   tabWidth,
@@ -52,6 +52,7 @@ export function useTabsRuntimeRootState({
   onValueChange,
   variant
 }: TabsRootBaseProps & { variant: TabsVariant }): TabsRuntimeRootState {
+  const scale = useComponentScale('tabs', size);
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(defaultValue);
   const barRef = useRef<HTMLDivElement | null>(null);

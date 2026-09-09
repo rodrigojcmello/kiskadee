@@ -49,6 +49,7 @@ function omitPending(value: unknown): unknown {
 describe('Fluent 2 Button surface contexts', () => {
   it('publishes logical icon composition defaults', () => {
     expect(schema.components.button?.options).toEqual({
+      density: { compact: 's:md:1', spacious: 's:lg:1' },
       groupDivider: true,
       disclosureDivider: false,
       iconLayout: 'inline',
@@ -69,7 +70,7 @@ describe('Fluent 2 Button surface contexts', () => {
       },
       boxHeight: {
         's:sm:1': 20,
-        's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+        's:md:1': 20,
         's:lg:1': 24
       }
     });
@@ -102,7 +103,7 @@ describe('Fluent 2 Button surface contexts', () => {
     });
   });
 
-  it('preserves the three official sizes and uses large geometry for the responsive mobile default', () => {
+  it('preserves fixed official sizes and maps adaptive density to Medium/Large', () => {
     const e1 = requireButtonSurfaceElement();
     const e2 = requireButtonContentElement();
     const e3 = requireButtonIconElement();
@@ -110,28 +111,28 @@ describe('Fluent 2 Button surface contexts', () => {
     expect(e1.scales).toMatchObject({
       paddingTop: {
         's:sm:1': 4,
-        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:md:1': 6,
         's:lg:1': 9
       },
       paddingBottom: {
         's:sm:1': 4,
-        's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+        's:md:1': 6,
         's:lg:1': 9
       },
       paddingLeft: {
         's:sm:1': 8,
-        's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
+        's:md:1': 12,
         's:lg:1': 16
       },
       paddingRight: {
         's:sm:1': 8,
-        's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
+        's:md:1': 12,
         's:lg:1': 16
       }
     });
     expect(e2.typography).toEqual({
       's:sm:1': 'caption-medium',
-      's:md:1': { 'bp:all': 'label-large', 'bp:lg:1': 'body-medium-strong' },
+      's:md:1': 'body-medium-strong',
       's:lg:1': 'label-large'
     });
     expect(schema.global?.typography?.profiles).toMatchObject({
@@ -150,7 +151,7 @@ describe('Fluent 2 Button surface contexts', () => {
     });
     expect(e3.iconSize).toEqual({
       's:sm:1': 's:md:1',
-      's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+      's:md:1': 's:md:1',
       's:lg:1': 's:lg:1'
     });
     expect(e3.scales).toMatchObject({

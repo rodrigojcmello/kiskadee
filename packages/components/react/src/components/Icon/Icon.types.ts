@@ -1,4 +1,10 @@
-import type { ClassNameByElementJSON, IconIntent, IconScale, SurfaceContext } from '@kiskadee/core';
+import type {
+  ClassNameByElementJSON,
+  ComponentSizeFor,
+  IconIntent,
+  IconScale,
+  SurfaceContext
+} from '@kiskadee/core';
 import type { IconProps as HeadlessIconProps } from '@kiskadee/react-headless';
 
 export type IconElementName = 'e1';
@@ -6,8 +12,8 @@ export type IconElementName = 'e1';
 export type IconClassesMap = Partial<Record<IconElementName, ClassNameByElementJSON>>;
 
 export type IconVisualProps = {
-  /** Preset-owned glyph size reference. Defaults to s:md:1. */
-  scale?: IconScale;
+  /** Preset-owned glyph size reference. Omit to follow the configured density. */
+  size?: ComponentSizeFor<IconScale>;
 } & (
   | {
       foreground?: never;

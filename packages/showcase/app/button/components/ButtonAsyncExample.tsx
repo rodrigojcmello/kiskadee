@@ -7,6 +7,7 @@ import type {
   SurfaceContext,
   SystemButtonIntent
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   FamilyResolvedIcon,
   Button as KButton,
@@ -63,7 +64,7 @@ export function ButtonAsyncExample({
   progressAvailable: boolean;
   progressSurfaceContext: SurfaceContext;
   radius: RadiusMode;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
   const statusId = useId();
@@ -181,7 +182,7 @@ export function ButtonAsyncExample({
               }}
               pending={pending}
               radius={radius}
-              scale={scale}
+              size={componentScaleToSize(scale)}
               surfaceContext={surfaceContext}
             >
               {pending && activePresentation === 'progress' ? (

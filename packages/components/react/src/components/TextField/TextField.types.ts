@@ -1,7 +1,7 @@
 import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
-  ElementSizeValue,
+  ComponentSize,
   RadiusMode,
   TextFieldFocusRingColorSource,
   TextFieldIntent,
@@ -43,7 +43,7 @@ export type TextFieldProps = Omit<
   /** External ref for anchoring semantic overlays such as Autocomplete. */
   inputRef?: Ref<HTMLInputElement>;
   placeholder?: string;
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   emphasis?: ComponentEmphasis;
   intent?: TextFieldIntent;
   validationStatus?: TextFieldValidationStatus;

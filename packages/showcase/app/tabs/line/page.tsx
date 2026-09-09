@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  componentScaleToSize,
   type TabsIndicatorPosition,
   type TabsIndicatorWidth,
   type TabsLineIndicatorShape,
@@ -181,7 +182,7 @@ export default function TabsLinePage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        scale={tabSize}
+        size={componentScaleToSize(tabSize === 'preset' ? undefined : tabSize)}
         tabWidth={tabWidthProp}
         indicator={resolvedIndicator}
         spring={spring}

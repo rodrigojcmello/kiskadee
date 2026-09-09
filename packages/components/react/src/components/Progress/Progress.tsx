@@ -1,3 +1,4 @@
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import './Progress.structural.scss';
 import { HeadlessProgress } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
@@ -8,7 +9,8 @@ import { resolveProgressClassNames } from './Progress.class-names.ts';
 import type { ProgressClassesMap, ProgressProps } from './Progress.types.ts';
 
 function useResolvedProgressClassNames(props: ProgressProps) {
-  const { className, classNames = {}, intent, scale, surfaceContext } = props;
+  const { className, classNames = {}, intent, size, surfaceContext } = props;
+  const scale = useComponentScale('progress', size);
   const { classesMap } = useKiskadee();
   const resolvedSurfaceContext = useSurfaceContext(surfaceContext);
   const progressClassesMap = useComponentClassMap(
@@ -46,7 +48,7 @@ export const Progress = forwardRef<HTMLSpanElement, ProgressProps>(function Prog
     className: _className,
     classNames: _classNames,
     intent: _intent,
-    scale: _scale,
+    size: _size,
     surfaceContext: _surfaceContext,
     ...headlessProps
   } = props;

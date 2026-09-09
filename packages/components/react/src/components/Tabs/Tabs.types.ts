@@ -1,7 +1,7 @@
 import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
-  ElementSizeValue,
+  ComponentSize,
   RadiusMode,
   TabsBoxIndicatorShape,
   TabsBridgeLowerCurve,
@@ -100,7 +100,7 @@ export type TabsSpringConfig = Partial<{
 
 export type TabsRootBaseProps = Omit<HeadlessTabsRootProps, 'classNames' | 'orientation'> & {
   classNames?: TabsClassNames;
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   emphasis?: ComponentEmphasis;
   tabWidth?: TabsTabWidth;
   separator?: boolean;

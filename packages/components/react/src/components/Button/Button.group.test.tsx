@@ -142,7 +142,7 @@ describe('Button.Group', () => {
         ref={ref}
         className="author-group"
         data-testid="group"
-        scale="s:lg:1"
+        size="lg"
         radius="pill"
         emphasis="high"
         intent="primary"
@@ -150,7 +150,7 @@ describe('Button.Group', () => {
         shadow
       >
         <Button
-          scale="s:sm:1"
+          size="sm"
           radius="square"
           emphasis="low"
           intent="neutral"
@@ -194,7 +194,7 @@ describe('Button.Group', () => {
     expect(onSecond).toHaveBeenCalledOnce();
 
     expect(warning).toHaveBeenCalledWith(
-      '[Kiskadee] Button inside Button.Group inherits its shared visual contract. Ignored child props: scale, radius, emphasis, intent, surfaceContext, shadow, radiusEffect.'
+      '[Kiskadee] Button inside Button.Group inherits its shared visual contract. Ignored child props: size, radius, emphasis, intent, surfaceContext, shadow, radiusEffect.'
     );
   });
 
@@ -202,7 +202,7 @@ describe('Button.Group', () => {
     renderWithContext(
       <Button.Group
         data-testid="group"
-        scale="s:lg:1"
+        size="lg"
         emphasis="high"
         intent="primary"
         surfaceContext="onVivid"

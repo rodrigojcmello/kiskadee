@@ -287,6 +287,7 @@ export function createFluent2MicrosoftDropdownSchema({
       }
     },
     options: {
+      density: { compact: 's:md:1', spacious: 's:lg:1' },
       leadingIconComposition: 'item-and-selection',
       selectedItemBackground: true
     },
@@ -312,12 +313,12 @@ export function createFluent2MicrosoftDropdownSchema({
         name: 'dropdown-item',
         scales: {
           paddingTop: {
-            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:md:1': 6,
             's:lg:1': 9
           },
           paddingRight: 2,
           paddingBottom: {
-            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:md:1': 6,
             's:lg:1': 9
           },
           paddingLeft: 6,
@@ -331,7 +332,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e3: {
         name: 'dropdown-icon',
         iconSize: {
-          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:md:1': 's:md:1',
           's:lg:1': 's:lg:1'
         },
         scales: { paddingRight: 6 },
@@ -342,7 +343,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e4: {
         name: 'dropdown-label',
         typography: {
-          's:md:1': { 'bp:all': 'body-large', 'bp:lg:1': 'body-medium' },
+          's:md:1': 'body-medium',
           's:lg:1': 'body-large'
         },
         scales: { paddingRight: 10, paddingLeft: 6 },
@@ -365,7 +366,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e6: {
         name: 'dropdown-trailing-icon',
         iconSize: {
-          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:md:1': 's:md:1',
           's:lg:1': 's:lg:1'
         },
         scales: { paddingLeft: 6 },
@@ -410,7 +411,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e10: {
         name: 'dropdown-selection-indicator',
         iconSize: {
-          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:md:1': 's:md:1',
           's:lg:1': 's:lg:1'
         },
         scales: { paddingRight: 6 },
@@ -421,7 +422,7 @@ export function createFluent2MicrosoftDropdownSchema({
       e11: {
         name: 'dropdown-scroll-affordance',
         iconSize: {
-          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:md:1': 's:md:1',
           's:lg:1': 's:lg:1'
         },
         palettes: {

@@ -55,7 +55,7 @@ describe('Icon component contract', () => {
 
     expect(validateIconComponentContract(icon)).toEqual(
       expect.arrayContaining([
-        'components.icon.options: unrecognized key',
+        'components.icon.options.decorative: unrecognized key',
         'components.icon.elements.e2: unrecognized key',
         'components.icon.elements.e1.iconSize.s:all: "s:all" cannot be combined with another size',
         expect.stringContaining('.warning: unrecognized intent'),

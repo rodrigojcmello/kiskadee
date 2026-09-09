@@ -1,6 +1,7 @@
 'use client';
 
 import type { TabsTabWidth } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import { TabsSegmented, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
 import {
@@ -71,7 +72,7 @@ export default function TabsSegmentedPage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        scale={tabSize}
+        size={componentScaleToSize(tabSize === 'preset' ? undefined : tabSize)}
         tabWidth={tabWidthProp}
       >
         {tabs}

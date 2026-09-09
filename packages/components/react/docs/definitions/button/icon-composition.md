@@ -63,8 +63,8 @@ is inert while the active treatment is `plain`.
 - Button owns the icon slot's color, accessible relationship, size, spacing, and composition. It
   does not nest a semantic `Icon` component.
 - `global.iconSizes` owns the preset's numeric viewport levels. `e3.iconSize` maps the Button's
-  scale and breakpoints to those levels; the Builder emits the resulting square geometry into the
-  existing scale classes.
+  fixed scales to those levels; the Builder emits the resulting square geometry into the existing
+  scale classes. Adaptive density selects a complete recipe, including its icon geometry.
 - `e4` owns optional icon-region background, foreground, and padding. It is a styled React wrapper
   and does not change the Headless Button topology.
 - `e5` owns the size and logical separation of a presentational disclosure glyph. It remains

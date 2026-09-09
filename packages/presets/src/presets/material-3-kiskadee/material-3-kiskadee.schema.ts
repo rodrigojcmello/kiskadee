@@ -15,7 +15,10 @@ const c = createPresetColorGetter<SegmentName>(schemaContext);
 type Segments = 'modern';
 
 const patch = {
-  global: { interaction: { controlCursor: { value: 'pointer', scope: 'web' } } },
+  global: {
+    density: { compact: 's:sm:1', spacious: 's:md:1' },
+    interaction: { controlCursor: { value: 'pointer', scope: 'web' } }
+  },
   name: 'Material Design',
   prefix: 'mk', // Material by Kiskadee
   version: [3, 0, 0],

@@ -7,6 +7,7 @@ import type {
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
@@ -26,7 +27,7 @@ type ButtonStateSectionProps = {
   simplified?: boolean;
   grouped?: boolean;
   radius: RadiusMode;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 };
 
@@ -98,7 +99,7 @@ export function ButtonStateSection({
           emphasis={emphasis}
           intent={intent}
           radius={radius}
-          scale={scale}
+          size={componentScaleToSize(scale)}
         >
           {button}
           <KButton
@@ -150,7 +151,7 @@ export function ButtonStateSection({
                     emphasis={emphasis}
                     intent={intent}
                     radius={radius}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     aria-label={`${title} ${EMPHASIS_LABELS[emphasis]} emphasis Rest`}
                   >
                     <KButton.Label>
@@ -178,7 +179,12 @@ export function ButtonStateSection({
                 {renderButtonState(
                   emphasis,
                   'rest',
-                  <KButton emphasis={emphasis} intent={intent} radius={radius} scale={scale}>
+                  <KButton
+                    emphasis={emphasis}
+                    intent={intent}
+                    radius={radius}
+                    size={componentScaleToSize(scale)}
+                  >
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={align}>
                         Rest
@@ -193,7 +199,7 @@ export function ButtonStateSection({
                     emphasis={emphasis}
                     intent={intent}
                     radius={radius}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     status="hover"
                   >
                     <KButton.Label>
@@ -210,7 +216,7 @@ export function ButtonStateSection({
                     emphasis={emphasis}
                     intent={intent}
                     radius={radius}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     status="focus"
                   >
                     <KButton.Label>
@@ -227,7 +233,7 @@ export function ButtonStateSection({
                     emphasis={emphasis}
                     intent={intent}
                     radius={radius}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     status="pressed"
                   >
                     <KButton.Label>
@@ -244,7 +250,7 @@ export function ButtonStateSection({
                     emphasis={emphasis}
                     intent={intent}
                     radius={radius}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     controlState={selectedMap[emphasis]}
                     radiusEffect={!grouped && intent === 'primary'}
                     onClick={() => toggleSelected(emphasis)}
@@ -263,7 +269,7 @@ export function ButtonStateSection({
                     emphasis={emphasis}
                     intent={intent}
                     radius={radius}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     status="disabled"
                   >
                     <KButton.Label>

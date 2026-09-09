@@ -1,6 +1,7 @@
 'use client';
 
 import type { TabsBridgeLowerCurve, TabsTabWidth } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import { TabsBridge, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
 import {
@@ -87,7 +88,7 @@ export default function TabsBridgePage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        scale={tabSize}
+        size={componentScaleToSize(tabSize === 'preset' ? undefined : tabSize)}
         tabWidth={tabWidthProp}
         lowerCurve={bridgeLowerCurve}
       >

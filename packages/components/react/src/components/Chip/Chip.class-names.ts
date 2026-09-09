@@ -33,7 +33,7 @@ export function resolveChipClassNames({
   classNames: ChipClassNames;
   intent: ChipIntent;
   emphasis: ChipEmphasis;
-  scale: ChipScale;
+  scale: string;
   radius: Extract<RadiusMode, 'rounded' | 'pill'>;
   surfaceContext: SurfaceContext;
 }): Required<ChipClassNames> {

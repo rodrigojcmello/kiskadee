@@ -1,5 +1,6 @@
 import type {
   ClassNameByElementJSON,
+  ComponentSize,
   DropdownIntent,
   DropdownLeadingIconComposition,
   DropdownPresence,
@@ -34,7 +35,7 @@ export type DropdownPresentationProps = {
 };
 
 export type DropdownVisualProps = DropdownPresentationProps & {
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   radius?: RadiusMode;
   shadow?: boolean | ElementSizeValue;
   presence?: DropdownPresence;

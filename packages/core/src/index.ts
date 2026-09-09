@@ -1,4 +1,5 @@
 export * from './breakpoints.ts';
+export * from './component-size.ts';
 export * from './components/badge.ts';
 export * from './components/bottom-sheet.ts';
 export * from './components/button.ts';
@@ -16,6 +17,7 @@ export * from './components/text-field.ts';
 export * from './content-surface-context.ts';
 export * from './contour.ts';
 export * from './controlCursor.ts';
+export * from './density.ts';
 export * from './foreground.ts';
 export * from './icon-sizes.ts';
 export {

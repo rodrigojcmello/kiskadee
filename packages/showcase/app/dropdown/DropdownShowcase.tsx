@@ -5,6 +5,7 @@ import type {
   DropdownPresence,
   ElementSizeValue
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   Button,
   ButtonMenu,
@@ -54,7 +55,12 @@ function DemoDropdown({
   const [open, setOpen] = useState(false);
 
   return (
-    <Dropdown.Root open={open} onOpenChange={setOpen} presence={presence} scale={scale}>
+    <Dropdown.Root
+      open={open}
+      onOpenChange={setOpen}
+      presence={presence}
+      size={componentScaleToSize(scale)}
+    >
       <Dropdown.Anchor
         render={(anchorProps) => {
           const { ref, ...props } = anchorProps;

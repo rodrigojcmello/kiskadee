@@ -1,5 +1,7 @@
 'use client';
 
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+
 import './Chip.structural.scss';
 import { stateActivator as cn } from '@kiskadee/core';
 import { HeadlessChip } from '@kiskadee/react-headless';
@@ -17,7 +19,6 @@ import {
   DEFAULT_CHIP_EMPHASIS,
   DEFAULT_CHIP_INTENT,
   DEFAULT_CHIP_RADIUS,
-  DEFAULT_CHIP_SCALE,
   resolveChipClassNames
 } from './Chip.class-names.ts';
 import type {
@@ -159,12 +160,13 @@ const ChipRoot = forwardRef<HTMLSpanElement, ChipProps>(function ChipRoot(
     emphasis = DEFAULT_CHIP_EMPHASIS,
     intent = DEFAULT_CHIP_INTENT,
     radius = DEFAULT_CHIP_RADIUS,
-    scale = DEFAULT_CHIP_SCALE,
+    size,
     surfaceContext: explicitSurfaceContext,
     ...props
   },
   ref
 ) {
+  const scale = useComponentScale('chip', size);
   const { classesMap, global, segment, theme } = useKiskadee();
   const consumedSurfaceContext = useSurfaceContext(explicitSurfaceContext);
   const elements =

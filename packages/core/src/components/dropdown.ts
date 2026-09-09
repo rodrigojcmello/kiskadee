@@ -1,3 +1,4 @@
+import type { DensityScaleMap } from '../density.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import { validateDropdownPresenceEffectContract } from '../presence.contract.zod.ts';
@@ -54,6 +55,7 @@ export const dropdownLeadingIconCompositions = ['item-and-selection', 'selection
 export type DropdownLeadingIconComposition = (typeof dropdownLeadingIconCompositions)[number];
 
 export type DropdownOptions = {
+  density?: DensityScaleMap;
   /** Keeps ordinary leading item icons beside the selection-indicator track. */
   leadingIconComposition?: DropdownLeadingIconComposition;
   /** Applies the preset-authored selected background to selected items. */
@@ -159,7 +161,11 @@ type ElementContractRules = {
 
 const DROPDOWN_COMPONENT_KEYS = ['effects', 'elements', 'options'] as const;
 const DROPDOWN_COMPONENT_EFFECT_KEYS = ['presence', 'shadow'] as const;
-const DROPDOWN_OPTION_KEYS = ['leadingIconComposition', 'selectedItemBackground'] as const;
+const DROPDOWN_OPTION_KEYS = [
+  'density',
+  'leadingIconComposition',
+  'selectedItemBackground'
+] as const;
 const DROPDOWN_SHADOW_ELEMENT_KEYS = ['e1'] as const;
 const DROPDOWN_SHADOW_RECIPE_KEYS = ['fixedLevels', 'kind', 'states'] as const;
 const DROPDOWN_ELEMENTS_KEYS = [

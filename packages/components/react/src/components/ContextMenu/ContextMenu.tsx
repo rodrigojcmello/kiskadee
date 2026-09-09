@@ -22,7 +22,7 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
 
 function ContextMenuRoot({
   children,
-  scale,
+  size,
   radius,
   shadow,
   presence,
@@ -33,7 +33,7 @@ function ContextMenuRoot({
 }: ContextMenuRootProps) {
   return (
     <Dropdown.VisualProvider
-      scale={scale}
+      size={size}
       radius={radius}
       shadow={shadow}
       presence={presence}

@@ -1,7 +1,7 @@
 import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
-  ElementSizeValue,
+  ComponentSize,
   RadiusMode,
   SliderMarks as SliderArtifactMarks,
   SliderEdgeLabelAlignment,
@@ -127,7 +127,7 @@ export type SliderProps = Omit<
   helperText?: ReactNode;
   className?: string;
   classNames?: SliderClassNames;
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   emphasis?: ComponentEmphasis;
   intent?: SliderIntent;
   radius?: RadiusMode;

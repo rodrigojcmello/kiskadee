@@ -36,7 +36,7 @@ export function resolveBadgeClassNames({
   classNames: BadgeClassNames;
   intent: BadgeIntent;
   emphasis: BadgeEmphasis;
-  scale: BadgeScale;
+  scale: string;
   radius: Extract<RadiusMode, 'square' | 'rounded' | 'pill'>;
   shadow: boolean;
   surfaceContext: SurfaceContext;

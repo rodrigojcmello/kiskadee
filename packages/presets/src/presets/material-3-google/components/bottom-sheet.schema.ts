@@ -206,6 +206,7 @@ export function createMaterial3GoogleBottomSheetSchema({
 
   return {
     options: {
+      density: { spacious: 's:md:1' },
       initialHeight: 'standard',
       swipeBehavior: 'expand-dismiss',
       pageTransition: 'slide',

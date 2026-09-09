@@ -1,7 +1,8 @@
 'use client';
 
-import type { ControlCursorValue } from '@kiskadee/core';
+import type { ControlCursorValue, Density } from '@kiskadee/core';
 import {
+  DensityProvider,
   FamilyResolvedIcon,
   KiskadeeContext,
   SurfaceContextProvider,
@@ -33,6 +34,29 @@ export default function ShowcaseShell({
 }) {
   const pathname = usePathname();
   const administrativeContext = useKiskadee();
+  const [densityOverrides, setDensityOverrides] = useState<Record<string, Density | undefined>>({});
+  const routeComponent =
+    (
+      {
+        'bottom-sheet': 'bottomSheet',
+        'text-field': 'textField',
+        icons: 'icon',
+        'brand-buttons': 'button'
+      } as Record<string, string>
+    )[pathname.split('/')[1]] ?? pathname.split('/')[1];
+  const densityMap = administrativeContext.global?.density?.[routeComponent];
+  const requestedDensity = densityOverrides[pathname];
+  const densityOverride =
+    (requestedDensity === 'compact' && !densityMap?.c) ||
+    (requestedDensity === 'spacious' && !densityMap?.s)
+      ? undefined
+      : requestedDensity;
+  const setDensityOverride = useCallback(
+    (value: Density | undefined) => {
+      setDensityOverrides((current) => ({ ...current, [pathname]: value }));
+    },
+    [pathname]
+  );
   const [cursorOverrides, setCursorOverrides] = useState<
     Record<string, ControlCursorValue | undefined>
   >({});
@@ -105,6 +129,9 @@ export default function ShowcaseShell({
   const contextValue = useMemo(
     () => ({
       administrativeContext,
+      densityMap,
+      densityOverride,
+      setDensityOverride,
       controlCursorAvailable,
       controlCursorOverride,
       setControlCursorOverride,
@@ -118,6 +145,9 @@ export default function ShowcaseShell({
     }),
     [
       administrativeContext,
+      densityMap,
+      densityOverride,
+      setDensityOverride,
       controlCursorAvailable,
       controlCursorOverride,
       setControlCursorOverride,
@@ -231,7 +261,9 @@ export default function ShowcaseShell({
             <div className={style.contentInner}>
               <SurfaceContextProvider value={background.surfaceContext}>
                 <KiskadeeContext.Provider value={contentContext}>
-                  {children}
+                  <DensityProvider value={densityOverride ?? 'adaptive'}>
+                    {children}
+                  </DensityProvider>
                 </KiskadeeContext.Provider>
               </SurfaceContextProvider>
             </div>

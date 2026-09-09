@@ -492,6 +492,7 @@ export function createFluent2MicrosoftButtonSchema({
       default: createContentSurfaceContext()
     },
     options: {
+      density: { compact: 's:md:1', spacious: 's:lg:1' },
       groupDivider: true,
       disclosureDivider: false,
       iconLayout: 'inline',
@@ -508,22 +509,22 @@ export function createFluent2MicrosoftButtonSchema({
         scales: {
           paddingTop: {
             's:sm:1': 4,
-            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:md:1': 6,
             's:lg:1': 9
           },
           paddingBottom: {
             's:sm:1': 4,
-            's:md:1': { 'bp:all': 9, 'bp:lg:1': 6 },
+            's:md:1': 6,
             's:lg:1': 9
           },
           paddingLeft: {
             's:sm:1': 8,
-            's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
+            's:md:1': 12,
             's:lg:1': 16
           },
           paddingRight: {
             's:sm:1': 8,
-            's:md:1': { 'bp:all': 16, 'bp:lg:1': 12 },
+            's:md:1': 12,
             's:lg:1': 16
           },
           borderWidth: {
@@ -564,7 +565,7 @@ export function createFluent2MicrosoftButtonSchema({
         name: 'button-text',
         typography: {
           's:sm:1': 'caption-medium',
-          's:md:1': { 'bp:all': 'label-large', 'bp:lg:1': 'body-medium-strong' },
+          's:md:1': 'body-medium-strong',
           's:lg:1': 'label-large'
         },
         palettes: {
@@ -579,7 +580,7 @@ export function createFluent2MicrosoftButtonSchema({
         name: 'button-icon',
         iconSize: {
           's:sm:1': 's:md:1',
-          's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+          's:md:1': 's:md:1',
           's:lg:1': 's:lg:1'
         },
         palettes: {
@@ -609,12 +610,12 @@ export function createFluent2MicrosoftButtonSchema({
         scales: {
           paddingLeft: {
             's:sm:1': 8,
-            's:md:1': { 'bp:all': 18, 'bp:lg:1': 14 },
+            's:md:1': 14,
             's:lg:1': 18
           },
           paddingRight: {
             's:sm:1': 8,
-            's:md:1': { 'bp:all': 18, 'bp:lg:1': 14 },
+            's:md:1': 14,
             's:lg:1': 18
           }
         }
@@ -644,7 +645,7 @@ export function createFluent2MicrosoftButtonSchema({
           },
           boxHeight: {
             's:sm:1': 20,
-            's:md:1': { 'bp:all': 24, 'bp:lg:1': 20 },
+            's:md:1': 20,
             's:lg:1': 24
           }
         },

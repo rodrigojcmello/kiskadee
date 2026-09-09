@@ -275,3 +275,18 @@ Kiskadee adaptation:
 **Kiskadee extension**: the preset explicitly selects `pointer` with `web` scope. This is
 a framework convention, not a cursor value extracted from the upstream design kit. Native
 targets retain their platform cursor. See [cursor policy](../../definitions/cursor-policy.md).
+
+## Kiskadee density adaptation
+
+Density selection is a **Kiskadee extension**, not an upstream operating-system rule. The preset
+reuses its existing fixed recipes through a global compact/spacious mapping and explicit component
+exceptions. A single-density component keeps its medium reference; no unsupported recipe is
+synthesized. Explicit public `size` selections remain independent of viewport width. See the
+[adaptive density contract](../../../../../docs/definitions/adaptive-density.md).
+
+The inline TextField label width now keeps the existing base value for each fixed recipe:
+`sm` uses `88px` and `md` uses `96px`, across standard outline, underline and borderless modes. The former
+viewport-specific widths (`104px`/`120px` for small and `120px`/`144px` for medium) are removed
+so an explicit size remains fixed. This is a Kiskadee layout adaptation, not a newly extracted
+Material measurement. Density selects the complete recipe instead of changing its label width
+independently at another breakpoint.

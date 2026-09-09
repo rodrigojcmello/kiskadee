@@ -105,4 +105,4 @@ strategy around that slot. Those concerns never move into the family adapter.
 | `s:lg:3` | 32 |
 | `s:lg:4` | 48 |
 
-`s:md:1` is the default.
+Public `size` uses `sm`, `md`, `lg`, and numbered levels such as `lg2`. Omitting it follows the configured density.

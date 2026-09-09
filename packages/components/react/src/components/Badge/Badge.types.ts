@@ -5,6 +5,7 @@ import type {
   BadgeScale,
   BadgeSeparation,
   ClassNameByElementJSON,
+  ComponentSizeFor,
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
@@ -19,7 +20,7 @@ export type BadgeVisualProps = {
   emphasis?: BadgeEmphasis;
   intent?: BadgeIntent;
   radius?: Extract<RadiusMode, 'square' | 'rounded' | 'pill'>;
-  scale?: BadgeScale;
+  size?: ComponentSizeFor<BadgeScale>;
   separation?: BadgeSeparation;
   surfaceContext?: SurfaceContext;
 };
@@ -32,7 +33,7 @@ export type BadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> &
 type BadgeIndicatorProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
   classNames?: BadgeClassNames;
   intent?: BadgeIntent;
-  scale?: BadgeScale;
+  size?: ComponentSizeFor<BadgeScale>;
   surfaceContext?: SurfaceContext;
 };
 

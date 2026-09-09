@@ -3,6 +3,7 @@ import type {
   ChipIntent,
   ChipScale,
   ClassNameByElementJSON,
+  ComponentSizeFor,
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
@@ -22,7 +23,7 @@ export type ChipVisualProps = {
   emphasis?: ChipEmphasis;
   intent?: ChipIntent;
   radius?: Extract<RadiusMode, 'rounded' | 'pill'>;
-  scale?: ChipScale;
+  size?: ComponentSizeFor<ChipScale>;
   surfaceContext?: SurfaceContext;
 };
 

@@ -1,4 +1,5 @@
 import type { ElementSizeValue } from '../breakpoints.ts';
+import { validateDensityOnlyOptions } from '../density.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
@@ -40,7 +41,7 @@ export type IconElements<TSegmentName extends SegmentName = never> = {
   e1: IconGlyphElementStyle<TSegmentName>;
 };
 
-const ICON_COMPONENT_KEYS = ['elements'] as const;
+const ICON_COMPONENT_KEYS = ['elements', 'options'] as const;
 const ICON_ELEMENTS_KEYS = ['e1'] as const;
 const ICON_ELEMENT_KEYS = ['name', 'iconSize', 'palettes'] as const;
 const ICON_COLOR_PROPERTIES = ['textColor'] as const satisfies readonly ColorProperty[];
@@ -124,6 +125,7 @@ export function validateIconComponentContract(value: unknown, path = 'components
   }
 
   validateAllowedKeys(value, ICON_COMPONENT_KEYS, path, issues);
+  issues.push(...validateDensityOnlyOptions(value.options, `${path}.options`));
 
   if (!isRecord(value.elements)) {
     issues.push(`${path}.elements: expected object`);

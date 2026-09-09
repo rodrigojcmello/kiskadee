@@ -1,6 +1,6 @@
 'use client';
 
-import type { ControlCursorValue } from '@kiskadee/core';
+import type { ControlCursorValue, Density, DensityScaleMapJSON } from '@kiskadee/core';
 import type { KiskadeeContextValue } from '@kiskadee/react-components';
 import { createContext, useContext } from 'react';
 import type { useShowcaseBackgroundState } from '@/hooks/use-showcase-background-state';
@@ -13,6 +13,9 @@ export type ShowcasePanelDetail = {
 };
 
 type ShowcasePanelContextValue = {
+  densityMap: DensityScaleMapJSON | undefined;
+  densityOverride: Density | undefined;
+  setDensityOverride: (value: Density | undefined) => void;
   controlCursorAvailable: boolean;
   controlCursorOverride: ControlCursorValue | undefined;
   setControlCursorOverride: (value: ControlCursorValue | undefined) => void;

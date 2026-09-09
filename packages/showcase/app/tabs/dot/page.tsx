@@ -1,6 +1,7 @@
 'use client';
 
 import type { TabsIndicatorPosition, TabsTabWidth } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import { TabsDot, useTabsArtifactConfig } from '@kiskadee/react-components';
 import { useState } from 'react';
 import {
@@ -106,7 +107,7 @@ export default function TabsDotPage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        scale={tabSize}
+        size={componentScaleToSize(tabSize === 'preset' ? undefined : tabSize)}
         tabWidth={tabWidthProp}
         indicator={{
           motion: mode === 'animated' ? 'auto' : 'none',

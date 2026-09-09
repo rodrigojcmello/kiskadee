@@ -94,7 +94,7 @@ function resolveSliderShadowEffectClassName(bucket: EffectClassBucketJSON | unde
 function elem(
   element: ClassNameByElementJSON | undefined,
   options: {
-    scale: ElementSizeValue;
+    scale: string;
     intent: SliderIntent;
     emphasis: ComponentEmphasis | undefined;
   }
@@ -115,7 +115,7 @@ function elem(
 
 function resolveRadiusClassName(
   element: ClassNameByElementJSON | undefined,
-  scale: ElementSizeValue,
+  scale: string,
   radiusMode: RadiusMode
 ): string {
   return resolveSharedRadiusClassName(element, scale, radiusMode);
@@ -125,7 +125,7 @@ export function resolveSliderClassNames(options: {
   elements: SliderClassesMap;
   classNames: SliderClassNames;
   structuralBranch: SliderStructuralBranch;
-  scale: ElementSizeValue;
+  scale: string;
   intent: SliderIntent;
   emphasis: ComponentEmphasis | undefined;
   radius: RadiusMode;

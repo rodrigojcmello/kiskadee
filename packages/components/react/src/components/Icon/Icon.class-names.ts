@@ -20,7 +20,7 @@ export function resolveIconClassNames({
 }: {
   e1: ClassNameByElementJSON | undefined;
   classNames: NonNullable<IconProps['classNames']>;
-  scale?: IconScale;
+  scale?: string;
   intent?: IconIntent;
   foreground?: 'inherit';
   surfaceContext?: SurfaceContext;

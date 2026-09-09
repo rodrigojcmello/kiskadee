@@ -10,7 +10,7 @@ const ELEMENT_SIZE_VALUES = [
   's:sm:3',
   's:sm:2',
   's:sm:1',
-  's:md:1', // Default / Must have
+  's:md:1', // Required central reference; density selects the default.
   's:lg:1',
   's:lg:2',
   's:lg:3',

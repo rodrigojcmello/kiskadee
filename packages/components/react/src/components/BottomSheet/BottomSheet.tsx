@@ -1,3 +1,4 @@
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './BottomSheet.structural.scss';
 import type {
@@ -7,7 +8,6 @@ import type {
   BottomSheetItemLayout,
   BottomSheetPageTransition,
   BottomSheetSwipeBehavior,
-  ElementSizeValue,
   RadiusMode
 } from '@kiskadee/core';
 import {
@@ -45,7 +45,6 @@ import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
   DEFAULT_BOTTOM_SHEET_INTENT,
   DEFAULT_BOTTOM_SHEET_RADIUS,
-  DEFAULT_BOTTOM_SHEET_SCALE,
   resolveBottomSheetClassNames,
   resolveBottomSheetElementClassName,
   resolveBottomSheetItemClassName
@@ -108,7 +107,7 @@ type BottomSheetVisualContextValue = {
   classNames: BottomSheetClassNames;
   resolved: ReturnType<typeof resolveBottomSheetClassNames>;
   options: BottomSheetResolvedOptions;
-  scale: ElementSizeValue;
+  scale: string;
 };
 
 type BottomSheetRuntimeContextValue = {
@@ -149,7 +148,7 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
 }
 
 function BottomSheetVisualProvider({
-  scale = DEFAULT_BOTTOM_SHEET_SCALE,
+  size,
   radius,
   shadow = true,
   initialHeight,
@@ -161,6 +160,7 @@ function BottomSheetVisualProvider({
   classNames = {},
   children
 }: BottomSheetVisualProviderProps) {
+  const scale = useComponentScale('bottomSheet', size);
   const { classesMap, global } = useKiskadee();
   const bottomSheetClassesMap = useComponentClassMap(
     'bottomSheet',
@@ -218,7 +218,7 @@ function BottomSheetVisualProvider({
 }
 
 function BottomSheetRoot({
-  scale,
+  size,
   radius,
   shadow,
   initialHeight,
@@ -233,7 +233,7 @@ function BottomSheetRoot({
 }: BottomSheetRootProps) {
   return (
     <BottomSheetVisualProvider
-      scale={scale}
+      size={size}
       radius={radius}
       shadow={shadow}
       initialHeight={initialHeight}

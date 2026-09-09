@@ -51,8 +51,8 @@
   a 20 px leading icon. Its nominal 32 px height remains intrinsic so enlarged or multiline
   content can grow.
 - **Kiskadee extension**: Large uses body Regular at 16/22, nine-pixel block padding, and 24 px
-  icons for a nominal 40 px item. The default `s:md:1` resolves to Large below `bp:lg:1` and
-  Medium from that breakpoint onward; explicit `s:lg:1` remains Large at every viewport.
+  icons for a nominal 40 px item. Adaptive density selects fixed `s:lg:1` below `bp:lg:1` and
+  fixed `s:md:1` from that breakpoint onward. Both explicit sizes remain fixed.
 - **Kiskadee extension**: a principal label or description consumes six pixels at an empty logical
   start edge and ten pixels at an empty logical end edge. Combined with surface and item padding,
   either empty edge reaches 16 px. A reserved icon, selection, shortcut, or trailing track owns its

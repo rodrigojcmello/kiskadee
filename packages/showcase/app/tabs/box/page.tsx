@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  componentScaleToSize,
   type TabsBoxIndicatorShape,
   type TabsTabWidth,
   tabsIndicatorShapesByVariant
@@ -130,7 +131,7 @@ export default function TabsBoxPage() {
         value={selectedValue}
         onValueChange={setSelectedValue}
         activationMode="manual"
-        scale={tabSize}
+        size={componentScaleToSize(tabSize === 'preset' ? undefined : tabSize)}
         tabWidth={tabWidthProp}
         indicator={{
           motion: mode === 'animated' ? 'auto' : 'none',

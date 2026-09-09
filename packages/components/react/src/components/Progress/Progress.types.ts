@@ -1,5 +1,6 @@
 import type {
   ClassNameByElementJSON,
+  ComponentSizeFor,
   ProgressIntent,
   ProgressScale,
   SurfaceContext
@@ -29,8 +30,8 @@ export type ProgressVisualProps = {
   intent?: ProgressIntent;
   /** Explicit surrounding surface relationship. Defaults to onSubtle. */
   surfaceContext?: SurfaceContext;
-  /** Published Progress scale. Defaults to the medium 2px track. */
-  scale?: ProgressScale;
+  /** Fixed Progress size. Omit to follow the configured density. */
+  size?: ComponentSizeFor<ProgressScale>;
 };
 
 type DistributiveOmit<T, TKey extends PropertyKey> = T extends unknown

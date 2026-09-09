@@ -6,6 +6,7 @@ import type {
   BottomSheetPageTransition,
   BottomSheetSwipeBehavior,
   ClassNameByElementJSON,
+  ComponentSize,
   ElementSizeValue,
   RadiusMode
 } from '@kiskadee/core';
@@ -56,7 +57,7 @@ export type BottomSheetBehaviorProps = {
 };
 
 export type BottomSheetVisualProps = BottomSheetBehaviorProps & {
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   radius?: RadiusMode;
   shadow?: boolean | ElementSizeValue;
   classNames?: BottomSheetClassNames;

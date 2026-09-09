@@ -809,16 +809,8 @@ export function createMaterial3GoogleTextFieldSchema(
                 },
                 scales: {
                   boxWidth: {
-                    's:sm:1': {
-                      'bp:all': 88,
-                      'bp:md:2': 104,
-                      'bp:lg:1': 120
-                    },
-                    's:md:1': {
-                      'bp:all': 96,
-                      'bp:md:2': 120,
-                      'bp:lg:1': 144
-                    }
+                    's:sm:1': 88,
+                    's:md:1': 96
                   },
                   paddingRight: {
                     's:sm:1': 10,
@@ -932,16 +924,8 @@ export function createMaterial3GoogleTextFieldSchema(
                 },
                 scales: {
                   boxWidth: {
-                    's:sm:1': {
-                      'bp:all': 88,
-                      'bp:md:2': 104,
-                      'bp:lg:1': 120
-                    },
-                    's:md:1': {
-                      'bp:all': 96,
-                      'bp:md:2': 120,
-                      'bp:lg:1': 144
-                    }
+                    's:sm:1': 88,
+                    's:md:1': 96
                   },
                   paddingRight: {
                     's:sm:1': 10,
@@ -1065,16 +1049,8 @@ export function createMaterial3GoogleTextFieldSchema(
                 },
                 scales: {
                   boxWidth: {
-                    's:sm:1': {
-                      'bp:all': 88,
-                      'bp:md:2': 104,
-                      'bp:lg:1': 120
-                    },
-                    's:md:1': {
-                      'bp:all': 96,
-                      'bp:md:2': 120,
-                      'bp:lg:1': 144
-                    }
+                    's:sm:1': 88,
+                    's:md:1': 96
                   },
                   paddingRight: {
                     's:sm:1': 10,

@@ -1,6 +1,7 @@
 'use client';
 
 import type { ElementSizeValue, RadiusMode, SurfaceContext } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import { Button, FamilyResolvedIcon, Text } from '@kiskadee/react-components';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
@@ -14,7 +15,7 @@ export function ButtonGroupExamples({
   surfaceContext
 }: {
   radius: RadiusMode;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   shadowAvailable: boolean;
   surfaceContext: SurfaceContext;
 }) {
@@ -41,7 +42,7 @@ export function ButtonGroupExamples({
             emphasis="medium"
             intent="neutral"
             radius={radius}
-            scale={scale}
+            size={componentScaleToSize(scale)}
             surfaceContext={surfaceContext}
           >
             <Button>
@@ -64,7 +65,7 @@ export function ButtonGroupExamples({
             emphasis="low"
             intent="neutral"
             radius={radius}
-            scale={scale}
+            size={componentScaleToSize(scale)}
             surfaceContext={surfaceContext}
           >
             <Button>
@@ -88,7 +89,7 @@ export function ButtonGroupExamples({
               emphasis="high"
               intent="primary"
               radius={radius}
-              scale={scale}
+              size={componentScaleToSize(scale)}
               shadow
               surfaceContext={surfaceContext}
             >

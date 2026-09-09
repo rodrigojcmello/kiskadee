@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { densityScaleMapSchema } from '../density.contract.zod.ts';
 
 export const switchVariantSchema = z.enum(['standard']);
 export const switchStandardModeSchema = z.enum(['base']);
@@ -18,6 +19,7 @@ export type SwitchControlTextVisibilitySchemaValue = z.infer<
 export function createSwitchOptionsSchema() {
   return z
     .object({
+      density: densityScaleMapSchema.optional(),
       variant: switchVariantSchema.optional(),
       radius: switchRadiusSchema.optional(),
       activationMotion: switchActivationMotionSchema.optional(),

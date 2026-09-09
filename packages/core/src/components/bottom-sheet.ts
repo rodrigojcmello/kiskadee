@@ -1,3 +1,4 @@
+import type { DensityScaleMap } from '../density.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import { validateElementSeparatorContract } from '../separator.contract.zod.ts';
@@ -33,6 +34,7 @@ export const bottomSheetCenteredIconVisibilities = ['show', 'hide'] as const;
 export type BottomSheetCenteredIcons = (typeof bottomSheetCenteredIconVisibilities)[number];
 
 export type BottomSheetOptions = {
+  density?: DensityScaleMap;
   initialHeight?: BottomSheetInitialHeight;
   swipeBehavior?: BottomSheetSwipeBehavior;
   pageTransition?: BottomSheetPageTransition;
@@ -192,6 +194,7 @@ const BOTTOM_SHEET_COMPONENT_EFFECT_KEYS = ['shadow'] as const;
 const BOTTOM_SHEET_SHADOW_ELEMENT_KEYS = ['e2'] as const;
 const BOTTOM_SHEET_SHADOW_RECIPE_KEYS = ['fixedLevels', 'kind', 'states'] as const;
 const BOTTOM_SHEET_OPTION_KEYS = [
+  'density',
   'initialHeight',
   'swipeBehavior',
   'pageTransition',

@@ -126,6 +126,7 @@ export function createMaterial3GoogleDropdownSchema({
       }
     },
     options: {
+      density: { spacious: 's:md:1' },
       leadingIconComposition: 'item-and-selection',
       selectedItemBackground: true
     },

@@ -32,10 +32,10 @@ describe('preset icon-size catalogs', () => {
     expect(() => validateSchemaIconSizesContract(schema)).not.toThrow();
   });
 
-  it('preserves Fluent Button responsive ownership while sharing the global values', () => {
+  it('preserves fixed Fluent Button icon sizes while sharing the global values', () => {
     expect(fluent2Microsoft.components.button?.elements.e3?.iconSize).toEqual({
       's:sm:1': 's:md:1',
-      's:md:1': { 'bp:all': 's:lg:1', 'bp:lg:1': 's:md:1' },
+      's:md:1': 's:md:1',
       's:lg:1': 's:lg:1'
     });
   });

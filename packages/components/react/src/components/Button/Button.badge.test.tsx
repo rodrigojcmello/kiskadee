@@ -185,7 +185,7 @@ describe('Button.Badge', () => {
   it('preserves inline Badge composition with RTL, disabled, icon, disclosure, and Large scale', () => {
     render(
       <KiskadeeContext.Provider value={inlineContext}>
-        <Button dir="rtl" disabled iconLayout="edge" scale="s:lg:1">
+        <Button dir="rtl" disabled iconLayout="edge" size="lg">
           <Button.Icon>
             <svg aria-hidden="true" />
           </Button.Icon>

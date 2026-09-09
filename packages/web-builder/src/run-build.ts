@@ -12,6 +12,11 @@ import { validateSchemaPresenceContract } from '@kiskadee/core/presence-contract
 import { validateSchemaSeparatorsContract } from '@kiskadee/core/separator-contract';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
+import {
+  appendDensityCss,
+  compileDensityClassMaps,
+  resolveSchemaDensityMaps
+} from './density/compileDensity.ts';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import {
   mapStyleKeyUsage,
@@ -108,11 +113,28 @@ export async function runBuild(): Promise<void> {
 
     try {
       validateSchemaGlobalIconContract(schema);
-      validateSchemaInteractionContract(schema);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(
         `Schema global icon contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
+      );
+    }
+
+    try {
+      validateSchemaInteractionContract(schema);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Schema interaction contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
+      );
+    }
+
+    try {
+      resolveSchemaDensityMaps(schema);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Schema density contract validation failed for "${schema.name}" (${schemaPath}).\n${message}`
       );
     }
 
@@ -238,6 +260,13 @@ export async function runBuild(): Promise<void> {
       }
     );
     // console.log('phrase 5', { name: schema.name, classNamesMapSplit });
+
+    const densityAliases = compileDensityClassMaps(
+      classNamesMapSplit.core,
+      resolveSchemaDensityMaps(schema)
+    );
+    cssGenerated.coreCss = appendDensityCss(cssGenerated.coreCss, densityAliases);
+    cssGenerated.effectsCss = appendDensityCss(cssGenerated.effectsCss, densityAliases);
 
     // Compute out dir
     const major = schema.version[0];

@@ -1,5 +1,7 @@
 'use client';
 
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+
 import './Badge.structural.scss';
 import { Children, forwardRef, isValidElement } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
@@ -9,7 +11,6 @@ import {
   DEFAULT_BADGE_EMPHASIS,
   DEFAULT_BADGE_INTENT,
   DEFAULT_BADGE_RADIUS,
-  DEFAULT_BADGE_SCALE,
   resolveBadgeClassNames
 } from './Badge.class-names.ts';
 import type { BadgeClassesMap, BadgeDotProps, BadgeMarkProps, BadgeProps } from './Badge.types.ts';
@@ -20,16 +21,17 @@ function useResolvedBadgeClasses({
   emphasis,
   intent,
   radius,
-  scale,
+  size,
   shadow,
   surfaceContext
 }: Pick<BadgeProps, 'className' | 'classNames' | 'surfaceContext'> & {
   emphasis: NonNullable<BadgeProps['emphasis']>;
   intent: NonNullable<BadgeProps['intent']>;
   radius: NonNullable<BadgeProps['radius']>;
-  scale: NonNullable<BadgeProps['scale']>;
+  size?: BadgeProps['size'];
   shadow: boolean;
 }) {
+  const scale = useComponentScale('badge', size);
   const { classesMap } = useKiskadee();
   const consumedSurfaceContext = useSurfaceContext(surfaceContext);
   const elements =
@@ -58,7 +60,7 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
     emphasis = DEFAULT_BADGE_EMPHASIS,
     intent = DEFAULT_BADGE_INTENT,
     radius = DEFAULT_BADGE_RADIUS,
-    scale = DEFAULT_BADGE_SCALE,
+    size,
     separation = 'none',
     surfaceContext,
     children,
@@ -76,7 +78,7 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
     emphasis,
     intent,
     radius,
-    scale,
+    size,
     shadow: false,
     surfaceContext
   });
@@ -94,7 +96,7 @@ const BadgeDot = forwardRef<HTMLSpanElement, BadgeDotProps>(function BadgeDot(
     className,
     classNames = {},
     intent = DEFAULT_BADGE_INTENT,
-    scale = 's:sm:3',
+    size,
     separation = 'none',
     shadow = false,
     surfaceContext,
@@ -108,7 +110,7 @@ const BadgeDot = forwardRef<HTMLSpanElement, BadgeDotProps>(function BadgeDot(
     emphasis: 'high',
     intent,
     radius: 'pill',
-    scale,
+    size,
     shadow,
     surfaceContext
   });
@@ -129,7 +131,7 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
     emphasis,
     intent = DEFAULT_BADGE_INTENT,
     presentation = 'contained',
-    scale = DEFAULT_BADGE_SCALE,
+    size,
     separation = 'none',
     surfaceContext,
     children,
@@ -151,7 +153,7 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
     emphasis: fullBleed ? 'high' : (emphasis ?? 'high'),
     intent,
     radius: 'pill',
-    scale,
+    size,
     shadow: false,
     surfaceContext
   });

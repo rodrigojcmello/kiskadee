@@ -1,6 +1,7 @@
 'use client';
 
 import type { ProgressIntent, ProgressScale, SurfaceContext } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import { Progress, useKiskadee, useShowcase } from '@kiskadee/react-components';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { useEffect, useState } from 'react';
@@ -59,7 +60,7 @@ export default function ProgressPage() {
   const [mode, setMode] = useState<(typeof MODE_OPTIONS)[number]['value']>('determinate');
   const [valueBehavior, setValueBehavior] =
     useState<(typeof VALUE_BEHAVIOR_OPTIONS)[number]['value']>('manual');
-  const [scale, setScale] = useState<ProgressScale>('s:md:1');
+  const [scale, setScale] = useState<ProgressScale | undefined>();
   const [intent, setIntent] = useState<ProgressIntent>('neutral');
   const { surfaceContext } = useShowcaseBackground();
 
@@ -91,9 +92,11 @@ export default function ProgressPage() {
     (option) => progressMeta?.scale?.[option.value]
   );
   const activeScale =
-    availableScaleOptions.find((option) => option.value === scale)?.value ??
-    availableScaleOptions[0]?.value ??
-    's:md:1';
+    scale === undefined
+      ? undefined
+      : (availableScaleOptions.find((option) => option.value === scale)?.value ??
+        availableScaleOptions[0]?.value ??
+        's:md:1');
   const surfaceContextOptions = SURFACE_CONTEXT_OPTIONS.filter((option) =>
     supportsManifestSurfaceContext(progressMeta, segment, theme, option.value)
   );
@@ -133,10 +136,14 @@ export default function ProgressPage() {
           />
           <ShowcaseSelectControl
             label="Size"
-            options={availableScaleOptions}
-            value={activeScale}
-            onValueChange={(nextScale) => setScale(nextScale as ProgressScale)}
-            disabled={availableScaleOptions.length <= 1}
+            options={[
+              { value: 'preset', label: 'Follow density (default)' },
+              ...availableScaleOptions
+            ]}
+            value={activeScale ?? 'preset'}
+            onValueChange={(nextScale) =>
+              setScale(nextScale === 'preset' ? undefined : (nextScale as ProgressScale))
+            }
           />
         </ShowcaseControlGrid>
 
@@ -210,7 +217,7 @@ export default function ProgressPage() {
               aria-labelledby="progress-preview-title"
               aria-valuetext={`${value}% complete`}
               intent={activeIntent}
-              scale={activeScale}
+              size={componentScaleToSize(activeScale)}
               surfaceContext={activeSurfaceContext}
               value={value}
             />
@@ -219,7 +226,7 @@ export default function ProgressPage() {
               aria-label="Deployment in progress"
               intent={activeIntent}
               mode="indeterminate"
-              scale={activeScale}
+              size={componentScaleToSize(activeScale)}
               surfaceContext={activeSurfaceContext}
             />
           )}
@@ -232,7 +239,7 @@ export default function ProgressPage() {
                   <Progress
                     aria-label={`${INTENT_LABELS[referenceIntent]} progress`}
                     intent={referenceIntent}
-                    scale="s:md:1"
+                    size="md"
                     surfaceContext={activeSurfaceContext}
                     value={64}
                   />

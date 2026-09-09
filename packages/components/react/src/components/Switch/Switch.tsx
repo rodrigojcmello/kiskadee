@@ -1,3 +1,4 @@
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Switch.structural.scss';
 import './effects/thumb-shrink/SwitchThumbShrink.structural.scss';
@@ -26,7 +27,6 @@ import {
   DEFAULT_SWITCH_INTENT,
   DEFAULT_SWITCH_LABEL_POSITION,
   DEFAULT_SWITCH_MODE,
-  DEFAULT_SWITCH_SCALE,
   DEFAULT_SWITCH_VARIANT,
   join,
   resolveSwitchShadowEffectClassName,
@@ -99,7 +99,7 @@ function SwitchRoot(props: SwitchProps) {
     className,
     classNames = EMPTY_SWITCH_CLASS_NAMES,
     inputProps,
-    scale = DEFAULT_SWITCH_SCALE,
+    size,
     emphasis = DEFAULT_SWITCH_EMPHASIS,
     intent = DEFAULT_SWITCH_INTENT,
     radius,
@@ -125,6 +125,7 @@ function SwitchRoot(props: SwitchProps) {
     onBlur,
     ...rootProps
   } = props;
+  const scale = useComponentScale('switch', size);
   const { switchClassesMap, componentEffects, options, effects, globalEffects } =
     useSwitchArtifactConfig(thumbShrink);
   const resolvedRadius = radius ?? options.radius;

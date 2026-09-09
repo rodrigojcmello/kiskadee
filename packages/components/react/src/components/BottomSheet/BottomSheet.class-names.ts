@@ -24,7 +24,7 @@ export const DEFAULT_BOTTOM_SHEET_INTENT: BottomSheetIntent = 'neutral';
 
 export function resolveBottomSheetElementClassName(
   element: ClassNameByElementJSON | undefined,
-  scale: ElementSizeValue,
+  scale: string,
   intent: BottomSheetIntent = DEFAULT_BOTTOM_SHEET_INTENT
 ): string {
   return (
@@ -45,7 +45,7 @@ export function resolveBottomSheetClassNames({
 }: {
   classesMap: BottomSheetClassesMap | undefined;
   classNames: BottomSheetClassNames;
-  scale: ElementSizeValue;
+  scale: string;
   radius: RadiusMode;
   shadow: boolean | ElementSizeValue;
 }): Record<BottomSheetElementName, string> {
@@ -101,7 +101,7 @@ export function resolveBottomSheetItemClassName({
 }: {
   baseClassName: string;
   element: ClassNameByElementJSON | undefined;
-  scale: ElementSizeValue;
+  scale: string;
   intent: BottomSheetIntent;
   selected: boolean;
   disabled: boolean;

@@ -1,6 +1,7 @@
 'use client';
 
 import type { IconIntent, IconScale, SchemaIconSizes, SurfaceContext } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import iconManifest from '@kiskadee/icons/icons.json';
 import { CANONICAL_ICON_NAMES, type CanonicalIconName } from '@kiskadee/icons/interface';
 import { interfaceIconFamilyOptions } from '@kiskadee/icons/interface/catalog';
@@ -157,7 +158,7 @@ function IconGallery({
   intent: IconIntent;
   rawIconSize: number;
   isStyled: boolean;
-  scale: IconScale;
+  scale?: IconScale;
   surfaceContext: SurfaceContext;
 }) {
   return (
@@ -166,7 +167,12 @@ function IconGallery({
         <ShowcaseExampleCard role="article" key={name} className={s.galleryItem}>
           <div className={s.iconPreview}>
             {isStyled ? (
-              <KIcon intent={intent} label={name} scale={scale} surfaceContext={surfaceContext}>
+              <KIcon
+                intent={intent}
+                label={name}
+                size={componentScaleToSize(scale)}
+                surfaceContext={surfaceContext}
+              >
                 <FamilyResolvedIcon name={name} />
               </KIcon>
             ) : (
@@ -204,7 +210,7 @@ function SocialIconGallery({
   entries: SocialIconEntry[];
   intent: IconIntent;
   monochromeBackgroundColor?: string;
-  scale: IconScale;
+  scale?: IconScale;
   surfaceContext: SurfaceContext;
 }) {
   return (
@@ -238,7 +244,7 @@ function SocialIconGallery({
                   <KIcon
                     intent={usesContextualColor ? intent : 'neutral'}
                     label={`${name}, ${construction}.${presentation}`}
-                    scale={scale}
+                    size={componentScaleToSize(scale)}
                     style={usesContextualColor ? undefined : { color: brandForegroundColor }}
                     surfaceContext={usesContextualColor ? surfaceContext : 'onSubtle'}
                   >
@@ -266,7 +272,7 @@ export default function IconShowcase() {
   const lightCanonicalBackgrounds = useCanonicalCardSurfaces('light');
   const stressTestBackgrounds = useButtonStressTestBackgroundTones();
 
-  const [scale, setScale] = useState<IconScale>('s:lg:3');
+  const [scale, setScale] = useState<IconScale | undefined>();
   const [intent, setIntent] = useState<IconIntent>('neutral');
   const selectedFamily = interfaceIconFamilyOptions.find((entry) => entry.id === iconFamilyId);
   const selectedFamilyLabel = selectedFamily?.label ?? iconFamilyId;
@@ -294,11 +300,13 @@ export default function IconShowcase() {
       .map((value) => ({ value, label: formatScaleLabel(value) }));
   }, [iconMeta?.scale, iconSizes]);
   const activeScale =
-    availableScaleOptions.find((option) => option.value === scale)?.value ??
-    availableScaleOptions.find((option) => option.value === 's:lg:3')?.value ??
-    availableScaleOptions[0]?.value ??
-    's:lg:3';
-  const activeRawIconSize = iconSizes?.[activeScale] ?? iconSizes?.['s:md:1'] ?? 20;
+    scale === undefined
+      ? undefined
+      : (availableScaleOptions.find((option) => option.value === scale)?.value ??
+        availableScaleOptions.find((option) => option.value === 's:lg:3')?.value ??
+        availableScaleOptions[0]?.value ??
+        's:lg:3');
+  const activeRawIconSize = iconSizes?.[activeScale ?? 's:md:1'] ?? iconSizes?.['s:md:1'] ?? 20;
 
   const availableIntentOptions = useMemo(
     () =>
@@ -334,9 +342,14 @@ export default function IconShowcase() {
         <ShowcaseControlStack>
           <ShowcaseSelectControl
             label="Scale"
-            options={availableScaleOptions}
-            value={activeScale}
-            onValueChange={(value) => setScale(value as IconScale)}
+            options={[
+              { value: 'preset', label: 'Follow density (default)' },
+              ...availableScaleOptions
+            ]}
+            value={activeScale ?? 'preset'}
+            onValueChange={(value) =>
+              setScale(value === 'preset' ? undefined : (value as IconScale))
+            }
           />
           <ShowcaseSelectControl
             label="Intent"
@@ -411,7 +424,7 @@ export default function IconShowcase() {
                       <KIcon
                         intent={intentOption.value}
                         label={`${intentOption.label}, ${scaleOption.label}`}
-                        scale={scaleOption.value}
+                        size={componentScaleToSize(scaleOption.value)}
                         surfaceContext={surfaceContext}
                       >
                         <FamilyResolvedIcon name="heart" />

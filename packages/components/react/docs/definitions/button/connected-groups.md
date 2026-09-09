@@ -5,7 +5,7 @@ topology only: the wrapper does not add a role, selection model, keyboard model,
 
 ## Shared visual contract
 
-The group is authoritative for `scale`, `radius`, `emphasis`, `intent`, and `surfaceContext`.
+The group is authoritative for `size`, `radius`, `emphasis`, `intent`, and `surfaceContext`.
 Every descendant Button inherits those values. Conflicting child values are ignored with a
 development warning; action props, state, content, focus, and activation feedback remain local to
 each Button.

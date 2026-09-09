@@ -58,7 +58,7 @@ headless root generates one and connects the wrapping label to the input.
 
 | Prop | Current rule |
 | --- | --- |
-| `scale` | Selects generated size classes. Default: `s:md:1`. |
+| `size` | Selects generated size classes. Default: `md`. |
 | `emphasis` | Selects the color emphasis bucket. Default: `medium`. |
 | `intent` | Selects the Switch intent. Default: `neutral`. |
 | `radius` | Per-instance override for the component artifact/global radius. Supported values are `rounded`, `square`, and `pill`. |

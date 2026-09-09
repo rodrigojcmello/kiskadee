@@ -8,6 +8,7 @@ import type {
   SliderIntent,
   SliderValueDisplay
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   Card,
   FamilyResolvedIcon,
@@ -72,7 +73,7 @@ const scaleOptions: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:3', label: 'Small 3' },
   { value: 's:sm:2', label: 'Small 2' },
   { value: 's:sm:1', label: 'Small' },
-  { value: 's:md:1', label: 'Medium (Default)' },
+  { value: 's:md:1', label: 'Medium' },
   { value: 's:lg:1', label: 'Large' }
 ];
 
@@ -477,7 +478,7 @@ export default function SliderPage() {
   const { options: sliderOptions } = useSliderArtifactConfig();
   const { manifest } = useShowcase();
   const designSystemSchema = useDesignSystemSchema(designSystem);
-  const [scale, setScale] = useState<ElementSizeValue>('s:md:1');
+  const [scale, setScale] = useState<ElementSizeValue | undefined>();
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SliderIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
@@ -637,7 +638,11 @@ export default function SliderPage() {
   }, [defaultRadius]);
 
   useEffect(() => {
-    if (!scaleSelectOptions.length || scaleSelectOptions.some((option) => option.value === scale)) {
+    if (
+      scale === undefined ||
+      !scaleSelectOptions.length ||
+      scaleSelectOptions.some((option) => option.value === scale)
+    ) {
       return;
     }
 
@@ -785,15 +790,18 @@ export default function SliderPage() {
         <ShowcaseControlGrid>
           <ShowcaseSelectControl
             label="Size"
-            options={scaleSelectOptions}
-            value={scale}
+            options={[
+              { value: 'preset', label: 'Follow density (default)' },
+              ...scaleSelectOptions
+            ]}
+            value={scale ?? 'preset'}
             onValueChange={(value) => {
-              const nextScale = value as ElementSizeValue;
+              const nextScale = value === 'preset' ? undefined : (value as ElementSizeValue);
               if (nextScale === scale) return;
               playWowTransition();
               setScale(nextScale);
             }}
-            disabled={!isSliderAvailable || scaleSelectOptions.length <= 1}
+            disabled={!isSliderAvailable}
           />
           <ShowcaseSelectControl
             label="Radius"
@@ -1159,7 +1167,7 @@ export default function SliderPage() {
                 thumbCrossing={thumbCrossingProp}
                 activationFeedback={activationFeedbackProp}
                 formatValue={formatPercent}
-                scale={scale}
+                size={componentScaleToSize(scale)}
                 radius={radius}
                 intent={intent}
                 emphasis={emphasis}
@@ -1220,7 +1228,7 @@ export default function SliderPage() {
                   snapAnimation={snapAnimationProp}
                   thumbStepBehavior={thumbStepBehaviorProp}
                   activationFeedback={activationFeedbackProp}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   intent={intent}
                   emphasis={emphasis}
@@ -1255,7 +1263,7 @@ export default function SliderPage() {
                   snapAnimation={snapAnimationProp}
                   thumbStepBehavior={thumbStepBehaviorProp}
                   activationFeedback={activationFeedbackProp}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   intent={intent}
                   emphasis={emphasis}
@@ -1299,7 +1307,7 @@ export default function SliderPage() {
                   thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   intent={intent}
                   emphasis={emphasis}
@@ -1339,7 +1347,7 @@ export default function SliderPage() {
                   thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   intent={intent}
                   emphasis={emphasis}
@@ -1384,7 +1392,7 @@ export default function SliderPage() {
                   thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   intent={intent}
                   emphasis={emphasis}
@@ -1421,7 +1429,7 @@ export default function SliderPage() {
                   snapAnimation={snapAnimationProp}
                   thumbStepBehavior={thumbStepBehaviorProp}
                   activationFeedback={activationFeedbackProp}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   intent={intent}
                   emphasis={emphasis}
@@ -1459,7 +1467,7 @@ export default function SliderPage() {
                   thumbStepBehavior={thumbStepBehaviorProp}
                   thumbCrossing={thumbCrossingProp}
                   activationFeedback={activationFeedbackProp}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   intent={intent}
                   emphasis={emphasis}

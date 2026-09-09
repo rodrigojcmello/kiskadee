@@ -24,7 +24,7 @@ export const DEFAULT_DROPDOWN_INTENT: DropdownIntent = 'neutral';
 
 export function resolveDropdownElementClassName(
   element: ClassNameByElementJSON | undefined,
-  scale: ElementSizeValue,
+  scale: string,
   intent: DropdownIntent = DEFAULT_DROPDOWN_INTENT
 ): string {
   return (
@@ -45,7 +45,7 @@ export function resolveDropdownClassNames({
 }: {
   classesMap: DropdownClassesMap | undefined;
   classNames: DropdownClassNames;
-  scale: ElementSizeValue;
+  scale: string;
   radius: RadiusMode;
   shadow: boolean | ElementSizeValue;
 }): Record<DropdownElementNameWithItems, string> {
@@ -99,7 +99,7 @@ export function resolveDropdownItemClassName({
 }: {
   baseClassName: string;
   element: ClassNameByElementJSON | undefined;
-  scale: ElementSizeValue;
+  scale: string;
   intent: DropdownIntent;
   selected: boolean;
   hovered: boolean;

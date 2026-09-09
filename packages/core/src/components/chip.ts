@@ -1,5 +1,7 @@
 import type { ContentSurfaceContextMap } from '../content-surface-context.ts';
 import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
+import type { DensityScaleMap } from '../density.ts';
+import { validateDensityOnlyOptions } from '../density.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
@@ -104,6 +106,7 @@ export type ChipElements<TSegmentName extends SegmentName = never> = {
 };
 
 export type ChipComponent<TSegmentName extends SegmentName = never> = {
+  options?: { density?: DensityScaleMap };
   contentSurfaceContext?: ContentSurfaceContextMap<ChipIntent, TSegmentName>;
   elements: ChipElements<TSegmentName>;
 };
@@ -154,7 +157,8 @@ const RULES = {
 export function validateChipComponentContract(value: unknown, path = 'components.chip'): string[] {
   const issues: string[] = [];
   if (!isContractRecord(value)) return [`${path}: expected object`];
-  validateContractKeys(value, ['contentSurfaceContext', 'elements'], path, issues);
+  validateContractKeys(value, ['contentSurfaceContext', 'elements', 'options'], path, issues);
+  issues.push(...validateDensityOnlyOptions(value.options, `${path}.options`));
   if (value.contentSurfaceContext !== undefined) {
     issues.push(
       ...validateContentSurfaceContextMap(

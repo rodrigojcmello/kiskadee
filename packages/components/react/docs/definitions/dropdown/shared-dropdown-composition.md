@@ -248,9 +248,9 @@ bounds; no preset schema, generated utility, or browser style lookup is introduc
 - with `ButtonMenu.Action`, Action and Trigger are two sibling Buttons and two tab stops;
 - Action and Trigger are the only children composed into the shared `Button.Group`; popup content
   remains outside that visual topology, including when it is rendered inline rather than portalled;
-- `ButtonMenu.Root.buttonGroup` owns the trigger group's `scale`, `radius`, `emphasis`, `intent`,
+- `ButtonMenu.Root.buttonGroup` owns the trigger group's `size`, `radius`, `emphasis`, `intent`,
   `surfaceContext`, and optional static Rest shadow;
-- the Root's top-level `scale`, `radius`, and `shadow` continue to configure the Dropdown surface,
+- the Root's top-level `size`, `radius`, and `shadow` continue to configure the Dropdown surface,
   so popup elevation is never reinterpreted as Button-group elevation;
 - only Trigger owns `aria-haspopup`, `aria-expanded`, `aria-controls`, and menu opening;
 - while open, Trigger projects Button's visual `pressed` status without becoming a toggle or

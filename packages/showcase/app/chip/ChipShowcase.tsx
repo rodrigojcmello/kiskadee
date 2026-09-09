@@ -1,6 +1,7 @@
 'use client';
 
 import type { ChipEmphasis, ChipIntent, ChipScale, RadiusMode } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   Badge,
   Button,
@@ -29,7 +30,7 @@ export default function ChipShowcase() {
   const buttonAvailable = Boolean(manifest?.components?.button);
   const [intent, setIntent] = useState<ChipIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ChipEmphasis>('medium');
-  const [scale, setScale] = useState<ChipScale>('s:md:1');
+  const [scale, setScale] = useState<ChipScale | undefined>();
   const [radius, setRadius] = useState<Extract<RadiusMode, 'rounded' | 'pill'>>('rounded');
   const [disabled, setDisabled] = useState(false);
   const [controlled, setControlled] = useState(true);
@@ -63,10 +64,18 @@ export default function ChipShowcase() {
                 onValueChange={(value) => setEmphasis(value as ChipEmphasis)}
               />
               <ShowcaseSelectControl
-                label="Scale"
-                options={['s:sm:1', 's:md:1', 's:lg:1'].map((value) => ({ value, label: value }))}
-                value={scale}
-                onValueChange={(value) => setScale(value as ChipScale)}
+                label="Size"
+                options={[
+                  { value: 'preset', label: 'Follow density (default)' },
+                  ...['s:sm:1', 's:md:1', 's:lg:1'].map((value) => ({
+                    value,
+                    label: value === 's:sm:1' ? 'Small' : value === 's:md:1' ? 'Medium' : 'Large'
+                  }))
+                ]}
+                value={scale ?? 'preset'}
+                onValueChange={(value) =>
+                  setScale(value === 'preset' ? undefined : (value as ChipScale))
+                }
               />
               <ShowcaseSelectControl
                 label="Radius"
@@ -112,13 +121,13 @@ export default function ChipShowcase() {
                   <Text as="span" profile={profiles.caption} className={styles.note}>
                     {label}
                   </Text>
-                  <Chip scale={itemScale}>
+                  <Chip size={componentScaleToSize(itemScale)}>
                     <Chip.Content>
                       <Chip.Label>Entity</Chip.Label>
                     </Chip.Content>
                   </Chip>
                   {buttonAvailable ? (
-                    <Button scale={itemScale} intent="primary" emphasis="high">
+                    <Button size={componentScaleToSize(itemScale)} intent="primary" emphasis="high">
                       <Button.Label>Action</Button.Label>
                     </Button>
                   ) : null}
@@ -135,7 +144,7 @@ export default function ChipShowcase() {
               <Chip
                 intent={intent}
                 emphasis={emphasis}
-                scale={scale}
+                size={componentScaleToSize(scale)}
                 radius={radius}
                 disabled={disabled}
               >
@@ -146,7 +155,7 @@ export default function ChipShowcase() {
               <Chip
                 intent={intent}
                 emphasis={emphasis}
-                scale={scale}
+                size={componentScaleToSize(scale)}
                 radius={radius}
                 disabled={disabled}
               >
@@ -159,7 +168,7 @@ export default function ChipShowcase() {
                   key={item}
                   intent={intent}
                   emphasis={emphasis}
-                  scale={scale}
+                  size={componentScaleToSize(scale)}
                   radius={radius}
                   disabled={disabled}
                 >
@@ -177,7 +186,7 @@ export default function ChipShowcase() {
               <Chip
                 intent={intent}
                 emphasis={emphasis}
-                scale={scale}
+                size={componentScaleToSize(scale)}
                 radius={radius}
                 disabled={disabled}
               >
@@ -250,17 +259,17 @@ export default function ChipShowcase() {
               Scale, radius and disabled
             </Text>
             <div className={styles.stage}>
-              <Chip scale="s:sm:1" radius="pill">
+              <Chip size="sm" radius="pill">
                 <Chip.Content>
                   <Chip.Label>Small pill</Chip.Label>
                 </Chip.Content>
               </Chip>
-              <Chip scale="s:md:1" radius="rounded" intent="primary">
+              <Chip size="md" radius="rounded" intent="primary">
                 <Chip.Select defaultControlState>
                   <Chip.Label>Medium selected</Chip.Label>
                 </Chip.Select>
               </Chip>
-              <Chip scale="s:lg:1" radius="pill" disabled>
+              <Chip size="lg" radius="pill" disabled>
                 <Chip.Content>
                   <Chip.Label>Large disabled</Chip.Label>
                 </Chip.Content>

@@ -31,7 +31,7 @@ import { useBottomSheetPageTransitionEffect } from './effects/page-transition/Bo
 
 export type BottomSheetMenuButtonGroupProps = Pick<
   ButtonGroupProps,
-  'scale' | 'radius' | 'emphasis' | 'intent' | 'surfaceContext' | 'shadow'
+  'size' | 'radius' | 'emphasis' | 'intent' | 'surfaceContext' | 'shadow'
 >;
 
 type BottomSheetMenuGroupOwnedButtonProp = keyof BottomSheetMenuButtonGroupProps | 'radiusEffect';

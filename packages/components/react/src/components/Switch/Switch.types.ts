@@ -1,7 +1,7 @@
 import type {
   ClassNameByElementJSON,
   ComponentEmphasis,
-  ElementSizeValue,
+  ComponentSize,
   RadiusMode,
   SurfaceContext,
   SwitchIntent,
@@ -63,7 +63,7 @@ export type SwitchProps = Omit<
   inputProps?: Omit<HeadlessSwitchInputProps, 'className'> & {
     className?: string;
   };
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   emphasis?: ComponentEmphasis;
   surfaceContext?: SurfaceContext;
   intent?: SwitchIntent;

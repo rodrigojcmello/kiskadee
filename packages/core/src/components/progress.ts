@@ -1,3 +1,4 @@
+import { validateDensityOnlyOptions } from '../density.ts';
 import type {
   Color,
   ColorProperty,
@@ -97,7 +98,7 @@ export type ProgressElements<TSegmentName extends SegmentName = never> = {
   e3: ProgressIndicatorElementStyle<TSegmentName>;
 };
 
-const PROGRESS_COMPONENT_KEYS = ['elements'] as const;
+const PROGRESS_COMPONENT_KEYS = ['elements', 'options'] as const;
 const PROGRESS_ELEMENT_KEYS = ['e1', 'e2', 'e3'] as const;
 const PROGRESS_ROOT_KEYS = ['name'] as const;
 const PROGRESS_VISUAL_ELEMENT_KEYS = ['name', 'scales', 'palettes'] as const;
@@ -308,6 +309,7 @@ export function validateProgressComponentContract(
   }
 
   validateAllowedKeys(value, PROGRESS_COMPONENT_KEYS, path, issues);
+  issues.push(...validateDensityOnlyOptions(value.options, `${path}.options`));
   if (!isRecord(value.elements)) {
     issues.push(`${path}.elements: expected object`);
     return issues;

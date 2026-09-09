@@ -8,6 +8,7 @@ import type {
 } from '@kiskadee/core';
 import { HeadlessTextField } from '@kiskadee/react-headless';
 import { memo, type Ref, type RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
@@ -15,7 +16,6 @@ import {
   DEFAULT_TEXT_FIELD_INTENT,
   DEFAULT_TEXT_FIELD_LABEL_PLACEMENT,
   DEFAULT_TEXT_FIELD_RADIUS,
-  DEFAULT_TEXT_FIELD_SCALE,
   resolveTextFieldClassNames,
   resolveVariantElements,
   TEXT_FIELD_STATE_PROJECTION
@@ -142,7 +142,7 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
       inputProps,
       inputRef: forwardedInputRef,
       placeholder,
-      scale = DEFAULT_TEXT_FIELD_SCALE,
+      size,
       emphasis = DEFAULT_TEXT_FIELD_EMPHASIS,
       intent,
       validationStatus,
@@ -155,6 +155,7 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
       readOnly,
       ...rootProps
     } = props;
+    const scale = useComponentScale('textField', size);
     const { global } = useKiskadee();
     const {
       textFieldClassesMap,

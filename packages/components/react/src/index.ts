@@ -319,6 +319,8 @@ export {
   createBrandPackResourceKey,
   useBrandPack
 } from './shared/contexts/BrandPackContext.tsx';
+export type { DensityProviderProps } from './shared/contexts/DensityContext.tsx';
+export { DensityProvider } from './shared/contexts/DensityContext.tsx';
 export type { EssentialIconProviderProps } from './shared/contexts/EssentialIconContext.tsx';
 export {
   EssentialIconProvider,

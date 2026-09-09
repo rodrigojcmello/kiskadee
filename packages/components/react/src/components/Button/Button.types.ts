@@ -8,7 +8,7 @@ import type {
   ButtonIntent,
   ClassNameByElementJSON,
   ComponentEmphasis,
-  ElementSizeValue,
+  ComponentSize,
   ProjectedStateKeys,
   RadiusMode,
   SurfaceContext
@@ -28,7 +28,7 @@ export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElem
 /** Determinate decorative progress paint rendered across the Button surface. */
 export type ButtonProgressProps = Omit<
   DeterminateDecorativeProgressProps,
-  'decorative' | 'children' | 'classNames' | 'mode' | 'scale'
+  'decorative' | 'children' | 'classNames' | 'mode' | 'size'
 >;
 
 export type ButtonIconProps = Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
@@ -70,10 +70,10 @@ export type ButtonProps = HeadlessButtonProps & {
   /** Semantic control state (selected/active/checked). When true, selected styles are applied. */
   controlState?: boolean;
   /**
-   * Force size/scale for the root element (e1).
-   * If not provided, Button defaults to the median scale 's:md:1'.
+   * Select a fixed component size.
+   * When omitted, the component uses the configured density.
    */
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   /** Enable elevation/shadow visuals. When true, adds the shadow activation class. */
   shadow?: boolean;
   /**
@@ -123,7 +123,7 @@ export type ButtonProps = HeadlessButtonProps & {
 export type ButtonGroupProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
   children?: ReactNode;
   /** Shared size inherited by every Button in the group. */
-  scale?: ElementSizeValue;
+  size?: ComponentSize;
   /** Shared radius mode. Only the outer Button corners remain rounded. */
   radius?: RadiusMode;
   /** Shared emphasis inherited by every Button in the group. */

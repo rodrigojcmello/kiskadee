@@ -195,3 +195,11 @@ See [Button](components/button.md) for theme, surface-context and Brand formulas
 **Kiskadee extension**: the preset explicitly selects `pointer` with `web` scope. This is
 a framework convention, not a cursor value extracted from the upstream design kit. Native
 targets retain their platform cursor. See [cursor policy](../../definitions/cursor-policy.md).
+
+## Kiskadee density adaptation
+
+Density selection is a **Kiskadee extension**, not an upstream operating-system rule. The preset
+reuses its existing fixed recipes through a global compact/spacious mapping and explicit component
+exceptions. A single-density component keeps its medium reference; no unsupported recipe is
+synthesized. Explicit public `size` selections remain independent of viewport width. See the
+[adaptive density contract](../../../../../docs/definitions/adaptive-density.md).

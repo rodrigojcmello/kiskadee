@@ -5,6 +5,7 @@ import {
   getBrandPackDefinition
 } from '@kiskadee/brands';
 import type { ComponentEmphasis, ElementSizeValue, SurfaceContext } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import { type IconProps, SocialIcons } from '@kiskadee/icons';
 import { BrandPackBoundary, Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
 import type { ComponentType } from 'react';
@@ -315,7 +316,7 @@ function BrandActionColumn({
   emphasis: 'high' | 'low';
   fontName: string;
   iconTreatment?: 'surface';
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
   title: string;
 }) {
@@ -368,7 +369,7 @@ function BrandActionColumn({
                           iconPlacement="leading"
                           iconTreatment={iconTreatment}
                           intent={buttonIntent === 'brand' ? brandIntent(brandId) : 'primary'}
-                          scale={scale}
+                          size={componentScaleToSize(scale)}
                           surfaceContext={surfaceContext}
                         >
                           <KButton.Icon>
@@ -404,7 +405,7 @@ function IconTreatmentComparison({
   surfaceContext
 }: {
   fontName: string;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
   const GoogleIcon = SHOWCASE_BRANDS.google.icon;
@@ -434,7 +435,7 @@ function IconTreatmentComparison({
               iconPlacement="leading"
               iconTreatment={example.iconTreatment}
               intent="primary"
-              scale={scale}
+              size={componentScaleToSize(scale)}
               surfaceContext={surfaceContext}
             >
               <KButton.Icon>
@@ -468,7 +469,7 @@ export function SocialButtonExamples({
 }: {
   fontName: string;
   iconRegionAvailable: boolean;
-  scale: ElementSizeValue;
+  scale?: ElementSizeValue;
   onSubtleBackground?: string;
   onVividBackground?: string;
   surfaceContext: SurfaceContext;
@@ -573,7 +574,7 @@ export function SocialButtonExamples({
                                     iconPlacement="leading"
                                     intent={brandIntent(id)}
                                     key={emphasis}
-                                    scale={scale}
+                                    size={componentScaleToSize(scale)}
                                     surfaceContext={surfaceContext}
                                   >
                                     <KButton.Icon>

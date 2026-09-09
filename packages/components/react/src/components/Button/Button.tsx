@@ -1,3 +1,4 @@
+import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Button.structural.scss';
 import type { ButtonIconTreatment, SurfaceContext } from '@kiskadee/core';
@@ -30,7 +31,6 @@ import {
   DEFAULT_BUTTON_EMPHASIS,
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_RADIUS,
-  DEFAULT_BUTTON_SCALE,
   join,
   mergeButtonClassNames,
   resolveButtonDividerClassName,
@@ -119,7 +119,7 @@ type ButtonGroupRuntimeContextValue = {
   emphasis: NonNullable<ButtonGroupProps['emphasis']>;
   intent: NonNullable<ButtonGroupProps['intent']>;
   radius: NonNullable<ButtonGroupProps['radius']>;
-  scale: NonNullable<ButtonGroupProps['scale']>;
+  size: ButtonGroupProps['size'];
   surfaceContext: NonNullable<ButtonGroupProps['surfaceContext']>;
 };
 
@@ -311,7 +311,7 @@ function composeInlineButtonBadges(children: ReactNode, enabled: boolean): React
   const grouped = new Set([...labels, ...inlineStartBadges, ...inlineEndBadges]);
   let inserted = false;
 
-  return childArray.flatMap((child) => {
+  return childArray.flatMap<ReactNode>((child) => {
     if (!grouped.has(child)) return [child];
     if (inserted) return [];
     inserted = true;
@@ -365,7 +365,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
   const groupedProps: ButtonProps = group
     ? {
         ...props,
-        scale: group.scale,
+        size: group.size,
         radius: group.radius,
         emphasis: group.emphasis,
         intent: group.intent,
@@ -380,7 +380,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     if (!group || process.env.NODE_ENV === 'production') return;
 
     const ignoredProps: string[] = [];
-    if (props.scale !== undefined && props.scale !== group.scale) ignoredProps.push('scale');
+    if (props.size !== undefined && props.size !== group.size) ignoredProps.push('size');
     if (props.radius !== undefined && props.radius !== group.radius) ignoredProps.push('radius');
     if (props.emphasis !== undefined && props.emphasis !== group.emphasis) {
       ignoredProps.push('emphasis');
@@ -403,7 +403,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     props.intent,
     props.radius,
     props.radiusEffect,
-    props.scale,
+    props.size,
     props.shadow,
     props.surfaceContext
   ]);
@@ -672,7 +672,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
   {
     children,
     className,
-    scale = DEFAULT_BUTTON_SCALE,
+    size,
     radius,
     emphasis = DEFAULT_BUTTON_EMPHASIS,
     intent = DEFAULT_BUTTON_INTENT,
@@ -682,6 +682,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
   },
   ref
 ) {
+  const scale = useComponentScale('button', size);
   const surfaceContext = useSurfaceContext(surfaceContextProp);
   const { buttonClassesMap, buttonClassesMapPending, options } = useButtonArtifactConfig();
   const { e1, e6 } = buttonClassesMap ?? {};
@@ -727,7 +728,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       emphasis,
       intent,
       radius: resolvedRadius,
-      scale,
+      size,
       surfaceContext
     }),
     [
@@ -736,7 +737,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       hasGroupDivider,
       intent,
       resolvedRadius,
-      scale,
+      size,
       surfaceContext
     ]
   );

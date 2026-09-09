@@ -7,6 +7,7 @@ import type {
   BadgeSeparation,
   RadiusMode
 } from '@kiskadee/core';
+import { componentScaleToSize } from '@kiskadee/core';
 import {
   Badge,
   Button,
@@ -192,14 +193,14 @@ function SeparationButtonSpecimen(
           treatment === 'ring' ? (
             <Badge.Dot
               intent="attention"
-              scale="s:sm:2"
+              size="sm2"
               separation="ring"
               aria-label={`${specimenLabel}, ${treatmentLabel}`}
             />
           ) : (
             <Badge.Dot
               intent="attention"
-              scale="s:sm:2"
+              size="sm2"
               shadow={treatment === 'shadow'}
               aria-label={`${specimenLabel}, ${treatmentLabel}`}
             />
@@ -207,7 +208,7 @@ function SeparationButtonSpecimen(
         ) : (
           <Badge
             intent="attention"
-            scale="s:sm:1"
+            size="sm"
             separation={treatment === 'ring' ? 'ring' : 'none'}
             aria-label={`More than 99 notifications, ${treatmentLabel}`}
           >
@@ -245,12 +246,7 @@ function IntentBadgeButton({
           <FamilyResolvedIcon name="bell" />
         </Button.Icon>
         <Button.Badge placement="block-start-inline-end">
-          <Badge.Dot
-            intent={intent}
-            scale="s:sm:2"
-            shadow={shadow}
-            aria-label={`${intent} status`}
-          />
+          <Badge.Dot intent={intent} size="sm2" shadow={shadow} aria-label={`${intent} status`} />
         </Button.Badge>
       </Button>
     );
@@ -260,7 +256,7 @@ function IntentBadgeButton({
     <Button intent="primary" emphasis={buttonEmphasis}>
       <Button.Label>Label</Button.Label>
       <Button.Badge placement="inline-end">
-        <Badge intent={intent} emphasis={emphasis} scale="s:sm:1" radius={radius}>
+        <Badge intent={intent} emphasis={emphasis} size="sm" radius={radius}>
           {kind === 'number' ? '3' : 'New'}
         </Badge>
       </Button.Badge>
@@ -278,7 +274,7 @@ export default function BadgeShowcase() {
   const dropdownAvailable = Boolean(manifest?.components?.dropdown);
   const [intent, setIntent] = useState<BadgeIntent>('attention');
   const [emphasis, setEmphasis] = useState<BadgeEmphasis>('medium');
-  const [scale, setScale] = useState<BadgeScale>('s:md:1');
+  const [scale, setScale] = useState<BadgeScale | undefined>();
   const [radius, setRadius] = useState<Extract<RadiusMode, 'square' | 'rounded' | 'pill'>>('pill');
   const [separation, setSeparation] = useState<BadgeSeparation>('none');
   const { surfaceContext } = useShowcaseBackground();
@@ -362,10 +358,15 @@ export default function BadgeShowcase() {
             onValueChange={(value) => setEmphasis(value as BadgeEmphasis)}
           />
           <ShowcaseSelectControl
-            label="Scale"
-            options={scales.map((value) => ({ value, label: value }))}
-            value={scale}
-            onValueChange={(value) => setScale(value as BadgeScale)}
+            label="Size"
+            options={[
+              { value: 'preset', label: 'Follow density (default)' },
+              ...scales.map((value) => ({ value, label: componentScaleToSize(value) }))
+            ]}
+            value={scale ?? 'preset'}
+            onValueChange={(value) =>
+              setScale(value === 'preset' ? undefined : (value as BadgeScale))
+            }
           />
           <ShowcaseSelectControl
             label="Radius"
@@ -420,7 +421,7 @@ export default function BadgeShowcase() {
               <Badge
                 intent={intent}
                 emphasis={emphasis}
-                scale={scale}
+                size={componentScaleToSize(scale)}
                 radius={radius}
                 separation={separation}
                 surfaceContext={surfaceContext}
@@ -563,7 +564,7 @@ export default function BadgeShowcase() {
                 render={(itemScale) => (
                   <Badge.Dot
                     key={itemScale}
-                    scale={itemScale}
+                    size={componentScaleToSize(itemScale)}
                     intent="attention"
                     aria-label={`Dot ${itemScale}`}
                   />
@@ -573,7 +574,7 @@ export default function BadgeShowcase() {
                 title="Number"
                 items={recommendedContentScales}
                 render={(itemScale) => (
-                  <Badge key={itemScale} scale={itemScale} intent="primary">
+                  <Badge key={itemScale} size={componentScaleToSize(itemScale)} intent="primary">
                     3
                   </Badge>
                 )}
@@ -582,7 +583,7 @@ export default function BadgeShowcase() {
                 title="New"
                 items={recommendedContentScales}
                 render={(itemScale) => (
-                  <Badge key={itemScale} scale={itemScale} intent="novelty">
+                  <Badge key={itemScale} size={componentScaleToSize(itemScale)} intent="novelty">
                     New
                   </Badge>
                 )}
@@ -593,13 +594,13 @@ export default function BadgeShowcase() {
                 Counter growth
               </Text>
               <div className={styles.stage}>
-                <Badge intent="primary" scale="s:md:1">
+                <Badge intent="primary" size="md">
                   {3}
                 </Badge>
-                <Badge intent="primary" scale="s:md:1">
+                <Badge intent="primary" size="md">
                   {12}
                 </Badge>
-                <Badge intent="primary" scale="s:md:1" aria-label="More than 99 notifications">
+                <Badge intent="primary" size="md" aria-label="More than 99 notifications">
                   99+
                 </Badge>
               </div>
@@ -625,7 +626,7 @@ export default function BadgeShowcase() {
                     <Badge.Mark
                       key={name}
                       intent={name === 'check' ? 'positive' : 'novelty'}
-                      scale="s:lg:1"
+                      size="lg"
                       aria-label={`${name} contained Mark`}
                     >
                       <FamilyResolvedIcon name={name} />
@@ -643,7 +644,7 @@ export default function BadgeShowcase() {
                       key={fixture}
                       presentation="full-bleed"
                       intent="attention"
-                      scale="s:lg:1"
+                      size="lg"
                       aria-label={`Fluent source artwork ${index + 1}`}
                     >
                       <FullBleedArtwork index={index} />
@@ -658,7 +659,7 @@ export default function BadgeShowcase() {
                 render={(itemScale) => (
                   <Badge.Mark
                     key={itemScale}
-                    scale={itemScale}
+                    size={componentScaleToSize(itemScale)}
                     intent="positive"
                     aria-label={`Contained Mark ${itemScale}`}
                   >
@@ -672,7 +673,7 @@ export default function BadgeShowcase() {
                   <Badge.Mark
                     key={itemScale}
                     presentation="full-bleed"
-                    scale={itemScale}
+                    size={componentScaleToSize(itemScale)}
                     intent="positive"
                     aria-label={`Full-bleed Mark ${itemScale}`}
                   >
@@ -778,7 +779,7 @@ export default function BadgeShowcase() {
                     <Button intent="primary" emphasis="high">
                       <Button.Label>Updates</Button.Label>
                       <Button.Badge placement="inline-end">
-                        <Badge intent="novelty" scale="s:sm:1">
+                        <Badge intent="novelty" size="sm">
                           New
                         </Badge>
                       </Button.Badge>
@@ -787,7 +788,7 @@ export default function BadgeShowcase() {
                       <Button intent="positive" emphasis="high">
                         <Button.Label>Chances</Button.Label>
                         <Button.Badge placement="inline-end">
-                          <Badge intent="positive" scale="s:sm:1">
+                          <Badge intent="positive" size="sm">
                             8
                           </Badge>
                         </Button.Badge>
@@ -797,7 +798,7 @@ export default function BadgeShowcase() {
                       <Button intent="destructive" emphasis="high">
                         <Button.Label>Delete</Button.Label>
                         <Button.Badge placement="inline-end">
-                          <Badge intent="attention" scale="s:sm:1">
+                          <Badge intent="attention" size="sm">
                             3
                           </Badge>
                         </Button.Badge>
@@ -810,7 +811,7 @@ export default function BadgeShowcase() {
                       <Button.Badge>
                         <Badge.Dot
                           intent="attention"
-                          scale="s:sm:2"
+                          size="sm2"
                           separation="ring"
                           aria-label="Unread"
                         />
@@ -822,7 +823,7 @@ export default function BadgeShowcase() {
                       </Button.Icon>
                       <Button.Label>Cart</Button.Label>
                       <Button.Badge placement="inline-end">
-                        <Badge intent="primary" emphasis="high" scale="s:md:1">
+                        <Badge intent="primary" emphasis="high" size="md">
                           3
                         </Badge>
                       </Button.Badge>
@@ -900,7 +901,7 @@ export default function BadgeShowcase() {
                       <span className={`${styles.profileBadge} ${styles.profileBadgeSmall}`}>
                         <Badge.Dot
                           intent="positive"
-                          scale="s:sm:1"
+                          size="sm"
                           separation="ring"
                           aria-label="Available"
                         />
@@ -930,7 +931,7 @@ export default function BadgeShowcase() {
                       <span className={`${styles.profileBadge} ${styles.profileBadgeMedium}`}>
                         <Badge
                           intent="attention"
-                          scale="s:md:1"
+                          size="md"
                           separation="ring"
                           aria-label="Eight notifications"
                         >
@@ -962,7 +963,7 @@ export default function BadgeShowcase() {
                       <span className={`${styles.profileBadge} ${styles.profileBadgeLarge}`}>
                         <Badge.Mark
                           intent="positive"
-                          scale="s:lg:1"
+                          size="lg"
                           separation="ring"
                           aria-label="Verified"
                         >
@@ -1001,7 +1002,7 @@ export default function BadgeShowcase() {
                           <Badge.Mark
                             presentation="full-bleed"
                             intent="attention"
-                            scale="s:sm:1"
+                            size="sm"
                             separation="ring"
                             aria-label={`Status artwork ${index + 1}`}
                           >

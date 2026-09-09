@@ -4,13 +4,13 @@ import {
 } from '@kiskadee/react-headless';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBrandPack } from '../../../shared/contexts/BrandPackContext.tsx';
+import { useComponentScale } from '../../../shared/contexts/DensityContext.tsx';
 import { useSurfaceContext } from '../../../shared/contexts/SurfaceContext.tsx';
 import {
   DEFAULT_BUTTON_ICON_SURFACE_CORNERS,
   DEFAULT_BUTTON_ICON_TREATMENT,
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_PRESSED_DURATION_MS,
-  DEFAULT_BUTTON_SCALE,
   resolveButtonClassNames
 } from '../Button.class-names.ts';
 import type { ButtonProps, ButtonStatus } from '../Button.types.ts';
@@ -28,7 +28,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     controlState,
     pending,
     interactionLocked,
-    scale = DEFAULT_BUTTON_SCALE,
+    size,
     disabled,
     shadow = false,
     activationFeedback,
@@ -55,6 +55,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     ...restProps
   } = props;
 
+  const scale = useComponentScale('button', size);
   const brandPack = useBrandPack();
   const surfaceContext = useSurfaceContext(surfaceContextProp);
   const {

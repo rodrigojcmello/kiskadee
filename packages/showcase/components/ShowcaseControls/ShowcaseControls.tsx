@@ -3,9 +3,10 @@
 import {
   type ControlCursorValue,
   DEFAULT_CONTROL_CURSOR,
+  type Density,
   resolveControlCursor
 } from '@kiskadee/core';
-import { KiskadeeContext } from '@kiskadee/react-components';
+import { DensityProvider, KiskadeeContext } from '@kiskadee/react-components';
 import type { ReactNode } from 'react';
 import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
@@ -35,6 +36,9 @@ export function ShowcaseRouteControls({
   title: string;
 }) {
   const {
+    densityMap,
+    densityOverride,
+    setDensityOverride,
     panelSlotElement,
     registerPanelDetail,
     clearPanelDetail,
@@ -63,30 +67,54 @@ export function ShowcaseRouteControls({
 
   return createPortal(
     <KiskadeeContext.Provider value={administrativeContext}>
-      <ShowcaseIconFamilyBoundary>
-        {children}
-        {controlCursorAvailable ? (
-          <ShowcaseControlGroup title="Interaction">
-            <ShowcaseSelectControl
-              label="Control cursor"
-              value={controlCursorOverride ?? 'preset'}
-              options={[
-                {
-                  value: 'preset',
-                  label: `Preset default · ${resolveControlCursor(presetCursor) === 'pointer' ? 'Pointer' : 'Default'} (${presetCursor.scope === 'web' ? 'Web only' : 'All platforms'})`
-                },
-                { value: 'default', label: 'Default (arrow)' },
-                { value: 'pointer', label: 'Pointer (hand)' }
-              ]}
-              onValueChange={(value) =>
-                setControlCursorOverride(
-                  value === 'preset' ? undefined : (value as ControlCursorValue)
-                )
-              }
-            />
-          </ShowcaseControlGroup>
-        ) : null}
-      </ShowcaseIconFamilyBoundary>
+      <DensityProvider value="adaptive">
+        <ShowcaseIconFamilyBoundary>
+          {densityMap ? (
+            <ShowcaseControlGroup title="Density">
+              <ShowcaseSelectControl
+                label="Density"
+                value={densityOverride ?? 'preset'}
+                options={[
+                  {
+                    value: 'preset',
+                    label: `Preset default · ${densityMap.c && densityMap.s ? 'Adaptive' : densityMap.c ? 'Compact' : 'Spacious'}`
+                  },
+                  ...(densityMap.c && densityMap.s
+                    ? [{ value: 'adaptive', label: 'Adaptive' }]
+                    : []),
+                  ...(densityMap.c ? [{ value: 'compact', label: 'Compact' }] : []),
+                  ...(densityMap.s ? [{ value: 'spacious', label: 'Spacious' }] : [])
+                ]}
+                onValueChange={(value) =>
+                  setDensityOverride(value === 'preset' ? undefined : (value as Density))
+                }
+              />
+            </ShowcaseControlGroup>
+          ) : null}
+          {children}
+          {controlCursorAvailable ? (
+            <ShowcaseControlGroup title="Interaction">
+              <ShowcaseSelectControl
+                label="Control cursor"
+                value={controlCursorOverride ?? 'preset'}
+                options={[
+                  {
+                    value: 'preset',
+                    label: `Preset default · ${resolveControlCursor(presetCursor) === 'pointer' ? 'Pointer' : 'Default'} (${presetCursor.scope === 'web' ? 'Web only' : 'All platforms'})`
+                  },
+                  { value: 'default', label: 'Default (arrow)' },
+                  { value: 'pointer', label: 'Pointer (hand)' }
+                ]}
+                onValueChange={(value) =>
+                  setControlCursorOverride(
+                    value === 'preset' ? undefined : (value as ControlCursorValue)
+                  )
+                }
+              />
+            </ShowcaseControlGroup>
+          ) : null}
+        </ShowcaseIconFamilyBoundary>
+      </DensityProvider>
     </KiskadeeContext.Provider>,
     panelSlotElement
   );

@@ -92,7 +92,7 @@ to expose the global `min` and `max`.
 
 | Prop | Current rule |
 | --- | --- |
-| `scale` | Selects generated size classes. Default: `s:md:1`. |
+| `size` | Selects generated size classes. Default: `md`. |
 | `emphasis` | Selects the color emphasis bucket. Default: `medium`. |
 | `intent` | Selects the Slider intent. Default: `neutral`. |
 | `radius` | Per-instance override for generated radius classes. Supported values are `rounded`, `square`, and `pill`. |

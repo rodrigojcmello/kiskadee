@@ -13,6 +13,8 @@ import type {
   ComponentClassNameMapJSON,
   ContentSurfaceContextMap,
   ControlCursor,
+  Density,
+  DensityScaleMapJSON,
   DropdownOptions,
   GlobalClassNameMapJSON,
   RadiusMode,
@@ -74,6 +76,7 @@ export type KiskadeeLayoutEnvironment = {
 };
 
 export type KiskadeeGlobalArtifact = {
+  density?: Partial<Record<string, DensityScaleMapJSON>>;
   interaction?: SchemaInteraction;
   classMap?: GlobalClassNameMapJSON;
   fonts?: SchemaFonts;
@@ -222,6 +225,7 @@ export type KiskadeeGlobalArtifact = {
 };
 
 export type KiskadeeContextValue = {
+  density?: Density;
   classesMap: ComponentClassNameMapJSON;
   segment: string;
   theme: ThemeMode;

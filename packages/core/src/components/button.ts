@@ -1,4 +1,5 @@
 import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
+import type { DensityScaleMap } from '../density.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
@@ -42,6 +43,7 @@ export type ButtonIconSurfaceCorners = 'edge' | 'all';
 export type ButtonIconTreatment = 'plain' | 'surface';
 
 export type ButtonOptions = {
+  density?: DensityScaleMap;
   /** Draws the preset-authored divider at every connected Button seam. */
   groupDivider?: boolean;
   /** Draws the preset-authored divider before the trailing disclosure slot. */
@@ -202,6 +204,7 @@ type ElementContractRules = {
 
 const BUTTON_COMPONENT_KEYS = ['contentSurfaceContext', 'effects', 'elements', 'options'] as const;
 const BUTTON_OPTION_KEYS = [
+  'density',
   'groupDivider',
   'disclosureDivider',
   'iconLayout',
