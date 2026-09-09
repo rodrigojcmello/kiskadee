@@ -46,9 +46,10 @@ function resolveSwitchEffectTargetStateClassName(states: {
 }): string {
   const isDisabled = states.disabled || states.status === 'disabled';
   const isPending = !isDisabled && states.status === 'pending';
-  const isHovered = !isPending && (states.hovered || states.status === 'hover');
-  const isPressed = !isPending && states.status === 'pressed';
-  const isFocused = states.status === 'focus';
+  const isTerminal = isDisabled || isPending;
+  const isHovered = !isTerminal && (states.hovered || states.status === 'hover');
+  const isPressed = !isTerminal && states.status === 'pressed';
+  const isFocused = !isTerminal && states.status === 'focus';
   const isReadOnly = states.readOnly || states.status === 'readOnly';
   const hasProjectedState =
     states.controlState ||
@@ -62,7 +63,7 @@ function resolveSwitchEffectTargetStateClassName(states: {
   return (
     join(
       cn.interactive,
-      !isPending && cn.nativeInteraction,
+      !isTerminal && cn.nativeInteraction,
       isHovered && cn.hover,
       isPressed && cn.pressed,
       states.controlState && cn.selected,

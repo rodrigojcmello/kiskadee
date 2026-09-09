@@ -132,9 +132,10 @@ function switchStateClassName(states: {
 }): string | undefined {
   const isDisabled = states.disabled || states.status === 'disabled';
   const isPending = !isDisabled && states.status === 'pending';
-  const isHovered = !isPending && states.status === 'hover';
-  const isPressed = !isPending && states.status === 'pressed';
-  const isFocused = !isPending && (states.focused || states.status === 'focus');
+  const isTerminal = isDisabled || isPending;
+  const isHovered = !isTerminal && states.status === 'hover';
+  const isPressed = !isTerminal && states.status === 'pressed';
+  const isFocused = !isTerminal && (states.focused || states.status === 'focus');
   const isFocusVisible = isFocused && (states.focusVisible || states.status === 'focus');
   const isReadOnly = states.readOnly || states.status === 'readOnly';
   const hasProjectedState =
@@ -148,7 +149,7 @@ function switchStateClassName(states: {
 
   return mergeClassNames(
     cn.interactive,
-    !isPending && cn.nativeInteraction,
+    !isTerminal && cn.nativeInteraction,
     isHovered && cn.hover,
     isPressed && cn.pressed,
     states.controlState && cn.selected,

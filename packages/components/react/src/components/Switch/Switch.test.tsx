@@ -51,6 +51,29 @@ afterEach(() => {
 });
 
 describe('Switch', () => {
+  it.each([
+    'hover',
+    'pressed',
+    'focus',
+    'pending',
+    'disabled'
+  ] as const)('keeps disabled terminal when %s is requested on selected controls', (status) => {
+    const { container } = renderSwitch(
+      h(Switch, { disabled: true, controlState: true, status, label: 'Disabled switch' })
+    );
+    const input = screen.getByRole('switch');
+    expect(input.hasAttribute('disabled')).toBe(true);
+    const scopes = container.querySelectorAll('.-i');
+    expect(scopes.length).toBeGreaterThan(0);
+    for (const scope of scopes) {
+      expect(scope.classList.contains('-d')).toBe(true);
+      expect(scope.classList.contains('-s')).toBe(true);
+      for (const state of ['-n', '-h', '-p', '-f', '-k', '-g']) {
+        expect(scope.classList.contains(state)).toBe(false);
+      }
+    }
+  });
+
   it('renderiza estrutura e aplica className e classNames de slot', () => {
     const { container } = renderSwitch(
       h(Switch, {
