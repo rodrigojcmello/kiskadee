@@ -25,15 +25,32 @@ describe('Fluent 2 Switch architecture', () => {
     const tone = schema.components.switch?.effects?.activationFeedback?.visual?.tone;
 
     expect(elements.e1).toEqual({ name: 'switch' });
-    expect(elements.e4?.typography).toEqual({ 's:md:1': 'body-medium' });
-    expect(elements.e5?.typography).toEqual({ 's:md:1': 'body-medium' });
-    expect(elements.e6?.iconSize).toEqual({ 's:md:1': 's:sm:3' });
+    expect(elements.e4?.typography).toEqual({ 's:md:1': 'body-medium', 's:lg:1': 'body-medium' });
+    expect(elements.e5?.typography).toEqual({ 's:md:1': 'body-medium', 's:lg:1': 'body-medium' });
+    expect(elements.e6?.iconSize).toEqual({ 's:md:1': 's:sm:3', 's:lg:1': 's:md:1' });
     expect(tone).toEqual({
       default: 'subtle',
       bySurfaceContext: {
         onSubtle: 'subtle',
         onVivid: 'vivid'
       }
+    });
+  });
+
+  it('adds Large geometry without changing Medium or the default density', () => {
+    const elements = requireSwitchElements();
+    expect(schema.components.switch?.options?.density).toEqual({ compact: 's:md:1' });
+    expect(elements.e2?.scales).toMatchObject({
+      boxWidth: { 's:md:1': 40, 's:lg:1': 64 },
+      boxHeight: { 's:md:1': 20, 's:lg:1': 32 },
+      borderRadius: { pill: { 's:md:1': 10, 's:lg:1': 16 } },
+      paddingTop: { 's:md:1': 1, 's:lg:1': 3 },
+      paddingBottom: { 's:md:1': 1, 's:lg:1': 3 }
+    });
+    expect(elements.e3?.scales).toMatchObject({
+      boxWidth: { 's:md:1': 14, 's:lg:1': 24 },
+      boxHeight: { 's:md:1': 14, 's:lg:1': 24 },
+      borderRadius: { pill: { 's:md:1': 7, 's:lg:1': 12 } }
     });
   });
 

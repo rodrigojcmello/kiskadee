@@ -80,3 +80,24 @@ remains open.
 - Exact Switch stops must use evidence ID `component.switch`; physical caps must use
   `primitive.black.v1`.
 - Geometry and the 10 px icon viewport remain unchanged by the color-authoring migration.
+
+## Large Size Extension (2026-09-09)
+
+The user-approved Large size is a **Kiskadee extension**, not an official Fluent size.
+It uses the multi-size geometry pattern from the local
+`ios-27-apple/components/switch.schema.ts` as an implementation reference, while retaining
+Fluent's circular thumb and 2:1 track proportions. No new upstream visual evidence was used.
+
+| Geometry | Medium (retained) | Large (extension) |
+| --- | --- | --- |
+| Track | 40 x 20 px | 64 x 32 px |
+| Thumb | 14 x 14 px | 24 x 24 px |
+| Track pill radius | 10 px | 16 px |
+| Thumb pill radius | 7 px | 12 px |
+| Vertical / horizontal track padding | 1 / 3 px | 3 / 4 px |
+| Icon viewport | 10 px | 16 px |
+
+Large is explicitly selected with `size="lg"`; Compact continues to resolve to Medium.
+Typography, colors, interaction states, and the default density are retained. This enlarges
+visual geometry; it does not introduce a separate minimum touch-target contract.
+The Showcase Sizes section lists the sizes published by the active preset.

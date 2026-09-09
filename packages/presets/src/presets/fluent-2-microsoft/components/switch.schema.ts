@@ -512,18 +512,18 @@ export function createFluent2MicrosoftSwitchSchema({
                   borderStyle: 'solid'
                 },
                 scales: {
-                  boxWidth: { 's:md:1': 40 },
-                  boxHeight: { 's:md:1': 20 },
+                  boxWidth: { 's:md:1': 40, 's:lg:1': 64 },
+                  boxHeight: { 's:md:1': 20, 's:lg:1': 32 },
                   borderWidth: 1,
                   borderRadius: {
                     rounded: 4,
-                    pill: 10,
+                    pill: { 's:md:1': 10, 's:lg:1': 16 },
                     square: 0
                   },
-                  paddingTop: { 's:md:1': 1 },
-                  paddingRight: { 's:md:1': 3 },
-                  paddingBottom: { 's:md:1': 1 },
-                  paddingLeft: { 's:md:1': 3 }
+                  paddingTop: { 's:md:1': 1, 's:lg:1': 3 },
+                  paddingRight: { 's:md:1': 3, 's:lg:1': 4 },
+                  paddingBottom: { 's:md:1': 1, 's:lg:1': 3 },
+                  paddingLeft: { 's:md:1': 3, 's:lg:1': 4 }
                 },
                 palettes: {
                   default: themes(createTrackContext)
@@ -532,11 +532,11 @@ export function createFluent2MicrosoftSwitchSchema({
               e3: {
                 name: 'thumb',
                 scales: {
-                  boxWidth: { 's:md:1': 14 },
-                  boxHeight: { 's:md:1': 14 },
+                  boxWidth: { 's:md:1': 14, 's:lg:1': 24 },
+                  boxHeight: { 's:md:1': 14, 's:lg:1': 24 },
                   borderRadius: {
                     rounded: 4,
-                    pill: 7,
+                    pill: { 's:md:1': 7, 's:lg:1': 12 },
                     square: 0
                   }
                 },
@@ -546,10 +546,10 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e4: {
                 name: 'label',
-                typography: { 's:md:1': 'body-medium' },
+                typography: { 's:md:1': 'body-medium', 's:lg:1': 'body-medium' },
                 scales: {
-                  marginLeft: { 's:md:1': 8 },
-                  marginRight: { 's:md:1': 8 }
+                  marginLeft: { 's:md:1': 8, 's:lg:1': 8 },
+                  marginRight: { 's:md:1': 8, 's:lg:1': 8 }
                 },
                 palettes: {
                   default: themes(createTextContext)
@@ -557,10 +557,10 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e5: {
                 name: 'control text',
-                typography: { 's:md:1': 'body-medium' },
+                typography: { 's:md:1': 'body-medium', 's:lg:1': 'body-medium' },
                 scales: {
-                  marginLeft: { 's:md:1': 8 },
-                  marginRight: { 's:md:1': 8 }
+                  marginLeft: { 's:md:1': 8, 's:lg:1': 8 },
+                  marginRight: { 's:md:1': 8, 's:lg:1': 8 }
                 },
                 palettes: {
                   default: themes(createTextContext)
@@ -568,7 +568,7 @@ export function createFluent2MicrosoftSwitchSchema({
               },
               e6: {
                 name: 'icon',
-                iconSize: { 's:md:1': 's:sm:3' },
+                iconSize: { 's:md:1': 's:sm:3', 's:lg:1': 's:md:1' },
                 palettes: {
                   default: themes(createIconContext)
                 }

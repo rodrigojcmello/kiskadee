@@ -725,6 +725,36 @@ export default function SwitchPage() {
                 </StateTile>
               </div>
             </section>
+
+            <section className={s.section} aria-label="Switch sizes">
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Sizes
+              </Text>
+              <div className={s.stateGrid}>
+                {scaleSelectOptions.map((option) => (
+                  <StateTile
+                    key={option.value}
+                    surfaceContext={activeCardSurfaceContext}
+                    surface={specimenCardSurface}
+                  >
+                    <Switch
+                      id={`switch-size-${option.value.replaceAll(':', '-')}`}
+                      label={option.label}
+                      controlText={switchControlText}
+                      icons={switchIcons}
+                      defaultControlState
+                      size={componentScaleToSize(option.value)}
+                      radius={radius}
+                      motion={motionOverride}
+                      thumbShrink={thumbShrinkOverride}
+                      intent={intent}
+                      emphasis={emphasis}
+                      interactionLocked={interactionLocked}
+                    />
+                  </StateTile>
+                ))}
+              </div>
+            </section>
           </>
         )}
       </SurfaceContextProvider>
