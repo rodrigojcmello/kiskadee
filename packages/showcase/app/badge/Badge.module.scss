@@ -284,3 +284,35 @@
   border-radius: 16px;
   padding: 20px;
 }
+
+.sizeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 16px;
+}
+
+.sizeCard {
+  min-inline-size: 0;
+}
+
+.sizeSample {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-block-size: 44px;
+}
+
+.overlaySample {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  inline-size: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.sizeGrid > .specimen {
+  align-content: start;
+}

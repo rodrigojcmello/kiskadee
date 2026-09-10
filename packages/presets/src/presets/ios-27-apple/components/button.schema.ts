@@ -285,6 +285,21 @@ export function createIos27AppleButtonSchema({
             darker: createDividerContextPalettes('dark')
           }
         }
+      },
+      e7: {
+        name: 'button-badge-relation',
+        scales: {
+          paddingLeft: {
+            's:sm:1': 4,
+            's:md:1': 6,
+            's:lg:1': 6
+          },
+          paddingRight: {
+            's:sm:1': 4,
+            's:md:1': 6,
+            's:lg:1': 6
+          }
+        }
       }
     }
   };

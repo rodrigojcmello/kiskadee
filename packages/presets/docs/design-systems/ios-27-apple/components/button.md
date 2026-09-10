@@ -365,3 +365,14 @@ No Builder, runtime, Headless or structural CSS change is needed. See the
 
 The preset global radius defaults to `pill`. `rounded` remains an explicit 6 px alternative;
 the Showcase defaults to the preset choice rather than overriding it.
+
+
+### Inline Badge relation (2026-09-09)
+
+`e7` (`button-badge-relation`) enables supported inline Badge composition in Button.
+This is a user-approved Kiskadee extension: no Apple visual source was found or used for
+this spacing. The existing Fluent relation is the local implementation reference.
+Left and right padding are 4 px for Small and 6 px for Medium/Large, keeping a compact
+separation between the label and passive metadata. Badge paint and typography remain
+owned by Badge; Button root padding and typography are unchanged. Overlay Badges do not
+use this relation, and Buttons without inline Badges do not gain a grouping wrapper.

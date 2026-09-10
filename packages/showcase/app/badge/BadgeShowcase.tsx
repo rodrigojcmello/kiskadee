@@ -5,6 +5,8 @@ import type {
   BadgeIntent,
   BadgeScale,
   BadgeSeparation,
+  ComponentSize,
+  ElementSizeValue,
   RadiusMode
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
@@ -21,6 +23,7 @@ import {
 } from '@kiskadee/react-components';
 import Image from 'next/image';
 import { type ReactNode, type Ref, useEffect, useMemo, useState } from 'react';
+import { useShowcasePanel } from '@/app/ShowcasePanelContext';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
@@ -46,8 +49,14 @@ const intents: BadgeIntent[] = [
 ];
 const emphasisOrder: BadgeEmphasis[] = ['high', 'medium', 'low', 'lowest'];
 const scales: BadgeScale[] = ['s:sm:3', 's:sm:2', 's:sm:1', 's:md:1', 's:lg:1', 's:lg:2'];
-const recommendedDotScales: BadgeScale[] = ['s:sm:3', 's:sm:2', 's:sm:1'];
-const recommendedContentScales: BadgeScale[] = ['s:sm:2', 's:sm:1', 's:md:1'];
+const badgeSizeLabels: Record<BadgeScale, string> = {
+  's:sm:3': 'Extra extra small',
+  's:sm:2': 'Extra small',
+  's:sm:1': 'Small',
+  's:md:1': 'Medium',
+  's:lg:1': 'Large',
+  's:lg:2': 'Extra large'
+};
 const metadataButtonEmphases = ['high', 'low'] as const;
 const radii = ['square', 'rounded', 'pill'] as const;
 const separationTreatments = [
@@ -193,14 +202,12 @@ function SeparationButtonSpecimen(
           treatment === 'ring' ? (
             <Badge.Dot
               intent="attention"
-              size="sm2"
               separation="ring"
               aria-label={`${specimenLabel}, ${treatmentLabel}`}
             />
           ) : (
             <Badge.Dot
               intent="attention"
-              size="sm2"
               shadow={treatment === 'shadow'}
               aria-label={`${specimenLabel}, ${treatmentLabel}`}
             />
@@ -208,7 +215,6 @@ function SeparationButtonSpecimen(
         ) : (
           <Badge
             intent="attention"
-            size="sm"
             separation={treatment === 'ring' ? 'ring' : 'none'}
             aria-label={`More than 99 notifications, ${treatmentLabel}`}
           >
@@ -226,7 +232,9 @@ function IntentBadgeButton({
   intent,
   kind,
   radius,
-  shadow
+  shadow,
+  size,
+  badgeSize
 }: {
   buttonEmphasis: (typeof metadataButtonEmphases)[number];
   emphasis: BadgeEmphasis;
@@ -234,10 +242,13 @@ function IntentBadgeButton({
   kind: 'dot' | 'number' | 'new';
   radius: Extract<RadiusMode, 'square' | 'rounded' | 'pill'>;
   shadow?: boolean;
+  size?: ComponentSize;
+  badgeSize?: ReturnType<typeof componentScaleToSize<BadgeScale>>;
 }) {
   if (kind === 'dot') {
     return (
       <Button
+        size={size}
         intent="primary"
         emphasis={buttonEmphasis}
         aria-label={`${intent} notifications, ${buttonEmphasis} emphasis button`}
@@ -246,17 +257,22 @@ function IntentBadgeButton({
           <FamilyResolvedIcon name="bell" />
         </Button.Icon>
         <Button.Badge placement="block-start-inline-end">
-          <Badge.Dot intent={intent} size="sm2" shadow={shadow} aria-label={`${intent} status`} />
+          <Badge.Dot
+            size={badgeSize}
+            intent={intent}
+            shadow={shadow}
+            aria-label={`${intent} status`}
+          />
         </Button.Badge>
       </Button>
     );
   }
 
   return (
-    <Button intent="primary" emphasis={buttonEmphasis}>
+    <Button intent="primary" emphasis={buttonEmphasis} size={size}>
       <Button.Label>Label</Button.Label>
       <Button.Badge placement="inline-end">
-        <Badge intent={intent} emphasis={emphasis} size="sm" radius={radius}>
+        <Badge size={badgeSize} intent={intent} emphasis={emphasis} radius={radius}>
           {kind === 'number' ? '3' : 'New'}
         </Badge>
       </Button.Badge>
@@ -266,6 +282,30 @@ function IntentBadgeButton({
 
 export default function BadgeShowcase() {
   const { manifest } = useShowcase();
+  const { densityMap, densityOverride } = useShowcasePanel();
+  const [metadataScale, setMetadataScale] = useState<ElementSizeValue | undefined>();
+  const metadataScales = Object.entries(manifest?.components?.button?.scale ?? {})
+    .filter(([key, enabled]) => enabled && /^s:(sm|md|lg):[1-5]$/.test(key))
+    .map(([key]) => key as ElementSizeValue)
+    .sort((a, b) => {
+      const rank = (key: string) => {
+        const [, family, level] = key.split(':');
+        return family === 'sm' ? -Number(level) : family === 'lg' ? Number(level) : 0;
+      };
+      return rank(a) - rank(b);
+    });
+  const activeMetadataScale =
+    metadataScale && metadataScales.includes(metadataScale) ? metadataScale : undefined;
+  const metadataSize = componentScaleToSize(activeMetadataScale);
+  const metadataBadgeScale = scales.find(
+    (value) => value === activeMetadataScale && manifest?.components?.badge?.scale?.[value]
+  );
+  const metadataDensity =
+    densityOverride ??
+    (densityMap?.c && densityMap?.s ? 'adaptive' : densityMap?.c ? 'compact' : 'spacious');
+  useEffect(() => {
+    if (metadataScale && !activeMetadataScale) setMetadataScale(undefined);
+  }, [metadataScale, activeMetadataScale]);
   const { global, segment, theme } = useKiskadee();
   const profiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.badge);
@@ -293,6 +333,9 @@ export default function BadgeShowcase() {
     String(segment ?? 'default'),
     theme,
     surfaceContext
+  );
+  const supportedScales = scales.filter((value) =>
+    Boolean(manifest?.components?.badge?.scale?.[value])
   );
   const supportedIntents = useMemo(
     () => intents.filter((value) => Boolean(badgeState?.[value])),
@@ -361,7 +404,7 @@ export default function BadgeShowcase() {
             label="Size"
             options={[
               { value: 'preset', label: 'Follow density (default)' },
-              ...scales.map((value) => ({ value, label: componentScaleToSize(value) }))
+              ...supportedScales.map((value) => ({ value, label: componentScaleToSize(value) }))
             ]}
             value={scale ?? 'preset'}
             onValueChange={(value) =>
@@ -442,6 +485,24 @@ export default function BadgeShowcase() {
             <Text as="h3" profile={profiles.sectionTitle}>
               Metadata by intent
             </Text>
+            <ShowcaseSelectControl
+              label="Button and Badge size"
+              value={activeMetadataScale ?? 'preset'}
+              options={[
+                { value: 'preset', label: `Follow density · ${metadataDensity}` },
+                ...metadataScales.map((value) => ({ value, label: componentScaleToSize(value) }))
+              ]}
+              onValueChange={(value) =>
+                setMetadataScale(value === 'preset' ? undefined : (value as ElementSizeValue))
+              }
+              disabled={metadataScales.length === 0}
+              width="280px"
+            />
+            {activeMetadataScale && !metadataBadgeScale ? (
+              <Text as="p" profile={profiles.caption}>
+                Badge does not publish this size; it follows preset density.
+              </Text>
+            ) : null}
             <Text as="p" profile={profiles.body} className={styles.note}>
               Every intent shows the Rest-only emphases published by the active preset on the
               canonical {surfaceContext} surface. Simplified mode keeps one count per emphasis;
@@ -500,6 +561,8 @@ export default function BadgeShowcase() {
                                     <div className={styles.intentButtonStage} key={buttonEmphasis}>
                                       {level === 'high' ? (
                                         <IntentBadgeButton
+                                          size={metadataSize}
+                                          badgeSize={componentScaleToSize(metadataBadgeScale)}
                                           buttonEmphasis={buttonEmphasis}
                                           emphasis={level}
                                           intent={itemIntent}
@@ -509,6 +572,8 @@ export default function BadgeShowcase() {
                                         />
                                       ) : null}
                                       <IntentBadgeButton
+                                        size={metadataSize}
+                                        badgeSize={componentScaleToSize(metadataBadgeScale)}
                                         buttonEmphasis={buttonEmphasis}
                                         emphasis={level}
                                         intent={itemIntent}
@@ -517,6 +582,8 @@ export default function BadgeShowcase() {
                                       />
                                       {!isSimplified ? (
                                         <IntentBadgeButton
+                                          size={metadataSize}
+                                          badgeSize={componentScaleToSize(metadataBadgeScale)}
                                           buttonEmphasis={buttonEmphasis}
                                           emphasis={level}
                                           intent={itemIntent}
@@ -550,44 +617,43 @@ export default function BadgeShowcase() {
 
           <section className={styles.section}>
             <Text as="h3" profile={profiles.sectionTitle}>
-              Recommended Badge scales
+              Badge sizes
             </Text>
             <Text as="p" profile={profiles.body} className={styles.note}>
-              The control retains all six supported scales. These rows highlight the compact sizes
-              recommended for each anatomy; content may still grow beyond the nominal minimum,
-              including at 200% zoom.
+              All sizes published by the active preset, shown as Dot, Number, and Text.
             </Text>
-            <div className={styles.matrix}>
-              <ScaleRow
-                title="Dot"
-                items={recommendedDotScales}
-                render={(itemScale) => (
-                  <Badge.Dot
+            <div className={styles.sizeGrid}>
+              {supportedScales.map((itemScale) => {
+                const size = componentScaleToSize(itemScale);
+                return (
+                  <ShowcaseExampleCard
                     key={itemScale}
-                    size={componentScaleToSize(itemScale)}
-                    intent="attention"
-                    aria-label={`Dot ${itemScale}`}
-                  />
-                )}
-              />
-              <ScaleRow
-                title="Number"
-                items={recommendedContentScales}
-                render={(itemScale) => (
-                  <Badge key={itemScale} size={componentScaleToSize(itemScale)} intent="primary">
-                    3
-                  </Badge>
-                )}
-              />
-              <ScaleRow
-                title="New"
-                items={recommendedContentScales}
-                render={(itemScale) => (
-                  <Badge key={itemScale} size={componentScaleToSize(itemScale)} intent="novelty">
-                    New
-                  </Badge>
-                )}
-              />
+                    role="article"
+                    aria-label={`Badge size ${size}`}
+                    className={styles.sizeCard}
+                  >
+                    <Text as="h4" profile={profiles.caption} className={styles.note}>
+                      {badgeSizeLabels[itemScale]}
+                    </Text>
+                    <div className={styles.sizeSample}>
+                      <Text profile={profiles.caption}>Dot</Text>
+                      <Badge.Dot size={size} intent="attention" aria-label={`Dot ${size}`} />
+                    </div>
+                    <div className={styles.sizeSample}>
+                      <Text profile={profiles.caption}>Number</Text>
+                      <Badge size={size} intent="primary" emphasis="high">
+                        3
+                      </Badge>
+                    </div>
+                    <div className={styles.sizeSample}>
+                      <Text profile={profiles.caption}>Text</Text>
+                      <Badge size={size} intent="novelty" emphasis="high">
+                        New
+                      </Badge>
+                    </div>
+                  </ShowcaseExampleCard>
+                );
+              })}
             </div>
             <div className={styles.counterGrowth}>
               <Text as="strong" profile={profiles.caption}>
@@ -695,11 +761,27 @@ export default function BadgeShowcase() {
               {radii.map((itemRadius) => (
                 <article className={styles.specimen} key={itemRadius}>
                   <Text as="span" profile={profiles.caption}>
-                    {itemRadius}
+                    {itemRadius === 'pill' ? 'pill (default)' : itemRadius}
                   </Text>
-                  <Badge intent="novelty" radius={itemRadius}>
-                    New
-                  </Badge>
+                  {buttonAvailable ? (
+                    metadataButtonEmphases.map((buttonEmphasis) => (
+                      <div className={styles.specimen} key={buttonEmphasis}>
+                        <Text profile={profiles.caption} className={styles.note}>
+                          Button {buttonEmphasis}
+                        </Text>
+                        <Button intent="primary" emphasis={buttonEmphasis}>
+                          <Button.Label>Updates</Button.Label>
+                          <Button.Badge placement="inline-end">
+                            <Badge intent="novelty" emphasis="high" radius={itemRadius}>
+                              New
+                            </Badge>
+                          </Button.Badge>
+                        </Button>
+                      </div>
+                    ))
+                  ) : (
+                    <UnavailableHost name="Button" />
+                  )}
                 </article>
               ))}
             </div>
@@ -708,54 +790,39 @@ export default function BadgeShowcase() {
                 <Text as="strong" profile={profiles.caption}>
                   Overlay treatments
                 </Text>
-                <div className={styles.separationMatrix}>
-                  <span aria-hidden="true" />
+                <div className={styles.sizeGrid}>
                   {separationTreatments.map(({ value, label }) => (
-                    <Text
-                      as="span"
-                      profile={profiles.caption}
-                      className={styles.separationHeader}
+                    <ShowcaseExampleCard
                       key={value}
+                      role="article"
+                      aria-label={label}
+                      className={styles.specimen}
                     >
-                      {label}
-                    </Text>
-                  ))}
-                  <Text as="strong" profile={profiles.caption}>
-                    Dot
-                  </Text>
-                  <div className={styles.separationCell}>
-                    <SeparationButtonSpecimen kind="dot" treatment="none" />
-                  </div>
-                  <div className={styles.separationCell}>
-                    {shadowSupported ? (
-                      <SeparationButtonSpecimen kind="dot" treatment="shadow" />
-                    ) : (
-                      <Text as="span" profile={profiles.caption} className={styles.note}>
-                        Unsupported
+                      <Text as="h4" profile={profiles.caption}>
+                        {label}
                       </Text>
-                    )}
-                  </div>
-                  <div className={styles.separationCell}>
-                    <SeparationButtonSpecimen kind="dot" treatment="ring" />
-                  </div>
-                  <Text as="strong" profile={profiles.caption}>
-                    99+
-                  </Text>
-                  <div className={styles.separationCell}>
-                    <SeparationButtonSpecimen kind="count" treatment="none" />
-                  </div>
-                  <div className={styles.separationCell}>
-                    <Text
-                      as="span"
-                      profile={profiles.caption}
-                      className={styles.separationUnavailable}
-                    >
-                      Dot only
-                    </Text>
-                  </div>
-                  <div className={styles.separationCell}>
-                    <SeparationButtonSpecimen kind="count" treatment="ring" />
-                  </div>
+                      <div className={styles.overlaySample}>
+                        <Text profile={profiles.caption}>Dot</Text>
+                        {value !== 'shadow' || shadowSupported ? (
+                          <SeparationButtonSpecimen kind="dot" treatment={value} />
+                        ) : (
+                          <Text profile={profiles.caption} className={styles.note}>
+                            Unsupported
+                          </Text>
+                        )}
+                      </div>
+                      {value !== 'shadow' ? (
+                        <div className={styles.overlaySample}>
+                          <Text profile={profiles.caption}>99+</Text>
+                          <SeparationButtonSpecimen kind="count" treatment={value} />
+                        </div>
+                      ) : (
+                        <Text profile={profiles.caption} className={styles.note}>
+                          Shadow is available for Dot only.
+                        </Text>
+                      )}
+                    </ShowcaseExampleCard>
+                  ))}
                 </div>
               </div>
             ) : null}
@@ -779,18 +846,14 @@ export default function BadgeShowcase() {
                     <Button intent="primary" emphasis="high">
                       <Button.Label>Updates</Button.Label>
                       <Button.Badge placement="inline-end">
-                        <Badge intent="novelty" size="sm">
-                          New
-                        </Badge>
+                        <Badge intent="novelty">New</Badge>
                       </Button.Badge>
                     </Button>
                     {positiveButtonAvailable ? (
                       <Button intent="positive" emphasis="high">
                         <Button.Label>Chances</Button.Label>
                         <Button.Badge placement="inline-end">
-                          <Badge intent="positive" size="sm">
-                            8
-                          </Badge>
+                          <Badge intent="positive">8</Badge>
                         </Button.Badge>
                       </Button>
                     ) : null}
@@ -798,9 +861,7 @@ export default function BadgeShowcase() {
                       <Button intent="destructive" emphasis="high">
                         <Button.Label>Delete</Button.Label>
                         <Button.Badge placement="inline-end">
-                          <Badge intent="attention" size="sm">
-                            3
-                          </Badge>
+                          <Badge intent="attention">3</Badge>
                         </Button.Badge>
                       </Button>
                     ) : null}
@@ -809,12 +870,7 @@ export default function BadgeShowcase() {
                         <FamilyResolvedIcon name="mail" />
                       </Button.Icon>
                       <Button.Badge>
-                        <Badge.Dot
-                          intent="attention"
-                          size="sm2"
-                          separation="ring"
-                          aria-label="Unread"
-                        />
+                        <Badge.Dot intent="attention" separation="ring" aria-label="Unread" />
                       </Button.Badge>
                     </Button>
                     <Button intent="primary" emphasis="low" iconLayout="edge">
@@ -823,7 +879,7 @@ export default function BadgeShowcase() {
                       </Button.Icon>
                       <Button.Label>Cart</Button.Label>
                       <Button.Badge placement="inline-end">
-                        <Badge intent="primary" emphasis="high" size="md">
+                        <Badge intent="primary" emphasis="high">
                           3
                         </Badge>
                       </Button.Badge>

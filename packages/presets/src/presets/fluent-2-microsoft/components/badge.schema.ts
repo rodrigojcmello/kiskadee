@@ -230,49 +230,35 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
         e5: { kind: 'outer', states: { rest: 's:sm:1' } }
       }
     },
+    options: { density: { compact: 's:md:1', spacious: 's:lg:1' } },
     elements: {
       e1: {
         name: 'badge-surface',
         scales: {
           boxHeight: {
-            's:sm:3': 8,
-            's:sm:2': 12,
-            's:sm:1': 16,
-            's:md:1': 20,
-            's:lg:1': 24,
-            's:lg:2': 32
+            's:sm:1': 14,
+            's:md:1': 16,
+            's:lg:1': 16
           },
           paddingTop: {
-            's:sm:3': 0,
-            's:sm:2': 0,
             's:sm:1': 0,
-            's:md:1': 1,
-            's:lg:1': 2,
-            's:lg:2': 4
+            's:md:1': 0,
+            's:lg:1': 0
           },
           paddingBottom: {
-            's:sm:3': 0,
-            's:sm:2': 0,
             's:sm:1': 0,
-            's:md:1': 1,
-            's:lg:1': 2,
-            's:lg:2': 4
+            's:md:1': 0,
+            's:lg:1': 0
           },
           paddingLeft: {
-            's:sm:3': 2,
-            's:sm:2': 3,
-            's:sm:1': 4,
-            's:md:1': 5,
-            's:lg:1': 7,
-            's:lg:2': 10
+            's:sm:1': 3,
+            's:md:1': 4,
+            's:lg:1': 4
           },
           paddingRight: {
-            's:sm:3': 2,
-            's:sm:2': 3,
-            's:sm:1': 4,
-            's:md:1': 5,
-            's:lg:1': 7,
-            's:lg:2': 10
+            's:sm:1': 3,
+            's:md:1': 4,
+            's:lg:1': 4
           },
           borderRadius: { square: 0, rounded: 4, pill: 999 }
         },
@@ -281,24 +267,18 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
       e2: {
         name: 'badge-content',
         typography: {
-          's:sm:3': 'caption-tiny-strong',
-          's:sm:2': 'caption-extra-small-strong',
-          's:sm:1': 'caption-small-strong',
-          's:md:1': 'caption-medium-strong',
-          's:lg:1': 'caption-medium-strong',
-          's:lg:2': 'caption-medium-strong'
+          's:sm:1': 'caption-extra-small-strong',
+          's:md:1': 'caption-small-strong',
+          's:lg:1': 'caption-small-strong'
         },
         palettes: { default: themes((theme) => createTextPalette(theme)) }
       },
       e3: {
         name: 'badge-full-bleed-mark',
         iconSize: {
-          's:sm:3': 's:sm:5',
-          's:sm:2': 's:sm:3',
           's:sm:1': 's:sm:1',
           's:md:1': 's:md:1',
-          's:lg:1': 's:lg:1',
-          's:lg:2': 's:lg:3'
+          's:lg:1': 's:lg:1'
         },
         scales: { borderRadius: { pill: 999 } },
         palettes: { default: themes((theme) => createTextPalette(theme, true)) }
@@ -306,12 +286,9 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
       e4: {
         name: 'badge-contained-mark-icon',
         iconSize: {
-          's:sm:3': 's:sm:5',
-          's:sm:2': 's:sm:5',
           's:sm:1': 's:sm:3',
           's:md:1': 's:sm:2',
-          's:lg:1': 's:sm:1',
-          's:lg:2': 's:md:1'
+          's:lg:1': 's:sm:1'
         },
         palettes: { default: themes((theme) => createTextPalette(theme)) }
       },
@@ -319,20 +296,14 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
         name: 'badge-dot-surface',
         scales: {
           boxHeight: {
-            's:sm:3': 6,
-            's:sm:2': 10,
-            's:sm:1': 16,
-            's:md:1': 20,
-            's:lg:1': 24,
-            's:lg:2': 32
+            's:sm:1': 10,
+            's:md:1': 10,
+            's:lg:1': 10
           },
           boxWidth: {
-            's:sm:3': 6,
-            's:sm:2': 10,
-            's:sm:1': 16,
-            's:md:1': 20,
-            's:lg:1': 24,
-            's:lg:2': 32
+            's:sm:1': 10,
+            's:md:1': 10,
+            's:lg:1': 10
           },
           borderRadius: { pill: 999 }
         },
@@ -342,12 +313,9 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
         name: 'badge-separation-ring',
         scales: {
           borderWidth: {
-            's:sm:3': 1,
-            's:sm:2': 1,
             's:sm:1': 1,
             's:md:1': 2,
-            's:lg:1': 2,
-            's:lg:2': 2
+            's:lg:1': 2
           },
           borderRadius: { square: 0, rounded: 4, pill: 999 }
         },

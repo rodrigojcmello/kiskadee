@@ -92,15 +92,15 @@ contract.
 
 | Scale | Text height | Shared typography | Vertical / horizontal padding | Dot/contained Mark size |
 | --- | --- | --- | --- | --- |
-| `s:sm:3` | 14 | `caption-small`, 11/13 Regular | 0 / 3 | 8 |
-| `s:sm:2` | 16 | `caption-small`, 11/13 Regular | 1 / 4 | 12 |
-| `s:sm:1` | 18 | `caption-medium`, 12/16 Regular | 1 / 5 | 16 |
-| `s:md:1` | 20 | `label-small`, 13/18 Regular | 1 / 6 | 20 |
-| `s:lg:1` | 24 | `body-small`, 15/20 Regular | 2 / 7 | 24 |
-| `s:lg:2` | 28 | `body-medium`, 17/22 Regular | 3 / 8 | 32 |
+| `s:sm:3` | 13 | `caption-small`, 11/13 Regular | 0 / 2 | 8 |
+| `s:sm:2` | 14 | `caption-small`, 11/13 Regular | 0 / 3 | 10 |
+| `s:sm:1` | 15 | `caption-small`, 11/13 Regular | 1 / 3 | 10 |
+| `s:md:1` | 16 | `caption-small`, 11/13 Regular | 1 / 4 | 12 |
+| `s:lg:1` | 18 | `caption-medium`, 12/16 Regular | 1 / 5 | 16 |
+| `s:lg:2` | 20 | `label-small`, 13/18 Regular | 1 / 6 | 20 |
 
-Contained mark icons use existing `global.iconSizes` references for 8/8/10/12/16/20px. Full-bleed
-mark viewports use 8/10/12/20/24/32px. No new icon family, downloaded SF Symbols, or runtime glyph
+Contained mark icons use existing `global.iconSizes` references for 8/8/8/8/10/12px. Full-bleed
+mark viewports use 8/8/8/10/12/20px. No new icon family, downloaded SF Symbols, or runtime glyph
 fallback is introduced. Pill radius is 100; Square 0 and Rounded 5 are public Kiskadee extensions.
 Optional separation has 1px width through Small and 2px from Medium upward.
 
@@ -138,3 +138,14 @@ artifacts, profile references, and browser inspection are validated after preset
 
 Exact Figma Badge measurement is still uninspected. The source distinction and the extension
 geometry remain explicit until a native component node provides stronger evidence.
+
+## Composition scale recalibration (2026-09-09)
+
+User-approved Kiskadee extension, not new Apple source evidence. The former `sm2` recipe is now
+`md`: 16 px surface, 1 px vertical / 4 px horizontal padding, caption-small (11/13 px), and the
+corresponding mark, dot and ring recipes. This pairs with an explicitly Medium Button.
+The six surface heights are now 13/14/15/16/18/20 px (sm3/sm2/sm/md/lg/lg2).
+Small sizes retain caption-small for legibility; lg uses caption-medium and lg2 uses label-small.
+Dot diameters are 8/10/10/12/16/20 px. Existing explicit size names therefore render more compactly;
+colors, placement rules, default density and Button geometry are unchanged.
+Shared Button/Badge composition examples follow preset density defaults, with no preset-specific branch.

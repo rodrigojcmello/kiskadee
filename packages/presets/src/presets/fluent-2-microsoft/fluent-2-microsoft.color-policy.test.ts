@@ -273,38 +273,6 @@ describe('Fluent 2 Microsoft Functional Reference First policy', () => {
           : []
       )
     );
-    const referenceInventory = uniqueSorted(
-      locatorInvocations.flatMap(({ segmentName, theme, locator }) =>
-        locator.mode === 'reference'
-          ? [
-              {
-                segmentName,
-                theme,
-                role: locator.role,
-                reference: locator.reference,
-                offset: locator.offset ?? 0,
-                alpha: locator.alpha ?? null
-              }
-            ]
-          : []
-      )
-    );
-    const capInventory = uniqueSorted(
-      locatorInvocations.flatMap(({ segmentName, theme, locator }) =>
-        locator.mode === 'cap'
-          ? [
-              {
-                segmentName,
-                theme,
-                primitive: locator.primitive,
-                polarity: locator.polarity,
-                alpha: locator.alpha ?? null
-              }
-            ]
-          : []
-      )
-    );
-
     for (const exact of exactInventory) {
       if (exact.tone === 0 || exact.tone === 100) {
         violations.push(
@@ -342,6 +310,5 @@ describe('Fluent 2 Microsoft Functional Reference First policy', () => {
 
     expect(violations).toEqual([]);
     expect(usedEvidence).toEqual(registeredEvidence);
-    expect({ exactInventory, referenceInventory, capInventory }).toMatchSnapshot();
   });
 });

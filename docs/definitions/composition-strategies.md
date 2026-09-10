@@ -213,3 +213,17 @@ A durable architecture decision should record:
 - [Structural CSS](../../STRUCTURAL-CSS.md)
 - [Global effects](./global-effects.md)
 - [Icon consumption](./icon-consumption.md)
+
+## Recommended size alignment in compositions
+
+When a component is composed inside another component, prefer the same semantic size
+for host and child (for example, Button `md` with inline Badge `md`). Presets should calibrate
+component scales so these pairings are visually proportionate; matching size names do not imply
+equal pixel dimensions. This is a recommendation, not mandatory inheritance: consumers may choose
+a different child size when the composition warrants it. Density still chooses defaults through
+existing global/component mappings; it does not propagate the host's resolved size to descendants.
+Do not add preset-name conditions in shared examples to compensate for a miscalibrated scale.
+
+Shared Showcase composition examples should follow preset density defaults. Do not pin host or
+child sizes merely to demonstrate composition; use explicit sizes when comparing sizes or when
+the example specifically requires one. Matching-size guidance does not override density defaults.

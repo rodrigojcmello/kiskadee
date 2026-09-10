@@ -64,7 +64,7 @@ presented as literal Fluent intent aliases.
 
 ## Size and shape
 
-The six React Badge sizes are mapped to Kiskadee scales without component-local names:
+Historical mapping before the 2026-09-10 composition calibration (current Text and Dot values are specified below):
 
 | Fluent size | Kiskadee scale | Text minimum | Dot/Mark viewport | Contained glyph | Text profile | Text metrics |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -74,12 +74,6 @@ The six React Badge sizes are mapped to Kiskadee scales without component-local 
 | Medium | `s:md:1` | 20 px | 20 px | 12 px | `caption-medium-strong` | Semibold 12/16 px |
 | Large | `s:lg:1` | 24 px | 24 px | 16 px | `caption-medium-strong` | Semibold 12/16 px |
 | Extra-large | `s:lg:2` | 32 px | 32 px | 20 px | `caption-medium-strong` | Semibold 12/16 px |
-
-Fluent supplies 6/10 px Tiny/Extra-small surfaces with 4/4 px and 6/6 px text. Kiskadee preserves
-those dimensions for Dot and Mark but raises only the textual surface and profiles to 8/12 px and
-6/6 px / 8/8 px. This is a Kiskadee legibility adaptation, not an official Fluent value.
-The two adapted textual surfaces also author 2 px and 3 px inline padding respectively. This keeps
-short text from touching the edge while leaving Dot and Mark geometry unchanged.
 
 Text Badge authors only its nominal height. Web structure consumes that token as both the minimum
 block size and minimum inline size, so a short count forms a circle while `12`, `99+`, and short
@@ -93,17 +87,33 @@ Text Badge supports `square`, `rounded`, and `pill`; `pill` is the default. Dot 
 `pill`. The framework does not introduce a separate `circular` radius term. Shape remains a
 secondary compatibility capability; `pill` is the recommended and primary Badge presentation.
 
-Dot, contained Mark, and full-bleed Mark support all six scales. Their viewports and contained
-glyphs select existing `global.iconSizes`; Badge does not redefine any global icon measurement.
-Contained glyphs resolve to 6/6/10/12/16/20 px inside the six circular surfaces, while full-bleed
-artwork continues to fill the complete 6/10/16/20/24/32 px viewport. A detailed contained glyph is
-recommended at `s:sm:1` or larger; the two smaller scales remain valid compact capabilities.
+The current catalog contains only sm, md, and lg. Contained Mark glyphs reference existing
+10/12/16 px global icon profiles; full-bleed Mark uses 16/20/24 px viewports.
+These icon references do not introduce additional Badge sizes.
 
-The Showcase retains all six scales in its runtime control and technical Mark matrix. Its primary
-anatomy examples deliberately highlight Dot at `s:sm:3` through `s:sm:1`, and text/number at
-`s:sm:2` through `s:md:1`, instead of presenting every supported extreme as a usage
-recommendation. The 20 px `s:md:1` example is also the documented counter-growth size for `3`,
-`12`, and `99+`.
+The Showcase displays all published sizes in named cards. Metadata composition examples follow
+density by default and offer explicit Button/Badge sizes for calibration.
+
+### Current Text and Dot composition calibration (2026-09-10)
+
+User-approved Kiskadee adaptation, using existing recipes rather than new size identifiers or
+new upstream evidence. Number and Text share these recipes; Mark geometry remains unchanged.
+
+| Scale | Text minimum | Text profile | Vertical / horizontal padding | Dot diameter |
+| --- | --- | --- | --- | --- |
+| sm | 14 px | caption-extra-small-strong | 0 / 3 px | 10 px |
+| md | 16 px | caption-small-strong | 0 / 4 px | 10 px |
+| lg | 16 px | caption-small-strong | 0 / 4 px | 10 px |
+
+Badge density maps compact to md and spacious to lg. Both now use the approved 16 px
+Text/Number recipe and 10 px Dot. Explicit sm, md, and lg intentionally share the same Dot
+dimensions; lg shares the complete md Text/Number recipe, including typography and padding.
+The sm Text/Number minimum is increased to 14 px while retaining its existing typography and padding.
+The optional separation ring retains its existing size-specific widths. Repeated values keep
+semantic size selection without host-specific mappings; the Builder reuses identical style keys.
+Only sm, md, and lg are published for all Badge anatomies, matching the Button size catalog.
+The former sm3, sm2, and lg2 entries are removed from scales, typography, icon mappings, and ring widths.
+This catalog reduction preserves the retained recipes.
 
 ## Badge anatomy adaptations
 

@@ -87,44 +87,44 @@ export function createIos27AppleBadgeSchema({
         name: 'badge-surface',
         scales: {
           boxHeight: {
-            's:sm:3': 14,
-            's:sm:2': 16,
-            's:sm:1': 18,
-            's:md:1': 20,
-            's:lg:1': 24,
-            's:lg:2': 28
+            's:sm:3': 13,
+            's:sm:2': 14,
+            's:sm:1': 15,
+            's:md:1': 16,
+            's:lg:1': 18,
+            's:lg:2': 20
           },
           paddingTop: {
             's:sm:3': 0,
-            's:sm:2': 1,
+            's:sm:2': 0,
             's:sm:1': 1,
             's:md:1': 1,
-            's:lg:1': 2,
-            's:lg:2': 3
+            's:lg:1': 1,
+            's:lg:2': 1
           },
           paddingBottom: {
             's:sm:3': 0,
-            's:sm:2': 1,
+            's:sm:2': 0,
             's:sm:1': 1,
             's:md:1': 1,
-            's:lg:1': 2,
-            's:lg:2': 3
+            's:lg:1': 1,
+            's:lg:2': 1
           },
           paddingLeft: {
-            's:sm:3': 3,
-            's:sm:2': 4,
-            's:sm:1': 5,
-            's:md:1': 6,
-            's:lg:1': 7,
-            's:lg:2': 8
+            's:sm:3': 2,
+            's:sm:2': 3,
+            's:sm:1': 3,
+            's:md:1': 4,
+            's:lg:1': 5,
+            's:lg:2': 6
           },
           paddingRight: {
-            's:sm:3': 3,
-            's:sm:2': 4,
-            's:sm:1': 5,
-            's:md:1': 6,
-            's:lg:1': 7,
-            's:lg:2': 8
+            's:sm:3': 2,
+            's:sm:2': 3,
+            's:sm:1': 3,
+            's:md:1': 4,
+            's:lg:1': 5,
+            's:lg:2': 6
           },
           borderRadius: { square: 0, rounded: 5, pill: 100 }
         },
@@ -135,10 +135,10 @@ export function createIos27AppleBadgeSchema({
         typography: {
           's:sm:3': 'caption-small',
           's:sm:2': 'caption-small',
-          's:sm:1': 'caption-medium',
-          's:md:1': 'label-small',
-          's:lg:1': 'body-small',
-          's:lg:2': 'body-medium'
+          's:sm:1': 'caption-small',
+          's:md:1': 'caption-small',
+          's:lg:1': 'caption-medium',
+          's:lg:2': 'label-small'
         },
         palettes: { default: foregroundPalettes() }
       },
@@ -146,11 +146,11 @@ export function createIos27AppleBadgeSchema({
         name: 'badge-full-bleed-mark',
         iconSize: {
           's:sm:3': 's:sm:5',
-          's:sm:2': 's:sm:4',
-          's:sm:1': 's:sm:3',
-          's:md:1': 's:md:1',
-          's:lg:1': 's:lg:1',
-          's:lg:2': 's:lg:2'
+          's:sm:2': 's:sm:5',
+          's:sm:1': 's:sm:5',
+          's:md:1': 's:sm:4',
+          's:lg:1': 's:sm:3',
+          's:lg:2': 's:md:1'
         },
         scales: { borderRadius: { pill: 100 } },
         palettes: {
@@ -170,10 +170,10 @@ export function createIos27AppleBadgeSchema({
         iconSize: {
           's:sm:3': 's:sm:5',
           's:sm:2': 's:sm:5',
-          's:sm:1': 's:sm:4',
-          's:md:1': 's:sm:3',
-          's:lg:1': 's:sm:1',
-          's:lg:2': 's:md:1'
+          's:sm:1': 's:sm:5',
+          's:md:1': 's:sm:5',
+          's:lg:1': 's:sm:4',
+          's:lg:2': 's:sm:3'
         },
         palettes: { default: foregroundPalettes() }
       },
@@ -182,19 +182,19 @@ export function createIos27AppleBadgeSchema({
         scales: {
           boxHeight: {
             's:sm:3': 8,
-            's:sm:2': 12,
-            's:sm:1': 16,
-            's:md:1': 20,
-            's:lg:1': 24,
-            's:lg:2': 32
+            's:sm:2': 10,
+            's:sm:1': 10,
+            's:md:1': 12,
+            's:lg:1': 16,
+            's:lg:2': 20
           },
           boxWidth: {
             's:sm:3': 8,
-            's:sm:2': 12,
-            's:sm:1': 16,
-            's:md:1': 20,
-            's:lg:1': 24,
-            's:lg:2': 32
+            's:sm:2': 10,
+            's:sm:1': 10,
+            's:md:1': 12,
+            's:lg:1': 16,
+            's:lg:2': 20
           },
           borderRadius: { pill: 100 }
         },
@@ -207,8 +207,8 @@ export function createIos27AppleBadgeSchema({
             's:sm:3': 1,
             's:sm:2': 1,
             's:sm:1': 1,
-            's:md:1': 2,
-            's:lg:1': 2,
+            's:md:1': 1,
+            's:lg:1': 1,
             's:lg:2': 2
           },
           borderRadius: { square: 0, rounded: 5, pill: 100 }

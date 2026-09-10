@@ -1,31 +1,7 @@
 import { type Schema, type TypographyProfileId, typographyProfileBuckets } from '@kiskadee/core';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { describe, expect, it } from 'vitest';
-import { schema as carbonIbm } from './presets/carbon-ibm/carbon-ibm.schema.ts';
-import { schema as elegant } from './presets/elegant/elegant.schema.ts';
-import { schema as fluent2Kiskadee } from './presets/fluent-2-kiskadee/fluent-2-kiskadee.schema.ts';
-import { schema as fluent2Microsoft } from './presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts';
-import { schema as ios18Apple } from './presets/ios-18-apple/ios-18-apple.schema.ts';
-import { schema as ios27Apple } from './presets/ios-27-apple/ios-27-apple.schema.ts';
-import { schema as material3Google } from './presets/material-3-google/material-3-google.schema.ts';
-import { schema as material3Kiskadee } from './presets/material-3-kiskadee/material-3-kiskadee.schema.ts';
-import { schema as sandbox } from './presets/sandbox/sandbox.schema.ts';
-import { schema as sandbox2 } from './presets/sandbox-2/sandbox-2.schema.ts';
-import { schema as sandbox3 } from './presets/sandbox-3/sandbox-3.schema.ts';
-
-const schemas = [
-  carbonIbm,
-  elegant,
-  fluent2Kiskadee,
-  fluent2Microsoft,
-  ios18Apple,
-  ios27Apple,
-  material3Google,
-  material3Kiskadee,
-  sandbox,
-  sandbox2,
-  sandbox3
-] as const satisfies readonly Schema<string>[];
+import { schemas } from './test-schemas.ts';
 
 const INLINE_TYPOGRAPHY_KEYS = new Set([
   'textFont',
@@ -84,28 +60,6 @@ describe('preset typography catalogs', () => {
     expect(references.every((reference) => profileIds.includes(reference))).toBe(true);
     expect(profileIds.some((id) => id.includes('stronger'))).toBe(false);
     expect(profileIds.some((id) => id.includes('compact') || id.includes('relaxed'))).toBe(false);
-  });
-
-  it('publishes the supported Fluent Web ramp and body-owned control adaptations', () => {
-    expect(Object.keys(fluent2Microsoft.global?.typography?.profiles ?? {})).toEqual([
-      'caption-tiny-strong',
-      'caption-extra-small-strong',
-      'caption-small',
-      'caption-small-strong',
-      'caption-medium',
-      'caption-medium-strong',
-      'body-medium',
-      'body-medium-strong',
-      'body-large',
-      'subtitle-small',
-      'subtitle-large',
-      'heading-small',
-      'heading-medium',
-      'heading-large',
-      'display-small',
-      'display-large',
-      'label-large'
-    ]);
   });
 
   it.each(

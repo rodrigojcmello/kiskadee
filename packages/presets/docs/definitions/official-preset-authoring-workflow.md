@@ -156,3 +156,8 @@ source evidence
   -> generated artifacts
   -> rendered Showcase validation
 ```
+
+## Validation policy
+
+Follow [Preset validation and testing](testing.md): validate shared contracts across presets,
+test executable mechanisms with controlled inputs, and keep visual choices out of unit snapshots.

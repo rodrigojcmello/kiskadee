@@ -22,7 +22,7 @@ import {
   SurfaceContextProvider,
   useSurfaceContext
 } from '../../shared/contexts/SurfaceContext.tsx';
-import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useComponentClassMapResolution } from '../../shared/contexts/useComponentClassMap.ts';
 import { flattenFragmentChildren } from '../../shared/utils/flattenFragmentChildren.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import { resolveProgressIndicatorClassName } from '../Progress/Progress.class-names.ts';
@@ -56,7 +56,11 @@ import {
   useButtonFeedbackEffect
 } from './effects/activation-feedback/index.ts';
 import { useButtonArtifactConfig } from './hooks/useButtonArtifactConfig.ts';
-import { useButtonClassNamesFromCommon, useButtonCommonProps } from './hooks/useButtonBase.ts';
+import {
+  resolveButtonAccessibilityFromCommon,
+  useButtonClassNamesFromCommon,
+  useButtonCommonProps
+} from './hooks/useButtonBase.ts';
 
 export type {
   ButtonActivationFeedbackEffect,
@@ -184,9 +188,10 @@ const ButtonProgress = forwardRef<HTMLSpanElement, ButtonProgressProps>(function
   const { progressAllowed, progressWarningRequired } = useButtonRuntimeContext();
   const { classesMap } = useKiskadee();
   const resolvedSurfaceContext = useSurfaceContext(surfaceContext);
-  const progressClassesMap = useComponentClassMap(
+  const { classMap: progressClassesMap } = useComponentClassMapResolution(
     'progress',
-    classesMap.progress as ProgressClassesMap | undefined
+    classesMap.progress as ProgressClassesMap | undefined,
+    progressAllowed
   );
   const indicatorPaintClassName = resolveProgressIndicatorClassName({
     element: progressClassesMap?.e3,
@@ -460,13 +465,15 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     requestedSurfacedIconTreatment,
     surfacedIconTreatmentSupported
   ]);
+  const { visualStatus } = resolveButtonAccessibilityFromCommon(common);
+  const feedbackLoadingBlocked = visualStatus === 'disabled' || visualStatus === 'pending';
   const feedbackEffectAvailability = useMemo(
     () =>
       resolveButtonFeedbackEffectAvailability({
-        activationFeedback: common.activationFeedback,
+        activationFeedback: feedbackLoadingBlocked ? false : common.activationFeedback,
         element: common.e1
       }),
-    [common.activationFeedback, common.e1]
+    [common.activationFeedback, common.e1, feedbackLoadingBlocked]
   );
   const feedbackEffect = useButtonFeedbackEffect(feedbackEffectAvailability);
   const activationFeedbackController = useButtonActivationFeedbackController(common, {
@@ -568,8 +575,12 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
   );
   const inlineBadgesSupported = Boolean(baseClassNames.e7) && contentSlots.hasLabel;
   const composedChildren = useMemo(
-    () => composeInlineButtonBadges(normalizedChildren, inlineBadgesSupported),
-    [inlineBadgesSupported, normalizedChildren]
+    () =>
+      composeInlineButtonBadges(
+        normalizedChildren,
+        inlineBadgesSupported && contentSlots.hasInlineBadge
+      ),
+    [inlineBadgesSupported, contentSlots.hasInlineBadge, normalizedChildren]
   );
   const producedSurfaceContext = resolveContentSurfaceContext({
     map: common.contentSurfaceContext,
