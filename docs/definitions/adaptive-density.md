@@ -42,7 +42,7 @@ independent of viewport width, not immune to browser zoom or user font enlargeme
 ## Selection and scope
 
 Without an application choice, density is `adaptive`. With regular authored, viewport widths below
-`bp:md:1` (568 CSS px) select spacious, widths from 568 to below `bp:lg:1` (1152 CSS px)
+`bp:md:2` (768 CSS px) select spacious, widths from 768 to below `bp:lg:1` (1152 CSS px)
 select regular, and widths at or above 1152 select compact. A missing outer branch uses regular.
 Legacy compact/spacious maps without regular retain their single 1152 px transition.
 A single mapping must be regular and stays fixed. At least one destination must be md; regular

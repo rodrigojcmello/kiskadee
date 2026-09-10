@@ -12,7 +12,7 @@ export type DensityScaleMap =
 export type DensityScaleMapJSON = { c?: string; r?: string; s?: string };
 
 export const DEFAULT_DENSITY: Density = 'adaptive';
-export const REGULAR_DENSITY_BREAKPOINT = 'bp:md:1' as const;
+export const REGULAR_DENSITY_BREAKPOINT = 'bp:md:2' as const;
 export const DENSITY_BREAKPOINT = 'bp:lg:1' as const;
 
 /** Selects artifact classes, without inspecting the viewport or deriving dimensions. */

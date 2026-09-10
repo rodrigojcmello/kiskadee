@@ -104,8 +104,8 @@ it('emits disjoint regular/mobile ranges alongside legacy two-density aliases', 
   const maps = fixture();
   const aliases = compileDensityClassMaps(maps, { button: { c: 'sm:1', r: 'md:1', s: 'md:1' } });
   const css = appendDensityCss('.fm-small { width: 10px } .fm-medium { width: 20px }', aliases);
-  expect(css).toContain('(568px <= width < 1152px)');
-  expect(css).toContain('(width < 568px)');
+  expect(css).toContain('(768px <= width < 1152px)');
+  expect(css).toContain('(width < 768px)');
   expect(css).toContain('(width >= 1152px)');
   expect(css).toContain('.fm-medium-dr');
   expect(css).toContain('.fm-medium-dm');

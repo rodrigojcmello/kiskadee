@@ -387,5 +387,5 @@ remains independent. Separation outlines follow the actual Badge surface.
 ## Three-density selection
 
 The global map is compact=sm, regular=md, spacious=lg. Adaptive selection uses 24 px at
-1152 px and above, 34 px from 568 to below 1152 px, and 50 px below 568 px. Fixed sizes
+1152 px and above, 34 px from 768 to below 1152 px, and 50 px below 768 px. Fixed sizes
 retain their complete geometry and typography recipes. This is a Kiskadee adaptation.
