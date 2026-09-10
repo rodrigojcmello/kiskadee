@@ -126,7 +126,18 @@ export function createIos27AppleBadgeSchema({
             's:lg:1': 5,
             's:lg:2': 6
           },
-          borderRadius: { square: 0, rounded: 5, pill: 100 }
+          borderRadius: {
+            square: 0,
+            rounded: 5,
+            pill: {
+              's:sm:3': 6.5,
+              's:sm:2': 7,
+              's:sm:1': 7.5,
+              's:md:1': 8,
+              's:lg:1': 9,
+              's:lg:2': 10
+            }
+          }
         },
         palettes: { default: surfacePalettes() }
       },
@@ -152,7 +163,18 @@ export function createIos27AppleBadgeSchema({
           's:lg:1': 's:sm:3',
           's:lg:2': 's:md:1'
         },
-        scales: { borderRadius: { pill: 100 } },
+        scales: {
+          borderRadius: {
+            pill: {
+              's:sm:3': 4,
+              's:sm:2': 4,
+              's:sm:1': 4,
+              's:md:1': 5,
+              's:lg:1': 6,
+              's:lg:2': 10
+            }
+          }
+        },
         palettes: {
           default: themes((theme) => {
             const color = Object.fromEntries(
@@ -196,7 +218,16 @@ export function createIos27AppleBadgeSchema({
             's:lg:1': 16,
             's:lg:2': 20
           },
-          borderRadius: { pill: 100 }
+          borderRadius: {
+            pill: {
+              's:sm:3': 4,
+              's:sm:2': 5,
+              's:sm:1': 5,
+              's:md:1': 6,
+              's:lg:1': 8,
+              's:lg:2': 10
+            }
+          }
         },
         palettes: { default: surfacePalettes() }
       },
@@ -211,7 +242,18 @@ export function createIos27AppleBadgeSchema({
             's:lg:1': 1,
             's:lg:2': 2
           },
-          borderRadius: { square: 0, rounded: 5, pill: 100 }
+          borderRadius: {
+            square: 0,
+            rounded: 5,
+            pill: {
+              's:sm:3': 6.5,
+              's:sm:2': 7,
+              's:sm:1': 7.5,
+              's:md:1': 8,
+              's:lg:1': 9,
+              's:lg:2': 10
+            }
+          }
         },
         palettes: {
           default: themes(() => {

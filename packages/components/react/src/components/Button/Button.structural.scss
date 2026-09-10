@@ -53,6 +53,8 @@
 /*
  * extra element for e1 / x4
  * Anchors passive Badge content to a logical Button corner without intercepting input.
+ * Insets use r * (1 - 1/sqrt(2)): the circular corner at 45 degrees.
+ * The wrapper inherits the host radius before the Badge defines its own tokens.
  */
 .k-btn-x4 {
   pointer-events: none;
@@ -65,8 +67,8 @@
  * Places the Badge at the logical block-start and inline-start corner.
  */
 .k-btn-x4-block-start-inline-start {
-  inset-block-start: 0;
-  inset-inline-start: 0;
+  inset-block-start: calc(var(--k-bdr, 0px) * 0.2928932188);
+  inset-inline-start: calc(var(--k-bdr, 0px) * 0.2928932188);
   translate: -50% -50%;
 }
 
@@ -83,8 +85,8 @@
  * Places the Badge at the logical block-start and inline-end corner.
  */
 .k-btn-x4-block-start-inline-end {
-  inset-block-start: 0;
-  inset-inline-end: 0;
+  inset-block-start: calc(var(--k-bdr, 0px) * 0.2928932188);
+  inset-inline-end: calc(var(--k-bdr, 0px) * 0.2928932188);
   translate: 50% -50%;
 }
 
@@ -101,8 +103,8 @@
  * Places the Badge at the logical block-end and inline-start corner.
  */
 .k-btn-x4-block-end-inline-start {
-  inset-block-end: 0;
-  inset-inline-start: 0;
+  inset-block-end: calc(var(--k-bdr, 0px) * 0.2928932188);
+  inset-inline-start: calc(var(--k-bdr, 0px) * 0.2928932188);
   translate: -50% 50%;
 }
 
@@ -119,8 +121,8 @@
  * Places the Badge at the logical block-end and inline-end corner.
  */
 .k-btn-x4-block-end-inline-end {
-  inset-block-end: 0;
-  inset-inline-end: 0;
+  inset-block-end: calc(var(--k-bdr, 0px) * 0.2928932188);
+  inset-inline-end: calc(var(--k-bdr, 0px) * 0.2928932188);
   translate: 50% 50%;
 }
 

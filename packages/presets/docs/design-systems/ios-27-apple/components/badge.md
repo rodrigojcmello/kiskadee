@@ -149,3 +149,10 @@ Small sizes retain caption-small for legibility; lg uses caption-medium and lg2 
 Dot diameters are 8/10/10/12/16/20 px. Existing explicit size names therefore render more compactly;
 colors, placement rules, default density and Button geometry are unchanged.
 Shared Button/Badge composition examples follow preset density defaults, with no preset-specific branch.
+
+## Exact pill geometry (2026-09-10)
+
+Kiskadee adaptation: pill radius is authored per size as half the nominal surface height,
+without oversized CSS sentinel values. Square and rounded retain their existing recipes.
+Button external Badge anchors consume the Button radius in structural CSS; Badge radius
+remains independent. Separation outlines follow the actual Badge surface.

@@ -196,7 +196,7 @@ export function createIos27AppleButtonSchema({
           },
           borderRadius: {
             rounded: 6,
-            pill: 25,
+            pill: { 's:sm:1': 12, 's:md:1': 17, 's:lg:1': 25 },
             square: 0
           }
         },

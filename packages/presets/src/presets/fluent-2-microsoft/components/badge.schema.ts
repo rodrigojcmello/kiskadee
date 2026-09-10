@@ -260,7 +260,11 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
             's:md:1': 4,
             's:lg:1': 4
           },
-          borderRadius: { square: 0, rounded: 4, pill: 999 }
+          borderRadius: {
+            square: 0,
+            rounded: 4,
+            pill: { 's:sm:1': 7, 's:md:1': 8, 's:lg:1': 8 }
+          }
         },
         palettes: { default: themes(createSurfacePalette) }
       },
@@ -280,7 +284,7 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
           's:md:1': 's:md:1',
           's:lg:1': 's:lg:1'
         },
-        scales: { borderRadius: { pill: 999 } },
+        scales: { borderRadius: { pill: { 's:sm:1': 8, 's:md:1': 10, 's:lg:1': 12 } } },
         palettes: { default: themes((theme) => createTextPalette(theme, true)) }
       },
       e4: {
@@ -305,7 +309,7 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
             's:md:1': 10,
             's:lg:1': 10
           },
-          borderRadius: { pill: 999 }
+          borderRadius: { pill: { 's:sm:1': 5, 's:md:1': 5, 's:lg:1': 5 } }
         },
         palettes: { default: themes((theme) => createSurfacePalette(theme, true)) }
       },
@@ -317,7 +321,11 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
             's:md:1': 2,
             's:lg:1': 2
           },
-          borderRadius: { square: 0, rounded: 4, pill: 999 }
+          borderRadius: {
+            square: 0,
+            rounded: 4,
+            pill: { 's:sm:1': 7, 's:md:1': 8, 's:lg:1': 8 }
+          }
         },
         palettes: { default: themes(createSeparationPalette) }
       }

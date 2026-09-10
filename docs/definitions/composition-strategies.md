@@ -227,3 +227,11 @@ Do not add preset-name conditions in shared examples to compensate for a miscali
 Shared Showcase composition examples should follow preset density defaults. Do not pin host or
 child sizes merely to demonstrate composition; use explicit sizes when comparing sizes or when
 the example specifically requires one. Matching-size guidance does not override density defaults.
+
+### Button external Badge corner geometry
+
+The Button-owned overlay wrapper consumes the host radius, not the nested Badge radius.
+For a circular corner of radius r, both logical insets are r * (1 - 1/sqrt(2)), placing the
+Badge center on the 45-degree point of the contour. Square corners retain zero inset.
+RTL changes the outward inline translation, not the logical geometry. Inline relations
+continue to use e7 spacing. Presets author exact half-height pill radii per size.

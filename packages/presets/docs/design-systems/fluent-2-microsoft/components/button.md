@@ -947,3 +947,10 @@ changing the asset scales.
   tonal-scale defect.
 - Migrate the existing Switch on-primary appearance from its overloaded Low emphasis to the shared
   `surfaceContext="onVivid"` contract in a separate component-scoped change.
+
+## Exact pill geometry (2026-09-10)
+
+Kiskadee adaptation: pill radius is authored per size as half the nominal surface height,
+without oversized CSS sentinel values. Square and rounded retain their existing recipes.
+Button external Badge anchors consume the Button radius in structural CSS; Badge radius
+remains independent. Separation outlines follow the actual Badge surface.

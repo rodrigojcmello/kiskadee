@@ -234,3 +234,10 @@ inspiration rather than Apple source evidence. Presets remain free to omit the r
 - The disabled-host rule: Badge remains visible and in Rest when its host is disabled. This
   preserves information but may leave a vivid Badge over muted host chrome; the known gap remains
   documented in the normative Badge definition.
+
+## Exact pill geometry (2026-09-10)
+
+Kiskadee adaptation: pill radius is authored per size as half the nominal surface height,
+without oversized CSS sentinel values. Square and rounded retain their existing recipes.
+Button external Badge anchors consume the Button radius in structural CSS; Badge radius
+remains independent. Separation outlines follow the actual Badge surface.

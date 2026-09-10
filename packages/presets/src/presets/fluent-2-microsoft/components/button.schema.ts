@@ -534,7 +534,7 @@ export function createFluent2MicrosoftButtonSchema({
           },
           borderRadius: {
             rounded: 4,
-            pill: 4,
+            pill: { 's:sm:1': 12, 's:md:1': 16, 's:lg:1': 20 },
             square: 0
           }
         },

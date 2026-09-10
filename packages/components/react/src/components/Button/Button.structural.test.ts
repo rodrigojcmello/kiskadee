@@ -2,6 +2,19 @@ import * as sass from 'sass';
 import { describe, expect, it } from 'vitest';
 
 describe('Button structural CSS', () => {
+  it('anchors every external Badge corner using the host radius and logical axes', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
+    for (const block of ['start', 'end']) {
+      for (const inline of ['start', 'end']) {
+        const selector = `.k-btn-x4-block-${block}-inline-${inline}`;
+        const rule = css.slice(css.indexOf(`${selector} {`)).split('}')[0];
+        expect(rule).toContain(`inset-block-${block}: calc(var(--k-bdr, 0px)`);
+        expect(rule).toContain(`inset-inline-${inline}: calc(var(--k-bdr, 0px)`);
+        expect(css).toContain(`${selector}:dir(rtl)`);
+      }
+    }
+  });
+
   it('keeps inline Badge relations neutral in the Button block axis', () => {
     const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname, {
       style: 'expanded'

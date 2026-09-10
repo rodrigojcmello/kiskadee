@@ -296,7 +296,7 @@ font-weight adaptation. No other typography profile is changed. The 16 px Small 
 
 Small replaces the former iOS 28 px mapping. Medium 34 px and Large 50 px remain unchanged.
 `rounded` is 6 px; applying that radius to Medium/Large is a **Kiskadee extension**. `pill` stays
-25 px and `square` stays zero. Material's explicit compact-to-spacious scale ordering is retained;
+half the 24/34/50 px height (12/17/25 px) and `square` stays zero. Material's explicit compact-to-spacious scale ordering is retained;
 there is no automatic OS or breakpoint detection.
 
 ### Inspected Light source layers
@@ -376,3 +376,10 @@ Left and right padding are 4 px for Small and 6 px for Medium/Large, keeping a c
 separation between the label and passive metadata. Badge paint and typography remain
 owned by Badge; Button root padding and typography are unchanged. Overlay Badges do not
 use this relation, and Buttons without inline Badges do not gain a grouping wrapper.
+
+## Exact pill geometry (2026-09-10)
+
+Kiskadee adaptation: pill radius is authored per size as half the nominal surface height,
+without oversized CSS sentinel values. Square and rounded retain their existing recipes.
+Button external Badge anchors consume the Button radius in structural CSS; Badge radius
+remains independent. Separation outlines follow the actual Badge surface.
