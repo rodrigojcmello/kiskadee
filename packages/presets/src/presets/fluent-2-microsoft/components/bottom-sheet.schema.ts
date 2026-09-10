@@ -238,7 +238,7 @@ export function createFluent2MicrosoftBottomSheetSchema({
 
   return {
     options: {
-      density: { compact: 's:md:1' },
+      density: { regular: 's:md:1' },
       initialHeight: 'standard',
       swipeBehavior: 'expand-dismiss',
       pageTransition: 'slide',

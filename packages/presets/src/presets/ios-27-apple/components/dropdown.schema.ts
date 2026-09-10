@@ -99,7 +99,7 @@ export function createIos27AppleDropdownSchema({
       }
     },
     options: {
-      density: { spacious: 's:md:1' },
+      density: { regular: 's:md:1' },
       leadingIconComposition: 'item-and-selection',
       selectedItemBackground: false
     },

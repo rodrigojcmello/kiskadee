@@ -203,3 +203,10 @@ reuses its existing fixed recipes through a global compact/spacious mapping and 
 exceptions. A single-density component keeps its medium reference; no unsupported recipe is
 synthesized. Explicit public `size` selections remain independent of viewport width. See the
 [adaptive density contract](../../../../../docs/definitions/adaptive-density.md).
+
+## Regular density (2026-09-10)
+
+Kiskadee adaptation: global compact/regular/spacious maps to sm/md/lg without renaming recipes.
+Slider retains sm/md geometry and maps regular and spacious to md. Dropdown and BottomSheet
+publish only regular=md. Progress retains its existing compact/spacious override.
+No new Apple source dimensions are inferred by this selection policy.

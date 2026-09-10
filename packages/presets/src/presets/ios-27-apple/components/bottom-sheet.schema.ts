@@ -92,7 +92,7 @@ export function createIos27AppleBottomSheetSchema({
 
   return {
     options: {
-      density: { spacious: 's:md:1' },
+      density: { regular: 's:md:1' },
       initialHeight: 'standard',
       swipeBehavior: 'expand-dismiss',
       pageTransition: 'slide',

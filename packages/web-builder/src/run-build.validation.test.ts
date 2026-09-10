@@ -15,7 +15,7 @@ describe('build contract diagnostics', () => {
     {
       contract: 'density',
       schema: {
-        global: { density: { compact: 's:md:1' } },
+        global: { density: { regular: 's:md:1' } },
         components: { button: { options: { density: { spacious: 's:lg:1' } } } }
       },
       detail: 'components.button.options.density'

@@ -415,7 +415,7 @@ export function createMaterial3GoogleSwitchSchema(
       }
     },
     options: {
-      density: { spacious: 's:md:1' },
+      density: { regular: 's:md:1' },
       variant: 'standard'
     },
     variants: {

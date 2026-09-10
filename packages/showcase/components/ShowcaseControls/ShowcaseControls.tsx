@@ -77,12 +77,13 @@ export function ShowcaseRouteControls({
                 options={[
                   {
                     value: 'preset',
-                    label: `Preset default · ${densityMap.c && densityMap.s ? 'Adaptive' : densityMap.c ? 'Compact' : 'Spacious'}`
+                    label: `Preset default · ${Object.values(densityMap).filter(Boolean).length > 1 ? 'Adaptive' : densityMap.r ? 'Regular' : densityMap.c ? 'Compact' : 'Spacious'}`
                   },
-                  ...(densityMap.c && densityMap.s
+                  ...(Object.values(densityMap).filter(Boolean).length > 1
                     ? [{ value: 'adaptive', label: 'Adaptive' }]
                     : []),
                   ...(densityMap.c ? [{ value: 'compact', label: 'Compact' }] : []),
+                  ...(densityMap.r ? [{ value: 'regular', label: 'Regular' }] : []),
                   ...(densityMap.s ? [{ value: 'spacious', label: 'Spacious' }] : [])
                 ]}
                 onValueChange={(value) =>

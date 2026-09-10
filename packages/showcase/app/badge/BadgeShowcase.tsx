@@ -302,7 +302,13 @@ export default function BadgeShowcase() {
   );
   const metadataDensity =
     densityOverride ??
-    (densityMap?.c && densityMap?.s ? 'adaptive' : densityMap?.c ? 'compact' : 'spacious');
+    (Object.values(densityMap ?? {}).filter(Boolean).length > 1
+      ? 'adaptive'
+      : densityMap?.r
+        ? 'regular'
+        : densityMap?.c
+          ? 'compact'
+          : 'spacious');
   useEffect(() => {
     if (metadataScale && !activeMetadataScale) setMetadataScale(undefined);
   }, [metadataScale, activeMetadataScale]);

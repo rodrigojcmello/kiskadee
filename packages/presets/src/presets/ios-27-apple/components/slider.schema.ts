@@ -179,6 +179,7 @@ export function createIos27AppleSliderSchema({
       }
     },
     options: {
+      density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:md:1' },
       variant: 'standard',
       valueDisplay: 'none',
       marks: 'none',

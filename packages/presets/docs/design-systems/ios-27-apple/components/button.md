@@ -383,3 +383,9 @@ Kiskadee adaptation: pill radius is authored per size as half the nominal surfac
 without oversized CSS sentinel values. Square and rounded retain their existing recipes.
 Button external Badge anchors consume the Button radius in structural CSS; Badge radius
 remains independent. Separation outlines follow the actual Badge surface.
+
+## Three-density selection
+
+The global map is compact=sm, regular=md, spacious=lg. Adaptive selection uses 24 px at
+1152 px and above, 34 px from 568 to below 1152 px, and 50 px below 568 px. Fixed sizes
+retain their complete geometry and typography recipes. This is a Kiskadee adaptation.

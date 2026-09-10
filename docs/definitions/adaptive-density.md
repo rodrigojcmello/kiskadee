@@ -23,15 +23,15 @@ remain `s:sm:1`, `s:md:1`, and so on.
 Medium is the required central reference, not an absolute physical dimension and not the automatic
 default. Even a visually small component with one recipe uses `s:md:1`.
 
-`global.density` declares one or two mappings, for example:
+`global.density` declares one, two, or three mappings, for example:
 
 ```ts
-density: { compact: 's:sm:1', spacious: 's:md:1' }
+density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:lg:1' }
 ```
 
 `components.<name>.options.density` replaces the entire global map. One effective destination must
 be `s:md:1`; all referenced sizes must exist in each supported structural variant. Invalid maps
-fail the build. A single-density component can declare `{ spacious: 's:md:1' }`; no alternative
+fail the build. A single-density component can declare `{ regular: 's:md:1' }`; no alternative
 recipe is invented. Components without applicable size semantics do not consume density.
 
 Fixed recipes cannot contain viewport overrides. A recipe includes geometry, matching internal
@@ -41,10 +41,13 @@ independent of viewport width, not immune to browser zoom or user font enlargeme
 
 ## Selection and scope
 
-Without an application choice, density is `adaptive`. Two available mappings select spacious below
-the central breakpoint and compact at or above it. One mapping stays fixed. The initial central
-threshold is `bp:lg:1` (1152 CSS px), calibrated centrally by Kiskadee rather than exposed as a
-consumer option. DPR, pointer precision and operating system do not participate.
+Without an application choice, density is `adaptive`. With regular authored, viewport widths below
+`bp:md:1` (568 CSS px) select spacious, widths from 568 to below `bp:lg:1` (1152 CSS px)
+select regular, and widths at or above 1152 select compact. A missing outer branch uses regular.
+Legacy compact/spacious maps without regular retain their single 1152 px transition.
+A single mapping must be regular and stays fixed. At least one destination must be md; regular
+is not otherwise required to reference md. DPR, pointer precision and operating system do not
+participate. Explicit unavailable density selection falls back to regular, then compact, then spacious.
 
 React hosts may set `KiskadeeContextValue.density`. `DensityProvider value="compact"` overrides it
 for a subtree, including React portals. Precedence is explicit component `size`, nearest density
@@ -63,7 +66,7 @@ to applicable size maps, including opt-in radius/effect and structural projectio
 selection governs the entire recipe without activating optional buckets unconditionally.
 
 `global.kiskadee.json` publishes effective mappings once per component as
-`density.<component> = { c: 'sm:1', s: 'md:1' }`. References are never duplicated per element.
+`density.<component> = { c: 'sm:1', r: 'md:1', s: 'lg:1' }`. References are never duplicated per element.
 A missing mapping while resources load resolves to the medium reference; it does not manufacture
 unpublished density alternatives.
 

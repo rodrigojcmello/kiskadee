@@ -12,18 +12,18 @@ describe('density schema handoff', () => {
       global: { density: { compact: 's:sm:1', spacious: 's:md:1' } },
       components: {
         button: { elements: {} },
-        dropdown: { options: { density: { spacious: 's:md:1' } }, elements: {} }
+        dropdown: { options: { density: { regular: 's:md:1' } }, elements: {} }
       }
     } as unknown as Schema;
     expect(resolveSchemaDensityMaps(schema)).toEqual({
       button: { c: 'sm:1', s: 'md:1' },
-      dropdown: { s: 'md:1' }
+      dropdown: { r: 'md:1' }
     });
   });
 
   it('rejects invalid local mappings even when the global mapping is valid', () => {
     const schema = {
-      global: { density: { compact: 's:md:1' } },
+      global: { density: { regular: 's:md:1' } },
       components: { button: { options: { density: { compact: 's:sm:1' } } } }
     } as unknown as Schema;
     expect(() => resolveSchemaDensityMaps(schema)).toThrow('components.button.options.density');
@@ -31,7 +31,7 @@ describe('density schema handoff', () => {
 
   it('rejects viewport overrides nested inside a fixed size recipe', () => {
     const schema = {
-      global: { density: { compact: 's:md:1' } },
+      global: { density: { regular: 's:md:1' } },
       components: {
         button: { elements: { e1: { padding: { 's:md:1': { 'bp:all': 8, 'bp:lg:1': 4 } } } } }
       }
@@ -98,4 +98,18 @@ describe('density artifact lowering', () => {
       'unavailable size sm:2'
     );
   });
+});
+
+it('emits disjoint regular/mobile ranges alongside legacy two-density aliases', () => {
+  const maps = fixture();
+  const aliases = compileDensityClassMaps(maps, { button: { c: 'sm:1', r: 'md:1', s: 'md:1' } });
+  const css = appendDensityCss('.fm-small { width: 10px } .fm-medium { width: 20px }', aliases);
+  expect(css).toContain('(568px <= width < 1152px)');
+  expect(css).toContain('(width < 568px)');
+  expect(css).toContain('(width >= 1152px)');
+  expect(css).toContain('.fm-medium-dr');
+  expect(css).toContain('.fm-medium-dm');
+  const single = fixture();
+  compileDensityClassMaps(single, { button: { r: 'md:1' } });
+  expect(single.button.e1.s.a).toBe('fm-medium fm-shared');
 });

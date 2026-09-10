@@ -48,6 +48,7 @@ export default function ShowcaseShell({
   const requestedDensity = densityOverrides[pathname];
   const densityOverride =
     (requestedDensity === 'compact' && !densityMap?.c) ||
+    (requestedDensity === 'regular' && !densityMap?.r) ||
     (requestedDensity === 'spacious' && !densityMap?.s)
       ? undefined
       : requestedDensity;

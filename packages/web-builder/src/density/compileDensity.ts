@@ -4,6 +4,7 @@ import {
   DENSITY_BREAKPOINT,
   type DensityScaleMap,
   type DensityScaleMapJSON,
+  REGULAR_DENSITY_BREAKPOINT,
   type Schema
 } from '@kiskadee/core';
 import { parseDensityScaleMap } from '@kiskadee/core/density-contract';
@@ -63,6 +64,7 @@ export function resolveSchemaDensityMaps(schema: Schema): CompiledDensityMaps {
     }
     result[name] = {
       ...(map.compact ? { c: map.compact.slice(2) } : {}),
+      ...(map.regular ? { r: map.regular.slice(2) } : {}),
       ...(map.spacious ? { s: map.spacious.slice(2) } : {})
     };
   }
@@ -88,12 +90,17 @@ function visitElementMaps(
 export function compileDensityClassMaps(
   classMap: ComponentClassNameMapJSON,
   maps: CompiledDensityMaps
-): { compact: Map<string, string>; spacious: Map<string, string> } {
-  const aliases = { compact: new Map<string, string>(), spacious: new Map<string, string>() };
+) {
+  const aliases = {
+    compact: new Map<string, string>(),
+    spacious: new Map<string, string>(),
+    regular: new Map<string, string>(),
+    mobile: new Map<string, string>()
+  };
   const alias = (name: string, mode: keyof typeof aliases): string => {
     const current = aliases[mode].get(name);
     if (current) return current;
-    const result = `${name}-${mode === 'compact' ? 'dc' : 'ds'}`;
+    const result = `${name}-${{ compact: 'dc', spacious: 'ds', regular: 'dr', mobile: 'dm' }[mode]}`;
     aliases[mode].set(name, result);
     return result;
   };
@@ -103,17 +110,23 @@ export function compileDensityClassMaps(
       for (const value of Object.values(bucket)) addAdaptiveBucket(value, map);
       return;
     }
-    const compact = String(bucket[map.c ?? map.s!] ?? '')
-      .split(/\s+/)
-      .filter(Boolean);
-    const spacious = String(bucket[map.s ?? map.c!] ?? '')
-      .split(/\s+/)
-      .filter(Boolean);
-    const common = compact.filter((name) => spacious.includes(name));
+    const modes = map.r
+      ? { compact: map.c ?? map.r, regular: map.r, mobile: map.s ?? map.r }
+      : { compact: map.c ?? map.s!, spacious: map.s ?? map.c! };
+    const selections = Object.entries(modes).map(([mode, size]) => ({
+      mode: mode as keyof typeof aliases,
+      classes: String(bucket[size] ?? '')
+        .split(/\s+/)
+        .filter(Boolean)
+    }));
+    const common = selections[0].classes.filter((name) =>
+      selections.every(({ classes }) => classes.includes(name))
+    );
     const adaptive = [
       ...common,
-      ...compact.filter((name) => !common.includes(name)).map((name) => alias(name, 'compact')),
-      ...spacious.filter((name) => !common.includes(name)).map((name) => alias(name, 'spacious'))
+      ...selections.flatMap(({ mode, classes }) =>
+        classes.filter((name) => !common.includes(name)).map((name) => alias(name, mode))
+      )
     ].join(' ');
     if (adaptive) bucket.a = adaptive;
   };
@@ -179,16 +192,23 @@ export function appendDensityCss(
   css: string,
   aliases: ReturnType<typeof compileDensityClassMaps>
 ): string {
-  if (!aliases.compact.size && !aliases.spacious.size) return css;
+  if (Object.values(aliases).every((map) => !map.size)) return css;
   const root = postcss.parse(css);
   const width = breakpoints[DENSITY_BREAKPOINT]!;
-  for (const mode of ['compact', 'spacious'] as const) {
+  const regularWidth = breakpoints[REGULAR_DENSITY_BREAKPOINT]!;
+  const queries = {
+    compact: `(width >= ${width}px)`,
+    spacious: `(width < ${width}px)`,
+    regular: `(${regularWidth}px <= width < ${width}px)`,
+    mobile: `(width < ${regularWidth}px)`
+  };
+  for (const mode of ['compact', 'spacious', 'regular', 'mobile'] as const) {
     const nodes = cloneMatchingRules(root, aliases[mode]);
     if (!nodes.length) continue;
     root.append(
       postcss.atRule({
         name: 'media',
-        params: mode === 'compact' ? `(width >= ${width}px)` : `(width < ${width}px)`,
+        params: queries[mode],
         nodes
       })
     );

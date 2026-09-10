@@ -489,7 +489,7 @@ export function createFluent2MicrosoftSwitchSchema({
       }
     },
     options: {
-      density: { compact: 's:md:1' },
+      density: { regular: 's:md:1' },
       variant: 'standard',
       radius: 'pill',
       activationMotion: 'slow',
