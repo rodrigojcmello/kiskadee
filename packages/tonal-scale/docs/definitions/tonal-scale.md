@@ -21,7 +21,7 @@ Kiskadee has two independent choices:
 
 - the **theme** is `light` or `dark` and determines the L or D orientation,
   caps, lightness distribution, and contrast guard;
-- the **tonal profile** is `balanced` or `muted-darks` and determines only the
+- the **tonal profile** is `balanced`, `muted-darks`, or `vivid-lights` and determines only the
   chroma treatment applied to the already generated theme scale.
 
 In this document, "profile" without a qualifier means tonal profile. Light and
@@ -259,6 +259,50 @@ The rejected lab used the display name `Balanced` for an experimental
 `balanced` means the frozen approved output; the separate `muted-darks` id owns
 the new dark-chroma behavior.
 
+### Muted Darks + Vivid Lights
+
+`vivid-lights` is an experimental profile introduced in generator 0.8.0, refined in 0.8.1 and 0.8.2. The stable recipe ID remains `vivid-lights`.
+It preserves the Muted Darks transformation below the exact seed and increases
+chroma above the seed's physical lightness in both Light and Dark tracks.
+Caps, seed, anchor position and target lightness remain unchanged. Dark-side
+requested hue remains unchanged.
+
+For physical progress `t = (L - seedL) / (100 - seedL)` clamped to `[0, 1]`,
+the requested chroma is `C + max(0.45 * C, Cmax - C) * sin(pi * t)^2`,
+where C is Balanced emitted chroma and Cmax is the sRGB boundary at the shifted hue.
+Version 0.8.2 removes the fixed 45% gain ceiling; 45% is now a minimum requested
+amplitude, and available headroom can raise it further. The gain starts and ends smoothly at zero and peaks
+halfway from the seed to white. Actual gains are limited by sRGB and the same
+lightness/contrast cells used by Muted Darks. On the light side the emitted
+chroma direction guard prevents a reduction below Balanced; the dark-side
+reduction guard is unchanged. Constraint restoration may keep an original slot.
+
+Version 0.8.1 chooses a bounded hue trajectory as well as chroma gain. It
+scores offsets from -12 to +12 degrees in two-degree steps against sRGB chroma
+headroom at physical progress 0.5, 0.65 and 0.8. Version 0.8.2 removes the
+previous travel penalty of 0.0002 per degree. Zero wins unless an offset
+increases headroom. The 12-degree identity bound remains; sRGB mapping and
+contrast/lightness guards remain necessary for the existing HEX contract.
+One direction is chosen per seed, shared by both theme tracks. The actual
+requested shift follows `offset * sin(pi * t)^2`, returning smoothly to the
+seed hue near the anchor and white. Constraint restoration reduces both hue
+shift and chroma gain toward the canonical endpoint. `profileHueShift` records
+the requested shift after restoration; emitted hue can differ through 8-bit
+quantization. This is a family-independent gamut heuristic, not a fixed cyan
+bias or a guarantee of improvement for every hue. Neutral families remain
+excluded. Visual acceptance remains separate from mathematical validity.
+
+Diagnostics retain reduction/restoration metrics and add `profileChromaIncrease`
+per transformed color and `maxProfileChromaIncrease` per scale for this profile.
+These extra fields are not added to the existing profiles' output.
+
+Multifamily generation excludes `n.black.*` from the light boost by resolving
+those families with Muted Darks. Standalone achromatic seeds remain achromatic;
+standalone chromatic inputs receive the selected profile without preset semantics.
+Support-family surface alignment and Dark harmony moderation remain active, so
+an isolated gain does not guarantee the same gain after multifamily composition.
+This profile does not promote or modify any approved preset asset.
+
 ## Emitted Curve Continuity
 
 Continuity is evaluated from emitted eight-bit sRGB colors, not only from the
@@ -327,11 +371,11 @@ migration remain explicitly outside this package's current boundary. They
 require a future integration plan and must not change this low-level contract
 implicitly.
 
-The local single-scale CLI continues to accept `balanced` or `muted-darks` for
+The local single-scale CLI continues to accept `balanced`, `muted-darks`, or `vivid-lights` for
 direct scale inspection:
 
 ```txt
-pnpm generate <hex> [light|dark|both] [balanced|muted-darks]
+pnpm generate <hex> [light|dark|both] [balanced|muted-darks|vivid-lights]
 ```
 
 The omitted theme defaults to `both`; the omitted tonal profile defaults to

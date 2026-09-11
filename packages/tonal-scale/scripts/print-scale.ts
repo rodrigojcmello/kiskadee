@@ -6,7 +6,7 @@ import {
 
 type ThemeArgument = 'light' | 'dark' | 'both';
 
-const usage = 'Usage: pnpm generate <hex> [light|dark|both] [balanced|muted-darks]';
+const usage = 'Usage: pnpm generate <hex> [light|dark|both] [balanced|muted-darks|vivid-lights]';
 const [seedHex, themeArgument = 'both', profileArgument = 'balanced', ...unexpectedArguments] =
   process.argv.slice(2);
 

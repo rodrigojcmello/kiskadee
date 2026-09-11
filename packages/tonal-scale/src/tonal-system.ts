@@ -910,15 +910,52 @@ export type FailedKiskadeeTonalSystem = {
 
 export type KiskadeeTonalSystemResult = ResolvedKiskadeeTonalSystem | FailedKiskadeeTonalSystem;
 
+export type TonalMediumReference = Omit<TonalFunctionalReference, 'source'> & {
+  source: 'midpoint';
+};
+
+export function resolveMediumTone(subtle: KiskadeeTone, vivid: KiskadeeTone): KiskadeeTone {
+  const start = KISKADEE_TONES.indexOf(subtle);
+  const end = KISKADEE_TONES.indexOf(vivid);
+  if (start < 0 || end < 0) throw new Error('Functional anchors must use public tonal positions.');
+  return KISKADEE_TONES[start + Math.trunc((end - start) / 2)];
+}
+
+export function resolveTonalFunctionalReference(
+  system: ResolvedKiskadeeTonalSystem,
+  familyId: TonalFamilyId,
+  theme: KiskadeeTheme,
+  kind: 'medium'
+): TonalMediumReference;
 export function resolveTonalFunctionalReference(
   system: ResolvedKiskadeeTonalSystem,
   familyId: TonalFamilyId,
   theme: KiskadeeTheme,
   kind: 'vivid' | 'subtle'
-): TonalFunctionalReference {
+): TonalFunctionalReference;
+export function resolveTonalFunctionalReference(
+  system: ResolvedKiskadeeTonalSystem,
+  familyId: TonalFamilyId,
+  theme: KiskadeeTheme,
+  kind: 'vivid' | 'subtle' | 'medium'
+): TonalFunctionalReference | TonalMediumReference {
   const family = system.functionalReferences.find((candidate) => candidate.id === familyId);
   if (!family) throw new Error(`Functional references are missing for ${familyId}.`);
-  return family[theme][kind];
+  if (kind !== 'medium') return family[theme][kind];
+  const tone = resolveMediumTone(family[theme].subtle.tone, family[theme].vivid.tone);
+  const color = system.families
+    .find((candidate) => candidate.id === familyId)
+    ?.themes[theme].scale.colors.find((candidate) => candidate.tone === tone);
+  if (!color) throw new Error(`Medium reference is missing from ${familyId} ${theme}.`);
+  const surfaceHex = resolveThemeSurfaceHex(theme);
+  return {
+    tone,
+    hex: color.hex,
+    color,
+    source: 'midpoint',
+    surfaceContrast: contrastRatio(color.hex, surfaceHex),
+    surfaceDeltaE: deltaEOk(color.oklch, hexToOklch(surfaceHex))
+  };
 }
 
 type RankedHarmonyCandidate = {
@@ -4044,6 +4081,14 @@ function resolveConfiguredFamilyTheme(params: {
     recipe,
     issues
   } = params;
+
+  // Neutral identity does not acquire the chromatic light-side boost.
+  if (familyKind === 'achromatic' && recipe.tonalProfile === 'vivid-lights') {
+    return resolveConfiguredFamilyTheme({
+      ...params,
+      recipe: { ...recipe, tonalProfile: 'muted-darks' }
+    });
+  }
 
   if (policy === 'harmonized') {
     return resolveHarmonizedTheme({

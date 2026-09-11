@@ -50,3 +50,7 @@ never recolor the generated scale.
 
 The standalone artifact format is `1`. Package `0.6.0` adds this format without
 changing the low-level Kiskadee scale algorithm or its Balanced goldens.
+
+Generator `0.8.0` adds `vivid-lights` support and advances the serializer/verifier
+identity while keeping format `1`. Existing profiles retain their scale colors;
+new exports use the new generator identity. See [tonal profiles](./tonal-scale.md#tonal-profiles).

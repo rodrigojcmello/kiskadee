@@ -619,11 +619,10 @@ dd {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(36, minmax(0, 1fr));
-  border-top: 1px solid var(--border);
-  padding-top: 18px;
 }
 
 .swatch {
+  position: relative;
   display: grid;
   min-width: 0;
   min-height: 112px;
@@ -639,7 +638,7 @@ dd {
 
 .swatch.anchor::before {
   position: absolute;
-  top: -13px;
+  top: -8px;
   left: 50%;
   width: 0;
   height: 0;
@@ -656,15 +655,16 @@ dd {
 
 .swatch.rest::after {
   position: absolute;
-  top: 4px;
+  top: 0;
   left: 50%;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
   content: "";
   opacity: 0.72;
   transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-right: 4px solid transparent;
+  border-bottom: 7px solid currentColor;
+  border-left: 4px solid transparent;
 }
 
 .swatch.vivid-reference,
@@ -1173,10 +1173,11 @@ dd {
 }
 
 .overview-marker-legend .rest-marker {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--text);
+  width: 0;
+  height: 0;
+  border-right: 4px solid transparent;
+  border-bottom: 7px solid var(--text);
+  border-left: 4px solid transparent;
 }
 
 .overview-marker-legend .vivid-marker {
@@ -1239,7 +1240,7 @@ dd {
 
 .overview-scale-row {
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) 72px;
+  grid-template-columns: 22px minmax(0, 1fr) 112px;
   gap: 9px;
   align-items: center;
   padding: 0 14px 10px;
@@ -1285,7 +1286,7 @@ dd {
 .overview-strip i.anchor::before {
   position: absolute;
   z-index: 1;
-  top: -7px;
+  top: -6px;
   left: 50%;
   width: 0;
   height: 0;
@@ -1299,15 +1300,15 @@ dd {
 .overview-strip i.rest::after {
   position: absolute;
   z-index: 1;
-  top: 4px;
+  top: 0;
   left: 50%;
-  width: 7px;
-  height: 7px;
-  border: 1px solid color-mix(in srgb, var(--overview-marker) 70%, transparent);
-  border-radius: 50%;
-  background: var(--overview-marker);
   content: "";
   transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-right: 4px solid transparent;
+  border-bottom: 7px solid var(--overview-marker);
+  border-left: 4px solid transparent;
 }
 
 .overview-strip .vivid-reference-marker {
@@ -1496,6 +1497,7 @@ dd {
 
 @media (max-width: 900px) {
   .swatch {
+    position: relative;
     min-height: 88px;
     padding-inline: 0;
   }
@@ -1576,6 +1578,7 @@ dd {
   }
 
   .swatch {
+    position: relative;
     min-height: 88px;
     padding-inline: 0;
   }

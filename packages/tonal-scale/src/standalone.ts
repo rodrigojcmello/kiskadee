@@ -14,7 +14,7 @@ import {
 
 export const STANDALONE_TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.6.0'
+  version: '0.8.2'
 } as const;
 
 export const STANDALONE_TONAL_GRID_CONTRACT = 'kiskadee-tonal-v1' as const;

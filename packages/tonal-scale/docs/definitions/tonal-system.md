@@ -87,7 +87,7 @@ Format 5 contains:
   `v1` through `v4` variant, and Light/Dark policy;
 - zero or more chromatic overrides or explicit `n.black.v2` through
   `n.black.v4` neutral variants;
-- one tonal profile (`balanced` or `muted-darks`);
+- one tonal profile (`balanced`, `muted-darks`, or `vivid-lights`);
 - automatic or locked Light/Dark rest positions;
 - sparse per-family Light/Dark vivid and subtle reference rules;
 - `kiskadee-tonal-v1` grid and `kiskadee-munsell-rest-v1` harmony contracts.
@@ -769,6 +769,19 @@ tone lies closer to the Orange prototype. This changes the multifamily generator
 identity to `0.7.0`; the independent standalone artifact generator remains
 `0.6.0` because neither its bytes nor its verifier contract changed.
 
+Generator `0.8.0` adds the optional `vivid-lights` profile. Existing profile
+color output remains unchanged. Both multifamily and standalone generator
+identities advance to `0.8.0` because both now serialize and verify the new
+profile. Format V5 and the standalone format version remain unchanged.
+Black families resolve using Muted Darks and retain their existing neutral
+trajectory; they do not receive the light-side chroma gain. The profile is a
+candidate for inspection, not preset promotion. Existing preset evidence and
+approved assets retain their historical provenance during this isolated delivery.
+
+Generator `0.8.1` refines the experimental Muted Darks + Vivid Lights profile with bounded,
+seed-relative hue travel on its physical light side. Both serializers advance
+to 0.8.1. Existing Balanced and Muted Darks color output remains unchanged.
+
 Format V5 remains package-local until its neutral scales receive explicit
 visual approval. Preset Shared Viewer links, approved assets, and preset
 evidence therefore intentionally remain on their last approved generator
@@ -785,3 +798,35 @@ positions, choose any semantic mapping for `n.black.v1` through
 evidence motivates the ability to preserve tinted neutral identities, but this
 package does not encode either Design System's semantic roles or asset
 provenance.
+
+### Expanded light chroma candidate (0.8.2)
+
+The display label is `Muted Darks + Vivid Lights`; the serialized ID remains
+`vivid-lights` for recipe/link compatibility. Light chroma can now exceed the
+former 45% requested gain ceiling by using available headroom, and hue selection
+no longer penalizes travel. The seed, Muted Darks branch, neutral exclusion and
+HEX output contract remain unchanged. See `tonal-scale.md` for the formula.
+
+### Derived medium anchor (0.9.0)
+
+`resolveTonalFunctionalReference(system, family, theme, 'medium')` selects the
+middle public position between the resolved subtle and vivid references. Count
+positions in `KISKADEE_TONES`, not numeric tone values or perceptual distances.
+An odd distance rounds toward subtle; coincident anchors remain coincident.
+For S4/V50 the result is M18; for S4/V40 the result is M16.
+
+Medium has source `midpoint`. It is computed from the final emitted family/theme
+and cannot be authored or locked independently. Existing recipe links remain
+valid. Consumption assets and diagnostics include medium; locked source recipes
+retain subtle/vivid, from which replay derives medium deterministically.
+No color generation, offset semantics, Core schema or preset assets change.
+
+Inspection strips use one identical diamond marker for each distinct functional
+anchor position, with names in tooltips and S/M/V labels. Coincident references
+share a marker, not a displaced or fictitious position. Generated seed anchors retain triangle markers and harmony-rest checkpoints
+retain upward triangle markers alongside the three functional diamonds. Their data also
+remains in detailed inspection.
+
+Package and multifamily artifact generator are 0.9.0. The unchanged standalone
+artifact contract retains generator 0.8.2. Preset version-label audit discrepancies
+remain deferred while preset files are outside this delivery's scope.

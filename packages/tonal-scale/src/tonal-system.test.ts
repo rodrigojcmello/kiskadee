@@ -18,6 +18,7 @@ import {
   type KiskadeeTonalSystemResult,
   MUNSELL_HARMONY_V1_PARAMETERS,
   type ResolvedKiskadeeTonalSystem,
+  resolveMediumTone,
   resolveTonalFunctionalReference,
   SURFACE_TRACK_CHROMA_ALIGNMENT_V1_PARAMETERS,
   TINTED_ACHROMATIC_CHROMA_V1_PARAMETERS
@@ -306,6 +307,31 @@ const PRIMARY_IDENTITY_REGRESSION_CASES = TONAL_PROFILES.flatMap((tonalProfile) 
 );
 
 const THEMES = ['light', 'dark'] as const satisfies readonly KiskadeeTheme[];
+
+describe('Vivid Lights family composition', () => {
+  it('generates the Fluent inputs while excluding both neutral families from the boost', () => {
+    const recipe = createFluentAlignmentRecipe();
+    const muted = generateKiskadeeTonalSystem(recipe);
+    expectResolved(muted);
+    recipe.tonalProfile = 'vivid-lights';
+    const vivid = generateKiskadeeTonalSystem(recipe);
+    expectResolved(vivid);
+    for (const id of ['n.black.v1', 'n.black.v2'] as const) {
+      for (const theme of ['light', 'dark'] as const) {
+        expect(resolveFamily(vivid, id).themes[theme].scale.colors.map((c) => c.hex)).toEqual(
+          resolveFamily(muted, id).themes[theme].scale.colors.map((c) => c.hex)
+        );
+      }
+    }
+    expect(
+      resolveFamily(vivid, 'b.blue.v1').themes.light.scale.colors.some(
+        (color, index) =>
+          color.oklch.c >
+          resolveFamily(muted, 'b.blue.v1').themes.light.scale.colors[index].oklch.c + 0.001
+      )
+    ).toBe(true);
+  }, 30000);
+});
 
 describe('generateKiskadeeTonalSystem v5', () => {
   it.each(
@@ -1594,5 +1620,34 @@ describe('generateKiskadeeTonalSystem v5', () => {
     expectResolved(first);
     expectResolved(second);
     expect(second).toEqual(first);
+  });
+});
+
+describe('derived medium anchor', () => {
+  it('counts public positions and resolves ties toward subtle', () => {
+    expect(resolveMediumTone(4, 50)).toBe(18);
+    expect(resolveMediumTone(4, 40)).toBe(16);
+    expect(resolveMediumTone(4, 45)).toBe(16);
+    expect(resolveMediumTone(1, 1)).toBe(1);
+    expect(resolveMediumTone(4, 5)).toBe(4);
+  });
+
+  it('selects existing colors for every family and theme without mutating the system', () => {
+    const result = generateKiskadeeTonalSystem(createRecipe());
+    if (!result.valid) throw new Error('Expected valid system');
+    const before = JSON.stringify(result);
+    for (const family of result.families)
+      for (const theme of ['light', 'dark'] as const) {
+        const subtle = resolveTonalFunctionalReference(result, family.id, theme, 'subtle');
+        const vivid = resolveTonalFunctionalReference(result, family.id, theme, 'vivid');
+        const medium = resolveTonalFunctionalReference(result, family.id, theme, 'medium');
+        expect(medium.tone).toBe(resolveMediumTone(subtle.tone, vivid.tone));
+        expect(medium.color).toBe(
+          family.themes[theme].scale.colors.find((c) => c.tone === medium.tone)
+        );
+        expect(medium.hex).toBe(medium.color.hex);
+        expect(medium.source).toBe('midpoint');
+      }
+    expect(JSON.stringify(result)).toBe(before);
   });
 });

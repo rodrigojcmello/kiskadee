@@ -54,6 +54,19 @@ describe('standalone tonal family artifact v1', () => {
     );
   });
 
+  it('replays Vivid Lights with its declared generator and exact source anchors', async () => {
+    const artifact = await generateStandaloneKiskadeeTonalFamily({
+      seedHex: '#0064b4',
+      tonalProfile: 'vivid-lights',
+      ...SOURCE_EXACT
+    });
+    expect(artifact.generatedAnchors.light.hex).toBe('#0064b4');
+    expect(artifact.generatedAnchors.dark.hex).toBe('#0064b4');
+    await expect(verifyStandaloneKiskadeeTonalFamilyArtifact(artifact)).resolves.toMatchObject({
+      valid: true
+    });
+  });
+
   it('keeps absolute black at both generated caps while emitting usable vivid references', async () => {
     const artifact = await generateStandaloneKiskadeeTonalFamily({
       seedHex: '#000000',

@@ -17,6 +17,7 @@ import {
   type ResolvedKiskadeeTonalSystem,
   type ResolvedTonalFamily,
   type ResolvedTonalTheme,
+  resolveMediumTone,
   resolveTonalFunctionalReference,
   type TonalFunctionalReference
 } from '@/src/tonal-system';
@@ -408,7 +409,9 @@ function ScaleWorkspace({
           <p>
             {tonalProfile === 'balanced'
               ? 'Light and dark use the canonical chroma trajectory with theme-relative lightness distributions.'
-              : 'Lightness geometry stays canonical while chroma is reduced only on the physically dark side of the seed.'}{' '}
+              : tonalProfile === 'vivid-lights'
+                ? 'Dark tones retain reduced chroma; physically light tones gain vividness with bounded hue shifts within sRGB limits.'
+                : 'Lightness geometry stays canonical while chroma is reduced only on the physically dark side of the seed.'}{' '}
             Dashed lines show nominal lightness targets before exact-anchor adaptation.
           </p>
         </div>
@@ -436,8 +439,8 @@ function ScaleWorkspace({
         <div className="section-heading">
           <h2 id="slot-details-title">Slot details</h2>
           <p>
-            Inspect actual deltas, nominal deviation, profile attenuation, constraint restoration,
-            guard contrast and gamut loss.
+            Inspect actual deltas, nominal deviation, profile chroma adjustment, constraint
+            restoration, guard contrast and gamut loss.
           </p>
         </div>
         <div className="scale-stack">
@@ -642,9 +645,9 @@ function ScaleOverview({
       <div className="section-heading">
         <h2 id="scale-overview-title">System scale overview</h2>
         <p>
-          Every row uses the same 36 public positions. The triangle marks the generated anchor; the
-          dot marks the shared harmony-rest checkpoint; the diamond marks the vivid reference; the
-          hollow square marks the subtle reference.
+          Every row uses the same 36 public positions. Identical markers show subtle, medium and
+          vivid anchors. The downward triangle marks the generated anchor; the upward triangle marks
+          harmony rest. Medium is halfway by position count, with ties toward subtle.
         </p>
       </div>
       <div className="overview-marker-legend">
@@ -654,13 +657,8 @@ function ScaleOverview({
         <span>
           <i className="rest-marker" aria-hidden="true" /> Harmony rest
         </span>
-        <span>
-          <i className="vivid-marker" aria-hidden="true" /> Vivid reference
-        </span>
-        <span>
-          <i className="subtle-marker" aria-hidden="true" /> Subtle reference
-        </span>
-        <small>Functional references point into emitted scales and never recolor them.</small>
+        <span>◆ Subtle · Medium · Vivid</span>
+        <small>Anchors point into emitted scales and never recolor them.</small>
       </div>
       <div className="overview-stack">
         {system.families.map((family) => (
@@ -700,6 +698,7 @@ function CompactScaleStrip({
   const generatedAnchorTone = resolution.scale.anchorTone;
   const vividReference = resolveTonalFunctionalReference(system, family.id, theme, 'vivid');
   const subtleReference = resolveTonalFunctionalReference(system, family.id, theme, 'subtle');
+  const mediumReference = resolveTonalFunctionalReference(system, family.id, theme, 'medium');
 
   return (
     <div className="overview-scale-row">
@@ -707,24 +706,26 @@ function CompactScaleStrip({
       <div
         className="overview-strip"
         role="img"
-        aria-label={`${capitalize(theme)} scale. Generated anchor ${generatedAnchorTone === null ? 'unavailable' : `${prefix}${generatedAnchorTone}`}. Harmony rest ${prefix}${resolution.restTone}. Vivid reference ${prefix}${vividReference.tone}. Subtle reference ${prefix}${subtleReference.tone}.`}
+        aria-label={`${capitalize(theme)} scale. Generated anchor ${generatedAnchorTone === null ? 'unavailable' : `${prefix}${generatedAnchorTone}`}. Harmony rest ${prefix}${resolution.restTone}. Medium reference ${prefix}${mediumReference.tone}. Vivid reference ${prefix}${vividReference.tone}. Subtle reference ${prefix}${subtleReference.tone}.`}
       >
         {resolution.scale.colors.map((color) => {
           const isAnchor = color.flags.isAnchor;
           const isHarmonyRest = color.tone === resolution.restTone;
+          const isMediumReference = color.tone === mediumReference.tone;
           const isVividReference = color.tone === vividReference.tone;
           const isSubtleReference = color.tone === subtleReference.tone;
           const markerLabels = [
             isAnchor ? 'generated anchor' : null,
             isHarmonyRest ? 'harmony rest' : null,
+            isMediumReference ? 'medium reference' : null,
             isVividReference ? 'vivid reference' : null,
             isSubtleReference ? 'subtle reference' : null
           ].filter((label): label is string => label !== null);
 
           return (
             <i
-              key={color.tone}
               className={`${isAnchor ? 'anchor' : ''}${isHarmonyRest ? ' rest' : ''}`.trim()}
+              key={color.tone}
               style={
                 {
                   '--overview-color': color.hex,
@@ -733,16 +734,17 @@ function CompactScaleStrip({
               }
               title={`${prefix}${color.tone} · ${color.hex}${markerLabels.length > 0 ? ` · ${markerLabels.join(' + ')}` : ''}`}
             >
-              {isVividReference ? <span className="vivid-reference-marker" /> : null}
-              {isSubtleReference ? <span className="subtle-reference-marker" /> : null}
+              {isVividReference || isSubtleReference || isMediumReference ? (
+                <span className="vivid-reference-marker" />
+              ) : null}
             </i>
           );
         })}
       </div>
       <code
-        title={`Vivid ${prefix}${vividReference.tone} ${vividReference.hex}; subtle ${prefix}${subtleReference.tone} ${subtleReference.hex}`}
+        title={`Medium ${prefix}${mediumReference.tone} ${mediumReference.hex}; vivid ${prefix}${vividReference.tone} ${vividReference.hex}; subtle ${prefix}${subtleReference.tone} ${subtleReference.hex}`}
       >
-        V{vividReference.tone} · S{subtleReference.tone}
+        S{subtleReference.tone} · M{mediumReference.tone} · V{vividReference.tone}
       </code>
     </div>
   );
@@ -1027,7 +1029,7 @@ function TonalScalePanel({
       <div className="scale-panel-header">
         <div>
           <span className="theme-kicker">{theme} scale</span>
-          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · harmony rest ${prefix}${harmonyRestTone} · vivid ${prefix}${vividTone} · subtle ${prefix}${subtleTone}`}</h3>
+          <h3>{`${prefix}0 → ${prefix}100 · anchor ${prefix}${result.anchorTone} · harmony rest ${prefix}${harmonyRestTone} · subtle ${prefix}${subtleTone} · medium ${prefix}${resolveMediumTone(subtleTone, vividTone)} · vivid ${prefix}${vividTone}`}</h3>
           <p className="scale-guard-note">
             <strong>{prefix}35</strong>
             {` · ${guardForegroundLabel} 3:1 guard starts${guardRatio === null ? '' : ` (${guardRatio.toFixed(2)}:1)`} · swatch labels use max contrast`}
@@ -1038,7 +1040,7 @@ function TonalScalePanel({
       <div
         className="scale-strip"
         role="img"
-        aria-label={`${capitalize(theme)} full scale. Generated anchor ${result.anchorTone === null ? 'unavailable' : `${prefix}${result.anchorTone}`}. Harmony rest ${prefix}${harmonyRestTone}. Vivid reference ${prefix}${vividTone}. Subtle reference ${prefix}${subtleTone}.`}
+        aria-label={`${capitalize(theme)} full scale. Generated anchor ${result.anchorTone === null ? 'unavailable' : `${prefix}${result.anchorTone}`}. Harmony rest ${prefix}${harmonyRestTone}. Medium reference ${prefix}${resolveMediumTone(subtleTone, vividTone)}. Vivid reference ${prefix}${vividTone}. Subtle reference ${prefix}${subtleTone}.`}
       >
         {result.colors.map((color) => (
           <Swatch
@@ -1048,6 +1050,7 @@ function TonalScalePanel({
             isHarmonyRest={color.tone === harmonyRestTone}
             isVividReference={color.tone === vividTone}
             isSubtleReference={color.tone === subtleTone}
+            isMediumReference={color.tone === resolveMediumTone(subtleTone, vividTone)}
           />
         ))}
       </div>
@@ -1060,13 +1063,15 @@ function Swatch({
   prefix,
   isHarmonyRest,
   isVividReference,
-  isSubtleReference
+  isSubtleReference,
+  isMediumReference
 }: {
   color: ScaleColor;
   prefix: 'L' | 'D';
   isHarmonyRest: boolean;
   isVividReference: boolean;
   isSubtleReference: boolean;
+  isMediumReference: boolean;
 }) {
   const blackContrast = contrastRatio(color.hex, '#000000');
   const whiteContrast = contrastRatio(color.hex, '#ffffff');
@@ -1077,15 +1082,12 @@ function Swatch({
 
   return (
     <div
-      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}${isHarmonyRest ? ' rest' : ''}${isVividReference ? ' vivid-reference' : ''}${isSubtleReference ? ' subtle-reference' : ''}`}
+      className={`swatch${color.flags.isAnchor ? ' anchor' : ''}${isHarmonyRest ? ' rest' : ''}`}
       style={style}
-      title={`${prefix}${color.tone} · ${color.hex}${color.flags.isAnchor ? ' · generated anchor' : ''}${isHarmonyRest ? ' · harmony rest' : ''}${isVividReference ? ' · vivid reference' : ''}${isSubtleReference ? ' · subtle reference' : ''} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
+      title={`${prefix}${color.tone} · ${color.hex}${color.flags.isAnchor ? ' · generated anchor' : ''}${isHarmonyRest ? ' · harmony rest' : ''}${isVividReference ? ' · vivid reference' : ''}${isSubtleReference ? ' · subtle reference' : ''}${isMediumReference ? ' · medium reference' : ''} · black ${blackContrast.toFixed(2)}:1 · white ${whiteContrast.toFixed(2)}:1`}
     >
-      {isVividReference ? (
+      {isVividReference || isSubtleReference || isMediumReference ? (
         <span className="swatch-vivid-reference-marker" aria-hidden="true" />
-      ) : null}
-      {isSubtleReference ? (
-        <span className="swatch-subtle-reference-marker" aria-hidden="true" />
       ) : null}
       <span className="swatch-tone">
         {prefix}
@@ -1261,15 +1263,20 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
           text: `${capitalize(resolution.policy)} policy resolved ${resolution.sourceSeedHex} to generated anchor ${resolution.effectiveSeedHex} at ${prefix}${result.anchorTone}; harmony rest is ${resolution.restColor.hex} at ${prefix}${resolution.restTone}.`,
           ok: resolution.status === 'pass'
         },
-    diagnostics.profile === 'muted-darks'
+    diagnostics.profile === 'vivid-lights'
       ? {
-          text: `${diagnostics.profileChromaAdjustedCount} physically dark slot${diagnostics.profileChromaAdjustedCount === 1 ? '' : 's'} received intentional profile chroma reduction (max ${diagnostics.maxProfileChromaReduction.toFixed(4)}).`,
+          text: `Muted Darks + Vivid Lights: maximum chroma gain ${(diagnostics.maxProfileChromaIncrease ?? 0).toFixed(4)} on physically light tones; maximum dark reduction ${diagnostics.maxProfileChromaReduction.toFixed(4)}.`,
           ok: true
         }
-      : {
-          text: 'Balanced uses the frozen canonical chroma trajectory without profile attenuation.',
-          ok: true
-        },
+      : diagnostics.profile === 'muted-darks'
+        ? {
+            text: `${diagnostics.profileChromaAdjustedCount} physically dark slot${diagnostics.profileChromaAdjustedCount === 1 ? '' : 's'} received intentional profile chroma reduction (max ${diagnostics.maxProfileChromaReduction.toFixed(4)}).`,
+            ok: true
+          }
+        : {
+            text: 'Balanced uses the frozen canonical chroma trajectory without profile chroma adjustment.',
+            ok: true
+          },
     diagnostics.gamutMappedCount > 0
       ? {
           text: `${diagnostics.gamutMappedCount} slot${diagnostics.gamutMappedCount === 1 ? '' : 's'} fitted to sRGB by chroma reduction.`,
@@ -1278,11 +1285,11 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
       : { text: 'Every generated target was already inside sRGB.', ok: true }
   ];
 
-  if (diagnostics.profile === 'muted-darks') {
+  if (diagnostics.profile !== 'balanced') {
     notes.push({
       text: diagnostics.anchorChromaProtected
-        ? 'The exact seed anchor is excluded from profile attenuation.'
-        : 'The achromatic seed anchor has no chroma to protect from profile attenuation.',
+        ? 'The exact seed anchor is excluded from profile chroma adjustment.'
+        : 'The achromatic seed anchor has no chroma to protect from profile chroma adjustment.',
       ok: true
     });
   }
@@ -1479,8 +1486,20 @@ function DiagnosticsPanel({ theme, resolution }: { theme: Theme; resolution: Res
                 : 'Achromatic'
           }
         />
-        <Metric label="Max profile ΔC" value={diagnostics.maxProfileChromaReduction.toFixed(4)} />
-        <Metric label="Mean profile ΔC" value={diagnostics.meanProfileChromaReduction.toFixed(4)} />
+        <Metric
+          label="Max chroma reduction"
+          value={diagnostics.maxProfileChromaReduction.toFixed(4)}
+        />
+        {diagnostics.profile === 'vivid-lights' && (
+          <Metric
+            label="Max chroma gain"
+            value={(diagnostics.maxProfileChromaIncrease ?? 0).toFixed(4)}
+          />
+        )}
+        <Metric
+          label="Mean chroma reduction"
+          value={diagnostics.meanProfileChromaReduction.toFixed(4)}
+        />
         <Metric label="Gamut mapped" value={String(diagnostics.gamutMappedCount)} />
         <Metric label="Max gamut ΔC" value={diagnostics.maxGamutChromaLoss.toFixed(4)} />
         <Metric label="Max emitted ΔE" value={continuity.maxAdjacentDeltaE.toFixed(3)} />
@@ -1593,7 +1612,8 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
               <th>ΔE prev</th>
               <th>Nominal ΔL</th>
               <th>Contrast vs {theme === 'light' ? 'white' : 'black'}</th>
-              <th>Profile ΔC</th>
+              <th>Profile ΔC (+gain / -reduction)</th>
+              <th>Profile hue Δ</th>
               <th>Restore</th>
               <th>Gamut ΔC</th>
               <th>Flags</th>
@@ -1631,7 +1651,10 @@ function DetailTable({ theme, result }: { theme: Theme; result: ScaleResult }) {
                   <td>{deltaEFromPrevious?.toFixed(3) ?? '—'}</td>
                   <td>{Math.abs(color.oklch.l - color.nominalLightness).toFixed(2)}</td>
                   <td>{contrastRatio(color.hex, contrastBackground).toFixed(2)}:1</td>
-                  <td>{color.profileChromaReduction.toFixed(4)}</td>
+                  <td>
+                    {((color.profileChromaIncrease ?? 0) - color.profileChromaReduction).toFixed(4)}
+                  </td>
+                  <td>{(color.profileHueShift ?? 0).toFixed(2)}°</td>
                   <td>
                     {color.flags.profileConstraintRestored
                       ? `${Math.round(color.profileRestoreRatio * 100)}%`
@@ -1758,7 +1781,11 @@ function resolveFlags(color: ScaleColor): string {
     color.flags.contrastAdjusted ? 'contrast fit' : null,
     color.flags.gamutMapped ? 'gamut fit' : null,
     color.flags.separationRelaxed ? 'spacing' : null,
-    color.flags.profileChromaAdjusted ? 'profile muted' : null,
+    color.flags.profileChromaAdjusted
+      ? (color.profileChromaIncrease ?? 0) > 0
+        ? 'profile vivid'
+        : 'profile muted'
+      : null,
     color.flags.profileConstraintRestored ? 'profile restore' : null
   ].filter((flag): flag is string => flag !== null);
 

@@ -375,6 +375,53 @@ describe('generateKiskadeeScale', () => {
     }
   });
 
+  it('boosts only the physical light side while preserving Muted Darks and seed geometry', () => {
+    for (const seedHex of ['#0064b4', '#c50f1f', '#107c10', '#eaa300', '#c239b3', '#808080']) {
+      for (const theme of THEMES) {
+        const muted = generateWithProfile(seedHex, theme, 'muted-darks');
+        const vivid = generateWithProfile(seedHex, theme, 'vivid-lights');
+        const seed = hexToOklch(seedHex);
+        expect(vivid.diagnostics.valid, `${seedHex} ${theme}`).toBe(true);
+        expect(vivid.anchorTone).toBe(muted.anchorTone);
+        let gains = 0;
+        vivid.colors.forEach((color, index) => {
+          const previous = muted.colors[index];
+          expect(color.targetLightness).toBe(previous.targetLightness);
+          expect(Math.abs(color.profileHueShift ?? 0)).toBeLessThanOrEqual(12);
+          if (
+            color.flags.isCap ||
+            color.flags.isAnchor ||
+            color.targetLightness <= seed.l ||
+            seedHex === '#808080'
+          ) {
+            expect(color.hex).toBe(previous.hex);
+          } else {
+            expect(color.oklch.c).toBeGreaterThanOrEqual(previous.oklch.c - 1e-7);
+            if (color.oklch.c > previous.oklch.c + 0.001) gains++;
+          }
+        });
+        if (seedHex === '#0064b4') {
+          expect(gains).toBeGreaterThan(3);
+          if (theme === 'light') {
+            expect(findColor(vivid, 18)?.hex).not.toBe(findColor(muted, 18)?.hex);
+            expect(findColor(vivid, 18)?.profileHueShift).toBeLessThan(0);
+          }
+        }
+        expect(generateWithProfile(seedHex, theme, 'vivid-lights')).toEqual(vivid);
+      }
+    }
+  });
+
+  it('allows light chroma gains above the former 45 percent ceiling', () => {
+    const muted = generateWithProfile('#107c10', 'light', 'muted-darks');
+    const vivid = generateWithProfile('#107c10', 'light', 'vivid-lights');
+    expect(
+      vivid.colors.some(
+        (color, index) => color.oklch.c > muted.colors[index].oklch.c * 1.45 + 0.001
+      )
+    ).toBe(true);
+  });
+
   it('rejects unsupported tonal profiles without generating a fallback scale', () => {
     const result = generateKiskadeeScale({
       seedHex: '#0f6cbd',

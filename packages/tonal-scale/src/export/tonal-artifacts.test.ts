@@ -40,6 +40,17 @@ describe('tonal artifact bundle v5', () => {
     bundle = await createTonalArtifactBundle(system);
   });
 
+  it('replays a complete Vivid Lights bundle without losing its profile', async () => {
+    const recipe = createRecipe();
+    recipe.tonalProfile = 'vivid-lights';
+    const result = generateKiskadeeTonalSystem(recipe);
+    expect(result.valid, JSON.stringify(result.issues)).toBe(true);
+    if (!result.valid) throw new Error('Vivid Lights fixture must resolve.');
+    const generated = await createTonalArtifactBundle(result);
+    const verification = await verifyTonalArtifactBundle(new Map(generated.files));
+    expect(verification.valid, JSON.stringify(verification)).toBe(true);
+  }, 30000);
+
   it('serializes the deterministic 15-file core tree', async () => {
     const second = await createTonalArtifactBundle(system);
     expect([...second.files]).toEqual([...bundle.files]);
@@ -51,7 +62,7 @@ describe('tonal artifact bundle v5', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.7.0');
+    expect(bundle.manifest.generator.version).toBe('0.9.0');
     expect(bundle.diagnostics.referenceSet).toBe('kiskadee-munsell-reference-v2');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const contents of bundle.files.values()) {
@@ -81,6 +92,12 @@ describe('tonal artifact bundle v5', () => {
       expect(asset.scales.dark['100']).toBe('#ffffff');
     }
 
+    for (const asset of bundle.assets)
+      for (const theme of ['light', 'dark'] as const) {
+        const medium = asset.functionalReferences[theme].medium;
+        expect(medium.source).toBe('midpoint');
+        expect(medium.hex).toBe(asset.scales[theme][`${medium.tone}`]);
+      }
     expect(bundle.assets.find((asset) => asset.id === 'b.blue.v1')).toMatchObject({
       munsellSector: 'B',
       appearance: 'blue',

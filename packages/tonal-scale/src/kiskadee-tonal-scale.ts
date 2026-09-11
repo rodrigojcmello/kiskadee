@@ -4,6 +4,7 @@ import {
   type HslColor,
   hexToHsl,
   hexToOklch,
+  maxSrgbChroma,
   normalizeHexColor,
   type OklchColor,
   oklchToSrgbHex
@@ -29,6 +30,11 @@ export const KISKADEE_TONAL_PROFILES = [
     id: 'muted-darks',
     label: 'Muted Darks',
     description: 'Lower chroma on the physically dark side of the exact seed.'
+  },
+  {
+    id: 'vivid-lights',
+    label: 'Muted Darks + Vivid Lights',
+    description: 'Muted dark tones with more vivid physically light tones.'
   }
 ] as const;
 
@@ -99,6 +105,8 @@ export type KiskadeeScaleColor = {
   targetLightness: number;
   gamutChromaLoss: number;
   profileChromaReduction: number;
+  profileChromaIncrease?: number;
+  profileHueShift?: number;
   profileRestoreRatio: number;
   flags: KiskadeeColorFlags;
 };
@@ -159,6 +167,7 @@ export type KiskadeeScaleDiagnostics = {
   profileChromaRestoredCount: number;
   profileChromaFullyRestoredCount: number;
   maxProfileChromaReduction: number;
+  maxProfileChromaIncrease?: number;
   meanProfileChromaReduction: number;
   anchorChromaProtected: boolean;
   maxNominalDeviation: number;
@@ -416,7 +425,8 @@ export function generateKiskadeeScale({
 
   return profile === 'balanced'
     ? balancedResult
-    : applyMutedDarksProfile({
+    : applyChromaProfile({
+        profile,
         balancedResult,
         normalizedSeed,
         seedOklch,
@@ -425,14 +435,33 @@ export function generateKiskadeeScale({
       });
 }
 
-function applyMutedDarksProfile(params: {
+function applyChromaProfile(params: {
+  profile: Exclude<KiskadeeTonalProfile, 'balanced'>;
   balancedResult: KiskadeeScaleResult;
   normalizedSeed: string;
   seedOklch: OklchColor;
   chromaAtLightness: (lightness: number) => number;
   theme: KiskadeeTheme;
 }): KiskadeeScaleResult {
-  const { balancedResult, normalizedSeed, seedOklch, chromaAtLightness, theme } = params;
+  const { profile, balancedResult, normalizedSeed, seedOklch, chromaAtLightness, theme } = params;
+  // Choose one trajectory for the entire family instead of independently changing
+  // direction per slot. Prefer the largest available chroma gain without a travel penalty.
+  let lightHueOffset = 0;
+  if (profile === 'vivid-lights' && seedOklch.c > NUMERIC_EPSILON) {
+    let bestScore = 0;
+    for (let offset = -12; offset <= 12; offset += 2) {
+      let score = 0;
+      for (const progress of [0.5, 0.65, 0.8]) {
+        const l = seedOklch.l + (100 - seedOklch.l) * progress;
+        const shift = offset * Math.sin(Math.PI * progress) ** 2;
+        score += (maxSrgbChroma(l, seedOklch.h + shift) - maxSrgbChroma(l, seedOklch.h)) / 3;
+      }
+      if (score > bestScore + NUMERIC_EPSILON) {
+        bestScore = score;
+        lightHueOffset = offset;
+      }
+    }
+  }
   const balancedColors = balancedResult.colors;
   const foregroundHex = theme === 'light' ? '#ffffff' : '#000000';
   const balancedOrientedLightness = balancedColors.map((color) =>
@@ -465,7 +494,13 @@ function applyMutedDarksProfile(params: {
       reasons.push('lightness-cell');
     }
 
-    if (candidate.oklch.c > balancedColors[index].oklch.c + PROFILE_CONSTRAINT_EPSILON) {
+    const increasesChroma =
+      profile === 'vivid-lights' && balancedColors[index].targetLightness > seedOklch.l;
+    if (
+      increasesChroma
+        ? candidate.oklch.c < balancedColors[index].oklch.c - PROFILE_CONSTRAINT_EPSILON
+        : candidate.oklch.c > balancedColors[index].oklch.c + PROFILE_CONSTRAINT_EPSILON
+    ) {
       reasons.push('chroma-direction');
     }
 
@@ -508,9 +543,10 @@ function applyMutedDarksProfile(params: {
     index: number;
     balancedColor: KiskadeeScaleColor;
     desiredChroma: number;
+    hueShift: number;
     balancedFittedChroma: number;
   }): ProfileRestoration => {
-    const { index, balancedColor, desiredChroma, balancedFittedChroma } = params;
+    const { index, balancedColor, desiredChroma, hueShift, balancedFittedChroma } = params;
     const render = (alpha: number): ProfileCandidate => {
       if (alpha >= 1) {
         return {
@@ -525,7 +561,7 @@ function applyMutedDarksProfile(params: {
       const rendered = oklchToSrgbHex({
         l: balancedColor.targetLightness,
         c: requestedChroma,
-        h: seedOklch.h
+        h: seedOklch.h + hueShift * (1 - alpha)
       });
 
       return {
@@ -586,27 +622,49 @@ function applyMutedDarksProfile(params: {
       balancedColor.flags.isCap ||
       balancedColor.flags.isAnchor ||
       seedOklch.c <= NUMERIC_EPSILON ||
-      balancedColor.targetLightness >= seedOklch.l - NUMERIC_EPSILON
+      (profile === 'muted-darks' && balancedColor.targetLightness >= seedOklch.l - NUMERIC_EPSILON)
     ) {
       return balancedColor;
     }
 
     const balancedFittedChroma = balancedColor.oklch.c;
-    const envelopeChroma =
-      seedOklch.c * resolveMutedDarksEnvelopeRatio(balancedColor.targetLightness, seedOklch.l);
+    const increasesChroma =
+      profile === 'vivid-lights' && balancedColor.targetLightness > seedOklch.l;
+    const lightProgress = Math.max(
+      0,
+      Math.min(1, (balancedColor.targetLightness - seedOklch.l) / (100 - seedOklch.l))
+    );
+    // A smooth hump preserves the seed and fades the gain toward physical white.
+    const envelopeChroma = increasesChroma
+      ? balancedFittedChroma +
+        Math.max(
+          balancedFittedChroma * 0.45,
+          maxSrgbChroma(
+            balancedColor.targetLightness,
+            seedOklch.h + lightHueOffset * Math.sin(Math.PI * lightProgress) ** 2
+          ) - balancedFittedChroma
+        ) *
+          Math.sin(Math.PI * lightProgress) ** 2
+      : seedOklch.c * resolveMutedDarksEnvelopeRatio(balancedColor.targetLightness, seedOklch.l);
 
-    if (envelopeChroma >= balancedFittedChroma - NUMERIC_EPSILON) return balancedColor;
+    if (!increasesChroma && envelopeChroma >= balancedFittedChroma - NUMERIC_EPSILON) {
+      return balancedColor;
+    }
 
     const restoration = restoreProfileColor({
       index,
       balancedColor,
-      desiredChroma: Math.min(chromaAtLightness(balancedColor.targetLightness), envelopeChroma),
+      desiredChroma: increasesChroma
+        ? envelopeChroma
+        : Math.min(chromaAtLightness(balancedColor.targetLightness), envelopeChroma),
+      hueShift: increasesChroma ? lightHueOffset * Math.sin(Math.PI * lightProgress) ** 2 : 0,
       balancedFittedChroma
     });
     const candidate = restoration.candidate;
     const profileChromaReduction = Math.max(0, balancedColor.oklch.c - candidate.oklch.c);
     const profileChromaAdjusted =
-      candidate.hex !== balancedColor.hex && profileChromaReduction > NUMERIC_EPSILON;
+      candidate.hex !== balancedColor.hex &&
+      Math.abs(balancedColor.oklch.c - candidate.oklch.c) > NUMERIC_EPSILON;
     const profileConstraintRestored =
       restoration.initialFailureReasons.length > 0 &&
       restoration.restoreRatio > PROFILE_CONSTRAINT_EPSILON;
@@ -618,6 +676,16 @@ function applyMutedDarksProfile(params: {
       oklch: candidate.oklch,
       gamutChromaLoss: candidate.gamutChromaLoss,
       profileChromaReduction,
+      ...(profile === 'vivid-lights'
+        ? {
+            profileChromaIncrease: Math.max(0, candidate.oklch.c - balancedColor.oklch.c),
+            profileHueShift: increasesChroma
+              ? lightHueOffset *
+                Math.sin(Math.PI * lightProgress) ** 2 *
+                (1 - restoration.restoreRatio)
+              : 0
+          }
+        : {}),
       profileRestoreRatio: restoration.restoreRatio,
       flags: {
         ...balancedColor.flags,
@@ -654,7 +722,7 @@ function applyMutedDarksProfile(params: {
     relocationReason: balancedAnchor.relocationReason
   };
   const diagnostics = createDiagnostics({
-    profile: 'muted-darks',
+    profile,
     colors,
     anchorIndex,
     normalizedSeed,
@@ -1530,6 +1598,13 @@ function createDiagnostics(params: {
       (color) => color.profileRestoreRatio >= 1 - NUMERIC_EPSILON
     ).length,
     maxProfileChromaReduction: Math.max(...profileChromaReductions),
+    ...(profile === 'vivid-lights'
+      ? {
+          maxProfileChromaIncrease: Math.max(
+            ...colors.map((color) => color.profileChromaIncrease ?? 0)
+          )
+        }
+      : {}),
     meanProfileChromaReduction:
       profileChromaReductions.reduce((sum, reduction) => sum + reduction, 0) /
       profileChromaReductions.length,

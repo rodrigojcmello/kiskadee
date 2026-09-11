@@ -28,7 +28,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.7.0'
+  version: '0.9.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -69,10 +69,12 @@ export type PrimitiveTonalColorAssetV5 = {
     light: {
       vivid: ArtifactFunctionalReference;
       subtle: ArtifactFunctionalReference;
+      medium: { tone: KiskadeeTone; hex: string; source: 'midpoint' };
     };
     dark: {
       vivid: ArtifactFunctionalReference;
       subtle: ArtifactFunctionalReference;
+      medium: { tone: KiskadeeTone; hex: string; source: 'midpoint' };
     };
   };
   scales: { light: ToneHexMap; dark: ToneHexMap };
@@ -139,6 +141,7 @@ type ThemeDiagnostics = {
   functionalReferences: {
     vivid: ArtifactFunctionalReferenceDiagnostics;
     subtle: ArtifactFunctionalReferenceDiagnostics;
+    medium: { tone: KiskadeeTone; hex: string; source: 'midpoint' };
   };
   classification: MunsellColorClassification | null;
   harmony: ResolvedTonalFamily['themes']['light']['harmony'];
@@ -406,11 +409,13 @@ function createColorAsset(
     functionalReferences: {
       light: {
         vivid: resolveArtifactFunctionalReference(system, family, 'light', 'vivid'),
-        subtle: resolveArtifactFunctionalReference(system, family, 'light', 'subtle')
+        subtle: resolveArtifactFunctionalReference(system, family, 'light', 'subtle'),
+        medium: resolveArtifactMediumReference(system, family, 'light')
       },
       dark: {
         vivid: resolveArtifactFunctionalReference(system, family, 'dark', 'vivid'),
-        subtle: resolveArtifactFunctionalReference(system, family, 'dark', 'subtle')
+        subtle: resolveArtifactFunctionalReference(system, family, 'dark', 'subtle'),
+        medium: resolveArtifactMediumReference(system, family, 'dark')
       }
     },
     scales: {
@@ -418,6 +423,15 @@ function createColorAsset(
       dark: createToneHexMap(family.themes.dark.scale.colors)
     }
   };
+}
+
+function resolveArtifactMediumReference(
+  system: ResolvedKiskadeeTonalSystem,
+  family: ResolvedTonalFamily,
+  theme: 'light' | 'dark'
+) {
+  const { tone, hex, source } = resolveTonalFunctionalReference(system, family.id, theme, 'medium');
+  return { tone, hex, source };
 }
 
 function resolveArtifactFunctionalReference(
@@ -503,7 +517,8 @@ function createThemeDiagnostics(
     functionalRest: { tone: theme.restTone, hex: theme.restColor.hex },
     functionalReferences: {
       vivid: resolveArtifactFunctionalReferenceDiagnostics(system, family, theme.theme, 'vivid'),
-      subtle: resolveArtifactFunctionalReferenceDiagnostics(system, family, theme.theme, 'subtle')
+      subtle: resolveArtifactFunctionalReferenceDiagnostics(system, family, theme.theme, 'subtle'),
+      medium: resolveArtifactMediumReference(system, family, theme.theme)
     },
     classification:
       family.colorKind === 'chromatic' ? classifyMunsellHex(theme.effectiveSeedHex) : null,
