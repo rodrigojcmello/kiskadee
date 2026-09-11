@@ -56,6 +56,29 @@ The absolute caps remain part of every scale:
 - Light uses L0 `#ffffff` and L100 `#000000`;
 - Dark uses D0 `#000000` and D100 `#ffffff`.
 
+## Preset Composition Boundary
+
+The accepted preset direction is documented in the
+[segment color model](../../../presets/docs/definitions/segment-color-model.md).
+It distinguishes curve profile, neutral origin, and semantic segment selection.
+This package owns the deterministic mathematics and serialized provenance;
+Presets owns the selected identities and mappings, and Core owns their public
+Schema grammar.
+
+Optional primary-derived neutrals are accepted follow-up work (KIS-108), not
+an existing format V5 input mode. Until that work defines its versioned
+contract, the explicit independent seeds above remain required. Existing
+recipes must not acquire derivation implicitly. The pure-gray `n.black.v1`
+identity remains immutable; a primary-derived tint must retain a separate
+black-family identity rather than becoming a chromatic family.
+
+Likewise, a full system export is an atomic generation bundle, not an
+incremental segment catalog. Changing the primary can change companion output
+even when companion seeds are unchanged. Preset composition must preserve
+reused approved assets; it must not relabel a mixture of independently selected
+families as a verified full-system bundle. Incremental catalog composition is
+follow-up work (KIS-111), separate from the existing bundle verifier.
+
 ## Input Contract
 
 Format 5 contains:

@@ -36,7 +36,7 @@ maintaining semantic consistency across the entire system.
 ```typescript
 type SemanticColor =
   | 'primary'      // Brand identity color
-  | 'neutral'      // Text, backgrounds, borders (grayscale)
+  | 'neutral'      // Neutral identity, either pure gray or tinted
   | 'redLike'      // Danger, error, urgent, notifications
   | 'greenLike'    // Success, purchase, confirmation, profit
   | 'yellowLike'   // Attention, warning, caution
@@ -65,7 +65,7 @@ red-like elements use orange instead.
 redLike = orange  // All destructive buttons, attention badges, etc. become orange
 ```
 
-## Why Kiskadee Does Not Use `secondary` / `tertiary` Global Semantic Colors
+## Secondary and Tertiary in Preset Authoring
 
 Many design systems in the market expose `primary`, `secondary` and sometimes
 `tertiary` colors. In practice, these labels tend to mix two concepts:
@@ -80,8 +80,12 @@ Kiskadee separates these concerns explicitly:
 - UI semantics live in Layer 2 (`SemanticColor`) and Layer 3 (component intents
   like `destructive`, `positive`).
 
-Because of this, Kiskadee does not expose `secondary` or `tertiary` as global
-semantic colors:
+The accepted authoring direction does not require dedicated `secondary` or
+`tertiary` global semantics. The current Core `SemanticColor` type still
+includes `secondary`; removing or changing that public member is outside this
+documentation delivery. The simplified union above illustrates the preferred
+authoring vocabulary rather than exhaustively reproducing the public type.
+For new mappings:
 
 - What most design systems call a secondary button is, in Kiskadee, usually just
   a combination of `semantic="primary"` or `semantic="neutral"` with
@@ -95,15 +99,30 @@ semantic colors:
 In other words, the secondary/tertiary UX is modeled by tone and neutral usage,
 not by extra global semantic color names.
 
-In most real systems, secondary is not a new semantic role; it is a support
-variation of the primary brand color, usually a nearby hue or a softer chroma.
-Kiskadee captures this with semantic variants in Layer 2:
+A supporting brand ramp may use `primary.v2` when that is the preset's
+intended meaning. This is an available mapping, not a required translation of
+every upstream secondary color. Support may instead use `neutral` with a
+suitable emphasis. The agreed Material migration uses the latter approach;
+its published mappings remain unchanged until that migration is completed.
 
-- `primary.v1` = main brand color ramp.
-- `primary.v2` = supporting/auxiliary ramp within the same semantic family.
+## Neutral and Shared Identity
 
-This keeps a single semantic meaning (primary) while still allowing multiple
-brand ramps to coexist without inventing new semantics.
+`neutral` is not restricted to grayscale or exclusively assigned to surfaces,
+backgrounds, and content. Component intents and formulas define its actual
+use. A tinted neutral remains neutral even when its hue follows a red, blue,
+or green primary; hue alone must not reclassify it as `redLike` or another
+chromatic semantic.
+
+Primitive family variants and semantic variants are separate namespaces.
+Core currently supports semantic `v1`/`v2`; additional black primitive variants
+can be selected through segment mappings without inventing `neutral.v3` as a
+public semantic reference.
+
+The [segment color model](./segment-color-model.md) owns the rules for the
+shared preset catalog, simple/complex identities, neutral-origin choices,
+variant preservation, and the staged Material adaptation. Reusing semantic
+colors across segments is intentional; changing a primary does not authorize
+regeneration or replacement of the other shared colors.
 
 ## Real-World Example: Mercado Livre
 
