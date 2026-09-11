@@ -36,6 +36,7 @@ import {
   type TonalFamilyId,
   type TonalFamilyOverrideV5,
   type TonalFamilyVariant,
+  type TonalNeutralConfig,
   type TonalPrimaryAppearance,
   type TonalPrimaryDraftV5,
   type TonalSubtleReferenceRule,
@@ -93,15 +94,40 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
   useEffect(() => {
     if (resolvedPrimaryId !== null) lastValidPrimaryId.current = resolvedPrimaryId;
   }, [resolvedPrimaryId]);
+  const legacyNeutral = recipe.overrides.find((o) => o.id === 'n.black.v2');
+  const neutral: TonalNeutralConfig = recipe.neutral ?? {
+    mode: 'existing',
+    seedHex: legacyNeutral?.seedHex ?? '#000000',
+    derivation: 'primary-neutral-v1',
+    ...(legacyNeutral ? { policies: legacyNeutral.policies as TonalNeutralConfig['policies'] } : {})
+  };
+  const changeNeutral = (patch: Partial<TonalNeutralConfig>) => {
+    onChange({
+      ...recipe,
+      neutral: { ...neutral, ...patch },
+      overrides: recipe.overrides.filter((o) => o.id !== 'n.black.v2'),
+      functionalReferences:
+        (patch.mode ?? neutral.mode) === 'existing' &&
+        (patch.seedHex ?? neutral.seedHex).toLowerCase() === '#000000'
+          ? recipe.functionalReferences.filter((r) => r.id !== 'n.black.v2')
+          : recipe.functionalReferences
+    });
+  };
+  const sharedNeutralRefs = neutral.references ??
+    recipe.functionalReferences.find((r) => r.id === 'n.black.v2') ??
+    recipe.functionalReferences.find((r) => r.id === 'n.black.v1') ?? {
+      light: { vivid: { mode: 'auto' as const }, subtle: { mode: 'auto' as const } },
+      dark: { vivid: { mode: 'auto' as const }, subtle: { mode: 'auto' as const } }
+    };
   const usedIds = new Set(recipe.overrides.map((override) => override.id));
   const extraOptions = EXTRA_FAMILY_IDS.filter(
-    (id) => !usedIds.has(id) && id !== resolvedPrimaryId
+    (id) => !usedIds.has(id) && id !== resolvedPrimaryId && id !== 'n.black.v2'
   );
   const additionalVariantIds = [
     ...(resolvedPrimaryId && !CORE_FAMILY_ID_SET.has(resolvedPrimaryId) ? [resolvedPrimaryId] : []),
     ...recipe.overrides.map((override) => override.id).filter((id) => !CORE_FAMILY_ID_SET.has(id))
   ]
-    .filter((id, index, ids) => ids.indexOf(id) === index)
+    .filter((id, index, ids) => ids.indexOf(id) === index && id !== 'n.black.v2')
     .sort((left, right) => left.localeCompare(right));
   const extraId =
     requestedExtraId && extraOptions.includes(requestedExtraId)
@@ -588,7 +614,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         </div>
 
         <div className={styles.familyList}>
-          {TONAL_CORE_FAMILY_IDS.map((id) => {
+          {TONAL_CORE_FAMILY_IDS.filter((id) => id !== 'n.black.v1').map((id) => {
             const override = recipe.overrides.find((candidate) => candidate.id === id);
             const overrideIndex = recipe.overrides.findIndex((candidate) => candidate.id === id);
             return (
@@ -620,6 +646,138 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             );
           })}
         </div>
+      </fieldset>
+
+      <fieldset className={styles.neutralSection}>
+        <legend>Neutral</legend>
+        {result.issues
+          .filter((issue) => issue.path.startsWith('/neutral'))
+          .map((issue) => (
+            <p key={`${issue.code}-${issue.path}`} role="alert">
+              {issue.message}
+            </p>
+          ))}
+        <p>Pure grayscale is always generated. A customized neutral becomes V2 in the output.</p>
+        <label>
+          Neutral origin
+          <select
+            aria-label="Neutral origin"
+            value={neutral.mode}
+            onChange={(event) =>
+              changeNeutral({ mode: event.target.value as TonalNeutralConfig['mode'] })
+            }
+          >
+            <option value="existing">Keep existing neutral</option>
+            <option value="derived-from-primary">Derive from primary</option>
+          </select>
+        </label>
+        <label>
+          Neutral seed
+          <input
+            aria-label="Neutral seed"
+            value={neutral.seedHex}
+            disabled={neutral.mode === 'derived-from-primary'}
+            onChange={(event) => changeNeutral({ seedHex: event.target.value })}
+          />
+        </label>
+        {neutral.mode === 'derived-from-primary' ? (
+          <p>
+            Uses the primary hue with low chroma. The existing seed is retained when switching back.
+          </p>
+        ) : null}
+        <p>
+          Generated:{' '}
+          {result.families.some((f) => f.id === 'n.black.v2')
+            ? 'V1 pure + V2 customized'
+            : 'V1 pure only'}
+        </p>
+        {result.families.find((f) => f.id === 'n.black.v2') ? (
+          <p>
+            V2 seed:{' '}
+            <code>{result.families.find((f) => f.id === 'n.black.v2')?.sourceSeedHex}</code>
+          </p>
+        ) : null}
+        {(['light', 'dark'] as const).map((theme) => (
+          <label key={`policy-${theme}`}>
+            {capitalize(theme)} neutral policy
+            <select
+              aria-label={`Neutral ${theme} policy`}
+              value={neutral.policies?.[theme] ?? 'source-exact'}
+              onChange={(event) =>
+                changeNeutral({
+                  policies: {
+                    light: neutral.policies?.light ?? 'source-exact',
+                    dark: neutral.policies?.dark ?? 'source-exact',
+                    [theme]: event.target.value as 'source-exact' | 'adaptive'
+                  }
+                })
+              }
+            >
+              <option value="source-exact">Source exact</option>
+              <option value="adaptive">Adaptive</option>
+            </select>
+          </label>
+        ))}
+        <p>Pure grayscale always keeps its canonical seed and source-exact policy.</p>
+        <p>Shared reference options apply to both neutral scales. Auto resolves independently.</p>
+        {(['light', 'dark'] as const).map((theme) => (
+          <label key={theme}>
+            {capitalize(theme)} vivid reference
+            <select
+              aria-label={`Neutral ${theme} vivid reference`}
+              value={sharedNeutralRefs[theme].vivid.mode}
+              onChange={(event) =>
+                changeNeutral({
+                  references: {
+                    light: sharedNeutralRefs.light,
+                    dark: sharedNeutralRefs.dark,
+                    [theme]: {
+                      ...sharedNeutralRefs[theme],
+                      vivid:
+                        event.target.value === 'locked'
+                          ? { mode: 'locked', tone: 50 }
+                          : {
+                              mode: event.target.value as
+                                | 'auto'
+                                | 'generated-anchor'
+                                | 'harmony-rest'
+                            }
+                    }
+                  }
+                })
+              }
+            >
+              <option value="auto">Auto</option>
+              <option value="generated-anchor">Generated anchor</option>
+              <option value="harmony-rest">Harmony rest</option>
+              <option value="locked">Locked</option>
+            </select>
+            {sharedNeutralRefs[theme].vivid.mode === 'locked' ? (
+              <select
+                aria-label={`Neutral ${theme} vivid tone`}
+                value={(sharedNeutralRefs[theme].vivid as { tone: number }).tone}
+                onChange={(event) =>
+                  changeNeutral({
+                    references: {
+                      light: sharedNeutralRefs.light,
+                      dark: sharedNeutralRefs.dark,
+                      [theme]: {
+                        ...sharedNeutralRefs[theme],
+                        vivid: { mode: 'locked', tone: Number(event.target.value) as KiskadeeTone }
+                      }
+                    }
+                  })
+                }
+              >
+                {KISKADEE_TONES.filter((t) => t > 0 && t < 100).map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+          </label>
+        ))}
       </fieldset>
 
       <section className={styles.extraSection} aria-labelledby={`${editorId}-extras-title`}>
@@ -801,20 +959,27 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
               ? 'Resolving the exact primary against every fixed harmony reference.'
               : result.issues.length === 0
                 ? `${result.families.length} ${pluralize(result.families.length, 'family', 'families')} resolved without issues.`
-                : `${result.issues.length} ${pluralize(result.issues.length, 'issue', 'issues')} require attention.`}
+                : `${result.issues.filter((issue) => issue.severity === 'error').length} blocking errors · ${result.issues.filter((issue) => issue.severity === 'review').length} review notices.`}
           </p>
 
           {!isGenerating && result.issues.length > 0 ? (
             <details className={styles.issueDetails} open={result.status === 'error'}>
-              <summary>Review issues</summary>
+              <summary>Generation diagnostics</summary>
               <ul>
-                {result.issues.map((issue) => (
-                  <li key={`${issue.code}-${issue.path}-${issue.message}`}>
-                    <strong>{issue.code}</strong>
-                    <span>{issue.message}</span>
-                    <code>{issue.path || '/'}</code>
-                  </li>
-                ))}
+                {[...result.issues]
+                  .sort(
+                    (left, right) =>
+                      Number(right.severity === 'error') - Number(left.severity === 'error')
+                  )
+                  .map((issue) => (
+                    <li key={`${issue.code}-${issue.path}-${issue.message}`}>
+                      <strong>
+                        {issue.severity === 'error' ? 'Error' : 'Review'} · {issue.code}
+                      </strong>
+                      <span>{issue.message}</span>
+                      <code>{issue.path || '/'}</code>
+                    </li>
+                  ))}
               </ul>
             </details>
           ) : null}

@@ -33,6 +33,9 @@ describe('writeTonalArtifactBundle', () => {
     expect(await readFile(join(destination, 'colors/b.blue.v1.json'), 'utf8')).toBe(
       bundle.files.get('colors/b.blue.v1.json')
     );
+    expect(await readFile(join(destination, 'preset-colors/b.blue.v1.ts'), 'utf8')).toBe(
+      bundle.files.get('preset-colors/b.blue.v1.ts')
+    );
     await expect(writeTonalArtifactBundle(bundle, destination)).rejects.toThrow(
       'Output directory already exists'
     );

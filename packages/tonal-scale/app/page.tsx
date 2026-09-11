@@ -212,7 +212,8 @@ export default function TonalScalePage() {
               ? 'Resolving the current recipe and every dependent family.'
               : system.valid
                 ? `${system.primaryReference.familyId} · L${system.rest.light} / D${system.rest.dark} · ${resolveProfileLabel(recipe.tonalProfile)}`
-                : (system.issues[0]?.message ?? 'The tonal recipe is incomplete.')}
+                : ((system.issues.find((issue) => issue.severity === 'error') ?? system.issues[0])
+                    ?.message ?? 'The tonal recipe is incomplete.')}
           </p>
         </div>
       </header>
@@ -817,7 +818,7 @@ function ArtifactExportPanel({
           {bundle ? (
             <>
               <div className="export-ready" aria-live="polite">
-                <strong>{bundle.files.size} canonical JSON files ready</strong>
+                <strong>{bundle.files.size} files ready (JSON evidence + preset TypeScript)</strong>
                 <code>
                   {bundle.manifest.generator.package}@{bundle.manifest.generator.version}
                 </code>
@@ -846,7 +847,9 @@ function ArtifactExportPanel({
 function downloadArtifact(path: string, contents: string): void {
   downloadBlob(
     path.split('/').at(-1) ?? path,
-    new Blob([contents], { type: 'application/json;charset=utf-8' })
+    new Blob([contents], {
+      type: path.endsWith('.ts') ? 'text/plain;charset=utf-8' : 'application/json;charset=utf-8'
+    })
   );
 }
 

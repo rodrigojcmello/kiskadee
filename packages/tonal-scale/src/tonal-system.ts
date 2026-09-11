@@ -40,6 +40,7 @@ import {
   lockTonalSystemRecipe,
   MUNSELL_SECTORS,
   parseTonalFamilyId,
+  resolveNeutralOverride,
   resolveTonalFamilyColorKind,
   resolveTonalFamilyStem,
   TONAL_BASE_FAMILY_ID_BY_SECTOR,
@@ -1130,6 +1131,7 @@ function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
         gridContract: locked.value.gridContract,
         harmonyContract: locked.value.harmonyContract,
         tonalProfile: locked.value.tonalProfile,
+        ...(locked.value.neutral ? { neutral: locked.value.neutral } : {}),
         primary: {
           seedHex: locked.value.primary.seedHex,
           appearance: parsed.appearance as TonalChromaticAppearance,
@@ -1240,9 +1242,15 @@ function materializeTonalSystemRecipe(
     });
   }
 
-  const overrideById = new Map(
-    authoringRecipe.overrides.map((override) => [override.id, override])
+  const neutralOverride = resolveNeutralOverride(
+    authoringRecipe.neutral,
+    authoringRecipe.primary.seedHex
   );
+  const effectiveOverrides = [
+    ...authoringRecipe.overrides,
+    ...(neutralOverride ? [neutralOverride] : [])
+  ];
+  const overrideById = new Map(effectiveOverrides.map((override) => [override.id, override]));
   if (overrideById.has(primaryId)) {
     issues.push({
       severity: 'error',
@@ -1314,7 +1322,7 @@ function materializeTonalSystemRecipe(
     });
   }
 
-  for (const override of authoringRecipe.overrides) {
+  for (const override of effectiveOverrides) {
     if (
       CORE_FAMILY_IDS.has(override.id) ||
       families.has(override.id) ||
@@ -1364,7 +1372,17 @@ function materializeTonalSystemRecipe(
       harmonyContract: authoringRecipe.harmonyContract,
       tonalProfile: authoringRecipe.tonalProfile,
       tonalAnchors: authoringRecipe.tonalAnchors,
-      functionalReferences: authoringRecipe.functionalReferences,
+      functionalReferences: authoringRecipe.neutral?.references
+        ? [
+            ...authoringRecipe.functionalReferences.filter(
+              (r) => r.id !== 'n.black.v1' && (r.id !== 'n.black.v2' || !neutralOverride)
+            ),
+            { id: 'n.black.v1', ...authoringRecipe.neutral.references },
+            ...(neutralOverride
+              ? [{ id: 'n.black.v2' as TonalFamilyId, ...authoringRecipe.neutral.references }]
+              : [])
+          ]
+        : authoringRecipe.functionalReferences,
       authoringRecipe,
       lockedFunctionalReferences,
       primaryReference: primaryId,
@@ -4462,6 +4480,27 @@ function findFreeAnchorHarmonyCandidate(params: {
 
   candidates = resolveFreeAnchorCandidatePool(feasible, reviewFallbacks);
   best = [...candidates].sort(compareCandidateResolutions)[0];
+  // Local refinement can miss a valid candidate when the profile changes the
+  // emitted peak nonlinearly. Exhaust the utilization range before rejecting
+  // the family, without changing successful recipes or relaxing hard limits.
+  if (
+    best.candidate.metrics.score > HARMONY_V1_PARAMETERS.hardScoreCeiling ||
+    best.candidate.metrics.hueDrift > HARMONY_V1_PARAMETERS.maximumHueDrift
+  ) {
+    for (const candidate of createFreeAnchorSeedCandidates({
+      sourceOklch: searchOklch,
+      sourceSeedHex,
+      includeSourceSeed,
+      familyId,
+      targetUtilization: vividPeakGlobalUtilization,
+      utilizations: Array.from({ length: 97 }, (_, index) => 0.04 + index * 0.01)
+    })) {
+      evaluate(candidate);
+    }
+    best = [...resolveFreeAnchorCandidatePool(feasible, reviewFallbacks)].sort(
+      compareCandidateResolutions
+    )[0];
+  }
   return { ...best, candidatesEvaluated: evaluated };
 }
 

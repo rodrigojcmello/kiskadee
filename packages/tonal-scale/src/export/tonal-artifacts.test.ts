@@ -14,6 +14,8 @@ import {
   type TonalSystemRecipeV5
 } from '../tonal-system-contract';
 import { formatCanonicalJsonFile } from './canonical-json';
+import { projectPresetAsset } from './preset-asset';
+import { sha256Hex } from './sha256';
 import {
   createTonalArtifactBundle,
   TONAL_ARTIFACT_GENERATOR,
@@ -51,23 +53,64 @@ describe('tonal artifact bundle v5', () => {
     expect(verification.valid, JSON.stringify(verification)).toBe(true);
   }, 30000);
 
-  it('serializes the deterministic 15-file core tree', async () => {
+  it('serializes the deterministic 27-file core tree', async () => {
     const second = await createTonalArtifactBundle(system);
     expect([...second.files]).toEqual([...bundle.files]);
-    expect(bundle.files.size).toBe(15);
+    expect(bundle.files.size).toBe(27);
     expect([...bundle.files.keys()]).toEqual([
       TONAL_SOURCE_PATH,
       TONAL_MANIFEST_PATH,
       TONAL_DIAGNOSTICS_PATH,
-      ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const)
+      ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `colors/${id}.json` as const),
+      ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `preset-colors/${id}.ts` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.9.0');
+    expect(bundle.manifest.generator.version).toBe('0.11.0');
     expect(bundle.diagnostics.referenceSet).toBe('kiskadee-munsell-reference-v2');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
-    for (const contents of bundle.files.values()) {
+    for (const [path, contents] of bundle.files) {
+      if (path.endsWith('.ts')) continue;
       expect(contents).toBe(formatCanonicalJsonFile(JSON.parse(contents)));
     }
+  });
+
+  it('exports exact Core-ready TypeScript assets with integrity records', async () => {
+    for (const asset of bundle.assets) {
+      const entry = bundle.manifest.assets.find((entry) => entry.familyId === asset.id)!;
+      const text = bundle.files.get(entry.preset.path)!;
+      expect(await sha256Hex(text)).toBe(entry.preset.sha256);
+      const payload = JSON.parse(text.split('export default ')[1].split(' as const satisfies ')[0]);
+      expect(Object.keys(payload).sort()).toEqual(['functionalReferences', 'kind', 'scales']);
+      expect(payload.kind).toBe('static');
+      expect(payload.scales).toEqual(asset.scales);
+      for (const theme of ['light', 'dark'] as const) {
+        for (const name of ['subtle', 'vivid'] as const) {
+          expect(payload.functionalReferences[theme][name]).toBe(
+            asset.functionalReferences[theme][name].tone
+          );
+        }
+      }
+    }
+  });
+
+  it('rejects invalid scale values rather than emitting a falsely typed module', () => {
+    const asset = structuredClone(bundle.assets[0]);
+    asset.scales.light[18] = 'invalid';
+    expect(() => projectPresetAsset(asset)).toThrow('Invalid preset color at tone 18');
+  });
+
+  it('rejects a missing or modified preset module without executing it', async () => {
+    const files = new Map<string, string>(bundle.files);
+    files.delete('preset-colors/b.blue.v1.ts');
+    files.set('preset-colors/g.green.v1.ts', 'throw new Error("must never execute");');
+    const result = await verifyTonalArtifactBundle(files);
+    expect(result.valid).toBe(false);
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: 'MISSING_FILE', path: 'preset-colors/b.blue.v1.ts' }),
+        expect.objectContaining({ code: 'CONTENT_MISMATCH', path: 'preset-colors/g.green.v1.ts' })
+      ])
+    );
   });
 
   it('keeps consumer assets concise while recording V5 identity, origin, and functional references', () => {
@@ -427,7 +470,7 @@ describe('tonal artifact bundle v5', () => {
     if (!result.valid) return;
     const extraBundle = await createTonalArtifactBundle(result);
     expect(extraBundle.files.has('colors/b.blue.v2.json')).toBe(true);
-    expect(extraBundle.files.size).toBe(16);
+    expect(extraBundle.files.size).toBe(29);
     expect(extraBundle.source.functionalReferences).toHaveLength(TONAL_CORE_FAMILY_IDS.length + 1);
   });
 });

@@ -14,6 +14,7 @@ import {
   type CoreTonalFamilyId,
   type LockedTonalFunctionalReferenceV5,
   type LockedTonalSystemSourceV5,
+  resolveNeutralOverride,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyAppearance,
   type TonalFamilyColorKind,
@@ -24,11 +25,12 @@ import {
   validateLockedTonalSystemSource
 } from '../tonal-system-contract.ts';
 import { formatCanonicalJsonFile } from './canonical-json.ts';
+import { serializePresetAsset } from './preset-asset.ts';
 import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.9.0'
+  version: '0.11.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -38,7 +40,8 @@ export type TonalArtifactPath =
   | typeof TONAL_SOURCE_PATH
   | typeof TONAL_MANIFEST_PATH
   | typeof TONAL_DIAGNOSTICS_PATH
-  | `colors/${TonalFamilyId}.json`;
+  | `colors/${TonalFamilyId}.json`
+  | `preset-colors/${TonalFamilyId}.ts`;
 
 export type ToneHexMap = Record<`${KiskadeeTone}`, string>;
 
@@ -55,6 +58,12 @@ export type PrimitiveTonalColorAssetV5 = {
   tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   seedHex: string;
   seedOrigin: ResolvedTonalFamily['seedOrigin'];
+  neutralOrigin?: {
+    mode: 'existing' | 'derived-from-primary';
+    contract: 'primary-neutral-v1';
+    primarySeedHex: string;
+    resolvedSeedHex: string;
+  };
   policies: { light: TonalThemePolicy; dark: TonalThemePolicy };
   tonalAnchors: { rest: { light: KiskadeeTone; dark: KiskadeeTone } };
   generatedAnchors: {
@@ -95,6 +104,7 @@ export type TonalManifestAssetEntry = {
   familyId: TonalFamilyId;
   path: `colors/${TonalFamilyId}.json`;
   sha256: string;
+  preset: { path: `preset-colors/${TonalFamilyId}.ts`; sha256: string };
 };
 
 export type TonalSystemManifestV5 = {
@@ -122,6 +132,12 @@ export type TonalSystemDiagnosticsV5 = {
   families: Array<{
     familyId: TonalFamilyId;
     seedOrigin: ResolvedTonalFamily['seedOrigin'];
+    neutralOrigin?: {
+      mode: 'existing' | 'derived-from-primary';
+      contract: 'primary-neutral-v1';
+      primarySeedHex: string;
+      resolvedSeedHex: string;
+    };
     classification: ResolvedTonalFamily['identity'];
     status: 'pass' | 'review';
     themes: {
@@ -226,6 +242,16 @@ export async function createTonalArtifactBundle(
       .map((family) => ({
         familyId: family.id,
         seedOrigin: family.seedOrigin,
+        ...(family.id === 'n.black.v2' && system.source.neutral
+          ? {
+              neutralOrigin: {
+                mode: system.source.neutral.mode,
+                contract: system.source.neutral.derivation,
+                primarySeedHex: system.source.primary.seedHex,
+                resolvedSeedHex: family.sourceSeedHex
+              }
+            }
+          : {}),
         classification: family.identity,
         status: family.status,
         themes: {
@@ -247,11 +273,17 @@ export async function createTonalArtifactBundle(
       sha256: await hashCanonicalFile(system.source)
     },
     diagnostics: { path: TONAL_DIAGNOSTICS_PATH },
-    assets: assetRecords.map(({ asset, path, sha256 }) => ({
-      familyId: asset.id,
-      path,
-      sha256
-    }))
+    assets: await Promise.all(
+      assetRecords.map(async ({ asset, path, sha256 }) => ({
+        familyId: asset.id,
+        path,
+        sha256,
+        preset: {
+          path: `preset-colors/${asset.id}.ts` as const,
+          sha256: await sha256Hex(serializePresetAsset(asset))
+        }
+      }))
+    )
   };
 
   const files = new Map<TonalArtifactPath, string>();
@@ -259,6 +291,9 @@ export async function createTonalArtifactBundle(
   files.set(TONAL_MANIFEST_PATH, formatCanonicalJsonFile(manifest));
   files.set(TONAL_DIAGNOSTICS_PATH, formatCanonicalJsonFile(diagnostics));
   for (const { asset, path } of assetRecords) files.set(path, formatCanonicalJsonFile(asset));
+
+  for (const { asset } of assetRecords)
+    files.set(`preset-colors/${asset.id}.ts`, serializePresetAsset(asset));
 
   return { source: system.source, manifest, diagnostics, assets, files };
 }
@@ -320,6 +355,15 @@ export async function verifyTonalArtifactBundle(
     const actualText = files.get(path);
     if (actualText === undefined) {
       issues.push({ code: 'MISSING_FILE', path, message: `${path} is required by the source.` });
+      continue;
+    }
+    if (path.endsWith('.ts')) {
+      if (actualText !== expectedText)
+        issues.push({
+          code: 'CONTENT_MISMATCH',
+          path,
+          message: `${path} does not match the generated preset asset.`
+        });
       continue;
     }
     let parsed: unknown;
@@ -396,6 +440,16 @@ function createColorAsset(
     tonalProfile: system.source.tonalProfile,
     seedHex: family.sourceSeedHex,
     seedOrigin: family.seedOrigin,
+    ...(family.id === 'n.black.v2' && system.source.neutral
+      ? {
+          neutralOrigin: {
+            mode: system.source.neutral.mode,
+            contract: system.source.neutral.derivation,
+            primarySeedHex: system.source.primary.seedHex,
+            resolvedSeedHex: family.sourceSeedHex
+          }
+        }
+      : {}),
     policies: {
       light: family.themes.light.policy,
       dark: family.themes.dark.policy
@@ -579,6 +633,11 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     throw new TonalArtifactError('Export is atomic and requires all twelve core families.');
   }
   const overrideById = new Map(system.source.overrides.map((override) => [override.id, override]));
+  const neutralOverride = resolveNeutralOverride(
+    system.source.neutral,
+    system.source.primary.seedHex
+  );
+  if (neutralOverride) overrideById.set(neutralOverride.id, neutralOverride);
   const sourceReferencesById = new Map(
     system.source.functionalReferences.map((references) => [references.id, references])
   );

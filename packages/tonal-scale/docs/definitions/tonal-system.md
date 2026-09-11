@@ -661,11 +661,15 @@ colors/
   y.yellow.v1.json
   yr.brown.v1.json
   yr.orange.v1.json
+preset-colors/
+  b.blue.v1.ts
+  ...
+  yr.orange.v1.ts
 ```
 
-The required system contains 12 color assets and 15 files total. Additional
-authored variants add one color file each. Format V5 artifacts identify
-`@kiskadee/tonal-scale@0.5.0`.
+The required system contains 12 color families and 27 files total. Additional
+authored variants add one evidence JSON and one preset TypeScript module each.
+Current Format V5 artifacts identify `@kiskadee/tonal-scale@0.11.0`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -688,8 +692,8 @@ the minimum applied strength. Those diagnostics describe how `n.black.v2`
 through `n.black.v4` were generated without turning their primitive assets into
 replay recipes.
 
-Verification regenerates the complete bundle and compares canonical JSON byte
-for byte. Missing, extra, non-canonical, or modified files invalidate it
+Verification regenerates the complete bundle and compares canonical JSON and
+generated TypeScript byte for byte, without executing the TypeScript. Missing, extra, non-canonical, or modified files invalidate it
 atomically.
 
 ## Versioning And External Boundary
@@ -830,3 +834,76 @@ remains in detailed inspection.
 Package and multifamily artifact generator are 0.9.0. The unchanged standalone
 artifact contract retains generator 0.8.2. Preset version-label audit discrepancies
 remain deferred while preset files are outside this delivery's scope.
+
+
+### Unified neutral authoring (0.10.0)
+
+V5 now accepts an optional `neutral` configuration. Its absence preserves legacy
+independent overrides and generated colors. The editor presents the existing
+`n.black.v2` override in the unified neutral input without modifying the recipe
+until the user edits it. Editing explicitly moves that input into `neutral`.
+Other additional variants remain independent. A simultaneous V2 override and
+neutral configuration is rejected rather than overwritten.
+
+```json
+{"mode":"derived-from-primary","seedHex":"#21242d","derivation":"primary-neutral-v1"}
+```
+
+`existing` is the default editor mode. `seedHex` stores the manual input even
+while derivation is active, allowing the user to switch back. `#000000` in
+existing mode generates only canonical V1. A customized seed produces V2;
+pure V1 is always present. The source field remains optional for compatibility.
+
+Derivation uses the original primary HEX, not theme-adapted seeds: OKL lightness
+25, chroma min(primary chroma, 0.02), and primary hue. The generated HEX enters
+the existing tinted-neutral trajectory. Below chroma 0.0001, derivation produces
+no second neutral. This does not lift the existing multifamily restriction on
+achromatic primaries. The pure grayscale seed/caps and source-exact policy remain
+canonical. No vivid-lights chroma boost applies to either neutral.
+
+Optional `policies` allows source-exact/adaptive for the personalized neutral;
+these cannot recolor or adapt canonical V1. Optional `references` stores common
+Light/Dark vivid/subtle rules. Rules resolve independently in each neutral;
+explicit tone selections apply to both. Medium stays derived. Common settings
+are owned by the neutral configuration, never inherited from V2 by V1.
+
+The locked source retains the mode, manual seed, original primary and versioned
+derivation. V2 consumption assets and diagnostics additionally record neutral
+origin and resolved seed. Replay regenerates the virtual V2 override; source
+validation and artifact verification account for it. The source contains no
+second authored override that could become stale when the primary changes.
+
+This delivery does not compose/publish segments or modify presets. New segments
+and shared asset selection remain KIS-111. The editor never replaces V3/V4.
+Package/multifamily generator: 0.10.0. Standalone output remains at 0.8.2.
+
+### Harmony search fallback (0.10.1)
+
+When local free-anchor search exceeds the existing score or hue hard ceiling,
+search utilization from 0.04 through 1 in 0.01 increments before rejecting the
+family. Candidate identity and scale validity checks remain unchanged. Successful
+local searches keep their previous output. This handles nonlinear emitted peak
+changes under Muted Darks + Vivid Lights without relaxing harmony limits.
+
+The editor presents blocking errors before review diagnostics; a review remains
+visible even when the complete system is exportable.
+
+### Preset-ready exports (0.11.0)
+
+The multifamily bundle includes `preset-colors/<family-id>.ts` alongside each
+`colors/<family-id>.json` evidence asset. The TypeScript default export satisfies
+Core's `StaticPrimitiveTonalColorAsset`: `kind: 'static'`, exact Light/Dark tone
+maps, and the subtle/vivid positions consumed by Core. Medium remains in the
+full evidence asset; this export does not expand Core's reference contract.
+
+The projection is deterministic and performs no color generation or semantic
+mapping. Copy the generated module unchanged into a preset's color catalog and
+select its primitive mapping there. Layer 2, Layer 3, variant destinations, and
+approval remain preset-authoring decisions. No runtime generator dependency or
+manual transcription is required.
+
+Each manifest asset entry includes a `preset` path and SHA-256. Bundle verification
+reconstructs and compares the module text without executing it, rejecting missing
+or changed modules. ZIP downloads and the atomic CLI writer include these files.
+Older approved bundles remain evidence of their original generator version;
+this release does not promote or rewrite them.

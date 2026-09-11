@@ -1,4 +1,4 @@
-import { normalizeHexColor } from './color-math.ts';
+import { hexToOklch, normalizeHexColor, oklchToSrgbHex } from './color-math.ts';
 import { compareStrings } from './deterministic-order.ts';
 import {
   isKiskadeeTonalProfile,
@@ -230,12 +230,47 @@ export type LockedTonalFamilyFunctionalReferencesV5 = {
   };
 };
 
+export const NEUTRAL_DERIVATION_V1 = {
+  contract: 'primary-neutral-v1',
+  lightness: 25,
+  maximumChroma: 0.02,
+  achromaticThreshold: 0.0001
+} as const;
+
+export type TonalNeutralConfig = {
+  mode: 'existing' | 'derived-from-primary';
+  seedHex: string;
+  derivation: 'primary-neutral-v1';
+  references?: Omit<TonalFamilyFunctionalReferenceRulesV5, 'id'>;
+  policies?: { light: 'source-exact' | 'adaptive'; dark: 'source-exact' | 'adaptive' };
+};
+
+export function resolveNeutralOverride(
+  config: TonalNeutralConfig | undefined,
+  primaryHex: string
+): TonalFamilyOverrideV5 | null {
+  if (!config) return null;
+  let seedHex = config.seedHex;
+  if (config.mode === 'derived-from-primary') {
+    const primary = hexToOklch(primaryHex);
+    if (primary.c < NEUTRAL_DERIVATION_V1.achromaticThreshold) return null;
+    seedHex = oklchToSrgbHex({
+      l: NEUTRAL_DERIVATION_V1.lightness,
+      c: Math.min(NEUTRAL_DERIVATION_V1.maximumChroma, primary.c),
+      h: primary.h
+    }).hex;
+  }
+  if (seedHex === '#000000') return null;
+  return { id: 'n.black.v2', seedHex, policies: { light: 'source-exact', dark: 'source-exact' } };
+}
+
 type TonalSystemContractBase = {
   formatVersion: typeof TONAL_SYSTEM_FORMAT_VERSION;
   gridContract: typeof TONAL_GRID_CONTRACT;
   harmonyContract: typeof TONAL_HARMONY_CONTRACT;
   tonalProfile: KiskadeeTonalProfile;
   overrides: TonalFamilyOverrideV5[];
+  neutral?: TonalNeutralConfig;
 };
 
 export type TonalSystemRecipeV5 = TonalSystemContractBase & {
@@ -292,7 +327,8 @@ const RECIPE_KEYS = [
   'primary',
   'tonalAnchors',
   'functionalReferences',
-  'overrides'
+  'overrides',
+  'neutral'
 ] as const;
 const PRIMARY_DRAFT_KEYS = ['seedHex', 'appearance', 'variant', 'policies'] as const;
 const PRIMARY_LOCKED_KEYS = ['id', 'seedHex', 'policies'] as const;
@@ -413,6 +449,7 @@ export function lockTonalSystemRecipe(
     gridContract: normalizedRecipe.gridContract,
     harmonyContract: normalizedRecipe.harmonyContract,
     tonalProfile: normalizedRecipe.tonalProfile,
+    ...(normalizedRecipe.neutral ? { neutral: normalizedRecipe.neutral } : {}),
     primary: {
       id: primaryId,
       seedHex: normalizedRecipe.primary.seedHex,
@@ -491,8 +528,70 @@ function validateContract(
     stage === 'draft'
       ? validateDraftPrimary(input.primary, issue)
       : validateLockedPrimary(input.primary, issue);
+  let neutral: TonalNeutralConfig | undefined;
+  if (input.neutral !== undefined) {
+    const raw = input.neutral;
+    if (!isPlainObject(raw))
+      issue('INVALID_NEUTRAL', '/neutral', 'Expected a neutral configuration.');
+    else {
+      reportUnknownKeys(
+        raw,
+        ['mode', 'seedHex', 'derivation', 'references', 'policies'],
+        '/neutral',
+        issue
+      );
+      const seedHex = typeof raw.seedHex === 'string' ? normalizeHexColor(raw.seedHex) : null;
+      if (
+        (raw.mode !== 'existing' && raw.mode !== 'derived-from-primary') ||
+        !seedHex ||
+        raw.derivation !== 'primary-neutral-v1'
+      ) {
+        issue(
+          'INVALID_NEUTRAL',
+          '/neutral',
+          'Expected existing or derived-from-primary mode, a HEX seed and primary-neutral-v1 derivation.'
+        );
+      } else {
+        neutral = { mode: raw.mode, seedHex, derivation: raw.derivation };
+        if (raw.policies !== undefined) {
+          const policies = validateOverridePolicies(raw.policies, '/neutral/policies', issue);
+          if (policies && policies.light !== 'harmonized' && policies.dark !== 'harmonized')
+            neutral.policies = { light: policies.light, dark: policies.dark };
+          else
+            issue(
+              'INVALID_NEUTRAL_POLICIES',
+              '/neutral/policies',
+              'Neutral supports source-exact or adaptive policies. Pure grayscale remains source-exact.'
+            );
+        }
+        if (raw.references !== undefined) {
+          if (!isPlainObject(raw.references))
+            issue(
+              'INVALID_NEUTRAL_REFERENCES',
+              '/neutral/references',
+              'Expected shared Light/Dark rules.'
+            );
+          else {
+            const refs = validateDraftFunctionalReferences(
+              [{ ...raw.references, id: 'n.black.v1' }],
+              (code, path, message) =>
+                issue(code, path.replace('/functionalReferences/0', '/neutral/references'), message)
+            );
+            if (refs?.[0]) neutral.references = { light: refs[0].light, dark: refs[0].dark };
+          }
+        }
+      }
+    }
+  }
   const rest = validateRest(input.tonalAnchors, stage, issue);
   const overrides = validateOverrides(input.overrides, issue);
+  if (neutral && overrides?.some((o) => o.id === 'n.black.v2')) {
+    issue(
+      'NEUTRAL_OVERRIDE_CONFLICT',
+      '/neutral',
+      'The neutral configuration owns n.black.v2; move its existing override into the neutral input.'
+    );
+  }
   const functionalReferences =
     stage === 'draft'
       ? validateDraftFunctionalReferences(input.functionalReferences, issue)
@@ -513,7 +612,12 @@ function validateContract(
   if (stage === 'locked' && primary && overrides && functionalReferences) {
     validateLockedFunctionalReferenceCompleteness(
       primary as TonalPrimaryLockedV5,
-      overrides,
+      [
+        ...overrides,
+        ...(neutral && primary && resolveNeutralOverride(neutral, primary.seedHex)
+          ? [resolveNeutralOverride(neutral, primary.seedHex)!]
+          : [])
+      ],
       functionalReferences as LockedTonalFamilyFunctionalReferencesV5[],
       issue
     );
@@ -540,6 +644,7 @@ function validateContract(
     gridContract: TONAL_GRID_CONTRACT,
     harmonyContract: TONAL_HARMONY_CONTRACT,
     tonalProfile,
+    ...(neutral ? { neutral } : {}),
     overrides
   };
 
