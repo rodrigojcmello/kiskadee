@@ -4,6 +4,11 @@
   "formatVersion": 5,
   "functionalReferences": {
     "dark": {
+      "medium": {
+        "hex": "#183e40",
+        "source": "midpoint",
+        "tone": 16
+      },
       "subtle": {
         "hex": "#091b1c",
         "source": "surface-relative",
@@ -16,6 +21,11 @@
       }
     },
     "light": {
+      "medium": {
+        "hex": "#73c2c5",
+        "source": "midpoint",
+        "tone": 18
+      },
       "subtle": {
         "hex": "#d6f4f6",
         "source": "surface-relative",
@@ -40,7 +50,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.5.0"
+    "version": "0.11.1"
   },
   "id": "bg.teal.v1",
   "kind": "kiskadee.primitive-tonal-family",

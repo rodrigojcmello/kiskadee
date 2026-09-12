@@ -1,5 +1,28 @@
 # Fluent 2 Color Evidence And Kiskadee Tonal Mapping
 
+## Medium reference integration — 0.11.1
+
+The current bundle and preset modules include the generator's medium reference
+explicitly. All Light/Dark HEX values and existing subtle/vivid positions remain
+unchanged from the equivalent 0.11.0 regeneration below. Core consumes medium
+with the same ordinal offsets as other references.
+
+
+## Equivalent regeneration with 0.11.0 — 2026-09-11
+
+The current `generated/` bundle was regenerated from its original locked recipe
+using generator `0.11.0` and profile `muted-darks`. All 936
+Light/Dark tone values and subtle/vivid positions match the previous evidence.
+All 8 existing preset modules match their previous runtime values and
+now come directly from the exported `preset-colors/*.ts` files. No family,
+semantic mapping, component intent, or profile was changed.
+
+[Comparison record](./regeneration-0.11.0.json) retains the original generator
+identity and previous manifest hash. Earlier approval/version statements below
+describe historical color decisions; this regeneration preserves those colors.
+The current bundle also records medium references and preset-module hashes.
+
+
 This directory preserves the official Fluent color ramps inspected in the
 Microsoft Fluent 2 Web Community Figma file and the Kiskadee tonal system
 generated from that evidence. Generator `0.5.0` and its V5 achromatic contract
@@ -81,10 +104,10 @@ recipe. The generated system uses:
   foundation independently of Fluent;
 - exact Light and Dark `n.black.v2`, preserving Fluent `Grey-14` as an authored
   tinted-neutral reference from one seed;
-- automatic harmony rest, currently resolved by candidate generator `0.7.0` to L50/D40;
+- automatic harmony rest, currently resolved by candidate generator `0.11.1` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.7.0
+### Shared viewer — candidate generator 0.11.1
 
 [Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22muted-darks%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
 
@@ -93,7 +116,7 @@ browser bookmark. It resolves the latest generated scales and functional
 references without changing the stored Fluent evidence. It requires the local
 `@kiskadee/tonal-scale` application on port `3001`.
 
-The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.7.0`. It
+The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.11.1`. It
 generates thirteen primitive families: the twelve mandatory V5 families plus
 authored `n.black.v2`. The eleven chromatic family scales and references are
 unchanged from the approved `0.4.1` export. V5 changes only the achromatic
@@ -121,11 +144,11 @@ Generator `0.7.0` calibrates the Yellow-Red Orange/Brown appearance classifier. 
 Fluent recipe continues to resolve its authored Orange and canonical Brown identities as before;
 the approved `0.5.0` assets remain untouched.
 
-### Approved generator 0.5.0 system
+### Approved 0.5.0 colors, regenerated with 0.11.0
 
 The verified canonical V5 export is under [`generated/`](./generated/). It
-contains thirteen primitive family assets plus source, manifest, and
-diagnostics. Eight identities are promoted into the preset:
+contains thirteen evidence assets, thirteen preset modules, source, manifest,
+and diagnostics (29 files). Eight identities are promoted into the preset:
 
 - source-backed `b.blue.v1`, `n.black.v2`, `r.red.v1`, `yr.orange.v1`,
   `y.yellow.v1`, `g.green.v1`, and `p.purple.v1`;

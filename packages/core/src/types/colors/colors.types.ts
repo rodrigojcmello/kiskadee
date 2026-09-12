@@ -69,9 +69,11 @@ export const KISKADEE_TONES = [
 export type KiskadeeTone = (typeof KISKADEE_TONES)[number];
 
 /** Functional positions authored by the tonal-system generator. */
-export type TonalFunctionalReferenceName = 'subtle' | 'vivid';
+export type TonalFunctionalReferenceName = 'subtle' | 'medium' | 'vivid';
 
-export type TonalFunctionalReferenceMap = Record<TonalFunctionalReferenceName, KiskadeeTone>;
+export type TonalFunctionalReferenceMap = Record<'subtle' | 'vivid', KiskadeeTone> & {
+  medium?: KiskadeeTone;
+};
 
 /**
  * Theme-scoped tonal positions. The resolved color always comes from the

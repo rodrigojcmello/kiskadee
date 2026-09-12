@@ -1,0 +1,15 @@
+{
+  "name": "ios-27-apple",
+  "profile": "balanced",
+  "colors": 1152,
+  "promoted": 13,
+  "diffs": [],
+  "runtimeDiffs": [],
+  "verified": true,
+  "originalGenerator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.7.0"
+  },
+  "previousManifestSha256": "f7841c594fe4434931aedee58ae005d9393d5dd58e1a16513345c04ea533d7c2",
+  "generator": "0.11.0"
+}

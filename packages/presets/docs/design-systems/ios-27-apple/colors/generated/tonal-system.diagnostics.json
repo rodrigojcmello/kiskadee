@@ -43,6 +43,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#0088ff",
           "functionalReferences": {
+            "medium": {
+              "hex": "#003e7b",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#001837",
               "source": "surface-relative",
@@ -341,6 +346,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#0088ff",
           "functionalReferences": {
+            "medium": {
+              "hex": "#a7ceff",
+              "source": "midpoint",
+              "tone": 12
+            },
             "subtle": {
               "hex": "#e2efff",
               "source": "surface-relative",
@@ -648,7 +658,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -658,6 +676,11 @@
           },
           "effectiveSeedHex": "#009d8c",
           "functionalReferences": {
+            "medium": {
+              "hex": "#004a42",
+              "source": "midpoint",
+              "tone": 22
+            },
             "subtle": {
               "hex": "#00211d",
               "source": "surface-relative",
@@ -934,12 +957,20 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
-            "adjustedTones": [90, 95, 99],
+            "adjustedTones": [
+              90,
+              95,
+              99
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.01943752,
             "maxRemainingExcess": 0.00074225,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -966,6 +997,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#00c8b3",
           "functionalReferences": {
+            "medium": {
+              "hex": "#9ee7da",
+              "source": "midpoint",
+              "tone": 9
+            },
             "subtle": {
               "hex": "#d8f5ef",
               "source": "surface-relative",
@@ -1225,12 +1261,30 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 12,
-            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14],
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.03692438,
             "maxRemainingExcess": 0.00055073,
-            "protectedTones": [0, 20, 28, 100],
+            "protectedTones": [
+              0,
+              20,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -1283,7 +1337,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -1293,6 +1355,11 @@
           },
           "effectiveSeedHex": "#009aa5",
           "functionalReferences": {
+            "medium": {
+              "hex": "#004a4f",
+              "source": "midpoint",
+              "tone": 22
+            },
             "subtle": {
               "hex": "#002124",
               "source": "surface-relative",
@@ -1569,12 +1636,20 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
-            "adjustedTones": [90, 95, 99],
+            "adjustedTones": [
+              90,
+              95,
+              99
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.01659052,
             "maxRemainingExcess": 0.00012402,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -1601,6 +1676,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#00c3d0",
           "functionalReferences": {
+            "medium": {
+              "hex": "#9be5ec",
+              "source": "midpoint",
+              "tone": 9
+            },
             "subtle": {
               "hex": "#d7f4f6",
               "source": "surface-relative",
@@ -1860,12 +1940,30 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 12,
-            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14],
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.03385423,
             "maxRemainingExcess": 0.00042963,
-            "protectedTones": [0, 20, 28, 100],
+            "protectedTones": [
+              0,
+              20,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -1930,7 +2028,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -1940,6 +2046,11 @@
           },
           "effectiveSeedHex": "#0097b7",
           "functionalReferences": {
+            "medium": {
+              "hex": "#004859",
+              "source": "midpoint",
+              "tone": 22
+            },
             "subtle": {
               "hex": "#002028",
               "source": "surface-relative",
@@ -2216,12 +2327,19 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 2,
-            "adjustedTones": [90, 95],
+            "adjustedTones": [
+              90,
+              95
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00930113,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -2254,6 +2372,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#00c0e8",
           "functionalReferences": {
+            "medium": {
+              "hex": "#9fe3f8",
+              "source": "midpoint",
+              "tone": 9
+            },
             "subtle": {
               "hex": "#d8f3fc",
               "source": "surface-relative",
@@ -2513,12 +2636,28 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 10,
-            "adjustedTones": [3, 4, 5, 6, 7, 8, 9, 10, 12, 14],
+            "adjustedTones": [
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.01513357,
             "maxRemainingExcess": 0.00066943,
-            "protectedTones": [0, 20, 28, 100],
+            "protectedTones": [
+              0,
+              20,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -2571,7 +2710,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -2581,6 +2728,11 @@
           },
           "effectiveSeedHex": "#00a23d",
           "functionalReferences": {
+            "medium": {
+              "hex": "#004a17",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#001e05",
               "source": "surface-relative",
@@ -2857,12 +3009,21 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 4,
-            "adjustedTones": [85, 90, 95, 99],
+            "adjustedTones": [
+              85,
+              90,
+              95,
+              99
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.05260816,
             "maxRemainingExcess": 0.00099707,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -2889,6 +3050,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#34c759",
           "functionalReferences": {
+            "medium": {
+              "hex": "#b3e6b8",
+              "source": "midpoint",
+              "tone": 9
+            },
             "subtle": {
               "hex": "#e1f4e2",
               "source": "surface-relative",
@@ -3148,12 +3314,30 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 12,
-            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14],
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.07020532,
             "maxRemainingExcess": 0.00125132,
-            "protectedTones": [0, 20, 28, 100],
+            "protectedTones": [
+              0,
+              20,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -3218,7 +3402,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -3228,6 +3420,11 @@
           },
           "effectiveSeedHex": "#b0ff00",
           "functionalReferences": {
+            "medium": {
+              "hex": "#2d4600",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#0f1c00",
               "source": "surface-relative",
@@ -3507,12 +3704,20 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 2,
-            "adjustedTones": [85, 99],
+            "adjustedTones": [
+              85,
+              99
+            ],
             "appliedStrength": 0,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00805252,
             "maxRemainingExcess": 0.20797221,
-            "protectedTones": [0, 65, 95, 100],
+            "protectedTones": [
+              0,
+              65,
+              95,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 1
           },
@@ -3545,6 +3750,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#b0ff00",
           "functionalReferences": {
+            "medium": {
+              "hex": "#a7e058",
+              "source": "midpoint",
+              "tone": 12
+            },
             "subtle": {
               "hex": "#e4f4d3",
               "source": "surface-relative",
@@ -3824,12 +4034,29 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 11,
-            "adjustedTones": [1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 14],
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
             "appliedStrength": 0.13944411,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.08532407,
             "maxRemainingExcess": 0.18909226,
-            "protectedTones": [0, 7, 28, 100],
+            "protectedTones": [
+              0,
+              7,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 2
           },
@@ -3848,6 +4075,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#000000",
           "functionalReferences": {
+            "medium": {
+              "hex": "#4b4b4b",
+              "source": "midpoint",
+              "tone": 28
+            },
             "subtle": {
               "hex": "#1d1d1d",
               "source": "surface-relative",
@@ -4113,6 +4345,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#000000",
           "functionalReferences": {
+            "medium": {
+              "hex": "#8c8c8c",
+              "source": "midpoint",
+              "tone": 28
+            },
             "subtle": {
               "hex": "#ededed",
               "source": "surface-relative",
@@ -4386,6 +4623,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#1c1c1e",
           "functionalReferences": {
+            "medium": {
+              "hex": "#4b4b4d",
+              "source": "midpoint",
+              "tone": 28
+            },
             "subtle": {
               "hex": "#1c1c1e",
               "source": "surface-relative",
@@ -4646,7 +4888,23 @@
           "surfaceTrackAlignment": null,
           "tintedAchromaticChroma": {
             "adjustedToneCount": 15,
-            "adjustedTones": [1, 2, 3, 6, 7, 8, 9, 30, 40, 45, 50, 55, 85, 90, 95],
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              6,
+              7,
+              8,
+              9,
+              30,
+              40,
+              45,
+              50,
+              55,
+              85,
+              90,
+              95
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-tinted-achromatic-chroma-v1",
             "gamutMappedTones": [],
@@ -4664,6 +4922,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#1c1c1e",
           "functionalReferences": {
+            "medium": {
+              "hex": "#939395",
+              "source": "midpoint",
+              "tone": 26
+            },
             "subtle": {
               "hex": "#ededf0",
               "source": "surface-relative",
@@ -4924,7 +5187,26 @@
           "surfaceTrackAlignment": null,
           "tintedAchromaticChroma": {
             "adjustedToneCount": 18,
-            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 9, 14, 24, 26, 28, 40, 50, 55, 65, 70, 85],
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              9,
+              14,
+              24,
+              26,
+              28,
+              40,
+              50,
+              55,
+              65,
+              70,
+              85
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-tinted-achromatic-chroma-v1",
             "gamutMappedTones": [],
@@ -4982,11 +5264,40 @@
           "darkSupportChromaModeration": {
             "adjustedToneCount": 22,
             "adjustedTones": [
-              10, 14, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95
+              10,
+              14,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85,
+              90,
+              95
             ],
             "baselineMaxExcess": 0.05718611,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0.00054345,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -4996,6 +5307,11 @@
           },
           "effectiveSeedHex": "#c162ce",
           "functionalReferences": {
+            "medium": {
+              "hex": "#6f007c",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#29002f",
               "source": "surface-relative",
@@ -5272,12 +5588,20 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
-            "adjustedTones": [85, 90, 95],
+            "adjustedTones": [
+              85,
+              90,
+              95
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.02592968,
             "maxRemainingExcess": 0.00083031,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -5304,6 +5628,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#cb30e0",
           "functionalReferences": {
+            "medium": {
+              "hex": "#f29efe",
+              "source": "midpoint",
+              "tone": 14
+            },
             "subtle": {
               "hex": "#f8e7fa",
               "source": "surface-relative",
@@ -5563,12 +5892,29 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 11,
-            "adjustedTones": [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14],
+            "adjustedTones": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.02939305,
             "maxRemainingExcess": 0.00050117,
-            "protectedTones": [0, 28, 30, 100],
+            "protectedTones": [
+              0,
+              28,
+              30,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -5619,12 +5965,41 @@
           "darkSupportChromaModeration": {
             "adjustedToneCount": 23,
             "adjustedTones": [
-              7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70,
+              7,
+              8,
+              9,
+              10,
+              12,
+              14,
+              16,
+              18,
+              20,
+              22,
+              24,
+              26,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
               75
             ],
             "baselineMaxExcess": 0.01280288,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0.0009261,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -5634,6 +6009,11 @@
           },
           "effectiveSeedHex": "#797bf7",
           "functionalReferences": {
+            "medium": {
+              "hex": "#35249d",
+              "source": "midpoint",
+              "tone": 18
+            },
             "subtle": {
               "hex": "#0d003e",
               "source": "surface-relative",
@@ -5915,7 +6295,11 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -5942,6 +6326,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#6155f5",
           "functionalReferences": {
+            "medium": {
+              "hex": "#abb3ff",
+              "source": "midpoint",
+              "tone": 16
+            },
             "subtle": {
               "hex": "#e9ecff",
               "source": "surface-relative",
@@ -6206,7 +6595,12 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 28, 40, 100],
+            "protectedTones": [
+              0,
+              28,
+              40,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -6257,11 +6651,41 @@
           "darkSupportChromaModeration": {
             "adjustedToneCount": 23,
             "adjustedTones": [
-              6, 7, 8, 9, 12, 14, 16, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85
+              6,
+              7,
+              8,
+              9,
+              12,
+              14,
+              16,
+              22,
+              24,
+              26,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80,
+              85
             ],
             "baselineMaxExcess": 0.02110422,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0.00074303,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -6271,6 +6695,11 @@
           },
           "effectiveSeedHex": "#e85752",
           "functionalReferences": {
+            "medium": {
+              "hex": "#84000f",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#320002",
               "source": "surface-relative",
@@ -6552,7 +6981,11 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -6579,6 +7012,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#ff383c",
           "functionalReferences": {
+            "medium": {
+              "hex": "#ffb5ad",
+              "source": "midpoint",
+              "tone": 12
+            },
             "subtle": {
               "hex": "#ffe7e4",
               "source": "surface-relative",
@@ -6843,7 +7281,12 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 26, 28, 100],
+            "protectedTones": [
+              0,
+              26,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -6893,10 +7336,34 @@
           },
           "darkSupportChromaModeration": {
             "adjustedToneCount": 15,
-            "adjustedTones": [5, 10, 14, 16, 18, 22, 35, 40, 45, 50, 55, 60, 65, 70, 80],
+            "adjustedTones": [
+              5,
+              10,
+              14,
+              16,
+              18,
+              22,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              80
+            ],
             "baselineMaxExcess": 0.02007623,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0.00180241,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -6906,6 +7373,11 @@
           },
           "effectiveSeedHex": "#ec5967",
           "functionalReferences": {
+            "medium": {
+              "hex": "#830022",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#320007",
               "source": "surface-relative",
@@ -7187,7 +7659,11 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -7214,6 +7690,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#ff2d55",
           "functionalReferences": {
+            "medium": {
+              "hex": "#ffb4b5",
+              "source": "midpoint",
+              "tone": 12
+            },
             "subtle": {
               "hex": "#ffe7e7",
               "source": "surface-relative",
@@ -7478,7 +7959,11 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 28, 100],
+            "protectedTones": [
+              0,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -7528,10 +8013,33 @@
           },
           "darkSupportChromaModeration": {
             "adjustedToneCount": 14,
-            "adjustedTones": [10, 18, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80],
+            "adjustedTones": [
+              10,
+              18,
+              28,
+              30,
+              35,
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70,
+              75,
+              80
+            ],
             "baselineMaxExcess": 0.04666179,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -7541,6 +8049,11 @@
           },
           "effectiveSeedHex": "#dc5c99",
           "functionalReferences": {
+            "medium": {
+              "hex": "#7e004b",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#2f0019",
               "source": "surface-relative",
@@ -7825,7 +8338,11 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0.00069027,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -7852,6 +8369,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#ff009e",
           "functionalReferences": {
+            "medium": {
+              "hex": "#feb1d0",
+              "source": "midpoint",
+              "tone": 12
+            },
             "subtle": {
               "hex": "#ffe6ef",
               "source": "surface-relative",
@@ -8131,12 +8653,25 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 7,
-            "adjustedTones": [5, 6, 7, 8, 9, 10, 12],
+            "adjustedTones": [
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00369069,
             "maxRemainingExcess": 0.00071901,
-            "protectedTones": [0, 26, 28, 100],
+            "protectedTones": [
+              0,
+              26,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -8189,7 +8724,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -8199,6 +8742,11 @@
           },
           "effectiveSeedHex": "#a88500",
           "functionalReferences": {
+            "medium": {
+              "hex": "#4e3d00",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#201800",
               "source": "surface-relative",
@@ -8475,12 +9023,20 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
-            "adjustedTones": [90, 95, 99],
+            "adjustedTones": [
+              90,
+              95,
+              99
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.02763535,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -8507,6 +9063,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#ffcc00",
           "functionalReferences": {
+            "medium": {
+              "hex": "#f1dfb1",
+              "source": "midpoint",
+              "tone": 7
+            },
             "subtle": {
               "hex": "#f5edd7",
               "source": "surface-relative",
@@ -8766,12 +9327,29 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 11,
-            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 14],
+            "adjustedTones": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              12,
+              14
+            ],
             "appliedStrength": 0.84168981,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.0586582,
             "maxRemainingExcess": 0.06671154,
-            "protectedTones": [0, 10, 28, 100],
+            "protectedTones": [
+              0,
+              10,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 1
           },
@@ -8824,7 +9402,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -8834,6 +9420,11 @@
           },
           "effectiveSeedHex": "#ac7f5e",
           "functionalReferences": {
+            "medium": {
+              "hex": "#5d3514",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#2a1200",
               "source": "surface-relative",
@@ -9115,7 +9706,11 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0.00030478,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -9142,6 +9737,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#ac7f5e",
           "functionalReferences": {
+            "medium": {
+              "hex": "#e7c3a9",
+              "source": "midpoint",
+              "tone": 12
+            },
             "subtle": {
               "hex": "#fee9da",
               "source": "surface-relative",
@@ -9401,12 +10001,18 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 1,
-            "adjustedTones": [4],
+            "adjustedTones": [
+              4
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00169545,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 28, 100],
+            "protectedTones": [
+              0,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -9459,7 +10065,15 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
+            "evaluatedTones": [
+              40,
+              45,
+              50,
+              55,
+              60,
+              65,
+              70
+            ],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -9469,6 +10083,11 @@
           },
           "effectiveSeedHex": "#d16d00",
           "functionalReferences": {
+            "medium": {
+              "hex": "#643100",
+              "source": "midpoint",
+              "tone": 20
+            },
             "subtle": {
               "hex": "#2b1200",
               "source": "surface-relative",
@@ -9745,12 +10364,20 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
-            "adjustedTones": [85, 90, 95],
+            "adjustedTones": [
+              85,
+              90,
+              95
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00509337,
             "maxRemainingExcess": 0,
-            "protectedTones": [0, 65, 100],
+            "protectedTones": [
+              0,
+              65,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -9777,6 +10404,11 @@
           "darkSupportChromaModeration": null,
           "effectiveSeedHex": "#ff8d28",
           "functionalReferences": {
+            "medium": {
+              "hex": "#fccba9",
+              "source": "midpoint",
+              "tone": 9
+            },
             "subtle": {
               "hex": "#fee9da",
               "source": "surface-relative",
@@ -10036,12 +10668,26 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 8,
-            "adjustedTones": [4, 5, 6, 7, 8, 9, 10, 12],
+            "adjustedTones": [
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              12
+            ],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00598212,
             "maxRemainingExcess": 0.00071689,
-            "protectedTones": [0, 18, 28, 100],
+            "protectedTones": [
+              0,
+              18,
+              28,
+              100
+            ],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -10079,7 +10725,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.7.0"
+    "version": "0.11.1"
   },
   "issues": [
     {

@@ -10,7 +10,7 @@ export default {
       "vivid": 99
     },
     "dark": {
-      "subtle": 4,
+      "subtle": 5,
       "medium": 28,
       "vivid": 99
     }

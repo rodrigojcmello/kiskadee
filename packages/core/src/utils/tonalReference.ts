@@ -10,6 +10,7 @@ import { isKiskadeeTone } from './hexColor.ts';
 
 const FUNCTIONAL_REFERENCE_NAMES = [
   'subtle',
+  'medium',
   'vivid'
 ] as const satisfies readonly TonalFunctionalReferenceName[];
 const THEME_NAMES = ['light', 'dark'] as const satisfies readonly ThemeName[];
@@ -83,6 +84,7 @@ export function assertPrimitiveFunctionalReferences(asset: {
 
     for (const name of FUNCTIONAL_REFERENCE_NAMES) {
       const tone = themeReferences[name];
+      if (name === 'medium' && tone === undefined) continue;
       if (typeof tone !== 'number' || !isKiskadeeTone(tone)) {
         throw new Error(`Invalid primitive ${theme}.${name} functional tone: ${String(tone)}`);
       }
@@ -95,6 +97,12 @@ export function assertPrimitiveFunctionalReferences(asset: {
 
     const subtleIndex = KISKADEE_TONES.indexOf(themeReferences.subtle as KiskadeeTone);
     const vividIndex = KISKADEE_TONES.indexOf(themeReferences.vivid as KiskadeeTone);
+    if (
+      themeReferences.medium !== undefined &&
+      themeReferences.medium !== KISKADEE_TONES[Math.floor((subtleIndex + vividIndex) / 2)]
+    ) {
+      throw new Error(`Primitive ${theme}.medium must be the ordinal midpoint of subtle and vivid`);
+    }
     if (
       subtleIndex >= vividIndex &&
       !(themeReferences.subtle === 1 && themeReferences.vivid === 1)

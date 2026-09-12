@@ -11,10 +11,12 @@ export function projectPresetAsset(
     functionalReferences: {
       light: {
         subtle: asset.functionalReferences.light.subtle.tone,
+        medium: asset.functionalReferences.light.medium.tone,
         vivid: asset.functionalReferences.light.vivid.tone
       },
       dark: {
         subtle: asset.functionalReferences.dark.subtle.tone,
+        medium: asset.functionalReferences.dark.medium.tone,
         vivid: asset.functionalReferences.dark.vivid.tone
       }
     },
@@ -24,7 +26,7 @@ export function projectPresetAsset(
 
 export function serializePresetAsset(asset: PrimitiveTonalColorAssetV5): string {
   return [
-    "import type { KiskadeeHexScale, StaticPrimitiveTonalColorAsset } from '@kiskadee/core';",
+    "import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';",
     '',
     `// Generated from colors/${asset.id}.json by ${asset.generator.package}@${asset.generator.version}.`,
     `export default ${JSON.stringify(projectPresetAsset(asset), null, 2)} as const satisfies StaticPrimitiveTonalColorAsset;`,

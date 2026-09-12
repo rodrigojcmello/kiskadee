@@ -669,7 +669,7 @@ preset-colors/
 
 The required system contains 12 color families and 27 files total. Additional
 authored variants add one evidence JSON and one preset TypeScript module each.
-Current Format V5 artifacts identify `@kiskadee/tonal-scale@0.11.0`.
+Current Format V5 artifacts identify `@kiskadee/tonal-scale@0.11.1`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -893,8 +893,7 @@ visible even when the complete system is exportable.
 The multifamily bundle includes `preset-colors/<family-id>.ts` alongside each
 `colors/<family-id>.json` evidence asset. The TypeScript default export satisfies
 Core's `StaticPrimitiveTonalColorAsset`: `kind: 'static'`, exact Light/Dark tone
-maps, and the subtle/vivid positions consumed by Core. Medium remains in the
-full evidence asset; this export does not expand Core's reference contract.
+maps, and subtle/medium/vivid positions consumed by Core (medium added in 0.11.1).
 
 The projection is deterministic and performs no color generation or semantic
 mapping. Copy the generated module unchanged into a preset's color catalog and

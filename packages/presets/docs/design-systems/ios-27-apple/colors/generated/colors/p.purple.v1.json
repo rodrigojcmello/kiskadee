@@ -4,6 +4,11 @@
   "formatVersion": 5,
   "functionalReferences": {
     "dark": {
+      "medium": {
+        "hex": "#6f007c",
+        "source": "midpoint",
+        "tone": 20
+      },
       "subtle": {
         "hex": "#29002f",
         "source": "surface-relative",
@@ -16,6 +21,11 @@
       }
     },
     "light": {
+      "medium": {
+        "hex": "#f29efe",
+        "source": "midpoint",
+        "tone": 14
+      },
       "subtle": {
         "hex": "#f8e7fa",
         "source": "surface-relative",
@@ -40,7 +50,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.7.0"
+    "version": "0.11.1"
   },
   "id": "p.purple.v1",
   "kind": "kiskadee.primitive-tonal-family",

@@ -1,0 +1,15 @@
+{
+  "name": "fluent-2-microsoft",
+  "profile": "muted-darks",
+  "colors": 936,
+  "promoted": 8,
+  "diffs": [],
+  "runtimeDiffs": [],
+  "verified": true,
+  "originalGenerator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.5.0"
+  },
+  "previousManifestSha256": "68805119c5cfb295739efb7f2ed18ae0c8fe77d915ef28ee2bdded0ead9295ba",
+  "generator": "0.11.0"
+}

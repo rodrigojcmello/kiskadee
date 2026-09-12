@@ -1,5 +1,28 @@
 # iOS 27 System Color Evidence
 
+## Medium reference integration — 0.11.1
+
+The current bundle and preset modules include the generator's medium reference
+explicitly. All Light/Dark HEX values and existing subtle/vivid positions remain
+unchanged from the equivalent 0.11.0 regeneration below. Core consumes medium
+with the same ordinal offsets as other references.
+
+
+## Equivalent regeneration with 0.11.0 — 2026-09-11
+
+The current `generated/` bundle was regenerated from its original locked recipe
+using generator `0.11.0` and profile `balanced`. All 1152
+Light/Dark tone values and subtle/vivid positions match the previous evidence.
+All 13 existing preset modules match their previous runtime values and
+now come directly from the exported `preset-colors/*.ts` files. No family,
+semantic mapping, component intent, or profile was changed.
+
+[Comparison record](./regeneration-0.11.0.json) retains the original generator
+identity and previous manifest hash. Earlier approval/version statements below
+describe historical color decisions; this regeneration preserves those colors.
+The current bundle also records medium references and preset-module hashes.
+
+
 The [iOS and iPadOS 27 Community Figma file](https://www.figma.com/design/GeO2lMY65IAFczDmjs6oei/iOS-and-iPadOS-27--Community-?node-id=507-24673)
 contains a centralized local variable collection named `Colors`, with `Light` and `Dark` modes.
 This is the canonical color-family source for the iOS 27 tonal-system generation; component
@@ -87,9 +110,9 @@ official Apple Orange values remain Orange. Apple Brown therefore replaces the c
 
 ## Tonal System And Promotion
 
-The editable [`tonal-system.recipe.json`](tonal-system.recipe.json) and promoted
-[`generated/`](generated/) bundle use the format V5 multifamily generator from
-`@kiskadee/tonal-scale@0.7.0`. This promotion moves Apple's tinted Gray source from `n.black.v1`
+The editable [`tonal-system.recipe.json`](tonal-system.recipe.json) retains the original inputs.
+The promoted [`generated/`](generated/) bundle now uses format V5 generator `0.11.0`,
+preserving the colors approved with `0.7.0`. That original promotion moved Apple's tinted Gray source from `n.black.v1`
 to `n.black.v2`, while mandatory `n.black.v1` provides an independent pure grayscale:
 
 - profile: `balanced`, because Apple's authored Dark accents remain vivid and do not justify the
@@ -102,7 +125,7 @@ to `n.black.v2`, while mandatory `n.black.v1` provides an independent pure grays
   generated tracks;
 - universal companion families without direct Apple Accent seeds: `gy.lime.v1` and
   `rp.magenta.v1`, generated from the shared harmony contract;
-- output: sixteen family assets and nineteen canonical files;
+- output: sixteen evidence assets, sixteen preset modules, and three metadata files (35 files);
 - bundle diagnostic status: `review`, with no generation errors.
 
 The complete perceptual de-para is stored in
@@ -136,7 +159,7 @@ preserve tonal provenance; preset primitive variants are a separate publication 
 bundle retains diagnostic status `review`; promotion is the explicit preset decision to adopt its
 source-backed Apple subset and required neutral family.
 
-### Shared viewer — candidate generator 0.7.0
+### Shared viewer — candidate generator 0.11.1
 
 [Open the iOS 27 candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22balanced%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230088ff%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23ff383c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22r.red.v2%22%2C%22seedHex%22%3A%22%23ff2d55%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23ff8d28%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.brown.v1%22%2C%22seedHex%22%3A%22%23ac7f5e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23ffcc00%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%2334c759%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v1%22%2C%22seedHex%22%3A%22%2300c8b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v2%22%2C%22seedHex%22%3A%22%2300c3d0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v3%22%2C%22seedHex%22%3A%22%2300c0e8%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22pb.indigo.v1%22%2C%22seedHex%22%3A%22%236155f5%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23cb30e0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%231c1c1e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D)
 

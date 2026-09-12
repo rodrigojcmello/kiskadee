@@ -3,38 +3,42 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import blueV1 from './b.blue.v1.ts';
-import greenV1 from './g.green.v1.ts';
-import blackV1 from './n.black.v1.ts';
-import blackV2 from './n.black.v2.ts';
-import purpleV1 from './p.purple.v1.ts';
-import redV1 from './r.red.v1.ts';
-import yellowV1 from './y.yellow.v1.ts';
-import orangeV1 from './yr.orange.v1.ts';
+import asset0 from './b.blue.v1.ts';
+import asset1 from './bg.teal.v1.ts';
+import asset2 from './bg.teal.v2.ts';
+import asset3 from './bg.teal.v3.ts';
+import asset4 from './g.green.v1.ts';
+import asset5 from './n.black.v2.ts';
+import asset6 from './p.purple.v1.ts';
+import asset7 from './pb.indigo.v1.ts';
+import asset8 from './r.red.v1.ts';
+import asset9 from './r.red.v2.ts';
+import asset10 from './y.yellow.v1.ts';
+import asset11 from './yr.brown.v1.ts';
+import asset12 from './yr.orange.v1.ts';
 
 const GENERATED_ROOT = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  '../../../../docs/design-systems/fluent-2-microsoft/colors/generated'
+  '../../../../docs/design-systems/ios-27-apple/colors/generated'
 );
 
 const PROMOTED_ASSETS = {
-  'b.blue.v1': blueV1,
-  'g.green.v1': greenV1,
-  'n.black.v1': blackV1,
-  'n.black.v2': blackV2,
-  'p.purple.v1': purpleV1,
-  'r.red.v1': redV1,
-  'y.yellow.v1': yellowV1,
-  'yr.orange.v1': orangeV1
+  'b.blue.v1': asset0,
+  'bg.teal.v1': asset1,
+  'bg.teal.v2': asset2,
+  'bg.teal.v3': asset3,
+  'g.green.v1': asset4,
+  'n.black.v2': asset5,
+  'p.purple.v1': asset6,
+  'pb.indigo.v1': asset7,
+  'r.red.v1': asset8,
+  'r.red.v2': asset9,
+  'y.yellow.v1': asset10,
+  'yr.brown.v1': asset11,
+  'yr.orange.v1': asset12
 } as const;
 
-const CANDIDATE_ONLY_ASSET_IDS = [
-  'bg.teal.v1',
-  'gy.lime.v1',
-  'pb.indigo.v1',
-  'rp.magenta.v1',
-  'yr.brown.v1'
-] as const;
+const CANDIDATE_ONLY_ASSET_IDS = ['gy.lime.v1', 'n.black.v1', 'rp.magenta.v1'] as const;
 
 type ApprovedAsset = {
   functionalReferences: Record<
@@ -81,7 +85,7 @@ function projectApprovedAsset(asset: ApprovedAsset) {
   };
 }
 
-describe('Fluent promoted tonal assets', () => {
+describe('iOS 27 promoted tonal assets', () => {
   const manifestPath = resolve(GENERATED_ROOT, 'tonal-system.json');
   const manifest = readJson<ApprovedManifest>(manifestPath);
 
