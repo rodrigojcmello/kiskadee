@@ -31,7 +31,10 @@ package map and authority boundaries. Skills own bounded workflows; their suppor
 contain details needed only for particular modes. Domain
 definitions continue to own technical contracts.
 The legacy Junie entrypoint was removed. Repository guidance must not require different wording
-or separate test authorization for an already-authorized implementation.
+or separate test authorization for an already-authorized implementation. The pre-implementation
+scope recap in `AGENTS.md` is a user-requested repository checkpoint, distinct from
+code review. Reuse approval already given for that recap; do not duplicate the
+checkpoint across domain skills or require approval for each validation step.
 
 Descriptions should distinguish when a skill applies. A skill entrypoint retains essential
 constraints and explains when to load supporting references. Short, cohesive skills can remain

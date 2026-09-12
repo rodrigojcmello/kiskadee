@@ -16,11 +16,22 @@ map and authority boundaries; load only the sections relevant to the task.
 ## Task Scope And Completion
 
 - Follow the user's current request and accepted corrections over skill defaults. Analysis-only
-  requests do not authorize implementation. An implementation request authorizes focused edits,
-  useful regression tests, and the required local validation without another confirmation.
-- For an open-ended architecture analysis with unsettled scope, recap scope and deliverables for
-  agreement first. Do not repeat that gate when the user has already approved the direction or
-  explicitly requested implementation. `cp` means agreement to the current proposed next step.
+  requests do not authorize implementation.
+- Before starting a new implementation, recap the intended outcome, concrete changes, relevant
+  boundaries, assumptions, and validation in concise Portuguese, then wait for the user's approval.
+  Read-only investigation may precede the recap to make it concrete. A first request to implement
+  does not replace this scope confirmation; approval of a recap already given in the conversation
+  does. Clear approval of the recapped scope authorizes the agreed work, interpreted in context
+  without requiring specific keywords. Honor an explicit request to skip this checkpoint for the task.
+- Apply that checkpoint at the transition from discussion/refinement to implementation, including
+  code, configuration, generated assets, and implementation-related documentation. Do not interrupt
+  ordinary questions, read-only analysis, or explicitly requested task-status updates with it.
+  Do not repeat it for routine implementation choices, fixes, tests, or validation within approved
+  scope. If findings materially change the intended outcome or scope, recap that change and wait
+  before implementing the affected part; continue independent approved work.
+- Once the recap is approved, complete the focused edits, useful regression tests, and required
+  local validation without another confirmation. For open-ended architecture analysis with
+  unsettled scope, agree on the analysis scope and deliverables first.
 - Finish authorized work through implementation, relevant validation, and a clear handoff. Ask only
   when missing information materially changes the result or an action needs additional authority;
   continue independent authorized work while waiting.
