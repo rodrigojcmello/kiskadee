@@ -193,7 +193,8 @@ Review later:
 
 ## Phased implementation plan
 
-Keep each phase shippable and reviewable. Do not add unit tests unless explicitly requested.
+Keep each phase shippable and reviewable. Follow the current test authorization and validation
+policy in [AGENTS.md](../../AGENTS.md); meaningful tests are included in authorized implementation.
 
 ### Phase 1 — Headless foundation
 
@@ -434,7 +435,8 @@ Suggested order once the direction is approved:
 5. Add styled React `Switch` in `packages/components/react`.
 6. Add showcase route/scenarios after artifacts build.
 
-No unit tests should be added unless explicitly requested.
+The current validation policy in [AGENTS.md](../../AGENTS.md) supersedes this plan's former
+test-authorization restriction.
 
 ## Post-phase Fluent 2 Microsoft visual pass
 

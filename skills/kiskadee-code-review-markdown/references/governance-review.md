@@ -9,7 +9,7 @@ Run this review for every diff, including changes confined to one project:
    selected strategy preserves the authority and handoff of its linked normative definition.
 3. Group changed files by governed project or repository-governance surface, then group them by
    concern. Treat cross-project definitions, root architecture documents, `AGENTS.md`,
-   `CHAT-CONTEXT.md`, and `skills/**` as governance surfaces rather than implementation projects.
+   `README.md`, and `skills/**` as governance surfaces rather than implementation projects.
    Assign their authority through the documentation precedence in the canonical governance
    definition, not through their directory. Multiple projects changed for unrelated concerns do not
    form one cross-project flow.
@@ -64,4 +64,3 @@ ownership remains ambiguous after architecture analysis, record the documentatio
 A different Composition Strategy is not actionable by preference alone. Record a finding only when
 the chosen strategy violates a linked normative contract or creates a concrete ownership, handoff,
 semantic, artifact, or runtime consequence.
-

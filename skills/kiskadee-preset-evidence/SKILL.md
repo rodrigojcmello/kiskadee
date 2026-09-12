@@ -21,7 +21,7 @@ When the task includes color extraction, tonal mapping, primitive color assets, 
 roles, or component schema colors, also read and follow
 `../kiskadee-resolve-preset-colors/SKILL.md` completely before editing the schema.
 
-This applies when the task includes any of these inputs or files:
+Within official preset authorship or source-fidelity analysis, relevant inputs include:
 
 - Figma links or node IDs;
 - official design-system docs, such as Apple HIG, Carbon, Fluent, Material, or similar sources;
@@ -30,6 +30,11 @@ This applies when the task includes any of these inputs or files:
 - files under `packages/presets/docs/design-systems/<preset>/`;
 - component schema decisions about geometry, color, state, radius, shadow, effects, marks, or
   component options.
+
+A Figma link, screenshot, or file path alone is not a trigger for a preset evidence investigation.
+For mechanical edits with no recipe or source-decision change, inspect the diff and existing
+evidence to confirm that boundary; do not reopen upstream sources or regenerate artifacts solely
+because the file belongs to an official preset.
 
 ## Required Locations
 

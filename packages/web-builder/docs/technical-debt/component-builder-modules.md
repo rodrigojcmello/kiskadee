@@ -128,7 +128,8 @@ Move these responsibilities toward component modules:
 5. Move `Switch` global option and manifest capability extraction into a `switch` module.
 6. Replace central component branches with iteration over the module registry.
 7. Add narrow snapshot or object-shape validation for generated `manifest.json` and
-   `global.kiskadee.json` only if tests are explicitly requested.
+   `global.kiskadee.json` as part of the authorized migration, following the relevant validation
+   policy in [AGENTS.md](../../../../AGENTS.md).
 
 ## Triggers
 

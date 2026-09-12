@@ -10,15 +10,21 @@ of copying visual values into component code.
 
 ## Read first
 
-Read these sources in order:
+Start with the canonical eligibility and ownership rules; reuse current sources already read:
 
 1. `../../packages/web-builder/docs/definitions/structural-utility-projections.md`
 2. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
 3. `../../STRUCTURAL-CSS.md` when structural Sass or a different DOM owner is involved
-4. `../../packages/web-builder/docs/definitions/style-emission-policy.md`
-5. `../../packages/web-builder/docs/definitions/generated-artifacts.md`
+4. `../../packages/web-builder/docs/definitions/style-emission-policy.md` when verifying source
+   token eligibility or distinguishing a projection from an emission-policy change
+5. `../../packages/web-builder/docs/definitions/generated-artifacts.md` when implementing or
+   reviewing the serialized bucket or consumer resolution
 
 ## Follow this workflow
+
+Analysis ends with an eligibility decision and proposed validation. Apply Registry edits and
+artifact generation only within authorized implementation; report freshness limits when relying
+on existing artifacts in a read-only review.
 
 1. Identify the schema element that owns the visual value.
 2. Locate the normal generated utility and class-map bucket that already serves that element.

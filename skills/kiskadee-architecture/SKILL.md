@@ -8,56 +8,28 @@ description: Choose Kiskadee project ownership, shared contracts, token taxonomy
 Use this skill to make architecture decisions and implementation plans that stay consistent with
 Kiskadee's package responsibilities.
 
-## Primary sources
+## Decision And Sources
 
-Read only what the task needs, in this order:
+Identify the requested outcome and concern. Use
+[project-governance.md](../../docs/definitions/project-governance.md) to establish its authority,
+allowed inputs, transformers, published handoff, and affected consumers before proposing code.
+For repository instructions, identify the nearest normative definition and keep derived guidance
+consistent with it. Reuse sources already read while they remain current.
 
-1. `../../docs/definitions/project-governance.md` for project authority and handoffs
-2. `../../PROJECT-PURPOSE.md` for product context and the architecture overview
-3. `../../docs/definitions/composition-strategies.md` when choosing between a component, slot,
-   variant, mode, option, profile, Effect, Provider, platform mechanic, or Web composition pattern
-4. `references/monorepo-map.md` as a quick routing summary
-5. `references/taxonomy-rules.md`
-6. `../../SCHEMA-BUILD-RUNTIME-RULES.md`
-7. `../../packages/web-builder/docs/definitions/structural-utility-projections.md` when an existing
-   token-only scale utility may be conditionally reused by a different structural owner
-8. `../../STRUCTURAL-CSS.md` when structural Sass is involved
-9. `references/headless-react-patterns.md` for headless React work
-10. `references/testing-checklist.md` for validation planning
+Load additional guidance only for the matching decision:
 
-## Follow this workflow
-
-1. Identify the requested outcome and affected concern before choosing its owning project.
-
-2. Determine the correct project authority before proposing code. Identify its allowed inputs,
-   published handoff, transformers, and consumers for the concern being changed.
-
-   For repository-governance surfaces, identify the nearest normative definition and verify that
-   summaries, bootstrap documents, agent rules, and skills remain derived from it.
-
-3. Apply `../../docs/definitions/composition-strategies.md` when choosing or materially changing a
-component, slot, variant, mode, option, profile, Effect, Provider, Headless primitive, platform
-mechanic, or Schema-to-Web composition pattern.
-
-4. When token modeling changes, validate taxonomy fit using `references/taxonomy-rules.md`.
-
-5. Validate project ownership using `../../docs/definitions/project-governance.md`. Use
-   `references/monorepo-map.md` only for quick routing.
-
-6. If the task involves schema/build/runtime placement, validate ownership using
-   `../../SCHEMA-BUILD-RUNTIME-RULES.md`.
-
-7. If a generated token-only scale utility may be applied to a wrapper or different structural
-   owner, apply
-   `../kiskadee-structural-utility-projections/SKILL.md` before proposing a new bucket or runtime
-   class reuse.
-
-8. If the task involves React headless components, apply `references/headless-react-patterns.md`.
-
-9. For a new component, load `references/new-component-rollout.md`.
-
-10. Use `references/testing-checklist.md` to select validation for the affected behavior.
-    Execute it for authorized implementation; propose it for analysis-only work.
+| Concern | Reference |
+| --- | --- |
+| Product purpose or delivery context is missing | [README.md](../../README.md) |
+| Choosing or materially changing a component, slot, variant, mode, option, profile, catalog, Effect, Provider, Headless primitive, platform mechanic, or named composition pattern | [composition-strategies.md](../../docs/definitions/composition-strategies.md) |
+| Token classification changes | [taxonomy-rules.md](references/taxonomy-rules.md) |
+| Schema/build/runtime placement or artifact semantics change | [SCHEMA-BUILD-RUNTIME-RULES.md](../../SCHEMA-BUILD-RUNTIME-RULES.md) and [schema-artifact-decisions.md](references/schema-artifact-decisions.md) |
+| Existing token-only utility reuse on a different structural owner | [projection skill](../kiskadee-structural-utility-projections/SKILL.md) before choosing a bucket or runtime reuse |
+| Structural Sass changes in React components | [STRUCTURAL-CSS.md](../../STRUCTURAL-CSS.md) before editing |
+| Headless React behavior or API changes | [headless-react-patterns.md](references/headless-react-patterns.md) |
+| New component delivery | [new-component-rollout.md](references/new-component-rollout.md) |
+| Selecting implementation or handoff checks | [testing-checklist.md](references/testing-checklist.md) |
+| Adding explanatory function comments | [function-comments.md](references/function-comments.md) |
 
 ## Hard constraints
 
@@ -77,31 +49,6 @@ mechanic, or Schema-to-Web composition pattern.
   artifacts and code that executes in the browser.
 - For structural Sass in `packages/components/react`, follow
   [STRUCTURAL-CSS.md](../../STRUCTURAL-CSS.md).
-- Put behavioral switches in `components.<name>.options` and keep the corresponding numeric/visual
-  values in `components.<name>.elements`.
-- If a schema value must exist but only apply when a runtime/component option enables it, do not
-  assume the generic artifact scale bucket is enough; verify whether `packages/web-builder` needs a
-  dedicated opt-in bucket.
-- If an already emitted token-only scale utility must be applied independently to a different
-  structural DOM owner, evaluate the Structural Utility Projection Registry before creating another
-  dedicated bucket. Keep it distinct from Style Emission Policy.
-- Structural utility projections use only
-  `element.p[artifactKey][scaleKey] = className`; `p` never stores raw values or semantic metadata.
-- The Structural Utility Projection Registry currently serves Button connected-divider overlap and
-  Dropdown independent empty leading tracks.
-- Migration of Tabs fixed width remains a future candidate, not an active `p` consumer.
-- For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique
-  and prefer narrowing generic schema keys via type-specific Zod/contracts over inventing ad hoc
-  schema properties or builder-only exceptions.
-- When a fixed-geometry type needs rounded shells/items, keep the radius values in the
-  participating schema elements themselves and let structural CSS only flatten the corners that
-  must be straight; avoid cross-element radius inheritance or arithmetic in the component layer.
-
-## Conditional Detail
-
-- When adding explanatory function comments, follow [function-comments.md](references/function-comments.md).
-- Before Schema or builder changes, use [schema-artifact-decisions.md](references/schema-artifact-decisions.md).
-- For a new component, use [new-component-rollout.md](references/new-component-rollout.md).
 
 ## Handoff
 

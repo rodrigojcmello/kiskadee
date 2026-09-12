@@ -297,7 +297,8 @@ Match validation to the blast radius:
 - run web-builder validation when class-map shape, schema consumption, or generated artifacts are
   involved;
 - run `pnpm --filter @kiskadee/showcase build` when the component is exposed in the showcase;
-- do not add or modify unit tests unless explicitly requested.
+- add or update meaningful regression tests within authorized implementation, following
+  [AGENTS.md](../../AGENTS.md); separate test authorization is not required.
 
 ## What Next?
 

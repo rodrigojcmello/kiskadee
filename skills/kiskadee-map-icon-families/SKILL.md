@@ -35,6 +35,9 @@ social marks through interface families.
 
 ## Workflow
 
+For analysis or review, inspect existing sources and artifacts and report gaps without edits or
+generation. The authoring steps below apply only to authorized changes.
+
 1. Read `AGENTS.md` and the icon-family definition.
 2. Search canonical names, metadata, generated adapters, and direct imports before choosing a new
    name.
@@ -52,7 +55,8 @@ social marks through interface families.
 
 ## Validation
 
-Run the narrow checks first:
+For documentation-only changes, check references, consistency with the icon-family definition,
+and diff whitespace. For mapping, canonical-name, or generator changes, run:
 
 ```sh
 pnpm --filter @kiskadee/icons generate
@@ -60,17 +64,20 @@ pnpm --filter @kiskadee/icons check:generated
 pnpm --filter @kiskadee/icons build
 ```
 
-Then verify:
+Select additional checks by the changed behavior:
 
 - every official family covers every canonical name;
 - no generated adapter imports an uninstalled undeclared upstream peer;
 - no accidental direct interface-library imports remain outside family adapters and deliberate
   direct cases;
-- RTL metadata renders correctly;
-- unselected lazy families create no browser request;
-- Material Symbols requests only the canonical ligature subset;
-- social icons and fixed brand paint remain unchanged;
-- React Components and Showcase still compile.
+- when directional mappings or rendering change, verify RTL output;
+- when family loading changes, verify unselected lazy families create no browser request;
+- when Material Symbols loading changes, verify requests contain only the canonical subset;
+- when shared generation affects social icons, verify fixed brand paint remains unchanged;
+- when public exports or consumer integration change, verify React Components and Showcase compile.
+
+Read-only reviews may run non-mutating checks and must report artifact freshness limits. Do not
+run generation or builds that overwrite tracked work merely to assess a mapping.
 
 If a concept has no credible equivalent across the official families, stop and keep it namespaced
 or direct instead of inventing a misleading mapping.

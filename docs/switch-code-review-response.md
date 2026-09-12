@@ -6,7 +6,7 @@ Contexto: os ajustes recentes tentaram corrigir o AF virando uma bolinha dentro 
 
 Pertinente. Esse é o ponto mais objetivo do review.
 
-O gerador foi alterado de propósito para remover fallbacks desenháveis de `--k-af-host-width`, `--k-af-host-height` e `--k-af-host-radius`, mas o teste ainda espera o contrato antigo com fallback. A build passou porque `run build` não executa esse teste. Eu não atualizei testes antes porque a regra do repo diz para não adicionar ou modificar unit tests sem pedido explícito, mas tecnicamente o review está correto: antes de commit, esse teste deve acompanhar a nova saída.
+O gerador foi alterado de propósito para remover fallbacks desenháveis de `--k-af-host-width`, `--k-af-host-height` e `--k-af-host-radius`, mas o teste ainda espera o contrato antigo com fallback. A build passou porque `run build` não executa esse teste. Os testes não foram atualizados naquela etapa devido a uma restrição antiga, já removida. A regra atual em [AGENTS.md](../AGENTS.md) permite criar e alterar testes relevantes dentro da implementação autorizada, sem pedido separado. Tecnicamente o review está correto: antes de commit, esse teste deve acompanhar a nova saída.
 
 Eu ajustaria as expectativas existentes. Sobre adicionar um novo caso de "host vars ausentes", eu acho útil se for um teste de geração documentando que o CSS emitido não possui fallback; não tentaria testar comportamento visual de ausência de var nesse nível.
 

@@ -7,6 +7,10 @@ description: Synchronize preset tonal candidate evidence after generator, versio
 
 Keep the current Shared Viewer candidate distinct from previously approved preset artifacts.
 
+For analysis or audit-only requests, inspect versions and run the read-only audit, then report
+drift without updating evidence or promoting assets. The synchronization and validation steps
+below apply to authorized updates; asset promotion still requires actual visual approval.
+
 ## Required Workflow
 
 1. Read `../kiskadee-preset-evidence/SKILL.md` completely before editing official preset evidence.

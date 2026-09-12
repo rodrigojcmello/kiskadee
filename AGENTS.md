@@ -4,14 +4,14 @@
 
 This file contains the repository-level operating rules for AI agents working in `kiskadee`.
 
-Keep it short and durable. Put project purpose and architecture in `PROJECT-PURPOSE.md`, and
-keep task-specific workflows inside skills.
+Keep it short and durable. Put product context in `README.md`, technical contracts in their
+definitions, and task-specific workflows inside skills.
 
 ## Repository Snapshot
 
 `kiskadee` is a PNPM design-system monorepo with packages under `packages/**`.
-Use `PROJECT-PURPOSE.md` for the package map and architecture; load only the sections relevant
-to the task.
+Use `README.md` for product context and `docs/definitions/project-governance.md` for the package
+map and authority boundaries; load only the sections relevant to the task.
 
 ## Task Scope And Completion
 
@@ -94,8 +94,8 @@ Preserve source evidence with preset changes; never add literal colors to offici
 Keep interaction states sparse and document intentional Rest-equal precedence overrides.
 Keep the Structural Utility Projection Registry separate from Style Emission Policy; `p` never
 contains raw values. Preserve approved tonal asset provenance when updating current candidates.
-`CHAT-CONTEXT.md` is the optional chat bootstrap; `SCHEMA-BUILD-RUNTIME-RULES.md` defines the
-Schema/build/runtime/Sass handoff. These remain derived from the project-governance definition.
+`SCHEMA-BUILD-RUNTIME-RULES.md` defines the Schema/build/runtime/Sass handoff and remains derived
+from the project-governance definition.
 
 ## Package Guidance
 

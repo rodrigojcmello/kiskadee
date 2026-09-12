@@ -9,7 +9,16 @@ Use these rules before proposing a schema or builder change:
 4. If the value is conditionally applied to its normal schema element, check whether the existing
    component artifact contract already provides the required opt-in bucket.
 5. If one already emitted token-only scale utility must instead be applied to a different structural
-   owner, apply the Structural Utility Projection Registry eligibility test.
+   owner, apply the [projection skill](../../kiskadee-structural-utility-projections/SKILL.md)
+   and its Registry eligibility test. Keep the Registry separate from Style Emission Policy.
+   Its output is only `element.p[artifactKey][scaleKey] = className`; `p` never contains raw
+   values or semantic metadata.
+6. For fixed-geometry component types (for example `tabs.segmented`), keep the public type unique
+   and narrow generic schema keys through type-specific Zod/contracts instead of inventing ad hoc
+   schema properties or builder-only exceptions.
+7. Keep rounded shell/item radius values in their participating schema elements. Structural CSS
+   only flattens corners that must be straight; avoid cross-element radius inheritance or
+   arithmetic in the component layer.
 
 Current example and future candidate:
 
@@ -21,4 +30,3 @@ Current example and future candidate:
   contract.
 
 Do not register the Tabs candidate without a separate implementation and validation task.
-

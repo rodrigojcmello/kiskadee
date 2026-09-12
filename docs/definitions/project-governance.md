@@ -43,13 +43,13 @@ to the consuming project.
 
 ## Repository-governance surfaces
 
-Cross-project definitions, root architecture documents, `AGENTS.md`, `CHAT-CONTEXT.md`, and
+Cross-project definitions, root architecture documents, `README.md`, `AGENTS.md`, and
 `skills/**` are repository-governance surfaces, not implementation projects.
 
 - The nearest normative definition owns the documented rule. This document owns cross-project
   authority and handoffs.
 - Domain definitions may refine the rule within its documented scope.
-- Overview and bootstrap documents summarize and route readers to normative definitions.
+- Overview documents summarize and route readers to normative definitions.
 - Skills operationalize and verify those definitions.
 
 The directory containing a governance surface does not grant it product or implementation
@@ -308,8 +308,7 @@ Document ambiguity as a governance gap instead of accusing the implementation sp
 
 ## Related definitions
 
-- [Project purpose](../../PROJECT-PURPOSE.md) provides product context and a concise architecture
-  overview.
+- [Project overview](../../README.md) provides product context and a concise architecture overview.
 - [Schema, build artifacts, and runtime rules](../../SCHEMA-BUILD-RUNTIME-RULES.md) refines Schema,
   Web artifact, and runtime-execution responsibilities.
 - [Structural CSS](../../STRUCTURAL-CSS.md) defines structural ownership inside `p-react`.

@@ -64,8 +64,10 @@ Isso evita que A1/A5 usem números aproximados como se fossem contrato.
 **Veredito:** procede.
 
 Essa é a parte mais valiosa da arquitetura. A separação entre palettes, scales, decorations,
-effects, options, elements, variant e mode está alinhada com `PROJECT-PURPOSE.md` e
-`SCHEMA-BUILD-RUNTIME-RULES.md`. Eu protegeria isso explicitamente nos issues de refactor: qualquer
+effects, options, elements, variant e mode estava alinhada com a apresentação do projeto vigente
+na época desta revisão. Os contratos atuais estão em
+[nomenclature.md](../definitions/nomenclature.md) e
+[SCHEMA-BUILD-RUNTIME-RULES.md](../../SCHEMA-BUILD-RUNTIME-RULES.md). Eu protegeria isso explicitamente nos issues de refactor: qualquer
 atividade que simplifique código mas misture token semântico, geometria e comportamento deve ser
 recusada.
 
@@ -299,9 +301,9 @@ A lacuna de testes existe: no pacote visual, os testes atuais estão concentrado
 refactors como A1 e A3, testes de equivalência de class resolution e comportamento de motion seriam
 uma rede importante.
 
-Mas, para este repo, há uma regra operacional: não adicionar/modificar unit tests a menos que o
-usuário peça explicitamente. Portanto, no Linear eu escreveria os testes como parte explícita de
-cada issue de refactor, não como uma permissão implícita.
+A restrição de autorização de testes considerada nesta revisão histórica foi removida.
+Atualmente, [AGENTS.md](../../AGENTS.md) inclui testes relevantes no escopo da implementação
+autorizada, sem pedido separado. As issues podem registrar a cobertura esperada para cada refactor.
 
 Eu não abriria A7 como "aumentar cobertura" genérico. Abriria assim:
 

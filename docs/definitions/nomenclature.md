@@ -235,8 +235,8 @@ The iOS component project rooted at `packages/components/ios`.
   icon-size ownership contracts.
 - [Project governance and responsibility](./project-governance.md) defines project authority,
   allowed consumption, forbidden ownership, and handoffs.
-- [Project purpose](../../PROJECT-PURPOSE.md) defines product context, the Schema, DSPE domains, and
-  the summarized platform flow.
+- [Project overview](../../README.md) introduces the product and summarizes the platform flow.
+  Schema and DSPE terminology are defined in this document.
 - [Schema, build artifacts, and runtime rules](../../SCHEMA-BUILD-RUNTIME-RULES.md) defines the
   boundary between Schema ownership and generated or runtime behavior.
 - [Structural CSS](../../STRUCTURAL-CSS.md) defines the complete ownership, naming, and consumption
