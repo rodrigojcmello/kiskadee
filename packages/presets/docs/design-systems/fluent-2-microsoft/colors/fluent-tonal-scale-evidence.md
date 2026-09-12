@@ -1,5 +1,21 @@
 # Fluent 2 Color Evidence And Kiskadee Tonal Mapping
 
+## Vivid Lights promotion — 2026-09-12
+
+User-approved generator 0.11.1 output now supplies the eight existing Fluent
+primitive modules, with subtle/medium/vivid references copied from the exporter.
+The current [primitive correspondence](./figma-to-kiskadee.vivid-lights.json) was
+recomputed from the original official HEX inputs; the previous mapping remains
+historical evidence. No component locator was remapped by this correspondence.
+Only the recipe profile changed to Muted Darks + Vivid Lights. The authored
+neutral #21242d and pure gray scales are unchanged; primary-derived neutral is
+not enabled. Layer 2/3 mappings and component formulas remain unchanged.
+
+The [comparison](./candidate-vivid-lights/README.md) records the differences
+against the previous profile. Earlier sections describe historical approvals
+and mappings; their HEX measurements must be read against that prior baseline.
+
+
 ## Medium reference integration — 0.11.1
 
 The current bundle and preset modules include the generator's medium reference
@@ -96,7 +112,7 @@ source JSON without being presented as component evidence.
 [`tonal-system.recipe.json`](./tonal-system.recipe.json) is the editable URL
 recipe. The generated system uses:
 
-- `muted-darks`, the Fluent-oriented tonal profile;
+- `vivid-lights` (Muted Darks + Vivid Lights), promoted with user approval;
 - exact Light seeds for the official authored families;
 - adaptive Dark chromatic policies, because Fluent selects different upstream
   stops by theme;
@@ -109,7 +125,7 @@ recipe. The generated system uses:
 
 ### Shared viewer — candidate generator 0.11.1
 
-[Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22muted-darks%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
+[Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22vivid-lights%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
 
 The link encodes the complete editable format V5 recipe and can be saved as a
 browser bookmark. It resolves the latest generated scales and functional
@@ -375,3 +391,10 @@ absolute white/black remain `n.black.v1` caps. Dark chroma moderation is owned
 by the tonal system and applies hue-independently to eligible support families;
 no Destructive-, Positive-, Neutral-, Button-, or Card-only compensation was
 introduced. Components without their own source-evidence mapping remain deferred.
+
+## Experimental Vivid Lights candidate
+
+The [0.11.1 candidate comparison](./candidate-vivid-lights/README.md) changes only
+the profile to Muted Darks + Vivid Lights. Its authored neutral is retained.
+The candidate has been promoted with user approval; the Shared Viewer and recipe
+now select vivid-lights. The comparison retains the prior Muted Darks baseline.

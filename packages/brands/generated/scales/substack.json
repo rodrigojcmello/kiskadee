@@ -224,7 +224,12 @@
               "stepImbalance": 1.8488676
             },
             "fairing": {
-              "adjustedTones": [65, 70, 80, 85],
+              "adjustedTones": [
+                65,
+                70,
+                80,
+                85
+              ],
               "beforeChromaExcess": 0.03200211,
               "beforeChromaSlopeChange": 0.00816717,
               "beforeStepImbalance": 3.37317573,
@@ -544,12 +549,12 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.6.0"
+    "version": "0.8.2"
   },
   "gridContract": "kiskadee-tonal-v1",
   "integrity": {
     "algorithm": "sha256",
-    "payloadSha256": "11ced710d3e7069ef6fedef4c7cb40999e7c99c0adf11fb588eb806462d020af"
+    "payloadSha256": "f2386884badfef020616d159e003ed02e4b343a5a65f9c4153c6ae2a8ef7b671"
   },
   "kind": "kiskadee.single-tonal-family",
   "policies": {

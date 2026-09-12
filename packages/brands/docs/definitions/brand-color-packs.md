@@ -172,3 +172,15 @@ prebuilt pack palette rather than calculating colors at runtime.
 Published seeds and logo references do not imply affiliation, endorsement, or permission to ignore
 the trademark owner's current rules. Revalidate the linked first-party evidence before adding a new
 brand, changing a seed, or using an identity in marketing material.
+
+## Standalone artifact refresh (0.8.2)
+
+The 25 checked-in brand scales were regenerated from their existing seeds,
+Muted Darks profile, and source-exact Light/Dark policies with standalone
+artifact generator 0.8.2. All 1,800 tone HEX values and functional references
+match the previous 0.6.0 artifacts. The existing generation script updates
+scale integrity hashes and all catalog/pack references together. This refresh
+restores compatibility with the current verifier without changing brand colors.
+
+Use `pnpm --filter @kiskadee/brands check:generated` to detect stale artifacts
+before running the Showcase build. Do not relabel generator versions manually.

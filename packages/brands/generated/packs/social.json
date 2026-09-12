@@ -6,7 +6,7 @@
       "id": "chat-gpt",
       "intent": "brand.chat-gpt",
       "tonalAsset": "scales/chat-gpt.json",
-      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+      "tonalIntegritySha256": "4e6e5e6da7c6a7990ea2462d88d211f758d9568f235b344a7cad9f6ab4d82a91"
     },
     {
       "contentPolarity": "dark",
@@ -14,7 +14,7 @@
       "id": "claude",
       "intent": "brand.claude",
       "tonalAsset": "scales/claude.json",
-      "tonalIntegritySha256": "6c1aeb578425bbee3da9326a3a4e7890fa2c6b6149e7cb69cad84eabd87ae37e"
+      "tonalIntegritySha256": "cfe9c5f929d7cf152c9d630310aacf5de9326a77b7843987578ece9ccf18b3e3"
     },
     {
       "contentPolarity": "light",
@@ -22,7 +22,7 @@
       "id": "gemini",
       "intent": "brand.gemini",
       "tonalAsset": "scales/gemini.json",
-      "tonalIntegritySha256": "03e82a4138e877f938410524de75868620d6e4ce686873a42dee0da3d6371b63"
+      "tonalIntegritySha256": "2ba779d21205440649595f616eed415feb30264534f1dee8484d32767e67a6f2"
     },
     {
       "contentPolarity": "light",
@@ -30,7 +30,7 @@
       "id": "facebook",
       "intent": "brand.facebook",
       "tonalAsset": "scales/facebook.json",
-      "tonalIntegritySha256": "0bc58a8bded5f8e97a3172bac1cf4f52cf67daf24117b714e0bad23976afd990"
+      "tonalIntegritySha256": "6c54811ef706508e5864e979b442b45fe71fe348d91383fa724c5a0e3f5a4b0d"
     },
     {
       "contentPolarity": "light",
@@ -38,7 +38,7 @@
       "id": "you-tube",
       "intent": "brand.you-tube",
       "tonalAsset": "scales/you-tube.json",
-      "tonalIntegritySha256": "4d63c743b39ef5048011408480357f6db38da3e4b59f3701d64c13256961e1ae"
+      "tonalIntegritySha256": "e7127f30cd4088a2c73b17e1fa476f48fadac54b71d9606024c1fb09a2067379"
     },
     {
       "contentPolarity": "dark",
@@ -46,7 +46,7 @@
       "id": "whats-app",
       "intent": "brand.whats-app",
       "tonalAsset": "scales/whats-app.json",
-      "tonalIntegritySha256": "8c8fd9bce4e0dc322279e688a6886b26efd6444378d1352bb69e6cf525602902"
+      "tonalIntegritySha256": "a1995a6915d3f33edcfe17187d03a225c59c05e4c1f8d8f35722692767a57534"
     },
     {
       "contentPolarity": "light",
@@ -54,7 +54,7 @@
       "id": "instagram",
       "intent": "brand.instagram",
       "tonalAsset": "scales/instagram.json",
-      "tonalIntegritySha256": "b1e030f31186e6ba0ff646ca5a4fe91e7966144194341496891a1e5324688f6d"
+      "tonalIntegritySha256": "d5ca52bfbfca8c977b5d0bcd93de9076d560c981a3e0b76909f9883160b4a9ce"
     },
     {
       "contentPolarity": "light",
@@ -62,7 +62,7 @@
       "id": "tik-tok",
       "intent": "brand.tik-tok",
       "tonalAsset": "scales/tik-tok.json",
-      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+      "tonalIntegritySha256": "4e6e5e6da7c6a7990ea2462d88d211f758d9568f235b344a7cad9f6ab4d82a91"
     },
     {
       "contentPolarity": "light",
@@ -70,7 +70,7 @@
       "id": "messenger",
       "intent": "brand.messenger",
       "tonalAsset": "scales/messenger.json",
-      "tonalIntegritySha256": "57a6061e67d890406401d1ba2d2b7193d20d2ed68816889ab25dcc4a7fefd4d0"
+      "tonalIntegritySha256": "15651b2c7f0e15e00af9bbe35507c4575bc0c588b2c924c27085c947374dc6eb"
     },
     {
       "contentPolarity": "light",
@@ -78,7 +78,7 @@
       "id": "telegram",
       "intent": "brand.telegram",
       "tonalAsset": "scales/telegram.json",
-      "tonalIntegritySha256": "ff0573b19ac6a6504d06c3325f4bfe1d82a058e218eaae7d34db796541485aa1"
+      "tonalIntegritySha256": "b064a6778fa0281995ed1c59d22be6f727c2f0254c756b0487f6425d0f48e013"
     },
     {
       "contentPolarity": "dark",
@@ -86,7 +86,7 @@
       "id": "snapchat",
       "intent": "brand.snapchat",
       "tonalAsset": "scales/snapchat.json",
-      "tonalIntegritySha256": "d0cf02eddc4a45805f85cebf97d127b5609c9511526d665a67c93f4d8874f517"
+      "tonalIntegritySha256": "cbcc2851272a2fd412e06393d7993b1af9bcdefbea7e4d473f08b8569a3d313a"
     },
     {
       "contentPolarity": "light",
@@ -94,7 +94,7 @@
       "id": "x",
       "intent": "brand.x",
       "tonalAsset": "scales/x.json",
-      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+      "tonalIntegritySha256": "4e6e5e6da7c6a7990ea2462d88d211f758d9568f235b344a7cad9f6ab4d82a91"
     },
     {
       "contentPolarity": "light",
@@ -102,7 +102,7 @@
       "id": "pinterest",
       "intent": "brand.pinterest",
       "tonalAsset": "scales/pinterest.json",
-      "tonalIntegritySha256": "2817e032117b9d8ea1add7c06c06954b6cbd50347f66e2fb6a16c847733ec628"
+      "tonalIntegritySha256": "c27c6b91133f61adf4da2f2f061b26eedbed08eeaedf5d83377fb5169122434d"
     },
     {
       "contentPolarity": "light",
@@ -110,7 +110,7 @@
       "id": "reddit",
       "intent": "brand.reddit",
       "tonalAsset": "scales/reddit.json",
-      "tonalIntegritySha256": "021590d62631e0f014f27f49d09dccb4e343e98e733410241ddf77e21ebc0b82"
+      "tonalIntegritySha256": "6dc8749b92609e49bda5784bf45368b540336f6699b026573d499635b1e25d8b"
     },
     {
       "contentPolarity": "light",
@@ -118,7 +118,7 @@
       "id": "linked-in",
       "intent": "brand.linked-in",
       "tonalAsset": "scales/linked-in.json",
-      "tonalIntegritySha256": "29a38979e1d36a7668b893676a7a34096224b9aabe43e115a519a1a6742b23dd"
+      "tonalIntegritySha256": "bf2062b4e6d2b234fdb8d9246ce9d419fe4b749be2811b5c8f3b38d0fb40f2bc"
     },
     {
       "contentPolarity": "light",
@@ -126,7 +126,7 @@
       "id": "discord",
       "intent": "brand.discord",
       "tonalAsset": "scales/discord.json",
-      "tonalIntegritySha256": "8f843cba45dc4a003b5d28f0f3f8bfca9866f0c967546582c036f07ac3800709"
+      "tonalIntegritySha256": "c39175a4754718831203f15f686936d1d9ef3a2a578bde3ce029db88a4e17a2b"
     },
     {
       "contentPolarity": "light",
@@ -134,7 +134,7 @@
       "id": "twitch",
       "intent": "brand.twitch",
       "tonalAsset": "scales/twitch.json",
-      "tonalIntegritySha256": "9b3a9538a615d1e9b551093af7e942e06f6189931111c89fbab02585e6d9ef62"
+      "tonalIntegritySha256": "71264a4bb733f6a5d1c8d43b29c22d5978c7f56967edefc0b4ab0c1f6905ad6f"
     },
     {
       "contentPolarity": "light",
@@ -142,7 +142,7 @@
       "id": "threads",
       "intent": "brand.threads",
       "tonalAsset": "scales/threads.json",
-      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+      "tonalIntegritySha256": "4e6e5e6da7c6a7990ea2462d88d211f758d9568f235b344a7cad9f6ab4d82a91"
     },
     {
       "contentPolarity": "light",
@@ -150,7 +150,7 @@
       "id": "mastodon",
       "intent": "brand.mastodon",
       "tonalAsset": "scales/mastodon.json",
-      "tonalIntegritySha256": "6841b4a73c53313984231a2db2c20dad07bf84850c0c3ebc3759420904773df6"
+      "tonalIntegritySha256": "b5b2edef568643ca10d3db99f3d5516c092bd8db19f0098d013b9ecd6725097e"
     },
     {
       "contentPolarity": "light",
@@ -158,7 +158,7 @@
       "id": "git-hub",
       "intent": "brand.git-hub",
       "tonalAsset": "scales/git-hub.json",
-      "tonalIntegritySha256": "74eabf6243b4f729b4d17775fd36dac474fb5e9b90ceedd458ad8f7936da97db"
+      "tonalIntegritySha256": "4e6e5e6da7c6a7990ea2462d88d211f758d9568f235b344a7cad9f6ab4d82a91"
     },
     {
       "contentPolarity": "dark",
@@ -166,7 +166,7 @@
       "id": "vimeo",
       "intent": "brand.vimeo",
       "tonalAsset": "scales/vimeo.json",
-      "tonalIntegritySha256": "82acfd4670ab809abd25dbadf5e02cbc35b02cac7c9da5b2246956ae5c7e90ba"
+      "tonalIntegritySha256": "a28280a32ffe60d493288e958bd6504b92fc5f1b1205beb61560fdd4b90abe33"
     },
     {
       "contentPolarity": "dark",
@@ -174,7 +174,7 @@
       "id": "substack",
       "intent": "brand.substack",
       "tonalAsset": "scales/substack.json",
-      "tonalIntegritySha256": "11ced710d3e7069ef6fedef4c7cb40999e7c99c0adf11fb588eb806462d020af"
+      "tonalIntegritySha256": "f2386884badfef020616d159e003ed02e4b343a5a65f9c4153c6ae2a8ef7b671"
     }
   ],
   "formatVersion": 1,

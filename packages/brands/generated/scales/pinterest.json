@@ -544,12 +544,12 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.6.0"
+    "version": "0.8.2"
   },
   "gridContract": "kiskadee-tonal-v1",
   "integrity": {
     "algorithm": "sha256",
-    "payloadSha256": "2817e032117b9d8ea1add7c06c06954b6cbd50347f66e2fb6a16c847733ec628"
+    "payloadSha256": "c27c6b91133f61adf4da2f2f061b26eedbed08eeaedf5d83377fb5169122434d"
   },
   "kind": "kiskadee.single-tonal-family",
   "policies": {
