@@ -1,0 +1,47 @@
+{
+  "formatVersion": 5,
+  "gridContract": "kiskadee-tonal-v1",
+  "harmonyContract": "kiskadee-munsell-rest-v1",
+  "tonalProfile": "balanced",
+  "primary": {
+    "seedHex": "#0b57d0",
+    "appearance": "auto",
+    "variant": "v1",
+    "policies": {
+      "light": "source-exact",
+      "dark": "adaptive"
+    }
+  },
+  "tonalAnchors": {
+    "rest": {
+      "mode": "auto"
+    }
+  },
+  "functionalReferences": [],
+  "overrides": [
+    {
+      "id": "r.red.v1",
+      "seedHex": "#b3261e",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "g.green.v1",
+      "seedHex": "#146c2e",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "n.black.v2",
+      "seedHex": "#001d35",
+      "policies": {
+        "light": "source-exact",
+        "dark": "source-exact"
+      }
+    }
+  ]
+}

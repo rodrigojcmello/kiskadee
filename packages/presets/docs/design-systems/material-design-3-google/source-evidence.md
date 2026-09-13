@@ -3,6 +3,17 @@
 This file records source evidence and preset-level decisions for
 `packages/presets/src/presets/material-3-google/`.
 
+## Current secondary color decision
+
+The preset intentionally has no mandatory secondary family or secondary Button intent.
+See [the accepted rationale](colors/secondary-color-decision.md) for the separation
+of intent and emphasis, user-facing clarity, and the tinted neutral's visual boundary.
+This is a **Kiskadee extension**, accepted on 2026-09-12.
+
+The older secondary and CorePalette mapping notes below are historical. Current
+color mapping is defined in [the tonal evidence](colors/README.md); Button behavior
+is defined in [Button evidence](components/button.md).
+
 ## Reference Note
 
 The image used as a reference for the Material color roles was downloaded from:
@@ -45,6 +56,8 @@ This is a minimal normalization. A complete review of the current Material type 
 tracking values is **Deferred**.
 
 ## Component Evidence
+
+- [Button](components/button.md)
 
 - [BottomSheet](components/bottom-sheet.md)
 - [Switch](components/switch.md)
@@ -290,3 +303,13 @@ viewport-specific widths (`104px`/`120px` for small and `120px`/`144px` for medi
 so an explicit size remains fixed. This is a Kiskadee layout adaptation, not a newly extracted
 Material measurement. Density selects the complete recipe instead of changing its label width
 independently at another breakpoint.
+
+
+## Balanced tonal migration - 2026-09-12
+
+The user authorized replacing the legacy purple Material-generated scales with
+Kiskadee tonal generator 0.13.0, Balanced, and configuring all three color layers.
+The authored Google blue/error/green references, explicit tinted neutral, exported
+functional references, legacy alias compatibility and source adaptations are
+recorded in [the tonal evidence](colors/README.md). Component numeric formulas are
+retained; this is a color-system migration, not renewed component visual approval.

@@ -1,0 +1,348 @@
+{
+  "formatVersion": 5,
+  "functionalReferences": [
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 40
+        }
+      },
+      "id": "b.blue.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "bg.teal.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 40
+        }
+      },
+      "id": "g.green.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 55
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "gy.lime.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "contrast-mirror",
+          "tone": 99
+        }
+      },
+      "id": "n.black.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 99
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "contrast-mirror",
+          "tone": 95
+        }
+      },
+      "id": "n.black.v2",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 90
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 3
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "p.purple.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 3
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "pb.indigo.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 40
+        }
+      },
+      "id": "r.red.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "rp.magenta.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "y.yellow.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "yr.brown.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 40
+        }
+      },
+      "id": "yr.orange.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    }
+  ],
+  "gridContract": "kiskadee-tonal-v1",
+  "harmonyContract": "kiskadee-munsell-rest-v1",
+  "overrides": [
+    {
+      "id": "g.green.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#146c2e"
+    },
+    {
+      "id": "n.black.v2",
+      "policies": {
+        "dark": "source-exact",
+        "light": "source-exact"
+      },
+      "seedHex": "#001d35"
+    },
+    {
+      "id": "r.red.v1",
+      "policies": {
+        "dark": "adaptive",
+        "light": "source-exact"
+      },
+      "seedHex": "#b3261e"
+    }
+  ],
+  "primary": {
+    "id": "b.blue.v1",
+    "policies": {
+      "dark": "adaptive",
+      "light": "source-exact"
+    },
+    "seedHex": "#0b57d0"
+  },
+  "tonalAnchors": {
+    "rest": {
+      "dark": 40,
+      "light": 50,
+      "mode": "locked"
+    }
+  },
+  "tonalProfile": "balanced"
+}

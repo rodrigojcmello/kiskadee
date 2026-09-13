@@ -139,10 +139,10 @@ recipe. The generated system uses:
   foundation independently of Fluent;
 - exact Light and Dark `n.black.v2`, preserving Fluent `Grey-14` as an authored
   tinted-neutral reference from one seed;
-- automatic harmony rest, currently resolved by candidate generator `0.12.0` to L50/D40;
+- automatic harmony rest, currently resolved by candidate generator `0.13.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.12.0
+### Shared viewer — candidate generator 0.13.0
 
 [Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22vivid-lights%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
 
@@ -151,7 +151,7 @@ browser bookmark. It resolves the latest generated scales and functional
 references without changing the stored Fluent evidence. It requires the local
 `@kiskadee/tonal-scale` application on port `3001`.
 
-The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.12.0`. It
+The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.13.0`. It
 generates thirteen primitive families: the twelve mandatory V5 families plus
 authored `n.black.v2`. The current chromatic candidate differs from stored approved exports.
 The following table documents the V5 achromatic architecture:
@@ -422,3 +422,13 @@ now select vivid-lights. The comparison retains the prior Muted Darks baseline.
 The live viewer now uses proportional light chroma gain (up to 35%) and a
 useful-gain hue search bounded to six degrees with a travel penalty. This corrects
 excessive green saturation. The candidate was subsequently promoted as recorded above; preset mappings remain unchanged.
+
+
+### Source-proximity candidate 0.13.0
+
+The local viewer now uses multifamily generator 0.13.0. Automatic free-anchor
+selection includes source-near lightness candidates and treats peak equivalence
+as a tolerance before preferring source proximity. This may change automatic
+family seeds and emitted tones. Stored approved bundles and preset modules are
+not regenerated or promoted by this generator correction. Standalone curves
+remain unchanged.

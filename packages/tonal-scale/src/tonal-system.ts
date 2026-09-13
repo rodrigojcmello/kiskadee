@@ -4552,28 +4552,32 @@ function createFreeAnchorSeedCandidates(params: {
     utilizations
   } = params;
   const peak = resolveHueChromaPeak(sourceOklch.h);
-  const preferredLightness = isBrownFamilyId(familyId) ? sourceOklch.l : peak.lightness;
+  const preferredLightnesses = isBrownFamilyId(familyId)
+    ? [sourceOklch.l]
+    : [sourceOklch.l, peak.lightness];
   const byHex = new Map<string, HarmonySeedCandidate>();
 
   for (const requestedUtilization of utilizations) {
     const utilization = clamp(requestedUtilization, 0.04, 1);
     const desiredChroma = peak.chroma * utilization;
-    const lightness = resolveNearestGlobalChromaLightness({
-      desiredLightness: preferredLightness,
-      desiredChroma,
-      hue: sourceOklch.h,
-      peak
-    });
-    const rendered = oklchToSrgbHex({ l: lightness, c: desiredChroma, h: sourceOklch.h });
-    const emitted = hexToOklch(rendered.hex);
-    const maximumChroma = maxSrgbChroma(emitted.l, emitted.h);
-    byHex.set(rendered.hex, {
-      requestedLightness: lightness,
-      requestedUtilization: utilization,
-      hex: rendered.hex,
-      oklch: emitted,
-      maximumSrgbChroma: maximumChroma
-    });
+    for (const preferredLightness of preferredLightnesses) {
+      const lightness = resolveNearestGlobalChromaLightness({
+        desiredLightness: preferredLightness,
+        desiredChroma,
+        hue: sourceOklch.h,
+        peak
+      });
+      const rendered = oklchToSrgbHex({ l: lightness, c: desiredChroma, h: sourceOklch.h });
+      const emitted = hexToOklch(rendered.hex);
+      const maximumChroma = maxSrgbChroma(emitted.l, emitted.h);
+      byHex.set(rendered.hex, {
+        requestedLightness: lightness,
+        requestedUtilization: utilization,
+        hex: rendered.hex,
+        oklch: emitted,
+        maximumSrgbChroma: maximumChroma
+      });
+    }
   }
 
   if (includeSourceSeed && !byHex.has(sourceSeedHex)) {
@@ -5018,9 +5022,17 @@ function compareRankedCandidates(
     if (Math.abs(excessDifference) > 1e-12) return excessDifference;
   }
 
-  const vividPeakDifference =
-    (leftMetrics.vividPeakError ?? 0) - (rightMetrics.vividPeakError ?? 0);
-  if (Math.abs(vividPeakDifference) > 1e-12) return vividPeakDifference;
+  // Peak equivalence is a tolerance, not an exact saturation target. Once
+  // emitted rest and peak constraints are satisfied, retain the closest seed
+  // rather than moving toward the hue's brightest chroma peak for tiny gains.
+  const vividPeakExcessDifference =
+    Math.max(0, (leftMetrics.vividPeakError ?? 0) - 1) -
+    Math.max(0, (rightMetrics.vividPeakError ?? 0) - 1);
+  if (Math.abs(vividPeakExcessDifference) > 1e-12) return vividPeakExcessDifference;
+  if (leftMetrics.vividPeakError !== undefined && rightMetrics.vividPeakError !== undefined) {
+    const distanceDifference = leftMetrics.seedDeltaE - rightMetrics.seedDeltaE;
+    if (Math.abs(distanceDifference) > 1e-12) return distanceDifference;
+  }
 
   const contrastExcessDifference =
     Math.max(0, leftMetrics.contrastLogError - 1) - Math.max(0, rightMetrics.contrastLogError - 1);

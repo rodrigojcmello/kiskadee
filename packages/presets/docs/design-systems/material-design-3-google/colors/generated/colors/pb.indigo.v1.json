@@ -1,0 +1,161 @@
+{
+  "appearance": "indigo",
+  "colorKind": "chromatic",
+  "formatVersion": 5,
+  "functionalReferences": {
+    "dark": {
+      "medium": {
+        "hex": "#2908aa",
+        "source": "midpoint",
+        "tone": 14
+      },
+      "subtle": {
+        "hex": "#0e0050",
+        "source": "surface-relative",
+        "tone": 3
+      },
+      "vivid": {
+        "hex": "#484ae7",
+        "source": "harmony-rest",
+        "tone": 40
+      }
+    },
+    "light": {
+      "medium": {
+        "hex": "#9badff",
+        "source": "midpoint",
+        "tone": 18
+      },
+      "subtle": {
+        "hex": "#e8edff",
+        "source": "surface-relative",
+        "tone": 4
+      },
+      "vivid": {
+        "hex": "#4239ec",
+        "source": "harmony-rest",
+        "tone": 50
+      }
+    }
+  },
+  "generatedAnchors": {
+    "dark": {
+      "hex": "#3f3cd9",
+      "tone": 30
+    },
+    "light": {
+      "hex": "#4e4eff",
+      "tone": 40
+    }
+  },
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.13.0"
+  },
+  "id": "pb.indigo.v1",
+  "kind": "kiskadee.primitive-tonal-family",
+  "munsellSector": "PB",
+  "policies": {
+    "dark": "harmonized",
+    "light": "harmonized"
+  },
+  "restColors": {
+    "dark": {
+      "hex": "#484ae7",
+      "tone": 40
+    },
+    "light": {
+      "hex": "#4239ec",
+      "tone": 50
+    }
+  },
+  "role": "support",
+  "scales": {
+    "dark": {
+      "0": "#000000",
+      "1": "#04002b",
+      "2": "#090041",
+      "3": "#0e0050",
+      "4": "#12005e",
+      "5": "#150069",
+      "6": "#180074",
+      "7": "#1b007d",
+      "8": "#1d0086",
+      "9": "#20008e",
+      "10": "#220096",
+      "12": "#2600a3",
+      "14": "#2908aa",
+      "16": "#2b10af",
+      "18": "#2c16b4",
+      "20": "#2e1ab8",
+      "22": "#301ebc",
+      "24": "#3223c0",
+      "26": "#3427c4",
+      "28": "#362cc9",
+      "30": "#3f3cd9",
+      "35": "#4140dd",
+      "40": "#484ae7",
+      "45": "#4e53ef",
+      "50": "#545df8",
+      "55": "#5c68ff",
+      "60": "#6574ff",
+      "65": "#6d7eff",
+      "70": "#7689ff",
+      "75": "#8b9dff",
+      "80": "#a1b1ff",
+      "85": "#b6c4ff",
+      "90": "#ccd6ff",
+      "95": "#e6ebff",
+      "99": "#fafbff",
+      "100": "#ffffff"
+    },
+    "light": {
+      "0": "#ffffff",
+      "1": "#f9fbff",
+      "2": "#f4f6ff",
+      "3": "#eef1ff",
+      "4": "#e8edff",
+      "5": "#e2e8ff",
+      "6": "#dde4ff",
+      "7": "#d7dfff",
+      "8": "#d0d9ff",
+      "9": "#cad4ff",
+      "10": "#c3cfff",
+      "12": "#bbc8ff",
+      "14": "#afbeff",
+      "16": "#a5b5ff",
+      "18": "#9badff",
+      "20": "#91a3ff",
+      "22": "#879aff",
+      "24": "#7d90ff",
+      "26": "#7486ff",
+      "28": "#6b7cff",
+      "30": "#6271ff",
+      "35": "#5963ff",
+      "40": "#4e4eff",
+      "45": "#4a46f9",
+      "50": "#4239ec",
+      "55": "#3c2be0",
+      "60": "#361cd5",
+      "65": "#3104c7",
+      "70": "#2a00b1",
+      "75": "#24009d",
+      "80": "#1d0086",
+      "85": "#180072",
+      "90": "#12005f",
+      "95": "#0d004d",
+      "99": "#000002",
+      "100": "#000000"
+    }
+  },
+  "seedHex": "#4f6bed",
+  "seedOrigin": "reference",
+  "tonalAnchors": {
+    "rest": {
+      "dark": 40,
+      "light": 50
+    }
+  },
+  "tonalProfile": "balanced",
+  "variant": "v1"
+}

@@ -1,6 +1,7 @@
-import { primitive, type Schema } from '@kiskadee/core';
+import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { createMaterialButtonIntent, MATERIAL_BUTTON_INTENTS } from './button-color-formula.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic';
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
@@ -13,10 +14,67 @@ type CreateMaterial3GoogleButtonSchemaArgs = {
 
 export function createMaterial3GoogleButtonSchema({
   c,
-  segmentNames,
-  transparent
+  segmentNames
 }: CreateMaterial3GoogleButtonSchemaArgs): ButtonComponent {
+  const createPalettes = (segment: Material3GoogleSegmentName, slot: 'box' | 'text' | 'icon') => {
+    const context = (theme: 'light' | 'dark', surface: 'onSubtle' | 'onVivid') => {
+      const recipes = {
+        primary: createMaterialButtonIntent({ c, segment, theme, surface, intent: 'primary' }),
+        neutral: createMaterialButtonIntent({ c, segment, theme, surface, intent: 'neutral' }),
+        destructive: createMaterialButtonIntent({
+          c,
+          segment,
+          theme,
+          surface,
+          intent: 'destructive'
+        }),
+        positive: createMaterialButtonIntent({ c, segment, theme, surface, intent: 'positive' })
+      };
+      const property = <T extends 'boxColor' | 'borderColor' | 'textColor'>(key: T) => ({
+        primary: recipes.primary[key],
+        neutral: recipes.neutral[key],
+        destructive: recipes.destructive[key],
+        positive: recipes.positive[key]
+      });
+      if (slot === 'icon') {
+        for (const recipe of Object.values(recipes)) {
+          for (const colors of Object.values(recipe.textColor)) delete colors.pending;
+        }
+      }
+      return slot === 'box'
+        ? { boxColor: property('boxColor'), borderColor: property('borderColor') }
+        : { textColor: property('textColor') };
+    };
+    return {
+      light: { onSubtle: context('light', 'onSubtle'), onVivid: context('light', 'onVivid') },
+      dark: { onSubtle: context('dark', 'onSubtle'), onVivid: context('dark', 'onVivid') }
+    };
+  };
+  const contentContext = (surface: 'onSubtle' | 'onVivid', theme: 'light' | 'dark') => {
+    const filled = surface === 'onVivid' || theme === 'dark' ? 'onSubtle' : 'onVivid';
+    return Object.fromEntries(
+      MATERIAL_BUTTON_INTENTS.map((intent) => [
+        intent,
+        {
+          high: { rest: filled, selected: filled, disabled: 'inherit' },
+          medium: { rest: surface, selected: filled, disabled: 'inherit' },
+          low: { rest: 'inherit', selected: filled, disabled: 'inherit' },
+          lowest: { rest: 'inherit', selected: filled, disabled: 'inherit' }
+        }
+      ])
+    );
+  };
   return {
+    contentSurfaceContext: buildBySegment(segmentNames, () => ({
+      light: {
+        onSubtle: contentContext('onSubtle', 'light'),
+        onVivid: contentContext('onVivid', 'light')
+      },
+      dark: {
+        onSubtle: contentContext('onSubtle', 'dark'),
+        onVivid: contentContext('onVivid', 'dark')
+      }
+    })),
     effects: {
       activationFeedback: {
         profile: 'ripple',
@@ -113,256 +171,7 @@ export function createMaterial3GoogleButtonSchema({
             }
           }
         },
-        palettes: buildBySegment(segmentNames, (s) => {
-          return {
-            light: {
-              onSubtle: {
-                boxColor: {
-                  primary: {
-                    // It matches Material "filled button"
-                    // verified: 2026-01-31 | Figma v1.23
-                    high: {
-                      rest: c(s, 'l', 'button.primary', 60), // =
-                      focus: c(s, 'l', 'button.primary', 55), // !
-                      hover: c(s, 'l', 'button.primary', 55), // !
-                      pressed: c(s, 'l', 'button.primary', 55), // !
-                      disabled: c(s, 'l', 'button.neutral', 90, 10) // match
-                    },
-                    // It matches Material "toggle button (normal* / elevated*)"
-                    // verified: 2026-01-31 | Figma v1.23
-                    medium: {
-                      rest: c(s, 'l', 'button.neutral', 4), // =
-                      focus: c(s, 'l', 'button.neutral', 6), // !
-                      hover: c(s, 'l', 'button.neutral', 6), // !
-                      pressed: c(s, 'l', 'button.neutral', 6), // !
-                      disabled: c(s, 'l', 'button.neutral', 90, 10), // =
-                      selected: {
-                        rest: c(s, 'l', 'button.primary', 60), // =
-                        hover: c(s, 'l', 'button.primary', 55),
-                        pressed: c(s, 'l', 'button.primary', 55)
-                      }
-                    },
-                    // It matches Material "outlined button (primary*)"
-                    // verified: 2026-02-01 | Figma v1.23
-                    low: {
-                      rest: transparent, // match
-                      focus: c(s, 'l', 'button.neutral', 2),
-                      hover: c(s, 'l', 'button.neutral', 2),
-                      pressed: c(s, 'l', 'button.neutral', 2),
-                      disabled: c(s, 'l', 'button.neutral', 90, 10), // match
-                      selected: {
-                        rest: c(s, 'l', 'button.neutral', 60), // match
-                        hover: c(s, 'l', 'button.neutral', 55),
-                        pressed: c(s, 'l', 'button.neutral', 55)
-                      }
-                    },
-                    // It matches Material "button text"
-                    // verified: 2026-02-02 | Figma v1.23
-                    lowest: {
-                      rest: transparent, // =
-                      focus: c(s, 'l', 'button.primary', 60, 8), // =
-                      hover: c(s, 'l', 'button.primary', 60, 8), // !
-                      pressed: c(s, 'l', 'button.primary', 60, 8), // !
-                      disabled: c(s, 'l', 'button.neutral', 90, 10) // =
-                    }
-                  },
-                  neutral: {
-                    high: {
-                      rest: c(s, 'l', 'primary.v2', 60),
-                      focus: c(s, 'l', 'primary.v2', 55),
-                      hover: c(s, 'l', 'primary.v2', 55),
-                      pressed: c(s, 'l', 'primary.v2', 55),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
-                      selected: {
-                        rest: c(s, 'l', 'primary.v2', 50),
-                        hover: c(s, 'l', 'primary.v2', 40),
-                        pressed: c(s, 'l', 'primary.v2', 60)
-                      }
-                    },
-                    medium: {
-                      rest: c(s, 'l', 'neutral', 10),
-                      focus: c(s, 'l', 'neutral', 6),
-                      hover: c(s, 'l', 'neutral', 6),
-                      pressed: c(s, 'l', 'neutral', 6),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
-                      selected: {
-                        rest: c(s, 'l', 'neutral', 60),
-                        hover: c(s, 'l', 'neutral', 55),
-                        pressed: c(s, 'l', 'neutral', 65)
-                      }
-                    },
-                    low: {
-                      rest: transparent,
-                      focus: c(s, 'l', 'neutral', 2),
-                      hover: c(s, 'l', 'neutral', 2),
-                      pressed: c(s, 'l', 'neutral', 2),
-                      disabled: transparent,
-                      selected: {
-                        rest: c(s, 'l', 'neutral', 60),
-                        hover: c(s, 'l', 'neutral', 55),
-                        pressed: c(s, 'l', 'neutral', 65)
-                      }
-                    },
-                    lowest: {
-                      rest: transparent,
-                      focus: c(s, 'l', 'neutral', 2),
-                      hover: c(s, 'l', 'neutral', 2),
-                      pressed: c(s, 'l', 'neutral', 2),
-                      disabled: transparent
-                    }
-                  }
-                },
-                borderColor: {
-                  primary: {
-                    // It matches Material "filled button"
-                    // verified: 2026-02-01 | Figma v1.23
-                    high: {
-                      rest: transparent, // match
-                      focus: transparent, // match
-                      hover: transparent, // match
-                      pressed: transparent, // match
-                      disabled: transparent // match
-                    },
-                    // It matches Material "toggle button (normal* / elevated*)"
-                    // verified: 2026-02-01 | Figma v1.23
-                    medium: {
-                      rest: transparent, // match
-                      focus: transparent, // match
-                      hover: transparent, // match
-                      pressed: transparent, // match
-                      disabled: transparent // match
-                    },
-                    // It matches Material "outlined button (primary*)"
-                    // verified: 2026-02-01 | Figma v1.23
-                    low: {
-                      rest: c(s, 'l', 'button.neutral.v2', 20), // match
-                      focus: c(s, 'l', 'button.neutral.v2', 20),
-                      hover: c(s, 'l', 'button.neutral.v2', 20),
-                      pressed: c(s, 'l', 'button.neutral.v2', 20),
-                      disabled: c(s, 'l', 'button.neutral.v2', 20), // match
-                      selected: {
-                        rest: transparent // match
-                      }
-                    },
-                    // It matches Material "button text"
-                    // verified: 2026-02-02 | Figma v1.23
-                    lowest: {
-                      rest: transparent // =
-                    }
-                  },
-                  neutral: {
-                    high: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
-                    },
-                    medium: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
-                    },
-                    low: {
-                      rest: c(s, 'l', 'neutral', 16),
-                      focus: c(s, 'l', 'neutral', 16),
-                      hover: c(s, 'l', 'neutral', 10),
-                      pressed: c(s, 'l', 'neutral', 20),
-                      disabled: c(s, 'l', 'neutral', 16)
-                    },
-                    lowest: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
-                    }
-                  }
-                }
-              }
-            },
-            dark: {
-              onSubtle: {
-                boxColor: {
-                  primary: {
-                    medium: {
-                      rest: c(s, 'd', 'button.primary', 10),
-                      hover: c(s, 'd', 'button.primary', 8),
-                      pressed: c(s, 'd', 'button.primary', 14),
-                      focus: c(s, 'd', 'button.primary', 10),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12),
-                      selected: {
-                        rest: c(s, 'd', 'button.primary', 50),
-                        hover: c(s, 'd', 'button.primary', 40),
-                        pressed: c(s, 'd', 'button.primary', 60)
-                      }
-                    },
-                    high: {
-                      rest: c(s, 'd', 'button.primary', 30),
-                      hover: c(s, 'd', 'button.primary', 35),
-                      pressed: c(s, 'd', 'button.primary', 26),
-                      focus: c(s, 'd', 'button.primary', 30),
-                      disabled: c(s, 'l', 'primitive.black.v1', 90, 12)
-                    },
-                    low: {
-                      rest: transparent,
-                      focus: c(s, 'd', 'button.primary', 10),
-                      hover: c(s, 'd', 'button.primary', 8),
-                      pressed: c(s, 'd', 'button.primary', 14),
-                      disabled: transparent,
-                      selected: {
-                        rest: c(s, 'd', 'button.primary', 50),
-                        hover: c(s, 'd', 'button.primary', 40),
-                        pressed: c(s, 'd', 'button.primary', 60)
-                      }
-                    },
-                    lowest: {
-                      rest: transparent,
-                      focus: c(s, 'd', 'button.primary', 10),
-                      hover: c(s, 'd', 'button.primary', 8),
-                      pressed: c(s, 'd', 'button.primary', 14),
-                      disabled: transparent
-                    }
-                  }
-                },
-                borderColor: {
-                  primary: {
-                    high: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
-                    },
-                    medium: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
-                    },
-                    low: {
-                      rest: c(s, 'd', 'button.primary', 30),
-                      focus: c(s, 'd', 'button.primary', 30),
-                      hover: c(s, 'd', 'button.primary', 35),
-                      pressed: c(s, 'd', 'button.primary', 26),
-                      disabled: transparent
-                    },
-                    lowest: {
-                      rest: transparent,
-                      focus: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      disabled: transparent
-                    }
-                  }
-                }
-              }
-            }
-          };
-        }),
+        palettes: buildBySegment(segmentNames, (segment) => createPalettes(segment, 'box')),
         effects: {
           // Material Design 3 interaction-driven shape. Border radius decreases as interaction intensifies
           // (rest > hover/focus > pressed), emulating MD3 "animated corners". This enables Kiskadee to
@@ -416,109 +225,11 @@ export function createMaterial3GoogleButtonSchema({
           's:lg:2': 'label-display-small',
           's:lg:3': 'label-display-large'
         },
-        palettes: buildBySegment(segmentNames, (s) => {
-          return {
-            light: {
-              onSubtle: {
-                textColor: {
-                  primary: {
-                    // It matches Material "filled button"
-                    // verified: 2026-01-31 | Figma v1.23
-                    high: {
-                      rest: c(s, 'l', 'button.neutral', 0), // match
-                      disabled: {
-                        ref: c(s, 'l', 'button.neutral', 90, 38) // match
-                      }
-                    },
-                    // It matches Material "toggle button (normal* / elevated*)"
-                    // verified: 2026-01-31 | Figma v1.23
-                    medium: {
-                      rest: c(s, 'l', 'button.primary', 60), // match
-                      disabled: {
-                        ref: c(s, 'l', 'button.neutral', 90, 38) // match
-                      },
-                      selected: {
-                        rest: {
-                          ref: c(s, 'l', 'button.neutral', 0) // match
-                        }
-                      }
-                    },
-                    // It matches Material "outline button (primary*)"
-                    // verified: 2026-02-01 | Figma v1.23
-                    low: {
-                      rest: c(s, 'l', 'button.primary', 60),
-                      hover: { ref: c(s, 'l', 'button.primary', 55) },
-                      pressed: { ref: c(s, 'l', 'button.primary', 70) },
-                      disabled: {
-                        ref: c(s, 'l', 'button.neutral', 90, 38) // match
-                      },
-                      selected: {
-                        rest: {
-                          ref: c(s, 'l', 'button.neutral', 0) // match
-                        }
-                      }
-                    },
-                    // It matches Material "button text"
-                    // verified: 2026-02-02 | Figma v1.23
-                    lowest: {
-                      rest: c(s, 'l', 'button.primary', 60), // =
-                      disabled: {
-                        ref: c(s, 'l', 'button.neutral', 90, 38) // =
-                      }
-                    }
-                  },
-                  neutral: {
-                    high: {
-                      rest: c(s, 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: c(s, 'l', 'button.neutral', 90, 38)
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            dark: {
-              onSubtle: {
-                textColor: {
-                  primary: {
-                    medium: {
-                      rest: c(s, 'd', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c(s, 'd', 'button.neutral', 60)
-                      }
-                    },
-                    high: {
-                      rest: c(s, 'd', primitive('black', 'v1'), 0),
-                      disabled: {
-                        ref: c(s, 'd', 'button.neutral', 60)
-                      }
-                    },
-                    low: {
-                      rest: c(s, 'd', 'button.primary', 30),
-                      hover: { ref: c(s, 'd', 'button.primary', 35) },
-                      pressed: { ref: c(s, 'd', 'button.primary', 26) },
-                      disabled: {
-                        ref: c(s, 'd', 'button.neutral', 60)
-                      }
-                    },
-                    lowest: {
-                      rest: c(s, 'd', 'button.primary', 30),
-                      hover: { ref: c(s, 'd', 'button.primary', 35) },
-                      pressed: { ref: c(s, 'd', 'button.primary', 26) },
-                      disabled: {
-                        ref: c(s, 'd', 'button.neutral', 60)
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          };
-        })
+        palettes: buildBySegment(segmentNames, (segment) => createPalettes(segment, 'text'))
       },
       e3: {
         name: 'button-icon',
+        palettes: buildBySegment(segmentNames, (segment) => createPalettes(segment, 'icon')),
         iconSize: {
           's:sm:1': 's:sm:1',
           's:md:1': 's:md:1',
@@ -529,6 +240,7 @@ export function createMaterial3GoogleButtonSchema({
       },
       e5: {
         name: 'button-disclosure',
+        palettes: buildBySegment(segmentNames, (segment) => createPalettes(segment, 'icon')),
         iconSize: {
           's:sm:1': 's:sm:1',
           's:md:1': 's:md:1',

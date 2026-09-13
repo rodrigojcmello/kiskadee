@@ -246,11 +246,11 @@ the free-anchor search.
 Within that feasible interval, harmony has two related target groups. The free
 anchor first preserves chromatic identity:
 
-1. natural hue-peak lightness;
-2. primary-equivalent hue-global chroma utilization;
+1. source-near gamut-feasible lightness and natural hue-peak alternatives;
+2. primary-equivalent hue-global chroma utilization within tolerance;
 3. sector identity and safe sRGB gamut.
 
-The emitted shared rest is then ranked hierarchically:
+For the local-gamut fallback, the emitted shared rest is ranked hierarchically:
 
 1. emitted OKL lightness;
 2. relative chroma utilization within the target hue's sRGB gamut;
@@ -263,6 +263,17 @@ green much more heavily than red or blue; prioritizing exact luminance across
 families can therefore desaturate otherwise valid companions. Functional
 contrast remains enforced by the low-level theme guards, while the primitive
 harmony ranking preserves perceptual lightness and chromatic character first.
+
+Since multifamily generator 0.13.0, free-anchor searches sample both the
+nearest gamut-feasible lightness to the materialized source and the natural
+hue-peak lightness. Peak equivalence uses the existing utilization tolerance:
+once candidates satisfy that tolerance and the preceding rest/identity/peak
+constraints, the smaller source delta E wins before residual peak precision.
+The search still evaluates each emitted scale, including its vivid peak and
+any isolated midtrack peak or dark-support guard. This prevents tiny peak-score
+gains from forcing a distant, highly luminous seed. Source-exact families bypass
+this adaptive selection; no hue-specific exception or new medium anchor rule is
+introduced. Low-level standalone curves and their artifact versions are unchanged.
 
 Candidate ranking is a soft preference and cannot run before hard feasibility.
 The finite coarse grid is traversed in ranked order until enough candidates

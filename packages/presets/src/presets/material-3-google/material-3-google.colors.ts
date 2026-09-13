@@ -18,22 +18,9 @@ import { globalSemantics, primitiveColors } from './color.layers.ts';
 export const globalSemanticsBySegment = {
   default: {
     meta: {
-      name: 'Material Design - Default (purple)'
+      name: 'Material Design - Default (blue)'
     }
   }
-  // dynamic: {
-  //   meta: {
-  //     name: 'Material Design - Dynamic'
-  //   },
-  //   themes: {
-  //     light: {
-  //       primary: 'primitive.purple.dynamic'
-  //     },
-  //     dark: {
-  //       primary: 'primitive.purple.dynamic'
-  //     }
-  //   }
-  // }
 } as const satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = {
@@ -43,6 +30,8 @@ export const componentIntents = {
   },
   button: {
     primary: 'primary',
+    destructive: 'redLike',
+    positive: 'greenLike',
     neutral: 'neutral'
   },
   card: {
