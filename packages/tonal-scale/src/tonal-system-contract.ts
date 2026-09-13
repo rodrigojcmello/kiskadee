@@ -234,6 +234,8 @@ export const NEUTRAL_DERIVATION_V1 = {
   contract: 'primary-neutral-v1',
   lightness: 25,
   maximumChroma: 0.02,
+  chromaticMaximumChroma: 0.06,
+  chromaticHueOffset: -14,
   achromaticThreshold: 0.0001
 } as const;
 
@@ -241,6 +243,7 @@ export type TonalNeutralConfig = {
   mode: 'existing' | 'derived-from-primary';
   seedHex: string;
   derivation: 'primary-neutral-v1';
+  intensity?: 'subtle' | 'chromatic';
   references?: Omit<TonalFamilyFunctionalReferenceRulesV5, 'id'>;
   policies?: { light: 'source-exact' | 'adaptive'; dark: 'source-exact' | 'adaptive' };
 };
@@ -256,8 +259,16 @@ export function resolveNeutralOverride(
     if (primary.c < NEUTRAL_DERIVATION_V1.achromaticThreshold) return null;
     seedHex = oklchToSrgbHex({
       l: NEUTRAL_DERIVATION_V1.lightness,
-      c: Math.min(NEUTRAL_DERIVATION_V1.maximumChroma, primary.c),
-      h: primary.h
+      c: Math.min(
+        config.intensity === 'chromatic'
+          ? NEUTRAL_DERIVATION_V1.chromaticMaximumChroma
+          : NEUTRAL_DERIVATION_V1.maximumChroma,
+        primary.c
+      ),
+      h:
+        config.intensity === 'chromatic'
+          ? (primary.h + NEUTRAL_DERIVATION_V1.chromaticHueOffset + 360) % 360
+          : primary.h
     }).hex;
   }
   if (seedHex === '#000000') return null;
@@ -536,7 +547,7 @@ function validateContract(
     else {
       reportUnknownKeys(
         raw,
-        ['mode', 'seedHex', 'derivation', 'references', 'policies'],
+        ['mode', 'seedHex', 'derivation', 'intensity', 'references', 'policies'],
         '/neutral',
         issue
       );
@@ -553,6 +564,16 @@ function validateContract(
         );
       } else {
         neutral = { mode: raw.mode, seedHex, derivation: raw.derivation };
+        if (raw.intensity !== undefined) {
+          if (raw.intensity === 'subtle' || raw.intensity === 'chromatic')
+            neutral.intensity = raw.intensity;
+          else
+            issue(
+              'INVALID_NEUTRAL_INTENSITY',
+              '/neutral/intensity',
+              'Expected subtle or chromatic.'
+            );
+        }
         if (raw.policies !== undefined) {
           const policies = validateOverridePolicies(raw.policies, '/neutral/policies', issue);
           if (policies && policies.light !== 'harmonized' && policies.dark !== 'harmonized')

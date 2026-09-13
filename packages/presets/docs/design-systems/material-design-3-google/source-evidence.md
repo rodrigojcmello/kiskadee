@@ -156,5 +156,9 @@ Kiskadee tonal generator 0.13.0, Balanced, and configuring all three color layer
 The authored Google blue/error/green references, explicit tinted neutral, exported
 functional references, legacy alias compatibility and source adaptations are
 recorded in [the tonal evidence](colors/README.md). The initial promotion retained component formulas. KIS-110 subsequently revised component
-consumers and completed the current [coverage](components/coverage.md). Generated color assets
-remain unchanged; component formulas and visual approval are tracked separately.
+consumers and completed the current [coverage](components/coverage.md). That component pass preserved the color assets. On 2026-09-13 the user separately approved
+the Chromatic primary-derived neutral promotion with generator 0.14.0; only n.black.v2
+scale colors changed, as recorded in the tonal evidence.
+
+The subsequent approved 0.15.0 promotion uses Chromatic offset and neutral seed #03233C.
+Only neutral scale colors changed; component formulas and the segment catalog were preserved.

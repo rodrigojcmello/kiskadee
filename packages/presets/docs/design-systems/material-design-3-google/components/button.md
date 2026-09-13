@@ -8,7 +8,7 @@ Inspected on 2026-09-12 with Figma design context, for interaction behavior rath
   - File key: Peqe9lNMsuQHLIUZsiTZNg; section: 57994:696.
   - Filled: 57994:2227. Tonal: 58651:11237. Outlined: 58650:10213. Text: 58650:8094.
   - Selected tonal: 57994:2433 under 58653:17539.
-- [Approved color provenance](../colors/README.md): Balanced, generator 0.13.0.
+- [Approved color provenance](../colors/README.md): Balanced, generator 0.15.0.
 - Local Fluent reference: fluent-2-microsoft/components/button-color-formula.ts.
   User authorized this preset as the fallback for missing context/theme/state behavior.
 

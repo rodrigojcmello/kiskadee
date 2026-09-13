@@ -1,6 +1,6 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/n.black.v1.json by @kiskadee/tonal-scale@0.13.0.
+// Generated from colors/n.black.v1.json by @kiskadee/tonal-scale@0.15.0.
 export default {
   "kind": "static",
   "functionalReferences": {

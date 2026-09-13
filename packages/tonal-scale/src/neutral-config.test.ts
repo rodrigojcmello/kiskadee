@@ -119,3 +119,68 @@ describe('neutral configuration', () => {
     expect(bundle.source.neutral).toEqual(result.source.neutral);
   }, 15000);
 });
+
+describe('neutral derivation strategy', () => {
+  it('preserves the default derivation and ignores intensity for explicit seeds', () => {
+    expect(resolveNeutralOverride(config, '#0b57d0')?.seedHex).toBe('#1c222b');
+    expect(resolveNeutralOverride({ ...config, intensity: 'subtle' }, '#0b57d0')).toEqual(
+      resolveNeutralOverride(config, '#0b57d0')
+    );
+    expect(
+      resolveNeutralOverride({ ...config, mode: 'existing', intensity: 'chromatic' }, '#0b57d0')
+        ?.seedHex
+    ).toBe(config.seedHex);
+  });
+
+  it.each([
+    '#0b57d0',
+    '#6750a4',
+    '#b3261e',
+    '#146c2e'
+  ])('increases neutral chroma for %s without recoloring other families', async (seedHex) => {
+    const input = { ...recipe(), primary: { ...recipe().primary, seedHex }, neutral: config };
+    const subtle = generateKiskadeeTonalSystem(input);
+    const chromatic = generateKiskadeeTonalSystem({
+      ...input,
+      neutral: { ...config, intensity: 'chromatic' }
+    });
+    expect(chromatic.valid).toBe(subtle.valid);
+    expect(chromatic.issues.filter((issue) => issue.severity === 'error')).toEqual(
+      subtle.issues.filter((issue) => issue.severity === 'error')
+    );
+    const neutral = (system: typeof subtle) => system.families.find((f) => f.id === 'n.black.v2')!;
+    const primaryHue = hexToOklch(seedHex).h;
+    const hue = hexToOklch(neutral(chromatic).sourceSeedHex).h;
+    const offsetError = Math.abs(((hue - primaryHue + 14 + 540) % 360) - 180);
+    expect(offsetError).toBeLessThan(3);
+    const primary = chromatic.families.find((f) => f.role === 'primary')!;
+    for (const tone of [4, 8, 12]) {
+      expect(
+        neutral(chromatic).themes.light.scale.colors.find((c) => c.tone === tone)?.hex
+      ).not.toBe(primary.themes.light.scale.colors.find((c) => c.tone === tone)?.hex);
+    }
+    expect(hexToOklch(neutral(chromatic).sourceSeedHex).c).toBeGreaterThan(
+      hexToOklch(neutral(subtle).sourceSeedHex).c
+    );
+    expect(chromatic.families.filter((f) => f.id !== 'n.black.v2')).toEqual(
+      subtle.families.filter((f) => f.id !== 'n.black.v2')
+    );
+    // Existing cross-family harmony failures are independent of neutral derivation.
+    if (!chromatic.valid || seedHex !== '#0b57d0') return;
+    const bundle = await createTonalArtifactBundle(chromatic);
+    expect((await verifyTonalArtifactBundle(bundle.files)).valid).toBe(true);
+    const source = JSON.parse(bundle.files.get('tonal-system.source.json')!);
+    expect(source.neutral.intensity).toBe('chromatic');
+    const asset = JSON.parse(bundle.files.get('colors/n.black.v2.json')!);
+    expect(asset.neutralOrigin.intensity).toBe('chromatic');
+  });
+
+  it('rejects unknown intensity and preserves achromatic primary behavior', () => {
+    const result = validateTonalSystemRecipe({
+      ...recipe(),
+      neutral: { ...config, intensity: 'extreme' }
+    });
+    expect(result.valid).toBe(false);
+    expect(resolveNeutralOverride({ ...config, intensity: 'chromatic' }, '#808080')).toBeNull();
+  });
+});

@@ -924,3 +924,35 @@ The multifamily generator and vivid-lights standalone output advance to 0.12.0.
 Balanced and muted-darks standalone output retain 0.8.2 and deterministic replay
 compatibility because their bytes are unchanged. Approved preset and brand artifacts retain their
 original provenance; they are not promoted by this generator-only change.
+
+### Primary-derived neutral tint intensity (0.14.0)
+
+`neutral.intensity` optionally selects `subtle` (default) or `chromatic` when
+`neutral.mode` is `derived-from-primary`. Omission preserves the previous derivation exactly.
+The Recipe Editor exposes this as **Tint intensity** only while derivation is enabled.
+The setting survives recipe/URL/source export and is recorded in neutral provenance.
+
+Both options use primary hue and OKLCH lightness 25. Subtle limits seed chroma to 0.02;
+Chromatic raises the limit to 0.06. Both cap it at the primary's own chroma, then use the
+existing sRGB gamut fitting. This is a shared calibration, not a blue-specific target.
+The selected tonal profile is independent and unchanged. Achromatic primaries still do not
+create V2. Explicit existing neutral seeds ignore this option. Pure grayscale and other
+families are unchanged. This addition does not promote new assets into any preset.
+
+
+### Chromatic offset neutral strategy (0.15.0)
+
+The editor now labels the single selector **Neutral derivation**, with **Subtle (default)**
+and **Chromatic offset**. For recipe compatibility the serialized field remains
+`neutral.intensity: subtle | chromatic`; `chromatic` deliberately adopts the new behavior
+in generator 0.15.0. Stored 0.14.0 artifacts retain their historical same-hue provenance.
+
+Subtle is byte-identical to its earlier seed derivation. Chromatic offset retains the 0.06
+chroma ceiling and lightness 25, but requests `(primaryHue - 14 + 360) % 360` before sRGB
+fitting. The offset is shared across hues, not hardcoded for Material or blue. Existing
+explicit seeds ignore it. No additional controls, neutral families or preset segments are added.
+
+The initial -14 degree calibration approximates the hue separation between Material's
+former explicit #001D35 and primary #0B57D0. This is a Kiskadee adaptation, not an official
+Material algorithm. Cross-hue comparisons check light-surface separation as well as seed
+chroma; they do not establish universal perceptual equivalence or visual approval.

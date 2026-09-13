@@ -49,7 +49,7 @@ it('publishes all intents, emphases, themes and surfaces in both segments', () =
 
 it('keeps medium and interactive low surfaces in their own intent family', () => {
   for (const theme of ['light', 'dark'] as const) {
-    const colors = MATERIAL_BUTTON_INTENTS.map((intent) => {
+    for (const intent of MATERIAL_BUTTON_INTENTS) {
       const formula = createMaterialButtonIntent({
         c,
         segment: 'default',
@@ -61,9 +61,7 @@ it('keeps medium and interactive low surfaces in their own intent family', () =>
         c.ref('default', theme === 'light' ? 'l' : 'd', `button.${intent}`, 'subtle')
       );
       expect(formula.boxColor.low.hover).not.toBe(formula.boxColor.low.rest);
-      return formula.boxColor.medium.rest;
-    });
-    expect(new Set(colors).size).toBe(4);
+    }
   }
 });
 

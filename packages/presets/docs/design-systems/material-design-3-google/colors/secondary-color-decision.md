@@ -35,9 +35,10 @@ have a product purpose beyond being another available palette.
 
 ## Neutral remains a separate visual decision
 
-The preset retains canonical pure grayscale n.black.v1 and the explicitly authored
-tinted neutral n.black.v2. The latter uses the approved #001D35 input adapted from
-a Google supporting color role. It is not evidence that the resulting ramp is
+The preset retains canonical pure grayscale n.black.v1 and tinted neutral n.black.v2.
+Initially the latter used #001D35, adapted from a Google supporting color role. On 2026-09-13
+the user first approved #10213E (same-hue Chromatic), then #03233C using Chromatic
+offset (-14 degrees) to distinguish light neutral surfaces from primary surfaces. See [current tonal provenance](README.md). It is not evidence that the resulting ramp is
 perceptually achromatic or that Google classifies this input as neutral.
 
 In the reviewed Light Button result, neutral high looks like a blue-black while

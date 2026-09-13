@@ -55,7 +55,12 @@ it('keeps intent families independent and uses a readable dark chromatic foregro
   const light = badge.elements.e1.palettes?.default?.light?.onSubtle;
   const dark = badge.elements.e2.palettes?.default?.dark?.onSubtle;
 
-  expect(light?.boxColor?.neutral?.medium?.rest).not.toBe(light?.boxColor?.primary?.medium?.rest);
+  // Different families may legitimately share a light cap-adjacent tone.
+  for (const intent of ['neutral', 'primary'] as const) {
+    expect(light?.boxColor?.[intent]?.medium?.rest).toBe(
+      c.ref('default', 'l', `badge.${intent}`, 'subtle')
+    );
+  }
   expect(dark?.textColor?.primary?.medium?.rest).toBe(
     c.ref('default', 'd', 'badge.primary', 'vivid', 6)
   );

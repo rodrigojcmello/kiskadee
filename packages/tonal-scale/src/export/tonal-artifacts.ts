@@ -30,7 +30,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.13.0'
+  version: '0.15.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -61,6 +61,7 @@ export type PrimitiveTonalColorAssetV5 = {
   neutralOrigin?: {
     mode: 'existing' | 'derived-from-primary';
     contract: 'primary-neutral-v1';
+    intensity?: 'subtle' | 'chromatic';
     primarySeedHex: string;
     resolvedSeedHex: string;
   };
@@ -135,6 +136,7 @@ export type TonalSystemDiagnosticsV5 = {
     neutralOrigin?: {
       mode: 'existing' | 'derived-from-primary';
       contract: 'primary-neutral-v1';
+      intensity?: 'subtle' | 'chromatic';
       primarySeedHex: string;
       resolvedSeedHex: string;
     };
@@ -247,6 +249,9 @@ export async function createTonalArtifactBundle(
               neutralOrigin: {
                 mode: system.source.neutral.mode,
                 contract: system.source.neutral.derivation,
+                ...(system.source.neutral.intensity
+                  ? { intensity: system.source.neutral.intensity }
+                  : {}),
                 primarySeedHex: system.source.primary.seedHex,
                 resolvedSeedHex: family.sourceSeedHex
               }
@@ -445,6 +450,9 @@ function createColorAsset(
           neutralOrigin: {
             mode: system.source.neutral.mode,
             contract: system.source.neutral.derivation,
+            ...(system.source.neutral.intensity
+              ? { intensity: system.source.neutral.intensity }
+              : {}),
             primarySeedHex: system.source.primary.seedHex,
             resolvedSeedHex: family.sourceSeedHex
           }

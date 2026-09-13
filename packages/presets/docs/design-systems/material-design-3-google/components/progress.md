@@ -76,7 +76,7 @@ Density maps compact to `s:md:1` and spacious to `s:lg:1`. The schema publishes 
 
 All colors resolve through `PresetColorGetter` references to `progress.<intent>` and the canonical
 `primitive.black.v1` cap. The approved authored seeds are documented in [Material tonal assets](../colors/README.md):
-blue `#0B57D0`, red `#B3261E`, green `#146C2E`, tinted neutral `#001D35`, plus existing yellow,
+blue `#0B57D0`, red `#B3261E`, green `#146C2E`, tinted neutral `#03233C`, plus existing yellow,
 purple and pink support families. The schema contains no literal color.
 
 ## Kiskadee Extensions
@@ -103,3 +103,6 @@ Progress-specific Figma node is **Not inspected** and remains user-owned.
 
 Progress-specific Figma nodes and screenshot evidence remain unavailable. The user owns final visual
 homologation against Material's current component kit.
+
+Neutral seed updated on 2026-09-13 through the approved Chromatic offset primary-derived recipe;
+see [current tonal provenance](../colors/README.md). Component formulas remain unchanged.

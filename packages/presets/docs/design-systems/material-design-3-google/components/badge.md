@@ -84,7 +84,7 @@ the same Rest-only palette; no transient states are invented for a passive compo
 All schema colors resolve with the existing `PresetColorGetter`. The recipe consumes
 `badge.<intent>` roles and the canonical `primitive.black.v1` cap for transparent, black and white
 endpoints. The current authored seeds are documented in [Material tonal assets](../colors/README.md):
-blue `#0B57D0`, red `#B3261E`, green `#146C2E`, tinted neutral `#001D35`, plus the existing
+blue `#0B57D0`, red `#B3261E`, green `#146C2E`, tinted neutral `#03233C`, plus the existing
 yellow, purple and pink support families. The schema contains no literal color.
 
 The numeric offsets are Kiskadee adaptations informed by the Fluent fallback. They preserve each
@@ -124,3 +124,6 @@ is **Not inspected** and remains user-owned.
 
 Badge-specific Figma nodes and screenshot evidence remain unavailable. The user owns final visual
 homologation against Material's current component kit.
+
+Neutral seed updated on 2026-09-13 through the approved Chromatic offset primary-derived recipe;
+see [current tonal provenance](../colors/README.md). Component formulas remain unchanged.

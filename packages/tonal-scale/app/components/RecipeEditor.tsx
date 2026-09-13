@@ -681,9 +681,23 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           />
         </label>
         {neutral.mode === 'derived-from-primary' ? (
-          <p>
-            Uses the primary hue with low chroma. The existing seed is retained when switching back.
-          </p>
+          <label>
+            Neutral derivation
+            <select
+              aria-label="Neutral derivation"
+              value={neutral.intensity ?? 'subtle'}
+              onChange={(event) =>
+                changeNeutral({ intensity: event.target.value as TonalNeutralConfig['intensity'] })
+              }
+            >
+              <option value="subtle">Subtle (default)</option>
+              <option value="chromatic">Chromatic offset</option>
+            </select>
+            <span>
+              Subtle keeps the primary hue. Chromatic offset adds more chroma and shifts the hue.
+              The existing seed is retained when switching back.
+            </span>
+          </label>
         ) : null}
         <p>
           Generated:{' '}

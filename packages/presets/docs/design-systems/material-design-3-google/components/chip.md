@@ -95,7 +95,7 @@ Core contract: `s:sm:1`, `s:md:1` and `s:lg:1`.
 All colors resolve with `PresetColorGetter` references to `chip.neutral` and `chip.primary`, plus
 the canonical `primitive.black.v1` cap for physical light/dark, disabled and transparent values.
 The approved authored seeds and support families are recorded in [Material tonal assets](../colors/README.md):
-blue `#0B57D0`, tinted neutral `#001D35`, and existing yellow, purple and pink support families.
+blue `#0B57D0`, tinted neutral `#03233C`, and existing yellow, purple and pink support families.
 The schema contains no literal color.
 
 State offsets and alpha values are Kiskadee adaptations guided by the Fluent fallback. They keep
@@ -135,3 +135,6 @@ paths when dependencies are available. Visual homologation against a Chip-specif
 
 Chip-specific Figma nodes and screenshot evidence remain unavailable. The user owns final visual
 homologation against Material's current component kit.
+
+Neutral seed updated on 2026-09-13 through the approved Chromatic offset primary-derived recipe;
+see [current tonal provenance](../colors/README.md). Component formulas remain unchanged.

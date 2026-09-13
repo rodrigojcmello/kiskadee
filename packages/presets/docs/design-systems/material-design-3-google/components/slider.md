@@ -61,7 +61,7 @@ The schema contains no literal source colors. Source literals are recorded here 
 | Value indicator | Dark neutral surface with light text | The active/neutral family for the box and physical white for the text |
 | Disabled | Source opacity `.10`/`.38` treatments | Existing physical black/white caps through `c(..., 'primitive.black.v1', ..., alpha)` |
 
-Root color integration maps `slider.neutral` to the tinted neutral family (`#001D35`) and
+Root color integration maps `slider.neutral` to the tinted neutral family (`#03233C`) and
 `slider.primary` to the approved Material blue family (`#0B57D0`). No secondary family or new
 platform capability is required. Dark chromatic active references use the existing positive offset
 from the vivid anchor so the active rail remains visually distinct from the dark subtle rail.
@@ -87,3 +87,6 @@ surface-context adaptation, not an additional Material role.
   keeps the existing contract's origin behavior available without adding a runtime primitive.
 - The source value indicator is represented as geometry and palette data; animation and tooltip
   behavior remain owned by the existing builder/runtime contract.
+
+Neutral seed updated on 2026-09-13 through the approved Chromatic offset primary-derived recipe;
+see [current tonal provenance](../colors/README.md). Component formulas remain unchanged.

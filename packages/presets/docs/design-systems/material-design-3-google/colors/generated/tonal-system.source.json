@@ -124,7 +124,7 @@
         },
         "vivid": {
           "source": "contrast-mirror",
-          "tone": 95
+          "tone": 90
         }
       },
       "id": "n.black.v2",
@@ -135,7 +135,7 @@
         },
         "vivid": {
           "source": "generated-anchor",
-          "tone": 90
+          "tone": 85
         }
       }
     },
@@ -303,6 +303,16 @@
   ],
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
+  "neutral": {
+    "derivation": "primary-neutral-v1",
+    "intensity": "chromatic",
+    "mode": "derived-from-primary",
+    "policies": {
+      "dark": "source-exact",
+      "light": "source-exact"
+    },
+    "seedHex": "#001d35"
+  },
   "overrides": [
     {
       "id": "g.green.v1",
@@ -311,14 +321,6 @@
         "light": "source-exact"
       },
       "seedHex": "#146c2e"
-    },
-    {
-      "id": "n.black.v2",
-      "policies": {
-        "dark": "source-exact",
-        "light": "source-exact"
-      },
-      "seedHex": "#001d35"
     },
     {
       "id": "r.red.v1",

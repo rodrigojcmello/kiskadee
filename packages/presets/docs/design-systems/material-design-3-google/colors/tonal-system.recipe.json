@@ -34,14 +34,16 @@
         "light": "source-exact",
         "dark": "adaptive"
       }
-    },
-    {
-      "id": "n.black.v2",
-      "seedHex": "#001d35",
-      "policies": {
-        "light": "source-exact",
-        "dark": "source-exact"
-      }
     }
-  ]
+  ],
+  "neutral": {
+    "mode": "derived-from-primary",
+    "seedHex": "#001d35",
+    "derivation": "primary-neutral-v1",
+    "intensity": "chromatic",
+    "policies": {
+      "light": "source-exact",
+      "dark": "source-exact"
+    }
+  }
 }

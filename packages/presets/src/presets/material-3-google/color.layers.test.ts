@@ -45,3 +45,17 @@ it('resolves Material component intents and legacy variants through the promoted
     }
   }
 });
+
+it('keeps the approved light Card medium neutral distinct from primary', () => {
+  const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+  for (const segment of ['default', 'dynamic'] as const) {
+    const neutral = c.ref(segment, 'l', 'card.neutral', 'subtle');
+    const primary = c.ref(segment, 'l', 'card.primary', 'subtle');
+    expect(neutral).not.toBe(primary);
+    expect(neutral).toBe(
+      primitiveColors.black.v2.scales.light[
+        primitiveColors.black.v2.functionalReferences.light.subtle
+      ]
+    );
+  }
+});
