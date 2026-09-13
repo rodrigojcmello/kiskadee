@@ -1,8 +1,27 @@
 # Fluent 2 Color Evidence And Kiskadee Tonal Mapping
 
+## Controlled chroma promotion — 0.12.0
+
+User authorized regeneration and promotion of the current Fluent recipe with
+0.12.0. All eight existing primitive modules are copied verbatim from the
+exporter's preset-colors output. Seeds, policies, authored neutral #21242d,
+Layer 2/3 mappings and component formulas remain unchanged.
+
+The correction changes 209 of 576 promoted Light/Dark HEX values. Both neutral
+scales remain identical. Adaptive Dark green, red and purple select new effective
+seeds, so their physically dark colors also change despite the unchanged Muted
+Darks transformation. Green Dark subtle moves D5 to D4; red Dark subtle D4 to D3
+and medium D16 to D14. These are generated reference changes, not formula edits.
+
+[Complete color/reference differences](./controlled-chroma-comparison.json)
+record before/after values. The current
+[official correspondence](./figma-to-kiskadee.controlled-chroma.json) is recomputed
+from the same official source HEX values. The 0.11.1 candidate and correspondence
+remain historical evidence. The generated bundle is now the approved 0.12.0 output.
+
 ## Vivid Lights promotion — 2026-09-12
 
-User-approved generator 0.11.1 output now supplies the eight existing Fluent
+Historically, user-approved generator 0.11.1 output supplied the eight existing Fluent
 primitive modules, with subtle/medium/vivid references copied from the exporter.
 The current [primitive correspondence](./figma-to-kiskadee.vivid-lights.json) was
 recomputed from the original official HEX inputs; the previous mapping remains
@@ -120,10 +139,10 @@ recipe. The generated system uses:
   foundation independently of Fluent;
 - exact Light and Dark `n.black.v2`, preserving Fluent `Grey-14` as an authored
   tinted-neutral reference from one seed;
-- automatic harmony rest, currently resolved by candidate generator `0.11.1` to L50/D40;
+- automatic harmony rest, currently resolved by candidate generator `0.12.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.11.1
+### Shared viewer — candidate generator 0.12.0
 
 [Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22vivid-lights%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
 
@@ -132,11 +151,10 @@ browser bookmark. It resolves the latest generated scales and functional
 references without changing the stored Fluent evidence. It requires the local
 `@kiskadee/tonal-scale` application on port `3001`.
 
-The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.11.1`. It
+The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.12.0`. It
 generates thirteen primitive families: the twelve mandatory V5 families plus
-authored `n.black.v2`. The eleven chromatic family scales and references are
-unchanged from the approved `0.4.1` export. V5 changes only the achromatic
-architecture:
+authored `n.black.v2`. The current chromatic candidate differs from stored approved exports.
+The following table documents the V5 achromatic architecture:
 
 | Candidate family | Role | Light subtle | Light vivid | Dark subtle | Dark vivid |
 | --- | --- | --- | --- | --- | --- |
@@ -398,3 +416,9 @@ The [0.11.1 candidate comparison](./candidate-vivid-lights/README.md) changes on
 the profile to Muted Darks + Vivid Lights. Its authored neutral is retained.
 The candidate has been promoted with user approval; the Shared Viewer and recipe
 now select vivid-lights. The comparison retains the prior Muted Darks baseline.
+
+### Controlled chroma candidate 0.12.0
+
+The live viewer now uses proportional light chroma gain (up to 35%) and a
+useful-gain hue search bounded to six degrees with a travel penalty. This corrects
+excessive green saturation. The candidate was subsequently promoted as recorded above; preset mappings remain unchanged.

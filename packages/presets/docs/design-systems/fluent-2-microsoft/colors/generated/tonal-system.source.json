@@ -51,7 +51,7 @@
       "dark": {
         "subtle": {
           "source": "surface-relative",
-          "tone": 5
+          "tone": 4
         },
         "vivid": {
           "source": "generated-anchor",
@@ -166,7 +166,7 @@
       "dark": {
         "subtle": {
           "source": "surface-relative",
-          "tone": 4
+          "tone": 3
         },
         "vivid": {
           "source": "harmony-rest",
@@ -189,7 +189,7 @@
       "dark": {
         "subtle": {
           "source": "surface-relative",
-          "tone": 4
+          "tone": 3
         },
         "vivid": {
           "source": "generated-anchor",

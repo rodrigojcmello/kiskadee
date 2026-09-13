@@ -1,6 +1,6 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/gy.lime.v1.json by @kiskadee/tonal-scale@0.11.1.
+// Generated from colors/gy.lime.v1.json by @kiskadee/tonal-scale@0.12.0.
 export default {
   "kind": "static",
   "functionalReferences": {
@@ -20,19 +20,19 @@ export default {
       "0": "#ffffff",
       "1": "#f8fcf4",
       "2": "#f3f9ed",
-      "3": "#edf6e5",
+      "3": "#edf6e4",
       "4": "#e7f2dc",
-      "5": "#e0efd4",
-      "6": "#daeccc",
-      "7": "#d3e9c4",
-      "8": "#cae5b6",
-      "9": "#bee4a3",
-      "10": "#afe488",
-      "12": "#9be35c",
-      "14": "#8ddd2b",
-      "16": "#8ad31b",
-      "18": "#88ca1b",
-      "20": "#85c019",
+      "5": "#e1efd4",
+      "6": "#dcebcc",
+      "7": "#d6e8c3",
+      "8": "#cee4b6",
+      "9": "#c5e2a5",
+      "10": "#bae18d",
+      "12": "#a9df61",
+      "14": "#99da2f",
+      "16": "#92d121",
+      "18": "#8cc91f",
+      "20": "#85c01a",
       "22": "#7fba00",
       "24": "#77af00",
       "26": "#71a600",
@@ -85,10 +85,10 @@ export default {
       "65": "#689900",
       "70": "#6ea200",
       "75": "#7fba00",
-      "80": "#88ca1b",
-      "85": "#8fdf32",
-      "90": "#b8e796",
-      "95": "#e4f0d9",
+      "80": "#8cc91e",
+      "85": "#9cdc36",
+      "90": "#c2e49c",
+      "95": "#e4f0d8",
       "99": "#f9fdf5",
       "100": "#ffffff"
     }

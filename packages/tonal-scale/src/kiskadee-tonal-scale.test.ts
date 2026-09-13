@@ -376,7 +376,15 @@ describe('generateKiskadeeScale', () => {
   });
 
   it('boosts only the physical light side while preserving Muted Darks and seed geometry', () => {
-    for (const seedHex of ['#0064b4', '#c50f1f', '#107c10', '#eaa300', '#c239b3', '#808080']) {
+    for (const seedHex of [
+      '#0064b4',
+      '#c50f1f',
+      '#107c10',
+      '#27ae60',
+      '#eaa300',
+      '#c239b3',
+      '#808080'
+    ]) {
       for (const theme of THEMES) {
         const muted = generateWithProfile(seedHex, theme, 'muted-darks');
         const vivid = generateWithProfile(seedHex, theme, 'vivid-lights');
@@ -387,7 +395,7 @@ describe('generateKiskadeeScale', () => {
         vivid.colors.forEach((color, index) => {
           const previous = muted.colors[index];
           expect(color.targetLightness).toBe(previous.targetLightness);
-          expect(Math.abs(color.profileHueShift ?? 0)).toBeLessThanOrEqual(12);
+          expect(Math.abs(color.profileHueShift ?? 0)).toBeLessThanOrEqual(6);
           if (
             color.flags.isCap ||
             color.flags.isAnchor ||
@@ -412,14 +420,19 @@ describe('generateKiskadeeScale', () => {
     }
   });
 
-  it('allows light chroma gains above the former 45 percent ceiling', () => {
-    const muted = generateWithProfile('#107c10', 'light', 'muted-darks');
-    const vivid = generateWithProfile('#107c10', 'light', 'vivid-lights');
-    expect(
-      vivid.colors.some(
-        (color, index) => color.oklch.c > muted.colors[index].oklch.c * 1.45 + 0.001
-      )
-    ).toBe(true);
+  it('keeps green light gains proportional instead of filling the gamut', () => {
+    for (const seed of ['#107c10', '#27ae60']) {
+      for (const theme of THEMES) {
+        const muted = generateWithProfile(seed, theme, 'muted-darks');
+        const vivid = generateWithProfile(seed, theme, 'vivid-lights');
+        vivid.colors.forEach((color, index) => {
+          expect(color.oklch.c).toBeLessThanOrEqual(muted.colors[index].oklch.c * 1.35 + 0.002);
+        });
+        expect(
+          vivid.colors.some((color, index) => color.oklch.c > muted.colors[index].oklch.c + 0.01)
+        ).toBe(true);
+      }
+    }
   });
 
   it('rejects unsupported tonal profiles without generating a fallback scale', () => {

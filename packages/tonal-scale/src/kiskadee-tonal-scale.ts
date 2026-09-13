@@ -445,16 +445,21 @@ function applyChromaProfile(params: {
 }): KiskadeeScaleResult {
   const { profile, balancedResult, normalizedSeed, seedOklch, chromaAtLightness, theme } = params;
   // Choose one trajectory for the entire family instead of independently changing
-  // direction per slot. Prefer the largest available chroma gain without a travel penalty.
+  // direction per slot. Reward only useful gain up to the requested chroma.
   let lightHueOffset = 0;
   if (profile === 'vivid-lights' && seedOklch.c > NUMERIC_EPSILON) {
     let bestScore = 0;
-    for (let offset = -12; offset <= 12; offset += 2) {
-      let score = 0;
+    for (let offset = -6; offset <= 6; offset += 2) {
+      let score = -Math.abs(offset) * 0.0002;
       for (const progress of [0.5, 0.65, 0.8]) {
         const l = seedOklch.l + (100 - seedOklch.l) * progress;
         const shift = offset * Math.sin(Math.PI * progress) ** 2;
-        score += (maxSrgbChroma(l, seedOklch.h + shift) - maxSrgbChroma(l, seedOklch.h)) / 3;
+        const base = Math.min(chromaAtLightness(l), maxSrgbChroma(l, seedOklch.h));
+        const target = base * (1 + 0.35 * Math.sin(Math.PI * progress) ** 2);
+        score +=
+          (Math.min(target, maxSrgbChroma(l, seedOklch.h + shift)) -
+            Math.min(target, maxSrgbChroma(l, seedOklch.h))) /
+          3;
       }
       if (score > bestScore + NUMERIC_EPSILON) {
         bestScore = score;
@@ -636,15 +641,7 @@ function applyChromaProfile(params: {
     );
     // A smooth hump preserves the seed and fades the gain toward physical white.
     const envelopeChroma = increasesChroma
-      ? balancedFittedChroma +
-        Math.max(
-          balancedFittedChroma * 0.45,
-          maxSrgbChroma(
-            balancedColor.targetLightness,
-            seedOklch.h + lightHueOffset * Math.sin(Math.PI * lightProgress) ** 2
-          ) - balancedFittedChroma
-        ) *
-          Math.sin(Math.PI * lightProgress) ** 2
+      ? balancedFittedChroma * (1 + 0.35 * Math.sin(Math.PI * lightProgress) ** 2)
       : seedOklch.c * resolveMutedDarksEnvelopeRatio(balancedColor.targetLightness, seedOklch.l);
 
     if (!increasesChroma && envelopeChroma >= balancedFittedChroma - NUMERIC_EPSILON) {

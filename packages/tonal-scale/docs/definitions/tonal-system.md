@@ -669,7 +669,7 @@ preset-colors/
 
 The required system contains 12 color families and 27 files total. Additional
 authored variants add one evidence JSON and one preset TypeScript module each.
-Current Format V5 artifacts identify `@kiskadee/tonal-scale@0.11.1`.
+Current Format V5 artifacts identify `@kiskadee/tonal-scale@0.12.0`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -906,3 +906,10 @@ reconstructs and compares the module text without executing it, rejecting missin
 or changed modules. ZIP downloads and the atomic CLI writer include these files.
 Older approved bundles remain evidence of their original generator version;
 this release does not promote or rewrite them.
+
+### Controlled light chroma (0.12.0)
+
+The multifamily generator and vivid-lights standalone output advance to 0.12.0.
+Balanced and muted-darks standalone output retain 0.8.2 and deterministic replay
+compatibility because their bytes are unchanged. Approved preset and brand artifacts retain their
+original provenance; they are not promoted by this generator-only change.

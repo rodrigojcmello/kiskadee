@@ -17,6 +17,11 @@ export const STANDALONE_TONAL_ARTIFACT_GENERATOR = {
   version: '0.8.2'
 } as const;
 
+export const VIVID_STANDALONE_TONAL_ARTIFACT_GENERATOR = {
+  package: '@kiskadee/tonal-scale',
+  version: '0.12.0'
+} as const;
+
 export const STANDALONE_TONAL_GRID_CONTRACT = 'kiskadee-tonal-v1' as const;
 const CAP_SAFE_LIGHT_VIVID_TONE = 85 satisfies KiskadeeTone;
 
@@ -69,7 +74,9 @@ export type StandaloneTonalReferenceDiagnostics = StandaloneTonalFunctionalRefer
 export type StandaloneKiskadeeTonalFamilyPayload = {
   kind: 'kiskadee.single-tonal-family';
   formatVersion: 1;
-  generator: typeof STANDALONE_TONAL_ARTIFACT_GENERATOR;
+  generator:
+    | typeof STANDALONE_TONAL_ARTIFACT_GENERATOR
+    | typeof VIVID_STANDALONE_TONAL_ARTIFACT_GENERATOR;
   gridContract: typeof STANDALONE_TONAL_GRID_CONTRACT;
   seedHex: string;
   tonalProfile: KiskadeeTonalProfile;
@@ -185,7 +192,10 @@ export async function generateStandaloneKiskadeeTonalFamily(
   const payload = normalizeArtifactNumbers({
     kind: 'kiskadee.single-tonal-family',
     formatVersion: 1,
-    generator: STANDALONE_TONAL_ARTIFACT_GENERATOR,
+    generator:
+      input.tonalProfile === 'vivid-lights'
+        ? VIVID_STANDALONE_TONAL_ARTIFACT_GENERATOR
+        : STANDALONE_TONAL_ARTIFACT_GENERATOR,
     gridContract: STANDALONE_TONAL_GRID_CONTRACT,
     seedHex,
     tonalProfile: input.tonalProfile,
@@ -552,7 +562,10 @@ function validateArtifactEnvelope(input: unknown): StandaloneTonalArtifactVerifi
   if (
     !isRecord(input.generator) ||
     input.generator.package !== STANDALONE_TONAL_ARTIFACT_GENERATOR.package ||
-    input.generator.version !== STANDALONE_TONAL_ARTIFACT_GENERATOR.version
+    input.generator.version !==
+      (input.tonalProfile === 'vivid-lights'
+        ? VIVID_STANDALONE_TONAL_ARTIFACT_GENERATOR.version
+        : STANDALONE_TONAL_ARTIFACT_GENERATOR.version)
   ) {
     return [
       {

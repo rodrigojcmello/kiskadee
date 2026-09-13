@@ -60,6 +60,7 @@ describe('standalone tonal family artifact v1', () => {
       tonalProfile: 'vivid-lights',
       ...SOURCE_EXACT
     });
+    expect(artifact.generator.version).toBe('0.12.0');
     expect(artifact.generatedAnchors.light.hex).toBe('#0064b4');
     expect(artifact.generatedAnchors.dark.hex).toBe('#0064b4');
     await expect(verifyStandaloneKiskadeeTonalFamilyArtifact(artifact)).resolves.toMatchObject({

@@ -159,7 +159,7 @@ preserve tonal provenance; preset primitive variants are a separate publication 
 bundle retains diagnostic status `review`; promotion is the explicit preset decision to adopt its
 source-backed Apple subset and required neutral family.
 
-### Shared viewer — candidate generator 0.11.1
+### Shared viewer — candidate generator 0.12.0
 
 [Open the iOS 27 candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22balanced%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230088ff%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23ff383c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22r.red.v2%22%2C%22seedHex%22%3A%22%23ff2d55%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23ff8d28%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.brown.v1%22%2C%22seedHex%22%3A%22%23ac7f5e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23ffcc00%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%2334c759%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v1%22%2C%22seedHex%22%3A%22%2300c8b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v2%22%2C%22seedHex%22%3A%22%2300c3d0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22bg.teal.v3%22%2C%22seedHex%22%3A%22%2300c0e8%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22pb.indigo.v1%22%2C%22seedHex%22%3A%22%236155f5%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23cb30e0%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%231c1c1e%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D)
 
@@ -182,3 +182,9 @@ The multifamily contract accepts one seed per family. Consequently, Apple Light 
 remain exact source anchors while the distinct Apple Dark Accent values map to the nearest tone on
 the adaptive Dark track. The approved mapping makes those differences explicit, including the
 remaining Dark adaptation distances for Yellow and Purple.
+
+### Controlled chroma candidate 0.12.0
+
+The live viewer now uses proportional light chroma gain (up to 35%) and a
+useful-gain hue search bounded to six degrees with a travel penalty. This corrects
+excessive green saturation. Stored approved assets and preset mappings are unchanged.

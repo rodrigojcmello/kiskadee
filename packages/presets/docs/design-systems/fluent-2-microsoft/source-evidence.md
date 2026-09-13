@@ -295,3 +295,10 @@ reuses its existing fixed recipes through a global compact/spacious mapping and 
 exceptions. A single-density component keeps its medium reference; no unsupported recipe is
 synthesized. Explicit public `size` selections remain independent of viewport width. See the
 [adaptive density contract](../../../../../docs/definitions/adaptive-density.md).
+
+## Controlled chroma asset promotion (0.12.0)
+
+The existing Fluent recipe was regenerated and promoted with user authorization.
+See [tonal evidence](./colors/fluent-tonal-scale-evidence.md) for all color and
+reference changes. This remains a Kiskadee tonal adaptation; upstream source
+colors, semantic roles and component formulas were not redefined.

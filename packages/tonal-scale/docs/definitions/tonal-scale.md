@@ -268,21 +268,17 @@ Caps, seed, anchor position and target lightness remain unchanged. Dark-side
 requested hue remains unchanged.
 
 For physical progress `t = (L - seedL) / (100 - seedL)` clamped to `[0, 1]`,
-the requested chroma is `C + max(0.45 * C, Cmax - C) * sin(pi * t)^2`,
-where C is Balanced emitted chroma and Cmax is the sRGB boundary at the shifted hue.
-Version 0.8.2 removes the fixed 45% gain ceiling; 45% is now a minimum requested
-amplitude, and available headroom can raise it further. The gain starts and ends smoothly at zero and peaks
-halfway from the seed to white. Actual gains are limited by sRGB and the same
-lightness/contrast cells used by Muted Darks. On the light side the emitted
-chroma direction guard prevents a reduction below Balanced; the dark-side
-reduction guard is unchanged. Constraint restoration may keep an original slot.
+the requested chroma in 0.12.0 is `C * (1 + 0.35 * sin(pi * t)^2)`,
+where C is Balanced emitted chroma. Gamut headroom does not set the amplitude.
+The 35% maximum is a candidate visual calibration, not a perceptual equivalence
+claim across hues. The gain fades to zero at the seed and physical white.
+Existing lightness, contrast and chroma-direction restoration remains active.
 
-Version 0.8.1 chooses a bounded hue trajectory as well as chroma gain. It
-scores offsets from -12 to +12 degrees in two-degree steps against sRGB chroma
-headroom at physical progress 0.5, 0.65 and 0.8. Version 0.8.2 removes the
-previous travel penalty of 0.0002 per degree. Zero wins unless an offset
-increases headroom. The 12-degree identity bound remains; sRGB mapping and
-contrast/lightness guards remain necessary for the existing HEX contract.
+Hue candidates range from -6 to +6 degrees in two-degree steps. The search
+rewards only additional reproducible chroma up to the proportional target at
+progress 0.5, 0.65 and 0.8, with a 0.0002-per-degree travel penalty. Zero wins
+when rotation provides no useful gain, preserving hue for unconstrained greens.
+This replaces the 0.8.2 headroom-driven gain and twelve-degree hue search.
 One direction is chosen per seed, shared by both theme tracks. The actual
 requested shift follows `offset * sin(pi * t)^2`, returning smoothly to the
 seed hue near the anchor and white. Constraint restoration reduces both hue
