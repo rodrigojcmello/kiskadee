@@ -92,6 +92,7 @@ export const cssPaths = {
       'default|light': '/build/material-design-3-google/default.light.kiskadee.css',
     },
     tokenPalettes: {
+      'default|dark': '/build/material-design-3-google/tokens.default.dark.kiskadee.css',
       'default|light': '/build/material-design-3-google/tokens.default.light.kiskadee.css',
     }
   },
@@ -106,6 +107,7 @@ export const cssPaths = {
       'modern|light': '/build/material-design-3-kiskadee/modern.light.kiskadee.css',
     },
     tokenPalettes: {
+      'default|dark': '/build/material-design-3-kiskadee/tokens.default.dark.kiskadee.css',
       'default|light': '/build/material-design-3-kiskadee/tokens.default.light.kiskadee.css',
     }
   },

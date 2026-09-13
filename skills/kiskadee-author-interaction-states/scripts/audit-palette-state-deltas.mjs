@@ -30,8 +30,14 @@ function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
+function resolvedValue(value) {
+  return isObject(value) && Object.keys(value).length === 1 && hasOwn(value, 'ref')
+    ? value.ref
+    : value;
+}
+
 function isEqual(left, right) {
-  return JSON.stringify(left) === JSON.stringify(right);
+  return JSON.stringify(resolvedValue(left)) === JSON.stringify(resolvedValue(right));
 }
 
 function visit(value, path, insidePalettes = false) {

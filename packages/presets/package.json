@@ -10,8 +10,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@kiskadee/core": "workspace:^",
-    "@material/material-color-utilities": "^0.3.0"
+    "@kiskadee/core": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",

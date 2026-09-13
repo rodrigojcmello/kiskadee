@@ -33,7 +33,8 @@ This file records source evidence and schema decisions for
 | Menu-like rows | Existing Material Dropdown/Menu adaptation | Independent `e7` through `e15` BottomSheet elements |
 
 All schema colors resolve through `createPresetColorGetter()` and the existing Material primitive
-assets. No literal color is introduced by BottomSheet.
+assets. The modal scrim uses the theme track's black cap with alpha, while other surfaces use the
+approved neutral and red-like component intents. No literal color is introduced by BottomSheet.
 
 ## Kiskadee Mapping
 
@@ -42,6 +43,7 @@ assets. No literal color is introduced by BottomSheet.
 | Neutral sheet and rows | Material Bottom sheet plus Menu concepts | **Official adapted** | Reuse approved neutral tones through `bottomSheet.neutral` |
 | Destructive row | Material semantic error/destructive family | **Official adapted** | Map `bottomSheet.destructive` to `redLike` |
 | Light and dark palettes | Existing Material theme tracks | **Official adapted** | Emit independent `light` and `dark` class maps for `default` and `dynamic` segments |
+| Surface contexts | No separate Material Menu surface recipe inspected | **Kiskadee extension** | Emit matching `onSubtle` and `onVivid` maps while preserving the same approved Material colors |
 | Recursive menu pages | No inspected Material Bottom-sheet MenuTree contract | **Kiskadee extension** | Render one hierarchy level at a time with Back and Close Buttons |
 | Centered items without icons | Framework presentation policy | **Kiskadee extension** | Default `itemLayout=centered` and `centeredIcons=hide` |
 
@@ -58,6 +60,8 @@ assets. No literal color is introduced by BottomSheet.
 - Rest is the base. Interaction states are retained only for visual deltas or selected-state resets.
 - The explicit transparent `disabled` item background is an intentional terminal reset: it clears
   any hover, pressed, or selected background that would otherwise win in a compound disabled state.
+- `onVivid` mirrors `onSubtle` for every authored BottomSheet palette. This is a surface-context
+  adaptation, not a second component color recipe.
 - Icons, typography, separators, and shadows reuse approved global catalogs while every component
   element remains BottomSheet-owned.
 

@@ -1,24 +1,15 @@
 import type { Schema } from '@kiskadee/core';
-import type { PresetColorGetter } from '../../../../utils/presetColor.ts';
 import { createMaterial3GoogleTabsLineVariant } from './tabs.line.schema.ts';
+import type { TabPaletteArgs } from './tabs.palette.ts';
 
 type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
-type Material3GoogleSegmentName = 'default' | 'dynamic';
-
-type CreateMaterial3GoogleTabsVariantArgs = {
-  c: PresetColorGetter<Material3GoogleSegmentName>;
-  transparent: string;
-};
-
 export function createMaterial3GoogleTabsDotVariant({
   c,
-  transparent
-}: CreateMaterial3GoogleTabsVariantArgs): NonNullable<
-  NonNullable<TabsComponent['variants']>['dot']
-> {
+  segmentNames
+}: TabPaletteArgs): NonNullable<NonNullable<TabsComponent['variants']>['dot']> {
   const lineVariant = createMaterial3GoogleTabsLineVariant({
     c,
-    transparent
+    segmentNames
   });
 
   return {

@@ -7,6 +7,10 @@
 - [Material Design 3 Split button](https://m3.material.io/components/split-button/overview)
 - Existing Material 3 color, typography, radius, and elevation evidence in this preset
 
+The schema emits `default` and `dynamic` segments for both `light` and `dark` themes. Every
+palette-bearing element has matching `onSubtle` and `onVivid` contexts; the latter reuses the same
+approved recipe because Material Menus do not publish a separate Kiskadee vivid-surface recipe.
+
 ## Evidence Classification
 
 - **Official adapted**: the Material Menu is an elevated anchored surface containing selectable or
@@ -31,7 +35,8 @@
 ## Schema Mapping
 
 - `e1`: neutral surface, four-pixel rounded shape, eight-pixel inset, and global elevation.
-- `e2`: neutral Medium row with sparse state-layer-derived visual deltas.
+- `e2`: neutral Medium row with sparse state-layer-derived visual deltas and explicit selected and
+  disabled compound-state resets.
 - `e3`: 24 px leading icon with a 12 px logical gap.
 - `e4`: `label-large` principal label.
 - `e5`: `body-small` auxiliary content.
@@ -55,6 +60,10 @@ The shared recipe preserves the existing neutral output documented in
 
 The first implementation is the minimum official adaptation needed to compose the existing Material
 TextField with Autocomplete. It does not introduce a public Dropdown appearance variant.
+
+All color values resolve through `c` and `c.ref` against the approved Material primitive and
+component-intent families. The destructive row uses the existing `redLike` intent; selected leading
+icons use the existing `primary` family.
 
 The end-text, group-heading, leading-checkmark, and scroll-affordance slots are a **Kiskadee extension** in this
 minimum migration. Their values reuse existing Material typography, color, icon sizing, and item

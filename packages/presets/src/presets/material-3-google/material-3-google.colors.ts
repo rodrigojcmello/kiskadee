@@ -24,6 +24,14 @@ export const globalSemanticsBySegment = {
 } as const satisfies GlobalSemanticsBySegment;
 
 export const componentIntents = {
+  badge: {
+    neutral: 'neutral',
+    primary: 'primary',
+    novelty: 'purpleLike',
+    positive: 'greenLike',
+    warning: 'yellowLike',
+    attention: 'redLike'
+  },
   bottomSheet: {
     neutral: 'neutral',
     destructive: 'redLike'
@@ -35,12 +43,24 @@ export const componentIntents = {
     neutral: 'neutral'
   },
   card: {
+    primary: 'primary',
     neutral: 'neutral'
   },
+  chip: { neutral: 'neutral', primary: 'primary' },
   dropdown: {
     neutral: 'neutral',
     destructive: 'redLike'
   },
+  icon: { neutral: 'neutral', primary: 'primary' },
+  progress: {
+    neutral: 'neutral',
+    primary: 'primary',
+    positive: 'greenLike',
+    warning: 'yellowLike',
+    destructive: 'redLike'
+  },
+  slider: { neutral: 'neutral', primary: 'primary' },
+  text: { neutral: 'neutral' },
   tabs: {
     neutral: 'neutral'
   },

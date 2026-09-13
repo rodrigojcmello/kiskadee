@@ -1,4 +1,4 @@
-import type { Schema } from '@kiskadee/core';
+import { type Schema, withAlpha } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
@@ -13,10 +13,121 @@ type CreateMaterial3GoogleCardSchemaArgs = {
 
 export function createMaterial3GoogleCardSchema({
   c,
-  segmentNames,
-  transparent
+  segmentNames
 }: CreateMaterial3GoogleCardSchemaArgs): CardComponent {
+  const surfaces = [
+    { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
+    { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+    { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+    { intent: 'primary', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
+    { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+    { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' },
+    { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
+  ] as const;
+  const context = Object.fromEntries(
+    ['neutral', 'primary'].map((intent) => [
+      intent,
+      Object.fromEntries(
+        surfaces
+          .filter((entry) => entry.intent === intent)
+          .map((entry) => [
+            entry.emphasis,
+            {
+              rest: entry.contentSurfaceContext,
+              selected: entry.contentSurfaceContext,
+              disabled: 'onSubtle'
+            }
+          ])
+      )
+    ])
+  );
+  const borderOptions = (surface: 'onSubtle' | 'onVivid') => ({
+    neutral: {
+      lowest: surface === 'onSubtle',
+      low: false,
+      medium: false,
+      highest: surface === 'onVivid'
+    },
+    primary: { lowest: surface === 'onSubtle', medium: false, highest: surface === 'onVivid' }
+  });
+  const palette = (
+    segment: Material3GoogleSegmentName,
+    theme: 'l' | 'd',
+    surface: 'onSubtle' | 'onVivid'
+  ) => {
+    const transparent = c(segment, 'l', 'primitive.black.v1', 0, 0);
+    const onSurface = c(segment, theme, 'primitive.black.v1', 100);
+    const disabled = c.ref(segment, theme, 'card.neutral', 'subtle', -1);
+    const resolve = (intent: 'neutral' | 'primary', emphasis: string) => {
+      const role = intent === 'neutral' ? 'card.neutral' : 'card.primary';
+      const strong = emphasis === 'highest';
+      // Strong surfaces stay deep in both themes and publish onVivid to descendants.
+      const color = (offset: number) =>
+        strong
+          ? c.ref(segment, 'l', role, 'vivid', -Math.min(offset, 2))
+          : c.ref(
+              segment,
+              theme,
+              role,
+              'subtle',
+              (emphasis === 'lowest' ? -3 : emphasis === 'low' ? -2 : 0) +
+                (surface === 'onVivid' && emphasis === 'medium' ? 3 : 0) +
+                offset
+            );
+      const rest = color(0);
+      const boundary = strong
+        ? c(segment, 'l', 'primitive.black.v1', 0, 30)
+        : withAlpha(onSurface, 20);
+      return {
+        box: {
+          rest,
+          hover: color(1),
+          pressed: color(3),
+          focus: color(2),
+          ...(rest !== disabled ? { disabled } : {}),
+          selected: { rest: color(strong ? 1 : 2), hover: color(3), pressed: color(4) }
+        },
+        border: {
+          rest: boundary,
+          disabled: transparent,
+          selected: { rest: strong ? withAlpha(boundary, 50) : withAlpha(onSurface, 45) }
+        }
+      };
+    };
+    const neutral = {
+      lowest: resolve('neutral', 'lowest'),
+      low: resolve('neutral', 'low'),
+      medium: resolve('neutral', 'medium'),
+      highest: resolve('neutral', 'highest')
+    };
+    const primary = {
+      lowest: resolve('primary', 'lowest'),
+      medium: resolve('primary', 'medium'),
+      highest: resolve('primary', 'highest')
+    };
+    const values = (recipes: typeof primary | typeof neutral, key: 'box' | 'border') =>
+      Object.fromEntries(
+        Object.entries(recipes).map(([emphasis, recipe]) => [emphasis, recipe[key]])
+      );
+    return {
+      boxColor: { neutral: values(neutral, 'box'), primary: values(primary, 'box') },
+      borderColor: { neutral: values(neutral, 'border'), primary: values(primary, 'border') }
+    };
+  };
   return {
+    contentSurfaceContext: buildBySegment(segmentNames, () => ({
+      light: { onSubtle: context, onVivid: context },
+      dark: { onSubtle: context, onVivid: context }
+    })),
+    options: {
+      canonicalSurfaces: Object.fromEntries(
+        segmentNames.map((segment) => [segment, { light: surfaces, dark: surfaces }])
+      ),
+      border: buildBySegment(segmentNames, () => ({
+        light: { onSubtle: borderOptions('onSubtle'), onVivid: borderOptions('onVivid') },
+        dark: { onSubtle: borderOptions('onSubtle'), onVivid: borderOptions('onVivid') }
+      }))
+    },
     effects: {
       shadow: {
         e1: {
@@ -24,8 +135,8 @@ export function createMaterial3GoogleCardSchema({
           states: {
             rest: 's:sm:1',
             hover: 's:md:1',
-            focus: 's:sm:1',
-            pressed: false,
+            // Reset hover elevation while pressed, retaining the resting elevation.
+            pressed: 's:sm:1',
             disabled: false
           },
           fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3']
@@ -63,44 +174,14 @@ export function createMaterial3GoogleCardSchema({
             }
           }
         },
-        palettes: buildBySegment(segmentNames, (s) => ({
+        palettes: buildBySegment(segmentNames, (segment) => ({
           light: {
-            onSubtle: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    rest: c(s, 'l', 'card.neutral', 0),
-                    hover: c(s, 'l', 'card.neutral', 2),
-                    pressed: c(s, 'l', 'card.neutral', 4),
-                    focus: c(s, 'l', 'card.neutral', 0),
-                    disabled: c(s, 'l', 'card.neutral', 90, 12),
-                    selected: {
-                      rest: c(s, 'l', 'primary.v2', 50),
-                      hover: c(s, 'l', 'primary.v2', 45),
-                      pressed: c(s, 'l', 'primary.v2', 40),
-                      focus: c(s, 'l', 'primary.v2', 50)
-                    }
-                  }
-                }
-              },
-              borderColor: {
-                neutral: {
-                  medium: {
-                    rest: c(s, 'l', 'card.neutral.v2', 16),
-                    hover: c(s, 'l', 'card.neutral.v2', 20),
-                    pressed: c(s, 'l', 'card.neutral.v2', 26),
-                    focus: c(s, 'l', 'primary.v2', 50),
-                    disabled: transparent,
-                    selected: {
-                      rest: transparent,
-                      hover: transparent,
-                      pressed: transparent,
-                      focus: transparent
-                    }
-                  }
-                }
-              }
-            }
+            onSubtle: palette(segment, 'l', 'onSubtle'),
+            onVivid: palette(segment, 'l', 'onVivid')
+          },
+          dark: {
+            onSubtle: palette(segment, 'd', 'onSubtle'),
+            onVivid: palette(segment, 'd', 'onVivid')
           }
         }))
       }

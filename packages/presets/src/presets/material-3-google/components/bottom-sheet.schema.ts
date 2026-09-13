@@ -60,13 +60,32 @@ export function createMaterial3GoogleBottomSheetSchema({
   c,
   segmentNames
 }: CreateMaterial3GoogleBottomSheetSchemaArgs): BottomSheetComponent {
-  const scrim = (segment: SegmentName) => ({
-    onSubtle: {
-      boxColor: {
-        neutral: { medium: { rest: c(segment, 'l', 'bottomSheet.neutral', 100, 32) } }
+  const scrim = (segment: SegmentName, theme: ThemeName) => ({
+    boxColor: {
+      neutral: {
+        medium: {
+          rest: c(
+            segment,
+            THEMES[theme].track,
+            'bottomSheet.neutral',
+            theme === 'light' ? 100 : 0,
+            32
+          )
+        }
       }
     }
   });
+  const withSurfaceContexts = <T>(palette: T) => ({
+    onSubtle: palette,
+    onVivid: palette
+  });
+  const withVividContext = <T>(palette: T): T => {
+    const source = palette as Record<string, unknown>;
+    return {
+      ...source,
+      onVivid: source.onSubtle
+    } as T;
+  };
   const createTheme = (segment: SegmentName, theme: ThemeName) => {
     const recipe = THEMES[theme];
     const transparent = c(segment, recipe.track, 'bottomSheet.neutral', 0, 0);
@@ -191,12 +210,12 @@ export function createMaterial3GoogleBottomSheetSchema({
   };
   const palettes = <T>(select: (theme: ReturnType<typeof createTheme>) => T) =>
     buildBySegment(segmentNames, (segment) => ({
-      light: select(createTheme(segment, 'light')),
-      dark: select(createTheme(segment, 'dark'))
+      light: withVividContext(select(createTheme(segment, 'light'))),
+      dark: withVividContext(select(createTheme(segment, 'dark')))
     }));
   const scrimPalettes = buildBySegment(segmentNames, (segment) => ({
-    light: scrim(segment),
-    dark: scrim(segment)
+    light: withSurfaceContexts(scrim(segment, 'light')),
+    dark: withSurfaceContexts(scrim(segment, 'dark'))
   }));
   const surfacePalettes = palettes((theme) => theme.surface);
   const handlePalettes = palettes((theme) => theme.handle);

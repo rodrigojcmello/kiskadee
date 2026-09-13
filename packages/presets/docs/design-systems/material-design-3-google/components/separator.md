@@ -1,47 +1,24 @@
 # Material Design 3 Google Separator Evidence
 
-This file records source evidence and schema decisions for the shared Separator recipe and
-`packages/presets/src/presets/material-3-google/components/separator.schema.ts`.
+Updated 2026-09-13 for KIS-110.
 
 ## Sources
 
-- [Material Design 3 Menus overview](https://m3.material.io/components/menus/overview)
-- [Material Design 3 Menus specifications](https://m3.material.io/components/menus/specs)
-- Existing Material Dropdown mapping documented in [Dropdown evidence](dropdown.md)
+- [Material Web Divider](https://github.com/material-components/material-web/blob/main/docs/components/divider.md)
+- [Material color roles](https://github.com/material-components/material-web/blob/main/docs/theming/color.md)
+- Fluent's existing shared contour/Separator authorship, used as the authorized fallback.
 
-## Source Coverage
+## Mapping
 
-| Source area | Evidence | Status | Notes |
-| --- | --- | --- | --- |
-| Menu grouping | Material Menu specifications | Official adapted | An explicit divider separates logical groups. |
-| Shared recipe and standalone component | Kiskadee contract | Kiskadee extension | Material semantics are adapted to Kiskadee's reusable recipe. |
+Material dividers separate content; the official token uses outline-variant paint and one-pixel
+thickness. Kiskadee keeps that thickness and the existing `subtle` separator profile. Full bleed,
+inset and orientation remain layout concerns, without new variants or runtime rules.
 
-## Color And Token Provenance
+`global.contours.neutral.standard` now supplies Low and Medium colors in Light/Dark and
+onSubtle/onVivid, for both default and dynamic. Neutral vivid at 12%/30% provides subtle-surface
+contours; pure white at 12%/30% provides vivid-surface contours. These alpha choices and the
+context matrix are **Kiskadee adaptations**, not claimed Material token values.
 
-The `subtle` recipe preserves the existing `Dropdown.e7` output without changing its color:
-
-| Segment and theme | Existing role | Primitive and tone | Generated value | Kiskadee mapping |
-| --- | --- | --- | --- | --- |
-| Default/Light | `dropdown.neutral` | `primitive.black.v1`, Light 20 at 12% | `#c9c5cd1f` | `global.separators.profiles.subtle` |
-| Dynamic/Light | inherited neutral mapping | `primitive.black.v1`, Light 20 at 12% | `#c9c5cd1f` | `global.separators.profiles.subtle` |
-
-The Material 3 Kiskadee preset inherits this profile and component mapping through its existing
-Material Google base-schema merge; it does not duplicate the recipe.
-
-## Kiskadee Mapping
-
-- The recipe contains a one-pixel `boxWidth` and Neutral/Medium/Rest `boxColor` only.
-- `components.separator.e1` and `components.dropdown.e7` reference the same build-time recipe.
-- Orientation is structural. Spacing and inset belong to the surrounding layout or Dropdown group.
-- Dropdown does not render the standalone Separator component; equal style keys deduplicate in the
-  Builder.
-
-## Validation
-
-- The mapping resolves through Material's existing neutral semantic and introduces no literal in
-  schema code.
-- Default and Dynamic preserve the previous Dropdown tone and alpha exactly.
-
-## Open Gaps
-
-- Dark-theme Divider evidence and a complete Material Divider capability review are deferred.
+Standalone Separator and Dropdown group dividers consume the same shared recipe. The former
+Light-only, legacy-purple divider mapping is retired. Text and icon foregrounds remain separate
+from the contour catalog, as required by existing Core contracts.

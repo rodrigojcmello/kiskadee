@@ -4,6 +4,7 @@ import { createMaterial3GoogleTabsBoxVariant } from './tabs/tabs.box.schema.ts';
 import { createMaterial3GoogleTabsBridgeVariant } from './tabs/tabs.bridge.schema.ts';
 import { createMaterial3GoogleTabsDotVariant } from './tabs/tabs.dot.schema.ts';
 import { createMaterial3GoogleTabsLineVariant } from './tabs/tabs.line.schema.ts';
+import type { TabSegmentNames } from './tabs/tabs.palette.ts';
 import { createMaterial3GoogleTabsSegmentedVariant } from './tabs/tabs.segmented.schema.ts';
 
 type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
@@ -11,14 +12,16 @@ type Material3GoogleSegmentName = 'default' | 'dynamic';
 
 type CreateMaterial3GoogleTabsSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
-  transparent: string;
-  white: string;
+  segmentNames?: TabSegmentNames;
+  /** @deprecated Palette values are derived from c; retained for call-site compatibility. */
+  transparent?: string;
+  /** @deprecated Palette values are derived from c; retained for call-site compatibility. */
+  white?: string;
 };
 
 export function createMaterial3GoogleTabsSchema({
   c,
-  transparent,
-  white
+  segmentNames
 }: CreateMaterial3GoogleTabsSchemaArgs): TabsComponent {
   return {
     options: {
@@ -31,25 +34,23 @@ export function createMaterial3GoogleTabsSchema({
     variants: {
       line: createMaterial3GoogleTabsLineVariant({
         c,
-        transparent
+        segmentNames
       }),
       dot: createMaterial3GoogleTabsDotVariant({
         c,
-        transparent
+        segmentNames
       }),
       box: createMaterial3GoogleTabsBoxVariant({
         c,
-        transparent
+        segmentNames
       }),
       bridge: createMaterial3GoogleTabsBridgeVariant({
         c,
-        transparent,
-        white
+        segmentNames
       }),
       segmented: createMaterial3GoogleTabsSegmentedVariant({
         c,
-        transparent,
-        white
+        segmentNames
       })
     }
   };

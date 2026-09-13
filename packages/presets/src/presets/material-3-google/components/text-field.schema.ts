@@ -14,13 +14,124 @@ type CreateMaterial3GoogleTextFieldSchemaArgs = {
 type PaletteTheme = Record<string, Record<string, Record<string, unknown>>>;
 type PaletteBundle = Record<string, Record<string, PaletteTheme>>;
 type PaletteGroupBundle = Record<string, PaletteBundle>;
-
-const borderlessLightRestBoxColor: Color = '#f5f5f5';
-const borderlessLightHoverBoxColor: Color = '#f0f0f0';
-const borderlessLightFocusBoxColor: Color = '#ebebeb';
+type Material3GoogleTextFieldIntent = 'neutral' | 'error' | 'warning';
+type TextFieldPaletteGroup =
+  | 'control'
+  | 'controlFloatingNotched'
+  | 'controlBorderless'
+  | 'placeholder'
+  | 'label'
+  | 'input'
+  | 'message'
+  | 'indicatorUnderline';
 
 function fieldStateRef(color: Color): { ref: Color } {
   return { ref: color };
+}
+
+// Vivid parents use an authored inverse recipe, never a transform of resolved HEX values.
+function createVividSurfacePalette(
+  group: TextFieldPaletteGroup,
+  c: PresetColorGetter<Material3GoogleSegmentName>,
+  segment: Material3GoogleSegmentName,
+  transparent: string
+): PaletteTheme[string] {
+  const white = (alpha?: number) => c(segment, 'l', 'primitive.black.v1', 0, alpha);
+  const intentMap = (factory: (intent: Material3GoogleTextFieldIntent) => unknown) => ({
+    neutral: { medium: factory('neutral') },
+    error: { medium: factory('error') },
+    warning: { medium: factory('warning') }
+  });
+  const semantic = (intent: 'error' | 'warning', offset = 0) =>
+    c.ref(
+      segment,
+      'l',
+      intent === 'error' ? 'textField.error' : 'textField.warning',
+      'vivid',
+      offset
+    );
+  const edge = (intent: Material3GoogleTextFieldIntent) => {
+    if (intent === 'neutral')
+      return {
+        rest: white(60),
+        hover: fieldStateRef(white(70)),
+        focus: fieldStateRef(white()),
+        disabled: fieldStateRef(white(38))
+      };
+    const rest = semantic(intent);
+    return {
+      rest,
+      hover: fieldStateRef(semantic(intent, -1)),
+      // Focus restores the semantic Rest stroke over Hover; field geometry owns focus emphasis.
+      focus: fieldStateRef(rest),
+      disabled: fieldStateRef(white(38)),
+      readOnly: fieldStateRef(semantic(intent, 1))
+    };
+  };
+  if (group === 'indicatorUnderline') return { boxColor: intentMap(edge) };
+  if (group === 'control' || group === 'controlFloatingNotched' || group === 'controlBorderless') {
+    return {
+      boxColor: intentMap((intent) => {
+        if (group === 'control')
+          return {
+            rest: transparent,
+            hover: fieldStateRef(white(8)),
+            // Focus removes the Hover layer on the outline shell.
+            focus: fieldStateRef(transparent),
+            disabled: fieldStateRef(white(38))
+          };
+        const rest = intent === 'neutral' ? white(10) : semantic(intent);
+        if (group === 'controlFloatingNotched')
+          return {
+            rest,
+            disabled: fieldStateRef(white(38))
+          };
+        return {
+          rest,
+          hover: fieldStateRef(intent === 'neutral' ? white(8) : semantic(intent, -1)),
+          focus: fieldStateRef(intent === 'neutral' ? white(16) : semantic(intent, -2)),
+          disabled: fieldStateRef(white(38)),
+          ...(intent === 'neutral' ? {} : { readOnly: fieldStateRef(semantic(intent, 1)) })
+        };
+      }),
+      borderColor: intentMap((intent) =>
+        group === 'controlBorderless' ? { rest: transparent } : edge(intent)
+      )
+    };
+  }
+  return {
+    textColor: intentMap(() => ({
+      rest: white(),
+      ...(group === 'placeholder' ? {} : { disabled: fieldStateRef(white(38)) }),
+      ...(group === 'input' || group === 'label' ? { readOnly: fieldStateRef(white(70)) } : {})
+    }))
+  };
+}
+
+function withVividSurfaceContexts<TPaletteGroupBundle extends PaletteGroupBundle>(
+  paletteGroups: TPaletteGroupBundle,
+  c: PresetColorGetter<Material3GoogleSegmentName>,
+  transparent: string
+): TPaletteGroupBundle {
+  const merged: PaletteGroupBundle = {};
+  for (const groupName of Object.keys(paletteGroups)) {
+    merged[groupName] = {};
+    for (const [segmentName, themes] of Object.entries(paletteGroups[groupName])) {
+      merged[groupName][segmentName] = {};
+      for (const [themeName, palette] of Object.entries(themes)) {
+        merged[groupName][segmentName][themeName] = {
+          ...palette,
+          onVivid: createVividSurfacePalette(
+            groupName as TextFieldPaletteGroup,
+            c,
+            segmentName as Material3GoogleSegmentName,
+            transparent
+          )
+        };
+      }
+    }
+  }
+  return merged as TPaletteGroupBundle;
 }
 
 function createLightLowEmphasisTheme(lightTheme: PaletteTheme, darkTheme: PaletteTheme) {
@@ -86,9 +197,27 @@ function withPlaceholderPalette<TControl extends PaletteBundle>(
     merged[segmentName] = {};
 
     for (const themeName of themeNames) {
+      const controlTheme = controlThemes[themeName] ?? {};
+      const placeholderTheme = placeholderThemes[themeName] ?? {};
       merged[segmentName][themeName] = {
-        ...(controlThemes[themeName] ?? {}),
-        ...(placeholderThemes[themeName] ?? {})
+        ...controlTheme,
+        ...placeholderTheme,
+        ...(controlTheme.onSubtle === undefined && placeholderTheme.onSubtle === undefined
+          ? {}
+          : {
+              onSubtle: {
+                ...(controlTheme.onSubtle ?? {}),
+                ...(placeholderTheme.onSubtle ?? {})
+              }
+            }),
+        ...(controlTheme.onVivid === undefined && placeholderTheme.onVivid === undefined
+          ? {}
+          : {
+              onVivid: {
+                ...(controlTheme.onVivid ?? {}),
+                ...(placeholderTheme.onVivid ?? {})
+              }
+            })
       };
     }
   }
@@ -342,132 +471,138 @@ function createTextFieldElementPalettes({
         }
       }
     })),
-    controlBorderless: buildBySegment(segmentNames, (s) => ({
-      light: {
-        onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: borderlessLightRestBoxColor,
-                hover: fieldStateRef(borderlessLightHoverBoxColor),
-                focus: fieldStateRef(borderlessLightFocusBoxColor),
-                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-                readOnly: fieldStateRef(borderlessLightRestBoxColor)
+    controlBorderless: buildBySegment(segmentNames, (s) => {
+      const borderlessLightRestBoxColor = c(s, 'l', 'primitive.black.v1', 4);
+      const borderlessLightHoverBoxColor = c(s, 'l', 'primitive.black.v1', 6);
+      const borderlessLightFocusBoxColor = c(s, 'l', 'primitive.black.v1', 8);
+
+      return {
+        light: {
+          onSubtle: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: borderlessLightRestBoxColor,
+                  hover: fieldStateRef(borderlessLightHoverBoxColor),
+                  focus: fieldStateRef(borderlessLightFocusBoxColor),
+                  disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                  readOnly: fieldStateRef(borderlessLightRestBoxColor)
+                }
+              },
+              error: {
+                medium: {
+                  rest: borderlessLightRestBoxColor,
+                  hover: fieldStateRef(borderlessLightHoverBoxColor),
+                  focus: fieldStateRef(borderlessLightFocusBoxColor),
+                  disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                  readOnly: fieldStateRef(borderlessLightRestBoxColor)
+                }
+              },
+              warning: {
+                medium: {
+                  rest: borderlessLightRestBoxColor,
+                  hover: fieldStateRef(borderlessLightHoverBoxColor),
+                  focus: fieldStateRef(borderlessLightFocusBoxColor),
+                  disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
+                  readOnly: fieldStateRef(borderlessLightRestBoxColor)
+                }
               }
             },
-            error: {
-              medium: {
-                rest: borderlessLightRestBoxColor,
-                hover: fieldStateRef(borderlessLightHoverBoxColor),
-                focus: fieldStateRef(borderlessLightFocusBoxColor),
-                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-                readOnly: fieldStateRef(borderlessLightRestBoxColor)
-              }
-            },
-            warning: {
-              medium: {
-                rest: borderlessLightRestBoxColor,
-                hover: fieldStateRef(borderlessLightHoverBoxColor),
-                focus: fieldStateRef(borderlessLightFocusBoxColor),
-                disabled: fieldStateRef(c(s, 'l', 'neutral', 90, 8)),
-                readOnly: fieldStateRef(borderlessLightRestBoxColor)
+            borderColor: {
+              neutral: {
+                medium: {
+                  rest: transparent,
+                  hover: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparent),
+                  disabled: fieldStateRef(transparent),
+                  readOnly: fieldStateRef(transparent)
+                }
+              },
+              error: {
+                medium: {
+                  rest: transparent,
+                  hover: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparent),
+                  disabled: fieldStateRef(transparent),
+                  readOnly: fieldStateRef(transparent)
+                }
+              },
+              warning: {
+                medium: {
+                  rest: transparent,
+                  hover: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparent),
+                  disabled: fieldStateRef(transparent),
+                  readOnly: fieldStateRef(transparent)
+                }
               }
             }
-          },
-          borderColor: {
-            neutral: {
-              medium: {
-                rest: transparent,
-                hover: fieldStateRef(transparent),
-                focus: fieldStateRef(transparent),
-                disabled: fieldStateRef(transparent),
-                readOnly: fieldStateRef(transparent)
+          }
+        },
+        dark: {
+          onSubtle: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: c(s, 'd', 'neutral', 14),
+                  hover: fieldStateRef(c(s, 'd', 'neutral', 18)),
+                  focus: fieldStateRef(c(s, 'd', 'primary', 20)),
+                  disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                  readOnly: fieldStateRef(c(s, 'd', 'neutral', 16))
+                }
+              },
+              error: {
+                medium: {
+                  rest: c(s, 'd', 'redLike', 18),
+                  hover: fieldStateRef(c(s, 'd', 'redLike', 22)),
+                  focus: fieldStateRef(c(s, 'd', 'redLike', 28)),
+                  disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                  readOnly: fieldStateRef(c(s, 'd', 'redLike', 20))
+                }
+              },
+              warning: {
+                medium: {
+                  rest: c(s, 'd', 'yellowLike', 18),
+                  hover: fieldStateRef(c(s, 'd', 'yellowLike', 24)),
+                  focus: fieldStateRef(c(s, 'd', 'yellowLike', 28)),
+                  disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
+                  readOnly: fieldStateRef(c(s, 'd', 'yellowLike', 20))
+                }
               }
             },
-            error: {
-              medium: {
-                rest: transparent,
-                hover: fieldStateRef(transparent),
-                focus: fieldStateRef(transparent),
-                disabled: fieldStateRef(transparent),
-                readOnly: fieldStateRef(transparent)
-              }
-            },
-            warning: {
-              medium: {
-                rest: transparent,
-                hover: fieldStateRef(transparent),
-                focus: fieldStateRef(transparent),
-                disabled: fieldStateRef(transparent),
-                readOnly: fieldStateRef(transparent)
+            borderColor: {
+              neutral: {
+                medium: {
+                  rest: transparent,
+                  hover: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparent),
+                  disabled: fieldStateRef(transparent),
+                  readOnly: fieldStateRef(transparent)
+                }
+              },
+              error: {
+                medium: {
+                  rest: transparent,
+                  hover: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparent),
+                  disabled: fieldStateRef(transparent),
+                  readOnly: fieldStateRef(transparent)
+                }
+              },
+              warning: {
+                medium: {
+                  rest: transparent,
+                  hover: fieldStateRef(transparent),
+                  focus: fieldStateRef(transparent),
+                  disabled: fieldStateRef(transparent),
+                  readOnly: fieldStateRef(transparent)
+                }
               }
             }
           }
         }
-      },
-      dark: {
-        onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: c(s, 'd', 'neutral', 14),
-                hover: fieldStateRef(c(s, 'd', 'neutral', 18)),
-                focus: fieldStateRef(c(s, 'd', 'primary', 20)),
-                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-                readOnly: fieldStateRef(c(s, 'd', 'neutral', 16))
-              }
-            },
-            error: {
-              medium: {
-                rest: c(s, 'd', 'redLike', 18),
-                hover: fieldStateRef(c(s, 'd', 'redLike', 22)),
-                focus: fieldStateRef(c(s, 'd', 'redLike', 28)),
-                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-                readOnly: fieldStateRef(c(s, 'd', 'redLike', 20))
-              }
-            },
-            warning: {
-              medium: {
-                rest: c(s, 'd', 'yellowLike', 18),
-                hover: fieldStateRef(c(s, 'd', 'yellowLike', 24)),
-                focus: fieldStateRef(c(s, 'd', 'yellowLike', 28)),
-                disabled: fieldStateRef(c(s, 'd', 'neutral', 10, 16)),
-                readOnly: fieldStateRef(c(s, 'd', 'yellowLike', 20))
-              }
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: {
-                rest: transparent,
-                hover: fieldStateRef(transparent),
-                focus: fieldStateRef(transparent),
-                disabled: fieldStateRef(transparent),
-                readOnly: fieldStateRef(transparent)
-              }
-            },
-            error: {
-              medium: {
-                rest: transparent,
-                hover: fieldStateRef(transparent),
-                focus: fieldStateRef(transparent),
-                disabled: fieldStateRef(transparent),
-                readOnly: fieldStateRef(transparent)
-              }
-            },
-            warning: {
-              medium: {
-                rest: transparent,
-                hover: fieldStateRef(transparent),
-                focus: fieldStateRef(transparent),
-                disabled: fieldStateRef(transparent),
-                readOnly: fieldStateRef(transparent)
-              }
-            }
-          }
-        }
-      }
-    })),
+      };
+    }),
     placeholder: buildBySegment(segmentNames, (s) => ({
       light: {
         onSubtle: {
@@ -760,7 +895,11 @@ function createTextFieldElementPalettes({
 export function createMaterial3GoogleTextFieldSchema(
   args: CreateMaterial3GoogleTextFieldSchemaArgs
 ): TextFieldComponent {
-  const palettes = withLightLowEmphasisFromDarkMedium(createTextFieldElementPalettes(args));
+  const palettes = withVividSurfaceContexts(
+    withLightLowEmphasisFromDarkMedium(createTextFieldElementPalettes(args)),
+    args.c,
+    args.transparent
+  );
 
   return {
     options: {

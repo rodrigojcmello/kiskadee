@@ -1,14 +1,23 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
+import { buildBySegment } from '../../utils/buildBySegment.ts';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
+import { createMaterial3GoogleBadgeSchema } from './components/badge.schema.ts';
 import { createMaterial3GoogleBottomSheetSchema } from './components/bottom-sheet.schema.ts';
 import { createMaterial3GoogleButtonSchema } from './components/button.schema.ts';
 import { createMaterial3GoogleCardSchema } from './components/card.schema.ts';
+import { createMaterial3GoogleChipSchema } from './components/chip.schema.ts';
 import { createMaterial3GoogleDropdownSchema } from './components/dropdown.schema.ts';
+import { createMaterial3GoogleIconSchema } from './components/icon.schema.ts';
+import { createMaterial3GoogleProgressSchema } from './components/progress.schema.ts';
 import { createMaterial3GoogleSeparatorSchema } from './components/separator.schema.ts';
+import { createMaterial3GoogleSliderSchema } from './components/slider.schema.ts';
 import { createMaterial3GoogleSwitchSchema } from './components/switch.schema.ts';
 import { createMaterial3GoogleTabsSchema } from './components/tabs.schema.ts';
+import { createMaterial3GoogleTextSchema } from './components/text.schema.ts';
 import { createMaterial3GoogleTextFieldSchema } from './components/text-field.schema.ts';
 import { schemaColors } from './material-3-google.colors.ts';
+import { createMaterial3GoogleContours } from './material-3-google.contours.ts';
+import { createMaterial3GoogleForegrounds } from './material-3-google.foregrounds.ts';
 import { createMaterial3GoogleSeparators } from './material-3-google.separators.ts';
 import { material3GoogleTypography } from './material-3-google.typography.ts';
 
@@ -27,9 +36,10 @@ const segmentNames = ['default', 'dynamic'] as const;
 type SegmentName = (typeof segmentNames)[number];
 
 const c = createPresetColorGetter<SegmentName>(schemaContext);
-const transparent = '#00000000' as const;
-const white = '#ffffff' as const;
-const shadowBlack = (alpha: number) => withAlpha('#000000', alpha * 100);
+const black = c('default', 'l', 'primitive.black.v1', 100);
+const transparent = withAlpha(black, 0);
+const white = c('default', 'l', 'primitive.black.v1', 0);
+const shadowBlack = (alpha: number) => withAlpha(black, alpha * 100);
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = never;
@@ -45,13 +55,20 @@ export const schema: Schema<Segments> = {
     density: { compact: 's:sm:1', spacious: 's:md:1' },
     interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
     typography: material3GoogleTypography,
-    separators: createMaterial3GoogleSeparators({ c, segmentNames }),
+    separators: createMaterial3GoogleSeparators({ segmentNames }),
+    foregrounds: createMaterial3GoogleForegrounds({ c, segmentNames }),
+    contours: createMaterial3GoogleContours({ c, segmentNames }),
     iconSizes: {
+      's:sm:5': 6,
+      's:sm:4': 8,
+      's:sm:3': 10,
+      's:sm:2': 12,
       's:sm:1': 16,
       's:md:1': 20,
       's:lg:1': 24,
       's:lg:2': 28,
-      's:lg:3': 32
+      's:lg:3': 32,
+      's:lg:4': 48
     },
     icons: {
       family: 'material-symbols',
@@ -145,45 +162,28 @@ export const schema: Schema<Segments> = {
     }
   },
   themeTokens: {
-    palettes: {
-      default: {
-        light: {
-          // background: c('default', 'l', 'primitive.black.v1', 4),
-          // verified: 2026-02-02 | Figma v1.23
-          focusColor: c('default', 'l', 'primary.v2', 60), // =
-          effects: {
-            activationFeedback: {
-              tone: {
-                subtle: {
-                  color: '#1d1b20',
-                  opacity: 0.1
-                },
-                vivid: {
-                  color: white,
-                  opacity: 0.2
-                }
-              }
+    palettes: buildBySegment(segmentNames, (segment) => {
+      const theme = (track: 'l' | 'd') => ({
+        focusColor: c.ref(segment, track, 'primary', 'vivid', track === 'l' ? 0 : 6),
+        effects: {
+          activationFeedback: {
+            tone: {
+              subtle: { color: c.ref(segment, track, 'neutral', 'vivid'), opacity: 0.1 },
+              vivid: { color: white, opacity: 0.2 }
             }
           }
         }
-        // dark: {
-        //   background: c('default', 'd', 'primitive.black.v1', 85),
-        //   focusColor: c('default', 'l', 'primitive.cyan.v1', 60)
-        // }
-      }
-      // dynamic: {
-      //   light: {
-      //     background: c('dynamic', 'l', 'primitive.black.v1', 4),
-      //     focusColor: c('dynamic', 'l', 'primitive.blue.v1', 50)
-      //   },
-      //   dark: {
-      //     background: c('dynamic', 'd', 'primitive.black.v1', 4),
-      //     focusColor: c('dynamic', 'd', 'primitive.blue.v1', 50)
-      //   }
-      // }
-    }
+      });
+      return { light: theme('l'), dark: theme('d') };
+    })
   },
   components: {
+    badge: createMaterial3GoogleBadgeSchema({ c, segmentNames, transparent }),
+    chip: createMaterial3GoogleChipSchema({ c, segmentNames, transparent }),
+    icon: createMaterial3GoogleIconSchema({ c, segmentNames }),
+    progress: createMaterial3GoogleProgressSchema({ c, segmentNames }),
+    slider: createMaterial3GoogleSliderSchema({ c, segmentNames, transparent }),
+    text: createMaterial3GoogleTextSchema(),
     bottomSheet: createMaterial3GoogleBottomSheetSchema({ c, segmentNames }),
     button: createMaterial3GoogleButtonSchema({
       c,
