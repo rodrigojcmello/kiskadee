@@ -3,7 +3,7 @@ import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleChipSchema } from './chip.schema.ts';
 
-const segmentNames = ['default', 'dynamic'] as const;
+const segmentNames = ['default', 'dynamic', 'purple'] as const;
 const c = createPresetColorGetter<(typeof segmentNames)[number]>({ colors: schemaColors });
 const transparent = c('default', 'l', 'primitive.black.v1', 100, 0);
 const chip = createMaterial3GoogleChipSchema({ c, segmentNames, transparent });

@@ -1132,6 +1132,7 @@ function resolveAuthoringRecipe(input: unknown): AuthoringRecipeResolution {
         harmonyContract: locked.value.harmonyContract,
         tonalProfile: locked.value.tonalProfile,
         ...(locked.value.neutral ? { neutral: locked.value.neutral } : {}),
+        ...(locked.value.catalog ? { catalog: locked.value.catalog } : {}),
         primary: {
           seedHex: locked.value.primary.seedHex,
           appearance: parsed.appearance as TonalChromaticAppearance,
@@ -2057,15 +2058,160 @@ function materializeOverride(
 export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystemResult {
   const authoring = resolveAuthoringRecipe(input);
   if (!authoring.valid) return failedResult(authoring.issues);
+  const catalog = authoring.recipe.catalog;
+  if (!catalog) return generateTonalSystemPass(input);
+  const recipe = authoring.recipe;
+  const extraIds = new Set([
+    ...catalog.colors.map((c) => c.id),
+    ...catalog.neutrals
+      .filter(
+        (n) =>
+          !(
+            n.id === 'n.black.v2' &&
+            recipe.neutral?.mode === 'derived-from-primary' &&
+            n.sourceId === 'primary'
+          )
+      )
+      .map((n) => n.id)
+  ]);
+  const baseInput = authoring.lockedFunctionalReferences
+    ? {
+        ...(input as LockedTonalSystemSourceV5),
+        catalog: undefined,
+        functionalReferences: authoring.lockedFunctionalReferences.filter(
+          (r) => !extraIds.has(r.id)
+        )
+      }
+    : {
+        ...recipe,
+        catalog: undefined,
+        functionalReferences: recipe.functionalReferences.filter((r) => !extraIds.has(r.id))
+      };
+  const context: { baseRecipe?: MaterializedTonalSystemRecipe } = {};
+  const base = generateTonalSystemPass(baseInput, undefined, context);
+  if (!base.valid) return base;
+  const families = [...base.families];
+  const references = [...base.functionalReferences];
+  const issues = [...base.issues];
+  const append = (entry: TonalFamilyOverrideV5) => {
+    if (families.some((f) => f.id === entry.id)) {
+      issues.push({
+        severity: 'error',
+        code: 'CATALOG_ID_COLLISION',
+        path: '/catalog',
+        message: `Occupied id: ${entry.id}.`
+      });
+      return;
+    }
+    const pass = generateTonalSystemPass(
+      {
+        ...baseInput,
+        functionalReferences: authoring.lockedFunctionalReferences
+          ? authoring.lockedFunctionalReferences.filter(
+              (r) => !extraIds.has(r.id) || r.id === entry.id
+            )
+          : recipe.functionalReferences.filter(
+              (r) => r.id === entry.id || r.id === base.primaryReference.familyId
+            ),
+        overrides: [...recipe.overrides, entry]
+      },
+      entry.id,
+      context
+    );
+    const family = pass.families.find((f) => f.id === entry.id);
+    issues.push(...pass.issues.filter((i) => i.familyId === entry.id || i.severity === 'error'));
+    if (!pass.valid || !family) {
+      if (!issues.some((i) => i.severity === 'error'))
+        issues.push({
+          severity: 'error',
+          code: 'CATALOG_ENTRY_FAILED',
+          path: '/catalog/colors',
+          familyId: entry.id,
+          message: `Could not generate ${entry.id}.`
+        });
+      return;
+    }
+    families.push(family);
+    references.push(...pass.functionalReferences.filter((r) => r.id === entry.id));
+  };
+  for (const color of catalog.colors) append(color);
+  for (const association of catalog.neutrals) {
+    if (
+      association.id === 'n.black.v2' &&
+      recipe.neutral?.mode === 'derived-from-primary' &&
+      association.sourceId === 'primary'
+    )
+      continue;
+    const parent = families.find(
+      (f) =>
+        f.id ===
+        (association.sourceId === 'primary' ? base.primaryReference.familyId : association.sourceId)
+    );
+    if (!parent) continue;
+    const derived = resolveNeutralOverride(
+      {
+        mode: 'derived-from-primary',
+        seedHex: parent.themes.light.restColor.hex,
+        derivation: 'primary-neutral-v1',
+        intensity: association.intensity
+      },
+      parent.themes.light.restColor.hex
+    );
+    if (derived) append({ ...derived, id: association.id });
+  }
+  if (issues.some((i) => i.severity === 'error'))
+    return failedResult(sortIssues(issues), base.rest, families);
+  return {
+    ...base,
+    status: issues.some((i) => i.severity === 'review') ? 'review' : 'pass',
+    families: families.sort((a, b) => compareStrings(a.id, b.id)),
+    functionalReferences: references.sort((a, b) => compareStrings(a.id, b.id)),
+    source: lockTonalSystemRecipe(
+      recipe,
+      base.primaryReference.familyId,
+      base.rest,
+      lockFunctionalReferences(references)
+    ),
+    issues: sortIssues(issues)
+  };
+}
 
-  const materialization = materializeTonalSystemRecipe(
-    authoring.recipe,
-    authoring.lockedPrimaryId,
-    authoring.lockedFunctionalReferences
-  );
+function generateTonalSystemPass(
+  input: unknown,
+  isolatedId?: TonalFamilyId,
+  context?: { baseRecipe?: MaterializedTonalSystemRecipe }
+): KiskadeeTonalSystemResult {
+  const authoring = resolveAuthoringRecipe(input);
+  if (!authoring.valid) return failedResult(authoring.issues);
+
+  let materialization: MaterializedRecipeResolution;
+  if (isolatedId && context?.baseRecipe) {
+    const issues: TonalSystemIssue[] = [];
+    const override = authoring.recipe.overrides.find((o) => o.id === isolatedId);
+    const extra = override ? materializeOverride(override, issues) : null;
+    if (!extra || issues.some((i) => i.severity === 'error')) return failedResult(issues);
+    materialization = {
+      valid: true,
+      issues,
+      recipe: {
+        ...context.baseRecipe,
+        authoringRecipe: authoring.recipe,
+        functionalReferences: authoring.recipe.functionalReferences,
+        lockedFunctionalReferences: authoring.lockedFunctionalReferences,
+        families: [...context.baseRecipe.families, extra]
+      }
+    };
+  } else {
+    materialization = materializeTonalSystemRecipe(
+      authoring.recipe,
+      authoring.lockedPrimaryId,
+      authoring.lockedFunctionalReferences
+    );
+  }
   if (!materialization.valid) return failedResult(materialization.issues);
 
   const recipe = materialization.recipe;
+  if (context && !isolatedId) context.baseRecipe = recipe;
   const issues: TonalSystemIssue[] = [...materialization.issues];
   const primarySource = recipe.families.find((family) => family.id === recipe.primaryReference);
 
@@ -2241,7 +2387,11 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   );
 
   for (const familySource of recipe.families) {
-    if (familySource.id === recipe.primaryReference) continue;
+    if (
+      familySource.id === recipe.primaryReference ||
+      (isolatedId && familySource.id !== isolatedId)
+    )
+      continue;
     const parsedId = parseTonalFamilyId(familySource.id);
     if (!parsedId) continue;
 
@@ -2446,27 +2596,34 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
 
   if (
     issues.some((issue) => issue.severity === 'error') ||
-    families.length !== recipe.families.length
+    families.length !== (isolatedId ? 2 : recipe.families.length)
   ) {
     return failedResult(issues, rest, families);
   }
 
-  alignIsolatedHarmonyPeaks({
-    families,
-    primaryFamily,
-    supportContextByFamily,
-    recipe,
-    issues
-  });
+  if (!isolatedId)
+    alignIsolatedHarmonyPeaks({
+      families,
+      primaryFamily,
+      supportContextByFamily,
+      recipe,
+      issues
+    });
 
-  validateAdjacentFamilyRestSeparation(primaryFamily, families, recipe, issues);
+  if (!isolatedId) validateAdjacentFamilyRestSeparation(primaryFamily, families, recipe, issues);
 
   if (issues.some((issue) => issue.severity === 'error')) {
     return failedResult(issues, rest, families);
   }
 
   const functionalReferences = recipe.lockedFunctionalReferences
-    ? resolveLockedFunctionalReferences(families, recipe.lockedFunctionalReferences, issues)
+    ? resolveLockedFunctionalReferences(
+        families,
+        isolatedId
+          ? recipe.lockedFunctionalReferences.filter((r) => families.some((f) => f.id === r.id))
+          : recipe.lockedFunctionalReferences,
+        issues
+      )
     : resolveGeneratedFunctionalReferences(families, primaryFamily, issues);
 
   if (issues.some((issue) => issue.severity === 'error')) {
@@ -2490,12 +2647,23 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   reportFunctionalRestReview(issues, functionalRestDiagnostics.light, rest.source);
   reportFunctionalRestReview(issues, functionalRestDiagnostics.dark, rest.source);
 
-  const source = lockTonalSystemRecipe(
-    recipe.authoringRecipe,
-    recipe.primaryReference,
-    rest,
-    lockFunctionalReferences(functionalReferences)
-  );
+  const source = isolatedId
+    ? {
+        ...recipe.authoringRecipe,
+        primary: {
+          id: recipe.primaryReference,
+          seedHex: primarySource.seedHex,
+          policies: { ...recipe.authoringRecipe.primary.policies }
+        },
+        tonalAnchors: { rest: { mode: 'locked' as const, light: rest.light, dark: rest.dark } },
+        functionalReferences: lockFunctionalReferences(functionalReferences)
+      }
+    : lockTonalSystemRecipe(
+        recipe.authoringRecipe,
+        recipe.primaryReference,
+        rest,
+        lockFunctionalReferences(functionalReferences)
+      );
   const status =
     issues.some((issue) => issue.severity === 'review') ||
     families.some((family) => family.status === 'review')

@@ -8,8 +8,8 @@ import {
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type Material3GoogleSegmentName = 'default' | 'dynamic';
-type ProgressComponent = NonNullable<Schema<never>['components']['progress']>;
+type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
+type ProgressComponent = NonNullable<Schema<'purple'>['components']['progress']>;
 type ThemeName = 'light' | 'dark';
 type ThemeShortcut = 'l' | 'd';
 type ProgressRole = `progress.${ProgressIntent}`;

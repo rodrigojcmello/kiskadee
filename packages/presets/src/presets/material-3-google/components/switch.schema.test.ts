@@ -4,7 +4,7 @@ import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleSwitchSchema } from './switch.schema.ts';
 
-const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
 const switchSchema = createMaterial3GoogleSwitchSchema({
   c,
   segmentNames: ['default', 'dynamic'],

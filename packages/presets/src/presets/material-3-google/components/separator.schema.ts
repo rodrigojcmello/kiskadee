@@ -1,7 +1,7 @@
 import type { Schema } from '@kiskadee/core';
 
 export function createMaterial3GoogleSeparatorSchema(): NonNullable<
-  Schema<never>['components']['separator']
+  Schema<'purple'>['components']['separator']
 > {
   return {
     elements: {

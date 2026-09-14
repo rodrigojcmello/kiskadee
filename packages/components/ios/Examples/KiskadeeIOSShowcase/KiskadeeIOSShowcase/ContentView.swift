@@ -119,12 +119,7 @@ private struct ShowcaseSwitchPreset: Identifiable, Hashable {
             title: "iOS 27 by Apple",
             resourceName: "ios-27-apple-switch.schema"
         ),
-        materialGoogle,
-        ShowcaseSwitchPreset(
-            id: "material-3-kiskadee",
-            title: "Material Design 3 by Kiskadee",
-            resourceName: "material-3-kiskadee-switch.schema"
-        )
+        materialGoogle
     ]
 }
 

@@ -1,7 +1,7 @@
 import type { Schema } from '@kiskadee/core';
 
 export function createMaterial3GoogleTextSchema(): NonNullable<
-  Schema<never>['components']['text']
+  Schema<'purple'>['components']['text']
 > {
   return {
     elements: {

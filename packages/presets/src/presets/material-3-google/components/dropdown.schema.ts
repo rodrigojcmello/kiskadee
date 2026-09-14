@@ -2,8 +2,8 @@ import type { KiskadeeTone, Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type DropdownComponent = NonNullable<Schema<never>['components']['dropdown']>;
-type SegmentName = 'default' | 'dynamic';
+type DropdownComponent = NonNullable<Schema<'purple'>['components']['dropdown']>;
+type SegmentName = 'default' | 'dynamic' | 'purple';
 type ThemeName = 'light' | 'dark';
 type ThemeShortcut = 'l' | 'd';
 

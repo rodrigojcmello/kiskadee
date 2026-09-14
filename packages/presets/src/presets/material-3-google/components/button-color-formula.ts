@@ -54,8 +54,8 @@ export function createMaterialButtonIntent({
   surface,
   intent
 }: {
-  c: PresetColorGetter<'default' | 'dynamic'>;
-  segment: 'default' | 'dynamic';
+  c: PresetColorGetter<'default' | 'dynamic' | 'purple'>;
+  segment: 'default' | 'dynamic' | 'purple';
   theme: 'light' | 'dark';
   surface: 'onSubtle' | 'onVivid';
   intent: Intent;

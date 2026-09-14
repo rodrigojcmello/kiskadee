@@ -60,9 +60,9 @@ function issueCodes(
   return result.valid ? [] : result.issues.map((issue) => issue.code);
 }
 
-describe('tonal-system contract v5', () => {
-  it('defines format 5 with the complete Munsell taxonomy and core family set', () => {
-    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(5);
+describe('tonal-system contract v6', () => {
+  it('defines format 6 with the complete Munsell taxonomy and core family set', () => {
+    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(6);
     expect(TONAL_HARMONY_CONTRACT).toBe('kiskadee-munsell-rest-v1');
     expect(MUNSELL_SECTORS).toEqual([
       'red',
@@ -113,7 +113,7 @@ describe('tonal-system contract v5', () => {
       variant: 'v4'
     });
     expect(parseTonalFamilyId('orange.v1')).toBeNull();
-    expect(parseTonalFamilyId('b.blue.v5')).toBeNull();
+    expect(parseTonalFamilyId('b.blue.v0')).toBeNull();
     expect(resolveTonalFamilyColorKind('n.black.v2')).toBe('achromatic');
     expect(resolveTonalFamilyColorKind('pb.indigo.v3')).toBe('chromatic');
   });
@@ -406,7 +406,7 @@ describe('tonal-system contract v5', () => {
     expect(issueCodes(dark)).toContain('UNSUPPORTED_PRIMARY_DARK_POLICY');
 
     const variant = createRecipe();
-    variant.primary.variant = 'v5' as 'v1';
+    variant.primary.variant = 'v0' as 'v1';
     expect(issueCodes(variant)).toContain('INVALID_PRIMARY_VARIANT');
 
     const appearance = createRecipe();
@@ -485,7 +485,7 @@ describe('tonal-system contract v5', () => {
     const locked = lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 24, dark: 70 }, references);
 
     expect(locked).toMatchObject({
-      formatVersion: 5,
+      formatVersion: 6,
       primary: {
         id: 'b.blue.v1',
         seedHex: '#1da1f2',

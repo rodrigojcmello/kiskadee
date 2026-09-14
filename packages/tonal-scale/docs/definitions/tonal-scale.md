@@ -350,7 +350,7 @@ change Balanced output.
 Format V5's Black rules live in the higher-level tonal-system compositor and
 do not redefine `generateKiskadeeScale`. The compositor owns one immutable
 zero-chroma `n.black.v1` scale and may shape only chroma for independently
-seeded `n.black.v2` through `n.black.v4` neutral variants. Their canonical
+seeded `n.black.v2` and higher numbered variants neutral variants. Their canonical
 lightness inputs, caps, exact anchors, and deterministic revalidation remain
 subject to this low-level contract, while their variant-specific chroma
 trajectory remains defined in [tonal-system.md](./tonal-system.md). The

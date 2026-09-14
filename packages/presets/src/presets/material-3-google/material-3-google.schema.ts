@@ -26,13 +26,13 @@ import { material3GoogleTypography } from './material-3-google.typography.ts';
  * Each segment represents a brand/product identity with support for multiple theme modes.
  *
  * NOTE:
- * - This preset registers `default` and `dynamic` segments.
+ * - This preset registers `default`, `dynamic` and `purple` segments.
  * - Palette files are emitted as `<segment>.<theme>.kiskadee.(css|json)`.
  */
 
 const schemaContext = { colors: schemaColors } as const satisfies Pick<Schema, 'colors'>;
 
-const segmentNames = ['default', 'dynamic'] as const;
+const segmentNames = ['default', 'dynamic', 'purple'] as const;
 type SegmentName = (typeof segmentNames)[number];
 
 const c = createPresetColorGetter<SegmentName>(schemaContext);
@@ -42,7 +42,7 @@ const white = c('default', 'l', 'primitive.black.v1', 0);
 const shadowBlack = (alpha: number) => withAlpha(black, alpha * 100);
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
-type Segments = never;
+type Segments = 'purple';
 
 export const schema: Schema<Segments> = {
   name: 'Material Design',

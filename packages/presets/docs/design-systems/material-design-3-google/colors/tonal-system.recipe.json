@@ -1,8 +1,64 @@
 {
-  "formatVersion": 5,
+  "catalog": {
+    "colors": [
+      {
+        "id": "pb.indigo.v2",
+        "seedHex": "#6750a4",
+        "policies": {
+          "light": "source-exact",
+          "dark": "adaptive"
+        }
+      }
+    ],
+    "names": {
+      "primary": "Azul Material",
+      "pb.indigo.v2": "Roxo Material"
+    },
+    "neutrals": [
+      {
+        "id": "n.black.v3",
+        "sourceId": "pb.indigo.v2",
+        "intensity": "chromatic"
+      },
+      {
+        "id": "n.black.v2",
+        "sourceId": "primary",
+        "intensity": "chromatic"
+      }
+    ]
+  },
+  "formatVersion": 6,
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
   "tonalProfile": "balanced",
+  "neutral": {
+    "mode": "derived-from-primary",
+    "seedHex": "#001d35",
+    "derivation": "primary-neutral-v1",
+    "intensity": "chromatic",
+    "policies": {
+      "light": "source-exact",
+      "dark": "source-exact"
+    }
+  },
+  "overrides": [
+    {
+      "id": "g.green.v1",
+      "seedHex": "#146c2e",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "r.red.v1",
+      "seedHex": "#b3261e",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    }
+  ],
   "primary": {
     "seedHex": "#0b57d0",
     "appearance": "auto",
@@ -17,33 +73,5 @@
       "mode": "auto"
     }
   },
-  "functionalReferences": [],
-  "overrides": [
-    {
-      "id": "r.red.v1",
-      "seedHex": "#b3261e",
-      "policies": {
-        "light": "source-exact",
-        "dark": "adaptive"
-      }
-    },
-    {
-      "id": "g.green.v1",
-      "seedHex": "#146c2e",
-      "policies": {
-        "light": "source-exact",
-        "dark": "adaptive"
-      }
-    }
-  ],
-  "neutral": {
-    "mode": "derived-from-primary",
-    "seedHex": "#001d35",
-    "derivation": "primary-neutral-v1",
-    "intensity": "chromatic",
-    "policies": {
-      "light": "source-exact",
-      "dark": "source-exact"
-    }
-  }
+  "functionalReferences": []
 }

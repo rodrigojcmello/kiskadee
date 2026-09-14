@@ -3,7 +3,7 @@ import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleBadgeSchema } from './badge.schema.ts';
 
-const segmentNames = ['default', 'dynamic'] as const;
+const segmentNames = ['default', 'dynamic', 'purple'] as const;
 const c = createPresetColorGetter<(typeof segmentNames)[number]>({ colors: schemaColors });
 const badge = createMaterial3GoogleBadgeSchema({ c, segmentNames, transparent: 'transparent' });
 const intents = ['neutral', 'primary', 'novelty', 'positive', 'warning', 'attention'] as const;

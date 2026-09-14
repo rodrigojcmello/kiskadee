@@ -1,11 +1,14 @@
 # Material tonal assets
 
 Initial promotion: 2026-09-12, generator 0.13.0. Current promotion approved on 2026-09-13:
-generator 0.15.0, Balanced, with Chromatic offset primary-derived neutral.
+generator 0.16.0, Balanced, with a shared catalog for default and purple.
 
-`tonal-system.recipe.json` is the authored input; `generated/` contains the canonical verified export. Eight TypeScript assets are copied verbatim into `packages/presets/src/presets/material-3-google/colors/`.
+`tonal-system.recipe.json` is the authored input; `generated/` contains the canonical verified export. Ten TypeScript assets are copied verbatim into `packages/presets/src/presets/material-3-google/colors/default/`.
 
-### Shared viewer — candidate generator 0.15.0
+### Shared viewer — candidate generator 0.16.0
+
+Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
+Existing approved assets retain their recorded versions until a separate promotion.
 
 Candidate 0.15.0 changes the opt-in Chromatic derivation to Chromatic offset (-14 degrees).
 Subtle and explicit-seed recipes preserve their colors. Approved preset assets retain their
@@ -28,7 +31,7 @@ active neutral seed is #03233C, derived from the approved blue #0B57D0.
 
 Gmail CSS tokens were inspected at https://mail.google.com/mail/u/0/#inbox on 2026-09-12. The primary represents a Google product theme, not a universal Material primary. Material error palette source: https://github.com/material-components/material-components-web/blob/master/packages/mdc-tokens/v0_161/_md-ref-palette.scss.
 
-Additional promoted families `p.purple.v1`, `rp.magenta.v1` and `y.yellow.v1` are Kiskadee-generated support colors, not canonical Google semantic seeds. `rp.magenta.v1` occupies the existing Core `pink.v1` slot. Teal, lime, indigo, orange and brown remain in the export for inspection but are not promoted into this preset.
+Additional promoted families `p.purple.v1`, `rp.magenta.v1` and `y.yellow.v1` are Kiskadee-generated support colors, not canonical Google semantic seeds. `rp.magenta.v1` occupies the existing Core `pink.v1` slot. Teal, lime, the base indigo V1, orange and brown remain in the export for inspection but are not promoted into this preset.
 
 ## Three-layer mapping
 
@@ -63,4 +66,27 @@ Material segment. Regeneration changes 67 neutral tone entries and no other fami
 The serialized recipe keeps `intensity: chromatic`; generator 0.15.0 records the offset behavior.
 Light medium Card surfaces now differ: primary L4 #E4EEFF, neutral L4 #E0F0FF. Subtle mode,
 pure grayscale, component formulas and the existing segment catalog are unchanged.
-The viewer and promoted assets now use the same 0.15.0 recipe and output.
+That promotion synchronized the 0.15.0 viewer and assets; the shared-catalog promotion below supersedes its metadata.
+
+
+## Shared recipe and purple segment (0.16.0 / V6)
+
+Approved visually by the user on 2026-09-13 before promotion. One recipe retains blue #0B57D0
+as generation primary and adds **Roxo Material**, #6750A4, Light source-exact / Dark adaptive.
+Official evidence: Material Web v0.192 `primary40`,
+https://github.com/material-components/material-web/blob/main/tokens/versions/v0_192/_md-ref-palette.scss.
+
+The generator classifies that input as `pb.indigo.v2`. Core has no indigo slot, so its unchanged
+exported asset is mapped to `primitive.purple.v2`; the existing `p.purple.v1` remains intact.
+Its Chromatic offset neutral is `n.black.v3`, seed #1C1D3E, mapped to `primitive.black.v3`.
+All 13 previously exported families retain exact scales and functional references.
+
+| Segment | Primary V1 | Neutral V1/V2 and legacy Primary V2 | Shared roles |
+| --- | --- | --- | --- |
+| default / dynamic | blue.v1 | black.v2 | redLike, greenLike, yellowLike, purpleLike, pure black |
+| purple | purple.v2 | black.v3 | same assets as default |
+
+All ten consumed assets live in `colors/default/`; no `colors/purple/` exists. The segment
+selects Layer 2 roles, not another generation recipe. Metadata records names and associated
+neutral origins. The bundle includes both additions and remains atomically verifiable.
+Existing component formulas, default colors and dynamic behavior are preserved.

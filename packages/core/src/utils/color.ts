@@ -156,6 +156,12 @@ function parsePrimitiveRole(role: PrimitiveRole): PrimitiveColorRef {
     );
   }
   const [, hue, name] = parts;
+  if (
+    name !== 'dynamic' &&
+    (!/^v[1-9]\d*$/.test(name) || !Number.isSafeInteger(Number(name.slice(1))))
+  ) {
+    throw new Error(`Invalid primitive variant: ${name}`);
+  }
   return { hue, name } as PrimitiveColorRef;
 }
 

@@ -2,8 +2,8 @@ import type { Color, Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type SliderComponent = NonNullable<NonNullable<Schema<never>['components']>['slider']>;
-type Material3GoogleSegmentName = 'default' | 'dynamic';
+type SliderComponent = NonNullable<NonNullable<Schema<'purple'>['components']>['slider']>;
+type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 type ThemeName = 'light' | 'dark';
 type ThemeShortcut = 'l' | 'd';
 type SurfaceContext = 'onSubtle' | 'onVivid';

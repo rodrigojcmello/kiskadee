@@ -1,7 +1,7 @@
 {
   "appearance": "brown",
   "colorKind": "chromatic",
-  "formatVersion": 5,
+  "formatVersion": 6,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -50,7 +50,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.15.0"
+    "version": "0.16.0"
   },
   "id": "yr.brown.v1",
   "kind": "kiskadee.primitive-tonal-family",

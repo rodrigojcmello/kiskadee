@@ -85,3 +85,14 @@ Verified on 2026-09-13:
   TextField recipes are not certified as sparse by this correction. Selected compound resets in
   Switch, Dropdown and Tabs retain their existing documentation.
 - Package typechecking retains four pre-existing Fluent errors; Material files have no type errors.
+
+
+## Shared purple segment — 2026-09-13
+
+The user approved the purple/neutral candidate before promotion. All fourteen component factories
+now materialize purple with the existing formulas. A recursive comparison found no changes to
+previously present default/dynamic schema values. Layer 2 swaps primary and neutral aliases only.
+The generated registry, manifest, Light/Dark class maps, tokens and brand packs include purple.
+Core/Material focused tests pass; four unrelated existing Fluent type errors remain.
+The generator editor was browser-tested for adding/naming entries, neutral opt-in, strategy,
+URL reload and removal of associated entries. Material purple cards were rendered in Showcase.

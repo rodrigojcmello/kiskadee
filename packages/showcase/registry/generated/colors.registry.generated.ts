@@ -14,7 +14,6 @@ export const colorsMaps = {
   'ios-18-apple': () => loadJsonFromBuild<ColorsJson>('ios-18-apple/colors.json', { required: true }),
   'ios-27-apple': () => loadJsonFromBuild<ColorsJson>('ios-27-apple/colors.json', { required: true }),
   'material-design-3-google': () => loadJsonFromBuild<ColorsJson>('material-design-3-google/colors.json', { required: true }),
-  'material-design-3-kiskadee': () => loadJsonFromBuild<ColorsJson>('material-design-3-kiskadee/colors.json', { required: true }),
   'sandbox-0-kiskadee': () => loadJsonFromBuild<ColorsJson>('sandbox-0-kiskadee/colors.json', { required: true }),
   'sandbox-2-kiskadee': () => loadJsonFromBuild<ColorsJson>('sandbox-2-kiskadee/colors.json', { required: true }),
   'sandbox-3-kiskadee': () => loadJsonFromBuild<ColorsJson>('sandbox-3-kiskadee/colors.json', { required: true }),

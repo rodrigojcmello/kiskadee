@@ -3,7 +3,7 @@ import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleCardSchema } from './card.schema.ts';
 
-const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
 const card = createMaterial3GoogleCardSchema({
   c,
   segmentNames: ['default', 'dynamic'],

@@ -4,7 +4,7 @@ import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleSliderSchema } from './slider.schema.ts';
 
-const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
 const sliderSchema = createMaterial3GoogleSliderSchema({
   c,
   segmentNames: ['default', 'dynamic'],

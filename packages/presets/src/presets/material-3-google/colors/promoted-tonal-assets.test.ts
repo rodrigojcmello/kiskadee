@@ -3,14 +3,16 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import blueV1 from './b.blue.v1.ts';
-import greenV1 from './g.green.v1.ts';
-import blackV1 from './n.black.v1.ts';
-import blackV2 from './n.black.v2.ts';
-import purpleV1 from './p.purple.v1.ts';
-import redV1 from './r.red.v1.ts';
-import pinkV1 from './rp.magenta.v1.ts';
-import yellowV1 from './y.yellow.v1.ts';
+import segmentPurple from './default/pb.indigo.v2.ts';
+import segmentNeutral from './default/n.black.v3.ts';
+import blueV1 from './default/b.blue.v1.ts';
+import greenV1 from './default/g.green.v1.ts';
+import blackV1 from './default/n.black.v1.ts';
+import blackV2 from './default/n.black.v2.ts';
+import purpleV1 from './default/p.purple.v1.ts';
+import redV1 from './default/r.red.v1.ts';
+import pinkV1 from './default/rp.magenta.v1.ts';
+import yellowV1 from './default/y.yellow.v1.ts';
 
 const GENERATED_ROOT = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -18,6 +20,8 @@ const GENERATED_ROOT = resolve(
 );
 
 const PROMOTED_ASSETS = {
+  'pb.indigo.v2': segmentPurple,
+  'n.black.v3': segmentNeutral,
   'b.blue.v1': blueV1,
   'g.green.v1': greenV1,
   'n.black.v1': blackV1,
@@ -99,7 +103,7 @@ describe('Material promoted tonal assets', () => {
         asset.preset.sha256
       );
       if (asset.familyId in PROMOTED_ASSETS) {
-        expect(readFileSync(new URL(`./${asset.familyId}.ts`, import.meta.url), 'utf8')).toBe(
+        expect(readFileSync(new URL(`./default/${asset.familyId}.ts`, import.meta.url), 'utf8')).toBe(
           readFileSync(resolve(GENERATED_ROOT, asset.preset.path), 'utf8')
         );
       }

@@ -3,7 +3,7 @@ import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleProgressSchema } from './progress.schema.ts';
 
-const segmentNames = ['default', 'dynamic'] as const;
+const segmentNames = ['default', 'dynamic', 'purple'] as const;
 const c = createPresetColorGetter<(typeof segmentNames)[number]>({ colors: schemaColors });
 const progress = createMaterial3GoogleProgressSchema({ c, segmentNames });
 const intents = ['neutral', 'primary', 'positive', 'warning', 'destructive'] as const;

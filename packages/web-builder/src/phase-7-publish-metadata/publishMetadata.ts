@@ -556,6 +556,12 @@ function collectPrimitiveScales(colors: SchemaColors): Array<{
     if (!isRecord(variantsValue)) continue;
 
     for (const [variant, variantValue] of Object.entries(variantsValue)) {
+      if (
+        variant !== 'dynamic' &&
+        (!/^v[1-9]\d*$/.test(variant) || !Number.isSafeInteger(Number(variant.slice(1))))
+      ) {
+        throw new Error(`Invalid primitive variant ${baseColor}.${variant}.`);
+      }
       if (!isRecord(variantValue)) {
         throw new Error(`Invalid primitive asset ${baseColor}.${variant}: expected an object.`);
       }
@@ -606,6 +612,12 @@ function buildColorsArtifact(
       const variantsOut: Record<string, unknown> = {};
 
       for (const [variant, variantValue] of Object.entries(variantsValue)) {
+        if (
+          variant !== 'dynamic' &&
+          (!/^v[1-9]\d*$/.test(variant) || !Number.isSafeInteger(Number(variant.slice(1))))
+        ) {
+          throw new Error(`Invalid primitive variant ${baseColor}.${variant}.`);
+        }
         if (!isRecord(variantValue)) continue;
 
         // Clone to keep any extra primitive asset config (e.g. `gradient`) intact.

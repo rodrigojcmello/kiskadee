@@ -669,7 +669,12 @@ function ScaleOverview({
           >
             <button type="button" onClick={() => onSelectFamily(family.id)}>
               <span>
-                <strong>{family.id}</strong>
+                <strong>
+                  {system.source.catalog?.names[family.role === 'primary' ? 'primary' : family.id]
+                    ? `${system.source.catalog.names[family.role === 'primary' ? 'primary' : family.id]} · `
+                    : ''}
+                  {family.id}
+                </strong>
                 <small>
                   {family.role} · {family.status}
                 </small>

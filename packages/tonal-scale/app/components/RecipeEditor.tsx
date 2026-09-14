@@ -26,6 +26,7 @@ import {
   type CoreTonalFamilyId,
   createTonalFamilyId,
   MUNSELL_SECTOR_IDENTITIES,
+  nextTonalFamilyVariant,
   parseTonalFamilyId,
   resolveTonalFamilyColorKind,
   resolveTonalFamilyStem,
@@ -44,15 +45,12 @@ import {
   type TonalThemePolicy,
   type TonalVividReferenceRule
 } from '@/src/tonal-system-contract';
+import { CatalogEditor } from './CatalogEditor';
 import styles from './RecipeEditor.module.css';
 
 const REST_TONES = KISKADEE_TONES.filter((tone): tone is KiskadeeTone => tone > 0 && tone < 100);
 const CORE_FAMILY_ID_SET = new Set<TonalFamilyId>(TONAL_CORE_FAMILY_IDS);
-const EXTRA_VARIANTS = TONAL_FAMILY_VARIANTS.filter((variant) => variant !== 'v1');
 const TINTED_NEUTRAL_STARTER_SEED = '#20252b';
-const EXTRA_FAMILY_IDS = TONAL_FAMILY_IDENTITIES.flatMap((identity) =>
-  EXTRA_VARIANTS.map((variant) => createTonalFamilyId(identity.stem, variant))
-).filter((id) => !CORE_FAMILY_ID_SET.has(id));
 
 const POLICY_LABELS = {
   'source-exact': 'Source exact',
@@ -102,9 +100,22 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     ...(legacyNeutral ? { policies: legacyNeutral.policies as TonalNeutralConfig['policies'] } : {})
   };
   const changeNeutral = (patch: Partial<TonalNeutralConfig>) => {
+    const next = { ...neutral, ...patch };
+    const catalog = recipe.catalog ?? { colors: [], names: {}, neutrals: [] };
+    const otherLinks = catalog.neutrals.filter((n) => n.id !== 'n.black.v2');
     onChange({
       ...recipe,
-      neutral: { ...neutral, ...patch },
+      neutral: next,
+      catalog: {
+        ...catalog,
+        neutrals:
+          next.mode === 'derived-from-primary'
+            ? [
+                ...otherLinks,
+                { id: 'n.black.v2', sourceId: 'primary', intensity: next.intensity ?? 'subtle' }
+              ]
+            : otherLinks
+      },
       overrides: recipe.overrides.filter((o) => o.id !== 'n.black.v2'),
       functionalReferences:
         (patch.mode ?? neutral.mode) === 'existing' &&
@@ -120,9 +131,19 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
       dark: { vivid: { mode: 'auto' as const }, subtle: { mode: 'auto' as const } }
     };
   const usedIds = new Set(recipe.overrides.map((override) => override.id));
-  const extraOptions = EXTRA_FAMILY_IDS.filter(
-    (id) => !usedIds.has(id) && id !== resolvedPrimaryId && id !== 'n.black.v2'
-  );
+  const extraOptions = TONAL_FAMILY_IDENTITIES.map((identity) =>
+    createTonalFamilyId(
+      identity.stem,
+      nextTonalFamilyVariant(
+        [
+          ...usedIds,
+          ...(recipe.catalog?.colors.map((c) => c.id) ?? []),
+          ...(recipe.catalog?.neutrals.map((n) => n.id) ?? [])
+        ],
+        identity.stem
+      )
+    )
+  ).filter((id) => !usedIds.has(id) && id !== resolvedPrimaryId && id !== 'n.black.v2');
   const additionalVariantIds = [
     ...(resolvedPrimaryId && !CORE_FAMILY_ID_SET.has(resolvedPrimaryId) ? [resolvedPrimaryId] : []),
     ...recipe.overrides.map((override) => override.id).filter((id) => !CORE_FAMILY_ID_SET.has(id))
@@ -244,12 +265,30 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
   };
 
   const removeExtraOverride = (id: TonalFamilyId) => {
+    const associated = recipe.catalog?.neutrals.filter((n) => n.sourceId === id) ?? [];
+    if (
+      associated.length &&
+      !window.confirm(
+        `Remove ${id} and associated neutral ${associated.map((n) => n.id).join(', ')}?`
+      )
+    )
+      return;
+    const removed = new Set<string>([id, ...associated.map((n) => n.id)]);
     onChange({
       ...recipe,
       overrides: recipe.overrides.filter((override) => override.id !== id),
-      functionalReferences: recipe.functionalReferences.filter(
-        (functionalReferences) => functionalReferences.id !== id
-      )
+      functionalReferences: recipe.functionalReferences.filter((r) => !removed.has(r.id)),
+      ...(recipe.catalog
+        ? {
+            catalog: {
+              ...recipe.catalog,
+              neutrals: recipe.catalog.neutrals.filter((n) => n.sourceId !== id),
+              names: Object.fromEntries(
+                Object.entries(recipe.catalog.names).filter(([key]) => !removed.has(key))
+              )
+            }
+          }
+        : {})
     });
   };
 
@@ -412,7 +451,16 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
                 })
               }
             >
-              {TONAL_FAMILY_VARIANTS.map((variant) => (
+              {[
+                ...new Set([
+                  ...TONAL_FAMILY_VARIANTS,
+                  recipe.primary.variant,
+                  nextTonalFamilyVariant(
+                    result.families.map((f) => f.id),
+                    'b.blue'
+                  )
+                ])
+              ].map((variant) => (
                 <option key={variant} value={variant}>
                   {variant.toUpperCase()}
                 </option>
@@ -648,6 +696,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         </div>
       </fieldset>
 
+      <CatalogEditor recipe={recipe} result={result} onChange={onChange} />
       <fieldset className={styles.neutralSection}>
         <legend>Neutral</legend>
         {result.issues
@@ -658,47 +707,59 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             </p>
           ))}
         <p>Pure grayscale is always generated. A customized neutral becomes V2 in the output.</p>
-        <label>
-          Neutral origin
-          <select
-            aria-label="Neutral origin"
-            value={neutral.mode}
-            onChange={(event) =>
-              changeNeutral({ mode: event.target.value as TonalNeutralConfig['mode'] })
-            }
-          >
-            <option value="existing">Keep existing neutral</option>
-            <option value="derived-from-primary">Derive from primary</option>
-          </select>
-        </label>
-        <label>
-          Neutral seed
-          <input
-            aria-label="Neutral seed"
-            value={neutral.seedHex}
-            disabled={neutral.mode === 'derived-from-primary'}
-            onChange={(event) => changeNeutral({ seedHex: event.target.value })}
-          />
-        </label>
-        {neutral.mode === 'derived-from-primary' ? (
-          <label>
-            Neutral derivation
-            <select
-              aria-label="Neutral derivation"
-              value={neutral.intensity ?? 'subtle'}
-              onChange={(event) =>
-                changeNeutral({ intensity: event.target.value as TonalNeutralConfig['intensity'] })
-              }
-            >
-              <option value="subtle">Subtle (default)</option>
-              <option value="chromatic">Chromatic offset</option>
-            </select>
-            <span>
-              Subtle keeps the primary hue. Chromatic offset adds more chroma and shifts the hue.
-              The existing seed is retained when switching back.
-            </span>
-          </label>
-        ) : null}
+        {!recipe.catalog?.neutrals.some((n) => n.sourceId === 'primary' || n.id === 'n.black.v2') ||
+        recipe.neutral?.mode === 'existing' ? (
+          <>
+            <label>
+              Neutral origin
+              <select
+                aria-label="Neutral origin"
+                value={neutral.mode}
+                onChange={(event) =>
+                  changeNeutral({ mode: event.target.value as TonalNeutralConfig['mode'] })
+                }
+              >
+                <option value="existing">Keep existing neutral</option>
+                <option value="derived-from-primary">Derive from primary</option>
+              </select>
+            </label>
+            <label>
+              Neutral seed
+              <input
+                aria-label="Neutral seed"
+                value={neutral.seedHex}
+                disabled={neutral.mode === 'derived-from-primary'}
+                onChange={(event) => changeNeutral({ seedHex: event.target.value })}
+              />
+            </label>
+            {neutral.mode === 'derived-from-primary' ? (
+              <label>
+                Neutral derivation
+                <select
+                  aria-label="Neutral derivation"
+                  value={neutral.intensity ?? 'subtle'}
+                  onChange={(event) =>
+                    changeNeutral({
+                      intensity: event.target.value as TonalNeutralConfig['intensity']
+                    })
+                  }
+                >
+                  <option value="subtle">Subtle (default)</option>
+                  <option value="chromatic">Chromatic offset</option>
+                </select>
+                <span>
+                  Subtle keeps the primary hue. Chromatic offset adds more chroma and shifts the
+                  hue. The existing seed is retained when switching back.
+                </span>
+              </label>
+            ) : null}
+          </>
+        ) : (
+          <p>
+            Configure the primary-associated neutral in the shared catalog above. Reference settings
+            below remain available.
+          </p>
+        )}
         <p>
           Generated:{' '}
           {result.families.some((f) => f.id === 'n.black.v2')
@@ -799,8 +860,8 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           <div>
             <h3 id={`${editorId}-extras-title`}>Additional variants</h3>
             <p>
-              Optional V2–V4 assets require their own explicit seed and may be removed. Achromatic
-              variants represent authored tinted neutrals.
+              Legacy base overrides require their own explicit seed. Use the shared catalog above
+              for stable additional colors. Achromatic variants represent authored tinted neutrals.
             </p>
           </div>
           <span>{additionalVariantIds.length} added</span>

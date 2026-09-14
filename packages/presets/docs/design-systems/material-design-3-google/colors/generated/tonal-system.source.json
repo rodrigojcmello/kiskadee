@@ -1,5 +1,33 @@
 {
-  "formatVersion": 5,
+  "catalog": {
+    "colors": [
+      {
+        "id": "pb.indigo.v2",
+        "policies": {
+          "dark": "adaptive",
+          "light": "source-exact"
+        },
+        "seedHex": "#6750a4"
+      }
+    ],
+    "names": {
+      "pb.indigo.v2": "Roxo Material",
+      "primary": "Azul Material"
+    },
+    "neutrals": [
+      {
+        "id": "n.black.v2",
+        "intensity": "chromatic",
+        "sourceId": "primary"
+      },
+      {
+        "id": "n.black.v3",
+        "intensity": "chromatic",
+        "sourceId": "pb.indigo.v2"
+      }
+    ]
+  },
+  "formatVersion": 6,
   "functionalReferences": [
     {
       "dark": {
@@ -143,6 +171,29 @@
       "dark": {
         "subtle": {
           "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "contrast-mirror",
+          "tone": 95
+        }
+      },
+      "id": "n.black.v3",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 85
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
           "tone": 3
         },
         "vivid": {
@@ -181,6 +232,29 @@
         },
         "vivid": {
           "source": "harmony-rest",
+          "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 3
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 40
+        }
+      },
+      "id": "pb.indigo.v2",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
           "tone": 50
         }
       }

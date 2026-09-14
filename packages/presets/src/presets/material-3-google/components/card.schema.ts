@@ -2,8 +2,8 @@ import { type Schema, withAlpha } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type Material3GoogleSegmentName = 'default' | 'dynamic';
-type CardComponent = NonNullable<Schema<never>['components']['card']>;
+type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
+type CardComponent = NonNullable<Schema<'purple'>['components']['card']>;
 
 type CreateMaterial3GoogleCardSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;

@@ -142,7 +142,10 @@ recipe. The generated system uses:
 - automatic harmony rest, currently resolved by candidate generator `0.13.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.15.0
+### Shared viewer — candidate generator 0.16.0
+
+Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
+Existing approved assets retain their recorded versions until a separate promotion.
 
 Candidate 0.15.0 changes the opt-in Chromatic derivation to Chromatic offset (-14 degrees).
 Subtle and explicit-seed recipes preserve their colors. Approved preset assets retain their

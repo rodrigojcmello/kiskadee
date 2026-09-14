@@ -2,7 +2,7 @@ import { type ForegroundProfile, type SchemaForegrounds, withAlpha } from '@kisk
 import { buildBySegment } from '../../utils/buildBySegment.ts';
 import type { PresetColorGetter, PresetSolidColorRole } from '../../utils/presetColor.ts';
 
-type SegmentName = 'default' | 'dynamic';
+type SegmentName = 'default' | 'dynamic' | 'purple';
 type Args = { c: PresetColorGetter<SegmentName>; segmentNames: readonly SegmentName[] };
 
 /** Material content roles expressed through the existing surface-relative foreground catalog. */

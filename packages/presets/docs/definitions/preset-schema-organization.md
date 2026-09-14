@@ -141,3 +141,13 @@ pill hack, not a portable schema value. When a component has known dimensions, e
 the exact half-height for each size. Reserve `rounded` for a modest fixed rounding when there is no
 official platform value, and choose the smallest value that preserves a visibly rounded but
 non-pill shape for that preset's geometry.
+
+
+## Palette-base directories
+
+Use `colors/default/` for the principal palette. Simple segments share its assets and override
+Layer 2 roles; do not duplicate files into a directory for every simple segment. Independent
+complex palettes may have separate folders, with explicit imports and globally unambiguous
+primitive references. Directory names have no runtime semantics. See [segment color model](segment-color-model.md).
+Existing flat presets can migrate when their palette organization is touched; no mass migration
+of unrelated presets is implied.

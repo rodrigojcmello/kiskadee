@@ -2,8 +2,8 @@ import { type ChipIntent, primitive, type Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type Material3GoogleSegmentName = 'default' | 'dynamic';
-type ChipComponent = NonNullable<Schema<never>['components']['chip']>;
+type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
+type ChipComponent = NonNullable<Schema<'purple'>['components']['chip']>;
 type ThemeName = 'light' | 'dark';
 type ThemeShortcut = 'l' | 'd';
 type ChipEmphasis = 'high' | 'medium' | 'low' | 'lowest';

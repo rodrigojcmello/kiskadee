@@ -1,0 +1,62 @@
+.catalog {
+  display: grid;
+  gap: 18px;
+}
+
+.catalog h3,
+.catalog p {
+  margin: 0;
+}
+
+.catalog > p,
+.catalog fieldset > p {
+  color: var(--editor-muted);
+}
+
+.catalog fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid var(--editor-border);
+  border-radius: 18px;
+  background: var(--editor-surface-subtle);
+}
+
+.catalog legend {
+  padding: 0 8px;
+  font-weight: 700;
+}
+
+.catalog label {
+  display: grid;
+  gap: 8px;
+  min-width: 160px;
+  flex: 1 1 180px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.catalog label:has(input[type='checkbox']) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+}
+
+.catalog input:not([type='checkbox']),
+.catalog select {
+  width: 100%;
+  min-width: 0;
+}
+
+.catalog fieldset > p {
+  flex-basis: 100%;
+}
+
+.catalog button {
+  min-height: 42px;
+}

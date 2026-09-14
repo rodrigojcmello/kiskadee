@@ -2,7 +2,7 @@ import type { Schema } from '@kiskadee/core';
 import type { TabPaletteArgs } from './tabs.palette.ts';
 import { buildTabPalettes, tabTransparent, tabWhite } from './tabs.palette.ts';
 
-type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
+type TabsComponent = NonNullable<Schema<'purple'>['components']['tabs']>;
 
 export function createMaterial3GoogleTabsBridgeVariant({
   c,

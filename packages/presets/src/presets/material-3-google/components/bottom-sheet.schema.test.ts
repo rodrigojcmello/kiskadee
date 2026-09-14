@@ -3,7 +3,7 @@ import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
 import { createMaterial3GoogleBottomSheetSchema } from './bottom-sheet.schema.ts';
 
-const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
 const bottomSheet = createMaterial3GoogleBottomSheetSchema({
   c,
   segmentNames: ['default', 'dynamic']

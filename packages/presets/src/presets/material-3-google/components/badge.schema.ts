@@ -2,8 +2,8 @@ import { type BadgeIntent, primitive, type Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type Material3GoogleSegmentName = 'default' | 'dynamic';
-type BadgeComponent = NonNullable<Schema<never>['components']['badge']>;
+type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
+type BadgeComponent = NonNullable<Schema<'purple'>['components']['badge']>;
 type ThemeName = 'light' | 'dark';
 type ThemeShortcut = 'l' | 'd';
 type BadgeEmphasis = 'high' | 'medium' | 'low' | 'lowest';

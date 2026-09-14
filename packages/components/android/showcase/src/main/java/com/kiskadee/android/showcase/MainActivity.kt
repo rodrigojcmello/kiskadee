@@ -267,11 +267,6 @@ private data class ShowcaseSwitchPreset(
                 assetName = "ios-27-apple-switch.schema.json",
             ),
             materialGoogle,
-            ShowcaseSwitchPreset(
-                id = "material-3-kiskadee",
-                title = "Material Design 3 by Kiskadee",
-                assetName = "material-3-kiskadee-switch.schema.json",
-            ),
         )
     }
 }

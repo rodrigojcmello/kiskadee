@@ -2,7 +2,7 @@ import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type SegmentName = 'default' | 'dynamic';
+type SegmentName = 'default' | 'dynamic' | 'purple';
 
 export function createMaterial3GoogleIconSchema({
   c,
@@ -10,7 +10,7 @@ export function createMaterial3GoogleIconSchema({
 }: {
   c: PresetColorGetter<SegmentName>;
   segmentNames: readonly SegmentName[];
-}): NonNullable<Schema<never>['components']['icon']> {
+}): NonNullable<Schema<'purple'>['components']['icon']> {
   return {
     elements: {
       e1: {

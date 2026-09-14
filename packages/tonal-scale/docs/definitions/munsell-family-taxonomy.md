@@ -42,7 +42,7 @@ The base and authored variants have distinct identities:
 
 - `n.black.v1` is the immutable Kiskadee pure-gray baseline. Its canonical
   reference is `#000000`; every emitted scale color has zero chroma;
-- `n.black.v2` through `n.black.v4` are optional, independently seeded
+- `n.black.v2` and higher numbered variants are optional, independently seeded
   neutral variants. Each can preserve a warm, cool, or otherwise subtle tint
   through its own neutral chroma trajectory.
 
@@ -72,7 +72,7 @@ but are separate appearances, so both begin at `v1`. A second Blue is
 `v4` ids require explicit seeds.
 
 Black is the deliberate exception to that ordinal reading: `n.black.v1`
-always means pure gray, and `n.black.v2` through `n.black.v4` always mean
+always means pure gray, and `n.black.v2` and higher numbered variants always mean
 independently authored seeded neutrals. New chromatic appearances are
 intentionally deferred until the current set proves insufficient in real
 Design System integration.
@@ -143,7 +143,7 @@ appearance distance retains the complete OKLab chromatic plane and weights
 lightness by `2/3`; this prevents the tone of a lighter, muted Brown from
 dominating its hue and chroma identity. The closer appearance proposes
 `orange` or `brown`. Authors may correct the appearance within the classified
-sector and select `v1` through `v4`. Export locks the resolved three-axis
+sector and select a positive numbered variant (`v1`, `v2`, ...). Export locks the resolved three-axis
 family id.
 
 The prototypes are perceptual comparison references, not exceptions to the
@@ -179,7 +179,7 @@ above `0.08` fail.
   are the adjustable dimensions.
 - Brown remains Yellow-Red and cannot be replaced by an Orange-like seed.
 - `n.black.v1` remains pure gray and byte-immutable across systems.
-- `n.black.v2` through `n.black.v4` preserve their own authored hue and
+- `n.black.v2` and higher numbered variants preserve their own authored hue and
   lightness inputs while their neutral trajectory shapes chroma.
 - The same recipe, contracts, and generator version must emit identical bytes.
 

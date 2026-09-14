@@ -3,8 +3,8 @@ import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 import { createMaterialButtonIntent, MATERIAL_BUTTON_INTENTS } from './button-color-formula.ts';
 
-type Material3GoogleSegmentName = 'default' | 'dynamic';
-type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
+type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
+type ButtonComponent = NonNullable<Schema<'purple'>['components']['button']>;
 
 type CreateMaterial3GoogleButtonSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;

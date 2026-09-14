@@ -8,7 +8,7 @@ import {
   MATERIAL_BUTTON_INTENTS
 } from './button-color-formula.ts';
 
-const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
 function rgb(hex: string) {
   return [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16));
 }

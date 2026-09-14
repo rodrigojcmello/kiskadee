@@ -21,7 +21,9 @@ function readPersistedSelection(): {
   if (typeof window === 'undefined') return null;
 
   try {
-    const storedDesignSystem = window.localStorage.getItem(STORAGE_KEYS.designSystem);
+    const previousDesignSystem = window.localStorage.getItem(STORAGE_KEYS.designSystem);
+    const retiredMaterial = previousDesignSystem === 'material-design-3-kiskadee';
+    const storedDesignSystem = retiredMaterial ? 'material-design-3-google' : previousDesignSystem;
     if (!storedDesignSystem) return null;
 
     if (!Object.hasOwn(coreMaps, storedDesignSystem)) {
@@ -36,7 +38,12 @@ function readPersistedSelection(): {
     if (!segments.length) return null;
 
     const storedSegment = window.localStorage.getItem(STORAGE_KEYS.segment) ?? undefined;
-    const segment = storedSegment && segments.includes(storedSegment) ? storedSegment : segments[0];
+    const segment =
+      storedSegment && segments.includes(storedSegment)
+        ? storedSegment
+        : retiredMaterial && segments.includes('default')
+          ? 'default'
+          : segments[0];
 
     const map = info.themesBySegment as unknown as Record<string, readonly ThemeMode[]>;
     const availableThemes = map[segment] ?? ([] as readonly ThemeMode[]);
@@ -48,6 +55,7 @@ function readPersistedSelection(): {
         ? storedTheme
         : getPreferredTheme(availableThemes);
 
+    if (retiredMaterial) persistSelection(designSystem, segment, theme);
     return { designSystem, segment, theme };
   } catch {
     return null;

@@ -4,7 +4,7 @@ import { primitiveColors } from './color.layers.ts';
 import { schemaColors } from './material-3-google.colors.ts';
 
 it('resolves Material component intents and legacy variants through the promoted families', () => {
-  const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+  const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
   for (const segment of ['default', 'dynamic'] as const) {
     for (const [shortcut, theme] of [
       ['l', 'light'],
@@ -47,7 +47,7 @@ it('resolves Material component intents and legacy variants through the promoted
 });
 
 it('keeps the approved light Card medium neutral distinct from primary', () => {
-  const c = createPresetColorGetter<'default' | 'dynamic'>({ colors: schemaColors });
+  const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
   for (const segment of ['default', 'dynamic'] as const) {
     const neutral = c.ref(segment, 'l', 'card.neutral', 'subtle');
     const primary = c.ref(segment, 'l', 'card.primary', 'subtle');
@@ -57,5 +57,17 @@ it('keeps the approved light Card medium neutral distinct from primary', () => {
         primitiveColors.black.v2.functionalReferences.light.subtle
       ]
     );
+  }
+});
+
+it('maps purple primary and all neutral aliases without changing shared semantic colors', () => {
+  const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
+  for (const theme of ['l', 'd'] as const) {
+    for (const role of ['neutral', 'neutral.v2', 'primary.v2', 'button.neutral', 'card.neutral.v2'] as const)
+      expect(c('purple', theme, role, 50)).toBe(c('purple', theme, 'primitive.black.v3', 50));
+    expect(c('purple', theme, 'primary', 50)).toBe(c('purple', theme, 'primitive.purple.v2', 50));
+    for (const role of ['redLike', 'greenLike', 'yellowLike', 'purpleLike'] as const)
+      expect(c('purple', theme, role, 50)).toBe(c('default', theme, role, 50));
+    expect(c('purple', theme, 'primitive.blue.v1', 50)).toBe(c('default', theme, 'primary', 50));
   }
 });

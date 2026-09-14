@@ -15,7 +15,13 @@ import { globalSemantics, primitiveColors } from './color.layers.ts';
  * - `default` is always present to register the primary segment.
  * - `themes` are optional and should be used only when a segment must override Layer 2 mappings.
  */
+const purpleSemantics = {
+  primary: { v1: 'primitive.purple.v2', v2: 'primitive.black.v3' },
+  neutral: { v1: 'primitive.black.v3', v2: 'primitive.black.v3' }
+} as const;
+
 export const globalSemanticsBySegment = {
+  purple: { meta: { name: 'Material Design - Purple' }, themes: { light: purpleSemantics, dark: purpleSemantics } },
   default: {
     meta: {
       name: 'Material Design - Default (blue)'

@@ -10,7 +10,7 @@ same first-party Switch fixture set as the iOS showcase.
 - `kiskadee-android`: reusable Android library code.
 - `showcase`: local Android app that consumes the library.
 - `showcase/src/main/assets/*-switch.schema.json`: Switch fixtures copied from the iOS showcase for
-  Carbon IBM, Fluent 2 Microsoft, iOS 27 Apple, Material 3 Google, and Material 3 Kiskadee.
+  Carbon IBM, Fluent 2 Microsoft, iOS 27 Apple, and Material 3 Google.
 
 The fixtures are not a separate Android schema contract. The canonical source remains the Kiskadee
 schema in `packages/presets`.

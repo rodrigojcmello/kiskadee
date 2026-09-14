@@ -1,19 +1,21 @@
 import type { GlobalSemanticsByTheme, PrimitiveColors } from '@kiskadee/core';
-import blueV1 from './colors/b.blue.v1.ts';
-import greenV1 from './colors/g.green.v1.ts';
-import blackV1 from './colors/n.black.v1.ts';
-import blackV2 from './colors/n.black.v2.ts';
-import purpleV1 from './colors/p.purple.v1.ts';
-import redV1 from './colors/r.red.v1.ts';
-import pinkV1 from './colors/rp.magenta.v1.ts';
-import yellowV1 from './colors/y.yellow.v1.ts';
+import segmentPurple from './colors/default/pb.indigo.v2.ts';
+import segmentPurpleNeutral from './colors/default/n.black.v3.ts';
+import blueV1 from './colors/default/b.blue.v1.ts';
+import greenV1 from './colors/default/g.green.v1.ts';
+import blackV1 from './colors/default/n.black.v1.ts';
+import blackV2 from './colors/default/n.black.v2.ts';
+import purpleV1 from './colors/default/p.purple.v1.ts';
+import redV1 from './colors/default/r.red.v1.ts';
+import pinkV1 from './colors/default/rp.magenta.v1.ts';
+import yellowV1 from './colors/default/y.yellow.v1.ts';
 
 export const primitiveColors = {
-  black: { v1: blackV1, v2: blackV2 },
+  black: { v1: blackV1, v2: blackV2, v3: segmentPurpleNeutral },
   blue: { v1: blueV1 },
   green: { v1: greenV1 },
   pink: { v1: pinkV1 },
-  purple: { v1: purpleV1 },
+  purple: { v1: purpleV1, v2: segmentPurple },
   red: { v1: redV1 },
   yellow: { v1: yellowV1 }
 } as const satisfies PrimitiveColors;

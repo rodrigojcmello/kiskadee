@@ -5,7 +5,6 @@ import { schema as carbonIbmSchema } from '../../../presets/src/presets/carbon-i
 import { schema as fluent2MicrosoftSchema } from '../../../presets/src/presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts';
 import { schema as ios27AppleSchema } from '../../../presets/src/presets/ios-27-apple/ios-27-apple.schema.ts';
 import { schema as material3GoogleSchema } from '../../../presets/src/presets/material-3-google/material-3-google.schema.ts';
-import { schema as material3KiskadeeSchema } from '../../../presets/src/presets/material-3-kiskadee/material-3-kiskadee.schema.ts';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const resourcesDir = resolve(
@@ -33,10 +32,6 @@ const fixtures = [
   {
     fileName: 'material-3-google-switch.schema.json',
     schema: material3GoogleSchema
-  },
-  {
-    fileName: 'material-3-kiskadee-switch.schema.json',
-    schema: material3KiskadeeSchema
   }
 ];
 

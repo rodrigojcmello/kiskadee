@@ -7,8 +7,8 @@ import { createMaterial3GoogleTabsLineVariant } from './tabs/tabs.line.schema.ts
 import type { TabSegmentNames } from './tabs/tabs.palette.ts';
 import { createMaterial3GoogleTabsSegmentedVariant } from './tabs/tabs.segmented.schema.ts';
 
-type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
-type Material3GoogleSegmentName = 'default' | 'dynamic';
+type TabsComponent = NonNullable<Schema<'purple'>['components']['tabs']>;
+type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 
 type CreateMaterial3GoogleTabsSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;

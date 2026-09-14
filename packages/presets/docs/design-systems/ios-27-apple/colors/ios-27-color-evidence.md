@@ -159,7 +159,10 @@ preserve tonal provenance; preset primitive variants are a separate publication 
 bundle retains diagnostic status `review`; promotion is the explicit preset decision to adopt its
 source-backed Apple subset and required neutral family.
 
-### Shared viewer — candidate generator 0.15.0
+### Shared viewer — candidate generator 0.16.0
+
+Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
+Existing approved assets retain their recorded versions until a separate promotion.
 
 Candidate 0.15.0 changes the opt-in Chromatic derivation to Chromatic offset (-14 degrees).
 Subtle and explicit-seed recipes preserve their colors. Approved preset assets retain their

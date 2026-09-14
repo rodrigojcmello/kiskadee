@@ -76,15 +76,6 @@ export const showcaseTextProfilesByDesignSystem = {
     bodyStrong: 'label-large',
     caption: 'body-small'
   },
-  'material-design-3-kiskadee': {
-    pageTitle: 'label-display-large',
-    sectionTitle: 'label-display-small',
-    subsectionTitle: 'label-extra-large',
-    groupTitle: 'label-large',
-    body: 'body-medium',
-    bodyStrong: 'label-large',
-    caption: 'body-small'
-  },
   'sandbox-0-kiskadee': {
     pageTitle: 'body-large-strong',
     sectionTitle: 'body-medium-strong',

@@ -2,7 +2,7 @@ import type { Schema } from '@kiskadee/core';
 import { createMaterial3GoogleTabsLineVariant } from './tabs.line.schema.ts';
 import type { TabPaletteArgs } from './tabs.palette.ts';
 
-type TabsComponent = NonNullable<Schema<never>['components']['tabs']>;
+type TabsComponent = NonNullable<Schema<'purple'>['components']['tabs']>;
 export function createMaterial3GoogleTabsDotVariant({
   c,
   segmentNames

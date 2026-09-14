@@ -1,4 +1,4 @@
-# Kiskadee Tonal System v5
+# Kiskadee Tonal System v6
 
 Status: canonical package-level definition.
 
@@ -36,7 +36,7 @@ reference.
 Every valid system resolves one `v1` appearance for each of the ten Munsell
 sectors, the additional Brown appearance at `yr.brown.v1`, and the immutable
 pure-gray family at `n.black.v1`. The primary may occupy one chromatic id or an
-explicit additional `v2` through `v4` chromatic variant. Optional overrides may
+explicit additional `v2` and higher chromatic variant. Optional overrides may
 replace a required chromatic seed or add further authored variants of an
 existing chromatic appearance.
 
@@ -46,7 +46,7 @@ contracts:
 
 - `n.black.v1` is the package-owned pure-gray baseline. It has zero chroma,
   cannot be replaced by an override, and cannot be the primary;
-- `n.black.v2` through `n.black.v4` are optional authored neutral variants.
+- `n.black.v2` and higher numbered variants are optional authored neutral variants.
   Each variant owns one explicit `seedHex` and its own emitted chroma
   trajectory. They are not derived from `n.black.v1`, from the Primary, or from
   one another.
@@ -65,28 +65,20 @@ This package owns the deterministic mathematics and serialized provenance;
 Presets owns the selected identities and mappings, and Core owns their public
 Schema grammar.
 
-Optional primary-derived neutrals are accepted follow-up work (KIS-108), not
-an existing format V5 input mode. Until that work defines its versioned
-contract, the explicit independent seeds above remain required. Existing
-recipes must not acquire derivation implicitly. The pure-gray `n.black.v1`
-identity remains immutable; a primary-derived tint must retain a separate
-black-family identity rather than becoming a chromatic family.
-
-Likewise, a full system export is an atomic generation bundle, not an
-incremental segment catalog. Changing the primary can change companion output
-even when companion seeds are unchanged. Preset composition must preserve
-reused approved assets; it must not relabel a mixture of independently selected
-families as a verified full-system bundle. Incremental catalog composition is
-follow-up work (KIS-111), separate from the existing bundle verifier.
+Format V6 adds a shared catalog. The base primary remains fixed; additional entries and their
+associated neutrals are generated without feedback into existing families. The complete bundle is
+still atomic and replayable. Presets select semantic primaries from that bundle. Format V5 links
+remain readable and normalize to V6, including an explicit base-primary association for legacy
+primary-derived neutrals. Legacy neutral policy/reference settings remain for faithful replay.
 
 ## Input Contract
 
 Format 5 contains:
 
 - one exact primary seed, automatic or explicit natural appearance, explicit
-  `v1` through `v4` variant, and Light/Dark policy;
+  a positive numbered variant (`v1`, `v2`, ...) variant, and Light/Dark policy;
 - zero or more chromatic overrides or explicit `n.black.v2` through
-  `n.black.v4` neutral variants;
+  higher numbered neutral variants;
 - one tonal profile (`balanced`, `muted-darks`, or `vivid-lights`);
 - automatic or locked Light/Dark rest positions;
 - sparse per-family Light/Dark vivid and subtle reference rules;
@@ -100,7 +92,7 @@ id.
 
 Overrides are explicit and ordered semantically by id rather than input order.
 Chromatic overrides may use `source-exact`, `adaptive`, or `harmonized` per
-theme. Authored `n.black.v2` through `n.black.v4` variants may use only
+theme. Authored `n.black.v2` and higher numbered variants variants may use only
 `source-exact` or `adaptive`. They require their own explicit seed and never
 inherit one from another. `n.black.v1` rejects overrides and policies because
 its pure-gray bytes are package-owned. Invalid ids, duplicates, sector
@@ -306,7 +298,7 @@ recipe nor a preset may tint or replace it. It does not participate in
 chromatic harmony. This gives every system one stable gray axis whose meaning
 does not depend on a brand seed or Design System source.
 
-`n.black.v2` through `n.black.v4` are independent authored neutral variants.
+`n.black.v2` and higher numbered variants are independent authored neutral variants.
 Each id requires its own explicit `seedHex`. A variant does not inherit the
 seed, hue, chroma, policy, or trajectory of another Black variant. These
 families exist for warm, cool, or otherwise subtly tinted neutral ramps while
@@ -367,7 +359,7 @@ trajectory parameters, semantic aliases, or preset mappings. Those decisions
 remain explicit in each recipe and, later, in each consuming preset.
 
 Seeded neutral chroma above `0.04` requires review and above `0.08` fails.
-These guards apply to `n.black.v2` through `n.black.v4`; they are vacuously
+These guards apply to `n.black.v2` and higher numbered variants; they are vacuously
 satisfied by the zero-chroma `n.black.v1`.
 
 ## Physical-Light Surface Alignment
@@ -505,7 +497,7 @@ positions. Its automatic vivid references therefore use the package-owned
 near-cap positions L99 and D99. This is a deliberate fallback, not an anchor
 relocation or review condition.
 
-An automatic authored `n.black.v2` through `n.black.v4` Dark vivid reference
+An automatic authored `n.black.v2` and higher numbered variants Dark vivid reference
 mirrors the functional contrast of its Light vivid reference instead of
 preserving the same physically dark seed. The generator measures the resolved
 Light reference against absolute white, then selects the non-cap Dark tone
@@ -680,7 +672,7 @@ preset-colors/
 
 The required system contains 12 color families and 27 files total. Additional
 authored variants add one evidence JSON and one preset TypeScript module each.
-Current Format V5 artifacts identify `@kiskadee/tonal-scale@0.12.0`.
+Current Format V6 artifacts identify `@kiskadee/tonal-scale@0.16.0`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -762,7 +754,7 @@ before its bytes are promoted to preset assets.
 Generator `0.5.0` moves the artifact contract to format V5 and separates the
 Black baseline from authored neutral variants. `n.black.v1` becomes the
 immutable zero-chroma scale with canonical reference `#000000`.
-`n.black.v2` through `n.black.v4` each require their own explicit seed and use
+`n.black.v2` and higher numbered variants each require their own explicit seed and use
 the seeded-neutral chroma trajectory defined above. V4 recipes are rejected
 instead of being reinterpreted because a former `n.black.v1` override or tinted
 canonical seed would have a different identity under V5. This change remains
@@ -956,3 +948,27 @@ The initial -14 degree calibration approximates the hue separation between Mater
 former explicit #001D35 and primary #0B57D0. This is a Kiskadee adaptation, not an official
 Material algorithm. Cross-hue comparisons check light-surface separation as well as seed
 chroma; they do not establish universal perceptual equivalence or visual approval.
+
+
+## Shared catalog contract (0.16.0 / V6)
+
+`catalog.colors` contains explicit additional entries (`id`, `seedHex`, `policies`).
+`catalog.names` maps stable entry IDs (or `primary`) to optional internal names.
+`catalog.neutrals` contains `{ id, sourceId, intensity }` associations; `sourceId: primary`
+selects the recipe primary. Subtle is the default; Chromatic offset retains the 0.15.0 math.
+Names change metadata hashes but never scale values. Omitted catalog means no additions.
+
+Generate the base once, then evaluate each additional family against the same base context,
+without collective peak/adjacent-family recalibration between additions. Finally generate each
+associated neutral from its parent's resolved Light rest. A recipe's base overrides still belong
+to the base; editing them may change the base. The editor distinguishes those legacy overrides
+from stable additional catalog entries.
+
+Variants accept canonical positive safe-integer ordinals without a fixed v4 ceiling. The editor
+allocates the next free ordinal, never renumbers existing IDs, and reports identity/seed mismatches.
+Collisions, orphaned associations and duplicate neutral origins are rejected. Immutable pure gray
+cannot be an associated target. Names, seeds, policies and links survive URL/export replay.
+
+The optional legacy `neutral` object is retained in migrated sources to preserve shared reference
+and policy behavior. Its derivation appears as an explicit `catalog.neutrals` link for `primary`;
+that link and the legacy strategy are normalized together. No profile math changed in V6.

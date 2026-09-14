@@ -2,7 +2,7 @@ import type { SolidColor } from '@kiskadee/core';
 import { buildBySegment } from '../../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../../utils/presetColor.ts';
 
-export type Material3GoogleSegmentName = 'default' | 'dynamic';
+export type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 export type ThemeShortcut = 'l' | 'd';
 export type TabSurfaceContext = 'onSubtle' | 'onVivid';
 export type TabSegmentNames = readonly Material3GoogleSegmentName[];

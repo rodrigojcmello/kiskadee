@@ -2,7 +2,7 @@ import type { SchemaContours } from '@kiskadee/core';
 import { buildBySegment } from '../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../utils/presetColor.ts';
 
-type SegmentName = 'default' | 'dynamic';
+type SegmentName = 'default' | 'dynamic' | 'purple';
 
 export function createMaterial3GoogleContours({
   c,

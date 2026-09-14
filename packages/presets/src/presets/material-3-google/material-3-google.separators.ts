@@ -1,7 +1,7 @@
 import { contour, type SchemaSeparators } from '@kiskadee/core';
 import { buildBySegment } from '../../utils/buildBySegment.ts';
 
-type SegmentName = 'default' | 'dynamic';
+type SegmentName = 'default' | 'dynamic' | 'purple';
 
 type CreateMaterial3GoogleSeparatorsArgs = {
   segmentNames: readonly SegmentName[];

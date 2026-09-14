@@ -324,9 +324,9 @@ export type ThemeName = 'light' | 'dark';
  * Core (non-social) primitive slots.
  *
  * These are ordinal slots within a hue family and are intentionally versioned
- * as `v1..v4` to match file naming like `purple-2.*` -> `v2`.
+ * as positive numbered slots (`v1`, `v2`, ...), validated at runtime.
  */
-export type CorePrimitiveColorName = 'v1' | 'v2' | 'v3' | 'v4' | 'dynamic';
+export type CorePrimitiveColorName = `v${bigint}` | 'dynamic';
 
 /**
  * Layer 1 (Primitive) color names.

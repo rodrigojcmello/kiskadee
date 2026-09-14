@@ -30,7 +30,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.15.0'
+  version: '0.16.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -47,7 +47,7 @@ export type ToneHexMap = Record<`${KiskadeeTone}`, string>;
 
 export type PrimitiveTonalColorAssetV5 = {
   kind: 'kiskadee.primitive-tonal-family';
-  formatVersion: 5;
+  formatVersion: 6;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   id: TonalFamilyId;
   munsellSector: TonalFamilySectorNotation | 'N';
@@ -58,6 +58,11 @@ export type PrimitiveTonalColorAssetV5 = {
   tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   seedHex: string;
   seedOrigin: ResolvedTonalFamily['seedOrigin'];
+  associatedNeutralOrigin?: {
+    sourceId: string;
+    referenceHex: string;
+    intensity: 'subtle' | 'chromatic';
+  };
   neutralOrigin?: {
     mode: 'existing' | 'derived-from-primary';
     contract: 'primary-neutral-v1';
@@ -110,7 +115,7 @@ export type TonalManifestAssetEntry = {
 
 export type TonalSystemManifestV5 = {
   kind: 'kiskadee.tonal-system';
-  formatVersion: 5;
+  formatVersion: 6;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   primaryReference: TonalFamilyId;
@@ -122,7 +127,7 @@ export type TonalSystemManifestV5 = {
 
 export type TonalSystemDiagnosticsV5 = {
   kind: 'kiskadee.tonal-system-diagnostics';
-  formatVersion: 5;
+  formatVersion: 6;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   seedModel: 'fixed-reference';
   referenceSet: typeof FIXED_FAMILY_REFERENCE_SET;
@@ -445,6 +450,22 @@ function createColorAsset(
     tonalProfile: system.source.tonalProfile,
     seedHex: family.sourceSeedHex,
     seedOrigin: family.seedOrigin,
+    ...(() => {
+      const association = system.source.catalog?.neutrals.find((n) => n.id === family.id);
+      if (!association) return {};
+      const parent = system.families.find(
+        (f) =>
+          f.id ===
+          (association.sourceId === 'primary' ? system.source.primary.id : association.sourceId)
+      )!;
+      return {
+        associatedNeutralOrigin: {
+          sourceId: association.sourceId,
+          referenceHex: parent.themes.light.restColor.hex,
+          intensity: association.intensity
+        }
+      };
+    })(),
     ...(family.id === 'n.black.v2' && system.source.neutral
       ? {
           neutralOrigin: {
@@ -640,12 +661,36 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
   ) {
     throw new TonalArtifactError('Export is atomic and requires all twelve core families.');
   }
-  const overrideById = new Map(system.source.overrides.map((override) => [override.id, override]));
+  const overrideById = new Map(
+    [...system.source.overrides, ...(system.source.catalog?.colors ?? [])].map((override) => [
+      override.id,
+      override
+    ])
+  );
   const neutralOverride = resolveNeutralOverride(
     system.source.neutral,
     system.source.primary.seedHex
   );
   if (neutralOverride) overrideById.set(neutralOverride.id, neutralOverride);
+  for (const association of system.source.catalog?.neutrals ?? []) {
+    const parent = system.families.find(
+      (f) =>
+        f.id ===
+        (association.sourceId === 'primary' ? system.source.primary.id : association.sourceId)
+    );
+    if (!parent) throw new TonalArtifactError(`Missing neutral origin: ${association.sourceId}`);
+    const seed = parent.themes.light.restColor.hex;
+    const override = resolveNeutralOverride(
+      {
+        mode: 'derived-from-primary',
+        seedHex: seed,
+        derivation: 'primary-neutral-v1',
+        intensity: association.intensity
+      },
+      seed
+    );
+    if (override) overrideById.set(association.id, { ...override, id: association.id });
+  }
   const sourceReferencesById = new Map(
     system.source.functionalReferences.map((references) => [references.id, references])
   );

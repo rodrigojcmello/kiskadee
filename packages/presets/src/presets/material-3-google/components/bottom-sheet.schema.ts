@@ -2,8 +2,8 @@ import type { KiskadeeTone, Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-type SegmentName = 'default' | 'dynamic';
-type BottomSheetComponent = NonNullable<Schema<never>['components']['bottomSheet']>;
+type SegmentName = 'default' | 'dynamic' | 'purple';
+type BottomSheetComponent = NonNullable<Schema<'purple'>['components']['bottomSheet']>;
 type ThemeName = 'light' | 'dark';
 type ThemeShortcut = 'l' | 'd';
 

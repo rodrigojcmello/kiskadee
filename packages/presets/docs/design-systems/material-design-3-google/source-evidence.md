@@ -162,3 +162,19 @@ scale colors changed, as recorded in the tonal evidence.
 
 The subsequent approved 0.15.0 promotion uses Chromatic offset and neutral seed #03233C.
 Only neutral scale colors changed; component formulas and the segment catalog were preserved.
+
+## Shared purple segment — 2026-09-13
+
+Generator 0.16.0 adds the user-approved #6750A4 primary candidate and its #1C1D3E neutral
+within the existing blue recipe. See [shared catalog provenance](colors/README.md).
+All colors are stored in colors/default; purple is a semantic segment, not an independent palette.
+
+## Retirement of the derived Material Kiskadee preset
+
+The user authorized retiring `material-design-3-kiskadee` after its original purpose (adding a
+red/destructive button) was absorbed into the Google preset's documented Kiskadee adaptations.
+Its old button-tone patches and experimental `modern` segment are not promoted. Material Google
+remains the single Material preset, with `default` and `purple` and existing dynamic behavior.
+The retired source, web registration and native Showcase fixtures/options were removed.
+Persisted web selections migrate to Material Google, preserving a supported segment/theme and
+mapping the retired `modern` segment to `default`. Historical review/archive notes remain intact.

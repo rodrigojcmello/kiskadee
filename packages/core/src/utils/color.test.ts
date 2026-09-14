@@ -212,3 +212,14 @@ describe('button intent types', () => {
     }>().not.toMatchTypeOf<ComponentIntents>();
   });
 });
+
+it('resolves expanded primitive variants and rejects noncanonical ordinal names', () => {
+  const asset = { kind: 'static' as const, scales: { light: scale } };
+  const colors = { ...colorsFor(asset), primitiveColors: { blue: { v12: asset } } };
+  expect(color({ colors }, 'default', 'l', primitive('blue', 'v12'), 24)).toBe('#123456');
+  for (const invalid of ['v0', 'v-1', 'v01', 'v1.5']) {
+    expect(() =>
+      color({ colors }, 'default', 'l', `primitive.blue.${invalid}` as 'primitive.blue.v12', 24)
+    ).toThrow('Invalid primitive');
+  }
+});
