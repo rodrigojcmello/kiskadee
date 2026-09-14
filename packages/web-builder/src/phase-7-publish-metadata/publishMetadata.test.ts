@@ -370,3 +370,14 @@ describe('buildManifestIcons', () => {
     expect(buildManifestIcons(undefined)).toBeUndefined();
   });
 });
+
+it('publishes default first without sorting the remaining declared segments', async () => {
+  const { orderPublishedSegments } = await import('./publishMetadata.ts');
+  expect(orderPublishedSegments(['purple', 'default', 'modern', 'blue'])).toEqual([
+    'default',
+    'purple',
+    'modern',
+    'blue'
+  ]);
+  expect(orderPublishedSegments(['purple', 'modern'])).toEqual(['purple', 'modern']);
+});

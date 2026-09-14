@@ -138,3 +138,18 @@ describe('Switch', () => {
     expect(container.querySelector('.k-swt-e5-a')).toBeTruthy();
   });
 });
+
+it('allows an explicit control text demonstration over a disabled preset default', () => {
+  const { rerender } = renderSwitch(
+    h(Switch, { controlText: { on: 'On', off: 'Off' }, controlTextVisibility: 'always' })
+  );
+  expect(screen.getByText('Off')).toBeTruthy();
+  rerender(
+    h(
+      KiskadeeContext.Provider,
+      { value: createContextValue('always') },
+      h(Switch, { controlText: { on: 'On', off: 'Off' }, controlTextVisibility: 'none' })
+    )
+  );
+  expect(screen.queryByText('Off')).toBeNull();
+});

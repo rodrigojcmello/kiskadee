@@ -4,6 +4,7 @@ import type {
   ComponentSize,
   RadiusMode,
   SurfaceContext,
+  SwitchControlTextVisibility,
   SwitchIntent,
   SwitchMode,
   SwitchVariant
@@ -57,6 +58,7 @@ export type SwitchProps = Omit<
   id?: string;
   label?: ReactNode;
   controlText?: SwitchControlText;
+  controlTextVisibility?: SwitchControlTextVisibility;
   icons?: SwitchIcons;
   className?: string;
   classNames?: SwitchClassNames;

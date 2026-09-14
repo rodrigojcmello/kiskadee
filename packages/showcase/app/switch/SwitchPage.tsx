@@ -147,17 +147,18 @@ function StateTile({
 }
 
 export default function SwitchPage() {
+  const [scale, setScale] = useState<ElementSizeValue | undefined>();
+  const [controlTextOverride, setShowControlText] = useState<boolean | undefined>();
   const { designSystem, segment, theme } = useKiskadee();
   const {
     effects: switchEffects,
     options: switchOptions,
     switchClassesMap
-  } = useSwitchArtifactConfig();
+  } = useSwitchArtifactConfig(undefined, componentScaleToSize(scale));
   const { manifest } = useShowcase();
   const background = useShowcaseBackground();
   const textProfiles = useShowcaseTextProfiles();
   const [controlState, setControlState] = useState(true);
-  const [scale, setScale] = useState<ElementSizeValue | undefined>();
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SwitchIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
@@ -169,6 +170,8 @@ export default function SwitchPage() {
   const switchMeta = manifest?.components?.switch;
   const isSwitchAvailable = Boolean(switchMeta);
   const defaultRadius = switchOptions.radius;
+  const showControlText = controlTextOverride ?? switchOptions.controlTextVisibility !== 'none';
+  useEffect(() => setShowControlText(undefined), [designSystem]);
   const hasThumbShrinkEffect = Boolean(switchEffects.thumbShrinkEffect);
   const motionOverride = motionEnabled ? undefined : false;
   const hasIconSupport = Boolean(switchClassesMap?.standard?.base?.e6);
@@ -419,6 +422,14 @@ export default function SwitchPage() {
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
+      <ShowcaseControlGroup title="State text">
+        <ShowcaseBooleanControl
+          label="Show On / Off"
+          checked={showControlText}
+          onCheckedChange={setShowControlText}
+          disabled={!isSwitchAvailable}
+        />
+      </ShowcaseControlGroup>
       {hasIconSupport ? (
         <ShowcaseControlGroup title="Content">
           <ShowcaseControlGrid>
@@ -449,7 +460,10 @@ export default function SwitchPage() {
     <Switch
       id="switch-notifications"
       label="Notifications"
-      controlText={switchControlText}
+      controlText={showControlText ? switchControlText : undefined}
+      controlTextVisibility={
+        controlTextOverride === undefined ? undefined : showControlText ? 'always' : 'none'
+      }
       icons={switchIcons}
       controlState={controlState}
       onControlStateChange={setControlState}
@@ -525,7 +539,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-rest"
                     label="Unselected (rest)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState={false}
                     size={componentScaleToSize(scale)}
@@ -541,7 +562,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-selected"
                     label="Selected (rest)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState
                     size={componentScaleToSize(scale)}
@@ -557,7 +585,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-hover"
                     label="Unselected (hover)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState={false}
                     status="hover"
@@ -574,7 +609,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-hover-selected"
                     label="Selected (hover)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState
                     status="hover"
@@ -591,7 +633,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-pressed"
                     label="Unselected (pressed)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState={false}
                     status="pressed"
@@ -608,7 +657,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-pressed-selected"
                     label="Selected (pressed)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState
                     status="pressed"
@@ -625,7 +681,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-activation-feedback"
                     label="Unselected (activation feedback)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState={false}
                     status="pressed"
@@ -643,7 +706,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-activation-feedback-selected"
                     label="Selected (activation feedback)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState
                     status="pressed"
@@ -661,7 +731,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-focus"
                     label="Unselected (focus)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState={false}
                     status="focus"
@@ -678,7 +755,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-state-focus-selected"
                     label="Selected (focus)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState
                     status="focus"
@@ -695,7 +779,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-disabled"
                     label="Unselected (disabled)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState={false}
                     size={componentScaleToSize(scale)}
@@ -711,7 +802,14 @@ export default function SwitchPage() {
                   <Switch
                     id="switch-disabled-selected"
                     label="Selected (disabled)"
-                    controlText={switchControlText}
+                    controlText={showControlText ? switchControlText : undefined}
+                    controlTextVisibility={
+                      controlTextOverride === undefined
+                        ? undefined
+                        : showControlText
+                          ? 'always'
+                          : 'none'
+                    }
                     icons={switchIcons}
                     controlState
                     size={componentScaleToSize(scale)}
@@ -740,7 +838,14 @@ export default function SwitchPage() {
                     <Switch
                       id={`switch-size-${option.value.replaceAll(':', '-')}`}
                       label={option.label}
-                      controlText={switchControlText}
+                      controlText={showControlText ? switchControlText : undefined}
+                      controlTextVisibility={
+                        controlTextOverride === undefined
+                          ? undefined
+                          : showControlText
+                            ? 'always'
+                            : 'none'
+                      }
                       icons={switchIcons}
                       defaultControlState
                       size={componentScaleToSize(option.value)}

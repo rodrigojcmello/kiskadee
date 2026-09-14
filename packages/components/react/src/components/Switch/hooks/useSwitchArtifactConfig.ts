@@ -1,11 +1,13 @@
 import type {
   ActivationFeedbackEffectSchema,
   ActivationFeedbackSetting,
+  ComponentSize,
   RadiusMode,
   SwitchActivationMotion,
   SwitchControlTextVisibility
 } from '@kiskadee/core';
 import type { SwitchComponentArtifactJSON } from '@kiskadee/web-builder/types';
+import { useComponentScale } from '../../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
@@ -42,8 +44,12 @@ function isSwitchComponentArtifact(artifact: unknown): artifact is SwitchCompone
   return (artifact as SwitchComponentArtifactJSON | undefined)?.component === 'switch';
 }
 
-export function useSwitchArtifactConfig(thumbShrink?: false): SwitchArtifactConfig {
+export function useSwitchArtifactConfig(
+  thumbShrink?: false,
+  size?: ComponentSize
+): SwitchArtifactConfig {
   const { classesMap, global } = useKiskadee();
+  const scale = useComponentScale('switch', size);
   const {
     currentArtifact: currentSwitchComponentArtifact,
     previousArtifact: previousLoadedSwitchComponentArtifact
@@ -61,7 +67,9 @@ export function useSwitchArtifactConfig(thumbShrink?: false): SwitchArtifactConf
   const aggregateSwitchClassesMap = classesMap.switch as SwitchVariantClassesMap | undefined;
   const switchClassesMap = useComponentClassMap('switch', aggregateSwitchClassesMap);
   const shouldLoadThumbShrinkEffect =
-    thumbShrink !== false && switchGlobalConfig?.effects?.thumbShrink === true;
+    thumbShrink !== false &&
+    supportsSwitchThumbShrink(scale) &&
+    switchGlobalConfig?.effects?.thumbShrink === true;
   const thumbShrinkEffect = useSwitchThumbShrinkEffect(shouldLoadThumbShrinkEffect);
 
   return {
@@ -86,4 +94,9 @@ export function useSwitchArtifactConfig(thumbShrink?: false): SwitchArtifactConf
       activationFeedback: global?.effects?.activationFeedback
     }
   };
+}
+
+export function supportsSwitchThumbShrink(scale: string): boolean {
+  const tier = scale.split(':')[1];
+  return tier === 'md' || tier === 'lg';
 }

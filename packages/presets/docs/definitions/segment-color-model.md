@@ -121,3 +121,10 @@ For example, a `modern` segment can:
 - Map `primary` to a purple primitive in Layer 2.
 - Choose to consume it as `button.primary.gradient` in `boxColor` palettes for
   some elements.
+
+
+## Published segment order
+
+Web Builder publishes default first, then preserves the remaining declaration order. Showcase
+consumes that published order; Headless Select does not sort segment identities. This order also
+makes first-segment fallback select default. Source registries remain authored by Presets.

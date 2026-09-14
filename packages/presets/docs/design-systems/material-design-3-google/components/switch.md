@@ -49,9 +49,9 @@ The schema contains no literal source colors. Every value is produced by the exi
 | Visual | Figma observation | Schema resolution |
 | --- | --- | --- |
 | Unselected track | `#E6E1E9` | `c.ref(..., 'neutral', 'subtle')` |
-| Unselected stroke | `#79757F` in Figma; `#C9C4CF` was the prior Kiskadee calibration | `c.ref(..., 'neutral'/'redLike', 'medium')` |
+| Unselected stroke | `#79757F` in Figma; `#C9C4CF` was the prior Kiskadee calibration | `c.ref(..., 'neutral'/'redLike', 'medium', 4)` |
 | Selected track | Historical purple `#615690` | `c.ref(..., 'switch.neutral', 'vivid')` for `#0B57D0`, or `c.ref(..., 'greenLike', 'vivid')` for polarity |
-| Unselected polarity | No separate Material polarity recipe | `c.ref(..., 'redLike', 'subtle'/'medium')` |
+| Unselected polarity | No separate Material polarity recipe | `subtle` track / `medium + 4` outline |
 | Selected polarity | No separate Material polarity recipe | `c.ref(..., 'greenLike', 'vivid')` |
 | White and disabled caps | Figma white/black state-layer alphas | `c(..., 'primitive.black.v1', 0 or 100, alpha)` |
 
@@ -74,3 +74,24 @@ two layers from disappearing into each other and follows the existing Fluent fal
 - Disabled values use the approved physical black/white caps with Material-style alpha values.
 - The icon follows its parent thumb family and remains white when it sits on a chromatic selected
   thumb.
+
+
+## Off-state, Small size and optional state text — 2026-09-13
+
+Figma node 54446:25355 was inspected directly. Enabled/unselected without icons has a
+52x32 rail, outline/handle #79757F and surface-container-highest #E6E1E9. The source contrast
+is about 3.50:1. Material's current Light neutral medium was too faint (~2.4:1). The Light
+thumb and border now use neutral medium +4 (~3.6:1 for default/purple); the subtle rail and
+Disabled treatment remain unchanged. Dark keeps its existing light thumb and strengthens the
+outline with the same relative offset. Other surface contexts retain their prior adaptations.
+Source: https://www.figma.com/design/Peqe9lNMsuQHLIUZsiTZNg/Material-3-Design-Kit--Community-?node-id=54446-25355.
+
+Small is a **Kiskadee extension**, not an extracted Material size: rail 36x24, thumb 16x16,
+4px inset and 2px border. Medium remains 52x32 with 24px thumb, shrinking to 16px off.
+Compact density selects Small; regular/spacious retain Medium. The shared runtime rule disables
+thumbShrink below Medium even when configured; no size-map option was added.
+
+The optional On/Off text is e5, distinct from descriptive label e4. Material sets
+controlTextVisibility to none. For demonstrations, e5 has body-small/body-medium typography,
+the label palette, and 8px side margins. Showcase's Show On / Off overrides instance visibility;
+it does not change the Material default or introduce an official Material text recommendation.

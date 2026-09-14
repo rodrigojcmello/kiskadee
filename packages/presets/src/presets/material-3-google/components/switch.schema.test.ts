@@ -7,7 +7,7 @@ import { createMaterial3GoogleSwitchSchema } from './switch.schema.ts';
 const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
 const switchSchema = createMaterial3GoogleSwitchSchema({
   c,
-  segmentNames: ['default', 'dynamic'],
+  segmentNames: ['default', 'dynamic', 'purple'],
   transparent: c('default', 'l', 'primitive.black.v1', 100, 0)
 });
 const base = switchSchema.variants?.standard?.modes?.base;
@@ -20,20 +20,20 @@ it('keeps the Material switch geometry source-backed', () => {
   const track = base?.elements.e2;
   const thumb = base?.elements.e3;
 
-  expect(track?.scales?.boxWidth).toEqual({ 's:md:1': 52 });
-  expect(track?.scales?.boxHeight).toEqual({ 's:md:1': 32 });
+  expect(track?.scales?.boxWidth).toEqual({ 's:sm:1': 36, 's:md:1': 52 });
+  expect(track?.scales?.boxHeight).toEqual({ 's:sm:1': 24, 's:md:1': 32 });
   expect(track?.scales?.borderWidth).toBe(2);
-  expect(track?.scales?.paddingTop).toEqual({ 's:md:1': 4 });
-  expect(track?.scales?.paddingRight).toEqual({ 's:md:1': 4 });
-  expect(track?.scales?.paddingBottom).toEqual({ 's:md:1': 4 });
-  expect(track?.scales?.paddingLeft).toEqual({ 's:md:1': 4 });
-  expect(thumb?.scales?.boxWidth).toEqual({ 's:md:1': 24 });
-  expect(thumb?.scales?.boxHeight).toEqual({ 's:md:1': 24 });
+  expect(track?.scales?.paddingTop).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
+  expect(track?.scales?.paddingRight).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
+  expect(track?.scales?.paddingBottom).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
+  expect(track?.scales?.paddingLeft).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
+  expect(thumb?.scales?.boxWidth).toEqual({ 's:sm:1': 16, 's:md:1': 24 });
+  expect(thumb?.scales?.boxHeight).toEqual({ 's:sm:1': 16, 's:md:1': 24 });
   expect(thumb?.effects?.thumbShrink?.rest).toEqual({
     boxWidth: { 's:md:1': 16 },
     boxHeight: { 's:md:1': 16 }
   });
-  expect(base?.elements.e6?.iconSize).toEqual({ 's:md:1': 's:sm:1' });
+  expect(base?.elements.e6?.iconSize).toEqual({ 's:sm:1': 's:sm:2', 's:md:1': 's:sm:1' });
 });
 
 it('publishes both intents and both surface contexts for every Material segment and theme', () => {
@@ -111,4 +111,22 @@ it('satisfies the shared switch contract', () => {
   expect(() =>
     validateSchemaComponentContracts({ components: { switch: switchSchema } })
   ).not.toThrow();
+});
+
+it('keeps control text styled but disabled by default and strengthens the light off control', () => {
+  expect(switchSchema.options?.controlTextVisibility).toBe('none');
+  expect(base?.elements.e5?.scales?.marginRight).toEqual({ 's:sm:1': 8, 's:md:1': 8 });
+  for (const segment of ['default', 'dynamic', 'purple'] as const) {
+    const track = base?.elements.e2?.palettes?.[segment]?.light?.onSubtle;
+    const thumb = base?.elements.e3?.palettes?.[segment]?.light?.onSubtle;
+    expect(track?.borderColor?.neutral?.medium?.rest).toBe(
+      c.ref(segment, 'l', 'neutral', 'medium', 4)
+    );
+    expect(thumb?.boxColor?.neutral?.medium?.rest).toBe(
+      c.ref(segment, 'l', 'neutral', 'medium', 4)
+    );
+    expect(thumb?.boxColor?.neutral?.medium?.disabled).not.toEqual({
+      ref: thumb?.boxColor?.neutral?.medium?.rest
+    });
+  }
 });

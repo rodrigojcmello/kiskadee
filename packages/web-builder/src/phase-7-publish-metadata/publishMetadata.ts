@@ -710,7 +710,7 @@ export async function publishMetadata(params: {
   const colors = schema.colors as SchemaColors;
 
   const segmentRegistry = requireSegmentRegistry(colors);
-  const segmentKeys = Object.keys(segmentRegistry);
+  const segmentKeys = orderPublishedSegments(Object.keys(segmentRegistry));
 
   // Build manifest content
   const displayName = computeDisplayName(schema, segmentRegistry);
@@ -955,4 +955,11 @@ export async function publishMetadata(params: {
   );
 
   // console.log('[web-builder] Phase 7: metadata published to', buildDir);
+}
+
+/** Default is the canonical first segment; all other declaration order is preserved. */
+export function orderPublishedSegments(keys: string[]): string[] {
+  return keys.includes('default')
+    ? ['default', ...keys.filter((key) => key !== 'default')]
+    : [...keys];
 }

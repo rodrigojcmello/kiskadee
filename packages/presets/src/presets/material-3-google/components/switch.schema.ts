@@ -113,9 +113,9 @@ function createSwitchPalettes({
       theme === 'dark' ? c(segment, 'd', selectedRole, 90) : family(selectedRole, 'subtle');
 
     const subtleOffTrack = family(familyRole, 'subtle');
-    const subtleOffBorder = family(familyRole, 'medium');
+    const subtleOffBorder = family(familyRole, 'medium', 4);
     const subtleOffThumb =
-      theme === 'dark' ? c(segment, 'd', familyRole, 90) : family(familyRole, 'medium');
+      theme === 'dark' ? c(segment, 'd', familyRole, 90) : family(familyRole, 'medium', 4);
     const subtleOffThumbHover =
       theme === 'dark' ? c(segment, 'd', familyRole, 95) : family(familyRole, 'vivid');
     const subtleDisabledTrack = physical(theme === 'light' ? 'dark' : 'light', 10);
@@ -327,11 +327,11 @@ export function createMaterial3GoogleSwitchSchema(
       }
     },
     options: {
-      density: { regular: 's:md:1' },
+      density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:md:1' },
       variant: 'standard',
       radius: 'pill',
       activationMotion: 'standard',
-      controlTextVisibility: 'always'
+      controlTextVisibility: 'none'
     },
     variants: {
       standard: {
@@ -351,29 +351,36 @@ export function createMaterial3GoogleSwitchSchema(
                 },
                 scales: {
                   boxWidth: {
+                    's:sm:1': 36,
                     's:md:1': 52
                   },
                   boxHeight: {
+                    's:sm:1': 24,
                     's:md:1': 32
                   },
                   borderWidth: 2,
                   borderRadius: {
                     rounded: 6,
                     pill: {
+                      's:sm:1': 12,
                       's:md:1': 16
                     },
                     square: 0
                   },
                   paddingTop: {
+                    's:sm:1': 4,
                     's:md:1': 4
                   },
                   paddingRight: {
+                    's:sm:1': 4,
                     's:md:1': 4
                   },
                   paddingBottom: {
+                    's:sm:1': 4,
                     's:md:1': 4
                   },
                   paddingLeft: {
+                    's:sm:1': 4,
                     's:md:1': 4
                   }
                 },
@@ -383,14 +390,17 @@ export function createMaterial3GoogleSwitchSchema(
                 name: 'thumb',
                 scales: {
                   boxWidth: {
+                    's:sm:1': 16,
                     's:md:1': 24
                   },
                   boxHeight: {
+                    's:sm:1': 16,
                     's:md:1': 24
                   },
                   borderRadius: {
                     rounded: 6,
                     pill: {
+                      's:sm:1': 8,
                       's:md:1': 12
                     },
                     square: 0
@@ -412,20 +422,31 @@ export function createMaterial3GoogleSwitchSchema(
               },
               e4: {
                 name: 'label',
-                typography: { 's:md:1': 'body-medium' },
+                typography: { 's:sm:1': 'body-small', 's:md:1': 'body-medium' },
                 scales: {
                   marginLeft: {
+                    's:sm:1': 8,
                     's:md:1': 12
                   },
                   marginRight: {
+                    's:sm:1': 8,
                     's:md:1': 12
                   }
                 },
                 palettes: palettesByElement.label
               },
+              e5: {
+                name: 'control text',
+                typography: { 's:sm:1': 'body-small', 's:md:1': 'body-medium' },
+                scales: {
+                  marginLeft: { 's:sm:1': 8, 's:md:1': 8 },
+                  marginRight: { 's:sm:1': 8, 's:md:1': 8 }
+                },
+                palettes: palettesByElement.label
+              },
               e6: {
                 name: 'icon',
-                iconSize: { 's:md:1': 's:sm:1' },
+                iconSize: { 's:sm:1': 's:sm:2', 's:md:1': 's:sm:1' },
                 palettes: palettesByElement.icon
               }
             }

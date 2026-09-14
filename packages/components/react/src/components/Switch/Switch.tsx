@@ -96,6 +96,7 @@ function SwitchRoot(props: SwitchProps) {
     id,
     label,
     controlText,
+    controlTextVisibility,
     icons,
     className,
     classNames = EMPTY_SWITCH_CLASS_NAMES,
@@ -128,7 +129,7 @@ function SwitchRoot(props: SwitchProps) {
   } = props;
   const scale = useComponentScale('switch', size);
   const { switchClassesMap, componentEffects, options, effects, globalEffects } =
-    useSwitchArtifactConfig(thumbShrink);
+    useSwitchArtifactConfig(thumbShrink, size);
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasTrackShadowEffect = resolveSwitchShadowEffectClassName(elements.e2, scale).length > 0;
@@ -140,7 +141,7 @@ function SwitchRoot(props: SwitchProps) {
   const hasIcons = hasIconSlot && Boolean(icons?.rest || icons?.selected);
   const shouldRenderControlText = useSwitchControlTextFeature({
     controlText,
-    visibility: options.controlTextVisibility
+    visibility: controlTextVisibility ?? options.controlTextVisibility
   });
   const motionEffect = useSwitchRuntimeMotionEffect(motion !== false);
   const thumbShrinkEffect = effects.thumbShrinkEffect;

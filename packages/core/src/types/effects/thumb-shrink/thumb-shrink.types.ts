@@ -7,6 +7,7 @@ export type ThumbShrinkEffectRest = Partial<{
   boxHeight: ThumbShrinkEffectValue;
 }>;
 
+/** Switch runtimes apply this effect only at resolved md/lg sizes, never sm tiers. */
 export type ThumbShrinkEffectSchema = Partial<{
   rest: ThumbShrinkEffectRest;
 }>;

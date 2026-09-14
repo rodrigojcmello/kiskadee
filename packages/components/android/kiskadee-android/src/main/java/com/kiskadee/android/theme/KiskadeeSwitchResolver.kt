@@ -234,6 +234,7 @@ internal object KiskadeeSwitchResolver {
         theme: KiskadeeTheme,
         fallback: Float,
     ): Float {
+        if (!theme.scale.startsWith("s:md:") && !theme.scale.startsWith("s:lg:")) return fallback
         val value = element.effects
             ?.get("thumbShrink")
             ?.objectValue
