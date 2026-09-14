@@ -2,7 +2,8 @@
 
 import type { ProgressIntent, ProgressScale, SurfaceContext } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import { Progress, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { Progress } from '@kiskadee/react-components/progress';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { useEffect, useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
@@ -15,6 +16,7 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import {
   getManifestComponentState,
   supportsManifestSurfaceContext
@@ -55,7 +57,7 @@ function hasRestProfile(
 
 export default function ProgressPage() {
   const { segment, theme } = useKiskadee();
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['progress']);
   const [value, setValue] = useState(64);
   const [mode, setMode] = useState<(typeof MODE_OPTIONS)[number]['value']>('determinate');
   const [valueBehavior, setValueBehavior] =

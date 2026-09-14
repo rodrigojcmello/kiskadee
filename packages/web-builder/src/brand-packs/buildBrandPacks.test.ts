@@ -137,9 +137,17 @@ it('publishes iOS Darker auth/social artifacts with complete Button matrices', a
       const manifest = await readJson<BrandPackBuildManifest>(resolve(packDir, 'manifest.json'));
       expect(Object.keys(manifest.palettes).sort()).toEqual([...PALETTES]);
       const palette = manifest.palettes['default.darker']!;
-      const css = await readFile(resolve(packDir, palette.css), 'utf8');
+      const css = (
+        await Promise.all(
+          palette.styles.button!.map(async (style) => {
+            const text = await readFile(resolve(packDir, style.path), 'utf8');
+            expect(sha256(text)).toBe(style.sha256);
+            return text;
+          })
+        )
+      ).join('');
       expect(css.length).toBeGreaterThan(0);
-      expect(sha256(css)).toBe(palette.cssSha256);
+
       const classMapJson = await readFile(resolve(packDir, palette.classMaps.button), 'utf8');
       expect(sha256(classMapJson)).toBe(palette.classMapSha256.button);
       expectIntentMatrix(JSON.parse(classMapJson), intents);
@@ -213,8 +221,15 @@ describe('Fluent 2 Microsoft brand pack artifacts', () => {
       expect(paletteArtifact).toBeDefined();
       if (!paletteArtifact) continue;
 
-      const css = await readFile(resolve(packDir, paletteArtifact.css), 'utf8');
-      expect(sha256(css)).toBe(paletteArtifact.cssSha256);
+      const css = (
+        await Promise.all(
+          paletteArtifact.styles.button!.map(async (style) => {
+            const text = await readFile(resolve(packDir, style.path), 'utf8');
+            expect(sha256(text)).toBe(style.sha256);
+            return text;
+          })
+        )
+      ).join('');
       expect(css).toContain(`${manifest.namespace}-`);
       expect(css).toContain(':hover');
       expect(css).toContain(':active');

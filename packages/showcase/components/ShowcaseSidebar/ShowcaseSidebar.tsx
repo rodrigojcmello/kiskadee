@@ -1,6 +1,6 @@
 'use client';
 
-import { useShowcase } from '@kiskadee/react-components';
+import { useShowcase } from '@kiskadee/react-components/resources';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import style from './ShowcaseSidebar.module.scss';

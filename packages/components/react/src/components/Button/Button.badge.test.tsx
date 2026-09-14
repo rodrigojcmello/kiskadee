@@ -46,9 +46,11 @@ const surfacedContext: KiskadeeContextValue = {
     },
     button: { e1: {}, e2: {}, e3: {}, e7: badgeRelationClasses }
   },
-  global: {
-    components: {
-      button: {
+  global: {},
+  componentArtifacts: {
+    button: {
+      component: 'button',
+      ...{
         contentSurfaceContext: {
           default: {
             light: {

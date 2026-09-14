@@ -1,17 +1,11 @@
 import { loadJsonFromBuild } from './build-artifacts.client';
 
-const loads = new Map<string, Promise<unknown>>();
-
+/** The shared URL cache owns deduplication and retry for every JSON consumer. */
 export function loadSelectedComponentArtifact<T>(
   path: string,
-  version?: string | null
+  revision?: string | null
 ): Promise<T> {
-  const key = `${version ?? 'default'}::${path}`;
-  let promise = loads.get(key);
-  if (!promise) {
-    promise = loadJsonFromBuild<T>(path, { required: true });
-    loads.set(key, promise);
-    void promise.catch(() => loads.delete(key));
-  }
-  return promise as Promise<T>;
+  return loadJsonFromBuild<T>(revision ? `${path}?v=${encodeURIComponent(revision)}` : path, {
+    required: true
+  });
 }

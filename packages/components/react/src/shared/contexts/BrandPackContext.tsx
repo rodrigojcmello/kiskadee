@@ -8,6 +8,7 @@ declare const process: { env: { NODE_ENV?: string } };
 export type BrandPackComponentName = 'button';
 
 export type BrandPackLoadRequest = {
+  artifactVersion?: string;
   designSystem: string;
   pack: BrandPackId;
   segment: string;
@@ -17,8 +18,10 @@ export type BrandPackLoadRequest = {
 
 export type LoadedBrandPackResources = BrandPackLoadRequest & {
   cacheKey: string;
-  stylesheetHref: string;
-  stylesheetSha256: string;
+  stylesheets?: readonly { href: string; sha256: string }[];
+  /** Legacy host preload; newly generated packs publish stylesheets. */
+  stylesheetHref?: string;
+  stylesheetSha256?: string;
   classMaps: Partial<Record<BrandPackComponentName, unknown>>;
   intents: readonly `brand.${string}`[];
 };
@@ -57,7 +60,8 @@ export function createBrandPackResourceKey(request: BrandPackLoadRequest): strin
     request.pack,
     request.segment,
     request.theme,
-    components.join(',')
+    components.join(','),
+    ...(request.artifactVersion ? [request.artifactVersion] : [])
   ].join('|');
 }
 
@@ -73,11 +77,12 @@ function getCompatibilityError(
     );
   }
 
-  if (!/^[0-9a-f]{64}$/.test(resources.stylesheetSha256)) {
-    return new Error('Brand-pack loader returned an invalid stylesheet SHA-256.');
-  }
-  if (resources.stylesheetHref.trim() === '') {
-    return new Error('Brand-pack loader returned an empty stylesheet URL.');
+  const styles = resourceStylesheets(resources);
+  if (
+    !styles.length ||
+    styles.some((style) => !/^[0-9a-f]{64}$/.test(style.sha256) || !style.href.trim())
+  ) {
+    return new Error('Brand-pack loader returned invalid stylesheet resources.');
   }
   if (
     resources.intents.length === 0 ||
@@ -129,6 +134,31 @@ function sha256HexToIntegrity(sha256: string): string {
   return `sha256-${btoa(binary)}`;
 }
 
+function resourceStylesheets(resources: LoadedBrandPackResources) {
+  return (
+    resources.stylesheets ??
+    (resources.stylesheetHref && resources.stylesheetSha256
+      ? [{ href: resources.stylesheetHref, sha256: resources.stylesheetSha256 }]
+      : [])
+  );
+}
+function ensureResourceStylesheets(resources: LoadedBrandPackResources) {
+  return Promise.all(
+    resourceStylesheets(resources).map((style) => ensureStylesheet(style.href, style.sha256))
+  );
+}
+function hasReadyStylesheets(resources: LoadedBrandPackResources) {
+  if (typeof document === 'undefined') return true;
+  return resourceStylesheets(resources).every((style) =>
+    Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')).some(
+      (link) =>
+        link.href === new URL(style.href, document.baseURI).href &&
+        link.integrity === sha256HexToIntegrity(style.sha256) &&
+        Boolean(link.sheet || link.dataset.kLoaded === 'true')
+    )
+  );
+}
+
 function ensureStylesheet(stylesheetHref: string, stylesheetSha256: string): Promise<void> {
   if (typeof document === 'undefined') return Promise.resolve();
 
@@ -148,6 +178,7 @@ function ensureStylesheet(stylesheetHref: string, stylesheetSha256: string): Pro
     }
     if (existing?.dataset.kLoaded === 'true' || existing?.sheet) {
       existing.dataset.kLoaded = 'true';
+      existing.media = 'all';
       resolve();
       return;
     }
@@ -196,7 +227,7 @@ async function loadResources(
       return undefined;
     }
     assertCompatibleResources(resources, request);
-    await ensureStylesheet(resources.stylesheetHref, resources.stylesheetSha256);
+    await ensureResourceStylesheets(resources);
     return resources;
   });
   resourcePromiseCache.set(cacheKey, pending);
@@ -221,7 +252,15 @@ export function BrandPackBoundary({
   fallback?: ReactNode;
   children?: ReactNode;
 }) {
-  const { brandPackLoader, preloadedBrandPacks, designSystem, segment, theme } = useKiskadee();
+  const {
+    brandPackLoader,
+    preloadedBrandPacks,
+    designSystem,
+    segment,
+    theme,
+    artifactVersion,
+    registerBrandPack
+  } = useKiskadee();
   const componentSignature = [...new Set(components)].sort().join(',');
   const normalizedComponents = useMemo(
     () =>
@@ -230,15 +269,21 @@ export function BrandPackBoundary({
         : []) as BrandPackComponentName[],
     [componentSignature]
   );
+  useEffect(
+    () => registerBrandPack?.(pack, normalizedComponents),
+    [registerBrandPack, pack, normalizedComponents]
+  );
+
   const request = useMemo<BrandPackLoadRequest>(
     () => ({
       designSystem,
       pack,
       segment,
       theme,
+      ...(artifactVersion ? { artifactVersion } : {}),
       components: normalizedComponents
     }),
-    [designSystem, normalizedComponents, pack, segment, theme]
+    [designSystem, normalizedComponents, pack, segment, theme, artifactVersion]
   );
   const cacheKey = createBrandPackResourceKey(request);
   const preloaded = preloadedBrandPacks?.[cacheKey];
@@ -248,7 +293,12 @@ export function BrandPackBoundary({
   );
   const compatiblePreloaded = preloadedCompatibilityError ? undefined : preloaded;
   const [loaded, setLoaded] = useState<LoadedBrandPackResources | undefined>(undefined);
-  const current = compatiblePreloaded ?? (loaded?.cacheKey === cacheKey ? loaded : undefined);
+  const current =
+    compatiblePreloaded && hasReadyStylesheets(compatiblePreloaded)
+      ? compatiblePreloaded
+      : loaded?.cacheKey === cacheKey
+        ? loaded
+        : undefined;
 
   useEffect(() => {
     let cancelled = false;
@@ -263,7 +313,16 @@ export function BrandPackBoundary({
       };
     }
     if (compatiblePreloaded) {
-      setLoaded(compatiblePreloaded);
+      void ensureResourceStylesheets(compatiblePreloaded)
+        .then(() => {
+          if (!cancelled) setLoaded(compatiblePreloaded);
+        })
+        .catch((error) => {
+          if (!cancelled) {
+            console.error(error);
+            setLoaded(undefined);
+          }
+        });
       return () => {
         cancelled = true;
       };

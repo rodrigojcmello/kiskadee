@@ -1,6 +1,6 @@
 'use client';
 
-import { useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { useKiskadee, useShowcase } from '@kiskadee/react-components/resources';
 import { usePathname } from 'next/navigation';
 import DynamicColorPicker from '@/components/DynamicColorPicker/DynamicColorPicker';
 import FontNamePicker from '@/components/FontNamePicker/FontNamePicker';

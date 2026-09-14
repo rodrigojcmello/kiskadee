@@ -2,11 +2,9 @@
 
 import { RightPanelClose, RightPanelOpen } from '@carbon/icons-react';
 import { carbonIconFamily } from '@kiskadee/icons/interface/carbon';
-import {
-  FamilyResolvedIcon,
-  type FamilyResolvedIconProps,
-  IconFamilyProvider
-} from '@kiskadee/react-components';
+import type { FamilyResolvedIconProps } from '@kiskadee/react-components';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { IconFamilyProvider } from '@kiskadee/react-components/resources';
 import type { ReactNode } from 'react';
 
 const SHOWCASE_ICON_FAMILY = carbonIconFamily;

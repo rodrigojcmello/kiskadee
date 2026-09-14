@@ -1,23 +1,25 @@
 'use client';
+
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
 import { DEFAULT_ESSENTIAL_ICONS } from '@kiskadee/icons/interface';
 import { interfaceIconFamilyCatalog } from '@kiskadee/icons/interface/catalog';
 import { lucideIconFamily } from '@kiskadee/icons/interface/lucide';
+import type {
+  ComponentClassMapScope,
+  DefinedFontFamily,
+  FontFamilyRoleSelection,
+  ShowcaseContextValue
+} from '@kiskadee/react-components';
 import {
-  type ComponentClassMapScope,
-  type DefinedFontFamily,
   EssentialIconProvider,
   FontFamilyProvider,
-  type FontFamilyRoleSelection,
   IconFamilyProvider,
   KiskadeeContext,
   ShowcaseContext,
-  type ShowcaseContextValue,
   useIconFamilyStatus
-} from '@kiskadee/react-components';
-import { usePathname } from 'next/navigation';
+} from '@kiskadee/react-components/resources';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useClassMapLoader } from '@/hooks/use-class-map-loader';
+import { ArtifactProgress } from '@/components/ArtifactProgress/ArtifactProgress';
 import { useDesignSystemSelection } from '@/hooks/use-design-system-selection';
 import { useFontPreference } from '@/hooks/use-font-preference';
 import { useGlobalThemeClasses } from '@/hooks/use-global-theme-classes';
@@ -26,7 +28,10 @@ import { useRuntimePlatformClasses } from '@/hooks/use-runtime-platform-classes'
 import { useThemeExtras } from '@/hooks/use-theme-extras';
 import { designSystemList } from '@/registry/design-systems.registry';
 import { loadBrandPack } from '@/utils/brand-pack-loader.client';
-import { loadSelectedComponentArtifact } from '@/utils/component-artifacts.client';
+import {
+  activateComponentStyles,
+  prepareComponentResources
+} from '@/utils/component-resources.client';
 import { FOLLOW_PRESET_FONT_KEY } from '@/utils/font-family-selection';
 
 // Client-side provider that mirrors legacy App.tsx/main.tsx responsibilities
@@ -76,7 +81,6 @@ function ShowcaseIconContextBridge({
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
   useInitialTransitionGate();
 
   // 1. Manage selection state (designSystem, segment, theme) and persistence
@@ -91,47 +95,66 @@ export function Providers({ children }: { children: React.ReactNode }) {
     availableThemes,
     designSystemKeys
   } = useDesignSystemSelection();
+  const activeBrandPacks = useRef(
+    new Map<
+      string,
+      Pick<import('@kiskadee/react-components').BrandPackLoadRequest, 'pack' | 'components'>
+    >()
+  );
+  const brandConsumerCounts = useRef(new Map<string, number>());
+  const registerBrandPack = useCallback(
+    (
+      pack: import('@kiskadee/brands').BrandPackId,
+      components: readonly import('@kiskadee/react-components').BrandPackComponentName[]
+    ) => {
+      const key = [pack, ...components].join('|');
+      activeBrandPacks.current.set(key, { pack, components });
+      brandConsumerCounts.current.set(key, (brandConsumerCounts.current.get(key) ?? 0) + 1);
+      return () => {
+        const remaining = (brandConsumerCounts.current.get(key) ?? 1) - 1;
+        if (remaining) brandConsumerCounts.current.set(key, remaining);
+        else {
+          brandConsumerCounts.current.delete(key);
+          activeBrandPacks.current.delete(key);
+        }
+      };
+    },
+    []
+  );
   const consumedComponents = useRef(new Set<string>());
+  const consumerCounts = useRef(new Map<string, number>());
+  const registerComponent = useCallback((name: string) => {
+    consumerCounts.current.set(name, (consumerCounts.current.get(name) ?? 0) + 1);
+    consumedComponents.current.add(name);
+    return () => {
+      const count = (consumerCounts.current.get(name) ?? 1) - 1;
+      if (count > 0) consumerCounts.current.set(name, count);
+      else {
+        consumerCounts.current.delete(name);
+        consumedComponents.current.delete(name);
+      }
+    };
+  }, []);
   const {
     prepared,
     error: selectionError,
-    retry: retrySelection
+    retry: retrySelection,
+    load: artifactLoad
   } = usePreparedSelection(
     {
       designSystem: requestedDesignSystem,
       segment: requestedSegment,
       theme: requestedTheme
     },
-    consumedComponents.current
+    consumedComponents.current,
+    activeBrandPacks.current
   );
   const designSystem = prepared?.designSystem ?? requestedDesignSystem;
   const segment = prepared?.segment ?? requestedSegment;
   const theme = prepared?.theme ?? requestedTheme;
   const globalConfig = prepared?.global;
 
-  // 2. Load class maps (core + palette) dynamically
-  const shouldLoadAggregateClassMap =
-    pathname !== '/switch' &&
-    pathname !== '/slider' &&
-    pathname !== '/button' &&
-    pathname !== '/card' &&
-    pathname !== '/badge' &&
-    pathname !== '/typography' &&
-    pathname !== '/colors' &&
-    pathname !== '/icons' &&
-    pathname !== '/progress' &&
-    pathname !== '/text-field' &&
-    !pathname.startsWith('/tabs');
-  const aggregateClassesMap = useClassMapLoader({
-    designSystem,
-    segment,
-    theme,
-    enabled: shouldLoadAggregateClassMap
-  });
-  const classesMap = useMemo(
-    () => ({ ...aggregateClassesMap, ...prepared?.classMaps }),
-    [aggregateClassesMap, prepared?.classMaps]
-  );
+  const classesMap = prepared?.classMaps ?? {};
 
   // 3. Load extra resources (background colors) and global metadata
   const { backgroundsByTheme } = useThemeExtras({
@@ -237,72 +260,55 @@ export function Providers({ children }: { children: React.ReactNode }) {
     },
     [designSystem]
   );
-  const loadComponentArtifact = useCallback(
-    <T,>(componentName: string): Promise<T | undefined> => {
-      consumedComponents.current.add(componentName);
-      const artifactPath = (
-        activeManifest?.components as
-          | Record<string, { artifacts?: { metadata?: string } } | undefined>
-          | undefined
-      )?.[componentName]?.artifacts?.metadata;
-
-      if (!artifactPath) {
-        return Promise.resolve(undefined);
-      }
-
-      return loadSelectedComponentArtifact<T | undefined>(
-        `${String(designSystem)}/${artifactPath}`,
-        activeManifest?.version
+  const activeSelection = useRef('');
+  activeSelection.current = [designSystem, segment, theme].join('|');
+  const prepareComponent = useCallback(
+    async (component: string) => {
+      if (!activeManifest) return undefined;
+      const ready = await prepareComponentResources(
+        String(designSystem),
+        activeManifest,
+        component,
+        segment,
+        theme
       );
+      if (
+        ready &&
+        !prepared?.componentArtifacts[component] &&
+        activeSelection.current === [designSystem, segment, theme].join('|')
+      )
+        activateComponentStyles(ready.links);
+      return ready;
     },
-    [activeManifest?.components, activeManifest?.version, designSystem]
+    [activeManifest, designSystem, segment, theme, prepared]
+  );
+  const loadComponentArtifact = useCallback(
+    async <T,>(component: string): Promise<T | undefined> =>
+      (await prepareComponent(component))?.metadata as T | undefined,
+    [prepareComponent]
   );
   const loadComponentClassMap = useCallback(
-    <T,>(componentName: string, scope: ComponentClassMapScope): Promise<T | undefined> => {
-      consumedComponents.current.add(componentName);
-      const classMaps = (
-        activeManifest?.components as
-          | Record<
-              string,
-              | {
-                  artifacts?: {
-                    classMaps?: {
-                      core?: string;
-                      palettes?: Record<string, string>;
-                    };
-                  };
-                }
-              | undefined
-            >
-          | undefined
-      )?.[componentName]?.artifacts?.classMaps;
-      const artifactPath =
-        scope.kind === 'core'
-          ? classMaps?.core
-          : classMaps?.palettes?.[`${scope.segment}.${scope.theme}`];
-
-      if (!artifactPath) {
-        return Promise.resolve(undefined);
-      }
-
-      return loadSelectedComponentArtifact<T | undefined>(
-        `${String(designSystem)}/${artifactPath}`,
-        activeManifest?.version
-      );
+    async <T,>(component: string, scope: ComponentClassMapScope): Promise<T | undefined> => {
+      const ready = await prepareComponent(component);
+      return (scope.kind === 'core' ? ready?.core : ready?.palette) as T | undefined;
     },
-    [activeManifest?.components, activeManifest?.version, designSystem]
+    [prepareComponent]
   );
 
   const contextValue = useMemo(
     () => ({
       classesMap,
+      componentArtifacts: prepared?.componentArtifacts,
+      registerComponent,
+      registerBrandPack,
+      preloadedBrandPacks: prepared?.preloadedBrandPacks,
       segment,
       theme,
       setSegment,
       setTheme,
       designSystem: String(designSystem),
       setDesignSystem: setShowcaseDesignSystem,
-      artifactVersion: activeManifest?.version ?? undefined,
+      artifactVersion: activeManifest?.revision ?? activeManifest?.version ?? undefined,
       loadComponentArtifact: activeManifest ? loadComponentArtifact : undefined,
       loadComponentClassMap: activeManifest ? loadComponentClassMap : undefined,
       brandPackLoader: loadBrandPack,
@@ -325,57 +331,65 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   if (!prepared) {
-    return selectionError ? (
-      <div role="alert">
-        Não foi possível carregar o tema.{' '}
-        <button type="button" onClick={retrySelection}>
-          Tentar novamente
-        </button>
-      </div>
-    ) : (
-      <div role="status">Carregando tema…</div>
+    return (
+      <>
+        <ArtifactProgress load={artifactLoad} />
+        {selectionError ? (
+          <div role="alert">
+            Não foi possível carregar o tema.{' '}
+            <button type="button" onClick={retrySelection}>
+              Tentar novamente
+            </button>
+          </div>
+        ) : (
+          <div role="status">Carregando tema…</div>
+        )}
+      </>
     );
   }
 
   return (
-    <KiskadeeContext.Provider value={contextValue}>
-      {selectionError ? (
-        <div role="alert">
-          Não foi possível trocar o tema.{' '}
-          <button type="button" onClick={retrySelection}>
-            Tentar novamente
-          </button>
-        </div>
-      ) : null}
-      <FontFamilyProvider families={fontFamilyDefinitions} roles={fontRoles}>
-        <IconFamilyProvider
-          families={EAGER_ICON_FAMILIES}
-          catalog={interfaceIconFamilyCatalog}
-          defaultFamily="lucide"
-          family={selectedIconFamily}
-          variant={selectedIconVariant}
-        >
-          <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
-            <ShowcaseIconContextBridge
-              value={{
-                designSystemKeys,
-                availableSegments,
-                availableThemes,
-                designSystemList,
-                manifest: activeManifest ?? manifest,
-                backgroundsByTheme,
-                fontName,
-                setFontName,
-                fontRoleNames,
-                setFontRoleName
-              }}
-              setIconFamilySelection={setShowcaseIconFamilySelection}
-            >
-              {children}
-            </ShowcaseIconContextBridge>
-          </EssentialIconProvider>
-        </IconFamilyProvider>
-      </FontFamilyProvider>
-    </KiskadeeContext.Provider>
+    <>
+      <ArtifactProgress load={artifactLoad} />
+      <KiskadeeContext.Provider value={contextValue}>
+        {selectionError ? (
+          <div role="alert">
+            Não foi possível trocar o tema.{' '}
+            <button type="button" onClick={retrySelection}>
+              Tentar novamente
+            </button>
+          </div>
+        ) : null}
+        <FontFamilyProvider families={fontFamilyDefinitions} roles={fontRoles}>
+          <IconFamilyProvider
+            families={EAGER_ICON_FAMILIES}
+            catalog={interfaceIconFamilyCatalog}
+            defaultFamily="lucide"
+            family={selectedIconFamily}
+            variant={selectedIconVariant}
+          >
+            <EssentialIconProvider icons={DEFAULT_ESSENTIAL_ICONS}>
+              <ShowcaseIconContextBridge
+                value={{
+                  designSystemKeys,
+                  availableSegments,
+                  availableThemes,
+                  designSystemList,
+                  manifest: activeManifest ?? manifest,
+                  backgroundsByTheme,
+                  fontName,
+                  setFontName,
+                  fontRoleNames,
+                  setFontRoleName
+                }}
+                setIconFamilySelection={setShowcaseIconFamilySelection}
+              >
+                {children}
+              </ShowcaseIconContextBridge>
+            </EssentialIconProvider>
+          </IconFamilyProvider>
+        </FontFamilyProvider>
+      </KiskadeeContext.Provider>
+    </>
   );
 }

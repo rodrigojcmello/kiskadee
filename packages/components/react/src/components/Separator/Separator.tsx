@@ -1,5 +1,7 @@
 'use client';
 
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
+
 import './Separator.structural.scss';
 import { forwardRef } from 'react';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
@@ -8,7 +10,7 @@ import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap
 import { resolveSeparatorClassName } from './Separator.class-names.ts';
 import type { SeparatorClassesMap, SeparatorProps } from './Separator.types.ts';
 
-export const Separator = forwardRef<HTMLHRElement, SeparatorProps>(function Separator(
+const SeparatorRuntime = forwardRef<HTMLHRElement, SeparatorProps>(function Separator(
   { className, orientation = 'horizontal', emphasis = 'medium', surfaceContext, ...props },
   ref
 ) {
@@ -33,5 +35,7 @@ export const Separator = forwardRef<HTMLHRElement, SeparatorProps>(function Sepa
     />
   );
 });
+
+export const Separator = withComponentResources('separator', SeparatorRuntime);
 
 export default Separator;

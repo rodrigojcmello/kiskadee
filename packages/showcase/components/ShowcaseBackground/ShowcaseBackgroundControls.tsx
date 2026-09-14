@@ -1,7 +1,7 @@
 'use client';
 
 import type { SurfaceContext } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import { ShowcaseSegmentedControl } from '@/components/ShowcaseControls';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import type { BackgroundMode } from '@/hooks/use-showcase-background-state';

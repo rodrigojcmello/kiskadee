@@ -113,6 +113,11 @@
       "types": "./dist/resources.d.ts",
       "import": "./dist/resources.js",
       "default": "./dist/resources.js"
+    },
+    "./smooth-text": {
+      "types": "./dist/components/SmoothText/SmoothText.d.ts",
+      "import": "./dist/components/SmoothText/SmoothText.js",
+      "default": "./dist/components/SmoothText/SmoothText.js"
     }
   },
   "files": [

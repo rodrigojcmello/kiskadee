@@ -2,13 +2,11 @@
 
 import type { ElementSizeValue, RadiusMode, SurfaceContext } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import {
-  Badge,
-  type ButtonBadgePlacement,
-  FamilyResolvedIcon,
-  Button as KButton,
-  Text
-} from '@kiskadee/react-components';
+import type { ButtonBadgePlacement } from '@kiskadee/react-components';
+import { Badge } from '@kiskadee/react-components/badge';
+import { Button as KButton } from '@kiskadee/react-components/button';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { Text } from '@kiskadee/react-components/text';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';

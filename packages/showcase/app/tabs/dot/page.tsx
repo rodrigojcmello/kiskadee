@@ -2,7 +2,7 @@
 
 import type { TabsIndicatorPosition, TabsTabWidth } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import { TabsDot, useTabsArtifactConfig } from '@kiskadee/react-components';
+import { TabsDot, useTabsArtifactConfig } from '@kiskadee/react-components/tabs';
 import { useState } from 'react';
 import {
   ShowcaseBooleanControl,

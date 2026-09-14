@@ -278,3 +278,43 @@ it('does not trust a loaded stylesheet with incompatible integrity', async () =>
   replacement.dispatchEvent(new Event('load'));
   await waitFor(() => expect(screen.getByText('verified')).toBeTruthy());
 });
+
+it('waits for every stylesheet of a component-scoped SSR preload', async () => {
+  const request: BrandPackLoadRequest = {
+    designSystem: 'split-ssr',
+    pack: 'auth',
+    segment: 'default',
+    theme: 'light',
+    components: ['button']
+  };
+  const base = createResources(request, '/unused-legacy.css');
+  const resources: LoadedBrandPackResources = {
+    ...base,
+    stylesheets: [
+      { href: '/split-first.css', sha256: '0'.repeat(64) },
+      { href: '/split-second.css', sha256: '0'.repeat(64) }
+    ]
+  };
+  const context = createContextValue({
+    designSystem: request.designSystem,
+    preloadedBrandPacks: { [resources.cacheKey]: resources }
+  });
+  render(
+    h(
+      KiskadeeContext.Provider,
+      { value: context },
+      h(
+        BrandPackBoundary,
+        { pack: 'auth', components: ['button'], fallback: h('span', null, 'split-loading') },
+        h('span', null, 'split-ready')
+      )
+    )
+  );
+  expect(screen.getByText('split-loading')).toBeTruthy();
+  const first = document.querySelector<HTMLLinkElement>('link[href="/split-first.css"]')!;
+  const second = document.querySelector<HTMLLinkElement>('link[href="/split-second.css"]')!;
+  first.dispatchEvent(new Event('load'));
+  expect(screen.queryByText('split-ready')).toBeNull();
+  second.dispatchEvent(new Event('load'));
+  await waitFor(() => expect(screen.getByText('split-ready')).toBeTruthy());
+});

@@ -5,6 +5,7 @@ import type {
 } from '@kiskadee/web-builder/types';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
+import { useComponentMetadata } from '../../../shared/contexts/useComponentMetadata.ts';
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
 import type { CardClassesMap } from '../Card.types.ts';
 
@@ -25,6 +26,7 @@ function isCardComponentArtifact(artifact: unknown): artifact is CardComponentAr
 
 export function useCardArtifactConfig(): CardArtifactConfig {
   const { classesMap, global } = useKiskadee();
+  const cardMetadata = useComponentMetadata('card');
   const { currentArtifact, previousArtifact, status } = useLoadedComponentArtifact({
     componentName: 'card',
     isArtifact: isCardComponentArtifact,
@@ -40,10 +42,10 @@ export function useCardArtifactConfig(): CardArtifactConfig {
 
   return {
     cardClassesMap,
-    contentSurfaceContext: global?.components?.card?.contentSurfaceContext,
+    contentSurfaceContext: cardMetadata?.contentSurfaceContext,
     options: {
       radius: global?.radius,
-      canonicalSurfaces: cardComponentArtifact?.options.canonicalSurfaces
+      canonicalSurfaces: cardComponentArtifact?.options?.canonicalSurfaces
     }
   };
 }

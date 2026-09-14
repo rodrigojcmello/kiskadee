@@ -21,8 +21,7 @@ export function createMaterial3GoogleCardSchema({
     { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
     { intent: 'primary', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
     { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-    { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' },
-    { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
+    { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
   ] as const;
   const context = Object.fromEntries(
     ['neutral', 'primary'].map((intent) => [
@@ -45,8 +44,7 @@ export function createMaterial3GoogleCardSchema({
     neutral: {
       lowest: surface === 'onSubtle',
       low: false,
-      medium: false,
-      highest: surface === 'onVivid'
+      medium: false
     },
     primary: { lowest: surface === 'onSubtle', medium: false, highest: surface === 'onVivid' }
   });
@@ -61,19 +59,22 @@ export function createMaterial3GoogleCardSchema({
     const resolve = (intent: 'neutral' | 'primary', emphasis: string) => {
       const role = intent === 'neutral' ? 'card.neutral' : 'card.primary';
       const strong = emphasis === 'highest';
-      // Strong surfaces stay deep in both themes and publish onVivid to descendants.
-      const color = (offset: number) =>
-        strong
-          ? c.ref(segment, 'l', role, 'vivid', -Math.min(offset, 2))
-          : c.ref(
-              segment,
-              theme,
-              role,
-              'subtle',
-              (emphasis === 'lowest' ? -3 : emphasis === 'low' ? -2 : 0) +
-                (surface === 'onVivid' && emphasis === 'medium' ? 3 : 0) +
-                offset
-            );
+      const color = (offset: 0 | 1 | 2 | 3 | 4) => {
+        if (strong) return c.ref(segment, 'l', role, 'vivid', -Math.min(offset, 2));
+        if (theme === 'l' && emphasis === 'lowest') {
+          // A common achromatic surface; interactions retain subtle grayscale deltas.
+          return c(segment, 'l', 'primitive.black.v1', offset);
+        }
+        return c.ref(
+          segment,
+          theme,
+          role,
+          'subtle',
+          (emphasis === 'lowest' ? -3 : emphasis === 'low' ? -2 : 0) +
+            (surface === 'onVivid' && emphasis === 'medium' ? 3 : 0) +
+            offset
+        );
+      };
       const rest = color(0);
       const boundary = strong
         ? c(segment, 'l', 'primitive.black.v1', 0, 30)
@@ -97,8 +98,7 @@ export function createMaterial3GoogleCardSchema({
     const neutral = {
       lowest: resolve('neutral', 'lowest'),
       low: resolve('neutral', 'low'),
-      medium: resolve('neutral', 'medium'),
-      highest: resolve('neutral', 'highest')
+      medium: resolve('neutral', 'medium')
     };
     const primary = {
       lowest: resolve('primary', 'lowest'),

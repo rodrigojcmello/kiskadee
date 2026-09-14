@@ -1,3 +1,4 @@
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Button.structural.scss';
@@ -818,10 +819,10 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
   );
 });
 
-const MemoButton = memo(ButtonRoot);
+const MemoButton = withComponentResources('button', memo(ButtonRoot));
 const CompoundButton = Object.assign(MemoButton, {
   Badge: ButtonBadge,
-  Group: ButtonGroup,
+  Group: withComponentResources('button', ButtonGroup),
   Label: HeadlessButton.Label,
   Icon: ButtonIcon,
   Disclosure: ButtonDisclosure,

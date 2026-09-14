@@ -1,12 +1,9 @@
 'use client';
 
 import type { ThemeMode } from '@kiskadee/core';
-import {
-  FamilyResolvedIcon,
-  type IconName,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+import type { IconName } from '@kiskadee/react-components';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { useKiskadee, useShowcase } from '@kiskadee/react-components/resources';
 import { ShowcaseSegmentedControl } from '../ShowcaseControls';
 import styles from './ThemeModePicker.module.scss';
 

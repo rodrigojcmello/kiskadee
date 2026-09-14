@@ -299,17 +299,9 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
       e5: {
         name: 'badge-dot-surface',
         scales: {
-          boxHeight: {
-            's:sm:1': 10,
-            's:md:1': 10,
-            's:lg:1': 10
-          },
-          boxWidth: {
-            's:sm:1': 10,
-            's:md:1': 10,
-            's:lg:1': 10
-          },
-          borderRadius: { pill: { 's:sm:1': 5, 's:md:1': 5, 's:lg:1': 5 } }
+          boxHeight: 10,
+          boxWidth: 10,
+          borderRadius: { pill: 5 }
         },
         palettes: { default: themes((theme) => createSurfacePalette(theme, true)) }
       },

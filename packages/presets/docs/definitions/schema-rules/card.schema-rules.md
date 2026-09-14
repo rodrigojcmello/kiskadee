@@ -109,3 +109,13 @@ Scoped component themes require a separate explicit mechanism, such as a future
 theme scope provider, and generated dark palettes for the components involved.
 Until that exists, dark-looking Card surfaces are still light-theme
 intent/emphasis buckets.
+
+
+## Required Primary Highest for onVivid
+
+A preset that supports canonical `onVivid` composition must publish `primary.highest` in the Card
+palettes and `canonicalSurfaces` for each supported segment/theme. Its `contentSurfaceContext`
+for enabled Rest/Selected descendants must be `onVivid`. This is the usable canonical vivid
+surface for other components, not an optional duplicate of pale surfaces. `neutral.highest` may
+remain absent. Do not remove Primary Highest as part of reducing subtle background variants or
+replace it with Showcase-only stress colors. Material's regression test covers this requirement.

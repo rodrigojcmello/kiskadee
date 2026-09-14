@@ -8,14 +8,11 @@ import type {
   BottomSheetSwipeBehavior
 } from '@kiskadee/core';
 import type { IconName } from '@kiskadee/icons/interface';
-import {
-  BottomSheetMenu,
-  Button,
-  FamilyResolvedIcon,
-  type MenuTree,
-  Text,
-  useShowcase
-} from '@kiskadee/react-components';
+import type { MenuTree } from '@kiskadee/react-components';
+import { BottomSheetMenu } from '@kiskadee/react-components/bottom-sheet-menu';
+import { Button } from '@kiskadee/react-components/button';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { Text } from '@kiskadee/react-components/text';
 import { useMemo, useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
@@ -25,6 +22,7 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './BottomSheet.module.scss';
 
@@ -175,7 +173,7 @@ function createShowcaseTree(onAction: (label: string) => void): MenuTree<IconNam
 }
 
 export default function BottomSheetShowcase() {
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['bottomSheet', 'button']);
   const textProfiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.bottomSheet && manifest.components.button);
   const [initialHeight, setInitialHeight] = useState<BottomSheetInitialHeight>('standard');

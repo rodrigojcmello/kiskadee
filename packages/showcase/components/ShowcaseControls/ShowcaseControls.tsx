@@ -5,7 +5,7 @@ import {
   DEFAULT_CONTROL_CURSOR,
   resolveControlCursor
 } from '@kiskadee/core';
-import { DensityProvider, KiskadeeContext } from '@kiskadee/react-components';
+import { DensityProvider, KiskadeeContext } from '@kiskadee/react-components/resources';
 import type { ReactNode } from 'react';
 import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';

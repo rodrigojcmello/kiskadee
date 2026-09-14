@@ -201,8 +201,7 @@ The resolution order for `valueDisplay` remains:
 
 1. `Slider` prop;
 2. `components.slider.options.valueDisplay` from the loaded artifact/preset;
-3. legacy `KiskadeeContext.global.components.slider.options.valueDisplay`;
-4. local default from the styled Slider.
+3. local default from the styled Slider.
 
 Do not add a separate prop such as `showTooltipOnDrag`. The interaction rule is
 part of the selected `valueDisplay` mode, while tooltip geometry, summary
@@ -474,8 +473,7 @@ Fallback order for component options:
 
 1. current loaded Slider component artifact;
 2. previous loaded Slider component artifact during a provider swap;
-3. `global.components.slider`;
-4. local defaults from `Slider.class-names.ts`.
+3. local defaults from `Slider.class-names.ts`.
 
 The generated class map remains the source of truth for visual styling. The
 React component resolves classes from `classesMap.slider` and

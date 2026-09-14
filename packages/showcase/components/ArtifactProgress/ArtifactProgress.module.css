@@ -1,0 +1,19 @@
+.track {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 2px;
+  z-index: 2147483647;
+  pointer-events: none;
+}
+.bar {
+  width: 100%;
+  height: 100%;
+  background: #1677ff;
+  transform-origin: left center;
+  transition: opacity 150ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
+}

@@ -5,10 +5,9 @@
 - Core CSS: utilities for decorations/scales and palette-independent base rules.
 - Effects CSS: gated effect utilities such as shadows, activation feedback, and stateful radius effects.
 - Per-palette CSS: color rules only.
-- Generated CSS remains aggregated by design. It behaves like a shared utility layer with maximum
-  class reuse across components, while structural CSS remains owned by the component packages.
-- `core.kiskadee.json` and `<segment>.<theme>.kiskadee.json`: aggregate class maps kept for
-  compatibility while component hooks migrate to smaller artifacts.
+- Generated CSS is partitioned by exact component consumer sets with shared utilities deduplicated.
+  The [component resources contract](component-resources.md) defines ordering, integrity and readiness.
+- Aggregate CSS/class maps remain build-only intermediates under `_debug/`, excluded from publication.
 - `class-maps/core/<component>.kiskadee.json`: component-scoped core class map.
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped palette class map.
 - Component-scoped class maps use the shape `{ component, classMap }`.
@@ -22,8 +21,8 @@
   Style keys and CSS declarations remain globally deduplicated across both buckets.
 
 Structural utility projection does not add another artifact or stylesheet. Its references live in
-the existing aggregate and component-scoped core class maps, and the referenced token-only scale
-utility continues to live in the normal core bundle. Active examples cover Button connected-group
+component-scoped core class maps, and the referenced token-only scale
+utility remains in the referenced component/shared stylesheet. Active examples cover Button connected-group
 seam overlap and Dropdown independent leading-track placeholders. Presets without an optional
 source omit its branch. Migration of Tabs fixed width remains a future candidate rather than an
 active projection consumer. See
@@ -35,11 +34,11 @@ Third-party brand colors are published outside the normal design-system artifact
 
 ```text
 brand-packs/<pack>/manifest.json
-brand-packs/<pack>/<segment>.<theme>.<hash>.kiskadee.css
+brand-packs/<pack>/styles/<segment>.<theme>.<hash>.css
 brand-packs/<pack>/class-maps/<segment>.<theme>/<component>.<hash>.kiskadee.json
 ```
 
-- One stylesheet contains every brand projected for that pack, segment, and theme.
+- Stylesheets are partitioned by component consumers; each requested component references its dependencies.
 - Class maps remain component-scoped so a boundary can request only supported components.
 - The manifest records exact resource paths, integrity hashes, supported `brand.*` intents, and
   content polarity.
@@ -57,21 +56,18 @@ brand-packs/<pack>/class-maps/<segment>.<theme>/<component>.<hash>.kiskadee.json
 Metadata is written per template under `packages/web-builder/build/<template-key>`:
 
 - `manifest.json`: used by the showcase to discover templates, segments and themes.
-  Component interaction capabilities are published under
-  `components.<component>.surfaceContexts["<segment>.<theme>"].onSubtle|onVivid.state`; there is no
-  context-aggregated state map.
+  Its component index contains paths only. Interaction capabilities live in component/palette
+  metadata with `surfaceContexts["<segment>.<theme>"].onSubtle|onVivid.state`.
 - Font capability is published compactly under `fonts` as semantic role-to-family-ID selections.
   Catalogs and stacks are not duplicated in the manifest.
 - Typography capability is published as `typography.artifact`; profile definitions, atomic class
   lists, and detailed usages live in `typography.kiskadee.json`.
-- `schema.json` / `segments.json`: schema and segment data for inspection or tooling.
+- `_debug/schema.json`: build-only schema inspection. `segments.json`: portable segment metadata.
 - `global.kiskadee.json`: global metadata consumed by runtime/components, including the complete
   semantic font catalog and role selections, radius, and global effects. Component semantic
   metadata should live in component artifacts.
-- Dropdown presence is the narrow latency-sensitive exception: when a preset authors it, the
-  artifact resolves the global profile catalog and component default once under
-  `components.dropdown.effects.presence`. It does not duplicate the catalog under
-  `effects.presence`, emit CSS/style keys, or introduce another request.
+- Dropdown presence is resolved once in `components/dropdown.kiskadee.json`; it is no longer a
+  special aggregate global payload.
 - `tokens.kiskadee.css`: global Web custom properties. When the schema declares fonts, this file
   resolves `--k-font-body`, `--k-font-heading`, and `--k-font-code`; otherwise it emits no font
   properties.
@@ -84,16 +80,9 @@ Metadata is written per template under `packages/web-builder/build/<template-key
   registered `p` branch likewise carries class references only; it does not turn a class map
   into a component-option or token artifact.
 
-`global.kiskadee.json` should not ordinarily grow new component semantic payloads under
-`global.components.<name>`. Existing fallback data may remain for compatibility, and any new
-exception must justify why the component needs the metadata before a component artifact can load.
-Dropdown presence is currently that explicit exception; other component-specific metadata should
-move to component artifacts.
-
-The generated `schema.json` remains aggregated. Tooling that needs full schema
-inspection, such as the Showcase surface picker, should read `schema.json`
-directly instead of expanding runtime component artifacts beyond their semantic
-metadata role.
+`global.kiskadee.json` contains no component payloads. All component defaults, overrides, size
+support and resource references live in the corresponding component artifact. The raw Schema is
+build-only inspection data; browser surface inspection uses canonical Card metadata.
 
 The font artifact shapes and fallback rules are defined in
 [Font family artifacts](font-family-artifacts.md).
@@ -104,7 +93,7 @@ Typography lowering and artifact ownership are defined in
 ## Typical usage
 
 1. Choose a preset from `@kiskadee/presets` and run the web-builder to generate CSS and class maps.
-2. Consume `core` and palette CSS in the app, and apply classes from `classNamesMapSplit`.
+2. Load the component metadata and its declared CSS/class-map resources before rendering.
 3. Keep layout/structure in component code; the builder should only own visual identity.
 
 Optional branded appearances add a second, explicit path: load a pack manifest at the feature

@@ -41,6 +41,7 @@ async function copyRecursive(src: string, dst: string): Promise<void> {
   await mkdir(dst, { recursive: true });
 
   for (const entry of entries) {
+    if (entry.name === '_debug') continue;
     const srcPath = path.join(src, entry.name);
     const dstPath = path.join(dst, entry.name);
 

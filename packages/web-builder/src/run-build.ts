@@ -12,6 +12,7 @@ import { validateSchemaPresenceContract } from '@kiskadee/core/presence-contract
 import { validateSchemaSeparatorsContract } from '@kiskadee/core/separator-contract';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
+import { publishComponentResources } from './component-artifacts/publishComponentResources.ts';
 import {
   appendDensityCss,
   compileDensityClassMaps,
@@ -298,6 +299,8 @@ export async function runBuild(): Promise<void> {
         ? buildTextTypographyClassMap(typographyArtifact)
         : undefined
     });
+
+    await publishComponentResources(resolve(baseBuildDir, outDirSlug), schema);
 
     // Optional brand packs are deliberately published outside the preset's
     // global CSS, colors catalog, and normal component class maps.

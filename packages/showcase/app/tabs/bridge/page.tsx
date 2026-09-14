@@ -2,7 +2,7 @@
 
 import type { TabsBridgeLowerCurve, TabsTabWidth } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import { TabsBridge, useTabsArtifactConfig } from '@kiskadee/react-components';
+import { TabsBridge, useTabsArtifactConfig } from '@kiskadee/react-components/tabs';
 import { useState } from 'react';
 import {
   ShowcaseControlGrid,

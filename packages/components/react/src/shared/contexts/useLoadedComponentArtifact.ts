@@ -1,4 +1,4 @@
-import { useCallback, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import {
   getComponentArtifactCacheKey,
   loadCachedArtifactOrThrow
@@ -59,8 +59,23 @@ export function useLoadedComponentArtifact<TArtifact>({
   preservePrevious = false,
   resetWhenLoaderMissing = true
 }: UseLoadedComponentArtifactOptions<TArtifact>): LoadedComponentArtifact<TArtifact> {
-  const { artifactVersion, designSystem, loadComponentArtifact } = useKiskadee();
-  const cacheKey = getComponentArtifactCacheKey({ designSystem, artifactVersion, componentName });
+  const {
+    artifactVersion,
+    designSystem,
+    loadComponentArtifact,
+    componentArtifacts,
+    segment,
+    theme,
+    registerComponent
+  } = useKiskadee();
+  useEffect(() => registerComponent?.(componentName), [registerComponent, componentName]);
+  const cacheKey = getComponentArtifactCacheKey({
+    designSystem,
+    artifactVersion,
+    componentName,
+    segment,
+    theme
+  });
   const previous = useRef<{ cacheKey: string; artifact: unknown } | undefined>(undefined);
   const load = useCallback(
     () =>
@@ -97,9 +112,12 @@ export function useLoadedComponentArtifact<TArtifact>({
   );
   const read = useCallback(() => snapshots.get(cacheKey) ?? PENDING, [cacheKey]);
   const snapshot = useSyncExternalStore(subscribe, read, serverSnapshot);
+  const preloaded = componentArtifacts?.[componentName];
+  const validPreloaded = isArtifact(preloaded) ? preloaded : undefined;
   const canRead = Boolean(loadComponentArtifact) || !resetWhenLoaderMissing;
-  const currentArtifact =
-    canRead && snapshot.status === 'ready' && isArtifact(snapshot.artifact)
+  const currentArtifact = validPreloaded
+    ? validPreloaded
+    : canRead && snapshot.status === 'ready' && isArtifact(snapshot.artifact)
       ? snapshot.artifact
       : undefined;
   const retry = useCallback(() => {
@@ -117,11 +135,13 @@ export function useLoadedComponentArtifact<TArtifact>({
       isArtifact(previous.current?.artifact)
         ? previous.current.artifact
         : undefined,
-    status: !canRead
-      ? 'absent'
-      : snapshot.status === 'ready' && !currentArtifact
+    status: validPreloaded
+      ? 'ready'
+      : !canRead
         ? 'absent'
-        : snapshot.status,
+        : snapshot.status === 'ready' && !currentArtifact
+          ? 'absent'
+          : snapshot.status,
     error: snapshot.error,
     retry
   };

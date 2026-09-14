@@ -2,7 +2,9 @@
 
 import type { ElementSizeValue, RadiusMode, SurfaceContext } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import { Button, FamilyResolvedIcon, Text } from '@kiskadee/react-components';
+import { Button } from '@kiskadee/react-components/button';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { Text } from '@kiskadee/react-components/text';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';

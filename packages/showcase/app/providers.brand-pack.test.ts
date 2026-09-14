@@ -5,6 +5,7 @@ import {
   type BrandPackBuildManifest
 } from '@kiskadee/web-builder/types';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { clearBuildArtifactCache } from '@/utils/build-artifacts.client';
 import { loadBrandPack } from '../utils/brand-pack-loader.client';
 
 const CLASS_MAP_JSON = `${JSON.stringify(
@@ -61,8 +62,9 @@ function createManifest(classMapSha256 = sha256(CLASS_MAP_JSON)): BrandPackBuild
     components: ['button'],
     palettes: {
       'default.light': {
-        css: 'default.light.test.kiskadee.css',
-        cssSha256: '4'.repeat(64),
+        styles: {
+          button: [{ path: 'default.light.test.kiskadee.css', sha256: '4'.repeat(64), order: 0 }]
+        },
         classMaps: {
           button: 'class-maps/default.light/button.test.kiskadee.json'
         },
@@ -105,6 +107,7 @@ const REQUEST = {
 };
 
 afterEach(() => {
+  clearBuildArtifactCache();
   vi.unstubAllGlobals();
 });
 
@@ -114,8 +117,12 @@ describe('Showcase brand-pack loader', () => {
 
     await expect(loadBrandPack(REQUEST)).resolves.toMatchObject({
       cacheKey: 'fluent-2-microsoft|auth|default|light|button',
-      stylesheetHref: '/build/fluent-2-microsoft/brand-packs/auth/default.light.test.kiskadee.css',
-      stylesheetSha256: '4'.repeat(64),
+      stylesheets: [
+        {
+          href: '/build/fluent-2-microsoft/brand-packs/auth/default.light.test.kiskadee.css',
+          sha256: '4'.repeat(64)
+        }
+      ],
       intents: ['brand.apple', 'brand.google', 'brand.microsoft']
     });
   });

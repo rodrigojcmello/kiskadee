@@ -1,3 +1,4 @@
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import './Progress.structural.scss';
 import { HeadlessProgress } from '@kiskadee/react-headless';
@@ -43,7 +44,7 @@ function useResolvedProgressClassNames(props: ProgressProps) {
   return resolvedClassNames;
 }
 
-export const Progress = forwardRef<HTMLSpanElement, ProgressProps>(function Progress(props, ref) {
+const ProgressRuntime = forwardRef<HTMLSpanElement, ProgressProps>(function Progress(props, ref) {
   const {
     className: _className,
     classNames: _classNames,
@@ -67,5 +68,7 @@ export const Progress = forwardRef<HTMLSpanElement, ProgressProps>(function Prog
     </HeadlessProgress.Root>
   );
 });
+
+export const Progress = withComponentResources('progress', ProgressRuntime);
 
 export default Progress;

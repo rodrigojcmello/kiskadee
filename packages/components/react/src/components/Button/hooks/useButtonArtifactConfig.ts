@@ -8,6 +8,7 @@ import type {
 } from '@kiskadee/core';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMapResolution } from '../../../shared/contexts/useComponentClassMap.ts';
+import { useComponentMetadata } from '../../../shared/contexts/useComponentMetadata.ts';
 import type { ButtonClassesMap } from '../Button.types.ts';
 
 type ButtonGlobalConfig = ReturnType<typeof useKiskadee>['global'];
@@ -36,6 +37,7 @@ export type ButtonArtifactConfig = {
 
 export function useButtonArtifactConfig(): ButtonArtifactConfig {
   const { classesMap, global } = useKiskadee();
+  const buttonMetadata = useComponentMetadata('button');
   const buttonClassMapResolution = useComponentClassMapResolution(
     'button',
     classesMap.button as ButtonClassesMap | undefined
@@ -44,21 +46,21 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
   return {
     buttonClassesMap: buttonClassMapResolution.classMap,
     buttonClassesMapPending: buttonClassMapResolution.pending,
-    contentSurfaceContext: global?.components?.button?.contentSurfaceContext,
+    contentSurfaceContext: buttonMetadata?.contentSurfaceContext,
     componentEffects: {
-      activationFeedback: global?.components?.button?.effects?.activationFeedback
+      activationFeedback: buttonMetadata?.effects?.activationFeedback
     },
     globalEffects: {
       activationFeedback: global?.effects?.activationFeedback
     },
     options: {
       radius: global?.radius,
-      iconLayout: global?.components?.button?.options?.iconLayout,
-      iconPlacement: global?.components?.button?.options?.iconPlacement,
-      iconSurfaceCorners: global?.components?.button?.options?.iconSurfaceCorners,
-      iconTreatment: global?.components?.button?.options?.iconTreatment,
-      groupDivider: global?.components?.button?.options?.groupDivider,
-      disclosureDivider: global?.components?.button?.options?.disclosureDivider
+      iconLayout: buttonMetadata?.options?.iconLayout,
+      iconPlacement: buttonMetadata?.options?.iconPlacement,
+      iconSurfaceCorners: buttonMetadata?.options?.iconSurfaceCorners,
+      iconTreatment: buttonMetadata?.options?.iconTreatment,
+      groupDivider: buttonMetadata?.options?.groupDivider,
+      disclosureDivider: buttonMetadata?.options?.disclosureDivider
     }
   };
 }

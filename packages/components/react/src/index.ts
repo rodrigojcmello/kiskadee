@@ -365,6 +365,8 @@ export {
   SurfaceContextProvider,
   useSurfaceContext
 } from './shared/contexts/SurfaceContext.tsx';
+export type { ComponentMetadata } from './shared/contexts/useComponentMetadata.ts';
+export { useComponentMetadata } from './shared/contexts/useComponentMetadata.ts';
 export { useControlCursorStyle } from './shared/contexts/useControlCursorStyle.ts';
 export type {
   MenuTreeIconNode,

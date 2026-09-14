@@ -93,10 +93,11 @@ describe('density artifact lowering', () => {
     expect(css).not.toContain('.fm-small-ds');
   });
 
-  it('rejects absent sizes in each variant rather than silently substituting another size', () => {
-    expect(() => compileDensityClassMaps(fixture(), { button: { c: 'sm:2', s: 'md:1' } })).toThrow(
-      'unavailable size sm:2'
-    );
+  it('resolves unavailable sizes to Medium without creating a fake fixed recipe', () => {
+    const maps = fixture();
+    compileDensityClassMaps(maps, { button: { c: 'sm:2', s: 'md:1' } });
+    expect((maps.button as any).e1.s.a).toBe('fm-medium fm-shared');
+    expect((maps.button as any).e1.s['sm:2']).toBeUndefined();
   });
 });
 
@@ -111,5 +112,5 @@ it('emits disjoint regular/mobile ranges alongside legacy two-density aliases', 
   expect(css).toContain('.fm-medium-dm');
   const single = fixture();
   compileDensityClassMaps(single, { button: { r: 'md:1' } });
-  expect(single.button.e1.s.a).toBe('fm-medium fm-shared');
+  expect((single.button as any).e1.s.a).toBe('fm-medium fm-shared');
 });

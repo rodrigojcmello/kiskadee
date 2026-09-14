@@ -1,4 +1,6 @@
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+import { useComponentMetadata } from '../../shared/contexts/useComponentMetadata.ts';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './BottomSheet.structural.scss';
 import type {
@@ -162,11 +164,12 @@ function BottomSheetVisualProvider({
 }: BottomSheetVisualProviderProps) {
   const scale = useComponentScale('bottomSheet', size);
   const { classesMap, global } = useKiskadee();
+  const bottomSheetMetadata = useComponentMetadata('bottomSheet');
   const bottomSheetClassesMap = useComponentClassMap(
     'bottomSheet',
     classesMap.bottomSheet as BottomSheetClassesMap | undefined
   );
-  const artifactOptions = global?.components?.bottomSheet?.options;
+  const artifactOptions = bottomSheetMetadata?.options;
   const resolvedRadius: RadiusMode = radius ?? global?.radius ?? DEFAULT_BOTTOM_SHEET_RADIUS;
   const options = useMemo<BottomSheetResolvedOptions>(
     () => ({
@@ -852,7 +855,7 @@ const BottomSheetClose = forwardRef<HTMLButtonElement, BottomSheetCloseProps>(
 );
 
 export const BottomSheet = {
-  Root: BottomSheetRoot,
+  Root: withComponentResources('bottomSheet', BottomSheetRoot),
   VisualProvider: BottomSheetVisualProvider,
   Trigger: BottomSheetTrigger,
   Content: BottomSheetContent,

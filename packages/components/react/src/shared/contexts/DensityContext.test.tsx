@@ -14,7 +14,11 @@ const context: KiskadeeContextValue = {
   setDesignSystem: () => {},
   setSegment: () => {},
   setTheme: () => {},
-  global: { density: { button: { c: 'sm:1', s: 'md:1' }, progress: { s: 'md:1' } } }
+  global: { density: { c: 'sm:1', s: 'md:1' } },
+  componentArtifacts: {
+    button: { component: 'button', sizeSupport: { sizes: ['sm:1', 'md:1', 'lg:2'] } },
+    progress: { component: 'progress', density: { r: 'md:1' }, sizeSupport: { sizes: ['md:1'] } }
+  }
 };
 
 function Probe({
@@ -62,18 +66,18 @@ describe('density selection context', () => {
     expect(screen.getByTestId('application').textContent).toBe('sm:1');
     expect(screen.getByTestId('scope').textContent).toBe('md:1');
     expect(screen.getByTestId('nested').textContent).toBe('a');
-    expect(screen.getByTestId('explicit').textContent).toBe('s:sm:2');
+    expect(screen.getByTestId('explicit').textContent).toBe('md:1');
   });
 
   it('updates consumers and portals without overriding explicit sizes', () => {
     const { rerender } = render(<Demo density="adaptive" />);
     expect(screen.getByTestId('following').textContent).toBe('a');
-    expect(screen.getByTestId('fixed').textContent).toBe('s:lg:2');
+    expect(screen.getByTestId('fixed').textContent).toBe('lg:2');
     rerender(<Demo density="compact" />);
     expect(screen.getByTestId('following').textContent).toBe('sm:1');
     expect(screen.getByTestId('portal').textContent).toBe('sm:1');
     expect(screen.getByTestId('single').textContent).toBe('md:1');
-    expect(screen.getByTestId('fixed').textContent).toBe('s:lg:2');
+    expect(screen.getByTestId('fixed').textContent).toBe('lg:2');
     rerender(<Demo density="spacious" />);
     expect(screen.getByTestId('following').textContent).toBe('md:1');
   });

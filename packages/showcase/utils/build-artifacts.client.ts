@@ -14,7 +14,7 @@ export type BuildJsonOptions<T> = { required: true } | { required: false; fallba
  *   other non-ok statuses still throw an error.
  * - Network or parsing errors are propagated in both cases.
  */
-export async function loadJsonFromBuild<T>(
+async function fetchJsonFromBuild<T>(
   relativePath: string,
   options: BuildJsonOptions<T>
 ): Promise<T> {
@@ -50,4 +50,22 @@ export async function loadTextFromBuild(
   }
 
   return response.text();
+}
+
+const jsonLoads = new Map<string, Promise<unknown>>();
+export function loadJsonFromBuild<T>(
+  relativePath: string,
+  options: BuildJsonOptions<T>
+): Promise<T> {
+  const key = `${relativePath}|${options.required}`;
+  const cached = jsonLoads.get(key);
+  if (cached) return cached as Promise<T>;
+  const promise = fetchJsonFromBuild(relativePath, options);
+  jsonLoads.set(key, promise);
+  void promise.catch(() => jsonLoads.delete(key));
+  return promise;
+}
+
+export function clearBuildArtifactCache() {
+  jsonLoads.clear();
 }

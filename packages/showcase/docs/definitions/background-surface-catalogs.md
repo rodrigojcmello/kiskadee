@@ -162,3 +162,13 @@ The Card route hides only the Background picker (mode and swatches), while retai
 Context and the Shell-owned canvas selection. It inherits the same generated default as other
 routes; it does not supply a route-local color. Returning to On subtle restores the initial
 subtle canvas, while On vivid selects the preset's default vivid surface.
+
+
+## Required vivid surface
+
+Presets supporting canonical onVivid composition must retain Primary Highest as a published Card
+surface, including its onVivid descendant context, palettes and canonicalSurfaces entry. Simplifying
+light backgrounds must not remove that role. Stress test is not a substitute for canonical support.
+Material keeps Primary Highest and removes only Neutral Highest. Its common white Lowest entries
+are deduplicated by the existing catalog logic; the canonical vivid background and Button comparison
+remain available without a forced switch to Stress test.

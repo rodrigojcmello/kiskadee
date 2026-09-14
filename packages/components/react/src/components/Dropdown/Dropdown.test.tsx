@@ -97,9 +97,11 @@ const context: KiskadeeContextValue = {
 
 const presenceContext: KiskadeeContextValue = {
   ...context,
-  global: {
-    components: {
-      dropdown: {
+  global: {},
+  componentArtifacts: {
+    dropdown: {
+      component: 'dropdown',
+      ...{
         effects: {
           presence: {
             profile: 'fade-translate',
@@ -653,9 +655,11 @@ describe('styled Dropdown', () => {
   it('resolves collection overrides above root, artifact and portability defaults at runtime', () => {
     const artifactContext: KiskadeeContextValue = {
       ...context,
-      global: {
-        components: {
-          dropdown: {
+      global: {},
+      componentArtifacts: {
+        dropdown: {
+          component: 'dropdown',
+          ...{
             options: {
               leadingIconComposition: 'selection-only',
               selectedItemBackground: false
@@ -707,9 +711,11 @@ describe('styled Dropdown', () => {
   it('uses artifact options when no public override is supplied', () => {
     const artifactContext: KiskadeeContextValue = {
       ...context,
-      global: {
-        components: {
-          dropdown: {
+      global: {},
+      componentArtifacts: {
+        dropdown: {
+          component: 'dropdown',
+          ...{
             options: {
               leadingIconComposition: 'selection-only',
               selectedItemBackground: false

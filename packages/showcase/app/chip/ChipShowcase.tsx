@@ -2,15 +2,12 @@
 
 import type { ChipEmphasis, ChipIntent, ChipScale, RadiusMode } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import {
-  Badge,
-  Button,
-  Chip,
-  EssentialIconProvider,
-  FamilyResolvedIcon,
-  Text,
-  useShowcase
-} from '@kiskadee/react-components';
+import { Badge } from '@kiskadee/react-components/badge';
+import { Button } from '@kiskadee/react-components/button';
+import { Chip } from '@kiskadee/react-components/chip';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { EssentialIconProvider } from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
 import { useState } from 'react';
 import {
   ShowcaseBooleanControl,
@@ -20,11 +17,12 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Chip.module.scss';
 
 export default function ChipShowcase() {
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['button', 'chip']);
   const profiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.chip);
   const buttonAvailable = Boolean(manifest?.components?.button);

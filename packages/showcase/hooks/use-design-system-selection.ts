@@ -1,6 +1,6 @@
 import type { ThemeMode } from '@kiskadee/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { coreMaps, designSystemList, paletteIndex } from '@/registry/design-systems.registry';
+import { designSystemList, paletteIndex } from '@/registry/design-systems.registry';
 import {
   type DesignSystemKey,
   getDefaultSegmentAndThemeForDesignSystem,
@@ -26,7 +26,7 @@ function readPersistedSelection(): {
     const storedDesignSystem = retiredMaterial ? 'material-design-3-google' : previousDesignSystem;
     if (!storedDesignSystem) return null;
 
-    if (!Object.hasOwn(coreMaps, storedDesignSystem)) {
+    if (!Object.hasOwn(paletteIndex, storedDesignSystem)) {
       return null;
     }
 
@@ -78,7 +78,7 @@ const designSystemKeysFromRegistry = designSystemList.map(
 ) as DesignSystemKey[];
 
 if (!designSystemKeysFromRegistry.length) {
-  throw new Error('No design systems registered in coreMaps.');
+  throw new Error('No design systems registered in paletteIndex.');
 }
 
 const DEFAULT_DESIGN_SYSTEM = designSystemKeysFromRegistry[0];

@@ -1,3 +1,4 @@
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Card.structural.scss';
 import { Card as HeadlessCard, CardAction as HeadlessCardAction } from '@kiskadee/react-headless';
@@ -238,5 +239,5 @@ function useCardProducedSurfaceResolver({
   );
 }
 
-export const Card = CardRoot;
-export const CardAction = CardActionRoot;
+export const Card = withComponentResources('card', CardRoot);
+export const CardAction = withComponentResources('card', CardActionRoot);

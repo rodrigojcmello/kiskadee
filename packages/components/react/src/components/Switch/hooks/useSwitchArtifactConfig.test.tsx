@@ -6,6 +6,14 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { KiskadeeContext } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { supportsSwitchThumbShrink, useSwitchArtifactConfig } from './useSwitchArtifactConfig';
 
+const metadata = {
+  switch: {
+    component: 'switch',
+    sizeSupport: { sizes: ['sm:1', 'md:1', 'lg:1'] },
+    effects: { thumbShrink: true }
+  }
+};
+
 const calls = vi.hoisted(() => ({ load: vi.fn(() => null) }));
 vi.mock('../effects/thumb-shrink/index.ts', () => ({ useSwitchThumbShrinkEffect: calls.load }));
 afterEach(() => {
@@ -17,7 +25,7 @@ it('gates the shared effect at the resolved size, including transitions from md 
     classesMap: {},
     segment: 'default',
     theme: 'light',
-    global: { components: { switch: { effects: { thumbShrink: true } } } }
+    componentArtifacts: metadata
   };
   const wrapper = ({ children }: { children: React.ReactNode }) =>
     createElement(KiskadeeContext.Provider, { value: context as never }, children);
@@ -39,9 +47,9 @@ it('disables shrink when density resolves to small even without an explicit inst
     segment: 'default',
     theme: 'light',
     density: 'compact',
+    componentArtifacts: metadata,
     global: {
-      density: { switch: { c: 's:sm:1', r: 's:md:1', s: 's:lg:1' } },
-      components: { switch: { effects: { thumbShrink: true } } }
+      density: { c: 'sm:1', r: 'md:1', s: 'lg:1' }
     }
   };
   const wrapper = ({ children }: { children: React.ReactNode }) =>
@@ -63,9 +71,9 @@ it('resolves adaptive and compiled density sizes before gating the effect', () =
     segment: 'default',
     theme: 'light',
     density: 'adaptive',
+    componentArtifacts: metadata,
     global: {
-      density: { switch: { c: 'sm:1', r: 'md:1', s: 'lg:1' } },
-      components: { switch: { effects: { thumbShrink: true } } }
+      density: { c: 'sm:1', r: 'md:1', s: 'lg:1' }
     }
   };
   const wrapper = ({ children }: { children: React.ReactNode }) =>
@@ -95,4 +103,17 @@ it('resolves adaptive and compiled density sizes before gating the effect', () =
   cleanup();
   vi.unstubAllGlobals();
   Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth });
+});
+
+it('uses Medium for an unsupported explicit large size before considering thumb shrink', () => {
+  const context = {
+    classesMap: {},
+    segment: 'default',
+    theme: 'light',
+    componentArtifacts: { switch: { ...metadata.switch, sizeSupport: { sizes: ['md:1'] } } }
+  };
+  const wrapper = ({ children }: { children: React.ReactNode }) =>
+    createElement(KiskadeeContext.Provider, { value: context as never }, children);
+  renderHook(() => useSwitchArtifactConfig(undefined, 'lg'), { wrapper });
+  expect(calls.load).toHaveBeenLastCalledWith(false);
 });

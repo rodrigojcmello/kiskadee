@@ -676,15 +676,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -978,21 +970,12 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
-            "adjustedTones": [
-              90,
-              95,
-              99
-            ],
+            "adjustedTones": [90, 95, 99],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.02430221,
             "maxRemainingExcess": 0.00085091,
-            "protectedTones": [
-              0,
-              40,
-              70,
-              100
-            ],
+            "protectedTones": [0, 40, 70, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -1303,28 +1286,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 10,
-            "adjustedTones": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10
-            ],
+            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.02247316,
             "maxRemainingExcess": 0.00023651,
-            "protectedTones": [
-              0,
-              26,
-              50,
-              100
-            ],
+            "protectedTones": [0, 26, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -1377,15 +1344,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -1676,20 +1635,12 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 3,
-            "adjustedTones": [
-              90,
-              95,
-              99
-            ],
+            "adjustedTones": [90, 95, 99],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.02488221,
             "maxRemainingExcess": 0,
-            "protectedTones": [
-              0,
-              40,
-              100
-            ],
+            "protectedTones": [0, 40, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -1980,28 +1931,12 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 10,
-            "adjustedTones": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10
-            ],
+            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.02416852,
             "maxRemainingExcess": 0.00151751,
-            "protectedTones": [
-              0,
-              50,
-              55,
-              100
-            ],
+            "protectedTones": [0, 50, 55, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -2066,15 +2001,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -2368,22 +2295,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 4,
-            "adjustedTones": [
-              85,
-              90,
-              95,
-              99
-            ],
+            "adjustedTones": [85, 90, 95, 99],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.06897224,
             "maxRemainingExcess": 0.00059959,
-            "protectedTones": [
-              0,
-              40,
-              75,
-              100
-            ],
+            "protectedTones": [0, 40, 75, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -2700,30 +2617,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 12,
-            "adjustedTones": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              12,
-              14
-            ],
+            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.06928079,
             "maxRemainingExcess": 0.00072853,
-            "protectedTones": [
-              0,
-              22,
-              50,
-              100
-            ],
+            "protectedTones": [0, 22, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -3563,46 +3462,17 @@
           "tintedAchromaticChroma": {
             "adjustedToneCount": 27,
             "adjustedTones": [
-              5,
-              7,
-              8,
-              9,
-              10,
-              12,
-              14,
-              16,
-              18,
-              20,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              85,
-              90
+              5, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65,
+              70, 75, 80, 85, 90
             ],
             "appliedStrength": 0.39980984,
             "contract": "kiskadee-tinted-achromatic-chroma-v1",
-            "gamutMappedTones": [
-              5
-            ],
+            "gamutMappedTones": [5],
             "maxChromaIncrease": 0.01624303,
             "maxChromaReduction": 0.01125512,
             "maxHueDrift": 6.6631404,
             "restorationCount": 1,
-            "restoredTones": [
-              35
-            ],
+            "restoredTones": [35],
             "seedChroma": 0.05999704,
             "seedHue": 246.48036429
           }
@@ -3878,41 +3748,12 @@
           "tintedAchromaticChroma": {
             "adjustedToneCount": 26,
             "adjustedTones": [
-              6,
-              7,
-              8,
-              9,
-              10,
-              12,
-              14,
-              16,
-              18,
-              20,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              90
+              6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65,
+              70, 75, 80, 90
             ],
             "appliedStrength": 1,
             "contract": "kiskadee-tinted-achromatic-chroma-v1",
-            "gamutMappedTones": [
-              6,
-              7,
-              8,
-              90
-            ],
+            "gamutMappedTones": [6, 7, 8, 90],
             "maxChromaIncrease": 0.01449463,
             "maxChromaReduction": 0.01060259,
             "maxHueDrift": 17.57165634,
@@ -4201,49 +4042,17 @@
           "tintedAchromaticChroma": {
             "adjustedToneCount": 30,
             "adjustedTones": [
-              1,
-              2,
-              3,
-              4,
-              7,
-              8,
-              9,
-              10,
-              12,
-              14,
-              16,
-              18,
-              20,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              85,
-              90
+              1, 2, 3, 4, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55,
+              60, 65, 70, 75, 80, 85, 90
             ],
             "appliedStrength": 0.78749481,
             "contract": "kiskadee-tinted-achromatic-chroma-v1",
-            "gamutMappedTones": [
-              90
-            ],
+            "gamutMappedTones": [90],
             "maxChromaIncrease": 0.0152879,
             "maxChromaReduction": 0.01110747,
             "maxHueDrift": 4.66535431,
             "restorationCount": 1,
-            "restoredTones": [
-              35
-            ],
+            "restoredTones": [35],
             "seedChroma": 0.06151377,
             "seedHue": 279.63294884
           }
@@ -4519,41 +4328,12 @@
           "tintedAchromaticChroma": {
             "adjustedToneCount": 26,
             "adjustedTones": [
-              6,
-              7,
-              8,
-              9,
-              10,
-              12,
-              14,
-              16,
-              18,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              90,
-              95
+              6, 7, 8, 9, 10, 12, 14, 16, 18, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70,
+              75, 80, 90, 95
             ],
             "appliedStrength": 1,
             "contract": "kiskadee-tinted-achromatic-chroma-v1",
-            "gamutMappedTones": [
-              6,
-              7,
-              8,
-              9
-            ],
+            "gamutMappedTones": [6, 7, 8, 9],
             "maxChromaIncrease": 0.01530447,
             "maxChromaReduction": 0.01125044,
             "maxHueDrift": 15.5809282,
@@ -4620,43 +4400,12 @@
           "darkSupportChromaModeration": {
             "adjustedToneCount": 25,
             "adjustedTones": [
-              6,
-              7,
-              12,
-              14,
-              16,
-              18,
-              20,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              85,
-              90,
-              99
+              6, 7, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,
+              85, 90, 99
             ],
             "baselineMaxExcess": 0.01535522,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -4950,19 +4699,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 1,
-            "adjustedTones": [
-              90
-            ],
+            "adjustedTones": [90],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00130593,
             "maxRemainingExcess": 0.00028701,
-            "protectedTones": [
-              0,
-              40,
-              50,
-              100
-            ],
+            "protectedTones": [0, 40, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -5279,24 +5021,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 6,
-            "adjustedTones": [
-              6,
-              7,
-              8,
-              9,
-              10,
-              12
-            ],
+            "adjustedTones": [6, 7, 8, 9, 10, 12],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00290894,
             "maxRemainingExcess": 0.00085012,
-            "protectedTones": [
-              0,
-              35,
-              50,
-              100
-            ],
+            "protectedTones": [0, 35, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -5347,40 +5077,11 @@
           "darkSupportChromaModeration": {
             "adjustedToneCount": 22,
             "adjustedTones": [
-              4,
-              14,
-              16,
-              18,
-              20,
-              22,
-              24,
-              26,
-              28,
-              30,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              90,
-              95
+              4, 14, 16, 18, 20, 22, 24, 26, 28, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 95
             ],
             "baselineMaxExcess": 0.01231523,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0.00142943,
             "limitingTone": 40,
             "maxChromaIncrease": 0.00010054,
@@ -5679,12 +5380,7 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [
-              0,
-              30,
-              40,
-              100
-            ],
+            "protectedTones": [0, 30, 40, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -6000,12 +5696,7 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [
-              0,
-              40,
-              50,
-              100
-            ],
+            "protectedTones": [0, 40, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -6070,15 +5761,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -6374,11 +6057,7 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [
-              0,
-              40,
-              100
-            ],
+            "protectedTones": [0, 40, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -6680,11 +6359,7 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [
-              0,
-              50,
-              100
-            ],
+            "protectedTones": [0, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -6737,15 +6412,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -7041,11 +6708,7 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [
-              0,
-              40,
-              100
-            ],
+            "protectedTones": [0, 40, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -7341,11 +7004,7 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0,
-            "protectedTones": [
-              0,
-              50,
-              100
-            ],
+            "protectedTones": [0, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -7395,34 +7054,10 @@
           },
           "darkSupportChromaModeration": {
             "adjustedToneCount": 15,
-            "adjustedTones": [
-              10,
-              16,
-              22,
-              28,
-              35,
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70,
-              75,
-              80,
-              85
-            ],
+            "adjustedTones": [10, 16, 22, 28, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
             "baselineMaxExcess": 0.0269572,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -7716,20 +7351,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 2,
-            "adjustedTones": [
-              85,
-              90
-            ],
+            "adjustedTones": [85, 90],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00263598,
             "maxRemainingExcess": 0.00063891,
-            "protectedTones": [
-              0,
-              40,
-              65,
-              100
-            ],
+            "protectedTones": [0, 40, 65, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -8040,25 +7667,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 7,
-            "adjustedTones": [
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              12
-            ],
+            "adjustedTones": [5, 6, 7, 8, 9, 10, 12],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00369425,
             "maxRemainingExcess": 0.00133823,
-            "protectedTones": [
-              0,
-              30,
-              50,
-              100
-            ],
+            "protectedTones": [0, 30, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -8111,15 +7725,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -8413,20 +8019,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 2,
-            "adjustedTones": [
-              90,
-              95
-            ],
+            "adjustedTones": [90, 95],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.01212172,
             "maxRemainingExcess": 0.00779449,
-            "protectedTones": [
-              0,
-              40,
-              85,
-              100
-            ],
+            "protectedTones": [0, 40, 85, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -8737,28 +8335,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 10,
-            "adjustedTones": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10
-            ],
+            "adjustedTones": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.03823905,
             "maxRemainingExcess": 0.01711366,
-            "protectedTones": [
-              0,
-              12,
-              50,
-              100
-            ],
+            "protectedTones": [0, 12, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -8811,15 +8393,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -9113,18 +8687,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 1,
-            "adjustedTones": [
-              95
-            ],
+            "adjustedTones": [95],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00181061,
             "maxRemainingExcess": 0.00019109,
-            "protectedTones": [
-              0,
-              40,
-              100
-            ],
+            "protectedTones": [0, 40, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -9435,19 +9003,12 @@
           "status": "review",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 2,
-            "adjustedTones": [
-              4,
-              5
-            ],
+            "adjustedTones": [4, 5],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.0016834,
             "maxRemainingExcess": 0.00075095,
-            "protectedTones": [
-              0,
-              50,
-              100
-            ],
+            "protectedTones": [0, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -9500,15 +9061,7 @@
             "adjustedTones": [],
             "baselineMaxExcess": 0,
             "contract": "kiskadee-primary-relative-dark-v1",
-            "evaluatedTones": [
-              40,
-              45,
-              50,
-              55,
-              60,
-              65,
-              70
-            ],
+            "evaluatedTones": [40, 45, 50, 55, 60, 65, 70],
             "finalMaxExcess": 0,
             "limitingTone": 40,
             "maxChromaIncrease": 0,
@@ -9807,12 +9360,7 @@
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0,
             "maxRemainingExcess": 0.00029205,
-            "protectedTones": [
-              0,
-              40,
-              55,
-              100
-            ],
+            "protectedTones": [0, 40, 55, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },
@@ -10123,19 +9671,12 @@
           "status": "pass",
           "surfaceTrackAlignment": {
             "adjustedToneCount": 1,
-            "adjustedTones": [
-              12
-            ],
+            "adjustedTones": [12],
             "appliedStrength": 1,
             "contract": "kiskadee-primary-relative-light-v1",
             "maxChromaReduction": 0.00050921,
             "maxRemainingExcess": 0.00036424,
-            "protectedTones": [
-              0,
-              35,
-              50,
-              100
-            ],
+            "protectedTones": [0, 35, 50, 100],
             "referenceFamilyId": "b.blue.v1",
             "restorationCount": 0
           },

@@ -1,10 +1,12 @@
 import {
   breakpoints,
   type ComponentClassNameMapJSON,
+  compileDensityMap,
   DENSITY_BREAKPOINT,
   type DensityScaleMap,
   type DensityScaleMapJSON,
   REGULAR_DENSITY_BREAKPOINT,
+  resolveSupportedSize,
   type Schema
 } from '@kiskadee/core';
 import { parseDensityScaleMap } from '@kiskadee/core/density-contract';
@@ -62,11 +64,7 @@ export function resolveSchemaDensityMaps(schema: Schema): CompiledDensityMaps {
       if (key in component)
         validateFixedRecipes(component[key as keyof typeof component], `components.${name}.${key}`);
     }
-    result[name] = {
-      ...(map.compact ? { c: map.compact.slice(2) } : {}),
-      ...(map.regular ? { r: map.regular.slice(2) } : {}),
-      ...(map.spacious ? { s: map.spacious.slice(2) } : {})
-    };
+    result[name] = compileDensityMap(map);
   }
   return result;
 }
@@ -141,20 +139,21 @@ export function compileDensityClassMaps(
         }
       };
       for (const element of Object.values(elements)) {
-        if (isRecord(element)) collect(element.s);
-      }
-      if (supported.size === 0) supported.add('md:1');
-      for (const size of Object.values(map)) {
-        if (!supported.has(size)) {
-          throw new Error(
-            `Density for ${name} references unavailable size ${size} in an element variant.`
-          );
+        if (isRecord(element)) {
+          collect(element.s);
+          collect(element.w);
         }
       }
+      const effectiveMap = Object.fromEntries(
+        Object.entries(map).map(([density, size]) => [
+          density,
+          resolveSupportedSize(size, [...supported])
+        ])
+      );
       for (const element of Object.values(elements)) {
         if (!isRecord(element)) continue;
         for (const bucket of ['s', 'w', 'rr', 'rp', 'rs', 'e', 'p', 'l']) {
-          addAdaptiveBucket(element[bucket], map);
+          addAdaptiveBucket(element[bucket], effectiveMap);
         }
       }
     });

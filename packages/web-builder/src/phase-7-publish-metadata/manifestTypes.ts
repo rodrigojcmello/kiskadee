@@ -78,6 +78,13 @@ export type ManifestComponent = {
 };
 
 export type Manifest = {
+  formatVersion?: 2;
+  revision?: string;
+  paletteStyles?: Record<
+    string,
+    import('../component-artifacts/componentResources.ts').StylesheetResource[]
+  >;
+  styles?: import('../component-artifacts/componentResources.ts').StylesheetResource[];
   key: string;
   displayName: string;
   author: string | null;

@@ -9,31 +9,29 @@ import type {
   SliderValueDisplay
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import {
-  Card,
-  FamilyResolvedIcon,
-  Slider,
-  type SliderActivationFeedback,
-  type SliderEdgeLabelAlignmentOption,
-  type SliderEdgeLabelPlacementOption,
-  type SliderEdgeMarksOption,
-  type SliderFillOriginMarkOption,
-  type SliderFillOriginOption,
-  type SliderMarkLabelPlacementOption,
-  type SliderMarkPlacementOption,
-  type SliderMarks,
-  type SliderSelectionMode,
-  type SliderSnapAnimationOption,
-  type SliderThumbCrossingOption,
-  type SliderThumbEdgeOption,
-  type SliderThumbStepBehaviorOption,
-  type SliderValueAnimationOption,
-  type SliderValueSummaryPlacementOption,
-  useCardArtifactConfig,
-  useKiskadee,
-  useShowcase,
-  useSliderArtifactConfig
+import type {
+  SliderActivationFeedback,
+  SliderEdgeLabelAlignmentOption,
+  SliderEdgeLabelPlacementOption,
+  SliderEdgeMarksOption,
+  SliderFillOriginMarkOption,
+  SliderFillOriginOption,
+  SliderMarkLabelPlacementOption,
+  SliderMarkPlacementOption,
+  SliderMarks,
+  SliderSelectionMode,
+  SliderSnapAnimationOption,
+  SliderThumbCrossingOption,
+  SliderThumbEdgeOption,
+  SliderThumbStepBehaviorOption,
+  SliderValueAnimationOption,
+  SliderValueSummaryPlacementOption
 } from '@kiskadee/react-components';
+import { Card, useCardArtifactConfig } from '@kiskadee/react-components/card';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { useComponentMetadata, useKiskadee } from '@kiskadee/react-components/resources';
+import { Slider, useSliderArtifactConfig } from '@kiskadee/react-components/slider';
+import type { CardComponentArtifactJSON } from '@kiskadee/web-builder/types';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -52,9 +50,8 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import { useDesignSystemSchema } from '@/hooks/use-design-system-schema';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { SwatchRadioGroup } from '@/k-components';
-import { resolveDesignSystemCardSurfaceColor } from '@/utils/design-system-card-surface';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { playWowTransition } from '@/utils/playWowTransition';
 import s from './Slider.module.scss';
@@ -476,8 +473,8 @@ export default function SliderPage() {
   const { designSystem, segment, theme } = useKiskadee();
   const { cardClassesMap } = useCardArtifactConfig();
   const { options: sliderOptions } = useSliderArtifactConfig();
-  const { manifest } = useShowcase();
-  const designSystemSchema = useDesignSystemSchema(designSystem);
+  const { manifest } = useShowcaseMetadata(['card', 'slider']);
+  const cardArtifact = useComponentMetadata('card') as CardComponentArtifactJSON | undefined;
   const [scale, setScale] = useState<ElementSizeValue | undefined>();
   const [radius, setRadius] = useState<RadiusMode>('rounded');
   const [intent, setIntent] = useState<SliderIntent>('neutral');
@@ -574,13 +571,10 @@ export default function SliderPage() {
       );
       if (!hasSliderEmphasis || !hasCardSurface) return [];
 
-      const swatchColor = resolveDesignSystemCardSurfaceColor({
-        schema: designSystemSchema,
-        segment,
-        theme,
-        intent: profile.cardIntent,
-        emphasis: profile.cardEmphasis
-      });
+      const swatchColor = cardArtifact?.options.canonicalSurfaces?.[segment]?.[theme]?.find(
+        (surface) =>
+          surface.intent === profile.cardIntent && surface.emphasis === profile.cardEmphasis
+      )?.rest;
       if (!swatchColor) return [];
       const normalizedSwatchColor = normalizeSurfaceColor(swatchColor);
       if (seenSurfaceColors.has(normalizedSwatchColor)) return [];
@@ -595,7 +589,7 @@ export default function SliderPage() {
       ];
     });
   }, [
-    designSystemSchema,
+    cardArtifact,
     isCardAvailable,
     isSliderAvailable,
     segment,

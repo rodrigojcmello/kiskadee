@@ -1,8 +1,11 @@
 'use client';
 
 import type { CardIntent, ComponentEmphasis, SurfaceContext } from '@kiskadee/core';
-import { Card, type CardProps, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import type { CardProps } from '@kiskadee/react-components';
+import { Card } from '@kiskadee/react-components/card';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { supportsManifestSurfaceContext } from '@/utils/manifest-surface-context';
 
 /** Consumer composition only: the public Card still owns all painting and child context. */
@@ -12,7 +15,7 @@ export function ShowcaseExampleCard({
 }: Omit<CardProps, 'intent' | 'emphasis' | 'surfaceContext'> & { context?: SurfaceContext }) {
   const background = useShowcaseBackground();
   const { segment, theme } = useKiskadee();
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['card']);
   const surface =
     !context || background.cardSurface?.contentSurfaceContext === context
       ? background.cardSurface

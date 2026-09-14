@@ -1,18 +1,16 @@
 'use client';
 
-import {
-  Dropdown,
-  FamilyResolvedIcon,
-  Text,
-  TextFieldStandardOutline,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+import { Dropdown } from '@kiskadee/react-components/dropdown';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { useKiskadee } from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
+import { TextFieldStandardOutline } from '@kiskadee/react-components/text-field';
 import type { AutocompleteInputRenderProps } from '@kiskadee/react-headless/autocomplete';
 import { Autocomplete } from '@kiskadee/react-headless/autocomplete';
 import type { Ref } from 'react';
 import { useMemo, useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './TextFieldAutocompleteExample.module.scss';
 
@@ -149,7 +147,7 @@ function StyledAutocomplete({ rich }: { rich: boolean }) {
 
 export function TextFieldAutocompleteExample() {
   const { designSystem } = useKiskadee();
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['dropdown', 'textField']);
   const textProfiles = useShowcaseTextProfiles();
   const available = Boolean(
     designSystem === 'material-design-3-google' &&

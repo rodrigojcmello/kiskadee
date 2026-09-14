@@ -7,13 +7,13 @@ import {
   type DensityScaleMapJSON,
   REGULAR_DENSITY_BREAKPOINT
 } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
-import { usePathname } from 'next/navigation';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import {
   createContext,
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useState,
   useSyncExternalStore
 } from 'react';
@@ -53,31 +53,19 @@ type DensityContextValue = {
 };
 const Context = createContext<DensityContextValue | null>(null);
 export function ShowcaseDensityProvider({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const { global } = useKiskadee();
-  const [overrides, setOverrides] = useState<Record<string, Density | undefined>>({});
-  const route = pathname.split('/')[1];
-  const component =
-    (
-      {
-        'bottom-sheet': 'bottomSheet',
-        'text-field': 'textField',
-        icons: 'icon',
-        'brand-buttons': 'button'
-      } as Record<string, string>
-    )[route] ?? route;
-  const densityMap = global?.density?.[component];
-  const requested = overrides[pathname];
+  const { global, designSystem } = useKiskadee();
+  const [requested, setRequested] = useState<Density>();
+  const densityMap = global?.density;
   const densityOverride =
     (requested === 'compact' && !densityMap?.c) ||
     (requested === 'regular' && !densityMap?.r) ||
     (requested === 'spacious' && !densityMap?.s)
       ? undefined
       : requested;
-  const setDensityOverride = useCallback(
-    (value: Density | undefined) => setOverrides((current) => ({ ...current, [pathname]: value })),
-    [pathname]
-  );
+  useEffect(() => {
+    if (requested !== undefined && densityOverride === undefined) setRequested(undefined);
+  }, [designSystem, requested, densityOverride]);
+  const setDensityOverride = useCallback((value: Density | undefined) => setRequested(value), []);
   const width = useSyncExternalStore(subscribe, getWidth, getServerWidth);
   return (
     <Context.Provider

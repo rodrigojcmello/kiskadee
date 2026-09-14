@@ -19,6 +19,7 @@ import {
   buildComponentClassMapArtifact,
   componentNameToArtifactSlug
 } from '../component-artifacts/componentClassMapArtifacts.ts';
+import { partitionComponentCss } from '../component-artifacts/partitionComponentCss.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsage.ts';
 import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
@@ -209,10 +210,20 @@ async function persistPack({
   const palettes: BrandPackBuildManifest['palettes'] = {};
 
   for (const paletteName of Object.keys(cssByPalette).sort()) {
-    const minifiedCss = await minifyCss(cssByPalette[paletteName] ?? '');
-    const cssSha256 = hash(minifiedCss);
-    const cssPath = `${paletteName}.${cssSha256.slice(0, 12)}.kiskadee.css`;
-    await writeFile(resolve(packDir, cssPath), minifiedCss, 'utf8');
+    const styles: BrandPackBuildManifest['palettes'][string]['styles'] = {};
+    for (const component of components) styles[component] = [];
+    for (const part of partitionComponentCss(
+      cssByPalette[paletteName] ?? '',
+      classMapsByPalette[paletteName] ?? {}
+    )) {
+      const css = await minifyCss(part.css);
+      const sha256 = hash(css);
+      const path = `styles/${paletteName}.${sha256.slice(0, 16)}.css`;
+      await mkdir(resolve(packDir, 'styles'), { recursive: true });
+      await writeFile(resolve(packDir, path), css);
+      for (const component of part.consumers.length ? part.consumers : components)
+        styles[component]!.push({ path, sha256, order: part.order });
+    }
 
     const classMapPaths: Record<string, string> = {};
     const classMapHashes: Record<string, string> = {};
@@ -238,8 +249,7 @@ async function persistPack({
     }
 
     palettes[paletteName] = {
-      css: cssPath,
-      cssSha256,
+      styles,
       classMaps: classMapPaths,
       classMapSha256: classMapHashes
     };

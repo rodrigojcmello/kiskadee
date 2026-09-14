@@ -1,6 +1,6 @@
 'use client';
 
-import { useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import type { CSSProperties } from 'react';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
 import { usePrimitiveColorCatalog } from '@/hooks/use-color-scale';

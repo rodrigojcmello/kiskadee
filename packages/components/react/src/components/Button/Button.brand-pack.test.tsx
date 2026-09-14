@@ -153,7 +153,8 @@ describe('Button brand intents', () => {
     const resources = createPreloadedResources();
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
-    stylesheet.href = resources.stylesheetHref;
+    stylesheet.href = resources.stylesheetHref!;
+    stylesheet.integrity = `sha256-${btoa(String.fromCharCode(...resources.stylesheetSha256!.match(/../g)!.map((byte) => parseInt(byte, 16))))}`;
     stylesheet.dataset.kLoaded = 'true';
     stylesheet.dataset.testBrandPack = 'true';
     document.head.appendChild(stylesheet);
@@ -240,7 +241,8 @@ describe('Button brand intents', () => {
     for (const resources of [authResources, socialResources]) {
       const stylesheet = document.createElement('link');
       stylesheet.rel = 'stylesheet';
-      stylesheet.href = resources.stylesheetHref;
+      stylesheet.href = resources.stylesheetHref!;
+      stylesheet.integrity = `sha256-${btoa(String.fromCharCode(...resources.stylesheetSha256!.match(/../g)!.map((byte) => parseInt(byte, 16))))}`;
       stylesheet.dataset.kLoaded = 'true';
       stylesheet.dataset.testBrandPack = 'true';
       document.head.appendChild(stylesheet);

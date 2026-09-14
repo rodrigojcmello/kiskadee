@@ -8,6 +8,7 @@ import type {
 } from '@kiskadee/core';
 import { HeadlessTextField } from '@kiskadee/react-headless';
 import { memo, type Ref, type RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
@@ -155,7 +156,7 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
       readOnly,
       ...rootProps
     } = props;
-    const scale = useComponentScale('textField', size);
+    const scale = useComponentScale('textField', size, options.structural);
     const { global } = useKiskadee();
     const {
       textFieldClassesMap,
@@ -289,7 +290,7 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
 
   const MemoTextField = memo(TextFieldRoot);
   MemoTextField.displayName = options.displayName;
-  return MemoTextField;
+  return withComponentResources('textField', MemoTextField);
 }
 
 export type {

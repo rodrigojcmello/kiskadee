@@ -8,16 +8,16 @@ import type {
   TextFieldLabelPlacement
 } from '@kiskadee/core';
 import { componentEmphasisBuckets } from '@kiskadee/core';
+import { Button as KButton } from '@kiskadee/react-components/button';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import {
-  Button as KButton,
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
   TextFieldStandardBorderless,
   TextFieldStandardOutline,
   TextFieldStandardUnderline,
-  useKiskadee,
   useTextFieldArtifactConfig
-} from '@kiskadee/react-components';
+} from '@kiskadee/react-components/text-field';
 import type { CSSProperties, ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';

@@ -1,16 +1,14 @@
 'use client';
 
-import {
-  Dropdown,
-  FamilyResolvedIcon,
-  Text,
-  useEssentialIcon,
-  useShowcase
-} from '@kiskadee/react-components';
+import { Dropdown } from '@kiskadee/react-components/dropdown';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { useEssentialIcon } from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless/select';
 import { useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Select.module.scss';
 
@@ -123,7 +121,7 @@ function PreviewSelect({
 }
 
 export default function SelectShowcase() {
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['dropdown']);
   const textProfiles = useShowcaseTextProfiles();
   const [workspace, setWorkspace] = useState('design');
   const [density, setDensity] = useState('default');

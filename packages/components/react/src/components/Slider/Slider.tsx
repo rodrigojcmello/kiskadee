@@ -1,3 +1,4 @@
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import './Slider.structural.scss';
 import {
@@ -347,7 +348,7 @@ function SliderRoot(props: SliderProps) {
     'aria-describedby': ariaDescribedBy,
     ...rootProps
   } = props;
-  const scale = useComponentScale('slider', size);
+  const scale = useComponentScale('slider', size, { variant, mode });
   const isLikelyTouch = useIsLikelyTouch();
   const isCompactViewport = useIsCompactViewport();
   const generatedId = useId();
@@ -762,5 +763,5 @@ function SliderRoot(props: SliderProps) {
   );
 }
 
-export const Slider = memo(SliderRoot);
+export const Slider = withComponentResources('slider', memo(SliderRoot));
 Slider.displayName = 'Slider';

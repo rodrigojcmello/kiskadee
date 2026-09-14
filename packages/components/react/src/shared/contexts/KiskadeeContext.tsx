@@ -16,7 +16,6 @@ import type {
   Density,
   DensityScaleMapJSON,
   DropdownOptions,
-  GlobalClassNameMapJSON,
   RadiusMode,
   ResolvedDropdownPresenceEffect,
   SchemaFonts,
@@ -76,9 +75,8 @@ export type KiskadeeLayoutEnvironment = {
 };
 
 export type KiskadeeGlobalArtifact = {
-  density?: Partial<Record<string, DensityScaleMapJSON>>;
+  density?: DensityScaleMapJSON;
   interaction?: SchemaInteraction;
-  classMap?: GlobalClassNameMapJSON;
   fonts?: SchemaFonts;
   iconSizes?: SchemaIconSizes;
   icons?: SchemaIcons;
@@ -87,137 +85,136 @@ export type KiskadeeGlobalArtifact = {
     activationFeedback?: ActivationFeedbackEffectSchema;
     shadow?: ShadowGlobalEffectSchema;
   };
-  components?: {
-    badge?: {
-      effects?: {
-        shadow?: ShadowEffectSchema;
-      };
+};
+
+export type KiskadeeComponentConfigs = {
+  badge?: {
+    effects?: {
+      shadow?: ShadowEffectSchema;
     };
-    bottomSheet?: {
-      options?: {
-        initialHeight?: BottomSheetInitialHeight;
-        swipeBehavior?: BottomSheetSwipeBehavior;
-        pageTransition?: BottomSheetPageTransition;
-        itemLayout?: BottomSheetItemLayout;
-        centeredIcons?: BottomSheetCenteredIcons;
-        groupSeparators?: boolean;
-      };
-      effects?: {
-        shadow?: ShadowEffectSchema;
-      };
+  };
+  bottomSheet?: {
+    options?: {
+      initialHeight?: BottomSheetInitialHeight;
+      swipeBehavior?: BottomSheetSwipeBehavior;
+      pageTransition?: BottomSheetPageTransition;
+      itemLayout?: BottomSheetItemLayout;
+      centeredIcons?: BottomSheetCenteredIcons;
+      groupSeparators?: boolean;
     };
-    button?: {
-      contentSurfaceContext?: ContentSurfaceContextMap;
-      options?: {
-        iconLayout?: ButtonIconLayout;
-        iconPlacement?: ButtonIconPlacement;
-        iconSurfaceCorners?: ButtonIconSurfaceCorners;
-        iconTreatment?: ButtonIconTreatment;
-        groupDivider?: boolean;
-        disclosureDivider?: boolean;
-      };
-      effects?: {
-        activationFeedback?: ActivationFeedbackSetting;
-        shadow?: ShadowEffectSchema;
-      };
+    effects?: {
+      shadow?: ShadowEffectSchema;
     };
-    card?: {
-      contentSurfaceContext?: ContentSurfaceContextMap;
-      effects?: {
-        shadow?: ShadowEffectSchema;
-      };
+  };
+  button?: {
+    contentSurfaceContext?: ContentSurfaceContextMap;
+    options?: {
+      iconLayout?: ButtonIconLayout;
+      iconPlacement?: ButtonIconPlacement;
+      iconSurfaceCorners?: ButtonIconSurfaceCorners;
+      iconTreatment?: ButtonIconTreatment;
+      groupDivider?: boolean;
+      disclosureDivider?: boolean;
     };
-    chip?: {
-      contentSurfaceContext?: ContentSurfaceContextMap;
+    effects?: {
+      activationFeedback?: ActivationFeedbackSetting;
+      shadow?: ShadowEffectSchema;
     };
-    dropdown?: {
-      options?: DropdownOptions;
-      effects?: {
-        presence?: ResolvedDropdownPresenceEffect;
-      };
+  };
+  card?: {
+    contentSurfaceContext?: ContentSurfaceContextMap;
+    effects?: {
+      shadow?: ShadowEffectSchema;
     };
-    slider?: {
-      effects?: {
-        activationFeedback?: ActivationFeedbackSetting;
-      };
-      options?: {
-        variant?: SliderVariant;
-        valueDisplay?: SliderValueDisplay;
-        valueSummaryPlacement?: SliderValueSummaryPlacement;
-        valueAnimation?: SliderValueAnimation;
-        snapAnimation?: SliderSnapAnimation;
-        thumbStepBehavior?: SliderThumbStepBehavior;
-        thumbCrossing?: SliderThumbCrossing;
-        marks?: SliderMarks;
-        markInterval?: number;
-        edgeMarks?: SliderEdgeMarks;
-        markPlacement?: SliderMarkPlacement;
-        markLabelPlacement?: SliderMarkLabelPlacement;
-        edgeLabelPlacement?: SliderEdgeLabelPlacement;
-        edgeLabelAlignment?: SliderEdgeLabelAlignment;
-        thumbEdge?: SliderThumbEdge;
-        fillOrigin?: SliderFillOrigin;
-        fillOriginMark?: SliderFillOriginMark;
-      };
-      variants?: {
-        standard?: {
-          options?: {
-            mode?: SliderMode;
-          };
+  };
+  chip?: {
+    contentSurfaceContext?: ContentSurfaceContextMap;
+  };
+  dropdown?: {
+    options?: DropdownOptions;
+    effects?: {
+      presence?: ResolvedDropdownPresenceEffect;
+    };
+  };
+  slider?: {
+    effects?: {
+      activationFeedback?: ActivationFeedbackSetting;
+    };
+    options?: {
+      variant?: SliderVariant;
+      valueDisplay?: SliderValueDisplay;
+      valueSummaryPlacement?: SliderValueSummaryPlacement;
+      valueAnimation?: SliderValueAnimation;
+      snapAnimation?: SliderSnapAnimation;
+      thumbStepBehavior?: SliderThumbStepBehavior;
+      thumbCrossing?: SliderThumbCrossing;
+      marks?: SliderMarks;
+      markInterval?: number;
+      edgeMarks?: SliderEdgeMarks;
+      markPlacement?: SliderMarkPlacement;
+      markLabelPlacement?: SliderMarkLabelPlacement;
+      edgeLabelPlacement?: SliderEdgeLabelPlacement;
+      edgeLabelAlignment?: SliderEdgeLabelAlignment;
+      thumbEdge?: SliderThumbEdge;
+      fillOrigin?: SliderFillOrigin;
+      fillOriginMark?: SliderFillOriginMark;
+    };
+    variants?: {
+      standard?: {
+        options?: {
+          mode?: SliderMode;
         };
       };
     };
-    textField?: {
-      options?: {
-        variant?: TextFieldVariant;
-        mode?: TextFieldMode;
-        focusRingColorSource?: TextFieldFocusRingColorSource;
-      };
-      variants?: {
-        [TVariant in TextFieldVariant]?: {
-          options?: {
-            focusRingColorSource?: TextFieldFocusRingColorSource;
-          } & (TVariant extends 'standard'
-            ? { labelPlacement?: TextFieldLabelPlacement }
-            : unknown);
-          modes?: {
-            [TMode in TextFieldModeByVariant[TVariant]]?: {
-              options?: {
-                labelOffset?: TextFieldLabelOffsetByRadius;
-                focusRingColorSource?: TextFieldFocusRingColorSource;
-              };
+  };
+  textField?: {
+    options?: {
+      variant?: TextFieldVariant;
+      mode?: TextFieldMode;
+      focusRingColorSource?: TextFieldFocusRingColorSource;
+    };
+    variants?: {
+      [TVariant in TextFieldVariant]?: {
+        options?: {
+          focusRingColorSource?: TextFieldFocusRingColorSource;
+        } & (TVariant extends 'standard' ? { labelPlacement?: TextFieldLabelPlacement } : unknown);
+        modes?: {
+          [TMode in TextFieldModeByVariant[TVariant]]?: {
+            options?: {
+              labelOffset?: TextFieldLabelOffsetByRadius;
+              focusRingColorSource?: TextFieldFocusRingColorSource;
             };
           };
         };
       };
     };
-    tabs?: {
-      options?: {
-        variant?: TabsVariant;
-        indicatorPosition?: TabsIndicatorPosition;
-        indicatorShape?: TabsIndicatorShape;
-        indicatorWidth?: TabsIndicatorWidth;
-        tabWidth?: TabsTabWidth;
-        separator?: boolean;
-        lowerCurve?: TabsBridgeLowerCurve;
-      };
+  };
+  tabs?: {
+    options?: {
+      variant?: TabsVariant;
+      indicatorPosition?: TabsIndicatorPosition;
+      indicatorShape?: TabsIndicatorShape;
+      indicatorWidth?: TabsIndicatorWidth;
+      tabWidth?: TabsTabWidth;
+      separator?: boolean;
+      lowerCurve?: TabsBridgeLowerCurve;
     };
-    switch?: {
-      options?: {
-        variant?: SwitchVariant;
-        radius?: RadiusMode;
-        activationMotion?: SwitchActivationMotion;
-        controlTextVisibility?: SwitchControlTextVisibility;
-      };
-      effects?: {
-        activationFeedback?: ActivationFeedbackSetting;
-        thumbShrink?: true;
-      };
-      variants?: {
-        standard?: {
-          options?: {
-            mode?: SwitchMode;
-          };
+  };
+  switch?: {
+    options?: {
+      variant?: SwitchVariant;
+      radius?: RadiusMode;
+      activationMotion?: SwitchActivationMotion;
+      controlTextVisibility?: SwitchControlTextVisibility;
+    };
+    effects?: {
+      activationFeedback?: ActivationFeedbackSetting;
+      thumbShrink?: true;
+    };
+    variants?: {
+      standard?: {
+        options?: {
+          mode?: SwitchMode;
         };
       };
     };
@@ -225,6 +222,12 @@ export type KiskadeeGlobalArtifact = {
 };
 
 export type KiskadeeContextValue = {
+  registerBrandPack?: (
+    pack: import('@kiskadee/brands').BrandPackId,
+    components: readonly import('./BrandPackContext.tsx').BrandPackComponentName[]
+  ) => () => void;
+  registerComponent?: (name: string) => () => void;
+  componentArtifacts?: Readonly<Record<string, unknown>>;
   density?: Density;
   classesMap: ComponentClassNameMapJSON;
   segment: string;

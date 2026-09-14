@@ -1,5 +1,5 @@
 import type { TypographyProfileId } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import type { DesignSystemKey } from '@/registry/registry-utils';
 
 export type ShowcaseTextProfiles = {

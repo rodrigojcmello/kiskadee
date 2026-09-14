@@ -9,6 +9,7 @@ import type {
 import type { TabsComponentArtifactJSON } from '@kiskadee/web-builder/types';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useComponentMetadata } from '../../shared/contexts/useComponentMetadata.ts';
 import { useLoadedComponentArtifact } from '../../shared/contexts/useLoadedComponentArtifact.ts';
 import type { TabsVariantClassesMap } from './Tabs.types.ts';
 
@@ -60,12 +61,13 @@ function normalizeTabsOptions(
 }
 
 export function useTabsArtifactConfig(): TabsArtifactConfig {
-  const { classesMap, global } = useKiskadee();
+  const { classesMap } = useKiskadee();
+  const tabsMetadata = useComponentMetadata('tabs');
   const { currentArtifact: tabsComponentArtifact } = useLoadedComponentArtifact({
     componentName: 'tabs',
     isArtifact: isTabsComponentArtifact
   });
-  const legacyTabsConfig = global?.components?.tabs;
+  const legacyTabsConfig = tabsMetadata;
   const tabsClassesMap = useComponentClassMap(
     'tabs',
     classesMap.tabs as TabsVariantClassesMap | undefined

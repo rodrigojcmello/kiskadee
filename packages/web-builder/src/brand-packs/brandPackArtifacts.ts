@@ -1,11 +1,13 @@
 import type { BrandContentPolarity, BrandId, BrandPackId } from '@kiskadee/brands';
 
-export const BRAND_PACK_BUILD_CONTRACT = 'kiskadee.brand-pack-build.v1' as const;
-export const BRAND_PACK_BUILD_FORMAT_VERSION = 1 as const;
+export const BRAND_PACK_BUILD_CONTRACT = 'kiskadee.brand-pack-build.v2' as const;
+export const BRAND_PACK_BUILD_FORMAT_VERSION = 2 as const;
 
 export type BrandPackPaletteArtifact = {
-  css: string;
-  cssSha256: string;
+  styles: Record<
+    string,
+    import('../component-artifacts/componentResources.ts').StylesheetResource[]
+  >;
   classMaps: Record<string, string>;
   classMapSha256: Record<string, string>;
 };

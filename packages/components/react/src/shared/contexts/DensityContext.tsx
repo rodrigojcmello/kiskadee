@@ -8,7 +8,9 @@ import {
   DENSITY_BREAKPOINT,
   type Density,
   REGULAR_DENSITY_BREAKPOINT,
-  resolveDensityScale
+  resolveDensityScale,
+  resolveSupportedSize,
+  selectSizeSupport
 } from '@kiskadee/core';
 import {
   createContext,
@@ -18,6 +20,7 @@ import {
   useSyncExternalStore
 } from 'react';
 import { KiskadeeContext } from './KiskadeeContext.tsx';
+import { useComponentMetadata } from './useComponentMetadata.ts';
 
 const DensityContext = createContext<Density | undefined>(undefined);
 
@@ -29,18 +32,40 @@ export function DensityProvider({ value, children }: DensityProviderProps) {
 }
 
 /** Resolves classes only; CSS owns adaptive viewport changes. */
-export function useComponentScale(component: string, size?: ComponentSize): string {
+export function useComponentScale(
+  component: string,
+  size?: ComponentSize,
+  selection: { variant?: string; mode?: string } = {}
+): string {
   const scopeDensity = useContext(DensityContext);
   const context = useContext(KiskadeeContext);
-  if (size !== undefined) return componentSizeToScale(size);
-  const map = context?.global?.density?.[component];
-  if (!map) return 's:md:1';
-  return resolveDensityScale(scopeDensity ?? context?.density ?? DEFAULT_DENSITY, map);
+  const metadata = useComponentMetadata(component);
+  const map = metadata?.density ?? context?.global?.density;
+  const requested =
+    size !== undefined
+      ? componentSizeToScale(size)
+      : map
+        ? resolveDensityScale(scopeDensity ?? context?.density ?? DEFAULT_DENSITY, map)
+        : 'md:1';
+  if (!metadata?.sizeSupport) return context?.loadComponentArtifact ? 'pending' : requested;
+  if (requested === 'a') return requested;
+  const variant =
+    selection.variant ?? (metadata.options as { variant?: string } | undefined)?.variant;
+  const mode = selection.mode ?? (metadata.variants as any)?.[variant ?? '']?.options?.mode;
+  return resolveSupportedSize(
+    requested,
+    selectSizeSupport(metadata.sizeSupport, { variant, mode })
+  );
 }
 
 /** Runtime effects need the active size; adaptive styling still uses the original CSS alias. */
-export function useResolvedComponentScale(component: string, size?: ComponentSize): string {
-  const scale = useComponentScale(component, size);
+export function useResolvedComponentScale(
+  component: string,
+  size?: ComponentSize,
+  selection: { variant?: string; mode?: string } = {}
+): string {
+  const scale = useComponentScale(component, size, selection);
+  const metadata = useComponentMetadata(component);
   const context = useContext(KiskadeeContext);
   const adaptive = scale === 'a';
   const subscribe = useCallback(
@@ -66,9 +91,21 @@ export function useResolvedComponentScale(component: string, size?: ComponentSiz
   }, [adaptive]);
   const density = useSyncExternalStore(subscribe, snapshot, () => 'regular');
   if (!adaptive) return scale;
-  const map = context?.global?.density?.[component];
+  const map = metadata?.density ?? context?.global?.density;
   if (!map) return 's:md:1';
-  if (density === 'compact') return map.c ?? map.r ?? map.s ?? 's:md:1';
-  if (density === 'regular' && map.r) return map.r;
-  return map.s ?? map.r ?? map.c ?? 's:md:1';
+  const requested =
+    density === 'compact'
+      ? (map.c ?? map.r ?? map.s)
+      : density === 'regular' && map.r
+        ? map.r
+        : (map.s ?? map.r ?? map.c);
+  const variant =
+    selection.variant ?? (metadata?.options as { variant?: string } | undefined)?.variant;
+  const mode = selection.mode ?? (metadata?.variants as any)?.[variant ?? '']?.options?.mode;
+  return metadata?.sizeSupport
+    ? resolveSupportedSize(
+        requested ?? 'md:1',
+        selectSizeSupport(metadata.sizeSupport, { variant, mode })
+      )
+    : 'pending';
 }

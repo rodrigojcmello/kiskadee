@@ -1,7 +1,7 @@
 'use client';
 
 import type { SurfaceContext } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import { useMemo, useState } from 'react';
 import { resolveBackgroundScenarios } from '../utils/background-scenarios';
 import {

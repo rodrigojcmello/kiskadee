@@ -52,6 +52,7 @@ internal object KiskadeeSwitchResolver {
         isEnabled: Boolean,
     ): KiskadeeSwitchResolvedStyle {
         val elements = switchElements(theme)
+        val theme = theme.copy(scale = resolvedScale(theme.scale, elements))
         val state = when {
             !isEnabled -> KiskadeeInteractionState.DISABLED
             isPressed -> KiskadeeInteractionState.PRESSED
@@ -307,6 +308,22 @@ internal object KiskadeeSwitchResolver {
         return numberFrom(value, theme.scale)?.toFloat() ?: 0f
     }
 
+    private fun resolvedScale(requested: String, elements: Map<String, KiskadeeElementSchema>): String {
+        val supported = mutableSetOf<String>()
+        fun collect(value: KiskadeeJsonValue) {
+            value.objectValue?.forEach { (key, child) ->
+                val normalized = normalizedScale(key)
+                if (Regex("^(sm|md|lg):[1-5]$").matches(normalized)) supported.add(normalized)
+                else collect(child)
+            }
+        }
+        elements.values.forEach { it.scales?.values?.forEach(::collect) }
+        if (supported.isEmpty()) return "s:md:1"
+        if (!supported.contains("md:1")) throw KiskadeeSchemaException("A sized recipe must support s:md:1.")
+        val normalized = normalizedScale(requested)
+        return "s:" + if (supported.contains(normalized)) normalized else "md:1"
+    }
+
     private fun numberFrom(value: KiskadeeJsonValue, scale: String): Double? {
         value.numberValue?.let { return it }
 
@@ -317,7 +334,7 @@ internal object KiskadeeSwitchResolver {
             ?: objectValue[normalizedScale]?.numberValue
             ?: objectValue["s:$normalizedScale"]?.numberValue
             ?: objectValue["all"]?.numberValue
-            ?: objectValue.values.firstNotNullOfOrNull { it.numberValue }
+            ?: objectValue["s:all"]?.numberValue
     }
 
     private fun normalizedScale(scale: String): String {

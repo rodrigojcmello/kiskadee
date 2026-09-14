@@ -1,4 +1,6 @@
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+import { useComponentMetadata } from '../../shared/contexts/useComponentMetadata.ts';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Dropdown.structural.scss';
 import type {
@@ -137,13 +139,14 @@ function DropdownVisualProvider({
 }: DropdownVisualProviderProps) {
   const scale = useComponentScale('dropdown', size);
   const { classesMap, global } = useKiskadee();
+  const dropdownMetadata = useComponentMetadata('dropdown');
   const dropdownClassesMap = useComponentClassMap(
     'dropdown',
     classesMap.dropdown as DropdownClassesMap | undefined
   );
   const resolvedRadius: RadiusMode = radius ?? global?.radius ?? DEFAULT_DROPDOWN_RADIUS;
-  const presenceArtifact = global?.components?.dropdown?.effects?.presence;
-  const artifactOptions = global?.components?.dropdown?.options;
+  const presenceArtifact = dropdownMetadata?.effects?.presence;
+  const artifactOptions = dropdownMetadata?.options;
   const presenceProfile = presence === false ? undefined : (presence ?? presenceArtifact?.profile);
   const resolvedPresence = useMemo<ResolvedDropdownPresence | null>(() => {
     if (!presenceProfile || !presenceArtifact?.profiles[presenceProfile]) return null;
@@ -898,7 +901,7 @@ export const Dropdown: {
   EndText: typeof DropdownEndText;
   Trailing: typeof DropdownTrailing;
 } = {
-  Root: DropdownRoot,
+  Root: withComponentResources('dropdown', DropdownRoot),
   VisualProvider: DropdownVisualProvider,
   Presence: DropdownPresence,
   Anchor: DropdownAnchor,

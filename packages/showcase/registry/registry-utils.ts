@@ -1,7 +1,7 @@
 import type { ThemeMode } from '@kiskadee/core';
-import { type coreMaps, paletteIndex } from './design-systems.registry';
+import { paletteIndex } from './design-systems.registry';
 
-export type DesignSystemKey = keyof typeof coreMaps;
+export type DesignSystemKey = keyof typeof paletteIndex;
 
 export function getPreferredTheme(themes: readonly ThemeMode[]): ThemeMode {
   const preferredTheme = themes.includes('light') ? 'light' : themes[0];

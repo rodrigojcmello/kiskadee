@@ -50,6 +50,11 @@ export type ExtraArtifactsJSON = {
   background?: string;
 };
 
+export type {
+  ComponentPaletteResourceArtifact,
+  ComponentResourceArtifact,
+  StylesheetResource
+} from './src/component-artifacts/componentResources.ts';
 // Manifest types (phase-7 publishMetadata) describing high-level
 // capabilities by design system.
 export type {

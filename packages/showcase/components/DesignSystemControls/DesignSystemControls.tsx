@@ -1,5 +1,5 @@
 'use client';
-import { useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { useKiskadee, useShowcase } from '@kiskadee/react-components/resources';
 import { Select } from '@/k-components';
 import styles from './DesignSystemControls.module.scss';
 

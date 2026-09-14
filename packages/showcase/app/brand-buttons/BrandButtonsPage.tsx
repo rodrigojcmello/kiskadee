@@ -1,7 +1,8 @@
 'use client';
 
 import type { ElementSizeValue } from '@kiskadee/core';
-import { Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
 import { useState } from 'react';
 import {
   ShowcaseGlobalSemanticControls,
@@ -19,6 +20,7 @@ import {
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { supportsManifestSurfaceContext } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import { SocialButtonExamples } from '../button/components/SocialButtonExamples';
@@ -34,7 +36,7 @@ const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = 
 
 export default function BrandButtonsPage() {
   const { segment, theme } = useKiskadee();
-  const { fontName, manifest } = useShowcase();
+  const { fontName, manifest } = useShowcaseMetadata(['button']);
   const canonicalBackgrounds = useCanonicalCardSurfaces();
   const textProfiles = useShowcaseTextProfiles();
   const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();

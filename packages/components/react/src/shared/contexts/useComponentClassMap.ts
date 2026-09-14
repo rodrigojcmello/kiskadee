@@ -1,5 +1,5 @@
 import type { ComponentClassMapArtifactJSON } from '@kiskadee/web-builder/types';
-import { useCallback, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { useBrandPack } from './BrandPackContext.tsx';
 import {
   getComponentArtifactCacheKey,
@@ -184,7 +184,15 @@ export function useComponentClassMapResolution<TClassMap>(
   aggregateClassMap: TClassMap | undefined,
   enabled = true
 ): ComponentClassMapResolution<TClassMap> {
-  const { artifactVersion, designSystem, loadComponentClassMap, segment, theme } = useKiskadee();
+  const {
+    artifactVersion,
+    designSystem,
+    loadComponentClassMap,
+    segment,
+    theme,
+    registerComponent
+  } = useKiskadee();
+  useEffect(() => registerComponent?.(componentName), [registerComponent, componentName]);
   const brandPack = useBrandPack();
   const classMapCacheKey = getComponentArtifactCacheKey({
     designSystem,

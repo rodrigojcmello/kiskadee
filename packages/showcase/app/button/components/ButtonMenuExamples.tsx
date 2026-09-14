@@ -8,14 +8,11 @@ import type {
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
 import type { IconName } from '@kiskadee/icons/interface';
-import {
-  AdaptiveButtonMenu,
-  type AdaptiveButtonMenuPresentation,
-  Button,
-  FamilyResolvedIcon,
-  type MenuTree,
-  Text
-} from '@kiskadee/react-components';
+import type { AdaptiveButtonMenuPresentation, MenuTree } from '@kiskadee/react-components';
+import { AdaptiveButtonMenu } from '@kiskadee/react-components/adaptive-button-menu';
+import { Button } from '@kiskadee/react-components/button';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { Text } from '@kiskadee/react-components/text';
 import { useMemo, useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseSelectControl } from '@/components/ShowcaseControls';

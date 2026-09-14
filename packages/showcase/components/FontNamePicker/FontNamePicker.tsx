@@ -1,6 +1,10 @@
 'use client';
 
-import { useFontFamilyStatus, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import {
+  useFontFamilyStatus,
+  useKiskadee,
+  useShowcase
+} from '@kiskadee/react-components/resources';
 import { Select } from '@/k-components';
 import { createFontSelectionOptions, MIXED_FONT_KEY } from '@/utils/font-family-selection';
 

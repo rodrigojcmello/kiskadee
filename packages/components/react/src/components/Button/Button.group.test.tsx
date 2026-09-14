@@ -108,9 +108,11 @@ function createContext(options?: {
     setDesignSystem: () => {},
     setSegment: () => {},
     setTheme: () => {},
-    global: {
-      components: {
-        button: {
+    global: {},
+    componentArtifacts: {
+      button: {
+        component: 'button',
+        ...{
           options: {
             groupDivider: options?.groupDivider,
             disclosureDivider: options?.disclosureDivider

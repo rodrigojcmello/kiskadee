@@ -29,6 +29,7 @@
     "@kiskadee/tonal-scale": "workspace:^"
   },
   "devDependencies": {
+    "@bramus/specificity": "2.4.2",
     "@types/node": "^25.9.2",
     "@vitest/coverage-v8": "^4.1.8",
     "@vitest/ui": "^4.1.8",

@@ -9,6 +9,7 @@ import type {
 import type { TextFieldComponentArtifactJSON } from '@kiskadee/web-builder/types';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useComponentMetadata } from '../../shared/contexts/useComponentMetadata.ts';
 import { useLoadedComponentArtifact } from '../../shared/contexts/useLoadedComponentArtifact.ts';
 import type { TextFieldVariantClassesMap } from './TextField.types.ts';
 
@@ -49,12 +50,13 @@ function isTextFieldComponentArtifact(
 }
 
 export function useTextFieldArtifactConfig(): TextFieldArtifactConfig {
-  const { classesMap, global } = useKiskadee();
+  const { classesMap } = useKiskadee();
+  const textFieldMetadata = useComponentMetadata('textField');
   const { currentArtifact: textFieldComponentArtifact } = useLoadedComponentArtifact({
     componentName: 'textField',
     isArtifact: isTextFieldComponentArtifact
   });
-  const legacyTextFieldConfig = global?.components?.textField;
+  const legacyTextFieldConfig = textFieldMetadata;
   const textFieldClassesMap = useComponentClassMap(
     'textField',
     classesMap.textField as TextFieldVariantClassesMap | undefined

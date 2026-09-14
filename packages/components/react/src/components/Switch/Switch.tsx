@@ -1,3 +1,4 @@
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Switch.structural.scss';
@@ -127,9 +128,9 @@ function SwitchRoot(props: SwitchProps) {
     onBlur,
     ...rootProps
   } = props;
-  const scale = useComponentScale('switch', size);
+  const scale = useComponentScale('switch', size, { variant, mode });
   const { switchClassesMap, componentEffects, options, effects, globalEffects } =
-    useSwitchArtifactConfig(thumbShrink, size);
+    useSwitchArtifactConfig(thumbShrink, size, { variant, mode });
   const resolvedRadius = radius ?? options.radius;
   const elements = resolveVariantElements(switchClassesMap, variant, mode);
   const hasTrackShadowEffect = resolveSwitchShadowEffectClassName(elements.e2, scale).length > 0;
@@ -425,4 +426,4 @@ function SwitchRoot(props: SwitchProps) {
   );
 }
 
-export const Switch = memo(SwitchRoot);
+export const Switch = withComponentResources('switch', memo(SwitchRoot));

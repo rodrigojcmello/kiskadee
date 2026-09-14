@@ -8,12 +8,10 @@ import type {
   SystemButtonIntent
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import {
-  FamilyResolvedIcon,
-  Button as KButton,
-  SmoothText,
-  Text
-} from '@kiskadee/react-components';
+import { Button as KButton } from '@kiskadee/react-components/button';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { SmoothText } from '@kiskadee/react-components/smooth-text';
+import { Text } from '@kiskadee/react-components/text';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { useEffect, useId, useState } from 'react';
 import { ShowcaseSegmentedControl } from '@/components/ShowcaseControls';

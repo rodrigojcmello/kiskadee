@@ -401,25 +401,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object';
 }
 
-function isComponentName(value: string): value is ComponentName {
-  return (
-    value === 'bottomSheet' ||
-    value === 'badge' ||
-    value === 'button' ||
-    value === 'card' ||
-    value === 'chip' ||
-    value === 'dropdown' ||
-    value === 'icon' ||
-    value === 'progress' ||
-    value === 'separator' ||
-    value === 'slider' ||
-    value === 'switch' ||
-    value === 'tabs' ||
-    value === 'text' ||
-    value === 'textField'
-  );
-}
-
 function hasEntries(value: unknown): value is Record<string, unknown> {
   return isRecord(value) && Object.keys(value).length > 0;
 }
@@ -433,15 +414,15 @@ function addComponentClassMapArtifactsToManifest(
   const componentNames = new Set<ComponentName>();
 
   for (const [componentName, componentClassMap] of Object.entries(classNamesMap.core)) {
-    if (!isComponentName(componentName) || !hasEntries(componentClassMap)) continue;
-    componentNames.add(componentName);
+    if (componentName === '$schema' || !hasEntries(componentClassMap)) continue;
+    componentNames.add(componentName as ComponentName);
   }
 
   for (const paletteMap of Object.values(classNamesMap.palettes)) {
     if (!hasEntries(paletteMap)) continue;
     for (const [componentName, componentClassMap] of Object.entries(paletteMap)) {
-      if (!isComponentName(componentName) || !hasEntries(componentClassMap)) continue;
-      componentNames.add(componentName);
+      if (componentName === '$schema' || !hasEntries(componentClassMap)) continue;
+      componentNames.add(componentName as ComponentName);
     }
   }
 
@@ -755,20 +736,7 @@ export async function publishMetadata(params: {
   // manifest focused on high-level capabilities instead of duplicating
   // the full schema structure. Absence of keys means the information is
   // not defined or not applicable.
-  const manifestComponentNames = [
-    'bottomSheet',
-    'badge',
-    'button',
-    'card',
-    'chip',
-    'dropdown',
-    'icon',
-    'progress',
-    'separator',
-    'slider',
-    'switch',
-    'text'
-  ] as const satisfies readonly ComponentName[];
+  const manifestComponentNames = Object.keys(schema.components ?? {}) as ComponentName[];
   for (const componentName of manifestComponentNames) {
     const componentScale = buildComponentScale(schema, componentName);
     const componentSurfaceContexts = buildComponentSurfaceContexts(schema, componentName);

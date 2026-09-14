@@ -9,17 +9,12 @@ import type {
   SwitchIntent
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import {
-  Card,
-  FamilyResolvedIcon,
-  SurfaceContextProvider,
-  Switch,
-  type SwitchIcons,
-  Text,
-  useKiskadee,
-  useShowcase,
-  useSwitchArtifactConfig
-} from '@kiskadee/react-components';
+import type { SwitchIcons } from '@kiskadee/react-components';
+import { Card } from '@kiskadee/react-components/card';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { SurfaceContextProvider, useKiskadee } from '@kiskadee/react-components/resources';
+import { Switch, useSwitchArtifactConfig } from '@kiskadee/react-components/switch';
+import { Text } from '@kiskadee/react-components/text';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -37,6 +32,7 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import type { CanonicalCardSurfaceKey } from '@/utils/canonical-card-surfaces';
 import {
   getManifestComponentState,
@@ -155,7 +151,7 @@ export default function SwitchPage() {
     options: switchOptions,
     switchClassesMap
   } = useSwitchArtifactConfig(undefined, componentScaleToSize(scale));
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['card', 'switch']);
   const background = useShowcaseBackground();
   const textProfiles = useShowcaseTextProfiles();
   const [controlState, setControlState] = useState(true);

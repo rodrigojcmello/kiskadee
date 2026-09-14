@@ -101,9 +101,12 @@ const fluentFeedbackContext: KiskadeeContextValue = {
         profile: 'ripple',
         visual: { layer: 'overlay' }
       }
-    },
-    components: {
-      button: {
+    }
+  },
+  componentArtifacts: {
+    button: {
+      component: 'button',
+      ...{
         effects: { activationFeedback: true }
       }
     }
@@ -147,9 +150,11 @@ const groupDividerContext: KiskadeeContextValue = {
     },
     dropdown: {}
   },
-  global: {
-    components: {
-      button: {
+  global: {},
+  componentArtifacts: {
+    button: {
+      component: 'button',
+      ...{
         options: { groupDivider: true }
       }
     }

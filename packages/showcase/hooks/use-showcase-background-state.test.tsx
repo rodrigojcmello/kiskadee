@@ -10,7 +10,9 @@ const fixtures = vi.hoisted(() => ({
   theme: 'light',
   tones: [] as ResolvedCanonicalCardSurface[]
 }));
-vi.mock('@kiskadee/react-components', () => ({ useKiskadee: () => ({ theme: fixtures.theme }) }));
+vi.mock('@kiskadee/react-components/resources', () => ({
+  useKiskadee: () => ({ theme: fixtures.theme })
+}));
 vi.mock('./use-canonical-card-surfaces', () => ({
   useCanonicalCardSurfaces: () => ({
     tones: fixtures.tones,

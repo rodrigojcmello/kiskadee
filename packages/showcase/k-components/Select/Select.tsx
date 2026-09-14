@@ -1,10 +1,7 @@
 'use client';
 
-import {
-  FamilyResolvedIcon,
-  useControlCursorStyle,
-  useEssentialIcon
-} from '@kiskadee/react-components';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { useControlCursorStyle, useEssentialIcon } from '@kiskadee/react-components/resources';
 import type { SelectProps as HeadlessSelectProps } from '@kiskadee/react-headless';
 import { Select as HeadlessSelect } from '@kiskadee/react-headless';
 import type { CSSProperties, ReactNode } from 'react';

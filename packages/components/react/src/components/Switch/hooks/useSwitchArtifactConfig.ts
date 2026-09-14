@@ -10,6 +10,7 @@ import type { SwitchComponentArtifactJSON } from '@kiskadee/web-builder/types';
 import { useResolvedComponentScale } from '../../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
+import { useComponentMetadata } from '../../../shared/contexts/useComponentMetadata.ts';
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
 import {
   type SwitchThumbShrinkEffectModule,
@@ -46,10 +47,12 @@ function isSwitchComponentArtifact(artifact: unknown): artifact is SwitchCompone
 
 export function useSwitchArtifactConfig(
   thumbShrink?: false,
-  size?: ComponentSize
+  size?: ComponentSize,
+  selection: { variant?: string; mode?: string } = {}
 ): SwitchArtifactConfig {
   const { classesMap, global } = useKiskadee();
-  const scale = useResolvedComponentScale('switch', size);
+  const switchMetadata = useComponentMetadata('switch');
+  const scale = useResolvedComponentScale('switch', size, selection);
   const {
     currentArtifact: currentSwitchComponentArtifact,
     previousArtifact: previousLoadedSwitchComponentArtifact
@@ -61,9 +64,7 @@ export function useSwitchArtifactConfig(
   });
   // Preserve component metadata while a provider swaps manifests/design systems.
   const switchGlobalConfig =
-    currentSwitchComponentArtifact ??
-    previousLoadedSwitchComponentArtifact ??
-    global?.components?.switch;
+    currentSwitchComponentArtifact ?? previousLoadedSwitchComponentArtifact ?? switchMetadata;
   const aggregateSwitchClassesMap = classesMap.switch as SwitchVariantClassesMap | undefined;
   const switchClassesMap = useComponentClassMap('switch', aggregateSwitchClassesMap);
   const shouldLoadThumbShrinkEffect =
@@ -88,7 +89,7 @@ export function useSwitchArtifactConfig(
       activationFeedback:
         currentSwitchComponentArtifact?.effects?.activationFeedback ??
         previousLoadedSwitchComponentArtifact?.effects?.activationFeedback ??
-        global?.components?.switch?.effects?.activationFeedback
+        switchMetadata?.effects?.activationFeedback
     },
     globalEffects: {
       activationFeedback: global?.effects?.activationFeedback

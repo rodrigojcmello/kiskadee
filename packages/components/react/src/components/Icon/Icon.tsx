@@ -1,5 +1,6 @@
 import { Icon as HeadlessIcon } from '@kiskadee/react-headless';
 import { forwardRef, useMemo } from 'react';
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
@@ -9,7 +10,7 @@ import type { IconClassesMap, IconProps } from './Icon.types.ts';
 
 export type { IconClassesMap, IconElementName, IconProps, IconVisualProps } from './Icon.types.ts';
 
-export const Icon = forwardRef<HTMLSpanElement, IconProps>(function Icon(
+const IconRuntime = forwardRef<HTMLSpanElement, IconProps>(function Icon(
   { classNames = {}, size, intent, surfaceContext, foreground, children, ...headlessProps },
   ref
 ) {
@@ -39,5 +40,7 @@ export const Icon = forwardRef<HTMLSpanElement, IconProps>(function Icon(
     </HeadlessIcon>
   );
 });
+
+export const Icon = withComponentResources('icon', IconRuntime);
 
 export default Icon;

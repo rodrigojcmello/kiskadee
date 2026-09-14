@@ -1,15 +1,18 @@
 'use client';
 
 import type { CardRadiusMode } from '@kiskadee/core';
-import { Card, Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { Card } from '@kiskadee/react-components/card';
+import { useKiskadee } from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Card.module.scss';
 
 export function CardComposition({ radius }: { radius: CardRadiusMode }) {
   const { segment, theme } = useKiskadee();
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['card']);
   const background = useShowcaseBackground();
   const profiles = useShowcaseTextProfiles();
   const state = getManifestComponentState(manifest?.components?.card, segment, theme, 'onSubtle');

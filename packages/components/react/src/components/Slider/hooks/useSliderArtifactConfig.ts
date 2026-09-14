@@ -23,6 +23,7 @@ import type {
 import type { SliderComponentArtifactJSON } from '@kiskadee/web-builder/types';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
+import { useComponentMetadata } from '../../../shared/contexts/useComponentMetadata.ts';
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
 import {
   DEFAULT_SLIDER_EDGE_LABEL_ALIGNMENT,
@@ -83,6 +84,7 @@ function isSliderComponentArtifact(artifact: unknown): artifact is SliderCompone
 
 export function useSliderArtifactConfig(): SliderArtifactConfig {
   const { classesMap, global } = useKiskadee();
+  const sliderMetadata = useComponentMetadata('slider');
   const {
     currentArtifact: currentSliderComponentArtifact,
     previousArtifact: previousLoadedSliderComponentArtifact
@@ -92,7 +94,7 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
     preservePrevious: true,
     resetWhenLoaderMissing: false
   });
-  const legacySliderConfig = global?.components?.slider;
+  const legacySliderConfig = sliderMetadata;
   const sliderGlobalConfig =
     currentSliderComponentArtifact ?? previousLoadedSliderComponentArtifact ?? legacySliderConfig;
   const sliderClassesMap = useComponentClassMap(
@@ -131,7 +133,7 @@ export function useSliderArtifactConfig(): SliderArtifactConfig {
       activationFeedback:
         currentSliderComponentArtifact?.effects?.activationFeedback ??
         previousLoadedSliderComponentArtifact?.effects?.activationFeedback ??
-        global?.components?.slider?.effects?.activationFeedback
+        sliderMetadata?.effects?.activationFeedback
     },
     globalEffects: {
       activationFeedback: global?.effects?.activationFeedback

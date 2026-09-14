@@ -52,7 +52,7 @@ export function useTabsRuntimeRootState({
   onValueChange,
   variant
 }: TabsRootBaseProps & { variant: TabsVariant }): TabsRuntimeRootState {
-  const scale = useComponentScale('tabs', size);
+  const scale = useComponentScale('tabs', size, { variant });
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(defaultValue);
   const barRef = useRef<HTMLDivElement | null>(null);

@@ -1,13 +1,13 @@
 'use client';
 
 import type { ControlCursorValue } from '@kiskadee/core';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import {
   DensityProvider,
-  FamilyResolvedIcon,
   KiskadeeContext,
   SurfaceContextProvider,
   useKiskadee
-} from '@kiskadee/react-components';
+} from '@kiskadee/react-components/resources';
 import { usePathname } from 'next/navigation';
 import type { CSSProperties, Dispatch, ReactNode, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';

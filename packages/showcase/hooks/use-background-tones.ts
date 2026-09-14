@@ -1,7 +1,7 @@
 'use client';
 
 import type { SurfaceContext, ThemeMode } from '@kiskadee/core';
-import { useKiskadee } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import { useMemo } from 'react';
 import { useColorScaleTones } from '@/hooks/use-color-scale';
 import type {

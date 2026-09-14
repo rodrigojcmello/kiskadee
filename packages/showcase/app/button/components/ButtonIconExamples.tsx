@@ -6,13 +6,11 @@ import type {
   SurfaceContext
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import {
-  FamilyResolvedIcon,
-  type IconName,
-  Button as KButton,
-  SmoothText,
-  Text
-} from '@kiskadee/react-components';
+import type { IconName } from '@kiskadee/react-components';
+import { Button as KButton } from '@kiskadee/react-components/button';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { SmoothText } from '@kiskadee/react-components/smooth-text';
+import { Text } from '@kiskadee/react-components/text';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';

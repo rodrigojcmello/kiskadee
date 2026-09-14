@@ -57,15 +57,9 @@ function createContextValue(
     setTheme: () => {},
     designSystem: 'test-design-system',
     setDesignSystem: () => {},
-    global: textClasses
-      ? {
-          classMap: {
-            text: {
-              e1: { t: textClasses }
-            }
-          }
-        }
-      : undefined
+    componentArtifacts: {
+      text: { component: 'text', ...(textClasses ? { classMap: { e1: { t: textClasses } } } : {}) }
+    }
   };
 }
 

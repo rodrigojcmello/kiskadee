@@ -10,9 +10,11 @@ import { Button } from '@kiskadee/react-components/button';
 ```
 
 The root remains compatible and may retain structural styles for other components because CSS
-imports have effects. `@kiskadee/react-components/style.css` remains the explicit aggregate sheet.
-Never mark CSS side-effect-free to reduce a bundle. Preset CSS remains shared and deduplicated;
-component JS subpaths do not change its schema-to-build contract.
+imports have effects. Use `@kiskadee/react-components/resources` for providers and resource hooks
+without importing component structural sheets. `@kiskadee/react-components/style.css` contains
+shared infrastructure; import it explicitly.
+Never mark CSS side-effect-free to reduce a bundle. Generated preset CSS follows the [component resources contract](../../../../web-builder/docs/definitions/component-resources.md)
+with shared consumers deduplicated and ordering preserved.
 
 After a build, run `pnpm --filter @kiskadee/react-components check:consumer-bundles`. It checks
 public root/subpath entrypoints for Text, Badge, Card, Button and Switch, excludes dynamic imports
@@ -40,7 +42,7 @@ place. Re-enabling or remounting retries; deployment-invalidated chunks may stil
 
 ## Integration boundary
 
-The host owns selection and transport. The Showcase prepares CSS, manifest, global metadata and the previously consumed components
+The host owns selection and transport. The Showcase prepares CSS, manifest, global metadata and the currently mounted components and Brand Packs
 before publishing a requested selection, retains the previous valid selection on failure, and offers
 retry. This is local host integration, not a reusable framework adapter. That proposed adapter and
 broader runtime measurement remain future work in Linear.
@@ -48,3 +50,7 @@ broader runtime measurement remain future work in Linear.
 SSR Brand Pack hosts must include the matching verified stylesheet with preloaded metadata. Valid
 SSR content is immediately available under that contract. The CSR stylesheet loader keys readiness
 by URL and expected hash and does not accept a loaded link with incompatible integrity.
+
+The Showcase uses component subpaths for runtime values and true `import type` declarations for
+root types. Mixed type-only specifiers must not leave a root side-effect import under verbatim module
+syntax. The consumer bundle check verifies that the resources entrypoint emits no component CSS.

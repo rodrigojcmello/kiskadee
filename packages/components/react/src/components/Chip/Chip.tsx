@@ -1,6 +1,8 @@
 'use client';
 
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+import { useComponentMetadata } from '../../shared/contexts/useComponentMetadata.ts';
 
 import './Chip.structural.scss';
 import { stateActivator as cn } from '@kiskadee/core';
@@ -167,7 +169,8 @@ const ChipRoot = forwardRef<HTMLSpanElement, ChipProps>(function ChipRoot(
   ref
 ) {
   const scale = useComponentScale('chip', size);
-  const { classesMap, global, segment, theme } = useKiskadee();
+  const { classesMap, segment, theme } = useKiskadee();
+  const chipMetadata = useComponentMetadata('chip');
   const consumedSurfaceContext = useSurfaceContext(explicitSurfaceContext);
   const elements =
     useComponentClassMap('chip', classesMap.chip as ChipClassesMap | undefined) ?? {};
@@ -197,7 +200,7 @@ const ChipRoot = forwardRef<HTMLSpanElement, ChipProps>(function ChipRoot(
     intent,
     resolveProducedSurface: (selected) =>
       resolveContentSurfaceContext({
-        map: global?.components?.chip?.contentSurfaceContext,
+        map: chipMetadata?.contentSurfaceContext,
         segment,
         theme,
         consumedSurfaceContext,
@@ -217,7 +220,7 @@ const ChipRoot = forwardRef<HTMLSpanElement, ChipProps>(function ChipRoot(
   );
 });
 
-export const Chip = Object.assign(ChipRoot, {
+export const Chip = Object.assign(withComponentResources('chip', ChipRoot), {
   Badge: ChipBadge,
   Content: ChipContent,
   Icon: ChipIcon,

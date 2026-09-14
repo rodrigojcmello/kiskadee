@@ -1,7 +1,8 @@
 'use client';
 
 import type { ThemeMode } from '@kiskadee/core';
-import { useCardArtifactConfig, useKiskadee } from '@kiskadee/react-components';
+import { useCardArtifactConfig } from '@kiskadee/react-components/card';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import { useMemo } from 'react';
 import {
   resolveCanonicalCardSurfaces,

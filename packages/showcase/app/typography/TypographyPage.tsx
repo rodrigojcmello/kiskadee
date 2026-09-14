@@ -11,14 +11,13 @@ import {
 } from '@kiskadee/core';
 import { SYSTEM_MONOSPACE_FONT_STACK } from '@kiskadee/core/font-family';
 import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
+import type { FontFamilyRole } from '@kiskadee/react-components';
 import {
-  type FontFamilyRole,
   SurfaceContextProvider,
-  Text,
   useFontFamilyStatus,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+  useKiskadee
+} from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
 import {
   ShowcaseGlobalSemanticControls,
   ShowcaseIconographyControls
@@ -31,6 +30,7 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { useTypographyArtifact } from '@/hooks/use-typography-artifact';
 import {
   createFontSelectionOptions,
@@ -716,7 +716,7 @@ function TypeScale({
 
 function TypographyContent() {
   const { global, segment, theme } = useKiskadee();
-  const { fontRoleNames, manifest, setFontRoleName } = useShowcase();
+  const { fontRoleNames, manifest, setFontRoleName } = useShowcaseMetadata(['text']);
   const { familyResolutions } = useFontFamilyStatus();
   const textProfiles = useShowcaseTextProfiles();
   const presetFonts = global?.fonts;

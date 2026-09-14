@@ -21,16 +21,8 @@ function createContextValue(
     setTheme: () => {},
     designSystem: 'default',
     setDesignSystem: () => {},
-    global: {
-      radius: 'rounded',
-      components: {
-        switch: {
-          options: {
-            controlTextVisibility
-          }
-        }
-      }
-    }
+    global: { radius: 'rounded' },
+    componentArtifacts: { switch: { component: 'switch', options: { controlTextVisibility } } }
   };
 }
 
@@ -118,7 +110,7 @@ describe('Switch', () => {
     expect(switchInput.getAttribute('aria-checked')).toBe('false');
   });
 
-  it('renderiza controlText quando configurado como always no global config', () => {
+  it('renderiza controlText quando configurado como always no artefato do componente', () => {
     const { container } = renderSwitch(
       h(Switch, {
         motion: false,

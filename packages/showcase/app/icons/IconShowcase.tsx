@@ -6,13 +6,8 @@ import iconManifest from '@kiskadee/icons/icons.json';
 import { CANONICAL_ICON_NAMES, type CanonicalIconName } from '@kiskadee/icons/interface';
 import { interfaceIconFamilyOptions } from '@kiskadee/icons/interface/catalog';
 import * as SocialIcons from '@kiskadee/icons/social';
-import {
-  FamilyResolvedIcon,
-  Icon as KIcon,
-  useIconFamilyStatus,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+import { FamilyResolvedIcon, Icon as KIcon } from '@kiskadee/react-components/icon';
+import { useIconFamilyStatus, useKiskadee } from '@kiskadee/react-components/resources';
 import type { ComponentType, CSSProperties, SVGProps } from 'react';
 import { useMemo, useState } from 'react';
 import {
@@ -30,6 +25,7 @@ import {
 import { useButtonStressTestBackgroundTones } from '@/hooks/use-background-tones';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import s from './Icons.module.scss';
@@ -264,7 +260,7 @@ function SocialIconGallery({
 
 export default function IconShowcase() {
   const { designSystem, global, segment, theme } = useKiskadee();
-  const { iconFamilyId, iconVariantId, manifest } = useShowcase();
+  const { iconFamilyId, iconVariantId, manifest } = useShowcaseMetadata(['icon']);
   const { fallbackFor } = useIconFamilyStatus();
   const background = useShowcaseBackground();
   const surfaceContext = background.surfaceContext;

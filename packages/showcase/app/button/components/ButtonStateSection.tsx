@@ -8,7 +8,9 @@ import type {
   SurfaceContext
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import { Button as KButton, SmoothText, Text } from '@kiskadee/react-components';
+import { Button as KButton } from '@kiskadee/react-components/button';
+import { SmoothText } from '@kiskadee/react-components/smooth-text';
+import { Text } from '@kiskadee/react-components/text';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';

@@ -751,18 +751,14 @@ They are not referenced by normal preset `colors.json`, global CSS, or class map
 
 Use each artifact for a different level of responsibility:
 
-- `schema.json`: serializable reference snapshot of the authored schema structure, excluding the
+- `_debug/schema.json`: build-only serializable reference snapshot of the authored schema structure, excluding the
   `colors` tree. This is the best artifact for inspection, tooling, debugging, and answering
   "what did this preset author actually declare?"
 - `manifest.json`: compact discovery metadata. Use it to list design systems, segments, themes,
   fonts, and high-level component capabilities without loading the full schema.
-- `global.kiskadee.json`: descriptive runtime-friendly defaults and DS intentions that are useful
-  without traversing full component branches. Use it for global defaults such as fonts, radius,
-  activation feedback, and the compact typography class map used by standalone `Text`.
-  Component-specific semantic metadata should move toward component artifacts such as
-  `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
-  `components/text-field.kiskadee.json`; new artifacts should not add component semantic payloads
-  under `global.components.<name>`.
+- `global.kiskadee.json`: shared defaults such as fonts, radius, activation feedback and density.
+  Component-specific options/effects and size support live in `components/<component>.kiskadee.json`.
+  Text's typography class map also lives in Text metadata; `global.components` is not published.
 - `typography.kiskadee.json`: optional, lazy inspection metadata containing authored profile
   definitions, compact bucket keys, their atomic class lists, and profile usages. It is not part of
   normal component runtime loading.
@@ -774,9 +770,8 @@ Use each artifact for a different level of responsibility:
   theme availability.
 - `extra.<segment>.<theme>.kiskadee.json`: lightweight per-palette metadata that complements the
   class maps, such as resolved background information used by consumers like Showcase.
-- `core.kiskadee.css`, `<segment>.<theme>.kiskadee.css`, `effects.kiskadee.css`, and token CSS:
-  shared utility-style CSS bundles. Keep these aggregated unless measurements prove a component CSS
-  split beats the current class reuse/dedupe model.
+- `styles/<hash>.css`: component-scoped and shared-consumer utility stylesheets, referenced with
+  integrity and source order. Token CSS remains global. Aggregate CSS is build-only inspection.
 
 Rule:
 
@@ -784,15 +779,16 @@ Rule:
   package authoritative input, but must not infer or repair missing design-system meaning.
 - Do not treat `manifest.json` as a substitute for `schema.json`.
 - Do not treat `global.kiskadee.json` as the structural source of truth for variant branches.
-- Do not treat `core.kiskadee.json` as semantic capability metadata for UI controls; it remains the
-  aggregate generated class map used by legacy/runtime fallback class resolution.
+- Aggregate `core.kiskadee.json` is a build-only inspection intermediate. Runtime loads component
+  metadata and class maps; it does not use an aggregate fallback.
 - Do not put semantic component defaults into component class-map artifacts. Class maps carry class
   names only; use component metadata artifacts for options, effects, and variant defaults.
-- Do not split generated CSS by component as a default next step. The generated CSS is intentionally
-  utility-like and reusable across components, while structural CSS belongs to component packages.
+- Partition generated CSS by exact component consumers while preserving shared utility reuse and
+  cascade order. Follow `packages/web-builder/docs/definitions/component-resources.md`.
 - Runtime components and Showcase controls must use the same component semantic metadata when
   deciding whether a component effect exists.
-- Use `global.kiskadee.json` for convenience defaults; use `schema.json` when structural fidelity matters.
+- Use component metadata for component defaults and global metadata only for shared foundations.
+  `schema.json` is a build-only authoring snapshot, not a browser runtime input.
 - Omit unsupported component effects from component metadata artifacts; do not emit explicit `false`
   values for absent effects.
 
@@ -839,7 +835,7 @@ Consequence:
 
 - A projection adds no CSS selector, utility rule, effect recipe, artifact file, provider, request,
   or browser module.
-- Aggregate and component-scoped core class maps are the only publication surfaces for `p`.
+- Component-scoped core class maps are the publication surface for `p`; aggregates remain build-only.
 - A missing registry entry must not fall back to raw schema data, a child class, or a hardcoded
   structural value.
 - Future entries require build validation, atomic-class deduplication evidence, deterministic
@@ -875,7 +871,8 @@ context.
 
 ### 5.2.2 Optional brand-pack representation
 
-Brand packs use one CSS file per pack, segment, and theme. Their class maps remain component-scoped.
+Brand packs publish component-scoped stylesheet dependencies per pack, segment and theme, with
+shared rules deduplicated by consumer set. Their class maps remain component-scoped.
 The pack manifest binds exact `brand.*` intents, components, hashes, and resource paths.
 
 The pack namespace includes the design system, pack, and projection hash so its classes cannot

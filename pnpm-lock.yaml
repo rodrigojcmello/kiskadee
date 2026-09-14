@@ -403,6 +403,9 @@ importers:
         specifier: workspace:^
         version: link:../tonal-scale
     devDependencies:
+      '@bramus/specificity':
+        specifier: 2.4.2
+        version: 2.4.2
       '@types/node':
         specifier: ^25.9.2
         version: 25.9.2

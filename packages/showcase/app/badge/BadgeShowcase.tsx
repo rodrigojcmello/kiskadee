@@ -10,17 +10,17 @@ import type {
   RadiusMode
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
+import { Badge } from '@kiskadee/react-components/badge';
+import { Button } from '@kiskadee/react-components/button';
+import { Chip } from '@kiskadee/react-components/chip';
+import { Dropdown } from '@kiskadee/react-components/dropdown';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import {
-  Badge,
-  Button,
-  Chip,
-  Dropdown,
-  FamilyResolvedIcon,
   SurfaceContextProvider,
-  Text,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+  useComponentMetadata,
+  useKiskadee
+} from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
 import Image from 'next/image';
 import { type ReactNode, type Ref, useEffect, useMemo, useState } from 'react';
 import { useShowcasePanel } from '@/app/ShowcasePanelContext';
@@ -34,6 +34,7 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
@@ -281,7 +282,7 @@ function IntentBadgeButton({
 }
 
 export default function BadgeShowcase() {
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['badge', 'button', 'chip', 'dropdown']);
   const { densityMap, densityOverride } = useShowcasePanel();
   const [metadataScale, setMetadataScale] = useState<ElementSizeValue | undefined>();
   const metadataScales = Object.entries(manifest?.components?.button?.scale ?? {})
@@ -312,7 +313,8 @@ export default function BadgeShowcase() {
   useEffect(() => {
     if (metadataScale && !activeMetadataScale) setMetadataScale(undefined);
   }, [metadataScale, activeMetadataScale]);
-  const { global, segment, theme } = useKiskadee();
+  const { segment, theme } = useKiskadee();
+  const badgeMetadata = useComponentMetadata('badge');
   const profiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.badge);
   const buttonAvailable = Boolean(manifest?.components?.button);
@@ -331,7 +333,7 @@ export default function BadgeShowcase() {
   const activeSurfaceIsDark = activeSurface
     ? isDarkSurfaceColor(activeSurface.resolvedColor)
     : false;
-  const badgeShadow = global?.components?.badge?.effects?.shadow;
+  const badgeShadow = badgeMetadata?.effects?.shadow;
   const shadowSupported = Boolean(badgeShadow?.e5);
   const activeShadow = shadow && shadowSupported;
   const badgeState = getManifestComponentState(

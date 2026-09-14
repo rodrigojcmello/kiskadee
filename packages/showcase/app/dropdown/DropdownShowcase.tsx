@@ -6,16 +6,13 @@ import type {
   ElementSizeValue
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import {
-  Button,
-  ButtonMenu,
-  ContextMenu,
-  Dropdown,
-  FamilyResolvedIcon,
-  Text,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+import { Button } from '@kiskadee/react-components/button';
+import { ButtonMenu } from '@kiskadee/react-components/button-menu';
+import { ContextMenu } from '@kiskadee/react-components/context-menu';
+import { Dropdown } from '@kiskadee/react-components/dropdown';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { useComponentMetadata, useKiskadee } from '@kiskadee/react-components/resources';
+import { Text } from '@kiskadee/react-components/text';
 import type { ReactNode, Ref } from 'react';
 import { useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
@@ -28,6 +25,7 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Dropdown.module.scss';
 
@@ -306,11 +304,12 @@ function SelectionPresentationMenu({
 }
 
 export default function DropdownShowcase() {
-  const { designSystem, global } = useKiskadee();
-  const { manifest } = useShowcase();
+  const { designSystem } = useKiskadee();
+  const dropdownMetadata = useComponentMetadata('dropdown');
+  const { manifest } = useShowcaseMetadata(['button', 'dropdown']);
   const textProfiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.dropdown && manifest.components.button);
-  const presenceArtifact = global?.components?.dropdown?.effects?.presence;
+  const presenceArtifact = dropdownMetadata?.effects?.presence;
   const { presenceOptions, presenceOverride, presenceSelection, setPresenceSelection } =
     useDropdownPresenceControl({ designSystem, presenceArtifact });
   const [leadingIconComposition, setLeadingIconComposition] =

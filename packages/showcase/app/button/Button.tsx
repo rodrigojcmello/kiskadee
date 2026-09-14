@@ -7,17 +7,16 @@ import type {
   SurfaceContext
 } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
+import { Button as KButton, useButtonArtifactConfig } from '@kiskadee/react-components/button';
+import { Card } from '@kiskadee/react-components/card';
 import {
-  Card,
-  Button as KButton,
-  SmoothText,
   SurfaceContextProvider,
-  Switch,
-  Text,
-  useButtonArtifactConfig,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+  useComponentMetadata,
+  useKiskadee
+} from '@kiskadee/react-components/resources';
+import { SmoothText } from '@kiskadee/react-components/smooth-text';
+import { Switch } from '@kiskadee/react-components/switch';
+import { Text } from '@kiskadee/react-components/text';
 import React from 'react';
 import {
   ShowcaseGlobalSemanticControls,
@@ -37,6 +36,7 @@ import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPrefe
 import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import {
   getManifestComponentState,
@@ -169,7 +169,16 @@ function SurfaceContextComparison({
 
 export function Button() {
   const { designSystem, global, segment, theme } = useKiskadee();
-  const { fontName, manifest } = useShowcase();
+  const dropdownMetadata = useComponentMetadata('dropdown');
+  const { fontName, manifest } = useShowcaseMetadata([
+    'badge',
+    'bottomSheet',
+    'button',
+    'card',
+    'dropdown',
+    'progress',
+    'switch'
+  ]);
   const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();
   const { buttonClassesMap } = useButtonArtifactConfig();
   const textProfiles = useShowcaseTextProfiles();
@@ -205,7 +214,7 @@ export function Button() {
   const { presenceOptions, presenceOverride, presenceSelection, setPresenceSelection } =
     useDropdownPresenceControl({
       designSystem,
-      presenceArtifact: global?.components?.dropdown?.effects?.presence
+      presenceArtifact: dropdownMetadata?.effects?.presence
     });
   const onVividSupported = supportsManifestSurfaceContext(buttonMeta, segment, theme, 'onVivid');
   const activeCardSurfaceContext = supportsManifestSurfaceContext(

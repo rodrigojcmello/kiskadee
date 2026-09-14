@@ -42,9 +42,11 @@ const context: KiskadeeContextValue = {
   setDesignSystem: () => {},
   setSegment: () => {},
   setTheme: () => {},
-  global: {
-    components: {
-      button: {
+  global: {},
+  componentArtifacts: {
+    button: {
+      component: 'button',
+      ...{
         contentSurfaceContext: {
           default: {
             light: {
@@ -56,8 +58,11 @@ const context: KiskadeeContextValue = {
             }
           }
         }
-      },
-      card: {
+      }
+    },
+    card: {
+      component: 'card',
+      ...{
         contentSurfaceContext: {
           default: {
             light: {

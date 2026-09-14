@@ -1,5 +1,8 @@
 'use client';
 
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
+import { useComponentMetadata } from '../../shared/contexts/useComponentMetadata.ts';
+
 import './Text.structural.scss';
 import type {
   SurfaceContext,
@@ -45,8 +48,11 @@ const TextRuntime = forwardRef<HTMLElement, TextRuntimeProps>(function TextRunti
   }: TextRuntimeProps,
   ref
 ) {
-  const { classesMap, designSystem, global } = useKiskadee();
-  const typographyElement = global?.classMap?.text?.e1;
+  const { classesMap, designSystem } = useKiskadee();
+  const metadata = useComponentMetadata('text');
+  const typographyElement = (
+    metadata?.classMap as import('@kiskadee/core').GlobalClassNameMapJSON['text'] | undefined
+  )?.e1;
   const profileClassName = resolveTypographyClassName(typographyElement, profile);
   const resolvedSurfaceContext = useSurfaceContext(surfaceContext);
   const colorResolution = useComponentClassMapResolution(
@@ -83,6 +89,6 @@ const TextRuntime = forwardRef<HTMLElement, TextRuntimeProps>(function TextRunti
   );
 });
 
-export const Text = TextRuntime as TextComponent;
+export const Text = withComponentResources('text', TextRuntime) as TextComponent;
 
 export default Text;

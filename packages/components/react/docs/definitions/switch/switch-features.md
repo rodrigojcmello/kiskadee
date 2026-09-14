@@ -125,9 +125,8 @@ Fallback order for component options:
 
 1. current loaded Switch component artifact;
 2. previous loaded Switch component artifact during a provider swap;
-3. `global.components.switch`;
-4. global radius for `radius`;
-5. local defaults from `Switch.class-names.ts`.
+3. global radius for `radius`;
+4. local defaults from `Switch.class-names.ts`.
 
 The generated class map remains the source of truth for visual styling. The
 React component resolves classes from `classesMap.switch` and

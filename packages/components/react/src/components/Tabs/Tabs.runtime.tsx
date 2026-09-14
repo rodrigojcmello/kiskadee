@@ -1,5 +1,6 @@
 import { HeadlessTabs } from '@kiskadee/react-headless';
 import { memo, type ReactNode, useEffect, useMemo, useState } from 'react';
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import {
   joinClassNames,
@@ -315,7 +316,7 @@ export function createTabsComponent<
     );
   }
 
-  const TabsRootMemo = memo(TabsRoot);
+  const TabsRootMemo = withComponentResources('tabs', memo(TabsRoot));
   TabsRootMemo.displayName = options.displayName;
   const BarComponent = options.BarComponent ?? TabsBar;
   const TabComponent = options.TabComponent ?? TabsTabBase;

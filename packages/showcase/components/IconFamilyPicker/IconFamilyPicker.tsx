@@ -1,7 +1,7 @@
 'use client';
 
 import { interfaceIconFamilyOptions } from '@kiskadee/icons/interface/catalog';
-import { useShowcase } from '@kiskadee/react-components';
+import { useShowcase } from '@kiskadee/react-components/resources';
 import { Select } from '@/k-components';
 
 type IconPickerProps = {

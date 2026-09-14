@@ -1,5 +1,7 @@
 'use client';
 
+import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
+
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 
 import './Badge.structural.scss';
@@ -166,7 +168,7 @@ const BadgeMark = forwardRef<HTMLSpanElement, BadgeMarkProps>(function BadgeMark
   );
 });
 
-export const Badge = Object.assign(BadgeRoot, {
-  Dot: BadgeDot,
-  Mark: BadgeMark
+export const Badge = Object.assign(withComponentResources('badge', BadgeRoot), {
+  Dot: withComponentResources('badge', BadgeDot),
+  Mark: withComponentResources('badge', BadgeMark)
 });

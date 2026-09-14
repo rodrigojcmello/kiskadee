@@ -1,7 +1,9 @@
 'use client';
 
 import type { ComponentEmphasis } from '@kiskadee/core';
-import { Separator, Text, useKiskadee, useShowcase } from '@kiskadee/react-components';
+import { useKiskadee } from '@kiskadee/react-components/resources';
+import { Separator } from '@kiskadee/react-components/separator';
+import { Text } from '@kiskadee/react-components/text';
 import { useState } from 'react';
 import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
@@ -11,6 +13,7 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Separator.module.scss';
@@ -28,7 +31,7 @@ function Unavailable() {
 }
 
 export default function SeparatorShowcase() {
-  const { manifest } = useShowcase();
+  const { manifest } = useShowcaseMetadata(['separator']);
   const { segment, theme } = useKiskadee();
   const { surfaceContext } = useShowcaseBackground();
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');

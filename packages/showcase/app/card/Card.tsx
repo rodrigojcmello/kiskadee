@@ -18,18 +18,17 @@ import {
   type ShadowLayerValue,
   type SolidColor
 } from '@kiskadee/core';
+import { Button as KButton } from '@kiskadee/react-components/button';
 import {
-  Icon,
-  Button as KButton,
   Card as KCard,
   CardAction as KCardAction,
-  Separator,
-  Switch,
-  Text,
-  useCardArtifactConfig,
-  useKiskadee,
-  useShowcase
-} from '@kiskadee/react-components';
+  useCardArtifactConfig
+} from '@kiskadee/react-components/card';
+import { Icon } from '@kiskadee/react-components/icon';
+import { useComponentMetadata, useKiskadee } from '@kiskadee/react-components/resources';
+import { Separator } from '@kiskadee/react-components/separator';
+import { Switch } from '@kiskadee/react-components/switch';
+import { Text } from '@kiskadee/react-components/text';
 import type { ManifestComponent, ManifestComponentState } from '@kiskadee/web-builder/types';
 import React from 'react';
 import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
@@ -46,6 +45,7 @@ import {
 } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Card.module.scss';
@@ -349,7 +349,8 @@ function resolveDemoButtonProfile(
 
 export function Card() {
   const { global, segment, theme } = useKiskadee();
-  const { manifest } = useShowcase();
+  const cardMetadata = useComponentMetadata('card');
+  const { manifest } = useShowcaseMetadata(['button', 'card', 'switch']);
   const { cardClassesMap } = useCardArtifactConfig();
   const background = useShowcaseBackground();
   const profiles = useShowcaseTextProfiles();
@@ -447,8 +448,8 @@ export function Card() {
     };
   });
   const cardShadowUsageByLevel = React.useMemo(
-    () => buildCardShadowUsageByLevel(global?.components?.card?.effects?.shadow?.e1),
-    [global?.components?.card?.effects?.shadow?.e1]
+    () => buildCardShadowUsageByLevel(cardMetadata?.effects?.shadow?.e1),
+    [cardMetadata?.effects?.shadow?.e1]
   );
   const shadowDocumentationByKind = React.useMemo(
     () =>

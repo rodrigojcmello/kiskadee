@@ -23,7 +23,7 @@ Resolution order is:
 
 1. the nearest collection override;
 2. the Dropdown Root or VisualProvider override;
-3. `global.components.dropdown.options` from the active preset artifact;
+3. `components/dropdown.kiskadee.json` options from the active preset;
 4. the portability defaults `item-and-selection` and `true`.
 
 The portability defaults complete an optional behavioral contract. They do not supply style

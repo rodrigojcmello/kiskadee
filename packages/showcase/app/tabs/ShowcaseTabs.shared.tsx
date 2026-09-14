@@ -8,11 +8,8 @@ import type {
   TabsLineIndicatorShape,
   TabsTabWidth
 } from '@kiskadee/core';
-import {
-  FamilyResolvedIcon,
-  type TabsIndicatorMotionStyle,
-  type TabsSpringPreset
-} from '@kiskadee/react-components';
+import type { TabsIndicatorMotionStyle, TabsSpringPreset } from '@kiskadee/react-components';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import Link from 'next/link';
 import type { ComponentType, ReactNode } from 'react';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';

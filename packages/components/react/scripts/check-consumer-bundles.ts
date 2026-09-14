@@ -55,3 +55,25 @@ for (const [component, budget] of Object.entries(budgets)) {
     );
   }
 }
+
+const resourceBundle = await build({
+  absWorkingDir: packageRoot,
+  stdin: {
+    contents:
+      "export { useKiskadee, DensityProvider, useComponentMetadata } from '@kiskadee/react-components/resources';",
+    resolveDir: packageRoot
+  },
+  bundle: true,
+  format: 'esm',
+  platform: 'browser',
+  minify: true,
+  write: false,
+  outdir: '/tmp/kiskadee-resource-check',
+  external: ['react', 'react-dom', 'react/*', 'react-dom/*'],
+  define: { 'process.env.NODE_ENV': '"production"' }
+});
+assert(
+  !resourceBundle.outputFiles.some((file) => file.path.endsWith('.css')),
+  'Resource hooks import component structural CSS'
+);
+console.log('Resources: no component CSS');

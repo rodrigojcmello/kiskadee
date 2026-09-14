@@ -6,7 +6,7 @@ import {
   type TabsTabWidth,
   tabsIndicatorShapesByVariant
 } from '@kiskadee/core';
-import { TabsBox, useTabsArtifactConfig } from '@kiskadee/react-components';
+import { TabsBox, useTabsArtifactConfig } from '@kiskadee/react-components/tabs';
 import { useState } from 'react';
 import {
   ShowcaseBooleanControl,

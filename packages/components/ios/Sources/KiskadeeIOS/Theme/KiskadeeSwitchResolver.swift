@@ -39,6 +39,9 @@ enum KiskadeeSwitchResolver {
         isDisabled: Bool
     ) throws -> KiskadeeSwitchResolvedStyle {
         let elements = try switchElements(theme: theme)
+        let effectiveScale = try resolvedScale(theme.scale, elements: elements)
+        let theme = KiskadeeTheme(schema: theme.schema, segment: theme.segment, mode: theme.mode,
+                                  scale: effectiveScale, intent: theme.intent, emphasis: theme.emphasis)
         let state: KiskadeeInteractionState = isDisabled ? .disabled : isPressed ? .pressed : .rest
         let radiusMode = switchRadiusMode(theme: theme)
 
@@ -378,6 +381,26 @@ enum KiskadeeSwitchResolver {
         return CGFloat(number)
     }
 
+    private static func resolvedScale(_ requested: String, elements: [String: KiskadeeElementSchema]) throws -> String {
+        var supported = Set<String>()
+        func collect(_ value: KiskadeeJSONValue) {
+            guard let object = value.objectValue else { return }
+            for (key, child) in object {
+                let normalized = normalizedScale(key)
+                if normalized.range(of: "^(sm|md|lg):[1-5]$", options: .regularExpression) != nil {
+                    supported.insert(normalized)
+                } else { collect(child) }
+            }
+        }
+        for element in elements.values { for value in (element.scales ?? [:]).values { collect(value) } }
+        if supported.isEmpty { return "s:md:1" }
+        guard supported.contains("md:1") else {
+            throw KiskadeeSchemaError.missingScale(element: "switch", scale: "s:md:1")
+        }
+        let normalized = normalizedScale(requested)
+        return "s:" + (supported.contains(normalized) ? normalized : "md:1")
+    }
+
     private static func number(from value: KiskadeeJSONValue, scale: String) -> Double? {
         if let number = value.numberValue {
             return number
@@ -391,7 +414,7 @@ enum KiskadeeSwitchResolver {
             ?? object[normalizedScale(scale)]?.numberValue
             ?? object["s:\(normalizedScale(scale))"]?.numberValue
             ?? object["all"]?.numberValue
-            ?? object.values.compactMap(\.numberValue).first
+            ?? object["s:all"]?.numberValue
     }
 
     private static func normalizedScale(_ scale: String) -> String {

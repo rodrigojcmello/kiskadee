@@ -6,16 +6,16 @@ import { createMaterial3GoogleCardSchema } from './card.schema.ts';
 const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
 const card = createMaterial3GoogleCardSchema({
   c,
-  segmentNames: ['default', 'dynamic'],
+  segmentNames: ['default', 'dynamic', 'purple'],
   transparent: 'transparent'
 });
 
 it('publishes canonical surfaces, palettes and descendant contexts consistently', () => {
-  for (const segment of ['default', 'dynamic'] as const)
+  for (const segment of ['default', 'dynamic', 'purple'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const) {
         const entries = card.options?.canonicalSurfaces?.[segment]?.[theme];
-        expect(entries).toHaveLength(7);
+        expect(entries).toHaveLength(6);
         for (const entry of entries!) {
           const box =
             card.elements.e1?.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.[entry.intent]?.[
@@ -46,22 +46,45 @@ it('resolves each medium surface from its own family and keeps border optional',
   expect(card.options?.border?.default?.light?.onVivid?.primary?.highest).toBe(true);
 });
 
-it('keeps strong surfaces dark enough for light content in every interaction', () => {
-  const contrast = (hex: string) => {
-    const channels = [1, 3, 5]
-      .map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
-      .map((x) => (x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));
-    return 1.05 / (0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2] + 0.05);
-  };
-  for (const theme of ['light', 'dark'] as const)
-    for (const intent of ['neutral', 'primary'] as const) {
-      const states =
-        card.elements.e1?.palettes?.default?.[theme]?.onSubtle?.boxColor?.[intent]?.highest;
-      for (const state of ['rest', 'hover', 'focus', 'pressed'] as const)
-        expect(contrast(states?.[state] as string), `${intent}/${state}`).toBeGreaterThanOrEqual(
-          4.5
-        );
-      for (const value of Object.values(states?.selected ?? {}))
-        expect(contrast(value as string)).toBeGreaterThanOrEqual(4.5);
+it('uses common pure white Lowest surfaces in Light, preserves Dark and removes only Neutral Highest', () => {
+  for (const segment of ['default', 'dynamic', 'purple'] as const)
+    for (const surface of ['onSubtle', 'onVivid'] as const)
+      for (const intent of ['neutral', 'primary'] as const) {
+        const light = card.elements.e1?.palettes?.[segment]?.light?.[surface]?.boxColor?.[intent];
+        const dark = card.elements.e1?.palettes?.[segment]?.dark?.[surface]?.boxColor?.[intent];
+        expect(light?.lowest?.rest).toBe('#ffffff');
+        expect(light?.lowest?.hover).toBe(c(segment, 'l', 'primitive.black.v1', 1));
+        expect(dark?.lowest?.rest).toBe(c.ref(segment, 'd', `card.${intent}`, 'subtle', -3));
+        if (intent === 'neutral') {
+          expect(light?.highest).toBeUndefined();
+          expect(dark?.highest).toBeUndefined();
+        }
+      }
+});
+
+it('requires Primary Highest as the canonical onVivid surface in every segment and theme', () => {
+  for (const segment of ['default', 'dynamic', 'purple'] as const)
+    for (const theme of ['light', 'dark'] as const) {
+      expect(card.options?.canonicalSurfaces?.[segment]?.[theme]).toContainEqual({
+        intent: 'primary',
+        emphasis: 'highest',
+        contentSurfaceContext: 'onVivid'
+      });
+      for (const surface of ['onSubtle', 'onVivid'] as const) {
+        const states =
+          card.elements.e1?.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.primary?.highest;
+        expect(states?.rest).toBe(c.ref(segment, 'l', 'card.primary', 'vivid'));
+        expect(states?.hover).toBe(c.ref(segment, 'l', 'card.primary', 'vivid', -1));
+        for (const state of ['focus', 'pressed'] as const)
+          expect(states?.[state]).toBe(c.ref(segment, 'l', 'card.primary', 'vivid', -2));
+        expect(states?.selected).toEqual({
+          rest: c.ref(segment, 'l', 'card.primary', 'vivid', -1),
+          hover: c.ref(segment, 'l', 'card.primary', 'vivid', -2),
+          pressed: c.ref(segment, 'l', 'card.primary', 'vivid', -2)
+        });
+        expect(
+          card.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.primary?.highest?.rest
+        ).toBe('onVivid');
+      }
     }
 });

@@ -2,7 +2,7 @@
 
 import type { TabsTabWidth } from '@kiskadee/core';
 import { componentScaleToSize } from '@kiskadee/core';
-import { TabsSegmented, useTabsArtifactConfig } from '@kiskadee/react-components';
+import { TabsSegmented, useTabsArtifactConfig } from '@kiskadee/react-components/tabs';
 import { useState } from 'react';
 import {
   ShowcaseControlGrid,

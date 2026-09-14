@@ -1,10 +1,10 @@
 import { getBrandPackDefinition, isBrandId } from '@kiskadee/brands';
-import {
-  type BrandPackLoader,
-  type BrandPackLoadRequest,
-  createBrandPackResourceKey,
-  type LoadedBrandPackResources
+import type {
+  BrandPackLoader,
+  BrandPackLoadRequest,
+  LoadedBrandPackResources
 } from '@kiskadee/react-components';
+import { createBrandPackResourceKey } from '@kiskadee/react-components/resources';
 import {
   BRAND_PACK_BUILD_CONTRACT,
   BRAND_PACK_BUILD_FORMAT_VERSION,
@@ -91,9 +91,7 @@ function assertPaletteArtifact(
 ): asserts value is BrandPackBuildManifest['palettes'][string] {
   if (
     !isRecord(value) ||
-    !isSafeArtifactPath(value.css) ||
-    typeof value.cssSha256 !== 'string' ||
-    !SHA256_PATTERN.test(value.cssSha256) ||
+    !isRecord(value.styles) ||
     !isRecord(value.classMaps) ||
     !isRecord(value.classMapSha256)
   ) {
@@ -112,7 +110,7 @@ export const loadBrandPack: BrandPackLoader = async (
 ): Promise<LoadedBrandPackResources | undefined> => {
   const packBasePath = `${request.designSystem}/brand-packs/${request.pack}`;
   const manifest = await loadJsonFromBuild<BrandPackBuildManifest | undefined>(
-    `${packBasePath}/manifest.json`,
+    `${packBasePath}/manifest.json${request.artifactVersion ? `?v=${encodeURIComponent(request.artifactVersion)}` : ''}`,
     {
       required: false,
       fallback: undefined
@@ -132,6 +130,14 @@ export const loadBrandPack: BrandPackLoader = async (
   );
   if (unsupportedComponent) return undefined;
 
+  const stylesheets = request.components.flatMap((component) => palette.styles[component] ?? []);
+  if (
+    !stylesheets.length ||
+    stylesheets.some(
+      (style) => !isSafeArtifactPath(style.path) || !SHA256_PATTERN.test(style.sha256)
+    )
+  )
+    throw new Error('Invalid component stylesheet resources.');
   const classMapEntries = await Promise.all(
     request.components.map(async (componentName) => {
       const artifactPath = palette.classMaps[componentName];
@@ -175,8 +181,16 @@ export const loadBrandPack: BrandPackLoader = async (
   return {
     ...request,
     cacheKey: createBrandPackResourceKey(request),
-    stylesheetHref: `/build/${packBasePath}/${palette.css}`,
-    stylesheetSha256: palette.cssSha256,
+    stylesheets: [
+      ...new Map(
+        stylesheets
+          .sort((a, b) => a.order - b.order)
+          .map((style) => [
+            style.path,
+            { href: `/build/${packBasePath}/${style.path}`, sha256: style.sha256 }
+          ])
+      ).values()
+    ],
     classMaps: Object.fromEntries(classMapEntries),
     intents: manifest.brands.map((brand) => brand.intent)
   };
