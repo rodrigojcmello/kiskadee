@@ -87,11 +87,20 @@ outline with the same relative offset. Other surface contexts retain their prior
 Source: https://www.figma.com/design/Peqe9lNMsuQHLIUZsiTZNg/Material-3-Design-Kit--Community-?node-id=54446-25355.
 
 Small is a **Kiskadee extension**, not an extracted Material size: rail 36x24, thumb 16x16,
-4px inset and 2px border. Medium remains 52x32 with 24px thumb, shrinking to 16px off.
-Compact density selects Small; regular/spacious retain Medium. The shared runtime rule disables
-thumbShrink below Medium even when configured; no size-map option was added.
+4px inset and 2px border. Large retains 52x32 with 24px thumb, shrinking to 16px off. Medium is 44x28 with a fixed 20px thumb.
+Compact/Desktop selects Small; regular/Tablet selects Medium; spacious/Mobile selects Large. The shared runtime rule disables
+thumbShrink below Large even when configured; no size-map option was added.
 
 The optional On/Off text is e5, distinct from descriptive label e4. Material sets
 controlTextVisibility to none. For demonstrations, e5 has body-small/body-medium typography,
 the label palette, and 8px side margins. Showcase's Show On / Off overrides instance visibility;
 it does not change the Material default or introduce an official Material text recommendation.
+
+
+## Three-size refinement — 2026-09-14
+
+The original Material geometry is now Large. Medium averages Small and Large: rail 44x28,
+thumb 20x20, pill radii 14/10 and 4px inset. Small remains rail 36x24, thumb 16x16.
+Only Large authors the 16px off-thumb shrink target. Runtime eligibility resolves both
+explicit and density-selected sizes, including adaptive viewport changes. Colors are unchanged.
+Segment display names are capitalized in Showcase without changing their IDs or ordering.

@@ -14,7 +14,9 @@ import {
 } from '@/components/ShowcaseControls';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
 import { Select } from '@/k-components';
+import { playWowTransition } from '@/utils/playWowTransition';
 import DesignSystemControls from './DesignSystemControls';
+import { ShowcaseDensityControl } from './ShowcaseDensityControl';
 import styles from './ShowcaseGlobalControls.module.scss';
 
 type ShowcaseGlobalControlsProps = {
@@ -48,7 +50,7 @@ export function ShowcaseSegmentControl({ className }: { className?: string }) {
 
   const segmentOptions = availableSegments.map((availableSegment) => ({
     value: availableSegment,
-    label: availableSegment
+    label: availableSegment.charAt(0).toUpperCase() + availableSegment.slice(1)
   }));
 
   return (
@@ -61,6 +63,8 @@ export function ShowcaseSegmentControl({ className }: { className?: string }) {
       options={segmentOptions}
       value={segment}
       onValueChange={(value) => {
+        if (value === segment) return;
+        playWowTransition();
         setSegment(value);
       }}
       disabled={availableSegments.length <= 1}
@@ -115,6 +119,7 @@ export default function ShowcaseGlobalControls({ variant }: ShowcaseGlobalContro
       <div className={styles.toolbarSegment}>
         <ShowcaseSegmentControl className={styles.toolbarSelect} />
       </div>
+      <ShowcaseDensityControl />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import type { ControlCursorValue, Density } from '@kiskadee/core';
+import type { ControlCursorValue } from '@kiskadee/core';
 import {
   DensityProvider,
   FamilyResolvedIcon,
@@ -18,6 +18,7 @@ import {
 import ShowcaseSidebar from '@/components/ShowcaseSidebar/ShowcaseSidebar';
 import { useShowcaseBackgroundState } from '@/hooks/use-showcase-background-state';
 import style from './layout.module.scss';
+import { useShowcaseDensity } from './ShowcaseDensityContext';
 import type { ShowcasePanelDetail } from './ShowcasePanelContext';
 import { ShowcasePanelContext } from './ShowcasePanelContext';
 
@@ -34,30 +35,7 @@ export default function ShowcaseShell({
 }) {
   const pathname = usePathname();
   const administrativeContext = useKiskadee();
-  const [densityOverrides, setDensityOverrides] = useState<Record<string, Density | undefined>>({});
-  const routeComponent =
-    (
-      {
-        'bottom-sheet': 'bottomSheet',
-        'text-field': 'textField',
-        icons: 'icon',
-        'brand-buttons': 'button'
-      } as Record<string, string>
-    )[pathname.split('/')[1]] ?? pathname.split('/')[1];
-  const densityMap = administrativeContext.global?.density?.[routeComponent];
-  const requestedDensity = densityOverrides[pathname];
-  const densityOverride =
-    (requestedDensity === 'compact' && !densityMap?.c) ||
-    (requestedDensity === 'regular' && !densityMap?.r) ||
-    (requestedDensity === 'spacious' && !densityMap?.s)
-      ? undefined
-      : requestedDensity;
-  const setDensityOverride = useCallback(
-    (value: Density | undefined) => {
-      setDensityOverrides((current) => ({ ...current, [pathname]: value }));
-    },
-    [pathname]
-  );
+  const { densityMap, densityOverride, setDensityOverride } = useShowcaseDensity();
   const [cursorOverrides, setCursorOverrides] = useState<
     Record<string, ControlCursorValue | undefined>
   >({});

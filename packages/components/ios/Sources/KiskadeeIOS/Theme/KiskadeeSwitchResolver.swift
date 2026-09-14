@@ -299,7 +299,7 @@ enum KiskadeeSwitchResolver {
         theme: KiskadeeTheme,
         fallback: CGFloat
     ) -> CGFloat {
-        guard theme.scale.hasPrefix("s:md:") || theme.scale.hasPrefix("s:lg:") else {
+        guard theme.scale.hasPrefix("s:lg:") else {
             return fallback
         }
         guard

@@ -132,3 +132,22 @@ catalog while the next metadata snapshot is pending (or failed). A pending snaps
 an absent capability: it must not temporarily replace an example Card with a plain div and
 remount its descendants. Once the new snapshot resolves, use its catalog; a confirmed absent
 artifact clears the previous catalog. This preserves DOM continuity for preset transitions.
+
+## Toolbar density control
+
+Density is selected beside Segment in the shared toolbar, not in each route's side panel.
+The labels are presentation aliases: Mobile = spacious, Tablet = regular, Desktop = compact.
+They select component density and do not emulate a device or resize the viewport.
+
+Automatic mode is implicit. The selected option reflects the current viewport and the same
+sparse-map fallbacks as Web Builder: regular begins at bp:md:2 and compact at bp:lg:1.
+A fixed map selects its only defined option at any width. All three options remain visible;
+undefined densities are disabled, even when other options happen to map to identical sizes.
+
+A manual selection remains per route for the current session. A circular-arrow button appears
+to clear the override and resume automatic behavior. The state provider is shared by toolbar
+and content; it does not apply the demonstration density to the administrative controls.
+Manual segment/density changes and density reset invoke playWowTransition before updating
+the selection. Automatic viewport changes do not trigger the demonstration effect.
+Explicit component Size continues to override density. Routes without a density map keep the control visible with no active selection and all
+three options disabled. On narrow screens the toolbar expands to fit the density control on a second row.

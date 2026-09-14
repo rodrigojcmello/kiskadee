@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 
-import { cleanup, renderHook } from '@testing-library/react';
+import { act, cleanup, renderHook } from '@testing-library/react';
 import { createElement } from 'react';
 import { afterEach, expect, it, vi } from 'vitest';
 import { KiskadeeContext } from '../../../shared/contexts/KiskadeeContext.tsx';
@@ -25,7 +25,7 @@ it('gates the shared effect at the resolved size, including transitions from md 
     ({ size }: { size: 'sm' | 'md' | 'lg' }) => useSwitchArtifactConfig(undefined, size),
     { wrapper, initialProps: { size: 'md' as 'sm' | 'md' | 'lg' } }
   );
-  expect(calls.load).toHaveBeenLastCalledWith(true);
+  expect(calls.load).toHaveBeenLastCalledWith(false);
   rerender({ size: 'sm' });
   expect(calls.load).toHaveBeenLastCalledWith(false);
   rerender({ size: 'lg' });
@@ -48,4 +48,51 @@ it('disables shrink when density resolves to small even without an explicit inst
     createElement(KiskadeeContext.Provider, { value: context as never }, children);
   renderHook(() => useSwitchArtifactConfig(), { wrapper });
   expect(calls.load).toHaveBeenLastCalledWith(false);
+});
+
+it('resolves adaptive and compiled density sizes before gating the effect', () => {
+  const callbacks = new Set<() => void>();
+  vi.stubGlobal('matchMedia', () => ({
+    addEventListener: (_: string, cb: () => void) => callbacks.add(cb),
+    removeEventListener: (_: string, cb: () => void) => callbacks.delete(cb)
+  }));
+  const originalWidth = window.innerWidth;
+  Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1500 });
+  const context = {
+    classesMap: {},
+    segment: 'default',
+    theme: 'light',
+    density: 'adaptive',
+    global: {
+      density: { switch: { c: 'sm:1', r: 'md:1', s: 'lg:1' } },
+      components: { switch: { effects: { thumbShrink: true } } }
+    }
+  };
+  const wrapper = ({ children }: { children: React.ReactNode }) =>
+    createElement(KiskadeeContext.Provider, { value: context as never }, children);
+  const { unmount } = renderHook(() => useSwitchArtifactConfig(), { wrapper });
+  expect(calls.load).toHaveBeenLastCalledWith(false);
+  act(() => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 });
+    callbacks.forEach((cb) => {
+      cb();
+    });
+  });
+  expect(calls.load).toHaveBeenLastCalledWith(true);
+  act(() => {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 900 });
+    callbacks.forEach((cb) => {
+      cb();
+    });
+  });
+  expect(calls.load).toHaveBeenLastCalledWith(false);
+  unmount();
+  context.density = 'spacious';
+  renderHook(() => useSwitchArtifactConfig(), { wrapper });
+  expect(calls.load).toHaveBeenLastCalledWith(true);
+  expect(supportsSwitchThumbShrink('lg:1')).toBe(true);
+  expect(supportsSwitchThumbShrink('s:md:1')).toBe(false);
+  cleanup();
+  vi.unstubAllGlobals();
+  Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth });
 });

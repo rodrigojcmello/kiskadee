@@ -7,6 +7,7 @@ import DesignSystemToolbar from '@/components/DesignSystemToolbar/DesignSystemTo
 import { ShowcaseDisplayPreferencesProvider } from '@/components/ShowcaseDisplayPreferences';
 import { ShowcaseIconFamilyBoundary } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import style from './layout.module.scss';
+import { ShowcaseDensityProvider } from './ShowcaseDensityContext';
 import ShowcaseShell from './ShowcaseShell';
 
 export default function ShowcaseChrome({ children }: { children: ReactNode }) {
@@ -15,18 +16,20 @@ export default function ShowcaseChrome({ children }: { children: ReactNode }) {
 
   return (
     <ShowcaseDisplayPreferencesProvider>
-      <div className={style.layout}>
-        <ShowcaseIconFamilyBoundary>
-          <DesignSystemToolbar isDesktopSidebarVisible={isDesktopSidebarVisible} />
-        </ShowcaseIconFamilyBoundary>
-        <ShowcaseShell
-          globalControls={globalPanelControls}
-          isDesktopSidebarVisible={isDesktopSidebarVisible}
-          onDesktopSidebarVisibilityChange={setIsDesktopSidebarVisible}
-        >
-          {children}
-        </ShowcaseShell>
-      </div>
+      <ShowcaseDensityProvider>
+        <div className={style.layout}>
+          <ShowcaseIconFamilyBoundary>
+            <DesignSystemToolbar isDesktopSidebarVisible={isDesktopSidebarVisible} />
+          </ShowcaseIconFamilyBoundary>
+          <ShowcaseShell
+            globalControls={globalPanelControls}
+            isDesktopSidebarVisible={isDesktopSidebarVisible}
+            onDesktopSidebarVisibilityChange={setIsDesktopSidebarVisible}
+          >
+            {children}
+          </ShowcaseShell>
+        </div>
+      </ShowcaseDensityProvider>
     </ShowcaseDisplayPreferencesProvider>
   );
 }

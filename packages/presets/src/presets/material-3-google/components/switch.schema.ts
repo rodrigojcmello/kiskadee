@@ -327,7 +327,7 @@ export function createMaterial3GoogleSwitchSchema(
       }
     },
     options: {
-      density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:md:1' },
+      density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:lg:1' },
       variant: 'standard',
       radius: 'pill',
       activationMotion: 'standard',
@@ -352,36 +352,43 @@ export function createMaterial3GoogleSwitchSchema(
                 scales: {
                   boxWidth: {
                     's:sm:1': 36,
-                    's:md:1': 52
+                    's:md:1': 44,
+                    's:lg:1': 52
                   },
                   boxHeight: {
                     's:sm:1': 24,
-                    's:md:1': 32
+                    's:md:1': 28,
+                    's:lg:1': 32
                   },
                   borderWidth: 2,
                   borderRadius: {
                     rounded: 6,
                     pill: {
                       's:sm:1': 12,
-                      's:md:1': 16
+                      's:md:1': 14,
+                      's:lg:1': 16
                     },
                     square: 0
                   },
                   paddingTop: {
                     's:sm:1': 4,
-                    's:md:1': 4
+                    's:md:1': 4,
+                    's:lg:1': 4
                   },
                   paddingRight: {
                     's:sm:1': 4,
-                    's:md:1': 4
+                    's:md:1': 4,
+                    's:lg:1': 4
                   },
                   paddingBottom: {
                     's:sm:1': 4,
-                    's:md:1': 4
+                    's:md:1': 4,
+                    's:lg:1': 4
                   },
                   paddingLeft: {
                     's:sm:1': 4,
-                    's:md:1': 4
+                    's:md:1': 4,
+                    's:lg:1': 4
                   }
                 },
                 palettes: palettesByElement.track
@@ -391,17 +398,20 @@ export function createMaterial3GoogleSwitchSchema(
                 scales: {
                   boxWidth: {
                     's:sm:1': 16,
-                    's:md:1': 24
+                    's:md:1': 20,
+                    's:lg:1': 24
                   },
                   boxHeight: {
                     's:sm:1': 16,
-                    's:md:1': 24
+                    's:md:1': 20,
+                    's:lg:1': 24
                   },
                   borderRadius: {
                     rounded: 6,
                     pill: {
                       's:sm:1': 8,
-                      's:md:1': 12
+                      's:md:1': 10,
+                      's:lg:1': 12
                     },
                     square: 0
                   }
@@ -410,10 +420,10 @@ export function createMaterial3GoogleSwitchSchema(
                   thumbShrink: {
                     rest: {
                       boxWidth: {
-                        's:md:1': 16
+                        's:lg:1': 16
                       },
                       boxHeight: {
-                        's:md:1': 16
+                        's:lg:1': 16
                       }
                     }
                   }
@@ -422,31 +432,41 @@ export function createMaterial3GoogleSwitchSchema(
               },
               e4: {
                 name: 'label',
-                typography: { 's:sm:1': 'body-small', 's:md:1': 'body-medium' },
+                typography: {
+                  's:sm:1': 'body-small',
+                  's:md:1': 'body-medium',
+                  's:lg:1': 'body-medium'
+                },
                 scales: {
                   marginLeft: {
                     's:sm:1': 8,
-                    's:md:1': 12
+                    's:md:1': 10,
+                    's:lg:1': 12
                   },
                   marginRight: {
                     's:sm:1': 8,
-                    's:md:1': 12
+                    's:md:1': 10,
+                    's:lg:1': 12
                   }
                 },
                 palettes: palettesByElement.label
               },
               e5: {
                 name: 'control text',
-                typography: { 's:sm:1': 'body-small', 's:md:1': 'body-medium' },
+                typography: {
+                  's:sm:1': 'body-small',
+                  's:md:1': 'body-medium',
+                  's:lg:1': 'body-medium'
+                },
                 scales: {
-                  marginLeft: { 's:sm:1': 8, 's:md:1': 8 },
-                  marginRight: { 's:sm:1': 8, 's:md:1': 8 }
+                  marginLeft: { 's:sm:1': 8, 's:md:1': 8, 's:lg:1': 8 },
+                  marginRight: { 's:sm:1': 8, 's:md:1': 8, 's:lg:1': 8 }
                 },
                 palettes: palettesByElement.label
               },
               e6: {
                 name: 'icon',
-                iconSize: { 's:sm:1': 's:sm:2', 's:md:1': 's:sm:1' },
+                iconSize: { 's:sm:1': 's:sm:2', 's:md:1': 's:sm:1', 's:lg:1': 's:sm:1' },
                 palettes: palettesByElement.icon
               }
             }

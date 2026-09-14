@@ -177,7 +177,7 @@ export default function SwitchPage() {
   const hasIconSupport = Boolean(switchClassesMap?.standard?.base?.e6);
   const hasActiveIconMode = hasIconSupport && iconMode !== 'none';
   const isThumbShrinkEnabled = hasThumbShrinkEffect && thumbShrinkEnabled;
-  const thumbShrinkOverride = isThumbShrinkEnabled ? undefined : false;
+  const thumbShrinkOverride = thumbShrinkEnabled ? undefined : false;
   const supportedScales = switchMeta?.scale;
   const supportedIntents = getManifestComponentState(switchMeta, segment, theme);
   const supportedStates = supportedIntents?.[intent];

@@ -66,7 +66,7 @@ headless root generates one and connects the wrapping label to the input.
 | `mode` | Current public mode inside `standard`. Default: `base`. |
 | `labelPosition` | Places the optional label before or after the visual control. Default: `start`. |
 | `motion` | `false` disables the runtime motion path. Any other value keeps runtime motion eligible. |
-| `thumbShrink` | `false` disables the thumb-shrink effect for the instance. Otherwise the configured effect is eligible only at resolved md/lg sizes; sm sizes ignore it. |
+| `thumbShrink` | `false` disables the thumb-shrink effect for the instance. Otherwise the configured effect is eligible only at resolved lg sizes; sm/md sizes ignore it. |
 | `icons` | Optional decorative thumb icons by control state: `{ rest?: ReactNode; selected?: ReactNode }`. Icons must be paintable through `currentColor`. |
 | `className` | Merged into the root `e1` slot. |
 | `classNames` | Escape hatch for the schema element slots `e1` through `e6`. |
@@ -460,11 +460,15 @@ contracts remain intact or are explicitly migrated.
 
 ### Size-gated thumb shrink and control-text override
 
-Thumb shrink is disabled for all sm tiers and enabled only for md/lg when declared by the
+Thumb shrink is disabled for all sm/md tiers and enabled only for lg when declared by the
 preset and not disabled on the instance. The gate uses resolved size, including density, and
 updates when size changes. It does not remove ordinary motion. Native resolvers use the same
-threshold and return the full thumb size below md.
+threshold and return the full thumb size below lg.
 
 The instance prop `controlTextVisibility` can override the artifact's existing none/largeOnly/always
 policy. Omission preserves the preset default. This supports Showcase demonstrations without
 changing a preset's recommendation or the headless behavior.
+
+Runtime gating resolves adaptive aliases and compact compiled size strings before checking the
+lg threshold. CSS keeps its adaptive class selection; effect eligibility observes matching viewport
+breakpoints independently. Explicit instance size takes precedence over density.

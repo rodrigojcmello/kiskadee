@@ -7,7 +7,7 @@ import type {
   SwitchControlTextVisibility
 } from '@kiskadee/core';
 import type { SwitchComponentArtifactJSON } from '@kiskadee/web-builder/types';
-import { useComponentScale } from '../../../shared/contexts/DensityContext.tsx';
+import { useResolvedComponentScale } from '../../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMap } from '../../../shared/contexts/useComponentClassMap.ts';
 import { useLoadedComponentArtifact } from '../../../shared/contexts/useLoadedComponentArtifact.ts';
@@ -49,7 +49,7 @@ export function useSwitchArtifactConfig(
   size?: ComponentSize
 ): SwitchArtifactConfig {
   const { classesMap, global } = useKiskadee();
-  const scale = useComponentScale('switch', size);
+  const scale = useResolvedComponentScale('switch', size);
   const {
     currentArtifact: currentSwitchComponentArtifact,
     previousArtifact: previousLoadedSwitchComponentArtifact
@@ -97,6 +97,5 @@ export function useSwitchArtifactConfig(
 }
 
 export function supportsSwitchThumbShrink(scale: string): boolean {
-  const tier = scale.split(':')[1];
-  return tier === 'md' || tier === 'lg';
+  return /^(?:s:)?lg:[1-5]$/.test(scale);
 }

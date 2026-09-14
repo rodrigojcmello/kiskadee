@@ -3,7 +3,6 @@
 import {
   type ControlCursorValue,
   DEFAULT_CONTROL_CURSOR,
-  type Density,
   resolveControlCursor
 } from '@kiskadee/core';
 import { DensityProvider, KiskadeeContext } from '@kiskadee/react-components';
@@ -36,9 +35,6 @@ export function ShowcaseRouteControls({
   title: string;
 }) {
   const {
-    densityMap,
-    densityOverride,
-    setDensityOverride,
     panelSlotElement,
     registerPanelDetail,
     clearPanelDetail,
@@ -69,29 +65,6 @@ export function ShowcaseRouteControls({
     <KiskadeeContext.Provider value={administrativeContext}>
       <DensityProvider value="adaptive">
         <ShowcaseIconFamilyBoundary>
-          {densityMap ? (
-            <ShowcaseControlGroup title="Density">
-              <ShowcaseSelectControl
-                label="Density"
-                value={densityOverride ?? 'preset'}
-                options={[
-                  {
-                    value: 'preset',
-                    label: `Preset default · ${Object.values(densityMap).filter(Boolean).length > 1 ? 'Adaptive' : densityMap.r ? 'Regular' : densityMap.c ? 'Compact' : 'Spacious'}`
-                  },
-                  ...(Object.values(densityMap).filter(Boolean).length > 1
-                    ? [{ value: 'adaptive', label: 'Adaptive' }]
-                    : []),
-                  ...(densityMap.c ? [{ value: 'compact', label: 'Compact' }] : []),
-                  ...(densityMap.r ? [{ value: 'regular', label: 'Regular' }] : []),
-                  ...(densityMap.s ? [{ value: 'spacious', label: 'Spacious' }] : [])
-                ]}
-                onValueChange={(value) =>
-                  setDensityOverride(value === 'preset' ? undefined : (value as Density))
-                }
-              />
-            </ShowcaseControlGroup>
-          ) : null}
           {children}
           {controlCursorAvailable ? (
             <ShowcaseControlGroup title="Interaction">

@@ -16,24 +16,28 @@ const refValue = (value: unknown) =>
     ? (value as { ref?: unknown }).ref
     : undefined;
 
-it('keeps the Material switch geometry source-backed', () => {
+it('preserves source Large and authored Small/Medium geometries', () => {
   const track = base?.elements.e2;
   const thumb = base?.elements.e3;
 
-  expect(track?.scales?.boxWidth).toEqual({ 's:sm:1': 36, 's:md:1': 52 });
-  expect(track?.scales?.boxHeight).toEqual({ 's:sm:1': 24, 's:md:1': 32 });
+  expect(track?.scales?.boxWidth).toEqual({ 's:sm:1': 36, 's:md:1': 44, 's:lg:1': 52 });
+  expect(track?.scales?.boxHeight).toEqual({ 's:sm:1': 24, 's:md:1': 28, 's:lg:1': 32 });
   expect(track?.scales?.borderWidth).toBe(2);
-  expect(track?.scales?.paddingTop).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
-  expect(track?.scales?.paddingRight).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
-  expect(track?.scales?.paddingBottom).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
-  expect(track?.scales?.paddingLeft).toEqual({ 's:sm:1': 4, 's:md:1': 4 });
-  expect(thumb?.scales?.boxWidth).toEqual({ 's:sm:1': 16, 's:md:1': 24 });
-  expect(thumb?.scales?.boxHeight).toEqual({ 's:sm:1': 16, 's:md:1': 24 });
+  expect(track?.scales?.paddingTop).toEqual({ 's:sm:1': 4, 's:md:1': 4, 's:lg:1': 4 });
+  expect(track?.scales?.paddingRight).toEqual({ 's:sm:1': 4, 's:md:1': 4, 's:lg:1': 4 });
+  expect(track?.scales?.paddingBottom).toEqual({ 's:sm:1': 4, 's:md:1': 4, 's:lg:1': 4 });
+  expect(track?.scales?.paddingLeft).toEqual({ 's:sm:1': 4, 's:md:1': 4, 's:lg:1': 4 });
+  expect(thumb?.scales?.boxWidth).toEqual({ 's:sm:1': 16, 's:md:1': 20, 's:lg:1': 24 });
+  expect(thumb?.scales?.boxHeight).toEqual({ 's:sm:1': 16, 's:md:1': 20, 's:lg:1': 24 });
   expect(thumb?.effects?.thumbShrink?.rest).toEqual({
-    boxWidth: { 's:md:1': 16 },
-    boxHeight: { 's:md:1': 16 }
+    boxWidth: { 's:lg:1': 16 },
+    boxHeight: { 's:lg:1': 16 }
   });
-  expect(base?.elements.e6?.iconSize).toEqual({ 's:sm:1': 's:sm:2', 's:md:1': 's:sm:1' });
+  expect(base?.elements.e6?.iconSize).toEqual({
+    's:sm:1': 's:sm:2',
+    's:md:1': 's:sm:1',
+    's:lg:1': 's:sm:1'
+  });
 });
 
 it('publishes both intents and both surface contexts for every Material segment and theme', () => {
@@ -115,7 +119,7 @@ it('satisfies the shared switch contract', () => {
 
 it('keeps control text styled but disabled by default and strengthens the light off control', () => {
   expect(switchSchema.options?.controlTextVisibility).toBe('none');
-  expect(base?.elements.e5?.scales?.marginRight).toEqual({ 's:sm:1': 8, 's:md:1': 8 });
+  expect(base?.elements.e5?.scales?.marginRight).toEqual({ 's:sm:1': 8, 's:md:1': 8, 's:lg:1': 8 });
   for (const segment of ['default', 'dynamic', 'purple'] as const) {
     const track = base?.elements.e2?.palettes?.[segment]?.light?.onSubtle;
     const thumb = base?.elements.e3?.palettes?.[segment]?.light?.onSubtle;
