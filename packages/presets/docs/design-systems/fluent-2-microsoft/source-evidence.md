@@ -302,3 +302,12 @@ The existing Fluent recipe was regenerated and promoted with user authorization.
 See [tonal evidence](./colors/fluent-tonal-scale-evidence.md) for all color and
 reference changes. This remains a Kiskadee tonal adaptation; upstream source
 colors, semantic roles and component formulas were not redefined.
+
+## Teams simple segment (2026-09-14)
+
+Status: Official adapted primary; Kiskadee extension for derived neutrals.
+Microsoft brandTeams[80] supplies #5B5FC7. The shared catalog retains the default
+blue generation reference and existing semantic colors. See
+[Teams mappings and approval](./colors/fluent-tonal-scale-evidence.md#teams-shared-catalog-promotion--2026-09-14)
+and [recipe](./colors/tonal-system.recipe.json). Both neutrals use Subtle.
+The user approved preset application; final rendered acceptance remains user-owned.

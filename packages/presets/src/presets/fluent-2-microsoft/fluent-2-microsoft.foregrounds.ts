@@ -39,7 +39,7 @@ function applyVisibility(color: SolidColor, visibility: number): SolidColor {
 
 function createChromaticForegroundProfile(
   c: Fluent2MicrosoftColorResolver,
-  role: PrimitiveRole
+  role: PrimitiveRole | 'primary'
 ): ForegroundProfile {
   const onSubtle = (theme: 'l' | 'd') => {
     const offset = theme === 'l' ? 0 : 8;
@@ -110,7 +110,7 @@ function createChromaticForegroundProfile(
 
 function createDeepChromaticForegroundProfile(
   c: Fluent2MicrosoftColorResolver,
-  role: PrimitiveRole
+  role: PrimitiveRole | 'primary'
 ): ForegroundProfile {
   const onSubtle = (theme: 'l' | 'd') => {
     const tone = theme === 'l' ? DEEP_ON_SUBTLE_LIGHT_TONE : DEEP_ON_SUBTLE_DARK_TONE;
@@ -320,8 +320,8 @@ export function createFluent2MicrosoftForegrounds({
         deep: createNeutralDeepForegroundProfile(c)
       },
       blue: {
-        standard: createChromaticForegroundProfile(c, primitive('blue', 'v1')),
-        deep: createDeepChromaticForegroundProfile(c, primitive('blue', 'v1'))
+        standard: createChromaticForegroundProfile(c, 'primary'),
+        deep: createDeepChromaticForegroundProfile(c, 'primary')
       },
       red: {
         standard: createChromaticForegroundProfile(c, primitive('red', 'v1')),

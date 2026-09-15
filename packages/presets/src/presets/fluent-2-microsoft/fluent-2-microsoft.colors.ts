@@ -9,7 +9,9 @@ import blueV1 from './colors/b.blue.v1.ts';
 import greenV1 from './colors/g.green.v1.ts';
 import blackV1 from './colors/n.black.v1.ts';
 import blackV2 from './colors/n.black.v2.ts';
+import blackV3 from './colors/n.black.v3.ts';
 import purpleV1 from './colors/p.purple.v1.ts';
+import indigoV2 from './colors/pb.indigo.v2.ts';
 import redV1 from './colors/r.red.v1.ts';
 import yellowV1 from './colors/y.yellow.v1.ts';
 import orangeV1 from './colors/yr.orange.v1.ts';
@@ -26,8 +28,9 @@ export const primitiveColors = {
   black: {
     // Canonical zero-chroma grayscale for absolute/structural white and black.
     v1: blackV1,
-    // Fluent's authored blue-gray Neutral ramp, seeded from Grey-14 #21242d.
-    v2: blackV2
+    // Subtle neutrals associated with the default and Teams identities.
+    v2: blackV2,
+    v3: blackV3
   },
   blue: {
     // Tonal generator asset `b.blue.v1` is addressed by its natural appearance in Core.
@@ -43,7 +46,9 @@ export const primitiveColors = {
   },
   purple: {
     // Tonal generator asset `p.purple.v1` preserves Fluent Berry.
-    v1: purpleV1
+    v1: purpleV1,
+    // Core groups PB/Indigo under purple; generator identity remains pb.indigo.v2.
+    v2: indigoV2
   },
   red: {
     // Tonal generator asset `r.red.v1` preserves Fluent Cranberry.
@@ -62,7 +67,7 @@ export const primitiveColors = {
 export const globalSemantics = {
   light: {
     primary: { v1: 'primitive.blue.v1' },
-    // Fluent semantics use its authored tinted Neutral; pure grayscale remains available directly.
+    // Default identity uses its derived neutral; pure grayscale remains shared.
     neutral: { v1: 'primitive.black.v2' },
     redLike: { v1: 'primitive.red.v1' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
@@ -93,6 +98,13 @@ export const globalSemanticsBySegment = {
   default: {
     meta: {
       name: 'Default'
+    }
+  },
+  teams: {
+    meta: { name: 'Teams' },
+    themes: {
+      light: { primary: { v1: 'primitive.purple.v2' }, neutral: { v1: 'primitive.black.v3' } },
+      dark: { primary: { v1: 'primitive.purple.v2' }, neutral: { v1: 'primitive.black.v3' } }
     }
   }
 } as const satisfies GlobalSemanticsBySegment;

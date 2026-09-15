@@ -248,7 +248,7 @@ export type LockedTonalFamilyFunctionalReferencesV5 = {
 export const NEUTRAL_DERIVATION_V1 = {
   contract: 'primary-neutral-v1',
   lightness: 25,
-  maximumChroma: 0.02,
+  maximumChroma: 0.01,
   chromaticMaximumChroma: 0.06,
   chromaticHueOffset: -14,
   achromaticThreshold: 0.0001

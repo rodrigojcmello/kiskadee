@@ -1,5 +1,57 @@
 # Fluent 2 Color Evidence And Kiskadee Tonal Mapping
 
+## Subtle calibration promotion — 0.17.0
+
+User authorized reducing Subtle chroma to 0.01 and applying it to default/Teams.
+The complete bundle was regenerated with 0.17.0; all thirteen other families keep
+identical scales and functional references. Only n.black.v2 and n.black.v3 change.
+[Exact neutral differences](./subtle-017-comparison.json) record the migration.
+Component formulas, original hues and Chromatic offset remain unchanged.
+This supersedes the 0.16.0 neutral approval below; final visual acceptance is user-owned.
+
+## Teams shared catalog promotion — 2026-09-14
+
+Generator/package 0.16.0. The user approved applying the Teams candidate and both
+Subtle derived neutrals to the preset, with final visual evaluation in Showcase.
+The shared recipe keeps generation primary #0064B4 and Muted Darks + Vivid Lights.
+Microsoft's [brandTeams palette](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/brandColors.ts)
+defines stop 80 as #5B5FC7. This is our selected input, not a claim about Microsoft's
+original generating seed. The separate brandTeamsV21 palette is not used.
+
+| Segment | Primary asset / Core role | Neutral asset / Core role |
+| --- | --- | --- |
+| default | b.blue.v1 / primitive.blue.v1 | n.black.v2 / primitive.black.v2 |
+| teams | pb.indigo.v2 / primitive.purple.v2 | n.black.v3 / primitive.black.v3 |
+
+The generator classifies Teams at OKLCH hue 277.96 degrees in PB (263–299),
+called Indigo in its taxonomy. Core groups this appearance under purple, as in
+Material; this does not rename the generator asset. Existing p.purple.v1 remains
+Fluent Berry #C239B3. Automatic pb.indigo.v1 remains in the bundle, candidate-only
+and unconsumed, rather than being overwritten by the Teams identity.
+
+Neutrals derive from each entry's resolved Light rest with Subtle, yielding
+#1B222B (blue) and #1F212B (Teams). They are Kiskadee extensions, not official Teams
+neutral values. Canonical n.black.v1 is unchanged. The two identities reuse the
+same component formulas, geometry, semantic colors and pure grayscale.
+
+The ten consumed assets are exported TypeScript from one verified bundle.
+[Comparison against the previous bundle](./teams-comparison.json) records every
+changed stop. Previously consumed chromatic scales and references are unchanged;
+only the approved neutral replacement changes an existing consumed scale.
+Four automatic candidate-only families (lime, indigo v1, magenta and brown) differ
+from 0.12.0. This predates Teams: rerunning the original recipe on 0.16.0 yields
+the same automatic families as the new catalog. The documented 0.13.0 adaptive
+candidate search/ranking correction explains why seed preservation alone does
+not preserve these generated companions. They are not promoted to runtime.
+
+Schema authoring evaluates the existing default recipes with a segment-bound
+resolver, then extends palettes, contentSurfaceContext, canonicalSurfaces and segment border maps. The blue
+foreground profile follows semantic primary, so Teams text also follows its
+identity; other chromatic profiles retain their semantic colors. No runtime
+recoloring or new component formula is introduced.
+
+Earlier sections below are historical approvals and retain their original versions.
+
 ## Controlled chroma promotion — 0.12.0
 
 User authorized regeneration and promotion of the current Fluent recipe with
@@ -137,31 +189,22 @@ recipe. The generated system uses:
   stops by theme;
 - immutable `n.black.v1` from canonical `#000000`, providing a pure grayscale
   foundation independently of Fluent;
-- exact Light and Dark `n.black.v2`, preserving Fluent `Grey-14` as an authored
-  tinted-neutral reference from one seed;
-- automatic harmony rest, currently resolved by candidate generator `0.13.0` to L50/D40;
+- Subtle neutrals associated with the blue base and Teams catalog entry;
+- automatic harmony rest, resolved by generator `0.17.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.16.0
+### Shared viewer — candidate generator 0.17.0
 
-Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
-Existing approved assets retain their recorded versions until a separate promotion.
+The format V6 shared recipe exports fifteen families, including the Teams entry
+and two associated Subtle neutrals. Ten assets are promoted; five automatic
+companions remain candidate-only. The promoted subset is generated with 0.17.0.
 
-Candidate 0.15.0 changes the opt-in Chromatic derivation to Chromatic offset (-14 degrees).
-Subtle and explicit-seed recipes preserve their colors. Approved preset assets retain their
-recorded versions; the viewer candidate is not an automatic asset promotion.
+[Open Fluent and Teams in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A6%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22vivid-lights%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%5D%2C%22catalog%22%3A%7B%22colors%22%3A%5B%7B%22id%22%3A%22pb.indigo.v2%22%2C%22seedHex%22%3A%22%235b5fc7%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%5D%2C%22names%22%3A%7B%22primary%22%3A%22Fluent%20Blue%22%2C%22pb.indigo.v2%22%3A%22Teams%20Purple%22%7D%2C%22neutrals%22%3A%5B%7B%22id%22%3A%22n.black.v2%22%2C%22sourceId%22%3A%22primary%22%2C%22intensity%22%3A%22subtle%22%7D%2C%7B%22id%22%3A%22n.black.v3%22%2C%22sourceId%22%3A%22pb.indigo.v2%22%2C%22intensity%22%3A%22subtle%22%7D%5D%7D%7D)
 
-[Open the Fluent candidate in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A5%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22vivid-lights%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22n.black.v2%22%2C%22seedHex%22%3A%22%2321242d%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22source-exact%22%7D%7D%5D%7D).
+The link requires the local application on port 3001. It contains the complete
+recipe, while the installed generator determines its output version.
 
-The link encodes the complete editable format V5 recipe and can be saved as a
-browser bookmark. It resolves the latest generated scales and functional
-references without changing the stored Fluent evidence. It requires the local
-`@kiskadee/tonal-scale` application on port `3001`.
-
-The Shared Viewer currently evaluates this unchanged recipe with candidate generator `0.13.0`. It
-generates thirteen primitive families: the twelve mandatory V5 families plus
-authored `n.black.v2`. The current chromatic candidate differs from stored approved exports.
-The following table documents the V5 achromatic architecture:
+The following table is historical (0.12.0), before the approved derived-neutral replacement:
 
 | Candidate family | Role | Light subtle | Light vivid | Dark subtle | Dark vivid |
 | --- | --- | --- | --- | --- | --- |
@@ -439,3 +482,6 @@ as a tolerance before preferring source proximity. This may change automatic
 family seeds and emitted tones. Stored approved bundles and preset modules are
 not regenerated or promoted by this generator correction. Standalone curves
 remain unchanged.
+
+Candidate generator 0.17.0 reduces Subtle neutral chroma to 0.01. Chromatic offset
+and explicit seeds are unchanged. Stored approvals keep their historical versions.

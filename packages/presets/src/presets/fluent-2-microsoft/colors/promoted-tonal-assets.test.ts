@@ -7,7 +7,9 @@ import blueV1 from './b.blue.v1.ts';
 import greenV1 from './g.green.v1.ts';
 import blackV1 from './n.black.v1.ts';
 import blackV2 from './n.black.v2.ts';
+import blackV3 from './n.black.v3.ts';
 import purpleV1 from './p.purple.v1.ts';
+import indigoV2 from './pb.indigo.v2.ts';
 import redV1 from './r.red.v1.ts';
 import yellowV1 from './y.yellow.v1.ts';
 import orangeV1 from './yr.orange.v1.ts';
@@ -22,6 +24,8 @@ const PROMOTED_ASSETS = {
   'g.green.v1': greenV1,
   'n.black.v1': blackV1,
   'n.black.v2': blackV2,
+  'n.black.v3': blackV3,
+  'pb.indigo.v2': indigoV2,
   'p.purple.v1': purpleV1,
   'r.red.v1': redV1,
   'y.yellow.v1': yellowV1,

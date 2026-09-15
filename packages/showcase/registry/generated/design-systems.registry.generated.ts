@@ -44,9 +44,10 @@ export const paletteIndex = {
     }
   },
   'fluent-2-microsoft': {
-    segments: ['default'],
+    segments: ['default', 'teams'],
     themesBySegment: {
-      "default": ['dark', 'darker', 'light']
+      "default": ['dark', 'darker', 'light'],
+      "teams": ['dark', 'darker', 'light']
     }
   },
   'ios-18-apple': {

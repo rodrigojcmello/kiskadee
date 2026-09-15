@@ -58,7 +58,7 @@ describe('neutral configuration', () => {
     expect(result.valid).toBe(true);
     const neutral = result.families.find((f) => f.id === 'n.black.v2');
     expect(neutral).toBeDefined();
-    expect(hexToOklch(neutral!.sourceSeedHex).c).toBeLessThan(0.023);
+    expect(hexToOklch(neutral!.sourceSeedHex).c).toBeLessThan(0.012);
     expect(neutral!.sourceSeedHex).toBe(resolveNeutralOverride(config, seedHex)!.seedHex);
     const baseline = generateKiskadeeTonalSystem({ ...input, neutral: undefined });
     expect(result.families.filter((f) => f.id !== 'n.black.v2')).toEqual(baseline.families);
@@ -122,7 +122,7 @@ describe('neutral configuration', () => {
 
 describe('neutral derivation strategy', () => {
   it('preserves the default derivation and ignores intensity for explicit seeds', () => {
-    expect(resolveNeutralOverride(config, '#0b57d0')?.seedHex).toBe('#1c222b');
+    expect(resolveNeutralOverride(config, '#0b57d0')?.seedHex).toBe('#1f2227');
     expect(resolveNeutralOverride({ ...config, intensity: 'subtle' }, '#0b57d0')).toEqual(
       resolveNeutralOverride(config, '#0b57d0')
     );

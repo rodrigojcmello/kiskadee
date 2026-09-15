@@ -21,12 +21,16 @@ import { fluent2MicrosoftColorEvidence } from './fluent-2-microsoft.color-eviden
 import { schemaColors } from './fluent-2-microsoft.colors.ts';
 import { createFluent2MicrosoftContours } from './fluent-2-microsoft.contours.ts';
 import { createFluent2MicrosoftForegrounds } from './fluent-2-microsoft.foregrounds.ts';
+import { withTeamsPalettes } from './fluent-2-microsoft.segments.ts';
 import { createFluent2MicrosoftSeparators } from './fluent-2-microsoft.separators.ts';
 import { fluent2MicrosoftTypography } from './fluent-2-microsoft.typography.ts';
 
 // Reference: https://www.figma.com/design/iEmab9I4qGqbUJlFSxRORE/Microsoft-Fluent-2-Web--Community-?node-id=1-840&p=f&t=M4w8UKqwRiqJgq8i-0
 
-const c = createStrictPresetColorResolver<'default', typeof fluent2MicrosoftColorEvidence>({
+const c = createStrictPresetColorResolver<
+  'default' | 'teams',
+  typeof fluent2MicrosoftColorEvidence
+>({
   colors: schemaColors,
   exactEvidence: fluent2MicrosoftColorEvidence
 });
@@ -226,4 +230,9 @@ export function createFluent2MicrosoftSchema(
   };
 }
 
-export const schema = createFluent2MicrosoftSchema(c);
+const defaultSchema = createFluent2MicrosoftSchema(c);
+const teamsSchema = createFluent2MicrosoftSchema({
+  resolve: (_segment, theme, locator) => c.resolve('teams', theme, locator)
+});
+
+export const schema: Schema<'teams'> = withTeamsPalettes(defaultSchema, teamsSchema);

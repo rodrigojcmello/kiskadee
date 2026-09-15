@@ -1,0 +1,816 @@
+{
+  "n.black.v3": {
+    "seedHex": "#202126",
+    "changes": [
+      {
+        "theme": "light",
+        "tone": "1",
+        "before": "#f9faff",
+        "after": "#fafbfd"
+      },
+      {
+        "theme": "light",
+        "tone": "2",
+        "before": "#f4f6ff",
+        "after": "#f5f6fb"
+      },
+      {
+        "theme": "light",
+        "tone": "3",
+        "before": "#eff1fd",
+        "after": "#f0f2f8"
+      },
+      {
+        "theme": "light",
+        "tone": "4",
+        "before": "#eaedfb",
+        "after": "#ebedf4"
+      },
+      {
+        "theme": "light",
+        "tone": "5",
+        "before": "#e5e8f6",
+        "after": "#e7e9f0"
+      },
+      {
+        "theme": "light",
+        "tone": "6",
+        "before": "#e1e4f2",
+        "after": "#e3e4eb"
+      },
+      {
+        "theme": "light",
+        "tone": "7",
+        "before": "#dde0ee",
+        "after": "#dfe0e7"
+      },
+      {
+        "theme": "light",
+        "tone": "8",
+        "before": "#d7dae8",
+        "after": "#d9dbe1"
+      },
+      {
+        "theme": "light",
+        "tone": "9",
+        "before": "#d3d6e3",
+        "after": "#d5d6dd"
+      },
+      {
+        "theme": "light",
+        "tone": "10",
+        "before": "#ced1df",
+        "after": "#d0d1d8"
+      },
+      {
+        "theme": "light",
+        "tone": "12",
+        "before": "#c7cad8",
+        "after": "#c9cad1"
+      },
+      {
+        "theme": "light",
+        "tone": "14",
+        "before": "#bfc1cf",
+        "after": "#c0c2c9"
+      },
+      {
+        "theme": "light",
+        "tone": "16",
+        "before": "#b6b9c7",
+        "after": "#b8bac0"
+      },
+      {
+        "theme": "light",
+        "tone": "18",
+        "before": "#afb2bf",
+        "after": "#b1b2b9"
+      },
+      {
+        "theme": "light",
+        "tone": "20",
+        "before": "#a7aab7",
+        "after": "#a9aab1"
+      },
+      {
+        "theme": "light",
+        "tone": "22",
+        "before": "#9fa2af",
+        "after": "#a1a2a9"
+      },
+      {
+        "theme": "light",
+        "tone": "24",
+        "before": "#979aa7",
+        "after": "#999ba1"
+      },
+      {
+        "theme": "light",
+        "tone": "26",
+        "before": "#90939f",
+        "after": "#919399"
+      },
+      {
+        "theme": "light",
+        "tone": "28",
+        "before": "#888b98",
+        "after": "#8a8b92"
+      },
+      {
+        "theme": "light",
+        "tone": "30",
+        "before": "#818490",
+        "after": "#83848a"
+      },
+      {
+        "theme": "light",
+        "tone": "35",
+        "before": "#787b87",
+        "after": "#7a7b81"
+      },
+      {
+        "theme": "light",
+        "tone": "40",
+        "before": "#70727f",
+        "after": "#717379"
+      },
+      {
+        "theme": "light",
+        "tone": "45",
+        "before": "#676a76",
+        "after": "#696a70"
+      },
+      {
+        "theme": "light",
+        "tone": "50",
+        "before": "#5e606c",
+        "after": "#5f6066"
+      },
+      {
+        "theme": "light",
+        "tone": "55",
+        "before": "#555763",
+        "after": "#56585d"
+      },
+      {
+        "theme": "light",
+        "tone": "60",
+        "before": "#4c4f5a",
+        "after": "#4e4f55"
+      },
+      {
+        "theme": "light",
+        "tone": "65",
+        "before": "#434651",
+        "after": "#45464c"
+      },
+      {
+        "theme": "light",
+        "tone": "70",
+        "before": "#3a3d48",
+        "after": "#3c3d43"
+      },
+      {
+        "theme": "light",
+        "tone": "75",
+        "before": "#32353f",
+        "after": "#34353a"
+      },
+      {
+        "theme": "light",
+        "tone": "80",
+        "before": "#2a2c36",
+        "after": "#2b2c31"
+      },
+      {
+        "theme": "light",
+        "tone": "85",
+        "before": "#1f212b",
+        "after": "#202126"
+      },
+      {
+        "theme": "light",
+        "tone": "90",
+        "before": "#1a1c26",
+        "after": "#1c1d21"
+      },
+      {
+        "theme": "light",
+        "tone": "95",
+        "before": "#14151f",
+        "after": "#15161a"
+      },
+      {
+        "theme": "dark",
+        "tone": "1",
+        "before": "#05060e",
+        "after": "#06060a"
+      },
+      {
+        "theme": "dark",
+        "tone": "2",
+        "before": "#0c0d16",
+        "after": "#0d0d12"
+      },
+      {
+        "theme": "dark",
+        "tone": "3",
+        "before": "#11131c",
+        "after": "#131318"
+      },
+      {
+        "theme": "dark",
+        "tone": "4",
+        "before": "#161721",
+        "after": "#17181d"
+      },
+      {
+        "theme": "dark",
+        "tone": "5",
+        "before": "#1a1b25",
+        "after": "#1b1c21"
+      },
+      {
+        "theme": "dark",
+        "tone": "6",
+        "before": "#1f212b",
+        "after": "#202126"
+      },
+      {
+        "theme": "dark",
+        "tone": "7",
+        "before": "#21232d",
+        "after": "#222429"
+      },
+      {
+        "theme": "dark",
+        "tone": "8",
+        "before": "#242630",
+        "after": "#25272c"
+      },
+      {
+        "theme": "dark",
+        "tone": "9",
+        "before": "#272933",
+        "after": "#282a2f"
+      },
+      {
+        "theme": "dark",
+        "tone": "10",
+        "before": "#292c36",
+        "after": "#2b2c31"
+      },
+      {
+        "theme": "dark",
+        "tone": "12",
+        "before": "#2e303b",
+        "after": "#2f3136"
+      },
+      {
+        "theme": "dark",
+        "tone": "14",
+        "before": "#333540",
+        "after": "#34353a"
+      },
+      {
+        "theme": "dark",
+        "tone": "16",
+        "before": "#363843",
+        "after": "#37383e"
+      },
+      {
+        "theme": "dark",
+        "tone": "18",
+        "before": "#393b46",
+        "after": "#3a3b41"
+      },
+      {
+        "theme": "dark",
+        "tone": "20",
+        "before": "#3c3e4a",
+        "after": "#3d3e44"
+      },
+      {
+        "theme": "dark",
+        "tone": "22",
+        "before": "#3f414c",
+        "after": "#404147"
+      },
+      {
+        "theme": "dark",
+        "tone": "24",
+        "before": "#424450",
+        "after": "#43444a"
+      },
+      {
+        "theme": "dark",
+        "tone": "26",
+        "before": "#454753",
+        "after": "#46474d"
+      },
+      {
+        "theme": "dark",
+        "tone": "28",
+        "before": "#484b56",
+        "after": "#494b50"
+      },
+      {
+        "theme": "dark",
+        "tone": "30",
+        "before": "#4c4e59",
+        "after": "#4d4e54"
+      },
+      {
+        "theme": "dark",
+        "tone": "35",
+        "before": "#565964",
+        "after": "#575960"
+      },
+      {
+        "theme": "dark",
+        "tone": "40",
+        "before": "#5e616d",
+        "after": "#606167"
+      },
+      {
+        "theme": "dark",
+        "tone": "45",
+        "before": "#666975",
+        "after": "#68696f"
+      },
+      {
+        "theme": "dark",
+        "tone": "50",
+        "before": "#6e717d",
+        "after": "#707177"
+      },
+      {
+        "theme": "dark",
+        "tone": "55",
+        "before": "#777a86",
+        "after": "#797a80"
+      },
+      {
+        "theme": "dark",
+        "tone": "60",
+        "before": "#7f818e",
+        "after": "#808288"
+      },
+      {
+        "theme": "dark",
+        "tone": "65",
+        "before": "#868996",
+        "after": "#88898f"
+      },
+      {
+        "theme": "dark",
+        "tone": "70",
+        "before": "#8e919e",
+        "after": "#909197"
+      },
+      {
+        "theme": "dark",
+        "tone": "75",
+        "before": "#9fa2af",
+        "after": "#a1a2a8"
+      },
+      {
+        "theme": "dark",
+        "tone": "80",
+        "before": "#b1b4c1",
+        "after": "#b2b4ba"
+      },
+      {
+        "theme": "dark",
+        "tone": "85",
+        "before": "#c2c5d2",
+        "after": "#c3c5cc"
+      },
+      {
+        "theme": "dark",
+        "tone": "90",
+        "before": "#d3d6e4",
+        "after": "#d5d6dd"
+      },
+      {
+        "theme": "dark",
+        "tone": "95",
+        "before": "#e8ebf9",
+        "after": "#eaebf2"
+      },
+      {
+        "theme": "dark",
+        "tone": "99",
+        "before": "#fafbff",
+        "after": "#fafbfe"
+      }
+    ]
+  },
+  "n.black.v2": {
+    "seedHex": "#1e2226",
+    "changes": [
+      {
+        "theme": "light",
+        "tone": "1",
+        "before": "#f8fbff",
+        "after": "#f9fbfd"
+      },
+      {
+        "theme": "light",
+        "tone": "2",
+        "before": "#f1f7ff",
+        "after": "#f3f7fa"
+      },
+      {
+        "theme": "light",
+        "tone": "3",
+        "before": "#ebf3fe",
+        "after": "#eef3f7"
+      },
+      {
+        "theme": "light",
+        "tone": "4",
+        "before": "#e5eefb",
+        "after": "#e9eef4"
+      },
+      {
+        "theme": "light",
+        "tone": "5",
+        "before": "#e0eaf7",
+        "after": "#e4eaef"
+      },
+      {
+        "theme": "light",
+        "tone": "6",
+        "before": "#dce6f2",
+        "after": "#e0e6eb"
+      },
+      {
+        "theme": "light",
+        "tone": "7",
+        "before": "#d8e1ee",
+        "after": "#dce1e7"
+      },
+      {
+        "theme": "light",
+        "tone": "8",
+        "before": "#d2dce8",
+        "after": "#d6dce1"
+      },
+      {
+        "theme": "light",
+        "tone": "9",
+        "before": "#ced7e4",
+        "after": "#d2d7dd"
+      },
+      {
+        "theme": "light",
+        "tone": "10",
+        "before": "#c9d3df",
+        "after": "#cdd2d8"
+      },
+      {
+        "theme": "light",
+        "tone": "12",
+        "before": "#c2ccd8",
+        "after": "#c6cbd1"
+      },
+      {
+        "theme": "light",
+        "tone": "14",
+        "before": "#bac3cf",
+        "after": "#bec3c8"
+      },
+      {
+        "theme": "light",
+        "tone": "16",
+        "before": "#b2bbc7",
+        "after": "#b5bbc0"
+      },
+      {
+        "theme": "light",
+        "tone": "18",
+        "before": "#abb4c0",
+        "after": "#aeb3b9"
+      },
+      {
+        "theme": "light",
+        "tone": "20",
+        "before": "#a3acb8",
+        "after": "#a6acb1"
+      },
+      {
+        "theme": "light",
+        "tone": "22",
+        "before": "#9ba4af",
+        "after": "#9ea3a9"
+      },
+      {
+        "theme": "light",
+        "tone": "24",
+        "before": "#939ca8",
+        "after": "#969ca1"
+      },
+      {
+        "theme": "light",
+        "tone": "26",
+        "before": "#8b94a0",
+        "after": "#8f9499"
+      },
+      {
+        "theme": "light",
+        "tone": "28",
+        "before": "#848d98",
+        "after": "#878d92"
+      },
+      {
+        "theme": "light",
+        "tone": "30",
+        "before": "#7c8591",
+        "after": "#80858a"
+      },
+      {
+        "theme": "light",
+        "tone": "35",
+        "before": "#747c87",
+        "after": "#777c81"
+      },
+      {
+        "theme": "light",
+        "tone": "40",
+        "before": "#6b747f",
+        "after": "#6f7479"
+      },
+      {
+        "theme": "light",
+        "tone": "45",
+        "before": "#636c76",
+        "after": "#676b70"
+      },
+      {
+        "theme": "light",
+        "tone": "50",
+        "before": "#59626c",
+        "after": "#5d6166"
+      },
+      {
+        "theme": "light",
+        "tone": "55",
+        "before": "#515963",
+        "after": "#54585d"
+      },
+      {
+        "theme": "light",
+        "tone": "60",
+        "before": "#48505b",
+        "after": "#4c5055"
+      },
+      {
+        "theme": "light",
+        "tone": "65",
+        "before": "#3f4751",
+        "after": "#42474b"
+      },
+      {
+        "theme": "light",
+        "tone": "70",
+        "before": "#363e48",
+        "after": "#3a3e42"
+      },
+      {
+        "theme": "light",
+        "tone": "75",
+        "before": "#2e3640",
+        "after": "#32363a"
+      },
+      {
+        "theme": "light",
+        "tone": "80",
+        "before": "#262d36",
+        "after": "#292d31"
+      },
+      {
+        "theme": "light",
+        "tone": "85",
+        "before": "#1b222b",
+        "after": "#1e2226"
+      },
+      {
+        "theme": "light",
+        "tone": "90",
+        "before": "#171d26",
+        "after": "#191d21"
+      },
+      {
+        "theme": "light",
+        "tone": "95",
+        "before": "#10171f",
+        "after": "#13161a"
+      },
+      {
+        "theme": "dark",
+        "tone": "1",
+        "before": "#03060e",
+        "after": "#04070a"
+      },
+      {
+        "theme": "dark",
+        "tone": "2",
+        "before": "#080f17",
+        "after": "#0b0f12"
+      },
+      {
+        "theme": "dark",
+        "tone": "3",
+        "before": "#0d141c",
+        "after": "#101417"
+      },
+      {
+        "theme": "dark",
+        "tone": "4",
+        "before": "#121921",
+        "after": "#15191c"
+      },
+      {
+        "theme": "dark",
+        "tone": "5",
+        "before": "#161d25",
+        "after": "#191d20"
+      },
+      {
+        "theme": "dark",
+        "tone": "6",
+        "before": "#1b222b",
+        "after": "#1d2124"
+      },
+      {
+        "theme": "dark",
+        "tone": "7",
+        "before": "#1d242d",
+        "after": "#1e2226"
+      },
+      {
+        "theme": "dark",
+        "tone": "8",
+        "before": "#202730",
+        "after": "#23272b"
+      },
+      {
+        "theme": "dark",
+        "tone": "9",
+        "before": "#232a33",
+        "after": "#25292e"
+      },
+      {
+        "theme": "dark",
+        "tone": "10",
+        "before": "#252c36",
+        "after": "#282c31"
+      },
+      {
+        "theme": "dark",
+        "tone": "12",
+        "before": "#2a313b",
+        "after": "#2d3136"
+      },
+      {
+        "theme": "dark",
+        "tone": "14",
+        "before": "#2e3640",
+        "after": "#32363a"
+      },
+      {
+        "theme": "dark",
+        "tone": "16",
+        "before": "#323943",
+        "after": "#35393e"
+      },
+      {
+        "theme": "dark",
+        "tone": "18",
+        "before": "#353c46",
+        "after": "#383c41"
+      },
+      {
+        "theme": "dark",
+        "tone": "20",
+        "before": "#383f49",
+        "after": "#3b3f44"
+      },
+      {
+        "theme": "dark",
+        "tone": "22",
+        "before": "#3b434d",
+        "after": "#3e4246"
+      },
+      {
+        "theme": "dark",
+        "tone": "24",
+        "before": "#3e4550",
+        "after": "#41454a"
+      },
+      {
+        "theme": "dark",
+        "tone": "26",
+        "before": "#414953",
+        "after": "#44484d"
+      },
+      {
+        "theme": "dark",
+        "tone": "28",
+        "before": "#444c56",
+        "after": "#474b50"
+      },
+      {
+        "theme": "dark",
+        "tone": "30",
+        "before": "#474f5a",
+        "after": "#4a4f53"
+      },
+      {
+        "theme": "dark",
+        "tone": "35",
+        "before": "#525a64",
+        "after": "#545a5e"
+      },
+      {
+        "theme": "dark",
+        "tone": "40",
+        "before": "#5a626d",
+        "after": "#5d6267"
+      },
+      {
+        "theme": "dark",
+        "tone": "45",
+        "before": "#626a75",
+        "after": "#656a6e"
+      },
+      {
+        "theme": "dark",
+        "tone": "50",
+        "before": "#6a727d",
+        "after": "#6d7277"
+      },
+      {
+        "theme": "dark",
+        "tone": "55",
+        "before": "#737b86",
+        "after": "#767b80"
+      },
+      {
+        "theme": "dark",
+        "tone": "60",
+        "before": "#7a838e",
+        "after": "#7d8287"
+      },
+      {
+        "theme": "dark",
+        "tone": "65",
+        "before": "#828a96",
+        "after": "#858a8f"
+      },
+      {
+        "theme": "dark",
+        "tone": "70",
+        "before": "#8a929e",
+        "after": "#8d9297"
+      },
+      {
+        "theme": "dark",
+        "tone": "75",
+        "before": "#9aa3af",
+        "after": "#9ea3a8"
+      },
+      {
+        "theme": "dark",
+        "tone": "80",
+        "before": "#acb5c1",
+        "after": "#afb5ba"
+      },
+      {
+        "theme": "dark",
+        "tone": "85",
+        "before": "#bdc6d3",
+        "after": "#c1c6cb"
+      },
+      {
+        "theme": "dark",
+        "tone": "90",
+        "before": "#ced8e4",
+        "after": "#d2d7dd"
+      },
+      {
+        "theme": "dark",
+        "tone": "95",
+        "before": "#e3edf9",
+        "after": "#e7ecf2"
+      },
+      {
+        "theme": "dark",
+        "tone": "99",
+        "before": "#f9fbff",
+        "after": "#f9fbfd"
+      }
+    ]
+  }
+}

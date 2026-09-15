@@ -1,5 +1,5 @@
 {
-  "formatVersion": 5,
+  "formatVersion": 6,
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
   "tonalProfile": "vivid-lights",
@@ -58,14 +58,34 @@
         "light": "source-exact",
         "dark": "adaptive"
       }
-    },
-    {
-      "id": "n.black.v2",
-      "seedHex": "#21242d",
-      "policies": {
-        "light": "source-exact",
-        "dark": "source-exact"
-      }
     }
-  ]
+  ],
+  "catalog": {
+    "colors": [
+      {
+        "id": "pb.indigo.v2",
+        "seedHex": "#5b5fc7",
+        "policies": {
+          "light": "source-exact",
+          "dark": "adaptive"
+        }
+      }
+    ],
+    "names": {
+      "primary": "Fluent Blue",
+      "pb.indigo.v2": "Teams Purple"
+    },
+    "neutrals": [
+      {
+        "id": "n.black.v2",
+        "sourceId": "primary",
+        "intensity": "subtle"
+      },
+      {
+        "id": "n.black.v3",
+        "sourceId": "pb.indigo.v2",
+        "intensity": "subtle"
+      }
+    ]
+  }
 }

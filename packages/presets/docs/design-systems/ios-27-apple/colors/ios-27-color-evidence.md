@@ -159,7 +159,7 @@ preserve tonal provenance; preset primitive variants are a separate publication 
 bundle retains diagnostic status `review`; promotion is the explicit preset decision to adopt its
 source-backed Apple subset and required neutral family.
 
-### Shared viewer — candidate generator 0.16.0
+### Shared viewer — candidate generator 0.17.0
 
 Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
 Existing approved assets retain their recorded versions until a separate promotion.
@@ -205,3 +205,6 @@ as a tolerance before preferring source proximity. This may change automatic
 family seeds and emitted tones. Stored approved bundles and preset modules are
 not regenerated or promoted by this generator correction. Standalone curves
 remain unchanged.
+
+Candidate generator 0.17.0 reduces Subtle neutral chroma to 0.01. Chromatic offset
+and explicit seeds are unchanged. Stored approvals keep their historical versions.

@@ -128,3 +128,17 @@ For example, a `modern` segment can:
 Web Builder publishes default first, then preserves the remaining declaration order. Showcase
 consumes that published order; Headless Select does not sort segment identities. This order also
 makes first-segment fallback select default. Source registries remain authored by Presets.
+
+## Identity variants do not replace semantic colors
+
+Family identity and semantic purpose are separate. For example, red.v1 can remain
+the shared destructive color while red.v2 is a product segment's primary. That
+segment may still use red.v1 for destructive actions. Adding or selecting red.v2
+does not redefine destructive red for this or any other segment.
+
+Fluent keeps the automatic pb.indigo.v1 catalog entry and adds Teams as
+pb.indigo.v2. Its existing p.purple.v1 remains the novelty color. Core currently
+addresses the Teams asset as primitive.purple.v2; this is an explicit schema
+mapping, not a change to the generator's family identifier. All belong to one
+base recipe; variants have independent semantic uses, not independent generation
+references. Only explicit Layer 2 mappings change a segment's roles.

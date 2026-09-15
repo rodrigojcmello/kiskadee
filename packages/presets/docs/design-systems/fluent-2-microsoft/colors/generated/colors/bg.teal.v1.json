@@ -1,7 +1,7 @@
 {
   "appearance": "teal",
   "colorKind": "chromatic",
-  "formatVersion": 5,
+  "formatVersion": 6,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -50,7 +50,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.12.0"
+    "version": "0.17.0"
   },
   "id": "bg.teal.v1",
   "kind": "kiskadee.primitive-tonal-family",

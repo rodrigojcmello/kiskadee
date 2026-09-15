@@ -5,7 +5,7 @@ generator 0.16.0, Balanced, with a shared catalog for default and purple.
 
 `tonal-system.recipe.json` is the authored input; `generated/` contains the canonical verified export. Ten TypeScript assets are copied verbatim into `packages/presets/src/presets/material-3-google/colors/default/`.
 
-### Shared viewer — candidate generator 0.16.0
+### Shared viewer — candidate generator 0.17.0
 
 Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
 Existing approved assets retain their recorded versions until a separate promotion.
@@ -90,3 +90,6 @@ All ten consumed assets live in `colors/default/`; no `colors/purple/` exists. T
 selects Layer 2 roles, not another generation recipe. Metadata records names and associated
 neutral origins. The bundle includes both additions and remains atomically verifiable.
 Existing component formulas, default colors and dynamic behavior are preserved.
+
+Candidate generator 0.17.0 reduces Subtle neutral chroma to 0.01. Chromatic offset
+and explicit seeds are unchanged. Stored approvals keep their historical versions.

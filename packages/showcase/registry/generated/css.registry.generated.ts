@@ -27,6 +27,7 @@ export const cssPaths = {
     tokens: '/build/fluent-2-microsoft/tokens.kiskadee.css',
     tokenPalettes: {
       'default|light': '/build/fluent-2-microsoft/tokens.default.light.kiskadee.css',
+      'teams|light': '/build/fluent-2-microsoft/tokens.teams.light.kiskadee.css',
     }
   },
   'ios-18-apple': {

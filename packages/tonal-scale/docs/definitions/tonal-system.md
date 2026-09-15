@@ -672,7 +672,7 @@ preset-colors/
 
 The required system contains 12 color families and 27 files total. Additional
 authored variants add one evidence JSON and one preset TypeScript module each.
-Current Format V6 artifacts identify `@kiskadee/tonal-scale@0.16.0`.
+Current Format V6 artifacts identify `@kiskadee/tonal-scale@0.17.0`.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -858,7 +858,7 @@ existing mode generates only canonical V1. A customized seed produces V2;
 pure V1 is always present. The source field remains optional for compatibility.
 
 Derivation uses the original primary HEX, not theme-adapted seeds: OKL lightness
-25, chroma min(primary chroma, 0.02), and primary hue. The generated HEX enters
+25, chroma min(primary chroma, 0.01), and primary hue. The generated HEX enters
 the existing tinted-neutral trajectory. Below chroma 0.0001, derivation produces
 no second neutral. This does not lift the existing multifamily restriction on
 achromatic primaries. The pure grayscale seed/caps and source-exact policy remain
@@ -924,7 +924,7 @@ original provenance; they are not promoted by this generator-only change.
 The Recipe Editor exposes this as **Tint intensity** only while derivation is enabled.
 The setting survives recipe/URL/source export and is recorded in neutral provenance.
 
-Both options use primary hue and OKLCH lightness 25. Subtle limits seed chroma to 0.02;
+Both options use primary hue and OKLCH lightness 25. Subtle limits seed chroma to 0.01;
 Chromatic raises the limit to 0.06. Both cap it at the primary's own chroma, then use the
 existing sRGB gamut fitting. This is a shared calibration, not a blue-specific target.
 The selected tonal profile is independent and unchanged. Achromatic primaries still do not
@@ -972,3 +972,10 @@ cannot be an associated target. Names, seeds, policies and links survive URL/exp
 The optional legacy `neutral` object is retained in migrated sources to preserve shared reference
 and policy behavior. Its derivation appears as an explicit `catalog.neutrals` link for `primary`;
 that link and the legacy strategy are normalized together. No profile math changed in V6.
+
+### Subtle neutral calibration (0.17.0)
+
+Subtle derivation caps OKLCH chroma at 0.01 (previously 0.02), preserving origin
+hue and derivation lightness. This reduces competition with pale primary surfaces.
+Chromatic offset and explicit neutral seeds are unchanged. Existing recipes using
+Subtle intentionally produce new neutral scales; stored exports retain provenance.

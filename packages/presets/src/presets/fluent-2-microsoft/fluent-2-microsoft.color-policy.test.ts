@@ -20,6 +20,8 @@ const PROMOTED_ASSET_FILES = new Set([
   'colors/g.green.v1.ts',
   'colors/n.black.v1.ts',
   'colors/n.black.v2.ts',
+  'colors/n.black.v3.ts',
+  'colors/pb.indigo.v2.ts',
   'colors/p.purple.v1.ts',
   'colors/r.red.v1.ts',
   'colors/y.yellow.v1.ts',
