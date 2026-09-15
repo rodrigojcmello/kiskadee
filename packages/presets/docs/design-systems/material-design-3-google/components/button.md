@@ -49,7 +49,8 @@ The formula is independent of specific seed HEX values.
 | --- | --- | --- |
 | Light onSubtle high | participating family vivid reference | Filled semantic identity. |
 | Dark onSubtle high | vivid +6 chromatic; neutral vivid +0 | Light filled surface with dark text; neutral already has its vivid reference near the light endpoint. |
-| onSubtle medium | participating family subtle reference | Soft intent-colored container; removes legacy shared blue neutral. |
+| Light onSubtle medium | participating family L7 | User-approved stronger tonal container, shared by all intents and segments. |
+| Dark onSubtle medium | participating family subtle reference | Existing soft intent-colored container. |
 | onSubtle non-high content | family L65 / D85 | Explicit Kiskadee foreground selection for contrast with soft and transparent surfaces. |
 | onVivid high | pure light cap; family L65 text | Fluent-style inverse control for a strong background. |
 | onVivid medium | Light subtle at 14/10/12/7% for Rest/Hover/Focus/Pressed | Fluent-guided translucent treatment that retains label contrast. |
@@ -92,3 +93,16 @@ disabled returns to the inherited surrounding context.
   Pending and disabled are not asserted to meet the enabled threshold.
 - Build/Showcase sync and sparse-state audits check published outputs.
 - Visual homologation is user-owned; no browser/pixel-equivalence claim is made.
+
+## Medium container refinement (2026-09-15)
+
+Status: **Kiskadee extension**, approved by the user after comparing Google Sheets
+Share/Upgrade and Gmail Compose/Upgrade screenshots. Screenshot samples indicate
+stronger tonal fills, but are not asserted to be official CSS token values.
+Light/onSubtle Medium now selects L7 through the existing intent getter: default
+primary `#D0E2FF`, default neutral `#C8E4FF`. This explicit tonal selection also
+applies to Purple and the destructive/positive intent families. It does not change
+the shared subtle reference, primitive assets, generator, Dark or onVivid recipes.
+Hover/Focus/Pressed retain their existing 8/10/12 percent foreground state layers
+over the new base. Pending derives from that base; Selected and Disabled retain
+their previous recipes. Contrast tests include Default and Purple.

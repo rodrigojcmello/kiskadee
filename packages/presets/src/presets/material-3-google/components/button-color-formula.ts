@@ -78,7 +78,9 @@ export function createMaterialButtonIntent({
   const highText = inverse ? c(segment, 'l', role, 65) : theme === 'light' ? white : black;
   const medium = inverse
     ? withAlpha(c.ref(segment, 'l', role, 'subtle'), 14)
-    : c.ref(segment, scale, role, 'subtle');
+    : theme === 'light'
+      ? c(segment, 'l', role, 7)
+      : c.ref(segment, 'd', role, 'subtle');
   const mediumText = inverse ? white : foreground;
   const layers = (base: SolidColor, ink: SolidColor) => ({
     rest: base,

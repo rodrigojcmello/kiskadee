@@ -58,7 +58,9 @@ it('keeps medium and interactive low surfaces in their own intent family', () =>
         intent
       });
       expect(formula.boxColor.medium.rest).toBe(
-        c.ref('default', theme === 'light' ? 'l' : 'd', `button.${intent}`, 'subtle')
+        theme === 'light'
+          ? c('default', 'l', `button.${intent}`, 7)
+          : c.ref('default', 'd', `button.${intent}`, 'subtle')
       );
       expect(formula.boxColor.low.hover).not.toBe(formula.boxColor.low.rest);
     }
@@ -67,37 +69,38 @@ it('keeps medium and interactive low surfaces in their own intent family', () =>
 
 it('keeps enabled label contrast through isolated and selected interaction states', () => {
   const failures: string[] = [];
-  for (const theme of ['light', 'dark'] as const)
-    for (const surface of ['onSubtle', 'onVivid'] as const)
-      for (const intent of MATERIAL_BUTTON_INTENTS) {
-        const formula = createMaterialButtonIntent({
-          c,
-          segment: 'default',
-          theme,
-          surface,
-          intent
-        });
-        const parent =
-          surface === 'onVivid'
-            ? c.ref('default', 'l', 'button.primary', 'vivid')
-            : c('default', theme === 'light' ? 'l' : 'd', 'primitive.black.v1', 0);
-        for (const emphasis of MATERIAL_BUTTON_EMPHASES)
-          for (const selected of [false, true])
-            for (const state of ['rest', 'hover', 'focus', 'pressed'] as const) {
-              const box = selected
-                ? formula.boxColor[emphasis].selected!
-                : formula.boxColor[emphasis];
-              const text = selected
-                ? (formula.textColor[emphasis].selected?.rest.ref ??
-                  formula.textColor[emphasis].rest)
-                : formula.textColor[emphasis].rest;
-              const ratio = contrast(text, box[state] ?? box.rest, parent);
-              if (ratio < 4.5)
-                failures.push(
-                  `${theme}/${surface}/${intent}/${emphasis}/${selected}/${state}: ${ratio.toFixed(2)}`
-                );
-            }
-      }
+  for (const segment of ['default', 'purple'] as const)
+    for (const theme of ['light', 'dark'] as const)
+      for (const surface of ['onSubtle', 'onVivid'] as const)
+        for (const intent of MATERIAL_BUTTON_INTENTS) {
+          const formula = createMaterialButtonIntent({
+            c,
+            segment,
+            theme,
+            surface,
+            intent
+          });
+          const parent =
+            surface === 'onVivid'
+              ? c.ref(segment, 'l', 'button.primary', 'vivid')
+              : c(segment, theme === 'light' ? 'l' : 'd', 'primitive.black.v1', 0);
+          for (const emphasis of MATERIAL_BUTTON_EMPHASES)
+            for (const selected of [false, true])
+              for (const state of ['rest', 'hover', 'focus', 'pressed'] as const) {
+                const box = selected
+                  ? formula.boxColor[emphasis].selected!
+                  : formula.boxColor[emphasis];
+                const text = selected
+                  ? (formula.textColor[emphasis].selected?.rest.ref ??
+                    formula.textColor[emphasis].rest)
+                  : formula.textColor[emphasis].rest;
+                const ratio = contrast(text, box[state] ?? box.rest, parent);
+                if (ratio < 4.5)
+                  failures.push(
+                    `${segment}/${theme}/${surface}/${intent}/${emphasis}/${selected}/${state}: ${ratio.toFixed(2)}`
+                  );
+              }
+        }
   expect(failures).toEqual([]);
 });
 
