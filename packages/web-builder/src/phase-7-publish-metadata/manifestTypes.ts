@@ -91,6 +91,7 @@ export type Manifest = {
   schemaName: string | null;
   version: string | null;
   segments: string[];
+  segmentMetadata?: string;
   themes: Record<string, string[]>;
   /**
    * Optional, compact font-role metadata for the schema.

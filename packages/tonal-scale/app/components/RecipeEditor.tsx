@@ -138,7 +138,8 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         [
           ...usedIds,
           ...(recipe.catalog?.colors.map((c) => c.id) ?? []),
-          ...(recipe.catalog?.neutrals.map((n) => n.id) ?? [])
+          ...(recipe.catalog?.neutrals.map((n) => n.id) ?? []),
+          ...(recipe.catalog?.supportingColors?.map((n) => n.id) ?? [])
         ],
         identity.stem
       )
@@ -265,11 +266,14 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
   };
 
   const removeExtraOverride = (id: TonalFamilyId) => {
-    const associated = recipe.catalog?.neutrals.filter((n) => n.sourceId === id) ?? [];
+    const associated = [
+      ...(recipe.catalog?.neutrals ?? []),
+      ...(recipe.catalog?.supportingColors ?? [])
+    ].filter((n) => n.sourceId === id);
     if (
       associated.length &&
       !window.confirm(
-        `Remove ${id} and associated neutral ${associated.map((n) => n.id).join(', ')}?`
+        `Remove ${id} and associated colors ${associated.map((n) => n.id).join(', ')}?`
       )
     )
       return;
@@ -283,6 +287,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             catalog: {
               ...recipe.catalog,
               neutrals: recipe.catalog.neutrals.filter((n) => n.sourceId !== id),
+              supportingColors: recipe.catalog.supportingColors?.filter((n) => n.sourceId !== id),
               names: Object.fromEntries(
                 Object.entries(recipe.catalog.names).filter(([key]) => !removed.has(key))
               )
@@ -696,7 +701,12 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
         </div>
       </fieldset>
 
-      <CatalogEditor recipe={recipe} result={result} onChange={onChange} />
+      <CatalogEditor
+        recipe={recipe}
+        result={result}
+        onChange={onChange}
+        onPrimaryChange={updatePrimary}
+      />
       <fieldset className={styles.neutralSection}>
         <legend>Neutral</legend>
         {result.issues

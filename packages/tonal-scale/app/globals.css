@@ -1238,6 +1238,11 @@ dd {
   letter-spacing: 0.06em;
 }
 
+.overview-family > button .derivation-origin {
+  text-transform: none;
+  letter-spacing: normal;
+}
+
 .overview-scale-row {
   display: grid;
   grid-template-columns: 22px minmax(0, 1fr) 112px;

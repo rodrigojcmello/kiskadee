@@ -13,8 +13,10 @@ import {
   ShowcaseControlPanel
 } from '@/components/ShowcaseControls';
 import ThemeModePicker from '@/components/ThemeModePicker/ThemeModePicker';
+import { useSegmentMetadata } from '@/hooks/use-segment-metadata';
 import { Select } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
+import { orderSegments } from '@/utils/segment-options';
 import DesignSystemControls from './DesignSystemControls';
 import { ShowcaseDensityControl } from './ShowcaseDensityControl';
 import styles from './ShowcaseGlobalControls.module.scss';
@@ -45,30 +47,67 @@ export function ShowcaseGlobalSemanticControls() {
 }
 
 export function ShowcaseSegmentControl({ className }: { className?: string }) {
-  const { segment, setSegment } = useKiskadee();
+  const { designSystem, segment, setSegment, theme } = useKiskadee();
   const { availableSegments } = useShowcase();
-
-  const segmentOptions = availableSegments.map((availableSegment) => ({
-    value: availableSegment,
-    label: availableSegment.charAt(0).toUpperCase() + availableSegment.slice(1)
-  }));
+  const metadata = useSegmentMetadata(designSystem);
+  const segmentOptions = metadata.data
+    ? orderSegments(metadata.data)
+        .filter((entry) => availableSegments.includes(entry.id))
+        .map((entry) => {
+          const name = `${entry.name}${entry.id === metadata.data?.defaultSegment ? ' (default)' : ''}`;
+          const color = entry.vivid[theme];
+          return {
+            value: entry.id,
+            textValue: name,
+            label: (
+              <span className={styles.segmentLabel}>
+                {color ? (
+                  <span
+                    aria-hidden="true"
+                    className={styles.segmentDot}
+                    style={{ backgroundColor: color }}
+                  />
+                ) : null}
+                <span>{name}</span>
+              </span>
+            )
+          };
+        })
+    : [
+        {
+          value: segment,
+          textValue: undefined,
+          label: metadata.error ? 'Segments unavailable' : 'Loading segments…'
+        }
+      ];
 
   return (
-    <Select
-      className={className}
-      label="Segment"
-      width="100%"
-      minWidth={0}
-      maxWidth={180}
-      options={segmentOptions}
-      value={segment}
-      onValueChange={(value) => {
-        if (value === segment) return;
-        playWowTransition();
-        setSegment(value);
-      }}
-      disabled={availableSegments.length <= 1}
-    />
+    <>
+      <Select
+        className={className}
+        label="Segment"
+        width="100%"
+        minWidth={0}
+        maxWidth={300}
+        options={segmentOptions}
+        selectedLabel={segmentOptions.find((option) => option.value === segment)?.textValue}
+        value={segment}
+        onValueChange={(value) => {
+          if (value === segment) return;
+          playWowTransition();
+          setSegment(value);
+        }}
+        disabled={!metadata.data || availableSegments.length <= 1}
+      />
+      {metadata.error ? (
+        <div className={styles.segmentError}>
+          <span role="alert">Unable to load segments.</span>
+          <button className={styles.segmentRetry} type="button" onClick={metadata.retry}>
+            Retry
+          </button>
+        </div>
+      ) : null}
+    </>
   );
 }
 

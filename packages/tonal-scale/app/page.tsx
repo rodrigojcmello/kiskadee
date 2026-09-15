@@ -675,9 +675,33 @@ function ScaleOverview({
                     : ''}
                   {family.id}
                 </strong>
-                <small>
-                  {family.role} · {family.status}
-                </small>
+                {(() => {
+                  const origin =
+                    system.source.catalog?.supportingColors?.find(
+                      (entry) => entry.id === family.id
+                    ) ?? system.source.catalog?.neutrals.find((entry) => entry.id === family.id);
+                  const sourceId =
+                    origin?.sourceId ??
+                    (family.id === 'n.black.v2' &&
+                    system.source.neutral?.mode === 'derived-from-primary'
+                      ? 'primary'
+                      : undefined);
+                  const originLabel =
+                    sourceId || family.seedOrigin === 'derived'
+                      ? 'Derived'
+                      : family.seedOrigin === 'primary' || family.seedOrigin === 'override'
+                        ? 'Custom seed'
+                        : 'Default';
+                  return (
+                    <small className="derivation-origin">
+                      {sourceId
+                        ? `Derived (${sourceId === 'primary' ? system.primaryReference.familyId : sourceId})`
+                        : originLabel}
+                      {' · '}
+                      {family.status.charAt(0).toUpperCase() + family.status.slice(1)}
+                    </small>
+                  );
+                })()}
               </span>
               <span>Inspect family</span>
             </button>

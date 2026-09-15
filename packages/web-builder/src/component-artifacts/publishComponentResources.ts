@@ -50,6 +50,17 @@ export async function publishComponentResources(buildDir: string, schema: Schema
     await writeFile(resolve(buildDir, path), JSON.stringify(value));
   };
   const manifest = await read('manifest.json');
+  let segmentMetadata: string | null = null;
+  if (manifest.segmentMetadata) {
+    try {
+      segmentMetadata = await readFile(resolve(buildDir, manifest.segmentMetadata), 'utf8');
+    } catch (cause) {
+      throw new Error(
+        `[web-builder] Cannot read declared segment metadata ${manifest.segmentMetadata} in ${buildDir}; rerun metadata publication before component resources`,
+        { cause }
+      );
+    }
+  }
   const global = await read('global.kiskadee.json');
   const coreMap = await read('core.kiskadee.json');
   delete coreMap.$schema;
@@ -211,7 +222,7 @@ export async function publishComponentResources(buildDir: string, schema: Schema
   manifest.styles = globalStyles;
   if (Object.keys(paletteStyles).length) manifest.paletteStyles = paletteStyles;
   manifest.revision = artifactHash(
-    JSON.stringify([global, revisions, mapRevisions, globalStyles, paletteStyles])
+    JSON.stringify([global, revisions, mapRevisions, globalStyles, paletteStyles, segmentMetadata])
   );
   await write('global.kiskadee.json', global);
   await write('manifest.json', manifest);

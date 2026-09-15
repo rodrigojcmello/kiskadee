@@ -40,14 +40,14 @@
   font-weight: 600;
 }
 
-.catalog label:has(input[type='checkbox']) {
+.catalog label:has(input[type="checkbox"]) {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 42px;
 }
 
-.catalog input:not([type='checkbox']),
+.catalog input:not([type="checkbox"]),
 .catalog select {
   width: 100%;
   min-width: 0;
@@ -59,4 +59,35 @@
 
 .catalog button {
   min-height: 42px;
+}
+
+.entry {
+  border: 1px solid var(--editor-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.entry summary {
+  cursor: pointer;
+  padding: 14px 18px;
+}
+.entry summary > span {
+  display: inline-block;
+  vertical-align: middle;
+}
+.entry summary small {
+  display: block;
+  color: var(--editor-muted);
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+.entry .swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--editor-border);
+  margin-right: 12px;
+}
+.entry fieldset {
+  border: 0;
+  border-radius: 0;
 }

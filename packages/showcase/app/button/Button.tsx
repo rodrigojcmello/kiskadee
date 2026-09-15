@@ -443,7 +443,7 @@ export function Button() {
               {showDescriptions ? (
                 <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
                   Intent gives an action its semantic role. Primary advances the main task, Neutral
-                  supports secondary actions, Destructive signals risk, and Positive communicates a
+                  supports support actions, Destructive signals risk, and Positive communicates a
                   beneficial outcome.
                 </Text>
               ) : null}
@@ -520,6 +520,26 @@ export function Button() {
                 scale={activeButtonScale}
                 surfaceContext={activeCardSurfaceContext}
               />
+              {buttonState?.support ? (
+                <ButtonStateSection
+                  key="support"
+                  intent="support"
+                  title="Support"
+                  description={
+                    showDescriptions
+                      ? 'A chromatic supporting action, distinct from neutral actions.'
+                      : undefined
+                  }
+                  fontName={fontName}
+                  align={alignment}
+                  stateCapabilities={buttonState}
+                  simplified={isSimplified}
+                  grouped={showButtonGroups}
+                  radius={buttonRadius}
+                  scale={activeButtonScale}
+                  surfaceContext={activeCardSurfaceContext}
+                />
+              ) : null}
             </div>
           </section>
           <div className={s.buttonExamples}>

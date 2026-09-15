@@ -65,7 +65,7 @@ describe('tonal artifact bundle v5', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `preset-colors/${id}.ts` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.17.0');
+    expect(bundle.manifest.generator.version).toBe('0.19.0');
     expect(bundle.diagnostics.referenceSet).toBe('kiskadee-munsell-reference-v2');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const [path, contents] of bundle.files) {
@@ -80,8 +80,15 @@ describe('tonal artifact bundle v5', () => {
       const text = bundle.files.get(entry.preset.path)!;
       expect(await sha256Hex(text)).toBe(entry.preset.sha256);
       const payload = JSON.parse(text.split('export default ')[1].split(' as const satisfies ')[0]);
-      expect(Object.keys(payload).sort()).toEqual(['functionalReferences', 'kind', 'scales']);
+      expect(Object.keys(payload).sort()).toEqual([
+        'classification',
+        'functionalReferences',
+        'kind',
+        'scales'
+      ]);
       expect(payload.kind).toBe('static');
+      expect(payload.classification).toEqual(asset.classification);
+      expect(payload.classification.referenceHex).toBe(asset.functionalReferences.light.vivid.hex);
       expect(payload.scales).toEqual(asset.scales);
       for (const theme of ['light', 'dark'] as const) {
         for (const name of ['subtle', 'medium', 'vivid'] as const) {
@@ -115,7 +122,7 @@ describe('tonal artifact bundle v5', () => {
 
   it('keeps consumer assets concise while recording V5 identity, origin, and functional references', () => {
     for (const asset of bundle.assets) {
-      expect(asset.formatVersion).toBe(6);
+      expect(asset.formatVersion).toBe(7);
       expect(asset.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
       expect(asset).not.toHaveProperty('diagnostics');
       expect(asset).not.toHaveProperty('dependencies');
@@ -123,7 +130,12 @@ describe('tonal artifact bundle v5', () => {
       expect(asset).not.toHaveProperty('hue');
       expect(asset).not.toHaveProperty('familyKind');
       expect(asset).not.toHaveProperty('sourceSeedHex');
-      expect(asset).not.toHaveProperty('classification');
+      expect(Object.keys(asset.classification!).sort()).toEqual([
+        'classifier',
+        'positionInSector',
+        'referenceHex',
+        'sector'
+      ]);
       expect(asset).not.toHaveProperty('surfaceTrackAlignment');
       expect(asset).not.toHaveProperty('darkSupportChromaModeration');
       expect(asset).not.toHaveProperty('stateReferences');

@@ -23,15 +23,15 @@ type PendingPresentation = 'text' | 'spinner' | 'progress';
 
 type PendingButtonProfile = {
   emphasis: ComponentEmphasis;
-  intent: SystemButtonIntent;
+  intent: (typeof PENDING_INTENT_ORDER)[number];
 };
 
-const PENDING_INTENT_ORDER: SystemButtonIntent[] = [
+const PENDING_INTENT_ORDER = [
   'primary',
   'neutral',
   'positive',
   'destructive'
-];
+] as const satisfies readonly SystemButtonIntent[];
 const PENDING_EMPHASIS_ORDER: ComponentEmphasis[] = ['high', 'medium', 'low', 'lowest', 'highest'];
 
 function resolvePendingButtonProfile(

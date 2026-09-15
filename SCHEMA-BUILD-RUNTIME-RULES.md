@@ -766,8 +766,8 @@ Use each artifact for a different level of responsibility:
   `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped class resolution
   artifacts. They mirror the component branch from the aggregate class-map files so runtime hooks
   can load only the class data they need.
-- `segments.json`: segment registry materialized for tooling and UIs that need segment names and
-  theme availability.
+- `segments.json`: compact segment identity, primary classification and per-theme vivid swatches
+  for inspection UIs; no expanded semantic maps.
 - `extra.<segment>.<theme>.kiskadee.json`: lightweight per-palette metadata that complements the
   class maps, such as resolved background information used by consumers like Showcase.
 - `styles/<hash>.css`: component-scoped and shared-consumer utility stylesheets, referenced with
@@ -981,3 +981,12 @@ Use this before implementing any new value:
 - Concrete selector behavior -> structural Sass (`k-tab-e5-*`) + runtime class composition.
 
 This split keeps the component flexible while preserving build-time optimization.
+
+### Segment inspection metadata
+
+`segments.json` is a compact, versioned registry containing segment IDs/names, the default ID,
+primary classification and vivid swatches by theme. It no longer expands Layer 2 semantic maps.
+The manifest references it through `segmentMetadata`; resource revisions include its contents.
+Classification comes from preset assets using Tonal Scale's public contract, never runtime hue
+inference. Showcase owns rotation/grouping around the default segment; generator mathematics
+and sector sequence remain owned by Tonal Scale. See the preset segment-color-model definition.

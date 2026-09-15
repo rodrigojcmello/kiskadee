@@ -1,14 +1,14 @@
+import blueSupport from './default/b.blue.v2.ts';
+import purpleSupport from './default/pb.indigo.v3.ts';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import segmentPurple from './default/pb.indigo.v2.ts';
-import segmentNeutral from './default/n.black.v3.ts';
 import blueV1 from './default/b.blue.v1.ts';
 import greenV1 from './default/g.green.v1.ts';
 import blackV1 from './default/n.black.v1.ts';
-import blackV2 from './default/n.black.v2.ts';
 import purpleV1 from './default/p.purple.v1.ts';
 import redV1 from './default/r.red.v1.ts';
 import pinkV1 from './default/rp.magenta.v1.ts';
@@ -20,12 +20,12 @@ const GENERATED_ROOT = resolve(
 );
 
 const PROMOTED_ASSETS = {
+  'b.blue.v2': blueSupport,
+  'pb.indigo.v3': purpleSupport,
   'pb.indigo.v2': segmentPurple,
-  'n.black.v3': segmentNeutral,
   'b.blue.v1': blueV1,
   'g.green.v1': greenV1,
   'n.black.v1': blackV1,
-  'n.black.v2': blackV2,
   'p.purple.v1': purpleV1,
   'r.red.v1': redV1,
   'y.yellow.v1': yellowV1,

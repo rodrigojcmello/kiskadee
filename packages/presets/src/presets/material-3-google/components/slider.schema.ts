@@ -79,8 +79,14 @@ function createSliderPalettes({
     const darkHoverOffset = !onVivid && intent === 'primary' ? 8 : 0;
     const darkPressedOffset = !onVivid && intent === 'primary' ? 4 : 0;
     const active = family('vivid', theme === 'light' ? 0 : darkActiveOffset);
-    const activeHover = family('vivid', theme === 'light' ? 1 : darkHoverOffset);
-    const activePressed = family('vivid', theme === 'light' ? 2 : darkPressedOffset);
+    const activeHover = family(
+      'vivid',
+      theme === 'light' ? (intent === 'neutral' ? -1 : 1) : darkHoverOffset
+    );
+    const activePressed = family(
+      'vivid',
+      theme === 'light' ? (intent === 'neutral' ? -2 : 2) : darkPressedOffset
+    );
     const rail = family('subtle');
     const marks = family('medium');
     const disabledPolarity = onVivid || theme === 'dark' ? 'light' : 'dark';

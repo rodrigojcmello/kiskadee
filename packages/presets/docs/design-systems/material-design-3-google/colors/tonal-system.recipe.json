@@ -11,36 +11,29 @@
       }
     ],
     "names": {
-      "primary": "Azul Material",
-      "pb.indigo.v2": "Roxo Material"
+      "primary": "Google Blue",
+      "pb.indigo.v2": "Baseline Purple",
+      "b.blue.v2": "Google Blue Support",
+      "pb.indigo.v3": "Baseline Purple Support"
     },
-    "neutrals": [
+    "neutrals": [],
+    "supportingColors": [
       {
-        "id": "n.black.v3",
-        "sourceId": "pb.indigo.v2",
-        "intensity": "chromatic"
+        "id": "b.blue.v2",
+        "sourceId": "primary",
+        "strategy": "material-support-v1"
       },
       {
-        "id": "n.black.v2",
-        "sourceId": "primary",
-        "intensity": "chromatic"
+        "id": "pb.indigo.v3",
+        "sourceId": "pb.indigo.v2",
+        "strategy": "material-support-v1"
       }
     ]
   },
-  "formatVersion": 6,
+  "formatVersion": 7,
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
   "tonalProfile": "balanced",
-  "neutral": {
-    "mode": "derived-from-primary",
-    "seedHex": "#001d35",
-    "derivation": "primary-neutral-v1",
-    "intensity": "chromatic",
-    "policies": {
-      "light": "source-exact",
-      "dark": "source-exact"
-    }
-  },
   "overrides": [
     {
       "id": "g.green.v1",

@@ -5,150 +5,150 @@
       "path": "colors/b.blue.v1.json",
       "preset": {
         "path": "preset-colors/b.blue.v1.ts",
-        "sha256": "f35f511809bd979386ac46601b0d1b602f30b7d4745b756087e51fcf167a4992"
+        "sha256": "ae66021c0ad54260d9589428bae463d97fd50a4f9a427d3e9d819cc57078e1ff"
       },
-      "sha256": "b035d2bfdac8e5f43a10f78b4a3c602f22d90067c09c9eb7954abcb9f37e03cc"
+      "sha256": "078c6e23e10edae42dcda19ca124f97efea2d16e197bc72349ff809d6e1cbc06"
+    },
+    {
+      "familyId": "b.blue.v2",
+      "path": "colors/b.blue.v2.json",
+      "preset": {
+        "path": "preset-colors/b.blue.v2.ts",
+        "sha256": "e2a6bbc6b3c644dd00b52b5d76209cac13d2921fb0ff6ec7127519ddf59233d8"
+      },
+      "sha256": "3491532771fab346f459403b5387ecd0ab114843b17cee03a9208b69180fab4b"
     },
     {
       "familyId": "bg.teal.v1",
       "path": "colors/bg.teal.v1.json",
       "preset": {
         "path": "preset-colors/bg.teal.v1.ts",
-        "sha256": "9448d2c7f24d2420e9f788d0e36df90874c9410b684387fed0f92c4c369e06ca"
+        "sha256": "8bef4484ba6f734f5bdd7619544dd284bc0eab40cf5333de8b6aad032ed0becf"
       },
-      "sha256": "c3c9049d6df2e65d069b8853912511ef5d55b7bc3dd423e7eba526608716e573"
+      "sha256": "82b0fb82b8c7239a4c4b920d5c2693ad2428a7f41c4b138fd4b2137725b934d2"
     },
     {
       "familyId": "g.green.v1",
       "path": "colors/g.green.v1.json",
       "preset": {
         "path": "preset-colors/g.green.v1.ts",
-        "sha256": "d9e8a308fef0b8150f9998ece2e4d3c196041238232f5cd4c069e9a384f4b9e4"
+        "sha256": "c98aeb071e1316a485c94dddad41c087c183e35f852abea5a70ac0a2cd795af4"
       },
-      "sha256": "d31fc78e961d0d4c3cc7ab85b9ebe737946378bf1c0340bf4d2be51f79713423"
+      "sha256": "5c5081c49f3b19030592c748dd27ad25c9b4a8784915958d70b27ad315d1328a"
     },
     {
       "familyId": "gy.lime.v1",
       "path": "colors/gy.lime.v1.json",
       "preset": {
         "path": "preset-colors/gy.lime.v1.ts",
-        "sha256": "6946121d997c220f626cab0e43f2a69b81cd374e6cd22e19cb29ad76464dfd0c"
+        "sha256": "0d87cde2b4155f8b5ec179a153ae16b6715e9a0aac9c10ab6034ccbb6a5301bb"
       },
-      "sha256": "57c5366acebda2f1b8417f9f868965b62008dba1705f882ee2ac8a4fcbbbef34"
+      "sha256": "6d62a555f4b5db4e3b85db37798870b724bfda9b7aaa896599ebfa6147108554"
     },
     {
       "familyId": "n.black.v1",
       "path": "colors/n.black.v1.json",
       "preset": {
         "path": "preset-colors/n.black.v1.ts",
-        "sha256": "a13a60fe2f7349113b386cb6a40612aca24fe3fca5b04145cf37e79c12fa7a06"
+        "sha256": "dc5034037df2610d1e3366a275dce334495804031fb93489bbb63fdf194e72ce"
       },
-      "sha256": "71cb40746737252ade58d5a43e0b64a6956dec44e9f9335ea4ac36fa4b9a72e1"
-    },
-    {
-      "familyId": "n.black.v2",
-      "path": "colors/n.black.v2.json",
-      "preset": {
-        "path": "preset-colors/n.black.v2.ts",
-        "sha256": "4a4a8fc009136c501132f16ac33b5bf2a0c912c633b75a433a8d0e6551c3cc40"
-      },
-      "sha256": "c73bdb23f6e1c1b3dea97136d4403b044d8023fb036009969644e75fbd777605"
-    },
-    {
-      "familyId": "n.black.v3",
-      "path": "colors/n.black.v3.json",
-      "preset": {
-        "path": "preset-colors/n.black.v3.ts",
-        "sha256": "452ec166fb51ecfc85f7913d79122bb95e003d9d7d2d083db32bf243342ea8a0"
-      },
-      "sha256": "a73abb981f5b1edad1229c5b0e2752d08d292c382c25139a1b2950e6990c6f4c"
+      "sha256": "4f7d1e949ae0596e992291c2ca794fa228202c8514ba76d3f839fcb0795ef3d7"
     },
     {
       "familyId": "p.purple.v1",
       "path": "colors/p.purple.v1.json",
       "preset": {
         "path": "preset-colors/p.purple.v1.ts",
-        "sha256": "c9e435a3312b77028643d48b6cfdcf5056e6b9cc37286a48e65900e52e045819"
+        "sha256": "86c98142e5f768dd042d1f33322b6f20cb25cf924d1f0977f6558be448c013e2"
       },
-      "sha256": "99213c63d583dab7cc036195a55b3e6e672c0da6bf9b18934a619476b42361be"
+      "sha256": "6ab1e8e9be358e690ab3672b202bcd31d0d7efa7d8f2434ff4ca66eb8b8c40b8"
     },
     {
       "familyId": "pb.indigo.v1",
       "path": "colors/pb.indigo.v1.json",
       "preset": {
         "path": "preset-colors/pb.indigo.v1.ts",
-        "sha256": "1cb9907cb8f8ca47fa16550f32931bbfd06d2fc8e308288c0cd94ba92484391c"
+        "sha256": "1938d940c91f081813d0ffb760f49693b8dd821b7e286cf82f32b1713494f9b2"
       },
-      "sha256": "d9538fe042a1774e227568e3247be6a2c6f9c91e0701d117ba8977e906042a67"
+      "sha256": "7bc18a4286a1e56e90030833ac9f42c7483b4b7b9610233cc54dabff8e939780"
     },
     {
       "familyId": "pb.indigo.v2",
       "path": "colors/pb.indigo.v2.json",
       "preset": {
         "path": "preset-colors/pb.indigo.v2.ts",
-        "sha256": "4a48de64db98728efa455df9e402d4a7b3b876f41c1ee32b69dab50757d0eb60"
+        "sha256": "2c3491d936565ff1c43d1ac35b6abc18d2ca741af348fb13787daa9554eccfe5"
       },
-      "sha256": "bfca70a119ad33b7baaef2ec93c672157903d7cb880409713a0ec9c90a1587d6"
+      "sha256": "094f61e11a6723878067be4cdbdb38564726d5efaf5ad7e7db63741177ced50f"
+    },
+    {
+      "familyId": "pb.indigo.v3",
+      "path": "colors/pb.indigo.v3.json",
+      "preset": {
+        "path": "preset-colors/pb.indigo.v3.ts",
+        "sha256": "f7577d3614aaa85b3365664d7646c2f33bda94c24ad04a84adb89cd63bf06e00"
+      },
+      "sha256": "ace17a9e3abee00037b6e951b427e91ad8ca73105061a5ef2246b0e6ef664953"
     },
     {
       "familyId": "r.red.v1",
       "path": "colors/r.red.v1.json",
       "preset": {
         "path": "preset-colors/r.red.v1.ts",
-        "sha256": "cabb954f4650827bf40f30971c763d6a59388bdd11d825a522a949d2846253bd"
+        "sha256": "432477914906efe3e9349dac4a652c2e01cc1a0fd058f744e9aa199b13b6d8d1"
       },
-      "sha256": "cffb6e95d58f0643a6dce94e6ed1cd063497fd42e16334d35ed3ff0a3234c159"
+      "sha256": "db67d7dc113abcd99af295d0c3a39d85d5eb63ebfc06ecd8b991295b131c5f33"
     },
     {
       "familyId": "rp.magenta.v1",
       "path": "colors/rp.magenta.v1.json",
       "preset": {
         "path": "preset-colors/rp.magenta.v1.ts",
-        "sha256": "21eaf3058c679ca43c8ca0829cf54ab933cf9e635a000fcca802e904b60e3710"
+        "sha256": "16378feb3f8bbc18158a68abefc60b42d1fc98e57b0de9dc90959fb04dd1c804"
       },
-      "sha256": "979b6053e83906051209d9e2f4dbc63830132932994517efb2751dfcf579ccd8"
+      "sha256": "ac185f7989745a635e32a9a9f701f5bb9a33a70962ef918d00113dbe8b7e39c5"
     },
     {
       "familyId": "y.yellow.v1",
       "path": "colors/y.yellow.v1.json",
       "preset": {
         "path": "preset-colors/y.yellow.v1.ts",
-        "sha256": "aa4e0ca292547429754846ce4d9bdb67a09b6238e362d860d01019ee0a67f71d"
+        "sha256": "b6fdce9d476fdaf4a26f0f1bdd9c84cbc6fed6d8bc7ad9545cff271b6fa048cf"
       },
-      "sha256": "91ce339fd95cabfb68263e9b7308d8189bc57efbdf9d94fd2381b70e78e3f5ee"
+      "sha256": "c3485bada7ad07db19bf7ddf33fa69c8360a6fce74fcb4a3899b26b350d517fe"
     },
     {
       "familyId": "yr.brown.v1",
       "path": "colors/yr.brown.v1.json",
       "preset": {
         "path": "preset-colors/yr.brown.v1.ts",
-        "sha256": "2113b454448715fc024304c957f54d8871ce8cc02dea69103ab381545a3ace1b"
+        "sha256": "800d760889427d91c7273f79b1e1b0b070bac68c4362363570eae87a6be50671"
       },
-      "sha256": "db7bb3948d2df1b3f194c2ca0c7d32f197047e9c8fef7df7d302b2c0dcafced9"
+      "sha256": "6b2af68e5cef798b60b580db160e847edd4672131114b308468bcfe5a07a7e7e"
     },
     {
       "familyId": "yr.orange.v1",
       "path": "colors/yr.orange.v1.json",
       "preset": {
         "path": "preset-colors/yr.orange.v1.ts",
-        "sha256": "4ac48adb56a2dd6753e8a55afe61b9ab763a2b0a2d504239ceee88eab8ffe970"
+        "sha256": "5710c0f1c43b7dd4c98bc1abbf0c4a6969a8c0764ff2633d6115419a8f50ec54"
       },
-      "sha256": "ccb4c377942ce595f70620c05335a6246a07069041ae22676f422a3b7620db9a"
+      "sha256": "40daeb9e9fe16e8a40437ca801f6271ce1afd8fd4023a60886882b9cde521ba5"
     }
   ],
   "diagnostics": {
     "path": "tonal-system.diagnostics.json"
   },
-  "formatVersion": 6,
+  "formatVersion": 7,
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.16.0"
+    "version": "0.18.0"
   },
   "kind": "kiskadee.tonal-system",
   "primaryReference": "b.blue.v1",
   "source": {
     "path": "tonal-system.source.json",
-    "sha256": "19b1ce587ab43faa22c5e073ff77a095ac56e8f1f0b162b5d85e3ffe1e4c451f"
+    "sha256": "0edafe3ff70ae997b14388022a8b53854d7d676806b5e7ca953f6ea04688553e"
   },
   "tonalAnchors": {
     "rest": {

@@ -1,0 +1,24 @@
+{
+  "preservedFamilies": [
+    "b.blue.v1",
+    "b.blue.v2",
+    "bg.teal.v1",
+    "g.green.v1",
+    "gy.lime.v1",
+    "n.black.v1",
+    "p.purple.v1",
+    "pb.indigo.v1",
+    "pb.indigo.v2",
+    "pb.indigo.v3",
+    "r.red.v1",
+    "rp.magenta.v1",
+    "y.yellow.v1",
+    "yr.brown.v1",
+    "yr.orange.v1"
+  ],
+  "removedFamilies": [
+    "n.black.v2",
+    "n.black.v3"
+  ],
+  "changedScales": []
+}

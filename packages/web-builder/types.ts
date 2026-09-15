@@ -66,6 +66,10 @@ export type {
   ManifestTypography
 } from './src/phase-7-publish-metadata/manifestTypes.ts';
 export type {
+  SegmentArtifact,
+  SegmentArtifactEntry
+} from './src/phase-7-publish-metadata/segmentArtifact.ts';
+export type {
   TypographyArtifact,
   TypographyArtifactProfile,
   TypographyArtifactUsage

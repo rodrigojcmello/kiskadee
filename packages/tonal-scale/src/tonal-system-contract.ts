@@ -7,7 +7,7 @@ import {
   type KiskadeeTone
 } from './kiskadee-tonal-scale.ts';
 
-export const TONAL_SYSTEM_FORMAT_VERSION = 6 as const;
+export const TONAL_SYSTEM_FORMAT_VERSION = 7 as const;
 export const TONAL_GRID_CONTRACT = 'kiskadee-tonal-v1' as const;
 export const TONAL_HARMONY_CONTRACT = 'kiskadee-munsell-rest-v1' as const;
 
@@ -290,7 +290,14 @@ export function resolveNeutralOverride(
   return { id: 'n.black.v2', seedHex, policies: { light: 'source-exact', dark: 'source-exact' } };
 }
 
+export type SupportingColorAssociation = {
+  id: TonalFamilyId;
+  sourceId: TonalFamilyId | 'primary';
+  strategy: 'material-support-v1';
+};
+
 export type TonalCatalog = {
+  supportingColors?: SupportingColorAssociation[];
   colors: TonalFamilyOverrideV5[];
   names: Record<string, string>;
   neutrals: {
@@ -689,7 +696,7 @@ function validateContract(
       [
         ...overrides,
         ...(catalog?.colors ?? []),
-        ...(catalog?.neutrals.map((n) => ({
+        ...([...(catalog?.neutrals ?? []), ...(catalog?.supportingColors ?? [])].map((n) => ({
           id: n.id,
           seedHex: '#202020',
           policies: { light: 'source-exact' as const, dark: 'source-exact' as const }
@@ -759,7 +766,11 @@ function validateContractIdentifiers(
   input: Record<string, unknown>,
   issue: (code: string, path: string, message: string) => void
 ): void {
-  if (input.formatVersion !== TONAL_SYSTEM_FORMAT_VERSION && input.formatVersion !== 5) {
+  if (
+    input.formatVersion !== TONAL_SYSTEM_FORMAT_VERSION &&
+    input.formatVersion !== 6 &&
+    input.formatVersion !== 5
+  ) {
     const legacy =
       input.formatVersion === 1 || input.formatVersion === 2 || input.formatVersion === 3
         ? ` Version ${input.formatVersion} is not migrated automatically.`
@@ -1462,7 +1473,7 @@ function validateCatalog(
     issue('INVALID_CATALOG', '/catalog', 'Expected a catalog.');
     return undefined;
   }
-  reportUnknownKeys(input, ['colors', 'names', 'neutrals'], '/catalog', issue);
+  reportUnknownKeys(input, ['colors', 'names', 'neutrals', 'supportingColors'], '/catalog', issue);
   const colors =
     validateOverrides(input.colors ?? [], (code, path, message) =>
       issue(code, path.replace('/overrides', '/catalog/colors'), message)
@@ -1526,6 +1537,50 @@ function validateCatalog(
         intensity: raw.intensity ?? 'subtle'
       });
     }
+  const supportingColors: SupportingColorAssociation[] = [];
+  const supportingSources = new Set<string>();
+  if (!Array.isArray(input.supportingColors ?? [])) {
+    issue('INVALID_ASSOCIATIONS', '/catalog/supportingColors', 'Expected an array.');
+  } else
+    for (const raw of (input.supportingColors ?? []) as unknown[]) {
+      if (!isPlainObject(raw)) {
+        issue('INVALID_ASSOCIATION', '/catalog/supportingColors', 'Expected an association.');
+        continue;
+      }
+      reportUnknownKeys(raw, ['id', 'sourceId', 'strategy'], '/catalog/supportingColors', issue);
+      const parsed = typeof raw.id === 'string' ? parseTonalFamilyId(raw.id) : null;
+      if (!parsed || parsed.stem === 'n.black' || occupied.has(raw.id as string)) {
+        issue('CATALOG_ID_COLLISION', '/catalog/supportingColors', 'Expected a free chromatic id.');
+        continue;
+      }
+      if (
+        typeof raw.sourceId !== 'string' ||
+        !sourceIds.has(raw.sourceId) ||
+        raw.sourceId.startsWith('n.black.')
+      ) {
+        issue(
+          'ORPHAN_SUPPORTING_COLOR',
+          '/catalog/supportingColors',
+          'Expected an existing chromatic origin.'
+        );
+        continue;
+      }
+      if (raw.strategy !== 'material-support-v1' || supportingSources.has(raw.sourceId)) {
+        issue(
+          'INVALID_SUPPORTING_STRATEGY',
+          '/catalog/supportingColors',
+          'Expected one material-support-v1 association per origin.'
+        );
+        continue;
+      }
+      occupied.add(raw.id as string);
+      supportingSources.add(raw.sourceId);
+      supportingColors.push({
+        id: raw.id as TonalFamilyId,
+        sourceId: raw.sourceId as TonalFamilyId | 'primary',
+        strategy: raw.strategy
+      });
+    }
   const names: Record<string, string> = {};
   if (input.names !== undefined && !isPlainObject(input.names))
     issue('INVALID_NAMES', '/catalog/names', 'Expected an entry-name map.');
@@ -1535,9 +1590,19 @@ function validateCatalog(
         issue('INVALID_NAME', '/catalog/names', 'Names must reference existing entries.');
       else names[id] = name.trim();
     }
-  return { colors, names, neutrals: neutrals.sort((a, b) => compareStrings(a.id, b.id)) };
+  return {
+    colors,
+    names,
+    ...(supportingColors.length
+      ? { supportingColors: supportingColors.sort((a, b) => compareStrings(a.id, b.id)) }
+      : {}),
+    neutrals: neutrals.sort((a, b) => compareStrings(a.id, b.id))
+  };
 }
 
-// V5 names remain source-compatible aliases while validated output follows V6.
+// V5/V6 names remain source-compatible aliases while validated output follows V7.
 export type TonalSystemRecipeV6 = TonalSystemRecipeV5;
 export type LockedTonalSystemSourceV6 = LockedTonalSystemSourceV5;
+
+export type TonalSystemRecipeV7 = TonalSystemRecipeV5;
+export type LockedTonalSystemSourceV7 = LockedTonalSystemSourceV5;

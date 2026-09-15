@@ -1,11 +1,12 @@
 # Material tonal assets
 
-Initial promotion: 2026-09-12, generator 0.13.0. Current promotion approved on 2026-09-13:
-generator 0.16.0, Balanced, with a shared catalog for default and purple.
+Initial promotion: 2026-09-12, generator 0.13.0. The 2026-09-13 promotion used generator 0.16.0. Current implementation on 2026-09-15
+uses candidate generator 0.19.0, Balanced, with the same shared catalog plus two derived supporting colors.
+The user authorized integration; visual acceptance of Secondary remains user-owned.
 
 `tonal-system.recipe.json` is the authored input; `generated/` contains the canonical verified export. Ten TypeScript assets are copied verbatim into `packages/presets/src/presets/material-3-google/colors/default/`.
 
-### Shared viewer — candidate generator 0.17.0
+### Shared viewer — candidate generator 0.19.0
 
 Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
 Existing approved assets retain their recorded versions until a separate promotion.
@@ -14,10 +15,9 @@ Candidate 0.15.0 changes the opt-in Chromatic derivation to Chromatic offset (-1
 Subtle and explicit-seed recipes preserve their colors. Approved preset assets retain their
 recorded versions; the viewer candidate is not an automatic asset promotion.
 
-The local viewer uses Balanced and `neutral.mode: derived-from-primary` with
-`neutral.intensity: chromatic`. Blue, red and green seeds and their policies are unchanged.
-The retained neutral input #001D35 is only the fallback for switching to existing mode; the
-active neutral seed is #03233C, derived from the approved blue #0B57D0.
+The local viewer uses Balanced, Google Blue and Baseline Purple, with chromatic supporting
+colors derived independently from each. Pure black V1 is the only neutral; V2/V3 are removed.
+Blue, red, green, purple and supporting scales remain unchanged.
 
 ## Authored evidence and promoted references
 
@@ -26,7 +26,6 @@ active neutral seed is #03233C, derived from the approved blue #0B57D0.
 | b.blue.v1 | #0B57D0 / Gmail primary | L4 `#e4eeff` / L18 `#86b3ff` / L50 `#0b57d0` | D4 `#001542` / D16 `#003285` / D40 `#0b57d0` |
 | r.red.v1 | #B3261E / Gmail error; Material error40 | L4 `#ffe7e3` / L18 `#ff8e7f` / L50 `#b3261e` | D4 `#3b0000` / D16 `#790002` / D40 `#b3261e` |
 | g.green.v1 | #146C2E / Gmail tertiary, adapted as semantic green | L4 `#e0f4e2` / L18 `#84c58d` / L55 `#146c2e` | D5 `#002308` / D16 `#004316` / D40 `#1b7132` |
-| n.black.v2 | #03233C / primary-derived neutral, Chromatic offset (Kiskadee adaptation) | L4 `#e0f0ff` / L24 `#7d9fbf` / L85 `#03233c` | D5 `#001d36` / D26 `#2b4b66` / D90 `#b7dbfd` |
 | n.black.v1 | #000000 / canonical pure grayscale | L4 `#ededed` / L28 `#8c8c8c` / L99 `#010101` | D5 `#1d1d1d` / D28 `#4b4b4b` / D99 `#fbfbfb` |
 
 Gmail CSS tokens were inspected at https://mail.google.com/mail/u/0/#inbox on 2026-09-12. The primary represents a Google product theme, not a universal Material primary. Material error palette source: https://github.com/material-components/material-components-web/blob/master/packages/mdc-tokens/v0_161/_md-ref-palette.scss.
@@ -35,9 +34,9 @@ Additional promoted families `p.purple.v1`, `rp.magenta.v1` and `y.yellow.v1` ar
 
 ## Three-layer mapping
 
-- Layer 1: canonical exported assets with Light/Dark scales and subtle, medium and vivid references. Black V1 is pure grayscale; Black V2 is the approved primary-derived tinted neutral.
-- Layer 2: primary V1 uses Blue V1. Legacy primary V2 and neutral V1/V2 resolve to Black V2, avoiding a separate secondary blue. Pure black remains directly available through primitive.black.v1. Green is exposed as greenLike; existing redLike, yellowLike and purpleLike aliases remain.
-- Layer 3: existing component intents remain valid. Button neutral resolves to neutral; Button primary and the existing Switch neutral intent resolve to primary. Destructive/error intents resolve to redLike. KIS-110 adds matching intent mappings for Badge, Chip, Icon, Progress, Slider and Text using these same approved families.
+- Layer 1: canonical exported assets with Light/Dark scales and subtle, medium and vivid references. Black V1 is pure grayscale; There are no tinted neutral assets.
+- Layer 2: support V1 uses Blue V2 in Default and Purple V3 in Purple. Primary V1 uses Blue V1. Legacy primary V2 and neutral V1/V2 resolve to Black V1, preserving their existing consumers. Pure black remains directly available through primitive.black.v1. Green is exposed as greenLike; existing redLike, yellowLike and purpleLike aliases remain.
+- Layer 3: existing component intents remain valid. Button neutral resolves to primitive.black.v1; Button/Card support resolve to support; Button primary and the existing Switch neutral intent resolve to primary. Destructive/error intents resolve to redLike. KIS-110 adds matching intent mappings for Badge, Chip, Icon, Progress, Slider and Text using these same approved families.
 
 The initial promotion retained legacy component formulas and numeric tone positions. Button formulas were subsequently revised; see [Button evidence](../components/button.md). Card formulas were also revised; see [Card evidence](../components/card.md). KIS-110 subsequently revised remaining consumers; see the [coverage register](../components/coverage.md). Their resulting colors intentionally change with the new scales. This promotion does not claim pixel equality with the older purple Material kit or complete component-level visual homologation.
 
@@ -69,7 +68,7 @@ pure grayscale, component formulas and the existing segment catalog are unchange
 That promotion synchronized the 0.15.0 viewer and assets; the shared-catalog promotion below supersedes its metadata.
 
 
-## Shared recipe and purple segment (0.16.0 / V6)
+## Historical shared recipe and purple segment (0.16.0 / V6)
 
 Approved visually by the user on 2026-09-13 before promotion. One recipe retains blue #0B57D0
 as generation primary and adds **Roxo Material**, #6750A4, Light source-exact / Dark adaptive.
@@ -93,3 +92,34 @@ Existing component formulas, default colors and dynamic behavior are preserved.
 
 Candidate generator 0.17.0 reduces Subtle neutral chroma to 0.01. Chromatic offset
 and explicit seeds are unchanged. Stored approvals keep their historical versions.
+
+
+## Supporting-color integration (0.18.0 / V7)
+
+The updated recipe opts into `material-support-v1` for `primary` and `pb.indigo.v2`.
+It adds b.blue.v2 (#004E6F, L7 #C2E6FD) and pb.indigo.v3 (#2D4187, L7 #D4E0FF).
+Both use Light source-exact / Dark adaptive and are exported with origin metadata.
+The [comparison](supporting-color-comparison.json) records exact preservation of all
+15 prior families' scales and functional references. The 12 consumed TypeScript files
+match this single bundle; only two contain new chromatic data. Existing files only
+receive serializer-version comments. Standalone generator remains frozen at 0.8.2.
+All Neutral mappings now use pure black V1. Tinted-neutral assets are removed. See [the revised secondary decision](secondary-color-decision.md).
+
+## Current Shared Viewer link
+
+[Open the Material generator link](./generator-link.md).
+
+Internal labels use English. This metadata-only rename does not change scales or IDs; the verified export retains its original metadata until the next export.
+
+## Current neutral/support split
+
+The preceding 0.14–0.17 records are historical. The current 0.18 recipe removes n.black.v2
+and n.black.v3; all 15 remaining scales and functional references are byte-equivalent in
+content. The preset consumes ten assets. Button and Card publish optional support; neutral
+uses black.v1 in Default, Purple and Dynamic. See supporting-color-comparison.json.
+
+### Candidate metadata update (0.19.0)
+
+The candidate adds portable Light-vivid Munsell classification to exported assets. Tonal
+mathematics, seed policies and approved palette values are unchanged. Previously promoted assets
+retain their recorded generator version; this update does not imply a new visual approval.

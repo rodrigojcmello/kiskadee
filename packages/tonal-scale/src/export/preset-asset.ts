@@ -1,4 +1,5 @@
 import type { KiskadeeHexScale, StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
+import { classifyTonalReference } from '../color-classification.ts';
 import { KISKADEE_TONES } from '../kiskadee-tonal-scale.ts';
 import type { PrimitiveTonalColorAssetV5 } from './tonal-artifacts.ts';
 
@@ -8,6 +9,8 @@ export function projectPresetAsset(
 ): StaticPrimitiveTonalColorAsset {
   return {
     kind: 'static',
+    classification:
+      asset.classification ?? classifyTonalReference(asset.functionalReferences.light.vivid.hex),
     functionalReferences: {
       light: {
         subtle: asset.functionalReferences.light.subtle.tone,

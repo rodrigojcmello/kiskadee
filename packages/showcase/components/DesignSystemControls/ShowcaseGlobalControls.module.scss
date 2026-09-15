@@ -2,8 +2,8 @@
   display: grid;
   align-items: flex-start;
   gap: 16px;
-  grid-template-columns: minmax(0, 340px) minmax(100px, 180px) minmax(150px, 210px);
-  inline-size: min(100%, 762px);
+  grid-template-columns: minmax(0, 340px) minmax(180px, 300px) minmax(150px, 210px);
+  inline-size: min(100%, 882px);
   min-width: 0;
 }
 
@@ -59,3 +59,21 @@
 @media (max-width: 480px) {
   .densityControl { grid-column: 1 / -1; max-width: 220px; }
 }
+
+.segmentLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.segmentDot {
+  display: inline-block;
+  inline-size: 14px;
+  block-size: 14px;
+  flex: 0 0 14px;
+  border-radius: 50%;
+}
+
+.segmentError { display: flex; align-items: center; gap: 8px; margin-block-start: 6px; font-size: 12px; }
+.segmentRetry { border: 1px solid currentColor; border-radius: 6px; padding: 4px 8px; background: transparent; color: inherit; cursor: pointer; }
+.segmentRetry:hover { background: rgb(128 128 128 / 12%); }
+.segmentRetry:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }

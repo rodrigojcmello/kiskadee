@@ -1,6 +1,6 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/pb.indigo.v2.json by @kiskadee/tonal-scale@0.16.0.
+// Generated from colors/pb.indigo.v2.json by @kiskadee/tonal-scale@0.18.0.
 export default {
   "kind": "static",
   "functionalReferences": {

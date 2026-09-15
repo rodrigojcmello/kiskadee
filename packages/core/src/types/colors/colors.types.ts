@@ -290,6 +290,7 @@ export type HueName =
 export type SemanticColor =
   | 'primary'
   | 'secondary'
+  | 'support'
   | 'redLike'
   | 'yellowLike'
   | 'greenLike'
@@ -403,7 +404,16 @@ export type GradientTemplate = {
   stops: GradientStopTemplate[];
 };
 
+/** Portable classification supplied by the tonal generator; no UI ordering policy. */
+export type TonalColorClassification = {
+  classifier: string;
+  referenceHex: string;
+  sector: string | null;
+  positionInSector: number | null;
+};
+
 export type StaticPrimitiveColorAsset = {
+  classification?: TonalColorClassification;
   kind: 'static';
   scales: Partial<Record<ThemeName, KiskadeeHexScale>>;
   /** Optional for legacy/exact-tone assets; required by tonal assets. */

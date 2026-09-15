@@ -11,23 +11,26 @@
       }
     ],
     "names": {
-      "pb.indigo.v2": "Roxo Material",
-      "primary": "Azul Material"
+      "b.blue.v2": "Google Blue Support",
+      "pb.indigo.v2": "Baseline Purple",
+      "pb.indigo.v3": "Baseline Purple Support",
+      "primary": "Google Blue"
     },
-    "neutrals": [
+    "neutrals": [],
+    "supportingColors": [
       {
-        "id": "n.black.v2",
-        "intensity": "chromatic",
-        "sourceId": "primary"
+        "id": "b.blue.v2",
+        "sourceId": "primary",
+        "strategy": "material-support-v1"
       },
       {
-        "id": "n.black.v3",
-        "intensity": "chromatic",
-        "sourceId": "pb.indigo.v2"
+        "id": "pb.indigo.v3",
+        "sourceId": "pb.indigo.v2",
+        "strategy": "material-support-v1"
       }
     ]
   },
-  "formatVersion": 6,
+  "formatVersion": 7,
   "functionalReferences": [
     {
       "dark": {
@@ -49,6 +52,29 @@
         "vivid": {
           "source": "generated-anchor",
           "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 40
+        }
+      },
+      "id": "b.blue.v2",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 65
         }
       }
     },
@@ -148,52 +174,6 @@
       "dark": {
         "subtle": {
           "source": "surface-relative",
-          "tone": 5
-        },
-        "vivid": {
-          "source": "contrast-mirror",
-          "tone": 90
-        }
-      },
-      "id": "n.black.v2",
-      "light": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "generated-anchor",
-          "tone": 85
-        }
-      }
-    },
-    {
-      "dark": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 5
-        },
-        "vivid": {
-          "source": "contrast-mirror",
-          "tone": 95
-        }
-      },
-      "id": "n.black.v3",
-      "light": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "generated-anchor",
-          "tone": 85
-        }
-      }
-    },
-    {
-      "dark": {
-        "subtle": {
-          "source": "surface-relative",
           "tone": 3
         },
         "vivid": {
@@ -256,6 +236,29 @@
         "vivid": {
           "source": "generated-anchor",
           "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 40
+        }
+      },
+      "id": "pb.indigo.v3",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 65
         }
       }
     },
@@ -377,16 +380,6 @@
   ],
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
-  "neutral": {
-    "derivation": "primary-neutral-v1",
-    "intensity": "chromatic",
-    "mode": "derived-from-primary",
-    "policies": {
-      "dark": "source-exact",
-      "light": "source-exact"
-    },
-    "seedHex": "#001d35"
-  },
   "overrides": [
     {
       "id": "g.green.v1",

@@ -1,7 +1,7 @@
 {
   "appearance": "purple",
   "colorKind": "chromatic",
-  "formatVersion": 6,
+  "formatVersion": 7,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -50,7 +50,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.16.0"
+    "version": "0.18.0"
   },
   "id": "p.purple.v1",
   "kind": "kiskadee.primitive-tonal-family",

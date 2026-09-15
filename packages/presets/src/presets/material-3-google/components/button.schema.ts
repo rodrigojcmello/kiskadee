@@ -19,6 +19,7 @@ export function createMaterial3GoogleButtonSchema({
   const createPalettes = (segment: Material3GoogleSegmentName, slot: 'box' | 'text' | 'icon') => {
     const context = (theme: 'light' | 'dark', surface: 'onSubtle' | 'onVivid') => {
       const recipes = {
+        support: createMaterialButtonIntent({ c, segment, theme, surface, intent: 'support' }),
         primary: createMaterialButtonIntent({ c, segment, theme, surface, intent: 'primary' }),
         neutral: createMaterialButtonIntent({ c, segment, theme, surface, intent: 'neutral' }),
         destructive: createMaterialButtonIntent({
@@ -31,6 +32,7 @@ export function createMaterial3GoogleButtonSchema({
         positive: createMaterialButtonIntent({ c, segment, theme, surface, intent: 'positive' })
       };
       const property = <T extends 'boxColor' | 'borderColor' | 'textColor'>(key: T) => ({
+        support: recipes.support[key],
         primary: recipes.primary[key],
         neutral: recipes.neutral[key],
         destructive: recipes.destructive[key],

@@ -193,7 +193,7 @@ recipe. The generated system uses:
 - automatic harmony rest, resolved by generator `0.17.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.17.0
+### Shared viewer — candidate generator 0.19.0
 
 The format V6 shared recipe exports fifteen families, including the Teams entry
 and two associated Subtle neutrals. Ten assets are promoted; five automatic
@@ -485,3 +485,9 @@ remain unchanged.
 
 Candidate generator 0.17.0 reduces Subtle neutral chroma to 0.01. Chromatic offset
 and explicit seeds are unchanged. Stored approvals keep their historical versions.
+
+### Candidate metadata update (0.19.0)
+
+The candidate adds portable Light-vivid Munsell classification to exported assets. Tonal
+mathematics, seed policies and approved palette values are unchanged. Previously promoted assets
+retain their recorded generator version; this update does not imply a new visual approval.

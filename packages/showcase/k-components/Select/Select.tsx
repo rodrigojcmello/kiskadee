@@ -12,6 +12,7 @@ export type SelectVariant = 'standard' | 'sequential';
 export interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames'> {
   className?: string;
   label?: ReactNode;
+  selectedLabel?: ReactNode;
   width?: number | string;
   minWidth?: number | string;
   maxWidth?: number | string;
@@ -25,6 +26,7 @@ export function Select({
   disabled,
   className = '',
   label,
+  selectedLabel,
   width,
   minWidth,
   maxWidth,
@@ -113,7 +115,7 @@ export function Select({
             ) : null}
           </HeadlessSelect.Previous>
           <HeadlessSelect.Trigger className={styles.sequentialTrigger}>
-            <span className={styles.value}>{selectedOption?.label || value}</span>
+            <span className={styles.value}>{selectedLabel ?? selectedOption?.label ?? value}</span>
           </HeadlessSelect.Trigger>
           <HeadlessSelect.Next>
             {nextIcon ? (
@@ -126,7 +128,7 @@ export function Select({
       ) : (
         <HeadlessSelect.Trigger>
           <span className={styles.standardValue}>
-            <span className={styles.value}>{selectedOption?.label || value}</span>
+            <span className={styles.value}>{selectedLabel ?? selectedOption?.label ?? value}</span>
           </span>
           {disclosureIcon ? (
             <span className={styles.chevron}>

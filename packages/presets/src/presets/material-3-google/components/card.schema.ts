@@ -19,12 +19,16 @@ export function createMaterial3GoogleCardSchema({
     { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
     { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
     { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
+    { intent: 'support', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
+    { intent: 'support', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
+    { intent: 'support', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
     { intent: 'primary', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
+    { intent: 'primary', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
     { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
     { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
   ] as const;
   const context = Object.fromEntries(
-    ['neutral', 'primary'].map((intent) => [
+    ['neutral', 'primary', 'support'].map((intent) => [
       intent,
       Object.fromEntries(
         surfaces
@@ -41,12 +45,18 @@ export function createMaterial3GoogleCardSchema({
     ])
   );
   const borderOptions = (surface: 'onSubtle' | 'onVivid') => ({
+    support: { lowest: surface === 'onSubtle', low: false, medium: false },
     neutral: {
       lowest: surface === 'onSubtle',
       low: false,
       medium: false
     },
-    primary: { lowest: surface === 'onSubtle', medium: false, highest: surface === 'onVivid' }
+    primary: {
+      lowest: surface === 'onSubtle',
+      low: false,
+      medium: false,
+      highest: surface === 'onVivid'
+    }
   });
   const palette = (
     segment: Material3GoogleSegmentName,
@@ -56,8 +66,8 @@ export function createMaterial3GoogleCardSchema({
     const transparent = c(segment, 'l', 'primitive.black.v1', 0, 0);
     const onSurface = c(segment, theme, 'primitive.black.v1', 100);
     const disabled = c.ref(segment, theme, 'card.neutral', 'subtle', -1);
-    const resolve = (intent: 'neutral' | 'primary', emphasis: string) => {
-      const role = intent === 'neutral' ? 'card.neutral' : 'card.primary';
+    const resolve = (intent: 'neutral' | 'primary' | 'support', emphasis: string) => {
+      const role = `card.${intent}` as const;
       const strong = emphasis === 'highest';
       const color = (offset: 0 | 1 | 2 | 3 | 4) => {
         if (strong) return c.ref(segment, 'l', role, 'vivid', -Math.min(offset, 2));
@@ -100,18 +110,35 @@ export function createMaterial3GoogleCardSchema({
       low: resolve('neutral', 'low'),
       medium: resolve('neutral', 'medium')
     };
+    const support = {
+      lowest: resolve('support', 'lowest'),
+      low: resolve('support', 'low'),
+      medium: resolve('support', 'medium')
+    };
     const primary = {
       lowest: resolve('primary', 'lowest'),
+      low: resolve('primary', 'low'),
       medium: resolve('primary', 'medium'),
       highest: resolve('primary', 'highest')
     };
-    const values = (recipes: typeof primary | typeof neutral, key: 'box' | 'border') =>
+    const values = (
+      recipes: typeof primary | typeof neutral | typeof support,
+      key: 'box' | 'border'
+    ) =>
       Object.fromEntries(
         Object.entries(recipes).map(([emphasis, recipe]) => [emphasis, recipe[key]])
       );
     return {
-      boxColor: { neutral: values(neutral, 'box'), primary: values(primary, 'box') },
-      borderColor: { neutral: values(neutral, 'border'), primary: values(primary, 'border') }
+      boxColor: {
+        support: values(support, 'box'),
+        neutral: values(neutral, 'box'),
+        primary: values(primary, 'box')
+      },
+      borderColor: {
+        support: values(support, 'border'),
+        neutral: values(neutral, 'border'),
+        primary: values(primary, 'border')
+      }
     };
   };
   return {

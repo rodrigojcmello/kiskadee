@@ -31,10 +31,10 @@ function contrast(ink: string, background: string, surface: string) {
 it('publishes all intents, emphases, themes and surfaces in both segments', () => {
   const button = createMaterial3GoogleButtonSchema({
     c,
-    segmentNames: ['default', 'dynamic'],
+    segmentNames: ['default', 'dynamic', 'purple'],
     transparent: 'transparent'
   });
-  for (const segment of ['default', 'dynamic'] as const)
+  for (const segment of ['default', 'dynamic', 'purple'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const)
         for (const intent of MATERIAL_BUTTON_INTENTS)
@@ -126,10 +126,10 @@ it('follows the foreground direction for Material state layers', () => {
 it('publishes parent-state content and keeps pending spinners at full strength', () => {
   const button = createMaterial3GoogleButtonSchema({
     c,
-    segmentNames: ['default', 'dynamic'],
+    segmentNames: ['default', 'dynamic', 'purple'],
     transparent: 'transparent'
   });
-  for (const segment of ['default', 'dynamic'] as const)
+  for (const segment of ['default', 'dynamic', 'purple'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const)
         for (const intent of MATERIAL_BUTTON_INTENTS)
@@ -153,4 +153,22 @@ it('publishes parent-state content and keeps pending spinners at full strength',
             );
             expect(context?.disabled).toBe('inherit');
           }
+});
+
+it('keeps the neutral button achromatic independently of segment tint', () => {
+  for (const segment of ['default', 'purple'] as const)
+    for (const theme of ['light', 'dark'] as const) {
+      const formula = createMaterialButtonIntent({
+        c,
+        segment,
+        theme,
+        surface: 'onSubtle',
+        intent: 'neutral'
+      });
+      for (const emphasis of MATERIAL_BUTTON_EMPHASES) {
+        const channels = rgb(formula.boxColor[emphasis].rest);
+        expect(channels[0]).toBe(channels[1]);
+        expect(channels[1]).toBe(channels[2]);
+      }
+    }
 });

@@ -10,7 +10,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@kiskadee/core": "workspace:^"
+    "@kiskadee/core": "workspace:^",
+    "@kiskadee/tonal-scale": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",

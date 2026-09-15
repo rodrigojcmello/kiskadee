@@ -251,6 +251,9 @@ importers:
       '@kiskadee/core':
         specifier: workspace:^
         version: link:../core
+      '@kiskadee/tonal-scale':
+        specifier: workspace:^
+        version: link:../tonal-scale
     devDependencies:
       '@types/node':
         specifier: ^25.9.2

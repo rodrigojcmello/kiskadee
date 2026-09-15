@@ -68,7 +68,7 @@ Schema grammar.
 Format V6 adds a shared catalog. The base primary remains fixed; additional entries and their
 associated neutrals are generated without feedback into existing families. The complete bundle is
 still atomic and replayable. Presets select semantic primaries from that bundle. Format V5 links
-remain readable and normalize to V6, including an explicit base-primary association for legacy
+remain readable and normalize to V7, including an explicit base-primary association for legacy
 primary-derived neutrals. Legacy neutral policy/reference settings remain for faithful replay.
 
 ## Input Contract
@@ -672,7 +672,7 @@ preset-colors/
 
 The required system contains 12 color families and 27 files total. Additional
 authored variants add one evidence JSON and one preset TypeScript module each.
-Current Format V6 artifacts identify `@kiskadee/tonal-scale@0.17.0`.
+Current Format V7 artifacts identify `@kiskadee/tonal-scale@0.18.0`. V7 also supports associated chromatic colors.
 
 The locked source retains the primary id and seed, policies, overrides,
 profile, rest positions, fully resolved functional references, and contract
@@ -979,3 +979,47 @@ Subtle derivation caps OKLCH chroma at 0.01 (previously 0.02), preserving origin
 hue and derivation lightness. This reduces competition with pale primary surfaces.
 Chromatic offset and explicit neutral seeds are unchanged. Existing recipes using
 Subtle intentionally produce new neutral scales; stored exports retain provenance.
+
+
+## Associated supporting colors (0.18.0 / V7)
+
+A supporting color is chromatic and is separate from `catalog.neutrals`. Opt in per
+origin with `catalog.supportingColors: [{ id, sourceId, strategy: "material-support-v1" }]`.
+The source is `primary` or an existing chromatic base/catalog entry. Supporting colors
+cannot derive from other supporting colors or neutrals. Each origin has at most one
+supporting association. IDs must be free positive variants; names remain metadata.
+
+`material-support-v1` derives from the source's resolved Light rest in OKLCH: L=40,
+C=min(source C, 0.12), H=(source H - 25 degrees) modulo 360, then converts into sRGB.
+The lower lightness provides a dark chromatic identity; the chroma cap moderates the
+supporting scale and the hue shift distinguishes it from the primary. This is a
+Kiskadee Material-oriented strategy, not Google's HCT algorithm or an official token.
+It does not promise universal perceptual suitability for every source color.
+
+The editor classifies the derived seed with the existing Munsell projection and allocates
+the next available family variant. The association retains this ID after editing; a seed
+change that no longer matches its family produces the existing identity diagnostic,
+not a silent rename. Resolve that authoring change by removing/recreating the association.
+Achromatic origins cannot produce valid chromatic support. The family name does not
+assign a semantic role: presets map the resulting asset to `secondary` explicitly.
+
+Generation order is base palette, explicit catalog colors, supporting colors, associated
+neutrals. Every addition uses the base context and does not recalibrate existing families.
+The single locked source includes associations and reference locks; JSON asset metadata
+records `supportingColorOrigin` with strategy, origin ID and resolved reference HEX.
+TypeScript consumption assets remain scales and functional references only.
+
+V5 and V6 recipes/links are read and normalized to V7; omission of supporting associations
+preserves their chromatic results. Existing neutral strategies are unchanged. V7 export
+uses generator 0.18.0; historical stored bundles keep their recorded provenance.
+Removing an origin in the editor removes its derived dependencies, names and reference locks.
+
+## Portable color classification (0.19.0)
+
+The public `@kiskadee/tonal-scale/classification` entry exports the existing Munsell sector sequence
+and `classifyTonalReference`. The input is the Light vivid reference; output carries the classifier,
+reference HEX, sector and normalized position. Achromatic references use null sector/position.
+Preset TypeScript projection includes this classification without changing tonal calculations.
+This additive serializer change versions the multifamily artifact generator to 0.19.0; previously
+promoted 0.18.0 assets retain their provenance and can receive metadata through the preset adapter.
+The API does not define semantic roles, segment identity, default selection or UI ordering.

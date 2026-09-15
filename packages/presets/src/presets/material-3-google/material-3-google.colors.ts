@@ -1,3 +1,4 @@
+import { classifyPrimitives } from '../../classify-primitives.ts';
 import type { ComponentIntents, GlobalSemanticsBySegment, SchemaColors } from '@kiskadee/core';
 import { globalSemantics, primitiveColors } from './color.layers.ts';
 
@@ -16,15 +17,19 @@ import { globalSemantics, primitiveColors } from './color.layers.ts';
  * - `themes` are optional and should be used only when a segment must override Layer 2 mappings.
  */
 const purpleSemantics = {
-  primary: { v1: 'primitive.purple.v2', v2: 'primitive.black.v3' },
-  neutral: { v1: 'primitive.black.v3', v2: 'primitive.black.v3' }
+  support: { v1: 'primitive.purple.v3' },
+  primary: { v1: 'primitive.purple.v2', v2: 'primitive.black.v1' },
+  neutral: { v1: 'primitive.black.v1', v2: 'primitive.black.v1' }
 } as const;
 
 export const globalSemanticsBySegment = {
-  purple: { meta: { name: 'Material Design - Purple' }, themes: { light: purpleSemantics, dark: purpleSemantics } },
+  purple: {
+    meta: { name: 'Purple - Baseline' },
+    themes: { light: purpleSemantics, dark: purpleSemantics }
+  },
   default: {
     meta: {
-      name: 'Material Design - Default (blue)'
+      name: 'Blue - Google'
     }
   }
 } as const satisfies GlobalSemanticsBySegment;
@@ -44,11 +49,13 @@ export const componentIntents = {
   },
   button: {
     primary: 'primary',
+    support: 'support',
     destructive: 'redLike',
     positive: 'greenLike',
-    neutral: 'neutral'
+    neutral: 'primitive.black.v1'
   },
   card: {
+    support: 'support',
     primary: 'primary',
     neutral: 'neutral'
   },
@@ -81,7 +88,7 @@ export const componentIntents = {
 } as const satisfies ComponentIntents;
 
 export const schemaColors = {
-  primitiveColors,
+  primitiveColors: classifyPrimitives(primitiveColors),
   globalSemantics,
   globalSemanticsBySegment,
   componentIntents

@@ -93,6 +93,7 @@ const shadowLevelLabels: Record<ElementSizeValue, string> = {
 
 const cardIntentLabels: Record<CardIntent, string> = {
   neutral: 'Neutral',
+  support: 'Support',
   primary: 'Primary'
 };
 
@@ -104,7 +105,7 @@ const cardEmphasisLabels: Record<ComponentEmphasis, string> = {
   highest: 'Highest'
 };
 
-const cardSemanticIntentOrder: CardIntent[] = ['neutral', 'primary'];
+const cardSemanticIntentOrder: CardIntent[] = ['neutral', 'primary', 'support'];
 const cardSemanticEmphasisOrder: ComponentEmphasis[] = [
   'lowest',
   'low',
@@ -581,58 +582,62 @@ export function Card() {
               }
               description="Read each intent from lowest to highest. The same content makes the preset's fill and border choices easier to compare. Empty positions are not published by this preset."
             />
-            {cardSemanticIntentOrder.map((intent) => (
-              <div className={s.intentGroup} key={intent}>
-                <Text as="h4" profile={profiles.subsectionTitle} emphasis="medium">
-                  {cardIntentLabels[intent]}
-                </Text>
-                <div className={s.surfaceGrid}>
-                  {cardSemanticEmphasisOrder.map((emphasis) => {
-                    const available = Boolean(cardState?.[intent]?.[emphasis]?.rest);
-                    return (
-                      <article
-                        className={`${s.example} ${available ? '' : s.unpublished}`}
-                        key={emphasis}
-                        aria-label={`${intent} ${emphasis}`}
-                      >
-                        <Text as="h5" profile={profiles.bodyStrong} emphasis="low">
-                          {cardEmphasisLabels[emphasis]}
-                        </Text>
-                        {available ? (
-                          <KCard
-                            className={s.cardSurface}
-                            intent={intent}
-                            emphasis={emphasis}
-                            radius={radius}
-                            shadow={surfaceAuto ? undefined : surfaceShadows}
-                            border={surfaceAuto ? undefined : surfaceBorders}
-                          >
-                            <CardContent
-                              title="Title"
-                              body="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                            />
-                          </KCard>
-                        ) : (
-                          <Text
-                            as="div"
-                            profile={profiles.caption}
-                            emphasis="lowest"
-                            className={s.emptyPosition}
-                          >
-                            <Icon decorative foreground="inherit">
-                              <SubtractAlt />
-                            </Icon>
-                            <Text as="span" profile={profiles.caption} foreground="inherit">
-                              Not published
-                            </Text>
+            {cardSemanticIntentOrder
+              .filter((intent) =>
+                cardSemanticEmphasisOrder.some((emphasis) => cardState?.[intent]?.[emphasis]?.rest)
+              )
+              .map((intent) => (
+                <div className={s.intentGroup} key={intent}>
+                  <Text as="h4" profile={profiles.subsectionTitle} emphasis="medium">
+                    {cardIntentLabels[intent]}
+                  </Text>
+                  <div className={s.surfaceGrid}>
+                    {cardSemanticEmphasisOrder.map((emphasis) => {
+                      const available = Boolean(cardState?.[intent]?.[emphasis]?.rest);
+                      return (
+                        <article
+                          className={`${s.example} ${available ? '' : s.unpublished}`}
+                          key={emphasis}
+                          aria-label={`${intent} ${emphasis}`}
+                        >
+                          <Text as="h5" profile={profiles.bodyStrong} emphasis="low">
+                            {cardEmphasisLabels[emphasis]}
                           </Text>
-                        )}
-                      </article>
-                    );
-                  })}
+                          {available ? (
+                            <KCard
+                              className={s.cardSurface}
+                              intent={intent}
+                              emphasis={emphasis}
+                              radius={radius}
+                              shadow={surfaceAuto ? undefined : surfaceShadows}
+                              border={surfaceAuto ? undefined : surfaceBorders}
+                            >
+                              <CardContent
+                                title="Title"
+                                body="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                              />
+                            </KCard>
+                          ) : (
+                            <Text
+                              as="div"
+                              profile={profiles.caption}
+                              emphasis="lowest"
+                              className={s.emptyPosition}
+                            >
+                              <Icon decorative foreground="inherit">
+                                <SubtractAlt />
+                              </Icon>
+                              <Text as="span" profile={profiles.caption} foreground="inherit">
+                                Not published
+                              </Text>
+                            </Text>
+                          )}
+                        </article>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </section>
 
           <section className={s.exampleSection} aria-labelledby="card-composition">

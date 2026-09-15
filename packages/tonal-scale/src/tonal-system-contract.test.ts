@@ -62,7 +62,7 @@ function issueCodes(
 
 describe('tonal-system contract v6', () => {
   it('defines format 6 with the complete Munsell taxonomy and core family set', () => {
-    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(6);
+    expect(TONAL_SYSTEM_FORMAT_VERSION).toBe(7);
     expect(TONAL_HARMONY_CONTRACT).toBe('kiskadee-munsell-rest-v1');
     expect(MUNSELL_SECTORS).toEqual([
       'red',
@@ -485,7 +485,7 @@ describe('tonal-system contract v6', () => {
     const locked = lockTonalSystemRecipe(recipe, 'b.blue.v1', { light: 24, dark: 70 }, references);
 
     expect(locked).toMatchObject({
-      formatVersion: 6,
+      formatVersion: 7,
       primary: {
         id: 'b.blue.v1',
         seedHex: '#1da1f2',

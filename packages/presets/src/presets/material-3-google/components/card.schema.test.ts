@@ -15,7 +15,7 @@ it('publishes canonical surfaces, palettes and descendant contexts consistently'
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const) {
         const entries = card.options?.canonicalSurfaces?.[segment]?.[theme];
-        expect(entries).toHaveLength(6);
+        expect(entries).toHaveLength(10);
         for (const entry of entries!) {
           const box =
             card.elements.e1?.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.[entry.intent]?.[
@@ -49,7 +49,7 @@ it('resolves each medium surface from its own family and keeps border optional',
 it('uses common pure white Lowest surfaces in Light, preserves Dark and removes only Neutral Highest', () => {
   for (const segment of ['default', 'dynamic', 'purple'] as const)
     for (const surface of ['onSubtle', 'onVivid'] as const)
-      for (const intent of ['neutral', 'primary'] as const) {
+      for (const intent of ['neutral', 'primary', 'support'] as const) {
         const light = card.elements.e1?.palettes?.[segment]?.light?.[surface]?.boxColor?.[intent];
         const dark = card.elements.e1?.palettes?.[segment]?.dark?.[surface]?.boxColor?.[intent];
         expect(light?.lowest?.rest).toBe('#ffffff');
@@ -87,4 +87,40 @@ it('requires Primary Highest as the canonical onVivid surface in every segment a
         ).toBe('onVivid');
       }
     }
+});
+
+it('separates optional support from achromatic neutral in every context', () => {
+  for (const segment of ['default', 'purple', 'dynamic'] as const)
+    for (const theme of ['light', 'dark'] as const)
+      for (const surface of ['onSubtle', 'onVivid'] as const) {
+        const palettes = card.elements.e1?.palettes?.[segment]?.[theme]?.[surface];
+        const neutral = palettes?.boxColor?.neutral?.medium?.rest as string;
+        expect(neutral.slice(1, 3)).toBe(neutral.slice(3, 5));
+        expect(neutral.slice(3, 5)).toBe(neutral.slice(5, 7));
+        expect(palettes?.boxColor?.support?.medium?.rest).toBe(
+          c.ref(
+            segment,
+            theme === 'light' ? 'l' : 'd',
+            'card.support',
+            'subtle',
+            surface === 'onVivid' ? 3 : 0
+          )
+        );
+        expect(palettes?.boxColor?.support?.medium?.rest).not.toBe(neutral);
+      }
+});
+
+it('publishes pale chromatic Low surfaces without replacing Medium', () => {
+  for (const segment of ['default', 'dynamic', 'purple'] as const)
+    for (const theme of ['light', 'dark'] as const)
+      for (const surface of ['onSubtle', 'onVivid'] as const)
+        for (const intent of ['primary', 'support'] as const) {
+          const states =
+            card.elements.e1?.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.[intent];
+          const track = theme === 'light' ? 'l' : 'd';
+          expect(states?.low?.rest).toBe(c.ref(segment, track, `card.${intent}`, 'subtle', -2));
+          expect(states?.low?.rest).not.toBe(states?.medium?.rest);
+          expect(states?.low?.hover).toBe(c.ref(segment, track, `card.${intent}`, 'subtle', -1));
+          expect(card.options?.border?.[segment]?.[theme]?.[surface]?.[intent]?.low).toBe(false);
+        }
 });

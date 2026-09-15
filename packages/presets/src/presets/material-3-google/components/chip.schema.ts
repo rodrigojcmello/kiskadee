@@ -54,9 +54,9 @@ function createChipIntentSchema({
   const familySurface = (kind: 'high' | 'medium', delta: number) => {
     if (kind === 'high') {
       if (context === 'onVivid') return family('subtle', -delta);
-      // A dark neutral ramp already ends near the light endpoint. Moving it
-      // toward the dark side keeps the state delta visible and in range.
-      const signedDelta = theme === 'dark' && intent === 'neutral' ? -delta : delta;
+      // Pure neutral vivid sits near the endpoint in both themes. Move inward
+      // so interaction deltas remain visible and inside the public grid.
+      const signedDelta = intent === 'neutral' ? -delta : delta;
       return family('vivid', signedDelta);
     }
 

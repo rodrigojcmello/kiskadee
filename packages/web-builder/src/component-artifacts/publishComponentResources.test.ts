@@ -5,7 +5,7 @@ import type { Schema } from '@kiskadee/core';
 import { expect, it } from 'vitest';
 import { publishComponentResources } from './publishComponentResources.ts';
 
-it('publishes a lean index, sparse support and selected-palette resources, retaining aggregates only for build inspection', async () => {
+it.each([false, true])('publishes lean resources (segment metadata: %s)', async (withSegments) => {
   const dir = await mkdtemp(join(tmpdir(), 'kiskadee-component-publication-'));
   const write = async (path: string, value: unknown) => {
     await mkdir(dirname(join(dir, path)), { recursive: true });
@@ -15,7 +15,9 @@ it('publishes a lean index, sparse support and selected-palette resources, retai
   try {
     const core = { button: { e1: { s: { 'md:1': 'medium' } } } };
     const palette = { button: { e1: { c: { s: { primary: { h: 'blue' } } } } } };
+    if (withSegments) await write('segments.json', { version: 1, segments: [] });
     await write('manifest.json', {
+      ...(withSegments ? { segmentMetadata: 'segments.json' } : {}),
       themes: { default: ['light'] },
       components: {
         button: {
@@ -79,6 +81,20 @@ it('publishes a lean index, sparse support and selected-palette resources, retai
       code: 'ENOENT'
     });
     expect(await read('_debug/core.kiskadee.json')).toEqual(core);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+it('diagnoses declared missing segment metadata before modifying resources', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'kiskadee-missing-segments-'));
+  try {
+    const manifest = JSON.stringify({ segmentMetadata: 'segments.json' });
+    await writeFile(join(dir, 'manifest.json'), manifest);
+    await expect(publishComponentResources(dir, {} as Schema)).rejects.toThrow(
+      '[web-builder] Cannot read declared segment metadata segments.json'
+    );
+    expect(await readFile(join(dir, 'manifest.json'), 'utf8')).toBe(manifest);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

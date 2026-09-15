@@ -78,7 +78,7 @@ it('migrates V5 primary neutral into an explicit V6 association', () => {
   });
   expect(result.valid).toBe(true);
   if (!result.valid) return;
-  expect(result.value.formatVersion).toBe(6);
+  expect(result.value.formatVersion).toBe(7);
   expect(result.value.catalog?.neutrals).toContainEqual({
     id: 'n.black.v2',
     sourceId: 'primary',

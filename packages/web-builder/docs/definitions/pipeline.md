@@ -37,7 +37,8 @@ Location: `packages/web-builder/src/run-build.ts`
 7. Phase 7 - Publish metadata
    - Function: `publishMetadata({ schema, outDirSlug, schemaPath, baseBuildDir })`.
    - Writes `manifest.json`, `schema.json` and `segments.json` under `build/<template-key>`.
-   - `segments.json` is derived from `schema.colors.globalSemanticsBySegment`.
+   - `segments.json` resolves the registry, global semantics and primitive primary assets into compact
+     names, classification and vivid swatches; see [segments.md](./segments.md).
    - Publishes only semantic font role IDs under the compact `manifest.fonts` capability.
    - Publishes only the typography artifact path under `manifest.typography`.
 

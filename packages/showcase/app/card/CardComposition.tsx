@@ -22,6 +22,7 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
     theme,
     background.surfaceContext
   );
+  const supportingIntent = state?.support?.medium?.rest ? 'support' : 'neutral';
   const available =
     outerState?.neutral?.low?.rest &&
     state?.neutral?.lowest?.rest &&
@@ -58,7 +59,12 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </Text>
         </Card>
-        <Card intent="neutral" emphasis="medium" radius={radius} className={s.compositionTile}>
+        <Card
+          intent={supportingIntent}
+          emphasis="medium"
+          radius={radius}
+          className={s.compositionTile}
+        >
           <Text profile={profiles.body}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </Text>

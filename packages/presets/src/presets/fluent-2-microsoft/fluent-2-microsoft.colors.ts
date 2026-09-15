@@ -1,3 +1,4 @@
+import { classifyPrimitives } from '../../classify-primitives.ts';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -97,11 +98,11 @@ export const globalSemantics = {
 export const globalSemanticsBySegment = {
   default: {
     meta: {
-      name: 'Default'
+      name: 'Blue - Microsoft'
     }
   },
   teams: {
-    meta: { name: 'Teams' },
+    meta: { name: 'Purple - Teams' },
     themes: {
       light: { primary: { v1: 'primitive.purple.v2' }, neutral: { v1: 'primitive.black.v3' } },
       dark: { primary: { v1: 'primitive.purple.v2' }, neutral: { v1: 'primitive.black.v3' } }
@@ -169,7 +170,7 @@ export const componentIntents = {
 } as const satisfies ComponentIntents;
 
 export const schemaColors = {
-  primitiveColors,
+  primitiveColors: classifyPrimitives(primitiveColors),
   globalSemantics,
   globalSemanticsBySegment,
   componentIntents

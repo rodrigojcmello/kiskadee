@@ -1,3 +1,4 @@
+import { deriveSupportingColor } from './supporting-color.ts';
 import {
   contrastRatio,
   deltaEOk,
@@ -2063,6 +2064,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   const recipe = authoring.recipe;
   const extraIds = new Set([
     ...catalog.colors.map((c) => c.id),
+    ...(catalog.supportingColors ?? []).map((c) => c.id),
     ...catalog.neutrals
       .filter(
         (n) =>
@@ -2135,6 +2137,20 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
     references.push(...pass.functionalReferences.filter((r) => r.id === entry.id));
   };
   for (const color of catalog.colors) append(color);
+  for (const association of catalog.supportingColors ?? []) {
+    const parent = families.find(
+      (f) =>
+        f.id ===
+        (association.sourceId === 'primary' ? base.primaryReference.familyId : association.sourceId)
+    );
+    if (!parent) continue;
+    const derived = deriveSupportingColor(parent.themes.light.restColor.hex);
+    append({
+      id: association.id,
+      seedHex: derived.seedHex,
+      policies: { light: 'source-exact', dark: 'adaptive' }
+    });
+  }
   for (const association of catalog.neutrals) {
     if (
       association.id === 'n.black.v2' &&

@@ -83,3 +83,20 @@ Dragged behavior and checked-icon composition are outside this color-mapping del
 - Full preset typecheck retains four pre-existing Fluent errors; no Material errors.
 - Visual homologation is user-owned. Arbitrary child colors and consumer backgrounds
   are not covered by the white-on-strong-surface contrast assertion.
+
+## Pure neutral and optional Support (2026-09-15)
+
+User-approved Kiskadee adaptation: Neutral now resolves black.v1 in all segments; Support
+Medium resolves the existing supporting color (blue.v2 in Default, purple.v3 in Purple).
+The existing subtle-reference/state-offset formula is reused. Primary Highest and its
+onVivid descendant context are retained. The Showcase upper-right tile uses published
+Support Medium or falls back to Neutral Medium, with stable component identity. The wide
+middle tile remains Neutral Medium. No other preset is required to publish Support.
+
+## Pale surface completion (2026-09-15)
+
+Primary Low and Support Lowest/Low are published for Default, Purple and Dynamic in both
+themes and contexts. Low uses its family's subtle reference minus two positions; Lowest
+uses pure white in Light and subtle minus three in Dark. Existing interaction offsets and
+onSubtle descendant contexts apply. Lowest has a default border onSubtle; Low has no default
+border. These are user-requested Kiskadee extensions. Medium and Primary Highest are unchanged.

@@ -142,3 +142,40 @@ addresses the Teams asset as primitive.purple.v2; this is an explicit schema
 mapping, not a change to the generator's family identifier. All belong to one
 base recipe; variants have independent semantic uses, not independent generation
 references. Only explicit Layer 2 mappings change a segment's roles.
+
+
+## Optional chromatic supporting role
+
+A simple segment may also select the supporting color associated with its semantic primary
+from the same base catalog. `catalog.supportingColors` is independent of associated neutrals;
+its generated family is chromatic and does not replace black V1 or tinted black variants.
+The primitive family name and the semantic `secondary` role are separate decisions.
+Material uses this role for an optional Secondary Button intent. Its Button Neutral maps
+pure grayscale directly while its other neutral consumers retain their prior aliases.
+No extra recipe or copied palette is required per simple segment.
+
+Material uses optional Support in Button and Card for derived chromatic support, while Neutral uses pure black V1. The generator can still derive tinted neutrals for other recipes; Material no longer requests them.
+
+## Segment discovery and chromatic order
+
+Segment IDs remain stable independently of display names. `meta.name` is the authored label;
+`default` identifies the preset's default segment, and consumers append the default marker.
+Material uses `Blue - Google` and `Purple - Baseline`.
+
+The primary semantic mapping remains the only source of the segment's representative color.
+Static tonal assets may carry `classification` (classifier version, Light vivid reference HEX,
+sector and normalized position). Tonal Scale owns this classification and the circular sector
+sequence. Achromatic references have null sector and position. The preset's legacy asset adapter
+calls that public generator API when an existing asset has functional references but no metadata;
+it does not alter scales or functional positions. Assets without a vivid reference remain
+unclassified and produce a build diagnostic; neither build nor Showcase guesses a tone.
+
+Web Builder owns the published format; see its canonical [segment artifact definition](../../../web-builder/docs/definitions/segments.md).
+Presets supply identity, primary mappings and asset classification; they do not author the Web artifact shape.
+
+Showcase owns the presentation policy: rotate the circular order to the default primary's sector,
+place the default first, then sort peers by position and ID. Unclassified/achromatic entries follow
+chromatic entries (except the default, which is always first). Theme changes update swatches,
+not classification or order. Swatches appear only in dropdown options, without a border; the closed trigger displays text only.
+Swatches are decorative and labels retain accessible text values.
+The generator has no knowledge of segment selection, default segments or Select rendering.

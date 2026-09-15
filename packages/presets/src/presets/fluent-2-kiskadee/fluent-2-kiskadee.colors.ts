@@ -1,3 +1,4 @@
+import { classifyPrimitives } from '../../classify-primitives.ts';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -139,7 +140,7 @@ export const componentIntents = {
 // ----------------------------------------------------------------------------
 
 export const schemaColors = {
-  primitiveColors,
+  primitiveColors: classifyPrimitives(primitiveColors),
   globalSemantics,
   globalSemanticsBySegment,
   componentIntents

@@ -18,7 +18,7 @@ export const ButtonIntentKeys = {
   primary: 'primary',
 
   /**
-   * Neutral actions: secondary actions that should not compete with the primary CTA.
+   * Neutral actions: support actions that should not compete with the primary CTA.
    *
    * Examples: "Cancel", "Back", "Later".
    */
@@ -36,7 +36,10 @@ export const ButtonIntentKeys = {
    *
    * Examples: "Confirm", "Accept", "Done".
    */
-  positive: 'positive'
+  positive: 'positive',
+
+  /** Optional chromatic supporting action, independently authored by a preset. */
+  support: 'support'
 } as const;
 
 /**
@@ -68,7 +71,9 @@ export const CardIntentKeys = {
   /**
    * Brand/primary card surface presentation.
    */
-  primary: 'primary'
+  primary: 'primary',
+  /** Optional chromatic supporting surface. */
+  support: 'support'
 } as const;
 
 /** Supported intent keys for the `card` component (Layer 3). */

@@ -5,14 +5,11 @@ This file records source evidence and preset-level decisions for
 
 ## Current secondary color decision
 
-The preset intentionally has no mandatory secondary family or secondary Button intent.
-See [the accepted rationale](colors/secondary-color-decision.md) for the separation
-of intent and emphasis, user-facing clarity, and the tinted neutral's visual boundary.
-This is a **Kiskadee extension**, accepted on 2026-09-12.
-
-The older secondary and CorePalette mapping decisions are superseded. Current
-color mapping is defined in [the tonal evidence](colors/README.md); Button behavior
-is defined in [Button evidence](components/button.md).
+The preset publishes an optional Secondary Button intent, revised on 2026-09-15.
+Button Neutral uses pure grayscale; Secondary uses its own primary-derived chromatic
+scale. Existing tinted neutrals remain available to other consumers. See
+[the accepted rationale](colors/secondary-color-decision.md) and [Button evidence](components/button.md).
+This is a **Kiskadee extension**, not a claim that all Material products require it.
 
 ## Reference Note
 
@@ -178,3 +175,13 @@ remains the single Material preset, with `default` and `purple` and existing dyn
 The retired source, web registration and native Showcase fixtures/options were removed.
 Persisted web selections migrate to Material Google, preserving a supported segment/theme and
 mapping the retired `modern` segment to `default`. Historical review/archive notes remain intact.
+
+Current decision (2026-09-15): Neutral uses black.v1 across Material. The optional chromatic intent is named support for Button and Card. Tinted neutrals V2/V3 are removed; see colors/secondary-color-decision.md for the superseding mapping.
+
+### Segment selector metadata (2026-09-15)
+
+Kiskadee inspection labels are `Blue - Google` and `Purple - Baseline`, with the default marker
+rendered by the consumer. Primary mappings and all tonal values remain unchanged. Munsell metadata
+is derived by the generator from the Light vivid reference; this is inspection metadata, not a
+new Google visual specification. The current candidate generator is 0.19.0; promoted tonal assets
+remain at their recorded 0.18.0 provenance.

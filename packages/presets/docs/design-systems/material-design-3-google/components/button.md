@@ -32,13 +32,13 @@ and content 38% in the inspected kit.
 
 The kit contains a distinct blue secondary/tonal family. Kiskadee intentionally replaces
 that organization with the participating intent family: red on pale red, green on pale
-green, primary on pale primary, and neutral on the authored tinted neutral.
+green, primary on pale primary, neutral on pure grayscale, and secondary on its derived supporting family.
 
-The absence of a separate secondary intent is deliberate. See
+The former omission of a separate support intent is superseded on 2026-09-15. See
 [the secondary color decision](../colors/secondary-color-decision.md) for why
 emphasis handles hierarchy and why two similar hues do not establish an intuitive
-semantic distinction. The neutral's visible blue tint remains a separate
-homologation decision.
+semantic distinction. Button Neutral is now grayscale; the supporting color has its own
+optional intent and remains subject to visual acceptance.
 
 ## Color lookup and shared formula
 
@@ -80,7 +80,7 @@ Stable foregrounds and borders omit redundant transient states. No Rest-equal Fo
 palette reset is required. Focus surface treatment coexists with the existing external ring.
 
 Content surface context is explicitly published for both themes, both input surfaces,
-all four intents and emphases. Selected medium/low/lowest publish the filled context;
+all five intents and emphases. Selected medium/low/lowest publish the filled context;
 disabled returns to the inherited surrounding context.
 
 ## Validation
@@ -100,9 +100,21 @@ Status: **Kiskadee extension**, approved by the user after comparing Google Shee
 Share/Upgrade and Gmail Compose/Upgrade screenshots. Screenshot samples indicate
 stronger tonal fills, but are not asserted to be official CSS token values.
 Light/onSubtle Medium now selects L7 through the existing intent getter: default
-primary `#D0E2FF`, default neutral `#C8E4FF`. This explicit tonal selection also
+primary `#D0E2FF`, then-current tinted neutral `#C8E4FF` (superseded below). This explicit tonal selection also
 applies to Purple and the destructive/positive intent families. It does not change
 the shared subtle reference, primitive assets, generator, Dark or onVivid recipes.
 Hover/Focus/Pressed retain their existing 8/10/12 percent foreground state layers
 over the new base. Pending derives from that base; Selected and Disabled retain
 their previous recipes. Contrast tests include Default and Purple.
+
+
+## Neutral and Secondary separation (2026-09-15)
+
+Status: **Kiskadee extension**, requested by the user. Button Neutral alone now resolves
+`primitive.black.v1`; the preset's other neutral consumers retain their tinted mappings.
+The optional Secondary intent uses `secondary.v1`: Blue V2 in Default, Purple V3 in Purple.
+The same full state/theme/context/emphasis formula applies, including L7 Medium on
+Light/onSubtle. This extends the prior four-intent recipe, without special per-segment CSS.
+Source evidence and derivation rationale: [secondary decision](../colors/secondary-color-decision.md).
+
+Current decision (2026-09-15): Neutral uses black.v1 across Material. The optional chromatic intent is named support for Button and Card. Tinted neutrals V2/V3 are removed; see colors/secondary-color-decision.md for the superseding mapping.

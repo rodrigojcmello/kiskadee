@@ -5,7 +5,6 @@ import type {
   ComponentClassNameMapSplitJSON,
   ComponentName,
   GlobalSemanticsBySegment,
-  GlobalSemanticsByTheme,
   KiskadeeCssScale,
   KiskadeeHexScale,
   Schema,
@@ -59,6 +58,7 @@ import type {
   ManifestIcons,
   ManifestTypography
 } from './manifestTypes.ts';
+import { buildSegmentArtifact } from './segmentArtifact.ts';
 
 const BUTTON_PLAIN_ICON_TREATMENTS = ['plain'] as const satisfies readonly ButtonIconTreatment[];
 const BUTTON_SURFACED_ICON_TREATMENTS = [
@@ -87,61 +87,6 @@ function requireSegmentRegistry(colors: SchemaColors | undefined): GlobalSemanti
     );
   }
   return bySegment;
-}
-
-function requireGlobalSemantics(colors: SchemaColors | undefined): GlobalSemanticsByTheme {
-  const gs = colors?.globalSemantics as GlobalSemanticsByTheme | undefined;
-  if (!gs || typeof gs !== 'object') {
-    throw new Error('[web-builder] Schema is missing `colors.globalSemantics`');
-  }
-  return gs;
-}
-
-/**
- * Build-time segment metadata artifact.
- *
- * Even though the runtime resolver supports inheritance (segment overrides fall back to
- * `colors.globalSemantics`), artifacts should be explicit. Therefore we materialize `themes`
- * for every segment (including `default`) by merging the global baseline with per-segment overrides.
- */
-function materializeSegmentThemesArtifact(
-  colors: SchemaColors | undefined,
-  bySegment: GlobalSemanticsBySegment,
-  themesBySegment: Record<string, string[]> = {}
-): Record<string, unknown> {
-  const globalSemantics = requireGlobalSemantics(colors);
-
-  const out: Record<string, unknown> = {};
-
-  for (const segmentKey of Object.keys(bySegment)) {
-    const entry = bySegment[segmentKey as keyof typeof bySegment];
-    if (!entry) continue;
-
-    const themes: Record<string, unknown> = {};
-    const themeNames = new Set([
-      ...Object.keys(globalSemantics),
-      ...Object.keys((entry as any)?.themes ?? {}),
-      ...(themesBySegment[segmentKey] ?? [])
-    ]);
-    for (const themeName of themeNames) {
-      const fallbackThemeName = themeName === 'darker' ? 'dark' : themeName;
-      const base =
-        (globalSemantics as any)[themeName] ?? (globalSemantics as any)[fallbackThemeName] ?? {};
-      const override =
-        (entry as any)?.themes?.[themeName] ?? (entry as any)?.themes?.[fallbackThemeName] ?? {};
-      themes[themeName] = {
-        ...base,
-        ...override
-      };
-    }
-
-    out[segmentKey] = {
-      meta: entry.meta,
-      themes
-    };
-  }
-
-  return out;
 }
 
 function firstSegmentLabel(bySegment: GlobalSemanticsBySegment): string | null {
@@ -825,9 +770,11 @@ export async function publishMetadata(params: {
   const buildDir = resolve(baseBuildDir, outDirSlug);
   await mkdir(buildDir, { recursive: true });
 
+  manifest.segmentMetadata = 'segments.json';
+
   // Write metadata files
   await writeFile(resolve(buildDir, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf8');
-  const segmentsArtifact = materializeSegmentThemesArtifact(colors, segmentRegistry, themes);
+  const segmentsArtifact = buildSegmentArtifact(colors!, themes);
   await writeFile(
     resolve(buildDir, 'segments.json'),
     JSON.stringify(segmentsArtifact, null, 2),

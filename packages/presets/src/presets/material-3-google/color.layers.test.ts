@@ -15,13 +15,13 @@ it('resolves Material component intents and legacy variants through the promoted
           primitiveColors.blue.v1.scales[theme][tone]
         );
         expect(c(segment, shortcut, 'button.neutral', tone)).toBe(
-          primitiveColors.black.v2.scales[theme][tone]
+          primitiveColors.black.v1.scales[theme][tone]
         );
         expect(c(segment, shortcut, 'primary.v2', tone)).toBe(
-          primitiveColors.black.v2.scales[theme][tone]
+          primitiveColors.black.v1.scales[theme][tone]
         );
         expect(c(segment, shortcut, 'card.neutral.v2', tone)).toBe(
-          primitiveColors.black.v2.scales[theme][tone]
+          primitiveColors.black.v1.scales[theme][tone]
         );
         expect(c(segment, shortcut, 'switch.neutral', tone)).toBe(
           primitiveColors.blue.v1.scales[theme][tone]
@@ -53,8 +53,8 @@ it('keeps the approved light Card medium neutral distinct from primary', () => {
     const primary = c.ref(segment, 'l', 'card.primary', 'subtle');
     expect(neutral).not.toBe(primary);
     expect(neutral).toBe(
-      primitiveColors.black.v2.scales.light[
-        primitiveColors.black.v2.functionalReferences.light.subtle
+      primitiveColors.black.v1.scales.light[
+        primitiveColors.black.v1.functionalReferences.light.subtle
       ]
     );
   }
@@ -63,11 +63,38 @@ it('keeps the approved light Card medium neutral distinct from primary', () => {
 it('maps purple primary and all neutral aliases without changing shared semantic colors', () => {
   const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
   for (const theme of ['l', 'd'] as const) {
-    for (const role of ['neutral', 'neutral.v2', 'primary.v2', 'button.neutral', 'card.neutral.v2'] as const)
-      expect(c('purple', theme, role, 50)).toBe(c('purple', theme, 'primitive.black.v3', 50));
+    for (const role of ['neutral', 'neutral.v2', 'primary.v2', 'card.neutral.v2'] as const)
+      expect(c('purple', theme, role, 50)).toBe(c('purple', theme, 'primitive.black.v1', 50));
     expect(c('purple', theme, 'primary', 50)).toBe(c('purple', theme, 'primitive.purple.v2', 50));
     for (const role of ['redLike', 'greenLike', 'yellowLike', 'purpleLike'] as const)
       expect(c('purple', theme, role, 50)).toBe(c('default', theme, role, 50));
     expect(c('purple', theme, 'primitive.blue.v1', 50)).toBe(c('default', theme, 'primary', 50));
   }
+});
+
+it('maps optional support separately from achromatic neutral consumers', () => {
+  const c = createPresetColorGetter<'default' | 'dynamic' | 'purple'>({ colors: schemaColors });
+  for (const segment of ['default', 'purple', 'dynamic'] as const)
+    for (const theme of ['l', 'd'] as const)
+      for (const tone of [7, 18, 50, 85] as const) {
+        expect(c(segment, theme, 'button.neutral', tone)).toBe(
+          c(segment, theme, 'primitive.black.v1', tone)
+        );
+        expect(c(segment, theme, 'button.support', tone)).toBe(
+          c(
+            segment,
+            theme,
+            segment === 'purple' ? 'primitive.purple.v3' : 'primitive.blue.v2',
+            tone
+          )
+        );
+        expect(c(segment, theme, 'card.neutral', tone)).toBe(
+          c(
+            segment,
+            theme,
+            segment === 'purple' ? 'primitive.black.v1' : 'primitive.black.v1',
+            tone
+          )
+        );
+      }
 });

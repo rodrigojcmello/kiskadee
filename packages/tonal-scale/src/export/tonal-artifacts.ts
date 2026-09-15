@@ -1,7 +1,10 @@
+import type { TonalColorClassification } from '@kiskadee/core';
+import { classifyTonalReference } from '../color-classification.ts';
 import { compareStrings } from '../deterministic-order.ts';
 import { FIXED_FAMILY_REFERENCE_SET, FIXED_FAMILY_SEEDS_V2 } from '../fixed-family-seeds.ts';
 import { KISKADEE_TONES, type KiskadeeTone } from '../kiskadee-tonal-scale.ts';
 import { classifyMunsellHex, type MunsellColorClassification } from '../munsell-oklch.ts';
+import { deriveSupportingColor } from '../supporting-color.ts';
 import {
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
@@ -30,7 +33,7 @@ import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.17.0'
+  version: '0.19.0'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -47,7 +50,8 @@ export type ToneHexMap = Record<`${KiskadeeTone}`, string>;
 
 export type PrimitiveTonalColorAssetV5 = {
   kind: 'kiskadee.primitive-tonal-family';
-  formatVersion: 6;
+  classification?: TonalColorClassification;
+  formatVersion: 7;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   id: TonalFamilyId;
   munsellSector: TonalFamilySectorNotation | 'N';
@@ -58,6 +62,11 @@ export type PrimitiveTonalColorAssetV5 = {
   tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   seedHex: string;
   seedOrigin: ResolvedTonalFamily['seedOrigin'];
+  supportingColorOrigin?: {
+    sourceId: string;
+    referenceHex: string;
+    strategy: 'material-support-v1';
+  };
   associatedNeutralOrigin?: {
     sourceId: string;
     referenceHex: string;
@@ -115,7 +124,7 @@ export type TonalManifestAssetEntry = {
 
 export type TonalSystemManifestV5 = {
   kind: 'kiskadee.tonal-system';
-  formatVersion: 6;
+  formatVersion: 7;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   primaryReference: TonalFamilyId;
@@ -127,7 +136,7 @@ export type TonalSystemManifestV5 = {
 
 export type TonalSystemDiagnosticsV5 = {
   kind: 'kiskadee.tonal-system-diagnostics';
-  formatVersion: 6;
+  formatVersion: 7;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   seedModel: 'fixed-reference';
   referenceSet: typeof FIXED_FAMILY_REFERENCE_SET;
@@ -439,6 +448,9 @@ function createColorAsset(
   const darkAnchor = resolveSourceAnchor(family, 'dark');
   return {
     kind: 'kiskadee.primitive-tonal-family',
+    classification: classifyTonalReference(
+      resolveArtifactFunctionalReference(system, family, 'light', 'vivid').hex
+    ),
     formatVersion: system.source.formatVersion,
     generator: TONAL_ARTIFACT_GENERATOR,
     id: family.id,
@@ -450,6 +462,22 @@ function createColorAsset(
     tonalProfile: system.source.tonalProfile,
     seedHex: family.sourceSeedHex,
     seedOrigin: family.seedOrigin,
+    ...(() => {
+      const association = system.source.catalog?.supportingColors?.find((n) => n.id === family.id);
+      if (!association) return {};
+      const parent = system.families.find(
+        (f) =>
+          f.id ===
+          (association.sourceId === 'primary' ? system.source.primary.id : association.sourceId)
+      )!;
+      return {
+        supportingColorOrigin: {
+          sourceId: association.sourceId,
+          referenceHex: parent.themes.light.restColor.hex,
+          strategy: association.strategy
+        }
+      };
+    })(),
     ...(() => {
       const association = system.source.catalog?.neutrals.find((n) => n.id === family.id);
       if (!association) return {};
@@ -690,6 +718,20 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
       seed
     );
     if (override) overrideById.set(association.id, { ...override, id: association.id });
+  }
+  for (const association of system.source.catalog?.supportingColors ?? []) {
+    const parent = system.families.find(
+      (f) =>
+        f.id ===
+        (association.sourceId === 'primary' ? system.source.primary.id : association.sourceId)
+    );
+    if (!parent) throw new TonalArtifactError(`Missing supporting origin: ${association.sourceId}`);
+    const { seedHex } = deriveSupportingColor(parent.themes.light.restColor.hex);
+    overrideById.set(association.id, {
+      id: association.id,
+      seedHex,
+      policies: { light: 'source-exact', dark: 'adaptive' }
+    });
   }
   const sourceReferencesById = new Map(
     system.source.functionalReferences.map((references) => [references.id, references])
