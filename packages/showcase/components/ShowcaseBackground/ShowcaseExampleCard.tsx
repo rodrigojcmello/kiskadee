@@ -36,7 +36,7 @@ export function ShowcaseExampleCard({
   return (
     <Card
       {...props}
-      border={props.border ?? (background.cardBorder || undefined)}
+      border={props.border ?? background.cardBorder}
       intent={intent}
       emphasis={emphasis}
       surfaceContext={surfaceContext}

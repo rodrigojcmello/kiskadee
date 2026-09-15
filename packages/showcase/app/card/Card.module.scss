@@ -1,5 +1,4 @@
 .route {
-  container-type: inline-size;
   display: grid;
   gap: 40px;
   min-inline-size: 0;
@@ -199,4 +198,24 @@
   .comparisonGrid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+
+.route .compositionBand {
+  inline-size: 100cqw;
+  margin-inline: calc((100% - 100cqw) / 2);
+  padding: 0;
+  border-width: 0;
+}
+
+.compositionInner {
+  box-sizing: border-box;
+  max-inline-size: var(--showcase-content-max-width);
+  margin-inline: auto;
+  padding: 24px var(--showcase-content-gutter);
+}
+
+// Grid queries measure usable content, while the band measures the scroll column.
+.exampleSection:not(.compositionSection),
+.compositionInner {
+  container-type: inline-size;
 }

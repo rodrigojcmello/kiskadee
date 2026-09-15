@@ -22,8 +22,8 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
-import { useButtonStressTestBackgroundTones } from '@/hooks/use-background-tones';
 import { useCanonicalCardSurfaces } from '@/hooks/use-canonical-card-surfaces';
+import { useColorScaleTones } from '@/hooks/use-color-scale';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
@@ -266,7 +266,13 @@ export default function IconShowcase() {
   const surfaceContext = background.surfaceContext;
   const selectedSurface = background.color ? { resolvedColor: background.color } : undefined;
   const lightCanonicalBackgrounds = useCanonicalCardSurfaces('light');
-  const stressTestBackgrounds = useButtonStressTestBackgroundTones();
+  const brandNeutral = useColorScaleTones({
+    designSystemKey: String(designSystem ?? ''),
+    theme: 'light',
+    selection: 'primitive:black.v1',
+    tones: ['0', '100'],
+    enabled: Boolean(designSystem)
+  });
 
   const [scale, setScale] = useState<IconScale | undefined>();
   const [intent, setIntent] = useState<IconIntent>('neutral');
@@ -324,10 +330,8 @@ export default function IconShowcase() {
     (surfaceContext === 'onVivid'
       ? firstLightCanonicalSubtle?.resolvedColor
       : (secondLightCanonicalSubtle?.resolvedColor ?? firstLightCanonicalSubtle?.resolvedColor)) ??
-    stressTestBackgrounds.tones.find((tone) => tone.key === 'white')?.resolvedColor;
-  const brandForegroundColor =
-    stressTestBackgrounds.tones.find((tone) => tone.key === 'black')?.resolvedColor ??
-    stressTestBackgrounds.tones.find((tone) => tone.key === 'vivid-black')?.resolvedColor;
+    brandNeutral.picked['0'];
+  const brandForegroundColor = brandNeutral.picked['100'];
 
   const controls = (
     <ShowcaseControlPanel>

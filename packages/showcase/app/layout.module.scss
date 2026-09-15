@@ -92,6 +92,7 @@
 }
 
 .content {
+  container-type: inline-size;
   min-width: 0;
   min-height: 0;
   height: 100%;
@@ -99,9 +100,11 @@
 }
 
 .contentInner {
-  max-width: 1040px;
+  --showcase-content-max-width: 1040px;
+  --showcase-content-gutter: 32px;
+  max-width: var(--showcase-content-max-width);
   margin: 0 auto;
-  padding: calc(var(--showcase-toolbar-height) + 24px) 32px 48px;
+  padding: calc(var(--showcase-toolbar-height) + 24px) var(--showcase-content-gutter) 48px;
 }
 
 .menuButton {
@@ -252,7 +255,8 @@
   }
 
   .contentInner {
-    padding: 16px 20px 40px;
+    --showcase-content-gutter: 20px;
+    padding: 16px var(--showcase-content-gutter) 40px;
   }
 
   .mobileBackdrop {

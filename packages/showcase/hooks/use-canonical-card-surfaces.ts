@@ -9,7 +9,7 @@ import {
   resolveDefaultCanonicalCardSurface
 } from '@/utils/canonical-card-surfaces';
 
-export function useCanonicalCardSurfaces(themeOverride?: ThemeMode) {
+export function useCanonicalCardSurfaces(themeOverride?: ThemeMode, deduplicateColors = true) {
   const { segment, theme: activeTheme } = useKiskadee();
   const { options } = useCardArtifactConfig();
   const theme = themeOverride ?? activeTheme;
@@ -19,9 +19,10 @@ export function useCanonicalCardSurfaces(themeOverride?: ThemeMode) {
       resolveCanonicalCardSurfaces({
         canonicalSurfaces: options.canonicalSurfaces,
         segment: String(segment ?? 'default'),
-        theme
+        theme,
+        deduplicateColors
       }),
-    [options.canonicalSurfaces, segment, theme]
+    [options.canonicalSurfaces, segment, theme, deduplicateColors]
   );
 
   const items = useMemo(

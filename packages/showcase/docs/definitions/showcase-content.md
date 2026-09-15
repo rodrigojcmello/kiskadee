@@ -64,8 +64,8 @@ Showcase-local visual implementation rather than layering `p-react` underneath t
 ## Surface Context
 
 All component routes inherit the shared canonical canvas background from `ShowcaseShell`, using
-Button as the visual reference. The second compatible subtle surface is the initial default
-(Fluent Light: light-gray `neutral.medium`). A route needs no background setup to inherit it.
+Button as the visual reference. The initial subtle scenario uses `neutral.low` with bordered `neutral.lowest` supporting Cards
+when available; selection and Shell fallback derive from the same scenario. A route needs no background setup to inherit it.
 Manual choices use the shared Showcase background scenario: canvas and supporting Card coordinates
 are independent. The split swatch selects the first subtle canvas with the second subtle Card;
 it does not change the initial default. Explicit specimen comparisons remain independent. See [Background Surface Catalogs](./background-surface-catalogs.md#shared-initial-canvas).
@@ -101,12 +101,9 @@ supported context for its boundary, as on Button, and publishes its authored Con
 borders without shadows; selecting the canvas background does not force the Card to use the same
 surface.
 
-The Switch route may also render specimens directly on a generated stress-test route background.
-That mode intentionally omits the Card so its canonical surface cannot mask the adversarial input;
-the route still publishes the selected Surface Context through `SurfaceContextProvider`. Stress-test
-colors come from generated preset tonal assets and remain diagnostic inputs, not local Showcase
-paint or approved component compositions. If a required compact surface is absent from `p-react`, it
-must still be modeled by the framework rather than recreated with route CSS.
+The Switch route uses the shared published background scenarios and supporting Cards. If a
+required compact surface is absent from `p-react`, it must be modeled by the framework rather
+than recreated with route CSS.
 
 ## Related definitions
 
@@ -151,3 +148,11 @@ Manual segment/density changes and density reset invoke playWowTransition before
 the selection. Automatic viewport changes do not trigger the demonstration effect.
 Explicit component Size continues to override density. Routes without a density map keep the control visible with no active selection and all
 three options disabled. On narrow screens the toolbar expands to fit the density control on a second row.
+
+## Card composition band
+
+The Card composition example spans the full scrollable content column. Its outer Card uses
+`radius="square"` and `border={false}`; Showcase removes only the outer spacing and residual
+border geometry. Public Separator components delimit the top and bottom. The inner composition
+uses the Shell's shared content width and responsive gutters, while specimen Cards retain their
+own surfaces and radius selection. Card grid queries measure section content width; only the full-width band measures the scroll column.

@@ -2,17 +2,13 @@
 
 ## Purpose
 
-Showcase background controls distinguish surfaces a preset intentionally publishes from
-adversarial color combinations used to diagnose composition limits.
+Showcase exposes only surfaces published by the active preset. Surface context and background
+swatches share one control in every route, including Card. This grouping is presentation-only:
+component surface-context props and internal providers remain unchanged.
 
-This distinction prevents a large chromatic picker from implying that every component and surface
-combination is an approved Design System composition.
+## Published catalog
 
-## Modes
-
-### Canonical
-
-Canonical is the default mode. It reads the active preset's generated Card metadata artifact:
+The control reads the active preset's generated Card metadata artifact:
 
 ```text
 components/card.kiskadee.json
@@ -28,7 +24,8 @@ Builder validates each referenced Card Rest surface, resolves its color, and pre
 in the artifact. The Showcase neither owns an intent/emphasis list nor sorts colors by luminance.
 
 When two surface entries resolve to the same normalized color, only the first is retained in the
-base surface catalog. Background scenarios are separate and must not be deduplicated by canvas
+base swatch catalog. Background composition opts out of this deduplication to retain same-intent
+fallbacks even when their colors match. Scenarios must not be deduplicated by canvas
 color: two scenarios can share a canvas while selecting different supporting Cards. The split-swatch
 scenario requests the public Card border to distinguish its supporting Cards from the canvas.
 This is scenario metadata, independent of swatch position; border paint remains preset-owned.
@@ -43,37 +40,20 @@ recipe.
 does not change the palette used to resolve the catalog and does not make Showcase infer context
 from a rendered color. A rendered Card consumes its surrounding context for its boundary.
 
-### Stress test
-
-Stress test keeps the broader red, green, purple, orange, blue, and black tonal combinations. These
-backgrounds are diagnostic inputs, not a preset support guarantee and not a visual-approval
-matrix.
-
-Stress-test colors continue to resolve from the active preset's generated color assets. Literal
-colors are not authored in component route code.
-
-The Button stress-test picker uses three physical-lightness rows whose visibility depends only on
-Theme:
-
-- The light row is available only in the Light theme.
-- The vivid row is available in every theme and both surface contexts.
-- The dark row is available only in Dark and Darker and supports both surface contexts.
-
-The Light and Dark rows therefore alternate with the active theme. The vivid row remains available
-as the shared adversarial range. Changing Surface Context never hides either theme-visible row.
-
 ## Shared initial canvas
 
 Every component route inherits its initial canvas background from `ShowcaseShell`.
-`utils/showcase-background-defaults.ts` centralizes default selection for canonical and
-stress-test backgrounds by theme and surface context. Canonical defaults select published
-identities, not swatch positions: Light/Dark prefer `neutral.low`; Darker prefers
-`neutral.highest`, then `neutral.medium` when the black surface is unavailable. The vivid
+`utils/showcase-background-defaults.ts` centralizes default selection for published backgrounds by theme and surface context. Canonical defaults select published
+identities, not swatch positions. The canonical composition selector prefers the `neutral.low` canvas / `neutral.lowest` bordered Card scenario
+for On subtle in every theme; when unavailable it uses the theme policy over published scenario
+canvases. The underlying surface policy prefers `neutral.low` in Light/Dark and
+`neutral.highest`, then `neutral.medium`, in Darker. The vivid
 context prefers `primary.highest`. Other compatible published surfaces are fallbacks.
 No color is authored by this policy and no surface crosses context as a fallback.
 
 Initial load and context changes use automatic defaults, reevaluated for the active theme.
-Explicit background selections remain selected while available; unavailable selections fall
+Preset changes clear the manual background selection and resolve the default for the current
+surface context. Within the same preset, explicit background selections remain selected while available; unavailable selections fall
 back to the current theme/context default. The schema owns the available surfaces and colors,
 not the Showcase's initial canvas choice. Applications remain free to choose their own canvas.
 
@@ -81,21 +61,26 @@ not the Showcase's initial canvas choice. Applications remain free to choose the
 
 `resolveBackgroundScenarios` composes pairs from the existing generated Card surfaces. Each
 scenario has a stable key, a canvas surface, a supporting Card surface, and a swatch treatment.
-For Fluent Light, the canonical choices begin with:
+The first two exceptions are Neutral Lowest / Neutral Lowest and Neutral Lowest / Neutral Low.
+Legacy catalogs without Neutral Lowest retain their first subtle surface as the base; if Neutral
+Low is unavailable as an alternate, the first distinct published subtle color supplies it.
+Both initial exceptions explicitly request Card borders. The first keeps a solid swatch;
+the second keeps its split swatch.
+When Neutral Low and Lowest are both published, a third exception follows the two initial exceptions: Neutral Low
+canvas with Neutral Lowest Cards and a border request. Its swatch is solid Neutral Low and it is the initial selection when available.
+Neutral Medium follows the other subtle compositions, immediately before the vivid group.
 
-| Swatch | Canvas | Supporting Cards |
-| --- | --- | --- |
-| White | Neutral Low (white) | Neutral Low (white) |
-| Half white / half gray | Neutral Low (white) | Neutral Medium (light gray) |
-| Light gray (initial default) | Neutral Medium (light gray) | Neutral Low (white) |
-| Other subtle surfaces | Selected published surface | First canonical subtle surface |
-| Vivid surface | Selected published vivid surface | First canonical vivid surface |
+The remaining On subtle choices contain one composition per published intent: Medium canvas
+and Low Cards of the same intent. Low falls back to Lowest of that intent, then the base subtle
+surface when neither is published. Catalogs without Medium retain Low or their first published
+surface. No recipes or colors are synthesized. Medium/Low are semantic coordinates in both
+Light and Dark; luminosity is never used to choose them. On vivid retains each published vivid
+canvas paired with the first vivid surface. Explicit component surface demonstrations retain
+their own coordinates.
 
-The split scenario is inserted after the first subtle surface only when a second distinct subtle
-surface exists. Its key includes both surface identities. Its colors are resolved again for each
-preset, segment and theme; "white" and "gray" describe the Light presentation, not literal colors
-or a demand to paint white in dark themes. Other swatches retain their previous single-color
-appearance. Accessible names describe both the canvas and Card, independently of the visual split.
+Scenario keys retain the canvas identity; the split exception includes both identities.
+Accessible names describe the complete canvas/Card pair. Presets and Builder continue to own
+surface availability and paint; these composition choices belong only to Showcase.
 
 `useShowcaseBackgroundState` owns the route-scoped selection in the existing Showcase panel
 context. The Shell paints the canvas and publishes its Surface Context only around content. All
@@ -117,58 +102,23 @@ This work does not change Button/Switch/Badge colors or rewrite remaining legacy
 
 ## Background control group
 
-The chrome has one Background frame. Its first row is Canonical / Stress test, followed by a
-horizontal divider and the active mode's swatches. Neither the segmented row nor the swatch row
-owns another surrounding frame. The description remains below the frame. Both modes share this
-component on desktop and mobile. Showcase chrome styling is not preset specimen styling.
+Every route uses one Surface context frame: On subtle / On vivid above a divider, followed by
+the same background swatches. There is no route exception, mode selector, or Stress test catalog.
+Swatches keep their 24px size and selection ring. Rows fill the available width with even spacing,
+wrap when needed, and center incomplete rows. The chrome remains independent of preset styling.
 
-Control legends use a consistent 6px gap before their option container. The Background divider
-spans the frame width; the segmented row keeps its 3px internal inset on every side. Background
-swatches retain their 24px diameter when selected, with a 2px clear offset before the 2px blue
-selection ring. Selection does not enlarge the color sample.
+Changing context selects the shared default for that context. Selecting a swatch applies its
+published descendant context. Neither action changes Theme. Explicit component examples keep
+their own coordinates and component APIs.
 
-## Coordinated controls
-
-Theme, Background, and Surface Context remain separate concepts:
-
-- Theme selects the active Light, Dark, or Darker artifact.
-- Background selects the route surface from the active catalog.
-- Surface Context selects the component palette intended for the surrounding surface.
-
-Changing Surface Context directly always resets Background to Canonical and selects the shared default Card
-surface for that `contentSurfaceContext` (second distinct subtle surface, first vivid surface). The exact intent and emphasis are preset-authored;
-for example, Fluent may publish Primary Highest while iOS 27 publishes Primary High. This provides
-a predictable return from exploratory stress testing to an approved composition without imposing
-one global emphasis on every design system.
-
-Returning to Canonical also uses that shared default for the current Surface Context. Selecting a canonical swatch applies its exact published
-`contentSurfaceContext`. Selecting a stress-test swatch applies a physical-lightness convention:
-light-row tones select `onSubtle`, while vivid- and dark-row tones select `onVivid`. Vivid and dark
-tones remain available in both contexts for intentional testing, but a fresh click restores their
-recommended `onVivid` context. Background selection never changes Theme.
-
-## Adoption
-
-KIS-69 first applied this contract to the Button route. The Switch route also consumes the shared
-Card-derived canonical catalog instead of maintaining its own intent/emphasis surface list.
-
-On Switch, Canonical mode uses the selected scenario's supporting Card coordinates, independently
-of the canvas coordinates. Like Button, these Cards use preset borders without a shadow and consume
-the surrounding supported context for their boundary. They publish their authored child context.
-Stress-test mode keeps Switch specimens directly on the chosen canvas so a canonical Card does not
-mask the adversarial input. Explicit surface comparisons on other routes keep their stated purpose.
-
-The Card route hides only the Background picker (mode and swatches), while retaining Surface
-Context and the Shell-owned canvas selection. It inherits the same generated default as other
-routes; it does not supply a route-local color. Returning to On subtle restores the initial
-subtle canvas, while On vivid selects the preset's default vivid surface.
-
+Switch uses the selected supporting Card coordinates. Card exposes the same control while its
+surface matrix continues demonstrating explicit intent/emphasis coordinates.
 
 ## Required vivid surface
 
 Presets supporting canonical onVivid composition must retain Primary Highest as a published Card
 surface, including its onVivid descendant context, palettes and canonicalSurfaces entry. Simplifying
-light backgrounds must not remove that role. Stress test is not a substitute for canonical support.
+light backgrounds must not remove that role.
 Material keeps Primary Highest and removes only Neutral Highest. Its common white Lowest entries
 are deduplicated by the existing catalog logic; the canonical vivid background and Button comparison
-remain available without a forced switch to Stress test.
+remain available.

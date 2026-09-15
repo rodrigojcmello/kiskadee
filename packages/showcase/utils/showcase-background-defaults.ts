@@ -1,5 +1,4 @@
 import type { SurfaceContext, ThemeMode } from '@kiskadee/core';
-import type { ButtonStressTestBackgroundAvailability } from './button-stress-test-backgrounds';
 
 // Showcase presentation policy only. Colors and availability remain preset-owned.
 const canonicalDefaults: Record<ThemeMode, Record<SurfaceContext, readonly string[]>> = {
@@ -30,12 +29,4 @@ export function resolveDefaultCanonicalCardSurface<
     if (surface) return surface;
   }
   return compatible[0];
-}
-
-export function getPreferredButtonStressTestBackground<
-  T extends ButtonStressTestBackgroundAvailability
->(tones: readonly T[], theme: ThemeMode, surfaceContext: SurfaceContext): T | undefined {
-  return tones.find(
-    (tone) => tone.availableThemes.includes(theme) && tone.surfaceContexts.includes(surfaceContext)
-  );
 }

@@ -218,8 +218,8 @@ Shared utilities for Showcase.
 - The Colors foundation route inspects all published primitives, including variants that are not
   currently mapped to a global semantic or component intent. Darker reuses the primitive Dark
   scale and is not rendered as a duplicate third track.
-- Background controls distinguish canonical surfaces published in
-  `components/card.kiskadee.json` from diagnostic Stress Test colors. See
+- Every route groups Surface context and background swatches in one control, using only
+  published surfaces from `components/card.kiskadee.json`. See
   [Background Surface Catalogs](docs/definitions/background-surface-catalogs.md).
 - Initial and fallback theme selection prefers `light` whenever the active preset exposes it. A
   valid theme explicitly persisted by the user still takes precedence.

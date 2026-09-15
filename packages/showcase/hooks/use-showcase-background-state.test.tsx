@@ -20,26 +20,6 @@ vi.mock('./use-canonical-card-surfaces', () => ({
     defaultSurface: fixtures.tones[1]
   })
 }));
-vi.mock('./use-background-tones', () => ({
-  useButtonStressTestBackgroundTones: () => ({
-    tones: [
-      {
-        key: 'white',
-        row: 'light',
-        resolvedColor: 'light-stress',
-        surfaceContexts: ['onSubtle'],
-        availableThemes: ['light']
-      },
-      {
-        key: 'vivid-blue',
-        row: 'vivid',
-        resolvedColor: 'vivid-stress',
-        surfaceContexts: ['onVivid'],
-        availableThemes: ['light', 'dark', 'darker']
-      }
-    ]
-  })
-}));
 
 let value: ReturnType<typeof useShowcaseBackgroundState>;
 let container: HTMLDivElement;
@@ -99,7 +79,7 @@ describe('shared background selection', () => {
     ];
     fixtures.theme = 'darker';
     render();
-    expect(value.color).toBe('black');
+    expect(value.color).toBe('gray');
     act(() => value.selectContext('onVivid'));
     fixtures.theme = 'dark';
     render();
@@ -108,7 +88,7 @@ describe('shared background selection', () => {
     expect(value.color).toBe('gray');
     fixtures.theme = 'darker';
     render();
-    expect(value.color).toBe('black');
+    expect(value.color).toBe('gray');
     act(() => value.selectBackground('neutral.lowest'));
     fixtures.theme = 'dark';
     render();
@@ -146,17 +126,6 @@ describe('shared background selection', () => {
     expect(value.color).toBeUndefined();
     expect(value.cardSurface).toBeUndefined();
   });
-  it('coordinates surface context and stress-test mode, preserving canonical colors', () => {
-    render();
-    act(() => value.selectContext('onVivid'));
-    expect([value.color, value.cardSurface?.resolvedColor]).toEqual(['blue', 'blue']);
-    act(() => value.selectMode('stress-test'));
-    expect(value.color).toBe('vivid-stress');
-    act(() => value.selectBackground('white'));
-    expect(value.surfaceContext).toBe('onSubtle');
-    act(() => value.selectMode('canonical'));
-    expect(value.color).toBe('gray');
-  });
   it('restores the shared subtle default after a vivid context on Card', () => {
     render('/card');
     const initial = value.color;
@@ -172,4 +141,23 @@ describe('shared background selection', () => {
     act(() => value.selectBackground('unknown'));
     expect(value.key).toBe('neutral.low');
   });
+});
+
+it('uses the same Darker default for selection and shell fallback', () => {
+  fixtures.theme = 'darker';
+  fixtures.tones.push({
+    key: 'neutral.highest',
+    label: 'Black',
+    resolvedColor: 'black',
+    contentSurfaceContext: 'onSubtle'
+  });
+  render();
+  expect(value.key).toBe('neutral.low');
+  expect(value.defaultColor).toBe(value.color);
+  expect(value.defaultColor).toBe('gray');
+  act(() => value.selectBackground('neutral.lowest'));
+  expect(value.color).toBe('white');
+  expect(value.defaultColor).toBe('gray');
+  act(() => value.selectContext('onVivid'));
+  expect(value.defaultColor).toBe(value.color);
 });

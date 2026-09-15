@@ -23,6 +23,10 @@ map and authority boundaries; load only the sections relevant to the task.
   does not replace this scope confirmation; approval of a recap already given in the conversation
   does. Clear approval of the recapped scope authorizes the agreed work, interpreted in context
   without requiring specific keywords. Honor an explicit request to skip this checkpoint for the task.
+- Requests to inspect, analyze, review, validate, or correct an existing `CODE-REVIEW.md` authorize
+  the report workflow (verification, pertinent fixes, validation, and closure) without the scope
+  approval checkpoint. Explicit analysis-only or no-edit instructions take precedence. Follow
+  `skills/kiskadee-code-review-markdown/SKILL.md`; this exception does not expand a fresh diff review.
 - Apply that checkpoint at the transition from discussion/refinement to implementation, including
   code, configuration, generated assets, and implementation-related documentation. Do not interrupt
   ordinary questions, read-only analysis, or explicitly requested task-status updates with it.

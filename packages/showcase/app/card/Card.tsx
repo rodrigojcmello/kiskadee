@@ -640,7 +640,10 @@ export function Card() {
               ))}
           </section>
 
-          <section className={s.exampleSection} aria-labelledby="card-composition">
+          <section
+            className={`${s.exampleSection} ${s.compositionSection}`}
+            aria-labelledby="card-composition"
+          >
             <SectionHeading
               id="card-composition"
               title="Composition"

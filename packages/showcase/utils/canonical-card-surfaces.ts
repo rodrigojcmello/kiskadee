@@ -23,11 +23,13 @@ export function normalizeSurfaceColor(color: string): string {
 export function resolveCanonicalCardSurfaces({
   canonicalSurfaces,
   segment,
-  theme
+  theme,
+  deduplicateColors = true
 }: {
   canonicalSurfaces: CardCanonicalSurfacesPayload | undefined;
   segment: string;
   theme: ThemeMode;
+  deduplicateColors?: boolean;
 }): ResolvedCanonicalCardSurface[] {
   const authoredSurfaces = canonicalSurfaces?.[segment]?.[theme];
   if (!authoredSurfaces) return [];
@@ -37,7 +39,7 @@ export function resolveCanonicalCardSurfaces({
 
   for (const surface of authoredSurfaces) {
     const normalizedColor = normalizeSurfaceColor(surface.rest);
-    if (seenColors.has(normalizedColor)) continue;
+    if (deduplicateColors && seenColors.has(normalizedColor)) continue;
 
     seenColors.add(normalizedColor);
     surfaces.push({

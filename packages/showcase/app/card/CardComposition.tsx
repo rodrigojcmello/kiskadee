@@ -3,6 +3,7 @@
 import type { CardRadiusMode } from '@kiskadee/core';
 import { Card } from '@kiskadee/react-components/card';
 import { useKiskadee } from '@kiskadee/react-components/resources';
+import { Separator } from '@kiskadee/react-components/separator';
 import { Text } from '@kiskadee/react-components/text';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
@@ -38,48 +39,58 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
     );
 
   return (
-    <Card intent="neutral" emphasis="low" border radius={radius}>
-      <div className={s.compositionGrid}>
-        <Card
-          intent="neutral"
-          emphasis="lowest"
-          border={false}
-          radius={radius}
-          className={s.compositionSidebar}
-        >
-          <div className={s.compositionSettings}>
+    <Card
+      intent="neutral"
+      emphasis="low"
+      border={false}
+      radius="square"
+      className={s.compositionBand}
+    >
+      <Separator emphasis="low" />
+      <div className={s.compositionInner}>
+        <div className={s.compositionGrid}>
+          <Card
+            intent="neutral"
+            emphasis="lowest"
+            border={false}
+            radius={radius}
+            className={s.compositionSidebar}
+          >
+            <div className={s.compositionSettings}>
+              <Text profile={profiles.body}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.
+              </Text>
+            </div>
+          </Card>
+          <Card intent="primary" emphasis="medium" radius={radius} className={s.compositionTile}>
             <Text profile={profiles.body}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </Text>
-          </div>
-        </Card>
-        <Card intent="primary" emphasis="medium" radius={radius} className={s.compositionTile}>
-          <Text profile={profiles.body}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </Text>
-        </Card>
-        <Card
-          intent={supportingIntent}
-          emphasis="medium"
-          radius={radius}
-          className={s.compositionTile}
-        >
-          <Text profile={profiles.body}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </Text>
-        </Card>
-        <Card intent="neutral" emphasis="medium" radius={radius} className={s.compositionWide}>
-          <Text profile={profiles.body}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </Text>
-        </Card>
-        <Card intent="primary" emphasis="highest" radius={radius} className={s.compositionWide}>
-          <Text profile={profiles.body}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </Text>
-        </Card>
+          </Card>
+          <Card
+            intent={supportingIntent}
+            emphasis="medium"
+            radius={radius}
+            className={s.compositionTile}
+          >
+            <Text profile={profiles.body}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </Text>
+          </Card>
+          <Card intent="neutral" emphasis="medium" radius={radius} className={s.compositionWide}>
+            <Text profile={profiles.body}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </Text>
+          </Card>
+          <Card intent="primary" emphasis="highest" radius={radius} className={s.compositionWide}>
+            <Text profile={profiles.body}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </Text>
+          </Card>
+        </div>
       </div>
+      <Separator emphasis="low" />
     </Card>
   );
 }

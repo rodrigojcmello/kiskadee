@@ -213,16 +213,15 @@ export default function SwitchPage() {
   )
     ? activeSurfaceContext
     : 'onSubtle';
-  const specimenCardSurface: ResolvedSwitchSurface | undefined =
-    background.mode === 'canonical' && background.cardSurface
-      ? {
-          value: background.cardSurface.key,
-          label: background.cardSurface.label,
-          ...resolveCardCoordinates(background.cardSurface.key),
-          swatchColor: background.cardSurface.resolvedColor,
-          contentSurfaceContext: background.cardSurface.contentSurfaceContext
-        }
-      : undefined;
+  const specimenCardSurface: ResolvedSwitchSurface | undefined = background.cardSurface
+    ? {
+        value: background.cardSurface.key,
+        label: background.cardSurface.label,
+        ...resolveCardCoordinates(background.cardSurface.key),
+        swatchColor: background.cardSurface.resolvedColor,
+        contentSurfaceContext: background.cardSurface.contentSurfaceContext
+      }
+    : undefined;
   const isBackgroundAvailable = Boolean(background.color);
   useEffect(() => {
     setRadius(defaultRadius);
