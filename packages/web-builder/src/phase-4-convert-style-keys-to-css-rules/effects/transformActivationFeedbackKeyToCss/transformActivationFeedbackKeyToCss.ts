@@ -118,7 +118,8 @@ function transformActivationFeedbackProfileToCss(
   const profileDefinition = resolveActivationFeedbackProfileDefinition(profile);
   const isOverflowProfile = profileDefinition.overflow === 'visible';
   const overflow = isOverflowProfile ? 'visible' : 'hidden';
-  const clip = isOverflowProfile ? 'none' : 'inset(0 round var(--k-bdr, 0px))';
+  // Overflow clips feedback to the rendered radius; a target-radius clip would cut animated borders.
+  const clip = 'none';
   const isHaloProfile = profileDefinition.shape === 'halo';
   const isOutline = visual?.paint === 'outline';
   const size =

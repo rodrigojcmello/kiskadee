@@ -34,12 +34,6 @@ export const STRUCTURAL_SCHEMA_FALLBACK_DEBT: readonly StructuralSchemaFallbackD
     count: 3,
     justification: 'Optional item and metadata spacing remains existing structural debt.'
   })),
-  {
-    file: 'components/Button/effects/activation-feedback/ButtonActivationFeedback.structural.scss',
-    variable: '--k-bdr',
-    count: 1,
-    justification: 'Effect clipping remains existing runtime-owned structural debt.'
-  },
   ...(['--k-pdl', '--k-pdr'] as const).map((variable) => ({
     file: 'components/Dropdown/Dropdown.structural.scss',
     variable,

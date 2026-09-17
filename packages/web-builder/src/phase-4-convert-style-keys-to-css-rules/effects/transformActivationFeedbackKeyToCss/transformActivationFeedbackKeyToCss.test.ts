@@ -47,7 +47,7 @@ describe('transformActivationFeedbackKeyToCss', () => {
 
     expect(out).toContain('--k-af-profile: ripple;');
     expect(out).toContain('--k-af-overflow: hidden;');
-    expect(out).toContain('--k-af-clip: inset(0 round var(--k-bdr, 0px));');
+    expect(out).toContain('--k-af-clip: none;');
     expect(out).toContain('--k-af-size: auto;');
     expect(out).toContain('--k-af-animate-size: 1;');
     expect(out).toContain('--k-af-duration: 360ms;');
