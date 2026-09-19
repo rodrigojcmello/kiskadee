@@ -26,19 +26,35 @@ export function createFluent2MicrosoftContours({
         {
           onSubtle: {
             medium,
+            ...(theme === 'light'
+              ? {
+                  lowest: {
+                    rest: c.resolve('default', track, exactColor('neutral', 3, 'global.contours'))
+                  }
+                }
+              : {}),
             low: {
               rest: c.resolve(
                 'default',
                 track,
-                absoluteCap(
-                  primitive('black', 'v1'),
-                  theme === 'light' ? 'dark' : 'light',
-                  theme === 'light' ? 8 : 12
-                )
+                theme === 'light'
+                  ? exactColor('neutral', 6, 'global.contours')
+                  : absoluteCap(primitive('black', 'v1'), 'light', 12)
               )
             }
           },
           onVivid: {
+            ...(theme === 'light'
+              ? {
+                  lowest: {
+                    rest: c.resolve(
+                      'default',
+                      track,
+                      absoluteCap(primitive('black', 'v1'), 'light', 8)
+                    )
+                  }
+                }
+              : {}),
             medium: {
               rest: c.resolve('default', track, absoluteCap(primitive('black', 'v1'), 'light', 15))
             },

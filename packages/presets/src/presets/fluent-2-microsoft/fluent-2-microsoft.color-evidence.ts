@@ -15,11 +15,13 @@ export const fluent2MicrosoftColorEvidence = {
   },
   'global.contours': {
     source: 'components/card.md#shared-neutral-contours',
-    rationale: 'Preserves Card neutral boundary L10/D45 in a component-independent catalog.'
+    rationale:
+      'Light uses achromatic L3/L6/L10 contours; Dark retains D45 and existing cap opacities.'
   },
   'component.card': {
     source: 'components/card.md#color-and-token-provenance',
-    rationale: 'Card fixed stops adapt documented Fluent surface, content, and border tokens.'
+    rationale:
+      'Card fixed stops adapt documented Fluent tokens; approved Light Primary Low/High extend Neutral positions L1/L5.'
   },
   'component.chip': {
     source: 'components/chip.md#color-and-token-provenance',

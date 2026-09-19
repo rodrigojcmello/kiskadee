@@ -1,7 +1,13 @@
 {
   "appearance": "blue",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "positionInSector": 0.7117033282382571,
+    "referenceHex": "#0064b4",
+    "sector": "blue"
+  },
   "colorKind": "chromatic",
-  "formatVersion": 6,
+  "formatVersion": 7,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -50,7 +56,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.17.0"
+    "version": "0.19.0"
   },
   "id": "b.blue.v1",
   "kind": "kiskadee.primitive-tonal-family",

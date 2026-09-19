@@ -1,8 +1,14 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/pb.indigo.v2.json by @kiskadee/tonal-scale@0.17.0.
+// Generated from colors/pb.indigo.v2.json by @kiskadee/tonal-scale@0.19.0.
 export default {
   "kind": "static",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "referenceHex": "#5b5fc7",
+    "sector": "purple-blue",
+    "positionInSector": 0.41560827062448247
+  },
   "functionalReferences": {
     "light": {
       "subtle": 4,

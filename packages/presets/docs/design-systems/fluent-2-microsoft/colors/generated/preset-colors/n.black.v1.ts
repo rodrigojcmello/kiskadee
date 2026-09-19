@@ -1,18 +1,24 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/n.black.v1.json by @kiskadee/tonal-scale@0.17.0.
+// Generated from colors/n.black.v1.json by @kiskadee/tonal-scale@0.19.0.
 export default {
   "kind": "static",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "referenceHex": "#252525",
+    "sector": null,
+    "positionInSector": null
+  },
   "functionalReferences": {
     "light": {
       "subtle": 4,
-      "medium": 28,
-      "vivid": 99
+      "medium": 24,
+      "vivid": 85
     },
     "dark": {
       "subtle": 4,
-      "medium": 28,
-      "vivid": 99
+      "medium": 26,
+      "vivid": 90
     }
   },
   "scales": {

@@ -16,12 +16,12 @@ const c = createStrictPresetColorResolver<
 describe('Fluent Teams shared palette', () => {
   it('remaps identity while preserving semantic families', () => {
     for (const theme of ['l', 'd'] as const) {
-      for (const role of ['primary', 'neutral'] as const) {
+      for (const role of ['primary'] as const) {
         expect(c.resolve('teams', theme, referenceColor(role, 'vivid'))).not.toBe(
           c.resolve('default', theme, referenceColor(role, 'vivid'))
         );
       }
-      for (const role of ['redLike', 'greenLike', 'purpleLike', 'yellowLike'] as const) {
+      for (const role of ['neutral', 'redLike', 'greenLike', 'purpleLike', 'yellowLike'] as const) {
         expect(c.resolve('teams', theme, referenceColor(role, 'vivid'))).toBe(
           c.resolve('default', theme, referenceColor(role, 'vivid'))
         );

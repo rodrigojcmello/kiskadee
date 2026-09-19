@@ -15,7 +15,7 @@ describe('Card border pipeline', () => {
     ['default', 'invalid'],
     ['default', 'light', 'invalid'],
     ['default', 'light', 'onSubtle', 'invalid'],
-    ['default', 'light', 'onSubtle', 'neutral', 'high'],
+    ['default', 'light', 'onSubtle', 'neutral', 'highest'],
     ['missing', 'light', 'onSubtle', 'neutral', 'medium']
   ])('rejects unknown or unpublished coordinate %j', (...keys: string[]) => {
     const border = keys.reduceRight<unknown>((value, key) => ({ [key]: value }), false);

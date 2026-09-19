@@ -1,8 +1,14 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/p.purple.v1.json by @kiskadee/tonal-scale@0.17.0.
+// Generated from colors/p.purple.v1.json by @kiskadee/tonal-scale@0.19.0.
 export default {
   "kind": "static",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "referenceHex": "#c239b3",
+    "sector": "purple",
+    "positionInSector": 0.900530401889273
+  },
   "functionalReferences": {
     "light": {
       "subtle": 4,

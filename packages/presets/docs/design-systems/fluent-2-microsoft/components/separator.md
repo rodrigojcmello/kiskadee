@@ -1,5 +1,9 @@
 # Fluent 2 Microsoft Separator Evidence
 
+> Current neutral mapping: [2026-09-19 achromatic calibration](neutral-surface-calibration.md).
+> It supersedes the earlier tinted-neutral and Light contour values below; those sections retain historical provenance.
+
+
 This file records source evidence and schema decisions for the shared Separator recipe and
 `packages/presets/src/presets/fluent-2-microsoft/components/separator.schema.ts`.
 

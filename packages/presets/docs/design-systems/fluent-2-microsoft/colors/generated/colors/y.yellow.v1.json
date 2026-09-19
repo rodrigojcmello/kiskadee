@@ -1,7 +1,13 @@
 {
   "appearance": "yellow",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "positionInSector": 0.08655998582595105,
+    "referenceHex": "#eaa300",
+    "sector": "yellow"
+  },
   "colorKind": "chromatic",
-  "formatVersion": 6,
+  "formatVersion": 7,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -50,7 +56,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.17.0"
+    "version": "0.19.0"
   },
   "id": "y.yellow.v1",
   "kind": "kiskadee.primitive-tonal-family",

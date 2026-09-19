@@ -1,8 +1,14 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/y.yellow.v1.json by @kiskadee/tonal-scale@0.17.0.
+// Generated from colors/y.yellow.v1.json by @kiskadee/tonal-scale@0.19.0.
 export default {
   "kind": "static",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "referenceHex": "#eaa300",
+    "sector": "yellow",
+    "positionInSector": 0.08655998582595105
+  },
   "functionalReferences": {
     "light": {
       "subtle": 4,

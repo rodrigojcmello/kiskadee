@@ -1,5 +1,18 @@
 # Fluent 2 Color Evidence And Kiskadee Tonal Mapping
 
+## Achromatic neutral migration — 2026-09-19
+
+Current generated bundle: 0.19.0. The user authorized application of the shared
+achromatic Neutral and the screenshot-derived Light hierarchy. Rendered visual
+acceptance remains user-owned; historical approvals below describe superseded assets.
+All retained scale samples are unchanged. Black v2/v3 are removed from the current
+recipe, exported bundle and preset. Black v1 Vivid references are L85/D90 to retain
+the previous neutral interaction anchor positions; Subtle remains L4/D4.
+See [current generator link](generator-link.md) and
+[the current surface mapping](../components/neutral-surface-calibration.md).
+Earlier Figma mapping JSON files are historical comparisons, not the current
+neutral mapping. The current explicit de-para is [neutral-surface-mapping.json](neutral-surface-mapping.json).
+
 ## Subtle calibration promotion — 0.17.0
 
 User authorized reducing Subtle chroma to 0.01 and applying it to default/Teams.
@@ -199,7 +212,7 @@ The format V6 shared recipe exports fifteen families, including the Teams entry
 and two associated Subtle neutrals. Ten assets are promoted; five automatic
 companions remain candidate-only. The promoted subset is generated with 0.17.0.
 
-[Open Fluent and Teams in the local Kiskadee Tonal Scale](http://localhost:3001/?recipe=%7B%22formatVersion%22%3A6%2C%22gridContract%22%3A%22kiskadee-tonal-v1%22%2C%22harmonyContract%22%3A%22kiskadee-munsell-rest-v1%22%2C%22tonalProfile%22%3A%22vivid-lights%22%2C%22primary%22%3A%7B%22seedHex%22%3A%22%230064b4%22%2C%22appearance%22%3A%22auto%22%2C%22variant%22%3A%22v1%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%22tonalAnchors%22%3A%7B%22rest%22%3A%7B%22mode%22%3A%22auto%22%7D%7D%2C%22functionalReferences%22%3A%5B%5D%2C%22overrides%22%3A%5B%7B%22id%22%3A%22r.red.v1%22%2C%22seedHex%22%3A%22%23c50f1f%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22yr.orange.v1%22%2C%22seedHex%22%3A%22%23f7630c%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22y.yellow.v1%22%2C%22seedHex%22%3A%22%23eaa300%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22g.green.v1%22%2C%22seedHex%22%3A%22%23107c10%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%2C%7B%22id%22%3A%22p.purple.v1%22%2C%22seedHex%22%3A%22%23c239b3%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%5D%2C%22catalog%22%3A%7B%22colors%22%3A%5B%7B%22id%22%3A%22pb.indigo.v2%22%2C%22seedHex%22%3A%22%235b5fc7%22%2C%22policies%22%3A%7B%22light%22%3A%22source-exact%22%2C%22dark%22%3A%22adaptive%22%7D%7D%5D%2C%22names%22%3A%7B%22primary%22%3A%22Fluent%20Blue%22%2C%22pb.indigo.v2%22%3A%22Teams%20Purple%22%7D%2C%22neutrals%22%3A%5B%7B%22id%22%3A%22n.black.v2%22%2C%22sourceId%22%3A%22primary%22%2C%22intensity%22%3A%22subtle%22%7D%2C%7B%22id%22%3A%22n.black.v3%22%2C%22sourceId%22%3A%22pb.indigo.v2%22%2C%22intensity%22%3A%22subtle%22%7D%5D%7D%7D)
+[Open the current generator recipe](./generator-link.md)
 
 The link requires the local application on port 3001. It contains the complete
 recipe, while the installed generator determines its output version.

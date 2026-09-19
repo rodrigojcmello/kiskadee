@@ -1,8 +1,14 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/b.blue.v1.json by @kiskadee/tonal-scale@0.17.0.
+// Generated from colors/b.blue.v1.json by @kiskadee/tonal-scale@0.19.0.
 export default {
   "kind": "static",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "referenceHex": "#0064b4",
+    "sector": "blue",
+    "positionInSector": 0.7117033282382571
+  },
   "functionalReferences": {
     "light": {
       "subtle": 4,

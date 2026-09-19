@@ -14,20 +14,9 @@
       "pb.indigo.v2": "Teams Purple",
       "primary": "Fluent Blue"
     },
-    "neutrals": [
-      {
-        "id": "n.black.v2",
-        "intensity": "subtle",
-        "sourceId": "primary"
-      },
-      {
-        "id": "n.black.v3",
-        "intensity": "subtle",
-        "sourceId": "pb.indigo.v2"
-      }
-    ]
+    "neutrals": []
   },
-  "formatVersion": 6,
+  "formatVersion": 7,
   "functionalReferences": [
     {
       "dark": {
@@ -128,8 +117,8 @@
           "tone": 4
         },
         "vivid": {
-          "source": "contrast-mirror",
-          "tone": 99
+          "source": "locked",
+          "tone": 90
         }
       },
       "id": "n.black.v1",
@@ -139,53 +128,7 @@
           "tone": 4
         },
         "vivid": {
-          "source": "generated-anchor",
-          "tone": 99
-        }
-      }
-    },
-    {
-      "dark": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "contrast-mirror",
-          "tone": 90
-        }
-      },
-      "id": "n.black.v2",
-      "light": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "generated-anchor",
-          "tone": 85
-        }
-      }
-    },
-    {
-      "dark": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "contrast-mirror",
-          "tone": 90
-        }
-      },
-      "id": "n.black.v3",
-      "light": {
-        "subtle": {
-          "source": "surface-relative",
-          "tone": 4
-        },
-        "vivid": {
-          "source": "generated-anchor",
+          "source": "locked",
           "tone": 85
         }
       }

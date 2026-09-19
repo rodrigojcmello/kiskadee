@@ -1,7 +1,22 @@
 # Fluent 2 Card Evidence
 
+> Current neutral mapping: [2026-09-19 achromatic calibration](neutral-surface-calibration.md).
+> It supersedes the earlier tinted-neutral and Light contour values below; those sections retain historical provenance.
+
+
 This file records the source evidence and schema decisions for the Fluent 2 Card
 mapping in `packages/presets/src/presets/fluent-2-microsoft/components/card.schema.ts`.
+
+## Approved Primary extension — 2026-09-19
+
+Status: Kiskadee extension, explicitly approved by the user. Light Primary Low and
+High use exact L1 and L5, matching Neutral's positions in both surface contexts.
+Microsoft uses `b.blue.v1`; Teams uses `pb.indigo.v2`. These are Rest-only additions,
+with onSubtle descendant content and borders hidden by default. Primary Medium onSubtle now uses exact L3 instead of L4, explicitly approved to
+align its position with Neutral Medium and separate it from High L5. This supersedes
+the historical Brand/Background/2/Rest to L4 adaptation below. The onVivid Medium
+mapping, Highest, interactions and Dark/Darker remain unchanged.
+This is a tonal-position equivalence, not a claim of additional upstream Fluent Card variants.
 
 ## Sources
 

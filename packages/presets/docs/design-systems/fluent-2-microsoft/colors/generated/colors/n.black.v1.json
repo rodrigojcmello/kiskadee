@@ -1,13 +1,19 @@
 {
   "appearance": "black",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "positionInSector": null,
+    "referenceHex": "#252525",
+    "sector": null
+  },
   "colorKind": "achromatic",
-  "formatVersion": 6,
+  "formatVersion": 7,
   "functionalReferences": {
     "dark": {
       "medium": {
-        "hex": "#4b4b4b",
+        "hex": "#484848",
         "source": "midpoint",
-        "tone": 28
+        "tone": 26
       },
       "subtle": {
         "hex": "#191919",
@@ -15,16 +21,16 @@
         "tone": 4
       },
       "vivid": {
-        "hex": "#fbfbfb",
-        "source": "contrast-mirror",
-        "tone": 99
+        "hex": "#d7d7d7",
+        "source": "locked",
+        "tone": 90
       }
     },
     "light": {
       "medium": {
-        "hex": "#8c8c8c",
+        "hex": "#9b9b9b",
         "source": "midpoint",
-        "tone": 28
+        "tone": 24
       },
       "subtle": {
         "hex": "#ededed",
@@ -32,9 +38,9 @@
         "tone": 4
       },
       "vivid": {
-        "hex": "#010101",
-        "source": "generated-anchor",
-        "tone": 99
+        "hex": "#252525",
+        "source": "locked",
+        "tone": 85
       }
     }
   },
@@ -50,7 +56,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.17.0"
+    "version": "0.19.0"
   },
   "id": "n.black.v1",
   "kind": "kiskadee.primitive-tonal-family",

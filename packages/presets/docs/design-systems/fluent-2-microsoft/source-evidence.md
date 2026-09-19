@@ -3,6 +3,13 @@
 This file records source evidence and preset-level decisions for
 `packages/presets/src/presets/fluent-2-microsoft/`.
 
+## Current neutral calibration
+
+The user-authorized [achromatic surface calibration](components/neutral-surface-calibration.md)
+applies across Microsoft and Teams identities. It records original screenshots, rounded Light
+roles and the explicit preservation policy for Dark/Darker. The [generator link](colors/generator-link.md)
+loads the current recipe.
+
 ## Primary Sources
 
 - Figma community file:

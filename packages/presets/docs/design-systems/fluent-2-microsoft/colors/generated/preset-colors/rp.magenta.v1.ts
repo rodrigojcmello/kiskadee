@@ -1,8 +1,14 @@
 import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';
 
-// Generated from colors/rp.magenta.v1.json by @kiskadee/tonal-scale@0.17.0.
+// Generated from colors/rp.magenta.v1.json by @kiskadee/tonal-scale@0.19.0.
 export default {
   "kind": "static",
+  "classification": {
+    "classifier": "munsell-oklch-v1",
+    "referenceHex": "#a91869",
+    "sector": "red-purple",
+    "positionInSector": 0.5440627349058162
+  },
   "functionalReferences": {
     "light": {
       "subtle": 4,

@@ -16,6 +16,13 @@ export function createFluent2MicrosoftSeparators(): SchemaSeparators {
                   {
                     boxColor: {
                       neutral: {
+                        ...(theme === 'light'
+                          ? {
+                              lowest: {
+                                rest: contour(`neutral.standard.${theme}.${context}.lowest`)
+                              }
+                            }
+                          : {}),
                         low: { rest: contour(`neutral.standard.${theme}.${context}.low`) },
                         medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) }
                       }

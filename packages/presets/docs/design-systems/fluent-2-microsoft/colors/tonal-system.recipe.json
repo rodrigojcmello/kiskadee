@@ -17,7 +17,29 @@
       "mode": "auto"
     }
   },
-  "functionalReferences": [],
+  "functionalReferences": [
+    {
+      "id": "n.black.v1",
+      "light": {
+        "subtle": {
+          "mode": "auto"
+        },
+        "vivid": {
+          "mode": "locked",
+          "tone": 85
+        }
+      },
+      "dark": {
+        "subtle": {
+          "mode": "auto"
+        },
+        "vivid": {
+          "mode": "locked",
+          "tone": 90
+        }
+      }
+    }
+  ],
   "overrides": [
     {
       "id": "r.red.v1",
@@ -74,18 +96,6 @@
     "names": {
       "primary": "Fluent Blue",
       "pb.indigo.v2": "Teams Purple"
-    },
-    "neutrals": [
-      {
-        "id": "n.black.v2",
-        "sourceId": "primary",
-        "intensity": "subtle"
-      },
-      {
-        "id": "n.black.v3",
-        "sourceId": "pb.indigo.v2",
-        "intensity": "subtle"
-      }
-    ]
+    }
   }
 }
