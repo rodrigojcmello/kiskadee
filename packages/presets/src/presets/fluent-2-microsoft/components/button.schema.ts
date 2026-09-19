@@ -204,6 +204,12 @@ export function createFluent2MicrosoftButtonSchema({
 
   const createBoxAndBorderContextPalettes = (theme: ButtonRecipeTheme) => ({
     onSubtle: {
+      borderBottomColor: {
+        primary: onSubtleButtonIntentPalettes[theme].primary.borderBottomColor,
+        neutral: onSubtleButtonIntentPalettes[theme].neutral.borderBottomColor,
+        destructive: onSubtleButtonIntentPalettes[theme].destructive.borderBottomColor,
+        positive: onSubtleButtonIntentPalettes[theme].positive.borderBottomColor
+      },
       boxColor: {
         primary: onSubtleButtonIntentPalettes[theme].primary.boxColor,
         neutral: onSubtleButtonIntentPalettes[theme].neutral.boxColor,
@@ -218,6 +224,12 @@ export function createFluent2MicrosoftButtonSchema({
       }
     },
     onVivid: {
+      borderBottomColor: {
+        primary: onVividButtonIntentPalettes[theme].primary.borderBottomColor,
+        neutral: onVividButtonIntentPalettes[theme].neutral.borderBottomColor,
+        destructive: onVividButtonIntentPalettes[theme].destructive.borderBottomColor,
+        positive: onVividButtonIntentPalettes[theme].positive.borderBottomColor
+      },
       boxColor: {
         primary: onVividButtonIntentPalettes[theme].primary.boxColor,
         neutral: onVividButtonIntentPalettes[theme].neutral.boxColor,

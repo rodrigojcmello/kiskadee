@@ -196,11 +196,13 @@ export function createFluent2MicrosoftBrandButtonProjection(
   const createContainerTheme = (theme: FluentButtonFormulaTheme) => ({
     onSubtle: {
       boxColor: selectProperty(onSubtle[theme], 'boxColor'),
-      borderColor: selectProperty(onSubtle[theme], 'borderColor')
+      borderColor: selectProperty(onSubtle[theme], 'borderColor'),
+      borderBottomColor: selectProperty(onSubtle[theme], 'borderBottomColor')
     },
     onVivid: {
       boxColor: selectProperty(onVivid[theme], 'boxColor'),
-      borderColor: selectProperty(onVivid[theme], 'borderColor')
+      borderColor: selectProperty(onVivid[theme], 'borderColor'),
+      borderBottomColor: selectProperty(onVivid[theme], 'borderBottomColor')
     }
   });
   const createContentTheme = (

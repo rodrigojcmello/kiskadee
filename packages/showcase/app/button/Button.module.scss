@@ -113,13 +113,21 @@ $height: 64px;
 .richTextEditorExample {
   border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
   border-radius: 14px;
-  margin-block-start: 16px;
+  margin-block-start: 32px;
   min-width: 0;
   overflow: hidden;
+}
+
+.richTextEditorHeader {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 14px 16px;
 
   > h4 {
     margin: 0;
-    padding: 14px 16px;
   }
 }
 
@@ -454,8 +462,12 @@ $height: 64px;
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16px;
   justify-content: flex-end;
+}
+
+.intentsInlineControls .intentControlLabel {
+  margin-inline-start: 0;
 }
 
 .intentsInlineControlsSurface {

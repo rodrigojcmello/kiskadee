@@ -45,6 +45,31 @@ function createBadgeRelation() {
 }
 
 describe('Button component contract', () => {
+  it('accepts side border palettes on the container', () => {
+    for (const side of ['Top', 'Right', 'Bottom', 'Left']) {
+      expect(
+        validateButtonComponentContract({
+          elements: {
+            e1: {
+              name: 'button',
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      [`border${side}Color`]: {
+                        neutral: { low: { rest: '#dddddd', disabled: '#00000000' } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        })
+      ).toEqual([]);
+    }
+  });
+
   it('accepts logical icon layout defaults', () => {
     expect(
       validateButtonComponentContract(

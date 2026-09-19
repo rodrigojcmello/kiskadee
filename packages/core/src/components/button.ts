@@ -87,7 +87,15 @@ export type ButtonContainerElementStyle<TSegmentName extends SegmentName = never
       square?: ScaleBySize | number;
     };
   };
-  palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'borderColor'>;
+  palettes: ElementPalettesByColor<
+    TSegmentName,
+    | 'boxColor'
+    | 'borderColor'
+    | 'borderTopColor'
+    | 'borderRightColor'
+    | 'borderBottomColor'
+    | 'borderLeftColor'
+  >;
   effects: ElementEffects;
 }> &
   ElementNameMetadata;
@@ -234,7 +242,14 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
       'borderWidth',
       'borderRadius'
     ],
-    palettes: ['boxColor', 'borderColor']
+    palettes: [
+      'boxColor',
+      'borderColor',
+      'borderTopColor',
+      'borderRightColor',
+      'borderBottomColor',
+      'borderLeftColor'
+    ]
   },
   e2: {
     decorations: ['textItalic', 'textLineType'],

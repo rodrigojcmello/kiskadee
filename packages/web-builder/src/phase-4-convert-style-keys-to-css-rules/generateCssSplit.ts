@@ -399,7 +399,10 @@ export async function generateCssSplit(
         const wa = precedenceOf(a);
         const wb = precedenceOf(b);
         if (wa !== wb) return wa - wb; // forced/no-native first; then hover < focus < active
-        return a.localeCompare(b);
+        // At equal state precedence, authored sides override the uniform border.
+        const sideA = /border-(?:top|right|bottom|left)-color\s*:/.test(a) ? 1 : 0;
+        const sideB = /border-(?:top|right|bottom|left)-color\s*:/.test(b) ? 1 : 0;
+        return sideA - sideB || a.localeCompare(b);
       })
       .join('\n');
     const out = await postcss(mediaQueryPostcssPlugins).process(raw, { from: undefined });

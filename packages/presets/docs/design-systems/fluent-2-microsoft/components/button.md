@@ -3,6 +3,27 @@
 This file records source evidence and color decisions for the Button currently authored in
 `packages/presets/src/presets/fluent-2-microsoft/components/button.schema.ts`.
 
+## Current Low contour adaptation — 2026-09-19
+
+Status: Kiskadee extension approved by the user, based on the Windows 11 Settings
+[Set up button screenshot](../evidence/button/windows-11-settings-2026-09-19.png).
+The light perimeter and slightly stronger lower edge replace the uniform Low contour.
+The new Figma copy `EGN3fcri4MMrR4aTeHQOfF` is read-only reference and was not edited
+or used to calibrate the lower edge.
+
+All four intents and portable brand projections use the same formula. On Light/onSubtle,
+the existing Vivid family reference is composited using perceptual targets 0.06 for the
+perimeter and 0.13 for the bottom (previous uniform target: 0.30). These are authored
+calibration targets, not extracted Windows token values. No tonal assets change.
+Dark/Darker onSubtle retain the 0.18 perimeter target and use 0.22 for the bottom.
+OnVivid uses physical white: Light 30%/38%, Dark/Darker 85%/100% for perimeter/bottom.
+Dark and onVivid treatments are adaptations, not evidence from the Light screenshot.
+
+Only Low receives `borderBottomColor`. Hover/focus inherit Rest; existing pressed/selected
+onVivid Light deltas remain, including the reset of the bottom accent. Pending keeps the
+existing 60% contour visibility factor. Disabled matches the perimeter, removing the accent.
+Other emphases, geometry, focus rings and border widths remain unchanged.
+
 ## Sources
 
 - Figma Light reference:
@@ -847,9 +868,11 @@ changing the asset scales.
   Canonical text foregrounds are selected separately from `global.foregrounds`.
 - `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. In Light, Medium uses the restored
   `14%/10%/7%` White fill sequence while Low keeps a transparent Rest and the provisional `8%/3%`
-  Hover/Pressed fills. Medium uses a neutral L0 White stroke at `10%` Rest/Hover, while Low restores
-  its `30%` Rest/Hover stroke; both use `7%` at Pressed/Selected/Disabled. Dark and Darker retain the
-  role-aware Medium surface calibration and opaque outlined Low. Lowest keeps its prior transparent
+  Hover/Pressed fills. Medium uses a neutral L0 White stroke at `10%` Rest/Hover. Low splits
+  the White contour into `borderColor` at `30%` and `borderBottomColor` at `38%` for Rest/Hover;
+  both channels, like Medium, use `7%` at Pressed/Selected/Disabled. Dark and Darker retain the
+  role-aware Medium surface calibration; Low uses White at `85%` for the perimeter and `100%`
+  for the bottom. Lowest keeps its prior transparent
   surface and context-relative interaction overlays. Intent differentiation in canonical text now
   comes from global family Deep coordinates rather than this surface recipe.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
@@ -888,11 +911,15 @@ changing the asset scales.
   solid D35 in Dark/Darker. Lowest consumes the solid L16/D35 coordinate because it has no disabled
   fill.
 - Every intent exposes High, Medium, Low, and Lowest in Light, Dark, and Darker.
-- `e1.borderColor.*.low` remains the outlined Low treatment in `onSubtle`, where its emitted alpha
-  is resolved from the shared Delta E OK target and the canonical Neutral surface. In Light
-  `onVivid`, Medium uses the `10%/7%` control stroke while Low uses `30%` at Rest/Hover and `7%` at
-  Pressed/Selected/Disabled. Dark/Darker `onVivid` Low remains opaque White with a
-  transparent Disabled border. All Lowest borders remain transparent.
+- Low uses `e1.borderColor` for the perimeter and `e1.borderBottomColor` for the stronger lower
+  edge in all four intents. In `onSubtle`, each channel's alpha is resolved against the canonical
+  Neutral surface using Delta E OK targets: `0.06/0.13` (perimeter/bottom) in Light and
+  `0.18/0.22` in Dark/Darker. Hover and Focus inherit Rest; both Disabled channels are transparent.
+  In Light `onVivid`, Medium uses the `10%/7%` control stroke; Low uses White at `30%/38%`
+  (perimeter/bottom) for Rest/Hover, with both channels at `7%` for Pressed/Selected/Disabled.
+  Dark/Darker `onVivid` Low uses White at `85%/100%`, with both Disabled channels transparent.
+  Pending retains 60% of each channel's Rest alpha. Other emphases do not author side overrides;
+  all Lowest borders remain transparent.
 - Official Fluent Button surfaces omit `focus` when Focus is visually identical to Rest. The base
   Rest class remains active and the global focus ring provides the focus affordance without
   generating a duplicate surface rule.
@@ -954,3 +981,5 @@ Kiskadee adaptation: pill radius is authored per size as half the nominal surfac
 without oversized CSS sentinel values. Square and rounded retain their existing recipes.
 Button external Badge anchors consume the Button radius in structural CSS; Badge radius
 remains independent. Separation outlines follow the actual Badge surface.
+
+The [side-by-side Windows comparison](../evidence/button/windows-outline-comparison-2026-09-19.png) prompted increasing the Light/onSubtle bottom target from 0.10 to 0.12, then to 0.13 at the user's request. This modest visual calibration applies to every Low intent; the perimeter, Dark and onVivid mappings remain unchanged.

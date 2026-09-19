@@ -14,6 +14,7 @@ import {
   useComponentMetadata,
   useKiskadee
 } from '@kiskadee/react-components/resources';
+import { Separator } from '@kiskadee/react-components/separator';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
 import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
@@ -187,7 +188,7 @@ export function Button() {
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
   const [isSimplified, setIsSimplified] = React.useState(true);
   const [showButtonGroups, setShowButtonGroups] = React.useState(false);
-  const [showFocusRing, setShowFocusRing] = React.useState(true);
+  const [showFocusRing, setShowFocusRing] = React.useState(false);
   const [radiusOverride, setRadiusOverride] = React.useState<RadiusMode>();
   const buttonRadius = radiusOverride ?? global?.radius ?? 'rounded';
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue | undefined>();
@@ -420,13 +421,20 @@ export function Button() {
                     <div className={s.intentsInlineControls}>
                       <Switch
                         id="button-rest-only"
+                        classNames={{ e4: s.intentControlLabel }}
                         label="Rest only"
                         emphasis={inlineControlsSwitchEmphasis}
                         controlState={isSimplified}
-                        onControlStateChange={setIsSimplified}
+                        onControlStateChange={(value) => {
+                          setIsSimplified(value);
+                          if (value) setShowFocusRing(false);
+                        }}
                       />
+                      <Separator orientation="vertical" emphasis="low" />
                       <Switch
                         id="button-focus-ring"
+                        classNames={{ e4: s.intentControlLabel }}
+                        disabled={isSimplified}
                         label="Focus ring"
                         emphasis={inlineControlsSwitchEmphasis}
                         controlState={showFocusRing}

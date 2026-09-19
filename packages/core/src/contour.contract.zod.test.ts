@@ -42,8 +42,15 @@ describe('contour contract', () => {
       )
     ).toBe('#aabbcc');
   });
-  it('validates references in both supported paint channels', () => {
-    for (const channel of ['boxColor', 'borderColor'])
+  it('validates references in all supported paint channels', () => {
+    for (const channel of [
+      'boxColor',
+      'borderColor',
+      'borderTopColor',
+      'borderRightColor',
+      'borderBottomColor',
+      'borderLeftColor'
+    ])
       expect(() =>
         validateSchemaContoursContract(
           consumer(contour('neutral.standard.light.onSubtle.medium'), channel)

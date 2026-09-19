@@ -551,7 +551,11 @@ export type SemanticColorMap = Partial<
 export const CssColorProperty = {
   textColor: 'color',
   boxColor: 'background-color',
-  borderColor: 'border-color'
+  borderColor: 'border-color',
+  borderTopColor: 'border-top-color',
+  borderRightColor: 'border-right-color',
+  borderBottomColor: 'border-bottom-color',
+  borderLeftColor: 'border-left-color'
 } as const;
 
 export type ColorProperty = keyof typeof CssColorProperty;

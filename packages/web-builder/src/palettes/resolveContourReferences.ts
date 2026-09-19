@@ -64,7 +64,9 @@ export function resolveContourReferences(
                 Object.entries(colorSchema ?? {}).map(([colorProperty, value]) => [
                   colorProperty,
                   resolveValue(value, {
-                    allowContour: colorProperty === 'boxColor' || colorProperty === 'borderColor',
+                    allowContour:
+                      colorProperty === 'boxColor' ||
+                      /^border(?:Top|Right|Bottom|Left)?Color$/.test(colorProperty),
                     contours,
                     path: `${segment}.${theme}.${surfaceContext}.${colorProperty}`,
                     segment

@@ -19,7 +19,10 @@ V1 publishes solid colors and Rest only. Gradients and interaction-state catalog
 this initial contract. Missing coordinates are errors, not inferred colors or fallback profiles.
 
 Use `contour('neutral.standard.light.onSubtle.medium')` from Core in a component
-`borderColor` or `boxColor` palette, or in a Separator profile's `boxColor` palette.
+`borderColor`, `borderTopColor`, `borderRightColor`, `borderBottomColor`, `borderLeftColor`,
+or `boxColor` palette, where the component element allows that channel, or in a Separator
+profile's `boxColor` palette. Physical-side channels follow the
+[border-side color contract](../../packages/core/docs/definitions/border-side-colors.md).
 The enclosing palette supplies the segment. The token explicitly selects theme, context,
 and intensity; a component's surface emphasis does not implicitly select contour intensity.
 Catalog colors must be concrete and cannot reference another contour or foreground.

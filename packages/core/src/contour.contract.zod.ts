@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CssColorProperty } from './types/colors/colors.types.ts';
 import {
   isContourReferenceCandidate,
   resolveContourReference,
@@ -55,7 +56,7 @@ export function validateSchemaContoursContract(schema: {
   if (catalog !== undefined) schemaContoursContractSchema.parse(catalog);
   function visit(value: unknown, path: string[], segment = '', channel = ''): void {
     if (isContourReferenceCandidate(value)) {
-      if (channel !== 'borderColor' && channel !== 'boxColor')
+      if (!/^border(?:Top|Right|Bottom|Left)?Color$/.test(channel) && channel !== 'boxColor')
         throw new Error(`${path.join('.')}: contour references require borderColor or boxColor.`);
       try {
         resolveContourReference(value, segment, catalog as SchemaContours | undefined);
@@ -71,7 +72,7 @@ export function validateSchemaContoursContract(schema: {
         child,
         [...path, key],
         paletteIndex >= 0 && path.length === paletteIndex + 1 ? key : segment,
-        key === 'boxColor' || key === 'borderColor' || key === 'textColor' ? key : channel
+        Object.hasOwn(CssColorProperty, key) ? key : channel
       );
     }
   }

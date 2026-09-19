@@ -47,6 +47,7 @@ type ButtonDefaultThemeRecipe = {
 type FluentButtonIntentFormula = {
   boxColor: Record<string, unknown>;
   borderColor: Record<string, unknown>;
+  borderBottomColor: Record<string, unknown>;
   textColor: Record<string, unknown>;
 };
 
@@ -76,7 +77,7 @@ export const FLUENT_BUTTON_DEFAULT_TONAL_RECIPE = {
       border: {
         ...familyReferenceColor('vivid'),
         surface: absoluteCap(primitive('black', 'v1'), 'light'),
-        targetDeltaE: 0.3
+        targetDeltaE: 0.06
       }
     },
     foreground: familyExactColor(65, 'component.button'),
@@ -173,8 +174,8 @@ export const FLUENT_BUTTON_ON_VIVID_RECIPE = {
     },
     borderAlpha: {
       light: 30,
-      dark: 100,
-      darker: 100
+      dark: 85,
+      darker: 85
     },
     hoverAlpha: 10,
     pressedAlpha: 30
@@ -282,6 +283,12 @@ export function createFluentButtonOnSubtleIntent({
     targetDeltaE: recipe.low.border.targetDeltaE
   });
 
+  const lowBottomBorder = createBalancedLowBorder({
+    color: roleColor(recipe.low.border),
+    surface: neutralSurfaceColor(scale, recipe.low.border.surface),
+    targetDeltaE: isLight ? 0.13 : 0.22
+  });
+
   return {
     boxColor: {
       medium: {
@@ -342,6 +349,13 @@ export function createFluentButtonOnSubtleIntent({
       },
       lowest: {
         rest: transparent
+      }
+    },
+    borderBottomColor: {
+      low: {
+        rest: lowBottomBorder,
+        pending: applySlotVisibility(lowBottomBorder, FLUENT_BUTTON_PENDING_VISIBILITY.border),
+        disabled: transparent
       }
     },
     textColor: {
@@ -548,6 +562,18 @@ export function createFluentButtonOnVividIntent({
       lowest: {
         rest: onVividTransparent
       }
+    },
+    borderBottomColor: {
+      low: usesSharedLightMedium
+        ? createLightControlBorder({
+            ...FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha,
+            rest: 38
+          })
+        : {
+            rest: onVividWhite,
+            pending: applySlotVisibility(onVividWhite, FLUENT_BUTTON_PENDING_VISIBILITY.border),
+            disabled: onVividTransparent
+          }
     },
     textColor: {
       medium: {

@@ -1,6 +1,7 @@
 import type {
   ButtonIconLayout,
   ButtonIconPlacement,
+  ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
   SurfaceContext
@@ -11,7 +12,9 @@ import { Button as KButton } from '@kiskadee/react-components/button';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
 import { Text } from '@kiskadee/react-components/text';
+import { useState } from 'react';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
+import { Select } from '@/k-components/Select/Select';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -155,6 +158,7 @@ export function ButtonIconExamples({
   scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
+  const [editorEmphasis, setEditorEmphasis] = useState<ComponentEmphasis>('medium');
   const textProfiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
 
@@ -194,9 +198,24 @@ export function ButtonIconExamples({
         ))}
       </div>
       <article className={`${styles.richTextEditorExample} k-root`}>
-        <Text as="h4" profile={textProfiles.subsectionTitle}>
-          Rich text editor
-        </Text>
+        <header className={styles.richTextEditorHeader}>
+          <Text as="h4" profile={textProfiles.subsectionTitle}>
+            Rich text editor
+          </Text>
+          <Select
+            label="Emphasis"
+            variant="sequential"
+            loop
+            value={editorEmphasis}
+            onValueChange={(value) => setEditorEmphasis(value as ComponentEmphasis)}
+            options={[
+              { value: 'lowest', label: 'Lowest' },
+              { value: 'low', label: 'Low' },
+              { value: 'medium', label: 'Medium' },
+              { value: 'high', label: 'High' }
+            ]}
+          />
+        </header>
         <fieldset className={styles.richTextToolbar}>
           <Text as="legend" profile={textProfiles.caption} className={styles.richTextToolbarLegend}>
             Rich text formatting controls
@@ -214,7 +233,7 @@ export function ButtonIconExamples({
                   {actions.map(({ icon, label }) => (
                     <KButton
                       aria-label={label}
-                      emphasis="medium"
+                      emphasis={editorEmphasis}
                       intent="neutral"
                       key={label}
                       radius={radius}
@@ -239,7 +258,7 @@ export function ButtonIconExamples({
               {RICH_TEXT_ACTION_GROUPS.map((actions) => (
                 <KButton.Group
                   className={styles.richTextToolbarGroup}
-                  emphasis="medium"
+                  emphasis={editorEmphasis}
                   intent="neutral"
                   key={actions[0].label}
                   radius={radius}

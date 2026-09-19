@@ -5,6 +5,45 @@ import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-p
 import { generateCssSplit } from './generateCssSplit.ts';
 
 describe('generateCssSplit', () => {
+  it('emits side colors after uniform borders at equal state precedence', async () => {
+    const sides = ['Top', 'Right', 'Bottom', 'Left'];
+    const keys = [
+      'borderColor__#eeeeee',
+      'borderColor--hover__#dddddd',
+      ...sides.flatMap((side) => [
+        `border${side}Color__#aaaaaa`,
+        `border${side}Color--hover__#bbbbbb`
+      ])
+    ];
+    const input = {
+      button: {
+        e1: {
+          palettes: {
+            default: {
+              light: {
+                onSubtle: {
+                  neutral: { rest: keys }
+                }
+              }
+            }
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const short = Object.fromEntries(keys.map((key, i) => [key, i < 2 ? `z${i}` : `a${i}`]));
+    const result = await generateCssSplit(input, short);
+    const css = result.palettes['default.light']!;
+    for (const side of ['top', 'right', 'bottom', 'left']) {
+      expect(css.indexOf(`border-${side}-color: #aaa`)).toBeGreaterThan(
+        css.indexOf('border-color: #eee')
+      );
+      expect(css.indexOf(`border-${side}-color: #bbb`)).toBeGreaterThan(
+        css.indexOf('border-color: #ddd')
+      );
+      expect(css).toContain(`border-${side}-color`);
+    }
+  });
+
   it('keeps base rules first and orders min-width utilities from smallest to largest', async () => {
     const input = {
       button: {
