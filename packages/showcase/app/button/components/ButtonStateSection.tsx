@@ -27,6 +27,7 @@ type ButtonStateSectionProps = {
   align?: 'left' | 'center';
   stateCapabilities?: ManifestComponentState;
   simplified?: boolean;
+  showFocusRing?: boolean;
   grouped?: boolean;
   radius: RadiusMode;
   scale?: ElementSizeValue;
@@ -50,6 +51,7 @@ export function ButtonStateSection({
   align,
   stateCapabilities,
   simplified = false,
+  showFocusRing = false,
   grouped = false,
   radius,
   scale
@@ -219,7 +221,7 @@ export function ButtonStateSection({
                     intent={intent}
                     radius={radius}
                     size={componentScaleToSize(scale)}
-                    status="focus"
+                    status={showFocusRing ? 'focus' : undefined}
                   >
                     <KButton.Label>
                       <SmoothText fontName={fontName} align={align}>

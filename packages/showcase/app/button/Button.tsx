@@ -198,12 +198,7 @@ export function Button() {
 
   const isCarbon = designSystem === 'carbon-1-ibm';
   const alignment = isCarbon ? 'left' : 'center';
-  const routeClassName = [
-    isDarkSurface ? s.darkSurface : undefined,
-    showFocusRing ? undefined : s.focusRingHidden
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const routeClassName = isDarkSurface ? s.darkSurface : undefined;
 
   const buttonMeta = manifest?.components?.button;
   const cardMeta = manifest?.components?.card;
@@ -471,6 +466,7 @@ export function Button() {
                 align={alignment}
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
+                showFocusRing={showFocusRing}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -487,6 +483,7 @@ export function Button() {
                 align={alignment}
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
+                showFocusRing={showFocusRing}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -505,6 +502,7 @@ export function Button() {
                 align={alignment}
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
+                showFocusRing={showFocusRing}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -523,6 +521,7 @@ export function Button() {
                 align={alignment}
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
+                showFocusRing={showFocusRing}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -542,6 +541,7 @@ export function Button() {
                   align={alignment}
                   stateCapabilities={buttonState}
                   simplified={isSimplified}
+                  showFocusRing={showFocusRing}
                   grouped={showButtonGroups}
                   radius={buttonRadius}
                   scale={activeButtonScale}
@@ -709,7 +709,7 @@ export function Button() {
                 size={componentScaleToSize(activeButtonScale)}
                 shadow={true}
                 surfaceContext={activeSurfaceContext}
-                status={'focus'}
+                status={showFocusRing ? 'focus' : undefined}
               >
                 <KButton.Label>
                   <SmoothText fontName={fontName} align={alignment}>
