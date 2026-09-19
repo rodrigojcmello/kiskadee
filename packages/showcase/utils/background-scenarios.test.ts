@@ -44,7 +44,11 @@ describe('Showcase background combinations', () => {
     ]);
     expect(new Set(scenarios.map((item) => item.key)).size).toBe(5);
     expect(scenarios.filter((item) => item.splitSwatch)).toHaveLength(1);
-    expect(scenarios.filter((item) => item.cardBorder)).toEqual([scenarios[0], scenarios[1]]);
+    expect(scenarios.filter((item) => item.cardBorder)).toEqual([
+      scenarios[0],
+      scenarios[1],
+      scenarios[4]
+    ]);
     expect(
       scenarios.find((item) => item.key === resolveDefaultCanonicalCardSurface(surfaces)?.key)
     ).toBe(scenarios[0]);
@@ -122,4 +126,13 @@ it('keeps a border on the base-on-base exception without adding borders to tonal
   });
   expect(scenarios.find(({ key }) => key === 'primary.medium')?.cardBorder).toBe(false);
   expect(scenarios.find(({ key }) => key === 'neutral.medium')?.cardBorder).toBe(false);
+});
+
+it('borders vivid cards on matching backgrounds, retaining borderless contrasting pairs', () => {
+  const vivid = surfaces[3];
+  const sameColor = { ...vivid, key: 'neutral.highest' as const };
+  const differentColor = { ...vivid, key: 'support.highest' as const, resolvedColor: '#6750a4' };
+  const scenarios = resolveBackgroundScenarios([vivid, sameColor, differentColor]);
+  expect(scenarios.map(({ cardBorder }) => cardBorder)).toEqual([true, true, false]);
+  expect(scenarios.every(({ card }) => card === vivid)).toBe(true);
 });

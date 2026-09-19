@@ -56,6 +56,9 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
   const neutralMediumIndex = scenarios.findIndex((scenario) => scenario.key === 'neutral.medium');
   if (neutralMediumIndex >= 0) scenarios.push(...scenarios.splice(neutralMediumIndex, 1));
   const vivid = surfaces.filter((surface) => surface.contentSurfaceContext === 'onVivid');
-  for (const canvas of vivid) append(canvas, vivid[0]);
+  for (const canvas of vivid) {
+    const card = vivid[0];
+    append(canvas, card, false, canvas.resolvedColor === card.resolvedColor);
+  }
   return scenarios;
 }

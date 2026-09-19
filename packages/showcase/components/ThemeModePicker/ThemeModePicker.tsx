@@ -13,8 +13,8 @@ const OPTIONS: ReadonlyArray<{
   value: ThemeMode;
 }> = [
   { value: 'light', label: 'Light', icon: 'sun' },
-  { value: 'dark', label: 'Dark', icon: 'moon-star' },
-  { value: 'darker', label: 'Darker', icon: 'moon' }
+  { value: 'dark', label: 'Dark', icon: 'moon' },
+  { value: 'darker', label: 'Darker', icon: 'moon-star' }
 ];
 
 export default function ThemeModePicker({ className }: { className?: string }) {
