@@ -71,14 +71,16 @@ describe('transformColorKeyToCss', () => {
         it('forceState=false', () => {
           const force = false as const;
           const result = transformColorKeyToCss('boxColor--hover__#4040bf80', className, force);
-          expect(result).toEqual('.abc.-n:hover:where(:not(:active)) { background: #4040bf80 }');
+          expect(result).toEqual(
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { background: #4040bf80 }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const result = transformColorKeyToCss('boxColor--hover__#4040bf80', className, force);
           // expects both :hover and forced class (.-h) gated by activator (.-a) applied to the same element (i.e. .abc.-h.-a)
           expect(result).toEqual(
-            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { background: #4040bf80 }'
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-h.-a { background: #4040bf80 }'
           );
         });
       });
@@ -104,7 +106,7 @@ describe('transformColorKeyToCss', () => {
           });
 
           expect(result).toEqual(
-            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040bf80; --k-bg1: #4040bf80; }'
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-h.-a { --k-bg0: #4040bf80; --k-bg1: #4040bf80; }'
           );
         });
 
@@ -125,7 +127,9 @@ describe('transformColorKeyToCss', () => {
             className,
             force
           );
-          expect(result).toEqual('.abc.-n.-s:hover:where(:not(:active)) { background: #4040bf80 }');
+          expect(result).toEqual(
+            '.abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { background: #4040bf80 }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -136,7 +140,7 @@ describe('transformColorKeyToCss', () => {
           );
           // native selector must NOT include activator (-a); forced selector remains gated by activator (-a)
           expect(result).toEqual(
-            '.abc.-n.-s:hover:where(:not(:active)), .abc.-s.-h.-a { background: #4040bf80 }'
+            '.abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-s.-h.-a { background: #4040bf80 }'
           );
         });
         it('gates only selected box-color rules when requested by emission policy', () => {
@@ -157,7 +161,7 @@ describe('transformColorKeyToCss', () => {
           );
 
           expect(result).toEqual(
-            '.abc.-n.-s.k-ddn-sbg:hover:where(:not(:active)), .abc.-s.-h.-a.k-ddn-sbg { background: #4040bf80 }'
+            '.abc.-n.-s.k-ddn-sbg:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-s.-h.-a.k-ddn-sbg { background: #4040bf80 }'
           );
           expect(
             transformColorKeyToCss('boxColor--hover__#4040bf80', className, true, {
@@ -170,7 +174,9 @@ describe('transformColorKeyToCss', () => {
                 shadowEmission: 'direct'
               }
             })
-          ).toEqual('.abc.-n:hover:where(:not(:active)), .abc.-h.-a { background: #4040bf80 }');
+          ).toEqual(
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-h.-a { background: #4040bf80 }'
+          );
         });
       });
 
@@ -230,7 +236,7 @@ describe('transformColorKeyToCss', () => {
 
           // Non-rest rules only override the variables.
           expect(result).toEqual(
-            '.abc.-n:hover:where(:not(:active)), .abc.-h.-a { --k-bg0: #4040bf80; --k-bg1: var(--x); }'
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-h.-a { --k-bg0: #4040bf80; --k-bg1: var(--x); }'
           );
         });
 
@@ -314,14 +320,16 @@ describe('transformColorKeyToCss', () => {
         it('forceState=false', () => {
           const force = false as const;
           const result = transformColorKeyToCss('boxColor==hover__#4040bf80', className, force);
-          expect(result).toEqual('.-n:hover:where(:not(:active)) .abc { background: #4040bf80 }');
+          expect(result).toEqual(
+            '.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc { background: #4040bf80 }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const result = transformColorKeyToCss('boxColor==hover__#4040bf80', className, force);
           // expects both parent :hover and forced parent class (.-h) to be combined as selectors
           expect(result).toEqual(
-            '.-n:hover:where(:not(:active)) .abc, .-a.-h .abc { background: #4040bf80 }'
+            '.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc, .-a.-h .abc { background: #4040bf80 }'
           );
         });
       });
@@ -360,7 +368,7 @@ describe('transformColorKeyToCss', () => {
             force
           );
           expect(result).toEqual(
-            '.-n.-s:hover:where(:not(:active)) .abc { background: #4040bf80 }'
+            '.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc { background: #4040bf80 }'
           );
         });
         it('forceState=true', () => {
@@ -372,7 +380,7 @@ describe('transformColorKeyToCss', () => {
           );
           // parent gets native-interaction anchor -n for native, activator -a only for forced branch
           expect(result).toEqual(
-            '.-n.-s:hover:where(:not(:active)) .abc, .-a.-s.-h .abc { background: #4040bf80 }'
+            '.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc, .-a.-s.-h .abc { background: #4040bf80 }'
           );
         });
       });
@@ -411,7 +419,7 @@ describe('transformColorKeyToCss', () => {
 
           // Ref rules do not have a guaranteed rest anchor, so they must include background.
           expect(result).toEqual(
-            '.-n:hover:where(:not(:active)) .abc, .-a.-h .abc { --k-bg0: #4040bf80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
+            '.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc, .-a.-h .abc { --k-bg0: #4040bf80; --k-bg1: var(--x); background: linear-gradient(180deg, var(--k-bg0) 0%, var(--k-bg1) 100%) }'
           );
         });
       });

@@ -1,4 +1,5 @@
-import { type ComponentType, createElement, forwardRef, type ReactNode } from 'react';
+import { acquirePointerModality } from '@kiskadee/runtime/pointer-modality';
+import { type ComponentType, createElement, forwardRef, type ReactNode, useEffect } from 'react';
 import { useKiskadee } from './KiskadeeContext.tsx';
 import { useComponentClassMapResolution } from './useComponentClassMap.ts';
 import { useLoadedComponentArtifact } from './useLoadedComponentArtifact.ts';
@@ -14,6 +15,7 @@ export function ComponentResourceBoundary({
   component: string;
   children: ReactNode;
 }) {
+  useEffect(() => acquirePointerModality(), []);
   const context = useKiskadee();
   const metadata = useLoadedComponentArtifact({
     componentName: component,

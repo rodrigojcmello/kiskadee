@@ -12,6 +12,7 @@ import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
 } from '../../../style-emission/web-build-policy.ts';
+import { normalizeNativePseudo } from '../../utils/nativeInteractionPseudo.ts';
 import { hasAlwaysProjectedState } from '../../utils/stateSelectors.ts';
 
 export const ERROR_INVALID_NUMERIC_KEY_FORMAT =
@@ -122,7 +123,9 @@ export function transformBorderRadiusKeyToCss(
 
     // Split states into those with native CSS pseudos and those that only exist as forced classes
     const nativeTokens = states
-      .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
+      .map((s) =>
+        normalizeNativePseudo(InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
+      )
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = states
       .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])
@@ -159,7 +162,9 @@ export function transformBorderRadiusKeyToCss(
     if (parentStates.length === 0) throw new Error(ERROR_REF_REQUIRE_STATE_NUMERIC);
 
     const nativeTokens = parentStates
-      .map((s) => InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
+      .map((s) =>
+        normalizeNativePseudo(InteractionStateCssPseudoSelector[s as PseudoSelectorKeys] || '')
+      )
       .filter((v) => v !== '');
     const nonNativeForcedSuffixes = parentStates
       .filter((s) => !InteractionStateCssPseudoSelector[s as PseudoSelectorKeys])

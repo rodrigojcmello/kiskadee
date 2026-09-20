@@ -97,13 +97,17 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--hover++s:md:1__22';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc.-n:hover { --k-bdr: 22px; border-radius: 22px }');
+          expect(out).toEqual(
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { --k-bdr: 22px; border-radius: 22px }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--hover++s:md:1__22';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc.-n:hover, .abc.-h.-a { --k-bdr: 22px; border-radius: 22px }');
+          expect(out).toEqual(
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-h.-a { --k-bdr: 22px; border-radius: 22px }'
+          );
         });
       });
 
@@ -113,7 +117,9 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--selected:hover++s:md:1__6';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           // TODO: deveria ter o "-a"?!
-          expect(out).toEqual('.abc.-n.-s:hover { --k-bdr: 6px; border-radius: 6px }');
+          expect(out).toEqual(
+            '.abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { --k-bdr: 6px; border-radius: 6px }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
@@ -121,7 +127,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const out = transformBorderRadiusKeyToCss(key, className, force);
           // TODO: deveria ter o "-a"?!
           expect(out).toEqual(
-            '.abc.-n.-s:hover, .abc.-s.-h.-a { --k-bdr: 6px; border-radius: 6px }'
+            '.abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-s.-h.-a { --k-bdr: 6px; border-radius: 6px }'
           );
         });
       });
@@ -132,7 +138,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--selected:hover++s:lg:1::bp:lg:2__4';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .abc.-n.-s:hover { --k-bdr: 4px; border-radius: 4px } }'
+            '@media (min-width: 1312px) { .abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { --k-bdr: 4px; border-radius: 4px } }'
           );
         });
         it('forceState=true', () => {
@@ -140,7 +146,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded--selected:hover++s:lg:1::bp:lg:2__4';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .abc.-n.-s:hover, .abc.-s.-h.-a { --k-bdr: 4px; border-radius: 4px } }'
+            '@media (min-width: 1312px) { .abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-s.-h.-a { --k-bdr: 4px; border-radius: 4px } }'
           );
         });
       });
@@ -220,13 +226,17 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--hover__24';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc.-n:hover { --k-bdr: 24px; border-radius: 24px }');
+          expect(out).toEqual(
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { --k-bdr: 24px; border-radius: 24px }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--hover__24';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc.-n:hover, .abc.-h.-a { --k-bdr: 24px; border-radius: 24px }');
+          expect(out).toEqual(
+            '.abc.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-h.-a { --k-bdr: 24px; border-radius: 24px }'
+          );
         });
       });
 
@@ -235,14 +245,16 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded--selected:hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.abc.-n.-s:hover { --k-bdr: 12px; border-radius: 12px }');
+          expect(out).toEqual(
+            '.abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { --k-bdr: 12px; border-radius: 12px }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded--selected:hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '.abc.-n.-s:hover, .abc.-s.-h.-a { --k-bdr: 12px; border-radius: 12px }'
+            '.abc.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)), .abc.-s.-h.-a { --k-bdr: 12px; border-radius: 12px }'
           );
         });
       });
@@ -282,14 +294,16 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded==hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-n:hover .abc { --k-bdr: 12px; border-radius: 12px }');
+          expect(out).toEqual(
+            '.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc { --k-bdr: 12px; border-radius: 12px }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==hover__12';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '.-n:hover .abc, .-a.-h .abc { --k-bdr: 12px; border-radius: 12px }'.replace(
+            '.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc, .-a.-h .abc { --k-bdr: 12px; border-radius: 12px }'.replace(
               ' \\.',
               ' .'
             )
@@ -319,14 +333,16 @@ describe('transformBorderRadiusKeyToCss', () => {
           const force = false as const;
           const key = 'borderRadiusRounded==selected:hover__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-n.-s:hover .abc { --k-bdr: 8px; border-radius: 8px }');
+          expect(out).toEqual(
+            '.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc { --k-bdr: 8px; border-radius: 8px }'
+          );
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==selected:hover__8';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '.-n.-s:hover .abc, .-a.-s.-h .abc { --k-bdr: 8px; border-radius: 8px }'.replace(
+            '.-n.-s:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc, .-a.-s.-h .abc { --k-bdr: 8px; border-radius: 8px }'.replace(
               ' \\.',
               ' .'
             )
@@ -357,14 +373,19 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==hover++s:md:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '.-n:hover .abc { --k-bdr: 14px; border-radius: 14px }'.replace(' \\.', ' .')
+            '.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc { --k-bdr: 14px; border-radius: 14px }'.replace(
+              ' \\.',
+              ' .'
+            )
           );
         });
         it('forceState=true', () => {
           const force = true as const;
           const key = 'borderRadiusRounded==hover++s:md:1__14';
           const out = transformBorderRadiusKeyToCss(key, className, force);
-          expect(out).toEqual('.-n:hover .abc, .-a.-h .abc { --k-bdr: 14px; border-radius: 14px }');
+          expect(out).toEqual(
+            '.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc, .-a.-h .abc { --k-bdr: 14px; border-radius: 14px }'
+          );
         });
       });
 
@@ -374,7 +395,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==hover++s:md:1::bp:lg:2__16';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .-n:hover .abc { --k-bdr: 16px; border-radius: 16px } }'
+            '@media (min-width: 1312px) { .-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc { --k-bdr: 16px; border-radius: 16px } }'
           );
         });
         it('forceState=true', () => {
@@ -382,7 +403,7 @@ describe('transformBorderRadiusKeyToCss', () => {
           const key = 'borderRadiusRounded==hover++s:md:1::bp:lg:2__16';
           const out = transformBorderRadiusKeyToCss(key, className, force);
           expect(out).toEqual(
-            '@media (min-width: 1312px) { .-n:hover .abc, .-a.-h \\.abc { --k-bdr: 16px; border-radius: 16px } }'.replace(
+            '@media (min-width: 1312px) { .-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) .abc, .-a.-h \\.abc { --k-bdr: 16px; border-radius: 16px } }'.replace(
               ' \\.',
               ' .'
             )

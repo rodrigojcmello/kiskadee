@@ -22,7 +22,9 @@ describe('transformShadowKeyToCss', () => {
       const styleKey = 'shadow--hover__[6,8,10,"#00000080"]';
       const result = transformShadowKeyToCss(styleKey, className);
 
-      expect(result).toEqual('.abc.-e.-n:hover { box-shadow: 6px 8px 10px 0 #00000080 }');
+      expect(result).toEqual(
+        '.abc.-e.-n:hover:where(:not(:active)):where(:not(:root[data-k-input="touch"] *)) { box-shadow: 6px 8px 10px 0 #00000080 }'
+      );
     });
 
     it('should transform a pressed state shadow key to use :active pseudo-selector', () => {

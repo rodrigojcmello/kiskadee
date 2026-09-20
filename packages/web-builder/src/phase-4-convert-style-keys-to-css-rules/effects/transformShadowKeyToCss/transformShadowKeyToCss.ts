@@ -16,6 +16,7 @@ import {
   UNSUPPORTED_PROPERTY_NAME,
   UNSUPPORTED_VALUE
 } from '../../errorMessages.ts';
+import { normalizeNativePseudo } from '../../utils/nativeInteractionPseudo.ts';
 import { hasAlwaysProjectedState } from '../../utils/stateSelectors.ts';
 
 export type TransformShadowKeyToCssOptions = {
@@ -187,7 +188,9 @@ export function transformShadowKeyToCss(
   }
 
   // Map to CSS pseudo (empty when rest or non-native states like disabled/selected).
-  const cssPseudo = InteractionStateCssPseudoSelector[interactionState as PseudoSelectorKeys] || '';
+  const cssPseudo = normalizeNativePseudo(
+    InteractionStateCssPseudoSelector[interactionState as PseudoSelectorKeys] || ''
+  );
 
   // Optimize zero lengths: CSS allows omitting the unit for 0 values
   const formatPx = (n: number): string => (n === 0 ? '0' : `${n}px`);

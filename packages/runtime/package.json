@@ -6,7 +6,8 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./font-family": "./src/fontFamily.ts"
+    "./font-family": "./src/fontFamily.ts",
+    "./pointer-modality": "./src/pointerModality.ts"
   },
   "scripts": {},
   "keywords": [],

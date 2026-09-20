@@ -13,6 +13,7 @@ import {
   DEFAULT_ELEMENT_STYLE_EMISSION_POLICY,
   type ResolvedElementStyleEmissionPolicy
 } from '../../style-emission/web-build-policy.ts';
+import { normalizeNativePseudo } from '../utils/nativeInteractionPseudo.ts';
 import { hasAlwaysProjectedState } from '../utils/stateSelectors.ts';
 import { toShortHex } from '../utils/toShortHex.ts';
 
@@ -244,9 +245,6 @@ export function transformColorKeyToCss(
       ? styleEmissionPolicy.selectedBoxColorGateClass
       : undefined;
   const selectedBoxColorGate = selectedBoxColorGateClass ? `.${selectedBoxColorGateClass}` : '';
-  // Preserve the "hover does not compete with active" rule without increasing hover specificity.
-  const normalizeNativePseudo = (pseudo: string): string =>
-    pseudo === ':hover' ? ':hover:where(:not(:active))' : pseudo;
 
   if (!isRef) {
     if (filteredStates.length === 0) {

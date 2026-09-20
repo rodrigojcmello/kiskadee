@@ -486,3 +486,18 @@ For focus, forced examples should choose the intended level:
 - In structural Sass, prefer selectors from the state scope owner to descendants. Avoid adding
   duplicate `data-*` and projected selectors for the same Kiskadee-owned state unless a migration or
   public structural contract explicitly requires both.
+
+## Native hover and pointer modality
+
+Native hover selectors exclude active presses and descendants of
+`:root[data-k-input="touch"]`, using `:where()` so the guard adds no specificity.
+Apply the same guard to palette, radius and shadow state rules, including parent references.
+Projected/forced Hover, Selected, native focus and `:focus-visible` remain independent.
+
+`@kiskadee/runtime/pointer-modality` owns the document pointer tracker. Styled React resource
+boundaries acquire it automatically; other Web adapters must acquire it for their document.
+Registrations are reference-counted and released on unmount. Pointer Events from touch suppress
+native hover until a real mouse event (or hovering pen) restores it. Compatibility mouse events
+are ignored. Releasing or cancelling a touch does not re-enable its sticky CSS hover.
+This supports mouse/touch switching on hybrid devices without disabling focus, changing selection,
+preventing default events, or depending on the primary-device media query.
