@@ -51,7 +51,7 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
       candidates.find((surface) => surface.key === `${intent}.lowest`) ??
       base ??
       canvas;
-    append(canvas, card);
+    append(canvas, card, false, true);
   }
   const neutralMediumIndex = scenarios.findIndex((scenario) => scenario.key === 'neutral.medium');
   if (neutralMediumIndex >= 0) scenarios.push(...scenarios.splice(neutralMediumIndex, 1));

@@ -359,7 +359,7 @@ export default function IconShowcase() {
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Iconografia">
+      <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
     </ShowcaseControlPanel>

@@ -44,14 +44,10 @@ describe('Showcase background combinations', () => {
     ]);
     expect(new Set(scenarios.map((item) => item.key)).size).toBe(5);
     expect(scenarios.filter((item) => item.splitSwatch)).toHaveLength(1);
-    expect(scenarios.filter((item) => item.cardBorder)).toEqual([
-      scenarios[0],
-      scenarios[1],
-      scenarios[4]
-    ]);
+    expect(scenarios.every((item) => item.cardBorder)).toBe(true);
     expect(
       scenarios.find((item) => item.key === resolveDefaultCanonicalCardSurface(surfaces)?.key)
-    ).toBe(scenarios[0]);
+    ).toBe(scenarios[3]);
   });
 
   it('uses published theme/segment values and never authors white or gray literals', () => {
@@ -116,7 +112,7 @@ it('adds a solid Neutral Low swatch with bordered Lowest cards before Medium', (
   expect(new Set(scenarios.map(({ key }) => key)).size).toBe(scenarios.length);
 });
 
-it('keeps a border on the base-on-base exception without adding borders to tonal scenarios', () => {
+it('keeps borders on base and tonal subtle scenarios', () => {
   const scenarios = resolveBackgroundScenarios(surfaces);
   expect(scenarios[0]).toMatchObject({
     canvas: surfaces[0],
@@ -124,8 +120,8 @@ it('keeps a border on the base-on-base exception without adding borders to tonal
     cardBorder: true,
     splitSwatch: false
   });
-  expect(scenarios.find(({ key }) => key === 'primary.medium')?.cardBorder).toBe(false);
-  expect(scenarios.find(({ key }) => key === 'neutral.medium')?.cardBorder).toBe(false);
+  expect(scenarios.find(({ key }) => key === 'primary.medium')?.cardBorder).toBe(true);
+  expect(scenarios.find(({ key }) => key === 'neutral.medium')?.cardBorder).toBe(true);
 });
 
 it('borders vivid cards on matching backgrounds, retaining borderless contrasting pairs', () => {

@@ -66,16 +66,16 @@ export default function BrandButtonsPage() {
 
   const controls = (
     <ShowcaseControlPanel>
-      <ShowcaseControlGroup title="Ambiente">
+      <ShowcaseControlGroup title="Environment">
         <ShowcaseGlobalSemanticControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Tipografia">
+      <ShowcaseControlGroup title="Typography">
         <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Iconografia">
+      <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Visualização">
+      <ShowcaseControlGroup title="Display">
         <ShowcaseControlStack>
           <ShowcaseSelectControl
             label="Button size"

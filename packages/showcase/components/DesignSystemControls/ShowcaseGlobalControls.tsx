@@ -135,10 +135,10 @@ export function ShowcaseGlobalPanelControls() {
       <ShowcaseControlGroup title="Semantic">
         <ShowcaseGlobalSemanticControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Tipografia">
+      <ShowcaseControlGroup title="Typography">
         <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Iconografia">
+      <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
     </ShowcaseControlPanel>

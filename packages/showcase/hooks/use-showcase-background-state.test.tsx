@@ -54,6 +54,12 @@ beforeEach(() => {
       resolvedColor: 'gray'
     },
     {
+      key: 'neutral.medium',
+      label: 'Medium',
+      contentSurfaceContext: 'onSubtle',
+      resolvedColor: 'medium-gray'
+    },
+    {
       key: 'primary.highest',
       label: 'Vivid',
       contentSurfaceContext: 'onVivid',
@@ -79,24 +85,24 @@ describe('shared background selection', () => {
     ];
     fixtures.theme = 'darker';
     render();
-    expect(value.color).toBe('gray');
+    expect(value.color).toBe('medium-gray');
     act(() => value.selectContext('onVivid'));
     fixtures.theme = 'dark';
     render();
     expect(value.color).toBe('blue');
     act(() => value.selectContext('onSubtle'));
-    expect(value.color).toBe('gray');
+    expect(value.color).toBe('medium-gray');
     fixtures.theme = 'darker';
     render();
-    expect(value.color).toBe('gray');
+    expect(value.color).toBe('medium-gray');
     act(() => value.selectBackground('neutral.lowest'));
     fixtures.theme = 'dark';
     render();
     expect(value.color).toBe('white');
   });
-  it('keeps gray/white default, and selects white/white and white/gray independently', () => {
+  it('keeps Medium/Low default, and selects white/white and white/gray independently', () => {
     render();
-    expect([value.color, value.cardSurface?.resolvedColor]).toEqual(['gray', 'white']);
+    expect([value.color, value.cardSurface?.resolvedColor]).toEqual(['medium-gray', 'gray']);
     act(() => value.selectBackground('neutral.lowest'));
     expect([value.color, value.cardSurface?.resolvedColor]).toEqual(['white', 'white']);
     act(() => value.selectBackground('neutral.lowest:cards:neutral.low'));
@@ -107,9 +113,9 @@ describe('shared background selection', () => {
     render();
     act(() => value.selectBackground('neutral.lowest:cards:neutral.low'));
     render('/switch');
-    expect(value.key).toBe('neutral.low');
+    expect(value.key).toBe('neutral.medium');
     render('/button');
-    expect(value.key).toBe('neutral.low');
+    expect(value.key).toBe('neutral.medium');
   });
   it('resolves the selected pair again for themes and releases unavailable artifacts', () => {
     render();
@@ -133,13 +139,13 @@ describe('shared background selection', () => {
     expect(value.color).toBe('blue');
     act(() => value.selectContext('onSubtle'));
     expect(value.color).toBe(initial);
-    expect(value.cardSurface?.resolvedColor).toBe('white');
+    expect(value.cardSurface?.resolvedColor).toBe('gray');
   });
   it('ignores invalid selections and renders on the server without document access', () => {
-    expect(renderToString(<Harness />)).toContain('data-canvas="gray"');
+    expect(renderToString(<Harness />)).toContain('data-canvas="medium-gray"');
     render();
     act(() => value.selectBackground('unknown'));
-    expect(value.key).toBe('neutral.low');
+    expect(value.key).toBe('neutral.medium');
   });
 });
 
@@ -152,12 +158,12 @@ it('uses the same Darker default for selection and shell fallback', () => {
     contentSurfaceContext: 'onSubtle'
   });
   render();
-  expect(value.key).toBe('neutral.low');
+  expect(value.key).toBe('neutral.medium');
   expect(value.defaultColor).toBe(value.color);
-  expect(value.defaultColor).toBe('gray');
+  expect(value.defaultColor).toBe('medium-gray');
   act(() => value.selectBackground('neutral.lowest'));
   expect(value.color).toBe('white');
-  expect(value.defaultColor).toBe('gray');
+  expect(value.defaultColor).toBe('medium-gray');
   act(() => value.selectContext('onVivid'));
   expect(value.defaultColor).toBe(value.color);
 });

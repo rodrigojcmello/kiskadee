@@ -30,7 +30,7 @@
   min-width: 0;
   height: 100%;
   padding: 0 20px 40px;
-  border-inline-start: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: -1px 0 0 rgba(0, 0, 0, 0.08);
   background: #fff;
   opacity: 1;
   overflow-y: auto;
@@ -283,7 +283,7 @@
     bottom: 0;
     width: min(380px, calc(100vw - 24px));
     padding: 20px;
-    border-inline-start: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: -1px 0 0 rgba(0, 0, 0, 0.08);
     background: #fff;
     transform: translateX(100%);
     transition: transform 180ms ease;

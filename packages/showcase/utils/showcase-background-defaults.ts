@@ -3,15 +3,15 @@ import type { SurfaceContext, ThemeMode } from '@kiskadee/core';
 // Showcase presentation policy only. Colors and availability remain preset-owned.
 const canonicalDefaults: Record<ThemeMode, Record<SurfaceContext, readonly string[]>> = {
   light: {
-    onSubtle: ['neutral.low', 'neutral.medium', 'neutral.lowest'],
+    onSubtle: ['neutral.medium', 'neutral.low', 'neutral.lowest'],
     onVivid: ['primary.highest']
   },
   dark: {
-    onSubtle: ['neutral.low', 'neutral.medium', 'neutral.lowest'],
+    onSubtle: ['neutral.medium', 'neutral.low', 'neutral.lowest'],
     onVivid: ['primary.highest']
   },
   darker: {
-    onSubtle: ['neutral.highest', 'neutral.medium', 'neutral.low', 'neutral.lowest'],
+    onSubtle: ['neutral.medium', 'neutral.low', 'neutral.lowest', 'neutral.highest'],
     onVivid: ['primary.highest']
   }
 };

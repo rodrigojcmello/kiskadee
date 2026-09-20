@@ -298,7 +298,7 @@ export default function SwitchPage() {
 
   const switchControls = (
     <ShowcaseControlPanel>
-      <ShowcaseControlGroup title="Ambiente">
+      <ShowcaseControlGroup title="Environment">
         <ShowcaseGlobalSemanticControls />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Shape">
@@ -355,10 +355,10 @@ export default function SwitchPage() {
           />
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Tipografia">
+      <ShowcaseControlGroup title="Typography">
         <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Iconografia">
+      <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Interaction">

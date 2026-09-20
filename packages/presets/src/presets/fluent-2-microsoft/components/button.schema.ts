@@ -151,6 +151,7 @@ export function createFluent2MicrosoftButtonSchema({
     return createFluentButtonOnSubtleIntent({
       theme,
       family: families[role],
+      lightenHighInteraction: theme === 'light' && role === 'button.neutral',
       neutralButtonFamily,
       neutralSurfaceColor,
       highForeground: neutralButtonFamily.resolve(

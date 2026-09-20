@@ -782,7 +782,7 @@ function TypographyContent() {
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
       <PreparationStatus />
-      <ShowcaseControlGroup title="Iconografia">
+      <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
     </ShowcaseControlPanel>

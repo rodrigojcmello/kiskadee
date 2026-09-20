@@ -845,10 +845,10 @@ export default function SliderPage() {
           </ShowcaseControlField>
         </ShowcaseControlGrid>
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Tipografia">
+      <ShowcaseControlGroup title="Typography">
         <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Iconografia">
+      <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Value">

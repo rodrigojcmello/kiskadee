@@ -32,22 +32,15 @@ export function useShowcaseBackgroundState(route: string) {
         : selection;
   if (current !== selection) setSelection(current);
   // The default uses the surface identity, never the index in the expanded swatch list.
-  const defaultScenario =
-    scenarios.find(
-      (item) =>
-        current.context === 'onSubtle' &&
-        item.key === 'neutral.low' &&
-        item.card.key === 'neutral.lowest'
-    ) ??
-    scenarios.find(
-      (item) =>
-        item.key ===
-        resolveDefaultCanonicalCardSurface(
-          scenarios.map((entry) => entry.canvas),
-          current.context,
-          theme
-        )?.key
-    );
+  const defaultScenario = scenarios.find(
+    (item) =>
+      item.key ===
+      resolveDefaultCanonicalCardSurface(
+        scenarios.map((entry) => entry.canvas),
+        current.context,
+        theme
+      )?.key
+  );
   const scenario = scenarios.find((item) => item.key === current.key) ?? defaultScenario;
   const surfaceContext = scenario?.canvas.contentSurfaceContext ?? current.context;
   const cardSurface = scenario?.card;

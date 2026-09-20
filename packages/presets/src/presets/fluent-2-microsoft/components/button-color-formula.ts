@@ -250,7 +250,8 @@ export function createFluentButtonOnSubtleIntent({
   family,
   neutralButtonFamily,
   neutralSurfaceColor,
-  highForeground
+  highForeground,
+  lightenHighInteraction = false
 }: {
   theme: FluentButtonFormulaTheme;
   family: FluentButtonTonalFamily;
@@ -260,6 +261,7 @@ export function createFluentButtonOnSubtleIntent({
     locator: Fluent2MicrosoftFamilyColorLocator
   ) => SolidColor;
   highForeground: SolidColor;
+  lightenHighInteraction?: boolean;
 }): FluentButtonIntentFormula {
   const recipe = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme];
   const scale = recipe.scale;
@@ -276,6 +278,14 @@ export function createFluentButtonOnSubtleIntent({
   const filledDisabledForeground = isLight
     ? neutralButtonFamily.resolve('light', familyExactColor(20, 'component.button', 82))
     : disabledForeground;
+  const highRecipe =
+    isLight && lightenHighInteraction
+      ? {
+          ...recipe.high,
+          hover: familyReferenceColor('vivid', -2),
+          pressed: familyReferenceColor('vivid', -4)
+        }
+      : recipe.high;
   const roleColor = (locator: Fluent2MicrosoftFamilyColorLocator) => family.resolve(scale, locator);
   const lowBorder = createBalancedLowBorder({
     color: roleColor(recipe.low.border),
@@ -305,16 +315,16 @@ export function createFluentButtonOnSubtleIntent({
         }
       },
       high: {
-        rest: roleColor(recipe.high.rest),
-        hover: roleColor(recipe.high.hover),
-        pressed: roleColor(recipe.high.pressed),
+        rest: roleColor(highRecipe.rest),
+        hover: roleColor(highRecipe.hover),
+        pressed: roleColor(highRecipe.pressed),
         pending: applySlotVisibility(
-          roleColor(recipe.high.rest),
+          roleColor(highRecipe.rest),
           FLUENT_BUTTON_PENDING_VISIBILITY.surface
         ),
         disabled: adaptiveDisabled,
         selected: {
-          rest: roleColor(recipe.high.pressed)
+          rest: roleColor(highRecipe.pressed)
         }
       },
       low: {

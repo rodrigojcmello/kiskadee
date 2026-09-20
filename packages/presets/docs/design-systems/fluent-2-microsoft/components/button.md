@@ -862,6 +862,14 @@ The Munsell sector prefix remains in generated-artifact provenance. Core current
 primitive through its natural appearance name, so `b.blue.v1` becomes `primitive.blue.v1` without
 changing the asset scales.
 
+## Neutral High Light interaction adaptation — 2026-09-20
+
+User-approved Kiskadee adaptation: Neutral High on Light/onSubtle retains its Vivid Rest,
+but uses Vivid offsets -2 for Hover and -4 for Pressed/Selected. The near-black Rest has
+insufficient darkening headroom, so these states lighten instead. This applies to both
+Default and Teams. Focus remains Rest-derived; Pending, Disabled, other intents and
+Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior change.
+
 ## Schema Mapping
 
 - `BUTTON_DEFAULT_TONAL_RECIPE` remains the source of Default Button surface and border positions.

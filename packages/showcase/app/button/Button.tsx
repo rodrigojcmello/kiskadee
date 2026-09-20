@@ -259,13 +259,13 @@ export function Button() {
 
   const buttonControls = (
     <ShowcaseControlPanel>
-      <ShowcaseControlGroup title="Ambiente">
+      <ShowcaseControlGroup title="Environment">
         <ShowcaseGlobalSemanticControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Tipografia">
+      <ShowcaseControlGroup title="Typography">
         <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Iconografia">
+      <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
       </ShowcaseControlGroup>
       {dropdownAvailable ? (
@@ -280,7 +280,7 @@ export function Button() {
           </ShowcaseControlStack>
         </ShowcaseControlGroup>
       ) : null}
-      <ShowcaseControlGroup title="Visualização">
+      <ShowcaseControlGroup title="Display">
         <ShowcaseControlStack>
           <ShowcaseSelectControl
             label="Button size"
