@@ -1,4 +1,3 @@
-import { classifyPrimitives } from '../../classify-primitives.ts';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -6,85 +5,92 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
-import { invertKiskadeeHexScale } from '@kiskadee/core';
-import blackLight from './colors/black.light.ts';
-import blueLight from './colors/blue.light.ts';
+import { classifyPrimitives } from '../../classify-primitives.ts';
+import blue from './colors/default/b.blue.v1.ts';
+import green from './colors/default/g.green.v1.ts';
+import black from './colors/default/n.black.v1.ts';
+import purple from './colors/default/pb.indigo.v1.ts';
+import red from './colors/default/r.red.v1.ts';
+import yellow from './colors/default/y.yellow.v1.ts';
+import orange from './colors/default/yr.orange.v1.ts';
 
-// Layer 1: Primitive colors
 export const primitiveColors = {
-  blue: {
-    v1: {
-      kind: 'static',
-      scales: { light: blueLight, dark: invertKiskadeeHexScale(blueLight) }
-    }
-  },
-  black: {
-    v1: {
-      kind: 'static',
-      scales: { light: blackLight, dark: invertKiskadeeHexScale(blackLight) }
-    }
-  }
+  blue: { v1: blue },
+  black: { v1: black },
+  red: { v1: red },
+  green: { v1: green },
+  yellow: { v1: yellow },
+  orange: { v1: orange },
+  purple: { v1: purple }
 } as const satisfies PrimitiveColors;
 
-// Layer 2: Semantic colors (global meanings).
-//
-// Layer 2 is stable by default (no `light/dark`) and must not change meaning per
-// component. However, for maximum flexibility, we support per-theme overrides.
-//
-// In practice, ~99% of design systems will mirror `light` and `dark` here: the same
-// global semantic keys (e.g. `primary`, `neutral`) will point to the same primitive
-// color assets.
-//
-// We still keep `Theme` support in Layer 2 for maximum flexibility in the remaining
-// ~1% of cases. Example: in `light` you might map `neutral` to a black-based scale
-// sitting on a very light gray surface; but in `dark` you may want to map `neutral`
-// to a warm beige/rose primitive scale to increase contrast and improve readability.
-// Having `light`/`dark` overrides in Layer 2 enables these fine-tuned adjustments.
-//
+const roles = {
+  primary: { v1: 'primitive.blue.v1' },
+  neutral: { v1: 'primitive.black.v1' },
+  redLike: { v1: 'primitive.red.v1' },
+  greenLike: { v1: 'primitive.green.v1' },
+  yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
+  purpleLike: { v1: 'primitive.purple.v1' }
+} as const;
 export const globalSemantics = {
-  light: {
-    primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v1' }
-  },
-  dark: {
-    primary: { v1: 'primitive.blue.v1' },
-    neutral: { v1: 'primitive.black.v1' }
-  }
+  light: roles,
+  dark: roles
 } as const satisfies GlobalSemanticsByTheme;
-
-// -------------------------------------------------------------------------------------------------
-// Color Layer 2 - Global semantics by segment (registry + optional overrides)
-// -------------------------------------------------------------------------------------------------
-
-/**
- * Segment registry + optional per-segment overrides for global semantics.
- *
- * - `default` is always present to register the primary segment.
- * - `themes` is optional and should be used only when a segment must override Layer 2 mappings.
- */
 export const globalSemanticsBySegment = {
-  default: {
-    meta: {
-      name: 'Default'
-    }
-  }
+  default: { meta: { name: 'Blue - IBM' } }
 } as const satisfies GlobalSemanticsBySegment;
-
 export const componentIntents = {
+  badge: {
+    neutral: 'neutral',
+    primary: 'primary',
+    novelty: 'purpleLike',
+    positive: 'greenLike',
+    warning: 'yellowLike',
+    attention: 'redLike'
+  },
+  bottomSheet: {
+    neutral: 'neutral',
+    destructive: 'redLike'
+  },
   button: {
     primary: 'primary',
     neutral: 'neutral',
     destructive: 'redLike',
     positive: 'greenLike'
-
-    // Example of direct Layer 1 usage (e.g. social buttons):
-    // socialLinkedIn: 'primitive.blue.linkedin'
   },
   card: {
     neutral: 'neutral',
     primary: 'primary'
   },
+  chip: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
+  dropdown: {
+    neutral: 'neutral',
+    destructive: 'redLike'
+  },
+  icon: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
+  progress: {
+    neutral: 'neutral',
+    primary: 'primary',
+    positive: 'greenLike',
+    warning: 'yellowLike',
+    destructive: 'redLike'
+  },
+  slider: {
+    neutral: 'neutral',
+    primary: 'primary'
+  },
   switch: {
+    neutral: 'neutral',
+    primary: 'primary',
+    polarity: 'greenLike'
+  },
+  text: {
     neutral: 'neutral'
   }
 } as const satisfies ComponentIntents;

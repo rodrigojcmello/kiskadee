@@ -196,7 +196,7 @@ export function Button() {
   const activeSurfaceContext = background.surfaceContext;
   const isDarkSurface = background.color ? isDarkSurfaceColor(background.color) : false;
 
-  const isCarbon = designSystem === 'carbon-1-ibm';
+  const isCarbon = designSystem === 'carbon-11-ibm';
   const alignment = isCarbon ? 'left' : 'center';
   const routeClassName = isDarkSurface ? s.darkSurface : undefined;
 

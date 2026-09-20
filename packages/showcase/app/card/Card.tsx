@@ -371,14 +371,15 @@ export function Card() {
     background.surfaceContext
   );
   const isCardAvailable = Boolean(cardManifest);
-  const defaultRadius: CardRadiusMode = 'rounded';
+  const defaultRadius: CardRadiusMode = global?.radius === 'square' ? 'square' : 'rounded';
   const [passiveActivations, setPassiveActivations] = React.useState(0);
   const [selected, setSelected] = React.useState(false);
   const [interactionIntent, setInteractionIntent] = React.useState<CardIntent>('neutral');
   const [interactionEmphasis, setInteractionEmphasis] = React.useState<ComponentEmphasis>('medium');
   const [lockedSelected, setLockedSelected] = React.useState(false);
   const [interactionLocked, setInteractionLocked] = React.useState(true);
-  const [radius, setRadius] = React.useState<CardRadiusMode>(defaultRadius);
+  const [radiusOverride, setRadius] = React.useState<CardRadiusMode>();
+  const radius = radiusOverride ?? defaultRadius;
   const [surfacePresentation, setSurfacePresentation] = React.useState<
     { mode: 'auto' } | { mode: 'manual'; border: boolean; shadow: boolean }
   >({ mode: 'auto' });

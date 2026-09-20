@@ -23,7 +23,12 @@ function readPersistedSelection(): {
   try {
     const previousDesignSystem = window.localStorage.getItem(STORAGE_KEYS.designSystem);
     const retiredMaterial = previousDesignSystem === 'material-design-3-kiskadee';
-    const storedDesignSystem = retiredMaterial ? 'material-design-3-google' : previousDesignSystem;
+    const previousCarbon = previousDesignSystem === 'carbon-1-ibm';
+    const storedDesignSystem = retiredMaterial
+      ? 'material-design-3-google'
+      : previousCarbon
+        ? 'carbon-11-ibm'
+        : previousDesignSystem;
     if (!storedDesignSystem) return null;
 
     if (!Object.hasOwn(paletteIndex, storedDesignSystem)) {
@@ -55,7 +60,7 @@ function readPersistedSelection(): {
         ? storedTheme
         : getPreferredTheme(availableThemes);
 
-    if (retiredMaterial) persistSelection(designSystem, segment, theme);
+    if (retiredMaterial || previousCarbon) persistSelection(designSystem, segment, theme);
     return { designSystem, segment, theme };
   } catch {
     return null;

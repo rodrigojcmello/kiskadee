@@ -1,131 +1,102 @@
 # Carbon Switch Evidence
 
-This file records the source evidence and schema decisions for the Carbon Switch
-mapping in `packages/presets/src/presets/carbon-ibm/components/switch.schema.ts`.
+This records source decisions for `components/switch.schema.ts` in the Carbon preset.
 
 ## Sources
 
-- Figma small Switch reference:
-  [IBM Carbon Design System Community, node 2599:187956](https://www.figma.com/design/52HHpBaYAUdDKqAdH5vw8Y/IBM-Carbon-Design-System--Community-?node-id=2599-187956&t=qLbIokpcDKtcJ79I-4)
-- Official Toggle documentation:
-  [Carbon Toggle usage](https://carbondesignsystem.com/components/toggle/usage/)
-- Official React Storybook iframe inspected for Gray 100:
-  [components-toggle--default, theme g100](https://react.carbondesignsystem.com/iframe.html?id=components-toggle--default&viewMode=story&globals=theme:g100)
+- [Preview Toggle guidelines](https://preview.carbondesignsystem.com/building-blocks/core/components/toggle/guidelines) and [specifications](https://preview.carbondesignsystem.com/building-blocks/core/components/toggle/specifications), inspected 2026-09-20; Stable with feature flag, updated 2026-08-19.
+- [Official Toggle Sass](https://github.com/carbon-design-system/carbon/blob/main/packages/styles/scss/components/toggle/_toggle.scss).
+- User-provided [Carbon v11 Figma](https://www.figma.com/design/MfGzFa79SfhHQ2mKpC3ss4/-v11--Carbon-Design-System--Community-?node-id=58-2763): file key `MfGzFa79SfhHQ2mKpC3ss4`, entry node `58:2763`; shared token capture in [figma-theme-tokens.json](../colors/figma-theme-tokens.json).
+- Historical small [Figma node 2599:187956](https://www.figma.com/design/52HHpBaYAUdDKqAdH5vw8Y/IBM-Carbon-Design-System--Community-?node-id=2599-187956), file key `52HHpBaYAUdDKqAdH5vw8Y`. Its old large-thumb and dark-color interpretations are superseded by the current source above.
 
-## Local Evidence
+## Source Coverage
 
-- Figma small Switch node:
-  `packages/presets/docs/design-systems/carbon-ibm/evidence/switch/figma-small-switch.png`
-- Official site Gray 100 Toggle:
-  `packages/presets/docs/design-systems/carbon-ibm/evidence/switch/carbon-toggle-gray-100.png`
-
-![Figma small Switch](../evidence/switch/figma-small-switch.png)
-
-![Official Carbon Toggle Gray 100](../evidence/switch/carbon-toggle-gray-100.png)
-
-## Figma-Derived Decisions
-
-The Figma small Switch reference defines the compact Carbon size used by
-Kiskadee as `s:sm:1`:
-
-- track: `32 x 16`
-- track radius: pill radius `8`
-- thumb: `10 x 10`
-- thumb radius: pill radius `5`
-- thumb inset: `3`
-- selected track: `#24A148`
-- unselected track: `#8D8D8D`
-- disabled track: `#C6C6C6`
-- light text: `#161616`
-- disabled text: `#C6C6C6`
-- focus color: `#0F62FE`
-
-## Additional Toggle Figma Reference
-
-An older extraction inspected the larger Carbon `Toggle` frame:
-
-- [IBM Carbon Design System Community, node 2598:187999](https://www.figma.com/design/52HHpBaYAUdDKqAdH5vw8Y/IBM-Carbon-Design-System--Community-?node-id=2598-187999)
-- file key: `52HHpBaYAUdDKqAdH5vw8Y`
-- node id: `2598:187999`
-- frame: `Toggle`
-- inspected on: 2026-06-05
-
-That reference exposes six state symbols: `Toggle State=True|False` across
-`State=Default|Active|Disabled`. Kiskadee maps `Toggle State=True` to selected
-Switch state and `Toggle State=False` to unselected Switch state.
-
-Extracted values from that larger Toggle reference:
-
-| Carbon token | Value | Kiskadee usage |
+| Source area | Inspected | Status |
 | --- | --- | --- |
-| `support/support-success` | `#24A148` | selected/on track |
-| `miscellaneous/toggle-off` | `#8D8D8D` | unselected/off track |
-| `button/button-disabled` | `#C6C6C6` | disabled track |
-| `icon/icon-on-color` | `#FFFFFF` | enabled thumb |
-| `icon/icon-on-color-disabled` | `#8D8D8D` | disabled thumb |
-| `text/text-primary` | `#161616` | enabled control text |
-| `text/text-secondary` | `#525252` | enabled label |
-| `text/text-disabled` | `#C6C6C6` | disabled label and control text |
-| `focus/focus` | `#0F62FE` | global focus color |
+| Standard and small Toggle, on/off, disabled, read-only | Preview specification and official implementation | Official adapted |
+| Reduced label spacing feature flag | Preview guideline and Sass flag | Official adapted |
+| Primary and Polarity intents, onVivid | Existing Kiskadee API | Kiskadee extension |
+| Future v12 redesign beyond documented flag | Announcement only | Deferred |
 
-Geometry from that reference:
+## Official Contract
 
-| Part | Value |
-| --- | ---: |
-| Toggle visual | `48 x 24` |
-| Thumb | `20 x 20` |
-| Track radius | `12` |
-| Thumb radius | `10` |
-| Track padding | `2` |
-| Control text gap | `8` |
-| Focus ring | `2px` outline with `1px` offset |
+Carbon's default Toggle uses a gray off track and **green** support-success on track. It has no
+separate Hover or Pressed color delta; focus is an outline. Read-only retains readable content,
+uses a transparent track with an outline and a primary-color thumb. Disabled has dedicated track,
+thumb, label and state-text tokens.
 
-Typography from that reference:
-
-| Figma style | Value | Kiskadee element |
+| Part | Small | Default |
 | --- | --- | --- |
-| `productive / label-01` | IBM Plex Sans regular, `12 / 16` | `e4` label |
-| `body/body-compact-01` | IBM Plex Sans regular, `14 / 18` | `e5` control text |
+| Track | 32 x 16 | 48 x 24 |
+| Thumb | 10 x 10 | 18 x 18 |
+| Visual inset | 3 | 3 |
+| Pill radius, track / thumb | 8 / 5 | 12 / 9 |
+| Label and control-text gap | 8 | 8 |
 
-## Site-Derived Decisions
+The current preview/code default thumb is 18px, replacing the earlier Kiskadee 20px extraction.
+The recommended v12 feature flag reduces the label/container gap from 16px to 8px. Kiskadee's
+existing horizontal label slots apply that 8px spacing on both sides; the preset does not introduce
+a new vertical label layout. Label typography is IBM Plex Sans Regular 12/16, state text 14/18.
 
-The official Toggle docs expose a Gray 100 theme that was not available in the
-inspected Figma node. The inspected Gray 100 treatment uses:
+## Color And Token Provenance
 
-- background: `#161616`
-- value/control text: `#F4F4F4`
-- label text: `#C6C6C6`
-- selected track: `#42BE65`
-- default large Toggle track: `48 x 24` with pill radius `12`
+All colors use the strict Carbon resolver. Each exact token includes `source.tokens` evidence;
+physical endpoints and their alpha variants use cap locators. Full source aliases, generated
+values, alpha and distances are in [token-mapping.json](../colors/token-mapping.json).
 
-Kiskadee registers this dark-surface treatment in two equivalent places:
+| Source token | Light source -> generated | Dark source -> generated | Darker source -> generated |
+| --- | --- | --- | --- |
+| toggle-off | #8d8d8d -> L28 #8c8c8c | #8d8d8d -> D65 #8a8a8a | #6f6f6f -> D50 #727272 |
+| support-success | #24a148 -> L30 #3f9a53 | #42be65 -> D75 #63b672 | #42be65 -> D75 #63b672 |
+| button-disabled | #c6c6c6 -> L14 #c2c2c2 | #6f6f6f -> D50 #727272 | #525252 -> D30 #4f4f4f |
+| icon-on-color | #ffffff -> cap light | #ffffff -> cap light | #ffffff -> cap light |
+| icon-on-color-disabled | #8d8d8d -> L28 #8c8c8c | #ffffff40 -> cap light 25.1% | #ffffff40 -> cap light 25.1% |
+| text-secondary | #525252 -> L60 #4f4f4f | #c6c6c6 -> D85 #c5c5c5 | #c6c6c6 -> D85 #c5c5c5 |
+| text-primary | #161616 -> L95 #161616 | #f4f4f4 -> D99 #fbfbfb | #f4f4f4 -> D99 #fbfbfb |
 
-- `default.light`: `switch.neutral.low`
-- `default.dark`: `switch.neutral.medium`
+Text-disabled preserves the source token's 25.1 percent alpha over the corresponding primary
+neutral. The read-only outline follows icon-disabled as in the official Sass; the overview's
+border-subtle shorthand is not used to replace the inspected implementation value.
 
-This is a preset-authored palette equivalence for Carbon, not a generic
-automatic inversion rule.
+## Kiskadee Mapping
 
-## Adaptations
+| Appearance | Upstream relationship | Status |
+| --- | --- | --- |
+| Neutral Medium onSubtle | Standard Carbon Toggle | Official adapted |
+| Primary Medium onSubtle | Blue activation using button-primary; neutral off track | Kiskadee extension |
+| Polarity Medium onSubtle | support-error off, support-success on | Kiskadee extension |
+| All onVivid | White track/colored thumb inversion | Kiskadee extension |
 
-- The optional `e6` icon measurements remain `6px` for `s:sm:1` and `14px` for `s:md:1`, but are
-  now mapped through `e6.iconSize` references into `global.iconSizes`. No Carbon geometry changed.
+The canonical Core intent is `primary`; no unsupported `accent` intent or new public option is
+introduced. Old Light neutral.low represented an implicit dark surface. Explicit onVivid and
+theme palettes now carry that responsibility; Medium is the standard emphasis across contexts.
 
-- Carbon's Figma Toggle has an optional field label above the control. The
-  current Kiskadee Switch primitive only has an inline `label`, so `e4` uses the
-  Carbon label typography/color as the closest supported representation.
-- Carbon's Figma `Toggle + Text` places the visual toggle before the `On`/`Off`
-  text. The current Kiskadee `controlText` feature renders the control text
-  before the visual track. The Carbon preset still sets
-  `controlTextVisibility: "always"` because this is the closest supported
-  mapping for the Carbon state text.
-- Carbon's `State=Active` visual is represented by the focus-colored outline in
-  the Figma assets. Kiskadee maps this through the normal Switch focus ring
-  instead of introducing a Carbon-specific active mode.
-- The inspected Carbon Toggle does not expose a distinct state-layer reference.
-  The Carbon schema opts into component-level `activationFeedback` with the
-  shared Switch halo profile for runtime consistency across presets.
-- The current Kiskadee Switch color model does not have a `selected:disabled`
-  color branch. Carbon's disabled selected visual is approximated through the
-  existing disabled and selected cascade until that state exists in the schema
-  contract.
+On vivid backgrounds the off track uses physical white at 40 percent, selected track is white,
+and the selected thumb carries the intent's Light action color. Polarity also colors the off
+thumb red. Disabled track/thumb/text use white at 16/32/25 percent. This authored inversion keeps
+the binary state visible without claiming an upstream chromatic-surface token.
+
+## State And Geometry Ownership
+
+- `e1` owns interaction state; all e2-e6 changes are parent references.
+- `e2` is the track. Its transparent 1px resting border reserves the existing read-only outline;
+  compensated padding preserves the 3px visual inset.
+- `e3` is the thumb. There is no shrink effect or invented Hover/Pressed tint.
+- `e4` is the accessible label; `e5` the optional state text; `e6` the optional thumb icon.
+- Read-only values remain explicit when equal to Rest on vivid surfaces: they reset the selected
+  thumb and icon colors. Disabled values similarly suppress selected state.
+- Global focus uses the existing 2px ring with 1px offset. The existing optional halo activation
+  effect is preserved as a Kiskadee extension; it does not invent interaction color states.
+- Compact selects 32 x 16; Regular and Spacious select 48 x 24, the largest official recipe.
+  Rounded and square remain optional framework radius choices; Pill is the Carbon default.
+
+## Local Historical Evidence
+
+- [Earlier small Switch capture](../evidence/switch/figma-small-switch.png).
+- [Earlier official Gray 100 capture](../evidence/switch/carbon-toggle-gray-100.png).
+
+## Validation
+
+Factory resolution covers three canonical intents in Light, Dark and Darker and both surface
+contexts. Focused typechecking reports no Switch-file errors. Generated-artifact and browser
+validation belong to the coordinated preset completion pass.

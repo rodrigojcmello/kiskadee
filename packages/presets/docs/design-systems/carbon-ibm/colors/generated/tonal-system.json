@@ -1,0 +1,133 @@
+{
+  "assets": [
+    {
+      "familyId": "b.blue.v1",
+      "path": "colors/b.blue.v1.json",
+      "preset": {
+        "path": "preset-colors/b.blue.v1.ts",
+        "sha256": "d601b3401d7a6fe264bbcb146a364949bc5082fe9f2aa22afb9e09e6014fba87"
+      },
+      "sha256": "6e0198746fa4404c423a931192f9f93697a944b2c83bfe12ed5cd891a8e3110c"
+    },
+    {
+      "familyId": "bg.teal.v1",
+      "path": "colors/bg.teal.v1.json",
+      "preset": {
+        "path": "preset-colors/bg.teal.v1.ts",
+        "sha256": "356fd86876f41d6464a3315253dcfb2fda31e07a6f638d7ca57c4a6eb16d56fa"
+      },
+      "sha256": "5ea78ade9a3e04da446fd87ade3ee4f36fba147100c1bee5b4b5a49d2c7d730a"
+    },
+    {
+      "familyId": "g.green.v1",
+      "path": "colors/g.green.v1.json",
+      "preset": {
+        "path": "preset-colors/g.green.v1.ts",
+        "sha256": "09d798bf9aa3f87297f4c8ac6546c5c50a0ae7fd4702bc65bea0a78a35a72453"
+      },
+      "sha256": "84da5a3d39c215204144a0e446632b6dd2c6edf87cc5e86ed67330af7c12178c"
+    },
+    {
+      "familyId": "gy.lime.v1",
+      "path": "colors/gy.lime.v1.json",
+      "preset": {
+        "path": "preset-colors/gy.lime.v1.ts",
+        "sha256": "60928c6092f8c219355fc2da4c1886cf2f64463438cdf3da8a5dbeb7d1687864"
+      },
+      "sha256": "b110cd1b4c6f96525e2d7dc4767f794faca8d2c2e857a8a155b987a06ad86adc"
+    },
+    {
+      "familyId": "n.black.v1",
+      "path": "colors/n.black.v1.json",
+      "preset": {
+        "path": "preset-colors/n.black.v1.ts",
+        "sha256": "e526679710a753e2c696a1e0de2a98e9630a1148c37851aaf6d5917c2691fc9b"
+      },
+      "sha256": "d011af2cf7f07ec514c94daa486a0c5e34d738cea2266282c2aed8fbe410a593"
+    },
+    {
+      "familyId": "p.purple.v1",
+      "path": "colors/p.purple.v1.json",
+      "preset": {
+        "path": "preset-colors/p.purple.v1.ts",
+        "sha256": "fd61de6ffdc15643f45d04b9c1bf03b7f906eaaf77849b2be32dbdd33df2f415"
+      },
+      "sha256": "92242168cefd2a85144b660b98ad3ffef8790f58de2739bbd31cb1f2a518a2cb"
+    },
+    {
+      "familyId": "pb.indigo.v1",
+      "path": "colors/pb.indigo.v1.json",
+      "preset": {
+        "path": "preset-colors/pb.indigo.v1.ts",
+        "sha256": "df1aa470e4af699f7fa20dcd59adf078c51b2153336efd5ab001d500d8f59de9"
+      },
+      "sha256": "fad9ebfd7128f7adfaa3db5ba466a2b1a72cbbbebeddd4384ebb83b5b94f3227"
+    },
+    {
+      "familyId": "r.red.v1",
+      "path": "colors/r.red.v1.json",
+      "preset": {
+        "path": "preset-colors/r.red.v1.ts",
+        "sha256": "52a71ca4d745b92307c826f96f16cd57934d214929e6e459fec07ec4896ca743"
+      },
+      "sha256": "06152893c5df01874ef81748c56133543906ffff73d15863f69237b14235644e"
+    },
+    {
+      "familyId": "rp.magenta.v1",
+      "path": "colors/rp.magenta.v1.json",
+      "preset": {
+        "path": "preset-colors/rp.magenta.v1.ts",
+        "sha256": "fa493fbcf59da65ede965535783d6f7cab7fa78f5382f5aed0bd180dc272d2e6"
+      },
+      "sha256": "727d2b3748913d7b13e0017fb49d0fec643c906c37e9df45ccb01d12f1f708e5"
+    },
+    {
+      "familyId": "y.yellow.v1",
+      "path": "colors/y.yellow.v1.json",
+      "preset": {
+        "path": "preset-colors/y.yellow.v1.ts",
+        "sha256": "d5bc6342b8b7cb776e3f9c66397ae4fc8e421d0d83a2186263bcc59eacfabda2"
+      },
+      "sha256": "c8117b9ffcd43655dbb7e5c056a2fdb60fe2b89eca651c4b8d989220111233a5"
+    },
+    {
+      "familyId": "yr.brown.v1",
+      "path": "colors/yr.brown.v1.json",
+      "preset": {
+        "path": "preset-colors/yr.brown.v1.ts",
+        "sha256": "d20f526231e92ffc4ac661e4b94bed73130f5030789fbf5103830e9bd968babd"
+      },
+      "sha256": "9893b3f6ef04db11afca1fc7981a61fdcb216096328c7a4ffdc3be6255fe8a4f"
+    },
+    {
+      "familyId": "yr.orange.v1",
+      "path": "colors/yr.orange.v1.json",
+      "preset": {
+        "path": "preset-colors/yr.orange.v1.ts",
+        "sha256": "f6d736543d589a6fb33ac29cc280d3cf0c1f1ff62f5948ea86a72c8ef9382ba2"
+      },
+      "sha256": "84194fd72576d69cae03d7c243241be86d4ddc86ef56c0d7c446820e493386ed"
+    }
+  ],
+  "diagnostics": {
+    "path": "tonal-system.diagnostics.json"
+  },
+  "formatVersion": 7,
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.19.0"
+  },
+  "kind": "kiskadee.tonal-system",
+  "primaryReference": "b.blue.v1",
+  "source": {
+    "path": "tonal-system.source.json",
+    "sha256": "6cec7d818d8f46dcd05b7d1a5a1e5a848446aa9e95ddd9a26384d12bbedbe104"
+  },
+  "tonalAnchors": {
+    "rest": {
+      "dark": 50,
+      "light": 40
+    }
+  },
+  "tonalProfile": "balanced"
+}

@@ -1,0 +1,71 @@
+{
+  "formatVersion": 7,
+  "gridContract": "kiskadee-tonal-v1",
+  "harmonyContract": "kiskadee-munsell-rest-v1",
+  "tonalProfile": "balanced",
+  "primary": {
+    "seedHex": "#0f62fe",
+    "appearance": "auto",
+    "variant": "v1",
+    "policies": {
+      "light": "source-exact",
+      "dark": "adaptive"
+    }
+  },
+  "tonalAnchors": {
+    "rest": {
+      "mode": "auto"
+    }
+  },
+  "functionalReferences": [],
+  "overrides": [
+    {
+      "id": "r.red.v1",
+      "seedHex": "#da1e28",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "g.green.v1",
+      "seedHex": "#198038",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "y.yellow.v1",
+      "seedHex": "#f1c21b",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "yr.orange.v1",
+      "seedHex": "#ff832b",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    },
+    {
+      "id": "pb.indigo.v1",
+      "seedHex": "#8a3ffc",
+      "policies": {
+        "light": "source-exact",
+        "dark": "adaptive"
+      }
+    }
+  ],
+  "catalog": {
+    "colors": [],
+    "names": {
+      "primary": "IBM Blue"
+    },
+    "neutrals": [],
+    "supportingColors": []
+  }
+}

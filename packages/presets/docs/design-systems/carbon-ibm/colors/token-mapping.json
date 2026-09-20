@@ -1,0 +1,7152 @@
+[
+  {
+    "token": "background",
+    "theme": "light",
+    "sourceName": "Background/background",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "background",
+    "theme": "dark",
+    "sourceName": "Background/background",
+    "sourceHex": "#262626",
+    "sourcePrimitive": "Default/Gray/90",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 8,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#272727",
+    "deltaE": 0.0041
+  },
+  {
+    "token": "background",
+    "theme": "darker",
+    "sourceName": "Background/background",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "background-active",
+    "theme": "light",
+    "sourceName": "Background/background-active",
+    "sourceHex": "#8d8d8d80",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 50.19607843137255
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "background-active",
+    "theme": "dark",
+    "sourceName": "Background/background-active",
+    "sourceHex": "#8d8d8d66",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 40
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-active",
+    "theme": "darker",
+    "sourceName": "Background/background-active",
+    "sourceHex": "#8d8d8d66",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 40
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-hover",
+    "theme": "light",
+    "sourceName": "Background/background-hover",
+    "sourceHex": "#8d8d8d1f",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 12.156862745098039
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "background-hover",
+    "theme": "dark",
+    "sourceName": "Background/background-hover",
+    "sourceHex": "#8d8d8d29",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 16.07843137254902
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-hover",
+    "theme": "darker",
+    "sourceName": "Background/background-hover",
+    "sourceHex": "#8d8d8d29",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 16.07843137254902
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-selected",
+    "theme": "light",
+    "sourceName": "Background/background-selected",
+    "sourceHex": "#8d8d8d33",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 20
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "background-selected",
+    "theme": "dark",
+    "sourceName": "Background/background-selected",
+    "sourceHex": "#8d8d8d3d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 23.92156862745098
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-selected",
+    "theme": "darker",
+    "sourceName": "Background/background-selected",
+    "sourceHex": "#8d8d8d3d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 23.92156862745098
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-selected-hover",
+    "theme": "light",
+    "sourceName": "Background/background-selected-hover",
+    "sourceHex": "#8d8d8d52",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 32.15686274509804
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "background-selected-hover",
+    "theme": "dark",
+    "sourceName": "Background/background-selected-hover",
+    "sourceHex": "#8d8d8d52",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 32.15686274509804
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-selected-hover",
+    "theme": "darker",
+    "sourceName": "Background/background-selected-hover",
+    "sourceHex": "#8d8d8d52",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 32.15686274509804
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "background-brand",
+    "theme": "light",
+    "sourceName": "Background/background-brand",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "background-brand",
+    "theme": "dark",
+    "sourceName": "Background/background-brand",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "background-brand",
+    "theme": "darker",
+    "sourceName": "Background/background-brand",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "background-inverse",
+    "theme": "light",
+    "sourceName": "Background/background-inverse",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 70,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#3d3d3d",
+    "deltaE": 0.0154
+  },
+  {
+    "token": "background-inverse",
+    "theme": "dark",
+    "sourceName": "Background/background-inverse",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "background-inverse",
+    "theme": "darker",
+    "sourceName": "Background/background-inverse",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "background-inverse-hover",
+    "theme": "light",
+    "sourceName": "Background/background-inverse-hover",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#464646",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "background-inverse-hover",
+    "theme": "dark",
+    "sourceName": "Background/background-inverse-hover",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ebebeb",
+    "deltaE": 0.0091
+  },
+  {
+    "token": "background-inverse-hover",
+    "theme": "darker",
+    "sourceName": "Background/background-inverse-hover",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ebebeb",
+    "deltaE": 0.0091
+  },
+  {
+    "token": "layer-01",
+    "theme": "light",
+    "sourceName": "Layer/layer-01",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 2,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f6f6f6",
+    "deltaE": 0.006
+  },
+  {
+    "token": "layer-01",
+    "theme": "dark",
+    "sourceName": "Layer/layer-01",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "layer-01",
+    "theme": "darker",
+    "sourceName": "Layer/layer-01",
+    "sourceHex": "#262626",
+    "sourcePrimitive": "Default/Gray/90",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 8,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#272727",
+    "deltaE": 0.0041
+  },
+  {
+    "token": "layer-02",
+    "theme": "light",
+    "sourceName": "Layer/layer-02",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-02",
+    "theme": "dark",
+    "sourceName": "Layer/layer-02",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-02",
+    "theme": "darker",
+    "sourceName": "Layer/layer-02",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "layer-03",
+    "theme": "light",
+    "sourceName": "Layer/layer-03",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 2,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f6f6f6",
+    "deltaE": 0.006
+  },
+  {
+    "token": "layer-03",
+    "theme": "dark",
+    "sourceName": "Layer/layer-03",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-03",
+    "theme": "darker",
+    "sourceName": "Layer/layer-03",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-hover-01",
+    "theme": "light",
+    "sourceName": "Layer/layer-hover-01",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 5,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e9e9e9",
+    "deltaE": 0.003
+  },
+  {
+    "token": "layer-hover-01",
+    "theme": "dark",
+    "sourceName": "Layer/layer-hover-01",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "layer-hover-01",
+    "theme": "darker",
+    "sourceName": "Layer/layer-hover-01",
+    "sourceHex": "#333333",
+    "sourcePrimitive": "Hover/Gray/90",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#353535",
+    "deltaE": 0.0079
+  },
+  {
+    "token": "layer-hover-02",
+    "theme": "light",
+    "sourceName": "Layer/layer-hover-02",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 5,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e9e9e9",
+    "deltaE": 0.003
+  },
+  {
+    "token": "layer-hover-02",
+    "theme": "dark",
+    "sourceName": "Layer/layer-hover-02",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "layer-hover-02",
+    "theme": "darker",
+    "sourceName": "Layer/layer-hover-02",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "layer-hover-03",
+    "theme": "light",
+    "sourceName": "Layer/layer-hover-03",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 5,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e9e9e9",
+    "deltaE": 0.003
+  },
+  {
+    "token": "layer-hover-03",
+    "theme": "dark",
+    "sourceName": "Layer/layer-hover-03",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "layer-hover-03",
+    "theme": "darker",
+    "sourceName": "Layer/layer-hover-03",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "layer-active-01",
+    "theme": "light",
+    "sourceName": "Layer/layer-active-01",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "layer-active-01",
+    "theme": "dark",
+    "sourceName": "Layer/layer-active-01",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-active-01",
+    "theme": "darker",
+    "sourceName": "Layer/layer-active-01",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-active-02",
+    "theme": "light",
+    "sourceName": "Layer/layer-active-02",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "layer-active-02",
+    "theme": "dark",
+    "sourceName": "Layer/layer-active-02",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "layer-active-02",
+    "theme": "darker",
+    "sourceName": "Layer/layer-active-02",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-active-03",
+    "theme": "light",
+    "sourceName": "Layer/layer-active-03",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "layer-active-03",
+    "theme": "dark",
+    "sourceName": "Layer/layer-active-03",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "layer-active-03",
+    "theme": "darker",
+    "sourceName": "Layer/layer-active-03",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "layer-selected-01",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-01",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-selected-01",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-01",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-selected-01",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-01",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "layer-selected-02",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-02",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-selected-02",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-02",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-selected-02",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-02",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-selected-03",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-03",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-selected-03",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-03",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-selected-03",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-03",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-selected-hover-01",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-hover-01",
+    "sourceHex": "#d1d1d1",
+    "sourcePrimitive": "Hover/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1d1d1",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-selected-hover-01",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-hover-01",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "layer-selected-hover-01",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-hover-01",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "layer-selected-hover-02",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-hover-02",
+    "sourceHex": "#d1d1d1",
+    "sourcePrimitive": "Hover/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1d1d1",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-selected-hover-02",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-hover-02",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "layer-selected-hover-02",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-hover-02",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "layer-selected-hover-03",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-hover-03",
+    "sourceHex": "#d1d1d1",
+    "sourcePrimitive": "Hover/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1d1d1",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-selected-hover-03",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-hover-03",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "layer-selected-hover-03",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-hover-03",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "layer-selected-disabled",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-disabled",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "layer-selected-disabled",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-disabled",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "layer-selected-disabled",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-disabled",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-selected-inverse",
+    "theme": "light",
+    "sourceName": "Layer/layer-selected-inverse",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#161616",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-selected-inverse",
+    "theme": "dark",
+    "sourceName": "Layer/layer-selected-inverse",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "layer-selected-inverse",
+    "theme": "darker",
+    "sourceName": "Layer/layer-selected-inverse",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "layer-accent-01",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-01",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-accent-01",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-01",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-accent-01",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-01",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "layer-accent-02",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-02",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-accent-02",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-02",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-accent-02",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-02",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-accent-03",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-03",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-accent-03",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-03",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "layer-accent-03",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-03",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-accent-hover-01",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-hover-01",
+    "sourceHex": "#d1d1d1",
+    "sourcePrimitive": "Hover/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1d1d1",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-accent-hover-01",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-hover-01",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "layer-accent-hover-01",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-hover-01",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "layer-accent-hover-02",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-hover-02",
+    "sourceHex": "#d1d1d1",
+    "sourcePrimitive": "Hover/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1d1d1",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-accent-hover-02",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-hover-02",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "layer-accent-hover-02",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-hover-02",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "layer-accent-hover-03",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-hover-03",
+    "sourceHex": "#d1d1d1",
+    "sourcePrimitive": "Hover/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1d1d1",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-accent-hover-03",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-hover-03",
+    "sourceHex": "#7a7a7a",
+    "sourcePrimitive": "Hover/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 55,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#7b7b7b",
+    "deltaE": 0.0034
+  },
+  {
+    "token": "layer-accent-hover-03",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-hover-03",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "layer-accent-active-01",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-active-01",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ababab",
+    "deltaE": 0.0096
+  },
+  {
+    "token": "layer-accent-active-01",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-active-01",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "layer-accent-active-01",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-active-01",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-accent-active-02",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-active-02",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ababab",
+    "deltaE": 0.0096
+  },
+  {
+    "token": "layer-accent-active-02",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-active-02",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "layer-accent-active-02",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-active-02",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "layer-accent-active-03",
+    "theme": "light",
+    "sourceName": "Layer accent/layer-accent-active-03",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ababab",
+    "deltaE": 0.0096
+  },
+  {
+    "token": "layer-accent-active-03",
+    "theme": "dark",
+    "sourceName": "Layer accent/layer-accent-active-03",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-accent-active-03",
+    "theme": "darker",
+    "sourceName": "Layer accent/layer-accent-active-03",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "field-01",
+    "theme": "light",
+    "sourceName": "Field/field-01",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 2,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f6f6f6",
+    "deltaE": 0.006
+  },
+  {
+    "token": "field-01",
+    "theme": "dark",
+    "sourceName": "Field/field-01",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "field-01",
+    "theme": "darker",
+    "sourceName": "Field/field-01",
+    "sourceHex": "#262626",
+    "sourcePrimitive": "Default/Gray/90",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 8,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#272727",
+    "deltaE": 0.0041
+  },
+  {
+    "token": "field-02",
+    "theme": "light",
+    "sourceName": "Field/field-02",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "field-02",
+    "theme": "dark",
+    "sourceName": "Field/field-02",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "field-02",
+    "theme": "darker",
+    "sourceName": "Field/field-02",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "field-03",
+    "theme": "light",
+    "sourceName": "Field/field-03",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 2,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f6f6f6",
+    "deltaE": 0.006
+  },
+  {
+    "token": "field-03",
+    "theme": "dark",
+    "sourceName": "Field/field-03",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "field-03",
+    "theme": "darker",
+    "sourceName": "Field/field-03",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "field-hover-01",
+    "theme": "light",
+    "sourceName": "Field/field-hover-01",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 5,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e9e9e9",
+    "deltaE": 0.003
+  },
+  {
+    "token": "field-hover-01",
+    "theme": "dark",
+    "sourceName": "Field/field-hover-01",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "field-hover-01",
+    "theme": "darker",
+    "sourceName": "Field/field-hover-01",
+    "sourceHex": "#333333",
+    "sourcePrimitive": "Hover/Gray/90",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#353535",
+    "deltaE": 0.0079
+  },
+  {
+    "token": "field-hover-02",
+    "theme": "light",
+    "sourceName": "Field/field-hover-02",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 5,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e9e9e9",
+    "deltaE": 0.003
+  },
+  {
+    "token": "field-hover-02",
+    "theme": "dark",
+    "sourceName": "Field/field-hover-02",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "field-hover-02",
+    "theme": "darker",
+    "sourceName": "Field/field-hover-02",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "field-hover-03",
+    "theme": "light",
+    "sourceName": "Field/field-hover-03",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 5,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e9e9e9",
+    "deltaE": 0.003
+  },
+  {
+    "token": "field-hover-03",
+    "theme": "dark",
+    "sourceName": "Field/field-hover-03",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "field-hover-03",
+    "theme": "darker",
+    "sourceName": "Field/field-hover-03",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "border-subtle-00",
+    "theme": "light",
+    "sourceName": "Border/border-subtle-00",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "border-subtle-00",
+    "theme": "dark",
+    "sourceName": "Border/border-subtle-00",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "border-subtle-00",
+    "theme": "darker",
+    "sourceName": "Border/border-subtle-00",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "border-subtle-01",
+    "theme": "light",
+    "sourceName": "Border/border-subtle-01",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-subtle-01",
+    "theme": "dark",
+    "sourceName": "Border/border-subtle-01",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "border-subtle-01",
+    "theme": "darker",
+    "sourceName": "Border/border-subtle-01",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "border-subtle-02",
+    "theme": "light",
+    "sourceName": "Border/border-subtle-02",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "border-subtle-02",
+    "theme": "dark",
+    "sourceName": "Border/border-subtle-02",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-subtle-02",
+    "theme": "darker",
+    "sourceName": "Border/border-subtle-02",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "border-subtle-03",
+    "theme": "light",
+    "sourceName": "Border/border-subtle-03",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-subtle-03",
+    "theme": "dark",
+    "sourceName": "Border/border-subtle-03",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-subtle-03",
+    "theme": "darker",
+    "sourceName": "Border/border-subtle-03",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "border-subtle-selected-01",
+    "theme": "light",
+    "sourceName": "Border/border-subtle-selected-01",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-subtle-selected-01",
+    "theme": "dark",
+    "sourceName": "Border/border-subtle-selected-01",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-subtle-selected-01",
+    "theme": "darker",
+    "sourceName": "Border/border-subtle-selected-01",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "border-subtle-selected-02",
+    "theme": "light",
+    "sourceName": "Border/border-subtle-selected-02",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-subtle-selected-02",
+    "theme": "dark",
+    "sourceName": "Border/border-subtle-selected-02",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a3a3a3",
+    "deltaE": 0.0161
+  },
+  {
+    "token": "border-subtle-selected-02",
+    "theme": "darker",
+    "sourceName": "Border/border-subtle-selected-02",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-subtle-selected-03",
+    "theme": "light",
+    "sourceName": "Border/border-subtle-selected-03",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-subtle-selected-03",
+    "theme": "dark",
+    "sourceName": "Border/border-subtle-selected-03",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a3a3a3",
+    "deltaE": 0.0161
+  },
+  {
+    "token": "border-subtle-selected-03",
+    "theme": "darker",
+    "sourceName": "Border/border-subtle-selected-03",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-strong-01",
+    "theme": "light",
+    "sourceName": "Border/border-strong-01",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "border-strong-01",
+    "theme": "dark",
+    "sourceName": "Border/border-strong-01",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-strong-01",
+    "theme": "darker",
+    "sourceName": "Border/border-strong-01",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "border-strong-02",
+    "theme": "light",
+    "sourceName": "Border/border-strong-02",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "border-strong-02",
+    "theme": "dark",
+    "sourceName": "Border/border-strong-02",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a3a3a3",
+    "deltaE": 0.0161
+  },
+  {
+    "token": "border-strong-02",
+    "theme": "darker",
+    "sourceName": "Border/border-strong-02",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-strong-03",
+    "theme": "light",
+    "sourceName": "Border/border-strong-03",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "border-strong-03",
+    "theme": "dark",
+    "sourceName": "Border/border-strong-03",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c5c5c5",
+    "deltaE": 0.0031
+  },
+  {
+    "token": "border-strong-03",
+    "theme": "darker",
+    "sourceName": "Border/border-strong-03",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a3a3a3",
+    "deltaE": 0.0161
+  },
+  {
+    "token": "border-tile-01",
+    "theme": "light",
+    "sourceName": "Border/border-tile-01",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-tile-01",
+    "theme": "dark",
+    "sourceName": "Border/border-tile-01",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "border-tile-01",
+    "theme": "darker",
+    "sourceName": "Border/border-tile-01",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "border-tile-02",
+    "theme": "light",
+    "sourceName": "Border/border-tile-02",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ababab",
+    "deltaE": 0.0096
+  },
+  {
+    "token": "border-tile-02",
+    "theme": "dark",
+    "sourceName": "Border/border-tile-02",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-tile-02",
+    "theme": "darker",
+    "sourceName": "Border/border-tile-02",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "border-tile-03",
+    "theme": "light",
+    "sourceName": "Border/border-tile-03",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-tile-03",
+    "theme": "dark",
+    "sourceName": "Border/border-tile-03",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a3a3a3",
+    "deltaE": 0.0161
+  },
+  {
+    "token": "border-tile-03",
+    "theme": "darker",
+    "sourceName": "Border/border-tile-03",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-inverse",
+    "theme": "light",
+    "sourceName": "Border/border-inverse",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#161616",
+    "deltaE": 0
+  },
+  {
+    "token": "border-inverse",
+    "theme": "dark",
+    "sourceName": "Border/border-inverse",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "border-inverse",
+    "theme": "darker",
+    "sourceName": "Border/border-inverse",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "border-disabled",
+    "theme": "light",
+    "sourceName": "Border/border-disabled",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "border-disabled",
+    "theme": "dark",
+    "sourceName": "Border/border-disabled",
+    "sourceHex": "#8d8d8d80",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 50.19607843137255
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-disabled",
+    "theme": "darker",
+    "sourceName": "Border/border-disabled",
+    "sourceHex": "#8d8d8d80",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 50.19607843137255
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "border-interactive",
+    "theme": "light",
+    "sourceName": "Border/border-interactive",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "border-interactive",
+    "theme": "dark",
+    "sourceName": "Border/border-interactive",
+    "sourceHex": "#4589ff",
+    "sourcePrimitive": "Default/Blue/50",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4786ff",
+    "deltaE": 0.0074
+  },
+  {
+    "token": "border-interactive",
+    "theme": "darker",
+    "sourceName": "Border/border-interactive",
+    "sourceHex": "#4589ff",
+    "sourcePrimitive": "Default/Blue/50",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4786ff",
+    "deltaE": 0.0074
+  },
+  {
+    "token": "focus",
+    "theme": "light",
+    "sourceName": "Focus/focus",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "focus",
+    "theme": "dark",
+    "sourceName": "Focus/focus",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "focus",
+    "theme": "darker",
+    "sourceName": "Focus/focus",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "focus-inset",
+    "theme": "light",
+    "sourceName": "Focus/focus-inset",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "focus-inset",
+    "theme": "dark",
+    "sourceName": "Focus/focus-inset",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "focus-inset",
+    "theme": "darker",
+    "sourceName": "Focus/focus-inset",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "focus-inverse",
+    "theme": "light",
+    "sourceName": "Focus/focus-inverse",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "focus-inverse",
+    "theme": "dark",
+    "sourceName": "Focus/focus-inverse",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "focus-inverse",
+    "theme": "darker",
+    "sourceName": "Focus/focus-inverse",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "interactive",
+    "theme": "light",
+    "sourceName": "Miscellaneous/interactive",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "interactive",
+    "theme": "dark",
+    "sourceName": "Miscellaneous/interactive",
+    "sourceHex": "#4589ff",
+    "sourcePrimitive": "Default/Blue/50",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4786ff",
+    "deltaE": 0.0074
+  },
+  {
+    "token": "interactive",
+    "theme": "darker",
+    "sourceName": "Miscellaneous/interactive",
+    "sourceHex": "#4589ff",
+    "sourcePrimitive": "Default/Blue/50",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4786ff",
+    "deltaE": 0.0074
+  },
+  {
+    "token": "highlight",
+    "theme": "light",
+    "sourceName": "Miscellaneous/highlight",
+    "sourceHex": "#d0e2ff",
+    "sourcePrimitive": "Default/Blue/20",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1e1ff",
+    "deltaE": 0.0028
+  },
+  {
+    "token": "highlight",
+    "theme": "dark",
+    "sourceName": "Miscellaneous/highlight",
+    "sourceHex": "#002d9c",
+    "sourcePrimitive": "Default/Blue/80",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 18,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#003395",
+    "deltaE": 0.0169
+  },
+  {
+    "token": "highlight",
+    "theme": "darker",
+    "sourceName": "Miscellaneous/highlight",
+    "sourceHex": "#001d6c",
+    "sourcePrimitive": "Default/Blue/90",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 9,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#00226d",
+    "deltaE": 0.0122
+  },
+  {
+    "token": "toggle-off",
+    "theme": "light",
+    "sourceName": "Miscellaneous/toggle-off",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "toggle-off",
+    "theme": "dark",
+    "sourceName": "Miscellaneous/toggle-off",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "toggle-off",
+    "theme": "darker",
+    "sourceName": "Miscellaneous/toggle-off",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "overlay",
+    "theme": "light",
+    "sourceName": "Miscellaneous/overlay",
+    "sourceHex": "#00000099",
+    "sourcePrimitive": "Miscellaneous/overlay",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "dark",
+      "alpha": 60
+    },
+    "generatedHex": "#00000099",
+    "deltaE": 0
+  },
+  {
+    "token": "overlay",
+    "theme": "dark",
+    "sourceName": "Miscellaneous/overlay",
+    "sourceHex": "#00000099",
+    "sourcePrimitive": "Miscellaneous/overlay",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "dark",
+      "alpha": 60
+    },
+    "generatedHex": "#00000099",
+    "deltaE": 0
+  },
+  {
+    "token": "overlay",
+    "theme": "darker",
+    "sourceName": "Miscellaneous/overlay",
+    "sourceHex": "#00000099",
+    "sourcePrimitive": "Miscellaneous/overlay",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "dark",
+      "alpha": 60
+    },
+    "generatedHex": "#00000099",
+    "deltaE": 0
+  },
+  {
+    "token": "skeleton-element",
+    "theme": "light",
+    "sourceName": "Miscellaneous/skeleton-element",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "skeleton-element",
+    "theme": "dark",
+    "sourceName": "Miscellaneous/skeleton-element",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "skeleton-element",
+    "theme": "darker",
+    "sourceName": "Miscellaneous/skeleton-element",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "skeleton-background",
+    "theme": "light",
+    "sourceName": "Miscellaneous/skeleton-background",
+    "sourceHex": "#e8e8e8",
+    "sourcePrimitive": "Hover/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 5,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e9e9e9",
+    "deltaE": 0.003
+  },
+  {
+    "token": "skeleton-background",
+    "theme": "dark",
+    "sourceName": "Miscellaneous/skeleton-background",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "skeleton-background",
+    "theme": "darker",
+    "sourceName": "Miscellaneous/skeleton-background",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#484848",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "support-error",
+    "theme": "light",
+    "sourceName": "Support/support-error",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#da1e28",
+    "deltaE": 0
+  },
+  {
+    "token": "support-error",
+    "theme": "dark",
+    "sourceName": "Support/support-error",
+    "sourceHex": "#ff8389",
+    "sourcePrimitive": "Default/Red/40",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ff756c",
+    "deltaE": 0.0386
+  },
+  {
+    "token": "support-error",
+    "theme": "darker",
+    "sourceName": "Support/support-error",
+    "sourceHex": "#fa4d56",
+    "sourcePrimitive": "Default/Red/50",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 70,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f95550",
+    "deltaE": 0.0165
+  },
+  {
+    "token": "support-success",
+    "theme": "light",
+    "sourceName": "Support/support-success",
+    "sourceHex": "#24a148",
+    "sourcePrimitive": "Default/Green/50",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#3f9a53",
+    "deltaE": 0.0312
+  },
+  {
+    "token": "support-success",
+    "theme": "dark",
+    "sourceName": "Support/support-success",
+    "sourceHex": "#42be65",
+    "sourcePrimitive": "Default/Green/40",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#63b672",
+    "deltaE": 0.0403
+  },
+  {
+    "token": "support-success",
+    "theme": "darker",
+    "sourceName": "Support/support-success",
+    "sourceHex": "#42be65",
+    "sourcePrimitive": "Default/Green/40",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#63b672",
+    "deltaE": 0.0403
+  },
+  {
+    "token": "support-warning",
+    "theme": "light",
+    "sourceName": "Support/support-warning",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 12,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f1c21b",
+    "deltaE": 0
+  },
+  {
+    "token": "support-warning",
+    "theme": "dark",
+    "sourceName": "Support/support-warning",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dac486",
+    "deltaE": 0.0821
+  },
+  {
+    "token": "support-warning",
+    "theme": "darker",
+    "sourceName": "Support/support-warning",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dac486",
+    "deltaE": 0.0821
+  },
+  {
+    "token": "support-info",
+    "theme": "light",
+    "sourceName": "Support/support-info",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 55,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0048cb",
+    "deltaE": 0.0114
+  },
+  {
+    "token": "support-info",
+    "theme": "dark",
+    "sourceName": "Support/support-info",
+    "sourceHex": "#4589ff",
+    "sourcePrimitive": "Default/Blue/50",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4786ff",
+    "deltaE": 0.0074
+  },
+  {
+    "token": "support-info",
+    "theme": "darker",
+    "sourceName": "Support/support-info",
+    "sourceHex": "#4589ff",
+    "sourcePrimitive": "Default/Blue/50",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4786ff",
+    "deltaE": 0.0074
+  },
+  {
+    "token": "support-error-inverse",
+    "theme": "light",
+    "sourceName": "Support/support-error-inverse",
+    "sourceHex": "#fa4d56",
+    "sourcePrimitive": "Default/Red/50",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 26,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f84f4b",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "support-error-inverse",
+    "theme": "dark",
+    "sourceName": "Support/support-error-inverse",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d82129",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "support-error-inverse",
+    "theme": "darker",
+    "sourceName": "Support/support-error-inverse",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d82129",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "support-success-inverse",
+    "theme": "light",
+    "sourceName": "Support/support-success-inverse",
+    "sourceHex": "#42be65",
+    "sourcePrimitive": "Default/Green/40",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 22,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#67b875",
+    "deltaE": 0.0422
+  },
+  {
+    "token": "support-success-inverse",
+    "theme": "dark",
+    "sourceName": "Support/support-success-inverse",
+    "sourceHex": "#24a148",
+    "sourcePrimitive": "Default/Green/50",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#429c56",
+    "deltaE": 0.0313
+  },
+  {
+    "token": "support-success-inverse",
+    "theme": "darker",
+    "sourceName": "Support/support-success-inverse",
+    "sourceHex": "#24a148",
+    "sourcePrimitive": "Default/Green/50",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#429c56",
+    "deltaE": 0.0313
+  },
+  {
+    "token": "support-warning-inverse",
+    "theme": "light",
+    "sourceName": "Support/support-warning-inverse",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 12,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f1c21b",
+    "deltaE": 0
+  },
+  {
+    "token": "support-warning-inverse",
+    "theme": "dark",
+    "sourceName": "Support/support-warning-inverse",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dac486",
+    "deltaE": 0.0821
+  },
+  {
+    "token": "support-warning-inverse",
+    "theme": "darker",
+    "sourceName": "Support/support-warning-inverse",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dac486",
+    "deltaE": 0.0821
+  },
+  {
+    "token": "support-info-inverse",
+    "theme": "light",
+    "sourceName": "Support/support-info-inverse",
+    "sourceHex": "#4589ff",
+    "sourcePrimitive": "Default/Blue/50",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4685ff",
+    "deltaE": 0.01
+  },
+  {
+    "token": "support-info-inverse",
+    "theme": "dark",
+    "sourceName": "Support/support-info-inverse",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004cd6",
+    "deltaE": 0.0241
+  },
+  {
+    "token": "support-info-inverse",
+    "theme": "darker",
+    "sourceName": "Support/support-info-inverse",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004cd6",
+    "deltaE": 0.0241
+  },
+  {
+    "token": "link-primary",
+    "theme": "light",
+    "sourceName": "Link/link-primary",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "link-primary",
+    "theme": "dark",
+    "sourceName": "Link/link-primary",
+    "sourceHex": "#78a9ff",
+    "sourcePrimitive": "Default/Blue/40",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#71a3ff",
+    "deltaE": 0.0186
+  },
+  {
+    "token": "link-primary",
+    "theme": "darker",
+    "sourceName": "Link/link-primary",
+    "sourceHex": "#78a9ff",
+    "sourcePrimitive": "Default/Blue/40",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#71a3ff",
+    "deltaE": 0.0186
+  },
+  {
+    "token": "link-primary-hover",
+    "theme": "light",
+    "sourceName": "Link/link-primary-hover",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 55,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0048cb",
+    "deltaE": 0.0114
+  },
+  {
+    "token": "link-primary-hover",
+    "theme": "dark",
+    "sourceName": "Link/link-primary-hover",
+    "sourceHex": "#a6c8ff",
+    "sourcePrimitive": "Default/Blue/30",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a9c8ff",
+    "deltaE": 0.0036
+  },
+  {
+    "token": "link-primary-hover",
+    "theme": "darker",
+    "sourceName": "Link/link-primary-hover",
+    "sourceHex": "#a6c8ff",
+    "sourcePrimitive": "Default/Blue/30",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a9c8ff",
+    "deltaE": 0.0036
+  },
+  {
+    "token": "link-secondary",
+    "theme": "light",
+    "sourceName": "Link/link-secondary",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 55,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0048cb",
+    "deltaE": 0.0114
+  },
+  {
+    "token": "link-secondary",
+    "theme": "dark",
+    "sourceName": "Link/link-secondary",
+    "sourceHex": "#a6c8ff",
+    "sourcePrimitive": "Default/Blue/30",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a9c8ff",
+    "deltaE": 0.0036
+  },
+  {
+    "token": "link-secondary",
+    "theme": "darker",
+    "sourceName": "Link/link-secondary",
+    "sourceHex": "#a6c8ff",
+    "sourcePrimitive": "Default/Blue/30",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a9c8ff",
+    "deltaE": 0.0036
+  },
+  {
+    "token": "link-inverse",
+    "theme": "light",
+    "sourceName": "Link/link-inverse",
+    "sourceHex": "#78a9ff",
+    "sourcePrimitive": "Default/Blue/40",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#7caaff",
+    "deltaE": 0.0054
+  },
+  {
+    "token": "link-inverse",
+    "theme": "dark",
+    "sourceName": "Link/link-inverse",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "link-inverse",
+    "theme": "darker",
+    "sourceName": "Link/link-inverse",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "link-visited",
+    "theme": "light",
+    "sourceName": "Link/link-visited",
+    "sourceHex": "#8a3ffc",
+    "sourcePrimitive": "Default/Purple/60",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a3ffc",
+    "deltaE": 0
+  },
+  {
+    "token": "link-visited",
+    "theme": "dark",
+    "sourceName": "Link/link-visited",
+    "sourceHex": "#be95ff",
+    "sourcePrimitive": "Default/Purple/40",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b092ff",
+    "deltaE": 0.0235
+  },
+  {
+    "token": "link-visited",
+    "theme": "darker",
+    "sourceName": "Link/link-visited",
+    "sourceHex": "#be95ff",
+    "sourcePrimitive": "Default/Purple/40",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b092ff",
+    "deltaE": 0.0235
+  },
+  {
+    "token": "icon-primary",
+    "theme": "light",
+    "sourceName": "Icon/icon-primary",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#161616",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-primary",
+    "theme": "dark",
+    "sourceName": "Icon/icon-primary",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "icon-primary",
+    "theme": "darker",
+    "sourceName": "Icon/icon-primary",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "icon-secondary",
+    "theme": "light",
+    "sourceName": "Icon/icon-secondary",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 60,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "icon-secondary",
+    "theme": "dark",
+    "sourceName": "Icon/icon-secondary",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c5c5c5",
+    "deltaE": 0.0031
+  },
+  {
+    "token": "icon-secondary",
+    "theme": "darker",
+    "sourceName": "Icon/icon-secondary",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c5c5c5",
+    "deltaE": 0.0031
+  },
+  {
+    "token": "icon-on-color",
+    "theme": "light",
+    "sourceName": "Icon/icon-on-color",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-on-color",
+    "theme": "dark",
+    "sourceName": "Icon/icon-on-color",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-on-color",
+    "theme": "darker",
+    "sourceName": "Icon/icon-on-color",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-on-color-disabled",
+    "theme": "light",
+    "sourceName": "Icon/icon-on-color-disabled",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "icon-on-color-disabled",
+    "theme": "dark",
+    "sourceName": "Icon/icon-on-color-disabled",
+    "sourceHex": "#ffffff40",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#ffffff40",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-on-color-disabled",
+    "theme": "darker",
+    "sourceName": "Icon/icon-on-color-disabled",
+    "sourceHex": "#ffffff40",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#ffffff40",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-interactive",
+    "theme": "light",
+    "sourceName": "Icon/icon-interactive",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-interactive",
+    "theme": "dark",
+    "sourceName": "Icon/icon-interactive",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-interactive",
+    "theme": "darker",
+    "sourceName": "Icon/icon-interactive",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-inverse",
+    "theme": "light",
+    "sourceName": "Icon/icon-inverse",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-inverse",
+    "theme": "dark",
+    "sourceName": "Icon/icon-inverse",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "icon-inverse",
+    "theme": "darker",
+    "sourceName": "Icon/icon-inverse",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "icon-disabled",
+    "theme": "light",
+    "sourceName": "Icon/icon-disabled",
+    "sourceHex": "#16161640",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#161616",
+    "deltaE": 0
+  },
+  {
+    "token": "icon-disabled",
+    "theme": "dark",
+    "sourceName": "Icon/icon-disabled",
+    "sourceHex": "#f4f4f440",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "icon-disabled",
+    "theme": "darker",
+    "sourceName": "Icon/icon-disabled",
+    "sourceHex": "#f4f4f440",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "text-primary",
+    "theme": "light",
+    "sourceName": "Text/text-primary",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#161616",
+    "deltaE": 0
+  },
+  {
+    "token": "text-primary",
+    "theme": "dark",
+    "sourceName": "Text/text-primary",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "text-primary",
+    "theme": "darker",
+    "sourceName": "Text/text-primary",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "text-secondary",
+    "theme": "light",
+    "sourceName": "Text/text-secondary",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 60,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "text-secondary",
+    "theme": "dark",
+    "sourceName": "Text/text-secondary",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c5c5c5",
+    "deltaE": 0.0031
+  },
+  {
+    "token": "text-secondary",
+    "theme": "darker",
+    "sourceName": "Text/text-secondary",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c5c5c5",
+    "deltaE": 0.0031
+  },
+  {
+    "token": "text-placeholder",
+    "theme": "light",
+    "sourceName": "Text/text-placeholder",
+    "sourceHex": "#a8a8a8",
+    "sourcePrimitive": "Default/Gray/40",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ababab",
+    "deltaE": 0.0096
+  },
+  {
+    "token": "text-placeholder",
+    "theme": "dark",
+    "sourceName": "Text/text-placeholder",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "text-placeholder",
+    "theme": "darker",
+    "sourceName": "Text/text-placeholder",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "text-on-color",
+    "theme": "light",
+    "sourceName": "Text/text-on-color",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "text-on-color",
+    "theme": "dark",
+    "sourceName": "Text/text-on-color",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "text-on-color",
+    "theme": "darker",
+    "sourceName": "Text/text-on-color",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "text-on-color-disabled",
+    "theme": "light",
+    "sourceName": "Text/text--on-color-disabled",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 28,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8c8c8c",
+    "deltaE": 0.0033
+  },
+  {
+    "token": "text-on-color-disabled",
+    "theme": "dark",
+    "sourceName": "Text/text--on-color-disabled",
+    "sourceHex": "#ffffff40",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#ffffff40",
+    "deltaE": 0
+  },
+  {
+    "token": "text-on-color-disabled",
+    "theme": "darker",
+    "sourceName": "Text/text--on-color-disabled",
+    "sourceHex": "#ffffff40",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#ffffff40",
+    "deltaE": 0
+  },
+  {
+    "token": "text-helper",
+    "theme": "light",
+    "sourceName": "Text/text-helper",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#737373",
+    "deltaE": 0.0138
+  },
+  {
+    "token": "text-helper",
+    "theme": "dark",
+    "sourceName": "Text/text-helper",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "text-helper",
+    "theme": "darker",
+    "sourceName": "Text/text-helper",
+    "sourceHex": "#8d8d8d",
+    "sourcePrimitive": "Default/Gray/50",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a8a8a",
+    "deltaE": 0.01
+  },
+  {
+    "token": "text-error",
+    "theme": "light",
+    "sourceName": "Text/text-error",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#da1e28",
+    "deltaE": 0
+  },
+  {
+    "token": "text-error",
+    "theme": "dark",
+    "sourceName": "Text/text-error",
+    "sourceHex": "#ffb3b8",
+    "sourcePrimitive": "Default/Red/30",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ffb1a8",
+    "deltaE": 0.0204
+  },
+  {
+    "token": "text-error",
+    "theme": "darker",
+    "sourceName": "Text/text-error",
+    "sourceHex": "#ff8389",
+    "sourcePrimitive": "Default/Red/40",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ff756c",
+    "deltaE": 0.0386
+  },
+  {
+    "token": "text-inverse",
+    "theme": "light",
+    "sourceName": "Text/text-inverse",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "text-inverse",
+    "theme": "dark",
+    "sourceName": "Text/text-inverse",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "text-inverse",
+    "theme": "darker",
+    "sourceName": "Text/text-inverse",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "text-disabled",
+    "theme": "light",
+    "sourceName": "Text/text-disabled",
+    "sourceHex": "#16161640",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#161616",
+    "deltaE": 0
+  },
+  {
+    "token": "text-disabled",
+    "theme": "dark",
+    "sourceName": "Text/text-disabled",
+    "sourceHex": "#f4f4f440",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "text-disabled",
+    "theme": "darker",
+    "sourceName": "Text/text-disabled",
+    "sourceHex": "#f4f4f440",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 25.098039215686274
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "button-primary",
+    "theme": "light",
+    "sourceName": "Button/button-primary",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "button-primary",
+    "theme": "dark",
+    "sourceName": "Button/button-primary",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "button-primary",
+    "theme": "darker",
+    "sourceName": "Button/button-primary",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "button-primary-hover",
+    "theme": "light",
+    "sourceName": "Button/button-primary-hover",
+    "sourceHex": "#0050e6",
+    "sourcePrimitive": "Hover/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004fde",
+    "deltaE": 0.0128
+  },
+  {
+    "token": "button-primary-hover",
+    "theme": "dark",
+    "sourceName": "Button/button-primary-hover",
+    "sourceHex": "#0050e6",
+    "sourcePrimitive": "Hover/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0053e7",
+    "deltaE": 0.0068
+  },
+  {
+    "token": "button-primary-hover",
+    "theme": "darker",
+    "sourceName": "Button/button-primary-hover",
+    "sourceHex": "#0050e6",
+    "sourcePrimitive": "Hover/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0053e7",
+    "deltaE": 0.0068
+  },
+  {
+    "token": "button-primary-active",
+    "theme": "light",
+    "sourceName": "Button/button-primary-active",
+    "sourceHex": "#002d9c",
+    "sourcePrimitive": "Default/Blue/80",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 70,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#003192",
+    "deltaE": 0.0181
+  },
+  {
+    "token": "button-primary-active",
+    "theme": "dark",
+    "sourceName": "Button/button-primary-active",
+    "sourceHex": "#002d9c",
+    "sourcePrimitive": "Default/Blue/80",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 18,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#003395",
+    "deltaE": 0.0169
+  },
+  {
+    "token": "button-primary-active",
+    "theme": "darker",
+    "sourceName": "Button/button-primary-active",
+    "sourceHex": "#002d9c",
+    "sourcePrimitive": "Default/Blue/80",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 18,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#003395",
+    "deltaE": 0.0169
+  },
+  {
+    "token": "button-secondary",
+    "theme": "light",
+    "sourceName": "Button/button-secondary",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 70,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#3d3d3d",
+    "deltaE": 0.0154
+  },
+  {
+    "token": "button-secondary",
+    "theme": "dark",
+    "sourceName": "Button/button-secondary",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "button-secondary",
+    "theme": "darker",
+    "sourceName": "Button/button-secondary",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "button-secondary-hover",
+    "theme": "light",
+    "sourceName": "Button/button-secondary-hover",
+    "sourceHex": "#474747",
+    "sourcePrimitive": "Hover/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#464646",
+    "deltaE": 0.0037
+  },
+  {
+    "token": "button-secondary-hover",
+    "theme": "dark",
+    "sourceName": "Button/button-secondary-hover",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "button-secondary-hover",
+    "theme": "darker",
+    "sourceName": "Button/button-secondary-hover",
+    "sourceHex": "#5e5e5e",
+    "sourcePrimitive": "Hover/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0142
+  },
+  {
+    "token": "button-secondary-active",
+    "theme": "light",
+    "sourceName": "Button/button-secondary-active",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#737373",
+    "deltaE": 0.0138
+  },
+  {
+    "token": "button-secondary-active",
+    "theme": "dark",
+    "sourceName": "Button/button-secondary-active",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "button-secondary-active",
+    "theme": "darker",
+    "sourceName": "Button/button-secondary-active",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "button-tertiary",
+    "theme": "light",
+    "sourceName": "Button/button-tertiary",
+    "sourceHex": "#0f62fe",
+    "sourcePrimitive": "Default/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0f62fe",
+    "deltaE": 0
+  },
+  {
+    "token": "button-tertiary",
+    "theme": "dark",
+    "sourceName": "Button/button-tertiary",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "button-tertiary",
+    "theme": "darker",
+    "sourceName": "Button/button-tertiary",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "button-tertiary-hover",
+    "theme": "light",
+    "sourceName": "Button/button-tertiary-hover",
+    "sourceHex": "#0050e6",
+    "sourcePrimitive": "Hover/Blue/60",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004fde",
+    "deltaE": 0.0128
+  },
+  {
+    "token": "button-tertiary-hover",
+    "theme": "dark",
+    "sourceName": "Button/button-tertiary-hover",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "button-tertiary-hover",
+    "theme": "darker",
+    "sourceName": "Button/button-tertiary-hover",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 99,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#fbfbfb",
+    "deltaE": 0.0209
+  },
+  {
+    "token": "button-tertiary-active",
+    "theme": "light",
+    "sourceName": "Button/button-tertiary-active",
+    "sourceHex": "#002d9c",
+    "sourcePrimitive": "Default/Blue/80",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 70,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#003192",
+    "deltaE": 0.0181
+  },
+  {
+    "token": "button-tertiary-active",
+    "theme": "dark",
+    "sourceName": "Button/button-tertiary-active",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c5c5c5",
+    "deltaE": 0.0031
+  },
+  {
+    "token": "button-tertiary-active",
+    "theme": "darker",
+    "sourceName": "Button/button-tertiary-active",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c5c5c5",
+    "deltaE": 0.0031
+  },
+  {
+    "token": "button-danger-primary",
+    "theme": "light",
+    "sourceName": "Button/button-danger-primary",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#da1e28",
+    "deltaE": 0
+  },
+  {
+    "token": "button-danger-primary",
+    "theme": "dark",
+    "sourceName": "Button/button-danger-primary",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d82129",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "button-danger-primary",
+    "theme": "darker",
+    "sourceName": "Button/button-danger-primary",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d82129",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "button-danger-secondary",
+    "theme": "light",
+    "sourceName": "Button/button-danger-secondary",
+    "sourceHex": "#da1e28",
+    "sourcePrimitive": "Default/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#da1e28",
+    "deltaE": 0
+  },
+  {
+    "token": "button-danger-secondary",
+    "theme": "dark",
+    "sourceName": "Button/button-danger-secondary",
+    "sourceHex": "#ff8389",
+    "sourcePrimitive": "Default/Red/40",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ff756c",
+    "deltaE": 0.0386
+  },
+  {
+    "token": "button-danger-secondary",
+    "theme": "darker",
+    "sourceName": "Button/button-danger-secondary",
+    "sourceHex": "#fa4d56",
+    "sourcePrimitive": "Default/Red/50",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 70,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f95550",
+    "deltaE": 0.0165
+  },
+  {
+    "token": "button-danger-hover",
+    "theme": "light",
+    "sourceName": "Button/button-danger-hover",
+    "sourceHex": "#b81922",
+    "sourcePrimitive": "Hover/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b80018",
+    "deltaE": 0.0137
+  },
+  {
+    "token": "button-danger-hover",
+    "theme": "dark",
+    "sourceName": "Button/button-danger-hover",
+    "sourceHex": "#b81922",
+    "sourcePrimitive": "Hover/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b60017",
+    "deltaE": 0.016
+  },
+  {
+    "token": "button-danger-hover",
+    "theme": "darker",
+    "sourceName": "Button/button-danger-hover",
+    "sourceHex": "#b81922",
+    "sourcePrimitive": "Hover/Red/60",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b60017",
+    "deltaE": 0.016
+  },
+  {
+    "token": "button-danger-active",
+    "theme": "light",
+    "sourceName": "Button/button-danger-active",
+    "sourceHex": "#750e13",
+    "sourcePrimitive": "Default/Red/80",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 70,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#78000c",
+    "deltaE": 0.0111
+  },
+  {
+    "token": "button-danger-active",
+    "theme": "dark",
+    "sourceName": "Button/button-danger-active",
+    "sourceHex": "#750e13",
+    "sourcePrimitive": "Default/Red/80",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#78000b",
+    "deltaE": 0.0113
+  },
+  {
+    "token": "button-danger-active",
+    "theme": "darker",
+    "sourceName": "Button/button-danger-active",
+    "sourceHex": "#750e13",
+    "sourcePrimitive": "Default/Red/80",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#78000b",
+    "deltaE": 0.0113
+  },
+  {
+    "token": "button-separator",
+    "theme": "light",
+    "sourceName": "Button/button-separator",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "button-separator",
+    "theme": "dark",
+    "sourceName": "Button/button-separator",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "button-separator",
+    "theme": "darker",
+    "sourceName": "Button/button-separator",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "button-disabled",
+    "theme": "light",
+    "sourceName": "Button/button-disabled",
+    "sourceHex": "#c6c6c6",
+    "sourcePrimitive": "Default/Gray/30",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c2c2c2",
+    "deltaE": 0.0125
+  },
+  {
+    "token": "button-disabled",
+    "theme": "dark",
+    "sourceName": "Button/button-disabled",
+    "sourceHex": "#6f6f6f",
+    "sourcePrimitive": "Default/Gray/60",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#727272",
+    "deltaE": 0.0104
+  },
+  {
+    "token": "button-disabled",
+    "theme": "darker",
+    "sourceName": "Button/button-disabled",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "support-caution-major",
+    "theme": "light",
+    "sourceName": "Support/support-caution-major",
+    "sourceHex": "#ff832b",
+    "sourcePrimitive": "Default/Orange/40",
+    "familyId": "yr.orange.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.orange.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ff832b",
+    "deltaE": 0
+  },
+  {
+    "token": "support-caution-major",
+    "theme": "dark",
+    "sourceName": "Support/support-caution-major",
+    "sourceHex": "#ff832b",
+    "sourcePrimitive": "Default/Orange/40",
+    "familyId": "yr.orange.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.orange.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e48a53",
+    "deltaE": 0.0505
+  },
+  {
+    "token": "support-caution-major",
+    "theme": "darker",
+    "sourceName": "Support/support-caution-major",
+    "sourceHex": "#ff832b",
+    "sourcePrimitive": "Default/Orange/40",
+    "familyId": "yr.orange.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.orange.v1",
+      "tone": 75,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e48a53",
+    "deltaE": 0.0505
+  },
+  {
+    "token": "support-caution-minor",
+    "theme": "light",
+    "sourceName": "Support/support-caution-minor",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 12,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f1c21b",
+    "deltaE": 0
+  },
+  {
+    "token": "support-caution-minor",
+    "theme": "dark",
+    "sourceName": "Support/support-caution-minor",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dac486",
+    "deltaE": 0.0821
+  },
+  {
+    "token": "support-caution-minor",
+    "theme": "darker",
+    "sourceName": "Support/support-caution-minor",
+    "sourceHex": "#f1c21b",
+    "sourcePrimitive": "Default/Yellow/30",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 85,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dac486",
+    "deltaE": 0.0821
+  },
+  {
+    "token": "support-undefined",
+    "theme": "light",
+    "sourceName": "Support/support-undefined",
+    "sourceHex": "#8a3ffc",
+    "sourcePrimitive": "Default/Purple/60",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a3ffc",
+    "deltaE": 0
+  },
+  {
+    "token": "support-undefined",
+    "theme": "dark",
+    "sourceName": "Support/support-undefined",
+    "sourceHex": "#a56eff",
+    "sourcePrimitive": "Default/Purple/50",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#9d6eff",
+    "deltaE": 0.0132
+  },
+  {
+    "token": "support-undefined",
+    "theme": "darker",
+    "sourceName": "Support/support-undefined",
+    "sourceHex": "#a56eff",
+    "sourcePrimitive": "Default/Purple/50",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 65,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#9d6eff",
+    "deltaE": 0.0132
+  },
+  {
+    "token": "link-inverse-hover",
+    "theme": "light",
+    "sourceName": "Link/link-inverse-hover",
+    "sourceHex": "#a6c8ff",
+    "sourcePrimitive": "Default/Blue/30",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a1c3ff",
+    "deltaE": 0.0153
+  },
+  {
+    "token": "link-inverse-hover",
+    "theme": "dark",
+    "sourceName": "Link/link-inverse-hover",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004cd6",
+    "deltaE": 0.0241
+  },
+  {
+    "token": "link-inverse-hover",
+    "theme": "darker",
+    "sourceName": "Link/link-inverse-hover",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004cd6",
+    "deltaE": 0.0241
+  },
+  {
+    "token": "link-inverse-visited",
+    "theme": "light",
+    "sourceName": "Link/link-inverse-visited",
+    "sourceHex": "#be95ff",
+    "sourcePrimitive": "Default/Purple/40",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 20,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b296ff",
+    "deltaE": 0.0181
+  },
+  {
+    "token": "link-inverse-visited",
+    "theme": "dark",
+    "sourceName": "Link/link-inverse-visited",
+    "sourceHex": "#8a3ffc",
+    "sourcePrimitive": "Default/Purple/60",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a3ffc",
+    "deltaE": 0
+  },
+  {
+    "token": "link-inverse-visited",
+    "theme": "darker",
+    "sourceName": "Link/link-inverse-visited",
+    "sourceHex": "#8a3ffc",
+    "sourcePrimitive": "Default/Purple/60",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 50,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#8a3ffc",
+    "deltaE": 0
+  },
+  {
+    "token": "link-inverse-active",
+    "theme": "light",
+    "sourceName": "Link/link-inverse-active",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 2,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f6f6f6",
+    "deltaE": 0.006
+  },
+  {
+    "token": "link-inverse-active",
+    "theme": "dark",
+    "sourceName": "Link/link-inverse-active",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "link-inverse-active",
+    "theme": "darker",
+    "sourceName": "Link/link-inverse-active",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "layer-background-00",
+    "theme": "light",
+    "sourceName": "Layer/layer-background-00",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-background-00",
+    "theme": "dark",
+    "sourceName": "Layer/layer-background-00",
+    "sourceHex": "#262626",
+    "sourcePrimitive": "Default/Gray/90",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 8,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#272727",
+    "deltaE": 0.0041
+  },
+  {
+    "token": "layer-background-00",
+    "theme": "darker",
+    "sourceName": "Layer/layer-background-00",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 3,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#141414",
+    "deltaE": 0.0089
+  },
+  {
+    "token": "layer-background-01",
+    "theme": "light",
+    "sourceName": "Layer/layer-background-01",
+    "sourceHex": "#f4f4f4",
+    "sourcePrimitive": "Default/Gray/10",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 2,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f6f6f6",
+    "deltaE": 0.006
+  },
+  {
+    "token": "layer-background-01",
+    "theme": "dark",
+    "sourceName": "Layer/layer-background-01",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "layer-background-01",
+    "theme": "darker",
+    "sourceName": "Layer/layer-background-01",
+    "sourceHex": "#262626",
+    "sourcePrimitive": "Default/Gray/90",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 8,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#272727",
+    "deltaE": 0.0041
+  },
+  {
+    "token": "layer-background-02",
+    "theme": "light",
+    "sourceName": "Layer/layer-background-02",
+    "sourceHex": "#ffffff",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 100
+    },
+    "generatedHex": "#ffffff",
+    "deltaE": 0
+  },
+  {
+    "token": "layer-background-02",
+    "theme": "dark",
+    "sourceName": "Layer/layer-background-02",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "layer-background-02",
+    "theme": "darker",
+    "sourceName": "Layer/layer-background-02",
+    "sourceHex": "#393939",
+    "sourcePrimitive": "Default/Gray/80",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 16,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#383838",
+    "deltaE": 0.0039
+  },
+  {
+    "token": "tag-background-blue",
+    "theme": "light",
+    "sourceName": "Tag/Blue/tag-background",
+    "sourceHex": "#d0e2ff",
+    "sourcePrimitive": "Default/Blue/20",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1e1ff",
+    "deltaE": 0.0028
+  },
+  {
+    "token": "tag-background-blue",
+    "theme": "dark",
+    "sourceName": "Tag/Blue/tag-background",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004cd6",
+    "deltaE": 0.0241
+  },
+  {
+    "token": "tag-background-blue",
+    "theme": "darker",
+    "sourceName": "Tag/Blue/tag-background",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 35,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#004cd6",
+    "deltaE": 0.0241
+  },
+  {
+    "token": "tag-color-blue",
+    "theme": "light",
+    "sourceName": "Tag/Blue/tag-color",
+    "sourceHex": "#0043ce",
+    "sourcePrimitive": "Default/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 55,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#0048cb",
+    "deltaE": 0.0114
+  },
+  {
+    "token": "tag-color-blue",
+    "theme": "dark",
+    "sourceName": "Tag/Blue/tag-color",
+    "sourceHex": "#d0e2ff",
+    "sourcePrimitive": "Default/Blue/20",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c3d9ff",
+    "deltaE": 0.0303
+  },
+  {
+    "token": "tag-color-blue",
+    "theme": "darker",
+    "sourceName": "Tag/Blue/tag-color",
+    "sourceHex": "#d0e2ff",
+    "sourcePrimitive": "Default/Blue/20",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c3d9ff",
+    "deltaE": 0.0303
+  },
+  {
+    "token": "tag-hover-blue",
+    "theme": "light",
+    "sourceName": "Tag/Blue/tag-hover",
+    "sourceHex": "#b8d3ff",
+    "sourcePrimitive": "Hover/Blue/20",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#bad3ff",
+    "deltaE": 0.0025
+  },
+  {
+    "token": "tag-hover-blue",
+    "theme": "dark",
+    "sourceName": "Tag/Blue/tag-hover",
+    "sourceHex": "#0053ff",
+    "sourcePrimitive": "Hover/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 45,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#025af6",
+    "deltaE": 0.0191
+  },
+  {
+    "token": "tag-hover-blue",
+    "theme": "darker",
+    "sourceName": "Tag/Blue/tag-hover",
+    "sourceHex": "#0053ff",
+    "sourcePrimitive": "Hover/Blue/70",
+    "familyId": "b.blue.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.blue.v1",
+      "tone": 45,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#025af6",
+    "deltaE": 0.0191
+  },
+  {
+    "token": "tag-background-gray",
+    "theme": "light",
+    "sourceName": "Tag/Gray/tag-background",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e0e0e0",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-background-gray",
+    "theme": "dark",
+    "sourceName": "Tag/Gray/tag-background",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "tag-background-gray",
+    "theme": "darker",
+    "sourceName": "Tag/Gray/tag-background",
+    "sourceHex": "#525252",
+    "sourcePrimitive": "Default/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#4f4f4f",
+    "deltaE": 0.011
+  },
+  {
+    "token": "tag-color-gray",
+    "theme": "light",
+    "sourceName": "Tag/Gray/tag-color",
+    "sourceHex": "#161616",
+    "sourcePrimitive": "Default/Gray/100",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 95,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#161616",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-color-gray",
+    "theme": "dark",
+    "sourceName": "Tag/Gray/tag-color",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d7d7d7",
+    "deltaE": 0.0275
+  },
+  {
+    "token": "tag-color-gray",
+    "theme": "darker",
+    "sourceName": "Tag/Gray/tag-color",
+    "sourceHex": "#e0e0e0",
+    "sourcePrimitive": "Default/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d7d7d7",
+    "deltaE": 0.0275
+  },
+  {
+    "token": "tag-hover-gray",
+    "theme": "light",
+    "sourceName": "Tag/Gray/tag-hover",
+    "sourceHex": "#d1d1d1",
+    "sourcePrimitive": "Hover/Gray/20",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d1d1d1",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-hover-gray",
+    "theme": "dark",
+    "sourceName": "Tag/Gray/tag-hover",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "tag-hover-gray",
+    "theme": "darker",
+    "sourceName": "Tag/Gray/tag-hover",
+    "sourceHex": "#636363",
+    "sourcePrimitive": "Hover/Gray/70",
+    "familyId": "n.black.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.black.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#626262",
+    "deltaE": 0.0035
+  },
+  {
+    "token": "tag-background-green",
+    "theme": "light",
+    "sourceName": "Tag/Green/tag-background",
+    "sourceHex": "#a7f0ba",
+    "sourcePrimitive": "Default/Green/20",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 9,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b6e4bc",
+    "deltaE": 0.036
+  },
+  {
+    "token": "tag-background-green",
+    "theme": "dark",
+    "sourceName": "Tag/Green/tag-background",
+    "sourceHex": "#0e6027",
+    "sourcePrimitive": "Default/Green/70",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#005b22",
+    "deltaE": 0.0181
+  },
+  {
+    "token": "tag-background-green",
+    "theme": "darker",
+    "sourceName": "Tag/Green/tag-background",
+    "sourceHex": "#0e6027",
+    "sourcePrimitive": "Default/Green/70",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#005b22",
+    "deltaE": 0.0181
+  },
+  {
+    "token": "tag-color-green",
+    "theme": "light",
+    "sourceName": "Tag/Green/tag-color",
+    "sourceHex": "#0e6027",
+    "sourcePrimitive": "Default/Green/70",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 60,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#006124",
+    "deltaE": 0.0071
+  },
+  {
+    "token": "tag-color-green",
+    "theme": "dark",
+    "sourceName": "Tag/Green/tag-color",
+    "sourceHex": "#a7f0ba",
+    "sourcePrimitive": "Default/Green/20",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b8e3bd",
+    "deltaE": 0.0399
+  },
+  {
+    "token": "tag-color-green",
+    "theme": "darker",
+    "sourceName": "Tag/Green/tag-color",
+    "sourceHex": "#a7f0ba",
+    "sourcePrimitive": "Default/Green/20",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#b8e3bd",
+    "deltaE": 0.0399
+  },
+  {
+    "token": "tag-hover-green",
+    "theme": "light",
+    "sourceName": "Tag/Green/tag-hover",
+    "sourceHex": "#74e792",
+    "sourcePrimitive": "Hover/Green/20",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 14,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#91d69b",
+    "deltaE": 0.0568
+  },
+  {
+    "token": "tag-hover-green",
+    "theme": "dark",
+    "sourceName": "Tag/Green/tag-hover",
+    "sourceHex": "#11742f",
+    "sourcePrimitive": "Hover/Green/70",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#00722c",
+    "deltaE": 0.009
+  },
+  {
+    "token": "tag-hover-green",
+    "theme": "darker",
+    "sourceName": "Tag/Green/tag-hover",
+    "sourceHex": "#11742f",
+    "sourcePrimitive": "Hover/Green/70",
+    "familyId": "g.green.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.green.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#00722c",
+    "deltaE": 0.009
+  },
+  {
+    "token": "tag-background-red",
+    "theme": "light",
+    "sourceName": "Tag/Red/tag-background",
+    "sourceHex": "#ffd7d9",
+    "sourcePrimitive": "Default/Red/20",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 6,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ffdbd7",
+    "deltaE": 0.0114
+  },
+  {
+    "token": "tag-background-red",
+    "theme": "dark",
+    "sourceName": "Tag/Red/tag-background",
+    "sourceHex": "#a2191f",
+    "sourcePrimitive": "Default/Red/70",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a10013",
+    "deltaE": 0.0175
+  },
+  {
+    "token": "tag-background-red",
+    "theme": "darker",
+    "sourceName": "Tag/Red/tag-background",
+    "sourceHex": "#a2191f",
+    "sourcePrimitive": "Default/Red/70",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a10013",
+    "deltaE": 0.0175
+  },
+  {
+    "token": "tag-color-red",
+    "theme": "light",
+    "sourceName": "Tag/Red/tag-color",
+    "sourceHex": "#a2191f",
+    "sourcePrimitive": "Default/Red/70",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 55,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#a80015",
+    "deltaE": 0.0164
+  },
+  {
+    "token": "tag-color-red",
+    "theme": "dark",
+    "sourceName": "Tag/Red/tag-color",
+    "sourceHex": "#ffd7d9",
+    "sourcePrimitive": "Default/Red/20",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ffcac4",
+    "deltaE": 0.0353
+  },
+  {
+    "token": "tag-color-red",
+    "theme": "darker",
+    "sourceName": "Tag/Red/tag-color",
+    "sourceHex": "#ffd7d9",
+    "sourcePrimitive": "Default/Red/20",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ffcac4",
+    "deltaE": 0.0353
+  },
+  {
+    "token": "tag-hover-red",
+    "theme": "light",
+    "sourceName": "Tag/Red/tag-hover",
+    "sourceHex": "#ffc2c5",
+    "sourcePrimitive": "Hover/Red/20",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#ffc0b9",
+    "deltaE": 0.0152
+  },
+  {
+    "token": "tag-hover-red",
+    "theme": "dark",
+    "sourceName": "Tag/Red/tag-hover",
+    "sourceHex": "#c21e25",
+    "sourcePrimitive": "Hover/Red/70",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c4001a",
+    "deltaE": 0.0155
+  },
+  {
+    "token": "tag-hover-red",
+    "theme": "darker",
+    "sourceName": "Tag/Red/tag-hover",
+    "sourceHex": "#c21e25",
+    "sourcePrimitive": "Hover/Red/70",
+    "familyId": "r.red.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.red.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#c4001a",
+    "deltaE": 0.0155
+  },
+  {
+    "token": "tag-background-purple",
+    "theme": "light",
+    "sourceName": "Tag/Purple/tag-background",
+    "sourceHex": "#e8daff",
+    "sourcePrimitive": "Default/Purple/20",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 7,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e2dbff",
+    "deltaE": 0.0083
+  },
+  {
+    "token": "tag-background-purple",
+    "theme": "dark",
+    "sourceName": "Tag/Purple/tag-background",
+    "sourceHex": "#6929c4",
+    "sourcePrimitive": "Default/Purple/70",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#6900d0",
+    "deltaE": 0.0344
+  },
+  {
+    "token": "tag-background-purple",
+    "theme": "darker",
+    "sourceName": "Tag/Purple/tag-background",
+    "sourceHex": "#6929c4",
+    "sourcePrimitive": "Default/Purple/70",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#6900d0",
+    "deltaE": 0.0344
+  },
+  {
+    "token": "tag-color-purple",
+    "theme": "light",
+    "sourceName": "Tag/Purple/tag-color",
+    "sourceHex": "#6929c4",
+    "sourcePrimitive": "Default/Purple/70",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 55,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#6a00d1",
+    "deltaE": 0.0346
+  },
+  {
+    "token": "tag-color-purple",
+    "theme": "dark",
+    "sourceName": "Tag/Purple/tag-color",
+    "sourceHex": "#e8daff",
+    "sourcePrimitive": "Default/Purple/20",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dcd2ff",
+    "deltaE": 0.0278
+  },
+  {
+    "token": "tag-color-purple",
+    "theme": "darker",
+    "sourceName": "Tag/Purple/tag-color",
+    "sourceHex": "#e8daff",
+    "sourcePrimitive": "Default/Purple/20",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#dcd2ff",
+    "deltaE": 0.0278
+  },
+  {
+    "token": "tag-hover-purple",
+    "theme": "light",
+    "sourceName": "Tag/Purple/tag-hover",
+    "sourceHex": "#dcc7ff",
+    "sourcePrimitive": "Hover/Purple/20",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#d5c9ff",
+    "deltaE": 0.0105
+  },
+  {
+    "token": "tag-hover-purple",
+    "theme": "dark",
+    "sourceName": "Tag/Purple/tag-hover",
+    "sourceHex": "#7c3dd6",
+    "sourcePrimitive": "Hover/Purple/70",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#7d28ed",
+    "deltaE": 0.0432
+  },
+  {
+    "token": "tag-hover-purple",
+    "theme": "darker",
+    "sourceName": "Tag/Purple/tag-hover",
+    "sourceHex": "#7c3dd6",
+    "sourcePrimitive": "Hover/Purple/70",
+    "familyId": "pb.indigo.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.purple.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#7d28ed",
+    "deltaE": 0.0432
+  },
+  {
+    "token": "tag-background-yellow",
+    "theme": "light",
+    "sourceName": "Tag/Yellow/tag-background",
+    "sourceHex": "#fddc69",
+    "sourcePrimitive": "Default/Yellow/20",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 9,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f3d47c",
+    "deltaE": 0.0344
+  },
+  {
+    "token": "tag-background-yellow",
+    "theme": "dark",
+    "sourceName": "Tag/Yellow/tag-background",
+    "sourceHex": "#684e00",
+    "sourcePrimitive": "Default/Yellow/70",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#614c00",
+    "deltaE": 0.0147
+  },
+  {
+    "token": "tag-background-yellow",
+    "theme": "darker",
+    "sourceName": "Tag/Yellow/tag-background",
+    "sourceHex": "#684e00",
+    "sourcePrimitive": "Default/Yellow/70",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 30,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#614c00",
+    "deltaE": 0.0147
+  },
+  {
+    "token": "tag-color-yellow",
+    "theme": "light",
+    "sourceName": "Tag/Yellow/tag-color",
+    "sourceHex": "#684e00",
+    "sourcePrimitive": "Default/Yellow/70",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 60,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#624d00",
+    "deltaE": 0.0117
+  },
+  {
+    "token": "tag-color-yellow",
+    "theme": "dark",
+    "sourceName": "Tag/Yellow/tag-color",
+    "sourceHex": "#fddc69",
+    "sourcePrimitive": "Default/Yellow/20",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e8d6a5",
+    "deltaE": 0.0748
+  },
+  {
+    "token": "tag-color-yellow",
+    "theme": "darker",
+    "sourceName": "Tag/Yellow/tag-color",
+    "sourceHex": "#fddc69",
+    "sourcePrimitive": "Default/Yellow/20",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 90,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#e8d6a5",
+    "deltaE": 0.0748
+  },
+  {
+    "token": "tag-hover-yellow",
+    "theme": "light",
+    "sourceName": "Tag/Yellow/tag-hover",
+    "sourceHex": "#fccd27",
+    "sourcePrimitive": "Hover/Yellow/20",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 10,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#f6cd54",
+    "deltaE": 0.0255
+  },
+  {
+    "token": "tag-hover-yellow",
+    "theme": "dark",
+    "sourceName": "Tag/Yellow/tag-hover",
+    "sourceHex": "#806000",
+    "sourcePrimitive": "Hover/Yellow/70",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#785f00",
+    "deltaE": 0.0148
+  },
+  {
+    "token": "tag-hover-yellow",
+    "theme": "darker",
+    "sourceName": "Tag/Yellow/tag-hover",
+    "sourceHex": "#806000",
+    "sourcePrimitive": "Hover/Yellow/70",
+    "familyId": "y.yellow.v1",
+    "locator": {
+      "mode": "exact",
+      "role": "primitive.yellow.v1",
+      "tone": 40,
+      "evidenceId": "source.tokens",
+      "alpha": 100
+    },
+    "generatedHex": "#785f00",
+    "deltaE": 0.0148
+  },
+  {
+    "token": "tag-border-blue",
+    "theme": "light",
+    "sourceName": "Tag/Blue/tag-border",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-blue",
+    "theme": "dark",
+    "sourceName": "Tag/Blue/tag-border",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-blue",
+    "theme": "darker",
+    "sourceName": "Tag/Blue/tag-border",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-green",
+    "theme": "light",
+    "sourceName": "Tag/Green/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-green",
+    "theme": "dark",
+    "sourceName": "Tag/Green/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-green",
+    "theme": "darker",
+    "sourceName": "Tag/Green/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-purple",
+    "theme": "light",
+    "sourceName": "Tag/Purple/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-purple",
+    "theme": "dark",
+    "sourceName": "Tag/Purple/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-purple",
+    "theme": "darker",
+    "sourceName": "Tag/Purple/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-red",
+    "theme": "light",
+    "sourceName": "Tag/Red/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-red",
+    "theme": "dark",
+    "sourceName": "Tag/Red/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-red",
+    "theme": "darker",
+    "sourceName": "Tag/Red/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-yellow",
+    "theme": "light",
+    "sourceName": "Tag/Yellow/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-yellow",
+    "theme": "dark",
+    "sourceName": "Tag/Yellow/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-yellow",
+    "theme": "darker",
+    "sourceName": "Tag/Yellow/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-gray",
+    "theme": "light",
+    "sourceName": "Tag/Gray/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-gray",
+    "theme": "dark",
+    "sourceName": "Tag/Gray/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  },
+  {
+    "token": "tag-border-gray",
+    "theme": "darker",
+    "sourceName": "Tag/Gray/tag-border-transparent",
+    "sourceHex": "#ffffff00",
+    "sourcePrimitive": "Default/Neutral/White",
+    "locator": {
+      "mode": "cap",
+      "primitive": "primitive.black.v1",
+      "polarity": "light",
+      "alpha": 0
+    },
+    "generatedHex": "#ffffff00",
+    "deltaE": 0
+  }
+]

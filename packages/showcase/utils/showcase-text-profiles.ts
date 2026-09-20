@@ -13,11 +13,11 @@ export type ShowcaseTextProfiles = {
 };
 
 export const showcaseTextProfilesByDesignSystem = {
-  'carbon-1-ibm': {
-    pageTitle: 'body-medium-strong',
-    sectionTitle: 'body-medium-strong',
-    subsectionTitle: 'body-medium-strong',
-    groupTitle: 'label-small',
+  'carbon-11-ibm': {
+    pageTitle: 'heading-large',
+    sectionTitle: 'heading-medium',
+    subsectionTitle: 'heading-small',
+    groupTitle: 'subtitle-small',
     body: 'body-medium',
     bodyStrong: 'body-medium-strong',
     caption: 'label-small'

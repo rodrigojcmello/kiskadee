@@ -12,8 +12,6 @@ function loadExtraJson(relativePath: string): Promise<ExtraArtifactsJSON> {
 }
 
 export const extraMaps = {
-  'carbon-1-ibm|default|dark': () => loadExtraJson('carbon-1-ibm/extra.default.dark.kiskadee.json'),
-  'carbon-1-ibm|default|light': () => loadExtraJson('carbon-1-ibm/extra.default.light.kiskadee.json'),
   'elegant-1-kiskadee|default|light': () => loadExtraJson('elegant-1-kiskadee/extra.default.light.kiskadee.json'),
   'fluent-2-kiskadee|default|dark': () => loadExtraJson('fluent-2-kiskadee/extra.default.dark.kiskadee.json'),
   'ios-18-apple|default|light': () => loadExtraJson('ios-18-apple/extra.default.light.kiskadee.json'),
@@ -23,10 +21,10 @@ export const extraMaps = {
 } as const;
 
 export const paletteIndex = {
-  'carbon-1-ibm': {
+  'carbon-11-ibm': {
     segments: ['default'],
     themesBySegment: {
-      "default": ['dark', 'light']
+      "default": ['dark', 'darker', 'light']
     }
   },
   'elegant-1-kiskadee': {
@@ -92,7 +90,7 @@ export const paletteIndex = {
 export type DesignSystemListEntry = import('@kiskadee/web-builder/types').DesignSystemListEntry;
 
 export const designSystemList: DesignSystemListEntry[] = [
-  { key: 'carbon-1-ibm', displayName: "Carbon by IBM" },
+  { key: 'carbon-11-ibm', displayName: "Carbon 11 by IBM" },
   { key: 'elegant-1-kiskadee', displayName: "Elegant by Kiskadee" },
   { key: 'fluent-2-kiskadee', displayName: "Fluent 2 by Kiskadee" },
   { key: 'fluent-2-microsoft', displayName: "Fluent 2 by Microsoft" },
@@ -105,7 +103,7 @@ export const designSystemList: DesignSystemListEntry[] = [
 ];
 
 export const designSystemMeta = {
-  'carbon-1-ibm': {"displayName":"Carbon by IBM","components":{"button":true,"card":true,"switch":true,"text":true}},
+  'carbon-11-ibm': {"displayName":"Carbon 11 by IBM","components":{"badge":true,"bottomSheet":true,"button":true,"card":true,"chip":true,"dropdown":true,"icon":true,"progress":true,"separator":true,"slider":true,"switch":true,"text":true}},
   'elegant-1-kiskadee': {"displayName":"Elegant by Kiskadee","components":{"button":true,"card":true,"switch":true,"text":true}},
   'fluent-2-kiskadee': {"displayName":"Fluent 2 by Kiskadee","components":{"button":true,"text":true}},
   'fluent-2-microsoft': {"displayName":"Fluent 2 by Microsoft","components":{"badge":true,"bottomSheet":true,"slider":true,"button":true,"card":true,"chip":true,"dropdown":true,"icon":true,"progress":true,"separator":true,"switch":true,"text":true}},
