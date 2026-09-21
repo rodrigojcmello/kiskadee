@@ -10,6 +10,7 @@
 .section h4,
 .description,
 .contentBlock p,
+.emphasisExample p,
 .unavailable p {
   margin: 0;
 }
@@ -53,6 +54,18 @@
 .unavailable {
   min-block-size: 120px;
   place-items: center;
+}
+
+.emphasisExample {
+  display: grid;
+  gap: 8px;
+  min-inline-size: 0;
+}
+
+.emphasisLabel {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .horizontalStage {

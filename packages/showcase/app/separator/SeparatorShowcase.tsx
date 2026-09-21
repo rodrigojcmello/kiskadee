@@ -1,17 +1,11 @@
 'use client';
 
-import type { ComponentEmphasis } from '@kiskadee/core';
 import { useKiskadee } from '@kiskadee/react-components/resources';
 import { Separator } from '@kiskadee/react-components/separator';
 import { Text } from '@kiskadee/react-components/text';
-import { useState } from 'react';
 import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
-import {
-  ShowcaseControlGroup,
-  ShowcaseRouteControls,
-  ShowcaseSelectControl
-} from '@/components/ShowcaseControls';
+import { ShowcaseControlGroup, ShowcaseRouteControls } from '@/components/ShowcaseControls';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
@@ -34,7 +28,6 @@ export default function SeparatorShowcase() {
   const { manifest } = useShowcaseMetadata(['separator']);
   const { segment, theme } = useKiskadee();
   const { surfaceContext } = useShowcaseBackground();
-  const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
   const state = getManifestComponentState(
     manifest?.components?.separator,
     String(segment ?? 'default'),
@@ -44,9 +37,7 @@ export default function SeparatorShowcase() {
   const supportedEmphases = (['lowest', 'low', 'medium', 'high', 'highest'] as const).filter(
     (value) => state?.neutral?.[value]?.rest
   );
-  const activeEmphasis = supportedEmphases.includes(emphasis)
-    ? emphasis
-    : (supportedEmphases[0] ?? 'medium');
+  const layoutEmphasis = supportedEmphases.includes('medium') ? 'medium' : supportedEmphases[0];
   const textProfiles = useShowcaseTextProfiles();
   const available = Boolean(manifest?.components?.separator);
 
@@ -68,16 +59,6 @@ export default function SeparatorShowcase() {
         <ShowcaseControlGroup title="Semantic">
           <ShowcaseGlobalSemanticControls />
         </ShowcaseControlGroup>
-        <ShowcaseControlGroup title="Appearance">
-          <ShowcaseSelectControl
-            label="Emphasis"
-            variant="sequential"
-            loop
-            options={supportedEmphases.map((value) => ({ value, label: value }))}
-            value={activeEmphasis}
-            onValueChange={(value) => setEmphasis(value as ComponentEmphasis)}
-          />
-        </ShowcaseControlGroup>
       </ShowcaseRouteControls>
 
       {!available ? (
@@ -86,31 +67,49 @@ export default function SeparatorShowcase() {
         <div className={styles.sections}>
           <section className={styles.section} aria-labelledby="separator-orientation-title">
             <Text as="h3" id="separator-orientation-title" profile={textProfiles.sectionTitle}>
-              Orientation
+              Emphasis and orientation
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              Compare every available emphasis on the same surface, horizontally and vertically.
+              Available levels depend on the design system, theme, and surface context.
             </Text>
             <div className={styles.grid}>
               <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Horizontal
                 </Text>
-                <div className={styles.horizontalStage}>
-                  <Separator emphasis={activeEmphasis} />
-                </div>
+                {supportedEmphases.map((emphasis) => (
+                  <div key={emphasis} className={styles.emphasisExample}>
+                    <Text as="p" profile={textProfiles.caption} className={styles.emphasisLabel}>
+                      {emphasis}
+                    </Text>
+                    <div className={styles.horizontalStage}>
+                      <Separator emphasis={emphasis} />
+                    </div>
+                  </div>
+                ))}
               </ShowcaseExampleCard>
 
               <ShowcaseExampleCard role="article" className={styles.card}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Vertical
                 </Text>
-                <div className={styles.verticalStage}>
-                  <Text as="span" profile={textProfiles.body}>
-                    Previous
-                  </Text>
-                  <Separator orientation="vertical" emphasis={activeEmphasis} />
-                  <Text as="span" profile={textProfiles.body}>
-                    Next
-                  </Text>
-                </div>
+                {supportedEmphases.map((emphasis) => (
+                  <div key={emphasis} className={styles.emphasisExample}>
+                    <Text as="p" profile={textProfiles.caption} className={styles.emphasisLabel}>
+                      {emphasis}
+                    </Text>
+                    <div className={styles.verticalStage}>
+                      <Text as="span" profile={textProfiles.body}>
+                        Previous
+                      </Text>
+                      <Separator orientation="vertical" emphasis={emphasis} />
+                      <Text as="span" profile={textProfiles.body}>
+                        Next
+                      </Text>
+                    </div>
+                  </div>
+                ))}
               </ShowcaseExampleCard>
             </div>
           </section>
@@ -132,7 +131,7 @@ export default function SeparatorShowcase() {
                   Profile, sign-in and security preferences.
                 </Text>
               </div>
-              <Separator emphasis={activeEmphasis} />
+              <Separator emphasis={layoutEmphasis} />
               <div className={styles.contentBlock}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Notifications
