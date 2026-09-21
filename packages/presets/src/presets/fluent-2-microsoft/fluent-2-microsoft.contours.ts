@@ -19,7 +19,7 @@ export function createFluent2MicrosoftContours({
           'default',
           track,
           theme === 'light'
-            ? absoluteCap(primitive('black', 'v1'), 'dark', 18)
+            ? absoluteCap(primitive('black', 'v1'), 'dark', 23)
             : exactColor('neutral', 45, 'global.contours')
         )
       };

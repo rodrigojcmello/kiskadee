@@ -15,7 +15,8 @@ The catalog is optional. Its hierarchy is intention, profile, palettes, segment,
 surface context, emphasis, and Rest. Each intention requires `standard`; additional named
 profiles are permitted. A published theme requires `onSubtle`, with optional `onVivid`.
 Each context requires `medium`; other ComponentEmphasis values are optional.
-V1 publishes solid colors and Rest only. Gradients and interaction-state catalogs are outside
+V1 publishes solid paint colors (including alpha) and Rest only. Here, solid means
+non-gradient, not necessarily opaque. Gradients and interaction-state catalogs are outside
 this initial contract. Missing coordinates are errors, not inferred colors or fallback profiles.
 
 Use `contour('neutral.standard.light.onSubtle.medium')` from Core in a component
@@ -44,15 +45,15 @@ references, including unused declared profiles. Palette-source resolution expand
 profiles and then resolves contour references for both Style Keys and published metadata.
 No contour token, catalog bucket, runtime color resolver, or Provider is shipped to the browser.
 
-## Fluent migration
+## Preset guidance and Fluent usage
 
-Fluent `neutral.standard.medium` preserves the tinted Card boundary onSubtle: L10 in Light
-and D45 in Dark/Darker. OnVivid uses physical white at 15% opacity for medium and 8% for low.
-The vivid primary highest Card explicitly selects onVivid medium regardless of its input context,
-because its own painted surface is vivid. Its existing white-at-15% boundary is preserved.
-Neutral Card borders select the incoming context. Border activation and interaction deltas remain
-independent. OnSubtle low is unchanged; internal Separator consumers share the revised recipes.
-Other presets remain unchanged.
+Prefer the advisory [surface and contour composition guidance](../../packages/presets/docs/definitions/surface-and-contour-composition.md)
+when authoring or reviewing presets. This recommendation does not constrain the color
+contract or require migration of existing recipes.
 
-This is an authorized Kiskadee consistency refinement, not a claim that Fluent upstream
-specifies identical border and divider colors. See the [Card evidence](../../packages/presets/docs/design-systems/fluent-2-microsoft/components/card.md#shared-neutral-contours).
+Fluent shares contour recipes between Separator and selected Card boundaries. The
+component explicitly selects an intensity; changing Medium does not change a Card
+that references Low. Preset-specific values and approved adaptations are maintained
+in the [current Card evidence](../../packages/presets/docs/design-systems/fluent-2-microsoft/components/card.md#shared-neutral-contours),
+not duplicated in this cross-package contract. Border activation and interaction deltas
+remain independent of the shared Rest catalog.

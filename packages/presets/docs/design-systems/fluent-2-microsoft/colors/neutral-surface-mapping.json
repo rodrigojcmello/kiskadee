@@ -46,10 +46,10 @@
       "medium": {
         "target": "#d1d1d1",
         "tone": 100,
-        "generated": "#0000002e",
+        "generated": "#0000003b",
         "locator": "cap",
         "polarity": "dark",
-        "alpha": 18
+        "alpha": 23
       }
     }
   },

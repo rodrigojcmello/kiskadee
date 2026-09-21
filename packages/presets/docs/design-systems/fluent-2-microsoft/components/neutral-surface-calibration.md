@@ -42,12 +42,12 @@ neutral is introduced. Primary recipes are unchanged.
 | --- | --- | --- |
 | Lowest | physical black cap (L100), 5% alpha | #0000000d |
 | Low | physical black cap (L100), 9.5% alpha | #00000018 |
-| Medium | physical black cap (L100), 18% alpha | #0000002e |
+| Medium | physical black cap (L100), 23% alpha | #0000003b |
 
 Separator publishes all three levels through the shared contour catalog. Light neutral Card
 borders use the shared Low contour, independently of fill emphasis. Border visibility defaults
 are unchanged. On 2026-09-20 the user approved replacing the solid L3/L6/L10 contours
-with physical black at 5/9.5/18% alpha so dividing lines retain the underlying surface hue.
+with physical black at 5/9.5/23% alpha so dividing lines retain the underlying surface hue.
 The user refined Low to 9.5% on 2026-09-21 after practical visual testing.
 This is a Kiskadee extension, not a new upstream Fluent token mapping. The former solid
 references were #f2f2f2/#e5e5e5/#d1d1d1; the alpha recipes approximate them over white,
@@ -75,3 +75,18 @@ See [explicit de-para](../colors/neutral-surface-mapping.json),
 The preceding tinted-neutral approvals remain historical evidence and are superseded for this
 migration. Parity tests verify manifest hashes, classification, functional references and scales;
 regression tests cover segment parity, Light catalogs, contour resolution and retained dark recipes.
+
+## Strong contour refinement - 2026-09-21
+
+The user approved increasing Light/onSubtle Medium from 18% to 23% black after
+[comparing Windows and Kiskadee samples in Figma](https://www.figma.com/design/ORKFzGqGEJPkxuy2VF3upA/Untitled?node-id=13-65).
+The sampled strongest colors were Windows #c1c1c1 and Kiskadee #cecece. Black at
+23% over #fbfbfb approximately reproduces the selected Windows sample. This is
+an approved visual adaptation, not identification of an official Windows brush:
+the exact source element/token of the sampled Windows boundary remains unverified.
+The published alpha is quantized to 8-bit #0000003b. Low remains 9.5%, so neutral
+Card Rest borders do not darken with this Medium-only adjustment. Surface fills,
+Dark/Darker, onVivid and interaction recipes are unchanged.
+
+Follow the advisory [surface and contour composition guidance](../../../definitions/surface-and-contour-composition.md)
+when evaluating subsequent presets; this change does not migrate them.

@@ -4,6 +4,10 @@ This workflow defines the dependency order for adding or substantially revising 
 Kiskadee preset. A component schema should not be treated as isolated from the color and surface
 contracts that its examples consume.
 
+For surface and boundary paint, use the advisory
+[surface and contour composition guidance](surface-and-contour-composition.md).
+It guides gradual review across presets without requiring an immediate migration.
+
 ## 1. Record Source Evidence
 
 Create or update the preset-wide source evidence before authoring schema values:

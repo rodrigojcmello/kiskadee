@@ -16,7 +16,7 @@ export const fluent2MicrosoftColorEvidence = {
   'global.contours': {
     source: 'components/card.md#shared-neutral-contours',
     rationale:
-      'Light onSubtle uses physical black caps at 5/9.5/18%; Dark retains D45 and existing cap opacities.'
+      'Light onSubtle uses physical black caps at 5/9.5/23%; Dark retains D45 and existing cap opacities.'
   },
   'component.card': {
     source: 'components/card.md#color-and-token-provenance',

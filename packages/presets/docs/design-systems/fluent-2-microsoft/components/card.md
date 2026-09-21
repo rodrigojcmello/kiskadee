@@ -372,7 +372,7 @@ This is a Kiskadee adaptation; it does not assert upstream Fluent token equivale
 | --- | --- | --- |
 | Light, onSubtle, lowest | physical black cap (L100), 5% | `#0000000d` |
 | Light, onSubtle, low | physical black cap (L100), 9.5% | `#00000018` |
-| Light, onSubtle, medium | physical black cap (L100), 18% | `#0000002e` |
+| Light, onSubtle, medium | physical black cap (L100), 23% | `#0000003b` |
 | Dark/Darker, onSubtle, medium | exact neutral D45 | `#6a6a6a` |
 | Dark/Darker, onSubtle, low | physical white cap 12% | `#ffffff1f` |
 | All themes, onVivid, medium | physical white cap 15% | `#ffffff26` |

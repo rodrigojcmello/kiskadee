@@ -103,7 +103,7 @@ describe('Fluent achromatic surfaces', () => {
       for (const [key, color] of Object.entries({
         lowest: '#0000000d',
         low: '#00000018',
-        medium: '#0000002e'
+        medium: '#0000003b'
       })) {
         const emphasis = key as ComponentEmphasis;
         expect(
