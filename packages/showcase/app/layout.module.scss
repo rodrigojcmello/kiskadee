@@ -17,6 +17,11 @@
     var(--showcase-default-route-background, transparent)
   );
   transition: background-color 180ms ease, grid-template-columns 180ms ease;
+
+  // The canvas is painted here, outside the content subtree that owns the wow effect.
+  &:has(:global(.s-content.s-wow)) {
+    transition: background-color var(--k-dur-theme) var(--k-ease-out), grid-template-columns 180ms ease;
+  }
 }
 
 .shellWithoutSidebar {
