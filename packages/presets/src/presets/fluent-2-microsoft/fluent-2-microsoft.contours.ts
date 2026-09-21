@@ -18,7 +18,9 @@ export function createFluent2MicrosoftContours({
         rest: c.resolve(
           'default',
           track,
-          exactColor('neutral', theme === 'light' ? 10 : 45, 'global.contours')
+          theme === 'light'
+            ? absoluteCap(primitive('black', 'v1'), 'dark', 18)
+            : exactColor('neutral', 45, 'global.contours')
         )
       };
       return [
@@ -29,7 +31,11 @@ export function createFluent2MicrosoftContours({
             ...(theme === 'light'
               ? {
                   lowest: {
-                    rest: c.resolve('default', track, exactColor('neutral', 3, 'global.contours'))
+                    rest: c.resolve(
+                      'default',
+                      track,
+                      absoluteCap(primitive('black', 'v1'), 'dark', 5)
+                    )
                   }
                 }
               : {}),
@@ -38,7 +44,7 @@ export function createFluent2MicrosoftContours({
                 'default',
                 track,
                 theme === 'light'
-                  ? exactColor('neutral', 6, 'global.contours')
+                  ? absoluteCap(primitive('black', 'v1'), 'dark', 9.5)
                   : absoluteCap(primitive('black', 'v1'), 'light', 12)
               )
             }

@@ -1,7 +1,7 @@
 import { type ComponentEmphasis, resolveContourReference } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
-import black from '../colors/n.black.v1.ts';
 import blue from '../colors/b.blue.v1.ts';
+import black from '../colors/n.black.v1.ts';
 import purple from '../colors/pb.indigo.v2.ts';
 import { schema } from '../fluent-2-microsoft.schema.ts';
 
@@ -25,7 +25,7 @@ describe('Fluent achromatic surfaces', () => {
           ).toBe('onSubtle');
           const border = palette?.borderColor?.neutral?.[emphasis]?.rest;
           expect(resolveContourReference(border as string, segment, schema.global?.contours)).toBe(
-            context === 'onSubtle' ? '#e5e5e5' : '#ffffff26'
+            context === 'onSubtle' ? '#00000018' : '#ffffff26'
           );
         }
         expect(palette?.boxColor?.neutral?.highest).toBeUndefined();
@@ -101,9 +101,9 @@ describe('Fluent achromatic surfaces', () => {
         schema.global?.separators?.profiles.subtle.palettes?.[segment]?.light?.onSubtle?.boxColor
           ?.neutral;
       for (const [key, color] of Object.entries({
-        lowest: '#f2f2f2',
-        low: '#e5e5e5',
-        medium: '#d1d1d1'
+        lowest: '#0000000d',
+        low: '#00000018',
+        medium: '#0000002e'
       })) {
         const emphasis = key as ComponentEmphasis;
         expect(

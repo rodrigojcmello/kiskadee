@@ -29,18 +29,27 @@
     "contours": {
       "lowest": {
         "target": "#f2f2f2",
-        "tone": 3,
-        "generated": "#f2f2f2"
+        "tone": 100,
+        "generated": "#0000000d",
+        "locator": "cap",
+        "polarity": "dark",
+        "alpha": 5
       },
       "low": {
         "target": "#e5e5e5",
-        "tone": 6,
-        "generated": "#e5e5e5"
+        "tone": 100,
+        "generated": "#00000018",
+        "locator": "cap",
+        "polarity": "dark",
+        "alpha": 9.5
       },
       "medium": {
         "target": "#d1d1d1",
-        "tone": 10,
-        "generated": "#d1d1d1"
+        "tone": 100,
+        "generated": "#0000002e",
+        "locator": "cap",
+        "polarity": "dark",
+        "alpha": 18
       }
     }
   },

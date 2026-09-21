@@ -362,33 +362,32 @@ onSubtle, Dark and Darker remain unchanged. No Rest-equal state override is adde
 
 ## Shared Neutral Contours
 
-On 2026-09-07, the user approved a Kiskadee consistency refinement sharing neutral outline
-and divider colors. The onSubtle medium recipe preserves the Card boundary from the approved
-Fluent tinted neutral asset `colors/n.black.v2.ts`. Its `global.contours` exact locator uses
-global `neutral`, mapped to the same `primitive.black.v2` as the former `card.neutral` boundary.
-Physical black and white caps use `primitive.black.v1`; no primitive asset was replaced.
-
-The table describes the current recipes, including the approved onVivid refinement.
+The shared `global.contours` catalog supplies Card boundaries and Separator lines.
+The [current neutral calibration](neutral-surface-calibration.md) supersedes the original
+2026-09-07 tinted-neutral mapping. On 2026-09-20 the user approved physical black alpha
+contours for Light/onSubtle, allowing the background hue to remain visible through the line.
+This is a Kiskadee adaptation; it does not assert upstream Fluent token equivalence.
 
 | Coordinate | Locator | Resolved output |
 | --- | --- | --- |
-| Light, onSubtle, medium | exact neutral L10 | `#cdd1de` |
-| Dark/Darker, onSubtle, medium | exact neutral D45 | `#656973` |
-| Light, onSubtle, low | physical black cap 8% | `#00000014` |
+| Light, onSubtle, lowest | physical black cap (L100), 5% | `#0000000d` |
+| Light, onSubtle, low | physical black cap (L100), 9.5% | `#00000018` |
+| Light, onSubtle, medium | physical black cap (L100), 18% | `#0000002e` |
+| Dark/Darker, onSubtle, medium | exact neutral D45 | `#6a6a6a` |
 | Dark/Darker, onSubtle, low | physical white cap 12% | `#ffffff1f` |
 | All themes, onVivid, medium | physical white cap 15% | `#ffffff26` |
 | All themes, onVivid, low | physical white cap 8% | `#ffffff14` |
+| Light, onVivid, lowest | physical white cap 8% | `#ffffff14` |
 
-Neutral Card borders select medium for the incoming surface context. Primary highest selects
-neutral onVivid medium even with an onSubtle input, since its painted surface is vivid. This
-preserves its previous border while sharing the color source with Separator. Other chromatic
-border recipes remain local and unchanged.
+Light neutral Card Rest borders select Low onSubtle and Medium onVivid, independently of
+Card fill emphasis. Dark neutral Card Rest borders retain 15% white and Darker retains
+10% white. Primary Highest selects the theme's onVivid Medium; other primary borders and
+component-specific interaction recipes remain unchanged. Border visibility is unchanged.
 
-Separator medium and low, including Dropdown and Bottom Sheet consumers, select these shared
-recipes. OnSubtle colors retain their previous values. The onVivid refinement preserves the
-vivid controls Card boundary as medium and reduces low below it; 8% is the selected Kiskadee
-adaptation, not an upstream Fluent token claim. This alignment does not assert upstream token
-equivalence between Card and Separator.
+Separator selects each matching shared emphasis. Changing the catalog therefore updates
+both Separator and referencing Card borders after artifact generation, without duplicating
+paint recipes in either component. Physical endpoints use the existing `primitive.black.v1`
+asset and FRF cap locators; no tonal asset or global semantic mapping changes.
 
 Color recipes do not activate borders or shadows. Activation defaults, shadows, and Card
 interaction deltas are unchanged; neutral optional borders follow the revised onVivid recipe.

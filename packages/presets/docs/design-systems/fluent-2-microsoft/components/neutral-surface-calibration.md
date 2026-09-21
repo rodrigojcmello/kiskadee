@@ -40,13 +40,20 @@ neutral is introduced. Primary recipes are unchanged.
 
 | Light onSubtle contour | Locator | Published |
 | --- | --- | --- |
-| Lowest | exact neutral L3 | #f2f2f2 |
-| Low | exact neutral L6 | #e5e5e5 |
-| Medium | exact neutral L10 | #d1d1d1 |
+| Lowest | physical black cap (L100), 5% alpha | #0000000d |
+| Low | physical black cap (L100), 9.5% alpha | #00000018 |
+| Medium | physical black cap (L100), 18% alpha | #0000002e |
 
 Separator publishes all three levels through the shared contour catalog. Light neutral Card
 borders use the shared Low contour, independently of fill emphasis. Border visibility defaults
-are unchanged. These are solid recipes; no background-specific intent or new alpha rule is added.
+are unchanged. On 2026-09-20 the user approved replacing the solid L3/L6/L10 contours
+with physical black at 5/9.5/18% alpha so dividing lines retain the underlying surface hue.
+The user refined Low to 9.5% on 2026-09-21 after practical visual testing.
+This is a Kiskadee extension, not a new upstream Fluent token mapping. The former solid
+references were #f2f2f2/#e5e5e5/#d1d1d1; the alpha recipes approximate them over white,
+while their composited appearance intentionally changes over other backgrounds.
+The asset remains n.black.v1; the FRF locator is cap with dark polarity (Light L100).
+Card consumes the shared Low recipe at Rest; component-specific interaction recipes remain intact.
 Existing onVivid white-alpha contours are retained. Light Lowest reuses the existing 8% white Low contour in onVivid to satisfy context coverage, without inventing a new opacity.
 
 ## Dark and interaction preservation

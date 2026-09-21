@@ -8,7 +8,9 @@ This file records source evidence and preset-level decisions for
 The user-authorized [achromatic surface calibration](components/neutral-surface-calibration.md)
 applies across Microsoft and Teams identities. It records original screenshots, rounded Light
 roles and the explicit preservation policy for Dark/Darker. The [generator link](colors/generator-link.md)
-loads the current recipe.
+loads the current recipe. The approved 2026-09-20 contour refinement uses physical black
+at 5/9.5/18% alpha for Light/onSubtle Lowest/Low/Medium; shared neutral Card Rest borders
+consume Low. Dark/Darker and onVivid recipes are preserved.
 
 ## Primary Sources
 
