@@ -1,4 +1,5 @@
 import type {
+  CardSurfaceElementStyle,
   ElementForeground,
   ElementPalettes,
   ElementSeparator,
@@ -16,7 +17,7 @@ import { resolveContourReferences } from './resolveContourReferences.ts';
 
 export type ElementPaletteSource = {
   foreground?: ElementForeground;
-  palettes?: ElementPalettes;
+  palettes?: ElementPalettes | CardSurfaceElementStyle<string>['palettes'];
   separator?: ElementSeparator;
 };
 
@@ -74,7 +75,7 @@ export function resolveElementPaletteSources(
   const paletteSources = [
     separatorRecipe?.palettes as ElementPalettes | undefined,
     foregroundPalettes,
-    element.palettes
+    element.palettes as ElementPalettes | undefined
   ].filter((value): value is ElementPalettes => Boolean(value));
   const palettes = paletteSources.reduce<ElementPalettes | undefined>(
     (current, value) =>

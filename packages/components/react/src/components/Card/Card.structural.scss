@@ -4,6 +4,15 @@
   display: block;
 }
 
+/*
+ * element card root modifier 'a' / e1a
+ * Flush content suppresses generated padding and clips children to the Card boundary.
+ */
+.k-crd.k-crd-e1a {
+  padding: 0;
+  overflow: hidden;
+}
+
 .k-crd-b {
   /* Composition: Suppress border paint without changing the generated geometry. */
   border-color: transparent !important;

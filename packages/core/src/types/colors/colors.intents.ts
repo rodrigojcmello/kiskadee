@@ -79,6 +79,16 @@ export const CardIntentKeys = {
 /** Supported intent keys for the `card` component (Layer 3). */
 export type CardIntent = keyof typeof CardIntentKeys;
 
+/** Container paint families. Complementary surfaces have no CardAction states. */
+export const ContainerIntentKeys = {
+  ...CardIntentKeys,
+  neutralComplementary: 'neutralComplementary',
+  primaryComplementary: 'primaryComplementary'
+} as const;
+
+export type ContainerIntent = keyof typeof ContainerIntentKeys;
+export type CardSurfaceIntent = ContainerIntent;
+
 /** Qualified role identifier for `card` intents (e.g. `card.neutral`). */
 export type RoleCard = `card.${CardIntent}`;
 

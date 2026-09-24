@@ -1,9 +1,7 @@
-import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import type { Segment } from '../elegant.schema.ts';
-
-type CardComponent = NonNullable<Schema<Segment>['components']['card']>;
 
 type CreateElegantCardSchemaArgs = {
   c: PresetColorGetter<Segment>;
@@ -15,8 +13,8 @@ export function createElegantCardSchema({
   c,
   segmentNames,
   transparent
-}: CreateElegantCardSchemaArgs): CardComponent {
-  return {
+}: CreateElegantCardSchemaArgs) {
+  return splitCardSurfaceSchema<Segment>({
     effects: {
       shadow: {
         e1: {
@@ -105,5 +103,5 @@ export function createElegantCardSchema({
         }))
       }
     }
-  };
+  });
 }

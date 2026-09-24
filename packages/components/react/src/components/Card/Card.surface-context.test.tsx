@@ -102,6 +102,22 @@ function SurfaceProbe({ testId }: { testId: string }) {
 afterEach(cleanup);
 
 describe('Card Surface Context', () => {
+  it('keeps a flush static Card on one clipped root and does not forward the visual prop', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <Card flushContent data-testid="card">
+          <span data-testid="child">Content</span>
+        </Card>
+      </KiskadeeContext.Provider>
+    );
+    const card = result.getByTestId('card');
+
+    expect(card.tagName).toBe('DIV');
+    expect(card.className).toContain('k-crd-e1a');
+    expect(card.hasAttribute('flushContent')).toBe(false);
+    expect(card.firstElementChild).toBe(result.getByTestId('child'));
+  });
+
   it('composes recursively through nested Cards, Button, and Badge without forced alternation', () => {
     const result = render(
       <KiskadeeContext.Provider value={context}>
@@ -141,6 +157,7 @@ describe('Card Surface Context', () => {
     );
     const action = result.getByRole('button');
 
+    expect(result.container.firstElementChild).toBe(action);
     expect(result.getByTestId('action-surface').textContent).toBe('onSubtle');
     fireEvent.click(action);
     expect(result.getByTestId('action-surface').textContent).toBe('onVivid');

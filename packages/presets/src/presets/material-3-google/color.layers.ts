@@ -1,11 +1,11 @@
-import blueSupport from './colors/default/b.blue.v2.ts';
-import purpleSupport from './colors/default/pb.indigo.v3.ts';
 import type { GlobalSemanticsByTheme, PrimitiveColors } from '@kiskadee/core';
-import segmentPurple from './colors/default/pb.indigo.v2.ts';
 import blueV1 from './colors/default/b.blue.v1.ts';
+import blueSupport from './colors/default/b.blue.v2.ts';
 import greenV1 from './colors/default/g.green.v1.ts';
 import blackV1 from './colors/default/n.black.v1.ts';
 import purpleV1 from './colors/default/p.purple.v1.ts';
+import segmentPurple from './colors/default/pb.indigo.v2.ts';
+import purpleSupport from './colors/default/pb.indigo.v3.ts';
 import redV1 from './colors/default/r.red.v1.ts';
 import pinkV1 from './colors/default/rp.magenta.v1.ts';
 import yellowV1 from './colors/default/y.yellow.v1.ts';

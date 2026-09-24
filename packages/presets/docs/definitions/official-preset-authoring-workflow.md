@@ -66,28 +66,32 @@ not bypass the strict resolver with literals or direct tonal lookup helpers.
 
 ## 6. Publish Canonical Surfaces
 
-Before documenting components on preset-owned backgrounds, define the surface vocabulary through
-Card:
+Before documenting components on preset-owned backgrounds, define continuous Rest surfaces through
+Container and bounded presentations through Card:
 
-1. Author the required Card Rest surfaces under
-   `components.card.elements.e1.palettes[segment][theme].onSubtle.boxColor` and author the matching
-   supported contextual branches.
-2. Author `components.card.contentSurfaceContext` for the runtime transitions a Card publishes to
-   descendants for every supported input context.
+1. Author the required Container Rest surfaces under
+   `components.container.elements.e1.palettes[segment][theme].onSubtle.boxColor` and matching
+   supported contextual branches. Author `components.container.contentSurfaceContext` for the
+   context produced for descendants.
+2. Set `components.card.surfaceSource: 'container'` and author Card borders, geometry, effects and
+   interactive color deltas. Every Card surface must resolve to a Container Rest at the same
+   coordinate. Card keeps its own descendant context map and self-contained generated artifact.
 3. Declare the recommended order and associated descendant context through
-   `components.card.options.canonicalSurfaces[segment][theme]`.
+   `components.container.options.canonicalSurfaces[segment][theme]`.
 4. Include at least one entry whose `contentSurfaceContext` is `onSubtle`.
 5. Include a strong Primary entry whose `contentSurfaceContext` is `onVivid` when components will
    be demonstrated on a vivid Primary canvas.
 
-The canonical catalog resolves its surface swatches from the `onSubtle` Rest branch. At runtime,
-Card consumes its explicit or inherited `surfaceContext` and selects the matching Card palette. The
-runtime `contentSurfaceContext` map tells descendants which palette context to select; the matching
-field in `canonicalSurfaces` documents the catalog entry and does not replace that map.
+The canonical catalog resolves its surface swatches from the Container `onSubtle` Rest branch via
+the resolved Card recipe. At runtime, Card consumes its explicit or inherited `surfaceContext` and
+selects the matching Card palette. The runtime `contentSurfaceContext` map tells descendants which
+palette context to select; the matching field in `canonicalSurfaces` documents the catalog entry
+and does not replace that map.
 
-The Web Builder validates these references and publishes `components/card.kiskadee.json`. The
-Showcase consumes that artifact as the canonical background catalog. Having a Primary color in
-Layers 1, 2, or 3 is not sufficient to create this artifact.
+Core validates Card-to-Container and catalog references; Web Builder resolves them before
+publishing `components/container.kiskadee.json` and the self-contained
+`components/card.kiskadee.json`. The latter retains a resolved canonical catalog for existing
+Showcase consumers. Having a Primary color in Layers 1, 2, or 3 is not sufficient to create it.
 
 Card is not a universal prerequisite for compiling another component. It becomes a delivery
 prerequisite when the component's documentation or composition needs a preset-owned surrounding
@@ -107,14 +111,14 @@ For each component, author the palettes it can render on the surrounding surface
 The surrounding canvas and the component treatment are independent contracts:
 
 ```text
-Card canonical surface
+Container Rest surface, selected directly or through Card
   -> supplies the actual background color
 
 Component onVivid palette
   -> supplies the component colors that remain legible on that background
 ```
 
-A preset needs both contracts for a complete vivid composition. A Card surface without a matching
+A preset needs both contracts for a complete vivid composition. A Container/Card surface without a matching
 component `onVivid` palette produces an unsupported component context. A component `onVivid`
 palette without a canonical Card surface can render on a host-provided background, but the Showcase
 has no preset-authored canonical canvas to display.
@@ -125,7 +129,8 @@ After schema authoring, inspect the generated outputs instead of assuming that a
 proves the composition:
 
 - `manifest.json` must announce the intended component surface contexts;
-- `components/card.kiskadee.json` must exist when canonical surfaces are declared;
+- `components/container.kiskadee.json` must exist for Container surfaces;
+- `components/card.kiskadee.json` must exist when canonical Card surfaces are declared;
 - Card canonical entries must contain resolved Rest colors in authored order;
 - component class maps must contain `c.s` for `onSubtle` and `c.v` for `onVivid` when supported;
 - every declared segment and theme must have the intended artifacts.

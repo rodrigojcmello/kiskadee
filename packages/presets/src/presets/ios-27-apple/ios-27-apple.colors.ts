@@ -1,4 +1,3 @@
-import { classifyPrimitives } from '../../classify-primitives.ts';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -6,6 +5,7 @@ import type {
   PrimitiveColors,
   SchemaColors
 } from '@kiskadee/core';
+import { classifyPrimitives } from '../../classify-primitives.ts';
 import blueV1 from './colors/b.blue.v1.ts';
 import mintV1 from './colors/bg.teal.v1.ts';
 import tealV2 from './colors/bg.teal.v2.ts';

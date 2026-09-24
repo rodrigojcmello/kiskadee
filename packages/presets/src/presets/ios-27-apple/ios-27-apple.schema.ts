@@ -181,7 +181,7 @@ export const schema: Schema<Segment> = {
     button: createIos27AppleButtonSchema({
       c
     }),
-    card: createIos27AppleCardSchema({
+    ...createIos27AppleCardSchema({
       c,
       segmentNames,
       transparent

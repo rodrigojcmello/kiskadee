@@ -120,7 +120,7 @@ export const schema: Schema<Segment> = {
     button: createElegantButtonSchema({
       c
     }),
-    card: createElegantCardSchema({
+    ...createElegantCardSchema({
       c,
       segmentNames,
       transparent

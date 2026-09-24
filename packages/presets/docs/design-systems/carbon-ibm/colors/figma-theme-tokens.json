@@ -1,863 +1,148 @@
 {
   "fileKey": "MfGzFa79SfhHQ2mKpC3ss4",
-  "themeOrder": [
-    "white",
-    "g10",
-    "g90",
-    "g100"
-  ],
+  "themeOrder": ["white", "g10", "g90", "g100"],
   "tokens": {
-    "Background/background": [
-      "#ffffff",
-      "#f4f4f4",
-      "#262626",
-      "#161616"
-    ],
-    "Background/background-active": [
-      "#8d8d8d80",
-      "#8d8d8d80",
-      "#8d8d8d66",
-      "#8d8d8d66"
-    ],
-    "Background/background-hover": [
-      "#8d8d8d1f",
-      "#8d8d8d1f",
-      "#8d8d8d29",
-      "#8d8d8d29"
-    ],
-    "Background/background-selected": [
-      "#8d8d8d33",
-      "#8d8d8d33",
-      "#8d8d8d3d",
-      "#8d8d8d3d"
-    ],
-    "Background/background-selected-hover": [
-      "#8d8d8d52",
-      "#8d8d8d52",
-      "#8d8d8d52",
-      "#8d8d8d52"
-    ],
-    "Background/background-brand": [
-      "#0f62fe",
-      "#0f62fe",
-      "#0f62fe",
-      "#0f62fe"
-    ],
-    "Background/background-inverse": [
-      "#393939",
-      "#393939",
-      "#f4f4f4",
-      "#f4f4f4"
-    ],
-    "Background/background-inverse-hover": [
-      "#474747",
-      "#474747",
-      "#e8e8e8",
-      "#e8e8e8"
-    ],
-    "Layer/layer-01": [
-      "#f4f4f4",
-      "#ffffff",
-      "#393939",
-      "#262626"
-    ],
-    "Layer/layer-02": [
-      "#ffffff",
-      "#f4f4f4",
-      "#525252",
-      "#393939"
-    ],
-    "Layer/layer-03": [
-      "#f4f4f4",
-      "#ffffff",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Layer/layer-hover-01": [
-      "#e8e8e8",
-      "#e8e8e8",
-      "#474747",
-      "#333333"
-    ],
-    "Layer/layer-hover-02": [
-      "#e8e8e8",
-      "#e8e8e8",
-      "#636363",
-      "#474747"
-    ],
-    "Layer/layer-hover-03": [
-      "#e8e8e8",
-      "#e8e8e8",
-      "#5e5e5e",
-      "#636363"
-    ],
-    "Layer/layer-active-01": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Layer/layer-active-02": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Layer/layer-active-03": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#393939",
-      "#8d8d8d"
-    ],
-    "Layer/layer-selected-01": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#525252",
-      "#393939"
-    ],
-    "Layer/layer-selected-02": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Layer/layer-selected-03": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#525252",
-      "#6f6f6f"
-    ],
-    "Layer/layer-selected-hover-01": [
-      "#d1d1d1",
-      "#d1d1d1",
-      "#636363",
-      "#474747"
-    ],
-    "Layer/layer-selected-hover-02": [
-      "#d1d1d1",
-      "#d1d1d1",
-      "#5e5e5e",
-      "#636363"
-    ],
-    "Layer/layer-selected-hover-03": [
-      "#d1d1d1",
-      "#d1d1d1",
-      "#636363",
-      "#5e5e5e"
-    ],
-    "Layer/layer-selected-disabled": [
-      "#8d8d8d",
-      "#8d8d8d",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Layer/layer-selected-inverse": [
-      "#161616",
-      "#161616",
-      "#f4f4f4",
-      "#f4f4f4"
-    ],
-    "Layer accent/layer-accent-01": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#525252",
-      "#393939"
-    ],
-    "Layer accent/layer-accent-02": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Layer accent/layer-accent-03": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Layer accent/layer-accent-hover-01": [
-      "#d1d1d1",
-      "#d1d1d1",
-      "#636363",
-      "#474747"
-    ],
-    "Layer accent/layer-accent-hover-02": [
-      "#d1d1d1",
-      "#d1d1d1",
-      "#5e5e5e",
-      "#636363"
-    ],
-    "Layer accent/layer-accent-hover-03": [
-      "#d1d1d1",
-      "#d1d1d1",
-      "#7a7a7a",
-      "#5e5e5e"
-    ],
-    "Layer accent/layer-accent-active-01": [
-      "#a8a8a8",
-      "#a8a8a8",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Layer accent/layer-accent-active-02": [
-      "#a8a8a8",
-      "#a8a8a8",
-      "#393939",
-      "#8d8d8d"
-    ],
-    "Layer accent/layer-accent-active-03": [
-      "#a8a8a8",
-      "#a8a8a8",
-      "#525252",
-      "#393939"
-    ],
-    "Field/field-01": [
-      "#f4f4f4",
-      "#ffffff",
-      "#393939",
-      "#262626"
-    ],
-    "Field/field-02": [
-      "#ffffff",
-      "#f4f4f4",
-      "#525252",
-      "#393939"
-    ],
-    "Field/field-03": [
-      "#f4f4f4",
-      "#ffffff",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Field/field-hover-01": [
-      "#e8e8e8",
-      "#e8e8e8",
-      "#474747",
-      "#333333"
-    ],
-    "Field/field-hover-02": [
-      "#e8e8e8",
-      "#e8e8e8",
-      "#636363",
-      "#474747"
-    ],
-    "Field/field-hover-03": [
-      "#e8e8e8",
-      "#e8e8e8",
-      "#5e5e5e",
-      "#636363"
-    ],
-    "Border/border-subtle-00": [
-      "#e0e0e0",
-      "#c6c6c6",
-      "#525252",
-      "#393939"
-    ],
-    "Border/border-subtle-01": [
-      "#c6c6c6",
-      "#e0e0e0",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Border/border-subtle-02": [
-      "#e0e0e0",
-      "#c6c6c6",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Border/border-subtle-03": [
-      "#c6c6c6",
-      "#e0e0e0",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Border/border-subtle-selected-01": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Border/border-subtle-selected-02": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#a8a8a8",
-      "#8d8d8d"
-    ],
-    "Border/border-subtle-selected-03": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#a8a8a8",
-      "#8d8d8d"
-    ],
-    "Border/border-strong-01": [
-      "#8d8d8d",
-      "#8d8d8d",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Border/border-strong-02": [
-      "#8d8d8d",
-      "#8d8d8d",
-      "#a8a8a8",
-      "#8d8d8d"
-    ],
-    "Border/border-strong-03": [
-      "#8d8d8d",
-      "#8d8d8d",
-      "#c6c6c6",
-      "#a8a8a8"
-    ],
-    "Border/border-tile-01": [
-      "#c6c6c6",
-      "#a8a8a8",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Border/border-tile-02": [
-      "#a8a8a8",
-      "#c6c6c6",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Border/border-tile-03": [
-      "#c6c6c6",
-      "#a8a8a8",
-      "#a8a8a8",
-      "#8d8d8d"
-    ],
-    "Border/border-inverse": [
-      "#161616",
-      "#161616",
-      "#f4f4f4",
-      "#f4f4f4"
-    ],
-    "Border/border-disabled": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#8d8d8d80",
-      "#8d8d8d80"
-    ],
-    "Border/border-interactive": [
-      "#0f62fe",
-      "#0f62fe",
-      "#4589ff",
-      "#4589ff"
-    ],
-    "Focus/focus": [
-      "#0f62fe",
-      "#0f62fe",
-      "#ffffff",
-      "#ffffff"
-    ],
-    "Focus/focus-inset": [
-      "#ffffff",
-      "#ffffff",
-      "#161616",
-      "#161616"
-    ],
-    "Focus/focus-inverse": [
-      "#ffffff",
-      "#ffffff",
-      "#0f62fe",
-      "#0f62fe"
-    ],
-    "Miscellaneous/interactive": [
-      "#0f62fe",
-      "#0f62fe",
-      "#4589ff",
-      "#4589ff"
-    ],
-    "Miscellaneous/highlight": [
-      "#d0e2ff",
-      "#d0e2ff",
-      "#002d9c",
-      "#001d6c"
-    ],
-    "Miscellaneous/toggle-off": [
-      "#8d8d8d",
-      "#8d8d8d",
-      "#8d8d8d",
-      "#6f6f6f"
-    ],
-    "Miscellaneous/overlay": [
-      "#00000099",
-      "#00000099",
-      "#00000099",
-      "#00000099"
-    ],
-    "Miscellaneous/skeleton-element": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#525252",
-      "#525252"
-    ],
-    "Miscellaneous/skeleton-background": [
-      "#e8e8e8",
-      "#e8e8e8",
-      "#474747",
-      "#474747"
-    ],
-    "Support/support-error": [
-      "#da1e28",
-      "#da1e28",
-      "#ff8389",
-      "#fa4d56"
-    ],
-    "Support/support-success": [
-      "#24a148",
-      "#24a148",
-      "#42be65",
-      "#42be65"
-    ],
-    "Support/support-warning": [
-      "#f1c21b",
-      "#f1c21b",
-      "#f1c21b",
-      "#f1c21b"
-    ],
-    "Support/support-info": [
-      "#0043ce",
-      "#0043ce",
-      "#4589ff",
-      "#4589ff"
-    ],
-    "Support/support-error-inverse": [
-      "#fa4d56",
-      "#fa4d56",
-      "#da1e28",
-      "#da1e28"
-    ],
-    "Support/support-success-inverse": [
-      "#42be65",
-      "#42be65",
-      "#24a148",
-      "#24a148"
-    ],
-    "Support/support-warning-inverse": [
-      "#f1c21b",
-      "#f1c21b",
-      "#f1c21b",
-      "#f1c21b"
-    ],
-    "Support/support-info-inverse": [
-      "#4589ff",
-      "#4589ff",
-      "#0043ce",
-      "#0043ce"
-    ],
-    "Link/link-primary": [
-      "#0f62fe",
-      "#0f62fe",
-      "#78a9ff",
-      "#78a9ff"
-    ],
-    "Link/link-primary-hover": [
-      "#0043ce",
-      "#0043ce",
-      "#a6c8ff",
-      "#a6c8ff"
-    ],
-    "Link/link-secondary": [
-      "#0043ce",
-      "#0043ce",
-      "#a6c8ff",
-      "#a6c8ff"
-    ],
-    "Link/link-inverse": [
-      "#78a9ff",
-      "#78a9ff",
-      "#0f62fe",
-      "#0f62fe"
-    ],
-    "Link/link-visited": [
-      "#8a3ffc",
-      "#8a3ffc",
-      "#be95ff",
-      "#be95ff"
-    ],
-    "Icon/icon-primary": [
-      "#161616",
-      "#161616",
-      "#f4f4f4",
-      "#f4f4f4"
-    ],
-    "Icon/icon-secondary": [
-      "#525252",
-      "#525252",
-      "#c6c6c6",
-      "#c6c6c6"
-    ],
-    "Icon/icon-on-color": [
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff"
-    ],
-    "Icon/icon-on-color-disabled": [
-      "#8d8d8d",
-      "#8d8d8d",
-      "#ffffff40",
-      "#ffffff40"
-    ],
-    "Icon/icon-interactive": [
-      "#0f62fe",
-      "#0f62fe",
-      "#ffffff",
-      "#ffffff"
-    ],
-    "Icon/icon-inverse": [
-      "#ffffff",
-      "#ffffff",
-      "#161616",
-      "#161616"
-    ],
-    "Icon/icon-disabled": [
-      "#16161640",
-      "#16161640",
-      "#f4f4f440",
-      "#f4f4f440"
-    ],
-    "Text/text-primary": [
-      "#161616",
-      "#161616",
-      "#f4f4f4",
-      "#f4f4f4"
-    ],
-    "Text/text-secondary": [
-      "#525252",
-      "#525252",
-      "#c6c6c6",
-      "#c6c6c6"
-    ],
-    "Text/text-placeholder": [
-      "#a8a8a8",
-      "#a8a8a8",
-      "#6f6f6f",
-      "#6f6f6f"
-    ],
-    "Text/text-on-color": [
-      "#ffffff",
-      "#ffffff",
-      "#ffffff",
-      "#ffffff"
-    ],
-    "Text/text--on-color-disabled": [
-      "#8d8d8d",
-      "#8d8d8d",
-      "#ffffff40",
-      "#ffffff40"
-    ],
-    "Text/text-helper": [
-      "#6f6f6f",
-      "#6f6f6f",
-      "#8d8d8d",
-      "#8d8d8d"
-    ],
-    "Text/text-error": [
-      "#da1e28",
-      "#da1e28",
-      "#ffb3b8",
-      "#ff8389"
-    ],
-    "Text/text-inverse": [
-      "#ffffff",
-      "#ffffff",
-      "#161616",
-      "#161616"
-    ],
-    "Text/text-disabled": [
-      "#16161640",
-      "#16161640",
-      "#f4f4f440",
-      "#f4f4f440"
-    ],
-    "Button/button-primary": [
-      "#0f62fe",
-      "#0f62fe",
-      "#0f62fe",
-      "#0f62fe"
-    ],
-    "Button/button-primary-hover": [
-      "#0050e6",
-      "#0050e6",
-      "#0050e6",
-      "#0050e6"
-    ],
-    "Button/button-primary-active": [
-      "#002d9c",
-      "#002d9c",
-      "#002d9c",
-      "#002d9c"
-    ],
-    "Button/button-secondary": [
-      "#393939",
-      "#393939",
-      "#6f6f6f",
-      "#6f6f6f"
-    ],
-    "Button/button-secondary-hover": [
-      "#474747",
-      "#474747",
-      "#5e5e5e",
-      "#5e5e5e"
-    ],
-    "Button/button-secondary-active": [
-      "#6f6f6f",
-      "#6f6f6f",
-      "#393939",
-      "#393939"
-    ],
-    "Button/button-tertiary": [
-      "#0f62fe",
-      "#0f62fe",
-      "#ffffff",
-      "#ffffff"
-    ],
-    "Button/button-tertiary-hover": [
-      "#0050e6",
-      "#0050e6",
-      "#f4f4f4",
-      "#f4f4f4"
-    ],
-    "Button/button-tertiary-active": [
-      "#002d9c",
-      "#002d9c",
-      "#c6c6c6",
-      "#c6c6c6"
-    ],
-    "Button/button-danger-primary": [
-      "#da1e28",
-      "#da1e28",
-      "#da1e28",
-      "#da1e28"
-    ],
-    "Button/button-danger-secondary": [
-      "#da1e28",
-      "#da1e28",
-      "#ff8389",
-      "#fa4d56"
-    ],
-    "Button/button-danger-hover": [
-      "#b81922",
-      "#b81922",
-      "#b81922",
-      "#b81922"
-    ],
-    "Button/button-danger-active": [
-      "#750e13",
-      "#750e13",
-      "#750e13",
-      "#750e13"
-    ],
-    "Button/button-separator": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#161616",
-      "#161616"
-    ],
-    "Button/button-disabled": [
-      "#c6c6c6",
-      "#c6c6c6",
-      "#6f6f6f",
-      "#525252"
-    ],
-    "Support/support-caution-major": [
-      "#ff832b",
-      "#ff832b",
-      "#ff832b",
-      "#ff832b"
-    ],
-    "Support/support-caution-minor": [
-      "#f1c21b",
-      "#f1c21b",
-      "#f1c21b",
-      "#f1c21b"
-    ],
-    "Support/support-undefined": [
-      "#8a3ffc",
-      "#8a3ffc",
-      "#a56eff",
-      "#a56eff"
-    ],
-    "Link/link-inverse-hover": [
-      "#a6c8ff",
-      "#a6c8ff",
-      "#0043ce",
-      "#0043ce"
-    ],
-    "Link/link-inverse-visited": [
-      "#be95ff",
-      "#be95ff",
-      "#8a3ffc",
-      "#8a3ffc"
-    ],
-    "Link/link-inverse-active": [
-      "#f4f4f4",
-      "#f4f4f4",
-      "#161616",
-      "#161616"
-    ],
-    "Layer/layer-background-00": [
-      "#ffffff",
-      "#f4f4f4",
-      "#262626",
-      "#161616"
-    ],
-    "Layer/layer-background-01": [
-      "#f4f4f4",
-      "#ffffff",
-      "#393939",
-      "#262626"
-    ],
-    "Layer/layer-background-02": [
-      "#ffffff",
-      "#f4f4f4",
-      "#525252",
-      "#393939"
-    ],
-    "Tag/Blue/tag-background": [
-      "#d0e2ff",
-      "#d0e2ff",
-      "#0043ce",
-      "#0043ce"
-    ],
-    "Tag/Blue/tag-color": [
-      "#0043ce",
-      "#0043ce",
-      "#d0e2ff",
-      "#d0e2ff"
-    ],
-    "Tag/Blue/tag-hover": [
-      "#b8d3ff",
-      "#b8d3ff",
-      "#0053ff",
-      "#0053ff"
-    ],
-    "Tag/Gray/tag-background": [
-      "#e0e0e0",
-      "#e0e0e0",
-      "#525252",
-      "#525252"
-    ],
-    "Tag/Gray/tag-color": [
-      "#161616",
-      "#161616",
-      "#e0e0e0",
-      "#e0e0e0"
-    ],
-    "Tag/Gray/tag-hover": [
-      "#d1d1d1",
-      "#d1d1d1",
-      "#636363",
-      "#636363"
-    ],
-    "Tag/Green/tag-background": [
-      "#a7f0ba",
-      "#a7f0ba",
-      "#0e6027",
-      "#0e6027"
-    ],
-    "Tag/Green/tag-color": [
-      "#0e6027",
-      "#0e6027",
-      "#a7f0ba",
-      "#a7f0ba"
-    ],
-    "Tag/Green/tag-hover": [
-      "#74e792",
-      "#74e792",
-      "#11742f",
-      "#11742f"
-    ],
-    "Tag/Red/tag-background": [
-      "#ffd7d9",
-      "#ffd7d9",
-      "#a2191f",
-      "#a2191f"
-    ],
-    "Tag/Red/tag-color": [
-      "#a2191f",
-      "#a2191f",
-      "#ffd7d9",
-      "#ffd7d9"
-    ],
-    "Tag/Red/tag-hover": [
-      "#ffc2c5",
-      "#ffc2c5",
-      "#c21e25",
-      "#c21e25"
-    ],
-    "Tag/Purple/tag-background": [
-      "#e8daff",
-      "#e8daff",
-      "#6929c4",
-      "#6929c4"
-    ],
-    "Tag/Purple/tag-color": [
-      "#6929c4",
-      "#6929c4",
-      "#e8daff",
-      "#e8daff"
-    ],
-    "Tag/Purple/tag-hover": [
-      "#dcc7ff",
-      "#dcc7ff",
-      "#7c3dd6",
-      "#7c3dd6"
-    ],
-    "Tag/Yellow/tag-background": [
-      "#fddc69",
-      "#fddc69",
-      "#684e00",
-      "#684e00"
-    ],
-    "Tag/Yellow/tag-color": [
-      "#684e00",
-      "#684e00",
-      "#fddc69",
-      "#fddc69"
-    ],
-    "Tag/Yellow/tag-hover": [
-      "#fccd27",
-      "#fccd27",
-      "#806000",
-      "#806000"
-    ],
-    "Tag/Blue/tag-border": [
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00"
-    ],
-    "Tag/Green/tag-border-transparent": [
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00"
-    ],
-    "Tag/Purple/tag-border-transparent": [
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00"
-    ],
-    "Tag/Red/tag-border-transparent": [
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00"
-    ],
-    "Tag/Yellow/tag-border-transparent": [
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00"
-    ],
-    "Tag/Gray/tag-border-transparent": [
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00",
-      "#ffffff00"
-    ]
+    "Background/background": ["#ffffff", "#f4f4f4", "#262626", "#161616"],
+    "Background/background-active": ["#8d8d8d80", "#8d8d8d80", "#8d8d8d66", "#8d8d8d66"],
+    "Background/background-hover": ["#8d8d8d1f", "#8d8d8d1f", "#8d8d8d29", "#8d8d8d29"],
+    "Background/background-selected": ["#8d8d8d33", "#8d8d8d33", "#8d8d8d3d", "#8d8d8d3d"],
+    "Background/background-selected-hover": ["#8d8d8d52", "#8d8d8d52", "#8d8d8d52", "#8d8d8d52"],
+    "Background/background-brand": ["#0f62fe", "#0f62fe", "#0f62fe", "#0f62fe"],
+    "Background/background-inverse": ["#393939", "#393939", "#f4f4f4", "#f4f4f4"],
+    "Background/background-inverse-hover": ["#474747", "#474747", "#e8e8e8", "#e8e8e8"],
+    "Layer/layer-01": ["#f4f4f4", "#ffffff", "#393939", "#262626"],
+    "Layer/layer-02": ["#ffffff", "#f4f4f4", "#525252", "#393939"],
+    "Layer/layer-03": ["#f4f4f4", "#ffffff", "#6f6f6f", "#525252"],
+    "Layer/layer-hover-01": ["#e8e8e8", "#e8e8e8", "#474747", "#333333"],
+    "Layer/layer-hover-02": ["#e8e8e8", "#e8e8e8", "#636363", "#474747"],
+    "Layer/layer-hover-03": ["#e8e8e8", "#e8e8e8", "#5e5e5e", "#636363"],
+    "Layer/layer-active-01": ["#c6c6c6", "#c6c6c6", "#6f6f6f", "#525252"],
+    "Layer/layer-active-02": ["#c6c6c6", "#c6c6c6", "#8d8d8d", "#6f6f6f"],
+    "Layer/layer-active-03": ["#c6c6c6", "#c6c6c6", "#393939", "#8d8d8d"],
+    "Layer/layer-selected-01": ["#e0e0e0", "#e0e0e0", "#525252", "#393939"],
+    "Layer/layer-selected-02": ["#e0e0e0", "#e0e0e0", "#6f6f6f", "#525252"],
+    "Layer/layer-selected-03": ["#e0e0e0", "#e0e0e0", "#525252", "#6f6f6f"],
+    "Layer/layer-selected-hover-01": ["#d1d1d1", "#d1d1d1", "#636363", "#474747"],
+    "Layer/layer-selected-hover-02": ["#d1d1d1", "#d1d1d1", "#5e5e5e", "#636363"],
+    "Layer/layer-selected-hover-03": ["#d1d1d1", "#d1d1d1", "#636363", "#5e5e5e"],
+    "Layer/layer-selected-disabled": ["#8d8d8d", "#8d8d8d", "#8d8d8d", "#6f6f6f"],
+    "Layer/layer-selected-inverse": ["#161616", "#161616", "#f4f4f4", "#f4f4f4"],
+    "Layer accent/layer-accent-01": ["#e0e0e0", "#e0e0e0", "#525252", "#393939"],
+    "Layer accent/layer-accent-02": ["#e0e0e0", "#e0e0e0", "#6f6f6f", "#525252"],
+    "Layer accent/layer-accent-03": ["#e0e0e0", "#e0e0e0", "#8d8d8d", "#6f6f6f"],
+    "Layer accent/layer-accent-hover-01": ["#d1d1d1", "#d1d1d1", "#636363", "#474747"],
+    "Layer accent/layer-accent-hover-02": ["#d1d1d1", "#d1d1d1", "#5e5e5e", "#636363"],
+    "Layer accent/layer-accent-hover-03": ["#d1d1d1", "#d1d1d1", "#7a7a7a", "#5e5e5e"],
+    "Layer accent/layer-accent-active-01": ["#a8a8a8", "#a8a8a8", "#6f6f6f", "#525252"],
+    "Layer accent/layer-accent-active-02": ["#a8a8a8", "#a8a8a8", "#393939", "#8d8d8d"],
+    "Layer accent/layer-accent-active-03": ["#a8a8a8", "#a8a8a8", "#525252", "#393939"],
+    "Field/field-01": ["#f4f4f4", "#ffffff", "#393939", "#262626"],
+    "Field/field-02": ["#ffffff", "#f4f4f4", "#525252", "#393939"],
+    "Field/field-03": ["#f4f4f4", "#ffffff", "#6f6f6f", "#525252"],
+    "Field/field-hover-01": ["#e8e8e8", "#e8e8e8", "#474747", "#333333"],
+    "Field/field-hover-02": ["#e8e8e8", "#e8e8e8", "#636363", "#474747"],
+    "Field/field-hover-03": ["#e8e8e8", "#e8e8e8", "#5e5e5e", "#636363"],
+    "Border/border-subtle-00": ["#e0e0e0", "#c6c6c6", "#525252", "#393939"],
+    "Border/border-subtle-01": ["#c6c6c6", "#e0e0e0", "#6f6f6f", "#525252"],
+    "Border/border-subtle-02": ["#e0e0e0", "#c6c6c6", "#8d8d8d", "#6f6f6f"],
+    "Border/border-subtle-03": ["#c6c6c6", "#e0e0e0", "#8d8d8d", "#6f6f6f"],
+    "Border/border-subtle-selected-01": ["#c6c6c6", "#c6c6c6", "#8d8d8d", "#6f6f6f"],
+    "Border/border-subtle-selected-02": ["#c6c6c6", "#c6c6c6", "#a8a8a8", "#8d8d8d"],
+    "Border/border-subtle-selected-03": ["#c6c6c6", "#c6c6c6", "#a8a8a8", "#8d8d8d"],
+    "Border/border-strong-01": ["#8d8d8d", "#8d8d8d", "#8d8d8d", "#6f6f6f"],
+    "Border/border-strong-02": ["#8d8d8d", "#8d8d8d", "#a8a8a8", "#8d8d8d"],
+    "Border/border-strong-03": ["#8d8d8d", "#8d8d8d", "#c6c6c6", "#a8a8a8"],
+    "Border/border-tile-01": ["#c6c6c6", "#a8a8a8", "#6f6f6f", "#525252"],
+    "Border/border-tile-02": ["#a8a8a8", "#c6c6c6", "#8d8d8d", "#6f6f6f"],
+    "Border/border-tile-03": ["#c6c6c6", "#a8a8a8", "#a8a8a8", "#8d8d8d"],
+    "Border/border-inverse": ["#161616", "#161616", "#f4f4f4", "#f4f4f4"],
+    "Border/border-disabled": ["#c6c6c6", "#c6c6c6", "#8d8d8d80", "#8d8d8d80"],
+    "Border/border-interactive": ["#0f62fe", "#0f62fe", "#4589ff", "#4589ff"],
+    "Focus/focus": ["#0f62fe", "#0f62fe", "#ffffff", "#ffffff"],
+    "Focus/focus-inset": ["#ffffff", "#ffffff", "#161616", "#161616"],
+    "Focus/focus-inverse": ["#ffffff", "#ffffff", "#0f62fe", "#0f62fe"],
+    "Miscellaneous/interactive": ["#0f62fe", "#0f62fe", "#4589ff", "#4589ff"],
+    "Miscellaneous/highlight": ["#d0e2ff", "#d0e2ff", "#002d9c", "#001d6c"],
+    "Miscellaneous/toggle-off": ["#8d8d8d", "#8d8d8d", "#8d8d8d", "#6f6f6f"],
+    "Miscellaneous/overlay": ["#00000099", "#00000099", "#00000099", "#00000099"],
+    "Miscellaneous/skeleton-element": ["#c6c6c6", "#c6c6c6", "#525252", "#525252"],
+    "Miscellaneous/skeleton-background": ["#e8e8e8", "#e8e8e8", "#474747", "#474747"],
+    "Support/support-error": ["#da1e28", "#da1e28", "#ff8389", "#fa4d56"],
+    "Support/support-success": ["#24a148", "#24a148", "#42be65", "#42be65"],
+    "Support/support-warning": ["#f1c21b", "#f1c21b", "#f1c21b", "#f1c21b"],
+    "Support/support-info": ["#0043ce", "#0043ce", "#4589ff", "#4589ff"],
+    "Support/support-error-inverse": ["#fa4d56", "#fa4d56", "#da1e28", "#da1e28"],
+    "Support/support-success-inverse": ["#42be65", "#42be65", "#24a148", "#24a148"],
+    "Support/support-warning-inverse": ["#f1c21b", "#f1c21b", "#f1c21b", "#f1c21b"],
+    "Support/support-info-inverse": ["#4589ff", "#4589ff", "#0043ce", "#0043ce"],
+    "Link/link-primary": ["#0f62fe", "#0f62fe", "#78a9ff", "#78a9ff"],
+    "Link/link-primary-hover": ["#0043ce", "#0043ce", "#a6c8ff", "#a6c8ff"],
+    "Link/link-secondary": ["#0043ce", "#0043ce", "#a6c8ff", "#a6c8ff"],
+    "Link/link-inverse": ["#78a9ff", "#78a9ff", "#0f62fe", "#0f62fe"],
+    "Link/link-visited": ["#8a3ffc", "#8a3ffc", "#be95ff", "#be95ff"],
+    "Icon/icon-primary": ["#161616", "#161616", "#f4f4f4", "#f4f4f4"],
+    "Icon/icon-secondary": ["#525252", "#525252", "#c6c6c6", "#c6c6c6"],
+    "Icon/icon-on-color": ["#ffffff", "#ffffff", "#ffffff", "#ffffff"],
+    "Icon/icon-on-color-disabled": ["#8d8d8d", "#8d8d8d", "#ffffff40", "#ffffff40"],
+    "Icon/icon-interactive": ["#0f62fe", "#0f62fe", "#ffffff", "#ffffff"],
+    "Icon/icon-inverse": ["#ffffff", "#ffffff", "#161616", "#161616"],
+    "Icon/icon-disabled": ["#16161640", "#16161640", "#f4f4f440", "#f4f4f440"],
+    "Text/text-primary": ["#161616", "#161616", "#f4f4f4", "#f4f4f4"],
+    "Text/text-secondary": ["#525252", "#525252", "#c6c6c6", "#c6c6c6"],
+    "Text/text-placeholder": ["#a8a8a8", "#a8a8a8", "#6f6f6f", "#6f6f6f"],
+    "Text/text-on-color": ["#ffffff", "#ffffff", "#ffffff", "#ffffff"],
+    "Text/text--on-color-disabled": ["#8d8d8d", "#8d8d8d", "#ffffff40", "#ffffff40"],
+    "Text/text-helper": ["#6f6f6f", "#6f6f6f", "#8d8d8d", "#8d8d8d"],
+    "Text/text-error": ["#da1e28", "#da1e28", "#ffb3b8", "#ff8389"],
+    "Text/text-inverse": ["#ffffff", "#ffffff", "#161616", "#161616"],
+    "Text/text-disabled": ["#16161640", "#16161640", "#f4f4f440", "#f4f4f440"],
+    "Button/button-primary": ["#0f62fe", "#0f62fe", "#0f62fe", "#0f62fe"],
+    "Button/button-primary-hover": ["#0050e6", "#0050e6", "#0050e6", "#0050e6"],
+    "Button/button-primary-active": ["#002d9c", "#002d9c", "#002d9c", "#002d9c"],
+    "Button/button-secondary": ["#393939", "#393939", "#6f6f6f", "#6f6f6f"],
+    "Button/button-secondary-hover": ["#474747", "#474747", "#5e5e5e", "#5e5e5e"],
+    "Button/button-secondary-active": ["#6f6f6f", "#6f6f6f", "#393939", "#393939"],
+    "Button/button-tertiary": ["#0f62fe", "#0f62fe", "#ffffff", "#ffffff"],
+    "Button/button-tertiary-hover": ["#0050e6", "#0050e6", "#f4f4f4", "#f4f4f4"],
+    "Button/button-tertiary-active": ["#002d9c", "#002d9c", "#c6c6c6", "#c6c6c6"],
+    "Button/button-danger-primary": ["#da1e28", "#da1e28", "#da1e28", "#da1e28"],
+    "Button/button-danger-secondary": ["#da1e28", "#da1e28", "#ff8389", "#fa4d56"],
+    "Button/button-danger-hover": ["#b81922", "#b81922", "#b81922", "#b81922"],
+    "Button/button-danger-active": ["#750e13", "#750e13", "#750e13", "#750e13"],
+    "Button/button-separator": ["#e0e0e0", "#e0e0e0", "#161616", "#161616"],
+    "Button/button-disabled": ["#c6c6c6", "#c6c6c6", "#6f6f6f", "#525252"],
+    "Support/support-caution-major": ["#ff832b", "#ff832b", "#ff832b", "#ff832b"],
+    "Support/support-caution-minor": ["#f1c21b", "#f1c21b", "#f1c21b", "#f1c21b"],
+    "Support/support-undefined": ["#8a3ffc", "#8a3ffc", "#a56eff", "#a56eff"],
+    "Link/link-inverse-hover": ["#a6c8ff", "#a6c8ff", "#0043ce", "#0043ce"],
+    "Link/link-inverse-visited": ["#be95ff", "#be95ff", "#8a3ffc", "#8a3ffc"],
+    "Link/link-inverse-active": ["#f4f4f4", "#f4f4f4", "#161616", "#161616"],
+    "Layer/layer-background-00": ["#ffffff", "#f4f4f4", "#262626", "#161616"],
+    "Layer/layer-background-01": ["#f4f4f4", "#ffffff", "#393939", "#262626"],
+    "Layer/layer-background-02": ["#ffffff", "#f4f4f4", "#525252", "#393939"],
+    "Tag/Blue/tag-background": ["#d0e2ff", "#d0e2ff", "#0043ce", "#0043ce"],
+    "Tag/Blue/tag-color": ["#0043ce", "#0043ce", "#d0e2ff", "#d0e2ff"],
+    "Tag/Blue/tag-hover": ["#b8d3ff", "#b8d3ff", "#0053ff", "#0053ff"],
+    "Tag/Gray/tag-background": ["#e0e0e0", "#e0e0e0", "#525252", "#525252"],
+    "Tag/Gray/tag-color": ["#161616", "#161616", "#e0e0e0", "#e0e0e0"],
+    "Tag/Gray/tag-hover": ["#d1d1d1", "#d1d1d1", "#636363", "#636363"],
+    "Tag/Green/tag-background": ["#a7f0ba", "#a7f0ba", "#0e6027", "#0e6027"],
+    "Tag/Green/tag-color": ["#0e6027", "#0e6027", "#a7f0ba", "#a7f0ba"],
+    "Tag/Green/tag-hover": ["#74e792", "#74e792", "#11742f", "#11742f"],
+    "Tag/Red/tag-background": ["#ffd7d9", "#ffd7d9", "#a2191f", "#a2191f"],
+    "Tag/Red/tag-color": ["#a2191f", "#a2191f", "#ffd7d9", "#ffd7d9"],
+    "Tag/Red/tag-hover": ["#ffc2c5", "#ffc2c5", "#c21e25", "#c21e25"],
+    "Tag/Purple/tag-background": ["#e8daff", "#e8daff", "#6929c4", "#6929c4"],
+    "Tag/Purple/tag-color": ["#6929c4", "#6929c4", "#e8daff", "#e8daff"],
+    "Tag/Purple/tag-hover": ["#dcc7ff", "#dcc7ff", "#7c3dd6", "#7c3dd6"],
+    "Tag/Yellow/tag-background": ["#fddc69", "#fddc69", "#684e00", "#684e00"],
+    "Tag/Yellow/tag-color": ["#684e00", "#684e00", "#fddc69", "#fddc69"],
+    "Tag/Yellow/tag-hover": ["#fccd27", "#fccd27", "#806000", "#806000"],
+    "Tag/Blue/tag-border": ["#ffffff00", "#ffffff00", "#ffffff00", "#ffffff00"],
+    "Tag/Green/tag-border-transparent": ["#ffffff00", "#ffffff00", "#ffffff00", "#ffffff00"],
+    "Tag/Purple/tag-border-transparent": ["#ffffff00", "#ffffff00", "#ffffff00", "#ffffff00"],
+    "Tag/Red/tag-border-transparent": ["#ffffff00", "#ffffff00", "#ffffff00", "#ffffff00"],
+    "Tag/Yellow/tag-border-transparent": ["#ffffff00", "#ffffff00", "#ffffff00", "#ffffff00"],
+    "Tag/Gray/tag-border-transparent": ["#ffffff00", "#ffffff00", "#ffffff00", "#ffffff00"]
   }
 }

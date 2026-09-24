@@ -488,6 +488,7 @@ export function createFluent2MicrosoftSliderSchema({
       }
     },
     options: {
+      density: { regular: 's:md:1' },
       variant: 'standard',
       valueDisplay: 'none',
       marks: 'none',

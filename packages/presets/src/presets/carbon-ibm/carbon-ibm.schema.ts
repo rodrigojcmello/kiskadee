@@ -135,7 +135,7 @@ export function createCarbonIbmSchema(c: CarbonIbmColorResolver): Schema<never> 
       badge: createCarbonIbmBadgeSchema({ c }),
       bottomSheet: createCarbonIbmBottomSheetSchema({ c }),
       button: createCarbonIbmButtonSchema({ c }),
-      card: createCarbonIbmCardSchema({ c }),
+      ...createCarbonIbmCardSchema({ c }),
       chip: createCarbonIbmChipSchema({ c }),
       dropdown: createCarbonIbmDropdownSchema({ c }),
       icon: createCarbonIbmIconSchema({ c }),

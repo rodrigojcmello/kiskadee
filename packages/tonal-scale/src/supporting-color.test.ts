@@ -1,9 +1,8 @@
-import { createTonalArtifactBundle, verifyTonalArtifactBundle } from './export/tonal-artifacts.ts';
-import { validateTonalSystemRecipe } from './tonal-system-contract.ts';
 import { expect, it } from 'vitest';
+import { createTonalArtifactBundle, verifyTonalArtifactBundle } from './export/tonal-artifacts.ts';
 import { deriveSupportingColor } from './supporting-color.ts';
 import { generateKiskadeeTonalSystem } from './tonal-system.ts';
-import { DEFAULT_TONAL_SYSTEM_RECIPE } from './tonal-system-contract.ts';
+import { DEFAULT_TONAL_SYSTEM_RECIPE, validateTonalSystemRecipe } from './tonal-system-contract.ts';
 
 it('derives chromatic support independently of neutral generation', () => {
   const blue = deriveSupportingColor('#0b57d0');

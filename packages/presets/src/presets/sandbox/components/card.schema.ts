@@ -1,8 +1,7 @@
-import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
+import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 
 type SandboxSegmentName = 'default';
-type CardComponent = NonNullable<Schema<never>['components']['card']>;
 
 type CreateSandboxCardSchemaArgs = {
   segmentNames: readonly SandboxSegmentName[];
@@ -12,7 +11,7 @@ type CreateSandboxCardSchemaArgs = {
 export function createSandboxCardSchema({
   segmentNames,
   transparent
-}: CreateSandboxCardSchemaArgs): CardComponent {
+}: CreateSandboxCardSchemaArgs) {
   const neutralLow = {
     rest: '#ffffff',
     hover: '#f0f5ff',
@@ -170,7 +169,7 @@ export function createSandboxCardSchema({
     disabled: transparent
   };
 
-  return {
+  return splitCardSurfaceSchema<never>({
     effects: {
       shadow: {
         e1: {
@@ -317,5 +316,5 @@ export function createSandboxCardSchema({
         }))
       }
     }
-  };
+  });
 }

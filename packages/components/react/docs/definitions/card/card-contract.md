@@ -1,8 +1,9 @@
 # Card Contract
 
-This document records the current styled React `Card` and `CardAction`
-contract. It is the durable source for component behavior; implementation and
-showcase code should follow this model.
+This document records the styled React `Card` and `CardAction` contract. It is the durable source
+for component behavior; implementation and showcase code should follow this model. The
+[surface ownership decision](../../../../../../docs/definitions/container-and-card-surfaces.md)
+defines how their Rest backgrounds relate to Container.
 
 ## Scope
 
@@ -24,6 +25,11 @@ default cursor, not `cursor: pointer`. Interactivity should be communicated by
 hover, pressed, focus, pending, disabled, and shadow states. Disabled CardAction
 instances may use the unavailable-state cursor.
 
+Card and CardAction each keep one DOM root. Their Rest fill comes from the resolved Card artifact,
+which incorporates the Container surface at build time. Neither renders a Container or loads its
+artifact. A consumer can place a separate Container inside a static Card for a distinct internal
+region.
+
 ## Visual Props
 
 Card visuals are selected through the normal Kiskadee component axes:
@@ -38,6 +44,12 @@ Card visuals are selected through the normal Kiskadee component axes:
   support.
 - `border`: static Card visibility override, independent of emphasis and shadow.
 - `preserveBorderWithShadow`: CardAction-only legacy shadow composition option.
+- `flushContent`: static Card-only option. It removes Card's internal padding and clips content
+  to its corners so a child Container can form a full-width band. The band owns its own spacing.
+
+Static Card also accepts optional `neutralComplementary` and `primaryComplementary` surfaces when
+the preset publishes them. The companion uses the base intent's border and frame. CardAction
+continues to accept only intents with authored interactive state recipes.
 
 `Card.shadow` accepts `boolean | ElementSizeValue`. A boolean chooses the
 component default shadow behavior; an explicit size value selects a static
@@ -109,15 +121,16 @@ still owns its own checked/selected state and interaction feedback.
 
 ## Showcase Surface Usage
 
-When Showcase examples need real Card surfaces, they should render real
-`Card`/`CardAction` instances instead of local hardcoded surface wrappers.
+When Showcase examples need bounded Card surfaces, they should render `Card`/`CardAction`.
+Continuous regions such as page bands and internal footers use `Container`; local CSS must not
+invent their colors.
 
 For visual background pickers, the color source is the generated schema, not
 CSS and not a local tonal-scale JSON:
 
 ```txt
 packages/showcase/public/build/<design-system-key>/schema.json
-components.card.elements.e1.palettes[segment][theme].boxColor[intent][emphasis].rest
+components.container.elements.e1.palettes[segment][theme][surfaceContext].boxColor[intent][emphasis].rest
 ```
 
 `manifest.json` may be used to check whether a component supports the requested

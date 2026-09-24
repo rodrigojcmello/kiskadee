@@ -49,7 +49,9 @@ import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Card.module.scss';
+import { CardComplementaryExamples } from './CardComplementaryExamples';
 import { CardComposition } from './CardComposition';
+import { QuickSettingsComposition } from './QuickSettingsComposition';
 
 const cardRadiusOptions: Array<{ value: CardRadiusMode; label: string }> = [
   { value: 'rounded', label: 'Rounded' },
@@ -641,6 +643,8 @@ export function Card() {
               ))}
           </section>
 
+          <CardComplementaryExamples radius={radius} />
+
           <section
             className={`${s.exampleSection} ${s.compositionSection}`}
             aria-labelledby="card-composition"
@@ -648,9 +652,21 @@ export function Card() {
             <SectionHeading
               id="card-composition"
               title="Composition"
-              description="Inspired by the Fluent UI Preview: base, paired tonal surfaces and a vivid region. Lorem ipsum text inherits the context of each Card."
+              description="Inspired by the Fluent UI Preview: Container paints the continuous band, while Cards present bounded tonal surfaces. Lorem ipsum text inherits each surface context."
             />
             <CardComposition radius={radius} />
+          </section>
+
+          <section
+            className={`${s.exampleSection} ${s.compositionSection}`}
+            aria-labelledby="card-quick-settings"
+          >
+            <SectionHeading
+              id="card-quick-settings"
+              title="Quick settings"
+              description="Inspired by Windows quick settings, composed with Container, Card, Button, Separator and Slider. Neutral and vivid versions appear where supported; controls do not change system settings."
+            />
+            <QuickSettingsComposition radius={radius} />
           </section>
 
           {contextSurfaces.length === 2 ? (

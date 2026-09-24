@@ -1,14 +1,15 @@
 # Card Schema Rules
 
 Card schema rules define the generated surface contract for the styled React
-Card components.
+Card components. [Container surface ownership](../../../../../docs/definitions/container-and-card-surfaces.md)
+defines the cross-package relationship.
 
 ## Elements
 
 ## Independent static border
 
 `options.border[segment][theme][surfaceContext][intent][emphasis]` publishes boolean defaults.
-Every declared combination must have an existing box Rest, border Rest, positive border width
+Every declared combination must resolve a Container box Rest, Card border Rest, positive border width
 and visible border style. The map controls activation only; colors remain in `e1.palettes`.
 Presets without the map retain legacy behavior. Emphasis suggests the default rather than
 restricting the availability of a border. Static consumers may override visibility independently
@@ -19,13 +20,17 @@ its interaction deltas; this extension does not redesign interaction-state recip
 
 Card uses `e1` as the root surface element.
 
-`e1` owns the Card's visible container styling:
+`surfaceSource: 'container'` declares the Container Rest fill used by `e1`. Card `e1` owns:
 
-- background / box color;
 - border;
 - radius;
 - shadow/elevation effect hooks;
-- interaction-state styling for `CardAction`.
+- box-color changes and other interaction-state styling for `CardAction`.
+
+Every Card coordinate must have a matching `components.container.e1` Rest surface in the same
+segment, theme, input context, intent and emphasis. Core rejects a missing reference. Web Builder
+combines Container Rest with Card's own recipe before emitting Card classes and artifacts. React
+loads only the resolved Card artifact, and Card keeps one root node.
 
 Do not add extra public Card elements only to model local layout wrappers inside
 showcase examples. Internal composition should stay in React/CSS unless the
@@ -33,14 +38,15 @@ design system needs a stable visual slot.
 
 ## Surface Color Path
 
-The generated schema path for Card surface color is:
+The authored schema path for a Rest surface is:
 
 ```txt
-components.card.elements.e1.palettes[segment][theme].boxColor[intent][emphasis].rest
+components.container.elements.e1.palettes[segment][theme][surfaceContext].boxColor[intent][emphasis].rest
 ```
 
-That path is the source for tooling that needs literal Card surface colors, such
-as the Showcase surface picker.
+The generated Card artifact still carries the resolved Rest surface and is the source for tooling
+that inspects Card-specific combinations. The Container artifact is the source for tooling that
+inspects continuous background colors.
 
 `manifest.json` is a capability/index artifact. It may confirm that an
 intent/emphasis/state combination exists, but it must not be treated as the
@@ -49,7 +55,11 @@ literal color source.
 ## Intent And Emphasis
 
 Card can expose `neutral` and `primary` as public intents because the whole Card
-surface changes semantic family.
+surface changes semantic family. Optional `neutralComplementary` and
+`primaryComplementary` surfaces may be selected by a static Card with the frame of their base
+intent. They do not imply interactive CardAction recipes. Their emphasis names identify the base
+surface to which they are recommended, not a second ascending color scale. Equal resolved colors
+across base and complementary intents are valid.
 
 Current first-party Card surface buckets are:
 
@@ -113,8 +123,9 @@ intent/emphasis buckets.
 
 ## Required Primary Highest for onVivid
 
-A preset that supports canonical `onVivid` composition must publish `primary.highest` in the Card
-palettes and `canonicalSurfaces` for each supported segment/theme. Its `contentSurfaceContext`
+A preset that supports canonical `onVivid` composition must publish `primary.highest` in the
+Container Rest and the resolved Card palettes, plus
+`components.container.options.canonicalSurfaces` for each supported segment/theme. Its `contentSurfaceContext`
 for enabled Rest/Selected descendants must be `onVivid`. This is the usable canonical vivid
 surface for other components, not an optional duplicate of pale surfaces. `neutral.highest` may
 remain absent. Do not remove Primary Highest as part of reducing subtle background variants or

@@ -5,6 +5,7 @@ import type {
   SolidColor,
   ThemeMode
 } from '@kiskadee/core';
+import { resolveCardSurfaceSource } from '@kiskadee/core';
 
 export const CARD_COMPONENT_ARTIFACT_PATH = 'components/card.kiskadee.json';
 
@@ -62,7 +63,7 @@ function resolveCanonicalSurfaceRest({
 }
 
 export function buildCardComponentArtifact(schema: Schema): CardComponentArtifactJSON | null {
-  const cardSchema = schema.components?.card;
+  const cardSchema = resolveCardSurfaceSource(schema).components?.card;
   const canonicalSurfaces = cardSchema?.options?.canonicalSurfaces;
   if (!cardSchema || (!canonicalSurfaces && !cardSchema.options?.border)) return null;
 

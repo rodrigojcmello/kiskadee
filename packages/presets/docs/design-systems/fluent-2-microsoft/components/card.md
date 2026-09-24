@@ -1,5 +1,8 @@
 # Fluent 2 Card Evidence
 
+> Rest fill ownership and the initial companion pairs: [Container calibration](container.md).
+> The Card mapping below remains the evidence for the migrated base colors, borders and states.
+
 > Current neutral mapping: [2026-09-19 achromatic calibration](neutral-surface-calibration.md).
 > It supersedes the earlier tinted-neutral and Light contour values below; those sections retain historical provenance.
 
@@ -31,7 +34,7 @@ This is a tonal-position equivalence, not a claim of additional upstream Fluent 
 - Approved generated assets:
   [`b.blue.v1.json`](../colors/generated/colors/b.blue.v1.json),
   [`n.black.v1.json`](../colors/generated/colors/n.black.v1.json), and
-  [`n.black.v2.json`](../colors/generated/colors/n.black.v2.json)
+  [archived `n.black.v2.json`](../colors/candidate-vivid-lights/colors/n.black.v2.json)
 
 ## Source Coverage
 
@@ -272,12 +275,13 @@ Light and Dark intentionally omit `neutral.highest` rather than exposing
 visually distinct Kiskadee extension outside the six official sticker-sheet
 aliases.
 
-The Card consumes the ambient `surfaceContext`, while intent and emphasis select which surface the
-Card owns. The Fluent schema publishes the same surface recipes under both input contexts and uses
-the contextual branch only for the boundary adaptation described above.
+The Card consumes the ambient `surfaceContext`, while intent and emphasis select the Container
+Rest surface it uses. The Fluent schema publishes the same base Rest recipes under both input
+contexts and uses Card's contextual branch for the boundary adaptation described above.
 
-The authored `contentSurfaceContext` map remains a separate output contract for descendants. It is
-published for both input contexts:
+The authored `contentSurfaceContext` map remains a separate output contract for descendants.
+Container authors Rest outputs; Card retains its selected and other interaction deltas. The
+resolved Card artifact publishes the combined map for both input contexts:
 
 - transparent `lowest` surfaces inherit the consumed context;
 - Neutral Low, Medium, High, and Darker Highest produce `onSubtle`;
@@ -288,7 +292,7 @@ The p-react Card resolves this map and republishes the result with `SurfaceConte
 `canonicalSurfaces` remains the recommended surface catalog and is not used as a substitute for
 runtime propagation.
 
-`components.card.options.canonicalSurfaces` publishes the source-backed
+`components.container.options.canonicalSurfaces` publishes the source-backed
 surface catalog in its intended order for every theme:
 
 1. `neutral.low` -> descendant context `onSubtle`;
@@ -304,8 +308,9 @@ these references and publishes their resolved Rest values in
 `components/card.kiskadee.json`. Consumers use that artifact instead of
 duplicating the order or inferring surface context from luminance.
 
-This keeps surface ownership with Card and contrast/polarity treatment with the
-child instead of coupling Card appearance to every descendant.
+This keeps Rest surface ownership with Container, Card geometry and interaction with Card, and
+contrast/polarity treatment with the child instead of coupling Card appearance to every
+descendant.
 
 Kiskadee exposes one Card shadow recipe for the root surface. The Fluent preset
 emits only Rest as `Shadow 04` (`s:md:1`) and Hover as `Shadow 08`

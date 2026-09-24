@@ -23,6 +23,11 @@ export const fluent2MicrosoftColorEvidence = {
     rationale:
       'Card fixed stops adapt documented Fluent tokens; approved Light Primary Low/High extend Neutral positions L1/L5.'
   },
+  'component.container': {
+    source: 'components/container.md#color-and-token-provenance',
+    rationale:
+      'Container companion stops use the approved Card neutral/primary tonal assets for calibrated internal regions.'
+  },
   'component.chip': {
     source: 'components/chip.md#color-and-token-provenance',
     rationale: 'Chip fixed stops adapt documented interaction-state token positions.'

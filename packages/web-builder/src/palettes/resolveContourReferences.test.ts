@@ -10,7 +10,7 @@ import {
 } from './resolveElementPaletteSources.ts';
 
 describe('Fluent shared contour pipeline', () => {
-  it('aligns neutral borders and vivid Card outlines with context-relative Separator medium', () => {
+  it('resolves Card borders and Separator levels from the shared contour catalog', () => {
     expect(() => validateSchemaContoursContract(schema)).not.toThrow();
     const card = resolveElementPaletteSources(schema.components.card!.elements.e1!, schema.global!)
       .palettes!;
@@ -28,16 +28,26 @@ describe('Fluent shared contour pipeline', () => {
             ?.primary?.highest?.rest
         ).toBe(contour(`neutral.standard.${theme}.onVivid.medium`));
         const expected =
-          context === 'onVivid' ? '#ffffff26' : theme === 'light' ? '#cdd1de' : '#656973';
+          context === 'onVivid' ? '#ffffff26' : theme === 'light' ? '#0000003b' : '#6a6a6a';
         expect(separator.default?.[theme]?.[context]?.boxColor?.neutral?.medium?.rest).toBe(
           expected
         );
+        const cardBorder =
+          context === 'onVivid'
+            ? theme === 'darker'
+              ? '#ffffff1a'
+              : '#ffffff26'
+            : theme === 'light'
+              ? '#00000018'
+              : theme === 'dark'
+                ? '#ffffff26'
+                : '#ffffff1a';
         for (const states of Object.values(
           card.default?.[theme]?.[context]?.borderColor?.neutral ?? {}
         ))
-          expect(states?.rest).toBe(expected);
+          expect(states?.rest).toBe(cardBorder);
         expect(separator.default?.[theme]?.[context]?.boxColor?.neutral?.low?.rest).toBe(
-          context === 'onVivid' ? '#ffffff14' : theme === 'light' ? '#00000014' : '#ffffff1f'
+          context === 'onVivid' ? '#ffffff14' : theme === 'light' ? '#00000018' : '#ffffff1f'
         );
       }
     }
@@ -53,7 +63,7 @@ describe('Fluent shared contour pipeline', () => {
         if ('separator' in node && typeof node.separator === 'object') {
           const result = resolveElementPaletteSources(node as ElementPaletteSource, schema.global!);
           expect(result.palettes?.default?.light?.onSubtle.boxColor?.neutral?.medium?.rest).toBe(
-            '#cdd1de'
+            '#0000003b'
           );
           count++;
         }

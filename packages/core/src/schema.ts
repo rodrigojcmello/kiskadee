@@ -2,8 +2,9 @@ import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './break
 import type { BadgeEffects, BadgeElements } from './components/badge.ts';
 import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
-import type { CardElements, CardOptions } from './components/card.ts';
+import type { CardContentSurfaceContextMap, CardElements, CardOptions } from './components/card.ts';
 import type { ChipComponent } from './components/chip.ts';
+import type { ContainerComponent } from './components/container.ts';
 import type { DropdownElements, DropdownOptions } from './components/dropdown.ts';
 import type { IconElements } from './components/icon.ts';
 import type { ProgressElements } from './components/progress.ts';
@@ -21,7 +22,6 @@ import type { ElementForeground, SchemaForegrounds } from './foreground.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
 import type {
-  CardIntent,
   ElementPalettes,
   InteractionState,
   SchemaColors,
@@ -59,6 +59,7 @@ export type ComponentName =
   | 'button'
   | 'card'
   | 'chip'
+  | 'container'
   | 'dropdown'
   | 'icon'
   | 'progress'
@@ -144,6 +145,7 @@ export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Par
   button: ComponentElementsStyleKeyMap<TSegmentName>;
   card: ComponentElementsStyleKeyMap<TSegmentName>;
   chip: ComponentElementsStyleKeyMap<TSegmentName>;
+  container: ComponentElementsStyleKeyMap<TSegmentName>;
   dropdown: ComponentElementsStyleKeyMap<TSegmentName>;
   icon: ComponentElementsStyleKeyMap<TSegmentName>;
   progress: ComponentElementsStyleKeyMap<TSegmentName>;
@@ -215,12 +217,14 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
   };
   card: {
-    contentSurfaceContext?: ContentSurfaceContextMap<CardIntent, TSegmentName>;
+    contentSurfaceContext?: CardContentSurfaceContextMap<TSegmentName>;
     effects?: ComponentEffects;
     options?: CardOptions<TSegmentName>;
-    elements: CardElements<TSegmentName> & Elements<TSegmentName>;
+    surfaceSource?: 'container';
+    elements: CardElements<TSegmentName>;
   };
   chip: ChipComponent<TSegmentName>;
+  container: ContainerComponent<TSegmentName>;
   dropdown: {
     effects?: {
       presence?: DropdownPresenceEffectSchema;

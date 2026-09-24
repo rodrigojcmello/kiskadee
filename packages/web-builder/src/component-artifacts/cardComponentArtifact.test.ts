@@ -1,6 +1,7 @@
 import type { Schema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { buildCardComponentArtifact } from './cardComponentArtifact.ts';
+import { buildContainerComponentArtifact } from './containerComponentArtifact.ts';
 
 function createSchema(): Schema {
   return {
@@ -99,5 +100,55 @@ describe('buildCardComponentArtifact', () => {
     delete schema.components.card.options;
 
     expect(buildCardComponentArtifact(schema)).toBeNull();
+  });
+
+  it('publishes Container-owned canonical surfaces in both component artifacts', () => {
+    const schema = createSchema();
+    const card = schema.components.card!;
+    const catalog = card.options!.canonicalSurfaces!;
+    card.surfaceSource = 'container';
+    card.options = {};
+    const colors = card.elements.e1!.palettes!.default!.light!.onSubtle.boxColor!;
+    colors.neutral!.low = {};
+    colors.primary!.highest = {};
+    schema.components.container = {
+      options: { canonicalSurfaces: catalog },
+      contentSurfaceContext: {
+        default: {
+          light: {
+            onSubtle: {
+              neutral: { low: { rest: 'onSubtle' } },
+              primary: { highest: { rest: 'onVivid' } }
+            }
+          }
+        }
+      },
+      elements: {
+        e1: {
+          name: 'container',
+          palettes: {
+            default: {
+              light: {
+                onSubtle: {
+                  boxColor: {
+                    neutral: { low: { rest: '#ffffff' } },
+                    primary: { highest: { rest: '#0064b4' } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const cardArtifact = buildCardComponentArtifact(schema);
+    const containerArtifact = buildContainerComponentArtifact(schema);
+    expect(cardArtifact?.options.canonicalSurfaces.default?.light?.map(({ rest }) => rest)).toEqual(
+      ['#ffffff', '#0064b4']
+    );
+    expect(containerArtifact?.options.canonicalSurfaces).toEqual(
+      cardArtifact?.options.canonicalSurfaces
+    );
   });
 });

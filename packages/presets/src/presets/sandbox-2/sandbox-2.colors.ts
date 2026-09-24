@@ -1,4 +1,3 @@
-import { classifyPrimitives } from '../../classify-primitives.ts';
 import type {
   ComponentIntents,
   GlobalSemanticsBySegment,
@@ -8,6 +7,7 @@ import type {
   SchemaColors
 } from '@kiskadee/core';
 import { invertKiskadeeHexScale } from '@kiskadee/core';
+import { classifyPrimitives } from '../../classify-primitives.ts';
 
 const primaryScale = {
   0: '#ffffff',

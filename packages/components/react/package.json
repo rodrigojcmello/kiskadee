@@ -54,6 +54,11 @@
       "import": "./dist/components/Card/index.js",
       "default": "./dist/components/Card/index.js"
     },
+    "./container": {
+      "types": "./dist/components/Container/index.d.ts",
+      "import": "./dist/components/Container/index.js",
+      "default": "./dist/components/Container/index.js"
+    },
     "./chip": {
       "types": "./dist/components/Chip/index.d.ts",
       "import": "./dist/components/Chip/index.js",

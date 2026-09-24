@@ -16,9 +16,6 @@
     "yr.brown.v1",
     "yr.orange.v1"
   ],
-  "removedFamilies": [
-    "n.black.v2",
-    "n.black.v3"
-  ],
+  "removedFamilies": ["n.black.v2", "n.black.v3"],
   "changedScales": []
 }

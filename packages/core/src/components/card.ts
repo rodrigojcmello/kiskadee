@@ -1,16 +1,21 @@
-import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
+import {
+  type ContentSurfaceContextMap,
+  validateContentSurfaceContextMap
+} from '../content-surface-context.ts';
 import type {
   CardIntent,
+  CardSurfaceIntent,
   ColorProperty,
   ColorSchema,
   ComponentEmphasis,
+  InteractionStateColorMap,
   SegmentName,
   SurfaceContext,
-  SurfaceContextPalette,
   ThemeMode
 } from '../types/colors/colors.types.ts';
 import {
   CardIntentKeys,
+  ContainerIntentKeys,
   componentEmphasisBuckets,
   surfaceContexts
 } from '../types/colors/colors.types.ts';
@@ -18,15 +23,28 @@ import type { DecorationSchema } from '../types/decorations/decorations.types.ts
 import type { ScaleBySize, StandardScaleProperty } from '../types/scales/scales.types.ts';
 import { getElementPaletteValidationIssues } from './palettes.ts';
 
-type ElementPalettesByColor<
-  TSegmentName extends SegmentName,
-  TColorProperty extends ColorProperty
-> = Partial<
+type CardElementPalettes<TSegmentName extends SegmentName> = Partial<
   Record<
     TSegmentName | 'default' | 'dynamic',
-    Partial<Record<ThemeMode, SurfaceContextPalette<Partial<Pick<ColorSchema, TColorProperty>>>>>
+    Partial<
+      Record<
+        ThemeMode,
+        {
+          onSubtle: CardColorPalette;
+          onVivid?: CardColorPalette;
+        }
+      >
+    >
   >
 >;
+
+type CardColorPalette = {
+  /** Rest is supplied by Container when card.surfaceSource is enabled. */
+  boxColor?: Partial<
+    Record<CardSurfaceIntent, Partial<Record<ComponentEmphasis, Partial<InteractionStateColorMap>>>>
+  >;
+  borderColor?: ColorSchema['borderColor'];
+};
 
 type ElementScalesByProperty<TScaleProperty extends StandardScaleProperty> = Partial<
   Record<TScaleProperty, ScaleBySize | number>
@@ -58,7 +76,7 @@ export type CardSurfaceElementStyle<TSegmentName extends SegmentName = never> = 
       pill?: never;
     };
   };
-  palettes: ElementPalettesByColor<TSegmentName, 'boxColor' | 'borderColor'>;
+  palettes: CardElementPalettes<TSegmentName>;
 }> &
   ElementNameMetadata;
 
@@ -66,8 +84,15 @@ export type CardElements<TSegmentName extends SegmentName = never> = {
   e1?: CardSurfaceElementStyle<TSegmentName>;
 };
 
+type DeepPartial<T> = T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
+
+/** With a Container source, Card may author only selected/pending/disabled output deltas. */
+export type CardContentSurfaceContextMap<TSegmentName extends SegmentName = never> = DeepPartial<
+  ContentSurfaceContextMap<CardSurfaceIntent, TSegmentName>
+>;
+
 export type CardCanonicalSurface = {
-  intent: CardIntent;
+  intent: CardSurfaceIntent;
   emphasis: ComponentEmphasis;
   contentSurfaceContext: SurfaceContext;
 };
@@ -100,7 +125,13 @@ type ElementContractRules = {
   radiusModes?: readonly string[];
 };
 
-const CARD_COMPONENT_KEYS = ['contentSurfaceContext', 'effects', 'options', 'elements'] as const;
+const CARD_COMPONENT_KEYS = [
+  'contentSurfaceContext',
+  'effects',
+  'options',
+  'elements',
+  'surfaceSource'
+] as const;
 const CARD_COMPONENT_EFFECT_KEYS = ['shadow'] as const;
 const CARD_COMPONENT_OPTION_KEYS = ['canonicalSurfaces', 'border'] as const;
 const CARD_CANONICAL_SURFACE_KEYS = ['intent', 'emphasis', 'contentSurfaceContext'] as const;
@@ -331,7 +362,7 @@ function validateCanonicalSurfaces(
 
         validateAllowedKeys(entryValue, CARD_CANONICAL_SURFACE_KEYS, entryPath, issues);
 
-        if (!Object.hasOwn(CardIntentKeys, String(entryValue.intent))) {
+        if (!Object.hasOwn(ContainerIntentKeys, String(entryValue.intent))) {
           issues.push(`${entryPath}.intent: expected Card intent`);
         }
         if (!Object.hasOwn(componentEmphasisBuckets, String(entryValue.emphasis))) {
@@ -451,6 +482,9 @@ export function validateCardComponentContract(value: unknown, path = 'components
   }
 
   validateAllowedKeys(value, CARD_COMPONENT_KEYS, path, issues);
+  if (value.surfaceSource !== undefined && value.surfaceSource !== 'container') {
+    issues.push(`${path}.surfaceSource: expected "container"`);
+  }
 
   if (value.contentSurfaceContext !== undefined) {
     issues.push(

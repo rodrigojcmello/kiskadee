@@ -1,21 +1,21 @@
 import type {
   InteractionStateColorMap,
   KiskadeeTone,
-  Schema,
   SolidColor,
   SurfaceContext
 } from '@kiskadee/core';
 import { contour, primitive } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
+import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import {
   absoluteCap,
   exactColor,
   type Fluent2MicrosoftColorLocator,
   type Fluent2MicrosoftColorResolver
 } from '../fluent-2-microsoft.color.ts';
+import { createFluent2MicrosoftContainerSchema } from './container.schema.ts';
 
 type Fluent2MicrosoftSegmentName = 'default';
-type CardComponent = NonNullable<Schema<never>['components']['card']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type ThemeShortcut = 'l' | 'd';
 type ColorLocator = {
@@ -33,6 +33,7 @@ type StateRecipe = {
 
 type IntentRecipe = {
   lowest: StateRecipe;
+  low?: StateRecipe;
   medium: StateRecipe;
   high?: StateRecipe;
   highest?: StateRecipe;
@@ -334,7 +335,7 @@ const CANONICAL_CARD_SURFACES = {
       { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onSubtle' }
     ]
   }
-} as const satisfies NonNullable<CardComponent['options']>['canonicalSurfaces'];
+} as const;
 
 function resolveColor(
   c: Fluent2MicrosoftColorResolver,
@@ -506,8 +507,8 @@ function createCardPalette(
 export function createFluent2MicrosoftCardSchema({
   c,
   segmentNames
-}: CreateFluent2MicrosoftCardSchemaArgs): CardComponent {
-  return {
+}: CreateFluent2MicrosoftCardSchemaArgs) {
+  const result = splitCardSurfaceSchema<never>({
     contentSurfaceContext: {
       default: {
         light: createCardContentSurfaceContext('light'),
@@ -611,5 +612,10 @@ export function createFluent2MicrosoftCardSchema({
         }))
       }
     }
+  });
+
+  return {
+    ...result,
+    container: createFluent2MicrosoftContainerSchema({ base: result.container, c, segmentNames })
   };
 }

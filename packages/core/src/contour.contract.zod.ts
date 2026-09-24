@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { CssColorProperty } from './types/colors/colors.types.ts';
 import {
   isContourReferenceCandidate,
   resolveContourReference,
   type SchemaContours
 } from './contour.ts';
+import { CssColorProperty } from './types/colors/colors.types.ts';
 
 const id = z.string().regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/);
 const color = z

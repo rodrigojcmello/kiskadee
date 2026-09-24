@@ -38,6 +38,9 @@ export function resolveCanonicalCardSurfaces({
   const surfaces: ResolvedCanonicalCardSurface[] = [];
 
   for (const surface of authoredSurfaces) {
+    if (surface.intent === 'neutralComplementary' || surface.intent === 'primaryComplementary') {
+      continue;
+    }
     const normalizedColor = normalizeSurfaceColor(surface.rest);
     if (deduplicateColors && seenColors.has(normalizedColor)) continue;
 

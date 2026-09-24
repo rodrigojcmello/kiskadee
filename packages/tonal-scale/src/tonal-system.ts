@@ -1,4 +1,3 @@
-import { deriveSupportingColor } from './supporting-color.ts';
 import {
   contrastRatio,
   deltaEOk,
@@ -33,6 +32,7 @@ import {
   projectMunsellHue,
   suggestYellowRedAppearance
 } from './munsell-oklch.ts';
+import { deriveSupportingColor } from './supporting-color.ts';
 import {
   createTonalFamilyId,
   type LockedTonalFamilyFunctionalReferencesV5,

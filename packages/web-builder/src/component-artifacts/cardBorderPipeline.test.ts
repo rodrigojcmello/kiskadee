@@ -1,5 +1,6 @@
 import {
   componentEmphasisBuckets,
+  resolveCardSurfaceSource,
   surfaceContextBuckets,
   validateCardComponentContract
 } from '@kiskadee/core';
@@ -10,6 +11,8 @@ import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsag
 import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { generateClassNamesMapSplit } from '../phase-5-generate-class-names-map/generateClassNamesMap.ts';
 
+const resolvedCard = resolveCardSurfaceSource(schema).components.card!;
+
 describe('Card border pipeline', () => {
   it.each([
     ['default', 'invalid'],
@@ -19,12 +22,12 @@ describe('Card border pipeline', () => {
     ['missing', 'light', 'onSubtle', 'neutral', 'medium']
   ])('rejects unknown or unpublished coordinate %j', (...keys: string[]) => {
     const border = keys.reduceRight<unknown>((value, key) => ({ [key]: value }), false);
-    const invalid = { ...schema.components.card, options: { border } };
+    const invalid = { ...resolvedCard, options: { border } };
     expect(validateCardComponentContract(invalid).length).toBeGreaterThan(0);
   });
   it('validates every declared recipe and rejects missing coverage', () => {
-    expect(validateCardComponentContract(schema.components.card)).toEqual([]);
-    const invalid = structuredClone(schema.components.card)!;
+    expect(validateCardComponentContract(resolvedCard)).toEqual([]);
+    const invalid = structuredClone(resolvedCard);
     delete invalid.elements.e1!.scales!.borderWidth;
     expect(
       validateCardComponentContract(invalid).some((issue) => issue.includes('borderWidth'))
@@ -34,20 +37,19 @@ describe('Card border pipeline', () => {
   it('keeps Rest paint opt-in and all CardAction deltas in the regular palette', () => {
     const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys({
       ...schema,
-      components: { card: schema.components.card }
+      components: { card: resolvedCard }
     });
     const usage = mapStyleKeyUsage(styleKeys, {
       additionalStyleKeys: ['borderColor__#00000000']
     });
     const names = shortenCssClassNames(usage);
     const result = generateClassNamesMapSplit(styleKeys, names, toneMetadataByPalette, {
-      cardBorderDefaults: schema.components.card?.options?.border
+      cardBorderDefaults: resolvedCard.options?.border
     });
     for (const theme of ['light', 'dark', 'darker'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
         for (const intent of ['neutral', 'primary'] as const) {
-          const levels =
-            schema.components.card!.options!.border!.default![theme]![context]![intent]!;
+          const levels = resolvedCard.options!.border!.default![theme]![context]![intent]!;
           const element = result.palettes[`default.${theme}`].card as {
             e1: import('@kiskadee/core').ClassNameByElementJSON;
           };

@@ -213,7 +213,7 @@ export function createFluent2MicrosoftSchema(
       bottomSheet: createFluent2MicrosoftBottomSheetSchema({ c: colorResolver }),
       slider: createFluent2MicrosoftSliderSchema({ c: colorResolver }),
       button: createFluent2MicrosoftButtonSchema({ c: colorResolver, shadowBlack }),
-      card: createFluent2MicrosoftCardSchema({
+      ...createFluent2MicrosoftCardSchema({
         c: colorResolver,
         segmentNames
       }),

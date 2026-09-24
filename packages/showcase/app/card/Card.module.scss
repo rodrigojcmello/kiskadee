@@ -73,6 +73,46 @@
   min-block-size: 140px;
 }
 
+.complementaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 24px 16px;
+}
+
+.complementaryExample {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+  min-inline-size: 0;
+}
+
+.complementarySurface {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  min-block-size: 140px;
+  padding: 24px;
+}
+
+.complementaryPairCard {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 220px;
+}
+
+.complementaryBand,
+.complementaryBody {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  padding: 16px 24px;
+}
+
+.complementaryBody {
+  flex: 1;
+  padding-block: 24px;
+}
+
 .surfaceGrid > .example,
 .comparisonGrid > .example,
 .shadowGrid > .example {
@@ -203,8 +243,6 @@
 .route .compositionBand {
   inline-size: 100cqw;
   margin-inline: calc((100% - 100cqw) / 2);
-  padding: 0;
-  border-width: 0;
 }
 
 .compositionInner {

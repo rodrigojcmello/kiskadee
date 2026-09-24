@@ -63,4 +63,23 @@ describe('static Card border', () => {
       'k-crd-b'
     );
   });
+
+  it('uses the complementary surface color with its authored base-intent border', () => {
+    const e1 = {
+      ...base.e1,
+      c: { s: { neutralComplementary: { m: 'complementary-surface' } } },
+      b: { s: { neutral: { m: { on: 'neutral-border', off: 'no-border', default: true } } } }
+    };
+    const classes = resolveCardClassNames({
+      ...base,
+      e1,
+      intent: 'neutralComplementary'
+    }).classNames.e1;
+
+    expect(classes).toContain('complementary-surface');
+    expect(classes).toContain('neutral-border');
+    expect(() =>
+      resolveCardClassNames({ ...base, e1, intent: 'neutralComplementary', action: true })
+    ).toThrow('CardAction does not support complementary surface intents.');
+  });
 });

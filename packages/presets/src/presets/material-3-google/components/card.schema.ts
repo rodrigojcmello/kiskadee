@@ -1,9 +1,9 @@
-import { type Schema, withAlpha } from '@kiskadee/core';
+import { withAlpha } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
-type CardComponent = NonNullable<Schema<'purple'>['components']['card']>;
 
 type CreateMaterial3GoogleCardSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
@@ -14,7 +14,7 @@ type CreateMaterial3GoogleCardSchemaArgs = {
 export function createMaterial3GoogleCardSchema({
   c,
   segmentNames
-}: CreateMaterial3GoogleCardSchemaArgs): CardComponent {
+}: CreateMaterial3GoogleCardSchemaArgs) {
   const surfaces = [
     { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
     { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
@@ -141,7 +141,7 @@ export function createMaterial3GoogleCardSchema({
       }
     };
   };
-  return {
+  return splitCardSurfaceSchema<Material3GoogleSegmentName>({
     contentSurfaceContext: buildBySegment(segmentNames, () => ({
       light: { onSubtle: context, onVivid: context },
       dark: { onSubtle: context, onVivid: context }
@@ -213,5 +213,5 @@ export function createMaterial3GoogleCardSchema({
         }))
       }
     }
-  };
+  });
 }

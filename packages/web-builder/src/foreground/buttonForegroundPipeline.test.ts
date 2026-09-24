@@ -36,8 +36,8 @@ describe('Fluent Button global foreground pipeline', () => {
       destructive: lightOnVivid?.destructive?.medium?.rest,
       positive: lightOnVivid?.positive?.medium?.rest
     }).toEqual({
-      primary: '#d3e7ff',
-      neutral: '#d6dbe7',
+      primary: '#d2e8ff',
+      neutral: '#dbdbdb',
       destructive: '#ffdbd7',
       positive: '#d4edd2'
     });
@@ -50,7 +50,7 @@ describe('Fluent Button global foreground pipeline', () => {
     const e4 = resolveButtonElement('e4');
 
     expect(e3.default?.light?.onVivid?.textColor?.primary?.high).not.toHaveProperty('pending');
-    expect(e4.default?.dark?.onVivid?.textColor?.neutral?.medium?.rest).toBe('#21242d');
+    expect(e4.default?.dark?.onVivid?.textColor?.neutral?.medium?.rest).toBe('#252525');
   });
 
   it('does not let an fg token reach Style Key generation', () => {

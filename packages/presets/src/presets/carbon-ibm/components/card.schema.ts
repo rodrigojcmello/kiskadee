@@ -1,18 +1,13 @@
-import {
-  type InteractionStateColorMap,
-  primitive,
-  type Schema,
-  type SolidColor
-} from '@kiskadee/core';
+import { type InteractionStateColorMap, primitive, type SolidColor } from '@kiskadee/core';
+import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import { absoluteCap, type CarbonIbmColorResolver, referenceColor } from '../carbon-ibm.color.ts';
 import { type CarbonTokenName, tokenColor } from '../carbon-ibm.tokens.ts';
 
-type CardComponent = NonNullable<Schema<never>['components']['card']>;
 const themes = ['light', 'dark', 'darker'] as const;
 const levels = ['lowest', 'low', 'medium', 'high'] as const;
 
 /** Carbon layer tokens become stable Card surfaces; primary tonal layers are Kiskadee extensions. */
-export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }): CardComponent {
+export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }) {
   const palettes = Object.fromEntries(
     themes.map((theme) => {
       const track = theme === 'light' ? 'l' : 'd';
@@ -168,7 +163,7 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }):
       contentSurfaceContext: 'onVivid' as const
     }
   ];
-  return {
+  return splitCardSurfaceSchema<never>({
     contentSurfaceContext: {
       default: Object.fromEntries(
         themes.map((theme) => [theme, { onSubtle: contexts(), onVivid: contexts() }])
@@ -218,5 +213,5 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }):
         palettes: { default: palettes }
       }
     }
-  };
+  });
 }

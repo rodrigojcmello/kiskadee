@@ -2,7 +2,9 @@ import { validateBadgeComponentContract } from '../components/badge.ts';
 import { validateBottomSheetComponentContract } from '../components/bottom-sheet.ts';
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
+import { resolveCardSurfaceSource } from '../components/card-surface-source.ts';
 import { validateChipComponentContract } from '../components/chip.ts';
+import { validateContainerComponentContract } from '../components/container.ts';
 import { validateDropdownComponentContract } from '../components/dropdown.ts';
 import { validateIconComponentContract } from '../components/icon.ts';
 import { validateProgressComponentContract } from '../components/progress.ts';
@@ -12,6 +14,7 @@ import { validateSwitchComponentContract } from '../components/switch.zod.ts';
 import { validateTabsComponentContract } from '../components/tabs.zod.ts';
 import { validateTextComponentContract } from '../components/text.ts';
 import { validateTextFieldComponentContract } from '../components/text-field.zod.ts';
+import type { Schema } from '../schema.ts';
 
 /**
  * Build-time validation for component contracts with strict, element-aware rules.
@@ -70,8 +73,18 @@ export function validateSchemaComponentContracts(schemaLike: {
     }
   }
 
+  if (byName.container !== undefined) {
+    const issues = validateContainerComponentContract(byName.container, 'components.container');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for container. Review Rest surface mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
   if (byName.card !== undefined) {
-    const issues = validateCardComponentContract(byName.card, 'components.card');
+    const effectiveCard = resolveCardSurfaceSource(schemaLike as Schema).components.card;
+    const issues = validateCardComponentContract(effectiveCard, 'components.card');
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for card. Review element/property mapping.\n${issues.join('\n')}`

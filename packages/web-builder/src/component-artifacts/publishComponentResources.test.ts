@@ -40,6 +40,13 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
         button: {
           options: { groupDivider: true },
           contentSurfaceContext: { default: { light: { onSubtle: {} } } }
+        },
+        container: {
+          contentSurfaceContext: {
+            default: {
+              light: { onSubtle: { neutral: { medium: { rest: 'onSubtle' } } } }
+            }
+          }
         }
       }
     });
@@ -54,13 +61,19 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
     });
     const schema = {
       global: { density: { compact: 's:sm:1', regular: 's:md:1', spacious: 's:lg:1' } },
-      components: { button: { elements: { e1: { scales: { boxWidth: { 's:md:1': 10 } } } } } }
+      components: {
+        button: { elements: { e1: { scales: { boxWidth: { 's:md:1': 10 } } } } },
+        container: { elements: { e1: { name: 'container' } } }
+      }
     } as unknown as Schema;
     await publishComponentResources(dir, schema);
     const manifest = await read('manifest.json');
     expect(manifest.revision).toMatch(/^[0-9a-f]{64}$/);
     expect(manifest.components.button).toEqual({
       artifacts: { metadata: 'components/button.kiskadee.json' }
+    });
+    expect(manifest.components.container).toEqual({
+      artifacts: { metadata: 'components/container.kiskadee.json' }
     });
     expect((await read('global.kiskadee.json')).components).toBeUndefined();
     expect((await read('global.kiskadee.json')).density).toEqual({
@@ -77,6 +90,14 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
     expect(descriptor.capabilities.surfaceContexts['default.light']).toBeDefined();
     expect(descriptor.styles).toHaveLength(1);
     expect(metadata.resources.styles).toHaveLength(1);
+    const containerMetadata = await read('components/container.kiskadee.json');
+    expect(containerMetadata.component).toBe('container');
+    const containerDescriptor = await read(containerMetadata.resources.palettes['default.light']);
+    expect(
+      containerDescriptor.config.contentSurfaceContext.default.light.onSubtle.neutral.medium
+    ).toEqual({
+      rest: 'onSubtle'
+    });
     await expect(readFile(join(dir, 'core.kiskadee.json'))).rejects.toMatchObject({
       code: 'ENOENT'
     });

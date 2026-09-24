@@ -164,6 +164,8 @@ export type {
   ChipVisualProps
 } from './components/Chip';
 export { Chip } from './components/Chip';
+export type { ContainerClassesMap, ContainerProps } from './components/Container';
+export { Container } from './components/Container';
 export type { ContextMenuRootProps, ContextMenuTriggerProps } from './components/ContextMenu';
 export { ContextMenu } from './components/ContextMenu';
 export type {

@@ -103,14 +103,14 @@ export const designSystemList: DesignSystemListEntry[] = [
 ];
 
 export const designSystemMeta = {
-  'carbon-11-ibm': {"displayName":"Carbon 11 by IBM","components":{"badge":true,"bottomSheet":true,"button":true,"card":true,"chip":true,"dropdown":true,"icon":true,"progress":true,"separator":true,"slider":true,"switch":true,"text":true}},
-  'elegant-1-kiskadee': {"displayName":"Elegant by Kiskadee","components":{"button":true,"card":true,"switch":true,"text":true}},
+  'carbon-11-ibm': {"displayName":"Carbon 11 by IBM","components":{"badge":true,"bottomSheet":true,"button":true,"container":true,"card":true,"chip":true,"dropdown":true,"icon":true,"progress":true,"separator":true,"slider":true,"switch":true,"text":true}},
+  'elegant-1-kiskadee': {"displayName":"Elegant by Kiskadee","components":{"button":true,"container":true,"card":true,"switch":true,"text":true}},
   'fluent-2-kiskadee': {"displayName":"Fluent 2 by Kiskadee","components":{"button":true,"text":true}},
-  'fluent-2-microsoft': {"displayName":"Fluent 2 by Microsoft","components":{"badge":true,"bottomSheet":true,"slider":true,"button":true,"card":true,"chip":true,"dropdown":true,"icon":true,"progress":true,"separator":true,"switch":true,"text":true}},
+  'fluent-2-microsoft': {"displayName":"Fluent 2 by Microsoft","components":{"badge":true,"bottomSheet":true,"slider":true,"button":true,"container":true,"card":true,"chip":true,"dropdown":true,"icon":true,"progress":true,"separator":true,"switch":true,"text":true}},
   'ios-18-apple': {"displayName":"iOS 18 by Apple","components":{"switch":true,"text":true}},
-  'ios-27-apple': {"displayName":"iOS 27 by Apple","components":{"badge":true,"progress":true,"bottomSheet":true,"button":true,"card":true,"dropdown":true,"icon":true,"text":true,"separator":true,"slider":true,"switch":true}},
-  'material-design-3-google': {"displayName":"Material Design 3 by Google","components":{"badge":true,"chip":true,"icon":true,"progress":true,"slider":true,"text":true,"bottomSheet":true,"button":true,"card":true,"dropdown":true,"separator":true,"switch":true,"tabs":true,"textField":true}},
-  'sandbox-0-kiskadee': {"displayName":"Sandbox by Kiskadee","components":{"card":true,"slider":true,"switch":true,"text":true}},
-  'sandbox-2-kiskadee': {"displayName":"Sandbox 2 by Kiskadee","components":{"card":true,"slider":true,"switch":true,"text":true}},
-  'sandbox-3-kiskadee': {"displayName":"Sandbox 3 by Kiskadee","components":{"card":true,"slider":true,"switch":true,"text":true}},
+  'ios-27-apple': {"displayName":"iOS 27 by Apple","components":{"badge":true,"progress":true,"bottomSheet":true,"button":true,"container":true,"card":true,"dropdown":true,"icon":true,"text":true,"separator":true,"slider":true,"switch":true}},
+  'material-design-3-google': {"displayName":"Material Design 3 by Google","components":{"badge":true,"chip":true,"icon":true,"progress":true,"slider":true,"text":true,"bottomSheet":true,"button":true,"container":true,"card":true,"dropdown":true,"separator":true,"switch":true,"tabs":true,"textField":true}},
+  'sandbox-0-kiskadee': {"displayName":"Sandbox by Kiskadee","components":{"container":true,"card":true,"slider":true,"switch":true,"text":true}},
+  'sandbox-2-kiskadee': {"displayName":"Sandbox 2 by Kiskadee","components":{"container":true,"card":true,"slider":true,"switch":true,"text":true}},
+  'sandbox-3-kiskadee': {"displayName":"Sandbox 3 by Kiskadee","components":{"container":true,"card":true,"slider":true,"switch":true,"text":true}},
 } as const;

@@ -25,14 +25,20 @@ import type {
 } from '@kiskadee/core';
 import {
   DEFAULT_CONTROL_CURSOR,
+  resolveCardSurfaceSource,
   resolveControlCursor,
-  type SchemaInteraction
+  type SchemaInteraction,
+  validateContentSurfaceContextMap
 } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import {
   buildCardComponentArtifact,
   CARD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/cardComponentArtifact.ts';
+import {
+  buildContainerComponentArtifact,
+  CONTAINER_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/containerComponentArtifact.ts';
 import {
   buildSliderComponentArtifact,
   SLIDER_COMPONENT_ARTIFACT_PATH
@@ -74,9 +80,18 @@ type ComponentEffectArtifactName =
   | 'button'
   | 'card'
   | 'chip'
+  | 'container'
   | 'dropdown'
   | 'slider'
   | 'switch';
+
+function assertContentSurfaceContextMap(
+  value: unknown,
+  path: string
+): asserts value is ContentSurfaceContextMap {
+  const issues = validateContentSurfaceContextMap(value, path);
+  if (issues.length) throw new Error(issues.join('\n'));
+}
 
 function hasErrnoCode(error: unknown, code: string): boolean {
   return (
@@ -236,12 +251,18 @@ export async function writeExtraArtifacts(params: {
   typographyArtifact?: TypographyArtifact;
   textTypographyClassMap?: NonNullable<GlobalClassNameMapJSON['text']>;
 }): Promise<void> {
-  const { schema, outDirSlug, textTypographyClassMap, typographyArtifact } = params as {
+  const {
+    schema: authoredSchema,
+    outDirSlug,
+    textTypographyClassMap,
+    typographyArtifact
+  } = params as {
     schema: ExtractableSchema;
     outDirSlug: string;
     typographyArtifact?: TypographyArtifact;
     textTypographyClassMap?: NonNullable<GlobalClassNameMapJSON['text']>;
   };
+  const schema = resolveCardSurfaceSource(authoredSchema);
 
   const buildDir = getBuildDir(outDirSlug);
 
@@ -347,8 +368,10 @@ export async function writeExtraArtifacts(params: {
   }
 
   if (schema.components?.card?.contentSurfaceContext !== undefined) {
+    const cardContext = schema.components.card.contentSurfaceContext;
+    assertContentSurfaceContextMap(cardContext, 'components.card.contentSurfaceContext');
     const cardArtifact = componentEffectOverrides.card ?? {};
-    cardArtifact.contentSurfaceContext = schema.components.card.contentSurfaceContext;
+    cardArtifact.contentSurfaceContext = cardContext;
     componentEffectOverrides.card = cardArtifact;
   }
 
@@ -356,6 +379,12 @@ export async function writeExtraArtifacts(params: {
     const chipArtifact = componentEffectOverrides.chip ?? {};
     chipArtifact.contentSurfaceContext = schema.components.chip.contentSurfaceContext;
     componentEffectOverrides.chip = chipArtifact;
+  }
+
+  if (schema.components?.container?.contentSurfaceContext !== undefined) {
+    const containerArtifact = componentEffectOverrides.container ?? {};
+    containerArtifact.contentSurfaceContext = schema.components.container.contentSurfaceContext;
+    componentEffectOverrides.container = containerArtifact;
   }
 
   const dropdownPresence = buildDropdownPresenceEffect(schema);
@@ -384,6 +413,7 @@ export async function writeExtraArtifacts(params: {
 
   const sliderComponentArtifact = buildSliderComponentArtifact(schema);
   const cardComponentArtifact = buildCardComponentArtifact(schema);
+  const containerComponentArtifact = buildContainerComponentArtifact(schema);
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
@@ -463,6 +493,7 @@ export async function writeExtraArtifacts(params: {
 
   const componentArtifacts = [
     { artifact: cardComponentArtifact, path: CARD_COMPONENT_ARTIFACT_PATH },
+    { artifact: containerComponentArtifact, path: CONTAINER_COMPONENT_ARTIFACT_PATH },
     { artifact: sliderComponentArtifact, path: SLIDER_COMPONENT_ARTIFACT_PATH },
     { artifact: switchComponentArtifact, path: SWITCH_COMPONENT_ARTIFACT_PATH },
     { artifact: tabsComponentArtifact, path: TABS_COMPONENT_ARTIFACT_PATH },

@@ -1,7 +1,13 @@
 import { normalizeHexColor, type SolidColor, withAlpha } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
-export const MATERIAL_BUTTON_INTENTS = ['primary', 'neutral', 'destructive', 'positive', 'support'] as const;
+export const MATERIAL_BUTTON_INTENTS = [
+  'primary',
+  'neutral',
+  'destructive',
+  'positive',
+  'support'
+] as const;
 export const MATERIAL_BUTTON_EMPHASES = ['high', 'medium', 'low', 'lowest'] as const;
 type Intent = (typeof MATERIAL_BUTTON_INTENTS)[number];
 type Emphasis = (typeof MATERIAL_BUTTON_EMPHASES)[number];

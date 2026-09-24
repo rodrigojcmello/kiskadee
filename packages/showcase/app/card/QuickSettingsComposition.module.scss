@@ -1,0 +1,79 @@
+.band {
+  inline-size: 100cqw;
+  margin-inline: calc((100% - 100cqw) / 2);
+}
+
+.bandContent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px var(--showcase-content-gutter);
+}
+
+.variant {
+  inline-size: min(100%, 360px);
+  display: grid;
+  gap: 12px;
+}
+
+.variantLabel {
+  margin: 0;
+}
+
+.buttonSurface {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.panel {
+  inline-size: 100%;
+  max-inline-size: 360px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px 12px;
+  padding: 24px 16px;
+}
+
+.action {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-inline-size: 0;
+}
+
+.actionButton.actionButton {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+}
+
+.actionLabel {
+  margin: 0;
+  text-align: center;
+}
+
+.volume {
+  padding: 24px 16px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+}
+
+@media (max-width: 480px) {
+  .actions {
+    gap: 20px 12px;
+    padding: 20px 16px;
+  }
+
+  .volume {
+    padding: 20px 16px;
+  }
+}

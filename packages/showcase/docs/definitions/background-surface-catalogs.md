@@ -19,9 +19,11 @@ components/card.kiskadee.json
     rest
 ```
 
-The preset authors the array order through `components.card.options.canonicalSurfaces`. The Web
-Builder validates each referenced Card Rest surface, resolves its color, and preserves the order
-in the artifact. The Showcase neither owns an intent/emphasis list nor sorts colors by luminance.
+The preset authors the array order through `components.container.options.canonicalSurfaces`.
+Container owns the referenced Rest colors and descendant contexts. The Web Builder validates the
+references and preserves Card-compatible resolved entries in the Card artifact for existing
+Showcase consumers. The Container artifact keeps the complete authored catalog.
+The Showcase neither owns an intent/emphasis list nor sorts colors by luminance.
 
 When two surface entries resolve to the same normalized color, only the first is retained in the
 base swatch catalog. Background composition opts out of this deduplication to retain same-intent
@@ -32,11 +34,11 @@ This is scenario metadata, independent of swatch position; border paint remains 
 An explicit border override on an example takes precedence. Sparse intent
 tracks remain valid: a preset may publish `primary.highest` without inventing `primary.high`.
 
-The Card owns the canonical surface vocabulary because it is the framework component that
-represents surfaces. Other component routes may consume this catalog without copying its color
-recipe.
+Container owns the canonical surface vocabulary. Card consumes those Rest surfaces at build time,
+then adds its own border and geometry. Other component routes may consume the resolved catalog
+without copying its color recipe.
 
-`contentSurfaceContext` recommends the palette context for descendants placed on that Card. It
+`contentSurfaceContext` records the context the selected surface provides to descendants. It
 does not change the palette used to resolve the catalog and does not make Showcase infer context
 from a rendered color. A rendered Card consumes its surrounding context for its boundary.
 
@@ -90,15 +92,16 @@ return navigation; theme and segment changes resolve the current pair from curre
 No route writes canvas paint to `document.documentElement`.
 
 `ShowcaseExampleCard` is Showcase-only composition of the public passive `p-react` Card. It selects
-coordinates, not CSS paint: Card still owns backgrounds, borders, geometry and produced child
-context. Button and Switch support cards, default Slider/TextField cards, Dropdown/Select/Separator
+coordinates, not CSS paint: Card consumes Container's Rest fill while keeping its own border and
+geometry. Button and Switch support cards, default Slider/TextField cards, Dropdown/Select/Separator
 cards and other supporting surfaces consume the same selection. An absent Card surface produces
 an unpainted content wrapper instead of inventing a fallback color.
 
 Explicit specimen surfaces remain independent: the Card route demonstrates its own intent/emphasis
 matrix, foreground comparisons retain a vivid column, and Slider/TextField's existing custom
 surface probes remain explicit overrides. Layout-only groups do not acquire decorative Cards.
-This work does not change Button/Switch/Badge colors or rewrite remaining legacy specimen styles.
+This delivery does not replace all existing Showcase canvas Cards with Container or rewrite
+remaining legacy specimen styles.
 
 ## Background control group
 

@@ -319,7 +319,8 @@ describe('writeExtraArtifacts content surface context', () => {
       schema: {
         components: {
           button: { contentSurfaceContext, elements: {} },
-          chip: { contentSurfaceContext, elements: {} }
+          chip: { contentSurfaceContext, elements: {} },
+          container: { contentSurfaceContext, elements: {} }
         }
       } as Schema,
       outDirSlug
@@ -330,6 +331,9 @@ describe('writeExtraArtifacts content surface context', () => {
     );
     expect(globalArtifact.components.button.contentSurfaceContext).toEqual(contentSurfaceContext);
     expect(globalArtifact.components.chip.contentSurfaceContext).toEqual(contentSurfaceContext);
+    expect(globalArtifact.components.container.contentSurfaceContext).toEqual(
+      contentSurfaceContext
+    );
   });
 });
 

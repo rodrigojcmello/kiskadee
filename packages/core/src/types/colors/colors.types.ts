@@ -3,6 +3,7 @@ import type {
   BottomSheetIntent,
   CardIntent,
   ChipIntent,
+  ContainerIntent,
   DropdownIntent,
   IconIntent,
   ProgressIntent,
@@ -23,7 +24,9 @@ export type {
   BottomSheetIntent,
   ButtonIntent,
   CardIntent,
+  CardSurfaceIntent,
   ChipIntent,
+  ContainerIntent,
   DropdownIntent,
   ExternalButtonIntent,
   IconIntent,
@@ -49,6 +52,7 @@ export {
   ButtonIntentKeys,
   CardIntentKeys,
   ChipIntentKeys,
+  ContainerIntentKeys,
   DropdownIntentKeys,
   IconIntentKeys,
   ProgressIntentKeys,
@@ -537,6 +541,7 @@ export type ComponentPaletteKey =
   | BadgeIntent
   | SystemButtonIntent
   | CardIntent
+  | ContainerIntent
   | ChipIntent
   | IconIntent
   | ProgressIntent

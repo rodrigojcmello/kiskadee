@@ -127,6 +127,9 @@ export type KiskadeeComponentConfigs = {
       shadow?: ShadowEffectSchema;
     };
   };
+  container?: {
+    contentSurfaceContext?: ContentSurfaceContextMap;
+  };
   chip?: {
     contentSurfaceContext?: ContentSurfaceContextMap;
   };

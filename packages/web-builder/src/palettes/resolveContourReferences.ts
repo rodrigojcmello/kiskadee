@@ -1,5 +1,4 @@
 import {
-  type ElementPalettes,
   isContourReferenceCandidate,
   resolveContourReference,
   type SchemaContours
@@ -47,10 +46,10 @@ function resolveValue(
  *     Style Keys, CSS, manifests, and browser artifacts must remain unaware of schema-only `contour`
  *     references and continue consuming final colors through the existing pipeline.
  */
-export function resolveContourReferences(
-  palettes: ElementPalettes,
+export function resolveContourReferences<TPalettes extends object>(
+  palettes: TPalettes,
   contours: SchemaContours | undefined
-): ElementPalettes {
+): TPalettes {
   return Object.fromEntries(
     Object.entries(palettes).map(([segment, byTheme]) => [
       segment,
@@ -78,5 +77,5 @@ export function resolveContourReferences(
         ])
       )
     ])
-  ) as ElementPalettes;
+  ) as TPalettes;
 }

@@ -6,12 +6,50 @@ import purple from '../colors/pb.indigo.v2.ts';
 import { schema } from '../fluent-2-microsoft.schema.ts';
 
 const card = schema.components.card!;
+const container = schema.components.container!;
 
 describe('Fluent achromatic surfaces', () => {
+  it('publishes complementary Rest surfaces and their descendant contexts in both consumed contexts', () => {
+    for (const segment of ['default', 'teams'] as const) {
+      const primary = segment === 'default' ? blue : purple;
+      for (const [theme, neutralLow, neutralMedium, primaryHighest] of [
+        ['light', black.scales.light[3], black.scales.light[4], primary.scales.light[55]],
+        ['dark', black.scales.dark[5], black.scales.dark[2], primary.scales.dark[30]],
+        ['darker', black.scales.dark[1], black.scales.dark[0], primary.scales.dark[14]]
+      ] as const)
+        for (const context of ['onSubtle', 'onVivid'] as const) {
+          const colors = container.elements.e1.palettes?.[segment]?.[theme]?.[context]?.boxColor;
+          expect(colors?.neutralComplementary).toEqual({
+            low: { rest: neutralLow },
+            medium: { rest: neutralMedium }
+          });
+          expect(colors?.primaryComplementary).toEqual({
+            highest: { rest: primaryHighest }
+          });
+          expect(
+            container.contentSurfaceContext?.[segment]?.[theme]?.[context]?.neutralComplementary
+          ).toEqual({
+            low: { rest: 'onSubtle' },
+            medium: { rest: 'onSubtle' }
+          });
+          expect(
+            container.contentSurfaceContext?.[segment]?.[theme]?.[context]?.primaryComplementary
+          ).toEqual({
+            highest: { rest: 'onVivid' }
+          });
+          expect(
+            card.elements.e1?.palettes?.[segment]?.[theme]?.[context]?.boxColor
+              ?.neutralComplementary
+          ).toBeUndefined();
+        }
+    }
+  });
+
   it('publishes the Light hierarchy consistently in both identities and surface contexts', () => {
     for (const segment of ['default', 'teams'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
         const palette = card.elements.e1?.palettes?.[segment]?.light?.[context];
+        const surfaces = container.elements.e1.palettes?.[segment]?.light?.[context];
         for (const [key, color] of Object.entries({
           lowest: '#ffffff',
           low: '#fbfbfb',
@@ -19,18 +57,18 @@ describe('Fluent achromatic surfaces', () => {
           high: '#e9e9e9'
         })) {
           const emphasis = key as ComponentEmphasis;
-          expect(palette?.boxColor?.neutral?.[emphasis]?.rest).toBe(color);
+          expect(surfaces?.boxColor?.neutral?.[emphasis]?.rest).toBe(color);
           expect(
-            card.contentSurfaceContext?.[segment]?.light?.[context]?.neutral?.[emphasis]?.rest
+            container.contentSurfaceContext?.[segment]?.light?.[context]?.neutral?.[emphasis]?.rest
           ).toBe('onSubtle');
           const border = palette?.borderColor?.neutral?.[emphasis]?.rest;
           expect(resolveContourReference(border as string, segment, schema.global?.contours)).toBe(
             context === 'onSubtle' ? '#00000018' : '#ffffff26'
           );
         }
-        expect(palette?.boxColor?.neutral?.highest).toBeUndefined();
+        expect(surfaces?.boxColor?.neutral?.highest).toBeUndefined();
       }
-      expect(card.options?.canonicalSurfaces?.[segment]?.light).toContainEqual({
+      expect(container.options?.canonicalSurfaces?.[segment]?.light).toContainEqual({
         intent: 'neutral',
         emphasis: 'high',
         contentSurfaceContext: 'onSubtle'
@@ -42,10 +80,10 @@ describe('Fluent achromatic surfaces', () => {
     for (const segment of ['default', 'teams'] as const) {
       const primary = segment === 'default' ? blue : purple;
       expect(
-        card.elements.e1?.palettes?.[segment]?.light?.onSubtle?.boxColor?.primary?.medium?.rest
+        container.elements.e1.palettes?.[segment]?.light?.onSubtle?.boxColor?.primary?.medium?.rest
       ).toBe(primary.scales.light[3]);
       expect(
-        card.elements.e1?.palettes?.[segment]?.light?.onVivid?.boxColor?.primary?.medium?.rest
+        container.elements.e1.palettes?.[segment]?.light?.onVivid?.boxColor?.primary?.medium?.rest
       ).toBe(primary.scales.light[9]);
       for (const context of ['onSubtle', 'onVivid'] as const) {
         for (const [emphasis, tone] of [
@@ -53,20 +91,21 @@ describe('Fluent achromatic surfaces', () => {
           ['high', 5]
         ] as const) {
           expect(
-            card.elements.e1?.palettes?.[segment]?.light?.[context]?.boxColor?.primary?.[emphasis]
-              ?.rest
+            container.elements.e1.palettes?.[segment]?.light?.[context]?.boxColor?.primary?.[
+              emphasis
+            ]?.rest
           ).toBe(primary.scales.light[tone]);
           expect(
-            card.contentSurfaceContext?.[segment]?.light?.[context]?.primary?.[emphasis]?.rest
+            container.contentSurfaceContext?.[segment]?.light?.[context]?.primary?.[emphasis]?.rest
           ).toBe('onSubtle');
-          expect(card.options?.canonicalSurfaces?.[segment]?.light).toContainEqual({
+          expect(container.options?.canonicalSurfaces?.[segment]?.light).toContainEqual({
             intent: 'primary',
             emphasis,
             contentSurfaceContext: 'onSubtle'
           });
           for (const theme of ['dark', 'darker'] as const) {
             expect(
-              card.elements.e1?.palettes?.[segment]?.[theme]?.[context]?.boxColor?.primary?.[
+              container.elements.e1.palettes?.[segment]?.[theme]?.[context]?.boxColor?.primary?.[
                 emphasis
               ]
             ).toBeUndefined();
@@ -81,11 +120,14 @@ describe('Fluent achromatic surfaces', () => {
       for (const context of ['onSubtle', 'onVivid'] as const)
         for (const theme of ['dark', 'darker'] as const) {
           const palette = card.elements.e1?.palettes?.[segment]?.[theme]?.[context];
+          const surfaces = container.elements.e1.palettes?.[segment]?.[theme]?.[context];
           const tones = theme === 'dark' ? ([9, 6, 3] as const) : ([3, 2, 1] as const);
           for (const [i, emphasis] of (['lowest', 'low', 'medium'] as const).entries()) {
-            expect(palette?.boxColor?.neutral?.[emphasis]?.rest).toBe(black.scales.dark[tones[i]!]);
+            expect(surfaces?.boxColor?.neutral?.[emphasis]?.rest).toBe(
+              black.scales.dark[tones[i]!]
+            );
           }
-          expect(palette?.boxColor?.neutral?.high).toBeUndefined();
+          expect(surfaces?.boxColor?.neutral?.high).toBeUndefined();
           const border = palette?.borderColor?.neutral?.lowest?.rest as string;
           expect(
             theme === 'dark'

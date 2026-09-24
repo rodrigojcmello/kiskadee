@@ -127,7 +127,7 @@ export const schema: Schema<Sandbox2Segment> = {
     }
   },
   components: {
-    card: createSandboxCardSchema({
+    ...createSandboxCardSchema({
       segmentNames,
       transparent
     }),

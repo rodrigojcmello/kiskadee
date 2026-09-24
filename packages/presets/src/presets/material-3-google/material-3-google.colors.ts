@@ -1,5 +1,5 @@
-import { classifyPrimitives } from '../../classify-primitives.ts';
 import type { ComponentIntents, GlobalSemanticsBySegment, SchemaColors } from '@kiskadee/core';
+import { classifyPrimitives } from '../../classify-primitives.ts';
 import { globalSemantics, primitiveColors } from './color.layers.ts';
 
 // -------------------------------------------------------------------------------------------------

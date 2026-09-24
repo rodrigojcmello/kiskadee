@@ -1,6 +1,7 @@
 import {
   type CardIntent,
   type CardRadiusMode,
+  type CardSurfaceIntent,
   type ClassNameByElementJSON,
   type ComponentEmphasis,
   stateActivator as cn,
@@ -56,7 +57,7 @@ function resolveCardShadowClassName(
 function collectElementClasses(
   element: ClassNameByElementJSON | undefined,
   emphasis: ComponentEmphasis | undefined = DEFAULT_CARD_EMPHASIS,
-  intent: CardIntent | undefined = DEFAULT_CARD_INTENT,
+  intent: CardSurfaceIntent | undefined = DEFAULT_CARD_INTENT,
   surfaceContext: SurfaceContext = 'onSubtle'
 ): string {
   return resolveSchemaElementClassName(element, {
@@ -64,6 +65,12 @@ function collectElementClasses(
     emphasis,
     surfaceContext
   });
+}
+
+function resolveCardFrameIntent(intent: CardSurfaceIntent): CardIntent {
+  if (intent === 'neutralComplementary') return 'neutral';
+  if (intent === 'primaryComplementary') return 'primary';
+  return intent;
 }
 
 function resolveCardRadiusMode(
@@ -83,6 +90,7 @@ export function resolveCardClassNames({
   shadow,
   preserveBorderWithShadow,
   border,
+  flushContent,
   emphasis,
   intent,
   surfaceContext,
@@ -97,6 +105,7 @@ export function resolveCardClassNames({
   shadow: CardVisualProps['shadow'] | CardActionVisualProps['shadow'];
   preserveBorderWithShadow?: CardActionVisualProps['preserveBorderWithShadow'];
   border?: boolean;
+  flushContent?: CardVisualProps['flushContent'];
   emphasis: CardVisualProps['emphasis'];
   intent: CardVisualProps['intent'];
   surfaceContext: SurfaceContext;
@@ -104,6 +113,13 @@ export function resolveCardClassNames({
   action: boolean;
 }): ResolvedCardClassNames {
   const resolvedIntent = intent ?? DEFAULT_CARD_INTENT;
+  if (
+    action &&
+    (resolvedIntent === 'neutralComplementary' || resolvedIntent === 'primaryComplementary')
+  ) {
+    throw new Error('CardAction does not support complementary surface intents.');
+  }
+  const frameIntent = resolveCardFrameIntent(resolvedIntent);
   const resolvedEmphasis = emphasis ?? DEFAULT_CARD_EMPHASIS;
   const scaleKey = normalizeCardScaleKey(DEFAULT_CARD_SCALE);
   const radiusMode = resolveCardRadiusMode(radius, globalRadius);
@@ -111,7 +127,7 @@ export function resolveCardClassNames({
   const e1RadiusClassName = resolveRadiusClassName(e1, DEFAULT_CARD_SCALE, radiusMode);
   const shadowEffect = resolveCardShadowClassName(e1?.e?.h, shadow);
   const borderRecipe =
-    e1?.b?.[surfaceContextBuckets[surfaceContext]]?.[resolvedIntent]?.[
+    e1?.b?.[surfaceContextBuckets[surfaceContext]]?.[frameIntent]?.[
       componentEmphasisBuckets[resolvedEmphasis]
     ];
   const borderEnabled = action ? borderRecipe?.default : (border ?? borderRecipe?.default);
@@ -145,6 +161,7 @@ export function resolveCardClassNames({
           activation,
           shadowEffect ? cn.shadow : undefined,
           'k-crd',
+          flushContent && !action ? 'k-crd-e1a' : undefined,
           action ? 'k-crd-a' : undefined,
           hideBorderWithShadow ? CARD_HIDE_BORDER_WITH_SHADOW_CLASS : undefined,
           action ? 'k-foc' : undefined,

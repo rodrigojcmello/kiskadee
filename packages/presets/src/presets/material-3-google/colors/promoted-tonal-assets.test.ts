@@ -1,15 +1,15 @@
-import blueSupport from './default/b.blue.v2.ts';
-import purpleSupport from './default/pb.indigo.v3.ts';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import segmentPurple from './default/pb.indigo.v2.ts';
 import blueV1 from './default/b.blue.v1.ts';
+import blueSupport from './default/b.blue.v2.ts';
 import greenV1 from './default/g.green.v1.ts';
 import blackV1 from './default/n.black.v1.ts';
 import purpleV1 from './default/p.purple.v1.ts';
+import segmentPurple from './default/pb.indigo.v2.ts';
+import purpleSupport from './default/pb.indigo.v3.ts';
 import redV1 from './default/r.red.v1.ts';
 import pinkV1 from './default/rp.magenta.v1.ts';
 import yellowV1 from './default/y.yellow.v1.ts';
@@ -103,9 +103,9 @@ describe('Material promoted tonal assets', () => {
         asset.preset.sha256
       );
       if (asset.familyId in PROMOTED_ASSETS) {
-        expect(readFileSync(new URL(`./default/${asset.familyId}.ts`, import.meta.url), 'utf8')).toBe(
-          readFileSync(resolve(GENERATED_ROOT, asset.preset.path), 'utf8')
-        );
+        expect(
+          readFileSync(new URL(`./default/${asset.familyId}.ts`, import.meta.url), 'utf8')
+        ).toBe(readFileSync(resolve(GENERATED_ROOT, asset.preset.path), 'utf8'));
       }
     }
   });

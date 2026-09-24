@@ -1,7 +1,7 @@
 import { mkdir, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validateSchemaComponentContracts } from '@kiskadee/core';
+import { resolveCardSurfaceSource, validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaContoursContract } from '@kiskadee/core/contour-contract';
 import { validateSchemaInteractionContract } from '@kiskadee/core/control-cursor-contract';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
@@ -198,7 +198,8 @@ export async function runBuild(): Promise<void> {
   await mkdir(baseBuildDir, { recursive: true });
 
   for (const t of presetsToBuild) {
-    const { schema, schemaPath, buildExtensions } = t;
+    const { schema: authoredSchema, schemaPath, buildExtensions } = t;
+    const schema = resolveCardSurfaceSource(authoredSchema);
 
     // One concise log per preset, e.g. "[web-builder] Material Design 3.0.0 by Google"
     const presetVersion = Array.isArray(schema.version) ? schema.version.join('.') : '';

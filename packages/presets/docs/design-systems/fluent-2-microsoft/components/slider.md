@@ -10,6 +10,15 @@ Source:
   - `Size=Medium (Default), State=Rest` through `State=Disabled`
   - `Size=Small, State=Rest` through `State=Disabled`
 
+## Density selection
+
+The user-approved Kiskadee policy uses Medium for all global densities: Desktop,
+Tablet, Mobile and adaptive selection. The local schema declares
+`options.density: { regular: 's:md:1' }`, independently of the global density map.
+This is a Kiskadee selection policy, not a claim that upstream Fluent lacks Small.
+The Small recipe remains published for explicit `size="sm"`; explicit `size="md"`
+also remains supported. Sandbox presets and other components are unchanged.
+
 ## Variant Geometry
 
 The Figma component exposes two sizes:

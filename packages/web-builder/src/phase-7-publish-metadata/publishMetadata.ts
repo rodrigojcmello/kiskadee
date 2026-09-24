@@ -29,6 +29,10 @@ import {
   getComponentPaletteClassMapArtifactPath
 } from '../component-artifacts/componentClassMapArtifacts.ts';
 import {
+  buildContainerComponentArtifact,
+  CONTAINER_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/containerComponentArtifact.ts';
+import {
   buildSliderComponentArtifact,
   SLIDER_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/sliderComponentArtifact.ts';
@@ -728,6 +732,17 @@ export async function publishMetadata(params: {
       artifacts: {
         ...(manifest.components.card?.artifacts ?? {}),
         metadata: CARD_COMPONENT_ARTIFACT_PATH
+      }
+    };
+  }
+
+  if (buildContainerComponentArtifact(schema)) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.container = {
+      ...(manifest.components.container ?? {}),
+      artifacts: {
+        ...(manifest.components.container?.artifacts ?? {}),
+        metadata: CONTAINER_COMPONENT_ARTIFACT_PATH
       }
     };
   }

@@ -190,7 +190,7 @@ export const schema: Schema<Segments> = {
       segmentNames,
       transparent
     }),
-    card: createMaterial3GoogleCardSchema({
+    ...createMaterial3GoogleCardSchema({
       c,
       segmentNames,
       transparent

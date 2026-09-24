@@ -1,8 +1,8 @@
-import { contour, type Schema, type SolidColor } from '@kiskadee/core';
+import { contour, type SolidColor } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
+import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import type { Segment } from '../ios-27-apple.schema.ts';
 
-type CardComponent = NonNullable<Schema<Segment>['components']['card']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type CreateIos27AppleCardSchemaArgs = {
   c: PresetColorGetter<Segment>;
@@ -25,7 +25,7 @@ export function createIos27AppleCardSchema({
   c,
   segmentNames,
   transparent
-}: CreateIos27AppleCardSchemaArgs): CardComponent {
+}: CreateIos27AppleCardSchemaArgs) {
   const palette = (segment: Segment, theme: ThemeName, context: (typeof contexts)[number]) => {
     const track = theme === 'light' ? 'l' : 'd';
     // Light grouped backgrounds; Dark Elevated; Darker Base. These are source stops, not emphasis arithmetic.
@@ -78,7 +78,7 @@ export function createIos27AppleCardSchema({
       highest: { rest: 'onVivid' }
     }
   } as const;
-  return {
+  return splitCardSurfaceSchema<Segment>({
     contentSurfaceContext: Object.fromEntries(
       segmentNames.map((segment) => [
         segment,
@@ -162,5 +162,5 @@ export function createIos27AppleCardSchema({
         )
       }
     }
-  };
+  });
 }

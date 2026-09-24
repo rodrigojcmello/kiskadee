@@ -157,6 +157,13 @@ whole Card surface from neutral to brand/primary. This is distinct from a binary
 control's selected/on state using a primary activation color inside a neutral
 presentation.
 
+Container owns the Rest surfaces used by Card. `neutralComplementary` and
+`primaryComplementary` are optional Container surface intents that a static Card may also select.
+Their emphasis names the recommended base pairing rather than another progression of own-surface
+strength: `neutralComplementary.low` accompanies `neutral.low`. They need not be a distinct
+HEX from every base intent and do not restrict ancestry. They do not become CardAction intents
+without authored interactive recipes. See [Container and Card surface ownership](../../../../docs/definitions/container-and-card-surfaces.md).
+
 Example:
 
 ```ts
