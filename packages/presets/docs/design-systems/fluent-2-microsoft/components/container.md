@@ -32,7 +32,7 @@ uses the corresponding Container Rest at build time.
 
 ## Initial paired surfaces
 
-The user approved only these three companion pairs. The base values already exist and are not
+The user approved these companion pairs. The base values already exist and are not
 recalibrated. Each companion resolves through the preset's existing tonal asset and strict color
 locator; the physical-black Darker cap uses the existing cap locator.
 
@@ -40,6 +40,8 @@ locator; the physical-black Darker cap uses the existing cap locator.
 | --- | --- | --- | --- |
 | `neutral.low` -> `neutralComplementary.low` | L1 -> L3 | D6 -> D5 | D2 -> D1 |
 | `neutral.medium` -> `neutralComplementary.medium` | L3 -> L4 | D3 -> D2 | D1 -> physical black |
+| `primary.low` -> `primaryComplementary.low` | L1 -> L3 | Not published | Not published |
+| `primary.medium` -> `primaryComplementary.medium` | L3 -> L5 | D10 -> D8 | D5 -> D3 |
 | `primary.highest` -> `primaryComplementary.highest` | L50 -> L55 | D35 -> D30 | D18 -> D14 |
 
 `neutralComplementary` uses the neutral tonal family and produces `onSubtle` for descendants.
@@ -51,3 +53,21 @@ nested surfaces. A companion can repeat a color found in the base palette.
 
 No other companion emphasis or preset is inferred from these examples. This calibration does not
 change the base emphasis scale or any CardAction interaction recipe.
+
+## Light Primary composition experiment — 2026-09-24
+
+The user approved primary low and medium companions as a Kiskadee experiment inspired by
+the earlier Figma tonal composition, not as reproductions of official neutral-blue tokens.
+They reuse the approved segment Primary assets (blue v1 / indigo v2), with exact locators
+registered under `component.container`. Low reuses the base medium Light tone; medium uses
+the base high Light tone. Dark medium and Darker medium instead use D8 and D3 to provide a
+slightly darker region. Primary low remains unpublished in those themes, as does its companion.
+Both new companions produce `onSubtle`; primary highest continues producing `onVivid`.
+The table describes onSubtle bases; existing onVivid base recipes remain unchanged. Companion
+colors are identical across consumed contexts so nested regions retain the selected pairing.
+The Showcase groups Neutral and Primary examples separately and omits the border only on the
+Primary highest composition. Visual acceptance remains user-owned.
+
+Resolved Microsoft/Blue companion values: Light low `#e9f3ff`, Light medium `#d9ebff`,
+Dark medium `#13273e`, Darker medium `#061423`. These are generated asset values, not
+official Microsoft token values. Teams resolves the same positions through its Indigo asset.

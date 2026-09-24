@@ -79,6 +79,42 @@
   gap: 24px 16px;
 }
 
+.complementaryCompositionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 24px 16px;
+}
+
+@container (min-width: 840px) {
+  .complementaryCompositionGrid:has(> .complementaryNeutralLow):has(> .complementaryNeutralMedium):has(> .complementaryPrimaryLow):has(> .complementaryPrimaryMedium):has(> .complementaryPrimaryHighest) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      'neutral-low neutral-medium vivid'
+      'primary-low primary-medium vivid';
+
+    > .complementaryNeutralLow {
+      grid-area: neutral-low;
+    }
+
+    > .complementaryNeutralMedium {
+      grid-area: neutral-medium;
+    }
+
+    > .complementaryPrimaryLow {
+      grid-area: primary-low;
+    }
+
+    > .complementaryPrimaryMedium {
+      grid-area: primary-medium;
+    }
+
+    > .complementaryPrimaryHighest {
+      grid-area: vivid;
+      align-self: center;
+    }
+  }
+}
+
 .complementaryExample {
   display: grid;
   grid-template-rows: auto 1fr;

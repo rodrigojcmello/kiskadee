@@ -69,6 +69,19 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
     theme,
     background.surfaceContext
   );
+  const sectionContext = containerState?.neutral?.lowest?.rest
+    ? resolveContentSurfaceContext({
+        map: containerMap,
+        segment,
+        theme,
+        consumedSurfaceContext: background.surfaceContext,
+        intent: 'neutral',
+        emphasis: 'lowest'
+      })
+    : undefined;
+  const sectionCardState = sectionContext
+    ? getManifestComponentState(components?.card, segment, theme, sectionContext)
+    : undefined;
 
   const standalone = allPairs.filter(({ complementaryIntent, emphasis }) => {
     if (!containerState?.[complementaryIntent]?.[emphasis]?.rest) return false;
@@ -84,12 +97,13 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
   });
 
   const compositions = allPairs.filter(({ baseIntent, complementaryIntent, emphasis }) => {
-    if (!cardState?.[baseIntent]?.[emphasis]?.rest) return false;
+    if (!sectionContext) return false;
+    if (!sectionCardState?.[baseIntent]?.[emphasis]?.rest) return false;
     const baseOutput = resolveContentSurfaceContext({
       map: cardMap,
       segment,
       theme,
-      consumedSurfaceContext: background.surfaceContext,
+      consumedSurfaceContext: sectionContext,
       intent: baseIntent,
       emphasis
     });
@@ -178,68 +192,91 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
       ) : null}
 
       {compositions.length ? (
-        <section className={s.exampleSection} aria-labelledby="card-complementary-pairs">
-          <header className={s.sectionHeader}>
-            <Text as="h3" id="card-complementary-pairs" profile={profiles.sectionTitle}>
-              Base and complementary surfaces
-            </Text>
-            {showDescriptions ? (
-              <Text as="p" profile={profiles.body} className={s.description}>
-                A Card keeps the base surface, while an inner Container paints a header or footer.
-                These are suggested pairings, not nesting rules.
+        <Container
+          intent="neutral"
+          emphasis="lowest"
+          surfaceContext={background.surfaceContext}
+          className={s.compositionBand}
+        >
+          <section
+            className={`${s.exampleSection} ${s.compositionInner}`}
+            aria-labelledby="card-complementary-pairs"
+          >
+            <header className={s.sectionHeader}>
+              <Text as="h3" id="card-complementary-pairs" profile={profiles.sectionTitle}>
+                Base and complementary surfaces
               </Text>
-            ) : null}
-          </header>
-          <div className={s.complementaryGrid}>
-            {compositions.map((sample) => {
-              const placement =
-                sample.baseIntent === 'neutral' && sample.emphasis === 'low' ? 'header' : 'footer';
-              const band = (
-                <Container
-                  intent={sample.complementaryIntent}
-                  emphasis={sample.emphasis}
-                  className={s.complementaryBand}
-                >
-                  <Text as="span" profile={profiles.groupTitle}>
-                    {placement === 'header' ? 'Header' : 'Footer'}
-                  </Text>
-                  <Text as="span" profile={profiles.caption} emphasis="low">
-                    {sample.complementaryIntent}.{sample.emphasis}
-                  </Text>
-                </Container>
-              );
-
-              return (
-                <div className={s.complementaryExample} key={pairLabel(sample)}>
-                  <Text as="h4" profile={profiles.bodyStrong}>
-                    {pairTitle(sample)}
-                  </Text>
-                  <Card
-                    intent={sample.baseIntent}
+              {showDescriptions ? (
+                <Text as="p" profile={profiles.body} className={s.description}>
+                  A Card keeps the base surface, while an inner Container paints a header or footer.
+                  These are suggested pairings, not nesting rules.
+                </Text>
+              ) : null}
+            </header>
+            <div className={s.complementaryCompositionGrid}>
+              {compositions.map((sample) => {
+                const placement = sample.emphasis === 'low' ? 'header' : 'footer';
+                const band = (
+                  <Container
+                    intent={sample.complementaryIntent}
                     emphasis={sample.emphasis}
-                    radius={radius}
-                    surfaceContext={background.surfaceContext}
-                    border
-                    shadow
-                    flushContent
-                    className={s.complementaryPairCard}
+                    className={s.complementaryBand}
                   >
-                    {placement === 'header' ? band : null}
-                    <div className={s.complementaryBody}>
-                      <Text as="span" profile={profiles.groupTitle}>
-                        Main content
-                      </Text>
-                      <Text as="span" profile={profiles.body}>
-                        {sample.baseIntent}.{sample.emphasis} remains the Card background.
-                      </Text>
-                    </div>
-                    {placement === 'footer' ? band : null}
-                  </Card>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                    <Text as="span" profile={profiles.groupTitle}>
+                      {placement === 'header' ? 'Header' : 'Footer'}
+                    </Text>
+                    <Text as="span" profile={profiles.caption} emphasis="low">
+                      {sample.complementaryIntent}.{sample.emphasis}
+                    </Text>
+                  </Container>
+                );
+
+                return (
+                  <div
+                    className={`${s.complementaryExample} ${
+                      sample.baseIntent === 'neutral' && sample.emphasis === 'low'
+                        ? s.complementaryNeutralLow
+                        : sample.baseIntent === 'neutral' && sample.emphasis === 'medium'
+                          ? s.complementaryNeutralMedium
+                          : sample.baseIntent === 'primary' && sample.emphasis === 'low'
+                            ? s.complementaryPrimaryLow
+                            : sample.baseIntent === 'primary' && sample.emphasis === 'medium'
+                              ? s.complementaryPrimaryMedium
+                              : sample.baseIntent === 'primary' && sample.emphasis === 'highest'
+                                ? s.complementaryPrimaryHighest
+                                : ''
+                    }`}
+                    key={pairLabel(sample)}
+                  >
+                    <Text as="h4" profile={profiles.bodyStrong}>
+                      {pairTitle(sample)}
+                    </Text>
+                    <Card
+                      intent={sample.baseIntent}
+                      emphasis={sample.emphasis}
+                      radius={radius}
+                      border={!(sample.baseIntent === 'primary' && sample.emphasis === 'highest')}
+                      shadow={false}
+                      flushContent
+                      className={s.complementaryPairCard}
+                    >
+                      {placement === 'header' ? band : null}
+                      <div className={s.complementaryBody}>
+                        <Text as="span" profile={profiles.groupTitle}>
+                          Main content
+                        </Text>
+                        <Text as="span" profile={profiles.body}>
+                          {sample.baseIntent}.{sample.emphasis} remains the Card background.
+                        </Text>
+                      </div>
+                      {placement === 'footer' ? band : null}
+                    </Card>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </Container>
       ) : null}
     </>
   );

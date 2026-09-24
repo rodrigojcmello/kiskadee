@@ -26,18 +26,21 @@ const COMPLEMENTARY_SURFACES = {
     track: 'l',
     neutralLow: neutral(3),
     neutralMedium: neutral(4),
+    primaryMedium: primary(5),
     primaryHighest: primary(55)
   },
   dark: {
     track: 'd',
     neutralLow: neutral(5),
     neutralMedium: neutral(2),
+    primaryMedium: primary(8),
     primaryHighest: primary(30)
   },
   darker: {
     track: 'd',
     neutralLow: neutral(1),
     neutralMedium: physicalBlack,
+    primaryMedium: primary(3),
     primaryHighest: primary(14)
   }
 } as const satisfies Record<
@@ -46,6 +49,7 @@ const COMPLEMENTARY_SURFACES = {
     track: Track;
     neutralLow: ColorLocator;
     neutralMedium: ColorLocator;
+    primaryMedium: ColorLocator;
     primaryHighest: ColorLocator;
   }
 >;
@@ -59,7 +63,7 @@ function resolveColor(
   return c.resolve(segment, track, locator.color);
 }
 
-/** Add the three calibrated companion Rest surfaces to the migrated Container schema. */
+/** Add the calibrated companion Rest surfaces to the migrated Container schema. */
 export function createFluent2MicrosoftContainerSchema({
   base,
   c,
@@ -85,13 +89,21 @@ export function createFluent2MicrosoftContainerSchema({
           medium: { rest: resolveColor(c, segment, recipe.track, recipe.neutralMedium) }
         };
         palette.boxColor.primaryComplementary = {
+          ...(theme === 'light'
+            ? { low: { rest: resolveColor(c, segment, recipe.track, primary(3)) } }
+            : {}),
+          medium: { rest: resolveColor(c, segment, recipe.track, recipe.primaryMedium) },
           highest: { rest: resolveColor(c, segment, recipe.track, recipe.primaryHighest) }
         };
         outputs.neutralComplementary = {
           low: { rest: 'onSubtle' },
           medium: { rest: 'onSubtle' }
         };
-        outputs.primaryComplementary = { highest: { rest: 'onVivid' } };
+        outputs.primaryComplementary = {
+          ...(theme === 'light' ? { low: { rest: 'onSubtle' as const } } : {}),
+          medium: { rest: 'onSubtle' },
+          highest: { rest: 'onVivid' }
+        };
       }
     }
   }

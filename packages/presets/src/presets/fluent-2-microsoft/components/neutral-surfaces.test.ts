@@ -24,6 +24,13 @@ describe('Fluent achromatic surfaces', () => {
             medium: { rest: neutralMedium }
           });
           expect(colors?.primaryComplementary).toEqual({
+            ...(theme === 'light' ? { low: { rest: primary.scales.light[3] } } : {}),
+            medium: {
+              rest:
+                theme === 'light'
+                  ? primary.scales.light[5]
+                  : primary.scales.dark[theme === 'dark' ? 8 : 3]
+            },
             highest: { rest: primaryHighest }
           });
           expect(
@@ -35,6 +42,8 @@ describe('Fluent achromatic surfaces', () => {
           expect(
             container.contentSurfaceContext?.[segment]?.[theme]?.[context]?.primaryComplementary
           ).toEqual({
+            ...(theme === 'light' ? { low: { rest: 'onSubtle' } } : {}),
+            medium: { rest: 'onSubtle' },
             highest: { rest: 'onVivid' }
           });
           expect(
