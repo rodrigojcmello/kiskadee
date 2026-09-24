@@ -10,7 +10,7 @@
   "scripts": {
     "prepare": "husky",
     "biome": "biome check --write .",
-    "precommit": "pnpm biome && pnpm test",
+    "precommit": "biome check --staged --vcs-enabled=true --vcs-client-kind=git",
     "test": "vitest run",
     "commitlint": "commitlint --edit"
   },

@@ -28,8 +28,8 @@ describe('Fluent achromatic surfaces', () => {
             medium: {
               rest:
                 theme === 'light'
-                  ? primary.scales.light[5]
-                  : primary.scales.dark[theme === 'dark' ? 8 : 3]
+                  ? primary.scales.light[context === 'onVivid' ? 10 : 4]
+                  : primary.scales.dark[theme === 'dark' ? 9 : 4]
             },
             highest: { rest: primaryHighest }
           });
