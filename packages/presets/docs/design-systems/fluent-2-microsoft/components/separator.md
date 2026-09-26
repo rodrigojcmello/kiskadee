@@ -61,6 +61,45 @@ blue NeutralStroke2 family with Kiskadee's approved achromatic Black v1 scale:
 
 - A complete standalone Fluent divider capability review is not part of this change.
 
+## Optional Primary composition line (2026-09-24)
+
+Primary Lowest was added on 2026-09-26 as a Kiskadee calibration: L50 at 7% alpha
+onSubtle and initially L4 at 5% onVivid, half the then-current Low opacity. Light publishes
+Lowest, Low and Medium for both intents. The subsequent visual calibration separates
+onSubtle strengths into 7%, 14% and 28%; Medium was previously equal to Low. This is not an official
+Fluent token mapping and does not add Primary recipes to Dark/Darker.
+
+Status: user-authorized Kiskadee composition trial, not an upstream Fluent Divider token.
+Light publishes Primary Medium as an optional standalone Separator intent while retaining
+all Neutral recipes and the one-pixel geometry. On subtle surfaces Medium uses
+Microsoft L50 `#0064b4` at 28% (`#0064b447`) and Teams L50 `#5053b2` at 28%
+(`#5053b247`). Card borders continue referencing Low at 14%, unchanged. The initial
+onVivid Primary line used the shared pale L4 contour at 5/10/20%; the current mapping
+is documented below.
+Low onSubtle retains its 14% contour; Medium now provides a distinct stronger line.
+No literal color is authored in the Schema; both values resolve through the existing
+approved Primary assets. Dark and Darker continue publishing only Neutral separators.
+Consumers may use a neutral line instead; Primary is a composition choice, not a
+nesting rule.
+
+## Primary dark line on vivid (2026-09-26)
+
+Status: user-authorized Kiskadee composition trial, not an official Fluent Divider token.
+On a vivid surface, Neutral retains its light line while Primary now darkens the surface.
+The segment's approved Primary Light scale supplies L85 through an evidence-backed `exact`
+locator in the Separator recipe. No Card border or shared contour recipe changes.
+
+| Emphasis | Alpha | Microsoft Blue L85 `#12263b` | Teams Primary L85 `#1f223c` |
+| --- | --- | --- | --- |
+| Lowest | 8% | `#12263b14` | `#1f223c14` |
+| Low | 16% | `#12263b29` | `#1f223c29` |
+| Medium | 32% | `#12263b52` | `#1f223c52` |
+
+These values are a visual calibration for the existing three-level hierarchy. They use
+translucent Primary rather than physical black; the latter remains an option if the trial
+does not read well in use. Primary onSubtle keeps its L50 7/14/28% hierarchy, and Dark
+and Darker still publish only Neutral Separator recipes.
+
 ## Low Emphasis Extension
 
 Low is a user-requested Kiskadee hierarchy extension, not an upstream Fluent token mapping.

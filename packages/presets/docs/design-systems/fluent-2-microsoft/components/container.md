@@ -44,6 +44,10 @@ locator; the physical-black Darker cap uses the existing cap locator.
 | `primary.medium` -> `primaryComplementary.medium` | L3 -> L4 | D10 -> D9 | D5 -> D4 |
 | `primary.highest` -> `primaryComplementary.highest` | L50 -> L55 | D35 -> D30 | D18 -> D14 |
 
+`primaryComplementary.highest` is also published as a canonical Container canvas.
+The Showcase can pair that darker continuous background with a `primary.highest`
+supporting Card. This uses the same calibrated Rest color; it adds no new tone.
+
 `neutralComplementary` uses the neutral tonal family and produces `onSubtle` for descendants.
 `primaryComplementary.highest` uses the segment's Primary family and produces `onVivid` for
 descendants. Companions are published in supported input contexts so they can be placed within

@@ -8,7 +8,11 @@ import {
   useComponentMetadata,
   useKiskadee
 } from '@kiskadee/react-components/resources';
+import { Separator } from '@kiskadee/react-components/separator';
+import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
+import { useState } from 'react';
+import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
@@ -41,10 +45,11 @@ function pairTitle({ baseIntent, emphasis }: SurfacePair) {
 }
 
 export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }) {
+  const [showSeparators, setShowSeparators] = useState(false);
   const { segment, theme } = useKiskadee();
   const containerMetadata = useComponentMetadata('container');
   const cardMetadata = useComponentMetadata('card');
-  const { manifest } = useShowcaseMetadata(['container', 'card', 'text']);
+  const { manifest } = useShowcaseMetadata(['container', 'card', 'text', 'separator', 'switch']);
   const background = useShowcaseBackground();
   const profiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
@@ -202,20 +207,74 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
             className={`${s.exampleSection} ${s.compositionInner}`}
             aria-labelledby="card-complementary-pairs"
           >
-            <header className={s.sectionHeader}>
-              <Text as="h3" id="card-complementary-pairs" profile={profiles.sectionTitle}>
-                Base and complementary surfaces
-              </Text>
-              {showDescriptions ? (
-                <Text as="p" profile={profiles.body} className={s.description}>
-                  A Card keeps the base surface, while an inner Container paints a header or footer.
-                  These are suggested pairings, not nesting rules.
+            <div className={s.sectionHeadingRow}>
+              <header className={s.sectionHeader}>
+                <Text as="h3" id="card-complementary-pairs" profile={profiles.sectionTitle}>
+                  Base and complementary surfaces
                 </Text>
+                {showDescriptions ? (
+                  <Text as="p" profile={profiles.body} className={s.description}>
+                    A Card keeps the base surface, while an inner Container paints a header or
+                    footer. These are suggested pairings, not nesting rules.
+                  </Text>
+                ) : null}
+              </header>
+              {sectionContext &&
+              supportsManifestSurfaceContext(
+                components?.separator,
+                segment,
+                theme,
+                sectionContext
+              ) &&
+              supportsManifestSurfaceContext(components?.switch, segment, theme, sectionContext) ? (
+                <ShowcaseExampleCard context={sectionContext} border shadow={false}>
+                  <Switch
+                    id="card-complementary-separators"
+                    label="Separators"
+                    emphasis="medium"
+                    controlState={showSeparators}
+                    onControlStateChange={setShowSeparators}
+                  />
+                </ShowcaseExampleCard>
               ) : null}
-            </header>
+            </div>
             <div className={s.complementaryCompositionGrid}>
               {compositions.map((sample) => {
                 const placement = sample.emphasis === 'low' ? 'header' : 'footer';
+                const baseOutput = resolveContentSurfaceContext({
+                  map: cardMap,
+                  segment,
+                  theme,
+                  consumedSurfaceContext: sectionContext!,
+                  intent: sample.baseIntent,
+                  emphasis: sample.emphasis
+                });
+                const separatorState = getManifestComponentState(
+                  components?.separator,
+                  segment,
+                  theme,
+                  baseOutput
+                );
+                const separatorIntent =
+                  sample.baseIntent === 'primary' && separatorState?.primary?.medium?.rest
+                    ? 'primary'
+                    : 'neutral';
+                const separatorEmphasis =
+                  sample.baseIntent === 'primary' &&
+                  sample.emphasis === 'highest' &&
+                  separatorState?.primary?.medium?.rest
+                    ? 'medium'
+                    : separatorState?.[separatorIntent]?.low?.rest
+                      ? 'low'
+                      : 'medium';
+                const divider = separatorState?.[separatorIntent]?.[separatorEmphasis]?.rest ? (
+                  <Separator
+                    intent={separatorIntent}
+                    emphasis={separatorEmphasis}
+                    className={showSeparators ? undefined : s.invisibleSeparator}
+                    aria-hidden={showSeparators ? undefined : true}
+                  />
+                ) : null;
                 const band = (
                   <Container
                     intent={sample.complementaryIntent}
@@ -261,6 +320,7 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
                       className={s.complementaryPairCard}
                     >
                       {placement === 'header' ? band : null}
+                      {placement === 'header' ? divider : null}
                       <div className={s.complementaryBody}>
                         <Text as="span" profile={profiles.groupTitle}>
                           Main content
@@ -269,6 +329,7 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
                           {sample.baseIntent}.{sample.emphasis} remains the Card background.
                         </Text>
                       </div>
+                      {placement === 'footer' ? divider : null}
                       {placement === 'footer' ? band : null}
                     </Card>
                   </div>

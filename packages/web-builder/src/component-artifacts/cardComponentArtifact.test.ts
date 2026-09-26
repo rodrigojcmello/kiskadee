@@ -12,6 +12,14 @@ function createSchema(): Schema {
     components: {
       card: {
         options: {
+          border: {
+            defaultMode: 'adaptive',
+            adaptive: {
+              default: {
+                light: { onSubtle: { neutral: { low: true }, primary: { highest: false } } }
+              }
+            }
+          },
           canonicalSurfaces: {
             default: {
               light: [
@@ -60,6 +68,14 @@ describe('buildCardComponentArtifact', () => {
     expect(buildCardComponentArtifact(createSchema())).toEqual({
       component: 'card',
       options: {
+        border: {
+          defaultMode: 'adaptive',
+          adaptive: {
+            default: {
+              light: { onSubtle: { neutral: { low: true }, primary: { highest: false } } }
+            }
+          }
+        },
         canonicalSurfaces: {
           default: {
             light: [
@@ -106,8 +122,9 @@ describe('buildCardComponentArtifact', () => {
     const schema = createSchema();
     const card = schema.components.card!;
     const catalog = card.options!.canonicalSurfaces!;
+    const border = card.options!.border;
     card.surfaceSource = 'container';
-    card.options = {};
+    card.options = { border };
     const colors = card.elements.e1!.palettes!.default!.light!.onSubtle.boxColor!;
     colors.neutral!.low = {};
     colors.primary!.highest = {};

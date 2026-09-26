@@ -1,6 +1,7 @@
 'use client';
 
-import type { ControlCursorValue } from '@kiskadee/core';
+import type { ComponentEmphasis, ContainerIntent, ControlCursorValue } from '@kiskadee/core';
+import { Container } from '@kiskadee/react-components/container';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import {
   DensityProvider,
@@ -192,6 +193,9 @@ export default function ShowcaseShell({
     '--showcase-default-route-background': background.defaultColor,
     '--showcase-route-background': background.color
   } as CSSProperties;
+  const content = <div className={style.contentInner}>{children}</div>;
+  const canvas = background.canvasSurface;
+  const [canvasIntent, canvasEmphasis] = canvas?.key.split('.') ?? [];
 
   return (
     <ShowcasePanelContext.Provider value={contextValue}>
@@ -236,17 +240,26 @@ export default function ShowcaseShell({
             </div>
           </ShowcaseIconFamilyBoundary>
 
-          <div className={`${style.content} s-content`}>
-            <div className={style.contentInner}>
-              <SurfaceContextProvider value={background.surfaceContext}>
-                <KiskadeeContext.Provider value={contentContext}>
-                  <DensityProvider value={densityOverride ?? 'adaptive'}>
-                    {children}
-                  </DensityProvider>
-                </KiskadeeContext.Provider>
-              </SurfaceContextProvider>
-            </div>
-          </div>
+          <KiskadeeContext.Provider value={contentContext}>
+            <DensityProvider value={densityOverride ?? 'adaptive'}>
+              {canvas ? (
+                <Container
+                  intent={canvasIntent as ContainerIntent}
+                  emphasis={canvasEmphasis as ComponentEmphasis}
+                  surfaceContext="onSubtle"
+                  className={`${style.content} s-content`}
+                >
+                  {content}
+                </Container>
+              ) : (
+                <SurfaceContextProvider value={background.surfaceContext}>
+                  <div className={`${style.content} ${style.contentFallback} s-content`}>
+                    {content}
+                  </div>
+                </SurfaceContextProvider>
+              )}
+            </DensityProvider>
+          </KiskadeeContext.Provider>
         </div>
 
         {!isNarrowViewport ? (

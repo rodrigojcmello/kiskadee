@@ -72,5 +72,34 @@ export function createFluent2MicrosoftContours({
       ];
     })
   );
-  return { profiles: { neutral: { standard: { palettes: { default: palettes } } } } };
+  const primaryLight = {
+    onSubtle: {
+      lowest: {
+        rest: c.resolve('default', 'l', exactColor('primary', 50, 'global.contours', 7))
+      },
+      low: {
+        rest: c.resolve('default', 'l', exactColor('primary', 50, 'global.contours', 14))
+      },
+      medium: {
+        rest: c.resolve('default', 'l', exactColor('primary', 50, 'global.contours', 28))
+      }
+    },
+    onVivid: {
+      lowest: {
+        rest: c.resolve('default', 'l', exactColor('primary', 4, 'global.contours', 5))
+      },
+      low: {
+        rest: c.resolve('default', 'l', exactColor('primary', 4, 'global.contours', 10))
+      },
+      medium: {
+        rest: c.resolve('default', 'l', exactColor('primary', 4, 'global.contours', 20))
+      }
+    }
+  };
+  return {
+    profiles: {
+      neutral: { standard: { palettes: { default: palettes } } },
+      primary: { standard: { palettes: { default: { light: primaryLight } } } }
+    }
+  };
 }

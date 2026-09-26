@@ -8,10 +8,10 @@ component surface-context props and internal providers remain unchanged.
 
 ## Published catalog
 
-The control reads the active preset's generated Card metadata artifact:
+The shared canvas control reads the active preset's generated Container metadata artifact:
 
 ```text
-components/card.kiskadee.json
+components/container.kiskadee.json
   options.canonicalSurfaces[segment][theme][]
     intent
     emphasis
@@ -21,17 +21,18 @@ components/card.kiskadee.json
 
 The preset authors the array order through `components.container.options.canonicalSurfaces`.
 Container owns the referenced Rest colors and descendant contexts. The Web Builder validates the
-references and preserves Card-compatible resolved entries in the Card artifact for existing
-Showcase consumers. The Container artifact keeps the complete authored catalog.
+references and preserves Card-compatible resolved entries in the Card artifact for other
+consumers. The shared canvas can include a published companion surface; the ordinary
+Card inspection catalog continues to omit companion intents.
 The Showcase neither owns an intent/emphasis list nor sorts colors by luminance.
 
 When two surface entries resolve to the same normalized color, only the first is retained in the
 base swatch catalog. Background composition opts out of this deduplication to retain same-intent
 fallbacks even when their colors match. Scenarios must not be deduplicated by canvas
-color: two scenarios can share a canvas while selecting different supporting Cards. The split-swatch
-scenario requests the public Card border to distinguish its supporting Cards from the canvas.
-This is scenario metadata, independent of swatch position; border paint remains preset-owned.
-An explicit border override on an example takes precedence. Sparse intent
+color: two scenarios can share a canvas while selecting different supporting Cards. Supporting
+Cards explicitly request the preset's adaptive border policy; scenario metadata selects
+surfaces and swatch presentation only. An explicit border override on an example takes
+precedence. Sparse intent
 tracks remain valid: a preset may publish `primary.highest` without inventing `primary.high`.
 
 Container owns the canonical surface vocabulary. Card consumes those Rest surfaces at build time,
@@ -50,7 +51,8 @@ identities, not swatch positions. The canonical composition selector prefers the
 for On subtle in every theme; when unavailable it uses the theme policy over published scenario
 canvases. The underlying surface policy prefers `neutral.low` in Light/Dark and
 `neutral.highest`, then `neutral.medium`, in Darker. The vivid
-context prefers `primary.highest`. Other compatible published surfaces are fallbacks.
+context prefers `primaryComplementary.highest` when published, then `primary.highest`.
+Other compatible published surfaces are fallbacks.
 No color is authored by this policy and no surface crosses context as a fallback.
 
 Initial load and context changes use automatic defaults, reevaluated for the active theme.
@@ -61,7 +63,7 @@ not the Showcase's initial canvas choice. Applications remain free to choose the
 
 ## Canvas and supporting Card combinations
 
-`resolveBackgroundScenarios` composes pairs from the existing generated Card surfaces. Each
+`resolveBackgroundScenarios` composes pairs from the generated Container canvas surfaces. Each
 scenario has a stable key, a canvas surface, a supporting Card surface, and a swatch treatment.
 The first two exceptions are Neutral Lowest / Neutral Lowest and Neutral Lowest / Neutral Low.
 Legacy catalogs without Neutral Lowest retain their first subtle surface as the base; if Neutral
@@ -76,16 +78,20 @@ The remaining On subtle choices contain one composition per published intent: Me
 and Low Cards of the same intent. Low falls back to Lowest of that intent, then the base subtle
 surface when neither is published. Catalogs without Medium retain Low or their first published
 surface. No recipes or colors are synthesized. Medium/Low are semantic coordinates in both
-Light and Dark; luminosity is never used to choose them. On vivid retains each published vivid
-canvas paired with the first vivid surface. Explicit component surface demonstrations retain
-their own coordinates.
+Light and Dark; luminosity is never used to choose them. On vivid pairs each published canvas
+with `primary.highest` as its supporting Card when available. When the preset publishes
+`primaryComplementary.highest`, the `primary.highest` canvas scenario is omitted from the picker;
+that base color remains available for the supporting Card and explicit demonstrations.
+Supporting Cards use their published border on these related vivid surfaces.
 
 Scenario keys retain the canvas identity; the split exception includes both identities.
 Accessible names describe the complete canvas/Card pair. Presets and Builder continue to own
 surface availability and paint; these composition choices belong only to Showcase.
 
 `useShowcaseBackgroundState` owns the route-scoped selection in the existing Showcase panel
-context. The Shell paints the canvas and publishes its Surface Context only around content. All
+context. The Shell renders the selected Container as the scrollable `s-content` surface;
+Container paints the canvas and publishes its child context. For a preset without a
+published Container surface, the Shell retains the existing CSS-painted content wrapper. All
 component panels consume the same `ShowcaseBackgroundControls` through their semantic controls,
 including routes without a previous local picker. Route changes reset the selection, including
 return navigation; theme and segment changes resolve the current pair from current artifacts.
@@ -96,12 +102,15 @@ coordinates, not CSS paint: Card consumes Container's Rest fill while keeping it
 geometry. Button and Switch support cards, default Slider/TextField cards, Dropdown/Select/Separator
 cards and other supporting surfaces consume the same selection. An absent Card surface produces
 an unpainted content wrapper instead of inventing a fallback color.
+The inherited surface context selects the preset's adaptive border decision. A directly
+supplied `border` prop still takes precedence for demonstrations that intentionally force
+visibility. In Fluent Light, this keeps a white comparison Card borderless on a vivid blue
+canvas while bordering the related blue Card on that canvas.
 
 Explicit specimen surfaces remain independent: the Card route demonstrates its own intent/emphasis
 matrix, foreground comparisons retain a vivid column, and Slider/TextField's existing custom
 surface probes remain explicit overrides. Layout-only groups do not acquire decorative Cards.
-This delivery does not replace all existing Showcase canvas Cards with Container or rewrite
-remaining legacy specimen styles.
+This delivery does not rewrite specimen Cards inside the routes.
 
 ## Background control group
 

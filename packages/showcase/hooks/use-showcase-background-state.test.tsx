@@ -13,12 +13,8 @@ const fixtures = vi.hoisted(() => ({
 vi.mock('@kiskadee/react-components/resources', () => ({
   useKiskadee: () => ({ theme: fixtures.theme })
 }));
-vi.mock('./use-canonical-card-surfaces', () => ({
-  useCanonicalCardSurfaces: () => ({
-    tones: fixtures.tones,
-    defaultToneKey: fixtures.tones[1]?.key,
-    defaultSurface: fixtures.tones[1]
-  })
+vi.mock('./use-canonical-container-surfaces', () => ({
+  useCanonicalContainerSurfaces: () => fixtures.tones
 }));
 
 let value: ReturnType<typeof useShowcaseBackgroundState>;
@@ -72,6 +68,21 @@ beforeEach(() => {
 afterEach(() => act(() => root.unmount()));
 
 describe('shared background selection', () => {
+  it('pairs a published vivid companion canvas with the main Primary Card', () => {
+    fixtures.tones.push({
+      key: 'primaryComplementary.highest',
+      label: 'Vivid companion',
+      contentSurfaceContext: 'onVivid',
+      resolvedColor: 'deep-blue'
+    });
+    render();
+    act(() => value.selectContext('onVivid'));
+    expect([value.key, value.color, value.cardSurface?.resolvedColor]).toEqual([
+      'primaryComplementary.highest',
+      'deep-blue',
+      'blue'
+    ]);
+  });
   it('updates automatic defaults on theme changes and preserves explicit choices', () => {
     render();
     fixtures.tones = [

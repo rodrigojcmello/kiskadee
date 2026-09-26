@@ -9,12 +9,18 @@ export function withTeamsPalettes<T>(base: T, teams: T): T {
   const candidate = teams as Record<string, unknown>;
   for (const [key, value] of Object.entries(result)) {
     if (key === 'colors') continue;
-    if (
-      key === 'palettes' ||
-      key === 'contentSurfaceContext' ||
-      key === 'canonicalSurfaces' ||
-      key === 'border'
-    ) {
+    if (key === 'border') {
+      const source = candidate[key] as { adaptive?: { default?: unknown } } | undefined;
+      const current = value as { adaptive?: object };
+      if (source?.adaptive?.default && current.adaptive) {
+        result[key] = {
+          ...current,
+          adaptive: { ...current.adaptive, teams: source.adaptive.default }
+        };
+      }
+      continue;
+    }
+    if (key === 'palettes' || key === 'contentSurfaceContext' || key === 'canonicalSurfaces') {
       const source = candidate[key] as Record<string, unknown> | undefined;
       if (source && 'default' in source) {
         result[key] = { ...(value as object), teams: source.default };

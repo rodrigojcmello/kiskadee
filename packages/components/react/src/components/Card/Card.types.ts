@@ -40,8 +40,8 @@ export type CardBaseVisualProps = {
 export type CardVisualProps = Omit<CardBaseVisualProps, 'intent'> & {
   /** Static Cards may also use a Container complementary surface. */
   intent?: CardSurfaceIntent;
-  /** Override border visibility; omitted follows the preset for the current surface. */
-  border?: boolean;
+  /** Omitted follows the preset; adaptive uses its authored surface policy. */
+  border?: boolean | 'adaptive';
   /** Let child regions meet the Card edge while retaining its radius and clipping. */
   flushContent?: boolean;
   /** Opt into shadow, or choose a fixed global shadow level for static cards. */

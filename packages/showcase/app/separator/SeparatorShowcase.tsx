@@ -1,11 +1,16 @@
 'use client';
 
 import { useKiskadee } from '@kiskadee/react-components/resources';
-import { Separator } from '@kiskadee/react-components/separator';
+import { Separator, type SeparatorIntent } from '@kiskadee/react-components/separator';
 import { Text } from '@kiskadee/react-components/text';
+import { useState } from 'react';
 import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
-import { ShowcaseControlGroup, ShowcaseRouteControls } from '@/components/ShowcaseControls';
+import {
+  ShowcaseControlGroup,
+  ShowcaseRouteControls,
+  ShowcaseSelectControl
+} from '@/components/ShowcaseControls';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { getManifestComponentState } from '@/utils/manifest-surface-context';
@@ -18,24 +23,38 @@ function Unavailable() {
   return (
     <div className={styles.unavailable}>
       <Text as="p" profile={textProfiles.body}>
-        Separator is not available in the active design system.
+        No Separator recipe is available for the active preset, theme and example surface.
       </Text>
     </div>
   );
 }
 
 export default function SeparatorShowcase() {
-  const { manifest } = useShowcaseMetadata(['separator']);
+  const { manifest } = useShowcaseMetadata(['separator', 'text']);
   const { segment, theme } = useKiskadee();
-  const { surfaceContext } = useShowcaseBackground();
+  const background = useShowcaseBackground();
+  const surfaceContext = background.cardSurface?.contentSurfaceContext ?? background.surfaceContext;
+  const [requestedIntent, setRequestedIntent] = useState<SeparatorIntent>('neutral');
   const state = getManifestComponentState(
     manifest?.components?.separator,
     String(segment ?? 'default'),
     theme,
     surfaceContext
   );
-  const supportedEmphases = (['lowest', 'low', 'medium', 'high', 'highest'] as const).filter(
-    (value) => state?.neutral?.[value]?.rest
+  const textState = getManifestComponentState(
+    manifest?.components?.text,
+    String(segment ?? 'default'),
+    theme,
+    surfaceContext
+  );
+  const labelForeground = textState?.blue?.medium?.rest ? 'blue' : 'neutral';
+  const emphasisOrder = ['lowest', 'low', 'medium', 'high', 'highest'] as const;
+  const supportedIntents = (['neutral', 'primary'] as const).filter((intent) =>
+    emphasisOrder.some((emphasis) => state?.[intent]?.[emphasis]?.rest)
+  );
+  const intent = supportedIntents.includes(requestedIntent) ? requestedIntent : supportedIntents[0];
+  const supportedEmphases = emphasisOrder.filter(
+    (value) => intent && state?.[intent]?.[value]?.rest
   );
   const layoutEmphasis = supportedEmphases.includes('medium') ? 'medium' : supportedEmphases[0];
   const textProfiles = useShowcaseTextProfiles();
@@ -47,7 +66,8 @@ export default function SeparatorShowcase() {
         Separator
       </Text>
       <Text as="p" profile={textProfiles.body} className={styles.lead}>
-        A neutral line whose spacing and placement remain the responsibility of its layout.
+        A line separating content regions. Intent selects its color family; emphasis controls its
+        strength. Spacing and placement belong to the surrounding layout.
       </Text>
       <ShowcaseRouteControls
         id="separator"
@@ -58,10 +78,23 @@ export default function SeparatorShowcase() {
       >
         <ShowcaseControlGroup title="Semantic">
           <ShowcaseGlobalSemanticControls />
+          {supportedIntents.length ? (
+            <ShowcaseSelectControl
+              label="Intent"
+              variant="sequential"
+              loop
+              value={intent}
+              options={supportedIntents.map((value) => ({
+                value,
+                label: value === 'neutral' ? 'Neutral' : 'Primary'
+              }))}
+              onValueChange={(value) => setRequestedIntent(value as SeparatorIntent)}
+            />
+          ) : null}
         </ShowcaseControlGroup>
       </ShowcaseRouteControls>
 
-      {!available ? (
+      {!available || !intent || !supportedEmphases.length ? (
         <Unavailable />
       ) : (
         <div className={styles.sections}>
@@ -71,7 +104,8 @@ export default function SeparatorShowcase() {
             </Text>
             <Text as="p" profile={textProfiles.body} className={styles.description}>
               Compare every available emphasis on the same surface, horizontally and vertically.
-              Available levels depend on the design system, theme, and surface context.
+              Available levels depend on the preset, theme, intent and the surface inside each Card.
+              The current intent is {intent === 'neutral' ? 'Neutral' : 'Primary'}.
             </Text>
             <div className={styles.grid}>
               <ShowcaseExampleCard role="article" className={styles.card}>
@@ -80,11 +114,22 @@ export default function SeparatorShowcase() {
                 </Text>
                 {supportedEmphases.map((emphasis) => (
                   <div key={emphasis} className={styles.emphasisExample}>
-                    <Text as="p" profile={textProfiles.caption} className={styles.emphasisLabel}>
+                    <Text
+                      as="p"
+                      profile={textProfiles.bodyStrong}
+                      foreground={labelForeground}
+                      className={styles.emphasisLabel}
+                    >
                       {emphasis}
                     </Text>
                     <div className={styles.horizontalStage}>
-                      <Separator emphasis={emphasis} />
+                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                        Above
+                      </Text>
+                      <Separator intent={intent} emphasis={emphasis} />
+                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                        Below
+                      </Text>
                     </div>
                   </div>
                 ))}
@@ -96,22 +141,39 @@ export default function SeparatorShowcase() {
                 </Text>
                 {supportedEmphases.map((emphasis) => (
                   <div key={emphasis} className={styles.emphasisExample}>
-                    <Text as="p" profile={textProfiles.caption} className={styles.emphasisLabel}>
+                    <Text
+                      as="p"
+                      profile={textProfiles.bodyStrong}
+                      foreground={labelForeground}
+                      className={styles.emphasisLabel}
+                    >
                       {emphasis}
                     </Text>
                     <div className={styles.verticalStage}>
-                      <Text as="span" profile={textProfiles.body}>
-                        Previous
+                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                        Before
                       </Text>
-                      <Separator orientation="vertical" emphasis={emphasis} />
-                      <Text as="span" profile={textProfiles.body}>
-                        Next
+                      <Separator intent={intent} orientation="vertical" emphasis={emphasis} />
+                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                        After
                       </Text>
                     </div>
                   </div>
                 ))}
               </ShowcaseExampleCard>
             </div>
+          </section>
+
+          <section className={styles.section} aria-labelledby="separator-context-title">
+            <Text as="h3" id="separator-context-title" profile={textProfiles.sectionTitle}>
+              Inherited surface
+            </Text>
+            <Text as="p" profile={textProfiles.body} className={styles.description}>
+              Each Separator inherits the surface created by its nearest Card or Container. These
+              examples use {surfaceContext === 'onVivid' ? 'On vivid' : 'On subtle'}. Neutral can
+              use dark or light paint depending on the preset and context; Primary uses the preset's
+              primary color family. Changing intent does not change the background.
+            </Text>
           </section>
 
           <section className={styles.section} aria-labelledby="separator-layout-title">
@@ -131,7 +193,7 @@ export default function SeparatorShowcase() {
                   Profile, sign-in and security preferences.
                 </Text>
               </div>
-              <Separator emphasis={layoutEmphasis} />
+              <Separator intent={intent} emphasis={layoutEmphasis} />
               <div className={styles.contentBlock}>
                 <Text as="h4" profile={textProfiles.subsectionTitle}>
                   Notifications

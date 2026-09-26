@@ -17,7 +17,10 @@ const context: KiskadeeContextValue = {
         d: 'separator-default',
         s: { all: 'separator-thickness' },
         c: {
-          s: { neutral: { m: 'separator-color', l: 'separator-low-subtle' } },
+          s: {
+            neutral: { m: 'separator-color', l: 'separator-low-subtle' },
+            primary: { m: 'separator-primary-subtle' }
+          },
           v: { neutral: { m: 'separator-medium-vivid', l: 'separator-low-vivid' } }
         }
       }
@@ -68,6 +71,18 @@ describe('Separator', () => {
     expect(separator.className.split(' ')).toContain('k-sep');
     expect(separator.className.split(' ')).toContain('k-sep-e1');
     expect(separator.className).toContain('consumer');
+  });
+
+  it('selects an authored Primary line without forwarding the intent to hr', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <Separator intent="primary" />
+      </KiskadeeContext.Provider>
+    );
+    const separator = result.getByRole('separator');
+    expect(separator.className).toContain('separator-primary-subtle');
+    expect(separator.className).not.toContain('separator-color');
+    expect(separator.hasAttribute('intent')).toBe(false);
   });
 
   it('publishes vertical orientation and forwards its native ref', () => {

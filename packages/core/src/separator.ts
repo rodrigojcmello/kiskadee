@@ -17,11 +17,14 @@ export type SeparatorRestStateColorMap = {
   rest: Color;
 } & Partial<Record<SeparatorNonRestState, never>>;
 
+type SeparatorIntentColorMap = {
+  medium: SeparatorRestStateColorMap;
+} & Partial<Record<Exclude<ComponentEmphasis, 'medium'>, SeparatorRestStateColorMap>>;
+
 export type SeparatorColorSchema = {
   boxColor: {
-    neutral: {
-      medium: SeparatorRestStateColorMap;
-    } & Partial<Record<Exclude<ComponentEmphasis, 'medium'>, SeparatorRestStateColorMap>>;
+    neutral: SeparatorIntentColorMap;
+    primary?: SeparatorIntentColorMap;
   };
   borderColor?: never;
   textColor?: never;

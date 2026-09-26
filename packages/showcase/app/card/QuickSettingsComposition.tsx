@@ -13,6 +13,7 @@ import {
 import { Separator } from '@kiskadee/react-components/separator';
 import { Slider } from '@kiskadee/react-components/slider';
 import { Text } from '@kiskadee/react-components/text';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import {
   getManifestComponentState,
@@ -43,16 +44,30 @@ type Panel = {
   emphasis: ComponentEmphasis;
   footerIntent: 'neutral' | 'neutralComplementary' | 'primary' | 'primaryComplementary';
   footerEmphasis: ComponentEmphasis;
-  faceEmphasis: ComponentEmphasis;
   actionButton: ButtonProfile;
   settingsButton: ButtonProfile;
   separatorEmphasis: ComponentEmphasis;
+  footerSeparatorIntent: 'neutral' | 'primary';
 };
 
 type ButtonProfile = { intent: 'neutral' | 'primary'; emphasis: ComponentEmphasis };
 
 function QuickSettingsPanel({ panel, radius }: { panel: Panel; radius: CardRadiusMode }) {
   const profiles = useShowcaseTextProfiles();
+  const volume = (
+    <Slider
+      aria-label="Volume"
+      defaultValue={65}
+      min={0}
+      max={100}
+      step={1}
+      marks={[
+        { value: 0, icon: <FamilyResolvedIcon name="volume-low" /> },
+        { value: 100, icon: <FamilyResolvedIcon name="volume-high" /> }
+      ]}
+      edgeMarks="exclude"
+    />
+  );
 
   return (
     <div className={s.variant}>
@@ -71,42 +86,27 @@ function QuickSettingsPanel({ panel, radius }: { panel: Panel; radius: CardRadiu
         <div className={s.actions}>
           {actions.map(({ label, icon }) => (
             <div key={label} className={s.action}>
-              <Container intent="neutral" emphasis={panel.faceEmphasis} className={s.buttonSurface}>
-                <Button
-                  intent={panel.actionButton.intent}
-                  emphasis={panel.actionButton.emphasis}
-                  radius={radius}
-                  size="lg"
-                  aria-label={label}
-                  classNames={{ e1: s.actionButton }}
-                >
-                  <Button.Icon>
-                    <FamilyResolvedIcon name={icon} />
-                  </Button.Icon>
-                </Button>
-              </Container>
+              <Button
+                intent={panel.actionButton.intent}
+                emphasis={panel.actionButton.emphasis}
+                radius={radius}
+                size="lg"
+                aria-label={label}
+                classNames={{ e1: s.actionButton }}
+              >
+                <Button.Icon>
+                  <FamilyResolvedIcon name={icon} />
+                </Button.Icon>
+              </Button>
               <Text as="p" profile={profiles.body} className={s.actionLabel}>
                 {label}
               </Text>
             </div>
           ))}
         </div>
-        <Separator emphasis={panel.separatorEmphasis} />
-        <div className={s.volume}>
-          <Slider
-            aria-label="Volume"
-            defaultValue={65}
-            min={0}
-            max={100}
-            step={1}
-            marks={[
-              { value: 0, icon: <FamilyResolvedIcon name="volume-low" /> },
-              { value: 100, icon: <FamilyResolvedIcon name="volume-high" /> }
-            ]}
-            edgeMarks="exclude"
-          />
-        </div>
-        <Separator emphasis={panel.separatorEmphasis} />
+        <Separator intent="neutral" emphasis={panel.separatorEmphasis} />
+        <div className={s.volume}>{volume}</div>
+        <Separator intent={panel.footerSeparatorIntent} emphasis={panel.separatorEmphasis} />
         <Container intent={panel.footerIntent} emphasis={panel.footerEmphasis} className={s.footer}>
           <Button
             intent={panel.settingsButton.intent}
@@ -136,8 +136,14 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
     'text'
   ]);
   const profiles = useShowcaseTextProfiles();
+  const background = useShowcaseBackground();
   const components = manifest?.components;
-  const containerState = getManifestComponentState(components?.container, segment, theme);
+  const containerState = getManifestComponentState(
+    components?.container,
+    segment,
+    theme,
+    background.surfaceContext
+  );
   const containerMap = containerMetadata?.contentSurfaceContext;
   const cardMap = cardMetadata?.contentSurfaceContext;
 
@@ -164,10 +170,10 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
       emphasis
     });
 
-  const pickBand = (intent: 'neutral' | 'primary', order: ComponentEmphasis[]) => {
+  const pickBand = (intent: Panel['footerIntent'], order: ComponentEmphasis[]) => {
     for (const emphasis of order) {
       if (!containerState?.[intent]?.[emphasis]?.rest) continue;
-      const output = containerOutput('onSubtle', intent, emphasis);
+      const output = containerOutput(background.surfaceContext, intent, emphasis);
       if (supportsManifestSurfaceContext(components?.text, segment, theme, output)) {
         return { intent, emphasis, output };
       }
@@ -217,37 +223,35 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
       theme,
       panelOutput
     );
-    const separatorEmphasis = pick(separatorState?.neutral, [
-      'low',
-      'medium',
-      'lowest',
-      'high',
-      'highest'
-    ]);
+    const separatorEmphasis = pick(
+      separatorState?.neutral,
+      panelOutput === 'onVivid'
+        ? ['medium', 'low', 'lowest', 'high', 'highest']
+        : ['low', 'medium', 'lowest', 'high', 'highest']
+    );
     const panelContainerState = getManifestComponentState(
       components?.container,
       segment,
       theme,
       panelOutput
     );
-    const faceEmphasis = pick(panelContainerState?.neutral, [
-      'low',
-      'lowest',
-      'medium',
-      'high',
-      'highest'
-    ]);
     if (
       !separatorEmphasis ||
-      !faceEmphasis ||
-      !supportsManifestSurfaceContext(components?.slider, segment, theme, panelOutput) ||
       !supportsManifestSurfaceContext(components?.text, segment, theme, panelOutput)
     ) {
       return undefined;
     }
+    const footerSeparatorIntent =
+      panelOutput === 'onVivid' && separatorState?.primary?.[separatorEmphasis]?.rest
+        ? 'primary'
+        : 'neutral';
 
-    const faceOutput = containerOutput(panelOutput, 'neutral', faceEmphasis);
-    const actionButton = pickButton(faceOutput, ['low', 'medium', 'lowest', 'high', 'highest']);
+    const actionButton = pickButton(
+      panelOutput,
+      panelOutput === 'onVivid'
+        ? ['medium', 'high', 'low', 'lowest', 'highest']
+        : ['low', 'medium', 'high', 'lowest', 'highest']
+    );
     if (!actionButton) return undefined;
 
     const footerIntents: Panel['footerIntent'][] =
@@ -259,7 +263,9 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
       const footerOutput = containerOutput(panelOutput, footerIntent, emphasis);
       const settingsButton = pickButton(
         footerOutput,
-        ['lowest', 'low', 'medium', 'high', 'highest'],
+        footerOutput === 'onVivid'
+          ? ['medium', 'high', 'low', 'lowest', 'highest']
+          : ['lowest', 'low', 'medium', 'high', 'highest'],
         actionButton.intent
       );
       if (settingsButton) {
@@ -269,35 +275,37 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
           emphasis,
           footerIntent,
           footerEmphasis: emphasis,
-          faceEmphasis,
           actionButton,
           settingsButton,
-          separatorEmphasis
+          separatorEmphasis,
+          footerSeparatorIntent
         };
       }
     }
     return undefined;
   };
 
-  const bandCandidates = [
-    pickBand('primary', ['highest']),
-    pickBand('neutral', ['high', 'medium', 'low', 'lowest', 'highest'])
-  ];
+  const vivid = background.surfaceContext === 'onVivid';
+  const bandCandidates = vivid
+    ? [pickBand('primaryComplementary', ['highest']), pickBand('primary', ['highest'])]
+    : [pickBand('neutral', ['high', 'medium', 'low', 'lowest'])];
   let band: NonNullable<(typeof bandCandidates)[number]> | undefined;
-  let neutralPanel: Panel | undefined;
+  let panel: Panel | undefined;
   for (const candidate of bandCandidates) {
     if (!candidate) continue;
-    const panel = (['medium', 'low', 'lowest', 'high', 'highest'] as const)
-      .map((emphasis) => buildPanel('Neutral surface', 'neutral', emphasis, candidate.output))
-      .find((item) => item !== undefined);
-    if (panel) {
+    const matchingPanel = vivid
+      ? buildPanel('Vivid surface', 'primary', 'highest', candidate.output)
+      : (['medium', 'low', 'lowest', 'high'] as const)
+          .map((emphasis) => buildPanel('Neutral surface', 'neutral', emphasis, candidate.output))
+          .find((item) => item !== undefined);
+    if (matchingPanel) {
       band = candidate;
-      neutralPanel = panel;
+      panel = matchingPanel;
       break;
     }
   }
 
-  if (!band || !neutralPanel) {
+  if (!band || !panel) {
     return (
       <Text profile={profiles.body} emphasis="low">
         This composition requires Container, Card, Button, Separator and Slider recipes in the
@@ -306,21 +314,15 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
     );
   }
 
-  const panels: Panel[] = [neutralPanel];
-  const vividPanel = buildPanel('Vivid surface', 'primary', 'highest', band.output);
-  if (vividPanel) panels.push(vividPanel);
-
   return (
     <Container
       intent={band.intent}
       emphasis={band.emphasis}
-      surfaceContext="onSubtle"
+      surfaceContext={background.surfaceContext}
       className={s.band}
     >
       <div className={s.bandContent}>
-        {panels.map((item) => (
-          <QuickSettingsPanel key={item.intent} panel={item} radius={radius} />
-        ))}
+        <QuickSettingsPanel panel={panel} radius={radius} />
       </div>
     </Container>
   );

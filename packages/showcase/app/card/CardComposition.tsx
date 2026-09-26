@@ -105,7 +105,7 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
           <Card
             intent="neutral"
             emphasis="lowest"
-            border={false}
+            border
             radius={radius}
             className={s.compositionSidebar}
           >

@@ -74,32 +74,36 @@ function validateSeparatorColorMap(
     return;
   }
   for (const key of Object.keys(boxColor)) {
-    if (key !== 'neutral') addPaletteIssue(ctx, [...path, 'boxColor', key], 'unrecognized intent');
+    if (key !== 'neutral' && key !== 'primary')
+      addPaletteIssue(ctx, [...path, 'boxColor', key], 'unrecognized intent');
   }
 
-  const neutral = boxColor.neutral;
-  if (!isRecord(neutral)) {
-    addPaletteIssue(ctx, [...path, 'boxColor', 'neutral'], 'required intent');
-    return;
-  }
-  if (!isRecord(neutral.medium)) {
-    addPaletteIssue(ctx, [...path, 'boxColor', 'neutral', 'medium'], 'required emphasis');
-  }
-  for (const [emphasis, states] of Object.entries(neutral)) {
-    const emphasisPath = [...path, 'boxColor', 'neutral', emphasis];
-    if (!Object.hasOwn(componentEmphasisBuckets, emphasis)) {
-      addPaletteIssue(ctx, emphasisPath, 'unrecognized emphasis');
+  for (const intent of ['neutral', 'primary'] as const) {
+    const colors = boxColor[intent];
+    if (colors === undefined && intent === 'primary') continue;
+    if (!isRecord(colors)) {
+      addPaletteIssue(ctx, [...path, 'boxColor', intent], 'required intent');
       continue;
     }
-    if (!isRecord(states)) {
-      addPaletteIssue(ctx, emphasisPath, 'expected object');
-      continue;
+    if (!isRecord(colors.medium)) {
+      addPaletteIssue(ctx, [...path, 'boxColor', intent, 'medium'], 'required emphasis');
     }
-    for (const state of Object.keys(states)) {
-      if (state !== 'rest') addPaletteIssue(ctx, [...emphasisPath, state], 'unrecognized state');
+    for (const [emphasis, states] of Object.entries(colors)) {
+      const emphasisPath = [...path, 'boxColor', intent, emphasis];
+      if (!Object.hasOwn(componentEmphasisBuckets, emphasis)) {
+        addPaletteIssue(ctx, emphasisPath, 'unrecognized emphasis');
+        continue;
+      }
+      if (!isRecord(states)) {
+        addPaletteIssue(ctx, emphasisPath, 'expected object');
+        continue;
+      }
+      for (const state of Object.keys(states)) {
+        if (state !== 'rest') addPaletteIssue(ctx, [...emphasisPath, state], 'unrecognized state');
+      }
+      if (states.rest === undefined)
+        addPaletteIssue(ctx, [...emphasisPath, 'rest'], 'required state');
     }
-    if (states.rest === undefined)
-      addPaletteIssue(ctx, [...emphasisPath, 'rest'], 'required state');
   }
 }
 

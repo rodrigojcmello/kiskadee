@@ -1,7 +1,7 @@
-import type { CardIntent, ComponentEmphasis, SurfaceContext, ThemeMode } from '@kiskadee/core';
+import type { ComponentEmphasis, ContainerIntent, SurfaceContext, ThemeMode } from '@kiskadee/core';
 import type { CardCanonicalSurfacesPayload } from '@kiskadee/web-builder/types';
 
-export type CanonicalCardSurfaceKey = `${CardIntent}.${ComponentEmphasis}`;
+export type CanonicalCardSurfaceKey = `${ContainerIntent}.${ComponentEmphasis}`;
 
 export type ResolvedCanonicalCardSurface = {
   key: CanonicalCardSurfaceKey;
@@ -13,7 +13,8 @@ export type ResolvedCanonicalCardSurface = {
 export { resolveDefaultCanonicalCardSurface } from './showcase-background-defaults';
 
 function capitalize(value: string): string {
-  return value.length > 0 ? `${value[0].toUpperCase()}${value.slice(1)}` : value;
+  const words = value.replace(/([a-z])([A-Z])/g, '$1 $2');
+  return words.length > 0 ? `${words[0].toUpperCase()}${words.slice(1)}` : words;
 }
 
 export function normalizeSurfaceColor(color: string): string {
@@ -24,12 +25,14 @@ export function resolveCanonicalCardSurfaces({
   canonicalSurfaces,
   segment,
   theme,
-  deduplicateColors = true
+  deduplicateColors = true,
+  includeComplementary = false
 }: {
   canonicalSurfaces: CardCanonicalSurfacesPayload | undefined;
   segment: string;
   theme: ThemeMode;
   deduplicateColors?: boolean;
+  includeComplementary?: boolean;
 }): ResolvedCanonicalCardSurface[] {
   const authoredSurfaces = canonicalSurfaces?.[segment]?.[theme];
   if (!authoredSurfaces) return [];
@@ -38,7 +41,10 @@ export function resolveCanonicalCardSurfaces({
   const surfaces: ResolvedCanonicalCardSurface[] = [];
 
   for (const surface of authoredSurfaces) {
-    if (surface.intent === 'neutralComplementary' || surface.intent === 'primaryComplementary') {
+    if (
+      !includeComplementary &&
+      (surface.intent === 'neutralComplementary' || surface.intent === 'primaryComplementary')
+    ) {
       continue;
     }
     const normalizedColor = normalizeSurfaceColor(surface.rest);

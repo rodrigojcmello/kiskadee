@@ -114,6 +114,12 @@ own opaque source-backed surface.
 
 ## Interaction, Border, And Geometry
 
+The Card border now publishes `defaultMode: adaptive` with its prior contextual
+visibility choices. Primary High and Highest onSubtle remain adaptively borderless;
+their existing neutral contour is available when a static Card explicitly requests
+a border. This is a Kiskadee presentation option, not a new Apple border token.
+
+
 Rest background colors are source-backed; Apple background variables do not define Card states.
 No Hover/Pressed/Focus fill is invented. The existing optional shadow effect supplies transient
 CardAction elevation. Selected promotes Neutral and Primary Medium to Primary High as a

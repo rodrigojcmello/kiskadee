@@ -73,7 +73,7 @@ export function createFluent2MicrosoftSchema(
       foregrounds: createFluent2MicrosoftForegrounds({ c: colorResolver }),
       contours: createFluent2MicrosoftContours({ c: colorResolver }),
       typography: fluent2MicrosoftTypography,
-      separators: createFluent2MicrosoftSeparators(),
+      separators: createFluent2MicrosoftSeparators({ c: colorResolver }),
       iconSizes: {
         's:sm:5': 6,
         's:sm:4': 8,

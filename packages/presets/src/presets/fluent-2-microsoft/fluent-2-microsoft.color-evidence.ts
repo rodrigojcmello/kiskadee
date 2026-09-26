@@ -16,7 +16,12 @@ export const fluent2MicrosoftColorEvidence = {
   'global.contours': {
     source: 'components/card.md#shared-neutral-contours',
     rationale:
-      'Light onSubtle uses physical black caps at 5/9.5/23%; Dark retains D45 and existing cap opacities.'
+      'Light neutral contours use black caps at 5/9.5/23%; Light Primary Card uses segment brand at 14% onSubtle; Separator uses 7/14/28% onSubtle. Dark recipes remain unchanged.'
+  },
+  'global.separators': {
+    source: 'components/separator.md#primary-dark-line-on-vivid-2026-09-26',
+    rationale:
+      'Kiskadee Light onVivid Primary Separator uses approved segment Primary L85 at 8/16/32% to distinguish dark lines from Neutral light lines.'
   },
   'component.card': {
     source: 'components/card.md#color-and-token-provenance',

@@ -1,4 +1,4 @@
-import { contour, type SolidColor } from '@kiskadee/core';
+import { contour } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
 import type { Segment } from '../ios-27-apple.schema.ts';
@@ -7,7 +7,6 @@ type ThemeName = 'light' | 'dark' | 'darker';
 type CreateIos27AppleCardSchemaArgs = {
   c: PresetColorGetter<Segment>;
   segmentNames: readonly Segment[];
-  transparent: SolidColor;
 };
 
 const themes = ['light', 'dark', 'darker'] as const;
@@ -21,11 +20,7 @@ const canonical = [
   { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
 ] as const;
 
-export function createIos27AppleCardSchema({
-  c,
-  segmentNames,
-  transparent
-}: CreateIos27AppleCardSchemaArgs) {
+export function createIos27AppleCardSchema({ c, segmentNames }: CreateIos27AppleCardSchemaArgs) {
   const palette = (segment: Segment, theme: ThemeName, context: (typeof contexts)[number]) => {
     const track = theme === 'light' ? 'l' : 'd';
     // Light grouped backgrounds; Dark Elevated; Darker Base. These are source stops, not emphasis arithmetic.
@@ -60,8 +55,8 @@ export function createIos27AppleCardSchema({
         },
         primary: {
           medium: { rest: border },
-          high: { rest: context === 'onVivid' ? border : transparent },
-          highest: { rest: context === 'onVivid' ? border : transparent }
+          high: { rest: border },
+          highest: { rest: border }
         }
       }
     };
@@ -101,29 +96,32 @@ export function createIos27AppleCardSchema({
           )
         ])
       ),
-      border: Object.fromEntries(
-        segmentNames.map((segment) => [
-          segment,
-          Object.fromEntries(
-            themes.map((theme) => [
-              theme,
-              Object.fromEntries(
-                contexts.map((context) => [
-                  context,
-                  {
-                    neutral: { lowest: true, low: false, medium: false },
-                    primary: {
-                      medium: false,
-                      high: context === 'onVivid',
-                      highest: context === 'onVivid'
+      border: {
+        defaultMode: 'adaptive',
+        adaptive: Object.fromEntries(
+          segmentNames.map((segment) => [
+            segment,
+            Object.fromEntries(
+              themes.map((theme) => [
+                theme,
+                Object.fromEntries(
+                  contexts.map((context) => [
+                    context,
+                    {
+                      neutral: { lowest: true, low: false, medium: false },
+                      primary: {
+                        medium: false,
+                        high: context === 'onVivid',
+                        highest: context === 'onVivid'
+                      }
                     }
-                  }
-                ])
-              )
-            ])
-          )
-        ])
-      )
+                  ])
+                )
+              ])
+            )
+          ])
+        )
+      }
     },
     effects: {
       shadow: {

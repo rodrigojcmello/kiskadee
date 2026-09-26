@@ -10,6 +10,7 @@ import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-st
 import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsage.ts';
 import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { generateClassNamesMapSplit } from '../phase-5-generate-class-names-map/generateClassNamesMap.ts';
+import { buildCardComponentArtifact } from './cardComponentArtifact.ts';
 
 const resolvedCard = resolveCardSurfaceSource(schema).components.card!;
 
@@ -22,15 +23,54 @@ describe('Card border pipeline', () => {
     ['missing', 'light', 'onSubtle', 'neutral', 'medium']
   ])('rejects unknown or unpublished coordinate %j', (...keys: string[]) => {
     const border = keys.reduceRight<unknown>((value, key) => ({ [key]: value }), false);
-    const invalid = { ...resolvedCard, options: { border } };
+    const invalid = {
+      ...resolvedCard,
+      options: { border: { defaultMode: 'adaptive', adaptive: border } }
+    };
     expect(validateCardComponentContract(invalid).length).toBeGreaterThan(0);
   });
   it('validates every declared recipe and rejects missing coverage', () => {
     expect(validateCardComponentContract(resolvedCard)).toEqual([]);
+    const invalidMode = structuredClone(resolvedCard);
+    (invalidMode.options!.border as { defaultMode: string }).defaultMode = 'automatic';
+    expect(
+      validateCardComponentContract(invalidMode).some((issue) => issue.includes('defaultMode'))
+    ).toBe(true);
     const invalid = structuredClone(resolvedCard);
     delete invalid.elements.e1!.scales!.borderWidth;
     expect(
       validateCardComponentContract(invalid).some((issue) => issue.includes('borderWidth'))
+    ).toBe(true);
+    const missingPolicy = structuredClone(resolvedCard);
+    delete missingPolicy.options!.border!.adaptive.default!.light!.onSubtle!.neutral!.medium;
+    expect(
+      validateCardComponentContract(missingPolicy).some((issue) =>
+        issue.includes('neutral.medium: missing supported Card combination')
+      )
+    ).toBe(true);
+    const missingRecipe = structuredClone(resolvedCard);
+    Reflect.deleteProperty(
+      missingRecipe.elements.e1!.palettes!.default!.light!.onSubtle.borderColor!.neutral!.medium!,
+      'rest'
+    );
+    expect(
+      validateCardComponentContract(missingRecipe).some((issue) =>
+        issue.includes('referenced borderColor Rest recipe is missing')
+      )
+    ).toBe(true);
+  });
+
+  it('publishes the default mode separately from the adaptive decision', () => {
+    const altered = structuredClone(schema);
+    altered.components.card!.options!.border!.defaultMode = 'always';
+    expect(
+      validateCardComponentContract(resolveCardSurfaceSource(altered).components.card)
+    ).toEqual([]);
+    expect(buildCardComponentArtifact(altered)?.options.border?.defaultMode).toBe('always');
+    altered.components.card!.options!.border!.defaultMode = 'never';
+    expect(
+      buildCardComponentArtifact(altered)?.options.border?.adaptive.default?.light?.onSubtle
+        ?.neutral?.medium
     ).toBe(true);
   });
 
@@ -44,12 +84,12 @@ describe('Card border pipeline', () => {
     });
     const names = shortenCssClassNames(usage);
     const result = generateClassNamesMapSplit(styleKeys, names, toneMetadataByPalette, {
-      cardBorderDefaults: resolvedCard.options?.border
+      cardBorderPolicy: resolvedCard.options?.border
     });
     for (const theme of ['light', 'dark', 'darker'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
         for (const intent of ['neutral', 'primary'] as const) {
-          const levels = resolvedCard.options!.border!.default![theme]![context]![intent]!;
+          const levels = resolvedCard.options!.border!.adaptive.default![theme]![context]![intent]!;
           const element = result.palettes[`default.${theme}`].card as {
             e1: import('@kiskadee/core').ClassNameByElementJSON;
           };
@@ -57,7 +97,7 @@ describe('Card border pipeline', () => {
             const bucket =
               componentEmphasisBuckets[emphasis as keyof typeof componentEmphasisBuckets];
             const recipe = element.e1.b![surfaceContextBuckets[context]]![intent]![bucket]!;
-            expect(recipe.default).toBe(enabled);
+            expect(recipe.adaptive).toBe(enabled);
             expect(recipe.off).toBe(names['borderColor__#00000000']);
             expect(recipe.on).not.toContain('__');
             expect(

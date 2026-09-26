@@ -11,7 +11,14 @@ import { resolveSeparatorClassName } from './Separator.class-names.ts';
 import type { SeparatorClassesMap, SeparatorProps } from './Separator.types.ts';
 
 const SeparatorRuntime = forwardRef<HTMLHRElement, SeparatorProps>(function Separator(
-  { className, orientation = 'horizontal', emphasis = 'medium', surfaceContext, ...props },
+  {
+    className,
+    orientation = 'horizontal',
+    emphasis = 'medium',
+    intent = 'neutral',
+    surfaceContext,
+    ...props
+  },
   ref
 ) {
   const resolvedSurfaceContext = useSurfaceContext(surfaceContext);
@@ -30,7 +37,8 @@ const SeparatorRuntime = forwardRef<HTMLHRElement, SeparatorProps>(function Sepa
         separatorClassesMap?.e1,
         className,
         emphasis,
-        resolvedSurfaceContext
+        resolvedSurfaceContext,
+        intent
       )}
     />
   );

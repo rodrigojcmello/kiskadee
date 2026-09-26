@@ -150,10 +150,13 @@ export function createMaterial3GoogleCardSchema({
       canonicalSurfaces: Object.fromEntries(
         segmentNames.map((segment) => [segment, { light: surfaces, dark: surfaces }])
       ),
-      border: buildBySegment(segmentNames, () => ({
-        light: { onSubtle: borderOptions('onSubtle'), onVivid: borderOptions('onVivid') },
-        dark: { onSubtle: borderOptions('onSubtle'), onVivid: borderOptions('onVivid') }
-      }))
+      border: {
+        defaultMode: 'adaptive',
+        adaptive: buildBySegment(segmentNames, () => ({
+          light: { onSubtle: borderOptions('onSubtle'), onVivid: borderOptions('onVivid') },
+          dark: { onSubtle: borderOptions('onSubtle'), onVivid: borderOptions('onVivid') }
+        }))
+      }
     },
     effects: {
       shadow: {

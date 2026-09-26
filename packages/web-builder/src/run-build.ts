@@ -256,7 +256,7 @@ export async function runBuild(): Promise<void> {
       shortenCssClassNameMap,
       toneMetadataByPalette,
       {
-        cardBorderDefaults: schema.components.card?.options?.border,
+        cardBorderPolicy: schema.components.card?.options?.border,
         webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
         collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
       }

@@ -1,5 +1,5 @@
 import type {
-  CardBorderDefaults,
+  CardBorderPolicy,
   CardCanonicalSurface,
   Schema,
   SolidColor,
@@ -21,7 +21,7 @@ export type CardCanonicalSurfacesPayload = Record<
 export type CardComponentArtifactJSON = {
   component: 'card';
   options: {
-    border?: CardBorderDefaults;
+    border?: CardBorderPolicy;
     canonicalSurfaces: CardCanonicalSurfacesPayload;
   };
 };

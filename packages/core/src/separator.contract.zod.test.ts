@@ -96,7 +96,29 @@ describe('separator contract', () => {
     );
   });
 
-  it('enforces the neutral Rest-only palette vocabulary', () => {
+  it('accepts optional Primary while keeping Neutral required and states Rest-only', () => {
+    const valid = palettes();
+    expect(
+      validateSchemaSeparatorsDefinitionContract({
+        profiles: {
+          subtle: {
+            scales: { boxWidth: 1 },
+            palettes: {
+              default: {
+                light: {
+                  onSubtle: {
+                    boxColor: {
+                      neutral: valid.default.light.onSubtle.boxColor.neutral,
+                      primary: { medium: { rest: '#0064b424' } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
+    ).toEqual([]);
     const issues = validateSchemaSeparatorsDefinitionContract({
       profiles: {
         subtle: {
@@ -118,7 +140,9 @@ describe('separator contract', () => {
 
     expect(issues).toEqual(
       expect.arrayContaining([
-        expect.stringContaining('.boxColor.primary: unrecognized intent'),
+        expect.stringContaining('.boxColor.primary.medium: required emphasis'),
+        expect.stringContaining('.boxColor.primary.low.hover: unrecognized state'),
+        expect.stringContaining('.boxColor.primary.low.rest: required state'),
         expect.stringContaining('.boxColor.neutral: required intent')
       ])
     );

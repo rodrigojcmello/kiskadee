@@ -225,6 +225,7 @@ export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
 export type {
   SeparatorClassesMap,
   SeparatorElementName,
+  SeparatorIntent,
   SeparatorOrientation,
   SeparatorProps
 } from './components/Separator';

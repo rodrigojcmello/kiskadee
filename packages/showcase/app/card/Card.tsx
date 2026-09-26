@@ -26,8 +26,6 @@ import {
 } from '@kiskadee/react-components/card';
 import { Icon } from '@kiskadee/react-components/icon';
 import { useComponentMetadata, useKiskadee } from '@kiskadee/react-components/resources';
-import { Separator } from '@kiskadee/react-components/separator';
-import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
 import type { ManifestComponent, ManifestComponentState } from '@kiskadee/web-builder/types';
 import React from 'react';
@@ -353,7 +351,7 @@ function resolveDemoButtonProfile(
 export function Card() {
   const { global, segment, theme } = useKiskadee();
   const cardMetadata = useComponentMetadata('card');
-  const { manifest } = useShowcaseMetadata(['button', 'card', 'switch']);
+  const { manifest } = useShowcaseMetadata(['button', 'card']);
   const { cardClassesMap } = useCardArtifactConfig();
   const background = useShowcaseBackground();
   const profiles = useShowcaseTextProfiles();
@@ -382,17 +380,11 @@ export function Card() {
   const [interactionLocked, setInteractionLocked] = React.useState(true);
   const [radiusOverride, setRadius] = React.useState<CardRadiusMode>();
   const radius = radiusOverride ?? defaultRadius;
-  const [surfacePresentation, setSurfacePresentation] = React.useState<
-    { mode: 'auto' } | { mode: 'manual'; border: boolean; shadow: boolean }
-  >({ mode: 'auto' });
-  const surfaceAuto = surfacePresentation.mode === 'auto';
-  const surfaceSwitchAvailable = Boolean(
-    getManifestComponentState(
-      manifest?.components?.switch,
-      segment,
-      theme,
-      background.cardSurface?.contentSurfaceContext ?? background.surfaceContext
-    )?.neutral?.medium?.rest
+  const [surfaceBorderMode, setSurfaceBorderMode] = React.useState<
+    'adaptive' | 'always' | 'never' | 'preset'
+  >('adaptive');
+  const [surfaceShadowMode, setSurfaceShadowMode] = React.useState<'preset' | 'always' | 'never'>(
+    'preset'
   );
   const [preserveBorderWithShadow, setPreserveBorderWithShadow] = React.useState(true);
   const demoButtonProfile = React.useMemo(
@@ -412,16 +404,13 @@ export function Card() {
     });
   }, [cardClassesMap]);
   const semanticSamples = React.useMemo(() => resolveCardSemanticSamples(cardState), [cardState]);
-  const surfaceBorders = surfacePresentation.mode === 'manual' && surfacePresentation.border;
-  const surfaceShadows = surfacePresentation.mode === 'manual' && surfacePresentation.shadow;
-  const setSurfaceManual = (property: 'border' | 'shadow', value: boolean) => {
-    setSurfacePresentation({
-      mode: 'manual',
-      border: surfaceBorders,
-      shadow: surfaceShadows,
-      [property]: value
-    });
-  };
+  const surfaceBorder =
+    surfaceBorderMode === 'preset'
+      ? undefined
+      : surfaceBorderMode === 'adaptive'
+        ? 'adaptive'
+        : surfaceBorderMode === 'always';
+  const surfaceShadow = surfaceShadowMode === 'preset' ? undefined : surfaceShadowMode === 'always';
   const comparisonSample =
     semanticSamples.find(
       (sample) => `${sample.intent}.${sample.emphasis}` === background.surfaces[0]?.key
@@ -540,44 +529,39 @@ export function Card() {
               id="card-surfaces"
               title="Surfaces"
               actions={
-                surfaceSwitchAvailable && background.cardSurface ? (
+                background.cardSurface ? (
                   <ShowcaseExampleCard
                     border
                     role="group"
                     aria-label="Surface presentation controls"
                   >
                     <div className={s.controlRow}>
-                      <Switch
-                        id="card-surfaces-auto"
-                        label="Auto"
-                        classNames={{ e4: s.surfaceControlLabel }}
-                        emphasis="medium"
-                        controlState={surfaceAuto}
-                        onControlStateChange={(value) => {
-                          setSurfacePresentation(
-                            value
-                              ? { mode: 'auto' }
-                              : { mode: 'manual', border: surfaceBorders, shadow: surfaceShadows }
-                          );
-                        }}
-                      />
-                      <Separator orientation="vertical" emphasis="medium" />
-                      <Switch
-                        id="card-surfaces-borders"
+                      <ShowcaseSelectControl
                         label="Border"
-                        classNames={{ e4: s.surfaceControlLabel }}
-                        emphasis="medium"
-                        controlState={surfaceBorders}
-                        onControlStateChange={(value) => setSurfaceManual('border', value)}
+                        width={160}
+                        value={surfaceBorderMode}
+                        options={[
+                          { value: 'adaptive', label: 'Adaptive' },
+                          { value: 'always', label: 'Show' },
+                          { value: 'never', label: 'Hide' },
+                          { value: 'preset', label: 'Preset default' }
+                        ]}
+                        onValueChange={(value) =>
+                          setSurfaceBorderMode(value as typeof surfaceBorderMode)
+                        }
                       />
-                      <Separator orientation="vertical" emphasis="low" />
-                      <Switch
-                        id="card-surfaces-shadows"
+                      <ShowcaseSelectControl
                         label="Shadow"
-                        classNames={{ e4: s.surfaceControlLabel }}
-                        emphasis="medium"
-                        controlState={surfaceShadows}
-                        onControlStateChange={(value) => setSurfaceManual('shadow', value)}
+                        width={140}
+                        value={surfaceShadowMode}
+                        options={[
+                          { value: 'preset', label: 'Default' },
+                          { value: 'always', label: 'Show' },
+                          { value: 'never', label: 'Hide' }
+                        ]}
+                        onValueChange={(value) =>
+                          setSurfaceShadowMode(value as typeof surfaceShadowMode)
+                        }
                       />
                     </div>
                   </ShowcaseExampleCard>
@@ -612,8 +596,8 @@ export function Card() {
                               intent={intent}
                               emphasis={emphasis}
                               radius={radius}
-                              shadow={surfaceAuto ? undefined : surfaceShadows}
-                              border={surfaceAuto ? undefined : surfaceBorders}
+                              shadow={surfaceShadow}
+                              border={surfaceBorder}
                             >
                               <CardContent
                                 title="Title"
@@ -664,7 +648,7 @@ export function Card() {
             <SectionHeading
               id="card-quick-settings"
               title="Quick settings"
-              description="Inspired by Windows quick settings, composed with Container, Card, Button, Separator and Slider. Neutral and vivid versions appear where supported; controls do not change system settings."
+              description="Inspired by Windows quick settings, composed with Container, Card, Button, Separator and Slider. The section follows the selected surface context where recipes are available; controls do not change system settings."
             />
             <QuickSettingsComposition radius={radius} />
           </section>

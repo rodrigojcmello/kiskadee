@@ -31,7 +31,7 @@ function useCardClassNames(
     status?: CardStatus | 'rest';
     shadow?: CardProps['shadow'] | CardActionProps['shadow'];
     preserveBorderWithShadow?: CardActionProps['preserveBorderWithShadow'];
-    border?: boolean;
+    border?: CardProps['border'];
     flushContent?: CardProps['flushContent'];
   },
   options: { action: boolean },
@@ -63,6 +63,7 @@ function useCardClassNames(
         radius,
         shadow,
         border,
+        borderDefaultMode: artifactOptions.borderDefaultMode,
         flushContent,
         preserveBorderWithShadow,
         emphasis,
@@ -79,6 +80,7 @@ function useCardClassNames(
       radius,
       shadow,
       border,
+      artifactOptions.borderDefaultMode,
       flushContent,
       preserveBorderWithShadow,
       emphasis,

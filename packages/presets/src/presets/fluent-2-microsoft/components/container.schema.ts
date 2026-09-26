@@ -112,6 +112,18 @@ export function createFluent2MicrosoftContainerSchema({
           highest: { rest: 'onVivid' }
         };
       }
+      const canonicalByTheme = container.options?.canonicalSurfaces?.[segment];
+      const canonical = canonicalByTheme?.[theme];
+      if (canonical && canonicalByTheme) {
+        canonicalByTheme[theme] = [
+          ...canonical,
+          {
+            intent: 'primaryComplementary',
+            emphasis: 'highest',
+            contentSurfaceContext: 'onVivid'
+          }
+        ];
+      }
     }
   }
 

@@ -33,6 +33,20 @@ const surfaces: ResolvedCanonicalCardSurface[] = [
 ];
 
 describe('Showcase background combinations', () => {
+  it('uses the main vivid surface as the supporting Card on a companion canvas', () => {
+    const companion: ResolvedCanonicalCardSurface = {
+      key: 'primaryComplementary.highest',
+      label: 'Primary companion highest',
+      resolvedColor: '#0059a1',
+      contentSurfaceContext: 'onVivid'
+    };
+    const scenarios = resolveBackgroundScenarios([...surfaces, companion]);
+    expect(scenarios.at(-1)).toMatchObject({
+      canvas: companion,
+      card: surfaces[3]
+    });
+    expect(scenarios.some((scenario) => scenario.key === 'primary.highest')).toBe(false);
+  });
   it('preserves legacy exceptions and vivid compositions', () => {
     const scenarios = resolveBackgroundScenarios(surfaces);
     expect(scenarios.map(({ canvas, card }) => [canvas.key, card.key])).toEqual([
@@ -44,7 +58,6 @@ describe('Showcase background combinations', () => {
     ]);
     expect(new Set(scenarios.map((item) => item.key)).size).toBe(5);
     expect(scenarios.filter((item) => item.splitSwatch)).toHaveLength(1);
-    expect(scenarios.every((item) => item.cardBorder)).toBe(true);
     expect(
       scenarios.find((item) => item.key === resolveDefaultCanonicalCardSurface(surfaces)?.key)
     ).toBe(scenarios[3]);
@@ -102,33 +115,31 @@ it('pairs each intent by emphasis, retaining equal-color identities and sparse f
   );
 });
 
-it('adds a solid Neutral Low swatch with bordered Lowest cards before Medium', () => {
+it('adds a solid Neutral Low swatch with Lowest cards before Medium', () => {
   const lowest: ResolvedCanonicalCardSurface = { ...surfaces[0], key: 'neutral.lowest' };
   const scenarios = resolveBackgroundScenarios([lowest, ...surfaces]);
   const index = scenarios.findIndex((scenario) => scenario.key === 'neutral.low');
-  expect(scenarios[index]).toMatchObject({ card: lowest, splitSwatch: false, cardBorder: true });
+  expect(scenarios[index]).toMatchObject({ card: lowest, splitSwatch: false });
   expect(scenarios.at(-2)?.key).toBe('neutral.medium');
   expect(scenarios.at(-1)?.key).toBe('primary.highest');
   expect(new Set(scenarios.map(({ key }) => key)).size).toBe(scenarios.length);
 });
 
-it('keeps borders on base and tonal subtle scenarios', () => {
+it('keeps base and tonal subtle scenarios independent of Card border policy', () => {
   const scenarios = resolveBackgroundScenarios(surfaces);
   expect(scenarios[0]).toMatchObject({
     canvas: surfaces[0],
     card: surfaces[0],
-    cardBorder: true,
     splitSwatch: false
   });
-  expect(scenarios.find(({ key }) => key === 'primary.medium')?.cardBorder).toBe(true);
-  expect(scenarios.find(({ key }) => key === 'neutral.medium')?.cardBorder).toBe(true);
+  expect(scenarios.find(({ key }) => key === 'primary.medium')?.card.key).toBe('neutral.low');
+  expect(scenarios.find(({ key }) => key === 'neutral.medium')?.card.key).toBe('neutral.low');
 });
 
-it('borders vivid cards on matching backgrounds, retaining borderless contrasting pairs', () => {
+it('reuses the vivid supporting Card when published tones differ', () => {
   const vivid = surfaces[3];
   const sameColor = { ...vivid, key: 'neutral.highest' as const };
   const differentColor = { ...vivid, key: 'support.highest' as const, resolvedColor: '#6750a4' };
   const scenarios = resolveBackgroundScenarios([vivid, sameColor, differentColor]);
-  expect(scenarios.map(({ cardBorder }) => cardBorder)).toEqual([true, true, false]);
   expect(scenarios.every(({ card }) => card === vivid)).toBe(true);
 });

@@ -22,11 +22,6 @@
   margin: 0;
 }
 
-.buttonSurface {
-  inline-size: 100%;
-  min-inline-size: 0;
-}
-
 .panel {
   inline-size: 100%;
   max-inline-size: 360px;
@@ -64,7 +59,7 @@
 .footer {
   display: flex;
   justify-content: flex-end;
-  padding: 16px 24px;
+  padding: 16px;
 }
 
 @media (max-width: 480px) {

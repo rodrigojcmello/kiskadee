@@ -45,6 +45,12 @@ applies in both surrounding contexts; it does not introduce automatic nested-lay
 
 ## Deferred capabilities
 
+The Card border now publishes `defaultMode: adaptive` with the previous contextual
+visibility choices. Primary Highest onSubtle remains adaptively borderless; its
+existing `border-interactive` color is available when a static Card explicitly
+requests a border. No new Carbon color or layer relationship is introduced.
+
+
 Automatic cyclical layer providers, Tile expand behavior, tile-specific grids and persistent
 selection machinery are outside this preset-only update. Existing Card/CardAction capabilities
 remain the delivery boundary. Colored text on the highest G90 layers follows upstream token

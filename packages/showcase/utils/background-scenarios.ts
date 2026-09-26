@@ -6,7 +6,6 @@ export type BackgroundScenario = {
   canvas: ResolvedCanonicalCardSurface;
   card: ResolvedCanonicalCardSurface;
   splitSwatch: boolean;
-  cardBorder: boolean;
 };
 
 /** Compose published semantic emphases, independently of theme luminosity. */
@@ -16,16 +15,14 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
   const append = (
     canvas: ResolvedCanonicalCardSurface,
     card: ResolvedCanonicalCardSurface,
-    splitSwatch = false,
-    cardBorder = splitSwatch
+    splitSwatch = false
   ) => {
     scenarios.push({
       key: splitSwatch ? `${canvas.key}:cards:${card.key}` : canvas.key,
       label: `${canvas.label} canvas / ${card.label} cards`,
       canvas,
       card,
-      splitSwatch,
-      cardBorder
+      splitSwatch
     });
   };
   const base = subtle.find((surface) => surface.key === 'neutral.lowest') ?? subtle[0];
@@ -33,12 +30,12 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
     subtle.find((surface) => surface.key === 'neutral.low' && surface !== base) ??
     subtle.find((surface) => surface.resolvedColor !== base?.resolvedColor);
   if (base) {
-    append(base, base, false, true);
+    append(base, base);
     if (alternate) append(base, alternate, true);
   }
   const neutralLow = subtle.find((surface) => surface.key === 'neutral.low');
   const neutralLowest = subtle.find((surface) => surface.key === 'neutral.lowest');
-  if (neutralLow && neutralLowest) append(neutralLow, neutralLowest, false, true);
+  if (neutralLow && neutralLowest) append(neutralLow, neutralLowest);
   const intents = new Set(subtle.map((surface) => surface.key.split('.')[0]));
   for (const intent of intents) {
     const candidates = subtle.filter((surface) => surface.key.startsWith(`${intent}.`));
@@ -51,14 +48,20 @@ export function resolveBackgroundScenarios(surfaces: readonly ResolvedCanonicalC
       candidates.find((surface) => surface.key === `${intent}.lowest`) ??
       base ??
       canvas;
-    append(canvas, card, false, true);
+    append(canvas, card);
   }
   const neutralMediumIndex = scenarios.findIndex((scenario) => scenario.key === 'neutral.medium');
   if (neutralMediumIndex >= 0) scenarios.push(...scenarios.splice(neutralMediumIndex, 1));
   const vivid = surfaces.filter((surface) => surface.contentSurfaceContext === 'onVivid');
+  const primaryCard = vivid.find((surface) => surface.key === 'primary.highest') ?? vivid[0];
+  const hasPrimaryCompanion = vivid.some(
+    (surface) => surface.key === 'primaryComplementary.highest'
+  );
   for (const canvas of vivid) {
-    const card = vivid[0];
-    append(canvas, card, false, canvas.resolvedColor === card.resolvedColor);
+    if (hasPrimaryCompanion && canvas.key === 'primary.highest') continue;
+    const card = primaryCard;
+    if (!card) continue;
+    append(canvas, card);
   }
   return scenarios;
 }

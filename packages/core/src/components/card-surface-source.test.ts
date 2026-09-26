@@ -54,12 +54,22 @@ function createSchema(): Schema {
       },
       card: {
         surfaceSource: 'container',
+        options: {
+          border: {
+            defaultMode: 'adaptive',
+            adaptive: {
+              default: { light: { onSubtle: { primary: { highest: false } } } }
+            }
+          }
+        },
         contentSurfaceContext: {
           default: { light: { onSubtle: { primary: { highest: { selected: 'onSubtle' } } } } }
         },
         elements: {
           e1: {
             name: 'card',
+            decorations: { borderStyle: 'solid' },
+            scales: { borderWidth: 1 },
             palettes: {
               default: {
                 light: {
@@ -145,7 +155,10 @@ describe('Card Container surface source', () => {
     );
 
     delete card.elements.e1!.palettes!.default!.light!.onSubtle.boxColor!.primary!.highest!.rest;
-    card.options = { canonicalSurfaces: schema.components.container!.options!.canonicalSurfaces };
+    card.options = {
+      border: card.options!.border,
+      canonicalSurfaces: schema.components.container!.options!.canonicalSurfaces
+    };
     expect(() => validateSchemaComponentContracts(schema)).toThrow(
       /authored catalog belongs to Container/
     );

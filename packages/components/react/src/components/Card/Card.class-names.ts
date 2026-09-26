@@ -1,4 +1,5 @@
 import {
+  type CardBorderMode,
   type CardIntent,
   type CardRadiusMode,
   type CardSurfaceIntent,
@@ -90,6 +91,7 @@ export function resolveCardClassNames({
   shadow,
   preserveBorderWithShadow,
   border,
+  borderDefaultMode,
   flushContent,
   emphasis,
   intent,
@@ -104,7 +106,8 @@ export function resolveCardClassNames({
   radius: CardVisualProps['radius'];
   shadow: CardVisualProps['shadow'] | CardActionVisualProps['shadow'];
   preserveBorderWithShadow?: CardActionVisualProps['preserveBorderWithShadow'];
-  border?: boolean;
+  border?: CardVisualProps['border'];
+  borderDefaultMode?: CardBorderMode;
   flushContent?: CardVisualProps['flushContent'];
   emphasis: CardVisualProps['emphasis'];
   intent: CardVisualProps['intent'];
@@ -130,7 +133,17 @@ export function resolveCardClassNames({
     e1?.b?.[surfaceContextBuckets[surfaceContext]]?.[frameIntent]?.[
       componentEmphasisBuckets[resolvedEmphasis]
     ];
-  const borderEnabled = action ? borderRecipe?.default : (border ?? borderRecipe?.default);
+  const borderMode =
+    border === true
+      ? 'always'
+      : border === false
+        ? 'never'
+        : (border ?? borderDefaultMode ?? 'adaptive');
+  const borderEnabled = action
+    ? borderRecipe?.adaptive
+    : borderMode === 'adaptive'
+      ? borderRecipe?.adaptive
+      : borderMode === 'always';
   const borderClass = borderRecipe
     ? borderEnabled
       ? borderRecipe.on
@@ -138,7 +151,9 @@ export function resolveCardClassNames({
     : undefined;
   const hideBorderWithShadow = action
     ? shadowEffect.length > 0 && preserveBorderWithShadow === false
-    : border === false;
+    : borderRecipe
+      ? borderEnabled === false
+      : borderMode === 'never';
 
   const projectedStatus =
     status !== 'rest'

@@ -1,4 +1,4 @@
-import type { ContentSurfaceContextMap } from '@kiskadee/core';
+import type { CardBorderMode, ContentSurfaceContextMap } from '@kiskadee/core';
 import type {
   CardCanonicalSurfacesPayload,
   CardComponentArtifactJSON
@@ -17,6 +17,7 @@ export type CardArtifactConfig = {
   options: {
     radius: NonNullable<CardGlobalConfig>['radius'] | undefined;
     canonicalSurfaces: CardCanonicalSurfacesPayload | undefined;
+    borderDefaultMode: CardBorderMode | undefined;
   };
 };
 
@@ -45,7 +46,8 @@ export function useCardArtifactConfig(): CardArtifactConfig {
     contentSurfaceContext: cardMetadata?.contentSurfaceContext,
     options: {
       radius: global?.radius,
-      canonicalSurfaces: cardComponentArtifact?.options?.canonicalSurfaces
+      canonicalSurfaces: cardComponentArtifact?.options?.canonicalSurfaces,
+      borderDefaultMode: cardComponentArtifact?.options?.border?.defaultMode
     }
   };
 }

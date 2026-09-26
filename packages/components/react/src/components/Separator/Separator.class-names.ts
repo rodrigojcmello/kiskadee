@@ -3,17 +3,19 @@ import {
   joinClassNames,
   resolveSchemaElementClassName
 } from '../../shared/class-resolution/classNames.ts';
+import type { SeparatorIntent } from './Separator.types.ts';
 
 export function resolveSeparatorClassName(
   element: ClassNameByElementJSON | undefined,
   consumerClassName?: string,
   emphasis: ComponentEmphasis = 'medium',
-  surfaceContext: SurfaceContext = 'onSubtle'
+  surfaceContext: SurfaceContext = 'onSubtle',
+  intent: SeparatorIntent = 'neutral'
 ): string {
   return (
     joinClassNames(
       resolveSchemaElementClassName(element, {
-        intent: 'neutral',
+        intent,
         emphasis,
         surfaceContext
       }),

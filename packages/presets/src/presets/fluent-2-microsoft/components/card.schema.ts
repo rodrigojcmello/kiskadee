@@ -490,12 +490,14 @@ function createCardPalette(
                       )
                   : emphasis === 'highest'
                     ? contour(`neutral.standard.${themeName}.onVivid.medium`)
-                    : resolveColor(
-                        c,
-                        segmentName,
-                        recipe.track,
-                        recipe.borderColor.primary.lowest.rest
-                      )
+                    : themeName === 'light' && surfaceContext === 'onSubtle'
+                      ? contour('primary.standard.light.onSubtle.low')
+                      : resolveColor(
+                          c,
+                          segmentName,
+                          recipe.track,
+                          recipe.borderColor.primary.lowest.rest
+                        )
             }
           ])
         )
@@ -518,35 +520,38 @@ export function createFluent2MicrosoftCardSchema({
     },
     options: {
       border: {
-        default: {
-          light: {
-            onSubtle: {
-              neutral: { lowest: true, low: false, medium: false, high: false },
-              primary: { lowest: true, low: false, medium: false, high: false, highest: false }
+        defaultMode: 'adaptive',
+        adaptive: {
+          default: {
+            light: {
+              onSubtle: {
+                neutral: { lowest: true, low: true, medium: true, high: true },
+                primary: { lowest: true, low: true, medium: true, high: true, highest: false }
+              },
+              onVivid: {
+                neutral: { lowest: false, low: false, medium: false, high: false },
+                primary: { lowest: false, low: false, medium: false, high: false, highest: true }
+              }
             },
-            onVivid: {
-              neutral: { lowest: false, low: false, medium: false, high: false },
-              primary: { lowest: false, low: false, medium: false, high: false, highest: true }
-            }
-          },
-          dark: {
-            onSubtle: {
-              neutral: { lowest: true, low: false, medium: false },
-              primary: { lowest: true, medium: false, highest: false }
+            dark: {
+              onSubtle: {
+                neutral: { lowest: true, low: false, medium: false },
+                primary: { lowest: true, medium: false, highest: false }
+              },
+              onVivid: {
+                neutral: { lowest: false, low: false, medium: false },
+                primary: { lowest: false, medium: false, highest: true }
+              }
             },
-            onVivid: {
-              neutral: { lowest: false, low: false, medium: false },
-              primary: { lowest: false, medium: false, highest: true }
-            }
-          },
-          darker: {
-            onSubtle: {
-              neutral: { lowest: true, low: false, medium: false, highest: false },
-              primary: { lowest: true, medium: false, highest: false }
-            },
-            onVivid: {
-              neutral: { lowest: false, low: false, medium: false, highest: false },
-              primary: { lowest: false, medium: false, highest: true }
+            darker: {
+              onSubtle: {
+                neutral: { lowest: true, low: false, medium: false, highest: false },
+                primary: { lowest: true, medium: false, highest: false }
+              },
+              onVivid: {
+                neutral: { lowest: false, low: false, medium: false, highest: false },
+                primary: { lowest: false, medium: false, highest: true }
+              }
             }
           }
         }

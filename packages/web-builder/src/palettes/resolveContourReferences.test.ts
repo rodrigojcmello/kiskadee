@@ -18,6 +18,21 @@ describe('Fluent shared contour pipeline', () => {
       schema.components.separator!.elements.e1!,
       schema.global!
     ).palettes!;
+    for (const [segment, expected] of [
+      ['default', '#0064b424'],
+      ['teams', '#5053b224']
+    ] as const) {
+      for (const emphasis of ['lowest', 'low', 'medium', 'high'] as const)
+        expect(card[segment]?.light?.onSubtle?.borderColor?.primary?.[emphasis]?.rest).toBe(
+          expected
+        );
+      expect(separator[segment]?.light?.onSubtle?.boxColor?.primary?.medium?.rest).toBe(
+        segment === 'default' ? '#0064b447' : '#5053b247'
+      );
+      expect(separator[segment]?.light?.onVivid?.boxColor?.primary?.medium?.rest).toBe(
+        segment === 'default' ? '#12263b52' : '#1f223c52'
+      );
+    }
     for (const theme of ['light', 'dark', 'darker'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
         expect(card.default?.[theme]?.[context]?.borderColor?.primary?.highest?.rest).toBe(

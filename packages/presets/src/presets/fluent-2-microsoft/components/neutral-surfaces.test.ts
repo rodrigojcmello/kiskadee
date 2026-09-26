@@ -54,6 +54,16 @@ describe('Fluent achromatic surfaces', () => {
     }
   });
 
+  it('publishes the vivid companion as a Container canvas in every theme and segment', () => {
+    for (const segment of ['default', 'teams'] as const)
+      for (const theme of ['light', 'dark', 'darker'] as const)
+        expect(container.options?.canonicalSurfaces?.[segment]?.[theme]).toContainEqual({
+          intent: 'primaryComplementary',
+          emphasis: 'highest',
+          contentSurfaceContext: 'onVivid'
+        });
+  });
+
   it('publishes the Light hierarchy consistently in both identities and surface contexts', () => {
     for (const segment of ['default', 'teams'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
@@ -82,6 +92,39 @@ describe('Fluent achromatic surfaces', () => {
         emphasis: 'high',
         contentSurfaceContext: 'onSubtle'
       });
+    }
+  });
+
+  it('uses a translucent segment-primary Rest contour only for Light onSubtle Cards', () => {
+    for (const [segment, expected] of [
+      ['default', '#0064b424'],
+      ['teams', '#5053b224']
+    ] as const) {
+      for (const emphasis of ['lowest', 'low', 'medium', 'high'] as const) {
+        const border = card.elements.e1?.palettes?.[segment]?.light?.onSubtle?.borderColor
+          ?.primary?.[emphasis]?.rest as string;
+        expect(border).toBe('contour:primary.standard.light.onSubtle.low');
+        expect(resolveContourReference(border, segment, schema.global?.contours)).toBe(expected);
+      }
+      expect(
+        card.elements.e1?.palettes?.[segment]?.light?.onSubtle?.borderColor?.primary?.lowest?.hover
+      ).not.toBeUndefined();
+      expect(
+        card.elements.e1?.palettes?.[segment]?.light?.onVivid?.borderColor?.primary?.lowest?.rest
+      ).not.toBe('contour:primary.standard.light.onSubtle.low');
+      for (const theme of ['dark', 'darker'] as const)
+        expect(
+          card.elements.e1?.palettes?.[segment]?.[theme]?.onSubtle?.borderColor?.primary?.lowest
+            ?.rest
+        ).toBe(
+          segment === 'default'
+            ? theme === 'dark'
+              ? '#0e467b'
+              : '#143a61'
+            : theme === 'dark'
+              ? '#3b3e81'
+              : '#31346d'
+        );
     }
   });
 
@@ -165,6 +208,53 @@ describe('Fluent achromatic surfaces', () => {
           )
         ).toBe(color);
       }
+    }
+  });
+
+  it('publishes optional Primary Separator paint for both Light contexts and segments', () => {
+    for (const [segment, subtle, vivid] of [
+      ['default', '#0064b424', '#12263b'],
+      ['teams', '#5053b224', '#1f223c']
+    ] as const) {
+      for (const [context, expected] of [
+        ['onSubtle', segment === 'default' ? '#0064b447' : '#5053b247'],
+        ['onVivid', `${vivid}52`]
+      ] as const) {
+        const token = schema.global?.separators?.profiles.subtle.palettes?.[segment]?.light?.[
+          context
+        ]?.boxColor?.primary?.medium?.rest as string;
+        expect(
+          context === 'onVivid'
+            ? token
+            : resolveContourReference(token, segment, schema.global?.contours)
+        ).toBe(expected);
+        const low = schema.global?.separators?.profiles.subtle.palettes?.[segment]?.light?.[context]
+          ?.boxColor?.primary?.low?.rest as string;
+        expect(
+          context === 'onVivid'
+            ? low
+            : resolveContourReference(low, segment, schema.global?.contours)
+        ).toBe(context === 'onSubtle' ? subtle : `${vivid}29`);
+        const lowest = schema.global?.separators?.profiles.subtle.palettes?.[segment]?.light?.[
+          context
+        ]?.boxColor?.primary?.lowest?.rest as string;
+        expect(
+          context === 'onVivid'
+            ? lowest
+            : resolveContourReference(lowest, segment, schema.global?.contours)
+        ).toBe(
+          context === 'onSubtle'
+            ? segment === 'default'
+              ? '#0064b412'
+              : '#5053b212'
+            : `${vivid}14`
+        );
+      }
+      for (const theme of ['dark', 'darker'] as const)
+        expect(
+          schema.global?.separators?.profiles.subtle.palettes?.[segment]?.[theme]?.onSubtle
+            ?.boxColor?.primary
+        ).toBeUndefined();
     }
   });
 });

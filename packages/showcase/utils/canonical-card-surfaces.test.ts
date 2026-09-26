@@ -52,6 +52,24 @@ function createCanonicalSurfaces(): CardCanonicalSurfacesPayload {
 }
 
 describe('canonical Card surface resolver', () => {
+  it('exposes companion surfaces only when the canvas consumer requests them', () => {
+    const catalog = createCanonicalSurfaces();
+    catalog.default!.light!.push({
+      intent: 'primaryComplementary',
+      emphasis: 'highest',
+      contentSurfaceContext: 'onVivid',
+      rest: '#0059a1'
+    });
+    const input = { canonicalSurfaces: catalog, segment: 'default', theme: 'light' as const };
+    expect(
+      resolveCanonicalCardSurfaces(input).some(
+        (surface) => surface.key === 'primaryComplementary.highest'
+      )
+    ).toBe(false);
+    expect(resolveCanonicalCardSurfaces({ ...input, includeComplementary: true }).at(-1)?.key).toBe(
+      'primaryComplementary.highest'
+    );
+  });
   it('shares the Button initial canvas surface without hardcoding a color', () => {
     const surfaces = resolveCanonicalCardSurfaces({
       canonicalSurfaces: createCanonicalSurfaces(),

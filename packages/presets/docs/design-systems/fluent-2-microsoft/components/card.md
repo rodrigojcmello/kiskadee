@@ -168,7 +168,7 @@ reuse their theme's existing Neutral/Primary Lowest border locator. Primary High
 the approved physical white cap at 15% alpha in both consumed contexts. No new source color
 or tonal mapping is introduced.
 
-`options.border` defaults are true only for Lowest onSubtle and Primary Highest onVivid.
+At that stage, `options.border` defaults were true only for Lowest onSubtle and Primary Highest onVivid.
 The map is authored explicitly by segment, theme, context, intent and emphasis for readability;
 replacing the former generated boolean map does not change any defaults or source recipes.
 All other published defaults are false. Static Card can override the default independently
@@ -388,6 +388,8 @@ Light neutral Card Rest borders select Low onSubtle and Medium onVivid, independ
 Card fill emphasis. Dark neutral Card Rest borders retain 15% white and Darker retains
 10% white. Primary Highest selects the theme's onVivid Medium; other primary borders and
 component-specific interaction recipes remain unchanged. Border visibility is unchanged.
+The Light Primary Rest refinement below supersedes that historical exception for
+non-Highest Primary Cards in onSubtle.
 
 Separator selects each matching shared emphasis. Changing the catalog therefore updates
 both Separator and referencing Card borders after artifact generation, without duplicating
@@ -397,6 +399,39 @@ asset and FRF cap locators; no tonal asset or global semantic mapping changes.
 Color recipes do not activate borders or shadows. Activation defaults, shadows, and Card
 interaction deltas are unchanged; neutral optional borders follow the revised onVivid recipe.
 
+### Translucent Light Primary Card boundary (2026-09-24)
+
+Status: user-authorized Kiskadee calibration trial; visual acceptance remains with the user.
+The existing Light Primary Rest outline used the solid segment brand at L50: Microsoft
+`#0064b4` and Teams `#5053b2`. That made it substantially stronger than the Light
+Neutral Card Rest boundary, which uses physical black at 9.5% alpha. The new shared
+`global.contours.profiles.primary.standard` coordinate uses the same approved L50
+segment-primary color at 14% alpha: Microsoft `#0064b424`, Teams `#5053b224`.
+Over white, the Microsoft result is approximately `#dbe9f4`, close in luminance
+contrast to black at 9.5% over white (`#e7e7e7`), while preserving a blue tint.
+This is a perceptual starting point, not a claim that Fluent specifies a 14% Card stroke.
+
+Card Primary Lowest, Low, Medium and High in Light/onSubtle reference this coordinate
+at Rest. Primary Highest keeps its existing onVivid neutral contour. The onVivid
+input context, Dark/Darker, border visibility, shadows, surfaces and interaction
+state colors remain unchanged. The global profile is shared data; other components
+change only if they explicitly reference it.
+The optional Light Primary Separator now references this contour onSubtle; its
+onVivid companion is documented in [Separator evidence](separator.md#optional-primary-composition-line-2026-09-24).
+
+### Adaptive border visibility (2026-09-24)
+
+The user approved a Kiskadee calibration of Light Rest visibility using the existing
+boundary colors. `options.border.defaultMode` is `adaptive`; the adaptive map selects
+visibility by segment, theme, consumed context, base Card intent and emphasis.
+On Light/onSubtle, Neutral and Primary Lowest/Low/Medium/High display their authored
+borders, while Primary Highest remains borderless. On Light/onVivid, subtle Cards
+remain borderless and Primary Highest displays its white-alpha boundary.
+Dark and Darker retain their previous adaptive booleans. This changes no border
+color, surface fill, shadow recipe or interaction color. CardAction shares the
+adaptive Rest decision; its interactive state recipes remain unchanged for a
+later dedicated review. This is a Kiskadee composition policy, not an upstream
+Fluent Card border specification.
 
 ### Experimental dark neutral Card border (2026-09-07)
 

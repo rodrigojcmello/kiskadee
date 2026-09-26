@@ -136,6 +136,10 @@
   min-block-size: 220px;
 }
 
+.invisibleSeparator {
+  visibility: hidden;
+}
+
 .complementaryBand,
 .complementaryBody {
   display: grid;
@@ -196,10 +200,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
-}
-
-.controlRow .surfaceControlLabel {
-  margin-inline-start: 0;
 }
 
 .compositionGrid {

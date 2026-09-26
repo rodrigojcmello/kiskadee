@@ -5,7 +5,7 @@ import { useKiskadee } from '@kiskadee/react-components/resources';
 import { useMemo, useState } from 'react';
 import { resolveBackgroundScenarios } from '../utils/background-scenarios';
 import { resolveDefaultCanonicalCardSurface } from '../utils/canonical-card-surfaces';
-import { useCanonicalCardSurfaces } from './use-canonical-card-surfaces';
+import { useCanonicalContainerSurfaces } from './use-canonical-container-surfaces';
 
 type Selection = {
   designSystem: string;
@@ -17,8 +17,8 @@ type Selection = {
 /** Shell-owned inspection state, scoped to the route rather than persisted between pages. */
 export function useShowcaseBackgroundState(route: string) {
   const { theme, designSystem } = useKiskadee();
-  const canonical = useCanonicalCardSurfaces(undefined, false);
-  const scenarios = useMemo(() => resolveBackgroundScenarios(canonical.tones), [canonical.tones]);
+  const surfaces = useCanonicalContainerSurfaces();
+  const scenarios = useMemo(() => resolveBackgroundScenarios(surfaces), [surfaces]);
   const [selection, setSelection] = useState<Selection>({
     route,
     designSystem,
@@ -61,8 +61,8 @@ export function useShowcaseBackgroundState(route: string) {
     color: scenario?.canvas.resolvedColor,
     defaultColor: defaultScenario?.canvas.resolvedColor,
     cardSurface,
-    cardBorder: Boolean(scenario?.cardBorder),
-    surfaces: canonical.tones,
+    canvasSurface: scenario?.canvas,
+    surfaces,
     scenarios,
     selectContext,
     selectBackground

@@ -50,9 +50,9 @@ it('resolves each medium surface from its own family and keeps border optional',
   expect(palette?.boxColor?.neutral?.medium?.rest).toBe(
     c.ref('default', 'l', 'card.neutral', 'subtle')
   );
-  expect(card.options?.border?.default?.light?.onSubtle?.neutral?.lowest).toBe(true);
-  expect(card.options?.border?.default?.light?.onSubtle?.neutral?.medium).toBe(false);
-  expect(card.options?.border?.default?.light?.onVivid?.primary?.highest).toBe(true);
+  expect(card.options?.border?.adaptive.default?.light?.onSubtle?.neutral?.lowest).toBe(true);
+  expect(card.options?.border?.adaptive.default?.light?.onSubtle?.neutral?.medium).toBe(false);
+  expect(card.options?.border?.adaptive.default?.light?.onVivid?.primary?.highest).toBe(true);
 });
 
 it('uses common pure white Lowest surfaces in Light, preserves Dark and removes only Neutral Highest', () => {
@@ -141,6 +141,8 @@ it('publishes pale chromatic Low surfaces without replacing Medium', () => {
           expect(interactions?.low?.hover).toBe(
             c.ref(segment, track, `card.${intent}`, 'subtle', -1)
           );
-          expect(card.options?.border?.[segment]?.[theme]?.[surface]?.[intent]?.low).toBe(false);
+          expect(card.options?.border?.adaptive[segment]?.[theme]?.[surface]?.[intent]?.low).toBe(
+            false
+          );
         }
 });

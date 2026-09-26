@@ -112,12 +112,8 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }) 
             level,
             {
               rest:
-                level === 'highest'
-                  ? c.resolve(
-                      'default',
-                      track,
-                      absoluteCap(primitive('black', 'v1'), 'light', onVivid ? 30 : 0)
-                    )
+                level === 'highest' && onVivid
+                  ? c.resolve('default', track, absoluteCap(primitive('black', 'v1'), 'light', 30))
                   : token('border-interactive'),
               disabled: transparent
             }
@@ -172,21 +168,24 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }) 
     options: {
       canonicalSurfaces: { default: Object.fromEntries(themes.map((theme) => [theme, catalog])) },
       border: {
-        default: Object.fromEntries(
-          themes.map((theme) => [
-            theme,
-            {
-              onSubtle: {
-                neutral: Object.fromEntries(levels.map((x) => [x, true])),
-                primary: { ...Object.fromEntries(levels.map((x) => [x, true])), highest: false }
-              },
-              onVivid: {
-                neutral: Object.fromEntries(levels.map((x) => [x, true])),
-                primary: { ...Object.fromEntries(levels.map((x) => [x, true])), highest: true }
+        defaultMode: 'adaptive',
+        adaptive: {
+          default: Object.fromEntries(
+            themes.map((theme) => [
+              theme,
+              {
+                onSubtle: {
+                  neutral: Object.fromEntries(levels.map((x) => [x, true])),
+                  primary: { ...Object.fromEntries(levels.map((x) => [x, true])), highest: false }
+                },
+                onVivid: {
+                  neutral: Object.fromEntries(levels.map((x) => [x, true])),
+                  primary: { ...Object.fromEntries(levels.map((x) => [x, true])), highest: true }
+                }
               }
-            }
-          ])
-        )
+            ])
+          )
+        }
       }
     },
     effects: {

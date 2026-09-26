@@ -170,6 +170,21 @@ export function createSandboxCardSchema({
   };
 
   return splitCardSurfaceSchema<never>({
+    options: {
+      border: {
+        defaultMode: 'adaptive',
+        adaptive: {
+          default: {
+            light: {
+              onSubtle: {
+                neutral: { lowest: false, low: true, medium: false, high: true, highest: true },
+                primary: { lowest: false, low: true, medium: false, high: true, highest: true }
+              }
+            }
+          }
+        }
+      }
+    },
     effects: {
       shadow: {
         e1: {
@@ -269,6 +284,7 @@ export function createSandboxCardSchema({
                 neutral: {
                   lowest: {
                     ...borderlessNeutral,
+                    rest: borderLow.rest,
                     selected: selectedBorder
                   },
                   low: {
@@ -277,6 +293,7 @@ export function createSandboxCardSchema({
                   },
                   medium: {
                     ...borderlessNeutral,
+                    rest: borderLow.rest,
                     selected: selectedBorder
                   },
                   high: {
@@ -291,6 +308,7 @@ export function createSandboxCardSchema({
                 primary: {
                   lowest: {
                     ...primaryBorderless,
+                    rest: primaryBorderLow.rest,
                     selected: selectedBorder
                   },
                   low: {
@@ -299,6 +317,7 @@ export function createSandboxCardSchema({
                   },
                   medium: {
                     ...primaryBorderless,
+                    rest: primaryBorderLow.rest,
                     selected: selectedBorder
                   },
                   high: {

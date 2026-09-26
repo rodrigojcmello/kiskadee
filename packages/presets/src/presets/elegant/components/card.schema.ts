@@ -15,6 +15,14 @@ export function createElegantCardSchema({
   transparent
 }: CreateElegantCardSchemaArgs) {
   return splitCardSurfaceSchema<Segment>({
+    options: {
+      border: {
+        defaultMode: 'adaptive',
+        adaptive: buildBySegment(segmentNames, () => ({
+          light: { onSubtle: { neutral: { medium: true } } }
+        }))
+      }
+    },
     effects: {
       shadow: {
         e1: {

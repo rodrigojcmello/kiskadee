@@ -4,6 +4,14 @@ import { validateCardComponentContract } from './card.ts';
 function createCard() {
   return {
     options: {
+      border: {
+        defaultMode: 'adaptive',
+        adaptive: {
+          default: {
+            light: { onSubtle: { neutral: { low: true }, primary: { highest: false } } }
+          }
+        }
+      },
       canonicalSurfaces: {
         default: {
           light: [
@@ -24,6 +32,8 @@ function createCard() {
     elements: {
       e1: {
         name: 'card',
+        decorations: { borderStyle: 'solid' },
+        scales: { borderWidth: 1 },
         palettes: {
           default: {
             light: {
@@ -35,6 +45,10 @@ function createCard() {
                   primary: {
                     highest: { rest: '#0064b4' }
                   }
+                },
+                borderColor: {
+                  neutral: { low: { rest: '#dddddd' } },
+                  primary: { highest: { rest: '#0064b4' } }
                 }
               }
             }
@@ -46,6 +60,13 @@ function createCard() {
 }
 
 describe('validateCardComponentContract', () => {
+  it('requires a border policy for published Card surfaces', () => {
+    const card = createCard();
+    Reflect.deleteProperty(card.options, 'border');
+    expect(validateCardComponentContract(card)).toContain(
+      'components.card.options.border: required border policy'
+    );
+  });
   it('accepts ordered canonical surfaces that resolve in the Card palette', () => {
     expect(validateCardComponentContract(createCard())).toEqual([]);
   });

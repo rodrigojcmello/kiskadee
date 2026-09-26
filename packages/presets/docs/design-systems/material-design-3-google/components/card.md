@@ -74,6 +74,10 @@ Dragged behavior and checked-icon composition are outside this color-mapping del
 
 ## Validation
 
+Card border authorship now uses `defaultMode: adaptive` and retains the existing
+Light/Dark context decisions and colors. The migration changes no Material token.
+
+
 - Tests check all seven canonical surfaces against palettes and descendant contexts
   across both segments, themes and input surfaces.
 - Tests verify medium family isolation, optional border defaults and strong-surface

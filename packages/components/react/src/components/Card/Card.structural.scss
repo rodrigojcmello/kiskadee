@@ -18,6 +18,11 @@
   border-color: transparent !important;
 }
 
+/* Flush regions must reach the outer edge when the static Card boundary is off. */
+.k-crd.k-crd-e1a.k-crd-b {
+  border-style: none;
+}
+
 .k-crd-a {
   /* Native reset: CardAction is a button but should keep the card surface contract */
   appearance: none;

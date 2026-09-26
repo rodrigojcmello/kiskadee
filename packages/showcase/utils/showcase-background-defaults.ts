@@ -4,15 +4,15 @@ import type { SurfaceContext, ThemeMode } from '@kiskadee/core';
 const canonicalDefaults: Record<ThemeMode, Record<SurfaceContext, readonly string[]>> = {
   light: {
     onSubtle: ['neutral.medium', 'neutral.low', 'neutral.lowest'],
-    onVivid: ['primary.highest']
+    onVivid: ['primaryComplementary.highest', 'primary.highest']
   },
   dark: {
     onSubtle: ['neutral.medium', 'neutral.low', 'neutral.lowest'],
-    onVivid: ['primary.highest']
+    onVivid: ['primaryComplementary.highest', 'primary.highest']
   },
   darker: {
     onSubtle: ['neutral.medium', 'neutral.low', 'neutral.lowest', 'neutral.highest'],
-    onVivid: ['primary.highest']
+    onVivid: ['primaryComplementary.highest', 'primary.highest']
   }
 };
 

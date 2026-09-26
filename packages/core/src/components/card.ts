@@ -98,7 +98,7 @@ export type CardCanonicalSurface = {
 };
 
 export type CardOptions<TSegmentName extends SegmentName = never> = {
-  border?: CardBorderDefaults<TSegmentName>;
+  border: CardBorderPolicy<TSegmentName>;
   canonicalSurfaces?: Partial<
     Record<
       TSegmentName | 'default' | 'dynamic',
@@ -111,12 +111,17 @@ type CardBorderIntentDefaults = Partial<
   Record<CardIntent, Partial<Record<ComponentEmphasis, boolean>>>
 >;
 type CardBorderContextDefaults = Partial<Record<SurfaceContext, CardBorderIntentDefaults>>;
-export type CardBorderDefaults<TSegmentName extends string = string> = Partial<
+export type CardBorderAdaptiveMap<TSegmentName extends string = string> = Partial<
   Record<
     TSegmentName | 'default' | 'dynamic',
     Partial<Record<ThemeMode, CardBorderContextDefaults>>
   >
 >;
+export type CardBorderMode = 'adaptive' | 'always' | 'never';
+export type CardBorderPolicy<TSegmentName extends string = string> = {
+  defaultMode: CardBorderMode;
+  adaptive: CardBorderAdaptiveMap<TSegmentName>;
+};
 
 type ElementContractRules = {
   decorations?: readonly string[];
@@ -400,18 +405,34 @@ function validateComponentOptions(
   }
 
   validateAllowedKeys(value, CARD_COMPONENT_OPTION_KEYS, path, issues);
+  if (value.border === undefined) {
+    issues.push(`${path}.border: required border policy`);
+  }
   if (value.border !== undefined) {
     const root = isRecord(elements) && isRecord(elements.e1) ? elements.e1 : {};
+    if (!isRecord(value.border)) {
+      issues.push(`${path}.border: expected object`);
+      return;
+    }
+    validateAllowedKeys(value.border, ['defaultMode', 'adaptive'], `${path}.border`, issues);
+    if (!['adaptive', 'always', 'never'].includes(String(value.border.defaultMode))) {
+      issues.push(`${path}.border.defaultMode: expected "adaptive", "always" or "never"`);
+    }
+    const adaptive = value.border.adaptive;
+    if (!isRecord(adaptive)) {
+      issues.push(`${path}.border.adaptive: expected object`);
+      return;
+    }
+    const read = (value: unknown, names: string[]): unknown =>
+      names.reduce<unknown>(
+        (current, key) => (isRecord(current) ? current[key] : undefined),
+        value
+      );
     const visit = (entry: unknown, keys: string[], depth: number): void => {
-      const entryPath = `${path}.border.${keys.join('.')}`;
+      const entryPath = `${path}.border.adaptive.${keys.join('.')}`;
       if (depth === 5) {
         if (typeof entry !== 'boolean') issues.push(`${entryPath}: expected boolean`);
         const [segment, theme, context, intent, emphasis] = keys;
-        const read = (value: unknown, names: string[]): unknown =>
-          names.reduce<unknown>(
-            (current, key) => (isRecord(current) ? current[key] : undefined),
-            value
-          );
         for (const property of ['boxColor', 'borderColor']) {
           if (
             read(root.palettes, [segment, theme, context, property, intent, emphasis, 'rest']) ===
@@ -461,7 +482,39 @@ function validateComponentOptions(
       if (allowed) validateAllowedKeys(entry, allowed, entryPath, issues);
       for (const [key, child] of Object.entries(entry)) visit(child, [...keys, key], depth + 1);
     };
-    visit(value.border, [], 0);
+    visit(adaptive, [], 0);
+
+    if (isRecord(root.palettes)) {
+      for (const [segment, themes] of Object.entries(root.palettes)) {
+        if (!isRecord(themes)) continue;
+        for (const [theme, contexts] of Object.entries(themes)) {
+          if (!isRecord(contexts)) continue;
+          for (const [context, palette] of Object.entries(contexts)) {
+            if (!isRecord(palette) || !isRecord(palette.boxColor)) continue;
+            for (const [intent, emphases] of Object.entries(palette.boxColor)) {
+              if (!isRecord(emphases)) continue;
+              const frameIntent =
+                intent === 'neutralComplementary'
+                  ? 'neutral'
+                  : intent === 'primaryComplementary'
+                    ? 'primary'
+                    : intent;
+              for (const [emphasis, states] of Object.entries(emphases)) {
+                if (!isRecord(states) || states.rest === undefined) continue;
+                if (
+                  typeof read(adaptive, [segment, theme, context, frameIntent, emphasis]) !==
+                  'boolean'
+                ) {
+                  issues.push(
+                    `${path}.border.adaptive.${segment}.${theme}.${context}.${frameIntent}.${emphasis}: missing supported Card combination`
+                  );
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   if (value.canonicalSurfaces !== undefined) {
@@ -507,6 +560,8 @@ export function validateCardComponentContract(value: unknown, path = 'components
 
   if (value.options !== undefined) {
     validateComponentOptions(value.options, elements, `${path}.options`, issues);
+  } else {
+    issues.push(`${path}.options.border: required border policy`);
   }
 
   validateAllowedKeys(elements, CARD_ELEMENTS_KEYS, `${path}.elements`, issues);

@@ -1,5 +1,5 @@
 import type {
-  CardBorderDefaults,
+  CardBorderPolicy,
   ClassNameByElementJSON,
   ColorClasses,
   ComponentClassNameMapJSON,
@@ -148,7 +148,7 @@ export function generateClassNamesMapSplit(
   shortenMap: ShortenCssClassNames,
   toneMetadataByPalette: ToneMetadataByPalette,
   options?: {
-    cardBorderDefaults?: CardBorderDefaults;
+    cardBorderPolicy?: CardBorderPolicy;
     webStyleEmissionPolicy?: WebStyleEmissionPolicy;
     structuralUtilityProjectionRegistry?: WebStructuralUtilityProjectionRegistry;
   } & WebStyleIdentityOptimizationOptions
@@ -403,13 +403,13 @@ export function generateClassNamesMapSplit(
 
                     // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
                     for (const tone of tones) {
-                      const borderDefault =
+                      const borderAdaptive =
                         componentName === 'card' && elementName === 'e1'
-                          ? options?.cardBorderDefaults?.[segmentName]?.[
+                          ? options?.cardBorderPolicy?.adaptive?.[segmentName]?.[
                               themeName as 'light' | 'dark' | 'darker'
                             ]?.[surfaceContext]?.[sem as 'neutral' | 'primary']?.[tone]
                           : undefined;
-                      if (borderDefault !== undefined && styleKey.startsWith('borderColor__')) {
+                      if (borderAdaptive !== undefined && styleKey.startsWith('borderColor__')) {
                         const contextBucket = surfaceContextBuckets[surfaceContext];
                         elemRecord.b ??= {};
                         const borders = elemRecord.b;
@@ -424,7 +424,7 @@ export function generateClassNamesMapSplit(
                         levels[componentEmphasisBuckets[tone]] = {
                           on: shortenedClass,
                           off: offClass,
-                          default: borderDefault
+                          adaptive: borderAdaptive
                         };
                         continue;
                       }

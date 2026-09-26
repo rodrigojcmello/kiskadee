@@ -46,6 +46,8 @@ Card visuals are selected through the normal Kiskadee component axes:
 - `preserveBorderWithShadow`: CardAction-only legacy shadow composition option.
 - `flushContent`: static Card-only option. It removes Card's internal padding and clips content
   to its corners so a child Container can form a full-width band. The band owns its own spacing.
+  With `border={false}`, it also removes the border geometry so the base fill cannot form a rim
+  around a differently colored child band.
 
 Static Card also accepts optional `neutralComplementary` and `primaryComplementary` surfaces when
 the preset publishes them. The companion uses the base intent's border and frame. CardAction
@@ -62,28 +64,30 @@ component's stateful shadow recipe.
 
 Card borders and shadows are separate visual concerns.
 
-Static `Card.border` omitted follows the preset's combination-specific default;
-`true` enables the available recipe and `false` hides border paint without changing
-width, padding, content context or dimensions. Shadow remains independent.
+Static `Card.border` omitted follows `options.border.defaultMode` from the preset.
+`"adaptive"` selects the preset's contextual boolean policy regardless of that default;
+`true` enables the available recipe and `false` hides it. Adaptive decisions use segment,
+theme, consumed surface context, base frame intent and emphasis. Shadow remains independent.
 
 ```tsx
 <Card />
+<Card border="adaptive" />
 <Card border={false} />
 <Card border />
 <Card border={false} shadow />
 <Card border shadow />
 ```
 
-The schema owns defaults in `options.border[segment][theme][surfaceContext][intent][emphasis]`.
-Colors stay in palettes, width in scales and style in decorations. Builder publishes
-Rest recipe classes and boolean defaults in the palette-local `b` bucket. React only
-selects classes; it never computes a border color. Presets without this capability
-keep their existing recipe; `border` cannot manufacture an unpublished stroke.
+The schema owns `options.border.defaultMode` and the contextual `options.border.adaptive`
+map. Colors stay in palettes, width in scales and style in decorations. Builder publishes
+Rest on/off classes and the adaptive decision in the palette-local `b` bucket, plus the
+default mode in the Card artifact. React selects classes; it never computes contrast or
+a border color. `border` cannot manufacture an unpublished stroke.
 
 Static Card no longer accepts `preserveBorderWithShadow`: replace suppression with
-`border={false}`. For preservation, omit `border` to retain the preset default rather
-than enabling previously invisible recipes. CardAction retains its API and state
-maps, including its old Rest visibility and optional suppression with shadow.
+`border={false}`. For the preset default, omit `border`; to request the contextual
+policy explicitly, use `border="adaptive"`. CardAction retains its API and state maps,
+including optional suppression with shadow. Its Rest border follows the shared adaptive map.
 
 ## CardAction State
 

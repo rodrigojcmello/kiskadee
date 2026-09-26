@@ -8,13 +8,27 @@ defines the cross-package relationship.
 
 ## Independent static border
 
-`options.border[segment][theme][surfaceContext][intent][emphasis]` publishes boolean defaults.
-Every declared combination must resolve a Container box Rest, Card border Rest, positive border width
-and visible border style. The map controls activation only; colors remain in `e1.palettes`.
-Presets without the map retain legacy behavior. Emphasis suggests the default rather than
-restricting the availability of a border. Static consumers may override visibility independently
-of shadow. CardAction retains the declared default as its legacy Rest visibility and preserves
-its interaction deltas; this extension does not redesign interaction-state recipes.
+`options.border` declares `defaultMode: 'adaptive' | 'always' | 'never'` and a complete
+`adaptive[segment][theme][surfaceContext][intent][emphasis]` boolean map. The mode is the
+choice used when a static Card omits its `border` prop. A boolean in the adaptive map answers
+whether the published Rest border is visible for that exact combination; it does not determine
+whether the border recipe exists. Every published Rest Card surface must have a matching
+adaptive entry. Complementary intents use the entry of their base frame intent.
+
+Every entry requires a Container box Rest, Card border Rest, positive border width and visible
+border style. Missing entries and recipes fail validation. Rest border colors remain in
+`e1.palettes`. Static `border="adaptive"`, `border={true}` and `border={false}` override the
+preset's default mode independently of shadow. `always` activates only a published border
+recipe; it cannot invent one. CardAction uses the contextual adaptive decision for its Rest
+border and retains its existing interaction deltas for later review.
+
+All first-party Card presets publish `defaultMode: adaptive`. Fluent, Carbon, Material and
+iOS 27 migrate their prior visibility maps without changing Dark/Darker decisions. Elegant
+publishes its visible Neutral Medium Rest boundary. Sandbox and its variants keep their
+prior transparent Rest positions adaptively off, while reusing the existing Low border of
+the same intent as a visible manually activated recipe. Carbon and iOS 27 likewise reuse
+an existing visible border for strong onSubtle positions that previously had a transparent
+Rest boundary. These migrations introduce no new color asset.
 
 ## Surface ownership
 

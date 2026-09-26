@@ -183,8 +183,7 @@ export const schema: Schema<Segment> = {
     }),
     ...createIos27AppleCardSchema({
       c,
-      segmentNames,
-      transparent
+      segmentNames
     }),
     dropdown: createIos27AppleDropdownSchema({ c }),
     icon: createIos27AppleIconSchema({ c }),

@@ -7,7 +7,7 @@ const base = {
     s: { 'md:1': 'width padding' },
     e: { h: 'shadow' },
     c: { s: { neutral: { m: 'surface states' } } },
-    b: { s: { neutral: { m: { on: 'border-on', off: 'border-off', default: false } } } }
+    b: { s: { neutral: { m: { on: 'border-on', off: 'border-off', adaptive: false } } } }
   },
   className: undefined,
   classNames: {},
@@ -24,24 +24,39 @@ const base = {
 describe('static Card border', () => {
   it.each([
     undefined,
+    'adaptive',
     true,
     false
-  ])('selects the recipe for border=%s independently of shadow', (border) => {
+  ] as const)('selects the recipe for border=%s independently of shadow', (border) => {
     for (const shadow of [false, true]) {
       const classes = resolveCardClassNames({ ...base, border, shadow }).classNames.e1;
-      expect(classes).toContain(border ? 'border-on' : 'border-off');
+      expect(classes).toContain(border === true ? 'border-on' : 'border-off');
       expect(classes).toContain('width padding');
       expect(classes).toContain('surface states');
       expect(classes?.split(' ').includes('shadow')).toBe(shadow);
     }
   });
 
-  it('follows a changed preset default and does not override CardAction', () => {
+  it('separates the preset default from the adaptive rule and does not override CardAction', () => {
     const on = {
       ...base.e1,
-      b: { s: { neutral: { m: { on: 'on', off: 'off', default: true } } } }
+      b: { s: { neutral: { m: { on: 'on', off: 'off', adaptive: true } } } }
     };
     expect(resolveCardClassNames({ ...base, e1: on }).classNames.e1).toContain('on');
+    expect(
+      resolveCardClassNames({ ...base, e1: on, borderDefaultMode: 'never' }).classNames.e1
+    ).toContain('off');
+    expect(
+      resolveCardClassNames({ ...base, e1: on, borderDefaultMode: 'never', border: 'adaptive' })
+        .classNames.e1
+    ).toContain('on');
+    expect(resolveCardClassNames({ ...base, borderDefaultMode: 'always' }).classNames.e1).toContain(
+      'border-on'
+    );
+    expect(
+      resolveCardClassNames({ ...base, borderDefaultMode: 'always', border: 'adaptive' }).classNames
+        .e1
+    ).toContain('border-off');
     expect(resolveCardClassNames({ ...base, border: true, action: true }).classNames.e1).toContain(
       'border-off'
     );
@@ -68,7 +83,7 @@ describe('static Card border', () => {
     const e1 = {
       ...base.e1,
       c: { s: { neutralComplementary: { m: 'complementary-surface' } } },
-      b: { s: { neutral: { m: { on: 'neutral-border', off: 'no-border', default: true } } } }
+      b: { s: { neutral: { m: { on: 'neutral-border', off: 'no-border', adaptive: true } } } }
     };
     const classes = resolveCardClassNames({
       ...base,
