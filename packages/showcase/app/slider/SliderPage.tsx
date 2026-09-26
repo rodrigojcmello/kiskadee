@@ -1,7 +1,6 @@
 'use client';
 
 import type {
-  CardIntent,
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
@@ -27,22 +26,19 @@ import type {
   SliderValueAnimationOption,
   SliderValueSummaryPlacementOption
 } from '@kiskadee/react-components';
-import { Card, useCardArtifactConfig } from '@kiskadee/react-components/card';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
-import { useComponentMetadata, useKiskadee } from '@kiskadee/react-components/resources';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import { Slider, useSliderArtifactConfig } from '@kiskadee/react-components/slider';
-import type { CardComponentArtifactJSON } from '@kiskadee/web-builder/types';
-import type { CSSProperties, ReactNode } from 'react';
+import { Text } from '@kiskadee/react-components/text';
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ShowcaseGlobalSemanticControls,
-  ShowcaseIconographyControls,
-  ShowcaseTypographyControls
+  ShowcaseIconographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
-  ShowcaseControlField,
   ShowcaseControlGrid,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
@@ -50,10 +46,14 @@ import {
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
+import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
-import { SwatchRadioGroup } from '@/k-components';
-import { getManifestComponentState } from '@/utils/manifest-surface-context';
+import {
+  getManifestComponentState,
+  supportsManifestSurfaceContext
+} from '@/utils/manifest-surface-context';
 import { playWowTransition } from '@/utils/playWowTransition';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Slider.module.scss';
 
 type SliderMarksMode = 'none' | 'step' | 'labeled';
@@ -87,82 +87,6 @@ const emphasisOptions: Array<{ value: ComponentEmphasis; label: string }> = [
   { value: 'low', label: 'Low' },
   { value: 'lowest', label: 'Lowest' }
 ];
-
-type SliderSurface =
-  | 'white'
-  | 'gray'
-  | 'dark-gray'
-  | 'black'
-  | 'light-primary'
-  | 'primary'
-  | 'dark-primary';
-
-type SliderSurfaceProfile = {
-  label: string;
-  cardIntent: CardIntent;
-  cardEmphasis: ComponentEmphasis;
-  sliderEmphasis: ComponentEmphasis;
-};
-
-type ResolvedSliderSurface = SliderSurfaceProfile & {
-  value: SliderSurface;
-  swatchColor: string;
-};
-
-const surfaceToneOrder: SliderSurface[] = [
-  'white',
-  'light-primary',
-  'gray',
-  'primary',
-  'dark-gray',
-  'dark-primary',
-  'black'
-];
-
-const surfaceProfiles: Record<SliderSurface, SliderSurfaceProfile> = {
-  white: {
-    label: 'White',
-    cardIntent: 'neutral',
-    cardEmphasis: 'low',
-    sliderEmphasis: 'medium'
-  },
-  gray: {
-    label: 'Gray',
-    cardIntent: 'neutral',
-    cardEmphasis: 'medium',
-    sliderEmphasis: 'medium'
-  },
-  'dark-gray': {
-    label: 'Dark gray',
-    cardIntent: 'neutral',
-    cardEmphasis: 'high',
-    sliderEmphasis: 'low'
-  },
-  black: {
-    label: 'Black',
-    cardIntent: 'neutral',
-    cardEmphasis: 'highest',
-    sliderEmphasis: 'low'
-  },
-  'light-primary': {
-    label: 'Light primary',
-    cardIntent: 'primary',
-    cardEmphasis: 'medium',
-    sliderEmphasis: 'medium'
-  },
-  primary: {
-    label: 'Primary',
-    cardIntent: 'primary',
-    cardEmphasis: 'high',
-    sliderEmphasis: 'low'
-  },
-  'dark-primary': {
-    label: 'Dark primary',
-    cardIntent: 'primary',
-    cardEmphasis: 'highest',
-    sliderEmphasis: 'low'
-  }
-};
 
 const selectionModeOptions: Array<{ value: SliderSelectionMode; label: string }> = [
   { value: 'single', label: 'Single value' },
@@ -293,14 +217,6 @@ const intentLabels: Record<string, string> = {
   primary: 'Primary'
 };
 
-const preferredCardShadowLevels: ElementSizeValue[] = [
-  's:md:1',
-  's:sm:1',
-  's:lg:1',
-  's:lg:2',
-  's:lg:3'
-];
-
 const labeledPercentMarks = [
   { value: 0, label: '0%' },
   { value: 25, label: '25%' },
@@ -333,18 +249,6 @@ function renderThumbVolumeIcon(value: number) {
   if (value <= 0) return <FamilyResolvedIcon name="volume-muted" />;
   if (value < 50) return <FamilyResolvedIcon name="volume-low" />;
   return <FamilyResolvedIcon name="volume-high" />;
-}
-
-function normalizeShadowLevelKey(key: ElementSizeValue): string {
-  return key.slice(2);
-}
-
-function getSurfaceForEmphasis(emphasis: ComponentEmphasis): SliderSurface {
-  return emphasis === 'low' ? 'primary' : 'white';
-}
-
-function normalizeSurfaceColor(color: string): string {
-  return color.trim().toLowerCase();
 }
 
 function resolveInteractiveMarks(marksMode: SliderMarksMode): SliderMarks {
@@ -435,51 +339,37 @@ function formatSignedPercent(value: number): string {
 }
 
 function SliderExampleCard({
-  cardShadow,
   children,
   className,
-  surface,
   title
 }: {
-  cardShadow: ElementSizeValue | undefined;
   children: ReactNode;
   className?: string;
-  surface: ResolvedSliderSurface;
   title?: string;
 }) {
-  if (surface.value === 'white') {
-    return (
-      <ShowcaseExampleCard className={className ? `${s.demoCard} ${className}` : s.demoCard}>
-        {title ? <h4 className={s.cardTitle}>{title}</h4> : null}
-        <div className={s.cardContent}>{children}</div>
-      </ShowcaseExampleCard>
-    );
-  }
+  const textProfiles = useShowcaseTextProfiles();
   return (
-    <Card
-      className={className ? `${s.demoCard} ${className}` : s.demoCard}
-      intent={surface.cardIntent}
-      emphasis={surface.cardEmphasis}
-      shadow={cardShadow}
-      border={false}
-    >
-      {title ? <h4 className={s.cardTitle}>{title}</h4> : null}
+    <ShowcaseExampleCard className={className ? `${s.demoCard} ${className}` : s.demoCard}>
+      {title ? (
+        <Text as="h4" profile={textProfiles.groupTitle} className={s.cardTitle}>
+          {title}
+        </Text>
+      ) : null}
       <div className={s.cardContent}>{children}</div>
-    </Card>
+    </ShowcaseExampleCard>
   );
 }
 
 export default function SliderPage() {
   const { designSystem, segment, theme } = useKiskadee();
-  const { cardClassesMap } = useCardArtifactConfig();
   const { options: sliderOptions } = useSliderArtifactConfig();
   const { manifest } = useShowcaseMetadata(['card', 'slider']);
-  const cardArtifact = useComponentMetadata('card') as CardComponentArtifactJSON | undefined;
+  const background = useShowcaseBackground();
+  const textProfiles = useShowcaseTextProfiles();
   const [scale, setScale] = useState<ElementSizeValue | undefined>();
-  const [radius, setRadius] = useState<RadiusMode>('rounded');
+  const [radius, setRadius] = useState<RadiusMode | undefined>();
   const [intent, setIntent] = useState<SliderIntent>('neutral');
   const [emphasis, setEmphasis] = useState<ComponentEmphasis>('medium');
-  const [surface, setSurface] = useState<SliderSurface>('white');
   const [selectionMode, setSelectionMode] = useState<SliderSelectionMode>('single');
   const [valueDisplay, setValueDisplay] = useState<SliderValueDisplay>('tooltip');
   const [valueAnimation, setValueAnimation] = useState<SliderValueAnimationControl>('rolling');
@@ -518,33 +408,20 @@ export default function SliderPage() {
   const [centerBiased, setCenterBiased] = useState(40);
   const sliderMeta = manifest?.components?.slider;
   const cardMeta = manifest?.components?.card;
-  const isSliderAvailable = Boolean(sliderMeta);
+  const sampleContext = background.cardSurface?.contentSurfaceContext ?? background.surfaceContext;
+  const isSliderAvailable = supportsManifestSurfaceContext(
+    sliderMeta,
+    segment,
+    theme,
+    sampleContext
+  );
   const isCardAvailable = Boolean(cardMeta);
-  const defaultRadius = sliderOptions.radius;
   const supportedScales = sliderMeta?.scale;
-  const supportedIntents = getManifestComponentState(sliderMeta, segment, theme);
+  const supportedIntents = getManifestComponentState(sliderMeta, segment, theme, sampleContext);
   const supportedStates = supportedIntents?.[intent];
-  const supportedCardStates = getManifestComponentState(cardMeta, segment, theme);
-  const cardShadow = useMemo(() => {
-    const shadowBucket = cardClassesMap?.e1?.e?.h;
-    if (!shadowBucket || typeof shadowBucket === 'string') return undefined;
-
-    return preferredCardShadowLevels.find((level) =>
-      Boolean(shadowBucket[normalizeShadowLevelKey(level)])
-    );
-  }, [cardClassesMap]);
   const scaleSelectOptions = useMemo(
     () => scaleOptions.filter((option) => Boolean(supportedScales?.[option.value])),
     [supportedScales]
-  );
-  const radiusSelectOptions = useMemo(
-    () =>
-      radiusOptions.map((option) => ({
-        ...option,
-        label: option.value === defaultRadius ? `${option.label} (default)` : option.label,
-        disabled: supportedScales ? !supportedScales[option.value] : false
-      })),
-    [defaultRadius, supportedScales]
   );
   const intentSelectOptions = useMemo(
     () =>
@@ -558,63 +435,6 @@ export default function SliderPage() {
     () => emphasisOptions.filter((option) => Boolean(supportedStates?.[option.value])),
     [supportedStates]
   );
-  const surfaceOptions = useMemo<ResolvedSliderSurface[]>(() => {
-    const seenSurfaceColors = new Set<string>();
-
-    return surfaceToneOrder.flatMap((value) => {
-      if (!isSliderAvailable || !isCardAvailable) return [];
-
-      const profile = surfaceProfiles[value];
-      const hasSliderEmphasis = Boolean(supportedStates?.[profile.sliderEmphasis]);
-      const hasCardSurface = Boolean(
-        supportedCardStates?.[profile.cardIntent]?.[profile.cardEmphasis]?.rest
-      );
-      if (!hasSliderEmphasis || !hasCardSurface) return [];
-
-      const swatchColor = cardArtifact?.options.canonicalSurfaces?.[segment]?.[theme]?.find(
-        (surface) =>
-          surface.intent === profile.cardIntent && surface.emphasis === profile.cardEmphasis
-      )?.rest;
-      if (!swatchColor) return [];
-      const normalizedSwatchColor = normalizeSurfaceColor(swatchColor);
-      if (seenSurfaceColors.has(normalizedSwatchColor)) return [];
-      seenSurfaceColors.add(normalizedSwatchColor);
-
-      return [
-        {
-          value,
-          ...profile,
-          swatchColor
-        }
-      ];
-    });
-  }, [
-    cardArtifact,
-    isCardAvailable,
-    isSliderAvailable,
-    segment,
-    supportedCardStates,
-    supportedStates,
-    theme
-  ]);
-  const selectedSurface = useMemo(
-    () => surfaceOptions.find((option) => option.value === surface),
-    [surface, surfaceOptions]
-  );
-  const surfaceItems = useMemo(
-    () =>
-      surfaceOptions.map((option) => ({
-        value: option.value,
-        label: option.label,
-        swatch: {
-          color: option.swatchColor
-        }
-      })),
-    [surfaceOptions]
-  );
-  const pageStyle = {
-    '--slider-surface-primary': selectedSurface?.swatchColor ?? '#0064B4'
-  } as CSSProperties;
   const interactiveMarks = resolveInteractiveMarks(marksMode);
   const activationFeedbackProp = resolveActivationFeedbackProp(activationFeedback);
   const valueAnimationProp = resolveValueAnimationProp(valueAnimation);
@@ -626,10 +446,6 @@ export default function SliderPage() {
   const markIntervalProp = resolveMarkIntervalProp(markInterval);
   const fillOriginProp = resolveFillOriginProp(fillOrigin);
   const visibleVolume = volumePreview ?? volume;
-
-  useEffect(() => {
-    setRadius(defaultRadius);
-  }, [defaultRadius]);
 
   useEffect(() => {
     if (
@@ -645,11 +461,6 @@ export default function SliderPage() {
         scaleSelectOptions[0].value
     );
   }, [scale, scaleSelectOptions]);
-
-  useEffect(() => {
-    if (!supportedScales || supportedScales[radius]) return;
-    setRadius(supportedScales.rounded ? 'rounded' : supportedScales.pill ? 'pill' : 'square');
-  }, [radius, supportedScales]);
 
   useEffect(() => {
     if (
@@ -725,57 +536,11 @@ export default function SliderPage() {
     setFillOriginMark(sliderOptions.fillOriginMark);
   }, [sliderOptions.fillOriginMark]);
 
-  useEffect(() => {
-    if (!surfaceOptions.length) {
-      return;
-    }
-
-    if (selectedSurface) {
-      if (emphasis !== selectedSurface.sliderEmphasis) {
-        setEmphasis(selectedSurface.sliderEmphasis);
-      }
-      return;
-    }
-
-    const nextSurface =
-      surfaceOptions.find((option) => option.value === 'white') ?? surfaceOptions[0];
-    setSurface(nextSurface.value);
-    if (emphasis !== nextSurface.sliderEmphasis) {
-      setEmphasis(nextSurface.sliderEmphasis);
-    }
-  }, [emphasis, selectedSurface, surfaceOptions]);
-
-  const handleSurfaceChange = (value: string) => {
-    const nextSurface = value as SliderSurface;
-    if (nextSurface === surface) return;
-
-    const nextSurfaceOption = surfaceOptions.find((option) => option.value === nextSurface);
-    if (!nextSurfaceOption) return;
-
-    playWowTransition();
-    setSurface(nextSurface);
-    if (emphasis !== nextSurfaceOption.sliderEmphasis) {
-      setEmphasis(nextSurfaceOption.sliderEmphasis);
-    }
-  };
-
   const handleEmphasisChange = (value: string) => {
     const nextEmphasis = value as ComponentEmphasis;
-    if (nextEmphasis === emphasis) return;
-
-    if (!supportedStates?.[nextEmphasis]) return;
-
-    const preferredSurface = getSurfaceForEmphasis(nextEmphasis);
-    const nextSurface =
-      surfaceOptions.find((option) => option.value === preferredSurface) ??
-      surfaceOptions.find((option) => option.sliderEmphasis === nextEmphasis);
-    if (!nextSurface) return;
-
+    if (nextEmphasis === emphasis || !supportedStates?.[nextEmphasis]) return;
     playWowTransition();
     setEmphasis(nextEmphasis);
-    if (surface !== nextSurface.value) {
-      setSurface(nextSurface.value);
-    }
   };
 
   const sliderControls = (
@@ -799,10 +564,10 @@ export default function SliderPage() {
           />
           <ShowcaseSelectControl
             label="Radius"
-            options={radiusSelectOptions}
-            value={radius}
+            options={[{ value: 'preset', label: 'Preset default' }, ...radiusOptions]}
+            value={radius ?? 'preset'}
             onValueChange={(value) => {
-              const nextRadius = value as RadiusMode;
+              const nextRadius = value === 'preset' ? undefined : (value as RadiusMode);
               if (nextRadius === radius) return;
               playWowTransition();
               setRadius(nextRadius);
@@ -833,20 +598,7 @@ export default function SliderPage() {
             onValueChange={handleEmphasisChange}
             disabled={!isSliderAvailable || emphasisSelectOptions.length <= 1}
           />
-          <ShowcaseControlField fullWidth>
-            <SwatchRadioGroup
-              groupLabel="Surface"
-              value={surface}
-              onValueChange={handleSurfaceChange}
-              items={surfaceItems}
-              aria-label="Slider example surface"
-              className={s.surfaceControl}
-            />
-          </ShowcaseControlField>
         </ShowcaseControlGrid>
-      </ShowcaseControlGroup>
-      <ShowcaseControlGroup title="Typography">
-        <ShowcaseTypographyControls />
       </ShowcaseControlGroup>
       <ShowcaseControlGroup title="Iconography">
         <ShowcaseIconographyControls />
@@ -1097,15 +849,17 @@ export default function SliderPage() {
   );
 
   return (
-    <main className={`${s.page} k-root`} style={pageStyle}>
+    <main className={`${s.page} k-root`}>
       <header className={s.header}>
-        <h2>Slider</h2>
-        <p className={s.summary}>
+        <Text as="h2" profile={textProfiles.pageTitle}>
+          Slider
+        </Text>
+        <Text as="p" profile={textProfiles.body} className={s.summary}>
           Horizontal single-value and range examples for the initial Slider contract.
-        </p>
+        </Text>
       </header>
 
-      {!isSliderAvailable || !isCardAvailable || !selectedSurface ? (
+      {!isSliderAvailable || !isCardAvailable ? (
         <div className={s.emptyState}>
           Slider/Card surfaces are not available for the selected design system: {designSystem}.
         </div>
@@ -1122,12 +876,10 @@ export default function SliderPage() {
           </ShowcaseRouteControls>
 
           <section className={`${s.section} ${s.previewSection}`}>
-            <h3>Interactive</h3>
-            <SliderExampleCard
-              cardShadow={cardShadow}
-              surface={selectedSurface}
-              className={s.interactiveCard}
-            >
+            <Text as="h3" profile={textProfiles.sectionTitle}>
+              Interactive
+            </Text>
+            <SliderExampleCard className={s.interactiveCard}>
               <Slider
                 label={selectionMode === 'range' ? 'Selected range' : 'Selected value'}
                 selectionMode={selectionMode}
@@ -1172,21 +924,22 @@ export default function SliderPage() {
           </section>
 
           <section className={s.section}>
-            <h3>Examples</h3>
+            <Text as="h3" profile={textProfiles.sectionTitle}>
+              Examples
+            </Text>
             <div className={s.demoGrid}>
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example A"
-              >
-                <Slider label="Basic" defaultValue={50} />
+              <SliderExampleCard title="Example A">
+                <Slider
+                  label="Basic"
+                  defaultValue={50}
+                  size={componentScaleToSize(scale)}
+                  radius={radius}
+                  intent={intent}
+                  emphasis={emphasis}
+                />
               </SliderExampleCard>
 
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example B"
-              >
+              <SliderExampleCard title="Example B">
                 <Slider
                   label="Volume"
                   optionalIndicator="(optional)"
@@ -1229,11 +982,7 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example C"
-              >
+              <SliderExampleCard title="Example C">
                 <Slider
                   label="Thumb icon"
                   min={0}
@@ -1264,11 +1013,7 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example D: Area"
-              >
+              <SliderExampleCard title="Example D: Area">
                 <Slider
                   label="Area"
                   required
@@ -1284,7 +1029,7 @@ export default function SliderPage() {
                     { value: 25, label: formatSquareMeters(25) },
                     { value: 250, label: formatSquareMeters(250) }
                   ]}
-                  thumbIcon={<FamilyResolvedIcon name="grip-vertical" />}
+                  thumbIcon={<FamilyResolvedIcon name="arrow-left-right" />}
                   markInterval={markIntervalProp}
                   edgeMarks="exclude"
                   markPlacement={markPlacement}
@@ -1308,11 +1053,7 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example E: Brightness"
-              >
+              <SliderExampleCard title="Example E: Brightness">
                 <Slider
                   label="Brightness"
                   min={0}
@@ -1348,11 +1089,7 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example F: Tasks completed"
-              >
+              <SliderExampleCard title="Example F: Tasks completed">
                 <Slider
                   label="Tasks completed"
                   selectionMode="range"
@@ -1393,11 +1130,7 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example G: Center origin"
-              >
+              <SliderExampleCard title="Example G: Center origin">
                 <Slider
                   label="Center biased"
                   min={-100}
@@ -1430,11 +1163,7 @@ export default function SliderPage() {
                 />
               </SliderExampleCard>
 
-              <SliderExampleCard
-                cardShadow={cardShadow}
-                surface={selectedSurface}
-                title="Example H: Rating"
-              >
+              <SliderExampleCard title="Example H: Rating">
                 <Slider
                   label="Rating"
                   min={0}

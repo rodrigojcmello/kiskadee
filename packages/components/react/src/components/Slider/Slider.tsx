@@ -1,5 +1,6 @@
 import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
 import './Slider.structural.scss';
 import {
   resolveActivationFeedbackSetting,
@@ -348,6 +349,7 @@ function SliderRoot(props: SliderProps) {
     'aria-describedby': ariaDescribedBy,
     ...rootProps
   } = props;
+  const surfaceContext = useSurfaceContext();
   const scale = useComponentScale('slider', size, { variant, mode });
   const isLikelyTouch = useIsLikelyTouch();
   const isCompactViewport = useIsCompactViewport();
@@ -473,6 +475,7 @@ function SliderRoot(props: SliderProps) {
         scale,
         intent,
         emphasis,
+        surfaceContext,
         radius: resolvedRadius,
         hasLabel,
         hasOptionalIndicator,
@@ -499,6 +502,7 @@ function SliderRoot(props: SliderProps) {
       hasMarkLabels,
       hasValueSummary,
       intent,
+      surfaceContext,
       resolvedRadius,
       resolvedMarkPlacement,
       resolvedMarkLabelPlacement,

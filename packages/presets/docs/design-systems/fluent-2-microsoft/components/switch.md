@@ -7,6 +7,7 @@ This file records source evidence and schema decisions for
 
 - [Fluent 2 Switch usage](https://fluent2.microsoft.design/components/web/react/core/switch/usage)
 - [Fluent UI React Switch styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-switch/library/src/components/Switch/useSwitchStyles.styles.ts)
+- [User-supplied Windows 11 quick-settings screenshot](../evidence/switch/windows-11-quick-settings-on-vivid.png)
 - Promoted Fluent tonal evidence in
   [`fluent-tonal-scale-evidence.md`](../colors/fluent-tonal-scale-evidence.md)
 
@@ -17,7 +18,7 @@ This file records source evidence and schema decisions for
 | Standard track, thumb, label, and checked state | Fluent usage and React styles | Official adapted |
 | Hover, Pressed, Focus, and Disabled state rhythm | Existing Kiskadee schema; latest upstream comparison pending | Retained adaptation |
 | Polarity presentation | No single upstream semantic variant | Kiskadee extension |
-| Low on-primary presentation | No upstream emphasis/context matrix | Kiskadee extension |
+| onVivid Neutral/Primary presentation | User-supplied Windows 11 quick-settings reference; no inspectable Figma context matrix | Kiskadee extension |
 | Activation-feedback halo | Shared Kiskadee effect | Kiskadee extension |
 
 ## Official Contract
@@ -33,24 +34,24 @@ This file records source evidence and schema decisions for
 
 | Source relationship | Lookup | Kiskadee use | Status |
 | --- | --- | --- | --- |
-| Compound Brand Rest/Hover/Pressed | `reference(primary, vivid +2/+4/+6)` | Checked track plus Low thumb/icon states | Official adapted |
+| Compound Brand Rest/Hover/Pressed | `reference(primary, vivid +2/+4/+6)` | Checked track and selected thumb states | Official adapted |
 | Neutral foreground | `reference(switch.neutral, vivid)` | Label and control text | Official adapted |
 | Polarity Off/On | `reference(redLike, vivid)` / `reference(greenLike, vivid)` | Polarity thumb and selected track | Kiskadee extension |
 | Neutral Background 6 | `exact(switch.neutral, 6, component.switch)` | Disabled track | Retained adaptation |
 | Neutral disabled/content stops | `exact(switch.neutral, 26/70, component.switch)` | Disabled thumb, icon, and label | Retained adaptation |
 | Neutral track/thumb stops | `exact(primitive.black.v1, 50/55/65/10, component.switch)` | Unchecked border/thumb state rhythm | Retained adaptation |
 | White and transparent | `cap(primitive.black.v1, light, 100%/0%)` | Thumb, track, icon, and transparent borders | Physical endpoint |
-| On-primary overlay family | `cap(primitive.black.v1, light, 12%..88%)` | Low track, border, disabled text, and state overlays | Kiskadee extension |
+| On-vivid overlay family | `cap(primitive.black.v1, light, 8%..88%)` | Unchecked track, border, disabled text, and state overlays | Kiskadee extension |
 
 The fixed stop set is a closed catalog under evidence ID `component.switch`. Those entries preserve
 the established Fluent-adapted state relationships and are not promoted to functional references.
 Brand, foreground, and polarity colors use functional anchors so an approved anchor change flows
 through the component. White, transparency, and translucent white overlays use physical caps.
 
-The schema resolves this catalog against the Light track because the current Switch contract
-publishes only `default.light.onSubtle`. It does not claim Dark, Darker, or independent `onVivid`
-coverage. The current Low appearance is the historical on-primary adaptation; separating surface
-context from emphasis remains tracked as technical debt.
+The schema publishes Light, Dark and Darker in both surface contexts. Physical onVivid
+overlays resolve on the Light track; the onSubtle chromatic recipes use each theme's
+track. The original Low on-primary experiment has been superseded by the context
+axis and the intent mapping below.
 
 The closest approved tonal positions intentionally resolve several historical literals to nearby
 values: neutral foreground `#21242d`, neutral thumb Hover `#464646`, and neutral track Hover
@@ -64,15 +65,29 @@ remains open.
 - `e4`: label using `body-medium`.
 - `e5`: optional control text using `body-medium`.
 - `e6`: optional 10 px icon using the global icon-size profile.
-- `neutral.medium`: standard Fluent-adapted appearance.
+- `neutral.medium`: standard Fluent-adapted appearance on subtle surfaces, and the
+  Windows-inspired light-blue selected track on vivid surfaces.
+- `primary.medium`: the same onSubtle appearance, with a white selected track
+  and brand-colored thumb on vivid surfaces.
 - `polarity.medium`: explicit red/off and green/on relationship.
-- `neutral.low` and `polarity.low`: Kiskadee on-primary adaptations retained for compatibility.
 
 ## Deferred Or Unsupported
 
-- A dedicated Surface Context matrix replacing the overloaded Low on-primary appearance.
-- Dark and Darker Switch palettes.
 - Revalidation of every fixed stop against the latest upstream Figma component.
+
+## Neutral and Primary on vivid (2026-09-26)
+
+The default intent remains Neutral. The previous `accent` onVivid treatment is now
+Neutral: transparent unchecked track, Light-track Primary `subtle +10/+12/+14`
+selected track (`#68baff` Rest for Microsoft Blue) and a physical dark selected
+thumb. The previous Neutral treatment is now Primary: translucent unchecked
+track, white selected track and segment Primary selected thumb. Both use the same
+published geometry and have identical onSubtle recipes. Polarity is unchanged.
+
+This remaps an existing Kiskadee experiment to the user's Windows 11 composition
+semantics. It is not an upstream Fluent token mapping. The physical overlays use
+`cap(primitive.black.v1, light/dark)` and the brand colors use functional
+`reference(primary, subtle/vivid + offset)` locators; no new primitive is introduced.
 
 ## Validation
 

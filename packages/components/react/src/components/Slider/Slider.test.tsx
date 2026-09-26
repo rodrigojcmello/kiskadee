@@ -6,6 +6,7 @@ import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { Slider } from './Slider.tsx';
 
 vi.mock('../RollingNumber/RollingNumber.tsx', () => ({
@@ -117,4 +118,46 @@ describe('Slider value indicator lane', () => {
       'calc(18px + max(0px, 40px - 24px))'
     );
   });
+});
+
+it('selects the inherited surface palette as the nearest painted context changes', () => {
+  const context: KiskadeeContextValue = {
+    ...createContextValue(),
+    classesMap: {
+      slider: {
+        standard: {
+          base: {
+            e9: {
+              c: {
+                s: { neutral: { m: 'subtle-active-track' } },
+                v: { neutral: { m: 'vivid-active-track' } }
+              }
+            },
+            e11: {
+              c: {
+                s: { neutral: { m: 'subtle-thumb-inner' } },
+                v: { neutral: { m: 'vivid-thumb-inner' } }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+  const tree = (surfaceContext: 'onSubtle' | 'onVivid') =>
+    h(
+      KiskadeeContext.Provider,
+      { value: context },
+      h(
+        SurfaceContextProvider,
+        { value: surfaceContext },
+        h(Slider, { 'aria-label': 'Volume', defaultValue: 50 })
+      )
+    );
+  const view = render(tree('onVivid'));
+  expect(view.container.querySelector('.k-sld-e9-a')?.className).toContain('vivid-active-track');
+  expect(view.container.querySelector('.k-sld-e11-a')?.className).toContain('vivid-thumb-inner');
+  view.rerender(tree('onSubtle'));
+  expect(view.container.querySelector('.k-sld-e9-a')?.className).toContain('subtle-active-track');
+  expect(view.container.querySelector('.k-sld-e11-a')?.className).toContain('subtle-thumb-inner');
 });

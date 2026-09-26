@@ -119,7 +119,7 @@
         "align-center": "TextAlignCenterRegular",
         "align-left": "TextAlignLeftRegular",
         "align-right": "TextAlignRightRegular",
-        "arrow-left-right": "ArrowSwapRegular",
+        "arrow-left-right": "ArrowBidirectionalLeftRightRegular",
         "ban": "ProhibitedRegular",
         "bell": "AlertRegular",
         "bold": "TextBoldRegular",

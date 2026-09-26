@@ -28,6 +28,16 @@ function states(colors: {
   };
 }
 
+function withVivid<T extends { default: { light: object } }, V>(palette: T, onVivid: V) {
+  return {
+    ...palette,
+    default: {
+      ...palette.default,
+      light: { ...palette.default.light, onVivid }
+    }
+  };
+}
+
 function createFluentSliderColors(c: Fluent2MicrosoftColorResolver) {
   const resolve = (locator: Parameters<Fluent2MicrosoftColorResolver['resolve']>[2]) =>
     c.resolve('default', 'l', locator);
@@ -38,13 +48,26 @@ function createFluentSliderColors(c: Fluent2MicrosoftColorResolver) {
     transparent: resolve(absoluteCap(primitive('black', 'v1'), 'light', 0)),
     neutralForeground1: resolve(referenceColor('slider.neutral', 'vivid')),
     neutralStrokeAccessible: resolve(exactColor('slider.neutral', 50, 'component.slider')),
+    inactiveRail: resolve(exactColor('slider.neutral', 26, 'component.slider')),
+    inactiveRailPressed: resolve(exactColor('slider.neutral', 14, 'component.slider')),
     neutralBackground1: resolve(absoluteCap(primitive('black', 'v1'), 'light')),
     neutralStroke1: resolve(exactColor('slider.neutral', 10, 'component.slider')),
     neutralForegroundDisabled: resolve(exactColor('slider.neutral', 16, 'component.slider')),
     neutralStrokeDisabled: resolve(exactColor('slider.neutral', 7, 'component.slider')),
     compoundBrandRest: resolve(referenceColor('slider.primary', 'vivid')),
     compoundBrandHover: resolve(referenceColor('slider.primary', 'vivid', 1)),
-    compoundBrandPressed: resolve(referenceColor('slider.primary', 'vivid', 2))
+    compoundBrandPressed: resolve(referenceColor('slider.primary', 'vivid', 2)),
+    vividBrandRest: resolve(referenceColor('slider.primary', 'subtle', 10)),
+    vividBrandHover: resolve(referenceColor('slider.primary', 'subtle', 12)),
+    vividBrandPressed: resolve(referenceColor('slider.primary', 'subtle', 14)),
+    subtleCardLowSurface: resolve(exactColor('card.neutral', 1, 'component.card')),
+    vividPrimaryCardSurface: resolve(exactColor('slider.primary', 50, 'component.slider')),
+    physicalBlack: resolve(absoluteCap(primitive('black', 'v1'), 'dark')),
+    vividWhite: resolve(absoluteCap(primitive('black', 'v1'), 'light')),
+    vividWhite35: resolve(absoluteCap(primitive('black', 'v1'), 'light', 35)),
+    vividWhite38: resolve(absoluteCap(primitive('black', 'v1'), 'light', 38)),
+    vividWhite20: resolve(absoluteCap(primitive('black', 'v1'), 'light', 20)),
+    vividDark80: resolve(absoluteCap(primitive('black', 'v1'), 'dark', 80))
   } as const satisfies Record<string, Color>;
 }
 
@@ -119,10 +142,7 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
             },
             primary: {
               medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
+                rest: fluent.neutralForeground1,
                 disabled: fluent.neutralForegroundDisabled
               })
             }
@@ -162,10 +182,7 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
             },
             primary: {
               medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
+                rest: fluent.neutralStrokeAccessible,
                 disabled: fluent.neutralForegroundDisabled
               })
             }
@@ -182,19 +199,19 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
           boxColor: {
             neutral: {
               medium: states({
-                rest: fluent.neutralStrokeAccessible,
-                hover: fluent.neutralStrokeAccessible,
-                focus: fluent.neutralStrokeAccessible,
-                pressed: fluent.neutralStrokeAccessible,
+                rest: fluent.inactiveRail,
+                hover: fluent.inactiveRail,
+                focus: fluent.inactiveRail,
+                pressed: fluent.inactiveRailPressed,
                 disabled: fluent.transparent
               })
             },
             primary: {
               medium: states({
-                rest: fluent.neutralStrokeAccessible,
-                hover: fluent.neutralStrokeAccessible,
-                focus: fluent.neutralStrokeAccessible,
-                pressed: fluent.neutralStrokeAccessible,
+                rest: fluent.inactiveRail,
+                hover: fluent.inactiveRail,
+                focus: fluent.inactiveRail,
+                pressed: fluent.inactiveRailPressed,
                 disabled: fluent.transparent
               })
             }
@@ -277,10 +294,10 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
             },
             primary: {
               medium: states({
-                rest: fluent.neutralBackground1,
-                hover: fluent.neutralBackground1,
-                focus: fluent.neutralBackground1,
-                pressed: fluent.neutralBackground1,
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
                 disabled: fluent.neutralBackground1
               })
             }
@@ -294,7 +311,10 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
             },
             primary: {
               medium: states({
-                rest: fluent.neutralStroke1,
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
                 disabled: fluent.neutralStrokeDisabled
               })
             }
@@ -320,10 +340,10 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
             },
             primary: {
               medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
+                rest: fluent.subtleCardLowSurface,
+                hover: fluent.subtleCardLowSurface,
+                focus: fluent.subtleCardLowSurface,
+                pressed: fluent.subtleCardLowSurface,
                 disabled: fluent.neutralForegroundDisabled
               })
             }
@@ -360,7 +380,10 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
             },
             primary: {
               medium: states({
-                rest: fluent.neutralBackground1,
+                rest: fluent.compoundBrandRest,
+                hover: fluent.compoundBrandHover,
+                focus: fluent.compoundBrandRest,
+                pressed: fluent.compoundBrandPressed,
                 disabled: fluent.neutralBackground1
               })
             }
@@ -411,7 +434,10 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          boxColor: activeTrackPalettes.default.light.onSubtle.boxColor,
+          boxColor: {
+            neutral: { medium: states({ rest: fluent.neutralForeground1 }) },
+            primary: { medium: states({ rest: fluent.neutralForeground1 }) }
+          },
           borderColor: activeTrackPalettes.default.light.onSubtle.borderColor,
           textColor: {
             neutral: {
@@ -432,17 +458,108 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     }
   } as const;
 
+  const vivid = (neutral: Color, primary: Color, disabled: Color) => ({
+    neutral: { medium: { rest: neutral, disabled: ref(disabled) } },
+    primary: { medium: { rest: primary, disabled: ref(disabled) } }
+  });
+  const vividBrand = {
+    rest: fluent.vividBrandRest,
+    hover: ref(fluent.vividBrandHover),
+    pressed: ref(fluent.vividBrandPressed),
+    disabled: ref(fluent.vividWhite38)
+  };
+  const vividLight = {
+    rest: fluent.vividWhite,
+    disabled: ref(fluent.vividWhite38)
+  };
+  const vividPrimaryThumb = {
+    rest: fluent.vividPrimaryCardSurface,
+    disabled: ref(fluent.vividWhite38)
+  };
+  const vividRail = {
+    rest: fluent.vividWhite35,
+    disabled: ref(fluent.vividWhite20)
+  };
+  const vividTransparent = {
+    rest: fluent.transparent,
+    disabled: ref(fluent.transparent)
+  };
+  const vividThumb = {
+    rest: fluent.neutralForeground1,
+    disabled: ref(fluent.vividWhite20)
+  };
+  const vividThumbBorder = {
+    rest: fluent.neutralForeground1,
+    disabled: ref(fluent.vividWhite20)
+  };
   return {
-    textPalettes,
-    optionalIndicatorPalettes,
-    iconPalettes,
-    railPalettes,
-    activeTrackPalettes,
-    thumbPalettes,
-    thumbInnerPalettes,
-    thumbIconPalettes,
-    markPalettes,
-    valueIndicatorPalettes
+    textPalettes: withVivid(textPalettes, {
+      textColor: vivid(fluent.vividWhite, fluent.vividWhite, fluent.vividWhite38)
+    }),
+    optionalIndicatorPalettes: withVivid(optionalIndicatorPalettes, {
+      textColor: { neutral: { medium: vividLight } }
+    }),
+    iconPalettes: withVivid(iconPalettes, {
+      textColor: vivid(fluent.vividWhite, fluent.vividWhite, fluent.vividWhite38)
+    }),
+    railPalettes: withVivid(railPalettes, {
+      boxColor: { neutral: { medium: vividRail }, primary: { medium: vividRail } },
+      borderColor: {
+        neutral: { medium: vividTransparent },
+        primary: { medium: vividTransparent }
+      }
+    }),
+    activeTrackPalettes: withVivid(activeTrackPalettes, {
+      boxColor: {
+        neutral: { medium: vividBrand },
+        primary: { medium: vividLight }
+      },
+      borderColor: {
+        neutral: { medium: vividTransparent },
+        primary: { medium: vividTransparent }
+      }
+    }),
+    thumbPalettes: withVivid(thumbPalettes, {
+      boxColor: {
+        neutral: { medium: vividThumb },
+        primary: { medium: vividLight }
+      },
+      borderColor: {
+        neutral: { medium: vividThumbBorder },
+        primary: { medium: vividTransparent }
+      }
+    }),
+    thumbInnerPalettes: withVivid(thumbInnerPalettes, {
+      boxColor: {
+        neutral: { medium: vividBrand },
+        primary: { medium: vividPrimaryThumb }
+      },
+      borderColor: {
+        neutral: { medium: vividTransparent },
+        primary: { medium: vividTransparent }
+      }
+    }),
+    thumbIconPalettes: withVivid(thumbIconPalettes, {
+      textColor: vivid(fluent.physicalBlack, fluent.vividWhite, fluent.vividWhite38)
+    }),
+    markPalettes: withVivid(markPalettes, {
+      boxColor: vivid(fluent.vividWhite, fluent.vividDark80, fluent.vividWhite38),
+      borderColor: {
+        neutral: { medium: vividTransparent },
+        primary: { medium: vividTransparent }
+      }
+    }),
+    valueIndicatorPalettes: withVivid(valueIndicatorPalettes, {
+      boxColor: {
+        neutral: { medium: vividLight },
+        primary: { medium: vividLight }
+      },
+      borderColor: {
+        neutral: { medium: vividTransparent },
+        primary: { medium: vividTransparent }
+      },
+      textColor: vivid(fluent.neutralForeground1, fluent.neutralForeground1, fluent.vividWhite38)
+    })
   };
 }
 
@@ -619,6 +736,20 @@ export function createFluent2MicrosoftSliderSchema({
                 },
                 palettes: thumbInnerPalettes
               },
+              e12: {
+                name: 'slider-thumb-with-icon',
+                scales: {
+                  boxWidth: { 's:sm:1': 14, 's:md:1': 30 },
+                  boxHeight: { 's:sm:1': 14, 's:md:1': 30 }
+                }
+              },
+              e13: {
+                name: 'slider-thumb-inner-with-icon',
+                scales: {
+                  boxWidth: { 's:sm:1': 10, 's:md:1': 24 },
+                  boxHeight: { 's:sm:1': 10, 's:md:1': 24 }
+                }
+              },
               e14: {
                 name: 'slider-value-indicator',
                 typography: {
@@ -684,7 +815,7 @@ export function createFluent2MicrosoftSliderSchema({
                 name: 'slider-thumb-icon',
                 iconSize: {
                   's:sm:1': 's:sm:4',
-                  's:md:1': 's:sm:3'
+                  's:md:1': 's:sm:1'
                 },
                 palettes: thumbIconPalettes
               },

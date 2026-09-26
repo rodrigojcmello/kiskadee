@@ -942,6 +942,14 @@ structure. The suffix does not create a public variant or mode.
 Internal details can change, but only if the public behavior and schema/artifact
 contracts remain intact or are explicitly migrated.
 
+## Surface Context
+
+The styled Slider consumes the nearest Card or Container surface context through
+`useSurfaceContext`. Its element class selection reads the
+published `onSubtle` or `onVivid` palette directly; the runtime does not derive
+colors for an unpublished context. The default input context outside a painted
+ancestor remains `onSubtle`.
+
 ## Deferred Areas
 
 These areas are intentionally not part of the current contract:

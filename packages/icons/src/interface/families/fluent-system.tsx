@@ -1,8 +1,8 @@
 // Generated from metadata/interface-families.json. Do not edit manually.
 import { AddRegular } from '@fluentui/react-icons/headless/svg/add';
 import { AlertRegular } from '@fluentui/react-icons/headless/svg/alert';
+import { ArrowBidirectionalLeftRightRegular } from '@fluentui/react-icons/headless/svg/arrow-bidirectional-left-right';
 import { ArrowRedoRegular } from '@fluentui/react-icons/headless/svg/arrow-redo';
-import { ArrowSwapRegular } from '@fluentui/react-icons/headless/svg/arrow-swap';
 import { ArrowSyncCircleRegular } from '@fluentui/react-icons/headless/svg/arrow-sync-circle';
 import { ArrowUndoRegular } from '@fluentui/react-icons/headless/svg/arrow-undo';
 import { BoardRegular } from '@fluentui/react-icons/headless/svg/board';
@@ -66,8 +66,8 @@ import type { CompleteCanonicalGlyphMap } from '../types.ts';
 
 const glyphAddRegular = createSvgGlyph(AddRegular, {"fontSize":"1em"});
 const glyphAlertRegular = createSvgGlyph(AlertRegular, {"fontSize":"1em"});
+const glyphArrowBidirectionalLeftRightRegular = createSvgGlyph(ArrowBidirectionalLeftRightRegular, {"fontSize":"1em"});
 const glyphArrowRedoRegular = createSvgGlyph(ArrowRedoRegular, {"fontSize":"1em"});
-const glyphArrowSwapRegular = createSvgGlyph(ArrowSwapRegular, {"fontSize":"1em"});
 const glyphArrowSyncCircleRegular = createSvgGlyph(ArrowSyncCircleRegular, {"fontSize":"1em"});
 const glyphArrowUndoRegular = createSvgGlyph(ArrowUndoRegular, {"fontSize":"1em"});
 const glyphBoardRegular = createSvgGlyph(BoardRegular, {"fontSize":"1em"});
@@ -128,7 +128,7 @@ const glyphMap = {
     "align-center": glyphTextAlignCenterRegular,
     "align-left": glyphTextAlignLeftRegular,
     "align-right": glyphTextAlignRightRegular,
-    "arrow-left-right": glyphArrowSwapRegular,
+    "arrow-left-right": glyphArrowBidirectionalLeftRightRegular,
     "ban": glyphProhibitedRegular,
     "bell": glyphAlertRegular,
     "bold": glyphTextBoldRegular,

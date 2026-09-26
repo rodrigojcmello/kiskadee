@@ -157,7 +157,8 @@ export const componentIntents = {
     primary: 'primary'
   },
   switch: {
-    neutral: 'neutral'
+    neutral: 'neutral',
+    primary: 'primary'
   },
   text: {
     neutral: 'neutral'

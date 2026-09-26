@@ -18,7 +18,8 @@ import {
   type SliderThumbStepBehavior,
   type SliderValueAnimation,
   type SliderValueSummaryPlacement,
-  type SliderVariant
+  type SliderVariant,
+  type SurfaceContext
 } from '@kiskadee/core';
 import {
   type ActivationFeedbackEffectBuckets,
@@ -97,6 +98,7 @@ function elem(
     scale: string;
     intent: SliderIntent;
     emphasis: ComponentEmphasis | undefined;
+    surfaceContext: SurfaceContext;
   }
 ): string {
   if (!element) return '';
@@ -105,6 +107,7 @@ function elem(
     scale: options.scale,
     intent: options.intent,
     emphasis: options.emphasis,
+    surfaceContext: options.surfaceContext,
     intentOptions: {
       fallbackIntent: 'neutral',
       useFirstIntentFallback: true,
@@ -128,6 +131,7 @@ export function resolveSliderClassNames(options: {
   scale: string;
   intent: SliderIntent;
   emphasis: ComponentEmphasis | undefined;
+  surfaceContext: SurfaceContext;
   radius: RadiusMode;
   hasLabel: boolean;
   hasOptionalIndicator: boolean;

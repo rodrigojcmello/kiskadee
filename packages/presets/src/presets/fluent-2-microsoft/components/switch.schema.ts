@@ -19,7 +19,7 @@ type SwitchComponent = NonNullable<Schema<never>['components']['switch']>;
 type ThemeName = 'light' | 'dark' | 'darker';
 type ThemeShortcut = 'l' | 'd';
 type SwitchForegroundFamily = 'neutral' | 'blue' | 'red' | 'green';
-type SwitchIntent = 'neutral' | 'accent' | 'polarity';
+type SwitchIntent = 'neutral' | 'primary' | 'polarity';
 
 type CreateFluent2MicrosoftSwitchSchemaArgs = {
   c: Fluent2MicrosoftColorResolver;
@@ -31,7 +31,11 @@ const THEME_TRACK = {
   darker: 'd'
 } as const satisfies Record<ThemeName, ThemeShortcut>;
 
-const SWITCH_INTENTS = ['neutral', 'accent', 'polarity'] as const satisfies readonly SwitchIntent[];
+const SWITCH_INTENTS = [
+  'neutral',
+  'primary',
+  'polarity'
+] as const satisfies readonly SwitchIntent[];
 
 function createForegroundCoordinate({
   family,
@@ -154,8 +158,8 @@ export function createFluent2MicrosoftSwitchSchema({
     polarityOn: physicalLight(referenceColor('greenLike', 'vivid'))
   };
 
-  // Windows-inspired Accent experiment; see the Switch evidence for the ordinal recipe.
-  const onVividAccentColors = {
+  // Windows-inspired Neutral treatment; see the Switch evidence for the ordinal recipe.
+  const onVividNeutralColors = {
     trackRest: transparent,
     trackHover: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 8)),
     trackPressed: onVividColors.trackRest,
@@ -199,18 +203,18 @@ export function createFluent2MicrosoftSwitchSchema({
 
   const createOnVividTrackIntent = (intent: SwitchIntent) => ({
     boxColor: {
-      rest: intent === 'accent' ? onVividAccentColors.trackRest : onVividColors.trackRest,
+      rest: intent === 'neutral' ? onVividNeutralColors.trackRest : onVividColors.trackRest,
       hover: {
-        ref: intent === 'accent' ? onVividAccentColors.trackHover : onVividColors.trackHover
+        ref: intent === 'neutral' ? onVividNeutralColors.trackHover : onVividColors.trackHover
       },
       pressed: {
-        ref: intent === 'accent' ? onVividAccentColors.trackPressed : onVividColors.trackPressed
+        ref: intent === 'neutral' ? onVividNeutralColors.trackPressed : onVividColors.trackPressed
       },
       // Selected must override the unchecked interaction overlays for every intent.
       selected: {
-        rest: { ref: intent === 'accent' ? onVividAccentColors.selectedRest : white },
-        hover: { ref: intent === 'accent' ? onVividAccentColors.selectedHover : white },
-        pressed: { ref: intent === 'accent' ? onVividAccentColors.selectedPressed : white }
+        rest: { ref: intent === 'neutral' ? onVividNeutralColors.selectedRest : white },
+        hover: { ref: intent === 'neutral' ? onVividNeutralColors.selectedHover : white },
+        pressed: { ref: intent === 'neutral' ? onVividNeutralColors.selectedPressed : white }
       },
       disabled: { ref: onVividColors.trackDisabled }
     },
@@ -260,8 +264,8 @@ export function createFluent2MicrosoftSwitchSchema({
       boxColor: {
         rest: white,
         selected:
-          intent === 'accent'
-            ? { rest: { ref: onVividAccentColors.selectedThumb } }
+          intent === 'neutral'
+            ? { rest: { ref: onVividNeutralColors.selectedThumb } }
             : intent === 'polarity'
               ? { rest: { ref: selectedRest } }
               : {

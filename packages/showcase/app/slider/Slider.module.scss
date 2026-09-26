@@ -1,8 +1,6 @@
 .page {
   display: grid;
   gap: 26px;
-
-  --slider-surface-primary: #0064b4;
 }
 
 .header {
@@ -13,25 +11,11 @@
 
 .header h2 {
   margin: 0;
-  font-size: clamp(1.4rem, 2.8vw, 2rem);
-  line-height: 1.05;
 }
 
 .summary {
   max-width: 720px;
   margin: 10px 0 0;
-  color: rgba(0, 0, 0, 0.56);
-  line-height: 1.5;
-}
-
-.surfaceControl {
-  --swatch-selected-ring-shadow: 0 0 0 3px
-    color-mix(in srgb, var(--slider-surface-primary) 72%, white);
-  --swatch-group-inline-size: 100%;
-  --swatch-group-justify-content: space-between;
-
-  display: block;
-  min-width: 0;
 }
 
 .section {
@@ -42,12 +26,10 @@
 
 .section h3 {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.2;
 }
 
 .previewSection {
-  inline-size: min(100%, 760px);
+  inline-size: calc((100% - 28px) / 2);
   margin-inline: auto;
 }
 
@@ -67,9 +49,6 @@
 
 .cardTitle {
   margin: 0;
-  font-size: 0.88rem;
-  font-weight: 650;
-  line-height: 1.25;
 }
 
 .interactiveCard {

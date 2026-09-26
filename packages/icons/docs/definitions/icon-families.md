@@ -100,6 +100,12 @@ from the family's `radio-selected` mapping; components do not draw the dot in CS
 
 ## Canonical coverage
 
+The canonical `arrow-left-right` concept maps to Fluent
+`ArrowBidirectionalLeftRightRegular`, the straight two-headed arrow from the
+official regular icon set. The Slider Showcase uses this canonical name for
+its optional range-thumb illustration; other families resolve their existing
+corresponding arrow.
+
 `src/interface/canonical.ts` owns the public canonical-name union.
 `metadata/interface-families.json` maps every canonical name across every official Web family and
 records `fixed`, `mirror`, or explicit RTL geometry per family.
