@@ -12,6 +12,7 @@ import { createFluent2MicrosoftSeparatorSchema } from './components/separator.sc
 import { createFluent2MicrosoftSliderSchema } from './components/slider.schema.ts';
 import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
 import { createFluent2MicrosoftTextSchema } from './components/text.schema.ts';
+import { createFluent2MicrosoftTextFieldSchema } from './components/text-field.schema.ts';
 import {
   absoluteCap,
   type Fluent2MicrosoftColorResolver,
@@ -225,6 +226,7 @@ export function createFluent2MicrosoftSchema(
       switch: createFluent2MicrosoftSwitchSchema({
         c: colorResolver
       }),
+      textField: createFluent2MicrosoftTextFieldSchema({ c: colorResolver }),
       text: createFluent2MicrosoftTextSchema()
     }
   };

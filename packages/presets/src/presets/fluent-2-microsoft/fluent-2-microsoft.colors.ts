@@ -160,6 +160,11 @@ export const componentIntents = {
     neutral: 'neutral',
     primary: 'primary'
   },
+  textField: {
+    neutral: 'neutral',
+    error: 'redLike',
+    warning: 'primitive.orange.v1'
+  },
   text: {
     neutral: 'neutral'
   }

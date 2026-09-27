@@ -175,18 +175,54 @@
 
 /*
  * element indicator / e6
- * Preserves the bottom overlay lane shared with other TextField modes.
+ * Clips the bottom indicator to its authored thickness over the outer shell outline.
  */
 .k-txf-e6-b {
   position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
+  inset-inline: calc(-1 * var(--k-bdw));
+  inset-block-end: calc(-1 * var(--k-bdw));
   z-index: 0;
   pointer-events: none;
-  border-start-start-radius: 0;
-  border-start-end-radius: 0;
-  border-end-start-radius: inherit;
-  border-end-end-radius: inherit;
+  overflow: hidden;
+}
+
+/*
+ * element indicator / e6
+ * Clips a shell-sized rounded surface so the bottom corners retain the shell curvature.
+ */
+.k-txf-e6-b::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: calc(var(--k-bxh) + 2 * var(--k-bdw));
+  border-radius: calc(var(--k-bdr) + var(--k-bdw));
+  background: var(--k-bgc);
+}
+
+/*
+ * element control / e3
+ * An authored bottom indicator owns focus thickness instead of the surrounding outline.
+ */
+.k-txf-e1-b.-f.-k.-a .k-txf-e3-b:has(> .k-txf-e6-b) {
+  outline-width: var(--k-bdw);
+  outline-color: var(--k-bdc);
+}
+
+/*
+ * element indicator / e6
+ * Expands the focus indicator inward while preserving its outer bottom edge.
+ */
+.k-txf-e1-b.-f.-k.-a .k-txf-e6-b {
+  block-size: calc(var(--k-focus-width) * 1px);
+}
+
+/*
+ * element indicator / e6
+ * Honors the global focus color unless the shell opts into component-owned color.
+ */
+.k-txf-e1-b.-f.-k.-a .k-txf-e3-b:not(.k-txf-e3a) > .k-txf-e6-b::before {
+  background: var(--k-focus-color);
 }
 
 /*
@@ -199,4 +235,12 @@
 .k-txf-e1-b.-d.-a .k-txf-e3-b,
 .k-txf-e1-b.-d.-a .k-txf-e4-b {
   cursor: not-allowed;
+}
+
+/*
+ * element indicator / e6
+ * Native pressing expands the indicator without changing the active mode or terminal states.
+ */
+.k-txf-e1-b.-i.-n.-a:not(.-d):not(.-r):active .k-txf-e6-b {
+  block-size: calc(var(--k-focus-width) * 1px);
 }

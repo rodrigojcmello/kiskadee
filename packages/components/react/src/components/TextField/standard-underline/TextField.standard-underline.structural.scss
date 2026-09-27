@@ -221,3 +221,11 @@
 .k-txf-e1-d.-d.-a .k-txf-e4-d {
   cursor: not-allowed;
 }
+
+/*
+ * element indicator / e6
+ * Native pressing expands the indicator without changing the active mode or terminal states.
+ */
+.k-txf-e1-d.-i.-n.-a:not(.-d):not(.-r):active .k-txf-e6-d {
+  block-size: calc(var(--k-focus-width) * 1px);
+}

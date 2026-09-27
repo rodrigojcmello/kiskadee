@@ -290,6 +290,7 @@ instead of flattening them to the larger offset layer.
 - [Badge](components/badge.md)
 - [Chip](components/chip.md)
 - [Text](components/text.md)
+- [TextField](components/text-field.md)
 
 ## Control Cursor Preference
 

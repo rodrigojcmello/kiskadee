@@ -41,6 +41,11 @@ export const fluent2MicrosoftColorEvidence = {
     source: 'components/dropdown.md#color-and-token-provenance',
     rationale: 'Dropdown fixed stops adapt Fluent menu surface and content tokens.'
   },
+  'component.text-field': {
+    source: 'components/text-field.md#color-and-token-provenance',
+    rationale:
+      'Input neutral tokens map to approved achromatic stops; Orange L50 extends validation warning.'
+  },
   'component.slider': {
     source: 'components/slider.md#color-and-token-provenance',
     rationale: 'Slider fixed stops adapt official track, thumb, and state colors.'

@@ -2,7 +2,6 @@
 
 import { Dropdown } from '@kiskadee/react-components/dropdown';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
-import { useKiskadee } from '@kiskadee/react-components/resources';
 import { Text } from '@kiskadee/react-components/text';
 import { TextFieldStandardOutline } from '@kiskadee/react-components/text-field';
 import type { AutocompleteInputRenderProps } from '@kiskadee/react-headless/autocomplete';
@@ -146,14 +145,9 @@ function StyledAutocomplete({ rich }: { rich: boolean }) {
 }
 
 export function TextFieldAutocompleteExample() {
-  const { designSystem } = useKiskadee();
   const { manifest } = useShowcaseMetadata(['dropdown', 'textField']);
   const textProfiles = useShowcaseTextProfiles();
-  const available = Boolean(
-    designSystem === 'material-design-3-google' &&
-      manifest?.components?.dropdown &&
-      manifest.components.textField
-  );
+  const available = Boolean(manifest?.components?.dropdown && manifest.components.textField);
 
   return (
     <section className={styles.section} aria-labelledby="text-field-autocomplete-title">
@@ -161,8 +155,8 @@ export function TextFieldAutocompleteExample() {
         Autocomplete
       </Text>
       <Text as="p" profile={textProfiles.body} className={styles.description}>
-        Headless combobox behavior keeps focus on a real Material TextField while the active
-        Dropdown renders its suggestions.
+        Headless combobox behavior keeps focus on the TextField while the active Dropdown renders
+        its suggestions.
       </Text>
       {available ? (
         <div className={styles.grid}>
@@ -182,7 +176,7 @@ export function TextFieldAutocompleteExample() {
       ) : (
         <div className={styles.unavailable}>
           <Text as="p" profile={textProfiles.body}>
-            Switch to Material 3 Google to inspect the TextField and Dropdown composition.
+            This example requires TextField and Dropdown in the selected design system.
           </Text>
         </div>
       )}
