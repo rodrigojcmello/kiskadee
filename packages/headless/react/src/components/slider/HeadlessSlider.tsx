@@ -402,7 +402,8 @@ function getPointerValue(
   min: number,
   max: number,
   thumbEdge: SliderThumbEdge,
-  geometry: SliderGeometry
+  geometry: SliderGeometry,
+  pointerOffset = 0
 ): number {
   if (!track) return min;
   const rect = track.getBoundingClientRect();
@@ -410,7 +411,11 @@ function getPointerValue(
   const edgeInset = getThumbEdgeInset(thumbEdge, geometry);
   const availableWidth = rect.width - edgeInset * 2;
   if (availableWidth <= 0) return min;
-  const ratio = clamp((event.clientX - rect.left - edgeInset) / availableWidth, 0, 1);
+  const ratio = clamp(
+    (event.clientX - pointerOffset - rect.left - edgeInset) / availableWidth,
+    0,
+    1
+  );
   return clamp(min + ratio * (max - min), min, max);
 }
 
@@ -525,6 +530,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
   const [heldPreviewValue, setHeldPreviewValue] = useState<SliderHeldPreview | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
+  const pointerOffsetRef = useRef(0);
   const thumbRefs = useRef<[HTMLSpanElement | null, HTMLSpanElement | null]>([null, null]);
   const [geometry, setGeometry] = useState<SliderGeometry>(DEFAULT_SLIDER_GEOMETRY);
 
@@ -895,7 +901,15 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
   const updateThumbFromPointer = useCallback(
     (index: SliderThumbIndex, event: ReactPointerEvent<HTMLDivElement>) => {
-      const nextValue = getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry);
+      const nextValue = getPointerValue(
+        event,
+        trackRef.current,
+        min,
+        max,
+        thumbEdge,
+        geometry,
+        pointerOffsetRef.current
+      );
       setThumbPreviewValue(index, nextValue, event);
     },
     [geometry, max, min, setThumbPreviewValue, thumbEdge]
@@ -913,9 +927,25 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
       ) {
         return;
       }
-      const nextValue = getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry);
-      const targetIndex =
-        getThumbIndexFromEventTarget(event.target) ?? pickNearestThumbIndex(nextValue);
+      const clickedThumbIndex = getThumbIndexFromEventTarget(event.target);
+      const thumbRect =
+        clickedThumbIndex === null
+          ? undefined
+          : thumbRefs.current[clickedThumbIndex]?.getBoundingClientRect();
+      pointerOffsetRef.current =
+        thumbRect && thumbRect.width > 0
+          ? event.clientX - (thumbRect.left + thumbRect.width / 2)
+          : 0;
+      const nextValue = getPointerValue(
+        event,
+        trackRef.current,
+        min,
+        max,
+        thumbEdge,
+        geometry,
+        pointerOffsetRef.current
+      );
+      const targetIndex = clickedThumbIndex ?? pickNearestThumbIndex(nextValue);
       setActiveThumbIndex(targetIndex);
       setDraggingThumbIndex(targetIndex);
       setSettlingThumbIndex(null);
@@ -960,7 +990,15 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
     (event: ReactPointerEvent<HTMLDivElement>) => {
       if (event.isPrimary === false || activePointerIdRef.current !== event.pointerId) return;
       const nextValue = resolveThumbStepBehaviorValue(
-        getPointerValue(event, trackRef.current, min, max, thumbEdge, geometry)
+        getPointerValue(
+          event,
+          trackRef.current,
+          min,
+          max,
+          thumbEdge,
+          geometry,
+          pointerOffsetRef.current
+        )
       );
       const nextPreview =
         draggingThumbIndex === null || selectionMode !== 'range'
@@ -1020,6 +1058,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
       event.currentTarget.releasePointerCapture?.(event.pointerId);
       activePointerIdRef.current = null;
+      pointerOffsetRef.current = 0;
       setDraggingThumbIndex(null);
       setDragPreviewValue(null);
       setPressed(false);
@@ -1054,6 +1093,7 @@ const SliderRoot = forwardRef<HTMLDivElement, SliderRootProps>(function SliderRo
 
       event.currentTarget.releasePointerCapture?.(event.pointerId);
       activePointerIdRef.current = null;
+      pointerOffsetRef.current = 0;
       setDraggingThumbIndex(null);
       setSettlingThumbIndex(null);
       setDragPreviewValue(null);

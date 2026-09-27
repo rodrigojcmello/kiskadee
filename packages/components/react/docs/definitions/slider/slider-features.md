@@ -517,6 +517,11 @@ Rules to preserve:
 - The track owns pointer capture and maps pointer position to a value. Only the
   primary pointer with the primary button can begin and continue interaction;
   other pointer identities cannot take over an active drag.
+- Grabbing a thumb preserves the signed horizontal distance between the pointer
+  and its rendered center throughout movement and release. Clicking the track
+  uses zero offset and positions the nearest thumb at the pointer. The offset
+  belongs to the gesture, survives range-thumb swaps, and resets on release or
+  cancellation. Bounds, crossing prevention, and step snapping still apply.
 - `label` names the control and is connected to thumbs through
   `aria-labelledby`.
 - `optionalIndicator` is opt-in content inside the field label. It participates
