@@ -1,3 +1,4 @@
+// Intent/state precedence: see ../../docs/definitions/text-field-intents.md.
 import type { RadiusMode } from '../schema.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {

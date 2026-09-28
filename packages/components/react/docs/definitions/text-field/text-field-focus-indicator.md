@@ -48,3 +48,10 @@ using the shared interaction duration and ease-out tokens. Outline/Borderless pa
 on ::before and receives its own background-color transition. Base-state declarations animate
 both focus entry and exit. Reduced motion disables these transitions; global no-transitions
 continues to take precedence. Schema state colors and thickness rules are unchanged.
+
+## Terminal visual intent
+
+Follow the [Core intent contract](../../../../../core/docs/definitions/text-field-intents.md).
+React selects neutral classes for disabled/read-only fields before resolving element palettes.
+Consumer validation status remains unchanged in Headless, including aria-invalid and messages.
+Restoring editability restores the requested intent without rewriting consumer state.

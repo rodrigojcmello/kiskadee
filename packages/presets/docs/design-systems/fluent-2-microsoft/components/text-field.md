@@ -235,3 +235,11 @@ L45/D40; Orange resolves L24/D40. Matching Dark positions come from each asset's
 functional reference, not a shared fixed position. Contours, indicators and messages consume
 these references; disabled/read-only overrides and input text remain unchanged. No primitive
 assets are changed. This rule does not claim that Vivid anchors guarantee text contrast.
+
+## Shared terminal intent contract
+
+Disabled and read-only palettes are authored only for neutral, following the
+[Core TextField contract](../../../../../core/docs/definitions/text-field-intents.md).
+Error and warning retain editable-state recipes; terminal presentation resolves through neutral.
+This framework contract supersedes earlier semantic read-only/disabled mappings in this document.
+It is a Kiskadee contract rather than a claim of upstream state coverage.

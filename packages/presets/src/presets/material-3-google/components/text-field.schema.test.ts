@@ -70,7 +70,7 @@ type PaintStates = {
 type IntentPaint = Record<'neutral' | 'error' | 'warning', { medium: PaintStates }>;
 type FieldPaint = { boxColor: IntentPaint; borderColor: IntentPaint; textColor: IntentPaint };
 
-it('keeps semantic hover and read-only deltas on vivid fields in both themes and segments', () => {
+it('keeps semantic hover without terminal deltas on vivid fields in both themes and segments', () => {
   for (const segment of ['default', 'dynamic'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const intent of ['error', 'warning'] as const) {
@@ -82,8 +82,7 @@ it('keeps semantic hover and read-only deltas on vivid fields in both themes and
         expect(edge.rest).toBe(c.ref(segment, 'l', role, 'vivid'));
         expect(edge.hover?.ref).toBe(c.ref(segment, 'l', role, 'vivid', -1));
         expect(edge.hover?.ref).not.toBe(edge.rest);
-        expect(edge.readOnly?.ref).toBe(c.ref(segment, 'l', role, 'vivid', 1));
-        expect(edge.readOnly?.ref).not.toBe(edge.rest);
+        expect(edge.readOnly).toBeUndefined();
         expect(edge.focus?.ref).toBe(edge.rest);
       }
 });
@@ -148,4 +147,20 @@ it('limits inverse Rest-equal focus to documented resets of an actual Hover delt
     for (const [key, child] of Object.entries(record)) visit(child, inverse || key === 'onVivid');
   };
   visit(textField);
+});
+
+it('publishes terminal visual states only under neutral', () => {
+  const visit = (node: unknown) => {
+    if (!node || typeof node !== 'object') return;
+    for (const [key, value] of Object.entries(node)) {
+      if (key === 'error' || key === 'warning') {
+        for (const states of Object.values(value as Record<string, Record<string, unknown>>)) {
+          expect(states.disabled).toBeUndefined();
+          expect(states.readOnly).toBeUndefined();
+        }
+      }
+      visit(value);
+    }
+  };
+  visit(textField.variants);
 });

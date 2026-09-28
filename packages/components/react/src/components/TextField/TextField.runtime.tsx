@@ -166,7 +166,10 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
     const labelRef = useRef<HTMLLabelElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const controlRef = useRef<HTMLDivElement | null>(null);
-    const resolvedIntent = intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT;
+    const resolvedIntent =
+      disabled || readOnly
+        ? DEFAULT_TEXT_FIELD_INTENT
+        : (intent ?? validationStatus ?? DEFAULT_TEXT_FIELD_INTENT);
     const resolvedRadius = radius ?? global?.radius ?? DEFAULT_TEXT_FIELD_RADIUS;
     const modeOptions =
       options.structural.variant === 'standard'

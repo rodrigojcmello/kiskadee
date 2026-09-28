@@ -63,3 +63,11 @@ must preserve the existing TextField element and mode names.
 
 Regression tests cover semantic state deltas, production transparent caps, opaque black inputs,
 and intentional inverse Focus resets across both segments and themes.
+
+## Shared terminal intent contract
+
+Disabled and read-only palettes are authored only for neutral, following the
+[Core TextField contract](../../../../../core/docs/definitions/text-field-intents.md).
+Error and warning retain editable-state recipes; terminal presentation resolves through neutral.
+This framework contract supersedes earlier semantic read-only/disabled mappings in this document.
+It is a Kiskadee contract rather than a claim of upstream state coverage.

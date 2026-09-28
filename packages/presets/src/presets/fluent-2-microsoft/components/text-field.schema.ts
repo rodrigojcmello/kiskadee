@@ -24,10 +24,14 @@ const inputTypography = {
   's:lg:1': 'body-large'
 } as const;
 const ref = (color: Color) => ({ ref: color });
-const intents = <T>(recipe: (intent: Intent) => T) => ({
+const editableStates = <T extends { disabled?: unknown; readOnly?: unknown }>(states: T) => {
+  const { disabled: _disabled, readOnly: _readOnly, ...editable } = states;
+  return editable;
+};
+const intents = <T extends object>(recipe: (intent: Intent) => T) => ({
   neutral: { medium: recipe('neutral') },
-  error: { medium: recipe('error') },
-  warning: { medium: recipe('warning') }
+  error: { medium: editableStates(recipe('error')) },
+  warning: { medium: editableStates(recipe('warning')) }
 });
 
 export function createFluent2MicrosoftTextFieldSchema({

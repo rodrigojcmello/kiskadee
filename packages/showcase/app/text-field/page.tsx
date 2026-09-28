@@ -81,6 +81,60 @@ const variantModeOptions: Array<{ value: TextFieldVariantMode; label: string }> 
   { value: 'floating-inside', label: 'Floating / Inside' }
 ];
 
+const fieldScenarios = [
+  {
+    id: 'neutral',
+    title: 'Neutral · Intent',
+    description: 'Ordinary input. Hover, click or use Tab to explore interaction states.',
+    label: 'Project name',
+    value: '',
+    placeholder: 'Odette',
+    intent: 'neutral',
+    message: 'Choose a name for your project.'
+  },
+  {
+    id: 'error',
+    title: 'Error · Intent',
+    description: 'An invalid value that needs correction.',
+    label: 'Email',
+    value: 'ada@',
+    placeholder: '',
+    intent: 'error',
+    message: 'Enter a valid email address.'
+  },
+  {
+    id: 'warning',
+    title: 'Warning · Intent',
+    description: 'A value that deserves attention before continuing.',
+    label: 'Budget',
+    value: '12',
+    placeholder: '',
+    intent: 'warning',
+    message: 'This budget is below the recommended amount. Please review it.'
+  },
+  {
+    id: 'disabled',
+    title: 'Disabled · State · Neutral intent',
+    description:
+      'Unavailable for interaction. Terminal states use the neutral appearance for every intent.',
+    label: 'Project name',
+    value: 'Odette',
+    placeholder: '',
+    intent: 'neutral',
+    message: 'Project editing is currently unavailable.'
+  },
+  {
+    id: 'readonly',
+    title: 'Read-only · Condition · Neutral intent',
+    description: 'Cannot be edited, but can receive focus for selection and copying.',
+    label: 'Project reference',
+    value: 'PRJ-0012',
+    placeholder: '',
+    intent: 'neutral',
+    message: 'This reference is generated automatically.'
+  }
+] as const;
+
 type InteractiveEmailFormValues = {
   email: string;
   emailConfirmation: string;
@@ -225,11 +279,6 @@ export default function TextFieldPage() {
   );
   const [standardInline, setStandardInline] = useState(false);
   const standardLabelPlacement: TextFieldLabelPlacement = standardInline ? 'inline' : 'top';
-  const [standardOutlineName, setStandardOutlineName] = useState('');
-  const [standardUnderlineName, setStandardUnderlineName] = useState('');
-  const [standardBorderlessName, setStandardBorderlessName] = useState('');
-  const [floatingNotchedProject, setFloatingNotchedProject] = useState('');
-  const [floatingInsideProject, setFloatingInsideProject] = useState('');
   const [interactiveVariantMode, setInteractiveVariantMode] =
     useState<TextFieldVariantMode>('standard-outline');
   const [interactiveSubmitState, setInteractiveSubmitState] = useState<'idle' | 'success'>('idle');
@@ -434,129 +483,47 @@ export default function TextFieldPage() {
   const interactivePanelClassName = getSurfaceClassName(s.interactivePanel, surface);
   const getStaticStandardLabelOffset = (placement: TextFieldLabelPlacement) =>
     placement === 'inline' ? undefined : labelOffset;
-  const renderStandardOutlineFields = (placement: TextFieldLabelPlacement, idSuffix: string) => (
-    <>
-      <TextFieldStandardOutline
-        id={`standard-outline-name-${idSuffix}`}
-        label="Full name"
-        value={standardOutlineName}
-        onValueChange={setStandardOutlineName}
-        placeholder="Ada Lovelace"
-        message="Classic outlined field."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-      />
-      <TextFieldStandardOutline
-        id={`standard-outline-email-${idSuffix}`}
-        label="Email"
-        defaultValue="ada@"
-        validationStatus="error"
-        message="Enter a valid email address."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-      />
-      <TextFieldStandardOutline
-        id={`standard-outline-disabled-${idSuffix}`}
-        label="Disabled"
-        defaultValue="Locked value"
-        message="Disabled fields keep their message available."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-        disabled
-      />
-    </>
-  );
-  const renderStandardUnderlineFields = (placement: TextFieldLabelPlacement, idSuffix: string) => (
-    <>
-      <TextFieldStandardUnderline
-        id={`standard-underline-name-${idSuffix}`}
-        label="Project name"
-        value={standardUnderlineName}
-        onValueChange={setStandardUnderlineName}
-        placeholder="Odette"
-        message="Minimal shell with an underline."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-      />
-      <TextFieldStandardUnderline
-        id={`standard-underline-tax-id-${idSuffix}`}
-        label="Tax ID"
-        defaultValue="123"
-        validationStatus="warning"
-        message="This value looks short for the selected country."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-      />
-      <TextFieldStandardUnderline
-        id={`standard-underline-readonly-${idSuffix}`}
-        label="Read only"
-        defaultValue="Generated automatically"
-        message="Read-only fields can still be focused and copied."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-        readOnly
-      />
-    </>
-  );
-  const renderStandardBorderlessFields = (placement: TextFieldLabelPlacement, idSuffix: string) => (
-    <>
-      <TextFieldStandardBorderless
-        id={`standard-borderless-name-${idSuffix}`}
-        label="Search"
-        value={standardBorderlessName}
-        onValueChange={setStandardBorderlessName}
-        placeholder="Find a record"
-        message="Filled shell without a visible border."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-      />
-      <TextFieldStandardBorderless
-        id={`standard-borderless-email-${idSuffix}`}
-        label="Email"
-        defaultValue="ada@"
-        validationStatus="error"
-        message="Enter a valid email address."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-      />
-      <TextFieldStandardBorderless
-        id={`standard-borderless-budget-${idSuffix}`}
-        label="Budget"
-        defaultValue="12"
-        validationStatus="warning"
-        message="Budget may be lower than the project minimum."
-        radius={borderRadius}
-        emphasis={textFieldEmphasis}
-        labelPlacement={placement}
-        labelOffset={getStaticStandardLabelOffset(placement)}
-        focusRingColorSource={focusRingColorSourceOverride}
-      />
-    </>
-  );
+  const renderModeExamples = (mode: TextFieldVariantMode) => {
+    const Component =
+      mode === 'standard-outline'
+        ? TextFieldStandardOutline
+        : mode === 'standard-underline'
+          ? TextFieldStandardUnderline
+          : mode === 'standard-borderless'
+            ? TextFieldStandardBorderless
+            : mode === 'floating-notched'
+              ? TextFieldFloatingNotched
+              : TextFieldFloatingInside;
+    const standard = mode.startsWith('standard-');
+    return fieldScenarios.map((scenario) => (
+      <div key={scenario.id} className={s.scenario}>
+        <Text as="h5" profile={textProfiles.body}>
+          {scenario.title}
+        </Text>
+        <Text as="p" profile={textProfiles.body}>
+          {scenario.description}
+        </Text>
+        <Component
+          id={`${mode}-${scenario.id}`}
+          label={scenario.label}
+          defaultValue={scenario.value}
+          placeholder={scenario.placeholder}
+          intent={scenario.intent}
+          validationStatus={scenario.intent === 'neutral' ? undefined : scenario.intent}
+          disabled={scenario.id === 'disabled'}
+          readOnly={scenario.id === 'readonly'}
+          message={scenario.message}
+          radius={borderRadius}
+          emphasis={textFieldEmphasis}
+          {...(standard ? { labelPlacement: standardLabelPlacement } : {})}
+          labelOffset={
+            standard ? getStaticStandardLabelOffset(standardLabelPlacement) : labelOffset
+          }
+          focusRingColorSource={focusRingColorSourceOverride}
+        />
+      </div>
+    ));
+  };
   const textFieldControls = (
     <ShowcaseControlPanel>
       <ShowcaseControlGroup title="Interactive">
@@ -805,13 +772,13 @@ export default function TextFieldPage() {
         </div>
         <div className={s.exampleGrid}>
           <ExampleBlock title="Outline" surface={surface}>
-            {renderStandardOutlineFields(standardLabelPlacement, 'example')}
+            {renderModeExamples('standard-outline')}
           </ExampleBlock>
           <ExampleBlock title="Underline" surface={surface}>
-            {renderStandardUnderlineFields(standardLabelPlacement, 'example')}
+            {renderModeExamples('standard-underline')}
           </ExampleBlock>
           <ExampleBlock title="Borderless" surface={surface}>
-            {renderStandardBorderlessFields(standardLabelPlacement, 'example')}
+            {renderModeExamples('standard-borderless')}
           </ExampleBlock>
         </div>
       </section>
@@ -822,75 +789,11 @@ export default function TextFieldPage() {
         </Text>
         <div className={s.exampleGrid}>
           <ExampleBlock title="Notched" surface={surface}>
-            <TextFieldFloatingNotched
-              id="floating-notched-project"
-              label="Project name"
-              value={floatingNotchedProject}
-              onValueChange={setFloatingNotchedProject}
-              message="Label cuts through the outline when active."
-              radius={borderRadius}
-              emphasis={textFieldEmphasis}
-              labelOffset={labelOffset}
-              focusRingColorSource={focusRingColorSourceOverride}
-            />
-            <TextFieldFloatingNotched
-              id="floating-notched-email"
-              label="Email"
-              defaultValue="ada@"
-              validationStatus="error"
-              message="Enter a valid email address."
-              radius={borderRadius}
-              emphasis={textFieldEmphasis}
-              labelOffset={labelOffset}
-              focusRingColorSource={focusRingColorSourceOverride}
-            />
-            <TextFieldFloatingNotched
-              id="floating-notched-readonly"
-              label="Read only"
-              defaultValue="Generated automatically"
-              message="Read-only fields can still be focused and copied."
-              radius={borderRadius}
-              emphasis={textFieldEmphasis}
-              labelOffset={labelOffset}
-              focusRingColorSource={focusRingColorSourceOverride}
-              readOnly
-            />
+            {renderModeExamples('floating-notched')}
           </ExampleBlock>
 
           <ExampleBlock title="Inside" surface={surface}>
-            <TextFieldFloatingInside
-              id="floating-inside-project"
-              label="Project name"
-              value={floatingInsideProject}
-              onValueChange={setFloatingInsideProject}
-              message="Label stays inside the shell when active."
-              radius={borderRadius}
-              emphasis={textFieldEmphasis}
-              labelOffset={labelOffset}
-              focusRingColorSource={focusRingColorSourceOverride}
-            />
-            <TextFieldFloatingInside
-              id="floating-inside-email"
-              label="Email"
-              defaultValue="ada@"
-              validationStatus="error"
-              message="Enter a valid email address."
-              radius={borderRadius}
-              emphasis={textFieldEmphasis}
-              labelOffset={labelOffset}
-              focusRingColorSource={focusRingColorSourceOverride}
-            />
-            <TextFieldFloatingInside
-              id="floating-inside-budget"
-              label="Budget"
-              defaultValue="12"
-              validationStatus="warning"
-              message="Budget may be lower than the project minimum."
-              radius={borderRadius}
-              emphasis={textFieldEmphasis}
-              labelOffset={labelOffset}
-              focusRingColorSource={focusRingColorSourceOverride}
-            />
+            {renderModeExamples('floating-inside')}
           </ExampleBlock>
         </div>
       </section>

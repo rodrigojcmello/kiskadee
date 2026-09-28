@@ -56,7 +56,7 @@ describe('Fluent TextField Light onSubtle', () => {
       const message = mode.elements.e5!.palettes!.default!.light!.onSubtle.textColor!;
       for (const intent of ['neutral', 'error', 'warning'] as const) {
         expect(Object.keys(control.textColor![intent]!.medium!)).toEqual(['rest']);
-        expect(input[intent]!.medium).toEqual(input.neutral!.medium);
+        expect(input[intent]!.medium!.rest).toEqual(input.neutral!.medium!.rest);
       }
       expect(message.error!.medium!.rest).not.toBe(message.neutral!.medium!.rest);
       expect(message.warning!.medium!.rest).not.toBe(message.neutral!.medium!.rest);
@@ -75,8 +75,8 @@ describe('Fluent TextField Light onSubtle', () => {
       expect(state.rest).toBe('#ffffff00');
       expect(state.focus).not.toEqual({ ref: state.rest });
       expect(state.pressed).toEqual(state.focus);
-      expect(state.disabled).toEqual({ ref: state.rest });
-      expect(state.readOnly).toEqual({ ref: state.rest });
+      expect(state.disabled).toEqual(intent === 'neutral' ? { ref: state.rest } : undefined);
+      expect(state.readOnly).toEqual(intent === 'neutral' ? { ref: state.rest } : undefined);
     }
   });
 
@@ -241,4 +241,20 @@ describe('Fluent validation family anchors', () => {
       }
     }
   });
+});
+
+it('publishes terminal visual states only under neutral', () => {
+  const visit = (node: unknown) => {
+    if (!node || typeof node !== 'object') return;
+    for (const [key, value] of Object.entries(node)) {
+      if (key === 'error' || key === 'warning') {
+        for (const states of Object.values(value as Record<string, Record<string, unknown>>)) {
+          expect(states.disabled).toBeUndefined();
+          expect(states.readOnly).toBeUndefined();
+        }
+      }
+      visit(value);
+    }
+  };
+  visit(field.variants);
 });
