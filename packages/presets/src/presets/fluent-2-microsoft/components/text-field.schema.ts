@@ -51,19 +51,8 @@ export function createFluent2MicrosoftTextFieldSchema({
     const neutralVivid = c.resolve('default', track, referenceColor('textField.neutral', 'vivid'));
     const foreground = dark ? white : neutralVivid;
     const brand = c.resolve('default', track, referenceColor('primary', 'vivid'));
-    const error = c.resolve(
-      'default',
-      track,
-      dark
-        ? exactColor('textField.error', 75, 'component.text-field')
-        : referenceColor('textField.error', 'vivid')
-    );
-    // Warning is a Kiskadee extension; use the existing readable Orange L50 recipe.
-    const warning = c.resolve(
-      'default',
-      track,
-      exactColor('textField.warning', dark ? 75 : 50, 'component.text-field')
-    );
+    const error = c.resolve('default', track, referenceColor('textField.error', 'vivid'));
+    const warning = c.resolve('default', track, referenceColor('textField.warning', 'vivid'));
     const disabledText = neutral(dark ? 35 : 16);
     const disabledStroke = neutral(dark ? 24 : 7);
     const outlineStroke = createBalancedLowBorder({

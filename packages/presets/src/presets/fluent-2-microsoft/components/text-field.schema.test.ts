@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import red from '../colors/r.red.v1.ts';
+import orange from '../colors/yr.orange.v1.ts';
 import { schema } from '../fluent-2-microsoft.schema.ts';
 
 const field = schema.components.textField!;
@@ -215,6 +217,27 @@ describe('Fluent TextField Dark onSubtle', () => {
         expect(
           mode.elements.e4!.palettes![segment]!.dark!.onSubtle.textColor!.neutral!.medium!.rest
         ).toBe('#ffffff');
+      }
+    }
+  });
+});
+
+describe('Fluent validation family anchors', () => {
+  it('uses each family Vivid reference for contours and messages in both themes and segments', () => {
+    for (const theme of ['light', 'dark'] as const) {
+      for (const segment of ['default', 'teams'] as const) {
+        for (const [intent, asset] of [
+          ['error', red],
+          ['warning', orange]
+        ] as const) {
+          const expected = asset.scales[theme][asset.functionalReferences[theme].vivid];
+          for (const mode of modes) {
+            const control = mode.elements.e3!.palettes![segment]![theme]!.onSubtle;
+            const message = mode.elements.e5!.palettes![segment]![theme]!.onSubtle;
+            expect(control.borderColor![intent]!.medium!.rest).toBe(expected);
+            expect(message.textColor![intent]!.medium!.rest).toBe(expected);
+          }
+        }
       }
     }
   });

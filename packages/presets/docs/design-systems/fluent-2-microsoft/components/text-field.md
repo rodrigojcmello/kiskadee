@@ -59,7 +59,7 @@ not perceptual Delta E measurements.
 | Neutral Stroke Disabled | Grey-88 `#e0e0e0` | exact neutral L7 | `#e0e0e0` | Disabled/read-only edge |
 | Brand Compound Stroke | Figma Brand-80 `#0064b4` | reference primary vivid +0 | default L50 `#0064b4`; Teams L50 `#5b5fc7` | Focus follows segment |
 | Danger Stroke 2 | Cranberry Primary `#c50f1f` | reference error vivid +0 | L45 `#c50f1f` | Error edge/message |
-| Warning extension | Existing Fluent Progress readable Orange recipe | exact warning L50 | `#9d4012` | Warning edge/message; no claim of official Input warning |
+| Warning extension | Approved Orange Vivid anchor | reference warning vivid +0 | L24 `#f7630c` | Warning edge/message; no claim of official Input warning |
 
 TextField exact locators use evidence ID `component.text-field`; the reused Card surface uses `component.card`. Component intents map neutral to its global role, error to `redLike`, and warning to `primitive.orange.v1`. Focus directly references global `primary`. Physical caps
 use `primitive.black.v1`. Light and Dark are authored; Darker and inverse palettes are deferred.
@@ -214,15 +214,24 @@ adaptations to the approved achromatic asset, not newly generated colors.
 | Floating Notched surface | NeutralBackground1, #292929 | neutral D9 | #2a2a2a |
 | Floating contour / hover | NeutralStroke1 #666666 / Hover #757575 | neutral D40 / D50 | #626262 / #727272 |
 | Borderless / Inside surface | Canonical Card neutral medium | card.neutral D3 | #141414 |
-| Error | Kiskadee readable semantic adaptation | textField.error D75 | #ff746c |
-| Warning | Kiskadee readable semantic adaptation | textField.warning D75 | #f68035 |
+| Error | Approved Red Vivid anchor | reference textField.error vivid +0, D40 | #b6302f |
+| Warning | Approved Orange Vivid anchor | reference textField.warning vivid +0, D40 | #a5430f |
 
 Outline contour reuses Button low-neutral balancing: neutral Vivid D90 against neutral D5,
 target Delta E 0.18. Its surface remains transparent like Button. Outline bottom Rest uses
 D80, Hover D90; native border and e6 stay synchronized. Focus references the active segment's
-primary Vivid Dark reference. All neutral/semantic exact locators use component.text-field;
+primary Vivid Dark reference. All neutral exact locators use component.text-field;
 the Card surface uses component.card. No schema color literals or new assets are introduced.
 
 Geometry, transitions and state precedence remain shared with Light. Placeholder still uses
 the existing structural opacity; that limitation remains unchanged. Darker and onVivid are
 not inferred from this palette and remain deferred.
+
+## Validation family references
+
+Error and warning use their own family Vivid reference with offset zero in both Light and Dark.
+This approved consistency rule replaces warning L50 and semantic D75 overrides. Red resolves
+L45/D40; Orange resolves L24/D40. Matching Dark positions come from each asset's independent
+functional reference, not a shared fixed position. Contours, indicators and messages consume
+these references; disabled/read-only overrides and input text remain unchanged. No primitive
+assets are changed. This rule does not claim that Vivid anchors guarantee text contrast.

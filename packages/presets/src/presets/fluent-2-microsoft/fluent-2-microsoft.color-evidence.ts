@@ -44,7 +44,7 @@ export const fluent2MicrosoftColorEvidence = {
   'component.text-field': {
     source: 'components/text-field.md#color-and-token-provenance',
     rationale:
-      'Input neutral tokens map to approved achromatic stops; Orange L50 extends validation warning.'
+      'Input neutral tokens map to approved achromatic stops; validation uses family Vivid references.'
   },
   'component.slider': {
     source: 'components/slider.md#color-and-token-provenance',
