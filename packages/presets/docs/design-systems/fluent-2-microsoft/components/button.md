@@ -991,3 +991,12 @@ Button external Badge anchors consume the Button radius in structural CSS; Badge
 remains independent. Separation outlines follow the actual Badge surface.
 
 The [side-by-side Windows comparison](../evidence/button/windows-outline-comparison-2026-09-19.png) prompted increasing the Light/onSubtle bottom target from 0.10 to 0.12, then to 0.13 at the user's request. This modest visual calibration applies to every Low intent; the perimeter, Dark and onVivid mappings remain unchanged.
+
+## Shared neutral control bottom contour (2026-09-28)
+
+**Kiskadee extension**, user-approved: Low neutral now shares Rest/Hover bottom colors with
+Outline TextField through `neutral-control-recipe.ts`, for Light/Dark and both surface contexts.
+See [the shared recipe and locator provenance](text-field.md#canonical-neutral-outlined-controls-2026-09-28).
+Other intents/emphases, Pressed/Selected treatment, geometry and focus behavior are preserved;
+Pending visibility derives from the new Rest. Darker remains unchanged until TextField coverage.
+The same authoring recipe supplies Outline TextField with Button's existing Hover background.

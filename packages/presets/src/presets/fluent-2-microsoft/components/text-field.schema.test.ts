@@ -264,8 +264,8 @@ describe('Fluent TextField onVivid', () => {
     const control = field.variants!.standard!.modes.outline!.elements.e3!;
     for (const segment of ['default', 'teams'] as const) {
       for (const theme of ['light', 'dark'] as const) {
-        const paint = control.palettes![segment]![theme]!.onVivid;
-        const button = schema.components.button!.elements!.e1!.palettes![segment]![theme]!.onVivid;
+        const paint = control.palettes![segment]![theme]!.onVivid!;
+        const button = schema.components.button!.elements!.e1!.palettes![segment]![theme]!.onVivid!;
         expect(paint.borderColor!.neutral!.medium!.rest).toEqual(
           button.borderColor!.neutral!.low!.rest
         );
@@ -281,13 +281,13 @@ describe('Fluent TextField onVivid', () => {
     for (const theme of ['light', 'dark'] as const) {
       const control = elements.e3!.palettes!.default![theme]!;
       const input = elements.e4!.palettes!.default![theme]!;
-      expect(control.onVivid.boxColor!.neutral!.medium!.rest).toEqual(
+      expect(control.onVivid!.boxColor!.neutral!.medium!.rest).toEqual(
         control.onSubtle.boxColor!.neutral!.medium!.rest
       );
-      expect(input.onVivid.textColor!.neutral!.medium!.rest).toEqual(
+      expect(input.onVivid!.textColor!.neutral!.medium!.rest).toEqual(
         input.onSubtle.textColor!.neutral!.medium!.rest
       );
-      expect(input.onVivid.textColor!.neutral!.medium!.disabled).toEqual(
+      expect(input.onVivid!.textColor!.neutral!.medium!.disabled).toEqual(
         input.onSubtle.textColor!.neutral!.medium!.disabled
       );
     }
@@ -297,9 +297,32 @@ describe('Fluent TextField onVivid', () => {
 it('keeps external labels on vivid when floating labels use a filled surface', () => {
   const standard = field.variants!.standard!.modes.outline!.elements;
   const floating = field.variants!.floating!.modes.inside!.elements;
-  const color = (element: typeof standard.e2) =>
-    element!.palettes!.default!.light!.onVivid.textColor!.neutral!.medium!.rest;
+  const color = (element: Pick<NonNullable<typeof standard.e2>, 'palettes'> | undefined) =>
+    element!.palettes!.default!.light!.onVivid!.textColor!.neutral!.medium!.rest;
   expect(color(standard.e2)).toEqual(color(standard.e4));
   expect(color(standard.e7)).toEqual(color(standard.e4));
   expect(color(floating.e2)).not.toEqual(color(standard.e2));
+});
+
+it('shares neutral control hover fills and bottom contours across themes and contexts', () => {
+  const fieldElements = field.variants!.standard!.modes.outline!.elements;
+  for (const segment of ['default', 'teams'] as const) {
+    for (const theme of ['light', 'dark'] as const) {
+      for (const context of ['onSubtle', 'onVivid'] as const) {
+        const fieldPaint = fieldElements.e3!.palettes![segment]![theme]![context]!;
+        const line =
+          fieldElements.e6!.palettes![segment]![theme]![context]!.boxColor!.neutral!.medium!;
+        const button =
+          schema.components.button!.elements!.e1!.palettes![segment]![theme]![context]!;
+        expect(fieldPaint.boxColor!.neutral!.medium!.hover).toEqual({
+          ref: button.boxColor!.neutral!.low!.hover
+        });
+        expect(button.borderBottomColor!.neutral!.low!.rest).toEqual(line.rest);
+        expect(line.hover).toEqual({ ref: button.borderBottomColor!.neutral!.low!.hover });
+        expect(fieldPaint.boxColor!.neutral!.medium!.focus).toEqual({
+          ref: fieldPaint.boxColor!.neutral!.medium!.rest
+        });
+      }
+    }
+  }
 });

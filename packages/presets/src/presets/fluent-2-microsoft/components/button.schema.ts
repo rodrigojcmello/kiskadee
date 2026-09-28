@@ -26,6 +26,8 @@ import {
   omitFluentButtonPendingTextState
 } from './button-color-formula.ts';
 
+import { createNeutralControlRecipe } from './neutral-control-recipe.ts';
+
 type ButtonComponent = NonNullable<Schema<never>['components']['button']>;
 type ThemeShortcut = 'l' | 'd';
 type ButtonRecipeTheme = FluentButtonFormulaTheme;
@@ -150,6 +152,10 @@ export function createFluent2MicrosoftButtonSchema({
     const recipe = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme];
     return createFluentButtonOnSubtleIntent({
       theme,
+      neutralControlBottom:
+        role === 'button.neutral' && theme !== 'darker'
+          ? createNeutralControlRecipe(c, theme, false).bottom
+          : undefined,
       family: families[role],
       lightenHighInteraction: theme === 'light' && role === 'button.neutral',
       neutralButtonFamily,
@@ -164,6 +170,10 @@ export function createFluent2MicrosoftButtonSchema({
   const createOnVividButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) =>
     createFluentButtonOnVividIntent({
       theme,
+      neutralControlBottom:
+        role === 'button.neutral' && theme !== 'darker'
+          ? createNeutralControlRecipe(c, theme, true).bottom
+          : undefined,
       family: families[role],
       neutralButtonFamily,
       canonicalSurface: onVividCanonicalSurface

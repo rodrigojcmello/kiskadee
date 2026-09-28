@@ -17,6 +17,8 @@ type Intent = 'neutral' | 'error' | 'warning';
 import { FLUENT_BUTTON_ON_VIVID_RECIPE } from './button-color-formula.ts';
 import { createBalancedLowBorder } from './button-perceptual-alpha.ts';
 
+import { createNeutralControlRecipe } from './neutral-control-recipe.ts';
+
 type Mode = 'outline' | 'underline' | 'borderless' | 'notched' | 'inside';
 
 const inputTypography = {
@@ -80,8 +82,9 @@ export function createFluent2MicrosoftTextFieldSchema({
           surface: dark ? neutral(5) : white,
           targetDeltaE: dark ? 0.18 : 0.06
         });
-    const outlineIndicator = vivid ? lightCap(dark ? 85 : 38) : neutral(dark ? 80 : 12);
-    const outlineIndicatorHover = vivid ? white : neutral(dark ? 90 : 22);
+    const neutralControl = createNeutralControlRecipe(c, dark ? 'dark' : 'light', vivid);
+    const outlineIndicator = neutralControl.bottom.rest;
+    const outlineIndicatorHover = neutralControl.bottom.hover;
     const borderlessSurface = c.resolve(
       'default',
       track,
@@ -155,6 +158,13 @@ export function createFluent2MicrosoftTextFieldSchema({
       const controlPalette = palette({
         boxColor: intents(() => ({
           rest: background,
+          ...(mode === 'outline'
+            ? {
+                hover: ref(neutralControl.hoverBackground),
+                focus: ref(background),
+                pressed: ref(background)
+              }
+            : {}),
           ...(underlined || filledVivid
             ? {}
             : { disabled: ref(transparent), readOnly: ref(transparent) })
@@ -288,7 +298,7 @@ export function createFluent2MicrosoftTextFieldSchema({
     for (const key of ['e2', 'e3', 'e4', 'e5', 'e6', 'e7'] as const) {
       const target = light[key];
       const darkPalette = dark[key]?.palettes?.default?.dark;
-      if (target?.palettes?.default && darkPalette) {
+      if (target?.palettes?.default?.light && darkPalette) {
         target.palettes = {
           ...target.palettes,
           default: {

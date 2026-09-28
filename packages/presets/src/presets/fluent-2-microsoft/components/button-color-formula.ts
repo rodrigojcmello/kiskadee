@@ -251,9 +251,11 @@ export function createFluentButtonOnSubtleIntent({
   neutralButtonFamily,
   neutralSurfaceColor,
   highForeground,
-  lightenHighInteraction = false
+  lightenHighInteraction = false,
+  neutralControlBottom
 }: {
   theme: FluentButtonFormulaTheme;
+  neutralControlBottom?: { rest: SolidColor; hover: SolidColor };
   family: FluentButtonTonalFamily;
   neutralButtonFamily: FluentButtonTonalFamily;
   neutralSurfaceColor: (
@@ -293,11 +295,13 @@ export function createFluentButtonOnSubtleIntent({
     targetDeltaE: recipe.low.border.targetDeltaE
   });
 
-  const lowBottomBorder = createBalancedLowBorder({
-    color: roleColor(recipe.low.border),
-    surface: neutralSurfaceColor(scale, recipe.low.border.surface),
-    targetDeltaE: isLight ? 0.13 : 0.22
-  });
+  const lowBottomBorder =
+    neutralControlBottom?.rest ??
+    createBalancedLowBorder({
+      color: roleColor(recipe.low.border),
+      surface: neutralSurfaceColor(scale, recipe.low.border.surface),
+      targetDeltaE: isLight ? 0.13 : 0.22
+    });
 
   return {
     boxColor: {
@@ -364,6 +368,7 @@ export function createFluentButtonOnSubtleIntent({
     borderBottomColor: {
       low: {
         rest: lowBottomBorder,
+        ...(neutralControlBottom ? { hover: neutralControlBottom.hover } : {}),
         pending: applySlotVisibility(lowBottomBorder, FLUENT_BUTTON_PENDING_VISIBILITY.border),
         disabled: transparent
       }
@@ -422,9 +427,11 @@ export function createFluentButtonOnVividIntent({
   theme,
   family,
   neutralButtonFamily,
-  canonicalSurface
+  canonicalSurface,
+  neutralControlBottom
 }: {
   theme: FluentButtonFormulaTheme;
+  neutralControlBottom?: { rest: SolidColor; hover: SolidColor };
   family: FluentButtonTonalFamily;
   neutralButtonFamily: FluentButtonTonalFamily;
   canonicalSurface: SolidColor;
@@ -574,16 +581,28 @@ export function createFluentButtonOnVividIntent({
       }
     },
     borderBottomColor: {
-      low: usesSharedLightMedium
-        ? createLightControlBorder({
-            ...FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha,
-            rest: 38
-          })
-        : {
-            rest: onVividWhite,
-            pending: applySlotVisibility(onVividWhite, FLUENT_BUTTON_PENDING_VISIBILITY.border),
-            disabled: onVividTransparent
+      low: neutralControlBottom
+        ? {
+            ...(usesSharedLightMedium
+              ? createLightControlBorder(FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha)
+              : { disabled: onVividTransparent }),
+            rest: neutralControlBottom.rest,
+            hover: neutralControlBottom.hover,
+            pending: applySlotVisibility(
+              neutralControlBottom.rest,
+              FLUENT_BUTTON_PENDING_VISIBILITY.border
+            )
           }
+        : usesSharedLightMedium
+          ? createLightControlBorder({
+              ...FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha,
+              rest: 38
+            })
+          : {
+              rest: onVividWhite,
+              pending: applySlotVisibility(onVividWhite, FLUENT_BUTTON_PENDING_VISIBILITY.border),
+              disabled: onVividTransparent
+            }
     },
     textColor: {
       medium: {

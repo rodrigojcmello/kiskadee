@@ -11,7 +11,13 @@ describe('Fluent Low directional border', () => {
           for (const intent of ['primary', 'neutral', 'destructive', 'positive'] as const) {
             const base = palette.borderColor![intent]!.low!;
             const bottom = palette.borderBottomColor![intent]!.low!;
-            expect(bottom.rest).not.toBe(base.rest);
+            if (intent === 'neutral' && theme === 'dark' && context === 'onVivid') {
+              // Shared TextField contour: equal at Rest, stronger on Hover.
+              expect(bottom.rest).toBe(base.rest);
+              expect(bottom.hover).not.toBe(bottom.rest);
+            } else {
+              expect(bottom.rest).not.toBe(base.rest);
+            }
             expect(bottom.disabled).toBe(base.disabled);
             expect(bottom.pending).not.toBe(bottom.rest);
             for (const emphasis of ['lowest', 'medium', 'high'] as const)

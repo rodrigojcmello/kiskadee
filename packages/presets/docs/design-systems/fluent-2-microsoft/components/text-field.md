@@ -275,3 +275,25 @@ Showcase card titles use contextual Text, as do the Sizes-mode label and existin
 The React adapter now forwards inherited SurfaceContext to every TextField slot resolver.
 This repairs selection of the authored palette without adding a new public prop or changing
 Headless behavior. Regression coverage checks a live onSubtle-to-onVivid context change.
+
+## Canonical neutral outlined controls (2026-09-28)
+
+**Kiskadee extension**, approved from the user's Showcase comparison. Outline TextField,
+low-neutral Button and future Select share the preset-owned `neutral-control-recipe.ts`.
+This is schema-authoring reuse, with no runtime dependency between components.
+
+- Outline Hover background consumes the existing Button neutral Low locator: exact
+  `button.neutral` L2/D14 (`component.button`) onSubtle; physical white 8% in Light
+  onVivid and physical black 10% in Dark onVivid.
+- Button neutral Low bottom Rest/Hover now consumes the TextField indicator recipe:
+  exact `textField.neutral` L12/L22 or D80/D90 (`component.text-field`); onVivid uses
+  physical white 38%/100% in Light and 85%/100% in Dark.
+- Outline Focus/Pressed reset the hover fill to its transparent Rest, leaving e6 as the
+  focus signal. These Rest-equal overrides intentionally suppress concurrent Hover.
+- Button retains its activation/focus policy and terminal states. Pending visibility is
+  calculated from the new bottom Rest color. Other Button intents/emphases are unchanged.
+- Underline/Borderless/Floating fills are unchanged. Darker is deferred until the TextField
+  recipe exists. The future Select adopts this composition when implemented.
+
+This supersedes earlier notes that Outline never changes its Hover surface and that Button's
+bottom color remains untouched. Primitive assets, geometry, and e6 thickness are unchanged.
