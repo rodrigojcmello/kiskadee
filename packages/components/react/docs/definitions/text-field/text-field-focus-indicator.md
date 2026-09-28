@@ -28,3 +28,23 @@ or focus affordances.
 
 Floating modes retain their existing structural focus treatment. Optional element rendering does
 not by itself imply that every branch implements the same bottom-focus geometry.
+
+For Outline/Borderless with an indicator, the contour is inset inside the sized shell. The indicator
+shares that bottom edge and shell radius, so the painted contour does not add to the control height.
+
+## Native Outline border with bottom indicator
+
+Outline shells with e6 use a single native border box, with e3 borderBottomColor overriding
+its bottom color. No pseudo-element paints the contour. Shells without e6 retain their
+existing outline treatment. Fluent compensates its Outline padding by the authored 1px
+border on each side, preserving control height and input alignment. The absolute e6 insets
+compensate that border to retain its outer-shell position. e6 remains visible at Rest and
+retains its existing Focus/Pressed thickness and color. Visual acceptance remains user-owned.
+
+## Indicator transitions
+
+Standard Outline, Underline and Borderless animate e6 block-size and its painted background
+using the shared interaction duration and ease-out tokens. Outline/Borderless paint resides
+on ::before and receives its own background-color transition. Base-state declarations animate
+both focus entry and exit. Reduced motion disables these transitions; global no-transitions
+continues to take precedence. Schema state colors and thickness rules are unchanged.

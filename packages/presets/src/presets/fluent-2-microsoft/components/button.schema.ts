@@ -523,31 +523,36 @@ export function createFluent2MicrosoftButtonSchema({
           paddingTop: {
             's:sm:1': 4,
             's:md:1': 6,
-            's:lg:1': 9
+            's:lg:1': 9,
+            's:lg:2': 13
           },
           paddingBottom: {
             's:sm:1': 4,
             's:md:1': 6,
-            's:lg:1': 9
+            's:lg:1': 9,
+            's:lg:2': 13
           },
           paddingLeft: {
             's:sm:1': 8,
             's:md:1': 12,
-            's:lg:1': 16
+            's:lg:1': 16,
+            's:lg:2': 20
           },
           paddingRight: {
             's:sm:1': 8,
             's:md:1': 12,
-            's:lg:1': 16
+            's:lg:1': 16,
+            's:lg:2': 20
           },
           borderWidth: {
             's:sm:1': 1,
             's:md:1': 1,
-            's:lg:1': 1
+            's:lg:1': 1,
+            's:lg:2': 1
           },
           borderRadius: {
             rounded: 4,
-            pill: { 's:sm:1': 12, 's:md:1': 16, 's:lg:1': 20 },
+            pill: { 's:sm:1': 12, 's:md:1': 16, 's:lg:1': 20, 's:lg:2': 24 },
             square: 0
           }
         },
@@ -579,7 +584,8 @@ export function createFluent2MicrosoftButtonSchema({
         typography: {
           's:sm:1': 'caption-medium',
           's:md:1': 'body-medium-strong',
-          's:lg:1': 'label-large'
+          's:lg:1': 'label-large',
+          's:lg:2': 'label-large'
         },
         palettes: {
           default: {
@@ -594,7 +600,8 @@ export function createFluent2MicrosoftButtonSchema({
         iconSize: {
           's:sm:1': 's:md:1',
           's:md:1': 's:md:1',
-          's:lg:1': 's:lg:1'
+          's:lg:1': 's:lg:1',
+          's:lg:2': 's:lg:1'
         },
         palettes: {
           default: {
@@ -607,7 +614,8 @@ export function createFluent2MicrosoftButtonSchema({
           paddingRight: {
             's:sm:1': 4,
             's:md:1': 6,
-            's:lg:1': 6
+            's:lg:1': 6,
+            's:lg:2': 6
           }
         }
       },
@@ -624,12 +632,14 @@ export function createFluent2MicrosoftButtonSchema({
           paddingLeft: {
             's:sm:1': 8,
             's:md:1': 14,
-            's:lg:1': 18
+            's:lg:1': 18,
+            's:lg:2': 18
           },
           paddingRight: {
             's:sm:1': 8,
             's:md:1': 14,
-            's:lg:1': 18
+            's:lg:1': 18,
+            's:lg:2': 18
           }
         }
       },
@@ -638,13 +648,15 @@ export function createFluent2MicrosoftButtonSchema({
         iconSize: {
           's:sm:1': 's:sm:1',
           's:md:1': 's:sm:1',
-          's:lg:1': 's:sm:1'
+          's:lg:1': 's:sm:1',
+          's:lg:2': 's:sm:1'
         },
         scales: {
           paddingRight: {
             's:sm:1': 3,
             's:md:1': 4,
-            's:lg:1': 4
+            's:lg:1': 4,
+            's:lg:2': 4
           }
         }
       },
@@ -654,12 +666,14 @@ export function createFluent2MicrosoftButtonSchema({
           boxWidth: {
             's:sm:1': 1,
             's:md:1': 1,
-            's:lg:1': 1
+            's:lg:1': 1,
+            's:lg:2': 1
           },
           boxHeight: {
             's:sm:1': 20,
             's:md:1': 20,
-            's:lg:1': 24
+            's:lg:1': 24,
+            's:lg:2': 24
           }
         },
         palettes: {
@@ -676,12 +690,14 @@ export function createFluent2MicrosoftButtonSchema({
           paddingLeft: {
             's:sm:1': 4,
             's:md:1': 6,
-            's:lg:1': 6
+            's:lg:1': 6,
+            's:lg:2': 6
           },
           paddingRight: {
             's:sm:1': 4,
             's:md:1': 6,
-            's:lg:1': 6
+            's:lg:1': 6,
+            's:lg:2': 6
           }
         }
       }

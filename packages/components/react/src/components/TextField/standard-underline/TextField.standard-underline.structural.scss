@@ -229,3 +229,18 @@
 .k-txf-e1-d.-i.-n.-a:not(.-d):not(.-r):active .k-txf-e6-d {
   block-size: calc(var(--k-focus-width) * 1px);
 }
+
+/* Animate the persistent indicator in both directions, including its actual paint layer. */
+.k-txf-e6-d,
+.k-txf-e6-d.k-trn {
+  transition-property: block-size, background-color;
+  transition-duration: var(--k-dur-int);
+  transition-timing-function: var(--k-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-txf-e6-d,
+  .k-txf-e6-d.k-trn {
+    transition: none;
+  }
+}

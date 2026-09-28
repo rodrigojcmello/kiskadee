@@ -92,7 +92,8 @@
   box-sizing: border-box;
   cursor: text;
   isolation: isolate;
-  border: 0;
+  border-width: 0;
+  border-style: none;
   outline: var(--k-bdc) solid var(--k-bdw);
   outline-offset: 0;
   --k-txf-phc: var(--k-txc);
@@ -175,12 +176,12 @@
 
 /*
  * element indicator / e6
- * Clips the bottom indicator to its authored thickness over the outer shell outline.
+ * Clips the bottom indicator to its authored thickness over the inset shell outline.
  */
 .k-txf-e6-b {
   position: absolute;
-  inset-inline: calc(-1 * var(--k-bdw));
-  inset-block-end: calc(-1 * var(--k-bdw));
+  inset-inline: 0;
+  inset-block-end: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
@@ -195,8 +196,8 @@
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
-  block-size: calc(var(--k-bxh) + 2 * var(--k-bdw));
-  border-radius: calc(var(--k-bdr) + var(--k-bdw));
+  block-size: var(--k-bxh);
+  border-radius: var(--k-bdr);
   background: var(--k-bgc);
 }
 
@@ -205,8 +206,7 @@
  * An authored bottom indicator owns focus thickness instead of the surrounding outline.
  */
 .k-txf-e1-b.-f.-k.-a .k-txf-e3-b:has(> .k-txf-e6-b) {
-  outline-width: var(--k-bdw);
-  outline-color: var(--k-bdc);
+  outline: none;
 }
 
 /*
@@ -243,4 +243,45 @@
  */
 .k-txf-e1-b.-i.-n.-a:not(.-d):not(.-r):active .k-txf-e6-b {
   block-size: calc(var(--k-focus-width) * 1px);
+}
+
+/* The bottom-indicator composition uses one native border box for all four sides. */
+.k-txf-e3-b:has(> .k-txf-e6-b) {
+  border-width: var(--k-bdw);
+  border-style: solid;
+  border-top-color: var(--k-bdc);
+  border-right-color: var(--k-bdc);
+  border-left-color: var(--k-bdc);
+  outline: none;
+}
+
+/* Optional bottom color defaults to the shell contour, below generated color classes. */
+:where(.k-txf-e3-b) {
+  border-bottom-color: var(--k-bdc);
+}
+
+/* Absolute insets start at the padding edge; retain the indicator's outer-shell position. */
+.k-txf-e3-b:has(> .k-txf-e6-b) > .k-txf-e6-b {
+  inset-inline: calc(-1 * var(--k-bdw));
+  inset-block-end: calc(-1 * var(--k-bdw));
+}
+
+/* Animate the persistent indicator in both directions, including its actual paint layer. */
+.k-txf-e6-b,
+.k-txf-e6-b.k-trn {
+  transition-property: block-size, background-color;
+  transition-duration: var(--k-dur-int);
+  transition-timing-function: var(--k-ease-out);
+}
+
+.k-txf-e6-b::before {
+  transition: background-color var(--k-dur-int) var(--k-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-txf-e6-b,
+  .k-txf-e6-b.k-trn,
+  .k-txf-e6-b::before {
+    transition: none;
+  }
 }

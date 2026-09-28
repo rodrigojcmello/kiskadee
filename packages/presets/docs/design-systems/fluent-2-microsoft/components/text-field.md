@@ -1,6 +1,6 @@
 # Fluent TextField Evidence
 
-Scope: Light, `onSubtle`, medium emphasis; default and Teams segments. Inspected 2026-09-27.
+Scope: Light and Dark, `onSubtle`, medium emphasis; default and Teams segments. Inspected 2026-09-27.
 
 ## Sources
 
@@ -27,7 +27,7 @@ Scope: Light, `onSubtle`, medium emphasis; default and Teams segments. Inspected
 
 Input has four appearances, not just one. Standard field labels may be above or alongside the
 control; `inline` is label placement, independent of appearance. Placeholder is supplementary
-and must not replace an accessible label. Windows guidance informs semantics only; no clear
+and must not replace an accessible label. Windows guidance initially informed semantics; the approved visual adaptation below also uses user-provided Windows screenshots; no clear
 button, multiline behavior, validation logic, or other capability is introduced here.
 
 Figma heights are 24/32/40 px, radius 4 px, text 12/14/16 px. Medium horizontal text inset is
@@ -46,11 +46,11 @@ not perceptual Delta E measurements.
 
 | Source concept | Source value | Lookup | Current generated value | Mapping / adaptation |
 | --- | --- | --- | --- | --- |
-| Neutral Background 1 | White `#ffffff` | cap light | `#ffffff` | Outline/notched surface |
+| Neutral Background 1 | White `#ffffff` | cap light | `#ffffff` | Notched surface |
 | Transparent | White alpha 0 | cap light, alpha 0 | `#ffffff00` | Underline, disabled/read-only surfaces |
-| Neutral Background 3 | Grey-96 `#f5f5f5` | exact neutral L2 | `#f6f6f6` (+1) | Filled-derived borderless/inside |
-| Neutral Stroke 1 | Grey-82 `#d1d1d1` | exact neutral L10 | `#d1d1d1` | Outline Rest |
-| Neutral Stroke 1 Hover | Grey-78 `#c7c7c7` | exact neutral L12 | `#cbcbcb` (+4) | Outline Hover |
+| Neutral Background 3 | Grey-96 `#f5f5f5` | exact neutral L2 | `#f6f6f6` (+1) | Floating Inside surface |
+| Neutral Stroke 1 | Grey-82 `#d1d1d1` | exact neutral L10 | `#d1d1d1` | Floating Notched Rest |
+| Neutral Stroke 1 Hover | Grey-78 `#c7c7c7` | exact neutral L12 | `#cbcbcb` (+4) | Floating Notched Hover |
 | Neutral Stroke Accessible | Grey-38 `#616161` | exact neutral L50 | `#616161` | Underline Rest; supporting text |
 | Accessible Hover | Grey-34 `#575757` | exact neutral L55 | `#585858` (+1) | Underline Hover |
 | Neutral Foreground 1 | Grey-14 `#242424` | reference neutral vivid +0 | L85 `#252525` (+1) | Label and input; remappable role |
@@ -61,16 +61,16 @@ not perceptual Delta E measurements.
 | Danger Stroke 2 | Cranberry Primary `#c50f1f` | reference error vivid +0 | L45 `#c50f1f` | Error edge/message |
 | Warning extension | Existing Fluent Progress readable Orange recipe | exact warning L50 | `#9d4012` | Warning edge/message; no claim of official Input warning |
 
-Every exact locator uses evidence ID `component.text-field`. Component intents map neutral to its global role, error to `redLike`, and warning to `primitive.orange.v1`. Focus directly references global `primary`. Physical caps
-use `primitive.black.v1`. Only Light is authored; Dark/Darker and inverse palettes are deferred.
+TextField exact locators use evidence ID `component.text-field`; the reused Card surface uses `component.card`. Component intents map neutral to its global role, error to `redLike`, and warning to `primitive.orange.v1`. Focus directly references global `primary`. Physical caps
+use `primitive.black.v1`. Light and Dark are authored; Darker and inverse palettes are deferred.
 
 ## Kiskadee Mapping
 
 | Appearance | Upstream relationship | Status | Decision |
 | --- | --- | --- | --- |
 | Standard / Underline, top or inline | Fluent Underline | Official adapted | Transparent shell, neutral bottom line, Brand focus |
-| Standard / Outline, top or inline | Fluent Outline | Official adapted | Default; white surface, neutral contour retained on Focus, independent bottom line: 1 px at Rest, 2 px on Pressed/highlighted Focus; semantic contours stay 1 px |
-| Standard / Borderless, top or inline | Filled darker | Official adapted | Subtle neutral fill; transparent neutral contour and indicator at Rest; bottom indicator on Pressed/Focus; semantic validation contour |
+| Standard / Outline, top or inline | Fluent Outline | Official adapted | Default; Button low-neutral transparent surface and contour retained on Focus, independent bottom line: 1 px at Rest, 2 px on Pressed/highlighted Focus; semantic contours stay 1 px |
+| Standard / Borderless, top or inline | Filled darker | Official adapted | Canonical Card neutral/medium fill; transparent neutral contour and indicator at Rest; bottom indicator on Pressed/Focus; semantic validation contour |
 | Floating / Notched | Material-derived Kiskadee composition | Kiskadee extension | Fluent colors/type/radius; white shell and existing notch |
 | Floating / Inside | Material-derived Kiskadee composition | Kiskadee extension | Fluent colors/type/radius; subtle fill and existing floating layout |
 
@@ -78,7 +78,7 @@ Top labels default to preserve familiar Fluent Field composition; inline placeme
 independent public choice. Rounded radius is 4 px, square is 0; Underline stays square. Pill is
 an existing Kiskadee extension. Standard density maps compact/regular/spacious to 32/32/40 px; explicit Small remains 24 px.
 Desktop uses Medium geometry, independently of its compact density name;
-floating controls use 40/48/56 px to reserve the additional label lane. No Material factory is
+floating controls use Medium/Large at 40/48 px to reserve the additional label lane. No Material factory is
 imported, so subsequent Material visual changes cannot silently change Fluent.
 
 ## States And Schema Mapping
@@ -86,8 +86,7 @@ imported, so subsequent Material visual changes cannot silently change Fluent.
 `e1` owns states; descendants use reference states. `e2`/`e7` own labels, `e3` shell and Rest
 placeholder color, `e4` value, `e5` message, and Standard `e6` the bottom indicator.
 
-Surfaces do not acquire an invented Hover tint. Outline neutral contours retain the Hover
-neutral tone on Pressed/Focus; the bottom indicator carries Brand emphasis. Semantic contours
+Surfaces do not acquire an invented Hover tint. Outline neutral contours retain their Rest color on Hover/Pressed/Focus; the bottom indicator carries Brand emphasis. Semantic contours
 retain their validation color. Borderless authors a transparent neutral contour with nonzero
 width so validation can reveal the contour without changing geometry. Its indicator remains
 transparent at Rest and becomes visible on Pressed/Focus. Disabled/read-only override transient
@@ -118,12 +117,12 @@ Both filled appearances fit Borderless conceptually; only the darker fill is aut
 
 ## Deferred Or Unsupported
 
-- Dark/Darker, onVivid, other emphases, Filled lighter as a separate option.
+- Darker, onVivid, other emphases, Filled lighter as a separate option.
 - Focus animation and a separate Filled lighter appearance remain deferred. Floating focus mechanics are unchanged.
 - Existing structural placeholder opacity (0.62) attenuates the schema color in Standard modes;
   the Rest-only placeholder contract cannot represent official disabled placeholder independently.
   This is an existing limitation, not silently corrected or compensated with an invented color.
-- Existing highlighted-focus policy controls thickness. Runtime remains unchanged. Outline structural CSS aligns `e6` with the external outline, clips its paint to the expanded shell radius, and thickens inward on highlighted focus. Shells without `e6` retain whole-outline focus; inline label widths are 96/112/128 px to avoid wrapping the Showcase labels.
+- Existing highlighted-focus policy controls thickness. Runtime remains unchanged. Outline structural CSS aligns `e6` with the inset outline, clips its paint to the shell radius, and thickens inward on highlighted focus. Shells without `e6` retain whole-outline focus; inline label widths are 96/112/128 px to avoid wrapping the Showcase labels.
 
 ## Validation
 
@@ -136,3 +135,94 @@ Both filled appearances fit Borderless conceptually; only the darker fill is aut
   Open Sans fallback for Segoe UI; this is not a native Windows rendering certification.
 - Package typechecking remains blocked by diagnostics in unchanged classify-primitives,
   Button, Switch and Slider-test files. No diagnostics remain in the new TextField files.
+
+## Size Comparison
+
+Standard exposes Small/Medium/Large at 24/32/40 px. Floating intentionally omits Small and
+publishes Medium/Large at 40/48 px. These floating sizes and the Button Large 2 extension are
+Kiskadee adaptations, not claims about official Fluent Input sizes.
+
+Button Large 2 uses 48 px height (22 px label line plus 13 px block padding per side), 20 px
+inline padding and 24 px pill radius. Typography and icon size retain Large values.
+The Showcase pairs Floating Medium with Button Large and Floating Large with Button Large 2.
+This is demonstration-only pairing: consumers can independently choose either component's size.
+Sizes initializes from the preset TextField variant/mode options, offers a looping mode selector,
+and can hide comparison buttons. Standard does not gain a Large 2 size.
+
+## Approved Windows-inspired color adaptation (2026-09-27)
+
+Status: Kiskadee extension, approved by the user. Windows Settings and Calculator screenshots
+supplied in this conversation establish the visual direction; the user's sampled Input bottom
+color `#cccccc` is a target, not a verified official Microsoft token. Button remains unchanged.
+
+- Standard Outline surface: physical light cap at alpha 0, matching Button low neutral.
+- Outline contour: neutral Vivid reference (Black v1 L85, `#252525`) balanced against the
+  physical white cap with target Delta E 0.06, using the existing Button color helper.
+  This resolves to `#25252517`, matching Button low neutral. No Hover/Pressed/Focus contour
+  delta is authored; semantic validation and terminal-state overrides remain unchanged.
+- Outline e6 Rest: Black v1 L12, `#cbcbcb`, exact `component.text-field`; each channel is
+  one byte below the user-provided `#cccccc` target. Hover uses the approved L22 adaptation below; Focus/Pressed retain
+  the brand indicator. Geometry, clipping, radius, positioning and thickness are unchanged.
+- Borderless surface: Card neutral/medium Light Rest, `card.neutral` Black v1 L3 (`#f2f2f2`),
+  exact `component.card`. This reuses the canonical Card recipe without a runtime dependency.
+  All validation intents use this same neutral surface.
+- Underline and both Floating appearances retain their previous recipes.
+
+This supersedes the initial Web-derived Outline surface/contour/indicator and Borderless fill
+mappings above. No primitive asset, Button recipe, structural CSS or runtime behavior changes.
+
+## Native Outline border with bottom indicator
+
+Outline shells with e6 use a single native border box, with e3 borderBottomColor overriding
+its bottom color. No pseudo-element paints the contour. Shells without e6 retain their
+existing outline treatment. Fluent compensates its Outline padding by the authored 1px
+border on each side, preserving control height and input alignment. The absolute e6 insets
+compensate that border to retain its outer-shell position. e6 remains visible at Rest and
+retains its existing Focus/Pressed thickness and color. Visual acceptance remains user-owned.
+
+## Outline hover contrast
+
+Approved Kiskadee adaptation: Outline neutral e6 and native bottom border use Black v1 L22
+(`#a3a3a3`) on Hover, versus L12 (`#cbcbcb`) at Rest. Both use exact locators with
+`component.text-field` evidence; the approved existing tonal asset is unchanged. Thickness
+remains 1px on Hover. Error/warning do not acquire neutral hover paint. Disabled/read-only
+retain their existing terminal overrides. Focus/Pressed keep the e6 brand treatment; the
+native bottom border explicitly resets to Rest to suppress simultaneous Hover paint behind it.
+These Rest-equal Focus/Pressed entries are intentional compound-state precedence overrides.
+
+Inspected Figma nodes [9119:3810](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/?node-id=9119-3810)
+and [9119:3816](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/?node-id=9119-3816)
+use Hover (1px) and Pressed (2px) tokens respectively. The chosen neutral hover shade is a
+user-approved Windows-inspired adaptation, not an exact reproduction of those tinted tokens.
+
+## Dark onSubtle (2026-09-27)
+
+Both Microsoft and Teams publish Dark for all five modes. Light recipes are preserved.
+Sources: [official Dark aliases](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/darkColor.ts)
+and the official Input implementation linked above. Numeric differences below are deliberate
+adaptations to the approved achromatic asset, not newly generated colors.
+
+| Role | Official / adopted reference | Kiskadee lookup | Resolved Dark color |
+| --- | --- | --- | --- |
+| Input/label | NeutralForeground1, white | physical light cap | #ffffff |
+| Placeholder | NeutralForeground4, #999999 | neutral D75 | #a3a3a3 |
+| Disabled text | NeutralForegroundDisabled, #5c5c5c | neutral D35 | #5a5a5a |
+| Disabled edge | NeutralStrokeDisabled, #424242 | neutral D24 | #454545 |
+| Underline Rest / supporting text | NeutralStrokeAccessible, #adadad | neutral D80 | #b4b4b4 |
+| Underline Hover | NeutralStrokeAccessibleHover, #bdbdbd | neutral D85 | #c5c5c5 |
+| Outline indicator Hover | Approved stronger hover contrast adaptation | neutral D90 | #d7d7d7 |
+| Floating Notched surface | NeutralBackground1, #292929 | neutral D9 | #2a2a2a |
+| Floating contour / hover | NeutralStroke1 #666666 / Hover #757575 | neutral D40 / D50 | #626262 / #727272 |
+| Borderless / Inside surface | Canonical Card neutral medium | card.neutral D3 | #141414 |
+| Error | Kiskadee readable semantic adaptation | textField.error D75 | #ff746c |
+| Warning | Kiskadee readable semantic adaptation | textField.warning D75 | #f68035 |
+
+Outline contour reuses Button low-neutral balancing: neutral Vivid D90 against neutral D5,
+target Delta E 0.18. Its surface remains transparent like Button. Outline bottom Rest uses
+D80, Hover D90; native border and e6 stay synchronized. Focus references the active segment's
+primary Vivid Dark reference. All neutral/semantic exact locators use component.text-field;
+the Card surface uses component.card. No schema color literals or new assets are introduced.
+
+Geometry, transitions and state precedence remain shared with Light. Placeholder still uses
+the existing structural opacity; that limitation remains unchanged. Darker and onVivid are
+not inferred from this palette and remain deferred.

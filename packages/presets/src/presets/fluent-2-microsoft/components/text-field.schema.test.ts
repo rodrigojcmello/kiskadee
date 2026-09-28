@@ -16,7 +16,9 @@ describe('Fluent TextField Light onSubtle', () => {
           const palettes = mode.elements[slot]!.palettes![segment]!;
           expect(palettes.light?.onSubtle).toBeDefined();
           expect(palettes.light?.onVivid).toBeUndefined();
-          expect(palettes.dark).toBeUndefined();
+          expect(palettes.dark?.onSubtle).toBeDefined();
+          expect(palettes.dark?.onVivid).toBeUndefined();
+          expect(palettes.darker).toBeUndefined();
           for (const paint of Object.values(palettes.light!.onSubtle)) {
             for (const intent of ['neutral', 'error', 'warning']) {
               expect(
@@ -87,7 +89,10 @@ describe('Fluent TextField Light onSubtle', () => {
     }
     const outline = field.variants!.standard!.modes.outline!.elements;
     const underline = field.variants!.standard!.modes.underline!.elements;
-    expect(outline.e6).toEqual(underline.e6);
+    expect(outline.e6!.scales).toEqual(underline.e6!.scales);
+    expect(outline.e6!.palettes!.default!.light!.onSubtle.boxColor!.neutral!.medium!.rest).toBe(
+      '#cbcbcb'
+    );
     expect(outline.e6!.scales!.boxHeight).toBe(1);
     expect(
       outline.e3!.palettes!.default!.light!.onSubtle.borderColor!.neutral!.medium!.rest
@@ -101,12 +106,115 @@ describe('Fluent TextField Light onSubtle', () => {
     for (const segment of ['default', 'teams'] as const) {
       const border = elements.e3!.palettes![segment]!.light!.onSubtle.borderColor!;
       const line = elements.e6!.palettes![segment]!.light!.onSubtle.boxColor!;
-      expect(border.neutral!.medium!.focus).toEqual(border.neutral!.medium!.hover);
-      expect(border.neutral!.medium!.pressed).toEqual(border.neutral!.medium!.focus);
+      expect(border.neutral!.medium!.focus).toBeUndefined();
+      expect(border.neutral!.medium!.hover).toBeUndefined();
+      expect(border.neutral!.medium!.pressed).toBeUndefined();
       expect(line.neutral!.medium!.focus).not.toEqual(border.neutral!.medium!.focus);
       for (const intent of ['error', 'warning'] as const) {
         expect(border[intent]!.medium!.rest).toBe(line[intent]!.medium!.rest);
         expect(border[intent]!.medium!.focus).toBeUndefined();
+      }
+    }
+  });
+  it('keeps Standard sizes and explicitly shifts Floating heights to larger buttons', () => {
+    const standardSizes = ['s:sm:1', 's:md:1', 's:lg:1'];
+    for (const mode of Object.values(field.variants!.standard!.modes)) {
+      expect(Object.keys(mode.elements.e4!.typography!)).toEqual(standardSizes);
+    }
+    for (const mode of Object.values(field.variants!.floating!.modes)) {
+      expect(Object.keys(mode.elements.e4!.typography!)).toEqual(['s:md:1', 's:lg:1']);
+      expect(mode.elements.e3!.scales!.boxHeight).toEqual({ 's:md:1': 40, 's:lg:1': 48 });
+    }
+    const button = schema.components.button!;
+    expect(Object.keys(button.elements!.e2!.typography!)).toEqual([...standardSizes, 's:lg:2']);
+    expect(button.elements!.e1!.scales!.paddingTop).toMatchObject({ 's:lg:2': 13 });
+    expect(button.elements!.e1!.scales!.paddingBottom).toMatchObject({ 's:lg:2': 13 });
+  });
+});
+
+// Cross-component visual contracts intentionally share resolved colors, not runtime components.
+describe('Fluent TextField canonical surfaces', () => {
+  it('reuses the Card neutral medium surface for Borderless', () => {
+    for (const segment of ['default', 'teams'] as const) {
+      const fieldPaint =
+        field.variants!.standard!.modes.borderless!.elements.e3!.palettes![segment]!.light!
+          .onSubtle;
+      const cardPaint =
+        schema.components.container!.elements!.e1!.palettes![segment]!.light!.onSubtle;
+      expect(fieldPaint.boxColor!.neutral!.medium!.rest).toEqual(
+        cardPaint.boxColor!.neutral!.medium!.rest
+      );
+    }
+  });
+  it('uses the low neutral Button contour and transparent surface for Outline', () => {
+    for (const segment of ['default', 'teams'] as const) {
+      const fieldPaint =
+        field.variants!.standard!.modes.outline!.elements.e3!.palettes![segment]!.light!.onSubtle;
+      const buttonPaint =
+        schema.components.button!.elements!.e1!.palettes![segment]!.light!.onSubtle;
+      expect(fieldPaint.borderColor!.neutral!.medium!.rest).toEqual(
+        buttonPaint.borderColor!.neutral!.low!.rest
+      );
+      expect(fieldPaint.boxColor!.neutral!.medium!.rest).toEqual(
+        buttonPaint.boxColor!.neutral!.low!.rest
+      );
+    }
+  });
+});
+
+describe('Fluent Outline bottom contour', () => {
+  it('matches the persistent indicator at rest and terminal states without affecting other modes', () => {
+    for (const segment of ['default', 'teams'] as const) {
+      const outline = field.variants!.standard!.modes.outline!.elements;
+      const bottom = outline.e3!.palettes![segment]!.light!.onSubtle.borderBottomColor!;
+      const indicator = outline.e6!.palettes![segment]!.light!.onSubtle.boxColor!;
+      for (const intent of ['neutral', 'error', 'warning'] as const) {
+        for (const state of ['rest', 'disabled', 'readOnly'] as const) {
+          expect(bottom[intent]!.medium![state]).toEqual(indicator[intent]!.medium![state]);
+        }
+      }
+      expect(bottom.neutral!.medium!.hover).toEqual(indicator.neutral!.medium!.hover);
+      expect(bottom.neutral!.medium!.hover).not.toEqual({ ref: bottom.neutral!.medium!.rest });
+      expect(bottom.neutral!.medium!.focus).toEqual({ ref: bottom.neutral!.medium!.rest });
+      expect(indicator.neutral!.medium!.focus).not.toEqual(indicator.neutral!.medium!.hover);
+      expect(bottom.error!.medium!.hover).toBeUndefined();
+      expect(bottom.warning!.medium!.hover).toBeUndefined();
+      for (const mode of ['underline', 'borderless'] as const) {
+        expect(
+          field.variants!.standard!.modes[mode]!.elements.e3!.palettes![segment]!.light!.onSubtle
+            .borderBottomColor
+        ).toBeUndefined();
+      }
+    }
+  });
+});
+
+describe('Fluent TextField Dark onSubtle', () => {
+  it('uses Button contours and canonical Card surfaces while preserving focus and terminal states', () => {
+    for (const segment of ['default', 'teams'] as const) {
+      const standard = field.variants!.standard!.modes;
+      const outline = standard.outline!.elements;
+      const paint = outline.e3!.palettes![segment]!.dark!.onSubtle;
+      const button = schema.components.button!.elements!.e1!.palettes![segment]!.dark!.onSubtle;
+      expect(paint.borderColor!.neutral!.medium!.rest).toEqual(
+        button.borderColor!.neutral!.low!.rest
+      );
+      expect(
+        standard.borderless!.elements.e3!.palettes![segment]!.dark!.onSubtle.boxColor!.neutral!
+          .medium!.rest
+      ).toEqual(
+        schema.components.container!.elements!.e1!.palettes![segment]!.dark!.onSubtle.boxColor!
+          .neutral!.medium!.rest
+      );
+      const line = outline.e6!.palettes![segment]!.dark!.onSubtle.boxColor!.neutral!.medium!;
+      expect(line.rest).toBe('#b4b4b4');
+      expect(line.hover).toEqual({ ref: '#d7d7d7' });
+      expect(line.focus).not.toEqual(line.hover);
+      expect(line.disabled).toEqual(line.readOnly);
+      for (const mode of modes) {
+        expect(
+          mode.elements.e4!.palettes![segment]!.dark!.onSubtle.textColor!.neutral!.medium!.rest
+        ).toBe('#ffffff');
       }
     }
   });

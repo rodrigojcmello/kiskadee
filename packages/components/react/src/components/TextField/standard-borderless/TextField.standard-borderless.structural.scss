@@ -175,12 +175,12 @@
 
 /*
  * element indicator / e6
- * Clips the bottom indicator to its authored thickness over the outer shell outline.
+ * Clips the bottom indicator to its authored thickness over the inset shell outline.
  */
 .k-txf-e6-e {
   position: absolute;
-  inset-inline: calc(-1 * var(--k-bdw));
-  inset-block-end: calc(-1 * var(--k-bdw));
+  inset-inline: 0;
+  inset-block-end: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
@@ -195,8 +195,8 @@
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
-  block-size: calc(var(--k-bxh) + 2 * var(--k-bdw));
-  border-radius: calc(var(--k-bdr) + var(--k-bdw));
+  block-size: var(--k-bxh);
+  border-radius: var(--k-bdr);
   background: var(--k-bgc);
 }
 
@@ -243,4 +243,32 @@
  */
 .k-txf-e1-e.-i.-n.-a:not(.-d):not(.-r):active .k-txf-e6-e {
   block-size: calc(var(--k-focus-width) * 1px);
+}
+
+/*
+ * element control / e3
+ * Keeps the authored contour inside the sized shell when a bottom indicator is present.
+ */
+.k-txf-e3-e:has(> .k-txf-e6-e) {
+  outline-offset: calc(-1 * var(--k-bdw));
+}
+
+/* Animate the persistent indicator in both directions, including its actual paint layer. */
+.k-txf-e6-e,
+.k-txf-e6-e.k-trn {
+  transition-property: block-size, background-color;
+  transition-duration: var(--k-dur-int);
+  transition-timing-function: var(--k-ease-out);
+}
+
+.k-txf-e6-e::before {
+  transition: background-color var(--k-dur-int) var(--k-ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k-txf-e6-e,
+  .k-txf-e6-e.k-trn,
+  .k-txf-e6-e::before {
+    transition: none;
+  }
 }

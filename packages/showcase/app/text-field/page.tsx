@@ -7,9 +7,11 @@ import type {
   TextFieldLabelOffsetStrategy,
   TextFieldLabelPlacement
 } from '@kiskadee/core';
-import { componentEmphasisBuckets } from '@kiskadee/core';
+import { componentEmphasisBuckets, componentScaleToSize } from '@kiskadee/core';
 import { Button as KButton } from '@kiskadee/react-components/button';
 import { useKiskadee } from '@kiskadee/react-components/resources';
+import { Switch } from '@kiskadee/react-components/switch';
+import { Text } from '@kiskadee/react-components/text';
 import {
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
@@ -36,8 +38,10 @@ import {
   useBackgroundTones,
   usePrimarySurfaceTone
 } from '@/hooks/use-background-tones';
+import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
+import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import { TextFieldAutocompleteExample } from './components/TextFieldAutocompleteExample';
 import s from './TextField.module.scss';
 
@@ -149,7 +153,7 @@ function ExampleBlock({
   const Surface = surface === 'default' ? ShowcaseExampleCard : 'section';
   return (
     <Surface className={getSurfaceClassName(s.exampleBlock, surface)}>
-      <h3>{title}</h3>
+      <h4>{title}</h4>
       <div className={s.fieldStack}>{children}</div>
     </Surface>
   );
@@ -180,6 +184,47 @@ export default function TextFieldPage() {
   const { options: textFieldArtifactOptions, textFieldClassesMap } = useTextFieldArtifactConfig();
   const backgroundTones = useBackgroundTones();
   const primarySurface = usePrimarySurfaceTone();
+  const textProfiles = useShowcaseTextProfiles();
+  const { manifest } = useShowcaseMetadata(['button', 'textField']);
+  const [showSizeButtons, setShowSizeButtons] = useState(true);
+  const [sizeModeSelection, setSizeModeSelection] = useState<{
+    preset: string;
+    mode: TextFieldVariantMode;
+  }>();
+  const defaultSizeMode =
+    `${textFieldArtifactOptions.variant ?? 'standard'}-${textFieldArtifactOptions.mode ?? 'outline'}` as TextFieldVariantMode;
+  const sizeMode =
+    sizeModeSelection?.preset === designSystem ? sizeModeSelection.mode : defaultSizeMode;
+  const SizeField = {
+    'standard-outline': TextFieldStandardOutline,
+    'standard-underline': TextFieldStandardUnderline,
+    'standard-borderless': TextFieldStandardBorderless,
+    'floating-notched': TextFieldFloatingNotched,
+    'floating-inside': TextFieldFloatingInside
+  }[sizeMode];
+  const fluentFloating = designSystem === 'fluent-2-microsoft' && sizeMode.startsWith('floating-');
+  const comparisonSizes = (
+    [
+      { scale: 's:sm:1', label: 'Small', buttonScale: 's:sm:1', buttonLabel: 'Small' },
+      {
+        scale: 's:md:1',
+        label: 'Medium',
+        buttonScale: fluentFloating ? 's:lg:1' : 's:md:1',
+        buttonLabel: fluentFloating ? 'Large' : 'Medium'
+      },
+      {
+        scale: 's:lg:1',
+        label: 'Large',
+        buttonScale: fluentFloating ? 's:lg:2' : 's:lg:1',
+        buttonLabel: fluentFloating ? 'Large 2' : 'Large'
+      }
+    ] as const
+  ).filter(
+    ({ scale }) =>
+      !(fluentFloating && scale === 's:sm:1') && manifest?.components?.textField?.scale?.[scale]
+  );
+  const [standardInline, setStandardInline] = useState(false);
+  const standardLabelPlacement: TextFieldLabelPlacement = standardInline ? 'inline' : 'top';
   const [standardOutlineName, setStandardOutlineName] = useState('');
   const [standardUnderlineName, setStandardUnderlineName] = useState('');
   const [standardBorderlessName, setStandardBorderlessName] = useState('');
@@ -684,106 +729,171 @@ export default function TextFieldPage() {
 
       <TextFieldAutocompleteExample />
 
-      <div className={s.exampleGrid}>
-        <div className={s.standardExamplePair}>
-          <ExampleBlock title="Standard / Outline" surface={surface}>
-            {renderStandardOutlineFields('top', 'top')}
+      <section className={s.section} aria-labelledby="text-field-sizes-title">
+        <div className={s.sectionHeadingRow}>
+          <Text as="h3" id="text-field-sizes-title" profile={textProfiles.sectionTitle}>
+            Sizes
+          </Text>
+          <ShowcaseExampleCard border shadow={false}>
+            <div className={s.sizeControls}>
+              <Switch
+                id="text-field-size-buttons"
+                label="Show buttons"
+                emphasis="medium"
+                controlState={showSizeButtons}
+                onControlStateChange={setShowSizeButtons}
+              />
+              <ShowcaseSelectControl
+                label="Sizes mode"
+                variant="sequential"
+                loop
+                options={variantModeOptions}
+                value={sizeMode}
+                onValueChange={(mode) =>
+                  setSizeModeSelection({ preset: designSystem, mode: mode as TextFieldVariantMode })
+                }
+              />
+            </div>
+          </ShowcaseExampleCard>
+        </div>
+        <div className={s.exampleGrid}>
+          {comparisonSizes.map(({ scale, label, buttonScale, buttonLabel }) => (
+            <ExampleBlock key={`${sizeMode}-${scale}`} title={label} surface={surface}>
+              <div className={s.sizeComparisonRow}>
+                <SizeField
+                  id={`size-${scale}`}
+                  label="Field"
+                  placeholder="Enter text"
+                  size={componentScaleToSize(scale)}
+                  radius={borderRadius}
+                />
+                {showSizeButtons && manifest?.components?.button?.scale?.[buttonScale] ? (
+                  <KButton
+                    size={componentScaleToSize(buttonScale)}
+                    radius={borderRadius}
+                    intent="neutral"
+                    emphasis="low"
+                  >
+                    <KButton.Label>Action</KButton.Label>
+                  </KButton>
+                ) : null}
+              </div>
+              {showSizeButtons && fluentFloating ? (
+                <Text as="p" profile={textProfiles.body}>
+                  Floating {label} · Button {buttonLabel}
+                </Text>
+              ) : null}
+            </ExampleBlock>
+          ))}
+        </div>
+      </section>
+
+      <section className={s.section} aria-labelledby="text-field-standard-title">
+        <div className={s.sectionHeadingRow}>
+          <Text as="h3" id="text-field-standard-title" profile={textProfiles.sectionTitle}>
+            Standard
+          </Text>
+          <ShowcaseExampleCard border shadow={false}>
+            <Switch
+              id="text-field-standard-inline"
+              label="Inline"
+              emphasis="medium"
+              controlState={standardInline}
+              onControlStateChange={setStandardInline}
+            />
+          </ShowcaseExampleCard>
+        </div>
+        <div className={s.exampleGrid}>
+          <ExampleBlock title="Outline" surface={surface}>
+            {renderStandardOutlineFields(standardLabelPlacement, 'example')}
           </ExampleBlock>
-          <ExampleBlock title="Standard / Outline Inline" surface={surface}>
-            {renderStandardOutlineFields('inline', 'inline')}
+          <ExampleBlock title="Underline" surface={surface}>
+            {renderStandardUnderlineFields(standardLabelPlacement, 'example')}
+          </ExampleBlock>
+          <ExampleBlock title="Borderless" surface={surface}>
+            {renderStandardBorderlessFields(standardLabelPlacement, 'example')}
           </ExampleBlock>
         </div>
+      </section>
 
-        <div className={s.standardExamplePair}>
-          <ExampleBlock title="Standard / Underline" surface={surface}>
-            {renderStandardUnderlineFields('top', 'top')}
+      <section className={s.section} aria-labelledby="text-field-floating-title">
+        <Text as="h3" id="text-field-floating-title" profile={textProfiles.sectionTitle}>
+          Floating
+        </Text>
+        <div className={s.exampleGrid}>
+          <ExampleBlock title="Notched" surface={surface}>
+            <TextFieldFloatingNotched
+              id="floating-notched-project"
+              label="Project name"
+              value={floatingNotchedProject}
+              onValueChange={setFloatingNotchedProject}
+              message="Label cuts through the outline when active."
+              radius={borderRadius}
+              emphasis={textFieldEmphasis}
+              labelOffset={labelOffset}
+              focusRingColorSource={focusRingColorSourceOverride}
+            />
+            <TextFieldFloatingNotched
+              id="floating-notched-email"
+              label="Email"
+              defaultValue="ada@"
+              validationStatus="error"
+              message="Enter a valid email address."
+              radius={borderRadius}
+              emphasis={textFieldEmphasis}
+              labelOffset={labelOffset}
+              focusRingColorSource={focusRingColorSourceOverride}
+            />
+            <TextFieldFloatingNotched
+              id="floating-notched-readonly"
+              label="Read only"
+              defaultValue="Generated automatically"
+              message="Read-only fields can still be focused and copied."
+              radius={borderRadius}
+              emphasis={textFieldEmphasis}
+              labelOffset={labelOffset}
+              focusRingColorSource={focusRingColorSourceOverride}
+              readOnly
+            />
           </ExampleBlock>
-          <ExampleBlock title="Standard / Underline Inline" surface={surface}>
-            {renderStandardUnderlineFields('inline', 'inline')}
+
+          <ExampleBlock title="Inside" surface={surface}>
+            <TextFieldFloatingInside
+              id="floating-inside-project"
+              label="Project name"
+              value={floatingInsideProject}
+              onValueChange={setFloatingInsideProject}
+              message="Label stays inside the shell when active."
+              radius={borderRadius}
+              emphasis={textFieldEmphasis}
+              labelOffset={labelOffset}
+              focusRingColorSource={focusRingColorSourceOverride}
+            />
+            <TextFieldFloatingInside
+              id="floating-inside-email"
+              label="Email"
+              defaultValue="ada@"
+              validationStatus="error"
+              message="Enter a valid email address."
+              radius={borderRadius}
+              emphasis={textFieldEmphasis}
+              labelOffset={labelOffset}
+              focusRingColorSource={focusRingColorSourceOverride}
+            />
+            <TextFieldFloatingInside
+              id="floating-inside-budget"
+              label="Budget"
+              defaultValue="12"
+              validationStatus="warning"
+              message="Budget may be lower than the project minimum."
+              radius={borderRadius}
+              emphasis={textFieldEmphasis}
+              labelOffset={labelOffset}
+              focusRingColorSource={focusRingColorSourceOverride}
+            />
           </ExampleBlock>
         </div>
-
-        <div className={s.standardExamplePair}>
-          <ExampleBlock title="Standard / Borderless" surface={surface}>
-            {renderStandardBorderlessFields('top', 'top')}
-          </ExampleBlock>
-          <ExampleBlock title="Standard / Borderless Inline" surface={surface}>
-            {renderStandardBorderlessFields('inline', 'inline')}
-          </ExampleBlock>
-        </div>
-
-        <ExampleBlock title="Floating / Notched" surface={surface}>
-          <TextFieldFloatingNotched
-            id="floating-notched-project"
-            label="Project name"
-            value={floatingNotchedProject}
-            onValueChange={setFloatingNotchedProject}
-            message="Label cuts through the outline when active."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldFloatingNotched
-            id="floating-notched-email"
-            label="Email"
-            defaultValue="ada@"
-            validationStatus="error"
-            message="Enter a valid email address."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldFloatingNotched
-            id="floating-notched-readonly"
-            label="Read only"
-            defaultValue="Generated automatically"
-            message="Read-only fields can still be focused and copied."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-            readOnly
-          />
-        </ExampleBlock>
-
-        <ExampleBlock title="Floating / Inside" surface={surface}>
-          <TextFieldFloatingInside
-            id="floating-inside-project"
-            label="Project name"
-            value={floatingInsideProject}
-            onValueChange={setFloatingInsideProject}
-            message="Label stays inside the shell when active."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldFloatingInside
-            id="floating-inside-email"
-            label="Email"
-            defaultValue="ada@"
-            validationStatus="error"
-            message="Enter a valid email address."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-          <TextFieldFloatingInside
-            id="floating-inside-budget"
-            label="Budget"
-            defaultValue="12"
-            validationStatus="warning"
-            message="Budget may be lower than the project minimum."
-            radius={borderRadius}
-            emphasis={textFieldEmphasis}
-            labelOffset={labelOffset}
-            focusRingColorSource={focusRingColorSourceOverride}
-          />
-        </ExampleBlock>
-      </div>
+      </section>
     </section>
   );
 }
