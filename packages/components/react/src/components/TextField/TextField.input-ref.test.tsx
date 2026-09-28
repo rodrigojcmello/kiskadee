@@ -7,6 +7,7 @@ import {
   KiskadeeContext,
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
+import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { createTextFieldComponent } from './TextField.runtime.tsx';
 import { textFieldStandardOutlineStructural } from './TextField.structural.ts';
 
@@ -21,7 +22,8 @@ vi.mock('./useTextFieldArtifactConfig.ts', () => ({
                 neutral: { m: 'neutral-paint' },
                 error: { m: 'error-paint' },
                 warning: { m: 'warning-paint' }
-              }
+              },
+              v: { neutral: { m: 'vivid-paint' } }
             }
           }
         }
@@ -88,4 +90,19 @@ it.each([
   expect(input.getAttribute('aria-invalid')).toBe('true');
   result.rerender(view(false));
   expect(input.classList.contains('error-paint')).toBe(true);
+});
+
+it('follows the inherited surface context when it changes', () => {
+  const tree = (value: 'onSubtle' | 'onVivid') => (
+    <KiskadeeContext.Provider value={context}>
+      <SurfaceContextProvider value={value}>
+        <TestTextField label="Context field" />
+      </SurfaceContextProvider>
+    </KiskadeeContext.Provider>
+  );
+  const result = render(tree('onSubtle'));
+  expect(result.getByLabelText('Context field').className).toContain('neutral-paint');
+  result.rerender(tree('onVivid'));
+  expect(result.getByLabelText('Context field').className).toContain('vivid-paint');
+  expect(result.getByLabelText('Context field').className).not.toContain('neutral-paint');
 });

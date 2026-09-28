@@ -11,6 +11,7 @@ import { memo, type Ref, type RefObject, useCallback, useEffect, useMemo, useRef
 import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
+import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
 import {
   DEFAULT_TEXT_FIELD_EMPHASIS,
   DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE,
@@ -194,12 +195,14 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
       variantOptions?.focusRingColorSource ??
       textFieldOptions.focusRingColorSource ??
       DEFAULT_TEXT_FIELD_FOCUS_RING_COLOR_SOURCE;
+    const surfaceContext = useSurfaceContext();
     const elements = resolveTextFieldElements(textFieldClassesMap, options.structural);
     const shouldMirrorFloatingTypography = options.structural.variant === 'floating';
 
     const resolvedClassNames = useMemo(
       () =>
         resolveTextFieldClassNames({
+          surfaceContext,
           structural: options.structural,
           elements,
           classNames,
@@ -221,7 +224,8 @@ export function createTextFieldComponent<TProps extends TextFieldRuntimeProps>(
         resolvedLabelOffsetStrategy,
         resolvedIntent,
         resolvedRadius,
-        scale
+        scale,
+        surfaceContext
       ]
     );
 

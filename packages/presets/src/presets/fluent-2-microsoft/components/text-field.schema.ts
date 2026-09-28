@@ -14,6 +14,7 @@ import {
 
 type Intent = 'neutral' | 'error' | 'warning';
 
+import { FLUENT_BUTTON_ON_VIVID_RECIPE } from './button-color-formula.ts';
 import { createBalancedLowBorder } from './button-perceptual-alpha.ts';
 
 type Mode = 'outline' | 'underline' | 'borderless' | 'notched' | 'inside';
@@ -39,10 +40,10 @@ export function createFluent2MicrosoftTextFieldSchema({
 }: {
   c: Fluent2MicrosoftColorResolver;
 }): NonNullable<Schema<never>['components']['textField']> {
-  const themedElements = (dark: boolean) => {
+  const themedElements = (dark: boolean, vivid = false) => {
     const track = dark ? 'd' : 'l';
     const palette = <T>(onSubtle: T) => ({
-      default: dark ? { dark: { onSubtle } } : { light: { onSubtle } }
+      default: { [dark ? 'dark' : 'light']: { [vivid ? 'onVivid' : 'onSubtle']: onSubtle } }
     });
     const neutral = (tone: KiskadeeTone) =>
       c.resolve('default', track, exactColor('textField.neutral', tone, 'component.text-field'));
@@ -53,35 +54,50 @@ export function createFluent2MicrosoftTextFieldSchema({
     );
     const white = c.resolve('default', track, absoluteCap(primitive('black', 'v1'), 'light'));
     const neutralVivid = c.resolve('default', track, referenceColor('textField.neutral', 'vivid'));
-    const foreground = dark ? white : neutralVivid;
-    const brand = c.resolve('default', track, referenceColor('primary', 'vivid'));
+    const onSurfaceForeground = dark ? white : neutralVivid;
+    const foreground = vivid
+      ? c.resolve('default', 'l', referenceColor('textField.neutral', 'subtle', 4))
+      : onSurfaceForeground;
+    const lightCap = (alpha: number) =>
+      c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light', alpha));
+    const brand = c.resolve(
+      'default',
+      vivid ? 'l' : track,
+      referenceColor('primary', vivid ? 'subtle' : 'vivid', vivid ? 4 : 0)
+    );
     const error = c.resolve('default', track, referenceColor('textField.error', 'vivid'));
     const warning = c.resolve('default', track, referenceColor('textField.warning', 'vivid'));
-    const disabledText = neutral(dark ? 35 : 16);
-    const disabledStroke = neutral(dark ? 24 : 7);
-    const outlineStroke = createBalancedLowBorder({
-      color: neutralVivid,
-      surface: dark ? neutral(5) : white,
-      targetDeltaE: dark ? 0.18 : 0.06
-    });
-    const outlineIndicator = neutral(dark ? 80 : 12);
-    const outlineIndicatorHover = neutral(dark ? 90 : 22);
+    const disabledText = vivid
+      ? lightCap(FLUENT_BUTTON_ON_VIVID_RECIPE.disabled.foregroundAlpha)
+      : neutral(dark ? 35 : 16);
+    const disabledStroke = vivid
+      ? lightCap(FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha.disabled)
+      : neutral(dark ? 24 : 7);
+    const outlineStroke = vivid
+      ? lightCap(FLUENT_BUTTON_ON_VIVID_RECIPE.low.borderAlpha[dark ? 'dark' : 'light'])
+      : createBalancedLowBorder({
+          color: neutralVivid,
+          surface: dark ? neutral(5) : white,
+          targetDeltaE: dark ? 0.18 : 0.06
+        });
+    const outlineIndicator = vivid ? lightCap(dark ? 85 : 38) : neutral(dark ? 80 : 12);
+    const outlineIndicatorHover = vivid ? white : neutral(dark ? 90 : 22);
     const borderlessSurface = c.resolve(
       'default',
       track,
       exactColor('card.neutral', 3, 'component.card')
     );
-    const stroke = neutral(dark ? 40 : 10);
-    const strokeHover = neutral(dark ? 50 : 12);
-    const underline = neutral(dark ? 80 : 50);
-    const underlineHover = neutral(dark ? 85 : 55);
-    const placeholder = neutral(dark ? 75 : 40);
+    const stroke = vivid ? outlineStroke : neutral(dark ? 40 : 10);
+    const strokeHover = vivid ? white : neutral(dark ? 50 : 12);
+    const underline = vivid ? lightCap(75) : neutral(dark ? 80 : 50);
+    const underlineHover = vivid ? white : neutral(dark ? 85 : 55);
+    const placeholder = vivid ? foreground : neutral(dark ? 75 : 40);
     const filled = dark ? borderlessSurface : neutral(2);
     const semantic = (intent: Intent) =>
       intent === 'error' ? error : intent === 'warning' ? warning : brand;
-    const text = (rest: Color) =>
+    const text = (rest: Color, disabled = disabledText) =>
       palette({
-        textColor: intents(() => ({ rest, disabled: ref(disabledText) }))
+        textColor: intents(() => ({ rest, disabled: ref(disabled) }))
       });
     const labelPalette = text(foreground);
     const messagePalette = palette({
@@ -101,6 +117,9 @@ export function createFluent2MicrosoftTextFieldSchema({
         ? { 's:md:1': inputTypography['s:md:1'], 's:lg:1': inputTypography['s:lg:1'] }
         : inputTypography;
       const borderless = mode === 'borderless';
+      // Filled shells retain Card's on-subtle content; external labels/messages stay on-vivid.
+      const filledVivid = vivid && (borderless || floating);
+      const inputForeground = filledVivid ? onSurfaceForeground : foreground;
       const underlined = mode === 'underline';
       const height = floating ? sizes(0, 40, 48) : sizes(24, 32, 40);
       const background =
@@ -136,7 +155,9 @@ export function createFluent2MicrosoftTextFieldSchema({
       const controlPalette = palette({
         boxColor: intents(() => ({
           rest: background,
-          ...(underlined ? {} : { disabled: ref(transparent), readOnly: ref(transparent) })
+          ...(underlined || filledVivid
+            ? {}
+            : { disabled: ref(transparent), readOnly: ref(transparent) })
         })),
         borderColor: intents(edge),
         ...(mode === 'outline'
@@ -157,7 +178,7 @@ export function createFluent2MicrosoftTextFieldSchema({
             }
           : {}),
         // e3 only carries Rest placeholder color; structural CSS owns its opacity.
-        textColor: intents(() => ({ rest: placeholder }))
+        textColor: intents(() => ({ rest: filledVivid ? onSurfaceForeground : placeholder }))
       });
       return {
         e1: { name: 'root' },
@@ -170,7 +191,8 @@ export function createFluent2MicrosoftTextFieldSchema({
               : mode === 'inside'
                 ? { marginTop: sizes(4, 6, 8), marginLeft: sizes(12, 16, 20) }
                 : { marginBottom: 4 },
-          palettes: labelPalette
+          palettes:
+            floating && vivid ? text(onSurfaceForeground, neutral(dark ? 35 : 16)) : labelPalette
         },
         ...(!floating
           ? {
@@ -214,7 +236,7 @@ export function createFluent2MicrosoftTextFieldSchema({
           name: 'input',
           typography: typography,
           ...(mode === 'inside' ? { scales: { paddingTop: 10 } } : {}),
-          palettes: text(foreground)
+          palettes: text(inputForeground, filledVivid ? neutral(dark ? 35 : 16) : disabledText)
         },
         e5: {
           name: 'message',
@@ -256,14 +278,28 @@ export function createFluent2MicrosoftTextFieldSchema({
   };
   const lightElements = themedElements(false);
   const darkElements = themedElements(true);
+  const lightVividElements = themedElements(false, true);
+  const darkVividElements = themedElements(true, true);
   const elements = (mode: Mode): TextFieldElements => {
     const light = lightElements(mode);
     const dark = darkElements(mode);
+    const lightVivid = lightVividElements(mode);
+    const darkVivid = darkVividElements(mode);
     for (const key of ['e2', 'e3', 'e4', 'e5', 'e6', 'e7'] as const) {
       const target = light[key];
       const darkPalette = dark[key]?.palettes?.default?.dark;
       if (target?.palettes?.default && darkPalette) {
-        target.palettes.default.dark = darkPalette;
+        target.palettes = {
+          ...target.palettes,
+          default: {
+            ...target.palettes.default,
+            dark: { ...darkPalette, ...darkVivid[key]?.palettes?.default?.dark },
+            light: {
+              ...target.palettes.default.light,
+              ...lightVivid[key]?.palettes?.default?.light
+            }
+          }
+        };
       }
     }
     return light;

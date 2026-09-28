@@ -21,7 +21,7 @@ Scope: Light and Dark, `onSubtle`, medium emphasis; default and Teams segments. 
 | Medium Underline | `9115:9024` through `9115:9079` | Rest, Hover, Pressed, Focus, Error, Disabled, Read only | Official adapted |
 | Medium Filled | `9115:8639`, `9115:8647`, `9115:8717`, `9115:8726` | Background and focus layer | Official adapted |
 | Floating labels, warning field, pill shape | No equivalent inspected in Input set | Existing Kiskadee composition | Kiskadee extension |
-| Dark and onVivid | Not visually inspected | Outside this pass | Deferred |
+| Dark and onVivid | Later contextual adaptations below | Local recipes and Showcase | Kiskadee extension |
 
 ## Official Contract
 
@@ -62,7 +62,7 @@ not perceptual Delta E measurements.
 | Warning extension | Approved Orange Vivid anchor | reference warning vivid +0 | L24 `#f7630c` | Warning edge/message; no claim of official Input warning |
 
 TextField exact locators use evidence ID `component.text-field`; the reused Card surface uses `component.card`. Component intents map neutral to its global role, error to `redLike`, and warning to `primitive.orange.v1`. Focus directly references global `primary`. Physical caps
-use `primitive.black.v1`. Light and Dark are authored; Darker and inverse palettes are deferred.
+use `primitive.black.v1`. Light and Dark are authored for onSubtle and onVivid; Darker remains deferred.
 
 ## Kiskadee Mapping
 
@@ -117,7 +117,7 @@ Both filled appearances fit Borderless conceptually; only the darker fill is aut
 
 ## Deferred Or Unsupported
 
-- Darker, onVivid, other emphases, Filled lighter as a separate option.
+- Darker, other emphases, Filled lighter as a separate option.
 - Focus animation and a separate Filled lighter appearance remain deferred. Floating focus mechanics are unchanged.
 - Existing structural placeholder opacity (0.62) attenuates the schema color in Standard modes;
   the Rest-only placeholder contract cannot represent official disabled placeholder independently.
@@ -224,8 +224,7 @@ primary Vivid Dark reference. All neutral exact locators use component.text-fiel
 the Card surface uses component.card. No schema color literals or new assets are introduced.
 
 Geometry, transitions and state precedence remain shared with Light. Placeholder still uses
-the existing structural opacity; that limitation remains unchanged. Darker and onVivid are
-not inferred from this palette and remain deferred.
+the existing structural opacity; that limitation remains unchanged. Darker remains deferred. The later onVivid adaptation is documented below.
 
 ## Validation family references
 
@@ -243,3 +242,36 @@ Disabled and read-only palettes are authored only for neutral, following the
 Error and warning retain editable-state recipes; terminal presentation resolves through neutral.
 This framework contract supersedes earlier semantic read-only/disabled mappings in this document.
 It is a Kiskadee contract rather than a claim of upstream state coverage.
+
+
+## On-vivid Light and Dark (2026-09-28)
+
+Status: **Kiskadee extension** approved from the Showcase comparison with Button low neutral,
+not an upstream Input specification. Applies to Microsoft and Teams; Button is unchanged.
+This supersedes earlier notes deferring onVivid. Darker remains outside this change.
+
+- Outline keeps the transparent Button low surface and its physical-white contour: 30% in
+  Light, 85% in Dark, consuming `FLUENT_BUTTON_ON_VIVID_RECIPE.low.borderAlpha`.
+- The bottom contour/e6 uses physical white 38% in Light (Button's existing bottom Rest),
+  85% in Dark. Hover becomes opaque white. Focus/Pressed use primary Light `subtle +4`;
+  the native bottom border resets to Rest under Focus/Pressed to suppress concurrent Hover.
+- External labels and transparent-shell input/placeholder use neutral Light `subtle +4`,
+  matching Button low's foreground recipe. Supporting text uses white 75%; disabled text
+  uses Button's white 40%, terminal edges its Light disabled-contour alpha (7%). These are
+  cap/reference locators, with no new primitive asset or exact-tone mapping.
+- Borderless retains canonical Card neutral medium (`card.neutral` L3/D3, evidence
+  `component.card`). Floating filled surfaces also retain their existing onSubtle fill.
+  Their input, placeholder and internal labels use the foreground of that actual fill;
+  external labels/messages follow onVivid. Filled backgrounds remain present when disabled
+  or read-only so their content palette stays paired with the surface.
+- Semantic validation continues to use each family's Vivid anchor. This change does not
+  replace the approved error/warning policy or guarantee their contrast on every vivid hue.
+- Underline uses white 75% at Rest and opaque white on Hover. Neutral floating contours
+  use the contextual contour, white Hover, and primary Light `subtle +4` Focus.
+- Geometry, e6 thickness/motion, and neutral-only terminal intent ownership are unchanged.
+
+Showcase card titles use contextual Text, as do the Sizes-mode label and existing section titles.
+
+The React adapter now forwards inherited SurfaceContext to every TextField slot resolver.
+This repairs selection of the authored palette without adding a new public prop or changing
+Headless behavior. Regression coverage checks a live onSubtle-to-onVivid context change.

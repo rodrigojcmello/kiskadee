@@ -17,9 +17,9 @@ describe('Fluent TextField Light onSubtle', () => {
         for (const segment of ['default', 'teams'] as const) {
           const palettes = mode.elements[slot]!.palettes![segment]!;
           expect(palettes.light?.onSubtle).toBeDefined();
-          expect(palettes.light?.onVivid).toBeUndefined();
+          expect(palettes.light?.onVivid).toBeDefined();
           expect(palettes.dark?.onSubtle).toBeDefined();
-          expect(palettes.dark?.onVivid).toBeUndefined();
+          expect(palettes.dark?.onVivid).toBeDefined();
           expect(palettes.darker).toBeUndefined();
           for (const paint of Object.values(palettes.light!.onSubtle)) {
             for (const intent of ['neutral', 'error', 'warning']) {
@@ -257,4 +257,49 @@ it('publishes terminal visual states only under neutral', () => {
     }
   };
   visit(field.variants);
+});
+
+describe('Fluent TextField onVivid', () => {
+  it('matches Button low neutral contours without changing onSubtle', () => {
+    const control = field.variants!.standard!.modes.outline!.elements.e3!;
+    for (const segment of ['default', 'teams'] as const) {
+      for (const theme of ['light', 'dark'] as const) {
+        const paint = control.palettes![segment]![theme]!.onVivid;
+        const button = schema.components.button!.elements!.e1!.palettes![segment]![theme]!.onVivid;
+        expect(paint.borderColor!.neutral!.medium!.rest).toEqual(
+          button.borderColor!.neutral!.low!.rest
+        );
+        expect(paint.boxColor!.neutral!.medium!.rest).toEqual(button.boxColor!.neutral!.low!.rest);
+        expect(paint.textColor!.neutral!.medium!.rest).not.toEqual(
+          control.palettes![segment]![theme]!.onSubtle.textColor!.neutral!.medium!.rest
+        );
+      }
+    }
+  });
+  it('keeps filled Card surfaces paired with their own input foreground', () => {
+    const elements = field.variants!.standard!.modes.borderless!.elements;
+    for (const theme of ['light', 'dark'] as const) {
+      const control = elements.e3!.palettes!.default![theme]!;
+      const input = elements.e4!.palettes!.default![theme]!;
+      expect(control.onVivid.boxColor!.neutral!.medium!.rest).toEqual(
+        control.onSubtle.boxColor!.neutral!.medium!.rest
+      );
+      expect(input.onVivid.textColor!.neutral!.medium!.rest).toEqual(
+        input.onSubtle.textColor!.neutral!.medium!.rest
+      );
+      expect(input.onVivid.textColor!.neutral!.medium!.disabled).toEqual(
+        input.onSubtle.textColor!.neutral!.medium!.disabled
+      );
+    }
+  });
+});
+
+it('keeps external labels on vivid when floating labels use a filled surface', () => {
+  const standard = field.variants!.standard!.modes.outline!.elements;
+  const floating = field.variants!.floating!.modes.inside!.elements;
+  const color = (element: typeof standard.e2) =>
+    element!.palettes!.default!.light!.onVivid.textColor!.neutral!.medium!.rest;
+  expect(color(standard.e2)).toEqual(color(standard.e4));
+  expect(color(standard.e7)).toEqual(color(standard.e4));
+  expect(color(floating.e2)).not.toEqual(color(standard.e2));
 });

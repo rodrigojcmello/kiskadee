@@ -3,6 +3,7 @@ import {
   type ComponentEmphasis,
   stateActivator as cn,
   type RadiusMode,
+  type SurfaceContext,
   type TextFieldFocusRingColorSource,
   type TextFieldIntent,
   type TextFieldLabelOffsetStrategy,
@@ -88,6 +89,7 @@ export function resolveIntentClasses(
 export function elem(
   element: ClassNameByElementJSON | undefined,
   options: {
+    surfaceContext?: SurfaceContext;
     scale: string;
     intent: TextFieldIntent;
     emphasis: ComponentEmphasis | undefined;
@@ -96,6 +98,7 @@ export function elem(
   if (!element) return '';
 
   return resolveSchemaElementClassName(element, {
+    surfaceContext: options.surfaceContext,
     scale: options.scale,
     intent: options.intent,
     emphasis: options.emphasis,
@@ -116,6 +119,7 @@ export function resolveRadiusClassName(
 }
 
 export function resolveTextFieldClassNames(options: {
+  surfaceContext?: SurfaceContext;
   structural: TextFieldStructuralDescriptor;
   elements: TextFieldClassesMap;
   classNames: TextFieldClassNames;

@@ -204,10 +204,13 @@ function ExampleBlock({
   surface: TextFieldSurface;
   title: string;
 }) {
+  const textProfiles = useShowcaseTextProfiles();
   const Surface = surface === 'default' ? ShowcaseExampleCard : 'section';
   return (
     <Surface className={getSurfaceClassName(s.exampleBlock, surface)}>
-      <h4>{title}</h4>
+      <Text as="h4" profile={textProfiles.groupTitle}>
+        {title}
+      </Text>
       <div className={s.fieldStack}>{children}</div>
     </Surface>
   );
@@ -711,7 +714,11 @@ export default function TextFieldPage() {
                 onControlStateChange={setShowSizeButtons}
               />
               <ShowcaseSelectControl
-                label="Sizes mode"
+                label={
+                  <Text as="span" profile={textProfiles.caption}>
+                    Sizes mode
+                  </Text>
+                }
                 variant="sequential"
                 loop
                 options={variantModeOptions}
