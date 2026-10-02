@@ -1,0 +1,102 @@
+/*
+ * element root / e1
+ * All standard modes share the same label/control/message stack.
+ */
+.k-sel-e1 { display: flex; flex-direction: column; min-inline-size: 0; }
+
+/*
+ * element control / e3
+ * Owns the complete border box while leaving external focus paint unclipped.
+ */
+.k-sel-e3 { position: relative; display: flex; align-items: stretch; min-inline-size: 0; box-sizing: border-box; min-block-size: var(--k-bxh); }
+
+/*
+ * element trigger / e4
+ * Fills its interactive lane inside the common shell without adding height.
+ */
+.k-sel-e4 { position: relative; display: flex; align-items: center; flex: 1 1 auto; min-inline-size: 0; min-block-size: 0; box-sizing: border-box; border-width: var(--k-bdw); border-top-color: var(--k-bdc); border-right-color: var(--k-bdc); border-left-color: var(--k-bdc); text-align: start; outline: none; font-family: inherit; }
+
+/*
+ * element value / e5 and placeholder / e11
+ * Both truncate within the value lane without displacing the disclosure.
+ */
+.k-sel-e5, .k-sel-e11 { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/*
+ * element chevron / e6
+ * The generated box measures the icon viewport.
+ */
+.k-sel-e6 { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; }
+
+/*
+ * extra element for e3 / x1
+ * Keeps the three interactive regions in one surface without clipping their rings.
+ */
+.k-sel-x1 { display: flex; align-items: stretch; flex: 1 1 auto; min-inline-size: 0; min-block-size: 0; }
+
+/*
+ * extra element for e3 / x2
+ * Clips only bottom paint at the outer border edge and inherits the shell radius.
+ */
+.k-sel-x2 { position: absolute; inset: calc(-1 * var(--k-bdw)); overflow: hidden; border-radius: inherit; pointer-events: none; }
+
+/*
+ * element indicator / e7
+ * Paints across the whole shell, including the sequential lanes.
+ */
+.k-sel-e7 { position: absolute; inset-inline: 0; inset-block-end: 0; pointer-events: none; background: var(--k-bgc); transition: block-size var(--k-dur-int) var(--k-ease-out), background-color var(--k-dur-int) var(--k-ease-out); }
+
+/*
+ * element control modifier 'a' / e3a
+ * Underline focus grows only from the explicitly projected trigger focus.
+ */
+.k-sel-e3a:not(.-d) > .k-sel-x2.-a.-f > .k-sel-e7 { block-size: calc(var(--k-focus-width) * 1px); }
+.k-sel-e3a:not(.-d):not(.k-sel-e3d) > .k-sel-x2.-a.-f > .k-sel-e7 { background: var(--k-focus-color); }
+
+/*
+ * element control modifier 'b' / e3b
+ * Inner focus reuses the trigger contour and grows inward without a second ring.
+ */
+.k-sel-e3b:not(.-d):has(.k-sel-e4.-a.-f.-k) .k-sel-e4 { box-shadow: inset 0 0 0 max(0px, calc(var(--k-focus-width) * 1px - var(--k-bdw))) var(--k-focus-color); }
+.k-sel-e3b.k-sel-e3d:not(.-d):has(.k-sel-e4.-a.-f.-k) .k-sel-e4 { box-shadow: inset 0 0 0 max(0px, calc(var(--k-focus-width) * 1px - var(--k-bdw))) var(--k-bdc); }
+.k-sel-e3b:not(.-d):has(.k-sel-e4.-a.-f.-k):not(.k-sel-e3d) .k-sel-e4 { border-color: var(--k-focus-color); }
+
+/*
+ * element control modifier 'c' / e3c
+ * Outer focus surrounds the common shell only when the trigger has highlighted focus.
+ */
+.k-sel-e3c.-a.-f.-k:not(.-d) { outline: calc(var(--k-focus-width) * 1px) solid var(--k-focus-color); outline-offset: calc(var(--k-focus-offset) * 1px); }
+.k-sel-e3c.k-sel-e3d.-a.-f.-k:not(.-d) { outline-color: var(--k-bdc); }
+
+/*
+ * element previous / e8 and next / e9
+ * The shell owns height; each button keeps its own native interaction and keyboard ring.
+ */
+.k-sel-e8, .k-sel-e9 { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; box-sizing: border-box; min-block-size: 0; font-family: inherit; }
+.k-sel-e8:focus-visible, .k-sel-e9:focus-visible { outline: calc(var(--k-focus-width) * 1px) solid var(--k-focus-color); outline-offset: calc(var(--k-focus-offset) * 1px); }
+
+/*
+ * element divider / e12
+ * Reinterprets global separator thickness vertically with a schema-owned extent.
+ */
+.k-sel-e12 { flex: 0 0 auto; align-self: center; inline-size: var(--k-bxw); block-size: var(--k-bxh); pointer-events: none; }
+
+/*
+ * element previous / e8 and next / e9
+ * Their glyph viewport follows authored typography without intrinsic SVG dimensions.
+ */
+.k-sel-e8 > .k-gly, .k-sel-e9 > .k-gly { inline-size: 1em; block-size: 1em; }
+
+/*
+ * element chevron / e6
+ * Fills the schema-owned disclosure slot.
+ */
+.k-sel-e6 > .k-gly { inline-size: 100%; block-size: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  /*
+   * element indicator / e7
+   * Removes motion when the user requests it.
+   */
+  .k-sel-e7 { transition: none; }
+}

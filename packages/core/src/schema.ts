@@ -8,6 +8,7 @@ import type { ContainerComponent } from './components/container.ts';
 import type { DropdownElements, DropdownOptions } from './components/dropdown.ts';
 import type { IconElements } from './components/icon.ts';
 import type { ProgressElements } from './components/progress.ts';
+import type { SelectOptions, SelectVariants } from './components/select.ts';
 import type { SeparatorElements } from './components/separator.ts';
 import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
@@ -68,7 +69,8 @@ export type ComponentName =
   | 'switch'
   | 'tabs'
   | 'text'
-  | 'textField';
+  | 'textField'
+  | 'select';
 
 export type ElementStyle<TSegmentName extends SegmentName = never> = {
   name: string; // human-readable element label, for example "button-text"
@@ -155,6 +157,7 @@ export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Par
   tabs: ComponentVariantsStyleKeyMap<TSegmentName>;
   text: ComponentElementsStyleKeyMap<TSegmentName>;
   textField: ComponentVariantModesStyleKeyMap<TSegmentName>;
+  select: ComponentVariantModesStyleKeyMap<TSegmentName>;
 }>;
 
 // Legacy, delete it
@@ -251,6 +254,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     elements: TextElements & Elements<TSegmentName>;
   };
   textField: TextFieldComponent<TSegmentName>;
+  select: { options?: SelectOptions; variants: SelectVariants<TSegmentName> };
 }>;
 
 export type SchemaMetadata = {

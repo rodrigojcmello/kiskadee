@@ -1,338 +1,105 @@
-import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import { splitCardSurfaceSchema } from '../../../utils/splitCardSurfaceSchema.ts';
+import primary from '../colors/b.blue.v1.ts';
+import neutral from '../colors/n.black.v1.ts';
 
-type SandboxSegmentName = 'default';
-
-type CreateSandboxCardSchemaArgs = {
-  segmentNames: readonly SandboxSegmentName[];
+// Canonical surfaces are authored together with their descendant context.
+export function createSandboxCardSchema(_args: {
+  segmentNames: readonly 'default'[];
   transparent: string;
-};
-
-export function createSandboxCardSchema({
-  segmentNames,
-  transparent
-}: CreateSandboxCardSchemaArgs) {
-  const neutralLow = {
-    rest: '#ffffff',
-    hover: '#f0f5ff',
-    pressed: '#dbe0ec',
-    focus: '#ffffff',
-    disabled: '#ebf0fc'
+}) {
+  const levels = ['lowest', 'low', 'medium', 'high', 'highest'] as const;
+  const catalog = [
+    ...(['lowest', 'low', 'medium'] as const).map((emphasis) => ({
+      intent: 'neutral' as const,
+      emphasis,
+      contentSurfaceContext: 'onSubtle' as const
+    })),
+    {
+      intent: 'primary' as const,
+      emphasis: 'highest' as const,
+      contentSurfaceContext: 'onVivid' as const
+    }
+  ];
+  const palettes = Object.fromEntries(
+    (['light', 'dark'] as const).map((theme) => {
+      const n = neutral.scales[theme];
+      const p = primary.scales[theme];
+      const vivid = primary.functionalReferences[theme].vivid;
+      const boxes = (brand: boolean) =>
+        Object.fromEntries(
+          levels.map((level, i) => [
+            level,
+            {
+              rest: brand && i >= 3 ? p[vivid] : n[([0, 2, 5, 12, 20] as const)[i]!],
+              hover: brand && i >= 3 ? p[vivid] : n[([2, 4, 8, 16, 24] as const)[i]!],
+              selected: { rest: p[primary.functionalReferences[theme].subtle] }
+            }
+          ])
+        );
+      const borders = Object.fromEntries(levels.map((level) => [level, { rest: n[16] }]));
+      const surface = {
+        boxColor: { neutral: boxes(false), primary: boxes(true) },
+        borderColor: { neutral: borders, primary: borders }
+      };
+      return [theme, { onSubtle: surface, onVivid: surface }];
+    })
+  );
+  const contexts = {
+    neutral: Object.fromEntries(levels.map((level) => [level, { rest: 'onSubtle' }])),
+    primary: Object.fromEntries(
+      levels.map((level, i) => [
+        level,
+        {
+          rest: i >= 3 ? 'onVivid' : 'onSubtle',
+          ...(i >= 3 ? { selected: 'onSubtle' } : {})
+        }
+      ])
+    )
   };
-  const neutralMedium = {
-    rest: '#f5faff',
-    hover: '#ebf0fc',
-    pressed: '#d6dbe7',
-    focus: '#f5faff',
-    disabled: '#ebf0fc'
-  };
-  const neutralLowest = {
-    rest: transparent,
-    hover: '#f0f5ff',
-    pressed: '#dbe0ec',
-    focus: transparent,
-    disabled: '#ebf0fc'
-  };
-  const neutralHigh = {
-    rest: '#262932',
-    hover: '#1c1f28',
-    pressed: '#11141c',
-    focus: '#262932',
-    disabled: '#ffffff1f'
-  };
-  const neutralHighest = {
-    rest: '#000000',
-    hover: '#070a11',
-    pressed: '#000000',
-    focus: '#000000',
-    disabled: '#ffffff1f'
-  };
-  const primaryLow = neutralLow;
-  const primaryLowest = {
-    rest: transparent,
-    hover: '#d9f1ff',
-    pressed: '#c7e9ff',
-    focus: transparent,
-    disabled: '#ebf0fc'
-  };
-  const primaryMedium = {
-    rest: '#d9f1ff',
-    hover: '#c7e9ff',
-    pressed: '#b3dfff',
-    focus: '#d9f1ff',
-    disabled: '#ffffff1f'
-  };
-  const primaryHigh = {
-    rest: '#0064b4',
-    hover: '#0055a4',
-    pressed: '#002b6b',
-    focus: '#0064b4',
-    disabled: '#ffffff1f'
-  };
-  const primaryHighest = {
-    rest: '#001241',
-    hover: '#071a4d',
-    pressed: '#000a2e',
-    focus: '#001241',
-    disabled: '#ffffff1f'
-  };
-  const selectedPrimaryMedium = {
-    rest: primaryMedium.rest,
-    hover: primaryMedium.hover,
-    pressed: primaryMedium.pressed,
-    focus: primaryMedium.focus
-  };
-  const selectedPrimaryHigh = {
-    rest: primaryHigh.rest,
-    hover: primaryHigh.hover,
-    pressed: primaryHigh.pressed,
-    focus: primaryHigh.focus
-  };
-  const selectedPrimaryHighest = {
-    rest: primaryHighest.rest,
-    hover: primaryHighest.hover,
-    pressed: primaryHighest.pressed,
-    focus: primaryHighest.focus
-  };
-  const selectedNeutralLow = {
-    rest: '#e6ebf7',
-    hover: '#e6ebf7',
-    pressed: '#e6ebf7',
-    focus: '#e6ebf7'
-  };
-  const selectedNeutralMedium = {
-    rest: '#e1e6f2',
-    hover: '#e1e6f2',
-    pressed: '#e1e6f2',
-    focus: '#e1e6f2'
-  };
-  const borderLow = {
-    rest: '#ccd1dd',
-    hover: '#c3c7d3',
-    pressed: '#afb3bf',
-    focus: '#0064b4',
-    disabled: '#dbe0ec'
-  };
-  const borderlessNeutral = {
-    rest: transparent,
-    hover: transparent,
-    pressed: transparent,
-    focus: '#0064b4',
-    disabled: transparent
-  };
-  const selectedBorder = {
-    rest: '#b9bdc9',
-    hover: '#b9bdc9',
-    pressed: '#b9bdc9',
-    focus: '#b9bdc9'
-  };
-  const borderHigh = {
-    rest: '#626671',
-    hover: '#a9adb9',
-    pressed: '#ccd1dd',
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const borderHighest = {
-    rest: '#000000',
-    hover: '#626671',
-    pressed: '#000000',
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const primaryBorderLow = {
-    rest: '#0064b4',
-    hover: '#0055a4',
-    pressed: '#002b6b',
-    focus: '#0064b4',
-    disabled: transparent
-  };
-  const primaryBorderless = {
-    rest: transparent,
-    hover: transparent,
-    pressed: transparent,
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const primaryBorderHigh = {
-    rest: '#3387da',
-    hover: '#0064b4',
-    pressed: '#0055a4',
-    focus: '#3387da',
-    disabled: transparent
-  };
-  const primaryBorderHighest = {
-    rest: '#3387da',
-    hover: '#0064b4',
-    pressed: '#0055a4',
-    focus: '#3387da',
-    disabled: transparent
-  };
-
   return splitCardSurfaceSchema<never>({
     options: {
+      canonicalSurfaces: { default: { light: catalog, dark: catalog } },
       border: {
-        defaultMode: 'adaptive',
+        defaultMode: 'always',
         adaptive: {
-          default: {
-            light: {
-              onSubtle: {
-                neutral: { lowest: false, low: true, medium: false, high: true, highest: true },
-                primary: { lowest: false, low: true, medium: false, high: true, highest: true }
-              }
-            }
-          }
+          default: Object.fromEntries(
+            ['light', 'dark'].map((theme) => [
+              theme,
+              Object.fromEntries(
+                ['onSubtle', 'onVivid'].map((surface) => [
+                  surface,
+                  Object.fromEntries(
+                    ['neutral', 'primary'].map((intent) => [
+                      intent,
+                      Object.fromEntries(levels.map((level) => [level, true]))
+                    ])
+                  )
+                ])
+              )
+            ])
+          )
         }
       }
     },
-    effects: {
-      shadow: {
-        e1: {
-          kind: 'outer',
-          states: {
-            rest: 's:md:1',
-            hover: 's:lg:1',
-            focus: 's:md:1',
-            pressed: 's:md:1',
-            disabled: 's:md:1'
-          },
-          fixedLevels: ['s:sm:1', 's:md:1', 's:lg:1', 's:lg:2', 's:lg:3', 's:lg:4']
-        }
+    contentSurfaceContext: {
+      default: {
+        light: { onSubtle: contexts, onVivid: contexts },
+        dark: { onSubtle: contexts, onVivid: contexts }
       }
     },
     elements: {
       e1: {
         name: 'card',
-        decorations: {
-          borderStyle: 'solid'
-        },
+        decorations: { borderStyle: 'solid' },
         scales: {
-          paddingTop: {
-            's:md:1': 16
-          },
-          paddingBottom: {
-            's:md:1': 16
-          },
-          paddingLeft: {
-            's:md:1': 16
-          },
-          paddingRight: {
-            's:md:1': 16
-          },
-          borderWidth: {
-            's:md:1': 1
-          },
-          borderRadius: {
-            rounded: {
-              's:md:1': 4
-            },
-            square: {
-              's:md:1': 0
-            }
-          }
+          paddingTop: 16,
+          paddingRight: 16,
+          paddingBottom: 16,
+          paddingLeft: 16,
+          borderWidth: 1,
+          borderRadius: { rounded: 12, square: 0 }
         },
-        palettes: buildBySegment(segmentNames, () => ({
-          light: {
-            onSubtle: {
-              boxColor: {
-                neutral: {
-                  lowest: {
-                    ...neutralLowest,
-                    selected: selectedNeutralLow
-                  },
-                  low: {
-                    ...neutralLow,
-                    selected: selectedNeutralLow
-                  },
-                  medium: {
-                    ...neutralMedium,
-                    selected: selectedNeutralMedium
-                  },
-                  high: {
-                    ...neutralHigh,
-                    selected: selectedPrimaryMedium
-                  },
-                  highest: {
-                    ...neutralHighest,
-                    selected: selectedPrimaryMedium
-                  }
-                },
-                primary: {
-                  lowest: {
-                    ...primaryLowest,
-                    selected: selectedPrimaryHigh
-                  },
-                  low: {
-                    ...primaryLow,
-                    selected: selectedPrimaryHigh
-                  },
-                  medium: {
-                    ...primaryMedium,
-                    selected: selectedPrimaryHigh
-                  },
-                  high: {
-                    ...primaryHigh,
-                    selected: selectedPrimaryHighest
-                  },
-                  highest: {
-                    ...primaryHighest,
-                    selected: selectedPrimaryMedium
-                  }
-                }
-              },
-              borderColor: {
-                neutral: {
-                  lowest: {
-                    ...borderlessNeutral,
-                    rest: borderLow.rest,
-                    selected: selectedBorder
-                  },
-                  low: {
-                    ...borderLow,
-                    selected: selectedBorder
-                  },
-                  medium: {
-                    ...borderlessNeutral,
-                    rest: borderLow.rest,
-                    selected: selectedBorder
-                  },
-                  high: {
-                    ...borderHigh,
-                    selected: selectedBorder
-                  },
-                  highest: {
-                    ...borderHighest,
-                    selected: selectedBorder
-                  }
-                },
-                primary: {
-                  lowest: {
-                    ...primaryBorderless,
-                    rest: primaryBorderLow.rest,
-                    selected: selectedBorder
-                  },
-                  low: {
-                    ...primaryBorderLow,
-                    selected: selectedBorder
-                  },
-                  medium: {
-                    ...primaryBorderless,
-                    rest: primaryBorderLow.rest,
-                    selected: selectedBorder
-                  },
-                  high: {
-                    ...primaryBorderHigh,
-                    selected: selectedBorder
-                  },
-                  highest: {
-                    ...primaryBorderHighest,
-                    selected: selectedBorder
-                  }
-                }
-              }
-            }
-          }
-        }))
+        palettes: { default: palettes }
       }
     }
   });

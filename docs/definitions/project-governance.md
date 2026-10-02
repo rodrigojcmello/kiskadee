@@ -68,6 +68,10 @@ review.
 4. Generated outputs and copied fixtures never become authoring sources.
 5. Missing capability does not authorize a local fallback or parallel contract. It requires an
    explicit upstream change or a documented consumer-owned behavior.
+   Schema-owned visual values must not be authored or replaced by hardcoded CSS/Sass, TypeScript
+   constants, numeric prop defaults, or local token fallbacks in components or runtime helpers,
+   including Headless React. A documented local decision does not exempt visual values from this
+   rule. Algorithmic constants and actual behavioral defaults do not authorize substitute styling.
 6. Platform adapters may change mechanics required by their host platform while preserving the
    canonical visual and semantic meaning.
 7. Showcase code proves consumption and supports inspection. A Showcase-only implementation is not

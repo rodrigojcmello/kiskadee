@@ -833,7 +833,7 @@ different element's token, or add a fallback. See
 ## Required custom properties
 
 When structural CSS consumes a custom property that is part of the expected component contract,
-prefer bare `var(--k-...)` references without a fallback.
+use bare `var(--k-...)` references without a fallback.
 
 Examples:
 
@@ -850,8 +850,15 @@ Why:
 Practical rule:
 
 - if the variable is required, do not add a fallback in `var()`,
-- if a local default is genuinely intentional, define that custom property at the owning structural scope instead of
-  repeating a fallback at each consumption site.
+- do not move a hardcoded visual default to the owning structural scope to bypass this rule,
+- address missing visual values in the owning Schema contract and its generated handoff; a
+  documented local design decision does not authorize a replacement,
+- structural aliases or derived geometry may consume generated tokens or measured browser values;
+  they must not introduce substitute visual tokens.
+
+The same ownership rule applies when TypeScript, Headless components, or shared positioning helpers
+consume visual values. See the
+[cross-project runtime execution rules](SCHEMA-BUILD-RUNTIME-RULES.md#6-runtime-execution-responsibilities).
 
 ## Runtime structural variables
 

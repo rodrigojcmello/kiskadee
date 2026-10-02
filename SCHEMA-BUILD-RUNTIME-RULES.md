@@ -907,7 +907,8 @@ Practical authoring rules:
 - If a component has only one emphasis in a preset, that emphasis should be `medium`.
 - Add `high` only when there is a genuinely stronger visual presentation of the same semantic family.
 - Treat `low` and `lowest` as optional expansions, not mandatory completeness buckets.
-- Runtime fallback logic may still exist for resilience, but fallback behavior does not define the architectural contract.
+- Non-visual runtime fallback logic may exist for resilience when the owning contract permits it;
+  it must not supply substitute visual values or hide missing Schema authorship or generated tokens.
 
 This keeps `neutral.medium` as the default mental model when a component is instantiated without explicit semantic or emphasis overrides.
 
@@ -938,12 +939,24 @@ Runtime responsibilities:
 Runtime should not:
 
 - generate new DS color decisions on the fly;
-- replace schema-defined token values with arbitrary runtime constants (except explicit behavior options);
+- author or replace Schema-owned visual values through hardcoded CSS/Sass, TypeScript constants,
+  numeric prop defaults, or local token fallbacks;
 - move theme/segment/emphasis logic out of artifacts.
 - infer a structural projection from descendants, class strings, CSS declarations, or raw schema
   values;
 - infer or automatically request a brand pack from the first `brand.*` component instance;
 - fall back from a missing `brand.*` class to Primary, Neutral, or any other system intent.
+
+These restrictions apply to styled components, Headless React, and shared runtime helpers.
+Visual distances, including anchor offsets and collision clearances, retain Schema ownership even
+when a positioning algorithm consumes them instead of CSS. They must be supplied through the
+generated handoff; neither a numeric API default nor a documented local decision authorizes a
+hardcoded replacement. Headless executes the supplied geometry without importing or interpreting
+the Schema.
+
+Algorithmic constants, measured browser geometry, and documented defaults for actual behavior
+(such as controlled/uncontrolled state or keyboard flow) remain valid runtime concerns. They must
+not be used to introduce visual tokens or compensate for missing generated values.
 
 ## 7) Decision matrix (quick rule)
 

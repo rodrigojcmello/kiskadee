@@ -6,6 +6,7 @@ import {
   resolveControlCursor
 } from '@kiskadee/core';
 import { DensityProvider, KiskadeeContext } from '@kiskadee/react-components/resources';
+import { Select as PresentationSelect } from '@kiskadee/react-components/select';
 import type { ReactNode } from 'react';
 import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
@@ -245,6 +246,29 @@ export function ShowcaseBooleanControl({
           {description ? <span className={styles.booleanDescription}>{description}</span> : null}
         </span>
       }
+    />
+  );
+}
+
+/** Content controls use the active preset, including the unstyled path when absent. */
+export function ShowcaseContentSelectControl({
+  variant,
+  width = '100%',
+  minWidth,
+  maxWidth,
+  selectedLabel: _selectedLabel,
+  style,
+  onValueChange,
+  ...props
+}: SelectProps) {
+  return (
+    <PresentationSelect
+      {...props}
+      onValueChange={(value) => {
+        if (value !== null) onValueChange?.(value);
+      }}
+      sequential={variant === 'sequential'}
+      style={{ width, minWidth, maxWidth, ...style }}
     />
   );
 }

@@ -237,6 +237,23 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e1: separatorThicknessEmission
       }
     },
+    select: {
+      elements: {
+        e3: {
+          boxHeightEmission: 'token',
+          borderWidthEmission: 'mirrored',
+          boxColorEmission: 'mirrored',
+          borderColorEmission: 'mirrored'
+        },
+        e4: {
+          borderWidthEmission: 'token',
+          borderColorEmission: 'token'
+        },
+        e7: { boxColorEmission: 'token' },
+        e12: { ...separatorThicknessEmission, boxHeightEmission: 'token' },
+        e13: { marginTopEmission: 'token', paddingEmission: 'token' }
+      }
+    },
     textField: {
       elements: {
         e2: {

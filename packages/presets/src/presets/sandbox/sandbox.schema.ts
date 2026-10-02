@@ -1,5 +1,8 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
+import neutralAsset from './colors/n.black.v1.ts';
 import { createSandboxCardSchema } from './components/card.schema.ts';
+import { createSandboxDropdownSchema } from './components/dropdown.schema.ts';
+import { createSandboxSelectSchema } from './components/select.schema.ts';
 import { createSandboxSliderSchema } from './components/slider.schema.ts';
 import { createSandboxSwitchSchema } from './components/switch.schema.ts';
 import { schemaColors } from './sandbox.colors.ts';
@@ -19,6 +22,23 @@ export const schema: Schema<SandboxSegment> = {
   breakpoints,
   colors: schemaColors,
   global: {
+    separators: {
+      profiles: {
+        subtle: {
+          scales: { boxWidth: 1 },
+          palettes: {
+            default: Object.fromEntries(
+              (['light', 'dark'] as const).map((theme) => {
+                const paint = {
+                  boxColor: { neutral: { medium: { rest: neutralAsset.scales[theme][16] } } }
+                };
+                return [theme, { onSubtle: paint, onVivid: paint }];
+              })
+            )
+          }
+        }
+      }
+    },
     density: { compact: 's:sm:1', spacious: 's:md:1' },
     interaction: { controlCursor: { value: 'pointer', scope: 'web' } },
     typography: sandboxTypography,
@@ -47,7 +67,7 @@ export const schema: Schema<SandboxSegment> = {
       width: 2,
       offset: 2
     },
-    radius: 'pill',
+    radius: 'rounded',
     effects: {
       activationFeedback: {
         profile: 'ripple',
@@ -131,6 +151,8 @@ export const schema: Schema<SandboxSegment> = {
       segmentNames,
       transparent
     }),
+    select: createSandboxSelectSchema(),
+    dropdown: createSandboxDropdownSchema(),
     slider: createSandboxSliderSchema(),
     switch: createSandboxSwitchSchema()
   }

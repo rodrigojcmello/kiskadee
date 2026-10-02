@@ -115,6 +115,44 @@ describe('Tabs Web style-emission policy', () => {
 });
 
 describe('separator Web style-emission policy', () => {
+  it('publishes Select divider thickness and extent without making the line interactive', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'select',
+      'e12'
+    );
+    expect(policy.boxWidthEmission).toBe('token');
+    expect(policy.boxHeightEmission).toBe('token');
+    expect(policy.boxColorEmission).toBe('direct');
+    expect(
+      getSeparatorStyleEmissionPolicyIssues(
+        {
+          components: {
+            select: {
+              variants: {
+                standard: {
+                  modes: { outline: { elements: { e12: { separator: { 's:all': 'subtle' } } } } }
+                }
+              }
+            }
+          }
+        },
+        DEFAULT_WEB_STYLE_EMISSION_POLICY
+      )
+    ).toEqual([]);
+  });
+
+  it('preserves Select surface paint while publishing tokens for component-colored focus', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'select',
+      'e3'
+    );
+    expect(policy.boxColorEmission).toBe('mirrored');
+    expect(policy.borderColorEmission).toBe('mirrored');
+    expect(policy.borderWidthEmission).toBe('mirrored');
+  });
+
   it('shares explicit token thickness between Separator and Dropdown', () => {
     expect(
       resolveElementStyleEmissionPolicy(DEFAULT_WEB_STYLE_EMISSION_POLICY, 'separator', 'e1')
@@ -245,4 +283,14 @@ describe('separator Web style-emission policy', () => {
       'components.separator.elements.e1.separator: requires explicit boxWidthEmission "token" in the Web style-emission policy'
     ]);
   });
+});
+
+it('keeps Select positioner spacing token-only for collision middleware', () => {
+  const policy = resolveElementStyleEmissionPolicy(
+    DEFAULT_WEB_STYLE_EMISSION_POLICY,
+    'select',
+    'e13'
+  );
+  expect(policy.marginTopEmission).toBe('token');
+  expect(policy.paddingEmission).toBe('token');
 });

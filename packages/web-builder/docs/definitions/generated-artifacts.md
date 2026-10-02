@@ -74,7 +74,7 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 - `components/<component>.kiskadee.json`: component-scoped semantic metadata loaded on demand by
   component runtime hooks. Current emitted metadata artifacts include
   `components/switch.kiskadee.json`, `components/tabs.kiskadee.json`, and
-  `components/text-field.kiskadee.json`.
+  `components/text-field.kiskadee.json`, and `components/select.kiskadee.json`.
 - `class-maps/**/<component>.kiskadee.json`: component-scoped class maps loaded on demand by
   component runtime hooks. These are class resolution artifacts, not semantic metadata. Any
   registered `p` branch likewise carries class references only; it does not turn a class map
@@ -83,6 +83,12 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 `global.kiskadee.json` contains no component payloads. All component defaults, overrides, size
 support and resource references live in the corresponding component artifact. The raw Schema is
 build-only inspection data; browser surface inspection uses canonical Card metadata.
+
+Select publishes `options` (component defaults), `modes` (supported mode names), and `modeOptions`
+(effective presentation options for each supported mode). The Builder resolves each mode's
+`focusIndicator`, `focusRingColorSource` and `showDividers` over component options and contract
+defaults. Explicit public props retain precedence in the platform consumer. Visual element recipes,
+including separator thickness/colors, remain in ordinary class maps rather than this metadata.
 
 The font artifact shapes and fallback rules are defined in
 [Font family artifacts](font-family-artifacts.md).

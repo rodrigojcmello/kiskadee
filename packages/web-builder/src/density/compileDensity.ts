@@ -23,7 +23,8 @@ export const DENSITY_COMPONENTS = [
   'slider',
   'switch',
   'tabs',
-  'textField'
+  'textField',
+  'select'
 ] as const;
 
 export type CompiledDensityMaps = Partial<

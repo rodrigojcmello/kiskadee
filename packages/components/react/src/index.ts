@@ -222,6 +222,8 @@ export type {
   RollingNumberProps
 } from './components/RollingNumber/RollingNumber.tsx';
 export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
+export type { SelectProps } from './components/Select/index.ts';
+export { Select } from './components/Select/index.ts';
 export type {
   SeparatorClassesMap,
   SeparatorElementName,

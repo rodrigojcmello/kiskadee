@@ -123,6 +123,11 @@
       "types": "./dist/components/SmoothText/SmoothText.d.ts",
       "import": "./dist/components/SmoothText/SmoothText.js",
       "default": "./dist/components/SmoothText/SmoothText.js"
+    },
+    "./select": {
+      "types": "./dist/components/Select/index.d.ts",
+      "import": "./dist/components/Select/index.js",
+      "default": "./dist/components/Select/index.js"
     }
   },
   "files": [

@@ -1,0 +1,107 @@
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1040" viewBox="0 0 1440 1040" fill="#182638" role="img" aria-labelledby="title description">
+  
+
+  <title id="title">Select control anatomy</title>
+  
+
+  <desc id="description">Annotated sequential Select with e1 root, e2 label, e3 common control surface, e4 trigger, e5 value, e6 chevron, e7 bottom indicator, e8 Previous, e9 Next, e10 message, e11 alternate placeholder and two occurrences of e12 divider.</desc>
+  
+
+  <style>
+text { font-family: Inter, &quot;Segoe UI&quot;, Arial, sans-serif; }
+.title { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; }
+.eyebrow { font-size: 14px; font-weight: 700; letter-spacing: 2px; fill: #5d7087; }
+.subtitle { font-size: 20px; fill: #52657b; }
+.call { font-size: 22px; font-weight: 700; }
+.detail { font-size: 18px; fill: #52657b; }
+.body { font-size: 24px; }
+.small { font-size: 17px; fill: #52657b; }
+.note { font-size: 19px; }
+.slot { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
+</style>
+  
+
+  <rect x="0" y="0" width="1440" height="1040" rx="0" fill="#f7f9fc" stroke="none"/>
+  
+
+  <text x="52" y="48" class="eyebrow">01 / SELECT COMPOSITION</text>
+  <text x="52" y="94" class="title">One surface, three interaction regions</text>
+  <text x="52" y="128" class="subtitle">Current standard composition / outline / sequential + dividers / schematic, not to scale</text>
+  <rect x="394" y="274" width="644" height="316" rx="16" fill="#ffffff" stroke="#7952a3" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="414" y="303" class="slot" fill="#7952a3">SELECT e1</text>
+  <text x="414" y="343" class="body">Workspace</text>
+  <rect x="414" y="374" width="604" height="86" rx="8" fill="#fafafa" stroke="#d9dde3" stroke-width="2"/>
+  <rect x="408" y="368" width="616" height="98" rx="10" fill="none" stroke="#217d75" stroke-width="2" stroke-dasharray="6 5"/>
+  <rect x="420" y="380" width="60" height="74" rx="5" fill="#edf3f9" stroke="none"/>
+  <rect x="492" y="380" width="446" height="74" rx="5" fill="#fff7ec" stroke="#ad681e" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <rect x="950" y="380" width="62" height="74" rx="5" fill="#edf3f9" stroke="none"/>
+  <path d="M454 405 L442 417 L454 429" fill="none" stroke="#242424" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+  <path d="M976 405 L988 417 L976 429" fill="none" stroke="#242424" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+  <path d="M486 396 V438" fill="none" stroke="#b6bcc5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M944 396 V438" fill="none" stroke="#b6bcc5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="512" y="429" class="body">Design systems</text>
+  <path d="M906 411 L918 423 L930 411" fill="none" stroke="#242424" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+  <path d="M416 459 H1016" fill="none" stroke="#858c96" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  <text x="414" y="521" class="note" fill="#677282">Choose a workspace for this project.</text>
+  <path d="M315 209 H356 V290 H394" fill="none" stroke="#7952a3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="394" cy="290" r="4" fill="#7952a3" stroke="#ffffff" stroke-width="2"/>
+  <path d="M315 342 H408" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="408" cy="342" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <path d="M315 441 H370 V417 H432" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="432" cy="417" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <path d="M315 565 H366 V459 H418" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="418" cy="459" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <path d="M315 681 H382 V521 H408" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="408" cy="521" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <path d="M1092 209 H1072 V374 H1018" fill="none" stroke="#217d75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="1018" cy="374" r="4" fill="#217d75" stroke="#ffffff" stroke-width="2"/>
+  <path d="M1092 342 H1056 V389 H936" fill="none" stroke="#ad681e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="936" cy="389" r="4" fill="#ad681e" stroke="#ffffff" stroke-width="2"/>
+  <path d="M1092 478 H1050 V417 H936" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="936" cy="417" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <path d="M1092 611 H1068 V430 H997" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="997" cy="430" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <path d="M702 235 V355 H695 V410" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="695" cy="410" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <path d="M486 438 V481 H388 V612 H708 V636" fill="none" stroke="#70849a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="486" cy="438" r="4" fill="#70849a" stroke="#ffffff" stroke-width="2"/>
+  <path d="M944 438 V481 H1044 V612 H708" fill="none" stroke="#70849a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="944" cy="438" r="4" fill="#70849a" stroke="#ffffff" stroke-width="2"/>
+  <text x="52" y="194" class="call" fill="#7952a3">e1 / Root</text>
+  <text x="52" y="221" class="detail">Label + control + message</text>
+  <text x="52" y="326" class="call" fill="#315a83">e2 / Label</text>
+  <text x="52" y="353" class="detail">Optional field label</text>
+  <text x="52" y="429" class="call" fill="#315a83">e8 / Previous</text>
+  <text x="52" y="456" class="detail">Independent button / focus</text>
+  <text x="52" y="550" class="call" fill="#315a83">e7 / Bottom indicator</text>
+  <text x="52" y="577" class="detail">Spans the complete e3 surface</text>
+  <text x="52" y="665" class="call" fill="#315a83">e10 / Message</text>
+  <text x="52" y="692" class="detail">Optional supporting message</text>
+  <text x="1110" y="194" class="call" fill="#217d75">e3 / Control surface</text>
+  <text x="1110" y="221" class="detail">Fill, contour, radius and height</text>
+  <text x="1110" y="326" class="call" fill="#ad681e">e4 / Trigger</text>
+  <text x="1110" y="353" class="detail">Opens the option list</text>
+  <text x="1110" y="462" class="call" fill="#315a83">e6 / Chevron</text>
+  <text x="1110" y="489" class="detail">Disclosure glyph / optional</text>
+  <text x="1110" y="595" class="call" fill="#315a83">e9 / Next</text>
+  <text x="1110" y="622" class="detail">Independent button / focus</text>
+  <text x="595" y="194" class="call" fill="#315a83">e5 / Value</text>
+  <text x="595" y="221" class="detail">Confirmed selection only</text>
+  <text x="557" y="663" class="call" fill="#70849a">e12 / Divider</text>
+  <text x="557" y="690" class="detail">One recipe / two rendered boundaries</text>
+  <rect x="394" y="733" width="644" height="141" rx="12" fill="#ffffff" stroke="#dce3eb"/>
+  <text x="414" y="762" class="slot" fill="#315a83">ALTERNATIVE CONTENT / NO SELECTION</text>
+  <rect x="414" y="785" width="604" height="65" rx="7" fill="#fafafa" stroke="#d9dde3" stroke-width="2"/>
+  <text x="512" y="826" class="body" fill="#8d949d">Choose a workspace</text>
+  <path d="M906 810 L918 822 L930 810" fill="none" stroke="#242424" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+  <path d="M315 829 H382 V817 H500" fill="none" stroke="#315a83" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="500" cy="817" r="4" fill="#315a83" stroke="#ffffff" stroke-width="2"/>
+  <text x="52" y="814" class="call" fill="#315a83">e11 / Placeholder</text>
+  <text x="52" y="841" class="detail">Replaces e5 in the same lane</text>
+  <rect x="52" y="912" width="1336" height="89" rx="12" fill="#eaf0f7" stroke="none"/>
+  <text x="76" y="942" class="call">Reading the drawing</text>
+  <text x="76" y="973" class="note">Dashed outlines and tinted regions are annotations. They do not add borders or states to the preset.</text>
+  
+
+</svg>

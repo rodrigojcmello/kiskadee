@@ -33,6 +33,10 @@ import {
   CONTAINER_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/containerComponentArtifact.ts';
 import {
+  buildSelectComponentArtifact,
+  SELECT_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/selectComponentArtifact.ts';
+import {
   buildSliderComponentArtifact,
   SLIDER_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/sliderComponentArtifact.ts';
@@ -769,6 +773,16 @@ export async function publishMetadata(params: {
     };
   }
 
+  if (buildSelectComponentArtifact(schema)) {
+    manifest.components = manifest.components ?? {};
+    manifest.components.select = {
+      ...manifest.components.select,
+      artifacts: {
+        ...manifest.components.select?.artifacts,
+        metadata: SELECT_COMPONENT_ARTIFACT_PATH
+      }
+    };
+  }
   if (buildTextFieldComponentArtifact(schema)) {
     manifest.components = manifest.components ?? {};
     manifest.components.textField = {

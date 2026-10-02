@@ -236,6 +236,29 @@ Current scope:
 The schema value remains the design-system control height. The web structure changes only how that
 height constrains layout: it is a minimum rather than a fixed block size.
 
+## Select
+
+All `standard` modes consume the same Select element policies. e3 owns the common control surface;
+e4 owns the trigger; e7 owns the bottom indicator; e8/e9 own the sequential controls; e12 owns the
+decorative divider recipe rendered at both sequential boundaries.
+
+| Element/property family | Policy | CSS shape | Reason |
+| --- | --- | --- | --- |
+| e3 `boxHeight` | `token` | `--k-bxh: <value>` | Structural CSS applies minimum logical height without fixing the block axis. |
+| e3 `borderWidth` | `mirrored` | `--k-bdw: <value>; border-width: <value>` | The common shell preserves its border and publishes geometry for the internal control lane. |
+| e3 `boxColor` | `mirrored` | `--k-bgc: <value>; background-color: <value>` | The surface retains its paint and exposes its own authored background to local rendering mechanics. |
+| e3 `borderColor` | `mirrored` | `--k-bdc: <value>; border-color: <value>` | The shell retains its contour and exposes its authored focus contour to outer focus painting. |
+| e4 `borderWidth`, `borderColor` | `token` | `--k-bdw: <value>; --k-bdc: <value>` | Trigger structure applies its authored contour and can paint an inner focus ring without copying global or sibling colors. |
+| e7 `boxColor` | `token` | `--k-bgc: <value>` | The shared indicator layer paints the authored color and transitions it with its logical thickness. |
+| e13 `marginTop`, `padding*` | `token` | `--k-mgt`, `--k-pdt/r/b/l` | Positioning middleware consumes the resolved gap and per-side clearance; DOM spacing must not duplicate it. |
+| e12 `boxWidth`, `boxHeight` | `token` | `--k-bxw: <value>; --k-bxh: <value>` | Divider structure applies the separator profile's thickness and optional local extent as logical dimensions. |
+
+e4/e8/e9 have no local height scale or height emission override: they stretch within e3.
+
+e12 separator references use the existing separator expansion pipeline and ordinary scale/palette
+buckets. The line's color retains the default direct emission. There is no copied Separator
+component artifact, special divider bucket or new cross-owner projection.
+
 ## Future Additions
 
 Add other components to this file when a component/element needs a documented emission override or

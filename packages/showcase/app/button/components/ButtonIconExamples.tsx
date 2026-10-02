@@ -13,8 +13,8 @@ import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
 import { Text } from '@kiskadee/react-components/text';
 import { useState } from 'react';
+import { ShowcaseContentSelectControl } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
-import { Select } from '@/k-components/Select/Select';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
 
@@ -202,7 +202,7 @@ export function ButtonIconExamples({
           <Text as="h4" profile={textProfiles.subsectionTitle}>
             Rich text editor
           </Text>
-          <Select
+          <ShowcaseContentSelectControl
             label="Emphasis"
             variant="sequential"
             loop

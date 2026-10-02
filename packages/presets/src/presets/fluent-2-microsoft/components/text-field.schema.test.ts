@@ -20,7 +20,8 @@ describe('Fluent TextField Light onSubtle', () => {
           expect(palettes.light?.onVivid).toBeDefined();
           expect(palettes.dark?.onSubtle).toBeDefined();
           expect(palettes.dark?.onVivid).toBeDefined();
-          expect(palettes.darker).toBeUndefined();
+          expect(palettes.darker?.onSubtle).toBeDefined();
+          expect(palettes.darker?.onVivid).toBeDefined();
           for (const paint of Object.values(palettes.light!.onSubtle)) {
             for (const intent of ['neutral', 'error', 'warning']) {
               expect(

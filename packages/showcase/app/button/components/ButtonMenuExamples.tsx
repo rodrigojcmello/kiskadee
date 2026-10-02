@@ -15,7 +15,7 @@ import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import { Text } from '@kiskadee/react-components/text';
 import { useMemo, useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
-import { ShowcaseSelectControl } from '@/components/ShowcaseControls';
+import { ShowcaseContentSelectControl } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
@@ -281,7 +281,7 @@ export function ButtonMenuExamples({
           viewport and freezes the presenter while it is open.
         </Text>
       ) : null}
-      <ShowcaseSelectControl
+      <ShowcaseContentSelectControl
         className={styles.buttonMenuPresentationControl}
         label={
           <Text as="span" profile={textProfiles.caption}>

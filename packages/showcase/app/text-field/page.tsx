@@ -25,6 +25,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
+  ShowcaseContentSelectControl,
   ShowcaseControlField,
   ShowcaseControlGrid,
   ShowcaseControlGroup,
@@ -713,7 +714,7 @@ export default function TextFieldPage() {
                 controlState={showSizeButtons}
                 onControlStateChange={setShowSizeButtons}
               />
-              <ShowcaseSelectControl
+              <ShowcaseContentSelectControl
                 label={
                   <Text as="span" profile={textProfiles.caption}>
                     Sizes mode

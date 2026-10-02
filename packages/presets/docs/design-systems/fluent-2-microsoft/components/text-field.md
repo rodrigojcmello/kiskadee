@@ -297,3 +297,13 @@ This is schema-authoring reuse, with no runtime dependency between components.
 
 This supersedes earlier notes that Outline never changes its Hover surface and that Button's
 bottom color remains untouched. Primitive assets, geometry, and e6 thickness are unchanged.
+
+## Darker and independent Select (2026-09-28)
+
+This approved Kiskadee adaptation supersedes the Darker deferrals above. TextField now publishes
+Darker in both surface contexts, alongside Select. `field-visual-recipe.ts` shares named color
+recipes and standard typography/size helpers; schemas remain independent.
+Darker follows Button's neutral Vivid -1 contour calibrated over the physical black cap, with
+Card neutral low D2 for Borderless. Dark text, terminal and underline contrast remain the starting
+calibration. Light and Dark recipes and TextField geometry are preserved. This is a documented
+adaptation to Kiskadee Darker, not an upstream Fluent Darker specification.

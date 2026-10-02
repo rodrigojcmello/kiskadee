@@ -40,6 +40,10 @@ import {
   CONTAINER_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/containerComponentArtifact.ts';
 import {
+  buildSelectComponentArtifact,
+  SELECT_COMPONENT_ARTIFACT_PATH
+} from '../component-artifacts/selectComponentArtifact.ts';
+import {
   buildSliderComponentArtifact,
   SLIDER_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/sliderComponentArtifact.ts';
@@ -416,6 +420,7 @@ export async function writeExtraArtifacts(params: {
   const containerComponentArtifact = buildContainerComponentArtifact(schema);
   const switchComponentArtifact = buildSwitchComponentArtifact(schema);
   const tabsComponentArtifact = buildTabsComponentArtifact(schema);
+  const selectComponentArtifact = buildSelectComponentArtifact(schema);
   const textFieldComponentArtifact = buildTextFieldComponentArtifact(schema);
 
   const hasRadius = Boolean(radius);
@@ -497,6 +502,7 @@ export async function writeExtraArtifacts(params: {
     { artifact: sliderComponentArtifact, path: SLIDER_COMPONENT_ARTIFACT_PATH },
     { artifact: switchComponentArtifact, path: SWITCH_COMPONENT_ARTIFACT_PATH },
     { artifact: tabsComponentArtifact, path: TABS_COMPONENT_ARTIFACT_PATH },
+    { artifact: selectComponentArtifact, path: SELECT_COMPONENT_ARTIFACT_PATH },
     { artifact: textFieldComponentArtifact, path: TEXT_FIELD_COMPONENT_ARTIFACT_PATH }
   ];
 

@@ -13,10 +13,10 @@ import {
 // Shared authoring recipe for Outline TextField, low-neutral Button and future Select.
 export function createNeutralControlRecipe(
   c: Fluent2MicrosoftColorResolver,
-  theme: 'light' | 'dark',
+  theme: 'light' | 'dark' | 'darker',
   vivid: boolean
 ) {
-  const dark = theme === 'dark';
+  const dark = theme !== 'light';
   const track = dark ? 'd' : 'l';
   const cap = (alpha: number, polarity: 'light' | 'dark' = 'light') =>
     c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), polarity, alpha));

@@ -1,0 +1,300 @@
+{
+  "formatVersion": 7,
+  "functionalReferences": [
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 60
+        }
+      },
+      "id": "b.blue.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "bg.teal.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "g.green.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "gy.lime.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "contrast-mirror",
+          "tone": 99
+        }
+      },
+      "id": "n.black.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 99
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 3
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "p.purple.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 3
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "pb.indigo.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "r.red.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "rp.magenta.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "y.yellow.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 5
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "yr.brown.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 60
+        }
+      },
+      "id": "yr.orange.v1",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "harmony-rest",
+          "tone": 30
+        }
+      }
+    }
+  ],
+  "gridContract": "kiskadee-tonal-v1",
+  "harmonyContract": "kiskadee-munsell-rest-v1",
+  "overrides": [],
+  "primary": {
+    "id": "b.blue.v1",
+    "policies": {
+      "dark": "adaptive",
+      "light": "source-exact"
+    },
+    "seedHex": "#3b82f6"
+  },
+  "tonalAnchors": {
+    "rest": {
+      "dark": 60,
+      "light": 30,
+      "mode": "locked"
+    }
+  },
+  "tonalProfile": "balanced"
+}

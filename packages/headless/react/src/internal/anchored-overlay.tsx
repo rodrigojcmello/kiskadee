@@ -5,6 +5,7 @@ import {
   flip,
   offset as floatingOffset,
   type OpenChangeReason,
+  type Padding,
   type Placement,
   type ReferenceType,
   shift,
@@ -36,8 +37,8 @@ export type UseAnchoredOverlayOptions = {
   positionReference?: ReferenceType | null;
   placement?: Placement;
   fallbackPlacements?: Placement[];
-  offset?: number;
-  collisionPadding?: number;
+  offset?: number | null;
+  collisionPadding?: Padding | null;
   shiftCrossAxis?: boolean;
   portalled?: boolean;
   portalContainer?: HTMLElement | null;
@@ -96,7 +97,7 @@ export function useAnchoredOverlay({
   const sizeMiddleware = useMemo(
     () =>
       size({
-        padding: collisionPadding,
+        padding: collisionPadding ?? undefined,
         apply({ availableHeight, availableWidth, elements, rects }) {
           const height = Math.max(0, availableHeight);
           const widthLimit = Math.max(0, availableWidth);
@@ -144,9 +145,9 @@ export function useAnchoredOverlay({
     placement,
     strategy: 'fixed',
     middleware: [
-      floatingOffset(offset),
-      flip({ padding: collisionPadding, fallbackPlacements }),
-      shift({ padding: collisionPadding, crossAxis: shiftCrossAxis }),
+      offset === null ? undefined : floatingOffset(offset),
+      flip({ padding: collisionPadding ?? undefined, fallbackPlacements }),
+      shift({ padding: collisionPadding ?? undefined, crossAxis: shiftCrossAxis }),
       sizeMiddleware
     ],
     transform: false,

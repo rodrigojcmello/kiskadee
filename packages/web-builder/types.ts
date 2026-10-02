@@ -55,6 +55,10 @@ export type {
   ComponentResourceArtifact,
   StylesheetResource
 } from './src/component-artifacts/componentResources.ts';
+export type {
+  SelectComponentArtifactJSON,
+  SelectPresentationOptionsJSON
+} from './src/component-artifacts/selectComponentArtifact.ts';
 // Manifest types (phase-7 publishMetadata) describing high-level
 // capabilities by design system.
 export type {

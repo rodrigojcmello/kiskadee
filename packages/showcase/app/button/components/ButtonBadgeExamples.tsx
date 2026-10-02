@@ -10,7 +10,7 @@ import { Text } from '@kiskadee/react-components/text';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
-import { ShowcaseSelectControl } from '@/components/ShowcaseControls';
+import { ShowcaseContentSelectControl } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
@@ -65,7 +65,7 @@ export function ButtonBadgeExamples({
           <Text as="h4" profile={profiles.subsectionTitle}>
             Runtime logical placement
           </Text>
-          <ShowcaseSelectControl
+          <ShowcaseContentSelectControl
             label={
               <Text as="span" profile={profiles.caption}>
                 Badge placement

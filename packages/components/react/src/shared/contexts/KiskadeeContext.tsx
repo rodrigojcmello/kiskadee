@@ -22,6 +22,7 @@ import type {
   SchemaIconSizes,
   SchemaIcons,
   SchemaInteraction,
+  SelectMode,
   ShadowEffectSchema,
   ShadowGlobalEffectSchema,
   SliderEdgeLabelAlignment,
@@ -169,6 +170,10 @@ export type KiskadeeComponentConfigs = {
         };
       };
     };
+  };
+  select?: {
+    options?: { variant?: 'standard'; mode?: SelectMode; focusIndicator?: 'underline' | 'outline' };
+    modes?: SelectMode[];
   };
   textField?: {
     options?: {

@@ -9,7 +9,14 @@ import styles from './Select.module.scss';
 
 export type SelectVariant = 'standard' | 'sequential';
 
-export interface SelectProps extends Omit<HeadlessSelectProps, 'children' | 'classNames'> {
+export interface SelectProps
+  extends Omit<
+    HeadlessSelectProps,
+    'children' | 'classNames' | 'value' | 'defaultValue' | 'onValueChange'
+  > {
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
   className?: string;
   label?: ReactNode;
   selectedLabel?: ReactNode;
@@ -86,7 +93,9 @@ export function Select({
   return (
     <HeadlessSelect.Root
       value={value}
-      onValueChange={onValueChange}
+      onValueChange={(nextValue) => {
+        if (nextValue !== null) onValueChange?.(nextValue);
+      }}
       disabled={disabled}
       loop={loop}
       data-disabled={disabled || undefined}

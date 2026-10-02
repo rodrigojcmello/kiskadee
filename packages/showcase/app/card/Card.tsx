@@ -33,6 +33,7 @@ import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControl
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
+  ShowcaseContentSelectControl,
   ShowcaseControlField,
   ShowcaseControlGrid,
   ShowcaseControlGroup,
@@ -536,7 +537,7 @@ export function Card() {
                     aria-label="Surface presentation controls"
                   >
                     <div className={s.controlRow}>
-                      <ShowcaseSelectControl
+                      <ShowcaseContentSelectControl
                         label="Border"
                         width={160}
                         value={surfaceBorderMode}
@@ -550,7 +551,7 @@ export function Card() {
                           setSurfaceBorderMode(value as typeof surfaceBorderMode)
                         }
                       />
-                      <ShowcaseSelectControl
+                      <ShowcaseContentSelectControl
                         label="Shadow"
                         width={140}
                         value={surfaceShadowMode}

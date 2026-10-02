@@ -8,6 +8,7 @@ import { createFluent2MicrosoftChipSchema } from './components/chip.schema.ts';
 import { createFluent2MicrosoftDropdownSchema } from './components/dropdown.schema.ts';
 import { createFluent2MicrosoftIconSchema } from './components/icon.schema.ts';
 import { createFluent2MicrosoftProgressSchema } from './components/progress.schema.ts';
+import { createFluent2MicrosoftSelectSchema } from './components/select.schema.ts';
 import { createFluent2MicrosoftSeparatorSchema } from './components/separator.schema.ts';
 import { createFluent2MicrosoftSliderSchema } from './components/slider.schema.ts';
 import { createFluent2MicrosoftSwitchSchema } from './components/switch.schema.ts';
@@ -226,6 +227,7 @@ export function createFluent2MicrosoftSchema(
       switch: createFluent2MicrosoftSwitchSchema({
         c: colorResolver
       }),
+      select: createFluent2MicrosoftSelectSchema({ c: colorResolver }),
       textField: createFluent2MicrosoftTextFieldSchema({ c: colorResolver }),
       text: createFluent2MicrosoftTextSchema()
     }

@@ -1,191 +1,252 @@
 'use client';
-
-import { Dropdown } from '@kiskadee/react-components/dropdown';
-import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
-import { useEssentialIcon } from '@kiskadee/react-components/resources';
+import type { ComponentSize, SelectMode } from '@kiskadee/core';
+import { Select } from '@kiskadee/react-components/select';
+import { Separator } from '@kiskadee/react-components/separator';
+import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
-import { Select as HeadlessSelect } from '@kiskadee/react-headless/select';
 import { useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { ShowcaseRouteControls } from '@/components/ShowcaseControls';
-import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './Select.module.scss';
 
-const STANDARD_OPTIONS = [
+const options = [
   { value: 'design', label: 'Design systems' },
+  { value: 'archived', label: 'Archived workspace', disabled: true },
   { value: 'engineering', label: 'Frontend engineering' },
-  {
-    value: 'research',
-    label: 'Research, accessibility and interaction documentation'
-  },
-  { value: 'archived', label: 'Archived workspace', disabled: true }
+  { value: 'research', label: 'Research and accessibility' }
 ];
-
-const DENSITY_OPTIONS = [
-  { value: 'compact', label: 'Compact' },
-  { value: 'default', label: 'Default' },
-  { value: 'comfortable', label: 'Comfortable' }
-];
-
-type PreviewSelectProps = {
-  label: string;
-  options: typeof STANDARD_OPTIONS;
-  value: string;
-  onValueChange: (value: string) => void;
-  sequential?: boolean;
-};
-
-function PreviewSelect({
-  label,
-  options,
-  value,
-  onValueChange,
-  sequential = false
-}: PreviewSelectProps) {
-  const selectedOption = options.find((option) => option.value === value);
-  const previousIcon = useEssentialIcon('chevron-left');
-  const nextIcon = useEssentialIcon('chevron-end');
-  const disclosureIcon = useEssentialIcon('chevron-down');
-
-  return (
-    <Dropdown.VisualProvider>
-      <HeadlessSelect.Root options={options} value={value} onValueChange={onValueChange}>
-        <HeadlessSelect.Label className={styles.label}>{label}</HeadlessSelect.Label>
-        {sequential ? (
-          <div className={styles.sequential}>
-            <HeadlessSelect.Previous className={styles.stepButton}>
-              {previousIcon ? <FamilyResolvedIcon name={previousIcon} /> : null}
-            </HeadlessSelect.Previous>
-            <HeadlessSelect.Trigger className={`${styles.trigger} ${styles.sequentialTrigger}`}>
-              <span className={styles.value}>{selectedOption?.label}</span>
-            </HeadlessSelect.Trigger>
-            <HeadlessSelect.Next className={styles.stepButton}>
-              {nextIcon ? <FamilyResolvedIcon name={nextIcon} /> : null}
-            </HeadlessSelect.Next>
-          </div>
-        ) : (
-          <HeadlessSelect.Trigger className={styles.trigger}>
-            <span className={styles.value}>{selectedOption?.label}</span>
-            {disclosureIcon ? (
-              <span className={styles.disclosure} aria-hidden="true">
-                <FamilyResolvedIcon name={disclosureIcon} />
-              </span>
-            ) : null}
-          </HeadlessSelect.Trigger>
-        )}
-        <Dropdown.Presence>
-          {({ forceMount, render }) => (
-            <HeadlessSelect.Content
-              portalled
-              offset={6}
-              width="anchor"
-              forceMount={forceMount}
-              render={render}
-            >
-              <Dropdown.Surface>
-                <Dropdown.Items>
-                  <Dropdown.Group>
-                    {options.map((option) => (
-                      <HeadlessSelect.Option
-                        key={option.value}
-                        value={option.value}
-                        disabled={option.disabled}
-                        textValue={option.label}
-                        render={(optionProps, state) => {
-                          const { ref, children, ...itemProps } = optionProps;
-                          return (
-                            <Dropdown.Item
-                              {...itemProps}
-                              ref={ref}
-                              disabled={state.disabled}
-                              selected={state.selected || state.active}
-                            >
-                              <Dropdown.Label>{children}</Dropdown.Label>
-                            </Dropdown.Item>
-                          );
-                        }}
-                      >
-                        {option.label}
-                      </HeadlessSelect.Option>
-                    ))}
-                  </Dropdown.Group>
-                </Dropdown.Items>
-              </Dropdown.Surface>
-            </HeadlessSelect.Content>
-          )}
-        </Dropdown.Presence>
-      </HeadlessSelect.Root>
-    </Dropdown.VisualProvider>
-  );
-}
-
 export default function SelectShowcase() {
-  const { manifest } = useShowcaseMetadata(['dropdown']);
-  const textProfiles = useShowcaseTextProfiles();
-  const [workspace, setWorkspace] = useState('design');
-  const [density, setDensity] = useState('default');
-  const available = Boolean(manifest?.components?.dropdown);
-
+  const profiles = useShowcaseTextProfiles();
+  const [showChevron, setShowChevron] = useState(true);
+  const [showDividers, setShowDividers] = useState(false);
+  const [value, setValue] = useState<string | null>('design');
+  const sequentialPresentation = { showChevron, showDividers };
   return (
     <main className={styles.page}>
-      <Text as="h2" profile={textProfiles.pageTitle}>
+      <Text as="h2" profile={profiles.pageTitle}>
         Select
       </Text>
-      <Text as="p" profile={textProfiles.body} className={styles.lead}>
-        A headless value-selection contract rendered with the active preset Dropdown.
+      <Text as="p" profile={profiles.body}>
+        Independent selection control. Presets without a Select recipe retain the functional,
+        unstyled composition.
       </Text>
-      <ShowcaseRouteControls id="select" eyebrow="Select" title="Examples" isAvailable={available}>
+      <ShowcaseRouteControls id="select" eyebrow="Select" title="Examples">
         {null}
       </ShowcaseRouteControls>
-
-      {!available ? (
-        <div className={styles.unavailable}>
-          <Text as="p" profile={textProfiles.body}>
-            Dropdown is not available in the active design system, so this visual preview cannot be
-            rendered.
-          </Text>
+      <section className={styles.section} aria-labelledby="select-standard-title">
+        <Text as="h3" id="select-standard-title" profile={profiles.sectionTitle}>
+          Standard
+        </Text>
+        <div className={styles.grid}>
+          {(['outline', 'underline', 'borderless'] as SelectMode[]).map((mode) => (
+            <ShowcaseExampleCard key={mode} className={styles.card} border shadow={false}>
+              <Text as="h4" profile={profiles.subsectionTitle}>
+                {mode[0]?.toUpperCase()}
+                {mode.slice(1)}
+              </Text>
+              <Select label="Workspace" mode={mode} options={options} defaultValue="design" />
+              <Select
+                label="Disabled"
+                mode={mode}
+                options={options}
+                defaultValue="design"
+                disabled
+              />
+              <Select
+                {...sequentialPresentation}
+                label="Sequential · Loop enabled"
+                mode={mode}
+                options={options}
+                defaultValue="design"
+                sequential
+                loop
+              />
+            </ShowcaseExampleCard>
+          ))}
         </div>
-      ) : (
-        <>
-          <section className={styles.section} aria-labelledby="select-preview-title">
-            <Text as="h3" id="select-preview-title" profile={textProfiles.sectionTitle}>
-              Visual preview
+      </section>
+      <section className={styles.section} aria-labelledby="select-sizes-title">
+        <Text as="h3" id="select-sizes-title" profile={profiles.sectionTitle}>
+          Sizes
+        </Text>
+        <div className={`${styles.grid} ${styles.sizeGrid}`}>
+          {(['sm', 'md', 'lg'] as ComponentSize[]).map((size) => (
+            <ShowcaseExampleCard key={size} className={styles.card} border shadow={false}>
+              <Select label={size} size={size} options={options} defaultValue="design" />
+            </ShowcaseExampleCard>
+          ))}
+        </div>
+      </section>
+      <section className={styles.section} aria-labelledby="select-selection-title">
+        <Text as="h3" id="select-selection-title" profile={profiles.sectionTitle}>
+          Selection and suggestion
+        </Text>
+        <div className={styles.grid}>
+          <ShowcaseExampleCard className={styles.card} border shadow={false}>
+            <Text as="h4" profile={profiles.subsectionTitle}>
+              With selection
             </Text>
-            <div className={styles.grid}>
-              <ShowcaseExampleCard role="article" className={styles.card}>
-                <Text as="h4" profile={textProfiles.subsectionTitle}>
-                  Standard
-                </Text>
-                <PreviewSelect
-                  label="Workspace"
-                  options={STANDARD_OPTIONS}
-                  value={workspace}
-                  onValueChange={setWorkspace}
-                />
-              </ShowcaseExampleCard>
-              <ShowcaseExampleCard role="article" className={styles.card}>
-                <Text as="h4" profile={textProfiles.subsectionTitle}>
-                  Sequential
-                </Text>
-                <PreviewSelect
-                  label="Density"
-                  options={DENSITY_OPTIONS}
-                  value={density}
-                  onValueChange={setDensity}
-                  sequential
-                />
-              </ShowcaseExampleCard>
+            <Text as="p" profile={profiles.body}>
+              A confirmed value appears in the field and as Selected in the list.
+            </Text>
+            <Select label="Workspace" options={options} value={value} onValueChange={setValue} />
+          </ShowcaseExampleCard>
+          <ShowcaseExampleCard className={styles.card} border shadow={false}>
+            <Text as="h4" profile={profiles.subsectionTitle}>
+              Suggestion without a choice
+            </Text>
+            <Text as="p" profile={profiles.body}>
+              Opening highlights Frontend engineering. It stays a suggestion until confirmed.
+            </Text>
+            <Select
+              label="Workspace"
+              options={options}
+              suggestedValue="engineering"
+              placeholder="Choose a workspace"
+            />
+          </ShowcaseExampleCard>
+          <ShowcaseExampleCard className={styles.card} border shadow={false}>
+            <Text as="h4" profile={profiles.subsectionTitle}>
+              No suggestion
+            </Text>
+            <Text as="p" profile={profiles.body}>
+              The field starts empty and the list opens without an initial highlight.
+            </Text>
+            <Select
+              label="Workspace"
+              options={options}
+              suggestedValue={null}
+              placeholder="Choose a workspace"
+            />
+          </ShowcaseExampleCard>
+          <ShowcaseExampleCard className={styles.card} border shadow={false}>
+            <Text as="h4" profile={profiles.subsectionTitle}>
+              Option to clear
+            </Text>
+            <Text as="p" profile={profiles.body}>
+              Choose No workspace to remove the selection and restore the placeholder.
+            </Text>
+            <Select
+              label="Workspace"
+              options={[{ value: 'none', label: 'No workspace', kind: 'none' }, ...options]}
+              defaultValue="design"
+              placeholder="Choose a workspace"
+            />
+          </ShowcaseExampleCard>
+        </div>
+      </section>
+      <section className={styles.section} aria-labelledby="select-sequential-title">
+        <div className={styles.sectionHeader}>
+          <Text as="h3" id="select-sequential-title" profile={profiles.sectionTitle}>
+            Sequential navigation
+          </Text>
+          <ShowcaseExampleCard
+            className={styles.controlsCard}
+            aria-label="Sequential presentation controls"
+            role="group"
+            border
+            shadow={false}
+          >
+            <div className={styles.sectionControls}>
+              <Switch
+                id="select-show-chevron"
+                label="Show chevron"
+                emphasis="medium"
+                controlState={showChevron}
+                onControlStateChange={setShowChevron}
+              />
+              <Separator orientation="vertical" emphasis="low" />
+              <Switch
+                id="select-show-dividers"
+                label="Show dividers"
+                emphasis="medium"
+                controlState={showDividers}
+                onControlStateChange={setShowDividers}
+              />
             </div>
-          </section>
-          <aside className={styles.notice}>
-            <Text as="p" profile={textProfiles.caption}>
-              Preview only: the selection behavior is public Headless Select, while this trigger
-              shell remains local to the Showcase until a styled Select contract is designed.
-            </Text>
-          </aside>
-        </>
-      )}
+          </ShowcaseExampleCard>
+        </div>
+        <Text as="p" profile={profiles.body}>
+          Previous and Next confirm a value without opening the list. Disabled options are skipped.
+          Loop affects these buttons only. The switches apply to every sequential example on this
+          page.
+        </Text>
+        <div className={styles.grid}>
+          <ShowcaseExampleCard className={styles.card} border shadow={false}>
+            <Select
+              {...sequentialPresentation}
+              label="Bounded · First option"
+              options={options}
+              defaultValue="design"
+              sequential
+            />
+            <Select
+              {...sequentialPresentation}
+              label="Bounded · Last option"
+              options={options}
+              defaultValue="research"
+              sequential
+            />
+          </ShowcaseExampleCard>
+          <ShowcaseExampleCard className={styles.card} border shadow={false}>
+            <Select
+              {...sequentialPresentation}
+              label="Loop"
+              options={options}
+              defaultValue="research"
+              sequential
+              loop
+            />
+            <Select
+              {...sequentialPresentation}
+              label="Disabled sequential control"
+              options={options}
+              defaultValue="design"
+              sequential
+              loop
+              disabled
+            />
+          </ShowcaseExampleCard>
+          <ShowcaseExampleCard className={styles.card} border shadow={false}>
+            <Select {...sequentialPresentation} label="Empty list" options={[]} sequential loop />
+            <Select
+              {...sequentialPresentation}
+              label="No enabled values"
+              options={[{ value: 'none', label: 'No workspace', kind: 'none' }, options[1]!]}
+              sequential
+              loop
+            />
+            <Select
+              {...sequentialPresentation}
+              label="Only one enabled option"
+              options={[options[0]!, options[1]!]}
+              defaultValue="design"
+              sequential
+              loop
+            />
+          </ShowcaseExampleCard>
+        </div>
+      </section>
+      <section className={styles.section} aria-labelledby="select-rtl-title">
+        <Text as="h3" id="select-rtl-title" profile={profiles.sectionTitle}>
+          Right-to-left (RTL)
+        </Text>
+        <Text as="p" profile={profiles.body}>
+          The value, disclosure glyph and sequential controls follow the field&apos;s RTL direction.
+        </Text>
+        <ShowcaseExampleCard className={`${styles.card} ${styles.rtlCard}`} border shadow={false}>
+          <Select
+            {...sequentialPresentation}
+            dir="rtl"
+            label="Workspace"
+            options={options}
+            defaultValue="design"
+            sequential
+            loop
+          />
+        </ShowcaseExampleCard>
+      </section>
     </main>
   );
 }

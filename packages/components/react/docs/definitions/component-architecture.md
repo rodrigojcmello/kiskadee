@@ -107,9 +107,11 @@ It should expose the artifact decisions the React component needs, such as:
 - enabled effects;
 - global effect configuration when the component consumes a shared effect.
 
-Fallbacks should be explicit and local. The generated class map remains the
-source of truth for styling, but artifact metadata owns whether a component
-option or effect exists when that metadata is available.
+Behavioral defaults must follow the documented component contract. They must not
+supply hardcoded visual values or hide missing Schema tokens or artifact metadata.
+The generated class map remains the source of truth for styling, and artifact
+metadata owns whether a component option or effect exists when that metadata is
+available.
 
 ## Features
 
@@ -183,8 +185,18 @@ Shared effect structural CSS should own:
 - reusable interaction rendering.
 
 Generated CSS and token artifacts own semantic color, state, typography, radius,
-spacing, and effect token values. Local Sass may hardcode a value only when the
-component has an explicit local design decision and the decision is documented.
+spacing, and effect token values. Components must not author or replace these
+values through hardcoded Sass/CSS, TypeScript constants, numeric prop defaults,
+or local token fallbacks. Documenting a local design decision does not authorize
+an exception; missing visual authorship must be addressed in the owning Schema
+contract and its generated handoff.
+
+This restriction also applies to Headless components and shared runtime helpers.
+Moving a visual value into positioning or behavior code does not change its
+ownership. Algorithmic constants and defaults for actual behavior remain distinct
+from visual tokens; see the cross-project
+[runtime execution rules](../../../../../SCHEMA-BUILD-RUNTIME-RULES.md#6-runtime-execution-responsibilities)
+and [governance invariants](../../../../../docs/definitions/project-governance.md#cross-project-invariants).
 
 ## Lazy Loading And Runtime Cost
 

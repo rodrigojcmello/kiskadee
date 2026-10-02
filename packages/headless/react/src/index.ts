@@ -141,6 +141,7 @@ export type {
 } from './components/progress/HeadlessProgress.tsx';
 export { HeadlessProgress } from './components/progress/HeadlessProgress.tsx';
 export type {
+  SelectActiveSource,
   SelectContentProps,
   SelectContentRenderProps,
   SelectContentRenderState,
@@ -149,10 +150,14 @@ export type {
   SelectOption,
   SelectOptionProps,
   SelectProps,
+  SelectState,
   SelectStepProps,
-  SelectTriggerProps
+  SelectStepRenderProps,
+  SelectTriggerProps,
+  SelectValueChangeDetails,
+  SelectValueChangeReason
 } from './components/select/Select.tsx';
-export { Select } from './components/select/Select.tsx';
+export { Select, useSelectState } from './components/select/Select.tsx';
 export type {
   SliderActiveTrackProps,
   SliderClassNames,

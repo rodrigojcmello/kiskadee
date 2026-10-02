@@ -1,31 +1,15 @@
+import type { Color, Schema, TextFieldElements } from '@kiskadee/core';
+import type { Fluent2MicrosoftColorResolver } from '../fluent-2-microsoft.color.ts';
 import {
-  type Color,
-  type KiskadeeTone,
-  primitive,
-  type Schema,
-  type TextFieldElements
-} from '@kiskadee/core';
-import {
-  absoluteCap,
-  exactColor,
-  type Fluent2MicrosoftColorResolver,
-  referenceColor
-} from '../fluent-2-microsoft.color.ts';
+  createFieldVisualRecipe,
+  fieldSizes,
+  fieldTypography as inputTypography
+} from './field-visual-recipe.ts';
 
 type Intent = 'neutral' | 'error' | 'warning';
 
-import { FLUENT_BUTTON_ON_VIVID_RECIPE } from './button-color-formula.ts';
-import { createBalancedLowBorder } from './button-perceptual-alpha.ts';
-
-import { createNeutralControlRecipe } from './neutral-control-recipe.ts';
-
 type Mode = 'outline' | 'underline' | 'borderless' | 'notched' | 'inside';
 
-const inputTypography = {
-  's:sm:1': 'caption-medium',
-  's:md:1': 'body-medium',
-  's:lg:1': 'body-large'
-} as const;
 const ref = (color: Color) => ({ ref: color });
 const editableStates = <T extends { disabled?: unknown; readOnly?: unknown }>(states: T) => {
   const { disabled: _disabled, readOnly: _readOnly, ...editable } = states;
@@ -42,60 +26,32 @@ export function createFluent2MicrosoftTextFieldSchema({
 }: {
   c: Fluent2MicrosoftColorResolver;
 }): NonNullable<Schema<never>['components']['textField']> {
-  const themedElements = (dark: boolean, vivid = false) => {
-    const track = dark ? 'd' : 'l';
-    const palette = <T>(onSubtle: T) => ({
-      default: { [dark ? 'dark' : 'light']: { [vivid ? 'onVivid' : 'onSubtle']: onSubtle } }
-    });
-    const neutral = (tone: KiskadeeTone) =>
-      c.resolve('default', track, exactColor('textField.neutral', tone, 'component.text-field'));
-    const transparent = c.resolve(
-      'default',
-      track,
-      absoluteCap(primitive('black', 'v1'), 'light', 0)
-    );
-    const white = c.resolve('default', track, absoluteCap(primitive('black', 'v1'), 'light'));
-    const neutralVivid = c.resolve('default', track, referenceColor('textField.neutral', 'vivid'));
-    const onSurfaceForeground = dark ? white : neutralVivid;
-    const foreground = vivid
-      ? c.resolve('default', 'l', referenceColor('textField.neutral', 'subtle', 4))
-      : onSurfaceForeground;
-    const lightCap = (alpha: number) =>
-      c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light', alpha));
-    const brand = c.resolve(
-      'default',
-      vivid ? 'l' : track,
-      referenceColor('primary', vivid ? 'subtle' : 'vivid', vivid ? 4 : 0)
-    );
-    const error = c.resolve('default', track, referenceColor('textField.error', 'vivid'));
-    const warning = c.resolve('default', track, referenceColor('textField.warning', 'vivid'));
-    const disabledText = vivid
-      ? lightCap(FLUENT_BUTTON_ON_VIVID_RECIPE.disabled.foregroundAlpha)
-      : neutral(dark ? 35 : 16);
-    const disabledStroke = vivid
-      ? lightCap(FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha.disabled)
-      : neutral(dark ? 24 : 7);
-    const outlineStroke = vivid
-      ? lightCap(FLUENT_BUTTON_ON_VIVID_RECIPE.low.borderAlpha[dark ? 'dark' : 'light'])
-      : createBalancedLowBorder({
-          color: neutralVivid,
-          surface: dark ? neutral(5) : white,
-          targetDeltaE: dark ? 0.18 : 0.06
-        });
-    const neutralControl = createNeutralControlRecipe(c, dark ? 'dark' : 'light', vivid);
-    const outlineIndicator = neutralControl.bottom.rest;
-    const outlineIndicatorHover = neutralControl.bottom.hover;
-    const borderlessSurface = c.resolve(
-      'default',
-      track,
-      exactColor('card.neutral', 3, 'component.card')
-    );
-    const stroke = vivid ? outlineStroke : neutral(dark ? 40 : 10);
-    const strokeHover = vivid ? white : neutral(dark ? 50 : 12);
-    const underline = vivid ? lightCap(75) : neutral(dark ? 80 : 50);
-    const underlineHover = vivid ? white : neutral(dark ? 85 : 55);
-    const placeholder = vivid ? foreground : neutral(dark ? 75 : 40);
-    const filled = dark ? borderlessSurface : neutral(2);
+  const themedElements = (theme: 'light' | 'dark' | 'darker', vivid = false) => {
+    const dark = theme !== 'light';
+    const {
+      palette,
+      neutral,
+      transparent,
+      white,
+      onSurfaceForeground,
+      foreground,
+      brand,
+      error,
+      warning,
+      disabledText,
+      disabledStroke,
+      outlineStroke,
+      neutralControl,
+      outlineIndicator,
+      outlineIndicatorHover,
+      borderlessSurface,
+      stroke,
+      strokeHover,
+      underline,
+      underlineHover,
+      placeholder,
+      filled
+    } = createFieldVisualRecipe(c, theme, vivid);
     const semantic = (intent: Intent) =>
       intent === 'error' ? error : intent === 'warning' ? warning : brand;
     const text = (rest: Color, disabled = disabledText) =>
@@ -113,9 +69,7 @@ export function createFluent2MicrosoftTextFieldSchema({
     const elements = (mode: Mode): TextFieldElements => {
       const floating = mode === 'notched' || mode === 'inside';
       const sizes = (small: number, medium: number, large: number) =>
-        floating
-          ? { 's:md:1': medium, 's:lg:1': large }
-          : { 's:sm:1': small, 's:md:1': medium, 's:lg:1': large };
+        floating ? { 's:md:1': medium, 's:lg:1': large } : fieldSizes(small, medium, large);
       const typography = floating
         ? { 's:md:1': inputTypography['s:md:1'], 's:lg:1': inputTypography['s:lg:1'] }
         : inputTypography;
@@ -286,11 +240,15 @@ export function createFluent2MicrosoftTextFieldSchema({
 
     return elements;
   };
-  const lightElements = themedElements(false);
-  const darkElements = themedElements(true);
-  const lightVividElements = themedElements(false, true);
-  const darkVividElements = themedElements(true, true);
+  const lightElements = themedElements('light');
+  const darkElements = themedElements('dark');
+  const lightVividElements = themedElements('light', true);
+  const darkVividElements = themedElements('dark', true);
+  const darkerElements = themedElements('darker');
+  const darkerVividElements = themedElements('darker', true);
   const elements = (mode: Mode): TextFieldElements => {
+    const darker = darkerElements(mode);
+    const darkerVivid = darkerVividElements(mode);
     const light = lightElements(mode);
     const dark = darkElements(mode);
     const lightVivid = lightVividElements(mode);
@@ -298,11 +256,16 @@ export function createFluent2MicrosoftTextFieldSchema({
     for (const key of ['e2', 'e3', 'e4', 'e5', 'e6', 'e7'] as const) {
       const target = light[key];
       const darkPalette = dark[key]?.palettes?.default?.dark;
-      if (target?.palettes?.default?.light && darkPalette) {
+      const darkerPalette = darker[key]?.palettes?.default?.darker;
+      if (target?.palettes?.default?.light && darkPalette && darkerPalette) {
         target.palettes = {
           ...target.palettes,
           default: {
             ...target.palettes.default,
+            darker: {
+              ...darkerPalette,
+              ...darkerVivid[key]?.palettes?.default?.darker
+            },
             dark: { ...darkPalette, ...darkVivid[key]?.palettes?.default?.dark },
             light: {
               ...target.palettes.default.light,

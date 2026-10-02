@@ -27,6 +27,7 @@ import { useShowcasePanel } from '@/app/ShowcasePanelContext';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
+  ShowcaseContentSelectControl,
   ShowcaseControlGroup,
   ShowcaseControlPanel,
   ShowcaseControlStack,
@@ -493,7 +494,7 @@ export default function BadgeShowcase() {
             <Text as="h3" profile={profiles.sectionTitle}>
               Metadata by intent
             </Text>
-            <ShowcaseSelectControl
+            <ShowcaseContentSelectControl
               label="Button and Badge size"
               value={activeMetadataScale ?? 'preset'}
               options={[

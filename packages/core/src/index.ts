@@ -10,6 +10,7 @@ export * from './components/container.ts';
 export * from './components/dropdown.ts';
 export * from './components/icon.ts';
 export * from './components/progress.ts';
+export * from './components/select.ts';
 export * from './components/separator.ts';
 export * from './components/slider.ts';
 export * from './components/switch.ts';
