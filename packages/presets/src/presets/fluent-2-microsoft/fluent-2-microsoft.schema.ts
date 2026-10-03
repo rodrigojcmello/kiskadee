@@ -1,4 +1,5 @@
 import { breakpoints, primitive, type Schema } from '@kiskadee/core';
+import { createLayoutSchema } from '../../utils/createLayoutSchema.ts';
 import { createStrictPresetColorResolver } from '../../utils/presetColor.ts';
 import { createFluent2MicrosoftBadgeSchema } from './components/badge.schema.ts';
 import { createFluent2MicrosoftBottomSheetSchema } from './components/bottom-sheet.schema.ts';
@@ -211,6 +212,7 @@ export function createFluent2MicrosoftSchema(
       }
     },
     components: {
+      layout: createLayoutSchema(),
       badge: createFluent2MicrosoftBadgeSchema({ c: colorResolver }),
       bottomSheet: createFluent2MicrosoftBottomSheetSchema({ c: colorResolver }),
       slider: createFluent2MicrosoftSliderSchema({ c: colorResolver }),

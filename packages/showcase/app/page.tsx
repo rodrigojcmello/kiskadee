@@ -30,6 +30,9 @@ export default function HomePage() {
           <Link href="/dropdown">/dropdown</Link>
         </li>
         <li>
+          <Link href="/layout">/layout</Link>
+        </li>
+        <li>
           <Link href="/slider">/slider</Link>
         </li>
         <li>

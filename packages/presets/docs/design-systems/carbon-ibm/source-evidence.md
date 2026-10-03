@@ -59,6 +59,7 @@ production schemas. Existing legacy Light-only assets are superseded by the gene
 ## Component evidence
 
 - [Card](components/card.md)
+- [Layout (Kiskadee extension)](components/layout.md)
 - [Separator](components/separator.md)
 - [Text](components/text.md)
 - [Icon](components/icon.md)

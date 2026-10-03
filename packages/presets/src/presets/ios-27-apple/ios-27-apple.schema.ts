@@ -1,4 +1,5 @@
 import { breakpoints, type Schema } from '@kiskadee/core';
+import { createLayoutSchema } from '../../utils/createLayoutSchema.ts';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createIos27AppleBadgeSchema } from './components/badge.schema.ts';
 import { createIos27AppleBottomSheetSchema } from './components/bottom-sheet.schema.ts';
@@ -175,6 +176,7 @@ export const schema: Schema<Segment> = {
     }
   },
   components: {
+    layout: createLayoutSchema(),
     badge: createIos27AppleBadgeSchema({ c }),
     progress: createIos27AppleProgressSchema({ c }),
     bottomSheet: createIos27AppleBottomSheetSchema({ c }),

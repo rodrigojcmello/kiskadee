@@ -206,6 +206,16 @@ export type {
 } from './components/Icon';
 export { FamilyResolvedIcon, Icon } from './components/Icon';
 export type {
+  LayoutClassesMap,
+  LayoutElementName,
+  LayoutGap,
+  LayoutProps,
+  LayoutSpacing,
+  LayoutSpacingEdges,
+  LayoutSpacingSize
+} from './components/Layout';
+export { Layout } from './components/Layout';
+export type {
   DeterminateDecorativeProgressProps,
   DeterminateProgressProps,
   IndeterminateProgressProps,

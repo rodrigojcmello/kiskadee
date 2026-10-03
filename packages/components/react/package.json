@@ -59,6 +59,11 @@
       "import": "./dist/components/Container/index.js",
       "default": "./dist/components/Container/index.js"
     },
+    "./layout": {
+      "types": "./dist/components/Layout/index.d.ts",
+      "import": "./dist/components/Layout/index.js",
+      "default": "./dist/components/Layout/index.js"
+    },
     "./chip": {
       "types": "./dist/components/Chip/index.d.ts",
       "import": "./dist/components/Chip/index.js",

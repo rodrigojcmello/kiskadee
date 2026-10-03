@@ -232,6 +232,20 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         }
       }
     },
+    layout: {
+      elements: {
+        e1: {
+          paddingEmission: 'token',
+          marginTopEmission: 'token',
+          marginRightEmission: 'token',
+          marginBottomEmission: 'token',
+          marginLeftEmission: 'token'
+        },
+        e2: {
+          paddingEmission: 'token'
+        }
+      }
+    },
     separator: {
       elements: {
         e1: separatorThicknessEmission

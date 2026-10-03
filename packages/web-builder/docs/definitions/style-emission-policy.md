@@ -63,6 +63,9 @@ remains responsible only for producing the required custom properties.
 
 Current element-specific contracts include:
 
+- `layout.e1` padding and margin and `layout.e2` padding use token-only emission. Layout's
+  independent spacing selectors and responsive column catalog are described in
+  [`layout-artifacts.md`](./layout-artifacts.md).
 - `textField.e2.marginLeftEmission = 'mirrored'` so label geometry can expose `--k-mgl`.
 - `textField.e3.textColorEmission = 'mirrored'` so TextField structural CSS can capture the
   placeholder color through `--k-txc`.

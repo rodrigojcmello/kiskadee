@@ -18,6 +18,7 @@ import {
   compileDensityClassMaps,
   resolveSchemaDensityMaps
 } from './density/compileDensity.ts';
+import { compileLayoutArtifacts } from './layout/compileLayoutArtifacts.ts';
 import { convertElementSchemaToStyleKeys } from './phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
 import {
   mapStyleKeyUsage,
@@ -262,6 +263,16 @@ export async function runBuild(): Promise<void> {
       }
     );
     // console.log('phrase 5', { name: schema.name, classNamesMapSplit });
+
+    cssGenerated.coreCss += compileLayoutArtifacts({
+      styleKeys,
+      coreClassMap: classNamesMapSplit.core,
+      shortenMap: shortenCssClassNameMap,
+      breakpoints: schema.breakpoints,
+      classNamePrefix,
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      collapseDirectIntoMirrored: ENABLE_COLLAPSE_DIRECT_INTO_MIRRORED
+    });
 
     const densityAliases = compileDensityClassMaps(
       classNamesMapSplit.core,

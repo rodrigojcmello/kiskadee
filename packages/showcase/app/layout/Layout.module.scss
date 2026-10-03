@@ -1,0 +1,82 @@
+.page,
+.section,
+.stage,
+.slot,
+.flow {
+  min-inline-size: 0;
+}
+
+.page {
+  inline-size: 100%;
+}
+
+.page h2,
+.page h3,
+.page h4,
+.page p {
+  margin: 0;
+}
+
+.stage {
+  inline-size: 100%;
+}
+
+.playgroundWindow,
+.comparisonWindow {
+  overflow-x: auto;
+}
+
+.playgroundFlow {
+  min-block-size: 8rem;
+}
+
+.slot {
+  flex-shrink: 0;
+}
+
+.slotText,
+.measure {
+  white-space: nowrap;
+}
+
+.comparisonTable {
+  border-collapse: collapse;
+  inline-size: 100%;
+  min-inline-size: 54rem;
+  table-layout: fixed;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+  padding: 0;
+  text-align: start;
+  vertical-align: middle;
+}
+
+.sizeColumn {
+  inline-size: 6.5rem;
+}
+
+.comparisonStage {
+  display: inline-grid;
+  vertical-align: middle;
+}
+
+.compactSlot {
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+}
+
+.codePanel {
+  min-inline-size: 0;
+}
+
+.code {
+  display: block;
+  margin: 0;
+  max-inline-size: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

@@ -281,6 +281,7 @@ instead of flattening them to the larger offset layer.
 - [BottomSheet](components/bottom-sheet.md)
 - [Button](components/button.md)
 - [Card](components/card.md)
+- [Layout (Kiskadee extension)](components/layout.md)
 - [Icon](components/icon.md)
 - [Progress](components/progress.md)
 - [Slider](components/slider.md)

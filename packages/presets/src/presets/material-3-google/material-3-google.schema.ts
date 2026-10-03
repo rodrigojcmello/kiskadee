@@ -1,5 +1,6 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
 import { buildBySegment } from '../../utils/buildBySegment.ts';
+import { createLayoutSchema } from '../../utils/createLayoutSchema.ts';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createMaterial3GoogleBadgeSchema } from './components/badge.schema.ts';
 import { createMaterial3GoogleBottomSheetSchema } from './components/bottom-sheet.schema.ts';
@@ -178,6 +179,7 @@ export const schema: Schema<Segments> = {
     })
   },
   components: {
+    layout: createLayoutSchema(),
     badge: createMaterial3GoogleBadgeSchema({ c, segmentNames, transparent }),
     chip: createMaterial3GoogleChipSchema({ c, segmentNames, transparent }),
     icon: createMaterial3GoogleIconSchema({ c, segmentNames }),

@@ -7,6 +7,7 @@ import { validateChipComponentContract } from '../components/chip.ts';
 import { validateContainerComponentContract } from '../components/container.ts';
 import { validateDropdownComponentContract } from '../components/dropdown.ts';
 import { validateIconComponentContract } from '../components/icon.ts';
+import { validateLayoutComponentContract } from '../components/layout.ts';
 import { validateProgressComponentContract } from '../components/progress.ts';
 import { validateSelectComponentContract } from '../components/select.zod.ts';
 import { validateSeparatorComponentContract } from '../components/separator.ts';
@@ -26,6 +27,7 @@ import type { Schema } from '../schema.ts';
  * - card
  * - dropdown
  * - icon
+ * - layout
  * - progress
  * - separator
  * - slider
@@ -116,6 +118,15 @@ export function validateSchemaComponentContracts(schemaLike: {
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for icon. Review element/property mapping.\n${issues.join('\n')}`
+      );
+    }
+  }
+
+  if (byName.layout !== undefined) {
+    const issues = validateLayoutComponentContract(byName.layout, 'components.layout');
+    if (issues.length > 0) {
+      throw new Error(
+        `Invalid component contract for layout. Review shared spacing mapping.\n${issues.join('\n')}`
       );
     }
   }

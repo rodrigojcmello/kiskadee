@@ -58,6 +58,7 @@ tracking values is **Deferred**.
 - [Complete coverage and adaptation register](components/coverage.md)
 
 - [Card](components/card.md)
+- [Layout (Kiskadee extension)](components/layout.md)
 
 - [Button](components/button.md)
 

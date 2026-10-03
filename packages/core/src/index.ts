@@ -9,6 +9,7 @@ export * from './components/chip.ts';
 export * from './components/container.ts';
 export * from './components/dropdown.ts';
 export * from './components/icon.ts';
+export * from './components/layout.ts';
 export * from './components/progress.ts';
 export * from './components/select.ts';
 export * from './components/separator.ts';
@@ -23,6 +24,7 @@ export * from './controlCursor.ts';
 export * from './density.ts';
 export * from './foreground.ts';
 export * from './icon-sizes.ts';
+export * from './layout-column-variables.ts';
 export {
   validateDropdownPresenceEffectContract,
   validatePresenceEffectContract,

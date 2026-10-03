@@ -50,6 +50,10 @@ const componentEntries = [
     label: 'Icon'
   },
   {
+    href: '/layout',
+    label: 'Layout'
+  },
+  {
     href: '/progress',
     label: 'Progress'
   },

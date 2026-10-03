@@ -54,6 +54,22 @@ const coreClassMapSchema = {
           description: 'Scale classes by size key.',
           additionalProperties: { type: 'string' }
         },
+        sp: {
+          type: 'object',
+          description: 'Layout spacing classes by property and size key.',
+          patternProperties: {
+            '^(pt|pr|pb|pl|mt|mr|mb|ml)$': {
+              type: 'object',
+              additionalProperties: { type: 'string' }
+            }
+          },
+          additionalProperties: false
+        },
+        gc: {
+          type: 'object',
+          description: 'Layout grid column-variable consumer classes by breakpoint.',
+          additionalProperties: { type: 'string' }
+        },
         rr: {
           type: 'object',
           description: 'Rounded border radius scales by size key.',

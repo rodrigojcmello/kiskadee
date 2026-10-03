@@ -1,4 +1,5 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
+import { createLayoutSchema } from '../../utils/createLayoutSchema.ts';
 import { createSandboxCardSchema } from '../sandbox/components/card.schema.ts';
 import { sandboxTypography } from '../sandbox/sandbox.typography.ts';
 import { createSandbox2SliderSchema } from './components/slider.schema.ts';
@@ -127,6 +128,7 @@ export const schema: Schema<Sandbox2Segment> = {
     }
   },
   components: {
+    layout: createLayoutSchema(),
     ...createSandboxCardSchema({
       segmentNames,
       transparent

@@ -1,4 +1,5 @@
 import { breakpoints, primitive, type Schema } from '@kiskadee/core';
+import { createLayoutSchema } from '../../utils/createLayoutSchema.ts';
 import { createStrictPresetColorResolver } from '../../utils/presetColor.ts';
 import { absoluteCap, type CarbonIbmColorResolver } from './carbon-ibm.color.ts';
 import { carbonIbmColorEvidence } from './carbon-ibm.color-evidence.ts';
@@ -132,6 +133,7 @@ export function createCarbonIbmSchema(c: CarbonIbmColorResolver): Schema<never> 
       }
     },
     components: {
+      layout: createLayoutSchema(),
       badge: createCarbonIbmBadgeSchema({ c }),
       bottomSheet: createCarbonIbmBottomSheetSchema({ c }),
       button: createCarbonIbmButtonSchema({ c }),

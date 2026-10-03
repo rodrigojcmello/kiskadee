@@ -1,4 +1,5 @@
 import { breakpoints, type Schema, withAlpha } from '@kiskadee/core';
+import { createLayoutSchema } from '../../utils/createLayoutSchema.ts';
 import { createPresetColorGetter } from '../../utils/presetColor.ts';
 import { createElegantButtonSchema } from './components/button.schema.ts';
 import { createElegantCardSchema } from './components/card.schema.ts';
@@ -117,6 +118,7 @@ export const schema: Schema<Segment> = {
     }
   },
   components: {
+    layout: createLayoutSchema(),
     button: createElegantButtonSchema({
       c
     }),

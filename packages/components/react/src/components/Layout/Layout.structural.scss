@@ -1,0 +1,82 @@
+/*
+ * element frame / e1
+ * Owns independent logical insets and outer margins without inheriting spacing activation.
+ */
+.k-lyt {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/*
+ * element frame modifiers 'a' through 'd' / e1a-e1d
+ * Apply only explicitly selected padding edges using their generated tokens.
+ */
+.k-lyt-e1a { padding-block-start: var(--k-pdt); }
+.k-lyt-e1b { padding-inline-end: var(--k-pdr); }
+.k-lyt-e1c { padding-block-end: var(--k-pdb); }
+.k-lyt-e1d { padding-inline-start: var(--k-pdl); }
+
+/*
+ * element frame modifiers 'e' through 'h' / e1e-e1h
+ * Apply independent external margins on logical edges.
+ */
+.k-lyt-e1e { margin-block-start: var(--k-mgt); }
+.k-lyt-e1f { margin-inline-end: var(--k-mgr); }
+.k-lyt-e1g { margin-block-end: var(--k-mgb); }
+.k-lyt-e1h { margin-inline-start: var(--k-mgl); }
+
+/*
+ * element flow / e2
+ * Owns child layout separately from frame padding and prevents collapsed child margins.
+ */
+.k-lyt-e2 {
+  box-sizing: border-box;
+  display: flow-root;
+  min-inline-size: 0;
+  align-items: stretch;
+}
+
+/*
+ * element flow modifiers 'a' and 'b' / e2a-e2b
+ * Consume flow padding tokens as spacing between rows and columns, without real flow padding.
+ */
+.k-lyt-e2a { row-gap: var(--k-pdt); }
+.k-lyt-e2b { column-gap: var(--k-pdl); }
+
+/*
+ * element flow modifiers 'c' and 'd' / e2c-e2d
+ * Select the native CSS layout mechanism without changing child semantics or DOM order.
+ */
+.k-lyt-e2c { display: flex; }
+.k-lyt-e2d { display: grid; }
+
+/*
+ * element flow modifiers 'e' through 'h' / e2e-e2h
+ * Control flex direction and wrapping independently of the spacing recipe.
+ */
+.k-lyt-e2e { flex-direction: row-reverse; }
+.k-lyt-e2f { flex-direction: column; }
+.k-lyt-e2g { flex-direction: column-reverse; }
+.k-lyt-e2h { flex-wrap: wrap; }
+
+/*
+ * element flow modifiers 'i' through 'l' / e2i-e2l
+ * Align children along the cross axis while stretch remains the structural default.
+ */
+.k-lyt-e2i { align-items: start; }
+.k-lyt-e2j { align-items: center; }
+.k-lyt-e2k { align-items: end; }
+.k-lyt-e2l { align-items: baseline; }
+
+/*
+ * element flow modifiers 'm' through 'r' / e2m-e2r
+ * Distribute children along the main axis without authoring spacing values.
+ */
+.k-lyt-e2m { justify-content: start; }
+.k-lyt-e2n { justify-content: center; }
+.k-lyt-e2o { justify-content: end; }
+.k-lyt-e2p { justify-content: space-between; }
+.k-lyt-e2q { justify-content: space-around; }
+.k-lyt-e2r { justify-content: space-evenly; }

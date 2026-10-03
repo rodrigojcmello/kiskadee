@@ -1,4 +1,9 @@
-import type { Breakpoints, ElementAllSizeValue, ElementSizeValue } from './breakpoints.ts';
+import type {
+  Breakpoints,
+  BreakpointValue,
+  ElementAllSizeValue,
+  ElementSizeValue
+} from './breakpoints.ts';
 import type { BadgeEffects, BadgeElements } from './components/badge.ts';
 import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
@@ -7,6 +12,7 @@ import type { ChipComponent } from './components/chip.ts';
 import type { ContainerComponent } from './components/container.ts';
 import type { DropdownElements, DropdownOptions } from './components/dropdown.ts';
 import type { IconElements } from './components/icon.ts';
+import type { LayoutComponent } from './components/layout.ts';
 import type { ProgressElements } from './components/progress.ts';
 import type { SelectOptions, SelectVariants } from './components/select.ts';
 import type { SeparatorElements } from './components/separator.ts';
@@ -63,6 +69,7 @@ export type ComponentName =
   | 'container'
   | 'dropdown'
   | 'icon'
+  | 'layout'
   | 'progress'
   | 'separator'
   | 'slider'
@@ -150,6 +157,7 @@ export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Par
   container: ComponentElementsStyleKeyMap<TSegmentName>;
   dropdown: ComponentElementsStyleKeyMap<TSegmentName>;
   icon: ComponentElementsStyleKeyMap<TSegmentName>;
+  layout: ComponentElementsStyleKeyMap<TSegmentName>;
   progress: ComponentElementsStyleKeyMap<TSegmentName>;
   separator: ComponentElementsStyleKeyMap<TSegmentName>;
   slider: ComponentVariantModesStyleKeyMap<TSegmentName>;
@@ -240,6 +248,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     options?: { density?: DensityScaleMap };
     elements: IconElements<TSegmentName> & Elements<TSegmentName>;
   };
+  layout: LayoutComponent;
   progress: {
     options?: { density?: DensityScaleMap };
     elements: ProgressElements<TSegmentName>;
@@ -425,6 +434,12 @@ export type ClassNameByElementJSON = {
   // s: values are pre-joined into a single space-separated string (no arrays) per size key.
   // For web payload optimization, keys are stored without the "s:" prefix (e.g. "s:md:1" -> "md:1", "s:all" -> "all").
   s?: Partial<Record<string, string>>;
+  // sp: Layout-owned property-specific spacing classes, keyed by compact size.
+  sp?: Partial<
+    Record<'pt' | 'pr' | 'pb' | 'pl' | 'mt' | 'mr' | 'mb' | 'ml', Partial<Record<string, string>>>
+  >;
+  // gc: Layout column-variable consumer class by preset breakpoint.
+  gc?: Partial<Record<BreakpointValue, string>>;
   // t: compact typography-profile bucket -> space-separated atomic utility classes.
   // Text consumes this independently from component scale; no profile-specific CSS selector exists.
   t?: Partial<Record<string, string>>;

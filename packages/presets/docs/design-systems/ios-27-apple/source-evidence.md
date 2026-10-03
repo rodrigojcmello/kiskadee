@@ -143,6 +143,7 @@ implementation under the same recommended ID without changing the preset.
 ## Component Evidence
 
 - [Card and surface composition](components/card.md)
+- [Layout (Kiskadee extension)](components/layout.md)
 - [Text and typography](components/text.md)
 - [Icon](components/icon.md)
 - [Separator](components/separator.md)
