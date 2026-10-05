@@ -180,18 +180,6 @@ export function createMaterial3GoogleCardSchema({
           borderStyle: 'solid'
         },
         scales: {
-          paddingTop: {
-            's:md:1': 16
-          },
-          paddingBottom: {
-            's:md:1': 16
-          },
-          paddingLeft: {
-            's:md:1': 16
-          },
-          paddingRight: {
-            's:md:1': 16
-          },
           borderWidth: {
             's:md:1': 1
           },

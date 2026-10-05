@@ -39,14 +39,18 @@ missing or similar visual treatments visible before a new border or surface mech
    and border plus shadow through public Card props. The comparison prefers the first
    published canonical surface (Neutral Lowest in Fluent) and
    the selected static shadow level (otherwise the published medium or first fixed level).
-   Its five explicit cases remain independent of the panel's preserve-border toggle.
+   Its explicit cases remain independent of the Interaction controls.
 5. **Shadow scale** previews only levels exposed through the public Card shadow artifact. Other
    global recipes remain textual documentation, never inline CSS shadow replicas.
 6. **Interaction** distinguishes a passive Card containing a Button from CardAction selection,
-   selected, disabled and interaction-locked examples. Interactive CardAction examples do not
-   contain or visually overlay another Button. Local p-react Button controls choose intent and
-   emphasis for all five specimens. Only published combinations are offered; an unavailable choice
-   after a theme/preset/intent change resolves to a published Medium or the first valid recipe.
+   selected, disabled, selected-plus-disabled, visual Pending and interaction-locked examples.
+   Interactive CardAction examples do not contain or visually overlay another Button. Local
+   controls choose intent, emphasis, independent border and CardAction shadow. The passive Card's
+   Button has its own shadow control, disabled when the active preset publishes no Button shadow.
+   Only published surface combinations are offered; an unavailable choice after a
+   theme/preset/intent change resolves to a published Medium or the first valid recipe.
+   Pending is explicitly a visual preview: its activation counter continues to respond.
+   Short property/value captions explain state without making JSX the primary documentation.
 
 ## Fluent scale migration (2026-09-04)
 
@@ -75,8 +79,10 @@ it does not author fill, stroke, radius, foreground, opacity or shadow recipes.
 
 The shared background controls continue to own the canvas. Card specimens retain their explicit
 intent and emphasis so choosing another canvas does not replace the recipe being inspected.
-Radius, static shadow and border-preservation controls apply to the surface matrix and passive
-example; CardAction keeps its existing independent shadow and interaction-lock controls.
+Radius is shared by the Card specimens. Surface matrix border and shadow controls stay local to
+that section; Interaction has independent border, shadow and interaction-lock controls.
+Card and CardAction own no padding. Content composes public Layout frames explicitly;
+`clipContent` clips edge-to-edge compositions without supplying spacing.
 
 The page consumes the independent static Card border contract. It does not infer border
 colors from contrast or implement stroke recipes locally.

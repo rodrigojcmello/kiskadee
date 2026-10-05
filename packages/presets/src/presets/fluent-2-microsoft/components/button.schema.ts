@@ -5,7 +5,6 @@ import {
   fg,
   primitive,
   type Schema,
-  type SolidColor,
   type SurfaceContext,
   type TextEmphasis
 } from '@kiskadee/core';
@@ -92,7 +91,6 @@ function parentStateForegroundReference(
 
 type CreateFluent2MicrosoftButtonSchemaArgs = {
   c: Fluent2MicrosoftColorResolver;
-  shadowBlack: (alpha: number) => SolidColor;
 };
 
 const BUTTON_HIGH_FOREGROUND_POLARITIES = {
@@ -123,8 +121,7 @@ const BUTTON_DIVIDER_LOCATORS = {
 } as const satisfies Record<ButtonRecipeTheme, Fluent2MicrosoftFamilyColorLocator>;
 
 export function createFluent2MicrosoftButtonSchema({
-  c,
-  shadowBlack
+  c
 }: CreateFluent2MicrosoftButtonSchemaArgs): ButtonComponent {
   const toThemeShortcut = (theme: FluentButtonFormulaScale): ThemeShortcut =>
     theme === 'light' ? 'l' : 'd';
@@ -523,6 +520,20 @@ export function createFluent2MicrosoftButtonSchema({
       iconSurfaceCorners: 'edge',
       iconTreatment: 'plain'
     },
+    effects: {
+      shadow: {
+        e1: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1',
+            hover: 's:md:1',
+            pressed: false,
+            pending: false,
+            disabled: false
+          }
+        }
+      }
+    },
     elements: {
       e1: {
         name: 'button',
@@ -571,21 +582,6 @@ export function createFluent2MicrosoftButtonSchema({
             light: createBoxAndBorderContextPalettes('light'),
             dark: createBoxAndBorderContextPalettes('dark'),
             darker: createBoxAndBorderContextPalettes('darker')
-          }
-        },
-        effects: {
-          shadow: {
-            x: { rest: 0, hover: 0, pressed: 0, focus: 0, pending: 0, disabled: 0 },
-            y: { rest: 2, hover: 4, pressed: 0, focus: 4, pending: 0, disabled: 0 },
-            blur: { rest: 6, hover: 10, pressed: 0, focus: 10, pending: 0, disabled: 0 },
-            color: {
-              rest: shadowBlack(0.28),
-              hover: shadowBlack(0.35),
-              pressed: shadowBlack(0.32),
-              focus: shadowBlack(0.35),
-              pending: shadowBlack(0),
-              disabled: shadowBlack(0)
-            }
           }
         }
       },

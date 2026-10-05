@@ -187,7 +187,7 @@ function ExampleSlot({
     <Card
       {...surface}
       border
-      flushContent
+      clipContent
       shadow={false}
       className={compact ? `${styles.slot} ${styles.compactSlot}` : styles.slot}
     >
@@ -225,7 +225,7 @@ function ExampleFrame({
   );
 
   return (
-    <ShowcaseExampleCard border flushContent shadow={false} className={styles.stage}>
+    <ShowcaseExampleCard padding={false} border clipContent shadow={false} className={styles.stage}>
       {children}
       {divider ? <Separator {...divider} /> : null}
       {codeSurface ? (
@@ -276,7 +276,8 @@ function SpacingComparison({ surface }: { surface: CardProps }) {
                 <Layout margin={{ block: 'sm2', inlineEnd: 'md' }}>
                   <ShowcaseExampleCard
                     border
-                    flushContent
+                    padding={false}
+                    clipContent
                     shadow={false}
                     className={styles.comparisonStage}
                   >
@@ -290,7 +291,8 @@ function SpacingComparison({ surface }: { surface: CardProps }) {
                 <Layout margin={{ block: 'sm2', inlineEnd: 'md' }}>
                   <ShowcaseExampleCard
                     border
-                    flushContent
+                    padding={false}
+                    clipContent
                     shadow={false}
                     className={styles.comparisonStage}
                   >
@@ -304,7 +306,8 @@ function SpacingComparison({ surface }: { surface: CardProps }) {
                 <Layout margin={{ block: 'sm2' }}>
                   <ShowcaseExampleCard
                     border
-                    flushContent
+                    padding={false}
+                    clipContent
                     shadow={false}
                     className={styles.comparisonStage}
                   >

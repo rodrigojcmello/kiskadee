@@ -3,6 +3,7 @@
 import type { CardRadiusMode, ComponentEmphasis } from '@kiskadee/core';
 import { Card } from '@kiskadee/react-components/card';
 import { Container } from '@kiskadee/react-components/container';
+import { Layout } from '@kiskadee/react-components/layout';
 import {
   resolveContentSurfaceContext,
   useComponentMetadata,
@@ -109,17 +110,19 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
             radius={radius}
             className={s.compositionSidebar}
           >
-            <div className={s.compositionSettings}>
+            <Layout padding="md" classNames={{ e2: s.compositionSettings }}>
               <Text profile={profiles.body}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua.
               </Text>
-            </div>
+            </Layout>
           </Card>
           <Card intent="primary" emphasis="medium" radius={radius} className={s.compositionTile}>
-            <Text profile={profiles.body}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </Text>
+            <Layout padding="md">
+              <Text profile={profiles.body}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </Text>
+            </Layout>
           </Card>
           <Card
             intent={supportingIntent}
@@ -127,19 +130,25 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
             radius={radius}
             className={s.compositionTile}
           >
-            <Text profile={profiles.body}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </Text>
+            <Layout padding="md">
+              <Text profile={profiles.body}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </Text>
+            </Layout>
           </Card>
           <Card intent="neutral" emphasis="medium" radius={radius} className={s.compositionWide}>
-            <Text profile={profiles.body}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </Text>
+            <Layout padding="md">
+              <Text profile={profiles.body}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </Text>
+            </Layout>
           </Card>
           <Card intent="primary" emphasis="highest" radius={radius} className={s.compositionWide}>
-            <Text profile={profiles.body}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </Text>
+            <Layout padding="md">
+              <Text profile={profiles.body}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </Text>
+            </Layout>
           </Card>
         </div>
       </div>

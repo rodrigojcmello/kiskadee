@@ -137,10 +137,6 @@ export function createIos27AppleCardSchema({ c, segmentNames }: CreateIos27Apple
         name: 'card',
         decorations: { borderStyle: 'solid' },
         scales: {
-          paddingTop: { 's:md:1': 16 },
-          paddingBottom: { 's:md:1': 16 },
-          paddingLeft: { 's:md:1': 16 },
-          paddingRight: { 's:md:1': 16 },
           borderWidth: 1,
           borderRadius: { rounded: { 's:md:1': 28 }, square: { 's:md:1': 0 } }
         },

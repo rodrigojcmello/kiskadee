@@ -9,6 +9,7 @@ import type {
 import { componentScaleToSize } from '@kiskadee/core';
 import { Button as KButton, useButtonArtifactConfig } from '@kiskadee/react-components/button';
 import { Card } from '@kiskadee/react-components/card';
+import { Layout } from '@kiskadee/react-components/layout';
 import {
   SurfaceContextProvider,
   useComponentMetadata,
@@ -133,7 +134,7 @@ function SurfaceContextComparison({
             emphasis="highest"
             surfaceContext={surfaceContext}
           >
-            <div className={s.contextSurfaceGrid}>
+            <Layout padding="md" classNames={{ e2: s.contextSurfaceGrid }}>
               {onVividSupported ? (
                 COMPARISON_EMPHASES.map((emphasis) => (
                   <KButton
@@ -160,7 +161,7 @@ function SurfaceContextComparison({
                   On vivid is not available in this palette.
                 </Text>
               )}
-            </div>
+            </Layout>
           </Card>
         </article>
       </div>
@@ -675,75 +676,64 @@ export function Button() {
               </div>
             </div>
 
-            <div>
-              <Text as="h3" profile={textProfiles.sectionTitle}>
+            <section className={s.shadowSection} aria-labelledby="button-shadow-title">
+              <Text as="h3" id="button-shadow-title" profile={textProfiles.sectionTitle}>
                 Shadow
               </Text>
-              <KButton
-                radius={buttonRadius}
-                size={componentScaleToSize(activeButtonScale)}
-                shadow={true}
-                surfaceContext={activeSurfaceContext}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Rest
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-              <KButton
-                radius={buttonRadius}
-                size={componentScaleToSize(activeButtonScale)}
-                shadow={true}
-                surfaceContext={activeSurfaceContext}
-                status={'hover'}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Hover
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-              <KButton
-                radius={buttonRadius}
-                size={componentScaleToSize(activeButtonScale)}
-                shadow={true}
-                surfaceContext={activeSurfaceContext}
-                status={showFocusRing ? 'focus' : undefined}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Focus
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-              <KButton
-                radius={buttonRadius}
-                size={componentScaleToSize(activeButtonScale)}
-                shadow={true}
-                surfaceContext={activeSurfaceContext}
-                status={'pressed'}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Pressed
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-              <KButton
-                radius={buttonRadius}
-                size={componentScaleToSize(activeButtonScale)}
-                shadow={true}
-                surfaceContext={activeSurfaceContext}
-                status={'disabled'}
-              >
-                <KButton.Label>
-                  <SmoothText fontName={fontName} align={alignment}>
-                    Disabled
-                  </SmoothText>
-                </KButton.Label>
-              </KButton>
-            </div>
+              {buttonClassesMap?.e1?.e?.h ? (
+                <>
+                  {showDescriptions ? (
+                    <Text as="p" profile={textProfiles.body}>
+                      Optional shadow follows the preset's state recipe. Compare the same button
+                      without shadow, during interaction and while unavailable.
+                    </Text>
+                  ) : null}
+                  <div className={s.shadowExamples}>
+                    {[
+                      { label: 'Off', props: { shadow: false } },
+                      { label: 'Rest', props: { shadow: true } },
+                      { label: 'Hover', props: { shadow: true, status: 'hover' as const } },
+                      {
+                        label: 'Focus',
+                        props: {
+                          shadow: true,
+                          status: showFocusRing ? ('focus' as const) : undefined
+                        }
+                      },
+                      { label: 'Pressed', props: { shadow: true, status: 'pressed' as const } },
+                      {
+                        label: 'Selected',
+                        props: { shadow: true, toggle: true, controlState: true }
+                      },
+                      { label: 'Pending', props: { shadow: true, pending: true } },
+                      { label: 'Disabled', props: { shadow: true, disabled: true } },
+                      {
+                        label: 'Selected + disabled',
+                        props: { shadow: true, toggle: true, controlState: true, disabled: true }
+                      }
+                    ].map(({ label, props }) => (
+                      <KButton
+                        key={label}
+                        {...props}
+                        radius={buttonRadius}
+                        size={componentScaleToSize(activeButtonScale)}
+                        surfaceContext={activeSurfaceContext}
+                      >
+                        <KButton.Label>
+                          <SmoothText fontName={fontName} align={alignment}>
+                            {label}
+                          </SmoothText>
+                        </KButton.Label>
+                      </KButton>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <Text as="p" profile={textProfiles.body} emphasis="low">
+                  The active preset does not publish a Button shadow.
+                </Text>
+              )}
+            </section>
 
             <div className={s['interaction-state']}>
               <Text as="h3" profile={textProfiles.sectionTitle}>

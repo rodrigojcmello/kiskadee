@@ -100,8 +100,9 @@ export function createMaterial3GoogleButtonSchema({
           states: {
             rest: 's:sm:1',
             hover: 's:md:1',
-            focus: 's:sm:1',
-            pressed: false,
+            // Pressed restores the resting elevation when Hover is also active.
+            pressed: 's:sm:1',
+            pending: false,
             disabled: false
           }
         }

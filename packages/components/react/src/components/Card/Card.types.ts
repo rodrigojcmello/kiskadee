@@ -35,22 +35,20 @@ export type CardBaseVisualProps = {
   emphasis?: ComponentEmphasis;
   /** Semantic color family to use on the Card root. Card v1 starts with 'neutral'. */
   intent?: CardIntent;
+  /** Omitted follows the preset; adaptive uses its authored surface policy. */
+  border?: boolean | 'adaptive';
+  /** Clip overflowing content to the Card boundary without changing its spacing. */
+  clipContent?: boolean;
 };
 
 export type CardVisualProps = Omit<CardBaseVisualProps, 'intent'> & {
   /** Static Cards may also use a Container complementary surface. */
   intent?: CardSurfaceIntent;
-  /** Omitted follows the preset; adaptive uses its authored surface policy. */
-  border?: boolean | 'adaptive';
-  /** Let child regions meet the Card edge while retaining its radius and clipping. */
-  flushContent?: boolean;
   /** Opt into shadow, or choose a fixed global shadow level for static cards. */
   shadow?: boolean | ElementSizeValue;
 };
 
 export type CardActionVisualProps = CardBaseVisualProps & {
-  /** Keep the schema border visible when shadow is active. Defaults to true. */
-  preserveBorderWithShadow?: boolean;
   /** Force Kiskadee visual/interaction state on the root element (e1). Excludes 'selected'. */
   status?: CardStatus;
   /** Opt into the stateful CardAction shadow recipe. */

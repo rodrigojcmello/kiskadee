@@ -21,12 +21,7 @@ import {
   resolveRadiusClassName,
   resolveSchemaElementClassName
 } from '../../shared/class-resolution/classNames.ts';
-import type {
-  CardActionVisualProps,
-  CardProps,
-  CardStatus,
-  CardVisualProps
-} from './Card.types.ts';
+import type { CardActionVisualProps, CardProps, CardVisualProps } from './Card.types.ts';
 
 export const DEFAULT_CARD_SCALE = 's:md:1';
 export const DEFAULT_CARD_RADIUS: CardRadiusMode = 'rounded';
@@ -37,7 +32,7 @@ export type ResolvedCardClassNames = {
   classNames: NonNullable<HeadlessCardClassNames>;
 };
 
-const CARD_HIDE_BORDER_WITH_SHADOW_CLASS = 'k-crd-b';
+const CARD_HIDE_BORDER_CLASS = 'k-crd-b';
 
 export const join = joinClassNames;
 export const normalizeCardScaleKey = normalizeScaleKey;
@@ -86,13 +81,11 @@ export function resolveCardClassNames({
   e1,
   className,
   classNames,
-  status,
   radius,
   shadow,
-  preserveBorderWithShadow,
   border,
   borderDefaultMode,
-  flushContent,
+  clipContent,
   emphasis,
   intent,
   surfaceContext,
@@ -102,13 +95,11 @@ export function resolveCardClassNames({
   e1: ClassNameByElementJSON | undefined;
   className: string | undefined;
   classNames: NonNullable<CardProps['classNames']>;
-  status: CardStatus | 'rest';
   radius: CardVisualProps['radius'];
   shadow: CardVisualProps['shadow'] | CardActionVisualProps['shadow'];
-  preserveBorderWithShadow?: CardActionVisualProps['preserveBorderWithShadow'];
   border?: CardVisualProps['border'];
   borderDefaultMode?: CardBorderMode;
-  flushContent?: CardVisualProps['flushContent'];
+  clipContent?: CardVisualProps['clipContent'];
   emphasis: CardVisualProps['emphasis'];
   intent: CardVisualProps['intent'];
   surfaceContext: SurfaceContext;
@@ -139,27 +130,18 @@ export function resolveCardClassNames({
       : border === false
         ? 'never'
         : (border ?? borderDefaultMode ?? 'adaptive');
-  const borderEnabled = action
-    ? borderRecipe?.adaptive
-    : borderMode === 'adaptive'
-      ? borderRecipe?.adaptive
-      : borderMode === 'always';
+  const borderEnabled =
+    borderMode === 'adaptive' ? borderRecipe?.adaptive : borderMode === 'always';
   const borderClass = borderRecipe
     ? borderEnabled
       ? borderRecipe.on
       : borderRecipe.off
     : undefined;
-  const hideBorderWithShadow = action
-    ? shadowEffect.length > 0 && preserveBorderWithShadow === false
+  const hideBorder = action
+    ? borderMode === 'never'
     : borderRecipe
       ? borderEnabled === false
       : borderMode === 'never';
-
-  const projectedStatus =
-    status !== 'rest'
-      ? join(cn[status], status === 'focus' ? cn.focusVisible : undefined)
-      : undefined;
-  const activation = projectedStatus ? join(projectedStatus, cn.activator) : undefined;
 
   return {
     classNames: {
@@ -173,12 +155,11 @@ export function resolveCardClassNames({
           shadowEffect,
           classNames.e1,
           className,
-          activation,
           shadowEffect ? cn.shadow : undefined,
           'k-crd',
-          flushContent && !action ? 'k-crd-e1a' : undefined,
+          clipContent ? 'k-crd-e1a' : undefined,
           action ? 'k-crd-a' : undefined,
-          hideBorderWithShadow ? CARD_HIDE_BORDER_WITH_SHADOW_CLASS : undefined,
+          hideBorder ? CARD_HIDE_BORDER_CLASS : undefined,
           action ? 'k-foc' : undefined,
           'k-trn'
         ) ?? ''

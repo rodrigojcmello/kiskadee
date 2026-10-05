@@ -183,6 +183,24 @@ Rules:
 - shadow should stay opt-in by default in React components such as `Button` and
   `Card`.
 
+CardAction and Button share this opt-in contract. Presets author geometry only in the global
+catalog and select a small state recipe per component. Legacy element-local shadow and a
+component catalog recipe must not coexist on the same target; Web Builder rejects competing
+authorship and missing global catalogs. An omitted recipe remains an unsupported capability,
+without a runtime fallback.
+
+Rest provides the base elevation. Hover may raise it; Pressed supersedes Hover and may restore
+Rest or remove elevation according to the preset. Focus uses the global focus indicator unless
+an authored shadow delta or documented compound-state reset is required. Selected does not
+automatically introduce a new elevation scale. Pending and Disabled suppress transient native
+and projected interactions; their shadow may retain Rest or explicitly use `false`. An omitted
+state emits no rule, while `false` actively clears the shadow. State-only rules must remain
+state-gated even when forced visual previews are disabled.
+
+Button.Group consumes the authored Rest shadow once on its wrapper. Its children do not add
+individual shadows, and child interaction states do not turn the group into an interactive
+shadow owner.
+
 The state recipe is flat. It maps each canonical interaction or projected state
 to one shadow level or to `false`; it does not define a nested selected-state
 matrix. For example, a Switch thumb can use:
@@ -268,47 +286,49 @@ The static Card uses a fixed catalog level. CardAction uses the component's
 state recipe and native/projected interaction states. A single element should
 not mix a fixed level and a state recipe at runtime.
 
-Shadow does not remove the static Card border by default. Static Card uses `border`
+Shadow does not remove the Card or CardAction border. Both components use `border`
 independently of shadow: omit it to follow the preset default, use `false` to hide
 border paint, or `true` to enable the available border recipe. Hiding border paint
-preserves schema border width and dimensions.
+preserves schema border width and dimensions. The explicit `clipContent` composition with a
+fully hidden border removes that border geometry so internal surface bands meet the outer edge.
 
-`preserveBorderWithShadow` remains a legacy CardAction-only composition prop.
-When it is `false` and a shadow class is resolved, CardAction hides border paint
-without changing the schema border width. It is no longer accepted by static Card.
+`preserveBorderWithShadow` has been removed. Use `border={false}` to suppress the border
+independently of whether the current state draws a shadow. An adaptive Rest border can still
+have authored interaction deltas; explicitly disabling the border suppresses those too.
 See the [Card contract](../../packages/components/react/docs/definitions/card/card-contract.md)
 for the current border and shadow API.
 
 ## Material 3 Google Elevation Mapping
 
-`material-3-google` maps the Material 3 Light elevation levels from the
-Material 3 Design Kit Community Figma file into Kiskadee's canonical size scale:
+`material-3-google` maps the complete Material Web elevation stacks into Kiskadee's canonical
+size scale. Each level combines a key layer at 30% opacity and an ambient layer at 15% opacity:
 
-| Kiskadee level | Material elevation | CSS layer |
+| Kiskadee level | Material elevation | Key geometry / ambient geometry (x y blur spread, px) |
 | --- | --- | --- |
-| `s:sm:1` | Elevation 1 | `0 1px 3px 1px rgba(0,0,0,.15)` |
-| `s:md:1` | Elevation 2 | `0 2px 6px 2px rgba(0,0,0,.15)` |
-| `s:lg:1` | Elevation 3 | `0 1px 3px 0 rgba(0,0,0,.30)` |
-| `s:lg:2` | Elevation 4 | `0 2px 3px 0 rgba(0,0,0,.30)` |
-| `s:lg:3` | Elevation 5 | `0 4px 4px 0 rgba(0,0,0,.30)` |
+| `s:sm:1` | Elevation 1 | `0 1 2 0` / `0 1 3 1` |
+| `s:md:1` | Elevation 2 | `0 1 2 0` / `0 2 6 2` |
+| `s:lg:1` | Elevation 3 | `0 1 3 0` / `0 4 8 3` |
+| `s:lg:2` | Elevation 4 | `0 2 3 0` / `0 6 10 4` |
+| `s:lg:3` | Elevation 5 | `0 4 4 0` / `0 8 12 6` |
 
-The Material source defines two-layer elevation shadows. The current
-`material-3-google` preset still keeps one CSS layer per level as a preset-level
-approximation. This is not a global schema limitation; a future Material fidelity
-pass may preserve both source layers in the same way as any other official
-shadow stack.
+Source geometry and component adaptations are recorded in the
+[Material preset evidence](../../packages/presets/docs/design-systems/material-design-3-google/source-evidence.md).
+The shared catalog also improves Dropdown and BottomSheet elevation without changing their recipes.
 
-The current Material Button and CardAction recipe is:
+Material Button and CardAction share Rest, Hover, Pressed and Disabled levels:
 
 ```ts
 {
   rest: 's:sm:1',
   hover: 's:md:1',
-  focus: 's:sm:1',
-  pressed: false,
+  pressed: 's:sm:1',
   disabled: false
 }
 ```
+
+Pressed explicitly restores Rest after Hover. Focus adds the global ring and preserves Hover
+when both coexist. Button additionally declares `pending: false` as an operational-state
+adaptation; CardAction Pending remains a visual projection with its sparse recipe.
 
 ## Fluent 2 Microsoft Shadow Mapping
 

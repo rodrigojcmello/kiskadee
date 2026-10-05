@@ -92,10 +92,6 @@ export function createSandboxCardSchema(_args: {
         name: 'card',
         decorations: { borderStyle: 'solid' },
         scales: {
-          paddingTop: 16,
-          paddingRight: 16,
-          paddingBottom: 16,
-          paddingLeft: 16,
           borderWidth: 1,
           borderRadius: { rounded: 12, square: 0 }
         },

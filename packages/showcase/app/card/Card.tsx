@@ -18,13 +18,14 @@ import {
   type ShadowLayerValue,
   type SolidColor
 } from '@kiskadee/core';
-import { Button as KButton } from '@kiskadee/react-components/button';
+import { Button as KButton, useButtonArtifactConfig } from '@kiskadee/react-components/button';
 import {
   Card as KCard,
   CardAction as KCardAction,
   useCardArtifactConfig
 } from '@kiskadee/react-components/card';
 import { Icon } from '@kiskadee/react-components/icon';
+import { Layout } from '@kiskadee/react-components/layout';
 import { useComponentMetadata, useKiskadee } from '@kiskadee/react-components/resources';
 import { Text } from '@kiskadee/react-components/text';
 import type { ManifestComponent, ManifestComponentState } from '@kiskadee/web-builder/types';
@@ -124,6 +125,7 @@ const cardShadowStateLabels: Partial<Record<InteractionState, string>> = {
   hover: 'Hover',
   focus: 'Focus',
   pressed: 'Pressed',
+  pending: 'Pending',
   disabled: 'Disabled',
   selected: 'Selected'
 };
@@ -255,21 +257,23 @@ function buildShadowDocumentationByKind({
 
 function CardContent({
   title = 'Project overview',
-  body = 'Keep related information together.'
+  body = 'Keep related information together.',
+  inset = true
 }: {
   title?: string;
   body?: string;
+  inset?: boolean;
 }) {
   const profiles = useShowcaseTextProfiles();
   return (
-    <div className={s.content}>
+    <Layout padding={inset ? 'md' : false} classNames={{ e2: s.content }}>
       <Text as="span" profile={profiles.groupTitle}>
         {title}
       </Text>
       <Text as="span" profile={profiles.caption} emphasis="low">
         {body}
       </Text>
-    </div>
+    </Layout>
   );
 }
 
@@ -354,6 +358,7 @@ export function Card() {
   const cardMetadata = useComponentMetadata('card');
   const { manifest } = useShowcaseMetadata(['button', 'card']);
   const { cardClassesMap } = useCardArtifactConfig();
+  const { buttonClassesMap } = useButtonArtifactConfig();
   const background = useShowcaseBackground();
   const profiles = useShowcaseTextProfiles();
   const { showDescriptions, setShowDescriptions } = useShowcaseDisplayPreferences();
@@ -374,6 +379,7 @@ export function Card() {
   const isCardAvailable = Boolean(cardManifest);
   const defaultRadius: CardRadiusMode = global?.radius === 'square' ? 'square' : 'rounded';
   const [passiveActivations, setPassiveActivations] = React.useState(0);
+  const [pendingPreviewActivations, setPendingPreviewActivations] = React.useState(0);
   const [selected, setSelected] = React.useState(false);
   const [interactionIntent, setInteractionIntent] = React.useState<CardIntent>('neutral');
   const [interactionEmphasis, setInteractionEmphasis] = React.useState<ComponentEmphasis>('medium');
@@ -387,7 +393,21 @@ export function Card() {
   const [surfaceShadowMode, setSurfaceShadowMode] = React.useState<'preset' | 'always' | 'never'>(
     'preset'
   );
-  const [preserveBorderWithShadow, setPreserveBorderWithShadow] = React.useState(true);
+  const [interactionBorderMode, setInteractionBorderMode] = React.useState<
+    'adaptive' | 'always' | 'never'
+  >('adaptive');
+  const [interactionShadow, setInteractionShadow] = React.useState(true);
+  const [buttonShadow, setButtonShadow] = React.useState(false);
+  const interactionBorder =
+    interactionBorderMode === 'adaptive' ? 'adaptive' : interactionBorderMode === 'always';
+  const cardShadowBucket = cardClassesMap?.e1?.e?.h;
+  const hasCardActionShadow = Boolean(
+    typeof cardShadowBucket === 'string' ? cardShadowBucket : cardShadowBucket?.all
+  );
+  const buttonShadowBucket = buttonClassesMap?.e1?.e?.h;
+  const hasButtonShadow = Boolean(
+    typeof buttonShadowBucket === 'string' ? buttonShadowBucket : buttonShadowBucket?.all
+  );
   const demoButtonProfile = React.useMemo(
     () => resolveDemoButtonProfile(buttonManifest, buttonState),
     [buttonManifest, buttonState]
@@ -480,11 +500,6 @@ export function Card() {
             label="Descriptions"
             checked={showDescriptions}
             onCheckedChange={setShowDescriptions}
-          />
-          <ShowcaseBooleanControl
-            label="Preserve border with shadow"
-            checked={preserveBorderWithShadow}
-            onCheckedChange={setPreserveBorderWithShadow}
           />
         </ShowcaseControlStack>
       </ShowcaseControlGroup>
@@ -684,7 +699,7 @@ export function Card() {
                         radius={radius}
                         className={s.contextHost}
                       >
-                        <div className={s.contextSamples}>
+                        <Layout padding="md" classNames={{ e2: s.contextSamples }}>
                           {semanticSamples
                             .filter(
                               (sample) =>
@@ -713,7 +728,7 @@ export function Card() {
                                 </KCard>
                               </div>
                             ))}
-                        </div>
+                        </Layout>
                       </KCard>
                     </article>
                   );
@@ -819,7 +834,57 @@ export function Card() {
             <SectionHeading
               id="card-interaction"
               title="Interaction"
-              description="A passive Card can contain an independent action. CardAction is itself the action: activate it to inspect selection, or compare disabled and locked behavior."
+              description="Card groups content; CardAction makes the whole surface an action. Compare selection, disabled and locked behavior with the same surface. Shadow is optional, and border remains independent."
+              actions={
+                <ShowcaseExampleCard
+                  border
+                  role="group"
+                  aria-label="Interaction presentation controls"
+                >
+                  <Text
+                    as="div"
+                    profile={profiles.body}
+                    className={s.controlRow}
+                    style={{ colorScheme: theme === 'light' ? 'light' : 'dark' }}
+                  >
+                    <ShowcaseContentSelectControl
+                      label="Border"
+                      width={140}
+                      value={interactionBorderMode}
+                      options={[
+                        { value: 'adaptive', label: 'Adaptive' },
+                        { value: 'always', label: 'Show' },
+                        { value: 'never', label: 'Hide' }
+                      ]}
+                      onValueChange={(value) =>
+                        setInteractionBorderMode(value as typeof interactionBorderMode)
+                      }
+                    />
+                    <ShowcaseContentSelectControl
+                      label="CardAction shadow"
+                      width={150}
+                      value={hasCardActionShadow && interactionShadow ? 'on' : 'off'}
+                      disabled={!hasCardActionShadow}
+                      options={[
+                        { value: 'on', label: 'On' },
+                        { value: 'off', label: hasCardActionShadow ? 'Off' : 'Not published' }
+                      ]}
+                      onValueChange={(value) => setInteractionShadow(value === 'on')}
+                    />
+                    <ShowcaseContentSelectControl
+                      label="Button shadow"
+                      width={150}
+                      value={hasButtonShadow && buttonShadow ? 'on' : 'off'}
+                      disabled={!hasButtonShadow}
+                      options={[
+                        { value: 'on', label: 'On' },
+                        { value: 'off', label: hasButtonShadow ? 'Off' : 'Not published' }
+                      ]}
+                      onValueChange={(value) => setButtonShadow(value === 'on')}
+                    />
+                  </Text>
+                </ShowcaseExampleCard>
+              }
             />
             {buttonManifest ? (
               <div className={s.interactionControls}>
@@ -871,18 +936,28 @@ export function Card() {
                 <Text as="h4" profile={profiles.groupTitle}>
                   Passive Card
                 </Text>
-                <KCard {...interactionSample} className={s.cardSurface} radius={radius}>
-                  <div className={s.passiveContent}>
-                    <CardContent title="Project resources" body="Only the button is interactive." />
+                <KCard
+                  {...interactionSample}
+                  className={s.cardSurface}
+                  radius={radius}
+                  border={interactionBorder}
+                >
+                  <Layout padding="md" classNames={{ e2: s.passiveContent }}>
+                    <CardContent
+                      title="Project resources"
+                      body="Only the button is interactive."
+                      inset={false}
+                    />
                     {buttonManifest ? (
                       <KButton
                         {...demoButtonProfile}
+                        shadow={buttonShadow}
                         onClick={() => setPassiveActivations((count) => count + 1)}
                       >
                         <KButton.Label>Learn more</KButton.Label>
                       </KButton>
                     ) : null}
-                  </div>
+                  </Layout>
                 </KCard>
                 <Text as="p" profile={profiles.caption} emphasis="low" role="status">
                   {passiveActivations
@@ -898,8 +973,8 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow
-                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  shadow={interactionShadow}
+                  border={interactionBorder}
                   controlState={selected}
                   onControlStateChange={setSelected}
                 >
@@ -909,7 +984,7 @@ export function Card() {
                   />
                 </KCardAction>
                 <Text as="p" profile={profiles.caption} emphasis="low">
-                  {selected ? 'Selected' : 'Rest'} · Whole surface is interactive
+                  selected: {String(selected)} · Whole surface is interactive
                 </Text>
               </article>
               <article className={s.example}>
@@ -920,8 +995,8 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow
-                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  shadow={interactionShadow}
+                  border={interactionBorder}
                   controlState
                 >
                   <CardContent
@@ -930,7 +1005,7 @@ export function Card() {
                   />
                 </KCardAction>
                 <Text as="p" profile={profiles.caption} emphasis="low">
-                  Selected state held for comparison
+                  selected: true · Selection held for comparison
                 </Text>
               </article>
               <article className={s.example}>
@@ -941,14 +1016,58 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow
-                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  shadow={interactionShadow}
+                  border={interactionBorder}
                   disabled
                 >
                   <CardContent title="Project overview" body="This action is unavailable." />
                 </KCardAction>
                 <Text as="p" profile={profiles.caption} emphasis="low">
-                  Native disabled behavior
+                  disabled: true · Activation unavailable
+                </Text>
+              </article>
+              <article className={s.example}>
+                <Text as="h4" profile={profiles.groupTitle}>
+                  Selected + disabled
+                </Text>
+                <KCardAction
+                  {...interactionSample}
+                  className={s.cardSurface}
+                  radius={radius}
+                  shadow={interactionShadow}
+                  border={interactionBorder}
+                  controlState
+                  disabled
+                >
+                  <CardContent
+                    title="Project overview"
+                    body="Selection is retained while activation is unavailable."
+                  />
+                </KCardAction>
+                <Text as="p" profile={profiles.caption} emphasis="low">
+                  selected: true · disabled: true
+                </Text>
+              </article>
+              <article className={s.example}>
+                <Text as="h4" profile={profiles.groupTitle}>
+                  Pending appearance
+                </Text>
+                <KCardAction
+                  {...interactionSample}
+                  className={s.cardSurface}
+                  radius={radius}
+                  shadow={interactionShadow}
+                  border={interactionBorder}
+                  status="pending"
+                  onClick={() => setPendingPreviewActivations((count) => count + 1)}
+                >
+                  <CardContent
+                    title="Project overview"
+                    body="Visual preview only. This action can still be activated."
+                  />
+                </KCardAction>
+                <Text as="p" profile={profiles.caption} emphasis="low" role="status">
+                  status: pending · Activations: {pendingPreviewActivations}
                 </Text>
               </article>
               <article className={s.example}>
@@ -959,8 +1078,8 @@ export function Card() {
                   {...interactionSample}
                   className={s.cardSurface}
                   radius={radius}
-                  shadow
-                  preserveBorderWithShadow={preserveBorderWithShadow}
+                  shadow={interactionShadow}
+                  border={interactionBorder}
                   controlState={lockedSelected}
                   interactionLocked={interactionLocked}
                   onControlStateChange={setLockedSelected}

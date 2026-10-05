@@ -30,6 +30,10 @@ which incorporates the Container surface at build time. Neither renders a Contai
 artifact. A consumer can place a separate Container inside a static Card for a distinct internal
 region.
 
+Neither component adds content padding. Applications compose spacing through `Layout` or their
+own content layout. CardAction resets native button padding to zero; this is browser normalization,
+not a preset spacing value.
+
 ## Visual Props
 
 Card visuals are selected through the normal Kiskadee component axes:
@@ -42,12 +46,10 @@ Card visuals are selected through the normal Kiskadee component axes:
   `square`; `pill` is outside the current Card contract.
 - `shadow`: static or stateful elevation, depending on component and schema
   support.
-- `border`: static Card visibility override, independent of emphasis and shadow.
-- `preserveBorderWithShadow`: CardAction-only legacy shadow composition option.
-- `flushContent`: static Card-only option. It removes Card's internal padding and clips content
-  to its corners so a child Container can form a full-width band. The band owns its own spacing.
-  With `border={false}`, it also removes the border geometry so the base fill cannot form a rim
-  around a differently colored child band.
+- `border`: Card or CardAction visibility override, independent of emphasis and shadow.
+- `clipContent`: clips overflowing content to the component boundary. It adds no spacing. When the
+  border is completely hidden, clipping also removes its geometry so a differently colored child
+  region can reach the outer edge without a rim of the parent surface.
 
 Static Card also accepts optional `neutralComplementary` and `primaryComplementary` surfaces when
 the preset publishes them. The companion uses the base intent's border and frame. CardAction
@@ -64,7 +66,7 @@ component's stateful shadow recipe.
 
 Card borders and shadows are separate visual concerns.
 
-Static `Card.border` omitted follows `options.border.defaultMode` from the preset.
+On both Card and CardAction, omitted `border` follows `options.border.defaultMode` from the preset.
 `"adaptive"` selects the preset's contextual boolean policy regardless of that default;
 `true` enables the available recipe and `false` hides it. Adaptive decisions use segment,
 theme, consumed surface context, base frame intent and emphasis. Shadow remains independent.
@@ -76,6 +78,8 @@ theme, consumed surface context, base frame intent and emphasis. Shadow remains 
 <Card border />
 <Card border={false} shadow />
 <Card border shadow />
+<CardAction border={false} shadow />
+<CardAction border shadow />
 ```
 
 The schema owns `options.border.defaultMode` and the contextual `options.border.adaptive`
@@ -84,10 +88,15 @@ Rest on/off classes and the adaptive decision in the palette-local `b` bucket, p
 default mode in the Card artifact. React selects classes; it never computes contrast or
 a border color. `border` cannot manufacture an unpublished stroke.
 
-Static Card no longer accepts `preserveBorderWithShadow`: replace suppression with
-`border={false}`. For the preset default, omit `border`; to request the contextual
-policy explicitly, use `border="adaptive"`. CardAction retains its API and state maps,
-including optional suppression with shadow. Its Rest border follows the shared adaptive map.
+Neither component accepts `preserveBorderWithShadow`: replace suppression with `border={false}`.
+For the preset default, omit `border`; to request the contextual policy explicitly, use
+`border="adaptive"`. On CardAction, an adaptive false decision hides only the Rest border;
+authored interaction deltas may still display a boundary. Explicit `border={false}` or the preset's
+`defaultMode: never` suppresses border paint in every state. Shadow never changes that decision,
+including states whose shadow recipe is off.
+
+The former `flushContent` option is replaced by `clipContent` on both components. Content spacing
+is always composed independently; clipping does not remove consumer-authored padding.
 
 ## CardAction State
 
@@ -103,6 +112,12 @@ through `aria-pressed`.
 `status="pending"` is a terminal visual projection. On CardAction it remains
 actionable and does not add busy, disabled, or other ARIA semantics; operational
 pending behavior is currently owned only by Button.
+
+Disabled takes precedence over Pending. Both terminal visual states suppress native interaction
+styling and transient projected states. They also suspend the Selected visual marker while
+preserving `controlState` and `aria-pressed`. The surface and descendant context use the authored
+terminal output or Rest fallback together. Leaving the terminal state restores the Selected
+appearance if the control is still selected. Focus indication remains independent of shadow.
 
 Use selected state only when the card itself is the selectable item. Do not make
 `CardAction` selected only because a child control inside the card is on. In
@@ -122,6 +137,13 @@ contracts unchanged, but projects hover and pressed visual state while the
 pointer is within the card bounds even if the browser hit-test lands on the
 overlaid control. Use it only for these overlay compositions. The child control
 still owns its own checked/selected state and interaction feedback.
+
+Bounds mode observes the primary pointer and projects Pressed only while that pointer remains
+inside the Card after starting a press there. Pressed suppresses Hover, including native hover
+styling. Leaving the bounds clears Pressed until the same active pointer re-enters; releasing it,
+cancelling it, leaving the window, or losing window focus ends the press. Pointer transitions to
+another element in the same window do not clear the bounds state. Overlaid controls must be DOM
+siblings rather than interactive descendants of the native button.
 
 ## Showcase Surface Usage
 

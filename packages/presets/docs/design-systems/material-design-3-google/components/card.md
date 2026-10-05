@@ -39,8 +39,8 @@ of the current theme: deep cards are available in Light and Dark.
 Outlined presentation defaults to lowest onSubtle. Other soft surfaces default to
 no border; highest onVivid defaults to a border to separate adjacent strong surfaces.
 The existing border option remains usable independently. Elevation stays an opt-in
-effect with the five existing fixed levels. Geometry stays at 16px padding and
-12px rounded radius.
+effect with five fixed levels. The surface retains its 12px rounded radius and has no content
+padding; consumers use Layout for interior spacing.
 
 ## Tonal formula
 

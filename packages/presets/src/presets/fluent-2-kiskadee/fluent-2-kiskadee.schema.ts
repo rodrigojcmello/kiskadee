@@ -12,6 +12,8 @@ const segmentNames = ['default', 'modern', 'dynamic'] as const;
 type SegmentName = (typeof segmentNames)[number];
 
 const c = createPresetColorGetter<SegmentName>(schemaContext);
+const shadowBlack = (alpha: number) =>
+  withAlpha(c('default', 'l', 'primitive.black.v1', 100), alpha * 100);
 
 // The `Schema` generic represents extra segment names beyond the built-ins (`default` and optional `dynamic`).
 type Segments = 'modern';
@@ -40,7 +42,23 @@ export const schema: Schema<Segments> = {
       width: 2,
       offset: 1
     },
-    radius: 'rounded'
+    radius: 'rounded',
+    effects: {
+      shadow: {
+        outer: {
+          levels: {
+            's:sm:1': [
+              { x: 0, y: 0, blur: 2, spread: 0, color: shadowBlack(0.12) },
+              { x: 0, y: 1, blur: 2, spread: 0, color: shadowBlack(0.14) }
+            ],
+            's:md:1': [
+              { x: 0, y: 0, blur: 2, spread: 0, color: shadowBlack(0.12) },
+              { x: 0, y: 2, blur: 4, spread: 0, color: shadowBlack(0.14) }
+            ]
+          }
+        }
+      }
+    }
   },
   themeTokens: {
     palettes: {
@@ -62,6 +80,20 @@ export const schema: Schema<Segments> = {
   },
   components: {
     button: {
+      effects: {
+        shadow: {
+          e1: {
+            kind: 'outer',
+            states: {
+              rest: 's:sm:1',
+              hover: 's:md:1',
+              pressed: false,
+              pending: false,
+              disabled: false
+            }
+          }
+        }
+      },
       elements: {
         e1: {
           name: 'button',
@@ -198,21 +230,7 @@ export const schema: Schema<Segments> = {
                 }
               })
             }
-          ),
-          effects: {
-            shadow: {
-              x: { rest: 0, hover: 0, pressed: 0, focus: 0, disabled: 0 },
-              y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
-              blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
-              color: {
-                rest: withAlpha('#000000', 28),
-                hover: withAlpha('#000000', 35),
-                pressed: withAlpha('#000000', 32),
-                focus: withAlpha('#000000', 35),
-                disabled: withAlpha('#000000', 0)
-              }
-            }
-          }
+          )
         },
         e2: {
           name: 'button-text',

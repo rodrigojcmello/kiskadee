@@ -34,6 +34,8 @@ for (const [name, schema] of Object.entries({
   it(`${name} sources every authored Card Rest surface and output from Container`, () => {
     const card = schema.components.card!;
     const container = schema.components.container!;
+    for (const property of ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'])
+      expect(card.elements.e1?.scales).not.toHaveProperty(property);
     expect(card.surfaceSource).toBe('container');
     if (card.options) expect(card.options).not.toHaveProperty('canonicalSurfaces');
     expect(validateContainerComponentContract(container)).toEqual([]);

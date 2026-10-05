@@ -316,7 +316,7 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
                       radius={radius}
                       border={!(sample.baseIntent === 'primary' && sample.emphasis === 'highest')}
                       shadow={false}
-                      flushContent
+                      clipContent
                       className={s.complementaryPairCard}
                     >
                       {placement === 'header' ? band : null}

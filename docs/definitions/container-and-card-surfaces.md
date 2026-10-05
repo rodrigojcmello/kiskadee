@@ -57,10 +57,11 @@ not recalibrated by this decision.
 ## Framework and Showcase
 
 React shares a private context-resolution hook between Container, Card and CardAction. Each
-component keeps its own root (`div`, `div`, and `button`, respectively). Static Card's
-`flushContent` option removes its internal padding and clips its content to its corners, allowing
-consumer-composed Container bands to reach the Card edges. The content inside each band owns its
-own spacing. `flushContent` does not apply to CardAction.
+component keeps its own root (`div`, `div`, and `button`, respectively). Card and CardAction have
+no internal padding; consumer compositions use Layout for spacing. Their `clipContent` option
+only clips descendants to the surface boundary. It replaces `flushContent` without coupling
+clipping to spacing. Container bands can reach the Card edges, with Layout inside each band
+owning its padding. CardAction content must still obey native button content restrictions.
 
 Showcase compositions use the public components and preset artifacts for all colors. Local CSS
 may arrange and space them but does not supply substitute surface colors. A composition remains

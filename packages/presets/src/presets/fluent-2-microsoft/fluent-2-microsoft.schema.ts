@@ -216,7 +216,7 @@ export function createFluent2MicrosoftSchema(
       badge: createFluent2MicrosoftBadgeSchema({ c: colorResolver }),
       bottomSheet: createFluent2MicrosoftBottomSheetSchema({ c: colorResolver }),
       slider: createFluent2MicrosoftSliderSchema({ c: colorResolver }),
-      button: createFluent2MicrosoftButtonSchema({ c: colorResolver, shadowBlack }),
+      button: createFluent2MicrosoftButtonSchema({ c: colorResolver }),
       ...createFluent2MicrosoftCardSchema({
         c: colorResolver,
         segmentNames

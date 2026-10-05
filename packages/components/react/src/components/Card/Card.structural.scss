@@ -1,38 +1,53 @@
+/*
+ * element card / e1
+ * Keep the surface box predictable; consumer composition owns inner spacing.
+ */
 .k-crd {
-  /* Layout: Keep card sizing predictable when generated padding/border classes are present */
   box-sizing: border-box;
   display: block;
 }
 
 /*
  * element card root modifier 'a' / e1a
- * Flush content suppresses generated padding and clips children to the Card boundary.
+ * Clip overflowing content to the Card boundary without changing spacing.
  */
 .k-crd.k-crd-e1a {
-  padding: 0;
   overflow: hidden;
 }
 
+/*
+ * element card / e1
+ * Suppress border paint without changing the generated geometry.
+ */
 .k-crd-b {
-  /* Composition: Suppress border paint without changing the generated geometry. */
   border-color: transparent !important;
 }
 
-/* Flush regions must reach the outer edge when the static Card boundary is off. */
+/*
+ * element card root modifier 'a' / e1a
+ * Hidden boundaries let clipped child regions meet the outer edge without a surface rim.
+ */
 .k-crd.k-crd-e1a.k-crd-b {
   border-style: none;
 }
 
+/*
+ * element card action / e1
+ * Reset native button presentation while preserving the shared Card surface contract.
+ */
 .k-crd-a {
-  /* Native reset: CardAction is a button but should keep the card surface contract */
   appearance: none;
   color: inherit;
   cursor: var(--k-cc);
   font: inherit;
+  padding: 0;
   text-align: inherit;
   width: 100%;
 
-  /* Accessibility/UX: Respect disabled state for cursor feedback */
+  /*
+   * element card action / e1
+   * Respect native disabled state for cursor feedback.
+   */
   &[disabled] {
     cursor: not-allowed;
   }

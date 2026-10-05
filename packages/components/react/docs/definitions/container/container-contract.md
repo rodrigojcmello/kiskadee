@@ -21,8 +21,9 @@ private to the React implementation; it is not a third public component.
 
 `neutralComplementary` and `primaryComplementary` are optional intents for companion regions.
 Their emphasis is the recommended base pairing, not a restriction on ancestry. Layout and inner
-spacing belong to the consumer composition. For a full-width internal band, use the static
-Card's `flushContent` option and provide spacing inside the Container.
+spacing belong to the consumer composition. Card has no internal padding, so an internal band
+can occupy its full width. Use `Card.clipContent` when the band should be clipped to its corners,
+and compose Layout inside the Container for token-based spacing.
 
 See the [cross-package surface decision](../../../../../../docs/definitions/container-and-card-surfaces.md)
 and [Card contract](../card/card-contract.md).

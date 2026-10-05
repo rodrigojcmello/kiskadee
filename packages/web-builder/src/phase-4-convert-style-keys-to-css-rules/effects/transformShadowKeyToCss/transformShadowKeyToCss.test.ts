@@ -11,6 +11,19 @@ const className = 'abc';
 
 describe('transformShadowKeyToCss', () => {
   describe('Successful operation', () => {
+    it.each([
+      ['selected', '-s'],
+      ['pending', '-g'],
+      ['disabled', '-d']
+    ])('keeps %s shadows state-gated without forced preview support', (state, marker) => {
+      const result = transformShadowKeyToCss(
+        `shadow--${state}__[0,1,2,"#00000033"]`,
+        className,
+        false
+      );
+      expect(result).toBe(`.abc.-e.${marker}.-a { box-shadow: 0 1px 2px 0 #00000033 }`);
+    });
+
     it('should transform default state shadow key using hex color conversion', () => {
       const styleKey = 'shadow__[2,4,5,"#000000"]';
       const result = transformShadowKeyToCss(styleKey, className);

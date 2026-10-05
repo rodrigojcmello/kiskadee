@@ -139,7 +139,12 @@ function RolePreview({
   const stackLabel = display.stack?.join(', ') ?? 'Inherited from the host';
 
   return (
-    <ShowcaseExampleCard role="article" className={styles.roleCard} data-font-role={role}>
+    <ShowcaseExampleCard
+      role="article"
+      className={styles.roleCard}
+      contentClassName={styles.roleCardContent}
+      data-font-role={role}
+    >
       <header className={styles.roleHeader}>
         <div>
           <Text as="p" profile={textProfiles.caption} className={styles.roleEyebrow}>
@@ -647,6 +652,7 @@ function TypeScale({
                     <ShowcaseExampleCard
                       role="article"
                       className={styles.profileCard}
+                      contentClassName={styles.profileCardContent}
                       key={profileId}
                     >
                       <div className={styles.profilePreview}>

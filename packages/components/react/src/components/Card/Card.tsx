@@ -28,11 +28,9 @@ const EMPTY_CARD_CLASS_NAMES: NonNullable<CardProps['classNames']> = {};
 function useCardClassNames(
   props: Pick<CardProps, 'className' | 'classNames' | 'radius' | 'emphasis' | 'intent'> & {
     surfaceContext: NonNullable<CardProps['surfaceContext']>;
-    status?: CardStatus | 'rest';
     shadow?: CardProps['shadow'] | CardActionProps['shadow'];
-    preserveBorderWithShadow?: CardActionProps['preserveBorderWithShadow'];
     border?: CardProps['border'];
-    flushContent?: CardProps['flushContent'];
+    clipContent?: CardProps['clipContent'];
   },
   options: { action: boolean },
   artifactConfig: CardArtifactConfig
@@ -40,15 +38,13 @@ function useCardClassNames(
   const {
     className,
     classNames = EMPTY_CARD_CLASS_NAMES,
-    status: statusProp = 'rest',
     radius,
     emphasis,
     intent = DEFAULT_CARD_INTENT,
     surfaceContext,
     shadow,
     border,
-    flushContent,
-    preserveBorderWithShadow
+    clipContent
   } = props;
   const { cardClassesMap, options: artifactOptions } = artifactConfig;
   const { e1 } = cardClassesMap ?? {};
@@ -59,13 +55,11 @@ function useCardClassNames(
         e1,
         className,
         classNames,
-        status: statusProp,
         radius,
         shadow,
         border,
         borderDefaultMode: artifactOptions.borderDefaultMode,
-        flushContent,
-        preserveBorderWithShadow,
+        clipContent,
         emphasis,
         intent,
         surfaceContext,
@@ -76,13 +70,11 @@ function useCardClassNames(
       e1,
       className,
       classNames,
-      statusProp,
       radius,
       shadow,
       border,
       artifactOptions.borderDefaultMode,
-      flushContent,
-      preserveBorderWithShadow,
+      clipContent,
       emphasis,
       intent,
       surfaceContext,
@@ -98,7 +90,7 @@ const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref)
     classNames,
     radius,
     border,
-    flushContent,
+    clipContent,
     shadow,
     emphasis,
     intent,
@@ -125,7 +117,7 @@ const CardRoot = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref)
       emphasis,
       intent,
       surfaceContext: consumedSurfaceContext,
-      flushContent
+      clipContent
     },
     { action: false },
     artifactConfig
@@ -146,7 +138,8 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
     classNames,
     status,
     radius,
-    preserveBorderWithShadow,
+    border,
+    clipContent,
     shadow,
     emphasis,
     intent,
@@ -169,10 +162,10 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
     {
       className,
       classNames,
-      status,
       radius,
       shadow,
-      preserveBorderWithShadow,
+      border,
+      clipContent,
       emphasis,
       intent,
       surfaceContext: consumedSurfaceContext

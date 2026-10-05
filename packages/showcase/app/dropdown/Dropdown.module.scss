@@ -50,8 +50,8 @@
 
 }
 
-.card > :global(.k-btn-x3),
-.card > :global(.k-btn) {
+.card :global(.s-example-card-content) > :global(.k-btn-x3),
+.card :global(.s-example-card-content) > :global(.k-btn) {
   justify-self: start;
 }
 
@@ -71,11 +71,11 @@
   min-block-size: 260px;
 }
 
-.edgeStage > :global(.k-btn) {
+.edgeStage :global(.s-example-card-content) > :global(.k-btn) {
   justify-self: end;
 }
 
-.edgeStage > p {
+.edgeStage :global(.s-example-card-content) > p {
   max-inline-size: 360px;
   text-align: end;
 }

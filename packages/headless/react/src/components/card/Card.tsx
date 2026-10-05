@@ -74,31 +74,29 @@ function isPointerInsideBounds(element: HTMLElement, event: PointerEvent): boole
 function cardActionStateClassName(states: {
   controlState: boolean;
   disabled?: boolean;
+  boundsPointerActive?: boolean;
   projectedHover?: boolean;
   projectedPressed?: boolean;
   status?: CardActionStatus;
 }): string | undefined {
   const isDisabled = states.disabled || states.status === 'disabled';
   const isPending = !isDisabled && states.status === 'pending';
-  const isHovered = !isPending && (states.projectedHover || states.status === 'hover');
-  const isPressed = !isPending && (states.projectedPressed || states.status === 'pressed');
-  const isFocused = states.status === 'focus';
-  const isReadOnly = states.status === 'readOnly';
+  const isTerminal = isDisabled || isPending;
+  const isPressed = !isTerminal && (states.projectedPressed || states.status === 'pressed');
+  const isHovered =
+    !isTerminal && !isPressed && (states.projectedHover || states.status === 'hover');
+  const isSelected = !isTerminal && states.controlState;
+  const isFocused = !isTerminal && states.status === 'focus';
+  const isReadOnly = !isTerminal && states.status === 'readOnly';
   const hasProjectedState =
-    states.controlState ||
-    isHovered ||
-    isPressed ||
-    isFocused ||
-    isPending ||
-    isDisabled ||
-    isReadOnly;
+    isSelected || isHovered || isPressed || isFocused || isPending || isDisabled || isReadOnly;
 
   return join(
     cn.interactive,
-    !isPending && cn.nativeInteraction,
+    !isTerminal && !isPressed && !states.boundsPointerActive && cn.nativeInteraction,
     isHovered && cn.hover,
     isPressed && cn.pressed,
-    states.controlState && cn.selected,
+    isSelected && cn.selected,
     isFocused && cn.focus,
     isFocused && cn.focusVisible,
     isPending && cn.pending,
@@ -144,6 +142,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
   const pressedPointerIdRef = useRef<number | null>(null);
   const [isBoundsHovered, setIsBoundsHovered] = useState(false);
   const [isBoundsPressed, setIsBoundsPressed] = useState(false);
+  const [isBoundsPointerActive, setIsBoundsPointerActive] = useState(false);
   const isSelectable =
     controlStateProp !== undefined ||
     defaultControlState !== undefined ||
@@ -156,11 +155,15 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
     onControlStateChange
   });
   const shouldProjectBoundsState =
-    interactionStateSource === 'bounds' && !disabled && status !== 'pending';
+    interactionStateSource === 'bounds' &&
+    !disabled &&
+    status !== 'disabled' &&
+    status !== 'pending';
   const stateClassName = cardActionStateClassName({
     controlState,
     disabled,
     status,
+    boundsPointerActive: shouldProjectBoundsState && isBoundsPointerActive,
     projectedHover: shouldProjectBoundsState && isBoundsHovered,
     projectedPressed: shouldProjectBoundsState && isBoundsPressed
   });
@@ -177,6 +180,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
     if (shouldProjectBoundsState) return;
 
     pressedPointerIdRef.current = null;
+    setIsBoundsPointerActive(false);
     setIsBoundsHovered(false);
     setIsBoundsPressed(false);
   }, [shouldProjectBoundsState]);
@@ -184,60 +188,78 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
   useEffect(() => {
     if (!shouldProjectBoundsState) return;
 
-    const updateHoverFromPointer = (event: PointerEvent) => {
+    const updateBoundsFromPointer = (event: PointerEvent) => {
+      if (event.isPrimary === false) return;
+      if (pressedPointerIdRef.current !== null && pressedPointerIdRef.current !== event.pointerId) {
+        return;
+      }
       const buttonElement = buttonRef.current;
-      const isHovered =
-        buttonElement !== null &&
-        isHoverCapablePointer(event) &&
-        isPointerInsideBounds(buttonElement, event);
-
-      setIsBoundsHovered(isHovered);
+      const isInside = buttonElement !== null && isPointerInsideBounds(buttonElement, event);
+      setIsBoundsHovered(isHoverCapablePointer(event) && isInside);
+      setIsBoundsPressed(pressedPointerIdRef.current === event.pointerId && isInside);
     };
 
     const handlePointerDown = (event: PointerEvent) => {
       const buttonElement = buttonRef.current;
       if (!buttonElement || event.button !== 0 || event.isPrimary === false) return;
+      if (pressedPointerIdRef.current !== null && pressedPointerIdRef.current !== event.pointerId) {
+        return;
+      }
 
       const isInside = isPointerInsideBounds(buttonElement, event);
-      if (isHoverCapablePointer(event)) {
-        setIsBoundsHovered(isInside);
-      }
+      setIsBoundsHovered(isInside && isHoverCapablePointer(event));
 
       if (!isInside) {
         pressedPointerIdRef.current = null;
+        setIsBoundsPointerActive(false);
         setIsBoundsPressed(false);
         return;
       }
 
       pressedPointerIdRef.current = event.pointerId;
+      setIsBoundsPointerActive(true);
       setIsBoundsPressed(true);
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      updateHoverFromPointer(event);
+      updateBoundsFromPointer(event);
     };
 
     const handlePointerEnd = (event: PointerEvent) => {
+      if (event.isPrimary === false) return;
       if (pressedPointerIdRef.current !== null && pressedPointerIdRef.current !== event.pointerId) {
         return;
       }
 
       pressedPointerIdRef.current = null;
-      setIsBoundsPressed(false);
-      updateHoverFromPointer(event);
+      setIsBoundsPointerActive(false);
+      updateBoundsFromPointer(event);
     };
 
     const handleWindowBlur = () => {
       pressedPointerIdRef.current = null;
+      setIsBoundsPointerActive(false);
       setIsBoundsPressed(false);
       setIsBoundsHovered(false);
+    };
+
+    const handlePointerCancel = (event: PointerEvent) => {
+      if (event.isPrimary === false) return;
+      if (pressedPointerIdRef.current !== null && pressedPointerIdRef.current !== event.pointerId) {
+        return;
+      }
+      handleWindowBlur();
+    };
+    const handlePointerOut = (event: PointerEvent) => {
+      if (event.relatedTarget === null) handlePointerCancel(event);
     };
 
     const listenerOptions = { capture: true, passive: true };
     window.addEventListener('pointerdown', handlePointerDown, listenerOptions);
     window.addEventListener('pointermove', handlePointerMove, listenerOptions);
     window.addEventListener('pointerup', handlePointerEnd, listenerOptions);
-    window.addEventListener('pointercancel', handlePointerEnd, listenerOptions);
+    window.addEventListener('pointercancel', handlePointerCancel, listenerOptions);
+    window.addEventListener('pointerout', handlePointerOut, listenerOptions);
     window.addEventListener('blur', handleWindowBlur);
 
     return () => {
@@ -245,7 +267,8 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
       window.removeEventListener('pointerdown', handlePointerDown, listenerOptions);
       window.removeEventListener('pointermove', handlePointerMove, listenerOptions);
       window.removeEventListener('pointerup', handlePointerEnd, listenerOptions);
-      window.removeEventListener('pointercancel', handlePointerEnd, listenerOptions);
+      window.removeEventListener('pointercancel', handlePointerCancel, listenerOptions);
+      window.removeEventListener('pointerout', handlePointerOut, listenerOptions);
       window.removeEventListener('blur', handleWindowBlur);
     };
   }, [shouldProjectBoundsState]);
@@ -269,6 +292,7 @@ const CardActionRoot = forwardRef<HTMLButtonElement, CardActionProps>(function C
   const handleBlur = useCallback(
     (event: FocusEvent<HTMLButtonElement>) => {
       pressedPointerIdRef.current = null;
+      setIsBoundsPointerActive(false);
       setIsBoundsPressed(false);
       onBlur?.(event);
     },

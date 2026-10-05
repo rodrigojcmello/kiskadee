@@ -1,7 +1,8 @@
 /** @vitest-environment jsdom */
 
+import { stateActivator as cn } from '@kiskadee/core';
 import { cleanup, fireEvent, render } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   KiskadeeContext,
   type KiskadeeContextValue
@@ -13,6 +14,11 @@ import {
 import { Badge } from '../Badge/Badge.tsx';
 import { Button } from '../Button/Button.tsx';
 import { Card, CardAction } from './Card.tsx';
+
+vi.mock('@kiskadee/react-headless', async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  ...(await import('../../../../../headless/react/src/components/card/Card.tsx'))
+}));
 
 const badgeRelationClasses = {
   d: 'button-badge-relation',
@@ -73,7 +79,7 @@ const context: KiskadeeContextValue = {
                     selected: 'onVivid',
                     disabled: 'onVivid'
                   },
-                  low: { rest: 'onSubtle' }
+                  low: { rest: 'onSubtle', selected: 'onVivid' }
                 },
                 primary: {
                   high: { rest: 'onVivid' }
@@ -102,19 +108,22 @@ function SurfaceProbe({ testId }: { testId: string }) {
 afterEach(cleanup);
 
 describe('Card Surface Context', () => {
-  it('keeps a flush static Card on one clipped root and does not forward the visual prop', () => {
+  it.each([
+    Card,
+    CardAction
+  ])('keeps clipped content on one root without forwarding the visual prop', (Component) => {
     const result = render(
       <KiskadeeContext.Provider value={context}>
-        <Card flushContent data-testid="card">
+        <Component clipContent data-testid="card">
           <span data-testid="child">Content</span>
-        </Card>
+        </Component>
       </KiskadeeContext.Provider>
     );
     const card = result.getByTestId('card');
 
-    expect(card.tagName).toBe('DIV');
+    expect(card.tagName).toBe(Component === Card ? 'DIV' : 'BUTTON');
     expect(card.className).toContain('k-crd-e1a');
-    expect(card.hasAttribute('flushContent')).toBe(false);
+    expect(card.hasAttribute('clipContent')).toBe(false);
     expect(card.firstElementChild).toBe(result.getByTestId('child'));
   });
 
@@ -174,5 +183,48 @@ describe('Card Surface Context', () => {
 
     expect(result.getByRole<HTMLButtonElement>('button').disabled).toBe(true);
     expect(result.getByTestId('disabled-action-surface').textContent).toBe('onVivid');
+  });
+
+  it.each([
+    'pending',
+    'disabled'
+  ] as const)('keeps selected semantics while %s surface and descendants use Rest fallback', (terminal) => {
+    const content = (active: boolean) => (
+      <KiskadeeContext.Provider value={context}>
+        <CardAction
+          controlState
+          emphasis="low"
+          disabled={active && terminal === 'disabled'}
+          status={active && terminal === 'pending' ? 'pending' : undefined}
+        >
+          <SurfaceProbe testId="selected-terminal-surface" />
+        </CardAction>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(content(false));
+    const action = result.getByRole('button');
+    expect(action.classList.contains(cn.selected)).toBe(true);
+    expect(result.getByTestId('selected-terminal-surface').textContent).toBe('onVivid');
+    result.rerender(content(true));
+    expect(action.classList.contains(cn.selected)).toBe(false);
+    expect(action.getAttribute('aria-pressed')).toBe('true');
+    expect(result.getByTestId('selected-terminal-surface').textContent).toBe('onSubtle');
+    result.rerender(content(false));
+    expect(action.classList.contains(cn.selected)).toBe(true);
+    expect(result.getByTestId('selected-terminal-surface').textContent).toBe('onVivid');
+  });
+
+  it('lets Headless suppress forced transient classes when CardAction is disabled', () => {
+    const result = render(
+      <KiskadeeContext.Provider value={context}>
+        <CardAction disabled status="hover">
+          Action
+        </CardAction>
+      </KiskadeeContext.Provider>
+    );
+    const action = result.getByRole('button');
+    expect(action.classList.contains(cn.disabled)).toBe(true);
+    expect(action.classList.contains(cn.hover)).toBe(false);
+    expect(action.classList.contains(cn.nativeInteraction)).toBe(false);
   });
 });

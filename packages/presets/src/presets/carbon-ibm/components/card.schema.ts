@@ -202,10 +202,6 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }) 
         name: 'card',
         decorations: { borderStyle: 'solid' },
         scales: {
-          paddingTop: { 's:md:1': 16 },
-          paddingBottom: { 's:md:1': 16 },
-          paddingLeft: { 's:md:1': 16 },
-          paddingRight: { 's:md:1': 16 },
           borderWidth: 1,
           borderRadius: { square: 0, rounded: 4 }
         },

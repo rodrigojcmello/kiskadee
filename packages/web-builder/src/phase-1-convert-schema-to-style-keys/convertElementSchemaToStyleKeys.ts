@@ -145,11 +145,15 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     componentName: ComponentName,
     elementName: string
   ): ShadowElementEffectSchema | undefined => {
-    if (!shadowConfig) return undefined;
     const component = schema.components?.[componentName] as ComponentSchemaInput | undefined;
     const componentSetting = component?.effects?.shadow;
     const elementSetting = componentSetting?.[elementName];
     if (!elementSetting) return undefined;
+    if (!shadowConfig) {
+      throw new Error(
+        `[web-builder] ${componentName}.${elementName} references shadow without global.effects.shadow.`
+      );
+    }
     return elementSetting;
   };
 
@@ -405,6 +409,11 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         metadataScope.componentName as ComponentName,
         metadataScope.elementName
       );
+      if (element.effects?.shadow && shadowResolvedConfig) {
+        throw new Error(
+          `[web-builder] ${metadataScope.componentName}.${metadataScope.elementName} declares both element and component shadow recipes. Choose one shadow owner.`
+        );
+      }
       if (element.effects || activationFeedbackResolvedConfig || shadowResolvedConfig) {
         const effectsMap: StyleKeysByInteractionState = {};
         const appendEffectMap = (map: StyleKeysByInteractionState) => {

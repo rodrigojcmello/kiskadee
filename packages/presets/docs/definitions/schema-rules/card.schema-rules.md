@@ -50,6 +50,10 @@ Do not add extra public Card elements only to model local layout wrappers inside
 showcase examples. Internal composition should stay in React/CSS unless the
 design system needs a stable visual slot.
 
+Card and CardAction do not author content padding. Consumers compose their content with Layout;
+the surface schema owns no padding scale and needs no `flush` counterpart. Source spacing such as
+Carbon Tile's 16px is composition guidance, not Card root geometry.
+
 ## Surface Color Path
 
 The authored schema path for a Rest surface is:
@@ -144,3 +148,13 @@ for enabled Rest/Selected descendants must be `onVivid`. This is the usable cano
 surface for other components, not an optional duplicate of pale surfaces. `neutral.highest` may
 remain absent. Do not remove Primary Highest as part of reducing subtle background variants or
 replace it with Showcase-only stress colors. Material's regression test covers this requirement.
+
+
+## Optional shadow recipes
+
+Card and CardAction share the preset's root shadow recipe. The recipe references complete levels
+from `global.effects.shadow`; content padding and border activation do not select those levels.
+States remain sparse. Elegant's former Rest-equal shadow Focus override is omitted, so Focus
+retains Rest and Hover plus Focus retains Hover with the external ring. Carbon and iOS Button
+shadow absence does not restrict their independent Card recipes. Sandbox catalogs likewise do not
+imply a Card or Button shadow recipe.

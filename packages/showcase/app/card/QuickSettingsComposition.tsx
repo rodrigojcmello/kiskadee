@@ -80,7 +80,7 @@ function QuickSettingsPanel({ panel, radius }: { panel: Panel; radius: CardRadiu
         radius={radius}
         border
         shadow
-        flushContent
+        clipContent
         className={s.panel}
       >
         <div className={s.actions}>

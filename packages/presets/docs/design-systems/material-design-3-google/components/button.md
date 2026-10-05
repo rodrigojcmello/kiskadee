@@ -118,3 +118,22 @@ Light/onSubtle. This extends the prior four-intent recipe, without special per-s
 Source evidence and derivation rationale: [secondary decision](../colors/secondary-color-decision.md).
 
 Current decision (2026-09-15): Neutral uses black.v1 across Material. The optional chromatic intent is named support for Button and Card. Tinted neutrals V2/V3 are removed; see colors/secondary-color-decision.md for the superseding mapping.
+
+
+## Optional elevation recipe (2026-10-03)
+
+Status: **Official adapted** for the [Material Web Elevated Button state levels](https://github.com/material-components/material-web/blob/main/tokens/versions/v0_192/_md-comp-elevated-button.scss),
+**Kiskadee extension** for applying this optional effect across Kiskadee intents/emphases.
+Rest uses level 1 (`s:sm:1`), Hover uses level 2 (`s:md:1`), Pressed returns to level 1, and
+Disabled removes elevation. The explicit Rest-equal Pressed entry resets simultaneous Hover;
+it is not a duplicate added to complete the state matrix.
+
+Focus omits a shadow delta: isolated Focus retains level 1 and Hover plus Focus retains Hover
+with the external focus ring. Selected also adds no elevation delta. Pending explicitly removes
+elevation as a Kiskadee terminal-state adaptation; the upstream token file does not define Pending.
+The shared catalog now supplies both official layers per level, using its existing physical black
+lookup and source alpha. See [global elevation evidence](../source-evidence.md#complete-shared-elevation-layers-2026-10-03).
+
+This is an opt-in Elevated recipe, not a claim that every Button appearance is upstream Elevated.
+The [official Filled Button tokens](https://github.com/material-components/material-web/blob/main/tokens/versions/v0_192/_md-comp-filled-button.scss)
+use different elevation levels; no automatic emphasis-to-elevation mapping is introduced.

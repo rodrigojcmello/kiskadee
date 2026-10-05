@@ -934,11 +934,11 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
 - When Hover and focus-visible coexist, the omitted surface override preserves Hover and adds the
   focus ring. An explicit `focus` value is reserved for a documented component-owned visual delta.
 - Every emphasis and intent omits component-owned Focus palette deltas. The optional Button shadow
-  remains a separate global effect with its authored focus delta.
+  also omits Focus; the external ring remains independent and Hover can coexist with it.
 - Only the documented Selected rest color is emitted. It equals Pressed by preset decision;
   Selected hover and pressed substates are not inferred.
-- Existing Kiskadee Button shadow behavior is retained, but its black color now resolves from the
-  `primitive.black.v1` absolute cap instead of a schema HEX literal.
+- The optional Kiskadee Button shadow now selects the shared Fluent levels; its current mapping
+  and source boundary are documented below.
 - `e6` contains only Rest. No duplicate or inferred Hover, Pressed, Focus, Selected, Pending, or
   Disabled palette state is emitted.
 
@@ -1000,3 +1000,21 @@ See [the shared recipe and locator provenance](text-field.md#canonical-neutral-o
 Other intents/emphases, Pressed/Selected treatment, geometry and focus behavior are preserved;
 Pending visibility derives from the new Rest. Darker remains unchanged until TextField coverage.
 The same authoring recipe supplies Outline TextField with Button's existing Hover background.
+
+
+## Optional global shadow recipe (2026-10-03)
+
+Status: **Kiskadee extension**. The optional Button elevation is not claimed as an upstream
+Fluent Button appearance. The [official React Button source](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts)
+uses its own focus treatment, including Shadow 02 for Primary; that treatment does not justify
+copying the previous generic single-layer Rest/Hover geometry.
+
+Button now references the [inspected Fluent shadow catalog](../source-evidence.md#shadow-scale):
+Rest selects Shadow 02 (`s:sm:1`), Hover selects Shadow 04 (`s:md:1`), and Pressed, Pending and
+Disabled explicitly remove the optional effect. This small elevation progression is a Kiskadee
+choice. Both layers retain the catalog's physical `primitive.black.v1` dark-cap locators and
+source alpha; no component color or new primitive asset is authored.
+
+The recipe applies equally to the published intents/emphases. Focus and Selected do not add a
+shadow delta. Focus indication stays in the external ring, so Hover can coexist with it. Pending
+removal is an intentional Kiskadee terminal-state adaptation, independent from palette opacity.

@@ -16,8 +16,9 @@ and progressively lightens G90/G100 surfaces.
 ## Coverage and adaptations
 
 **Official adapted:** neutral background/layer/accent surfaces, hover/pressed/selected tokens,
-1px contours, square geometry and 16px padding. A single Card border option generalizes the interactive
-Tile treatment; no Tile-specific API is introduced.
+1px contours and square geometry. The source's 16px interior spacing is represented by consumer
+Layout composition; Card and CardAction themselves have no content padding. A single Card border
+option generalizes the interactive Tile treatment; no Tile-specific API is introduced.
 
 **Kiskadee extension:** five emphasis names, primary tinted surfaces, vivid brand canvas,
 optional rounding and shadows. Light neutral lowest = White, low = subtle - 3 (near-white intermediate),

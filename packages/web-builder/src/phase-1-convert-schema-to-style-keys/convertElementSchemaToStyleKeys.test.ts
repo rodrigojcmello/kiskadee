@@ -17,6 +17,50 @@ function createSchema(components: Schema['components'], global?: Schema['global'
 }
 
 describe('convertElementSchemaToStyleKeys', () => {
+  it('rejects competing local and catalog shadow recipes on the same element', () => {
+    const schema = createSchema(
+      {
+        button: {
+          effects: { shadow: { e1: { kind: 'outer', states: { rest: 's:sm:1' } } } },
+          elements: {
+            e1: {
+              name: 'button',
+              effects: {
+                shadow: {
+                  x: { rest: 0 },
+                  y: { rest: 1 },
+                  blur: { rest: 2 },
+                  color: { rest: '#00000033' }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        effects: {
+          shadow: { outer: { levels: { 's:sm:1': { x: 0, y: 1, blur: 2, color: '#00000033' } } } }
+        }
+      }
+    );
+
+    expect(() => convertElementSchemaToStyleKeys(schema)).toThrow(
+      'button.e1 declares both element and component shadow recipes'
+    );
+  });
+
+  it('rejects a component shadow recipe whose global catalog is missing', () => {
+    const schema = createSchema({
+      button: {
+        effects: { shadow: { e1: { kind: 'outer', states: { rest: 's:sm:1' } } } },
+        elements: { e1: { name: 'button' } }
+      }
+    });
+    expect(() => convertElementSchemaToStyleKeys(schema)).toThrow(
+      'button.e1 references shadow without global.effects.shadow'
+    );
+  });
+
   it('keeps Dropdown presence metadata out of style keys', () => {
     const schema = createSchema(
       {

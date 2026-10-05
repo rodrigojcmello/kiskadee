@@ -12,6 +12,7 @@ import { componentScaleToSize } from '@kiskadee/core';
 import type { SwitchIcons } from '@kiskadee/react-components';
 import { Card } from '@kiskadee/react-components/card';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
+import { Layout } from '@kiskadee/react-components/layout';
 import { SurfaceContextProvider, useKiskadee } from '@kiskadee/react-components/resources';
 import { Switch, useSwitchArtifactConfig } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
@@ -137,7 +138,7 @@ function StateTile({
       emphasis={surface.cardEmphasis}
       surfaceContext={surfaceContext}
     >
-      {content}
+      <Layout padding="md">{content}</Layout>
     </Card>
   );
 }
@@ -515,7 +516,9 @@ export default function SwitchPage() {
                     emphasis={specimenCardSurface.cardEmphasis}
                     surfaceContext={activeCardSurfaceContext}
                   >
-                    <div className={s.interactiveSwitchVisual}>{interactiveSwitch}</div>
+                    <Layout padding="md">
+                      <div className={s.interactiveSwitchVisual}>{interactiveSwitch}</div>
+                    </Layout>
                   </Card>
                 ) : (
                   <div className={s.interactivePanel}>

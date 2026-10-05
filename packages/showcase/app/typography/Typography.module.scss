@@ -189,10 +189,13 @@
 .profileCard {
 
 
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(270px, 0.8fr);
   min-inline-size: 0;
   overflow: hidden;
+}
+
+.profileCardContent {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(270px, 0.8fr);
 }
 
 .profilePreview {
@@ -254,10 +257,13 @@
 
 
 
-  display: grid;
-  grid-template-rows: auto minmax(150px, 1fr) auto;
   min-inline-size: 0;
   overflow: hidden;
+}
+
+.roleCardContent {
+  display: grid;
+  grid-template-rows: auto minmax(150px, 1fr) auto;
 }
 
 .roleHeader {
@@ -420,7 +426,7 @@
     display: none;
   }
 
-  .profileCard {
+  .profileCardContent {
     grid-template-columns: 1fr;
   }
 

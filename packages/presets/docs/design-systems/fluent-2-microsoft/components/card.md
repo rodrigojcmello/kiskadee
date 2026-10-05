@@ -555,3 +555,11 @@ and interactive state deltas are unchanged. This is a user-approved Kiskadee ada
 
 The user visually approved the preceding Primary border calibration (Dark D24 / Darker D16);
 retain those blue borders. The new Neutral opacity adjustment awaits visual evaluation.
+
+
+## Content spacing ownership (2026-10-03)
+
+Status: **Kiskadee extension**. Card and CardAction are surfaces without content padding.
+The former 16px root padding is removed; consumer Layout composition now supplies interior
+spacing. The existing source-backed surface, border, radius and shadow choices remain independent
+from the content layout, and no `flush` recipe is needed.

@@ -4,14 +4,13 @@ import { resolveCardClassNames } from './Card.class-names.ts';
 const base = {
   e1: {
     d: 'solid',
-    s: { 'md:1': 'width padding' },
+    s: { 'md:1': 'width' },
     e: { h: 'shadow' },
     c: { s: { neutral: { m: 'surface states' } } },
     b: { s: { neutral: { m: { on: 'border-on', off: 'border-off', adaptive: false } } } }
   },
   className: undefined,
   classNames: {},
-  status: 'rest' as const,
   radius: undefined,
   shadow: undefined,
   emphasis: 'medium' as const,
@@ -21,53 +20,47 @@ const base = {
   action: false
 };
 
-describe('static Card border', () => {
-  it.each([
-    undefined,
-    'adaptive',
-    true,
-    false
-  ] as const)('selects the recipe for border=%s independently of shadow', (border) => {
-    for (const shadow of [false, true]) {
-      const classes = resolveCardClassNames({ ...base, border, shadow }).classNames.e1;
-      expect(classes).toContain(border === true ? 'border-on' : 'border-off');
-      expect(classes).toContain('width padding');
-      expect(classes).toContain('surface states');
-      expect(classes?.split(' ').includes('shadow')).toBe(shadow);
+describe('Card and CardAction border', () => {
+  it.each([false, true])('selects border independently of shadow for action=%s', (action) => {
+    for (const border of [undefined, 'adaptive', true, false] as const) {
+      for (const shadow of [false, true]) {
+        const classes = resolveCardClassNames({ ...base, action, border, shadow }).classNames.e1;
+        expect(classes).toContain(border === true ? 'border-on' : 'border-off');
+        expect(classes).toContain('width');
+        expect(classes).toContain('surface states');
+        expect(classes?.split(' ').includes('shadow')).toBe(shadow);
+        expect(classes?.split(' ').includes('k-crd-b')).toBe(
+          action ? border === false : border !== true
+        );
+      }
     }
   });
 
-  it('separates the preset default from the adaptive rule and does not override CardAction', () => {
+  it.each([false, true])('separates the preset default from adaptive for action=%s', (action) => {
+    const input = { ...base, action };
     const on = {
       ...base.e1,
       b: { s: { neutral: { m: { on: 'on', off: 'off', adaptive: true } } } }
     };
-    expect(resolveCardClassNames({ ...base, e1: on }).classNames.e1).toContain('on');
+    expect(resolveCardClassNames({ ...input, e1: on }).classNames.e1).toContain('on');
     expect(
-      resolveCardClassNames({ ...base, e1: on, borderDefaultMode: 'never' }).classNames.e1
+      resolveCardClassNames({ ...input, e1: on, borderDefaultMode: 'never' }).classNames.e1
     ).toContain('off');
     expect(
-      resolveCardClassNames({ ...base, e1: on, borderDefaultMode: 'never', border: 'adaptive' })
+      resolveCardClassNames({ ...input, e1: on, borderDefaultMode: 'never', border: 'adaptive' })
         .classNames.e1
     ).toContain('on');
-    expect(resolveCardClassNames({ ...base, borderDefaultMode: 'always' }).classNames.e1).toContain(
-      'border-on'
-    );
     expect(
-      resolveCardClassNames({ ...base, borderDefaultMode: 'always', border: 'adaptive' }).classNames
-        .e1
+      resolveCardClassNames({ ...input, borderDefaultMode: 'always' }).classNames.e1
+    ).toContain('border-on');
+    expect(
+      resolveCardClassNames({ ...input, borderDefaultMode: 'always', border: 'adaptive' })
+        .classNames.e1
     ).toContain('border-off');
-    expect(resolveCardClassNames({ ...base, border: true, action: true }).classNames.e1).toContain(
-      'border-off'
+    expect(resolveCardClassNames({ ...input, border: true }).classNames.e1).toContain('border-on');
+    expect(resolveCardClassNames({ ...input, borderDefaultMode: 'never' }).classNames.e1).toContain(
+      'k-crd-b'
     );
-    expect(
-      resolveCardClassNames({
-        ...base,
-        action: true,
-        shadow: true,
-        preserveBorderWithShadow: false
-      }).classNames.e1
-    ).toContain('k-crd-b');
   });
 
   it('preserves legacy recipes without inventing a border capability', () => {

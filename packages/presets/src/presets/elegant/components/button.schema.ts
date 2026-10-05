@@ -1,4 +1,4 @@
-import { type Schema, withAlpha } from '@kiskadee/core';
+import type { Schema } from '@kiskadee/core';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 
 type ElegantSegmentName = 'default';
@@ -10,6 +10,20 @@ type CreateElegantButtonSchemaArgs = {
 
 export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs): ButtonComponent {
   return {
+    effects: {
+      shadow: {
+        e1: {
+          kind: 'outer',
+          states: {
+            rest: 's:sm:1',
+            hover: 's:md:1',
+            pressed: false,
+            pending: false,
+            disabled: false
+          }
+        }
+      }
+    },
     elements: {
       e1: {
         name: 'button',
@@ -74,20 +88,6 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
                   }
                 }
               }
-            }
-          }
-        },
-        effects: {
-          shadow: {
-            x: { rest: 0, hover: 0, pressed: 0, focus: 0, disabled: 0 },
-            y: { rest: 2, hover: 4, pressed: 0, focus: 4, disabled: 0 },
-            blur: { rest: 6, hover: 10, pressed: 0, focus: 10, disabled: 0 },
-            color: {
-              rest: withAlpha('#000000', 28),
-              hover: withAlpha('#000000', 35),
-              pressed: withAlpha('#000000', 32),
-              focus: withAlpha('#000000', 35),
-              disabled: withAlpha('#000000', 0)
             }
           }
         }

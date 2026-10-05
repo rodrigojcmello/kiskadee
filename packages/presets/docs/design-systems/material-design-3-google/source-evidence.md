@@ -186,3 +186,25 @@ rendered by the consumer. Primary mappings and all tonal values remain unchanged
 is derived by the generator from the Light vivid reference; this is inspection metadata, not a
 new Google visual specification. The current candidate generator is 0.19.0; promoted tonal assets
 remain at their recorded 0.18.0 provenance.
+
+
+## Complete shared elevation layers (2026-10-03)
+
+Status: **Official adapted**. The [Material Web elevation implementation](https://github.com/material-components/material-web/blob/main/elevation/internal/_elevation.scss)
+combines a key layer at 30% opacity with an ambient layer at 15% for each nonzero level.
+Kiskadee maps levels 1-5 to `s:sm:1`, `s:md:1`, `s:lg:1`, `s:lg:2`, `s:lg:3`.
+Each global level now preserves both layers; the former catalog retained only one per level.
+
+| Level | Key: y / blur / spread | Ambient: y / blur / spread |
+| --- | --- | --- |
+| 1 | 1 / 2 / 0 | 1 / 3 / 1 |
+| 2 | 1 / 2 / 0 | 2 / 6 / 2 |
+| 3 | 1 / 3 / 0 | 4 / 8 / 3 |
+| 4 | 2 / 3 / 0 | 6 / 10 / 4 |
+| 5 | 4 / 4 / 0 | 8 / 12 / 6 |
+
+All x offsets are zero. Shadow paint is the existing approved `primitive.black.v1` physical dark
+endpoint, resolved by the established preset getter at L100 and multiplied by the source alpha.
+No asset, semantic color role or theme matrix changes. Card and Button consume the completed levels;
+Dropdown remains on level 2 and BottomSheet on level 3, so their shadows also gain the missing layer.
+Their component recipes and fixed-level contracts are preserved.

@@ -1,0 +1,17 @@
+// Preserve the example's existing flow across the explicit Layout spacing frame.
+.frame.frame,
+.flow.flow {
+  display: inherit;
+  gap: inherit;
+  align-content: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+  justify-items: inherit;
+  flex-direction: inherit;
+  flex-wrap: inherit;
+  min-inline-size: 0;
+}
+
+.frame {
+  inline-size: 100%;
+}

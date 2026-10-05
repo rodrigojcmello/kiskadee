@@ -227,14 +227,17 @@ export function transformShadowKeyToCss(
   // Projected branch uses projectedStateActivator + activator (.-a), and is also gated by shadow activation.
   const suffix = getProjectedStateSuffix(interactionState);
   const allowForced =
-    suffix !== '' && (forceState === true || hasAlwaysProjectedState([interactionState]));
+    suffix !== '' &&
+    (forceState === true || !cssPseudo || hasAlwaysProjectedState([interactionState]));
   if (allowForced) {
     const activator = stateActivator.activator;
     selectors.push(`.${className}.${eSuffix}.${suffix}.${activator}`);
   }
 
-  // Fallback: if nothing collected (e.g., non-native state without force enabled but should still style)
-  if (selectors.length === 0) selectors.push(`.${className}.${eSuffix}`);
+  // A stateful effect must never become an unconditional Rest rule.
+  if (selectors.length === 0) {
+    throw new Error(UNSUPPORTED_INTERACTION_STATE(interactionState, styleKey));
+  }
 
   return `${selectors.join(', ')} ${decl}`;
 }

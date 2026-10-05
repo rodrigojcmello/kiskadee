@@ -45,7 +45,7 @@ They are evidence for a future material capability and are not flattened into op
 | Opaque applications | Context Menu, Grouped Table View, Window nodes | Official adapted | Confirm use of semantic backgrounds in compositions. |
 | Primary vivid canvas | `Accents/Blue` from the centralized color variables | Kiskadee extension | Exposed as a strong Card surface for descendants using `onVivid`. |
 | Glass and material | Alert, Action Sheet, Color Picker, Material, Activity View nodes | Deferred | Requires a material/effect contract; no opaque approximation is emitted. |
-| Card geometry and interaction states | No reusable Apple Card component inspected | Kiskadee extension | Existing padding, radius, and shadow remain framework-owned. |
+| Card geometry and interaction states | No reusable Apple Card component inspected | Kiskadee extension | Radius and shadow remain framework-owned; content spacing belongs to Layout composition. |
 
 ## Official Background Contract
 
@@ -129,8 +129,9 @@ The optional border consumes `global.contours.neutral.standard.low`. This shares
 nonopaque separator paint; its use as a Card boundary is an explicit extension. Lowest enables
 the border by default; other opaque surfaces leave it off. High/Highest enable their boundary
 on a vivid parent to keep equal-color nested surfaces identifiable. Border controls can override
-these defaults without changing the fill. Geometry stays at 16px padding, 28px rounded radius,
-1px border box and the existing shadow scale. These remain Kiskadee extensions.
+these defaults without changing the fill. The surface retains its 28px rounded radius,
+1px border box and shadow scale. Card and CardAction have no content padding; consumers use
+Layout for interior spacing. These remain Kiskadee extensions.
 
 ## Deferred Or Unsupported
 

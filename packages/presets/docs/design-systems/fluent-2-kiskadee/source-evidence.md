@@ -25,3 +25,18 @@ reuses its existing fixed recipes through a global compact/spacious mapping and 
 exceptions. A single-density component keeps its medium reference; no unsupported recipe is
 synthesized. Explicit public `size` selections remain independent of viewport width. See the
 [adaptive density contract](../../../../../docs/definitions/adaptive-density.md).
+
+## Optional Button shadow (2026-10-03)
+
+Status: **Kiskadee extension**. The preset now publishes the inspected Fluent Shadow 02 and
+Shadow 04 geometries as global outer `s:sm:1` and `s:md:1`, preserving both layers. Source geometry
+and alpha are recorded in the [upstream catalog evidence](../fluent-2-microsoft/source-evidence.md#shadow-scale).
+Paint uses the preset's existing `primitive.black.v1` physical dark endpoint, resolved by its
+legacy getter at L100. No new literal color or primitive asset is introduced.
+
+Button selects small at Rest and medium at Hover, and explicitly removes elevation for Pressed,
+Pending and Disabled. This compact action recipe replaces the previous local single-layer
+geometry; it is not claimed as an official Fluent Button appearance. Focus and Selected add no
+shadow delta. Focus indication stays independent, allowing Hover elevation and the external ring
+to coexist. Pending removal is an intentional Kiskadee terminal-state adaptation. The recipe is
+shared across all published Button segments, themes and appearances.
