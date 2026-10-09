@@ -4,6 +4,7 @@ import type {
   ElementAllSizeValue,
   ElementSizeValue
 } from './breakpoints.ts';
+import type { AccordionComponent } from './components/accordion.ts';
 import type { BadgeEffects, BadgeElements } from './components/badge.ts';
 import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
 import type { ButtonElements, ButtonOptions } from './components/button.ts';
@@ -61,6 +62,7 @@ import type { ElementTypography, SchemaTypography } from './typography.ts';
 
 // Names of all supported components
 export type ComponentName =
+  | 'accordion'
   | 'bottomSheet'
   | 'badge'
   | 'button'
@@ -149,6 +151,7 @@ export type ComponentVariantModesStyleKeyMap<TSegmentName extends SegmentName = 
 >;
 
 export type ComponentStyleKeyMap<TSegmentName extends SegmentName = never> = Partial<{
+  accordion: ComponentElementsStyleKeyMap<TSegmentName>;
   bottomSheet: ComponentElementsStyleKeyMap<TSegmentName>;
   badge: ComponentElementsStyleKeyMap<TSegmentName>;
   button: ComponentElementsStyleKeyMap<TSegmentName>;
@@ -227,6 +230,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     options?: ButtonOptions;
     elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
   };
+  accordion: AccordionComponent;
   card: {
     contentSurfaceContext?: CardContentSurfaceContextMap<TSegmentName>;
     effects?: ComponentEffects;

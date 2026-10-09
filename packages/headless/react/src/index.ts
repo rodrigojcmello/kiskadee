@@ -1,4 +1,17 @@
 export type {
+  AccordionClassNames,
+  AccordionHeaderProps,
+  AccordionItemProps,
+  AccordionPanelProps,
+  AccordionProps
+} from './components/accordion/Accordion.tsx';
+export {
+  HeadlessAccordion,
+  useAccordionHeader,
+  useAccordionItemContext,
+  useAccordionPanel
+} from './components/accordion/Accordion.tsx';
+export type {
   AutocompleteContentProps,
   AutocompleteContentRenderProps,
   AutocompleteContentRenderState,

@@ -1,5 +1,6 @@
 export * from './breakpoints.ts';
 export * from './component-size.ts';
+export * from './components/accordion.ts';
 export * from './components/badge.ts';
 export * from './components/bottom-sheet.ts';
 export * from './components/button.ts';

@@ -563,3 +563,29 @@ Status: **Kiskadee extension**. Card and CardAction are surfaces without content
 The former 16px root padding is removed; consumer Layout composition now supplies interior
 spacing. The existing source-backed surface, border, radius and shadow choices remain independent
 from the content layout, and no `flush` recipe is needed.
+
+## Subtle neutral interaction refinement — 2026-10-09
+
+Status: user-authorized Kiskadee extension. This supersedes the historical Light
+neutral Hover/Pressed mapping above, following feedback that Accordion headers
+looked excessively dark while pressed. CardAction and Accordion consume the same
+recipe; no Accordion-specific colors are introduced.
+
+For both Light surface contexts, use existing `component.card` exact locators in
+`card.neutral` (approved achromatic `primitive.black.v1`):
+
+| Emphasis | Rest (unchanged) | Hover | Pressed |
+| --- | --- | --- | --- |
+| Lowest | physical light cap | L1 `#fbfbfb` | L2 `#f6f6f6` |
+| Low | L1 | L2 `#f6f6f6` | L3 `#f2f2f2` |
+| Medium | L3 | L4 `#ededed` | L5 `#e9e9e9` |
+| High | L5 | L6 | L7 |
+
+The authored progression uses one adjacent tonal step for hover and two for pressed,
+with no dependency on other emphasis names. Existing assets and exact locator
+provenance are retained. This is deliberate softer feedback, not a claim of exact
+upstream Fluent token fidelity. Selected, Disabled, borders, shadows, Primary,
+Dark and Darker are unchanged. Final visual acceptance remains user-owned.
+
+The follow-up refinement includes High in the same Light neutral progression: L5
+at Rest, L6 on Hover and L7 on Pressed. Both surface contexts inherit this recipe.

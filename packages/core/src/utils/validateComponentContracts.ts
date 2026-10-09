@@ -1,3 +1,4 @@
+import { validateAccordionComponentContract } from '../components/accordion.ts';
 import { validateBadgeComponentContract } from '../components/badge.ts';
 import { validateBottomSheetComponentContract } from '../components/bottom-sheet.ts';
 import { validateButtonComponentContract } from '../components/button.ts';
@@ -119,6 +120,14 @@ export function validateSchemaComponentContracts(schemaLike: {
       throw new Error(
         `Invalid component contract for icon. Review element/property mapping.\n${issues.join('\n')}`
       );
+    }
+  }
+
+  if (byName.accordion !== undefined) {
+    const issues = validateAccordionComponentContract(byName.accordion);
+    if (issues.length) throw new Error(issues.join('\n'));
+    for (const dependency of ['card', 'container', 'separator', 'icon']) {
+      if (!byName[dependency]) throw new Error(`Accordion requires ${dependency}`);
     }
   }
 

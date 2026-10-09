@@ -27,6 +27,7 @@ type SchemaPresenceContractInput = {
     };
   };
   components?: {
+    accordion?: { effects?: { presence?: unknown } };
     dropdown?: {
       effects?: {
         presence?: unknown;
@@ -174,6 +175,28 @@ export function validateSchemaPresenceContract(schemaLike: SchemaPresenceContrac
           `components.dropdown.effects.presence.profile: references missing profile "${String(profile)}"`
         );
       }
+    }
+  }
+
+  const accordionPresence = schemaLike.components?.accordion?.effects?.presence;
+  if (accordionPresence !== undefined) {
+    if (!isRecord(accordionPresence) || accordionPresence.profile !== 'grow-height') {
+      issues.push('components.accordion.effects.presence.profile: expected grow-height');
+    } else {
+      validateAllowedKeys(
+        accordionPresence,
+        ['profile'],
+        'components.accordion.effects.presence',
+        issues
+      );
+      if (
+        !isRecord(presence) ||
+        !isRecord(presence.profiles) ||
+        !Object.hasOwn(presence.profiles, 'grow-height')
+      )
+        issues.push(
+          'components.accordion.effects.presence.profile: requires global grow-height profile'
+        );
     }
   }
 

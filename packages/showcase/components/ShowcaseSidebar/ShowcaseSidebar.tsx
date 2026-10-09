@@ -17,6 +17,7 @@ const foundationEntries = [
 ] as const;
 
 const componentEntries = [
+  { href: '/accordion', label: 'Accordion' },
   {
     href: '/badge',
     label: 'Badge'

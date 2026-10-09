@@ -51,6 +51,7 @@ export type {
   FontFamilyPrepare
 } from '@kiskadee/runtime/font-family';
 export { defineFontFamily } from '@kiskadee/runtime/font-family';
+export * from './components/Accordion/index.ts';
 export type {
   AdaptiveButtonMenuActionProps,
   AdaptiveButtonMenuBottomSheetProps,
@@ -168,6 +169,7 @@ export type { ContainerClassesMap, ContainerProps } from './components/Container
 export { Container } from './components/Container';
 export type { ContextMenuRootProps, ContextMenuTriggerProps } from './components/ContextMenu';
 export { ContextMenu } from './components/ContextMenu';
+export { Crossfade, type CrossfadeProps } from './components/Crossfade/index.ts';
 export type {
   DropdownAnchorProps,
   DropdownCheckmarkProps,
@@ -232,6 +234,7 @@ export type {
   RollingNumberProps
 } from './components/RollingNumber/RollingNumber.tsx';
 export { RollingNumber } from './components/RollingNumber/RollingNumber.tsx';
+export { Rotate, type RotateProps } from './components/Rotate/index.ts';
 export type { SelectProps } from './components/Select/index.ts';
 export { Select } from './components/Select/index.ts';
 export type {

@@ -322,3 +322,10 @@ blue generation reference and existing semantic colors. See
 [Teams mappings and approval](./colors/fluent-tonal-scale-evidence.md#teams-shared-catalog-promotion--2026-09-14)
 and [recipe](./colors/tonal-system.recipe.json). Both neutrals use Subtle.
 The user approved preset application; final rendered acceptance remains user-owned.
+
+## Accordion first delivery (2026-10-05)
+
+See [Accordion evidence](components/accordion.md). Light-only Low/Medium combine
+Fluent behavior with a Windows-inspired framed composition. The emphasis mapping
+and timing calibration are Kiskadee extensions; existing surface colors remain
+owned by Card/Container.

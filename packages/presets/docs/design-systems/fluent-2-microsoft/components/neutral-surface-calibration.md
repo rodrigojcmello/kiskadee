@@ -34,7 +34,8 @@ The current recipe removes derived Black v2/v3. The generator's derivation featu
 | High | #ebebeb | exact card.neutral L5 | #e9e9e9 |
 
 The same Light Rest progression applies onSubtle and onVivid. Existing interaction recipes
-retain their positions; new High publishes Rest only. High remains onSubtle for descendants,
+were initially retained; the [October 9 Card refinement](card.md#subtle-neutral-interaction-refinement--2026-10-09)
+softens Light neutral Hover/Pressed. High now follows the same adjacent-step Hover/Pressed rule. High remains onSubtle for descendants,
 is included in the canonical surface catalog, and has an optional border. No Light Highest
 neutral is introduced. Primary recipes are unchanged.
 

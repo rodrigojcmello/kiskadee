@@ -90,6 +90,7 @@ const separatorThicknessEmission = {
 
 export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
   components: {
+    accordion: { elements: { e3: { paddingEmission: 'token' } } },
     badge: {
       elements: {
         e1: {

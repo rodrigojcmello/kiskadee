@@ -79,6 +79,7 @@ type ComponentEffectArtifact = {
   options?: BottomSheetOptions | ButtonOptions | DropdownOptions;
 };
 type ComponentEffectArtifactName =
+  | 'accordion'
   | 'bottomSheet'
   | 'badge'
   | 'button'
@@ -389,6 +390,13 @@ export async function writeExtraArtifacts(params: {
     const containerArtifact = componentEffectOverrides.container ?? {};
     containerArtifact.contentSurfaceContext = schema.components.container.contentSurfaceContext;
     componentEffectOverrides.container = containerArtifact;
+  }
+
+  if (schema.components?.accordion?.effects.presence && schema.global?.effects?.presence) {
+    getComponentEffects('accordion').presence = {
+      profile: 'grow-height',
+      profiles: { 'grow-height': schema.global.effects.presence.profiles['grow-height']! }
+    };
   }
 
   const dropdownPresence = buildDropdownPresenceEffect(schema);

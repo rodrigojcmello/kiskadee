@@ -133,6 +133,21 @@
       "types": "./dist/components/Select/index.d.ts",
       "import": "./dist/components/Select/index.js",
       "default": "./dist/components/Select/index.js"
+    },
+    "./accordion": {
+      "types": "./dist/components/Accordion/index.d.ts",
+      "import": "./dist/components/Accordion/index.js",
+      "default": "./dist/components/Accordion/index.js"
+    },
+    "./crossfade": {
+      "types": "./dist/components/Crossfade/index.d.ts",
+      "import": "./dist/components/Crossfade/index.js",
+      "default": "./dist/components/Crossfade/index.js"
+    },
+    "./rotate": {
+      "types": "./dist/components/Rotate/index.d.ts",
+      "import": "./dist/components/Rotate/index.js",
+      "default": "./dist/components/Rotate/index.js"
     }
   },
   "files": [

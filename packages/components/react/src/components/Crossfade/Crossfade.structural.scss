@@ -1,0 +1,10 @@
+/*
+ * root crossfade / cfd
+ * Overlaps the two visual snapshots and keeps their intrinsic size in flow.
+ */
+.k-cfd { display: inline-grid; grid-template-columns: minmax(0, 1fr); align-items: center; justify-items: center; }
+/*
+ * extra element for crossfade / x1
+ * Both snapshots occupy the same grid cell without imposing text layout or paint.
+ */
+.k-cfd-x1 { grid-area: 1 / 1; display: inline-flex; align-self: stretch; justify-self: stretch; align-items: center; justify-content: center; }

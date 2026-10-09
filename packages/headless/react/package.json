@@ -89,6 +89,11 @@
       "types": "./dist/components/slider/HeadlessSlider.d.ts",
       "import": "./dist/components/slider/HeadlessSlider.js",
       "default": "./dist/components/slider/HeadlessSlider.js"
+    },
+    "./accordion": {
+      "types": "./dist/components/accordion/Accordion.d.ts",
+      "import": "./dist/components/accordion/Accordion.js",
+      "default": "./dist/components/accordion/Accordion.js"
     }
   },
   "files": [

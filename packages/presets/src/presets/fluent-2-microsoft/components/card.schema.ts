@@ -87,23 +87,23 @@ const LIGHT_RECIPE = {
     neutral: {
       lowest: {
         rest: lightCap(),
-        hover: n(2),
-        pressed: n(7),
+        hover: n(1),
+        pressed: n(2),
         selected: n(5),
         disabled: n(3)
       },
       low: {
         rest: n(1),
-        hover: n(3),
-        pressed: n(8),
+        hover: n(2),
+        pressed: n(3),
         selected: n(6),
         disabled: n(3)
       },
-      high: { rest: n(5) },
+      high: { rest: n(5), hover: n(6), pressed: n(7) },
       medium: {
         rest: n(3),
         hover: n(4),
-        pressed: n(9),
+        pressed: n(5),
         selected: n(7),
         disabled: n(3)
       }
@@ -266,8 +266,8 @@ const LIGHT_ON_VIVID_RECIPE = {
   boxColor: {
     neutral: {
       ...LIGHT_RECIPE.boxColor.neutral,
-      low: { rest: n(1), hover: n(4), pressed: n(9), selected: n(7), disabled: n(3) },
-      medium: { rest: n(3), hover: n(8), pressed: n(14), selected: n(12), disabled: n(3) }
+      low: { rest: n(1), hover: n(2), pressed: n(3), selected: n(7), disabled: n(3) },
+      medium: { rest: n(3), hover: n(4), pressed: n(5), selected: n(12), disabled: n(3) }
     },
     primary: {
       ...LIGHT_RECIPE.boxColor.primary,
