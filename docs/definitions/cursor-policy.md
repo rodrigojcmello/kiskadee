@@ -36,7 +36,7 @@ regardless of stylesheet order. Runtime does not read CSS to infer semantics.
 
 ## Rule
 
-- Button, Switch, Tabs triggers, CardAction, Dropdown and BottomSheet action items consume
+- Button, Switch, Tabs triggers, CardAction, Dropdown, Select triggers/sequential buttons, Chip.Select/Remove and BottomSheet action items consume
   `cursor: var(--k-cc)`. The current Showcase Select uses the same contract, including its portal.
 - No universal clickable selector or `-n` selector applies the cursor. Components identify their
   action owners; static containers must not acquire an action cursor.
@@ -51,7 +51,7 @@ regardless of stylesheet order. Runtime does not read CSS to infer semantics.
 
 ## Showcase
 
-Every affected component route exposes Control cursor in its side panel: Preset default (with
+Every component detail panel, including passive routes, exposes Control cursor in its side panel: Preset default (with
 the resolved value and scope), Default (arrow), and Pointer (hand). Overrides are local to the
 route, survive preset selection within that route, and are not persisted across page reloads.
 Returning to Preset default removes the override. The administrative panel retains its original
@@ -90,3 +90,14 @@ When creating or reviewing a component, treat cursor behavior as part of the com
 - use hover styling only when the component or element owns an interaction affordance;
 - add `-n` only when the component or element owns native interaction states;
 - document any component-specific cursor inheritance guard in the component's definition.
+
+
+## Coverage and inspection
+
+Accordion reuses CardAction. ButtonMenu, ContextMenu, BottomSheetMenu and AdaptiveButtonMenu
+reuse Button/Dropdown/BottomSheet actions. Their action owners keep the same preference,
+including portals; caller-owned context-menu targets retain caller semantics.
+Passive Card/Container, Chip.Content, Layout, Text, Icon, Badge, Separator, Progress and
+visual helpers do not acquire an action cursor. Passive-route panels explain that the
+preference affects interactive examples only. The administrative panel uses its original
+context regardless of the demonstrated component override.

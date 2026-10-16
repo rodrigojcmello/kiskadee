@@ -7,5 +7,7 @@ export type {
   AccordionIndicatorTransition,
   AccordionItemProps,
   AccordionPanelProps,
-  AccordionProps
+  AccordionProps,
+  AccordionTransitionCoordination,
+  TransitionSpeed
 } from './Accordion.types.ts';

@@ -18,7 +18,6 @@ import type {
   DensityScaleMapJSON,
   DropdownOptions,
   RadiusMode,
-  ResolvedAccordionPresenceEffect,
   ResolvedDropdownPresenceEffect,
   SchemaFonts,
   SchemaIconSizes,
@@ -93,7 +92,6 @@ export type KiskadeeGlobalArtifact = {
 export type KiskadeeComponentConfigs = {
   accordion?: {
     options?: AccordionOptions;
-    effects?: { presence?: ResolvedAccordionPresenceEffect };
   };
   badge?: {
     effects?: {

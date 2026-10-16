@@ -7,7 +7,7 @@ is a Kiskadee adaptation, not an official Fluent variant catalog.
 
 `Accordion` owns `expandedItems: readonly string[]`, `defaultExpandedItems`,
 `onExpandedItemsChange(items)`, `multiple`, `disabled`, `interactionLocked`,
-`emphasis`, `panelEmphasis`, `divider`, `border`, `shadow`, `motion` and `indicatorTransition`. Defaults are no expanded items, single-open, medium and
+`emphasis`, `panelEmphasis`, `divider`, `border`, `shadow`, `motion`, `motionSpeed`, `transitionCoordination` and `indicatorTransition`. Defaults are no expanded items, single-open, medium and
 Motion enabled. All items may close. Single-open input is normalized to its first
 unique value. Switching from multiple to single likewise displays only the first.
 Controlled requests notify without changing the supplied state.
@@ -62,8 +62,13 @@ CardAction `controlState` and never emits `aria-pressed` or selected paint.
 No shared Card, Button, Container or Layout recipes are modified.
 
 Panel supplies no padding. Consumers compose `Layout` inside Panel and around
-items. The trigger owns 16px insets in the initial Fluent recipe. Label uses
-body-medium; the indicator is 20px. Existing Icon handles leading-glyph geometry.
+items. The Fluent trigger owns 16px block and 24px inline insets. Its marginRight scale
+is emitted as a token and consumed as a 16px gap between header children, independently
+of the insets (it does not create an outer margin), following the wrapper relationship
+exception in [Structural CSS](../../../../../../STRUCTURAL-CSS.md#spacing-and-schema-ownership).
+The uniform gap follows the flex flow in LTR and RTL; marginRight is the token source, not
+a physical outer margin. Label uses
+body-medium; the indicator is 12px. Existing Icon handles leading-glyph geometry.
 Structural CSS consumes published spacing variables and logical axes; no token
 values, colors, state recipes or breakpoints are invented in CSS.
 
@@ -77,15 +82,36 @@ Closing immediately applies `inert` and `aria-hidden`; focus within Panel return
 to Header. Mounted children survive closure. `hidden` is applied after exit, so
 collapsed panels reserve no height. No automatic focus moves occur on opening.
 
-One public Accordion loads its optional Motion module lazily. The component's own
-presence metadata references global `grow-height`; it does not read Dropdown
-metadata. Height and indicator transitions use 180ms entry / 120ms exit in Fluent.
-The indicator composes the public Rotate (default) or Crossfade helper through
-`indicatorTransition`; panel height no longer owns indicator animation.
+One public Accordion loads its optional Motion module lazily. Panel timing is a bounded
+p-react recipe under the [transition-speed contract](../../../../../../docs/definitions/transition-speeds.md),
+not a preset effect or generated metadata. `motionSpeed` defaults to normal:
+
+| Speed | Open ms | Close ms |
+| --- | ---: | ---: |
+| normal | 180 | 120 |
+| fast | 120 | 80 |
+| slow | 360 | 240 |
+| debugSlow | 1800 | 1200 |
+
+Isolated opening uses ease-out; isolated closing uses ease-in.
+`transitionCoordination` defaults to synchronized. If one committed group update opens
+and closes panels, all participants use the opening recipe on one shared progress clock.
+Independent mode retains separate entry/exit clocks. This works with controlled and
+internal state, single or multiple expansion, and isolated nested groups.
+
+Interrupted batches stop at current measured heights. All still-moving participants of
+an interrupted synchronized batch join its replacement. ResizeObserver retargets changed
+content on the existing progress clock; it never extends the group's deadline. Open height
+becomes auto on completion. Unmount and cancellation release observers and clocks.
+Changing motion enablement, speed, coordination, or enhancer availability settles current desired
+states immediately. This also applies when configuration and expansion change in the same React
+commit: the new expansion is applied without animation and is not replayed afterward. Ordinary
+expansion updates with stable configuration still animate. Initial mount is immediate.
+
+The indicator composes Rotate or Crossfade; its independent recipe remains 180ms entry /
+120ms exit with ease-out/ease-in, unaffected by panel speed or coordination. Fluent defaults
+to none (instant glyph replacement), with the default still sourced from Schema.
 See [visual helpers](../visual-helpers/visual-helpers-contract.md).
-Exit reversals start from current measured height; ResizeObserver retargets changing
-content during entry. Height becomes auto once open; observers/animations are
-cleaned up after completion, reversal or unmount.
 
 `motion={false}` disables panel height animation only. `indicatorTransition`
 follows `options.indicatorTransition` unless overridden by the instance: rotate,
@@ -105,7 +131,7 @@ RTL and the immediate path. Showcase examples use low panel emphasis except for 
 they omit code blocks to keep the visual comparison compact.
 Unit/integration tests cover state, semantic closure, focus, retained children,
 late Motion, reduced motion, reversal and dynamic measurement. Artifact tests
-cover availability, Motion publication and padding emission.
+cover availability, absence of preset-owned Motion metadata and spacing emission.
 
 Deferred: other presets/themes, sizes/radius variants, upward expansion, mandatory
 one-open groups, unmount-on-close and additional header actions.

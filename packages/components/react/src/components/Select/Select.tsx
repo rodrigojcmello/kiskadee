@@ -27,6 +27,7 @@ import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import { useSurfaceContext } from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMapResolution } from '../../shared/contexts/useComponentClassMap.ts';
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import { useLoadedComponentArtifact } from '../../shared/contexts/useLoadedComponentArtifact.ts';
 import { Dropdown } from '../Dropdown/index.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
@@ -184,6 +185,7 @@ function SelectControl({
   placeholder,
   messageId
 }: SelectControlProps) {
+  const cursorStyle = useControlCursorStyle();
   const state = useSelectState();
   const [focused, setFocused] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
@@ -220,6 +222,7 @@ function SelectControl({
             render={(buttonProps, stepState) => (
               <button
                 {...buttonProps}
+                style={{ ...cursorStyle, ...buttonProps.style }}
                 className={joinClassNames(
                   buttonProps.className,
                   styled && stepState.disabled ? cn.disabled : ''
@@ -258,7 +261,11 @@ function SelectControl({
                 )
               : undefined;
             return (
-              <button {...triggerProps} type="button">
+              <button
+                {...triggerProps}
+                style={{ ...cursorStyle, ...triggerProps.style }}
+                type="button"
+              >
                 <span className={cls(selected ? 'e5' : 'e11')}>
                   {selected?.label ?? placeholder}
                 </span>
@@ -279,6 +286,7 @@ function SelectControl({
             render={(buttonProps, stepState) => (
               <button
                 {...buttonProps}
+                style={{ ...cursorStyle, ...buttonProps.style }}
                 className={joinClassNames(
                   buttonProps.className,
                   styled && stepState.disabled ? cn.disabled : ''

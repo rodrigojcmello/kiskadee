@@ -1,7 +1,7 @@
 'use client';
 
 import './Accordion.structural.scss';
-import type { AccordionEmphasis, GrowHeightPresenceProfile, SurfaceContext } from '@kiskadee/core';
+import type { AccordionEmphasis, SurfaceContext } from '@kiskadee/core';
 import {
   HeadlessAccordion,
   useAccordionHeader,
@@ -27,7 +27,12 @@ import type {
   AccordionPanelProps,
   AccordionProps
 } from './Accordion.types.ts';
-import { useAccordionMotion } from './effects/motion/AccordionMotion.controller.ts';
+import {
+  useAccordionMotion,
+  useAccordionMotionGroup
+} from './effects/motion/AccordionMotion.controller.ts';
+import type { AccordionMotionGroup } from './effects/motion/AccordionMotion.group.ts';
+import { accordionIndicatorTiming } from './effects/motion/AccordionMotion.recipes.ts';
 import { useAccordionArtifactConfig } from './hooks/useAccordionArtifactConfig.ts';
 
 type VisualContext = {
@@ -39,7 +44,7 @@ type VisualContext = {
   border: AccordionProps['border'];
   shadow: AccordionProps['shadow'];
   surfaceContext: SurfaceContext;
-  timing?: GrowHeightPresenceProfile;
+  group?: AccordionMotionGroup;
 };
 const Visual = createContext<VisualContext>({
   emphasis: 'medium',
@@ -58,6 +63,8 @@ const Root = forwardRef<HTMLDivElement, AccordionProps>(function Accordion(
     panelEmphasis = emphasis,
     divider,
     motion = true,
+    motionSpeed = 'normal',
+    transitionCoordination = 'synchronized',
     indicatorTransition,
     border = true,
     shadow = false,
@@ -68,6 +75,7 @@ const Root = forwardRef<HTMLDivElement, AccordionProps>(function Accordion(
 ) {
   const config = useAccordionArtifactConfig();
   const surfaceContext = useSurfaceContext();
+  const group = useAccordionMotionGroup(motion, motionSpeed, transitionCoordination);
   const classes = useMemo(
     () => resolveAccordionClassNames(config.map, classNames),
     [config.map, classNames]
@@ -82,7 +90,7 @@ const Root = forwardRef<HTMLDivElement, AccordionProps>(function Accordion(
       border,
       shadow,
       surfaceContext,
-      timing: config.timing
+      group
     }),
     [
       emphasis,
@@ -95,7 +103,7 @@ const Root = forwardRef<HTMLDivElement, AccordionProps>(function Accordion(
       border,
       shadow,
       surfaceContext,
-      config.timing
+      group
     ]
   );
   if (
@@ -137,11 +145,15 @@ const Header = forwardRef<HTMLButtonElement, AccordionHeaderProps>(function Acco
 ) {
   const item = useAccordionItemContext();
   const trigger = useAccordionHeader(props);
-  const { emphasis, surfaceContext, timing, indicatorTransition } = useContext(Visual);
+  const { emphasis, surfaceContext, indicatorTransition } = useContext(Visual);
   const chevron = useEssentialIcon('chevron-down');
   const chevronUp = useEssentialIcon('chevron-up');
-  const durationMs = timing ? (item.open ? timing.enterDurationMs : timing.exitDurationMs) : 0;
-  const easing = timing ? (item.open ? timing.enterEasing : timing.exitEasing) : 'ease-out';
+  const durationMs = item.open
+    ? accordionIndicatorTiming.enterDurationMs
+    : accordionIndicatorTiming.exitDurationMs;
+  const easing = item.open
+    ? accordionIndicatorTiming.enterEasing
+    : accordionIndicatorTiming.exitEasing;
   const down = chevron ? <FamilyResolvedIcon name={chevron} /> : '⌄';
   const up = chevronUp ? <FamilyResolvedIcon name={chevronUp} /> : '⌃';
   const Heading = `h${headingLevel}` as 'h3';
@@ -201,11 +213,11 @@ const Panel = forwardRef<HTMLDivElement, AccordionPanelProps>(function Accordion
   { children, className, ...props },
   ref
 ) {
-  const { panelEmphasis, divider, motion, timing, surfaceContext } = useContext(Visual);
+  const { panelEmphasis, divider, group, surfaceContext } = useContext(Visual);
   const item = useAccordionItemContext();
   const panel = useAccordionPanel();
   const content = useRef<HTMLDivElement>(null);
-  const presence = useAccordionMotion(panel.open, motion, timing, panel.ref, content);
+  const presence = useAccordionMotion(item.panelId, panel.open, group!, panel.ref, content);
   return (
     <div
       {...props}

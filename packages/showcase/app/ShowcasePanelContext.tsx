@@ -16,7 +16,6 @@ type ShowcasePanelContextValue = {
   densityMap: DensityScaleMapJSON | undefined;
   densityOverride: Density | undefined;
   setDensityOverride: (value: Density | undefined) => void;
-  controlCursorAvailable: boolean;
   controlCursorOverride: ControlCursorValue | undefined;
   setControlCursorOverride: (value: ControlCursorValue | undefined) => void;
   administrativeContext: KiskadeeContextValue;

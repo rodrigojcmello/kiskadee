@@ -392,13 +392,6 @@ export async function writeExtraArtifacts(params: {
     componentEffectOverrides.container = containerArtifact;
   }
 
-  if (schema.components?.accordion?.effects.presence && schema.global?.effects?.presence) {
-    getComponentEffects('accordion').presence = {
-      profile: 'grow-height',
-      profiles: { 'grow-height': schema.global.effects.presence.profiles['grow-height']! }
-    };
-  }
-
   const dropdownPresence = buildDropdownPresenceEffect(schema);
   if (dropdownPresence) {
     getComponentEffects('dropdown').presence = dropdownPresence;

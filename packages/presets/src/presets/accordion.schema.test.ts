@@ -1,4 +1,4 @@
-import { validateAccordionComponentContract, validateSchemaPresenceContract } from '@kiskadee/core';
+import { validateAccordionComponentContract } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { createFluent2MicrosoftAccordionSchema } from './fluent-2-microsoft/components/accordion.schema.ts';
 import { schema as fluent } from './fluent-2-microsoft/fluent-2-microsoft.schema.ts';
@@ -53,35 +53,11 @@ describe('Accordion contract', () => {
       ])
     );
   });
-  it('requires its own declared global height profile', () => {
-    expect(() =>
-      validateSchemaPresenceContract({
-        components: { accordion: { effects: { presence: { profile: 'grow-height' } } } }
-      })
-    ).toThrow('requires global grow-height');
-    expect(() =>
-      validateSchemaPresenceContract({
-        components: { accordion: { effects: { presence: { profile: 'fade-translate' } } } }
-      })
-    ).toThrow('expected grow-height');
-    expect(() =>
-      validateSchemaPresenceContract({
-        global: {
-          effects: {
-            presence: {
-              profiles: {
-                'grow-height': {
-                  enterDurationMs: 180,
-                  exitDurationMs: 120,
-                  enterEasing: 'ease-out',
-                  exitEasing: 'ease-in'
-                }
-              }
-            }
-          }
-        },
-        components: { accordion: { effects: { presence: { profile: 'grow-height' } } } }
-      })
-    ).not.toThrow();
+  it('rejects schema-authored motion recipes', () => {
+    const schema = createFluent2MicrosoftAccordionSchema();
+    Object.assign(schema, { effects: { presence: { profile: 'grow-height' } } });
+    expect(validateAccordionComponentContract(schema)).toContain(
+      'components.accordion.effects: unrecognized key'
+    );
   });
 });

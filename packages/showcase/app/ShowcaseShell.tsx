@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentEmphasis, ContainerIntent, ControlCursorValue } from '@kiskadee/core';
+import type { ComponentEmphasis, ContainerIntent } from '@kiskadee/core';
 import { Container } from '@kiskadee/react-components/container';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import {
@@ -17,6 +17,7 @@ import {
   ShowcaseSidebarToggleGlyph
 } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import ShowcaseSidebar from '@/components/ShowcaseSidebar/ShowcaseSidebar';
+import { useRouteControlCursor } from '@/hooks/use-route-control-cursor';
 import { useShowcaseBackgroundState } from '@/hooks/use-showcase-background-state';
 import style from './layout.module.scss';
 import { useShowcaseDensity } from './ShowcaseDensityContext';
@@ -37,18 +38,8 @@ export default function ShowcaseShell({
   const pathname = usePathname();
   const administrativeContext = useKiskadee();
   const { densityMap, densityOverride, setDensityOverride } = useShowcaseDensity();
-  const [cursorOverrides, setCursorOverrides] = useState<
-    Record<string, ControlCursorValue | undefined>
-  >({});
-  const controlCursorAvailable =
-    /^\/(button|card|switch|tabs|dropdown|bottom-sheet|select)(?:\/|$)/.test(pathname);
-  const controlCursorOverride = controlCursorAvailable ? cursorOverrides[pathname] : undefined;
-  const setControlCursorOverride = useCallback(
-    (value: ControlCursorValue | undefined) => {
-      setCursorOverrides((current) => ({ ...current, [pathname]: value }));
-    },
-    [pathname]
-  );
+  const { override: controlCursorOverride, setOverride: setControlCursorOverride } =
+    useRouteControlCursor(pathname);
   const contentContext = useMemo(
     () => ({
       ...administrativeContext,
@@ -112,7 +103,6 @@ export default function ShowcaseShell({
       densityMap,
       densityOverride,
       setDensityOverride,
-      controlCursorAvailable,
       controlCursorOverride,
       setControlCursorOverride,
       background,
@@ -128,7 +118,6 @@ export default function ShowcaseShell({
       densityMap,
       densityOverride,
       setDensityOverride,
-      controlCursorAvailable,
       controlCursorOverride,
       setControlCursorOverride,
       background,

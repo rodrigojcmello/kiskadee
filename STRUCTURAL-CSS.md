@@ -76,6 +76,25 @@ the child order is intentionally side-aware or reversible, the wrapper may own t
 padding token that structural CSS consumes as `gap`; this keeps the value in schema without coupling
 spacing to one child order.
 
+When the same wrapper owns both edge insets and independent spacing between optional or
+reversible children, and its padding scales already represent those insets, one side-specific
+margin scale may instead author the inter-child relationship. This is a bounded exception to the
+ordinary external-margin interpretation, using the existing token-emission mechanism:
+
+- the component contract must name the wrapper, source margin scale, and consumed gap axis;
+- Style Emission Policy must emit that margin as a token only, without also applying an outer margin;
+- structural CSS consumes the emitted variable directly as `gap` or a specific gap axis, with no
+  local value, alias, or fallback;
+- all insets stay on the wrapper's independent padding scales; a caller-owned external margin must
+  not be repurposed;
+- the margin side identifies the stored token, not a physical outer edge in the rendered layout;
+  structural flow determines child adjacency in LTR and RTL.
+
+Accordion trigger e3 is the current example: `marginRight` emits `--k-mgr` for a uniform gap between
+its optional leading icon, label, and trailing indicator, while its padding scales own the insets.
+Ordinary margins retain their external-spacing meaning outside an explicitly documented mapping.
+This exception does not introduce a new scale attribute, projection bucket, or runtime token source.
+
 Style Emission Policy may expose existing scale attributes as CSS custom properties when structural
 CSS needs to consume the value indirectly. Margin emission stays side-specific:
 `marginTopEmission`, `marginRightEmission`, `marginBottomEmission`, and `marginLeftEmission`. These

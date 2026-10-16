@@ -1,29 +1,10 @@
 # Switch Cursor Policy
 
-## Problem
+Switch action owners consume `cursor: var(--k-cc)` in both static and Motion branches.
+The global preset policy or explicit KiskadeeContext preference determines default/pointer;
+Switch does not impose a fixed default cursor. Children inherit the root cursor.
 
-The styled React Switch previously used `cursor: pointer` on the structural root. That matched a
-common web convention for clickable labels, but it made the Switch behave more like a link than a
-native control. Kiskadee should preserve visual affordance through state color, motion, focus, and
-activation feedback instead of relying on a hand cursor.
+Disabled and read-only states keep the existing unavailable cursor override. Cursor choice
+never changes interaction, focus, selected state, or activation feedback.
 
-Simply removing the root cursor would be fragile because `cursor` inherits. A Switch rendered inside
-an ancestor with `cursor: pointer` could accidentally pick up the ancestor's affordance.
-
-## Policy
-
-Interactive Switch roots use `cursor: default`. This applies to both structural branches:
-
-- static Switch branch `a`;
-- motion Switch branch `b`.
-
-Structural children keep `cursor: inherit` so the track, label, control text, and visual wrappers all
-mirror the root cursor without duplicating policy across slots.
-
-Disabled and read-only Switch states keep the existing `cursor: not-allowed` structural override.
-Those states are non-interactive even though the native input is visually hidden, so the cursor state
-has to be mirrored from the root to the rendered visual slots.
-
-This component-specific policy follows the global Kiskadee cursor rule. Generic clickable controls
-must not use `cursor: pointer`; reserve the hand cursor for true link semantics. See
-[`cursor-policy.md`](../../../../../../docs/definitions/cursor-policy.md).
+Follow the canonical [cursor policy](../../../../../../docs/definitions/cursor-policy.md).

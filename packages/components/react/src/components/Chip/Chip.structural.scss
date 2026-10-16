@@ -109,3 +109,15 @@
   min-block-size: 0;
   overflow: visible;
 }
+
+/*
+ * element primary action / e2 + remove action / e5
+ * Only native action owners consume the global cursor; passive content stays passive.
+ */
+button.k-chp-e2, button.k-chp-e5 { cursor: var(--k-cc); }
+
+/*
+ * element primary action / e2 + remove action / e5
+ * Disabled controls take precedence over the contextual action cursor.
+ */
+button.k-chp-e2:disabled, button.k-chp-e5:disabled { cursor: not-allowed; }

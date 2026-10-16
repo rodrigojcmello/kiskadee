@@ -40,7 +40,6 @@ export function ShowcaseRouteControls({
     registerPanelDetail,
     clearPanelDetail,
     administrativeContext,
-    controlCursorAvailable,
     controlCursorOverride,
     setControlCursorOverride
   } = useShowcasePanel();
@@ -66,9 +65,9 @@ export function ShowcaseRouteControls({
     <KiskadeeContext.Provider value={administrativeContext}>
       <DensityProvider value="adaptive">
         <ShowcaseIconFamilyBoundary>
-          {children}
-          {controlCursorAvailable ? (
-            <ShowcaseControlGroup title="Interaction">
+          <ShowcaseControlPanel>
+            {children}
+            <ShowcaseControlGroup title="Interaction" className={styles.cursorGroup}>
               <ShowcaseSelectControl
                 label="Control cursor"
                 value={controlCursorOverride ?? 'preset'}
@@ -86,8 +85,11 @@ export function ShowcaseRouteControls({
                   )
                 }
               />
+              <p className={styles.cursorDescription}>
+                Applies to interactive controls. Text and drag handles keep their own cursors.
+              </p>
             </ShowcaseControlGroup>
-          ) : null}
+          </ShowcaseControlPanel>
         </ShowcaseIconFamilyBoundary>
       </DensityProvider>
     </KiskadeeContext.Provider>,

@@ -106,3 +106,33 @@ describe('Chip', () => {
     expect(screen.getByText('3').className).toContain('k-chp-e7');
   });
 });
+
+it('projects cursor preferences only on native actions and removes overrides', () => {
+  const example = (cursor?: 'default' | 'pointer', disabled = false) => (
+    <KiskadeeContext.Provider
+      value={{ ...context, controlCursor: cursor ? { value: cursor, scope: 'web' } : undefined }}
+    >
+      <Chip disabled={disabled}>
+        <Chip.Select>Selected chip</Chip.Select>
+        <Chip.Remove aria-label="Remove">x</Chip.Remove>
+      </Chip>
+      <Chip>
+        <Chip.Content>Static chip</Chip.Content>
+      </Chip>
+    </KiskadeeContext.Provider>
+  );
+  const view = render(example('default'));
+  const owners = [
+    screen.getByRole('button', { name: 'Selected chip' }),
+    screen.getByRole('button', { name: 'Remove' })
+  ];
+  for (const owner of owners) expect(owner.style.getPropertyValue('--k-cc')).toBe('default');
+  expect(screen.getByText('Static chip').style.getPropertyValue('--k-cc')).toBe('');
+  view.rerender(example('pointer', true));
+  for (const owner of owners) {
+    expect(owner.style.getPropertyValue('--k-cc')).toBe('pointer');
+    expect((owner as HTMLButtonElement).disabled).toBe(true);
+  }
+  view.rerender(example());
+  for (const owner of owners) expect(owner.style.getPropertyValue('--k-cc')).toBe('');
+});

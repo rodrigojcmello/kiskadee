@@ -167,3 +167,15 @@
   font-weight: 500;
   line-height: 1.25;
 }
+
+.cursorGroup {
+  border-block-start: 1px solid rgba(0, 0, 0, 0.06);
+  padding-block-start: 18px;
+}
+
+.cursorDescription {
+  color: rgba(0, 0, 0, 0.48);
+  font-size: 0.76rem;
+  line-height: 1.35;
+  margin: 0;
+}

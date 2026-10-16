@@ -128,6 +128,13 @@ review.
 - **Must not own:** preset primitive or semantic colors, preset component projection formulas,
   component UI, runtime loading policy, or icon/logo geometry owned by the icon catalog.
 
+## Bounded transition recipes
+
+[Transition speeds](./transition-speeds.md) defines an explicit exception for library-owned,
+bounded interaction timing. Platform component projects own the executable calibration of
+`normal`, `fast`, `slow`, and `debugSlow`; these recipes are not preset visual tokens.
+The exception does not authorize runtime authorship of geometry, color, or other Schema values.
+
 ## Resource projects
 
 ### `packages/fonts`

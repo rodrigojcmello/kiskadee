@@ -16,6 +16,7 @@ import {
   useSurfaceContext
 } from '../../shared/contexts/SurfaceContext.tsx';
 import { useComponentClassMap } from '../../shared/contexts/useComponentClassMap.ts';
+import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import { FamilyResolvedIcon } from '../Icon/FamilyResolvedIcon.tsx';
 import {
   DEFAULT_CHIP_EMPHASIS,
@@ -114,8 +115,14 @@ const ChipSelect = forwardRef<HTMLButtonElement, ChipSelectProps>(function ChipS
   ref
 ) {
   const chip = useChip('Select');
+  const cursorStyle = useControlCursorStyle();
   return (
-    <HeadlessChip.Select {...props} ref={ref} className={join(chip.classes.e2, className)}>
+    <HeadlessChip.Select
+      {...props}
+      style={{ ...cursorStyle, ...props.style }}
+      ref={ref}
+      className={join(chip.classes.e2, className)}
+    >
       {({ controlState }) => (
         <SurfaceContextProvider value={chip.resolveProducedSurface(controlState)}>
           <ChipPrimaryContext.Provider value>{children}</ChipPrimaryContext.Provider>
@@ -130,6 +137,7 @@ const ChipRemove = forwardRef<HTMLButtonElement, ChipRemoveProps>(function ChipR
   ref
 ) {
   const chip = useChip('Remove');
+  const cursorStyle = useControlCursorStyle();
   const closeIcon = useEssentialIcon('close');
   const warned = useRef(false);
   const content = children ?? (closeIcon ? <FamilyResolvedIcon name={closeIcon} /> : undefined);
@@ -145,7 +153,12 @@ const ChipRemove = forwardRef<HTMLButtonElement, ChipRemoveProps>(function ChipR
   }
 
   return (
-    <HeadlessChip.Remove {...props} ref={ref} className={join(chip.classes.e5, className)}>
+    <HeadlessChip.Remove
+      {...props}
+      style={{ ...cursorStyle, ...props.style }}
+      ref={ref}
+      className={join(chip.classes.e5, className)}
+    >
       <span className={chip.classes.e6} aria-hidden="true">
         {content}
       </span>

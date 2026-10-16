@@ -60,6 +60,11 @@ Rule:
 
 - If it can vary by segment/theme/intent/emphasis/state, it belongs in schema elements.
 
+Library-owned bounded transition recipes are governed by
+[Transition speeds](docs/definitions/transition-speeds.md). Their executable timing belongs
+to platform components, not preset Schema. This exception does not move appearance tokens
+or existing effects into runtime.
+
 ### 3.1.1 Component topology: `elements` vs `variants`
 
 Context:

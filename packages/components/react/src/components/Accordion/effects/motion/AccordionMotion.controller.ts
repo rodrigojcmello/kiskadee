@@ -1,44 +1,62 @@
-import type { GrowHeightPresenceProfile } from '@kiskadee/core';
-import { type RefObject, useEffect, useRef, useState } from 'react';
+import { type RefObject, useRef, useState } from 'react';
+import type { TransitionSpeed } from '../../../../shared/motion/transitionSpeed.ts';
 import { useIsomorphicLayoutEffect } from '../../../../shared/utils/useIsomorphicLayoutEffect.ts';
+import type { AccordionTransitionCoordination } from '../../Accordion.types.ts';
+import { type AccordionMotionGroup, createAccordionMotionGroup } from './AccordionMotion.group.ts';
 import { useAccordionMotionModule } from './AccordionMotion.loader.ts';
 
-export function useAccordionMotion(
-  open: boolean,
+export function useAccordionMotionGroup(
   enabled: boolean,
-  timing: GrowHeightPresenceProfile | undefined,
-  panel: RefObject<HTMLDivElement | null>,
-  content: RefObject<HTMLDivElement | null>
+  speed: TransitionSpeed,
+  coordination: AccordionTransitionCoordination
 ) {
-  const module = useAccordionMotionModule(enabled && Boolean(timing));
   const [reduced, setReduced] = useState(false);
-  const [retained, setRetained] = useState(open);
-  const previousOpen = useRef(open);
-  useEffect(() => {
-    if (!enabled) return;
+  const group = useRef<AccordionMotionGroup | null>(null);
+  if (!group.current) group.current = createAccordionMotionGroup();
+  const current = group.current;
+  const module = useAccordionMotionModule(enabled && !reduced);
+  useIsomorphicLayoutEffect(() => {
     const query = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     if (!query) return;
-    const update = () => setReduced(query.matches);
+    const update = () => {
+      setReduced(query.matches);
+      if (query.matches) current.configure({ animate: null, speed, coordination });
+    };
     update();
     query.addEventListener('change', update);
     return () => query.removeEventListener('change', update);
-  }, [enabled]);
+  }, [current, speed, coordination]);
   useIsomorphicLayoutEffect(() => {
-    const element = panel.current;
-    const body = content.current;
-    if (!element || !body) return;
-    const changed = previousOpen.current !== open;
-    previousOpen.current = open;
-    const finish = () => setRetained(open);
-    // Loading the enhancer must never replay a transition already applied without it.
-    if (!changed || !enabled || reduced || !module || !timing) {
-      element.style.height = open ? 'auto' : '0px';
-      element.style.overflow = open ? '' : 'hidden';
-      finish();
-      return;
-    }
+    const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    current.configure({
+      animate:
+        enabled && !reduced && !prefersReduced && module ? module.animateAccordionPanels : null,
+      speed,
+      coordination
+    });
+  }, [current, enabled, reduced, module, speed, coordination]);
+  useIsomorphicLayoutEffect(() => () => current.destroy(), [current]);
+  return current;
+}
+
+export function useAccordionMotion(
+  id: string,
+  open: boolean,
+  group: AccordionMotionGroup,
+  panel: RefObject<HTMLDivElement | null>,
+  content: RefObject<HTMLDivElement | null>
+) {
+  const [retained, setRetained] = useState(open);
+  useIsomorphicLayoutEffect(() => {
+    if (!panel.current || !content.current) return;
     if (open) setRetained(true);
-    return module.animateAccordionPanel(element, body, open, timing, finish);
-  }, [open, enabled, reduced, module, timing, panel, content]);
+    group.update(id, {
+      panel: panel.current,
+      content: content.current,
+      open,
+      finish: () => setRetained(open)
+    });
+  }, [id, open, group, panel, content]);
+  useIsomorphicLayoutEffect(() => () => group.remove(id), [group, id]);
   return { hidden: !open && !retained };
 }

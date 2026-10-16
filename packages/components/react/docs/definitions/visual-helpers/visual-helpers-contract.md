@@ -3,7 +3,7 @@
 Crossfade and Rotate are public p-react presentation helpers. They do not own
 semantic state, colors, geometry tokens, Headless behavior, or preset schemas.
 Their consumer supplies authored `durationMs` and `easing` (`ease-in`/`ease-out`).
-Accordion supplies these from its own resolved global grow-height profile.
+Accordion supplies a library-owned indicator recipe, independently of its panel speed.
 
 Both helpers accept `children`, native attributes, classes, refs, `as` (span by
 default, div for block content), and `motion` (true by default). Their shared

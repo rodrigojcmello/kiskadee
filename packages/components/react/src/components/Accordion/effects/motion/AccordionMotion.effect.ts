@@ -1,52 +1,74 @@
-import type { GrowHeightPresenceProfile } from '@kiskadee/core';
 import { animate } from 'motion';
+import type { AccordionTransition } from './AccordionMotion.recipes.ts';
 
-/** Retarget measured height from the current frame, including content changes during entry. */
-export function animateAccordionPanel(
-  panel: HTMLElement,
-  content: HTMLElement,
-  open: boolean,
-  timing: GrowHeightPresenceProfile,
+export type AccordionMotionParticipant = {
+  panel: HTMLElement;
+  content: HTMLElement;
+  open: boolean;
+};
+
+/** A single progress clock keeps all participating heights on the same timeline. */
+export function animateAccordionPanels(
+  participants: readonly AccordionMotionParticipant[],
+  transition: AccordionTransition,
   complete: () => void
 ): () => void {
   let cancelled = false;
-  let observer: ResizeObserver | undefined;
-  let animation: ReturnType<typeof animate> | undefined;
-  let generation = 0;
-  const duration = (open ? timing.enterDurationMs : timing.exitDurationMs) / 1000;
-  const ease = open ? timing.enterEasing : timing.exitEasing;
-  const curve = ease === 'ease-in' ? ([0.42, 0, 1, 1] as const) : ([0, 0, 0.58, 1] as const);
-  let lastTarget = -1;
-  const retarget = () => {
-    const target = open ? content.getBoundingClientRect().height : 0;
-    if (target === lastTarget) return;
-    lastTarget = target;
-    const current = panel.getBoundingClientRect().height;
-    animation?.stop();
-    const currentGeneration = ++generation;
-    panel.style.height = `${current}px`;
-    panel.style.overflow = 'hidden';
-    animation = animate(
+  let progress = 0;
+  const tracks = participants.map(({ panel, content, open }) => {
+    const origin = panel.getBoundingClientRect().height;
+    return {
       panel,
-      { height: [`${current}px`, `${target}px`] },
-      { duration, ease: curve }
-    );
-    void animation.then(() => {
-      if (cancelled || generation !== currentGeneration) return;
-      observer?.disconnect();
-      panel.style.height = open ? 'auto' : '0px';
-      panel.style.overflow = open ? '' : 'hidden';
-      complete();
-    });
-  };
-  retarget();
-  if (open && typeof ResizeObserver !== 'undefined') {
-    observer = new ResizeObserver(retarget);
-    observer.observe(content);
+      content,
+      open,
+      origin,
+      target: open ? content.getBoundingClientRect().height : 0,
+      start: 0
+    };
+  });
+  // Measure the entire cohort before writing, avoiding repeated read/write layout cycles.
+  for (const track of tracks) {
+    track.panel.style.height = `${track.origin}px`;
+    track.panel.style.overflow = 'hidden';
   }
+  const observer =
+    typeof ResizeObserver === 'undefined'
+      ? undefined
+      : new ResizeObserver(() => {
+          for (const track of tracks) {
+            if (!track.open) continue;
+            const target = track.content.getBoundingClientRect().height;
+            if (target === track.target) continue;
+            track.origin = track.panel.getBoundingClientRect().height;
+            track.target = target;
+            track.start = progress;
+          }
+        });
+  for (const track of tracks) if (track.open) observer?.observe(track.content);
+  const animation = animate(0, 1, {
+    duration: transition.durationMs / 1000,
+    ease: transition.easing === 'ease-in' ? [0.42, 0, 1, 1] : [0, 0, 0.58, 1],
+    onUpdate(value) {
+      if (cancelled) return;
+      progress = value;
+      for (const track of tracks) {
+        const fraction = track.start === 1 ? 1 : (value - track.start) / (1 - track.start);
+        track.panel.style.height = `${track.origin + (track.target - track.origin) * fraction}px`;
+      }
+    }
+  });
+  void animation.then(() => {
+    if (cancelled) return;
+    observer?.disconnect();
+    for (const track of tracks) {
+      track.panel.style.height = track.open ? 'auto' : '0px';
+      track.panel.style.overflow = track.open ? '' : 'hidden';
+    }
+    complete();
+  });
   return () => {
     cancelled = true;
     observer?.disconnect();
-    animation?.stop();
+    animation.stop();
   };
 }

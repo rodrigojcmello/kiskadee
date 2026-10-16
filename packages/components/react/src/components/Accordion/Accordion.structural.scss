@@ -10,10 +10,14 @@
   border-end-start-radius: 0;
   border-end-end-radius: 0;
 }
+/*
+ * element trigger / e3
+ * Consumes independent emitted insets and inter-child spacing without an outer margin.
+ */
 .k-acc-e3.k-crd-a {
   display: flex;
   align-items: center;
-  gap: var(--k-pdl);
+  gap: var(--k-mgr);
   padding-block: var(--k-pdt) var(--k-pdb);
   padding-inline: var(--k-pdl) var(--k-pdr);
   border-style: none;

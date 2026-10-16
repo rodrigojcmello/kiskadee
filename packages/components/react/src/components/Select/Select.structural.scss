@@ -100,3 +100,15 @@
    */
   .k-sel-e7 { transition: none; }
 }
+
+/*
+ * element trigger / e4 + sequential controls / e8 and e9
+ * Each native action consumes its own contextual cursor, independently of the shell.
+ */
+.k-sel-e4, .k-sel-e8, .k-sel-e9 { cursor: var(--k-cc); }
+
+/*
+ * element trigger / e4 + sequential controls / e8 and e9
+ * Unavailable native actions override the interactive cursor preference.
+ */
+.k-sel-e4:disabled, .k-sel-e8:disabled, .k-sel-e9:disabled { cursor: not-allowed; }

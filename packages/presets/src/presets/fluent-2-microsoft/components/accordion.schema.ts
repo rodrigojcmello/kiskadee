@@ -7,9 +7,8 @@ export function createFluent2MicrosoftAccordionSchema(): AccordionComponent {
       themes: ['light'],
       emphases: ['lowest', 'low', 'medium', 'high'],
       divider: true,
-      indicatorTransition: 'rotate'
+      indicatorTransition: 'none'
     },
-    effects: { presence: { profile: 'grow-height' } },
     elements: {
       e1: { name: 'root' },
       e2: { name: 'item' },
@@ -17,15 +16,16 @@ export function createFluent2MicrosoftAccordionSchema(): AccordionComponent {
         name: 'trigger',
         scales: {
           paddingTop: { 's:md:1': 16 },
-          paddingRight: { 's:md:1': 16 },
+          paddingRight: { 's:md:1': 24 },
           paddingBottom: { 's:md:1': 16 },
-          paddingLeft: { 's:md:1': 16 }
+          paddingLeft: { 's:md:1': 24 },
+          marginRight: { 's:md:1': 16 }
         }
       },
       e4: { name: 'label', typography: { 's:all': 'body-medium' } },
       e5: {
         name: 'indicator',
-        scales: { boxWidth: { 's:md:1': 20 }, boxHeight: { 's:md:1': 20 } }
+        scales: { boxWidth: { 's:md:1': 12 }, boxHeight: { 's:md:1': 12 } }
       },
       e6: { name: 'panel' }
     }

@@ -155,6 +155,13 @@ Name a new composition strategy only when all of these conditions hold:
 Record the full term in [Kiskadee Nomenclature](./nomenclature.md) only after the meaning is stable
 across packages. Do not create an abbreviation merely to shorten discussion.
 
+## Bounded transition customization
+
+When a component offers selectable transition speed, follow [Transition speeds](./transition-speeds.md).
+Use the four named choices and platform-owned executable recipes; do not introduce arbitrary
+public duration or spring objects, preset timing options, or a Provider for this concern.
+The component owns local coordination; Headless retains expansion and accessibility authority.
+
 ## Decision record
 
 A durable architecture decision should record:

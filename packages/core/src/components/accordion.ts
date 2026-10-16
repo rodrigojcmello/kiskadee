@@ -1,6 +1,5 @@
 import type { ElementStyle } from '../schema.ts';
 import { type ComponentEmphasis, componentEmphasisBuckets } from '../types/colors/colors.types.ts';
-import type { GrowHeightPresenceProfile } from '../types/effects/presence/presence.types.ts';
 
 export type AccordionEmphasis = ComponentEmphasis;
 export type AccordionIndicatorTransition = 'rotate' | 'crossfade' | 'none';
@@ -13,7 +12,6 @@ export type AccordionOptions = {
 };
 export type AccordionComponent = {
   options: AccordionOptions;
-  effects: { presence: { profile: 'grow-height' } };
   elements: {
     e1: { name: 'root' };
     e2: { name: 'item' };
@@ -21,7 +19,7 @@ export type AccordionComponent = {
       name: 'trigger';
       scales: Pick<
         NonNullable<ElementStyle['scales']>,
-        'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
+        'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'marginRight'
       >;
     };
     e4: { name: 'label'; typography: NonNullable<ElementStyle['typography']> };
@@ -32,11 +30,6 @@ export type AccordionComponent = {
     e6: { name: 'panel' };
   };
 };
-export type ResolvedAccordionPresenceEffect = {
-  profile: 'grow-height';
-  profiles: { 'grow-height': GrowHeightPresenceProfile };
-};
-
 /** Keep composition slots free from re-authored Card/Container visual recipes. */
 export function validateAccordionComponentContract(value: unknown): string[] {
   const issues: string[] = [];
@@ -47,7 +40,7 @@ export function validateAccordionComponentContract(value: unknown): string[] {
     for (const key of Object.keys(v))
       if (!keys.includes(key)) issues.push(`${path}.${key}: unrecognized key`);
   };
-  allowed(value, ['options', 'effects', 'elements'], 'components.accordion');
+  allowed(value, ['options', 'elements'], 'components.accordion');
   if (
     !record(value.options) ||
     JSON.stringify(value.options.themes) !== '["light"]' ||
@@ -70,16 +63,6 @@ export function validateAccordionComponentContract(value: unknown): string[] {
       ['themes', 'emphases', 'divider', 'indicatorTransition'],
       'components.accordion.options'
     );
-  if (
-    !record(value.effects) ||
-    !record(value.effects.presence) ||
-    value.effects.presence.profile !== 'grow-height'
-  )
-    issues.push('components.accordion.effects.presence: expected grow-height');
-  else {
-    allowed(value.effects, ['presence'], 'components.accordion.effects');
-    allowed(value.effects.presence, ['profile'], 'components.accordion.effects.presence');
-  }
   if (!record(value.elements)) return [...issues, 'components.accordion.elements: expected object'];
   const slots = {
     e1: 'root',
@@ -109,7 +92,7 @@ export function validateAccordionComponentContract(value: unknown): string[] {
     if (slot === 'e3' || slot === 'e5') {
       const keys =
         slot === 'e3'
-          ? ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft']
+          ? ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'marginRight']
           : ['boxWidth', 'boxHeight'];
       if (!record(element.scales)) {
         issues.push(`${path}.scales: required`);

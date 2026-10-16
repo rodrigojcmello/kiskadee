@@ -22,6 +22,8 @@ Load additional guidance only for the matching decision:
 | --- | --- |
 | Product purpose or delivery context is missing | [README.md](../../README.md) |
 | Choosing or materially changing a component, slot, variant, mode, option, profile, catalog, Effect, Provider, Headless primitive, platform mechanic, or named composition pattern | [composition-strategies.md](../../docs/definitions/composition-strategies.md) |
+| Action cursor ownership or new interactive components | [cursor-policy.md](../../docs/definitions/cursor-policy.md) |
+| Bounded transition speed or animation coordination | [transition-speeds.md](../../docs/definitions/transition-speeds.md) |
 | Token classification changes | [taxonomy-rules.md](references/taxonomy-rules.md) |
 | Schema/build/runtime placement or artifact semantics change | [SCHEMA-BUILD-RUNTIME-RULES.md](../../SCHEMA-BUILD-RUNTIME-RULES.md) and [schema-artifact-decisions.md](references/schema-artifact-decisions.md) |
 | Existing token-only utility reuse on a different structural owner | [projection skill](../kiskadee-structural-utility-projections/SKILL.md) before choosing a bucket or runtime reuse |

@@ -3,17 +3,17 @@
 import { Accordion, type AccordionProps } from '@kiskadee/react-components/accordion';
 import { Button } from '@kiskadee/react-components/button';
 import { Card } from '@kiskadee/react-components/card';
-import { Crossfade } from '@kiskadee/react-components/crossfade';
-import { FamilyResolvedIcon, Icon } from '@kiskadee/react-components/icon';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import { Layout } from '@kiskadee/react-components/layout';
 import { useComponentMetadata, useKiskadee } from '@kiskadee/react-components/resources';
-import { Rotate } from '@kiskadee/react-components/rotate';
+import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
 import { type ReactNode, useState } from 'react';
 import { ShowcaseGlobalSemanticControls } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
 import {
   ShowcaseBooleanControl,
   ShowcaseControlGroup,
+  ShowcaseControlPanel,
   ShowcaseRouteControls,
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
@@ -46,6 +46,8 @@ function PanelContent({ children }: { children: ReactNode }) {
 }
 function Support({
   motion,
+  motionSpeed,
+  transitionCoordination,
   emphasis,
   border,
   shadow,
@@ -54,6 +56,8 @@ function Support({
   indicatorTransition
 }: {
   motion: boolean;
+  motionSpeed: AccordionProps['motionSpeed'];
+  transitionCoordination: AccordionProps['transitionCoordination'];
   emphasis: NonNullable<AccordionProps['emphasis']>;
   panelEmphasis?: AccordionProps['panelEmphasis'];
   divider?: boolean;
@@ -66,6 +70,8 @@ function Support({
       border={border}
       shadow={shadow}
       motion={motion}
+      motionSpeed={motionSpeed}
+      transitionCoordination={transitionCoordination}
       emphasis={emphasis}
       panelEmphasis={panelEmphasis}
       divider={divider}
@@ -99,6 +105,7 @@ export default function AccordionShowcase() {
     'layout',
     'text',
     'button',
+    'switch',
     'icon'
   ]);
   const metadata = useComponentMetadata('accordion');
@@ -109,11 +116,11 @@ export default function AccordionShowcase() {
   const [shadow, setShadow] = useState(false);
   const [indicatorOverride, setIndicatorOverride] =
     useState<AccordionProps['indicatorTransition']>();
-  const [helperAlternate, setHelperAlternate] = useState(false);
   const indicatorTransition = indicatorOverride;
-  const helperTiming = metadata?.effects?.presence?.profiles['grow-height'];
-  const helperDuration = helperTiming?.enterDurationMs ?? 0;
-  const helperEasing = helperTiming?.enterEasing ?? 'ease-out';
+  const [motionSpeed, setMotionSpeed] =
+    useState<NonNullable<AccordionProps['motionSpeed']>>('normal');
+  const [transitionCoordination, setTransitionCoordination] =
+    useState<NonNullable<AccordionProps['transitionCoordination']>>('synchronized');
   const [motion, setMotion] = useState(true);
   const [multiple, setMultiple] = useState(false);
   const [locked, setLocked] = useState(false);
@@ -131,54 +138,70 @@ export default function AccordionShowcase() {
         title="Controls"
         showGlobalControls={false}
       >
-        <ShowcaseControlGroup title="Semantic">
-          <ShowcaseGlobalSemanticControls />
-        </ShowcaseControlGroup>
-        <ShowcaseControlGroup title="Comparison appearance">
-          <ShowcaseBooleanControl
-            label="Divider"
-            checked={divider ?? metadata?.options?.divider ?? false}
-            onCheckedChange={setDivider}
-          />
-          <ShowcaseBooleanControl label="Border" checked={border} onCheckedChange={setBorder} />
-          <ShowcaseBooleanControl label="Shadow" checked={shadow} onCheckedChange={setShadow} />
-        </ShowcaseControlGroup>
-        <ShowcaseControlGroup title="Behavior">
-          <ShowcaseSelectControl
-            label="Indicator transition"
-            options={[
-              { label: 'Preset default', value: 'preset' },
-              { label: 'Rotate', value: 'rotate' },
-              { label: 'Crossfade', value: 'crossfade' },
-              { label: 'None', value: 'none' }
-            ]}
-            value={indicatorOverride ?? 'preset'}
-            onValueChange={(value) =>
-              setIndicatorOverride(
-                value === 'preset' ? undefined : (value as AccordionProps['indicatorTransition'])
-              )
-            }
-          />
-          <ShowcaseBooleanControl
-            label="Panel motion"
-            checked={motion}
-            onCheckedChange={setMotion}
-          />
-          <ShowcaseBooleanControl
-            label="Multiple open"
-            checked={multiple}
-            onCheckedChange={(value) => {
-              setMultiple(value);
-              setExpanded((current) => (value ? current : current.slice(0, 1)));
-            }}
-          />
-          <ShowcaseBooleanControl
-            label="Interaction locked"
-            checked={locked}
-            onCheckedChange={setLocked}
-          />
-          <ShowcaseBooleanControl label="Right to left" checked={rtl} onCheckedChange={setRtl} />
-        </ShowcaseControlGroup>
+        <ShowcaseControlPanel>
+          <ShowcaseControlGroup title="Semantic">
+            <ShowcaseGlobalSemanticControls />
+          </ShowcaseControlGroup>
+          <ShowcaseControlGroup title="Comparison appearance">
+            <ShowcaseBooleanControl
+              label="Divider"
+              checked={divider ?? metadata?.options?.divider ?? false}
+              onCheckedChange={setDivider}
+            />
+            <ShowcaseBooleanControl label="Border" checked={border} onCheckedChange={setBorder} />
+            <ShowcaseBooleanControl label="Shadow" checked={shadow} onCheckedChange={setShadow} />
+          </ShowcaseControlGroup>
+          <ShowcaseControlGroup title="Behavior">
+            <ShowcaseSelectControl
+              label="Indicator transition"
+              options={[
+                { label: 'Preset default', value: 'preset' },
+                { label: 'Rotate', value: 'rotate' },
+                { label: 'Crossfade', value: 'crossfade' },
+                { label: 'None', value: 'none' }
+              ]}
+              value={indicatorOverride ?? 'preset'}
+              onValueChange={(value) =>
+                setIndicatorOverride(
+                  value === 'preset' ? undefined : (value as AccordionProps['indicatorTransition'])
+                )
+              }
+            />
+            <ShowcaseBooleanControl
+              label="Panel motion"
+              checked={motion}
+              onCheckedChange={setMotion}
+            />
+            <ShowcaseSelectControl
+              label="Panel speed"
+              options={[
+                { label: 'Normal', value: 'normal' },
+                { label: 'Fast', value: 'fast' },
+                { label: 'Slow', value: 'slow' },
+                { label: 'Debug slow (inspection)', value: 'debugSlow' }
+              ]}
+              value={motionSpeed}
+              onValueChange={(value) => setMotionSpeed(value as typeof motionSpeed)}
+            />
+            <ShowcaseSelectControl
+              label="Transition coordination"
+              options={[
+                { label: 'Synchronized', value: 'synchronized' },
+                { label: 'Independent', value: 'independent' }
+              ]}
+              value={transitionCoordination}
+              onValueChange={(value) =>
+                setTransitionCoordination(value as typeof transitionCoordination)
+              }
+            />
+            <ShowcaseBooleanControl
+              label="Interaction locked"
+              checked={locked}
+              onCheckedChange={setLocked}
+            />
+            <ShowcaseBooleanControl label="Right to left" checked={rtl} onCheckedChange={setRtl} />
+          </ShowcaseControlGroup>
+        </ShowcaseControlPanel>
       </ShowcaseRouteControls>
       <Layout display="flex" direction="column" gap="lg2">
         <Layout display="flex" direction="column" gap="sm">
@@ -207,6 +230,8 @@ export default function AccordionShowcase() {
                   <Support
                     indicatorTransition={indicatorTransition}
                     motion={motion}
+                    motionSpeed={motionSpeed}
+                    transitionCoordination={transitionCoordination}
                     emphasis={emphasis}
                     border={border}
                     shadow={shadow}
@@ -220,6 +245,8 @@ export default function AccordionShowcase() {
                 <Support
                   indicatorTransition={indicatorTransition}
                   motion={motion}
+                  motionSpeed={motionSpeed}
+                  transitionCoordination={transitionCoordination}
                   emphasis="medium"
                   panelEmphasis="medium"
                   border={border}
@@ -231,6 +258,8 @@ export default function AccordionShowcase() {
                 <Support
                   indicatorTransition={indicatorTransition}
                   motion={motion}
+                  motionSpeed={motionSpeed}
+                  transitionCoordination={transitionCoordination}
                   emphasis="high"
                   panelEmphasis="low"
                   border={border}
@@ -241,9 +270,17 @@ export default function AccordionShowcase() {
             </Layout>
             <Example title="Controlled expansion">
               <Layout display="flex" direction="column" gap="md">
-                <Layout display="flex" gap="sm" wrap>
+                <Layout display="flex" gap="md" align="center" wrap>
                   <Button onClick={() => setExpanded(['details'])}>Open details</Button>
                   <Button onClick={() => setExpanded([])}>Close all</Button>
+                  <Switch
+                    label="Allow multiple open"
+                    controlState={multiple}
+                    onControlStateChange={(value) => {
+                      setMultiple(value);
+                      setExpanded((current) => (value ? current : current.slice(0, 1)));
+                    }}
+                  />
                 </Layout>
                 <Accordion
                   indicatorTransition={indicatorTransition}
@@ -253,6 +290,8 @@ export default function AccordionShowcase() {
                   onExpandedItemsChange={setExpanded}
                   interactionLocked={locked}
                   motion={motion}
+                  motionSpeed={motionSpeed}
+                  transitionCoordination={transitionCoordination}
                 >
                   <Layout display="flex" direction="column" gap="sm">
                     <Accordion.Item value="details">
@@ -271,7 +310,33 @@ export default function AccordionShowcase() {
                       </Accordion.Header>
                       <Accordion.Panel>
                         <PanelContent>
-                          Content stays in normal page flow and pushes the following items down.
+                          <Layout display="flex" direction="column" gap="md">
+                            <p>
+                              This taller panel demonstrates the space exchanged with Project
+                              details.
+                            </p>
+                            <p>
+                              Choose Debug slow to inspect the panels sharing one progress clock.
+                            </p>
+                            <p>
+                              Switch to Independent to compare the separate opening and closing
+                              recipes.
+                            </p>
+                          </Layout>
+                        </PanelContent>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                    <Accordion.Item value="activity">
+                      <Accordion.Header>Recent activity</Accordion.Header>
+                      <Accordion.Panel>
+                        <PanelContent>
+                          <Layout display="flex" direction="column" gap="sm">
+                            <p>The project was created and its name was updated.</p>
+                            <p>
+                              This panel has a different height to compare transitions between all
+                              three sections.
+                            </p>
+                          </Layout>
                         </PanelContent>
                       </Accordion.Panel>
                     </Accordion.Item>
@@ -285,9 +350,6 @@ export default function AccordionShowcase() {
                     </Accordion.Item>
                   </Layout>
                 </Accordion>
-                <Text as="p" profile={profiles.caption} role="status">
-                  Open: {expanded.join(', ') || 'none'}
-                </Text>
               </Layout>
             </Example>
             <Example title="Disabled while open">
@@ -296,6 +358,8 @@ export default function AccordionShowcase() {
                 disabled
                 defaultExpandedItems={['retained']}
                 motion={motion}
+                motionSpeed={motionSpeed}
+                transitionCoordination={transitionCoordination}
               >
                 <Accordion.Item value="retained">
                   <Accordion.Header>Previously expanded content</Accordion.Header>
@@ -313,6 +377,8 @@ export default function AccordionShowcase() {
                 panelEmphasis="low"
                 defaultExpandedItems={['content']}
                 motion={motion}
+                motionSpeed={motionSpeed}
+                transitionCoordination={transitionCoordination}
               >
                 <Accordion.Item value="content">
                   <Accordion.Header>Content that changes height</Accordion.Header>
@@ -339,6 +405,8 @@ export default function AccordionShowcase() {
                           indicatorTransition={indicatorTransition}
                           panelEmphasis="low"
                           motion={motion}
+                          motionSpeed={motionSpeed}
+                          transitionCoordination={transitionCoordination}
                         >
                           <Accordion.Item value="nested">
                             <Accordion.Header headingLevel={4}>
@@ -354,48 +422,6 @@ export default function AccordionShowcase() {
                           </Accordion.Item>
                         </Accordion>
                       </Layout>
-                    </PanelContent>
-                  </Accordion.Panel>
-                </Accordion.Item>
-              </Accordion>
-            </Example>
-            <Example title="Reusable visual helpers">
-              <Layout display="flex" direction="column" gap="md">
-                <Button onClick={() => setHelperAlternate((value) => !value)}>
-                  Swap content and rotate
-                </Button>
-                <Layout display="flex" gap="lg" align="center">
-                  <Crossfade
-                    transitionKey={helperAlternate ? 'updated' : 'ready'}
-                    durationMs={helperDuration}
-                    easing={helperEasing}
-                  >
-                    {helperAlternate ? 'Updated' : 'Ready'}
-                  </Crossfade>
-                  <Rotate
-                    angle={helperAlternate ? 180 : 45}
-                    durationMs={helperDuration}
-                    easing={helperEasing}
-                    aria-hidden="true"
-                  >
-                    <Icon decorative>
-                      <FamilyResolvedIcon name="chevron-down" />
-                    </Icon>
-                  </Rotate>
-                </Layout>
-              </Layout>
-            </Example>
-            <Example title="Immediate expansion">
-              <Accordion
-                indicatorTransition={indicatorTransition}
-                panelEmphasis="low"
-                motion={false}
-              >
-                <Accordion.Item value="instant">
-                  <Accordion.Header>Open without animation</Accordion.Header>
-                  <Accordion.Panel>
-                    <PanelContent>
-                      The same accessible behavior with immediate expansion.
                     </PanelContent>
                   </Accordion.Panel>
                 </Accordion.Item>

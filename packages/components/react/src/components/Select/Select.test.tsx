@@ -364,3 +364,18 @@ describe('Select list resource, viewport and portal handoff', () => {
     expect((await screen.findByRole('listbox')).querySelector('.k-ddn-e1')).toBeTruthy();
   });
 });
+
+it('projects cursor preferences to the trigger and both sequential actions and removes overrides', () => {
+  const result = render(view({ ...base, controlCursor: { value: 'default', scope: 'web' } }));
+  const owners = [
+    screen.getByRole('combobox'),
+    screen.getByRole('button', { name: 'Previous option' }),
+    screen.getByRole('button', { name: 'Next option' })
+  ];
+  for (const owner of owners) expect(owner.style.getPropertyValue('--k-cc')).toBe('default');
+  result.rerender(view({ ...base, controlCursor: { value: 'pointer', scope: 'web' } }));
+  for (const owner of owners) expect(owner.style.getPropertyValue('--k-cc')).toBe('pointer');
+  expect((owners[1] as HTMLButtonElement).disabled).toBe(true);
+  result.rerender(view());
+  for (const owner of owners) expect(owner.style.getPropertyValue('--k-cc')).toBe('');
+});

@@ -1,5 +1,7 @@
 /** @vitest-environment jsdom */
+
 import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   type KiskadeeComponentConfigs,
@@ -18,13 +20,13 @@ const motion = vi.hoisted(() => ({
   crossfade: vi.fn(),
   cancel: vi.fn()
 }));
-vi.mock('./effects/motion/AccordionMotion.loader.ts', () => {
-  const module = { animateAccordionPanel: motion.animate };
+vi.mock('./effects/motion/AccordionMotion.loader.ts', async () => {
+  const module = { animateAccordionPanels: motion.animate };
   return {
     useAccordionMotionModule: (enabled: boolean) => (enabled && motion.enabled ? module : null)
   };
 });
-vi.mock('../../shared/visual-motion/visualMotion.loader.ts', () => {
+vi.mock('../../shared/visual-motion/visualMotion.loader.ts', async () => {
   const module = { rotate: motion.rotate, crossfade: motion.crossfade };
   return {
     useVisualMotion: (enabled: boolean) =>
@@ -51,19 +53,6 @@ const context = {
         emphases: ['lowest', 'low', 'medium', 'high'],
         divider: true,
         indicatorTransition: 'rotate'
-      },
-      effects: {
-        presence: {
-          profile: 'grow-height',
-          profiles: {
-            'grow-height': {
-              enterDurationMs: 180,
-              exitDurationMs: 120,
-              enterEasing: 'ease-out',
-              exitEasing: 'ease-in'
-            }
-          }
-        }
       }
     } satisfies NonNullable<KiskadeeComponentConfigs['accordion']> & { component: 'accordion' }
   }
@@ -79,7 +68,14 @@ function Fixture({
   theme?: 'light' | 'dark';
   appearance?: Pick<
     AccordionProps,
-    'emphasis' | 'panelEmphasis' | 'divider' | 'border' | 'shadow' | 'indicatorTransition'
+    | 'emphasis'
+    | 'panelEmphasis'
+    | 'divider'
+    | 'border'
+    | 'shadow'
+    | 'indicatorTransition'
+    | 'motionSpeed'
+    | 'transitionCoordination'
   >;
 }) {
   return (
@@ -95,6 +91,11 @@ function Fixture({
     </KiskadeeContext.Provider>
   );
 }
+async function rerender(view: ReturnType<typeof render>, ui: ReactElement) {
+  await act(async () => {
+    view.rerender(ui);
+  });
+}
 beforeEach(() => {
   motion.enabled = true;
   motion.completions = [];
@@ -103,7 +104,7 @@ beforeEach(() => {
   motion.indicatorCancel.mockReset();
   motion.rotate.mockReset().mockReturnValue(motion.indicatorCancel);
   motion.crossfade.mockReset().mockReturnValue(motion.indicatorCancel);
-  motion.animate.mockImplementation((_panel, _content, _open, _timing, done) => {
+  motion.animate.mockImplementation((_participants, _transition, done) => {
     motion.completions.push(done);
     return motion.cancel;
   });
@@ -112,24 +113,40 @@ afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
 });
-describe('Accordion presentation', () => {
-  it('animates the indicator independently from disabled panel motion', () => {
+describe('Accordion presentation', async () => {
+  it('keeps indicator timing independent of panel speed and coordination', async () => {
+    const view = render(
+      <Fixture appearance={{ motionSpeed: 'debugSlow', transitionCoordination: 'independent' }} />
+    );
+    await rerender(
+      view,
+      <Fixture
+        open={['a']}
+        appearance={{ motionSpeed: 'debugSlow', transitionCoordination: 'independent' }}
+      />
+    );
+    expect(motion.animate.mock.calls[0]?.[1].durationMs).toBe(1800);
+    expect(motion.rotate.mock.calls[0]?.[2]).toMatchObject({ durationMs: 180, easing: 'ease-out' });
+    expect(view.container.querySelector('[motionSpeed]')).toBeNull();
+    expect(view.container.querySelector('[transitionCoordination]')).toBeNull();
+  });
+  it('animates the indicator independently from disabled panel motion', async () => {
     const view = render(<Fixture enabled={false} />);
-    view.rerender(<Fixture open={['a']} enabled={false} />);
+    await rerender(view, <Fixture open={['a']} enabled={false} />);
     expect(motion.animate).not.toHaveBeenCalled();
     expect(motion.rotate).toHaveBeenCalledOnce();
     expect(motion.rotate.mock.calls[0]?.[1]).toBe(180);
     expect((view.container.querySelector('.k-acc-e6') as HTMLElement).hidden).toBe(false);
   });
-  it('can keep panel motion enabled while swapping the indicator without animation', () => {
+  it('can keep panel motion enabled while swapping the indicator without animation', async () => {
     const view = render(<Fixture appearance={{ indicatorTransition: 'none' }} />);
-    view.rerender(<Fixture open={['a']} appearance={{ indicatorTransition: 'none' }} />);
+    await rerender(view, <Fixture open={['a']} appearance={{ indicatorTransition: 'none' }} />);
     expect(motion.animate).toHaveBeenCalledOnce();
     expect(motion.rotate).not.toHaveBeenCalled();
     expect(motion.crossfade).not.toHaveBeenCalled();
     expect(view.container.querySelector('.k-acc-e5a')).not.toBeNull();
   });
-  it('uses the indicator default from the artifact and allows an instance override', () => {
+  it('uses the indicator default from the artifact and allows an instance override', async () => {
     const alternate = {
       ...context,
       componentArtifacts: {
@@ -154,23 +171,27 @@ describe('Accordion presentation', () => {
     );
     const view = render(example());
     expect(view.container.querySelector('.k-acc-e5.k-cfd')).not.toBeNull();
-    view.rerender(example('none'));
+    await rerender(view, example('none'));
     expect(view.container.querySelector('.k-acc-e5a')).not.toBeNull();
   });
-  it('switches indicator presentation without replacing panel content or adding selection', () => {
+  it('switches indicator presentation without replacing panel content or adding selection', async () => {
     const view = render(<Fixture open={['a']} enabled={false} />);
     const input = view.getByRole('textbox');
     expect(view.container.querySelector('.k-acc-e5.k-rot')).not.toBeNull();
-    view.rerender(
+    await rerender(
+      view,
       <Fixture open={['a']} enabled={false} appearance={{ indicatorTransition: 'crossfade' }} />
     );
     expect(view.container.querySelector('.k-acc-e5.k-cfd')).not.toBeNull();
     expect(view.getByRole('textbox')).toBe(input);
     expect(view.getByRole('button').hasAttribute('aria-pressed')).toBe(false);
-    view.rerender(<Fixture enabled={false} appearance={{ indicatorTransition: 'crossfade' }} />);
+    await rerender(
+      view,
+      <Fixture enabled={false} appearance={{ indicatorTransition: 'crossfade' }} />
+    );
     expect((view.container.querySelector('.k-acc-e6') as HTMLElement).hidden).toBe(true);
   });
-  it('honors a disabled preset divider default and an explicit enabled override', () => {
+  it('honors a disabled preset divider default and an explicit enabled override', async () => {
     const alternate = {
       ...context,
       componentArtifacts: {
@@ -197,18 +218,19 @@ describe('Accordion presentation', () => {
     );
     const view = render(example());
     expect(view.container.querySelector('.k-acc-body > hr')).toBeNull();
-    view.rerender(example(true));
+    await rerender(view, example(true));
     expect(view.container.querySelectorAll('.k-acc-body > hr')).toHaveLength(1);
   });
-  it('applies the preset divider default at every emphasis and honors instance overrides', () => {
+  it('applies the preset divider default at every emphasis and honors instance overrides', async () => {
     const view = render(
       <Fixture open={['a']} enabled={false} appearance={{ emphasis: 'lowest' }} />
     );
     for (const emphasis of ['lowest', 'low', 'medium', 'high'] as const) {
-      view.rerender(<Fixture open={['a']} enabled={false} appearance={{ emphasis }} />);
+      await rerender(view, <Fixture open={['a']} enabled={false} appearance={{ emphasis }} />);
       expect(view.container.querySelectorAll('.k-acc-body > hr')).toHaveLength(1);
     }
-    view.rerender(
+    await rerender(
+      view,
       <Fixture
         open={['a']}
         enabled={false}
@@ -223,18 +245,19 @@ describe('Accordion presentation', () => {
     expect(view.container.querySelector('.k-acc-body > hr')).toBeNull();
     expect(view.getByRole('textbox')).toBeTruthy();
   });
-  it('does not fabricate an unsupported emphasis', () => {
+  it('does not fabricate an unsupported emphasis', async () => {
     const view = render(<Fixture appearance={{ panelEmphasis: 'highest' }} />);
     expect(view.queryByRole('button')).toBeNull();
   });
-  it('keeps content mounted when emphasis and independent frame options change', () => {
+  it('keeps content mounted when emphasis and independent frame options change', async () => {
     const view = render(
       <Fixture open={['a']} enabled={false} appearance={{ emphasis: 'low', border: false }} />
     );
     const input = view.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'Retained appearance edit' } });
     expect(view.container.querySelector('.k-acc-frame.k-crd-b')).not.toBeNull();
-    view.rerender(
+    await rerender(
+      view,
       <Fixture
         open={['a']}
         enabled={false}
@@ -247,7 +270,7 @@ describe('Accordion presentation', () => {
     expect(view.getByRole('button').hasAttribute('aria-pressed')).toBe(false);
     expect(view.container.querySelector('[shadow]')).toBeNull();
   });
-  it('renders one native action without selection and does not animate initial expansion', () => {
+  it('renders one native action without selection and does not animate initial expansion', async () => {
     const view = render(<Fixture open={['a']} />);
     const trigger = view.getByRole('button');
     expect(view.container.querySelectorAll('button')).toHaveLength(1);
@@ -257,11 +280,11 @@ describe('Accordion presentation', () => {
     expect(motion.animate).not.toHaveBeenCalled();
     expect(view.container.querySelector('.k-acc-e5')?.getAttribute('style')).toContain('180deg');
   });
-  it('closes semantics immediately, retains exit DOM, then hides without unmounting', () => {
+  it('closes semantics immediately, retains exit DOM, then hides without unmounting', async () => {
     const view = render(<Fixture open={['a']} />);
     const input = view.getByRole('textbox');
     input.focus();
-    view.rerender(<Fixture />);
+    await rerender(view, <Fixture />);
     const panel = view.container.querySelector('.k-acc-e6') as HTMLElement;
     expect(panel.hidden).toBe(false);
     expect(panel.hasAttribute('inert')).toBe(true);
@@ -271,43 +294,152 @@ describe('Accordion presentation', () => {
     act(() => motion.completions[0]?.());
     expect(panel.hidden).toBe(true);
     expect(input.isConnected).toBe(true);
-    view.rerender(<Fixture open={['a']} />);
+    await rerender(view, <Fixture open={['a']} />);
     expect(panel.hidden).toBe(false);
   });
-  it('cancels an in-flight exit when it reopens', () => {
+  it('cancels an in-flight exit when it reopens', async () => {
     const view = render(<Fixture open={['a']} />);
-    view.rerender(<Fixture />);
-    view.rerender(<Fixture open={['a']} />);
+    await rerender(view, <Fixture />);
+    await rerender(view, <Fixture open={['a']} />);
     expect(motion.cancel).toHaveBeenCalledOnce();
-    expect(motion.animate.mock.calls.map((call) => call[2])).toEqual([false, true]);
+    expect(motion.animate.mock.calls.map((call) => call[0][0].open)).toEqual([false, true]);
   });
-  it('preserves local inputs across immediate closure and reopening', () => {
+  it('preserves local inputs across immediate closure and reopening', async () => {
     const view = render(<Fixture open={['a']} enabled={false} />);
     fireEvent.change(view.getByRole('textbox'), { target: { value: 'edited' } });
-    view.rerender(<Fixture enabled={false} />);
+    await rerender(view, <Fixture enabled={false} />);
     expect((view.container.querySelector('.k-acc-e6') as HTMLElement).hidden).toBe(true);
-    view.rerender(<Fixture open={['a']} enabled={false} />);
+    await rerender(view, <Fixture open={['a']} enabled={false} />);
     expect((view.getByRole('textbox') as HTMLInputElement).value).toBe('edited');
     expect(motion.animate).not.toHaveBeenCalled();
   });
-  it('does not replay expansion when Motion arrives after a fallback transition', () => {
+  it('does not replay expansion when Motion arrives after a fallback transition', async () => {
     motion.enabled = false;
     const view = render(<Fixture />);
-    view.rerender(<Fixture open={['a']} />);
+    await rerender(view, <Fixture open={['a']} />);
     motion.enabled = true;
-    view.rerender(<Fixture open={['a']} />);
+    await rerender(view, <Fixture open={['a']} />);
     expect(motion.animate).not.toHaveBeenCalled();
   });
-  it('respects reduced motion and does not render unsupported themes', () => {
+  it('respects reduced motion and does not render unsupported themes', async () => {
     vi.stubGlobal('matchMedia', () => ({
       matches: true,
       addEventListener() {},
       removeEventListener() {}
     }));
     const view = render(<Fixture />);
-    view.rerender(<Fixture open={['a']} />);
+    await rerender(view, <Fixture open={['a']} />);
     expect(motion.animate).not.toHaveBeenCalled();
-    view.rerender(<Fixture theme="dark" />);
+    await rerender(view, <Fixture theme="dark" />);
     expect(view.queryByRole('button')).toBeNull();
   });
+});
+
+function GroupFixture({
+  open,
+  coordination = 'synchronized',
+  nested = false
+}: {
+  open?: string[];
+  coordination?: AccordionProps['transitionCoordination'];
+  nested?: boolean;
+}) {
+  return (
+    <KiskadeeContext.Provider value={context}>
+      <Accordion
+        multiple
+        expandedItems={open}
+        defaultExpandedItems={['a']}
+        transitionCoordination={coordination}
+      >
+        <Accordion.Item value="a">
+          <Accordion.Header>First</Accordion.Header>
+          <Accordion.Panel>First content</Accordion.Panel>
+        </Accordion.Item>
+        <Accordion.Item value="b">
+          <Accordion.Header>Second</Accordion.Header>
+          <Accordion.Panel>
+            Second content
+            {nested && (
+              <Accordion>
+                <Accordion.Item value="inner">
+                  <Accordion.Header>Inner</Accordion.Header>
+                  <Accordion.Panel>Nested content</Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
+            )}
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
+    </KiskadeeContext.Provider>
+  );
+}
+it('coordinates a controlled multiple-mode replacement in one visual batch', async () => {
+  const view = render(<GroupFixture open={['a']} />);
+  await rerender(view, <GroupFixture open={['b']} />);
+  expect(motion.animate).toHaveBeenCalledOnce();
+  expect(motion.animate.mock.calls[0]?.[0].map((entry: { open: boolean }) => entry.open)).toEqual([
+    false,
+    true
+  ]);
+  expect(motion.animate.mock.calls[0]?.[1]).toEqual({ durationMs: 180, easing: 'ease-out' });
+  const oldPanel = view.container.querySelector('.k-acc-e6')!;
+  expect(oldPanel.getAttribute('aria-hidden')).toBe('true');
+  expect(oldPanel.hasAttribute('inert')).toBe(true);
+});
+it('keeps internal groups and nested transitions isolated', async () => {
+  const view = render(<GroupFixture nested />);
+  await act(async () => {
+    fireEvent.click(view.getByRole('button', { name: 'Second' }));
+  });
+  expect(motion.animate.mock.calls[0]?.[0]).toHaveLength(1);
+  await act(async () => {
+    motion.completions[0]?.();
+  });
+  motion.animate.mockClear();
+  await act(async () => {
+    fireEvent.click(view.getByRole('button', { name: 'Inner' }));
+  });
+  expect(motion.animate).toHaveBeenCalledOnce();
+  expect(motion.animate.mock.calls[0]?.[0]).toHaveLength(1);
+  expect(view.getByRole('button', { name: 'First' }).getAttribute('aria-expanded')).toBe('true');
+});
+it('coordinates internal single-open toggles without requiring controlled state', async () => {
+  const ui = (
+    <KiskadeeContext.Provider value={context}>
+      <Accordion defaultExpandedItems={['a']}>
+        <Accordion.Item value="a">
+          <Accordion.Header>First</Accordion.Header>
+          <Accordion.Panel>A</Accordion.Panel>
+        </Accordion.Item>
+        <Accordion.Item value="b">
+          <Accordion.Header>Second</Accordion.Header>
+          <Accordion.Panel>B</Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
+    </KiskadeeContext.Provider>
+  );
+  const view = render(ui);
+  await act(async () => {
+    fireEvent.click(view.getByRole('button', { name: 'Second' }));
+  });
+  expect(motion.animate).toHaveBeenCalledOnce();
+  expect(motion.animate.mock.calls[0]?.[0]).toHaveLength(2);
+  expect(view.getByRole('button', { name: 'First' }).getAttribute('aria-expanded')).toBe('false');
+});
+
+it.each([
+  { motionSpeed: 'fast' },
+  { transitionCoordination: 'independent' }
+] as const)('settles a simultaneous configuration and expansion update without replay: %j', async (appearance) => {
+  const view = render(<Fixture />);
+  await rerender(view, <Fixture open={['a']} appearance={appearance} />);
+  const panel = view.container.querySelector('.k-acc-e6') as HTMLElement;
+  expect(panel.hidden).toBe(false);
+  expect(panel.style.height).toBe('auto');
+  expect(motion.animate).not.toHaveBeenCalled();
+  await rerender(view, <Fixture open={['a']} appearance={appearance} />);
+  expect(motion.animate).not.toHaveBeenCalled();
+  await rerender(view, <Fixture appearance={appearance} />);
+  expect(motion.animate).toHaveBeenCalledOnce();
 });

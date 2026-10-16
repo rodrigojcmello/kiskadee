@@ -390,3 +390,5 @@ export type {
   MenuTreeIconNode,
   MenuTreeIconRenderer
 } from './shared/MenuTreeIconRenderer.ts';
+
+export type { TransitionSpeed } from './shared/motion/transitionSpeed.ts';

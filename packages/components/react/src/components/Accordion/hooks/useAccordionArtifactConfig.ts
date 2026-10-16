@@ -23,7 +23,6 @@ export function useAccordionArtifactConfig() {
   return {
     map,
     options: config?.options,
-    supported: config?.options?.themes.includes(theme as 'light') === true,
-    timing: config?.effects?.presence?.profiles['grow-height']
+    supported: config?.options?.themes.includes(theme as 'light') === true
   };
 }
