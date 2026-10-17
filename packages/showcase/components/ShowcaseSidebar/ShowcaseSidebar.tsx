@@ -4,87 +4,66 @@ import { useShowcase } from '@kiskadee/react-components/resources';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import style from './ShowcaseSidebar.module.scss';
+import ShowcaseSidebarIcon from './ShowcaseSidebarIcon';
 
-const foundationEntries = [
+const navigationGroups = [
   {
-    href: '/colors',
-    label: 'Colors'
+    label: 'Foundations',
+    entries: [
+      { href: '/colors', label: 'Colors' },
+      { href: '/typography', label: 'Typography / Text' },
+      { href: '/icons', label: 'Icon', icon: 'icons' }
+    ]
   },
   {
-    href: '/typography',
-    label: 'Typography / Text'
+    label: 'Composition',
+    entries: [
+      { href: '/layout', label: 'Layout', icon: 'layout' },
+      { href: '/card', label: 'Card', icon: 'card' },
+      { href: '/separator', label: 'Separator', icon: 'separator' }
+    ]
+  },
+  {
+    label: 'Content organization',
+    entries: [
+      { href: '/accordion', label: 'Accordion', icon: 'accordion' },
+      { href: '/tabs', label: 'Tabs', icon: 'tabs' }
+    ]
+  },
+  {
+    label: 'Actions',
+    entries: [
+      { href: '/button', label: 'Button', icon: 'button' },
+      { href: '/brand-buttons', label: 'Brand buttons', icon: 'brand-buttons' }
+    ]
+  },
+  {
+    label: 'Fields and controls',
+    entries: [
+      { href: '/text-field', label: 'TextField', icon: 'text-field' },
+      { href: '/select', label: 'Select', icon: 'select' },
+      { href: '/slider', label: 'Slider', icon: 'slider' },
+      { href: '/switch', label: 'Switch', icon: 'switch' }
+    ]
+  },
+  {
+    label: 'Menus and panels',
+    entries: [
+      { href: '/dropdown', label: 'Dropdown', icon: 'dropdown' },
+      { href: '/bottom-sheet', label: 'BottomSheet', icon: 'bottom-sheet' }
+    ]
+  },
+  {
+    label: 'Labels and indicators',
+    entries: [
+      { href: '/badge', label: 'Badge', icon: 'badge' },
+      { href: '/chip', label: 'Chip', icon: 'chip' },
+      { href: '/progress', label: 'Progress', icon: 'progress' }
+    ]
   }
 ] as const;
 
-const componentEntries = [
-  { href: '/accordion', label: 'Accordion' },
-  {
-    href: '/badge',
-    label: 'Badge'
-  },
-  {
-    href: '/button',
-    label: 'Button'
-  },
-  {
-    href: '/brand-buttons',
-    label: 'Brand buttons'
-  },
-  {
-    href: '/bottom-sheet',
-    label: 'BottomSheet'
-  },
-  {
-    href: '/card',
-    label: 'Card'
-  },
-  {
-    href: '/chip',
-    label: 'Chip'
-  },
-  {
-    href: '/dropdown',
-    label: 'Dropdown'
-  },
-  {
-    href: '/icons',
-    label: 'Icon'
-  },
-  {
-    href: '/layout',
-    label: 'Layout'
-  },
-  {
-    href: '/progress',
-    label: 'Progress'
-  },
-  {
-    href: '/select',
-    label: 'Select'
-  },
-  {
-    href: '/separator',
-    label: 'Separator'
-  },
-  {
-    href: '/slider',
-    label: 'Slider'
-  },
-  {
-    href: '/tabs',
-    label: 'Tabs'
-  },
-  {
-    href: '/switch',
-    label: 'Switch'
-  },
-  {
-    href: '/text-field',
-    label: 'TextField'
-  }
-] as const;
-
-type ShowcaseSidebarEntry = (typeof foundationEntries)[number] | (typeof componentEntries)[number];
+type ShowcaseSidebarEntry = (typeof navigationGroups)[number]['entries'][number];
 
 function ShowcaseSidebarLinks({
   entries,
@@ -106,6 +85,9 @@ function ShowcaseSidebarLinks({
         className={`${style.link} ${isActive ? style.active : ''}`.trim()}
         aria-current={isActive ? 'page' : undefined}
       >
+        <span className={style.linkIcon} aria-hidden="true">
+          {'icon' in entry ? <ShowcaseSidebarIcon name={entry.icon} active={isActive} /> : null}
+        </span>
         <span className={style.linkLabel}>{entry.label}</span>
       </Link>
     );
@@ -119,9 +101,6 @@ export default function ShowcaseSidebar({
 }) {
   const pathname = usePathname();
   const { manifest } = useShowcase();
-  const visibleComponentEntries = componentEntries.filter(
-    (entry) => entry.href !== '/progress' || Boolean(manifest?.components?.progress)
-  );
 
   return (
     <aside className={style.sidebar} aria-label="Showcase navigation">
@@ -129,26 +108,20 @@ export default function ShowcaseSidebar({
         <p className={style.eyebrow}>Navigation</p>
         <h2 className={style.title}>Showcase</h2>
       </div>
-      <div className={style.section}>
-        <p className={style.sectionTitle}>Foundations</p>
-        <nav className={style.nav} aria-label="Foundations">
-          <ShowcaseSidebarLinks
-            entries={foundationEntries}
-            onNavigate={onNavigate}
-            pathname={pathname}
-          />
-        </nav>
-      </div>
-      <div className={style.section}>
-        <p className={style.sectionTitle}>Components</p>
-        <nav className={style.nav} aria-label="Components">
-          <ShowcaseSidebarLinks
-            entries={visibleComponentEntries}
-            onNavigate={onNavigate}
-            pathname={pathname}
-          />
-        </nav>
-      </div>
+      {navigationGroups.map((group) => (
+        <div key={group.label} className={style.section}>
+          <h3 className={style.sectionTitle}>{group.label}</h3>
+          <nav className={style.nav} aria-label={group.label}>
+            <ShowcaseSidebarLinks
+              entries={group.entries.filter(
+                (entry) => entry.href !== '/progress' || Boolean(manifest?.components?.progress)
+              )}
+              onNavigate={onNavigate}
+              pathname={pathname}
+            />
+          </nav>
+        </div>
+      ))}
     </aside>
   );
 }
