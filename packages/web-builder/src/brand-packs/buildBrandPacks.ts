@@ -360,7 +360,10 @@ async function buildBrandPack({
       `Brand pack projection "${extension.projectionContract}" did not emit any components.`
     );
   }
-  const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(projectedSchema);
+  const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+    projectedSchema,
+    DEFAULT_WEB_STYLE_EMISSION_POLICY
+  );
   const usage = mapStyleKeyUsage(styleKeys, {
     webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
   });

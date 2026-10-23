@@ -52,7 +52,9 @@ function createForegroundCoordinate({
   emphasis: TextEmphasis;
   state?: ForegroundState;
 }): ForegroundCoordinate {
-  return `${family}.${profile}.${theme}.${surfaceContext}.${emphasis}${state ? `.${state}` : ''}`;
+  return state
+    ? `${family}.${profile}.${theme}.${surfaceContext}.${emphasis}.${state}`
+    : `${family}.${profile}.${theme}.${surfaceContext}.${emphasis}`;
 }
 
 function foregroundReference(
@@ -341,14 +343,14 @@ export function createFluent2MicrosoftSwitchSchema({
   });
 
   const createTextIntent = (theme: ThemeName, surfaceContext: SurfaceContext) => {
-    const disabledEmphasis = surfaceContext === 'onVivid' ? 'medium' : 'lowest';
+    const disabledEmphasis = surfaceContext === 'onVivid' ? 'high' : 'lowest';
 
     return {
       medium: {
-        rest: foregroundReference('neutral', 'standard', theme, surfaceContext, 'medium'),
+        rest: foregroundReference('neutral', 'standard', theme, surfaceContext, 'high'),
         disabled: parentStateForegroundReference(
           'neutral',
-          'deep',
+          'standard',
           theme,
           surfaceContext,
           disabledEmphasis,
@@ -378,10 +380,10 @@ export function createFluent2MicrosoftSwitchSchema({
   ) => {
     const chromaticFamily: SwitchForegroundFamily = intent === 'polarity' ? 'red' : 'blue';
     const selectedFamily: SwitchForegroundFamily = intent === 'polarity' ? 'green' : 'blue';
-    const whiteReference = foregroundReference('neutral', 'standard', 'light', 'onVivid', 'medium');
-    const blackReference = foregroundReference('neutral', 'deep', 'light', 'onSubtle', 'medium');
+    const whiteReference = foregroundReference('neutral', 'standard', 'light', 'onVivid', 'high');
+    const blackReference = foregroundReference('neutral', 'standard', 'light', 'onSubtle', 'high');
     const createChromaticParentState = (family: SwitchForegroundFamily, state: ForegroundState) =>
-      parentStateForegroundReference(family, 'standard', 'light', 'onSubtle', 'medium', state);
+      parentStateForegroundReference(family, 'standard', 'light', 'onSubtle', 'high', state);
     const createSelectedForeground = () => ({
       rest: createChromaticParentState(selectedFamily, 'rest'),
       ...(intent === 'polarity'
@@ -398,12 +400,12 @@ export function createFluent2MicrosoftSwitchSchema({
         'standard',
         'light',
         'onVivid',
-        'medium',
+        'high',
         'rest'
       );
       const createRestForeground = (state: ForegroundState = 'rest') =>
         state === 'rest'
-          ? foregroundReference(chromaticFamily, 'standard', 'light', 'onSubtle', 'medium')
+          ? foregroundReference(chromaticFamily, 'standard', 'light', 'onSubtle', 'high')
           : createChromaticParentState(chromaticFamily, state);
 
       return {
@@ -424,10 +426,10 @@ export function createFluent2MicrosoftSwitchSchema({
           },
           disabled: parentStateForegroundReference(
             'neutral',
-            'deep',
+            'standard',
             'light',
             'onSubtle',
-            'low',
+            'medium',
             'rest'
           )
         }
@@ -440,10 +442,10 @@ export function createFluent2MicrosoftSwitchSchema({
         selected: createSelectedForeground(),
         disabled: parentStateForegroundReference(
           'neutral',
-          theme === 'light' ? 'deep' : 'standard',
+          'standard',
           theme,
           'onSubtle',
-          'low',
+          'medium',
           'rest'
         )
       }

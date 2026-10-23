@@ -145,6 +145,11 @@ owners.
 
 The canonical Registry currently contains these projection families:
 
+- `button-icon-line-height` exposes optional `Button.e2.scales.textHeight` through `e2.p.lh`,
+  with `retainSource: true`. This includes the metric lowered from an assigned typography profile.
+  p-react applies only this utility to a plain icon viewport with authored scales, including
+  icon-only Buttons. Keeping the bucket on e2 preserves schemas without an optional e3 element.
+
 - `button-group-divider-thickness` projects optional `Button.e6.scales.boxWidth` to `Button.e1`
   under artifact key `gd`, with `retainSource: true`.
 - Dropdown independent leading-track projections expose `e3` icon width/gap under `e3.p.iw/ig`

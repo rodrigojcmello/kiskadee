@@ -6,14 +6,16 @@
 surface-relative foreground declared by the active design system:
 
 ```tsx
-<Text as="h2" profile="heading-large" emphasis="medium">
+<Text as="h2" profile="heading-large" emphasis="high">
   Button
 </Text>
 ```
 
 The HTML element, typography profile, and foreground are independent. `as="h2"` owns document
 semantics; `profile="heading-large"` owns visual typography; and the default
-`foreground="neutral"` with `emphasis="medium"` owns color relative to the current Surface Context.
+`foreground="neutral"` owns color relative to the current Surface Context. Omitted emphasis uses
+`components.text.options.emphasis` from the current preset; Fluent 2 authors `high`. Explicit
+emphasis always takes precedence, independently of the chosen typography profile.
 
 ## Artifact contract
 
@@ -33,8 +35,8 @@ keys, while custom preset-local IDs use a deterministic `x-<profile-id>` key. Th
 artifact. Foreground profiles are expanded into the ordinary Text component class maps:
 
 ```text
-text.e1.c.s.<foreground>.m|l|ll
-text.e1.c.v.<foreground>.m|l|ll
+text.e1.c.s.<foreground>.h|m|l|ll
+text.e1.c.v.<foreground>.h|m|l|ll
 ```
 
 The `t` bucket remains typography-only and the `c` bucket remains color-only. React resolves and
@@ -46,7 +48,7 @@ composes the two channels independently.
 
 - the selected typography profile;
 - the required `neutral` foreground plus preset-supported named color-family profiles and
-  `medium | low | lowest` strength;
+  `high | medium | low | lowest` strength;
 - explicit or inherited Surface Context selection;
 - the selected HTML element or class-forwarding component;
 - native props, ARIA attributes, events, consumer classes, and ref forwarding;
@@ -81,12 +83,12 @@ type TextForegroundFamily =
   | 'pink'
   | 'brown';
 
-type TextForegroundName = TextForegroundFamily | `${TextForegroundFamily}-deep`;
+type TextForegroundName = TextForegroundFamily | `${Exclude<TextForegroundFamily, 'neutral'>}-deep`;
 
 type TextForegroundProps =
   | {
       foreground?: TextForegroundName;
-      emphasis?: 'medium' | 'low' | 'lowest';
+      emphasis?: 'high' | 'medium' | 'low' | 'lowest';
       surfaceContext?: 'onSubtle' | 'onVivid';
     }
   | {
@@ -102,7 +104,8 @@ surface-owning ancestor may publish the context produced by its content surface.
 
 The chromatic values are visual family names, not Text intents. The unsuffixed name selects the
 preset's local mapping to the family `standard` profile. A `-deep` suffix selects a local mapping to
-that family's optional independent `deep` profile. A preset may publish any subset of those
+that chromatic family's optional independent `deep` profile. Neutral has only Standard;
+`neutral-deep` is excluded from the public API and Schema. A preset may publish any subset of those
 capabilities, but unsuffixed `neutral` is always required. `black` is excluded because all
 achromatic variation stays inside `neutral`. If the active preset does not publish the requested
 family profile, Text inherits color; it does not fall back to `neutral` or from `deep` to
@@ -121,6 +124,12 @@ active preset, so `Text` never applies the previous preset's typography classes.
 If the matching artifact exists but does not contain the requested profile, development builds emit
 a warning and the content remains rendered with inherited typography. There is no silent fallback
 to another profile.
+
+The Text core artifact publishes `options.emphasis`; typography profiles contain no default
+foreground choice. Other components keep selecting their own coordinates and do not consult this
+option. Without a current default, omitted emphasis inherits color rather than selecting a runtime
+constant or preserving the previous preset default. Explicit emphasis can still resolve a matching
+color map.
 
 The Text color class map is loaded independently. While a new preset, segment, or theme artifact is
 pending, Text drops the previous color class and temporarily inherits color. A preset without a Text

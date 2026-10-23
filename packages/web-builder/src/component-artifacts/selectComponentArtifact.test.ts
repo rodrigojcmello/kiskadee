@@ -1,6 +1,7 @@
 import type { Schema } from '@kiskadee/core';
 import { expect, it } from 'vitest';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { buildSelectComponentArtifact } from './selectComponentArtifact.ts';
 
 it('publishes defaults and modes without copying visual elements into metadata', () => {
@@ -124,7 +125,7 @@ it('lowers Select dividers through shared separator profiles and diagnoses missi
       }
     }
   } as Schema;
-  const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+  const { styleKeys } = convertElementSchemaToStyleKeys(schema, DEFAULT_WEB_STYLE_EMISSION_POLICY);
   const divider = styleKeys.select?.standard?.outline?.e12;
   expect(divider?.scales?.['s:all']).toEqual(
     expect.arrayContaining(['boxWidth__1', 'boxHeight__20'])
@@ -132,9 +133,9 @@ it('lowers Select dividers through shared separator profiles and diagnoses missi
   expect(divider?.palettes).toEqual({
     default: { light: { onSubtle: { neutral: { rest: ['boxColor__#dddddd'] } } } }
   });
-  expect(() => convertElementSchemaToStyleKeys({ ...schema, global: {} })).toThrow(
-    'select.e12 references separator without global.separators'
-  );
+  expect(() =>
+    convertElementSchemaToStyleKeys({ ...schema, global: {} }, DEFAULT_WEB_STYLE_EMISSION_POLICY)
+  ).toThrow('select.e12 references separator without global.separators');
 });
 
 it('publishes positioner geometry as scale keys for the consumer, without local fallback values', () => {
@@ -164,7 +165,7 @@ it('publishes positioner geometry as scale keys for the consumer, without local 
       }
     }
   } as Schema;
-  const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+  const { styleKeys } = convertElementSchemaToStyleKeys(schema, DEFAULT_WEB_STYLE_EMISSION_POLICY);
   expect(styleKeys.select?.standard?.outline?.e13?.scales?.['s:all']).toEqual(
     expect.arrayContaining([
       'marginTop__13',

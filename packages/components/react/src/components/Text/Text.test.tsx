@@ -14,9 +14,10 @@ const TEXT_COLORS = {
   e1: {
     c: {
       s: {
-        neutral: { m: 'fg-medium', l: 'fg-low', ll: 'fg-lowest' },
-        red: { m: 'fg-red-medium', l: 'fg-red-low', ll: 'fg-red-lowest' },
+        neutral: { h: 'fg-high', m: 'fg-medium', l: 'fg-low', ll: 'fg-lowest' },
+        red: { h: 'fg-red-high', m: 'fg-red-medium', l: 'fg-red-low', ll: 'fg-red-lowest' },
         'red-deep': {
+          h: 'fg-red-deep-high',
           m: 'fg-red-deep-medium',
           l: 'fg-red-deep-low',
           ll: 'fg-red-deep-lowest'
@@ -24,16 +25,19 @@ const TEXT_COLORS = {
       },
       v: {
         neutral: {
+          h: 'fg-vivid-high',
           m: 'fg-vivid-medium',
           l: 'fg-vivid-low',
           ll: 'fg-vivid-lowest'
         },
         red: {
+          h: 'fg-vivid-red-high',
           m: 'fg-vivid-red-medium',
           l: 'fg-vivid-red-low',
           ll: 'fg-vivid-red-lowest'
         },
         'red-deep': {
+          h: 'fg-vivid-red-deep-high',
           m: 'fg-vivid-red-deep-medium',
           l: 'fg-vivid-red-deep-low',
           ll: 'fg-vivid-red-deep-lowest'
@@ -58,7 +62,11 @@ function createContextValue(
     designSystem: 'test-design-system',
     setDesignSystem: () => {},
     componentArtifacts: {
-      text: { component: 'text', ...(textClasses ? { classMap: { e1: { t: textClasses } } } : {}) }
+      text: {
+        component: 'text',
+        options: { emphasis: 'high' },
+        ...(textClasses ? { classMap: { e1: { t: textClasses } } } : {})
+      }
     }
   };
 }
@@ -89,9 +97,7 @@ describe('Text', () => {
     const title = screen.getByRole('heading', { level: 2, name: 'Button' });
     expect(title.id).toBe('page-title');
     expect(title.getAttribute('aria-live')).toBe('polite');
-    expect(title.className).toBe(
-      'k-txt font-body text-medium line-medium fg-medium consumer-class'
-    );
+    expect(title.className).toBe('k-txt font-body text-medium line-medium fg-high consumer-class');
   });
 
   it('forwards refs and defaults to span', () => {
@@ -150,13 +156,13 @@ describe('Text', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     renderText(<Text profile="heading-large">Fallback</Text>);
 
-    expect(screen.getByText('Fallback').className).toBe('k-txt fg-medium');
+    expect(screen.getByText('Fallback').className).toBe('k-txt fg-high');
     expect(warn).toHaveBeenCalledWith(
       '[Kiskadee] Text profile "heading-large" is not available in design system "test-design-system".'
     );
   });
 
-  it('defaults to neutral.medium and supports every Text emphasis', () => {
+  it('uses the preset default and supports every Text emphasis', () => {
     renderText(
       <>
         <Text data-testid="default" profile="body-medium">
@@ -171,7 +177,7 @@ describe('Text', () => {
       </>
     );
 
-    expect(screen.getByTestId('default').className).toContain('fg-medium');
+    expect(screen.getByTestId('default').className).toContain('fg-high');
     expect(screen.getByTestId('low').className).toContain('fg-low');
     expect(screen.getByTestId('lowest').className).toContain('fg-lowest');
   });
@@ -206,9 +212,9 @@ describe('Text', () => {
       </>
     );
 
-    expect(screen.getByTestId('red-subtle').className).toContain('fg-red-medium');
+    expect(screen.getByTestId('red-subtle').className).toContain('fg-red-high');
     expect(screen.getByTestId('red-vivid').className).toContain('fg-vivid-red-low');
-    expect(screen.getByTestId('red-deep-subtle').className).toContain('fg-red-deep-medium');
+    expect(screen.getByTestId('red-deep-subtle').className).toContain('fg-red-deep-high');
     expect(screen.getByTestId('red-deep-vivid').className).toContain('fg-vivid-red-deep-low');
   });
 
@@ -283,7 +289,7 @@ describe('Text', () => {
       </KiskadeeContext.Provider>
     );
 
-    expect(html).toContain('font-body text-medium line-medium fg-medium');
+    expect(html).toContain('font-body text-medium line-medium fg-high');
     expect(html).toContain('Server text');
   });
 
@@ -319,7 +325,7 @@ describe('Text', () => {
     await act(async () => {
       light.resolve({ component: 'text', classMap: TEXT_COLORS });
     });
-    await waitFor(() => expect(screen.getByText('Swapping').className).toContain('fg-medium'));
+    await waitFor(() => expect(screen.getByText('Swapping').className).toContain('fg-high'));
 
     view.rerender(
       <KiskadeeContext.Provider value={contextForTheme('dark')}>
@@ -332,10 +338,63 @@ describe('Text', () => {
       dark.resolve({
         component: 'text',
         classMap: {
-          e1: { c: { s: { neutral: { m: 'fg-dark-medium' } } } }
+          e1: { c: { s: { neutral: { h: 'fg-dark-high' } } } }
         }
       });
     });
-    await waitFor(() => expect(screen.getByText('Swapping').className).toContain('fg-dark-medium'));
+    await waitFor(() => expect(screen.getByText('Swapping').className).toContain('fg-dark-high'));
+  });
+
+  it('takes the default from metadata while an explicit emphasis wins', () => {
+    const context = createContextValue();
+    context.componentArtifacts = {
+      text: { component: 'text', options: { emphasis: 'medium' } }
+    };
+    renderText(
+      <>
+        <Text profile="body-medium">Preset medium</Text>
+        <Text profile="body-medium" emphasis="high">
+          Explicit high
+        </Text>
+      </>,
+      context
+    );
+    expect(screen.getByText('Preset medium').className).toContain('fg-medium');
+    expect(screen.getByText('Explicit high').className).toContain('fg-high');
+  });
+
+  it('inherits without an authored default instead of inventing a strength', () => {
+    const context = createContextValue();
+    context.componentArtifacts = { text: { component: 'text' } };
+    renderText(
+      <>
+        <Text profile="body-medium">No default</Text>
+        <Text profile="body-medium" emphasis="low">
+          Explicit low
+        </Text>
+      </>,
+      context
+    );
+    expect(screen.getByText('No default').className).toBe('k-txt');
+    expect(screen.getByText('Explicit low').className).toBe('k-txt fg-low');
+  });
+
+  it('updates an omitted emphasis when the active preset changes its authored default', () => {
+    const first = createContextValue();
+    const second = {
+      ...createContextValue(),
+      designSystem: 'another-design-system',
+      componentArtifacts: {
+        text: { component: 'text', options: { emphasis: 'medium' } }
+      }
+    };
+    const view = renderText(<Text profile="body-medium">Preset default</Text>, first);
+    expect(screen.getByText('Preset default').className).toContain('fg-high');
+    view.rerender(
+      <KiskadeeContext.Provider value={second}>
+        <Text profile="body-medium">Preset default</Text>
+      </KiskadeeContext.Provider>
+    );
+    expect(screen.getByText('Preset default').className).toBe('k-txt fg-medium');
   });
 });

@@ -38,6 +38,7 @@ export type ElementStyleEmissionPolicy = {
   borderColorEmission?: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
   boxHeightEmission?: BoxHeightEmission;
+  textHeightEmission?: DirectOrTokenEmission;
   marginTopEmission?: MarginEmission;
   marginRightEmission?: MarginEmission;
   marginBottomEmission?: MarginEmission;
@@ -58,6 +59,7 @@ export type ResolvedElementStyleEmissionPolicy = {
   borderColorEmission: BorderColorEmission;
   boxWidthEmission?: BoxWidthEmission;
   boxHeightEmission?: BoxHeightEmission;
+  textHeightEmission?: DirectOrTokenEmission;
   marginTopEmission?: MarginEmission;
   marginRightEmission?: MarginEmission;
   marginBottomEmission?: MarginEmission;
@@ -148,6 +150,7 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
     },
     button: {
       elements: {
+        e2: { textHeightEmission: 'token' },
         e1: {
           boxColorGradientEmission: 'interpolated',
           borderRadiusEmission: 'mirrored',
@@ -272,17 +275,36 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
     textField: {
       elements: {
         e2: {
-          marginLeftEmission: 'mirrored'
+          marginLeftEmission: 'token',
+          paddingLeftEmission: 'token',
+          paddingRightEmission: 'token'
         },
         e3: {
           boxColorEmission: 'mirrored',
           textColorEmission: 'mirrored',
           boxHeightEmission: 'token',
           borderWidthEmission: 'token',
-          borderColorEmission: 'token'
+          borderColorEmission: 'token',
+          paddingEmission: 'token',
+          paddingLeftEmission: 'direct',
+          paddingRightEmission: 'direct'
         },
         e6: {
           boxColorEmission: 'token'
+        },
+        e7: {
+          paddingRightEmission: 'token'
+        },
+        e8: {
+          paddingLeftEmission: 'token',
+          boxColorEmission: 'token',
+          borderColorEmission: 'token',
+          borderWidthEmission: 'token',
+          marginRightEmission: 'token'
+        },
+        e9: {
+          boxWidthEmission: 'token',
+          boxHeightEmission: 'token'
         }
       }
     },
@@ -462,6 +484,8 @@ export function resolveElementStyleEmissionPolicy(
       variantElementPolicy?.boxWidthEmission ??
       elementPolicy?.boxWidthEmission ??
       DEFAULT_ELEMENT_STYLE_EMISSION_POLICY.boxWidthEmission,
+    textHeightEmission:
+      variantElementPolicy?.textHeightEmission ?? elementPolicy?.textHeightEmission,
     boxHeightEmission:
       variantElementPolicy?.boxHeightEmission ??
       elementPolicy?.boxHeightEmission ??

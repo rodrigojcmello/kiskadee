@@ -391,6 +391,22 @@ describe('web-style-key-identity', () => {
       ).toBe('boxHeight__40@@t');
     });
 
+    it('separates TextField shell block-spacing tokens from direct input and inline padding', () => {
+      const identity = (styleKey: string, element: string) =>
+        resolveWebStyleKeyIdentity(
+          styleKey,
+          DEFAULT_WEB_STYLE_EMISSION_POLICY,
+          'textField',
+          element
+        );
+
+      expect(identity('paddingTop__10', 'e3')).toBe('paddingTop__10@@t');
+      expect(identity('paddingTop__10', 'e4')).toBe('paddingTop__10');
+      expect(identity('paddingBottom__4', 'e3')).toBe('paddingBottom__4@@t');
+      expect(identity('paddingLeft__12', 'e3')).toBe('paddingLeft__12');
+      expect(identity('paddingRight__12', 'e3')).toBe('paddingRight__12');
+    });
+
     it('emits the Slider value-indicator height as its own minimum-size token', () => {
       expect(
         resolveWebStyleKeyIdentity(
@@ -411,7 +427,7 @@ describe('web-style-key-identity', () => {
           'textField',
           'e2'
         )
-      ).toBe('marginLeft__4@@m');
+      ).toBe('marginLeft__4@@t');
     });
   });
 

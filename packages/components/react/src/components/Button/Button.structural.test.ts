@@ -2,6 +2,18 @@ import * as sass from 'sass';
 import { describe, expect, it } from 'vitest';
 
 describe('Button structural CSS', () => {
+  it('normalizes intrinsic media and direct font glyphs using the authored icon viewport', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
+    const slot = css.match(/^\.k-btn-e3\s*\{([^}]*)\}/m)?.[1];
+    expect(slot).toContain('font-size: var(--k-bxh)');
+    expect(slot).toContain('line-height: 1');
+    expect(css).toMatch(
+      /\.k-btn-e3 > picture > img\s*\{[^}]*block-size: 100%[^}]*inline-size: 100%/
+    );
+    expect(css).toMatch(/\.k-btn-e3 > picture > img\s*\{[^}]*object-fit: contain/);
+    expect(css).toMatch(/\.k-btn-e3 > i\s*\{[^}]*font-size: inherit/);
+  });
+
   it('anchors every external Badge corner using the host radius and logical axes', () => {
     const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
     for (const block of ['start', 'end']) {

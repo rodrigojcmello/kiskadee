@@ -327,6 +327,14 @@ Consequence:
 - Internal component dividers share the recipe data and atomic utilities, not the standalone
   Separator component's DOM or class map.
 
+### 3.1.8 Element height reference
+
+The [Core element height reference contract](packages/core/docs/definitions/element-height-reference.md)
+defines optional `scales._boxHeight` inspection metadata, initially supported by Button `e1`.
+Presets author the expected height; Web Builder publishes it in the component's `inspection`
+metadata without generating styles or expanding size support. Platform components retain their
+existing layout, while Showcase can compare this reference with the rendered border box.
+
 ### 3.2 `components.<name>.options`
 
 Use `options` for component-specific behavior/structure defaults that are not a DS color/scale token.
@@ -594,8 +602,9 @@ Context:
 Decision:
 
 - `global.foregrounds.profiles` is organized by color family. Every family owns a required complete
-  `standard` recipe and may publish an independent complete `deep` recipe.
-- Every profile theme publishes exactly `medium`, `low`, and `lowest` strengths under `onSubtle`;
+  `standard` recipe. Only chromatic families may publish an independent complete `deep` recipe;
+  Neutral supports Standard only.
+- Every profile theme publishes exactly `high`, `medium`, `low`, and `lowest` strengths under `onSubtle`;
   `onVivid` is an optional capability with the same complete emphasis coverage. Every strength
   requires `rest` and may publish `hover`, `pressed`, `pending`, and `disabled` coordinates.
 - Participating elements map local intents to structured `{ family, profile }` references through
@@ -608,9 +617,10 @@ Decision:
 - An element using `foreground` must not also author `palettes.*.textColor`.
 - `inherit` is reserved for the React API and is invalid as a schema profile, local intent, or
   reference.
-- Standalone Text uses foreground emphasis as paint strength and excludes `high` and `highest`;
-  `medium` is its normal and strongest supported foreground. This does not change own-surface
-  emphasis semantics for Button and Card.
+- Standalone Text uses `high | medium | low | lowest` as foreground paint strength; `highest`
+  remains unsupported. Its required preset-authored `components.text.options.emphasis` selects
+  the default when the consumer omits emphasis. Explicit React emphasis takes precedence.
+  This does not change own-surface emphasis semantics for Button and Card.
 - React keeps profile selection flat through preset-owned local names: a preset can map `red` to
   `red.standard` and `red-deep` to `red.deep` without introducing a runtime profile lookup.
 - Component text slots may address one coordinate with
@@ -916,6 +926,9 @@ Practical authoring rules:
   it must not supply substitute visual values or hide missing Schema authorship or generated tokens.
 
 This keeps `neutral.medium` as the default mental model when a component is instantiated without explicit semantic or emphasis overrides.
+
+Standalone Text is the foreground-only exception: its required preset-authored
+`components.text.options.emphasis` selects the default strength, as defined in section 3.3.3.
 
 ## 6) Runtime execution responsibilities
 

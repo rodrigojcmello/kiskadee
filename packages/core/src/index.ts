@@ -23,6 +23,7 @@ export * from './content-surface-context.ts';
 export * from './contour.ts';
 export * from './controlCursor.ts';
 export * from './density.ts';
+export * from './element-height-reference.ts';
 export * from './foreground.ts';
 export * from './icon-sizes.ts';
 export * from './layout-column-variables.ts';

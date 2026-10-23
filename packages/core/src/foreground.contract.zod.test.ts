@@ -4,9 +4,39 @@ import {
   validateElementForegroundContract,
   validateSchemaForegroundsDefinitionContract
 } from './foreground.contract.zod.ts';
-import { fg, parseForegroundReferenceToken } from './foreground.ts';
+import {
+  type ForegroundEmphasisMap,
+  fg,
+  parseForegroundReferenceToken,
+  type SchemaForegrounds,
+  type TextForegroundName
+} from './foreground.ts';
 
-const emphasisMap = () => ({
+// These assignments are checked by tsc; the function is intentionally not executed.
+function assertStaticForegroundContracts() {
+  // @ts-expect-error Neutral has no Deep public alias.
+  const invalidName: TextForegroundName = 'neutral-deep';
+  // @ts-expect-error Neutral has no Deep atomic coordinate.
+  fg('neutral.deep.light.onSubtle.high');
+  // @ts-expect-error Parent-state references follow the same neutral restriction.
+  fg.parentState('neutral.deep.light.onSubtle.high.pending');
+  const invalidCatalog: SchemaForegrounds = {
+    profiles: {
+      neutral: {
+        standard: { palettes: {} },
+        // @ts-expect-error Neutral owns one Standard recipe.
+        deep: { palettes: {} }
+      }
+    }
+  };
+  void invalidName;
+  void invalidCatalog;
+}
+
+void assertStaticForegroundContracts;
+
+const emphasisMap = (): ForegroundEmphasisMap => ({
+  high: { rest: '#111111' },
   medium: { rest: '#333333' },
   low: { rest: '#555555' },
   lowest: { rest: '#777777' }
@@ -30,7 +60,7 @@ const foregrounds = () => ({
 });
 
 describe('foreground profile contract', () => {
-  it('accepts three strengths, optional foreground states, and optional onVivid', () => {
+  it('accepts four strengths, optional foreground states, and optional onVivid', () => {
     const value = foregrounds();
     value.profiles.neutral.standard.palettes.default.light.onSubtle.medium = {
       rest: '#333333',
@@ -47,9 +77,6 @@ describe('foreground profile contract', () => {
 
   it('rejects unsupported strengths, incomplete coverage, and unsupported states', () => {
     const value = foregrounds() as any;
-    value.profiles.neutral.standard.palettes.default.light.onSubtle.high = {
-      rest: '#111111'
-    };
     value.profiles.neutral.standard.palettes.default.light.onSubtle.highest = {
       rest: '#000000'
     };
@@ -57,9 +84,6 @@ describe('foreground profile contract', () => {
     value.profiles.neutral.standard.palettes.default.light.onVivid.medium.focus = '#222222';
 
     const issues = validateSchemaForegroundsDefinitionContract(value);
-    expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.high: unrecognized emphasis'
-    );
     expect(issues).toContain(
       'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.highest: unrecognized emphasis'
     );
@@ -152,7 +176,9 @@ describe('foreground profile contract', () => {
       emphasis: 'low',
       state: 'pending'
     });
-    expect(parseForegroundReferenceToken('fg:red.deep.dark.onVivid.high')).toBeUndefined();
+    expect(parseForegroundReferenceToken('fg:red.deep.dark.onVivid.high')?.emphasis).toBe('high');
+    expect(parseForegroundReferenceToken('fg:neutral.deep.dark.onVivid.high')).toBeUndefined();
+    expect(parseForegroundReferenceToken('fg:red.deep.dark.onVivid.highest')).toBeUndefined();
   });
 
   it('validates atomic foreground coordinates and confines them to textColor', () => {
@@ -246,7 +272,8 @@ describe('foreground profile contract', () => {
 
   it('accepts optional deep profiles and rejects unavailable profile references', () => {
     const value = foregrounds() as any;
-    value.profiles.neutral.deep = {
+    value.profiles.red = { standard: value.profiles.neutral.standard };
+    value.profiles.red.deep = {
       palettes: {
         default: {
           light: {
@@ -266,14 +293,75 @@ describe('foreground profile contract', () => {
             elements: {
               e1: {
                 name: 'foreground',
-                foreground: { neutral: { family: 'neutral', profile: 'deep' } }
+                foreground: { red: { family: 'red', profile: 'deep' } }
               }
             }
           }
         }
       })
     ).toContain(
-      'components.text.elements.e1.foreground.neutral: references unavailable foreground profile "neutral.deep"'
+      'components.text.elements.e1.foreground.red: references unknown foreground family "red"'
+    );
+  });
+
+  it('rejects neutral deep in definitions and element references', () => {
+    const value = foregrounds() as any;
+    value.profiles.neutral.deep = value.profiles.neutral.standard;
+    expect(validateSchemaForegroundsDefinitionContract(value)).toContain(
+      'global.foregrounds.profiles.neutral.deep: neutral supports only the standard profile'
+    );
+    expect(
+      validateElementForegroundContract({
+        neutral: { family: 'neutral', profile: 'deep' }
+      })
+    ).toContain('foreground.neutral.profile: neutral supports only the standard profile');
+  });
+
+  it('retains custom chromatic family profiles and coordinates', () => {
+    const value = foregrounds() as any;
+    value.profiles['brand-accent'] = {
+      standard: value.profiles.neutral.standard,
+      deep: value.profiles.neutral.standard
+    };
+    expect(validateSchemaForegroundsDefinitionContract(value)).toEqual([]);
+    expect(fg('brand-accent.deep.light.onSubtle.high')).toBe(
+      'fg:brand-accent.deep.light.onSubtle.high'
+    );
+  });
+
+  it('rejects dynamic neutral Deep atomic tokens at the Schema boundary', () => {
+    const issues = getSchemaForegroundsContractIssues({
+      global: { foregrounds: foregrounds() },
+      components: {
+        button: {
+          elements: {
+            e2: {
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: {
+                      textColor: {
+                        neutral: {
+                          medium: {
+                            rest: 'fg:neutral.deep.light.onSubtle.high',
+                            pending: { parentState: 'fg:neutral.deep.light.onSubtle.high.pending' }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('rest: invalid fg coordinate'),
+        expect.stringContaining('pending.parentState: invalid fg coordinate')
+      ])
     );
   });
 });

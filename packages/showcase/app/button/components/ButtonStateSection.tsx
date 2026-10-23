@@ -14,9 +14,9 @@ import { Text } from '@kiskadee/react-components/text';
 import type { ManifestComponentState } from '@kiskadee/web-builder/types';
 import { Fragment, type ReactNode, useState } from 'react';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
-import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from '../Button.module.scss';
+import { ButtonUnavailableExample } from './ButtonUnavailableExample';
 import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
 
 type ButtonStateSectionProps = {
@@ -87,9 +87,9 @@ export function ButtonStateSection({
     }
 
     return (
-      <div className={s.missingState}>
-        <ShowcaseFamilyResolvedIcon name="ban" style={{ width: 24, height: 24 }} />
-      </div>
+      <ButtonUnavailableExample
+        description={`${title} Button, ${EMPHASIS_LABELS[emphasis]} emphasis, ${state} state is not published in the active design system.`}
+      />
     );
   };
 
@@ -136,7 +136,7 @@ export function ButtonStateSection({
           {description ? (
             <Text
               as="p"
-              emphasis="low"
+              emphasis="medium"
               profile={textProfiles.caption}
               className={s['state-description']}
             >
@@ -173,7 +173,7 @@ export function ButtonStateSection({
             <div key={emphasis} className={s['interaction-state']}>
               <Text
                 as="h4"
-                emphasis="low"
+                emphasis="medium"
                 profile={textProfiles.groupTitle}
                 className={s['emphasis-title']}
               >

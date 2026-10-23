@@ -9,6 +9,7 @@ import type {
 import { componentScaleToSize } from '@kiskadee/core';
 import { Button as KButton, useButtonArtifactConfig } from '@kiskadee/react-components/button';
 import { Card } from '@kiskadee/react-components/card';
+import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import { Layout } from '@kiskadee/react-components/layout';
 import {
   SurfaceContextProvider,
@@ -35,10 +36,10 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
-import { ShowcaseFamilyResolvedIcon } from '@/components/ShowcaseIconFamily/ShowcaseIconFamily';
 import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
+import { useTypographyArtifact } from '@/hooks/use-typography-artifact';
 import { isDarkSurfaceColor } from '@/utils/canonical-card-surfaces';
 import {
   getManifestComponentState,
@@ -50,8 +51,12 @@ import { ButtonAsyncExample } from './components/ButtonAsyncExample';
 import { ButtonBadgeExamples } from './components/ButtonBadgeExamples';
 import { ButtonGroupExamples } from './components/ButtonGroupExamples';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
+import { ButtonIconFormatExamples } from './components/ButtonIconFormatExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
+import { ButtonSizeScaleExample } from './components/ButtonSizeScaleExample';
 import ButtonStateSection from './components/ButtonStateSection';
+import { ButtonUnavailableExample } from './components/ButtonUnavailableExample';
+import { resolveButtonReferenceProfile } from './components/buttonReferenceProfile';
 import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
 
 const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = [
@@ -101,42 +106,35 @@ function SurfaceContextComparison({
       </div>
       <div className={s.contextComparisonGrid}>
         <article className={s.contextCard}>
-          <Text as="h4" profile={textProfiles.subsectionTitle}>
-            On subtle
-          </Text>
-          <ShowcaseExampleCard className={`${s.contextSurface} k-root`} context="onSubtle">
-            <div className={s.contextSurfaceGrid}>
-              {COMPARISON_EMPHASES.map((emphasis) => (
-                <KButton
-                  key={emphasis}
-                  intent="primary"
-                  emphasis={emphasis}
-                  radius={radius}
-                  size={componentScaleToSize(scale)}
-                >
-                  <KButton.Label>
-                    <SmoothText fontName={fontName} align={textAlign}>
-                      {emphasis}
-                    </SmoothText>
-                  </KButton.Label>
-                </KButton>
-              ))}
-            </div>
-          </ShowcaseExampleCard>
-        </article>
-        <article className={s.contextCard}>
-          <Text as="h4" profile={textProfiles.subsectionTitle}>
-            On vivid
-          </Text>
-          <Card
+          <ShowcaseExampleCard
             className={`${s.contextSurface} k-root`}
-            intent="primary"
-            emphasis="highest"
-            surfaceContext={surfaceContext}
+            context="onSubtle"
+            role="group"
+            aria-labelledby="button-context-on-subtle-title"
           >
-            <Layout padding="md" classNames={{ e2: s.contextSurfaceGrid }}>
-              {onVividSupported ? (
-                COMPARISON_EMPHASES.map((emphasis) => (
+            <div className={s['state-content']}>
+              <header className={s['state-header']}>
+                <Text
+                  as="h4"
+                  id="button-context-on-subtle-title"
+                  profile={textProfiles.subsectionTitle}
+                  className={s['state-title']}
+                >
+                  On subtle
+                </Text>
+                {showDescriptions ? (
+                  <Text
+                    as="p"
+                    profile={textProfiles.caption}
+                    emphasis="medium"
+                    className={s['state-description']}
+                  >
+                    Primary actions on a subtle surface.
+                  </Text>
+                ) : null}
+              </header>
+              <div className={s.contextSurfaceGrid}>
+                {COMPARISON_EMPHASES.map((emphasis) => (
                   <KButton
                     key={emphasis}
                     intent="primary"
@@ -150,17 +148,71 @@ function SurfaceContextComparison({
                       </SmoothText>
                     </KButton.Label>
                   </KButton>
-                ))
-              ) : (
-                <Text
-                  as="p"
-                  emphasis="lowest"
-                  profile={textProfiles.caption}
-                  className={s.contextUnavailable}
-                >
-                  On vivid is not available in this palette.
-                </Text>
-              )}
+                ))}
+              </div>
+            </div>
+          </ShowcaseExampleCard>
+        </article>
+        <article className={s.contextCard}>
+          <Card
+            className={`${s.contextSurface} k-root`}
+            intent="primary"
+            emphasis="highest"
+            surfaceContext={surfaceContext}
+            role="group"
+            aria-labelledby="button-context-on-vivid-title"
+          >
+            <Layout padding="md">
+              <div className={s['state-content']}>
+                <header className={s['state-header']}>
+                  <Text
+                    as="h4"
+                    id="button-context-on-vivid-title"
+                    profile={textProfiles.subsectionTitle}
+                    className={s['state-title']}
+                  >
+                    On vivid
+                  </Text>
+                  {showDescriptions ? (
+                    <Text
+                      as="p"
+                      profile={textProfiles.caption}
+                      emphasis="medium"
+                      className={s['state-description']}
+                    >
+                      Primary actions on a vivid surface.
+                    </Text>
+                  ) : null}
+                </header>
+                <div className={s.contextSurfaceGrid}>
+                  {onVividSupported ? (
+                    COMPARISON_EMPHASES.map((emphasis) => (
+                      <KButton
+                        key={emphasis}
+                        intent="primary"
+                        emphasis={emphasis}
+                        radius={radius}
+                        size={componentScaleToSize(scale)}
+                      >
+                        <KButton.Label>
+                          <SmoothText fontName={fontName} align={textAlign}>
+                            {emphasis}
+                          </SmoothText>
+                        </KButton.Label>
+                      </KButton>
+                    ))
+                  ) : (
+                    <Text
+                      as="p"
+                      emphasis="lowest"
+                      profile={textProfiles.caption}
+                      className={s.contextUnavailable}
+                    >
+                      On vivid is not available in this palette.
+                    </Text>
+                  )}
+                </div>
+              </div>
             </Layout>
           </Card>
         </article>
@@ -172,6 +224,8 @@ function SurfaceContextComparison({
 export function Button() {
   const { designSystem, global, segment, theme } = useKiskadee();
   const dropdownMetadata = useComponentMetadata('dropdown');
+  const buttonMetadata = useComponentMetadata('button');
+  const buttonHeightReference = buttonMetadata?.inspection?.elements?.e1?.scales?._boxHeight;
   const { fontName, manifest } = useShowcaseMetadata([
     'badge',
     'bottomSheet',
@@ -179,11 +233,17 @@ export function Button() {
     'card',
     'dropdown',
     'progress',
+    'separator',
     'switch'
   ]);
   const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();
   const { buttonClassesMap } = useButtonArtifactConfig();
   const textProfiles = useShowcaseTextProfiles();
+  const { artifact: typography } = useTypographyArtifact(
+    designSystem,
+    manifest?.typography?.artifact
+  );
+  const referenceProfile = resolveButtonReferenceProfile(typography, textProfiles.caption);
 
   const [isSelected, setIsSelected] = React.useState(false);
   const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
@@ -257,6 +317,10 @@ export function Button() {
         availableButtonScaleOptions[0]?.value ??
         's:md:1');
   const buttonState = getManifestComponentState(buttonMeta, segment, theme, activeSurfaceContext);
+  const sizeSeparatorAvailable = Boolean(
+    getManifestComponentState(manifest?.components?.separator, segment, theme, activeSurfaceContext)
+      ?.neutral?.low?.rest
+  );
 
   const buttonControls = (
     <ShowcaseControlPanel>
@@ -347,9 +411,9 @@ export function Button() {
     }
 
     return (
-      <div className={s.missingState}>
-        <ShowcaseFamilyResolvedIcon name="ban" style={{ width: 24, height: 24 }} />
-      </div>
+      <ButtonUnavailableExample
+        description={`${semantic} Button, ${emphasis} emphasis, ${state} state is not published in the active design system.`}
+      />
     );
   };
 
@@ -364,8 +428,10 @@ export function Button() {
     }
 
     return (
-      <div className={s.missingState}>
-        <ShowcaseFamilyResolvedIcon name="ban" style={{ width: 24, height: 24 }} />
+      <div className={s.sizeScaleUnavailable}>
+        <ButtonUnavailableExample
+          description={`Button size ${BUTTON_SCALE_OPTIONS.find((option) => option.value === scale)?.label ?? scale} is not published in the active design system.`}
+        />
       </div>
     );
   };
@@ -439,7 +505,7 @@ export function Button() {
                     </div>
                   </ShowcaseExampleCard>
                 ) : (
-                  <Text as="p" emphasis="low" profile={textProfiles.caption} role="status">
+                  <Text as="p" emphasis="medium" profile={textProfiles.caption} role="status">
                     Switch controls are not available on this surface.
                   </Text>
                 )}
@@ -552,6 +618,76 @@ export function Button() {
             </div>
           </section>
           <div className={s.buttonExamples}>
+            <section
+              className={`${s['interaction-state']} ${s.sizesSection}`}
+              aria-labelledby="button-sizes-title"
+            >
+              <Text as="h3" id="button-sizes-title" profile={textProfiles.sectionTitle}>
+                Sizes
+              </Text>
+              <div className={s.sizeScaleCompositions}>
+                {[
+                  { value: 'text', label: 'Text only' },
+                  { value: 'text-icon', label: 'Text and icon' },
+                  { value: 'icon', label: 'Icon only' }
+                ].map((composition, index) => (
+                  <React.Fragment key={composition.value}>
+                    {index > 0 && sizeSeparatorAvailable ? (
+                      <Separator intent="neutral" emphasis="low" />
+                    ) : null}
+                    <section className={s.sizeScaleComposition}>
+                      <Text as="h4" profile={textProfiles.subsectionTitle} emphasis="medium">
+                        {composition.label}
+                      </Text>
+                      <div
+                        className={`${s['example-states']} ${s.sizeScaleExamples} k-root`}
+                        data-button-scale-composition={composition.value}
+                      >
+                        {BUTTON_SCALE_OPTIONS.map(({ value, label }) => (
+                          <React.Fragment key={value}>
+                            {renderScale(
+                              value,
+                              <ButtonSizeScaleExample
+                                scale={value}
+                                heightReference={buttonHeightReference}
+                                referenceProfile={referenceProfile}
+                                compact={composition.value === 'icon'}
+                              >
+                                {({ buttonRef, descriptionId }) => (
+                                  <KButton
+                                    ref={buttonRef}
+                                    aria-describedby={descriptionId}
+                                    radius={buttonRadius}
+                                    size={componentScaleToSize(value)}
+                                    intent="primary"
+                                    emphasis="high"
+                                    surfaceContext={activeSurfaceContext}
+                                    aria-label={composition.value === 'icon' ? label : undefined}
+                                  >
+                                    {composition.value !== 'text' ? (
+                                      <KButton.Icon>
+                                        <FamilyResolvedIcon name="plus" />
+                                      </KButton.Icon>
+                                    ) : null}
+                                    {composition.value !== 'icon' ? (
+                                      <KButton.Label>
+                                        <SmoothText fontName={fontName} align={alignment}>
+                                          {label}
+                                        </SmoothText>
+                                      </KButton.Label>
+                                    ) : null}
+                                  </KButton>
+                                )}
+                              </ButtonSizeScaleExample>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    </section>
+                  </React.Fragment>
+                ))}
+              </div>
+            </section>
             {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
             <div className={s['interaction-state']}>
               <Text as="h3" profile={textProfiles.sectionTitle}>
@@ -729,115 +865,17 @@ export function Button() {
                   </div>
                 </>
               ) : (
-                <Text as="p" profile={textProfiles.body} emphasis="low">
+                <Text as="p" profile={textProfiles.body} emphasis="medium">
                   The active preset does not publish a Button shadow.
                 </Text>
               )}
             </section>
 
-            <div className={s['interaction-state']}>
-              <Text as="h3" profile={textProfiles.sectionTitle}>
-                Size / Scale
-              </Text>
-              <div className={`${s['example-states']} k-root`}>
-                {renderScale(
-                  's:sm:2',
-                  <KButton
-                    radius={buttonRadius}
-                    size="sm2"
-                    intent="primary"
-                    emphasis="high"
-                    surfaceContext={activeSurfaceContext}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        Small 2
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-                {renderScale(
-                  's:sm:1',
-                  <KButton
-                    radius={buttonRadius}
-                    size="sm"
-                    intent="primary"
-                    emphasis="high"
-                    surfaceContext={activeSurfaceContext}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        Small
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-                {renderScale(
-                  's:md:1',
-                  <KButton
-                    radius={buttonRadius}
-                    size="md"
-                    intent="primary"
-                    emphasis="high"
-                    surfaceContext={activeSurfaceContext}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        Medium
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-                {renderScale(
-                  's:lg:1',
-                  <KButton
-                    radius={buttonRadius}
-                    size="lg"
-                    intent="primary"
-                    emphasis="high"
-                    surfaceContext={activeSurfaceContext}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        Large
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-                {renderScale(
-                  's:lg:2',
-                  <KButton
-                    radius={buttonRadius}
-                    size="lg2"
-                    intent="primary"
-                    emphasis="high"
-                    surfaceContext={activeSurfaceContext}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        Large 2
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-                {renderScale(
-                  's:lg:3',
-                  <KButton
-                    radius={buttonRadius}
-                    size="lg3"
-                    intent="primary"
-                    emphasis="high"
-                    surfaceContext={activeSurfaceContext}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        Large 3
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-              </div>
-            </div>
+            <ButtonIconFormatExamples
+              radius={buttonRadius}
+              scale={activeButtonScale}
+              surfaceContext={activeSurfaceContext}
+            />
             <ButtonIconExamples
               fontName={fontName}
               radius={buttonRadius}

@@ -1,6 +1,12 @@
 import { stateActivator } from '@kiskadee/core';
+import {
+  getTextFieldInlineStartOffset,
+  observeTextFieldContentLayout,
+  observeTextFieldDirection
+} from './TextField.direction.runtime.ts';
 
 const FLOATING_BLOCK_OFFSET_PROPERTY = '--k-txf-fbo';
+const PASSIVE_TEXT_BLOCK_OFFSET_PROPERTY = '--k-txf-tbo';
 
 export function resolveFloatingInputBlockOffset(options: {
   currentOffset: number;
@@ -19,24 +25,65 @@ function parsePixelValue(value: string): number {
   return Number.isFinite(parsedValue) ? parsedValue : 0;
 }
 
+function getInputLineCenter(inputRect: DOMRect, inputStyles: CSSStyleDeclaration): number {
+  return (
+    inputRect.top +
+    (inputRect.height +
+      parsePixelValue(inputStyles.borderBlockStartWidth) -
+      parsePixelValue(inputStyles.borderBlockEndWidth) +
+      parsePixelValue(inputStyles.paddingBlockStart) -
+      parsePixelValue(inputStyles.paddingBlockEnd)) /
+      2
+  );
+}
+
 export function bindFloatingRestTypography(options: {
   labelElement: HTMLLabelElement;
   inputElement: HTMLInputElement;
 }): () => void {
   const { labelElement, inputElement } = options;
   const controlElement =
-    inputElement.offsetParent instanceof HTMLElement
+    inputElement.closest<HTMLElement>('[data-text-field-control]') ??
+    (inputElement.offsetParent instanceof HTMLElement
       ? inputElement.offsetParent
-      : inputElement.parentElement;
+      : inputElement.parentElement);
 
   if (!controlElement) {
     return () => {};
   }
 
-  const rootElement = controlElement.parentElement;
+  const rootElement = controlElement.closest<HTMLElement>('[data-text-field-root]');
+  const editingLane =
+    inputElement.closest<HTMLElement>('[data-text-field-editing-lane]') ?? controlElement;
+  const textOffsetRegions = new Set<HTMLElement>();
+
+  const syncPassiveTextOffsets = (inputStyles: CSSStyleDeclaration) => {
+    const regions = Array.from(
+      controlElement.querySelectorAll<HTMLElement>(':scope > [data-text-field-content]')
+    );
+    for (const region of textOffsetRegions) {
+      if (regions.includes(region)) continue;
+      region.style.removeProperty(PASSIVE_TEXT_BLOCK_OFFSET_PROPERTY);
+      textOffsetRegions.delete(region);
+    }
+    if (regions.length === 0) return;
+
+    const inputRect = inputElement.getBoundingClientRect();
+    const inputLineCenter = getInputLineCenter(inputRect, inputStyles);
+    for (const region of regions) {
+      const regionRect = region.getBoundingClientRect();
+      const offset = inputLineCenter - (regionRect.top + regionRect.height / 2);
+      region.style.setProperty(PASSIVE_TEXT_BLOCK_OFFSET_PROPERTY, `${offset}px`);
+      textOffsetRegions.add(region);
+    }
+  };
 
   const syncRestPlaceholder = () => {
     const inputStyles = getComputedStyle(inputElement);
+    const controlStyles = getComputedStyle(controlElement);
+    const laneStyles = editingLane === controlElement ? null : getComputedStyle(editingLane);
+    const controlRect = controlElement.getBoundingClientRect();
+    const inputRect = inputElement.getBoundingClientRect();
     const parsedLineHeight = Number.parseFloat(inputStyles.lineHeight);
     const parsedFontSize = Number.parseFloat(inputStyles.fontSize);
     const effectiveLineHeight = Number.isFinite(parsedLineHeight)
@@ -44,9 +91,12 @@ export function bindFloatingRestTypography(options: {
       : parsedFontSize;
     const restBlockTop = Math.max(
       0,
-      inputElement.offsetTop + (inputElement.clientHeight - effectiveLineHeight) / 2
+      getInputLineCenter(inputRect, inputStyles) -
+        controlRect.top -
+        parsePixelValue(controlStyles.borderBlockStartWidth) -
+        effectiveLineHeight / 2
     );
-    const restInlineStart = inputElement.offsetLeft;
+    const restInlineStart = getTextFieldInlineStartOffset(controlElement, inputElement);
     const restInlineWidth = inputElement.clientWidth;
 
     labelElement.style.setProperty('--k-txf-rts', inputStyles.fontSize);
@@ -60,11 +110,14 @@ export function bindFloatingRestTypography(options: {
       rootElement?.classList.contains(stateActivator.focus) === true ||
       rootElement?.classList.contains(stateActivator.filled) === true;
 
-    const controlStyles = getComputedStyle(controlElement);
     const tokenBlockSize = Number.parseFloat(controlStyles.getPropertyValue('--k-bxh'));
     const naturalContentBlockSize =
       parsePixelValue(controlStyles.paddingBlockStart) +
       parsePixelValue(controlStyles.paddingBlockEnd) +
+      (laneStyles
+        ? parsePixelValue(laneStyles.paddingBlockStart) +
+          parsePixelValue(laneStyles.paddingBlockEnd)
+        : 0) +
       effectiveLineHeight +
       parsePixelValue(inputStyles.paddingBlockStart) +
       parsePixelValue(inputStyles.paddingBlockEnd) +
@@ -75,18 +128,17 @@ export function bindFloatingRestTypography(options: {
 
     if (!isPromoted || !needsTextExpansion) {
       controlElement.style.setProperty(FLOATING_BLOCK_OFFSET_PROPERTY, '0px');
+      syncPassiveTextOffsets(inputStyles);
       return;
     }
 
-    const controlRect = controlElement.getBoundingClientRect();
-    const inputRect = inputElement.getBoundingClientRect();
     const labelRect = labelElement.getBoundingClientRect();
     const parsedCurrentOffset = Number.parseFloat(
       controlStyles.getPropertyValue(FLOATING_BLOCK_OFFSET_PROPERTY)
     );
     const currentOffset = Number.isFinite(parsedCurrentOffset) ? parsedCurrentOffset : 0;
     const inputLineBlockStart =
-      inputRect.top - controlRect.top + (inputElement.clientHeight - effectiveLineHeight) / 2;
+      getInputLineCenter(inputRect, inputStyles) - controlRect.top - effectiveLineHeight / 2;
     const labelBlockEnd = labelRect.bottom - controlRect.top;
     const nextOffset = resolveFloatingInputBlockOffset({
       currentOffset,
@@ -98,6 +150,7 @@ export function bindFloatingRestTypography(options: {
     if (Math.abs(nextOffset - currentOffset) >= 0.125) {
       controlElement.style.setProperty(FLOATING_BLOCK_OFFSET_PROPERTY, `${nextOffset}px`);
     }
+    syncPassiveTextOffsets(inputStyles);
   };
 
   syncRestPlaceholder();
@@ -117,6 +170,9 @@ export function bindFloatingRestTypography(options: {
   resizeObserver?.observe(labelElement);
   resizeObserver?.observe(inputElement);
   resizeObserver?.observe(controlElement);
+  if (editingLane !== controlElement) resizeObserver?.observe(editingLane);
+  const stopObservingDirection = observeTextFieldDirection(controlElement, scheduleSync);
+  const stopObservingContent = observeTextFieldContentLayout(controlElement, scheduleSync);
 
   const mutationObserver =
     rootElement && typeof MutationObserver !== 'undefined'
@@ -128,6 +184,17 @@ export function bindFloatingRestTypography(options: {
       attributeFilter: ['class']
     });
   }
+  mutationObserver?.observe(controlElement, { attributes: true, attributeFilter: ['class'] });
+  mutationObserver?.observe(inputElement, {
+    attributes: true,
+    attributeFilter: ['class', 'style']
+  });
+  if (editingLane !== controlElement) {
+    mutationObserver?.observe(editingLane, {
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    });
+  }
 
   labelElement.addEventListener('transitionend', scheduleSync);
   window.addEventListener('resize', scheduleSync);
@@ -137,10 +204,15 @@ export function bindFloatingRestTypography(options: {
       window.cancelAnimationFrame(syncFrame);
     }
     resizeObserver?.disconnect();
+    stopObservingDirection();
+    stopObservingContent();
     mutationObserver?.disconnect();
     labelElement.removeEventListener('transitionend', scheduleSync);
     window.removeEventListener('resize', scheduleSync);
     controlElement.style.removeProperty(FLOATING_BLOCK_OFFSET_PROPERTY);
+    for (const region of textOffsetRegions) {
+      region.style.removeProperty(PASSIVE_TEXT_BLOCK_OFFSET_PROPERTY);
+    }
     labelElement.removeAttribute('data-rest-placeholder');
     labelElement.style.removeProperty('--k-txf-rts');
     labelElement.style.removeProperty('--k-txf-rth');

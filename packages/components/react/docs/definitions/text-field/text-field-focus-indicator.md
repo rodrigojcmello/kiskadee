@@ -18,8 +18,10 @@ The field keeps the same variant and mode when its indicator changes appearance.
 Outline and Borderless with `e6` retain their schema-authored shell contour width/color during
 highlighted focus and delegate the enlarged focus treatment to the indicator. Without `e6`,
 their existing whole-outline focus treatment remains available. Underline uses its bottom lane.
-The indicator expands inward on highlighted focus or native pressing; pressing excludes disabled
-and read-only roots. Palette terminal states still govern indicator color.
+The indicator expands inward on highlighted focus or the field's projected Pressed state; pressing
+excludes disabled and read-only roots. Pointer gestures on the input, shell, or passive content own
+field pressing. Composed actions keep their own pressing and do not activate the field indicator.
+Palette terminal states still govern indicator color.
 
 A transparent resting contour can reserve its width for a later validation contour. Likewise,
 a transparent resting indicator can become visible on interaction without a mode change or DOM

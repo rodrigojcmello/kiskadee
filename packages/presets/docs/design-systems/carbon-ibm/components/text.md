@@ -45,14 +45,14 @@ Micro badge labels `caption-tiny-strong` (6/6), `caption-extra-small-strong` (8/
 
 | Source token | White | G90 / G100 | Mapping |
 | --- | --- | --- | --- |
-| text-primary | Gray 100 `#161616` | Gray 10 `#f4f4f4` | neutral standard medium, exact source token |
-| text-secondary | Gray 70 `#525252` | Gray 30 `#c6c6c6` | neutral standard low |
+| text-primary | Gray 100 `#161616` | Gray 10 `#f4f4f4` | neutral standard high, exact source token |
+| text-secondary | Gray 70 `#525252` | Gray 30 `#c6c6c6` | neutral standard medium |
 | text-helper | Gray 60 `#6f6f6f` | Gray 50 `#8d8d8d` | neutral standard lowest |
 | text-disabled | Gray 100 at 25% | Gray 10 at 25% | disabled text in every onSubtle foreground family |
-| link-primary | Blue 60 `#0f62fe` | Blue 40 `#78a9ff` | blue standard medium |
-| link-primary-hover | Blue 70 `#0043ce` | Blue 30 `#a6c8ff` | blue standard medium Hover |
-| link-secondary | Blue 70 `#0043ce` | Blue 30 `#a6c8ff` | blue deep medium |
-| text-on-color | white | white | onVivid medium, light cap |
+| link-primary | Blue 60 `#0f62fe` | Blue 40 `#78a9ff` | blue standard high |
+| link-primary-hover | Blue 70 `#0043ce` | Blue 30 `#a6c8ff` | blue standard high Hover |
+| link-secondary | Blue 70 `#0043ce` | Blue 30 `#a6c8ff` | blue deep high |
+| text-on-color | white | white | onVivid high, light cap |
 | text-on-color-disabled | Gray 50 `#8d8d8d` | white at 25% | onVivid Disabled |
 
 The preview changes placeholder wording/value from the Figma v11 snapshot; the foreground hierarchy uses `text-helper`, not that unresolved placeholder token. The Figma alias `text--on-color-disabled` is normalized to the official single-hyphen spelling.
@@ -60,15 +60,16 @@ The preview changes placeholder wording/value from the Figma v11 snapshot; the f
 ## Kiskadee Extensions
 
 - Standard/deep red, green and purple text use their own promoted family's Light `vivid` reference with offsets 0/+3. Orange uses +7/+10 and yellow +12/+15. Dark and Darker use +7/+9 for all five extension families. These are measured foreground adaptations of existing families, not new Carbon semantic tokens.
-- Chromatic low and lowest use 68% and 40% of the resolved family color. OnVivid low/lowest use 70%/40% of `text-on-color`.
-- Neutral deep uses physical black on Light and white on Dark/Darker. Its lower levels reuse text-primary and text-secondary.
+- Chromatic Medium, Low and Lowest use 68%, 54% and 40% of the resolved family color. OnVivid uses 70%/55%/40% of `text-on-color`. The new Low opacity is the midpoint between the preserved Medium and Lowest endpoints.
+- Neutral publishes Standard only. Its High/Medium/Lowest preserve `text-primary`/`text-secondary`/`text-helper`; the new Low selects L50 / D75, the midpoint of their source-mapped secondary/helper tonal positions L60/L40 and D85/D65. The strict `exact` locator carries `foreground.low` evidence. This additional step is a **Kiskadee extension**, not an additional Carbon semantic token.
+- The former Medium and Low strengths are renamed High and Medium, preserving their full state maps. `components.text.options.emphasis` explicitly selects High as the preset default. Neutral Deep is retired without an alias; chromatic Standard/Deep remain separate recipes.
 - Pending retains 70% of the original opacity. The source alpha is multiplied, not discarded.
 - Only the documented blue-link Hover delta is published. Focus belongs to the shared focus contract; there are no redundant Rest-equal Focus, Hover or Pressed entries.
 
 ## Schema Mapping
 
 - `global.typography`: the reusable fixed Carbon type catalog.
-- `global.foregrounds`: neutral plus six chromatic standard/deep profiles.
+- `global.foregrounds`: one neutral Standard profile plus six chromatic Standard/Deep families.
 - `text.e1`: publishes the existing neutral and chromatic foreground options without embedding colors.
 - `light`, `dark`, `darker`: Carbon White, G90, G100 respectively; both surface contexts are available.
 

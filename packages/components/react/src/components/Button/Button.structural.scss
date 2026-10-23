@@ -461,19 +461,48 @@
 
 /*
  * element button icon / e3
- * Gives schema-owned icon geometry a stable inline box and normalizes SVG descendants.
+ * Gives schema-owned icon geometry a stable viewport for vector, raster and font artwork.
  */
 .k-btn-e3 {
   block-size: var(--k-bxh);
   display: inline-block;
+  font-size: var(--k-bxh);
   inline-size: var(--k-bxw);
+  line-height: 1;
   vertical-align: middle;
 
-  > svg {
+  > svg,
+  > img,
+  > picture,
+  > picture > img {
     block-size: 100%;
     display: block;
     inline-size: 100%;
   }
+
+  > img,
+  > picture > img {
+    object-fit: contain;
+  }
+
+  > span,
+  > i {
+    align-items: center;
+    block-size: 100%;
+    display: inline-flex;
+    font-size: inherit;
+    inline-size: 100%;
+    justify-content: center;
+    line-height: inherit;
+  }
+}
+
+/*
+ * element button icon modifier 'a' / e3a
+ * Fits plain artwork to the projected label line without shrinking its viewport.
+ */
+.k-btn-e3a {
+  margin-block: min(0px, calc((var(--k-txh) - var(--k-bxh)) / 2));
 }
 
 /*

@@ -129,8 +129,9 @@ function resolveScalePropertyEmission(
     case 'paddingTop':
     case 'paddingBottom':
       return policy.paddingEmission;
-    case 'textSize':
     case 'textHeight':
+      return policy.textHeightEmission ?? 'direct';
+    case 'textSize':
       return 'direct';
   }
 }

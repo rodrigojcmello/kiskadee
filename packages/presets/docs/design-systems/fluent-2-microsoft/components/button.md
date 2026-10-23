@@ -122,6 +122,25 @@ The label selects preset-wide typography profiles instead of declaring text prim
 This closes the former shared-weight gap: Small no longer inherits the old element-wide Medium
 weight, while Medium and Large now use the official Semibold recipes.
 
+### Height reference metadata (2026-10-22)
+
+`e1.scales._boxHeight` records the nominal 24/32/40 px Small/Medium/Large heights from the size
+reference above and the 48 px Large 2 height authored by Kiskadee. The Large 2 reference follows
+its existing text recipe: 22 px line height plus 13 px top and bottom authored insets, with the
+Builder's border compensation preserving the 48 px outer box. These values are inspection metadata
+under the
+[Core height reference contract](../../../../../core/docs/definitions/element-height-reference.md),
+not emitted visual scales. They do not change Button padding, typography, icon viewports, borders
+or rendered height. Every supported Button size in this preset has a declared reference regardless
+of whether it comes from upstream evidence or a Kiskadee extension; that distinction belongs here
+in the evidence documentation.
+
+The metadata, the Showcase ruler and the Large 2 reference are a **Kiskadee extension**; the three
+upstream reference values retain their existing source provenance. The same reference is shown
+beside text-only, text-with-icon and icon-only compositions. Differences caused by the current
+intrinsic content geometry remain visible for inspection rather than being corrected or promoted
+to a new expected value.
+
 ## Icon Slot
 
 The official Fluent React Button implementation provides a dedicated icon slot. Its published
@@ -131,16 +150,26 @@ Button `e3` instead of styling SVG children directly:
 
 | Kiskadee scale | Icon box | Gap before label | Status |
 | --- | --- | --- | --- |
-| `s:sm:1` | 20 px | 4 px | Official adapted |
+| `s:sm:1` | 16 px | 4 px | Kiskadee adaptation |
 | `s:md:1` | 20 px | 6 px | Official adapted |
 | `s:lg:1` | 24 px | 6 px | Official adapted |
 
 The numeric viewports live once in `global.iconSizes`. Button `e3.iconSize` maps each Button scale
-to that catalog: Small and Medium select icon Medium; Large selects icon Large. The density
+to that catalog: Small selects icon Small, Medium selects icon Medium, and Large selects icon Large. The density
 mapping selects the entire Medium or Large recipe, including its icon. Icon color
 reuses the complete label palette for the active theme, surface context, intent, emphasis, and
 state. This makes an icon and its adjacent label one content relationship while keeping the SVG
 asset itself free of preset colors and dimensions.
+
+On 2026-10-22, Small was intentionally changed from the upstream 20 px icon to the existing
+16 px catalog level. With the current 16 px text line and unchanged vertical insets, ordinary
+Small Buttons now retain their 24 px nominal height with or without an icon. This is a Kiskadee
+adaptation, not a correction to the upstream evidence. Medium, Large and Large 2 mappings remain
+unchanged. Plain-icon fitting now compares their 24 px icon viewport with the authored 22 px
+label line through SEP/SUP and Structural CSS. The resulting -1 px block margins preserve the
+artwork while restoring the 40 px Large and 48 px Large 2 heights. Small and Medium require no
+compensation. This Kiskadee composition adaptation leaves root padding and borders unchanged and
+does not use `_boxHeight` or measured deltas. Surfaced icon panels retain their separate geometry.
 
 Fluent publishes icon-leading Button examples, so this preset declares `iconLayout: inline` and
 `iconPlacement: leading` as its defaults. Kiskadee additionally exposes `edge` composition and
@@ -191,7 +220,7 @@ while preserving the Core contract's ability to accept explicit overrides if fut
 evidence requires them. This first-cut mapping is not presented as an exact implementation of
 Fluent's appearance-specific or stateful SplitButton stroke.
 
-`boxWidth` is 1 px at every published Button scale. `boxHeight` follows the icon viewport: 20 px at
+`boxWidth` is 1 px at every published Button scale. `boxHeight` retains its independent divider size: 20 px at
 Small, 20 px at Medium, and 24 px at Large. The divider owns no margin, padding, gap,
 opacity, or semantics; structural Button composition centers it without changing adjacent content
 spacing.
@@ -272,9 +301,9 @@ Kiskadee composition decision, not an official Fluent dark-token substitution.
 `e4` publishes only Rest colors. Hover, Pressed, Pending, and Disabled continue to be communicated
 by the Button root and label while the icon canvas and arbitrary artwork stay stable. The region
 uses the Button's three existing scales: its inline padding combines with the `e3` icon viewport to
-form a 36 px Small, 48 px Medium, and 60 px Large panel. These totals are a Kiskadee
-visual calibration that enlarges the original panel geometry by 50% without changing the icon
-viewport. The region inherits the same root geometry and derives its outer radius as `e1 radius -
+form a 32 px Small, 48 px Medium, and 60 px Large panel. The Small panel follows the 2026-10-22
+icon adaptation without changing its existing padding. The Medium and Large totals retain the
+earlier Kiskadee visual calibration. The region inherits the same root geometry and derives its outer radius as `e1 radius -
 e1 border width`, keeping the inner canvas concentric without duplicating radius or border-width
 tokens in `e4`. Fluent defaults `iconSurfaceCorners` to `edge`: only the corners adjacent to the
 outer Button edge remain rounded, while the two corners facing the label are straight. This is a
@@ -351,9 +380,9 @@ role-aware Medium and opaque outlined Low.
 
 | Light emphasis | Rest | Hover | Pressed | Selected | Foreground | Border |
 | --- | --- | --- | --- | --- | --- | --- |
-| Medium | White 14% | White 10% | White 7% | same as Pressed | global family Deep, Light `onVivid.medium` | White 10% Rest/Hover; 7% Pressed/Selected |
-| Low | Transparent | White 8% | White 3% | same as Pressed | global family Deep, Light `onVivid.medium` | White 30% Rest/Hover; 7% Pressed/Selected |
-| Lowest | Transparent | Black 10% | Black 30% | same as Pressed | global family Deep, Light `onVivid.medium` | Transparent |
+| Medium | White 14% | White 10% | White 7% | same as Pressed | global family Deep, Light `onVivid.high` | White 10% Rest/Hover; 7% Pressed/Selected |
+| Low | Transparent | White 8% | White 3% | same as Pressed | global family Deep, Light `onVivid.high` | White 30% Rest/Hover; 7% Pressed/Selected |
+| Lowest | Transparent | Black 10% | Black 30% | same as Pressed | global family Deep, Light `onVivid.high` | Transparent |
 
 The Rest hierarchy is now categorical: Medium is filled and bordered, Low is transparent and
 bordered, and Lowest has neither. Low's transferred Hover, Pressed, Selected, and Disabled states
@@ -376,15 +405,14 @@ Light Medium resolves its fill and stroke from `button.neutral` L0, using
 `14%/10%/7%` Rest/Hover/Pressed fill. Low resolves a transparent Rest plus `8%/3%` White
 Hover/Pressed fills from the same neutral family. Medium uses a `10%` Rest/Hover stroke, while Low
 uses `30%`; both currently use `7%` at Pressed/Selected/Disabled. Selected intentionally equals
-Pressed. Medium, Low, and Lowest deliberately point to the same global Deep `medium` coordinate:
-Blue `#d3e7ff`, Neutral `#d6dbe7`, Cranberry `#ffdbd7`, or Green `#d4edd2`. The chromatic families
-use their Light-track `subtle +2` reference; Neutral retains its approved Light-track `subtle +4`
-coordinate. Neither fill nor border participates in intent differentiation.
+Pressed. Medium, Low, and Lowest deliberately point to the same chromatic Deep `high` coordinate:
+Blue `#d2e8ff`, Neutral Standard white `#ffffff`, Cranberry `#ffdbd7`, or Green `#d4edd2`. The chromatic families
+use their Light-track `subtle +2` reference; Neutral selects Standard High, the physical-white cap. Neither fill nor border participates in intent differentiation.
 
 Dark and Darker retain the role-aware Medium candidate while using the same darker state
 progression: `subtle +8/+6/+4` sources are alpha-calibrated against the canonical Primary vivid
 surface at Delta E OK `0.04/0.032/0.024`. Their foreground now uses the same global Deep physical
-Light coordinate as the Light theme: chromatic `subtle +2` and Neutral `subtle +4`. The explicit
+Light coordinate as the Light theme: chromatic `subtle +2` and Neutral Standard High white. The explicit
 Light source track remains intentional because `onVivid` describes a component on a locally strong
 surface, not the global theme orientation. Disabled remains neutral across every theme.
 
@@ -400,14 +428,30 @@ avoids a separate Selected offset for every tonal family.
 Selected remains explicit in the schema because the Button supports a persistent Selected state.
 Only its visual value is shared with Pressed; Selected is not removed or inferred at runtime.
 
+### Four-strength foreground migration
+
+**Kiskadee extension:** foreground Medium becomes High, Low becomes Medium, and a new Low
+is inserted before Lowest. Button's own surface emphases retain their existing names and recipes.
+Neutral publishes only Standard; no alias preserves the removed Deep Rest recipe. Consequently,
+Neutral High on physically light Dark/Darker surfaces changes from absolute black to #252525,
+Neutral lower labels select Standard Medium (#616161 Light / #b4b4b4 Dark), and lower onVivid
+neutral labels become white. Disabled foreground colors remain unchanged as optional Standard
+states. Chromatic consumers preserve their existing color by renaming Deep Medium to Deep High.
+
+For Neutral High onSubtle in Dark/Darker, Selected continues consuming the existing
+`neutral.standard.light.onSubtle.high.pressed` coordinate (#010101), while Rest now consumes
+Standard High (#252525). This retained Selected delta follows the preset's documented
+Selected-to-Pressed adaptation above; it does not introduce a second Neutral profile.
+
+
 ### Global Foreground Consumption
 
 The canonical Fluent Button no longer authors colors directly in `e2.textColor`, `e3.textColor`,
 or `e4.textColor`. Those slots select atomic coordinates from `global.foregrounds`:
 
 ```ts
-fg('red.deep.light.onSubtle.medium')
-fg.parentState('red.deep.light.onSubtle.medium.pending')
+fg('red.deep.light.onSubtle.high')
+fg.parentState('red.deep.light.onSubtle.high.pending')
 ```
 
 Web Builder resolves the first form to an inline HEX and the second to the existing parent-state
@@ -427,23 +471,23 @@ Button intent maps to a visual family without changing the Button API:
 The selected coordinate is intentionally independent from Button emphasis:
 
 - `onSubtle` High uses the global physical-white coordinate, except Neutral Dark/Darker, which uses
-  `neutral.deep.light.onSubtle.medium`, the agreed absolute-black coordinate;
+  `neutral.standard.light.onSubtle.high`, the shared neutral #252525 coordinate;
 - chromatic `onSubtle` Medium, Low, and Lowest all use the family's Deep coordinate for the current
-  theme; Neutral uses the dedicated lower gray in `neutral.deep`;
-- `onVivid` High uses each family's Standard Light `onSubtle.medium` coordinates and their Hover,
+  theme; Neutral uses Standard Medium (the previous Standard Low);
+- `onVivid` High uses each family's Standard Light `onSubtle.high` coordinates and their Hover,
   Pressed, and Pending states;
 - chromatic `onVivid` Medium, Low, and Lowest all use the family's Deep Light
-  `onVivid.medium`; Neutral uses the equivalent neutral coordinate;
-- disabled labels use the promoted Neutral Deep disabled coordinates;
+  `onVivid.high`; Neutral uses the equivalent neutral coordinate;
+- disabled labels use the preserved Neutral Standard Medium/Lowest disabled coordinates;
 - High Selected points to the global Pressed coordinate; Focus remains absent and inherits Rest.
 
 `e2` publishes the complete label map. `e3` reuses it without Pending so an icon or spinner stays
 at Rest strength. `e4` consumes Neutral Standard over its physically light icon-region surface.
 `e5` keeps the canonical `e2` fallback instead of duplicating paint.
 
-The global profile may publish `medium`, `low`, and `lowest`, but Button is not required to choose
+The global profile publishes `high`, `medium`, `low`, and `lowest`, but Button is not required to choose
 the homonymous strength. For example, Button Medium, Low, and Lowest intentionally converge on
-`red.deep.light.onVivid.medium`. Button emphasis still controls the complete control appearance;
+`red.deep.light.onVivid.high`. Button emphasis still controls the complete control appearance;
 the global coordinate only standardizes the foreground color.
 
 ## Kiskadee Extensions: Primary Medium, Low, And Lowest
@@ -848,7 +892,7 @@ L16 because it has no disabled fill, and all Dark/Darker disabled foregrounds re
    - `neutral.v1` points to `primitive.black.v2` in Light and Dark;
    - `redLike.v1` points to `primitive.red.v1` in Light and Dark;
    - `greenLike.v1` points to `primitive.green.v1` in Light and Dark.
-   - `global.foregrounds` publishes Standard and Deep coordinates from those approved families,
+   - `global.foregrounds` publishes Standard for Neutral and Standard/Deep for the approved chromatic families,
      including the promoted neutral state stops.
 3. Layer 3 Button intents:
    - `button.primary` points to global `primary`;
@@ -915,7 +959,7 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
 - `e2.textColor` and `e3.textColor` are authored exclusively with `fg()` and
   `fg.parentState()` coordinates. `e3` removes Pending from the shared map; no direct color remains
   in canonical Button text authoring.
-- Filled `e2.textColor.*.*.disabled` foregrounds consume `neutral.deep` L20 at 82% in Light and
+- Filled `e2.textColor.*.*.disabled` foregrounds consume `neutral.standard` Medium L20 at 82% in Light and
   solid D35 in Dark/Darker. Lowest consumes the solid L16/D35 coordinate because it has no disabled
   fill.
 - Every intent exposes High, Medium, Low, and Lowest in Light, Dark, and Darker.

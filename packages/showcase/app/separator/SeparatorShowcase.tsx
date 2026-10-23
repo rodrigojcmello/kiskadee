@@ -123,11 +123,11 @@ export default function SeparatorShowcase() {
                       {emphasis}
                     </Text>
                     <div className={styles.horizontalStage}>
-                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                      <Text as="span" profile={textProfiles.caption} emphasis="medium">
                         Above
                       </Text>
                       <Separator intent={intent} emphasis={emphasis} />
-                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                      <Text as="span" profile={textProfiles.caption} emphasis="medium">
                         Below
                       </Text>
                     </div>
@@ -150,11 +150,11 @@ export default function SeparatorShowcase() {
                       {emphasis}
                     </Text>
                     <div className={styles.verticalStage}>
-                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                      <Text as="span" profile={textProfiles.caption} emphasis="medium">
                         Before
                       </Text>
                       <Separator intent={intent} orientation="vertical" emphasis={emphasis} />
-                      <Text as="span" profile={textProfiles.caption} emphasis="low">
+                      <Text as="span" profile={textProfiles.caption} emphasis="medium">
                         After
                       </Text>
                     </div>

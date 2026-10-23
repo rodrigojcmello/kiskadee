@@ -11,6 +11,7 @@ import { resolveButtonClassNames } from './Button.class-names.ts';
 
 function createElement(slot: string, includeOnVivid = true): ClassNameByElementJSON {
   return {
+    ...(slot === 'e2' ? { p: { lh: { 'md:1': 'label-height-token' } } } : {}),
     d: `${slot}-base`,
     s: {
       all: `${slot}-scale-all`,
@@ -63,6 +64,16 @@ function resolve(
 }
 
 describe('Button surface context class resolution', () => {
+  it('uses the label height projection on plain icons without copying typography or resizing surfaced icons', () => {
+    const plain = resolve(undefined);
+    expect(plain.e3).toContain('label-height-token');
+    expect(plain.e3).toContain('k-btn-e3a');
+    expect(plain.e3).not.toContain('e2-scale-medium');
+    const surfaced = resolve(undefined, true, undefined, undefined, undefined, 'surface');
+    expect(surfaced.e3).not.toContain('label-height-token');
+    expect(surfaced.e3).not.toContain('k-btn-e3a');
+  });
+
   it('uses onSubtle colors when the prop is omitted', () => {
     const classes = resolve(undefined);
 
@@ -90,7 +101,7 @@ describe('Button surface context class resolution', () => {
     expect(classes.e3).toContain('e3-scale-all');
     expect(classes.e3).toContain('e3-scale-medium');
     expect(classes.e3).toContain('k-btn-e3');
-    expect(classes.e3).not.toContain('k-btn-e3a');
+    expect(classes.e3).toContain('k-btn-e3a');
   });
 
   it('resolves edge and trailing icon composition independently', () => {

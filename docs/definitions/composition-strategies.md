@@ -162,6 +162,14 @@ Use the four named choices and platform-owned executable recipes; do not introdu
 public duration or spring objects, preset timing options, or a Provider for this concern.
 The component owns local coordination; Headless retains expansion and accessibility authority.
 
+## Bidirectional composition
+
+Follow [Bidirectional layout](./bidirectional-layout.md) when composition uses logical start/end
+regions or mixes interface and content direction. The application supplies HTML `dir`; platform
+components preserve logical layout, semantic DOM order, and independent content direction.
+TextField is the first implementation of this contract. No new direction Provider or preset-owned
+direction policy is introduced.
+
 ## Decision record
 
 A durable architecture decision should record:
@@ -209,6 +217,14 @@ A durable architecture decision should record:
 - Surface Context uses a Provider because independent descendants need a subtree-scoped semantic
   runtime input. Presets still author the serialized produced-surface map; the Provider does not
   replace Schema data.
+- TextField owns logical content regions and passive `TextFieldIcon` / `TextFieldText` anatomy.
+  The lateral regions select Lowest or Medium treatment; helpers keep their geometry without
+  individual frames. `TextFieldAction` provides the isolated internal-action relation, while
+  `connectedEndAction` places an existing native Button outside the input control at logical end.
+  Both are local TextField composition, preserving Button identity, behavior, and visual choices
+  through the produced surface contract. This follows the same ownership boundary as Accordion
+  composing existing independent components, without introducing generic grouping mechanics.
+  See [TextField internal content](../../packages/components/react/docs/definitions/text-field/text-field-content.md).
 
 ## Related definitions
 

@@ -23,10 +23,13 @@ import { DragRegular } from '@fluentui/react-icons/headless/svg/drag';
 import { EditRegular } from '@fluentui/react-icons/headless/svg/edit';
 import { EmojiRegular } from '@fluentui/react-icons/headless/svg/emoji';
 import { EmojiSadRegular } from '@fluentui/react-icons/headless/svg/emoji-sad';
+import { EyeRegular } from '@fluentui/react-icons/headless/svg/eye';
+import { EyeOffRegular } from '@fluentui/react-icons/headless/svg/eye-off';
 import { FolderArrowRightRegular } from '@fluentui/react-icons/headless/svg/folder-arrow-right';
 import { HeartRegular } from '@fluentui/react-icons/headless/svg/heart';
 import { HomeRegular } from '@fluentui/react-icons/headless/svg/home';
 import { LinkRegular } from '@fluentui/react-icons/headless/svg/link';
+import { LockClosedRegular } from '@fluentui/react-icons/headless/svg/lock-closed';
 import { MailRegular } from '@fluentui/react-icons/headless/svg/mail';
 import { NavigationRegular } from '@fluentui/react-icons/headless/svg/navigation';
 import { PauseRegular } from '@fluentui/react-icons/headless/svg/pause';
@@ -88,10 +91,13 @@ const glyphDragRegular = createSvgGlyph(DragRegular, {"fontSize":"1em"});
 const glyphEditRegular = createSvgGlyph(EditRegular, {"fontSize":"1em"});
 const glyphEmojiRegular = createSvgGlyph(EmojiRegular, {"fontSize":"1em"});
 const glyphEmojiSadRegular = createSvgGlyph(EmojiSadRegular, {"fontSize":"1em"});
+const glyphEyeOffRegular = createSvgGlyph(EyeOffRegular, {"fontSize":"1em"});
+const glyphEyeRegular = createSvgGlyph(EyeRegular, {"fontSize":"1em"});
 const glyphFolderArrowRightRegular = createSvgGlyph(FolderArrowRightRegular, {"fontSize":"1em"});
 const glyphHeartRegular = createSvgGlyph(HeartRegular, {"fontSize":"1em"});
 const glyphHomeRegular = createSvgGlyph(HomeRegular, {"fontSize":"1em"});
 const glyphLinkRegular = createSvgGlyph(LinkRegular, {"fontSize":"1em"});
+const glyphLockClosedRegular = createSvgGlyph(LockClosedRegular, {"fontSize":"1em"});
 const glyphMailRegular = createSvgGlyph(MailRegular, {"fontSize":"1em"});
 const glyphNavigationRegular = createSvgGlyph(NavigationRegular, {"fontSize":"1em"});
 const glyphPauseRegular = createSvgGlyph(PauseRegular, {"fontSize":"1em"});
@@ -143,6 +149,8 @@ const glyphMap = {
     "clipboard-check": glyphClipboardCheckmarkRegular,
     "close": glyphDismissRegular,
     "dashboard": glyphBoardRegular,
+    "eye": { glyph: glyphEyeRegular, direction: 'fixed' },
+    "eye-off": { glyph: glyphEyeOffRegular, direction: 'fixed' },
     "folder-move": { glyph: glyphFolderArrowRightRegular, direction: 'mirror' },
     "frown": glyphEmojiSadRegular,
     "git-branch": glyphBranchForkRegular,
@@ -154,6 +162,7 @@ const glyphMap = {
     "list": { glyph: glyphTextBulletListLtrRegular, direction: 'unique', rtlGlyph: glyphTextBulletListRtlRegular },
     "list-ordered": { glyph: glyphTextNumberListLtrRegular, direction: 'unique', rtlGlyph: glyphTextNumberListRtlRegular },
     "loader-circle": glyphArrowSyncCircleRegular,
+    "lock": { glyph: glyphLockClosedRegular, direction: 'fixed' },
     "mail": glyphMailRegular,
     "menu": glyphNavigationRegular,
     "minus": glyphSubtractRegular,

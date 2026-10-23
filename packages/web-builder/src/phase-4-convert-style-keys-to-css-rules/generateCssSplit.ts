@@ -51,6 +51,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/** Stops parent-state paint at the next native or projected interaction owner. */
+function isolateParentStateRule(rule: string): string {
+  const scopedRule = rule.replace(/(^|, )(?=\.-(?:a|n)\b)/g, '$1:where(:scope)');
+  return `@scope (.-a, .-n) to (.-a, .-n) { ${scopedRule} }`;
+}
+
 function hasElementStyleShape(value: Record<string, unknown>): boolean {
   return (
     'decorations' in value ||
@@ -280,7 +286,13 @@ export async function generateCssSplit(
                       ...options,
                       styleEmissionPolicy
                     });
-                    if (rule && rule.trim() !== '') paletteRules[bundleKey].add(rule);
+                    if (rule && rule.trim() !== '') {
+                      paletteRules[bundleKey].add(
+                        key.includes('==') || key.includes('::ref')
+                          ? isolateParentStateRule(rule)
+                          : rule
+                      );
+                    }
                   }
                 }
               }

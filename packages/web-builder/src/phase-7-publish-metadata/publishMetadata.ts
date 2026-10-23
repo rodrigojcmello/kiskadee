@@ -226,7 +226,7 @@ function collectComponentElements(
   return componentElements;
 }
 
-function buildComponentScale(
+export function buildComponentScale(
   schema: Schema,
   componentName: ComponentName
 ): ManifestComponent['scale'] | undefined {
@@ -246,7 +246,8 @@ function buildComponentScale(
 
   for (const elements of collectComponentElements(schema, componentName)) {
     for (const el of Object.values(elements)) {
-      collectPublishedScaleKeys((el as any).scales);
+      const { _boxHeight, ...renderedScales } = (el as any).scales ?? {};
+      collectPublishedScaleKeys(renderedScales);
       collectPublishedScaleKeys((el as any).iconSize);
     }
   }

@@ -12,7 +12,6 @@ import type {
   ElementTypography,
   RadiusMode,
   ScaleProperty,
-  ScaleSchema,
   Schema,
   SchemaIconSizes,
   SchemaSeparators,
@@ -24,6 +23,10 @@ import type {
 } from '@kiskadee/core';
 import { resolveActivationFeedbackSetting } from '@kiskadee/core';
 import { resolveElementPaletteSources } from '../palettes/resolveElementPaletteSources.ts';
+import {
+  resolveElementStyleEmissionPolicy,
+  type WebStyleEmissionPolicy
+} from '../style-emission/web-build-policy.ts';
 import { createTypographyBuild, type TypographyBuild } from '../typography/compileTypography.ts';
 import { buildStyleKey, deepUpdate } from '../utils/index.ts';
 import {
@@ -100,11 +103,17 @@ const ACTIVATION_FEEDBACK_HOST_BY_COMPONENT: Partial<Record<ComponentName, strin
  * @param schema - The Schema object to process.
  * @returns An object containing styleKeys and toneMetadata Map.
  */
-export function convertElementSchemaToStyleKeys(schema: Schema): {
+export function convertElementSchemaToStyleKeys(
+  schema: Schema,
+  webStyleEmissionPolicy: WebStyleEmissionPolicy
+): {
   styleKeys: ComponentStyleKeyMap;
   toneMetadataByPalette: ToneMetadataByPalette;
   typographyBuild?: TypographyBuild;
 } {
+  if (!webStyleEmissionPolicy) {
+    throw new Error('An explicit Web style-emission policy is required.');
+  }
   const styleKeysByComponent: ComponentStyleKeyMap = {};
   const toneMetadataByPalette: ToneMetadataByPalette = new Map();
   const typographyBuild = createTypographyBuild(schema.global?.typography, schema.breakpoints);
@@ -190,13 +199,22 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
     deepUpdate<StyleKeyByElement>(styleKeysByComponent, path, (prev) => {
       const el: Partial<StyleKeyByElement> = prev ? { ...prev } : {};
       const typographyStyleKeys = element.typography
-        ? typographyBuild?.expandElement(element.typography as ElementTypography, {
-            component: metadataScope.componentName as ComponentName,
-            ...(metadataScope.variantName ? { variant: metadataScope.variantName } : {}),
-            ...(metadataScope.modeName ? { mode: metadataScope.modeName } : {}),
-            element: metadataScope.elementName,
-            elementName: element.name
-          })
+        ? typographyBuild?.expandElement(
+            element.typography as ElementTypography,
+            {
+              component: metadataScope.componentName as ComponentName,
+              ...(metadataScope.variantName ? { variant: metadataScope.variantName } : {}),
+              ...(metadataScope.modeName ? { mode: metadataScope.modeName } : {}),
+              element: metadataScope.elementName,
+              elementName: element.name
+            },
+            resolveElementStyleEmissionPolicy(
+              webStyleEmissionPolicy,
+              metadataScope.componentName,
+              metadataScope.elementName,
+              metadataScope.variantName
+            ).textHeightEmission === 'token'
+          )
         : undefined;
       if (element.decorations) {
         el.decorations = convertElementDecorationsToStyleKeys(element.decorations);
@@ -216,7 +234,8 @@ export function convertElementSchemaToStyleKeys(schema: Schema): {
         separators
       });
       if (element.scales || iconSizeScales || separatorRecipe) {
-        const { borderRadius, ...otherScales } = (element.scales ?? {}) as ScaleSchema;
+        const { borderRadius, ...otherScales } = element.scales ?? {};
+        Reflect.deleteProperty(otherScales, '_boxHeight');
         const mergedScales = {
           ...otherScales,
           ...separatorRecipe?.scales,

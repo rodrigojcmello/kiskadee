@@ -48,8 +48,8 @@ semantic mapping. Exact positions below use the preset's existing legacy `c` get
 | Source concept | Source Light / Dark | Lookup and generated mapping | Decision |
 | --- | --- | --- | --- |
 | `Backgrounds/Primary - Elevated` | `#ffffff` / `#1c1c1e` | Light physical white cap L0; Dark exact D5, exact in both tracks | Opaque neutral surface; glass remains deferred |
-| `Labels/Primary` | `#000000` / `#ffffff` | `fg:neutral.standard.<theme>.onSubtle.medium`; caps L100/D100 | Normal labels replace vibrant labels because the surface is opaque |
-| `Labels/Secondary` | `#3c3c43` 60% / `#ebebf5` 70% | Global `low`; L70 `#3d3d3f` 60% / D95 `#ebebee` 70% | Descriptions, end text, and group labels |
+| `Labels/Primary` | `#000000` / `#ffffff` | `fg:neutral.standard.<theme>.onSubtle.high`; caps L100/D100 | Normal labels replace vibrant labels because the surface is opaque |
+| `Labels/Secondary` | `#3c3c43` 60% / `#ebebf5` 70% | Global `medium`; L70 `#3d3d3f` 60% / D95 `#ebebee` 70% | Descriptions, end text, and group labels |
 | `Labels/Tertiary` | Same source hues at 30% / 30% | Parent-state global `lowest`; L70/D95 at 30% | Disabled label and icon paint, including destructive items |
 | `Fills/Tertiary` | `#767680` 12% / `#767680` 24% | Exact L40 `#737375` 12% / D55 `#7a7a7c` 24% | Web Hover; opt-in Selected background |
 | `Fills/Secondary` | `#787880` 16% / `#787880` 32% | Exact L35 `#7b7b7e` 16% / D55 `#7a7a7c` 32% | Web Pressed |

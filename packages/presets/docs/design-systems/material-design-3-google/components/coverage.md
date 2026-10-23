@@ -47,8 +47,11 @@ Fluent. Pink represents the approved magenta asset; orange is not fabricated or 
 to duplicate Fluent's family list.
 
 Standard foregrounds use vivid references (six positions lighter for chromatic Dark content);
-deep foregrounds use L65/D85. Low and lowest visibility are 68% and 38%; pending is 70% and disabled
-38%. Vivid-surface foregrounds use the pure white cap. These coordinates and visibility levels are
+chromatic Deep foregrounds use L65/D85. Neutral has Standard only. High retains the full anchor;
+Medium, Low and Lowest visibility are 68%, 53% and 38%; pending is 70% and disabled
+38%. The inserted Low midpoint and preset-owned Text default High are documented in the
+[four-step hierarchy decision](../source-evidence.md#four-step-foreground-hierarchy-2026-10-22).
+Vivid-surface foregrounds use the pure white cap. These coordinates and visibility levels are
 **Kiskadee adaptations**, not exact Material token claims. Icon uses neutral/primary with matching
 context behavior and the existing size catalog. Text and Icon remain passive components.
 

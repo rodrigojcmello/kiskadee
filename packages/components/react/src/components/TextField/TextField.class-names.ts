@@ -19,6 +19,7 @@ import {
   resolveSchemaElementClassName,
   resolveRadiusClassName as resolveSharedRadiusClassName
 } from '../../shared/class-resolution/classNames.ts';
+import type { TextFieldContentClassNames, TextFieldContentEmphasis } from './TextField.content.tsx';
 import type { TextFieldStructuralDescriptor } from './TextField.structural.ts';
 import type {
   TextFieldClassesMap,
@@ -36,8 +37,14 @@ export const DEFAULT_TEXT_FIELD_LABEL_PLACEMENT: TextFieldLabelPlacement = 'top'
 export const TEXT_FIELD_STATE_PROJECTION = {
   target: 'e1',
   activatorClassName: cn.activator,
-  interactiveClassName: `${cn.interactive} ${cn.nativeInteraction}`,
+  interactiveClassName: cn.interactive,
   projections: {
+    hovered: {
+      className: cn.hover
+    },
+    pressed: {
+      className: cn.pressed
+    },
     focused: {
       className: cn.focus
     },
@@ -118,6 +125,34 @@ export function resolveRadiusClassName(
   return resolveSharedRadiusClassName(element, scale, radiusMode);
 }
 
+/** Resolves passive anatomy without coupling its emphasis to the control shell. */
+export function resolveTextFieldContentClassNames(options: {
+  surfaceContext?: SurfaceContext;
+  structural: TextFieldStructuralDescriptor;
+  elements: TextFieldClassesMap;
+  classNames: TextFieldClassNames;
+  scale: string;
+  intent: TextFieldIntent;
+  emphasis: TextFieldContentEmphasis;
+  radius: RadiusMode;
+}): TextFieldContentClassNames {
+  const { elements, classNames, structural } = options;
+  const resolve = (slot: 'e8' | 'e9' | 'e10') =>
+    elements[slot]
+      ? (join(
+          `k-txf-${slot}-${structural.letter}`,
+          elem(elements[slot], options),
+          classNames[slot]
+        ) ?? '')
+      : (classNames[slot] ?? '');
+
+  return {
+    iconClassName: resolve('e9'),
+    textClassName: resolve('e10'),
+    regionClassName: resolve('e8')
+  };
+}
+
 export function resolveTextFieldClassNames(options: {
   surfaceContext?: SurfaceContext;
   structural: TextFieldStructuralDescriptor;
@@ -135,6 +170,7 @@ export function resolveTextFieldClassNames(options: {
   const letter = options.structural.letter;
   const usesInlineLabel = options.labelPlacement === 'inline';
   const effectiveLabelOffsetStrategy = usesInlineLabel ? 'none' : options.labelOffsetStrategy;
+  const passiveClassNames = resolveTextFieldContentClassNames({ ...options, emphasis: 'lowest' });
   const topLabelClassName = join(
     `k-txf-e2-${letter}`,
     effectiveLabelOffsetStrategy === 'radius'
@@ -196,6 +232,11 @@ export function resolveTextFieldClassNames(options: {
           options.classNames.e6
         ) ?? '')
       : '',
-    e7: usesInlineLabel ? (inlineLabelClassName ?? '') : ''
+    e7: usesInlineLabel ? (inlineLabelClassName ?? '') : '',
+    e8: elements.e8
+      ? (join(`k-txf-e8-${letter}`, elem(elements.e8, options), options.classNames.e8) ?? '')
+      : (options.classNames.e8 ?? ''),
+    e9: passiveClassNames.iconClassName,
+    e10: passiveClassNames.textClassName
   };
 }

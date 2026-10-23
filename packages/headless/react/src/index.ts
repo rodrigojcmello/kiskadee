@@ -247,9 +247,14 @@ export type {
   TextFieldRootProps,
   TextFieldStateName,
   TextFieldStateProjectionOptions,
-  TextFieldValidationStatus
+  TextFieldValidationStatus,
+  UseHeadlessTextFieldActionsOptions,
+  UseHeadlessTextFieldActionsResult
 } from './components/text-field/HeadlessTextField.tsx';
-export { HeadlessTextField } from './components/text-field/HeadlessTextField.tsx';
+export {
+  HeadlessTextField,
+  useHeadlessTextFieldActions
+} from './components/text-field/HeadlessTextField.tsx';
 export type {
   UseControlStateOptions,
   UseControlStateResult

@@ -28,6 +28,21 @@ Class maps retain only generated class references. Size fallbacks do not copy Me
 Small/Large. Palette-specific capabilities are loaded for the selected palette, not every palette.
 The revision includes metadata, class maps and CSS references, independently of the preset version.
 
+### Optional authored inspection values
+
+Button may publish its authored reference height under
+`inspection.elements.e1.scales._boxHeight`. This optional field uses Core's
+`ElementHeightReference`: either one number or the authored map of fixed size keys to numbers.
+A number stays a number; publication does not synthesize an `s:all` entry or missing size keys.
+The complete `inspection` branch is omitted when the canonical Button schema has no reference.
+
+This value is an inspection annotation, not a rendered scale. Web Builder separates `_boxHeight`
+explicitly before style-key conversion, compensation, class/CSS generation, density recipe
+validation and size-capability discovery. It cannot create a supported Button size, token or
+utility. Other underscore-prefixed fields are not implicitly ignored or accepted. Core remains
+responsible for allowed ownership and value validation; extraction does not mutate the schema.
+Existing component metadata without `inspection` remains valid and requires no fallback value.
+
 ## CSS partitioning and order
 
 Generated selectors and class names are preserved. Rules are assigned to their exact component

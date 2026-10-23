@@ -116,3 +116,12 @@ Large is explicitly selected with `size="lg"`; Compact continues to resolve to M
 Typography, colors, interaction states, and the default density are retained. This enlarges
 visual geometry; it does not introduce a separate minimum touch-target contract.
 The Showcase Sizes section lists the sizes published by the active preset.
+
+## Four-strength foreground migration
+
+**Kiskadee extension:** label and chromatic icon references move from global Medium to High,
+retaining their colors and states. Neutral has only Standard. The former Deep absolute-black
+icon now selects Standard Light/onSubtle High (#252525), and disabled neutral icon Rest
+references select Standard Medium (#616161 Light, #b4b4b4 Dark/Darker). Dedicated disabled
+label coordinates remain preserved in Standard Lowest/onSubtle and High/onVivid. Switch's
+component Medium emphasis, surfaces and borders keep their existing names and recipes.

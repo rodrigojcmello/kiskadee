@@ -1,5 +1,7 @@
+import { elementSizeValues } from '../breakpoints.ts';
 import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
 import type { DensityScaleMap } from '../density.ts';
+import type { ElementHeightReference } from '../element-height-reference.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
 import type {
@@ -81,6 +83,8 @@ export type ButtonContainerElementStyle<TSegmentName extends SegmentName = never
   scales: ElementScalesByProperty<
     'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft' | 'borderWidth'
   > & {
+    /** Nominal border-box height for inspection; does not emit visual styles. */
+    _boxHeight?: ElementHeightReference;
     borderRadius?: {
       rounded?: ScaleBySize | number;
       pill?: ScaleBySize | number;
@@ -240,7 +244,8 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
       'paddingBottom',
       'paddingLeft',
       'borderWidth',
-      'borderRadius'
+      'borderRadius',
+      '_boxHeight'
     ],
     palettes: [
       'boxColor',
@@ -340,6 +345,29 @@ function validatePositiveScaleMap(value: unknown, path: string, issues: string[]
 
   for (const [scale, leaf] of Object.entries(value)) {
     validateLeaf(leaf, `${path}.${scale}`);
+  }
+}
+
+function validateHeightReference(value: unknown, path: string, issues: string[]): void {
+  const validateNumber = (height: unknown, heightPath: string): void => {
+    if (typeof height !== 'number' || !Number.isFinite(height) || height <= 0) {
+      issues.push(`${heightPath}: expected finite number greater than 0`);
+    }
+  };
+
+  if (typeof value === 'number') {
+    validateNumber(value, path);
+    return;
+  }
+
+  if (!isRecord(value) || Object.keys(value).length === 0) {
+    issues.push(`${path}: expected positive number or non-empty fixed-size map`);
+    return;
+  }
+
+  validateAllowedKeys(value, elementSizeValues, path, issues);
+  for (const [size, height] of Object.entries(value)) {
+    validateNumber(height, `${path}.${size}`);
   }
 }
 
@@ -454,6 +482,9 @@ function validateElementContract(
       issues.push(`${path}.scales: expected object`);
     } else {
       validateAllowedKeys(value.scales, rules.scales, `${path}.scales`, issues);
+      if (rules.scales.includes('_boxHeight') && value.scales._boxHeight !== undefined) {
+        validateHeightReference(value.scales._boxHeight, `${path}.scales._boxHeight`, issues);
+      }
     }
   }
 

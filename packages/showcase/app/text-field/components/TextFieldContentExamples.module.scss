@@ -1,0 +1,46 @@
+.section,
+.card,
+.fields {
+  display: grid;
+  gap: 16px;
+  min-inline-size: 0;
+}
+
+.section h3,
+.section h4,
+.section p {
+  margin: 0;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  min-inline-size: 0;
+}
+
+.card {
+  align-content: start;
+}
+
+.message {
+  min-inline-size: 0;
+}
+
+.feedback {
+  min-block-size: 1.5em;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

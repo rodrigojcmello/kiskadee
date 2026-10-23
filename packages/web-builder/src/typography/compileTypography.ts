@@ -43,7 +43,8 @@ export type TypographyBuild = {
   usage: Record<TypographyProfileId, TypographyArtifactUsage[]>;
   expandElement(
     typography: ElementTypography,
-    scope: TypographyElementScope
+    scope: TypographyElementScope,
+    emitTextHeight?: boolean
   ): TypographyElementStyleKeys;
 };
 
@@ -208,7 +209,7 @@ export function createTypographyBuild(
     profileStyleKeys: byProfile,
     profiles: typography.profiles,
     usage,
-    expandElement(elementTypography, scope) {
+    expandElement(elementTypography, scope, emitTextHeight = false) {
       const scales: TypographyElementStyleKeys['scales'] = {};
       const decorations: string[] = [];
       const allFrames = Object.values(elementTypography).flatMap((assignment) =>
@@ -294,6 +295,17 @@ export function createTypographyBuild(
             })
           );
 
+          if (emitTextHeight) {
+            appendScaleKey(
+              scales,
+              size,
+              responsiveStyleKey({
+                ...keyParams,
+                propertyName: 'textHeight',
+                value: frame.profile.scales.textHeight
+              })
+            );
+          }
           const letterSpacing = normalizeLetterSpacing(frame.profile);
           if (letterSpacing !== undefined) {
             appendScaleKey(

@@ -82,5 +82,36 @@ is inert while the active treatment is `plain`.
 
 The defaults are `inline`, `leading`, `plain`, and `edge` when a preset omits the options.
 
+## Artwork dimensions
+
+Plain icon fitting uses the label's authored line height as the vertical contribution limit.
+Button `e2` retains typography ownership. SEP exposes its `textHeight` as `--k-txh`; when a
+typography profile is used, the Builder also retains the existing unitless line-height utility.
+SUP publishes the token-only utility under `e2.p.lh`, without copying the profile's other classes.
+The runtime attaches that projection and modifier `k-btn-e3a` to a plain `e3` with authored scales,
+even when no label is rendered. Absent projection means absent compensation, with no fallback.
+
+Structural CSS computes `min(0px, (textHeight - iconHeight) / 2)` as the icon's block margins.
+The viewport and artwork remain unchanged. This is derived structural geometry, not CSC: it does
+not combine independently authored spacing values. No size selector, nominal-height metadata,
+browser measurement, or JavaScript calculation participates. The label consumes its height token
+for legacy scale-based typography; profile-based line-height utilities remain in normal resolution.
+Surfaced icons keep their independent panel geometry and do not receive this modifier.
+
+`Button.Icon` consumes the Builder's existing width and height tokens, both resolved from one
+`iconSize` reference. Structural CSS fits direct SVG, `img`, and `picture > img` children into
+that viewport. Raster images use `object-fit: contain`; SVG artwork retains its own viewBox and
+aspect-ratio policy. Intrinsic image dimensions and SVG width/height attributes do not determine
+the slot size. Transparent margins within an asset remain part of that artwork.
+
+Direct font glyphs (text, `span`, or `i`) inherit the viewport height as their font size and use a
+unit line height. Consumers provide the font family, glyph and font loading; family-resolved
+glyphs remain supported. Font metrics can give different optical ink bounds even in equal boxes.
+Custom wrappers must forward this sizing contract to their artwork. Explicit consumer CSS or
+inline style overrides remain consumer-owned; the slot does not use `!important` to defeat them.
+
+The Showcase's Icon formats section compares one Google artwork as SVG, PNG, JPEG and WebP,
+alongside a direct Material Symbols font glyph. JPEG's opaque white canvas is an asset property.
+
 Icon-region treatments never choose a brand artwork presentation automatically. Consumers remain
 responsible for choosing `brand`, `mark`, `monochrome`, or another direct icon representation.

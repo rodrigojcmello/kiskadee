@@ -21,6 +21,7 @@ import {
   resolveRadiusClassName,
   resolveSchemaElementClassName
 } from '../../shared/class-resolution/classNames.ts';
+import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import type {
   ButtonElementName,
   ButtonGroupProps,
@@ -178,6 +179,10 @@ export function resolveButtonClassNames({
   const scaleKey = normalizeButtonScaleKey(scale ?? DEFAULT_BUTTON_SCALE);
   const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
   const e3HasSchemaScale = Boolean(e3?.s?.all || e3?.s?.[scaleKey]);
+  const iconLineHeight =
+    e3HasSchemaScale && !hasSurfacedIconTreatment
+      ? resolveStructuralUtilityProjectionClassName(e2, 'lh', scaleKey)
+      : '';
   const e4HasSchemaScale = Boolean(e4?.s?.all || e4?.s?.[scaleKey]);
   const isTerminalInteractionStatus = status === 'pending' || status === 'disabled';
 
@@ -243,6 +248,8 @@ export function resolveButtonClassNames({
         e3HasSchemaScale ? e3?.s?.all : undefined,
         classNames.e3,
         e3HasSchemaScale ? e3?.s?.[scaleKey] : undefined,
+        iconLineHeight,
+        iconLineHeight ? 'k-btn-e3a' : undefined,
         'k-btn-e3'
       ) ?? '',
     e4: hasSurfacedIconTreatment

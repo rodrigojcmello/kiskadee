@@ -18,9 +18,11 @@ type CreateFluent2MicrosoftForegroundsArgs = {
   c: Fluent2MicrosoftColorResolver;
 };
 
-const CHROMATIC_LOW_ALPHA = 68;
+const CHROMATIC_MEDIUM_ALPHA = 68;
+const CHROMATIC_LOW_ALPHA = 46;
 const CHROMATIC_LOWEST_ALPHA = 24;
-const CHROMATIC_ON_VIVID_LOW_ALPHA = 76;
+const CHROMATIC_ON_VIVID_MEDIUM_ALPHA = 76;
+const CHROMATIC_ON_VIVID_LOW_ALPHA = 58;
 const CHROMATIC_ON_VIVID_LOWEST_ALPHA = 40;
 const STANDARD_ON_VIVID_LIGHT_OFFSET = 8;
 const STANDARD_ON_VIVID_DARK_OFFSET = -2;
@@ -43,20 +45,27 @@ function createChromaticForegroundProfile(
 ): ForegroundProfile {
   const onSubtle = (theme: 'l' | 'd') => {
     const offset = theme === 'l' ? 0 : 8;
-    const medium = c.resolve('default', theme, referenceColor(role, 'vivid', offset));
+    const high = c.resolve('default', theme, referenceColor(role, 'vivid', offset));
 
     return {
-      medium: {
-        rest: medium,
+      high: {
+        rest: high,
         hover:
           theme === 'l'
             ? c.resolve('default', theme, referenceColor(role, 'vivid', offset + 1))
-            : medium,
+            : high,
         pressed:
           theme === 'l'
             ? c.resolve('default', theme, referenceColor(role, 'vivid', offset + 3))
-            : medium,
-        pending: applyVisibility(medium, FOREGROUND_PENDING_VISIBILITY)
+            : high,
+        pending: applyVisibility(high, FOREGROUND_PENDING_VISIBILITY)
+      },
+      medium: {
+        rest: c.resolve(
+          'default',
+          theme,
+          referenceColor(role, 'vivid', offset, CHROMATIC_MEDIUM_ALPHA)
+        )
       },
       low: {
         rest: c.resolve(
@@ -79,7 +88,14 @@ function createChromaticForegroundProfile(
       theme === 'light' ? STANDARD_ON_VIVID_LIGHT_OFFSET : STANDARD_ON_VIVID_DARK_OFFSET;
 
     return {
-      medium: { rest: c.resolve('default', 'l', referenceColor(role, 'subtle', offset)) },
+      high: { rest: c.resolve('default', 'l', referenceColor(role, 'subtle', offset)) },
+      medium: {
+        rest: c.resolve(
+          'default',
+          'l',
+          referenceColor(role, 'subtle', offset, CHROMATIC_ON_VIVID_MEDIUM_ALPHA)
+        )
+      },
       low: {
         rest: c.resolve(
           'default',
@@ -114,12 +130,19 @@ function createDeepChromaticForegroundProfile(
 ): ForegroundProfile {
   const onSubtle = (theme: 'l' | 'd') => {
     const tone = theme === 'l' ? DEEP_ON_SUBTLE_LIGHT_TONE : DEEP_ON_SUBTLE_DARK_TONE;
-    const medium = c.resolve('default', theme, exactColor(role, tone, 'global.foreground.deep'));
+    const high = c.resolve('default', theme, exactColor(role, tone, 'global.foreground.deep'));
 
     return {
+      high: {
+        rest: high,
+        pending: applyVisibility(high, FOREGROUND_PENDING_VISIBILITY)
+      },
       medium: {
-        rest: medium,
-        pending: applyVisibility(medium, FOREGROUND_PENDING_VISIBILITY)
+        rest: c.resolve(
+          'default',
+          theme,
+          exactColor(role, tone, 'global.foreground.deep', CHROMATIC_MEDIUM_ALPHA)
+        )
       },
       low: {
         rest: c.resolve(
@@ -139,12 +162,19 @@ function createDeepChromaticForegroundProfile(
   };
   const onVivid = () => {
     const offset = DEEP_ON_VIVID_OFFSET;
-    const medium = c.resolve('default', 'l', referenceColor(role, 'subtle', offset));
+    const high = c.resolve('default', 'l', referenceColor(role, 'subtle', offset));
 
     return {
+      high: {
+        rest: high,
+        pending: applyVisibility(high, FOREGROUND_PENDING_VISIBILITY)
+      },
       medium: {
-        rest: medium,
-        pending: applyVisibility(medium, FOREGROUND_PENDING_VISIBILITY)
+        rest: c.resolve(
+          'default',
+          'l',
+          referenceColor(role, 'subtle', offset, CHROMATIC_ON_VIVID_MEDIUM_ALPHA)
+        )
       },
       low: {
         rest: c.resolve(
@@ -174,86 +204,11 @@ function createDeepChromaticForegroundProfile(
   };
 }
 
-function createNeutralDeepForegroundProfile(c: Fluent2MicrosoftColorResolver): ForegroundProfile {
-  const onSubtle = (theme: 'l' | 'd') => {
-    const medium = c.resolve(
-      'default',
-      theme,
-      absoluteCap(primitive('black', 'v1'), theme === 'l' ? 'dark' : 'light')
-    );
-    const lower = c.resolve(
-      'default',
-      theme,
-      exactColor(
-        'neutral',
-        theme === 'l' ? DEEP_ON_SUBTLE_LIGHT_TONE : DEEP_ON_SUBTLE_DARK_TONE,
-        'global.foreground.deep'
-      )
-    );
-    const filledDisabled =
-      theme === 'l'
-        ? c.resolve('default', 'l', exactColor('neutral', 20, 'global.foreground.states', 82))
-        : c.resolve('default', 'd', exactColor('neutral', 35, 'global.foreground.states'));
-    const lowestDisabled =
-      theme === 'l'
-        ? c.resolve('default', 'l', exactColor('neutral', 16, 'global.foreground.states'))
-        : filledDisabled;
-
-    return {
-      medium: {
-        rest: medium,
-        hover: medium,
-        pressed: medium,
-        pending: applyVisibility(medium, FOREGROUND_PENDING_VISIBILITY)
-      },
-      low: {
-        rest: lower,
-        pending: applyVisibility(lower, FOREGROUND_PENDING_VISIBILITY),
-        disabled: filledDisabled
-      },
-      lowest: {
-        rest: applyVisibility(lower, CHROMATIC_LOWEST_ALPHA),
-        disabled: lowestDisabled
-      }
-    };
-  };
-  const onVivid = () => {
-    const medium = c.resolve('default', 'l', referenceColor('neutral', 'subtle', 4));
-    const disabled = c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light', 40));
-
-    return {
-      medium: {
-        rest: medium,
-        pending: applyVisibility(medium, FOREGROUND_PENDING_VISIBILITY),
-        disabled
-      },
-      low: {
-        rest: applyVisibility(medium, CHROMATIC_ON_VIVID_LOW_ALPHA),
-        disabled
-      },
-      lowest: {
-        rest: applyVisibility(medium, CHROMATIC_ON_VIVID_LOWEST_ALPHA),
-        disabled
-      }
-    };
-  };
-
-  return {
-    palettes: {
-      default: {
-        light: { onSubtle: onSubtle('l'), onVivid: onVivid() },
-        dark: { onSubtle: onSubtle('d'), onVivid: onVivid() },
-        darker: { onSubtle: onSubtle('d'), onVivid: onVivid() }
-      }
-    }
-  };
-}
-
 export function createFluent2MicrosoftForegrounds({
   c
 }: CreateFluent2MicrosoftForegroundsArgs): SchemaForegrounds {
   const lightOnSubtle = {
-    medium: (() => {
+    high: (() => {
       const rest = c.resolve('default', 'l', referenceColor('neutral', 'vivid'));
       return {
         rest,
@@ -262,11 +217,22 @@ export function createFluent2MicrosoftForegrounds({
         pending: applyVisibility(rest, FOREGROUND_PENDING_VISIBILITY)
       };
     })(),
-    low: { rest: c.resolve('default', 'l', referenceColor('neutral', 'vivid', -7)) },
-    lowest: { rest: c.resolve('default', 'l', referenceColor('neutral', 'vivid', -21)) }
+    medium: {
+      rest: c.resolve('default', 'l', referenceColor('neutral', 'vivid', -7)),
+      pending: applyVisibility(
+        c.resolve('default', 'l', referenceColor('neutral', 'vivid', -7)),
+        FOREGROUND_PENDING_VISIBILITY
+      ),
+      disabled: c.resolve('default', 'l', exactColor('neutral', 20, 'global.foreground.states', 82))
+    },
+    low: { rest: c.resolve('default', 'l', referenceColor('neutral', 'vivid', -14)) },
+    lowest: {
+      rest: c.resolve('default', 'l', referenceColor('neutral', 'vivid', -21)),
+      disabled: c.resolve('default', 'l', exactColor('neutral', 16, 'global.foreground.states'))
+    }
   } as const;
   const darkOnSubtle = {
-    medium: (() => {
+    high: (() => {
       const rest = c.resolve('default', 'd', referenceColor('neutral', 'vivid', 3));
       return {
         rest,
@@ -275,23 +241,49 @@ export function createFluent2MicrosoftForegrounds({
         pending: applyVisibility(rest, FOREGROUND_PENDING_VISIBILITY)
       };
     })(),
-    low: { rest: c.resolve('default', 'd', referenceColor('neutral', 'vivid', -2)) },
-    lowest: { rest: c.resolve('default', 'd', referenceColor('neutral', 'vivid', -11)) }
+    medium: {
+      rest: c.resolve('default', 'd', referenceColor('neutral', 'vivid', -2)),
+      pending: applyVisibility(
+        c.resolve('default', 'd', referenceColor('neutral', 'vivid', -2)),
+        FOREGROUND_PENDING_VISIBILITY
+      ),
+      disabled: c.resolve('default', 'd', exactColor('neutral', 35, 'global.foreground.states'))
+    },
+    low: { rest: c.resolve('default', 'd', referenceColor('neutral', 'vivid', -6)) },
+    lowest: {
+      rest: c.resolve('default', 'd', referenceColor('neutral', 'vivid', -11)),
+      disabled: c.resolve('default', 'd', exactColor('neutral', 35, 'global.foreground.states'))
+    }
   } as const;
   const onVivid = (theme: 'l' | 'd') => {
-    const medium = c.resolve('default', theme, absoluteCap(primitive('black', 'v1'), 'light'));
+    const high = c.resolve('default', theme, absoluteCap(primitive('black', 'v1'), 'light'));
+    const disabled = c.resolve(
+      'default',
+      theme,
+      absoluteCap(primitive('black', 'v1'), 'light', 40)
+    );
     return {
+      high: {
+        rest: high,
+        hover: high,
+        pressed: high,
+        pending: applyVisibility(high, FOREGROUND_PENDING_VISIBILITY),
+        disabled
+      },
       medium: {
-        rest: medium,
-        hover: medium,
-        pressed: medium,
-        pending: applyVisibility(medium, FOREGROUND_PENDING_VISIBILITY)
+        rest: c.resolve('default', theme, absoluteCap(primitive('black', 'v1'), 'light', 68)),
+        disabled
       },
       low: {
-        rest: c.resolve('default', theme, absoluteCap(primitive('black', 'v1'), 'light', 68))
+        rest: c.resolve(
+          'default',
+          theme,
+          absoluteCap(primitive('black', 'v1'), 'light', CHROMATIC_LOW_ALPHA)
+        )
       },
       lowest: {
-        rest: c.resolve('default', theme, absoluteCap(primitive('black', 'v1'), 'light', 24))
+        rest: c.resolve('default', theme, absoluteCap(primitive('black', 'v1'), 'light', 24)),
+        disabled
       }
     };
   };
@@ -316,8 +308,7 @@ export function createFluent2MicrosoftForegrounds({
               }
             }
           }
-        },
-        deep: createNeutralDeepForegroundProfile(c)
+        }
       },
       blue: {
         standard: createChromaticForegroundProfile(c, 'primary'),

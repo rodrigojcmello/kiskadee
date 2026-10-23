@@ -42,7 +42,12 @@ function validateFixedRecipes(value: unknown, path: string): void {
         `${path}.${key}: component sizes must be fixed; configure density instead of size breakpoints.`
       );
     }
-    validateFixedRecipes(child, `${path}.${key}`);
+    if (key === 'scales' && isRecord(child)) {
+      const { _boxHeight, ...renderedScales } = child;
+      validateFixedRecipes(renderedScales, `${path}.${key}`);
+    } else {
+      validateFixedRecipes(child, `${path}.${key}`);
+    }
   }
 }
 

@@ -10,6 +10,7 @@ import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-st
 import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsage.ts';
 import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { generateClassNamesMapSplit } from '../phase-5-generate-class-names-map/generateClassNamesMap.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { buildCardComponentArtifact } from './cardComponentArtifact.ts';
 
 const resolvedCard = resolveCardSurfaceSource(schema).components.card!;
@@ -75,10 +76,13 @@ describe('Card border pipeline', () => {
   });
 
   it('keeps Rest paint opt-in and all CardAction deltas in the regular palette', () => {
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys({
-      ...schema,
-      components: { card: resolvedCard }
-    });
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      {
+        ...schema,
+        components: { card: resolvedCard }
+      },
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const usage = mapStyleKeyUsage(styleKeys, {
       additionalStyleKeys: ['borderColor__#00000000']
     });

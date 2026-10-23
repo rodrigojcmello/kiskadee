@@ -51,7 +51,10 @@ describe('generateClassNamesMapSplit', () => {
       }
     } as unknown as Schema;
 
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const out = generateClassNamesMapSplit(
       styleKeys,
       {
@@ -119,7 +122,10 @@ describe('generateClassNamesMapSplit', () => {
       }
     } as unknown as Schema;
 
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const out = generateClassNamesMapSplit(
       styleKeys,
       {
@@ -203,7 +209,10 @@ describe('generateClassNamesMapSplit', () => {
       }
     } satisfies Schema;
 
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const out = generateClassNamesMapSplit(
       styleKeys,
       {
@@ -264,7 +273,10 @@ describe('generateClassNamesMapSplit', () => {
       }
     } as unknown as Schema;
 
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const out = generateClassNamesMapSplit(
       styleKeys,
       {
@@ -502,7 +514,10 @@ describe('generateClassNamesMapSplit', () => {
       }
     } satisfies Schema;
 
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const out = generateClassNamesMapSplit(
       styleKeys,
       {
@@ -556,7 +571,10 @@ describe('generateClassNamesMapSplit', () => {
       }
     } satisfies Schema;
 
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const out = generateClassNamesMapSplit(
       styleKeys,
       { 'boxColor__#ffffff': 'surface' },

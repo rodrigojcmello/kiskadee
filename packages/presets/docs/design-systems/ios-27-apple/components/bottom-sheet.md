@@ -45,8 +45,8 @@ positions use the established legacy `c` getter and the approved source mapping.
 | Source concept | Source Light / Dark | Lookup and generated mapping | Decision |
 | --- | --- | --- | --- |
 | `Backgrounds/Primary - Elevated` | `#ffffff` / `#1c1c1e` | Physical Light cap L0; exact Dark D5, both exact matches | Opaque Sheet surface |
-| `Labels/Primary` | `#000000` / `#ffffff` | Global `neutral.standard.<theme>.onSubtle.medium`; caps L100/D100 | Header and action text |
-| `Labels/Secondary` | `#3c3c43` 60% / `#ebebf5` 70% | Global `low`; L70 `#3d3d3f` 60% / D95 `#ebebee` 70% | Supporting text and group headings |
+| `Labels/Primary` | `#000000` / `#ffffff` | Global `neutral.standard.<theme>.onSubtle.high`; caps L100/D100 | Header and action text |
+| `Labels/Secondary` | `#3c3c43` 60% / `#ebebf5` 70% | Global `medium`; L70 `#3d3d3f` 60% / D95 `#ebebee` 70% | Supporting text and group headings |
 | `Labels/Tertiary` | Same source hues, 30% in both modes | Parent-state global `lowest`; L70/D95 at 30% | Disabled text; same source role reused by grabber |
 | `Fills/Secondary` | `#787880` 16% / `#787880` 32% | Exact L35 `#7b7b7e` 16% / D55 `#7a7a7c` 32% | Source-backed pill-action Rest fill |
 | `Fills/Primary` | `#787878` 20% / `#787880` 36% | Same promoted neutral L35/D55 at 20%/36% | Hover adaptation; next stronger semantic fill |

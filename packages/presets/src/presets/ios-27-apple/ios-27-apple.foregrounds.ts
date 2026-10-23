@@ -30,15 +30,19 @@ export function createIos27AppleForegrounds({
             theme,
             {
               onSubtle: {
-                medium: { rest: c('default', track, 'neutral', 100) },
-                low: {
+                high: { rest: c('default', track, 'neutral', 100) },
+                medium: {
                   rest: c('default', track, 'neutral', secondaryTone, theme === 'light' ? 60 : 70)
+                },
+                low: {
+                  rest: c('default', track, 'neutral', secondaryTone, theme === 'light' ? 45 : 50)
                 },
                 lowest: { rest: c('default', track, 'neutral', secondaryTone, 30) }
               },
               onVivid: {
-                medium: { rest: c('default', 'l', 'neutral', 0) },
-                low: { rest: c('default', 'l', 'neutral', 0, 80) },
+                high: { rest: c('default', 'l', 'neutral', 0) },
+                medium: { rest: c('default', 'l', 'neutral', 0, 80) },
+                low: { rest: c('default', 'l', 'neutral', 0, 65) },
                 lowest: { rest: c('default', 'l', 'neutral', 0, 50) }
               }
             }
@@ -62,13 +66,15 @@ export function createIos27AppleForegrounds({
             theme,
             {
               onSubtle: {
-                medium: { rest: c.ref('default', track, role, 'vivid', offset) },
-                low: { rest: c.ref('default', track, role, 'vivid', offset, 75) },
+                high: { rest: c.ref('default', track, role, 'vivid', offset) },
+                medium: { rest: c.ref('default', track, role, 'vivid', offset, 75) },
+                low: { rest: c.ref('default', track, role, 'vivid', offset, 57.5) },
                 lowest: { rest: c.ref('default', track, role, 'vivid', offset, 40) }
               },
               onVivid: {
-                medium: { rest: c.ref('default', 'l', role, 'subtle', -2) },
-                low: { rest: c.ref('default', 'l', role, 'subtle', -2, 80) },
+                high: { rest: c.ref('default', 'l', role, 'subtle', -2) },
+                medium: { rest: c.ref('default', 'l', role, 'subtle', -2, 80) },
+                low: { rest: c.ref('default', 'l', role, 'subtle', -2, 65) },
                 lowest: { rest: c.ref('default', 'l', role, 'subtle', -2, 50) }
               }
             }

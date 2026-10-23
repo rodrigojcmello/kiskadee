@@ -20,7 +20,12 @@ export function withTeamsPalettes<T>(base: T, teams: T): T {
       }
       continue;
     }
-    if (key === 'palettes' || key === 'contentSurfaceContext' || key === 'canonicalSurfaces') {
+    if (
+      key === 'palettes' ||
+      key === 'contentSurfaceContext' ||
+      key === 'contentRegionSurfaceContext' ||
+      key === 'canonicalSurfaces'
+    ) {
       const source = candidate[key] as Record<string, unknown> | undefined;
       if (source && 'default' in source) {
         result[key] = { ...(value as object), teams: source.default };

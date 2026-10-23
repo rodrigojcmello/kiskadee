@@ -93,7 +93,7 @@ export function CardComposition({ radius }: { radius: CardRadiusMode }) {
 
   if (!available)
     return (
-      <Text profile={profiles.body} emphasis="low">
+      <Text profile={profiles.body} emphasis="medium">
         This composition requires base, neutral/primary medium and vivid Card surfaces.
       </Text>
     );

@@ -3,9 +3,11 @@ import type {
   ComponentPropsWithoutRef,
   FocusEvent,
   HTMLAttributes,
+  HTMLInputTypeAttribute,
   KeyboardEvent,
   MouseEvent,
   ReactNode,
+  PointerEvent as ReactPointerEvent,
   Ref,
   RefObject
 } from 'react';
@@ -14,7 +16,9 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState
@@ -35,6 +39,8 @@ export type TextFieldValidationStatus = 'error' | 'warning';
 export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6';
 
 export type TextFieldStateName =
+  | 'hovered'
+  | 'pressed'
   | 'focused'
   | 'focusVisible'
   | 'filled'
@@ -100,6 +106,7 @@ type TextFieldContextValue = {
   value: string;
   setValue: (value: string) => void;
   inputRef: RefObject<HTMLInputElement | null>;
+  controlRef: RefObject<HTMLDivElement | null>;
   disabled: boolean | undefined;
   readOnly: boolean | undefined;
   required: boolean | undefined;
@@ -121,12 +128,144 @@ function useTextFieldContext() {
   return context;
 }
 
+export type UseHeadlessTextFieldActionsOptions = {
+  inputType?: HTMLInputTypeAttribute;
+  visibilityEnabled?: boolean;
+};
+
+export type UseHeadlessTextFieldActionsResult = {
+  value: string;
+  inputId: string;
+  disabled: boolean;
+  readOnly: boolean;
+  clear: () => void;
+  inputType: HTMLInputTypeAttribute;
+  visible: boolean;
+  toggleVisibility: () => void;
+};
+
+/** Connects optional actions to the existing field value and native input without exposing its context. */
+export function useHeadlessTextFieldActions({
+  inputType = 'text',
+  visibilityEnabled = false
+}: UseHeadlessTextFieldActionsOptions = {}): UseHeadlessTextFieldActionsResult {
+  const { value, inputId, disabled, readOnly, setValue, inputRef } = useTextFieldContext();
+  const canReveal = visibilityEnabled && inputType === 'password';
+  const [shown, setShown] = useState(false);
+  const visible = canReveal && shown;
+  const selectionRef = useRef<{
+    start: number;
+    end: number;
+    direction: 'forward' | 'backward' | 'none' | null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (canReveal) return;
+    setShown(false);
+    selectionRef.current = null;
+  }, [canReveal]);
+
+  useLayoutEffect(() => {
+    const selection = selectionRef.current;
+    selectionRef.current = null;
+    const input = inputRef.current;
+    if (!selection || !canReveal || !input || (input.type !== 'text' && input.type !== 'password'))
+      return;
+    input.setSelectionRange(selection.start, selection.end, selection.direction ?? undefined);
+  }, [canReveal, inputRef, visible]);
+
+  const clear = useCallback(() => {
+    if (disabled || readOnly || value.length === 0) return;
+    inputRef.current?.focus();
+    setValue('');
+  }, [disabled, inputRef, readOnly, setValue, value]);
+
+  const toggleVisibility = useCallback(() => {
+    if (!canReveal || disabled) return;
+    const input = inputRef.current;
+    selectionRef.current =
+      input?.selectionStart != null && input.selectionEnd != null
+        ? {
+            start: input.selectionStart,
+            end: input.selectionEnd,
+            direction: input.selectionDirection
+          }
+        : null;
+    setShown((current) => !current);
+  }, [canReveal, disabled, inputRef]);
+
+  return {
+    value,
+    inputId,
+    disabled: disabled === true,
+    readOnly: readOnly === true,
+    clear,
+    inputType: visible ? 'text' : inputType,
+    visible,
+    toggleVisibility
+  };
+}
+
 function mergeClassNames(...parts: Array<string | undefined | null | false>): string | undefined {
   const joined = parts.filter(Boolean).join(' ').trim();
   return joined.length > 0 ? joined : undefined;
 }
 
+const interactiveDescendantSelector = [
+  'button',
+  'input',
+  'select',
+  'textarea',
+  'a[href]',
+  'area[href]',
+  'summary',
+  'label',
+  'audio[controls]',
+  'video[controls]',
+  '[tabindex]',
+  '[contenteditable]:not([contenteditable="false"])',
+  ...[
+    'button',
+    'checkbox',
+    'combobox',
+    'link',
+    'listbox',
+    'menuitem',
+    'menuitemcheckbox',
+    'menuitemradio',
+    'option',
+    'radio',
+    'searchbox',
+    'slider',
+    'spinbutton',
+    'switch',
+    'tab',
+    'textbox',
+    'treeitem'
+  ].map((role) => `[role~="${role}"]`)
+].join(',');
+
+function isTextFieldSurfaceTarget(
+  control: HTMLElement | null,
+  input: HTMLInputElement | null,
+  target: EventTarget | null
+): boolean {
+  if (!control || !(target instanceof Node) || !control.contains(target)) return false;
+  if (target === input) return true;
+  const interactiveTarget =
+    target instanceof Element ? target.closest(interactiveDescendantSelector) : null;
+  return (
+    !interactiveTarget || interactiveTarget === control || !control.contains(interactiveTarget)
+  );
+}
+
 const textFieldDataAttributeProjections = {
+  hovered: {
+    attribute: 'data-hovered'
+  },
+  pressed: {
+    attribute: 'data-pressed'
+  },
   focused: {
     attribute: 'data-focused'
   },
@@ -174,6 +313,14 @@ function TextFieldRoot({
   required,
   validationStatus,
   message,
+  onPointerEnter,
+  onPointerLeave,
+  onPointerOver,
+  onPointerOut,
+  onPointerDown,
+  onPointerUp,
+  onPointerCancel,
+  onBlurCapture,
   ...rootProps
 }: TextFieldRootProps) {
   const generatedId = useId();
@@ -183,11 +330,165 @@ function TextFieldRoot({
   const resolvedValue = isControlled ? value : uncontrolledValue;
   const [focused, setFocused] = useState(false);
   const [focusVisible, setFocusVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const pressedPointerId = useRef<number | null>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const controlRef = useRef<HTMLDivElement | null>(null);
+  const isTerminal = disabled === true || readOnly === true;
   const { target: stateProjectionTarget = 'e1', ...stateProjectionOptions } = stateProjection ?? {};
+
+  const clearPressed = useCallback(() => {
+    pressedPointerId.current = null;
+    setPressed(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isTerminal) return;
+    setHovered(false);
+    clearPressed();
+  }, [clearPressed, isTerminal]);
+
+  useEffect(() => {
+    if (!hovered && !pressed) return;
+    const root = rootRef.current;
+    const view = root?.ownerDocument.defaultView;
+    if (!root || !view) return;
+
+    const handlePointerEnd = (event: PointerEvent) => {
+      if (pressedPointerId.current !== event.pointerId) return;
+      clearPressed();
+      if (
+        event.type === 'pointercancel' ||
+        !(event.target instanceof Node) ||
+        !controlRef.current?.contains(event.target)
+      ) {
+        setHovered(false);
+      }
+    };
+    const handleWindowBlur = () => {
+      setHovered(false);
+      clearPressed();
+    };
+    view.addEventListener('pointerup', handlePointerEnd, true);
+    view.addEventListener('pointercancel', handlePointerEnd, true);
+    view.addEventListener('blur', handleWindowBlur);
+    return () => {
+      view.removeEventListener('pointerup', handlePointerEnd, true);
+      view.removeEventListener('pointercancel', handlePointerEnd, true);
+      view.removeEventListener('blur', handleWindowBlur);
+    };
+  }, [clearPressed, hovered, pressed]);
+
+  const handlePointerEnter = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      onPointerEnter?.(event);
+      if (
+        !event.defaultPrevented &&
+        !isTerminal &&
+        event.target instanceof Node &&
+        controlRef.current?.contains(event.target)
+      ) {
+        setHovered(event.pointerType === 'mouse' || event.pointerType === 'pen');
+      }
+    },
+    [isTerminal, onPointerEnter]
+  );
+  const handlePointerOver = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      onPointerOver?.(event);
+      if (
+        event.defaultPrevented ||
+        isTerminal ||
+        !(event.target instanceof Node) ||
+        !event.currentTarget.contains(event.target)
+      )
+        return;
+      setHovered(
+        controlRef.current?.contains(event.target) === true &&
+          (event.pointerType === 'mouse' || event.pointerType === 'pen')
+      );
+    },
+    [isTerminal, onPointerOver]
+  );
+  const handlePointerOut = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      onPointerOut?.(event);
+      if (
+        !(event.target instanceof Node) ||
+        !event.currentTarget.contains(event.target) ||
+        (event.relatedTarget instanceof Node &&
+          controlRef.current?.contains(event.relatedTarget)) ||
+        (pressedPointerId.current !== null && pressedPointerId.current !== event.pointerId)
+      )
+        return;
+      setHovered(false);
+      clearPressed();
+    },
+    [clearPressed, onPointerOut]
+  );
+  const handlePointerLeave = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      onPointerLeave?.(event);
+      if (
+        !(event.target instanceof Node) ||
+        !event.currentTarget.contains(event.target) ||
+        (pressedPointerId.current !== null && pressedPointerId.current !== event.pointerId)
+      )
+        return;
+      setHovered(false);
+      clearPressed();
+    },
+    [clearPressed, onPointerLeave]
+  );
+  const handlePointerDown = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      onPointerDown?.(event);
+      if (event.pointerType === 'touch') setHovered(false);
+      if (
+        event.defaultPrevented ||
+        isTerminal ||
+        event.button !== 0 ||
+        event.isPrimary === false ||
+        (pressedPointerId.current !== null && pressedPointerId.current !== event.pointerId) ||
+        !isTextFieldSurfaceTarget(controlRef.current, inputRef.current, event.target)
+      ) {
+        return;
+      }
+      pressedPointerId.current = event.pointerId;
+      setPressed(true);
+    },
+    [isTerminal, onPointerDown]
+  );
+  const handlePointerUp = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      onPointerUp?.(event);
+      if (pressedPointerId.current === event.pointerId) clearPressed();
+    },
+    [clearPressed, onPointerUp]
+  );
+  const handlePointerCancel = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      onPointerCancel?.(event);
+      if (pressedPointerId.current !== event.pointerId) return;
+      setHovered(false);
+      clearPressed();
+    },
+    [clearPressed, onPointerCancel]
+  );
+  const handleBlurCapture = useCallback(
+    (event: FocusEvent<HTMLDivElement>) => {
+      onBlurCapture?.(event);
+      if (event.target === inputRef.current && event.relatedTarget !== null) clearPressed();
+    },
+    [clearPressed, onBlurCapture]
+  );
 
   const projectionStates = useMemo<TextFieldProjectionStates>(
     () => ({
+      hovered: hovered && !pressed && !isTerminal,
+      pressed: pressed && !isTerminal,
       focused,
       focusVisible: focused && focusVisible,
       filled: resolvedValue.length > 0,
@@ -196,7 +497,17 @@ function TextFieldRoot({
       invalid: validationStatus === 'error',
       validationStatus
     }),
-    [disabled, focusVisible, focused, readOnly, resolvedValue, validationStatus]
+    [
+      disabled,
+      focusVisible,
+      focused,
+      hovered,
+      isTerminal,
+      pressed,
+      readOnly,
+      resolvedValue,
+      validationStatus
+    ]
   );
 
   const projectedSlotProps = useStateProjection<TextFieldElementName, TextFieldStateName>({
@@ -247,6 +558,7 @@ function TextFieldRoot({
       value: resolvedValue,
       setValue,
       inputRef,
+      controlRef,
       disabled,
       readOnly,
       required,
@@ -268,6 +580,7 @@ function TextFieldRoot({
       resolvedValue,
       setValue,
       inputRef,
+      controlRef,
       slotProps,
       validationStatus
     ]
@@ -276,7 +589,21 @@ function TextFieldRoot({
 
   return (
     <TextFieldContext.Provider value={contextValue}>
-      <div {...rootSlotProps} className={rootClassName} {...rootProps}>
+      <div
+        {...rootSlotProps}
+        {...rootProps}
+        ref={rootRef}
+        data-text-field-root=""
+        className={rootClassName}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        onBlurCapture={handleBlurCapture}
+      >
         {children}
       </div>
     </TextFieldContext.Provider>
@@ -315,9 +642,18 @@ const TextFieldControl = forwardRef<HTMLDivElement, TextFieldControlProps>(
         onClick?.(event);
 
         const inputElement = inputRef.current;
-        if (!inputElement || event.defaultPrevented || disabled || event.target === inputElement) {
+        if (
+          !inputElement ||
+          event.defaultPrevented ||
+          disabled ||
+          event.target === inputElement ||
+          !(event.target instanceof Node) ||
+          !event.currentTarget.contains(event.target)
+        ) {
           return;
         }
+
+        if (!isTextFieldSurfaceTarget(event.currentTarget, inputElement, event.target)) return;
 
         inputElement.focus();
       },
@@ -329,10 +665,14 @@ const TextFieldControl = forwardRef<HTMLDivElement, TextFieldControlProps>(
       // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard access remains owned by the native input.
       <div
         {...slotProps}
-        ref={ref}
+        ref={(node) => {
+          context.controlRef.current = node;
+          assignRef(ref, node);
+        }}
         className={mergeClassNames(slotClassName, className)}
         onClick={handleClick}
         {...props}
+        data-text-field-control=""
       >
         {children}
       </div>

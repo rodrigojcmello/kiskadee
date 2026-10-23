@@ -1,5 +1,6 @@
 import type { Schema, StyleKeyByElement } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { buildScopedToneMetadataKey } from './colors/convertElementColorsToStyleKeys.ts';
 import { convertElementSchemaToStyleKeys } from './convertElementSchemaToStyleKeys.ts';
 
@@ -15,6 +16,12 @@ function createSchema(components: Schema['components'], global?: Schema['global'
     components
   };
 }
+
+it('rejects a missing emission policy before lowering a JavaScript caller schema', () => {
+  expect(() => convertElementSchemaToStyleKeys(createSchema({}), undefined as never)).toThrow(
+    'An explicit Web style-emission policy is required.'
+  );
+});
 
 describe('convertElementSchemaToStyleKeys', () => {
   it('rejects competing local and catalog shadow recipes on the same element', () => {
@@ -44,9 +51,9 @@ describe('convertElementSchemaToStyleKeys', () => {
       }
     );
 
-    expect(() => convertElementSchemaToStyleKeys(schema)).toThrow(
-      'button.e1 declares both element and component shadow recipes'
-    );
+    expect(() =>
+      convertElementSchemaToStyleKeys(schema, DEFAULT_WEB_STYLE_EMISSION_POLICY)
+    ).toThrow('button.e1 declares both element and component shadow recipes');
   });
 
   it('rejects a component shadow recipe whose global catalog is missing', () => {
@@ -56,9 +63,9 @@ describe('convertElementSchemaToStyleKeys', () => {
         elements: { e1: { name: 'button' } }
       }
     });
-    expect(() => convertElementSchemaToStyleKeys(schema)).toThrow(
-      'button.e1 references shadow without global.effects.shadow'
-    );
+    expect(() =>
+      convertElementSchemaToStyleKeys(schema, DEFAULT_WEB_STYLE_EMISSION_POLICY)
+    ).toThrow('button.e1 references shadow without global.effects.shadow');
   });
 
   it('keeps Dropdown presence metadata out of style keys', () => {
@@ -88,7 +95,10 @@ describe('convertElementSchemaToStyleKeys', () => {
       }
     );
 
-    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
 
     expect(JSON.stringify(styleKeys)).not.toContain('presence');
     expect(JSON.stringify(styleKeys)).not.toContain('fade-translate');
@@ -141,7 +151,10 @@ describe('convertElementSchemaToStyleKeys', () => {
       }
     });
 
-    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const button = styleKeys.button as Record<string, StyleKeyByElement>;
     const e1 = button.e1;
 
@@ -211,7 +224,10 @@ describe('convertElementSchemaToStyleKeys', () => {
       }
     );
 
-    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const tabs = styleKeys.tabs as Record<string, Record<string, StyleKeyByElement>>;
 
     expect(tabs.line.e3.decorations).toEqual(['textFont__body', 'textWeight__medium']);
@@ -267,7 +283,10 @@ describe('convertElementSchemaToStyleKeys', () => {
       }
     });
 
-    const { toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema);
+    const { toneMetadataByPalette } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const metadataKey = buildScopedToneMetadataKey(
       {
         componentName: 'button',
@@ -308,7 +327,10 @@ describe('convertElementSchemaToStyleKeys', () => {
       }
     });
 
-    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const button = styleKeys.button as Record<string, StyleKeyByElement>;
 
     expect(button.e1.effects).toEqual({
@@ -348,7 +370,10 @@ describe('convertElementSchemaToStyleKeys', () => {
       }
     );
 
-    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const separator = styleKeys.separator as Record<string, StyleKeyByElement>;
 
     expect(separator.e1.scales).toEqual({ 's:all': ['boxWidth__1'] });

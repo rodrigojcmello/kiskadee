@@ -28,6 +28,19 @@ export type WebStructuralUtilityProjectionRegistry = {
 export const DEFAULT_WEB_STRUCTURAL_UTILITY_PROJECTIONS = {
   projections: [
     {
+      id: 'button-icon-line-height',
+      artifactKey: 'lh',
+      source: {
+        component: 'button',
+        element: 'e2',
+        channel: 'scales',
+        property: 'textHeight',
+        optional: true
+      },
+      target: { component: 'button', element: 'e2' },
+      retainSource: true
+    },
+    {
       id: 'button-group-divider-thickness',
       artifactKey: 'gd',
       source: {

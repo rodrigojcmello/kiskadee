@@ -20,8 +20,8 @@ export function createIos27AppleBottomSheetSchema({
   const scrim = { onSubtle: scrimColor, onVivid: scrimColor };
   const createTheme = (theme: ThemeName) => {
     const track = theme === 'light' ? 'l' : 'd';
-    const neutralText = fg(`neutral.standard.${theme}.onSubtle.medium`);
-    const secondaryText = fg(`neutral.standard.${theme}.onSubtle.low`);
+    const neutralText = fg(`neutral.standard.${theme}.onSubtle.high`);
+    const secondaryText = fg(`neutral.standard.${theme}.onSubtle.medium`);
     const disabledText = fg.parentState(`neutral.standard.${theme}.onSubtle.lowest`);
     const textColor = {
       neutral: { medium: { rest: neutralText, disabled: disabledText } },

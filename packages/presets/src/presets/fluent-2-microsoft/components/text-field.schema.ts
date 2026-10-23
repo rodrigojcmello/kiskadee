@@ -1,4 +1,10 @@
-import type { Color, Schema, TextFieldElements } from '@kiskadee/core';
+import {
+  type Color,
+  type ContentSurfaceContextMap,
+  fg,
+  type Schema,
+  type TextFieldElements
+} from '@kiskadee/core';
 import type { Fluent2MicrosoftColorResolver } from '../fluent-2-microsoft.color.ts';
 import {
   createFieldVisualRecipe,
@@ -54,6 +60,8 @@ export function createFluent2MicrosoftTextFieldSchema({
     } = createFieldVisualRecipe(c, theme, vivid);
     const semantic = (intent: Intent) =>
       intent === 'error' ? error : intent === 'warning' ? warning : brand;
+    // A surfaced content region paints its own on-subtle surface in either ambient context.
+    const passiveFrameRecipe = createFieldVisualRecipe(c, theme);
     const text = (rest: Color, disabled = disabledText) =>
       palette({
         textColor: intents(() => ({ rest, disabled: ref(disabled) }))
@@ -77,6 +85,52 @@ export function createFluent2MicrosoftTextFieldSchema({
       // Filled shells retain Card's on-subtle content; external labels/messages stay on-vivid.
       const filledVivid = vivid && (borderless || floating);
       const inputForeground = filledVivid ? onSurfaceForeground : foreground;
+      const passiveTextColors = Object.fromEntries(
+        (['neutral', 'error', 'warning'] as const).map((intent) => [
+          intent,
+          {
+            lowest: {
+              rest:
+                intent === 'neutral'
+                  ? filledVivid
+                    ? neutral(dark ? 80 : 50)
+                    : underline
+                  : semantic(intent)
+            },
+            medium: {
+              rest:
+                intent === 'neutral'
+                  ? passiveFrameRecipe.underline
+                  : intent === 'error'
+                    ? fg(`red.deep.${theme}.onSubtle.high`)
+                    : fg(`orange.deep.${theme}.onSubtle.high`)
+            }
+          }
+        ])
+      );
+      const passivePalette = palette({ textColor: passiveTextColors });
+      const iconPalette = palette({
+        textColor: Object.fromEntries(
+          (['neutral', 'error', 'warning'] as const).map((intent) => [
+            intent,
+            {
+              ...passiveTextColors[intent],
+              ...(intent === 'neutral'
+                ? Object.fromEntries(
+                    (['lowest', 'medium'] as const).map((emphasis) => [
+                      emphasis,
+                      {
+                        rest: vivid
+                          ? fg('neutral.standard.light.onVivid.medium')
+                          : neutral(dark ? 75 : 40)
+                      }
+                    ])
+                  )
+                : {})
+            }
+          ])
+        )
+      });
       const underlined = mode === 'underline';
       const height = floating ? sizes(0, 40, 48) : sizes(24, 32, 40);
       const background =
@@ -208,6 +262,47 @@ export function createFluent2MicrosoftTextFieldSchema({
           scales: { marginTop: 4 },
           palettes: messagePalette
         },
+        e8: {
+          name: 'content-region',
+          scales: {
+            paddingLeft: sizes(8, 8, 8),
+            marginRight: sizes(8, 8, 8),
+            borderWidth: 1
+          },
+          palettes: palette(
+            Object.fromEntries(
+              (['boxColor', 'borderColor'] as const).map((property) => [
+                property,
+                Object.fromEntries(
+                  (['neutral', 'error', 'warning'] as const).map((intent) => [
+                    intent,
+                    {
+                      lowest: { rest: transparent },
+                      medium: {
+                        rest:
+                          property === 'boxColor'
+                            ? passiveFrameRecipe.borderlessSurface
+                            : passiveFrameRecipe.outlineStroke
+                      }
+                    }
+                  ])
+                )
+              ])
+            )
+          )
+        },
+        e9: {
+          name: 'icon',
+          iconSize: floating
+            ? { 's:md:1': 's:md:1', 's:lg:1': 's:lg:1' }
+            : { 's:sm:1': 's:sm:1', 's:md:1': 's:md:1', 's:lg:1': 's:lg:1' },
+          palettes: iconPalette
+        },
+        e10: {
+          name: 'text',
+          typography,
+          palettes: passivePalette
+        },
         ...(!floating
           ? {
               e6: {
@@ -253,7 +348,7 @@ export function createFluent2MicrosoftTextFieldSchema({
     const dark = darkElements(mode);
     const lightVivid = lightVividElements(mode);
     const darkVivid = darkVividElements(mode);
-    for (const key of ['e2', 'e3', 'e4', 'e5', 'e6', 'e7'] as const) {
+    for (const key of ['e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'e9', 'e10'] as const) {
       const target = light[key];
       const darkPalette = dark[key]?.palettes?.default?.dark;
       const darkerPalette = darker[key]?.palettes?.default?.darker;
@@ -277,6 +372,27 @@ export function createFluent2MicrosoftTextFieldSchema({
     }
     return light;
   };
+  const contentSurfaceContext = (filled: boolean, region = false): ContentSurfaceContextMap => ({
+    default: Object.fromEntries(
+      ['light', 'dark', 'darker'].map((theme) => [
+        theme,
+        Object.fromEntries(
+          ['onSubtle', 'onVivid'].map((context) => [
+            context,
+            Object.fromEntries(
+              ['neutral', 'error', 'warning'].map((intent) => [
+                intent,
+                {
+                  ...(region ? { lowest: { rest: 'inherit' } } : {}),
+                  medium: { rest: filled ? 'onSubtle' : 'inherit' }
+                }
+              ])
+            )
+          ])
+        )
+      ])
+    )
+  });
 
   return {
     options: {
@@ -290,14 +406,20 @@ export function createFluent2MicrosoftTextFieldSchema({
         options: { mode: 'outline', labelPlacement: 'top' },
         modes: {
           outline: {
+            contentSurfaceContext: contentSurfaceContext(false),
+            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'none', pill: 'radius' } },
             elements: elements('outline')
           },
           underline: {
+            contentSurfaceContext: contentSurfaceContext(false),
+            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'none', pill: 'none' } },
             elements: elements('underline')
           },
           borderless: {
+            contentSurfaceContext: contentSurfaceContext(true),
+            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'none', pill: 'input-start' } },
             elements: elements('borderless')
           }
@@ -307,10 +429,14 @@ export function createFluent2MicrosoftTextFieldSchema({
         options: { mode: 'notched' },
         modes: {
           notched: {
+            contentSurfaceContext: contentSurfaceContext(true),
+            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: { labelOffset: { square: 'none', rounded: 'radius', pill: 'input-start' } },
             elements: elements('notched')
           },
           inside: {
+            contentSurfaceContext: contentSurfaceContext(true),
+            contentRegionSurfaceContext: contentSurfaceContext(true, true),
             options: {
               labelOffset: { square: 'input-start', rounded: 'input-start', pill: 'schema' }
             },

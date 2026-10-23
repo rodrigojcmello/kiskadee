@@ -19,6 +19,7 @@ describe('Text component contract', () => {
 
     expect(
       validateTextComponentContract({
+        options: { emphasis: 'high' },
         elements: {
           e1: {
             name: 'foreground',
@@ -31,6 +32,7 @@ describe('Text component contract', () => {
 
   it('rejects extra elements, authored palettes, semantic intents, and black', () => {
     const issues = validateTextComponentContract({
+      options: { emphasis: 'high' },
       elements: {
         e1: {
           name: 'foreground',
@@ -58,6 +60,7 @@ describe('Text component contract', () => {
   it('keeps neutral mandatory even when chromatic foregrounds are published', () => {
     expect(
       validateTextComponentContract({
+        options: { emphasis: 'high' },
         elements: {
           e1: {
             name: 'foreground',
@@ -66,5 +69,52 @@ describe('Text component contract', () => {
         }
       })
     ).toContain('components.text.elements.e1.foreground.neutral: required reference');
+  });
+
+  it('requires an authored default and rejects unknown Text options', () => {
+    const component = {
+      elements: {
+        e1: {
+          name: 'foreground',
+          foreground: {
+            neutral: { family: 'neutral', profile: 'standard' }
+          }
+        }
+      }
+    };
+    expect(validateTextComponentContract(component)).toContain(
+      'components.text.options: expected object'
+    );
+    expect(
+      validateTextComponentContract({
+        ...component,
+        options: { emphasis: 'highest', color: 'red' }
+      })
+    ).toEqual(
+      expect.arrayContaining([
+        'components.text.options.emphasis: expected high, medium, low, or lowest',
+        'components.text.options.color: unrecognized key'
+      ])
+    );
+    expect(validateTextComponentContract({ ...component, options: { emphasis: 'low' } })).toEqual(
+      []
+    );
+  });
+
+  it('rejects the neutral-deep public alias', () => {
+    expect(
+      validateTextComponentContract({
+        options: { emphasis: 'high' },
+        elements: {
+          e1: {
+            name: 'foreground',
+            foreground: {
+              neutral: { family: 'neutral', profile: 'standard' },
+              'neutral-deep': { family: 'neutral', profile: 'standard' }
+            }
+          }
+        }
+      })
+    ).toContain('components.text.elements.e1.foreground.neutral-deep: unrecognized key');
   });
 });

@@ -1,3 +1,5 @@
+@use '../TextField.content' as text-field;
+
 /*
  * TextField structural branch registry:
  * a = floating / notched
@@ -33,6 +35,9 @@
  * Owns the standalone label row that sits above the outlined control shell.
  */
 .k-txf-e2-b {
+  margin-inline-start: var(--k-mgl);
+  padding-inline-start: var(--k-pdl);
+  padding-inline-end: var(--k-pdr);
   display: block;
   cursor: default;
   user-select: none;
@@ -67,6 +72,7 @@
  * Owns the alternate label style used when the standard field is laid out inline.
  */
 .k-txf-e7-b {
+  padding-inline-end: var(--k-pdr);
   display: block;
   cursor: default;
   user-select: none;
@@ -239,9 +245,9 @@
 
 /*
  * element indicator / e6
- * Native pressing expands the indicator without changing the active mode or terminal states.
+ * Input-owned pressing expands the indicator without changing the mode or terminal states.
  */
-.k-txf-e1-b.-i.-n.-a:not(.-d):not(.-r):active .k-txf-e6-b {
+.k-txf-e1-b.-i.-p.-a:not(.-d):not(.-r) .k-txf-e6-b {
   block-size: calc(var(--k-focus-width) * 1px);
 }
 
@@ -285,3 +291,5 @@
     transition: none;
   }
 }
+
+@include text-field.content('b');

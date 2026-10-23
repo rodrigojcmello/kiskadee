@@ -14,6 +14,8 @@ import { ClipboardIcon } from '@phosphor-icons/react/Clipboard';
 import { DotIcon } from '@phosphor-icons/react/Dot';
 import { DotsSixVerticalIcon } from '@phosphor-icons/react/DotsSixVertical';
 import { EnvelopeSimpleIcon } from '@phosphor-icons/react/EnvelopeSimple';
+import { EyeIcon } from '@phosphor-icons/react/Eye';
+import { EyeSlashIcon } from '@phosphor-icons/react/EyeSlash';
 import { FolderIcon } from '@phosphor-icons/react/Folder';
 import { GearIcon } from '@phosphor-icons/react/Gear';
 import { GitBranchIcon } from '@phosphor-icons/react/GitBranch';
@@ -23,6 +25,7 @@ import { LinkIcon } from '@phosphor-icons/react/Link';
 import { ListIcon } from '@phosphor-icons/react/List';
 import { ListBulletsIcon } from '@phosphor-icons/react/ListBullets';
 import { ListNumbersIcon } from '@phosphor-icons/react/ListNumbers';
+import { LockSimpleIcon } from '@phosphor-icons/react/LockSimple';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react/MagnifyingGlass';
 import { MinusIcon } from '@phosphor-icons/react/Minus';
 import { MoonIcon } from '@phosphor-icons/react/Moon';
@@ -75,6 +78,8 @@ const glyphClipboardIcon = createSvgGlyph(ClipboardIcon, {"size":"1em","weight":
 const glyphDotIcon = createSvgGlyph(DotIcon, {"size":"1em","weight":"regular"});
 const glyphDotsSixVerticalIcon = createSvgGlyph(DotsSixVerticalIcon, {"size":"1em","weight":"regular"});
 const glyphEnvelopeSimpleIcon = createSvgGlyph(EnvelopeSimpleIcon, {"size":"1em","weight":"regular"});
+const glyphEyeIcon = createSvgGlyph(EyeIcon, {"size":"1em","weight":"regular"});
+const glyphEyeSlashIcon = createSvgGlyph(EyeSlashIcon, {"size":"1em","weight":"regular"});
 const glyphFolderIcon = createSvgGlyph(FolderIcon, {"size":"1em","weight":"regular"});
 const glyphGearIcon = createSvgGlyph(GearIcon, {"size":"1em","weight":"regular"});
 const glyphGitBranchIcon = createSvgGlyph(GitBranchIcon, {"size":"1em","weight":"regular"});
@@ -84,6 +89,7 @@ const glyphLinkIcon = createSvgGlyph(LinkIcon, {"size":"1em","weight":"regular"}
 const glyphListBulletsIcon = createSvgGlyph(ListBulletsIcon, {"size":"1em","weight":"regular"});
 const glyphListIcon = createSvgGlyph(ListIcon, {"size":"1em","weight":"regular"});
 const glyphListNumbersIcon = createSvgGlyph(ListNumbersIcon, {"size":"1em","weight":"regular"});
+const glyphLockSimpleIcon = createSvgGlyph(LockSimpleIcon, {"size":"1em","weight":"regular"});
 const glyphMagnifyingGlassIcon = createSvgGlyph(MagnifyingGlassIcon, {"size":"1em","weight":"regular"});
 const glyphMinusIcon = createSvgGlyph(MinusIcon, {"size":"1em","weight":"regular"});
 const glyphMoonIcon = createSvgGlyph(MoonIcon, {"size":"1em","weight":"regular"});
@@ -137,6 +143,8 @@ const glyphMap = {
     "clipboard-check": glyphClipboardIcon,
     "close": glyphXIcon,
     "dashboard": glyphSquaresFourIcon,
+    "eye": { glyph: glyphEyeIcon, direction: 'fixed' },
+    "eye-off": { glyph: glyphEyeSlashIcon, direction: 'fixed' },
     "folder-move": glyphFolderIcon,
     "frown": glyphSmileySadIcon,
     "git-branch": glyphGitBranchIcon,
@@ -148,6 +156,7 @@ const glyphMap = {
     "list": glyphListBulletsIcon,
     "list-ordered": glyphListNumbersIcon,
     "loader-circle": glyphCircleNotchIcon,
+    "lock": { glyph: glyphLockSimpleIcon, direction: 'fixed' },
     "mail": glyphEnvelopeSimpleIcon,
     "menu": glyphListIcon,
     "minus": glyphMinusIcon,

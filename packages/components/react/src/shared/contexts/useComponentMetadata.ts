@@ -11,12 +11,13 @@ const isMetadata = (value: unknown): value is ComponentMetadata =>
   Boolean(value && typeof value === 'object' && 'component' in value);
 
 export function useComponentMetadata<K extends string>(
-  component: K
+  component: K,
+  options: { preservePrevious?: boolean } = {}
 ): ComponentMetadata<K> | undefined {
   const result = useLoadedComponentArtifact({
     componentName: component,
     isArtifact: isMetadata,
-    preservePrevious: true
+    preservePrevious: options.preservePrevious ?? true
   });
   return (result.currentArtifact ?? result.previousArtifact) as ComponentMetadata<K> | undefined;
 }

@@ -60,7 +60,9 @@ function createForegroundCoordinate({
   emphasis: TextEmphasis;
   state?: ForegroundState;
 }): ForegroundCoordinate {
-  return `${family}.${profile}.${theme}.${surfaceContext}.${emphasis}${state ? `.${state}` : ''}`;
+  return state
+    ? `${family}.${profile}.${theme}.${surfaceContext}.${emphasis}.${state}`
+    : `${family}.${profile}.${theme}.${surfaceContext}.${emphasis}`;
 }
 
 function foregroundReference(
@@ -259,40 +261,40 @@ export function createFluent2MicrosoftButtonSchema({
       intent === 'neutral' && theme !== 'light'
         ? {
             family: 'neutral' as const,
-            profile: 'deep' as const,
+            profile: 'standard' as const,
             theme: 'light' as const,
             surfaceContext: 'onSubtle' as const,
-            emphasis: 'medium' as const
+            emphasis: 'high' as const
           }
         : {
             family: 'neutral' as const,
             profile: 'standard' as const,
             theme: 'light' as const,
             surfaceContext: 'onVivid' as const,
-            emphasis: 'medium' as const
+            emphasis: 'high' as const
           };
     const lower =
       intent === 'neutral'
         ? {
             family,
-            profile: 'deep' as const,
+            profile: 'standard' as const,
             theme,
             surfaceContext: 'onSubtle' as const,
-            emphasis: 'low' as const
+            emphasis: 'medium' as const
           }
         : {
             family,
             profile: 'deep' as const,
             theme,
             surfaceContext: 'onSubtle' as const,
-            emphasis: 'medium' as const
+            emphasis: 'high' as const
           };
     const disabled = {
       family: 'neutral' as const,
-      profile: 'deep' as const,
+      profile: 'standard' as const,
       theme,
       surfaceContext: 'onSubtle' as const,
-      emphasis: 'low' as const
+      emphasis: 'medium' as const
     };
     const lowestDisabled = { ...disabled, emphasis: 'lowest' as const };
     const direct = (coordinate: typeof high | typeof lower) =>
@@ -345,21 +347,21 @@ export function createFluent2MicrosoftButtonSchema({
       profile: 'standard' as const,
       theme: 'light' as const,
       surfaceContext: 'onSubtle' as const,
-      emphasis: 'medium' as const
+      emphasis: 'high' as const
     };
     const lower = {
       family,
-      profile: 'deep' as const,
+      profile: intent === 'neutral' ? ('standard' as const) : ('deep' as const),
       theme: 'light' as const,
       surfaceContext: 'onVivid' as const,
-      emphasis: 'medium' as const
+      emphasis: 'high' as const
     };
     const disabled = {
       family: 'neutral' as const,
-      profile: 'deep' as const,
+      profile: 'standard' as const,
       theme: 'light' as const,
       surfaceContext: 'onVivid' as const,
-      emphasis: 'medium' as const
+      emphasis: 'high' as const
     };
     const direct = (coordinate: typeof high | typeof lower) =>
       foregroundReference(
@@ -449,7 +451,7 @@ export function createFluent2MicrosoftButtonSchema({
       textColor: {
         neutral: {
           medium: {
-            rest: foregroundReference('neutral', 'standard', 'light', 'onSubtle', 'medium')
+            rest: foregroundReference('neutral', 'standard', 'light', 'onSubtle', 'high')
           }
         }
       }
@@ -541,6 +543,12 @@ export function createFluent2MicrosoftButtonSchema({
           borderStyle: 'solid'
         },
         scales: {
+          _boxHeight: {
+            's:sm:1': 24,
+            's:md:1': 32,
+            's:lg:1': 40,
+            's:lg:2': 48
+          },
           paddingTop: {
             's:sm:1': 4,
             's:md:1': 6,
@@ -604,7 +612,7 @@ export function createFluent2MicrosoftButtonSchema({
       e3: {
         name: 'button-icon',
         iconSize: {
-          's:sm:1': 's:md:1',
+          's:sm:1': 's:sm:1',
           's:md:1': 's:md:1',
           's:lg:1': 's:lg:1',
           's:lg:2': 's:lg:1'

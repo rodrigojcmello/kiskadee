@@ -3,6 +3,7 @@ import { validateSchemaContoursContract } from '@kiskadee/core/contour-contract'
 import { describe, expect, it } from 'vitest';
 import { schema } from '../../../presets/src/presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { resolveContourReferences } from './resolveContourReferences.ts';
 import {
   type ElementPaletteSource,
@@ -66,7 +67,7 @@ describe('Fluent shared contour pipeline', () => {
         );
       }
     }
-    const result = convertElementSchemaToStyleKeys(schema);
+    const result = convertElementSchemaToStyleKeys(schema, DEFAULT_WEB_STYLE_EMISSION_POLICY);
     expect(JSON.stringify(result)).not.toContain('contour:');
   });
   it('resolves internal separator consumers through the same catalog', () => {

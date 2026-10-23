@@ -1,0 +1,96 @@
+.example {
+  align-self: stretch;
+  display: grid;
+  gap: 4px;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  min-inline-size: 0;
+}
+
+.stage {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  min-inline-size: 0;
+}
+
+.buttonSlot {
+  display: flex;
+  min-inline-size: 0;
+}
+
+.compact {
+  grid-template-columns: minmax(0, 1fr) max-content minmax(0, 1fr);
+
+  .buttonSlot {
+    grid-column: 2;
+  }
+
+  .reference {
+    grid-column: 3;
+    justify-self: start;
+  }
+
+  .buttonSlot > :global(.k-btn) {
+    inline-size: max-content;
+  }
+}
+
+.reference {
+  align-items: center;
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.ruler {
+  background: linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat;
+  display: block;
+  flex: none;
+  inline-size: 9px;
+  position: relative;
+
+  &::before,
+  &::after {
+    background: currentColor;
+    block-size: 1px;
+    content: '';
+    inline-size: 100%;
+    inset-inline-start: 0;
+    position: absolute;
+  }
+
+  &::before {
+    inset-block-start: 0;
+  }
+
+  &::after {
+    inset-block-end: 0;
+  }
+}
+
+.details {
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  min-block-size: 2lh;
+  opacity: 0;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.example[data-details-persistent] .details,
+.example:hover .details,
+.example:focus-within .details {
+  opacity: 1;
+}
+
+.accessibleReference {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}

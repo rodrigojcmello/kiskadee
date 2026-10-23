@@ -308,21 +308,34 @@ export type {
 } from './components/Text';
 export { Text } from './components/Text';
 export type {
+  TextFieldActionProps,
   TextFieldArtifactConfig,
+  TextFieldClearAction,
+  TextFieldConnectedAction,
+  TextFieldConnectedActionState,
+  TextFieldContent,
+  TextFieldContentEmphasis,
+  TextFieldContentState,
   TextFieldFloatingInsideProps,
   TextFieldFloatingNotchedProps,
+  TextFieldIconProps,
   TextFieldStandardBorderlessProps,
   TextFieldStandardOutlineProps,
   TextFieldStandardProps,
-  TextFieldStandardUnderlineProps
+  TextFieldStandardUnderlineProps,
+  TextFieldTextProps,
+  TextFieldVisibilityToggle
 } from './components/TextField';
 export {
+  TextFieldAction,
   TextFieldFloatingInside,
   TextFieldFloatingNotched,
+  TextFieldIcon,
   TextFieldStandard,
   TextFieldStandardBorderless,
   TextFieldStandardOutline,
   TextFieldStandardUnderline,
+  TextFieldText,
   useTextFieldArtifactConfig
 } from './components/TextField';
 export type {

@@ -60,6 +60,18 @@ describe('Headless Button', () => {
     expect(html).toContain('<span class="label-class">Label</span>');
   });
 
+  it('preserves a composition relation alongside the root anatomy classes', () => {
+    const html = renderToStaticMarkup(
+      h(Button, {
+        classNames: { e1: 'button-root' },
+        className: 'connected-end-action',
+        label: 'Search'
+      })
+    );
+
+    expect(html).toContain('class="button-root connected-end-action"');
+  });
+
   it('lets compound slots append className and preserve explicit aria-hidden in Button.Icon', () => {
     const html = renderToStaticMarkup(
       h(

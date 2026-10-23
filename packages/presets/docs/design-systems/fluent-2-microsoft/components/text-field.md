@@ -35,6 +35,135 @@ Figma heights are 24/32/40 px, radius 4 px, text 12/14/16 px. Medium horizontal 
 neutral line; Focus uses the Brand compound stroke and a 2 px line. Outline also has a separate
 bottom line; Filled has a bottom focus line. Kiskadee retains its existing focus mechanisms.
 
+## Internal content and action composition (2026-10-18)
+
+Status: **Official adapted** for before/after content and 16/20/24 px passive icons;
+**Kiskadee extension** for typed passive slots, surfaced full-height lateral regions, multiple
+composed actions, validation-colored passives and Floating modes. Sources inspected on this date:
+[official Input slot types](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-input/library/src/components/Input/Input.types.ts)
+and the official Input styles linked above. Upstream supports content before and after the input,
+uses NeutralForeground3 for content and defines 16/20/24 px icons for Small/Medium/Large.
+
+### Region ownership and geometry
+
+The optional anatomy is e8 content region, e9 passive icon and e10 passive text. This approved
+composition replaces the earlier per-item frames; e11 and the per-item emphasis API are retired.
+Region emphasis is independent on each logical side: Lowest is transparent and Medium paints a
+neutral tonal region with a separator at its inner edge. Neither region owns a radius scale or a
+four-sided frame. Its paint follows the field's existing contour. Passive content, Buttons and
+other composed items can share the same region.
+
+The existing 8 px child gap and 8 px separation from the editable area are preserved at every
+supported size: e8.paddingLeft emits --k-pdl for child gap, and e8.marginRight emits --k-mgr for
+region-to-input separation. These are token-only logical composition channels, not physical
+padding or margin declarations. No additional region layout inset is authored. The shell owns
+the border and minimum height; a persistent editing lane consumes its existing token-authored
+block padding once. Lateral regions remain centered siblings without repeating that padding.
+Input insets and native Button geometry are preserved. Painting Medium cannot add another copy
+of the insets or change the field's dimensions.
+
+A fitting internal action keeps the same control height as the input-only composition in the
+corresponding empty, filled, or focused state. Only intrinsic content larger than the available
+inner height may grow the field, with its existing borders. Growth caused by applying the input's
+block padding again around a side action is not part of this composition. Floating labels stay
+absolute children of the control, with label-clearance flow restricted to the editing lane.
+
+Chrome validation with the Showcase's Open Sans/fallback setup retained the same Medium input node
+while toggling a native 28px Button Small: Standard stayed at 32px, Notched at 40px, and Inside at
+approximately 46px (samples included 45.96875px), comparing corresponding value/focus states.
+The floating line-center measurement accounts for the input's own block padding and borders
+before resolving label clearance, avoiding excess reserved space. The explicit oversized
+Standard Medium comparison measured 34px with a native 32px Button Medium and the field's two
+1px borders. These are observations of the composition, not new preset scales or Button changes.
+
+The region paints a 1 px separator through e8.borderWidth (--k-bdw), outside layout flow. Lowest
+suppresses that decorative paint; Medium reveals it. Box and border colors emit token-only
+--k-bgc and --k-bdc for the full-height background and separator. Structural geometry locates the
+paint against the actual shell bounds without reconstructing preset values or clipping action
+focus. The field's focus indicator remains independent of the lateral paint.
+
+Passive icon size still references global.iconSizes (16/20/24 px Standard, 20/24 px Floating), and
+text still references the active input typography. The connected action composes a native Button
+at an existing size: no stretching, new Button size or new radius recipe is introduced. Floating
+compositions demonstrate their existing size-pairing limitations rather than inventing a missing
+Button scale.
+
+### Region paint and descendant surface
+
+Medium reuses Card neutral/medium fill (card.neutral, exact L3/D3 and Darker D2, component.card)
+and the existing onSubtle Outline neutral contour (the approved neutral Vivid/physical-cap
+balance). Neutral, Error and Warning share that gray region. Lowest resolves both paint channels
+to the existing transparent physical cap. All palettes contain Rest only; no new disabled,
+read-only, hover, focus or pressed paint is authored. The n.black.v1 asset and its provenance
+remain unchanged.
+
+Each mode publishes two independent optional surface maps. contentSurfaceContext still describes
+the shell: Outline/Underline inherit, while Borderless/Notched/Inside produce onSubtle.
+contentRegionSurfaceContext describes each region: Lowest inherits its consumed shell context;
+Medium produces onSubtle. Both maps cover medium field emphasis or Lowest/Medium region emphasis
+as applicable, all validation intents, both segments and Light/Dark/Darker. A Provider inside each
+region gives nested independent components its actual surface. Buttons retain their own intent,
+emphasis, size, states and focus behavior.
+
+### Passive foregrounds
+
+Region emphasis selects e9/e10 palettes; the icon/text helpers do not independently select a
+surface. Text prefixes retain their existing foregrounds. Medium chromatic content keeps the
+approved Deep foreground references because the region actually paints an onSubtle surface.
+
+| Role | Source / existing recipe | Kiskadee lookup and current value |
+| --- | --- | --- |
+| Neutral icon onSubtle | NeutralForeground4, official Light #707070 / Dark #999999; existing placeholder mapping | Exact textField.neutral L40 #737373 / D75 #a3a3a3, evidence component.text-field |
+| Neutral icon onVivid | Existing global Medium-strength neutral foreground | fg(neutral.standard.light.onVivid.medium), white at 68%, #ffffffad |
+| Neutral text onSubtle | Existing passive NeutralForeground3 adaptation | Exact L50 #616161 / D80 #b4b4b4 |
+| Plain validation text/icon | Existing validation Vivid anchor | Error L45/D40; Warning L24/D40, unchanged |
+| Medium validation text/icon | Existing global Deep text profile | fg(red.deep.<theme>.onSubtle.high) / fg(orange.deep.<theme>.onSubtle.high) |
+
+Neutral icon mapping is intentionally more subdued than the earlier L50/D80 recipe, without
+altering the prefix typography or colors. The onVivid Medium coordinate is existing catalog data,
+not a new alpha literal or a P-React color override. Its composited contrast is 3.64:1 over Fluent
+Microsoft Blue #0064b4 and 3.42:1 over Teams Blue #5b5fc7; the opaque Button neutral foreground
+#dbdbdb produces 4.36:1 and 3.88:1 respectively. These are concrete supported backgrounds, not a
+claim that a binary context guarantees contrast over arbitrary RGB backgrounds.
+
+Medium Error/Warning references reuse the catalog's evidence-backed L65 / D75 recipe
+(global.foreground.deep, documented in [Text Deep profiles](./text.md#deep-profile-extension)).
+Core catalogs and primitive assets are unchanged.
+
+| Theme | Medium region | Error Deep / contrast | Warning Deep / contrast |
+| --- | --- | --- | --- |
+| Light | #f2f2f2 | L65 #811819, 9.03:1 | L65 #6f3217, 8.75:1 |
+| Dark | #141414 | D75 #ff746c, 6.99:1 | D75 #f68035, 7.07:1 |
+| Darker | #0e0e0e | D75 #ff746c, 7.32:1 | D75 #f68035, 7.41:1 |
+
+Ratios are rounded only for reporting; focused tests use unrounded relative luminance and require
+at least 4.5:1 for informational text and 3:1 for the inspected informational icon scenarios.
+See [WCAG 2.2 SC 1.4.3](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html).
+Colors in this evidence are source/mapping values, never schema literals.
+
+Browser validation of the local Showcase on 2026-10-18 covered both segments, all three themes,
+both ambient contexts, Outline/Inside, Neutral/Error/Warning and both regional emphasis
+inversions: 144 combinations and 288 regions. Resolved e8 paint, e9/e10 foregrounds and effective
+surface contexts matched the authored recipes. Medium's minimum measured text contrast was
+5.53:1 and its minimum neutral icon contrast was 4.24:1.
+
+Two limitations are intentionally preserved. First, the independent NeutralForeground4 mapping
+can coincide with Button neutral/lowest at Rest in Dark/Darker: both resolve to #a3a3a3 onSubtle.
+This recipe therefore does not guarantee that a passive icon has less contrast than every Button
+composition. Second, Lowest text retains its earlier foreground policy, which does not guarantee
+4.5:1 on every supported surface. Samples included Light Warning at approximately 2.9-3.0:1,
+Light neutral text over vivid at approximately 4.0:1, and Light Error text over vivid near 1.01:1.
+These are existing Lowest text limitations; changing that policy or Button foregrounds is outside
+the regional surface extension. Medium's measured contrast results above do not imply that
+Lowest text passes the same threshold.
+
+Start/end follow the shell's logical direction independently of the value. Currency symbol
+placement remains application-owned locale data, as specified by
+[Unicode CLDR currency formats](https://unicode.org/reports/tr35/tr35-numbers.html#Currency_Formats).
+Direction and isolation follow [HTML dir](https://html.spec.whatwg.org/multipage/dom.html#the-dir-attribute)
+and [W3C bidi guidance](https://www.w3.org/International/questions/qa-html-dir.en.html).
+No TextField-specific SVG mirroring policy is introduced.
+
 ## Color And Token Provenance
 
 The Figma aliases resolve to tinted neutrals (for example Grey-82 `#ccd1dd`, Grey-38 `#5d616b`,
@@ -142,10 +271,17 @@ Standard exposes Small/Medium/Large at 24/32/40 px. Floating intentionally omits
 publishes Medium/Large at 40/48 px. These floating sizes and the Button Large 2 extension are
 Kiskadee adaptations, not claims about official Fluent Input sizes.
 
-Button Large 2 uses 48 px height (22 px label line plus 13 px block padding per side), 20 px
-inline padding and 24 px pill radius. Typography and icon size retain Large values.
-The Showcase pairs Floating Medium with Button Large and Floating Large with Button Large 2.
-This is demonstration-only pairing: consumers can independently choose either component's size.
+Button Large 2 has a 48 px content-plus-padding extent (22 px label line plus 13 px block
+padding per side). Its authored 1 px borders produce a 50 px native border box in the observed
+Showcase composition. It uses 20 px inline padding and 24 px pill radius. Typography and icon
+size retain Large values.
+Connected and external Showcase examples pair Floating Medium with Button Large and Floating Large
+with Button Large 2. Internal examples use Button Small for a Medium field and Button Medium for a
+Large field; the persistent Medium-field toggle demonstrates adding/removing a fitting Small
+Button. Standard Small has no fitting native Button size and retains its action as an oversized
+composition. The Small/Medium comparison remains separate and demonstrates that true oversized
+content can require a larger control. These are demonstration choices: consumers independently
+choose either component's size, without changing Button or adding an intermediate size.
 Sizes initializes from the preset TextField variant/mode options, offers a looping mode selector,
 and can hide comparison buttons. Standard does not gain a Large 2 size.
 

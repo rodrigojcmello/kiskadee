@@ -3,7 +3,8 @@
 ## Decision
 
 `global.foregrounds.profiles` is the preset-owned catalog of reusable foreground recipes. Each
-color family owns a required `standard` profile and may publish an independent `deep` profile. A
+color family owns a required `standard` profile. Chromatic families may publish an independent
+`deep` profile; `neutral` supports only `standard`. A
 participating element maps its local foreground name to a specific family profile:
 
 ```ts
@@ -25,21 +26,26 @@ painted against the current surface.
 ## Profile contract
 
 A family profile is a complete recipe keyed by segment and theme. `standard` is mandatory for
-every family; `deep` is optional. When present, `deep` is not a modifier applied to `standard`: it
+every family; `deep` is optional for chromatic families and forbidden for `neutral`. When present,
+`deep` is not a modifier applied to `standard`: it
 owns a complete, independently validated recipe. Every published theme contains an `onSubtle`
 branch and may contain an `onVivid` branch. Each branch must contain exactly these strengths:
 
 ```text
-medium | low | lowest
+high | medium | low | lowest
 ```
 
-`high` and `highest` are intentionally excluded from `TextEmphasis`. `Text` has no surface of its
-own, so `medium` is the normal and strongest foreground, while `low` and `lowest` de-emphasize it.
-The contract does not require an exceptional neutral black merely to fill an ordinal level. A
-preset may publish `neutral.deep` with the physical absolute cap as its `medium` anchor: black on a
-Light track and white on inverted Dark/Darker tracks. Fluent 2 currently does so for atomic
-component-slot consumption. Coinciding with `neutral.standard.medium` in another preset is valid
-because the two profiles express stable choices, not guaranteed unique values.
+`high` is the strongest foreground; `medium`, `low`, and `lowest` progressively reduce its
+prominence. The hierarchy does not require absolute black or white. Presets author each level for
+the physical theme, segment, context, and chromatic profile. `highest` is not a Text emphasis.
+
+The four-level migration preserves the former Medium as High, the former Low as Medium, and the
+former Lowest as Lowest. A new Low fills the interval between the latter two. Existing consumers
+migrate their explicit coordinates accordingly; component surface emphases are not renamed.
+
+`neutral.deep` is not an alternative neutral recipe, alias, or compatibility branch. Existing
+consumers choose an appropriate coordinate in `neutral.standard`, accepting deliberate changes
+where the former Deep recipe differed. All gray, black, and white variations share that one profile.
 
 This does not change the component emphasis rule for surface-owning components such as Button and
 Card, where emphasis describes the strength of the component surface.
@@ -70,7 +76,8 @@ An element-level `foreground` map translates a local foreground name into a stru
 `{ family, profile }` reference. Family IDs and local foreground IDs use lowercase kebab case;
 profile names are the closed vocabulary `standard | deep`. `inherit` is reserved for the React API
 and is not a schema family, profile, or reference value. Text requires a local `neutral` reference;
-chromatic and deep references are optional preset capabilities.
+chromatic references and their Deep aliases are optional preset capabilities. `neutral-deep` is
+not a public foreground name, and `{ family: 'neutral', profile: 'deep' }` is invalid for every element.
 
 React keeps the common case flat: `foreground="red"` selects the local mapping to `red.standard`,
 while `foreground="red-deep"` selects the mapping to `red.deep`. The suffix is a public alias, not
@@ -83,18 +90,36 @@ References are validated before compilation. Unknown families, unavailable profi
 emphasis coverage, unsupported interaction states, mismatched context branches, and invalid IDs are
 authoring errors.
 
+## Text default emphasis
+
+Every authored Text component declares `components.text.options.emphasis` using one of the four
+foreground levels. This is a component option, independent from global typography profiles and
+from any other component's explicit foreground selection. Fluent 2 selects `high` to preserve the
+former default appearance.
+
+The Builder publishes the option in the existing Text core component artifact as
+`options.emphasis`. React resolves an explicit Text `emphasis` prop before this authored default.
+If the current artifact or option is unavailable, omitted emphasis inherits color; runtime does
+not synthesize a fallback level or reuse a previous preset's default. An explicit emphasis can
+still resolve against a matching available color map. `foreground="inherit"` bypasses both.
+
+Family IDs remain extensible for preset-local chromatic recipes. Core's explicit neutral catalog
+type forbids a Deep branch, and literal `fg()`/`fg.parentState()` helpers reject Neutral Deep
+coordinates at compile time. Dynamic IDs and structured references are validated at the Schema
+boundary; parsing rejects Neutral Deep coordinates regardless of static type information.
+
 ## Atomic foreground coordinates
 
 Component slots that need to choose one coordinate rather than project a complete Text profile use
 the schema-only `fg` authoring API:
 
 ```ts
-fg('red.deep.light.onSubtle.medium')
-fg.parentState('red.deep.light.onSubtle.medium.pending')
+fg('red.deep.light.onSubtle.high')
+fg.parentState('red.deep.light.onSubtle.high.pending')
 ```
 
-The serializable forms are respectively `fg:red.deep.light.onSubtle.medium` and
-`{ parentState: 'fg:red.deep.light.onSubtle.medium.pending' }`. A coordinate contains family,
+The serializable forms are respectively `fg:red.deep.light.onSubtle.high` and
+`{ parentState: 'fg:red.deep.light.onSubtle.high.pending' }`. A coordinate contains family,
 profile, physical source theme, Surface Context, strength, and an optional global foreground state;
 omitting state selects `rest`. The consuming palette supplies the segment.
 
@@ -105,7 +130,7 @@ to tonal `referenceColor()` and replaces the ambiguous use of the legacy authori
 `{ ref: ... }` for global foreground coordinates.
 
 The component's emphasis and the selected foreground strength are intentionally independent. A
-Button `low` label may use `red.deep...medium` when all enabled labels share one approved color.
+Button `low` label may use `red.deep...high` when all enabled labels share one approved color.
 
 ## Surface Context inheritance
 
@@ -130,8 +155,8 @@ the existing parent-state color representation. For `Text.e1`,
 the initial output is:
 
 ```text
-text.e1.c.s.<foreground>.m|l|ll
-text.e1.c.v.<foreground>.m|l|ll
+text.e1.c.s.<foreground>.h|m|l|ll
+text.e1.c.v.<foreground>.h|m|l|ll
 ```
 
 The `c` bucket remains the color channel and `t` remains the typography channel. No foreground
@@ -149,10 +174,8 @@ missing-context warning applies and Text inherits instead of falling back to ano
 ## Current integration
 
 Fluent 2 Microsoft publishes `standard` for `neutral`, `blue`, `red`, `green`, `purple`, `orange`,
-and `yellow`. All seven families publish `deep`. Text exposes the six chromatic profiles through
-flat React aliases such as `foreground="blue-deep"` and `foreground="red-deep"`; the Fluent
-`neutral.deep` profile currently exists for atomic component-slot consumption rather than as a
-Text alias. Those families correspond exactly to the preset's approved primitive assets; it does
-not synthesize the remaining Core hues. Fluent Button label and icon-region foregrounds consume
-atomic coordinates from this catalog. Badge, Card, Chip, Brand Pack projections, and other
-component-owned recipes remain separate migrations.
+and `yellow`. The six chromatic families also publish `deep`; `neutral` has only `standard`. Text
+exposes chromatic Deep profiles through flat React aliases such as `foreground="blue-deep"` and
+`foreground="red-deep"`. Those families correspond to the preset's approved primitive assets; it
+does not synthesize the remaining Core hues. Component-owned foreground slots may consume atomic
+coordinates from this catalog without inheriting Text's default emphasis.

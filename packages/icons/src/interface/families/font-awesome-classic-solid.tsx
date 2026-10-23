@@ -19,6 +19,8 @@ import { faClipboardCheck } from '@fortawesome/free-solid-svg-icons/faClipboardC
 import { faCloudMoon } from '@fortawesome/free-solid-svg-icons/faCloudMoon';
 import { faCodeBranch } from '@fortawesome/free-solid-svg-icons/faCodeBranch';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope';
+import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash';
 import { faFaceFrown } from '@fortawesome/free-solid-svg-icons/faFaceFrown';
 import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
@@ -30,6 +32,7 @@ import { faItalic } from '@fortawesome/free-solid-svg-icons/faItalic';
 import { faLink } from '@fortawesome/free-solid-svg-icons/faLink';
 import { faList } from '@fortawesome/free-solid-svg-icons/faList';
 import { faListOl } from '@fortawesome/free-solid-svg-icons/faListOl';
+import { faLock } from '@fortawesome/free-solid-svg-icons/faLock';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon';
@@ -79,6 +82,8 @@ const glyphfaClipboardCheck = createFontAwesomeGlyph(faClipboardCheck);
 const glyphfaCloudMoon = createFontAwesomeGlyph(faCloudMoon);
 const glyphfaCodeBranch = createFontAwesomeGlyph(faCodeBranch);
 const glyphfaEnvelope = createFontAwesomeGlyph(faEnvelope);
+const glyphfaEye = createFontAwesomeGlyph(faEye);
+const glyphfaEyeSlash = createFontAwesomeGlyph(faEyeSlash);
 const glyphfaFaceFrown = createFontAwesomeGlyph(faFaceFrown);
 const glyphfaFaceSmile = createFontAwesomeGlyph(faFaceSmile);
 const glyphfaFolder = createFontAwesomeGlyph(faFolder);
@@ -90,6 +95,7 @@ const glyphfaItalic = createFontAwesomeGlyph(faItalic);
 const glyphfaLink = createFontAwesomeGlyph(faLink);
 const glyphfaList = createFontAwesomeGlyph(faList);
 const glyphfaListOl = createFontAwesomeGlyph(faListOl);
+const glyphfaLock = createFontAwesomeGlyph(faLock);
 const glyphfaMagnifyingGlass = createFontAwesomeGlyph(faMagnifyingGlass);
 const glyphfaMinus = createFontAwesomeGlyph(faMinus);
 const glyphfaMoon = createFontAwesomeGlyph(faMoon);
@@ -137,6 +143,8 @@ const glyphMap = {
     "clipboard-check": glyphfaClipboardCheck,
     "close": glyphfaXmark,
     "dashboard": glyphfaTableColumns,
+    "eye": { glyph: glyphfaEye, direction: 'fixed' },
+    "eye-off": { glyph: glyphfaEyeSlash, direction: 'fixed' },
     "folder-move": glyphfaFolder,
     "frown": glyphfaFaceFrown,
     "git-branch": glyphfaCodeBranch,
@@ -148,6 +156,7 @@ const glyphMap = {
     "list": glyphfaList,
     "list-ordered": glyphfaListOl,
     "loader-circle": glyphfaSpinner,
+    "lock": { glyph: glyphfaLock, direction: 'fixed' },
     "mail": glyphfaEnvelope,
     "menu": glyphfaBars,
     "minus": glyphfaMinus,

@@ -232,9 +232,20 @@ Current scope:
 | Property family | Policy | Default | CSS shape | Reason |
 | --- | --- | --- | --- | --- |
 | `boxHeight` | `token` | `direct` | `--k-bxh: <value>` | TextField structural CSS consumes the authored height as `min-block-size`, preserving the nominal control geometry while allowing enlarged text to grow without clipping. |
+| `paddingTop`, `paddingBottom` | `token` | `direct` | `--k-pdt: <value>`, `--k-pdb: <value>` | The editing lane consumes inherited block spacing independently from lateral regions, so an intrinsic Button does not acquire the input's vertical padding. |
+| `paddingLeft`, `paddingRight` | Explicit `direct` overrides | `direct` | `padding-left: <value>`, `padding-right: <value>` | The control retains its authored inline edge insets while block spacing is token-only. |
 
 The schema value remains the design-system control height. The web structure changes only how that
 height constrains layout: it is a minimum rather than a fixed block size.
+
+The block-spacing policy uses the existing padding-family token mode with direct Left/Right
+overrides. Generated classes remain on their e3 schema owner. An always-present structural editing
+lane inherits the two block tokens, wraps the Input and any Floating clearance, and applies the
+spacing once. The shell's lateral regions center their children without inheriting a layout inset.
+Floating labels remain direct control children for the existing notch and absolute-positioning
+contract. e4's own Inside `paddingTop` stays direct on the Input, so it cannot replace the inherited
+e3 token or the lane's spacing. The handoff introduces no projection, raw runtime values, new
+Schema element, or Button geometry change.
 
 ## Select
 

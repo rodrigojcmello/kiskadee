@@ -84,6 +84,12 @@ Metadata is written per template under `packages/web-builder/build/<template-key
 support and resource references live in the corresponding component artifact. The raw Schema is
 build-only inspection data; browser surface inspection uses canonical Card metadata.
 
+Text publishes the Schema-authored `options.emphasis` in `components/text.kiskadee.json`.
+It is the default only for standalone Text; an explicit Text prop takes precedence. The authoring
+value replaces stale generated defaults during publication and is independent of typography
+profiles or the foreground coordinates chosen by other components. Foreground color palettes
+publish High, Medium, Low and Lowest; Neutral exposes only Standard.
+
 Select publishes `options` (component defaults), `modes` (supported mode names), and `modeOptions`
 (effective presentation options for each supported mode). The Builder resolves each mode's
 `focusIndicator`, `focusRingColorSource` and `showDividers` over component options and contract

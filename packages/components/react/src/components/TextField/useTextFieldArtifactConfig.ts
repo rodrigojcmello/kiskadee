@@ -1,4 +1,5 @@
 import type {
+  ContentSurfaceContextMap,
   TextFieldFocusRingColorSource,
   TextFieldLabelOffsetByRadius,
   TextFieldLabelPlacement,
@@ -23,6 +24,8 @@ export type TextFieldVariantsConfig = {
       Record<
         TextFieldModeByVariant[TVariant],
         {
+          contentSurfaceContext?: ContentSurfaceContextMap;
+          contentRegionSurfaceContext?: ContentSurfaceContextMap;
           options?: {
             labelOffset?: TextFieldLabelOffsetByRadius;
             focusRingColorSource?: TextFieldFocusRingColorSource;

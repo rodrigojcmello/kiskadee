@@ -9,7 +9,7 @@ import {
   type ThemeMode,
   withAlpha
 } from '@kiskadee/core';
-import { absoluteCap, type CarbonIbmColorResolver, referenceColor } from './carbon-ibm.color.ts';
+import { type CarbonIbmColorResolver, exactColor, referenceColor } from './carbon-ibm.color.ts';
 import { tokenColor } from './carbon-ibm.tokens.ts';
 
 const THEMES = ['light', 'dark', 'darker'] as const;
@@ -35,36 +35,39 @@ function onColor(c: CarbonIbmColorResolver, theme: ThemeMode): ForegroundEmphasi
   const rest = tokenColor(c, theme, 'text-on-color');
   const disabled = tokenColor(c, theme, 'text-on-color-disabled', 'neutral');
   return {
-    medium: { rest, pending: visibility(rest, 70), disabled },
-    low: { rest: visibility(rest, 70), disabled },
+    high: { rest, pending: visibility(rest, 70), disabled },
+    medium: { rest: visibility(rest, 70), disabled },
+    low: { rest: visibility(rest, 55), disabled },
     lowest: { rest: visibility(rest, 40), disabled }
   };
 }
 
-function neutralProfile(c: CarbonIbmColorResolver, deep = false): ForegroundProfile {
+function neutralProfile(c: CarbonIbmColorResolver): ForegroundProfile {
   return {
     palettes: {
       default: Object.fromEntries(
         THEMES.map((theme) => {
-          const rest = deep
-            ? c.resolve(
-                'default',
-                theme === 'light' ? 'l' : 'd',
-                absoluteCap(primitive('black', 'v1'), theme === 'light' ? 'dark' : 'light')
-              )
-            : tokenColor(c, theme, 'text-primary', 'neutral');
+          const rest = tokenColor(c, theme, 'text-primary', 'neutral');
           const disabled = tokenColor(c, theme, 'text-disabled', 'neutral');
           return [
             theme,
             {
               onSubtle: {
-                medium: { rest, pending: visibility(rest, 70), disabled },
+                high: { rest, pending: visibility(rest, 70), disabled },
+                medium: {
+                  rest: tokenColor(c, theme, 'text-secondary', 'neutral'),
+                  disabled
+                },
                 low: {
-                  rest: tokenColor(c, theme, deep ? 'text-primary' : 'text-secondary', 'neutral'),
+                  rest: c.resolve(
+                    'default',
+                    theme === 'light' ? 'l' : 'd',
+                    exactColor('neutral', theme === 'light' ? 50 : 75, 'foreground.low')
+                  ),
                   disabled
                 },
                 lowest: {
-                  rest: tokenColor(c, theme, deep ? 'text-secondary' : 'text-helper', 'neutral'),
+                  rest: tokenColor(c, theme, 'text-helper', 'neutral'),
                   disabled
                 }
               },
@@ -104,13 +107,14 @@ function chromaticProfile(
             theme,
             {
               onSubtle: {
-                medium: {
+                high: {
                   rest,
                   ...(hover !== undefined && hover !== rest ? { hover } : {}),
                   pending: visibility(rest, 70),
                   disabled
                 },
-                low: { rest: visibility(rest, 68), disabled },
+                medium: { rest: visibility(rest, 68), disabled },
+                low: { rest: visibility(rest, 54), disabled },
                 lowest: { rest: visibility(rest, 40), disabled }
               },
               onVivid: onColor(c, theme)
@@ -133,7 +137,7 @@ export function createCarbonIbmForegrounds({
   });
   return {
     profiles: {
-      neutral: { standard: neutralProfile(c), deep: neutralProfile(c, true) },
+      neutral: { standard: neutralProfile(c) },
       blue: family('primary'),
       red: family(primitive('red', 'v1')),
       green: family(primitive('green', 'v1')),

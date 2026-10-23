@@ -1,14 +1,21 @@
 import { z } from 'zod';
+import {
+  type ContentSurfaceContextMap,
+  validateContentSurfaceContextMap
+} from '../content-surface-context.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import { formatZodIssue } from './tabs.zod.shared.ts';
 import {
+  createTextFieldContentRegionElementStyleSchema,
   createTextFieldControlElementStyleSchema,
+  createTextFieldIconElementStyleSchema,
   createTextFieldIndicatorElementStyleSchema,
   createTextFieldInlineLabelElementStyleSchema,
   createTextFieldInputElementStyleSchema,
   createTextFieldLabelElementStyleSchema,
   createTextFieldMessageElementStyleSchema,
-  createTextFieldRootElementStyleSchema
+  createTextFieldRootElementStyleSchema,
+  createTextFieldTextElementStyleSchema
 } from './text-field.elements.zod.ts';
 import {
   createTextFieldFloatingVariantOptionsSchema,
@@ -26,7 +33,10 @@ function createTextFieldElementsSchema<TSegmentName extends SegmentName = never>
       e4: createTextFieldInputElementStyleSchema<TSegmentName>().optional(),
       e5: createTextFieldMessageElementStyleSchema<TSegmentName>().optional(),
       e6: createTextFieldIndicatorElementStyleSchema<TSegmentName>().optional(),
-      e7: createTextFieldInlineLabelElementStyleSchema<TSegmentName>().optional()
+      e7: createTextFieldInlineLabelElementStyleSchema<TSegmentName>().optional(),
+      e8: createTextFieldContentRegionElementStyleSchema<TSegmentName>().optional(),
+      e9: createTextFieldIconElementStyleSchema<TSegmentName>().optional(),
+      e10: createTextFieldTextElementStyleSchema<TSegmentName>().optional()
     })
     .strict();
 }
@@ -35,6 +45,8 @@ function createTextFieldModeConfigSchema() {
   return z
     .object({
       options: createTextFieldModeOptionsSchema().optional(),
+      contentSurfaceContext: z.custom<ContentSurfaceContextMap>().optional(),
+      contentRegionSurfaceContext: z.custom<ContentSurfaceContextMap>().optional(),
       elements: createTextFieldElementsSchema()
     })
     .strict();
@@ -127,6 +139,21 @@ export function validateTextFieldComponentContract(
   path = 'components.textField'
 ): string[] {
   const result = textFieldComponentContractSchema.safeParse(value);
-  if (result.success) return [];
-  return result.error.issues.map((issue) => formatZodIssue(path, issue));
+  if (!result.success) return result.error.issues.map((issue) => formatZodIssue(path, issue));
+  const issues: string[] = [];
+  for (const [variantName, variant] of Object.entries(result.data.variants ?? {})) {
+    for (const [modeName, mode] of Object.entries(variant?.modes ?? {})) {
+      for (const key of ['contentSurfaceContext', 'contentRegionSurfaceContext'] as const) {
+        if (mode?.[key] !== undefined) {
+          issues.push(
+            ...validateContentSurfaceContextMap(
+              mode[key],
+              `${path}.variants.${variantName}.modes.${modeName}.${key}`
+            )
+          );
+        }
+      }
+    }
+  }
+  return issues;
 }

@@ -3,6 +3,7 @@ import { schema } from '@kiskadee/presets/src/presets/fluent-2-microsoft/index.t
 import { describe, expect, it } from 'vitest';
 import { resolveElementPaletteSources } from '../palettes/resolveElementPaletteSources.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 
 function resolveButtonElement(elementName: 'e2' | 'e3' | 'e4') {
   const element = schema.components.button?.elements[elementName];
@@ -37,12 +38,12 @@ describe('Fluent Button global foreground pipeline', () => {
       positive: lightOnVivid?.positive?.medium?.rest
     }).toEqual({
       primary: '#d2e8ff',
-      neutral: '#dbdbdb',
+      neutral: '#ffffff',
       destructive: '#ffdbd7',
       positive: '#d4edd2'
     });
     expect(e2.default?.light?.onSubtle?.textColor?.destructive?.medium?.rest).toBe('#811819');
-    expect(e2.default?.dark?.onSubtle?.textColor?.neutral?.high?.rest).toBe('#000000');
+    expect(e2.default?.dark?.onSubtle?.textColor?.neutral?.high?.rest).toBe('#252525');
   });
 
   it('keeps icon Pending absent and resolves the icon-region label independently', () => {
@@ -54,7 +55,10 @@ describe('Fluent Button global foreground pipeline', () => {
   });
 
   it('does not let an fg token reach Style Key generation', () => {
-    const { styleKeys } = convertElementSchemaToStyleKeys(schema);
+    const { styleKeys } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const serialized = JSON.stringify(styleKeys.button);
 
     expect(serialized).not.toContain('fg:');

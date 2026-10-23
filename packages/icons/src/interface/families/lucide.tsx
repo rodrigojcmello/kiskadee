@@ -16,6 +16,8 @@ import {
   CircleSmallIcon,
   CircleXIcon,
   ClipboardCheckIcon,
+  EyeIcon,
+  EyeOffIcon,
   FileSpreadsheetIcon,
   FolderOutputIcon,
   FrownIcon,
@@ -29,6 +31,7 @@ import {
   ListIcon,
   ListOrderedIcon,
   LoaderCircleIcon,
+  LockKeyholeIcon,
   MailIcon,
   MenuIcon,
   MinusIcon,
@@ -77,6 +80,8 @@ const glyphChevronUpIcon = createSvgGlyph(ChevronUpIcon, {"size":"1em"});
 const glyphCircleCheckIcon = createSvgGlyph(CircleCheckIcon, {"size":"1em"});
 const glyphCircleXIcon = createSvgGlyph(CircleXIcon, {"size":"1em"});
 const glyphClipboardCheckIcon = createSvgGlyph(ClipboardCheckIcon, {"size":"1em"});
+const glyphEyeIcon = createSvgGlyph(EyeIcon, {"size":"1em"});
+const glyphEyeOffIcon = createSvgGlyph(EyeOffIcon, {"size":"1em"});
 const glyphFileSpreadsheetIcon = createSvgGlyph(FileSpreadsheetIcon, {"size":"1em"});
 const glyphFolderOutputIcon = createSvgGlyph(FolderOutputIcon, {"size":"1em"});
 const glyphFrownIcon = createSvgGlyph(FrownIcon, {"size":"1em"});
@@ -90,6 +95,7 @@ const glyphLinkIcon = createSvgGlyph(LinkIcon, {"size":"1em"});
 const glyphListIcon = createSvgGlyph(ListIcon, {"size":"1em"});
 const glyphListOrderedIcon = createSvgGlyph(ListOrderedIcon, {"size":"1em"});
 const glyphLoaderCircleIcon = createSvgGlyph(LoaderCircleIcon, {"size":"1em"});
+const glyphLockKeyholeIcon = createSvgGlyph(LockKeyholeIcon, {"size":"1em"});
 const glyphMailIcon = createSvgGlyph(MailIcon, {"size":"1em"});
 const glyphMenuIcon = createSvgGlyph(MenuIcon, {"size":"1em"});
 const glyphMinusIcon = createSvgGlyph(MinusIcon, {"size":"1em"});
@@ -139,6 +145,8 @@ const glyphMap = {
     "clipboard-check": glyphClipboardCheckIcon,
     "close": glyphXIcon,
     "dashboard": glyphLayoutDashboardIcon,
+    "eye": { glyph: glyphEyeIcon, direction: 'fixed' },
+    "eye-off": { glyph: glyphEyeOffIcon, direction: 'fixed' },
     "folder-move": { glyph: glyphFolderOutputIcon, direction: 'mirror' },
     "frown": glyphFrownIcon,
     "git-branch": glyphGitBranchIcon,
@@ -150,6 +158,7 @@ const glyphMap = {
     "list": glyphListIcon,
     "list-ordered": glyphListOrderedIcon,
     "loader-circle": glyphLoaderCircleIcon,
+    "lock": { glyph: glyphLockKeyholeIcon, direction: 'fixed' },
     "mail": glyphMailIcon,
     "menu": glyphMenuIcon,
     "minus": glyphMinusIcon,

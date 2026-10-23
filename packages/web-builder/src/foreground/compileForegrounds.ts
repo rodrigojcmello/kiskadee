@@ -31,6 +31,9 @@ export function expandElementForeground(
   let expanded: Record<string, unknown> = {};
 
   for (const [intent, reference] of Object.entries(foreground)) {
+    if (reference.family === 'neutral' && reference.profile !== 'standard') {
+      throw new Error('[web-builder] Neutral foreground only supports the standard profile.');
+    }
     const family = foregrounds.profiles[reference.family];
     if (!family) {
       throw new Error(`[web-builder] Foreground family "${reference.family}" is not defined.`);

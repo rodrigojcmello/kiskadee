@@ -1,12 +1,15 @@
 export { validateTextFieldComponentContract } from './text-field.contract.zod.ts';
 export type {
+  TextFieldContentRegionElementStyleFromSchema,
   TextFieldControlElementStyleFromSchema,
+  TextFieldIconElementStyleFromSchema,
   TextFieldIndicatorElementStyleFromSchema,
   TextFieldInlineLabelElementStyleFromSchema,
   TextFieldInputElementStyleFromSchema,
   TextFieldLabelElementStyleFromSchema,
   TextFieldMessageElementStyleFromSchema,
-  TextFieldRootElementStyleFromSchema
+  TextFieldRootElementStyleFromSchema,
+  TextFieldTextElementStyleFromSchema
 } from './text-field.elements.zod.ts';
 export type {
   TextFieldFloatingVariantOptionsFromSchema,

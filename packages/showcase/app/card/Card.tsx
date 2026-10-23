@@ -270,7 +270,7 @@ function CardContent({
       <Text as="span" profile={profiles.groupTitle}>
         {title}
       </Text>
-      <Text as="span" profile={profiles.caption} emphasis="low">
+      <Text as="span" profile={profiles.caption} emphasis="medium">
         {body}
       </Text>
     </Layout>
@@ -591,7 +591,7 @@ export function Card() {
               )
               .map((intent) => (
                 <div className={s.intentGroup} key={intent}>
-                  <Text as="h4" profile={profiles.subsectionTitle} emphasis="medium">
+                  <Text as="h4" profile={profiles.subsectionTitle} emphasis="high">
                     {cardIntentLabels[intent]}
                   </Text>
                   <div className={s.surfaceGrid}>
@@ -603,7 +603,7 @@ export function Card() {
                           key={emphasis}
                           aria-label={`${intent} ${emphasis}`}
                         >
-                          <Text as="h5" profile={profiles.bodyStrong} emphasis="low">
+                          <Text as="h5" profile={profiles.bodyStrong} emphasis="medium">
                             {cardEmphasisLabels[emphasis]}
                           </Text>
                           {available ? (
@@ -713,7 +713,7 @@ export function Card() {
                                 className={s.example}
                                 key={`${sample.intent}.${sample.emphasis}`}
                               >
-                                <Text as="code" profile={profiles.caption} emphasis="low">
+                                <Text as="code" profile={profiles.caption} emphasis="medium">
                                   {sample.intent}.{sample.emphasis}
                                 </Text>
                                 <KCard
@@ -744,7 +744,7 @@ export function Card() {
                 title="Border & shadow"
                 description="One surface, independent border and shadow. Emphasis suggests the default; the border option overrides visibility without changing the surface."
               />
-              <Text as="p" profile={profiles.caption} emphasis="low">
+              <Text as="p" profile={profiles.caption} emphasis="medium">
                 {comparisonSample.intent}.{comparisonSample.emphasis} · Shadow {comparisonShadow}
               </Text>
               <div className={s.comparisonGrid}>
@@ -818,7 +818,7 @@ export function Card() {
                               border={false}
                             />
                           ) : (
-                            <Text as="p" profile={profiles.caption} emphasis="low">
+                            <Text as="p" profile={profiles.caption} emphasis="medium">
                               Global recipe, not exposed by Card.
                             </Text>
                           )}
@@ -959,7 +959,7 @@ export function Card() {
                     ) : null}
                   </Layout>
                 </KCard>
-                <Text as="p" profile={profiles.caption} emphasis="low" role="status">
+                <Text as="p" profile={profiles.caption} emphasis="medium" role="status">
                   {passiveActivations
                     ? `Button activated ${passiveActivations} times.`
                     : 'The surrounding surface stays passive.'}
@@ -983,7 +983,7 @@ export function Card() {
                     body={selected ? 'Selected. Activate to clear.' : 'Activate to select.'}
                   />
                 </KCardAction>
-                <Text as="p" profile={profiles.caption} emphasis="low">
+                <Text as="p" profile={profiles.caption} emphasis="medium">
                   selected: {String(selected)} · Whole surface is interactive
                 </Text>
               </article>
@@ -1004,7 +1004,7 @@ export function Card() {
                     body="A selected surface and its content."
                   />
                 </KCardAction>
-                <Text as="p" profile={profiles.caption} emphasis="low">
+                <Text as="p" profile={profiles.caption} emphasis="medium">
                   selected: true · Selection held for comparison
                 </Text>
               </article>
@@ -1022,7 +1022,7 @@ export function Card() {
                 >
                   <CardContent title="Project overview" body="This action is unavailable." />
                 </KCardAction>
-                <Text as="p" profile={profiles.caption} emphasis="low">
+                <Text as="p" profile={profiles.caption} emphasis="medium">
                   disabled: true · Activation unavailable
                 </Text>
               </article>
@@ -1044,7 +1044,7 @@ export function Card() {
                     body="Selection is retained while activation is unavailable."
                   />
                 </KCardAction>
-                <Text as="p" profile={profiles.caption} emphasis="low">
+                <Text as="p" profile={profiles.caption} emphasis="medium">
                   selected: true · disabled: true
                 </Text>
               </article>
@@ -1066,7 +1066,7 @@ export function Card() {
                     body="Visual preview only. This action can still be activated."
                   />
                 </KCardAction>
-                <Text as="p" profile={profiles.caption} emphasis="low" role="status">
+                <Text as="p" profile={profiles.caption} emphasis="medium" role="status">
                   status: pending · Activations: {pendingPreviewActivations}
                 </Text>
               </article>
@@ -1089,7 +1089,7 @@ export function Card() {
                     body={lockedSelected ? 'Selected.' : 'Ready to select.'}
                   />
                 </KCardAction>
-                <Text as="p" profile={profiles.caption} emphasis="low">
+                <Text as="p" profile={profiles.caption} emphasis="medium">
                   {interactionLocked
                     ? 'Activation blocked by the panel control'
                     : 'Unlocked · Activate to select'}

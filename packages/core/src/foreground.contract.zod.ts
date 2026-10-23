@@ -28,7 +28,11 @@ export const foregroundProfileReferenceContractSchema = z
     family: foregroundFamilyIdContractSchema,
     profile: foregroundProfileNameContractSchema
   })
-  .strict() satisfies z.ZodType<ForegroundProfileReference>;
+  .strict()
+  .refine((reference) => reference.family !== 'neutral' || reference.profile === 'standard', {
+    path: ['profile'],
+    message: 'neutral supports only the standard profile'
+  }) satisfies z.ZodType<ForegroundProfileReference>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -129,10 +133,26 @@ const foregroundFamilyProfilesContractSchema = z
 export const schemaForegroundsContractSchema = z
   .object({
     profiles: z
-      .record(z.string(), foregroundFamilyProfilesContractSchema)
+      .object({
+        neutral: z
+          .object({
+            standard: foregroundProfileContractSchema,
+            deep: z.never({ error: 'neutral supports only the standard profile' }).optional()
+          })
+          .strict()
+          .optional()
+      })
+      .catchall(foregroundFamilyProfilesContractSchema)
       .refine((profiles) => Object.keys(profiles).length > 0, 'expected at least one family')
       .superRefine((profiles, ctx) => {
         for (const familyId of Object.keys(profiles)) {
+          if (familyId === 'neutral' && profiles[familyId]?.deep !== undefined) {
+            ctx.addIssue({
+              code: 'custom',
+              path: [familyId, 'deep'],
+              message: 'neutral supports only the standard profile'
+            });
+          }
           const result = foregroundFamilyIdContractSchema.safeParse(familyId);
           if (result.success) continue;
           for (const issue of result.error.issues) {

@@ -166,6 +166,7 @@ describe('buildComponentSurfaceContexts', () => {
 
   it('computes Text contexts after expanding its global foreground profile', () => {
     const states = {
+      high: { rest: '#111111' },
       medium: { rest: '#333333' },
       low: { rest: '#555555' },
       lowest: { rest: '#777777' }
@@ -173,6 +174,7 @@ describe('buildComponentSurfaceContexts', () => {
     const schema: Schema = {
       ...createSchema({
         text: {
+          options: { emphasis: 'high' },
           elements: {
             e1: {
               name: 'foreground',
@@ -223,16 +225,19 @@ describe('buildComponentSurfaceContexts', () => {
         onSubtle: {
           state: {
             neutral: {
+              high: { rest: true },
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }
             },
             red: {
+              high: { rest: true },
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }
             },
             'red-deep': {
+              high: { rest: true },
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }
@@ -242,16 +247,19 @@ describe('buildComponentSurfaceContexts', () => {
         onVivid: {
           state: {
             neutral: {
+              high: { rest: true },
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }
             },
             red: {
+              high: { rest: true },
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }
             },
             'red-deep': {
+              high: { rest: true },
               medium: { rest: true },
               low: { rest: true },
               lowest: { rest: true }

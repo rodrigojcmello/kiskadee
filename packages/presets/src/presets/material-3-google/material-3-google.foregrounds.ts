@@ -15,8 +15,9 @@ export function createMaterial3GoogleForegrounds({ c, segmentNames }: Args): Sch
           : c.ref(segment, track, role, 'vivid', track === 'd' && role !== 'neutral' ? 6 : 0);
         const white = c(segment, 'l', 'primitive.black.v1', 0);
         const foreground = (value: typeof rest) => ({
-          medium: { rest: value, pending: withAlpha(value, 70), disabled: withAlpha(value, 38) },
-          low: { rest: withAlpha(value, 68), disabled: withAlpha(value, 38) },
+          high: { rest: value, pending: withAlpha(value, 70), disabled: withAlpha(value, 38) },
+          medium: { rest: withAlpha(value, 68), disabled: withAlpha(value, 38) },
+          low: { rest: withAlpha(value, 53), disabled: withAlpha(value, 38) },
           lowest: { rest: withAlpha(value, 38) }
         });
         return { onSubtle: foreground(rest), onVivid: foreground(white) };
@@ -31,7 +32,7 @@ export function createMaterial3GoogleForegrounds({ c, segmentNames }: Args): Sch
 
   return {
     profiles: {
-      neutral: family('neutral'),
+      neutral: { standard: profile('neutral') },
       blue: family('primitive.blue.v1'),
       red: family('primitive.red.v1'),
       green: family('primitive.green.v1'),

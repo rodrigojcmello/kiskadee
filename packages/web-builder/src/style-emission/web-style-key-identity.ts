@@ -42,6 +42,10 @@ function resolveStyleKeyEmissionMode(
     return styleEmissionPolicy.textColorEmission === 'mirrored' ? 'm' : undefined;
   }
 
+  if (styleKey.startsWith('textHeight')) {
+    return styleEmissionPolicy.textHeightEmission === 'token' ? 't' : undefined;
+  }
+
   if (styleKey.startsWith('shadow')) {
     return styleEmissionPolicy.shadowEmission === 'token' ? 't' : undefined;
   }

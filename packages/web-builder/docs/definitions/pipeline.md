@@ -5,7 +5,9 @@ Location: `packages/web-builder/src/run-build.ts`
 ## Phases
 
 1. Phase 1 - Convert schema to style keys
-   - Function: `convertElementSchemaToStyleKeys(schema)`.
+   - Function: `convertElementSchemaToStyleKeys(schema, webStyleEmissionPolicy)`; the policy is required.
+     Production passes `DEFAULT_WEB_STYLE_EMISSION_POLICY`. Pass that same policy to later phases;
+     omission fails explicitly instead of silently discarding token-only typography utilities.
    - Produces normalized style keys per component and element.
    - Expands typography profile references into atomic decoration and scale keys before the normal
      element conversion.

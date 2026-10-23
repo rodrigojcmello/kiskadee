@@ -1,10 +1,93 @@
 import type { ComponentStyleKeyMap } from '@kiskadee/core';
+import postcss from 'postcss';
 import { describe, expect, it } from 'vitest';
 import type { ShortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { generateCssSplit } from './generateCssSplit.ts';
 
 describe('generateCssSplit', () => {
+  it('limits parent color rules to the nearest interaction owner without scoping Rest', async () => {
+    const rest = 'textColor__#111111';
+    const hover = 'textColor==hover__#222222';
+    const input = {
+      button: {
+        e2: {
+          palettes: {
+            default: { light: { onSubtle: { neutral: { rest: [rest], hover: [hover] } } } }
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const output = await generateCssSplit(
+      input,
+      { [rest]: 'label-rest', [hover]: 'label-hover' },
+      { forceState: true }
+    );
+    const palette = postcss.parse(output.palettes['default.light']);
+    expect(
+      palette.nodes.some((node) => node.type === 'rule' && node.selector === '.label-rest')
+    ).toBe(true);
+    expect(output.coreCss).not.toContain('@scope');
+    expect(output.palettes['default.light']).toContain('@scope (.-a, .-n) to (.-a, .-n)');
+    expect(output.palettes['default.light']).toContain(':where(:scope).-a.-h .label-hover');
+    expect(output.palettes['default.light']).toContain(':where(:scope).-n:hover');
+  });
+
+  it('keeps TextField projected hover and pressed usable for palettes and effects in production output', async () => {
+    const hoverPaint = 'boxColor==hover__#eeeeee';
+    const pressedPaint = 'boxColor==pressed__#dddddd';
+    const hoverRadius = 'borderRadius==hover__4';
+    const pressedRadius = 'borderRadius==pressed__2';
+    const hoverShadow = 'shadow--hover__[0,2,4,"#00000040"]';
+    const pressedShadow = 'shadow--pressed__[0,1,2,"#00000040"]';
+    const input = {
+      textField: {
+        standard: {
+          outline: {
+            e1: { effects: { hover: [hoverShadow], pressed: [pressedShadow] } },
+            e3: {
+              effects: { hover: [hoverRadius], pressed: [pressedRadius] },
+              palettes: {
+                default: {
+                  light: {
+                    onSubtle: { neutral: { hover: [hoverPaint], pressed: [pressedPaint] } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } as unknown as ComponentStyleKeyMap;
+    const output = await generateCssSplit(
+      input,
+      {
+        [`${hoverPaint}@@m`]: 'tf-hover-paint',
+        [`${pressedPaint}@@m`]: 'tf-pressed-paint',
+        [`${hoverRadius}@@m`]: 'tf-hover-radius',
+        [`${pressedRadius}@@m`]: 'tf-pressed-radius',
+        [hoverShadow]: 'tf-hover-shadow',
+        [pressedShadow]: 'tf-pressed-shadow'
+      },
+      {
+        // These are the production build options; projected states are runtime behavior.
+        forceState: true,
+        webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+      }
+    );
+
+    for (const [state, name] of [
+      ['h', 'hover'],
+      ['p', 'pressed']
+    ] as const) {
+      expect(output.palettes['default.light']).toContain(`.-a.-${state} .tf-${name}-paint`);
+      expect(output.effectsCss).toContain(`.-a.-${state} .tf-${name}-radius`);
+      expect(output.effectsCss).toContain(`.tf-${name}-shadow.-e.-${state}.-a`);
+    }
+    expect(output.coreCss).not.toContain('tf-hover');
+    expect(output.coreCss).not.toContain('tf-pressed');
+  });
+
   it('emits side colors after uniform borders at equal state precedence', async () => {
     const sides = ['Top', 'Right', 'Bottom', 'Left'];
     const keys = [

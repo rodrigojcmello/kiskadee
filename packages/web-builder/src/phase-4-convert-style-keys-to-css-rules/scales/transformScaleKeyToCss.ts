@@ -180,7 +180,9 @@ export function transformScaleKeyToCss(
 
   const styleEmissionPolicy = options?.styleEmissionPolicy ?? DEFAULT_ELEMENT_STYLE_EMISSION_POLICY;
   let rule: string;
-  if (scaleProperty === 'borderWidth') {
+  if (scaleProperty === 'textHeight' && styleEmissionPolicy.textHeightEmission === 'token') {
+    rule = `.${className} { ${EMITTED_SCALE_CSS_VARS.textHeight}: ${cssValue} }`;
+  } else if (scaleProperty === 'borderWidth') {
     rule =
       styleEmissionPolicy.borderWidthEmission === 'mirrored'
         ? `.${className} { ${EMITTED_SCALE_CSS_VARS.borderWidth}: ${cssValue}; ${cssProperty}: ${cssValue} }`

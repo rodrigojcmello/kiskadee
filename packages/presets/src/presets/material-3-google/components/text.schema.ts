@@ -4,6 +4,7 @@ export function createMaterial3GoogleTextSchema(): NonNullable<
   Schema<'purple'>['components']['text']
 > {
   return {
+    options: { emphasis: 'high' },
     elements: {
       e1: {
         name: 'foreground',

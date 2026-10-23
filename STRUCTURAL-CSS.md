@@ -832,12 +832,16 @@ Rules:
 - treat absence of a projection as absence of the capability, not permission to add a Sass
   fallback.
 
-The Registry currently serves Button connected-divider overlap and Dropdown independent empty
-leading tracks. Runtime applies only the approved width/gap subsets, and structural Sass consumes
+The Registry currently serves Button connected-divider overlap, Button plain-icon label-height
+fitting, and Dropdown independent empty leading tracks. Runtime applies only the approved width/gap subsets, and structural Sass consumes
 their emitted variables on the approved structural nodes. Migration of Tabs fixed width remains
 only a future candidate. See
 [`structural-utility-projections.md`](packages/web-builder/docs/definitions/structural-utility-projections.md)
 for the canonical eligibility and artifact contract.
+
+Button plain-icon fitting also uses the Registry: `e2.p.lh` projects only the label's token-only
+`textHeight` utility onto `e3`. The `e3a` modifier derives symmetric block margins from `--k-txh`
+and `--k-bxh`; it does not author spacing or inspect the rendered label. Surfaced icons are excluded.
 
 ## Complementary spacing composition
 

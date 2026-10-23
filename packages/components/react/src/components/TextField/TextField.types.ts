@@ -3,6 +3,7 @@ import type {
   ComponentEmphasis,
   ComponentSize,
   RadiusMode,
+  TextFieldContentEmphasis,
   TextFieldFocusRingColorSource,
   TextFieldIntent,
   TextFieldLabelOffsetByRadius,
@@ -18,7 +19,47 @@ import type {
 } from '@kiskadee/react-headless';
 import type { ReactNode, Ref } from 'react';
 
-export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type TextFieldElementName =
+  | 'e1'
+  | 'e2'
+  | 'e3'
+  | 'e4'
+  | 'e5'
+  | 'e6'
+  | 'e7'
+  | 'e8'
+  | 'e9'
+  | 'e10';
+
+export type TextFieldContentState = {
+  disabled: boolean;
+  readOnly: boolean;
+};
+
+export type TextFieldContent = ReactNode | ((state: TextFieldContentState) => ReactNode);
+
+export type TextFieldConnectedActionState = TextFieldContentState & { className: string };
+export type TextFieldConnectedAction = (state: TextFieldConnectedActionState) => ReactNode;
+
+export type TextFieldClearAction = {
+  /** Caller-provided artwork; no icon family or canonical name is assumed. */
+  icon: ReactNode;
+  label: string;
+  /** Polite, visually hidden confirmation after an accepted clear. */
+  clearedAnnouncement: string;
+  /** Existing Button size. Defaults to Small without changing its geometry. */
+  size?: ComponentSize;
+};
+
+export type TextFieldVisibilityToggle = {
+  showLabel: string;
+  hideLabel: string;
+  /** Existing Button size. Defaults to Small. */
+  size?: ComponentSize;
+} & (
+  | { presentation: 'text'; showText: string; hideText: string }
+  | { presentation: 'icon'; showIcon: ReactNode; hideIcon: ReactNode }
+);
 
 export type TextFieldClassNames = Partial<Record<TextFieldElementName, string>>;
 
@@ -43,6 +84,20 @@ export type TextFieldProps = Omit<
   /** External ref for anchoring semantic overlays such as Autocomplete. */
   inputRef?: Ref<HTMLInputElement>;
   placeholder?: string;
+  /** Content at the field's logical start, independent of the input text direction. */
+  startContent?: TextFieldContent;
+  /** Content at the field's logical end, independent of the input text direction. */
+  endContent?: TextFieldContent;
+  /** Own-surface treatment of the logical start region. */
+  startContentEmphasis?: TextFieldContentEmphasis;
+  /** Own-surface treatment of the logical end region. */
+  endContentEmphasis?: TextFieldContentEmphasis;
+  /** Existing Button connected to the field's logical end; forward the supplied relation class. */
+  connectedEndAction?: TextFieldConnectedAction;
+  /** Clears a nonempty editable value; absent for empty, disabled, or read-only fields. */
+  clearAction?: TextFieldClearAction;
+  /** Opt-in reveal control for inputProps.type="password". */
+  visibilityToggle?: TextFieldVisibilityToggle;
   size?: ComponentSize;
   emphasis?: ComponentEmphasis;
   intent?: TextFieldIntent;

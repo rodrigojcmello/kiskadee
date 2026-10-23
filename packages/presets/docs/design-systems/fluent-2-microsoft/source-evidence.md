@@ -46,21 +46,18 @@ consume Low. Dark/Darker and onVivid recipes are preserved.
   scale. The mapping is explicit because the two grids and theme orientations
   are not identical.
 - Fluent publishes `colorNeutralForeground1` through `colorNeutralForeground4` for Light and Dark,
-  plus a white `colorNeutralForegroundOnBrand`. Kiskadee records all four aliases in the tonal
-  de-para, but standalone Text uses Foreground 1 as its normal `medium`, Foreground 3 as `low`, and
-  a deliberately quieter Kiskadee `lowest`. Foreground 2 is intentionally skipped so the reduced
-  hierarchy remains visibly separated. Fluent does not publish that three-level component API,
-  its weakest extension, an on-brand hierarchy, or a Darker theme; those decisions are documented
-  in the Text evidence.
-- Fluent's approved Blue, Cranberry, Green, Berry, Orange, and Marigold primitives are also
-  published as standalone Text foreground families named `blue`, `red`, `green`, `purple`,
-  `orange`, and `yellow`. Each family exposes complete `standard` and `deep` profiles. Their
-  three-level hierarchies are Kiskadee extensions calibrated from the existing Button and Badge
-  foreground recipes, not an upstream generic Text API.
-- `neutral.deep` promotes the approved absolute-black, lower neutral, and disabled Button
-  foregrounds into the same global catalog. Canonical Fluent Button text slots now consume atomic
-  global foreground coordinates; Button surfaces and borders remain component-owned, and Brand
-  Pack projections remain on their existing build-only formula.
+  plus `colorNeutralForegroundOnBrand`. The current four-strength Kiskadee hierarchy preserves
+  the previous normal/secondary/quiet colors as High/Medium/Lowest and adds an intermediate Low.
+  Neutral publishes **Standard only**; chromatic families publish Standard and Deep. These public
+  strength/profile axes are Kiskadee extensions rather than Fluent token names.
+- New neutral Low uses strict `reference(neutral, vivid -14)` in Light (L24 #9b9b9b) and
+  `reference(neutral, vivid -6)` in Dark/Darker (D60 #828282). Neutral onVivid uses physical white
+  at 46%; chromatic Low uses 46% onSubtle / 58% onVivid of the unchanged anchor. Existing approved
+  primitive assets and generator identity remain unchanged.
+- Text explicitly declares `options.emphasis: 'high'`. Other components choose atomic foreground
+  coordinates independently; their surface emphases are unchanged. Neutral Deep consumers migrate
+  to Standard, accepting the documented Rest-color differences rather than keeping another gray
+  recipe. Component disabled foreground coordinates survive within Standard. See [Text evidence](components/text.md).
 
 ## Preset-Wide Color And Token Provenance
 

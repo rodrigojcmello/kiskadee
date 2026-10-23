@@ -208,3 +208,18 @@ endpoint, resolved by the established preset getter at L100 and multiplied by th
 No asset, semantic color role or theme matrix changes. Card and Button consume the completed levels;
 Dropdown remains on level 2 and BottomSheet on level 3, so their shadows also gain the missing layer.
 Their component recipes and fixed-level contracts are preserved.
+
+## Four-step foreground hierarchy (2026-10-22)
+
+Status: **Kiskadee extension**. Neutral exposes only Standard; the former Neutral Deep recipe is
+retired without an alias. Chromatic Standard/Deep remain independent recipes. High preserves the
+previous Medium color and complete state map, Medium preserves the previous Low, and Lowest is
+unchanged. The new Low uses 53% opacity of the existing resolved foreground, the midpoint between
+the preserved 68% Medium and 38% Lowest. Its Disabled paint uses the existing 38% recipe.
+This applies independently to Light/Dark, the existing segments, and both surface contexts.
+
+All colors continue through the existing `c` / `c.ref` getters and approved primitive assets
+documented in [tonal evidence](colors/README.md); no new literal, ramp, seed or upstream color claim
+is introduced. `components.text.options.emphasis` selects High explicitly to retain the default
+Text appearance. This option belongs to Text and does not override other components’ foreground
+recipes or typography profiles.

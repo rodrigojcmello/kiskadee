@@ -10,25 +10,28 @@ const foregrounds = {
           default: {
             light: {
               onSubtle: {
-                medium: {
+                high: {
                   rest: '#c50f1f',
                   hover: '#b70419',
                   pressed: '#951219',
                   pending: '#c50f1fb3'
                 },
-                low: { rest: '#c50f1fad' },
+                medium: { rest: '#c50f1fad' },
+                low: { rest: '#888888' },
                 lowest: { rest: '#c50f1f3d' }
               },
               onVivid: {
-                medium: { rest: '#ffa89f' },
-                low: { rest: '#ffa89fc2' },
+                high: { rest: '#ffa89f' },
+                medium: { rest: '#ffa89fc2' },
+                low: { rest: '#888888' },
                 lowest: { rest: '#ffa89f66' }
               }
             },
             dark: {
               onSubtle: {
-                medium: { rest: '#ff958b' },
-                low: { rest: '#ff958bad' },
+                high: { rest: '#ff958b' },
+                medium: { rest: '#ff958bad' },
+                low: { rest: '#888888' },
                 lowest: { rest: '#ff958b3d' }
               }
             }
@@ -48,10 +51,10 @@ describe('resolveForegroundReferences', () => {
             textColor: {
               destructive: {
                 high: {
-                  rest: fg('red.standard.light.onSubtle.medium'),
-                  hover: fg.parentState('red.standard.light.onSubtle.medium.hover'),
+                  rest: fg('red.standard.light.onSubtle.high'),
+                  hover: fg.parentState('red.standard.light.onSubtle.high.hover'),
                   selected: {
-                    rest: fg.parentState('red.standard.light.onSubtle.medium.pressed')
+                    rest: fg.parentState('red.standard.light.onSubtle.high.pressed')
                   }
                 }
               }
@@ -89,7 +92,7 @@ describe('resolveForegroundReferences', () => {
               onSubtle: {
                 textColor: {
                   destructive: {
-                    medium: { rest: 'fg:red.deep.light.onSubtle.medium' }
+                    medium: { rest: 'fg:red.deep.light.onSubtle.high' }
                   }
                 }
               }
@@ -110,7 +113,7 @@ describe('resolveForegroundReferences', () => {
                   destructive: {
                     medium: {
                       rest: '#c50f1f',
-                      hover: { ref: 'fg:red.standard.light.onSubtle.medium.hover' }
+                      hover: { ref: 'fg:red.standard.light.onSubtle.high.hover' }
                     }
                   }
                 }
@@ -130,7 +133,7 @@ describe('resolveForegroundReferences', () => {
               onSubtle: {
                 boxColor: {
                   destructive: {
-                    medium: { rest: fg('red.standard.light.onSubtle.medium') }
+                    medium: { rest: fg('red.standard.light.onSubtle.high') }
                   }
                 }
               }

@@ -50,12 +50,12 @@ lookup remains the preset's authoring contract; no new resolver or generated col
 
 | Source | Source Light / Dark | Lookup and output | Decision |
 | --- | --- | --- | --- |
-| Labels/Primary | black / white | physical cap via neutral L100 / D100 | Text medium, Official exact |
-| Labels/Secondary | #3c3c43 at 60% / #ebebf5 at 70% | exact neutral L70 #3d3d3f / D95 #ebebee, source alpha retained | Text low, Official adapted; Delta E 0.008785 / 0.009598 |
+| Labels/Primary | black / white | physical cap via neutral L100 / D100 | Text high, Official exact |
+| Labels/Secondary | #3c3c43 at 60% / #ebebf5 at 70% | exact neutral L70 #3d3d3f / D95 #ebebee, source alpha retained | Text medium, Official adapted; Delta E 0.008785 / 0.009598 |
 | Labels/Tertiary | same families at 30% | exact L70 / D95, 30% | Text lowest, Official adapted |
 | Apple Accents | all ten public chromatic families | family reference vivid, independent L/D | Standard colored text, Official adapted anchor; Dark generation is adaptive |
 | Colored text deep | no Apple counterpart | reference vivid +8 Light / +4 Dark | Kiskadee extension for stronger foreground |
-| Vivid content | no Apple global label recipe for this canvas | physical white 100/80/50%; chromatic Light subtle -2 at same alpha | Kiskadee extension |
+| Vivid content | no Apple global label recipe for this canvas | physical white 100/80/65/50%; chromatic Light subtle -2 at same alpha | Kiskadee extension |
 
 Darker uses Dark label values against the separately authored black Base canvas. It is not a third
 Apple palette. On-vivid colors target the preset's dark blue canonical surfaces; they do not claim
@@ -68,7 +68,9 @@ a universal small-text contrast guarantee.
 The only Showcase change is the existing iOS entry in `showcase-text-profiles.ts`, selecting the
 new heading and label profiles. No layout, runtime, Builder or interaction feature is added.
 Native Dynamic Type resizing, vibrancy, semantic quaternary text, and scene-relative materials are
-**Deferred**. The existing three text emphasis levels map to Primary/Secondary/Tertiary.
+**Deferred**. High, Medium and Lowest preserve the source Primary/Secondary/Tertiary mapping. Low is an explicit **Kiskadee extension** between Secondary and Tertiary: neutral Light retains L70 with 45% alpha, while Dark/Darker retain D95 with 50% alpha. Chromatic onSubtle uses 57.5% between the preserved 75%/40% endpoints; every onVivid recipe uses 65% between 80%/50%. These midpoint alphas reuse the approved color assets and existing `c`/`c.ref` lookups; they do not introduce new Apple source colors.
+
+Neutral publishes Standard only; Deep remains available exclusively for chromatic families. `components.text.options.emphasis` explicitly selects High as the preset default. Component-owned menu and sheet foreground coordinates migrate old Medium to High and old Low to Medium, retaining their previous paints independently of the Text default.
 
 ## Validation
 

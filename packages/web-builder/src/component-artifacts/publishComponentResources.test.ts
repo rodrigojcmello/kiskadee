@@ -5,6 +5,50 @@ import type { Schema } from '@kiskadee/core';
 import { expect, it } from 'vitest';
 import { publishComponentResources } from './publishComponentResources.ts';
 
+it('publishes the authored Text default over stale metadata without changing foreground recipes', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'kiskadee-text-default-'));
+  const write = async (path: string, value: unknown) => {
+    await mkdir(dirname(join(dir, path)), { recursive: true });
+    await writeFile(join(dir, path), typeof value === 'string' ? value : JSON.stringify(value));
+  };
+  const schema = {
+    name: 'Text default',
+    author: 'Kiskadee',
+    version: [1, 0, 0],
+    breakpoints: { 'bp:all': 0 },
+    components: {
+      text: {
+        options: { emphasis: 'high' },
+        elements: {
+          e1: {
+            name: 'foreground',
+            foreground: { neutral: { family: 'neutral', profile: 'standard' } }
+          }
+        }
+      }
+    }
+  } satisfies Schema;
+  try {
+    await write('manifest.json', {
+      themes: {},
+      components: {
+        text: { artifacts: { metadata: 'components/previous-text.json' } }
+      }
+    });
+    await write('global.kiskadee.json', { components: { text: { options: { emphasis: 'low' } } } });
+    await write('components/previous-text.json', { options: { emphasis: 'medium' } });
+    await write('core.kiskadee.json', {});
+    await write('core.kiskadee.css', '');
+    await publishComponentResources(dir, schema);
+    const metadata = JSON.parse(await readFile(join(dir, 'components/text.kiskadee.json'), 'utf8'));
+    expect(metadata.options).toEqual({ emphasis: 'high' });
+    expect(metadata).not.toHaveProperty('foregrounds');
+    expect(schema.components.text.elements.e1.foreground.neutral.profile).toBe('standard');
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 it.each([false, true])('publishes lean resources (segment metadata: %s)', async (withSegments) => {
   const dir = await mkdtemp(join(tmpdir(), 'kiskadee-component-publication-'));
   const write = async (path: string, value: unknown) => {

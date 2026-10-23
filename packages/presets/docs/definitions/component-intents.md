@@ -72,13 +72,14 @@ identical backgrounds just because their semantic paths differ.
 ### Text Foreground Emphasis
 
 Standalone Text is the deliberate exception to own-surface emphasis semantics because it does not
-paint a surface. Its `medium | low | lowest` axis describes the strength of the foreground itself
-within one profile. `medium` is the normal and strongest supported foreground; `high` and `highest`
-are excluded rather than authoring an exceptional color that would invite accidental overuse.
+paint a surface. Its `high | medium | low | lowest` axis describes the strength of the foreground itself
+within one profile. High is the strongest supported foreground; Highest remains excluded.
+Neutral publishes Standard only, while chromatic families may also publish Deep.
 
 This is a component-specific interpretation, not a redefinition of `ComponentEmphasis`. Button and
-Card continue using emphasis for own-surface strength. Text defaults to `neutral.medium`, and its
-surface-relative color branch is selected independently through Surface Context.
+Card continue using emphasis for own-surface strength. Text defaults to Neutral and the preset-authored
+`components.text.options.emphasis` (High in the current official presets). Its surface-relative
+color branch is selected independently through Surface Context.
 
 Text chromatic families are also a deliberate exception to component-intent naming. Standalone
 content is too generic to infer that every `red` string is destructive, every `green` string is

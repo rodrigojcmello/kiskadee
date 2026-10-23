@@ -44,6 +44,7 @@ import { SwatchRadioGroup } from '@/k-components';
 import { playWowTransition } from '@/utils/playWowTransition';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import { TextFieldAutocompleteExample } from './components/TextFieldAutocompleteExample';
+import { TextFieldContentExamples } from './components/TextFieldContentExamples';
 import s from './TextField.module.scss';
 
 const radiusOptions: Array<{ value: RadiusMode; label: string }> = [
@@ -699,6 +700,13 @@ export default function TextFieldPage() {
       </section>
 
       <TextFieldAutocompleteExample />
+
+      <TextFieldContentExamples
+        radius={borderRadius}
+        emphasis={textFieldEmphasis}
+        customSurface={surface !== 'default'}
+        surfaceClassName={getSurfaceClassName(s.exampleBlock, surface)}
+      />
 
       <section className={s.section} aria-labelledby="text-field-sizes-title">
         <div className={s.sectionHeadingRow}>

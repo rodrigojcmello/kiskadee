@@ -15,6 +15,7 @@ import {
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { ComponentClassMapArtifactJSON } from '../component-artifacts/componentClassMapArtifacts.ts';
 import { convertElementSchemaToStyleKeys } from '../phase-1-convert-schema-to-style-keys/convertElementSchemaToStyleKeys.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import type { BrandPackBuildManifest } from './brandPackArtifacts.ts';
 import { buildOptionalBrandPacksForPreset } from './buildBrandPacks.ts';
 
@@ -114,7 +115,10 @@ describe('buildOptionalBrandPacksForPreset', () => {
   });
 
   it('keeps brand intents out of the normal Fluent preset projection', () => {
-    const { styleKeys } = convertElementSchemaToStyleKeys(fluent2MicrosoftSchema);
+    const { styleKeys } = convertElementSchemaToStyleKeys(
+      fluent2MicrosoftSchema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     expect(JSON.stringify(styleKeys)).not.toContain('brand.');
   });
 });

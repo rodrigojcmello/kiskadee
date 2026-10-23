@@ -1,11 +1,14 @@
-import type {
-  Schema,
-  TextFieldFocusRingColorSource,
-  TextFieldLabelOffsetByRadius,
-  TextFieldLabelPlacement,
-  TextFieldMode,
-  TextFieldModeByVariant,
-  TextFieldVariant
+import {
+  type ContentSurfaceContextMap,
+  type Schema,
+  type TextFieldFocusRingColorSource,
+  type TextFieldLabelOffsetByRadius,
+  type TextFieldLabelPlacement,
+  type TextFieldMode,
+  type TextFieldModeByVariant,
+  type TextFieldModeConfig,
+  type TextFieldVariant,
+  validateContentSurfaceContextMap
 } from '@kiskadee/core';
 
 export const TEXT_FIELD_COMPONENT_ARTIFACT_PATH = 'components/text-field.kiskadee.json';
@@ -22,7 +25,14 @@ export type TextFieldModeOptionsPayload = {
 };
 
 export type TextFieldModePayload<TMode extends TextFieldMode = TextFieldMode> = Partial<
-  Record<TMode, { options?: TextFieldModeOptionsPayload }>
+  Record<
+    TMode,
+    {
+      options?: TextFieldModeOptionsPayload;
+      contentSurfaceContext?: ContentSurfaceContextMap;
+      contentRegionSurfaceContext?: ContentSurfaceContextMap;
+    }
+  >
 >;
 
 export type TextFieldVariantOptionsPayload = {
@@ -53,6 +63,27 @@ function pickTextFieldModeOptions(options: unknown): TextFieldModeOptionsPayload
     ? {
         ...(labelOffset ? { labelOffset } : {}),
         ...(focusRingColorSource ? { focusRingColorSource } : {})
+      }
+    : undefined;
+}
+
+function buildTextFieldModePayload(mode: TextFieldModeConfig | undefined, path: string) {
+  if (!mode) return undefined;
+  const options = pickTextFieldModeOptions(mode.options);
+  const contentSurfaceContext = mode.contentSurfaceContext;
+  const contentRegionSurfaceContext = mode.contentRegionSurfaceContext;
+  for (const key of ['contentSurfaceContext', 'contentRegionSurfaceContext'] as const) {
+    if (mode[key] !== undefined) {
+      const issues = validateContentSurfaceContextMap(mode[key], `${path}.${key}`);
+      if (issues.length > 0)
+        throw new Error(`Invalid TextField content surface context.\n${issues.join('\n')}`);
+    }
+  }
+  return options || contentSurfaceContext !== undefined || contentRegionSurfaceContext !== undefined
+    ? {
+        ...(options ? { options } : {}),
+        ...(contentSurfaceContext !== undefined ? { contentSurfaceContext } : {}),
+        ...(contentRegionSurfaceContext !== undefined ? { contentRegionSurfaceContext } : {})
       }
     : undefined;
 }
@@ -92,12 +123,13 @@ function buildTextFieldVariantsPayload(schema: Schema): TextFieldVariantsPayload
 
   const standardOptions = pickTextFieldStandardVariantOptions(standardVariant?.options);
   const standard: TextFieldModePayload<TextFieldModeByVariant['standard']> = {};
-  const outlineOptions = pickTextFieldModeOptions(standardModes?.outline?.options);
-  const underlineOptions = pickTextFieldModeOptions(standardModes?.underline?.options);
-  const borderlessOptions = pickTextFieldModeOptions(standardModes?.borderless?.options);
-  if (outlineOptions) standard.outline = { options: outlineOptions };
-  if (underlineOptions) standard.underline = { options: underlineOptions };
-  if (borderlessOptions) standard.borderless = { options: borderlessOptions };
+  for (const modeName of ['outline', 'underline', 'borderless'] as const) {
+    const payload = buildTextFieldModePayload(
+      standardModes?.[modeName],
+      `components.textField.variants.standard.modes.${modeName}`
+    );
+    if (payload) standard[modeName] = payload;
+  }
   if (standardOptions || Object.keys(standard).length > 0) {
     variants.standard = {
       ...(standardOptions ? { options: standardOptions } : {}),
@@ -107,10 +139,13 @@ function buildTextFieldVariantsPayload(schema: Schema): TextFieldVariantsPayload
 
   const floatingOptions = pickTextFieldFloatingVariantOptions(floatingVariant?.options);
   const floating: TextFieldModePayload<TextFieldModeByVariant['floating']> = {};
-  const notchedOptions = pickTextFieldModeOptions(floatingModes?.notched?.options);
-  const insideOptions = pickTextFieldModeOptions(floatingModes?.inside?.options);
-  if (notchedOptions) floating.notched = { options: notchedOptions };
-  if (insideOptions) floating.inside = { options: insideOptions };
+  for (const modeName of ['notched', 'inside'] as const) {
+    const payload = buildTextFieldModePayload(
+      floatingModes?.[modeName],
+      `components.textField.variants.floating.modes.${modeName}`
+    );
+    if (payload) floating[modeName] = payload;
+  }
   if (floatingOptions || Object.keys(floating).length > 0) {
     variants.floating = {
       ...(floatingOptions ? { options: floatingOptions } : {}),

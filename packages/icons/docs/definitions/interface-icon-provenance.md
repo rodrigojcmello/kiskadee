@@ -47,3 +47,25 @@ The canonical `cart` CP-I concept uses `ShoppingCartIcon`, `CartRegular`, `Shopp
 `ShoppingCartIcon`, `faCartShopping`, and Material Symbols `shopping_cart` for those same families.
 It remains consumer-provided content: adding complete family coverage does not promote it to the
 limited Essential Icon catalog.
+
+The canonical `lock` concept uses `LockKeyholeIcon`, `LockClosedRegular`, `Locked`, `Lock`,
+`LockSimpleIcon`, `faLock`, and Material Symbols `lock` for Lucide, Fluent, Carbon, Iconoir,
+Phosphor, Font Awesome, and Material respectively. All mappings are fixed in RTL, use the pinned
+upstream releases above, and cover every exposed family variant without artwork substitution.
+
+The canonical `eye` / `eye-off` concepts map to the following pinned upstream artwork. Both are
+`fixed` in RTL and retain all exposed variants; no rendering fallback substitutes another family.
+
+| Family | `eye` | `eye-off` |
+| --- | --- | --- |
+| Lucide | `EyeIcon` | `EyeOffIcon` |
+| Fluent System | `EyeRegular` | `EyeOffRegular` |
+| Material Symbols | `visibility` | `visibility_off` |
+| Carbon | `View` | `ViewOff` |
+| Iconoir | `Eye` | `EyeClosed` |
+| Phosphor | `EyeIcon` | `EyeSlashIcon` |
+| Font Awesome Classic | `faEye` | `faEyeSlash` |
+
+The Material ligatures belong to the shared outlined font subset for both FILL variants. Iconoir's
+concealed concept uses its native closed-eye glyph rather than synthetic slash artwork. These
+canonical additions do not extend the Essential Icon map or select artwork inside TextField.

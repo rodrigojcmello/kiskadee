@@ -5,6 +5,7 @@ import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsag
 import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { generateCssSplit } from '../phase-4-convert-style-keys-to-css-rules/generateCssSplit.ts';
 import { generateClassNamesMapSplit } from '../phase-5-generate-class-names-map/generateClassNamesMap.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { buildTextTypographyClassMap, buildTypographyArtifact } from './compileTypography.ts';
 
 const schema = {
@@ -47,20 +48,49 @@ const schema = {
 } as const satisfies Schema;
 
 describe('typography Web pipeline', () => {
+  it('projects only the authored label height utility, even when no icon element is authored', async () => {
+    const policy = DEFAULT_WEB_STYLE_EMISSION_POLICY;
+    const { styleKeys, toneMetadataByPalette } = convertElementSchemaToStyleKeys(schema, policy);
+    const usage = mapStyleKeyUsage(styleKeys, { webStyleEmissionPolicy: policy });
+    const shortened = shortenCssClassNames(usage, { prefix: 'fit-' });
+    const css = await generateCssSplit(styleKeys, shortened, {
+      breakpoints: schema.breakpoints,
+      webStyleEmissionPolicy: policy
+    });
+    const maps = generateClassNamesMapSplit(styleKeys, shortened, toneMetadataByPalette, {
+      webStyleEmissionPolicy: policy
+    });
+    const label = (maps.core.button as Record<string, ClassNameByElementJSON>).e2!;
+    const small = label.p?.lh?.['sm:1'];
+    expect(small).toBeTruthy();
+    expect(small?.split(' ')).toHaveLength(1);
+    expect(label.s?.['sm:1']?.split(' ')).toContain(small);
+    expect(css.coreCss).toContain(`.${small} { --k-txh: 16px }`);
+    expect(css.coreCss).toContain('line-height: 1.333333');
+    expect(css.coreCss).not.toContain('margin-block');
+    expect(css.coreCss).not.toContain('_boxHeight');
+  });
+
   it('lowers profiles into d/s only and publishes reusable atomic profile classes', async () => {
-    const { styleKeys, toneMetadataByPalette, typographyBuild } =
-      convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette, typographyBuild } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     if (!typographyBuild) throw new Error('Expected typography build.');
 
     const usage = mapStyleKeyUsage(styleKeys, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
       additionalStyleKeys: typographyBuild.additionalCoreStyleKeys
     });
     const shortenMap = shortenCssClassNames(usage, { prefix: 'type-' });
     const css = await generateCssSplit(styleKeys, shortenMap, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY,
       breakpoints: schema.breakpoints,
       additionalCoreStyleKeys: typographyBuild.additionalCoreStyleKeys
     });
-    const classMaps = generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette);
+    const classMaps = generateClassNamesMapSplit(styleKeys, shortenMap, toneMetadataByPalette, {
+      webStyleEmissionPolicy: DEFAULT_WEB_STYLE_EMISSION_POLICY
+    });
     const button = classMaps.core.button as Record<string, ClassNameByElementJSON> | undefined;
     const element = button?.e2;
 

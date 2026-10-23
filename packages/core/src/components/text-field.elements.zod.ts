@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { elementIconSizeContractSchema } from '../icon-sizes.contract.zod.ts';
+import type { ElementIconSize } from '../icon-sizes.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import { elementTypographyContractSchema } from '../typography.contract.zod.ts';
@@ -124,6 +126,50 @@ export function createTextFieldIndicatorElementStyleSchema<
     })
     .strict();
 }
+
+export function createTextFieldContentRegionElementStyleSchema<
+  TSegmentName extends SegmentName = never
+>() {
+  return z
+    .object({
+      name: z.string(),
+      scales: createScalesSchema(['paddingLeft', 'marginRight', 'borderWidth']).optional(),
+      palettes: createPalettesSchema<TSegmentName, 'boxColor' | 'borderColor'>([
+        'boxColor',
+        'borderColor'
+      ]).optional()
+    })
+    .strict();
+}
+
+export function createTextFieldIconElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string(),
+      iconSize: elementIconSizeContractSchema as z.ZodType<ElementIconSize, ElementIconSize>,
+      palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional()
+    })
+    .strict();
+}
+
+export function createTextFieldTextElementStyleSchema<TSegmentName extends SegmentName = never>() {
+  return z
+    .object({
+      name: z.string(),
+      typography: elementTypographyContractSchema.optional(),
+      palettes: createPalettesSchema<TSegmentName, 'textColor'>(['textColor']).optional()
+    })
+    .strict();
+}
+
+export type TextFieldContentRegionElementStyleFromSchema<TSegmentName extends SegmentName = never> =
+  z.input<ReturnType<typeof createTextFieldContentRegionElementStyleSchema<TSegmentName>>>;
+export type TextFieldIconElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
+  ReturnType<typeof createTextFieldIconElementStyleSchema<TSegmentName>>
+>;
+export type TextFieldTextElementStyleFromSchema<TSegmentName extends SegmentName = never> = z.input<
+  ReturnType<typeof createTextFieldTextElementStyleSchema<TSegmentName>>
+>;
 
 export type TextFieldRootElementStyleFromSchema = z.input<
   ReturnType<typeof createTextFieldRootElementStyleSchema>

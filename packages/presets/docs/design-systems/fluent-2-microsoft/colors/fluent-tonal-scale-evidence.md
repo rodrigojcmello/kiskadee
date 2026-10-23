@@ -385,51 +385,34 @@ Black, Cranberry, and Green generated scales. Primary High anchors the shared
 surface recipe to each family's `vivid` reference, while Medium begins at each
 family's `subtle` reference. Primary, Neutral, Destructive, and Positive reuse
 the same ordinal surface-state recipe without intent-specific tonal compensation.
-Canonical Button text now consumes the global foreground catalog separately
-from those surfaces and borders. Neutral High has one foreground exception: its
-physically light Dark/Darker `vivid` surfaces use
-`neutral.deep.light.onSubtle.medium`, the absolute-black cap, instead of white.
-In the Kiskadee on-vivid extension, Light Medium shares one neutral White
-overlay across intents while chromatic labels use each family's global Deep
-Light-track `subtle +2` coordinate; Neutral retains its approved `subtle +4`
-coordinate. Dark and Darker retain the role-aware Medium surface candidate but
-consume the same physical-Light foreground coordinates. All three themes reuse
-their existing Medium surfaces in descending physical-lightness order from Rest
-through Hover to Pressed/Selected, matching the state direction already used by
-on-vivid High, Low, and Lowest.
+Canonical Button text consumes the global foreground catalog separately from those surfaces
+and borders. The current four-strength migration is documented in [Text evidence](../components/text.md).
+Neutral has only Standard; the former Deep neutral label recipe is removed. Neutral High on
+physically light Dark/Darker Button surfaces uses Standard Light/onSubtle High (#252525), and
+lower neutral labels use Standard Medium. OnVivid lower neutral labels use Standard High white.
+These are intentional changes where the removed recipe differed; chromatic Deep labels simply
+rename their unchanged coordinate from Medium to High. Surface/border recipes are unaffected.
 
 Progress is documented in [`../components/progress.md`](../components/progress.md). It reuses Brand,
 Green, Orange, Cranberry, and Neutral through one canonical `medium` profile per intent. Warning
 uses the existing Orange v1 family at L50/D55; no second Orange primitive is introduced.
 
-Text is documented in [`../components/text.md`](../components/text.md). Its global neutral profile
-uses `vivid +0/-7/-21` in Light and `vivid +3/-2/-11` in Dark/Darker for Medium, Low, and Lowest.
-These references currently resolve to L85/L50/L10 and D100/D80/D35. On vivid surfaces, `medium`
-uses the physical light cap, while `low` and `lowest` project that cap at 68% and 24%.
+Text is documented in [`../components/text.md`](../components/text.md). Every published profile
+contains High, Medium, Low, Lowest. Neutral Standard uses `vivid +0/-7/-14/-21` in Light and
+`vivid +3/-2/-6/-11` in Dark/Darker, currently L85/L50/L24/L10 and D100/D80/D60/D35.
+High/Medium/Lowest preserve the previous Medium/Low/Lowest. Low is a Kiskadee intermediate.
+Neutral onVivid uses the physical light cap at 100/68/46/24%.
 
-The same Text catalog now publishes the six approved chromatic primitive families by hue name.
-On subtle surfaces, normal chromatic text follows each family's `vivid` reference in Light and
-`vivid +8` in Dark/Darker; `low` and `lowest` reuse that base at 68% and 24% alpha. On vivid
-surfaces Standard uses the family's Light-track `subtle +8` anchor in Light and `subtle -2` in
-Dark/Darker at 100%, 76%, and 40%. This shared hierarchy is a Kiskadee extension
-derived from the existing Button/Badge color evidence. It does not rename hues to component
-semantics and does not promote the harmony-derived Teal, Lime, Indigo, Magenta, or Brown candidates.
+Chromatic Standard retains its existing family-relative anchors (`vivid` Light, `vivid +8`
+Dark/Darker onSubtle; Light-track `subtle +8/-2` onVivid). Chromatic Deep retains exact L65/D75
+onSubtle and Light-track `subtle +2` onVivid. Every chromatic profile uses 100/68/46/24% onSubtle
+and 100/76/58/40% onVivid. The new Low alpha is the midpoint of the unchanged lower anchors.
+Blue follows the segment Primary identity. No new primitive family or tonal asset is promoted.
 
-Each approved chromatic family additionally publishes a complete `deep` Text profile. Its
-`onSubtle` anchor uses the evidence-backed exact family tone L65 in Light and D75 in Dark/Darker;
-its `onVivid` anchor is the family-relative Light-track `subtle +2` reference in every theme.
-Descendants retain the same 68%/24% subtle and 76%/40% vivid alpha hierarchy. This is
-a Kiskadee extension projected consistently across Blue, Cranberry, Green, Berry, Orange, and
-Marigold. Canonical Button Medium, Low, and Lowest may all consume the same Deep `medium`
-coordinate; Button emphasis is intentionally independent from the profile strength name.
-
-The catalog also publishes `neutral.deep` for component-owned text slots. Light
-`onSubtle.medium` is the absolute-black cap, while Light `onSubtle.low` preserves the approved L65
-neutral label. Disabled filled controls use neutral L20 at 82% and borderless controls use solid
-L16; Dark/Darker use solid D35. The all-theme `onVivid.medium` anchor remains the Neutral
-Light-track `subtle +4` reference, with physical white at 40% for disabled content. These exact
-values are promoted from Button evidence under `global.foreground.states`; component schemas no
-longer reopen their primitive or tonal positions.
+Neutral publishes Standard only. Existing component disabled stops remain optional Standard
+states: onSubtle Medium uses L20 at 82% / D35; Lowest uses L16 / D35; onVivid High, Medium and
+Lowest use physical white 40%. Their exact locators keep `global.foreground.states` provenance.
+These state coordinates do not create a separate neutral Rest hierarchy.
 
 Global coordinates may publish Hover, Pressed, Pending, and Disabled in addition to Rest. The
 standalone Text pipeline still projects only Rest. Button selects the optional coordinates through

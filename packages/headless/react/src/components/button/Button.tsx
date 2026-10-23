@@ -193,6 +193,7 @@ const ButtonDisclosure = forwardRef<HTMLSpanElement, ButtonDisclosureProps>(
 const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     classNames = {},
+    className,
     label,
     icon,
     interactionLocked,
@@ -315,7 +316,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
         disabled={interactionState.nativeDisabled}
         aria-busy={interactionState.ariaBusy}
         aria-disabled={interactionState.ariaDisabled}
-        className={e1}
+        className={[e1, className].filter(Boolean).join(' ') || undefined}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}

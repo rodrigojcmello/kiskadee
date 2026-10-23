@@ -100,6 +100,16 @@ from the family's `radio-selected` mapping; components do not draw the dot in CS
 
 ## Canonical coverage
 
+The canonical `eye` and `eye-off` concepts represent visible and concealed information. Every
+official family variant supplies distinct artwork with `fixed` direction; the concealed glyph may
+use a slash or a closed eye according to its family's visual language. These names remain
+consumer-provided content and are not added to the Essential Icon catalog. The consuming action
+owns the accessible name and decides which artwork represents its operation or state.
+
+The canonical `lock` concept represents a closed padlock for common interface contexts such as
+password fields. Every official family and exposed variant provides its own artwork with `fixed`
+direction. It remains consumer-provided content and is not an Essential Icon affordance.
+
 The canonical `arrow-left-right` concept maps to Fluent
 `ArrowBidirectionalLeftRightRegular`, the straight two-headed arrow from the
 official regular icon set. The Slider Showcase uses this canonical name for

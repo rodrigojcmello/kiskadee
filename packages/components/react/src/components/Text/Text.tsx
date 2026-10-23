@@ -40,7 +40,7 @@ const TextRuntime = forwardRef<HTMLElement, TextRuntimeProps>(function TextRunti
   {
     as,
     className,
-    emphasis = 'medium',
+    emphasis,
     foreground = 'neutral',
     profile,
     surfaceContext,
@@ -49,7 +49,7 @@ const TextRuntime = forwardRef<HTMLElement, TextRuntimeProps>(function TextRunti
   ref
 ) {
   const { classesMap, designSystem } = useKiskadee();
-  const metadata = useComponentMetadata('text');
+  const metadata = useComponentMetadata('text', { preservePrevious: false });
   const typographyElement = (
     metadata?.classMap as import('@kiskadee/core').GlobalClassNameMapJSON['text'] | undefined
   )?.e1;
@@ -61,10 +61,11 @@ const TextRuntime = forwardRef<HTMLElement, TextRuntimeProps>(function TextRunti
     foreground !== 'inherit'
   );
   const colorElement = colorResolution.pending ? undefined : colorResolution.classMap?.e1;
+  const resolvedEmphasis = emphasis ?? metadata?.options?.emphasis;
   const foregroundClassName =
-    foreground === 'inherit'
+    foreground === 'inherit' || !resolvedEmphasis
       ? ''
-      : resolveIntentClassName(colorElement, foreground, emphasis, {
+      : resolveIntentClassName(colorElement, foreground, resolvedEmphasis, {
           surfaceContext: resolvedSurfaceContext
         });
 

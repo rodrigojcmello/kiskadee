@@ -8,7 +8,7 @@ import {
 } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import { componentNameToArtifactSlug } from './componentClassMapArtifacts.ts';
-import type { StylesheetResource } from './componentResources.ts';
+import type { ComponentInspectionArtifact, StylesheetResource } from './componentResources.ts';
 import { artifactHash, partitionComponentCss } from './partitionComponentCss.ts';
 
 const isRecord = (value: unknown): value is Record<string, any> =>
@@ -28,7 +28,8 @@ export function buildSizeSupport(branch: unknown): ComponentSizeSupport {
       }
     };
     for (const element of Object.values(branch.elements) as any[]) {
-      collect(element.scales);
+      const { _boxHeight, ...renderedScales } = element.scales ?? {};
+      collect(renderedScales);
       collect(element.iconSize);
     }
     support.sizes = [...sizes].sort();
@@ -151,23 +152,41 @@ export async function publishComponentResources(buildDir: string, schema: Schema
     if (artifacts?.classMaps?.core) resource.core = artifacts.classMaps.core;
     const paletteCapabilities = capabilities.surfaceContexts;
     delete capabilities.surfaceContexts;
+    const heightReference =
+      name === 'button' ? schema.components.button?.elements.e1?.scales?._boxHeight : undefined;
+    const inspection: ComponentInspectionArtifact | undefined =
+      heightReference === undefined
+        ? undefined
+        : {
+            elements: {
+              e1: {
+                scales: {
+                  _boxHeight:
+                    typeof heightReference === 'number' ? heightReference : { ...heightReference }
+                }
+              }
+            }
+          };
     const payload = {
       ...global.components?.[name],
       ...existing,
       options: {
         ...(component as any).options,
         ...(global.components?.[name]?.options ?? {}),
-        ...((existing as any).options ?? {})
+        ...((existing as any).options ?? {}),
+        ...(name === 'text' ? schema.components.text?.options : {})
       },
       component: name,
       sizeSupport: buildSizeSupport(component),
       capabilities,
+      ...(inspection ? { inspection } : {}),
       resources: { ...resource, palettes: {} as Record<string, string> },
       ...((component as any).options?.density
         ? { density: compileDensityMap((component as any).options.density) }
         : {}),
       ...(name === 'text' && global.classMap?.text ? { classMap: global.classMap.text } : {})
     };
+    if (!inspection) delete payload.inspection;
     const contentSurfaceContext = payload.contentSurfaceContext;
     delete payload.contentSurfaceContext;
     const canonicalSurfaces = payload.options?.canonicalSurfaces;

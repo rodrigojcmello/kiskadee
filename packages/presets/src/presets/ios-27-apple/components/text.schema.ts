@@ -4,6 +4,7 @@ type TextComponent = NonNullable<Schema<never>['components']['text']>;
 
 export function createIos27AppleTextSchema(): TextComponent {
   return {
+    options: { emphasis: 'high' },
     elements: {
       e1: {
         name: 'foreground',

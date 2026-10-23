@@ -20,7 +20,7 @@ import type { SeparatorElements } from './components/separator.ts';
 import type { SliderOptions, SliderVariants } from './components/slider.ts';
 import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
-import type { TextElements } from './components/text.ts';
+import type { TextElements, TextOptions } from './components/text.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
 import type { ContentSurfaceContextMap } from './content-surface-context.ts';
 import type { SchemaContours } from './contour.ts';
@@ -228,7 +228,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     contentSurfaceContext?: ContentSurfaceContextMap<SystemButtonIntent, TSegmentName>;
     effects?: ComponentEffects;
     options?: ButtonOptions;
-    elements: ButtonElements<TSegmentName> & Elements<TSegmentName>;
+    elements: ButtonElements<TSegmentName>;
   };
   accordion: AccordionComponent;
   card: {
@@ -264,6 +264,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
   switch: SwitchComponent<TSegmentName>;
   tabs: TabsComponent<TSegmentName>;
   text: {
+    options: TextOptions;
     elements: TextElements & Elements<TSegmentName>;
   };
   textField: TextFieldComponent<TSegmentName>;

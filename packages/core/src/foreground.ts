@@ -6,7 +6,7 @@ import type {
   ThemeMode
 } from './types/colors/colors.types.ts';
 
-export const textEmphasisValues = ['medium', 'low', 'lowest'] as const;
+export const textEmphasisValues = ['high', 'medium', 'low', 'lowest'] as const;
 
 /** Foreground-strength levels supported by the standalone Text component. */
 export type TextEmphasis = (typeof textEmphasisValues)[number];
@@ -18,7 +18,7 @@ export type TextChromaticForeground = Exclude<HueName, 'black'>;
 export type TextForegroundFamily = 'neutral' | TextChromaticForeground;
 
 /** Public deep-profile aliases exposed by the standalone Text component. */
-export type TextDeepForegroundName = `${TextForegroundFamily}-deep`;
+export type TextDeepForegroundName = `${TextChromaticForeground}-deep`;
 
 /** Public foreground vocabulary supported by the standalone Text component contract. */
 export type TextForegroundName = TextForegroundFamily | TextDeepForegroundName;
@@ -42,7 +42,9 @@ export const textForegroundFamilyValues: readonly TextForegroundFamily[] = Objec
 );
 
 export const textForegroundValues: readonly TextForegroundName[] = Object.freeze(
-  textForegroundFamilyValues.flatMap((family) => [family, `${family}-deep` as const])
+  textForegroundFamilyValues.flatMap((family) =>
+    family === 'neutral' ? [family] : [family, `${family}-deep` as const]
+  )
 );
 
 export type ForegroundFamilyId = string;
@@ -83,7 +85,9 @@ export type ForegroundFamilyProfiles = {
 };
 
 export type SchemaForegrounds = {
-  profiles: Readonly<Record<ForegroundFamilyId, ForegroundFamilyProfiles>>;
+  profiles: Readonly<Record<ForegroundFamilyId, ForegroundFamilyProfiles>> & {
+    readonly neutral?: { standard: ForegroundProfile; deep?: never };
+  };
 };
 
 export type ForegroundProfileReference = {
@@ -140,6 +144,7 @@ export function parseForegroundReferenceToken(
     !family ||
     extra.length > 0 ||
     (profile !== 'standard' && profile !== 'deep') ||
+    (family === 'neutral' && profile !== 'standard') ||
     (theme !== 'light' && theme !== 'dark' && theme !== 'darker') ||
     (surfaceContext !== 'onSubtle' && surfaceContext !== 'onVivid') ||
     !textEmphasisValues.includes(emphasis as TextEmphasis) ||
@@ -158,12 +163,15 @@ export function parseForegroundReferenceToken(
   };
 }
 
+type ValidForegroundCoordinate<TCoordinate extends ForegroundCoordinate> =
+  TCoordinate extends `neutral.deep.${string}` ? never : TCoordinate;
+
 type ForegroundAuthoring = {
   <TCoordinate extends ForegroundCoordinate>(
-    coordinate: TCoordinate
+    coordinate: TCoordinate & ValidForegroundCoordinate<TCoordinate>
   ): ForegroundReferenceToken<TCoordinate>;
   parentState<TCoordinate extends ForegroundCoordinate>(
-    coordinate: TCoordinate
+    coordinate: TCoordinate & ValidForegroundCoordinate<TCoordinate>
   ): ParentStateForegroundReference<TCoordinate>;
 };
 

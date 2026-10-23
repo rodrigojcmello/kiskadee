@@ -5,6 +5,7 @@ import { mapStyleKeyUsage } from '../phase-2-map-style-key-usage/mapStyleKeyUsag
 import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shortenCssClassNames.ts';
 import { generateCssSplit } from '../phase-4-convert-style-keys-to-css-rules/generateCssSplit.ts';
 import { generateClassNamesMapSplit } from '../phase-5-generate-class-names-map/generateClassNamesMap.ts';
+import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import {
   buildTextTypographyClassMap,
   buildTypographyArtifact
@@ -33,13 +34,15 @@ const schema = {
               default: {
                 light: {
                   onSubtle: {
-                    medium: { rest: '#333333' },
-                    low: { rest: '#555555' },
+                    high: { rest: '#333333' },
+                    medium: { rest: '#555555' },
+                    low: { rest: '#888888' },
                     lowest: { rest: '#777777' }
                   },
                   onVivid: {
-                    medium: { rest: '#ffffffd6' },
-                    low: { rest: '#ffffffad' },
+                    high: { rest: '#ffffffd6' },
+                    medium: { rest: '#ffffffad' },
+                    low: { rest: '#888888' },
                     lowest: { rest: '#ffffff99' }
                   }
                 }
@@ -53,13 +56,15 @@ const schema = {
               default: {
                 light: {
                   onSubtle: {
-                    medium: { rest: '#811819' },
-                    low: { rest: '#811819ad' },
+                    high: { rest: '#811819' },
+                    medium: { rest: '#811819ad' },
+                    low: { rest: '#888888' },
                     lowest: { rest: '#8118193d' }
                   },
                   onVivid: {
-                    medium: { rest: '#ffdbd7' },
-                    low: { rest: '#ffdbd7ad' },
+                    high: { rest: '#ffdbd7' },
+                    medium: { rest: '#ffdbd7ad' },
+                    low: { rest: '#888888' },
                     lowest: { rest: '#ffdbd73d' }
                   }
                 }
@@ -71,13 +76,15 @@ const schema = {
               default: {
                 light: {
                   onSubtle: {
-                    medium: { rest: '#611112' },
-                    low: { rest: '#611112ad' },
+                    high: { rest: '#611112' },
+                    medium: { rest: '#611112ad' },
+                    low: { rest: '#888888' },
                     lowest: { rest: '#6111123d' }
                   },
                   onVivid: {
-                    medium: { rest: '#fff4f2' },
-                    low: { rest: '#fff4f2c2' },
+                    high: { rest: '#fff4f2' },
+                    medium: { rest: '#fff4f2c2' },
+                    low: { rest: '#888888' },
                     lowest: { rest: '#fff4f266' }
                   }
                 }
@@ -90,6 +97,7 @@ const schema = {
   },
   components: {
     text: {
+      options: { emphasis: 'high' },
       elements: {
         e1: {
           name: 'foreground',
@@ -106,8 +114,10 @@ const schema = {
 
 describe('foreground Web pipeline', () => {
   it('emits color through c.s/c.v without replacing the typography channel', async () => {
-    const { styleKeys, toneMetadataByPalette, typographyBuild } =
-      convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette, typographyBuild } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     if (!typographyBuild) throw new Error('Expected typography build.');
 
     const usage = mapStyleKeyUsage(styleKeys, {
@@ -124,33 +134,39 @@ describe('foreground Web pipeline', () => {
       | undefined;
 
     expect(text?.e1.c?.s?.neutral).toEqual({
-      m: shortenMap['textColor__#333333'],
-      l: shortenMap['textColor__#555555'],
+      h: shortenMap['textColor__#333333'],
+      m: shortenMap['textColor__#555555'],
+      l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#777777']
     });
     expect(text?.e1.c?.v?.neutral).toEqual({
-      m: shortenMap['textColor__#ffffffd6'],
-      l: shortenMap['textColor__#ffffffad'],
+      h: shortenMap['textColor__#ffffffd6'],
+      m: shortenMap['textColor__#ffffffad'],
+      l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#ffffff99']
     });
     expect(text?.e1.c?.s?.red).toEqual({
-      m: shortenMap['textColor__#811819'],
-      l: shortenMap['textColor__#811819ad'],
+      h: shortenMap['textColor__#811819'],
+      m: shortenMap['textColor__#811819ad'],
+      l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#8118193d']
     });
     expect(text?.e1.c?.v?.red).toEqual({
-      m: shortenMap['textColor__#ffdbd7'],
-      l: shortenMap['textColor__#ffdbd7ad'],
+      h: shortenMap['textColor__#ffdbd7'],
+      m: shortenMap['textColor__#ffdbd7ad'],
+      l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#ffdbd73d']
     });
     expect(text?.e1.c?.s?.['red-deep']).toEqual({
-      m: shortenMap['textColor__#611112'],
-      l: shortenMap['textColor__#611112ad'],
+      h: shortenMap['textColor__#611112'],
+      m: shortenMap['textColor__#611112ad'],
+      l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#6111123d']
     });
     expect(text?.e1.c?.v?.['red-deep']).toEqual({
-      m: shortenMap['textColor__#fff4f2'],
-      l: shortenMap['textColor__#fff4f2c2'],
+      h: shortenMap['textColor__#fff4f2'],
+      m: shortenMap['textColor__#fff4f2c2'],
+      l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#fff4f266']
     });
     expect(css.palettes['default.light']).toContain('color: #333');

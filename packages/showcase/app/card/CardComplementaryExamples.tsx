@@ -171,7 +171,7 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
                     <Text as="span" profile={profiles.groupTitle}>
                       Complementary surface
                     </Text>
-                    <Text as="span" profile={profiles.caption} emphasis="low">
+                    <Text as="span" profile={profiles.caption} emphasis="medium">
                       Suggested for {sample.baseIntent}.{sample.emphasis}
                     </Text>
                   </Card>
@@ -185,7 +185,7 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
                     <Text as="span" profile={profiles.groupTitle}>
                       Complementary surface
                     </Text>
-                    <Text as="span" profile={profiles.caption} emphasis="low">
+                    <Text as="span" profile={profiles.caption} emphasis="medium">
                       Suggested for {sample.baseIntent}.{sample.emphasis}
                     </Text>
                   </Container>
@@ -284,7 +284,7 @@ export function CardComplementaryExamples({ radius }: { radius: CardRadiusMode }
                     <Text as="span" profile={profiles.groupTitle}>
                       {placement === 'header' ? 'Header' : 'Footer'}
                     </Text>
-                    <Text as="span" profile={profiles.caption} emphasis="low">
+                    <Text as="span" profile={profiles.caption} emphasis="medium">
                       {sample.complementaryIntent}.{sample.emphasis}
                     </Text>
                   </Container>

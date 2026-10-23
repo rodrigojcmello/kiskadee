@@ -22,7 +22,7 @@ optimized selectors for generated CSS and showcase/static previews.
   `projectedStateActivator`, such as `.-h`, `.-f`, `.-s`, and `.-v`. These classes activate the
   Kiskadee styling channel for that state.
 - **Selector/effect meta classes** are compact classes that modify selector behavior or opt into
-  effects, such as `.-a`, `.-i`, `.-k`, and `.-e`.
+  effects, such as `.-a`, `.-i`, `.-n`, `.-k`, and `.-e`.
 - **Forced state** is one use of projected state classes: a showcase or snapshot can opt into a
   state class to simulate an interaction state without relying on browser pseudos.
 - **Focus state** is the Kiskadee focused component state. It is represented by `.-f` and means the
@@ -120,7 +120,8 @@ existing runtime call sites.
 - `-r`: read-only
 - `-v`: filled / has value
 - `-a`: activator gate for projected state selectors
-- `-i`: interactive anchor for native parent-to-child selectors
+- `-i`: logical interactivity marker
+- `-n`: gate for native pseudo selectors; terminal states remove this gate
 - `-k`: highlighted focus qualifier, exported as `stateActivator.focusVisible`; use it with `-f`
   for keyboard-visible / outline-worthy focus
 - `-e`: shadow/elevation effect activator, not an interaction state
@@ -246,20 +247,22 @@ The state lives on the state scope owner and the generated class belongs to the 
 background==hover__...
 ```
 
-Native parent selectors use the interactive anchor `-i`, native pseudos, and any non-native state
+Native parent selectors use the native interaction gate `-n`, native pseudos, and any non-native state
 markers:
 
 ```css
-.-i:hover .abc {
+.-n:hover .abc {
   background: red;
 }
 
-.-i:hover.-s .abc {
+.-n:hover.-s .abc {
   background: red;
 }
 ```
 
-Projected parent selectors use the activator gate `-a` plus projected state classes:
+Projected parent selectors use the activator gate `-a` plus projected state classes.
+These examples show transformer fragments; published color rules wrap them in the nearest-owner
+`@scope` boundary described below and prefix the owning compound with `:where(:scope)`:
 
 ```css
 .-a.-h .abc {
@@ -278,11 +281,11 @@ state once on the state scope owner instead of duplicating state classes across 
 For new text-slot authoring through `global.foregrounds`, use the more explicit schema helper:
 
 ```ts
-fg.parentState('red.deep.light.onSubtle.medium.pending')
+fg.parentState('red.deep.light.onSubtle.high.pending')
 ```
 
 Its serializable form is
-`{ parentState: 'fg:red.deep.light.onSubtle.medium.pending' }`. Web Builder validates and resolves
+`{ parentState: 'fg:red.deep.light.onSubtle.high.pending' }`. Web Builder validates and resolves
 the global foreground coordinate, then lowers `parentState` to the existing internal `{ ref: HEX }`
 representation before Style Keys are generated. The resulting key and selector remain `==`; no
 new selector grammar or runtime behavior is introduced.
@@ -300,10 +303,10 @@ state.
 For inline keys, the generated class is the state owner, so a native branch such as `.abc:hover` or
 `.abc:focus-visible` can be correct when that class is applied to the native interactive element.
 
-For reference keys, the native branch targets the state scope owner through `-i`:
+For reference keys, the native branch targets the state scope owner through `-n`:
 
 ```css
-.-i:hover .abc {
+.-n:hover .abc {
   background: red;
 }
 ```
@@ -320,7 +323,7 @@ active, the reference key must use only the projected branch:
 
 `readOnly` is the motivating case. CSS `:read-only` is broad and can match common wrapper elements
 that are not user-editable, even when the component's input is not actually read-only. A selector
-such as `.-i:read-only .abc` can therefore leak read-only styling into a normal rest field.
+such as `.-n:read-only .abc` can therefore leak read-only styling into a normal rest field.
 Generated parent-reference read-only styles must rely on the projected `.-r.-a` state instead.
 
 The same rule applies to any future state whose native pseudo is not a trustworthy signal on the
@@ -376,7 +379,7 @@ The first migration pass established these component decisions:
   not as a pattern to copy into new headless primitives.
 - Descendant slots that react to field state should use reference keys, not self-state classes.
 - Native `:focus-visible` can remain on the input when the style belongs to the input itself.
-- Hover should stay native when possible; `-i` on `e1` is the parent-to-child native hover anchor,
+- Hover should stay native when possible; `-n` on `e1` is the parent-to-child native hover gate,
   not a signal to force hover through JavaScript.
 
 ### Button
@@ -420,7 +423,7 @@ and runtime already have a clear state scope owner.
 - Rest state emits a base class selector with no state suffix.
 - Native branches use pseudos from `InteractionStateCssPseudoSelector` when available.
 - Native inline branches never append `-a`; `-a` gates only projected selectors.
-- Native reference branches use `-i` as the parent interactive anchor; they do not use `-a`.
+- Native reference branches use `-n` as the native interaction gate; they do not use `-a`.
 - Non-native state markers, such as selected, can be added to native branches when combined with a
   native pseudo.
 - Projected branches include all projected state classes and are gated by `-a`.
@@ -501,3 +504,13 @@ native hover until a real mouse event (or hovering pen) restores it. Compatibili
 are ignored. Releasing or cancelling a touch does not re-enable its sticky CSS hover.
 This supports mouse/touch switching on hybrid devices without disabling focus, changing selection,
 preventing default events, or depending on the primary-device media query.
+
+
+### Nested parent-state paint
+
+Published parent-reference color rules use CSS `@scope` with native/projected interaction owners
+(`.-n` / `.-a`) as both roots and nested boundaries. Their selectors address `:where(:scope)`, so an
+outer field's Hover/Pressed cannot recolor a nested Button; the Button's own owner remains active.
+The `:where` wrapper preserves the existing state-selector specificity and precedence.
+Rest utilities remain unscoped. Consumers require browser support for CSS `@scope`. This is Web
+selector lowering, not a component or preset value.

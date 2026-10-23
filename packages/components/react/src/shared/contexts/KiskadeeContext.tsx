@@ -17,6 +17,7 @@ import type {
   Density,
   DensityScaleMapJSON,
   DropdownOptions,
+  GlobalClassNameMapJSON,
   RadiusMode,
   ResolvedDropdownPresenceEffect,
   SchemaFonts,
@@ -59,6 +60,7 @@ import type {
   TextFieldMode,
   TextFieldModeByVariant,
   TextFieldVariant,
+  TextOptions,
   ThemeMode
 } from '@kiskadee/core';
 import { createContext, useContext } from 'react';
@@ -179,6 +181,10 @@ export type KiskadeeComponentConfigs = {
     options?: { variant?: 'standard'; mode?: SelectMode; focusIndicator?: 'underline' | 'outline' };
     modes?: SelectMode[];
   };
+  text?: {
+    options?: TextOptions;
+    classMap?: GlobalClassNameMapJSON['text'];
+  };
   textField?: {
     options?: {
       variant?: TextFieldVariant;
@@ -192,6 +198,8 @@ export type KiskadeeComponentConfigs = {
         } & (TVariant extends 'standard' ? { labelPlacement?: TextFieldLabelPlacement } : unknown);
         modes?: {
           [TMode in TextFieldModeByVariant[TVariant]]?: {
+            contentSurfaceContext?: ContentSurfaceContextMap;
+            contentRegionSurfaceContext?: ContentSurfaceContextMap;
             options?: {
               labelOffset?: TextFieldLabelOffsetByRadius;
               focusRingColorSource?: TextFieldFocusRingColorSource;

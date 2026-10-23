@@ -1,3 +1,5 @@
+@use '../TextField.content' as text-field;
+
 /*
  * TextField structural branch registry:
  * a = floating / notched
@@ -25,7 +27,7 @@
 .k-txf-e3-a {
   position: relative;
   display: grid;
-  grid-template-rows: minmax(min-content, 1fr) auto;
+  grid-template-rows: minmax(min-content, 1fr);
   align-items: stretch;
   inline-size: 100%;
   min-block-size: var(--k-bxh);
@@ -62,6 +64,9 @@
  * Owns the resting floating label that occupies the same lane as the input content.
  */
 .k-txf-e2-a {
+  margin-inline-start: var(--k-mgl);
+  padding-inline-start: var(--k-pdl);
+  padding-inline-end: var(--k-pdr);
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: 0;
@@ -90,10 +95,9 @@
   max-inline-size: var(--k-txf-riw);
   font-size: var(--k-txf-rts);
   line-height: var(--k-txf-rth);
-  margin-top: 0;
-  margin-left: 0;
-  padding-left: 0;
-  padding-right: 0;
+  margin-block-start: 0;
+  margin-inline-start: 0;
+  padding-inline: 0;
   color: var(--k-txf-phc);
 }
 
@@ -169,11 +173,11 @@
 }
 
 /*
- * extra structural space for e3
- * Reserves the same measured block offset after the input so the shell grows with its content.
+ * extra element for e4 / x3
+ * Reserves measured label clearance within the central editing lane.
  */
-.k-txf-e1-a.-f.-a .k-txf-e3-a::after,
-.k-txf-e1-a.-v.-a .k-txf-e3-a::after {
+.k-txf-e1-a.-f.-a .k-txf-x3-a::after,
+.k-txf-e1-a.-v.-a .k-txf-x3-a::after {
   content: '';
   grid-area: 2 / 1;
   block-size: var(--k-txf-fbo);
@@ -207,6 +211,14 @@
 .k-txf-e4-a::placeholder {
   color: var(--k-txf-phc);
   opacity: 0.52;
+}
+
+/*
+ * element input / e4
+ * Hides the native prompt while the resting label occupies the same lane.
+ */
+.k-txf-e1-a:not(.-f):not(.-v) .k-txf-e4-a::placeholder {
+  opacity: 0;
 }
 
 /*
@@ -248,3 +260,13 @@
 .k-txf-e1-a.-d.-a .k-txf-e4-a {
   cursor: not-allowed;
 }
+
+/*
+ * element label / e2
+ * Keeps the transform origin at the shell start independently of input direction.
+ */
+.k-txf-e2-a:dir(rtl) {
+  transform-origin: right top;
+}
+
+@include text-field.content('a', true);

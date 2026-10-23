@@ -208,8 +208,10 @@ export async function runBuild(): Promise<void> {
     console.log(`[web-builder] ${schema.name} ${presetVersion}${presetAuthor}`);
 
     // Phase 1 - Convert Element Schema to Style Keys
-    const { styleKeys, toneMetadataByPalette, typographyBuild } =
-      convertElementSchemaToStyleKeys(schema);
+    const { styleKeys, toneMetadataByPalette, typographyBuild } = convertElementSchemaToStyleKeys(
+      schema,
+      DEFAULT_WEB_STYLE_EMISSION_POLICY
+    );
     const additionalCoreStyleKeys = [
       ...(typographyBuild?.additionalCoreStyleKeys ?? []),
       ...(schema.components.card?.options?.border ? ['borderColor__#00000000'] : [])

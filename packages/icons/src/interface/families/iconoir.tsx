@@ -16,6 +16,8 @@ import {
   EditPencil,
   EmojiSad,
   EmojiTalkingHappy,
+  Eye,
+  EyeClosed,
   Folder,
   GitBranch,
   HalfMoon,
@@ -24,6 +26,7 @@ import {
   Italic,
   Link,
   List,
+  Lock,
   Mail,
   Menu,
   Minus,
@@ -78,6 +81,8 @@ const glyphDrag = createSvgGlyph(Drag, {"width":"1em","height":"1em"});
 const glyphEditPencil = createSvgGlyph(EditPencil, {"width":"1em","height":"1em"});
 const glyphEmojiSad = createSvgGlyph(EmojiSad, {"width":"1em","height":"1em"});
 const glyphEmojiTalkingHappy = createSvgGlyph(EmojiTalkingHappy, {"width":"1em","height":"1em"});
+const glyphEye = createSvgGlyph(Eye, {"width":"1em","height":"1em"});
+const glyphEyeClosed = createSvgGlyph(EyeClosed, {"width":"1em","height":"1em"});
 const glyphFolder = createSvgGlyph(Folder, {"width":"1em","height":"1em"});
 const glyphGitBranch = createSvgGlyph(GitBranch, {"width":"1em","height":"1em"});
 const glyphHalfMoon = createSvgGlyph(HalfMoon, {"width":"1em","height":"1em"});
@@ -86,6 +91,7 @@ const glyphHome = createSvgGlyph(Home, {"width":"1em","height":"1em"});
 const glyphItalic = createSvgGlyph(Italic, {"width":"1em","height":"1em"});
 const glyphLink = createSvgGlyph(Link, {"width":"1em","height":"1em"});
 const glyphList = createSvgGlyph(List, {"width":"1em","height":"1em"});
+const glyphLock = createSvgGlyph(Lock, {"width":"1em","height":"1em"});
 const glyphMail = createSvgGlyph(Mail, {"width":"1em","height":"1em"});
 const glyphMenu = createSvgGlyph(Menu, {"width":"1em","height":"1em"});
 const glyphMinus = createSvgGlyph(Minus, {"width":"1em","height":"1em"});
@@ -141,6 +147,8 @@ const glyphMap = {
     "clipboard-check": glyphClipboardCheck,
     "close": glyphXmark,
     "dashboard": glyphDashboard,
+    "eye": { glyph: glyphEye, direction: 'fixed' },
+    "eye-off": { glyph: glyphEyeClosed, direction: 'fixed' },
     "folder-move": glyphFolder,
     "frown": glyphEmojiSad,
     "git-branch": glyphGitBranch,
@@ -152,6 +160,7 @@ const glyphMap = {
     "list": { glyph: glyphList, direction: 'mirror' },
     "list-ordered": { glyph: glyphNumberedListLeft, direction: 'unique', rtlGlyph: glyphNumberedListRight },
     "loader-circle": glyphRefreshCircle,
+    "lock": { glyph: glyphLock, direction: 'fixed' },
     "mail": glyphMail,
     "menu": glyphMenu,
     "minus": glyphMinus,

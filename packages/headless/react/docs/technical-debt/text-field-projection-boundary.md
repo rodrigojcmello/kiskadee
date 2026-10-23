@@ -16,6 +16,8 @@ preset cross into the headless package.
 
 The headless package should own semantic state only:
 
+- hover;
+- field-owned pressing, excluding independent controls and portalled content;
 - focus;
 - focus-visible;
 - filled;
@@ -28,6 +30,10 @@ The styled package should own Kiskadee class projection:
 - generated state activator classes;
 - component element class composition;
 - package-specific visual projection defaults.
+
+TextField currently projects semantic Hover and Pressed rather than enabling native interaction
+pseudos on its root. The projected branches govern both generated paint/effects and the structural
+bottom indicator, preventing an internal action's ancestral `:active` match from pressing the field.
 
 ## Preservation Rules
 

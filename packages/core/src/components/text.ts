@@ -1,7 +1,17 @@
 import { validateElementForegroundContract } from '../foreground.contract.zod.ts';
-import { type TextElementForeground, textForegroundValues } from '../foreground.ts';
+import {
+  type TextElementForeground,
+  type TextEmphasis,
+  textEmphasisValues,
+  textForegroundValues
+} from '../foreground.ts';
 
 export type TextElementName = 'e1';
+
+export type TextOptions = {
+  /** Default foreground strength for standalone Text; explicit props take precedence. */
+  emphasis: TextEmphasis;
+};
 
 export type TextForegroundElementStyle = {
   name: string;
@@ -12,7 +22,7 @@ export type TextElements = {
   e1: TextForegroundElementStyle;
 };
 
-const TEXT_COMPONENT_KEYS = ['elements'] as const;
+const TEXT_COMPONENT_KEYS = ['options', 'elements'] as const;
 const TEXT_ELEMENTS_KEYS = ['e1'] as const;
 const TEXT_ELEMENT_KEYS = ['name', 'foreground'] as const;
 
@@ -36,6 +46,14 @@ export function validateTextComponentContract(value: unknown, path = 'components
   if (!isRecord(value)) return [`${path}: expected object`];
 
   validateAllowedKeys(value, TEXT_COMPONENT_KEYS, path, issues);
+  if (!isRecord(value.options)) {
+    issues.push(`${path}.options: expected object`);
+  } else {
+    validateAllowedKeys(value.options, ['emphasis'], `${path}.options`, issues);
+    if (!textEmphasisValues.includes(value.options.emphasis as TextEmphasis)) {
+      issues.push(`${path}.options.emphasis: expected high, medium, low, or lowest`);
+    }
+  }
   if (!isRecord(value.elements)) {
     issues.push(`${path}.elements: expected object`);
     return issues;

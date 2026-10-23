@@ -3,6 +3,7 @@ import type { ElementPaletteSource } from './resolveElementPaletteSources.ts';
 import { resolveElementPaletteSources } from './resolveElementPaletteSources.ts';
 
 const foregroundStates = {
+  high: { rest: '#111111' },
   medium: { rest: '#333333' },
   low: { rest: '#555555' },
   lowest: { rest: '#777777' }

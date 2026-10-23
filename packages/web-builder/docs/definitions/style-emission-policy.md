@@ -63,12 +63,40 @@ remains responsible only for producing the required custom properties.
 
 Current element-specific contracts include:
 
+- `button.e2.textHeightEmission = 'token'` publishes `--k-txh`. Phase 1 receives the same policy
+  as later phases and exposes the original `textHeight` metric when lowering a typography profile,
+  alongside its existing unitless line-height utility. Global profile classes are unchanged.
+  Legacy authored `scales.textHeight` uses the same token emission. The label consumes the token;
+  the registered `e2.p.lh` projection allows plain icon fitting without publishing raw metrics or
+  copying typography classes. The token identity stays distinct from direct line-height emission.
+
 - `layout.e1` padding and margin and `layout.e2` padding use token-only emission. Layout's
   independent spacing selectors and responsive column catalog are described in
   [`layout-artifacts.md`](./layout-artifacts.md).
-- `textField.e2.marginLeftEmission = 'mirrored'` so label geometry can expose `--k-mgl`.
+- `textField.e2` marginLeft and inline padding emit token-only `--k-mgl`, `--k-pdl` and `--k-pdr`;
+  `textField.e7.paddingRight` emits token-only `--k-pdr`. Structural CSS consumes their logical
+  label offset and notch/inline-label spacing without additional physical CSS declarations.
 - `textField.e3.textColorEmission = 'mirrored'` so TextField structural CSS can capture the
   placeholder color through `--k-txc`.
+- `textField.e3.paddingEmission = 'token'`, with explicit direct Left/Right overrides, publishes
+  only the authored block spacing as `--k-pdt` and `--k-pdb`. The classes remain on e3; its
+  structural editing lane consumes the inherited tokens as block padding. The shell therefore
+  does not add that spacing around lateral Buttons. Every branch renders this lane around the
+  Input and any Floating clearance, while the Floating label remains a child of the control.
+  Inline shell padding and e4's own Inside `paddingTop` remain direct and independent. This is
+  ordinary token inheritance within the control, not a Structural Utility Projection: no class
+  reference is copied to another owner, no `p` bucket is added, and no new scale is authored.
+- `textField.e8.paddingLeftEmission = 'token'` publishes the content-region child gap as
+  `--k-pdl`; `marginRightEmission = 'token'` publishes the independent region-to-input gap as
+  `--k-mgr`. Structural CSS consumes these tokens as logical gaps on either start/end region,
+  without physical padding or right margin. Both classes stay on their authored e8 owner.
+- `textField.e8` boxColor, borderColor and borderWidth emit token-only `--k-bgc`, `--k-bdc`
+  and `--k-bdw` for lateral region paint. The full-height surface and inner separator do not add
+  layout padding, border width or an independent radius. Lowest and Medium share the same content
+  geometry; structural paint is located against the existing shell bounds. The editing lane
+  consumes e3's block spacing once; lateral regions receive no copy of that layout padding.
+- `textField.e9` emits icon width/height as tokens for structural logical sizing, resolved from
+  `global.iconSizes` rather than local pixel values.
 - `button.e1.boxColorGradientEmission = 'interpolated'` so button gradients can expose `--k-bg*`
   interpolation variables without making every `boxColor` class use that CSS shape.
 - `button.e6.boxWidthEmission = 'token'` and `button.e6.boxHeightEmission = 'token'` so Button

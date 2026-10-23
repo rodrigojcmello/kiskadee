@@ -149,7 +149,7 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
 
   if (!containerMap || !cardMap || !components?.slider) {
     return (
-      <Text profile={profiles.body} emphasis="low">
+      <Text profile={profiles.body} emphasis="medium">
         This composition requires Container, Card, Button, Separator and Slider recipes in the
         active preset.
       </Text>
@@ -307,7 +307,7 @@ export function QuickSettingsComposition({ radius }: { radius: CardRadiusMode })
 
   if (!band || !panel) {
     return (
-      <Text profile={profiles.body} emphasis="low">
+      <Text profile={profiles.body} emphasis="medium">
         This composition requires Container, Card, Button, Separator and Slider recipes in the
         active preset.
       </Text>

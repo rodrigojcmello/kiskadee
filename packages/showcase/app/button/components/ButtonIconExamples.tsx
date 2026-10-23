@@ -221,7 +221,7 @@ export function ButtonIconExamples({
             Rich text formatting controls
           </Text>
           <div className={styles.richTextToolbarMode}>
-            <Text as="span" emphasis="low" profile={textProfiles.caption}>
+            <Text as="span" emphasis="medium" profile={textProfiles.caption}>
               Independent buttons
             </Text>
             <div className={styles.richTextToolbarRow}>
@@ -251,7 +251,7 @@ export function ButtonIconExamples({
             </div>
           </div>
           <div className={styles.richTextToolbarMode}>
-            <Text as="span" emphasis="low" profile={textProfiles.caption}>
+            <Text as="span" emphasis="medium" profile={textProfiles.caption}>
               Connected Button groups
             </Text>
             <div className={styles.richTextToolbarRow}>

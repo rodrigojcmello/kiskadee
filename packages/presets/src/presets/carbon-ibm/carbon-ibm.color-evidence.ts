@@ -9,6 +9,11 @@ export const carbonIbmColorEvidence = {
   'component.card': {
     source: 'components/card.md',
     rationale: 'Layered Carbon surfaces and documented primary tonal extensions.'
+  },
+  'foreground.low': {
+    source: 'components/text.md',
+    rationale:
+      'Kiskadee Low foreground extension at L50 / D75: the tonal midpoint between the preserved source-mapped text-secondary and text-helper positions.'
   }
 } as const satisfies PresetColorEvidenceRegistry;
 export type CarbonIbmColorEvidenceId = keyof typeof carbonIbmColorEvidence;

@@ -3,8 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { expandElementForeground } from './compileForegrounds.ts';
 
 const emphases = {
-  medium: { rest: '#333333' },
-  low: { rest: '#555555' },
+  high: { rest: '#333333' },
+  medium: { rest: '#555555' },
+  low: { rest: '#888888' },
   lowest: { rest: '#777777' }
 } as const;
 
@@ -34,8 +35,9 @@ const foregrounds = {
           default: {
             light: {
               onSubtle: {
-                medium: { rest: '#811819' },
-                low: { rest: '#811819ad' },
+                high: { rest: '#811819' },
+                medium: { rest: '#811819ad' },
+                low: { rest: '#888888' },
                 lowest: { rest: '#8118193d' }
               }
             }
@@ -104,8 +106,9 @@ describe('expandElementForeground', () => {
             textColor: {
               red: emphases,
               'red-deep': {
-                medium: { rest: '#811819' },
-                low: { rest: '#811819ad' },
+                high: { rest: '#811819' },
+                medium: { rest: '#811819ad' },
+                low: { rest: '#888888' },
                 lowest: { rest: '#8118193d' }
               }
             }
@@ -121,17 +124,17 @@ describe('expandElementForeground', () => {
     ).toThrow('[web-builder] Foreground family "missing" is not defined.');
     expect(() =>
       expandElementForeground({ neutral: { family: 'neutral', profile: 'deep' } }, foregrounds)
-    ).toThrow('[web-builder] Foreground profile "neutral.deep" is not defined.');
+    ).toThrow('[web-builder] Neutral foreground only supports the standard profile.');
   });
 
   it('projects only Rest when a global profile also publishes control states', () => {
     const stateful = structuredClone(foregrounds) as any;
-    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.medium.hover = '#222222';
-    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.medium.pending = '#333333b3';
+    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.high.hover = '#222222';
+    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.high.pending = '#333333b3';
 
     expect(
       expandElementForeground({ neutral: { family: 'neutral', profile: 'standard' } }, stateful)
-        .default?.light?.onSubtle?.textColor?.neutral?.medium
+        .default?.light?.onSubtle?.textColor?.neutral?.high
     ).toEqual({ rest: '#333333' });
   });
 });

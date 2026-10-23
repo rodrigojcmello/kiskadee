@@ -9,6 +9,213 @@ const modes = [
   ...Object.values(field.variants!.floating!.modes)
 ];
 
+function contrastRatio(first: string, second: string) {
+  const luminance = (hex: string) => {
+    const [red = 0, green = 0, blue = 0] = hex
+      .slice(1, 7)
+      .match(/../g)!
+      .map((channel) => {
+        const value = Number.parseInt(channel, 16) / 255;
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      });
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+  };
+  const a = luminance(first);
+  const b = luminance(second);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+function compositeForeground(foreground: string, background: string) {
+  const alpha = foreground.length === 9 ? Number.parseInt(foreground.slice(7, 9), 16) / 255 : 1;
+  return `#${foreground
+    .slice(1, 7)
+    .match(/../g)!
+    .map((channel, index) => {
+      const backgroundChannel = background.slice(1 + index * 2, 3 + index * 2);
+      return Math.round(
+        Number.parseInt(channel, 16) * alpha + Number.parseInt(backgroundChannel, 16) * (1 - alpha)
+      )
+        .toString(16)
+        .padStart(2, '0');
+    })
+    .join('')}`;
+}
+
+describe('Fluent TextField internal content', () => {
+  it('keeps neutral informational icons legible and subdued on the inspected vivid backgrounds', () => {
+    const profiles = schema.global!.foregrounds!.profiles;
+    for (const segment of ['default', 'teams'] as const) {
+      const vividIcon = profiles.neutral!.standard.palettes[segment]!.light!.onVivid!.medium
+        .rest as string;
+      const buttonForeground = profiles.neutral!.standard.palettes[segment]!.light!.onVivid!.high
+        .rest as string;
+      for (const theme of ['light', 'dark', 'darker'] as const) {
+        const background = schema.components.button!.elements!.e1!.palettes![segment]![theme]!
+          .onSubtle.boxColor!.primary!.high!.rest as string;
+        const iconContrast = contrastRatio(compositeForeground(vividIcon, background), background);
+        expect(iconContrast).toBeGreaterThanOrEqual(3);
+        expect(iconContrast).toBeLessThan(contrastRatio(buttonForeground, background));
+        for (const mode of modes) {
+          const icon = mode.elements.e9!.palettes![segment]![theme]!.onSubtle!.textColor!.neutral!
+            .lowest!.rest as string;
+          const surface = mode.elements.e8!.palettes![segment]![theme]!.onSubtle!.boxColor!.neutral!
+            .medium!.rest as string;
+          expect(contrastRatio(icon, surface)).toBeGreaterThanOrEqual(3);
+        }
+      }
+    }
+  });
+
+  it('uses existing Deep chromatic foregrounds for readable surfaced-region content without changing Lowest', () => {
+    for (const mode of modes) {
+      for (const segment of ['default', 'teams'] as const) {
+        for (const theme of ['light', 'dark', 'darker'] as const) {
+          const track = theme === 'light' ? 'light' : 'dark';
+          for (const context of ['onSubtle', 'onVivid'] as const) {
+            const frame =
+              mode.elements.e8!.palettes![segment]![theme]![context]!.boxColor!.neutral!.medium!
+                .rest;
+            for (const [intent, family, asset] of [
+              ['error', 'red', red],
+              ['warning', 'orange', orange]
+            ] as const) {
+              const foreground =
+                schema.global!.foregrounds!.profiles[family]!.deep!.palettes[segment]![theme]!
+                  .onSubtle.high.rest;
+              for (const slot of ['e9', 'e10'] as const) {
+                const paint =
+                  mode.elements[slot]!.palettes![segment]![theme]![context]!.textColor![intent]!;
+                expect(paint.medium!.rest).toBe(`fg:${family}.deep.${theme}.onSubtle.high`);
+                expect(paint.lowest!.rest).toBe(
+                  asset.scales[track][asset.functionalReferences[track].vivid]
+                );
+                expect(contrastRatio(foreground as string, frame as string)).toBeGreaterThanOrEqual(
+                  4.5
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  it('authors independent region spacing and global icon/typography references in every mode', () => {
+    for (const mode of modes) {
+      const { e4, e8, e9, e10 } = mode.elements;
+      expect(e8!.scales!.paddingLeft).toEqual(e8!.scales!.marginRight);
+      expect(Object.values(e8!.scales!.paddingLeft!)).toEqual(
+        Object.keys(e4!.typography!).map(() => 8)
+      );
+      expect(e10!.typography).toEqual(e4!.typography);
+      for (const [size, reference] of Object.entries(e9!.iconSize)) {
+        expect(typeof reference).toBe('string');
+        expect(schema.global!.iconSizes!).toHaveProperty(String(reference));
+        expect(e4!.typography).toHaveProperty(size);
+      }
+    }
+  });
+
+  it('keeps passive palettes sparse and validation-colored while terminal presentation uses neutral Rest', () => {
+    for (const mode of modes) {
+      for (const slot of ['e9', 'e10'] as const) {
+        for (const segment of ['default', 'teams'] as const) {
+          for (const theme of ['light', 'dark', 'darker'] as const) {
+            for (const context of ['onSubtle', 'onVivid'] as const) {
+              const paint = mode.elements[slot]!.palettes![segment]![theme]![context]!.textColor!;
+              for (const intent of ['neutral', 'error', 'warning'] as const) {
+                for (const emphasis of ['lowest', 'medium'] as const) {
+                  expect(Object.keys(paint[intent]![emphasis]!)).toEqual(['rest']);
+                }
+              }
+              expect(paint.error!.medium!.rest).not.toEqual(paint.neutral!.medium!.rest);
+              expect(paint.warning!.medium!.rest).not.toEqual(paint.neutral!.medium!.rest);
+            }
+          }
+        }
+      }
+    }
+  });
+
+  it('authors a neutral region surface without frame geometry or changes to text prefixes', () => {
+    for (const mode of modes) {
+      const { e8, e9, e10 } = mode.elements;
+      expect(mode.elements).not.toHaveProperty('e11');
+      expect(e8!.scales).not.toHaveProperty('boxHeight');
+      expect(e8!.scales).not.toHaveProperty('boxWidth');
+      expect(e8!.scales).not.toHaveProperty('borderRadius');
+      expect(e8!.scales).not.toHaveProperty('paddingRight');
+      expect(e8!.scales!.borderWidth).toBe(1);
+      for (const segment of ['default', 'teams'] as const) {
+        for (const theme of ['light', 'dark', 'darker'] as const) {
+          const frame = e8!.palettes![segment]![theme]!;
+          expect(frame.onVivid).toEqual(frame.onSubtle);
+          for (const paint of Object.values(frame.onSubtle!)) {
+            for (const intent of ['neutral', 'error', 'warning'] as const) {
+              expect(Object.keys(paint![intent]!)).toEqual(['lowest', 'medium']);
+              for (const emphasis of ['lowest', 'medium'] as const) {
+                expect(Object.keys(paint![intent]![emphasis]!)).toEqual(['rest']);
+              }
+              expect(paint![intent]!.lowest!.rest).toBe('#ffffff00');
+              expect(paint![intent]!.medium!.rest).toEqual(paint!.neutral!.medium!.rest);
+            }
+          }
+          const foreground = e10!.palettes![segment]![theme]!;
+          for (const intent of ['neutral', 'error', 'warning'] as const) {
+            expect(foreground.onVivid!.textColor![intent]!.medium).toEqual(
+              foreground.onSubtle!.textColor![intent]!.medium
+            );
+          }
+        }
+        expect(e9!.palettes![segment]!.light!.onSubtle!.textColor!.neutral!.lowest!.rest).toBe(
+          '#737373'
+        );
+        expect(e10!.palettes![segment]!.light!.onSubtle!.textColor!.neutral!.lowest!.rest).toBe(
+          '#616161'
+        );
+        for (const theme of ['light', 'dark', 'darker'] as const) {
+          for (const emphasis of ['lowest', 'medium'] as const) {
+            expect(
+              e9!.palettes![segment]![theme]!.onVivid!.textColor!.neutral![emphasis]!.rest
+            ).toBe('fg:neutral.standard.light.onVivid.medium');
+            expect(
+              e9!.palettes![segment]![theme]!.onSubtle!.textColor!.neutral![emphasis]!.rest
+            ).toBe(theme === 'light' ? '#737373' : '#a3a3a3');
+          }
+        }
+      }
+    }
+  });
+
+  it('publishes the actual mode surface for descendants across segments and themes', () => {
+    for (const [variant, config] of Object.entries(field.variants!)) {
+      for (const [modeName, mode] of Object.entries(config.modes)) {
+        const expected =
+          variant === 'standard' && modeName !== 'borderless' ? 'inherit' : 'onSubtle';
+        for (const segment of ['default', 'teams'] as const) {
+          for (const theme of ['light', 'dark', 'darker'] as const) {
+            for (const context of ['onSubtle', 'onVivid'] as const) {
+              for (const intent of ['neutral', 'error', 'warning'] as const) {
+                expect(
+                  mode.contentSurfaceContext![segment]![theme]![context]![intent]!.medium!.rest
+                ).toBe(expected);
+                expect(
+                  mode.contentRegionSurfaceContext![segment]![theme]![context]![intent]!.lowest!
+                    .rest
+                ).toBe('inherit');
+                expect(
+                  mode.contentRegionSurfaceContext![segment]![theme]![context]![intent]!.medium!
+                    .rest
+                ).toBe('onSubtle');
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+});
+
 describe('Fluent TextField Light onSubtle', () => {
   it('publishes all five compositions with complete light palettes for both segments', () => {
     expect(modes).toHaveLength(5);

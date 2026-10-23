@@ -103,7 +103,7 @@ describe('Structural Utility Projection', () => {
   it('uses one explicit emitted custom-property identity for every eligible standard scale', () => {
     const emittedCssVarByProperty = {
       textSize: undefined,
-      textHeight: undefined,
+      textHeight: '--k-txh',
       paddingTop: '--k-pdt',
       paddingRight: '--k-pdr',
       paddingBottom: '--k-pdb',

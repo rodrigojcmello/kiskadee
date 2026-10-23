@@ -1,10 +1,14 @@
 // Intent/state precedence: see ../../docs/definitions/text-field-intents.md.
+
+import type { ContentSurfaceContextMap } from '../content-surface-context.ts';
 import type { RadiusMode } from '../schema.ts';
 import type { SegmentName } from '../types/colors/colors.types.ts';
 import type {
+  TextFieldContentRegionElementStyleFromSchema,
   TextFieldControlElementStyleFromSchema,
   TextFieldFloatingVariantOptionsFromSchema,
   TextFieldFocusRingColorSourceFromSchema,
+  TextFieldIconElementStyleFromSchema,
   TextFieldIndicatorElementStyleFromSchema,
   TextFieldInlineLabelElementStyleFromSchema,
   TextFieldInputElementStyleFromSchema,
@@ -14,7 +18,8 @@ import type {
   TextFieldModeOptionsFromSchema,
   TextFieldOptionsFromSchema,
   TextFieldRootElementStyleFromSchema,
-  TextFieldStandardVariantOptionsFromSchema
+  TextFieldStandardVariantOptionsFromSchema,
+  TextFieldTextElementStyleFromSchema
 } from './text-field.zod.ts';
 
 /**
@@ -26,8 +31,22 @@ import type {
  * - e5: validation/supporting message
  * - e6: indicator layer
  * - e7: inline label
+ * - e8: start/end content region
+ * - e9: passive icon
+ * - e10: passive text
  */
-export type TextFieldElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type TextFieldElementName =
+  | 'e1'
+  | 'e2'
+  | 'e3'
+  | 'e4'
+  | 'e5'
+  | 'e6'
+  | 'e7'
+  | 'e8'
+  | 'e9'
+  | 'e10';
+export type TextFieldContentEmphasis = 'lowest' | 'medium';
 export type TextFieldVariant = 'standard' | 'floating';
 export type TextFieldStandardMode = 'outline' | 'underline' | 'borderless';
 export type TextFieldFloatingMode = 'notched' | 'inside';
@@ -112,6 +131,14 @@ export type TextFieldIndicatorElementStyle<TSegmentName extends SegmentName = ne
 export type TextFieldInlineLabelElementStyle<TSegmentName extends SegmentName = never> =
   TextFieldInlineLabelElementStyleFromSchema<TSegmentName>;
 
+/** e8: paddingLeft is child gap, marginRight input separation, borderWidth separator paint thickness. */
+export type TextFieldContentRegionElementStyle<TSegmentName extends SegmentName = never> =
+  TextFieldContentRegionElementStyleFromSchema<TSegmentName>;
+export type TextFieldIconElementStyle<TSegmentName extends SegmentName = never> =
+  TextFieldIconElementStyleFromSchema<TSegmentName>;
+export type TextFieldTextElementStyle<TSegmentName extends SegmentName = never> =
+  TextFieldTextElementStyleFromSchema<TSegmentName>;
+
 export type TextFieldElements<TSegmentName extends SegmentName = never> = {
   // e1: root wrapper
   e1?: TextFieldRootElementStyle;
@@ -127,6 +154,9 @@ export type TextFieldElements<TSegmentName extends SegmentName = never> = {
   e6?: TextFieldIndicatorElementStyle<TSegmentName>;
   // e7: inline label
   e7?: TextFieldInlineLabelElementStyle<TSegmentName>;
+  e8?: TextFieldContentRegionElementStyle<TSegmentName>;
+  e9?: TextFieldIconElementStyle<TSegmentName>;
+  e10?: TextFieldTextElementStyle<TSegmentName>;
 };
 
 export type TextFieldVariantConfig = {
@@ -135,6 +165,8 @@ export type TextFieldVariantConfig = {
 
 export type TextFieldModeConfig<TSegmentName extends SegmentName = never> = {
   options?: TextFieldModeOptions;
+  contentSurfaceContext?: ContentSurfaceContextMap<string, TSegmentName>;
+  contentRegionSurfaceContext?: ContentSurfaceContextMap<string, TSegmentName>;
   elements: TextFieldElements<TSegmentName>;
 };
 

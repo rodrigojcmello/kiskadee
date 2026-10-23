@@ -51,6 +51,7 @@ export type ExtraArtifactsJSON = {
 };
 
 export type {
+  ComponentInspectionArtifact,
   ComponentPaletteResourceArtifact,
   ComponentResourceArtifact,
   StylesheetResource

@@ -24,6 +24,7 @@ import {
   Link,
   ListBulleted,
   ListNumbered,
+  Locked,
   Menu,
   Moon,
   NotAvailable,
@@ -54,6 +55,8 @@ import {
   TrashCan,
   Undo,
   User,
+  View,
+  ViewOff,
   VolumeDown,
   VolumeMute,
   VolumeUp,
@@ -86,6 +89,7 @@ const glyphHome = createSvgGlyph(Home, {"size":"1em"});
 const glyphLink = createSvgGlyph(Link, {"size":"1em"});
 const glyphListBulleted = createSvgGlyph(ListBulleted, {"size":"1em"});
 const glyphListNumbered = createSvgGlyph(ListNumbered, {"size":"1em"});
+const glyphLocked = createSvgGlyph(Locked, {"size":"1em"});
 const glyphMenu = createSvgGlyph(Menu, {"size":"1em"});
 const glyphMoon = createSvgGlyph(Moon, {"size":"1em"});
 const glyphNotAvailable = createSvgGlyph(NotAvailable, {"size":"1em"});
@@ -116,6 +120,8 @@ const glyphThumbsUp = createSvgGlyph(ThumbsUp, {"size":"1em"});
 const glyphTrashCan = createSvgGlyph(TrashCan, {"size":"1em"});
 const glyphUndo = createSvgGlyph(Undo, {"size":"1em"});
 const glyphUser = createSvgGlyph(User, {"size":"1em"});
+const glyphView = createSvgGlyph(View, {"size":"1em"});
+const glyphViewOff = createSvgGlyph(ViewOff, {"size":"1em"});
 const glyphVolumeDown = createSvgGlyph(VolumeDown, {"size":"1em"});
 const glyphVolumeMute = createSvgGlyph(VolumeMute, {"size":"1em"});
 const glyphVolumeUp = createSvgGlyph(VolumeUp, {"size":"1em"});
@@ -139,6 +145,8 @@ const glyphMap = {
     "clipboard-check": glyphTaskComplete,
     "close": glyphClose,
     "dashboard": glyphDashboard,
+    "eye": { glyph: glyphView, direction: 'fixed' },
+    "eye-off": { glyph: glyphViewOff, direction: 'fixed' },
     "folder-move": { glyph: glyphFolderMoveTo, direction: 'mirror' },
     "frown": glyphFaceDissatisfied,
     "git-branch": glyphBranch,
@@ -150,6 +158,7 @@ const glyphMap = {
     "list": glyphListBulleted,
     "list-ordered": glyphListNumbered,
     "loader-circle": glyphRenew,
+    "lock": { glyph: glyphLocked, direction: 'fixed' },
     "mail": glyphEmail,
     "menu": glyphMenu,
     "minus": glyphSubtract,

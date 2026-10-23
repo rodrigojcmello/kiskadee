@@ -19,7 +19,7 @@ export type TextForegroundProps =
   | {
       /** Preset-owned foreground family. Defaults to neutral. */
       foreground?: TextForegroundName;
-      /** Foreground strength. Defaults to medium. */
+      /** Foreground strength. Defaults to the active preset Text option. */
       emphasis?: TextEmphasis;
       /** Explicit surface-relative branch. Inherits the nearest Provider when omitted. */
       surfaceContext?: SurfaceContext;

@@ -3,9 +3,9 @@
 import {
   type FontStack,
   type SchemaFonts,
-  type TextEmphasis,
   type TextFontValue,
   type TextForegroundName,
+  textEmphasisValues,
   textForegroundFamilyValues,
   textForegroundValues
 } from '@kiskadee/core';
@@ -53,11 +53,11 @@ type RoleDisplay = {
 
 const FONT_ROLES: readonly FontFamilyRole[] = ['body', 'heading', 'code'];
 const TYPOGRAPHY_ROLE_ORDER: readonly TextFontValue[] = ['body', 'heading', 'code'];
-const TEXT_FOREGROUND_EMPHASES: readonly TextEmphasis[] = ['medium', 'low', 'lowest'];
+const TEXT_FOREGROUND_EMPHASES = textEmphasisValues;
 const TEXT_STANDARD_CHROMATIC_FOREGROUNDS: readonly TextForegroundName[] =
   textForegroundFamilyValues.filter((foreground) => foreground !== 'neutral');
-const TEXT_DEEP_CHROMATIC_FOREGROUNDS = textForegroundValues.filter(
-  (foreground) => foreground.endsWith('-deep') && foreground !== 'neutral-deep'
+const TEXT_DEEP_CHROMATIC_FOREGROUNDS = textForegroundValues.filter((foreground) =>
+  foreground.endsWith('-deep')
 );
 
 const PROFILE_SAMPLES: Readonly<Record<TextFontValue, string>> = {
@@ -269,7 +269,7 @@ function ChromaticForegroundProfileGroups({
         <Text as="h5" profile={textProfiles.subsectionTitle}>
           Standard
         </Text>
-        <Text as="p" emphasis="low" profile={textProfiles.caption}>
+        <Text as="p" emphasis="medium" profile={textProfiles.caption}>
           family.standard → foreground=&quot;family&quot;
         </Text>
         <ChromaticForegroundRows
@@ -284,7 +284,7 @@ function ChromaticForegroundProfileGroups({
           <Text as="h5" profile={textProfiles.subsectionTitle}>
             Deep
           </Text>
-          <Text as="p" emphasis="low" profile={textProfiles.caption}>
+          <Text as="p" emphasis="medium" profile={textProfiles.caption}>
             family.deep → foreground=&quot;family-deep&quot;
           </Text>
           <ChromaticForegroundRows
@@ -323,7 +323,8 @@ function TextComponentExamples({
         </Text>
         <Text as="p" profile={textProfiles.body}>
           Typography and foreground resolve independently. Preset-owned neutral and chromatic
-          profiles adapt three levels of emphasis to the surface behind the Text.
+          profiles adapt four levels of emphasis to the surface behind the Text. Neutral uses only
+          Standard. The preset defines the default Text emphasis; an explicit emphasis overrides it.
         </Text>
       </div>
 
@@ -334,18 +335,23 @@ function TextComponentExamples({
               <Text as="h3" profile={textProfiles.groupTitle}>
                 On subtle
               </Text>
-              <Text as="p" emphasis="low" profile={textProfiles.caption}>
-                Neutral foregrounds over a light or otherwise subtle surface.
+              <Text as="p" emphasis="medium" profile={textProfiles.caption}>
+                Neutral Standard foregrounds over a light or otherwise subtle surface.
               </Text>
             </header>
             <div className={styles.foregroundRows}>
               {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
                 <div className={styles.foregroundRow} key={emphasis}>
-                  <Text emphasis={emphasis} profile={textProfiles.body}>
+                  <Text
+                    emphasis={emphasis}
+                    profile={textProfiles.body}
+                    data-text-foreground="neutral"
+                    data-text-emphasis={emphasis}
+                  >
                     {emphasis[0].toUpperCase() + emphasis.slice(1)}
                   </Text>
                   <Text emphasis="lowest" profile={textProfiles.caption}>
-                    {`neutral.${emphasis}`}
+                    {`neutral.standard.${emphasis}`}
                   </Text>
                 </div>
               ))}
@@ -359,18 +365,23 @@ function TextComponentExamples({
               <Text as="h3" profile={textProfiles.groupTitle}>
                 On vivid
               </Text>
-              <Text as="p" emphasis="low" profile={textProfiles.caption}>
+              <Text as="p" emphasis="medium" profile={textProfiles.caption}>
                 The same hierarchy projected over a vivid surface.
               </Text>
             </header>
             <div className={styles.foregroundRows}>
               {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
                 <div className={styles.foregroundRow} key={emphasis}>
-                  <Text emphasis={emphasis} profile={textProfiles.body}>
+                  <Text
+                    emphasis={emphasis}
+                    profile={textProfiles.body}
+                    data-text-foreground="neutral"
+                    data-text-emphasis={emphasis}
+                  >
                     {emphasis[0].toUpperCase() + emphasis.slice(1)}
                   </Text>
                   <Text emphasis="lowest" profile={textProfiles.caption}>
-                    {`neutral.${emphasis}`}
+                    {`neutral.standard.${emphasis}`}
                   </Text>
                 </div>
               ))}
@@ -385,7 +396,7 @@ function TextComponentExamples({
             <Text as="h3" id="chromatic-foregrounds-title" profile={textProfiles.groupTitle}>
               Chromatic foregrounds
             </Text>
-            <Text as="p" emphasis="low" profile={textProfiles.body}>
+            <Text as="p" emphasis="medium" profile={textProfiles.body}>
               Standard preserves the normal chromatic anchor. Deep is an independent family profile
               calibrated per theme and surface; the public Text API exposes it with a -deep suffix.
             </Text>
@@ -434,7 +445,9 @@ function TextComponentExamples({
                 <Text as="h4" profile={textProfiles.caption}>
                   Default
                 </Text>
-                <Text profile={textProfiles.body}>Neutral medium is applied automatically.</Text>
+                <Text profile={textProfiles.body}>
+                  The preset's default emphasis is applied automatically.
+                </Text>
                 <Text emphasis="lowest" profile={textProfiles.caption}>
                   No foreground, emphasis, or surface prop.
                 </Text>
@@ -730,7 +743,7 @@ function TypographyContent() {
   const supportsForeground = (foreground: TextForegroundName) => {
     const subtle = textSurfaceContexts?.onSubtle?.state?.[foreground];
     const vivid = textSurfaceContexts?.onVivid?.state?.[foreground];
-    return Boolean(subtle?.medium?.rest && vivid?.medium?.rest);
+    return Boolean(subtle?.high?.rest && vivid?.high?.rest);
   };
   const standardChromaticForegrounds =
     TEXT_STANDARD_CHROMATIC_FOREGROUNDS.filter(supportsForeground);

@@ -1,9 +1,139 @@
+import { breakpoints } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
+import { transformColorKeyToCss } from '../phase-4-convert-style-keys-to-css-rules/palettes/transformColorKeyToCss.ts';
+import { transformScaleKeyToCss } from '../phase-4-convert-style-keys-to-css-rules/scales/transformScaleKeyToCss.ts';
 import {
   DEFAULT_WEB_STYLE_EMISSION_POLICY,
   getSeparatorStyleEmissionPolicyIssues,
   resolveElementStyleEmissionPolicy
 } from './web-build-policy.ts';
+
+describe('TextField internal content emission', () => {
+  it('publishes region paint without adding region layout insets', () => {
+    const styleEmissionPolicy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e8'
+    );
+    expect(
+      transformScaleKeyToCss('borderWidth__1', breakpoints, 'edge', { styleEmissionPolicy })
+    ).toBe('.edge { --k-bdw: 1px }');
+    expect(styleEmissionPolicy.boxColorEmission).toBe('token');
+    expect(styleEmissionPolicy.borderColorEmission).toBe('token');
+    const background = transformColorKeyToCss('boxColor__#f2f2f2', 'surface', true, {
+      styleEmissionPolicy
+    });
+    const separator = transformColorKeyToCss('borderColor__#616161', 'separator', true, {
+      styleEmissionPolicy
+    });
+    expect(background).toContain('--k-bgc: #f2f2f2');
+    expect(background).not.toContain('background:');
+    expect(separator).toContain('--k-bdc: #616161');
+    expect(separator).not.toContain('border-color:');
+    expect(DEFAULT_WEB_STYLE_EMISSION_POLICY.components?.textField?.elements).not.toHaveProperty(
+      'e11'
+    );
+  });
+  it('publishes shell block spacing for the editing lane while preserving inline and input padding', () => {
+    const control = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e3'
+    );
+    const input = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e4'
+    );
+
+    expect(
+      transformScaleKeyToCss('paddingTop__8', breakpoints, 'top', {
+        styleEmissionPolicy: control
+      })
+    ).toBe('.top { --k-pdt: 8px }');
+    expect(
+      transformScaleKeyToCss('paddingBottom__4', breakpoints, 'bottom', {
+        styleEmissionPolicy: control
+      })
+    ).toBe('.bottom { --k-pdb: 4px }');
+    expect(
+      transformScaleKeyToCss('paddingLeft__12', breakpoints, 'start', {
+        styleEmissionPolicy: control
+      })
+    ).toBe('.start { padding-left: 12px }');
+    expect(
+      transformScaleKeyToCss('paddingRight__12', breakpoints, 'end', {
+        styleEmissionPolicy: control
+      })
+    ).toBe('.end { padding-right: 12px }');
+    expect(
+      transformScaleKeyToCss('paddingTop__10', breakpoints, 'inside', {
+        styleEmissionPolicy: input
+      })
+    ).toBe('.inside { padding-top: 10px }');
+  });
+  it('emits gap variables without physical margins or padding', () => {
+    const styleEmissionPolicy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e8'
+    );
+    expect(
+      transformScaleKeyToCss('paddingLeft__4', breakpoints, 'gap', { styleEmissionPolicy })
+    ).toBe('.gap { --k-pdl: 4px }');
+    expect(
+      transformScaleKeyToCss('marginRight__4', breakpoints, 'space', { styleEmissionPolicy })
+    ).toBe('.space { --k-mgr: 4px }');
+  });
+  it('publishes logical label offsets and insets without leftover physical declarations', () => {
+    const label = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e2'
+    );
+    const inline = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e7'
+    );
+    for (const [key, variable, policy] of [
+      ['marginLeft__4', '--k-mgl', label],
+      ['paddingLeft__8', '--k-pdl', label],
+      ['paddingRight__8', '--k-pdr', label],
+      ['paddingRight__8', '--k-pdr', inline]
+    ] as const) {
+      expect(
+        transformScaleKeyToCss(key, breakpoints, 'logical', { styleEmissionPolicy: policy })
+      ).toBe(`.logical { ${variable}: ${key.endsWith('__4') ? 4 : 8}px }`);
+    }
+  });
+  it('publishes region gaps and icon dimensions without physical layout declarations', () => {
+    const region = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e8'
+    );
+    const icon = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'textField',
+      'e9'
+    );
+    for (const [key, variable, policy] of [
+      ['paddingLeft__20', '--k-pdl', region],
+      ['marginRight__20', '--k-mgr', region],
+      ['boxWidth__20', '--k-bxw', icon],
+      ['boxHeight__20', '--k-bxh', icon]
+    ] as const) {
+      expect(
+        transformScaleKeyToCss(key, breakpoints, 'content', { styleEmissionPolicy: policy })
+      ).toBe(`.content { ${variable}: 20px }`);
+    }
+    expect(
+      resolveElementStyleEmissionPolicy(DEFAULT_WEB_STYLE_EMISSION_POLICY, 'textField', 'e10')
+        .textColorEmission
+    ).toBe('direct');
+  });
+});
 
 describe('Button Web style-emission policy', () => {
   it('publishes icon dimensions as tokens for structural logical sizing', () => {
