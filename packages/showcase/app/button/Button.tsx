@@ -54,6 +54,8 @@ import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonIconFormatExamples } from './components/ButtonIconFormatExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
 import { ButtonSizeScaleExample } from './components/ButtonSizeScaleExample';
+import { ButtonStackedExamples } from './components/ButtonStackedExamples';
+import { ButtonStackedOptionsExample } from './components/ButtonStackedOptionsExample';
 import ButtonStateSection from './components/ButtonStateSection';
 import { ButtonUnavailableExample } from './components/ButtonUnavailableExample';
 import { resolveButtonReferenceProfile } from './components/buttonReferenceProfile';
@@ -226,6 +228,7 @@ export function Button() {
   const dropdownMetadata = useComponentMetadata('dropdown');
   const buttonMetadata = useComponentMetadata('button');
   const buttonHeightReference = buttonMetadata?.inspection?.elements?.e1?.scales?._boxHeight;
+  const stackedButtonHeightReference = buttonMetadata?.inspection?.elements?.e8?.scales?._boxHeight;
   const { fontName, manifest } = useShowcaseMetadata([
     'badge',
     'bottomSheet',
@@ -237,7 +240,7 @@ export function Button() {
     'switch'
   ]);
   const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();
-  const { buttonClassesMap } = useButtonArtifactConfig();
+  const { buttonClassesMap, stackedSizesByRadius } = useButtonArtifactConfig();
   const textProfiles = useShowcaseTextProfiles();
   const { artifact: typography } = useTypographyArtifact(
     designSystem,
@@ -252,6 +255,7 @@ export function Button() {
   const [showFocusRing, setShowFocusRing] = React.useState(false);
   const [radiusOverride, setRadiusOverride] = React.useState<RadiusMode>();
   const buttonRadius = radiusOverride ?? global?.radius ?? 'rounded';
+  const stackedSizes = stackedSizesByRadius?.[buttonRadius];
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue | undefined>();
   const background = useShowcaseBackground();
   const activeSurfaceContext = background.surfaceContext;
@@ -686,6 +690,16 @@ export function Button() {
                     </section>
                   </React.Fragment>
                 ))}
+                {sizeSeparatorAvailable ? <Separator intent="neutral" emphasis="low" /> : null}
+                <ButtonStackedExamples
+                  classesMap={buttonClassesMap}
+                  fontName={fontName}
+                  heightReference={stackedButtonHeightReference}
+                  radius={buttonRadius}
+                  referenceProfile={referenceProfile}
+                  stackedSizes={stackedSizes}
+                  surfaceContext={activeSurfaceContext}
+                />
               </div>
             </section>
             {/* [ACTIVATION FEEDBACK] START: Showcase examples for profile/origin overrides. */}
@@ -880,6 +894,14 @@ export function Button() {
               fontName={fontName}
               radius={buttonRadius}
               scale={activeButtonScale}
+              surfaceContext={activeSurfaceContext}
+            />
+            <ButtonStackedOptionsExample
+              classesMap={buttonClassesMap}
+              fontName={fontName}
+              radius={buttonRadius}
+              scale={activeButtonScale}
+              stackedSizes={stackedSizes}
               surfaceContext={activeSurfaceContext}
             />
             {manifest?.components?.badge ? (

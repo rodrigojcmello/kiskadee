@@ -69,3 +69,27 @@ The canonical `eye` / `eye-off` concepts map to the following pinned upstream ar
 The Material ligatures belong to the shared outlined font subset for both FILL variants. Iconoir's
 concealed concept uses its native closed-eye glyph rather than synthetic slash artwork. These
 canonical additions do not extend the Essential Icon map or select artwork inside TextField.
+
+The common meeting-action concepts use the pinned native exports below. Every exposed variant
+shares its family's semantic mappings and keeps fixed RTL direction. These remain generic
+interface concepts; the Button Showcase's meeting bar is an application composition.
+
+| Canonical concept | Lucide | Fluent System | Carbon | Iconoir | Phosphor | Font Awesome Classic | Material Symbols |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `record` | `CircleDotIcon` | `RecordRegular` | `Recording` | `Circle` with mapping-local fill | `RecordIcon` | `faCircleDot` | `radio_button_checked` |
+| `chat` | `MessageCircleIcon` | `ChatRegular` | `Chat` | `ChatBubble` | `ChatCircleIcon` | `faComment` | `chat_bubble` |
+| `users` | `UsersIcon` | `PeopleRegular` | `UserMultiple` | `Group` | `UsersIcon` | `faUserGroup` | `group` |
+| `hand` | `HandIcon` | `HandRightRegular` | `TouchInteraction` | `OpenSelectHandGesture` | `HandPalmIcon` | `faHand` | `front_hand` |
+| `grid` | `Grid2X2Icon` | `GridRegular` | `Grid` | `ViewGrid` | `GridFourIcon` | `faTableCellsLarge` | `grid_view` |
+| `ellipsis` | `EllipsisIcon` | `MoreHorizontalRegular` | `OverflowMenuHorizontal` | `MoreHoriz` | `DotsThreeIcon` | `faEllipsis` | `more_horiz` |
+| `video` | `VideoIcon` | `VideoRegular` | `Video` | `VideoCamera` | `VideoCameraIcon` | `faVideo` | `videocam` |
+| `mic` | `MicIcon` | `MicRegular` | `Microphone` | `Microphone` | `MicrophoneIcon` | `faMicrophone` | `mic` |
+| `screen-share` | `ScreenShareIcon` | `ShareScreenStartRegular` | `Screen` | `UploadDataWindow` | `ScreencastIcon` | `faArrowUpFromBracket` | `present_to_all` |
+| `phone-hangup` | `PhoneOffIcon` | `CallEndRegular` | `PhoneOff` | `PhoneXmark` | `PhoneDisconnectIcon` | `faPhoneSlash` | `call_end` |
+
+Family language differs deliberately: Carbon's hand is a touch gesture; screen sharing can use
+a monitor, broadcast display, or upward sharing tray; ending a call can use a lowered handset,
+a slash, or a dismissal mark. These native approximations preserve the action concept without
+mixing families or drawing synthetic artwork. The consuming Button's visible label supplies the
+specific operation. Iconoir's recording dot uses its native circle with mapping-local fill;
+Fluent's `RecordRegular` uses a ring and center dot, distinct from the essential menu-radio dot.

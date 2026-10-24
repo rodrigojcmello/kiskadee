@@ -3,6 +3,7 @@ import {
   Add,
   ArrowsHorizontal,
   Branch,
+  Chat,
   Checkmark,
   CheckmarkOutline,
   ChevronDown,
@@ -20,21 +21,27 @@ import {
   FaceSatisfied,
   Favorite,
   FolderMoveTo,
+  Grid,
   Home,
   Link,
   ListBulleted,
   ListNumbered,
   Locked,
   Menu,
+  Microphone,
   Moon,
   NotAvailable,
   Notification,
+  OverflowMenuHorizontal,
   PartlyCloudyNight,
   Pause,
+  PhoneOff,
   Play,
+  Recording,
   Redo,
   Renew,
   Rocket,
+  Screen,
   Search,
   Send,
   Settings,
@@ -52,9 +59,12 @@ import {
   TextStrikethrough,
   TextUnderline,
   ThumbsUp,
+  TouchInteraction,
   TrashCan,
   Undo,
   User,
+  UserMultiple,
+  Video,
   View,
   ViewOff,
   VolumeDown,
@@ -68,6 +78,7 @@ import type { CompleteCanonicalGlyphMap } from '../types.ts';
 const glyphAdd = createSvgGlyph(Add, {"size":"1em"});
 const glyphArrowsHorizontal = createSvgGlyph(ArrowsHorizontal, {"size":"1em"});
 const glyphBranch = createSvgGlyph(Branch, {"size":"1em"});
+const glyphChat = createSvgGlyph(Chat, {"size":"1em"});
 const glyphCheckmark = createSvgGlyph(Checkmark, {"size":"1em"});
 const glyphCheckmarkOutline = createSvgGlyph(CheckmarkOutline, {"size":"1em"});
 const glyphChevronDown = createSvgGlyph(ChevronDown, {"size":"1em"});
@@ -85,21 +96,27 @@ const glyphFaceDissatisfied = createSvgGlyph(FaceDissatisfied, {"size":"1em"});
 const glyphFaceSatisfied = createSvgGlyph(FaceSatisfied, {"size":"1em"});
 const glyphFavorite = createSvgGlyph(Favorite, {"size":"1em"});
 const glyphFolderMoveTo = createSvgGlyph(FolderMoveTo, {"size":"1em"});
+const glyphGrid = createSvgGlyph(Grid, {"size":"1em"});
 const glyphHome = createSvgGlyph(Home, {"size":"1em"});
 const glyphLink = createSvgGlyph(Link, {"size":"1em"});
 const glyphListBulleted = createSvgGlyph(ListBulleted, {"size":"1em"});
 const glyphListNumbered = createSvgGlyph(ListNumbered, {"size":"1em"});
 const glyphLocked = createSvgGlyph(Locked, {"size":"1em"});
 const glyphMenu = createSvgGlyph(Menu, {"size":"1em"});
+const glyphMicrophone = createSvgGlyph(Microphone, {"size":"1em"});
 const glyphMoon = createSvgGlyph(Moon, {"size":"1em"});
 const glyphNotAvailable = createSvgGlyph(NotAvailable, {"size":"1em"});
 const glyphNotification = createSvgGlyph(Notification, {"size":"1em"});
+const glyphOverflowMenuHorizontal = createSvgGlyph(OverflowMenuHorizontal, {"size":"1em"});
 const glyphPartlyCloudyNight = createSvgGlyph(PartlyCloudyNight, {"size":"1em"});
 const glyphPause = createSvgGlyph(Pause, {"size":"1em"});
+const glyphPhoneOff = createSvgGlyph(PhoneOff, {"size":"1em"});
 const glyphPlay = createSvgGlyph(Play, {"size":"1em"});
+const glyphRecording = createSvgGlyph(Recording, {"size":"1em"});
 const glyphRedo = createSvgGlyph(Redo, {"size":"1em"});
 const glyphRenew = createSvgGlyph(Renew, {"size":"1em"});
 const glyphRocket = createSvgGlyph(Rocket, {"size":"1em"});
+const glyphScreen = createSvgGlyph(Screen, {"size":"1em"});
 const glyphSearch = createSvgGlyph(Search, {"size":"1em"});
 const glyphSend = createSvgGlyph(Send, {"size":"1em"});
 const glyphSettings = createSvgGlyph(Settings, {"size":"1em"});
@@ -117,9 +134,12 @@ const glyphTextItalic = createSvgGlyph(TextItalic, {"size":"1em"});
 const glyphTextStrikethrough = createSvgGlyph(TextStrikethrough, {"size":"1em"});
 const glyphTextUnderline = createSvgGlyph(TextUnderline, {"size":"1em"});
 const glyphThumbsUp = createSvgGlyph(ThumbsUp, {"size":"1em"});
+const glyphTouchInteraction = createSvgGlyph(TouchInteraction, {"size":"1em"});
 const glyphTrashCan = createSvgGlyph(TrashCan, {"size":"1em"});
 const glyphUndo = createSvgGlyph(Undo, {"size":"1em"});
 const glyphUser = createSvgGlyph(User, {"size":"1em"});
+const glyphUserMultiple = createSvgGlyph(UserMultiple, {"size":"1em"});
+const glyphVideo = createSvgGlyph(Video, {"size":"1em"});
 const glyphView = createSvgGlyph(View, {"size":"1em"});
 const glyphViewOff = createSvgGlyph(ViewOff, {"size":"1em"});
 const glyphVolumeDown = createSvgGlyph(VolumeDown, {"size":"1em"});
@@ -135,6 +155,7 @@ const glyphMap = {
     "bell": glyphNotification,
     "bold": glyphTextBold,
     "cart": glyphShoppingCart,
+    "chat": { glyph: glyphChat, direction: 'fixed' },
     "check": glyphCheckmark,
     "chevron-down": glyphChevronDown,
     "chevron-up": glyphChevronUp,
@@ -145,12 +166,15 @@ const glyphMap = {
     "clipboard-check": glyphTaskComplete,
     "close": glyphClose,
     "dashboard": glyphDashboard,
+    "ellipsis": { glyph: glyphOverflowMenuHorizontal, direction: 'fixed' },
     "eye": { glyph: glyphView, direction: 'fixed' },
     "eye-off": { glyph: glyphViewOff, direction: 'fixed' },
     "folder-move": { glyph: glyphFolderMoveTo, direction: 'mirror' },
     "frown": glyphFaceDissatisfied,
     "git-branch": glyphBranch,
+    "grid": { glyph: glyphGrid, direction: 'fixed' },
     "grip-vertical": glyphDragVertical,
+    "hand": { glyph: glyphTouchInteraction, direction: 'fixed' },
     "heart": glyphFavorite,
     "home": glyphHome,
     "italic": glyphTextItalic,
@@ -161,16 +185,20 @@ const glyphMap = {
     "lock": { glyph: glyphLocked, direction: 'fixed' },
     "mail": glyphEmail,
     "menu": glyphMenu,
+    "mic": { glyph: glyphMicrophone, direction: 'fixed' },
     "minus": glyphSubtract,
     "moon": glyphMoon,
     "moon-star": glyphPartlyCloudyNight,
     "pause": glyphPause,
     "pencil": glyphEdit,
+    "phone-hangup": { glyph: glyphPhoneOff, direction: 'fixed' },
     "play": glyphPlay,
     "plus": glyphAdd,
+    "record": { glyph: glyphRecording, direction: 'fixed' },
     "redo": { glyph: glyphRedo, direction: 'mirror' },
     "radio-selected": glyphDotMark,
     "rocket": glyphRocket,
+    "screen-share": { glyph: glyphScreen, direction: 'fixed' },
     "search": glyphSearch,
     "send": { glyph: glyphSend, direction: 'mirror' },
     "settings": glyphSettings,
@@ -184,6 +212,8 @@ const glyphMap = {
     "underline": glyphTextUnderline,
     "undo": { glyph: glyphUndo, direction: 'mirror' },
     "user": glyphUser,
+    "users": { glyph: glyphUserMultiple, direction: 'fixed' },
+    "video": { glyph: glyphVideo, direction: 'fixed' },
     "volume-high": glyphVolumeUp,
     "volume-low": glyphVolumeDown,
     "volume-muted": glyphVolumeMute

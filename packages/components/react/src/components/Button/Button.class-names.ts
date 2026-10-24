@@ -23,6 +23,7 @@ import {
 } from '../../shared/class-resolution/classNames.ts';
 import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import type {
+  ButtonClassesMap,
   ButtonElementName,
   ButtonGroupProps,
   ButtonProps,
@@ -49,6 +50,21 @@ export type ButtonResolvedClassNames = NonNullable<HeadlessButtonProps['classNam
 
 export const join = joinClassNames;
 export const normalizeButtonScaleKey = normalizeScaleKey;
+
+/** Checks all stacked roles and the requested radius at the effective size. */
+export function supportsButtonStackedLayout(
+  elements: Pick<ButtonClassesMap, 'e8' | 'e9' | 'e10'>,
+  scale: string = DEFAULT_BUTTON_SCALE,
+  radius: RadiusMode = DEFAULT_BUTTON_RADIUS
+): boolean {
+  const scaleKey = normalizeButtonScaleKey(scale);
+  return (
+    Boolean(resolveRadiusClassName(elements.e8, scaleKey, radius)) &&
+    [elements.e8, elements.e9, elements.e10].every((element) =>
+      Boolean(element?.s?.all || element?.s?.[scaleKey])
+    )
+  );
+}
 
 function collectElementClasses(
   element: ClassNameByElementJSON | undefined,
@@ -127,6 +143,9 @@ export function resolveButtonClassNames({
   e5,
   e6,
   e7,
+  e8,
+  e9,
+  e10,
   classNames,
   status,
   controlState,
@@ -150,6 +169,9 @@ export function resolveButtonClassNames({
   e5?: ClassNameByElementJSON;
   e6?: ClassNameByElementJSON;
   e7?: ClassNameByElementJSON;
+  e8?: ClassNameByElementJSON;
+  e9?: ClassNameByElementJSON;
+  e10?: ClassNameByElementJSON;
   classNames: NonNullable<ButtonProps['classNames']>;
   status: ButtonStatus | 'rest';
   controlState: boolean | undefined;
@@ -172,15 +194,24 @@ export function resolveButtonClassNames({
   const resolvedIconTreatment = iconTreatment ?? DEFAULT_BUTTON_ICON_TREATMENT;
   const resolvedIconSurfaceCorners = iconSurfaceCorners ?? DEFAULT_BUTTON_ICON_SURFACE_CORNERS;
   const hasSurfacedIconTreatment = resolvedIconTreatment !== 'plain';
-  const resolvedIconLayout = hasSurfacedIconTreatment
-    ? 'edge'
-    : (iconLayout ?? DEFAULT_BUTTON_ICON_LAYOUT);
-  const resolvedIconPlacement = iconPlacement ?? DEFAULT_BUTTON_ICON_PLACEMENT;
   const scaleKey = normalizeButtonScaleKey(scale ?? DEFAULT_BUTTON_SCALE);
   const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
+  const isStacked =
+    iconLayout === 'stacked' &&
+    !hasSurfacedIconTreatment &&
+    supportsButtonStackedLayout({ e8, e9, e10 }, scaleKey, radiusMode);
+  const resolvedIconLayout = hasSurfacedIconTreatment
+    ? 'edge'
+    : iconLayout === 'stacked' && !isStacked
+      ? DEFAULT_BUTTON_ICON_LAYOUT
+      : (iconLayout ?? DEFAULT_BUTTON_ICON_LAYOUT);
+  const resolvedIconPlacement = iconPlacement ?? DEFAULT_BUTTON_ICON_PLACEMENT;
+  const rootGeometry = isStacked ? e8 : e1;
+  const labelGeometry = isStacked ? e9 : e2;
+  const iconGeometry = isStacked ? e10 : e3;
   const e3HasSchemaScale = Boolean(e3?.s?.all || e3?.s?.[scaleKey]);
   const iconLineHeight =
-    e3HasSchemaScale && !hasSurfacedIconTreatment
+    e3HasSchemaScale && !hasSurfacedIconTreatment && !isStacked
       ? resolveStructuralUtilityProjectionClassName(e2, 'lh', scaleKey)
       : '';
   const e4HasSchemaScale = Boolean(e4?.s?.all || e4?.s?.[scaleKey]);
@@ -196,7 +227,7 @@ export function resolveButtonClassNames({
         : ''
     : '';
 
-  const e1RadiusClassName = resolveRadiusClassName(e1, scaleKey, radiusMode);
+  const e1RadiusClassName = resolveRadiusClassName(rootGeometry, scaleKey, radiusMode);
 
   const projectedStatus =
     status !== 'rest'
@@ -211,9 +242,9 @@ export function resolveButtonClassNames({
     e1:
       join(
         collectElementClasses(e1, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
-        e1?.s?.all,
+        rootGeometry?.s?.all,
         classNames.e1,
-        e1?.s?.[scaleKey],
+        rootGeometry?.s?.[scaleKey],
         e1RadiusClassName,
         shadowEffect,
         radiusEffectClass,
@@ -223,8 +254,8 @@ export function resolveButtonClassNames({
         shadowEffect ? cn.shadow : undefined,
         activation,
         'k-btn',
-        resolvedIconLayout === 'inline' ? 'k-btn-e1d' : 'k-btn-e1e',
-        resolvedIconPlacement === 'leading' ? 'k-btn-e1f' : 'k-btn-e1g',
+        isStacked ? 'k-btn-e8' : resolvedIconLayout === 'inline' ? 'k-btn-e1d' : 'k-btn-e1e',
+        isStacked ? undefined : resolvedIconPlacement === 'leading' ? 'k-btn-e1f' : 'k-btn-e1g',
         hasSurfacedIconTreatment ? 'k-btn-e1h' : undefined,
         hasSurfacedIconTreatment && resolvedIconSurfaceCorners === 'edge' ? 'k-btn-e1i' : undefined,
         'k-foc',
@@ -232,25 +263,38 @@ export function resolveButtonClassNames({
       ) ?? '',
     e2:
       join(
-        collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
-        e2?.s?.all,
+        isStacked
+          ? join(
+              labelGeometry?.d,
+              resolveIntentClassName(e2, resolvedIntent, resolvedEmphasis, {
+                surfaceContext: resolvedSurfaceContext
+              })
+            )
+          : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+        labelGeometry?.s?.all,
         classNames.e2,
-        e2?.s?.[scaleKey],
-        'k-btn-e2'
+        labelGeometry?.s?.[scaleKey],
+        'k-btn-e2',
+        isStacked ? 'k-btn-e9' : undefined
       ) ?? '',
     e3:
       join(
-        hasSurfacedIconTreatment
-          ? e3?.d
-          : e3?.c
-            ? collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext)
-            : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
-        e3HasSchemaScale ? e3?.s?.all : undefined,
+        isStacked
+          ? resolveIntentClassName(e3?.c ? e3 : e2, resolvedIntent, resolvedEmphasis, {
+              surfaceContext: resolvedSurfaceContext
+            })
+          : hasSurfacedIconTreatment
+            ? e3?.d
+            : e3?.c
+              ? collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext)
+              : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+        isStacked || e3HasSchemaScale ? iconGeometry?.s?.all : undefined,
         classNames.e3,
-        e3HasSchemaScale ? e3?.s?.[scaleKey] : undefined,
+        isStacked || e3HasSchemaScale ? iconGeometry?.s?.[scaleKey] : undefined,
         iconLineHeight,
         iconLineHeight ? 'k-btn-e3a' : undefined,
-        'k-btn-e3'
+        'k-btn-e3',
+        isStacked ? 'k-btn-e10' : undefined
       ) ?? '',
     e4: hasSurfacedIconTreatment
       ? (join(

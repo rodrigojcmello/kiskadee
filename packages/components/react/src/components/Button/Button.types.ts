@@ -21,7 +21,17 @@ export type { ButtonIconSurfaceCorners, ButtonIconTreatment } from '@kiskadee/co
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type ButtonElementName =
+  | 'e1'
+  | 'e2'
+  | 'e3'
+  | 'e4'
+  | 'e5'
+  | 'e6'
+  | 'e7'
+  | 'e8'
+  | 'e9'
+  | 'e10';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
@@ -103,9 +113,10 @@ export type ButtonProps = HeadlessButtonProps & {
   /**
    * Icon/label composition. `inline` centers both as one group; `edge`
    * pins the icon to a logical edge while centering the label independently.
+   * `stacked` centers an icon above a single-line label using the preset's stacked recipe.
    */
   iconLayout?: ButtonIconLayout;
-  /** Logical icon side. Leading/trailing follow the document direction. */
+  /** Logical icon side. Leading/trailing follow direction; inactive in stacked layout. */
   iconPlacement?: ButtonIconPlacement;
   /**
    * Optional visual treatment for the icon region.

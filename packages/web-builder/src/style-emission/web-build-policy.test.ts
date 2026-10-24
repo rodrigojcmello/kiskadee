@@ -136,6 +136,50 @@ describe('TextField internal content emission', () => {
 });
 
 describe('Button Web style-emission policy', () => {
+  it('emits complete stacked root geometry with the ordinary border compensation policy', () => {
+    const policy = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'button',
+      'e8'
+    );
+    expect(policy.borderRadiusEmission).toBe('mirrored');
+    expect(policy.borderWidthEmission).toBe('mirrored');
+    expect(policy.paddingEmission).toBe('compensated');
+    expect(
+      transformScaleKeyToCss('paddingTop__8', breakpoints, 'stacked', {
+        styleEmissionPolicy: policy
+      })
+    ).toBe(
+      '.stacked { --k-pdt: 8px; padding-top: max(0px, calc(var(--k-pdt) - var(--k-bdw, 0px))) }'
+    );
+  });
+
+  it('keeps stacked label spacing direct and stacked icon dimensions token-only', () => {
+    const label = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'button',
+      'e9'
+    );
+    const icon = resolveElementStyleEmissionPolicy(
+      DEFAULT_WEB_STYLE_EMISSION_POLICY,
+      'button',
+      'e10'
+    );
+    expect(
+      transformScaleKeyToCss('marginTop__4', breakpoints, 'label', {
+        styleEmissionPolicy: label
+      })
+    ).toBe('.label { margin-top: 4px }');
+    for (const [key, variable] of [
+      ['boxHeight__24', '--k-bxh'],
+      ['boxWidth__24', '--k-bxw']
+    ]) {
+      expect(transformScaleKeyToCss(key, breakpoints, 'icon', { styleEmissionPolicy: icon })).toBe(
+        `.icon { ${variable}: 24px }`
+      );
+    }
+  });
+
   it('publishes icon dimensions as tokens for structural logical sizing', () => {
     const policy = resolveElementStyleEmissionPolicy(
       DEFAULT_WEB_STYLE_EMISSION_POLICY,

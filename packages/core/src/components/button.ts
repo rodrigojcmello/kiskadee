@@ -39,7 +39,7 @@ type ElementNameMetadata = {
   name: string;
 };
 
-export type ButtonIconLayout = 'inline' | 'edge';
+export type ButtonIconLayout = 'inline' | 'edge' | 'stacked';
 export type ButtonIconPlacement = 'leading' | 'trailing';
 export type ButtonIconSurfaceCorners = 'edge' | 'all';
 export type ButtonIconTreatment = 'plain' | 'surface';
@@ -51,8 +51,8 @@ export type ButtonOptions = {
   /** Draws the preset-authored divider before the trailing disclosure slot. */
   disclosureDivider?: boolean;
   /**
-   * Controls whether icon and label form one centered group or occupy
-   * independent edge/center tracks.
+   * Controls whether icon and label form one centered group, occupy
+   * independent edge/center tracks, or stack the icon above the label.
    */
   iconLayout?: ButtonIconLayout;
   /** Logical icon side. Leading/trailing follow the document direction. */
@@ -72,8 +72,21 @@ export type ButtonOptions = {
  * - e5: optional trailing disclosure indicator
  * - e6: optional decorative divider used by connected and disclosure compositions
  * - e7: optional inline Badge relation spacing
+ * - e8: optional stacked container geometry
+ * - e9: optional stacked label typography and icon-to-label spacing
+ * - e10: optional stacked icon viewport
  */
-export type ButtonElementName = 'e1' | 'e2' | 'e3' | 'e4' | 'e5' | 'e6' | 'e7';
+export type ButtonElementName =
+  | 'e1'
+  | 'e2'
+  | 'e3'
+  | 'e4'
+  | 'e5'
+  | 'e6'
+  | 'e7'
+  | 'e8'
+  | 'e9'
+  | 'e10';
 
 /**
  * e1 — button container/surface
@@ -196,6 +209,29 @@ export type ButtonBadgeRelationElementStyle = {
   };
 };
 
+/** e8 replaces root geometry while e1 retains surface, decoration and effects ownership. */
+export type ButtonStackedContainerElementStyle = {
+  name: string;
+  scales: Required<Omit<NonNullable<ButtonContainerElementStyle['scales']>, '_boxHeight'>> &
+    Pick<NonNullable<ButtonContainerElementStyle['scales']>, '_boxHeight'>;
+};
+
+/** e9 replaces label typography; e2 retains foreground and effects ownership. */
+export type ButtonStackedLabelElementStyle = {
+  name: string;
+  decorations?: Pick<DecorationSchema, 'textItalic' | 'textLineType'>;
+  typography: ElementTypography;
+  scales: {
+    marginTop: ScaleBySize | number;
+  };
+};
+
+/** e10 replaces the icon viewport; e3 retains foreground and effects ownership. */
+export type ButtonStackedIconElementStyle = {
+  name: string;
+  iconSize: ElementIconSize;
+};
+
 export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e1?: ButtonContainerElementStyle<TSegmentName>;
   e2?: ButtonLabelElementStyle<TSegmentName>;
@@ -204,14 +240,20 @@ export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e5?: ButtonDisclosureElementStyle<TSegmentName>;
   e6?: ButtonDividerElementStyle<TSegmentName>;
   e7?: ButtonBadgeRelationElementStyle;
+  e8?: ButtonStackedContainerElementStyle;
+  e9?: ButtonStackedLabelElementStyle;
+  e10?: ButtonStackedIconElementStyle;
 };
 
 type ElementContractRules = {
   decorations?: readonly string[];
   iconSize?: boolean;
   typography?: boolean;
+  typographyRequired?: boolean;
   scales?: readonly string[];
+  requiredScales?: readonly string[];
   palettes?: readonly ColorProperty[];
+  effects?: false;
 };
 
 const BUTTON_COMPONENT_KEYS = ['contentSurfaceContext', 'effects', 'elements', 'options'] as const;
@@ -224,7 +266,7 @@ const BUTTON_OPTION_KEYS = [
   'iconTreatment',
   'iconSurfaceCorners'
 ] as const;
-const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7'] as const;
+const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'e9', 'e10'] as const;
 const BUTTON_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
@@ -281,6 +323,38 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
   },
   e7: {
     scales: ['paddingLeft', 'paddingRight']
+  },
+  e8: {
+    scales: [
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft',
+      'borderWidth',
+      'borderRadius',
+      '_boxHeight'
+    ],
+    requiredScales: [
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft',
+      'borderWidth',
+      'borderRadius'
+    ],
+    effects: false
+  },
+  e9: {
+    decorations: ['textItalic', 'textLineType'],
+    typography: true,
+    typographyRequired: true,
+    scales: ['marginTop'],
+    requiredScales: ['marginTop'],
+    effects: false
+  },
+  e10: {
+    iconSize: true,
+    effects: false
   }
 };
 
@@ -463,6 +537,8 @@ function validateElementContract(
     } else {
       issues.push(...validateElementTypographyContract(value.typography, `${path}.typography`));
     }
+  } else if (rules.typographyRequired) {
+    issues.push(`${path}.typography: required reference`);
   }
 
   if (value.iconSize !== undefined) {
@@ -488,12 +564,28 @@ function validateElementContract(
     }
   }
 
+  if (rules.requiredScales) {
+    if (value.scales === undefined) {
+      issues.push(`${path}.scales: required object`);
+    } else if (isRecord(value.scales)) {
+      for (const property of rules.requiredScales) {
+        if (value.scales[property] === undefined) {
+          issues.push(`${path}.scales.${property}: required scale`);
+        }
+      }
+    }
+  }
+
   if (value.palettes !== undefined) {
     if (!rules.palettes) {
       issues.push(`${path}.palettes: not allowed for this element`);
     } else {
       validatePalettes(value.palettes, rules.palettes, `${path}.palettes`, issues);
     }
+  }
+
+  if (value.effects !== undefined && rules.effects === false) {
+    issues.push(`${path}.effects: not allowed for this element`);
   }
 }
 
@@ -533,9 +625,10 @@ export function validateButtonComponentContract(
       if (
         value.options.iconLayout !== undefined &&
         value.options.iconLayout !== 'inline' &&
-        value.options.iconLayout !== 'edge'
+        value.options.iconLayout !== 'edge' &&
+        value.options.iconLayout !== 'stacked'
       ) {
-        issues.push(`${path}.options.iconLayout: expected "inline" or "edge"`);
+        issues.push(`${path}.options.iconLayout: expected "inline", "edge" or "stacked"`);
       }
 
       if (
@@ -582,6 +675,16 @@ export function validateButtonComponentContract(
     if (key === 'e7') {
       validateButtonBadgeRelationContract(element, `${path}.elements.e7`, issues);
     }
+  }
+
+  if (
+    isRecord(value.options) &&
+    value.options.iconLayout === 'stacked' &&
+    ['e8', 'e9', 'e10'].some((element) => elements[element] === undefined)
+  ) {
+    issues.push(
+      `${path}.options.iconLayout: stacked defaults require components.button.elements.e8, e9 and e10`
+    );
   }
 
   if (

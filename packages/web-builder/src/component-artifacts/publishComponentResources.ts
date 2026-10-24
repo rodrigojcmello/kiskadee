@@ -3,12 +3,18 @@ import { dirname, resolve } from 'node:path';
 import {
   type ComponentSizeSupport,
   compileDensityMap,
+  elementSizeValues,
+  type RadiusMode,
   resolveSupportedSize,
   type Schema
 } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import { componentNameToArtifactSlug } from './componentClassMapArtifacts.ts';
-import type { ComponentInspectionArtifact, StylesheetResource } from './componentResources.ts';
+import type {
+  ComponentInspectionArtifact,
+  ComponentResourceArtifact,
+  StylesheetResource
+} from './componentResources.ts';
 import { artifactHash, partitionComponentCss } from './partitionComponentCss.ts';
 
 const isRecord = (value: unknown): value is Record<string, any> =>
@@ -41,6 +47,57 @@ export function buildSizeSupport(branch: unknown): ComponentSizeSupport {
         Object.entries(branch[key]).map(([name, child]) => [name, buildSizeSupport(child)])
       );
   return support;
+}
+
+/** Publishes complete stacked recipes, not the presence of any utility in an element bucket. */
+export function buildButtonLayoutSupport(
+  branch: unknown,
+  componentSizes: readonly string[]
+): ComponentResourceArtifact['layouts'] {
+  if (!isRecord(branch) || !isRecord(branch.elements)) return undefined;
+  const { e8, e9, e10 } = branch.elements;
+  if (!isRecord(e8) || !isRecord(e9) || !isRecord(e10)) return undefined;
+
+  const hasBaseline = (value: unknown): boolean => {
+    if (typeof value === 'number') return Number.isFinite(value);
+    if (typeof value === 'string') return value.length > 0;
+    return isRecord(value) && hasBaseline(value['bp:all']);
+  };
+  const hasSize = (value: unknown, size: string): boolean => {
+    if (!isRecord(value)) return hasBaseline(value);
+    return hasBaseline(Object.hasOwn(value, size) ? value[size] : value['s:all']);
+  };
+  const rootScales = e8.scales;
+  const labelScales = e9.scales;
+  const sizesByRadius: Record<RadiusMode, string[]> = { rounded: [], pill: [], square: [] };
+  const sizes = elementSizeValues.filter((size) => {
+    if (!componentSizes.includes(size.slice(2))) return false;
+    if (!isRecord(rootScales) || !isRecord(labelScales)) return false;
+    if (
+      !['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderWidth'].every(
+        (property) => hasSize(rootScales[property], size)
+      )
+    ) {
+      return false;
+    }
+    if (
+      !hasSize(e9.typography, size) ||
+      !hasSize(labelScales.marginTop, size) ||
+      !hasSize(e10.iconSize, size)
+    ) {
+      return false;
+    }
+    const radius = rootScales.borderRadius;
+    if (!isRecord(radius)) return false;
+    let hasRadius = false;
+    for (const mode of ['rounded', 'pill', 'square'] as const) {
+      if (!hasSize(radius[mode], size)) continue;
+      sizesByRadius[mode].push(size.slice(2));
+      hasRadius = true;
+    }
+    return hasRadius;
+  });
+  return { stacked: { sizes: sizes.map((size) => size.slice(2)), sizesByRadius } };
 }
 
 /** Converts phase-local aggregate intermediates to the only published runtime handoff. */
@@ -152,21 +209,24 @@ export async function publishComponentResources(buildDir: string, schema: Schema
     if (artifacts?.classMaps?.core) resource.core = artifacts.classMaps.core;
     const paletteCapabilities = capabilities.surfaceContexts;
     delete capabilities.surfaceContexts;
-    const heightReference =
-      name === 'button' ? schema.components.button?.elements.e1?.scales?._boxHeight : undefined;
+    const inspectionElements: ComponentInspectionArtifact['elements'] = {};
+    if (name === 'button') {
+      for (const element of ['e1', 'e8'] as const) {
+        const heightReference = schema.components.button?.elements[element]?.scales?._boxHeight;
+        if (heightReference === undefined) continue;
+        inspectionElements[element] = {
+          scales: {
+            _boxHeight:
+              typeof heightReference === 'number' ? heightReference : { ...heightReference }
+          }
+        };
+      }
+    }
     const inspection: ComponentInspectionArtifact | undefined =
-      heightReference === undefined
-        ? undefined
-        : {
-            elements: {
-              e1: {
-                scales: {
-                  _boxHeight:
-                    typeof heightReference === 'number' ? heightReference : { ...heightReference }
-                }
-              }
-            }
-          };
+      Object.keys(inspectionElements).length === 0 ? undefined : { elements: inspectionElements };
+    const sizeSupport = buildSizeSupport(component);
+    const layouts =
+      name === 'button' ? buildButtonLayoutSupport(component, sizeSupport.sizes ?? []) : undefined;
     const payload = {
       ...global.components?.[name],
       ...existing,
@@ -177,7 +237,8 @@ export async function publishComponentResources(buildDir: string, schema: Schema
         ...(name === 'text' ? schema.components.text?.options : {})
       },
       component: name,
-      sizeSupport: buildSizeSupport(component),
+      sizeSupport,
+      ...(layouts ? { layouts } : {}),
       capabilities,
       ...(inspection ? { inspection } : {}),
       resources: { ...resource, palettes: {} as Record<string, string> },
@@ -187,6 +248,7 @@ export async function publishComponentResources(buildDir: string, schema: Schema
       ...(name === 'text' && global.classMap?.text ? { classMap: global.classMap.text } : {})
     };
     if (!inspection) delete payload.inspection;
+    if (!layouts) delete payload.layouts;
     const contentSurfaceContext = payload.contentSurfaceContext;
     delete payload.contentSurfaceContext;
     const canonicalSurfaces = payload.options?.canonicalSurfaces;

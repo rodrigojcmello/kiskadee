@@ -7,7 +7,9 @@ import { ArrowSyncCircleRegular } from '@fluentui/react-icons/headless/svg/arrow
 import { ArrowUndoRegular } from '@fluentui/react-icons/headless/svg/arrow-undo';
 import { BoardRegular } from '@fluentui/react-icons/headless/svg/board';
 import { BranchForkRegular } from '@fluentui/react-icons/headless/svg/branch-fork';
+import { CallEndRegular } from '@fluentui/react-icons/headless/svg/call-end';
 import { CartRegular } from '@fluentui/react-icons/headless/svg/cart';
+import { ChatRegular } from '@fluentui/react-icons/headless/svg/chat';
 import { CheckmarkRegular } from '@fluentui/react-icons/headless/svg/checkmark';
 import { CheckmarkCircleRegular } from '@fluentui/react-icons/headless/svg/checkmark-circle';
 import { ChevronDownRegular } from '@fluentui/react-icons/headless/svg/chevron-down';
@@ -26,21 +28,28 @@ import { EmojiSadRegular } from '@fluentui/react-icons/headless/svg/emoji-sad';
 import { EyeRegular } from '@fluentui/react-icons/headless/svg/eye';
 import { EyeOffRegular } from '@fluentui/react-icons/headless/svg/eye-off';
 import { FolderArrowRightRegular } from '@fluentui/react-icons/headless/svg/folder-arrow-right';
+import { GridRegular } from '@fluentui/react-icons/headless/svg/grid';
+import { HandRightRegular } from '@fluentui/react-icons/headless/svg/hand-right';
 import { HeartRegular } from '@fluentui/react-icons/headless/svg/heart';
 import { HomeRegular } from '@fluentui/react-icons/headless/svg/home';
 import { LinkRegular } from '@fluentui/react-icons/headless/svg/link';
 import { LockClosedRegular } from '@fluentui/react-icons/headless/svg/lock-closed';
 import { MailRegular } from '@fluentui/react-icons/headless/svg/mail';
+import { MicRegular } from '@fluentui/react-icons/headless/svg/mic';
+import { MoreHorizontalRegular } from '@fluentui/react-icons/headless/svg/more-horizontal';
 import { NavigationRegular } from '@fluentui/react-icons/headless/svg/navigation';
 import { PauseRegular } from '@fluentui/react-icons/headless/svg/pause';
+import { PeopleRegular } from '@fluentui/react-icons/headless/svg/people';
 import { PersonRegular } from '@fluentui/react-icons/headless/svg/person';
 import { PlayRegular } from '@fluentui/react-icons/headless/svg/play';
 import { ProhibitedRegular } from '@fluentui/react-icons/headless/svg/prohibited';
+import { RecordRegular } from '@fluentui/react-icons/headless/svg/record';
 import { RocketRegular } from '@fluentui/react-icons/headless/svg/rocket';
 import { SearchRegular } from '@fluentui/react-icons/headless/svg/search';
 import { SendRegular } from '@fluentui/react-icons/headless/svg/send';
 import { SettingsRegular } from '@fluentui/react-icons/headless/svg/settings';
 import { ShareRegular } from '@fluentui/react-icons/headless/svg/share';
+import { ShareScreenStartRegular } from '@fluentui/react-icons/headless/svg/share-screen-start';
 import {
   Speaker1Regular,
   Speaker2Regular,
@@ -60,6 +69,7 @@ import { TextNumberListRtlRegular } from '@fluentui/react-icons/headless/svg/tex
 import { TextStrikethroughRegular } from '@fluentui/react-icons/headless/svg/text-strikethrough';
 import { TextUnderlineRegular } from '@fluentui/react-icons/headless/svg/text-underline';
 import { ThumbLikeRegular } from '@fluentui/react-icons/headless/svg/thumb-like';
+import { VideoRegular } from '@fluentui/react-icons/headless/svg/video';
 import { WeatherMoonRegular } from '@fluentui/react-icons/headless/svg/weather-moon';
 import { WeatherPartlyCloudyNightRegular } from '@fluentui/react-icons/headless/svg/weather-partly-cloudy-night';
 import { WeatherSunnyRegular } from '@fluentui/react-icons/headless/svg/weather-sunny';
@@ -75,7 +85,9 @@ const glyphArrowSyncCircleRegular = createSvgGlyph(ArrowSyncCircleRegular, {"fon
 const glyphArrowUndoRegular = createSvgGlyph(ArrowUndoRegular, {"fontSize":"1em"});
 const glyphBoardRegular = createSvgGlyph(BoardRegular, {"fontSize":"1em"});
 const glyphBranchForkRegular = createSvgGlyph(BranchForkRegular, {"fontSize":"1em"});
+const glyphCallEndRegular = createSvgGlyph(CallEndRegular, {"fontSize":"1em"});
 const glyphCartRegular = createSvgGlyph(CartRegular, {"fontSize":"1em"});
+const glyphChatRegular = createSvgGlyph(ChatRegular, {"fontSize":"1em"});
 const glyphCheckmarkCircleRegular = createSvgGlyph(CheckmarkCircleRegular, {"fontSize":"1em"});
 const glyphCheckmarkRegular = createSvgGlyph(CheckmarkRegular, {"fontSize":"1em"});
 const glyphChevronDownRegular = createSvgGlyph(ChevronDownRegular, {"fontSize":"1em"});
@@ -94,21 +106,28 @@ const glyphEmojiSadRegular = createSvgGlyph(EmojiSadRegular, {"fontSize":"1em"})
 const glyphEyeOffRegular = createSvgGlyph(EyeOffRegular, {"fontSize":"1em"});
 const glyphEyeRegular = createSvgGlyph(EyeRegular, {"fontSize":"1em"});
 const glyphFolderArrowRightRegular = createSvgGlyph(FolderArrowRightRegular, {"fontSize":"1em"});
+const glyphGridRegular = createSvgGlyph(GridRegular, {"fontSize":"1em"});
+const glyphHandRightRegular = createSvgGlyph(HandRightRegular, {"fontSize":"1em"});
 const glyphHeartRegular = createSvgGlyph(HeartRegular, {"fontSize":"1em"});
 const glyphHomeRegular = createSvgGlyph(HomeRegular, {"fontSize":"1em"});
 const glyphLinkRegular = createSvgGlyph(LinkRegular, {"fontSize":"1em"});
 const glyphLockClosedRegular = createSvgGlyph(LockClosedRegular, {"fontSize":"1em"});
 const glyphMailRegular = createSvgGlyph(MailRegular, {"fontSize":"1em"});
+const glyphMicRegular = createSvgGlyph(MicRegular, {"fontSize":"1em"});
+const glyphMoreHorizontalRegular = createSvgGlyph(MoreHorizontalRegular, {"fontSize":"1em"});
 const glyphNavigationRegular = createSvgGlyph(NavigationRegular, {"fontSize":"1em"});
 const glyphPauseRegular = createSvgGlyph(PauseRegular, {"fontSize":"1em"});
+const glyphPeopleRegular = createSvgGlyph(PeopleRegular, {"fontSize":"1em"});
 const glyphPersonRegular = createSvgGlyph(PersonRegular, {"fontSize":"1em"});
 const glyphPlayRegular = createSvgGlyph(PlayRegular, {"fontSize":"1em"});
 const glyphProhibitedRegular = createSvgGlyph(ProhibitedRegular, {"fontSize":"1em"});
+const glyphRecordRegular = createSvgGlyph(RecordRegular, {"fontSize":"1em"});
 const glyphRocketRegular = createSvgGlyph(RocketRegular, {"fontSize":"1em"});
 const glyphSearchRegular = createSvgGlyph(SearchRegular, {"fontSize":"1em"});
 const glyphSendRegular = createSvgGlyph(SendRegular, {"fontSize":"1em"});
 const glyphSettingsRegular = createSvgGlyph(SettingsRegular, {"fontSize":"1em"});
 const glyphShareRegular = createSvgGlyph(ShareRegular, {"fontSize":"1em"});
+const glyphShareScreenStartRegular = createSvgGlyph(ShareScreenStartRegular, {"fontSize":"1em"});
 const glyphSpeaker1Regular = createSvgGlyph(Speaker1Regular, {"fontSize":"1em"});
 const glyphSpeaker2Regular = createSvgGlyph(Speaker2Regular, {"fontSize":"1em"});
 const glyphSpeakerMuteRegular = createSvgGlyph(SpeakerMuteRegular, {"fontSize":"1em"});
@@ -126,6 +145,7 @@ const glyphTextNumberListRtlRegular = createSvgGlyph(TextNumberListRtlRegular, {
 const glyphTextStrikethroughRegular = createSvgGlyph(TextStrikethroughRegular, {"fontSize":"1em"});
 const glyphTextUnderlineRegular = createSvgGlyph(TextUnderlineRegular, {"fontSize":"1em"});
 const glyphThumbLikeRegular = createSvgGlyph(ThumbLikeRegular, {"fontSize":"1em"});
+const glyphVideoRegular = createSvgGlyph(VideoRegular, {"fontSize":"1em"});
 const glyphWeatherMoonRegular = createSvgGlyph(WeatherMoonRegular, {"fontSize":"1em"});
 const glyphWeatherPartlyCloudyNightRegular = createSvgGlyph(WeatherPartlyCloudyNightRegular, {"fontSize":"1em"});
 const glyphWeatherSunnyRegular = createSvgGlyph(WeatherSunnyRegular, {"fontSize":"1em"});
@@ -139,6 +159,7 @@ const glyphMap = {
     "bell": glyphAlertRegular,
     "bold": glyphTextBoldRegular,
     "cart": glyphCartRegular,
+    "chat": { glyph: glyphChatRegular, direction: 'fixed' },
     "check": glyphCheckmarkRegular,
     "chevron-down": glyphChevronDownRegular,
     "chevron-up": glyphChevronUpRegular,
@@ -149,12 +170,15 @@ const glyphMap = {
     "clipboard-check": glyphClipboardCheckmarkRegular,
     "close": glyphDismissRegular,
     "dashboard": glyphBoardRegular,
+    "ellipsis": { glyph: glyphMoreHorizontalRegular, direction: 'fixed' },
     "eye": { glyph: glyphEyeRegular, direction: 'fixed' },
     "eye-off": { glyph: glyphEyeOffRegular, direction: 'fixed' },
     "folder-move": { glyph: glyphFolderArrowRightRegular, direction: 'mirror' },
     "frown": glyphEmojiSadRegular,
     "git-branch": glyphBranchForkRegular,
+    "grid": { glyph: glyphGridRegular, direction: 'fixed' },
     "grip-vertical": glyphDragRegular,
+    "hand": { glyph: glyphHandRightRegular, direction: 'fixed' },
     "heart": glyphHeartRegular,
     "home": glyphHomeRegular,
     "italic": glyphTextItalicRegular,
@@ -165,16 +189,20 @@ const glyphMap = {
     "lock": { glyph: glyphLockClosedRegular, direction: 'fixed' },
     "mail": glyphMailRegular,
     "menu": glyphNavigationRegular,
+    "mic": { glyph: glyphMicRegular, direction: 'fixed' },
     "minus": glyphSubtractRegular,
     "moon": glyphWeatherMoonRegular,
     "moon-star": glyphWeatherPartlyCloudyNightRegular,
     "pause": glyphPauseRegular,
     "pencil": glyphEditRegular,
+    "phone-hangup": { glyph: glyphCallEndRegular, direction: 'fixed' },
     "play": glyphPlayRegular,
     "plus": glyphAddRegular,
+    "record": { glyph: glyphRecordRegular, direction: 'fixed' },
     "redo": { glyph: glyphArrowRedoRegular, direction: 'mirror' },
     "radio-selected": glyphCircleSmallFilled,
     "rocket": glyphRocketRegular,
+    "screen-share": { glyph: glyphShareScreenStartRegular, direction: 'fixed' },
     "search": glyphSearchRegular,
     "send": { glyph: glyphSendRegular, direction: 'mirror' },
     "settings": glyphSettingsRegular,
@@ -188,6 +216,8 @@ const glyphMap = {
     "underline": glyphTextUnderlineRegular,
     "undo": { glyph: glyphArrowUndoRegular, direction: 'mirror' },
     "user": glyphPersonRegular,
+    "users": { glyph: glyphPeopleRegular, direction: 'fixed' },
+    "video": { glyph: glyphVideoRegular, direction: 'fixed' },
     "volume-high": glyphSpeaker2Regular,
     "volume-low": glyphSpeaker1Regular,
     "volume-muted": glyphSpeakerMuteRegular

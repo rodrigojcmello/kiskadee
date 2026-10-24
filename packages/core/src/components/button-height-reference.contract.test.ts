@@ -1,6 +1,7 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import {
   type ButtonContainerElementStyle,
+  type ButtonStackedContainerElementStyle,
   type ElementHeightReference,
   type ElementStyle,
   elementSizeValues,
@@ -24,6 +25,7 @@ describe('Button inspection height reference', () => {
   it('exposes the reference only on the Button container type', () => {
     expectTypeOf<NonNullable<ElementStyle['scales']>>().not.toHaveProperty('_boxHeight');
     expectTypeOf<NonNullable<ButtonContainerElementStyle['scales']>>().toHaveProperty('_boxHeight');
+    expectTypeOf<ButtonStackedContainerElementStyle['scales']>().toHaveProperty('_boxHeight');
   });
   it('accepts scalar and fixed-size references through public contracts', () => {
     const references: ElementHeightReference[] = [
@@ -115,7 +117,7 @@ describe('Button inspection height reference', () => {
     );
   });
 
-  it('limits the reference to Button e1 without permitting other underscore properties', () => {
+  it('limits the reference to Button container geometry without permitting other underscore properties', () => {
     const button = createButton(30);
     expect(
       validateButtonComponentContract({

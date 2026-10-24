@@ -428,6 +428,69 @@ $height: 64px;
   margin: 0;
 }
 
+.stackedActionExample {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  > :global(.k-btn) {
+    inline-size: max-content;
+  }
+
+  > p {
+    margin: 0;
+  }
+}
+
+.stackedOptionsSection {
+  display: grid;
+  gap: 16px;
+  min-inline-size: 0;
+  width: 100%;
+
+  > h3,
+  > p {
+    margin: 0;
+  }
+}
+
+.stackedOptionsContent {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.stackedOptionsBar {
+  border: 0;
+  margin: 0;
+  min-inline-size: 0;
+  overflow-x: auto;
+  padding: 4px;
+}
+
+.stackedOptionsGrid {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-auto-columns: minmax(4rem, 1fr);
+  grid-auto-flow: column;
+  inline-size: max-content;
+  min-inline-size: 0;
+
+  > :global(.k-btn) {
+    align-self: center;
+    inline-size: 100%;
+    min-inline-size: 0;
+    scroll-margin-inline: 4px;
+  }
+}
+
 .sizeScaleCompositions .sizeScaleExamples {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   height: auto;

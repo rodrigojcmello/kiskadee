@@ -100,6 +100,15 @@ from the family's `radio-selected` mapping; components do not draw the dot in CS
 
 ## Canonical coverage
 
+The common action concepts `record`, `chat`, `users`, `hand`, `grid`, `ellipsis`, `video`,
+`mic`, `screen-share`, and `phone-hangup` cover recording, conversation, participants, hand
+gestures, a uniform view grid, more options, camera, microphone, screen sharing, and ending a
+call. They are application content, not built-in meeting behavior or Essential Icons. Every
+official family variant resolves native artwork with `fixed` direction. These symbols do not
+change meaning in RTL, including the upward screen-sharing arrow. The existing `smile` concept
+can represent the reactions action. Family-specific approximations are recorded in
+[`interface-icon-provenance.md`](./interface-icon-provenance.md).
+
 The canonical `eye` and `eye-off` concepts represent visible and concealed information. Every
 official family variant supplies distinct artwork with `fixed` direction; the concealed glyph may
 use a slash or a closed eye according to its family's visual language. These names remain

@@ -4,7 +4,8 @@ import type {
   ButtonIconPlacement,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
-  ContentSurfaceContextMap
+  ContentSurfaceContextMap,
+  RadiusMode
 } from '@kiskadee/core';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMapResolution } from '../../../shared/contexts/useComponentClassMap.ts';
@@ -17,6 +18,8 @@ type ButtonGlobalEffects = NonNullable<NonNullable<ButtonGlobalConfig>['effects'
 export type ButtonArtifactConfig = {
   buttonClassesMap: ButtonClassesMap | undefined;
   buttonClassesMapPending: boolean;
+  stackedSizes: readonly string[] | undefined;
+  stackedSizesByRadius: Readonly<Partial<Record<RadiusMode, readonly string[]>>> | undefined;
   componentEffects: {
     activationFeedback: ActivationFeedbackSetting | undefined;
   };
@@ -46,6 +49,8 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
   return {
     buttonClassesMap: buttonClassMapResolution.classMap,
     buttonClassesMapPending: buttonClassMapResolution.pending,
+    stackedSizes: buttonMetadata?.layouts?.stacked?.sizes,
+    stackedSizesByRadius: buttonMetadata?.layouts?.stacked?.sizesByRadius,
     contentSurfaceContext: buttonMetadata?.contentSurfaceContext,
     componentEffects: {
       activationFeedback: buttonMetadata?.effects?.activationFeedback

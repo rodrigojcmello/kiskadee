@@ -19,8 +19,8 @@ announcements. The indicator adds no focus stop. Theme, Surface Context and fami
 the same public component contracts as the surrounding examples.
 
 The `Sizes` section appears immediately before `Activation Feedback Profiles`. Its section title
-and the subtler Text only, Text and icon, and Icon only composition headings use the active
-preset's public Text profiles. Two public horizontal Separators divide the composition
+and the subtler Text only, Text and icon, Icon only, and Stacked composition headings use the active
+preset's public Text profiles. Three public horizontal Separators divide the composition
 subsections, using Neutral intent and Low emphasis when that recipe is published for the active
 segment, theme and Surface Context. Showcase CSS owns the spacing around headings and Separators;
 their visual presentation remains preset-owned.
@@ -34,6 +34,52 @@ Ruler labels use the next smaller published typography profile with the same fon
 the active caption. When no compatible smaller profile is published, they retain that caption.
 The typography artifact is loaded once by the route. Measurement details keep their caption
 profile; the ruler's reference height and the measured Button geometry are unchanged.
+
+Stacked presents Small, Medium, Large, and Large 2 with an icon above a single-line label.
+Each size requires published scale recipes in all three optional anatomy elements: container
+`e8`, label `e9`, and icon `e10`. Capability checks require the effective compact size in the
+Builder-derived `layouts.stacked.sizesByRadius` metadata filtered by the effective radius, plus
+the corresponding classes or shared `all` classes in all three elements and the matching `e8`
+radius bucket (`rr`, `rp`, or `rs`), independently of preset identity. Shared classes alone cannot
+prove that required geometry was published for a size. Missing recipes use the same Not published
+indicator, preventing a horizontal fallback from appearing as a stacked example.
+
+Stacked Buttons remain content-sized and centered in their comparison columns. Their rulers read
+`inspection.elements.e8.scales._boxHeight`; the horizontal examples continue reading `e1`.
+A Medium Neutral Low action with the canonical `plus` icon demonstrates activation and announces
+the added-item count through preset Text. It is available only when that Medium stacked recipe
+is published. The optional explanation follows the Descriptions preference.
+
+## Stacked option-bar example
+
+A separate `Stacked` section immediately after Icons presents an option bar inspired by the
+supplied Microsoft Teams screenshot. Its English labels are Record, Chat, People, Raise, React,
+View, More, Camera, Mic, Share, and Leave. Their canonical icons are `record`, `chat`, `users`,
+`hand`, `smile`, `grid`, `ellipsis`, `video`, `mic`, `screen-share`, and `phone-hangup`, respectively.
+Each resolves through the selected family and variant. Actions use Neutral Low, except Leave, which uses
+Destructive Low, including the preset-authored outlines. The bar is wrapped in
+the shared Showcase example Card with Medium Layout padding. Buttons inherit that Card's produced
+Surface Context rather than overriding it with the surrounding page context.
+
+The example consumes the public Button API, the selected size (Medium by default), radius,
+Surface Context, and fonts. It requires the effective size in the Builder-derived stacked-size
+metadata filtered by the effective radius, the corresponding `e8`, `e9`, and `e10` class recipes,
+and the matching `e8` radius bucket. Changing radius updates both Stacked demonstrations; recipes
+published only for another radius remain unavailable. The option bar uses equal-width columns with a
+four-rem minimum and intrinsic growth for the widest label at the selected size. Buttons fill
+their cells without stretching to fill the Card. This is a Showcase composition constraint,
+not a Button width recipe. A single row scrolls horizontally inside the Card instead of wrapping,
+including on mobile. The scrollport leaves clearance for focus rings and remains a named group,
+preserving native Tab navigation without introducing toolbar semantics or a new keyboard model.
+Focusing an option scrolls its complete box into the nearest visible position, including inline
+clearance for its focus ring; the browser's default focus scroll can otherwise reveal only part
+of a cell.
+Each option uses the public Button `toggle` and `controlState` APIs to expose its selection visually
+and through `aria-pressed`. Clicking an option toggles it. At most two stay selected; selecting a
+third removes the oldest selection. Deselecting and selecting an option again makes it the newest
+selection. This route-local simulation applies to every option without implementing meeting
+functionality, and displays no last-action status. The existing Stacked comparison in Sizes remains
+independent.
 
 ## Icon format fixtures
 

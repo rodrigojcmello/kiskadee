@@ -122,6 +122,15 @@ const BUTTON_DIVIDER_LOCATORS = {
   darker: familyReferenceColor('subtle', 7)
 } as const satisfies Record<ButtonRecipeTheme, Fluent2MicrosoftFamilyColorLocator>;
 
+const BUTTON_BORDER_WIDTH = {
+  's:sm:1': 1,
+  's:md:1': 1,
+  's:lg:1': 1,
+  's:lg:2': 1
+} as const;
+
+const BUTTON_SHARED_RADII = { rounded: 4, square: 0 } as const;
+
 export function createFluent2MicrosoftButtonSchema({
   c
 }: CreateFluent2MicrosoftButtonSchemaArgs): ButtonComponent {
@@ -573,16 +582,10 @@ export function createFluent2MicrosoftButtonSchema({
             's:lg:1': 16,
             's:lg:2': 20
           },
-          borderWidth: {
-            's:sm:1': 1,
-            's:md:1': 1,
-            's:lg:1': 1,
-            's:lg:2': 1
-          },
+          borderWidth: BUTTON_BORDER_WIDTH,
           borderRadius: {
-            rounded: 4,
-            pill: { 's:sm:1': 12, 's:md:1': 16, 's:lg:1': 20, 's:lg:2': 24 },
-            square: 0
+            ...BUTTON_SHARED_RADII,
+            pill: { 's:sm:1': 12, 's:md:1': 16, 's:lg:1': 20, 's:lg:2': 24 }
           }
         },
         palettes: {
@@ -713,6 +716,72 @@ export function createFluent2MicrosoftButtonSchema({
             's:lg:1': 6,
             's:lg:2': 6
           }
+        }
+      },
+      e8: {
+        name: 'button-stacked',
+        scales: {
+          _boxHeight: {
+            's:sm:1': 48,
+            's:md:1': 54,
+            's:lg:1': 68,
+            's:lg:2': 80
+          },
+          paddingTop: {
+            's:sm:1': 4,
+            's:md:1': 6,
+            's:lg:1': 8,
+            's:lg:2': 12
+          },
+          paddingBottom: {
+            's:sm:1': 4,
+            's:md:1': 6,
+            's:lg:1': 8,
+            's:lg:2': 12
+          },
+          paddingLeft: {
+            's:sm:1': 8,
+            's:md:1': 12,
+            's:lg:1': 16,
+            's:lg:2': 20
+          },
+          paddingRight: {
+            's:sm:1': 8,
+            's:md:1': 12,
+            's:lg:1': 16,
+            's:lg:2': 20
+          },
+          borderWidth: BUTTON_BORDER_WIDTH,
+          borderRadius: {
+            ...BUTTON_SHARED_RADII,
+            pill: { 's:sm:1': 24, 's:md:1': 27, 's:lg:1': 34, 's:lg:2': 40 }
+          }
+        }
+      },
+      e9: {
+        name: 'button-stacked-text',
+        typography: {
+          's:sm:1': 'caption-medium',
+          's:md:1': 'caption-small',
+          's:lg:1': 'body-medium',
+          's:lg:2': 'body-medium'
+        },
+        scales: {
+          marginTop: {
+            's:sm:1': 4,
+            's:md:1': 4,
+            's:lg:1': 4,
+            's:lg:2': 4
+          }
+        }
+      },
+      e10: {
+        name: 'button-stacked-icon',
+        iconSize: {
+          's:sm:1': 's:md:1',
+          's:md:1': 's:lg:1',
+          's:lg:1': 's:lg:2',
+          's:lg:2': 's:lg:3'
         }
       }
     }

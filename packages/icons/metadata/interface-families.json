@@ -23,7 +23,17 @@
         "lock": "fixed",
         "redo": "mirror",
         "send": "mirror",
-        "undo": "mirror"
+        "undo": "mirror",
+        "chat": "fixed",
+        "ellipsis": "fixed",
+        "grid": "fixed",
+        "hand": "fixed",
+        "mic": "fixed",
+        "phone-hangup": "fixed",
+        "record": "fixed",
+        "screen-share": "fixed",
+        "users": "fixed",
+        "video": "fixed"
       },
       "mappings": {
         "align-center": "AlignCenterIcon",
@@ -88,7 +98,17 @@
         "user": "UserIcon",
         "volume-high": "Volume2Icon",
         "volume-low": "Volume1Icon",
-        "volume-muted": "VolumeXIcon"
+        "volume-muted": "VolumeXIcon",
+        "chat": "MessageCircleIcon",
+        "ellipsis": "EllipsisIcon",
+        "grid": "Grid2X2Icon",
+        "hand": "HandIcon",
+        "mic": "MicIcon",
+        "phone-hangup": "PhoneOffIcon",
+        "record": "CircleDotIcon",
+        "screen-share": "ScreenShareIcon",
+        "users": "UsersIcon",
+        "video": "VideoIcon"
       }
     },
     "fluent-system": {
@@ -118,7 +138,17 @@
         "lock": "fixed",
         "redo": "mirror",
         "send": "mirror",
-        "undo": "mirror"
+        "undo": "mirror",
+        "chat": "fixed",
+        "ellipsis": "fixed",
+        "grid": "fixed",
+        "hand": "fixed",
+        "mic": "fixed",
+        "phone-hangup": "fixed",
+        "record": "fixed",
+        "screen-share": "fixed",
+        "users": "fixed",
+        "video": "fixed"
       },
       "rtlMappings": {
         "list": "TextBulletListRtlRegular",
@@ -184,7 +214,17 @@
         "user": "PersonRegular",
         "volume-high": "Speaker2Regular",
         "volume-low": "Speaker1Regular",
-        "volume-muted": "SpeakerMuteRegular"
+        "volume-muted": "SpeakerMuteRegular",
+        "chat": "ChatRegular",
+        "ellipsis": "MoreHorizontalRegular",
+        "grid": "GridRegular",
+        "hand": "HandRightRegular",
+        "mic": "MicRegular",
+        "phone-hangup": "CallEndRegular",
+        "record": "RecordRegular",
+        "screen-share": "ShareScreenStartRegular",
+        "users": "PeopleRegular",
+        "video": "VideoRegular"
       }
     },
     "carbon": {
@@ -207,7 +247,17 @@
         "lock": "fixed",
         "redo": "mirror",
         "send": "mirror",
-        "undo": "mirror"
+        "undo": "mirror",
+        "chat": "fixed",
+        "ellipsis": "fixed",
+        "grid": "fixed",
+        "hand": "fixed",
+        "mic": "fixed",
+        "phone-hangup": "fixed",
+        "record": "fixed",
+        "screen-share": "fixed",
+        "users": "fixed",
+        "video": "fixed"
       },
       "mappings": {
         "align-center": "TextAlignCenter",
@@ -269,7 +319,17 @@
         "user": "User",
         "volume-high": "VolumeUp",
         "volume-low": "VolumeDown",
-        "volume-muted": "VolumeMute"
+        "volume-muted": "VolumeMute",
+        "chat": "Chat",
+        "ellipsis": "OverflowMenuHorizontal",
+        "grid": "Grid",
+        "hand": "TouchInteraction",
+        "mic": "Microphone",
+        "phone-hangup": "PhoneOff",
+        "record": "Recording",
+        "screen-share": "Screen",
+        "users": "UserMultiple",
+        "video": "Video"
       }
     },
     "iconoir": {
@@ -293,7 +353,17 @@
         "lock": "fixed",
         "redo": "mirror",
         "send": "mirror",
-        "undo": "mirror"
+        "undo": "mirror",
+        "chat": "fixed",
+        "ellipsis": "fixed",
+        "grid": "fixed",
+        "hand": "fixed",
+        "mic": "fixed",
+        "phone-hangup": "fixed",
+        "record": "fixed",
+        "screen-share": "fixed",
+        "users": "fixed",
+        "video": "fixed"
       },
       "rtlMappings": {
         "list-ordered": "NumberedListRight"
@@ -364,7 +434,17 @@
         "user": "User",
         "volume-high": "SoundHigh",
         "volume-low": "SoundLow",
-        "volume-muted": "SoundOff"
+        "volume-muted": "SoundOff",
+        "chat": "ChatBubble",
+        "ellipsis": "MoreHoriz",
+        "grid": "ViewGrid",
+        "hand": "OpenSelectHandGesture",
+        "mic": "Microphone",
+        "phone-hangup": "PhoneXmark",
+        "record": { "export": "Circle", "defaults": { "fill": "currentColor" } },
+        "screen-share": "UploadDataWindow",
+        "users": "Group",
+        "video": "VideoCamera"
       }
     },
     "phosphor": {
@@ -390,7 +470,17 @@
         "lock": "fixed",
         "redo": "mirror",
         "send": "mirror",
-        "undo": "mirror"
+        "undo": "mirror",
+        "chat": "fixed",
+        "ellipsis": "fixed",
+        "grid": "fixed",
+        "hand": "fixed",
+        "mic": "fixed",
+        "phone-hangup": "fixed",
+        "record": "fixed",
+        "screen-share": "fixed",
+        "users": "fixed",
+        "video": "fixed"
       },
       "mappings": {
         "align-center": "TextAlignCenterIcon",
@@ -452,7 +542,17 @@
         "user": "UserIcon",
         "volume-high": "SpeakerHighIcon",
         "volume-low": "SpeakerLowIcon",
-        "volume-muted": "SpeakerXIcon"
+        "volume-muted": "SpeakerXIcon",
+        "chat": "ChatCircleIcon",
+        "ellipsis": "DotsThreeIcon",
+        "grid": "GridFourIcon",
+        "hand": "HandPalmIcon",
+        "mic": "MicrophoneIcon",
+        "phone-hangup": "PhoneDisconnectIcon",
+        "record": "RecordIcon",
+        "screen-share": "ScreencastIcon",
+        "users": "UsersIcon",
+        "video": "VideoCameraIcon"
       }
     },
     "font-awesome-classic": {
@@ -475,7 +575,17 @@
         "lock": "fixed",
         "redo": "mirror",
         "send": "mirror",
-        "undo": "mirror"
+        "undo": "mirror",
+        "chat": "fixed",
+        "ellipsis": "fixed",
+        "grid": "fixed",
+        "hand": "fixed",
+        "mic": "fixed",
+        "phone-hangup": "fixed",
+        "record": "fixed",
+        "screen-share": "fixed",
+        "users": "fixed",
+        "video": "fixed"
       },
       "mappings": {
         "align-center": "faAlignCenter",
@@ -540,7 +650,17 @@
         "user": "faUser",
         "volume-high": "faVolumeHigh",
         "volume-low": "faVolumeLow",
-        "volume-muted": "faVolumeXmark"
+        "volume-muted": "faVolumeXmark",
+        "chat": "faComment",
+        "ellipsis": "faEllipsis",
+        "grid": "faTableCellsLarge",
+        "hand": "faHand",
+        "mic": "faMicrophone",
+        "phone-hangup": "faPhoneSlash",
+        "record": "faCircleDot",
+        "screen-share": "faArrowUpFromBracket",
+        "users": "faUserGroup",
+        "video": "faVideo"
       }
     },
     "material-symbols": {
@@ -564,7 +684,17 @@
         "lock": "fixed",
         "redo": "mirror",
         "send": "mirror",
-        "undo": "mirror"
+        "undo": "mirror",
+        "chat": "fixed",
+        "ellipsis": "fixed",
+        "grid": "fixed",
+        "hand": "fixed",
+        "mic": "fixed",
+        "phone-hangup": "fixed",
+        "record": "fixed",
+        "screen-share": "fixed",
+        "users": "fixed",
+        "video": "fixed"
       },
       "mappings": {
         "align-center": "format_align_center",
@@ -629,7 +759,17 @@
         "user": "person",
         "volume-high": "volume_up",
         "volume-low": "volume_down",
-        "volume-muted": "volume_off"
+        "volume-muted": "volume_off",
+        "chat": "chat_bubble",
+        "ellipsis": "more_horiz",
+        "grid": "grid_view",
+        "hand": "front_hand",
+        "mic": "mic",
+        "phone-hangup": "call_end",
+        "record": "radio_button_checked",
+        "screen-share": "present_to_all",
+        "users": "group",
+        "video": "videocam"
       }
     }
   }

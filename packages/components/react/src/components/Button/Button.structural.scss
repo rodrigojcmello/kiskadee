@@ -506,6 +506,33 @@
 }
 
 /*
+ * element stacked button root / e8
+ * Centers the two content rows without constraining the control's intrinsic dimensions.
+ */
+.k-btn-e8 {
+  align-items: center;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/*
+ * element stacked icon / e10
+ * Keeps the artwork above the label independently of logical icon placement.
+ */
+.k-btn-e8 > .k-btn-e10 {
+  order: 1;
+}
+
+/*
+ * element stacked label / e9
+ * Keeps the single-line label below the artwork with its authored margin.
+ */
+.k-btn-e8 > .k-btn-e9 {
+  order: 2;
+}
+
+/*
  * element disclosure / e5
  * Owns the final icon viewport and logical spacing.
  */

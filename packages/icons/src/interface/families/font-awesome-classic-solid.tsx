@@ -2,6 +2,7 @@
 import { faAlignCenter } from '@fortawesome/free-solid-svg-icons/faAlignCenter';
 import { faAlignLeft } from '@fortawesome/free-solid-svg-icons/faAlignLeft';
 import { faAlignRight } from '@fortawesome/free-solid-svg-icons/faAlignRight';
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons/faArrowUpFromBracket';
 import { faBan } from '@fortawesome/free-solid-svg-icons/faBan';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
 import { faBell } from '@fortawesome/free-solid-svg-icons/faBell';
@@ -14,10 +15,13 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons/faChevronRight
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
 import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons/faCircleCheck';
+import { faCircleDot } from '@fortawesome/free-solid-svg-icons/faCircleDot';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons/faCircleXmark';
 import { faClipboardCheck } from '@fortawesome/free-solid-svg-icons/faClipboardCheck';
 import { faCloudMoon } from '@fortawesome/free-solid-svg-icons/faCloudMoon';
 import { faCodeBranch } from '@fortawesome/free-solid-svg-icons/faCodeBranch';
+import { faComment } from '@fortawesome/free-solid-svg-icons/faComment';
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons/faEllipsis';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons/faEnvelope';
 import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash';
@@ -26,6 +30,7 @@ import { faFaceSmile } from '@fortawesome/free-solid-svg-icons/faFaceSmile';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
 import { faGear } from '@fortawesome/free-solid-svg-icons/faGear';
 import { faGripVertical } from '@fortawesome/free-solid-svg-icons/faGripVertical';
+import { faHand } from '@fortawesome/free-solid-svg-icons/faHand';
 import { faHeart } from '@fortawesome/free-solid-svg-icons/faHeart';
 import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse';
 import { faItalic } from '@fortawesome/free-solid-svg-icons/faItalic';
@@ -34,11 +39,13 @@ import { faList } from '@fortawesome/free-solid-svg-icons/faList';
 import { faListOl } from '@fortawesome/free-solid-svg-icons/faListOl';
 import { faLock } from '@fortawesome/free-solid-svg-icons/faLock';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
+import { faMicrophone } from '@fortawesome/free-solid-svg-icons/faMicrophone';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import { faMoon } from '@fortawesome/free-solid-svg-icons/faMoon';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import { faPause } from '@fortawesome/free-solid-svg-icons/faPause';
 import { faPencil } from '@fortawesome/free-solid-svg-icons/faPencil';
+import { faPhoneSlash } from '@fortawesome/free-solid-svg-icons/faPhoneSlash';
 import { faPlay } from '@fortawesome/free-solid-svg-icons/faPlay';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faRightLeft } from '@fortawesome/free-solid-svg-icons/faRightLeft';
@@ -50,11 +57,14 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { faStrikethrough } from '@fortawesome/free-solid-svg-icons/faStrikethrough';
 import { faSun } from '@fortawesome/free-solid-svg-icons/faSun';
 import { faTableCells } from '@fortawesome/free-solid-svg-icons/faTableCells';
+import { faTableCellsLarge } from '@fortawesome/free-solid-svg-icons/faTableCellsLarge';
 import { faTableColumns } from '@fortawesome/free-solid-svg-icons/faTableColumns';
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons/faThumbsUp';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons/faTrashCan';
 import { faUnderline } from '@fortawesome/free-solid-svg-icons/faUnderline';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
+import { faUserGroup } from '@fortawesome/free-solid-svg-icons/faUserGroup';
+import { faVideo } from '@fortawesome/free-solid-svg-icons/faVideo';
 import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons/faVolumeHigh';
 import { faVolumeLow } from '@fortawesome/free-solid-svg-icons/faVolumeLow';
 import { faVolumeXmark } from '@fortawesome/free-solid-svg-icons/faVolumeXmark';
@@ -66,6 +76,7 @@ import type { CompleteCanonicalGlyphMap } from '../types.ts';
 const glyphfaAlignCenter = createFontAwesomeGlyph(faAlignCenter);
 const glyphfaAlignLeft = createFontAwesomeGlyph(faAlignLeft);
 const glyphfaAlignRight = createFontAwesomeGlyph(faAlignRight);
+const glyphfaArrowUpFromBracket = createFontAwesomeGlyph(faArrowUpFromBracket);
 const glyphfaBan = createFontAwesomeGlyph(faBan);
 const glyphfaBars = createFontAwesomeGlyph(faBars);
 const glyphfaBell = createFontAwesomeGlyph(faBell);
@@ -77,10 +88,13 @@ const glyphfaChevronLeft = createFontAwesomeGlyph(faChevronLeft);
 const glyphfaChevronRight = createFontAwesomeGlyph(faChevronRight);
 const glyphfaChevronUp = createFontAwesomeGlyph(faChevronUp);
 const glyphfaCircleCheck = createFontAwesomeGlyph(faCircleCheck);
+const glyphfaCircleDot = createFontAwesomeGlyph(faCircleDot);
 const glyphfaCircleXmark = createFontAwesomeGlyph(faCircleXmark);
 const glyphfaClipboardCheck = createFontAwesomeGlyph(faClipboardCheck);
 const glyphfaCloudMoon = createFontAwesomeGlyph(faCloudMoon);
 const glyphfaCodeBranch = createFontAwesomeGlyph(faCodeBranch);
+const glyphfaComment = createFontAwesomeGlyph(faComment);
+const glyphfaEllipsis = createFontAwesomeGlyph(faEllipsis);
 const glyphfaEnvelope = createFontAwesomeGlyph(faEnvelope);
 const glyphfaEye = createFontAwesomeGlyph(faEye);
 const glyphfaEyeSlash = createFontAwesomeGlyph(faEyeSlash);
@@ -89,6 +103,7 @@ const glyphfaFaceSmile = createFontAwesomeGlyph(faFaceSmile);
 const glyphfaFolder = createFontAwesomeGlyph(faFolder);
 const glyphfaGear = createFontAwesomeGlyph(faGear);
 const glyphfaGripVertical = createFontAwesomeGlyph(faGripVertical);
+const glyphfaHand = createFontAwesomeGlyph(faHand);
 const glyphfaHeart = createFontAwesomeGlyph(faHeart);
 const glyphfaHouse = createFontAwesomeGlyph(faHouse);
 const glyphfaItalic = createFontAwesomeGlyph(faItalic);
@@ -97,11 +112,13 @@ const glyphfaList = createFontAwesomeGlyph(faList);
 const glyphfaListOl = createFontAwesomeGlyph(faListOl);
 const glyphfaLock = createFontAwesomeGlyph(faLock);
 const glyphfaMagnifyingGlass = createFontAwesomeGlyph(faMagnifyingGlass);
+const glyphfaMicrophone = createFontAwesomeGlyph(faMicrophone);
 const glyphfaMinus = createFontAwesomeGlyph(faMinus);
 const glyphfaMoon = createFontAwesomeGlyph(faMoon);
 const glyphfaPaperPlane = createFontAwesomeGlyph(faPaperPlane);
 const glyphfaPause = createFontAwesomeGlyph(faPause);
 const glyphfaPencil = createFontAwesomeGlyph(faPencil);
+const glyphfaPhoneSlash = createFontAwesomeGlyph(faPhoneSlash);
 const glyphfaPlay = createFontAwesomeGlyph(faPlay);
 const glyphfaPlus = createFontAwesomeGlyph(faPlus);
 const glyphfaRightLeft = createFontAwesomeGlyph(faRightLeft);
@@ -113,11 +130,14 @@ const glyphfaSpinner = createFontAwesomeGlyph(faSpinner);
 const glyphfaStrikethrough = createFontAwesomeGlyph(faStrikethrough);
 const glyphfaSun = createFontAwesomeGlyph(faSun);
 const glyphfaTableCells = createFontAwesomeGlyph(faTableCells);
+const glyphfaTableCellsLarge = createFontAwesomeGlyph(faTableCellsLarge);
 const glyphfaTableColumns = createFontAwesomeGlyph(faTableColumns);
 const glyphfaThumbsUp = createFontAwesomeGlyph(faThumbsUp);
 const glyphfaTrashCan = createFontAwesomeGlyph(faTrashCan);
 const glyphfaUnderline = createFontAwesomeGlyph(faUnderline);
 const glyphfaUser = createFontAwesomeGlyph(faUser);
+const glyphfaUserGroup = createFontAwesomeGlyph(faUserGroup);
+const glyphfaVideo = createFontAwesomeGlyph(faVideo);
 const glyphfaVolumeHigh = createFontAwesomeGlyph(faVolumeHigh);
 const glyphfaVolumeLow = createFontAwesomeGlyph(faVolumeLow);
 const glyphfaVolumeXmark = createFontAwesomeGlyph(faVolumeXmark);
@@ -133,6 +153,7 @@ const glyphMap = {
     "bell": glyphfaBell,
     "bold": glyphfaBold,
     "cart": glyphfaCartShopping,
+    "chat": { glyph: glyphfaComment, direction: 'fixed' },
     "check": glyphfaCheck,
     "chevron-down": glyphfaChevronDown,
     "chevron-up": glyphfaChevronUp,
@@ -143,12 +164,15 @@ const glyphMap = {
     "clipboard-check": glyphfaClipboardCheck,
     "close": glyphfaXmark,
     "dashboard": glyphfaTableColumns,
+    "ellipsis": { glyph: glyphfaEllipsis, direction: 'fixed' },
     "eye": { glyph: glyphfaEye, direction: 'fixed' },
     "eye-off": { glyph: glyphfaEyeSlash, direction: 'fixed' },
     "folder-move": glyphfaFolder,
     "frown": glyphfaFaceFrown,
     "git-branch": glyphfaCodeBranch,
+    "grid": { glyph: glyphfaTableCellsLarge, direction: 'fixed' },
     "grip-vertical": glyphfaGripVertical,
+    "hand": { glyph: glyphfaHand, direction: 'fixed' },
     "heart": glyphfaHeart,
     "home": glyphfaHouse,
     "italic": glyphfaItalic,
@@ -159,16 +183,20 @@ const glyphMap = {
     "lock": { glyph: glyphfaLock, direction: 'fixed' },
     "mail": glyphfaEnvelope,
     "menu": glyphfaBars,
+    "mic": { glyph: glyphfaMicrophone, direction: 'fixed' },
     "minus": glyphfaMinus,
     "moon": glyphfaMoon,
     "moon-star": glyphfaCloudMoon,
     "pause": glyphfaPause,
     "pencil": glyphfaPencil,
+    "phone-hangup": { glyph: glyphfaPhoneSlash, direction: 'fixed' },
     "play": glyphfaPlay,
     "plus": glyphfaPlus,
+    "record": { glyph: glyphfaCircleDot, direction: 'fixed' },
     "redo": { glyph: glyphfaRotateRight, direction: 'mirror' },
     "radio-selected": glyphfaCircleradioselected,
     "rocket": glyphfaRocket,
+    "screen-share": { glyph: glyphfaArrowUpFromBracket, direction: 'fixed' },
     "search": glyphfaMagnifyingGlass,
     "send": { glyph: glyphfaPaperPlane, direction: 'mirror' },
     "settings": glyphfaGear,
@@ -182,6 +210,8 @@ const glyphMap = {
     "underline": glyphfaUnderline,
     "undo": { glyph: glyphfaRotateLeft, direction: 'mirror' },
     "user": glyphfaUser,
+    "users": { glyph: glyphfaUserGroup, direction: 'fixed' },
+    "video": { glyph: glyphfaVideo, direction: 'fixed' },
     "volume-high": glyphfaVolumeHigh,
     "volume-low": glyphfaVolumeLow,
     "volume-muted": glyphfaVolumeXmark

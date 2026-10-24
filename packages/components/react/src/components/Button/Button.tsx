@@ -34,8 +34,10 @@ import {
   DEFAULT_BUTTON_RADIUS,
   join,
   mergeButtonClassNames,
+  normalizeButtonScaleKey,
   resolveButtonDividerClassName,
-  resolveButtonGroupClassName
+  resolveButtonGroupClassName,
+  supportsButtonStackedLayout
 } from './Button.class-names.ts';
 import type {
   ButtonBadgePlacement,
@@ -430,7 +432,39 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     contentSlots.hasLabel
       ? common.iconTreatment
       : 'plain';
-  const activeIconLayout = activeIconTreatment === 'plain' ? common.iconLayout : 'edge';
+  const requestedStackedLayout = common.iconLayout === 'stacked';
+  const stackedRadius = common.radius ?? common.options.radius ?? DEFAULT_BUTTON_RADIUS;
+  const stackedScale = normalizeButtonScaleKey(common.scale);
+  const stackedLayoutSupported =
+    !common.buttonClassesMapPending &&
+    Boolean(common.stackedSizesByRadius?.[stackedRadius]?.includes(stackedScale)) &&
+    supportsButtonStackedLayout(common, common.scale, stackedRadius);
+  const activeIconLayout =
+    activeIconTreatment !== 'plain'
+      ? 'edge'
+      : requestedStackedLayout &&
+          (requestedSurfacedIconTreatment ||
+            !stackedLayoutSupported ||
+            !contentSlots.hasIcon ||
+            !contentSlots.hasLabel ||
+            contentSlots.hasDisclosure ||
+            contentSlots.hasInlineBadge)
+        ? 'inline'
+        : common.iconLayout;
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      common.buttonClassesMapPending ||
+      !requestedStackedLayout ||
+      activeIconLayout === 'stacked'
+    )
+      return;
+
+    console.warn(
+      '[Kiskadee] Button iconLayout="stacked" requires icon and label, a complete preset recipe for the effective size and radius, and plain content without Disclosure or inline Badge. Falling back to horizontal layout.'
+    );
+  }, [activeIconLayout, common.buttonClassesMapPending, requestedStackedLayout]);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production' || !requestedSurfacedIconTreatment) return;

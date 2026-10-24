@@ -13,16 +13,20 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
   CircleCheckIcon,
+  CircleDotIcon,
   CircleSmallIcon,
   CircleXIcon,
   ClipboardCheckIcon,
+  EllipsisIcon,
   EyeIcon,
   EyeOffIcon,
   FileSpreadsheetIcon,
   FolderOutputIcon,
   FrownIcon,
   GitBranchIcon,
+  Grid2X2Icon,
   GripVerticalIcon,
+  HandIcon,
   HeartIcon,
   HomeIcon,
   ItalicIcon,
@@ -34,15 +38,19 @@ import {
   LockKeyholeIcon,
   MailIcon,
   MenuIcon,
+  MessageCircleIcon,
+  MicIcon,
   MinusIcon,
   MoonIcon,
   MoonStarIcon,
   PauseIcon,
   PencilIcon,
+  PhoneOffIcon,
   PlayIcon,
   PlusIcon,
   RedoIcon,
   RocketIcon,
+  ScreenShareIcon,
   SearchIcon,
   SendIcon,
   SettingsIcon,
@@ -56,6 +64,8 @@ import {
   UnderlineIcon,
   UndoIcon,
   UserIcon,
+  UsersIcon,
+  VideoIcon,
   Volume1Icon,
   Volume2Icon,
   VolumeXIcon,
@@ -78,15 +88,19 @@ const glyphChevronLeftIcon = createSvgGlyph(ChevronLeftIcon, {"size":"1em"});
 const glyphChevronRightIcon = createSvgGlyph(ChevronRightIcon, {"size":"1em"});
 const glyphChevronUpIcon = createSvgGlyph(ChevronUpIcon, {"size":"1em"});
 const glyphCircleCheckIcon = createSvgGlyph(CircleCheckIcon, {"size":"1em"});
+const glyphCircleDotIcon = createSvgGlyph(CircleDotIcon, {"size":"1em"});
 const glyphCircleXIcon = createSvgGlyph(CircleXIcon, {"size":"1em"});
 const glyphClipboardCheckIcon = createSvgGlyph(ClipboardCheckIcon, {"size":"1em"});
+const glyphEllipsisIcon = createSvgGlyph(EllipsisIcon, {"size":"1em"});
 const glyphEyeIcon = createSvgGlyph(EyeIcon, {"size":"1em"});
 const glyphEyeOffIcon = createSvgGlyph(EyeOffIcon, {"size":"1em"});
 const glyphFileSpreadsheetIcon = createSvgGlyph(FileSpreadsheetIcon, {"size":"1em"});
 const glyphFolderOutputIcon = createSvgGlyph(FolderOutputIcon, {"size":"1em"});
 const glyphFrownIcon = createSvgGlyph(FrownIcon, {"size":"1em"});
 const glyphGitBranchIcon = createSvgGlyph(GitBranchIcon, {"size":"1em"});
+const glyphGrid2X2Icon = createSvgGlyph(Grid2X2Icon, {"size":"1em"});
 const glyphGripVerticalIcon = createSvgGlyph(GripVerticalIcon, {"size":"1em"});
+const glyphHandIcon = createSvgGlyph(HandIcon, {"size":"1em"});
 const glyphHeartIcon = createSvgGlyph(HeartIcon, {"size":"1em"});
 const glyphHomeIcon = createSvgGlyph(HomeIcon, {"size":"1em"});
 const glyphItalicIcon = createSvgGlyph(ItalicIcon, {"size":"1em"});
@@ -98,15 +112,19 @@ const glyphLoaderCircleIcon = createSvgGlyph(LoaderCircleIcon, {"size":"1em"});
 const glyphLockKeyholeIcon = createSvgGlyph(LockKeyholeIcon, {"size":"1em"});
 const glyphMailIcon = createSvgGlyph(MailIcon, {"size":"1em"});
 const glyphMenuIcon = createSvgGlyph(MenuIcon, {"size":"1em"});
+const glyphMessageCircleIcon = createSvgGlyph(MessageCircleIcon, {"size":"1em"});
+const glyphMicIcon = createSvgGlyph(MicIcon, {"size":"1em"});
 const glyphMinusIcon = createSvgGlyph(MinusIcon, {"size":"1em"});
 const glyphMoonIcon = createSvgGlyph(MoonIcon, {"size":"1em"});
 const glyphMoonStarIcon = createSvgGlyph(MoonStarIcon, {"size":"1em"});
 const glyphPauseIcon = createSvgGlyph(PauseIcon, {"size":"1em"});
 const glyphPencilIcon = createSvgGlyph(PencilIcon, {"size":"1em"});
+const glyphPhoneOffIcon = createSvgGlyph(PhoneOffIcon, {"size":"1em"});
 const glyphPlayIcon = createSvgGlyph(PlayIcon, {"size":"1em"});
 const glyphPlusIcon = createSvgGlyph(PlusIcon, {"size":"1em"});
 const glyphRedoIcon = createSvgGlyph(RedoIcon, {"size":"1em"});
 const glyphRocketIcon = createSvgGlyph(RocketIcon, {"size":"1em"});
+const glyphScreenShareIcon = createSvgGlyph(ScreenShareIcon, {"size":"1em"});
 const glyphSearchIcon = createSvgGlyph(SearchIcon, {"size":"1em"});
 const glyphSendIcon = createSvgGlyph(SendIcon, {"size":"1em"});
 const glyphSettingsIcon = createSvgGlyph(SettingsIcon, {"size":"1em"});
@@ -120,6 +138,8 @@ const glyphTrash2Icon = createSvgGlyph(Trash2Icon, {"size":"1em"});
 const glyphUnderlineIcon = createSvgGlyph(UnderlineIcon, {"size":"1em"});
 const glyphUndoIcon = createSvgGlyph(UndoIcon, {"size":"1em"});
 const glyphUserIcon = createSvgGlyph(UserIcon, {"size":"1em"});
+const glyphUsersIcon = createSvgGlyph(UsersIcon, {"size":"1em"});
+const glyphVideoIcon = createSvgGlyph(VideoIcon, {"size":"1em"});
 const glyphVolume1Icon = createSvgGlyph(Volume1Icon, {"size":"1em"});
 const glyphVolume2Icon = createSvgGlyph(Volume2Icon, {"size":"1em"});
 const glyphVolumeXIcon = createSvgGlyph(VolumeXIcon, {"size":"1em"});
@@ -135,6 +155,7 @@ const glyphMap = {
     "bell": glyphBellIcon,
     "bold": glyphBoldIcon,
     "cart": glyphShoppingCartIcon,
+    "chat": { glyph: glyphMessageCircleIcon, direction: 'fixed' },
     "check": glyphCheckIcon,
     "chevron-down": glyphChevronDownIcon,
     "chevron-up": glyphChevronUpIcon,
@@ -145,12 +166,15 @@ const glyphMap = {
     "clipboard-check": glyphClipboardCheckIcon,
     "close": glyphXIcon,
     "dashboard": glyphLayoutDashboardIcon,
+    "ellipsis": { glyph: glyphEllipsisIcon, direction: 'fixed' },
     "eye": { glyph: glyphEyeIcon, direction: 'fixed' },
     "eye-off": { glyph: glyphEyeOffIcon, direction: 'fixed' },
     "folder-move": { glyph: glyphFolderOutputIcon, direction: 'mirror' },
     "frown": glyphFrownIcon,
     "git-branch": glyphGitBranchIcon,
+    "grid": { glyph: glyphGrid2X2Icon, direction: 'fixed' },
     "grip-vertical": glyphGripVerticalIcon,
+    "hand": { glyph: glyphHandIcon, direction: 'fixed' },
     "heart": glyphHeartIcon,
     "home": glyphHomeIcon,
     "italic": glyphItalicIcon,
@@ -161,16 +185,20 @@ const glyphMap = {
     "lock": { glyph: glyphLockKeyholeIcon, direction: 'fixed' },
     "mail": glyphMailIcon,
     "menu": glyphMenuIcon,
+    "mic": { glyph: glyphMicIcon, direction: 'fixed' },
     "minus": glyphMinusIcon,
     "moon": glyphMoonIcon,
     "moon-star": glyphMoonStarIcon,
     "pause": glyphPauseIcon,
     "pencil": glyphPencilIcon,
+    "phone-hangup": { glyph: glyphPhoneOffIcon, direction: 'fixed' },
     "play": glyphPlayIcon,
     "plus": glyphPlusIcon,
+    "record": { glyph: glyphCircleDotIcon, direction: 'fixed' },
     "redo": { glyph: glyphRedoIcon, direction: 'mirror' },
     "radio-selected": glyphCircleSmallIconradioselected,
     "rocket": glyphRocketIcon,
+    "screen-share": { glyph: glyphScreenShareIcon, direction: 'fixed' },
     "search": glyphSearchIcon,
     "send": { glyph: glyphSendIcon, direction: 'mirror' },
     "settings": glyphSettingsIcon,
@@ -184,6 +212,8 @@ const glyphMap = {
     "underline": glyphUnderlineIcon,
     "undo": { glyph: glyphUndoIcon, direction: 'mirror' },
     "user": glyphUserIcon,
+    "users": { glyph: glyphUsersIcon, direction: 'fixed' },
+    "video": { glyph: glyphVideoIcon, direction: 'fixed' },
     "volume-high": glyphVolume2Icon,
     "volume-low": glyphVolume1Icon,
     "volume-muted": glyphVolumeXIcon

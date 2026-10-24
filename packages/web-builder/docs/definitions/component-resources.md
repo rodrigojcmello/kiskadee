@@ -30,11 +30,13 @@ The revision includes metadata, class maps and CSS references, independently of 
 
 ### Optional authored inspection values
 
-Button may publish its authored reference height under
-`inspection.elements.e1.scales._boxHeight`. This optional field uses Core's
+Button may publish its authored reference heights under
+`inspection.elements.e1.scales._boxHeight` for ordinary geometry and
+`inspection.elements.e8.scales._boxHeight` for stacked geometry. Each optional field uses Core's
 `ElementHeightReference`: either one number or the authored map of fixed size keys to numbers.
 A number stays a number; publication does not synthesize an `s:all` entry or missing size keys.
-The complete `inspection` branch is omitted when the canonical Button schema has no reference.
+The references are independent: neither element nor size is filled from the other layout.
+The complete `inspection` branch is omitted when neither supported Button element has a reference.
 
 This value is an inspection annotation, not a rendered scale. Web Builder separates `_boxHeight`
 explicitly before style-key conversion, compensation, class/CSS generation, density recipe
@@ -42,6 +44,47 @@ validation and size-capability discovery. It cannot create a supported Button si
 utility. Other underscore-prefixed fields are not implicitly ignored or accepted. Core remains
 responsible for allowed ownership and value validation; extraction does not mutate the schema.
 Existing component metadata without `inspection` remains valid and requires no fallback value.
+
+### Optional stacked Button anatomy
+
+`Button.options.iconLayout` can select `stacked`; presets without the optional `e8`, `e9` and `e10`
+elements remain valid. Selecting stacked by default requires the complete trio. Its generated class
+maps use the existing element buckets without another artifact, variant, mode or projection.
+
+- `e8` publishes the complete alternate root scale recipe: padding, border width and radius. Its
+  border and radius emission mirrors `e1`, and padding uses the same border compensation. Consumers
+  replace the root's scale and radius classes rather than merging conflicting ordinary geometry.
+- `e9` publishes the complete alternate label typography and a direct `marginTop` for the distance
+  below the icon. Consumers replace both ordinary label decorations and scales because typography
+  compilation can place invariant font family and weight in the decoration bucket.
+- `e10` publishes the alternate catalog-backed icon viewport as dimension tokens. It does not
+  inherit ordinary inline spacing or the line-height fitting projection.
+
+The ordinary `e1`, `e2` and `e3` retain paint and effect ownership. The new geometry elements do not
+publish independent palettes or effects.
+
+The component metadata publishes `layouts.stacked.sizes` with compact fixed-size keys such as
+`md:1`. This list intersects every required root inset and border width, at least one authored
+radius mode, label typography and top margin, and the icon-size reference. Scalars and `s:all`
+assignments cover all fixed sizes; fixed-size maps cover only their own entries, and responsive
+assignments need `bp:all`. The list is limited to the component's existing size support and ignores
+`_boxHeight`. The trio's absence omits `layouts`; a present trio with no complete common size
+publishes an empty list. Republication removes stale layout metadata.
+
+New publication also supplies `layouts.stacked.sizesByRadius`, with `rounded`, `pill` and `square`
+lists in that order. Each list requires the same complete geometry, typography and icon recipe,
+plus a baseline value for that specific radius. The existing `sizes` list remains their union.
+An explicit square radius of zero is supported; an absent radius or a responsive assignment
+without `bp:all` is not. A class bucket for a responsive-only radius is insufficient because its
+CSS might apply only at a larger breakpoint.
+
+Runtime uses the effective radius (explicit or inherited/default) to select the radius-specific
+list, together with generated classes, before activating stacked.
+A nonempty `s.all` or `s[size]` bucket alone is insufficient because it might contain only a border
+or margin. Consumers do not synthesize missing dimensions or borrow ordinary `e1` radius classes.
+Older metadata without `sizesByRadius` remains valid, but consumers retain the horizontal layout
+until compatible layout capabilities are regenerated. Absence of optional stacked anatomy continues
+to omit `layouts`; publication with no complete size supplies empty lists for all three radii.
 
 ## CSS partitioning and order
 

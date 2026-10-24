@@ -4,7 +4,7 @@ Status: canonical definition.
 
 Button icon composition has two independent axes:
 
-- `iconLayout`: `inline | edge`
+- `iconLayout`: `inline | edge | stacked`
 - `iconPlacement`: `leading | trailing`
 
 It also has an independent icon-region treatment:
@@ -33,6 +33,40 @@ comfortable separation between the edge icon and the centered label. Compact com
 use `inline`; Kiskadee does not switch layouts automatically from the Button's measured width.
 
 An icon-only Button remains centered in either layout.
+
+`stacked` places an icon above a single-line label and centers both. It requires both content
+slots and a complete stacked recipe for the effective size and radius. Logical `iconPlacement` has no effect
+in this layout. Labels keep the existing no-wrap behavior; intrinsic width and height remain
+content-driven, without a square constraint or a fixed control height.
+
+The optional stacked anatomy supplies alternate recipes on the same native elements:
+
+- `e8` replaces the root's complete scales and radius buckets, retaining `e1` decorations,
+  palettes and effects. It owns padding, border width, radius and optional `_boxHeight` inspection
+  metadata; it does not introduce another DOM wrapper.
+- `e9` replaces the label's typography/decorations and scales, retaining `e2` palettes and effects.
+  Its ordinary `marginTop` supplies the icon-to-label separation.
+- `e10` replaces the icon's dimensions through the existing `iconSize` catalog, retaining `e3`
+  palettes and effects. The existing artwork normalization still applies.
+
+These are complete recipe substitutions, not additive classes: retaining horizontal root scales
+or label typography would create conflicts depending on CSS emission order. Horizontal icon gap
+classes and the label-height fitting projection are omitted in stacked layout.
+
+Missing content or an unavailable effective-size recipe preserves the ordinary inline layout and
+emits a development warning. Surfaced icon regions keep their existing edge layout. Disclosure
+and inline Badge compositions remain horizontal in this first release, with a warning when stacked
+is requested; overlay Badges and Progress preserve their existing contracts. Capability is resolved
+from the Builder's `layouts.stacked.sizesByRadius` metadata plus published element and radius
+classes, not the preset identifier. The effective radius follows the connected group's contract,
+then an explicit standalone prop, the global radius, and the Rounded default. Each radius list
+intersects required geometry, typography, icon recipes and that radius's baseline values. A class
+that exists only at a larger breakpoint cannot establish baseline support. The aggregate
+`layouts.stacked.sizes` remains the union across authored radius modes, not permission to use every
+radius at those sizes. Missing radius metadata keeps the horizontal fallback until regeneration;
+missing radius classes never borrow ordinary `e1` geometry for a stacked control.
+Shared border or gap classes alone do not establish support. Old presets remain valid without
+`e8`, `e9` or `e10`, and their default layout remains unchanged.
 
 ## Icon Region Treatments
 
@@ -96,7 +130,7 @@ The viewport and artwork remain unchanged. This is derived structural geometry, 
 not combine independently authored spacing values. No size selector, nominal-height metadata,
 browser measurement, or JavaScript calculation participates. The label consumes its height token
 for legacy scale-based typography; profile-based line-height utilities remain in normal resolution.
-Surfaced icons keep their independent panel geometry and do not receive this modifier.
+Surfaced and stacked icons keep their independent geometry and do not receive this modifier.
 
 `Button.Icon` consumes the Builder's existing width and height tokens, both resolved from one
 `iconSize` reference. Structural CSS fits direct SVG, `img`, and `picture > img` children into

@@ -330,7 +330,8 @@ Consequence:
 ### 3.1.8 Element height reference
 
 The [Core element height reference contract](packages/core/docs/definitions/element-height-reference.md)
-defines optional `scales._boxHeight` inspection metadata, initially supported by Button `e1`.
+defines optional `scales._boxHeight` inspection metadata on Button `e1` (horizontal) and `e8`
+(stacked).
 Presets author the expected height; Web Builder publishes it in the component's `inspection`
 metadata without generating styles or expanding size support. Platform components retain their
 existing layout, while Showcase can compare this reference with the rendered border box.

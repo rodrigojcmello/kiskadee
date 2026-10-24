@@ -118,14 +118,14 @@ describe('Button component contract', () => {
     expect(
       validateButtonComponentContract(
         createButton({
-          iconLayout: 'stacked',
+          iconLayout: 'vertical',
           iconPlacement: 'left',
           iconGap: 8
         })
       )
     ).toEqual([
       'components.button.options.iconGap: unrecognized key',
-      'components.button.options.iconLayout: expected "inline" or "edge"',
+      'components.button.options.iconLayout: expected "inline", "edge" or "stacked"',
       'components.button.options.iconPlacement: expected "leading" or "trailing"'
     ]);
   });

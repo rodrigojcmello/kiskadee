@@ -59,6 +59,9 @@ Other emphases, geometry, focus rings and border widths remain unchanged.
   - [WinUI Button theme resources](https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Button_themeresources.xaml)
   - [WinUI common theme resources](https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Common_themeresources_any.xaml)
 - Product observation:
+  - Microsoft Teams meeting actions observed on 2026-10-23 place visible labels below their
+    icons. The user-provided screenshot motivates the stacked composition; its pixel measurements,
+    exact emphasis, and icon sizes were not used as official Fluent recipe evidence.
   - a Microsoft sign-in flow observed on 2026-07-31 kept its Primary Button recognizable while
     making the accepted action translucent during asynchronous processing;
   - this observation motivates Kiskadee's pending representation, but is not treated as evidence
@@ -87,10 +90,12 @@ Other emphases, geometry, focus rings and border widths remain unchanged.
 | Fluent inverted color aliases | Official color-token table | Background, foreground, stroke, subtle-state, and disabled aliases | Official adapted as source material |
 | Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
 | Passive Badge relation | No equivalent Fluent Button slot was used as source evidence | Inline label relation and external logical-corner overlays | Kiskadee extension |
+| Stacked icon and label | Microsoft Teams meeting toolbar screenshot, 2026-10-23 | Icon-above-label product presentation; no numeric recipe extracted | Kiskadee extension; motivational evidence only |
 
 ## Local Evidence
 
 - [`windows-11-quick-settings-on-vivid-2026-08-29.png`](../evidence/button/windows-11-quick-settings-on-vivid-2026-08-29.png)
+- [`teams-stacked-actions-2026-10-23.png`](../evidence/button/teams-stacked-actions-2026-10-23.png)
 
 ![Windows 11 Quick Settings controls over a vivid blue surface](../evidence/button/windows-11-quick-settings-on-vivid-2026-08-29.png)
 
@@ -177,6 +182,65 @@ logical trailing placement as framework extensions for layouts such as full-widt
 The 4/6 px source-derived gap is still owned by `e3`; the Web Builder exposes it as a structural
 token so `leading` and `trailing` can use the same schema value without hardcoding direction in
 React or Sass.
+
+## Kiskadee Extension: Stacked Icon And Label
+
+Status: **Kiskadee extension**, approved on 2026-10-23. The Microsoft Teams meeting toolbar
+[screenshot](../evidence/button/teams-stacked-actions-2026-10-23.png) demonstrates the use of an icon
+above a visible label. It is motivational product evidence, not a source of exact Fluent Web
+Button metrics, a new official variant, or an inferred state/emphasis mapping. No Figma node or
+additional official numeric source was used for this recipe.
+
+`iconLayout="stacked"` reuses the existing Button interaction, foregrounds, surfaces, effects, and
+semantic surface output. Both icon and label are required. The optional `e8`, `e9`, and `e10`
+recipes replace horizontal geometry on the existing root, label, and icon nodes; they do not add
+another button or create a separate navigation component. The preset default remains `inline`.
+
+| Button size | Icon catalog reference | Icon viewport | Label profile | Block inset per side | Inline inset per side | Icon-label gap | Nominal height |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Small | `s:md:1` | 20 px | `caption-medium` (12/16 px) | 4 px | 8 px | 4 px | 48 px |
+| Medium | `s:lg:1` | 24 px | `caption-small` (10/14 px) | 6 px | 12 px | 4 px | 54 px |
+| Large | `s:lg:2` | 28 px | `body-medium` (14/20 px) | 8 px | 16 px | 4 px | 68 px |
+| Large 2 | `s:lg:3` | 32 px | `body-medium` (14/20 px) | 12 px | 20 px | 4 px | 80 px |
+
+These values are authored Kiskadee choices using the existing global icon-size catalog and
+typography profiles. The block and inline insets are authored before the established one-pixel
+border compensation. The natural border-box height is the icon viewport plus the label line,
+the gap, and both authored block insets. The inline icon fitting compensation and `e3` horizontal
+gap do not participate in this composition.
+
+Schema mapping:
+
+- `e8` owns the complete stacked root geometry: padding, the locally shared one-pixel border map,
+  and corner recipes. Rounded (4 px) and Square (0 px) share their local authoring with `e1`;
+  Pill uses half the stacked nominal height (24/27/34/40 px).
+- `e9` owns the stacked typography and its 4 px `marginTop` relation to the icon. Label palettes
+  and effects still come from `e2`.
+- `e10` selects the icon-size catalog entries above. Icon palettes and effects still come from
+  `e3`.
+
+`e8.scales._boxHeight` publishes the four nominal heights for inspection only. It does not emit
+CSS, constrain the Button, or derive the actual dimensions. It is attached to `e8` because this
+element already owns real stacked root geometry; no element exists solely to store a reference.
+The ordinary `e1` height references and horizontal recipes remain unchanged.
+
+The approved Medium refinement reduces only its stacked label by one existing typography step,
+from `caption-medium` (12/16 px) to `caption-small` (10/14 px). Its 24 px icon, 6 px block insets,
+12 px inline insets, and 4 px gap remain unchanged. The natural border-box height consequently
+changes from 56 px to 54 px; the inspection reference and Pill radius follow that resulting
+geometry rather than constraining it. Small, Large, Large 2, and all horizontal typography remain
+unchanged.
+
+The label remains a single line without automatic truncation, and the Button width follows the
+content. A square shape is not guaranteed. The recipe is shared across both segments, all three
+themes, both surface contexts, and existing intents/emphases without additional palettes.
+Surfaced icons, Disclosure, and inline Badge compositions retain their horizontal contracts in
+this delivery; overlay Badges and Progress retain their existing behavior.
+
+Preset regression checks cover the catalog/profile/inset height formula, shared border and fixed
+corner recipes, Pill references, absence of duplicate palettes, and unchanged horizontal nominal
+heights. Generated-artifact and rendered behavior checks belong to the consuming pipeline and
+Showcase validation.
 
 ## Badge Relation
 

@@ -174,6 +174,15 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e7: {
           paddingLeftEmission: 'token',
           paddingRightEmission: 'token'
+        },
+        e8: {
+          borderRadiusEmission: 'mirrored',
+          borderWidthEmission: 'mirrored',
+          paddingEmission: 'compensated'
+        },
+        e10: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token'
         }
       }
     },
