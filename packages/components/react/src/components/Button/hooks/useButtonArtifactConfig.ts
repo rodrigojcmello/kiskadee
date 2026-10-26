@@ -4,6 +4,8 @@ import type {
   ButtonIconPlacement,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
+  ButtonIndicatorPlacement,
+  ButtonIndicatorScope,
   ContentSurfaceContextMap,
   RadiusMode
 } from '@kiskadee/core';
@@ -20,6 +22,16 @@ export type ButtonArtifactConfig = {
   buttonClassesMapPending: boolean;
   stackedSizes: readonly string[] | undefined;
   stackedSizesByRadius: Readonly<Partial<Record<RadiusMode, readonly string[]>>> | undefined;
+  indicatorSizesByRadius: Readonly<Partial<Record<RadiusMode, readonly string[]>>> | undefined;
+  stackedIndicatorSizesByRadius:
+    | Readonly<Partial<Record<RadiusMode, readonly string[]>>>
+    | undefined;
+  outsideIndicatorSizesByRadius:
+    | Readonly<Partial<Record<RadiusMode, readonly string[]>>>
+    | undefined;
+  stackedOutsideIndicatorSizesByRadius:
+    | Readonly<Partial<Record<RadiusMode, readonly string[]>>>
+    | undefined;
   componentEffects: {
     activationFeedback: ActivationFeedbackSetting | undefined;
   };
@@ -35,6 +47,8 @@ export type ButtonArtifactConfig = {
     iconTreatment: ButtonIconTreatment | undefined;
     groupDivider: boolean | undefined;
     disclosureDivider: boolean | undefined;
+    indicatorPlacement: ButtonIndicatorPlacement | undefined;
+    indicatorScope: ButtonIndicatorScope | undefined;
   };
 };
 
@@ -51,6 +65,10 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
     buttonClassesMapPending: buttonClassMapResolution.pending,
     stackedSizes: buttonMetadata?.layouts?.stacked?.sizes,
     stackedSizesByRadius: buttonMetadata?.layouts?.stacked?.sizesByRadius,
+    indicatorSizesByRadius: buttonMetadata?.indicator?.sizesByRadius,
+    stackedIndicatorSizesByRadius: buttonMetadata?.indicator?.stackedSizesByRadius,
+    outsideIndicatorSizesByRadius: buttonMetadata?.indicator?.outsideSizesByRadius,
+    stackedOutsideIndicatorSizesByRadius: buttonMetadata?.indicator?.stackedOutsideSizesByRadius,
     contentSurfaceContext: buttonMetadata?.contentSurfaceContext,
     componentEffects: {
       activationFeedback: buttonMetadata?.effects?.activationFeedback
@@ -65,7 +83,9 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
       iconSurfaceCorners: buttonMetadata?.options?.iconSurfaceCorners,
       iconTreatment: buttonMetadata?.options?.iconTreatment,
       groupDivider: buttonMetadata?.options?.groupDivider,
-      disclosureDivider: buttonMetadata?.options?.disclosureDivider
+      disclosureDivider: buttonMetadata?.options?.disclosureDivider,
+      indicatorPlacement: buttonMetadata?.options?.indicatorPlacement,
+      indicatorScope: buttonMetadata?.options?.indicatorScope
     }
   };
 }

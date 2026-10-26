@@ -37,6 +37,7 @@ type ButtonColorRole =
   | 'button.positive';
 type ButtonIntent = 'primary' | 'neutral' | 'destructive' | 'positive';
 type ButtonForegroundFamily = 'blue' | 'neutral' | 'red' | 'green';
+type ButtonIndicatorPlacement = 'inside' | 'outside';
 
 const BUTTON_FOREGROUND_FAMILY = {
   primary: 'blue',
@@ -130,6 +131,16 @@ const BUTTON_BORDER_WIDTH = {
 } as const;
 
 const BUTTON_SHARED_RADII = { rounded: 4, square: 0 } as const;
+
+const BUTTON_INDICATOR_SCALES = {
+  boxWidth: { 's:sm:1': 24, 's:md:1': 30, 's:lg:1': 36, 's:lg:2': 36 },
+  boxHeight: 2,
+  marginTop: 2,
+  marginBottom: 2,
+  marginLeft: 2,
+  marginRight: 2,
+  borderRadius: { rounded: 2, pill: 2, square: 0 }
+} as const;
 
 export function createFluent2MicrosoftButtonSchema({
   c
@@ -491,6 +502,81 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
+  const createIndicatorPalettes = (placement: ButtonIndicatorPlacement) => {
+    const indicatorColor = (
+      theme: ButtonRecipeTheme,
+      context: SurfaceContext,
+      intent: ButtonIntent,
+      emphasis: 'high' | 'medium' | 'low' | 'lowest'
+    ) => {
+      if (context === 'onVivid') {
+        if (placement === 'outside') {
+          return parentStateForegroundReference(
+            'neutral',
+            'standard',
+            theme,
+            'onVivid',
+            'high',
+            'rest'
+          );
+        }
+        return parentStateForegroundReference(
+          'blue',
+          emphasis === 'high' ? 'standard' : 'deep',
+          'light',
+          emphasis === 'high' ? 'onSubtle' : 'onVivid',
+          'high',
+          'rest'
+        );
+      }
+
+      if (placement === 'inside' && emphasis === 'high') {
+        return intent === 'neutral' && theme !== 'light'
+          ? parentStateForegroundReference('blue', 'deep', 'light', 'onSubtle', 'high', 'rest')
+          : parentStateForegroundReference(
+              'neutral',
+              'standard',
+              'light',
+              'onVivid',
+              'high',
+              'rest'
+            );
+      }
+
+      return parentStateForegroundReference('blue', 'standard', theme, 'onSubtle', 'high', 'rest');
+    };
+
+    return {
+      default: Object.fromEntries(
+        (['light', 'dark', 'darker'] as const).map((theme) => [
+          theme,
+          Object.fromEntries(
+            (['onSubtle', 'onVivid'] as const).map((context) => [
+              context,
+              {
+                boxColor: Object.fromEntries(
+                  (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
+                    intent,
+                    Object.fromEntries(
+                      (['high', 'medium', 'low', 'lowest'] as const).map((emphasis) => [
+                        emphasis,
+                        {
+                          selected: {
+                            rest: indicatorColor(theme, context, intent, emphasis)
+                          }
+                        }
+                      ])
+                    )
+                  ])
+                )
+              }
+            ])
+          )
+        ])
+      )
+    };
+  };
+
   const createContentSurfaceContext = () =>
     Object.fromEntries(
       (['light', 'dark', 'darker'] as const).map((theme) => [
@@ -529,7 +615,9 @@ export function createFluent2MicrosoftButtonSchema({
       iconLayout: 'inline',
       iconPlacement: 'leading',
       iconSurfaceCorners: 'edge',
-      iconTreatment: 'plain'
+      iconTreatment: 'plain',
+      indicatorPlacement: 'inside',
+      indicatorScope: 'stacked'
     },
     effects: {
       shadow: {
@@ -722,7 +810,7 @@ export function createFluent2MicrosoftButtonSchema({
         name: 'button-stacked',
         scales: {
           _boxHeight: {
-            's:sm:1': 48,
+            's:sm:1': 46,
             's:md:1': 54,
             's:lg:1': 68,
             's:lg:2': 80
@@ -754,14 +842,14 @@ export function createFluent2MicrosoftButtonSchema({
           borderWidth: BUTTON_BORDER_WIDTH,
           borderRadius: {
             ...BUTTON_SHARED_RADII,
-            pill: { 's:sm:1': 24, 's:md:1': 27, 's:lg:1': 34, 's:lg:2': 40 }
+            pill: { 's:sm:1': 23, 's:md:1': 27, 's:lg:1': 34, 's:lg:2': 40 }
           }
         }
       },
       e9: {
         name: 'button-stacked-text',
         typography: {
-          's:sm:1': 'caption-medium',
+          's:sm:1': 'caption-small',
           's:md:1': 'caption-small',
           's:lg:1': 'body-medium',
           's:lg:2': 'body-medium'
@@ -783,6 +871,16 @@ export function createFluent2MicrosoftButtonSchema({
           's:lg:1': 's:lg:2',
           's:lg:2': 's:lg:3'
         }
+      },
+      e11: {
+        name: 'button-indicator',
+        scales: BUTTON_INDICATOR_SCALES,
+        palettes: createIndicatorPalettes('inside')
+      },
+      e12: {
+        name: 'button-indicator-outside',
+        scales: BUTTON_INDICATOR_SCALES,
+        palettes: createIndicatorPalettes('outside')
       }
     }
   };

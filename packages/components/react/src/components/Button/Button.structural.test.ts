@@ -2,6 +2,80 @@ import * as sass from 'sass';
 import { describe, expect, it } from 'vitest';
 
 describe('Button structural CSS', () => {
+  it('anchors a passive indicator to the real border box without reserving layout space', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
+    const host = css.match(/\.k-btn-e1k\s*\{([^}]*)\}/)?.[1];
+    const indicator = css.match(/\.k-btn > \.k-btn-e11\s*\{([^}]*)\}/)?.[1];
+    const outside = css.match(/\.k-btn > \.k-btn-e11a\s*\{([^}]*)\}/)?.[1];
+    expect(host).toContain('overflow: visible');
+    expect(host).not.toMatch(/(?:padding|margin|height|block-size):/);
+    expect(indicator).toContain('position: absolute');
+    expect(indicator).toContain('inset-inline: calc(var(--k-bdw) * -1)');
+    expect(indicator).toContain('margin-inline: auto');
+    expect(indicator).toContain('pointer-events: none');
+    expect(indicator).toContain('inline-size: var(--k-bxw)');
+    expect(indicator).toContain(
+      'max-inline-size: max(0px, 100% + var(--k-bdw) * 2 - max(var(--k-mgl), var(--k-mgr)) * 2)'
+    );
+    expect(indicator).toContain('block-size: var(--k-bxh)');
+    expect(indicator).toContain('border-radius: var(--k-bdr)');
+    expect(indicator).toContain('inset-block-end: calc(var(--k-mgb) - var(--k-bdw))');
+    expect(outside).toContain(
+      'inset-block-end: calc((var(--k-bdw) + var(--k-mgt) + var(--k-bxh)) * -1)'
+    );
+  });
+
+  it('clips feedback on an independent viewport without overriding progress, Badge or focus geometry', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
+    const feedback = sass.compile(
+      new URL(
+        './effects/activation-feedback/ButtonActivationFeedback.structural.scss',
+        import.meta.url
+      ).pathname
+    ).css;
+    const viewport = css.match(/\.k-btn > \.k-btn-x6\s*\{([^}]*)\}/)?.[1];
+    expect(viewport).toContain('inset: calc(var(--k-bdw) * -1)');
+    expect(viewport).toContain('border-radius: inherit');
+    expect(viewport).toContain('overflow: var(--k-af-overflow)');
+    expect(viewport).toContain('clip-path: var(--k-af-clip)');
+    expect(viewport).toContain('position: absolute');
+    expect(css).toContain('.k-btn-x3 > .k-btn.k-btn-e1a:not(.k-btn-e1k)');
+    expect(css).toContain(':not(:is(.k-btn-x1, .k-btn-x4, .k-btn-x6, .k-btn-e11))');
+    expect(feedback).toContain('.k-btn-e1a:not(.k-btn-e1k):focus-visible');
+    expect(feedback).toContain('.k-btn-e1a:not(.k-btn-e1k).-f.-k.-a');
+    expect(feedback).toContain('.k-btn-e1a > .k-btn-x6::after');
+    expect(feedback).toContain(':not(:is(.k-btn-x1, .k-btn-x4, .k-btn-x6, .k-btn-e11))');
+    expect(feedback).not.toContain('.k-btn-e1a::after');
+  });
+
+  it('aligns overlays to borderless connected seams and ignores decoration in disclosure-only content', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
+    const startEdge = css.match(
+      /\.k-btn-x3a > \.k-btn \+ \.k-btn-e6a \+ \.k-btn > :is\(\.k-btn-e11, \.k-btn-x6\)\s*\{([^}]*)\}/
+    )?.[1];
+    const endEdge = css.match(
+      /\.k-btn-x3a > \.k-btn:has\(\+ \.k-btn-e6a \+ \.k-btn\) > :is\(\.k-btn-e11, \.k-btn-x6\)\s*\{([^}]*)\}/
+    )?.[1];
+    expect(startEdge).toContain('inset-inline-start: 0');
+    expect(endEdge).toContain('inset-inline-end: 0');
+    const oneSeamBudget = css.match(
+      /\.k-btn-x3a > \.k-btn \+ \.k-btn-e6a \+ \.k-btn > \.k-btn-e11,[^{]+\{([^}]*)\}/
+    )?.[1];
+    const twoSeamBudget = css.match(
+      /\.k-btn-x3a > \.k-btn \+ \.k-btn-e6a \+ \.k-btn:has\(\+ \.k-btn-e6a \+ \.k-btn\) > \.k-btn-e11\s*\{([^}]*)\}/
+    )?.[1];
+    expect(oneSeamBudget).toContain(
+      'max-inline-size: max(0px, 100% + var(--k-bdw) - max(var(--k-mgl), var(--k-mgr)) * 2)'
+    );
+    expect(twoSeamBudget).toContain(
+      'max-inline-size: max(0px, 100% - max(var(--k-mgl), var(--k-mgr)) * 2)'
+    );
+    expect(css).toMatch(
+      /\.k-btn:not\(:has\(> :not\(:is\(\.k-btn-e5, \.k-btn-x1, \.k-btn-x4, \.k-btn-x6, \.k-btn-e11\)\)\)\) > \.k-btn-e5\s*\{[^}]*margin-inline-start: 0;[^}]*padding-inline-start: 0;/
+    );
+    expect(css).not.toContain('.k-btn-e5:only-child');
+  });
+
   it('normalizes intrinsic media and direct font glyphs using the authored icon viewport', () => {
     const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
     const slot = css.match(/^\.k-btn-e3\s*\{([^}]*)\}/m)?.[1];

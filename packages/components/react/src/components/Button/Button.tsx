@@ -1,5 +1,8 @@
 import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
-import { useComponentScale } from '../../shared/contexts/DensityContext.tsx';
+import {
+  useComponentScale,
+  useResolvedComponentScale
+} from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Button.structural.scss';
 import type { ButtonIconTreatment, SurfaceContext } from '@kiskadee/core';
@@ -30,6 +33,7 @@ import { resolveProgressIndicatorClassName } from '../Progress/Progress.class-na
 import type { ProgressClassesMap } from '../Progress/Progress.types.ts';
 import {
   DEFAULT_BUTTON_EMPHASIS,
+  DEFAULT_BUTTON_INDICATOR_PLACEMENT,
   DEFAULT_BUTTON_INTENT,
   DEFAULT_BUTTON_RADIUS,
   join,
@@ -37,6 +41,7 @@ import {
   normalizeButtonScaleKey,
   resolveButtonDividerClassName,
   resolveButtonGroupClassName,
+  resolveButtonIndicatorClassName,
   supportsButtonStackedLayout
 } from './Button.class-names.ts';
 import type {
@@ -69,11 +74,15 @@ export type {
   ButtonActivationFeedbackEffect,
   ButtonBadgePlacement,
   ButtonBadgeProps,
+  ButtonClassesMap,
   ButtonDisclosureProps,
+  ButtonElementName,
   ButtonGroupProps,
   ButtonIconProps,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
+  ButtonIndicatorPlacement,
+  ButtonIndicatorScope,
   ButtonProgressProps,
   ButtonProps,
   ButtonStatus
@@ -451,6 +460,28 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
             contentSlots.hasInlineBadge)
         ? 'inline'
         : common.iconLayout;
+  const indicatorPlacement =
+    common.indicatorPlacement ??
+    common.options.indicatorPlacement ??
+    DEFAULT_BUTTON_INDICATOR_PLACEMENT;
+  const indicatorElement = indicatorPlacement === 'outside' ? common.e12 : common.e11;
+  const indicatorSizesByRadius =
+    indicatorPlacement === 'outside'
+      ? activeIconLayout === 'stacked'
+        ? common.stackedOutsideIndicatorSizesByRadius
+        : common.outsideIndicatorSizesByRadius
+      : activeIconLayout === 'stacked'
+        ? common.stackedIndicatorSizesByRadius
+        : common.indicatorSizesByRadius;
+  const indicatorEnabled =
+    common.indicator ??
+    (common.options.indicatorScope !== 'stacked' || activeIconLayout === 'stacked');
+  const indicatorScale = useResolvedComponentScale(
+    'button',
+    indicatorEnabled && indicatorElement && indicatorSizesByRadius?.[stackedRadius]?.length
+      ? groupedProps.size
+      : (groupedProps.size ?? 'md')
+  );
 
   useEffect(() => {
     if (
@@ -514,6 +545,35 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
   const activationFeedbackController = useButtonActivationFeedbackController(common, {
     feedbackEnabled: Boolean(feedbackEffect.loadedFeedbackKind)
   });
+  const producedSurfaceContext = resolveContentSurfaceContext({
+    map: common.contentSurfaceContext,
+    segment,
+    theme,
+    consumedSurfaceContext: common.surfaceContext,
+    intent: common.intent,
+    emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
+    selected: common.controlState,
+    pending: activationFeedbackController.pending,
+    disabled: activationFeedbackController.nativeDisabled
+  });
+  const indicatorClassName =
+    indicatorEnabled && !common.buttonClassesMapPending
+      ? resolveButtonIndicatorClassName({
+          element: indicatorElement,
+          sizesByRadius: indicatorSizesByRadius,
+          scale: indicatorScale,
+          radius: common.radius ?? common.options.radius ?? DEFAULT_BUTTON_RADIUS,
+          placement: indicatorPlacement,
+          intent: common.intent,
+          emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
+          surfaceContext: common.surfaceContext
+        })
+      : undefined;
+  const indicatorActive =
+    common.controlState === true &&
+    !activationFeedbackController.activationBlocked &&
+    activationFeedbackController.visualStatus !== 'disabled' &&
+    activationFeedbackController.visualStatus !== 'pending';
   const elements = useMemo<ButtonClassesMap>(
     () => ({
       e1: common.e1,
@@ -617,18 +677,6 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       ),
     [inlineBadgesSupported, contentSlots.hasInlineBadge, normalizedChildren]
   );
-  const producedSurfaceContext = resolveContentSurfaceContext({
-    map: common.contentSurfaceContext,
-    segment,
-    theme,
-    consumedSurfaceContext: common.surfaceContext,
-    intent: common.intent,
-    emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
-    selected: common.controlState,
-    pending: activationFeedbackController.pending,
-    disabled: activationFeedbackController.nativeDisabled
-  });
-
   useEffect(() => {
     if (
       process.env.NODE_ENV === 'production' ||
@@ -694,7 +742,11 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
         aria-pressed={activationFeedbackController.ariaPressed}
         classNames={{
           ...computedClassNames,
-          e1: join(computedClassNames.e1, contentSlots.hasOverlayBadge ? 'k-btn-e1j' : undefined)
+          e1: join(
+            computedClassNames.e1,
+            contentSlots.hasOverlayBadge ? 'k-btn-e1j' : undefined,
+            indicatorClassName ? 'k-btn-e1k' : undefined
+          )
         }}
         ref={hostRef}
         onClick={activationFeedbackController.handlers.onClick}
@@ -706,9 +758,18 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
         onBlur={activationFeedbackController.handlers.onBlur}
         tabIndex={common.tabIndex ?? 0}
       >
+        {indicatorClassName && feedbackEffect.loadedFeedbackKind ? (
+          <span className="k-btn-x6" aria-hidden="true" />
+        ) : null}
         <SurfaceContextProvider value={producedSurfaceContext}>
           {composedChildren}
         </SurfaceContextProvider>
+        {indicatorClassName ? (
+          <span
+            className={join(indicatorClassName, indicatorActive ? 'k-btn-e11b' : undefined)}
+            aria-hidden="true"
+          />
+        ) : null}
       </HeadlessButton>
     </ButtonRuntimeContext.Provider>
   );

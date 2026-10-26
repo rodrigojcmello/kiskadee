@@ -2,6 +2,52 @@
 
 Status: canonical Web Builder publication contract (format 2).
 
+## Button indicator handoff
+
+Button's optional `e11` (inside) and `e12` (outside) each publish complete geometry in `s`, `rr`,
+`rp` and `rs`, and ordinary surface-context, intent and emphasis color buckets in `c`. Both use the
+normal palette pipeline, including element-owned emphasis metadata and global utility
+deduplication. The runtime selects one recipe for one rendered indicator. There is no
+position-specific style-key or artifact branch. Selected-state references keep the host as
+interaction owner; no new state selector is added.
+
+The component metadata publishes `indicator.sizesByRadius`, with `rounded`, `pill` and `square`
+arrays of compact supported sizes. A size requires baseline indicator width, height, both vertical
+gaps, both horizontal safety insets, the selected radius and the root `e1` border-width token.
+Scalars and `s:all` are supported. When the Button has only invariant geometry, its empty fixed-size
+catalog still resolves to Medium through Core. Indicator coverage checks that effective `md:1`
+without adding a fixed size to `sizeSupport` or publishing indicator-only sizes.
+Breakpoint maps require `bp:all`. When stacked anatomy is present, `indicator.stackedSizesByRadius`
+independently requires the actual stacked `e8` border-width token and complete stacked geometry
+for that size and radius. Missing horizontal border geometry does not suppress valid stacked
+support, and missing stacked geometry does not suppress horizontal support.
+
+The same completeness checks apply independently to `e12`, published as `outsideSizesByRadius`
+and optional `stackedOutsideSizesByRadius`. If only `e12` exists, `sizesByRadius` remains present
+with empty arrays for compatibility and outside coverage remains available. If only `e11` exists,
+outside coverage fields are absent. No support for one placement is inferred from the other.
+
+Neither indicator recipe introduces a Button size. The metadata is absent when both recipes are
+absent and stale previous metadata is removed on republishing. These are geometry capabilities; consumers
+also require paint for the active palette coordinate in the selected element. Both recipes consume
+the Button's ambient context with its actual intent and emphasis. Position changes the selected
+recipe, without changing the context produced for the Button's independent descendants.
+
+The style-emission policy makes both recipes' dimensions, all four margins and radius token-only.
+Structural CSS consumes existing `--k-bxw`, `--k-bxh`, `--k-mgt`, `--k-mgb`, `--k-mgl`, `--k-mgr` and `--k-bdr`
+variables. No raw offsets, reference heights, custom color buckets or alternate state activators
+are published.
+Nominal width remains a literal preset-authored scalar or size map. The Builder performs no
+measurement or geometry-based derivation of that width.
+
+`options.indicatorScope` publishes the authored `all` or `stacked` value through the existing
+component options. Omission stays omitted in the artifact, preserving the runtime's compatible
+`all` default; scope does not change geometry capability metadata.
+
+Foreground references continue to resolve only in `textColor`, except for indicator `boxColor`
+inside the authorized Button `e11.palettes` and `e12.palettes` paths. Their foreground coordinates
+resolve before normal palette conversion; no foreground token reaches CSS or runtime artifacts.
+
 ## Ownership and publication
 
 Core defines size support and the Medium fallback. Presets author recipes. Web Builder resolves

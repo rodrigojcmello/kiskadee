@@ -123,7 +123,14 @@ The serializable forms are respectively `fg:red.deep.light.onSubtle.high` and
 profile, physical source theme, Surface Context, strength, and an optional global foreground state;
 omitting state selects `rest`. The consuming palette supplies the segment.
 
-Atomic references are valid only inside `textColor`. Unknown coordinates fail validation; there is
+Atomic references are valid inside `textColor`. One bounded exception permits `boxColor` in
+`components.button.elements.e11.palettes` and `components.button.elements.e12.palettes`: these
+alternative recipes for one passive state indicator consume an existing foreground as line paint.
+The exception does not authorize other box-color consumers or duplicate the foreground catalog. Its state-driven
+references use `fg.parentState()` because the Button owns the state. See
+[State indicators](./state-indicators.md).
+
+Unknown coordinates fail validation; there is
 no profile, theme, context, strength, state, or segment fallback. `parentState` means that the slot
 reacts to the state scope owner and lowers to the existing `==` selector mechanism. It is unrelated
 to tonal `referenceColor()` and replaces the ambiguous use of the legacy authoring shape

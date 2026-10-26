@@ -5,6 +5,7 @@ import type {
   ButtonIconPlacement,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
+  ButtonIndicatorPlacement,
   ButtonIntent,
   ClassNameByElementJSON,
   ComponentEmphasis,
@@ -17,7 +18,12 @@ import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headles
 import type { HTMLAttributes, ReactNode } from 'react';
 import type { DeterminateDecorativeProgressProps } from '../Progress/Progress.types.ts';
 
-export type { ButtonIconSurfaceCorners, ButtonIconTreatment } from '@kiskadee/core';
+export type {
+  ButtonIconSurfaceCorners,
+  ButtonIconTreatment,
+  ButtonIndicatorPlacement,
+  ButtonIndicatorScope
+} from '@kiskadee/core';
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
 
@@ -31,7 +37,9 @@ export type ButtonElementName =
   | 'e7'
   | 'e8'
   | 'e9'
-  | 'e10';
+  | 'e10'
+  | 'e11'
+  | 'e12';
 
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
 
@@ -79,6 +87,10 @@ export type ButtonProps = HeadlessButtonProps & {
   toggle?: boolean;
   /** Semantic control state (selected/active/checked). When true, selected styles are applied. */
   controlState?: boolean;
+  /** Overrides preset indicator scope; true still requires an authored recipe and selected state. */
+  indicator?: boolean;
+  /** Places the optional preset-authored selection indicator inside or outside the lower edge. */
+  indicatorPlacement?: ButtonIndicatorPlacement;
   /**
    * Select a fixed component size.
    * When omitted, the component uses the configured density.

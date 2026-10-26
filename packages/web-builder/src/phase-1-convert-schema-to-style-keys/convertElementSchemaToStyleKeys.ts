@@ -22,7 +22,10 @@ import type {
   ThumbShrinkEffectSchema
 } from '@kiskadee/core';
 import { resolveActivationFeedbackSetting } from '@kiskadee/core';
-import { resolveElementPaletteSources } from '../palettes/resolveElementPaletteSources.ts';
+import {
+  type ElementPaletteSource,
+  resolveElementPaletteSources
+} from '../palettes/resolveElementPaletteSources.ts';
 import {
   resolveElementStyleEmissionPolicy,
   type WebStyleEmissionPolicy
@@ -55,11 +58,11 @@ type ElementSchemaInput = Pick<
   | 'foreground'
   | 'iconSize'
   | 'name'
-  | 'palettes'
   | 'scales'
   | 'separator'
   | 'typography'
->;
+> &
+  Pick<ElementPaletteSource, 'palettes'>;
 
 type ComponentSchemaInput = {
   effects?: {
@@ -228,11 +231,15 @@ export function convertElementSchemaToStyleKeys(
         element.iconSize && iconSizes
           ? expandElementIconSize(element.iconSize as ElementIconSize, iconSizes)
           : undefined;
-      const { palettes: mergedPalettes, separatorRecipe } = resolveElementPaletteSources(element, {
-        foregrounds,
-        contours: schema.global?.contours,
-        separators
-      });
+      const { palettes: mergedPalettes, separatorRecipe } = resolveElementPaletteSources(
+        element,
+        { foregrounds, contours: schema.global?.contours, separators },
+        {
+          allowIndicatorBoxColor:
+            metadataScope.componentName === 'button' &&
+            (metadataScope.elementName === 'e11' || metadataScope.elementName === 'e12')
+        }
+      );
       if (element.scales || iconSizeScales || separatorRecipe) {
         const { borderRadius, ...otherScales } = element.scales ?? {};
         Reflect.deleteProperty(otherScales, '_boxHeight');

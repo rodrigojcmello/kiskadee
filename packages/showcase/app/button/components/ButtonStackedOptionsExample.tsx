@@ -49,7 +49,7 @@ export function ButtonStackedOptionsExample({
 }) {
   const profiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(['Raise', 'Mic']);
   const available = supportsStackedButtonSize(classesMap, scale, stackedSizes, radius);
 
   return (
@@ -62,7 +62,7 @@ export function ButtonStackedOptionsExample({
       </Text>
       {showDescriptions ? (
         <Text as="p" profile={profiles.body}>
-          A horizontally scrolling options bar inspired by Microsoft Teams. Icons follow the
+          A horizontally scrolling options bar for a videoconferencing application. Icons follow the
           selected family. Select up to two options; a third replaces the oldest selection.
         </Text>
       ) : null}

@@ -54,7 +54,7 @@ describe('Fluent stacked Button recipe', () => {
     }
   });
 
-  it('refines only the Medium stacked label while preserving its icon and spacing', () => {
+  it('shares the small caption between Small and Medium without reducing their icons or spacing', () => {
     const {
       e2: horizontalLabel,
       e8: root,
@@ -65,9 +65,18 @@ describe('Fluent stacked Button recipe', () => {
     const profiles = schema.global!.typography!.profiles;
     const typography = label!.typography as Record<string, keyof typeof profiles>;
     const mediumProfile = profiles[typography['s:md:1']!]!;
+    const smallProfile = profiles[typography['s:sm:1']!]!;
     const iconSize = icon!.iconSize as Record<string, keyof typeof icons>;
 
     expect(mediumProfile.scales).toEqual({ textSize: 10, textHeight: 14 });
+    expect(smallProfile).toEqual(mediumProfile);
+    expect(icons[iconSize['s:sm:1']!]!).toBe(20);
+    expect((root!.scales!.paddingTop as Record<string, number>)['s:sm:1']).toBe(4);
+    expect((root!.scales!.paddingBottom as Record<string, number>)['s:sm:1']).toBe(4);
+    expect((root!.scales!.paddingLeft as Record<string, number>)['s:sm:1']).toBe(8);
+    expect((root!.scales!.paddingRight as Record<string, number>)['s:sm:1']).toBe(8);
+    expect((label!.scales!.marginTop as Record<string, number>)['s:sm:1']).toBe(4);
+    expect((root!.scales!._boxHeight as Record<string, number>)['s:sm:1']).toBe(46);
     expect(icons[iconSize['s:md:1']!]!).toBe(24);
     expect((root!.scales!.paddingTop as Record<string, number>)['s:md:1']).toBe(6);
     expect((root!.scales!.paddingBottom as Record<string, number>)['s:md:1']).toBe(6);
@@ -80,7 +89,7 @@ describe('Fluent stacked Button recipe', () => {
       's:lg:1': 'label-large',
       's:lg:2': 'label-large'
     });
-    expect(typography['s:sm:1']).toBe('caption-medium');
+    expect(typography['s:sm:1']).toBe('caption-small');
     expect(typography['s:lg:1']).toBe('body-medium');
     expect(typography['s:lg:2']).toBe('body-medium');
   });

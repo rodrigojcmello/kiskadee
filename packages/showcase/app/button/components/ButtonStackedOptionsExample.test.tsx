@@ -144,11 +144,14 @@ function selected() {
 describe('Stacked options selection', () => {
   it('toggles options and removes the oldest selection when a third option is selected', () => {
     render();
-    expect(selected()).toEqual([]);
+    expect(selected()).toEqual(['Raise', 'Mic']);
     expect(container?.querySelector('[role="status"]')).toBeNull();
     act(() => button('Record').click());
+    expect(selected()).toEqual(['Record', 'Mic']);
+    expect(button('Raise').getAttribute('aria-pressed')).toBe('false');
     act(() => button('Chat').click());
     expect(selected()).toEqual(['Record', 'Chat']);
+    expect(button('Mic').getAttribute('aria-pressed')).toBe('false');
     act(() => button('People').click());
     expect(selected()).toEqual(['Chat', 'People']);
     act(() => button('Chat').click());
@@ -162,6 +165,7 @@ describe('Stacked options selection', () => {
 
   it('preserves selection order and toggles across clicks batched in one update', () => {
     render();
+    expect(selected()).toEqual(['Raise', 'Mic']);
     act(() => {
       button('Record').click();
       button('Chat').click();
@@ -188,6 +192,7 @@ describe('Stacked options selection', () => {
     expect(container?.querySelector('button')).toBeNull();
     act(() => root?.render(example({ classesMap, radius: 'pill', stackedSizes: ['md:1'] })));
     expect(container?.querySelectorAll('button')).toHaveLength(11);
+    expect(selected()).toEqual(['Raise', 'Mic']);
     act(() => {
       button('Record').click();
       button('Chat').click();

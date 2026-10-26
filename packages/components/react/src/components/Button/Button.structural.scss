@@ -51,6 +51,71 @@
 }
 
 /*
+ * element button root modifier 'k' / e1k
+ * Keeps the indicator paint outside layout and separates it from clipped feedback.
+ */
+.k-btn-e1k {
+  isolation: isolate;
+  overflow: visible;
+  position: relative;
+}
+
+/*
+ * element selection indicator / e11
+ * Centers fixed authored geometry against the lower border edge without reserving space.
+ */
+.k-btn > .k-btn-e11 {
+  block-size: var(--k-bxh);
+  border-radius: var(--k-bdr);
+  inline-size: var(--k-bxw);
+  inset-block-end: calc(var(--k-mgb) - var(--k-bdw));
+  inset-inline: calc(var(--k-bdw) * -1);
+  margin-inline: auto;
+  max-inline-size: max(0px, calc(100% + var(--k-bdw) * 2 - max(var(--k-mgl), var(--k-mgr)) * 2));
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+  z-index: 3;
+}
+
+/*
+ * element selection indicator modifier 'a' / e11a
+ * Moves the indicator below the border edge using its own height and outside separation.
+ */
+.k-btn > .k-btn-e11a {
+  inset-block-end: calc((var(--k-bdw) + var(--k-mgt) + var(--k-bxh)) * -1);
+}
+
+/*
+ * element selection indicator modifier 'b' / e11b
+ * Reveals the stable decorative node only while selected and actionable.
+ */
+.k-btn > .k-btn-e11b {
+  visibility: visible;
+}
+
+/*
+ * extra element for e1 / x6
+ * Clips only feedback to the actual border box while the root can expose its indicator.
+ */
+.k-btn > .k-btn-x6 {
+  border-radius: inherit;
+  clip-path: var(--k-af-clip);
+  inset: calc(var(--k-bdw) * -1);
+  overflow: var(--k-af-overflow);
+  pointer-events: none;
+  position: absolute;
+}
+
+/*
+ * extra element for e1 / x4
+ * Keeps overlaid metadata above the indicator in the indicator-enabled stacking context.
+ */
+.k-btn-e1k > .k-btn-x4 {
+  z-index: 4;
+}
+
+/*
  * extra element for e1 / x4
  * Anchors passive Badge content to a logical Button corner without intercepting input.
  * Insets use r * (1 - 1/sqrt(2)): the circular corner at 45 degrees.
@@ -206,7 +271,7 @@
  * Button progress content layer / e2 and e3
  * Keeps labels and arbitrary icons above the progress fill without affecting layout.
  */
-.k-btn:has(> .k-btn-x1) > :not(.k-btn-x1) {
+.k-btn:has(> .k-btn-x1) > :not(:is(.k-btn-x1, .k-btn-x4, .k-btn-x6, .k-btn-e11)) {
   position: relative;
   z-index: 1;
 }
@@ -551,7 +616,7 @@
  * element disclosure / e5
  * Removes label-to-disclosure spacing when the disclosure is the Button's only content slot.
  */
-.k-btn > .k-btn-e5:only-child {
+.k-btn:not(:has(> :not(:is(.k-btn-e5, .k-btn-x1, .k-btn-x4, .k-btn-x6, .k-btn-e11)))) > .k-btn-e5 {
   margin-inline-start: 0;
   padding-inline-start: 0;
 }
@@ -636,10 +701,43 @@
 }
 
 /*
+ * element indicator and feedback viewport / e11 and x6
+ * Anchors overlays to the real logical-start edge where a group seam removes the border.
+ */
+.k-btn-x3a > .k-btn + .k-btn-e6a + .k-btn > :is(.k-btn-e11, .k-btn-x6) {
+  inset-inline-start: 0;
+}
+
+/*
+ * element indicator and feedback viewport / e11 and x6
+ * Anchors overlays to the real logical-end edge where a group seam removes the border.
+ */
+.k-btn-x3a > .k-btn:has(+ .k-btn-e6a + .k-btn) > :is(.k-btn-e11, .k-btn-x6) {
+  inset-inline-end: 0;
+}
+
+/*
+ * element selection indicator / e11
+ * Removes one border contribution from the narrow-width budget at either connected seam.
+ */
+.k-btn-x3a > .k-btn + .k-btn-e6a + .k-btn > .k-btn-e11,
+.k-btn-x3a > .k-btn:has(+ .k-btn-e6a + .k-btn) > .k-btn-e11 {
+  max-inline-size: max(0px, calc(100% + var(--k-bdw) - max(var(--k-mgl), var(--k-mgr)) * 2));
+}
+
+/*
+ * element selection indicator / e11
+ * Uses the border box directly when both inline borders are replaced by connected seams.
+ */
+.k-btn-x3a > .k-btn + .k-btn-e6a + .k-btn:has(+ .k-btn-e6a + .k-btn) > .k-btn-e11 {
+  max-inline-size: max(0px, calc(100% - max(var(--k-mgl), var(--k-mgr)) * 2));
+}
+
+/*
  * element button root / e1
  * Lets the final border radius clip activation feedback after internal corners become straight.
  */
-.k-btn-x3 > .k-btn.k-btn-e1a {
+.k-btn-x3 > .k-btn.k-btn-e1a:not(.k-btn-e1k) {
   clip-path: none;
   overflow: var(--k-af-overflow, hidden);
 }

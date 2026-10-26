@@ -4,6 +4,12 @@ Styled React components for the Kiskadee design-system framework. Ships compiled
 (`dist/**/*.js`), TypeScript declarations (`dist/**/*.d.ts`) and a single CSS bundle
 (`dist/style.kiskadee.css`).
 
+Button composition contracts cover [icons and stacked layout](docs/definitions/button/icon-composition.md),
+[connected groups](docs/definitions/button/connected-groups.md) and the optional
+[state indicator](docs/definitions/button/state-indicator.md).
+Indicator eligibility follows the preset scope; `indicator` overrides it per instance without
+changing the Button's selected state or dimensions.
+
 ## Build scripts
 
 The package exposes one **official build script** plus a few **granular helpers** for debugging

@@ -43,7 +43,8 @@ function validateColorMap(
   value: unknown,
   allowedColorKeys: readonly string[],
   path: string[],
-  issues: ElementPaletteValidationIssue[]
+  issues: ElementPaletteValidationIssue[],
+  requireRest: boolean
 ): value is Record<string, unknown> {
   if (!isRecord(value)) {
     issues.push({ path, message: 'expected object' });
@@ -68,7 +69,7 @@ function validateColorMap(
       interactionStateKeys.includes(key as never)
     );
     if (isDirectStateMap) {
-      if (colorEntry.rest === undefined) {
+      if (requireRest && colorEntry.rest === undefined) {
         issues.push({ path: [...path, colorProperty, 'rest'], message: 'required state' });
       }
       continue;
@@ -87,7 +88,7 @@ function validateColorMap(
           });
           continue;
         }
-        if (stateMap.rest === undefined) {
+        if (requireRest && stateMap.rest === undefined) {
           issues.push({
             path: [...path, colorProperty, intent, emphasis, 'rest'],
             message: 'required state'
@@ -108,7 +109,8 @@ function validateColorMap(
  */
 export function getElementPaletteValidationIssues(
   value: unknown,
-  allowedColorKeys: readonly ColorProperty[]
+  allowedColorKeys: readonly ColorProperty[],
+  options: { requireRest?: boolean } = {}
 ): ElementPaletteValidationIssue[] {
   const issues: ElementPaletteValidationIssue[] = [];
 
@@ -152,7 +154,8 @@ export function getElementPaletteValidationIssues(
         onSubtleColorMap,
         allowedColorKeys,
         onSubtlePath,
-        issues
+        issues,
+        options.requireRest !== false
       );
 
       if (!Object.hasOwn(bySurfaceContext, 'onVivid')) continue;
@@ -163,7 +166,8 @@ export function getElementPaletteValidationIssues(
         onVividColorMap,
         allowedColorKeys,
         onVividPath,
-        issues
+        issues,
+        options.requireRest !== false
       );
 
       if (!onSubtleIsValid || !onVividIsValid) continue;

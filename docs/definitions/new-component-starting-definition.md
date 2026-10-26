@@ -21,9 +21,13 @@ recipe belongs here.
 
 Before implementation starts, decide and record:
 
-- whether the component is truly new or should be a variant of an existing component;
+- the applicable approaches from the [Composition strategies catalog](./composition-strategies.md#strategy-catalog),
+  including whether existing component composition, internal anatomy, an alternate recipe or a
+  variant can express the need before introducing a new public component;
 - the canonical component name;
-- the element map and each element's meaning;
+- the element map and each element's meaning, including any
+  [alternate recipes for the same rendered part](./composition-strategies.md#alternate-element-recipes-for-one-rendered-part)
+  and the visual domains selected or retained;
 - the accessible headless contract that must exist before styling;
 - which themes are in scope;
 - whether radius modes are in scope;

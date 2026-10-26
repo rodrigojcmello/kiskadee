@@ -7,6 +7,13 @@
 .k-btn-e1a {
   position: relative;
   z-index: 0;
+}
+
+/*
+ * element button root / e1a
+ * Legacy hosts clip feedback directly when no independent indicator viewport is needed.
+ */
+.k-btn-e1a:not(.k-btn-e1k) {
   overflow: var(--k-af-overflow, hidden);
   /* Native overflow follows the animated border radius without clipping the border itself. */
   clip-path: var(--k-af-clip, none);
@@ -18,18 +25,27 @@
  * render outside.
  * .-f.-k.-a is the generated forced focus-visible state used by projected Showcase/status classes.
  */
-.k-btn-e1a:focus-visible,
-.k-btn-e1a.-f.-k.-a {
+.k-btn-e1a:not(.k-btn-e1k):focus-visible,
+.k-btn-e1a:not(.k-btn-e1k).-f.-k.-a {
   clip-path: none;
   overflow: hidden;
 }
 
-.k-btn-e1a > * {
+/*
+ * element button content / e1a
+ * Raises normal content without overriding absolute progress, Badge or indicator layers.
+ */
+.k-btn-e1a > :not(:is(.k-btn-x1, .k-btn-x4, .k-btn-x6, .k-btn-e11)) {
   position: relative;
   z-index: var(--k-af-content-z, 1);
 }
 
-.k-btn-e1a::after {
+/*
+ * extra element for e1 / x6
+ * Moves feedback paint into its viewport while legacy hosts keep their own pseudo-element.
+ */
+.k-btn-e1a:not(.k-btn-e1k)::after,
+.k-btn-e1a > .k-btn-x6::after {
   content: '';
   position: absolute;
   left: var(--k-af-x, 50%);
@@ -63,7 +79,12 @@
   pointer-events: none;
 }
 
-.k-btn-e1b::after {
+/*
+ * element button root modifier 'b' / e1b
+ * Activates the feedback paint on the selected structural owner.
+ */
+.k-btn-e1b:not(.k-btn-e1k)::after,
+.k-btn-e1b > .k-btn-x6::after {
   animation: none;
   visibility: visible;
   transform: translate(-50%, -50%);
@@ -71,7 +92,12 @@
   height: var(--k-af-end-size, var(--k-af-size, 0px));
 }
 
-.k-btn-e1c::after {
+/*
+ * element button root modifier 'c' / e1c
+ * Fades the same paint without modifying the independent indicator.
+ */
+.k-btn-e1c:not(.k-btn-e1k)::after,
+.k-btn-e1c > .k-btn-x6::after {
   opacity: 0;
 }
 

@@ -37,8 +37,8 @@ This is a PNPM monorepo. Use the Node version in [.nvmrc](.nvmrc).
 
 - [Nomenclature](docs/definitions/nomenclature.md): Schema, DSPE, and other Kiskadee terms.
 - [Schema, build, and runtime](SCHEMA-BUILD-RUNTIME-RULES.md): visual values and execution boundaries.
-- [Composition strategies](docs/definitions/composition-strategies.md): choosing components,
-  profiles, Effects, Providers, and other composition mechanisms.
+- [Composition strategies](docs/definitions/composition-strategies.md): categorized catalog for
+  components, anatomy, alternate element recipes, profiles, Effects, Providers, and platform handoffs.
 - [Structural CSS](STRUCTURAL-CSS.md): Web layout and structural styling rules.
 - [Preset definitions](packages/presets/docs/definitions/): source fidelity and preset authorship.
 

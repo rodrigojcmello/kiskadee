@@ -21,7 +21,10 @@ const isRecord = (value: unknown): value is Record<string, any> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 
 /** The branch union includes actual size geometry/typography, never another variant's sizes. */
-export function buildSizeSupport(branch: unknown): ComponentSizeSupport {
+export function buildSizeSupport(
+  branch: unknown,
+  excludedElements: readonly string[] = []
+): ComponentSizeSupport {
   if (!isRecord(branch)) return {};
   const support: ComponentSizeSupport = {};
   if (branch.elements) {
@@ -33,7 +36,8 @@ export function buildSizeSupport(branch: unknown): ComponentSizeSupport {
         else collect(child);
       }
     };
-    for (const element of Object.values(branch.elements) as any[]) {
+    for (const [elementName, element] of Object.entries(branch.elements) as [string, any][]) {
+      if (excludedElements.includes(elementName)) continue;
       const { _boxHeight, ...renderedScales } = element.scales ?? {};
       collect(renderedScales);
       collect(element.iconSize);
@@ -44,9 +48,90 @@ export function buildSizeSupport(branch: unknown): ComponentSizeSupport {
   for (const key of ['variants', 'modes'] as const)
     if (isRecord(branch[key]))
       support[key] = Object.fromEntries(
-        Object.entries(branch[key]).map(([name, child]) => [name, buildSizeSupport(child)])
+        Object.entries(branch[key]).map(([name, child]) => [
+          name,
+          buildSizeSupport(child, excludedElements)
+        ])
       );
   return support;
+}
+
+function hasBaseline(value: unknown): boolean {
+  if (typeof value === 'number') return Number.isFinite(value);
+  if (typeof value === 'string') return value.length > 0;
+  return isRecord(value) && hasBaseline(value['bp:all']);
+}
+
+function hasSize(value: unknown, size: string): boolean {
+  if (!isRecord(value)) return hasBaseline(value);
+  return hasBaseline(Object.hasOwn(value, size) ? value[size] : value['s:all']);
+}
+
+/** Optional indicator anatomy cannot introduce sizes absent from the Button itself. */
+export function buildButtonIndicatorSupport(
+  branch: unknown,
+  componentSizes: readonly string[]
+): ComponentResourceArtifact['indicator'] {
+  if (!isRecord(branch) || !isRecord(branch.elements)) return undefined;
+  const inside = isRecord(branch.elements.e11) ? branch.elements.e11 : undefined;
+  const outside = isRecord(branch.elements.e12) ? branch.elements.e12 : undefined;
+  if (!inside && !outside) return undefined;
+  const effectiveComponentSizes = componentSizes.length
+    ? componentSizes
+    : [resolveSupportedSize('md:1', componentSizes)];
+  const collect = (
+    scales: unknown,
+    rootScales: unknown,
+    layoutSizes?: Record<RadiusMode, string[]>
+  ) => {
+    const sizesByRadius: Record<RadiusMode, string[]> = { rounded: [], pill: [], square: [] };
+    for (const size of elementSizeValues) {
+      if (
+        !effectiveComponentSizes.includes(size.slice(2)) ||
+        !isRecord(scales) ||
+        !isRecord(rootScales)
+      )
+        continue;
+      if (
+        !hasSize(rootScales.borderWidth, size) ||
+        !['boxWidth', 'boxHeight', 'marginTop', 'marginBottom', 'marginLeft', 'marginRight'].every(
+          (property) => hasSize(scales[property], size)
+        )
+      )
+        continue;
+      if (!isRecord(scales.borderRadius)) continue;
+      for (const radius of ['rounded', 'pill', 'square'] as const) {
+        if (layoutSizes && !layoutSizes[radius].includes(size.slice(2))) continue;
+        if (hasSize(scales.borderRadius[radius], size)) sizesByRadius[radius].push(size.slice(2));
+      }
+    }
+    return sizesByRadius;
+  };
+  const stacked = buildButtonLayoutSupport(branch, componentSizes)?.stacked;
+  return {
+    sizesByRadius: collect(inside?.scales, branch.elements.e1?.scales),
+    ...(inside && stacked?.sizesByRadius
+      ? {
+          stackedSizesByRadius: collect(
+            inside.scales,
+            branch.elements.e8?.scales,
+            stacked.sizesByRadius
+          )
+        }
+      : {}),
+    ...(outside
+      ? { outsideSizesByRadius: collect(outside.scales, branch.elements.e1?.scales) }
+      : {}),
+    ...(outside && stacked?.sizesByRadius
+      ? {
+          stackedOutsideSizesByRadius: collect(
+            outside.scales,
+            branch.elements.e8?.scales,
+            stacked.sizesByRadius
+          )
+        }
+      : {})
+  };
 }
 
 /** Publishes complete stacked recipes, not the presence of any utility in an element bucket. */
@@ -58,15 +143,6 @@ export function buildButtonLayoutSupport(
   const { e8, e9, e10 } = branch.elements;
   if (!isRecord(e8) || !isRecord(e9) || !isRecord(e10)) return undefined;
 
-  const hasBaseline = (value: unknown): boolean => {
-    if (typeof value === 'number') return Number.isFinite(value);
-    if (typeof value === 'string') return value.length > 0;
-    return isRecord(value) && hasBaseline(value['bp:all']);
-  };
-  const hasSize = (value: unknown, size: string): boolean => {
-    if (!isRecord(value)) return hasBaseline(value);
-    return hasBaseline(Object.hasOwn(value, size) ? value[size] : value['s:all']);
-  };
   const rootScales = e8.scales;
   const labelScales = e9.scales;
   const sizesByRadius: Record<RadiusMode, string[]> = { rounded: [], pill: [], square: [] };
@@ -224,9 +300,13 @@ export async function publishComponentResources(buildDir: string, schema: Schema
     }
     const inspection: ComponentInspectionArtifact | undefined =
       Object.keys(inspectionElements).length === 0 ? undefined : { elements: inspectionElements };
-    const sizeSupport = buildSizeSupport(component);
+    const sizeSupport = buildSizeSupport(component, name === 'button' ? ['e11', 'e12'] : []);
     const layouts =
       name === 'button' ? buildButtonLayoutSupport(component, sizeSupport.sizes ?? []) : undefined;
+    const indicator =
+      name === 'button'
+        ? buildButtonIndicatorSupport(component, sizeSupport.sizes ?? [])
+        : undefined;
     const payload = {
       ...global.components?.[name],
       ...existing,
@@ -239,6 +319,7 @@ export async function publishComponentResources(buildDir: string, schema: Schema
       component: name,
       sizeSupport,
       ...(layouts ? { layouts } : {}),
+      ...(indicator ? { indicator } : {}),
       capabilities,
       ...(inspection ? { inspection } : {}),
       resources: { ...resource, palettes: {} as Record<string, string> },
@@ -249,6 +330,7 @@ export async function publishComponentResources(buildDir: string, schema: Schema
     };
     if (!inspection) delete payload.inspection;
     if (!layouts) delete payload.layouts;
+    if (!indicator) delete payload.indicator;
     const contentSurfaceContext = payload.contentSurfaceContext;
     delete payload.contentSurfaceContext;
     const canonicalSurfaces = payload.options?.canonicalSurfaces;

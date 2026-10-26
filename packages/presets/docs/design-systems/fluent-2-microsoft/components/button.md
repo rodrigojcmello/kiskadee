@@ -56,12 +56,20 @@ Other emphases, geometry, focus rings and border widths remain unchanged.
   - [Color tokens](https://fluent2.microsoft.design/color-tokens/)
   - [Fluent React Button styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts)
   - [Fluent React SplitButton styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/SplitButton/useSplitButtonStyles.styles.ts)
+  - [Fluent React Tab indicator styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-tabs/library/src/components/Tab/useTabStyles.styles.ts)
+  - [Fluent React ToggleButton styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/ToggleButton/useToggleButtonStyles.styles.ts)
+  - [Fluent stroke widths](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/strokeWidths.ts),
+    [spacing](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/spacings.ts), and
+    [radii](https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/borderRadius.ts)
   - [WinUI Button theme resources](https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Button_themeresources.xaml)
   - [WinUI common theme resources](https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Common_themeresources_any.xaml)
 - Product observation:
   - Microsoft Teams meeting actions observed on 2026-10-23 place visible labels below their
     icons. The user-provided screenshot motivates the stacked composition; its pixel measurements,
     exact emphasis, and icon sizes were not used as official Fluent recipe evidence.
+  - Microsoft Teams observed on 2026-10-24 uses a short external line below the active More
+    action. This motivates the optional Button state indicator, without defining its exact
+    dimensions, interaction-state semantics, or an official Fluent Button appearance.
   - a Microsoft sign-in flow observed on 2026-07-31 kept its Primary Button recognizable while
     making the accepted action translucent during asynchronous processing;
   - this observation motivates Kiskadee's pending representation, but is not treated as evidence
@@ -91,11 +99,13 @@ Other emphases, geometry, focus rings and border widths remain unchanged.
 | Third-party brand Buttons | Brand-owner evidence and standalone Kiskadee tonal assets | Apple, Google, Microsoft, Facebook, Instagram, TikTok | Kiskadee extension |
 | Passive Badge relation | No equivalent Fluent Button slot was used as source evidence | Inline label relation and external logical-corner overlays | Kiskadee extension |
 | Stacked icon and label | Microsoft Teams meeting toolbar screenshot, 2026-10-23 | Icon-above-label product presentation; no numeric recipe extracted | Kiskadee extension; motivational evidence only |
+| Optional Button state indicator | Microsoft Teams screenshot, 2026-10-24; official Tab and ToggleButton implementation | External active-action line and related Fluent token grammar; no equivalent Button recipe | Kiskadee extension; motivational evidence only |
 
 ## Local Evidence
 
 - [`windows-11-quick-settings-on-vivid-2026-08-29.png`](../evidence/button/windows-11-quick-settings-on-vivid-2026-08-29.png)
 - [`teams-stacked-actions-2026-10-23.png`](../evidence/button/teams-stacked-actions-2026-10-23.png)
+- [`teams-button-indicator-2026-10-24.png`](../evidence/button/teams-button-indicator-2026-10-24.png)
 
 ![Windows 11 Quick Settings controls over a vivid blue surface](../evidence/button/windows-11-quick-settings-on-vivid-2026-08-29.png)
 
@@ -198,7 +208,7 @@ another button or create a separate navigation component. The preset default rem
 
 | Button size | Icon catalog reference | Icon viewport | Label profile | Block inset per side | Inline inset per side | Icon-label gap | Nominal height |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Small | `s:md:1` | 20 px | `caption-medium` (12/16 px) | 4 px | 8 px | 4 px | 48 px |
+| Small | `s:md:1` | 20 px | `caption-small` (10/14 px) | 4 px | 8 px | 4 px | 46 px |
 | Medium | `s:lg:1` | 24 px | `caption-small` (10/14 px) | 6 px | 12 px | 4 px | 54 px |
 | Large | `s:lg:2` | 28 px | `body-medium` (14/20 px) | 8 px | 16 px | 4 px | 68 px |
 | Large 2 | `s:lg:3` | 32 px | `body-medium` (14/20 px) | 12 px | 20 px | 4 px | 80 px |
@@ -213,7 +223,7 @@ Schema mapping:
 
 - `e8` owns the complete stacked root geometry: padding, the locally shared one-pixel border map,
   and corner recipes. Rounded (4 px) and Square (0 px) share their local authoring with `e1`;
-  Pill uses half the stacked nominal height (24/27/34/40 px).
+  Pill uses half the stacked nominal height (23/27/34/40 px).
 - `e9` owns the stacked typography and its 4 px `marginTop` relation to the icon. Label palettes
   and effects still come from `e2`.
 - `e10` selects the icon-size catalog entries above. Icon palettes and effects still come from
@@ -224,12 +234,17 @@ CSS, constrain the Button, or derive the actual dimensions. It is attached to `e
 element already owns real stacked root geometry; no element exists solely to store a reference.
 The ordinary `e1` height references and horizontal recipes remain unchanged.
 
-The approved Medium refinement reduces only its stacked label by one existing typography step,
+The earlier approved Medium refinement reduces its stacked label by one existing typography step,
 from `caption-medium` (12/16 px) to `caption-small` (10/14 px). Its 24 px icon, 6 px block insets,
 12 px inline insets, and 4 px gap remain unchanged. The natural border-box height consequently
 changes from 56 px to 54 px; the inspection reference and Pill radius follow that resulting
-geometry rather than constraining it. Small, Large, Large 2, and all horizontal typography remain
-unchanged.
+geometry rather than constraining it.
+
+On 2026-10-25, the user approved matching the Small stacked label to Medium's `caption-small`
+(10/14 px). Its 20 px icon, 4 px block insets, 8 px inline insets, and 4 px gap remain unchanged.
+The resulting natural height changes from 48 px to 46 px, and its inspection reference and Pill
+radius follow that result (46 px and 23 px). No fixed height is emitted. Medium, Large, Large 2,
+and all horizontal recipes retain their existing typography and geometry.
 
 The label remains a single line without automatic truncation, and the Button width follows the
 content. A square shape is not guaranteed. The recipe is shared across both segments, all three
@@ -241,6 +256,114 @@ Preset regression checks cover the catalog/profile/inset height formula, shared 
 corner recipes, Pill references, absence of duplicate palettes, and unchanged horizontal nominal
 heights. Generated-artifact and rendered behavior checks belong to the consuming pipeline and
 Showcase validation.
+
+## Kiskadee Extension: Optional State Indicator
+
+Status: **Kiskadee extension**, approved on 2026-10-24. The Teams
+[active More action](../evidence/button/teams-button-indicator-2026-10-24.png) motivates a short
+horizontal line. The official Fluent Tab implementation has a separate active indicator, while
+ToggleButton communicates its checked state through its fill, border, and foreground. Neither
+source defines this Button recipe. The screenshot is preserved without extracting numeric values
+or treating an expanded menu as proof of a particular Kiskadee control state.
+
+`e11 (button-indicator)` is the complete inside recipe; `e12 (button-indicator-outside)` is the
+complete outside recipe. These optional Schema elements supply alternative recipes for one
+decorative runtime span, not two rendered indicators. Its painted line occupies the bottom
+inside or outside the Button, centered on the inline axis, in both horizontal and stacked layouts.
+`options.indicatorPlacement: inside` and `options.indicatorScope: stacked` are this preset's
+defaults. Horizontal Buttons opt in with the public `indicator` prop; false suppresses either
+composition. An opt-in still requires authored anatomy and a selected, available control.
+Positioning is an overlay: the
+line does not participate in content layout, reference height, or border compensation. It also
+does not alter the independent focus ring. The outside placement requires consumer-owned space
+where an ancestor would otherwise clip the projected line.
+
+| Scale or property | Small | Medium | Large | Large 2 | Existing Fluent token grammar |
+| --- | --- | --- | --- | --- | --- |
+| `boxWidth` | 24 px | 30 px | 36 px | 36 px | Fixed Kiskadee values, manually selected as 1.5 times the ordinary icon viewport |
+| `boxHeight` | 2 px | 2 px | 2 px | 2 px | `strokeWidthThick` |
+| `marginBottom`, inside gap | 2 px | 2 px | 2 px | 2 px | `spacingVerticalXXS` |
+| `marginTop`, outside gap | 2 px | 2 px | 2 px | 2 px | `spacingVerticalXXS` |
+| `marginLeft` / `marginRight`, each | 2 px | 2 px | 2 px | 2 px | `spacingHorizontalXXS` |
+| Rounded/Pill radius | 2 px | 2 px | 2 px | 2 px | `borderRadiusSmall` |
+| Square radius | 0 px | 0 px | 0 px | 0 px | `borderRadiusNone` |
+
+These are approved Kiskadee choices from the existing Fluent dimension vocabulary, not an
+official Button size table. The same geometry applies across both segments, all themes,
+contexts, intentions, emphases, and icon layouts. There is no new `_boxHeight` reference.
+
+On 2026-10-25 the first manual width-calibration experiment used the ordinary plain icon-only
+Buttons measured 32, 44, 56 and 64 CSS px at Small, Medium, Large and Large 2 respectively,
+including their compensated padding and borders. Its 28, 40, 52 and 60 px lines left two pixels
+at each side of those boxes, but the user found them too long. The next experiment manually
+selects the fixed widths above as 1.5 times the ordinary `e3` icon viewports: 16, 20, 24 and
+24 px. Large and Large 2 share a 36 px line because they use the same ordinary artwork size.
+The reference remains the ordinary Button, including when the indicator is used on Stacked;
+it does not use the larger `e10` viewport or introduce a separate width axis by layout.
+These are literal values in the schema, with no derivation helper, build calculation, DOM probe
+or runtime measurement. A wider text Button keeps the same nominal line; a narrow label such as
+I lets CSS limit the line to the actual available box with the authored safety insets. Horizontal
+margins and the two vertical gaps remain independent attributes even though all currently use
+two pixels. The multiplier is authoring rationale only; no multiplication is performed by the
+schema factory, Builder or runtime, and no alternate width mode is introduced.
+
+### Signal And Surface Provenance
+
+The signal follows semantic Primary in both default and Teams. It never changes to red or green
+because of Button intent. An opaque inverse foreground replaces the brand signal where the
+Button or ambient surface requires it. Neutral High in Dark/Darker is the only intent-specific
+branch: its selected Button surface is physically light, unlike the other High surfaces.
+
+One authoring helper creates the ordinary `e11.palettes` and `e12.palettes` matrices, and one shared
+local scale object supplies both complete geometries. Each palette uses the existing
+segment/theme/consumed-context/intent/emphasis hierarchy. Both recipes consume the Button's
+ambient context: the inside recipe additionally accounts for its actual host polarity, while
+the outside recipe accounts for the surrounding surface. No `placements` branch, extra palette
+axis, Provider change, or modification to the Button's descendant `contentSurfaceContext` remains.
+
+The two ordinary recipes share one rendered indicator. A single palette using produced context
+inside and ambient context outside cannot preserve contrast in the current surface matrix. For example,
+Neutral High in Darker would select the same `onVivid` cell over the inside selected surface
+`#a3a3a3` (relative luminance 0.366253) and outside ambient `#133d68` (0.044754). A 3:1 line requires
+luminance at most 0.088751 inside but at least 0.234262 outside; those ranges do not intersect.
+Changing that output to `onSubtle` also collides with the dark neutral ambient surface. The two
+standard recipes express these distinct paint targets without altering any descendant context.
+
+| Position and consumed context | Button emphasis or condition | Atomic coordinate | Existing locator provenance |
+| --- | --- | --- | --- |
+| Outside, `onSubtle` | All | `blue.standard.<theme>.onSubtle.high.rest` | Semantic Primary `reference(vivid)` in Light; `reference(vivid +8)` in Dark/Darker |
+| Outside, `onVivid` | All | `neutral.standard.<theme>.onVivid.high.rest` | Physical `primitive.black.v1` light cap, opaque |
+| Inside, `onSubtle` | High, except Neutral Dark/Darker | `neutral.standard.light.onVivid.high.rest` | Physical light cap, opaque |
+| Inside, `onSubtle` | Neutral High in Dark/Darker | `blue.deep.light.onSubtle.high.rest` | Existing semantic Primary exact L65, `global.foreground.deep` |
+| Inside, `onSubtle` | Medium, Low, Lowest | `blue.standard.<theme>.onSubtle.high.rest` | Semantic Primary `reference(vivid)` in Light; `reference(vivid +8)` in Dark/Darker |
+| Inside, `onVivid` | High | `blue.standard.light.onSubtle.high.rest` | Semantic Primary `reference(vivid)` on the physical Light track |
+| Inside, `onVivid` | Medium, Low, Lowest | `blue.deep.light.onVivid.high.rest` | Semantic Primary `reference(subtle +2)` on the physical Light track |
+
+The `blue` profile already follows the segment's semantic Primary: the default Blue asset or
+the Teams Purple asset. All neutral inverse coordinates use the current shared achromatic asset.
+The approved foreground [source chain](text.md) and preset-wide
+[tonal evidence](../colors/fluent-tonal-scale-evidence.md) remain authoritative. No primitive
+asset, functional reference, exact decision, or runtime color calculation is introduced here.
+
+The initial Standard Light Primary proposal for inside Neutral High Dark/Darker gave only
+2.91/2.39 contrast in default and 2.59/2.13 in Teams against their selected surfaces. The existing
+Deep Light coordinate replaces it to preserve the same family with adequate contrast; no
+surface recipe is changed to accommodate the line.
+
+### State And Validation Boundary
+
+Each palette entry authors only `selected.rest`, using `fg.parentState()` with the listed Rest
+coordinate. Selected belongs to the Button ancestor, not to the passive indicator. Missing
+Hover, Focus, or Pressed deltas preserve the selected paint. Disabled and Pending suppress the
+indicator structurally without removing the Button's selected control state; no terminal-state
+color or independent indicator behavior is authored.
+
+Preset regression checks cover the complete matrix for both placements, both segments, three
+themes, two contexts, four intents, and four emphases; sparse ancestor-state references; the
+single brand signal; unchanged horizontal height references; and at least 3:1 contrast against
+the selected Button surface inside or the canonical Container surface outside. Those canonical
+samples are not a claim of contrast over every arbitrary consumer background. Browser checks
+remain responsible for overlay positioning, clipping, focus coexistence, and rendered geometry.
 
 ## Badge Relation
 

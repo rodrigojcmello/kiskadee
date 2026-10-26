@@ -3,6 +3,7 @@ import {
   type ButtonIconPlacement,
   type ButtonIconSurfaceCorners,
   type ButtonIconTreatment,
+  type ButtonIndicatorPlacement,
   type ButtonIntent,
   type ClassNameByElementJSON,
   type ComponentEmphasis,
@@ -39,6 +40,7 @@ export const DEFAULT_BUTTON_ICON_LAYOUT: ButtonIconLayout = 'inline';
 export const DEFAULT_BUTTON_ICON_PLACEMENT: ButtonIconPlacement = 'leading';
 export const DEFAULT_BUTTON_ICON_TREATMENT: ButtonIconTreatment = 'plain';
 export const DEFAULT_BUTTON_ICON_SURFACE_CORNERS: ButtonIconSurfaceCorners = 'edge';
+export const DEFAULT_BUTTON_INDICATOR_PLACEMENT: ButtonIndicatorPlacement = 'inside';
 export const DEFAULT_BUTTON_PRESSED_DURATION_MS = 60;
 
 export type ButtonClassNamePatch = Partial<Record<ButtonElementName, string>>;
@@ -50,6 +52,45 @@ export type ButtonResolvedClassNames = NonNullable<HeadlessButtonProps['classNam
 
 export const join = joinClassNames;
 export const normalizeButtonScaleKey = normalizeScaleKey;
+
+/** Resolves only a complete authored indicator at the effective geometry and palette coordinate. */
+export function resolveButtonIndicatorClassName({
+  element,
+  sizesByRadius,
+  scale,
+  radius,
+  placement,
+  intent,
+  emphasis,
+  surfaceContext
+}: {
+  element: ClassNameByElementJSON | undefined;
+  sizesByRadius: Readonly<Partial<Record<RadiusMode, readonly string[]>>> | undefined;
+  scale: string;
+  radius: RadiusMode;
+  placement: ButtonIndicatorPlacement;
+  intent: ButtonIntent;
+  emphasis: ComponentEmphasis;
+  surfaceContext: SurfaceContext;
+}): string | undefined {
+  const scaleKey = normalizeButtonScaleKey(scale);
+  if (!sizesByRadius?.[radius]?.includes(scaleKey)) return undefined;
+  if (!element?.s?.all && !element?.s?.[scaleKey]) return undefined;
+  const radiusClassName = resolveRadiusClassName(element, scaleKey, radius);
+  const paintClassName = resolveIntentClassName(element, intent, emphasis, {
+    surfaceContext
+  });
+  if (!radiusClassName || !paintClassName) return undefined;
+  return join(
+    element.d,
+    element.s?.all,
+    element.s?.[scaleKey],
+    radiusClassName,
+    paintClassName,
+    'k-btn-e11',
+    placement === 'outside' ? 'k-btn-e11a' : undefined
+  );
+}
 
 /** Checks all stacked roles and the requested radius at the effective size. */
 export function supportsButtonStackedLayout(

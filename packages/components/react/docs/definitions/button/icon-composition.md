@@ -39,7 +39,9 @@ slots and a complete stacked recipe for the effective size and radius. Logical `
 in this layout. Labels keep the existing no-wrap behavior; intrinsic width and height remain
 content-driven, without a square constraint or a fixed control height.
 
-The optional stacked anatomy supplies alternate recipes on the same native elements:
+The optional stacked anatomy uses
+[alternate element recipes for one rendered part](../../../../../../docs/definitions/composition-strategies.md#alternate-element-recipes-for-one-rendered-part),
+with explicit replacement by property domain on the same native elements:
 
 - `e8` replaces the root's complete scales and radius buckets, retaining `e1` decorations,
   palettes and effects. It owns padding, border width, radius and optional `_boxHeight` inspection
@@ -49,8 +51,8 @@ The optional stacked anatomy supplies alternate recipes on the same native eleme
 - `e10` replaces the icon's dimensions through the existing `iconSize` catalog, retaining `e3`
   palettes and effects. The existing artwork normalization still applies.
 
-These are complete recipe substitutions, not additive classes: retaining horizontal root scales
-or label typography would create conflicts depending on CSS emission order. Horizontal icon gap
+These are complete substitutions within the listed domains, not additive classes: retaining horizontal
+root scales or label typography would create conflicts depending on CSS emission order. Horizontal icon gap
 classes and the label-height fitting projection are omitted in stacked layout.
 
 Missing content or an unavailable effective-size recipe preserves the ordinary inline layout and

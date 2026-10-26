@@ -26,6 +26,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     status: statusProp = 'rest',
     toggle,
     controlState,
+    indicator,
+    indicatorPlacement,
     pending,
     interactionLocked,
     size,
@@ -66,9 +68,13 @@ export function useButtonCommonProps(props: ButtonProps) {
     globalEffects,
     stackedSizes,
     stackedSizesByRadius,
+    indicatorSizesByRadius,
+    stackedIndicatorSizesByRadius,
+    outsideIndicatorSizesByRadius,
+    stackedOutsideIndicatorSizesByRadius,
     options
   } = useButtonArtifactConfig();
-  const { e1, e2, e3, e4, e5, e6, e7, e8, e9, e10 } = buttonClassesMap ?? {};
+  const { e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12 } = buttonClassesMap ?? {};
   const status: ButtonStatus | 'rest' = statusProp;
   const iconLayout = iconLayoutProp ?? options.iconLayout;
   const iconPlacement = iconPlacementProp ?? options.iconPlacement;
@@ -92,6 +98,8 @@ export function useButtonCommonProps(props: ButtonProps) {
     status,
     toggle,
     controlState,
+    indicator,
+    indicatorPlacement,
     pending,
     interactionLocked,
     scale,
@@ -130,12 +138,18 @@ export function useButtonCommonProps(props: ButtonProps) {
     e8,
     e9,
     e10,
+    e11,
+    e12,
     buttonClassesMapPending,
     componentEffects,
     contentSurfaceContext,
     globalEffects,
     stackedSizes,
     stackedSizesByRadius,
+    indicatorSizesByRadius,
+    stackedIndicatorSizesByRadius,
+    outsideIndicatorSizesByRadius,
+    stackedOutsideIndicatorSizesByRadius,
     options
   };
 }

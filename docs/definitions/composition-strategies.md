@@ -19,6 +19,12 @@ Use the following precedence:
 If this guide conflicts with a normative domain definition, resolve the conflict in the owning
 definition before treating either interpretation as canonical.
 
+Use the [categorized catalog](#strategy-catalog) to find an existing approach, then follow its
+decision criteria and owning definition. For alternative Schema recipes applied to the same
+rendered part, see [alternate element recipes](#alternate-element-recipes-for-one-rendered-part).
+The [stable examples](#stable-examples) connect the strategies to implemented contracts; they are
+precedents to evaluate, not templates that override a new component's semantics.
+
 ## Strategies compose
 
 Composition strategies are not mutually exclusive. One concern may require a public component, a
@@ -43,32 +49,63 @@ Evaluate a proposal in this order:
 3. Separate behavior and accessibility from visual presentation.
 4. Decide whether a presentation difference is a variant, mode, or component option.
 5. Classify concrete visual values through the DSPE taxonomy.
-6. Check whether repeated visual data is a serializable profile or catalog rather than duplicated
+6. If the same part needs mutually exclusive recipes, evaluate
+   [alternate element recipes](#alternate-element-recipes-for-one-rendered-part) before adding a
+   component, wrapper, or new Schema axis.
+7. Check whether repeated visual data is a serializable profile or catalog rather than duplicated
    component authorship.
-7. Check whether an optional visual treatment is an Effect.
-8. Use a Provider only for contextual runtime selection that cannot belong to serialized Schema.
-9. Assign platform composition and rendering mechanics to the owning platform project.
-10. Evaluate SEP, SUP, or CSC only when the Web artifact relationship requires one of them.
-11. Keep inspection controls and scenarios in Showcase when no framework contract is required.
-12. Recheck authority, handoffs, consumers, and validation before implementation.
+8. Check whether an optional visual treatment is an Effect.
+9. Use a Provider only for contextual runtime selection that cannot belong to serialized Schema.
+10. Assign platform composition and rendering mechanics to the owning platform project.
+11. Evaluate SEP, SUP, or CSC only when the Web artifact relationship requires one of them.
+12. Keep inspection controls and scenarios in Showcase when no framework contract is required.
+13. Recheck authority, handoffs, consumers, and validation before implementation.
 
 ## Strategy catalog
+
+The categories organize different decisions within one composition. Selecting an approach in one
+category does not replace the decisions in the others. Reuse a documented approach when its
+eligibility matches; record a new precedent in this guide when it teaches a durable distinction,
+and keep the complete component or domain contract in its owning definition.
+
+### Component identity and anatomy
 
 | Strategy | Use when | Do not use when |
 | --- | --- | --- |
 | Existing component composition | Public components already express the intended semantic entities and only need consumer-owned assembly. | The framework must guarantee new shared semantics, behavior, or anatomy. |
 | New public component | The entity has independent meaning, public use, anatomy, or a stable accessibility contract. | The concern is only a style recipe, optional treatment, or internal part of one parent. |
 | Compound slot and Schema element | A part exists only inside its parent and the parent owns its lifecycle and composition. | The part must also be instantiated and understood independently. |
+
+### Presentation and visual authorship
+
+| Strategy | Use when | Do not use when |
+| --- | --- | --- |
 | Variant or mode | One public component identity has a named presentation family or a meaningful presentation branch. | The difference is only one behavioral switch or one visual value. |
 | Component option | The contract must choose which behavior, structure, or canonical mode is active. | The property answers what visual value the active mode uses. |
 | DSPE on an element | A component element owns concrete decorations, scales, palettes, or effects. | The value is runtime behavior, platform mechanics, or a resource import. |
+| [Alternate element recipes for one rendered part](#alternate-element-recipes-for-one-rendered-part) | One part keeps its identity but needs explicitly selected element recipes or domain substitutions. This combines component options and ordinary DSPE elements. | Existing size, palette or state axes, or platform positioning alone, already express the difference correctly; or the parts have independent semantics. |
 | Global profile or catalog | Consumers reference the same serializable visual recipe or limited shared catalog without sharing DOM or behavior. A complete source-backed recipe may begin with one consumer when its name and contract remain component-agnostic. | Reuse is merely speculative, the recipe is component-named or incomplete, or the concern requires a public entity. |
 | Effect | A visual treatment is optional and additive without replacing semantic color or base geometry. | The content communicates independent information or is mandatory anatomy. |
+
+### Behavior and runtime context
+
+| Strategy | Use when | Do not use when |
+| --- | --- | --- |
 | Headless primitive or hook | The concern owns semantics, native behavior, focus, keyboard flow, state, or accessible event composition. | It is purely visual or platform-specific layout. |
 | Provider | A subtree needs contextual runtime selection of a non-serializable resource or integration. | Static design-system values can be authored in Schema or passed directly by the consumer. |
+
+### Platform mechanics and artifact handoff
+
+| Strategy | Use when | Do not use when |
+| --- | --- | --- |
 | Structural CSS or native platform mechanics | The concern is DOM/native composition, layout, flow, stacking, clipping, or rendering mechanics. | It would invent design tokens, semantic colors, or preset policy. |
 | [Shared structural primitive](../../STRUCTURAL-CSS.md#shared-structural-primitive-namespace) | Repeated platform mechanics need one internal implementation but do not form a public component, Schema element, or Effect. | Component-scoped structure can express the ownership clearly. |
 | SEP, SUP, or CSC | A Web concern needs a defined emission shape, utility projection, or complementary spacing composition. | Ordinary generated class consumption already attaches the authored value to its owner. |
+
+### Consumer demonstrations
+
+| Strategy | Use when | Do not use when |
+| --- | --- | --- |
 | Showcase-only composition | The concern exists only to inspect, control, or demonstrate public framework behavior. | Applications need the behavior or presentation as a supported framework contract. |
 
 ## Distinguishing related strategies
@@ -90,6 +127,56 @@ elements.
 
 Do not introduce a variant or mode solely because one scale value changes. Do not put numeric or
 visual values directly in options.
+
+### Alternate element recipes for one rendered part
+
+A Schema element identifies authored visual responsibilities and their artifact identity. It
+does not require a separate rendered node for every `e<n>` key. A component may explicitly map
+alternative element recipes to the same logical part while keeping that part's semantics, state,
+focus ownership and lifecycle contract. This is a composition of existing component options and
+DSPE elements, not a new Schema property, global palette axis, public component or Web mechanism.
+
+Use this approach when the part remains the same but a local presentation needs distinct recipes
+that the ordinary axes cannot represent correctly, or needs to replace declared visual domains
+without changing the semantic structure. A position difference by itself does not justify another
+element: first check whether platform positioning and the existing palette contexts are sufficient.
+
+The component contract must declare:
+
+- the shared rendered part and the purpose of each participating Schema element;
+- the option or presentation condition that selects a recipe;
+- which visual domains are replaced and which explicitly remain from the base recipe;
+- the required recipe coverage and behavior when it is unavailable; and
+- the semantics, state and geometry invariants that the composition must preserve.
+
+There are two established forms:
+
+| Form | Canonical example | Authored responsibilities and rendered result |
+| --- | --- | --- |
+| Whole-recipe selection | [Button indicator](../../packages/core/docs/definitions/button-indicator.md) | `e11` authors inside geometry and paint; `e12` authors outside geometry and paint. The placement option selects one complete recipe for one decorative indicator. |
+| Explicit domain substitution | [Button Stacked](../../packages/components/react/docs/definitions/button/icon-composition.md) | On the same native parts, `e8` replaces root scales and radii, `e9` replaces label typography/decorations and scales, and `e10` replaces icon dimensions. The declared base decorations, palettes and effects remain where the local contract specifies. |
+
+Both forms use ordinary element artifacts. On the Web, select the active classes for each declared
+responsibility; do not attach conflicting base and alternative classes and let CSS emission order
+choose the winner. Preset helpers may share authored values, but this does not introduce implicit
+inheritance between Schema elements or permit runtime reconstruction of missing recipes.
+
+Availability and fallback remain component-specific. An unavailable Button indicator recipe omits
+that indicator; an unavailable Stacked recipe follows the documented horizontal fallback. Neither
+example authorizes silently borrowing another recipe's values. The indicator preserves one span
+across supported placement changes; platform details and node-lifecycle guarantees stay in the
+component's contract.
+
+Do not use alternate recipes for parts that must coexist with independent behavior, focus or
+meaning; model those as real anatomy or independent components. Do not duplicate recipes merely
+to bypass a valid size, intent, emphasis, state or Surface Context axis, create a global profile
+for a component-local exception, or reinterpret those axes as presentation selectors.
+
+Core owns the allowed Schema elements and their visual responsibilities; Presets author their
+values; Builders publish normal artifacts and required coverage; platform components own the
+rendered-node mapping and application of selected recipes within the component contract.
+Selection alone does not require SEP, SUP or CSC. Those patterns remain independently applicable
+when their own emission, structural-owner or additive-spacing conditions exist.
 
 ### Profile and Effect
 
@@ -130,6 +217,7 @@ Answer these questions before proposing a contract:
 4. Does it make sense only as anatomy of one parent component?
 5. Is the difference still the same component identity with another presentation?
 6. Does the decision choose an active behavior, or define the visual value used by that behavior?
+   If one part needs alternate recipes, which authored domains must actually be substituted?
 7. Is the value a reusable, serializable recipe without DOM or behavior?
 8. Is the treatment optional and additive?
 9. Must a non-serializable runtime choice apply consistently to a subtree?
@@ -217,6 +305,11 @@ A durable architecture decision should record:
 - Surface Context uses a Provider because independent descendants need a subtree-scoped semantic
   runtime input. Presets still author the serialized produced-surface map; the Provider does not
   replace Schema data.
+- Button's indicator and Stacked compositions are the two forms of
+  [alternate element recipes for one rendered part](#alternate-element-recipes-for-one-rendered-part).
+  The indicator selects a complete inside/outside recipe; Stacked substitutes explicitly declared
+  domains while retaining the base parts' identity. Their local contracts document the different
+  coverage, fallback and geometry requirements.
 - TextField owns logical content regions and passive `TextFieldIcon` / `TextFieldText` anatomy.
   The lateral regions select Lowest or Medium treatment; helpers keep their geometry without
   individual frames. `TextFieldAction` provides the isolated internal-action relation, while
@@ -228,6 +321,7 @@ A durable architecture decision should record:
 
 ## Related definitions
 
+- [State indicators](./state-indicators.md)
 - [Project governance and responsibility](./project-governance.md)
 - [Kiskadee Nomenclature](./nomenclature.md)
 - [Schema-to-Web composition patterns](./schema-to-web-composition-patterns.md)

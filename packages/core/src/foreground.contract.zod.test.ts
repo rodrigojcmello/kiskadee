@@ -60,6 +60,53 @@ const foregrounds = () => ({
 });
 
 describe('foreground profile contract', () => {
+  it.each([
+    'e11',
+    'e12'
+  ])('allows foreground-owned box paint only in the Button %s indicator palette', (element) => {
+    const palettes = {
+      default: {
+        light: {
+          onSubtle: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  selected: { rest: fg.parentState('neutral.standard.light.onSubtle.high') }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    expect(
+      getSchemaForegroundsContractIssues({
+        global: { foregrounds: foregrounds() },
+        components: {
+          button: {
+            elements: {
+              [element]: {
+                name: 'button-indicator',
+                palettes
+              }
+            }
+          }
+        }
+      } as any)
+    ).toEqual([]);
+    expect(
+      getSchemaForegroundsContractIssues({
+        global: { foregrounds: foregrounds() },
+        components: {
+          button: { elements: { e1: { name: 'button', palettes } } }
+        }
+      } as any)
+    ).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('fg references are accepted only in textColor')
+      ])
+    );
+  });
   it('accepts four strengths, optional foreground states, and optional onVivid', () => {
     const value = foregrounds();
     value.profiles.neutral.standard.palettes.default.light.onSubtle.medium = {

@@ -52,6 +52,7 @@ import { ButtonBadgeExamples } from './components/ButtonBadgeExamples';
 import { ButtonGroupExamples } from './components/ButtonGroupExamples';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonIconFormatExamples } from './components/ButtonIconFormatExamples';
+import { ButtonIndicatorExamples } from './components/ButtonIndicatorExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
 import { ButtonSizeScaleExample } from './components/ButtonSizeScaleExample';
 import { ButtonStackedExamples } from './components/ButtonStackedExamples';
@@ -253,6 +254,7 @@ export function Button() {
   const [isSimplified, setIsSimplified] = React.useState(true);
   const [showButtonGroups, setShowButtonGroups] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(false);
+  const [showIndicator, setShowIndicator] = React.useState(false);
   const [radiusOverride, setRadiusOverride] = React.useState<RadiusMode>();
   const buttonRadius = radiusOverride ?? global?.radius ?? 'rounded';
   const stackedSizes = stackedSizesByRadius?.[buttonRadius];
@@ -493,7 +495,10 @@ export function Button() {
                         controlState={isSimplified}
                         onControlStateChange={(value) => {
                           setIsSimplified(value);
-                          if (value) setShowFocusRing(false);
+                          if (value) {
+                            setShowFocusRing(false);
+                            setShowIndicator(false);
+                          }
                         }}
                       />
                       <Separator orientation="vertical" emphasis="low" />
@@ -505,6 +510,16 @@ export function Button() {
                         emphasis={inlineControlsSwitchEmphasis}
                         controlState={showFocusRing}
                         onControlStateChange={setShowFocusRing}
+                      />
+                      <Separator orientation="vertical" emphasis="low" />
+                      <Switch
+                        id="button-indicator"
+                        classNames={{ e4: s.intentControlLabel }}
+                        disabled={isSimplified}
+                        label="Indicator"
+                        emphasis={inlineControlsSwitchEmphasis}
+                        controlState={showIndicator}
+                        onControlStateChange={setShowIndicator}
                       />
                     </div>
                   </ShowcaseExampleCard>
@@ -538,6 +553,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
+                showIndicator={showIndicator}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -555,6 +571,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
+                showIndicator={showIndicator}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -574,6 +591,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
+                showIndicator={showIndicator}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -593,6 +611,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
+                showIndicator={showIndicator}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -613,6 +632,7 @@ export function Button() {
                   stateCapabilities={buttonState}
                   simplified={isSimplified}
                   showFocusRing={showFocusRing}
+                  showIndicator={showIndicator}
                   grouped={showButtonGroups}
                   radius={buttonRadius}
                   scale={activeButtonScale}
@@ -768,64 +788,6 @@ export function Button() {
             </div>
             {/* [ACTIVATION FEEDBACK] END: Showcase examples for profile/origin overrides. */}
 
-            <div className={s['interaction-state']}>
-              <Text as="h3" profile={textProfiles.sectionTitle}>
-                Selected (Primary / Medium)
-              </Text>
-              <div className={`${s['example-states']} k-root`}>
-                {renderState(
-                  'primary',
-                  'medium',
-                  isSelected ? 'selected' : 'rest',
-                  <KButton
-                    emphasis="medium"
-                    intent="primary"
-                    radius={buttonRadius}
-                    size={componentScaleToSize(activeButtonScale)}
-                    surfaceContext={activeSurfaceContext}
-                    radiusEffect={true}
-                    controlState={isSelected}
-                    onClick={() => setIsSelected((prev) => !prev)}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        {isSelected ? 'Followed' : 'Follow'}
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-              </div>
-            </div>
-
-            <div className={s['interaction-state']}>
-              <Text as="h3" profile={textProfiles.sectionTitle}>
-                Selected (Primary / High)
-              </Text>
-              <div className={`${s['example-states']} k-root`}>
-                {renderState(
-                  'primary',
-                  'high',
-                  isSelectedVivid ? 'selected' : 'rest',
-                  <KButton
-                    emphasis="high"
-                    intent="primary"
-                    radius={buttonRadius}
-                    size={componentScaleToSize(activeButtonScale)}
-                    surfaceContext={activeSurfaceContext}
-                    radiusEffect={true}
-                    controlState={isSelectedVivid}
-                    onClick={() => setIsSelectedVivid((prev) => !prev)}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        {isSelectedVivid ? 'Followed' : 'Follow'}
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-              </div>
-            </div>
-
             <section className={s.shadowSection} aria-labelledby="button-shadow-title">
               <Text as="h3" id="button-shadow-title" profile={textProfiles.sectionTitle}>
                 Shadow
@@ -943,6 +905,71 @@ export function Button() {
             scale={activeButtonScale}
             surfaceContext={activeSurfaceContext}
           />
+          <section className={s.selectionExamples} aria-label="Selection examples">
+            <div className={s['interaction-state']}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Selected (Primary / Medium)
+              </Text>
+              <div className={`${s['example-states']} k-root`}>
+                {renderState(
+                  'primary',
+                  'medium',
+                  isSelected ? 'selected' : 'rest',
+                  <KButton
+                    emphasis="medium"
+                    intent="primary"
+                    radius={buttonRadius}
+                    size={componentScaleToSize(activeButtonScale)}
+                    surfaceContext={activeSurfaceContext}
+                    radiusEffect={true}
+                    controlState={isSelected}
+                    onClick={() => setIsSelected((prev) => !prev)}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        {isSelected ? 'Followed' : 'Follow'}
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+              </div>
+            </div>
+
+            <div className={s['interaction-state']}>
+              <Text as="h3" profile={textProfiles.sectionTitle}>
+                Selected (Primary / High)
+              </Text>
+              <div className={`${s['example-states']} k-root`}>
+                {renderState(
+                  'primary',
+                  'high',
+                  isSelectedVivid ? 'selected' : 'rest',
+                  <KButton
+                    emphasis="high"
+                    intent="primary"
+                    radius={buttonRadius}
+                    size={componentScaleToSize(activeButtonScale)}
+                    surfaceContext={activeSurfaceContext}
+                    radiusEffect={true}
+                    controlState={isSelectedVivid}
+                    onClick={() => setIsSelectedVivid((prev) => !prev)}
+                  >
+                    <KButton.Label>
+                      <SmoothText fontName={fontName} align={alignment}>
+                        {isSelectedVivid ? 'Followed' : 'Follow'}
+                      </SmoothText>
+                    </KButton.Label>
+                  </KButton>
+                )}
+              </div>
+            </div>
+
+            <ButtonIndicatorExamples
+              radius={buttonRadius}
+              scale={activeButtonScale}
+              surfaceContext={activeSurfaceContext}
+            />
+          </section>
         </section>
       </SurfaceContextProvider>
     </>

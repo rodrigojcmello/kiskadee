@@ -5,6 +5,12 @@ header and content layout as Intents. Titles and descriptions consume the contex
 that Card; descriptions use the active caption profile and Medium emphasis and follow the
 Descriptions preference.
 
+Intents groups Rest only, Focus ring and Indicator switches. Rest only disables and resets both
+visual reinforcement controls. Focus ring projects the Focus sample; Indicator explicitly opts
+the Selected sample into the public Button indicator, without changing its stored selection or
+the preset's default policy. The two reinforcements remain independent, including in grouped
+examples. Simplified Rest samples do not opt into selection paint.
+
 The Button route preserves comparison positions for unpublished sizes and optional interaction
 states. These positions use a route-local `ButtonUnavailableExample` rather than a substitute
 Button. Existing availability rules remain responsible for deciding when to show the indicator.
@@ -52,8 +58,8 @@ is published. The optional explanation follows the Descriptions preference.
 
 ## Stacked option-bar example
 
-A separate `Stacked` section immediately after Icons presents an option bar inspired by the
-supplied Microsoft Teams screenshot. Its English labels are Record, Chat, People, Raise, React,
+A separate `Stacked` section immediately after Icons presents an option bar for a videoconferencing
+application. Its English labels are Record, Chat, People, Raise, React,
 View, More, Camera, Mic, Share, and Leave. Their canonical icons are `record`, `chat`, `users`,
 `hand`, `smile`, `grid`, `ellipsis`, `video`, `mic`, `screen-share`, and `phone-hangup`, respectively.
 Each resolves through the selected family and variant. Actions use Neutral Low, except Leave, which uses
@@ -75,11 +81,37 @@ Focusing an option scrolls its complete box into the nearest visible position, i
 clearance for its focus ring; the browser's default focus scroll can otherwise reveal only part
 of a cell.
 Each option uses the public Button `toggle` and `controlState` APIs to expose its selection visually
-and through `aria-pressed`. Clicking an option toggles it. At most two stay selected; selecting a
+and through `aria-pressed`. Raise and Mic start selected, in that FIFO order. Clicking an option
+toggles it. At most two stay selected; selecting a
 third removes the oldest selection. Deselecting and selecting an option again makes it the newest
 selection. This route-local simulation applies to every option without implementing meeting
 functionality, and displays no last-action status. The existing Stacked comparison in Sizes remains
 independent.
+
+## Selection indicator examples
+
+The final Selection examples group appears after Async pending. It contains Selected (Primary /
+Medium), Selected (Primary / High), then Selection indicator, preserving each demonstration for
+later refinement. Selection indicator availability comes from the active Button
+artifact's complete indicator-size coverage for the selected radius, independently of preset ID.
+Presets without a recipe use the existing Not published presentation.
+
+Inside and Outside Cards demonstrate the same four intents at Low and High emphasis. Their Buttons
+start selected and toggle independently, explicitly opting in with `indicator`. A Preset default
+horizontal action follows the preset policy, while an I action opts in and demonstrates shrinking
+below the nominal fixed line width in a narrow host. The Cards also contain a stacked action when supported,
+a connected Group, and selected Disabled, Pending, and aria-disabled actions. Unavailable controls
+preserve their semantic selection but suppress the indicator. The existing Stacked option bar
+retains its two-selection FIFO simulation and receives the preset's default indicator placement.
+
+All indicator colors, dimensions, and radii come from the Button recipe. Showcase CSS owns only
+the comparison layout and clearance around the external paint. It does not measure or resize
+the Button to accommodate the indicator. Themes, segments, fonts, contexts, and radius controls
+remain ordinary public component inputs. Inside selects the ordinary `e11` recipe and Outside
+selects `e12`, with one indicator rendered in either case. The Showcase does not force a context
+from placement or author palette colors. Availability is checked independently for each recipe.
+
+See the [state-indicator definition](../../../../docs/definitions/state-indicators.md).
 
 ## Icon format fixtures
 

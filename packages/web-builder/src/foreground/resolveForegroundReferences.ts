@@ -112,7 +112,8 @@ function resolveValue(
  */
 export function resolveForegroundReferences(
   palettes: ElementPalettes,
-  foregrounds: SchemaForegrounds | undefined
+  foregrounds: SchemaForegrounds | undefined,
+  options: { allowIndicatorBoxColor?: boolean } = {}
 ): ElementPalettes {
   return Object.fromEntries(
     Object.entries(palettes).map(([segment, byTheme]) => [
@@ -127,7 +128,9 @@ export function resolveForegroundReferences(
                 Object.entries(colorSchema ?? {}).map(([colorProperty, value]) => [
                   colorProperty,
                   resolveValue(value, {
-                    allowForeground: colorProperty === 'textColor',
+                    allowForeground:
+                      colorProperty === 'textColor' ||
+                      (options.allowIndicatorBoxColor === true && colorProperty === 'boxColor'),
                     foregrounds,
                     path: `${segment}.${theme}.${surfaceContext}.${colorProperty}`,
                     segment

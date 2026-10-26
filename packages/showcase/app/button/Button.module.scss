@@ -455,6 +455,52 @@ $height: 64px;
   }
 }
 
+.indicatorSection {
+  display: grid;
+  gap: 16px;
+  min-inline-size: 0;
+  width: 100%;
+
+  > h3,
+  > p {
+    margin: 0;
+  }
+}
+
+.selectionExamples {
+  display: grid;
+  gap: 24px;
+  margin-block-start: 32px;
+  min-inline-size: 0;
+}
+
+.indicatorGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+}
+
+.indicatorCard {
+  display: grid;
+  gap: 24px;
+  min-inline-size: 0;
+
+  > h4 {
+    margin: 0;
+  }
+}
+
+.indicatorRow {
+  align-items: center;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0;
+  min-inline-size: 0;
+  padding-block: 8px;
+}
+
 .stackedOptionsContent {
   display: grid;
   gap: 16px;

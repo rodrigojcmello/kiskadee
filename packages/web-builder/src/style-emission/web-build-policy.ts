@@ -183,6 +183,24 @@ export const DEFAULT_WEB_STYLE_EMISSION_POLICY: WebStyleEmissionPolicy = {
         e10: {
           boxHeightEmission: 'token',
           boxWidthEmission: 'token'
+        },
+        e11: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
+          marginTopEmission: 'token',
+          marginBottomEmission: 'token',
+          marginLeftEmission: 'token',
+          marginRightEmission: 'token',
+          borderRadiusEmission: 'token'
+        },
+        e12: {
+          boxHeightEmission: 'token',
+          boxWidthEmission: 'token',
+          marginTopEmission: 'token',
+          marginBottomEmission: 'token',
+          marginLeftEmission: 'token',
+          marginRightEmission: 'token',
+          borderRadiusEmission: 'token'
         }
       }
     },

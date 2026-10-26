@@ -16,6 +16,13 @@ export type ComponentResourceArtifact = {
   layouts?: {
     stacked?: { sizes: string[]; sizesByRadius?: Record<RadiusMode, string[]> };
   };
+  /** Complete indicator geometry for existing Button sizes; paint is resolved per placement. */
+  indicator?: {
+    sizesByRadius: Record<RadiusMode, string[]>;
+    stackedSizesByRadius?: Record<RadiusMode, string[]>;
+    outsideSizesByRadius?: Record<RadiusMode, string[]>;
+    stackedOutsideSizesByRadius?: Record<RadiusMode, string[]>;
+  };
   density?: DensityScaleMapJSON;
   capabilities?: Omit<ManifestComponent, 'artifacts'>;
   inspection?: ComponentInspectionArtifact;

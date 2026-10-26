@@ -136,6 +136,11 @@ Consequence:
 - A non-visual but meaningful schema element should still be represented as `name` only.
 - Web-builder style generation continues to use the `e<n>` key as the artifact identity.
 
+An `e<n>` key identifies component authorship and an artifact entry; it does not require a
+one-to-one correspondence with rendered nodes. The component contract declares the mapping and
+which recipe responsibilities are substituted. See
+[Alternate element recipes for one rendered part](./docs/definitions/composition-strategies.md#alternate-element-recipes-for-one-rendered-part).
+
 ### 3.1.3 Activation feedback ownership
 
 Context:

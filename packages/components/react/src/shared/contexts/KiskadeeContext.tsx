@@ -11,6 +11,8 @@ import type {
   ButtonIconPlacement,
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
+  ButtonIndicatorPlacement,
+  ButtonIndicatorScope,
   ComponentClassNameMapJSON,
   ContentSurfaceContextMap,
   ControlCursor,
@@ -122,6 +124,8 @@ export type KiskadeeComponentConfigs = {
       iconTreatment?: ButtonIconTreatment;
       groupDivider?: boolean;
       disclosureDivider?: boolean;
+      indicatorPlacement?: ButtonIndicatorPlacement;
+      indicatorScope?: ButtonIndicatorScope;
     };
     effects?: {
       activationFeedback?: ActivationFeedbackSetting;

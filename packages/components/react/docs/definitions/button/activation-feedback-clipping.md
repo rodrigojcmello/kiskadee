@@ -9,3 +9,8 @@ fallback for that clip is also `none`. Do not derive a root clip path from the t
 the token can change immediately while the actual border radius is still interpolating, causing
 corners of the border to disappear during preset or radius changes. Focus outline behavior and
 feedback profile timing remain independent of this native clipping mechanism.
+
+With the optional [state indicator](state-indicator.md), the native Button remains overflow-visible
+and a passive internal `x6` viewport owns feedback clipping. It inherits the rendered radius and
+uses the same profile tokens and root measurements. This preserves external indicator paint and
+the root focus outline without changing the control border box or connected Group topology.

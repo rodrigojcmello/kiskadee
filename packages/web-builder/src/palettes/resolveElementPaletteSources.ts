@@ -1,4 +1,5 @@
 import type {
+  ButtonIndicatorPalettes,
   CardSurfaceElementStyle,
   ElementForeground,
   ElementPalettes,
@@ -17,7 +18,10 @@ import { resolveContourReferences } from './resolveContourReferences.ts';
 
 export type ElementPaletteSource = {
   foreground?: ElementForeground;
-  palettes?: ElementPalettes | CardSurfaceElementStyle<string>['palettes'];
+  palettes?:
+    | ElementPalettes
+    | CardSurfaceElementStyle<string>['palettes']
+    | ButtonIndicatorPalettes<string>;
   separator?: ElementSeparator;
 };
 
@@ -55,7 +59,8 @@ export function resolveElementPaletteSources(
     foregrounds?: SchemaForegrounds;
     contours?: SchemaContours;
     separators?: SchemaSeparators;
-  }
+  },
+  options: { allowIndicatorBoxColor?: boolean } = {}
 ): ResolvedElementPaletteSources {
   if (element.foreground && !catalogs.foregrounds) {
     throw new Error('[web-builder] Element references foreground without global.foregrounds.');
@@ -91,7 +96,7 @@ export function resolveElementPaletteSources(
   return {
     palettes: palettes
       ? resolveContourReferences(
-          resolveForegroundReferences(palettes, catalogs.foregrounds),
+          resolveForegroundReferences(palettes, catalogs.foregrounds, options),
           catalogs.contours
         )
       : undefined,

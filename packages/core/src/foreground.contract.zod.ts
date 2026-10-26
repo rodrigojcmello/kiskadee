@@ -321,7 +321,10 @@ function validateAtomicForegroundReference(
   definitionIsValid: boolean
 ): string[] {
   const issues: string[] = [];
-  if (reference.colorProperty !== 'textColor') {
+  const isButtonIndicatorPaint =
+    reference.colorProperty === 'boxColor' &&
+    /^components\.button\.elements\.e(?:11|12)\.palettes\./.test(reference.path);
+  if (reference.colorProperty !== 'textColor' && !isButtonIndicatorPaint) {
     issues.push(`${reference.path}: fg references are accepted only in textColor`);
   }
   if (reference.kind === 'legacyRef') {

@@ -11,6 +11,10 @@ composition pattern.
 
 ## Pattern selection
 
+Selecting [alternate element recipes for one rendered part](./composition-strategies.md#alternate-element-recipes-for-one-rendered-part)
+is ordinary component recipe consumption, not a new SEP, SUP, or CSC mechanism. It may coexist
+with those patterns when their respective responsibilities apply.
+
 | Pattern | Use when | Authority retained by |
 | --- | --- | --- |
 | **SEP** | One authored Style Key needs a specific Web emission shape. | Web Builder policy |

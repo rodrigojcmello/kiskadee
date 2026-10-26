@@ -115,13 +115,18 @@ function computeDisplayName(schema: Schema, bySegment: GlobalSemanticsBySegment)
 
 function getExpandedElementPalettes(
   schema: Schema,
-  element: Record<string, unknown>
+  element: Record<string, unknown>,
+  indicator = false
 ): Record<string, any> | undefined {
-  return resolveElementPaletteSources(element as ElementPaletteSource, {
-    foregrounds: schema.global?.foregrounds,
-    contours: schema.global?.contours,
-    separators: schema.global?.separators
-  }).palettes as Record<string, any> | undefined;
+  return resolveElementPaletteSources(
+    element as ElementPaletteSource,
+    {
+      foregrounds: schema.global?.foregrounds,
+      contours: schema.global?.contours,
+      separators: schema.global?.separators
+    },
+    { allowIndicatorBoxColor: indicator }
+  ).palettes as Record<string, any> | undefined;
 }
 
 function discoverSegmentsThemesFromPalettes(
@@ -155,10 +160,14 @@ function discoverSegmentsThemesFromPalettes(
 
   const components = (schema as any).components as Record<string, any> | undefined;
   if (components) {
-    const visitElements = (elements: Record<string, any> | undefined) => {
+    const visitElements = (elements: Record<string, any> | undefined, componentName: string) => {
       if (!elements) return;
-      for (const el of Object.values(elements)) {
-        const palettes = getExpandedElementPalettes(schema, el);
+      for (const [elementName, el] of Object.entries(elements)) {
+        const palettes = getExpandedElementPalettes(
+          schema,
+          el,
+          componentName === 'button' && (elementName === 'e11' || elementName === 'e12')
+        );
         if (!palettes) continue;
         for (const seg of Object.keys(palettes)) {
           const byTheme = palettes[seg];
@@ -169,18 +178,18 @@ function discoverSegmentsThemesFromPalettes(
       }
     };
 
-    for (const component of Object.values(components)) {
+    for (const [componentName, component] of Object.entries(components)) {
       const elements = (component as any)?.elements as Record<string, any> | undefined;
-      visitElements(elements);
+      visitElements(elements, componentName);
 
       const variants = (component as any)?.variants as Record<string, any> | undefined;
       if (!variants) continue;
       for (const variant of Object.values(variants)) {
-        visitElements((variant as any)?.elements as Record<string, any> | undefined);
+        visitElements((variant as any)?.elements as Record<string, any> | undefined, componentName);
         const modes = (variant as any)?.modes as Record<string, any> | undefined;
         if (!modes) continue;
         for (const mode of Object.values(modes)) {
-          visitElements((mode as any)?.elements as Record<string, any> | undefined);
+          visitElements((mode as any)?.elements as Record<string, any> | undefined, componentName);
         }
       }
     }
@@ -245,7 +254,8 @@ export function buildComponentScale(
   };
 
   for (const elements of collectComponentElements(schema, componentName)) {
-    for (const el of Object.values(elements)) {
+    for (const [elementName, el] of Object.entries(elements)) {
+      if (componentName === 'button' && (elementName === 'e11' || elementName === 'e12')) continue;
       const { _boxHeight, ...renderedScales } = (el as any).scales ?? {};
       collectPublishedScaleKeys(renderedScales);
       collectPublishedScaleKeys((el as any).iconSize);
@@ -294,8 +304,12 @@ export function buildComponentSurfaceContexts(
   };
 
   for (const elements of collectComponentElements(schema, componentName)) {
-    for (const el of Object.values(elements)) {
-      const palettes = getExpandedElementPalettes(schema, el) as
+    for (const [elementName, el] of Object.entries(elements)) {
+      const palettes = getExpandedElementPalettes(
+        schema,
+        el,
+        componentName === 'button' && (elementName === 'e11' || elementName === 'e12')
+      ) as
         | Record<string, Record<string, Partial<Record<SurfaceContext, Record<string, any>>>>>
         | undefined;
       if (!palettes) continue;

@@ -1,4 +1,4 @@
-import { elementSizeValues } from '../breakpoints.ts';
+import { breakpointValues, elementSizeValues } from '../breakpoints.ts';
 import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
 import type { DensityScaleMap } from '../density.ts';
 import type { ElementHeightReference } from '../element-height-reference.ts';
@@ -9,10 +9,16 @@ import type {
   ColorProperty,
   ColorSchema,
   ComponentEmphasis,
+  InteractionStateColorMap,
   SegmentName,
   SurfaceContextPalette,
   SystemButtonIntent,
   ThemeMode
+} from '../types/colors/colors.types.ts';
+import {
+  ButtonIntentKeys,
+  componentEmphasisBuckets,
+  interactionStateKeys
 } from '../types/colors/colors.types.ts';
 import type { DecorationSchema } from '../types/decorations/decorations.types.ts';
 import type { ElementEffects } from '../types/effects/index.ts';
@@ -40,6 +46,8 @@ type ElementNameMetadata = {
 };
 
 export type ButtonIconLayout = 'inline' | 'edge' | 'stacked';
+export type ButtonIndicatorPlacement = 'inside' | 'outside';
+export type ButtonIndicatorScope = 'all' | 'stacked';
 export type ButtonIconPlacement = 'leading' | 'trailing';
 export type ButtonIconSurfaceCorners = 'edge' | 'all';
 export type ButtonIconTreatment = 'plain' | 'surface';
@@ -61,6 +69,10 @@ export type ButtonOptions = {
   iconTreatment?: ButtonIconTreatment;
   /** Corner policy applied to a surfaced icon region. */
   iconSurfaceCorners?: ButtonIconSurfaceCorners;
+  /** Places the optional decorative state indicator relative to the Button border box. */
+  indicatorPlacement?: ButtonIndicatorPlacement;
+  /** Limits default indicator rendering to a Button composition; omission preserves all layouts. */
+  indicatorScope?: ButtonIndicatorScope;
 };
 
 /**
@@ -75,6 +87,8 @@ export type ButtonOptions = {
  * - e8: optional stacked container geometry
  * - e9: optional stacked label typography and icon-to-label spacing
  * - e10: optional stacked icon viewport
+ * - e11: optional inside state indicator recipe
+ * - e12: optional outside state indicator recipe, applied to the same rendered indicator
  */
 export type ButtonElementName =
   | 'e1'
@@ -86,7 +100,9 @@ export type ButtonElementName =
   | 'e7'
   | 'e8'
   | 'e9'
-  | 'e10';
+  | 'e10'
+  | 'e11'
+  | 'e12';
 
 /**
  * e1 — button container/surface
@@ -232,6 +248,52 @@ export type ButtonStackedIconElementStyle = {
   iconSize: ElementIconSize;
 };
 
+type ButtonIndicatorParentPaint = { ref: Color } | { parentState: Color };
+type ButtonIndicatorStateColors = {
+  rest?: Color;
+  selected?: Partial<Record<'rest' | 'hover' | 'pressed' | 'focus', ButtonIndicatorParentPaint>>;
+} & Partial<
+  Record<Exclude<keyof InteractionStateColorMap, 'rest' | 'selected'>, ButtonIndicatorParentPaint>
+>;
+type ButtonIndicatorColorSchema = {
+  boxColor: Partial<
+    Record<SystemButtonIntent, Partial<Record<ComponentEmphasis, ButtonIndicatorStateColors>>>
+  >;
+};
+
+/** Sparse state maps are local to the indicator; ordinary palettes still require Rest. */
+export type ButtonIndicatorPalettes<TSegmentName extends SegmentName = never> = Partial<
+  Record<
+    TSegmentName | 'default' | 'dynamic',
+    Partial<
+      Record<
+        ThemeMode,
+        {
+          onSubtle: ButtonIndicatorColorSchema;
+          onVivid?: ButtonIndicatorColorSchema;
+        }
+      >
+    >
+  >
+>;
+
+/** e11/e12 author alternate recipes for one passive indicator without layout contribution. */
+export type ButtonIndicatorElementStyle<TSegmentName extends SegmentName = never> = {
+  name: string;
+  scales: Required<
+    ElementScalesByProperty<
+      'boxWidth' | 'boxHeight' | 'marginTop' | 'marginBottom' | 'marginLeft' | 'marginRight'
+    >
+  > & {
+    borderRadius: {
+      rounded: ScaleBySize | number;
+      pill: ScaleBySize | number;
+      square: ScaleBySize | number;
+    };
+  };
+  palettes: ButtonIndicatorPalettes<TSegmentName>;
+};
+
 export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e1?: ButtonContainerElementStyle<TSegmentName>;
   e2?: ButtonLabelElementStyle<TSegmentName>;
@@ -243,6 +305,8 @@ export type ButtonElements<TSegmentName extends SegmentName = never> = {
   e8?: ButtonStackedContainerElementStyle;
   e9?: ButtonStackedLabelElementStyle;
   e10?: ButtonStackedIconElementStyle;
+  e11?: ButtonIndicatorElementStyle<TSegmentName>;
+  e12?: ButtonIndicatorElementStyle<TSegmentName>;
 };
 
 type ElementContractRules = {
@@ -264,9 +328,24 @@ const BUTTON_OPTION_KEYS = [
   'iconLayout',
   'iconPlacement',
   'iconTreatment',
-  'iconSurfaceCorners'
+  'iconSurfaceCorners',
+  'indicatorPlacement',
+  'indicatorScope'
 ] as const;
-const BUTTON_ELEMENTS_KEYS = ['e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'e9', 'e10'] as const;
+const BUTTON_ELEMENTS_KEYS = [
+  'e1',
+  'e2',
+  'e3',
+  'e4',
+  'e5',
+  'e6',
+  'e7',
+  'e8',
+  'e9',
+  'e10',
+  'e11',
+  'e12'
+] as const;
 const BUTTON_ELEMENT_BASE_KEYS = [
   'name',
   'decorations',
@@ -355,7 +434,9 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
   e10: {
     iconSize: true,
     effects: false
-  }
+  },
+  e11: {},
+  e12: {}
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -504,6 +585,147 @@ function validateButtonBadgeRelationContract(value: unknown, path: string, issue
   validatePositiveScaleMap(value.scales.paddingRight, `${path}.scales.paddingRight`, issues);
 }
 
+function validateButtonIndicatorContract(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value)) {
+    issues.push(`${path}: expected object`);
+    return;
+  }
+  validateAllowedKeys(value, ['name', 'scales', 'palettes'], path, issues);
+  if (typeof value.name !== 'string') issues.push(`${path}.name: expected string`);
+  const validateScale = (scale: unknown, scalePath: string, positive: boolean): void => {
+    const leaf = (entry: unknown, entryPath: string): void => {
+      if (
+        typeof entry !== 'number' ||
+        !Number.isFinite(entry) ||
+        (positive ? entry <= 0 : entry < 0)
+      ) {
+        issues.push(
+          `${entryPath}: expected finite ${positive ? 'positive' : 'non-negative'} number`
+        );
+      }
+    };
+    if (typeof scale === 'number') {
+      leaf(scale, scalePath);
+      return;
+    }
+    if (!isRecord(scale) || Object.keys(scale).length === 0) {
+      issues.push(`${scalePath}: expected number or non-empty size map`);
+      return;
+    }
+    validateAllowedKeys(scale, [...elementSizeValues, 's:all'], scalePath, issues);
+    for (const [size, entry] of Object.entries(scale)) {
+      if (!isRecord(entry)) leaf(entry, `${scalePath}.${size}`);
+      else {
+        validateAllowedKeys(entry, breakpointValues, `${scalePath}.${size}`, issues);
+        if (!Object.keys(entry).length)
+          issues.push(`${scalePath}.${size}: expected non-empty breakpoint map`);
+        for (const [breakpoint, number] of Object.entries(entry))
+          leaf(number, `${scalePath}.${size}.${breakpoint}`);
+      }
+    }
+  };
+  if (!isRecord(value.scales)) issues.push(`${path}.scales: required object`);
+  else {
+    validateAllowedKeys(
+      value.scales,
+      [
+        'boxWidth',
+        'boxHeight',
+        'marginTop',
+        'marginBottom',
+        'marginLeft',
+        'marginRight',
+        'borderRadius'
+      ],
+      `${path}.scales`,
+      issues
+    );
+    for (const property of [
+      'boxWidth',
+      'boxHeight',
+      'marginTop',
+      'marginBottom',
+      'marginLeft',
+      'marginRight'
+    ]) {
+      validateScale(
+        value.scales[property],
+        `${path}.scales.${property}`,
+        property.startsWith('box')
+      );
+    }
+    if (!isRecord(value.scales.borderRadius))
+      issues.push(`${path}.scales.borderRadius: required object`);
+    else {
+      validateAllowedKeys(
+        value.scales.borderRadius,
+        ['rounded', 'pill', 'square'],
+        `${path}.scales.borderRadius`,
+        issues
+      );
+      for (const radius of ['rounded', 'pill', 'square'])
+        validateScale(
+          value.scales.borderRadius[radius],
+          `${path}.scales.borderRadius.${radius}`,
+          false
+        );
+    }
+  }
+  for (const issue of getElementPaletteValidationIssues(value.palettes, ['boxColor'], {
+    requireRest: false
+  })) {
+    const issuePath = issue.path.length
+      ? `${path}.palettes.${issue.path.join('.')}`
+      : `${path}.palettes`;
+    issues.push(`${issuePath}: ${issue.message}`);
+  }
+  let paints = 0;
+  const validateParentReference = (paint: unknown, paintPath: string): void => {
+    if (
+      !isRecord(paint) ||
+      Object.keys(paint).length !== 1 ||
+      (paint.ref === undefined && paint.parentState === undefined)
+    ) {
+      issues.push(`${paintPath}: expected parent-state reference`);
+    }
+  };
+  const validateStates = (entry: unknown, entryPath: string, depth = 0): void => {
+    if (!isRecord(entry)) return;
+    if (depth === 4) validateAllowedKeys(entry, Object.keys(ButtonIntentKeys), entryPath, issues);
+    if (depth === 5)
+      validateAllowedKeys(entry, Object.keys(componentEmphasisBuckets), entryPath, issues);
+    if (depth === 6) {
+      validateAllowedKeys(entry, interactionStateKeys, entryPath, issues);
+      for (const [state, color] of Object.entries(entry)) {
+        if (state === 'rest') {
+          if (color !== undefined) paints++;
+          continue;
+        }
+        if (state === 'selected' && isRecord(color)) {
+          validateAllowedKeys(
+            color,
+            ['rest', 'hover', 'focus', 'pressed'],
+            `${entryPath}.selected`,
+            issues
+          );
+          for (const [substate, paint] of Object.entries(color)) {
+            validateParentReference(paint, `${entryPath}.selected.${substate}`);
+            paints++;
+          }
+        } else {
+          validateParentReference(color, `${entryPath}.${state}`);
+          paints++;
+        }
+      }
+      return;
+    }
+    for (const [key, child] of Object.entries(entry))
+      validateStates(child, `${entryPath}.${key}`, depth + 1);
+  };
+  validateStates(value.palettes, `${path}.palettes`);
+  if (paints === 0) issues.push(`${path}.palettes: expected at least one boxColor state`);
+}
+
 function validateElementContract(
   value: unknown,
   path: string,
@@ -648,6 +870,22 @@ export function validateButtonComponentContract(
       }
 
       if (
+        value.options.indicatorScope !== undefined &&
+        value.options.indicatorScope !== 'all' &&
+        value.options.indicatorScope !== 'stacked'
+      ) {
+        issues.push(`${path}.options.indicatorScope: expected "all" or "stacked"`);
+      }
+
+      if (
+        value.options.indicatorPlacement !== undefined &&
+        value.options.indicatorPlacement !== 'inside' &&
+        value.options.indicatorPlacement !== 'outside'
+      ) {
+        issues.push(`${path}.options.indicatorPlacement: expected "inside" or "outside"`);
+      }
+
+      if (
         value.options.iconSurfaceCorners !== undefined &&
         value.options.iconSurfaceCorners !== 'edge' &&
         value.options.iconSurfaceCorners !== 'all'
@@ -668,6 +906,10 @@ export function validateButtonComponentContract(
   for (const key of BUTTON_ELEMENTS_KEYS) {
     const element = elements[key];
     if (element === undefined) continue;
+    if (key === 'e11' || key === 'e12') {
+      validateButtonIndicatorContract(element, `${path}.elements.${key}`, issues);
+      continue;
+    }
     validateElementContract(element, `${path}.elements.${key}`, BUTTON_RULES[key], issues);
     if (key === 'e6') {
       validateButtonDividerContract(element, `${path}.elements.e6`, issues);
