@@ -12,6 +12,7 @@ import { validateSchemaPresenceContract } from '@kiskadee/core/presence-contract
 import { validateSchemaSeparatorsContract } from '@kiskadee/core/separator-contract';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
+import { BUTTON_GROUP_BORDER_SUPPRESSION_STYLE_KEY } from './component-artifacts/buttonGroupArtifact.ts';
 import { publishComponentResources } from './component-artifacts/publishComponentResources.ts';
 import {
   appendDensityCss,
@@ -214,7 +215,9 @@ export async function runBuild(): Promise<void> {
     );
     const additionalCoreStyleKeys = [
       ...(typographyBuild?.additionalCoreStyleKeys ?? []),
-      ...(schema.components.card?.options?.border ? ['borderColor__#00000000'] : [])
+      ...(schema.components.card?.options?.border || schema.components.button?.elements.e6
+        ? [BUTTON_GROUP_BORDER_SUPPRESSION_STYLE_KEY]
+        : [])
     ];
     // console.log('phase 1', { name: schema.name, styleKeys: JSON.stringify(styleKeys, null, 2) });
 

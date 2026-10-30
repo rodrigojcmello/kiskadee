@@ -832,10 +832,17 @@ Rules:
 - treat absence of a projection as absence of the capability, not permission to add a Sass
   fallback.
 
-The Registry currently serves Button connected-divider overlap, Button plain-icon label-height
-fitting, and Dropdown independent empty leading tracks. Runtime applies only the approved width/gap subsets, and structural Sass consumes
-their emitted variables on the approved structural nodes. Migration of Tabs fixed width remains
-only a future candidate. See
+The Registry currently serves Button plain-icon label-height fitting, connected-group seam overlap,
+and Dropdown independent empty leading tracks. Runtime applies only the approved utility subsets,
+and structural Sass consumes their emitted variables on the approved structural nodes. Button
+groups use `e1.p.gd` to expose the authored `e6` thickness on member roots for overlap and on frame
+pieces for shared-strip clipping. The divider itself is an overlay, while decorative grid-aligned
+segments paint one logical Rest perimeter without doubling translucent strokes. The segment over
+a selected member actually using High paint is omitted;
+local frame clipping prevents a neighboring segment from painting over that member. The group
+itself does not clip external focus or indicators. Border-color selection and member border
+suppression use Builder-published paint classes, never `p` or Sass color overrides.
+Migration of Tabs fixed width remains only a future candidate. See
 [`structural-utility-projections.md`](packages/web-builder/docs/definitions/structural-utility-projections.md)
 for the canonical eligibility and artifact contract.
 

@@ -105,6 +105,46 @@ function Probe({ testId = 'merged-class-map' }: { testId?: string }) {
   return h('pre', { 'data-testid': testId }, JSON.stringify(outline ?? null));
 }
 
+function SelectionProjectionProbe() {
+  const classMap = useComponentClassMap<Record<string, unknown>>('button', undefined);
+  return h('pre', { 'data-testid': 'selection-projection-map' }, JSON.stringify(classMap ?? null));
+}
+
+it.each([
+  true,
+  false
+])('merges Button selection projections beside element maps (core projection: %s)', async (withCoreProjection) => {
+  const value = createContextValue(`selection-projection-${withCoreProjection}`, {
+    loadComponentClassMap: async <T,>(componentName: string, scope: ComponentClassMapScope) => {
+      if (componentName !== 'button') return undefined;
+      return {
+        component: 'button',
+        classMap:
+          scope.kind === 'core'
+            ? {
+                e1: { s: { all: 'root-geometry' } },
+                ...(withCoreProjection
+                  ? { selectionRest: { e1: { e: { h: 'normal-shadow' } } } }
+                  : {})
+              }
+            : {
+                e1: { c: { s: { neutral: { m: 'base-palette' } } } },
+                selectionRest: { e1: { c: { s: { neutral: { h: 'normal-high' } } } } }
+              }
+      } as T;
+    }
+  });
+  render(h(KiskadeeContext.Provider, { value }, h(SelectionProjectionProbe)));
+  await waitFor(() =>
+    expect(screen.getByTestId('selection-projection-map').textContent).toContain('normal-high')
+  );
+  const merged = JSON.parse(screen.getByTestId('selection-projection-map').textContent ?? '{}');
+  expect(merged.e1.s.all).toBe('root-geometry');
+  expect(merged.e1.c.s.neutral.m).toBe('base-palette');
+  expect(merged.selectionRest.e1.c.s.neutral.h).toBe('normal-high');
+  expect(merged.selectionRest.e1.e?.h).toBe(withCoreProjection ? 'normal-shadow' : undefined);
+});
+
 function ResolutionProbe({ testId = 'class-map-resolution' }: { testId?: string }) {
   const { classMap, pending } = useComponentClassMapResolution<TextFieldClassMap>(
     'textField',

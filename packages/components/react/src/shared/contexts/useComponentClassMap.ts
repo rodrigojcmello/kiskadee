@@ -74,7 +74,11 @@ function mergeClassMapNode(coreNode: unknown, paletteNode: unknown): unknown {
   const coreIsElementMap = isClassElementMap(coreNode);
   const paletteIsElementMap = isClassElementMap(paletteNode);
 
-  if (coreIsElementMap || paletteIsElementMap) {
+  if (
+    (coreIsElementMap || paletteIsElementMap) &&
+    (coreNode === undefined || coreIsElementMap) &&
+    (paletteNode === undefined || paletteIsElementMap)
+  ) {
     return mergeClassElementMaps(
       coreIsElementMap ? coreNode : undefined,
       paletteIsElementMap ? paletteNode : undefined

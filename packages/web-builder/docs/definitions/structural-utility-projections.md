@@ -151,14 +151,20 @@ The canonical Registry currently contains these projection families:
   icon-only Buttons. Keeping the bucket on e2 preserves schemas without an optional e3 element.
 
 - `button-group-divider-thickness` projects optional `Button.e6.scales.boxWidth` to `Button.e1`
-  under artifact key `gd`, with `retainSource: true`.
+  under artifact key `gd`, with `retainSource: true`. With the complete divider and Rest-frame
+  handoff, connected groups apply this utility to member roots for overlap and to frame pieces for
+  shared-strip clipping. The artifact owner remains `e1`; these uses do not add Registry entries.
 - Dropdown independent leading-track projections expose `e3` icon width/gap under `e3.p.iw/ig`
   and `e10` selection width/gap under `e10.p.sw/sg`, all with `retainSource: true`.
 
-`Button.e6` remains the only visual author. Its normal `s` bucket continues to size the decorative
-line, while `Button.e1.p.gd` lets grouped Button roots expose the same `--k-bxw` utility for logical
-seam-overlap compensation. Runtime activates that projection only when `groupDivider` has
-compatible paint, the projection exists, and the group contains more than one Button.
+`Button.e6` remains the only divider author. Its normal classes size the decorative overlay;
+`Button.e1.p.gd` references the same atomic width utility on member roots for structural seam
+overlap and on frame pieces to clip the shared strip before a High-painted member. It adds no CSS
+or spacing value. The group's Rest perimeter and member paint subsets are
+palette-aware Button class-map projections; grid-aligned frame pieces omit only the segment over
+a selected member actually using High paint. This local visibility is not a `p` value. See
+[`component-resources.md`](./component-resources.md#button-connected-group-paint-projection), not
+entries in the scale-only Registry.
 
 Dropdown keeps `e3` and `e10` as the only visual authors. p-react applies the projected width and
 gap utilities to empty structural track nodes only when another direct item in the same independent

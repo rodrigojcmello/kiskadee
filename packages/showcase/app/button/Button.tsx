@@ -1,12 +1,13 @@
 'use client';
 
 import type {
+  ButtonSelectionEmphasis,
   ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
-import { componentScaleToSize } from '@kiskadee/core';
+import { componentScaleToSize, resolveButtonStackedRadiusMode } from '@kiskadee/core';
 import { Button as KButton, useButtonArtifactConfig } from '@kiskadee/react-components/button';
 import { Card } from '@kiskadee/react-components/card';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
@@ -54,13 +55,16 @@ import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonIconFormatExamples } from './components/ButtonIconFormatExamples';
 import { ButtonIndicatorExamples } from './components/ButtonIndicatorExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
+import { ButtonPaginationExamples } from './components/ButtonPaginationExamples';
+import { ButtonRichTextEditorExample } from './components/ButtonRichTextEditorExample';
+import { ButtonSelectionEmphasisControl } from './components/ButtonSelectionEmphasisControl';
+import { ButtonSelectionExamples } from './components/ButtonSelectionExamples';
 import { ButtonSizeScaleExample } from './components/ButtonSizeScaleExample';
 import { ButtonStackedExamples } from './components/ButtonStackedExamples';
-import { ButtonStackedOptionsExample } from './components/ButtonStackedOptionsExample';
 import ButtonStateSection from './components/ButtonStateSection';
 import { ButtonUnavailableExample } from './components/ButtonUnavailableExample';
+import { ButtonVideoconferencingExamples } from './components/ButtonVideoconferencingExamples';
 import { resolveButtonReferenceProfile } from './components/buttonReferenceProfile';
-import { shouldCheckButtonStateAvailability } from './components/buttonStateAvailability';
 
 const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = [
   { value: 's:sm:2', label: 'Small 2' },
@@ -238,6 +242,7 @@ export function Button() {
     'dropdown',
     'progress',
     'separator',
+    'select',
     'switch'
   ]);
   const { setShowDescriptions, showDescriptions } = useShowcaseDisplayPreferences();
@@ -249,15 +254,14 @@ export function Button() {
   );
   const referenceProfile = resolveButtonReferenceProfile(typography, textProfiles.caption);
 
-  const [isSelected, setIsSelected] = React.useState(false);
-  const [isSelectedVivid, setIsSelectedVivid] = React.useState(false);
   const [isSimplified, setIsSimplified] = React.useState(true);
   const [showButtonGroups, setShowButtonGroups] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(false);
-  const [showIndicator, setShowIndicator] = React.useState(false);
+  const [selectionEmphasis, setSelectionEmphasis] =
+    React.useState<ButtonSelectionEmphasis>('lowest');
   const [radiusOverride, setRadiusOverride] = React.useState<RadiusMode>();
   const buttonRadius = radiusOverride ?? global?.radius ?? 'rounded';
-  const stackedSizes = stackedSizesByRadius?.[buttonRadius];
+  const stackedRadius = resolveButtonStackedRadiusMode(buttonRadius);
   const [buttonScale, setButtonScale] = React.useState<ElementSizeValue | undefined>();
   const background = useShowcaseBackground();
   const activeSurfaceContext = background.surfaceContext;
@@ -312,6 +316,9 @@ export function Button() {
   const inlineControlsAvailable = Boolean(
     inlineControlsCardAvailable && switchState?.neutral?.[inlineControlsSwitchEmphasis]?.rest
   );
+  // Content Select preserves its unstyled path when the preset has no Select recipe.
+  const selectionControlsAvailable = Boolean(inlineControlsCardAvailable && dropdownAvailable);
+  const activeSelectionEmphasis = selectionControlsAvailable ? selectionEmphasis : 'lowest';
   const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
   );
@@ -392,37 +399,6 @@ export function Button() {
     </ShowcaseControlPanel>
   );
 
-  // Only optional interaction capabilities use the manifest to show an unavailable indicator.
-  // Rest, Focus, and Disabled always render: an omitted visual state can inherit Rest, and these
-  // states remain part of the expected Button contract.
-  const renderState = (
-    semantic: string,
-    emphasis: string,
-    state: string,
-    children: React.ReactNode
-  ) => {
-    if (!shouldCheckButtonStateAvailability(state)) {
-      return children;
-    }
-
-    const isSupported = (() => {
-      if (!buttonState) return true;
-      const group = buttonState[semantic]?.[emphasis];
-      if (!group) return false;
-      return Boolean(group[state]);
-    })();
-
-    if (isSupported) {
-      return children;
-    }
-
-    return (
-      <ButtonUnavailableExample
-        description={`${semantic} Button, ${emphasis} emphasis, ${state} state is not published in the active design system.`}
-      />
-    );
-  };
-
   const renderScale = (scale: string, children: React.ReactNode) => {
     const isSupported = (() => {
       if (!buttonMeta?.scale) return true;
@@ -497,7 +473,7 @@ export function Button() {
                           setIsSimplified(value);
                           if (value) {
                             setShowFocusRing(false);
-                            setShowIndicator(false);
+                            setSelectionEmphasis('lowest');
                           }
                         }}
                       />
@@ -512,15 +488,13 @@ export function Button() {
                         onControlStateChange={setShowFocusRing}
                       />
                       <Separator orientation="vertical" emphasis="low" />
-                      <Switch
-                        id="button-indicator"
-                        classNames={{ e4: s.intentControlLabel }}
-                        disabled={isSimplified}
-                        label="Indicator"
-                        emphasis={inlineControlsSwitchEmphasis}
-                        controlState={showIndicator}
-                        onControlStateChange={setShowIndicator}
-                      />
+                      {selectionControlsAvailable ? (
+                        <ButtonSelectionEmphasisControl
+                          disabled={isSimplified}
+                          value={selectionEmphasis}
+                          onValueChange={setSelectionEmphasis}
+                        />
+                      ) : null}
                     </div>
                   </ShowcaseExampleCard>
                 ) : (
@@ -553,7 +527,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                showIndicator={showIndicator}
+                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -571,7 +545,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                showIndicator={showIndicator}
+                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -591,7 +565,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                showIndicator={showIndicator}
+                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -611,7 +585,7 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                showIndicator={showIndicator}
+                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -632,7 +606,7 @@ export function Button() {
                   stateCapabilities={buttonState}
                   simplified={isSimplified}
                   showFocusRing={showFocusRing}
-                  showIndicator={showIndicator}
+                  selectionEmphasis={activeSelectionEmphasis}
                   grouped={showButtonGroups}
                   radius={buttonRadius}
                   scale={activeButtonScale}
@@ -715,9 +689,9 @@ export function Button() {
                   classesMap={buttonClassesMap}
                   fontName={fontName}
                   heightReference={stackedButtonHeightReference}
-                  radius={buttonRadius}
+                  radius={stackedRadius}
                   referenceProfile={referenceProfile}
-                  stackedSizes={stackedSizes}
+                  stackedSizes={stackedSizesByRadius?.[stackedRadius]}
                   surfaceContext={activeSurfaceContext}
                 />
               </div>
@@ -852,20 +826,44 @@ export function Button() {
               scale={activeButtonScale}
               surfaceContext={activeSurfaceContext}
             />
-            <ButtonIconExamples
-              fontName={fontName}
-              radius={buttonRadius}
-              scale={activeButtonScale}
-              surfaceContext={activeSurfaceContext}
-            />
-            <ButtonStackedOptionsExample
-              classesMap={buttonClassesMap}
-              fontName={fontName}
-              radius={buttonRadius}
-              scale={activeButtonScale}
-              stackedSizes={stackedSizes}
-              surfaceContext={activeSurfaceContext}
-            />
+            <section className={s.compositionsSection} aria-labelledby="button-compositions-title">
+              <header>
+                <Text as="h3" id="button-compositions-title" profile={textProfiles.sectionTitle}>
+                  Compositions
+                </Text>
+                {showDescriptions ? (
+                  <Text as="p" profile={textProfiles.body}>
+                    Action groups, editing controls, meeting toolbars and pagination composed with
+                    Buttons.
+                  </Text>
+                ) : null}
+              </header>
+              <ButtonIconExamples
+                fontName={fontName}
+                radius={buttonRadius}
+                scale={activeButtonScale}
+                surfaceContext={activeSurfaceContext}
+              />
+              <ButtonRichTextEditorExample
+                radius={buttonRadius}
+                scale={activeButtonScale}
+                surfaceContext={activeSurfaceContext}
+              />
+              <ButtonVideoconferencingExamples
+                classesMap={buttonClassesMap}
+                fontName={fontName}
+                radius={stackedRadius}
+                scale={activeButtonScale}
+                selectionControlAvailable={selectionControlsAvailable}
+                stackedSizes={stackedSizesByRadius?.[stackedRadius]}
+                surfaceContext={activeSurfaceContext}
+              />
+              <ButtonPaginationExamples
+                radius={buttonRadius}
+                scale={activeButtonScale}
+                surfaceContext={activeSurfaceContext}
+              />
+            </section>
             {manifest?.components?.badge ? (
               <ButtonBadgeExamples
                 radius={buttonRadius}
@@ -906,63 +904,11 @@ export function Button() {
             surfaceContext={activeSurfaceContext}
           />
           <section className={s.selectionExamples} aria-label="Selection examples">
-            <div className={s['interaction-state']}>
-              <Text as="h3" profile={textProfiles.sectionTitle}>
-                Selected (Primary / Medium)
-              </Text>
-              <div className={`${s['example-states']} k-root`}>
-                {renderState(
-                  'primary',
-                  'medium',
-                  isSelected ? 'selected' : 'rest',
-                  <KButton
-                    emphasis="medium"
-                    intent="primary"
-                    radius={buttonRadius}
-                    size={componentScaleToSize(activeButtonScale)}
-                    surfaceContext={activeSurfaceContext}
-                    radiusEffect={true}
-                    controlState={isSelected}
-                    onClick={() => setIsSelected((prev) => !prev)}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        {isSelected ? 'Followed' : 'Follow'}
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-              </div>
-            </div>
-
-            <div className={s['interaction-state']}>
-              <Text as="h3" profile={textProfiles.sectionTitle}>
-                Selected (Primary / High)
-              </Text>
-              <div className={`${s['example-states']} k-root`}>
-                {renderState(
-                  'primary',
-                  'high',
-                  isSelectedVivid ? 'selected' : 'rest',
-                  <KButton
-                    emphasis="high"
-                    intent="primary"
-                    radius={buttonRadius}
-                    size={componentScaleToSize(activeButtonScale)}
-                    surfaceContext={activeSurfaceContext}
-                    radiusEffect={true}
-                    controlState={isSelectedVivid}
-                    onClick={() => setIsSelectedVivid((prev) => !prev)}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={alignment}>
-                        {isSelectedVivid ? 'Followed' : 'Follow'}
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                )}
-              </div>
-            </div>
+            <ButtonSelectionExamples
+              fontName={fontName}
+              radius={buttonRadius}
+              surfaceContext={activeSurfaceContext}
+            />
 
             <ButtonIndicatorExamples
               radius={buttonRadius}

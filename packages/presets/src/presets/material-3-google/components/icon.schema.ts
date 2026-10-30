@@ -22,7 +22,7 @@ export function createMaterial3GoogleIconSchema({
           's:lg:1': 's:lg:1',
           's:lg:2': 's:lg:2',
           's:lg:3': 's:lg:3',
-          's:lg:4': 's:lg:4'
+          's:lg:4': 's:lg:5'
         },
         palettes: buildBySegment(segmentNames, (segment) => {
           const theme = (track: 'l' | 'd') => ({

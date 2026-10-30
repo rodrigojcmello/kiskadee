@@ -6,7 +6,10 @@ import {
   resolveControlCursor
 } from '@kiskadee/core';
 import { DensityProvider, KiskadeeContext } from '@kiskadee/react-components/resources';
-import { Select as PresentationSelect } from '@kiskadee/react-components/select';
+import {
+  Select as PresentationSelect,
+  type SelectProps as PresentationSelectProps
+} from '@kiskadee/react-components/select';
 import type { ReactNode } from 'react';
 import { useEffect, useId } from 'react';
 import { createPortal } from 'react-dom';
@@ -262,7 +265,7 @@ export function ShowcaseContentSelectControl({
   style,
   onValueChange,
   ...props
-}: SelectProps) {
+}: SelectProps & Pick<PresentationSelectProps, 'size'>) {
   return (
     <PresentationSelect
       {...props}

@@ -2,6 +2,7 @@
 
 import type {
   ButtonIntent,
+  ButtonSelectionEmphasis,
   ElementSizeValue,
   InteractionState,
   RadiusMode,
@@ -28,7 +29,7 @@ type ButtonStateSectionProps = {
   stateCapabilities?: ManifestComponentState;
   simplified?: boolean;
   showFocusRing?: boolean;
-  showIndicator?: boolean;
+  selectionEmphasis?: ButtonSelectionEmphasis;
   grouped?: boolean;
   radius: RadiusMode;
   scale?: ElementSizeValue;
@@ -53,7 +54,7 @@ export function ButtonStateSection({
   stateCapabilities,
   simplified = false,
   showFocusRing = false,
-  showIndicator = false,
+  selectionEmphasis = 'lowest',
   grouped = false,
   radius,
   scale
@@ -258,7 +259,7 @@ export function ButtonStateSection({
                     radius={radius}
                     size={componentScaleToSize(scale)}
                     controlState={selectedMap[emphasis]}
-                    indicator={showIndicator}
+                    selectionEmphasis={selectionEmphasis}
                     radiusEffect={!grouped && intent === 'primary'}
                     onClick={() => toggleSelected(emphasis)}
                   >

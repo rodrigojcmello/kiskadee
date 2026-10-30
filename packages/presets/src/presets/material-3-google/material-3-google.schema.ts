@@ -69,7 +69,8 @@ export const schema: Schema<Segments> = {
       's:lg:1': 24,
       's:lg:2': 28,
       's:lg:3': 32,
-      's:lg:4': 48
+      's:lg:4': 40,
+      's:lg:5': 48
     },
     icons: {
       family: 'material-symbols',

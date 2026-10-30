@@ -57,9 +57,14 @@ DOM owner.
 
 See
 [`structural-utility-projections.md`](./structural-utility-projections.md) for the Registry and
-artifact rules. Active examples include `Button.e6.boxWidth` to `Button.e1.p.gd` and Dropdown
-leading-track width/gap utilities under `e3.p.iw/ig` and `e10.p.sw/sg`; Style Emission Policy
-remains responsible only for producing the required custom properties.
+artifact rules. Active examples include Button's plain-icon line-height metric at `e2.p.lh` and
+Dropdown leading-track width/gap utilities under `e3.p.iw/ig` and `e10.p.sw/sg`. Connected Button
+groups apply the `Button.e6.boxWidth` projection at `Button.e1.p.gd` to member roots for seam
+overlap and to frame pieces for shared-strip clipping, without another Registry entry.
+Their logical Rest frame and border-free member paint use separate palette-aware class-map
+projections; structural grid segments locally omit the frame over a member using High selection
+paint. Style Emission Policy remains responsible only for producing the required CSS shape;
+neither projection re-authors the preset's colors or dimensions.
 
 Current element-specific contracts include:
 

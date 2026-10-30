@@ -40,7 +40,7 @@ component may select alternative Schema element recipes for the same rendered in
 than introduce a generic palette axis, following
 [alternate element recipes for one rendered part](./composition-strategies.md#alternate-element-recipes-for-one-rendered-part).
 Such local recipes retain the actual ambient context and
-host intent and emphasis; the host's published content context remains authoritative for its
+effective host paint intent and emphasis; the host's published content context remains authoritative for its
 other descendants.
 
 The indicator is hidden from assistive technology, receives no pointer events, and has no focus
@@ -57,7 +57,7 @@ Button is the first implementation. Optional `e11` and `e12` author the inside a
 of one short bottom-centered line. The Button's `controlState` owns activation; focus alone does
 not select it. Each element has ordinary scales and `palettes`, including `onSubtle` and `onVivid`.
 The placement option selects one complete recipe for one DOM element. Both palettes receive the
-actual Button intent, emphasis, theme and ambient context. The internal recipe accounts for the
+effective Button paint intent, emphasis, theme and ambient context. The internal recipe accounts for the
 Button's own surface at those coordinates, while the external recipe accounts for the surrounding
 surface. Neutral foreground references use Standard only. This selection does not change the
 context provided to other descendants.
@@ -66,10 +66,17 @@ The default Fluent placement is inside. Its shared authoring helper selects the 
 signal or contrast inversion over the actual host surface; destructive and positive Buttons do not
 recolor the signal by intent. All numerical choices are preset-owned Kiskadee extensions.
 
-Button `options.indicatorScope` chooses automatic use in `all` or `stacked` compositions. Omission
-preserves `all`; Fluent authors `stacked`. The instance `indicator` prop follows the policy when
-omitted, bypasses only that policy when true, and suppresses the anatomy when false. Policy uses
-the actual rendered layout, including any horizontal fallback from a stacked request.
+Button `selectionEmphasis` coordinates selection paint and the indicator. `lowest` uses the base
+Selected recipe, `low` adds its indicator, `medium` uses normal High paint and `high` adds the
+indicator over that High surface. The default is `lowest` in every layout. `controlState` remains
+the semantic selection in all four levels; there is no independent indicator activation prop or
+layout scope option. Position remains an independent geometry choice. See
+[Button selection emphasis](../../packages/components/react/docs/definitions/button/selection-emphasis.md).
+
+Button `selectionIntent` independently chooses the selected recipe's intent, with the base intent
+as the inherited default. The indicator resolves against that same effective paint intent rather
+than the unselected Button's intent. All published intent pairs remain available; this does not
+create more selection-emphasis levels, recolor the indicator independently, or add a palette axis.
 
 Indicator width remains a literal preset-authored value per size. A reference Button may guide
 manual calibration, but no build or runtime formula derives nominal width from icon geometry or

@@ -5,9 +5,10 @@ import type {
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ButtonIndicatorPlacement,
-  ButtonIndicatorScope,
+  ButtonSelectionEmphasis,
   ContentSurfaceContextMap,
-  RadiusMode
+  RadiusMode,
+  SystemButtonIntent
 } from '@kiskadee/core';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMapResolution } from '../../../shared/contexts/useComponentClassMap.ts';
@@ -48,7 +49,8 @@ export type ButtonArtifactConfig = {
     groupDivider: boolean | undefined;
     disclosureDivider: boolean | undefined;
     indicatorPlacement: ButtonIndicatorPlacement | undefined;
-    indicatorScope: ButtonIndicatorScope | undefined;
+    selectionEmphasis: ButtonSelectionEmphasis | undefined;
+    selectionIntent: SystemButtonIntent | undefined;
   };
 };
 
@@ -85,7 +87,8 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
       groupDivider: buttonMetadata?.options?.groupDivider,
       disclosureDivider: buttonMetadata?.options?.disclosureDivider,
       indicatorPlacement: buttonMetadata?.options?.indicatorPlacement,
-      indicatorScope: buttonMetadata?.options?.indicatorScope
+      selectionEmphasis: buttonMetadata?.options?.selectionEmphasis,
+      selectionIntent: buttonMetadata?.options?.selectionIntent
     }
   };
 }

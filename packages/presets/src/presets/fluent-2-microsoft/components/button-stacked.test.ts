@@ -41,17 +41,14 @@ describe('Fluent stacked Button recipe', () => {
     expect(stacked!.scales!.borderWidth).toEqual(horizontal!.scales!.borderWidth);
     expect(stackedRadii.rounded).toBe(horizontalRadii.rounded);
     expect(stackedRadii.square).toBe(horizontalRadii.square);
+    expect(stackedRadii).not.toHaveProperty('pill');
+    expect(horizontalRadii.pill).toBeDefined();
     expect(horizontal!.scales!._boxHeight).toEqual({
       's:sm:1': 24,
       's:md:1': 32,
       's:lg:1': 40,
       's:lg:2': 48
     });
-    for (const size of sizes) {
-      expect((stackedRadii.pill as Record<string, number>)[size]! * 2).toBe(
-        (stacked!.scales!._boxHeight as Record<string, number>)[size]
-      );
-    }
   });
 
   it('shares the small caption between Small and Medium without reducing their icons or spacing', () => {

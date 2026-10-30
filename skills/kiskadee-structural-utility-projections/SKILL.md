@@ -61,8 +61,12 @@ on existing artifacts in a read-only review.
 - Resolve `all` plus the active scale; do not invent scale fallback.
 - Do not create CSS rules, effect recipes, component artifacts, providers, or runtime dependencies
   for a projection.
-- Preserve `button-group-divider-thickness` as the canonical active example: optional
-  `Button.e6.boxWidth` projects to `Button.e1.p.gd` with `retainSource: true`.
+- Preserve `button-group-divider-thickness`: optional `Button.e6.boxWidth` projects to
+  `Button.e1.p.gd` with `retainSource: true`. Connected groups apply it to member roots for seam
+  overlap and to frame pieces for shared-strip clipping only with the complete divider/frame
+  handoff. Keep `e1` as the artifact owner; do not add another Registry entry for those pieces.
+  Their frame/member paint projections are palette-aware component class maps and must not be
+  moved into the scale-only `p` Registry.
 - Preserve the Dropdown independent-track entries: `e3` publishes `iw/ig`, `e10` publishes `sw/sg`,
   and p-react applies them only to empty structural leading-track nodes.
 - Treat migration of Tabs fixed width only as a future candidate until its ownership is reviewed.

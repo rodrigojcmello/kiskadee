@@ -1,0 +1,33 @@
+.section {
+  display: grid;
+  gap: 16px;
+  min-inline-size: 0;
+
+  > h4,
+  > p {
+    margin: 0;
+  }
+}
+
+.example {
+  display: grid;
+  gap: 12px;
+  min-inline-size: 0;
+
+  > h5 {
+    margin: 0;
+  }
+}
+
+.viewport {
+  min-inline-size: 0;
+  overflow-x: auto;
+  padding: 8px;
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  inline-size: max-content;
+}

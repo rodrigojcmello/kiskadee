@@ -5,6 +5,8 @@ import {
   type ButtonStackedContainerElementStyle,
   type ButtonStackedIconElementStyle,
   type ButtonStackedLabelElementStyle,
+  type ButtonStackedRadiusMode,
+  resolveButtonStackedRadiusMode,
   validateButtonComponentContract
 } from '../index.ts';
 
@@ -38,12 +40,51 @@ function stackedElements() {
 describe('Button stacked anatomy contract', () => {
   it('exports geometry-only types without transferring paint or effects ownership', () => {
     expectTypeOf<ButtonIconLayout>().toEqualTypeOf<'inline' | 'edge' | 'stacked'>();
+    expectTypeOf<ButtonStackedRadiusMode>().toEqualTypeOf<'rounded' | 'square'>();
+    expectTypeOf<
+      ButtonStackedContainerElementStyle['scales']['borderRadius']['pill']
+    >().toEqualTypeOf<undefined>();
     expectTypeOf<ButtonStackedContainerElementStyle>().not.toHaveProperty('palettes');
     expectTypeOf<ButtonStackedContainerElementStyle>().not.toHaveProperty('effects');
     expectTypeOf<ButtonStackedLabelElementStyle>().not.toHaveProperty('palettes');
     expectTypeOf<ButtonStackedLabelElementStyle>().not.toHaveProperty('effects');
     expectTypeOf<ButtonStackedIconElementStyle>().not.toHaveProperty('scales');
     expectTypeOf<ButtonStackedIconElementStyle>().not.toHaveProperty('palettes');
+  });
+
+  it.each([
+    ['rounded', 'rounded'],
+    ['square', 'square'],
+    ['pill', 'rounded']
+  ] as const)('resolves %s to the supported stacked shape %s', (radius, expected) => {
+    expect(resolveButtonStackedRadiusMode(radius)).toBe(expected);
+  });
+
+  it.each([24, { 's:md:1': 24 }])('rejects Pill stacked geometry: %j', (pill) => {
+    const { e8 } = stackedElements();
+    expect(
+      validateButtonComponentContract({
+        elements: {
+          e8: { ...e8, scales: { ...e8.scales, borderRadius: { rounded: 4, pill } } }
+        }
+      })
+    ).toEqual(['components.button.elements.e8.scales.borderRadius.pill: unrecognized key']);
+  });
+
+  it('requires a radius object while allowing each supported shape to be authored independently', () => {
+    const { e8 } = stackedElements();
+    for (const borderRadius of [{ rounded: 4 }, { square: 0 }]) {
+      expect(
+        validateButtonComponentContract({
+          elements: { e8: { ...e8, scales: { ...e8.scales, borderRadius } } }
+        })
+      ).toEqual([]);
+    }
+    expect(
+      validateButtonComponentContract({
+        elements: { e8: { ...e8, scales: { ...e8.scales, borderRadius: 4 } } }
+      })
+    ).toContain('components.button.elements.e8.scales.borderRadius: expected object');
   });
 
   it('accepts a complete optional recipe and the stacked layout default', () => {

@@ -12,7 +12,7 @@ import type {
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ButtonIndicatorPlacement,
-  ButtonIndicatorScope,
+  ButtonSelectionEmphasis,
   ComponentClassNameMapJSON,
   ContentSurfaceContextMap,
   ControlCursor,
@@ -50,6 +50,7 @@ import type {
   SwitchControlTextVisibility,
   SwitchMode,
   SwitchVariant,
+  SystemButtonIntent,
   TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorShape,
@@ -125,7 +126,8 @@ export type KiskadeeComponentConfigs = {
       groupDivider?: boolean;
       disclosureDivider?: boolean;
       indicatorPlacement?: ButtonIndicatorPlacement;
-      indicatorScope?: ButtonIndicatorScope;
+      selectionEmphasis?: ButtonSelectionEmphasis;
+      selectionIntent?: SystemButtonIntent;
     };
     effects?: {
       activationFeedback?: ActivationFeedbackSetting;

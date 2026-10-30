@@ -2,11 +2,12 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
-  type ButtonIndicatorScope,
+  type ButtonSelectionEmphasis,
   type ClassNameByElementJSON,
   fg,
   resolveSupportedSize,
   type Schema,
+  type SystemButtonIntent,
   validateButtonComponentContract
 } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
@@ -215,14 +216,59 @@ describe('Button indicator publication', () => {
     expect(buildSizeSupport(button, ['e11', 'e12'])).toEqual({ sizes: [] });
   });
 
-  it.each<ButtonIndicatorScope | undefined>([
+  it('publishes selection intent faithfully without adding paint classes or retaining a stale default', async () => {
+    const schema = fixture();
+    const result = await compile(schema);
+    schema.components.button!.options = { selectionIntent: 'primary' };
+    const withSelectionIntent = await compile(schema);
+    expect(withSelectionIntent.styleKeys).toEqual(result.styleKeys);
+    expect(withSelectionIntent.css).toEqual(result.css);
+    expect(withSelectionIntent.maps).toEqual(result.maps);
+    const dir = await mkdtemp(join(tmpdir(), 'kiskadee-button-selection-intent-'));
+    try {
+      const write = (file: string, value: unknown) =>
+        writeFile(join(dir, file), typeof value === 'string' ? value : JSON.stringify(value));
+      await write('manifest.json', { themes: { default: ['light'] }, components: { button: {} } });
+      await write('global.kiskadee.json', {
+        components: { button: { options: { selectionIntent: 'destructive' } } }
+      });
+      for (const selectionIntent of [
+        'primary',
+        'neutral',
+        undefined,
+        'support',
+        'destructive',
+        'positive'
+      ] satisfies Array<SystemButtonIntent | undefined>) {
+        schema.components.button!.options =
+          selectionIntent === undefined ? {} : { selectionIntent };
+        await write('core.kiskadee.json', result.maps.core);
+        await write('core.kiskadee.css', result.css.coreCss);
+        await write('default.light.kiskadee.json', result.maps.palettes['default.light']);
+        await write('default.light.kiskadee.css', result.css.palettes['default.light']);
+        await publishComponentResources(dir, schema);
+        const published = JSON.parse(
+          await readFile(join(dir, 'components/button.kiskadee.json'), 'utf8')
+        );
+        if (selectionIntent === undefined)
+          expect(published).not.toHaveProperty('options.selectionIntent');
+        else expect(published).toHaveProperty('options.selectionIntent', selectionIntent);
+      }
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it.each<ButtonSelectionEmphasis | undefined>([
     undefined,
-    'all',
-    'stacked'
-  ])('publishes optional scope %j and removes stale capability when absent', async (indicatorScope) => {
+    'lowest',
+    'low',
+    'medium',
+    'high'
+  ])('publishes selection emphasis %j and removes stale capability when absent', async (selectionEmphasis) => {
     const schema = fixture();
     addOutsideRecipe(schema);
-    if (indicatorScope !== undefined) schema.components.button!.options = { indicatorScope };
+    if (selectionEmphasis !== undefined) schema.components.button!.options = { selectionEmphasis };
     const result = await compile(schema);
     const dir = await mkdtemp(join(tmpdir(), 'kiskadee-button-indicator-'));
     try {
@@ -230,7 +276,12 @@ describe('Button indicator publication', () => {
         writeFile(join(dir, file), typeof value === 'string' ? value : JSON.stringify(value));
       await write('manifest.json', { themes: { default: ['light'] }, components: { button: {} } });
       await write('global.kiskadee.json', {
-        components: { button: { indicator: { sizesByRadius: { rounded: ['stale'] } } } }
+        components: {
+          button: {
+            options: { indicatorScope: 'all' },
+            indicator: { sizesByRadius: { rounded: ['stale'] } }
+          }
+        }
       });
       await write('core.kiskadee.json', result.maps.core);
       await write('core.kiskadee.css', result.css.coreCss);
@@ -242,9 +293,10 @@ describe('Button indicator publication', () => {
           await readFile(join(dir, 'components/button.kiskadee.json'), 'utf8')
         ) as ComponentResourceArtifact;
       const published = await read();
-      if (indicatorScope === undefined)
-        expect(published).not.toHaveProperty('options.indicatorScope');
-      else expect(published).toHaveProperty('options.indicatorScope', indicatorScope);
+      expect(published).not.toHaveProperty('options.indicatorScope');
+      if (selectionEmphasis === undefined)
+        expect(published).not.toHaveProperty('options.selectionEmphasis');
+      else expect(published).toHaveProperty('options.selectionEmphasis', selectionEmphasis);
       expect(published.indicator?.sizesByRadius).toEqual({
         rounded: ['md:1'],
         pill: ['md:1'],
@@ -341,7 +393,7 @@ describe('Button indicator publication', () => {
           paddingBottom: 4,
           paddingLeft: 4,
           borderWidth: 1,
-          borderRadius: { rounded: 4, pill: 24, square: 0 }
+          borderRadius: { rounded: 4, square: 0 }
         }
       },
       e9: {
@@ -352,16 +404,17 @@ describe('Button indicator publication', () => {
       e10: { name: 'button-stacked-icon', iconSize: { 's:all': 's:md:1' } }
     });
     const coverage = (size: string) => ({ rounded: [size], pill: [size], square: [size] });
+    const stackedCoverage = (size: string) => ({ rounded: [size], pill: [], square: [size] });
     expect(buildButtonIndicatorSupport(button, ['md:1', 'lg:1'])).toEqual({
       sizesByRadius: coverage('md:1'),
-      stackedSizesByRadius: coverage('md:1'),
+      stackedSizesByRadius: stackedCoverage('md:1'),
       outsideSizesByRadius: coverage('lg:1'),
-      stackedOutsideSizesByRadius: coverage('lg:1')
+      stackedOutsideSizesByRadius: stackedCoverage('lg:1')
     });
     button.elements.e12!.scales.borderRadius.pill = { 's:lg:1': { 'bp:sm:1': 2 } };
     const support = buildButtonIndicatorSupport(button, ['md:1', 'lg:1']);
     expect(support?.sizesByRadius.pill).toEqual(['md:1']);
-    expect(support?.stackedSizesByRadius?.pill).toEqual(['md:1']);
+    expect(support?.stackedSizesByRadius?.pill).toEqual([]);
     expect(support?.outsideSizesByRadius?.pill).toEqual([]);
     expect(support?.stackedOutsideSizesByRadius?.pill).toEqual([]);
   });
@@ -406,7 +459,7 @@ describe('Button indicator publication', () => {
           paddingBottom: 4,
           paddingLeft: 4,
           borderWidth: { 's:lg:1': 2 },
-          borderRadius: { rounded: 4, pill: 24, square: 0 }
+          borderRadius: { rounded: 4, square: 0 }
         }
       },
       e9: {
@@ -418,14 +471,15 @@ describe('Button indicator publication', () => {
     });
     const componentSizes = ['md:1', 'lg:1'];
     const all = (sizes: string[]) => ({ rounded: sizes, pill: sizes, square: sizes });
+    const stacked = (sizes: string[]) => ({ rounded: sizes, pill: [], square: sizes });
     expect(buildButtonIndicatorSupport(button, componentSizes)).toEqual({
       sizesByRadius: all(['md:1']),
-      stackedSizesByRadius: all(['lg:1'])
+      stackedSizesByRadius: stacked(['lg:1'])
     });
     delete button.elements.e1!.scales!.borderWidth;
     expect(buildButtonIndicatorSupport(button, componentSizes)).toEqual({
       sizesByRadius: all([]),
-      stackedSizesByRadius: all(['lg:1'])
+      stackedSizesByRadius: stacked(['lg:1'])
     });
     button.elements.e1!.scales!.borderWidth = 1;
     (button.elements.e8!.scales as any).borderWidth = undefined;

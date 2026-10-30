@@ -21,7 +21,6 @@ const context: KiskadeeContextValue = {
       e8: {
         s: { 'md:1': 'stacked-root' },
         rr: { 'md:1': 'stacked-rounded' },
-        rp: { 'md:1': 'stacked-pill' },
         rs: { 'md:1': 'stacked-square' }
       },
       e9: { d: 'stacked-font', s: { 'md:1': 'stacked-label' } },
@@ -40,7 +39,7 @@ const context: KiskadeeContextValue = {
       layouts: {
         stacked: {
           sizes: ['md:1'],
-          sizesByRadius: { rounded: ['md:1'], pill: ['md:1'], square: ['md:1'] }
+          sizesByRadius: { rounded: ['md:1'], pill: [], square: ['md:1'] }
         }
       }
     }
@@ -242,12 +241,13 @@ describe('Button stacked composition', () => {
 
     rerender(example({ icon, label: 'Add', radius: 'pill' }, pillOnly));
     expect(screen.getByRole('button', { name: 'Add' })).toBe(button);
-    expect(button.className).toContain('stacked-root');
-    expect(button.className).toContain('stacked-pill');
-    expect(button.className).not.toContain('horizontal-root');
+    expect(button.className).not.toContain('stacked-root');
+    expect(button.className).not.toContain('stacked-pill');
+    expect(button.className).toContain('horizontal-root');
 
     rerender(example({ icon, label: 'Add' }, { ...pillOnly, global: { radius: 'pill' } }));
-    expect(button.className).toContain('stacked-pill');
+    expect(button.className).not.toContain('stacked-pill');
+    expect(button.className).not.toContain('stacked-root');
     rerender(
       example(
         { icon, label: 'Add', radius: 'rounded' },
@@ -263,7 +263,79 @@ describe('Button stacked composition', () => {
         </Button.Group>
       </KiskadeeContext.Provider>
     );
-    expect(screen.getByRole('button', { name: 'Add' }).className).toContain('stacked-pill');
+    expect(screen.getByRole('button', { name: 'Add' }).className).not.toContain('stacked-root');
+  });
+
+  it('normalizes Pill before capability lookup and preserves Square across radius changes', () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const props = { icon, label: 'Add', radiusEffect: true };
+    const value: KiskadeeContextValue = {
+      ...context,
+      global: { radius: 'pill' },
+      classesMap: {
+        button: {
+          ...context.classesMap.button,
+          e1: {
+            ...context.classesMap.button?.e1,
+            e: { rr: 'rounded-effect', rp: 'pill-effect' }
+          }
+        }
+      }
+    };
+    const { rerender } = render(example(props, value));
+    const button = screen.getByRole('button', { name: 'Add' });
+    expect(button.className).toContain('stacked-rounded');
+    expect(button.className).toContain('rounded-effect');
+    expect(button.className).not.toContain('pill-effect');
+    expect(warning).not.toHaveBeenCalled();
+    rerender(example({ ...props, radius: 'pill' }, value));
+    expect(screen.getByRole('button', { name: 'Add' })).toBe(button);
+    expect(button.className).toContain('stacked-rounded');
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining('Pill radius was converted'));
+    rerender(example(props, { ...value, global: { radius: 'square' } }));
+    expect(button.className).toContain('stacked-square');
+    expect(button.className).not.toContain('rounded-effect');
+    rerender(example({ ...props, iconLayout: 'inline', radius: 'pill' }, value));
+    expect(button.className).not.toContain('stacked-root');
+    expect(button.className).toContain('pill-effect');
+  });
+
+  it('normalizes the entire connected group and its shadow while preserving horizontal-only Pill groups', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const value: KiskadeeContextValue = {
+      ...context,
+      global: { radius: 'pill' },
+      classesMap: {
+        button: {
+          ...context.classesMap.button,
+          e1: {
+            s: { 'md:1': 'horizontal-root' },
+            rr: { 'md:1': 'horizontal-rounded' },
+            rp: { 'md:1': 'horizontal-pill' },
+            e: { h: 'group-shadow' }
+          }
+        }
+      }
+    };
+    const group = (stacked: boolean) => (
+      <KiskadeeContext.Provider value={value}>
+        <Button.Group data-testid="group" size="md" shadow>
+          <Fragment key="members">
+            <Button iconLayout={stacked ? 'stacked' : 'inline'} icon={icon} label="Add" />
+            <Button label="Other" />
+          </Fragment>
+        </Button.Group>
+      </KiskadeeContext.Provider>
+    );
+    const { rerender } = render(group(true));
+    expect(screen.getByTestId('group').className).toContain('horizontal-rounded');
+    expect(screen.getByTestId('group').className).toContain('group-shadow');
+    expect(screen.getByRole('button', { name: 'Add' }).className).toContain('stacked-rounded');
+    expect(screen.getByRole('button', { name: 'Other' }).className).toContain('horizontal-rounded');
+    rerender(group(false));
+    expect(screen.getByTestId('group').className).toContain('horizontal-pill');
+    expect(screen.getByRole('button', { name: 'Add' }).className).toContain('horizontal-pill');
+    expect(screen.getByRole('button', { name: 'Other' }).className).toContain('horizontal-pill');
   });
 
   it('does not activate stacked from legacy size-only metadata or a missing radius class', () => {

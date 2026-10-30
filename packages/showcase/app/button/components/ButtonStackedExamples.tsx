@@ -7,7 +7,7 @@ import type {
   SurfaceContext,
   TypographyProfileId
 } from '@kiskadee/core';
-import { componentScaleToSize } from '@kiskadee/core';
+import { componentScaleToSize, resolveButtonStackedRadiusMode } from '@kiskadee/core';
 import { Button, type ButtonArtifactConfig } from '@kiskadee/react-components/button';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
@@ -49,7 +49,13 @@ export function ButtonStackedExamples({
   const textProfiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
   const [addedItems, setAddedItems] = useState(0);
-  const supportsAction = supportsStackedButtonSize(classesMap, 's:md:1', stackedSizes, radius);
+  const stackedRadius = resolveButtonStackedRadiusMode(radius);
+  const supportsAction = supportsStackedButtonSize(
+    classesMap,
+    's:md:1',
+    stackedSizes,
+    stackedRadius
+  );
 
   return (
     <section className={styles.sizeScaleComposition} aria-labelledby="button-stacked-title">
@@ -66,7 +72,7 @@ export function ButtonStackedExamples({
         data-button-scale-composition="stacked"
       >
         {STACKED_SIZES.map(({ value, label }) =>
-          supportsStackedButtonSize(classesMap, value, stackedSizes, radius) ? (
+          supportsStackedButtonSize(classesMap, value, stackedSizes, stackedRadius) ? (
             <ButtonSizeScaleExample
               key={value}
               compact
@@ -80,7 +86,7 @@ export function ButtonStackedExamples({
                   aria-describedby={descriptionId}
                   iconLayout="stacked"
                   iconTreatment="plain"
-                  radius={radius}
+                  radius={stackedRadius}
                   size={componentScaleToSize(value)}
                   intent="primary"
                   emphasis="high"
@@ -115,7 +121,7 @@ export function ButtonStackedExamples({
               iconTreatment="plain"
               intent="neutral"
               emphasis="low"
-              radius={radius}
+              radius={stackedRadius}
               size="md"
               surfaceContext={surfaceContext}
               onClick={() => setAddedItems((count) => count + 1)}

@@ -4,6 +4,7 @@ import type { DensityScaleMap } from '../density.ts';
 import type { ElementHeightReference } from '../element-height-reference.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
 import type { ElementIconSize } from '../icon-sizes.ts';
+import type { RadiusMode } from '../schema.ts';
 import type {
   Color,
   ColorProperty,
@@ -46,8 +47,15 @@ type ElementNameMetadata = {
 };
 
 export type ButtonIconLayout = 'inline' | 'edge' | 'stacked';
+export type ButtonStackedRadiusMode = 'rounded' | 'square';
+
+/** Resolves the stacked shape without changing preset-authored radius values. */
+export function resolveButtonStackedRadiusMode(radius: RadiusMode): ButtonStackedRadiusMode {
+  return radius === 'square' ? 'square' : 'rounded';
+}
+
 export type ButtonIndicatorPlacement = 'inside' | 'outside';
-export type ButtonIndicatorScope = 'all' | 'stacked';
+export type ButtonSelectionEmphasis = 'lowest' | 'low' | 'medium' | 'high';
 export type ButtonIconPlacement = 'leading' | 'trailing';
 export type ButtonIconSurfaceCorners = 'edge' | 'all';
 export type ButtonIconTreatment = 'plain' | 'surface';
@@ -71,8 +79,10 @@ export type ButtonOptions = {
   iconSurfaceCorners?: ButtonIconSurfaceCorners;
   /** Places the optional decorative state indicator relative to the Button border box. */
   indicatorPlacement?: ButtonIndicatorPlacement;
-  /** Limits default indicator rendering to a Button composition; omission preserves all layouts. */
-  indicatorScope?: ButtonIndicatorScope;
+  /** Selects the presentation of the semantic selected state; omission defaults to lowest. */
+  selectionEmphasis?: ButtonSelectionEmphasis;
+  /** Selects the system intent used while selected; omission follows the base Button intent. */
+  selectionIntent?: SystemButtonIntent;
 };
 
 /**
@@ -228,8 +238,14 @@ export type ButtonBadgeRelationElementStyle = {
 /** e8 replaces root geometry while e1 retains surface, decoration and effects ownership. */
 export type ButtonStackedContainerElementStyle = {
   name: string;
-  scales: Required<Omit<NonNullable<ButtonContainerElementStyle['scales']>, '_boxHeight'>> &
-    Pick<NonNullable<ButtonContainerElementStyle['scales']>, '_boxHeight'>;
+  scales: Required<
+    Omit<NonNullable<ButtonContainerElementStyle['scales']>, '_boxHeight' | 'borderRadius'>
+  > &
+    Pick<NonNullable<ButtonContainerElementStyle['scales']>, '_boxHeight'> & {
+      borderRadius: Partial<Record<ButtonStackedRadiusMode, ScaleBySize | number>> & {
+        pill?: never;
+      };
+    };
 };
 
 /** e9 replaces label typography; e2 retains foreground and effects ownership. */
@@ -316,6 +332,7 @@ type ElementContractRules = {
   typographyRequired?: boolean;
   scales?: readonly string[];
   requiredScales?: readonly string[];
+  radiusModes?: readonly string[];
   palettes?: readonly ColorProperty[];
   effects?: false;
 };
@@ -330,7 +347,8 @@ const BUTTON_OPTION_KEYS = [
   'iconTreatment',
   'iconSurfaceCorners',
   'indicatorPlacement',
-  'indicatorScope'
+  'selectionEmphasis',
+  'selectionIntent'
 ] as const;
 const BUTTON_ELEMENTS_KEYS = [
   'e1',
@@ -421,6 +439,7 @@ const BUTTON_RULES: Record<(typeof BUTTON_ELEMENTS_KEYS)[number], ElementContrac
       'borderWidth',
       'borderRadius'
     ],
+    radiusModes: ['rounded', 'square'],
     effects: false
   },
   e9: {
@@ -783,6 +802,18 @@ function validateElementContract(
       if (rules.scales.includes('_boxHeight') && value.scales._boxHeight !== undefined) {
         validateHeightReference(value.scales._boxHeight, `${path}.scales._boxHeight`, issues);
       }
+      if (rules.radiusModes && value.scales.borderRadius !== undefined) {
+        if (!isRecord(value.scales.borderRadius)) {
+          issues.push(`${path}.scales.borderRadius: expected object`);
+        } else {
+          validateAllowedKeys(
+            value.scales.borderRadius,
+            rules.radiusModes,
+            `${path}.scales.borderRadius`,
+            issues
+          );
+        }
+      }
     }
   }
 
@@ -870,11 +901,23 @@ export function validateButtonComponentContract(
       }
 
       if (
-        value.options.indicatorScope !== undefined &&
-        value.options.indicatorScope !== 'all' &&
-        value.options.indicatorScope !== 'stacked'
+        value.options.selectionEmphasis !== undefined &&
+        value.options.selectionEmphasis !== 'lowest' &&
+        value.options.selectionEmphasis !== 'low' &&
+        value.options.selectionEmphasis !== 'medium' &&
+        value.options.selectionEmphasis !== 'high'
       ) {
-        issues.push(`${path}.options.indicatorScope: expected "all" or "stacked"`);
+        issues.push(
+          `${path}.options.selectionEmphasis: expected "lowest", "low", "medium" or "high"`
+        );
+      }
+
+      if (
+        value.options.selectionIntent !== undefined &&
+        (typeof value.options.selectionIntent !== 'string' ||
+          !Object.hasOwn(ButtonIntentKeys, value.options.selectionIntent))
+      ) {
+        issues.push(`${path}.options.selectionIntent: expected a system Button intent`);
       }
 
       if (

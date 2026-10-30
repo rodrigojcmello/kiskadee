@@ -617,7 +617,7 @@ export function createFluent2MicrosoftButtonSchema({
       iconSurfaceCorners: 'edge',
       iconTreatment: 'plain',
       indicatorPlacement: 'inside',
-      indicatorScope: 'stacked'
+      selectionEmphasis: 'lowest'
     },
     effects: {
       shadow: {
@@ -840,10 +840,7 @@ export function createFluent2MicrosoftButtonSchema({
             's:lg:2': 20
           },
           borderWidth: BUTTON_BORDER_WIDTH,
-          borderRadius: {
-            ...BUTTON_SHARED_RADII,
-            pill: { 's:sm:1': 23, 's:md:1': 27, 's:lg:1': 34, 's:lg:2': 40 }
-          }
+          borderRadius: BUTTON_SHARED_RADII
         }
       },
       e9: {

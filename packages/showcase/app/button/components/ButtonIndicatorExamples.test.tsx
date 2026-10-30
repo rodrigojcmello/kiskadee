@@ -21,12 +21,12 @@ vi.mock('@kiskadee/react-components/button', () => ({
   Button: Object.assign(
     ({
       size: _size,
-      radius: _radius,
+      radius,
       intent: _intent,
       emphasis: _emphasis,
       iconLayout: _layout,
       indicatorPlacement,
-      indicator,
+      selectionEmphasis,
       controlState,
       toggle,
       pending,
@@ -38,7 +38,7 @@ vi.mock('@kiskadee/react-components/button', () => ({
       emphasis?: string;
       iconLayout?: string;
       indicatorPlacement?: string;
-      indicator?: boolean;
+      selectionEmphasis?: string;
       controlState?: boolean;
       toggle?: boolean;
       pending?: boolean;
@@ -48,7 +48,8 @@ vi.mock('@kiskadee/react-components/button', () => ({
         ...props,
         'aria-pressed': toggle ? controlState : undefined,
         'data-placement': indicatorPlacement,
-        'data-indicator': indicator,
+        'data-radius': radius,
+        'data-selection-emphasis': selectionEmphasis,
         'aria-busy': pending || undefined
       }),
     {
@@ -113,20 +114,28 @@ function render(
 }
 
 describe('Button indicator Showcase', () => {
-  it('leaves default and stacked samples under preset policy and explicitly opts in comparisons', () => {
+  it('uses the preset default only for its default sample and Low for the indicated comparisons', () => {
     render();
     const buttons = Array.from(container.querySelectorAll('button'));
     for (const button of buttons.filter((element) =>
-      ['Preset default', 'Chat'].includes(element.textContent ?? '')
+      ['Preset default'].includes(element.textContent ?? '')
     )) {
-      expect(button.hasAttribute('data-indicator')).toBe(false);
+      expect(button.hasAttribute('data-selection-emphasis')).toBe(false);
     }
     for (const button of buttons.filter((element) =>
-      ['I', 'primary', 'neutral', 'destructive', 'positive', 'Day', 'Week', 'Month'].includes(
-        element.textContent ?? ''
-      )
+      [
+        'Chat',
+        'I',
+        'primary',
+        'neutral',
+        'destructive',
+        'positive',
+        'Day',
+        'Week',
+        'Month'
+      ].includes(element.textContent ?? '')
     )) {
-      expect(button.getAttribute('data-indicator')).toBe('true');
+      expect(button.getAttribute('data-selection-emphasis')).toBe('low');
     }
   });
 
@@ -158,6 +167,17 @@ describe('Button indicator Showcase', () => {
     expect(container.textContent).not.toContain('Chat');
     render();
     expect(container.textContent).toContain('Chat');
+  });
+
+  it('uses Rounded coverage for the Stacked sample when horizontal samples request Pill', () => {
+    artifact.coverage = { pill: ['md:1'] };
+    artifact.outsideCoverage = { pill: ['md:1'] };
+    render('pill');
+    const chats = Array.from(container.querySelectorAll('button')).filter(
+      (button) => button.textContent === 'Chat'
+    );
+    expect(chats).toHaveLength(2);
+    expect(chats.every((button) => button.dataset.radius === 'rounded')).toBe(true);
   });
 
   it.each([

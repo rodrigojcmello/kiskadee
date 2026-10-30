@@ -7,7 +7,68 @@ import type {
   SurfaceContext
 } from '@kiskadee/core';
 import { describe, expect, it, vi } from 'vitest';
-import { resolveButtonClassNames, supportsButtonStackedLayout } from './Button.class-names.ts';
+import {
+  resolveButtonClassNames,
+  resolveButtonGroupFrameClassName,
+  supportsButtonStackedLayout
+} from './Button.class-names.ts';
+
+describe('Button Group Rest frame', () => {
+  const frame: ClassNameByElementJSON = {
+    d: 'frame-border-style',
+    s: { all: 'frame-border-width', 'md:1': 'frame-medium-border' },
+    rr: { 'md:1': 'frame-rounded' },
+    rs: { 'md:1': 'frame-square' },
+    c: {
+      s: { neutral: { m: 'frame-border-rest frame-bottom-rest', h: 'frame-high-rest' } },
+      v: { neutral: { m: 'frame-vivid-rest' } }
+    }
+  };
+  const resolveFrame = (element: ClassNameByElementJSON | undefined = frame) =>
+    resolveButtonGroupFrameClassName({
+      element,
+      scale: 's:md:1',
+      radius: 'rounded',
+      intent: 'neutral',
+      emphasis: 'medium',
+      surfaceContext: 'onSubtle'
+    });
+
+  it('consumes only the published frame at the effective size and palette', () => {
+    expect(resolveFrame()).toBe(
+      'frame-border-style frame-border-width frame-medium-border frame-rounded frame-border-rest frame-bottom-rest'
+    );
+    expect(
+      resolveButtonGroupFrameClassName({
+        element: frame,
+        scale: 'md:1',
+        radius: undefined,
+        globalRadius: 'square',
+        intent: 'neutral',
+        emphasis: 'medium',
+        surfaceContext: 'onVivid'
+      })
+    ).toBe(
+      'frame-border-style frame-border-width frame-medium-border frame-square frame-vivid-rest'
+    );
+  });
+
+  it('requires complete frame geometry, radius and paint without fallback', () => {
+    for (const element of [
+      {},
+      { ...frame, d: undefined },
+      { ...frame, s: undefined },
+      { ...frame, rr: undefined },
+      { ...frame, c: undefined },
+      { ...frame, c: { s: { neutral: { h: 'another-emphasis' } } } }
+    ]) {
+      expect(resolveFrame(element)).toBeUndefined();
+    }
+    expect(
+      resolveButtonGroupFrameClassName({ element: frame, scale: 'lg:1', radius: 'rounded' })
+    ).toBeUndefined();
+  });
+});
 
 function createElement(slot: string, includeOnVivid = true): ClassNameByElementJSON {
   return {
@@ -69,7 +130,7 @@ describe('Button surface context class resolution', () => {
     'onSubtle',
     'onVivid'
   ] as const)('replaces stacked geometry while retaining %s colors, states and radius ownership', (surfaceContext) => {
-    const e8 = { ...createElement('e8'), rp: { 'md:1': 'stacked-pill-radius' } };
+    const e8 = { ...createElement('e8'), rr: { 'md:1': 'stacked-rounded-radius' } };
     const classes = resolveButtonClassNames({
       e1: { ...createElement('e1'), rp: { 'md:1': 'horizontal-pill-radius' } },
       e2: createElement('e2'),
@@ -95,7 +156,7 @@ describe('Button surface context class resolution', () => {
     expect(classes.e1).toContain('e1-base');
     expect(classes.e1).toContain('e8-scale-all');
     expect(classes.e1).toContain('e8-scale-medium');
-    expect(classes.e1).toContain('stacked-pill-radius');
+    expect(classes.e1).toContain('stacked-rounded-radius');
     expect(classes.e1).toContain('-p');
     expect(classes.e1).toContain('-s');
     expect(classes.e1).not.toContain('horizontal-pill-radius');
@@ -142,7 +203,7 @@ describe('Button surface context class resolution', () => {
       e10: { s: { all: 'icon' } }
     };
     expect(supportsButtonStackedLayout(elements, 's:md:1', 'rounded')).toBe(false);
-    expect(supportsButtonStackedLayout(elements, 's:md:1', 'pill')).toBe(true);
+    expect(supportsButtonStackedLayout(elements, 's:md:1', 'pill')).toBe(false);
     expect(supportsButtonStackedLayout(elements, 's:sm:1', 'pill')).toBe(false);
     expect(supportsButtonStackedLayout(elements, 's:sm:1', 'square')).toBe(true);
   });

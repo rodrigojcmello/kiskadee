@@ -89,6 +89,16 @@ Google Fonts variable stylesheet covering the supported Fill 0–1 axis only whe
 selected. The `fill-1` variant is available to applications but is not the preset recommendation.
 No icon-font URL or loader is stored in the preset schema.
 
+### Button geometry inspection (2026-10-26)
+
+Status: **Official adapted**. The user-supplied Material kit copy inspected in OpenPencil
+provides inline Button visual heights 32/40/56/96/136 and icons 20/20/24/32/40. The Material
+icon-size catalog adds 40px while preserving the existing 48px standalone Icon output.
+Source-copy identity, local imported node IDs, measurements and version boundaries
+are recorded in [Button evidence](components/button.md#official-geometry-and-kiskadee-mapping).
+The same change authors Stacked and selection indicators as **Kiskadee extension** recipes
+for existing framework Button capabilities; neither is presented as official Material anatomy.
+
 ## Historical references and superseded decisions
 
 The January/February 2026 inspection compared the Material website's purple `#65558e`, the

@@ -50,7 +50,7 @@ export function compileLayoutArtifacts(options: CompileLayoutArtifactsOptions): 
   }
 
   for (const elementName of ['e1', 'e2'] as const) {
-    const element = layout[elementName];
+    const element = elementName === 'e1' ? layout.e1 : layout.e2;
     const emission = resolveElementStyleEmissionPolicy(policy, 'layout', elementName);
     if (
       emission.paddingEmission !== 'token' ||

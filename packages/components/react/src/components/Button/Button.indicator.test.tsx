@@ -101,7 +101,7 @@ const context: KiskadeeContextValue = {
 function example(props: ButtonProps = {}, value = context) {
   return (
     <KiskadeeContext.Provider value={value}>
-      <Button activationFeedback={false} size="md" {...props}>
+      <Button activationFeedback={false} size="md" selectionEmphasis="low" {...props}>
         {props.children ?? 'Chat'}
       </Button>
     </KiskadeeContext.Provider>
@@ -167,11 +167,11 @@ describe('Button indicator coverage', () => {
 });
 
 describe('Button decorative state indicator', () => {
-  it('follows preset scope by actual layout and supports explicit per-instance overrides', () => {
-    const scoped: KiskadeeContextValue = {
+  it('resolves the preset selection emphasis and explicit overrides uniformly across layouts', () => {
+    const presetLowest: KiskadeeContextValue = {
       ...context,
       componentArtifacts: {
-        button: { ...context.componentArtifacts!.button!, options: { indicatorScope: 'stacked' } }
+        button: { ...context.componentArtifacts!.button!, options: { selectionEmphasis: 'lowest' } }
       }
     };
     const children = (
@@ -182,21 +182,39 @@ describe('Button decorative state indicator', () => {
         <Button.Label>Chat</Button.Label>
       </>
     );
-    const { rerender } = render(example({ controlState: true, children }, scoped));
+    const { rerender } = render(
+      example({ controlState: true, children, selectionEmphasis: undefined }, presetLowest)
+    );
     const button = screen.getByRole('button');
     const label = screen.getByText('Chat');
     expect(button.querySelector('.k-btn-e11')).toBeNull();
-    rerender(example({ controlState: true, children, iconLayout: 'stacked' }, scoped));
-    expect(button.querySelector('.k-btn-e11')?.classList.contains('k-btn-e11b')).toBe(true);
     rerender(
-      example({ controlState: true, children, iconLayout: 'stacked', indicator: false }, scoped)
+      example(
+        { controlState: true, children, iconLayout: 'stacked', selectionEmphasis: undefined },
+        presetLowest
+      )
     );
     expect(button.querySelector('.k-btn-e11')).toBeNull();
-    expect(button.classList.contains('k-btn-e1k')).toBe(false);
-    rerender(example({ controlState: true, children, indicator: true }, scoped));
+    rerender(
+      example(
+        { controlState: true, children, iconLayout: 'stacked', selectionEmphasis: 'low' },
+        presetLowest
+      )
+    );
     expect(button.querySelector('.k-btn-e11')?.classList.contains('k-btn-e11b')).toBe(true);
-    expect(button.hasAttribute('indicator')).toBe(false);
-    rerender(example({ controlState: true, children }, scoped));
+    rerender(example({ controlState: true, children, selectionEmphasis: 'lowest' }, presetLowest));
+    expect(button.querySelector('.k-btn-e11')).toBeNull();
+    expect(button.classList.contains('k-btn-e1k')).toBe(false);
+    const presetLow: KiskadeeContextValue = {
+      ...presetLowest,
+      componentArtifacts: {
+        button: { ...context.componentArtifacts!.button!, options: { selectionEmphasis: 'low' } }
+      }
+    };
+    rerender(example({ controlState: true, children, selectionEmphasis: undefined }, presetLow));
+    expect(button.querySelector('.k-btn-e11')?.classList.contains('k-btn-e11b')).toBe(true);
+    expect(button.hasAttribute('selectionEmphasis')).toBe(false);
+    rerender(example({ controlState: true, children, selectionEmphasis: 'lowest' }, presetLow));
     expect(button.querySelector('.k-btn-e11')).toBeNull();
     rerender(example({ controlState: true, children }));
     expect(button.querySelector('.k-btn-e11')).not.toBeNull();
@@ -204,36 +222,76 @@ describe('Button decorative state indicator', () => {
     expect(screen.getByText('Chat')).toBe(label);
   });
 
-  it('applies stacked scope after content fallback and does not force missing recipes or states', () => {
+  it('defaults to lowest after layout fallback and never forces missing recipes or semantic selection', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const scoped: KiskadeeContextValue = {
-      ...context,
-      componentArtifacts: {
-        button: { ...context.componentArtifacts!.button!, options: { indicatorScope: 'stacked' } }
-      }
+    const props: ButtonProps = {
+      controlState: true,
+      iconLayout: 'stacked',
+      selectionEmphasis: undefined
     };
-    const props: ButtonProps = { controlState: true, iconLayout: 'stacked' };
-    const { rerender } = render(example(props, scoped));
+    const { rerender } = render(example(props));
     const button = screen.getByRole('button');
     expect(button.classList.contains('k-btn-e8')).toBe(false);
     expect(button.querySelector('.k-btn-e11')).toBeNull();
-    rerender(example({ ...props, indicator: true }, scoped));
+    rerender(example({ ...props, selectionEmphasis: 'low' }));
     const indicator = button.querySelector('.k-btn-e11');
     expect(indicator?.classList.contains('k-btn-e11b')).toBe(true);
-    rerender(example({ ...props, indicator: true, disabled: true }, scoped));
+    rerender(example({ ...props, selectionEmphasis: 'low', disabled: true }));
     expect(button.querySelector('.k-btn-e11')).toBe(indicator);
     expect(indicator?.classList.contains('k-btn-e11b')).toBe(false);
-    rerender(example({ ...props, controlState: false, indicator: true }, scoped));
+    rerender(example({ ...props, controlState: false, selectionEmphasis: 'low' }));
     expect(indicator?.classList.contains('k-btn-e11b')).toBe(false);
-    rerender(example({ ...props, indicator: true }, { ...scoped, componentArtifacts: {} }));
+    rerender(
+      example({ ...props, selectionEmphasis: 'low' }, { ...context, componentArtifacts: {} })
+    );
     expect(button.querySelector('.k-btn-e11')).toBeNull();
+  });
+
+  it.each([
+    'inside',
+    'outside'
+  ] as const)('uses the normalized stacked radius for the %s indicator on a Pill preset', (indicatorPlacement) => {
+    const value: KiskadeeContextValue = { ...context, global: { radius: 'pill' } };
+    render(
+      example(
+        {
+          iconLayout: 'stacked',
+          indicatorPlacement,
+          controlState: true,
+          children: (
+            <>
+              <Button.Icon>
+                <svg />
+              </Button.Icon>
+              <Button.Label>Chat</Button.Label>
+            </>
+          )
+        },
+        value
+      )
+    );
+    const button = screen.getByRole('button', { name: 'Chat' });
+    expect(button.className).toContain('stacked-rounded');
+    const indicator = button.querySelector('.k-btn-e11');
+    expect(indicator?.className).toContain(
+      indicatorPlacement === 'inside' ? 'indicator-rounded' : 'outside-indicator-rounded'
+    );
+    expect(indicator?.className).not.toContain('indicator-pill');
+    expect(indicator?.classList.contains('k-btn-e11b')).toBe(true);
   });
 
   it('preserves the native control, ref, label and stable passive node across states', () => {
     const ref = createRef<HTMLButtonElement>();
     const view = (props: ButtonProps) => (
       <KiskadeeContext.Provider value={context}>
-        <Button ref={ref} activationFeedback={false} size="md" toggle {...props}>
+        <Button
+          ref={ref}
+          activationFeedback={false}
+          size="md"
+          toggle
+          selectionEmphasis="low"
+          {...props}
+        >
           Chat
         </Button>
       </KiskadeeContext.Provider>
@@ -707,10 +765,10 @@ describe('Button decorative state indicator', () => {
     render(
       <KiskadeeContext.Provider value={context}>
         <Button.Group size="md" radius="square">
-          <Button controlState activationFeedback={false}>
+          <Button controlState activationFeedback={false} selectionEmphasis="low">
             Chat
           </Button>
-          <Button controlState activationFeedback={false}>
+          <Button controlState activationFeedback={false} selectionEmphasis="low">
             People
           </Button>
         </Button.Group>

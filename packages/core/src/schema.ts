@@ -473,12 +473,19 @@ export type ComponentVariantClassNameMapJSON = Record<string, ComponentElementCl
 
 export type ComponentVariantModeClassNameMapJSON = Record<string, ComponentVariantClassNameMapJSON>;
 
+/** Published element classes may coexist with component-owned projection maps. */
+export type ComponentProjectedClassNameMapJSON = Record<
+  string,
+  ClassNameByElementJSON | Partial<ComponentElementClassNameMapJSON> | undefined
+>;
+
 export type ComponentClassNameMapJSON = Partial<
   Record<
     string,
     | ComponentElementClassNameMapJSON
     | ComponentVariantClassNameMapJSON
     | ComponentVariantModeClassNameMapJSON
+    | ComponentProjectedClassNameMapJSON
   >
 >;
 

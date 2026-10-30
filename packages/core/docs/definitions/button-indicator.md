@@ -8,10 +8,11 @@ It has no semantic role, focus target, interaction owner or layout contribution.
 the state that drives its paint. Either recipe may be published independently. A preset containing
 neither recipe remains valid and does not publish indicator support.
 
-`options.indicatorPlacement` accepts `inside` and `outside`. `options.indicatorScope` accepts `all`
-and `stacked`; omission preserves `all` for consumers of existing presets. Scope describes default
-rendering by the actual active layout, not anatomy support or palette availability. It neither
-requires an indicator element nor removes support from other layouts.
+`options.indicatorPlacement` accepts `inside` and `outside` and controls positioning only.
+[Selection emphasis](./button-selection.md) owns activation: `low` and `high` request the indicator,
+while `lowest` and `medium` do not. Every level still requires a selected, available control and
+complete authored coverage. The removed `indicatorScope` option is invalid; there is no independent
+indicator activation prop. The preset default is `lowest` for every layout, including Stacked.
 
 Both recipes use the same geometry contract: `scales` requires positive `boxWidth` and `boxHeight`, non-negative
 `marginTop` (outside gap), `marginBottom` (inside gap), `marginLeft` and `marginRight` (horizontal
@@ -23,10 +24,13 @@ using the horizontal insets when the actual Button is narrower, without replacin
 
 Both elements contain complete geometry and `palettes` following the ordinary segment, theme,
 surface context, intent and emphasis hierarchy. Paint belongs only to `boxColor`. Position selects
-the participating element, without another palette axis or a different intent or emphasis. Both
+the participating element, without another palette axis or substituting an intent or emphasis for
+position. Both
 recipes consume the Button's ambient context; inside placement does not imply `onVivid`. Each
 recipe authors contrast for its actual position and host appearance. The context produced for
-independent descendants remains unchanged.
+independent descendants remains governed by that host appearance. When `selectionIntent` chooses
+a different selected color recipe, the indicator consumes the same effective paint intent and
+emphasis as the host, without changing its activation or geometry contract.
 
 Rest is optional only for this anatomy. State maps are sparse, including Selected substate maps.
 Every non-Rest paint uses a parent-state reference (`{ ref: color }` or `fg.parentState(...)`), so

@@ -78,6 +78,25 @@ describe('density artifact lowering', () => {
     expect(appendDensityCss('.fm-medium{padding:8px}', aliases)).toBe('.fm-medium{padding:8px}');
   });
 
+  it('lowers Group frame geometry with the same density aliases as the source Button', () => {
+    const maps = fixture();
+    const button = maps.button as Record<string, unknown>;
+    const frame = {
+      s: { 'sm:1': 'fm-small', 'md:1': 'fm-medium' },
+      rr: { 'sm:1': 'fm-rs', 'md:1': 'fm-rm' },
+      rp: { 'sm:1': 'fm-ps', 'md:1': 'fm-pm' },
+      rs: { all: 'fm-square' }
+    };
+    button.group = { frame };
+    const aliases = compileDensityClassMaps(maps, { button: { c: 'sm:1', s: 'md:1' } });
+    expect(frame.s).toHaveProperty('a', 'fm-small-dc fm-medium-ds');
+    expect(frame.rr).toHaveProperty('a', 'fm-rs-dc fm-rm-ds');
+    expect(frame.rp).toHaveProperty('a', 'fm-ps-dc fm-pm-ds');
+    expect(frame.rs).toEqual({ all: 'fm-square' });
+    expect(aliases.compact.get('fm-small')).toBe('fm-small-dc');
+    expect(aliases.compact.get('fm-rs')).toBe('fm-rs-dc');
+  });
+
   it('preserves interaction selectors and enclosing rules with exclusive width ranges', () => {
     const aliases = compileDensityClassMaps(fixture(), { button: { c: 'sm:1', s: 'md:1' } });
     const css = appendDensityCss(

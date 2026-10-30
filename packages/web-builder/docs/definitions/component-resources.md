@@ -40,13 +40,76 @@ are published.
 Nominal width remains a literal preset-authored scalar or size map. The Builder performs no
 measurement or geometry-based derivation of that width.
 
-`options.indicatorScope` publishes the authored `all` or `stacked` value through the existing
-component options. Omission stays omitted in the artifact, preserving the runtime's compatible
-`all` default; scope does not change geometry capability metadata.
+`options.selectionEmphasis` publishes the authored `lowest`, `low`, `medium` or `high` default.
+Omission stays omitted and the runtime uses `lowest`. Indicator activation is part of that scale;
+there is no independent `indicatorScope`, and stale scope metadata is removed when republishing.
+The scale does not change indicator geometry capability metadata.
+
+`options.selectionIntent` publishes an optional system-intent default unchanged. Omission remains
+omitted; the runtime resolves an explicit Button prop before this option and otherwise inherits
+the Button's base intent. It is not a palette branch or a replacement for `selectionEmphasis`.
+
+### Button selection paint projection
+
+The Button class map may publish a component-specific `selectionRest` object alongside its ordinary
+`eN` records. It references only existing classes and does not change Schema palettes, Style Keys,
+Style Emission Policy, or Structural Utility Projection (`p`) semantics. It emits no additional CSS.
+
+- Its optional `e1` through `e5` records contain only `c` and `e`, never geometry, decorations,
+  control-state classes, authored values or inferred colors.
+- `c` contains the ordinary High Rest/Hover/Focus/Pressed and terminal-state classes, excluding every
+  Selected rule. The surfaced icon region `e4` retains its existing emphasis coordinates because it
+  owns a separate surface rather than inheriting the Button's High paint.
+- `e` contains the ordinary effect buckets with Selected-specific classes removed. Effect bucket
+  names and size keys are identical to the ordinary class map.
+- Core resources carry effect projections, while palette resources carry color projections. Both
+  remain on the existing split-resource loading path; a combined map contains their merged values.
+- Projected High color classes establish paint coverage for the exact intent and ambient surface
+  context. Missing High is not synthesized from Selected-only classes or another palette coordinate.
+
+The existing intent keys also support `selectionIntent`: consumers choose the effective selected
+intent in these same maps and the ordinary element maps. No additional selected-intent bucket,
+pair matrix or CSS is emitted. System-intent coverage fallback is whole-recipe, while external
+brand requests preserve the existing strict resource-boundary rules.
+
+Runtime consumers preserve semantic selection on the Button root, including the indicator's parent
+state and connected-group stacking. For the two stronger selection levels, they select this paint
+projection instead of attaching the ordinary Selected palette/effect classes. Old class maps remain
+valid without the projection and cannot be treated as publishing High Rest selection support.
 
 Foreground references continue to resolve only in `textColor`, except for indicator `boxColor`
 inside the authorized Button `e11.palettes` and `e12.palettes` paths. Their foreground coordinates
 resolve before normal palette conversion; no foreground token reaches CSS or runtime artifacts.
+
+### Button connected-group paint projection
+
+The Button class map may also publish `group.frame`, `group.member`, and
+`group.selectionRestMember` for a connected group with a compatible divider. These are references
+to the existing `e1` recipe, not new Schema elements, preset palettes, public options, or entries in
+the scale-only Structural Utility Projection Registry.
+
+- `frame` contains only border geometry, radius, and Rest border paint, including independent side
+  colors. It excludes backgrounds and interaction-state deltas. The group resolves its base
+  intent, emphasis, and surface context before applying it to decorative segments of one logical
+  perimeter. React omits the segment over a selected member actually using the normal High
+  projection; neighboring Rest segments remain visible and return locally after deselection.
+- `member` retains ordinary surface and interaction paint while excluding every border-color
+  property. A Builder-emitted transparent suppression class prevents default border painting
+  without changing border widths or compensated padding.
+- `selectionRestMember` provides the same border-free paint subset for the existing normal High
+  selection projection, without Selected deltas. Semantic selection remains on each member.
+  Members resolve these paint subsets with their effective selection intent; `frame` continues
+  using the shared base Group intent.
+- Core and palette portions use the existing split-resource merge path. Runtime consumes their
+  classes directly; it must not split class strings, inspect CSS, infer colors, or measure member
+  geometry to reconstruct the frame. Intrinsic grid columns align its non-overlapping pieces.
+
+The existing `e1.p.gd` remains separate: the same authored `e6.boxWidth` utility is applied to member
+roots for seam overlap and frame pieces for shared-strip clipping. The artifact owner remains `e1`
+without another Registry entry. The line's own classes retain its dimensions and color. Missing a
+complete frame/member/divider handoff preserves the ordinary collapsed-border composition. See
+[connected groups](../../../components/react/docs/definitions/button/connected-groups.md) for
+the painting, interaction, and clipping contract.
 
 ## Ownership and publication
 

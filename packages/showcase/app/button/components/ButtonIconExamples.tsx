@@ -1,7 +1,6 @@
 import type {
   ButtonIconLayout,
   ButtonIconPlacement,
-  ComponentEmphasis,
   ElementSizeValue,
   RadiusMode,
   SurfaceContext
@@ -12,8 +11,6 @@ import { Button as KButton } from '@kiskadee/react-components/button';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
 import { Text } from '@kiskadee/react-components/text';
-import { useState } from 'react';
-import { ShowcaseContentSelectControl } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
@@ -124,29 +121,6 @@ const EXAMPLES = [
   label: string;
 }>;
 
-const RICH_TEXT_ACTION_GROUPS = [
-  [
-    { icon: 'bold', label: 'Bold' },
-    { icon: 'italic', label: 'Italic' },
-    { icon: 'underline', label: 'Underline' },
-    { icon: 'strikethrough', label: 'Strikethrough' }
-  ],
-  [
-    { icon: 'align-left', label: 'Align left' },
-    { icon: 'align-center', label: 'Align center' },
-    { icon: 'align-right', label: 'Align right' }
-  ],
-  [
-    { icon: 'list', label: 'Bulleted list' },
-    { icon: 'list-ordered', label: 'Numbered list' },
-    { icon: 'link', label: 'Insert link' }
-  ],
-  [
-    { icon: 'undo', label: 'Undo' },
-    { icon: 'redo', label: 'Redo' }
-  ]
-] as const;
-
 export function ButtonIconExamples({
   fontName,
   radius,
@@ -158,20 +132,18 @@ export function ButtonIconExamples({
   scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
-  const [editorEmphasis, setEditorEmphasis] = useState<ComponentEmphasis>('medium');
   const textProfiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
 
   return (
     <section className={styles.showcaseSection} aria-labelledby="button-icon-examples-title">
-      <Text as="h3" id="button-icon-examples-title" profile={textProfiles.sectionTitle}>
-        Icons
+      <Text as="h4" id="button-icon-examples-title" profile={textProfiles.subsectionTitle}>
+        Icon actions
       </Text>
       {showDescriptions ? (
         <Text as="p" profile={textProfiles.body} className={styles.showcaseSectionDescription}>
           Each intent is represented at high, medium, and low emphasis. Inline composes icon and
-          label as one centered group, while Edge keeps the label independently centered. Icon-only
-          buttons can also compose compact control groups such as an editing toolbar.
+          label as one centered group, while Edge keeps the label independently centered.
         </Text>
       ) : null}
       <div className={`${styles.buttonExampleGrid} k-root`}>
@@ -197,98 +169,6 @@ export function ButtonIconExamples({
           </KButton>
         ))}
       </div>
-      <article className={`${styles.richTextEditorExample} k-root`}>
-        <header className={styles.richTextEditorHeader}>
-          <Text as="h4" profile={textProfiles.subsectionTitle}>
-            Rich text editor
-          </Text>
-          <ShowcaseContentSelectControl
-            label="Emphasis"
-            variant="sequential"
-            loop
-            value={editorEmphasis}
-            onValueChange={(value) => setEditorEmphasis(value as ComponentEmphasis)}
-            options={[
-              { value: 'lowest', label: 'Lowest' },
-              { value: 'low', label: 'Low' },
-              { value: 'medium', label: 'Medium' },
-              { value: 'high', label: 'High' }
-            ]}
-          />
-        </header>
-        <fieldset className={styles.richTextToolbar}>
-          <Text as="legend" profile={textProfiles.caption} className={styles.richTextToolbarLegend}>
-            Rich text formatting controls
-          </Text>
-          <div className={styles.richTextToolbarMode}>
-            <Text as="span" emphasis="medium" profile={textProfiles.caption}>
-              Independent buttons
-            </Text>
-            <div className={styles.richTextToolbarRow}>
-              {RICH_TEXT_ACTION_GROUPS.map((actions) => (
-                <div
-                  className={`${styles.richTextToolbarGroup} ${styles.richTextToolbarLooseGroup}`}
-                  key={actions[0].label}
-                >
-                  {actions.map(({ icon, label }) => (
-                    <KButton
-                      aria-label={label}
-                      emphasis={editorEmphasis}
-                      intent="neutral"
-                      key={label}
-                      radius={radius}
-                      size={componentScaleToSize(scale)}
-                      surfaceContext={surfaceContext}
-                      title={label}
-                    >
-                      <KButton.Icon>
-                        <FamilyResolvedIcon name={icon} />
-                      </KButton.Icon>
-                    </KButton>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className={styles.richTextToolbarMode}>
-            <Text as="span" emphasis="medium" profile={textProfiles.caption}>
-              Connected Button groups
-            </Text>
-            <div className={styles.richTextToolbarRow}>
-              {RICH_TEXT_ACTION_GROUPS.map((actions) => (
-                <KButton.Group
-                  className={styles.richTextToolbarGroup}
-                  emphasis={editorEmphasis}
-                  intent="neutral"
-                  key={actions[0].label}
-                  radius={radius}
-                  size={componentScaleToSize(scale)}
-                  surfaceContext={surfaceContext}
-                >
-                  {actions.map(({ icon, label }) => (
-                    <KButton aria-label={label} key={label} title={label}>
-                      <KButton.Icon>
-                        <FamilyResolvedIcon name={icon} />
-                      </KButton.Icon>
-                    </KButton>
-                  ))}
-                </KButton.Group>
-              ))}
-            </div>
-          </div>
-        </fieldset>
-        <div className={styles.richTextEditorCanvas}>
-          <Text as="p" profile={textProfiles.body}>
-            <Text as="strong" foreground="inherit" profile={textProfiles.bodyStrong}>
-              Kiskadee composes familiar editing controls
-            </Text>{' '}
-            from the same Button and Icon primitives used throughout an interface.
-          </Text>
-          <Text as="p" emphasis="lowest" profile={textProfiles.caption}>
-            This surface is illustrative and does not edit text.
-          </Text>
-        </div>
-      </article>
     </section>
   );
 }

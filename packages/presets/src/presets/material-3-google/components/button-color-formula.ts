@@ -109,21 +109,22 @@ export function createMaterialButtonIntent({
     focus: withAlpha(mediumText, STATE_LAYER.focus),
     pressed: withAlpha(mediumText, STATE_LAYER.pressed)
   };
+  // Kiskadee selection preserves emphasis by reusing that emphasis's Pressed surface.
   const boxColor: Record<Emphasis, ColorStates> = {
     high: {
       ...filled,
       pending: withAlpha(high, 60),
       disabled: disabledBox,
-      selected: { ...filled, rest: stateLayer(high, highText, 4) }
+      selected: { rest: filled.pressed }
     },
     medium: {
       ...soft,
       pending: withAlpha(medium, inverse ? 11 : 60),
       disabled: disabledBox,
-      selected: filled
+      selected: { rest: soft.pressed }
     },
-    low: { ...unfilled, disabled: disabledBox, selected: filled },
-    lowest: { ...unfilled, disabled: disabledBox, selected: filled }
+    low: { ...unfilled, disabled: disabledBox, selected: { rest: unfilled.pressed } },
+    lowest: { ...unfilled, disabled: disabledBox, selected: { rest: unfilled.pressed } }
   };
   const borderColor: Record<Emphasis, ColorStates> = {
     high: { rest: transparent },
@@ -131,17 +132,14 @@ export function createMaterialButtonIntent({
     low: {
       rest: withAlpha(mediumText, inverse ? 40 : 35),
       pending: withAlpha(mediumText, 20),
-      disabled: withAlpha(onSurface, 12),
-      selected: { rest: transparent }
+      disabled: withAlpha(onSurface, 12)
     },
     lowest: { rest: transparent }
   };
   const text = (rest: SolidColor): TextStates => ({
     rest,
     pending: { ref: withAlpha(rest, 70) },
-    disabled: { ref: disabledText },
-    // A parent-selected reference overrides the unselected text without self-state selectors.
-    ...(rest !== highText ? { selected: { rest: { ref: highText } } } : {})
+    disabled: { ref: disabledText }
   });
   const textColor: Record<Emphasis, TextStates> = {
     high: text(highText),

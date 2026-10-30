@@ -60,12 +60,18 @@ emits a development warning. Surfaced icon regions keep their existing edge layo
 and inline Badge compositions remain horizontal in this first release, with a warning when stacked
 is requested; overlay Badges and Progress preserve their existing contracts. Capability is resolved
 from the Builder's `layouts.stacked.sizesByRadius` metadata plus published element and radius
-classes, not the preset identifier. The effective radius follows the connected group's contract,
-then an explicit standalone prop, the global radius, and the Rounded default. Each radius list
+classes, not the preset identifier. The requested radius follows the connected group's contract,
+then an explicit standalone prop, the global radius, and the Rounded default. Stacked accepts only
+Rounded and Square: `resolveButtonStackedRadiusMode` preserves those modes and resolves Pill to
+Rounded before capability lookup. An explicit standalone Pill request emits a development warning.
+The effective shape is shared by geometry, radius effects and the state indicator. `e8` rejects
+Pill in both the Schema type and validation; it does not borrow numeric radii from `e1`.
+See the [Core stacked geometry contract](../../../../../core/docs/definitions/button-stacked.md).
+Each radius list
 intersects required geometry, typography, icon recipes and that radius's baseline values. A class
 that exists only at a larger breakpoint cannot establish baseline support. The aggregate
 `layouts.stacked.sizes` remains the union across authored radius modes, not permission to use every
-radius at those sizes. Missing radius metadata keeps the horizontal fallback until regeneration;
+radius at those sizes; the legacy Pill list remains empty. Missing radius metadata keeps the horizontal fallback until regeneration;
 missing radius classes never borrow ordinary `e1` geometry for a stacked control.
 Shared border or gap classes alone do not establish support. Old presets remain valid without
 `e8`, `e9` or `e10`, and their default layout remains unchanged.

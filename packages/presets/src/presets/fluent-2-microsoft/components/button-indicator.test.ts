@@ -62,7 +62,8 @@ describe('Fluent Button selected indicator', () => {
   it('publishes one shared line geometry without modifying the Button size recipes', () => {
     expect(validateButtonComponentContract(button)).toEqual([]);
     expect(button.options!.indicatorPlacement).toBe('inside');
-    expect(button.options!.indicatorScope).toBe('stacked');
+    expect(button.options!.selectionEmphasis).toBe('lowest');
+    expect(button.options).not.toHaveProperty('indicatorScope');
     expect(indicator.scales).toEqual({
       boxWidth: { 's:sm:1': 24, 's:md:1': 30, 's:lg:1': 36, 's:lg:2': 36 },
       boxHeight: 2,
@@ -175,6 +176,43 @@ describe('Fluent Button selected indicator', () => {
                   .soft(
                     contrastRatio(foreground, background),
                     `${segment}/${theme}/${context}/${intent}/${emphasis}/${placement}`
+                  )
+                  .toBeGreaterThanOrEqual(3);
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  it('contrasts over ordinary High states used by high selection emphasis without Selected paint', () => {
+    for (const segment of segments) {
+      for (const theme of themes) {
+        const container =
+          schema.components.container!.elements.e1!.palettes![segment]![theme]!.onSubtle.boxColor!;
+        for (const context of contexts) {
+          const ambient = (
+            context === 'onSubtle'
+              ? container.neutral!.lowest!.rest
+              : container.primary!.highest!.rest
+          ) as string;
+          for (const intent of intents) {
+            const host =
+              button.elements.e1!.palettes![segment]![theme]![context]!.boxColor![intent]!.high!;
+            for (const state of ['rest', 'hover', 'focus', 'pressed'] as const) {
+              const surface = (host[state] ?? host.rest) as string;
+              for (const placement of placements) {
+                const paint =
+                  indicatorRecipes[placement].palettes[segment]![theme]![context]!.boxColor![
+                    intent
+                  ]!.high!.selected!.rest;
+                const background = placement === 'inside' ? composite(surface, ambient) : ambient;
+                const foreground = composite(resolveForeground(paint, segment), background);
+                expect
+                  .soft(
+                    contrastRatio(foreground, background),
+                    `${segment}/${theme}/${context}/${intent}/high-rest/${placement}/${state}`
                   )
                   .toBeGreaterThanOrEqual(3);
               }

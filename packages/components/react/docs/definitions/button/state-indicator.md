@@ -10,21 +10,23 @@ placement selects one complete recipe for that part.
 
 ## Resolution and state
 
-`indicator` is an optional per-instance override. When omitted, the preset's `indicatorScope`
-controls the eligible compositions: `all` permits every actual layout and `stacked` permits only
-an active stacked composition. Missing scope preserves `all` for compatibility. A requested stacked
-layout that falls back to horizontal content follows the horizontal rule.
+`selectionEmphasis` controls the presentation strength and indicator activation. Levels `low` and `high` request
+the indicator; `lowest` and `medium` omit its anatomy. There is no independent `indicator` prop or
+`indicatorScope` policy. Omission resolves the preset's selection emphasis, then `lowest`, in all
+layouts. A requested line still requires complete geometry and paint coverage, selection and an
+available action. Changing level, layout or coverage can add or remove the node; ordinary state
+changes retain it. See [selection emphasis](./selection-emphasis.md) for the four levels.
 
-`indicator={true}` bypasses only that scope restriction; it still requires complete geometry and
-paint coverage, selection, and an available action. `indicator={false}` omits the indicator anatomy.
-Changing scope, layout or this override can add or remove the node; ordinary state changes retain
-the existing node. Neither prop changes selection or inserts a second control.
+`selectionIntent` separately chooses the selected appearance's intent, with the base intent as
+its inherited default. Indicator paint follows that effective intent and emphasis, including any
+whole-recipe coverage fallback, so the line contrasts with the surface actually being painted.
+The independent intent choice does not add indicator activation states or geometry.
 
 `indicatorPlacement` resolves from the Button prop, then the preset option, then `inside`.
 The other placement is `outside`; both anchor to the lower edge. Inside requires `e11` and published
 `indicator.sizesByRadius` coverage; outside requires `e12` and `indicator.outsideSizesByRadius`.
 The active recipe must provide scale/radius classes for the effective size and radius, and paint
-for the exact intent, emphasis and ambient Surface Context. Unsupported
+for the exact effective paint intent, emphasis and ambient Surface Context. Unsupported
 coordinates omit the anatomy; they do not borrow a neutral or weaker-emphasis recipe.
 
 `indicator.stackedSizesByRadius` and `indicator.stackedOutsideSizesByRadius` supply independent inside
@@ -48,7 +50,9 @@ focus, events or accessible name. `controlState === true` activates its paint; H
 Pressed preserve Selected unless the preset authors another state delta. Explicit `aria-pressed`
 does not set `controlState`. Native disabled, ARIA disabled, interaction locks, pending and projected
 Disabled/Pending hide the indicator without clearing `controlState` or changing existing ARIA
-semantics. A restored action reveals the same selected indicator.
+semantics. A restored action reveals the same selected indicator. Levels `medium/high` keep
+`controlState` and the root selection activator while consuming the normal High paint projection;
+the indicator therefore continues using its Selected recipe over the actual High Rest surface.
 
 ## Overlay geometry and clipping
 
@@ -82,7 +86,7 @@ retains its separate clipped viewport, and overlaid Badge content stays above th
 The focus outline remains on the root and is not clipped by either viewport.
 
 The indicator does not change the content Surface Context or its published map. Both recipes consume
-the Button's ambient context and actual intent and emphasis through ordinary palette resolution.
+the Button's ambient context and effective paint intent and emphasis through ordinary palette resolution.
 The preset authors `e11.c` against the Button surface and `e12.c` against the surrounding surface;
 runtime does not infer either recipe from the context produced for children. Those children continue
 to receive the same produced context as before. Group children remain direct native Button siblings,

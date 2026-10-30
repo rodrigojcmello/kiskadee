@@ -14,7 +14,7 @@ vi.mock('@kiskadee/react-components/button', async () => {
       {
         iconLayout,
         iconTreatment: _treatment,
-        radius: _radius,
+        radius,
         size,
         intent,
         emphasis,
@@ -27,6 +27,7 @@ vi.mock('@kiskadee/react-components/button', async () => {
         ...props,
         ref,
         'data-layout': iconLayout,
+        'data-radius': radius,
         'data-size': size,
         'data-intent': intent,
         'data-emphasis': emphasis
@@ -183,7 +184,7 @@ describe('Stacked Button Showcase examples', () => {
     expect(container.querySelector('button')).toBeNull();
   });
 
-  it('hides pill-only comparisons and actions in rounded, then activates them for pill', () => {
+  it('does not activate legacy Pill-only recipes and normalizes Pill requests to authored Rounded', () => {
     const classesMap = {
       e8: { s: { all: 'container' }, rp: { 'md:1': 'pill' } },
       e9: { s: { all: 'label' } },
@@ -197,12 +198,35 @@ describe('Stacked Button Showcase examples', () => {
     expect(container.querySelector('[role="status"]')).toBeNull();
 
     act(() => root?.render(examples(classesMap, ['md:1'], 'pill')));
-    expect(container.querySelectorAll('[data-button-unavailable]')).toHaveLength(3);
+    expect(container.querySelector('button')).toBeNull();
+
+    const roundedClasses = {
+      ...classesMap,
+      e8: { s: { all: 'container' }, rr: { 'md:1': 'rounded' } }
+    };
+    act(() => root?.render(examples(roundedClasses, ['md:1'], 'pill')));
     expect(container.querySelectorAll('button')).toHaveLength(2);
+    expect(
+      Array.from(container.querySelectorAll('button'), (button) => button.dataset.radius)
+    ).toEqual(['rounded', 'rounded']);
     expect(container.querySelector('[data-button-height-ruler]')).not.toBeNull();
-    expect(container.querySelector('[role="status"]')?.textContent).toBe('No items added yet.');
 
     act(() => root?.render(examples(classesMap, [], 'rounded')));
     expect(container.querySelector('button')).toBeNull();
+  });
+
+  it('preserves Square requests and requires their own authored recipe', () => {
+    const classesMap = {
+      e8: { s: { all: 'container' }, rs: { all: 'square' } },
+      e9: { s: { all: 'label' } },
+      e10: { s: { all: 'icon' } }
+    };
+    const container = render(classesMap);
+    expect(container.querySelector('button')).toBeNull();
+    act(() => root?.render(examples(classesMap, ['md:1'], 'square')));
+    expect(container.querySelectorAll('button')).toHaveLength(2);
+    expect(
+      Array.from(container.querySelectorAll('button'), (button) => button.dataset.radius)
+    ).toEqual(['square', 'square']);
   });
 });

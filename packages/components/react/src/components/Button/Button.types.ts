@@ -7,6 +7,7 @@ import type {
   ButtonIconTreatment,
   ButtonIndicatorPlacement,
   ButtonIntent,
+  ButtonSelectionEmphasis,
   ClassNameByElementJSON,
   ComponentEmphasis,
   ComponentSize,
@@ -22,7 +23,7 @@ export type {
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ButtonIndicatorPlacement,
-  ButtonIndicatorScope
+  ButtonSelectionEmphasis
 } from '@kiskadee/core';
 
 export type ButtonStatus = Exclude<ProjectedStateKeys, 'selected' | 'filled'>;
@@ -41,7 +42,18 @@ export type ButtonElementName =
   | 'e11'
   | 'e12';
 
-export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>>;
+export type ButtonSelectionRestClassesMap = Partial<
+  Record<'e1' | 'e2' | 'e3' | 'e4' | 'e5', ClassNameByElementJSON>
+>;
+export type ButtonGroupClassesMap = {
+  frame?: ClassNameByElementJSON;
+  member?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
+  selectionRestMember?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
+};
+export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>> & {
+  selectionRest?: ButtonSelectionRestClassesMap;
+  group?: ButtonGroupClassesMap;
+};
 
 /** Determinate decorative progress paint rendered across the Button surface. */
 export type ButtonProgressProps = Omit<
@@ -87,8 +99,10 @@ export type ButtonProps = HeadlessButtonProps & {
   toggle?: boolean;
   /** Semantic control state (selected/active/checked). When true, selected styles are applied. */
   controlState?: boolean;
-  /** Overrides preset indicator scope; true still requires an authored recipe and selected state. */
-  indicator?: boolean;
+  /** Chooses selection paint and its optional indicator without changing the semantic state. */
+  selectionEmphasis?: ButtonSelectionEmphasis;
+  /** Overrides the paint intent only while selected; omission follows the preset or base intent. */
+  selectionIntent?: ButtonIntent;
   /** Places the optional preset-authored selection indicator inside or outside the lower edge. */
   indicatorPlacement?: ButtonIndicatorPlacement;
   /**
@@ -102,7 +116,7 @@ export type ButtonProps = HeadlessButtonProps & {
    * Local activation-feedback override. Pass `false` to disable activation feedback.
    */
   activationFeedback?: ButtonActivationFeedbackEffect | false;
-  /** Border radius mode. Uses schema radius scales for rounded/pill/square. */
+  /** Uses schema radius scales. Stacked converts Pill to Rounded and preserves Square. */
   radius?: RadiusMode;
   /** Enable border-radius effects (animated corners). */
   radiusEffect?: boolean;
@@ -113,7 +127,7 @@ export type ButtonProps = HeadlessButtonProps & {
    * If not provided or if emphasis metadata is not available, uses all palette classes.
    */
   emphasis?: ComponentEmphasis;
-  /** Semantic color family to use across ALL elements (e1, e2, e3, ...). Default is 'neutral'. */
+  /** Base semantic color family; selectionIntent can override selected paint. Default is neutral. */
   intent?: ButtonIntent;
   /**
    * Local surface relationship used to resolve palette colors.

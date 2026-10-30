@@ -22,6 +22,8 @@ export {
   BRAND_PACK_BUILD_CONTRACT,
   BRAND_PACK_BUILD_FORMAT_VERSION
 } from './src/brand-packs/brandPackArtifacts.ts';
+export type { ButtonGroupClassMapJSON } from './src/component-artifacts/buttonGroupArtifact.ts';
+export type { ButtonSelectionRestClassMapJSON } from './src/component-artifacts/buttonSelectionArtifact.ts';
 export type {
   CardCanonicalSurfacesPayload,
   CardComponentArtifactJSON,

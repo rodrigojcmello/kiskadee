@@ -2,9 +2,45 @@ import type { Schema } from '@kiskadee/core';
 import { buildBySegment } from '../../../utils/buildBySegment.ts';
 import type { PresetColorGetter } from '../../../utils/presetColor.ts';
 import { createMaterialButtonIntent, MATERIAL_BUTTON_INTENTS } from './button-color-formula.ts';
+import { createMaterialButtonIndicatorPalettes } from './button-indicator-palettes.ts';
 
 type Material3GoogleSegmentName = 'default' | 'dynamic' | 'purple';
 type ButtonComponent = NonNullable<Schema<'purple'>['components']['button']>;
+
+const BUTTON_BORDER_WIDTH = {
+  's:sm:1': 1,
+  's:md:1': 1,
+  's:lg:1': 1,
+  's:lg:2': 2,
+  's:lg:3': 3
+} as const;
+const BUTTON_SHARED_RADII = {
+  rounded: { 's:sm:1': 16, 's:md:1': 20, 's:lg:1': 28, 's:lg:2': 48, 's:lg:3': 68 },
+  square: { 's:sm:1': 0, 's:md:1': 0, 's:lg:1': 0, 's:lg:2': 0, 's:lg:3': 0 }
+} as const;
+const BUTTON_ICON_SIZES = {
+  's:sm:1': 's:md:1',
+  's:md:1': 's:md:1',
+  's:lg:1': 's:lg:1',
+  's:lg:2': 's:lg:3',
+  's:lg:3': 's:lg:4'
+} as const;
+const BUTTON_ICON_GAP = {
+  's:sm:1': 4,
+  's:md:1': 8,
+  's:lg:1': 8,
+  's:lg:2': 12,
+  's:lg:3': 16
+} as const;
+const BUTTON_INDICATOR_SCALES = {
+  boxWidth: { 's:sm:1': 30, 's:md:1': 30, 's:lg:1': 36, 's:lg:2': 48, 's:lg:3': 60 },
+  boxHeight: 3,
+  marginTop: 2,
+  marginBottom: 2,
+  marginLeft: 2,
+  marginRight: 2,
+  borderRadius: { rounded: 3, pill: 3, square: 0 }
+} as const;
 
 type CreateMaterial3GoogleButtonSchemaArgs = {
   c: PresetColorGetter<Material3GoogleSegmentName>;
@@ -59,14 +95,19 @@ export function createMaterial3GoogleButtonSchema({
         intent,
         {
           high: { rest: filled, selected: filled, disabled: 'inherit' },
-          medium: { rest: surface, selected: filled, disabled: 'inherit' },
-          low: { rest: 'inherit', selected: filled, disabled: 'inherit' },
-          lowest: { rest: 'inherit', selected: filled, disabled: 'inherit' }
+          medium: { rest: surface, selected: surface, disabled: 'inherit' },
+          low: { rest: 'inherit', selected: 'inherit', disabled: 'inherit' },
+          lowest: { rest: 'inherit', selected: 'inherit', disabled: 'inherit' }
         }
       ])
     );
   };
   return {
+    options: {
+      iconLayout: 'inline',
+      indicatorPlacement: 'inside',
+      selectionEmphasis: 'lowest'
+    },
     contentSurfaceContext: buildBySegment(segmentNames, () => ({
       light: {
         onSubtle: contentContext('onSubtle', 'light'),
@@ -115,15 +156,22 @@ export function createMaterial3GoogleButtonSchema({
           borderStyle: 'solid'
         },
         scales: {
+          _boxHeight: {
+            's:sm:1': 32,
+            's:md:1': 40,
+            's:lg:1': 56,
+            's:lg:2': 96,
+            's:lg:3': 136
+          },
           paddingTop: {
-            's:sm:1': 8,
+            's:sm:1': 6,
             's:md:1': 10,
             's:lg:1': 16,
             's:lg:2': 32,
             's:lg:3': 48
           },
           paddingBottom: {
-            's:sm:1': 8,
+            's:sm:1': 6,
             's:md:1': 10,
             's:lg:1': 16,
             's:lg:2': 32,
@@ -143,35 +191,10 @@ export function createMaterial3GoogleButtonSchema({
             's:lg:2': 48,
             's:lg:3': 64
           },
-          borderWidth: {
-            's:sm:1': 1,
-            's:md:1': 1,
-            's:lg:1': 1,
-            's:lg:2': 1,
-            's:lg:3': 1
-          },
+          borderWidth: BUTTON_BORDER_WIDTH,
           borderRadius: {
-            rounded: {
-              's:sm:1': 18,
-              's:md:1': 20,
-              's:lg:1': 28,
-              's:lg:2': 48,
-              's:lg:3': 68
-            },
-            pill: {
-              's:sm:1': 18,
-              's:md:1': 20,
-              's:lg:1': 28,
-              's:lg:2': 48,
-              's:lg:3': 68
-            },
-            square: {
-              's:sm:1': 0,
-              's:md:1': 0,
-              's:lg:1': 0,
-              's:lg:2': 0,
-              's:lg:3': 0
-            }
+            ...BUTTON_SHARED_RADII,
+            pill: BUTTON_SHARED_RADII.rounded
           }
         },
         palettes: buildBySegment(segmentNames, (segment) => createPalettes(segment, 'box')),
@@ -233,27 +256,63 @@ export function createMaterial3GoogleButtonSchema({
       e3: {
         name: 'button-icon',
         palettes: buildBySegment(segmentNames, (segment) => createPalettes(segment, 'icon')),
-        iconSize: {
-          's:sm:1': 's:sm:1',
-          's:md:1': 's:md:1',
-          's:lg:1': 's:lg:1',
-          's:lg:2': 's:lg:2',
-          's:lg:3': 's:lg:3'
+        iconSize: BUTTON_ICON_SIZES,
+        scales: {
+          paddingRight: BUTTON_ICON_GAP
         }
       },
       e5: {
         name: 'button-disclosure',
         palettes: buildBySegment(segmentNames, (segment) => createPalettes(segment, 'icon')),
-        iconSize: {
-          's:sm:1': 's:sm:1',
-          's:md:1': 's:md:1',
-          's:lg:1': 's:md:1',
-          's:lg:2': 's:md:1',
-          's:lg:3': 's:md:1'
+        iconSize: BUTTON_ICON_SIZES,
+        scales: {
+          paddingRight: BUTTON_ICON_GAP
+        }
+      },
+      e8: {
+        name: 'button-stacked',
+        scales: {
+          _boxHeight: { 's:sm:1': 52, 's:md:1': 64, 's:lg:1': 84, 's:lg:2': 108, 's:lg:3': 136 },
+          paddingTop: { 's:sm:1': 4, 's:md:1': 8, 's:lg:1': 12, 's:lg:2': 16, 's:lg:3': 24 },
+          paddingBottom: { 's:sm:1': 4, 's:md:1': 8, 's:lg:1': 12, 's:lg:2': 16, 's:lg:3': 24 },
+          paddingLeft: { 's:sm:1': 12, 's:md:1': 16, 's:lg:1': 24, 's:lg:2': 32, 's:lg:3': 48 },
+          paddingRight: { 's:sm:1': 12, 's:md:1': 16, 's:lg:1': 24, 's:lg:2': 32, 's:lg:3': 48 },
+          borderWidth: BUTTON_BORDER_WIDTH,
+          borderRadius: BUTTON_SHARED_RADII
+        }
+      },
+      e9: {
+        name: 'button-stacked-text',
+        typography: {
+          's:sm:1': 'label-medium',
+          's:md:1': 'label-medium',
+          's:lg:1': 'label-large',
+          's:lg:2': 'label-extra-large',
+          's:lg:3': 'label-extra-large'
         },
         scales: {
-          paddingRight: 4
+          marginTop: BUTTON_ICON_GAP
         }
+      },
+      e10: {
+        name: 'button-stacked-icon',
+        iconSize: {
+          's:sm:1': 's:lg:1',
+          's:md:1': 's:lg:1',
+          's:lg:1': 's:lg:3',
+          's:lg:2': 's:lg:4',
+          's:lg:3': 's:lg:5'
+        }
+      },
+      e11: {
+        name: 'button-indicator',
+        scales: BUTTON_INDICATOR_SCALES,
+        palettes: createMaterialButtonIndicatorPalettes({ c, segmentNames, placement: 'inside' })
+      },
+      e12: {
+        name: 'button-indicator-outside',
+        scales: BUTTON_INDICATOR_SCALES,
+        palettes: createMaterialButtonIndicatorPalettes({ c, segmentNames, placement: 'outside' })
       }
     }
   };

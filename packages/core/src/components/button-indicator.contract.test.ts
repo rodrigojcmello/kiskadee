@@ -2,7 +2,7 @@ import { describe, expect, expectTypeOf, it } from 'vitest';
 import {
   type ButtonElements,
   type ButtonIndicatorPlacement,
-  type ButtonIndicatorScope,
+  type ButtonSelectionEmphasis,
   type ClassNameByElementJSON,
   type StyleKeyByElement,
   validateButtonComponentContract
@@ -68,7 +68,7 @@ describe('Button optional state indicator', () => {
   });
   it('exports bounded placement and preserves presets without indicator anatomy', () => {
     expectTypeOf<ButtonIndicatorPlacement>().toEqualTypeOf<'inside' | 'outside'>();
-    expectTypeOf<ButtonIndicatorScope>().toEqualTypeOf<'all' | 'stacked'>();
+    expectTypeOf<ButtonSelectionEmphasis>().toEqualTypeOf<'lowest' | 'low' | 'medium' | 'high'>();
     expectTypeOf<StyleKeyByElement>().not.toHaveProperty('placements');
     expectTypeOf<ClassNameByElementJSON>().not.toHaveProperty('placements');
     expect(validateButtonComponentContract({ elements: { e1: { name: 'button' } } })).toEqual([]);
@@ -81,29 +81,45 @@ describe('Button optional state indicator', () => {
   });
   it.each([
     undefined,
-    'all',
-    'stacked'
-  ])('accepts optional indicator scope %j without requiring anatomy', (scope) => {
+    'lowest',
+    'low',
+    'medium',
+    'high'
+  ])('accepts optional selection emphasis %j without requiring indicator anatomy', (selectionEmphasis) => {
     expect(
       validateButtonComponentContract({
-        options: scope === undefined ? {} : { indicatorScope: scope },
+        options: selectionEmphasis === undefined ? {} : { selectionEmphasis },
         elements: { e1: { name: 'button' } }
       })
     ).toEqual([]);
     expect(
       validateButtonComponentContract({
-        options: scope === undefined ? {} : { indicatorScope: scope },
+        options: selectionEmphasis === undefined ? {} : { selectionEmphasis },
         elements: { e11: indicator() }
       })
     ).toEqual([]);
   });
-  it.each(['inline', 'none', true, null])('rejects invalid scope %j', (indicatorScope) => {
+  it.each([
+    'highest',
+    'all',
+    'stacked',
+    'none',
+    true,
+    null
+  ])('rejects invalid selection emphasis %j', (selectionEmphasis) => {
     expect(
       validateButtonComponentContract({
-        options: { indicatorScope },
+        options: { selectionEmphasis },
         elements: { e11: indicator() }
       })
-    ).toContain('components.button.options.indicatorScope: expected "all" or "stacked"');
+    ).toContain(
+      'components.button.options.selectionEmphasis: expected "lowest", "low", "medium" or "high"'
+    );
+  });
+  it('rejects the removed independent indicator scope option', () => {
+    expect(validateButtonComponentContract({ options: { indicatorScope: 'stacked' } })).toContain(
+      'components.button.options.indicatorScope: unrecognized key'
+    );
   });
   it.each([
     'marginLeft',

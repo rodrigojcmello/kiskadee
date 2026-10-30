@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { createRef, Fragment, type ReactNode } from 'react';
+import { createRef, Fragment, type ReactNode, useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   KiskadeeContext,
@@ -67,6 +67,50 @@ const buttonClassMap = {
       s: { neutral: { m: 'divider-neutral-medium' } },
       v: { primary: { h: 'divider-primary-vivid-high' } }
     }
+  },
+  group: {
+    frame: {
+      d: 'frame-border-style',
+      s: { all: 'frame-border-width' },
+      rr: { all: 'frame-rounded' },
+      rp: { all: 'frame-pill' },
+      rs: { all: 'frame-square' },
+      c: {
+        s: {
+          neutral: {
+            m: 'frame-neutral-rest',
+            l: 'frame-neutral-low-rest',
+            h: 'frame-neutral-high-rest'
+          },
+          primary: { h: 'frame-primary-rest', l: 'frame-primary-low-rest' },
+          'brand.google': { h: 'frame-google-rest' }
+        },
+        v: { primary: { h: 'frame-primary-vivid-rest' } }
+      }
+    },
+    member: {
+      d: 'member-border-off',
+      c: {
+        s: {
+          neutral: {
+            m: 'member-neutral-medium',
+            l: 'member-neutral-low',
+            h: 'member-neutral-high'
+          },
+          primary: { h: 'member-primary-high', l: 'member-primary-low' },
+          'brand.google': { h: 'member-google-high' }
+        },
+        v: { primary: { h: 'member-primary-vivid-high' } }
+      }
+    },
+    selectionRestMember: {
+      d: 'member-border-off',
+      c: { s: { neutral: { h: 'member-neutral-high-normal' } } }
+    }
+  },
+  selectionRest: {
+    e1: { c: { s: { neutral: { h: 'button-neutral-high-normal' } } } },
+    e2: { c: { s: { neutral: { h: 'label-neutral-high-normal' } } } }
   }
 };
 
@@ -75,8 +119,11 @@ function createContext(options?: {
   disclosureDivider?: boolean;
   dividerPaint?: 'default' | 'primary-only';
   withDivider?: boolean;
+  withDividerGeometry?: boolean;
   withProjection?: boolean;
   withShadow?: boolean;
+  withGroup?: boolean;
+  withSelectionRest?: boolean;
 }): KiskadeeContextValue {
   const withDivider = options?.withDivider ?? true;
   const withProjection = options?.withProjection ?? true;
@@ -86,6 +133,9 @@ function createContext(options?: {
     classesMap: {
       button: {
         ...buttonClassMap,
+        group: options?.withGroup === false ? undefined : buttonClassMap.group,
+        selectionRest:
+          options?.withSelectionRest === false ? undefined : buttonClassMap.selectionRest,
         e1: {
           ...buttonClassMap.e1,
           p: withDivider && withProjection ? buttonClassMap.e1.p : undefined,
@@ -94,6 +144,7 @@ function createContext(options?: {
         e6: withDivider
           ? {
               ...buttonClassMap.e6,
+              s: options?.withDividerGeometry === false ? undefined : buttonClassMap.e6.s,
               c:
                 options?.dividerPaint === 'primary-only'
                   ? { s: { primary: { h: 'divider-primary-high' } } }
@@ -236,7 +287,14 @@ describe('Button.Group', () => {
     for (const button of screen.getAllByRole('button')) {
       expect(button.className).toContain('divider-width-all');
       expect(button.className).toContain('divider-width-large');
+      expect(button.className).toContain('member-primary-vivid-high');
+      expect(button.className).toContain('member-border-off');
+      expect(button.className).not.toContain('button-primary-vivid-high');
     }
+    const frame = group.querySelector('.k-btn-x3b');
+    expect(frame?.className).toContain('frame-primary-vivid-rest');
+    expect(frame?.className).toContain('frame-rounded');
+    expect(frame?.getAttribute('aria-hidden')).toBe('true');
     expect(disclosureDivider?.getAttribute('aria-hidden')).toBe('true');
     expect(disclosureDivider?.className).toContain('button-divider');
     expect(group.querySelector('[role="separator"]')).toBeNull();
@@ -257,7 +315,7 @@ describe('Button.Group', () => {
     expect(group.querySelector('.k-btn-e6a')).toBeNull();
   });
 
-  it('keeps the border seam when the e6 thickness projection is unavailable', () => {
+  it('keeps legacy borders when the divider thickness projection is unavailable', () => {
     const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     renderWithContext(
@@ -270,14 +328,220 @@ describe('Button.Group', () => {
 
     const group = screen.getByTestId('group');
     expect(group.className).toContain('k-btn-x3');
-    expect(group.className).not.toContain('k-btn-x3a');
+    expect(group.classList.contains('k-btn-x3a')).toBe(false);
     expect(group.querySelector('.k-btn-e6a')).toBeNull();
+    expect(group.querySelector('.k-btn-x3b')).toBeNull();
     for (const button of screen.getAllByRole('button')) {
       expect(button.className).not.toContain('divider-width-all');
     }
     expect(warning).toHaveBeenCalledWith(
-      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint and its ' +
-        'e1.p.gd thickness projection from the active preset.'
+      '[Kiskadee] Button groupDivider requires compatible divider geometry and a published Group Rest frame/member paint projection from the active preset.'
+    );
+  });
+
+  it('keeps the border seam when divider paint has no published geometry', () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    renderWithContext(
+      <Button.Group data-testid="group">
+        <Button>Previous</Button>
+        <Button>Next</Button>
+      </Button.Group>,
+      createContext({ groupDivider: true, withDividerGeometry: false })
+    );
+
+    const group = screen.getByTestId('group');
+    expect(group.classList.contains('k-btn-x3a')).toBe(false);
+    expect(group.querySelector('.k-btn-e6a')).toBeNull();
+    expect(warning).toHaveBeenCalledWith(
+      '[Kiskadee] Button groupDivider requires compatible divider geometry and a published Group Rest frame/member paint projection from the active preset.'
+    );
+  });
+
+  it.each([
+    'lowest',
+    'low',
+    'medium',
+    'high'
+  ] as const)('preserves the shared Rest recipe while %s selection changes member paint', (selectionEmphasis) => {
+    function Example() {
+      const [selected, setSelected] = useState(false);
+      return (
+        <Button.Group data-testid="group" size="lg" emphasis="low">
+          <Button
+            toggle
+            controlState={selected}
+            selectionEmphasis={selectionEmphasis}
+            activationFeedback={false}
+            onClick={() => setSelected((value) => !value)}
+          >
+            Toggle
+          </Button>
+          <Button controlState toggle activationFeedback={false}>
+            Neighbor
+          </Button>
+        </Button.Group>
+      );
+    }
+    renderWithContext(<Example />, createContext({ groupDivider: true }));
+    const group = screen.getByTestId('group');
+    const button = screen.getByRole('button', { name: 'Toggle' });
+    const frame = button.nextElementSibling;
+    expect(frame?.classList.contains('k-btn-x3b')).toBe(true);
+    const initialFrameClasses = frame?.className;
+    expect(frame?.getAttribute('aria-hidden')).toBe('true');
+    expect(initialFrameClasses).toContain('frame-neutral-low-rest');
+    expect(button.className).toContain('button-scale-large');
+    expect(button.className).toContain('member-border-off');
+    expect(button.className).toContain('member-neutral-low');
+    expect(button.className).not.toContain('button-neutral-low');
+    expect(button.classList.contains('k-btn-e1l')).toBe(false);
+    fireEvent.click(button);
+    const promoted = selectionEmphasis === 'medium' || selectionEmphasis === 'high';
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.classList.contains('-s')).toBe(true);
+    expect(button.classList.contains('k-btn-e1l')).toBe(promoted);
+    expect(button.className).toContain(
+      promoted ? 'member-neutral-high-normal' : 'member-neutral-low'
+    );
+    expect(button.className).not.toContain('button-neutral-high');
+    expect(group.querySelectorAll('.k-btn-x3b')).toHaveLength(2);
+    expect(button.nextElementSibling).toBe(frame);
+    expect(frame?.className).toBe(initialFrameClasses);
+    fireEvent.pointerEnter(button);
+    fireEvent.pointerDown(button);
+    expect(frame?.className).toBe(initialFrameClasses);
+    fireEvent.pointerUp(button);
+    expect(screen.getByRole('button', { name: 'Neighbor' }).getAttribute('aria-pressed')).toBe(
+      'true'
+    );
+    fireEvent.click(button);
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    expect(button.classList.contains('k-btn-e1l')).toBe(false);
+    expect(button.nextElementSibling).toBe(frame);
+    expect(frame?.className).toBe(initialFrameClasses);
+  });
+
+  it('keeps each member and its decorative frame adjacent without changing native Button roots', () => {
+    renderWithContext(
+      <Button.Group data-testid="group" emphasis="low">
+        <Button toggle controlState selectionEmphasis="medium">
+          First
+        </Button>
+        <Button toggle controlState selectionEmphasis="high">
+          Second
+        </Button>
+        <Button toggle controlState selectionEmphasis="low">
+          Third
+        </Button>
+      </Button.Group>,
+      createContext({ groupDivider: true })
+    );
+    const group = screen.getByTestId('group');
+    const buttons = screen.getAllByRole('button');
+    const frames = group.querySelectorAll('.k-btn-x3b');
+    expect(frames).toHaveLength(3);
+    expect(group.querySelectorAll('.k-btn-e6a')).toHaveLength(2);
+    for (const [index, button] of buttons.entries()) {
+      expect(button.parentElement).toBe(group);
+      expect(button.nextElementSibling).toBe(frames[index]);
+      expect(button.style.gridColumn).toBe(String(index + 1));
+      expect((frames[index] as HTMLElement).style.gridColumn).toBe(`${index + 1} / ${index + 2}`);
+      expect((frames[index] as HTMLElement).style.gridRow).toBe('1 / 2');
+      expect(frames[index].getAttribute('aria-hidden')).toBe('true');
+      expect(frames[index].className).toContain('frame-neutral-low-rest');
+      expect(button.classList.contains('k-btn-e1l')).toBe(index < 2);
+      expect(button.getAttribute('aria-pressed')).toBe('true');
+    }
+  });
+
+  it('does not suppress a member frame when a requested High projection is unavailable', () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    renderWithContext(
+      <Button.Group data-testid="group" emphasis="low">
+        <Button toggle controlState selectionEmphasis="high">
+          Fallback
+        </Button>
+        <Button>Neighbor</Button>
+      </Button.Group>,
+      createContext({ groupDivider: true, withSelectionRest: false })
+    );
+    const button = screen.getByRole('button', { name: 'Fallback' });
+    expect(button.classList.contains('-s')).toBe(true);
+    expect(button.classList.contains('k-btn-e1l')).toBe(false);
+    expect(button.className).toContain('member-neutral-low');
+    expect(button.nextElementSibling?.classList.contains('k-btn-x3b')).toBe(true);
+    expect(warning).toHaveBeenCalledWith(
+      '[Kiskadee] Button selectionEmphasis requires a published High Rest paint projection for the active intent, surface and content. Keeping the base Selected recipe.'
+    );
+  });
+
+  it('restores the member frame when selection emphasis changes without clearing selection', () => {
+    const context = createContext({ groupDivider: true });
+    const view = (selectionEmphasis: 'low' | 'high') => (
+      <KiskadeeContext.Provider value={context}>
+        <Button.Group data-testid="group" emphasis="low">
+          <Button toggle controlState selectionEmphasis={selectionEmphasis}>
+            Selected
+          </Button>
+          <Button>Neighbor</Button>
+        </Button.Group>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(view('high'));
+    const button = screen.getByRole('button', { name: 'Selected' });
+    const frame = button.nextElementSibling;
+    expect(button.classList.contains('k-btn-e1l')).toBe(true);
+    result.rerender(view('low'));
+    expect(screen.getByRole('button', { name: 'Selected' })).toBe(button);
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.classList.contains('k-btn-e1l')).toBe(false);
+    expect(button.nextElementSibling).toBe(frame);
+    expect(frame?.className).toContain('frame-neutral-low-rest');
+  });
+
+  it('keeps the shared Rest perimeter with disabled and pending selected members', () => {
+    renderWithContext(
+      <Button.Group data-testid="group" emphasis="low">
+        <Button disabled toggle controlState>
+          Disabled
+        </Button>
+        <Button pending toggle controlState>
+          Pending
+        </Button>
+      </Button.Group>,
+      createContext({ groupDivider: true })
+    );
+    const frame = screen.getByTestId('group').querySelector('.k-btn-x3b');
+    expect(frame?.className).toContain('frame-neutral-low-rest');
+    for (const button of screen.getAllByRole('button')) {
+      expect(button.className).toContain('member-border-off');
+      expect(button.getAttribute('aria-pressed')).toBe('true');
+      expect(button.className).not.toContain('button-neutral-low');
+    }
+  });
+
+  it('restores the authored member borders when switching to artifacts without the Group recipe', () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const view = (context: KiskadeeContextValue) => (
+      <KiskadeeContext.Provider value={context}>
+        <Button.Group data-testid="group" emphasis="low">
+          <Button>First</Button>
+          <Button>Second</Button>
+        </Button.Group>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(view(createContext({ groupDivider: true })));
+    const first = screen.getByRole('button', { name: 'First' });
+    expect(first.className).toContain('member-border-off');
+    result.rerender(view(createContext({ groupDivider: true, withGroup: false })));
+    expect(screen.getByRole('button', { name: 'First' })).toBe(first);
+    expect(first.className).toContain('button-neutral-low');
+    expect(first.className).not.toContain('member-border-off');
+    expect(screen.getByTestId('group').querySelector('.k-btn-x3b')).toBeNull();
+    expect(screen.getByTestId('group').querySelector('.k-btn-e6a')).toBeNull();
+    expect(warning).toHaveBeenCalledWith(
+      '[Kiskadee] Button groupDivider requires compatible divider geometry and a published Group Rest frame/member paint projection from the active preset.'
     );
   });
 
@@ -356,8 +620,7 @@ describe('Button.Group', () => {
     expect(group.querySelector('.k-btn-e6a')).toBeNull();
     expect(disclosure?.querySelector('.k-btn-e6b')).toBeNull();
     expect(warning).toHaveBeenCalledWith(
-      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint and its ' +
-        'e1.p.gd thickness projection from the active preset.'
+      '[Kiskadee] Button groupDivider requires compatible divider geometry and a published Group Rest frame/member paint projection from the active preset.'
     );
     expect(warning).toHaveBeenCalledWith(
       '[Kiskadee] Button disclosureDivider requires compatible Button.e6 paint from the active preset.'

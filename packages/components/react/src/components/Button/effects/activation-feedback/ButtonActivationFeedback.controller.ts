@@ -87,11 +87,15 @@ const BUTTON_ACTIVATION_FEEDBACK_MIN_POINTER_HOLD_MS = 120;
 
 export function useButtonActivationFeedbackController(
   common: ButtonCommonProps,
-  options: { feedbackEnabled?: boolean } = {}
+  options: {
+    feedbackEnabled?: boolean;
+    paintSelected?: boolean;
+    paintElement?: ButtonCommonProps['e1'];
+  } = {}
 ): ButtonActivationFeedbackControllerResult {
   const {
     activationFeedback,
-    controlState,
+    controlState: semanticSelected,
     status,
     pressedDurationMs,
     onClick,
@@ -101,10 +105,12 @@ export function useButtonActivationFeedbackController(
     onKeyDown,
     onKeyUp,
     onBlur,
-    e1,
+    e1: originalElement,
     componentEffects,
     globalEffects
   } = common;
+  const controlState = options.paintSelected ?? semanticSelected;
+  const e1 = options.paintElement ?? originalElement;
 
   const accessibility = resolveButtonAccessibilityFromCommon(common);
   const feedbackEnabled = options.feedbackEnabled ?? true;

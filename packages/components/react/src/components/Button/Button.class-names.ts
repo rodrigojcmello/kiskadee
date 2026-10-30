@@ -10,6 +10,7 @@ import {
   stateActivator as cn,
   type EffectClassBucketJSON,
   type RadiusMode,
+  resolveButtonStackedRadiusMode,
   type SurfaceContext
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
@@ -23,11 +24,13 @@ import {
   resolveSchemaElementClassName
 } from '../../shared/class-resolution/classNames.ts';
 import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
+import { resolveButtonPaintElement } from './Button.selection.ts';
 import type {
   ButtonClassesMap,
   ButtonElementName,
   ButtonGroupProps,
   ButtonProps,
+  ButtonSelectionRestClassesMap,
   ButtonStatus
 } from './Button.types.ts';
 
@@ -100,6 +103,7 @@ export function supportsButtonStackedLayout(
 ): boolean {
   const scaleKey = normalizeButtonScaleKey(scale);
   return (
+    radius !== 'pill' &&
     Boolean(resolveRadiusClassName(elements.e8, scaleKey, radius)) &&
     [elements.e8, elements.e9, elements.e10].every((element) =>
       Boolean(element?.s?.all || element?.s?.[scaleKey])
@@ -201,7 +205,8 @@ export function resolveButtonClassNames({
   iconPlacement,
   iconSurfaceCorners,
   iconTreatment,
-  globalRadius
+  globalRadius,
+  selectionRest
 }: {
   e1: ClassNameByElementJSON | undefined;
   e2: ClassNameByElementJSON | undefined;
@@ -228,7 +233,14 @@ export function resolveButtonClassNames({
   iconSurfaceCorners?: ButtonIconSurfaceCorners;
   iconTreatment?: ButtonIconTreatment;
   globalRadius: RadiusMode | undefined;
+  selectionRest?: ButtonSelectionRestClassesMap;
 }): ButtonResolvedClassNames {
+  const usesProjection = selectionRest !== undefined;
+  const paintE1 = resolveButtonPaintElement(e1, selectionRest?.e1, usesProjection);
+  e2 = resolveButtonPaintElement(e2, selectionRest?.e2, usesProjection);
+  e3 = resolveButtonPaintElement(e3, selectionRest?.e3, usesProjection);
+  e4 = resolveButtonPaintElement(e4, selectionRest?.e4, usesProjection);
+  e5 = resolveButtonPaintElement(e5, selectionRest?.e5, usesProjection);
   const resolvedIntent = intent ?? DEFAULT_BUTTON_INTENT;
   const resolvedEmphasis = emphasis ?? DEFAULT_BUTTON_EMPHASIS;
   const resolvedSurfaceContext = surfaceContext ?? DEFAULT_BUTTON_SURFACE_CONTEXT;
@@ -236,11 +248,13 @@ export function resolveButtonClassNames({
   const resolvedIconSurfaceCorners = iconSurfaceCorners ?? DEFAULT_BUTTON_ICON_SURFACE_CORNERS;
   const hasSurfacedIconTreatment = resolvedIconTreatment !== 'plain';
   const scaleKey = normalizeButtonScaleKey(scale ?? DEFAULT_BUTTON_SCALE);
-  const radiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
+  const requestedRadiusMode = radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS;
+  const stackedRadiusMode = resolveButtonStackedRadiusMode(requestedRadiusMode);
   const isStacked =
     iconLayout === 'stacked' &&
     !hasSurfacedIconTreatment &&
-    supportsButtonStackedLayout({ e8, e9, e10 }, scaleKey, radiusMode);
+    supportsButtonStackedLayout({ e8, e9, e10 }, scaleKey, stackedRadiusMode);
+  const radiusMode = isStacked ? stackedRadiusMode : requestedRadiusMode;
   const resolvedIconLayout = hasSurfacedIconTreatment
     ? 'edge'
     : iconLayout === 'stacked' && !isStacked
@@ -258,7 +272,7 @@ export function resolveButtonClassNames({
   const e4HasSchemaScale = Boolean(e4?.s?.all || e4?.s?.[scaleKey]);
   const isTerminalInteractionStatus = status === 'pending' || status === 'disabled';
 
-  const e1Effects = e1?.e;
+  const e1Effects = paintE1?.e;
   const shadowEffect = shadow ? resolveButtonStatefulEffectClassName(e1Effects?.h) : '';
   const radiusEffectClass = radiusEffect
     ? radiusMode === 'rounded'
@@ -282,14 +296,14 @@ export function resolveButtonClassNames({
   return {
     e1:
       join(
-        collectElementClasses(e1, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+        collectElementClasses(paintE1, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
         rootGeometry?.s?.all,
         classNames.e1,
         rootGeometry?.s?.[scaleKey],
         e1RadiusClassName,
         shadowEffect,
         radiusEffectClass,
-        controlState ? resolveButtonEffectBucketClassName(e1?.l, scaleKey) : undefined,
+        controlState ? resolveButtonEffectBucketClassName(paintE1?.l, scaleKey) : undefined,
         cn.interactive,
         isTerminalInteractionStatus ? undefined : cn.nativeInteraction,
         shadowEffect ? cn.shadow : undefined,
@@ -397,6 +411,38 @@ export function resolveButtonGroupClassName({
       ) ?? 'k-btn-x3',
     hasShadow: Boolean(shadowEffect)
   };
+}
+
+/** Resolves a complete published Rest perimeter without borrowing another palette coordinate. */
+export function resolveButtonGroupFrameClassName({
+  element,
+  scale,
+  radius,
+  globalRadius,
+  intent = DEFAULT_BUTTON_INTENT,
+  emphasis = DEFAULT_BUTTON_EMPHASIS,
+  surfaceContext = DEFAULT_BUTTON_SURFACE_CONTEXT
+}: {
+  element: ClassNameByElementJSON | undefined;
+  scale: string;
+  radius: RadiusMode | undefined;
+  globalRadius?: RadiusMode;
+  intent?: ButtonIntent;
+  emphasis?: ComponentEmphasis;
+  surfaceContext?: SurfaceContext;
+}): string | undefined {
+  if (!element?.d || (!element.s?.all && !element.s?.[normalizeButtonScaleKey(scale)])) {
+    return undefined;
+  }
+  const scaleKey = normalizeButtonScaleKey(scale);
+  const radiusClassName = resolveRadiusClassName(
+    element,
+    scaleKey,
+    radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS
+  );
+  const paintClassName = resolveIntentClassName(element, intent, emphasis, { surfaceContext });
+  if (!radiusClassName || !paintClassName) return undefined;
+  return join(element.d, element.s?.all, element.s?.[scaleKey], radiusClassName, paintClassName);
 }
 
 export function mergeButtonClassNames(

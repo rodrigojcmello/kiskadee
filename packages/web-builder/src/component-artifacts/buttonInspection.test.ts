@@ -141,8 +141,7 @@ describe('Button reference-height inspection', () => {
           paddingLeft: 12,
           borderWidth: 1,
           borderRadius: {
-            rounded: 4,
-            pill: { 's:md:1': { 'bp:lg:1': 28 } },
+            rounded: { 's:md:1': { 'bp:lg:1': 4 } },
             square: 0
           }
         }
@@ -160,16 +159,16 @@ describe('Button reference-height inspection', () => {
     expect(validateButtonComponentContract(schema.components.button)).toEqual([]);
     const { css, maps } = await compile(schema);
     const e8 = (maps.core.button as Record<string, ClassNameByElementJSON>).e8;
-    expect(e8.rr?.all).toBeTruthy();
+    expect(e8.rr?.['md:1']).toBeTruthy();
     expect(e8.rs?.all).toBeTruthy();
-    expect(e8.rp?.['md:1']).toBeTruthy();
+    expect(e8.rp).toBeUndefined();
     expect(css.coreCss).toContain('border-radius: 0px');
-    expect(css.coreCss).toContain('border-radius: 28px');
+    expect(css.coreCss).toContain('border-radius: 4px');
     expect(css.coreCss).toContain('@media (min-width: 1152px)');
     expect(buildButtonLayoutSupport(schema.components.button, ['md:1'])).toEqual({
       stacked: {
         sizes: ['md:1'],
-        sizesByRadius: { rounded: ['md:1'], pill: [], square: ['md:1'] }
+        sizesByRadius: { rounded: [], pill: [], square: ['md:1'] }
       }
     });
   });

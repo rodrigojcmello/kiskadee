@@ -156,7 +156,9 @@ export function compileDensityClassMaps(
           resolveSupportedSize(size, [...supported])
         ])
       );
-      for (const element of Object.values(elements)) {
+      const group = name === 'button' && isRecord(elements.group) ? elements.group : undefined;
+      // Reuse the source Button density aliases without adding supported component sizes.
+      for (const element of [...Object.values(elements), group?.frame]) {
         if (!isRecord(element)) continue;
         for (const bucket of ['s', 'w', 'rr', 'rp', 'rs', 'e', 'p', 'l']) {
           addAdaptiveBucket(element[bucket], effectiveMap);

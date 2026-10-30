@@ -1,3 +1,5 @@
+import { resolveIntentClassName } from '../../shared/class-resolution/classNames.ts';
+import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { withComponentResources } from '../../shared/contexts/ComponentResourceBoundary.tsx';
 import {
   useComponentScale,
@@ -5,7 +7,11 @@ import {
 } from '../../shared/contexts/DensityContext.tsx';
 import { useControlCursorStyle } from '../../shared/contexts/useControlCursorStyle.ts';
 import './Button.structural.scss';
-import type { ButtonIconTreatment, SurfaceContext } from '@kiskadee/core';
+import {
+  type ButtonIconTreatment,
+  resolveButtonStackedRadiusMode,
+  type SurfaceContext
+} from '@kiskadee/core';
 import { Button as HeadlessButton, HeadlessProgress } from '@kiskadee/react-headless';
 import {
   createContext,
@@ -18,7 +24,6 @@ import {
   useEffect,
   useMemo
 } from 'react';
-import { resolveStructuralUtilityProjectionClassName } from '../../shared/class-resolution/structuralUtilityProjection.ts';
 import { useEssentialIcon } from '../../shared/contexts/EssentialIconContext.tsx';
 import { useKiskadee } from '../../shared/contexts/KiskadeeContext.tsx';
 import {
@@ -41,9 +46,11 @@ import {
   normalizeButtonScaleKey,
   resolveButtonDividerClassName,
   resolveButtonGroupClassName,
+  resolveButtonGroupFrameClassName,
   resolveButtonIndicatorClassName,
   supportsButtonStackedLayout
 } from './Button.class-names.ts';
+import { resolveButtonPaintElement, resolveButtonSelectionPaint } from './Button.selection.ts';
 import type {
   ButtonBadgePlacement,
   ButtonBadgeProps,
@@ -82,9 +89,9 @@ export type {
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ButtonIndicatorPlacement,
-  ButtonIndicatorScope,
   ButtonProgressProps,
   ButtonProps,
+  ButtonSelectionEmphasis,
   ButtonStatus
 } from './Button.types.ts';
 
@@ -131,7 +138,9 @@ type ButtonRuntimeContextValue = {
 const ButtonRuntimeContext = createContext<ButtonRuntimeContextValue | null>(null);
 
 type ButtonGroupRuntimeContextValue = {
-  dividerThicknessProjectionClassName: string | undefined;
+  continuousFrame: boolean;
+  column?: number;
+  dividerThicknessProjectionClassName: string;
   emphasis: NonNullable<ButtonGroupProps['emphasis']>;
   intent: NonNullable<ButtonGroupProps['intent']>;
   radius: NonNullable<ButtonGroupProps['radius']>;
@@ -442,9 +451,11 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       ? common.iconTreatment
       : 'plain';
   const requestedStackedLayout = common.iconLayout === 'stacked';
-  const stackedRadius = common.radius ?? common.options.radius ?? DEFAULT_BUTTON_RADIUS;
+  const requestedRadius = common.radius ?? common.options.radius ?? DEFAULT_BUTTON_RADIUS;
+  const stackedRadius = resolveButtonStackedRadiusMode(requestedRadius);
   const stackedScale = normalizeButtonScaleKey(common.scale);
   const stackedLayoutSupported =
+    group?.radius !== 'pill' &&
     !common.buttonClassesMapPending &&
     Boolean(common.stackedSizesByRadius?.[stackedRadius]?.includes(stackedScale)) &&
     supportsButtonStackedLayout(common, common.scale, stackedRadius);
@@ -460,6 +471,70 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
             contentSlots.hasInlineBadge)
         ? 'inline'
         : common.iconLayout;
+  const effectiveRadius = activeIconLayout === 'stacked' ? stackedRadius : requestedRadius;
+  const selectionEmphasis =
+    common.selectionEmphasis ?? common.options.selectionEmphasis ?? 'lowest';
+  const memberRecipe = group?.continuousFrame ? common.buttonClassesMap?.group : undefined;
+  const selectionPaint = resolveButtonSelectionPaint({
+    elements: common.buttonClassesMap,
+    groupPaint: memberRecipe,
+    controlState: common.controlState,
+    selectionEmphasis,
+    emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
+    intent: common.intent,
+    selectionIntent: common.selectionIntent,
+    supportsSelectionIntent: common.supportsSelectionIntent,
+    surfaceContext: common.surfaceContext,
+    hasIcon: contentSlots.hasIcon,
+    hasLabel: contentSlots.hasLabel,
+    hasDisclosure: contentSlots.hasDisclosure,
+    surfaced: activeIconTreatment !== 'plain'
+  });
+  const memberRoot = useMemo(
+    () =>
+      memberRecipe
+        ? {
+            ...common.e1,
+            d: join(common.e1?.d, memberRecipe.member?.d),
+            c: memberRecipe.member?.c
+          }
+        : common.e1,
+    [common.e1, memberRecipe]
+  );
+  const paintProjection = useMemo(
+    () =>
+      memberRecipe && selectionPaint.projection
+        ? {
+            ...selectionPaint.projection,
+            e1: {
+              ...selectionPaint.projection.e1,
+              c: memberRecipe.selectionRestMember?.c
+            }
+          }
+        : selectionPaint.projection,
+    [memberRecipe, selectionPaint.projection]
+  );
+  const paintElements = useMemo<ButtonClassesMap>(
+    () => ({
+      e1: resolveButtonPaintElement(memberRoot, paintProjection?.e1, Boolean(paintProjection)),
+      e2: resolveButtonPaintElement(
+        common.e2,
+        selectionPaint.projection?.e2,
+        Boolean(selectionPaint.projection)
+      ),
+      e3: resolveButtonPaintElement(
+        common.e3,
+        selectionPaint.projection?.e3,
+        Boolean(selectionPaint.projection)
+      ),
+      e5: resolveButtonPaintElement(
+        common.e5,
+        selectionPaint.projection?.e5,
+        Boolean(selectionPaint.projection)
+      )
+    }),
+    [memberRoot, paintProjection, common.e2, common.e3, common.e5, selectionPaint.projection]
+  );
   const indicatorPlacement =
     common.indicatorPlacement ??
     common.options.indicatorPlacement ??
@@ -473,15 +548,57 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       : activeIconLayout === 'stacked'
         ? common.stackedIndicatorSizesByRadius
         : common.indicatorSizesByRadius;
-  const indicatorEnabled =
-    common.indicator ??
-    (common.options.indicatorScope !== 'stacked' || activeIconLayout === 'stacked');
+  const indicatorEnabled = selectionPaint.indicatorEnabled;
   const indicatorScale = useResolvedComponentScale(
     'button',
-    indicatorEnabled && indicatorElement && indicatorSizesByRadius?.[stackedRadius]?.length
+    indicatorEnabled && indicatorElement && indicatorSizesByRadius?.[effectiveRadius]?.length
       ? groupedProps.size
       : (groupedProps.size ?? 'md')
   );
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      !common.buttonClassesMapPending &&
+      selectionPaint.highUnavailable
+    ) {
+      console.warn(
+        '[Kiskadee] Button selectionEmphasis requires a published High Rest paint projection for the active intent, surface and content. Keeping the base Selected recipe.'
+      );
+    }
+  }, [common.buttonClassesMapPending, selectionPaint.highUnavailable]);
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      common.buttonClassesMapPending ||
+      !selectionPaint.intentUnavailable
+    )
+      return;
+
+    if (common.selectionIntent.startsWith('brand.')) {
+      console.error(
+        `[Kiskadee] Button selectionIntent="${common.selectionIntent}" requires a compatible BrandPackBoundary and complete paint coverage. No system intent was substituted.`
+      );
+    } else {
+      console.warn(
+        `[Kiskadee] Button selectionIntent="${common.selectionIntent}" requires a complete paint recipe for the active surface and content. Keeping the base intent.`
+      );
+    }
+  }, [common.buttonClassesMapPending, common.selectionIntent, selectionPaint.intentUnavailable]);
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      !group &&
+      common.radius === 'pill' &&
+      activeIconLayout === 'stacked'
+    ) {
+      console.warn(
+        '[Kiskadee] Button iconLayout="stacked" supports Rounded and Square corners. The explicit Pill radius was converted to Rounded.'
+      );
+    }
+  }, [activeIconLayout, common.radius, group]);
 
   useEffect(() => {
     if (
@@ -537,22 +654,24 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     () =>
       resolveButtonFeedbackEffectAvailability({
         activationFeedback: feedbackLoadingBlocked ? false : common.activationFeedback,
-        element: common.e1
+        element: paintElements.e1
       }),
-    [common.activationFeedback, common.e1, feedbackLoadingBlocked]
+    [common.activationFeedback, paintElements.e1, feedbackLoadingBlocked]
   );
   const feedbackEffect = useButtonFeedbackEffect(feedbackEffectAvailability);
   const activationFeedbackController = useButtonActivationFeedbackController(common, {
-    feedbackEnabled: Boolean(feedbackEffect.loadedFeedbackKind)
+    feedbackEnabled: Boolean(feedbackEffect.loadedFeedbackKind),
+    paintSelected: selectionPaint.selectedPaint,
+    paintElement: paintElements.e1
   });
   const producedSurfaceContext = resolveContentSurfaceContext({
     map: common.contentSurfaceContext,
     segment,
     theme,
     consumedSurfaceContext: common.surfaceContext,
-    intent: common.intent,
-    emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
-    selected: common.controlState,
+    intent: selectionPaint.intent,
+    emphasis: selectionPaint.emphasis,
+    selected: selectionPaint.selectedPaint,
     pending: activationFeedbackController.pending,
     disabled: activationFeedbackController.nativeDisabled
   });
@@ -562,10 +681,10 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
           element: indicatorElement,
           sizesByRadius: indicatorSizesByRadius,
           scale: indicatorScale,
-          radius: common.radius ?? common.options.radius ?? DEFAULT_BUTTON_RADIUS,
+          radius: effectiveRadius,
           placement: indicatorPlacement,
-          intent: common.intent,
-          emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
+          intent: selectionPaint.intent,
+          emphasis: selectionPaint.emphasis,
           surfaceContext: common.surfaceContext
         })
       : undefined;
@@ -574,15 +693,26 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     !activationFeedbackController.activationBlocked &&
     activationFeedbackController.visualStatus !== 'disabled' &&
     activationFeedbackController.visualStatus !== 'pending';
-  const elements = useMemo<ButtonClassesMap>(
-    () => ({
-      e1: common.e1,
-      e2: common.e2,
-      e3: common.e3,
-      e5: common.e5
-    }),
-    [common.e1, common.e2, common.e3, common.e5]
-  );
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      !common.buttonClassesMapPending &&
+      common.buttonClassesMap &&
+      indicatorActive &&
+      indicatorEnabled &&
+      !indicatorClassName
+    ) {
+      console.warn(
+        '[Kiskadee] Button selectionEmphasis indicator requires a complete recipe for the effective paint, placement, size and radius. The indicator was omitted.'
+      );
+    }
+  }, [
+    common.buttonClassesMapPending,
+    common.buttonClassesMap,
+    indicatorActive,
+    indicatorEnabled,
+    indicatorClassName
+  ]);
   const feedbackClassNamePatch = useMemo(
     () =>
       resolveButtonFeedbackClassNamePatch({
@@ -590,9 +720,9 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
         activationFeedbackEffect: feedbackEffect.activationFeedbackEffect,
         activationFeedbackConfig: activationFeedbackController.activationFeedbackConfig,
         activationFeedbackProfile: activationFeedbackController.activationFeedbackProfile,
-        controlState: common.controlState,
-        elements,
-        emphasis: common.emphasis,
+        controlState: selectionPaint.selectedPaint,
+        elements: paintElements,
+        emphasis: selectionPaint.emphasis,
         feedbackKind: activationFeedbackController.feedbackKind,
         isActive: activationFeedbackController.isFeedbackActive,
         isFading: activationFeedbackController.isFeedbackFading,
@@ -608,34 +738,38 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       activationFeedbackController.shouldForceOverlayPressed,
       activationFeedbackController.shouldUsePressedProfile,
       common.surfaceContext,
-      common.controlState,
-      common.emphasis,
-      elements,
+      selectionPaint.selectedPaint,
+      selectionPaint.emphasis,
+      paintElements,
       feedbackEffect.activationFeedbackEffect
     ]
   );
-  const baseClassNames = useButtonClassNamesFromCommon(common, {
-    iconLayoutOverride: activeIconLayout,
-    iconTreatmentOverride: activeIconTreatment,
-    statusOverride: activationFeedbackController.shouldForceOverlayPressed
-      ? 'rest'
-      : activationFeedbackController.visualStatus
-  });
+  const baseClassNames = useButtonClassNamesFromCommon(
+    { ...common, e1: memberRoot },
+    {
+      paintEmphasis: selectionPaint.emphasis,
+      paintIntent: selectionPaint.intent,
+      selectionRest: paintProjection,
+      iconLayoutOverride: activeIconLayout,
+      iconTreatmentOverride: activeIconTreatment,
+      statusOverride: activationFeedbackController.shouldForceOverlayPressed
+        ? 'rest'
+        : activationFeedbackController.visualStatus
+    }
+  );
   const computedClassNames = useMemo(
     () =>
       mergeButtonClassNames(
         baseClassNames,
         feedbackClassNamePatch,
-        group?.dividerThicknessProjectionClassName
-          ? { e1: group.dividerThicknessProjectionClassName }
-          : undefined,
+        group?.continuousFrame ? { e1: group.dividerThicknessProjectionClassName } : undefined,
         activationFeedbackController.shouldUsePressedFeedback ? { e1: 'k-pressed' } : undefined
       ),
     [
       activationFeedbackController.shouldUsePressedFeedback,
       baseClassNames,
       feedbackClassNamePatch,
-      group?.dividerThicknessProjectionClassName
+      group
     ]
   );
   const runtimeContextValue = useMemo<ButtonRuntimeContextValue>(
@@ -733,7 +867,11 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     <ButtonRuntimeContext.Provider value={runtimeContextValue}>
       <HeadlessButton
         {...common.restProps}
-        style={{ ...cursorStyle, ...common.restProps.style }}
+        style={{
+          ...cursorStyle,
+          ...common.restProps.style,
+          ...(group?.continuousFrame ? { gridColumn: group.column, gridRow: 1 } : undefined)
+        }}
         disabled={activationFeedbackController.nativeDisabled}
         pending={activationFeedbackController.pending}
         interactionLocked={common.interactionLocked}
@@ -744,6 +882,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
           ...computedClassNames,
           e1: join(
             computedClassNames.e1,
+            memberRecipe && selectionPaint.projection ? 'k-btn-e1l' : undefined,
             contentSlots.hasOverlayBadge ? 'k-btn-e1j' : undefined,
             indicatorClassName ? 'k-btn-e1k' : undefined
           )
@@ -793,7 +932,17 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
   const surfaceContext = useSurfaceContext(surfaceContextProp);
   const { buttonClassesMap, buttonClassesMapPending, options } = useButtonArtifactConfig();
   const { e1, e6 } = buttonClassesMap ?? {};
-  const resolvedRadius = radius ?? options.radius ?? DEFAULT_BUTTON_RADIUS;
+  const childArray = flattenFragmentChildren(children);
+  const requestedRadius = radius ?? options.radius ?? DEFAULT_BUTTON_RADIUS;
+  const hasStackedMember = childArray.some(
+    (child) =>
+      isValidElement<ButtonProps>(child) &&
+      (child.type === MemoButton || child.type === ButtonRoot) &&
+      (child.props.iconLayout ?? options.iconLayout) === 'stacked'
+  );
+  const resolvedRadius = hasStackedMember
+    ? resolveButtonStackedRadiusMode(requestedRadius)
+    : requestedRadius;
   const groupClassName = useMemo(
     () =>
       resolveButtonGroupClassName({
@@ -817,21 +966,38 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       }),
     [e6, emphasis, intent, scale, surfaceContext]
   );
-  const dividerThicknessProjectionClassName = useMemo(
-    () => resolveStructuralUtilityProjectionClassName(e1, 'gd', scale),
-    [e1, scale]
+  const hasDividerGeometry = Boolean(e6?.s?.all || e6?.s?.[normalizeButtonScaleKey(scale)]);
+  const dividerThicknessProjectionClassName = resolveStructuralUtilityProjectionClassName(
+    e1,
+    'gd',
+    scale
   );
-  const childArray = flattenFragmentChildren(children);
+  const frameClassName = resolveButtonGroupFrameClassName({
+    element: buttonClassesMap?.group?.frame,
+    scale,
+    radius: resolvedRadius,
+    globalRadius: options.radius,
+    emphasis,
+    intent,
+    surfaceContext
+  });
+  const hasMemberPaint = Boolean(
+    buttonClassesMap?.group?.member?.d &&
+      resolveIntentClassName(buttonClassesMap.group.member, intent, emphasis, { surfaceContext })
+  );
+  const hasContinuousFrame = Boolean(
+    frameClassName && hasMemberPaint && dividerThicknessProjectionClassName
+  );
   const hasGroupDivider =
     options.groupDivider === true &&
     dividerClassName.length > 0 &&
-    dividerThicknessProjectionClassName.length > 0 &&
+    hasDividerGeometry &&
+    hasContinuousFrame &&
     childArray.length > 1;
   const contextValue = useMemo<ButtonGroupRuntimeContextValue>(
     () => ({
-      dividerThicknessProjectionClassName: hasGroupDivider
-        ? dividerThicknessProjectionClassName
-        : undefined,
+      continuousFrame: hasGroupDivider,
+      dividerThicknessProjectionClassName,
       emphasis,
       intent,
       radius: resolvedRadius,
@@ -839,15 +1005,27 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       surfaceContext
     }),
     [
+      hasGroupDivider,
       dividerThicknessProjectionClassName,
       emphasis,
-      hasGroupDivider,
       intent,
       resolvedRadius,
       size,
       surfaceContext
     ]
   );
+
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      radius === 'pill' &&
+      resolvedRadius === 'rounded'
+    ) {
+      console.warn(
+        '[Kiskadee] Button.Group containing a Stacked Button uses Rounded corners instead of the explicit Pill radius for its shared visual contract.'
+      );
+    }
+  }, [radius, resolvedRadius]);
 
   useEffect(() => {
     if (
@@ -870,20 +1048,20 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       buttonClassesMapPending ||
       options.groupDivider !== true ||
       childArray.length < 2 ||
-      (dividerClassName.length > 0 && dividerThicknessProjectionClassName.length > 0)
+      (dividerClassName.length > 0 && hasDividerGeometry && hasContinuousFrame)
     ) {
       return;
     }
 
     console.warn(
-      '[Kiskadee] Button groupDivider requires compatible Button.e6 paint and its ' +
-        'e1.p.gd thickness projection from the active preset.'
+      '[Kiskadee] Button groupDivider requires compatible divider geometry and a published Group Rest frame/member paint projection from the active preset.'
     );
   }, [
     buttonClassesMapPending,
     childArray.length,
     dividerClassName,
-    dividerThicknessProjectionClassName,
+    hasDividerGeometry,
+    hasContinuousFrame,
     options.groupDivider
   ]);
 
@@ -894,21 +1072,28 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
         ref={ref}
         className={join(groupClassName.className, hasGroupDivider ? 'k-btn-x3a' : undefined)}
       >
-        {hasGroupDivider
-          ? childArray.flatMap((child, index) =>
-              index === 0
-                ? [child]
-                : [
-                    <span
-                      aria-hidden="true"
-                      className={join(dividerClassName, 'k-btn-e6a')}
-                      // biome-ignore lint/suspicious/noArrayIndexKey: divider identity is the positional seam between siblings.
-                      key={`button-group-divider-${index}`}
-                    />,
-                    child
-                  ]
-            )
-          : childArray}
+        {childArray.map((child, index) => (
+          <ButtonGroupRuntimeContext.Provider
+            value={{ ...contextValue, column: hasGroupDivider ? index + 1 : undefined }}
+            key={isValidElement(child) ? (child.key ?? index) : index}
+          >
+            {hasGroupDivider && index > 0 ? (
+              <span
+                aria-hidden="true"
+                className={join(dividerClassName, 'k-btn-e6a')}
+                style={{ gridColumn: `${index + 1} / ${index + 2}`, gridRow: '1 / 2' }}
+              />
+            ) : null}
+            {child}
+            {hasGroupDivider ? (
+              <span
+                aria-hidden="true"
+                className={join(frameClassName, dividerThicknessProjectionClassName, 'k-btn-x3b')}
+                style={{ gridColumn: `${index + 1} / ${index + 2}`, gridRow: '1 / 2' }}
+              />
+            ) : null}
+          </ButtonGroupRuntimeContext.Provider>
+        ))}
       </div>
     </ButtonGroupRuntimeContext.Provider>
   );

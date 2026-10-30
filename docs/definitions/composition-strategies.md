@@ -289,9 +289,14 @@ A durable architecture decision should record:
 - The Icon Family Provider selects the effective family and variant for family-resolved icons in a
   subtree. `EssentialIconProvider` separately maps E-I concepts to `IconName`; neither moves preset
   recommendations or icon-size values out of Schema.
-- Button connected-divider thickness uses SUP because another structural owner needs an existing
-  token-only utility. Dropdown group-label spacing uses CSC because one element owns both additive
-  spacing values.
+- Button plain-icon line-height fitting uses SUP because the icon viewport needs an existing
+  label metric. Connected groups use `e1.p.gd` to consume `e6` thickness on member roots for seam
+  overlap and on frame pieces for shared-strip clipping; the divider remains an overlay. A separate
+  palette-aware class-map projection supplies the logical Rest perimeter and member paint without
+  duplicating Schema authorship; it is not SUP.
+  Grid-aligned decorative pieces omit only the frame over a member using High selection paint. See
+  [connected groups](../../packages/components/react/docs/definitions/button/connected-groups.md).
+  Dropdown group-label spacing uses CSC because one element owns both additive spacing values.
 - Badge is an independent Rest-only component because its metadata remains meaningful outside any
   one host. `Button.Badge` is a compound relation: Button `e7` owns an inline relation gap, while
   Structural CSS owns logical-corner overlays. Badge preserves its identity and does not inherit
@@ -322,6 +327,12 @@ A durable architecture decision should record:
 ## Related definitions
 
 - [State indicators](./state-indicators.md)
+  and [Button selection emphasis](../../packages/components/react/docs/definitions/button/selection-emphasis.md)
+  separate semantic selection from its chosen paint source. The Button-specific Builder projection
+  reuses ordinary classes while preserving selection for accessibility, indicators and Group topology.
+  `selectionIntent` chooses the selected color recipe independently of `selectionEmphasis` strength;
+  both consume existing palette coordinates rather than adding a selected-color axis or duplicating
+  recipes. The same effective paint drives content context, effects and indicator contrast.
 - [Project governance and responsibility](./project-governance.md)
 - [Kiskadee Nomenclature](./nomenclature.md)
 - [Schema-to-Web composition patterns](./schema-to-web-composition-patterns.md)
@@ -351,4 +362,5 @@ The Button-owned overlay wrapper consumes the host radius, not the nested Badge 
 For a circular corner of radius r, both logical insets are r * (1 - 1/sqrt(2)), placing the
 Badge center on the 45-degree point of the contour. Square corners retain zero inset.
 RTL changes the outward inline translation, not the logical geometry. Inline relations
-continue to use e7 spacing. Presets author exact half-height pill radii per size.
+continue to use e7 spacing. Stacked geometry supports Rounded and Square; the shared Core radius
+resolver maps Pill requests to Rounded before capability checks. Numeric radii remain preset-owned.

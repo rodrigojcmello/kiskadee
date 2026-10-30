@@ -67,6 +67,38 @@ it('keeps medium and interactive low surfaces in their own intent family', () =>
   }
 });
 
+it('keeps selection at the Pressed surface of its own emphasis without extra selected layers', () => {
+  for (const segment of ['default', 'dynamic', 'purple'] as const)
+    for (const theme of ['light', 'dark'] as const)
+      for (const surface of ['onSubtle', 'onVivid'] as const)
+        for (const intent of MATERIAL_BUTTON_INTENTS) {
+          const formula = createMaterialButtonIntent({ c, segment, theme, surface, intent });
+          for (const emphasis of MATERIAL_BUTTON_EMPHASES) {
+            const colors = formula.boxColor[emphasis];
+            expect(colors.selected).toEqual({ rest: colors.pressed });
+            expect(Object.keys(colors.selected!)).toEqual(['rest']);
+            expect(formula.borderColor[emphasis].selected).toBeUndefined();
+            expect(formula.textColor[emphasis].selected).toBeUndefined();
+          }
+        }
+});
+
+it('preserves subtle Neutral selection and its outline instead of promoting it to High', () => {
+  const formula = createMaterialButtonIntent({
+    c,
+    segment: 'default',
+    theme: 'light',
+    surface: 'onSubtle',
+    intent: 'neutral'
+  });
+  for (const emphasis of ['medium', 'low', 'lowest'] as const) {
+    expect(formula.boxColor[emphasis].selected!.rest).not.toBe(formula.boxColor.high.rest);
+    expect(formula.textColor[emphasis].rest).not.toBe(formula.textColor.high.rest);
+  }
+  expect(formula.borderColor.low.rest).not.toBe(formula.borderColor.lowest.rest);
+  expect(formula.borderColor.low.selected).toBeUndefined();
+});
+
 it('keeps enabled label contrast through isolated and selected interaction states', () => {
   const failures: string[] = [];
   for (const segment of ['default', 'purple'] as const)
@@ -123,7 +155,7 @@ it('follows the foreground direction for Material state layers', () => {
   }
 });
 
-it('publishes parent-state content and keeps pending spinners at full strength', () => {
+it('keeps selected content stable, publishes matching surface contexts and preserves pending spinners', () => {
   const button = createMaterial3GoogleButtonSchema({
     c,
     segmentNames: ['default', 'dynamic', 'purple'],
@@ -142,15 +174,32 @@ it('publishes parent-state content and keeps pending spinners at full strength',
               button.elements.e3?.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
                 emphasis
               ];
+            const disclosure =
+              button.elements.e5?.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
+                emphasis
+              ];
             expect(label?.pending).toHaveProperty('ref');
             expect(icon?.pending).toBeUndefined();
             expect(icon?.rest).toEqual(label?.rest);
             expect(icon?.disabled).toEqual(label?.disabled);
+            expect(disclosure?.rest).toEqual(label?.rest);
+            expect(disclosure?.pending).toBeUndefined();
+            for (const content of [label, icon, disclosure]) {
+              expect(content?.selected).toBeUndefined();
+              expect(content?.disabled).toHaveProperty('ref');
+            }
             const context =
               button.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.[intent]?.[emphasis];
             expect(context?.selected).toBe(
-              surface === 'onVivid' || theme === 'dark' ? 'onSubtle' : 'onVivid'
+              emphasis === 'high'
+                ? surface === 'onVivid' || theme === 'dark'
+                  ? 'onSubtle'
+                  : 'onVivid'
+                : emphasis === 'medium'
+                  ? surface
+                  : 'inherit'
             );
+            expect(context?.selected).toBe(context?.rest);
             expect(context?.disabled).toBe('inherit');
           }
 });

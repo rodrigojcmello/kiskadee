@@ -839,9 +839,14 @@ Decision:
   projections and projection chains are invalid.
 - The target must not already emit the projected custom property from another token, mirrored, or
   compensated scale utility.
-- The canonical Registry projects optional `Button.e6.boxWidth` to `Button.e1.p.gd` and publishes
+- The canonical Registry publishes Button's plain-icon label-height metric through `e2.p.lh` and
   Dropdown `e3/e10` width-gap subsets for independent empty leading tracks, retaining every normal
-  source reference.
+  source reference. Optional `Button.e6.boxWidth` is also published at `Button.e1.p.gd`; connected
+  groups apply it to member roots for seam overlap and frame pieces for shared-strip clipping only
+  with a compatible divider and Rest-frame handoff. The artifact owner remains `e1`; no extra
+  Registry entry is needed. The palette-aware frame/member subsets use a separate class-map
+  projection, not the scale-only `p` bucket. Grid-aligned frame pieces share the base Rest recipe; the local
+  piece is omitted while a selected member actually uses the normal High projection.
 - Migration of Tabs fixed width remains a future candidate, not an active projection.
 
 Reason:

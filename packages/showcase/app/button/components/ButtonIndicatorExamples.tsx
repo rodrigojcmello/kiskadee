@@ -4,6 +4,7 @@ import {
   componentScaleToSize,
   type ElementSizeValue,
   type RadiusMode,
+  resolveButtonStackedRadiusMode,
   resolveDensityScale,
   resolveSupportedSize,
   type SurfaceContext
@@ -60,6 +61,7 @@ export function ButtonIndicatorExamples({
     hasCoverage(indicatorSizesByRadius?.[radius]) ||
     hasCoverage(outsideIndicatorSizesByRadius?.[radius]);
   const stackedSize = scaleKey ? componentScaleToSize(`s:${scaleKey}` as ElementSizeValue) : size;
+  const stackedRadius = resolveButtonStackedRadiusMode(radius);
   const toggle = (key: string) =>
     setDeselected((current) =>
       current.includes(key) ? current.filter((item) => item !== key) : [...current, key]
@@ -68,15 +70,15 @@ export function ButtonIndicatorExamples({
   return (
     <section className={styles.indicatorSection} aria-labelledby="button-indicator-title">
       <Text as="h3" id="button-indicator-title" profile={profiles.sectionTitle}>
-        Selection indicator
+        Selection selectionEmphasis="low"
       </Text>
       {showDescriptions ? (
         <Text as="p" profile={profiles.body}>
           Toggle a Button to compare its selection indicator. Placement preserves the Button box;
           the external line needs clearance in its surrounding layout. Unavailable actions keep
-          their selection and hide the line. Stacked and Preset default follow the preset policy;
-          the other horizontal samples explicitly opt in. Icon only reference shows the nominal
-          line; the narrow I tests its width limit.
+          their selection and hide the line. Preset default uses Lowest selection emphasis; the
+          other samples use Low to show the indicator. Icon only reference shows the nominal line;
+          the narrow I tests its width limit.
         </Text>
       ) : null}
       {available ? (
@@ -89,7 +91,8 @@ export function ButtonIndicatorExamples({
                 ? stackedIndicatorSizesByRadius
                 : stackedOutsideIndicatorSizesByRadius;
             const stackedAvailable =
-              hasCoverage(stackedSizesByRadius?.[radius]) && hasCoverage(stackedCoverage?.[radius]);
+              hasCoverage(stackedSizesByRadius?.[stackedRadius]) &&
+              hasCoverage(stackedCoverage?.[stackedRadius]);
             if (!hasCoverage(coverage?.[radius])) {
               return (
                 <ShowcaseExampleCard
@@ -120,7 +123,7 @@ export function ButtonIndicatorExamples({
                     radius={radius}
                     intent="neutral"
                     emphasis="low"
-                    indicator
+                    selectionEmphasis="low"
                     indicatorPlacement={placement}
                     toggle
                     aria-label="Icon only reference"
@@ -150,7 +153,7 @@ export function ButtonIndicatorExamples({
                     radius={radius}
                     intent="neutral"
                     emphasis="low"
-                    indicator
+                    selectionEmphasis="low"
                     indicatorPlacement={placement}
                     toggle
                     aria-label="Narrow label"
@@ -176,7 +179,7 @@ export function ButtonIndicatorExamples({
                           radius={radius}
                           intent={intent}
                           emphasis={emphasis}
-                          indicator
+                          selectionEmphasis="low"
                           indicatorPlacement={placement}
                           toggle
                           controlState={!deselected.includes(key)}
@@ -193,10 +196,11 @@ export function ButtonIndicatorExamples({
                     <Button
                       type="button"
                       size={stackedSize}
-                      radius={radius}
+                      radius={stackedRadius}
                       intent="neutral"
                       emphasis="low"
                       iconLayout="stacked"
+                      selectionEmphasis="low"
                       indicatorPlacement={placement}
                       toggle
                       controlState={!deselected.includes(`${placement}-chat`)}
@@ -215,7 +219,7 @@ export function ButtonIndicatorExamples({
                         <Button
                           key={key}
                           type="button"
-                          indicator
+                          selectionEmphasis="low"
                           indicatorPlacement={placement}
                           toggle
                           controlState={!deselected.includes(key)}
@@ -236,7 +240,7 @@ export function ButtonIndicatorExamples({
                     radius={radius}
                     intent="neutral"
                     emphasis="low"
-                    indicator
+                    selectionEmphasis="low"
                     indicatorPlacement={placement}
                     toggle
                     controlState
@@ -249,7 +253,7 @@ export function ButtonIndicatorExamples({
                     radius={radius}
                     intent="neutral"
                     emphasis="low"
-                    indicator
+                    selectionEmphasis="low"
                     indicatorPlacement={placement}
                     toggle
                     controlState
@@ -262,7 +266,7 @@ export function ButtonIndicatorExamples({
                     radius={radius}
                     intent="neutral"
                     emphasis="low"
-                    indicator
+                    selectionEmphasis="low"
                     indicatorPlacement={placement}
                     toggle
                     controlState

@@ -166,7 +166,7 @@ export function buildButtonLayoutSupport(
     const radius = rootScales.borderRadius;
     if (!isRecord(radius)) return false;
     let hasRadius = false;
-    for (const mode of ['rounded', 'pill', 'square'] as const) {
+    for (const mode of ['rounded', 'square'] as const) {
       if (!hasSize(radius[mode], size)) continue;
       sizesByRadius[mode].push(size.slice(2));
       hasRadius = true;
@@ -329,6 +329,12 @@ export async function publishComponentResources(buildDir: string, schema: Schema
       ...(name === 'text' && global.classMap?.text ? { classMap: global.classMap.text } : {})
     };
     if (!inspection) delete payload.inspection;
+    if (name === 'button') {
+      delete payload.options.indicatorScope;
+      const selectionIntent = schema.components.button?.options?.selectionIntent;
+      if (selectionIntent === undefined) delete payload.options.selectionIntent;
+      else payload.options.selectionIntent = selectionIntent;
+    }
     if (!layouts) delete payload.layouts;
     if (!indicator) delete payload.indicator;
     const contentSurfaceContext = payload.contentSurfaceContext;

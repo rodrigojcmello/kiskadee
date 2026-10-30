@@ -10,9 +10,22 @@ Every descendant Button inherits those values. Conflicting child values are igno
 development warning; action props, state, content, focus, and activation feedback remain local to
 each Button.
 
+The shared `intent` defines the base appearance. A member's `selectionIntent` remains local to
+that Button and selects its paint only while selected; it does not change its siblings or the
+group's Rest frame. Selection intent and selection emphasis do not introduce another Group axis.
+
 Individual `shadow` and `radiusEffect` requests are suppressed inside a connected group. When the
 group enables `shadow`, its wrapper reuses the compiled Rest shadow bucket from `Button.e1` and
 does not opt into Hover, Pressed, or Focus shadow selectors.
+
+A group containing a direct Button that requests `iconLayout="stacked"` resolves a shared Pill
+request to Rounded, including when Stacked is the preset default. All members and the group shadow
+use that same effective radius; Square is preserved. This is the existing Stacked shape restriction,
+not a separate group option. An explicit Pill group request emits a development warning. Groups
+containing only horizontal requests retain Pill. Transparent Fragments participate in this check.
+The group does not execute custom React components to discover their eventual children: if such an
+indirect Button inherits an unnormalized Pill group, its Stacked request keeps the horizontal
+fallback and warning rather than disagreeing with the group shape.
 
 ## Connected seams
 
@@ -22,34 +35,63 @@ The preset options have separate responsibilities:
 - `disclosureDivider` draws the same `Button.e6` before a trailing disclosure when a label is
   present.
 
-`e6` owns only the line thickness, height, and color. The Web Builder projects the existing
-token-only `e6.boxWidth` utility to `e1.p.gd` without duplicating its value or CSS. Structural CSS
-centers the line without adding margin or layout width. The node is decorative (`aria-hidden`) and
-is not the public `Separator` component because connected Button seams do not divide semantic
-groups.
+`e6` owns the line thickness, height, and color. Its ordinary element classes provide token-only
+dimensions for a centered decorative overlay (`aria-hidden`), not a public `Separator` component.
+Connected Button seams do not divide semantic groups. The line reserves no empty inline track;
+neighboring surfaces overlap by the authored thickness so the short divider remains inside their
+Hover, Pressed, or Selected area without leaving gaps above and below it. The existing
+`e1.p.gd` projection exposes only that thickness utility to member roots for overlap and to frame
+pieces for clipping the shared strip before a High-painted member. No value is copied into React
+or structural Sass. Logical properties preserve the topology in RTL.
 
-When `groupDivider` is absent, connected borders overlap into one seam. When it is enabled, the
-internal Button borders are removed and their logical paddings return to the authored values.
-Each Button before a divider overlaps it through
-`margin-inline-end: calc(var(--k-bxw) * -0.5)`, and each Button after a divider overlaps it through
-`margin-inline-start: calc(var(--k-bxw) * -0.5)`. Because the fixed `e6` line is centered on its
-zero-width anchor, both half-thickness overlaps together equal exactly one authored divider width.
-The line therefore covers the complete shared strip without leaving a half-width Button surface
-past either edge, without duplicating its thickness in schema or hardcoding it in Sass, and remains
-the authoritative paint. An unsupported external intent may reuse the preset's neutral divider paint;
-if neither the requested nor neutral paint exists in the active surface context, the divider stays
-inactive and the authored border seam is preserved. Logical border and radius properties preserve
-the same topology in RTL.
+With a compatible divider recipe, the group paints one logical outer frame. The frame uses
+`e1` border geometry, the effective group radius, and only the border colors from the group's base
+Rest recipe, including independently authored sides. Intent, emphasis, theme, and surface context
+still select the frame's appearance. Hover and Pressed do not recolor that border. Ordinary
+Selected, Disabled, or Pending paint also preserves its base Rest recipe.
 
-Focus rings and activation feedback remain owned by each Button, and the group never clips focus
-painting. Without `e6`, Hover temporarily owns the overlapped authored border. With `e6`, the line
-is the authoritative boundary and remains above every Button surface in Rest, Hover, Pressed, and
-Focus. It stays centered at the same seam coordinates in every state; Buttons move beneath that
-fixed line from both logical sides through the projected overlap. Logical margins and insets mirror
-the same geometry in RTL. Hover, Pressed, and Selected raise the active Button above both adjacent
-Rest siblings so its paint owns the two overlap strips; Focus remains above those interaction
-surfaces, and `e6` remains above all of them. The zero-width divider node adds no independent layout
-track while its paint stays visible over either adjacent surface when that Button changes state.
+A selected member actually using the normal High projection through
+`selectionEmphasis="medium|high"` suppresses only the frame segment over its own box. Rest-border
+segments remain visible on its other neighbors and return when the member is deselected or no
+longer uses the High projection. This is a local omission of the group frame, not a promotion of
+the group's border colors to High. Missing High support keeps the ordinary Selected fallback and
+its Rest frame segment.
+
+Each internal `e6` divider is hidden whenever either adjoining member is selected, regardless of
+`selectionEmphasis`, surface contrast, or availability of the High projection. Dividers between
+unselected members remain visible and return when neither adjoining member is selected. Changing
+selection emphasis alone never restores a divider. This changes painting only; divider geometry,
+focus, selection indicators, and the label-to-disclosure divider are unchanged.
+
+The Builder publishes `group.frame`, `group.member`, and `group.selectionRestMember` as class
+projections in the ordinary Button class map. The frame references only border geometry and Rest
+paint. Member projections exclude border paint while retaining their surfaces and interactions;
+the stronger-selection projection keeps the normal High recipe without Selected deltas. A
+Builder-emitted suppression class removes the members' border paint without changing their border
+widths, compensated padding, or content geometry. These palette-aware projections are separate
+from the scale-only `p` Registry and do not add a Schema element or public option.
+
+The framed group uses intrinsic inline-grid columns while native Buttons remain direct children.
+Decorative segments occupy those same columns in a separate top layer; they do not contribute
+another width, padding, or height. Neighboring members overlap by one authored divider thickness,
+applied only to the following member. Frame painting excludes the shared strip where the next
+member uses the High projection, preventing a preceding Rest border from crossing that surface.
+The frame pieces do not overlap their translucent strokes and require no JavaScript measurement.
+
+Focus rings, selection indicators, and activation feedback remain owned by each Button. Frame
+segments and dividers do not receive events, and the group never clips external painting. Local
+clipping applies only to the decorative frame pieces. Active and focused Buttons retain their
+layer priority below the independent divider. These pieces form one logical perimeter recipe,
+not new interactive surfaces. Groups without the framed handoff retain their inline-flex layout.
+
+When `groupDivider` or a complete frame/member/divider handoff is absent, the group preserves the
+ordinary collapsed-border composition. An unsupported external intent may reuse the preset's
+neutral divider paint; without either paint, the divider stays inactive. Standalone Buttons and
+the label-to-disclosure divider retain their existing behavior.
+
+The frame segments prevent translucent perimeter strokes from accumulating at joins. Overlapping
+translucent member backgrounds can still accumulate color independently of that border fix; inspect
+that result in the real composition rather than introducing runtime color compensation.
 
 A disclosure-only Button, such as the secondary trigger of a split button, does not consume the
 label-to-disclosure spacing authored for a labelled menu button. Its glyph keeps the full `e5`
@@ -57,8 +99,8 @@ viewport and is centered by the Button's own inline padding.
 
 ## Boundaries
 
-The first version is horizontal, connected, and gapless. It does not define Tabs, segmented
-selection, vertical grouping, arbitrary group-shadow levels, or a semantic toolbar. Compound
-components such as `ButtonMenu` may reuse `Button.Group`, but their popup behavior and semantics
+The first version is horizontal and connected, without consumer-authored gaps. It does not define
+Tabs, segmented selection, vertical grouping, arbitrary group-shadow levels, or a semantic toolbar.
+Compound components such as `ButtonMenu` may reuse `Button.Group`, but their popup behavior and semantics
 remain outside Button. Transparent React `Fragment` wrappers are flattened so their Buttons keep
 the same direct-group topology; authored DOM wrappers remain real layout boundaries.

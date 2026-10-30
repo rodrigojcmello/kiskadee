@@ -111,20 +111,9 @@ $height: 64px;
 }
 
 .richTextEditorExample {
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-  border-radius: 14px;
-  margin-block-start: 32px;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.richTextEditorHeader {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 16px;
-  justify-content: space-between;
-  padding: 14px 16px;
+  min-inline-size: 0;
 
   > h4 {
     margin: 0;
@@ -133,12 +122,11 @@ $height: 64px;
 
 .richTextToolbar {
   border: 0;
-  border-block: 1px solid color-mix(in srgb, currentColor 10%, transparent);
   display: grid;
   gap: 12px;
   margin: 0;
   min-inline-size: 0;
-  padding: 10px 12px;
+  padding: 0;
 }
 
 .richTextToolbarLegend {
@@ -167,11 +155,6 @@ $height: 64px;
 .richTextToolbarGroup {
   align-items: center;
 
-  + .richTextToolbarGroup {
-    border-inline-start: 1px solid color-mix(in srgb, currentColor 14%, transparent);
-    padding-inline-start: 8px;
-  }
-
   :global(.k-btn) {
     align-self: center;
   }
@@ -180,22 +163,6 @@ $height: 64px;
 .richTextToolbarLooseGroup {
   display: flex;
   gap: 4px;
-}
-
-.richTextEditorCanvas {
-  display: grid;
-  gap: 10px;
-  min-block-size: 112px;
-  padding: 18px 20px 22px;
-
-  p {
-    margin: 0;
-    max-inline-size: 68ch;
-  }
-
-  p + p {
-    opacity: 0.62;
-  }
 }
 
 .asyncSection {
@@ -443,13 +410,41 @@ $height: 64px;
   }
 }
 
-.stackedOptionsSection {
+.compositionsSection {
+  display: grid;
+  gap: 32px;
+  inline-size: 100%;
+  min-inline-size: 0;
+
+  > header {
+    display: grid;
+    gap: 12px;
+
+    > h3,
+    > p {
+      margin: 0;
+    }
+  }
+
+  > .showcaseSection {
+    display: grid;
+    gap: 16px;
+
+    > h4,
+    > p {
+      margin: 0;
+    }
+  }
+}
+
+.videoconferencingSection,
+.meetingLayoutSection {
   display: grid;
   gap: 16px;
   min-inline-size: 0;
-  width: 100%;
 
-  > h3,
+  > h4,
+  > h5,
   > p {
     margin: 0;
   }
@@ -472,6 +467,53 @@ $height: 64px;
   gap: 24px;
   margin-block-start: 32px;
   min-inline-size: 0;
+}
+
+.selectionBehaviors {
+  display: grid;
+  gap: 16px;
+  min-inline-size: 0;
+
+  > h3,
+  > p {
+    margin: 0;
+  }
+}
+
+.selectionBehaviorsGrid {
+  align-items: stretch;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  min-inline-size: 0;
+}
+
+.selectionBehaviorSample {
+  align-self: stretch;
+  display: grid;
+  gap: 12px;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-inline-size: 0;
+  text-align: center;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.selectionBehaviorControl {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-inline-size: 0;
+  padding-block: 8px;
+
+  > :global(.k-btn) {
+    align-self: center;
+    flex: none;
+    inline-size: 160px;
+    max-inline-size: 100%;
+  }
 }
 
 .indicatorGrid {
@@ -534,6 +576,14 @@ $height: 64px;
     inline-size: 100%;
     min-inline-size: 0;
     scroll-margin-inline: 4px;
+  }
+}
+
+.meetingIconGrid {
+  grid-auto-columns: max-content;
+
+  > :global(.k-btn) {
+    inline-size: max-content;
   }
 }
 

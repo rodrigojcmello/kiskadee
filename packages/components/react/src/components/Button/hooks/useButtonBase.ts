@@ -13,7 +13,7 @@ import {
   DEFAULT_BUTTON_PRESSED_DURATION_MS,
   resolveButtonClassNames
 } from '../Button.class-names.ts';
-import type { ButtonProps, ButtonStatus } from '../Button.types.ts';
+import type { ButtonProps, ButtonSelectionRestClassesMap, ButtonStatus } from '../Button.types.ts';
 import { useButtonArtifactConfig } from './useButtonArtifactConfig.ts';
 
 declare const process: { env: { NODE_ENV?: string } };
@@ -26,7 +26,9 @@ export function useButtonCommonProps(props: ButtonProps) {
     status: statusProp = 'rest',
     toggle,
     controlState,
-    indicator,
+    indicator: _removedIndicator,
+    selectionEmphasis,
+    selectionIntent,
     indicatorPlacement,
     pending,
     interactionLocked,
@@ -55,7 +57,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     onKeyUp,
     onBlur,
     ...restProps
-  } = props;
+  } = props as ButtonProps & { indicator?: unknown };
 
   const scale = useComponentScale('button', size);
   const brandPack = useBrandPack();
@@ -84,6 +86,10 @@ export function useButtonCommonProps(props: ButtonProps) {
   const isBrandIntent = intent.startsWith('brand.');
   const supportsBrandIntent =
     !isBrandIntent || Boolean(brandPack?.hasComponent('button') && brandPack.hasIntent(intent));
+  const requestedSelectionIntent = selectionIntent ?? options.selectionIntent ?? intent;
+  const supportsSelectionIntent =
+    !requestedSelectionIntent.startsWith('brand.') ||
+    Boolean(brandPack?.hasComponent('button') && brandPack.hasIntent(requestedSelectionIntent));
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production' || supportsBrandIntent) return;
@@ -98,7 +104,9 @@ export function useButtonCommonProps(props: ButtonProps) {
     status,
     toggle,
     controlState,
-    indicator,
+    selectionEmphasis,
+    selectionIntent: requestedSelectionIntent,
+    supportsSelectionIntent,
     indicatorPlacement,
     pending,
     interactionLocked,
@@ -140,6 +148,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     e10,
     e11,
     e12,
+    buttonClassesMap,
     buttonClassesMapPending,
     componentEffects,
     contentSurfaceContext,
@@ -162,6 +171,9 @@ export function useButtonClassNamesFromCommon(
     statusOverride?: ButtonStatus | 'rest';
     iconLayoutOverride?: ButtonProps['iconLayout'];
     iconTreatmentOverride?: ButtonProps['iconTreatment'];
+    paintEmphasis?: ButtonProps['emphasis'];
+    paintIntent?: ButtonProps['intent'];
+    selectionRest?: ButtonSelectionRestClassesMap;
   } = {}
 ) {
   return useMemo(
@@ -184,14 +196,15 @@ export function useButtonClassNamesFromCommon(
         shadow: common.shadow,
         radius: common.radius,
         radiusEffect: common.radiusEffect,
-        emphasis: common.emphasis,
-        intent: common.intent,
+        emphasis: options.paintEmphasis ?? common.emphasis,
+        intent: options.paintIntent ?? common.intent,
         surfaceContext: common.surfaceContext,
         iconLayout: options.iconLayoutOverride ?? common.iconLayout,
         iconPlacement: common.iconPlacement,
         iconSurfaceCorners: common.iconSurfaceCorners,
         iconTreatment: options.iconTreatmentOverride ?? common.iconTreatment,
-        globalRadius: common.options.radius
+        globalRadius: common.options.radius,
+        selectionRest: options.selectionRest
       }),
     [
       common.e1,
@@ -213,7 +226,10 @@ export function useButtonClassNamesFromCommon(
       common.radius,
       common.radiusEffect,
       common.emphasis,
+      options.paintEmphasis,
+      options.selectionRest,
       common.intent,
+      options.paintIntent,
       common.surfaceContext,
       common.iconLayout,
       options.iconLayoutOverride,

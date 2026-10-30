@@ -16,6 +16,11 @@ import {
   surfaceContextBuckets
 } from '@kiskadee/core';
 import {
+  BUTTON_GROUP_BORDER_SUPPRESSION_STYLE_KEY,
+  compileButtonGroupArtifact
+} from '../component-artifacts/buttonGroupArtifact.ts';
+import type { ButtonSelectionRestClassMapJSON } from '../component-artifacts/buttonSelectionArtifact.ts';
+import {
   buildScopedToneMetadataKey,
   type ToneMetadataByPalette
 } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
@@ -79,6 +84,32 @@ function getOrCreateSet(map: Map<string, Set<string>>, key: string): Set<string>
     map.set(key, set);
   }
   return set;
+}
+
+const BUTTON_SELECTION_REST_ELEMENTS = new Set(['e1', 'e2', 'e3', 'e4', 'e5']);
+
+function isSelectedState(state: string, styleKey: string): boolean {
+  return (
+    state === 'selected' ||
+    state.startsWith('selected:') ||
+    /(?:--|==)selected(?=:|\+\+|__)/.test(styleKey)
+  );
+}
+
+function effectClassBuckets(
+  buckets: Map<string, Set<string>>,
+  sizedBuckets: Map<string, Map<string, Set<string>>>
+): ClassNameByElement['e'] {
+  if (!buckets.size && !sizedBuckets.size) return undefined;
+  return {
+    ...Object.fromEntries(Array.from(buckets, ([key, set]) => [key, [...set].join(' ')])),
+    ...Object.fromEntries(
+      Array.from(sizedBuckets, ([key, sizes]) => [
+        key,
+        Object.fromEntries(Array.from(sizes, ([size, set]) => [size, [...set].join(' ')]))
+      ])
+    )
+  };
 }
 
 function isNestedVariantModeMap(
@@ -162,7 +193,8 @@ export function generateClassNamesMapSplit(
     componentName: string,
     variantName: string | undefined,
     modeName: string | undefined,
-    elementName: string
+    elementName: string,
+    selectionRest = false
   ): ClassNameByElement => {
     if (!palettes[bundleKey]) palettes[bundleKey] = {};
     if (!palettes[bundleKey][componentName]) {
@@ -179,10 +211,14 @@ export function generateClassNamesMapSplit(
         // biome-ignore lint/suspicious/noAssignInExpressions: initializes the nested mode record inline
         (variantTarget[modeName] = {}))
       : variantTarget;
-    if (!target[elementName]) {
-      target[elementName] = {};
+    if (selectionRest && !target.selectionRest) target.selectionRest = {};
+    const elementTarget = selectionRest
+      ? (target.selectionRest as Record<string, ClassNameByElement>)
+      : target;
+    if (!elementTarget[elementName]) {
+      elementTarget[elementName] = {};
     }
-    return target[elementName] as ClassNameByElement;
+    return elementTarget[elementName] as ClassNameByElement;
   };
 
   const processElements = (
@@ -222,6 +258,10 @@ export function generateClassNamesMapSplit(
       // Effects buckets (by effect kind), excluding selected/control-state.
       const eBuckets = new Map<string, Set<string>>();
       const eSizedBuckets = new Map<string, Map<string, Set<string>>>();
+      const selectionRest =
+        componentName === 'button' && BUTTON_SELECTION_REST_ELEMENTS.has(elementName);
+      const restEffects = new Map<string, Set<string>>();
+      const restSizedEffects = new Map<string, Map<string, Set<string>>>();
       // Control-state: selected — kept as a dedicated field (`l`) but must NOT include effects.
       // Control-state is expressed via runtime activators (e.g. `-s -a`) and palette/state rules.
       // Effects that happen to be authored under `selected*` interaction states must remain effects
@@ -271,10 +311,17 @@ export function generateClassNamesMapSplit(
                 eSizedBuckets.set(bucket, bySize);
               }
               getOrCreateSet(bySize, sizeKey ?? 'all').add(cls);
+              if (selectionRest && !isSelectedState(st, key)) {
+                const sizes = restSizedEffects.get(bucket) ?? new Map<string, Set<string>>();
+                restSizedEffects.set(bucket, sizes);
+                getOrCreateSet(sizes, sizeKey ?? 'all').add(cls);
+              }
               continue;
             }
 
             getOrCreateSet(eBuckets, bucket).add(cls);
+            if (selectionRest && !isSelectedState(st, key))
+              getOrCreateSet(restEffects, bucket).add(cls);
           }
         }
       }
@@ -371,6 +418,7 @@ export function generateClassNamesMapSplit(
 
               // Build color classes per semantic: c[semantic] = { hh, h, m, l, ll }
               const colorBySemantic: Record<string, ColorClasses> = {};
+              const restColorBySemantic: Record<string, ColorClasses> = {};
 
               for (const sem of Object.keys(bySemantic)) {
                 const byState = bySemantic[sem];
@@ -378,8 +426,9 @@ export function generateClassNamesMapSplit(
 
                 // Segregate classes by emphasis (or unique if no emphasis) per semantic
                 const emphasisSets = new Map<ComponentEmphasis, Set<string>>();
+                const restEmphasisSets = new Map<ComponentEmphasis, Set<string>>();
 
-                for (const rawStyleKeys of Object.values(byState)) {
+                for (const [state, rawStyleKeys] of Object.entries(byState)) {
                   const styleKeys = Array.isArray(rawStyleKeys)
                     ? rawStyleKeys.filter(
                         (styleKey): styleKey is string => typeof styleKey === 'string'
@@ -429,6 +478,13 @@ export function generateClassNamesMapSplit(
                         continue;
                       }
                       getOrCreateSet(emphasisSets, tone).add(shortenedClass);
+                      if (
+                        selectionRest &&
+                        (tone === 'high' || elementName === 'e4') &&
+                        !isSelectedState(state, styleKey)
+                      ) {
+                        getOrCreateSet(restEmphasisSets, tone).add(shortenedClass);
+                      }
                     }
 
                     // No unique bucket; all component colors must declare emphasis.
@@ -444,6 +500,11 @@ export function generateClassNamesMapSplit(
                 if (Object.keys(colorClasses).length > 0) {
                   colorBySemantic[sem] = colorClasses;
                 }
+                const restColors: ColorClasses = {};
+                for (const [tone, set] of restEmphasisSets) {
+                  if (set.size) restColors[componentEmphasisBuckets[tone]] = [...set].join(' ');
+                }
+                if (Object.keys(restColors).length) restColorBySemantic[sem] = restColors;
               }
 
               // Add to the element record only if we have color classes.
@@ -451,6 +512,20 @@ export function generateClassNamesMapSplit(
                 elemRecord.c = {
                   ...elemRecord.c,
                   [surfaceContextBuckets[surfaceContext]]: colorBySemantic
+                };
+              }
+              if (selectionRest && Object.keys(restColorBySemantic).length) {
+                const restRecord = ensurePaletteElement(
+                  bundleKey,
+                  componentName,
+                  variantName,
+                  modeName,
+                  elementName,
+                  true
+                );
+                restRecord.c = {
+                  ...restRecord.c,
+                  [surfaceContextBuckets[surfaceContext]]: restColorBySemantic
                 };
               }
             }
@@ -461,28 +536,7 @@ export function generateClassNamesMapSplit(
       // After processing palettes, finalize the core element record so `cs` includes palette-derived selected classes
       coreTarget[elementName] = {
         d: dSet.size ? Array.from(dSet).join(' ') : undefined,
-        e:
-          eBuckets.size > 0 || eSizedBuckets.size > 0
-            ? {
-                ...Object.fromEntries(
-                  Array.from(eBuckets.entries()).map(([k, set]) => [
-                    k,
-                    set.size ? Array.from(set).join(' ') : undefined
-                  ])
-                ),
-                ...Object.fromEntries(
-                  Array.from(eSizedBuckets.entries()).map(([bucket, bySize]) => [
-                    bucket,
-                    Object.fromEntries(
-                      Array.from(bySize.entries()).map(([sizeKey, set]) => [
-                        sizeKey,
-                        set.size ? Array.from(set).join(' ') : undefined
-                      ])
-                    )
-                  ])
-                )
-              }
-            : undefined,
+        e: effectClassBuckets(eBuckets, eSizedBuckets),
         // Intentionally empty until we have a dedicated source of control-state-only classes.
         // Do not backfill this from `effects.selected*`.
         l: selectedSet.size ? Array.from(selectedSet).join(' ') : undefined,
@@ -532,6 +586,36 @@ export function generateClassNamesMapSplit(
               )
             : undefined
       };
+      if (selectionRest) {
+        const target = coreTarget as Record<string, unknown>;
+        target.selectionRest ??= {};
+        const projection = target.selectionRest as ButtonSelectionRestClassMapJSON;
+        projection[elementName as keyof ButtonSelectionRestClassMapJSON] = {
+          e: effectClassBuckets(restEffects, restSizedEffects)
+        };
+      }
+      if (componentName === 'button' && elementName === 'e1' && elements.e6) {
+        const group = compileButtonGroupArtifact(
+          el,
+          { componentName, elementName, variantName, modeName },
+          toneMetadataByPalette,
+          resolveClassName,
+          knownIdentities.has(BUTTON_GROUP_BORDER_SUPPRESSION_STYLE_KEY)
+        );
+        if (group) {
+          (coreTarget as Record<string, unknown>).group = group.core;
+          for (const [bundle, projection] of Object.entries(group.palettes)) {
+            const target = ensurePaletteElement(
+              bundle,
+              componentName,
+              variantName,
+              modeName,
+              'group'
+            );
+            Object.assign(target, projection);
+          }
+        }
+      }
     }
   };
 

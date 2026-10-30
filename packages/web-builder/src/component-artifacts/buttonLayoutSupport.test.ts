@@ -129,14 +129,14 @@ describe('Button stacked layout capabilities', () => {
     }
   });
 
-  it('publishes pill-only support without inventing a rounded recipe', () => {
+  it('does not publish legacy Pill-only geometry or invent a Rounded recipe', () => {
     const button = buttonFixture();
     const elements: ButtonElements = button.elements;
-    elements.e8!.scales.borderRadius = { pill: 28 };
+    Object.assign(elements.e8!.scales, { borderRadius: { pill: 28 } });
     expect(buildButtonLayoutSupport(button, componentSizes)).toEqual({
       stacked: {
-        sizes: componentSizes,
-        sizesByRadius: { rounded: [], pill: componentSizes, square: [] }
+        sizes: [],
+        sizesByRadius: { rounded: [], pill: [], square: [] }
       }
     });
   });
@@ -146,7 +146,6 @@ describe('Button stacked layout capabilities', () => {
     const elements: ButtonElements = button.elements;
     elements.e8!.scales.borderRadius = {
       rounded: { 's:md:1': 4 },
-      pill: { 's:sm:1': 24, 's:lg:1': 34 },
       square: 0
     };
     expect(buildButtonLayoutSupport(button, componentSizes)).toEqual({
@@ -154,7 +153,7 @@ describe('Button stacked layout capabilities', () => {
         sizes: componentSizes,
         sizesByRadius: {
           rounded: ['md:1'],
-          pill: ['sm:1', 'lg:1'],
+          pill: [],
           square: componentSizes
         }
       }
@@ -166,7 +165,6 @@ describe('Button stacked layout capabilities', () => {
     const elements: ButtonElements = button.elements;
     elements.e8!.scales.borderRadius = {
       rounded: 4,
-      pill: { 's:md:1': { 'bp:lg:1': 28 } },
       square: { 's:sm:1': { 'bp:all': 0, 'bp:lg:1': 0 } }
     };
     expect(buildButtonLayoutSupport(button, componentSizes)).toEqual({
@@ -175,12 +173,12 @@ describe('Button stacked layout capabilities', () => {
         sizesByRadius: { rounded: componentSizes, pill: [], square: ['sm:1'] }
       }
     });
-    elements.e8!.scales.borderRadius.pill = {
-      's:md:1': { 'bp:all': 28, 'bp:lg:1': 30 }
-    };
-    expect(buildButtonLayoutSupport(button, componentSizes)?.stacked?.sizesByRadius?.pill).toEqual([
-      'md:1'
-    ]);
+    Object.assign(elements.e8!.scales.borderRadius, {
+      pill: { 's:md:1': { 'bp:all': 28, 'bp:lg:1': 30 } }
+    });
+    expect(buildButtonLayoutSupport(button, componentSizes)?.stacked?.sizesByRadius?.pill).toEqual(
+      []
+    );
   });
 
   it('requires baseline values for responsive assignments and accepts zero spacing', () => {
@@ -235,7 +233,7 @@ describe('Button stacked layout capabilities', () => {
       elements.e9!.typography = { 's:md:1': 'caption-medium' };
       elements.e10!.iconSize = { 's:sm:1': 's:lg:1' };
     }
-    if (kind === 'pill-only') elements.e8!.scales.borderRadius = { pill: 28 };
+    if (kind === 'pill-only') Object.assign(elements.e8!.scales, { borderRadius: { pill: 28 } });
     const schema = {
       name: 'Button layout capabilities',
       author: 'Kiskadee',
@@ -272,10 +270,10 @@ describe('Button stacked layout capabilities', () => {
       else {
         expect(metadata.layouts).toEqual({
           stacked: {
-            sizes: kind === 'empty' ? [] : componentSizes,
+            sizes: kind === 'complete' ? componentSizes : [],
             sizesByRadius: {
               rounded: kind === 'complete' ? componentSizes : [],
-              pill: kind === 'pill-only' ? componentSizes : [],
+              pill: [],
               square: []
             }
           }

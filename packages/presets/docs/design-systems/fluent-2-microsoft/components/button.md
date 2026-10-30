@@ -100,6 +100,7 @@ Other emphases, geometry, focus rings and border widths remain unchanged.
 | Passive Badge relation | No equivalent Fluent Button slot was used as source evidence | Inline label relation and external logical-corner overlays | Kiskadee extension |
 | Stacked icon and label | Microsoft Teams meeting toolbar screenshot, 2026-10-23 | Icon-above-label product presentation; no numeric recipe extracted | Kiskadee extension; motivational evidence only |
 | Optional Button state indicator | Microsoft Teams screenshot, 2026-10-24; official Tab and ToggleButton implementation | External active-action line and related Fluent token grammar; no equivalent Button recipe | Kiskadee extension; motivational evidence only |
+| Independent selection intent | Approved Kiskadee Button composition contract | Selected paint may consume another existing Button intent; no new upstream recipe or color extraction | Kiskadee extension |
 
 ## Local Evidence
 
@@ -222,8 +223,8 @@ gap do not participate in this composition.
 Schema mapping:
 
 - `e8` owns the complete stacked root geometry: padding, the locally shared one-pixel border map,
-  and corner recipes. Rounded (4 px) and Square (0 px) share their local authoring with `e1`;
-  Pill uses half the stacked nominal height (23/27/34/40 px).
+  and corner recipes. Rounded (4 px) and Square (0 px) share their local authoring with `e1`.
+  Stacked does not publish a Pill recipe.
 - `e9` owns the stacked typography and its 4 px `marginTop` relation to the icon. Label palettes
   and effects still come from `e2`.
 - `e10` selects the icon-size catalog entries above. Icon palettes and effects still come from
@@ -237,14 +238,20 @@ The ordinary `e1` height references and horizontal recipes remain unchanged.
 The earlier approved Medium refinement reduces its stacked label by one existing typography step,
 from `caption-medium` (12/16 px) to `caption-small` (10/14 px). Its 24 px icon, 6 px block insets,
 12 px inline insets, and 4 px gap remain unchanged. The natural border-box height consequently
-changes from 56 px to 54 px; the inspection reference and Pill radius follow that resulting
-geometry rather than constraining it.
+changes from 56 px to 54 px; the inspection reference follows that resulting geometry rather
+than constraining it.
 
 On 2026-10-25, the user approved matching the Small stacked label to Medium's `caption-small`
 (10/14 px). Its 20 px icon, 4 px block insets, 8 px inline insets, and 4 px gap remain unchanged.
-The resulting natural height changes from 48 px to 46 px, and its inspection reference and Pill
-radius follow that result (46 px and 23 px). No fixed height is emitted. Medium, Large, Large 2,
+The resulting natural height changes from 48 px to 46 px, and its inspection reference follows
+that result. No fixed height is emitted. Medium, Large, Large 2,
 and all horizontal recipes retain their existing typography and geometry.
+
+On 2026-10-26, the user approved restricting Stacked to Rounded and Square as a Kiskadee
+composition rule. The framework resolves a global Pill default to the authored Rounded recipe;
+an explicit Pill request receives the same normalization. Rounded and Square retain their
+existing values. This replaces the earlier Stacked Pill recipe without adding a preset option,
+changing horizontal Button corners, or deriving a radius from `_boxHeight`.
 
 The label remains a single line without automatic truncation, and the Button width follows the
 content. A square shape is not guaranteed. The recipe is shared across both segments, all three
@@ -253,7 +260,7 @@ Surfaced icons, Disclosure, and inline Badge compositions retain their horizonta
 this delivery; overlay Badges and Progress retain their existing behavior.
 
 Preset regression checks cover the catalog/profile/inset height formula, shared border and fixed
-corner recipes, Pill references, absence of duplicate palettes, and unchanged horizontal nominal
+corner recipes, absence of Stacked Pill, absence of duplicate palettes, and unchanged horizontal nominal
 heights. Generated-artifact and rendered behavior checks belong to the consuming pipeline and
 Showcase validation.
 
@@ -270,9 +277,10 @@ or treating an expanded menu as proof of a particular Kiskadee control state.
 complete outside recipe. These optional Schema elements supply alternative recipes for one
 decorative runtime span, not two rendered indicators. Its painted line occupies the bottom
 inside or outside the Button, centered on the inline axis, in both horizontal and stacked layouts.
-`options.indicatorPlacement: inside` and `options.indicatorScope: stacked` are this preset's
-defaults. Horizontal Buttons opt in with the public `indicator` prop; false suppresses either
-composition. An opt-in still requires authored anatomy and a selected, available control.
+`options.indicatorPlacement: inside` and `options.selectionEmphasis: lowest` are this preset's
+defaults for every layout. Selection emphasis `low` and `high` request the indicator; `lowest`
+and `medium` omit it. The former independent `indicator` prop and `indicatorScope` policy are
+removed. A request still requires authored anatomy and a selected, available control.
 Positioning is an overlay: the
 line does not participate in content layout, reference height, or border compensation. It also
 does not alter the independent focus ring. The outside placement requires consumer-owned space
@@ -364,6 +372,42 @@ single brand signal; unchanged horizontal height references; and at least 3:1 co
 the selected Button surface inside or the canonical Container surface outside. Those canonical
 samples are not a claim of contrast over every arbitrary consumer background. Browser checks
 remain responsible for overlay positioning, clipping, focus coexistence, and rendered geometry.
+
+### Selection Emphasis Scale
+
+Status: **Kiskadee extension**. The Button publishes the common `lowest | low | medium | high`
+selection-emphasis contract, with `lowest` as the default for horizontal and Stacked layouts.
+`lowest` reuses the existing per-emphasis Selected recipe; `low` adds the authored indicator.
+`medium` uses ordinary High Rest/Hover/Focus/Pressed paint; `high` adds the same High-coordinate
+indicator. The semantic selection remains active in all four cases. High is used literally even
+when the base emphasis is Highest. The base intent remains the default unless `selectionIntent`
+explicitly chooses another published Button intent.
+
+The scale reuses the existing Foreground Reference locators and Button palettes; it introduces no
+new primitive, tonal position or palette axis. High ordinary-state indicator contrast is checked
+in 384 inside/outside coordinates across both segments, all three themes, both contexts, all four
+intents and Rest/Hover/Focus/Pressed. Each meets 3:1 over the effective High surface inside or
+the canonical ambient surface outside. This extends the existing Selected-surface audit without
+changing either indicator's color recipe or adding indicator Rest paint.
+
+### Independent Selection Intent
+
+Status: **Kiskadee extension**. `selectionIntent` chooses the color family used by those same four
+selection presentations. The platform prop takes precedence over `options.selectionIntent`, then
+the base intent. This preset leaves the option omitted; its existing default appearance is
+unchanged. Neutral-to-Primary, Primary-to-Neutral and other published intent combinations are
+consumer choices, not an official Fluent Button variant or a new preset palette matrix.
+
+The selected surface, content, produced Surface Context, effects and indicator consume the existing
+recipe for the effective paint intent and emphasis. The Group keeps its base Rest-frame contract,
+and all dividers adjoining selected members stay hidden. No color, seed, foreground locator,
+geometry or typography recipe is added by this capability. Brand selections retain the existing
+BrandPack requirements. System-intent coverage fallback and ordinary High fallback follow the
+[shared selection contract](../../../../../core/docs/definitions/button-selection.md).
+
+The Rich Text Editor inspection adds independent Button intent and Selection intent controls beside
+the two emphasis controls. Its Neutral base and Primary selection defaults demonstrate existing
+Fluent recipes; the controls allow every published system-intent pair without a curated list.
 
 ## Badge Relation
 
@@ -1216,7 +1260,7 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
 
 ## Exact pill geometry (2026-09-10)
 
-Kiskadee adaptation: pill radius is authored per size as half the nominal surface height,
+Kiskadee adaptation: horizontal Button pill radius is authored per size as half the nominal surface height,
 without oversized CSS sentinel values. Square and rounded retain their existing recipes.
 Button external Badge anchors consume the Button radius in structural CSS; Badge radius
 remains independent. Separation outlines follow the actual Badge surface.
