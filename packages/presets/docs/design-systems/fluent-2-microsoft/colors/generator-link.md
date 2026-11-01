@@ -1,6 +1,6 @@
 # Fluent tonal generator
 
-### Shared viewer — candidate generator 0.19.0
+### Shared viewer — candidate generator 0.20.1
 
 Recipe: [`tonal-system.recipe.json`](tonal-system.recipe.json).
 

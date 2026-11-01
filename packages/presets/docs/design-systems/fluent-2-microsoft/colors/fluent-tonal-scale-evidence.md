@@ -206,7 +206,7 @@ recipe. The generated system uses:
 - automatic harmony rest, resolved by generator `0.17.0` to L50/D40;
 - automatic per-family Light and Dark `vivid`/`subtle` functional references.
 
-### Shared viewer — candidate generator 0.19.0
+### Shared viewer — candidate generator 0.20.1
 
 The format V6 shared recipe exports fifteen families, including the Teams entry
 and two associated Subtle neutrals. Ten assets are promoted; five automatic

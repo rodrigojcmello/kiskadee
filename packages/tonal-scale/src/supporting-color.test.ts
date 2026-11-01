@@ -59,11 +59,11 @@ it('round trips supporting origin metadata and rejects family drift', async () =
           policies: { light: 'source-exact', dark: 'adaptive' }
         }
       ],
-      names: { 'b.blue.v2': 'Blue support' },
+      names: { 'b.blue.v1.c': 'Blue support' },
       neutrals: [{ id: 'n.black.v2', sourceId: 'primary', intensity: 'chromatic' }],
-      supportingColors: [
-        { id: 'b.blue.v2', sourceId: 'primary', strategy: 'material-support-v1' },
-        { id: 'pb.indigo.v3', sourceId: 'pb.indigo.v2', strategy: 'material-support-v1' }
+      complementaryColors: [
+        { id: 'b.blue.v1.c', sourceId: 'primary', strategy: 'material-complement-v1' },
+        { id: 'pb.indigo.v2.c', sourceId: 'pb.indigo.v2', strategy: 'material-complement-v1' }
       ]
     }
   };
@@ -71,10 +71,10 @@ it('round trips supporting origin metadata and rejects family drift', async () =
   expect(system.valid, JSON.stringify(system.issues)).toBe(true);
   if (!system.valid) return;
   const bundle = await createTonalArtifactBundle(system);
-  expect(bundle.assets.find((a) => a.id === 'pb.indigo.v3')?.supportingColorOrigin).toEqual({
+  expect(bundle.assets.find((a) => a.id === 'pb.indigo.v2.c')?.complementaryColorOrigin).toEqual({
     sourceId: 'pb.indigo.v2',
     referenceHex: '#6750a4',
-    strategy: 'material-support-v1'
+    strategy: 'material-complement-v1'
   });
   expect((await verifyTonalArtifactBundle(bundle.files)).valid).toBe(true);
   const renamed = generateKiskadeeTonalSystem({
@@ -82,7 +82,7 @@ it('round trips supporting origin metadata and rejects family drift', async () =
     catalog: {
       ...recipe.catalog,
       names: {},
-      supportingColors: [...recipe.catalog.supportingColors].reverse()
+      complementaryColors: [...recipe.catalog.complementaryColors].reverse()
     }
   });
   expect(renamed.families).toEqual(system.families);
@@ -90,7 +90,7 @@ it('round trips supporting origin metadata and rejects family drift', async () =
     ...recipe,
     catalog: {
       ...recipe.catalog,
-      supportingColors: [{ ...recipe.catalog.supportingColors[0], id: 'g.green.v2' }]
+      complementaryColors: [{ ...recipe.catalog.complementaryColors[0], id: 'g.green.v1.c' }]
     }
   });
   expect(drift.valid).toBe(false);
@@ -100,7 +100,7 @@ it('reads legacy recipes and rejects duplicate, cyclic and unsupported associati
   for (const formatVersion of [5, 6]) {
     const result = validateTonalSystemRecipe({ ...DEFAULT_TONAL_SYSTEM_RECIPE, formatVersion });
     expect(result.valid).toBe(true);
-    if (result.valid) expect(result.value.formatVersion).toBe(7);
+    if (result.valid) expect(result.value.formatVersion).toBe(8);
   }
   const link = { id: 'b.blue.v2', sourceId: 'primary', strategy: 'material-support-v1' };
   for (const supportingColors of [

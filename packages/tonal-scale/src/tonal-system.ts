@@ -9,6 +9,11 @@ import {
   oklchToSrgbHex,
   relativeLuminance
 } from './color-math.ts';
+import {
+  ComplementaryColorSourceError,
+  deriveComplementaryColor,
+  resolveComplementaryTonalProfile
+} from './complementary-color.ts';
 import { compareStrings } from './deterministic-order.ts';
 import { FIXED_FAMILY_SEEDS_V2 } from './fixed-family-seeds.ts';
 import {
@@ -17,6 +22,7 @@ import {
   type KiskadeeScaleColor,
   type KiskadeeScaleResult,
   type KiskadeeTheme,
+  type KiskadeeTonalProfile,
   type KiskadeeTone,
   revalidateKiskadeeScaleResult
 } from './kiskadee-tonal-scale.ts';
@@ -32,7 +38,6 @@ import {
   projectMunsellHue,
   suggestYellowRedAppearance
 } from './munsell-oklch.ts';
-import { deriveSupportingColor } from './supporting-color.ts';
 import {
   createTonalFamilyId,
   type LockedTonalFamilyFunctionalReferencesV5,
@@ -40,6 +45,7 @@ import {
   type LockedTonalSystemSourceV5,
   lockTonalSystemRecipe,
   MUNSELL_SECTORS,
+  nextTonalFamilyVariant,
   parseTonalFamilyId,
   resolveNeutralOverride,
   resolveTonalFamilyColorKind,
@@ -47,6 +53,7 @@ import {
   TONAL_BASE_FAMILY_ID_BY_SECTOR,
   TONAL_BASE_FAMILY_IDS,
   TONAL_CORE_FAMILY_IDS,
+  TONAL_FAMILY_IDENTITIES,
   type TonalChromaticAppearance,
   type TonalFamilyAppearance,
   type TonalFamilyColorKind,
@@ -306,6 +313,7 @@ export type ResolvedTonalFamily = {
   role: 'primary' | 'support';
   seedOrigin: 'primary' | 'reference' | 'derived' | 'override' | 'canonical';
   sourceSeedHex: string;
+  tonalProfile?: KiskadeeTonalProfile;
   identity: MunsellColorClassification | null;
   functionalReferenceRules: {
     light: TonalFamilyFunctionalReferenceRulesV5['light'];
@@ -2064,7 +2072,7 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   const recipe = authoring.recipe;
   const extraIds = new Set([
     ...catalog.colors.map((c) => c.id),
-    ...(catalog.supportingColors ?? []).map((c) => c.id),
+    ...(catalog.complementaryColors ?? []).map((c) => c.id),
     ...catalog.neutrals
       .filter(
         (n) =>
@@ -2078,7 +2086,12 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   ]);
   const baseInput = authoring.lockedFunctionalReferences
     ? {
-        ...(input as LockedTonalSystemSourceV5),
+        ...recipe,
+        primary: {
+          id: authoring.lockedPrimaryId!,
+          seedHex: recipe.primary.seedHex,
+          policies: recipe.primary.policies
+        },
         catalog: undefined,
         functionalReferences: authoring.lockedFunctionalReferences.filter(
           (r) => !extraIds.has(r.id)
@@ -2095,7 +2108,11 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
   const families = [...base.families];
   const references = [...base.functionalReferences];
   const issues = [...base.issues];
-  const append = (entry: TonalFamilyOverrideV5) => {
+  const append = (
+    entry: TonalFamilyOverrideV5,
+    publishedId: TonalFamilyId = entry.id,
+    tonalProfile?: KiskadeeTonalProfile
+  ) => {
     if (families.some((f) => f.id === entry.id)) {
       issues.push({
         severity: 'error',
@@ -2109,19 +2126,29 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
       {
         ...baseInput,
         functionalReferences: authoring.lockedFunctionalReferences
-          ? authoring.lockedFunctionalReferences.filter(
-              (r) => !extraIds.has(r.id) || r.id === entry.id
-            )
-          : recipe.functionalReferences.filter(
-              (r) => r.id === entry.id || r.id === base.primaryReference.familyId
-            ),
+          ? authoring.lockedFunctionalReferences
+              .filter((r) => !extraIds.has(r.id) || r.id === publishedId)
+              .map((r) => (r.id === publishedId ? { ...r, id: entry.id } : r))
+          : recipe.functionalReferences
+              .filter((r) => r.id === publishedId || r.id === base.primaryReference.familyId)
+              .map((r) => (r.id === publishedId ? { ...r, id: entry.id } : r)),
         overrides: [...recipe.overrides, entry]
       },
       entry.id,
-      context
+      context,
+      tonalProfile
     );
     const family = pass.families.find((f) => f.id === entry.id);
-    issues.push(...pass.issues.filter((i) => i.familyId === entry.id || i.severity === 'error'));
+    issues.push(
+      ...pass.issues
+        .filter((i) => i.familyId === entry.id || i.severity === 'error')
+        .map((i) => ({
+          ...i,
+          ...(i.familyId === entry.id ? { familyId: publishedId } : {}),
+          path: i.path.replaceAll(entry.id, publishedId),
+          message: i.message.replaceAll(entry.id, publishedId)
+        }))
+    );
     if (!pass.valid || !family) {
       if (!issues.some((i) => i.severity === 'error'))
         issues.push({
@@ -2133,23 +2160,75 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
         });
       return;
     }
-    families.push(family);
-    references.push(...pass.functionalReferences.filter((r) => r.id === entry.id));
+    families.push({
+      ...family,
+      id: publishedId,
+      ...(publishedId !== entry.id
+        ? { variant: parseTonalFamilyId(publishedId)!.variant, seedOrigin: 'derived' as const }
+        : {}),
+      ...(tonalProfile ? { tonalProfile } : {})
+    });
+    references.push(
+      ...pass.functionalReferences
+        .filter((r) => r.id === entry.id)
+        .map((r) => ({ ...r, id: publishedId }))
+    );
   };
   for (const color of catalog.colors) append(color);
-  for (const association of catalog.supportingColors ?? []) {
+  for (const association of catalog.complementaryColors ?? []) {
     const parent = families.find(
       (f) =>
         f.id ===
         (association.sourceId === 'primary' ? base.primaryReference.familyId : association.sourceId)
     );
     if (!parent) continue;
-    const derived = deriveSupportingColor(parent.themes.light.restColor.hex);
-    append({
-      id: association.id,
-      seedHex: derived.seedHex,
-      policies: { light: 'source-exact', dark: 'adaptive' }
-    });
+    let derived: ReturnType<typeof deriveComplementaryColor>;
+    try {
+      derived = deriveComplementaryColor(parent.themes.light.restColor.hex, association.strategy);
+    } catch (error) {
+      if (!(error instanceof ComplementaryColorSourceError)) throw error;
+      issues.push({
+        severity: 'error',
+        code: 'COMPLEMENTARY_SOURCE_UNRELIABLE',
+        path: `/catalog/complementaryColors/${association.id}`,
+        familyId: association.id,
+        message: `${association.id}: ${error.message}`
+      });
+      continue;
+    }
+    // The catalog ID follows origin lineage; numerical generation follows measured hue.
+    const appearance =
+      derived.identity.sector === 'yellow-red'
+        ? suggestYellowRedAppearance(derived.identity.oklch).appearance
+        : TONAL_FAMILY_IDENTITIES.find((identity) => identity.sector === derived.identity.sector)!
+            .appearance;
+    const stem = resolveTonalFamilyStem(
+      derived.identity.sector,
+      appearance as TonalChromaticAppearance
+    )!;
+    const calculationId = createTonalFamilyId(
+      stem,
+      nextTonalFamilyVariant(
+        [...families.map((family) => family.id), ...catalog.colors.map((color) => color.id)],
+        stem
+      )
+    );
+    append(
+      {
+        id: calculationId,
+        seedHex: derived.seedHex,
+        policies: {
+          light: 'source-exact',
+          dark: association.strategy === 'contrast-complement-v1' ? 'source-exact' : 'adaptive'
+        }
+      },
+      association.id,
+      resolveComplementaryTonalProfile(
+        association.strategy,
+        recipe.tonalProfile,
+        association.tonalProfile
+      )
+    );
   }
   for (const association of catalog.neutrals) {
     if (
@@ -2195,7 +2274,8 @@ export function generateKiskadeeTonalSystem(input: unknown): KiskadeeTonalSystem
 function generateTonalSystemPass(
   input: unknown,
   isolatedId?: TonalFamilyId,
-  context?: { baseRecipe?: MaterializedTonalSystemRecipe }
+  context?: { baseRecipe?: MaterializedTonalSystemRecipe },
+  isolatedProfile?: KiskadeeTonalProfile
 ): KiskadeeTonalSystemResult {
   const authoring = resolveAuthoringRecipe(input);
   if (!authoring.valid) return failedResult(authoring.issues);
@@ -2408,6 +2488,7 @@ function generateTonalSystemPass(
       (isolatedId && familySource.id !== isolatedId)
     )
       continue;
+    const familyRecipe = isolatedProfile ? { ...recipe, tonalProfile: isolatedProfile } : recipe;
     const parsedId = parseTonalFamilyId(familySource.id);
     if (!parsedId) continue;
 
@@ -2508,7 +2589,7 @@ function generateTonalSystemPass(
         harmonyTarget: lightHarmonyTarget,
         harmonyHueOverride: lightHarmonyHueOverride,
         enforceSafeCore: familySource.seedOrigin === 'derived',
-        recipe,
+        recipe: familyRecipe,
         issues
       });
     const resolvedDark =
@@ -2523,7 +2604,7 @@ function generateTonalSystemPass(
         harmonyTarget: darkHarmonyTarget,
         harmonyHueOverride: darkHarmonyHueOverride,
         enforceSafeCore: familySource.seedOrigin === 'derived',
-        recipe,
+        recipe: familyRecipe,
         issues
       });
 
@@ -2572,7 +2653,7 @@ function generateTonalSystemPass(
             primary: primaryDark,
             familyId: familySource.id,
             context: supportContextByFamily.get(familySource.id)!,
-            recipe,
+            recipe: familyRecipe,
             issues
           })
         : darkWithSurface;

@@ -1,10 +1,10 @@
 import type { TonalColorClassification } from '@kiskadee/core';
 import { classifyTonalReference } from '../color-classification.ts';
+import { deriveComplementaryColor } from '../complementary-color.ts';
 import { compareStrings } from '../deterministic-order.ts';
 import { FIXED_FAMILY_REFERENCE_SET, FIXED_FAMILY_SEEDS_V2 } from '../fixed-family-seeds.ts';
 import { KISKADEE_TONES, type KiskadeeTone } from '../kiskadee-tonal-scale.ts';
 import { classifyMunsellHex, type MunsellColorClassification } from '../munsell-oklch.ts';
-import { deriveSupportingColor } from '../supporting-color.ts';
 import {
   generateKiskadeeTonalSystem,
   type ResolvedKiskadeeTonalSystem,
@@ -14,9 +14,12 @@ import {
   type TonalSystemIssue
 } from '../tonal-system.ts';
 import {
+  type ComplementaryColorAssociation,
   type CoreTonalFamilyId,
+  getLegacyComplementaryIdMap,
   type LockedTonalFunctionalReferenceV5,
   type LockedTonalSystemSourceV5,
+  parseTonalFamilyId,
   resolveNeutralOverride,
   TONAL_CORE_FAMILY_IDS,
   type TonalFamilyAppearance,
@@ -28,12 +31,12 @@ import {
   validateLockedTonalSystemSource
 } from '../tonal-system-contract.ts';
 import { formatCanonicalJsonFile } from './canonical-json.ts';
-import { serializePresetAsset } from './preset-asset.ts';
+import { projectPresetAsset, serializePresetAsset } from './preset-asset.ts';
 import { sha256Hex } from './sha256.ts';
 
 export const TONAL_ARTIFACT_GENERATOR = {
   package: '@kiskadee/tonal-scale',
-  version: '0.19.0'
+  version: '0.20.1'
 } as const;
 export const TONAL_SOURCE_PATH = 'tonal-system.source.json' as const;
 export const TONAL_MANIFEST_PATH = 'tonal-system.json' as const;
@@ -51,7 +54,7 @@ export type ToneHexMap = Record<`${KiskadeeTone}`, string>;
 export type PrimitiveTonalColorAssetV5 = {
   kind: 'kiskadee.primitive-tonal-family';
   classification?: TonalColorClassification;
-  formatVersion: 7;
+  formatVersion: 8;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   id: TonalFamilyId;
   munsellSector: TonalFamilySectorNotation | 'N';
@@ -62,10 +65,11 @@ export type PrimitiveTonalColorAssetV5 = {
   tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   seedHex: string;
   seedOrigin: ResolvedTonalFamily['seedOrigin'];
-  supportingColorOrigin?: {
+  complementaryColorOrigin?: {
     sourceId: string;
     referenceHex: string;
-    strategy: 'material-support-v1';
+    strategy: ComplementaryColorAssociation['strategy'];
+    tonalProfile?: ComplementaryColorAssociation['tonalProfile'];
   };
   associatedNeutralOrigin?: {
     sourceId: string;
@@ -124,7 +128,7 @@ export type TonalManifestAssetEntry = {
 
 export type TonalSystemManifestV5 = {
   kind: 'kiskadee.tonal-system';
-  formatVersion: 7;
+  formatVersion: 8;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   tonalProfile: LockedTonalSystemSourceV5['tonalProfile'];
   primaryReference: TonalFamilyId;
@@ -136,7 +140,7 @@ export type TonalSystemManifestV5 = {
 
 export type TonalSystemDiagnosticsV5 = {
   kind: 'kiskadee.tonal-system-diagnostics';
-  formatVersion: 7;
+  formatVersion: 8;
   generator: typeof TONAL_ARTIFACT_GENERATOR;
   seedModel: 'fixed-reference';
   referenceSet: typeof FIXED_FAMILY_REFERENCE_SET;
@@ -368,7 +372,7 @@ export async function verifyTonalArtifactBundle(
 
   const expected = await createTonalArtifactBundle(system);
   const issues: TonalArtifactVerificationIssue[] = [];
-  const expectedFiles = new Map<string, string>(expected.files);
+  const expectedFiles = await expectedVerificationFiles(expected, rawSource, files);
 
   for (const [path, expectedText] of expectedFiles) {
     const actualText = files.get(path);
@@ -440,6 +444,133 @@ export async function verifyTonalArtifactBundle(
   };
 }
 
+/**
+ * Verify older serialized names without rewriting integrity-recorded files. Historical mathematical
+ * output must still reproduce; a matching hash alone never replaces source replay.
+ * Successful verification returns the normalized current bundle for consumers.
+ */
+async function expectedVerificationFiles(
+  expected: TonalArtifactBundle,
+  rawSource: unknown,
+  files: ReadonlyMap<string, string>
+): Promise<Map<string, string>> {
+  const current = new Map<string, string>(expected.files);
+  if (!isRecord(rawSource) || ![5, 6, 7].includes(rawSource.formatVersion as number))
+    return current;
+  let historicalManifest: unknown;
+  try {
+    historicalManifest = JSON.parse(files.get(TONAL_MANIFEST_PATH) ?? 'null');
+  } catch {
+    return current;
+  }
+  if (
+    !isRecord(historicalManifest) ||
+    ![5, 6, 7].includes(historicalManifest.formatVersion as number) ||
+    !isRecord(historicalManifest.generator) ||
+    historicalManifest.generator.package !== TONAL_ARTIFACT_GENERATOR.package ||
+    typeof historicalManifest.generator.version !== 'string' ||
+    !['0.18.0', '0.19.0'].includes(historicalManifest.generator.version)
+  )
+    return current;
+
+  const version = historicalManifest.generator.version;
+  const formatVersion = historicalManifest.formatVersion;
+  const minor = Number(version.split('.')[1]);
+  const generator = { package: TONAL_ARTIFACT_GENERATOR.package, version };
+  const aliases = Object.entries(getLegacyComplementaryIdMap(rawSource)).map(
+    ([legacy, canonical]) => [canonical, legacy] as const
+  );
+  aliases.sort(([left], [right]) => right.length - left.length);
+  const historicalId = (input: string) =>
+    aliases.reduce((value, [canonical, legacy]) => value.split(canonical).join(legacy), input);
+  const convert = (value: unknown): unknown => {
+    if (typeof value === 'string') return historicalId(value);
+    if (Array.isArray(value)) return value.map(convert);
+    if (!isRecord(value)) return value;
+    const mappedComplementary = aliases.some(
+      ([canonical]) => value.id === canonical || value.familyId === canonical
+    );
+    const converted = Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [historicalId(key), convert(item)])
+    );
+    if ('generator' in converted) converted.generator = generator;
+    if ('formatVersion' in converted) converted.formatVersion = formatVersion;
+    if (typeof converted.id === 'string' && 'variant' in converted) {
+      converted.variant = parseTonalFamilyId(converted.id)?.variant ?? converted.variant;
+    }
+    if (mappedComplementary && typeof converted.id === 'string') {
+      const identity = parseTonalFamilyId(converted.id);
+      if (identity) {
+        // Historical IDs owned these fields; measured classification remains independent.
+        for (const key of ['appearance', 'munsellSector', 'variant', 'colorKind'] as const) {
+          if (key in converted) converted[key] = identity[key];
+        }
+      }
+    }
+    if (mappedComplementary && converted.seedOrigin === 'derived')
+      converted.seedOrigin = 'override';
+    if (isRecord(converted.complementaryColorOrigin)) {
+      const origin = converted.complementaryColorOrigin;
+      converted.supportingColorOrigin = {
+        sourceId: origin.sourceId,
+        referenceHex: origin.referenceHex,
+        strategy: 'material-support-v1'
+      };
+      delete converted.complementaryColorOrigin;
+    }
+    return converted;
+  };
+  const legacyFiles = new Map<string, string>();
+  const sourceText = formatCanonicalJsonFile(rawSource);
+  legacyFiles.set(TONAL_SOURCE_PATH, sourceText);
+  const manifest = convert(expected.manifest) as Record<string, unknown>;
+  manifest.source = { path: TONAL_SOURCE_PATH, sha256: await sha256Hex(sourceText) };
+  const entries: unknown[] = [];
+  for (const sourceAsset of expected.assets) {
+    const asset = convert(sourceAsset) as PrimitiveTonalColorAssetV5;
+    // Portable classification first appeared in multifamily serializer 0.19.0.
+    if (minor < 19) delete asset.classification;
+    const path = colorAssetPath(asset.id);
+    const assetText = formatCanonicalJsonFile(asset);
+    const presetPath = `preset-colors/${asset.id}.ts`;
+    const payload = projectPresetAsset(asset);
+    if (minor < 19) delete payload.classification;
+    const presetText = [
+      "import type { StaticPrimitiveTonalColorAsset } from '@kiskadee/core';",
+      '',
+      `// Generated from colors/${asset.id}.json by ${generator.package}@${generator.version}.`,
+      `export default ${JSON.stringify(payload, null, 2)} as const satisfies StaticPrimitiveTonalColorAsset;`,
+      ''
+    ].join('\n');
+    legacyFiles.set(path, assetText);
+    legacyFiles.set(presetPath, presetText);
+    entries.push({
+      familyId: asset.id,
+      path,
+      sha256: await sha256Hex(assetText),
+      preset: { path: presetPath, sha256: await sha256Hex(presetText) }
+    });
+  }
+  entries.sort((left, right) =>
+    compareStrings(
+      (left as { familyId: string }).familyId,
+      (right as { familyId: string }).familyId
+    )
+  );
+  manifest.assets = entries;
+  legacyFiles.set(TONAL_MANIFEST_PATH, formatCanonicalJsonFile(manifest));
+  const diagnostics = convert(expected.diagnostics) as TonalSystemDiagnosticsV5;
+  // Cross-stem aliases can change canonical array order as well as the serialized IDs.
+  diagnostics.families.sort((left, right) => compareStrings(left.familyId, right.familyId));
+  diagnostics.issues = normalizeIssues(diagnostics.issues);
+  legacyFiles.set(TONAL_DIAGNOSTICS_PATH, formatCanonicalJsonFile(diagnostics));
+  return legacyFiles;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
 function createColorAsset(
   system: ResolvedKiskadeeTonalSystem,
   family: ResolvedTonalFamily
@@ -459,11 +590,13 @@ function createColorAsset(
     variant: family.variant,
     colorKind: family.colorKind,
     role: family.role,
-    tonalProfile: system.source.tonalProfile,
+    tonalProfile: family.tonalProfile ?? system.source.tonalProfile,
     seedHex: family.sourceSeedHex,
     seedOrigin: family.seedOrigin,
     ...(() => {
-      const association = system.source.catalog?.supportingColors?.find((n) => n.id === family.id);
+      const association = system.source.catalog?.complementaryColors?.find(
+        (n) => n.id === family.id
+      );
       if (!association) return {};
       const parent = system.families.find(
         (f) =>
@@ -471,10 +604,11 @@ function createColorAsset(
           (association.sourceId === 'primary' ? system.source.primary.id : association.sourceId)
       )!;
       return {
-        supportingColorOrigin: {
+        complementaryColorOrigin: {
           sourceId: association.sourceId,
           referenceHex: parent.themes.light.restColor.hex,
-          strategy: association.strategy
+          strategy: association.strategy,
+          ...(association.tonalProfile ? { tonalProfile: association.tonalProfile } : {})
         }
       };
     })(),
@@ -695,6 +829,9 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
       override
     ])
   );
+  const complementaryIds = new Set<TonalFamilyId>(
+    system.source.catalog?.complementaryColors?.map((association) => association.id)
+  );
   const neutralOverride = resolveNeutralOverride(
     system.source.neutral,
     system.source.primary.seedHex
@@ -719,14 +856,18 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
     );
     if (override) overrideById.set(association.id, { ...override, id: association.id });
   }
-  for (const association of system.source.catalog?.supportingColors ?? []) {
+  for (const association of system.source.catalog?.complementaryColors ?? []) {
     const parent = system.families.find(
       (f) =>
         f.id ===
         (association.sourceId === 'primary' ? system.source.primary.id : association.sourceId)
     );
-    if (!parent) throw new TonalArtifactError(`Missing supporting origin: ${association.sourceId}`);
-    const { seedHex } = deriveSupportingColor(parent.themes.light.restColor.hex);
+    if (!parent)
+      throw new TonalArtifactError(`Missing complementary origin: ${association.sourceId}`);
+    const { seedHex } = deriveComplementaryColor(
+      parent.themes.light.restColor.hex,
+      association.strategy
+    );
     overrideById.set(association.id, {
       id: association.id,
       seedHex,
@@ -752,7 +893,8 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
       throw new TonalArtifactError(`${family.id} does not match the locked primary.`);
     }
     if (
-      family.seedOrigin === 'override' &&
+      (family.seedOrigin === 'override' ||
+        (family.seedOrigin === 'derived' && complementaryIds.has(family.id))) &&
       overrideById.get(family.id)?.seedHex !== family.sourceSeedHex
     ) {
       throw new TonalArtifactError(`${family.id} does not match its locked override.`);
@@ -765,7 +907,7 @@ function assertResolvedSystem(system: ResolvedKiskadeeTonalSystem): void {
         throw new TonalArtifactError(`${family.id} does not match the fixed reference set.`);
       }
     }
-    if (family.seedOrigin === 'derived') {
+    if (family.seedOrigin === 'derived' && !complementaryIds.has(family.id)) {
       throw new TonalArtifactError(
         `${family.id} cannot use a primary-derived seed in a fixed-reference artifact.`
       );

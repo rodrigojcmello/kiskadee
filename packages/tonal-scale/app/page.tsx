@@ -24,6 +24,7 @@ import {
 import {
   DEFAULT_TONAL_SYSTEM_RECIPE,
   TONAL_CORE_FAMILY_IDS,
+  TONAL_SYSTEM_FORMAT_VERSION,
   type TonalFamilyId,
   type TonalSystemRecipeV5,
   validateTonalSystemRecipe
@@ -188,7 +189,9 @@ export default function TonalScalePage() {
 
       <header className="hero">
         <div>
-          <span className="eyebrow">Kiskadee Munsell tonal system v5</span>
+          <span className="eyebrow">
+            Kiskadee Munsell tonal system v{TONAL_SYSTEM_FORMAT_VERSION}
+          </span>
           <h1>One primary. A complete color system.</h1>
           <p className="hero-copy">
             Start with the exact primary color. Kiskadee harmonizes one fixed reference in every
@@ -261,7 +264,6 @@ export default function TonalScalePage() {
           />
           <ScaleWorkspace
             family={resolvedFamily}
-            tonalProfile={recipe.tonalProfile}
             system={system}
             onSelectFamily={setSelectedFamilyId}
           />
@@ -313,17 +315,16 @@ function GenerationLoader({ isInitial }: { isInitial: boolean }) {
 
 function ScaleWorkspace({
   family,
-  tonalProfile,
   system,
   onSelectFamily
 }: {
   family: ResolvedTonalFamily;
-  tonalProfile: KiskadeeTonalProfile;
   system: ResolvedKiskadeeTonalSystem;
   onSelectFamily: (familyId: TonalFamilyId) => void;
 }) {
   const lightResult = family.themes.light.scale;
   const darkResult = family.themes.dark.scale;
+  const tonalProfile = lightResult.diagnostics.profile;
   const lightVividReference = resolveTonalFunctionalReference(system, family.id, 'light', 'vivid');
   const darkVividReference = resolveTonalFunctionalReference(system, family.id, 'dark', 'vivid');
   const lightSubtleReference = resolveTonalFunctionalReference(
@@ -676,10 +677,12 @@ function ScaleOverview({
                   {family.id}
                 </strong>
                 {(() => {
+                  const complementary = system.source.catalog?.complementaryColors?.find(
+                    (entry) => entry.id === family.id
+                  );
                   const origin =
-                    system.source.catalog?.supportingColors?.find(
-                      (entry) => entry.id === family.id
-                    ) ?? system.source.catalog?.neutrals.find((entry) => entry.id === family.id);
+                    complementary ??
+                    system.source.catalog?.neutrals.find((entry) => entry.id === family.id);
                   const sourceId =
                     origin?.sourceId ??
                     (family.id === 'n.black.v2' &&
@@ -694,9 +697,11 @@ function ScaleOverview({
                         : 'Default';
                   return (
                     <small className="derivation-origin">
-                      {sourceId
-                        ? `Derived (${sourceId === 'primary' ? system.primaryReference.familyId : sourceId})`
-                        : originLabel}
+                      {complementary
+                        ? `Complementary · Measured sector: ${family.identity?.sector ?? family.sector ?? 'pending'} · ${resolveProfileLabel(family.themes.light.scale.diagnostics.profile)}`
+                        : sourceId
+                          ? `Derived (${sourceId === 'primary' ? system.primaryReference.familyId : sourceId})`
+                          : originLabel}
                       {' · '}
                       {family.status.charAt(0).toUpperCase() + family.status.slice(1)}
                     </small>

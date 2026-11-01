@@ -1,12 +1,13 @@
 # Material tonal assets
 
-Initial promotion: 2026-09-12, generator 0.13.0. The 2026-09-13 promotion used generator 0.16.0. Current implementation on 2026-09-15
-uses candidate generator 0.19.0, Balanced, with the same shared catalog plus two derived supporting colors.
+Initial promotion: 2026-09-12, generator 0.13.0. The 2026-09-13 promotion used generator 0.16.0.
+The current Shared Viewer uses candidate generator 0.20.1, Balanced, with the same shared catalog
+plus two derived supporting colors.
 The user authorized integration; visual acceptance of Secondary remains user-owned.
 
 `tonal-system.recipe.json` is the authored input; `generated/` contains the canonical verified export. Ten TypeScript assets are copied verbatim into `packages/presets/src/presets/material-3-google/colors/default/`.
 
-### Shared viewer — candidate generator 0.19.0
+### Shared viewer — candidate generator 0.20.1
 
 Candidate 0.16.0 adds a shared catalog with named additional variants and associated neutrals.
 Existing approved assets retain their recorded versions until a separate promotion.

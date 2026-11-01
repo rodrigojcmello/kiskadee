@@ -46,6 +46,7 @@ import {
   type TonalVividReferenceRule
 } from '@/src/tonal-system-contract';
 import { CatalogEditor } from './CatalogEditor';
+import { rebindPrimaryComplementary } from './complementary-recipe';
 import styles from './RecipeEditor.module.css';
 
 const REST_TONES = KISKADEE_TONES.filter((tone): tone is KiskadeeTone => tone > 0 && tone < 100);
@@ -139,7 +140,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           ...usedIds,
           ...(recipe.catalog?.colors.map((c) => c.id) ?? []),
           ...(recipe.catalog?.neutrals.map((n) => n.id) ?? []),
-          ...(recipe.catalog?.supportingColors?.map((n) => n.id) ?? [])
+          ...(recipe.catalog?.complementaryColors?.map((n) => n.id) ?? [])
         ],
         identity.stem
       )
@@ -152,7 +153,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
     .filter((id, index, ids) => ids.indexOf(id) === index && id !== 'n.black.v2')
     .sort((left, right) => left.localeCompare(right));
   const extraId =
-    requestedExtraId && extraOptions.includes(requestedExtraId)
+    requestedExtraId && extraOptions.some((id) => id === requestedExtraId)
       ? requestedExtraId
       : (extraOptions[0] ?? '');
   const proposal = !isGenerating && result.rest ? result.rest : null;
@@ -210,15 +211,20 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
           )
         : nextRecipe.functionalReferences;
 
-    onChange({
-      ...nextRecipe,
-      overrides: nextOverrides,
-      functionalReferences: shouldRemovePreviousReference
-        ? movedFunctionalReferences.filter(
-            (functionalReferences) => functionalReferences.id !== previousPrimaryId
-          )
-        : movedFunctionalReferences
-    });
+    onChange(
+      rebindPrimaryComplementary(
+        {
+          ...nextRecipe,
+          overrides: nextOverrides,
+          functionalReferences: shouldRemovePreviousReference
+            ? movedFunctionalReferences.filter(
+                (functionalReferences) => functionalReferences.id !== previousPrimaryId
+              )
+            : movedFunctionalReferences
+        },
+        nextPrimaryId
+      )
+    );
   };
 
   const addOverride = (id: TonalFamilyId) => {
@@ -268,7 +274,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
   const removeExtraOverride = (id: TonalFamilyId) => {
     const associated = [
       ...(recipe.catalog?.neutrals ?? []),
-      ...(recipe.catalog?.supportingColors ?? [])
+      ...(recipe.catalog?.complementaryColors ?? [])
     ].filter((n) => n.sourceId === id);
     if (
       associated.length &&
@@ -287,7 +293,9 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
             catalog: {
               ...recipe.catalog,
               neutrals: recipe.catalog.neutrals.filter((n) => n.sourceId !== id),
-              supportingColors: recipe.catalog.supportingColors?.filter((n) => n.sourceId !== id),
+              complementaryColors: recipe.catalog.complementaryColors?.filter(
+                (n) => n.sourceId !== id
+              ),
               names: Object.fromEntries(
                 Object.entries(recipe.catalog.names).filter(([key]) => !removed.has(key))
               )
@@ -704,6 +712,7 @@ export function RecipeEditor({ recipe, result, isGenerating, onChange }: RecipeE
       <CatalogEditor
         recipe={recipe}
         result={result}
+        isGenerating={isGenerating}
         onChange={onChange}
         onPrimaryChange={updatePrimary}
       />

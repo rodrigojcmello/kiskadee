@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { normalizeHexColor } from '@/src/color-math';
+import { KISKADEE_TONAL_PROFILES, type KiskadeeTonalProfile } from '@/src/kiskadee-tonal-scale';
 import { classifyMunsellHex } from '@/src/munsell-oklch';
-import { deriveSupportingColor, SUPPORTING_COLOR_STRATEGY } from '@/src/supporting-color';
 import type { KiskadeeTonalSystemResult } from '@/src/tonal-system';
 import {
+  type ComplementaryColorAssociation,
+  createComplementaryColorId,
   nextTonalFamilyVariant,
   TONAL_FAMILY_IDENTITIES,
   type TonalCatalog,
@@ -16,11 +18,13 @@ import styles from './CatalogEditor.module.css';
 export function CatalogEditor({
   recipe,
   result,
+  isGenerating,
   onChange,
   onPrimaryChange
 }: {
   recipe: TonalSystemRecipeV5;
   result: KiskadeeTonalSystemResult;
+  isGenerating: boolean;
   onChange: (recipe: TonalSystemRecipeV5) => void;
   onPrimaryChange: (primary: TonalSystemRecipeV5['primary']) => void;
 }) {
@@ -34,13 +38,13 @@ export function CatalogEditor({
     const remaining = new Set([
       ...next.colors.map((c) => c.id),
       ...next.neutrals.map((n) => n.id),
-      ...(next.supportingColors ?? []).map((n) => n.id)
+      ...(next.complementaryColors ?? []).map((n) => n.id)
     ]);
     const removed = new Set(
       [
         ...catalog.colors.map((c) => c.id),
         ...catalog.neutrals.map((n) => n.id),
-        ...(catalog.supportingColors ?? []).map((n) => n.id)
+        ...(catalog.complementaryColors ?? []).map((n) => n.id)
       ].filter((id) => !remaining.has(id))
     );
     onChange({
@@ -61,7 +65,7 @@ export function CatalogEditor({
     ...recipe.overrides.map((o) => o.id),
     ...catalog.colors.map((o) => o.id),
     ...catalog.neutrals.map((n) => n.id),
-    ...(catalog.supportingColors ?? []).map((n) => n.id)
+    ...(catalog.complementaryColors ?? []).map((n) => n.id)
   ];
   if (recipe.neutral) ids.push('n.black.v2');
   const entries = [
@@ -95,18 +99,23 @@ export function CatalogEditor({
       </p>
       {entries.map((entry) => {
         const association = catalog.neutrals.find((n) => n.sourceId === entry.id);
-        const support = catalog.supportingColors?.find((n) => n.sourceId === entry.id);
+        const complementary = catalog.complementaryColors?.find((n) => n.sourceId === entry.id);
         const parent = result.valid
           ? result.families.find(
               (f) => f.id === (entry.id === 'primary' ? result.primaryReference.familyId : entry.id)
             )
           : undefined;
-        const derivedSupport = parent
-          ? deriveSupportingColor(parent.themes.light.restColor.hex)
+        const complementaryFamily = complementary
+          ? result.families.find((family) => family.id === complementary.id)
           : undefined;
-        const supportFamily = derivedSupport
-          ? TONAL_FAMILY_IDENTITIES.find((f) => f.sector === derivedSupport.identity.sector)
-          : undefined;
+        const canGenerateComplementary = parent?.colorKind === 'chromatic';
+        const updateComplementary = (patch: Partial<ComplementaryColorAssociation>) =>
+          change({
+            ...catalog,
+            complementaryColors: catalog.complementaryColors?.map((color) =>
+              color.id === complementary?.id ? { ...color, ...patch } : color
+            )
+          });
         const additional = catalog.colors.find((c) => c.id === entry.id);
         const updateEntry = (next: {
           seedHex: string;
@@ -157,7 +166,7 @@ export function CatalogEditor({
                   {catalog.names[entry.id] ? `${parent?.id ?? entry.id} · ` : ''}
                   {entry.seedHex}
                 </small>
-                {association || support || legacyPrimaryNeutral ? (
+                {association || complementary || legacyPrimaryNeutral ? (
                   <small>
                     {[
                       association
@@ -165,7 +174,7 @@ export function CatalogEditor({
                         : legacyPrimaryNeutral
                           ? 'Neutral: n.black.v2'
                           : '',
-                      support ? `Support: ${support.id}` : ''
+                      complementary ? `Complementary: ${complementary.id}` : ''
                     ]
                       .filter(Boolean)
                       .join(' · ')}
@@ -220,50 +229,94 @@ export function CatalogEditor({
               <label>
                 <input
                   type="checkbox"
-                  aria-label={`Generate supporting color ${entry.id}`}
-                  checked={!!support}
-                  disabled={!support && !supportFamily}
+                  aria-label={`Generate complementary color ${entry.id}`}
+                  checked={!!complementary}
+                  disabled={isGenerating || (!complementary && !canGenerateComplementary)}
                   onChange={(e) => {
-                    if (e.target.checked && !supportFamily) return;
+                    if (e.target.checked && !parent) return;
                     change({
                       ...catalog,
-                      supportingColors: e.target.checked
+                      complementaryColors: e.target.checked
                         ? [
-                            ...(catalog.supportingColors ?? []),
+                            ...(catalog.complementaryColors ?? []),
                             {
-                              id: `${supportFamily!.stem}.${nextTonalFamilyVariant(ids, supportFamily!.stem)}`,
-                              sourceId: entry.id as 'primary',
-                              strategy: SUPPORTING_COLOR_STRATEGY
+                              id: createComplementaryColorId(parent!.id),
+                              sourceId: entry.id as ComplementaryColorAssociation['sourceId'],
+                              strategy: 'material-complement-v1'
                             }
                           ]
-                        : (catalog.supportingColors ?? []).filter((n) => n.sourceId !== entry.id),
+                        : (catalog.complementaryColors ?? []).filter(
+                            (n) => n.sourceId !== entry.id
+                          ),
                       names: Object.fromEntries(
-                        Object.entries(catalog.names).filter(([id]) => id !== support?.id)
+                        Object.entries(catalog.names).filter(([id]) => id !== complementary?.id)
                       )
                     });
                   }}
                 />
-                Generate supporting color (Material)
+                Generate complementary color
               </label>
-              {support ? (
+              {complementary ? (
                 <>
-                  <p>
-                    Supporting color: {support.id} ·{' '}
-                    {result.families.find((f) => f.id === support.id)?.sourceSeedHex ?? 'pending'}
-                  </p>
                   <label>
-                    Supporting color name
+                    Complementary strategy
+                    <select
+                      aria-label={`Complementary strategy ${entry.id}`}
+                      value={complementary.strategy}
+                      onChange={(event) =>
+                        updateComplementary({
+                          strategy: event.target.value as ComplementaryColorAssociation['strategy']
+                        })
+                      }
+                    >
+                      <option value="material-complement-v1">Chromatic alternative</option>
+                      <option value="contrast-complement-v1">Contrast accent</option>
+                    </select>
+                  </label>
+                  <label>
+                    Complementary profile
+                    <select
+                      aria-label={`Complementary profile ${entry.id}`}
+                      value={complementary.tonalProfile ?? ''}
+                      onChange={(event) =>
+                        updateComplementary({
+                          tonalProfile: (event.target.value || undefined) as
+                            | KiskadeeTonalProfile
+                            | undefined
+                        })
+                      }
+                    >
+                      <option value="">Strategy default</option>
+                      {KISKADEE_TONAL_PROFILES.map((profile) => (
+                        <option key={profile.id} value={profile.id}>
+                          {profile.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Complementary name
                     <input
-                      aria-label={`Supporting color name ${entry.id}`}
-                      value={catalog.names[support.id] ?? ''}
+                      aria-label={`Complementary color name ${entry.id}`}
+                      value={catalog.names[complementary.id] ?? ''}
                       onChange={(e) =>
                         change({
                           ...catalog,
-                          names: { ...catalog.names, [support.id]: e.target.value }
+                          names: { ...catalog.names, [complementary.id]: e.target.value }
                         })
                       }
                     />
                   </label>
+                  <p>
+                    <strong>{complementary.id}</strong> ·{' '}
+                    {complementaryFamily?.sourceSeedHex ?? 'pending'}
+                    {complementaryFamily?.identity
+                      ? ` · Measured sector: ${complementaryFamily.identity.sector}`
+                      : ''}
+                    {complementaryFamily
+                      ? ` · Profile: ${complementaryFamily.themes.light.scale.diagnostics.profile}`
+                      : ''}
+                  </p>
                 </>
               ) : null}
               {legacyPrimaryNeutral ? (
@@ -332,19 +385,20 @@ export function CatalogEditor({
                       ...catalog,
                       colors: catalog.colors.filter((c) => c.id !== entry.id),
                       neutrals: catalog.neutrals.filter((n) => n.sourceId !== entry.id),
-                      supportingColors: (catalog.supportingColors ?? []).filter(
+                      complementaryColors: (catalog.complementaryColors ?? []).filter(
                         (n) => n.sourceId !== entry.id
                       ),
                       names: Object.fromEntries(
                         Object.entries(catalog.names).filter(
-                          ([id]) => id !== entry.id && id !== association?.id && id !== support?.id
+                          ([id]) =>
+                            id !== entry.id && id !== association?.id && id !== complementary?.id
                         )
                       )
                     })
                   }
                 >
-                  {association || support
-                    ? `Remove color and derived colors ${[association?.id, support?.id].filter(Boolean).join(', ')}`
+                  {association || complementary
+                    ? `Remove color and derived colors ${[association?.id, complementary?.id].filter(Boolean).join(', ')}`
                     : 'Remove color'}
                 </button>
               ) : null}

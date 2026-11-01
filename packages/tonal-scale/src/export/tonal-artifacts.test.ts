@@ -65,7 +65,7 @@ describe('tonal artifact bundle v5', () => {
       ...[...TONAL_CORE_FAMILY_IDS].sort().map((id) => `preset-colors/${id}.ts` as const)
     ]);
     expect(bundle.manifest.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
-    expect(bundle.manifest.generator.version).toBe('0.19.0');
+    expect(bundle.manifest.generator.version).toBe('0.20.1');
     expect(bundle.diagnostics.referenceSet).toBe('kiskadee-munsell-reference-v2');
     expect(bundle.manifest.primaryReference).toBe('b.blue.v1');
     for (const [path, contents] of bundle.files) {
@@ -122,7 +122,7 @@ describe('tonal artifact bundle v5', () => {
 
   it('keeps consumer assets concise while recording V5 identity, origin, and functional references', () => {
     for (const asset of bundle.assets) {
-      expect(asset.formatVersion).toBe(7);
+      expect(asset.formatVersion).toBe(8);
       expect(asset.generator).toEqual(TONAL_ARTIFACT_GENERATOR);
       expect(asset).not.toHaveProperty('diagnostics');
       expect(asset).not.toHaveProperty('dependencies');

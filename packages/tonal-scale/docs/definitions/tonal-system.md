@@ -1,4 +1,4 @@
-# Kiskadee Tonal System v6
+# Kiskadee Tonal System v8
 
 Status: canonical package-level definition.
 
@@ -67,13 +67,14 @@ Schema grammar.
 
 Format V6 adds a shared catalog. The base primary remains fixed; additional entries and their
 associated neutrals are generated without feedback into existing families. The complete bundle is
-still atomic and replayable. Presets select semantic primaries from that bundle. Format V5 links
-remain readable and normalize to V7, including an explicit base-primary association for legacy
-primary-derived neutrals. Legacy neutral policy/reference settings remain for faithful replay.
+still atomic and replayable. Presets select semantic primaries from that bundle. Formats V5 through V7 remain readable and normalize to V8, including the explicit base-primary
+association for legacy primary-derived neutrals and the origin-owned complementary identities
+described below. Legacy neutral policy/reference settings remain for faithful replay.
 
 ## Input Contract
 
-Format 5 contains:
+Format 8 extends the original format-5 input with the catalog and complementary associations
+described below. Its base input contains:
 
 - one exact primary seed, automatic or explicit natural appearance, explicit
   a positive numbered variant (`v1`, `v2`, ...) variant, and Light/Dark policy;
@@ -981,7 +982,10 @@ Chromatic offset and explicit neutral seeds are unchanged. Existing recipes usin
 Subtle intentionally produce new neutral scales; stored exports retain provenance.
 
 
-## Associated supporting colors (0.18.0 / V7)
+## Historical associated supporting colors (0.18.0 / V7)
+
+The following records the V7 contract and its stored provenance. New authoring uses the V8
+complementary-color contract below; historical links and assets retain their original bytes.
 
 A supporting color is chromatic and is separate from `catalog.neutrals`. Opt in per
 origin with `catalog.supportingColors: [{ id, sourceId, strategy: "material-support-v1" }]`.
@@ -1023,3 +1027,117 @@ Preset TypeScript projection includes this classification without changing tonal
 This additive serializer change versions the multifamily artifact generator to 0.19.0; previously
 promoted 0.18.0 assets retain their provenance and can receive metadata through the preset adapter.
 The API does not define semantic roles, segment identity, default selection or UI ordering.
+
+## Associated complementary colors (0.20.0 / V8)
+
+The canonical collection is `catalog.complementaryColors`. Complementary means an associated
+derived color; it does not require a 180-degree hue rotation or assign a preset-wide supporting
+intent. The origin may be `primary` or any existing chromatic base, override or catalog entry.
+Neutrals and other complementary colors cannot be origins, and each origin has at most one
+complementary association.
+
+```json
+{
+  "id": "b.blue.v1.c",
+  "sourceId": "primary",
+  "strategy": "contrast-complement-v1",
+  "tonalProfile": "balanced"
+}
+```
+
+### Lineage identity and measured classification
+
+The complementary ID is the resolved origin ID followed by `.c`: `b.blue.v1.c` is complementary
+to `b.blue.v1`, and `pb.indigo.v2.c` is complementary to `pb.indigo.v2`. It remains in its
+origin's catalog category even when the resulting color is measured in another hue sector.
+The suffix describes provenance, not a prohibition on using the resulting family directly.
+
+Numerical generation uses the derived seed's measured Munsell classification, independently
+from the category encoded in the lineage ID. A Blue complementary color may therefore look
+cyan without being forced back into Blue's hue range. Existing ordinary-family identity checks
+remain intact; `.c` colors are authored only through the complementary collection, not as
+explicit ordinary overrides or primary identities. The JSON classification describes the
+resulting Light-vivid reference; the association preserves the source ID and resolved Light-rest
+HEX used for derivation.
+
+### Two derivation strategies
+
+`material-complement-v1` preserves the former `material-support-v1` mathematics exactly:
+OKLCH L40, C=min(source C, 0.12), H=(source H - 25 degrees) modulo 360, followed by chroma-only
+sRGB fitting. It provides an alternate chromatic identity. Light remains `source-exact`; Dark
+remains `adaptive`. This is a Kiskadee adaptation oriented to the inspected Material examples,
+not Google's HCT algorithm.
+
+`contrast-complement-v1` provides an automatic physically light, chromatic candidate for
+emphasis on vivid surfaces. It derives from the origin's resolved Light rest and retains a small
+part of the source lightness around OKL L76, bounded to L72-L82. It estimates the source's local
+sRGB gamut utilization and carries that chromatic character into the lighter seed. A bounded
+hue search of at most 16 degrees may recover useful chroma while penalizing unnecessary travel;
+requested gamut utilization remains below the physical limit. These parameters are versioned in
+[`complementary-color.ts`](../../src/complementary-color.ts).
+
+The contrast calibration was informed by the two user-supplied Windows accent pairs, including
+the bright selected-control/Slider samples near `#40BEFF` and `#4DC1FF`. These are screenshot
+observations, not proof of the Windows shell's private derivation algorithm. The same deterministic
+rule is applied to every chromatic origin; it contains no blue-only target HEX or manual red/green
+complementary seeds. Both Light and Dark preserve the contrast seed with `source-exact` policies.
+
+### Contrast refinement (0.20.1)
+
+The contrast candidate limits requested chroma to the lesser of the target's gamut-scaled value
+and `1.15 * source C`. This is a generic source-relative growth limit, not a Green-specific rule.
+It moderates the disproportionately vivid Green result without changing the shared tone grid,
+target lightness or hue-selection rule. The inspected Blue references, Red and Teams candidates
+remain unchanged where this limit is inactive. The accepted Material derivation keeps its existing
+mathematics.
+
+Complementary source validation normalizes opaque sRGB HEX and requires measured source chroma
+and its local sRGB chroma limit to be at least `0.005`. Invalid or unreliable achromatic inputs
+produce a domain error, which the system exposes as `COMPLEMENTARY_SOURCE_UNRELIABLE` in the
+catalog diagnostics rather than allowing an unhandled generation failure. A very light or dark
+color is not rejected solely because of
+lightness. For reliable near-extreme chromatic inputs, the source-relative growth limit also
+prevents normalization against a small gamut from amplifying tiny RGB differences into a vivid
+complementary seed. Numerical validity and visual approval remain separate checks.
+
+### Profiles preserve the shared grid
+
+An association may choose any existing `tonalProfile`. Omission inherits the recipe profile for
+Material complementarity and selects `balanced` for contrast complementarity. The explicit
+association value takes precedence. This selection affects only that complementary family;
+it does not alter the origin, base palette, other catalog entries or associated neutrals.
+
+The contrast default avoids unintentionally muting medium colors that are physically darker
+than a light complementary seed under `vivid-lights`. Authors can compare Balanced, Muted Darks,
+and Vivid Lights without creating another grid or profile. Canonical tone positions, physical
+caps, existing profile mathematics, and the Balanced golden barrier remain unchanged.
+
+Generation still evaluates each catalog addition against the same base context. Source-exact
+anchor preservation is not an approval of the whole curve: continuity and other review diagnostics
+remain visible and require inspection before a preset adopts a candidate. The initial comparison
+recipe is documented in [Fluent complementary candidates](../examples/fluent-complementary-colors.md).
+
+### Migration, publication and boundaries
+
+The format is V8 and the current multifamily artifact generator is 0.20.1. V5-V7 recipes and locked sources
+read the legacy `supportingColors` collection and `material-support-v1` strategy through explicit
+normalization. Legacy support IDs are mapped to their origin-owned `.c` identities; names and
+functional-reference locks follow that map. Ambiguous old/new collections, conflicting names,
+occupied legacy IDs, and orphaned or chained associations are rejected rather than silently
+repaired. New exports use only canonical complementary names and IDs.
+
+Each new JSON family publishes `complementaryColorOrigin` with its source ID, resolved reference
+HEX, strategy and optional explicit profile. Its top-level `tonalProfile` records the effective
+profile. Historical bundles retain their recorded names, versions, fingerprints and hashes; reading
+them does not authorize rewriting their provenance. The standalone serializer remains frozen at
+0.8.2 because its byte contract and mathematics are unchanged.
+
+Historical replay restores ID-derived identity fields from the recorded legacy ID, including
+Orange appearance when the same seed is now measured as Brown. Measured classification and
+scale colors remain unchanged. Families and issues are sorted again after alias conversion so
+cross-family renaming reproduces the historical canonical order.
+
+This delivery is confined to the generator and documentation. It does not promote `.c` assets into
+Core/preset primitive slots, change a component palette, create a semantic intent, or implement
+dynamic colors in the browser. Selecting semantic roles and promoting reviewed assets remain
+separate preset work after visual approval.
