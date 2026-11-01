@@ -92,7 +92,8 @@ the scale-only Structural Utility Projection Registry.
   colors. It excludes backgrounds and interaction-state deltas. The group resolves its base
   intent, emphasis, and surface context before applying it to decorative segments of one logical
   perimeter. React omits the segment over a selected member actually using the normal High
-  projection; neighboring Rest segments remain visible and return locally after deselection.
+  projection, or a state covered by the optional unpainted-frame metadata below. Neighboring
+  Rest segments remain visible and return locally after the omitted state ends.
 - `member` retains ordinary surface and interaction paint while excluding every border-color
   property. A Builder-emitted transparent suppression class prevents default border painting
   without changing border widths or compensated padding.
@@ -103,6 +104,14 @@ the scale-only Structural Utility Projection Registry.
 - Core and palette portions use the existing split-resource merge path. Runtime consumes their
   classes directly; it must not split class strings, inspect CSS, infer colors, or measure member
   geometry to reconstruct the frame. Intrinsic grid columns align its non-overlapping pieces.
+
+Optional `group.frameOmissions` publishes palette/context/intent/emphasis coverage for fully
+transparent Pressed or Selected borders. Its boolean flags are derived by the Builder, not authored
+as another palette or public option. The adapter consumes exact effective paint coordinates to
+omit the corresponding decorative frame and shared overlap strip; terminal states and older
+artifacts preserve the Rest frame. These flags carry no colors or class names. See
+[frame paint coverage](generated-artifacts.md#connected-button-frame-paint-coverage) for the
+coverage and conservative per-side rules.
 
 The existing `e1.p.gd` remains separate: the same authored `e6.boxWidth` utility is applied to member
 roots for seam overlap and frame pieces for shared-strip clipping. The artifact owner remains `e1`

@@ -8,10 +8,16 @@ provides sequential Previous/Next or loop controls.
 
 - [Fluent Dropdown](https://fluent2.microsoft.design/components/web/react/core/dropdown/usage)
   supports choosing an existing value; the Kiskadee headless Select owns that behavior.
+- [Fluent Select](https://fluent2.microsoft.design/components/web/react/core/select/usage),
+  [React Select styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-select/library/src/components/Select/useSelectStyles.styles.ts)
+  and [React Dropdown styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-combobox/library/src/components/Dropdown/useDropdownStyles.styles.ts)
+  distinguish the solid outlined shell from a transparent internal trigger.
 - [Fluent Combobox](https://fluent2.microsoft.design/components/web/react/core/combobox/usage)
   includes editable/filterable scenarios, deliberately outside this Select delivery.
 - [Windows ComboBox](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/combo-box)
   provides the Windows selection-control reference.
+- [Figma Dropdown Outline Medium](https://www.figma.com/design/qdtPPQysSX0kHGGcDpEXzw/Microsoft-Fluent-2-Web--Community-?node-id=9159-2507)
+  supplies the inspected solid-shell binding described below.
 - The user supplied the community Figma SearchBox node `8995:7` in file
   `qdtPPQysSX0kHGGcDpEXzw`. Tool inspection did not resolve that node; no pixel measurements
   or official sequential behavior are attributed to it.
@@ -20,13 +26,15 @@ provides sequential Previous/Next or loop controls.
 | --- | --- | --- | --- |
 | Existing-value selection | Fluent Dropdown and Windows ComboBox links above | Official adapted | Behavior is supplied by Headless Select. |
 | Community SearchBox | `qdtPPQysSX0kHGGcDpEXzw`, `8995:7` | Not inspected | No measurements or behavior are inferred. |
-| Shared neutral control identity | Existing Button/TextField calibration | Kiskadee extension | Explicitly selected visual adaptation. |
+| Shared neutral control identity | Existing Button/TextField calibration; Card Low surface | Kiskadee extension | Explicitly selected visual adaptation, with solid Outline from 2026-10-30. |
+| Outline shell fill | Figma Dropdown `9159:2507`; official React Select/Dropdown sources | Official adapted | Opaque upstream shell, mapped to Kiskadee Card Low rather than exact Background 1. |
 | Sequential navigation and dividers | User-approved Select refinement, 2026-09-29 | Kiskadee extension | No official Fluent sequential-control claim. |
 
-The approved source of visual calibration is the existing Kiskadee Fluent TextField and low-neutral
-Button, including the user's Windows 11 screenshot comparisons documented in
-[text-field.md](text-field.md). This is an explicit adaptation rather than a literal copy of the
-Fluent Web appearance naming.
+The approved source of contour and geometry calibration is the existing Kiskadee Fluent TextField
+and low-neutral Button, including the user's Windows 11 screenshot comparisons documented in
+[text-field.md](text-field.md). The 2026-10-30 Outline fill now follows Card Neutral Low, as
+specified below. These are explicit adaptations rather than a literal copy of Fluent Web
+appearance naming.
 
 ## Shared recipes
 
@@ -35,15 +43,51 @@ Fluent Web appearance naming.
 The Select schema declares its elements independently and only neutral intent, with no
 TextField validation or read-only states. Height is 24/32/40 for sm/md/lg.
 
-Outline has the neutral contour and transparent Rest surface; hover uses Button's calibrated fill.
-Underline retains only the lower delimitation. Borderless uses canonical Card neutral fill.
-Focus changes e7 color and height; lateral controls retain individual focus rings. Rest-equal
-focus/pressed resets intentionally suppress Outline hover paint, matching TextField.
+Outline has the neutral contour and solid Card Low Rest surface; hover uses Button's calibrated
+neutral fill. Underline retains only the lower delimitation. Borderless uses its existing canonical
+Card neutral fill. Focus changes e7 color and height; lateral controls retain individual focus
+rings. Rest-equal focus/pressed resets intentionally suppress Outline hover paint. Outline's
+surface now differs from the unchanged transparent TextField Outline.
 
 Light, Dark and Darker publish onSubtle and onVivid. Darker uses the existing Button black-surface
 contour calibration and Card low D2 surface. It retains Dark text, disabled and indicator contrast
 where the shared control family already uses the same values. Filled onVivid controls retain
 foreground colors for their own fill, while external label/message follow the surrounding surface.
+
+## Solid Outline surface — 2026-10-30
+
+Status: **Kiskadee extension**, approved together with [Button Low](button.md#solid-low-control-surface--2026-10-30).
+The [2026-10-31 Light/onVivid Button refinement](button.md#canonical-light-onvivid-hierarchy--2026-10-31)
+does not change this Select recipe: Outline retains its solid surface in both contexts.
+The official React Select and Dropdown outlined roots use solid `colorNeutralBackground1`
+(Light `#ffffff`, Dark `#292929`); Dropdown's internal trigger remains transparent because its
+root already owns the surface. This distinction is retained in Kiskadee: e3 owns the Outline
+fill, while e4 does not add a second opaque layer.
+
+The read-only Figma inspection used file `qdtPPQysSX0kHGGcDpEXzw`, Dropdown Outline Medium
+`9159:2507`. Its Contents `I9159:2508;321038:8027` has an opaque
+`Neutral/Background/1/Rest` binding. The separate Transparent example `9159:2515` binds its
+Contents to `Neutral/Background/Transparent/Rest` with zero opacity. These observations establish
+solid versus transparent source ownership, not official sequential controls or Kiskadee heights.
+
+| Theme | Strict locator, evidence `component.card` | Approved primitive | Published Outline Rest |
+| --- | --- | --- | --- |
+| Light | `exact card.neutral L1` | `primitive.black.v1` | `#fbfbfb` |
+| Dark | `exact card.neutral D6` | `primitive.black.v1` | `#202020` |
+| Darker | `exact card.neutral D2` | `primitive.black.v1` | `#0e0e0e` |
+
+These are the existing [Card Low positions](neutral-surface-calibration.md#solid-outlined-controls--2026-10-30)
+from the unchanged approved `colors/n.black.v1.ts` asset. The near-white Light fill is a deliberate
+calibrated adaptation, not the official physical white token. No new tonal asset or literal schema
+color is introduced.
+
+Outline's value, placeholder, chevron and sequential controls use foregrounds and interaction
+paint appropriate to their own solid surface, including when the surrounding context is onVivid.
+External label/message colors retain the ambient context. Outline Hover remains an opaque neutral
+fill; Focus/Pressed and Disabled restore the solid Rest fill so simultaneous Hover cannot expose
+the old transparent background. Disabled content/contour keep their terminal treatment.
+Underline, Borderless and TextField retain their existing recipes; no Select emphasis API or
+additional appearance is introduced.
 
 ## Unified sequential composition (2026-09-28)
 
@@ -100,8 +144,15 @@ order, accessible naming or selection semantics. No duplicate per-side palette i
 
 ## Validation and open gaps
 
+The optional e12 sequential divider still consumes the ambient Separator context. On a solid
+Light/onVivid Outline surface its white-alpha line can be too weak. Core's current SelectDivider
+contract does not admit a local palette override; changing that contract is outside this refinement.
+The current Showcase controls use `showDividers={false}`, so they do not render this known gap.
+Value, placeholder, chevron and step-control foregrounds already follow the solid interior surface.
+
 Focused schema tests check mode focus policy, independently authored focus hosts, divider publication,
-all themes/segments/surface contexts, and parity with the unchanged TextField recipe. Artifact and rendered verification belongs
+all themes/segments/surface contexts, and the contour relationships with the unchanged TextField
+recipe. Outline's approved solid fill is checked separately from TextField's transparent fill. Artifact and rendered verification belongs
 to the implementation handoff. Official sequential Select geometry and the supplied SearchBox
 node remain uninspected upstream; these adaptations retain their **Kiskadee extension** status.
 

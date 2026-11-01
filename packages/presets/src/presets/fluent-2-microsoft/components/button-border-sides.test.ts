@@ -12,7 +12,7 @@ describe('Fluent Low directional border', () => {
             const base = palette.borderColor![intent]!.low!;
             const bottom = palette.borderBottomColor![intent]!.low!;
             if (intent === 'neutral' && theme === 'dark' && context === 'onVivid') {
-              // Shared TextField contour: equal at Rest, stronger on Hover.
+              // The vivid neutral contour matches at Rest and strengthens on Hover.
               expect(bottom.rest).toBe(base.rest);
               expect(bottom.hover).not.toBe(bottom.rest);
             } else {
@@ -25,4 +25,17 @@ describe('Fluent Low directional border', () => {
           }
         }
   });
+});
+
+it('keeps the Light onVivid Low bottom visibly stronger than its side contour', () => {
+  for (const segment of ['default', 'teams'] as const)
+    for (const intent of ['primary', 'neutral', 'destructive', 'positive'] as const) {
+      const palette = schema.components.button!.elements.e1!.palettes![segment]!.light!.onVivid!;
+      const side = palette.borderColor![intent]!.low!;
+      const bottom = palette.borderBottomColor![intent]!.low!;
+      expect(side.rest).toBe('#ffffff4d');
+      expect(bottom.rest).toBe('#ffffff73');
+      expect(bottom.hover).toBe('#ffffff80');
+      expect(bottom.disabled).toBe(side.disabled);
+    }
 });

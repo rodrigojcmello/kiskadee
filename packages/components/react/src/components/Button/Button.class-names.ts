@@ -8,10 +8,12 @@ import {
   type ClassNameByElementJSON,
   type ComponentEmphasis,
   stateActivator as cn,
+  componentEmphasisBuckets,
   type EffectClassBucketJSON,
   type RadiusMode,
   resolveButtonStackedRadiusMode,
-  type SurfaceContext
+  type SurfaceContext,
+  surfaceContextBuckets
 } from '@kiskadee/core';
 import type { ButtonProps as HeadlessButtonProps } from '@kiskadee/react-headless';
 import {
@@ -28,6 +30,7 @@ import { resolveButtonPaintElement } from './Button.selection.ts';
 import type {
   ButtonClassesMap,
   ButtonElementName,
+  ButtonGroupClassesMap,
   ButtonGroupProps,
   ButtonProps,
   ButtonSelectionRestClassesMap,
@@ -55,6 +58,33 @@ export type ButtonResolvedClassNames = NonNullable<HeadlessButtonProps['classNam
 
 export const join = joinClassNames;
 export const normalizeButtonScaleKey = normalizeScaleKey;
+
+/** Selects published frame omissions without inferring border paint in the browser. */
+export function resolveButtonGroupFrameOmissionClassName({
+  group,
+  intent,
+  emphasis,
+  surfaceContext,
+  selectedPaint,
+  available
+}: {
+  group: ButtonGroupClassesMap | undefined;
+  intent: ButtonIntent;
+  emphasis: ComponentEmphasis;
+  surfaceContext: SurfaceContext;
+  selectedPaint: boolean;
+  available: boolean;
+}): string | undefined {
+  if (!available) return undefined;
+  const states =
+    group?.frameOmissions?.[surfaceContextBuckets[surfaceContext]]?.[intent]?.[
+      componentEmphasisBuckets[emphasis]
+    ];
+  return join(
+    states?.pressed && (!selectedPaint || states.selected) ? 'k-btn-e1m' : undefined,
+    states?.selected ? 'k-btn-e1n' : undefined
+  );
+}
 
 /** Resolves only a complete authored indicator at the effective geometry and palette coordinate. */
 export function resolveButtonIndicatorClassName({

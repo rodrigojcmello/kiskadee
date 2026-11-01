@@ -146,12 +146,12 @@ export const FLUENT_BUTTON_ON_VIVID_RECIPE = {
   medium: {
     lightSurfaceAlpha: {
       rest: 14,
-      hover: 10,
-      pressed: 7
+      hover: 10
     },
+    lightPressedBlackAlpha: 10,
     lightBorderAlpha: {
       rest: 10,
-      pressed: 7,
+      pressed: 0,
       disabled: 7
     },
     roleSurface: {
@@ -165,7 +165,11 @@ export const FLUENT_BUTTON_ON_VIVID_RECIPE = {
     content: familyReferenceColor('subtle', 4),
     lightSurfaceAlpha: {
       hover: 8,
-      pressed: 3
+      pressed: 12
+    },
+    lightBottomBorderAlpha: {
+      rest: 45,
+      hover: 50
     },
     lightBorderAlpha: {
       rest: 30,
@@ -245,12 +249,31 @@ export function omitFluentButtonPendingTextState(
   );
 }
 
+/** Flattens a resolved overlay over the preset's opaque canonical surface during authoring. */
+function composeOpaqueSurface(paint: SolidColor, surface: SolidColor): SolidColor {
+  const source = normalizeHexColor(paint);
+  const backdrop = normalizeHexColor(surface);
+  if (backdrop.length !== 7) throw new Error('Canonical Button surface must be opaque.');
+  const alpha = source.length === 9 ? Number.parseInt(source.slice(7, 9), 16) / 255 : 1;
+  const channels = [1, 3, 5].map((offset) =>
+    Math.round(
+      Number.parseInt(source.slice(offset, offset + 2), 16) * alpha +
+        Number.parseInt(backdrop.slice(offset, offset + 2), 16) * (1 - alpha)
+    )
+      .toString(16)
+      .padStart(2, '0')
+  );
+  return normalizeHexColor(`#${channels.join('')}`);
+}
+
 export function createFluentButtonOnSubtleIntent({
   theme,
   family,
   neutralButtonFamily,
   neutralSurfaceColor,
   highForeground,
+  lowSurface,
+  lowPressedForeground,
   lightenHighInteraction = false,
   neutralControlBottom
 }: {
@@ -263,6 +286,8 @@ export function createFluentButtonOnSubtleIntent({
     locator: Fluent2MicrosoftFamilyColorLocator
   ) => SolidColor;
   highForeground: SolidColor;
+  lowSurface: SolidColor;
+  lowPressedForeground?: SolidColor;
   lightenHighInteraction?: boolean;
 }): FluentButtonIntentFormula {
   const recipe = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme];
@@ -332,10 +357,11 @@ export function createFluentButtonOnSubtleIntent({
         }
       },
       low: {
-        rest: transparent,
+        rest: lowSurface,
         hover: roleColor(recipe.low.hover),
         pressed: roleColor(recipe.low.pressed),
-        disabled: adaptiveDisabled,
+        // Reset transient fills while preserving the control's own solid surface.
+        disabled: lowSurface,
         selected: {
           rest: roleColor(recipe.low.pressed)
         }
@@ -397,6 +423,12 @@ export function createFluentButtonOnSubtleIntent({
       },
       low: {
         rest: roleColor(recipe.foreground),
+        ...(lowPressedForeground
+          ? {
+              pressed: { ref: lowPressedForeground },
+              selected: { rest: { ref: lowPressedForeground } }
+            }
+          : {}),
         pending: {
           ref: applySlotVisibility(
             roleColor(recipe.foreground),
@@ -428,6 +460,7 @@ export function createFluentButtonOnVividIntent({
   family,
   neutralButtonFamily,
   canonicalSurface,
+  lightBaseSurface,
   neutralControlBottom
 }: {
   theme: FluentButtonFormulaTheme;
@@ -435,6 +468,7 @@ export function createFluentButtonOnVividIntent({
   family: FluentButtonTonalFamily;
   neutralButtonFamily: FluentButtonTonalFamily;
   canonicalSurface: SolidColor;
+  lightBaseSurface: SolidColor;
 }): FluentButtonIntentFormula {
   const usesSharedLightMedium = theme === 'light';
   const onVividWhite = neutralButtonFamily.resolve(
@@ -489,7 +523,7 @@ export function createFluentButtonOnVividIntent({
     ? onVividMediumBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.lightSurfaceAlpha.hover)
     : mediumSurfaceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.roleSurface.hover);
   const mediumPressed = usesSharedLightMedium
-    ? onVividMediumBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.lightSurfaceAlpha.pressed)
+    ? onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.lightPressedBlackAlpha)
     : mediumSurfaceColor(FLUENT_BUTTON_ON_VIVID_RECIPE.medium.roleSurface.pressed);
   const mediumForeground = usesSharedLightMedium
     ? FLUENT_BUTTON_ON_VIVID_RECIPE.low.content
@@ -515,12 +549,24 @@ export function createFluentButtonOnVividIntent({
     : {
         rest: onVividTransparent
       };
-  const lowRest = onVividTransparent;
+  const lightHoverOverlay = onVividMediumBackground(
+    FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightSurfaceAlpha.hover
+  );
+  const lightPressedOverlay = onVividMediumBackground(
+    FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightSurfaceAlpha.pressed
+  );
+  const lowRest = usesSharedLightMedium ? lightBaseSurface : onVividTransparent;
   const lowHover = usesSharedLightMedium
-    ? onVividMediumBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightSurfaceAlpha.hover)
+    ? composeOpaqueSurface(lightHoverOverlay, lightBaseSurface)
     : onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.hoverAlpha);
   const lowPressed = usesSharedLightMedium
-    ? onVividMediumBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightSurfaceAlpha.pressed)
+    ? composeOpaqueSurface(lightPressedOverlay, lightBaseSurface)
+    : onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.pressedAlpha);
+  const lowestHover = usesSharedLightMedium
+    ? lightHoverOverlay
+    : onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.hoverAlpha);
+  const lowestPressed = usesSharedLightMedium
+    ? lightPressedOverlay
     : onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.pressedAlpha);
   const lowBorder = usesSharedLightMedium
     ? createLightControlBorder(FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha)
@@ -539,7 +585,8 @@ export function createFluentButtonOnVividIntent({
         pending: applySlotVisibility(mediumRest, FLUENT_BUTTON_PENDING_VISIBILITY.surface),
         disabled: onVividDisabledBackground,
         selected: {
-          rest: mediumPressed
+          rest: mediumPressed,
+          ...(usesSharedLightMedium ? { hover: mediumPressed } : {})
         }
       },
       high: {
@@ -556,17 +603,22 @@ export function createFluentButtonOnVividIntent({
         rest: lowRest,
         hover: lowHover,
         pressed: lowPressed,
-        disabled: onVividDisabledBackground,
+        disabled: usesSharedLightMedium
+          ? composeOpaqueSurface(onVividDisabledBackground, lightBaseSurface)
+          : onVividDisabledBackground,
         selected: {
-          rest: lowPressed
+          rest: lowPressed,
+          // Preserve the persistent Light selection against the weaker base Hover fill.
+          ...(usesSharedLightMedium ? { hover: lowPressed } : {})
         }
       },
       lowest: {
         rest: onVividTransparent,
-        hover: onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.hoverAlpha),
-        pressed: onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.pressedAlpha),
+        hover: lowestHover,
+        pressed: lowestPressed,
         selected: {
-          rest: onVividInteractionBackground(FLUENT_BUTTON_ON_VIVID_RECIPE.low.pressedAlpha)
+          rest: lowestPressed,
+          ...(usesSharedLightMedium ? { hover: lowestPressed } : {})
         }
       }
     },
@@ -581,23 +633,26 @@ export function createFluentButtonOnVividIntent({
       }
     },
     borderBottomColor: {
-      low: neutralControlBottom
+      low: usesSharedLightMedium
         ? {
-            ...(usesSharedLightMedium
-              ? createLightControlBorder(FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha)
-              : { disabled: onVividTransparent }),
-            rest: neutralControlBottom.rest,
-            hover: neutralControlBottom.hover,
-            pending: applySlotVisibility(
-              neutralControlBottom.rest,
-              FLUENT_BUTTON_PENDING_VISIBILITY.border
+            ...createLightControlBorder({
+              ...FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha,
+              rest: FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBottomBorderAlpha.rest
+            }),
+            hover: onVividMediumBackground(
+              FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBottomBorderAlpha.hover
             )
           }
-        : usesSharedLightMedium
-          ? createLightControlBorder({
-              ...FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightBorderAlpha,
-              rest: 38
-            })
+        : neutralControlBottom
+          ? {
+              disabled: onVividTransparent,
+              rest: neutralControlBottom.rest,
+              hover: neutralControlBottom.hover,
+              pending: applySlotVisibility(
+                neutralControlBottom.rest,
+                FLUENT_BUTTON_PENDING_VISIBILITY.border
+              )
+            }
           : {
               rest: onVividWhite,
               pending: applySlotVisibility(onVividWhite, FLUENT_BUTTON_PENDING_VISIBILITY.border),
@@ -641,22 +696,23 @@ export function createFluentButtonOnVividIntent({
         }
       },
       low: {
-        rest: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+        rest: onVividWhite,
         pending: {
-          ref: applySlotVisibility(
-            roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
-            FLUENT_BUTTON_PENDING_VISIBILITY.content
-          )
+          ref: applySlotVisibility(onVividWhite, FLUENT_BUTTON_PENDING_VISIBILITY.content)
         },
         disabled: {
           ref: onVividDisabledForeground
         }
       },
       lowest: {
-        rest: roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+        rest: usesSharedLightMedium
+          ? onVividWhite
+          : roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
         pending: {
           ref: applySlotVisibility(
-            roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
+            usesSharedLightMedium
+              ? onVividWhite
+              : roleColor(FLUENT_BUTTON_ON_VIVID_RECIPE.low.content),
             FLUENT_BUTTON_PENDING_VISIBILITY.content
           )
         },

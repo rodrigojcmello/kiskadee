@@ -4,12 +4,15 @@
 
 Kiskadee treats `subtle` as the low-emphasis base for button styling. The
 `outline` and `flat` variants, when available, are derived from `subtle`, since
-those variants are conceptually low-emphasis: a white/base own surface with
-colored or neutral text.
+those variants are conceptually low-emphasis: an explicit base own surface with
+colored or neutral text. Prefer that base close or equal to the intended supporting surface;
+it can be near-white on a light Card or a matching solid color on a vivid Card.
 
-Transparent/no-own-surface Button treatments belong to the open `lowest`
-emphasis decision. Do not treat transparent Button styling as the canonical
-definition of `low`.
+A transparent/no-own-surface Button is the recommended starting point for `lowest`.
+Transparency is not the canonical definition of `low`, but remains valid at `low`, `medium`,
+and `high` when deliberately authored. This guidance does not restrict the Schema or require
+existing presets to migrate. See [surface-relative emphasis authoring](component-intents.md#surface-relative-authoring-guidance)
+for the shared recommendation and its contrast-context boundary.
 
 Important: official presets stay faithful to the original design systems. If a
 design system does not define outline/flat, such as Material 3 or Carbon, those

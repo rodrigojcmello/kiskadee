@@ -47,6 +47,7 @@ import {
   resolveButtonDividerClassName,
   resolveButtonGroupClassName,
   resolveButtonGroupFrameClassName,
+  resolveButtonGroupFrameOmissionClassName,
   resolveButtonIndicatorClassName,
   supportsButtonStackedLayout
 } from './Button.class-names.ts';
@@ -772,6 +773,14 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
       group
     ]
   );
+  const frameOmissionClassName = resolveButtonGroupFrameOmissionClassName({
+    group: memberRecipe,
+    intent: selectionPaint.intent,
+    emphasis: selectionPaint.emphasis,
+    surfaceContext: common.surfaceContext,
+    selectedPaint: selectionPaint.selectedPaint,
+    available: !activationFeedbackController.activationBlocked && !feedbackLoadingBlocked
+  });
   const runtimeContextValue = useMemo<ButtonRuntimeContextValue>(
     () => ({
       badgeRelationClassName: baseClassNames.e7,
@@ -883,6 +892,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
           e1: join(
             computedClassNames.e1,
             memberRecipe && selectionPaint.projection ? 'k-btn-e1l' : undefined,
+            frameOmissionClassName,
             contentSlots.hasOverlayBadge ? 'k-btn-e1j' : undefined,
             indicatorClassName ? 'k-btn-e1k' : undefined
           )

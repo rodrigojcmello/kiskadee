@@ -89,6 +89,48 @@ function fixture() {
   return { element, metadata, names };
 }
 
+function paintFixture(
+  authored: Record<string, Record<string, string> | undefined>,
+  options: { context?: 'onSubtle' | 'onVivid'; tone?: 'medium' | 'high'; semantic?: string } = {}
+) {
+  const metadata: ToneMetadataByPalette = new Map();
+  const context = options.context ?? 'onVivid';
+  const tone = options.tone ?? 'medium';
+  const semantic = options.semantic ?? 'neutral';
+  const palettes: Record<string, unknown> = {};
+  for (const segment of ['default', 'brand']) {
+    const themes: Record<string, unknown> = {};
+    palettes[segment] = themes;
+    for (const theme of ['light', 'dark']) {
+      const states: Record<string, string[]> = {};
+      const tones = new Map();
+      metadata.set(`${segment}.${theme}.${context}`, tones);
+      themes[theme] = { [context]: { [semantic]: states } };
+      for (const [state, declarations] of Object.entries(authored)) {
+        if (!declarations) continue;
+        states[state] = Object.entries(declarations).map(([property, value]) => {
+          const key = `${property}--${state}__${value}`;
+          tones.set(
+            buildScopedToneMetadataKey(
+              { componentName: 'button', elementName: 'e1' },
+              `${semantic}::${key}`
+            ),
+            { tones: [tone] }
+          );
+          return key;
+        });
+      }
+    }
+  }
+  return compileButtonGroupArtifact(
+    { palettes },
+    { componentName: 'button', elementName: 'e1' },
+    metadata,
+    (key) => key,
+    true
+  )!;
+}
+
 describe('Button Group class projection', () => {
   it('publishes only perimeter geometry, without padding or unrelated decoration', () => {
     const { element, metadata, names } = fixture();
@@ -148,6 +190,141 @@ describe('Button Group class projection', () => {
         Object.values(names).includes(name)
       )
     ).toBe(true);
+  });
+
+  it('publishes palette-scoped omissions only for a fully transparent effective perimeter', () => {
+    const output = paintFixture({
+      rest: { borderColor: '#ffffff1a' },
+      pressed: { borderColor: '#ffffff00' },
+      'selected:rest': { borderColor: '#0000' },
+      'selected:hover': { borderColor: '#00000000' }
+    });
+    expect(output.core).not.toHaveProperty('frameOmissions');
+    for (const [bundle, group] of Object.entries(output.palettes)) {
+      expect(bundle).toMatch(/^(default|brand)\.(light|dark)$/);
+      expect(group.frameOmissions).toEqual({
+        v: { neutral: { m: { pressed: true, selected: true } } }
+      });
+      expect(group.frame?.c?.v?.neutral.m).toBe('borderColor--rest__#ffffff1a');
+      expect(group.member?.c?.v?.neutral.m).toBeUndefined();
+    }
+    const other = paintFixture(
+      { rest: { borderColor: '#fff' }, pressed: { borderColor: '#fff0' } },
+      {
+        context: 'onSubtle',
+        tone: 'high',
+        semantic: 'primary'
+      }
+    );
+    expect(other.palettes['brand.dark'].frameOmissions).toEqual({
+      s: { primary: { h: { pressed: true } } }
+    });
+  });
+
+  it('keeps specific Rest side paint when a state only clears the shorthand', () => {
+    const output = paintFixture({
+      rest: { borderColor: '#ffffff1a', borderBottomColor: '#ffffff80' },
+      pressed: { borderColor: '#ffffff00' },
+      'selected:rest': { borderColor: '#00000000' }
+    });
+    expect(Object.values(output.palettes).every((group) => !group.frameOmissions)).toBe(true);
+    const allSides = paintFixture({
+      rest: { borderColor: '#ffffff1a', borderBottomColor: '#ffffff80' },
+      pressed: { borderColor: '#ffffff00', borderBottomColor: '#00000000' },
+      'selected:rest': { borderColor: '#00000000', borderBottomColor: '#ffffff00' }
+    });
+    expect(allSides.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+      pressed: true,
+      selected: true
+    });
+  });
+
+  it.each([
+    'hover',
+    'focus'
+  ])('retains the frame when %s side paint can persist during Pressed', (interaction) => {
+    const output = paintFixture({
+      rest: { borderColor: '#ffffff1a' },
+      [interaction]: { borderBottomColor: '#fff' },
+      pressed: { borderColor: '#ffffff00' }
+    });
+    expect(Object.values(output.palettes).every((group) => !group.frameOmissions)).toBe(true);
+
+    const reset = paintFixture({
+      rest: { borderColor: '#ffffff1a' },
+      [interaction]: { borderBottomColor: '#fff' },
+      pressed: { borderColor: '#ffffff00', borderBottomColor: '#fff0' }
+    });
+    expect(reset.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+      pressed: true
+    });
+  });
+
+  it('checks a press without Focus even when Focus clears Hover side paint', () => {
+    const output = paintFixture({
+      rest: { borderColor: '#ffffff1a' },
+      hover: { borderBottomColor: '#fff' },
+      focus: { borderBottomColor: '#fff0' },
+      pressed: { borderColor: '#ffffff00' }
+    });
+    expect(Object.values(output.palettes).every((group) => !group.frameOmissions)).toBe(true);
+  });
+
+  it.each([
+    '#ffffff01',
+    'var(--border)',
+    'color-mix(in srgb, #fff 0%, transparent)',
+    '{"type":"linear"}'
+  ])('does not infer omission from a nontransparent or unresolved state paint (%s)', (value) => {
+    const output = paintFixture({
+      rest: { borderColor: '#ffffff1a' },
+      pressed: { borderColor: value },
+      'selected:rest': { borderColor: value }
+    });
+    expect(Object.values(output.palettes).every((group) => !group.frameOmissions)).toBe(true);
+  });
+
+  it('requires consistent Selected substates and accounts for base interaction deltas', () => {
+    for (const declarations of [
+      { hover: { borderColor: '#fff' } },
+      { 'selected:hover': { borderColor: '#fff' } },
+      { 'selected:pressed': { borderBottomColor: '#fff' } },
+      { 'selected:focus': { borderLeftColor: 'var(--border)' } }
+    ]) {
+      const output = paintFixture({
+        rest: { borderColor: '#ffffff1a' },
+        pressed: { borderColor: '#ffffff00' },
+        'selected:rest': { borderColor: '#00000000' },
+        ...declarations
+      });
+      expect(output.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+        pressed: true
+      });
+    }
+    const reset = paintFixture({
+      rest: { borderColor: '#ffffff1a' },
+      hover: { borderColor: '#fff' },
+      'selected:rest': { borderColor: '#00000000' },
+      'selected:hover': { borderColor: '#00000000' }
+    });
+    expect(reset.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+      selected: true
+    });
+  });
+
+  it('omits metadata for missing state deltas or a perimeter already transparent at Rest', () => {
+    for (const authored of [
+      { rest: { borderColor: '#ffffff1a' } },
+      {
+        rest: { borderColor: '#ffffff00' },
+        pressed: { borderColor: '#0000' },
+        'selected:rest': { borderColor: '#00000000' }
+      },
+      { rest: { borderColor: 'var(--rest)' }, pressed: { borderColor: '#0000' } }
+    ]) {
+      const output = paintFixture(authored);
+      expect(Object.values(output.palettes).every((group) => !group.frameOmissions)).toBe(true);
+    }
   });
 
   it('publishes optional Group recipes through the ordinary component artifact', () => {
@@ -224,6 +401,18 @@ describe('Button Group class projection', () => {
     );
     compileDensityClassMaps(output.core, resolveSchemaDensityMaps(schema));
     if (_name === 'Fluent') {
+      for (const segment of ['default', 'teams']) {
+        const palette = output.palettes[`${segment}.light`].button as ButtonMap;
+        for (const intent of ['primary', 'neutral', 'destructive', 'positive']) {
+          expect(palette.group?.frameOmissions?.v?.[intent]?.m).toEqual({
+            pressed: true,
+            selected: true
+          });
+          expect(palette.group?.frameOmissions?.s?.[intent]?.m).toBeUndefined();
+          const dark = output.palettes[`${segment}.dark`].button as ButtonMap;
+          expect(dark.group?.frameOmissions?.v?.[intent]?.m).toBeUndefined();
+        }
+      }
       expect(core.group?.frame?.s?.a).toBeTruthy();
       for (const radius of ['rr', 'rp', 'rs'] as const) {
         if (core.e1[radius]?.a) expect(core.group?.frame?.[radius]?.a).toBe(core.e1[radius]?.a);

@@ -3,7 +3,188 @@
 This file records source evidence and color decisions for the Button currently authored in
 `packages/presets/src/presets/fluent-2-microsoft/components/button.schema.ts`.
 
-## Current Low contour adaptation — 2026-09-19
+## Canonical Light onVivid hierarchy — 2026-10-31
+
+Status: **Kiskadee extension**, refined through user review of the Surface contexts comparison.
+The system-intent scope is Light/onVivid and all four intents in both Microsoft and Teams.
+Portable brands inherit the same Light formula within their existing Microsoft/default pack
+coverage; its three default theme palettes remain the complete published pack set. No Teams
+BrandPack palette is added or implied.
+
+High, all onSubtle recipes, Dark/Darker, geometry, effects, focus, Select and TextField retain
+their existing behavior.
+
+The surface-hierarchy clarification requires a real opaque Low surface, not merely a transparent
+paint that happens to look equal over the reference Card. Low Rest resolves to the preset's
+canonical Primary Light surface, the same existing role used by `Card primary/highest` in this
+example: Microsoft Blue `#0064b4` or Teams Purple `#5053b2`. No new color or global surface role
+is introduced. This deliberately matches the canonical Primary host; it does not promise equality
+to every arbitrary ancestor marked onVivid.
+
+Medium Pressed/Selected were initially tried with that same opaque canonical base. The user then
+approved a Black10% overlay instead, to darken the actual supporting surface without forcing a
+fixed Blue/Purple fill. This is an intentional component-local translucency exception permitted
+by the advisory [surface and contour guidance](../../../definitions/surface-and-contour-composition.md),
+not a new global requirement. Medium Rest remains White14% and Hover remains White10%.
+
+A further user-approved Medium Light/onVivid refinement makes the Pressed/Selected contour
+transparent while preserving the Black10% surface. Selected Hover explicitly retains the same
+transparent contour instead of restoring the base Hover border. Rest/Hover retain the White10%
+contour, Pending retains its 6% treatment and Disabled retains 7%. Only paint changes: border
+width and its padding compensation remain, so the Button's dimensions do not change.
+
+With updated artifacts, the Group also honors this transparent Pressed/Selected contour for the
+affected member's perimeter while keeping the Rest frame on its neighbors. This is driven by the
+published contour coverage, without duplicating the preset recipe, adding a public API or
+authoring colors in Sass.
+Unavailable states and artifacts without that coverage retain their previous Group behavior.
+
+The visual review also calibrates the state hierarchy and lower contour without changing layout:
+
+| Light/onVivid emphasis | Rest | Hover | Pressed and Selected | Surface publication |
+| --- | --- | --- | --- | --- |
+| High | Existing recipe | Existing recipe | Existing recipe | Unchanged |
+| Medium | White 14% overlay | White 10% overlay | Black 10% overlay | Pressed/Selected deliberately retain translucent paint |
+| Low | Canonical Primary vivid | White 8% composed over the canonical base | White 12% composed over the canonical base | All three fills are opaque |
+| Lowest | Transparent | White 8% overlay | White 12% overlay | Retains translucent interaction paint and no contour |
+
+Low's interaction composites are resolved by preset authorship/build, not by measuring or reading
+browser backgrounds. The dedicated `lightBaseSurface` input uses strict `exact card.primary L50`
+with `component.card` evidence; white overlay inputs use the existing physical light cap. The
+separate existing `canonicalSurface` input for Dark/Darker Medium calibration is unchanged.
+Medium's Pressed/Selected publication uses strict `cap primitive.black.v1 dark 10%`; Selected
+Hover retains the same overlay instead of reverting to White10% Hover. It does not use the
+canonical-base input or a zero-alpha reset. Lowest uses the existing Neutral inverse foreground
+for contrast, and the inherited Lowest geometry remains unchanged. Low Disabled also publishes an
+opaque composite of its existing White4% treatment over that same canonical base, preserving
+its appearance on the reference Card. Pending retains its existing visibility rules.
+
+Low keeps its 30% White perimeter. Its Rest lower contour rises from 38% to 45% White, while
+Neutral Low's Hover lower contour changes from 100% to 50% White. All Light Low intents use
+that same 50% Hover lower contour. This is a Button-local
+override: the shared helper and TextField calibration are not changed. These percentages are
+user-approved Kiskadee visual calibration, not official Fluent token values.
+
+Selected remains equal to Pressed. Medium, Low and Lowest author an explicit Light/onVivid
+Selected Hover reset so base Hover cannot weaken or replace the selected surface. These sparse
+Rest-equal compound overrides preserve persistent selection; no general Focus surface delta is
+added. The earlier transparent Low approach and subsequent 3%-to-12% calibration are retained
+below as historical steps, superseded only in the Light scope described here.
+
+## Context-relative Low on vivid surfaces — 2026-10-31
+
+Status: **Kiskadee extension**, an earlier user-reviewed step. The subsequent
+[canonical Light hierarchy](#canonical-light-onvivid-hierarchy--2026-10-31) supersedes its
+Light surface and contour decisions. The Dark/Darker restoration remains active.
+The user compared the Button emphasis scale in the Showcase Surface contexts example. Low must remain close to its surrounding surface;
+applying the onSubtle near-white fill to onVivid made it visually stronger than intended.
+
+The correction is limited to Button Low in `onVivid`, across both segments, all three themes,
+all intents, horizontal/Stacked layouts and portable brand projections. Low `onSubtle` retains
+the approved solid Card Neutral Low fill L1/D6/D2 and its existing content/interaction recipes.
+Select Outline remains solid in both contexts; its emphasis review is separate.
+
+| Consumed context | Low Rest surface | Descendant context | Content and indicator reference |
+| --- | --- | --- | --- |
+| `onSubtle` | Solid Card Neutral Low, unchanged | `onSubtle` for system intents | Existing own-surface foregrounds and inside-indicator recipe |
+| `onVivid` | Existing physical light cap at zero alpha | `inherit` | Existing Neutral inverse foreground, onVivid contour and inside-indicator recipe |
+
+The reference example in `packages/showcase/app/button/Button.tsx` uses a `Card` with
+`intent="primary"` and `emphasis="highest"` for its vivid host. That Card resolves
+`exact card.primary L50/D35/D18` (`component.card`) in Light/Dark/Darker, respectively.
+Button Low does not copy those colors: its transparent Rest lets the actual host remain visible,
+so it also matches other vivid host colors. `onVivid` communicates a contrast context, not the
+ancestor's exact color. No CSS color inspection, hardcoded Primary surface or new API is needed.
+
+Low onVivid restores its previous context-specific Hover/Pressed overlays, Selected-equals-Pressed
+surface and contour. Its label and icon instead use the existing
+`neutral.standard.light.onVivid.high.rest` inverse foreground for every intent. The prior
+chromatic Deep foreground reached only approximately 4.0–4.4:1 over the Light Hover/Pressed
+overlays; the shared neutral inverse keeps content legible without introducing a new color.
+Portable brands resolve the same existing physical light cap. Pending retains 70% content
+visibility and Disabled retains the original 40% inverse foreground treatment.
+
+A further user-approved visual calibration on 2026-10-31 changes only Light/onVivid Low's
+Pressed fill from 3% to 12% White; Selected uses the same 12% fill because it reuses Pressed.
+Hover remains 8% White for an unselected Button. Selected Hover explicitly retains the 12%
+Selected fill, resetting the weaker base Hover during that compound state. This is a **Kiskadee extension**, not an official Fluent token value;
+Rest, borders, content, Pending/Disabled, Dark/Darker and the rest of the recipe are unchanged.
+
+The inside indicator again contrasts with that vivid surface; the outside indicator is unchanged.
+No Rest-equal surface rule is added merely to complete the state matrix, and focus remains
+independently indicated. The FRF input for transparent Rest is the existing
+`cap primitive.black.v1 light 0%`; the inverse foreground resolves the existing light cap at
+full opacity. Existing cap/reference locators supply the other onVivid paints. No tonal asset,
+global profile, Card recipe, geometry or other Button emphasis changes.
+
+This supersedes only the onVivid portion of the [2026-10-30 decision](#solid-low-control-surface--2026-10-30).
+The earlier onSubtle approval remains active. The source appearances and their official/adapted
+classification below remain evidence; this context-relative correction is a Kiskadee decision.
+
+## Solid Low control surface — 2026-10-30
+
+Status: **Kiskadee extension**, explicitly approved by the user on 2026-10-30. At that stage,
+Button Low received its own solid neutral surface, matching Card Neutral Low rather than
+exposing its parent's fill, in both contexts. This decision remains active for `onSubtle`;
+its onVivid portion is superseded by the [2026-10-31 correction](#context-relative-low-on-vivid-surfaces--2026-10-31).
+The original scope covered all four intents, both segments, horizontal/Stacked layouts and
+portable BrandPack projections. The border remained part of Low; other emphases and Button
+geometry were unchanged.
+
+The inspected upstream appearances remain distinct:
+
+| Source | Inspected paint | Status |
+| --- | --- | --- |
+| Figma Secondary Light `11045:3981` | Opaque `Neutral/Background/1/Rest` | Official exact source evidence |
+| Figma Outline Light `11045:4016` | `Neutral/Background/Transparent/Rest`, zero opacity | Official exact source evidence |
+| Fluent React default/Secondary | Solid `colorNeutralBackground1`, Light `#ffffff`, Dark `#292929` | Official exact source evidence |
+| Fluent React Outline | `colorTransparentBackground` | Official exact source evidence |
+
+The Figma instances belong to file `qdtPPQysSX0kHGGcDpEXzw` linked below. The
+[official Button styles](https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts)
+confirm that Secondary and Outline do not share the same Rest surface. Kiskadee Low intentionally
+combines a solid calibrated neutral fill with its existing contour; it is not a literal mapping of
+the upstream Outline appearance.
+
+| Theme | Strict locator | Approved primitive | Published Rest fill |
+| --- | --- | --- | --- |
+| Light | `exact card.neutral L1`, evidence `component.card` | `primitive.black.v1` | `#fbfbfb` |
+| Dark | `exact card.neutral D6`, evidence `component.card` | `primitive.black.v1` | `#202020` |
+| Darker | `exact card.neutral D2`, evidence `component.card` | `primitive.black.v1` | `#0e0e0e` |
+
+The source chain is the approved [achromatic Card calibration](neutral-surface-calibration.md#solid-outlined-controls--2026-10-30)
+and the unchanged `colors/n.black.v1.ts` asset. No new primitive, tonal sample or literal schema
+color is introduced. These are the existing Card Low positions, not an exact reproduction of
+`colorNeutralBackground1`.
+
+The 2026-10-30 implementation used the onSubtle interaction, contour and foreground recipe in
+both ambient contexts. These details now apply only to Low `onSubtle`, following the correction above.
+Hover/Pressed remain opaque, and Selected continues to use Pressed. Disabled explicitly restores
+the solid Rest fill, suppressing any active Hover/Pressed while its foreground and contour retain
+their Disabled treatment. Internal foregrounds use Neutral Standard or the intent's Deep profile
+on their own surface. System-intent Low publishes `onSubtle` for descendants; the inside indicator
+follows this solid surface, while the outside indicator continues to contrast with the ambient
+context. Portable BrandPack paint does not yet carry this descendant-context handoff; see Open Gaps.
+For chromatic Low in Dark/Darker, Pressed and Selected switch the label/icon foreground from
+Deep to the existing `<family>.standard.<theme>.onSubtle.high.rest` coordinate. These are explicit
+parent-state deltas: the brighter standard foreground maintains contrast over Low's opaque
+Pressed/Selected fill, where the previous Deep color measured approximately 3.8–4.1:1. Rest,
+Hover and Pending keep Deep; Neutral is unchanged. This is a local Button Low contrast adaptation,
+not a change to the shared foreground profiles or the selected-surface rule. Portable brands use
+their existing dark-track `vivid + 8` family reference for the corresponding Low Pressed/Selected
+foreground contrast adaptation; no additional brand palette or runtime color calculation is added.
+
+If the portable Brand foreground offset leaves the public tonal grid, capped brands use the
+existing physical light cap instead; no silent tonal clamping is performed.
+
+Other emphases retain their current context and state recipes. TextField, Select Underline and
+Select Borderless are outside this change.
+
+This decision originally superseded the transparent Low Rest and ambient onVivid Low recipes
+below. The onVivid recipe was restored on 2026-10-31; only the onSubtle solid surface remains.
+The Select counterpart is documented in [select.md](select.md#solid-outline-surface--2026-10-30).
+
+## Historical Low contour adaptation — 2026-09-19
 
 Status: Kiskadee extension approved by the user, based on the Windows 11 Settings
 [Set up button screenshot](../evidence/button/windows-11-settings-2026-09-19.png).
@@ -495,7 +676,8 @@ of introducing a new literal source color:
 | Optional Button shadow | Collapses to zero |
 | `Button.Progress` | Keeps the independent Progress palette |
 
-Low and Lowest surfaces are transparent at Rest, so they omit a redundant pending surface value.
+Low and Lowest omit a separate Pending surface delta and retain their respective Rest surface,
+whether it is opaque or transparent in the active context.
 Medium and High emit the reduced surface value. The same multiplicative
 rule applies to `onSubtle` and `onVivid`; for example, an already translucent on-vivid Medium
 surface becomes quieter rather than being replaced by a more opaque absolute alpha.
@@ -591,54 +773,36 @@ light.
 
 ### On-vivid Medium, Low, And Lowest
 
-The remaining on-vivid emphases extend Fluent's inverted/on-brand token grammar while preserving
-the selected Button intent. Light Medium and Low use shared neutral White surfaces across all
-intents; their identity comes from the role-aware foreground instead of a second colored surface.
+The remaining onVivid emphases are **Kiskadee extensions** of Fluent's inverted/on-brand grammar.
+The active Light mapping is the [canonical hierarchy](#canonical-light-onvivid-hierarchy--2026-10-31),
+refined by the user after reviewing the Surface contexts example. Low's fixed Primary base is an
+existing preset role, shared by the Microsoft and Teams identity mappings.
 
-The adopted Kiskadee Light mapping restores Medium's earlier `14%/10%/7%`
-Rest/Hover/Pressed fill sequence and retains a translucent border. Low keeps the border language
-from the Windows-informed experiment but removes its Rest fill, restoring an outline-only identity.
-The 2026-08-29 Windows 11 Quick Settings observation calibrates the physical control grammar, while
-the stronger Medium fill and transparent Low Rest are Kiskadee hierarchy decisions.
+| Light emphasis | Rest | Hover | Pressed | Selected | Contour |
+| --- | --- | --- | --- | --- | --- |
+| Medium | White 14% overlay | White 10% overlay | Black 10% overlay | Same as Pressed | White 10% Rest/Hover; transparent Pressed/Selected; Pending6%/Disabled7% |
+| Low | Solid canonical Primary | Opaque canonical Primary + White 8% | Opaque canonical Primary + White 12% | Same as Pressed | White 30% perimeter; lower Rest45%, Neutral Hover50%; 7% Pressed/Selected |
+| Lowest | Transparent | White 8% overlay | White 12% overlay | Same as Pressed | Transparent |
 
-WinUI's `ControlElevationBorderBrush` is a vertical gradient assembled from the default and
-secondary control strokes. Button's current schema exposes one solid border color, so Kiskadee
-adapts the elevation edge to a White stroke. Medium uses `10%` at Rest/Hover; Low restores its
-original `30%` Rest/Hover outline so the transparent control remains legible against the vivid
-surface. Both currently use `7%` at Pressed/Selected/Disabled. This is a Kiskadee adaptation, not a
-claim that Fluent Web publishes either Button appearance. Dark and Darker retain their previous
-role-aware Medium and opaque outlined Low.
+Low Rest is opaque even when it visually matches the surrounding canonical Card. Its Hover and
+Pressed/Selected colors are opaque preset composites. Lowest remains the presentation whose Rest
+has no own fill or contour and whose interaction paint remains translucent. Medium's
+Pressed/Selected state deliberately uses a Black10% overlay to darken the actual supporting
+surface, replacing the earlier opaque canonical-base trial. High is unchanged. No new semantic emphasis or public API is introduced by these local recipes.
 
-| Light emphasis | Rest | Hover | Pressed | Selected | Foreground | Border |
-| --- | --- | --- | --- | --- | --- | --- |
-| Medium | White 14% | White 10% | White 7% | same as Pressed | global family Deep, Light `onVivid.high` | White 10% Rest/Hover; 7% Pressed/Selected |
-| Low | Transparent | White 8% | White 3% | same as Pressed | global family Deep, Light `onVivid.high` | White 30% Rest/Hover; 7% Pressed/Selected |
-| Lowest | Transparent | Black 10% | Black 30% | same as Pressed | global family Deep, Light `onVivid.high` | Transparent |
+WinUI's `ControlElevationBorderBrush` remains the source reference for a vertical contour rhythm;
+Kiskadee's single-color contour channels and the current 30/45/50% Low calibration are adaptations.
+The original Light Low 38% lower edge and Neutral 100% Hover remain historical reference values,
+not the active Button recipe. TextField still consumes its own unchanged shared-helper recipe.
 
-The Rest hierarchy is now categorical: Medium is filled and bordered, Low is transparent and
-bordered, and Lowest has neither. Low's transferred Hover, Pressed, Selected, and Disabled states
-remain provisional and are not additional WinUI source claims.
-
-Focus has no palette delta and inherits Rest while the global Button focus ring remains the
-accessibility affordance. Medium Hover omits a border delta and inherits its `10%` Rest stroke.
-Low Hover does the same. Selected stays explicit for both fill and stroke because it is persistent
-and intentionally reuses Pressed. Pending retains 60% of the Rest fill and border alpha. In Light,
-High, Medium, and Low disabled states use White at 4% for the background; Medium and Low retain a
-White `7%` border in the current mapping.
-
-Dark and Darker retain White at 10% for disabled backgrounds. All three themes use White at 40%
-for disabled content. Lowest remains transparent with White at 40% content. Surface and border
-percentages resolve through `button.neutral`; content resolves through global foreground
-coordinates. Both paths finish as HEX before publication, so no platform performs alpha or
-contrast calculations.
-
-Light Medium resolves its fill and stroke from `button.neutral` L0, using
-`14%/10%/7%` Rest/Hover/Pressed fill. Low resolves a transparent Rest plus `8%/3%` White
-Hover/Pressed fills from the same neutral family. Medium uses a `10%` Rest/Hover stroke, while Low
-uses `30%`; both currently use `7%` at Pressed/Selected/Disabled. Selected intentionally equals
-Pressed. Medium, Low, and Lowest deliberately point to the same chromatic Deep `high` coordinate:
-Blue `#d2e8ff`, Neutral Standard white `#ffffff`, Cranberry `#ffdbd7`, or Green `#d4edd2`. The chromatic families
-use their Light-track `subtle +2` reference; Neutral selects Standard High, the physical-white cap. Neither fill nor border participates in intent differentiation.
+Focus has no component-owned surface delta; the global Button focus ring remains independent.
+Selected equals Pressed, and Selected Hover explicitly retains that selected fill in Medium,
+Low and Lowest. These overrides are intentional compound-state resets, not a completed state
+matrix. Pending retains its existing visibility treatment. Low's existing Light Disabled White4%
+paint is now composed opaquely over the canonical base; Medium retains its White4% overlay.
+Disabled inverse content remains 40%. Medium keeps its existing 6% Pending and 7% Disabled
+contours, but its Pressed/Selected/Selected Hover contour is transparent. Low retains its
+existing 7% Pressed/Selected/Disabled contour treatment. Dark/Darker terminal recipes are unchanged. Lowest retains no contour, including during interaction.
 
 Dark and Darker retain the role-aware Medium candidate while using the same darker state
 progression: `subtle +8/+6/+4` sources are alpha-calibrated against the canonical Primary vivid
@@ -707,8 +871,12 @@ The selected coordinate is intentionally independent from Button emphasis:
   theme; Neutral uses Standard Medium (the previous Standard Low);
 - `onVivid` High uses each family's Standard Light `onSubtle.high` coordinates and their Hover,
   Pressed, and Pending states;
-- chromatic `onVivid` Medium, Low, and Lowest all use the family's Deep Light
-  `onVivid.high`; Neutral uses the equivalent neutral coordinate;
+- chromatic `onVivid` Medium and Dark/Darker Lowest use the family's Deep Light `onVivid.high`;
+  Neutral uses the equivalent neutral coordinate;
+- Light `onVivid` Lowest uses the existing Neutral inverse foreground after the canonical hierarchy
+  refinement, keeping contrast over its White8%/12% interaction overlays;
+- since 2026-10-31, `onVivid` Low uses `neutral.standard.light.onVivid.high` for every
+  intent, preserving the existing Pending/Disabled visibility factors for contrast over its overlays;
 - disabled labels use the preserved Neutral Standard Medium/Lowest disabled coordinates;
 - High Selected points to the global Pressed coordinate; Focus remains absent and inherits Rest.
 
@@ -828,6 +996,12 @@ dominant, while moving to L14/D50 was too light. The perceptual targets are a Ki
 not upstream Fluent tokens.
 
 ## Color And Token Provenance
+
+The [2026-10-30 solid Low surface](#solid-low-control-surface--2026-10-30) remains active in
+`onSubtle`. The current [Light/onVivid hierarchy](#canonical-light-onvivid-hierarchy--2026-10-31)
+uses the existing canonical Primary base and physical light-cap composites, while Dark/Darker
+retain their context-specific provenance. Historical exact/alpha mappings below preserve their
+source chain; the current user-calibrated decisions take precedence where explicitly scoped.
 
 The complete Button recipe is FRF. Medium and High surfaces use `subtle`/`vivid` references;
 source-calibrated Low states, foreground stops, and disabled stops use the closed
@@ -1149,15 +1323,15 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
 
 - `BUTTON_DEFAULT_TONAL_RECIPE` remains the source of Default Button surface and border positions.
   Canonical text foregrounds are selected separately from `global.foregrounds`.
-- `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. In Light, Medium uses the restored
-  `14%/10%/7%` White fill sequence while Low keeps a transparent Rest and the provisional `8%/3%`
-  Hover/Pressed fills. Medium uses a neutral L0 White stroke at `10%` Rest/Hover. Low splits
-  the White contour into `borderColor` at `30%` and `borderBottomColor` at `38%` for Rest/Hover;
-  both channels, like Medium, use `7%` at Pressed/Selected/Disabled. Dark and Darker retain the
-  role-aware Medium surface calibration; Low uses White at `85%` for the perimeter and `100%`
-  for the bottom. Lowest keeps its prior transparent
-  surface and context-relative interaction overlays. Intent differentiation in canonical text now
-  comes from global family Deep coordinates rather than this surface recipe.
+- `BUTTON_ON_VIVID_RECIPE` owns the on-strong-surface formula. The active Light recipe uses
+  Medium White14%/10% Rest/Hover and Black10% Pressed/Selected overlays. Low has a solid
+  canonical Primary Rest and opaque White8%/12% interaction composites; Lowest retains transparent
+  Rest and White8%/12% overlays. Low's perimeter is White30%, its lower Rest contour is White45%,
+  and its local Neutral Hover lower contour is White50%. Medium Pressed/Selected/Selected Hover
+  contours are transparent, without removing border width; Medium Pending6%/Disabled7% and
+  Low's existing contour recipes are preserved. Dark/Darker retain their existing Medium, Low and Lowest recipes. Canonical
+  text uses global coordinates; Light onVivid Low/Lowest use the existing Neutral inverse
+  foreground without adding a new profile.
 - `createButtonIntent()` applies that recipe to `button.primary`, `button.neutral`,
   `button.destructive`, or `button.positive`; it does not calculate foreground contrast.
 - `createOnVividButtonIntent()` resolves the same four Layer 3 roles through the Light physical
@@ -1183,10 +1357,11 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
 - `components.button.options.groupDivider` defaults to `true`, so connected Button groups render
   `e6` at each internal seam. `disclosureDivider` defaults to `false`, preventing a single menu
   Button from visually implying two separately clickable actions.
-- Filled `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay: L100 absolute black
-  at 5% in Light and D100 absolute white at 5% in Dark/Darker. High, Medium, and Low use this
-  treatment; Lowest remains transparent. This is an explicit Kiskadee extension; the official
-  opaque mappings remain documented above.
+- In onSubtle, High/Medium `e1.boxColor.*.*.disabled` surfaces use the adaptive neutral overlay:
+  L100 absolute black at 5% in Light and D100 absolute white at 5% in Dark/Darker. Low retains its
+  solid Rest fill as an explicit terminal reset from 2026-10-30; Lowest remains transparent.
+  Low onVivid instead retains its existing context-specific Disabled overlay and content treatment.
+  This is an explicit Kiskadee extension; the official opaque mappings remain documented above.
 - `e2.textColor` and `e3.textColor` are authored exclusively with `fg()` and
   `fg.parentState()` coordinates. `e3` removes Pending from the shared map; no direct color remains
   in canonical Button text authoring.
@@ -1198,9 +1373,11 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
   edge in all four intents. In `onSubtle`, each channel's alpha is resolved against the canonical
   Neutral surface using Delta E OK targets: `0.06/0.13` (perimeter/bottom) in Light and
   `0.18/0.22` in Dark/Darker. Hover and Focus inherit Rest; both Disabled channels are transparent.
-  In Light `onVivid`, Medium uses the `10%/7%` control stroke; Low uses White at `30%/38%`
-  (perimeter/bottom) for Rest/Hover, with both channels at `7%` for Pressed/Selected/Disabled.
-  Dark/Darker `onVivid` Low uses White at `85%/100%`, with both Disabled channels transparent.
+  Medium retains its Light/onVivid White10% Rest/Hover contour and its Pending6%/Disabled7%
+  treatment; Pressed, Selected and Selected Hover use transparent contour paint. Low onSubtle
+  retains its solid neutral fill. Light Low onVivid uses its Button-local White45% lower Rest and Neutral
+  White50% lower Hover contour; it does not change the shared neutral-control helper.
+  Dark/Darker Low onVivid retain their existing context-specific white contours.
   Pending retains 60% of each channel's Rest alpha. Other emphases do not author side overrides;
   all Lowest borders remain transparent.
 - Official Fluent Button surfaces omit `focus` when Focus is visually identical to Rest. The base
@@ -1210,8 +1387,9 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
   focus ring. An explicit `focus` value is reserved for a documented component-owned visual delta.
 - Every emphasis and intent omits component-owned Focus palette deltas. The optional Button shadow
   also omits Focus; the external ring remains independent and Hover can coexist with it.
-- Only the documented Selected rest color is emitted. It equals Pressed by preset decision;
-  Selected hover and pressed substates are not inferred.
+- Selected Rest equals Pressed by preset decision. Light/onVivid Medium, Low and Lowest emit
+  explicit Selected Hover resets to preserve the selected fill against their base Hover recipe.
+  Other Selected hover and pressed substates are not inferred.
 - The optional Kiskadee Button shadow now selects the shared Fluent levels; its current mapping
   and source boundary are documented below.
 - `e6` contains only Rest. No duplicate or inferred Hover, Pressed, Focus, Selected, Pending, or
@@ -1237,18 +1415,23 @@ Dark/Darker/onVivid retain their recipes. No tonal assets or runtime behavior ch
   Fluent Primary Button appearance.
 - Destructive and Positive use official Fluent semantic color families, but all four Button
   emphasis appearances are Kiskadee extensions rather than official Fluent variants.
-- The Light `onVivid` Medium/Low stroke language is a Kiskadee extension calibrated from Windows 11
-  Quick Settings and official WinUI control resources. Medium's stronger fill, Low's transparent
-  Rest, and Low's stronger `30%` outline are Kiskadee semantic-hierarchy decisions. The product
-  observation defines physical surface grammar only; it does not assign an emphasis. All intents
-  receive the mapping through the shared Button formula.
+- The Light `onVivid` Medium stroke language is a Kiskadee extension calibrated from Windows 11
+  Quick Settings and official WinUI control resources. Low uses the solid neutral surface in
+  onSubtle, the solid canonical Primary surface in Light/onVivid, and its retained transparent
+  treatment in Dark/Darker onVivid. The product observation defines physical surface grammar;
+  the current state/contour calibration is a user-approved Kiskadee decision.
 
 ## Open Gaps
 
+- BrandPack artifacts transport CSS/class maps without `contentSurfaceContext`. Portable brands
+  inherit the Light formula within the existing Microsoft/default pack palettes only; Teams
+  BrandPack coverage remains absent. This refinement does not add a descendant-context handoff
+  or expand the pack's published palette set.
+
 - The Windows 11 Quick Settings observation calibrates only a physically Light translucent control
-  treatment. The transferred Low interaction and terminal states require separate review; the
-  adopted Rest hierarchy does not approve them automatically. Dark and Darker `onVivid` retain
-  their existing role-aware Medium and outlined Low candidates.
+  treatment. Dark and Darker `onVivid` Medium retain their existing role-aware candidates. Low's
+  context-relative onVivid recipe is a user-approved Kiskadee adaptation, not an additional
+  upstream Fluent appearance.
 
 - Revisit whether Outline, Subtle, and Transparent need separate structural capabilities instead
   of sharing `neutral.lowest`.

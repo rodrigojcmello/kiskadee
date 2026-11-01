@@ -356,7 +356,7 @@ describe('Fluent TextField canonical surfaces', () => {
       );
     }
   });
-  it('uses the low neutral Button contour and transparent surface for Outline', () => {
+  it('preserves its transparent Outline surface independently of the solid Low Button', () => {
     for (const segment of ['default', 'teams'] as const) {
       const fieldPaint =
         field.variants!.standard!.modes.outline!.elements.e3!.palettes![segment]!.light!.onSubtle;
@@ -365,7 +365,8 @@ describe('Fluent TextField canonical surfaces', () => {
       expect(fieldPaint.borderColor!.neutral!.medium!.rest).toEqual(
         buttonPaint.borderColor!.neutral!.low!.rest
       );
-      expect(fieldPaint.boxColor!.neutral!.medium!.rest).toEqual(
+      expect(fieldPaint.boxColor!.neutral!.medium!.rest).toBe('#ffffff00');
+      expect(fieldPaint.boxColor!.neutral!.medium!.rest).not.toEqual(
         buttonPaint.boxColor!.neutral!.low!.rest
       );
     }
@@ -468,16 +469,15 @@ it('publishes terminal visual states only under neutral', () => {
 });
 
 describe('Fluent TextField onVivid', () => {
-  it('matches Button low neutral contours without changing onSubtle', () => {
+  it('preserves transparent surfaces and light contours on vivid backgrounds', () => {
     const control = field.variants!.standard!.modes.outline!.elements.e3!;
     for (const segment of ['default', 'teams'] as const) {
       for (const theme of ['light', 'dark'] as const) {
         const paint = control.palettes![segment]![theme]!.onVivid!;
-        const button = schema.components.button!.elements!.e1!.palettes![segment]![theme]!.onVivid!;
-        expect(paint.borderColor!.neutral!.medium!.rest).toEqual(
-          button.borderColor!.neutral!.low!.rest
+        expect(paint.borderColor!.neutral!.medium!.rest).toBe(
+          theme === 'light' ? '#ffffff4d' : '#ffffffd9'
         );
-        expect(paint.boxColor!.neutral!.medium!.rest).toEqual(button.boxColor!.neutral!.low!.rest);
+        expect(paint.boxColor!.neutral!.medium!.rest).toBe('#ffffff00');
         expect(paint.textColor!.neutral!.medium!.rest).not.toEqual(
           control.palettes![segment]![theme]!.onSubtle.textColor!.neutral!.medium!.rest
         );
@@ -512,7 +512,7 @@ it('keeps external labels on vivid when floating labels use a filled surface', (
   expect(color(floating.e2)).not.toEqual(color(standard.e2));
 });
 
-it('shares neutral control hover fills and bottom contours across themes and contexts', () => {
+it('preserves the transparent-field hover and bottom contours across themes and contexts', () => {
   const fieldElements = field.variants!.standard!.modes.outline!.elements;
   for (const segment of ['default', 'teams'] as const) {
     for (const theme of ['light', 'dark'] as const) {
@@ -522,11 +522,24 @@ it('shares neutral control hover fills and bottom contours across themes and con
           fieldElements.e6!.palettes![segment]![theme]![context]!.boxColor!.neutral!.medium!;
         const button =
           schema.components.button!.elements!.e1!.palettes![segment]![theme]![context]!;
-        expect(fieldPaint.boxColor!.neutral!.medium!.hover).toEqual({
-          ref: button.boxColor!.neutral!.low!.hover
-        });
-        expect(button.borderBottomColor!.neutral!.low!.rest).toEqual(line.rest);
-        expect(line.hover).toEqual({ ref: button.borderBottomColor!.neutral!.low!.hover });
+        // Transparent fields retain their ambient overlays; solid Low Buttons use their own fill.
+        const hover =
+          context === 'onVivid'
+            ? theme === 'light'
+              ? '#ffffff14'
+              : '#0000001a'
+            : button.boxColor!.neutral!.low!.hover;
+        const bottom =
+          context === 'onVivid'
+            ? theme === 'light'
+              ? '#ffffff61'
+              : '#ffffffd9'
+            : button.borderBottomColor!.neutral!.low!.rest;
+        const bottomHover =
+          context === 'onVivid' ? '#ffffff' : button.borderBottomColor!.neutral!.low!.hover;
+        expect(fieldPaint.boxColor!.neutral!.medium!.hover).toEqual({ ref: hover });
+        expect(line.rest).toEqual(bottom);
+        expect(line.hover).toEqual({ ref: bottomHover });
         expect(fieldPaint.boxColor!.neutral!.medium!.focus).toEqual({
           ref: fieldPaint.boxColor!.neutral!.medium!.rest
         });

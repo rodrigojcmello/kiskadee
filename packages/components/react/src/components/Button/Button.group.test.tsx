@@ -8,6 +8,7 @@ import {
   type KiskadeeContextValue
 } from '../../shared/contexts/KiskadeeContext.tsx';
 import { Button } from './Button.tsx';
+import type { ButtonGroupClassesMap } from './Button.types.ts';
 
 const buttonClassMap = {
   e1: {
@@ -124,6 +125,7 @@ function createContext(options?: {
   withShadow?: boolean;
   withGroup?: boolean;
   withSelectionRest?: boolean;
+  frameOmissions?: ButtonGroupClassesMap['frameOmissions'];
 }): KiskadeeContextValue {
   const withDivider = options?.withDivider ?? true;
   const withProjection = options?.withProjection ?? true;
@@ -133,7 +135,10 @@ function createContext(options?: {
     classesMap: {
       button: {
         ...buttonClassMap,
-        group: options?.withGroup === false ? undefined : buttonClassMap.group,
+        group:
+          options?.withGroup === false
+            ? undefined
+            : { ...buttonClassMap.group, frameOmissions: options?.frameOmissions },
         selectionRest:
           options?.withSelectionRest === false ? undefined : buttonClassMap.selectionRest,
         e1: {
@@ -641,5 +646,123 @@ describe('Button.Group', () => {
     expect(warning).toHaveBeenCalledWith(
       '[Kiskadee] Button.Group shadow requires the active preset to publish a Button.e1 Rest shadow.'
     );
+  });
+});
+
+describe('Button Group published frame omissions', () => {
+  const frameOmissions: ButtonGroupClassesMap['frameOmissions'] = {
+    s: { neutral: { l: { pressed: true, selected: true } } }
+  };
+
+  it('keeps frame pieces stable while selection and projected press change on one member', () => {
+    const context = createContext({ groupDivider: true, frameOmissions });
+    const view = (selected: boolean, pressed = false) => (
+      <KiskadeeContext.Provider value={context}>
+        <Button.Group data-testid="group" emphasis="low">
+          <Button
+            toggle
+            controlState={selected}
+            selectionEmphasis="lowest"
+            status={pressed ? 'pressed' : undefined}
+          >
+            Member
+          </Button>
+          <Button>Neighbor</Button>
+        </Button.Group>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(view(false));
+    const member = screen.getByRole('button', { name: 'Member' });
+    const frame = member.nextElementSibling;
+    const classes = frame?.className;
+    expect(member.classList.contains('k-btn-e1m')).toBe(true);
+    expect(member.classList.contains('k-btn-e1n')).toBe(true);
+    expect(member.classList.contains('-s')).toBe(false);
+    expect(member.classList.contains('-n')).toBe(true);
+    result.rerender(view(true, true));
+    expect(screen.getByRole('button', { name: 'Member' })).toBe(member);
+    expect(member.getAttribute('aria-pressed')).toBe('true');
+    expect(member.classList.contains('-s')).toBe(true);
+    expect(member.classList.contains('-p')).toBe(true);
+    expect(member.nextElementSibling).toBe(frame);
+    expect(frame?.className).toBe(classes);
+    expect(frame?.getAttribute('aria-hidden')).toBe('true');
+    expect(member.style.gridColumn).toBe('1');
+    expect(
+      screen.getByRole('button', { name: 'Neighbor' }).getAttribute('aria-pressed')
+    ).toBeNull();
+    result.rerender(view(false));
+    expect(member.classList.contains('-s')).toBe(false);
+    expect(member.classList.contains('-p')).toBe(false);
+    expect(member.nextElementSibling).toBe(frame);
+  });
+
+  it.each([
+    { name: 'Disabled', props: { disabled: true } },
+    { name: 'Pending', props: { pending: true } },
+    { name: 'Locked', props: { interactionLocked: true } },
+    { name: 'ARIA disabled', props: { 'aria-disabled': true } },
+    { name: 'projected Disabled', props: { status: 'disabled' as const } },
+    { name: 'projected Pending', props: { status: 'pending' as const } }
+  ])('keeps the Rest frame when a selected member is $name', ({ props }) => {
+    renderWithContext(
+      <Button.Group emphasis="low">
+        <Button toggle controlState selectionEmphasis="lowest" {...props}>
+          Member
+        </Button>
+        <Button>Neighbor</Button>
+      </Button.Group>,
+      createContext({ groupDivider: true, frameOmissions })
+    );
+    const member = screen.getByRole('button', { name: 'Member' });
+    expect(member.getAttribute('aria-pressed')).toBe('true');
+    expect(member.classList.contains('k-btn-e1m')).toBe(false);
+    expect(member.classList.contains('k-btn-e1n')).toBe(false);
+    expect(member.nextElementSibling?.className).toContain('frame-neutral-low-rest');
+  });
+
+  it('resolves omission against the selected intent without changing the Group base frame', () => {
+    const context = createContext({
+      groupDivider: true,
+      frameOmissions: { s: { primary: { h: { selected: true } } } }
+    });
+    const view = (selectionIntent: 'primary' | 'neutral') => (
+      <KiskadeeContext.Provider value={context}>
+        <Button.Group emphasis="high" intent="neutral">
+          <Button toggle controlState selectionEmphasis="lowest" selectionIntent={selectionIntent}>
+            Member
+          </Button>
+          <Button>Neighbor</Button>
+        </Button.Group>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(view('primary'));
+    const member = screen.getByRole('button', { name: 'Member' });
+    const frame = member.nextElementSibling;
+    expect(member.classList.contains('k-btn-e1n')).toBe(true);
+    expect(member.classList.contains('k-btn-e1l')).toBe(false);
+    expect(member.className).toContain('member-primary-high');
+    expect(frame?.className).toContain('frame-neutral-high-rest');
+    result.rerender(view('neutral'));
+    expect(member.classList.contains('k-btn-e1n')).toBe(false);
+    expect(member.className).toContain('member-neutral-high');
+    expect(member.getAttribute('aria-pressed')).toBe('true');
+    expect(member.nextElementSibling).toBe(frame);
+  });
+
+  it('preserves shared Rest frames for older artifacts without omission metadata', () => {
+    renderWithContext(
+      <Button.Group emphasis="low">
+        <Button toggle controlState selectionEmphasis="lowest">
+          Member
+        </Button>
+        <Button>Neighbor</Button>
+      </Button.Group>,
+      createContext({ groupDivider: true })
+    );
+    const member = screen.getByRole('button', { name: 'Member' });
+    expect(member.classList.contains('k-btn-e1m')).toBe(false);
+    expect(member.classList.contains('k-btn-e1n')).toBe(false);
+    expect(member.nextElementSibling?.className).toContain('frame-neutral-low-rest');
   });
 });

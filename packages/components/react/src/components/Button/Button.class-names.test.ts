@@ -10,8 +10,66 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   resolveButtonClassNames,
   resolveButtonGroupFrameClassName,
+  resolveButtonGroupFrameOmissionClassName,
   supportsButtonStackedLayout
 } from './Button.class-names.ts';
+import type { ButtonGroupClassesMap } from './Button.types.ts';
+
+describe('Button Group authored frame omissions', () => {
+  const group: ButtonGroupClassesMap = {
+    frameOmissions: { v: { primary: { m: { pressed: true, selected: true } } } }
+  };
+  const coordinate = {
+    group,
+    intent: 'primary' as const,
+    emphasis: 'medium' as const,
+    surfaceContext: 'onVivid' as const,
+    selectedPaint: false,
+    available: true
+  };
+
+  it('uses only exact published palette coordinates and preserves old artifacts', () => {
+    expect(resolveButtonGroupFrameOmissionClassName(coordinate)).toBe('k-btn-e1m k-btn-e1n');
+    expect(resolveButtonGroupFrameOmissionClassName({ ...coordinate, group: {} })).toBeUndefined();
+    expect(
+      resolveButtonGroupFrameOmissionClassName({ ...coordinate, group: undefined })
+    ).toBeUndefined();
+    expect(
+      resolveButtonGroupFrameOmissionClassName({ ...coordinate, intent: 'neutral' })
+    ).toBeUndefined();
+    expect(
+      resolveButtonGroupFrameOmissionClassName({ ...coordinate, emphasis: 'low' })
+    ).toBeUndefined();
+    expect(
+      resolveButtonGroupFrameOmissionClassName({ ...coordinate, surfaceContext: 'onSubtle' })
+    ).toBeUndefined();
+  });
+
+  it('keeps unavailable controls on their shared Rest perimeter', () => {
+    expect(
+      resolveButtonGroupFrameOmissionClassName({ ...coordinate, available: false })
+    ).toBeUndefined();
+  });
+
+  it('does not use ordinary Pressed omission for an opaque Selected recipe', () => {
+    const pressedOnly: ButtonGroupClassesMap = {
+      frameOmissions: { v: { primary: { m: { pressed: true } } } }
+    };
+    expect(resolveButtonGroupFrameOmissionClassName({ ...coordinate, group: pressedOnly })).toBe(
+      'k-btn-e1m'
+    );
+    expect(
+      resolveButtonGroupFrameOmissionClassName({
+        ...coordinate,
+        group: pressedOnly,
+        selectedPaint: true
+      })
+    ).toBeUndefined();
+    expect(resolveButtonGroupFrameOmissionClassName({ ...coordinate, selectedPaint: true })).toBe(
+      'k-btn-e1m k-btn-e1n'
+    );
+  });
+});
 
 describe('Button Group Rest frame', () => {
   const frame: ClassNameByElementJSON = {

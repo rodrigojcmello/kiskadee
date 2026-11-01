@@ -1,5 +1,6 @@
 import {
   type HexColor,
+  KISKADEE_TONES,
   type KiskadeeTone,
   normalizeHexColor,
   primitive,
@@ -19,6 +20,7 @@ import {
 } from '../../../utils/presetColor.ts';
 import {
   absoluteCap,
+  exactColor,
   type Fluent2MicrosoftFamilyColorLocator,
   familyReferenceColor
 } from '../fluent-2-microsoft.color.ts';
@@ -131,23 +133,46 @@ function createThemeFormulas(
     brands.map((brand) => {
       const family = createBrandFamily(brand);
       const scale = FLUENT_BUTTON_DEFAULT_TONAL_RECIPE[theme].scale;
+      const standardForegroundAvailable =
+        KISKADEE_TONES.indexOf(brand.functionalReferences[scale].vivid.tone) + 8 <
+        KISKADEE_TONES.length;
+      const onSubtleIntent = createFluentButtonOnSubtleIntent({
+        theme,
+        family,
+        neutralButtonFamily,
+        neutralSurfaceColor,
+        lowSurface: c.resolve(
+          'default',
+          toThemeShortcut(scale),
+          exactColor(
+            'card.neutral',
+            theme === 'light' ? 1 : theme === 'dark' ? 6 : 2,
+            'component.card'
+          )
+        ),
+        highForeground: resolveContentForeground(scale, resolveVividContentPolarity(brand, scale)),
+        ...(theme !== 'light'
+          ? {
+              // Standard Dark uses Vivid +8; capped brands use the existing physical light cap.
+              lowPressedForeground: standardForegroundAvailable
+                ? family.resolve(scale, familyReferenceColor('vivid', 8))
+                : resolveContentForeground(scale, 'light')
+            }
+          : {})
+      });
       const formula =
         surfaceContext === 'onSubtle'
-          ? createFluentButtonOnSubtleIntent({
-              theme,
-              family,
-              neutralButtonFamily,
-              neutralSurfaceColor,
-              highForeground: resolveContentForeground(
-                scale,
-                resolveVividContentPolarity(brand, scale)
-              )
-            })
+          ? onSubtleIntent
           : createFluentButtonOnVividIntent({
               theme,
               family,
               neutralButtonFamily,
-              canonicalSurface: canonicalOnVividSurface
+              canonicalSurface: canonicalOnVividSurface,
+              lightBaseSurface: c.resolve(
+                'default',
+                'l',
+                exactColor('card.primary', 50, 'component.card')
+              )
             });
 
       return [`brand.${brand.id}`, formula];

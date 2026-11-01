@@ -28,6 +28,41 @@ source omit its branch. Migration of Tabs fixed width remains a future candidate
 active projection consumer. See
 [`structural-utility-projections.md`](./structural-utility-projections.md).
 
+## Connected Button frame paint coverage
+
+Button class maps may additionally publish `group.frameOmissions`, alongside the existing
+`group.frame`, `group.member` and `group.selectionRestMember` projections. This is derived paint
+coverage for a structural consumer, not a new preset option or color recipe:
+
+```text
+group.frameOmissions.<surface-context-bucket>.<intent>.<emphasis-bucket>
+  = { pressed?: true, selected?: true }
+```
+
+The optional map is palette-scoped, uses the same compact context/emphasis buckets as the color
+class maps, and is omitted when no eligible transition is authored. It carries no colors, raw
+Style Keys, class hashes, dimensions or runtime-detected CSS values. It does not participate in the
+scale-only `p` Registry or add CSS utilities.
+
+The shared JSON grammar declares `ButtonGroupClassMapJSON` and `ButtonGroupFrameOmissions` in
+Core. The Builder publishes that shape and React consumes it; neither redeclares the metadata.
+
+The Builder proves the relationship from resolved border paint: Rest must contain actual paint,
+and the effective target must clear all four sides. Specific side paint is conservatively retained
+until that side is explicitly overridden; clearing only a shorthand must not erase a known
+nontransparent side. Unresolved, gradient and parent-scope reference paints do not prove omission.
+Pressed coverage also requires simultaneous projected Hover and native/projected Focus to remain
+clear; native Hover itself is suspended during an active press. Selected coverage checks the same
+Pressed combinations plus its authored and inherited Hover and Focus recipes. The `pressed` flag
+describes the ordinary Pressed recipe; a consumer must preserve
+Selected-substate precedence instead of applying that flag blindly to a different selected recipe.
+
+The platform consumer resolves this coverage with the Button's effective paint intent, emphasis
+and consumed surface context. Its structural state selectors omit only that member's decorative
+frame segment and shared overlap strip, retaining border geometry, neighboring Rest frame segments,
+terminal-state precedence and independent focus. Older artifacts without this map keep their
+existing frame behavior. See the [connected Group contract](../../../components/react/docs/definitions/button/connected-groups.md).
+
 ## Optional brand packs
 
 Third-party brand colors are published outside the normal design-system artifacts:

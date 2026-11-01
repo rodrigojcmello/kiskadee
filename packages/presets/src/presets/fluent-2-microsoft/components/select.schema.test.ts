@@ -22,24 +22,60 @@ it('publishes independent Select elements across modes, themes and segments', ()
         for (const surface of ['onSubtle', 'onVivid'] as const) {
           expect(elements.e3!.palettes![segment]![theme]![surface]).toBeDefined();
           const field = schema.components.textField!.variants.standard!.modes[mode]!.elements;
-          expect(
-            paint(elements.e3!.palettes![segment]![theme]![surface]!.boxColor?.neutral)
-          ).toEqual(
-            paint(
-              field.e3!.palettes![segment]![theme]![surface]!.boxColor?.neutral &&
-                Object.fromEntries(
-                  Object.entries(
-                    field.e3!.palettes![segment]![theme]![surface]!.boxColor!.neutral!
-                  ).map(([k, v]) => [
-                    k,
-                    Object.fromEntries(Object.entries(v!).filter(([state]) => state !== 'readOnly'))
-                  ])
-                )
-            )
-          );
+          if (mode !== 'outline')
+            expect(
+              paint(elements.e3!.palettes![segment]![theme]![surface]!.boxColor?.neutral)
+            ).toEqual(
+              paint(
+                field.e3!.palettes![segment]![theme]![surface]!.boxColor?.neutral &&
+                  Object.fromEntries(
+                    Object.entries(
+                      field.e3!.palettes![segment]![theme]![surface]!.boxColor!.neutral!
+                    ).map(([k, v]) => [
+                      k,
+                      Object.fromEntries(
+                        Object.entries(v!).filter(([state]) => state !== 'readOnly')
+                      )
+                    ])
+                  )
+              )
+            );
           expect(elements.e3!.scales?.boxHeight).toEqual(field.e3!.scales?.boxHeight);
         }
   }
+});
+
+it('pairs solid Outline surfaces with their own interior colors in both ambient contexts', () => {
+  const elements = select.variants.standard.modes.outline!.elements;
+  const underline = select.variants.standard.modes.underline!.elements;
+  const field = schema.components.textField!.variants.standard!.modes.outline!.elements;
+  for (const segment of ['default', 'teams'] as const)
+    for (const theme of ['light', 'dark', 'darker'] as const) {
+      const expectedSurface =
+        schema.components.container!.elements!.e1!.palettes![segment]![theme]!.onSubtle!.boxColor!
+          .neutral!.low!.rest;
+      for (const context of ['onSubtle', 'onVivid'] as const) {
+        const background =
+          elements.e3!.palettes![segment]![theme]![context]!.boxColor!.neutral!.medium!;
+        expect(background.rest).toBe(expectedSurface);
+        for (const state of ['focus', 'pressed', 'disabled'] as const)
+          expect(background[state]).toBe(background.rest);
+        expect(background.hover).toBe(
+          paint(field.e3!.palettes![segment]![theme]!.onSubtle!.boxColor!.neutral!.medium!.hover)
+        );
+        expect(background.hover).not.toBe(background.rest);
+        expect(background.rest).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(background.hover).toMatch(/^#[0-9a-f]{6}$/i);
+        for (const external of ['e2', 'e10'] as const)
+          expect(elements[external]!.palettes![segment]![theme]![context]).toEqual(
+            underline[external]!.palettes![segment]![theme]![context]
+          );
+      }
+      for (const interior of ['e3', 'e4', 'e5', 'e6', 'e7', 'e8', 'e9', 'e11'] as const)
+        expect(elements[interior]!.palettes![segment]![theme]!.onVivid).toEqual(
+          elements[interior]!.palettes![segment]![theme]!.onSubtle
+        );
+    }
 });
 
 it('pairs disabled Borderless content with its own fill on vivid surfaces', () => {

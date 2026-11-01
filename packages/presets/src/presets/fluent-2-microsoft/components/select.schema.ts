@@ -1,5 +1,5 @@
 import type { Color, Schema, SelectElements, SelectMode } from '@kiskadee/core';
-import type { Fluent2MicrosoftColorResolver } from '../fluent-2-microsoft.color.ts';
+import { exactColor, type Fluent2MicrosoftColorResolver } from '../fluent-2-microsoft.color.ts';
 import {
   createFieldVisualRecipe,
   fieldTypography,
@@ -22,15 +22,28 @@ export function createFluent2MicrosoftSelectSchema({
     const r = createFieldVisualRecipe(c, theme, vivid);
     const borderless = mode === 'borderless';
     const outline = mode === 'outline';
-    const background = borderless ? r.borderlessSurface : r.transparent;
-    const foreground = borderless && vivid ? r.onSurfaceForeground : r.foreground;
+    const control = outline ? createFieldVisualRecipe(c, theme) : r;
+    const background = outline
+      ? c.resolve(
+          'default',
+          theme === 'light' ? 'l' : 'd',
+          exactColor(
+            'card.neutral',
+            theme === 'light' ? 1 : theme === 'dark' ? 6 : 2,
+            'component.card'
+          )
+        )
+      : borderless
+        ? r.borderlessSurface
+        : r.transparent;
+    const foreground = borderless && vivid ? r.onSurfaceForeground : control.foreground;
     const text = (color: Color, disabled = r.disabledText) =>
       r.palette({ textColor: neutral({ rest: color, disabled: ref(disabled) }) });
     const innerDisabled =
-      borderless && vivid ? r.neutral(theme === 'light' ? 16 : 35) : r.disabledText;
-    const stroke = borderless || !outline ? r.transparent : r.outlineStroke;
-    const bottom = outline ? r.outlineIndicator : borderless ? r.transparent : r.underline;
-    const bottomHover = outline ? r.outlineIndicatorHover : r.underlineHover;
+      borderless && vivid ? r.neutral(theme === 'light' ? 16 : 35) : control.disabledText;
+    const stroke = borderless || !outline ? r.transparent : control.outlineStroke;
+    const bottom = outline ? control.outlineIndicator : borderless ? r.transparent : r.underline;
+    const bottomHover = outline ? control.outlineIndicatorHover : r.underlineHover;
     const controlScales = {
       boxHeight: sizes(24, 32, 40),
       borderRadius: { rounded: mode === 'underline' ? 0 : 4, square: 0, pill: sizes(12, 16, 20) },
@@ -44,22 +57,26 @@ export function createFluent2MicrosoftSelectSchema({
         rest: background,
         ...(outline
           ? {
-              hover: r.neutralControl.hoverBackground,
+              hover: control.neutralControl.hoverBackground,
+              // Focus, Pressed and Disabled intentionally reset the simultaneous Hover surface.
               focus: background,
-              pressed: background
+              pressed: background,
+              disabled: background
             }
           : {}),
-        ...(mode === 'underline' || (borderless && vivid) ? {} : { disabled: r.transparent })
+        ...(outline || mode === 'underline' || (borderless && vivid)
+          ? {}
+          : { disabled: r.transparent })
       }),
       borderColor: neutral({
         rest: stroke,
-        focus: r.brand,
-        disabled: borderless ? r.transparent : r.disabledStroke
+        focus: control.brand,
+        disabled: borderless ? r.transparent : control.disabledStroke
       }),
       borderBottomColor: neutral({
         rest: bottom,
         ...(!borderless ? { hover: bottomHover, focus: bottom, pressed: bottom } : {}),
-        disabled: borderless ? r.transparent : r.disabledStroke
+        disabled: borderless ? r.transparent : control.disabledStroke
       })
     });
     const innerScales = {
@@ -77,7 +94,7 @@ export function createFluent2MicrosoftSelectSchema({
       palettes: r.palette({
         boxColor: neutral({
           rest: r.transparent,
-          hover: r.neutralControl.hoverBackground,
+          hover: control.neutralControl.hoverBackground,
           disabled: r.transparent
         }),
         textColor: neutral({ rest: foreground, disabled: innerDisabled })
@@ -109,7 +126,7 @@ export function createFluent2MicrosoftSelectSchema({
           boxColor: neutral({ rest: r.transparent }),
           borderColor: neutral({
             rest: r.transparent,
-            focus: r.brand,
+            focus: control.brand,
             disabled: ref(r.transparent)
           })
         })
@@ -127,9 +144,9 @@ export function createFluent2MicrosoftSelectSchema({
           boxColor: neutral({
             rest: bottom,
             ...(!borderless ? { hover: ref(bottomHover) } : {}),
-            focus: ref(r.brand),
-            pressed: ref(r.brand),
-            disabled: ref(borderless ? r.transparent : r.disabledStroke)
+            focus: ref(control.brand),
+            pressed: ref(control.brand),
+            disabled: ref(borderless ? r.transparent : control.disabledStroke)
           })
         })
       },
@@ -145,7 +162,7 @@ export function createFluent2MicrosoftSelectSchema({
         name: 'placeholder',
         typography: fieldTypography,
         palettes: text(
-          `color-mix(in srgb, ${borderless && vivid ? r.onSurfaceForeground : r.placeholder} 62%, transparent)`,
+          `color-mix(in srgb, ${borderless && vivid ? r.onSurfaceForeground : control.placeholder} 62%, transparent)`,
           `color-mix(in srgb, ${innerDisabled} 62%, transparent)`
         )
       },

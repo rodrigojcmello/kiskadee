@@ -48,7 +48,8 @@ With a compatible divider recipe, the group paints one logical outer frame. The 
 `e1` border geometry, the effective group radius, and only the border colors from the group's base
 Rest recipe, including independently authored sides. Intent, emphasis, theme, and surface context
 still select the frame's appearance. Hover and Pressed do not recolor that border. Ordinary
-Selected, Disabled, or Pending paint also preserves its base Rest recipe.
+Selected, Disabled, or Pending paint also preserves its base Rest recipe, except for the
+explicit unpainted-state omissions described below.
 
 A selected member actually using the normal High projection through
 `selectionEmphasis="medium|high"` suppresses only the frame segment over its own box. Rest-border
@@ -56,6 +57,23 @@ segments remain visible on its other neighbors and return when the member is des
 longer uses the High projection. This is a local omission of the group frame, not a promotion of
 the group's border colors to High. Missing High support keeps the ordinary Selected fallback and
 its Rest frame segment.
+
+The Builder may additionally publish optional `group.frameOmissions`, indexed by surface-context
+bucket, effective paint intent, and emphasis bucket, with `pressed` and/or `selected` flags. These
+flags mean that the authored effective border is fully transparent on all sides for that state;
+a remaining opaque side prevents a complete-frame omission. They carry no colors or CSS values.
+The adapter resolves them against the member's actual paint recipe, including `selectionIntent`.
+An ordinary Pressed flag cannot suppress an opaque Selected recipe. Missing metadata preserves
+the existing Rest frame behavior and does not infer a missing recipe.
+
+Structural modifiers `e1m` and `e1n` omit only the affected member's decorative frame during
+native/projected Pressed or Selected. Native Pressed follows `:active` under the existing native
+interaction gate; projected Pressed/Selected use the existing activator classes. Unavailable,
+Disabled, Pending, and interaction-locked members do not receive these omission modifiers, while
+stored selection and accessibility semantics remain intact. The preceding frame trims only its
+shared overlap strip, in LTR or RTL, so a neighbor's Rest border cannot cross the omitted segment.
+This hides paint only: border widths, padding compensation, columns, focus rings and indicators
+retain their existing geometry. It introduces no public Button option or runtime color inspection.
 
 Each internal `e6` divider is hidden whenever either adjoining member is selected, regardless of
 `selectionEmphasis`, surface contrast, or availability of the High projection. Dividers between
@@ -75,7 +93,7 @@ The framed group uses intrinsic inline-grid columns while native Buttons remain 
 Decorative segments occupy those same columns in a separate top layer; they do not contribute
 another width, padding, or height. Neighboring members overlap by one authored divider thickness,
 applied only to the following member. Frame painting excludes the shared strip where the next
-member uses the High projection, preventing a preceding Rest border from crossing that surface.
+member uses the High projection or an active published frame omission, preventing a preceding Rest border from crossing that surface.
 The frame pieces do not overlap their translucent strokes and require no JavaScript measurement.
 
 Focus rings, selection indicators, and activation feedback remain owned by each Button. Frame

@@ -159,10 +159,11 @@ The canonical Registry currently contains these projection families:
 
 `Button.e6` remains the only divider author. Its normal classes size the decorative overlay;
 `Button.e1.p.gd` references the same atomic width utility on member roots for structural seam
-overlap and on frame pieces to clip the shared strip before a High-painted member. It adds no CSS
+overlap and on frame pieces to clip the shared strip before a member whose frame is omitted. It adds no CSS
 or spacing value. The group's Rest perimeter and member paint subsets are
 palette-aware Button class-map projections; grid-aligned frame pieces omit only the segment over
-a selected member actually using High paint. This local visibility is not a `p` value. See
+a selected member actually using High paint or an active state confirmed as fully unpainted by
+`group.frameOmissions`. This local visibility and its palette-aware coverage are not `p` values. See
 [`component-resources.md`](./component-resources.md#button-connected-group-paint-projection), not
 entries in the scale-only Registry.
 

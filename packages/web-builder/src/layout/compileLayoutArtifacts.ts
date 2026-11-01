@@ -3,6 +3,7 @@ import {
   type BreakpointValue,
   type ClassNameByElementJSON,
   type ComponentClassNameMapJSON,
+  type ComponentElementClassNameMapJSON,
   type ComponentStyleKeyMap,
   breakpoints as coreBreakpoints,
   layoutColumnCssVariables
@@ -44,7 +45,8 @@ export function compileLayoutArtifacts(options: CompileLayoutArtifactsOptions): 
   const { styleKeys, coreClassMap, shortenMap } = options;
   if (!styleKeys.layout) return '';
   const policy = options.webStyleEmissionPolicy ?? DEFAULT_WEB_STYLE_EMISSION_POLICY;
-  const layout = coreClassMap.layout;
+  // Layout has a direct element map, without variants or component projection branches.
+  const layout = coreClassMap.layout as Partial<ComponentElementClassNameMapJSON> | undefined;
   if (!layout?.e1 || !layout.e2) {
     throw new Error('components.layout: missing frame/flow class maps');
   }

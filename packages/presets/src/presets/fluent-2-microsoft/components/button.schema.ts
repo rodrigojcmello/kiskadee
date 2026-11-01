@@ -11,6 +11,7 @@ import {
 import { bindPresetColorRole } from '../../../utils/presetColor.ts';
 import {
   absoluteCap,
+  exactColor,
   type Fluent2MicrosoftColorResolver,
   type Fluent2MicrosoftFamilyColorLocator,
   familyReferenceColor
@@ -179,6 +180,15 @@ export function createFluent2MicrosoftButtonSchema({
       lightenHighInteraction: theme === 'light' && role === 'button.neutral',
       neutralButtonFamily,
       neutralSurfaceColor,
+      lowSurface: c.resolve(
+        'default',
+        toThemeShortcut(recipe.scale),
+        exactColor(
+          'card.neutral',
+          theme === 'light' ? 1 : theme === 'dark' ? 6 : 2,
+          'component.card'
+        )
+      ),
       highForeground: neutralButtonFamily.resolve(
         recipe.scale,
         absoluteCap(primitive('black', 'v1'), BUTTON_HIGH_FOREGROUND_POLARITIES[theme][role])
@@ -195,7 +205,8 @@ export function createFluent2MicrosoftButtonSchema({
           : undefined,
       family: families[role],
       neutralButtonFamily,
-      canonicalSurface: onVividCanonicalSurface
+      canonicalSurface: onVividCanonicalSurface,
+      lightBaseSurface: c.resolve('default', 'l', exactColor('card.primary', 50, 'component.card'))
     });
 
   const onSubtleButtonIntentPalettes = {
@@ -351,7 +362,32 @@ export function createFluent2MicrosoftButtonSchema({
         selected: { rest: parent(high, 'pressed') }
       },
       medium: lowerStates,
-      low: lowerStates,
+      low: {
+        ...lowerStates,
+        ...(theme !== 'light' && intent !== 'neutral'
+          ? {
+              // The dark Pressed fill needs the brighter existing Standard foreground.
+              pressed: parentStateForegroundReference(
+                family,
+                'standard',
+                theme,
+                'onSubtle',
+                'high',
+                'rest'
+              ),
+              selected: {
+                rest: parentStateForegroundReference(
+                  family,
+                  'standard',
+                  theme,
+                  'onSubtle',
+                  'high',
+                  'rest'
+                )
+              }
+            }
+          : {})
+      },
       lowest: {
         rest: direct(lower),
         pending: parent(lower, 'pending'),
@@ -360,7 +396,7 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
-  const createOnVividTextIntent = (intent: ButtonIntent) => {
+  const createOnVividTextIntent = (theme: ButtonRecipeTheme, intent: ButtonIntent) => {
     const family = BUTTON_FOREGROUND_FAMILY[intent];
     const high = {
       family,
@@ -409,6 +445,19 @@ export function createFluent2MicrosoftButtonSchema({
       disabled: parent(disabled, 'disabled')
     };
 
+    const inverseStates = {
+      rest: foregroundReference('neutral', 'standard', 'light', 'onVivid', 'high'),
+      pending: parentStateForegroundReference(
+        'neutral',
+        'standard',
+        'light',
+        'onVivid',
+        'high',
+        'pending'
+      ),
+      disabled: parent(disabled, 'disabled')
+    };
+
     return {
       high: {
         rest: direct(high),
@@ -419,8 +468,8 @@ export function createFluent2MicrosoftButtonSchema({
         selected: { rest: parent(high, 'pressed') }
       },
       medium: lowerStates,
-      low: lowerStates,
-      lowest: lowerStates
+      low: inverseStates,
+      lowest: theme === 'light' ? inverseStates : lowerStates
     };
   };
 
@@ -437,7 +486,7 @@ export function createFluent2MicrosoftButtonSchema({
       textColor: Object.fromEntries(
         (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
           intent,
-          createOnVividTextIntent(intent)
+          createOnVividTextIntent(theme, intent)
         ])
       )
     }
@@ -594,7 +643,7 @@ export function createFluent2MicrosoftButtonSchema({
                     disabled: 'onSubtle'
                   },
                   medium: { rest: 'onVivid', pending: 'onVivid', disabled: 'onSubtle' },
-                  low: { rest: 'inherit' },
+                  low: { rest: input === 'onVivid' && theme !== 'light' ? 'inherit' : input },
                   lowest: { rest: 'inherit' }
                 }
               ])

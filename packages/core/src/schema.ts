@@ -473,10 +473,28 @@ export type ComponentVariantClassNameMapJSON = Record<string, ComponentElementCl
 
 export type ComponentVariantModeClassNameMapJSON = Record<string, ComponentVariantClassNameMapJSON>;
 
+/** Builder-proven transparent border targets for connected Button frame segments. */
+export type ButtonGroupFrameOmissions = Partial<
+  Record<
+    SurfaceContextBucket,
+    Record<string, Partial<Record<keyof ColorClasses, { pressed?: true; selected?: true }>>>
+  >
+>;
+
+export type ButtonGroupClassMapJSON = {
+  frame?: ClassNameByElementJSON;
+  member?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
+  selectionRestMember?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
+  frameOmissions?: ButtonGroupFrameOmissions;
+};
+
 /** Published element classes may coexist with component-owned projection maps. */
 export type ComponentProjectedClassNameMapJSON = Record<
   string,
-  ClassNameByElementJSON | Partial<ComponentElementClassNameMapJSON> | undefined
+  | ClassNameByElementJSON
+  | Partial<ComponentElementClassNameMapJSON>
+  | ButtonGroupClassMapJSON
+  | undefined
 >;
 
 export type ComponentClassNameMapJSON = Partial<

@@ -25,6 +25,27 @@ describe('Button structural CSS', () => {
     );
   });
 
+  it('expands selected indicator paint from its center without animating dismissal or layout', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
+    const indicator = css.match(/\.k-btn > \.k-btn-e11\s*\{([^}]*)\}/)?.[1];
+    const active = css.match(/\.k-btn > \.k-btn-e11b\s*\{([^}]*)\}/)?.[1];
+    const reducedMotion = css.match(
+      /@media \(prefers-reduced-motion: reduce\) \{([\s\S]*?)\n\}/
+    )?.[1];
+    const reducedIndicator = reducedMotion?.match(/\.k-btn > \.k-btn-e11\s*\{([^}]*)\}/)?.[1];
+
+    expect(indicator).toContain('transform: scaleX(0.5)');
+    expect(indicator).toContain('transform-origin: center');
+    expect(indicator).toContain('transition: none');
+    expect(indicator).toContain('visibility: hidden');
+    expect(active).toContain('transform: scaleX(1)');
+    expect(active).toContain('transition: transform var(--k-dur-int) var(--k-ease-out)');
+    expect(active).toContain('visibility: visible');
+    expect(active).not.toMatch(/(?:opacity|inline-size|block-size|margin|padding|inset):/);
+    expect(reducedIndicator).toContain('transition: none');
+    expect(reducedIndicator).not.toMatch(/(?:visibility|transform):/);
+  });
+
   it('clips feedback on an independent viewport without overriding progress, Badge or focus geometry', () => {
     const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname).css;
     const feedback = sass.compile(
@@ -264,5 +285,25 @@ describe('Button structural CSS', () => {
     expect(precedingRtl).toContain('clip-path: inset(0 0 0 var(--k-bxw))');
     expect(preceding).not.toMatch(/width|margin|padding|z-index/);
     expect(css).not.toMatch(/\.k-btn-e1l\s*\{[^}]*z-index/);
+  });
+
+  it('omits published unpainted frames through native and projected state gates without changing geometry', () => {
+    const css = sass.compile(new URL('./Button.structural.scss', import.meta.url).pathname, {
+      style: 'expanded'
+    }).css;
+    const omitted = css.match(
+      /\.k-btn-x3a > \.k-btn-e1m\.-i\.-n:active \+ \.k-btn-x3b,[^{]+\{([^}]*)\}/
+    )?.[1];
+    expect(css).toContain('.k-btn-x3a > .k-btn-e1m.-p.-a + .k-btn-x3b');
+    expect(css).toContain('.k-btn-x3a > .k-btn-e1n.-s.-a + .k-btn-x3b');
+    expect(omitted).toContain('visibility: hidden');
+    expect(omitted).not.toMatch(/border|display|margin|padding|width|height|z-index/);
+    const preceding = css.match(/\.k-btn-x3a > \.k-btn-x3b:has\([^{]+\{([^}]*)\}/)?.[1];
+    const precedingRtl = css.match(
+      /\.k-btn-x3a > \.k-btn-x3b:has\([^{]+:dir\(rtl\)\s*\{([^}]*)\}/
+    )?.[1];
+    expect(preceding).toContain('clip-path: inset(0 var(--k-bxw) 0 0)');
+    expect(precedingRtl).toContain('clip-path: inset(0 0 0 var(--k-bxw))');
+    expect(preceding).not.toMatch(/border|visibility|display|margin|padding|width|height|z-index/);
   });
 });

@@ -10,7 +10,17 @@ applies across Microsoft and Teams identities. It records original screenshots, 
 roles and the explicit preservation policy for Dark/Darker. The [generator link](colors/generator-link.md)
 loads the current recipe. The approved 2026-09-20 contour refinement uses physical black
 at 5/9.5/23% alpha for Light/onSubtle Lowest/Low/Medium; shared neutral Card Rest borders
-consume Low. Dark/Darker and onVivid recipes are preserved.
+consume Low. Dark/Darker and onVivid global recipes are preserved. The component-scoped
+[2026-10-30 solid outlined control refinement](components/neutral-surface-calibration.md#solid-outlined-controls--2026-10-30)
+reuses existing Card Low positions in Button Low and Select Outline without changing these assets
+or global catalogs. The [2026-10-31 Light/onVivid Button refinement](components/button.md#canonical-light-onvivid-hierarchy--2026-10-31)
+keeps the neutral Low onSubtle surface and uses the existing canonical Primary base for Light
+Low Rest. Medium Pressed/Selected use a user-approved physical Black10% overlay over the actual
+supporting surface, an intentional local translucency exception. Medium Pressed/Selected and
+Selected Hover also use transparent contour paint without changing border geometry; Rest/Hover,
+Pending and Disabled keep their existing contours. Low interactions are opaque White8%/12% composites;
+Lowest retains White8%/12% overlays without a contour. These user-calibrated component recipes
+leave Card, global catalogs, Dark/Darker and Select Outline unchanged.
 
 ## Primary Sources
 

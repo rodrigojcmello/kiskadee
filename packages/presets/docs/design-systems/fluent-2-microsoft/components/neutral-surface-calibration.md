@@ -91,3 +91,64 @@ Dark/Darker, onVivid and interaction recipes are unchanged.
 
 Follow the advisory [surface and contour composition guidance](../../../definitions/surface-and-contour-composition.md)
 when evaluating subsequent presets; this change does not migrate them.
+
+## Solid outlined controls — 2026-10-30
+
+Status: **Kiskadee extension**, approved by the user after reviewing the outlined controls over
+Showcase composition headers. Button Low and Select Standard/Outline now reuse **Card Neutral
+Low** as their solid Rest surface, instead of inheriting the background through transparency.
+The [2026-10-31 Button correction](#context-relative-button-low--2026-10-31) narrows the Button
+portion to onSubtle; Select Outline keeps this solid surface in both contexts.
+
+| Theme | FRF lookup (`component.card`) | Primitive asset | Published fill |
+| --- | --- | --- | --- |
+| Light | `exact card.neutral L1` | `primitive.black.v1` / `colors/n.black.v1.ts` | `#fbfbfb` |
+| Dark | `exact card.neutral D6` | same approved achromatic asset | `#202020` |
+| Darker | `exact card.neutral D2` | same approved achromatic asset | `#0e0e0e` |
+
+The existing Card recipe is the authority for these positions. No primitive sample, generator
+output, global surface role or Card appearance changes. The Button onSubtle Rest surface remains
+neutral for every intent, including portable brands; chromatic interaction recipes remain
+intent-owned. Owned content paint uses that solid surface as its contrast reference for Button
+onSubtle and Select Outline in either ambient context. Outside indicators and Select external
+labels/messages still follow their surroundings. The optional Select divider and BrandPack
+artifact handoff limitations are recorded in the respective component Open Gaps.
+
+This is not a claim that Fluent's Outline Button is solid. The official Secondary Button and
+outlined Select use `colorNeutralBackground1`, while the official Outline Button remains
+transparent. Kiskadee intentionally combines its Low contour with the calibrated Card surface;
+the inspected tokens, source URLs and Figma nodes are recorded in [Button](button.md#solid-low-control-surface--2026-10-30)
+and [Select](select.md#solid-outline-surface--2026-10-30). Other Button emphases, Select modes and
+TextField retain their current recipes.
+
+## Context-relative Button Low — 2026-10-31
+
+Status: **Kiskadee extension**, refined by the user after reviewing the Surface contexts example.
+The near-white neutral fill remains the approved Low onSubtle surface. A transparent onVivid
+candidate was tried, then superseded for Light by the current
+[canonical Button hierarchy](button.md#canonical-light-onvivid-hierarchy--2026-10-31).
+
+Light/onVivid Low now uses the existing opaque Primary vivid base, matching the canonical
+`Card primary/highest` reference. Its White8%/12% Hover/Pressed composites are resolved as opaque
+colors by the preset from strict `exact card.primary L50` (`component.card`). Low Disabled
+publishes its existing White4% treatment as an opaque composite over the same base. Medium's
+Pressed/Selected instead use a strict physical Black10% overlay, an intentional local
+translucency exception to the advisory guidance that darkens the actual supporting surface.
+Its Rest White14% and Hover White10% surfaces are unchanged. The later user-approved Medium
+Pressed/Selected contour is transparent, including Selected Hover, without removing border width
+or padding compensation. Rest/Hover keep White10%, Pending6% and Disabled7% are preserved;
+Group neighbors keep their Rest frame. Lowest retains transparent
+Rest, no contour and White8%/12% interaction overlays. Selected remains equal to Pressed and
+Selected Hover retains the selected fill. Low's opaque base intentionally targets the canonical
+Primary host; Medium's translucent state instead darkens the actual supporting surface.
+No recipe infers an ancestor's exact color from the onVivid classification.
+
+Low's Light lower Rest contour is White45%; Neutral Hover is a local White50% override.
+The shared helper, Card recipe and TextField calibration remain unchanged. These are user-approved
+visual decisions, not newly identified official Fluent token values.
+
+Button Low onSubtle keeps the approved L1/D6/D2 solid fills in the table above. Dark/Darker Button
+recipes, all other onSubtle emphases, High and Select Outline remain unchanged. No shared neutral
+scale, global role or new tonal asset is introduced. The
+[Button evidence](button.md#canonical-light-onvivid-hierarchy--2026-10-31) records the current
+state, contour, foreground and coverage details.

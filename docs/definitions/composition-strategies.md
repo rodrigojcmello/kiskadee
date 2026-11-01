@@ -294,7 +294,9 @@ A durable architecture decision should record:
   overlap and on frame pieces for shared-strip clipping; the divider remains an overlay. A separate
   palette-aware class-map projection supplies the logical Rest perimeter and member paint without
   duplicating Schema authorship; it is not SUP.
-  Grid-aligned decorative pieces omit only the frame over a member using High selection paint. See
+  Grid-aligned decorative pieces omit the frame over a member using High selection paint or a
+  state published as fully unpainted in `group.frameOmissions`; neighboring Rest segments remain.
+  This derived palette-aware coverage stays outside `p`. See
   [connected groups](../../packages/components/react/docs/definitions/button/connected-groups.md).
   Dropdown group-label spacing uses CSC because one element owns both additive spacing values.
 - Badge is an independent Rest-only component because its metadata remains meaningful outside any

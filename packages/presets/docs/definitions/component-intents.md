@@ -19,9 +19,9 @@ Preset authoring rules:
   absolute own surface, such as black or a very dark brand surface.
 - Introduce `high` only when the same component truly needs a vivid, strong,
   or high-contrast own surface.
-- Use `low` only when the same component needs a white/base own surface. In the
-  current light-theme presets, `low` should resolve to that same base surface
-  across intents unless the component has a documented exception.
+- Prefer a solid/base own surface for `low`, close or equal to the intended supporting
+  surface. This is often near-white on a light surface, but can be the authored base color
+  of a vivid surface. Do not interpret `low` as universally white or transparent.
 - Treat `lowest` as the weakest perceptible presentation supported by the component. For
   own-surface components it can remain a transparent/no-own-surface treatment; components whose
   visual itself carries information may instead use a visible translucent treatment.
@@ -38,21 +38,21 @@ Kiskadee treats `emphasis` as the strength of the component's own visual
 surface. It is not a generic importance score, and it is not a local dark-mode
 switch.
 
-For Button and Card, the canonical surface mapping is:
+For Button and Card, use this surface mapping as the authoring starting point:
 
 | Emphasis | Canonical own surface | Examples |
 | --- | --- | --- |
 | `highest` | Extreme or absolute surface. | Black neutral Card, very dark primary Card. |
 | `high` | Vivid, strong, or high-contrast surface. | Dark primary Button, dark primary Card. |
 | `medium` | Light tonal surface. | Light primary Button, light neutral Card. |
-| `low` | Solid white/base surface. | White outlined Button, classic white Card. |
+| `low` | Prefer a solid base close or equal to the intended supporting surface. | Near-white outlined Button on a light Card, or a solid vivid base over its matching Card. |
 | `lowest` | Weakest perceptible presentation; often no own surface. | Text/ghost-like Button cases. |
 
-This rule is intentionally shared by Button and Card so the same emphasis name
-means the same kind of surface across components. A white Card may feel like the
-"normal" card in common design language, but in Kiskadee it is `low` because it
-has less own-surface strength than a light tonal Card and much less than a vivid
-Card.
+This hierarchy is intentionally shared by Button and Card so the same emphasis name
+suggests a comparable own-surface role across components. A white Card may feel like the
+"normal" card in common design language, but on a light supporting surface it is `low`
+because it has less own-surface contrast than a tonal Card and much less than a vivid Card.
+The role is relative to the intended composition, not to one absolute color.
 
 If a component exposes only one emphasis, the component still uses `medium`.
 `medium` is the consistency baseline, even when the component could later add
@@ -68,6 +68,30 @@ that choose visual backgrounds should avoid exposing duplicate choices. For
 example, `neutral.low` and `primary.low` may both be white/base in a light
 theme; a surface picker should keep one white option instead of showing two
 identical backgrounds just because their semantic paths differ.
+
+### Surface-Relative Authoring Guidance
+
+Status: recommended authoring direction for all presets, not a Schema restriction.
+
+For components that can paint their own surface, start with a transparent/no-own-surface
+presentation at `lowest`. At `low`, prefer an opaque base close or equal to the intended
+supporting surface. This keeps low own-surface contrast while giving the component an explicit
+paint recipe. A near-white base can serve a light Card; a vivid Card can call for its matching
+solid base color. `medium` and `high` can then express stronger own-surface treatments according
+to that design system's hierarchy.
+
+An opaque matching fill and a transparent fill can look identical on one host, but they are
+not interchangeable recipes. Author the opaque color through the preset's existing color
+references and record which canonical host it is intended to match. `onSubtle` and `onVivid`
+communicate contrast context, not the actual ancestor color; they do not authorize runtime
+color sampling, automatic copying of the ancestor's paint, or a new color-detection API.
+
+Transparency remains valid at `low`, `medium`, and `high` when an official source or an
+intentional composition calls for it. Preserve and document that choice rather than rejecting
+it or silently converting its paint. This recommendation does not impose alpha limits,
+mandatory validation, or a repository-wide preset migration. Review existing recipes gradually
+when their visual authorship is in scope. See [surface and contour composition](surface-and-contour-composition.md)
+for fill/contour ownership and comparison guidance.
 
 ### Text Foreground Emphasis
 
@@ -100,8 +124,8 @@ Current working guidance:
 | `highest` | Extreme / absolute surface. | Prefer `low`; validate any stronger child emphasis explicitly. |
 | `high` | Vivid / strong / high contrast. | Prefer `medium` or `low`; use child `high` only when contrast is intentionally validated. |
 | `medium` | Light tonal. | `medium` and `low` are both usually viable; `high` can be reserved for the primary action. |
-| `low` | White/base. | Most child emphases can work; children should normally keep their own baseline. |
-| `lowest` | No own surface. | Do not infer child emphasis; the external ambient surface is the real context. |
+| `low` | Contextual solid/base surface. | Most child emphases can work; children should normally keep their own baseline. |
+| `lowest` | Usually no own surface. | For a transparent recipe, the external ambient surface is the real context; do not infer child emphasis. |
 
 Do not model this as `child emphasis = parent emphasis - 1`. White/base
 surfaces are permissive and can host many child emphases, while vivid surfaces
@@ -109,8 +133,10 @@ are restrictive and require contrast checks.
 
 ### Lowest And Ambient Surface Context
 
-`lowest` remains the no-own-surface emphasis. Because a transparent component does not replace the
-surface behind it, its authored `contentSurfaceContext` output should normally be `inherit`.
+A no-own-surface treatment is the recommended starting point for `lowest`. When that recipe is
+transparent, it does not replace the surface behind it, so its authored `contentSurfaceContext`
+output should normally be `inherit`. A component whose weakest presentation still paints a
+visible surface must describe the context that its actual recipe produces.
 
 The orthogonal `surfaceContext` axis now carries the ambient semantic distinction through
 `onSubtle` and `onVivid`. This removes the need to encode ambient contrast in emphasis names such as

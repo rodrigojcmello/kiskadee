@@ -1,6 +1,7 @@
 import type {
   ActivationFeedbackOrigin,
   ActivationFeedbackProfileMode,
+  ButtonGroupClassMapJSON,
   ButtonIconLayout,
   ButtonIconPlacement,
   ButtonIconSurfaceCorners,
@@ -45,11 +46,7 @@ export type ButtonElementName =
 export type ButtonSelectionRestClassesMap = Partial<
   Record<'e1' | 'e2' | 'e3' | 'e4' | 'e5', ClassNameByElementJSON>
 >;
-export type ButtonGroupClassesMap = {
-  frame?: ClassNameByElementJSON;
-  member?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
-  selectionRestMember?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
-};
+export type ButtonGroupClassesMap = ButtonGroupClassMapJSON;
 export type ButtonClassesMap = Partial<Record<ButtonElementName, ClassNameByElementJSON>> & {
   selectionRest?: ButtonSelectionRestClassesMap;
   group?: ButtonGroupClassesMap;

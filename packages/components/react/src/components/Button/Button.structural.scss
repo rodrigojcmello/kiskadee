@@ -74,6 +74,9 @@
   max-inline-size: max(0px, calc(100% + var(--k-bdw) * 2 - max(var(--k-mgl), var(--k-mgr)) * 2));
   pointer-events: none;
   position: absolute;
+  transform: scaleX(0.5);
+  transform-origin: center;
+  transition: none;
   visibility: hidden;
   z-index: 3;
 }
@@ -88,10 +91,22 @@
 
 /*
  * element selection indicator modifier 'b' / e11b
- * Reveals the stable decorative node only while selected and actionable.
+ * Expands the visible center without changing the authored layout or animating dismissal.
  */
 .k-btn > .k-btn-e11b {
+  transform: scaleX(1);
+  transition: transform var(--k-dur-int) var(--k-ease-out);
   visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /*
+   * element selection indicator / e11
+   * Reveals the full active paint immediately when motion is reduced.
+   */
+  .k-btn > .k-btn-e11 {
+    transition: none;
+  }
 }
 
 /*
@@ -696,6 +711,33 @@
  * Mirrors the local paint cutout at the logical end in RTL.
  */
 .k-btn-x3b:has(+ .k-btn-e6a + .k-btn-e1l):dir(rtl) {
+  clip-path: inset(0 0 0 var(--k-bxw));
+}
+
+/*
+ * element button root modifiers 'm' and 'n' / e1m and e1n
+ * Omits a member's frame only for states published as fully unpainted by the Builder.
+ * Native and projected activation remain separate; unavailable members receive neither gate.
+ */
+.k-btn-x3a > .k-btn-e1m.-i.-n:active + .k-btn-x3b,
+.k-btn-x3a > .k-btn-e1m.-p.-a + .k-btn-x3b,
+.k-btn-x3a > .k-btn-e1n.-s.-a + .k-btn-x3b {
+  visibility: hidden;
+}
+
+/*
+ * extra button group frame modifier 'b' / x3b
+ * Trims the shared strip before an authored unpainted neighbor without changing layout.
+ */
+.k-btn-x3a > .k-btn-x3b:has(+ .k-btn-e6a + :is(.k-btn-e1m.-i.-n:active, .k-btn-e1m.-p.-a, .k-btn-e1n.-s.-a)) {
+  clip-path: inset(0 var(--k-bxw) 0 0);
+}
+
+/*
+ * extra button group frame modifier 'b' / x3b
+ * Mirrors the same published omission strip at the logical end in RTL.
+ */
+.k-btn-x3a > .k-btn-x3b:has(+ .k-btn-e6a + :is(.k-btn-e1m.-i.-n:active, .k-btn-e1m.-p.-a, .k-btn-e1n.-s.-a)):dir(rtl) {
   clip-path: inset(0 0 0 var(--k-bxw));
 }
 

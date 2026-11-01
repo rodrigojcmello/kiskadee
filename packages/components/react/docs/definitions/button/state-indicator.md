@@ -54,6 +54,25 @@ semantics. A restored action reveals the same selected indicator. Levels `medium
 `controlState` and the root selection activator while consuming the normal High paint projection;
 the indicator therefore continues using its Selected recipe over the actual High Rest surface.
 
+## Entry motion
+
+Revealing an existing indicator makes its central 50% visible immediately, without a fade. Its
+paint then expands horizontally from the center to the complete authored width, adding the remaining
+quarter on each side. Structural CSS uses `scaleX(0.5)` to `scaleX(1)` rather than changing layout
+width. Height, position, Button dimensions and `_boxHeight` remain unchanged. The same entry applies
+to horizontal and Stacked Buttons, with either inside or outside placement.
+
+The transition consumes the shared framework interaction tokens `--k-dur-int` and `--k-ease-out`
+(currently 180 ms and ease-out). This is lightweight structural motion, not a new Effect, preset
+recipe or public customization axis. Hover, Focus and Pressed do not restart it while selection and
+availability remain active. Hiding the indicator is immediate, even during entry; the hidden paint
+returns to half width in preparation for its next reveal.
+
+CSS transitions do not replay entry for an initially selected Button or an indicator mounted after
+its recipe loads. Those cases show the complete indicator immediately. The existing `.no-transitions`
+gate and `prefers-reduced-motion: reduce` also reveal the full active paint immediately, preserving
+selection and the absence of exit motion. See the shared [transition-speed contract](../../../../../../docs/definitions/transition-speeds.md).
+
 ## Overlay geometry and clipping
 
 The native `<button>` remains the semantic root, ref target, event owner and measured border box.

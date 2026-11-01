@@ -15,6 +15,20 @@ surfaces, while white alpha commonly suits dark or vivid surfaces. Do not copy o
 preset's alpha percentages into every preset or assume surface context alone proves
 sufficient contrast. Preserve each design system's hierarchy and source evidence.
 
+## Emphasis and the supporting surface
+
+Use the [surface-relative emphasis guidance](component-intents.md#surface-relative-authoring-guidance)
+as the starting point for all presets. Prefer a transparent/no-own-surface treatment for `lowest`
+and an opaque base near or equal to the intended supporting surface for `low`. The latter can be
+near-white on a light Card or the authored base color of a vivid Card; `low` is not a synonym for
+white. A matching opaque fill remains an owned surface even when its visible color equals the
+host.
+
+This is a recommendation for authoring coherent hierarchies, not a ban on transparency at
+`low`, `medium`, or `high`. Keep intentional alternatives and their evidence. A canonical host
+color belongs in the preset recipe; Surface Context does not carry an arbitrary ancestor's
+exact paint and must not trigger runtime color detection or automatic conversion.
+
 ## Exceptions and ownership
 
 Source-defined opaque strokes, chromatic boundaries, interactive or accessibility

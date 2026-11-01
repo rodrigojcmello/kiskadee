@@ -1,16 +1,12 @@
-import type { ClassNameByElementJSON, ColorClasses, SurfaceContext } from '@kiskadee/core';
-import { componentEmphasisBuckets, surfaceContextBuckets } from '@kiskadee/core';
+import type { ButtonGroupClassMapJSON, ColorClasses, SurfaceContext } from '@kiskadee/core';
+import { componentEmphasisBuckets, normalizeHexColor, surfaceContextBuckets } from '@kiskadee/core';
 import {
   buildScopedToneMetadataKey,
   type ToneMetadataByPalette,
   type ToneMetadataScope
 } from '../phase-1-convert-schema-to-style-keys/colors/convertElementColorsToStyleKeys.ts';
 
-export type ButtonGroupClassMapJSON = {
-  frame?: ClassNameByElementJSON;
-  member?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
-  selectionRestMember?: Pick<ClassNameByElementJSON, 'c' | 'd'>;
-};
+export type { ButtonGroupClassMapJSON, ButtonGroupFrameOmissions } from '@kiskadee/core';
 
 export const BUTTON_GROUP_BORDER_SUPPRESSION_STYLE_KEY = 'borderColor__#00000000';
 
@@ -28,6 +24,80 @@ const borderPaint = (key: string) => /^border(?:Top|Right|Bottom|Left)?Color(?:-
 const stateOf = (key: string) => key.split('__')[0]?.split(/--|==/)[1] ?? 'rest';
 const isSelected = (state: string, key: string) =>
   state.startsWith('selected') || stateOf(key).startsWith('selected');
+
+const borderSides = [
+  'borderTopColor',
+  'borderRightColor',
+  'borderBottomColor',
+  'borderLeftColor'
+] as const;
+type BorderProperty = 'borderColor' | (typeof borderSides)[number];
+type BorderPaint = 'clear' | 'painted' | 'unknown';
+type BorderDeclarations = Partial<Record<BorderProperty, BorderPaint>>;
+type BorderStates = Map<string, BorderDeclarations>;
+
+function borderDeclaration(key: string): { property: BorderProperty; paint: BorderPaint } {
+  const separator = key.indexOf('__');
+  const head = key.slice(0, separator);
+  const property = head.split(/--|==/)[0] as BorderProperty;
+  // Parent-scope references and unresolved CSS paints cannot prove this Button's perimeter.
+  if (separator < 0 || head.includes('==')) return { property, paint: 'unknown' };
+  try {
+    const color = normalizeHexColor(key.slice(separator + 2));
+    return { property, paint: color.length === 9 && color.endsWith('00') ? 'clear' : 'painted' };
+  } catch {
+    return { property, paint: 'unknown' };
+  }
+}
+
+/** Side-specific paint is retained conservatively until that side is explicitly overridden. */
+function effectiveBorder(layers: (BorderDeclarations | undefined)[]): BorderPaint[] {
+  const authored = layers.filter((layer): layer is BorderDeclarations => Boolean(layer)).reverse();
+  return borderSides.map(
+    (side) =>
+      authored.find((layer) => layer[side] !== undefined)?.[side] ??
+      authored.find((layer) => layer.borderColor !== undefined)?.borderColor ??
+      'unknown'
+  );
+}
+
+function frameOmissions(states: BorderStates): { pressed?: true; selected?: true } | undefined {
+  const rest = states.get('rest');
+  if (!effectiveBorder([rest]).includes('painted')) return undefined;
+  const isClear = (layers: (BorderDeclarations | undefined)[]) =>
+    effectiveBorder(layers).every((paint) => paint === 'clear');
+  const output: { pressed?: true; selected?: true } = {};
+  const pressed = states.get('pressed');
+  // Projected Hover and native/projected Focus can remain active during a press.
+  const pressedInteractions = [
+    ['pressed'],
+    ['hover', 'pressed'],
+    ['focus', 'pressed'],
+    ['hover', 'focus', 'pressed']
+  ];
+  if (
+    pressed &&
+    pressedInteractions.every((interactions) =>
+      isClear([rest, ...interactions.map((state) => states.get(state))])
+    )
+  )
+    output.pressed = true;
+  const selected = states.get('selected:rest');
+  if (
+    selected &&
+    isClear([rest, selected]) &&
+    [['hover'], ['focus'], ...pressedInteractions].every((interactions) =>
+      isClear([
+        rest,
+        selected,
+        ...interactions.map((state) => states.get(state)),
+        ...interactions.map((state) => states.get(`selected:${state}`))
+      ])
+    )
+  )
+    output.selected = true;
+  return Object.keys(output).length ? output : undefined;
+}
 
 /** Reuses existing utilities; the Group never authors a second Button palette. */
 export function compileButtonGroupArtifact(
@@ -83,6 +153,7 @@ export function compileButtonGroupArtifact(
         const contextMetadata = metadata.get(`${bundle}.${context}`);
         for (const [semantic, states] of Object.entries(semantics)) {
           if (!isRecord(states)) continue;
+          const borderStates = new Map<keyof ColorClasses, BorderStates>();
           const recipes = {
             frame: new Map<keyof ColorClasses, Set<string>>(),
             member: new Map<keyof ColorClasses, Set<string>>(),
@@ -103,6 +174,17 @@ export function compileButtonGroupArtifact(
                   recipes[recipe].set(bucket, set);
                 };
                 if (borderPaint(key)) {
+                  const declarationsByState =
+                    borderStates.get(bucket) ?? new Map<string, BorderDeclarations>();
+                  const effectiveState = stateOf(key);
+                  const declarations = declarationsByState.get(effectiveState) ?? {};
+                  const { property, paint } = borderDeclaration(key);
+                  declarations[property] =
+                    declarations[property] !== undefined && declarations[property] !== paint
+                      ? 'unknown'
+                      : paint;
+                  declarationsByState.set(effectiveState, declarations);
+                  borderStates.set(bucket, declarationsByState);
                   if (state === 'rest' && stateOf(key) === 'rest') add('frame');
                 } else {
                   add('member');
@@ -111,9 +193,19 @@ export function compileButtonGroupArtifact(
               }
             }
           }
+          for (const [tone, states] of borderStates) {
+            const omissions = frameOmissions(states);
+            if (!omissions) continue;
+            palettes[bundle] ??= {};
+            const target = palettes[bundle];
+            target.frameOmissions ??= {};
+            target.frameOmissions[contextBucket] ??= {};
+            target.frameOmissions[contextBucket][semantic] ??= {};
+            target.frameOmissions[contextBucket][semantic][tone] = omissions;
+          }
           for (const [recipe, levels] of Object.entries(recipes)) {
             if (!levels.size) continue;
-            const name = recipe as keyof ButtonGroupClassMapJSON;
+            const name = recipe as keyof typeof recipes;
             palettes[bundle] ??= {};
             const target = palettes[bundle];
             target[name] ??= {};
