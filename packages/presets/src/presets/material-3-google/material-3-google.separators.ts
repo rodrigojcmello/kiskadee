@@ -22,10 +22,12 @@ export function createMaterial3GoogleSeparators({
                 (['onSubtle', 'onVivid'] as const).map((context) => [
                   context,
                   {
-                    boxColor: {
-                      neutral: {
-                        medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) },
-                        low: { rest: contour(`neutral.standard.${theme}.${context}.low`) }
+                    standard: {
+                      boxColor: {
+                        neutral: {
+                          medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) },
+                          low: { rest: contour(`neutral.standard.${theme}.${context}.low`) }
+                        }
                       }
                     }
                   }

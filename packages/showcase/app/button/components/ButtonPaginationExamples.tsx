@@ -51,7 +51,7 @@ export function ButtonPaginationExamples({
   const profiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
   const { buttonClassesMap } = useButtonArtifactConfig();
-  const presentation = useButtonCompositionControls(buttonClassesMap);
+  const presentation = useButtonCompositionControls(buttonClassesMap, {}, surfaceContext);
   const painting = presentation.buttonProps();
   const [radiusOverride, setRadiusOverride] = useState<RadiusMode>();
   const effectiveRadius = radiusOverride ?? radius;

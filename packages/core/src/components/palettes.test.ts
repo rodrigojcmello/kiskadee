@@ -25,17 +25,21 @@ describe('surface-context palettes', () => {
         default: {
           light: {
             onSubtle: {
-              boxColor: {
-                primary: {
-                  high: state
+              standard: {
+                boxColor: {
+                  primary: {
+                    high: state
+                  }
                 }
               }
             },
             onVivid: {
-              boxColor: {
-                primary: {
-                  high: {
-                    rest: '#ffffff'
+              standard: {
+                boxColor: {
+                  primary: {
+                    high: {
+                      rest: '#ffffff'
+                    }
                   }
                 }
               }
@@ -107,18 +111,22 @@ describe('surface-context palettes', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: {
-              primary: {
-                high: state,
-                medium: state
+            standard: {
+              boxColor: {
+                primary: {
+                  high: state,
+                  medium: state
+                }
               }
             }
           },
           onVivid: {
-            boxColor: {
-              primary: {
-                high: {
-                  rest: '#ffffff'
+            standard: {
+              boxColor: {
+                primary: {
+                  high: {
+                    rest: '#ffffff'
+                  }
                 }
               }
             }
@@ -128,7 +136,7 @@ describe('surface-context palettes', () => {
     });
 
     expect(issues).toContainEqual({
-      path: ['default', 'light', 'onVivid', 'boxColor', 'primary', 'medium'],
+      path: ['default', 'light', 'onVivid', 'standard', 'boxColor', 'primary', 'medium'],
       message: 'must cover the same property, intent, and emphasis as onSubtle'
     });
   });
@@ -138,39 +146,20 @@ describe('surface-context palettes', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: {
-              primary: {
-                high: state
+            standard: {
+              boxColor: {
+                primary: {
+                  high: state
+                }
               }
             }
           },
           onVivid: {
-            boxColor: {
-              primary: {
-                high: state,
-                medium: state
-              }
-            }
-          }
-        }
-      }
-    });
-
-    expect(issues).toContainEqual({
-      path: ['default', 'light', 'onVivid', 'boxColor', 'primary', 'medium'],
-      message: 'must not add a property, intent, or emphasis absent from onSubtle'
-    });
-  });
-
-  it('requires rest for each declared emphasis', () => {
-    const issues = validate({
-      default: {
-        light: {
-          onSubtle: {
-            boxColor: {
-              primary: {
-                high: {
-                  hover: '#234567'
+            standard: {
+              boxColor: {
+                primary: {
+                  high: state,
+                  medium: state
                 }
               }
             }
@@ -180,7 +169,32 @@ describe('surface-context palettes', () => {
     });
 
     expect(issues).toContainEqual({
-      path: ['default', 'light', 'onSubtle', 'boxColor', 'primary', 'high', 'rest'],
+      path: ['default', 'light', 'onVivid', 'standard', 'boxColor', 'primary', 'medium'],
+      message: 'must not add a property, intent, or emphasis absent from onSubtle'
+    });
+  });
+
+  it('requires rest for each declared emphasis', () => {
+    const issues = validate({
+      default: {
+        light: {
+          onSubtle: {
+            standard: {
+              boxColor: {
+                primary: {
+                  high: {
+                    hover: '#234567'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+
+    expect(issues).toContainEqual({
+      path: ['default', 'light', 'onSubtle', 'standard', 'boxColor', 'primary', 'high', 'rest'],
       message: 'required state'
     });
   });

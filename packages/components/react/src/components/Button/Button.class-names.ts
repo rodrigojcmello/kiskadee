@@ -6,8 +6,10 @@ import {
   type ButtonIndicatorPlacement,
   type ButtonIntent,
   type ClassNameByElementJSON,
+  type ColorVariant,
   type ComponentEmphasis,
   stateActivator as cn,
+  colorVariantBuckets,
   componentEmphasisBuckets,
   type EffectClassBucketJSON,
   type RadiusMode,
@@ -64,6 +66,7 @@ export function resolveButtonGroupFrameOmissionClassName({
   group,
   intent,
   emphasis,
+  colorVariant = 'standard',
   surfaceContext,
   selectedPaint,
   available
@@ -71,15 +74,16 @@ export function resolveButtonGroupFrameOmissionClassName({
   group: ButtonGroupClassesMap | undefined;
   intent: ButtonIntent;
   emphasis: ComponentEmphasis;
+  colorVariant?: ColorVariant;
   surfaceContext: SurfaceContext;
   selectedPaint: boolean;
   available: boolean;
 }): string | undefined {
   if (!available) return undefined;
   const states =
-    group?.frameOmissions?.[surfaceContextBuckets[surfaceContext]]?.[intent]?.[
-      componentEmphasisBuckets[emphasis]
-    ];
+    group?.frameOmissions?.[surfaceContextBuckets[surfaceContext]]?.[
+      colorVariantBuckets[colorVariant]
+    ]?.[intent]?.[componentEmphasisBuckets[emphasis]];
   return join(
     states?.pressed && (!selectedPaint || states.selected) ? 'k-btn-e1m' : undefined,
     states?.selected ? 'k-btn-e1n' : undefined
@@ -145,12 +149,14 @@ function collectElementClasses(
   element: ClassNameByElementJSON | undefined,
   emphasis: ComponentEmphasis | undefined = DEFAULT_BUTTON_EMPHASIS,
   intent: ButtonIntent | undefined = DEFAULT_BUTTON_INTENT,
-  surfaceContext: SurfaceContext = DEFAULT_BUTTON_SURFACE_CONTEXT
+  surfaceContext: SurfaceContext = DEFAULT_BUTTON_SURFACE_CONTEXT,
+  colorVariant: ColorVariant = 'standard'
 ): string {
   return resolveSchemaElementClassName(element, {
     intent,
     emphasis,
-    surfaceContext
+    surfaceContext,
+    colorVariant
   });
 }
 
@@ -170,12 +176,14 @@ export function resolveButtonDividerClassName({
   scale,
   emphasis,
   intent,
+  colorVariant = 'standard',
   surfaceContext
 }: {
   e6: ClassNameByElementJSON | undefined;
   scale: string;
   emphasis: ComponentEmphasis | undefined;
   intent: ButtonIntent | undefined;
+  colorVariant?: ColorVariant;
   surfaceContext: SurfaceContext | undefined;
 }): string {
   if (!e6) return '';
@@ -187,10 +195,11 @@ export function resolveButtonDividerClassName({
       e6,
       intent ?? DEFAULT_BUTTON_INTENT,
       emphasis ?? DEFAULT_BUTTON_EMPHASIS,
-      { surfaceContext: resolvedSurfaceContext }
+      { surfaceContext: resolvedSurfaceContext, colorVariant }
     ) ||
     resolveIntentClassName(e6, DEFAULT_BUTTON_INTENT, DEFAULT_BUTTON_EMPHASIS, {
-      surfaceContext: resolvedSurfaceContext
+      surfaceContext: resolvedSurfaceContext,
+      colorVariant
     });
   if (!paintClassName) return '';
 
@@ -230,6 +239,7 @@ export function resolveButtonClassNames({
   radiusEffect,
   emphasis,
   intent,
+  colorVariant = 'standard',
   surfaceContext,
   iconLayout,
   iconPlacement,
@@ -257,6 +267,7 @@ export function resolveButtonClassNames({
   radiusEffect: boolean;
   emphasis: ComponentEmphasis | undefined;
   intent: ButtonIntent | undefined;
+  colorVariant?: ColorVariant;
   surfaceContext: SurfaceContext | undefined;
   iconLayout?: ButtonIconLayout;
   iconPlacement?: ButtonIconPlacement;
@@ -326,7 +337,13 @@ export function resolveButtonClassNames({
   return {
     e1:
       join(
-        collectElementClasses(paintE1, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+        collectElementClasses(
+          paintE1,
+          resolvedEmphasis,
+          resolvedIntent,
+          resolvedSurfaceContext,
+          colorVariant
+        ),
         rootGeometry?.s?.all,
         classNames.e1,
         rootGeometry?.s?.[scaleKey],
@@ -352,10 +369,17 @@ export function resolveButtonClassNames({
           ? join(
               labelGeometry?.d,
               resolveIntentClassName(e2, resolvedIntent, resolvedEmphasis, {
-                surfaceContext: resolvedSurfaceContext
+                surfaceContext: resolvedSurfaceContext,
+                colorVariant
               })
             )
-          : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+          : collectElementClasses(
+              e2,
+              resolvedEmphasis,
+              resolvedIntent,
+              resolvedSurfaceContext,
+              colorVariant
+            ),
         labelGeometry?.s?.all,
         classNames.e2,
         labelGeometry?.s?.[scaleKey],
@@ -366,13 +390,26 @@ export function resolveButtonClassNames({
       join(
         isStacked
           ? resolveIntentClassName(e3?.c ? e3 : e2, resolvedIntent, resolvedEmphasis, {
-              surfaceContext: resolvedSurfaceContext
+              surfaceContext: resolvedSurfaceContext,
+              colorVariant
             })
           : hasSurfacedIconTreatment
             ? e3?.d
             : e3?.c
-              ? collectElementClasses(e3, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext)
-              : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+              ? collectElementClasses(
+                  e3,
+                  resolvedEmphasis,
+                  resolvedIntent,
+                  resolvedSurfaceContext,
+                  colorVariant
+                )
+              : collectElementClasses(
+                  e2,
+                  resolvedEmphasis,
+                  resolvedIntent,
+                  resolvedSurfaceContext,
+                  colorVariant
+                ),
         isStacked || e3HasSchemaScale ? iconGeometry?.s?.all : undefined,
         classNames.e3,
         isStacked || e3HasSchemaScale ? iconGeometry?.s?.[scaleKey] : undefined,
@@ -383,7 +420,7 @@ export function resolveButtonClassNames({
       ) ?? '',
     e4: hasSurfacedIconTreatment
       ? (join(
-          collectElementClasses(e4, 'medium', 'neutral', resolvedSurfaceContext),
+          collectElementClasses(e4, 'medium', 'neutral', resolvedSurfaceContext, colorVariant),
           e4HasSchemaScale ? e4?.s?.all : undefined,
           e4HasSchemaScale ? e4?.s?.[scaleKey] : undefined,
           'k-btn-e4'
@@ -392,8 +429,20 @@ export function resolveButtonClassNames({
     e5:
       join(
         e5?.c
-          ? collectElementClasses(e5, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext)
-          : collectElementClasses(e2, resolvedEmphasis, resolvedIntent, resolvedSurfaceContext),
+          ? collectElementClasses(
+              e5,
+              resolvedEmphasis,
+              resolvedIntent,
+              resolvedSurfaceContext,
+              colorVariant
+            )
+          : collectElementClasses(
+              e2,
+              resolvedEmphasis,
+              resolvedIntent,
+              resolvedSurfaceContext,
+              colorVariant
+            ),
         e5?.s?.all,
         classNames.e5,
         e5?.s?.[scaleKey],
@@ -405,7 +454,8 @@ export function resolveButtonClassNames({
         scale: scaleKey,
         emphasis: resolvedEmphasis,
         intent: resolvedIntent,
-        surfaceContext: resolvedSurfaceContext
+        surfaceContext: resolvedSurfaceContext,
+        colorVariant
       }) || undefined,
     e7: resolveButtonBadgeRelationClassName({ e7, scale: scaleKey }) || undefined
   };
@@ -451,6 +501,7 @@ export function resolveButtonGroupFrameClassName({
   globalRadius,
   intent = DEFAULT_BUTTON_INTENT,
   emphasis = DEFAULT_BUTTON_EMPHASIS,
+  colorVariant = 'standard',
   surfaceContext = DEFAULT_BUTTON_SURFACE_CONTEXT
 }: {
   element: ClassNameByElementJSON | undefined;
@@ -459,6 +510,7 @@ export function resolveButtonGroupFrameClassName({
   globalRadius?: RadiusMode;
   intent?: ButtonIntent;
   emphasis?: ComponentEmphasis;
+  colorVariant?: ColorVariant;
   surfaceContext?: SurfaceContext;
 }): string | undefined {
   if (!element?.d || (!element.s?.all && !element.s?.[normalizeButtonScaleKey(scale)])) {
@@ -470,7 +522,10 @@ export function resolveButtonGroupFrameClassName({
     scaleKey,
     radius ?? globalRadius ?? DEFAULT_BUTTON_RADIUS
   );
-  const paintClassName = resolveIntentClassName(element, intent, emphasis, { surfaceContext });
+  const paintClassName = resolveIntentClassName(element, intent, emphasis, {
+    surfaceContext,
+    colorVariant
+  });
   if (!radiusClassName || !paintClassName) return undefined;
   return join(element.d, element.s?.all, element.s?.[scaleKey], radiusClassName, paintClassName);
 }

@@ -11,11 +11,11 @@ describe('Component class-map projection contract', () => {
     const group = {
       frame: { s: { 'md:1': 'border-width' } },
       member: { d: 'border-off' },
-      frameOmissions: { v: { neutral: { m: { pressed: true, selected: true } } } }
+      frameOmissions: { v: { s: { neutral: { m: { pressed: true, selected: true } } } } }
     } satisfies ButtonGroupClassMapJSON;
     const button = {
       e1: { d: 'root' },
-      selectionRest: { e1: { c: { v: { neutral: { h: 'high-rest' } } } } },
+      selectionRest: { e1: { c: { v: { s: { neutral: { h: 'high-rest' } } } } } },
       group
     } satisfies ComponentProjectedClassNameMapJSON;
     const split = {
@@ -28,7 +28,7 @@ describe('Component class-map projection contract', () => {
 
   it('keeps omission metadata bounded rather than accepting arbitrary projection values', () => {
     expectTypeOf<{
-      v: { neutral: { m: { pressed: false } } };
+      v: { s: { neutral: { m: { pressed: false } } } };
     }>().not.toExtend<ButtonGroupFrameOmissions>();
     expectTypeOf<{
       group: { frameOmissions: string };

@@ -13,7 +13,9 @@ describe('generateCssSplit', () => {
       button: {
         e2: {
           palettes: {
-            default: { light: { onSubtle: { neutral: { rest: [rest], hover: [hover] } } } }
+            default: {
+              light: { onSubtle: { standard: { neutral: { rest: [rest], hover: [hover] } } } }
+            }
           }
         }
       }
@@ -50,7 +52,9 @@ describe('generateCssSplit', () => {
               palettes: {
                 default: {
                   light: {
-                    onSubtle: { neutral: { hover: [hoverPaint], pressed: [pressedPaint] } }
+                    onSubtle: {
+                      standard: { neutral: { hover: [hoverPaint], pressed: [pressedPaint] } }
+                    }
                   }
                 }
               }
@@ -105,7 +109,9 @@ describe('generateCssSplit', () => {
             default: {
               light: {
                 onSubtle: {
-                  neutral: { rest: keys }
+                  standard: {
+                    neutral: { rest: keys }
+                  }
                 }
               }
             }
@@ -273,8 +279,10 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff']
+                    }
                   }
                 }
               }
@@ -303,10 +311,14 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: { rest: ['boxColor__#0091ff'] }
+                  standard: {
+                    primary: { rest: ['boxColor__#0091ff'] }
+                  }
                 },
                 onVivid: {
-                  primary: { rest: ['boxColor__#ffffff'] }
+                  standard: {
+                    primary: { rest: ['boxColor__#ffffff'] }
+                  }
                 }
               }
             }
@@ -333,15 +345,19 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff']
+                    }
                   }
                 }
               },
               dark: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#005799']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#005799']
+                    }
                   }
                 }
               }
@@ -349,8 +365,10 @@ describe('generateCssSplit', () => {
             youtube: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#000000']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#000000']
+                    }
                   }
                 }
               }
@@ -383,10 +401,12 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff'],
-                    hover: ['boxColor==hover__#0074cccc'],
-                    pressed: ['boxColor--pressed__#33a7ffcc']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff'],
+                      hover: ['boxColor==hover__#0074cccc'],
+                      pressed: ['boxColor--pressed__#33a7ffcc']
+                    }
                   }
                 }
               }
@@ -415,14 +435,16 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff']
-                  },
-                  secondary: {
-                    rest: ['boxColor__#29a3a3']
-                  },
-                  redLike: {
-                    rest: ['boxColor__#ec1313']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff']
+                    },
+                    secondary: {
+                      rest: ['boxColor__#29a3a3']
+                    },
+                    redLike: {
+                      rest: ['boxColor__#ec1313']
+                    }
                   }
                 }
               }
@@ -459,8 +481,10 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff']
+                    }
                   }
                 }
               }
@@ -525,8 +549,10 @@ describe('generateCssSplit', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      neutral: {
-                        rest: ['textColor__#000000']
+                      standard: {
+                        neutral: {
+                          rest: ['textColor__#000000']
+                        }
                       }
                     }
                   }
@@ -617,9 +643,11 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff'],
-                    hover: ['boxColor==hover__#0074cccc']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff'],
+                      hover: ['boxColor==hover__#0074cccc']
+                    }
                   }
                 }
               }
@@ -673,15 +701,19 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff']
+                    }
                   }
                 }
               },
               dark: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#005799']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#005799']
+                    }
                   }
                 }
               }
@@ -693,8 +725,10 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['textColor__#ffffff']
+                  standard: {
+                    primary: {
+                      rest: ['textColor__#ffffff']
+                    }
                   }
                 }
               }
@@ -728,8 +762,10 @@ describe('generateCssSplit', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['boxColor__#0091ff']
+                  standard: {
+                    primary: {
+                      rest: ['boxColor__#0091ff']
+                    }
                   }
                 }
               }

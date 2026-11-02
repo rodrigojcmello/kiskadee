@@ -7,7 +7,7 @@ import type {
   ButtonIconSurfaceCorners,
   ButtonIconTreatment,
   ButtonIndicatorPlacement,
-  ButtonIntent,
+  ButtonIntentValue,
   ButtonSelectionEmphasis,
   ClassNameByElementJSON,
   ComponentEmphasis,
@@ -99,7 +99,7 @@ export type ButtonProps = HeadlessButtonProps & {
   /** Chooses selection paint and its optional indicator without changing the semantic state. */
   selectionEmphasis?: ButtonSelectionEmphasis;
   /** Overrides the paint intent only while selected; omission follows the preset or base intent. */
-  selectionIntent?: ButtonIntent;
+  selectionIntent?: ButtonIntentValue;
   /** Places the optional preset-authored selection indicator inside or outside the lower edge. */
   indicatorPlacement?: ButtonIndicatorPlacement;
   /**
@@ -125,7 +125,7 @@ export type ButtonProps = HeadlessButtonProps & {
    */
   emphasis?: ComponentEmphasis;
   /** Base semantic color family; selectionIntent can override selected paint. Default is neutral. */
-  intent?: ButtonIntent;
+  intent?: ButtonIntentValue;
   /**
    * Local surface relationship used to resolve palette colors.
    * `onVivid` requires explicit support from the active preset palette.
@@ -163,7 +163,7 @@ export type ButtonGroupProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> 
   /** Shared emphasis inherited by every Button in the group. */
   emphasis?: ComponentEmphasis;
   /** Shared semantic intent inherited by every Button in the group. */
-  intent?: ButtonIntent;
+  intent?: ButtonIntentValue;
   /** Shared surface relationship inherited by every Button in the group. */
   surfaceContext?: SurfaceContext;
   /** Applies the Button Rest shadow once to the connected group surface. */

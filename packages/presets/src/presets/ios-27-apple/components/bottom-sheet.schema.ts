@@ -17,7 +17,7 @@ export function createIos27AppleBottomSheetSchema({
       neutral: { medium: { rest: c('default', 'l', 'bottomSheet.neutral', 100, 32) } }
     }
   };
-  const scrim = { onSubtle: scrimColor, onVivid: scrimColor };
+  const scrim = { onSubtle: { standard: scrimColor }, onVivid: { standard: scrimColor } };
   const createTheme = (theme: ThemeName) => {
     const track = theme === 'light' ? 'l' : 'd';
     const neutralText = fg(`neutral.standard.${theme}.onSubtle.high`);
@@ -58,13 +58,15 @@ export function createIos27AppleBottomSheetSchema({
 
     return {
       // The surface and scrim resolve outside the descendant SurfaceContext reset.
-      surface: { onSubtle: surfaceColors, onVivid: surfaceColors },
+      surface: { onSubtle: { standard: surfaceColors }, onVivid: { standard: surfaceColors } },
       handle: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: c('default', track, 'bottomSheet.neutral', track === 'l' ? 70 : 95, 30)
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: c('default', track, 'bottomSheet.neutral', track === 'l' ? 70 : 95, 30)
+                }
               }
             }
           }
@@ -72,14 +74,16 @@ export function createIos27AppleBottomSheetSchema({
       },
       item: {
         onSubtle: {
-          boxColor: {
-            neutral: { medium: itemColors },
-            destructive: { medium: itemColors }
+          standard: {
+            boxColor: {
+              neutral: { medium: itemColors },
+              destructive: { medium: itemColors }
+            }
           }
         }
       },
-      text: { onSubtle: { textColor } },
-      auxiliaryText: { onSubtle: { textColor: auxiliaryText } }
+      text: { onSubtle: { standard: { textColor } } },
+      auxiliaryText: { onSubtle: { standard: { textColor: auxiliaryText } } }
     };
   };
 

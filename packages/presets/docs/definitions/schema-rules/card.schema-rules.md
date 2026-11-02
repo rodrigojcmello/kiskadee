@@ -59,7 +59,7 @@ Carbon Tile's 16px is composition guidance, not Card root geometry.
 The authored schema path for a Rest surface is:
 
 ```txt
-components.container.elements.e1.palettes[segment][theme][surfaceContext].boxColor[intent][emphasis].rest
+components.container.elements.e1.palettes[segment][theme][surfaceContext][colorVariant].boxColor[intent][emphasis].rest
 ```
 
 The generated Card artifact still carries the resolved Rest surface and is the source for tooling

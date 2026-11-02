@@ -31,7 +31,7 @@ does not turn profiles into component scales or create profile-specific CSS sele
 
 The descriptive `typography.kiskadee.json` records the corresponding compact key for inspection.
 `Text` resolves the `t` bucket directly without loading that descriptive artifact. Its foreground
-classes remain independent in the ordinary `c.s` and optional `c.v` buckets; see
+classes remain independent in the ordinary `c.<s|v>.<s|a>` buckets; see
 [Text consumption](../../../components/react/docs/definitions/text/text-profiles.md).
 
 ## Catalog utilities

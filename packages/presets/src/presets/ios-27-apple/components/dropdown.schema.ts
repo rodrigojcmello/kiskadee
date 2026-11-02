@@ -59,28 +59,34 @@ export function createIos27AppleDropdownSchema({
     return {
       surface: {
         onSubtle: {
-          boxColor: { neutral: { medium: { rest: surface } } },
-          borderColor: {
-            neutral: { medium: { rest: contour(`neutral.standard.${theme}.onSubtle.low`) } }
+          standard: {
+            boxColor: { neutral: { medium: { rest: surface } } },
+            borderColor: {
+              neutral: { medium: { rest: contour(`neutral.standard.${theme}.onSubtle.low`) } }
+            }
           }
         }
       },
       scrollAffordance: {
         onSubtle: {
-          boxColor: { neutral: { medium: { rest: surface } } },
-          textColor
+          standard: {
+            boxColor: { neutral: { medium: { rest: surface } } },
+            textColor
+          }
         }
       },
       item: {
         onSubtle: {
-          boxColor: {
-            neutral: { medium: itemColors },
-            destructive: { medium: itemColors }
+          standard: {
+            boxColor: {
+              neutral: { medium: itemColors },
+              destructive: { medium: itemColors }
+            }
           }
         }
       },
-      text: { onSubtle: { textColor } },
-      auxiliaryText: { onSubtle: { textColor: auxiliaryText } }
+      text: { onSubtle: { standard: { textColor } } },
+      auxiliaryText: { onSubtle: { standard: { textColor: auxiliaryText } } }
     };
   };
 

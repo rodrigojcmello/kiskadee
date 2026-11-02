@@ -18,12 +18,14 @@ const map = {
   default: {
     light: {
       onSubtle: {
-        primary: {
-          high: {
-            rest: 'onVivid' as const,
-            selected: 'inherit' as const,
-            pending: 'onSubtle' as const,
-            disabled: 'onVivid' as const
+        standard: {
+          primary: {
+            high: {
+              rest: 'onVivid' as const,
+              selected: 'inherit' as const,
+              pending: 'onSubtle' as const,
+              disabled: 'onVivid' as const
+            }
           }
         }
       }

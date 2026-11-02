@@ -70,12 +70,17 @@ export function createCarbonIbmBadgeSchema({ c }: { c: CarbonIbmColorResolver })
       );
     return {
       onSubtle: {
-        [type === 'surface' || type === 'separation' ? 'boxColor' : 'textColor']: createMap(false),
-        ...(type === 'separation' && { borderColor: createMap(false) })
+        standard: {
+          [type === 'surface' || type === 'separation' ? 'boxColor' : 'textColor']:
+            createMap(false),
+          ...(type === 'separation' && { borderColor: createMap(false) })
+        }
       },
       onVivid: {
-        [type === 'surface' || type === 'separation' ? 'boxColor' : 'textColor']: createMap(true),
-        ...(type === 'separation' && { borderColor: createMap(true) })
+        standard: {
+          [type === 'surface' || type === 'separation' ? 'boxColor' : 'textColor']: createMap(true),
+          ...(type === 'separation' && { borderColor: createMap(true) })
+        }
       }
     };
   };

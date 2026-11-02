@@ -50,7 +50,7 @@ import type {
   SwitchControlTextVisibility,
   SwitchMode,
   SwitchVariant,
-  SystemButtonIntent,
+  SystemButtonIntentValue,
   TabsBridgeLowerCurve,
   TabsIndicatorPosition,
   TabsIndicatorShape,
@@ -127,7 +127,7 @@ export type KiskadeeComponentConfigs = {
       disclosureDivider?: boolean;
       indicatorPlacement?: ButtonIndicatorPlacement;
       selectionEmphasis?: ButtonSelectionEmphasis;
-      selectionIntent?: SystemButtonIntent;
+      selectionIntent?: SystemButtonIntentValue;
     };
     effects?: {
       activationFeedback?: ActivationFeedbackSetting;

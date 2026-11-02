@@ -7,8 +7,10 @@ Styled React components for the Kiskadee design-system framework. Ships compiled
 Button composition contracts cover [icons and stacked layout](docs/definitions/button/icon-composition.md),
 [connected groups](docs/definitions/button/connected-groups.md) and the optional
 [state indicator](docs/definitions/button/state-indicator.md).
-Indicator eligibility follows the preset scope; `indicator` overrides it per instance without
-changing the Button's selected state or dimensions.
+[Selection emphasis](docs/definitions/button/selection-emphasis.md) requests the indicator;
+[color variants](docs/definitions/button/color-variants.md) select shared Standard/Alternative
+body paint through qualified values such as `intent="primary-alt"` and
+`selectionIntent="primary-alt"`, while indicators retain their Standard recipes.
 
 ## Build scripts
 

@@ -135,38 +135,40 @@ const textPalettes = {
   default: {
     light: {
       onSubtle: {
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: c.ink,
-              hover: c.ink,
-              focus: c.ink,
-              pressed: c.ink,
-              disabled: c.inkDisabled
-            }),
-            low: states({
-              rest: c.inkMuted,
-              hover: c.inkSoft,
-              focus: c.inkMuted,
-              pressed: c.inkSoft,
-              disabled: c.inkDisabled
-            })
-          },
-          primary: {
-            medium: states({
-              rest: c.violet,
-              hover: c.violetHover,
-              focus: c.violet,
-              pressed: c.violetPressed,
-              disabled: c.primaryDisabled
-            }),
-            low: states({
-              rest: '#634899',
-              hover: c.violet,
-              focus: '#634899',
-              pressed: c.violetPressed,
-              disabled: c.primaryDisabled
-            })
+        standard: {
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: c.ink,
+                hover: c.ink,
+                focus: c.ink,
+                pressed: c.ink,
+                disabled: c.inkDisabled
+              }),
+              low: states({
+                rest: c.inkMuted,
+                hover: c.inkSoft,
+                focus: c.inkMuted,
+                pressed: c.inkSoft,
+                disabled: c.inkDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: c.violet,
+                hover: c.violetHover,
+                focus: c.violet,
+                pressed: c.violetPressed,
+                disabled: c.primaryDisabled
+              }),
+              low: states({
+                rest: '#634899',
+                hover: c.violet,
+                focus: '#634899',
+                pressed: c.violetPressed,
+                disabled: c.primaryDisabled
+              })
+            }
           }
         }
       }
@@ -178,15 +180,17 @@ const optionalIndicatorPalettes = {
   default: {
     light: {
       onSubtle: {
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: c.optionalIndicator,
-              hover: c.optionalIndicator,
-              focus: c.optionalIndicator,
-              pressed: c.optionalIndicator,
-              disabled: c.optionalIndicatorDisabled
-            })
+        standard: {
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: c.optionalIndicator,
+                hover: c.optionalIndicator,
+                focus: c.optionalIndicator,
+                pressed: c.optionalIndicator,
+                disabled: c.optionalIndicatorDisabled
+              })
+            }
           }
         }
       }
@@ -198,24 +202,26 @@ const iconPalettes = {
   default: {
     light: {
       onSubtle: {
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: c.inkMuted,
-              hover: c.inkSoft,
-              focus: c.inkMuted,
-              pressed: c.ink,
-              disabled: c.inkDisabled
-            })
-          },
-          primary: {
-            medium: states({
-              rest: c.violet,
-              hover: c.violetHover,
-              focus: c.violet,
-              pressed: c.violetPressed,
-              disabled: c.primaryDisabled
-            })
+        standard: {
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: c.inkMuted,
+                hover: c.inkSoft,
+                focus: c.inkMuted,
+                pressed: c.ink,
+                disabled: c.inkDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: c.violet,
+                hover: c.violetHover,
+                focus: c.violet,
+                pressed: c.violetPressed,
+                disabled: c.primaryDisabled
+              })
+            }
           }
         }
       }
@@ -227,44 +233,46 @@ const trackPalettes = {
   default: {
     light: {
       onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: c.track,
-              hover: c.trackHover,
-              focus: c.track,
-              pressed: c.trackPressed,
-              disabled: c.trackDisabled
-            })
+        standard: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: c.track,
+                hover: c.trackHover,
+                focus: c.track,
+                pressed: c.trackPressed,
+                disabled: c.trackDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: '#2856e23d',
+                hover: '#2856e252',
+                focus: '#2856e23d',
+                pressed: '#2856e266',
+                disabled: '#c2c7d638'
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: '#2856e23d',
-              hover: '#2856e252',
-              focus: '#2856e23d',
-              pressed: '#2856e266',
-              disabled: '#c2c7d638'
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: transparent,
-              hover: transparent,
-              focus: transparent,
-              pressed: transparent,
-              disabled: transparent
-            })
-          },
-          primary: {
-            medium: states({
-              rest: transparent,
-              hover: transparent,
-              focus: transparent,
-              pressed: transparent,
-              disabled: transparent
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: transparent,
+                hover: transparent,
+                focus: transparent,
+                pressed: transparent,
+                disabled: transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: transparent,
+                hover: transparent,
+                focus: transparent,
+                pressed: transparent,
+                disabled: transparent
+              })
+            }
           }
         }
       }
@@ -276,44 +284,46 @@ const activeTrackPalettes = {
   default: {
     light: {
       onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: c.primary,
-              hover: c.primaryHover,
-              focus: c.primary,
-              pressed: c.primaryPressed,
-              disabled: c.primaryDisabled
-            })
+        standard: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: c.primary,
+                hover: c.primaryHover,
+                focus: c.primary,
+                pressed: c.primaryPressed,
+                disabled: c.primaryDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: c.violet,
+                hover: c.violetHover,
+                focus: c.violet,
+                pressed: c.violetPressed,
+                disabled: c.primaryDisabled
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: c.violet,
-              hover: c.violetHover,
-              focus: c.violet,
-              pressed: c.violetPressed,
-              disabled: c.primaryDisabled
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: transparent,
-              hover: transparent,
-              focus: transparent,
-              pressed: transparent,
-              disabled: transparent
-            })
-          },
-          primary: {
-            medium: states({
-              rest: transparent,
-              hover: transparent,
-              focus: transparent,
-              pressed: transparent,
-              disabled: transparent
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: transparent,
+                hover: transparent,
+                focus: transparent,
+                pressed: transparent,
+                disabled: transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: transparent,
+                hover: transparent,
+                focus: transparent,
+                pressed: transparent,
+                disabled: transparent
+              })
+            }
           }
         }
       }
@@ -325,44 +335,46 @@ const thumbPalettes = {
   default: {
     light: {
       onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: c.surface,
-              hover: c.white,
-              focus: c.white,
-              pressed: '#edf1fd',
-              disabled: '#d6dae0'
-            })
+        standard: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: c.surface,
+                hover: c.white,
+                focus: c.white,
+                pressed: '#edf1fd',
+                disabled: '#d6dae0'
+              })
+            },
+            primary: {
+              medium: states({
+                rest: c.surface,
+                hover: c.white,
+                focus: c.white,
+                pressed: '#efe9fb',
+                disabled: '#d4d8e2'
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: c.surface,
-              hover: c.white,
-              focus: c.white,
-              pressed: '#efe9fb',
-              disabled: '#d4d8e2'
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: c.primary,
-              hover: c.primaryHover,
-              focus: c.primary,
-              pressed: c.primaryPressed,
-              disabled: c.primaryDisabled
-            })
-          },
-          primary: {
-            medium: states({
-              rest: c.violet,
-              hover: c.violetHover,
-              focus: c.violet,
-              pressed: c.violetPressed,
-              disabled: c.primaryDisabled
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: c.primary,
+                hover: c.primaryHover,
+                focus: c.primary,
+                pressed: c.primaryPressed,
+                disabled: c.primaryDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: c.violet,
+                hover: c.violetHover,
+                focus: c.violet,
+                pressed: c.violetPressed,
+                disabled: c.primaryDisabled
+              })
+            }
           }
         }
       }
@@ -374,64 +386,66 @@ const valueIndicatorPalettes = {
   default: {
     light: {
       onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: states({
-              rest: c.primary,
-              hover: c.primaryHover,
-              focus: c.primary,
-              pressed: c.primaryPressed,
-              disabled: c.primaryDisabled
-            })
+        standard: {
+          boxColor: {
+            neutral: {
+              medium: states({
+                rest: c.primary,
+                hover: c.primaryHover,
+                focus: c.primary,
+                pressed: c.primaryPressed,
+                disabled: c.primaryDisabled
+              })
+            },
+            primary: {
+              medium: states({
+                rest: c.violet,
+                hover: c.violetHover,
+                focus: c.violet,
+                pressed: c.violetPressed,
+                disabled: c.primaryDisabled
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: c.violet,
-              hover: c.violetHover,
-              focus: c.violet,
-              pressed: c.violetPressed,
-              disabled: c.primaryDisabled
-            })
-          }
-        },
-        borderColor: {
-          neutral: {
-            medium: states({
-              rest: transparent,
-              hover: transparent,
-              focus: transparent,
-              pressed: transparent,
-              disabled: transparent
-            })
+          borderColor: {
+            neutral: {
+              medium: states({
+                rest: transparent,
+                hover: transparent,
+                focus: transparent,
+                pressed: transparent,
+                disabled: transparent
+              })
+            },
+            primary: {
+              medium: states({
+                rest: transparent,
+                hover: transparent,
+                focus: transparent,
+                pressed: transparent,
+                disabled: transparent
+              })
+            }
           },
-          primary: {
-            medium: states({
-              rest: transparent,
-              hover: transparent,
-              focus: transparent,
-              pressed: transparent,
-              disabled: transparent
-            })
-          }
-        },
-        textColor: {
-          neutral: {
-            medium: states({
-              rest: c.white,
-              hover: c.white,
-              focus: c.white,
-              pressed: c.white,
-              disabled: c.white
-            })
-          },
-          primary: {
-            medium: states({
-              rest: c.white,
-              hover: c.white,
-              focus: c.white,
-              pressed: c.white,
-              disabled: c.white
-            })
+          textColor: {
+            neutral: {
+              medium: states({
+                rest: c.white,
+                hover: c.white,
+                focus: c.white,
+                pressed: c.white,
+                disabled: c.white
+              })
+            },
+            primary: {
+              medium: states({
+                rest: c.white,
+                hover: c.white,
+                focus: c.white,
+                pressed: c.white,
+                disabled: c.white
+              })
+            }
           }
         }
       }

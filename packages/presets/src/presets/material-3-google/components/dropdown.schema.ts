@@ -72,8 +72,8 @@ const THEMES = {
 >;
 
 const withSurfaceContexts = <T>(palette: T) => ({
-  onSubtle: palette,
-  onVivid: palette
+  onSubtle: { standard: palette },
+  onVivid: { standard: palette }
 });
 
 export function createMaterial3GoogleDropdownSchema({

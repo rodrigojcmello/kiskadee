@@ -84,8 +84,14 @@ export function createMaterial3GoogleButtonSchema({
         : { textColor: property('textColor') };
     };
     return {
-      light: { onSubtle: context('light', 'onSubtle'), onVivid: context('light', 'onVivid') },
-      dark: { onSubtle: context('dark', 'onSubtle'), onVivid: context('dark', 'onVivid') }
+      light: {
+        onSubtle: { standard: context('light', 'onSubtle') },
+        onVivid: { standard: context('light', 'onVivid') }
+      },
+      dark: {
+        onSubtle: { standard: context('dark', 'onSubtle') },
+        onVivid: { standard: context('dark', 'onVivid') }
+      }
     };
   };
   const contentContext = (surface: 'onSubtle' | 'onVivid', theme: 'light' | 'dark') => {
@@ -110,12 +116,12 @@ export function createMaterial3GoogleButtonSchema({
     },
     contentSurfaceContext: buildBySegment(segmentNames, () => ({
       light: {
-        onSubtle: contentContext('onSubtle', 'light'),
-        onVivid: contentContext('onVivid', 'light')
+        onSubtle: { standard: contentContext('onSubtle', 'light') },
+        onVivid: { standard: contentContext('onVivid', 'light') }
       },
       dark: {
-        onSubtle: contentContext('onSubtle', 'dark'),
-        onVivid: contentContext('onVivid', 'dark')
+        onSubtle: { standard: contentContext('onSubtle', 'dark') },
+        onVivid: { standard: contentContext('onVivid', 'dark') }
       }
     })),
     effects: {

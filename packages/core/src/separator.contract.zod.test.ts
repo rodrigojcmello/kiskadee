@@ -1,18 +1,22 @@
 import { describe, expect, it } from 'vitest';
+import { resolveColorVariantPalette } from './color-variant.ts';
 import {
   getSchemaSeparatorsContractIssues,
   validateElementSeparatorContract,
   validateSchemaSeparatorsDefinitionContract
 } from './separator.contract.zod.ts';
+import type { SeparatorProfilePalettes } from './separator.ts';
 
 function palettes(color = '#d1d1d1') {
   return {
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: { rest: color }
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: { rest: color }
+              }
             }
           }
         }
@@ -22,6 +26,46 @@ function palettes(color = '#d1d1d1') {
 }
 
 describe('separator contract', () => {
+  it('accepts sparse Alternative intents and emphases while preserving complete Standard', () => {
+    const profilePalettes = {
+      default: {
+        light: {
+          onSubtle: {
+            standard: palettes().default.light.onSubtle.standard,
+            alternative: { boxColor: { primary: { low: { rest: '#ffffff' } } } }
+          }
+        }
+      }
+    } satisfies SeparatorProfilePalettes;
+    const validate = (value: unknown) =>
+      validateSchemaSeparatorsDefinitionContract({
+        profiles: { sparse: { scales: { boxWidth: 1 }, palettes: value } }
+      });
+    expect(validate(profilePalettes)).toEqual([]);
+    expect(
+      resolveColorVariantPalette(profilePalettes.default.light.onSubtle, 'alternative')
+    ).toEqual({
+      boxColor: {
+        neutral: { medium: { rest: '#d1d1d1' } },
+        primary: { low: { rest: '#ffffff' } }
+      }
+    });
+    const invalid = structuredClone(profilePalettes) as any;
+    invalid.default.light.onSubtle.alternative.boxColor.primary.low = { hover: '#ffffff' };
+    expect(validate(invalid)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('.alternative.boxColor.primary.low.rest: required state'),
+        expect.stringContaining('.alternative.boxColor.primary.low.hover: unrecognized state')
+      ])
+    );
+    delete invalid.default.light.onSubtle.standard.boxColor.neutral;
+    expect(validate(invalid)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('.standard.boxColor.neutral: required intent')
+      ])
+    );
+  });
+
   it('accepts optional emphasis but validates its Rest-only state map', () => {
     const validate = (low: unknown) => {
       const palette = palettes();
@@ -33,10 +77,12 @@ describe('separator contract', () => {
               default: {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      neutral: {
-                        ...palette.default.light.onSubtle.boxColor.neutral,
-                        low
+                    standard: {
+                      boxColor: {
+                        neutral: {
+                          ...palette.default.light.onSubtle.standard.boxColor.neutral,
+                          low
+                        }
                       }
                     }
                   }
@@ -107,9 +153,11 @@ describe('separator contract', () => {
               default: {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      neutral: valid.default.light.onSubtle.boxColor.neutral,
-                      primary: { medium: { rest: '#0064b424' } }
+                    standard: {
+                      boxColor: {
+                        neutral: valid.default.light.onSubtle.standard.boxColor.neutral,
+                        primary: { medium: { rest: '#0064b424' } }
+                      }
                     }
                   }
                 }
@@ -127,8 +175,10 @@ describe('separator contract', () => {
             default: {
               light: {
                 onSubtle: {
-                  boxColor: {
-                    primary: { low: { hover: '#ffffff' } }
+                  standard: {
+                    boxColor: {
+                      primary: { low: { hover: '#ffffff' } }
+                    }
                   }
                 }
               }
@@ -179,7 +229,9 @@ describe('separator contract', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      boxColor: { neutral: { medium: { rest: '#ffffff' } } }
+                      standard: {
+                        boxColor: { neutral: { medium: { rest: '#ffffff' } } }
+                      }
                     }
                   }
                 }

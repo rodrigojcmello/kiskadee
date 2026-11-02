@@ -144,20 +144,28 @@ export function createIos27AppleBrandButtonProjection(
 
   const createContainerTheme = (theme: Ios27AppleButtonFormulaTheme) => ({
     onSubtle: {
-      boxColor: selectProperty(onSubtle[theme], 'boxColor'),
-      borderColor: selectProperty(onSubtle[theme], 'borderColor')
+      standard: {
+        boxColor: selectProperty(onSubtle[theme], 'boxColor'),
+        borderColor: selectProperty(onSubtle[theme], 'borderColor')
+      }
     },
     onVivid: {
-      boxColor: selectProperty(onVivid, 'boxColor'),
-      borderColor: selectProperty(onVivid, 'borderColor')
+      standard: {
+        boxColor: selectProperty(onVivid, 'boxColor'),
+        borderColor: selectProperty(onVivid, 'borderColor')
+      }
     }
   });
   const createContentTheme = (theme: Ios27AppleButtonFormulaTheme) => ({
     onSubtle: {
-      textColor: selectProperty(onSubtle[theme], 'textColor')
+      standard: {
+        textColor: selectProperty(onSubtle[theme], 'textColor')
+      }
     },
     onVivid: {
-      textColor: selectProperty(onVivid, 'textColor')
+      standard: {
+        textColor: selectProperty(onVivid, 'textColor')
+      }
     }
   });
 

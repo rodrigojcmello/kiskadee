@@ -28,7 +28,8 @@ function readRest(
   const bySegment = isRecord(palettes) ? palettes[segment] : undefined;
   const byTheme = isRecord(bySegment) ? bySegment[theme] : undefined;
   const byContext = isRecord(byTheme) ? byTheme.onSubtle : undefined;
-  const colors = isRecord(byContext) ? byContext.boxColor : undefined;
+  const standard = isRecord(byContext) ? byContext.standard : undefined;
+  const colors = isRecord(standard) ? standard.boxColor : undefined;
   const byIntent = isRecord(colors) ? colors[intent] : undefined;
   const byEmphasis = isRecord(byIntent) ? byIntent[emphasis] : undefined;
   const rest = isRecord(byEmphasis) ? byEmphasis.rest : undefined;

@@ -1,3 +1,4 @@
+import { resolveColorVariantLeaves } from '../color-variant.ts';
 import {
   type ContentSurfaceContextMap,
   validateContentSurfaceContextMap
@@ -6,13 +7,16 @@ import {
   type ComponentEmphasis,
   type ContainerIntent,
   ContainerIntentKeys,
+  colorVariants,
   componentEmphasisBuckets,
   type SegmentName,
   type SolidColor,
   type SurfaceContext,
+  type SurfaceContextPalette,
   surfaceContexts,
   type ThemeMode
 } from '../types/colors/colors.types.ts';
+import { getElementPaletteValidationIssues } from './palettes.ts';
 
 export type ContainerRestPalette = Partial<
   Record<ContainerIntent, Partial<Record<ComponentEmphasis, { rest: SolidColor }>>>
@@ -23,15 +27,7 @@ export type ContainerSurfaceElementStyle<TSegmentName extends SegmentName = neve
   palettes: Partial<
     Record<
       TSegmentName | 'default' | 'dynamic',
-      Partial<
-        Record<
-          ThemeMode,
-          {
-            onSubtle: { boxColor: ContainerRestPalette };
-            onVivid?: { boxColor: ContainerRestPalette };
-          }
-        >
-      >
+      Partial<Record<ThemeMode, SurfaceContextPalette<{ boxColor: ContainerRestPalette }>>>
     >
   >;
 };
@@ -134,6 +130,7 @@ function validateCanonicalSurfaces(
           segment,
           theme,
           'onSubtle',
+          'standard',
           'boxColor',
           intent,
           emphasis,
@@ -176,6 +173,9 @@ export function validateContainerComponentContract(
   if (!isRecord(element.palettes) || Object.keys(element.palettes).length === 0) {
     return [...issues, `${path}.elements.e1.palettes: expected non-empty object`];
   }
+  for (const issue of getElementPaletteValidationIssues(element.palettes, ['boxColor'])) {
+    issues.push(`${path}.elements.e1.palettes.${issue.path.join('.')}: ${issue.message}`);
+  }
   if (value.options !== undefined) {
     if (!isRecord(value.options)) issues.push(`${path}.options: expected object`);
     else validateCanonicalSurfaces(value.options, element.palettes, `${path}.options`, issues);
@@ -196,56 +196,69 @@ export function validateContainerComponentContract(
       }
       allowKeys(contexts, surfaceContexts, themePath, issues);
       if (!isRecord(contexts.onSubtle)) issues.push(`${themePath}.onSubtle: required context`);
-      for (const [context, colors] of Object.entries(contexts)) {
-        const contextPath = `${themePath}.${context}`;
-        if (!isRecord(colors)) {
-          issues.push(`${contextPath}: expected object`);
+      for (const [context, variants] of Object.entries(contexts)) {
+        const variantPath = `${themePath}.${context}`;
+        if (!isRecord(variants)) {
+          issues.push(`${variantPath}: expected object`);
           continue;
         }
-        allowKeys(colors, ['boxColor'], contextPath, issues);
-        if (!isRecord(colors.boxColor) || Object.keys(colors.boxColor).length === 0) {
-          issues.push(`${contextPath}.boxColor: expected non-empty object`);
-          continue;
-        }
-        allowKeys(
-          colors.boxColor,
-          Object.keys(ContainerIntentKeys),
-          `${contextPath}.boxColor`,
-          issues
-        );
-        for (const [intent, emphases] of Object.entries(colors.boxColor)) {
-          const intentPath = `${contextPath}.boxColor.${intent}`;
-          if (!isRecord(emphases)) {
-            issues.push(`${intentPath}: expected object`);
+        allowKeys(variants, colorVariants, variantPath, issues);
+        if (!isRecord(variants.standard))
+          issues.push(`${variantPath}.standard: required color variant`);
+        for (const [variant, colors] of Object.entries(variants)) {
+          const contextPath = `${variantPath}.${variant}`;
+          if (!isRecord(colors)) {
+            issues.push(`${contextPath}: expected object`);
             continue;
           }
-          allowKeys(emphases, Object.keys(componentEmphasisBuckets), intentPath, issues);
-          for (const [emphasis, states] of Object.entries(emphases)) {
-            const statePath = `${intentPath}.${emphasis}`;
-            if (!isRecord(states)) {
-              issues.push(`${statePath}: expected object`);
+          allowKeys(colors, ['boxColor'], contextPath, issues);
+          if (!isRecord(colors.boxColor) || Object.keys(colors.boxColor).length === 0) {
+            issues.push(`${contextPath}.boxColor: expected non-empty object`);
+            continue;
+          }
+          allowKeys(
+            colors.boxColor,
+            Object.keys(ContainerIntentKeys),
+            `${contextPath}.boxColor`,
+            issues
+          );
+          for (const [intent, emphases] of Object.entries(colors.boxColor)) {
+            const intentPath = `${contextPath}.boxColor.${intent}`;
+            if (!isRecord(emphases)) {
+              issues.push(`${intentPath}: expected object`);
               continue;
             }
-            allowKeys(states, ['rest'], statePath, issues);
-            if (typeof states.rest !== 'string' || !states.rest.trim()) {
-              issues.push(`${statePath}.rest: expected solid color`);
-            }
-            const output = isRecord(value.contentSurfaceContext)
-              ? (value.contentSurfaceContext as Record<string, any>)[segment]?.[theme]?.[context]?.[
-                  intent
-                ]?.[emphasis]
-              : undefined;
-            if (!isRecord(output) || typeof output.rest !== 'string') {
-              issues.push(
-                `${path}.contentSurfaceContext.${segment}.${theme}.${context}.${intent}.${emphasis}.rest: required output`
-              );
-            } else {
-              allowKeys(
-                output,
-                ['rest'],
-                `${path}.contentSurfaceContext.${segment}.${theme}.${context}.${intent}.${emphasis}`,
-                issues
-              );
+            allowKeys(emphases, Object.keys(componentEmphasisBuckets), intentPath, issues);
+            for (const [emphasis, states] of Object.entries(emphases)) {
+              const statePath = `${intentPath}.${emphasis}`;
+              if (!isRecord(states)) {
+                issues.push(`${statePath}: expected object`);
+                continue;
+              }
+              allowKeys(states, ['rest'], statePath, issues);
+              if (typeof states.rest !== 'string' || !states.rest.trim()) {
+                issues.push(`${statePath}.rest: expected solid color`);
+              }
+              const outputVariants = atPath(value.contentSurfaceContext, [segment, theme, context]);
+              const outputMap = isRecord(outputVariants)
+                ? resolveColorVariantLeaves(
+                    outputVariants.standard,
+                    variant === 'alternative' ? outputVariants.alternative : undefined
+                  )
+                : undefined;
+              const output = atPath(outputMap, [intent, emphasis]);
+              if (!isRecord(output) || typeof output.rest !== 'string') {
+                issues.push(
+                  `${path}.contentSurfaceContext.${segment}.${theme}.${context}.${variant}.${intent}.${emphasis}.rest: required output`
+                );
+              } else {
+                allowKeys(
+                  output,
+                  ['rest'],
+                  `${path}.contentSurfaceContext.${segment}.${theme}.${context}.${variant}.${intent}.${emphasis}`,
+                  issues
+                );
+              }
             }
           }
         }

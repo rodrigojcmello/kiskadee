@@ -51,15 +51,15 @@ describe('Fluent TextField internal content', () => {
         .rest as string;
       for (const theme of ['light', 'dark', 'darker'] as const) {
         const background = schema.components.button!.elements!.e1!.palettes![segment]![theme]!
-          .onSubtle.boxColor!.primary!.high!.rest as string;
+          .onSubtle!.standard.boxColor!.primary!.high!.rest as string;
         const iconContrast = contrastRatio(compositeForeground(vividIcon, background), background);
         expect(iconContrast).toBeGreaterThanOrEqual(3);
         expect(iconContrast).toBeLessThan(contrastRatio(buttonForeground, background));
         for (const mode of modes) {
-          const icon = mode.elements.e9!.palettes![segment]![theme]!.onSubtle!.textColor!.neutral!
-            .lowest!.rest as string;
-          const surface = mode.elements.e8!.palettes![segment]![theme]!.onSubtle!.boxColor!.neutral!
-            .medium!.rest as string;
+          const icon = mode.elements.e9!.palettes![segment]![theme]!.onSubtle!.standard.textColor!
+            .neutral!.lowest!.rest as string;
+          const surface = mode.elements.e8!.palettes![segment]![theme]!.onSubtle!.standard.boxColor!
+            .neutral!.medium!.rest as string;
           expect(contrastRatio(icon, surface)).toBeGreaterThanOrEqual(3);
         }
       }
@@ -73,8 +73,8 @@ describe('Fluent TextField internal content', () => {
           const track = theme === 'light' ? 'light' : 'dark';
           for (const context of ['onSubtle', 'onVivid'] as const) {
             const frame =
-              mode.elements.e8!.palettes![segment]![theme]![context]!.boxColor!.neutral!.medium!
-                .rest;
+              mode.elements.e8!.palettes![segment]![theme]![context]!.standard.boxColor!.neutral!
+                .medium!.rest;
             for (const [intent, family, asset] of [
               ['error', 'red', red],
               ['warning', 'orange', orange]
@@ -84,7 +84,9 @@ describe('Fluent TextField internal content', () => {
                   .onSubtle.high.rest;
               for (const slot of ['e9', 'e10'] as const) {
                 const paint =
-                  mode.elements[slot]!.palettes![segment]![theme]![context]!.textColor![intent]!;
+                  mode.elements[slot]!.palettes![segment]![theme]![context]!.standard.textColor![
+                    intent
+                  ]!;
                 expect(paint.medium!.rest).toBe(`fg:${family}.deep.${theme}.onSubtle.high`);
                 expect(paint.lowest!.rest).toBe(
                   asset.scales[track][asset.functionalReferences[track].vivid]
@@ -122,7 +124,8 @@ describe('Fluent TextField internal content', () => {
         for (const segment of ['default', 'teams'] as const) {
           for (const theme of ['light', 'dark', 'darker'] as const) {
             for (const context of ['onSubtle', 'onVivid'] as const) {
-              const paint = mode.elements[slot]!.palettes![segment]![theme]![context]!.textColor!;
+              const paint =
+                mode.elements[slot]!.palettes![segment]![theme]![context]!.standard.textColor!;
               for (const intent of ['neutral', 'error', 'warning'] as const) {
                 for (const emphasis of ['lowest', 'medium'] as const) {
                   expect(Object.keys(paint[intent]![emphasis]!)).toEqual(['rest']);
@@ -149,8 +152,8 @@ describe('Fluent TextField internal content', () => {
       for (const segment of ['default', 'teams'] as const) {
         for (const theme of ['light', 'dark', 'darker'] as const) {
           const frame = e8!.palettes![segment]![theme]!;
-          expect(frame.onVivid).toEqual(frame.onSubtle);
-          for (const paint of Object.values(frame.onSubtle!)) {
+          expect(frame.onVivid!.standard).toEqual(frame.onSubtle!.standard);
+          for (const paint of Object.values(frame.onSubtle!.standard)) {
             for (const intent of ['neutral', 'error', 'warning'] as const) {
               expect(Object.keys(paint![intent]!)).toEqual(['lowest', 'medium']);
               for (const emphasis of ['lowest', 'medium'] as const) {
@@ -162,24 +165,24 @@ describe('Fluent TextField internal content', () => {
           }
           const foreground = e10!.palettes![segment]![theme]!;
           for (const intent of ['neutral', 'error', 'warning'] as const) {
-            expect(foreground.onVivid!.textColor![intent]!.medium).toEqual(
-              foreground.onSubtle!.textColor![intent]!.medium
+            expect(foreground.onVivid!.standard.textColor![intent]!.medium).toEqual(
+              foreground.onSubtle!.standard.textColor![intent]!.medium
             );
           }
         }
-        expect(e9!.palettes![segment]!.light!.onSubtle!.textColor!.neutral!.lowest!.rest).toBe(
-          '#737373'
-        );
-        expect(e10!.palettes![segment]!.light!.onSubtle!.textColor!.neutral!.lowest!.rest).toBe(
-          '#616161'
-        );
+        expect(
+          e9!.palettes![segment]!.light!.onSubtle!.standard.textColor!.neutral!.lowest!.rest
+        ).toBe('#737373');
+        expect(
+          e10!.palettes![segment]!.light!.onSubtle!.standard.textColor!.neutral!.lowest!.rest
+        ).toBe('#616161');
         for (const theme of ['light', 'dark', 'darker'] as const) {
           for (const emphasis of ['lowest', 'medium'] as const) {
             expect(
-              e9!.palettes![segment]![theme]!.onVivid!.textColor!.neutral![emphasis]!.rest
+              e9!.palettes![segment]![theme]!.onVivid!.standard.textColor!.neutral![emphasis]!.rest
             ).toBe('fg:neutral.standard.light.onVivid.medium');
             expect(
-              e9!.palettes![segment]![theme]!.onSubtle!.textColor!.neutral![emphasis]!.rest
+              e9!.palettes![segment]![theme]!.onSubtle!.standard.textColor!.neutral![emphasis]!.rest
             ).toBe(theme === 'light' ? '#737373' : '#a3a3a3');
           }
         }
@@ -197,15 +200,16 @@ describe('Fluent TextField internal content', () => {
             for (const context of ['onSubtle', 'onVivid'] as const) {
               for (const intent of ['neutral', 'error', 'warning'] as const) {
                 expect(
-                  mode.contentSurfaceContext![segment]![theme]![context]![intent]!.medium!.rest
+                  mode.contentSurfaceContext![segment]![theme]![context]!.standard[intent]!.medium!
+                    .rest
                 ).toBe(expected);
                 expect(
-                  mode.contentRegionSurfaceContext![segment]![theme]![context]![intent]!.lowest!
-                    .rest
+                  mode.contentRegionSurfaceContext![segment]![theme]![context]!.standard[intent]!
+                    .lowest!.rest
                 ).toBe('inherit');
                 expect(
-                  mode.contentRegionSurfaceContext![segment]![theme]![context]![intent]!.medium!
-                    .rest
+                  mode.contentRegionSurfaceContext![segment]![theme]![context]!.standard[intent]!
+                    .medium!.rest
                 ).toBe('onSubtle');
               }
             }
@@ -223,13 +227,13 @@ describe('Fluent TextField Light onSubtle', () => {
       for (const slot of ['e2', 'e3', 'e4', 'e5'] as const) {
         for (const segment of ['default', 'teams'] as const) {
           const palettes = mode.elements[slot]!.palettes![segment]!;
-          expect(palettes.light?.onSubtle).toBeDefined();
-          expect(palettes.light?.onVivid).toBeDefined();
-          expect(palettes.dark?.onSubtle).toBeDefined();
-          expect(palettes.dark?.onVivid).toBeDefined();
-          expect(palettes.darker?.onSubtle).toBeDefined();
-          expect(palettes.darker?.onVivid).toBeDefined();
-          for (const paint of Object.values(palettes.light!.onSubtle)) {
+          expect(palettes.light?.onSubtle?.standard).toBeDefined();
+          expect(palettes.light?.onVivid?.standard).toBeDefined();
+          expect(palettes.dark?.onSubtle?.standard).toBeDefined();
+          expect(palettes.dark?.onVivid?.standard).toBeDefined();
+          expect(palettes.darker?.onSubtle?.standard).toBeDefined();
+          expect(palettes.darker?.onVivid?.standard).toBeDefined();
+          for (const paint of Object.values(palettes.light!.onSubtle!.standard)) {
             for (const intent of ['neutral', 'error', 'warning']) {
               expect(
                 (paint as Record<string, { medium: { rest: string } }>)[intent]!.medium.rest
@@ -244,24 +248,26 @@ describe('Fluent TextField Light onSubtle', () => {
   it('keeps neutral surfaces stable while focused brand color follows the active segment', () => {
     const elements = field.variants!.standard!.modes.underline!.elements;
     const line = elements.e6!.palettes!;
-    const defaultPaint = line.default!.light!.onSubtle.boxColor!.neutral!.medium!;
-    const teamsPaint = line.teams!.light!.onSubtle.boxColor!.neutral!.medium!;
+    const defaultPaint = line.default!.light!.onSubtle!.standard.boxColor!.neutral!.medium!;
+    const teamsPaint = line.teams!.light!.onSubtle!.standard.boxColor!.neutral!.medium!;
     expect(defaultPaint.rest).toBe('#616161');
     expect(defaultPaint.hover).toEqual({ ref: '#585858' });
     expect(teamsPaint.rest).toBe(defaultPaint.rest);
     expect(defaultPaint.focus).toEqual({ ref: '#0064b4' });
     expect(teamsPaint.focus).toEqual({ ref: '#5b5fc7' });
     expect(defaultPaint.disabled).toEqual({ ref: '#e0e0e0' });
-    expect(elements.e3!.palettes!.default!.light!.onSubtle.boxColor!.neutral!.medium).toEqual({
+    expect(
+      elements.e3!.palettes!.default!.light!.onSubtle!.standard.boxColor!.neutral!.medium
+    ).toEqual({
       rest: '#ffffff00'
     });
   });
 
   it('keeps validation out of input text and preserves the Rest-only placeholder contract', () => {
     for (const mode of modes) {
-      const control = mode.elements.e3!.palettes!.default!.light!.onSubtle;
-      const input = mode.elements.e4!.palettes!.default!.light!.onSubtle.textColor!;
-      const message = mode.elements.e5!.palettes!.default!.light!.onSubtle.textColor!;
+      const control = mode.elements.e3!.palettes!.default!.light!.onSubtle!.standard;
+      const input = mode.elements.e4!.palettes!.default!.light!.onSubtle!.standard.textColor!;
+      const message = mode.elements.e5!.palettes!.default!.light!.onSubtle!.standard.textColor!;
       for (const intent of ['neutral', 'error', 'warning'] as const) {
         expect(Object.keys(control.textColor![intent]!.medium!)).toEqual(['rest']);
         expect(input[intent]!.medium!.rest).toEqual(input.neutral!.medium!.rest);
@@ -273,8 +279,8 @@ describe('Fluent TextField Light onSubtle', () => {
 
   it('keeps Borderless neutral edges transparent and resets the transient indicator', () => {
     const elements = field.variants!.standard!.modes.borderless!.elements;
-    const border = elements.e3!.palettes!.default!.light!.onSubtle.borderColor!;
-    const line = elements.e6!.palettes!.default!.light!.onSubtle.boxColor!;
+    const border = elements.e3!.palettes!.default!.light!.onSubtle!.standard.borderColor!;
+    const line = elements.e6!.palettes!.default!.light!.onSubtle!.standard.boxColor!;
     expect(border.neutral!.medium!.rest).toBe('#ffffff00');
     expect(border.neutral!.medium!.focus).toBeUndefined();
     expect(elements.e3!.scales!.borderWidth).toBe(1);
@@ -300,13 +306,15 @@ describe('Fluent TextField Light onSubtle', () => {
     const outline = field.variants!.standard!.modes.outline!.elements;
     const underline = field.variants!.standard!.modes.underline!.elements;
     expect(outline.e6!.scales).toEqual(underline.e6!.scales);
-    expect(outline.e6!.palettes!.default!.light!.onSubtle.boxColor!.neutral!.medium!.rest).toBe(
-      '#cbcbcb'
-    );
+    expect(
+      outline.e6!.palettes!.default!.light!.onSubtle!.standard.boxColor!.neutral!.medium!.rest
+    ).toBe('#cbcbcb');
     expect(outline.e6!.scales!.boxHeight).toBe(1);
     expect(
-      outline.e3!.palettes!.default!.light!.onSubtle.borderColor!.neutral!.medium!.rest
-    ).not.toBe(outline.e6!.palettes!.default!.light!.onSubtle.boxColor!.neutral!.medium!.rest);
+      outline.e3!.palettes!.default!.light!.onSubtle!.standard.borderColor!.neutral!.medium!.rest
+    ).not.toBe(
+      outline.e6!.palettes!.default!.light!.onSubtle!.standard.boxColor!.neutral!.medium!.rest
+    );
     expect(field.options!.mode).toBe('outline');
     expect(field.variants!.standard!.options!.mode).toBe('outline');
   });
@@ -314,8 +322,8 @@ describe('Fluent TextField Light onSubtle', () => {
   it('retains neutral Outline contours on focus while preserving validation edges', () => {
     const elements = field.variants!.standard!.modes.outline!.elements;
     for (const segment of ['default', 'teams'] as const) {
-      const border = elements.e3!.palettes![segment]!.light!.onSubtle.borderColor!;
-      const line = elements.e6!.palettes![segment]!.light!.onSubtle.boxColor!;
+      const border = elements.e3!.palettes![segment]!.light!.onSubtle!.standard.borderColor!;
+      const line = elements.e6!.palettes![segment]!.light!.onSubtle!.standard.boxColor!;
       expect(border.neutral!.medium!.focus).toBeUndefined();
       expect(border.neutral!.medium!.hover).toBeUndefined();
       expect(border.neutral!.medium!.pressed).toBeUndefined();
@@ -348,9 +356,9 @@ describe('Fluent TextField canonical surfaces', () => {
     for (const segment of ['default', 'teams'] as const) {
       const fieldPaint =
         field.variants!.standard!.modes.borderless!.elements.e3!.palettes![segment]!.light!
-          .onSubtle;
+          .onSubtle!.standard;
       const cardPaint =
-        schema.components.container!.elements!.e1!.palettes![segment]!.light!.onSubtle;
+        schema.components.container!.elements!.e1!.palettes![segment]!.light!.onSubtle!.standard;
       expect(fieldPaint.boxColor!.neutral!.medium!.rest).toEqual(
         cardPaint.boxColor!.neutral!.medium!.rest
       );
@@ -359,9 +367,10 @@ describe('Fluent TextField canonical surfaces', () => {
   it('preserves its transparent Outline surface independently of the solid Low Button', () => {
     for (const segment of ['default', 'teams'] as const) {
       const fieldPaint =
-        field.variants!.standard!.modes.outline!.elements.e3!.palettes![segment]!.light!.onSubtle;
+        field.variants!.standard!.modes.outline!.elements.e3!.palettes![segment]!.light!.onSubtle!
+          .standard;
       const buttonPaint =
-        schema.components.button!.elements!.e1!.palettes![segment]!.light!.onSubtle;
+        schema.components.button!.elements!.e1!.palettes![segment]!.light!.onSubtle!.standard;
       expect(fieldPaint.borderColor!.neutral!.medium!.rest).toEqual(
         buttonPaint.borderColor!.neutral!.low!.rest
       );
@@ -377,8 +386,8 @@ describe('Fluent Outline bottom contour', () => {
   it('matches the persistent indicator at rest and terminal states without affecting other modes', () => {
     for (const segment of ['default', 'teams'] as const) {
       const outline = field.variants!.standard!.modes.outline!.elements;
-      const bottom = outline.e3!.palettes![segment]!.light!.onSubtle.borderBottomColor!;
-      const indicator = outline.e6!.palettes![segment]!.light!.onSubtle.boxColor!;
+      const bottom = outline.e3!.palettes![segment]!.light!.onSubtle!.standard.borderBottomColor!;
+      const indicator = outline.e6!.palettes![segment]!.light!.onSubtle!.standard.boxColor!;
       for (const intent of ['neutral', 'error', 'warning'] as const) {
         for (const state of ['rest', 'disabled', 'readOnly'] as const) {
           expect(bottom[intent]!.medium![state]).toEqual(indicator[intent]!.medium![state]);
@@ -392,8 +401,8 @@ describe('Fluent Outline bottom contour', () => {
       expect(bottom.warning!.medium!.hover).toBeUndefined();
       for (const mode of ['underline', 'borderless'] as const) {
         expect(
-          field.variants!.standard!.modes[mode]!.elements.e3!.palettes![segment]!.light!.onSubtle
-            .borderBottomColor
+          field.variants!.standard!.modes[mode]!.elements.e3!.palettes![segment]!.light!.onSubtle!
+            .standard.borderBottomColor
         ).toBeUndefined();
       }
     }
@@ -405,26 +414,29 @@ describe('Fluent TextField Dark onSubtle', () => {
     for (const segment of ['default', 'teams'] as const) {
       const standard = field.variants!.standard!.modes;
       const outline = standard.outline!.elements;
-      const paint = outline.e3!.palettes![segment]!.dark!.onSubtle;
-      const button = schema.components.button!.elements!.e1!.palettes![segment]!.dark!.onSubtle;
+      const paint = outline.e3!.palettes![segment]!.dark!.onSubtle!.standard;
+      const button =
+        schema.components.button!.elements!.e1!.palettes![segment]!.dark!.onSubtle!.standard;
       expect(paint.borderColor!.neutral!.medium!.rest).toEqual(
         button.borderColor!.neutral!.low!.rest
       );
       expect(
-        standard.borderless!.elements.e3!.palettes![segment]!.dark!.onSubtle.boxColor!.neutral!
-          .medium!.rest
-      ).toEqual(
-        schema.components.container!.elements!.e1!.palettes![segment]!.dark!.onSubtle.boxColor!
+        standard.borderless!.elements.e3!.palettes![segment]!.dark!.onSubtle!.standard.boxColor!
           .neutral!.medium!.rest
+      ).toEqual(
+        schema.components.container!.elements!.e1!.palettes![segment]!.dark!.onSubtle!.standard
+          .boxColor!.neutral!.medium!.rest
       );
-      const line = outline.e6!.palettes![segment]!.dark!.onSubtle.boxColor!.neutral!.medium!;
+      const line =
+        outline.e6!.palettes![segment]!.dark!.onSubtle!.standard.boxColor!.neutral!.medium!;
       expect(line.rest).toBe('#b4b4b4');
       expect(line.hover).toEqual({ ref: '#d7d7d7' });
       expect(line.focus).not.toEqual(line.hover);
       expect(line.disabled).toEqual(line.readOnly);
       for (const mode of modes) {
         expect(
-          mode.elements.e4!.palettes![segment]!.dark!.onSubtle.textColor!.neutral!.medium!.rest
+          mode.elements.e4!.palettes![segment]!.dark!.onSubtle!.standard.textColor!.neutral!.medium!
+            .rest
         ).toBe('#ffffff');
       }
     }
@@ -441,8 +453,8 @@ describe('Fluent validation family anchors', () => {
         ] as const) {
           const expected = asset.scales[theme][asset.functionalReferences[theme].vivid];
           for (const mode of modes) {
-            const control = mode.elements.e3!.palettes![segment]![theme]!.onSubtle;
-            const message = mode.elements.e5!.palettes![segment]![theme]!.onSubtle;
+            const control = mode.elements.e3!.palettes![segment]![theme]!.onSubtle!.standard;
+            const message = mode.elements.e5!.palettes![segment]![theme]!.onSubtle!.standard;
             expect(control.borderColor![intent]!.medium!.rest).toBe(expected);
             expect(message.textColor![intent]!.medium!.rest).toBe(expected);
           }
@@ -473,13 +485,13 @@ describe('Fluent TextField onVivid', () => {
     const control = field.variants!.standard!.modes.outline!.elements.e3!;
     for (const segment of ['default', 'teams'] as const) {
       for (const theme of ['light', 'dark'] as const) {
-        const paint = control.palettes![segment]![theme]!.onVivid!;
+        const paint = control.palettes![segment]![theme]!.onVivid!.standard;
         expect(paint.borderColor!.neutral!.medium!.rest).toBe(
           theme === 'light' ? '#ffffff4d' : '#ffffffd9'
         );
         expect(paint.boxColor!.neutral!.medium!.rest).toBe('#ffffff00');
         expect(paint.textColor!.neutral!.medium!.rest).not.toEqual(
-          control.palettes![segment]![theme]!.onSubtle.textColor!.neutral!.medium!.rest
+          control.palettes![segment]![theme]!.onSubtle!.standard.textColor!.neutral!.medium!.rest
         );
       }
     }
@@ -489,14 +501,14 @@ describe('Fluent TextField onVivid', () => {
     for (const theme of ['light', 'dark'] as const) {
       const control = elements.e3!.palettes!.default![theme]!;
       const input = elements.e4!.palettes!.default![theme]!;
-      expect(control.onVivid!.boxColor!.neutral!.medium!.rest).toEqual(
-        control.onSubtle.boxColor!.neutral!.medium!.rest
+      expect(control.onVivid!.standard.boxColor!.neutral!.medium!.rest).toEqual(
+        control.onSubtle!.standard.boxColor!.neutral!.medium!.rest
       );
-      expect(input.onVivid!.textColor!.neutral!.medium!.rest).toEqual(
-        input.onSubtle.textColor!.neutral!.medium!.rest
+      expect(input.onVivid!.standard.textColor!.neutral!.medium!.rest).toEqual(
+        input.onSubtle!.standard.textColor!.neutral!.medium!.rest
       );
-      expect(input.onVivid!.textColor!.neutral!.medium!.disabled).toEqual(
-        input.onSubtle.textColor!.neutral!.medium!.disabled
+      expect(input.onVivid!.standard.textColor!.neutral!.medium!.disabled).toEqual(
+        input.onSubtle!.standard.textColor!.neutral!.medium!.disabled
       );
     }
   });
@@ -506,7 +518,7 @@ it('keeps external labels on vivid when floating labels use a filled surface', (
   const standard = field.variants!.standard!.modes.outline!.elements;
   const floating = field.variants!.floating!.modes.inside!.elements;
   const color = (element: Pick<NonNullable<typeof standard.e2>, 'palettes'> | undefined) =>
-    element!.palettes!.default!.light!.onVivid!.textColor!.neutral!.medium!.rest;
+    element!.palettes!.default!.light!.onVivid!.standard.textColor!.neutral!.medium!.rest;
   expect(color(standard.e2)).toEqual(color(standard.e4));
   expect(color(standard.e7)).toEqual(color(standard.e4));
   expect(color(floating.e2)).not.toEqual(color(standard.e2));
@@ -517,11 +529,12 @@ it('preserves the transparent-field hover and bottom contours across themes and 
   for (const segment of ['default', 'teams'] as const) {
     for (const theme of ['light', 'dark'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
-        const fieldPaint = fieldElements.e3!.palettes![segment]![theme]![context]!;
+        const fieldPaint = fieldElements.e3!.palettes![segment]![theme]![context]!.standard;
         const line =
-          fieldElements.e6!.palettes![segment]![theme]![context]!.boxColor!.neutral!.medium!;
+          fieldElements.e6!.palettes![segment]![theme]![context]!.standard.boxColor!.neutral!
+            .medium!;
         const button =
-          schema.components.button!.elements!.e1!.palettes![segment]![theme]![context]!;
+          schema.components.button!.elements!.e1!.palettes![segment]![theme]![context]!.standard;
         // Transparent fields retain their ambient overlays; solid Low Buttons use their own fill.
         const hover =
           context === 'onVivid'

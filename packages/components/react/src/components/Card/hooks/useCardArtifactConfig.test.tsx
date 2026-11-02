@@ -19,7 +19,7 @@ function Probe() {
 }
 
 it('preserves surface identity while cold metadata loads and clears it for an absent artifact', async () => {
-  const artifact = { component: 'card', options: { canonicalSurfaces: {} } };
+  const artifact = { formatVersion: 3, component: 'card', options: { canonicalSurfaces: {} } };
   let resolveNext: (value: unknown) => void = () => {};
   const pending = new Promise<unknown>((resolve) => {
     resolveNext = resolve;

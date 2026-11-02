@@ -29,8 +29,8 @@ const themes = <T>(factory: (theme: Theme) => T) => ({
 });
 const scale = <T>(value: T) => Object.fromEntries(BUTTON_SCALES.map((key) => [key, value]));
 const contexts = <T>(factory: (surface: 'onSubtle' | 'onVivid') => T) => ({
-  onSubtle: factory('onSubtle'),
-  onVivid: factory('onVivid')
+  onSubtle: { standard: factory('onSubtle') },
+  onVivid: { standard: factory('onVivid') }
 });
 
 export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }): ButtonComponent {
@@ -285,16 +285,18 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
   };
 
   const recipes = themes((theme) => ({
-    onSubtle: Object.fromEntries(INTENTS.map((intent) => [intent, onSubtle(theme, intent)])),
-    onVivid: Object.fromEntries(INTENTS.map((intent) => [intent, onVivid(intent)]))
+    onSubtle: {
+      standard: Object.fromEntries(INTENTS.map((intent) => [intent, onSubtle(theme, intent)]))
+    },
+    onVivid: { standard: Object.fromEntries(INTENTS.map((intent) => [intent, onVivid(intent)])) }
   }));
   const boxPalettes = (theme: Theme) =>
     contexts((surface) => ({
       boxColor: Object.fromEntries(
-        INTENTS.map((intent) => [intent, recipes[theme][surface][intent].boxColor])
+        INTENTS.map((intent) => [intent, recipes[theme][surface].standard[intent].boxColor])
       ),
       borderColor: Object.fromEntries(
-        INTENTS.map((intent) => [intent, recipes[theme][surface][intent].borderColor])
+        INTENTS.map((intent) => [intent, recipes[theme][surface].standard[intent].borderColor])
       )
     }));
   const parentStates = (states: StateColors, icon: boolean) =>
@@ -323,7 +325,7 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
           Object.fromEntries(
             EMPHASES.map((emphasis) => [
               emphasis,
-              parentStates(recipes[theme][surface][intent].textColor[emphasis], icon)
+              parentStates(recipes[theme][surface].standard[intent].textColor[emphasis], icon)
             ])
           )
         ])
@@ -331,17 +333,23 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
     }));
   const iconRegion = (theme: Theme) => ({
     onSubtle: {
-      boxColor: { neutral: { medium: { rest: token(theme, 'layer-01') } } },
-      textColor: { neutral: { medium: { rest: token(theme, 'text-primary') } } }
+      standard: {
+        boxColor: { neutral: { medium: { rest: token(theme, 'layer-01') } } },
+        textColor: { neutral: { medium: { rest: token(theme, 'text-primary') } } }
+      }
     },
     onVivid: {
-      boxColor: { neutral: { medium: { rest: cap() } } },
-      textColor: { neutral: { medium: { rest: token('light', 'text-primary') } } }
+      standard: {
+        boxColor: { neutral: { medium: { rest: cap() } } },
+        textColor: { neutral: { medium: { rest: token('light', 'text-primary') } } }
+      }
     }
   });
   const divider = (theme: Theme) => ({
-    onSubtle: { boxColor: { neutral: { medium: { rest: token(theme, 'button-separator') } } } },
-    onVivid: { boxColor: { neutral: { medium: { rest: cap(40) } } } }
+    onSubtle: {
+      standard: { boxColor: { neutral: { medium: { rest: token(theme, 'button-separator') } } } }
+    },
+    onVivid: { standard: { boxColor: { neutral: { medium: { rest: cap(40) } } } } }
   });
 
   return {
@@ -352,36 +360,38 @@ export function createCarbonIbmButtonSchema({ c }: { c: CarbonIbmColorResolver }
           Object.fromEntries(
             (['onSubtle', 'onVivid'] as const).map((surface) => [
               surface,
-              Object.fromEntries(
-                INTENTS.map((intent) => [
-                  intent,
-                  {
-                    high: {
-                      rest: surface === 'onSubtle' ? 'onVivid' : 'onSubtle',
-                      pending: surface === 'onSubtle' ? 'onVivid' : 'onSubtle',
-                      disabled: 'inherit'
-                    },
-                    medium: { rest: 'inherit', pending: 'inherit', disabled: 'inherit' },
-                    low: {
-                      rest: 'inherit',
-                      selected:
-                        surface === 'onVivid' || (intent === 'primary' && theme !== 'light')
-                          ? 'onSubtle'
-                          : 'onVivid',
-                      pending: 'inherit',
-                      disabled: 'inherit'
-                    },
-                    lowest: {
-                      rest: 'inherit',
-                      ...(intent === 'destructive' && surface === 'onSubtle'
-                        ? { selected: 'onVivid' }
-                        : {}),
-                      pending: 'inherit',
-                      disabled: 'inherit'
+              {
+                standard: Object.fromEntries(
+                  INTENTS.map((intent) => [
+                    intent,
+                    {
+                      high: {
+                        rest: surface === 'onSubtle' ? 'onVivid' : 'onSubtle',
+                        pending: surface === 'onSubtle' ? 'onVivid' : 'onSubtle',
+                        disabled: 'inherit'
+                      },
+                      medium: { rest: 'inherit', pending: 'inherit', disabled: 'inherit' },
+                      low: {
+                        rest: 'inherit',
+                        selected:
+                          surface === 'onVivid' || (intent === 'primary' && theme !== 'light')
+                            ? 'onSubtle'
+                            : 'onVivid',
+                        pending: 'inherit',
+                        disabled: 'inherit'
+                      },
+                      lowest: {
+                        rest: 'inherit',
+                        ...(intent === 'destructive' && surface === 'onSubtle'
+                          ? { selected: 'onVivid' }
+                          : {}),
+                        pending: 'inherit',
+                        disabled: 'inherit'
+                      }
                     }
-                  }
-                ])
-              )
+                  ])
+                )
+              }
             ])
           )
         ])

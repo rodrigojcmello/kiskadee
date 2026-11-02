@@ -1,6 +1,7 @@
 'use client';
 
 import type {
+  ColorVariant,
   ComponentEmphasis,
   ContentSurfaceContextMap,
   ContentSurfaceContextValue,
@@ -39,6 +40,7 @@ export function resolveContentSurfaceContext({
   segment,
   theme,
   consumedSurfaceContext,
+  colorVariant = 'standard',
   intent,
   emphasis,
   selected,
@@ -49,13 +51,15 @@ export function resolveContentSurfaceContext({
   segment: string;
   theme: ThemeMode;
   consumedSurfaceContext: SurfaceContext;
+  colorVariant?: ColorVariant;
   intent: string;
   emphasis: ComponentEmphasis;
   selected?: boolean;
   pending?: boolean;
   disabled?: boolean;
 }): SurfaceContext {
-  const stateMap = map?.[segment]?.[theme]?.[consumedSurfaceContext]?.[intent]?.[emphasis];
+  const stateMap =
+    map?.[segment]?.[theme]?.[consumedSurfaceContext]?.[colorVariant]?.[intent]?.[emphasis];
   if (!stateMap) return consumedSurfaceContext;
 
   const output = disabled

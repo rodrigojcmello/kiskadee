@@ -1,4 +1,5 @@
 export * from './breakpoints.ts';
+export * from './color-variant.ts';
 export * from './component-size.ts';
 export * from './components/accordion.ts';
 export * from './components/badge.ts';

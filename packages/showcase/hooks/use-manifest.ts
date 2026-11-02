@@ -2,18 +2,22 @@ import type { Manifest } from '@kiskadee/web-builder/types';
 import { useEffect, useState } from 'react';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 
-async function loadManifest(designSystemKey: string): Promise<Manifest> {
-  return loadJsonFromBuild<Manifest>(`${designSystemKey}/manifest.json`, { required: true });
+export async function loadManifest(designSystemKey: string): Promise<Manifest> {
+  const manifest = await loadJsonFromBuild<Manifest>(`${designSystemKey}/manifest.json`, {
+    required: true
+  });
+  if (manifest.formatVersion !== 3) throw new Error('Unsupported manifest format version.');
+  return manifest;
 }
 
 export function useManifest(designSystemKey?: string): Manifest | undefined {
-  const [manifest, setManifest] = useState<Manifest | undefined>(undefined);
+  const [loaded, setLoaded] = useState<{ key: string; manifest: Manifest }>();
 
   useEffect(() => {
     let cancelled = false;
 
     if (!designSystemKey) {
-      setManifest(undefined);
+      setLoaded(undefined);
       return () => {
         cancelled = true;
       };
@@ -22,12 +26,12 @@ export function useManifest(designSystemKey?: string): Manifest | undefined {
     loadManifest(designSystemKey)
       .then((result) => {
         if (!cancelled) {
-          setManifest(result);
+          setLoaded({ key: designSystemKey, manifest: result });
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setManifest(undefined);
+          setLoaded(undefined);
         }
       });
 
@@ -36,5 +40,5 @@ export function useManifest(designSystemKey?: string): Manifest | undefined {
     };
   }, [designSystemKey]);
 
-  return manifest;
+  return loaded && loaded.key === designSystemKey ? loaded.manifest : undefined;
 }

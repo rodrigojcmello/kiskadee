@@ -1,3 +1,4 @@
+import { resolveColorVariantLeaves } from '../color-variant.ts';
 import type { Schema } from '../schema.ts';
 
 const COMPLEMENTARY_BASE_INTENT = {
@@ -61,16 +62,48 @@ export function resolveCardSurfaceSource<TSegmentName extends string>(
   const cardPalettes = requireRecord(cardElement.palettes, 'components.card.elements.e1.palettes');
   const containerElements = requireRecord(container.elements, 'components.container.elements');
   const containerElement = requireRecord(containerElements.e1, 'components.container.elements.e1');
-  const containerPalettes = requireRecord(
-    containerElement.palettes,
-    'components.container.elements.e1.palettes'
+  const containerPalettes = structuredClone(
+    requireRecord(containerElement.palettes, 'components.container.elements.e1.palettes')
   );
-  const containerContexts = requireRecord(
-    container.contentSurfaceContext,
-    'components.container.contentSurfaceContext'
+  const containerContexts = structuredClone(
+    requireRecord(container.contentSurfaceContext, 'components.container.contentSurfaceContext')
   );
+  for (const palette of [containerPalettes, containerContexts]) {
+    for (const themes of Object.values(palette)) {
+      if (!isRecord(themes)) continue;
+      for (const contexts of Object.values(themes)) {
+        if (!isRecord(contexts)) continue;
+        for (const variants of Object.values(contexts)) {
+          if (!isRecord(variants)) continue;
+          variants.alternative = resolveColorVariantLeaves(variants.standard, variants.alternative);
+        }
+      }
+    }
+  }
   const cardContexts = isRecord(card.contentSurfaceContext) ? card.contentSurfaceContext : {};
   card.contentSurfaceContext = cardContexts;
+  const materializeOutputRest = (value: Record<string, unknown>, path: string[] = []) => {
+    if (path.length === 6) {
+      if (Object.hasOwn(value, 'rest')) {
+        throw new Error(
+          `components.card.contentSurfaceContext.${path.join('.')}.rest: Card Rest output must come from Container`
+        );
+      }
+      value.rest = readRest(
+        containerContexts,
+        [...path, 'rest'],
+        'components.container.contentSurfaceContext'
+      );
+      return;
+    }
+    for (const [key, child] of Object.entries(value))
+      materializeOutputRest(
+        requireRecord(child, `components.card.contentSurfaceContext.${[...path, key].join('.')}`),
+        [...path, key]
+      );
+  };
+  // Output leaves own their states even when the alternative only changes contour paint.
+  materializeOutputRest(cardContexts);
 
   for (const [segment, cardThemesValue] of Object.entries(cardPalettes)) {
     const cardThemes = requireRecord(
@@ -82,118 +115,140 @@ export function resolveCardSurfaceSource<TSegmentName extends string>(
         cardContextsValue,
         `components.card.elements.e1.palettes.${segment}.${theme}`
       );
-      for (const [context, cardColorsValue] of Object.entries(cardByContext)) {
-        const path = `${segment}.${theme}.${context}`;
-        const cardColors = requireRecord(
-          cardColorsValue,
-          `components.card.elements.e1.palettes.${path}`
+      for (const [context, cardVariantsValue] of Object.entries(cardByContext)) {
+        const cardVariants = requireRecord(
+          cardVariantsValue,
+          `components.card.elements.e1.palettes.${segment}.${theme}.${context}`
         );
-        const cardBoxColor = requireRecord(
-          cardColors.boxColor,
-          `components.card.elements.e1.palettes.${path}.boxColor`
-        );
-        const containerBoxColor = requireRecord(
-          [segment, theme, context, 'boxColor'].reduce<unknown>(
-            (current, key) => (isRecord(current) ? current[key] : undefined),
-            containerPalettes
-          ),
-          `components.container.elements.e1.palettes.${path}.boxColor`
-        );
-
-        const outputThemes = ensureRecord(
-          cardContexts,
-          segment,
-          `components.card.contentSurfaceContext.${segment}`
-        );
-        const outputByContext = ensureRecord(
-          outputThemes,
-          theme,
-          `components.card.contentSurfaceContext.${segment}.${theme}`
-        );
-        const outputByIntent = ensureRecord(
-          outputByContext,
-          context,
-          `components.card.contentSurfaceContext.${path}`
-        );
-
-        for (const [intent, emphasesValue] of Object.entries(cardBoxColor)) {
-          if (Object.hasOwn(COMPLEMENTARY_BASE_INTENT, intent)) {
-            throw new Error(
-              `components.card.elements.e1.palettes.${path}.boxColor.${intent}: complementary Rest is supplied only by Container`
-            );
-          }
-          const emphases = requireRecord(
-            emphasesValue,
-            `components.card.elements.e1.palettes.${path}.boxColor.${intent}`
+        for (const [variant, cardColorsValue] of Object.entries(cardVariants)) {
+          const path = `${segment}.${theme}.${context}.${variant}`;
+          const cardColors = requireRecord(
+            cardColorsValue,
+            `components.card.elements.e1.palettes.${path}`
           );
-          const outputEmphases = ensureRecord(
-            outputByIntent,
-            intent,
-            `components.card.contentSurfaceContext.${path}.${intent}`
+          if (variant === 'alternative' && cardColors.boxColor === undefined) continue;
+          const cardBoxColor = requireRecord(
+            cardColors.boxColor,
+            `components.card.elements.e1.palettes.${path}.boxColor`
           );
-          for (const [emphasis, statesValue] of Object.entries(emphases)) {
-            const states = requireRecord(
-              statesValue,
-              `components.card.elements.e1.palettes.${path}.boxColor.${intent}.${emphasis}`
-            );
-            if (Object.hasOwn(states, 'rest')) {
+          const containerBoxColor = requireRecord(
+            [segment, theme, context, variant, 'boxColor'].reduce<unknown>(
+              (current, key) => (isRecord(current) ? current[key] : undefined),
+              containerPalettes
+            ),
+            `components.container.elements.e1.palettes.${path}.boxColor`
+          );
+
+          const outputThemes = ensureRecord(
+            cardContexts,
+            segment,
+            `components.card.contentSurfaceContext.${segment}`
+          );
+          const outputByContext = ensureRecord(
+            outputThemes,
+            theme,
+            `components.card.contentSurfaceContext.${segment}.${theme}`
+          );
+          const outputByVariant = ensureRecord(
+            outputByContext,
+            context,
+            `components.card.contentSurfaceContext.${segment}.${theme}.${context}`
+          );
+          const outputByIntent = ensureRecord(
+            outputByVariant,
+            variant,
+            `components.card.contentSurfaceContext.${path}`
+          );
+
+          for (const [intent, emphasesValue] of Object.entries(cardBoxColor)) {
+            if (Object.hasOwn(COMPLEMENTARY_BASE_INTENT, intent)) {
               throw new Error(
-                `components.card.elements.e1.palettes.${path}.boxColor.${intent}.${emphasis}.rest: Card Rest must come from Container`
+                `components.card.elements.e1.palettes.${path}.boxColor.${intent}: complementary Rest is supplied only by Container`
               );
             }
-            states.rest = readRest(
-              containerPalettes,
-              [segment, theme, context, 'boxColor', intent, emphasis, 'rest'],
-              'components.container.elements.e1.palettes'
+            const emphases = requireRecord(
+              emphasesValue,
+              `components.card.elements.e1.palettes.${path}.boxColor.${intent}`
             );
-            const outputStates = isRecord(outputEmphases[emphasis]) ? outputEmphases[emphasis] : {};
-            if (Object.hasOwn(outputStates, 'rest')) {
-              throw new Error(
-                `components.card.contentSurfaceContext.${path}.${intent}.${emphasis}.rest: Card Rest output must come from Container`
-              );
-            }
-            outputStates.rest = readRest(
-              containerContexts,
-              [segment, theme, context, intent, emphasis, 'rest'],
-              'components.container.contentSurfaceContext'
-            );
-            outputEmphases[emphasis] = outputStates;
-          }
-        }
-
-        for (const [intent, baseIntent] of Object.entries(COMPLEMENTARY_BASE_INTENT)) {
-          const complement = containerBoxColor[intent];
-          if (complement === undefined) continue;
-          const complementEmphases = requireRecord(
-            complement,
-            `components.container.elements.e1.palettes.${path}.boxColor.${intent}`
-          );
-          const baseEmphases = cardBoxColor[baseIntent];
-          if (!isRecord(baseEmphases)) continue;
-          const resolvedEmphases: Record<string, unknown> = {};
-          for (const emphasis of Object.keys(complementEmphases)) {
-            if (!Object.hasOwn(baseEmphases, emphasis)) continue;
-            resolvedEmphases[emphasis] = {
-              rest: readRest(
-                containerPalettes,
-                [segment, theme, context, 'boxColor', intent, emphasis, 'rest'],
-                'components.container.elements.e1.palettes'
-              )
-            };
             const outputEmphases = ensureRecord(
               outputByIntent,
               intent,
               `components.card.contentSurfaceContext.${path}.${intent}`
             );
-            outputEmphases[emphasis] = {
-              rest: readRest(
+            for (const [emphasis, statesValue] of Object.entries(emphases)) {
+              const states = requireRecord(
+                statesValue,
+                `components.card.elements.e1.palettes.${path}.boxColor.${intent}.${emphasis}`
+              );
+              if (Object.hasOwn(states, 'rest')) {
+                throw new Error(
+                  `components.card.elements.e1.palettes.${path}.boxColor.${intent}.${emphasis}.rest: Card Rest must come from Container`
+                );
+              }
+              states.rest = readRest(
+                containerPalettes,
+                [segment, theme, context, variant, 'boxColor', intent, emphasis, 'rest'],
+                'components.container.elements.e1.palettes'
+              );
+              const standardOutputStates = [
+                segment,
+                theme,
+                context,
+                'standard',
+                intent,
+                emphasis
+              ].reduce<unknown>(
+                (current, key) => (isRecord(current) ? current[key] : undefined),
+                authoredCard.contentSurfaceContext
+              );
+              const outputStates = isRecord(outputEmphases[emphasis])
+                ? outputEmphases[emphasis]
+                : variant === 'alternative' && isRecord(standardOutputStates)
+                  ? structuredClone(standardOutputStates)
+                  : {};
+              outputStates.rest = readRest(
                 containerContexts,
-                [segment, theme, context, intent, emphasis, 'rest'],
+                [segment, theme, context, variant, intent, emphasis, 'rest'],
                 'components.container.contentSurfaceContext'
-              )
-            };
+              );
+              outputEmphases[emphasis] = outputStates;
+            }
           }
-          if (Object.keys(resolvedEmphases).length) cardBoxColor[intent] = resolvedEmphases;
+
+          for (const [intent, baseIntent] of Object.entries(COMPLEMENTARY_BASE_INTENT)) {
+            const complement = containerBoxColor[intent];
+            if (complement === undefined) continue;
+            const complementEmphases = requireRecord(
+              complement,
+              `components.container.elements.e1.palettes.${path}.boxColor.${intent}`
+            );
+            const baseEmphases = cardBoxColor[baseIntent];
+            if (!isRecord(baseEmphases)) continue;
+            const resolvedEmphases: Record<string, unknown> = {};
+            for (const emphasis of Object.keys(complementEmphases)) {
+              if (!Object.hasOwn(baseEmphases, emphasis)) continue;
+              resolvedEmphases[emphasis] = {
+                rest: readRest(
+                  containerPalettes,
+                  [segment, theme, context, variant, 'boxColor', intent, emphasis, 'rest'],
+                  'components.container.elements.e1.palettes'
+                )
+              };
+              const outputEmphases = ensureRecord(
+                outputByIntent,
+                intent,
+                `components.card.contentSurfaceContext.${path}.${intent}`
+              );
+              outputEmphases[emphasis] = {
+                rest: readRest(
+                  containerContexts,
+                  [segment, theme, context, variant, intent, emphasis, 'rest'],
+                  'components.container.contentSurfaceContext'
+                )
+              };
+            }
+            if (Object.keys(resolvedEmphases).length) cardBoxColor[intent] = resolvedEmphases;
+          }
         }
       }
     }
@@ -218,7 +273,15 @@ export function resolveCardSurfaceSource<TSegmentName extends string>(
           const intent = entry.intent;
           const emphasis = entry.emphasis;
           if (typeof intent !== 'string' || typeof emphasis !== 'string') return false;
-          const states = [segment, theme, 'onSubtle', 'boxColor', intent, emphasis].reduce<unknown>(
+          const states = [
+            segment,
+            theme,
+            'onSubtle',
+            'standard',
+            'boxColor',
+            intent,
+            emphasis
+          ].reduce<unknown>(
             (current, key) => (isRecord(current) ? current[key] : undefined),
             cardPalettes
           );

@@ -30,30 +30,40 @@ export function createCarbonIbmProgressSchema({
     };
     return {
       onSubtle: {
-        boxColor: profiles(resolveIndicator)
+        standard: {
+          boxColor: profiles(resolveIndicator)
+        }
       },
       onVivid: {
-        boxColor: profiles((intent) =>
-          c.resolve('default', 'l', referenceColor(`progress.${intent}`, 'subtle'))
-        )
+        standard: {
+          boxColor: profiles((intent) =>
+            c.resolve('default', 'l', referenceColor(`progress.${intent}`, 'subtle'))
+          )
+        }
       }
     };
   };
   const trackPalette = (theme: Theme) => ({
     onSubtle: {
-      boxColor: {
-        neutral: { medium: { rest: tokenColor(c, theme, 'border-subtle-01', 'progress.neutral') } }
+      standard: {
+        boxColor: {
+          neutral: {
+            medium: { rest: tokenColor(c, theme, 'border-subtle-01', 'progress.neutral') }
+          }
+        }
       }
     },
     onVivid: {
-      boxColor: {
-        neutral: {
-          medium: {
-            rest: c.resolve(
-              'default',
-              theme === 'light' ? 'l' : 'd',
-              absoluteCap(primitive('black', 'v1'), 'light', 24)
-            )
+      standard: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c.resolve(
+                'default',
+                theme === 'light' ? 'l' : 'd',
+                absoluteCap(primitive('black', 'v1'), 'light', 24)
+              )
+            }
           }
         }
       }

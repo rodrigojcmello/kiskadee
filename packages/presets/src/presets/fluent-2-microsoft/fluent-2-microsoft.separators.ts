@@ -21,42 +21,44 @@ export function createFluent2MicrosoftSeparators({
                 (['onSubtle', 'onVivid'] as const).map((context) => [
                   context,
                   {
-                    boxColor: {
-                      neutral: {
+                    standard: {
+                      boxColor: {
+                        neutral: {
+                          ...(theme === 'light'
+                            ? {
+                                lowest: {
+                                  rest: contour(`neutral.standard.${theme}.${context}.lowest`)
+                                }
+                              }
+                            : {}),
+                          low: { rest: contour(`neutral.standard.${theme}.${context}.low`) },
+                          medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) }
+                        },
                         ...(theme === 'light'
                           ? {
-                              lowest: {
-                                rest: contour(`neutral.standard.${theme}.${context}.lowest`)
+                              primary: {
+                                lowest: {
+                                  rest:
+                                    context === 'onVivid'
+                                      ? primaryVivid(8)
+                                      : contour('primary.standard.light.onSubtle.lowest')
+                                },
+                                low: {
+                                  rest:
+                                    context === 'onVivid'
+                                      ? primaryVivid(16)
+                                      : contour('primary.standard.light.onSubtle.low')
+                                },
+                                medium: {
+                                  rest:
+                                    context === 'onVivid'
+                                      ? primaryVivid(32)
+                                      : contour('primary.standard.light.onSubtle.medium')
+                                }
                               }
                             }
-                          : {}),
-                        low: { rest: contour(`neutral.standard.${theme}.${context}.low`) },
-                        medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) }
-                      },
-                      ...(theme === 'light'
-                        ? {
-                            primary: {
-                              lowest: {
-                                rest:
-                                  context === 'onVivid'
-                                    ? primaryVivid(8)
-                                    : contour('primary.standard.light.onSubtle.lowest')
-                              },
-                              low: {
-                                rest:
-                                  context === 'onVivid'
-                                    ? primaryVivid(16)
-                                    : contour('primary.standard.light.onSubtle.low')
-                              },
-                              medium: {
-                                rest:
-                                  context === 'onVivid'
-                                    ? primaryVivid(32)
-                                    : contour('primary.standard.light.onSubtle.medium')
-                              }
-                            }
-                          }
-                        : {})
+                          : {})
+                      }
                     }
                   }
                 ])

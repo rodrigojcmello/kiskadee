@@ -7,11 +7,15 @@ import { ButtonIndicatorExamples } from './ButtonIndicatorExamples';
 
 const artifact = vi.hoisted(() => ({
   coverage: { rounded: ['md:1'], pill: ['sm:1'] } as Partial<Record<string, string[]>>,
-  outsideCoverage: { rounded: ['md:1'], pill: ['sm:1'] } as Partial<Record<string, string[]>>
+  outsideCoverage: { rounded: ['md:1'], pill: ['sm:1'] } as Partial<Record<string, string[]>>,
+  classes: {} as any,
+  colorVariants: undefined as any
 }));
 
 vi.mock('@kiskadee/react-components/button', () => ({
   useButtonArtifactConfig: () => ({
+    buttonClassesMap: artifact.classes,
+    colorVariants: artifact.colorVariants,
     indicatorSizesByRadius: artifact.coverage,
     outsideIndicatorSizesByRadius: artifact.outsideCoverage,
     stackedSizesByRadius: { rounded: ['md:1'] },
@@ -22,11 +26,11 @@ vi.mock('@kiskadee/react-components/button', () => ({
     ({
       size: _size,
       radius,
-      intent: _intent,
       emphasis: _emphasis,
       iconLayout: _layout,
       indicatorPlacement,
       selectionEmphasis,
+      intent,
       controlState,
       toggle,
       pending,
@@ -50,6 +54,7 @@ vi.mock('@kiskadee/react-components/button', () => ({
         'data-placement': indicatorPlacement,
         'data-radius': radius,
         'data-selection-emphasis': selectionEmphasis,
+        'data-intent': intent,
         'aria-busy': pending || undefined
       }),
     {
@@ -67,9 +72,28 @@ vi.mock('@kiskadee/react-components/text', () => ({
   }: HTMLAttributes<HTMLElement> & { as?: string; profile?: string }) => createElement(as, props)
 }));
 vi.mock('@kiskadee/react-components/icon', () => ({ FamilyResolvedIcon: () => <svg /> }));
+vi.mock('@/hooks/use-button-color-variants', () => ({
+  useButtonColorVariants: () => artifact.colorVariants
+}));
 vi.mock('@kiskadee/react-components/resources', () => ({
-  useKiskadee: () => ({ density: 'compact', global: {} }),
+  useKiskadee: () => ({ density: 'compact', global: {}, segment: 'default', theme: 'light' }),
+  useSurfaceContext: () => 'onVivid',
   useComponentMetadata: () => ({ density: { c: 'md:1' } })
+}));
+vi.mock('@kiskadee/react-components/select', () => ({
+  Select: ({ label, value, options, onValueChange }: any) => (
+    <select
+      aria-label={label}
+      value={value}
+      onChange={(event) => onValueChange(event.target.value)}
+    >
+      {options.map((option: any) => (
+        <option key={option.value} value={option.value} disabled={option.disabled}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  )
 }));
 vi.mock('@/components/ShowcaseBackground/ShowcaseExampleCard', () => ({
   ShowcaseExampleCard: ({ children }: { children: ReactNode }) => <article>{children}</article>
@@ -95,11 +119,14 @@ afterEach(() => {
   container?.remove();
   artifact.coverage = { rounded: ['md:1'], pill: ['sm:1'] };
   artifact.outsideCoverage = { rounded: ['md:1'], pill: ['sm:1'] };
+  artifact.classes = {};
+  artifact.colorVariants = undefined;
 });
 
 function render(
   radius: 'rounded' | 'pill' | 'square' = 'rounded',
-  scale: 's:md:1' | 's:sm:1' = 's:md:1'
+  scale: 's:md:1' | 's:sm:1' = 's:md:1',
+  surfaceContext: 'onSubtle' | 'onVivid' = 'onSubtle'
 ) {
   if (!root) {
     container = document.createElement('div');
@@ -108,12 +135,32 @@ function render(
   }
   act(() =>
     root?.render(
-      <ButtonIndicatorExamples radius={radius} scale={scale} surfaceContext="onSubtle" />
+      <ButtonIndicatorExamples radius={radius} scale={scale} surfaceContext={surfaceContext} />
     )
   );
 }
 
 describe('Button indicator Showcase', () => {
+  it('changes qualified intent without resetting inside and outside selections', () => {
+    artifact.colorVariants = {
+      alternative: { 'default.light': { onVivid: { neutral: ['low', 'high'] } } }
+    };
+    render('rounded', 's:md:1', 'onVivid');
+    const inside = container.querySelector<HTMLButtonElement>('button[data-placement="inside"]')!;
+    const outside = container.querySelector<HTMLButtonElement>('button[data-placement="outside"]')!;
+    act(() => inside.click());
+    act(() => {
+      const control = container.querySelector<HTMLSelectElement>(
+        'select[aria-label="Color variant"]'
+      )!;
+      control.value = 'alternative';
+      control.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    expect(container.querySelector('button[data-placement="inside"]')).toBe(inside);
+    expect(inside.getAttribute('aria-pressed')).toBe('false');
+    expect(outside.getAttribute('aria-pressed')).toBe('true');
+    expect(inside.getAttribute('data-intent')).toBe('neutral-alt');
+  });
   it('uses the preset default only for its default sample and Low for the indicated comparisons', () => {
     render();
     const buttons = Array.from(container.querySelectorAll('button'));

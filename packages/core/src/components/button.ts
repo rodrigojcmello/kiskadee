@@ -1,4 +1,5 @@
 import { breakpointValues, elementSizeValues } from '../breakpoints.ts';
+import { parseButtonIntentValue } from '../color-variant.ts';
 import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
 import type { DensityScaleMap } from '../density.ts';
 import type { ElementHeightReference } from '../element-height-reference.ts';
@@ -14,6 +15,7 @@ import type {
   SegmentName,
   SurfaceContextPalette,
   SystemButtonIntent,
+  SystemButtonIntentValue,
   ThemeMode
 } from '../types/colors/colors.types.ts';
 import {
@@ -55,6 +57,13 @@ export function resolveButtonStackedRadiusMode(radius: RadiusMode): ButtonStacke
 }
 
 export type ButtonIndicatorPlacement = 'inside' | 'outside';
+export const buttonIndicatorPaintElements = ['e11', 'e12'] as const;
+export type ButtonIndicatorPaintElementName = (typeof buttonIndicatorPaintElements)[number];
+export function isButtonIndicatorPaintElement(
+  name: string
+): name is ButtonIndicatorPaintElementName {
+  return buttonIndicatorPaintElements.some((element) => element === name);
+}
 export type ButtonSelectionEmphasis = 'lowest' | 'low' | 'medium' | 'high';
 export type ButtonIconPlacement = 'leading' | 'trailing';
 export type ButtonIconSurfaceCorners = 'edge' | 'all';
@@ -82,7 +91,7 @@ export type ButtonOptions = {
   /** Selects the presentation of the semantic selected state; omission defaults to lowest. */
   selectionEmphasis?: ButtonSelectionEmphasis;
   /** Selects the system intent used while selected; omission follows the base Button intent. */
-  selectionIntent?: SystemButtonIntent;
+  selectionIntent?: SystemButtonIntentValue;
 };
 
 /**
@@ -281,15 +290,7 @@ type ButtonIndicatorColorSchema = {
 export type ButtonIndicatorPalettes<TSegmentName extends SegmentName = never> = Partial<
   Record<
     TSegmentName | 'default' | 'dynamic',
-    Partial<
-      Record<
-        ThemeMode,
-        {
-          onSubtle: ButtonIndicatorColorSchema;
-          onVivid?: ButtonIndicatorColorSchema;
-        }
-      >
-    >
+    Partial<Record<ThemeMode, SurfaceContextPalette<ButtonIndicatorColorSchema, never>>>
   >
 >;
 
@@ -710,10 +711,12 @@ function validateButtonIndicatorContract(value: unknown, path: string, issues: s
   };
   const validateStates = (entry: unknown, entryPath: string, depth = 0): void => {
     if (!isRecord(entry)) return;
-    if (depth === 4) validateAllowedKeys(entry, Object.keys(ButtonIntentKeys), entryPath, issues);
-    if (depth === 5)
+    if (depth === 3 && Object.hasOwn(entry, 'alternative'))
+      issues.push(`${entryPath}.alternative: not supported for indicators`);
+    if (depth === 5) validateAllowedKeys(entry, Object.keys(ButtonIntentKeys), entryPath, issues);
+    if (depth === 6)
       validateAllowedKeys(entry, Object.keys(componentEmphasisBuckets), entryPath, issues);
-    if (depth === 6) {
+    if (depth === 7) {
       validateAllowedKeys(entry, interactionStateKeys, entryPath, issues);
       for (const [state, color] of Object.entries(entry)) {
         if (state === 'rest') {
@@ -914,8 +917,8 @@ export function validateButtonComponentContract(
 
       if (
         value.options.selectionIntent !== undefined &&
-        (typeof value.options.selectionIntent !== 'string' ||
-          !Object.hasOwn(ButtonIntentKeys, value.options.selectionIntent))
+        (!parseButtonIntentValue(value.options.selectionIntent) ||
+          String(value.options.selectionIntent).startsWith('brand.'))
       ) {
         issues.push(`${path}.options.selectionIntent: expected a system Button intent`);
       }

@@ -41,7 +41,9 @@ describe('Card border policy migration', () => {
       const card = resolveCardSurfaceSource(schema).components.card!;
       const policy = card.options!.border!.adaptive.default!.light!.onSubtle![intent]![emphasis];
       const rest =
-        card.elements.e1!.palettes!.default!.light!.onSubtle.borderColor![intent]![emphasis]!.rest;
+        card.elements.e1!.palettes!.default!.light!.onSubtle!.standard.borderColor![intent]![
+          emphasis
+        ]!.rest;
       expect(policy).toBe(false);
       const color = isContourReferenceCandidate(rest)
         ? resolveContourReference(rest, 'default', schema.global?.contours)

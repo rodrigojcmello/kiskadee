@@ -93,24 +93,30 @@ describe('mapStyleKeyUsage', () => {
             ios: {
               light: {
                 onSubtle: {
-                  primary: {
-                    rest: ['pA', 'pB', 'pA'],
-                    disabled: ['pC']
-                  },
-                  secondary: {
-                    hover: ['pB']
+                  standard: {
+                    primary: {
+                      rest: ['pA', 'pB', 'pA'],
+                      disabled: ['pC']
+                    },
+                    secondary: {
+                      hover: ['pB']
+                    }
                   }
                 },
                 onVivid: {
-                  primary: {
-                    rest: ['pE']
+                  standard: {
+                    primary: {
+                      rest: ['pE']
+                    }
                   }
                 }
               },
               dark: {
                 onSubtle: {
-                  primary: {
-                    rest: ['pD']
+                  standard: {
+                    primary: {
+                      rest: ['pD']
+                    }
                   }
                 }
               }

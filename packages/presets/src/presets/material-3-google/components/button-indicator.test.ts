@@ -60,7 +60,8 @@ describe('Material Button selected indicator', () => {
       for (const segment of segments) {
         for (const theme of themes) {
           for (const context of contexts) {
-            const palette = indicatorRecipes[placement].palettes[segment]![theme]![context]!;
+            const palette =
+              indicatorRecipes[placement].palettes[segment]![theme]![context]!.standard;
             expect(Object.keys(palette)).toEqual(['boxColor']);
             expect(Object.keys(palette.boxColor).sort()).toEqual([...intents].sort());
             for (const intent of intents) {
@@ -84,7 +85,7 @@ describe('Material Button selected indicator', () => {
         for (const theme of themes) {
           for (const context of contexts) {
             const colors =
-              indicatorRecipes[placement].palettes[segment]![theme]![context]!.boxColor;
+              indicatorRecipes[placement].palettes[segment]![theme]![context]!.standard.boxColor;
             for (const emphasis of emphases) {
               const signal = colors.primary![emphasis]!.selected!.rest;
               for (const intent of intents) {
@@ -111,9 +112,8 @@ describe('Material Button selected indicator', () => {
           for (const emphasis of emphases) {
             const paint = (segment: (typeof segments)[number]) =>
               resolvePaint(
-                indicatorRecipes[placement].palettes[segment]![theme]![context]!.boxColor.primary![
-                  emphasis
-                ]!.selected!.rest
+                indicatorRecipes[placement].palettes[segment]![theme]![context]!.standard.boxColor
+                  .primary![emphasis]!.selected!.rest
               );
             expect(paint('default')).toBe(paint('dynamic'));
             const usesPrimary =
@@ -150,7 +150,8 @@ describe('Material Button selected indicator', () => {
     for (const segment of segments) {
       for (const theme of themes) {
         const container =
-          schema.components.container!.elements.e1!.palettes![segment]![theme]!.onSubtle.boxColor!;
+          schema.components.container!.elements.e1!.palettes![segment]![theme]!.onSubtle!.standard
+            .boxColor!;
         for (const context of contexts) {
           const ambient = (
             context === 'onSubtle'
@@ -160,18 +161,17 @@ describe('Material Button selected indicator', () => {
           for (const intent of intents) {
             for (const emphasis of emphases) {
               const host =
-                button.elements.e1!.palettes![segment]![theme]![context]!.boxColor![intent]![
-                  emphasis
-                ]!;
+                button.elements.e1!.palettes![segment]![theme]![context]!.standard.boxColor![
+                  intent
+                ]![emphasis]!;
               const selected = host.selected!;
               expect(selected.rest).toBe(host.pressed);
               for (const state of ['rest', 'hover', 'focus', 'pressed'] as const) {
                 const surface = (selected[state] ?? selected.rest) as string;
                 for (const placement of placements) {
                   const paint =
-                    indicatorRecipes[placement].palettes[segment]![theme]![context]!.boxColor[
-                      intent
-                    ]![emphasis]!.selected!;
+                    indicatorRecipes[placement].palettes[segment]![theme]![context]!.standard
+                      .boxColor[intent]![emphasis]!.selected!;
                   const background = placement === 'inside' ? composite(surface, ambient) : ambient;
                   const foreground = composite(
                     resolvePaint(paint[state] ?? paint.rest),
@@ -196,7 +196,8 @@ describe('Material Button selected indicator', () => {
     for (const segment of segments) {
       for (const theme of themes) {
         const container =
-          schema.components.container!.elements.e1!.palettes![segment]![theme]!.onSubtle.boxColor!;
+          schema.components.container!.elements.e1!.palettes![segment]![theme]!.onSubtle!.standard
+            .boxColor!;
         for (const context of contexts) {
           const ambient = (
             context === 'onSubtle'
@@ -205,13 +206,14 @@ describe('Material Button selected indicator', () => {
           ) as string;
           for (const intent of intents) {
             const host =
-              button.elements.e1!.palettes![segment]![theme]![context]!.boxColor![intent]!.high!;
+              button.elements.e1!.palettes![segment]![theme]![context]!.standard.boxColor![intent]!
+                .high!;
             for (const state of ['rest', 'hover', 'focus', 'pressed'] as const) {
               const surface = (host[state] ?? host.rest) as string;
               for (const placement of placements) {
                 const paint =
-                  indicatorRecipes[placement].palettes[segment]![theme]![context]!.boxColor[intent]!
-                    .high!.selected!.rest;
+                  indicatorRecipes[placement].palettes[segment]![theme]![context]!.standard
+                    .boxColor[intent]!.high!.selected!.rest;
                 const background = placement === 'inside' ? composite(surface, ambient) : ambient;
                 const foreground = composite(resolvePaint(paint), background);
                 expect

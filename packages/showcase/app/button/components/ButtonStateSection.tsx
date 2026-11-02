@@ -1,14 +1,14 @@
 'use client';
 
 import type {
-  ButtonIntent,
+  ButtonIntentValue,
   ButtonSelectionEmphasis,
   ElementSizeValue,
   InteractionState,
   RadiusMode,
   SurfaceContext
 } from '@kiskadee/core';
-import { componentScaleToSize } from '@kiskadee/core';
+import { componentScaleToSize, parseButtonIntentValue } from '@kiskadee/core';
 import { Button as KButton } from '@kiskadee/react-components/button';
 import { SmoothText } from '@kiskadee/react-components/smooth-text';
 import { Text } from '@kiskadee/react-components/text';
@@ -21,7 +21,7 @@ import { ButtonUnavailableExample } from './ButtonUnavailableExample';
 import { shouldCheckButtonStateAvailability } from './buttonStateAvailability';
 
 type ButtonStateSectionProps = {
-  intent: ButtonIntent;
+  intent: ButtonIntentValue;
   title: string;
   description?: string;
   fontName: string;
@@ -80,7 +80,7 @@ export function ButtonStateSection({
 
     const isSupported = (() => {
       if (!stateCapabilities) return true;
-      const group = stateCapabilities[intent]?.[emphasis];
+      const group = stateCapabilities[parseButtonIntentValue(intent)?.intent ?? intent]?.[emphasis];
       if (!group) return false;
       return Boolean(group[state]);
     })();

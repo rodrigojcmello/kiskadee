@@ -1,4 +1,7 @@
+import { resolveColorVariantLeaves } from './color-variant.ts';
 import type {
+  ColorVariant,
+  ColorVariantPalette,
   ComponentEmphasis,
   SegmentName,
   SurfaceContext,
@@ -14,11 +17,15 @@ export type ContentSurfaceContextStateMap = {
   disabled?: ContentSurfaceContextValue;
 };
 
-/**
- * Serializable descendant-surface output authored by a component.
- *
- * Index order: segment -> theme -> consumed surface -> intent -> emphasis -> state.
- */
+export type ContentSurfaceContextIntentMap<TIntent extends string = string> = Partial<
+  Record<TIntent, Partial<Record<ComponentEmphasis, ContentSurfaceContextStateMap>>>
+>;
+
+export type ContentSurfaceContextVariants<TIntent extends string = string> = ColorVariantPalette<
+  ContentSurfaceContextIntentMap<TIntent>
+>;
+
+/** Segment -> theme -> consumed surface -> color variant -> intent -> emphasis -> state. */
 export type ContentSurfaceContextMap<
   TIntent extends string = string,
   TSegmentName extends SegmentName = string
@@ -26,20 +33,21 @@ export type ContentSurfaceContextMap<
   Record<
     TSegmentName | 'default' | 'dynamic',
     Partial<
-      Record<
-        ThemeMode,
-        Partial<
-          Record<
-            SurfaceContext,
-            Partial<
-              Record<TIntent, Partial<Record<ComponentEmphasis, ContentSurfaceContextStateMap>>>
-            >
-          >
-        >
-      >
+      Record<ThemeMode, Partial<Record<SurfaceContext, ContentSurfaceContextVariants<TIntent>>>>
     >
   >
 >;
+
+/** Applies the same whole-state-map inheritance used by component palettes. */
+export function resolveContentSurfaceContextVariant<TIntent extends string>(
+  variants: ContentSurfaceContextVariants<TIntent>,
+  variant: ColorVariant
+): ContentSurfaceContextIntentMap<TIntent> {
+  return resolveColorVariantLeaves(
+    variants.standard,
+    variant === 'alternative' ? variants.alternative : undefined
+  );
+}
 
 const OUTPUT_VALUES = ['onSubtle', 'onVivid', 'inherit'] as const;
 const OUTPUT_STATE_KEYS = ['rest', 'selected', 'pending', 'disabled'] as const;
@@ -64,39 +72,58 @@ export function validateContentSurfaceContextMap(value: unknown, path: string): 
         issues.push(`${path}.${segment}.${theme}: expected object`);
         continue;
       }
-      for (const [inputContext, intents] of Object.entries(inputContexts)) {
+      for (const [inputContext, variants] of Object.entries(inputContexts)) {
         if (!['onSubtle', 'onVivid'].includes(inputContext)) {
           issues.push(`${path}.${segment}.${theme}.${inputContext}: unrecognized surface context`);
         }
-        if (!isRecord(intents)) {
+        if (!isRecord(variants)) {
           issues.push(`${path}.${segment}.${theme}.${inputContext}: expected object`);
           continue;
         }
-        for (const [intent, emphases] of Object.entries(intents)) {
-          if (!isRecord(emphases)) {
-            issues.push(`${path}.${segment}.${theme}.${inputContext}.${intent}: expected object`);
+        if (!isRecord(variants.standard)) {
+          issues.push(
+            `${path}.${segment}.${theme}.${inputContext}.standard: required color variant`
+          );
+        }
+        for (const [variant, intents] of Object.entries(variants)) {
+          if (variant !== 'standard' && variant !== 'alternative') {
+            issues.push(
+              `${path}.${segment}.${theme}.${inputContext}.${variant}: unrecognized color variant`
+            );
             continue;
           }
-          for (const [emphasis, states] of Object.entries(emphases)) {
-            const statePath = `${path}.${segment}.${theme}.${inputContext}.${intent}.${emphasis}`;
-            if (!['highest', 'high', 'medium', 'low', 'lowest'].includes(emphasis)) {
-              issues.push(`${statePath}: unrecognized emphasis`);
-            }
-            if (!isRecord(states)) {
-              issues.push(`${statePath}: expected object`);
+          if (!isRecord(intents)) {
+            issues.push(`${path}.${segment}.${theme}.${inputContext}.${variant}: expected object`);
+            continue;
+          }
+          for (const [intent, emphases] of Object.entries(intents)) {
+            if (!isRecord(emphases)) {
+              issues.push(
+                `${path}.${segment}.${theme}.${inputContext}.${variant}.${intent}: expected object`
+              );
               continue;
             }
-            for (const key of Object.keys(states)) {
-              if (!OUTPUT_STATE_KEYS.includes(key as (typeof OUTPUT_STATE_KEYS)[number])) {
-                issues.push(`${statePath}.${key}: unrecognized state`);
+            for (const [emphasis, states] of Object.entries(emphases)) {
+              const statePath = `${path}.${segment}.${theme}.${inputContext}.${variant}.${intent}.${emphasis}`;
+              if (!['highest', 'high', 'medium', 'low', 'lowest'].includes(emphasis)) {
+                issues.push(`${statePath}: unrecognized emphasis`);
               }
-            }
-            if (!Object.hasOwn(states, 'rest')) {
-              issues.push(`${statePath}.rest: required state`);
-            }
-            for (const [state, output] of Object.entries(states)) {
-              if (!OUTPUT_VALUES.includes(output as (typeof OUTPUT_VALUES)[number])) {
-                issues.push(`${statePath}.${state}: expected onSubtle, onVivid, or inherit`);
+              if (!isRecord(states)) {
+                issues.push(`${statePath}: expected object`);
+                continue;
+              }
+              for (const key of Object.keys(states)) {
+                if (!OUTPUT_STATE_KEYS.includes(key as (typeof OUTPUT_STATE_KEYS)[number])) {
+                  issues.push(`${statePath}.${key}: unrecognized state`);
+                }
+              }
+              if (!Object.hasOwn(states, 'rest')) {
+                issues.push(`${statePath}.rest: required state`);
+              }
+              for (const [state, output] of Object.entries(states)) {
+                if (!OUTPUT_VALUES.includes(output as (typeof OUTPUT_VALUES)[number])) {
+                  issues.push(`${statePath}.${state}: expected onSubtle, onVivid, or inherit`);
+                }
               }
             }
           }

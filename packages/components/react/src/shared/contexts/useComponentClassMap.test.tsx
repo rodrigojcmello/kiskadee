@@ -49,8 +49,10 @@ const paletteClassMap = {
       e3: {
         c: {
           s: {
-            neutral: {
-              m: 'control-color'
+            s: {
+              neutral: {
+                m: 'control-color'
+              }
             }
           }
         }
@@ -58,8 +60,10 @@ const paletteClassMap = {
       e4: {
         c: {
           s: {
-            neutral: {
-              m: 'input-color'
+            s: {
+              neutral: {
+                m: 'input-color'
+              }
             }
           }
         }
@@ -88,6 +92,7 @@ function createContextValue(
       if (componentName !== 'textField') return undefined;
 
       const artifact: ComponentClassMapArtifactJSON<TextFieldClassMap> = {
+        formatVersion: 3,
         component: 'textField',
         classMap: scope.kind === 'core' ? coreClassMap : paletteClassMap
       };
@@ -118,6 +123,7 @@ it.each([
     loadComponentClassMap: async <T,>(componentName: string, scope: ComponentClassMapScope) => {
       if (componentName !== 'button') return undefined;
       return {
+        formatVersion: 3,
         component: 'button',
         classMap:
           scope.kind === 'core'
@@ -128,8 +134,8 @@ it.each([
                   : {})
               }
             : {
-                e1: { c: { s: { neutral: { m: 'base-palette' } } } },
-                selectionRest: { e1: { c: { s: { neutral: { h: 'normal-high' } } } } }
+                e1: { c: { s: { s: { neutral: { m: 'base-palette' } } } } },
+                selectionRest: { e1: { c: { s: { s: { neutral: { h: 'normal-high' } } } } } }
               }
       } as T;
     }
@@ -140,8 +146,8 @@ it.each([
   );
   const merged = JSON.parse(screen.getByTestId('selection-projection-map').textContent ?? '{}');
   expect(merged.e1.s.all).toBe('root-geometry');
-  expect(merged.e1.c.s.neutral.m).toBe('base-palette');
-  expect(merged.selectionRest.e1.c.s.neutral.h).toBe('normal-high');
+  expect(merged.e1.c.s.s.neutral.m).toBe('base-palette');
+  expect(merged.selectionRest.e1.c.s.s.neutral.h).toBe('normal-high');
   expect(merged.selectionRest.e1.e?.h).toBe(withCoreProjection ? 'normal-shadow' : undefined);
 });
 
@@ -208,8 +214,10 @@ describe('useComponentClassMap', () => {
       },
       c: {
         s: {
-          neutral: {
-            m: 'control-color'
+          s: {
+            neutral: {
+              m: 'control-color'
+            }
           }
         }
       }
@@ -220,8 +228,10 @@ describe('useComponentClassMap', () => {
       },
       c: {
         s: {
-          neutral: {
-            m: 'input-color'
+          s: {
+            neutral: {
+              m: 'input-color'
+            }
           }
         }
       }
@@ -323,7 +333,7 @@ describe('useComponentClassMap', () => {
     );
 
     expect(readResolution().classMap).not.toBeNull();
-    expect(readResolution().classMap?.e3?.c?.s?.neutral?.m).toBe('control-color');
+    expect(readResolution().classMap?.e3?.c?.s?.s?.neutral?.m).toBe('control-color');
     expect(readResolution().pending).toBe(false);
   });
 
@@ -337,6 +347,7 @@ describe('useComponentClassMap', () => {
       if (componentName !== 'textField') return undefined;
 
       const artifact: ComponentClassMapArtifactJSON<TextFieldClassMap> = {
+        formatVersion: 3,
         component: 'textField',
         classMap: scope.kind === 'core' ? coreClassMap : paletteClassMap
       };
@@ -384,6 +395,7 @@ describe('useComponentClassMap', () => {
       if (componentName !== 'textField') return undefined;
 
       const artifact: ComponentClassMapArtifactJSON<TextFieldClassMap> = {
+        formatVersion: 3,
         component: 'textField',
         classMap: scope.kind === 'core' ? coreClassMap : paletteClassMap
       };
@@ -411,13 +423,30 @@ describe('useComponentClassMap', () => {
   });
 });
 
-it('publishes a partial transport error and retries without remounting or refetching core', async () => {
+it.each([
+  'transport',
+  'format',
+  'component',
+  'classMap'
+] as const)('retries a partial %s error without remounting or refetching core', async (failure) => {
   const attempts = { core: 0, palette: 0 };
-  const context = createContextValue('mounted-class-map-retry', {
+  const context = createContextValue(`mounted-class-map-retry-${failure}`, {
     loadComponentClassMap: async <T,>(component: string, scope: ComponentClassMapScope) => {
       attempts[scope.kind]++;
-      if (scope.kind === 'palette' && attempts.palette === 1) throw new Error('offline');
-      return { component, classMap: scope.kind === 'core' ? coreClassMap : paletteClassMap } as T;
+      const firstPalette = scope.kind === 'palette' && attempts.palette === 1;
+      if (scope.kind === 'palette' && attempts.palette === 1 && failure === 'transport')
+        throw new Error('offline');
+      return {
+        formatVersion:
+          scope.kind === 'palette' && attempts.palette === 1 && failure === 'format' ? 2 : 3,
+        component: firstPalette && failure === 'component' ? 'button' : component,
+        classMap:
+          firstPalette && failure === 'classMap'
+            ? undefined
+            : scope.kind === 'core'
+              ? coreClassMap
+              : paletteClassMap
+      } as T;
     }
   });
   function RetryProbe() {

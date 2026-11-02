@@ -25,8 +25,10 @@ const iconFamily = defineIconFamily({
 const intentClasses = {
   c: {
     s: {
-      neutral: { m: 'slot-neutral' },
-      destructive: { m: 'slot-destructive' }
+      s: {
+        neutral: { m: 'slot-neutral' },
+        destructive: { m: 'slot-destructive' }
+      }
     }
   }
 };

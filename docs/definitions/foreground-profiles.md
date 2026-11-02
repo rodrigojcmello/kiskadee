@@ -125,10 +125,12 @@ omitting state selects `rest`. The consuming palette supplies the segment.
 
 Atomic references are valid inside `textColor`. One bounded exception permits `boxColor` in
 `components.button.elements.e11.palettes` and `components.button.elements.e12.palettes`: these
-alternative recipes for one passive state indicator consume an existing foreground as line paint.
-The exception does not authorize other box-color consumers or duplicate the foreground catalog. Its state-driven
-references use `fg.parentState()` because the Button owns the state. See
-[State indicators](./state-indicators.md).
+recipes for one passive state indicator consume an existing foreground as line paint. The exception
+applies to their Standard indicator recipes, without additional anatomy. Alternative Button bodies
+continue to use these Standard indicator recipes.
+It does not authorize other box-color consumers or duplicate the foreground catalog. Its state-driven
+references use `fg.parentState()` because the Button owns the state. Foreground catalogs and
+coordinates do not gain a color-variant axis. See [State indicators](./state-indicators.md).
 
 Unknown coordinates fail validation; there is
 no profile, theme, context, strength, state, or segment fallback. `parentState` means that the slot

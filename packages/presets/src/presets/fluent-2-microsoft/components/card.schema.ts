@@ -302,8 +302,8 @@ function createCardContentSurfaceContext(themeName: ThemeName) {
   });
 
   return {
-    onSubtle: createContext(),
-    onVivid: createContext()
+    onSubtle: { standard: createContext() },
+    onVivid: { standard: createContext() }
   };
 }
 
@@ -591,16 +591,16 @@ export function createFluent2MicrosoftCardSchema({
         },
         palettes: buildBySegment(segmentNames, (segmentName) => ({
           light: {
-            onSubtle: createCardPalette(c, segmentName, 'light', 'onSubtle'),
-            onVivid: createCardPalette(c, segmentName, 'light', 'onVivid')
+            onSubtle: { standard: createCardPalette(c, segmentName, 'light', 'onSubtle') },
+            onVivid: { standard: createCardPalette(c, segmentName, 'light', 'onVivid') }
           },
           dark: {
-            onSubtle: createCardPalette(c, segmentName, 'dark', 'onSubtle'),
-            onVivid: createCardPalette(c, segmentName, 'dark', 'onVivid')
+            onSubtle: { standard: createCardPalette(c, segmentName, 'dark', 'onSubtle') },
+            onVivid: { standard: createCardPalette(c, segmentName, 'dark', 'onVivid') }
           },
           darker: {
-            onSubtle: createCardPalette(c, segmentName, 'darker', 'onSubtle'),
-            onVivid: createCardPalette(c, segmentName, 'darker', 'onVivid')
+            onSubtle: { standard: createCardPalette(c, segmentName, 'darker', 'onSubtle') },
+            onVivid: { standard: createCardPalette(c, segmentName, 'darker', 'onVivid') }
           }
         }))
       }

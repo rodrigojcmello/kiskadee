@@ -9,7 +9,7 @@ it('selects Medium for every global density while preserving explicit Small geom
   for (const mode of ['compact', 'regular', 'spacious'] as const) {
     expect(resolveDensityScale(mode, density)).toBe('md:1');
   }
-  const thumb = slider.variants?.standard?.modes?.base?.elements.e10?.scales?.boxWidth;
+  const thumb = slider.variants!.standard?.modes?.base?.elements.e10?.scales?.boxWidth;
   expect(thumb).toEqual({ 's:sm:1': 14, 's:md:1': 18 });
   expect(resolveSupportedSize('sm:1', Object.keys(thumb!))).toBe('sm:1');
 });
@@ -28,17 +28,19 @@ it('enlarges only the Medium icon thumb while preserving the control lane and pl
 it('uses the lighter neutral rail on subtle without changing the selected rail', () => {
   const elements = schema.components.slider!.variants!.standard!.modes!.base!.elements;
   for (const segment of ['default', 'teams'] as const) {
-    const rail = elements.e8!.palettes![segment]!.light!.onSubtle.boxColor!;
+    const rail = elements.e8!.palettes![segment]!.light!.onSubtle!.standard.boxColor!;
     expect(rail.neutral!.medium!.rest).toBe('#939393');
     expect(rail.primary!.medium!.rest).toBe('#939393');
     expect(rail.neutral!.medium!.hover).toEqual({ ref: '#939393' });
     expect(rail.neutral!.medium!.pressed).toEqual({ ref: '#c2c2c2' });
     expect(rail.primary!.medium!.pressed).toEqual({ ref: '#c2c2c2' });
-    expect(elements.e6!.palettes![segment]!.light!.onSubtle.textColor!.neutral!.medium!.rest).toBe(
-      '#616161'
-    );
-    expect(elements.e9!.palettes![segment]!.light!.onSubtle.boxColor!.neutral!.medium!.rest).toBe(
-      elements.e11!.palettes![segment]!.light!.onSubtle.boxColor!.neutral!.medium!.rest
+    expect(
+      elements.e6!.palettes![segment]!.light!.onSubtle!.standard.textColor!.neutral!.medium!.rest
+    ).toBe('#616161');
+    expect(
+      elements.e9!.palettes![segment]!.light!.onSubtle!.standard.boxColor!.neutral!.medium!.rest
+    ).toBe(
+      elements.e11!.palettes![segment]!.light!.onSubtle!.standard.boxColor!.neutral!.medium!.rest
     );
   }
 });
@@ -49,17 +51,18 @@ it('uses the Primary selected rail as the subtle thumb ring around the Neutral L
   for (const segment of ['default', 'teams'] as const) {
     const context = { light: 'light', onSubtle: 'onSubtle' } as const;
     const active =
-      elements.e9!.palettes![segment]![context.light]![context.onSubtle].boxColor!.primary!.medium!;
-    const outer = elements.e10!.palettes![segment]![context.light]![context.onSubtle];
+      elements.e9!.palettes![segment]![context.light]![context.onSubtle].standard.boxColor!.primary!
+        .medium!;
+    const outer = elements.e10!.palettes![segment]![context.light]![context.onSubtle].standard;
     const inner =
-      elements.e11!.palettes![segment]![context.light]![context.onSubtle].boxColor!.primary!
-        .medium!;
+      elements.e11!.palettes![segment]![context.light]![context.onSubtle].standard.boxColor!
+        .primary!.medium!;
     const icon =
-      elements.e19!.palettes![segment]![context.light]![context.onSubtle].textColor!.primary!
-        .medium!;
+      elements.e19!.palettes![segment]![context.light]![context.onSubtle].standard.textColor!
+        .primary!.medium!;
     const cardLow =
-      cardSurface.palettes![segment]![context.light]![context.onSubtle].boxColor!.neutral!.low!
-        .rest;
+      cardSurface.palettes![segment]![context.light]![context.onSubtle].standard.boxColor!.neutral!
+        .low!.rest;
     for (const state of ['rest', 'hover', 'focus', 'pressed'] as const) {
       expect(outer.boxColor!.primary!.medium![state]).toEqual(active[state]);
       expect(outer.borderColor!.primary!.medium![state]).toEqual(active[state]);

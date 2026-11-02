@@ -100,10 +100,12 @@ export function createFluent2MicrosoftBottomSheetSchema({
 }: CreateFluent2MicrosoftBottomSheetSchemaArgs): BottomSheetComponent {
   const scrim = {
     onSubtle: {
-      boxColor: {
-        neutral: {
-          medium: {
-            rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'dark', 32))
+      standard: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'dark', 32))
+            }
           }
         }
       }
@@ -129,10 +131,12 @@ export function createFluent2MicrosoftBottomSheetSchema({
     return {
       surface: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.surface)
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.surface)
+                }
               }
             }
           }
@@ -140,10 +144,12 @@ export function createFluent2MicrosoftBottomSheetSchema({
       },
       handle: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.handle)
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.handle)
+                }
               }
             }
           }
@@ -151,61 +157,67 @@ export function createFluent2MicrosoftBottomSheetSchema({
       },
       item: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: transparent,
-                hover: resolve(recipe.hover),
-                pressed: resolve(recipe.pressed),
-                selected: {
-                  rest: resolve(recipe.selected)
-                },
-                disabled: transparent
-              }
-            },
-            destructive: {
-              medium: {
-                rest: transparent,
-                hover: resolve(recipe.destructiveHover),
-                pressed: resolve(recipe.destructivePressed),
-                selected: {
-                  rest: resolve(recipe.destructiveSelected)
-                },
-                disabled: transparent
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: transparent,
+                  hover: resolve(recipe.hover),
+                  pressed: resolve(recipe.pressed),
+                  selected: {
+                    rest: resolve(recipe.selected)
+                  },
+                  disabled: transparent
+                }
+              },
+              destructive: {
+                medium: {
+                  rest: transparent,
+                  hover: resolve(recipe.destructiveHover),
+                  pressed: resolve(recipe.destructivePressed),
+                  selected: {
+                    rest: resolve(recipe.destructiveSelected)
+                  },
+                  disabled: transparent
+                }
               }
             }
           }
         }
       },
-      text: { onSubtle: { textColor } },
+      text: { onSubtle: { standard: { textColor } } },
       auxiliaryText: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.secondaryText),
-                disabled: { ref: disabledText }
+          standard: {
+            textColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.secondaryText),
+                  disabled: { ref: disabledText }
+                }
+              },
+              destructive: {
+                medium: { rest: destructiveText, disabled: { ref: disabledText } }
               }
-            },
-            destructive: {
-              medium: { rest: destructiveText, disabled: { ref: disabledText } }
             }
           }
         }
       },
       endText: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.endText),
-                disabled: { ref: disabledText }
-              }
-            },
-            destructive: {
-              medium: {
-                rest: resolve(recipe.endText),
-                disabled: { ref: disabledText }
+          standard: {
+            textColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.endText),
+                  disabled: { ref: disabledText }
+                }
+              },
+              destructive: {
+                medium: {
+                  rest: resolve(recipe.endText),
+                  disabled: { ref: disabledText }
+                }
               }
             }
           }
@@ -213,15 +225,17 @@ export function createFluent2MicrosoftBottomSheetSchema({
       },
       groupLabelText: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.groupLabelText),
-                disabled: { ref: disabledText }
+          standard: {
+            textColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.groupLabelText),
+                  disabled: { ref: disabledText }
+                }
+              },
+              destructive: {
+                medium: { rest: destructiveText, disabled: { ref: disabledText } }
               }
-            },
-            destructive: {
-              medium: { rest: destructiveText, disabled: { ref: disabledText } }
             }
           }
         }

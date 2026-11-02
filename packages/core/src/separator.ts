@@ -30,10 +30,19 @@ export type SeparatorColorSchema = {
   textColor?: never;
 };
 
+type SeparatorAlternativeColorSchema = Omit<SeparatorColorSchema, 'boxColor'> & {
+  boxColor: Partial<Record<'neutral' | 'primary', Partial<SeparatorIntentColorMap>>>;
+};
+
 export type SeparatorProfilePalettes = Partial<
   Record<
     SegmentName | 'default' | 'dynamic',
-    Partial<Record<ThemeMode, SurfaceContextPalette<SeparatorColorSchema>>>
+    Partial<
+      Record<
+        ThemeMode,
+        SurfaceContextPalette<SeparatorColorSchema, SeparatorAlternativeColorSchema>
+      >
+    >
   >
 >;
 

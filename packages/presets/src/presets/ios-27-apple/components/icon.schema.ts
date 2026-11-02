@@ -27,18 +27,22 @@ export function createIos27AppleIconSchema({
                 theme,
                 {
                   onSubtle: {
-                    textColor: {
-                      neutral: { medium: { rest: c('default', track, 'icon.neutral', 100) } },
-                      primary: {
-                        medium: { rest: c.ref('default', track, 'icon.primary', 'vivid') }
+                    standard: {
+                      textColor: {
+                        neutral: { medium: { rest: c('default', track, 'icon.neutral', 100) } },
+                        primary: {
+                          medium: { rest: c.ref('default', track, 'icon.primary', 'vivid') }
+                        }
                       }
                     }
                   },
                   onVivid: {
-                    textColor: {
-                      neutral: { medium: { rest: c('default', 'l', 'neutral', 0) } },
-                      primary: {
-                        medium: { rest: c.ref('default', 'l', 'icon.primary', 'subtle', -2) }
+                    standard: {
+                      textColor: {
+                        neutral: { medium: { rest: c('default', 'l', 'neutral', 0) } },
+                        primary: {
+                          medium: { rest: c.ref('default', 'l', 'icon.primary', 'subtle', -2) }
+                        }
                       }
                     }
                   }

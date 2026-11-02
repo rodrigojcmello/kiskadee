@@ -23,6 +23,7 @@ export type {
   BadgeIntent,
   BottomSheetIntent,
   ButtonIntent,
+  ButtonIntentValue,
   CardIntent,
   CardSurfaceIntent,
   ChipIntent,
@@ -44,6 +45,7 @@ export type {
   SliderIntent,
   SwitchIntent,
   SystemButtonIntent,
+  SystemButtonIntentValue,
   TextFieldIntent
 } from './colors.intents.ts';
 export {
@@ -590,9 +592,25 @@ export const surfaceContextBuckets = {
 
 export type SurfaceContextBucket = (typeof surfaceContextBuckets)[SurfaceContext];
 
-export type SurfaceContextPalette<TColorSchema extends ColorSchema = ColorSchema> = {
-  onSubtle: TColorSchema;
-  onVivid?: TColorSchema;
+export const colorVariants = ['standard', 'alternative'] as const;
+
+export type ColorVariant = (typeof colorVariants)[number];
+
+export const colorVariantBuckets = {
+  standard: 's',
+  alternative: 'a'
+} as const satisfies Record<ColorVariant, string>;
+
+export type ColorVariantBucket = (typeof colorVariantBuckets)[ColorVariant];
+
+export type ColorVariantPalette<TColorSchema = ColorSchema, TAlternativeSchema = TColorSchema> = {
+  standard: TColorSchema;
+  alternative?: TAlternativeSchema;
+};
+
+export type SurfaceContextPalette<TColorSchema = ColorSchema, TAlternativeSchema = TColorSchema> = {
+  onSubtle: ColorVariantPalette<TColorSchema, TAlternativeSchema>;
+  onVivid?: ColorVariantPalette<TColorSchema, TAlternativeSchema>;
 };
 
 export type ElementPalettes<TSegmentName extends SegmentName = never> = Partial<

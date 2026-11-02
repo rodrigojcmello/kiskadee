@@ -26,7 +26,6 @@ export function ComponentResourceBoundary({
     component,
     context.classesMap[component as keyof typeof context.classesMap]
   );
-  if (!context.loadComponentArtifact && !context.loadComponentClassMap) return children;
   if (metadata.error || map.error)
     return (
       <span role="alert">
@@ -42,6 +41,7 @@ export function ComponentResourceBoundary({
         </button>
       </span>
     );
+  if (!context.loadComponentArtifact && !context.loadComponentClassMap) return children;
   if (
     (context.loadComponentArtifact && !metadata.currentArtifact) ||
     (!map.classMap && map.pending)

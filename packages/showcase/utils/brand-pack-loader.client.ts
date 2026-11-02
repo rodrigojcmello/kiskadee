@@ -167,6 +167,7 @@ export const loadBrandPack: BrandPackLoader = async (
       const artifact = JSON.parse(artifactJson) as ComponentClassMapArtifactJSON<unknown>;
       if (
         !isRecord(artifact) ||
+        artifact.formatVersion !== 3 ||
         artifact.component !== componentName ||
         !isRecord(artifact.classMap)
       ) {

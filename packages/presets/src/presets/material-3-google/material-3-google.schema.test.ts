@@ -46,7 +46,7 @@ it('supplies shared foregrounds, contours, separators and focus in every publish
         expect(contour?.low?.rest).toBeTruthy();
         const separator =
           schema.global?.separators?.profiles?.subtle?.palettes?.[segment]?.[theme]?.[surface];
-        expect(separator?.boxColor?.neutral?.medium?.rest).toBeTruthy();
+        expect(separator!.standard.boxColor?.neutral?.medium?.rest).toBeTruthy();
       }
     }
   }

@@ -6,7 +6,11 @@ The optional selection indicator follows the shared
 elements consumed by one decorative span of the existing Button, not additional controls or public
 slots. This follows
 [alternate element recipes for one rendered part](../../../../../../docs/definitions/composition-strategies.md#alternate-element-recipes-for-one-rendered-part):
-placement selects one complete recipe for that part.
+placement selects one complete recipe for that part. Both recipes retain Standard paint when
+the Button requests an Alternative [body color variant](color-variants.md). No additional
+indicator anatomy, separate color option or indicator contrast recalibration is introduced.
+Inside paint remains authored against the Button surface; Outside paint remains relative to
+the ambient surface.
 
 ## Resolution and state
 
@@ -18,15 +22,16 @@ available action. Changing level, layout or coverage can add or remove the node;
 changes retain it. See [selection emphasis](./selection-emphasis.md) for the four levels.
 
 `selectionIntent` separately chooses the selected appearance's intent, with the base intent as
-its inherited default. Indicator paint follows that effective intent and emphasis, including any
-whole-recipe coverage fallback, so the line contrasts with the surface actually being painted.
+its inherited default. Standard indicator paint follows that effective semantic intent and
+emphasis, including any whole-recipe coverage fallback. A qualified Alternative request does
+not select another indicator color variant.
 The independent intent choice does not add indicator activation states or geometry.
 
 `indicatorPlacement` resolves from the Button prop, then the preset option, then `inside`.
 The other placement is `outside`; both anchor to the lower edge. Inside requires `e11` and published
 `indicator.sizesByRadius` coverage; outside requires `e12` and `indicator.outsideSizesByRadius`.
 The active recipe must provide scale/radius classes for the effective size and radius, and paint
-for the exact effective paint intent, emphasis and ambient Surface Context. Unsupported
+for Standard at the exact effective semantic intent, emphasis and ambient Surface Context. Unsupported
 coordinates omit the anatomy; they do not borrow a neutral or weaker-emphasis recipe.
 
 `indicator.stackedSizesByRadius` and `indicator.stackedOutsideSizesByRadius` supply independent inside
@@ -105,7 +110,7 @@ retains its separate clipped viewport, and overlaid Badge content stays above th
 The focus outline remains on the root and is not clipped by either viewport.
 
 The indicator does not change the content Surface Context or its published map. Both recipes consume
-the Button's ambient context and effective paint intent and emphasis through ordinary palette resolution.
+Standard in the Button's ambient context and effective semantic intent and emphasis through ordinary palette resolution.
 The preset authors `e11.c` against the Button surface and `e12.c` against the surrounding surface;
 runtime does not infer either recipe from the context produced for children. Those children continue
 to receive the same produced context as before. Group children remain direct native Button siblings,

@@ -20,12 +20,16 @@ vi.mock('./useTextFieldArtifactConfig.ts', () => {
   const passive = {
     c: {
       s: {
-        neutral: { ll: 'neutral-passive', m: 'neutral-surfaced-passive' },
-        error: { ll: 'error-passive', m: 'error-surfaced-passive' }
+        s: {
+          neutral: { ll: 'neutral-passive', m: 'neutral-surfaced-passive' },
+          error: { ll: 'error-passive', m: 'error-surfaced-passive' }
+        }
       },
       v: {
-        neutral: { ll: 'vivid-passive', m: 'own-surface-passive' },
-        error: { ll: 'vivid-error-passive', m: 'own-surface-error-passive' }
+        s: {
+          neutral: { ll: 'vivid-passive', m: 'own-surface-passive' },
+          error: { ll: 'vivid-error-passive', m: 'own-surface-error-passive' }
+        }
       }
     }
   };
@@ -34,10 +38,12 @@ vi.mock('./useTextFieldArtifactConfig.ts', () => {
       s: { all: 'content-spacing' },
       c: {
         s: {
-          neutral: { ll: 'plain-region', m: 'neutral-region' },
-          error: { ll: 'plain-region', m: 'error-region' }
+          s: {
+            neutral: { ll: 'plain-region', m: 'neutral-region' },
+            error: { ll: 'plain-region', m: 'error-region' }
+          }
         },
-        v: { neutral: { ll: 'vivid-plain-region', m: 'vivid-region' } }
+        v: { s: { neutral: { ll: 'vivid-plain-region', m: 'vivid-region' } } }
       }
     },
     e9: passive,
@@ -47,8 +53,12 @@ vi.mock('./useTextFieldArtifactConfig.ts', () => {
     contentRegionSurfaceContext: {
       default: {
         light: {
-          onSubtle: { neutral: { lowest: { rest: 'inherit' }, medium: { rest: 'onSubtle' } } },
-          onVivid: { neutral: { lowest: { rest: 'inherit' }, medium: { rest: 'onSubtle' } } }
+          onSubtle: {
+            standard: { neutral: { lowest: { rest: 'inherit' }, medium: { rest: 'onSubtle' } } }
+          },
+          onVivid: {
+            standard: { neutral: { lowest: { rest: 'inherit' }, medium: { rest: 'onSubtle' } } }
+          }
         }
       }
     },
@@ -56,8 +66,10 @@ vi.mock('./useTextFieldArtifactConfig.ts', () => {
       default: {
         light: {
           onVivid: {
-            neutral: { medium: { rest: 'onSubtle' } },
-            error: { medium: { rest: 'onSubtle' } }
+            standard: {
+              neutral: { medium: { rest: 'onSubtle' } },
+              error: { medium: { rest: 'onSubtle' } }
+            }
           }
         }
       }
@@ -452,7 +464,7 @@ describe('TextField internal content', () => {
   it('keeps region anatomy optional for presets without authored surfaces', () => {
     const classes = resolveTextFieldContentClassNames({
       structural: textFieldStructuralRegistry.standard.outline,
-      elements: { e9: { c: { s: { neutral: { m: 'legacy-icon' } } } } },
+      elements: { e9: { c: { s: { s: { neutral: { m: 'legacy-icon' } } } } } },
       classNames: {},
       scale: 's:md:1',
       intent: 'neutral',

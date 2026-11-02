@@ -5,10 +5,15 @@ topology only: the wrapper does not add a role, selection model, keyboard model,
 
 ## Shared visual contract
 
-The group is authoritative for `size`, `radius`, `emphasis`, `intent`, and `surfaceContext`.
+The group is authoritative for `size`, `radius`, `emphasis`, qualified `intent`, and
+`surfaceContext`.
 Every descendant Button inherits those values. Conflicting child values are ignored with a
 development warning; action props, state, content, focus, and activation feedback remain local to
 each Button.
+
+The shared qualified `intent`, such as `primary-alt`, selects the frame/member/divider recipe
+together through [shared color-variant resolution](color-variants.md). Indicators retain
+Standard paint and their existing local activation contract.
 
 The shared `intent` defines the base appearance. A member's `selectionIntent` remains local to
 that Button and selects its paint only while selected; it does not change its siblings or the
@@ -46,8 +51,8 @@ or structural Sass. Logical properties preserve the topology in RTL.
 
 With a compatible divider recipe, the group paints one logical outer frame. The frame uses
 `e1` border geometry, the effective group radius, and only the border colors from the group's base
-Rest recipe, including independently authored sides. Intent, emphasis, theme, and surface context
-still select the frame's appearance. Hover and Pressed do not recolor that border. Ordinary
+Rest recipe, including independently authored sides. Semantic intent, color variant, emphasis, theme, and surface context
+select the frame's appearance. Hover and Pressed do not recolor that border. Ordinary
 Selected, Disabled, or Pending paint also preserves its base Rest recipe, except for the
 explicit unpainted-state omissions described below.
 
@@ -59,7 +64,7 @@ the group's border colors to High. Missing High support keeps the ordinary Selec
 its Rest frame segment.
 
 The Builder may additionally publish optional `group.frameOmissions`, indexed by surface-context
-bucket, effective paint intent, and emphasis bucket, with `pressed` and/or `selected` flags. These
+bucket, color-variant bucket, effective semantic intent, and emphasis bucket, with `pressed` and/or `selected` flags. These
 flags mean that the authored effective border is fully transparent on all sides for that state;
 a remaining opaque side prevents a complete-frame omission. They carry no colors or CSS values.
 The adapter resolves them against the member's actual paint recipe, including `selectionIntent`.

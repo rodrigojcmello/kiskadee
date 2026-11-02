@@ -15,15 +15,19 @@ function createIcon() {
           default: {
             light: {
               onSubtle: {
-                textColor: {
-                  neutral: { medium: { rest: '#202020' } },
-                  primary: { medium: { rest: '#0064b4' } }
+                standard: {
+                  textColor: {
+                    neutral: { medium: { rest: '#202020' } },
+                    primary: { medium: { rest: '#0064b4' } }
+                  }
                 }
               },
               onVivid: {
-                textColor: {
-                  neutral: { medium: { rest: '#ffffff' } },
-                  primary: { medium: { rest: '#ffffff' } }
+                standard: {
+                  textColor: {
+                    neutral: { medium: { rest: '#ffffff' } },
+                    primary: { medium: { rest: '#ffffff' } }
+                  }
                 }
               }
             }
@@ -44,14 +48,16 @@ describe('Icon component contract', () => {
     icon.options = { decorative: true };
     icon.elements.e2 = { name: 'label' };
     icon.elements.e1.iconSize['s:all'] = 's:lg:5';
-    icon.elements.e1.palettes.default.light.onSubtle.textColor.warning = {
+    icon.elements.e1.palettes.default.light.onSubtle.standard.textColor.warning = {
       medium: { rest: '#ffff00' }
     };
-    icon.elements.e1.palettes.default.light.onSubtle.textColor.neutral.high = {
+    icon.elements.e1.palettes.default.light.onSubtle.standard.textColor.neutral.high = {
       rest: '#202020'
     };
-    icon.elements.e1.palettes.default.light.onSubtle.textColor.primary.medium.hover = '#005a9e';
-    icon.elements.e1.palettes.default.light.onSubtle.textColor.primary.medium.active = '#004578';
+    icon.elements.e1.palettes.default.light.onSubtle.standard.textColor.primary.medium.hover =
+      '#005a9e';
+    icon.elements.e1.palettes.default.light.onSubtle.standard.textColor.primary.medium.active =
+      '#004578';
 
     expect(validateIconComponentContract(icon)).toEqual(
       expect.arrayContaining([

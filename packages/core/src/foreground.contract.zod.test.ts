@@ -68,10 +68,12 @@ describe('foreground profile contract', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: {
-              neutral: {
-                medium: {
-                  selected: { rest: fg.parentState('neutral.standard.light.onSubtle.high') }
+            standard: {
+              boxColor: {
+                neutral: {
+                  medium: {
+                    selected: { rest: fg.parentState('neutral.standard.light.onSubtle.high') }
+                  }
                 }
               }
             }
@@ -190,7 +192,7 @@ describe('foreground profile contract', () => {
               palettes: {
                 default: {
                   light: {
-                    onSubtle: { textColor: { neutral: emphasisMap() } }
+                    onSubtle: { standard: { textColor: { neutral: emphasisMap() } } }
                   }
                 }
               }
@@ -204,7 +206,7 @@ describe('foreground profile contract', () => {
       'components.text.elements.e1.foreground.neutral: references unknown foreground family "missing"'
     );
     expect(issues).toContain(
-      'components.text.elements.e1.palettes.default.light.onSubtle.textColor: cannot be authored together with components.text.elements.e1.foreground'
+      'components.text.elements.e1.palettes.default.light.onSubtle.standard.textColor: cannot be authored together with components.text.elements.e1.foreground'
     );
   });
 
@@ -242,11 +244,13 @@ describe('foreground profile contract', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: fg('neutral.standard.light.onSubtle.medium'),
-                            hover: fg.parentState('neutral.standard.light.onSubtle.medium.hover')
+                      standard: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: fg('neutral.standard.light.onSubtle.medium'),
+                              hover: fg.parentState('neutral.standard.light.onSubtle.medium.hover')
+                            }
                           }
                         }
                       }
@@ -271,9 +275,11 @@ describe('foreground profile contract', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      boxColor: {
-                        neutral: {
-                          medium: { rest: fg('neutral.standard.light.onSubtle.medium') }
+                      standard: {
+                        boxColor: {
+                          neutral: {
+                            medium: { rest: fg('neutral.standard.light.onSubtle.medium') }
+                          }
                         }
                       }
                     }
@@ -286,12 +292,14 @@ describe('foreground profile contract', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: 'fg:missing.standard.light.onSubtle.medium',
-                            hover: {
-                              ref: fg('neutral.standard.light.onSubtle.medium.hover')
+                      standard: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: 'fg:missing.standard.light.onSubtle.medium',
+                              hover: {
+                                ref: fg('neutral.standard.light.onSubtle.medium.hover')
+                              }
                             }
                           }
                         }
@@ -307,13 +315,13 @@ describe('foreground profile contract', () => {
     });
 
     expect(invalid).toContain(
-      'components.button.elements.e1.palettes.default.light.onSubtle.boxColor.neutral.medium.rest: fg references are accepted only in textColor'
+      'components.button.elements.e1.palettes.default.light.onSubtle.standard.boxColor.neutral.medium.rest: fg references are accepted only in textColor'
     );
     expect(invalid).toContain(
-      'components.button.elements.e2.palettes.default.light.onSubtle.textColor.neutral.medium.rest: references unknown foreground family "missing"'
+      'components.button.elements.e2.palettes.default.light.onSubtle.standard.textColor.neutral.medium.rest: references unknown foreground family "missing"'
     );
     expect(invalid).toContain(
-      'components.button.elements.e2.palettes.default.light.onSubtle.textColor.neutral.medium.hover.ref: use fg.parentState() instead of the legacy ref wrapper'
+      'components.button.elements.e2.palettes.default.light.onSubtle.standard.textColor.neutral.medium.hover.ref: use fg.parentState() instead of the legacy ref wrapper'
     );
   });
 
@@ -387,11 +395,15 @@ describe('foreground profile contract', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: 'fg:neutral.deep.light.onSubtle.high',
-                            pending: { parentState: 'fg:neutral.deep.light.onSubtle.high.pending' }
+                      standard: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: 'fg:neutral.deep.light.onSubtle.high',
+                              pending: {
+                                parentState: 'fg:neutral.deep.light.onSubtle.high.pending'
+                              }
+                            }
                           }
                         }
                       }

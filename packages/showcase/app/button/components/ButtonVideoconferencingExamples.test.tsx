@@ -62,6 +62,9 @@ vi.mock('@kiskadee/react-components/button', async () => {
   };
 });
 
+vi.mock('@/hooks/use-button-color-variants', () => ({
+  useButtonColorVariantMetadata: () => undefined
+}));
 vi.mock('@kiskadee/react-components/resources', () => ({
   useComponentMetadata: () => ({ sizeSupport: { sizes: artifact.sizes } }),
   useKiskadee: () => ({ global: { radius: artifact.globalRadius } })
@@ -228,10 +231,12 @@ const normalElements = {
     rr: { all: 'rounded' },
     c: {
       s: {
-        primary: { m: 'primary' },
-        neutral: { m: 'neutral' },
-        destructive: { m: 'destructive' },
-        positive: { m: 'positive' }
+        s: {
+          primary: { m: 'primary' },
+          neutral: { m: 'neutral' },
+          destructive: { m: 'destructive' },
+          positive: { m: 'positive' }
+        }
       }
     }
   },
@@ -469,7 +474,7 @@ describe('Videoconferencing options', () => {
             ...stackedElements,
             e1: {
               ...normalElements.e1,
-              c: { s: { primary: { m: 'primary' }, neutral: { m: 'neutral' } } }
+              c: { s: { s: { primary: { m: 'primary' }, neutral: { m: 'neutral' } } } }
             }
           }
         })

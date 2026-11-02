@@ -15,15 +15,17 @@ const intents = ['neutral', 'primary', 'positive'] as const;
 const sizesByRadius = { rounded: ['md:1'], pill: [], square: ['md:1'] };
 function colors(part: string, normalHigh = false): ClassNameByElementJSON['c'] {
   return {
-    s: Object.fromEntries(
-      intents.map((intent) => [
-        intent,
-        {
-          m: `${part}-${intent}-medium`,
-          h: `${part}-${intent}-high-${normalHigh ? 'normal' : 'selected'}`
-        }
-      ])
-    )
+    s: {
+      s: Object.fromEntries(
+        intents.map((intent) => [
+          intent,
+          {
+            m: `${part}-${intent}-medium`,
+            h: `${part}-${intent}-high-${normalHigh ? 'normal' : 'selected'}`
+          }
+        ])
+      )
+    }
   };
 }
 function fixture(): ButtonClassesMap {
@@ -83,6 +85,7 @@ function makeContext(
     setTheme() {},
     componentArtifacts: {
       button: {
+        formatVersion: 3,
         component: 'button',
         options: { selectionIntent, groupDivider: true },
         layouts: { stacked: { sizes: ['md:1'], sizesByRadius } },
@@ -95,17 +98,19 @@ function makeContext(
           default: {
             light: {
               onSubtle: {
-                neutral: {
-                  medium: { rest: 'onSubtle', selected: 'onSubtle' },
-                  high: { rest: 'onSubtle' }
-                },
-                primary: {
-                  medium: { rest: 'onSubtle', selected: 'onVivid' },
-                  high: { rest: 'onVivid' }
-                },
-                positive: {
-                  medium: { rest: 'onSubtle', selected: 'onSubtle' },
-                  high: { rest: 'onSubtle' }
+                standard: {
+                  neutral: {
+                    medium: { rest: 'onSubtle', selected: 'onSubtle' },
+                    high: { rest: 'onSubtle' }
+                  },
+                  primary: {
+                    medium: { rest: 'onSubtle', selected: 'onVivid' },
+                    high: { rest: 'onVivid' }
+                  },
+                  positive: {
+                    medium: { rest: 'onSubtle', selected: 'onSubtle' },
+                    high: { rest: 'onSubtle' }
+                  }
                 }
               }
             }
@@ -244,7 +249,7 @@ describe('Button selection intent', () => {
 
   it('keeps the surfaced icon Neutral while selecting a Primary High Button from Neutral', () => {
     const elements = fixture();
-    const surfacePaint = { s: { neutral: { m: 'surface-neutral-medium' } } };
+    const surfacePaint = { s: { s: { neutral: { m: 'surface-neutral-medium' } } } };
     elements.e4 = { s: { all: 'surface-geometry' }, c: surfacePaint };
     elements.selectionRest!.e4 = { c: surfacePaint };
     render(
@@ -283,7 +288,7 @@ describe('Button selection intent', () => {
 
   it('falls back atomically when a visible part lacks the requested ordinary intent', () => {
     const elements = fixture();
-    delete elements.e3!.c!.s!.primary;
+    delete elements.e3!.c!.s!.s!.primary;
     const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
     render(view({ selectionIntent: 'primary', selectionEmphasis: 'low' }, makeContext(elements)));
     const button = screen.getByRole('button', { name: 'Enable' });
@@ -304,7 +309,7 @@ describe('Button selection intent', () => {
 
   it('keeps the requested intent Selected recipe when only its High coverage is incomplete', () => {
     const elements = fixture();
-    delete elements.selectionRest!.e5!.c!.s!.primary;
+    delete elements.selectionRest!.e5!.c!.s!.s!.primary;
     const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
     render(view({ selectionIntent: 'primary', selectionEmphasis: 'high' }, makeContext(elements)));
     const button = screen.getByRole('button', { name: 'Enable' });
@@ -348,10 +353,10 @@ describe('Button selection intent', () => {
 
   it('uses complete High coverage even when the target has no ordinary base-emphasis recipe', () => {
     const elements = fixture();
-    delete elements.e1!.c!.s!.primary;
-    delete elements.e2!.c!.s!.primary;
-    delete elements.e3!.c!.s!.primary;
-    delete elements.e5!.c!.s!.primary;
+    delete elements.e1!.c!.s!.s!.primary;
+    delete elements.e2!.c!.s!.s!.primary;
+    delete elements.e3!.c!.s!.s!.primary;
+    delete elements.e5!.c!.s!.s!.primary;
     const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
     render(
       view({ selectionIntent: 'primary', selectionEmphasis: 'medium' }, makeContext(elements))

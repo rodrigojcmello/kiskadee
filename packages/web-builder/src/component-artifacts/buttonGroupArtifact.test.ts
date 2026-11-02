@@ -45,9 +45,9 @@ function fixture() {
       themes[theme] = contexts;
       for (const context of ['onSubtle', 'onVivid']) {
         const colors: Record<string, string[]> = {};
-        contexts[context] = { neutral: colors };
+        contexts[context] = { standard: { neutral: colors } };
         const tones = new Map();
-        metadata.set(`${segment}.${theme}.${context}`, tones);
+        metadata.set(`${segment}.${theme}.${context}.standard`, tones);
         for (const state of states) {
           colors[state] = [];
           for (const tone of ['medium', 'high'] as const) {
@@ -104,8 +104,8 @@ function paintFixture(
     for (const theme of ['light', 'dark']) {
       const states: Record<string, string[]> = {};
       const tones = new Map();
-      metadata.set(`${segment}.${theme}.${context}`, tones);
-      themes[theme] = { [context]: { [semantic]: states } };
+      metadata.set(`${segment}.${theme}.${context}.standard`, tones);
+      themes[theme] = { [context]: { standard: { [semantic]: states } } };
       for (const [state, declarations] of Object.entries(authored)) {
         if (!declarations) continue;
         states[state] = Object.entries(declarations).map(([property, value]) => {
@@ -164,24 +164,24 @@ describe('Button Group class projection', () => {
     for (const [bundle, group] of Object.entries(output.palettes)) {
       for (const context of ['s', 'v'] as const) {
         for (const tone of ['m', 'h'] as const) {
-          const frame = group.frame?.c?.[context]?.neutral[tone]?.split(' ');
+          const frame = group.frame?.c?.[context]?.s?.neutral[tone]?.split(' ');
           expect(frame).toHaveLength(5);
           expect(frame?.every((name) => name.endsWith('-rest') && !name.includes('selected'))).toBe(
             true
           );
           expect(frame?.some((name) => name.includes('borderBottomColor'))).toBe(true);
           expect(frame?.some((name) => name.includes('borderLeftColor'))).toBe(true);
-          const member = group.member?.c?.[context]?.neutral[tone];
+          const member = group.member?.c?.[context]?.s?.neutral[tone];
           expect(member).toContain('boxColor-selected-hover');
           expect(member).toContain('boxColor-disabled');
           expect(member).not.toContain('border');
         }
-        const high = group.selectionRestMember?.c?.[context]?.neutral.h;
+        const high = group.selectionRestMember?.c?.[context]?.s?.neutral.h;
         expect(high).toContain('boxColor-rest');
         expect(high).toContain('boxColor-hover');
         expect(high).not.toContain('selected');
         expect(high).not.toContain('border');
-        expect(group.selectionRestMember?.c?.[context]?.neutral.m).toBeUndefined();
+        expect(group.selectionRestMember?.c?.[context]?.s?.neutral.m).toBeUndefined();
       }
       expect(bundle).toMatch(/^(default|brand)\.(light|dark)$/);
     }
@@ -203,10 +203,10 @@ describe('Button Group class projection', () => {
     for (const [bundle, group] of Object.entries(output.palettes)) {
       expect(bundle).toMatch(/^(default|brand)\.(light|dark)$/);
       expect(group.frameOmissions).toEqual({
-        v: { neutral: { m: { pressed: true, selected: true } } }
+        v: { s: { neutral: { m: { pressed: true, selected: true } } } }
       });
-      expect(group.frame?.c?.v?.neutral.m).toBe('borderColor--rest__#ffffff1a');
-      expect(group.member?.c?.v?.neutral.m).toBeUndefined();
+      expect(group.frame?.c?.v?.s?.neutral.m).toBe('borderColor--rest__#ffffff1a');
+      expect(group.member?.c?.v?.s?.neutral.m).toBeUndefined();
     }
     const other = paintFixture(
       { rest: { borderColor: '#fff' }, pressed: { borderColor: '#fff0' } },
@@ -217,7 +217,7 @@ describe('Button Group class projection', () => {
       }
     );
     expect(other.palettes['brand.dark'].frameOmissions).toEqual({
-      s: { primary: { h: { pressed: true } } }
+      s: { s: { primary: { h: { pressed: true } } } }
     });
   });
 
@@ -233,7 +233,7 @@ describe('Button Group class projection', () => {
       pressed: { borderColor: '#ffffff00', borderBottomColor: '#00000000' },
       'selected:rest': { borderColor: '#00000000', borderBottomColor: '#ffffff00' }
     });
-    expect(allSides.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+    expect(allSides.palettes['default.light'].frameOmissions?.v?.s?.neutral?.m).toEqual({
       pressed: true,
       selected: true
     });
@@ -255,7 +255,7 @@ describe('Button Group class projection', () => {
       [interaction]: { borderBottomColor: '#fff' },
       pressed: { borderColor: '#ffffff00', borderBottomColor: '#fff0' }
     });
-    expect(reset.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+    expect(reset.palettes['default.light'].frameOmissions?.v?.s?.neutral?.m).toEqual({
       pressed: true
     });
   });
@@ -297,7 +297,7 @@ describe('Button Group class projection', () => {
         'selected:rest': { borderColor: '#00000000' },
         ...declarations
       });
-      expect(output.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+      expect(output.palettes['default.light'].frameOmissions?.v?.s?.neutral?.m).toEqual({
         pressed: true
       });
     }
@@ -307,7 +307,7 @@ describe('Button Group class projection', () => {
       'selected:rest': { borderColor: '#00000000' },
       'selected:hover': { borderColor: '#00000000' }
     });
-    expect(reset.palettes['default.light'].frameOmissions?.v?.neutral?.m).toEqual({
+    expect(reset.palettes['default.light'].frameOmissions?.v?.s?.neutral?.m).toEqual({
       selected: true
     });
   });
@@ -337,8 +337,8 @@ describe('Button Group class projection', () => {
     const core = output.core.button as ButtonMap;
     const palette = output.palettes['brand.dark'].button as ButtonMap;
     expect(core.group?.frame?.s?.['md:1']).toBe('border-width');
-    expect(palette.group?.frame?.c?.s?.neutral.m).toContain('borderBottomColor-rest');
-    expect(palette.group?.member?.c?.v?.neutral.h).not.toContain('border');
+    expect(palette.group?.frame?.c?.s?.s?.neutral.m).toContain('borderBottomColor-rest');
+    expect(palette.group?.member?.c?.v?.s?.neutral.h).not.toContain('border');
     expect(output.core.card).not.toHaveProperty('group');
     expect(core.e1.s?.['md:1']).toContain('padding');
   });
@@ -404,13 +404,13 @@ describe('Button Group class projection', () => {
       for (const segment of ['default', 'teams']) {
         const palette = output.palettes[`${segment}.light`].button as ButtonMap;
         for (const intent of ['primary', 'neutral', 'destructive', 'positive']) {
-          expect(palette.group?.frameOmissions?.v?.[intent]?.m).toEqual({
+          expect(palette.group?.frameOmissions?.v?.s?.[intent]?.m).toEqual({
             pressed: true,
             selected: true
           });
-          expect(palette.group?.frameOmissions?.s?.[intent]?.m).toBeUndefined();
+          expect(palette.group?.frameOmissions?.s?.s?.[intent]?.m).toBeUndefined();
           const dark = output.palettes[`${segment}.dark`].button as ButtonMap;
-          expect(dark.group?.frameOmissions?.v?.[intent]?.m).toBeUndefined();
+          expect(dark.group?.frameOmissions?.v?.s?.[intent]?.m).toBeUndefined();
         }
       }
       expect(core.group?.frame?.s?.a).toBeTruthy();

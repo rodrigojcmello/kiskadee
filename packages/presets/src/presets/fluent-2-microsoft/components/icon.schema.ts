@@ -30,29 +30,33 @@ function createIconPalette(c: Fluent2MicrosoftColorResolver, theme: ThemeName) {
 
   return {
     onSubtle: {
-      textColor: {
-        neutral: {
-          medium: {
-            rest: c.resolve('default', track, referenceColor('icon.neutral', 'vivid'))
-          }
-        },
-        primary: {
-          medium: {
-            rest: c.resolve('default', track, referenceColor('icon.primary', 'vivid'))
+      standard: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: c.resolve('default', track, referenceColor('icon.neutral', 'vivid'))
+            }
+          },
+          primary: {
+            medium: {
+              rest: c.resolve('default', track, referenceColor('icon.primary', 'vivid'))
+            }
           }
         }
       }
     },
     onVivid: {
-      textColor: {
-        neutral: {
-          medium: {
-            rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light'))
-          }
-        },
-        primary: {
-          medium: {
-            rest: c.resolve('default', 'l', referenceColor('icon.primary', 'subtle', 4))
+      standard: {
+        textColor: {
+          neutral: {
+            medium: {
+              rest: c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light'))
+            }
+          },
+          primary: {
+            medium: {
+              rest: c.resolve('default', 'l', referenceColor('icon.primary', 'subtle', 4))
+            }
           }
         }
       }

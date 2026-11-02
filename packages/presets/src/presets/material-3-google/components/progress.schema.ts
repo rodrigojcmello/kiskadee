@@ -85,23 +85,23 @@ export function createMaterial3GoogleProgressSchema({
 }: CreateMaterial3GoogleProgressSchemaArgs): ProgressComponent {
   const trackPalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
-      onSubtle: { boxColor: createTrackMap(c, segment, 'light', 'onSubtle') },
-      onVivid: { boxColor: createTrackMap(c, segment, 'light', 'onVivid') }
+      onSubtle: { standard: { boxColor: createTrackMap(c, segment, 'light', 'onSubtle') } },
+      onVivid: { standard: { boxColor: createTrackMap(c, segment, 'light', 'onVivid') } }
     },
     dark: {
-      onSubtle: { boxColor: createTrackMap(c, segment, 'dark', 'onSubtle') },
-      onVivid: { boxColor: createTrackMap(c, segment, 'dark', 'onVivid') }
+      onSubtle: { standard: { boxColor: createTrackMap(c, segment, 'dark', 'onSubtle') } },
+      onVivid: { standard: { boxColor: createTrackMap(c, segment, 'dark', 'onVivid') } }
     }
   }));
 
   const indicatorPalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
-      onSubtle: { boxColor: createIndicatorMap(c, segment, 'light', 'onSubtle') },
-      onVivid: { boxColor: createIndicatorMap(c, segment, 'light', 'onVivid') }
+      onSubtle: { standard: { boxColor: createIndicatorMap(c, segment, 'light', 'onSubtle') } },
+      onVivid: { standard: { boxColor: createIndicatorMap(c, segment, 'light', 'onVivid') } }
     },
     dark: {
-      onSubtle: { boxColor: createIndicatorMap(c, segment, 'dark', 'onSubtle') },
-      onVivid: { boxColor: createIndicatorMap(c, segment, 'dark', 'onVivid') }
+      onSubtle: { standard: { boxColor: createIndicatorMap(c, segment, 'dark', 'onSubtle') } },
+      onVivid: { standard: { boxColor: createIndicatorMap(c, segment, 'dark', 'onVivid') } }
     }
   }));
 

@@ -38,17 +38,19 @@ function createCard() {
           default: {
             light: {
               onSubtle: {
-                boxColor: {
-                  neutral: {
-                    low: { rest: '#ffffff' }
+                standard: {
+                  boxColor: {
+                    neutral: {
+                      low: { rest: '#ffffff' }
+                    },
+                    primary: {
+                      highest: { rest: '#0064b4' }
+                    }
                   },
-                  primary: {
-                    highest: { rest: '#0064b4' }
+                  borderColor: {
+                    neutral: { low: { rest: '#dddddd' } },
+                    primary: { highest: { rest: '#0064b4' } }
                   }
-                },
-                borderColor: {
-                  neutral: { low: { rest: '#dddddd' } },
-                  primary: { highest: { rest: '#0064b4' } }
                 }
               }
             }

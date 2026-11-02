@@ -44,12 +44,14 @@ function createSchema(): Schema {
               default: {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      neutral: {
-                        low: { rest: '#ffffff' }
-                      },
-                      primary: {
-                        highest: { rest: '#0064b4' }
+                    standard: {
+                      boxColor: {
+                        neutral: {
+                          low: { rest: '#ffffff' }
+                        },
+                        primary: {
+                          highest: { rest: '#0064b4' }
+                        }
                       }
                     }
                   }
@@ -101,7 +103,7 @@ describe('buildCardComponentArtifact', () => {
   it('fails explicitly when a canonical surface cannot resolve a solid Rest color', () => {
     const schema = createSchema();
     const palette =
-      schema.components.card?.elements.e1?.palettes?.default?.light?.onSubtle.boxColor;
+      schema.components.card?.elements.e1?.palettes?.default?.light?.onSubtle.standard.boxColor;
     if (!palette?.primary) throw new Error('Test Card palette is missing');
     palette.primary.highest = { rest: { kind: 'linear', angle: 0, stops: [] } };
 
@@ -125,7 +127,7 @@ describe('buildCardComponentArtifact', () => {
     const border = card.options!.border;
     card.surfaceSource = 'container';
     card.options = { border };
-    const colors = card.elements.e1!.palettes!.default!.light!.onSubtle.boxColor!;
+    const colors = card.elements.e1!.palettes!.default!.light!.onSubtle.standard.boxColor!;
     colors.neutral!.low = {};
     colors.primary!.highest = {};
     schema.components.container = {
@@ -134,8 +136,10 @@ describe('buildCardComponentArtifact', () => {
         default: {
           light: {
             onSubtle: {
-              neutral: { low: { rest: 'onSubtle' } },
-              primary: { highest: { rest: 'onVivid' } }
+              standard: {
+                neutral: { low: { rest: 'onSubtle' } },
+                primary: { highest: { rest: 'onVivid' } }
+              }
             }
           }
         }
@@ -147,9 +151,11 @@ describe('buildCardComponentArtifact', () => {
             default: {
               light: {
                 onSubtle: {
-                  boxColor: {
-                    neutral: { low: { rest: '#ffffff' } },
-                    primary: { highest: { rest: '#0064b4' } }
+                  standard: {
+                    boxColor: {
+                      neutral: { low: { rest: '#ffffff' } },
+                      primary: { highest: { rest: '#0064b4' } }
+                    }
                   }
                 }
               }

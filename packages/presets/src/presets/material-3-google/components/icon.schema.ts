@@ -27,19 +27,23 @@ export function createMaterial3GoogleIconSchema({
         palettes: buildBySegment(segmentNames, (segment) => {
           const theme = (track: 'l' | 'd') => ({
             onSubtle: {
-              textColor: {
-                neutral: { medium: { rest: c.ref(segment, track, 'icon.neutral', 'vivid') } },
-                primary: {
-                  medium: {
-                    rest: c.ref(segment, track, 'icon.primary', 'vivid', track === 'l' ? 0 : 6)
+              standard: {
+                textColor: {
+                  neutral: { medium: { rest: c.ref(segment, track, 'icon.neutral', 'vivid') } },
+                  primary: {
+                    medium: {
+                      rest: c.ref(segment, track, 'icon.primary', 'vivid', track === 'l' ? 0 : 6)
+                    }
                   }
                 }
               }
             },
             onVivid: {
-              textColor: {
-                neutral: { medium: { rest: c(segment, 'l', 'primitive.black.v1', 0) } },
-                primary: { medium: { rest: c.ref(segment, 'l', 'icon.primary', 'subtle') } }
+              standard: {
+                textColor: {
+                  neutral: { medium: { rest: c(segment, 'l', 'primitive.black.v1', 0) } },
+                  primary: { medium: { rest: c.ref(segment, 'l', 'icon.primary', 'subtle') } }
+                }
               }
             }
           });

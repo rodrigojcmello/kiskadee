@@ -33,7 +33,7 @@ describe('Fluent Button complementary primary selection on vivid surfaces', () =
         c.resolve(segment, 'l', referenceColor('button.primary', 'vivid'))
       );
       for (const theme of ['light', 'dark', 'darker'] as const) {
-        const palette = button.elements.e1!.palettes![segment]![theme]!.onVivid!;
+        const palette = button.elements.e1!.palettes![segment]![theme]!.onVivid!.standard;
         const fill = palette.boxColor!.primary!.medium!;
         expect(fill.pressed).toBe(complementary);
         expect(fill.selected!.rest).toBe(complementary);
@@ -53,11 +53,12 @@ describe('Fluent Button complementary primary selection on vivid surfaces', () =
     for (const segment of ['default', 'teams'] as const)
       for (const theme of ['light', 'dark', 'darker'] as const) {
         const fill =
-          button.elements.e1!.palettes![segment]![theme]!.onVivid!.boxColor!.primary!.medium!;
+          button.elements.e1!.palettes![segment]![theme]!.onVivid!.standard.boxColor!.primary!
+            .medium!;
         for (const element of ['e2', 'e3'] as const) {
           const text =
-            button.elements[element]!.palettes![segment]![theme]!.onVivid!.textColor!.primary!
-              .medium!;
+            button.elements[element]!.palettes![segment]![theme]!.onVivid!.standard.textColor!
+              .primary!.medium!;
           for (const state of ['pressed', 'selected'] as const) {
             const { coordinate, color } = foreground(
               state === 'selected' ? text.selected!.rest : text.pressed,
@@ -81,21 +82,22 @@ describe('Fluent Button complementary primary selection on vivid surfaces', () =
   it('publishes selected child context and matching inside-indicator polarity without changing the ambient context', () => {
     for (const segment of ['default', 'teams'] as const)
       for (const theme of ['light', 'dark', 'darker'] as const) {
-        const context = button.contentSurfaceContext![segment]![theme]!.onVivid!.primary!.medium!;
+        const context =
+          button.contentSurfaceContext![segment]![theme]!.onVivid!.standard.primary!.medium!;
         expect(context).toEqual({
           rest: 'onVivid',
           selected: 'onSubtle',
           pending: 'onVivid',
           disabled: 'onSubtle'
         });
-        const fill = button.elements.e1!.palettes![segment]![theme]!.onVivid!.boxColor!.primary!
-          .medium!.selected!.rest as string;
+        const fill = button.elements.e1!.palettes![segment]![theme]!.onVivid!.standard.boxColor!
+          .primary!.medium!.selected!.rest as string;
         const inside =
-          button.elements.e11!.palettes![segment]![theme]!.onVivid!.boxColor!.primary!.medium!
-            .selected!.rest;
+          button.elements.e11!.palettes![segment]![theme]!.onVivid!.standard.boxColor!.primary!
+            .medium!.selected!.rest;
         const outside =
-          button.elements.e12!.palettes![segment]![theme]!.onVivid!.boxColor!.primary!.medium!
-            .selected!.rest;
+          button.elements.e12!.palettes![segment]![theme]!.onVivid!.standard.boxColor!.primary!
+            .medium!.selected!.rest;
         expect(contrastRatio(foreground(inside, segment).color, fill)).toBeGreaterThanOrEqual(3);
         expect(foreground(outside, segment).coordinate.surfaceContext).toBe('onVivid');
       }

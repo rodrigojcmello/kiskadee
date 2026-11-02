@@ -41,7 +41,7 @@ export function createSandboxCardSchema(_args: {
         boxColor: { neutral: boxes(false), primary: boxes(true) },
         borderColor: { neutral: borders, primary: borders }
       };
-      return [theme, { onSubtle: surface, onVivid: surface }];
+      return [theme, { onSubtle: { standard: surface }, onVivid: { standard: surface } }];
     })
   );
   const contexts = {
@@ -83,8 +83,8 @@ export function createSandboxCardSchema(_args: {
     },
     contentSurfaceContext: {
       default: {
-        light: { onSubtle: contexts, onVivid: contexts },
-        dark: { onSubtle: contexts, onVivid: contexts }
+        light: { onSubtle: { standard: contexts }, onVivid: { standard: contexts } },
+        dark: { onSubtle: { standard: contexts }, onVivid: { standard: contexts } }
       }
     },
     elements: {

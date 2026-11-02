@@ -44,13 +44,26 @@ export type ProgressTrackColorSchema = {
   textColor?: never;
 };
 
+type ProgressAlternativeColorSchema<
+  TColorSchema extends ProgressColorSchema | ProgressTrackColorSchema
+> = Omit<TColorSchema, 'boxColor'> & {
+  boxColor: {
+    [TIntent in keyof TColorSchema['boxColor']]?: Partial<TColorSchema['boxColor'][TIntent]>;
+  };
+};
+
 export type ProgressElementPalettes<
   TSegmentName extends SegmentName = never,
   TColorSchema extends ProgressColorSchema | ProgressTrackColorSchema = ProgressColorSchema
 > = Partial<
   Record<
     TSegmentName | 'default' | 'dynamic',
-    Partial<Record<ThemeMode, SurfaceContextPalette<TColorSchema>>>
+    Partial<
+      Record<
+        ThemeMode,
+        SurfaceContextPalette<TColorSchema, ProgressAlternativeColorSchema<TColorSchema>>
+      >
+    >
   >
 >;
 
@@ -188,7 +201,8 @@ function validateProgressColorMap(
   value: unknown,
   path: string,
   issues: string[],
-  kind: 'track' | 'indicator'
+  kind: 'track' | 'indicator',
+  requireCoverage: boolean
 ): void {
   if (!isRecord(value)) {
     issues.push(`${path}: expected object`);
@@ -204,6 +218,7 @@ function validateProgressColorMap(
 
   for (const intent of intents) {
     const emphasisMap = value[intent];
+    if (emphasisMap === undefined && !requireCoverage) continue;
     if (!isRecord(emphasisMap)) {
       issues.push(`${path}.${intent}: required intent`);
       continue;
@@ -216,6 +231,7 @@ function validateProgressColorMap(
     }
 
     const stateMap = emphasisMap.medium;
+    if (stateMap === undefined && !requireCoverage) continue;
     if (!isRecord(stateMap)) {
       issues.push(`${path}.${intent}.medium: required emphasis`);
       continue;
@@ -245,14 +261,18 @@ function validateProgressPalettes(
     if (!isRecord(themes)) continue;
     for (const [theme, contexts] of Object.entries(themes)) {
       if (!isRecord(contexts)) continue;
-      for (const [context, colorSchema] of Object.entries(contexts)) {
-        if (!isRecord(colorSchema)) continue;
-        validateProgressColorMap(
-          colorSchema.boxColor,
-          `${path}.${segment}.${theme}.${context}.boxColor`,
-          issues,
-          kind
-        );
+      for (const [context, variants] of Object.entries(contexts)) {
+        if (!isRecord(variants)) continue;
+        for (const [variant, colorSchema] of Object.entries(variants)) {
+          if (!isRecord(colorSchema)) continue;
+          validateProgressColorMap(
+            colorSchema.boxColor,
+            `${path}.${segment}.${theme}.${context}.${variant}.boxColor`,
+            issues,
+            kind,
+            variant === 'standard'
+          );
+        }
       }
     }
   }

@@ -273,16 +273,19 @@ function collectPaletteAtomicReferences(
     if (!isRecord(byTheme)) continue;
     for (const [theme, byContext] of Object.entries(byTheme)) {
       if (!isRecord(byContext)) continue;
-      for (const [surfaceContext, colorSchema] of Object.entries(byContext)) {
-        if (!isRecord(colorSchema)) continue;
-        for (const [colorProperty, colorValue] of Object.entries(colorSchema)) {
-          collectAtomicReferenceValues(
-            colorValue,
-            `${path}.${segment}.${theme}.${surfaceContext}.${colorProperty}`,
-            segment,
-            colorProperty,
-            references
-          );
+      for (const [surfaceContext, variants] of Object.entries(byContext)) {
+        if (!isRecord(variants)) continue;
+        for (const [variant, colorSchema] of Object.entries(variants)) {
+          if (!isRecord(colorSchema)) continue;
+          for (const [colorProperty, colorValue] of Object.entries(colorSchema)) {
+            collectAtomicReferenceValues(
+              colorValue,
+              `${path}.${segment}.${theme}.${surfaceContext}.${variant}.${colorProperty}`,
+              segment,
+              colorProperty,
+              references
+            );
+          }
         }
       }
     }

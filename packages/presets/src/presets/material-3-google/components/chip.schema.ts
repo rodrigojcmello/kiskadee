@@ -170,21 +170,23 @@ function createContentSurfaceContext() {
       Object.fromEntries(
         surfaces.map((surfaceName) => [
           surfaceName,
-          Object.fromEntries(
-            INTENTS.map((intentName) => {
-              const high = highContentSurfaceContext(themeName, surfaceName, intentName);
-              const disabled: ContentSurfaceContextValue = surfaceName;
-              return [
-                intentName,
-                {
-                  high: { rest: high, selected: high, disabled },
-                  medium: { rest: 'onSubtle', selected: high, disabled },
-                  low: { rest: 'inherit', selected: high, disabled },
-                  lowest: { rest: 'inherit', selected: high, disabled }
-                }
-              ];
-            })
-          )
+          {
+            standard: Object.fromEntries(
+              INTENTS.map((intentName) => {
+                const high = highContentSurfaceContext(themeName, surfaceName, intentName);
+                const disabled: ContentSurfaceContextValue = surfaceName;
+                return [
+                  intentName,
+                  {
+                    high: { rest: high, selected: high, disabled },
+                    medium: { rest: 'onSubtle', selected: high, disabled },
+                    low: { rest: 'inherit', selected: high, disabled },
+                    lowest: { rest: 'inherit', selected: high, disabled }
+                  }
+                ];
+              })
+            )
+          }
         ])
       )
     ])
@@ -224,23 +226,23 @@ export function createMaterial3GoogleChipSchema({
 
   const surfacePalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
-      onSubtle: surfacePalette(segment, 'light', 'onSubtle'),
-      onVivid: surfacePalette(segment, 'light', 'onVivid')
+      onSubtle: { standard: surfacePalette(segment, 'light', 'onSubtle') },
+      onVivid: { standard: surfacePalette(segment, 'light', 'onVivid') }
     },
     dark: {
-      onSubtle: surfacePalette(segment, 'dark', 'onSubtle'),
-      onVivid: surfacePalette(segment, 'dark', 'onVivid')
+      onSubtle: { standard: surfacePalette(segment, 'dark', 'onSubtle') },
+      onVivid: { standard: surfacePalette(segment, 'dark', 'onVivid') }
     }
   }));
 
   const textPalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
-      onSubtle: textPalette(segment, 'light', 'onSubtle'),
-      onVivid: textPalette(segment, 'light', 'onVivid')
+      onSubtle: { standard: textPalette(segment, 'light', 'onSubtle') },
+      onVivid: { standard: textPalette(segment, 'light', 'onVivid') }
     },
     dark: {
-      onSubtle: textPalette(segment, 'dark', 'onSubtle'),
-      onVivid: textPalette(segment, 'dark', 'onVivid')
+      onSubtle: { standard: textPalette(segment, 'dark', 'onSubtle') },
+      onVivid: { standard: textPalette(segment, 'dark', 'onVivid') }
     }
   }));
 

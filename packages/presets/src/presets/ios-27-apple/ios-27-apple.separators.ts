@@ -14,10 +14,12 @@ export function createIos27AppleSeparators(): SchemaSeparators {
                 (['onSubtle', 'onVivid'] as const).map((context) => [
                   context,
                   {
-                    boxColor: {
-                      neutral: {
-                        low: { rest: contour(`neutral.standard.${theme}.${context}.low`) },
-                        medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) }
+                    standard: {
+                      boxColor: {
+                        neutral: {
+                          low: { rest: contour(`neutral.standard.${theme}.${context}.low`) },
+                          medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) }
+                        }
                       }
                     }
                   }

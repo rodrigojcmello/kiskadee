@@ -29,7 +29,7 @@ export function createCarbonIbmBottomSheetSchema({
           neutral: { medium: { rest: tokenColor(c, theme, token, 'bottomSheet.neutral') } }
         }
       };
-      return { onSubtle: palette, onVivid: palette };
+      return { onSubtle: { standard: palette }, onVivid: { standard: palette } };
     };
     return { default: { light: theme('light'), dark: theme('dark'), darker: theme('darker') } };
   };

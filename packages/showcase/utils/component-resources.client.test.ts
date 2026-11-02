@@ -27,7 +27,11 @@ it('loads 15 of 2,000 components, deduplicates instances and never asks for aggr
       { artifacts: { metadata: `components/component${i}.json` } }
     ])
   );
-  const manifest = { components, revision: 'synthetic-2000' } as unknown as Manifest;
+  const manifest = {
+    formatVersion: 3,
+    components,
+    revision: 'synthetic-2000'
+  } as unknown as Manifest;
   const calls: string[] = [];
   vi.stubGlobal(
     'fetch',
@@ -37,6 +41,7 @@ it('loads 15 of 2,000 components, deduplicates instances and never asks for aggr
       if (url.includes('/components/'))
         return new Response(
           JSON.stringify({
+            formatVersion: 3,
             component: name,
             sizeSupport: { sizes: ['md:1'] },
             resources: {
@@ -47,7 +52,11 @@ it('loads 15 of 2,000 components, deduplicates instances and never asks for aggr
           })
         );
       return new Response(
-        JSON.stringify({ component: name, classMap: { e1: { s: { 'md:1': 'size' } } } })
+        JSON.stringify({
+          formatVersion: 3,
+          component: name,
+          classMap: { e1: { s: { 'md:1': 'size' } } }
+        })
       );
     })
   );
@@ -65,6 +74,7 @@ it('loads 15 of 2,000 components, deduplicates instances and never asks for aggr
 });
 it('does not expose metadata until CSS is ready, and retries a rejected resource', async () => {
   const manifest = {
+    formatVersion: 3,
     revision: 'retry',
     components: { button: { artifacts: { metadata: 'components/button.json' } } }
   } as Manifest;
@@ -81,6 +91,7 @@ it('does not expose metadata until CSS is ready, and retries a rejected resource
       async () =>
         new Response(
           JSON.stringify({
+            formatVersion: 3,
             component: 'button',
             sizeSupport: { sizes: ['md:1'] },
             resources: { styles: [{ path: 'styles/one.css', sha256: 'a'.repeat(64), order: 0 }] }
@@ -118,4 +129,75 @@ it('does not expose metadata until CSS is ready, and retries a rejected resource
     )
   ).resolves.toBeDefined();
   expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);
+});
+
+it('discovers variant capabilities from metadata without loading class maps or CSS', async () => {
+  const { loadComponentMetadata } = await import('./component-resources.client');
+  const manifest = {
+    formatVersion: 3,
+    revision: 'metadata-only',
+    components: { button: { artifacts: { metadata: 'components/button.json' } } }
+  } as Manifest;
+  const fetcher = vi.fn(
+    async (_url: string) =>
+      new Response(
+        JSON.stringify({
+          formatVersion: 3,
+          component: 'button',
+          sizeSupport: { sizes: ['md:1'] },
+          capabilities: {
+            colorVariants: { alternative: { 'default.light': { onVivid: { primary: ['high'] } } } }
+          },
+          resources: {
+            core: 'button.core.json',
+            styles: [{ path: 'button.css', sha256: 'a'.repeat(64), order: 0 }],
+            palettes: { 'default.light': 'button.palette.json' }
+          }
+        })
+      )
+  );
+  vi.stubGlobal('fetch', fetcher);
+  const [first, second] = await Promise.all([
+    loadComponentMetadata('discovery', manifest, 'button'),
+    loadComponentMetadata('discovery', manifest, 'button')
+  ]);
+  expect(first).toBe(second);
+  expect(
+    first?.capabilities?.colorVariants?.alternative?.['default.light']?.onVivid?.primary
+  ).toEqual(['high']);
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  expect(style.prepare).not.toHaveBeenCalled();
+  expect(fetcher.mock.calls[0]?.[0]).toContain('components/button.json');
+});
+
+it.each([
+  undefined,
+  2
+])('rejects manifest format %j before requesting dependent artifacts', async (formatVersion) => {
+  const { loadComponentMetadata } = await import('./component-resources.client');
+  const fetcher = vi.fn();
+  vi.stubGlobal('fetch', fetcher);
+  await expect(
+    loadComponentMetadata(
+      'old',
+      {
+        formatVersion,
+        components: { button: { artifacts: { metadata: 'button.json' } } }
+      } as unknown as Manifest,
+      'button'
+    )
+  ).rejects.toThrow('Unsupported manifest format');
+  await expect(
+    prepareComponentResources(
+      'old',
+      {
+        formatVersion,
+        components: { button: { artifacts: { metadata: 'button.json' } } }
+      } as unknown as Manifest,
+      'button',
+      'default',
+      'light'
+    )
+  ).rejects.toThrow('Unsupported manifest format');
+  expect(fetcher).not.toHaveBeenCalled();
 });

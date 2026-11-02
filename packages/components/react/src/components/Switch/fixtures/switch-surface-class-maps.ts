@@ -10,13 +10,17 @@ export const switchSurfaceClassMaps = {
         e2: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-af fm-my fm-iv fm-bn fm-it fm-bl fm-iu fm-bm fm-oi fm-mz fm-na fm-nb'
+              s: {
+                neutral: {
+                  m: 'fm-af fm-my fm-iv fm-bn fm-it fm-bl fm-iu fm-bm fm-oi fm-mz fm-na fm-nb'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-hf fm-dv fm-hl fm-dx fm-hn fm-dy fm-bw fm-bn fm-cu fm-bl fm-cv fm-bm fm-eb fm-dw'
+              s: {
+                neutral: {
+                  m: 'fm-hf fm-dv fm-hl fm-dx fm-hn fm-dy fm-bw fm-bn fm-cu fm-bl fm-cv fm-bm fm-eb fm-dw'
+                }
               }
             }
           }
@@ -24,13 +28,17 @@ export const switchSurfaceClassMaps = {
         e3: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-rg fm-e fm-uf fm-uh fm-bw fm-cu fm-cv fm-oh'
+              s: {
+                neutral: {
+                  m: 'fm-rg fm-e fm-uf fm-uh fm-bw fm-cu fm-cv fm-oh'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-af fm-e fm-iv fm-it fm-iu fm-ec'
+              s: {
+                neutral: {
+                  m: 'fm-af fm-e fm-iv fm-it fm-iu fm-ec'
+                }
               }
             }
           }
@@ -38,13 +46,17 @@ export const switchSurfaceClassMaps = {
         e4: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-n fm-an'
+              s: {
+                neutral: {
+                  m: 'fm-n fm-an'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-a fm-b'
+              s: {
+                neutral: {
+                  m: 'fm-a fm-b'
+                }
               }
             }
           }
@@ -52,13 +64,17 @@ export const switchSurfaceClassMaps = {
         e5: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-n fm-an'
+              s: {
+                neutral: {
+                  m: 'fm-n fm-an'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-a fm-b'
+              s: {
+                neutral: {
+                  m: 'fm-a fm-b'
+                }
               }
             }
           }
@@ -66,13 +82,17 @@ export const switchSurfaceClassMaps = {
         e6: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-a fm-ek fm-gg fm-ij fm-cy'
+              s: {
+                neutral: {
+                  m: 'fm-a fm-ek fm-gg fm-ij fm-cy'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-ac fm-bj fm-cz fm-ag fm-ii fm-ik fm-cy'
+              s: {
+                neutral: {
+                  m: 'fm-ac fm-bj fm-cz fm-ag fm-ii fm-ik fm-cy'
+                }
               }
             }
           }
@@ -86,13 +106,17 @@ export const switchSurfaceClassMaps = {
         e2: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-gp fm-gh fm-mk fm-bn fm-mh fm-bl fm-mi fm-bm fm-hg fm-gk fm-gl fm-gm'
+              s: {
+                neutral: {
+                  m: 'fm-gp fm-gh fm-mk fm-bn fm-mh fm-bl fm-mi fm-bm fm-hg fm-gk fm-gl fm-gm'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-hf fm-dv fm-hl fm-dx fm-hn fm-dy fm-bw fm-bn fm-cu fm-bl fm-cv fm-bm fm-eb fm-dw'
+              s: {
+                neutral: {
+                  m: 'fm-hf fm-dv fm-hl fm-dx fm-hn fm-dy fm-bw fm-bn fm-cu fm-bl fm-cv fm-bm fm-eb fm-dw'
+                }
               }
             }
           }
@@ -100,13 +124,17 @@ export const switchSurfaceClassMaps = {
         e3: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-ki fm-e fm-md fm-mf fm-bw fm-cu fm-cv fm-hh'
+              s: {
+                neutral: {
+                  m: 'fm-ki fm-e fm-md fm-mf fm-bw fm-cu fm-cv fm-hh'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-af fm-e fm-iv fm-it fm-iu fm-ec'
+              s: {
+                neutral: {
+                  m: 'fm-af fm-e fm-iv fm-it fm-iu fm-ec'
+                }
               }
             }
           }
@@ -114,13 +142,17 @@ export const switchSurfaceClassMaps = {
         e4: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-a fm-g'
+              s: {
+                neutral: {
+                  m: 'fm-a fm-g'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-a fm-b'
+              s: {
+                neutral: {
+                  m: 'fm-a fm-b'
+                }
               }
             }
           }
@@ -128,13 +160,17 @@ export const switchSurfaceClassMaps = {
         e5: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-a fm-g'
+              s: {
+                neutral: {
+                  m: 'fm-a fm-g'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-a fm-b'
+              s: {
+                neutral: {
+                  m: 'fm-a fm-b'
+                }
               }
             }
           }
@@ -142,13 +178,17 @@ export const switchSurfaceClassMaps = {
         e6: {
           c: {
             s: {
-              neutral: {
-                m: 'fm-bi fm-ek fm-gg fm-ij fm-hw'
+              s: {
+                neutral: {
+                  m: 'fm-bi fm-ek fm-gg fm-ij fm-hw'
+                }
               }
             },
             v: {
-              neutral: {
-                m: 'fm-ac fm-bj fm-cz fm-ag fm-ii fm-ik fm-cy'
+              s: {
+                neutral: {
+                  m: 'fm-ac fm-bj fm-cz fm-ag fm-ii fm-ik fm-cy'
+                }
               }
             }
           }

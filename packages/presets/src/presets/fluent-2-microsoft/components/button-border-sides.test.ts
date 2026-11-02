@@ -7,7 +7,7 @@ describe('Fluent Low directional border', () => {
       for (const theme of ['light', 'dark', 'darker'] as const)
         for (const context of ['onSubtle', 'onVivid'] as const) {
           const palette =
-            schema.components.button!.elements.e1!.palettes![segment]![theme]![context]!;
+            schema.components.button!.elements.e1!.palettes![segment]![theme]![context]!.standard;
           for (const intent of ['primary', 'neutral', 'destructive', 'positive'] as const) {
             const base = palette.borderColor![intent]!.low!;
             const bottom = palette.borderBottomColor![intent]!.low!;
@@ -30,7 +30,8 @@ describe('Fluent Low directional border', () => {
 it('keeps the Light onVivid Low bottom visibly stronger than its side contour', () => {
   for (const segment of ['default', 'teams'] as const)
     for (const intent of ['primary', 'neutral', 'destructive', 'positive'] as const) {
-      const palette = schema.components.button!.elements.e1!.palettes![segment]!.light!.onVivid!;
+      const palette =
+        schema.components.button!.elements.e1!.palettes![segment]!.light!.onVivid!.standard;
       const side = palette.borderColor![intent]!.low!;
       const bottom = palette.borderBottomColor![intent]!.low!;
       expect(side.rest).toBe('#ffffff4d');

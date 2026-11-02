@@ -129,14 +129,14 @@ it('selects the inherited surface palette as the nearest painted context changes
           base: {
             e9: {
               c: {
-                s: { neutral: { m: 'subtle-active-track' } },
-                v: { neutral: { m: 'vivid-active-track' } }
+                s: { s: { neutral: { m: 'subtle-active-track' } } },
+                v: { s: { neutral: { m: 'vivid-active-track' } } }
               }
             },
             e11: {
               c: {
-                s: { neutral: { m: 'subtle-thumb-inner' } },
-                v: { neutral: { m: 'vivid-thumb-inner' } }
+                s: { s: { neutral: { m: 'subtle-thumb-inner' } } },
+                v: { s: { neutral: { m: 'vivid-thumb-inner' } } }
               }
             }
           }

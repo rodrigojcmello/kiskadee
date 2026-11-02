@@ -19,10 +19,13 @@ same default. The removed `indicatorScope` option is invalid. Independent indica
 is not part of the Button contract; `indicatorPlacement` still selects inside or outside geometry.
 
 `selectionIntent` complements this scale without creating another selection state. The platform
-prop accepts `ButtonIntent`; `components.button.options.selectionIntent` accepts only
-`SystemButtonIntent`. Precedence is the explicit prop, the preset option, then the Button's base
-intent. Fluent and Material leave this option omitted, preserving existing consumers. Without
-semantic selection, only the base intent participates in paint resolution.
+prop accepts `ButtonIntentValue`; `components.button.options.selectionIntent` accepts only
+`SystemButtonIntentValue`. Precedence is the explicit prop, the preset option, then the Button's
+base semantic intent and effective color variant. If the base Alternative resolves to Standard
+at its ordinary emphasis, omitted selection retains Standard when requesting normal High paint;
+it does not retry the original suffix at High. An explicit qualified selection remains independent.
+Fluent and Material leave this option omitted. Without semantic selection, only the base intent
+participates in paint resolution.
 
 All combinations of published intentions are allowed. There is no automatic Neutral-to-Primary
 swap, preferred pair list, or ordinal relation between intentions. External `brand.*` selections
@@ -36,11 +39,16 @@ High is literal even if the base Button uses Highest. Ordinary High
 Hover, Focus and Pressed remain active, while High Selected deltas are excluded. The platform
 must retain selected accessibility, indicator activation and connected-group state ownership.
 Surface, text, icon, disclosure, indicator, effects and the context produced for descendants follow
-the same effective paint intent and emphasis. Parts with their own authored color domain retain
+the same effective semantic paint intent and emphasis. Indicator color recipes stay Standard even
+when the body uses Alternative. Parts with their own authored color domain retain
 that domain. Geometry and base intent do not change. Terminal states retain their precedence and
 suppress the indicator without clearing semantic selection.
 
-The existing palettes and `e11/e12` indicator anatomy remain authoritative. No four-way palette
+Qualified system intentions select the shared [color variant](./color-variants.md). The effective
+selection intent is normalized before paint resolution, so its semantic intent and color variant
+both govern the selected appearance and produced-surface output. Plain intentions select Standard.
+
+The effective palettes and `e11/e12` indicator geometry remain authoritative. No four-way palette
 duplication or indicator Rest paint is required. A Builder publishes the required projected classes
 and coverage; a consumer never filters CSS identities or invents missing colors. If a system
 selection intent lacks the required published part coverage, the platform resolves the whole

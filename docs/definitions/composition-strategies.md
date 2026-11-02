@@ -83,6 +83,7 @@ and keep the complete component or domain contract in its owning definition.
 | Variant or mode | One public component identity has a named presentation family or a meaningful presentation branch. | The difference is only one behavioral switch or one visual value. |
 | Component option | The contract must choose which behavior, structure, or canonical mode is active. | The property answers what visual value the active mode uses. |
 | DSPE on an element | A component element owns concrete decorations, scales, palettes, or effects. | The value is runtime behavior, platform mechanics, or a resource import. |
+| [Shared color variants](../../packages/core/docs/definitions/color-variants.md) | The same anatomy needs Standard and optional Alternative paint within an existing Surface Context. | The difference changes geometry, semantic intent, or the surrounding surface. |
 | [Alternate element recipes for one rendered part](#alternate-element-recipes-for-one-rendered-part) | One part keeps its identity but needs explicitly selected element recipes or domain substitutions. This combines component options and ordinary DSPE elements. | Existing size, palette or state axes, or platform positioning alone, already express the difference correctly; or the parts have independent semantics. |
 | Global profile or catalog | Consumers reference the same serializable visual recipe or limited shared catalog without sharing DOM or behavior. A complete source-backed recipe may begin with one consumer when its name and contract remain component-agnostic. | Reuse is merely speculative, the recipe is component-named or incomplete, or the concern requires a public entity. |
 | Effect | A visual treatment is optional and additive without replacing semantic color or base geometry. | The content communicates independent information or is mandatory anatomy. |
@@ -149,7 +150,7 @@ The component contract must declare:
 - the required recipe coverage and behavior when it is unavailable; and
 - the semantics, state and geometry invariants that the composition must preserve.
 
-There are two established forms:
+The established forms include:
 
 | Form | Canonical example | Authored responsibilities and rendered result |
 | --- | --- | --- |
@@ -161,9 +162,15 @@ responsibility; do not attach conflicting base and alternative classes and let C
 choose the winner. Preset helpers may share authored values, but this does not introduce implicit
 inheritance between Schema elements or permit runtime reconstruction of missing recipes.
 
-Availability and fallback remain component-specific. An unavailable Button indicator recipe omits
-that indicator; an unavailable Stacked recipe follows the documented horizontal fallback. Neither
-example authorizes silently borrowing another recipe's values. The indicator preserves one span
+Palette color variants are a shared axis, not alternate element recipes. `standard` is required
+and `alternative` inherits missing whole state-map leaves from Standard. Components select their
+published variant without duplicating anatomy, geometry or catalogs. Standard retains the ordinary
+context coverage contract; sparse Alternative leaves do not require cross-context parity. See
+[Shared color variants](../../packages/core/docs/definitions/color-variants.md).
+
+Availability and fallback remain component-specific. A Button indicator without an available
+active or explicitly documented fallback recipe stays absent; an unavailable Stacked recipe follows
+the documented horizontal fallback. Neither example authorizes silently borrowing another recipe's values. The indicator preserves one span
 across supported placement changes; platform details and node-lifecycle guarantees stay in the
 component's contract.
 
@@ -313,11 +320,15 @@ A durable architecture decision should record:
   runtime input. Presets still author the serialized produced-surface map; the Provider does not
   replace Schema data or switch the theme. See
   [Theme and Surface Context](./theme-and-surface-context.md) for the independent recipe coordinates.
-- Button's indicator and Stacked compositions are the two forms of
+- Button's indicator and Stacked compositions use
   [alternate element recipes for one rendered part](#alternate-element-recipes-for-one-rendered-part).
   The indicator selects a complete inside/outside recipe; Stacked substitutes explicitly declared
-  domains while retaining the base parts' identity. Their local contracts document the different
-  coverage, fallback and geometry requirements.
+  geometry and typography domains. Both retain the base parts' identity. Their local contracts
+  document the different coverage, fallback and geometry requirements.
+- Button paint alternatives use the shared `colorVariant` palette axis on the existing elements.
+  Qualified intents such as `primary-alt` select Alternative without adding semantic intentions
+  or anatomy. The indicator retains its Standard recipe; body alternatives do not automatically
+  change its contrast. See [Shared color variants](../../packages/core/docs/definitions/color-variants.md).
 - TextField owns logical content regions and passive `TextFieldIcon` / `TextFieldText` anatomy.
   The lateral regions select Lowest or Medium treatment; helpers keep their geometry without
   individual frames. `TextFieldAction` provides the isolated internal-action relation, while
@@ -335,7 +346,8 @@ A durable architecture decision should record:
   reuses ordinary classes while preserving selection for accessibility, indicators and Group topology.
   `selectionIntent` chooses the selected color recipe independently of `selectionEmphasis` strength;
   both consume existing palette coordinates rather than adding a selected-color axis or duplicating
-  recipes. The same effective paint drives content context, effects and indicator contrast.
+  recipes. The same effective paint drives content context and effects. The indicator follows the
+  effective semantic intent and emphasis in Standard, independently of the body's color variant.
 - [Project governance and responsibility](./project-governance.md)
 - [Kiskadee Nomenclature](./nomenclature.md)
 - [Schema-to-Web composition patterns](./schema-to-web-composition-patterns.md)

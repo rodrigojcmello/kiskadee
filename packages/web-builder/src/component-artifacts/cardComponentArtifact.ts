@@ -47,7 +47,8 @@ function resolveCanonicalSurfaceRest({
   const segmentPalettes = isRecord(palettes) ? palettes[segment] : undefined;
   const themePalette = isRecord(segmentPalettes) ? segmentPalettes[theme] : undefined;
   const onSubtlePalette = isRecord(themePalette) ? themePalette.onSubtle : undefined;
-  const boxColor = isRecord(onSubtlePalette) ? onSubtlePalette.boxColor : undefined;
+  const standard = isRecord(onSubtlePalette) ? onSubtlePalette.standard : undefined;
+  const boxColor = isRecord(standard) ? standard.boxColor : undefined;
   const intentMap = isRecord(boxColor) ? boxColor[intent] : undefined;
   const emphasisMap = isRecord(intentMap) ? intentMap[emphasis] : undefined;
   const rest = isRecord(emphasisMap) ? emphasisMap.rest : undefined;

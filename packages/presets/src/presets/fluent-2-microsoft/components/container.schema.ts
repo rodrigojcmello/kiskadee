@@ -79,8 +79,8 @@ export function createFluent2MicrosoftContainerSchema({
     for (const theme of ['light', 'dark', 'darker'] as const) {
       const recipe = COMPLEMENTARY_SURFACES[theme];
       for (const context of ['onSubtle', 'onVivid'] as const) {
-        const palette = container.elements.e1.palettes[segment]?.[theme]?.[context];
-        const outputs = container.contentSurfaceContext[segment]?.[theme]?.[context];
+        const palette = container.elements.e1.palettes[segment]?.[theme]?.[context]?.standard;
+        const outputs = container.contentSurfaceContext[segment]?.[theme]?.[context]?.standard;
         if (!palette || !outputs) {
           throw new Error(`Container ${segment}.${theme}.${context}: missing migrated surface`);
         }

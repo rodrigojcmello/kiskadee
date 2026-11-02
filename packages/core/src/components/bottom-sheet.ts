@@ -302,24 +302,27 @@ function validateBottomSheetPaletteVocabulary(
     if (!isRecord(byTheme)) continue;
     for (const [theme, byContext] of Object.entries(byTheme)) {
       if (!isRecord(byContext)) continue;
-      for (const [context, colorMap] of Object.entries(byContext)) {
-        if (!isRecord(colorMap)) continue;
-        for (const colorProperty of allowedColorKeys) {
-          const byIntent = colorMap[colorProperty];
-          if (!isRecord(byIntent)) continue;
-          for (const [intent, byEmphasis] of Object.entries(byIntent)) {
-            if (!BOTTOM_SHEET_INTENTS.includes(intent as BottomSheetIntent)) {
-              issues.push(
-                `${path}.${segment}.${theme}.${context}.${colorProperty}.${intent}: unrecognized BottomSheet intent`
-              );
-              continue;
-            }
-            if (!isRecord(byEmphasis)) continue;
-            for (const emphasis of Object.keys(byEmphasis)) {
-              if (emphasis !== 'medium') {
+      for (const [context, variants] of Object.entries(byContext)) {
+        if (!isRecord(variants)) continue;
+        for (const [variant, colorMap] of Object.entries(variants)) {
+          if (!isRecord(colorMap)) continue;
+          for (const colorProperty of allowedColorKeys) {
+            const byIntent = colorMap[colorProperty];
+            if (!isRecord(byIntent)) continue;
+            for (const [intent, byEmphasis] of Object.entries(byIntent)) {
+              if (!BOTTOM_SHEET_INTENTS.includes(intent as BottomSheetIntent)) {
                 issues.push(
-                  `${path}.${segment}.${theme}.${context}.${colorProperty}.${intent}.${emphasis}: expected "medium" emphasis`
+                  `${path}.${segment}.${theme}.${context}.${variant}.${colorProperty}.${intent}: unrecognized BottomSheet intent`
                 );
+                continue;
+              }
+              if (!isRecord(byEmphasis)) continue;
+              for (const emphasis of Object.keys(byEmphasis)) {
+                if (emphasis !== 'medium') {
+                  issues.push(
+                    `${path}.${segment}.${theme}.${context}.${variant}.${colorProperty}.${intent}.${emphasis}: expected "medium" emphasis`
+                  );
+                }
               }
             }
           }

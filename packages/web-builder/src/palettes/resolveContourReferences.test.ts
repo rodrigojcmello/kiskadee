@@ -24,30 +24,30 @@ describe('Fluent shared contour pipeline', () => {
       ['teams', '#5053b224']
     ] as const) {
       for (const emphasis of ['lowest', 'low', 'medium', 'high'] as const)
-        expect(card[segment]?.light?.onSubtle?.borderColor?.primary?.[emphasis]?.rest).toBe(
-          expected
-        );
-      expect(separator[segment]?.light?.onSubtle?.boxColor?.primary?.medium?.rest).toBe(
+        expect(
+          card[segment]?.light?.onSubtle?.standard.borderColor?.primary?.[emphasis]?.rest
+        ).toBe(expected);
+      expect(separator[segment]?.light?.onSubtle?.standard.boxColor?.primary?.medium?.rest).toBe(
         segment === 'default' ? '#0064b447' : '#5053b247'
       );
-      expect(separator[segment]?.light?.onVivid?.boxColor?.primary?.medium?.rest).toBe(
+      expect(separator[segment]?.light?.onVivid?.standard.boxColor?.primary?.medium?.rest).toBe(
         segment === 'default' ? '#12263b52' : '#1f223c52'
       );
     }
     for (const theme of ['light', 'dark', 'darker'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
-        expect(card.default?.[theme]?.[context]?.borderColor?.primary?.highest?.rest).toBe(
+        expect(card.default?.[theme]?.[context]?.standard.borderColor?.primary?.highest?.rest).toBe(
           '#ffffff26'
         );
         expect(
-          schema.components.card!.elements.e1!.palettes!.default?.[theme]?.[context]?.borderColor
-            ?.primary?.highest?.rest
+          schema.components.card!.elements.e1!.palettes!.default?.[theme]?.[context]?.standard
+            .borderColor?.primary?.highest?.rest
         ).toBe(contour(`neutral.standard.${theme}.onVivid.medium`));
         const expected =
           context === 'onVivid' ? '#ffffff26' : theme === 'light' ? '#0000003b' : '#6a6a6a';
-        expect(separator.default?.[theme]?.[context]?.boxColor?.neutral?.medium?.rest).toBe(
-          expected
-        );
+        expect(
+          separator.default?.[theme]?.[context]?.standard.boxColor?.neutral?.medium?.rest
+        ).toBe(expected);
         const cardBorder =
           context === 'onVivid'
             ? theme === 'darker'
@@ -59,10 +59,10 @@ describe('Fluent shared contour pipeline', () => {
                 ? '#ffffff26'
                 : '#ffffff1a';
         for (const states of Object.values(
-          card.default?.[theme]?.[context]?.borderColor?.neutral ?? {}
+          card.default?.[theme]?.[context]?.standard.borderColor?.neutral ?? {}
         ))
           expect(states?.rest).toBe(cardBorder);
-        expect(separator.default?.[theme]?.[context]?.boxColor?.neutral?.low?.rest).toBe(
+        expect(separator.default?.[theme]?.[context]?.standard.boxColor?.neutral?.low?.rest).toBe(
           context === 'onVivid' ? '#ffffff14' : theme === 'light' ? '#00000018' : '#ffffff1f'
         );
       }
@@ -78,9 +78,9 @@ describe('Fluent shared contour pipeline', () => {
         if (!node || typeof node !== 'object') return;
         if ('separator' in node && typeof node.separator === 'object') {
           const result = resolveElementPaletteSources(node as ElementPaletteSource, schema.global!);
-          expect(result.palettes?.default?.light?.onSubtle.boxColor?.neutral?.medium?.rest).toBe(
-            '#0000003b'
-          );
+          expect(
+            result.palettes?.default?.light?.onSubtle?.standard.boxColor?.neutral?.medium?.rest
+          ).toBe('#0000003b');
           count++;
         }
         Object.values(node).forEach(visit);
@@ -91,10 +91,14 @@ describe('Fluent shared contour pipeline', () => {
   });
   it('keeps literal schemas unchanged and rejects missing reference coordinates', () => {
     const palettes: ElementPalettes = {
-      default: { light: { onSubtle: { boxColor: { neutral: { medium: { rest: '#123456' } } } } } }
+      default: {
+        light: {
+          onSubtle: { standard: { boxColor: { neutral: { medium: { rest: '#123456' } } } } }
+        }
+      }
     };
     expect(resolveContourReferences(palettes, undefined)).toEqual(palettes);
-    palettes.default!.light!.onSubtle.boxColor!.neutral!.medium!.rest = contour(
+    palettes.default!.light!.onSubtle.standard.boxColor!.neutral!.medium!.rest = contour(
       'neutral.standard.light.onVivid.highest'
     );
     expect(() => resolveContourReferences(palettes, schema.global!.contours)).toThrow(

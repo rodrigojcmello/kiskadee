@@ -83,7 +83,7 @@ export function createCarbonIbmSliderSchema({ c }: { c: CarbonIbmColorResolver }
         [part === 'text' || part === 'label' || part === 'inverse' ? 'textColor' : 'boxColor']: map
       };
     };
-    return { onSubtle: create(false), onVivid: create(true) };
+    return { onSubtle: { standard: create(false) }, onVivid: { standard: create(true) } };
   };
   const palettes = (part: Part) => ({
     default: {

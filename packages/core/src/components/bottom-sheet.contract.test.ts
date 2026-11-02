@@ -78,8 +78,10 @@ describe('BottomSheet component contract', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: {
-              primary: { medium: { rest: 'var(--color)' } }
+            standard: {
+              boxColor: {
+                primary: { medium: { rest: 'var(--color)' } }
+              }
             }
           }
         }
@@ -87,7 +89,7 @@ describe('BottomSheet component contract', () => {
     };
 
     expect(validateBottomSheetComponentContract(bottomSheet)).toContain(
-      'components.bottomSheet.elements.e7.palettes.default.light.onSubtle.boxColor.primary: unrecognized BottomSheet intent'
+      'components.bottomSheet.elements.e7.palettes.default.light.onSubtle.standard.boxColor.primary: unrecognized BottomSheet intent'
     );
   });
 });

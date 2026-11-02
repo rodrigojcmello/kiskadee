@@ -667,6 +667,13 @@ $height: 64px;
   justify-content: flex-end;
 }
 
+.colorVariantControls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 .intentsInlineControls .intentControlLabel {
   margin-inline-start: 0;
 }
@@ -737,6 +744,13 @@ $height: 64px;
 
 .contextSurface {
   min-width: 0;
+}
+
+.contextSurfaceHeader {
+  align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .contextSurfaceGrid {

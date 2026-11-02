@@ -138,7 +138,9 @@ it('rejects colors on slots that do not own that paint', () => {
                       default: {
                         light: {
                           onSubtle: {
-                            [property!]: { neutral: { medium: { rest: '#000000' } } }
+                            standard: {
+                              [property!]: { neutral: { medium: { rest: '#000000' } } }
+                            }
                           }
                         }
                       }

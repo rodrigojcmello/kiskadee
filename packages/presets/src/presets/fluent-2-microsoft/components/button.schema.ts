@@ -17,6 +17,7 @@ import {
   familyReferenceColor,
   referenceColor
 } from '../fluent-2-microsoft.color.ts';
+import { createFluentButtonAlternativeColors } from './button-alternative-colors.ts';
 import {
   createFluentButtonOnSubtleIntent,
   createFluentButtonOnVividIntent,
@@ -264,43 +265,47 @@ export function createFluent2MicrosoftButtonSchema({
 
   const createBoxAndBorderContextPalettes = (theme: ButtonRecipeTheme) => ({
     onSubtle: {
-      borderBottomColor: {
-        primary: onSubtleButtonIntentPalettes[theme].primary.borderBottomColor,
-        neutral: onSubtleButtonIntentPalettes[theme].neutral.borderBottomColor,
-        destructive: onSubtleButtonIntentPalettes[theme].destructive.borderBottomColor,
-        positive: onSubtleButtonIntentPalettes[theme].positive.borderBottomColor
-      },
-      boxColor: {
-        primary: onSubtleButtonIntentPalettes[theme].primary.boxColor,
-        neutral: onSubtleButtonIntentPalettes[theme].neutral.boxColor,
-        destructive: onSubtleButtonIntentPalettes[theme].destructive.boxColor,
-        positive: onSubtleButtonIntentPalettes[theme].positive.boxColor
-      },
-      borderColor: {
-        primary: onSubtleButtonIntentPalettes[theme].primary.borderColor,
-        neutral: onSubtleButtonIntentPalettes[theme].neutral.borderColor,
-        destructive: onSubtleButtonIntentPalettes[theme].destructive.borderColor,
-        positive: onSubtleButtonIntentPalettes[theme].positive.borderColor
+      standard: {
+        borderBottomColor: {
+          primary: onSubtleButtonIntentPalettes[theme].primary.borderBottomColor,
+          neutral: onSubtleButtonIntentPalettes[theme].neutral.borderBottomColor,
+          destructive: onSubtleButtonIntentPalettes[theme].destructive.borderBottomColor,
+          positive: onSubtleButtonIntentPalettes[theme].positive.borderBottomColor
+        },
+        boxColor: {
+          primary: onSubtleButtonIntentPalettes[theme].primary.boxColor,
+          neutral: onSubtleButtonIntentPalettes[theme].neutral.boxColor,
+          destructive: onSubtleButtonIntentPalettes[theme].destructive.boxColor,
+          positive: onSubtleButtonIntentPalettes[theme].positive.boxColor
+        },
+        borderColor: {
+          primary: onSubtleButtonIntentPalettes[theme].primary.borderColor,
+          neutral: onSubtleButtonIntentPalettes[theme].neutral.borderColor,
+          destructive: onSubtleButtonIntentPalettes[theme].destructive.borderColor,
+          positive: onSubtleButtonIntentPalettes[theme].positive.borderColor
+        }
       }
     },
     onVivid: {
-      borderBottomColor: {
-        primary: onVividButtonIntentPalettes[theme].primary.borderBottomColor,
-        neutral: onVividButtonIntentPalettes[theme].neutral.borderBottomColor,
-        destructive: onVividButtonIntentPalettes[theme].destructive.borderBottomColor,
-        positive: onVividButtonIntentPalettes[theme].positive.borderBottomColor
-      },
-      boxColor: {
-        primary: onVividButtonIntentPalettes[theme].primary.boxColor,
-        neutral: onVividButtonIntentPalettes[theme].neutral.boxColor,
-        destructive: onVividButtonIntentPalettes[theme].destructive.boxColor,
-        positive: onVividButtonIntentPalettes[theme].positive.boxColor
-      },
-      borderColor: {
-        primary: onVividButtonIntentPalettes[theme].primary.borderColor,
-        neutral: onVividButtonIntentPalettes[theme].neutral.borderColor,
-        destructive: onVividButtonIntentPalettes[theme].destructive.borderColor,
-        positive: onVividButtonIntentPalettes[theme].positive.borderColor
+      standard: {
+        borderBottomColor: {
+          primary: onVividButtonIntentPalettes[theme].primary.borderBottomColor,
+          neutral: onVividButtonIntentPalettes[theme].neutral.borderBottomColor,
+          destructive: onVividButtonIntentPalettes[theme].destructive.borderBottomColor,
+          positive: onVividButtonIntentPalettes[theme].positive.borderBottomColor
+        },
+        boxColor: {
+          primary: onVividButtonIntentPalettes[theme].primary.boxColor,
+          neutral: onVividButtonIntentPalettes[theme].neutral.boxColor,
+          destructive: onVividButtonIntentPalettes[theme].destructive.boxColor,
+          positive: onVividButtonIntentPalettes[theme].positive.boxColor
+        },
+        borderColor: {
+          primary: onVividButtonIntentPalettes[theme].primary.borderColor,
+          neutral: onVividButtonIntentPalettes[theme].neutral.borderColor,
+          destructive: onVividButtonIntentPalettes[theme].destructive.borderColor,
+          positive: onVividButtonIntentPalettes[theme].positive.borderColor
+        }
       }
     }
   });
@@ -502,20 +507,24 @@ export function createFluent2MicrosoftButtonSchema({
 
   const createTextContextPalettes = (theme: ButtonRecipeTheme) => ({
     onSubtle: {
-      textColor: Object.fromEntries(
-        (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
-          intent,
-          createOnSubtleTextIntent(theme, intent)
-        ])
-      )
+      standard: {
+        textColor: Object.fromEntries(
+          (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
+            intent,
+            createOnSubtleTextIntent(theme, intent)
+          ])
+        )
+      }
     },
     onVivid: {
-      textColor: Object.fromEntries(
-        (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
-          intent,
-          createOnVividTextIntent(theme, intent)
-        ])
-      )
+      standard: {
+        textColor: Object.fromEntries(
+          (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
+            intent,
+            createOnVividTextIntent(theme, intent)
+          ])
+        )
+      }
     }
   });
 
@@ -524,10 +533,14 @@ export function createFluent2MicrosoftButtonSchema({
 
     return {
       onSubtle: {
-        textColor: omitFluentButtonPendingTextState(textPalettes.onSubtle.textColor)
+        standard: {
+          textColor: omitFluentButtonPendingTextState(textPalettes.onSubtle.standard.textColor)
+        }
       },
       onVivid: {
-        textColor: omitFluentButtonPendingTextState(textPalettes.onVivid.textColor)
+        standard: {
+          textColor: omitFluentButtonPendingTextState(textPalettes.onVivid.standard.textColor)
+        }
       }
     };
   };
@@ -554,8 +567,8 @@ export function createFluent2MicrosoftButtonSchema({
     });
 
     return {
-      onSubtle: createContext(),
-      onVivid: createContext()
+      onSubtle: { standard: createContext() },
+      onVivid: { standard: createContext() }
     };
   };
 
@@ -573,8 +586,8 @@ export function createFluent2MicrosoftButtonSchema({
     });
 
     return {
-      onSubtle: createContext(),
-      onVivid: createContext()
+      onSubtle: { standard: createContext() },
+      onVivid: { standard: createContext() }
     };
   };
 
@@ -640,21 +653,23 @@ export function createFluent2MicrosoftButtonSchema({
             (['onSubtle', 'onVivid'] as const).map((context) => [
               context,
               {
-                boxColor: Object.fromEntries(
-                  (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
-                    intent,
-                    Object.fromEntries(
-                      (['high', 'medium', 'low', 'lowest'] as const).map((emphasis) => [
-                        emphasis,
-                        {
-                          selected: {
-                            rest: indicatorColor(theme, context, intent, emphasis)
+                standard: {
+                  boxColor: Object.fromEntries(
+                    (Object.keys(BUTTON_FOREGROUND_FAMILY) as ButtonIntent[]).map((intent) => [
+                      intent,
+                      Object.fromEntries(
+                        (['high', 'medium', 'low', 'lowest'] as const).map((emphasis) => [
+                          emphasis,
+                          {
+                            selected: {
+                              rest: indicatorColor(theme, context, intent, emphasis)
+                            }
                           }
-                        }
-                      ])
-                    )
-                  ])
-                )
+                        ])
+                      )
+                    ])
+                  )
+                }
               }
             ])
           )
@@ -670,34 +685,36 @@ export function createFluent2MicrosoftButtonSchema({
         Object.fromEntries(
           (['onSubtle', 'onVivid'] as const).map((input) => [
             input,
-            Object.fromEntries(
-              (['primary', 'neutral', 'destructive', 'positive'] as const).map((intent) => [
-                intent,
-                {
-                  high: {
-                    rest: input === 'onVivid' ? 'onSubtle' : 'onVivid',
-                    pending: input === 'onVivid' ? 'onSubtle' : 'onVivid',
-                    disabled: 'onSubtle'
-                  },
-                  medium: {
-                    rest: 'onVivid',
-                    ...(input === 'onVivid' && intent === 'primary'
-                      ? { selected: 'onSubtle' }
-                      : {}),
-                    pending: 'onVivid',
-                    disabled: 'onSubtle'
-                  },
-                  low: { rest: input === 'onVivid' && theme !== 'light' ? 'inherit' : input },
-                  lowest: { rest: 'inherit' }
-                }
-              ])
-            )
+            {
+              standard: Object.fromEntries(
+                (['primary', 'neutral', 'destructive', 'positive'] as const).map((intent) => [
+                  intent,
+                  {
+                    high: {
+                      rest: input === 'onVivid' ? 'onSubtle' : 'onVivid',
+                      pending: input === 'onVivid' ? 'onSubtle' : 'onVivid',
+                      disabled: 'onSubtle'
+                    },
+                    medium: {
+                      rest: 'onVivid',
+                      ...(input === 'onVivid' && intent === 'primary'
+                        ? { selected: 'onSubtle' }
+                        : {}),
+                      pending: 'onVivid',
+                      disabled: 'onSubtle'
+                    },
+                    low: { rest: input === 'onVivid' && theme !== 'light' ? 'inherit' : input },
+                    lowest: { rest: 'inherit' }
+                  }
+                ])
+              )
+            }
           ])
         )
       ])
     );
 
-  return {
+  const standard: ButtonComponent = {
     contentSurfaceContext: {
       default: createContentSurfaceContext()
     },
@@ -974,4 +991,5 @@ export function createFluent2MicrosoftButtonSchema({
       }
     }
   };
+  return createFluentButtonAlternativeColors(standard, c);
 }

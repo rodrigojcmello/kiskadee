@@ -117,28 +117,32 @@ export function validateComponentPalettes(
     if (!isContractRecord(themes)) continue;
     for (const [theme, contexts] of Object.entries(themes)) {
       if (!isContractRecord(contexts)) continue;
-      for (const [context, colors] of Object.entries(contexts)) {
-        if (!isContractRecord(colors)) continue;
-        for (const [colorProperty, intents] of Object.entries(colors)) {
-          if (!isContractRecord(intents)) continue;
-          for (const [intent, emphases] of Object.entries(intents)) {
-            const intentPath = `${path}.${segment}.${theme}.${context}.${colorProperty}.${intent}`;
-            if (!options.allowedIntents.includes(intent)) {
-              issues.push(`${intentPath}: unrecognized intent`);
-            }
-            if (!isContractRecord(emphases)) continue;
-            for (const [emphasis, states] of Object.entries(emphases)) {
-              const statePath = `${intentPath}.${emphasis}`;
-              if (!options.allowedEmphases.includes(emphasis)) {
-                issues.push(`${statePath}: unrecognized emphasis`);
+      for (const [context, variants] of Object.entries(contexts)) {
+        if (!isContractRecord(variants)) continue;
+        for (const [variant, colors] of Object.entries(variants)) {
+          if (!isContractRecord(colors)) continue;
+          for (const [colorProperty, intents] of Object.entries(colors)) {
+            if (!isContractRecord(intents)) continue;
+            for (const [intent, emphases] of Object.entries(intents)) {
+              const intentPath = `${path}.${segment}.${theme}.${context}.${variant}.${colorProperty}.${intent}`;
+              if (!options.allowedIntents.includes(intent)) {
+                issues.push(`${intentPath}: unrecognized intent`);
               }
-              if (!isContractRecord(states)) continue;
-              for (const state of Object.keys(states)) {
-                if (!options.allowedStates.includes(state)) {
-                  issues.push(`${statePath}.${state}: unrecognized state`);
+              if (!isContractRecord(emphases)) continue;
+              for (const [emphasis, states] of Object.entries(emphases)) {
+                const statePath = `${intentPath}.${emphasis}`;
+                if (!options.allowedEmphases.includes(emphasis)) {
+                  issues.push(`${statePath}: unrecognized emphasis`);
                 }
+                if (!isContractRecord(states)) continue;
+                for (const state of Object.keys(states)) {
+                  if (!options.allowedStates.includes(state)) {
+                    issues.push(`${statePath}.${state}: unrecognized state`);
+                  }
+                }
+                if (!Object.hasOwn(states, 'rest'))
+                  issues.push(`${statePath}.rest: required state`);
               }
-              if (!Object.hasOwn(states, 'rest')) issues.push(`${statePath}.rest: required state`);
             }
           }
         }

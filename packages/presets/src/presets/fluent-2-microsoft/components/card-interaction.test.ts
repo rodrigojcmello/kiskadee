@@ -6,10 +6,11 @@ describe('Fluent Light neutral CardAction feedback', () => {
     const channel = (hex: string) => Number.parseInt(hex.slice(1, 3), 16);
     for (const context of ['onSubtle', 'onVivid'] as const) {
       const states =
-        schema.components.card!.elements.e1!.palettes!.default!.light![context]!.boxColor!.neutral!;
-      const surfaces =
-        schema.components.container!.elements.e1.palettes.default!.light![context]!.boxColor
+        schema.components.card!.elements.e1!.palettes!.default!.light![context]!.standard.boxColor!
           .neutral!;
+      const surfaces =
+        schema.components.container!.elements.e1.palettes.default!.light![context]!.standard
+          .boxColor.neutral!;
       for (const emphasis of ['lowest', 'low', 'medium', 'high'] as const) {
         const rest = channel(surfaces[emphasis]!.rest as string);
         const hover = channel(states[emphasis]!.hover as string);

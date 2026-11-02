@@ -57,19 +57,24 @@ export function resolveContourReferences<TPalettes extends object>(
         Object.entries(byTheme ?? {}).map(([theme, byContext]) => [
           theme,
           Object.fromEntries(
-            Object.entries(byContext ?? {}).map(([surfaceContext, colorSchema]) => [
+            Object.entries(byContext ?? {}).map(([surfaceContext, variants]) => [
               surfaceContext,
               Object.fromEntries(
-                Object.entries(colorSchema ?? {}).map(([colorProperty, value]) => [
-                  colorProperty,
-                  resolveValue(value, {
-                    allowContour:
-                      colorProperty === 'boxColor' ||
-                      /^border(?:Top|Right|Bottom|Left)?Color$/.test(colorProperty),
-                    contours,
-                    path: `${segment}.${theme}.${surfaceContext}.${colorProperty}`,
-                    segment
-                  })
+                Object.entries(variants ?? {}).map(([colorVariant, colorSchema]) => [
+                  colorVariant,
+                  Object.fromEntries(
+                    Object.entries(colorSchema ?? {}).map(([colorProperty, value]) => [
+                      colorProperty,
+                      resolveValue(value, {
+                        allowContour:
+                          colorProperty === 'boxColor' ||
+                          /^border(?:Top|Right|Bottom|Left)?Color$/.test(colorProperty),
+                        contours,
+                        path: `${segment}.${theme}.${surfaceContext}.${colorVariant}.${colorProperty}`,
+                        segment
+                      })
+                    ])
+                  )
                 ])
               )
             ])

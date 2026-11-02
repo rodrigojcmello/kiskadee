@@ -68,7 +68,7 @@ describe('Button optional composition and loading', () => {
         calls(component);
         return (
           component === 'progress'
-            ? { component, classMap: { e3: { d: 'progress-paint' } } }
+            ? { formatVersion: 3, component, classMap: { e3: { d: 'progress-paint' } } }
             : undefined
         ) as T | undefined;
       }

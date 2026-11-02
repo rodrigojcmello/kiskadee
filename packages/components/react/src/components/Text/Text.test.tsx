@@ -14,33 +14,37 @@ const TEXT_COLORS = {
   e1: {
     c: {
       s: {
-        neutral: { h: 'fg-high', m: 'fg-medium', l: 'fg-low', ll: 'fg-lowest' },
-        red: { h: 'fg-red-high', m: 'fg-red-medium', l: 'fg-red-low', ll: 'fg-red-lowest' },
-        'red-deep': {
-          h: 'fg-red-deep-high',
-          m: 'fg-red-deep-medium',
-          l: 'fg-red-deep-low',
-          ll: 'fg-red-deep-lowest'
+        s: {
+          neutral: { h: 'fg-high', m: 'fg-medium', l: 'fg-low', ll: 'fg-lowest' },
+          red: { h: 'fg-red-high', m: 'fg-red-medium', l: 'fg-red-low', ll: 'fg-red-lowest' },
+          'red-deep': {
+            h: 'fg-red-deep-high',
+            m: 'fg-red-deep-medium',
+            l: 'fg-red-deep-low',
+            ll: 'fg-red-deep-lowest'
+          }
         }
       },
       v: {
-        neutral: {
-          h: 'fg-vivid-high',
-          m: 'fg-vivid-medium',
-          l: 'fg-vivid-low',
-          ll: 'fg-vivid-lowest'
-        },
-        red: {
-          h: 'fg-vivid-red-high',
-          m: 'fg-vivid-red-medium',
-          l: 'fg-vivid-red-low',
-          ll: 'fg-vivid-red-lowest'
-        },
-        'red-deep': {
-          h: 'fg-vivid-red-deep-high',
-          m: 'fg-vivid-red-deep-medium',
-          l: 'fg-vivid-red-deep-low',
-          ll: 'fg-vivid-red-deep-lowest'
+        s: {
+          neutral: {
+            h: 'fg-vivid-high',
+            m: 'fg-vivid-medium',
+            l: 'fg-vivid-low',
+            ll: 'fg-vivid-lowest'
+          },
+          red: {
+            h: 'fg-vivid-red-high',
+            m: 'fg-vivid-red-medium',
+            l: 'fg-vivid-red-low',
+            ll: 'fg-vivid-red-lowest'
+          },
+          'red-deep': {
+            h: 'fg-vivid-red-deep-high',
+            m: 'fg-vivid-red-deep-medium',
+            l: 'fg-vivid-red-deep-low',
+            ll: 'fg-vivid-red-deep-lowest'
+          }
         }
       }
     }
@@ -63,6 +67,7 @@ function createContextValue(
     setDesignSystem: () => {},
     componentArtifacts: {
       text: {
+        formatVersion: 3,
         component: 'text',
         options: { emphasis: 'high' },
         ...(textClasses ? { classMap: { e1: { t: textClasses } } } : {})
@@ -264,7 +269,7 @@ describe('Text', () => {
   it('warns and inherits instead of falling back to onSubtle when onVivid is missing', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const subtleOnly = {
-      e1: { c: { s: TEXT_COLORS.e1.c.s } }
+      e1: { c: { s: { s: TEXT_COLORS.e1.c.s } } }
     } as unknown as typeof TEXT_COLORS;
 
     renderText(
@@ -323,7 +328,7 @@ describe('Text', () => {
     const view = renderText(<Text profile="body-medium">Swapping</Text>, contextForTheme('light'));
 
     await act(async () => {
-      light.resolve({ component: 'text', classMap: TEXT_COLORS });
+      light.resolve({ formatVersion: 3, component: 'text', classMap: TEXT_COLORS });
     });
     await waitFor(() => expect(screen.getByText('Swapping').className).toContain('fg-high'));
 
@@ -336,9 +341,10 @@ describe('Text', () => {
 
     await act(async () => {
       dark.resolve({
+        formatVersion: 3,
         component: 'text',
         classMap: {
-          e1: { c: { s: { neutral: { h: 'fg-dark-high' } } } }
+          e1: { c: { s: { s: { neutral: { h: 'fg-dark-high' } } } } }
         }
       });
     });
@@ -348,7 +354,7 @@ describe('Text', () => {
   it('takes the default from metadata while an explicit emphasis wins', () => {
     const context = createContextValue();
     context.componentArtifacts = {
-      text: { component: 'text', options: { emphasis: 'medium' } }
+      text: { formatVersion: 3, component: 'text', options: { emphasis: 'medium' } }
     };
     renderText(
       <>
@@ -365,7 +371,7 @@ describe('Text', () => {
 
   it('inherits without an authored default instead of inventing a strength', () => {
     const context = createContextValue();
-    context.componentArtifacts = { text: { component: 'text' } };
+    context.componentArtifacts = { text: { formatVersion: 3, component: 'text' } };
     renderText(
       <>
         <Text profile="body-medium">No default</Text>
@@ -385,7 +391,7 @@ describe('Text', () => {
       ...createContextValue(),
       designSystem: 'another-design-system',
       componentArtifacts: {
-        text: { component: 'text', options: { emphasis: 'medium' } }
+        text: { formatVersion: 3, component: 'text', options: { emphasis: 'medium' } }
       }
     };
     const view = renderText(<Text profile="body-medium">Preset default</Text>, first);

@@ -20,11 +20,19 @@ it('makes Switch Neutral the default Windows-inspired vivid treatment while keep
     for (const theme of ['light', 'dark', 'darker'] as const) {
       const track = elements.e2!.palettes![segment]![theme]!;
       const thumb = elements.e3!.palettes![segment]![theme]!;
-      expect(Object.keys(track.onVivid!.boxColor!)).toEqual(['neutral', 'primary', 'polarity']);
-      expect(track.onSubtle.boxColor!.neutral).toEqual(track.onSubtle.boxColor!.primary);
-      expect(thumb.onSubtle.boxColor!.neutral).toEqual(thumb.onSubtle.boxColor!.primary);
-      expect(track.onVivid!.boxColor!.neutral!.medium!.selected!.rest).not.toEqual(
-        track.onVivid!.boxColor!.primary!.medium!.selected!.rest
+      expect(Object.keys(track.onVivid!.standard.boxColor!)).toEqual([
+        'neutral',
+        'primary',
+        'polarity'
+      ]);
+      expect(track.onSubtle!.standard.boxColor!.neutral).toEqual(
+        track.onSubtle!.standard.boxColor!.primary
+      );
+      expect(thumb.onSubtle!.standard.boxColor!.neutral).toEqual(
+        thumb.onSubtle!.standard.boxColor!.primary
+      );
+      expect(track.onVivid!.standard.boxColor!.neutral!.medium!.selected!.rest).not.toEqual(
+        track.onVivid!.standard.boxColor!.primary!.medium!.selected!.rest
       );
     }
   }
@@ -34,35 +42,44 @@ it('publishes both Slider intents on vivid using the Switch selected-color relat
   const switchTrack = schema.components.switch!.variants!.standard!.modes!.base!.elements.e2!;
   const sliderElements = schema.components.slider!.variants!.standard!.modes!.base!.elements;
   for (const segment of ['default', 'teams'] as const) {
-    const selected = switchTrack.palettes![segment]!.light!.onVivid!.boxColor!;
-    const active = sliderElements.e9!.palettes![segment]!.light!.onVivid!.boxColor!;
-    const thumbInner = sliderElements.e11!.palettes![segment]!.light!.onVivid!.boxColor!;
-    const thumbOuter = sliderElements.e10!.palettes![segment]!.light!.onVivid!;
-    const thumbIcon = sliderElements.e19!.palettes![segment]!.light!.onVivid!.textColor!;
+    const selected = switchTrack.palettes![segment]!.light!.onVivid!.standard.boxColor!;
+    const active = sliderElements.e9!.palettes![segment]!.light!.onVivid!.standard.boxColor!;
+    const thumbInner = sliderElements.e11!.palettes![segment]!.light!.onVivid!.standard.boxColor!;
+    const thumbOuter = sliderElements.e10!.palettes![segment]!.light!.onVivid!.standard;
+    const thumbIcon = sliderElements.e19!.palettes![segment]!.light!.onVivid!.standard.textColor!;
     const tooltip = sliderElements.e14!.palettes![segment]!.light!;
     const subtleForeground =
-      sliderElements.e2!.palettes![segment]!.light!.onSubtle.textColor!.neutral!.medium!.rest;
+      sliderElements.e2!.palettes![segment]!.light!.onSubtle!.standard.textColor!.neutral!.medium!
+        .rest;
     expect(active.neutral!.medium!.rest).toBe(resolved(selected.neutral!.medium!.selected?.rest));
     expect(active.primary!.medium!.rest).toBe(resolved(selected.primary!.medium!.selected?.rest));
     expect(thumbInner.neutral!.medium!.rest).toBe(active.neutral!.medium!.rest);
     expect(thumbInner.primary!.medium!.rest).toBe(
-      schema.components.container!.elements.e1!.palettes![segment]!.light!.onVivid!.boxColor!
-        .primary!.highest!.rest
+      schema.components.container!.elements.e1!.palettes![segment]!.light!.onVivid!.standard
+        .boxColor!.primary!.highest!.rest
     );
     expect(thumbOuter.boxColor!.neutral!.medium!.rest).toBe(subtleForeground);
     expect(thumbOuter.borderColor!.neutral!.medium!.rest).toBe(subtleForeground);
     expect(thumbIcon.neutral!.medium!.rest).toBe('#000000');
     expect(thumbIcon.primary!.medium!.rest).toBe('#ffffff');
-    expect(tooltip.onSubtle.boxColor!.neutral!.medium!.rest).toBe(subtleForeground);
-    expect(tooltip.onSubtle.boxColor!.primary!.medium!.rest).toBe(subtleForeground);
-    expect(tooltip.onVivid!.boxColor!.neutral!.medium!.rest).toBe(active.primary!.medium!.rest);
-    expect(tooltip.onVivid!.boxColor!.primary!.medium!.rest).toBe(active.primary!.medium!.rest);
-    expect(tooltip.onVivid!.textColor!.neutral!.medium!.rest).toBe(subtleForeground);
-    expect(tooltip.onVivid!.textColor!.primary!.medium!.rest).toBe(subtleForeground);
+    expect(tooltip.onSubtle!.standard.boxColor!.neutral!.medium!.rest).toBe(subtleForeground);
+    expect(tooltip.onSubtle!.standard.boxColor!.primary!.medium!.rest).toBe(subtleForeground);
+    expect(tooltip.onVivid!.standard.boxColor!.neutral!.medium!.rest).toBe(
+      active.primary!.medium!.rest
+    );
+    expect(tooltip.onVivid!.standard.boxColor!.primary!.medium!.rest).toBe(
+      active.primary!.medium!.rest
+    );
+    expect(tooltip.onVivid!.standard.textColor!.neutral!.medium!.rest).toBe(subtleForeground);
+    expect(tooltip.onVivid!.standard.textColor!.primary!.medium!.rest).toBe(subtleForeground);
     for (const [slot, element] of Object.entries(sliderElements)) {
-      if (!element || !('palettes' in element) || !element.palettes?.[segment]?.light?.onSubtle)
+      if (
+        !element ||
+        !('palettes' in element) ||
+        !element.palettes?.[segment]?.light?.onSubtle?.standard
+      )
         continue;
-      const subtle = element.palettes[segment]!.light!.onSubtle;
+      const subtle = element.palettes[segment]!.light!.onSubtle!.standard;
       for (const [channelName, channel] of Object.entries(subtle)) {
         if (
           channel &&
@@ -76,7 +93,7 @@ it('publishes both Slider intents on vivid using the Switch selected-color relat
           expect(channel.neutral).toEqual(channel.primary);
         }
       }
-      expect(element.palettes[segment]!.light!.onVivid).toBeDefined();
+      expect(element.palettes[segment]!.light!.onVivid!.standard).toBeDefined();
     }
   }
 });
@@ -96,18 +113,19 @@ it('uses the complementary vivid anchor and shared state deltas only for the Neu
     ] as const) {
       const expected = c.resolve(segment, 'l', referenceColor('primary.v2', 'vivid', offset));
       for (const theme of ['light', 'dark', 'darker'] as const) {
-        const track = switchElements.e2!.palettes![segment]![theme]!.onVivid!.boxColor!;
+        const track = switchElements.e2!.palettes![segment]![theme]!.onVivid!.standard.boxColor!;
         expect(resolved(track.neutral!.medium!.selected![state])).toBe(expected);
         expect(resolved(track.primary!.medium!.selected![state])).toBe('#ffffff');
       }
       for (const slot of ['e9', 'e11'] as const) {
-        const channel = sliderElements[slot]!.palettes![segment]!.light!.onVivid!.boxColor!;
+        const channel =
+          sliderElements[slot]!.palettes![segment]!.light!.onVivid!.standard.boxColor!;
         expect(resolved(channel.neutral!.medium![state])).toBe(expected);
       }
     }
     for (const theme of ['light', 'dark', 'darker'] as const) {
-      const track = switchElements.e2!.palettes![segment]![theme]!.onVivid!.boxColor!;
-      const thumb = switchElements.e3!.palettes![segment]![theme]!.onVivid!.boxColor!;
+      const track = switchElements.e2!.palettes![segment]![theme]!.onVivid!.standard.boxColor!;
+      const thumb = switchElements.e3!.palettes![segment]![theme]!.onVivid!.standard.boxColor!;
       expect(track.neutral!.medium!.rest).toBe('#ffffff00');
       expect(resolved(track.neutral!.medium!.disabled)).toBe('#ffffff1f');
       expect(resolved(thumb.neutral!.medium!.selected!.rest)).toBe('#000000');
@@ -124,8 +142,8 @@ it('keeps subtle recipes on the original family and preserves the Slider theme c
   for (const segment of ['default', 'teams'] as const) {
     for (const theme of ['light', 'dark', 'darker'] as const) {
       const selected =
-        switchElements.e2!.palettes![segment]![theme]!.onSubtle.boxColor!.neutral!.medium!.selected!
-          .rest;
+        switchElements.e2!.palettes![segment]![theme]!.onSubtle!.standard.boxColor!.neutral!.medium!
+          .selected!.rest;
       expect(resolved(selected)).toBe(
         c.resolve(
           segment,
@@ -136,7 +154,7 @@ it('keeps subtle recipes on the original family and preserves the Slider theme c
     }
     for (const slot of ['e9', 'e11'] as const) {
       const element = sliderElements[slot]!;
-      const channel = element.palettes![segment]!.light!.onSubtle.boxColor!;
+      const channel = element.palettes![segment]!.light!.onSubtle!.standard.boxColor!;
       expect(channel.neutral!.medium!.rest).toBe(
         c.resolve(segment, 'l', referenceColor('slider.primary', 'vivid'))
       );

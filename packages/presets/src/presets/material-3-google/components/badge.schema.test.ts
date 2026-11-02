@@ -32,13 +32,13 @@ it('publishes the Material Badge matrix for every segment, theme and surface con
         for (const intent of intents)
           for (const emphasis of emphases) {
             const box =
-              badge.elements.e1.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.[intent]?.[
-                emphasis
-              ];
+              badge.elements.e1.palettes?.[segment]?.[theme]?.[surface]?.standard?.boxColor?.[
+                intent
+              ]?.[emphasis];
             const text =
-              badge.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
-                emphasis
-              ];
+              badge.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.standard?.textColor?.[
+                intent
+              ]?.[emphasis];
 
             expect(
               box?.rest,
@@ -52,8 +52,8 @@ it('publishes the Material Badge matrix for every segment, theme and surface con
 });
 
 it('keeps intent families independent and uses a readable dark chromatic foreground', () => {
-  const light = badge.elements.e1.palettes?.default?.light?.onSubtle;
-  const dark = badge.elements.e2.palettes?.default?.dark?.onSubtle;
+  const light = badge.elements.e1.palettes?.default?.light?.onSubtle?.standard;
+  const dark = badge.elements.e2.palettes?.default?.dark?.onSubtle?.standard;
 
   // Different families may legitimately share a light cap-adjacent tone.
   for (const intent of ['neutral', 'primary'] as const) {
@@ -70,7 +70,7 @@ it('keeps intent families independent and uses a readable dark chromatic foregro
 });
 
 it('uses inverse foregrounds for low badges on vivid surfaces', () => {
-  const palette = badge.elements.e2.palettes?.default?.dark?.onVivid?.textColor;
+  const palette = badge.elements.e2.palettes?.default?.dark?.onVivid?.standard?.textColor;
 
   expect(palette?.primary?.low?.rest).toBe('#ffffff');
   expect(palette?.primary?.lowest?.rest).toBe('#ffffff');
@@ -78,8 +78,8 @@ it('uses inverse foregrounds for low badges on vivid surfaces', () => {
 });
 
 it('keeps full bleed marks readable across vivid and dark subtle contexts', () => {
-  const lightVivid = badge.elements.e3.palettes?.default?.light?.onVivid?.textColor;
-  const darkSubtle = badge.elements.e3.palettes?.default?.dark?.onSubtle?.textColor;
+  const lightVivid = badge.elements.e3.palettes?.default?.light?.onVivid?.standard?.textColor;
+  const darkSubtle = badge.elements.e3.palettes?.default?.dark?.onSubtle?.standard?.textColor;
 
   expect(lightVivid?.primary).toEqual({
     high: { rest: c.ref('default', 'l', 'badge.primary', 'subtle', 1) }
@@ -90,8 +90,8 @@ it('keeps full bleed marks readable across vivid and dark subtle contexts', () =
 });
 
 it('keeps dark chromatic Badge content at or above the compact text contrast floor', () => {
-  const palette = badge.elements.e1.palettes?.default?.dark?.onSubtle?.boxColor;
-  const text = badge.elements.e2.palettes?.default?.dark?.onSubtle?.textColor;
+  const palette = badge.elements.e1.palettes?.default?.dark?.onSubtle?.standard?.boxColor;
+  const text = badge.elements.e2.palettes?.default?.dark?.onSubtle?.standard?.textColor;
 
   for (const intent of intents.filter((value) => value !== 'neutral')) {
     const ratio = contrast(
@@ -103,6 +103,6 @@ it('keeps dark chromatic Badge content at or above the compact text contrast flo
 });
 
 it('keeps the full bleed mark intentionally Rest-only', () => {
-  const mark = badge.elements.e3.palettes?.default?.light?.onSubtle?.textColor?.primary;
+  const mark = badge.elements.e3.palettes?.default?.light?.onSubtle?.standard?.textColor?.primary;
   expect(mark).toEqual({ high: { rest: c.ref('default', 'l', 'badge.primary', 'vivid') } });
 });

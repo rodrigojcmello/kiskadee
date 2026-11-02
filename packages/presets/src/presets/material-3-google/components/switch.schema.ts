@@ -71,8 +71,8 @@ function themeMap<T>(factory: (theme: ThemeName) => T) {
 
 function surfaceMap<T>(factory: (surface: SurfaceContext) => T) {
   return {
-    onSubtle: factory('onSubtle'),
-    onVivid: factory('onVivid')
+    onSubtle: { standard: factory('onSubtle') },
+    onVivid: { standard: factory('onVivid') }
   };
 }
 
@@ -285,8 +285,8 @@ function createSwitchPalettes({
       Object.entries(palettes).map(([segment, themes]) => [
         segment,
         themeMap((theme) => ({
-          onSubtle: themes[theme].onSubtle[element],
-          onVivid: themes[theme].onVivid[element]
+          onSubtle: { standard: themes[theme].onSubtle.standard[element] },
+          onVivid: { standard: themes[theme].onVivid.standard[element] }
         }))
       ])
     );

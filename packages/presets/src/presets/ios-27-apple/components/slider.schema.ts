@@ -148,16 +148,16 @@ export function createIos27AppleSliderSchema({
   const palettes = (slot: Slot) =>
     buildBySegment(segmentNames, (segment) => ({
       light: {
-        onSubtle: createContext(segment, 'light', false, slot),
-        onVivid: createContext(segment, 'light', true, slot)
+        onSubtle: { standard: createContext(segment, 'light', false, slot) },
+        onVivid: { standard: createContext(segment, 'light', true, slot) }
       },
       dark: {
-        onSubtle: createContext(segment, 'dark', false, slot),
-        onVivid: createContext(segment, 'dark', true, slot)
+        onSubtle: { standard: createContext(segment, 'dark', false, slot) },
+        onVivid: { standard: createContext(segment, 'dark', true, slot) }
       },
       darker: {
-        onSubtle: createContext(segment, 'darker', false, slot),
-        onVivid: createContext(segment, 'darker', true, slot)
+        onSubtle: { standard: createContext(segment, 'darker', false, slot) },
+        onVivid: { standard: createContext(segment, 'darker', true, slot) }
       }
     }));
 

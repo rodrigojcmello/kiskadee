@@ -1,6 +1,41 @@
 # Component-scoped runtime resources
 
-Status: canonical Web Builder publication contract (format 2).
+Status: canonical Web Builder publication contract (format 3).
+
+## Shared color-variant handoff
+
+Every palette coordinate is `segment/theme/surfaceContext/{standard,alternative}`. The Builder
+resolves `alternative` over `standard` before lowering, at whole state-map leaves identified by
+property/intent/emphasis (or a direct property state map). An authored leaf replaces all states;
+missing leaves inherit within that exact context. Inheritance is materialized only where an element
+or referenced Separator authors Alternative in the same component, structural variant, mode,
+segment, theme and context. Standard-only branches publish no Alternative maps or output copies.
+Surface contexts and geometry are independent.
+Foreground and contour catalogs retain their existing grammars; foreground expansion creates a
+`standard` palette, while Separator profiles use the component palette grammar.
+
+Class maps publish `c.<s|v>.<s|a>.<intent>.<hh|h|m|l|ll>`, where the first compact axis is surface
+context and the second is color variant. Card `b` recipes and Button `group.frameOmissions` carry
+the same extra axis. Tone metadata includes the variant; Style Key identity does not. Equal
+resolved declarations reuse one CSS class, including when emphasis ownership differs by variant.
+
+Button uses its ordinary elements, `selectionRest`, and `group` projections for both variants.
+Inside/outside indicator elements `e11`/`e12` remain Standard and cannot create alternative body
+coverage. No alternative anatomy, geometry, effect, or separate Group branch is published.
+
+Component metadata publishes the complete positive discovery summary
+`capabilities.colorVariants.alternative[segment.theme][surfaceContext][intent] = emphasis[]`.
+Only explicitly authored alternatives with complete effective paint and descendant output qualify;
+inheritance alone does not advertise support. When class maps are supplied, coverage also requires
+the effective classes. The summary remains in component metadata for discovery before loading
+palette maps or CSS. `surfaceContexts` continues to describe Standard states.
+
+`contentSurfaceContext` uses the same variant axis and whole state-map inheritance. Effective
+per-palette output lives in `ComponentPaletteResourceArtifact.config.contentSurfaceContext`.
+Manifest, component metadata, class-map envelopes, and palette resource envelopes all require
+`formatVersion: 3`. Consumers reject missing or previous versions; there is no legacy reader.
+Compiled Web Brand Packs use `kiskadee.brand-pack-build.v3` and format 3. Portable seed/catalog
+formats and tonal assets are unchanged.
 
 ## Button indicator handoff
 
@@ -74,8 +109,9 @@ brand requests preserve the existing strict resource-boundary rules.
 
 Runtime consumers preserve semantic selection on the Button root, including the indicator's parent
 state and connected-group stacking. For the two stronger selection levels, they select this paint
-projection instead of attaching the ordinary Selected palette/effect classes. Old class maps remain
-valid without the projection and cannot be treated as publishing High Rest selection support.
+projection instead of attaching the ordinary Selected palette/effect classes. A format-3 class map
+without the optional projection cannot be treated as publishing High Rest selection support;
+previous-format envelopes remain unsupported.
 
 Foreground references continue to resolve only in `textColor`, except for indicator `boxColor`
 inside the authorized Button `e11.palettes` and `e12.palettes` paths. Their foreground coordinates
@@ -144,6 +180,11 @@ A component metadata artifact carries:
 
 Class maps retain only generated class references. Size fallbacks do not copy Medium recipes into
 Small/Large. Palette-specific capabilities are loaded for the selected palette, not every palette.
+The component metadata's compact `capabilities.colorVariants.standard` summary carries only
+positive palette/context/intent/emphasis coordinates for discovery before CSS or maps load.
+Its optional `alternative` sibling advertises authored alternatives with complete effective recipes.
+Full `surfaceContexts` interaction-state maps stay in the selected per-palette descriptor;
+the component metadata does not duplicate those maps for every palette.
 The revision includes metadata, class maps and CSS references, independently of the preset version.
 
 ### Optional authored inspection values

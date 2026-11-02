@@ -33,7 +33,7 @@ export const schema: Schema<SandboxSegment> = {
                 const paint = {
                   boxColor: { neutral: { medium: { rest: neutralAsset.scales[theme][16] } } }
                 };
-                return [theme, { onSubtle: paint, onVivid: paint }];
+                return [theme, { onSubtle: { standard: paint }, onVivid: { standard: paint } }];
               })
             )
           }

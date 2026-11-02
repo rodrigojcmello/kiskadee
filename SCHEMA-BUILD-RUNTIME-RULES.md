@@ -220,15 +220,27 @@ Decision:
 
 - Component palettes include the orthogonal `surfaceContext` axis with `onSubtle` and `onVivid`.
 - The canonical palette path is
-  `segment -> theme -> surfaceContext -> color property -> intent -> emphasis -> state`.
-- `onSubtle` is required for every declared segment/theme palette. `onVivid` is optional, but when
-  present it must cover the same color-property, intent, and emphasis pairs as `onSubtle`.
+  `segment -> theme -> surfaceContext -> colorVariant -> color property -> intent -> emphasis -> state`.
+- `onSubtle` is required for every declared segment/theme palette. `onVivid` is optional.
+  Each declared context requires `standard`; its Standard property/intent/emphasis coverage must
+  match the other context. `alternative` is optional and has no cross-context parity requirement.
+- Missing Alternative leaves inherit Standard. A leaf is the complete state map at
+  property/intent/emphasis, or the direct state map of a color property. An authored Alternative
+  leaf replaces that whole map: Standard Hover/Pressed/Selected do not leak into it.
+  Core owns the pure build-safe inheritance helpers; builders materialize effective recipes before
+  conversion. See [Shared color variants](packages/core/docs/definitions/color-variants.md).
 - `onVivid` is selected explicitly by the visual component. It is not inferred from theme,
   background color, contrast, DOM ancestry, or runtime color measurement.
 - p-react resolves an explicit `surfaceContext` prop first, then the nearest
   `SurfaceContextProvider`, then the `onSubtle` portability default. Components that create a
   semantic descendant surface resolve their preset-authored `contentSurfaceContext` output and
   publish it through a nested Provider.
+- `contentSurfaceContext` uses the same context/variant axes and whole-state-map inheritance.
+  Button normalizes qualified system intents such as `primary-alt` to semantic `primary` and
+  `alternative`, while plain intents select `standard`. External `brand.*` names are normalized
+  first and keep their namespace. Body, selection projections, connected groups and descendant
+  context follow the effective intent and variant. Indicators retain Standard paint at the effective
+  semantic intent, emphasis and ambient context. No extra paint anatomy is introduced.
 - `on-primary` and similar design-system terms are documented source relationships that map to
   `onVivid`; they are not additional Kiskadee intents, themes, or emphasis levels.
 
@@ -242,7 +254,8 @@ Reason:
 Consequence:
 
 - Web artifacts keep one file per segment/theme and publish separate compact color buckets for
-  `onSubtle` and `onVivid` inside that file.
+  `onSubtle` and `onVivid` inside that file. Colors, Card borders and connected frame omissions
+  nest the color-variant bucket (`s` Standard, `a` Alternative) below the context bucket.
 - Omitted `surfaceContext` resolves to `onSubtle`. An explicitly requested unsupported `onVivid`
   context must not silently fall back to `onSubtle`.
 - Theme and surface-context controls remain independent in inspection tools and consumer APIs.
@@ -455,12 +468,12 @@ Decision:
 - `components.card.options.canonicalSurfaces[segment][theme]` declares an ordered list of
   `{ intent, emphasis, contentSurfaceContext }` references.
 - The referenced visual value remains in
-  `components.card.elements.e1.palettes[segment][theme].onSubtle.boxColor`.
+  `components.card.elements.e1.palettes[segment][theme].onSubtle.standard.boxColor`.
 - The entry's `contentSurfaceContext` describes the descendant context associated with that
   catalog surface. It does not change the Card's own consumed palette context and is not the
   runtime propagation map.
 - `components.card.contentSurfaceContext` separately authors runtime output by segment, theme,
-  consumed context, intent, emphasis, and relevant state. p-react Card resolves this map and
+  consumed context, color variant, intent, emphasis, and relevant state. p-react Card resolves this map and
   publishes the result to descendants.
 - The Web Builder validates every reference, resolves its `rest` color, and publishes
   `components/card.kiskadee.json`.
@@ -885,6 +898,7 @@ In artifacts:
 In schema:
 
 - `onSubtle` and optional `onVivid` are keys below each declared segment/theme palette.
+  Each context contains required `standard` and optional `alternative` color recipes.
 
 In web class-map artifacts:
 

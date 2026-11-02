@@ -34,18 +34,22 @@ function fixture(): Schema {
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              high: { selected: { rest: { ref: high } } },
-              medium: { selected: { rest: { ref: medium } } }
+          standard: {
+            boxColor: {
+              neutral: {
+                high: { selected: { rest: { ref: high } } },
+                medium: { selected: { rest: { ref: medium } } }
+              }
             }
           }
         },
         onVivid: {
-          boxColor: {
-            neutral: {
-              high: { selected: { rest: { ref: '#ffffff' } } },
-              medium: { selected: { rest: { ref: '#ffffff' } } }
+          standard: {
+            boxColor: {
+              neutral: {
+                high: { selected: { rest: { ref: '#ffffff' } } },
+                medium: { selected: { rest: { ref: '#ffffff' } } }
+              }
             }
           }
         }
@@ -83,7 +87,7 @@ function fixture(): Schema {
 function addOutsideRecipe(schema: Schema): void {
   const outside = structuredClone(schema.components.button!.elements.e11!);
   outside.name = 'button-indicator-outside';
-  outside.palettes.default!.light!.onSubtle.boxColor.neutral!.high!.selected!.rest = {
+  outside.palettes.default!.light!.onSubtle.standard.boxColor.neutral!.high!.selected!.rest = {
     ref: '#111111'
   };
   schema.components.button!.elements.e12 = outside;
@@ -178,8 +182,8 @@ describe('Button indicator publication', () => {
         expect(className).toBeTruthy();
         expect(result.css.coreCss).toContain(`.${className}`);
       }
-      expect(paint[element]?.c?.s?.neutral?.m).toBeTruthy();
-      expect(paint[element]?.c?.v?.neutral?.m).toBeTruthy();
+      expect(paint[element]?.c?.s?.s?.neutral?.m).toBeTruthy();
+      expect(paint[element]?.c?.v?.s?.neutral?.m).toBeTruthy();
       expect(geometry[element === 'e11' ? 'e12' : 'e11']).toBeUndefined();
       expect(paint[element === 'e11' ? 'e12' : 'e11']).toBeUndefined();
       expect(published.resources.styles.length).toBeGreaterThan(0);
@@ -329,10 +333,10 @@ describe('Button indicator publication', () => {
     expect(geometry.rp?.all).toBeTruthy();
     expect(geometry.rs?.all).toBeTruthy();
     expect(geometry.c).toBeUndefined();
-    expect(paint.c?.s?.neutral?.h).toBeTruthy();
-    expect(paint.c?.v?.neutral?.h).toBeTruthy();
-    expect(paint.c?.s?.neutral?.h).not.toEqual(paint.c?.v?.neutral?.h);
-    expect(paint.c?.s?.neutral?.h).toEqual(paint.c?.s?.neutral?.m);
+    expect(paint.c?.s?.s?.neutral?.h).toBeTruthy();
+    expect(paint.c?.v?.s?.neutral?.h).toBeTruthy();
+    expect(paint.c?.s?.s?.neutral?.h).not.toEqual(paint.c?.v?.s?.neutral?.h);
+    expect(paint.c?.s?.s?.neutral?.h).toEqual(paint.c?.s?.s?.neutral?.m);
     expect(paint).not.toHaveProperty('placements');
     expect(geometry).not.toHaveProperty('placements');
     for (const variable of [
@@ -364,7 +368,7 @@ describe('Button indicator publication', () => {
     delete schema.components.button!.elements[element === 'e11' ? 'e12' : 'e11'];
     const { maps } = await compile(schema);
     const paint = maps.palettes['default.light']!.button as Record<string, ClassNameByElementJSON>;
-    expect(paint[element]?.c?.s?.neutral?.h).toBeTruthy();
+    expect(paint[element]?.c?.s?.s?.neutral?.h).toBeTruthy();
     expect(paint[element === 'e11' ? 'e12' : 'e11']).toBeUndefined();
     const support = buildButtonIndicatorSupport(schema.components.button, ['md:1']);
     const covered = { rounded: ['md:1'], pill: ['md:1'], square: ['md:1'] };
@@ -383,7 +387,7 @@ describe('Button indicator publication', () => {
     button.elements.e12!.scales.boxWidth = { 's:lg:1': 30 };
     const { maps } = await compile(schema);
     const paint = maps.palettes['default.light']!.button as Record<string, ClassNameByElementJSON>;
-    expect(paint.e11?.c?.s?.neutral?.h).not.toEqual(paint.e12?.c?.s?.neutral?.h);
+    expect(paint.e11?.c?.s?.s?.neutral?.h).not.toEqual(paint.e12?.c?.s?.s?.neutral?.h);
     Object.assign(button.elements, {
       e8: {
         name: 'button-stacked',
@@ -540,8 +544,8 @@ describe('Button indicator publication', () => {
       }
     };
     const value = fg.parentState('neutral.standard.light.onSubtle.high');
-    schema.components.button!.elements[element]!.palettes.default!.light!.onSubtle.boxColor.neutral!
-      .high!.selected!.rest = value;
+    schema.components.button!.elements[element]!.palettes.default!.light!.onSubtle.standard.boxColor
+      .neutral!.high!.selected!.rest = value;
     expect((await compile(schema)).css.palettes['default.light']).toContain('#fff');
     expect(
       buildComponentSurfaceContexts(schema, 'button')?.['default.light']?.onSubtle?.state?.neutral
@@ -551,7 +555,9 @@ describe('Button indicator publication', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: { neutral: { high: { rest: fg('neutral.standard.light.onSubtle.high') } } }
+            standard: {
+              boxColor: { neutral: { high: { rest: fg('neutral.standard.light.onSubtle.high') } } }
+            }
           }
         }
       }

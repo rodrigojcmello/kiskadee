@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { validateTextFieldComponentContract } from './text-field.contract.zod.ts';
 
 const contentSurfaceContext = {
-  default: { light: { onVivid: { neutral: { medium: { rest: 'onSubtle' } } } } }
+  default: { light: { onVivid: { standard: { neutral: { medium: { rest: 'onSubtle' } } } } } }
 };
 const component = (mode: object) => ({ variants: { standard: { modes: { outline: mode } } } });
 
@@ -69,10 +69,10 @@ describe('TextField optional content anatomy', () => {
     'contentRegionSurfaceContext'
   ] as const)('validates %s states with the existing shared contract', (key) => {
     const invalid = structuredClone(contentSurfaceContext);
-    invalid.default.light.onVivid.neutral.medium.rest = 'automatic';
+    invalid.default.light.onVivid.standard.neutral.medium.rest = 'automatic';
     expect(validateTextFieldComponentContract(component({ [key]: invalid, elements: {} }))).toEqual(
       [
-        `components.textField.variants.standard.modes.outline.${key}.default.light.onVivid.neutral.medium.rest: expected onSubtle, onVivid, or inherit`
+        `components.textField.variants.standard.modes.outline.${key}.default.light.onVivid.standard.neutral.medium.rest: expected onSubtle, onVivid, or inherit`
       ]
     );
   });

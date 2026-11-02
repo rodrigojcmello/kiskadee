@@ -117,17 +117,21 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
 
   const createSurfacePalette = (theme: ThemeName) => ({
     onSubtle: {
-      boxColor: createIntentMap(theme, 'box'),
-      borderColor: createIntentMap(theme, 'border')
+      standard: {
+        boxColor: createIntentMap(theme, 'box'),
+        borderColor: createIntentMap(theme, 'border')
+      }
     },
     onVivid: {
-      boxColor: createIntentMap(theme, 'box'),
-      borderColor: createIntentMap(theme, 'border')
+      standard: {
+        boxColor: createIntentMap(theme, 'box'),
+        borderColor: createIntentMap(theme, 'border')
+      }
     }
   });
   const createTextPalette = (theme: ThemeName) => ({
-    onSubtle: { textColor: createIntentMap(theme, 'text') },
-    onVivid: { textColor: createIntentMap(theme, 'text') }
+    onSubtle: { standard: { textColor: createIntentMap(theme, 'text') } },
+    onVivid: { standard: { textColor: createIntentMap(theme, 'text') } }
   });
 
   const createContentSurfaceContext = () =>
@@ -137,17 +141,19 @@ export function createFluent2MicrosoftChipSchema({ c }: CreateChipSchemaArgs): C
         Object.fromEntries(
           (['onSubtle', 'onVivid'] as const).map((input) => [
             input,
-            Object.fromEntries(
-              INTENTS.map((intent) => [
-                intent,
-                {
-                  high: { rest: 'onVivid', selected: 'onVivid', disabled: 'onSubtle' },
-                  medium: { rest: 'inherit' },
-                  low: { rest: 'inherit' },
-                  lowest: { rest: 'inherit' }
-                }
-              ])
-            )
+            {
+              standard: Object.fromEntries(
+                INTENTS.map((intent) => [
+                  intent,
+                  {
+                    high: { rest: 'onVivid', selected: 'onVivid', disabled: 'onSubtle' },
+                    medium: { rest: 'inherit' },
+                    low: { rest: 'inherit' },
+                    lowest: { rest: 'inherit' }
+                  }
+                ])
+              )
+            }
           ])
         )
       ])

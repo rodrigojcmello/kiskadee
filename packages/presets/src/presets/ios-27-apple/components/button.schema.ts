@@ -70,21 +70,25 @@ export function createIos27AppleButtonSchema({
     });
 
     return {
-      onSubtle: createContext(),
-      onVivid: createContext()
+      onSubtle: { standard: createContext() },
+      onVivid: { standard: createContext() }
     };
   };
 
   const createDividerContextPalettes = (theme: Ios27AppleButtonFormulaTheme) => ({
-    onVivid: { boxColor: { neutral: { medium: { rest: neutralFamily.color('l', 0, 30) } } } },
+    onVivid: {
+      standard: { boxColor: { neutral: { medium: { rest: neutralFamily.color('l', 0, 30) } } } }
+    },
     onSubtle: {
-      boxColor: {
-        neutral: {
-          medium: {
-            rest: neutralFamily.color(
-              IOS_27_APPLE_BUTTON_TONAL_RECIPE[theme].scale,
-              BUTTON_DIVIDER_TONES[theme]
-            )
+      standard: {
+        boxColor: {
+          neutral: {
+            medium: {
+              rest: neutralFamily.color(
+                IOS_27_APPLE_BUTTON_TONAL_RECIPE[theme].scale,
+                BUTTON_DIVIDER_TONES[theme]
+              )
+            }
           }
         }
       }
@@ -147,9 +151,18 @@ export function createIos27AppleButtonSchema({
   };
   const createPalettes = <T>(createContext: (theme: ButtonTheme, onVivid: boolean) => T) => ({
     default: {
-      light: { onSubtle: createContext('light', false), onVivid: createContext('light', true) },
-      dark: { onSubtle: createContext('dark', false), onVivid: createContext('dark', true) },
-      darker: { onSubtle: createContext('darker', false), onVivid: createContext('darker', true) }
+      light: {
+        onSubtle: { standard: createContext('light', false) },
+        onVivid: { standard: createContext('light', true) }
+      },
+      dark: {
+        onSubtle: { standard: createContext('dark', false) },
+        onVivid: { standard: createContext('dark', true) }
+      },
+      darker: {
+        onSubtle: { standard: createContext('darker', false) },
+        onVivid: { standard: createContext('darker', true) }
+      }
     }
   });
 

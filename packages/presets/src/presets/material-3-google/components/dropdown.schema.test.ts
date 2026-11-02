@@ -10,8 +10,8 @@ const dropdown = createMaterial3GoogleDropdownSchema({
 });
 
 type SurfacePalette = {
-  onSubtle?: unknown;
-  onVivid?: unknown;
+  onSubtle?: { standard: unknown };
+  onVivid?: { standard: unknown };
 };
 type PaletteElement = {
   palettes?: Record<string, Record<string, SurfacePalette>>;
@@ -23,13 +23,13 @@ it('publishes every dropdown palette for both segments, themes and surface conte
       for (const theme of ['light', 'dark'] as const) {
         const palette = element.palettes?.[segment]?.[theme];
         if (!palette) continue;
-        expect(palette.onSubtle).toBeDefined();
-        expect(palette.onVivid).toEqual(palette.onSubtle);
+        expect(palette.onSubtle!.standard).toBeDefined();
+        expect(palette.onVivid!.standard).toEqual(palette.onSubtle!.standard);
       }
 });
 
 it('keeps selected rows stable across compound pointer states and clears disabled rows', () => {
-  const item = dropdown.elements.e2?.palettes?.default?.light?.onSubtle as {
+  const item = dropdown.elements.e2?.palettes?.default?.light?.onSubtle?.standard as {
     boxColor?: {
       neutral?: { medium?: { selected?: Record<string, unknown>; disabled?: unknown } };
       destructive?: { medium?: { selected?: Record<string, unknown>; disabled?: unknown } };

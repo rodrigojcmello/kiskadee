@@ -59,8 +59,10 @@ const context: KiskadeeContextValue = {
         rs: { all: 'item-square' },
         c: {
           s: {
-            neutral: { m: 'item-neutral' },
-            destructive: { m: 'item-destructive' }
+            s: {
+              neutral: { m: 'item-neutral' },
+              destructive: { m: 'item-destructive' }
+            }
           }
         }
       },
@@ -100,6 +102,7 @@ const presenceContext: KiskadeeContextValue = {
   global: {},
   componentArtifacts: {
     dropdown: {
+      formatVersion: 3,
       component: 'dropdown',
       ...{
         effects: {
@@ -658,6 +661,7 @@ describe('styled Dropdown', () => {
       global: {},
       componentArtifacts: {
         dropdown: {
+          formatVersion: 3,
           component: 'dropdown',
           ...{
             options: {
@@ -714,6 +718,7 @@ describe('styled Dropdown', () => {
       global: {},
       componentArtifacts: {
         dropdown: {
+          formatVersion: 3,
           component: 'dropdown',
           ...{
             options: {

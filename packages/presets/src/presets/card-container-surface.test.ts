@@ -15,10 +15,10 @@ import { schema as sandbox3 } from './sandbox-3/sandbox-3.schema.ts';
 type StateMap = Record<string, unknown>;
 type BoxColor = Record<string, Record<string, StateMap>>;
 type Palette = { boxColor?: BoxColor; borderColor?: BoxColor };
-type Palettes = Record<string, Record<string, Record<string, Palette>>>;
+type Palettes = Record<string, Record<string, Record<string, { standard: Palette }>>>;
 type Contexts = Record<
   string,
-  Record<string, Record<string, Record<string, Record<string, StateMap>>>>
+  Record<string, Record<string, { standard: Record<string, Record<string, StateMap>> }>>
 >;
 
 for (const [name, schema] of Object.entries({
@@ -47,14 +47,16 @@ for (const [name, schema] of Object.entries({
     for (const [segment, themes] of Object.entries(cardPalettes))
       for (const [theme, contexts] of Object.entries(themes))
         for (const [context, palette] of Object.entries(contexts))
-          for (const [intent, emphases] of Object.entries(palette.boxColor ?? {}))
+          for (const [intent, emphases] of Object.entries(palette.standard.boxColor ?? {}))
             for (const [emphasis, states] of Object.entries(emphases)) {
               expect(states).not.toHaveProperty('rest');
               expect(
-                containerPalettes[segment]?.[theme]?.[context]?.boxColor?.[intent]?.[emphasis]?.rest
+                containerPalettes[segment]?.[theme]?.[context]?.standard?.boxColor?.[intent]?.[
+                  emphasis
+                ]?.rest
               ).toEqual(expect.any(String));
               expect(
-                containerContexts[segment]?.[theme]?.[context]?.[intent]?.[emphasis]?.rest
+                containerContexts[segment]?.[theme]?.[context]?.standard?.[intent]?.[emphasis]?.rest
               ).toEqual(expect.any(String));
             }
   });
@@ -62,17 +64,19 @@ for (const [name, schema] of Object.entries({
 
 it('keeps Card-only descendant context changes for selected and disabled states', () => {
   expect(
-    ios.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.neutral?.lowest?.selected
+    ios.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.neutral?.lowest
+      ?.selected
   ).toBe('onVivid');
   expect(
-    ios.components.container?.contentSurfaceContext?.default?.light?.onSubtle?.neutral?.lowest?.rest
+    ios.components.container?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.neutral
+      ?.lowest?.rest
   ).toBe('onSubtle');
   expect(
-    carbon.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.primary?.highest
-      ?.disabled
+    carbon.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.primary
+      ?.highest?.disabled
   ).toBe('onSubtle');
   expect(
-    carbon.components.container?.contentSurfaceContext?.default?.light?.onSubtle?.primary?.highest
-      ?.rest
+    carbon.components.container?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.primary
+      ?.highest?.rest
   ).toBe('onVivid');
 });

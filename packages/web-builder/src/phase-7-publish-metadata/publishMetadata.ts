@@ -18,12 +18,14 @@ import {
   assertKiskadeeCssScale,
   assertKiskadeeHexScale,
   assertPrimitiveFunctionalReferences,
+  isButtonIndicatorPaintElement,
   normalizeHexColor
 } from '@kiskadee/core';
 import {
   buildCardComponentArtifact,
   CARD_COMPONENT_ARTIFACT_PATH
 } from '../component-artifacts/cardComponentArtifact.ts';
+import { buildColorVariantCapabilities } from '../component-artifacts/colorVariantCapabilities.ts';
 import {
   getComponentCoreClassMapArtifactPath,
   getComponentPaletteClassMapArtifactPath
@@ -166,7 +168,7 @@ function discoverSegmentsThemesFromPalettes(
         const palettes = getExpandedElementPalettes(
           schema,
           el,
-          componentName === 'button' && (elementName === 'e11' || elementName === 'e12')
+          componentName === 'button' && isButtonIndicatorPaintElement(elementName)
         );
         if (!palettes) continue;
         for (const seg of Object.keys(palettes)) {
@@ -255,7 +257,7 @@ export function buildComponentScale(
 
   for (const elements of collectComponentElements(schema, componentName)) {
     for (const [elementName, el] of Object.entries(elements)) {
-      if (componentName === 'button' && (elementName === 'e11' || elementName === 'e12')) continue;
+      if (componentName === 'button' && isButtonIndicatorPaintElement(elementName)) continue;
       const { _boxHeight, ...renderedScales } = (el as any).scales ?? {};
       collectPublishedScaleKeys(renderedScales);
       collectPublishedScaleKeys((el as any).iconSize);
@@ -308,7 +310,7 @@ export function buildComponentSurfaceContexts(
       const palettes = getExpandedElementPalettes(
         schema,
         el,
-        componentName === 'button' && (elementName === 'e11' || elementName === 'e12')
+        componentName === 'button' && isButtonIndicatorPaintElement(elementName)
       ) as
         | Record<string, Record<string, Partial<Record<SurfaceContext, Record<string, any>>>>>
         | undefined;
@@ -318,7 +320,8 @@ export function buildComponentSurfaceContexts(
         for (const [themeName, surfaceContexts] of Object.entries(themes)) {
           const paletteKey = `${segmentName}.${themeName}`;
 
-          for (const [surfaceContextName, colorSchema] of Object.entries(surfaceContexts)) {
+          for (const [surfaceContextName, variants] of Object.entries(surfaceContexts)) {
+            const colorSchema = variants?.standard;
             const surfaceContext = surfaceContextName as SurfaceContext;
             if (!colorSchema) continue;
 
@@ -665,6 +668,7 @@ export async function publishMetadata(params: {
   const displayName = computeDisplayName(schema, segmentRegistry);
   const { segments: segKeys, themes } = discoverSegmentsThemesFromPalettes(schema, segmentKeys);
   const manifest: Manifest = {
+    formatVersion: 3,
     key: outDirSlug,
     displayName,
     author: schema.author ?? null,
@@ -722,6 +726,16 @@ export async function publishMetadata(params: {
         ...(componentContentSurfaceContext ? { contentSurfaceContext: true } : {})
       };
     }
+  }
+
+  for (const componentName of manifestComponentNames) {
+    const colorVariants = buildColorVariantCapabilities(schema, componentName, classNamesMap);
+    if (!colorVariants) continue;
+    manifest.components ??= {};
+    manifest.components[componentName] = {
+      ...(manifest.components[componentName] ?? {}),
+      colorVariants
+    };
   }
 
   const buttonIconTreatments = buildButtonIconTreatments(schema);

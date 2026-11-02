@@ -8,6 +8,7 @@ import { supportsSwitchThumbShrink, useSwitchArtifactConfig } from './useSwitchA
 
 const metadata = {
   switch: {
+    formatVersion: 3,
     component: 'switch',
     sizeSupport: { sizes: ['sm:1', 'md:1', 'lg:1'] },
     effects: { thumbShrink: true }

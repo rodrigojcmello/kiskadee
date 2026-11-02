@@ -17,7 +17,7 @@ import type { ButtonGroupClassesMap } from './Button.types.ts';
 
 describe('Button Group authored frame omissions', () => {
   const group: ButtonGroupClassesMap = {
-    frameOmissions: { v: { primary: { m: { pressed: true, selected: true } } } }
+    frameOmissions: { v: { s: { primary: { m: { pressed: true, selected: true } } } } }
   };
   const coordinate = {
     group,
@@ -53,7 +53,7 @@ describe('Button Group authored frame omissions', () => {
 
   it('does not use ordinary Pressed omission for an opaque Selected recipe', () => {
     const pressedOnly: ButtonGroupClassesMap = {
-      frameOmissions: { v: { primary: { m: { pressed: true } } } }
+      frameOmissions: { v: { s: { primary: { m: { pressed: true } } } } }
     };
     expect(resolveButtonGroupFrameOmissionClassName({ ...coordinate, group: pressedOnly })).toBe(
       'k-btn-e1m'
@@ -78,8 +78,8 @@ describe('Button Group Rest frame', () => {
     rr: { 'md:1': 'frame-rounded' },
     rs: { 'md:1': 'frame-square' },
     c: {
-      s: { neutral: { m: 'frame-border-rest frame-bottom-rest', h: 'frame-high-rest' } },
-      v: { neutral: { m: 'frame-vivid-rest' } }
+      s: { s: { neutral: { m: 'frame-border-rest frame-bottom-rest', h: 'frame-high-rest' } } },
+      v: { s: { neutral: { m: 'frame-vivid-rest' } } }
     }
   };
   const resolveFrame = (element: ClassNameByElementJSON | undefined = frame) =>
@@ -118,7 +118,7 @@ describe('Button Group Rest frame', () => {
       { ...frame, s: undefined },
       { ...frame, rr: undefined },
       { ...frame, c: undefined },
-      { ...frame, c: { s: { neutral: { h: 'another-emphasis' } } } }
+      { ...frame, c: { s: { s: { neutral: { h: 'another-emphasis' } } } } }
     ]) {
       expect(resolveFrame(element)).toBeUndefined();
     }
@@ -139,12 +139,16 @@ function createElement(slot: string, includeOnVivid = true): ClassNameByElementJ
     },
     c: {
       s: {
-        primary: { h: `${slot}-on-subtle-high` }
+        s: {
+          primary: { h: `${slot}-on-subtle-high` }
+        }
       },
       ...(includeOnVivid
         ? {
             v: {
-              primary: { h: `${slot}-on-vivid-high` }
+              s: {
+                primary: { h: `${slot}-on-vivid-high` }
+              }
             }
           }
         : {})

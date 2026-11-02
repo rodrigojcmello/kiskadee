@@ -34,8 +34,10 @@ describe('mergeMaps', () => {
             e3: {
               c: {
                 s: {
-                  neutral: {
-                    m: 'control-color'
+                  s: {
+                    neutral: {
+                      m: 'control-color'
+                    }
                   }
                 }
               }
@@ -43,8 +45,10 @@ describe('mergeMaps', () => {
             e4: {
               c: {
                 s: {
-                  neutral: {
-                    m: 'input-color'
+                  s: {
+                    neutral: {
+                      m: 'input-color'
+                    }
                   }
                 }
               }
@@ -68,8 +72,10 @@ describe('mergeMaps', () => {
       },
       c: {
         s: {
-          neutral: {
-            m: 'control-color'
+          s: {
+            neutral: {
+              m: 'control-color'
+            }
           }
         }
       }
@@ -80,8 +86,10 @@ describe('mergeMaps', () => {
       },
       c: {
         s: {
-          neutral: {
-            m: 'input-color'
+          s: {
+            neutral: {
+              m: 'input-color'
+            }
           }
         }
       }

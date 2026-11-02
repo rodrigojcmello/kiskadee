@@ -5,7 +5,13 @@
 // @kiskadee/showcase) through the root "@kiskadee/web-builder/types"
 // entrypoint.
 
-import type { ButtonIconTreatment, ComponentName, SurfaceContext } from '@kiskadee/core';
+import type {
+  ButtonIconTreatment,
+  ColorVariant,
+  ComponentEmphasis,
+  ComponentName,
+  SurfaceContext
+} from '@kiskadee/core';
 
 export type ManifestFonts = {
   body: string;
@@ -44,8 +50,16 @@ export type ManifestComponent = {
    */
   iconTreatments?: ButtonIconTreatment[];
 
+  /** Compact positive coordinates; Alternative requires authored, complete effective paint. */
+  colorVariants?: Partial<
+    Record<
+      ColorVariant,
+      Record<string, Partial<Record<SurfaceContext, Partial<Record<string, ComponentEmphasis[]>>>>>
+    >
+  >;
+
   /**
-   * Interaction states supported by the component, grouped by palette and surface context.
+   * Standard interaction states supported by the component, grouped by palette and surface context.
    *
    * Palette keys use the existing `<segment>.<theme>` convention. Only positive information is
    * stored: absent contexts or state keys are not supported or not defined in the schema.
@@ -78,7 +92,7 @@ export type ManifestComponent = {
 };
 
 export type Manifest = {
-  formatVersion?: 2;
+  formatVersion: 3;
   revision?: string;
   paletteStyles?: Record<
     string,

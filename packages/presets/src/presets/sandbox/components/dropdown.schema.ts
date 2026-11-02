@@ -6,7 +6,7 @@ export function createSandboxDropdownSchema(): NonNullable<Schema['components'][
   const themed = (theme: 'light' | 'dark') => {
     const n = neutral.scales[theme];
     const p = primary.scales[theme];
-    const both = <T>(value: T) => ({ onSubtle: value, onVivid: value });
+    const both = <T>(value: T) => ({ onSubtle: { standard: value }, onVivid: { standard: value } });
     const text = both({
       textColor: { neutral: { medium: { rest: n[85], disabled: { ref: n[30] } } } }
     });
@@ -27,7 +27,7 @@ export function createSandboxDropdownSchema(): NonNullable<Schema['components'][
       text,
       icon: text,
       auxiliary: text,
-      scroll: both({ boxColor: { neutral: { medium: { rest: n[2] } } }, ...text.onSubtle })
+      scroll: both({ boxColor: { neutral: { medium: { rest: n[2] } } }, ...text.onSubtle.standard })
     };
   };
   const values = { light: themed('light'), dark: themed('dark') };

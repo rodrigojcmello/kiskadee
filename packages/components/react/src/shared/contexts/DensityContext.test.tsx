@@ -16,8 +16,17 @@ const context: KiskadeeContextValue = {
   setTheme: () => {},
   global: { density: { c: 'sm:1', s: 'md:1' } },
   componentArtifacts: {
-    button: { component: 'button', sizeSupport: { sizes: ['sm:1', 'md:1', 'lg:2'] } },
-    progress: { component: 'progress', density: { r: 'md:1' }, sizeSupport: { sizes: ['md:1'] } }
+    button: {
+      formatVersion: 3,
+      component: 'button',
+      sizeSupport: { sizes: ['sm:1', 'md:1', 'lg:2'] }
+    },
+    progress: {
+      formatVersion: 3,
+      component: 'progress',
+      density: { r: 'md:1' },
+      sizeSupport: { sizes: ['md:1'] }
+    }
   }
 };
 

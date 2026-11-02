@@ -10,7 +10,7 @@ import { resolveButtonSelectionPaint } from './Button.selection.ts';
 import { Button } from './Button.tsx';
 import type { ButtonClassesMap, ButtonProps } from './Button.types.ts';
 
-const color = (m: string, h: string) => ({ s: { neutral: { m, h, hh: 'highest-base' } } });
+const color = (m: string, h: string) => ({ s: { s: { neutral: { m, h, hh: 'highest-base' } } } });
 const elements: ButtonClassesMap = {
   e1: {
     s: { 'md:1': 'root-geometry' },
@@ -45,15 +45,18 @@ const context: KiskadeeContextValue = {
   setTheme() {},
   componentArtifacts: {
     button: {
+      formatVersion: 3,
       component: 'button',
       indicator: { sizesByRadius: { rounded: ['md:1'] } },
       contentSurfaceContext: {
         default: {
           light: {
             onSubtle: {
-              neutral: {
-                medium: { rest: 'onSubtle', selected: 'onSubtle' },
-                high: { rest: 'onVivid', selected: 'onSubtle', disabled: 'onSubtle' }
+              standard: {
+                neutral: {
+                  medium: { rest: 'onSubtle', selected: 'onSubtle' },
+                  high: { rest: 'onVivid', selected: 'onSubtle', disabled: 'onSubtle' }
+                }
               }
             }
           }
@@ -201,13 +204,16 @@ describe('Button selection emphasis', () => {
   it('preserves the Neutral Medium icon surface when selecting a Primary High recipe', () => {
     const surfaced: ButtonClassesMap = {
       ...elements,
-      e1: { ...elements.e1, c: { s: { primary: { m: 'primary-base', h: 'primary-selected' } } } },
+      e1: {
+        ...elements.e1,
+        c: { s: { s: { primary: { m: 'primary-base', h: 'primary-selected' } } } }
+      },
       e2: { ...elements.e2, c: undefined },
       e3: { ...elements.e3, c: undefined },
       e4: { s: { all: 'surface-geometry' }, c: color('neutral-surface', '') },
       selectionRest: {
         ...elements.selectionRest,
-        e1: { c: { s: { primary: { h: 'primary-high-rest' } } } },
+        e1: { c: { s: { s: { primary: { h: 'primary-high-rest' } } } } },
         e4: { c: color('neutral-surface', '') }
       }
     };

@@ -220,14 +220,18 @@ export function createFluent2MicrosoftBrandButtonProjection(
 
   const createContainerTheme = (theme: FluentButtonFormulaTheme) => ({
     onSubtle: {
-      boxColor: selectProperty(onSubtle[theme], 'boxColor'),
-      borderColor: selectProperty(onSubtle[theme], 'borderColor'),
-      borderBottomColor: selectProperty(onSubtle[theme], 'borderBottomColor')
+      standard: {
+        boxColor: selectProperty(onSubtle[theme], 'boxColor'),
+        borderColor: selectProperty(onSubtle[theme], 'borderColor'),
+        borderBottomColor: selectProperty(onSubtle[theme], 'borderBottomColor')
+      }
     },
     onVivid: {
-      boxColor: selectProperty(onVivid[theme], 'boxColor'),
-      borderColor: selectProperty(onVivid[theme], 'borderColor'),
-      borderBottomColor: selectProperty(onVivid[theme], 'borderBottomColor')
+      standard: {
+        boxColor: selectProperty(onVivid[theme], 'boxColor'),
+        borderColor: selectProperty(onVivid[theme], 'borderColor'),
+        borderBottomColor: selectProperty(onVivid[theme], 'borderBottomColor')
+      }
     }
   });
   const createContentTheme = (
@@ -235,14 +239,18 @@ export function createFluent2MicrosoftBrandButtonProjection(
     options: { omitPending?: boolean } = {}
   ) => ({
     onSubtle: {
-      textColor: options.omitPending
-        ? omitFluentButtonPendingTextState(selectProperty(onSubtle[theme], 'textColor'))
-        : selectProperty(onSubtle[theme], 'textColor')
+      standard: {
+        textColor: options.omitPending
+          ? omitFluentButtonPendingTextState(selectProperty(onSubtle[theme], 'textColor'))
+          : selectProperty(onSubtle[theme], 'textColor')
+      }
     },
     onVivid: {
-      textColor: options.omitPending
-        ? omitFluentButtonPendingTextState(selectProperty(onVivid[theme], 'textColor'))
-        : selectProperty(onVivid[theme], 'textColor')
+      standard: {
+        textColor: options.omitPending
+          ? omitFluentButtonPendingTextState(selectProperty(onVivid[theme], 'textColor'))
+          : selectProperty(onVivid[theme], 'textColor')
+      }
     }
   });
 

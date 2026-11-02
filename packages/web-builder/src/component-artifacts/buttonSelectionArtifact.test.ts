@@ -31,11 +31,11 @@ function fixture() {
       const className = `${element}-${state.replace(':', '-')}`;
       shorten[key] = className;
       colors[state] = [key];
-      const byTone = metadata.get('default.light.onSubtle') ?? new Map();
+      const byTone = metadata.get('default.light.onSubtle.standard') ?? new Map();
       byTone.set(buildScopedToneMetadataKey(scope, `neutral::${key}`), { tones: [tone] });
-      metadata.set('default.light.onSubtle', byTone);
+      metadata.set('default.light.onSubtle.standard', byTone);
     }
-    return { default: { light: { onSubtle: { neutral: colors } } } };
+    return { default: { light: { onSubtle: { standard: { neutral: colors } } } } };
   };
   const effects = {
     rest: ['shadow__rest-shadow', 'borderRadiusRounded++s:md:1__4'],
@@ -77,9 +77,9 @@ describe('Button High Rest class projection', () => {
       rr: { 'md:1': 'radius-rest' }
     });
     expect(core.e1.e?.h).toEqual({ all: 'shadow-rest shadow-hover shadow-selected' });
-    expect(palette.e1.c?.s?.neutral.h).toContain('e1-selected-rest');
+    expect(palette.e1.c?.s?.s?.neutral.h).toContain('e1-selected-rest');
     for (const element of ['e1', 'e2', 'e3', 'e5'] as const) {
-      const classes = palette.selectionRest?.[element]?.c?.s?.neutral.h;
+      const classes = palette.selectionRest?.[element]?.c?.s?.s?.neutral.h;
       expect(classes?.split(' ')).toEqual([
         `${element}-rest`,
         `${element}-hover`,
@@ -93,8 +93,8 @@ describe('Button High Rest class projection', () => {
       expect(palette.selectionRest?.[element]).not.toHaveProperty('d');
       expect(core.selectionRest?.[element]).not.toHaveProperty('l');
     }
-    expect(palette.selectionRest?.e4?.c?.s?.neutral.m).toContain('e4-rest');
-    expect(palette.selectionRest?.e4?.c?.s?.neutral.m).not.toContain('selected');
+    expect(palette.selectionRest?.e4?.c?.s?.s?.neutral.m).toContain('e4-rest');
+    expect(palette.selectionRest?.e4?.c?.s?.s?.neutral.m).not.toContain('selected');
     expect(core.selectionRest).not.toHaveProperty('e11');
     expect(output.core.card).not.toHaveProperty('selectionRest');
     const projected = collectClassReferences([core.selectionRest, palette.selectionRest]);
@@ -115,13 +115,13 @@ describe('Button High Rest class projection', () => {
 
   it('does not claim High when only Selected High is authored and preserves old components', () => {
     const { styleKeys, shorten, metadata, elements } = fixture();
-    elements.e1.palettes.default.light.onSubtle.neutral = {
-      'selected:rest': elements.e1.palettes.default.light.onSubtle.neutral['selected:rest']
+    elements.e1.palettes.default.light.onSubtle.standard.neutral = {
+      'selected:rest': elements.e1.palettes.default.light.onSubtle.standard.neutral['selected:rest']
     };
     const output = generateClassNamesMapSplit(styleKeys, shorten, metadata);
     const palette = output.palettes['default.light'].button as ButtonMap;
     expect(palette.selectionRest?.e1?.c).toBeUndefined();
-    expect(palette.e1.c?.s?.neutral.h).toBe('e1-selected-rest');
+    expect(palette.e1.c?.s?.s?.neutral.h).toBe('e1-selected-rest');
     expect((output.core.card as ButtonMap).selectionRest).toBeUndefined();
   });
 
@@ -146,7 +146,7 @@ describe('Button High Rest class projection', () => {
         await readFile(join(dir, 'class-maps/default.light/button.kiskadee.json'), 'utf8')
       );
       expect(core.classMap.selectionRest.e1.e.h.all).toBe('shadow-rest shadow-hover');
-      expect(palette.classMap.selectionRest.e1.c.s.neutral.h).toContain('e1-rest');
+      expect(palette.classMap.selectionRest.e1.c.s.s?.neutral.h).toContain('e1-rest');
       expect(await readFile(join(dir, 'default.light.kiskadee.css'), 'utf8')).toBe(
         '.e1-rest{background:#fff}'
       );

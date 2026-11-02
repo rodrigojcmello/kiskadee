@@ -14,6 +14,10 @@ while `lowest` and `medium` do not. Every level still requires a selected, avail
 complete authored coverage. The removed `indicatorScope` option is invalid; there is no independent
 indicator activation prop. The preset default is `lowest` for every layout, including Stacked.
 
+`e11/e12` retain Standard indicator paint, preserving geometry, placement and activation. They
+follow the effective semantic Button intent, emphasis and ambient context. A qualified body
+intent from the shared [color variant](./color-variants.md) does not change indicator color variant.
+
 Both recipes use the same geometry contract: `scales` requires positive `boxWidth` and `boxHeight`, non-negative
 `marginTop` (outside gap), `marginBottom` (inside gap), `marginLeft` and `marginRight` (horizontal
 safety insets), and non-negative `borderRadius` recipes for `rounded`, `pill` and `square`. Values
@@ -23,7 +27,7 @@ from icon geometry, text, measurement or formulas. Structural CSS may limit its 
 using the horizontal insets when the actual Button is narrower, without replacing nominal width.
 
 Both elements contain complete geometry and `palettes` following the ordinary segment, theme,
-surface context, intent and emphasis hierarchy. Paint belongs only to `boxColor`. Position selects
+surface context, color variant, intent and emphasis hierarchy. Paint belongs only to `boxColor`. Position selects
 the participating element, without another palette axis or substituting an intent or emphasis for
 position. Both
 recipes consume the Button's ambient context; inside placement does not imply `onVivid`. Each
@@ -41,8 +45,9 @@ semantic control state.
 
 Foreground coordinates normally belong to `textColor`. The explicit exception is `boxColor` under
 `components.button.elements.e11.palettes` and `components.button.elements.e12.palettes`, allowing
-the indicator to reuse an existing foreground color coordinate. Foreground box paint in every other component or
-element remains invalid. The ordinary palette and foreground contracts are unchanged.
+the Standard indicator recipes to reuse an existing foreground coordinate. Foreground box paint
+in every other component or element remains invalid. `e11/e12` retain the ordinary required
+Standard palette and context coverage requirements.
 
 The Web Builder publishes geometry as token-only utilities and ordinary surface-context color classes;
 the structural owner consumes them without changing the Button border box. See the shared

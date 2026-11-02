@@ -112,19 +112,22 @@ export function mapStyleKeyUsage(
         }
       }
 
-      // 4) palettes (by segment / theme / surface context / semantic color / interaction state)
+      // 4) palettes (by segment / theme / surface context / color variant / semantic color / interaction state)
       for (const themes of Object.values(element.palettes ?? {})) {
         if (!themes) continue;
         for (const surfaceContexts of Object.values(themes)) {
           if (!surfaceContexts) continue;
-          for (const semanticColors of Object.values(surfaceContexts)) {
-            if (!semanticColors) continue;
-            for (const interactionStates of Object.values(semanticColors)) {
-              if (!interactionStates) continue;
-              for (const keys of Object.values(interactionStates)) {
-                if (!Array.isArray(keys)) continue;
-                for (const key of keys) {
-                  if (typeof key === 'string') increment(resolveKey(key));
+          for (const colorVariants of Object.values(surfaceContexts)) {
+            if (!colorVariants) continue;
+            for (const semanticColors of Object.values(colorVariants)) {
+              if (!semanticColors) continue;
+              for (const interactionStates of Object.values(semanticColors)) {
+                if (!interactionStates) continue;
+                for (const keys of Object.values(interactionStates)) {
+                  if (!Array.isArray(keys)) continue;
+                  for (const key of keys) {
+                    if (typeof key === 'string') increment(resolveKey(key));
+                  }
                 }
               }
             }

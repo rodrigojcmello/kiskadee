@@ -11,7 +11,9 @@ import {
 const palette = () => ({
   default: {
     light: {
-      onSubtle: { boxColor: { neutral: { medium: { selected: { rest: { ref: '#0067b8' } } } } } }
+      onSubtle: {
+        standard: { boxColor: { neutral: { medium: { selected: { rest: { ref: '#0067b8' } } } } } }
+      }
     }
   }
 });
@@ -32,6 +34,13 @@ function indicator(): NonNullable<ButtonElements['e11']> {
 }
 
 describe('Button optional state indicator', () => {
+  it.each(['e11', 'e12'] as const)('rejects unconsumed Alternative paint in %s', (element) => {
+    const value = indicator() as any;
+    value.palettes.default.light.onSubtle.alternative = palette().default.light.onSubtle.standard;
+    expect(validateButtonComponentContract({ elements: { [element]: value } })).toContain(
+      `components.button.elements.${element}.palettes.default.light.onSubtle.alternative: not supported for indicators`
+    );
+  });
   it('accepts inside and outside recipes independently or together without new palette axes', () => {
     for (const elements of [
       { e11: indicator() },
@@ -52,7 +61,9 @@ describe('Button optional state indicator', () => {
           palettes: {
             default: {
               light: {
-                onSubtle: { boxColor: { neutral: { medium: { selected: { rest: '#000000' } } } } }
+                onSubtle: {
+                  standard: { boxColor: { neutral: { medium: { selected: { rest: '#000000' } } } } }
+                }
               }
             }
           }
@@ -62,7 +73,7 @@ describe('Button optional state indicator', () => {
     expect(issues).toEqual(
       expect.arrayContaining([
         expect.stringContaining('components.button.elements.e12.scales.boxHeight'),
-        'components.button.elements.e12.palettes.default.light.onSubtle.boxColor.neutral.medium.selected.rest: expected parent-state reference'
+        'components.button.elements.e12.palettes.default.light.onSubtle.standard.boxColor.neutral.medium.selected.rest: expected parent-state reference'
       ])
     );
   });
@@ -142,22 +153,25 @@ describe('Button optional state indicator', () => {
     expect(
       validateButtonComponentContract({ elements: { e1: { name: 'button', palettes: palette() } } })
     ).toContain(
-      'components.button.elements.e1.palettes.default.light.onSubtle.boxColor.neutral.medium.rest: required state'
+      'components.button.elements.e1.palettes.default.light.onSubtle.standard.boxColor.neutral.medium.rest: required state'
     );
-    value.palettes.default!.light!.onSubtle.boxColor.neutral!.medium!.rest = '#ffffff';
+    value.palettes.default!.light!.onSubtle.standard.boxColor.neutral!.medium!.rest = '#ffffff';
     expect(validateButtonComponentContract({ elements: { e11: value } })).toEqual([]);
   });
   it('rejects the retired placements branch, other paint properties and self-state selected paint', () => {
     const value = indicator() as any;
     value.placements = { inside: { palettes: palette() } };
-    value.palettes.default.light.onSubtle.textColor = { neutral: { medium: { rest: '#000000' } } };
-    value.palettes.default.light.onSubtle.boxColor.neutral.medium.selected.rest = '#123456';
+    value.palettes.default.light.onSubtle.standard.textColor = {
+      neutral: { medium: { rest: '#000000' } }
+    };
+    value.palettes.default.light.onSubtle.standard.boxColor.neutral.medium.selected.rest =
+      '#123456';
     const issues = validateButtonComponentContract({ elements: { e11: value } });
     expect(issues).toEqual(
       expect.arrayContaining([
         'components.button.elements.e11.placements: unrecognized key',
-        'components.button.elements.e11.palettes.default.light.onSubtle.textColor: unrecognized key',
-        'components.button.elements.e11.palettes.default.light.onSubtle.boxColor.neutral.medium.selected.rest: expected parent-state reference'
+        'components.button.elements.e11.palettes.default.light.onSubtle.standard.textColor: unrecognized key',
+        'components.button.elements.e11.palettes.default.light.onSubtle.standard.boxColor.neutral.medium.selected.rest: expected parent-state reference'
       ])
     );
   });

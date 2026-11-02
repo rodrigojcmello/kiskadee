@@ -1,6 +1,5 @@
 import {
   type Color,
-  type ElementPalettes,
   isForegroundReferenceCandidate,
   parseForegroundReferenceToken,
   type SchemaForegrounds
@@ -110,11 +109,11 @@ function resolveValue(
  *     Style Keys, CSS, manifests, and browser artifacts must remain unaware of schema-only `fg`
  *     references and continue consuming final colors through the existing pipeline.
  */
-export function resolveForegroundReferences(
-  palettes: ElementPalettes,
+export function resolveForegroundReferences<TPalettes extends object>(
+  palettes: TPalettes,
   foregrounds: SchemaForegrounds | undefined,
   options: { allowIndicatorBoxColor?: boolean } = {}
-): ElementPalettes {
+): TPalettes {
   return Object.fromEntries(
     Object.entries(palettes).map(([segment, byTheme]) => [
       segment,
@@ -122,19 +121,24 @@ export function resolveForegroundReferences(
         Object.entries(byTheme ?? {}).map(([theme, byContext]) => [
           theme,
           Object.fromEntries(
-            Object.entries(byContext ?? {}).map(([surfaceContext, colorSchema]) => [
+            Object.entries(byContext ?? {}).map(([surfaceContext, variants]) => [
               surfaceContext,
               Object.fromEntries(
-                Object.entries(colorSchema ?? {}).map(([colorProperty, value]) => [
-                  colorProperty,
-                  resolveValue(value, {
-                    allowForeground:
-                      colorProperty === 'textColor' ||
-                      (options.allowIndicatorBoxColor === true && colorProperty === 'boxColor'),
-                    foregrounds,
-                    path: `${segment}.${theme}.${surfaceContext}.${colorProperty}`,
-                    segment
-                  })
+                Object.entries(variants ?? {}).map(([colorVariant, colorSchema]) => [
+                  colorVariant,
+                  Object.fromEntries(
+                    Object.entries(colorSchema ?? {}).map(([colorProperty, value]) => [
+                      colorProperty,
+                      resolveValue(value, {
+                        allowForeground:
+                          colorProperty === 'textColor' ||
+                          (options.allowIndicatorBoxColor === true && colorProperty === 'boxColor'),
+                        foregrounds,
+                        path: `${segment}.${theme}.${surfaceContext}.${colorVariant}.${colorProperty}`,
+                        segment
+                      })
+                    ])
+                  )
                 ])
               )
             ])
@@ -142,5 +146,5 @@ export function resolveForegroundReferences(
         ])
       )
     ])
-  ) as ElementPalettes;
+  ) as TPalettes;
 }

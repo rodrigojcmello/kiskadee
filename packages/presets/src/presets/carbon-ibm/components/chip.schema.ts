@@ -136,7 +136,10 @@ export function createCarbonIbmChipSchema({ c }: { c: CarbonIbmColorResolver }):
           ];
         })
       );
-    return { onSubtle: { [property]: create(false) }, onVivid: { [property]: create(true) } };
+    return {
+      onSubtle: { standard: { [property]: create(false) } },
+      onVivid: { standard: { [property]: create(true) } }
+    };
   };
   const themes = (text = false) => {
     const theme = (theme: Theme) =>
@@ -144,12 +147,16 @@ export function createCarbonIbmChipSchema({ c }: { c: CarbonIbmColorResolver }):
         ? palette(theme, 'textColor')
         : {
             onSubtle: {
-              ...palette(theme, 'boxColor').onSubtle,
-              ...palette(theme, 'borderColor').onSubtle
+              standard: {
+                ...palette(theme, 'boxColor').onSubtle.standard,
+                ...palette(theme, 'borderColor').onSubtle.standard
+              }
             },
             onVivid: {
-              ...palette(theme, 'boxColor').onVivid,
-              ...palette(theme, 'borderColor').onVivid
+              standard: {
+                ...palette(theme, 'boxColor').onVivid.standard,
+                ...palette(theme, 'borderColor').onVivid.standard
+              }
             }
           };
     return { default: { light: theme('light'), dark: theme('dark'), darker: theme('darker') } };
@@ -163,26 +170,28 @@ export function createCarbonIbmChipSchema({ c }: { c: CarbonIbmColorResolver }):
           Object.fromEntries(
             (['onSubtle', 'onVivid'] as const).map((context) => [
               context,
-              Object.fromEntries(
-                INTENTS.map((intent) => [
-                  intent,
-                  Object.fromEntries(
-                    EMPHASES.map((emphasis) => [
-                      emphasis,
-                      {
-                        rest:
-                          emphasis === 'high'
-                            ? intent === 'neutral' && theme !== 'light'
-                              ? 'onSubtle'
-                              : 'onVivid'
-                            : 'inherit',
-                        selected: theme === 'light' ? 'onVivid' : 'onSubtle',
-                        disabled: 'onSubtle'
-                      }
-                    ])
-                  )
-                ])
-              )
+              {
+                standard: Object.fromEntries(
+                  INTENTS.map((intent) => [
+                    intent,
+                    Object.fromEntries(
+                      EMPHASES.map((emphasis) => [
+                        emphasis,
+                        {
+                          rest:
+                            emphasis === 'high'
+                              ? intent === 'neutral' && theme !== 'light'
+                                ? 'onSubtle'
+                                : 'onVivid'
+                              : 'inherit',
+                          selected: theme === 'light' ? 'onVivid' : 'onSubtle',
+                          disabled: 'onSubtle'
+                        }
+                      ])
+                    )
+                  ])
+                )
+              }
             ])
           )
         ])

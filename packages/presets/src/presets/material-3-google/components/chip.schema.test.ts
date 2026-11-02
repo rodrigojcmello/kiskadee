@@ -73,13 +73,13 @@ it('publishes Chip surfaces, content and states across the complete Material mat
         for (const intent of intents)
           for (const emphasis of emphases) {
             const box =
-              chip.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.[intent]?.[
-                emphasis
-              ];
+              chip.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.standard?.boxColor?.[
+                intent
+              ]?.[emphasis];
             const text =
-              chip.elements.e3.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
-                emphasis
-              ];
+              chip.elements.e3.palettes?.[segment]?.[theme]?.[surface]?.standard?.textColor?.[
+                intent
+              ]?.[emphasis];
 
             expect(
               box?.rest,
@@ -105,7 +105,7 @@ it('publishes Chip surfaces, content and states across the complete Material mat
 });
 
 it('keeps Material outlined emphasis sparse while retaining selected and disabled deltas', () => {
-  const palette = chip.elements.e2.palettes?.default?.light?.onSubtle;
+  const palette = chip.elements.e2.palettes?.default?.light?.onSubtle?.standard;
   const low = palette?.boxColor?.primary?.low;
   const lowestBorder = palette?.borderColor?.primary?.lowest;
 
@@ -118,8 +118,8 @@ it('keeps Material outlined emphasis sparse while retaining selected and disable
 });
 
 it('keeps dark chromatic content readable and uses inverse text for vivid low chips', () => {
-  const dark = chip.elements.e3.palettes?.default?.dark?.onSubtle?.textColor?.primary;
-  const vivid = chip.elements.e3.palettes?.default?.dark?.onVivid?.textColor?.primary;
+  const dark = chip.elements.e3.palettes?.default?.dark?.onSubtle?.standard?.textColor?.primary;
+  const vivid = chip.elements.e3.palettes?.default?.dark?.onVivid?.standard?.textColor?.primary;
 
   expect(dark?.medium?.rest).toBe(c.ref('default', 'd', 'chip.primary', 'vivid', 6));
   expect(vivid?.low?.rest).toBe('#ffffff');
@@ -127,8 +127,8 @@ it('keeps dark chromatic content readable and uses inverse text for vivid low ch
 });
 
 it('keeps dark Material Chip content at or above the compact text contrast floor', () => {
-  const surface = chip.elements.e2.palettes?.default?.dark?.onSubtle?.boxColor;
-  const text = chip.elements.e3.palettes?.default?.dark?.onSubtle?.textColor;
+  const surface = chip.elements.e2.palettes?.default?.dark?.onSubtle?.standard?.boxColor;
+  const text = chip.elements.e3.palettes?.default?.dark?.onSubtle?.standard?.textColor;
 
   for (const intent of intents) {
     const ratio = contrast(
@@ -145,7 +145,8 @@ it('publishes effective parent surface contexts for Chip composition', () => {
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const)
         for (const intent of intents) {
-          const context = chip.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.[intent];
+          const context =
+            chip.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[intent];
           const high =
             surface === 'onVivid' || (theme === 'dark' && intent === 'neutral')
               ? 'onSubtle'
@@ -170,13 +171,13 @@ it('keeps labels readable over composed selected interaction states', () => {
         for (const intent of intents)
           for (const emphasis of emphases) {
             const box =
-              chip.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.[intent]?.[
-                emphasis
-              ];
+              chip.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.standard?.boxColor?.[
+                intent
+              ]?.[emphasis];
             const text =
-              chip.elements.e3.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
-                emphasis
-              ];
+              chip.elements.e3.palettes?.[segment]?.[theme]?.[surface]?.standard?.textColor?.[
+                intent
+              ]?.[emphasis];
             const base = canonicalSurface(segment, theme, surface);
             const restText = text?.rest as string;
             const selectedRest = text?.selected?.rest;

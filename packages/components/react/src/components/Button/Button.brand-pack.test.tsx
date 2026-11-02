@@ -18,13 +18,17 @@ const baseButtonClassMap = {
     d: 'button-structure',
     c: {
       s: {
-        neutral: {
-          h: 'neutral-box'
+        s: {
+          neutral: {
+            h: 'neutral-box'
+          }
         }
       },
       v: {
-        neutral: {
-          h: 'neutral-box-on-vivid'
+        s: {
+          neutral: {
+            h: 'neutral-box-on-vivid'
+          }
         }
       }
     }
@@ -32,8 +36,10 @@ const baseButtonClassMap = {
   e2: {
     c: {
       s: {
-        neutral: {
-          h: 'neutral-label'
+        s: {
+          neutral: {
+            h: 'neutral-label'
+          }
         }
       }
     }
@@ -44,19 +50,23 @@ const brandButtonClassMap = {
   e1: {
     c: {
       s: {
-        'brand.google': {
-          h: 'google-box-high',
-          m: 'google-box-medium',
-          l: 'google-box-low',
-          ll: 'google-box-lowest'
+        s: {
+          'brand.google': {
+            h: 'google-box-high',
+            m: 'google-box-medium',
+            l: 'google-box-low',
+            ll: 'google-box-lowest'
+          }
         }
       },
       v: {
-        'brand.google': {
-          h: 'google-box-on-vivid-high',
-          m: 'google-box-on-vivid-medium',
-          l: 'google-box-on-vivid-low',
-          ll: 'google-box-on-vivid-lowest'
+        s: {
+          'brand.google': {
+            h: 'google-box-on-vivid-high',
+            m: 'google-box-on-vivid-medium',
+            l: 'google-box-on-vivid-low',
+            ll: 'google-box-on-vivid-lowest'
+          }
         }
       }
     }
@@ -64,11 +74,13 @@ const brandButtonClassMap = {
   e2: {
     c: {
       s: {
-        'brand.google': {
-          h: 'google-label-high',
-          m: 'google-label-medium',
-          l: 'google-label-low',
-          ll: 'google-label-lowest'
+        s: {
+          'brand.google': {
+            h: 'google-label-high',
+            m: 'google-label-medium',
+            l: 'google-label-low',
+            ll: 'google-label-lowest'
+          }
         }
       }
     }
@@ -107,10 +119,7 @@ function createPreloadedResources(): LoadedBrandPackResources {
     stylesheetHref: '/brand-packs/auth/button-test.css',
     stylesheetSha256: '0'.repeat(64),
     classMaps: {
-      button: {
-        component: 'button',
-        classMap: brandButtonClassMap
-      }
+      button: { formatVersion: 3, component: 'button', classMap: brandButtonClassMap }
     },
     intents: ['brand.google']
   };
@@ -218,13 +227,16 @@ describe('Button brand intents', () => {
         stylesheetSha256: '0'.repeat(64),
         classMaps: {
           button: {
+            formatVersion: 3,
             component: 'button',
             classMap: {
               e1: {
                 c: {
                   s: {
-                    'brand.google': {
-                      h: className
+                    s: {
+                      'brand.google': {
+                        h: className
+                      }
                     }
                   }
                 }

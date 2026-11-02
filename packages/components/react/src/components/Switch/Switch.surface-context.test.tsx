@@ -46,7 +46,7 @@ it.each([
   for (const surface of ['v', 's'] as const) {
     if (surface === 's') view.rerender(tree('onSubtle'));
     for (const slot of ['e2', 'e3', 'e4', 'e5', 'e6'] as const) {
-      const expected = classMap.standard.base[slot]?.c?.[surface]?.neutral?.m;
+      const expected = classMap.standard.base[slot]?.c?.[surface]?.s?.neutral?.m;
       expect(expected).toBeTruthy();
       expect(view.container.innerHTML).toContain(expected);
     }
@@ -64,6 +64,6 @@ it.each([
       hasControlText: true,
       surfaceContext: surface === 'v' ? 'onVivid' : 'onSubtle'
     });
-    expect(resolved.x5).toContain(classMap.standard.base.e3.c[surface].neutral.m);
+    expect(resolved.x5).toContain(classMap.standard.base.e3.c[surface].s.neutral.m);
   }
 });

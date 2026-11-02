@@ -39,8 +39,8 @@ const surfacedContext: KiskadeeContextValue = {
     badge: {
       e1: {
         c: {
-          s: { attention: { m: 'badge-on-subtle' } },
-          v: { attention: { m: 'badge-on-vivid' } }
+          s: { s: { attention: { m: 'badge-on-subtle' } } },
+          v: { s: { attention: { m: 'badge-on-vivid' } } }
         }
       }
     },
@@ -49,19 +49,24 @@ const surfacedContext: KiskadeeContextValue = {
   global: {},
   componentArtifacts: {
     button: {
+      formatVersion: 3,
       component: 'button',
       ...{
         contentSurfaceContext: {
           default: {
             light: {
               onSubtle: {
-                neutral: {
-                  medium: { rest: 'onVivid', disabled: 'onSubtle' }
+                standard: {
+                  neutral: {
+                    medium: { rest: 'onVivid', disabled: 'onSubtle' }
+                  }
                 }
               },
               onVivid: {
-                neutral: {
-                  medium: { rest: 'onSubtle', disabled: 'onVivid' }
+                standard: {
+                  neutral: {
+                    medium: { rest: 'onSubtle', disabled: 'onVivid' }
+                  }
                 }
               }
             }

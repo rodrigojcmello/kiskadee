@@ -121,7 +121,7 @@ export function resolveCardClassNames({
   const e1RadiusClassName = resolveRadiusClassName(e1, DEFAULT_CARD_SCALE, radiusMode);
   const shadowEffect = resolveCardShadowClassName(e1?.e?.h, shadow);
   const borderRecipe =
-    e1?.b?.[surfaceContextBuckets[surfaceContext]]?.[frameIntent]?.[
+    e1?.b?.[surfaceContextBuckets[surfaceContext]]?.s?.[frameIntent]?.[
       componentEmphasisBuckets[resolvedEmphasis]
     ];
   const borderMode =

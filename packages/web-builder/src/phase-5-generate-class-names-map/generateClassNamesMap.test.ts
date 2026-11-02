@@ -40,7 +40,9 @@ describe('generateClassNamesMapSplit', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                      standard: {
+                        boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                      }
                     }
                   }
                 }
@@ -74,7 +76,7 @@ describe('generateClassNamesMapSplit', () => {
       expect.arrayContaining(['divider-width', 'divider-height'])
     );
     expect(core.e1.p?.gd).toEqual({ 'md:1': 'divider-width' });
-    expect(palette.e6.c?.s?.neutral).toEqual({ m: 'divider-color' });
+    expect(palette.e6.c?.s?.s?.neutral).toEqual({ m: 'divider-color' });
   });
 
   it('reuses the same atomic separator utilities without a dedicated bucket', () => {
@@ -84,7 +86,9 @@ describe('generateClassNamesMapSplit', () => {
         default: {
           light: {
             onSubtle: {
-              boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+              standard: {
+                boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+              }
             }
           }
         }
@@ -160,9 +164,9 @@ describe('generateClassNamesMapSplit', () => {
       expect.arrayContaining(['thickness-1', 'height-20'])
     );
     expect(buttonCore.e1.p?.gd).toEqual({ 'md:1': 'thickness-1' });
-    expect(separatorPalette.e1.c?.s?.neutral).toEqual({ m: 'neutral-line' });
-    expect(dropdownPalette.e7.c?.s?.neutral).toEqual({ m: 'neutral-line' });
-    expect(buttonPalette.e6.c?.s?.neutral).toEqual({ m: 'neutral-line' });
+    expect(separatorPalette.e1.c?.s?.s?.neutral).toEqual({ m: 'neutral-line' });
+    expect(dropdownPalette.e7.c?.s?.s?.neutral).toEqual({ m: 'neutral-line' });
+    expect(buttonPalette.e6.c?.s?.s?.neutral).toEqual({ m: 'neutral-line' });
   });
 
   it('carries the Icon scale and both surface-context color branches from schema to class maps', () => {
@@ -189,15 +193,19 @@ describe('generateClassNamesMapSplit', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      textColor: {
-                        neutral: { medium: { rest: '#21242d' } },
-                        primary: { medium: { rest: '#0064b4' } }
+                      standard: {
+                        textColor: {
+                          neutral: { medium: { rest: '#21242d' } },
+                          primary: { medium: { rest: '#0064b4' } }
+                        }
                       }
                     },
                     onVivid: {
-                      textColor: {
-                        neutral: { medium: { rest: '#d6dbe7' } },
-                        primary: { medium: { rest: '#c1deff' } }
+                      standard: {
+                        textColor: {
+                          neutral: { medium: { rest: '#d6dbe7' } },
+                          primary: { medium: { rest: '#c1deff' } }
+                        }
                       }
                     }
                   }
@@ -232,10 +240,10 @@ describe('generateClassNamesMapSplit', () => {
     expect(coreIcon.e1.s?.['sm:2']?.split(' ')).toEqual(
       expect.arrayContaining(['width-12', 'height-12'])
     );
-    expect(lightIcon.e1.c?.s?.neutral).toEqual({ m: 'neutral-subtle' });
-    expect(lightIcon.e1.c?.s?.primary).toEqual({ m: 'primary-subtle' });
-    expect(lightIcon.e1.c?.v?.neutral).toEqual({ m: 'neutral-vivid' });
-    expect(lightIcon.e1.c?.v?.primary).toEqual({ m: 'primary-vivid' });
+    expect(lightIcon.e1.c?.s?.s?.neutral).toEqual({ m: 'neutral-subtle' });
+    expect(lightIcon.e1.c?.s?.s?.primary).toEqual({ m: 'primary-subtle' });
+    expect(lightIcon.e1.c?.v?.s?.neutral).toEqual({ m: 'neutral-vivid' });
+    expect(lightIcon.e1.c?.v?.s?.primary).toEqual({ m: 'primary-vivid' });
   });
 
   it('publishes Dropdown checkmark geometry and color through the generic element pipeline', () => {
@@ -260,8 +268,10 @@ describe('generateClassNamesMapSplit', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      textColor: {
-                        neutral: { medium: { rest: '#21242d' } }
+                      standard: {
+                        textColor: {
+                          neutral: { medium: { rest: '#21242d' } }
+                        }
                       }
                     }
                   }
@@ -302,7 +312,7 @@ describe('generateClassNamesMapSplit', () => {
       sg: { all: 'inset-4' },
       sw: { all: 'width-20' }
     });
-    expect(dropdownPalette.e10.c?.s?.neutral).toEqual({ m: 'neutral-text' });
+    expect(dropdownPalette.e10.c?.s?.s?.neutral).toEqual({ m: 'neutral-text' });
   });
 
   it('reuses the mirrored canonical class name for raw and mirrored scale consumers', () => {
@@ -392,8 +402,10 @@ describe('generateClassNamesMapSplit', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      neutral: {
-                        rest: [colorKey]
+                      standard: {
+                        neutral: {
+                          rest: [colorKey]
+                        }
                       }
                     }
                   }
@@ -406,7 +418,7 @@ describe('generateClassNamesMapSplit', () => {
     } as unknown as ComponentStyleKeyMap;
     const toneMetadataByPalette = new Map([
       [
-        'default.light.onSubtle',
+        'default.light.onSubtle.standard',
         new Map([
           [
             buildScopedToneMetadataKey(
@@ -456,7 +468,7 @@ describe('generateClassNamesMapSplit', () => {
       rs: undefined
     });
     expect((coreOutline as any).e3.s?.['md:1']).toBe('tf-height tf-padding');
-    expect((paletteOutline as any).e4.c?.s?.neutral).toEqual({
+    expect((paletteOutline as any).e4.c?.s?.s?.neutral).toEqual({
       m: 'tf-color'
     });
   });
@@ -470,6 +482,7 @@ describe('generateClassNamesMapSplit', () => {
       breakpoints: {
         'bp:all': 0
       },
+      global: { iconSizes: { 's:md:1': 20 } },
       components: {
         button: {
           elements: {
@@ -479,10 +492,12 @@ describe('generateClassNamesMapSplit', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      textColor: {
-                        primary: {
-                          high: {
-                            rest: sharedColor
+                      standard: {
+                        textColor: {
+                          primary: {
+                            high: {
+                              rest: sharedColor
+                            }
                           }
                         }
                       }
@@ -493,14 +508,17 @@ describe('generateClassNamesMapSplit', () => {
             },
             e3: {
               name: 'icon',
+              iconSize: { 's:md:1': 's:md:1' },
               palettes: {
                 default: {
                   light: {
                     onSubtle: {
-                      textColor: {
-                        primary: {
-                          medium: {
-                            rest: sharedColor
+                      standard: {
+                        textColor: {
+                          primary: {
+                            medium: {
+                              rest: sharedColor
+                            }
                           }
                         }
                       }
@@ -527,8 +545,8 @@ describe('generateClassNamesMapSplit', () => {
     );
 
     const button = out.palettes['default.light'].button as Record<string, ClassNameByElementJSON>;
-    const e2Primary = button.e2.c?.s?.primary as ColorClasses;
-    const e3Primary = button.e3.c?.s?.primary as ColorClasses;
+    const e2Primary = button.e2.c?.s?.s?.primary as ColorClasses;
+    const e3Primary = button.e3.c?.s?.s?.primary as ColorClasses;
 
     expect(e2Primary).toEqual({
       h: 'txt'
@@ -553,13 +571,17 @@ describe('generateClassNamesMapSplit', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      boxColor: {
-                        primary: { high: { rest: '#ffffff' } }
+                      standard: {
+                        boxColor: {
+                          primary: { high: { rest: '#ffffff' } }
+                        }
                       }
                     },
                     onVivid: {
-                      boxColor: {
-                        primary: { low: { rest: '#ffffff' } }
+                      standard: {
+                        boxColor: {
+                          primary: { low: { rest: '#ffffff' } }
+                        }
                       }
                     }
                   }
@@ -582,8 +604,8 @@ describe('generateClassNamesMapSplit', () => {
     );
     const button = out.palettes['default.light'].button as Record<string, ClassNameByElementJSON>;
 
-    expect(button.e1.c?.s?.primary).toEqual({ h: 'surface' });
-    expect(button.e1.c?.v?.primary).toEqual({ l: 'surface' });
+    expect(button.e1.c?.s?.s?.primary).toEqual({ h: 'surface' });
+    expect(button.e1.c?.v?.s?.primary).toEqual({ l: 'surface' });
   });
 
   it('groups border radius effects by size inside effect buckets', () => {

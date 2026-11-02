@@ -7,15 +7,19 @@ type IconComponent = NonNullable<Schema<never>['components']['icon']>;
 function createIconPalette(c: CarbonIbmColorResolver, theme: ThemeMode) {
   return {
     onSubtle: {
-      textColor: {
-        neutral: { medium: { rest: tokenColor(c, theme, 'icon-primary', 'icon.neutral') } },
-        primary: { medium: { rest: tokenColor(c, theme, 'icon-interactive', 'icon.primary') } }
+      standard: {
+        textColor: {
+          neutral: { medium: { rest: tokenColor(c, theme, 'icon-primary', 'icon.neutral') } },
+          primary: { medium: { rest: tokenColor(c, theme, 'icon-interactive', 'icon.primary') } }
+        }
       }
     },
     onVivid: {
-      textColor: {
-        neutral: { medium: { rest: tokenColor(c, theme, 'icon-on-color') } },
-        primary: { medium: { rest: tokenColor(c, theme, 'icon-on-color') } }
+      standard: {
+        textColor: {
+          neutral: { medium: { rest: tokenColor(c, theme, 'icon-on-color') } },
+          primary: { medium: { rest: tokenColor(c, theme, 'icon-on-color') } }
+        }
       }
     }
   };

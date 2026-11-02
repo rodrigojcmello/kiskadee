@@ -77,7 +77,12 @@ export function createIos27AppleCardSchema({ c, segmentNames }: CreateIos27Apple
     contentSurfaceContext: Object.fromEntries(
       segmentNames.map((segment) => [
         segment,
-        Object.fromEntries(themes.map((theme) => [theme, { onSubtle: content, onVivid: content }]))
+        Object.fromEntries(
+          themes.map((theme) => [
+            theme,
+            { onSubtle: { standard: content }, onVivid: { standard: content } }
+          ])
+        )
       ])
     ),
     options: {
@@ -147,8 +152,8 @@ export function createIos27AppleCardSchema({ c, segmentNames }: CreateIos27Apple
               themes.map((theme) => [
                 theme,
                 {
-                  onSubtle: palette(segment, theme, 'onSubtle'),
-                  onVivid: palette(segment, theme, 'onVivid')
+                  onSubtle: { standard: palette(segment, theme, 'onSubtle') },
+                  onVivid: { standard: palette(segment, theme, 'onVivid') }
                 }
               ])
             )

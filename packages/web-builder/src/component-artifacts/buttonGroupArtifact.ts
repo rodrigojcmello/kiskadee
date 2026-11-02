@@ -1,5 +1,15 @@
-import type { ButtonGroupClassMapJSON, ColorClasses, SurfaceContext } from '@kiskadee/core';
-import { componentEmphasisBuckets, normalizeHexColor, surfaceContextBuckets } from '@kiskadee/core';
+import type {
+  ButtonGroupClassMapJSON,
+  ColorClasses,
+  ColorVariant,
+  SurfaceContext
+} from '@kiskadee/core';
+import {
+  colorVariantBuckets,
+  componentEmphasisBuckets,
+  normalizeHexColor,
+  surfaceContextBuckets
+} from '@kiskadee/core';
 import {
   buildScopedToneMetadataKey,
   type ToneMetadataByPalette,
@@ -147,74 +157,80 @@ export function compileButtonGroupArtifact(
     for (const [theme, contexts] of Object.entries(themes)) {
       if (!isRecord(contexts)) continue;
       const bundle = `${segment}.${theme}`;
-      for (const [context, semantics] of Object.entries(contexts)) {
-        if (!isRecord(semantics) || !(context in surfaceContextBuckets)) continue;
+      for (const [context, variants] of Object.entries(contexts)) {
+        if (!isRecord(variants) || !(context in surfaceContextBuckets)) continue;
         const contextBucket = surfaceContextBuckets[context as SurfaceContext];
-        const contextMetadata = metadata.get(`${bundle}.${context}`);
-        for (const [semantic, states] of Object.entries(semantics)) {
-          if (!isRecord(states)) continue;
-          const borderStates = new Map<keyof ColorClasses, BorderStates>();
-          const recipes = {
-            frame: new Map<keyof ColorClasses, Set<string>>(),
-            member: new Map<keyof ColorClasses, Set<string>>(),
-            selectionRestMember: new Map<keyof ColorClasses, Set<string>>()
-          };
-          for (const [state, keys] of Object.entries(states)) {
-            if (!Array.isArray(keys)) continue;
-            for (const key of keys) {
-              if (typeof key !== 'string') continue;
-              const tones = contextMetadata?.get(
-                buildScopedToneMetadataKey(scope, `${semantic}::${key}`)
-              )?.tones;
-              for (const tone of tones ?? []) {
-                const bucket = componentEmphasisBuckets[tone];
-                const add = (recipe: keyof typeof recipes) => {
-                  const set = recipes[recipe].get(bucket) ?? new Set<string>();
-                  set.add(resolveClassName(key));
-                  recipes[recipe].set(bucket, set);
-                };
-                if (borderPaint(key)) {
-                  const declarationsByState =
-                    borderStates.get(bucket) ?? new Map<string, BorderDeclarations>();
-                  const effectiveState = stateOf(key);
-                  const declarations = declarationsByState.get(effectiveState) ?? {};
-                  const { property, paint } = borderDeclaration(key);
-                  declarations[property] =
-                    declarations[property] !== undefined && declarations[property] !== paint
-                      ? 'unknown'
-                      : paint;
-                  declarationsByState.set(effectiveState, declarations);
-                  borderStates.set(bucket, declarationsByState);
-                  if (state === 'rest' && stateOf(key) === 'rest') add('frame');
-                } else {
-                  add('member');
-                  if (tone === 'high' && !isSelected(state, key)) add('selectionRestMember');
+        for (const [colorVariant, semantics] of Object.entries(variants)) {
+          if (!isRecord(semantics)) continue;
+          const variantBucket = colorVariantBuckets[colorVariant as ColorVariant];
+          const contextMetadata = metadata.get(`${bundle}.${context}.${colorVariant}`);
+          for (const [semantic, states] of Object.entries(semantics)) {
+            if (!isRecord(states)) continue;
+            const borderStates = new Map<keyof ColorClasses, BorderStates>();
+            const recipes = {
+              frame: new Map<keyof ColorClasses, Set<string>>(),
+              member: new Map<keyof ColorClasses, Set<string>>(),
+              selectionRestMember: new Map<keyof ColorClasses, Set<string>>()
+            };
+            for (const [state, keys] of Object.entries(states)) {
+              if (!Array.isArray(keys)) continue;
+              for (const key of keys) {
+                if (typeof key !== 'string') continue;
+                const tones = contextMetadata?.get(
+                  buildScopedToneMetadataKey(scope, `${semantic}::${key}`)
+                )?.tones;
+                for (const tone of tones ?? []) {
+                  const bucket = componentEmphasisBuckets[tone];
+                  const add = (recipe: keyof typeof recipes) => {
+                    const set = recipes[recipe].get(bucket) ?? new Set<string>();
+                    set.add(resolveClassName(key));
+                    recipes[recipe].set(bucket, set);
+                  };
+                  if (borderPaint(key)) {
+                    const declarationsByState =
+                      borderStates.get(bucket) ?? new Map<string, BorderDeclarations>();
+                    const effectiveState = stateOf(key);
+                    const declarations = declarationsByState.get(effectiveState) ?? {};
+                    const { property, paint } = borderDeclaration(key);
+                    declarations[property] =
+                      declarations[property] !== undefined && declarations[property] !== paint
+                        ? 'unknown'
+                        : paint;
+                    declarationsByState.set(effectiveState, declarations);
+                    borderStates.set(bucket, declarationsByState);
+                    if (state === 'rest' && stateOf(key) === 'rest') add('frame');
+                  } else {
+                    add('member');
+                    if (tone === 'high' && !isSelected(state, key)) add('selectionRestMember');
+                  }
                 }
               }
             }
-          }
-          for (const [tone, states] of borderStates) {
-            const omissions = frameOmissions(states);
-            if (!omissions) continue;
-            palettes[bundle] ??= {};
-            const target = palettes[bundle];
-            target.frameOmissions ??= {};
-            target.frameOmissions[contextBucket] ??= {};
-            target.frameOmissions[contextBucket][semantic] ??= {};
-            target.frameOmissions[contextBucket][semantic][tone] = omissions;
-          }
-          for (const [recipe, levels] of Object.entries(recipes)) {
-            if (!levels.size) continue;
-            const name = recipe as keyof typeof recipes;
-            palettes[bundle] ??= {};
-            const target = palettes[bundle];
-            target[name] ??= {};
-            const elementTarget = target[name];
-            elementTarget.c ??= {};
-            elementTarget.c[contextBucket] ??= {};
-            elementTarget.c[contextBucket][semantic] = Object.fromEntries(
-              [...levels].map(([tone, classes]) => [tone, [...classes].join(' ')])
-            );
+            for (const [tone, states] of borderStates) {
+              const omissions = frameOmissions(states);
+              if (!omissions) continue;
+              palettes[bundle] ??= {};
+              const target = palettes[bundle];
+              target.frameOmissions ??= {};
+              target.frameOmissions[contextBucket] ??= {};
+              target.frameOmissions[contextBucket][variantBucket] ??= {};
+              target.frameOmissions[contextBucket][variantBucket][semantic] ??= {};
+              target.frameOmissions[contextBucket][variantBucket][semantic][tone] = omissions;
+            }
+            for (const [recipe, levels] of Object.entries(recipes)) {
+              if (!levels.size) continue;
+              const name = recipe as keyof typeof recipes;
+              palettes[bundle] ??= {};
+              const target = palettes[bundle];
+              target[name] ??= {};
+              const elementTarget = target[name];
+              elementTarget.c ??= {};
+              elementTarget.c[contextBucket] ??= {};
+              elementTarget.c[contextBucket][variantBucket] ??= {};
+              elementTarget.c[contextBucket][variantBucket][semantic] = Object.fromEntries(
+                [...levels].map(([tone, classes]) => [tone, [...classes].join(' ')])
+              );
+            }
           }
         }
       }

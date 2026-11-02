@@ -54,19 +54,20 @@ describe('Fluent Button Low contextual surface', () => {
     for (const segment of segments)
       for (const theme of themes) {
         const expected =
-          schema.components.container!.elements.e1.palettes![segment]![theme]!.onSubtle.boxColor!
-            .neutral!.low!.rest;
+          schema.components.container!.elements.e1.palettes![segment]![theme]!.onSubtle!.standard
+            .boxColor!.neutral!.low!.rest;
         for (const intent of intents) {
           const fill =
-            button.elements.e1!.palettes![segment]![theme]!.onSubtle.boxColor![intent]!.low!;
+            button.elements.e1!.palettes![segment]![theme]!.onSubtle!.standard.boxColor![intent]!
+              .low!;
           expect(fill.rest).toBe(expected);
           expect(fill.disabled).toBe(expected);
           expect(fill.hover).toMatch(/^#[a-f0-9]{6}$/);
           expect(fill.pressed).toMatch(/^#[a-f0-9]{6}$/);
           expect(fill.selected!.rest).toBe(fill.pressed);
-          expect(button.contentSurfaceContext![segment]![theme]!.onSubtle![intent]!.low!.rest).toBe(
-            'onSubtle'
-          );
+          expect(
+            button.contentSurfaceContext![segment]![theme]!.onSubtle!.standard[intent]!.low!.rest
+          ).toBe('onSubtle');
         }
       }
   });
@@ -76,9 +77,11 @@ describe('Fluent Button Low contextual surface', () => {
       for (const theme of themes)
         for (const intent of intents) {
           const text =
-            button.elements.e2!.palettes![segment]![theme]!.onSubtle.textColor![intent]!.low!;
+            button.elements.e2!.palettes![segment]![theme]!.onSubtle!.standard.textColor![intent]!
+              .low!;
           const fill =
-            button.elements.e1!.palettes![segment]![theme]!.onSubtle.boxColor![intent]!.low!;
+            button.elements.e1!.palettes![segment]![theme]!.onSubtle!.standard.boxColor![intent]!
+              .low!;
           for (const state of ['rest', 'hover', 'pressed', 'selected'] as const) {
             const foreground = resolveForeground(
               state === 'selected'
@@ -96,12 +99,12 @@ describe('Fluent Button Low contextual surface', () => {
 
   it('uses an opaque canonical Card base for Low Light interactions and terminal resets', () => {
     for (const segment of segments) {
-      const base = schema.components.container!.elements.e1.palettes![segment]!.light!.onSubtle
-        .boxColor!.primary!.highest!.rest as string;
+      const base = schema.components.container!.elements.e1.palettes![segment]!.light!.onSubtle!
+        .standard.boxColor!.primary!.highest!.rest as string;
       expect(base).toBe(segment === 'default' ? '#0064b4' : '#5053b2');
       for (const intent of intents) {
         const fill =
-          button.elements.e1!.palettes![segment]!.light!.onVivid!.boxColor![intent]!.low!;
+          button.elements.e1!.palettes![segment]!.light!.onVivid!.standard.boxColor![intent]!.low!;
         expect(fill.rest).toBe(base);
         expect(fill.hover).toBe(composite('#ffffff14', base));
         expect(fill.pressed).toBe(composite('#ffffff1f', base));
@@ -119,21 +122,24 @@ describe('Fluent Button Low contextual surface', () => {
 
   it('darkens the actual vivid host for non-primary Medium Light Pressed and persistent selection', () => {
     for (const segment of segments) {
-      const base = schema.components.container!.elements.e1.palettes![segment]!.light!.onSubtle
-        .boxColor!.primary!.highest!.rest as string;
+      const base = schema.components.container!.elements.e1.palettes![segment]!.light!.onSubtle!
+        .standard.boxColor!.primary!.highest!.rest as string;
       for (const intent of intents) {
         if (intent === 'primary') continue;
         const fill =
-          button.elements.e1!.palettes![segment]!.light!.onVivid!.boxColor![intent]!.medium!;
+          button.elements.e1!.palettes![segment]!.light!.onVivid!.standard.boxColor![intent]!
+            .medium!;
         const text =
-          button.elements.e2!.palettes![segment]!.light!.onVivid!.textColor![intent]!.medium!;
+          button.elements.e2!.palettes![segment]!.light!.onVivid!.standard.textColor![intent]!
+            .medium!;
         expect(fill.rest).toBe('#ffffff24');
         expect(fill.hover).toBe('#ffffff1a');
         expect(fill.pressed).toBe('#0000001a');
         expect(fill.selected!.rest).toBe(fill.pressed);
         expect(fill.selected!.hover).toBe(fill.pressed);
         const border =
-          button.elements.e1!.palettes![segment]!.light!.onVivid!.borderColor![intent]!.medium!;
+          button.elements.e1!.palettes![segment]!.light!.onVivid!.standard.borderColor![intent]!
+            .medium!;
         expect(border.rest).toBe('#ffffff1a');
         expect(border.pressed).toBe('#ffffff00');
         expect(border.selected!.rest).toBe('#ffffff00');
@@ -163,12 +169,13 @@ describe('Fluent Button Low contextual surface', () => {
   it('keeps Lowest Light transparent at Rest and uses stronger translucent persistent selection', () => {
     for (const segment of segments) {
       const canonicalHost = schema.components.container!.elements.e1.palettes![segment]!.light!
-        .onSubtle.boxColor!.primary!.highest!.rest as string;
+        .onSubtle!.standard.boxColor!.primary!.highest!.rest as string;
       for (const intent of intents) {
-        const palette = button.elements.e1!.palettes![segment]!.light!.onVivid!;
+        const palette = button.elements.e1!.palettes![segment]!.light!.onVivid!.standard;
         const fill = palette.boxColor![intent]!.lowest!;
         const text =
-          button.elements.e2!.palettes![segment]!.light!.onVivid!.textColor![intent]!.lowest!;
+          button.elements.e2!.palettes![segment]!.light!.onVivid!.standard.textColor![intent]!
+            .lowest!;
         expect(fill.rest).toBe('#ffffff00');
         expect(fill.hover).toBe('#ffffff14');
         expect(fill.pressed).toBe('#ffffff1f');
@@ -205,22 +212,24 @@ describe('Fluent Button Low contextual surface', () => {
   it('keeps Low content and both indicators legible over the contextual vivid surface', () => {
     for (const segment of segments)
       for (const theme of themes) {
-        const host = schema.components.container!.elements.e1.palettes![segment]![theme]!.onSubtle
-          .boxColor!.primary!.highest!.rest as string;
+        const host = schema.components.container!.elements.e1.palettes![segment]![theme]!.onSubtle!
+          .standard.boxColor!.primary!.highest!.rest as string;
         for (const intent of intents) {
           const fill =
-            button.elements.e1!.palettes![segment]![theme]!.onVivid!.boxColor![intent]!.low!;
+            button.elements.e1!.palettes![segment]![theme]!.onVivid!.standard.boxColor![intent]!
+              .low!;
           const text =
-            button.elements.e2!.palettes![segment]![theme]!.onVivid!.textColor![intent]!.low!;
+            button.elements.e2!.palettes![segment]![theme]!.onVivid!.standard.textColor![intent]!
+              .low!;
           if (theme !== 'light') {
             expect(fill.rest).toBe('#ffffff00');
             expect(fill.hover).toBe('#0000001a');
             expect(fill.pressed).toBe('#0000004d');
           }
           expect(fill.selected!.rest).toBe(fill.pressed);
-          expect(button.contentSurfaceContext![segment]![theme]!.onVivid![intent]!.low!.rest).toBe(
-            theme === 'light' ? 'onVivid' : 'inherit'
-          );
+          expect(
+            button.contentSurfaceContext![segment]![theme]!.onVivid!.standard[intent]!.low!.rest
+          ).toBe(theme === 'light' ? 'onVivid' : 'inherit');
           for (const state of ['rest', 'hover', 'pressed', 'selected'] as const) {
             const background = composite(
               (state === 'selected' ? fill.selected!.rest : fill[state]) as string,
@@ -240,8 +249,9 @@ describe('Fluent Button Low contextual surface', () => {
               .toBeGreaterThanOrEqual(4.5);
             for (const id of ['e11', 'e12'] as const) {
               const indicator =
-                button.elements[id]!.palettes![segment]![theme]!.onVivid!.boxColor![intent]!.low!
-                  .selected!.rest;
+                button.elements[id]!.palettes![segment]![theme]!.onVivid!.standard.boxColor![
+                  intent
+                ]!.low!.selected!.rest;
               const indicatorHost = id === 'e11' ? background : host;
               expect
                 .soft(

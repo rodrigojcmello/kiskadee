@@ -72,13 +72,13 @@ export function createIos27AppleBadgeSchema({
     );
   const surfacePalettes = () =>
     themes((theme) => ({
-      onSubtle: { boxColor: surfaces(theme, false) },
-      onVivid: { boxColor: surfaces(theme, true) }
+      onSubtle: { standard: { boxColor: surfaces(theme, false) } },
+      onVivid: { standard: { boxColor: surfaces(theme, true) } }
     }));
   const foregroundPalettes = () =>
     themes((theme) => ({
-      onSubtle: { textColor: foregrounds(theme, false) },
-      onVivid: { textColor: foregrounds(theme, true) }
+      onSubtle: { standard: { textColor: foregrounds(theme, false) } },
+      onVivid: { standard: { textColor: foregrounds(theme, true) } }
     }));
 
   return {
@@ -181,8 +181,8 @@ export function createIos27AppleBadgeSchema({
               INTENTS.map((intent) => [intent, { high: { rest: vivid(theme, intent) } }])
             );
             return {
-              onSubtle: { textColor: color },
-              onVivid: { textColor: color }
+              onSubtle: { standard: { textColor: color } },
+              onVivid: { standard: { textColor: color } }
             };
           })
         }
@@ -264,8 +264,8 @@ export function createIos27AppleBadgeSchema({
               ])
             );
             return {
-              onSubtle: { boxColor: color, borderColor: color },
-              onVivid: { boxColor: color, borderColor: color }
+              onSubtle: { standard: { boxColor: color, borderColor: color } },
+              onVivid: { standard: { boxColor: color, borderColor: color } }
             };
           })
         }

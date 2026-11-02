@@ -1,3 +1,4 @@
+import { type ColorVariant, parseButtonIntentValue } from '@kiskadee/core';
 import {
   type ButtonProps as HeadlessButtonProps,
   resolveButtonInteractionState
@@ -39,7 +40,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     radius,
     radiusEffect = false,
     emphasis,
-    intent = DEFAULT_BUTTON_INTENT,
+    intent: intentValue = DEFAULT_BUTTON_INTENT,
     surfaceContext: surfaceContextProp,
     tabIndex,
     label,
@@ -67,6 +68,7 @@ export function useButtonCommonProps(props: ButtonProps) {
     buttonClassesMapPending,
     componentEffects,
     contentSurfaceContext,
+    colorVariants,
     globalEffects,
     stackedSizes,
     stackedSizesByRadius,
@@ -83,21 +85,37 @@ export function useButtonCommonProps(props: ButtonProps) {
   const iconTreatment = iconTreatmentProp ?? options.iconTreatment ?? DEFAULT_BUTTON_ICON_TREATMENT;
   const iconSurfaceCorners =
     iconSurfaceCornersProp ?? options.iconSurfaceCorners ?? DEFAULT_BUTTON_ICON_SURFACE_CORNERS;
+  const parsedIntent = parseButtonIntentValue(intentValue);
+  const intent = parsedIntent?.intent ?? (intentValue as typeof DEFAULT_BUTTON_INTENT);
+  const colorVariant = parsedIntent?.colorVariant ?? 'standard';
   const isBrandIntent = intent.startsWith('brand.');
   const supportsBrandIntent =
     !isBrandIntent || Boolean(brandPack?.hasComponent('button') && brandPack.hasIntent(intent));
-  const requestedSelectionIntent = selectionIntent ?? options.selectionIntent ?? intent;
+  const requestedSelectionIntent = selectionIntent ?? options.selectionIntent ?? intentValue;
+  const validIntent = parsedIntent !== undefined;
+  const validSelectionIntent = parseButtonIntentValue(requestedSelectionIntent) !== undefined;
   const supportsSelectionIntent =
     !requestedSelectionIntent.startsWith('brand.') ||
     Boolean(brandPack?.hasComponent('button') && brandPack.hasIntent(requestedSelectionIntent));
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'production' || supportsBrandIntent) return;
+    if (process.env.NODE_ENV === 'production') return;
+    if (!validIntent) console.error(`[Kiskadee] Invalid Button intent: ${intentValue}`);
+    if (!validSelectionIntent)
+      console.error(`[Kiskadee] Invalid Button selectionIntent: ${requestedSelectionIntent}`);
+    if (supportsBrandIntent) return;
 
     console.error(
       `[Kiskadee] Button intent="${intent}" requires a compatible BrandPackBoundary. No brand color classes were applied.`
     );
-  }, [intent, supportsBrandIntent]);
+  }, [
+    intent,
+    intentValue,
+    validIntent,
+    validSelectionIntent,
+    requestedSelectionIntent,
+    supportsBrandIntent
+  ]);
 
   return {
     classNames,
@@ -105,7 +123,10 @@ export function useButtonCommonProps(props: ButtonProps) {
     toggle,
     controlState,
     selectionEmphasis,
-    selectionIntent: requestedSelectionIntent,
+    selectionIntent: selectionIntent ?? options.selectionIntent,
+    colorVariant,
+    colorVariants,
+    intentValue,
     supportsSelectionIntent,
     indicatorPlacement,
     pending,
@@ -172,7 +193,8 @@ export function useButtonClassNamesFromCommon(
     iconLayoutOverride?: ButtonProps['iconLayout'];
     iconTreatmentOverride?: ButtonProps['iconTreatment'];
     paintEmphasis?: ButtonProps['emphasis'];
-    paintIntent?: ButtonProps['intent'];
+    paintIntent?: typeof DEFAULT_BUTTON_INTENT;
+    paintColorVariant?: ColorVariant;
     selectionRest?: ButtonSelectionRestClassesMap;
   } = {}
 ) {
@@ -198,6 +220,7 @@ export function useButtonClassNamesFromCommon(
         radiusEffect: common.radiusEffect,
         emphasis: options.paintEmphasis ?? common.emphasis,
         intent: options.paintIntent ?? common.intent,
+        colorVariant: options.paintColorVariant ?? common.colorVariant,
         surfaceContext: common.surfaceContext,
         iconLayout: options.iconLayoutOverride ?? common.iconLayout,
         iconPlacement: common.iconPlacement,
@@ -230,6 +253,8 @@ export function useButtonClassNamesFromCommon(
       options.selectionRest,
       common.intent,
       options.paintIntent,
+      options.paintColorVariant,
+      common.colorVariant,
       common.surfaceContext,
       common.iconLayout,
       options.iconLayoutOverride,

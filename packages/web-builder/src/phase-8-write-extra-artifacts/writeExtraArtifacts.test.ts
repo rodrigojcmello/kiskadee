@@ -307,8 +307,10 @@ describe('writeExtraArtifacts content surface context', () => {
       default: {
         light: {
           onSubtle: {
-            primary: {
-              high: { rest: 'onVivid', disabled: 'onSubtle' }
+            standard: {
+              primary: {
+                high: { rest: 'onVivid', disabled: 'onSubtle' }
+              }
             }
           }
         }

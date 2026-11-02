@@ -10,14 +10,14 @@
 - Aggregate CSS/class maps remain build-only intermediates under `_debug/`, excluded from publication.
 - `class-maps/core/<component>.kiskadee.json`: component-scoped core class map.
 - `class-maps/<segment>.<theme>/<component>.kiskadee.json`: component-scoped palette class map.
-- Component-scoped class maps use the shape `{ component, classMap }`.
+- Component-scoped class maps use the shape `{ formatVersion: 3, component, classMap }`.
 - An element may expose registered structural utility references under the optional
   compact shape `element.p[artifactKey][scaleKey] = className`. The `p` bucket contains only
   references to existing token-only scale utilities and is omitted when no projection is
   registered.
 - `onSubtle` and `onVivid` surface contexts share the same `<segment>.<theme>` CSS and class-map files.
-  Each element stores its color classes under `c.s` (`onSubtle`) and, when authored, `c.v`
-  (`onVivid`).
+  Each element stores its color classes under `c.<s|v>.<s|a>.<intent>.<emphasis>`,
+  with surface context first and Standard/Alternative second.
   Style keys and CSS declarations remain globally deduplicated across both buckets.
 
 Structural utility projection does not add another artifact or stylesheet. Its references live in
@@ -35,7 +35,7 @@ Button class maps may additionally publish `group.frameOmissions`, alongside the
 coverage for a structural consumer, not a new preset option or color recipe:
 
 ```text
-group.frameOmissions.<surface-context-bucket>.<intent>.<emphasis-bucket>
+group.frameOmissions.<surface-context-bucket>.<color-variant-bucket>.<intent>.<emphasis-bucket>
   = { pressed?: true, selected?: true }
 ```
 
@@ -58,10 +58,9 @@ describes the ordinary Pressed recipe; a consumer must preserve
 Selected-substate precedence instead of applying that flag blindly to a different selected recipe.
 
 The platform consumer resolves this coverage with the Button's effective paint intent, emphasis
-and consumed surface context. Its structural state selectors omit only that member's decorative
+color variant, and consumed surface context. Its structural state selectors omit only that member's decorative
 frame segment and shared overlap strip, retaining border geometry, neighboring Rest frame segments,
-terminal-state precedence and independent focus. Older artifacts without this map keep their
-existing frame behavior. See the [connected Group contract](../../../components/react/docs/definitions/button/connected-groups.md).
+terminal-state precedence and independent focus. A format-3 artifact without this optional map keeps its existing frame behavior. See the [connected Group contract](../../../components/react/docs/definitions/button/connected-groups.md).
 
 ## Optional brand packs
 

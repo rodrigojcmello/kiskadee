@@ -6,6 +6,8 @@ import { schema as fluent2MicrosoftSchema } from '../../../presets/src/presets/f
 import { schema as ios27AppleSchema } from '../../../presets/src/presets/ios-27-apple/ios-27-apple.schema.ts';
 import { schema as material3GoogleSchema } from '../../../presets/src/presets/material-3-google/material-3-google.schema.ts';
 
+import { projectSwitchFixturePalettes } from './project-switch-fixture.ts';
+
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const resourcesDir = resolve(
   scriptDir,
@@ -50,7 +52,7 @@ function buildSwitchFixture(schema: (typeof fixtures)[number]['schema']) {
     global,
     themeTokens,
     components: {
-      switch: components.switch
+      switch: projectSwitchFixturePalettes(components.switch)
     }
   };
 }

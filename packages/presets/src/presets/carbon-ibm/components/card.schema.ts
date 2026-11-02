@@ -124,12 +124,16 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }) 
         theme,
         {
           onSubtle: {
-            boxColor: { neutral: neutralBoxes, primary: primaryBoxes },
-            borderColor: border(false)
+            standard: {
+              boxColor: { neutral: neutralBoxes, primary: primaryBoxes },
+              borderColor: border(false)
+            }
           },
           onVivid: {
-            boxColor: { neutral: neutralBoxes, primary: primaryBoxes },
-            borderColor: border(true)
+            standard: {
+              boxColor: { neutral: neutralBoxes, primary: primaryBoxes },
+              borderColor: border(true)
+            }
           }
         }
       ];
@@ -162,7 +166,10 @@ export function createCarbonIbmCardSchema({ c }: { c: CarbonIbmColorResolver }) 
   return splitCardSurfaceSchema<never>({
     contentSurfaceContext: {
       default: Object.fromEntries(
-        themes.map((theme) => [theme, { onSubtle: contexts(), onVivid: contexts() }])
+        themes.map((theme) => [
+          theme,
+          { onSubtle: { standard: contexts() }, onVivid: { standard: contexts() } }
+        ])
       )
     },
     options: {

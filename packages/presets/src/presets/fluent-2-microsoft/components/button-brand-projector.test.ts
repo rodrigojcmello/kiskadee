@@ -35,13 +35,15 @@ function readHighForeground(
       string,
       {
         onSubtle: {
-          textColor: Record<string, { high: { rest: unknown } }>;
+          standard: {
+            textColor: Record<string, { high: { rest: unknown } }>;
+          };
         };
       }
     >;
   };
 
-  return palettes.default[theme]?.onSubtle.textColor[intent]?.high.rest;
+  return palettes.default[theme]?.onSubtle?.standard.textColor[intent]?.high.rest;
 }
 
 function createBrand({
@@ -105,17 +107,18 @@ it('keeps portable Brand Low solid on subtle surfaces and the canonical Light vi
   ) => {
     const palettes = projection.elements[id].palettes as Record<
       string,
-      Record<string, Record<string, Record<string, Record<string, Record<string, unknown>>>>>
+      Record<
+        string,
+        Record<string, { standard: Record<string, Record<string, Record<string, unknown>>> }>
+      >
     >;
-    return palettes.default![theme]![context]![property]!['brand.solid-control']!.low! as Record<
-      string,
-      unknown
-    >;
+    return palettes.default![theme]![context]!.standard[property]!['brand.solid-control']!
+      .low! as Record<string, unknown>;
   };
   for (const theme of ['light', 'dark', 'darker'] as const) {
     const expected =
-      schema.components.container!.elements.e1.palettes!.default![theme]!.onSubtle.boxColor!
-        .neutral!.low!.rest;
+      schema.components.container!.elements.e1.palettes!.default![theme]!.onSubtle!.standard
+        .boxColor!.neutral!.low!.rest;
     for (const context of ['onSubtle'] as const) {
       expect(read('e1', theme, context, 'boxColor').rest).toBe(expected);
       expect(read('e1', theme, context, 'boxColor').disabled).toBe(expected);
@@ -131,8 +134,8 @@ it('keeps portable Brand Low solid on subtle surfaces and the canonical Light vi
     const vivid = read('e1', theme, 'onVivid', 'boxColor');
     if (theme === 'light') {
       const canonical =
-        schema.components.container!.elements.e1.palettes!.default!.light!.onSubtle.boxColor!
-          .primary!.highest!.rest;
+        schema.components.container!.elements.e1.palettes!.default!.light!.onSubtle!.standard
+          .boxColor!.primary!.highest!.rest;
       expect(vivid.rest).toBe(canonical);
       expect(vivid.hover).toMatch(/^#[a-f0-9]{6}$/);
       expect(vivid.pressed).toMatch(/^#[a-f0-9]{6}$/);
@@ -168,7 +171,10 @@ it('keeps real chromatic and capped Brand Low content readable while pressed or 
       palettes: {
         default: Record<
           'dark' | 'darker',
-          Record<'onSubtle' | 'onVivid', Record<string, Record<string, { low: Paint }>>>
+          Record<
+            'onSubtle' | 'onVivid',
+            { standard: Record<string, Record<string, { low: Paint }>> }
+          >
         >;
       };
     }
@@ -207,12 +213,14 @@ it('keeps real chromatic and capped Brand Low content readable while pressed or 
     for (const theme of ['dark', 'darker'] as const)
       for (const context of ['onSubtle', 'onVivid'] as const) {
         const fill =
-          palettes.e1.palettes.default[theme][context].boxColor![`brand.${brand.id}`]!.low;
-        const ambient = schema.components.container!.elements.e1.palettes!.default![theme]!.onSubtle
-          .boxColor!.primary!.highest!.rest as string;
+          palettes.e1.palettes.default[theme][context]!.standard.boxColor![`brand.${brand.id}`]!
+            .low;
+        const ambient = schema.components.container!.elements.e1.palettes!.default![theme]!
+          .onSubtle!.standard.boxColor!.primary!.highest!.rest as string;
         for (const id of ['e2', 'e3'] as const) {
           const content =
-            palettes[id].palettes.default[theme][context].textColor![`brand.${brand.id}`]!.low;
+            palettes[id].palettes.default[theme][context]!.standard.textColor![`brand.${brand.id}`]!
+              .low;
           if (context === 'onSubtle') {
             expect(color(content.pressed!)).not.toBe(content.rest);
             expect(content.selected!.rest).toEqual(content.pressed);

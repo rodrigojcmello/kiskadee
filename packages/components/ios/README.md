@@ -15,6 +15,14 @@ Material Google Switch subset only.
 The fixture is not a separate iOS schema contract. It is a small runtime payload for the MVP. The
 canonical source remains the Kiskadee schema in `packages/presets`.
 
+The Switch fixture exporter projects canonical component palettes from
+`segment/theme/onSubtle/standard` into the native MVP's existing `segment/theme/paint` payload.
+It preserves all authored segments and themes. This projection does not resolve `fg:`
+foreground references: the native readers still lack that catalog-resolution step. This is
+a preexisting exporter gap, not evidence that current canonical schemas can be regenerated
+and consumed unchanged. The shared color-variant migration therefore leaves the eight
+checked-in iOS/Android fixtures byte-identical and does not run native fixture generation.
+
 ## Usage
 
 Add `packages/components/ios` as a local Swift Package dependency, include a Kiskadee schema JSON in

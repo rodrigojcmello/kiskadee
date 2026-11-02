@@ -33,7 +33,7 @@ function withVivid<T extends { default: { light: object } }, V>(palette: T, onVi
     ...palette,
     default: {
       ...palette.default,
-      light: { ...palette.default.light, onVivid }
+      light: { ...palette.default.light, onVivid: { standard: onVivid } }
     }
   };
 }
@@ -133,18 +133,20 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.neutralForeground1,
-                disabled: fluent.neutralForegroundDisabled
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.neutralForeground1,
-                disabled: fluent.neutralForegroundDisabled
-              })
+          standard: {
+            textColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.neutralForeground1,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.neutralForeground1,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              }
             }
           }
         }
@@ -156,12 +158,14 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.optionalIndicator,
-                disabled: fluent.optionalIndicatorDisabled
-              })
+          standard: {
+            textColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.optionalIndicator,
+                  disabled: fluent.optionalIndicatorDisabled
+                })
+              }
             }
           }
         }
@@ -173,18 +177,20 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.neutralStrokeAccessible,
-                disabled: fluent.neutralForegroundDisabled
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.neutralStrokeAccessible,
-                disabled: fluent.neutralForegroundDisabled
-              })
+          standard: {
+            textColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.neutralStrokeAccessible,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.neutralStrokeAccessible,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              }
             }
           }
         }
@@ -196,38 +202,40 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.inactiveRail,
-                hover: fluent.inactiveRail,
-                focus: fluent.inactiveRail,
-                pressed: fluent.inactiveRailPressed,
-                disabled: fluent.transparent
-              })
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.inactiveRail,
+                  hover: fluent.inactiveRail,
+                  focus: fluent.inactiveRail,
+                  pressed: fluent.inactiveRailPressed,
+                  disabled: fluent.transparent
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.inactiveRail,
+                  hover: fluent.inactiveRail,
+                  focus: fluent.inactiveRail,
+                  pressed: fluent.inactiveRailPressed,
+                  disabled: fluent.transparent
+                })
+              }
             },
-            primary: {
-              medium: states({
-                rest: fluent.inactiveRail,
-                hover: fluent.inactiveRail,
-                focus: fluent.inactiveRail,
-                pressed: fluent.inactiveRailPressed,
-                disabled: fluent.transparent
-              })
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
+            borderColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              }
             }
           }
         }
@@ -239,38 +247,40 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
-                disabled: fluent.neutralForegroundDisabled
-              })
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.compoundBrandRest,
+                  hover: fluent.compoundBrandHover,
+                  focus: fluent.compoundBrandRest,
+                  pressed: fluent.compoundBrandPressed,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.compoundBrandRest,
+                  hover: fluent.compoundBrandHover,
+                  focus: fluent.compoundBrandRest,
+                  pressed: fluent.compoundBrandPressed,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              }
             },
-            primary: {
-              medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
-                disabled: fluent.neutralForegroundDisabled
-              })
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
+            borderColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              }
             }
           }
         }
@@ -282,41 +292,43 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.neutralBackground1,
-                hover: fluent.neutralBackground1,
-                focus: fluent.neutralBackground1,
-                pressed: fluent.neutralBackground1,
-                disabled: fluent.neutralBackground1
-              })
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.neutralBackground1,
+                  hover: fluent.neutralBackground1,
+                  focus: fluent.neutralBackground1,
+                  pressed: fluent.neutralBackground1,
+                  disabled: fluent.neutralBackground1
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.compoundBrandRest,
+                  hover: fluent.compoundBrandHover,
+                  focus: fluent.compoundBrandRest,
+                  pressed: fluent.compoundBrandPressed,
+                  disabled: fluent.neutralBackground1
+                })
+              }
             },
-            primary: {
-              medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
-                disabled: fluent.neutralBackground1
-              })
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.neutralStroke1,
-                disabled: fluent.neutralStrokeDisabled
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
-                disabled: fluent.neutralStrokeDisabled
-              })
+            borderColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.neutralStroke1,
+                  disabled: fluent.neutralStrokeDisabled
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.compoundBrandRest,
+                  hover: fluent.compoundBrandHover,
+                  focus: fluent.compoundBrandRest,
+                  pressed: fluent.compoundBrandPressed,
+                  disabled: fluent.neutralStrokeDisabled
+                })
+              }
             }
           }
         }
@@ -328,38 +340,40 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
-                disabled: fluent.neutralForegroundDisabled
-              })
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.compoundBrandRest,
+                  hover: fluent.compoundBrandHover,
+                  focus: fluent.compoundBrandRest,
+                  pressed: fluent.compoundBrandPressed,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.subtleCardLowSurface,
+                  hover: fluent.subtleCardLowSurface,
+                  focus: fluent.subtleCardLowSurface,
+                  pressed: fluent.subtleCardLowSurface,
+                  disabled: fluent.neutralForegroundDisabled
+                })
+              }
             },
-            primary: {
-              medium: states({
-                rest: fluent.subtleCardLowSurface,
-                hover: fluent.subtleCardLowSurface,
-                focus: fluent.subtleCardLowSurface,
-                pressed: fluent.subtleCardLowSurface,
-                disabled: fluent.neutralForegroundDisabled
-              })
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
+            borderColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              }
             }
           }
         }
@@ -371,21 +385,23 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.neutralBackground1,
-                disabled: fluent.neutralBackground1
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.compoundBrandRest,
-                hover: fluent.compoundBrandHover,
-                focus: fluent.compoundBrandRest,
-                pressed: fluent.compoundBrandPressed,
-                disabled: fluent.neutralBackground1
-              })
+          standard: {
+            textColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.neutralBackground1,
+                  disabled: fluent.neutralBackground1
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.compoundBrandRest,
+                  hover: fluent.compoundBrandHover,
+                  focus: fluent.compoundBrandRest,
+                  pressed: fluent.compoundBrandPressed,
+                  disabled: fluent.neutralBackground1
+                })
+              }
             }
           }
         }
@@ -397,32 +413,34 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.neutralBackground1,
-                disabled: fluent.neutralBackground1
-              })
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.neutralBackground1,
+                  disabled: fluent.neutralBackground1
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.neutralBackground1,
+                  disabled: fluent.neutralBackground1
+                })
+              }
             },
-            primary: {
-              medium: states({
-                rest: fluent.neutralBackground1,
-                disabled: fluent.neutralBackground1
-              })
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
-            },
-            primary: {
-              medium: states({
-                rest: fluent.transparent,
-                disabled: fluent.transparent
-              })
+            borderColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.transparent,
+                  disabled: fluent.transparent
+                })
+              }
             }
           }
         }
@@ -434,23 +452,25 @@ function createSliderPalettes(fluent: ReturnType<typeof createFluentSliderColors
     default: {
       light: {
         onSubtle: {
-          boxColor: {
-            neutral: { medium: states({ rest: fluent.neutralForeground1 }) },
-            primary: { medium: states({ rest: fluent.neutralForeground1 }) }
-          },
-          borderColor: activeTrackPalettes.default.light.onSubtle.borderColor,
-          textColor: {
-            neutral: {
-              medium: states({
-                rest: fluent.neutralBackground1,
-                disabled: fluent.neutralBackground1
-              })
+          standard: {
+            boxColor: {
+              neutral: { medium: states({ rest: fluent.neutralForeground1 }) },
+              primary: { medium: states({ rest: fluent.neutralForeground1 }) }
             },
-            primary: {
-              medium: states({
-                rest: fluent.neutralBackground1,
-                disabled: fluent.neutralBackground1
-              })
+            borderColor: activeTrackPalettes.default.light.onSubtle.standard.borderColor,
+            textColor: {
+              neutral: {
+                medium: states({
+                  rest: fluent.neutralBackground1,
+                  disabled: fluent.neutralBackground1
+                })
+              },
+              primary: {
+                medium: states({
+                  rest: fluent.neutralBackground1,
+                  disabled: fluent.neutralBackground1
+                })
+              }
             }
           }
         }

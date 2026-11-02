@@ -89,16 +89,16 @@ export function createIos27AppleSwitchSchema({
   const palettes = (element: 'track' | 'thumb' | 'label' | 'icon') =>
     buildBySegment(segmentNames, (segment) => ({
       light: {
-        onSubtle: createContext(segment, 'light', false, element),
-        onVivid: createContext(segment, 'light', true, element)
+        onSubtle: { standard: createContext(segment, 'light', false, element) },
+        onVivid: { standard: createContext(segment, 'light', true, element) }
       },
       dark: {
-        onSubtle: createContext(segment, 'dark', false, element),
-        onVivid: createContext(segment, 'dark', true, element)
+        onSubtle: { standard: createContext(segment, 'dark', false, element) },
+        onVivid: { standard: createContext(segment, 'dark', true, element) }
       },
       darker: {
-        onSubtle: createContext(segment, 'darker', false, element),
-        onVivid: createContext(segment, 'darker', true, element)
+        onSubtle: { standard: createContext(segment, 'darker', false, element) },
+        onVivid: { standard: createContext(segment, 'darker', true, element) }
       }
     }));
 

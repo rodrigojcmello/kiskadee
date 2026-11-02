@@ -19,11 +19,13 @@ vi.mock('./useTextFieldArtifactConfig.ts', () => ({
           e4: {
             c: {
               s: {
-                neutral: { m: 'neutral-paint' },
-                error: { m: 'error-paint' },
-                warning: { m: 'warning-paint' }
+                s: {
+                  neutral: { m: 'neutral-paint' },
+                  error: { m: 'error-paint' },
+                  warning: { m: 'warning-paint' }
+                }
               },
-              v: { neutral: { m: 'vivid-paint' } }
+              v: { s: { neutral: { m: 'vivid-paint' } } }
             }
           }
         }

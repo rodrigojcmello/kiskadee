@@ -18,8 +18,10 @@ describe('resolveElementPaletteSources', () => {
         default: {
           light: {
             onSubtle: {
-              borderColor: {
-                neutral: { medium: { rest: '#999999' } }
+              standard: {
+                borderColor: {
+                  neutral: { medium: { rest: '#999999' } }
+                }
               }
             }
           }
@@ -49,8 +51,10 @@ describe('resolveElementPaletteSources', () => {
               default: {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      neutral: { medium: { rest: '#dddddd' } }
+                    standard: {
+                      boxColor: {
+                        neutral: { medium: { rest: '#dddddd' } }
+                      }
                     }
                   }
                 }
@@ -66,14 +70,16 @@ describe('resolveElementPaletteSources', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: {
-              neutral: { medium: { rest: '#dddddd' } }
-            },
-            textColor: {
-              neutral: foregroundStates
-            },
-            borderColor: {
-              neutral: { medium: { rest: '#999999' } }
+            standard: {
+              boxColor: {
+                neutral: { medium: { rest: '#dddddd' } }
+              },
+              textColor: {
+                neutral: foregroundStates
+              },
+              borderColor: {
+                neutral: { medium: { rest: '#999999' } }
+              }
             }
           }
         }

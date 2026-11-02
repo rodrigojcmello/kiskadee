@@ -21,8 +21,9 @@ import type {
   StyleKeysByInteractionState,
   ThumbShrinkEffectSchema
 } from '@kiskadee/core';
-import { resolveActivationFeedbackSetting } from '@kiskadee/core';
+import { isButtonIndicatorPaintElement, resolveActivationFeedbackSetting } from '@kiskadee/core';
 import {
+  collectAlternativePaletteScopes,
   type ElementPaletteSource,
   resolveElementPaletteSources
 } from '../palettes/resolveElementPaletteSources.ts';
@@ -177,7 +178,8 @@ export function convertElementSchemaToStyleKeys(
       variantName?: string;
       modeName?: string;
       elementName: string;
-    }
+    },
+    alternativePaletteScopes: ReadonlySet<string>
   ) => {
     if (element.typography && !typographyBuild) {
       throw new Error(
@@ -235,9 +237,10 @@ export function convertElementSchemaToStyleKeys(
         element,
         { foregrounds, contours: schema.global?.contours, separators },
         {
+          alternativePaletteScopes,
           allowIndicatorBoxColor:
             metadataScope.componentName === 'button' &&
-            (metadataScope.elementName === 'e11' || metadataScope.elementName === 'e12')
+            isButtonIndicatorPaintElement(metadataScope.elementName)
         }
       );
       if (element.scales || iconSizeScales || separatorRecipe) {
@@ -507,18 +510,35 @@ export function convertElementSchemaToStyleKeys(
     const component = schema.components[componentName] as ComponentSchemaInput | undefined;
     if (!component) continue;
 
+    const getAlternativeScopes = (elements: Record<string, ElementSchemaInput | undefined>) =>
+      collectAlternativePaletteScopes(
+        elements,
+        {
+          foregrounds,
+          contours: schema.global?.contours,
+          separators
+        },
+        componentName === 'button' ? ['e11', 'e12'] : []
+      );
+
     const variants = component.variants;
     if (variants && typeof variants === 'object') {
       for (const [variantName, variant] of Object.entries(variants)) {
         const elements = variant?.elements;
         if (elements) {
+          const alternativeScopes = getAlternativeScopes(elements);
           for (const [elementName, element] of Object.entries(elements)) {
             if (!element) continue;
-            applyElement([componentName, variantName, elementName], element, {
-              componentName,
-              variantName,
-              elementName
-            });
+            applyElement(
+              [componentName, variantName, elementName],
+              element,
+              {
+                componentName,
+                variantName,
+                elementName
+              },
+              alternativeScopes
+            );
           }
         }
 
@@ -527,14 +547,20 @@ export function convertElementSchemaToStyleKeys(
         for (const [modeName, mode] of Object.entries(modes)) {
           const modeElements = mode?.elements;
           if (!modeElements) continue;
+          const alternativeScopes = getAlternativeScopes(modeElements);
           for (const [elementName, element] of Object.entries(modeElements)) {
             if (!element) continue;
-            applyElement([componentName, variantName, modeName, elementName], element, {
-              componentName,
-              variantName,
-              modeName,
-              elementName
-            });
+            applyElement(
+              [componentName, variantName, modeName, elementName],
+              element,
+              {
+                componentName,
+                variantName,
+                modeName,
+                elementName
+              },
+              alternativeScopes
+            );
           }
         }
       }
@@ -543,12 +569,18 @@ export function convertElementSchemaToStyleKeys(
 
     const elements = component.elements;
     if (!elements) continue;
+    const alternativeScopes = getAlternativeScopes(elements);
     for (const [elementName, element] of Object.entries(elements)) {
       if (!element) continue;
-      applyElement([componentName, elementName], element, {
-        componentName,
-        elementName
-      });
+      applyElement(
+        [componentName, elementName],
+        element,
+        {
+          componentName,
+          elementName
+        },
+        alternativeScopes
+      );
     }
   }
 

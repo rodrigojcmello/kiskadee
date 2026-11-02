@@ -59,30 +59,32 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
           default: {
             light: {
               onSubtle: {
-                boxColor: {
-                  primary: {
-                    medium: {
-                      rest: c('default', 'l', 'button.primary', 5),
-                      hover: c('default', 'l', 'button.primary', 3),
-                      focus: c('default', 'l', 'button.primary', 5),
-                      pressed: c('default', 'l', 'button.primary', 8),
-                      disabled: c('default', 'l', 'button.primary', 5, 20),
-                      selected: {
-                        rest: c('default', 'l', 'button.primary', 10),
-                        hover: c('default', 'l', 'button.primary', 8),
-                        pressed: c('default', 'l', 'button.primary', 20)
-                      }
-                    },
-                    high: {
-                      rest: c('default', 'l', 'button.primary', 50),
-                      hover: c('default', 'l', 'button.primary', 50, 80),
-                      pressed: c('default', 'l', 'button.primary', 60),
-                      disabled: c('default', 'l', 'button.primary', 50, 20),
-                      focus: c('default', 'l', 'button.primary', 50),
-                      selected: {
-                        rest: c('default', 'l', 'button.primary', 10),
-                        hover: c('default', 'l', 'button.primary', 8),
-                        pressed: c('default', 'l', 'button.primary', 20)
+                standard: {
+                  boxColor: {
+                    primary: {
+                      medium: {
+                        rest: c('default', 'l', 'button.primary', 5),
+                        hover: c('default', 'l', 'button.primary', 3),
+                        focus: c('default', 'l', 'button.primary', 5),
+                        pressed: c('default', 'l', 'button.primary', 8),
+                        disabled: c('default', 'l', 'button.primary', 5, 20),
+                        selected: {
+                          rest: c('default', 'l', 'button.primary', 10),
+                          hover: c('default', 'l', 'button.primary', 8),
+                          pressed: c('default', 'l', 'button.primary', 20)
+                        }
+                      },
+                      high: {
+                        rest: c('default', 'l', 'button.primary', 50),
+                        hover: c('default', 'l', 'button.primary', 50, 80),
+                        pressed: c('default', 'l', 'button.primary', 60),
+                        disabled: c('default', 'l', 'button.primary', 50, 20),
+                        focus: c('default', 'l', 'button.primary', 50),
+                        selected: {
+                          rest: c('default', 'l', 'button.primary', 10),
+                          hover: c('default', 'l', 'button.primary', 8),
+                          pressed: c('default', 'l', 'button.primary', 20)
+                        }
                       }
                     }
                   }
@@ -99,31 +101,33 @@ export function createElegantButtonSchema({ c }: CreateElegantButtonSchemaArgs):
           default: {
             light: {
               onSubtle: {
-                textColor: {
-                  primary: {
-                    medium: {
-                      rest: c('default', 'l', 'button.primary', 50),
-                      hover: {
-                        ref: c('default', 'l', 'button.primary', 50, 80)
-                      },
-                      pressed: { ref: c('default', 'l', 'button.primary', 50) },
-                      disabled: {
-                        ref: c('default', 'l', 'button.neutral', 0, 20)
-                      },
-                      selected: {
-                        rest: {
-                          ref: c('default', 'l', 'button.neutral', 70)
+                standard: {
+                  textColor: {
+                    primary: {
+                      medium: {
+                        rest: c('default', 'l', 'button.primary', 50),
+                        hover: {
+                          ref: c('default', 'l', 'button.primary', 50, 80)
+                        },
+                        pressed: { ref: c('default', 'l', 'button.primary', 50) },
+                        disabled: {
+                          ref: c('default', 'l', 'button.neutral', 0, 20)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('default', 'l', 'button.neutral', 70)
+                          }
                         }
-                      }
-                    },
-                    high: {
-                      rest: c('default', 'l', 'button.neutral', 0),
-                      disabled: {
-                        ref: c('default', 'l', 'button.neutral', 0, 20)
                       },
-                      selected: {
-                        rest: {
-                          ref: c('default', 'l', 'button.neutral', 70)
+                      high: {
+                        rest: c('default', 'l', 'button.neutral', 0),
+                        disabled: {
+                          ref: c('default', 'l', 'button.neutral', 0, 20)
+                        },
+                        selected: {
+                          rest: {
+                            ref: c('default', 'l', 'button.neutral', 70)
+                          }
                         }
                       }
                     }

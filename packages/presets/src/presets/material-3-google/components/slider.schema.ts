@@ -231,12 +231,12 @@ function createSliderPalettes({
 
       return {
         light: {
-          onSubtle: createSurface('light', 'onSubtle'),
-          onVivid: createSurface('light', 'onVivid')
+          onSubtle: { standard: createSurface('light', 'onSubtle') },
+          onVivid: { standard: createSurface('light', 'onVivid') }
         },
         dark: {
-          onSubtle: createSurface('dark', 'onSubtle'),
-          onVivid: createSurface('dark', 'onVivid')
+          onSubtle: { standard: createSurface('dark', 'onSubtle') },
+          onVivid: { standard: createSurface('dark', 'onVivid') }
         }
       };
     });

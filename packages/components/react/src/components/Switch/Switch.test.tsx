@@ -22,7 +22,9 @@ function createContextValue(
     designSystem: 'default',
     setDesignSystem: () => {},
     global: { radius: 'rounded' },
-    componentArtifacts: { switch: { component: 'switch', options: { controlTextVisibility } } }
+    componentArtifacts: {
+      switch: { formatVersion: 3, component: 'switch', options: { controlTextVisibility } }
+    }
   };
 }
 

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { buildTextFieldComponentArtifact } from './textFieldComponentArtifact.ts';
 
 const contentSurfaceContext = {
-  default: { light: { onVivid: { neutral: { medium: { rest: 'onSubtle' } } } } }
+  default: { light: { onVivid: { standard: { neutral: { medium: { rest: 'onSubtle' } } } } } }
 };
 const schemaWithMode = (mode: object) =>
   ({
@@ -15,7 +15,9 @@ describe('TextField mode metadata', () => {
     const contentRegionSurfaceContext = {
       default: {
         light: {
-          onVivid: { neutral: { lowest: { rest: 'inherit' }, medium: { rest: 'onSubtle' } } }
+          onVivid: {
+            standard: { neutral: { lowest: { rest: 'inherit' }, medium: { rest: 'onSubtle' } } }
+          }
         }
       }
     };

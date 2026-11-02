@@ -21,7 +21,7 @@ function resolveButtonElement(elementName: 'e2' | 'e3' | 'e4') {
 describe('Fluent Button global foreground pipeline', () => {
   it('resolves canonical label coordinates while preserving parent-state projection', () => {
     const e2 = resolveButtonElement('e2');
-    const lightOnVivid = e2.default?.light?.onVivid?.textColor;
+    const lightOnVivid = e2.default?.light?.onVivid?.standard.textColor;
 
     expect(lightOnVivid?.primary?.high).toEqual({
       rest: '#0064b4',
@@ -42,16 +42,20 @@ describe('Fluent Button global foreground pipeline', () => {
       destructive: '#ffdbd7',
       positive: '#d4edd2'
     });
-    expect(e2.default?.light?.onSubtle?.textColor?.destructive?.medium?.rest).toBe('#811819');
-    expect(e2.default?.dark?.onSubtle?.textColor?.neutral?.high?.rest).toBe('#252525');
+    expect(e2.default?.light?.onSubtle?.standard.textColor?.destructive?.medium?.rest).toBe(
+      '#811819'
+    );
+    expect(e2.default?.dark?.onSubtle?.standard.textColor?.neutral?.high?.rest).toBe('#252525');
   });
 
   it('keeps icon Pending absent and resolves the icon-region label independently', () => {
     const e3 = resolveButtonElement('e3');
     const e4 = resolveButtonElement('e4');
 
-    expect(e3.default?.light?.onVivid?.textColor?.primary?.high).not.toHaveProperty('pending');
-    expect(e4.default?.dark?.onVivid?.textColor?.neutral?.medium?.rest).toBe('#252525');
+    expect(e3.default?.light?.onVivid?.standard.textColor?.primary?.high).not.toHaveProperty(
+      'pending'
+    );
+    expect(e4.default?.dark?.onVivid?.standard.textColor?.neutral?.medium?.rest).toBe('#252525');
   });
 
   it('does not let an fg token reach Style Key generation', () => {

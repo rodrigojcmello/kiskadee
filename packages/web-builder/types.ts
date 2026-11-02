@@ -52,6 +52,7 @@ export type ExtraArtifactsJSON = {
   background?: string;
 };
 
+export type { ColorVariantCoverage } from './src/component-artifacts/colorVariantCapabilities.ts';
 export type {
   ComponentInspectionArtifact,
   ComponentPaletteResourceArtifact,

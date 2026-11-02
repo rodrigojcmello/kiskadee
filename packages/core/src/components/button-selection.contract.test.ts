@@ -1,24 +1,29 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import {
   type ButtonOptions,
-  type SystemButtonIntent,
+  type SystemButtonIntentValue,
   validateButtonComponentContract
 } from '../index.ts';
 
 describe('Button selection intent option', () => {
   it('uses only the existing optional system intent domain', () => {
     expectTypeOf<ButtonOptions['selectionIntent']>().toEqualTypeOf<
-      SystemButtonIntent | undefined
+      SystemButtonIntentValue | undefined
     >();
   });
 
-  it.each<SystemButtonIntent | undefined>([
+  it.each<SystemButtonIntentValue | undefined>([
     undefined,
     'neutral',
     'primary',
     'positive',
     'destructive',
-    'support'
+    'support',
+    'primary-alt',
+    'neutral-alt',
+    'destructive-alt',
+    'positive-alt',
+    'support-alt'
   ])('accepts %j without adding anatomy or requiring a new palette', (selectionIntent) => {
     expect(
       validateButtonComponentContract({
@@ -30,6 +35,8 @@ describe('Button selection intent option', () => {
 
   it.each([
     'brand.google',
+    'primary-alt-alt',
+    'unknown-alt',
     'inherit',
     'unknown',
     'toString',

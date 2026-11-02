@@ -10,13 +10,16 @@ import { loadBrandPack } from '../utils/brand-pack-loader.client';
 
 const CLASS_MAP_JSON = `${JSON.stringify(
   {
+    formatVersion: 3,
     component: 'button',
     classMap: {
       e1: {
         c: {
           s: {
-            'brand.google': {
-              h: 'google-box'
+            s: {
+              'brand.google': {
+                h: 'google-box'
+              }
             }
           }
         }

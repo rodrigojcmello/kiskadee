@@ -46,12 +46,12 @@ export function buildTabPalettes<T>(
 ) {
   return buildBySegment(resolveTabSegmentNames(segmentNames), (segment) => ({
     light: {
-      onSubtle: create(segment, 'l', 'onSubtle'),
-      onVivid: create(segment, 'l', 'onVivid')
+      onSubtle: { standard: create(segment, 'l', 'onSubtle') },
+      onVivid: { standard: create(segment, 'l', 'onVivid') }
     },
     dark: {
-      onSubtle: create(segment, 'd', 'onSubtle'),
-      onVivid: create(segment, 'd', 'onVivid')
+      onSubtle: { standard: create(segment, 'd', 'onSubtle') },
+      onVivid: { standard: create(segment, 'd', 'onVivid') }
     }
   }));
 }

@@ -11,8 +11,8 @@ export function createSandboxSelectSchema(): NonNullable<Schema['components']['s
   });
   const palette = (properties: Record<string, unknown>) => ({
     default: {
-      light: { onSubtle: properties, onVivid: properties },
-      dark: { onSubtle: properties, onVivid: properties }
+      light: { onSubtle: { standard: properties }, onVivid: { standard: properties } },
+      dark: { onSubtle: { standard: properties }, onVivid: { standard: properties } }
     }
   });
   const color = (rest: string, hover?: string, disabled?: string, focus?: string) => ({
@@ -30,12 +30,12 @@ export function createSandboxSelectSchema(): NonNullable<Schema['components']['s
   const outerText = {
     default: {
       light: {
-        onSubtle: { textColor: color('#174d88', undefined, '#a6adb8') },
-        onVivid: { textColor: color('#ffffff', undefined, '#ffffff66') }
+        onSubtle: { standard: { textColor: color('#174d88', undefined, '#a6adb8') } },
+        onVivid: { standard: { textColor: color('#ffffff', undefined, '#ffffff66') } }
       },
       dark: {
-        onSubtle: { textColor: color('#ffffff', undefined, '#ffffff66') },
-        onVivid: { textColor: color('#ffffff', undefined, '#ffffff66') }
+        onSubtle: { standard: { textColor: color('#ffffff', undefined, '#ffffff66') } },
+        onVivid: { standard: { textColor: color('#ffffff', undefined, '#ffffff66') } }
       }
     }
   };

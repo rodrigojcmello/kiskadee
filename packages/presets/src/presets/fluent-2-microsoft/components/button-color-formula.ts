@@ -250,7 +250,7 @@ export function omitFluentButtonPendingTextState(
 }
 
 /** Flattens a resolved overlay over the preset's opaque canonical surface during authoring. */
-function composeOpaqueSurface(paint: SolidColor, surface: SolidColor): SolidColor {
+export function composeOpaqueSurface(paint: SolidColor, surface: SolidColor): SolidColor {
   const source = normalizeHexColor(paint);
   const backdrop = normalizeHexColor(surface);
   if (backdrop.length !== 7) throw new Error('Canonical Button surface must be opaque.');

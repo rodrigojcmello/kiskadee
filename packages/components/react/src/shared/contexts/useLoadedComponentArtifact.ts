@@ -16,6 +16,24 @@ const listeners = new Map<string, Set<() => void>>();
 const pendingLoads = new Set<string>();
 const serverSnapshot = () => PENDING;
 
+function metadataEnvelopeError(value: unknown, componentName: string): Error | undefined {
+  if (value === undefined) return undefined;
+  if (
+    !value ||
+    typeof value !== 'object' ||
+    !('formatVersion' in value) ||
+    value.formatVersion !== 3
+  ) {
+    return new Error('Unsupported component metadata format; regenerate version 3 artifacts.');
+  }
+  if (!('component' in value) || value.component !== componentName) {
+    return new Error(
+      `Component metadata does not match the requested "${componentName}" component.`
+    );
+  }
+  return undefined;
+}
+
 function publish(cacheKey: string, snapshot: ArtifactSnapshot) {
   snapshots.set(cacheKey, snapshot);
   for (const notify of listeners.get(cacheKey) ?? []) notify();
@@ -77,11 +95,12 @@ export function useLoadedComponentArtifact<TArtifact>({
     theme
   });
   const previous = useRef<{ cacheKey: string; artifact: unknown } | undefined>(undefined);
-  const load = useCallback(
-    () =>
-      loadComponentArtifact ? loadComponentArtifact(componentName) : Promise.resolve(undefined),
-    [componentName, loadComponentArtifact]
-  );
+  const load = useCallback(async () => {
+    const artifact = await loadComponentArtifact?.(componentName);
+    const error = metadataEnvelopeError(artifact, componentName);
+    if (error) throw error;
+    return artifact;
+  }, [componentName, loadComponentArtifact]);
   const subscribe = useCallback(
     (notify: () => void) => {
       if (!loadComponentArtifact) {
@@ -113,13 +132,16 @@ export function useLoadedComponentArtifact<TArtifact>({
   const read = useCallback(() => snapshots.get(cacheKey) ?? PENDING, [cacheKey]);
   const snapshot = useSyncExternalStore(subscribe, read, serverSnapshot);
   const preloaded = componentArtifacts?.[componentName];
-  const validPreloaded = isArtifact(preloaded) ? preloaded : undefined;
+  const preloadedError = metadataEnvelopeError(preloaded, componentName);
+  const validPreloaded = !preloadedError && isArtifact(preloaded) ? preloaded : undefined;
   const canRead = Boolean(loadComponentArtifact) || !resetWhenLoaderMissing;
-  const currentArtifact = validPreloaded
-    ? validPreloaded
-    : canRead && snapshot.status === 'ready' && isArtifact(snapshot.artifact)
-      ? snapshot.artifact
-      : undefined;
+  const currentArtifact = preloadedError
+    ? undefined
+    : validPreloaded
+      ? validPreloaded
+      : canRead && snapshot.status === 'ready' && isArtifact(snapshot.artifact)
+        ? snapshot.artifact
+        : undefined;
   const retry = useCallback(() => {
     if (loadComponentArtifact) loadArtifact(cacheKey, load);
   }, [cacheKey, load, loadComponentArtifact]);
@@ -135,14 +157,17 @@ export function useLoadedComponentArtifact<TArtifact>({
       isArtifact(previous.current?.artifact)
         ? previous.current.artifact
         : undefined,
-    status: validPreloaded
-      ? 'ready'
-      : !canRead
-        ? 'absent'
-        : snapshot.status === 'ready' && !currentArtifact
+    status: preloadedError
+      ? 'error'
+      : validPreloaded
+        ? 'ready'
+        : !canRead || (!loadComponentArtifact && snapshot.status === 'error')
           ? 'absent'
-          : snapshot.status,
-    error: snapshot.error,
+          : snapshot.status === 'ready' && !currentArtifact
+            ? 'absent'
+            : snapshot.status,
+    error:
+      preloadedError ?? (validPreloaded || !loadComponentArtifact ? undefined : snapshot.error),
     retry
   };
 }

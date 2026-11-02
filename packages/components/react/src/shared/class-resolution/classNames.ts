@@ -1,7 +1,9 @@
 import {
   type ClassNameByElementJSON,
   type ColorClasses,
+  type ColorVariant,
   type ComponentEmphasis,
+  colorVariantBuckets,
   componentEmphasisBuckets,
   type EffectClassBucketJSON,
   type RadiusMode,
@@ -29,6 +31,7 @@ type ResolveIntentClassNameOptions = {
   emphasisFallbackOrder?: readonly ColorBucketKey[];
   defaultFallbackOrder?: readonly ColorBucketKey[];
   surfaceContext?: SurfaceContext;
+  colorVariant?: ColorVariant;
 };
 
 const DEFAULT_COLOR_BUCKET_ORDER = ['hh', 'h', 'm', 'l', 'll'] as const;
@@ -36,9 +39,12 @@ const warnedMissingOnVividBuckets = new WeakSet<ClassNameByElementJSON>();
 
 function resolveColorClassesByIntent(
   element: ClassNameByElementJSON,
-  surfaceContext: SurfaceContext
+  surfaceContext: SurfaceContext,
+  colorVariant: ColorVariant
 ): Record<string, ColorClasses> | undefined {
-  const bucket = surfaceContext === 'onVivid' ? element.c?.v : element.c?.s;
+  const bucket = (surfaceContext === 'onVivid' ? element.c?.v : element.c?.s)?.[
+    colorVariantBuckets[colorVariant]
+  ];
 
   if (
     surfaceContext === 'onVivid' &&
@@ -74,7 +80,11 @@ export function resolveIntentClassName(
 ): string {
   if (!element?.c || !intent) return '';
 
-  const byIntent = resolveColorClassesByIntent(element, options.surfaceContext ?? 'onSubtle');
+  const byIntent = resolveColorClassesByIntent(
+    element,
+    options.surfaceContext ?? 'onSubtle',
+    options.colorVariant ?? 'standard'
+  );
   if (!byIntent) return '';
   const chosen =
     byIntent[intent] ??
@@ -120,6 +130,7 @@ export function resolveSchemaElementClassName(
     intent: string | undefined;
     emphasis: ComponentEmphasis | undefined;
     intentOptions?: ResolveIntentClassNameOptions;
+    colorVariant?: ColorVariant;
     surfaceContext?: SurfaceContext;
   }
 ): string {
@@ -130,7 +141,8 @@ export function resolveSchemaElementClassName(
       element.d,
       resolveIntentClassName(element, options.intent, options.emphasis, {
         ...options.intentOptions,
-        surfaceContext: options.surfaceContext
+        surfaceContext: options.surfaceContext,
+        colorVariant: options.colorVariant
       }),
       options.scale ? resolveScaleClassName(element, options.scale) : ''
     ) ?? ''

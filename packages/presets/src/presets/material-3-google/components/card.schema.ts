@@ -143,8 +143,8 @@ export function createMaterial3GoogleCardSchema({
   };
   return splitCardSurfaceSchema<Material3GoogleSegmentName>({
     contentSurfaceContext: buildBySegment(segmentNames, () => ({
-      light: { onSubtle: context, onVivid: context },
-      dark: { onSubtle: context, onVivid: context }
+      light: { onSubtle: { standard: context }, onVivid: { standard: context } },
+      dark: { onSubtle: { standard: context }, onVivid: { standard: context } }
     })),
     options: {
       canonicalSurfaces: Object.fromEntries(
@@ -194,12 +194,12 @@ export function createMaterial3GoogleCardSchema({
         },
         palettes: buildBySegment(segmentNames, (segment) => ({
           light: {
-            onSubtle: palette(segment, 'l', 'onSubtle'),
-            onVivid: palette(segment, 'l', 'onVivid')
+            onSubtle: { standard: palette(segment, 'l', 'onSubtle') },
+            onVivid: { standard: palette(segment, 'l', 'onVivid') }
           },
           dark: {
-            onSubtle: palette(segment, 'd', 'onSubtle'),
-            onVivid: palette(segment, 'd', 'onVivid')
+            onSubtle: { standard: palette(segment, 'd', 'onSubtle') },
+            onVivid: { standard: palette(segment, 'd', 'onVivid') }
           }
         }))
       }

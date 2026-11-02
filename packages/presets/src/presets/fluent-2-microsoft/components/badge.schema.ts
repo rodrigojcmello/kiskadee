@@ -191,16 +191,20 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
 
   const createSurfacePalette = (theme: ThemeName, indicator = false) => ({
     onSubtle: {
-      boxColor: createSurfaceIntentStates(theme)
+      standard: {
+        boxColor: createSurfaceIntentStates(theme)
+      }
     },
     onVivid: {
-      boxColor: createOnVividSurfaceIntentStates(theme, indicator)
+      standard: {
+        boxColor: createOnVividSurfaceIntentStates(theme, indicator)
+      }
     }
   });
 
   const createTextPalette = (theme: ThemeName, fullBleed = false) => ({
-    onSubtle: { textColor: createTextIntentStates(theme, fullBleed) },
-    onVivid: { textColor: createOnVividTextIntentStates(theme, fullBleed) }
+    onSubtle: { standard: { textColor: createTextIntentStates(theme, fullBleed) } },
+    onVivid: { standard: { textColor: createOnVividTextIntentStates(theme, fullBleed) } }
   });
 
   const createSeparationPalette = (theme: ThemeName) => {
@@ -213,8 +217,8 @@ export function createFluent2MicrosoftBadgeSchema({ c }: CreateBadgeSchemaArgs):
       ])
     );
     return {
-      onSubtle: { boxColor: intents, borderColor: intents },
-      onVivid: { boxColor: intents, borderColor: intents }
+      onSubtle: { standard: { boxColor: intents, borderColor: intents } },
+      onVivid: { standard: { boxColor: intents, borderColor: intents } }
     };
   };
 

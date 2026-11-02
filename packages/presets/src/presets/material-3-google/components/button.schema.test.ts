@@ -39,8 +39,8 @@ it('publishes all intents, emphases, themes and surfaces in both segments', () =
       for (const surface of ['onSubtle', 'onVivid'] as const)
         for (const intent of MATERIAL_BUTTON_INTENTS)
           for (const emphasis of MATERIAL_BUTTON_EMPHASES) {
-            const root = button.elements.e1?.palettes?.[segment]?.[theme]?.[surface];
-            const label = button.elements.e2?.palettes?.[segment]?.[theme]?.[surface];
+            const root = button.elements.e1?.palettes?.[segment]?.[theme]?.[surface]?.standard;
+            const label = button.elements.e2?.palettes?.[segment]?.[theme]?.[surface]?.standard;
             expect(root?.boxColor?.[intent]?.[emphasis]?.rest).toBeTruthy();
             expect(root?.borderColor?.[intent]?.[emphasis]?.rest).toBeTruthy();
             expect(label?.textColor?.[intent]?.[emphasis]?.disabled).toHaveProperty('ref');
@@ -167,17 +167,17 @@ it('keeps selected content stable, publishes matching surface contexts and prese
         for (const intent of MATERIAL_BUTTON_INTENTS)
           for (const emphasis of MATERIAL_BUTTON_EMPHASES) {
             const label =
-              button.elements.e2?.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
-                emphasis
-              ];
+              button.elements.e2?.palettes?.[segment]?.[theme]?.[surface]?.standard?.textColor?.[
+                intent
+              ]?.[emphasis];
             const icon =
-              button.elements.e3?.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
-                emphasis
-              ];
+              button.elements.e3?.palettes?.[segment]?.[theme]?.[surface]?.standard?.textColor?.[
+                intent
+              ]?.[emphasis];
             const disclosure =
-              button.elements.e5?.palettes?.[segment]?.[theme]?.[surface]?.textColor?.[intent]?.[
-                emphasis
-              ];
+              button.elements.e5?.palettes?.[segment]?.[theme]?.[surface]?.standard?.textColor?.[
+                intent
+              ]?.[emphasis];
             expect(label?.pending).toHaveProperty('ref');
             expect(icon?.pending).toBeUndefined();
             expect(icon?.rest).toEqual(label?.rest);
@@ -189,7 +189,9 @@ it('keeps selected content stable, publishes matching surface contexts and prese
               expect(content?.disabled).toHaveProperty('ref');
             }
             const context =
-              button.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.[intent]?.[emphasis];
+              button.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[intent]?.[
+                emphasis
+              ];
             expect(context?.selected).toBe(
               emphasis === 'high'
                 ? surface === 'onVivid' || theme === 'dark'

@@ -2,6 +2,7 @@ import type {
   CardBorderPolicy,
   ClassNameByElementJSON,
   ColorClasses,
+  ColorVariant,
   ComponentClassNameMapJSON,
   ComponentClassNameMapSplitJSON,
   ComponentEmphasis,
@@ -10,6 +11,7 @@ import type {
   SurfaceContext
 } from '@kiskadee/core';
 import {
+  colorVariantBuckets,
   componentEmphasisBuckets,
   isActivationFeedbackProfileKey,
   resolveActivationFeedbackProfileBucket,
@@ -194,7 +196,7 @@ export function generateClassNamesMapSplit(
     variantName: string | undefined,
     modeName: string | undefined,
     elementName: string,
-    selectionRest = false
+    selectionRest?: 'selectionRest'
   ): ClassNameByElement => {
     if (!palettes[bundleKey]) palettes[bundleKey] = {};
     if (!palettes[bundleKey][componentName]) {
@@ -211,9 +213,9 @@ export function generateClassNamesMapSplit(
         // biome-ignore lint/suspicious/noAssignInExpressions: initializes the nested mode record inline
         (variantTarget[modeName] = {}))
       : variantTarget;
-    if (selectionRest && !target.selectionRest) target.selectionRest = {};
+    if (selectionRest && !target[selectionRest]) target[selectionRest] = {};
     const elementTarget = selectionRest
-      ? (target.selectionRest as Record<string, ClassNameByElement>)
+      ? (target[selectionRest] as Record<string, ClassNameByElement>)
       : target;
     if (!elementTarget[elementName]) {
       elementTarget[elementName] = {};
@@ -258,8 +260,10 @@ export function generateClassNamesMapSplit(
       // Effects buckets (by effect kind), excluding selected/control-state.
       const eBuckets = new Map<string, Set<string>>();
       const eSizedBuckets = new Map<string, Map<string, Set<string>>>();
+      const logicalElement = elementName;
       const selectionRest =
         componentName === 'button' && BUTTON_SELECTION_REST_ELEMENTS.has(elementName);
+      const selectionRestKey = 'selectionRest';
       const restEffects = new Map<string, Set<string>>();
       const restSizedEffects = new Map<string, Map<string, Set<string>>>();
       // Control-state: selected — kept as a dedicated field (`l`) but must NOT include effects.
@@ -394,144 +398,156 @@ export function generateClassNamesMapSplit(
 
             for (const surfaceContextName of Object.keys(surfaceContexts)) {
               const surfaceContext = surfaceContextName as SurfaceContext;
-              const bySemantic = surfaceContexts[surfaceContext];
-              if (!isRecord(bySemantic)) continue;
+              const variants = surfaceContexts[surfaceContext];
+              if (!isRecord(variants)) continue;
+              for (const [colorVariantName, bySemantic] of Object.entries(variants)) {
+                const colorVariant = colorVariantName as ColorVariant;
+                const colorVariantBucket = colorVariantBuckets[colorVariant];
+                if (!isRecord(bySemantic)) continue;
 
-              // IMPORTANT:
-              // `toneMetadataByPalette` is scoped by palette (segment + theme + surface context)
-              // and element ownership.
-              //
-              // Rationale:
-              // - The same StyleKey can be used across multiple palettes because StyleKey encodes
-              //   the final CSS rule/value and must remain globally deduplicable.
-              // - However, the component emphasis bucket (highest/high/medium/low/lowest) is semantic
-              //   metadata and is allowed to differ per palette and per component element. If we used a single global
-              //   metadata map keyed only by StyleKey, emphasis could "leak" from one consumer to
-              //   another and make the JSON artifact incorrectly classify highest/high/medium/low/lowest classes.
-              //
-              // By resolving metadata through `bundleKey.surfaceContext` plus the current
-              // component/variant/element, we keep CSS dedupe intact while producing correct
-              // `c[surfaceContext][semantic].h|m|l|ll` buckets.
-              const toneMetaForPalette = toneMetadataByPalette.get(
-                `${bundleKey}.${surfaceContext}`
-              );
-
-              // Build color classes per semantic: c[semantic] = { hh, h, m, l, ll }
-              const colorBySemantic: Record<string, ColorClasses> = {};
-              const restColorBySemantic: Record<string, ColorClasses> = {};
-
-              for (const sem of Object.keys(bySemantic)) {
-                const byState = bySemantic[sem];
-                if (!isRecord(byState)) continue;
-
-                // Segregate classes by emphasis (or unique if no emphasis) per semantic
-                const emphasisSets = new Map<ComponentEmphasis, Set<string>>();
-                const restEmphasisSets = new Map<ComponentEmphasis, Set<string>>();
-
-                for (const [state, rawStyleKeys] of Object.entries(byState)) {
-                  const styleKeys = Array.isArray(rawStyleKeys)
-                    ? rawStyleKeys.filter(
-                        (styleKey): styleKey is string => typeof styleKey === 'string'
-                      )
-                    : undefined;
-
-                  styleKeys?.forEach((styleKey: string) => {
-                    const shortenedClass = resolveClassName(styleKey);
-                    const metaKey = buildScopedToneMetadataKey(
-                      {
-                        componentName,
-                        variantName,
-                        modeName,
-                        elementName
-                      },
-                      `${sem}::${styleKey}`
-                    );
-                    const meta = toneMetaForPalette?.get(metaKey);
-
-                    const tones = meta?.tones ?? [];
-
-                    // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
-                    for (const tone of tones) {
-                      const borderAdaptive =
-                        componentName === 'card' && elementName === 'e1'
-                          ? options?.cardBorderPolicy?.adaptive?.[segmentName]?.[
-                              themeName as 'light' | 'dark' | 'darker'
-                            ]?.[surfaceContext]?.[sem as 'neutral' | 'primary']?.[tone]
-                          : undefined;
-                      if (borderAdaptive !== undefined && styleKey.startsWith('borderColor__')) {
-                        const contextBucket = surfaceContextBuckets[surfaceContext];
-                        elemRecord.b ??= {};
-                        const borders = elemRecord.b;
-                        borders[contextBucket] ??= {};
-                        const intents = borders[contextBucket];
-                        intents[sem] ??= {};
-                        const levels = intents[sem];
-                        const offClass = resolveClassName('borderColor__#00000000');
-                        if (offClass.startsWith('borderColor__')) {
-                          throw new Error('Card border suppression class was not emitted.');
-                        }
-                        levels[componentEmphasisBuckets[tone]] = {
-                          on: shortenedClass,
-                          off: offClass,
-                          adaptive: borderAdaptive
-                        };
-                        continue;
-                      }
-                      getOrCreateSet(emphasisSets, tone).add(shortenedClass);
-                      if (
-                        selectionRest &&
-                        (tone === 'high' || elementName === 'e4') &&
-                        !isSelectedState(state, styleKey)
-                      ) {
-                        getOrCreateSet(restEmphasisSets, tone).add(shortenedClass);
-                      }
-                    }
-
-                    // No unique bucket; all component colors must declare emphasis.
-                  });
-                }
-
-                const colorClasses: ColorClasses = {};
-                for (const [tone, set] of emphasisSets.entries()) {
-                  if (set.size === 0) continue;
-                  const bucket = componentEmphasisBuckets[tone];
-                  (colorClasses as Record<string, string>)[bucket] = Array.from(set).join(' ');
-                }
-                if (Object.keys(colorClasses).length > 0) {
-                  colorBySemantic[sem] = colorClasses;
-                }
-                const restColors: ColorClasses = {};
-                for (const [tone, set] of restEmphasisSets) {
-                  if (set.size) restColors[componentEmphasisBuckets[tone]] = [...set].join(' ');
-                }
-                if (Object.keys(restColors).length) restColorBySemantic[sem] = restColors;
-              }
-
-              // Add to the element record only if we have color classes.
-              if (Object.keys(colorBySemantic).length > 0) {
-                elemRecord.c = {
-                  ...elemRecord.c,
-                  [surfaceContextBuckets[surfaceContext]]: colorBySemantic
-                };
-              }
-              if (selectionRest && Object.keys(restColorBySemantic).length) {
-                const restRecord = ensurePaletteElement(
-                  bundleKey,
-                  componentName,
-                  variantName,
-                  modeName,
-                  elementName,
-                  true
+                // IMPORTANT:
+                // `toneMetadataByPalette` is scoped by palette (segment + theme + surface context + color variant)
+                // and element ownership.
+                //
+                // Rationale:
+                // - The same StyleKey can be used across multiple palettes because StyleKey encodes
+                //   the final CSS rule/value and must remain globally deduplicable.
+                // - However, the component emphasis bucket (highest/high/medium/low/lowest) is semantic
+                //   metadata and is allowed to differ per palette and per component element. If we used a single global
+                //   metadata map keyed only by StyleKey, emphasis could "leak" from one consumer to
+                //   another and make the JSON artifact incorrectly classify highest/high/medium/low/lowest classes.
+                //
+                // By resolving metadata through `bundleKey.surfaceContext.colorVariant` plus the current
+                // component/variant/element, we keep CSS dedupe intact while producing correct
+                // `c[surfaceContext][colorVariant][semantic].h|m|l|ll` buckets.
+                const toneMetaForPalette = toneMetadataByPalette.get(
+                  `${bundleKey}.${surfaceContext}.${colorVariant}`
                 );
-                restRecord.c = {
-                  ...restRecord.c,
-                  [surfaceContextBuckets[surfaceContext]]: restColorBySemantic
-                };
+
+                // Build color classes per semantic: c[semantic] = { hh, h, m, l, ll }
+                const colorBySemantic: Record<string, ColorClasses> = {};
+                const restColorBySemantic: Record<string, ColorClasses> = {};
+
+                for (const sem of Object.keys(bySemantic)) {
+                  const byState = bySemantic[sem];
+                  if (!isRecord(byState)) continue;
+
+                  // Segregate classes by emphasis (or unique if no emphasis) per semantic
+                  const emphasisSets = new Map<ComponentEmphasis, Set<string>>();
+                  const restEmphasisSets = new Map<ComponentEmphasis, Set<string>>();
+
+                  for (const [state, rawStyleKeys] of Object.entries(byState)) {
+                    const styleKeys = Array.isArray(rawStyleKeys)
+                      ? rawStyleKeys.filter(
+                          (styleKey): styleKey is string => typeof styleKey === 'string'
+                        )
+                      : undefined;
+
+                    styleKeys?.forEach((styleKey: string) => {
+                      const shortenedClass = resolveClassName(styleKey);
+                      const metaKey = buildScopedToneMetadataKey(
+                        {
+                          componentName,
+                          variantName,
+                          modeName,
+                          elementName
+                        },
+                        `${sem}::${styleKey}`
+                      );
+                      const meta = toneMetaForPalette?.get(metaKey);
+
+                      const tones = meta?.tones ?? [];
+
+                      // Do NOT move selected palette classes into core.cs. Always classify by emphasis/unique.
+                      for (const tone of tones) {
+                        const borderAdaptive =
+                          componentName === 'card' && elementName === 'e1'
+                            ? options?.cardBorderPolicy?.adaptive?.[segmentName]?.[
+                                themeName as 'light' | 'dark' | 'darker'
+                              ]?.[surfaceContext]?.[sem as 'neutral' | 'primary']?.[tone]
+                            : undefined;
+                        if (borderAdaptive !== undefined && styleKey.startsWith('borderColor__')) {
+                          const contextBucket = surfaceContextBuckets[surfaceContext];
+                          elemRecord.b ??= {};
+                          const borders = elemRecord.b;
+                          borders[contextBucket] ??= {};
+                          borders[contextBucket][colorVariantBucket] ??= {};
+                          const intents = borders[contextBucket][colorVariantBucket];
+                          intents[sem] ??= {};
+                          const levels = intents[sem];
+                          const offClass = resolveClassName('borderColor__#00000000');
+                          if (offClass.startsWith('borderColor__')) {
+                            throw new Error('Card border suppression class was not emitted.');
+                          }
+                          levels[componentEmphasisBuckets[tone]] = {
+                            on: shortenedClass,
+                            off: offClass,
+                            adaptive: borderAdaptive
+                          };
+                          continue;
+                        }
+                        getOrCreateSet(emphasisSets, tone).add(shortenedClass);
+                        if (
+                          selectionRest &&
+                          (tone === 'high' || logicalElement === 'e4') &&
+                          !isSelectedState(state, styleKey)
+                        ) {
+                          getOrCreateSet(restEmphasisSets, tone).add(shortenedClass);
+                        }
+                      }
+
+                      // No unique bucket; all component colors must declare emphasis.
+                    });
+                  }
+
+                  const colorClasses: ColorClasses = {};
+                  for (const [tone, set] of emphasisSets.entries()) {
+                    if (set.size === 0) continue;
+                    const bucket = componentEmphasisBuckets[tone];
+                    (colorClasses as Record<string, string>)[bucket] = Array.from(set).join(' ');
+                  }
+                  if (Object.keys(colorClasses).length > 0) {
+                    colorBySemantic[sem] = colorClasses;
+                  }
+                  const restColors: ColorClasses = {};
+                  for (const [tone, set] of restEmphasisSets) {
+                    if (set.size) restColors[componentEmphasisBuckets[tone]] = [...set].join(' ');
+                  }
+                  if (Object.keys(restColors).length) restColorBySemantic[sem] = restColors;
+                }
+
+                // Add to the element record only if we have color classes.
+                if (Object.keys(colorBySemantic).length > 0) {
+                  elemRecord.c = {
+                    ...elemRecord.c,
+                    [surfaceContextBuckets[surfaceContext]]: {
+                      ...elemRecord.c?.[surfaceContextBuckets[surfaceContext]],
+                      [colorVariantBucket]: colorBySemantic
+                    }
+                  };
+                }
+                if (selectionRest && Object.keys(restColorBySemantic).length) {
+                  const restRecord = ensurePaletteElement(
+                    bundleKey,
+                    componentName,
+                    variantName,
+                    modeName,
+                    logicalElement,
+                    selectionRestKey
+                  );
+                  restRecord.c = {
+                    ...restRecord.c,
+                    [surfaceContextBuckets[surfaceContext]]: {
+                      ...restRecord.c?.[surfaceContextBuckets[surfaceContext]],
+                      [colorVariantBucket]: restColorBySemantic
+                    }
+                  };
+                }
               }
             }
           }
         }
-      }
+      } // End color variant loop
 
       // After processing palettes, finalize the core element record so `cs` includes palette-derived selected classes
       coreTarget[elementName] = {
@@ -588,9 +604,9 @@ export function generateClassNamesMapSplit(
       };
       if (selectionRest) {
         const target = coreTarget as Record<string, unknown>;
-        target.selectionRest ??= {};
-        const projection = target.selectionRest as ButtonSelectionRestClassMapJSON;
-        projection[elementName as keyof ButtonSelectionRestClassMapJSON] = {
+        target[selectionRestKey] ??= {};
+        const projection = target[selectionRestKey] as ButtonSelectionRestClassMapJSON;
+        projection[logicalElement as keyof ButtonSelectionRestClassMapJSON] = {
           e: effectClassBuckets(restEffects, restSizedEffects)
         };
       }

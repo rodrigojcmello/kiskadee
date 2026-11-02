@@ -62,6 +62,12 @@ Button's own surface at those coordinates, while the external recipe accounts fo
 surface. Neutral foreground references use Standard only. This selection does not change the
 context provided to other descendants.
 
+`e11/e12` retain Standard indicator paint even when a qualified Button intent selects an
+Alternative body. They follow the effective semantic intent, emphasis and ambient context.
+Geometry, activation and the indicator's sparse state maps remain unchanged. Inside and Outside
+continue to select their existing placement recipes. See
+[Shared color variants](../../packages/core/docs/definitions/color-variants.md).
+
 The default Fluent placement is inside. Its shared authoring helper selects the segment's brand
 signal or contrast inversion over the actual host surface; destructive and positive Buttons do not
 recolor the signal by intent. All numerical choices are preset-owned Kiskadee extensions.

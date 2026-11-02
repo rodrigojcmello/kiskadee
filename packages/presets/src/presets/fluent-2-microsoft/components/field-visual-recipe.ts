@@ -28,7 +28,7 @@ export function createFieldVisualRecipe(
   const dark = theme !== 'light';
   const track = dark ? 'd' : 'l';
   const palette = <T>(onSubtle: T) => ({
-    default: { [theme]: { [vivid ? 'onVivid' : 'onSubtle']: onSubtle } }
+    default: { [theme]: { [vivid ? 'onVivid' : 'onSubtle']: { standard: onSubtle } } }
   });
   const neutral = (tone: KiskadeeTone) =>
     c.resolve('default', track, exactColor('textField.neutral', tone, 'component.text-field'));

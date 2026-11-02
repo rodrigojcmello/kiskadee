@@ -10,6 +10,13 @@ const artifact = vi.hoisted(() => ({
   intents: ['primary', 'neutral', 'destructive', 'positive', 'support']
 }));
 
+vi.mock('@kiskadee/react-components/resources', () => ({
+  useKiskadee: () => ({ segment: 'default', theme: 'light' })
+}));
+vi.mock('@/hooks/use-button-color-variants', () => ({
+  useButtonColorVariantMetadata: () => undefined
+}));
+
 vi.mock('@kiskadee/react-components/button', async () => {
   const { createElement } = await import('react');
   return {
@@ -72,7 +79,9 @@ vi.mock('@kiskadee/react-components/button', async () => {
       buttonClassesMap: {
         e1: {
           c: {
-            s: Object.fromEntries(artifact.intents.map((intent) => [intent, { m: 'published' }]))
+            s: {
+              s: Object.fromEntries(artifact.intents.map((intent) => [intent, { m: 'published' }]))
+            }
           }
         }
       }

@@ -45,8 +45,8 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 function isValidComponentClassMap(value: unknown, componentName: string): boolean {
   if (!isRecord(value) || Object.keys(value).length === 0) return false;
-  if (!('component' in value) && !('classMap' in value)) return true;
   return (
+    value.formatVersion === 3 &&
     value.component === componentName &&
     isRecord(value.classMap) &&
     Object.keys(value.classMap).length > 0

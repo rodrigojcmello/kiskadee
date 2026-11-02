@@ -1,7 +1,7 @@
 import type { BrandContentPolarity, BrandId, BrandPackId } from '@kiskadee/brands';
 
-export const BRAND_PACK_BUILD_CONTRACT = 'kiskadee.brand-pack-build.v2' as const;
-export const BRAND_PACK_BUILD_FORMAT_VERSION = 2 as const;
+export const BRAND_PACK_BUILD_CONTRACT = 'kiskadee.brand-pack-build.v3' as const;
+export const BRAND_PACK_BUILD_FORMAT_VERSION = 3 as const;
 
 export type BrandPackPaletteArtifact = {
   styles: Record<

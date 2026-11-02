@@ -64,7 +64,7 @@ describe('styled Icon family composition', () => {
     const context: KiskadeeContextValue = {
       ...kiskadeeContext,
       classesMap: {
-        icon: { e1: { s: { 'md:1': 'size' }, c: { s: { neutral: { m: 'own-color' } } } } }
+        icon: { e1: { s: { 'md:1': 'size' }, c: { s: { s: { neutral: { m: 'own-color' } } } } } }
       }
     };
     function Example({ inherit }: { inherit: boolean }) {

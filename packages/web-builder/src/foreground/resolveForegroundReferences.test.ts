@@ -1,4 +1,4 @@
-import { type ElementPalettes, fg, type SchemaForegrounds } from '@kiskadee/core';
+import { fg, type SchemaForegrounds } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { resolveForegroundReferences } from './resolveForegroundReferences.ts';
 
@@ -48,13 +48,15 @@ describe('resolveForegroundReferences', () => {
       default: {
         dark: {
           onVivid: {
-            textColor: {
-              destructive: {
-                high: {
-                  rest: fg('red.standard.light.onSubtle.high'),
-                  hover: fg.parentState('red.standard.light.onSubtle.high.hover'),
-                  selected: {
-                    rest: fg.parentState('red.standard.light.onSubtle.high.pressed')
+            standard: {
+              textColor: {
+                destructive: {
+                  high: {
+                    rest: fg('red.standard.light.onSubtle.high'),
+                    hover: fg.parentState('red.standard.light.onSubtle.high.hover'),
+                    selected: {
+                      rest: fg.parentState('red.standard.light.onSubtle.high.pressed')
+                    }
                   }
                 }
               }
@@ -62,18 +64,20 @@ describe('resolveForegroundReferences', () => {
           }
         }
       }
-    } as const satisfies ElementPalettes;
+    } as const;
 
     expect(resolveForegroundReferences(palettes, foregrounds)).toEqual({
       default: {
         dark: {
           onVivid: {
-            textColor: {
-              destructive: {
-                high: {
-                  rest: '#c50f1f',
-                  hover: { ref: '#b70419' },
-                  selected: { rest: { ref: '#951219' } }
+            standard: {
+              textColor: {
+                destructive: {
+                  high: {
+                    rest: '#c50f1f',
+                    hover: { ref: '#b70419' },
+                    selected: { rest: { ref: '#951219' } }
+                  }
                 }
               }
             }
@@ -90,9 +94,11 @@ describe('resolveForegroundReferences', () => {
           default: {
             light: {
               onSubtle: {
-                textColor: {
-                  destructive: {
-                    medium: { rest: 'fg:red.deep.light.onSubtle.high' }
+                standard: {
+                  textColor: {
+                    destructive: {
+                      medium: { rest: 'fg:red.deep.light.onSubtle.high' }
+                    }
                   }
                 }
               }
@@ -109,11 +115,13 @@ describe('resolveForegroundReferences', () => {
           default: {
             light: {
               onSubtle: {
-                textColor: {
-                  destructive: {
-                    medium: {
-                      rest: '#c50f1f',
-                      hover: { ref: 'fg:red.standard.light.onSubtle.high.hover' }
+                standard: {
+                  textColor: {
+                    destructive: {
+                      medium: {
+                        rest: '#c50f1f',
+                        hover: { ref: 'fg:red.standard.light.onSubtle.high.hover' }
+                      }
                     }
                   }
                 }
@@ -131,9 +139,11 @@ describe('resolveForegroundReferences', () => {
           default: {
             light: {
               onSubtle: {
-                boxColor: {
-                  destructive: {
-                    medium: { rest: fg('red.standard.light.onSubtle.high') }
+                standard: {
+                  boxColor: {
+                    destructive: {
+                      medium: { rest: fg('red.standard.light.onSubtle.high') }
+                    }
                   }
                 }
               }

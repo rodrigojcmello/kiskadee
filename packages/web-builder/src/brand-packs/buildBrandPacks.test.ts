@@ -70,9 +70,11 @@ function expectIntentMatrix(
     expect(colorMap).toBeDefined();
 
     for (const context of SURFACE_CONTEXT_KEYS) {
-      expect(Object.keys(colorMap?.[context] ?? {}).sort()).toEqual([...intents].sort());
+      expect(Object.keys(colorMap?.[context]?.s ?? {}).sort()).toEqual([...intents].sort());
       for (const intent of intents) {
-        expect(Object.keys(colorMap?.[context]?.[intent] ?? {}).sort()).toEqual([...EMPHASIS_KEYS]);
+        expect(Object.keys(colorMap?.[context]?.s?.[intent] ?? {}).sort()).toEqual([
+          ...EMPHASIS_KEYS
+        ]);
       }
     }
   }

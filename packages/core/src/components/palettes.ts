@@ -1,5 +1,6 @@
 import {
   type ColorProperty,
+  colorVariants,
   interactionStateKeys,
   surfaceContexts
 } from '../types/colors/colors.types.ts';
@@ -101,99 +102,76 @@ function validateColorMap(
   return true;
 }
 
-/**
- * What
- *     Validates the segment, theme, and surface-context palette hierarchy.
- * Why
- *     Every component contract must reject the legacy theme-to-color shape consistently.
- */
+/** Validates required Standard palettes and sparse, independently authored Alternative leaves. */
 export function getElementPaletteValidationIssues(
   value: unknown,
   allowedColorKeys: readonly ColorProperty[],
   options: { requireRest?: boolean } = {}
 ): ElementPaletteValidationIssue[] {
   const issues: ElementPaletteValidationIssue[] = [];
-
-  if (!isRecord(value)) {
-    return [{ path: [], message: 'expected object' }];
-  }
-
+  if (!isRecord(value)) return [{ path: [], message: 'expected object' }];
   for (const [segment, byTheme] of Object.entries(value)) {
     if (!isRecord(byTheme)) {
       issues.push({ path: [segment], message: 'expected object' });
       continue;
     }
-
     for (const [theme, bySurfaceContext] of Object.entries(byTheme)) {
       const themePath = [segment, theme];
       if (!isRecord(bySurfaceContext)) {
         issues.push({ path: themePath, message: 'expected object' });
         continue;
       }
-
-      for (const context of Object.keys(bySurfaceContext)) {
+      if (!Object.hasOwn(bySurfaceContext, 'onSubtle')) {
+        issues.push({ path: [...themePath, 'onSubtle'], message: 'required surface context' });
+      }
+      const standards: Partial<Record<'onSubtle' | 'onVivid', Record<string, unknown>>> = {};
+      for (const [context, variants] of Object.entries(bySurfaceContext)) {
+        const contextPath = [...themePath, context];
         if (!surfaceContexts.includes(context as never)) {
-          issues.push({
-            path: [...themePath, context],
-            message: 'unrecognized surface context'
-          });
+          issues.push({ path: contextPath, message: 'unrecognized surface context' });
+          continue;
+        }
+        if (!isRecord(variants)) {
+          issues.push({ path: contextPath, message: 'expected object' });
+          continue;
+        }
+        if (!Object.hasOwn(variants, 'standard')) {
+          issues.push({ path: [...contextPath, 'standard'], message: 'required color variant' });
+        }
+        for (const [variant, colors] of Object.entries(variants)) {
+          if (!colorVariants.includes(variant as never)) {
+            issues.push({ path: [...contextPath, variant], message: 'unrecognized color variant' });
+            continue;
+          }
+          const valid = validateColorMap(
+            colors,
+            allowedColorKeys,
+            [...contextPath, variant],
+            issues,
+            options.requireRest !== false
+          );
+          if (valid && variant === 'standard')
+            standards[context as 'onSubtle' | 'onVivid'] = colors;
         }
       }
-
-      if (!Object.hasOwn(bySurfaceContext, 'onSubtle')) {
-        issues.push({
-          path: [...themePath, 'onSubtle'],
-          message: 'required surface context'
-        });
-        continue;
-      }
-
-      const onSubtlePath = [...themePath, 'onSubtle'];
-      const onSubtleColorMap = bySurfaceContext.onSubtle;
-      const onSubtleIsValid = validateColorMap(
-        onSubtleColorMap,
-        allowedColorKeys,
-        onSubtlePath,
-        issues,
-        options.requireRest !== false
-      );
-
-      if (!Object.hasOwn(bySurfaceContext, 'onVivid')) continue;
-
-      const onVividPath = [...themePath, 'onVivid'];
-      const onVividColorMap = bySurfaceContext.onVivid;
-      const onVividIsValid = validateColorMap(
-        onVividColorMap,
-        allowedColorKeys,
-        onVividPath,
-        issues,
-        options.requireRest !== false
-      );
-
-      if (!onSubtleIsValid || !onVividIsValid) continue;
-
-      const onSubtlePairs = getCoveragePairs(onSubtleColorMap, allowedColorKeys);
-      const onVividPairs = getCoveragePairs(onVividColorMap, allowedColorKeys);
-
-      for (const pair of onSubtlePairs) {
-        if (!onVividPairs.has(pair)) {
+      if (!standards.onSubtle || !standards.onVivid) continue;
+      const subtle = getCoveragePairs(standards.onSubtle, allowedColorKeys);
+      const vivid = getCoveragePairs(standards.onVivid, allowedColorKeys);
+      for (const pair of subtle) {
+        if (!vivid.has(pair))
           issues.push({
-            path: [...onVividPath, ...pair.split('.')],
+            path: [...themePath, 'onVivid', 'standard', ...pair.split('.')],
             message: 'must cover the same property, intent, and emphasis as onSubtle'
           });
-        }
       }
-
-      for (const pair of onVividPairs) {
-        if (!onSubtlePairs.has(pair)) {
+      for (const pair of vivid) {
+        if (!subtle.has(pair))
           issues.push({
-            path: [...onVividPath, ...pair.split('.')],
+            path: [...themePath, 'onVivid', 'standard', ...pair.split('.')],
             message: 'must not add a property, intent, or emphasis absent from onSubtle'
           });
-        }
       }
     }
   }
-
   return issues;
 }

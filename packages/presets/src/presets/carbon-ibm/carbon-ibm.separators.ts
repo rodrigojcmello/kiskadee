@@ -14,11 +14,13 @@ export function createCarbonIbmSeparators(): SchemaSeparators {
                 (['onSubtle', 'onVivid'] as const).map((context) => [
                   context,
                   {
-                    boxColor: {
-                      neutral: {
-                        lowest: { rest: contour(`neutral.standard.${theme}.${context}.lowest`) },
-                        low: { rest: contour(`neutral.standard.${theme}.${context}.low`) },
-                        medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) }
+                    standard: {
+                      boxColor: {
+                        neutral: {
+                          lowest: { rest: contour(`neutral.standard.${theme}.${context}.lowest`) },
+                          low: { rest: contour(`neutral.standard.${theme}.${context}.low`) },
+                          medium: { rest: contour(`neutral.standard.${theme}.${context}.medium`) }
+                        }
                       }
                     }
                   }

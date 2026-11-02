@@ -60,7 +60,8 @@ function addPaletteIssue(
 function validateSeparatorColorMap(
   value: unknown,
   path: PropertyKey[],
-  ctx: z.core.$RefinementCtx<unknown>
+  ctx: z.core.$RefinementCtx<unknown>,
+  requireCoverage: boolean
 ): void {
   if (!isRecord(value)) return;
 
@@ -80,12 +81,12 @@ function validateSeparatorColorMap(
 
   for (const intent of ['neutral', 'primary'] as const) {
     const colors = boxColor[intent];
-    if (colors === undefined && intent === 'primary') continue;
+    if (colors === undefined && (intent === 'primary' || !requireCoverage)) continue;
     if (!isRecord(colors)) {
       addPaletteIssue(ctx, [...path, 'boxColor', intent], 'required intent');
       continue;
     }
-    if (!isRecord(colors.medium)) {
+    if (requireCoverage && !isRecord(colors.medium)) {
       addPaletteIssue(ctx, [...path, 'boxColor', intent, 'medium'], 'required emphasis');
     }
     for (const [emphasis, states] of Object.entries(colors)) {
@@ -128,9 +129,17 @@ const separatorProfilePalettesContractSchema = z.unknown().superRefine((value, c
         addPaletteIssue(ctx, [segment, theme], 'unrecognized theme');
       }
       if (!isRecord(byContext)) continue;
-      for (const [context, colorMap] of Object.entries(byContext)) {
+      for (const [context, variants] of Object.entries(byContext)) {
         if (context !== 'onSubtle' && context !== 'onVivid') continue;
-        validateSeparatorColorMap(colorMap, [segment, theme, context], ctx);
+        if (!isRecord(variants)) continue;
+        for (const [variant, colorMap] of Object.entries(variants)) {
+          validateSeparatorColorMap(
+            colorMap,
+            [segment, theme, context, variant],
+            ctx,
+            variant === 'standard'
+          );
+        }
       }
     }
   }

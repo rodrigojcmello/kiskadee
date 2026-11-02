@@ -34,8 +34,8 @@ const context: KiskadeeContextValue = {
     badge: {
       e1: {
         c: {
-          s: { attention: { m: 'badge-on-subtle' } },
-          v: { attention: { m: 'badge-on-vivid' } }
+          s: { s: { attention: { m: 'badge-on-subtle' } } },
+          v: { s: { attention: { m: 'badge-on-vivid' } } }
         }
       }
     },
@@ -51,14 +51,17 @@ const context: KiskadeeContextValue = {
   global: {},
   componentArtifacts: {
     button: {
+      formatVersion: 3,
       component: 'button',
       ...{
         contentSurfaceContext: {
           default: {
             light: {
               onVivid: {
-                primary: {
-                  high: { rest: 'onSubtle' }
+                standard: {
+                  primary: {
+                    high: { rest: 'onSubtle' }
+                  }
                 }
               }
             }
@@ -67,30 +70,35 @@ const context: KiskadeeContextValue = {
       }
     },
     card: {
+      formatVersion: 3,
       component: 'card',
       ...{
         contentSurfaceContext: {
           default: {
             light: {
               onSubtle: {
-                neutral: {
-                  medium: {
-                    rest: 'onSubtle',
-                    selected: 'onVivid',
-                    disabled: 'onVivid'
+                standard: {
+                  neutral: {
+                    medium: {
+                      rest: 'onSubtle',
+                      selected: 'onVivid',
+                      disabled: 'onVivid'
+                    },
+                    low: { rest: 'onSubtle', selected: 'onVivid' }
                   },
-                  low: { rest: 'onSubtle', selected: 'onVivid' }
-                },
-                primary: {
-                  high: { rest: 'onVivid' }
+                  primary: {
+                    high: { rest: 'onVivid' }
+                  }
                 }
               },
               onVivid: {
-                neutral: {
-                  low: { rest: 'onSubtle' }
-                },
-                primary: {
-                  high: { rest: 'onVivid' }
+                standard: {
+                  neutral: {
+                    low: { rest: 'onSubtle' }
+                  },
+                  primary: {
+                    high: { rest: 'onVivid' }
+                  }
                 }
               }
             }

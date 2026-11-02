@@ -26,9 +26,21 @@ are regression bounds for this fixture, not promises about application runtime o
 A missing manifest entry is legitimate absence. A declared resource whose transport fails must
 reject; hosts must not convert network, HTTP or JSON errors into resolved `undefined` values.
 Failed promises are evicted. Successful absence remains cached until the artifact version changes.
+Component metadata and class-map envelopes require `formatVersion: 3`. Metadata validation is
+shared by every component adapter, including supplied preloads; incompatible envelopes cannot
+reach the component. Defined class-map envelopes must identify the requested component and contain
+an object map; only `undefined` represents normal absence. Loaded envelopes are validated before their promises settle in the cache,
+so format failures expose the same error/retry flow as transport failures instead of becoming
+permanently cached successes. Retry fetches the rejected resource again and preserves successful
+siblings such as the core map when only the palette failed.
 Core and palette requests run concurrently; merged maps publish errors and notify mounted consumers.
 A valid previous map can remain available during loading/error, but a completed absent result
 clears that previous value.
+Loader errors belong to active resource resolution. Removing a loader hides its cached errors,
+allowing a host to supply static resources under the same key. Metadata supplied through a valid
+preload takes precedence over a loader error; invalid preloads still fail validation. Consumers
+that retain cached metadata when a loader disappears keep successful metadata, not its old error
+state. Snapshots remain shared for other consumers whose loaders are still active.
 
 `@kiskadee/react-components/resources` exposes `useComponentClassMapResolution` and
 `useLoadedComponentArtifact` for hosts that need status/error and an explicit `retry()` action.

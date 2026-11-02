@@ -10,7 +10,7 @@ const switchSchema = createMaterial3GoogleSwitchSchema({
   segmentNames: ['default', 'dynamic', 'purple'],
   transparent: c('default', 'l', 'primitive.black.v1', 100, 0)
 });
-const base = switchSchema.variants?.standard?.modes?.base;
+const base = switchSchema.variants!.standard?.modes?.base;
 const refValue = (value: unknown) =>
   typeof value === 'object' && value !== null && 'ref' in value
     ? (value as { ref?: unknown }).ref
@@ -44,10 +44,10 @@ it('publishes both intents and both surface contexts for every Material segment 
   for (const segment of ['default', 'dynamic'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const) {
-        const track = base?.elements.e2?.palettes?.[segment]?.[theme]?.[surface];
-        const thumb = base?.elements.e3?.palettes?.[segment]?.[theme]?.[surface];
-        const label = base?.elements.e4?.palettes?.[segment]?.[theme]?.[surface];
-        const icon = base?.elements.e6?.palettes?.[segment]?.[theme]?.[surface];
+        const track = base?.elements.e2?.palettes?.[segment]?.[theme]?.[surface]?.standard;
+        const thumb = base?.elements.e3?.palettes?.[segment]?.[theme]?.[surface]?.standard;
+        const label = base?.elements.e4?.palettes?.[segment]?.[theme]?.[surface]?.standard;
+        const icon = base?.elements.e6?.palettes?.[segment]?.[theme]?.[surface]?.standard;
 
         expect(track?.boxColor).toEqual(
           expect.objectContaining({ neutral: expect.anything(), polarity: expect.anything() })
@@ -68,9 +68,9 @@ it('publishes both intents and both surface contexts for every Material segment 
 });
 
 it('resolves approved Material blue, red and green families without the legacy purple', () => {
-  const lightSubtle = base?.elements.e2?.palettes?.default?.light?.onSubtle;
-  const lightVivid = base?.elements.e2?.palettes?.default?.light?.onVivid;
-  const vividThumb = base?.elements.e3?.palettes?.default?.light?.onVivid;
+  const lightSubtle = base?.elements.e2?.palettes?.default?.light?.onSubtle?.standard;
+  const lightVivid = base?.elements.e2?.palettes?.default?.light?.onVivid?.standard;
+  const vividThumb = base?.elements.e3?.palettes?.default?.light?.onVivid?.standard;
 
   expect(lightSubtle?.boxColor?.neutral?.medium?.selected?.rest).toEqual({
     ref: c.ref('default', 'l', 'switch.neutral', 'vivid')
@@ -93,10 +93,11 @@ it('resolves approved Material blue, red and green families without the legacy p
 
 it('keeps interaction maps sparse and preserves selected precedence', () => {
   const subtleTrack =
-    base?.elements.e2?.palettes?.default?.light?.onSubtle?.boxColor?.neutral?.medium;
+    base?.elements.e2?.palettes?.default?.light?.onSubtle?.standard?.boxColor?.neutral?.medium;
   const vividBorder =
-    base?.elements.e2?.palettes?.default?.light?.onVivid?.borderColor?.neutral?.medium;
-  const darkThumb = base?.elements.e3?.palettes?.default?.dark?.onSubtle?.boxColor?.neutral?.medium;
+    base?.elements.e2?.palettes?.default?.light?.onVivid?.standard?.borderColor?.neutral?.medium;
+  const darkThumb =
+    base?.elements.e3?.palettes?.default?.dark?.onSubtle?.standard?.boxColor?.neutral?.medium;
 
   expect(subtleTrack?.hover).toBeUndefined();
   expect(subtleTrack?.focus).toBeUndefined();
@@ -121,8 +122,8 @@ it('keeps control text styled but disabled by default and strengthens the light 
   expect(switchSchema.options?.controlTextVisibility).toBe('none');
   expect(base?.elements.e5?.scales?.marginRight).toEqual({ 's:sm:1': 8, 's:md:1': 8, 's:lg:1': 8 });
   for (const segment of ['default', 'dynamic', 'purple'] as const) {
-    const track = base?.elements.e2?.palettes?.[segment]?.light?.onSubtle;
-    const thumb = base?.elements.e3?.palettes?.[segment]?.light?.onSubtle;
+    const track = base?.elements.e2?.palettes?.[segment]?.light?.onSubtle?.standard;
+    const thumb = base?.elements.e3?.palettes?.[segment]?.light?.onSubtle?.standard;
     expect(track?.borderColor?.neutral?.medium?.rest).toBe(
       c.ref(segment, 'l', 'neutral', 'medium', 4)
     );

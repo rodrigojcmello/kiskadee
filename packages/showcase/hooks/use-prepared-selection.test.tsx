@@ -10,7 +10,9 @@ const fixtures = vi.hoisted(() => ({
   prepare: vi.fn(),
   wow: vi.fn(),
   activate: vi.fn(),
-  json: vi.fn(async (path: string): Promise<unknown> => ({ key: path.split('/')[0] }))
+  json: vi.fn(
+    async (path: string): Promise<unknown> => ({ formatVersion: 3, key: path.split('/')[0] })
+  )
 }));
 vi.mock('@/utils/brand-pack-loader.client', () => ({ loadBrandPack: vi.fn() }));
 vi.mock('@/utils/playWowTransition', () => ({ playWowTransition: fixtures.wow }));
@@ -73,6 +75,7 @@ it('waits for consumed component maps and supports retry without committing part
     path = path.split('?')[0];
     if (path.endsWith('manifest.json'))
       return {
+        formatVersion: 3,
         key: 'resources',
         version: '1',
         components: {
@@ -89,9 +92,10 @@ it('waits for consumed component maps and supports retry without committing part
       };
     if (path.endsWith('global.kiskadee.json')) return {};
     if (path.endsWith('button.descriptor.json'))
-      return { component: 'button', styles: [], classMap: 'button.palette.json' };
+      return { formatVersion: 3, component: 'button', styles: [], classMap: 'button.palette.json' };
     if (path.endsWith('button.metadata.json'))
       return {
+        formatVersion: 3,
         component: 'button',
         options: {},
         sizeSupport: { sizes: ['md:1'] },
@@ -104,11 +108,12 @@ it('waits for consumed component maps and supports retry without committing part
     if (path.split('?')[0].endsWith('button.palette.json') && failPalette)
       throw new Error('offline');
     return {
+      formatVersion: 3,
       component: 'button',
       classMap: {
         e1: path.split('?')[0].endsWith('button.core.json')
           ? { d: 'base' }
-          : { c: { s: { neutral: { m: 'color' } } } }
+          : { c: { s: { s: { neutral: { m: 'color' } } } } }
       }
     };
   });
@@ -128,13 +133,16 @@ it('waits for consumed component maps and supports retry without committing part
   act(() => view.result.current.retry());
   await waitFor(() =>
     expect(view.result.current.prepared?.classMaps).toEqual({
-      button: { e1: { d: 'base', c: { s: { neutral: { m: 'color' } } } } }
+      button: { e1: { d: 'base', c: { s: { s: { neutral: { m: 'color' } } } } } }
     })
   );
 });
 
 it('activates each selection before descendant layout measurements', async () => {
-  fixtures.json.mockImplementation(async (path: string) => ({ key: path.split('/')[0] }));
+  fixtures.json.mockImplementation(async (path: string) => ({
+    formatVersion: 3,
+    key: path.split('/')[0]
+  }));
   const links = {
     A: [document.createElement('link')],
     B: [document.createElement('link')]
@@ -177,7 +185,10 @@ it('activates each selection before descendant layout measurements', async () =>
 
 it('prepares active Brand Packs before committing a new selection', async () => {
   fixtures.prepare.mockResolvedValue([]);
-  fixtures.json.mockImplementation(async (path: string) => ({ key: path.split('/')[0] }));
+  fixtures.json.mockImplementation(async (path: string) => ({
+    formatVersion: 3,
+    key: path.split('/')[0]
+  }));
   const { loadBrandPack } = await import('@/utils/brand-pack-loader.client');
   let release: (value: any) => void = () => {};
   vi.mocked(loadBrandPack).mockImplementationOnce(

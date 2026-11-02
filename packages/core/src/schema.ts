@@ -30,6 +30,8 @@ import type { ElementForeground, SchemaForegrounds } from './foreground.ts';
 import type { ElementIconSize, SchemaIconSizes } from './icon-sizes.ts';
 import type { ElementSeparator, SchemaSeparators } from './separator.ts';
 import type {
+  ColorVariant,
+  ColorVariantBucket,
   ElementPalettes,
   InteractionState,
   SchemaColors,
@@ -90,7 +92,7 @@ export type ElementStyle<TSegmentName extends SegmentName = never> = {
   separator: ElementSeparator;
   typography: ElementTypography;
   scales: ScaleSchema;
-  // Palettes follow the structure: segmentName → theme → surface context → ColorSchema.
+  // Palettes follow the structure: segmentName → theme → surface context → color variant → ColorSchema.
   // This ensures consistency and enables proper white-label theming with theme mode support.
   palettes: ElementPalettes<TSegmentName>;
   effects: ElementEffects;
@@ -130,7 +132,14 @@ export interface StyleKeyByElement<TSegmentName extends SegmentName = never> {
   palettes: Partial<
     Record<
       TSegmentName | 'default' | 'dynamic',
-      Partial<Record<ThemeMode, Partial<Record<SurfaceContext, InteractionStateBySemanticColor>>>>
+      Partial<
+        Record<
+          ThemeMode,
+          Partial<
+            Record<SurfaceContext, Partial<Record<ColorVariant, InteractionStateBySemanticColor>>>
+          >
+        >
+      >
     >
   >;
 }
@@ -405,16 +414,21 @@ export type ClassNameByElementJSON = {
   b?: Partial<
     Record<
       SurfaceContextBucket,
-      Record<
-        string,
-        Partial<
+      Partial<
+        Record<
+          ColorVariantBucket,
           Record<
-            keyof ColorClasses,
-            {
-              on: string;
-              off: string;
-              adaptive: boolean;
-            }
+            string,
+            Partial<
+              Record<
+                keyof ColorClasses,
+                {
+                  on: string;
+                  off: string;
+                  adaptive: boolean;
+                }
+              >
+            >
           >
         >
       >
@@ -460,9 +474,11 @@ export type ClassNameByElementJSON = {
   rp?: Partial<Record<string, string>>;
   // rs: square border radius scales (size-aware, opt-in at component level).
   rs?: Partial<Record<string, string>>;
-  // c: Surface-context bucket -> semantic key -> emphasis color classes.
+  // c: Surface-context bucket -> color-variant bucket -> semantic key -> emphasis color classes.
   // s = onSubtle, v = onVivid. No legacy flat format.
-  c?: Partial<Record<SurfaceContextBucket, Record<string, ColorClasses>>>;
+  c?: Partial<
+    Record<SurfaceContextBucket, Partial<Record<ColorVariantBucket, Record<string, ColorClasses>>>>
+  >;
   // l: control-state specific (selected) — flattened string of utility classes
   l?: string;
 };
@@ -477,7 +493,12 @@ export type ComponentVariantModeClassNameMapJSON = Record<string, ComponentVaria
 export type ButtonGroupFrameOmissions = Partial<
   Record<
     SurfaceContextBucket,
-    Record<string, Partial<Record<keyof ColorClasses, { pressed?: true; selected?: true }>>>
+    Partial<
+      Record<
+        ColorVariantBucket,
+        Record<string, Partial<Record<keyof ColorClasses, { pressed?: true; selected?: true }>>>
+      >
+    >
   >
 >;
 

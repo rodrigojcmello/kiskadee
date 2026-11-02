@@ -21,7 +21,9 @@ function consumer(token: string, channel = 'borderColor') {
           e1: {
             palettes: {
               default: {
-                light: { onSubtle: { [channel]: { neutral: { lowest: { rest: token } } } } }
+                light: {
+                  onSubtle: { standard: { [channel]: { neutral: { lowest: { rest: token } } } } }
+                }
               }
             }
           }

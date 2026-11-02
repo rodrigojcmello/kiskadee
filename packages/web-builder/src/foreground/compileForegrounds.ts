@@ -71,8 +71,10 @@ export function expandElementForeground(
             ])
           );
           contexts[context] = {
-            textColor: {
-              [intent]: restOnlyEmphases
+            standard: {
+              textColor: {
+                [intent]: restOnlyEmphases
+              }
             }
           };
         }

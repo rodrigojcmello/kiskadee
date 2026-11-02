@@ -18,10 +18,12 @@ const context: KiskadeeContextValue = {
         s: { all: 'separator-thickness' },
         c: {
           s: {
-            neutral: { m: 'separator-color', l: 'separator-low-subtle' },
-            primary: { m: 'separator-primary-subtle' }
+            s: {
+              neutral: { m: 'separator-color', l: 'separator-low-subtle' },
+              primary: { m: 'separator-primary-subtle' }
+            }
           },
-          v: { neutral: { m: 'separator-medium-vivid', l: 'separator-low-vivid' } }
+          v: { s: { neutral: { m: 'separator-medium-vivid', l: 'separator-low-vivid' } } }
         }
       }
     }

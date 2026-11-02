@@ -3,6 +3,87 @@
 This file records source evidence and color decisions for the Button currently authored in
 `packages/presets/src/presets/fluent-2-microsoft/components/button.schema.ts`.
 
+## Shared color variants - 2026-11-02
+
+Status: **Kiskadee extension**. The user approved optional `standard` and `alternative`
+Button paint through the shared `colorVariant` axis. It defaults to `standard`.
+The complete existing standard recipe, including the Primary Medium complementary pilot
+below, remains unchanged. This adds no official Fluent appearance, tonal asset, generator
+change, semantic intent or Headless behavior. Rendered visual acceptance remains user-owned.
+
+The [approved complementary promotion](../colors/fluent-tonal-scale-evidence.md#muted-darks-and-complementary-promotion)
+is the color source. Its original Windows selected-tile reference establishes provenance;
+it does not supply this complete Button treatment. Existing base-family and complementary
+asset approvals are reused without regeneration.
+
+| Button intent | Semantic variant / promoted family | Light Vivid / generated HEX | Dark Vivid / generated HEX |
+| --- | --- | --- | --- |
+| Primary, Default | `primary.v2` / `b.blue.v1.c` | L18 / `#40befe` | D80 / `#40befe` |
+| Primary, Teams | `primary.v2` / `pb.indigo.v2.c` | L18 / `#b5a2f4` | D80 / `#b5a2f4` |
+| Positive, both segments | `greenLike.v2` / `g.green.v1.c` | L18 / `#5ecd59` | D80 / `#5ecd59` |
+| Destructive, both segments | `redLike.v2` / `r.red.v1.c` | L18 / `#fe8a80` | D80 / `#fe8a80` |
+| Neutral, both segments | Existing `neutral.v1` / `n.black.v1` | Existing achromatic recipe | Existing achromatic recipe |
+
+Alternative paint is authored only for `onVivid`, in all three themes and both segments.
+All complementary component lookups deliberately use the physical Light track, including
+Dark and Darker appearances. `C` below means the corresponding intent's complementary
+family; every C lookup is a strict `reference` locator. `C vivid +1/+3` resolves to L20/L24,
+`C subtle` to L4. These are explicit Kiskadee recipe decisions, not upstream state offsets.
+
+| Emphasis | Rest and Hover | Pressed and Selected | Label and icon |
+| --- | --- | --- | --- |
+| High | Opaque `C vivid` / `C vivid +1` | Opaque `C vivid +3` | Existing achromatic `reference(neutral, vivid)` on Light, currently L85 `#252525` |
+| Medium | Light: C vivid overlays at 14/10%; Dark/Darker: the existing family-relative `subtle +8/+6` inputs and 0.04/0.032 perceptual-distance targets, using C | Opaque `C vivid` | Physical white in Rest/Hover; the same dark neutral in Pressed/Selected |
+| Low | Existing Rest base; C vivid overlays at Light 8%, Dark/Darker 10% for Hover | C vivid overlay at Light 12%, Dark/Darker 30% | Physical white |
+| Lowest | Transparent Rest; the same C overlays as Low for Hover | The same C overlays as Low | `C subtle`; white Pressed/Selected only where the authored canonical-surface contrast check requires it |
+
+Low Light retains its existing opaque `exact(card.primary, L50, component.card)` base and
+flattens C interaction paint over it during authorship. Dark/Darker Low and all Lowest
+interaction paint remain translucent. Low's perimeter uses C at the existing 30/85/85%
+theme alphas; the Light lower contour retains 45% Rest and 50% Hover. Its Light active
+contour uses C at 7%. Dark/Darker lower contours use opaque C. Medium Light substitutes C
+into its existing 10% Rest contour and retains its transparent active contour. Existing
+terminal colors remain in their established neutral treatment. Pending keeps the existing
+60% surface/contour and 70% label visibility factors; the icon omits the label's Pending
+delta so spinner artwork keeps its normal strength.
+
+Selected equals Pressed. Every alternative chromatic surface has an explicit Selected Hover
+reset so the weaker base Hover cannot replace persistent selection. No Focus surface or
+content delta is introduced. A white Lowest active foreground is authored only when C
+Subtle would fall below 4.5:1 over the canonical selected surface; the result is static
+schema data, not browser background inspection. Published descendant context follows the
+new surface polarity: High produces `onSubtle`; Medium Selected produces `onSubtle` while
+Rest remains `onVivid`; Low/Lowest preserve their existing publication. The existing context
+contract has no transient Pressed branch, so directly owned Pressed content changes color
+without adding a Provider or runtime context state.
+
+The shared palette coordinate is
+`palettes[segment][theme][surfaceContext][colorVariant]`. The existing `e1`, `e2` and `e3`
+publish the chromatic alternatives directly in `onVivid.alternative`; their `standard`
+recipes remain unchanged. Neutral has no authored Alternative leaf and inherits Standard.
+The achromatic divider `e6`, icon region `e4`, and disclosure `e5` need no alternative paint.
+Geometry, effects, typography and icon sizes continue to come from their existing owners.
+
+Descendant context uses the same `standard`/`alternative` axis in
+`contentSurfaceContext[segment][theme][surfaceContext][colorVariant]`. A missing alternative property,
+intent or emphasis inherits the entire Standard state map. A present alternative state map
+owns its states: missing Hover keeps its own Rest and does not import Standard Hover.
+Resolution happens during the build, with no runtime palette merge.
+
+The indicator retains only its original inside/outside recipes on `e11`/`e12`. Both always
+consume Standard paint, independently of the Button color variant. No alternative indicator,
+additional anatomy, indicator contrast recalibration or indicator-specific color option is
+published. Portable BrandPacks retain their Standard recipes; no complementary BrandPack
+family is synthesized.
+
+Focused tests cover the complete onVivid body matrix, inherited Neutral, sparse descendant
+contexts, retained active label/icon contrast and the absence of alternative indicator data.
+Standard preservation was checked during migration against temporary pre-migration snapshots;
+those audit snapshots are not repository fixtures or a persistent regression test.
+These checks establish the authored candidate's technical bounds; they do not promise
+contrast over every arbitrary surface merely labeled `onVivid`. Final visual acceptance
+remains user-owned.
+
 ## Complementary Primary Medium on vivid — 2026-11-01
 
 Status: **Kiskadee extension**, approved as a three-component preset pilot after visual

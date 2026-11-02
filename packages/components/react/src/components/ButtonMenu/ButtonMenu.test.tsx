@@ -105,6 +105,7 @@ const fluentFeedbackContext: KiskadeeContextValue = {
   },
   componentArtifacts: {
     button: {
+      formatVersion: 3,
       component: 'button',
       ...{
         effects: { activationFeedback: true }
@@ -145,18 +146,18 @@ const groupDividerContext: KiskadeeContextValue = {
       },
       e6: {
         s: { all: 'button-divider-size' },
-        c: { s: { neutral: { m: 'button-divider-color' } } }
+        c: { s: { s: { neutral: { m: 'button-divider-color' } } } }
       },
       group: {
         frame: {
           d: 'group-border-style',
           s: { all: 'group-border-width' },
           rr: { all: 'group-radius' },
-          c: { s: { neutral: { m: 'group-border-rest' } } }
+          c: { s: { s: { neutral: { m: 'group-border-rest' } } } }
         },
         member: {
           d: 'group-member-border-off',
-          c: { s: { neutral: { m: 'group-member-surface' } } }
+          c: { s: { s: { neutral: { m: 'group-member-surface' } } } }
         }
       }
     },
@@ -165,6 +166,7 @@ const groupDividerContext: KiskadeeContextValue = {
   global: {},
   componentArtifacts: {
     button: {
+      formatVersion: 3,
       component: 'button',
       ...{
         options: { groupDivider: true }

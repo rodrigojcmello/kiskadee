@@ -29,39 +29,41 @@ it('publishes the linear Progress track and indicator matrix', () => {
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const) {
         const track =
-          progress.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.neutral?.medium
-            ?.rest;
+          progress.elements.e2.palettes?.[segment]?.[theme]?.[surface]?.standard?.boxColor?.neutral
+            ?.medium?.rest;
         expect(track, `${segment}/${theme}/${surface} track`).toBeTruthy();
 
         for (const intent of intents) {
           const indicator =
-            progress.elements.e3.palettes?.[segment]?.[theme]?.[surface]?.boxColor?.[intent]?.medium
-              ?.rest;
+            progress.elements.e3.palettes?.[segment]?.[theme]?.[surface]?.standard?.boxColor?.[
+              intent
+            ]?.medium?.rest;
           expect(indicator, `${segment}/${theme}/${surface}/${intent} indicator`).toBeTruthy();
         }
       }
 });
 
 it('keeps tracks neutral and indicators in their own intent family', () => {
-  const light = progress.elements.e3.palettes?.default?.light?.onSubtle?.boxColor;
+  const light = progress.elements.e3.palettes?.default?.light?.onSubtle?.standard?.boxColor;
   expect(light?.primary?.medium?.rest).not.toBe(light?.positive?.medium?.rest);
   expect(light?.warning?.medium?.rest).not.toBe(light?.destructive?.medium?.rest);
   expect(
-    progress.elements.e2.palettes?.default?.light?.onVivid?.boxColor?.neutral?.medium?.rest
+    progress.elements.e2.palettes?.default?.light?.onVivid?.standard?.boxColor?.neutral?.medium
+      ?.rest
   ).toBe(c('default', 'l', 'primitive.black.v1', 0, 18));
 });
 
 it('raises dark chromatic indicators on subtle surfaces while preserving neutral vivid', () => {
-  const dark = progress.elements.e3.palettes?.default?.dark?.onSubtle?.boxColor;
+  const dark = progress.elements.e3.palettes?.default?.dark?.onSubtle?.standard?.boxColor;
 
   expect(dark?.primary?.medium?.rest).toBe(c.ref('default', 'd', 'progress.primary', 'vivid', 6));
   expect(dark?.neutral?.medium?.rest).toBe(c.ref('default', 'd', 'progress.neutral', 'vivid'));
 });
 
 it('keeps dark indicators at or above the progress contrast floor against the track', () => {
-  const track = progress.elements.e2.palettes?.default?.dark?.onSubtle?.boxColor?.neutral?.medium
-    ?.rest as string;
-  const indicator = progress.elements.e3.palettes?.default?.dark?.onSubtle?.boxColor;
+  const track = progress.elements.e2.palettes?.default?.dark?.onSubtle?.standard?.boxColor?.neutral
+    ?.medium?.rest as string;
+  const indicator = progress.elements.e3.palettes?.default?.dark?.onSubtle?.standard?.boxColor;
 
   for (const intent of intents) {
     const ratio = contrast(indicator?.[intent]?.medium?.rest as string, track);

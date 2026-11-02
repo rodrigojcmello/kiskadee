@@ -47,6 +47,7 @@ const context = {
   setTheme() {},
   componentArtifacts: {
     accordion: {
+      formatVersion: 3,
       component: 'accordion',
       options: {
         themes: ['light'],
@@ -54,7 +55,10 @@ const context = {
         divider: true,
         indicatorTransition: 'rotate'
       }
-    } satisfies NonNullable<KiskadeeComponentConfigs['accordion']> & { component: 'accordion' }
+    } satisfies NonNullable<KiskadeeComponentConfigs['accordion']> & {
+      component: 'accordion';
+      formatVersion: 3;
+    }
   }
 } satisfies KiskadeeContextValue;
 function Fixture({

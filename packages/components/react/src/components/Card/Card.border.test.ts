@@ -6,8 +6,8 @@ const base = {
     d: 'solid',
     s: { 'md:1': 'width' },
     e: { h: 'shadow' },
-    c: { s: { neutral: { m: 'surface states' } } },
-    b: { s: { neutral: { m: { on: 'border-on', off: 'border-off', adaptive: false } } } }
+    c: { s: { s: { neutral: { m: 'surface states' } } } },
+    b: { s: { s: { neutral: { m: { on: 'border-on', off: 'border-off', adaptive: false } } } } }
   },
   className: undefined,
   classNames: {},
@@ -40,7 +40,7 @@ describe('Card and CardAction border', () => {
     const input = { ...base, action };
     const on = {
       ...base.e1,
-      b: { s: { neutral: { m: { on: 'on', off: 'off', adaptive: true } } } }
+      b: { s: { s: { neutral: { m: { on: 'on', off: 'off', adaptive: true } } } } }
     };
     expect(resolveCardClassNames({ ...input, e1: on }).classNames.e1).toContain('on');
     expect(
@@ -75,8 +75,10 @@ describe('Card and CardAction border', () => {
   it('uses the complementary surface color with its authored base-intent border', () => {
     const e1 = {
       ...base.e1,
-      c: { s: { neutralComplementary: { m: 'complementary-surface' } } },
-      b: { s: { neutral: { m: { on: 'neutral-border', off: 'no-border', adaptive: true } } } }
+      c: { s: { s: { neutralComplementary: { m: 'complementary-surface' } } } },
+      b: {
+        s: { s: { neutral: { m: { on: 'neutral-border', off: 'no-border', adaptive: true } } } }
+      }
     };
     const classes = resolveCardClassNames({
       ...base,

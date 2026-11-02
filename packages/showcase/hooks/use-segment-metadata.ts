@@ -1,7 +1,8 @@
 'use client';
-import type { Manifest, SegmentArtifact } from '@kiskadee/web-builder/types';
+import type { SegmentArtifact } from '@kiskadee/web-builder/types';
 import { useCallback, useEffect, useState } from 'react';
 import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
+import { loadManifest } from './use-manifest';
 
 export function useSegmentMetadata(designSystem: string) {
   const [attempt, setAttempt] = useState(0);
@@ -11,9 +12,7 @@ export function useSegmentMetadata(designSystem: string) {
     let active = true;
     setState({ key: designSystem });
     async function load() {
-      const manifest = await loadJsonFromBuild<Manifest>(`${designSystem}/manifest.json`, {
-        required: true
-      });
+      const manifest = await loadManifest(designSystem);
       if (!manifest.segmentMetadata) throw new Error('Segment metadata is not published');
       return loadJsonFromBuild<SegmentArtifact>(
         `${designSystem}/${manifest.segmentMetadata}?revision=${encodeURIComponent(manifest.revision ?? '')}`,

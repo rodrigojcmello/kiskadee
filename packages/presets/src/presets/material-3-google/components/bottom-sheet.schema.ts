@@ -76,8 +76,8 @@ export function createMaterial3GoogleBottomSheetSchema({
     }
   });
   const withSurfaceContexts = <T>(palette: T) => ({
-    onSubtle: palette,
-    onVivid: palette
+    onSubtle: { standard: palette },
+    onVivid: { standard: palette }
   });
   const withVividContext = <T>(palette: T): T => {
     const source = palette as Record<string, unknown>;
@@ -117,17 +117,19 @@ export function createMaterial3GoogleBottomSheetSchema({
     return {
       surface: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.surface)
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.surface)
+                }
               }
-            }
-          },
-          borderColor: {
-            neutral: {
-              medium: {
-                rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.border, 12)
+            },
+            borderColor: {
+              neutral: {
+                medium: {
+                  rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.border, 12)
+                }
               }
             }
           }
@@ -135,10 +137,12 @@ export function createMaterial3GoogleBottomSheetSchema({
       },
       handle: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.handle)
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.handle)
+                }
               }
             }
           }
@@ -146,62 +150,66 @@ export function createMaterial3GoogleBottomSheetSchema({
       },
       item: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: transparent,
-                hover: c(segment, recipe.track, 'bottomSheet.neutral', recipe.hover, 8),
-                pressed: c(segment, recipe.track, 'bottomSheet.neutral', recipe.pressed, 12),
-                selected: {
-                  rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.selected, 12)
-                },
-                disabled: transparent
-              }
-            },
-            destructive: {
-              medium: {
-                rest: transparent,
-                hover: c(
-                  segment,
-                  recipe.track,
-                  'bottomSheet.destructive',
-                  recipe.destructiveText,
-                  8
-                ),
-                pressed: c(
-                  segment,
-                  recipe.track,
-                  'bottomSheet.destructive',
-                  recipe.destructiveText,
-                  12
-                ),
-                selected: {
-                  rest: c(
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: transparent,
+                  hover: c(segment, recipe.track, 'bottomSheet.neutral', recipe.hover, 8),
+                  pressed: c(segment, recipe.track, 'bottomSheet.neutral', recipe.pressed, 12),
+                  selected: {
+                    rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.selected, 12)
+                  },
+                  disabled: transparent
+                }
+              },
+              destructive: {
+                medium: {
+                  rest: transparent,
+                  hover: c(
+                    segment,
+                    recipe.track,
+                    'bottomSheet.destructive',
+                    recipe.destructiveText,
+                    8
+                  ),
+                  pressed: c(
                     segment,
                     recipe.track,
                     'bottomSheet.destructive',
                     recipe.destructiveText,
                     12
-                  )
-                },
-                disabled: transparent
+                  ),
+                  selected: {
+                    rest: c(
+                      segment,
+                      recipe.track,
+                      'bottomSheet.destructive',
+                      recipe.destructiveText,
+                      12
+                    )
+                  },
+                  disabled: transparent
+                }
               }
             }
           }
         }
       },
-      text: { onSubtle: { textColor } },
+      text: { onSubtle: { standard: { textColor } } },
       auxiliaryText: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: {
-                rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.auxiliaryText),
-                disabled: { ref: disabledText }
+          standard: {
+            textColor: {
+              neutral: {
+                medium: {
+                  rest: c(segment, recipe.track, 'bottomSheet.neutral', recipe.auxiliaryText),
+                  disabled: { ref: disabledText }
+                }
+              },
+              destructive: {
+                medium: { rest: destructiveText, disabled: { ref: disabledText } }
               }
-            },
-            destructive: {
-              medium: { rest: destructiveText, disabled: { ref: disabledText } }
             }
           }
         }

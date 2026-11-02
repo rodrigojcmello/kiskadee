@@ -293,52 +293,66 @@ export function createFluent2MicrosoftSwitchSchema({
 
     return {
       onSubtle: {
-        boxColor: Object.fromEntries(
-          SWITCH_INTENTS.map((intent) => [intent, { medium: onSubtleByIntent[intent].boxColor }])
-        ),
-        borderColor: Object.fromEntries(
-          SWITCH_INTENTS.map((intent) => [intent, { medium: onSubtleByIntent[intent].borderColor }])
-        )
+        standard: {
+          boxColor: Object.fromEntries(
+            SWITCH_INTENTS.map((intent) => [intent, { medium: onSubtleByIntent[intent].boxColor }])
+          ),
+          borderColor: Object.fromEntries(
+            SWITCH_INTENTS.map((intent) => [
+              intent,
+              { medium: onSubtleByIntent[intent].borderColor }
+            ])
+          )
+        }
       },
       onVivid: {
-        boxColor: Object.fromEntries(
-          SWITCH_INTENTS.map((intent) => [intent, { medium: onVividByIntent[intent].boxColor }])
-        ),
-        borderColor: Object.fromEntries(
-          SWITCH_INTENTS.map((intent) => [intent, { medium: onVividByIntent[intent].borderColor }])
-        )
+        standard: {
+          boxColor: Object.fromEntries(
+            SWITCH_INTENTS.map((intent) => [intent, { medium: onVividByIntent[intent].boxColor }])
+          ),
+          borderColor: Object.fromEntries(
+            SWITCH_INTENTS.map((intent) => [
+              intent,
+              { medium: onVividByIntent[intent].borderColor }
+            ])
+          )
+        }
       }
     };
   };
 
   const createThumbContext = (theme: ThemeName) => ({
     onSubtle: {
-      boxColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [
-          intent,
-          { medium: createOnSubtleThumbIntent(theme, intent).boxColor }
-        ])
-      ),
-      borderColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [
-          intent,
-          { medium: createOnSubtleThumbIntent(theme, intent).borderColor }
-        ])
-      )
+      standard: {
+        boxColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [
+            intent,
+            { medium: createOnSubtleThumbIntent(theme, intent).boxColor }
+          ])
+        ),
+        borderColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [
+            intent,
+            { medium: createOnSubtleThumbIntent(theme, intent).borderColor }
+          ])
+        )
+      }
     },
     onVivid: {
-      boxColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [
-          intent,
-          { medium: createOnVividThumbIntent(intent).boxColor }
-        ])
-      ),
-      borderColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [
-          intent,
-          { medium: createOnVividThumbIntent(intent).borderColor }
-        ])
-      )
+      standard: {
+        boxColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [
+            intent,
+            { medium: createOnVividThumbIntent(intent).boxColor }
+          ])
+        ),
+        borderColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [
+            intent,
+            { medium: createOnVividThumbIntent(intent).borderColor }
+          ])
+        )
+      }
     }
   });
 
@@ -362,14 +376,18 @@ export function createFluent2MicrosoftSwitchSchema({
 
   const createTextContext = (theme: ThemeName) => ({
     onSubtle: {
-      textColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [intent, createTextIntent(theme, 'onSubtle')])
-      )
+      standard: {
+        textColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [intent, createTextIntent(theme, 'onSubtle')])
+        )
+      }
     },
     onVivid: {
-      textColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [intent, createTextIntent(theme, 'onVivid')])
-      )
+      standard: {
+        textColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [intent, createTextIntent(theme, 'onVivid')])
+        )
+      }
     }
   });
 
@@ -454,14 +472,18 @@ export function createFluent2MicrosoftSwitchSchema({
 
   const createIconContext = (theme: ThemeName) => ({
     onSubtle: {
-      textColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [intent, createIconIntent(theme, 'onSubtle', intent)])
-      )
+      standard: {
+        textColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [intent, createIconIntent(theme, 'onSubtle', intent)])
+        )
+      }
     },
     onVivid: {
-      textColor: Object.fromEntries(
-        SWITCH_INTENTS.map((intent) => [intent, createIconIntent(theme, 'onVivid', intent)])
-      )
+      standard: {
+        textColor: Object.fromEntries(
+          SWITCH_INTENTS.map((intent) => [intent, createIconIntent(theme, 'onVivid', intent)])
+        )
+      }
     }
   });
 

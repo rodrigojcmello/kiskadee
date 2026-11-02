@@ -35,6 +35,7 @@ const context: KiskadeeContextValue = {
   setTheme: () => {},
   componentArtifacts: {
     button: {
+      formatVersion: 3,
       component: 'button',
       layouts: {
         stacked: {
@@ -67,6 +68,7 @@ describe('Button stacked composition', () => {
       ...context,
       componentArtifacts: {
         button: {
+          formatVersion: 3,
           component: 'button',
           layouts: context.componentArtifacts!.button!.layouts,
           options: { iconLayout: 'stacked' }
@@ -212,6 +214,7 @@ describe('Button stacked composition', () => {
       ...context,
       componentArtifacts: {
         button: {
+          formatVersion: 3,
           component: 'button',
           layouts: {
             stacked: {
@@ -346,7 +349,11 @@ describe('Button stacked composition', () => {
         {
           ...context,
           componentArtifacts: {
-            button: { component: 'button', layouts: { stacked: { sizes: ['md:1'] } } }
+            button: {
+              formatVersion: 3,
+              component: 'button',
+              layouts: { stacked: { sizes: ['md:1'] } }
+            }
           }
         }
       )

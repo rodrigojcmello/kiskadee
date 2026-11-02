@@ -146,10 +146,14 @@ function createTrackContextPalettes(
 ) {
   return {
     onSubtle: {
-      boxColor: createOnSubtleTrackProfiles(theme, c)
+      standard: {
+        boxColor: createOnSubtleTrackProfiles(theme, c)
+      }
     },
     onVivid: {
-      boxColor: createOnVividTrackProfiles(c)
+      standard: {
+        boxColor: createOnVividTrackProfiles(c)
+      }
     }
   };
 }
@@ -160,10 +164,14 @@ function createIndicatorContextPalettes(
 ) {
   return {
     onSubtle: {
-      boxColor: createOnSubtleIndicatorProfiles(theme, c)
+      standard: {
+        boxColor: createOnSubtleIndicatorProfiles(theme, c)
+      }
     },
     onVivid: {
-      boxColor: createOnVividIndicatorProfiles(c)
+      standard: {
+        boxColor: createOnVividIndicatorProfiles(c)
+      }
     }
   };
 }

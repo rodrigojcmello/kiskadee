@@ -11,8 +11,8 @@ const textField = createMaterial3GoogleTextFieldSchema({
 });
 
 type SurfacePalette = {
-  onSubtle?: unknown;
-  onVivid?: unknown;
+  onSubtle?: { standard: unknown };
+  onVivid?: { standard: unknown };
 };
 type PaletteElement = {
   palettes?: Record<string, Record<string, SurfacePalette>>;
@@ -33,14 +33,14 @@ it('publishes every TextField mode palette for both segments, themes and surface
           for (const theme of ['light', 'dark'] as const) {
             const palette = element.palettes?.[segment]?.[theme];
             if (!palette) continue;
-            expect(palette.onSubtle).toBeDefined();
-            expect(palette.onVivid).toBeDefined();
+            expect(palette.onSubtle!.standard).toBeDefined();
+            expect(palette.onVivid!.standard).toBeDefined();
           }
 });
 
 it('resolves borderless light surfaces through the approved primitive palette', () => {
-  const control = textField.variants?.standard?.modes?.borderless?.elements?.e3?.palettes?.default
-    ?.light?.onSubtle as {
+  const control = textField.variants!.standard?.modes?.borderless?.elements?.e3?.palettes?.default
+    ?.light?.onSubtle?.standard as {
     boxColor?: { neutral?: { medium?: { rest?: string } } };
   };
 
@@ -48,12 +48,12 @@ it('resolves borderless light surfaces through the approved primitive palette', 
 });
 
 it('uses light field content and state layers on vivid surfaces', () => {
-  const label = textField.variants?.standard?.modes?.outline?.elements?.e2?.palettes?.default?.light
-    ?.onVivid as {
+  const label = textField.variants!.standard?.modes?.outline?.elements?.e2?.palettes?.default?.light
+    ?.onVivid?.standard as {
     textColor?: { neutral?: { medium?: { rest?: string } } };
   };
-  const message = textField.variants?.standard?.modes?.outline?.elements?.e5?.palettes?.default
-    ?.light?.onVivid as {
+  const message = textField.variants!.standard?.modes?.outline?.elements?.e5?.palettes?.default
+    ?.light?.onVivid?.standard as {
     textColor?: { neutral?: { medium?: { rest?: string } } };
   };
 
@@ -74,9 +74,9 @@ it('keeps semantic hover without terminal deltas on vivid fields in both themes 
   for (const segment of ['default', 'dynamic'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const intent of ['error', 'warning'] as const) {
-        const palette = textField.variants?.standard?.modes?.outline?.elements?.e3?.palettes?.[
+        const palette = textField.variants!.standard?.modes?.outline?.elements?.e3?.palettes?.[
           segment
-        ]?.[theme]?.onVivid as unknown as FieldPaint;
+        ]?.[theme]?.onVivid?.standard as unknown as FieldPaint;
         const edge = palette.borderColor[intent].medium;
         const role = intent === 'error' ? 'textField.error' : 'textField.warning';
         expect(edge.rest).toBe(c.ref(segment, 'l', role, 'vivid'));
@@ -90,11 +90,11 @@ it('keeps semantic hover without terminal deltas on vivid fields in both themes 
 it('authors transparent shells and borders explicitly with the production cap', () => {
   const transparent = c('default', 'l', 'primitive.black.v1', 100, 0);
   for (const theme of ['light', 'dark'] as const) {
-    const modes = textField.variants?.standard?.modes;
-    const outline = modes?.outline?.elements?.e3?.palettes?.default?.[theme]
-      ?.onVivid as unknown as FieldPaint;
-    const borderless = modes?.borderless?.elements?.e3?.palettes?.default?.[theme]
-      ?.onVivid as unknown as FieldPaint;
+    const modes = textField.variants!.standard?.modes;
+    const outline = modes?.outline?.elements?.e3?.palettes?.default?.[theme]?.onVivid
+      ?.standard as unknown as FieldPaint;
+    const borderless = modes?.borderless?.elements?.e3?.palettes?.default?.[theme]?.onVivid
+      ?.standard as unknown as FieldPaint;
     for (const intent of ['neutral', 'error', 'warning'] as const) {
       expect(outline.boxColor[intent].medium.rest).toBe(transparent);
       expect(outline.boxColor[intent].medium.focus?.ref).toBe(transparent);
@@ -122,11 +122,11 @@ it('does not mistake opaque black source paint for a transparent inverse surface
     segmentNames: ['default', 'dynamic'],
     transparent: c('default', 'l', 'primitive.black.v1', 100, 0)
   });
-  const label = field.variants?.standard?.modes?.outline?.elements?.e2?.palettes?.default?.light;
-  expect((label?.onSubtle as unknown as FieldPaint).textColor.neutral.medium.rest).toBe(
+  const label = field.variants!.standard?.modes?.outline?.elements?.e2?.palettes?.default?.light;
+  expect((label?.onSubtle?.standard as unknown as FieldPaint).textColor.neutral.medium.rest).toBe(
     opaqueBlack
   );
-  expect((label?.onVivid as unknown as FieldPaint).textColor.neutral.medium.rest).toBe(
+  expect((label?.onVivid?.standard as unknown as FieldPaint).textColor.neutral.medium.rest).toBe(
     c('default', 'l', 'primitive.black.v1', 0)
   );
 });

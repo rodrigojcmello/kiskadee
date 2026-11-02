@@ -150,9 +150,11 @@ describe('Dropdown component contract', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: {
-              positive: { medium: { rest: '#ffffff' } },
-              neutral: { high: { rest: '#ffffff' } }
+            standard: {
+              boxColor: {
+                positive: { medium: { rest: '#ffffff' } },
+                neutral: { high: { rest: '#ffffff' } }
+              }
             }
           }
         }

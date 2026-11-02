@@ -61,7 +61,7 @@ export function ButtonRichTextEditorExample({
   });
   const textProfiles = useShowcaseTextProfiles();
   const { buttonClassesMap } = useButtonArtifactConfig();
-  const presentation = useButtonCompositionControls(buttonClassesMap);
+  const presentation = useButtonCompositionControls(buttonClassesMap, {}, surfaceContext);
   const {
     intent: editorIntent,
     emphasis: editorEmphasis,

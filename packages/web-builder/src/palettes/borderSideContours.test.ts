@@ -21,16 +21,18 @@ describe('side contour references', () => {
         default: {
           light: {
             onSubtle: {
-              [key]: {
-                neutral: { low: { rest: contour('neutral.standard.light.onSubtle.medium') } }
+              standard: {
+                [key]: {
+                  neutral: { low: { rest: contour('neutral.standard.light.onSubtle.medium') } }
+                }
               }
             }
           }
         }
       };
       expect(
-        resolveContourReferences(palettes, catalog).default?.light?.onSubtle[key]?.neutral?.low
-          ?.rest
+        resolveContourReferences(palettes, catalog).default?.light?.onSubtle.standard[key]?.neutral
+          ?.low?.rest
       ).toBe('#dddddd');
     }
   });

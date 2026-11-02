@@ -2,21 +2,28 @@
 
 import {
   ButtonIntentKeys,
+  type ButtonIntentValue,
   type ButtonSelectionEmphasis,
   type ComponentEmphasis,
+  parseButtonIntentValue,
   type RadiusMode,
-  type SystemButtonIntent
+  type SurfaceContext,
+  type SystemButtonIntent,
+  type SystemButtonIntentValue,
+  surfaceContextBuckets
 } from '@kiskadee/core';
 import type { ButtonArtifactConfig } from '@kiskadee/react-components/button';
 import { Container } from '@kiskadee/react-components/container';
 import { Layout } from '@kiskadee/react-components/layout';
+import { useKiskadee } from '@kiskadee/react-components/resources';
 import { Separator } from '@kiskadee/react-components/separator';
 import { useState } from 'react';
 import { ShowcaseContentSelectControl } from '@/components/ShowcaseControls';
+import { useButtonColorVariantMetadata } from '@/hooks/use-button-color-variants';
 import { ButtonSelectionEmphasisControl } from './ButtonSelectionEmphasisControl';
 
-type CompositionIntent = SystemButtonIntent | 'original';
-type CompositionSelectionIntent = SystemButtonIntent | 'same';
+type CompositionIntent = SystemButtonIntentValue | 'original';
+type CompositionSelectionIntent = SystemButtonIntentValue | 'same';
 
 type CompositionDefaults = {
   intent?: CompositionIntent;
@@ -27,7 +34,8 @@ type CompositionDefaults = {
 
 type CompositionControlsProps = {
   intent: CompositionIntent;
-  intentOptions: Array<{ value: SystemButtonIntent; label: string }>;
+  intentOptions: Array<{ value: SystemButtonIntentValue; label: string }>;
+  selectionIntentOptions: Array<{ value: SystemButtonIntentValue; label: string }>;
   allowOriginalIntent: boolean;
   onIntentChange: (value: CompositionIntent) => void;
   emphasis: ComponentEmphasis;
@@ -45,8 +53,12 @@ type CompositionControlsProps = {
 
 export function useButtonCompositionControls(
   classesMap: ButtonArtifactConfig['buttonClassesMap'],
-  defaults: CompositionDefaults = {}
+  defaults: CompositionDefaults = {},
+  surfaceContext: SurfaceContext = 'onSubtle'
 ) {
+  const { segment, theme } = useKiskadee();
+  const metadata = useButtonColorVariantMetadata();
+  const colorVariants = metadata?.capabilities?.colorVariants;
   const [requestedIntent, setRequestedIntent] = useState<CompositionIntent>(
     defaults.intent ?? 'neutral'
   );
@@ -56,33 +68,64 @@ export function useButtonCompositionControls(
   const [selectionEmphasis, setSelectionEmphasis] = useState<ButtonSelectionEmphasis>(
     defaults.selectionEmphasis ?? 'lowest'
   );
+  const standardCoverage = colorVariants?.standard?.[`${segment}.${theme}`]?.[surfaceContext];
+  const standardClasses = classesMap?.e1?.c?.[surfaceContextBuckets[surfaceContext]]?.s;
   const publishedIntents = (Object.keys(ButtonIntentKeys) as SystemButtonIntent[]).filter(
     (intent) =>
-      Object.values(classesMap?.e1?.c ?? {}).some((context) =>
-        Object.values(context?.[intent] ?? {}).some(Boolean)
+      Boolean(
+        standardCoverage?.[intent]?.length ||
+          Object.values(standardClasses?.[intent] ?? {}).some(Boolean)
       )
   );
+  const coverage = colorVariants?.alternative?.[`${segment}.${theme}`]?.[surfaceContext];
+  const optionsFor = (level: ComponentEmphasis): SystemButtonIntentValue[] =>
+    (Object.keys(ButtonIntentKeys) as SystemButtonIntent[]).flatMap((intent) => [
+      ...(publishedIntents.includes(intent) ? [intent] : []),
+      ...(coverage?.[intent]?.includes(level) ? [`${intent}-alt` as SystemButtonIntentValue] : [])
+    ]);
+  const baseOptions = optionsFor(emphasis);
+  const selectionOptions = optionsFor(
+    selectionEmphasis === 'medium' || selectionEmphasis === 'high' ? 'high' : emphasis
+  );
   const allowOriginalIntent = defaults.intent === 'original';
+  const fallback =
+    publishedIntents.find((value) => value === 'neutral') ?? publishedIntents[0] ?? 'neutral';
+  const normalizeAvailable = (
+    value: SystemButtonIntentValue,
+    options: readonly SystemButtonIntentValue[]
+  ) =>
+    options.includes(value)
+      ? value
+      : publishedIntents.includes(parseButtonIntentValue(value)?.intent as SystemButtonIntent)
+        ? (parseButtonIntentValue(value)!.intent as SystemButtonIntent)
+        : fallback;
   const intent =
     requestedIntent === 'original' && allowOriginalIntent
       ? requestedIntent
-      : requestedIntent !== 'original' && publishedIntents.includes(requestedIntent)
-        ? requestedIntent
-        : (publishedIntents.find((value) => value === 'neutral') ??
-          publishedIntents[0] ??
-          'neutral');
+      : requestedIntent !== 'original'
+        ? normalizeAvailable(requestedIntent, baseOptions)
+        : fallback;
   const selectionIntent =
-    requestedSelectionIntent === 'same' || publishedIntents.includes(requestedSelectionIntent)
-      ? requestedSelectionIntent
-      : 'same';
+    requestedSelectionIntent === 'same'
+      ? 'same'
+      : selectionOptions.includes(requestedSelectionIntent)
+        ? requestedSelectionIntent
+        : publishedIntents.includes(
+              parseButtonIntentValue(requestedSelectionIntent)?.intent as SystemButtonIntent
+            )
+          ? (parseButtonIntentValue(requestedSelectionIntent)!.intent as SystemButtonIntent)
+          : 'same';
+  const formatOptions = (values: readonly SystemButtonIntentValue[]) =>
+    values.map((value) => ({
+      value,
+      label: value.charAt(0).toUpperCase() + value.slice(1).replace('-alt', ' alt')
+    }));
 
   return {
     controls: {
       intent,
-      intentOptions: publishedIntents.map((value) => ({
-        value,
-        label: value.charAt(0).toUpperCase() + value.slice(1)
-      })),
+      intentOptions: formatOptions(baseOptions),
+      selectionIntentOptions: formatOptions(selectionOptions),
       allowOriginalIntent,
       onIntentChange: setRequestedIntent,
       emphasis,
@@ -92,7 +135,7 @@ export function useButtonCompositionControls(
       selectionEmphasis,
       onSelectionEmphasisChange: setSelectionEmphasis
     } satisfies CompositionControlsProps,
-    buttonProps(originalIntent: SystemButtonIntent = 'neutral') {
+    buttonProps(originalIntent: ButtonIntentValue = 'neutral') {
       const baseIntent = intent === 'original' ? originalIntent : intent;
       return {
         intent: baseIntent,
@@ -107,6 +150,7 @@ export function useButtonCompositionControls(
 export function ButtonCompositionControls({
   intent,
   intentOptions,
+  selectionIntentOptions,
   allowOriginalIntent,
   onIntentChange,
   emphasis,
@@ -169,7 +213,7 @@ export function ButtonCompositionControls({
             aria-describedby={descriptionId}
             value={selectionIntent}
             onValueChange={(value) => onSelectionIntentChange(value as CompositionSelectionIntent)}
-            options={[{ value: 'same', label: 'Same as button' }, ...intentOptions]}
+            options={[{ value: 'same', label: 'Same as button' }, ...selectionIntentOptions]}
             width="100%"
             maxWidth="100%"
           />

@@ -127,10 +127,12 @@ describe('convertElementSchemaToStyleKeys', () => {
               default: {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        medium: {
-                          rest: '#5c423d'
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          medium: {
+                            rest: '#5c423d'
+                          }
                         }
                       }
                     }
@@ -171,8 +173,10 @@ describe('convertElementSchemaToStyleKeys', () => {
       default: {
         light: {
           onSubtle: {
-            primary: {
-              rest: ['boxColor__#5c423d']
+            standard: {
+              primary: {
+                rest: ['boxColor__#5c423d']
+              }
             }
           }
         }
@@ -189,7 +193,7 @@ describe('convertElementSchemaToStyleKeys', () => {
       'primary::boxColor__#5c423d'
     );
 
-    expect(toneMetadataByPalette.get('default.light.onSubtle')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.onSubtle.standard')?.get(metadataKey)).toEqual({
       tones: ['medium']
     });
   });
@@ -247,19 +251,23 @@ describe('convertElementSchemaToStyleKeys', () => {
               default: {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        high: {
-                          rest: sameColor
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: {
+                            rest: sameColor
+                          }
                         }
                       }
                     }
                   },
                   onVivid: {
-                    boxColor: {
-                      primary: {
-                        lowest: {
-                          rest: sameColor
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          lowest: {
+                            rest: sameColor
+                          }
                         }
                       }
                     }
@@ -267,10 +275,12 @@ describe('convertElementSchemaToStyleKeys', () => {
                 },
                 dark: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        medium: {
-                          rest: sameColor
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          medium: {
+                            rest: sameColor
+                          }
                         }
                       }
                     }
@@ -295,13 +305,13 @@ describe('convertElementSchemaToStyleKeys', () => {
       'primary::boxColor__#000000'
     );
 
-    expect(toneMetadataByPalette.get('default.light.onSubtle')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.onSubtle.standard')?.get(metadataKey)).toEqual({
       tones: ['high']
     });
-    expect(toneMetadataByPalette.get('default.light.onVivid')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.light.onVivid.standard')?.get(metadataKey)).toEqual({
       tones: ['lowest']
     });
-    expect(toneMetadataByPalette.get('default.dark.onSubtle')?.get(metadataKey)).toEqual({
+    expect(toneMetadataByPalette.get('default.dark.onSubtle.standard')?.get(metadataKey)).toEqual({
       tones: ['medium']
     });
   });
@@ -359,7 +369,9 @@ describe('convertElementSchemaToStyleKeys', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                      standard: {
+                        boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                      }
                     }
                   }
                 }
@@ -381,7 +393,9 @@ describe('convertElementSchemaToStyleKeys', () => {
       default: {
         light: {
           onSubtle: {
-            neutral: { rest: ['boxColor__#dddddd'] }
+            standard: {
+              neutral: { rest: ['boxColor__#dddddd'] }
+            }
           }
         }
       }

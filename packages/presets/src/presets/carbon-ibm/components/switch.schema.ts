@@ -70,7 +70,7 @@ export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }
           : {})
       };
     };
-    return { onSubtle: surface(false), onVivid: surface(true) };
+    return { onSubtle: { standard: surface(false) }, onVivid: { standard: surface(true) } };
   };
   const textContext = (theme: Theme, secondary: boolean) => {
     const surface = (onVivid: boolean) => ({
@@ -88,7 +88,7 @@ export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }
         ])
       )
     });
-    return { onSubtle: surface(false), onVivid: surface(true) };
+    return { onSubtle: { standard: surface(false) }, onVivid: { standard: surface(true) } };
   };
   const iconContext = (theme: Theme) => {
     const surface = (onVivid: boolean) => ({
@@ -112,7 +112,7 @@ export function createCarbonIbmSwitchSchema({ c }: { c: CarbonIbmColorResolver }
         ])
       )
     });
-    return { onSubtle: surface(false), onVivid: surface(true) };
+    return { onSubtle: { standard: surface(false) }, onVivid: { standard: surface(true) } };
   };
 
   return {

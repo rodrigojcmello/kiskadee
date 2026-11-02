@@ -11,6 +11,7 @@ import type {
   InteractionStateColorMap,
   SegmentName,
   SurfaceContext,
+  SurfaceContextPalette,
   ThemeMode
 } from '../types/colors/colors.types.ts';
 import {
@@ -26,15 +27,7 @@ import { getElementPaletteValidationIssues } from './palettes.ts';
 type CardElementPalettes<TSegmentName extends SegmentName> = Partial<
   Record<
     TSegmentName | 'default' | 'dynamic',
-    Partial<
-      Record<
-        ThemeMode,
-        {
-          onSubtle: CardColorPalette;
-          onVivid?: CardColorPalette;
-        }
-      >
-    >
+    Partial<Record<ThemeMode, SurfaceContextPalette<CardColorPalette>>>
   >
 >;
 
@@ -383,10 +376,11 @@ function validateCanonicalSurfaces(
         }
         seenReferences.add(referenceKey);
 
-        const palette =
+        const variants =
           isRecord(palettes?.[segmentName]) && isRecord(palettes[segmentName][themeName])
             ? palettes[segmentName][themeName].onSubtle
             : undefined;
+        const palette = isRecord(variants) ? variants.standard : undefined;
         validateCanonicalSurfaceReference(entryValue, palette, entryPath, issues);
       }
     }
@@ -435,8 +429,16 @@ function validateComponentOptions(
         const [segment, theme, context, intent, emphasis] = keys;
         for (const property of ['boxColor', 'borderColor']) {
           if (
-            read(root.palettes, [segment, theme, context, property, intent, emphasis, 'rest']) ===
-            undefined
+            read(root.palettes, [
+              segment,
+              theme,
+              context,
+              'standard',
+              property,
+              intent,
+              emphasis,
+              'rest'
+            ]) === undefined
           ) {
             issues.push(`${entryPath}: referenced ${property} Rest recipe is missing`);
           }
@@ -445,6 +447,7 @@ function validateComponentOptions(
           segment,
           theme,
           context,
+          'standard',
           'borderColor',
           intent,
           emphasis,
@@ -489,7 +492,9 @@ function validateComponentOptions(
         if (!isRecord(themes)) continue;
         for (const [theme, contexts] of Object.entries(themes)) {
           if (!isRecord(contexts)) continue;
-          for (const [context, palette] of Object.entries(contexts)) {
+          for (const [context, variants] of Object.entries(contexts)) {
+            if (!isRecord(variants)) continue;
+            const palette = variants.standard;
             if (!isRecord(palette) || !isRecord(palette.boxColor)) continue;
             for (const [intent, emphases] of Object.entries(palette.boxColor)) {
               if (!isRecord(emphases)) continue;

@@ -1,4 +1,5 @@
 export type ComponentClassMapArtifactJSON<TClassMap = unknown> = {
+  formatVersion: 3;
   component: string;
   classMap: TClassMap;
 };
@@ -23,6 +24,7 @@ export function buildComponentClassMapArtifact<TClassMap>(
   classMap: TClassMap
 ): ComponentClassMapArtifactJSON<TClassMap> {
   return {
+    formatVersion: 3,
     component: componentName,
     classMap
   };

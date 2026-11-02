@@ -1,14 +1,22 @@
 import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import {
+  type ComponentEmphasis,
   type ComponentSizeSupport,
   compileDensityMap,
+  componentEmphasisBuckets,
   elementSizeValues,
   type RadiusMode,
+  resolveContentSurfaceContextVariant,
   resolveSupportedSize,
   type Schema
 } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
+import {
+  alternativePaletteScopeKey,
+  collectAlternativePaletteScopes
+} from '../palettes/resolveElementPaletteSources.ts';
+import type { ManifestComponent } from '../phase-7-publish-metadata/manifestTypes.ts';
 import { componentNameToArtifactSlug } from './componentClassMapArtifacts.ts';
 import type {
   ComponentInspectionArtifact,
@@ -19,6 +27,27 @@ import { artifactHash, partitionComponentCss } from './partitionComponentCss.ts'
 
 const isRecord = (value: unknown): value is Record<string, any> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
+/** Discovery needs intent/emphasis coordinates, not every palette's interaction-state maps. */
+function summarizeStandardCoverage(
+  palettes: ManifestComponent['surfaceContexts']
+): NonNullable<NonNullable<ManifestComponent['colorVariants']>['standard']> {
+  const summary: NonNullable<NonNullable<ManifestComponent['colorVariants']>['standard']> = {};
+  for (const [palette, contexts] of Object.entries(palettes ?? {})) {
+    for (const context of ['onSubtle', 'onVivid'] as const) {
+      for (const [intent, emphases] of Object.entries(contexts[context]?.state ?? {})) {
+        const levels = Object.keys(emphases).filter(
+          (level): level is ComponentEmphasis => level in componentEmphasisBuckets
+        );
+        if (!levels.length) continue;
+        summary[palette] ??= {};
+        summary[palette][context] ??= {};
+        summary[palette][context]![intent] = levels;
+      }
+    }
+  }
+  return summary;
+}
 
 /** The branch union includes actual size geometry/typography, never another variant's sizes. */
 export function buildSizeSupport(
@@ -285,6 +314,9 @@ export async function publishComponentResources(buildDir: string, schema: Schema
     if (artifacts?.classMaps?.core) resource.core = artifacts.classMaps.core;
     const paletteCapabilities = capabilities.surfaceContexts;
     delete capabilities.surfaceContexts;
+    const standardCoverage = summarizeStandardCoverage(paletteCapabilities);
+    if (Object.keys(standardCoverage).length)
+      capabilities.colorVariants = { ...capabilities.colorVariants, standard: standardCoverage };
     const inspectionElements: ComponentInspectionArtifact['elements'] = {};
     if (name === 'button') {
       for (const element of ['e1', 'e8'] as const) {
@@ -316,6 +348,7 @@ export async function publishComponentResources(buildDir: string, schema: Schema
         ...((existing as any).options ?? {}),
         ...(name === 'text' ? schema.components.text?.options : {})
       },
+      formatVersion: 3,
       component: name,
       sizeSupport,
       ...(layouts ? { layouts } : {}),
@@ -337,7 +370,51 @@ export async function publishComponentResources(buildDir: string, schema: Schema
     }
     if (!layouts) delete payload.layouts;
     if (!indicator) delete payload.indicator;
-    const contentSurfaceContext = payload.contentSurfaceContext;
+    const alternativePaletteScopes = new Set<string>();
+    const collectBranchScopes = (branch: any) => {
+      if (branch?.elements)
+        for (const key of collectAlternativePaletteScopes(
+          branch.elements,
+          {
+            foregrounds: schema.global?.foregrounds,
+            contours: schema.global?.contours,
+            separators: schema.global?.separators
+          },
+          name === 'button' ? ['e11', 'e12'] : []
+        ))
+          alternativePaletteScopes.add(key);
+      for (const key of ['variants', 'modes'])
+        for (const child of Object.values(branch?.[key] ?? {})) collectBranchScopes(child);
+    };
+    collectBranchScopes(component);
+    const authoredContentSurfaceContext = payload.contentSurfaceContext;
+    const contentSurfaceContext =
+      authoredContentSurfaceContext &&
+      Object.fromEntries(
+        Object.entries(authoredContentSurfaceContext).map(([segment, themes]) => [
+          segment,
+          Object.fromEntries(
+            Object.entries(themes as Record<string, any>).map(([theme, contexts]) => [
+              theme,
+              Object.fromEntries(
+                Object.entries(contexts as Record<string, any>).map(([context, variants]) => [
+                  context,
+                  {
+                    standard: variants.standard,
+                    ...(alternativePaletteScopes.has(
+                      alternativePaletteScopeKey(segment, theme, context)
+                    )
+                      ? {
+                          alternative: resolveContentSurfaceContextVariant(variants, 'alternative')
+                        }
+                      : {})
+                  }
+                ])
+              )
+            ])
+          )
+        ])
+      );
     delete payload.contentSurfaceContext;
     const canonicalSurfaces = payload.options?.canonicalSurfaces;
     if (payload.options) {
@@ -356,11 +433,16 @@ export async function publishComponentResources(buildDir: string, schema: Schema
       if (!classMap && !surfaceContexts && !styles.length && !context && !canonical) continue;
       const palettePath = `components/${palette}/${componentNameToArtifactSlug(name)}.json`;
       const selected = {
+        formatVersion: 3,
         component: name,
         styles,
         ...(classMap ? { classMap } : {}),
         ...(surfaceContexts
-          ? { capabilities: { surfaceContexts: { [palette]: surfaceContexts } } }
+          ? {
+              capabilities: {
+                ...(surfaceContexts ? { surfaceContexts: { [palette]: surfaceContexts } } : {})
+              }
+            }
           : {}),
         ...(context || canonical
           ? {
@@ -387,7 +469,7 @@ export async function publishComponentResources(buildDir: string, schema: Schema
   delete global.classMap;
   if (schema.global?.density) global.density = compileDensityMap(schema.global.density);
   else delete global.density;
-  manifest.formatVersion = 2;
+  manifest.formatVersion = 3;
   manifest.styles = globalStyles;
   if (Object.keys(paletteStyles).length) manifest.paletteStyles = paletteStyles;
   manifest.revision = artifactHash(

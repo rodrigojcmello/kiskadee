@@ -9,16 +9,17 @@ it('reuses the Outline contour for actual focus without a second external ring',
   expect(mode.options).toEqual({ focusIndicator: 'inner', focusRingColorSource: 'component' });
   const outline = mode.elements;
   expect(outline.e7!.scales?.boxHeight).toBe(0);
-  const border = outline.e4!.palettes!.default!.light!.onSubtle!.borderColor!.neutral!.medium!;
+  const border =
+    outline.e4!.palettes!.default!.light!.onSubtle!.standard.borderColor!.neutral!.medium!;
   expect(border.rest).toBe('#3b82f6');
   expect(border.focus).toBe(primary.scales.light[40]);
   expect(border.focus).not.toEqual(border.rest);
   expect(border.selected).toBeUndefined();
   expect(outline.e3!.scales?.boxHeight).toEqual({ 's:sm:1': 32, 's:md:1': 40, 's:lg:1': 48 });
   const disabledText =
-    outline.e5!.palettes!.default!.light!.onSubtle!.textColor!.neutral!.medium!.disabled;
+    outline.e5!.palettes!.default!.light!.onSubtle!.standard.textColor!.neutral!.medium!.disabled;
   expect(disabledText).not.toEqual(
-    outline.e4!.palettes!.default!.light!.onSubtle!.boxColor!.neutral!.medium!.rest
+    outline.e4!.palettes!.default!.light!.onSubtle!.standard.boxColor!.neutral!.medium!.rest
   );
 });
 
@@ -34,8 +35,8 @@ it('uses one resting fill for Underline and Borderless across themes and surface
     for (const theme of ['light', 'dark'] as const) {
       for (const context of ['onSubtle', 'onVivid'] as const) {
         const rest = (element: 'e3' | 'e4' | 'e8' | 'e9') =>
-          mode.elements[element]!.palettes!.default![theme]![context]!.boxColor!.neutral!.medium!
-            .rest;
+          mode.elements[element]!.palettes!.default![theme]![context]!.standard.boxColor!.neutral!
+            .medium!.rest;
         expect(rest('e3')).toBe('#fffffff5');
         expect(rest('e4')).toBe('#ffffff00');
         expect(rest('e8')).toEqual(rest('e4'));
@@ -56,7 +57,8 @@ it('authors dormant underline focus paint in every mode for presentation overrid
     expect(indicator.scales?.boxHeight).toBe(mode === 'underline' ? 1 : 0);
     for (const theme of ['light', 'dark'] as const)
       for (const context of ['onSubtle', 'onVivid'] as const) {
-        const color = indicator.palettes!.default![theme]![context]!.boxColor!.neutral!.medium!;
+        const color =
+          indicator.palettes!.default![theme]![context]!.standard.boxColor!.neutral!.medium!;
         expect(color.focus).toEqual({ ref: primary.scales.light[40] });
         if (mode !== 'underline') expect(color.rest).toBe('#ffffff00');
       }
@@ -83,7 +85,7 @@ it('publishes outer component focus paint without introducing a Borderless rest 
     for (const theme of ['light', 'dark'] as const)
       for (const context of ['onSubtle', 'onVivid'] as const) {
         const border =
-          elements.e3!.palettes!.default![theme]![context]!.borderColor!.neutral!.medium!;
+          elements.e3!.palettes!.default![theme]![context]!.standard.borderColor!.neutral!.medium!;
         expect(border.focus).toBe(primary.scales.light[40]);
         expect(border.rest).toBe(mode === 'borderless' ? '#ffffff00' : '#00000014');
         expect(border.disabled).toBeUndefined();
@@ -97,15 +99,16 @@ it('keeps trigger and step hover local and styles individually disabled steps', 
     for (const theme of ['light', 'dark'] as const)
       for (const context of ['onSubtle', 'onVivid'] as const) {
         const elements = mode!.elements;
-        const trigger = elements.e4!.palettes!.default![theme]![context]!;
+        const trigger = elements.e4!.palettes!.default![theme]![context]!.standard;
         expect(trigger.boxColor!.neutral!.medium!.hover).toBe('#ffffff');
         for (const step of ['e8', 'e9'] as const) {
-          const paint = elements[step]!.palettes!.default![theme]![context]!;
+          const paint = elements[step]!.palettes!.default![theme]![context]!.standard;
           expect(paint.boxColor!.neutral!.medium!.hover).toBe('#ffffffb8');
           expect(paint.textColor!.neutral!.medium!.disabled).toBe('#a6adb8');
         }
         expect(
-          elements.e5!.palettes!.default![theme]![context]!.textColor!.neutral!.medium!.disabled
+          elements.e5!.palettes!.default![theme]![context]!.standard.textColor!.neutral!.medium!
+            .disabled
         ).toEqual({ ref: '#a6adb8' });
       }
   }
@@ -134,7 +137,7 @@ it('owns placeholder attenuation and anchored geometry in every mode', () => {
     for (const segment of Object.values(mode!.elements.e11!.palettes!))
       for (const theme of Object.values(segment!))
         for (const context of Object.values(theme!)) {
-          const colors = context!.textColor!.neutral!.medium!;
+          const colors = context!.standard.textColor!.neutral!.medium!;
           expect(colors.rest).toMatch(/^color-mix\(in srgb, .+ 62%, transparent\)$/);
           const disabled =
             typeof colors.disabled === 'object' ? colors.disabled.ref : colors.disabled;

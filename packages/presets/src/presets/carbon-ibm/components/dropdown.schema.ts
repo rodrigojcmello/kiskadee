@@ -20,7 +20,10 @@ export function createCarbonMenuPalettes(
     theme === 'light' ? 'l' : 'd',
     absoluteCap(primitive('black', 'v1'), 'dark', 0)
   );
-  const both = <T>(palette: T) => ({ onSubtle: palette, onVivid: palette });
+  const both = <T>(palette: T) => ({
+    onSubtle: { standard: palette },
+    onVivid: { standard: palette }
+  });
   const surface = both({ boxColor: { neutral: { medium: { rest: token('layer-01') } } } });
   const text = (secondary = false, icons = false) =>
     both({
@@ -74,7 +77,7 @@ export function createCarbonMenuPalettes(
     text: text(),
     icon: text(false, true),
     auxiliary: text(true),
-    scroll: both({ ...surface.onSubtle, ...text().onSubtle })
+    scroll: both({ ...surface.onSubtle.standard, ...text().onSubtle.standard })
   };
 }
 

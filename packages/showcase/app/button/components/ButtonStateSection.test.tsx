@@ -10,12 +10,12 @@ vi.mock('@kiskadee/react-components/button', () => ({
   Button: Object.assign(
     ({
       emphasis,
-      intent: _intent,
       radius: _radius,
       size: _size,
       status,
       controlState,
       selectionEmphasis,
+      intent,
       radiusEffect: _radiusEffect,
       ...props
     }: HTMLAttributes<HTMLButtonElement> & {
@@ -34,7 +34,8 @@ vi.mock('@kiskadee/react-components/button', () => ({
         'data-emphasis': emphasis,
         'data-status': status,
         'data-control-state': controlState,
-        'data-selection-emphasis': selectionEmphasis
+        'data-selection-emphasis': selectionEmphasis,
+        'data-intent': intent
       }),
     {
       Label: ({ children }: { children: ReactNode }) => <span>{children}</span>,
@@ -84,12 +85,14 @@ function render({
   selectionEmphasis,
   showFocusRing,
   simplified,
-  grouped
+  grouped,
+  intent = 'neutral'
 }: {
   selectionEmphasis?: 'lowest' | 'low' | 'medium' | 'high';
   showFocusRing?: boolean;
   simplified?: boolean;
   grouped?: boolean;
+  intent?: 'neutral' | 'neutral-alt';
 } = {}) {
   if (!root) {
     container = document.createElement('div');
@@ -99,7 +102,7 @@ function render({
   act(() =>
     root?.render(
       <ButtonStateSection
-        intent="neutral"
+        intent={intent}
         title="Neutral"
         fontName="Test font"
         radius="rounded"
@@ -125,6 +128,17 @@ function selectedCount() {
 }
 
 describe('Button state section selection emphasis control', () => {
+  it('changes qualified intent without replacing Buttons or resetting their selected state', () => {
+    render({ selectionEmphasis: 'low' });
+    const controls = selectionControls();
+    const high = controls.find((button) => button.dataset.emphasis === 'high')!;
+    act(() => high.click());
+    render({ selectionEmphasis: 'low', intent: 'neutral-alt' });
+    expect(selectionControls()).toEqual(controls);
+    expect(high.dataset.controlState).toBe('false');
+    expect(high.dataset.selectionEmphasis).toBe('low');
+    expect(high.dataset.intent).toBe('neutral-alt');
+  });
   it('changes selection emphasis without changing selected state or replacing the controls', () => {
     render();
     const controls = selectionControls();

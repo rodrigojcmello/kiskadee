@@ -6,9 +6,11 @@ const sharedPalettes = {
   default: {
     light: {
       onSubtle: {
-        boxColor: {
-          neutral: {
-            medium: { rest: '#dddddd' }
+        standard: {
+          boxColor: {
+            neutral: {
+              medium: { rest: '#dddddd' }
+            }
           }
         }
       }
@@ -65,7 +67,9 @@ describe('expandElementSeparator', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      boxColor: { neutral: { medium: { rest: '#111111' } } }
+                      standard: {
+                        boxColor: { neutral: { medium: { rest: '#111111' } } }
+                      }
                     }
                   }
                 }

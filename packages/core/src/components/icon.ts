@@ -102,13 +102,16 @@ function validateIconPalettes(value: unknown, path: string, issues: string[]): v
     if (!isRecord(themes)) continue;
     for (const [theme, contexts] of Object.entries(themes)) {
       if (!isRecord(contexts)) continue;
-      for (const [context, colorSchema] of Object.entries(contexts)) {
-        if (!isRecord(colorSchema) || !isRecord(colorSchema.textColor)) continue;
-        validateIconColorMap(
-          colorSchema.textColor,
-          `${path}.${segment}.${theme}.${context}.textColor`,
-          issues
-        );
+      for (const [context, variants] of Object.entries(contexts)) {
+        if (!isRecord(variants)) continue;
+        for (const [variant, colorSchema] of Object.entries(variants)) {
+          if (!isRecord(colorSchema) || !isRecord(colorSchema.textColor)) continue;
+          validateIconColorMap(
+            colorSchema.textColor,
+            `${path}.${segment}.${theme}.${context}.${variant}.textColor`,
+            issues
+          );
+        }
       }
     }
   }

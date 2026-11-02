@@ -39,29 +39,33 @@ describe('buildComponentSurfaceContexts', () => {
               default: {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        high: {
-                          rest: '#0064b4',
-                          hover: '#0059a1'
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: {
+                            rest: '#0064b4',
+                            hover: '#0059a1'
+                          }
                         }
                       }
                     }
                   },
                   onVivid: {
-                    boxColor: {
-                      primary: {
-                        high: {
-                          rest: '#ffffff',
-                          pressed: '#a4cfff'
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: {
+                            rest: '#ffffff',
+                            pressed: '#a4cfff'
+                          }
                         }
-                      }
-                    },
-                    borderColor: {
-                      primary: {
-                        low: {
-                          rest: '#ffffff',
-                          selected: { rest: '#ffffffcc' }
+                      },
+                      borderColor: {
+                        primary: {
+                          low: {
+                            rest: '#ffffff',
+                            selected: { rest: '#ffffffcc' }
+                          }
                         }
                       }
                     }
@@ -69,9 +73,11 @@ describe('buildComponentSurfaceContexts', () => {
                 },
                 dark: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        high: { rest: '#0064b4' }
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: { rest: '#0064b4' }
+                        }
                       }
                     }
                   }
@@ -127,15 +133,19 @@ describe('buildComponentSurfaceContexts', () => {
               default: {
                 light: {
                   onSubtle: {
-                    textColor: {
-                      neutral: { medium: { rest: '#21242d' } },
-                      primary: { medium: { rest: '#0064b4' } }
+                    standard: {
+                      textColor: {
+                        neutral: { medium: { rest: '#21242d' } },
+                        primary: { medium: { rest: '#0064b4' } }
+                      }
                     }
                   },
                   onVivid: {
-                    textColor: {
-                      neutral: { medium: { rest: '#f4f6fe' } },
-                      primary: { medium: { rest: '#c1deff' } }
+                    standard: {
+                      textColor: {
+                        neutral: { medium: { rest: '#f4f6fe' } },
+                        primary: { medium: { rest: '#c1deff' } }
+                      }
                     }
                   }
                 }
@@ -291,10 +301,14 @@ describe('buildComponentSurfaceContexts', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                      standard: {
+                        boxColor: { neutral: { medium: { rest: '#dddddd' } } }
+                      }
                     },
                     onVivid: {
-                      boxColor: { neutral: { medium: { rest: '#ffffff33' } } }
+                      standard: {
+                        boxColor: { neutral: { medium: { rest: '#ffffff33' } } }
+                      }
                     }
                   }
                 }

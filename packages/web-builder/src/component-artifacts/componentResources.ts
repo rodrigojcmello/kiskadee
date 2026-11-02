@@ -11,6 +11,7 @@ export type ComponentInspectionArtifact = {
   elements: Partial<Record<'e1' | 'e8', { scales: { _boxHeight: ElementHeightReference } }>>;
 };
 export type ComponentResourceArtifact = {
+  formatVersion: 3;
   component: string;
   sizeSupport: ComponentSizeSupport;
   layouts?: {
@@ -34,9 +35,13 @@ export type ComponentResourceArtifact = {
 };
 
 export type ComponentPaletteResourceArtifact = {
+  formatVersion: 3;
   component: string;
   styles: StylesheetResource[];
   classMap?: string;
   capabilities?: Omit<ManifestComponent, 'artifacts'>;
-  config?: { options?: Record<string, unknown>; contentSurfaceContext?: unknown };
+  config?: {
+    options?: Record<string, unknown>;
+    contentSurfaceContext?: unknown;
+  };
 };

@@ -63,12 +63,12 @@ export function createMaterialButtonIndicatorPalettes({
 
   return buildBySegment(segmentNames, (segment) => ({
     light: {
-      onSubtle: context(segment, 'light', 'onSubtle'),
-      onVivid: context(segment, 'light', 'onVivid')
+      onSubtle: { standard: context(segment, 'light', 'onSubtle') },
+      onVivid: { standard: context(segment, 'light', 'onVivid') }
     },
     dark: {
-      onSubtle: context(segment, 'dark', 'onSubtle'),
-      onVivid: context(segment, 'dark', 'onVivid')
+      onSubtle: { standard: context(segment, 'dark', 'onSubtle') },
+      onVivid: { standard: context(segment, 'dark', 'onVivid') }
     }
   }));
 }

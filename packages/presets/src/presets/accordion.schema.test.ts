@@ -9,10 +9,11 @@ describe('Accordion contract', () => {
     expect(fluent.components.card!.surfaceSource).toBe('container');
     for (const context of ['onSubtle', 'onVivid'] as const) {
       const card =
-        fluent.components.card!.elements.e1!.palettes!.default!.light![context]!.boxColor!.neutral!;
-      const container =
-        fluent.components.container!.elements.e1.palettes.default!.light![context]!.boxColor
+        fluent.components.card!.elements.e1!.palettes!.default!.light![context]!.standard.boxColor!
           .neutral!;
+      const container =
+        fluent.components.container!.elements.e1.palettes.default!.light![context]!.standard
+          .boxColor.neutral!;
       expect([...emphases].sort()).toEqual(Object.keys(card).sort());
       for (const emphasis of emphases)
         expect(container[emphasis]?.rest).toEqual(expect.any(String));

@@ -379,15 +379,17 @@ export function createFluent2MicrosoftTextFieldSchema({
         Object.fromEntries(
           ['onSubtle', 'onVivid'].map((context) => [
             context,
-            Object.fromEntries(
-              ['neutral', 'error', 'warning'].map((intent) => [
-                intent,
-                {
-                  ...(region ? { lowest: { rest: 'inherit' } } : {}),
-                  medium: { rest: filled ? 'onSubtle' : 'inherit' }
-                }
-              ])
-            )
+            {
+              standard: Object.fromEntries(
+                ['neutral', 'error', 'warning'].map((intent) => [
+                  intent,
+                  {
+                    ...(region ? { lowest: { rest: 'inherit' } } : {}),
+                    medium: { rest: filled ? 'onSubtle' : 'inherit' }
+                  }
+                ])
+              )
+            }
           ])
         )
       ])

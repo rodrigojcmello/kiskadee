@@ -2,16 +2,13 @@
 
 import type {
   ButtonSelectionEmphasis,
-  ComponentEmphasis,
+  ColorVariant,
   ElementSizeValue,
-  RadiusMode,
-  SurfaceContext
+  RadiusMode
 } from '@kiskadee/core';
 import { componentScaleToSize, resolveButtonStackedRadiusMode } from '@kiskadee/core';
 import { Button as KButton, useButtonArtifactConfig } from '@kiskadee/react-components/button';
-import { Card } from '@kiskadee/react-components/card';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
-import { Layout } from '@kiskadee/react-components/layout';
 import {
   SurfaceContextProvider,
   useComponentMetadata,
@@ -37,6 +34,7 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
+import { useButtonColorVariants } from '@/hooks/use-button-color-variants';
 import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
@@ -50,6 +48,11 @@ import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Button.module.scss';
 import { ButtonAsyncExample } from './components/ButtonAsyncExample';
 import { ButtonBadgeExamples } from './components/ButtonBadgeExamples';
+import {
+  ButtonColorVariantControls,
+  getButtonColorVariantSupport,
+  qualifyButtonIntent
+} from './components/ButtonColorVariantControls';
 import { ButtonGroupExamples } from './components/ButtonGroupExamples';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonIconFormatExamples } from './components/ButtonIconFormatExamples';
@@ -62,6 +65,7 @@ import { ButtonSelectionExamples } from './components/ButtonSelectionExamples';
 import { ButtonSizeScaleExample } from './components/ButtonSizeScaleExample';
 import { ButtonStackedExamples } from './components/ButtonStackedExamples';
 import ButtonStateSection from './components/ButtonStateSection';
+import { SurfaceContextComparison } from './components/ButtonSurfaceContextComparison';
 import { ButtonUnavailableExample } from './components/ButtonUnavailableExample';
 import { ButtonVideoconferencingExamples } from './components/ButtonVideoconferencingExamples';
 import { resolveButtonReferenceProfile } from './components/buttonReferenceProfile';
@@ -74,163 +78,11 @@ const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = 
   { value: 's:lg:2', label: 'Large 2' },
   { value: 's:lg:3', label: 'Large 3' }
 ];
-const COMPARISON_EMPHASES: ComponentEmphasis[] = ['high', 'medium', 'low', 'lowest'];
-
-function SurfaceContextComparison({
-  fontName,
-  onVividSupported,
-  radius,
-  scale,
-  surfaceContext,
-  textAlign
-}: {
-  fontName: string;
-  onVividSupported: boolean;
-  radius: RadiusMode;
-  scale?: ElementSizeValue;
-  surfaceContext: SurfaceContext;
-  textAlign: 'left' | 'center';
-}) {
-  const textProfiles = useShowcaseTextProfiles();
-  const { showDescriptions } = useShowcaseDisplayPreferences();
-
-  return (
-    <section
-      className={`${s.contextComparison} ${
-        showDescriptions ? '' : s.contextComparisonWithoutDescription
-      }`.trim()}
-      aria-labelledby="surface-context-comparison-title"
-    >
-      <div className={s.contextComparisonHeader}>
-        <Text as="h3" id="surface-context-comparison-title" profile={textProfiles.sectionTitle}>
-          Surface contexts
-        </Text>
-        {showDescriptions ? (
-          <Text as="p" profile={textProfiles.body}>
-            The same Primary Rest buttons rendered simultaneously on subtle and vivid surfaces.
-          </Text>
-        ) : null}
-      </div>
-      <div className={s.contextComparisonGrid}>
-        <article className={s.contextCard}>
-          <ShowcaseExampleCard
-            className={`${s.contextSurface} k-root`}
-            context="onSubtle"
-            role="group"
-            aria-labelledby="button-context-on-subtle-title"
-          >
-            <div className={s['state-content']}>
-              <header className={s['state-header']}>
-                <Text
-                  as="h4"
-                  id="button-context-on-subtle-title"
-                  profile={textProfiles.subsectionTitle}
-                  className={s['state-title']}
-                >
-                  On subtle
-                </Text>
-                {showDescriptions ? (
-                  <Text
-                    as="p"
-                    profile={textProfiles.caption}
-                    emphasis="medium"
-                    className={s['state-description']}
-                  >
-                    Primary actions on a subtle surface.
-                  </Text>
-                ) : null}
-              </header>
-              <div className={s.contextSurfaceGrid}>
-                {COMPARISON_EMPHASES.map((emphasis) => (
-                  <KButton
-                    key={emphasis}
-                    intent="primary"
-                    emphasis={emphasis}
-                    radius={radius}
-                    size={componentScaleToSize(scale)}
-                  >
-                    <KButton.Label>
-                      <SmoothText fontName={fontName} align={textAlign}>
-                        {emphasis}
-                      </SmoothText>
-                    </KButton.Label>
-                  </KButton>
-                ))}
-              </div>
-            </div>
-          </ShowcaseExampleCard>
-        </article>
-        <article className={s.contextCard}>
-          <Card
-            className={`${s.contextSurface} k-root`}
-            intent="primary"
-            emphasis="highest"
-            surfaceContext={surfaceContext}
-            role="group"
-            aria-labelledby="button-context-on-vivid-title"
-          >
-            <Layout padding="md">
-              <div className={s['state-content']}>
-                <header className={s['state-header']}>
-                  <Text
-                    as="h4"
-                    id="button-context-on-vivid-title"
-                    profile={textProfiles.subsectionTitle}
-                    className={s['state-title']}
-                  >
-                    On vivid
-                  </Text>
-                  {showDescriptions ? (
-                    <Text
-                      as="p"
-                      profile={textProfiles.caption}
-                      emphasis="medium"
-                      className={s['state-description']}
-                    >
-                      Primary actions on a vivid surface.
-                    </Text>
-                  ) : null}
-                </header>
-                <div className={s.contextSurfaceGrid}>
-                  {onVividSupported ? (
-                    COMPARISON_EMPHASES.map((emphasis) => (
-                      <KButton
-                        key={emphasis}
-                        intent="primary"
-                        emphasis={emphasis}
-                        radius={radius}
-                        size={componentScaleToSize(scale)}
-                      >
-                        <KButton.Label>
-                          <SmoothText fontName={fontName} align={textAlign}>
-                            {emphasis}
-                          </SmoothText>
-                        </KButton.Label>
-                      </KButton>
-                    ))
-                  ) : (
-                    <Text
-                      as="p"
-                      emphasis="lowest"
-                      profile={textProfiles.caption}
-                      className={s.contextUnavailable}
-                    >
-                      On vivid is not available in this palette.
-                    </Text>
-                  )}
-                </div>
-              </div>
-            </Layout>
-          </Card>
-        </article>
-      </div>
-    </section>
-  );
-}
 
 export function Button() {
   const { designSystem, global, segment, theme } = useKiskadee();
   const dropdownMetadata = useComponentMetadata('dropdown');
+  const colorVariants = useButtonColorVariants();
   const buttonMetadata = useComponentMetadata('button');
   const buttonHeightReference = buttonMetadata?.inspection?.elements?.e1?.scales?._boxHeight;
   const stackedButtonHeightReference = buttonMetadata?.inspection?.elements?.e8?.scales?._boxHeight;
@@ -259,6 +111,7 @@ export function Button() {
   const [showFocusRing, setShowFocusRing] = React.useState(false);
   const [selectionEmphasis, setSelectionEmphasis] =
     React.useState<ButtonSelectionEmphasis>('lowest');
+  const [colorVariant, setColorVariant] = React.useState<ColorVariant>('standard');
   const [radiusOverride, setRadiusOverride] = React.useState<RadiusMode>();
   const buttonRadius = radiusOverride ?? global?.radius ?? 'rounded';
   const stackedRadius = resolveButtonStackedRadiusMode(buttonRadius);
@@ -298,6 +151,13 @@ export function Button() {
   const inlineControlsSwitchEmphasis = 'medium';
   const inlineControlsSurfaceContext =
     background.cardSurface?.contentSurfaceContext ?? activeSurfaceContext;
+  const intentVariantSupport = getButtonColorVariantSupport({
+    colorVariants,
+    segment,
+    theme,
+    contexts: [inlineControlsSurfaceContext]
+  });
+  const activeIntentColorVariant = intentVariantSupport ? colorVariant : 'standard';
   const inlineControlsCardState = getManifestComponentState(
     cardMeta,
     segment,
@@ -503,6 +363,13 @@ export function Button() {
                   </Text>
                 )}
               </div>
+              <ShowcaseExampleCard role="group" aria-label="Intent color variants">
+                <ButtonColorVariantControls
+                  colorVariant={colorVariant}
+                  onColorVariantChange={setColorVariant}
+                  contexts={[inlineControlsSurfaceContext]}
+                />
+              </ShowcaseExampleCard>
               {showDescriptions ? (
                 <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
                   Intent gives an action its semantic role. Primary advances the main task, Neutral
@@ -517,7 +384,7 @@ export function Button() {
               }`}
             >
               <ButtonStateSection
-                intent="primary"
+                intent={qualifyButtonIntent('primary', activeIntentColorVariant)}
                 title="Primary"
                 description={
                   showDescriptions ? 'The main action that advances the current task.' : undefined
@@ -535,7 +402,7 @@ export function Button() {
               />
 
               <ButtonStateSection
-                intent="neutral"
+                intent={qualifyButtonIntent('neutral', activeIntentColorVariant)}
                 title="Neutral"
                 description={
                   showDescriptions ? 'Supporting actions that do not dominate the flow.' : undefined
@@ -553,7 +420,7 @@ export function Button() {
               />
 
               <ButtonStateSection
-                intent="destructive"
+                intent={qualifyButtonIntent('destructive', activeIntentColorVariant)}
                 title="Destructive"
                 description={
                   showDescriptions
@@ -573,7 +440,7 @@ export function Button() {
               />
 
               <ButtonStateSection
-                intent="positive"
+                intent={qualifyButtonIntent('positive', activeIntentColorVariant)}
                 title="Positive"
                 description={
                   showDescriptions

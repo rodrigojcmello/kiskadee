@@ -23,28 +23,40 @@ export function splitCardSurfaceSchema<TSegment extends string>(card: {
     for (const [theme, contexts] of entries(themes)) {
       const cardContexts: Entry = {};
       const containerContexts: Entry = {};
-      for (const [context, palette] of entries(contexts)) {
-        const source = palette as Entry;
-        const cardColors: Entry = {};
-        const containerColors: Entry = {};
-        for (const [intent, emphases] of entries(source.boxColor)) {
-          const cardEmphases: Entry = {};
-          const containerEmphases: Entry = {};
-          for (const [emphasis, states] of entries(emphases)) {
-            const { rest, ...interactionStates } = states as Entry;
-            if (rest === undefined) {
-              throw new Error(
-                `Card ${segment}.${theme}.${context}.${intent}.${emphasis} has no Rest surface`
-              );
+      for (const [context, variants] of entries(contexts)) {
+        const cardVariants: Entry = {};
+        const containerVariants: Entry = {};
+        for (const [variant, palette] of entries(variants)) {
+          const source = palette as Entry;
+          const cardColors: Entry = {};
+          const containerColors: Entry = {};
+          for (const [intent, emphases] of entries(source.boxColor)) {
+            const cardEmphases: Entry = {};
+            const containerEmphases: Entry = {};
+            for (const [emphasis, states] of entries(emphases)) {
+              const { rest, ...interactionStates } = states as Entry;
+              if (rest === undefined) {
+                throw new Error(
+                  `Card ${segment}.${theme}.${context}.${intent}.${emphasis} has no Rest surface`
+                );
+              }
+              cardEmphases[emphasis] = interactionStates;
+              containerEmphases[emphasis] = { rest };
             }
-            cardEmphases[emphasis] = interactionStates;
-            containerEmphases[emphasis] = { rest };
+            cardColors[intent] = cardEmphases;
+            containerColors[intent] = containerEmphases;
           }
-          cardColors[intent] = cardEmphases;
-          containerColors[intent] = containerEmphases;
+          const hasSurfaces = Object.keys(containerColors).length > 0;
+          cardVariants[variant] = {
+            ...source,
+            ...(hasSurfaces ? { boxColor: cardColors } : {})
+          };
+          // A border-only alternative inherits Standard surfaces; it does not author a Container variant.
+          if (hasSurfaces || variant === 'standard')
+            containerVariants[variant] = { boxColor: containerColors };
         }
-        cardContexts[context] = { ...source, boxColor: cardColors };
-        containerContexts[context] = { boxColor: containerColors };
+        cardContexts[context] = cardVariants;
+        containerContexts[context] = containerVariants;
       }
       cardThemes[theme] = cardContexts;
       containerThemes[theme] = containerContexts;
@@ -61,27 +73,35 @@ export function splitCardSurfaceSchema<TSegment extends string>(card: {
     for (const [theme, contexts] of entries(themes)) {
       const containerInputs: Entry = {};
       const cardInputs: Entry = {};
-      for (const [context, intents] of entries(contexts)) {
-        const containerIntents: Entry = {};
-        const cardIntents: Entry = {};
-        for (const [intent, emphases] of entries(intents)) {
-          const containerEmphases: Entry = {};
-          const cardEmphases: Entry = {};
-          for (const [emphasis, states] of entries(emphases)) {
-            const { rest, ...stateChanges } = states as Entry;
-            if (rest === undefined) {
-              throw new Error(
-                `Card ${segment}.${theme}.${context}.${intent}.${emphasis} has no Rest context`
-              );
+      for (const [context, variants] of entries(contexts)) {
+        const containerVariants: Entry = {};
+        const cardVariants: Entry = {};
+        for (const [variant, intents] of entries(variants)) {
+          const containerIntents: Entry = {};
+          const cardIntents: Entry = {};
+          for (const [intent, emphases] of entries(intents)) {
+            const containerEmphases: Entry = {};
+            const cardEmphases: Entry = {};
+            for (const [emphasis, states] of entries(emphases)) {
+              const { rest, ...stateChanges } = states as Entry;
+              if (rest === undefined) {
+                throw new Error(
+                  `Card ${segment}.${theme}.${context}.${intent}.${emphasis} has no Rest context`
+                );
+              }
+              containerEmphases[emphasis] = { rest };
+              // An authored Alternative Rest-only leaf must still replace Standard states.
+              if (variant === 'alternative' || Object.keys(stateChanges).length)
+                cardEmphases[emphasis] = stateChanges;
             }
-            containerEmphases[emphasis] = { rest };
-            if (Object.keys(stateChanges).length) cardEmphases[emphasis] = stateChanges;
+            containerIntents[intent] = containerEmphases;
+            if (Object.keys(cardEmphases).length) cardIntents[intent] = cardEmphases;
           }
-          containerIntents[intent] = containerEmphases;
-          if (Object.keys(cardEmphases).length) cardIntents[intent] = cardEmphases;
+          containerVariants[variant] = containerIntents;
+          if (Object.keys(cardIntents).length) cardVariants[variant] = cardIntents;
         }
-        containerInputs[context] = containerIntents;
-        if (Object.keys(cardIntents).length) cardInputs[context] = cardIntents;
+        containerInputs[context] = containerVariants;
+        if (Object.keys(cardVariants).length) cardInputs[context] = cardVariants;
       }
       containerThemes[theme] = containerInputs;
       if (Object.keys(cardInputs).length) cardThemes[theme] = cardInputs;
@@ -97,15 +117,23 @@ export function splitCardSurfaceSchema<TSegment extends string>(card: {
     for (const [theme, palettes] of entries(themes)) {
       contextThemes[theme] ??= {};
       const contextPalettes = contextThemes[theme] as Entry;
-      for (const [context, palette] of entries(palettes)) {
+      for (const [context, variants] of entries(palettes)) {
         contextPalettes[context] ??= {};
-        const contextIntents = contextPalettes[context] as Entry;
-        for (const [intent, emphases] of entries((palette as Entry).boxColor)) {
-          contextIntents[intent] ??= {};
-          const contextEmphases = contextIntents[intent] as Entry;
-          for (const [emphasis] of entries(emphases)) {
-            contextEmphases[emphasis] ??= { rest: 'inherit' };
+        const contextVariants = contextPalettes[context] as Entry;
+        for (const [variant, palette] of entries(variants)) {
+          const contextIntents = (contextVariants[variant] ?? {}) as Entry;
+          for (const [intent, emphases] of entries((palette as Entry).boxColor)) {
+            const contextEmphases = (contextIntents[intent] ?? {}) as Entry;
+            for (const [emphasis] of entries(emphases)) {
+              const standardIntent = (contextVariants.standard as Entry | undefined)?.[intent] as
+                | Entry
+                | undefined;
+              if (variant === 'alternative' && standardIntent?.[emphasis] !== undefined) continue;
+              contextEmphases[emphasis] ??= { rest: 'inherit' };
+            }
+            if (Object.keys(contextEmphases).length) contextIntents[intent] = contextEmphases;
           }
+          if (Object.keys(contextIntents).length) contextVariants[variant] = contextIntents;
         }
       }
     }

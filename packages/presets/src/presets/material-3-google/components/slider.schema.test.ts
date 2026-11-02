@@ -10,7 +10,7 @@ const sliderSchema = createMaterial3GoogleSliderSchema({
   segmentNames: ['default', 'dynamic'],
   transparent: c('default', 'l', 'primitive.black.v1', 100, 0)
 });
-const base = sliderSchema.variants?.standard?.modes?.base;
+const base = sliderSchema.variants!.standard?.modes?.base;
 const refValue = (value: unknown) =>
   typeof value === 'object' && value !== null && 'ref' in value
     ? (value as { ref?: unknown }).ref
@@ -80,10 +80,10 @@ it('publishes neutral and primary palettes across segments, themes and surface c
   for (const segment of ['default', 'dynamic'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const) {
-        const rail = base?.elements.e8?.palettes?.[segment]?.[theme]?.[surface];
-        const active = base?.elements.e9?.palettes?.[segment]?.[theme]?.[surface];
-        const thumb = base?.elements.e10?.palettes?.[segment]?.[theme]?.[surface];
-        const indicator = base?.elements.e14?.palettes?.[segment]?.[theme]?.[surface];
+        const rail = base?.elements.e8?.palettes?.[segment]?.[theme]?.[surface]?.standard;
+        const active = base?.elements.e9?.palettes?.[segment]?.[theme]?.[surface]?.standard;
+        const thumb = base?.elements.e10?.palettes?.[segment]?.[theme]?.[surface]?.standard;
+        const indicator = base?.elements.e14?.palettes?.[segment]?.[theme]?.[surface]?.standard;
 
         expect(rail?.boxColor).toEqual(
           expect.objectContaining({ neutral: expect.anything(), primary: expect.anything() })
@@ -101,9 +101,9 @@ it('publishes neutral and primary palettes across segments, themes and surface c
 });
 
 it('resolves approved Material families and keeps disabled and interaction precedence explicit', () => {
-  const light = base?.elements.e8?.palettes?.default?.light?.onSubtle;
-  const active = base?.elements.e9?.palettes?.default?.light?.onSubtle;
-  const vivid = base?.elements.e8?.palettes?.default?.light?.onVivid;
+  const light = base?.elements.e8?.palettes?.default?.light?.onSubtle?.standard;
+  const active = base?.elements.e9?.palettes?.default?.light?.onSubtle?.standard;
+  const vivid = base?.elements.e8?.palettes?.default?.light?.onVivid?.standard;
 
   expect(light?.boxColor?.neutral?.medium?.rest).toBe(
     c.ref('default', 'l', 'slider.neutral', 'subtle')
@@ -125,9 +125,9 @@ it('resolves approved Material families and keeps disabled and interaction prece
 });
 
 it('keeps dark indicator text readable and separates the active and inactive rails', () => {
-  const darkSubtle = base?.elements.e8?.palettes?.default?.dark?.onSubtle;
-  const darkActive = base?.elements.e9?.palettes?.default?.dark?.onSubtle;
-  const darkIndicator = base?.elements.e14?.palettes?.default?.dark?.onSubtle;
+  const darkSubtle = base?.elements.e8?.palettes?.default?.dark?.onSubtle?.standard;
+  const darkActive = base?.elements.e9?.palettes?.default?.dark?.onSubtle?.standard;
+  const darkIndicator = base?.elements.e14?.palettes?.default?.dark?.onSubtle?.standard;
   const darkRailColor = darkSubtle?.boxColor?.primary?.medium?.rest;
   const darkActiveColor = darkActive?.boxColor?.primary?.medium?.rest;
   const darkIndicatorColor = darkIndicator?.boxColor?.neutral?.medium?.rest;
@@ -144,14 +144,14 @@ it('keeps dark indicator text readable and separates the active and inactive rai
     3
   );
   expect(
-    base?.elements.e10?.palettes?.default?.dark?.onSubtle?.boxColor?.primary?.medium?.rest
+    base?.elements.e10?.palettes?.default?.dark?.onSubtle?.standard?.boxColor?.primary?.medium?.rest
   ).toBe(darkActiveColor);
 });
 
 it('keeps the active interval visible on a same-family vivid parent', () => {
   for (const theme of ['light', 'dark'] as const) {
     const active =
-      base?.elements.e9?.palettes?.default?.[theme]?.onVivid?.boxColor?.primary?.medium;
+      base?.elements.e9?.palettes?.default?.[theme]?.onVivid?.standard?.boxColor?.primary?.medium;
     const parent = c.ref('default', 'l', 'primary', 'vivid');
     expect(contrastRatio(active?.rest as string, parent)).toBeGreaterThanOrEqual(3);
     expect(refValue(active?.disabled)).toBe(c('default', 'l', 'primitive.black.v1', 0, 38));

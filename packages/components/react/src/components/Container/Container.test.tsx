@@ -13,41 +13,49 @@ import { Container } from './Container.tsx';
 
 const context: KiskadeeContextValue = {
   classesMap: {
-    card: { e1: { c: { s: { primary: { h: 'card-primary-high' } } } } },
+    card: { e1: { c: { s: { s: { primary: { h: 'card-primary-high' } } } } } },
     container: {
       e1: {
         c: {
           s: {
-            neutral: { m: 'container-on-subtle', ll: 'transparent-on-subtle' },
-            neutralComplementary: { m: 'container-complementary' }
+            s: {
+              neutral: { m: 'container-on-subtle', ll: 'transparent-on-subtle' },
+              neutralComplementary: { m: 'container-complementary' }
+            }
           },
-          v: { neutral: { m: 'container-on-vivid', ll: 'transparent-on-vivid' } }
+          v: { s: { neutral: { m: 'container-on-vivid', ll: 'transparent-on-vivid' } } }
         }
       }
     }
   },
   componentArtifacts: {
     card: {
+      formatVersion: 3,
       component: 'card',
       contentSurfaceContext: {
-        default: { light: { onSubtle: { primary: { high: { rest: 'onVivid' } } } } }
+        default: { light: { onSubtle: { standard: { primary: { high: { rest: 'onVivid' } } } } } }
       }
     },
     container: {
+      formatVersion: 3,
       component: 'container',
       contentSurfaceContext: {
         default: {
           light: {
             onSubtle: {
-              neutral: { medium: { rest: 'onSubtle' }, lowest: { rest: 'inherit' } },
-              neutralComplementary: { medium: { rest: 'onSubtle' } }
+              standard: {
+                neutral: { medium: { rest: 'onSubtle' }, lowest: { rest: 'inherit' } },
+                neutralComplementary: { medium: { rest: 'onSubtle' } }
+              }
             },
             onVivid: {
-              neutral: { medium: { rest: 'onSubtle' }, lowest: { rest: 'inherit' } }
+              standard: {
+                neutral: { medium: { rest: 'onSubtle' }, lowest: { rest: 'inherit' } }
+              }
             }
           },
-          dark: { onSubtle: { neutral: { medium: { rest: 'onVivid' } } } },
-          darker: { onSubtle: { neutral: { medium: { rest: 'onSubtle' } } } }
+          dark: { onSubtle: { standard: { neutral: { medium: { rest: 'onVivid' } } } } },
+          darker: { onSubtle: { standard: { neutral: { medium: { rest: 'onSubtle' } } } } }
         }
       }
     }

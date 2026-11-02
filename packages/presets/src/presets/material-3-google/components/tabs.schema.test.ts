@@ -10,8 +10,8 @@ const tabs = createMaterial3GoogleTabsSchema({
 });
 
 type SurfacePalette = {
-  onSubtle?: unknown;
-  onVivid?: unknown;
+  onSubtle?: { standard: unknown };
+  onVivid?: { standard: unknown };
 };
 type PaletteElement = {
   palettes?: Record<string, Record<string, SurfacePalette>>;
@@ -24,13 +24,13 @@ it('publishes every authored Tabs variant for both segments, themes and surface 
         for (const theme of ['light', 'dark'] as const) {
           const palette = element.palettes?.[segment]?.[theme];
           if (!palette) continue;
-          expect(palette.onSubtle).toBeDefined();
-          expect(palette.onVivid).toBeDefined();
+          expect(palette.onSubtle!.standard).toBeDefined();
+          expect(palette.onVivid!.standard).toBeDefined();
         }
 });
 
 it('keeps selected tab backgrounds as explicit compound-state resets', () => {
-  const line = tabs.variants?.line?.elements?.e2?.palettes?.default?.light?.onSubtle as {
+  const line = tabs.variants?.line?.elements?.e2?.palettes?.default?.light?.onSubtle?.standard as {
     boxColor?: {
       neutral?: { medium?: { selected?: Record<string, unknown> } };
     };
@@ -43,10 +43,11 @@ it('keeps selected tab backgrounds as explicit compound-state resets', () => {
 });
 
 it('uses light foreground layers for transparent tabs on vivid surfaces', () => {
-  const subtle = tabs.variants?.line?.elements?.e3?.palettes?.default?.light?.onSubtle as {
+  const subtle = tabs.variants?.line?.elements?.e3?.palettes?.default?.light?.onSubtle
+    ?.standard as {
     textColor?: { neutral?: { medium?: { rest?: string } } };
   };
-  const vivid = tabs.variants?.line?.elements?.e3?.palettes?.default?.light?.onVivid as {
+  const vivid = tabs.variants?.line?.elements?.e3?.palettes?.default?.light?.onVivid?.standard as {
     textColor?: { neutral?: { medium?: { rest?: string } } };
   };
 
@@ -55,7 +56,8 @@ it('uses light foreground layers for transparent tabs on vivid surfaces', () => 
 });
 
 it('maps bridge colors through approved Material families', () => {
-  const bridge = tabs.variants?.bridge?.elements?.e2?.palettes?.default?.light?.onSubtle as {
+  const bridge = tabs.variants?.bridge?.elements?.e2?.palettes?.default?.light?.onSubtle
+    ?.standard as {
     boxColor?: { neutral?: { medium?: { rest?: string } } };
   };
   const rest = bridge.boxColor?.neutral?.medium?.rest;
@@ -87,7 +89,7 @@ it('keeps labels and icons readable against their actual filled tab surface', ()
       for (const surface of ['onSubtle', 'onVivid'] as const) {
         const elements = tabs.variants?.[variant]?.elements;
         const palette = (slot: 'e1' | 'e2' | 'e3' | 'e4' | 'e5') =>
-          elements?.[slot]?.palettes?.default?.[theme]?.[surface] as Paint;
+          elements?.[slot]?.palettes?.default?.[theme]?.[surface]?.standard as Paint;
         const background = palette(variant === 'box' ? 'e1' : 'e2').boxColor!.neutral.medium.rest;
         const selectedBox = palette('e5').boxColor!.neutral.medium;
         for (const slot of ['e3', 'e4'] as const) {

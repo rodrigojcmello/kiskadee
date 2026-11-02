@@ -8,7 +8,7 @@ import type {
   ButtonSelectionEmphasis,
   ContentSurfaceContextMap,
   RadiusMode,
-  SystemButtonIntent
+  SystemButtonIntentValue
 } from '@kiskadee/core';
 import { useKiskadee } from '../../../shared/contexts/KiskadeeContext.tsx';
 import { useComponentClassMapResolution } from '../../../shared/contexts/useComponentClassMap.ts';
@@ -37,6 +37,9 @@ export type ButtonArtifactConfig = {
     activationFeedback: ActivationFeedbackSetting | undefined;
   };
   contentSurfaceContext: ContentSurfaceContextMap | undefined;
+  colorVariants: NonNullable<
+    NonNullable<ReturnType<typeof useComponentMetadata<'button'>>>['capabilities']
+  >['colorVariants'];
   globalEffects: {
     activationFeedback: ButtonGlobalEffects['activationFeedback'] | undefined;
   };
@@ -50,7 +53,7 @@ export type ButtonArtifactConfig = {
     disclosureDivider: boolean | undefined;
     indicatorPlacement: ButtonIndicatorPlacement | undefined;
     selectionEmphasis: ButtonSelectionEmphasis | undefined;
-    selectionIntent: SystemButtonIntent | undefined;
+    selectionIntent: SystemButtonIntentValue | undefined;
   };
 };
 
@@ -72,6 +75,7 @@ export function useButtonArtifactConfig(): ButtonArtifactConfig {
     outsideIndicatorSizesByRadius: buttonMetadata?.indicator?.outsideSizesByRadius,
     stackedOutsideIndicatorSizesByRadius: buttonMetadata?.indicator?.stackedOutsideSizesByRadius,
     contentSurfaceContext: buttonMetadata?.contentSurfaceContext,
+    colorVariants: buttonMetadata?.capabilities?.colorVariants,
     componentEffects: {
       activationFeedback: buttonMetadata?.effects?.activationFeedback
     },

@@ -151,63 +151,71 @@ export function createMaterial3GoogleBadgeSchema({
 
   const surfacePalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
-      onSubtle: surfacePalette(segment, 'light', 'onSubtle'),
-      onVivid: surfacePalette(segment, 'light', 'onVivid')
+      onSubtle: { standard: surfacePalette(segment, 'light', 'onSubtle') },
+      onVivid: { standard: surfacePalette(segment, 'light', 'onVivid') }
     },
     dark: {
-      onSubtle: surfacePalette(segment, 'dark', 'onSubtle'),
-      onVivid: surfacePalette(segment, 'dark', 'onVivid')
+      onSubtle: { standard: surfacePalette(segment, 'dark', 'onSubtle') },
+      onVivid: { standard: surfacePalette(segment, 'dark', 'onVivid') }
     }
   }));
 
   const textPalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
-      onSubtle: textPalette(segment, 'light', 'onSubtle'),
-      onVivid: textPalette(segment, 'light', 'onVivid')
+      onSubtle: { standard: textPalette(segment, 'light', 'onSubtle') },
+      onVivid: { standard: textPalette(segment, 'light', 'onVivid') }
     },
     dark: {
-      onSubtle: textPalette(segment, 'dark', 'onSubtle'),
-      onVivid: textPalette(segment, 'dark', 'onVivid')
+      onSubtle: { standard: textPalette(segment, 'dark', 'onSubtle') },
+      onVivid: { standard: textPalette(segment, 'dark', 'onVivid') }
     }
   }));
 
   const fullBleedMarkPalettes = buildBySegment(segmentNames, (segment) => ({
     light: {
       onSubtle: {
-        textColor: createIntentMap(INTENTS, (intent) => ({
-          high: {
-            rest: c.ref(segment, 'l', `badge.${intent}` as BadgeRole, 'vivid')
-          }
-        }))
+        standard: {
+          textColor: createIntentMap(INTENTS, (intent) => ({
+            high: {
+              rest: c.ref(segment, 'l', `badge.${intent}` as BadgeRole, 'vivid')
+            }
+          }))
+        }
       },
       onVivid: {
-        textColor: createIntentMap(INTENTS, (intent) => ({
-          high: {
-            rest: c.ref(segment, 'l', `badge.${intent}` as BadgeRole, 'subtle', 1)
-          }
-        }))
+        standard: {
+          textColor: createIntentMap(INTENTS, (intent) => ({
+            high: {
+              rest: c.ref(segment, 'l', `badge.${intent}` as BadgeRole, 'subtle', 1)
+            }
+          }))
+        }
       }
     },
     dark: {
       onSubtle: {
-        textColor: createIntentMap(INTENTS, (intent) => ({
-          high: {
-            rest: c.ref(
-              segment,
-              'd',
-              `badge.${intent}` as BadgeRole,
-              'vivid',
-              intent === 'neutral' ? 0 : 6
-            )
-          }
-        }))
+        standard: {
+          textColor: createIntentMap(INTENTS, (intent) => ({
+            high: {
+              rest: c.ref(
+                segment,
+                'd',
+                `badge.${intent}` as BadgeRole,
+                'vivid',
+                intent === 'neutral' ? 0 : 6
+              )
+            }
+          }))
+        }
       },
       onVivid: {
-        textColor: createIntentMap(INTENTS, (intent) => ({
-          high: {
-            rest: c.ref(segment, 'l', `badge.${intent}` as BadgeRole, 'subtle', 1)
-          }
-        }))
+        standard: {
+          textColor: createIntentMap(INTENTS, (intent) => ({
+            high: {
+              rest: c.ref(segment, 'l', `badge.${intent}` as BadgeRole, 'subtle', 1)
+            }
+          }))
+        }
       }
     }
   }));
@@ -240,22 +248,30 @@ export function createMaterial3GoogleBadgeSchema({
     return {
       light: {
         onSubtle: {
-          boxColor: transparentMap,
-          borderColor: ring('light', 'onSubtle')
+          standard: {
+            boxColor: transparentMap,
+            borderColor: ring('light', 'onSubtle')
+          }
         },
         onVivid: {
-          boxColor: transparentMap,
-          borderColor: ring('light', 'onVivid')
+          standard: {
+            boxColor: transparentMap,
+            borderColor: ring('light', 'onVivid')
+          }
         }
       },
       dark: {
         onSubtle: {
-          boxColor: transparentMap,
-          borderColor: ring('dark', 'onSubtle')
+          standard: {
+            boxColor: transparentMap,
+            borderColor: ring('dark', 'onSubtle')
+          }
         },
         onVivid: {
-          boxColor: transparentMap,
-          borderColor: ring('dark', 'onVivid')
+          standard: {
+            boxColor: transparentMap,
+            borderColor: ring('dark', 'onVivid')
+          }
         }
       }
     };

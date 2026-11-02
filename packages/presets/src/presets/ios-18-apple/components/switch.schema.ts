@@ -102,32 +102,34 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
                     onSubtle: {
-                      boxColor: {
-                        neutral: {
-                          medium: {
-                            rest: ios18SwitchTrackOff,
-                            pressed: ios18SwitchTrackOffPressed,
-                            disabled: ios18SwitchTrackDisabled,
-                            selected: {
-                              rest: { ref: ios18SwitchTrackOn },
-                              pressed: { ref: ios18SwitchTrackOnPressed }
+                      standard: {
+                        boxColor: {
+                          neutral: {
+                            medium: {
+                              rest: ios18SwitchTrackOff,
+                              pressed: ios18SwitchTrackOffPressed,
+                              disabled: ios18SwitchTrackDisabled,
+                              selected: {
+                                rest: { ref: ios18SwitchTrackOn },
+                                pressed: { ref: ios18SwitchTrackOnPressed }
+                              }
                             }
                           }
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: {
-                            rest: transparent,
-                            hover: { ref: transparent },
-                            focus: { ref: transparent },
-                            pressed: { ref: transparent },
-                            disabled: { ref: transparent },
-                            selected: {
-                              rest: { ref: transparent },
+                        },
+                        borderColor: {
+                          neutral: {
+                            medium: {
+                              rest: transparent,
                               hover: { ref: transparent },
                               focus: { ref: transparent },
-                              pressed: { ref: transparent }
+                              pressed: { ref: transparent },
+                              disabled: { ref: transparent },
+                              selected: {
+                                rest: { ref: transparent },
+                                hover: { ref: transparent },
+                                focus: { ref: transparent },
+                                pressed: { ref: transparent }
+                              }
                             }
                           }
                         }
@@ -158,36 +160,38 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
                     onSubtle: {
-                      boxColor: {
-                        neutral: {
-                          medium: {
-                            rest: ios18SwitchThumb,
-                            hover: { ref: ios18SwitchThumb },
-                            focus: { ref: ios18SwitchThumb },
-                            pressed: { ref: ios18SwitchThumb },
-                            disabled: ios18SwitchThumbDisabled,
-                            selected: {
-                              rest: { ref: ios18SwitchThumb },
+                      standard: {
+                        boxColor: {
+                          neutral: {
+                            medium: {
+                              rest: ios18SwitchThumb,
                               hover: { ref: ios18SwitchThumb },
                               focus: { ref: ios18SwitchThumb },
-                              pressed: { ref: ios18SwitchThumb }
+                              pressed: { ref: ios18SwitchThumb },
+                              disabled: ios18SwitchThumbDisabled,
+                              selected: {
+                                rest: { ref: ios18SwitchThumb },
+                                hover: { ref: ios18SwitchThumb },
+                                focus: { ref: ios18SwitchThumb },
+                                pressed: { ref: ios18SwitchThumb }
+                              }
                             }
                           }
-                        }
-                      },
-                      borderColor: {
-                        neutral: {
-                          medium: {
-                            rest: transparent,
-                            hover: { ref: transparent },
-                            focus: { ref: transparent },
-                            pressed: { ref: transparent },
-                            disabled: { ref: transparent },
-                            selected: {
-                              rest: { ref: transparent },
+                        },
+                        borderColor: {
+                          neutral: {
+                            medium: {
+                              rest: transparent,
                               hover: { ref: transparent },
                               focus: { ref: transparent },
-                              pressed: { ref: transparent }
+                              pressed: { ref: transparent },
+                              disabled: { ref: transparent },
+                              selected: {
+                                rest: { ref: transparent },
+                                hover: { ref: transparent },
+                                focus: { ref: transparent },
+                                pressed: { ref: transparent }
+                              }
                             }
                           }
                         }
@@ -202,18 +206,20 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
                     onSubtle: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: ios18SwitchOffIcon,
-                            hover: { ref: ios18SwitchOffIcon },
-                            focus: { ref: ios18SwitchOffIcon },
-                            pressed: { ref: ios18SwitchOffIcon },
-                            selected: {
-                              rest: { ref: ios18SwitchTrackOn },
-                              hover: { ref: ios18SwitchTrackOn },
-                              focus: { ref: ios18SwitchTrackOn },
-                              pressed: { ref: ios18SwitchTrackOn }
+                      standard: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: ios18SwitchOffIcon,
+                              hover: { ref: ios18SwitchOffIcon },
+                              focus: { ref: ios18SwitchOffIcon },
+                              pressed: { ref: ios18SwitchOffIcon },
+                              selected: {
+                                rest: { ref: ios18SwitchTrackOn },
+                                hover: { ref: ios18SwitchTrackOn },
+                                focus: { ref: ios18SwitchTrackOn },
+                                pressed: { ref: ios18SwitchTrackOn }
+                              }
                             }
                           }
                         }
@@ -236,11 +242,13 @@ export function createIos18AppleSwitchSchema(): SwitchComponent {
                 palettes: buildBySegment(segmentNames, () => ({
                   light: {
                     onSubtle: {
-                      textColor: {
-                        neutral: {
-                          medium: {
-                            rest: ios18SwitchLabel,
-                            disabled: ios18SwitchLabelDisabled
+                      standard: {
+                        textColor: {
+                          neutral: {
+                            medium: {
+                              rest: ios18SwitchLabel,
+                              disabled: ios18SwitchLabelDisabled
+                            }
                           }
                         }
                       }

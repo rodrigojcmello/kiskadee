@@ -61,21 +61,25 @@ export function createIos27AppleProgressSchema({
         palettes: {
           default: themes((theme) => ({
             onSubtle: {
-              boxColor: {
-                neutral: {
-                  medium: {
-                    // Figma Fills/Primary, mapped independently through the approved de-para.
-                    rest:
-                      theme === 'light'
-                        ? c('default', 'l', 'neutral', 35, 20)
-                        : c('default', 'd', 'neutral', 55, 36)
+              standard: {
+                boxColor: {
+                  neutral: {
+                    medium: {
+                      // Figma Fills/Primary, mapped independently through the approved de-para.
+                      rest:
+                        theme === 'light'
+                          ? c('default', 'l', 'neutral', 35, 20)
+                          : c('default', 'd', 'neutral', 55, 36)
+                    }
                   }
                 }
               }
             },
             onVivid: {
-              boxColor: {
-                neutral: { medium: { rest: c('default', 'l', 'neutral', 0, 24) } }
+              standard: {
+                boxColor: {
+                  neutral: { medium: { rest: c('default', 'l', 'neutral', 0, 24) } }
+                }
               }
             }
           }))
@@ -86,8 +90,8 @@ export function createIos27AppleProgressSchema({
         scales: { borderRadius: { pill: 100 } },
         palettes: {
           default: themes((theme) => ({
-            onSubtle: { boxColor: indicator(theme, false) },
-            onVivid: { boxColor: indicator(theme, true) }
+            onSubtle: { standard: { boxColor: indicator(theme, false) } },
+            onVivid: { standard: { boxColor: indicator(theme, true) } }
           }))
         }
       }

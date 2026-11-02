@@ -153,10 +153,12 @@ export function createFluent2MicrosoftDropdownSchema({
     return {
       surface: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.surface)
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.surface)
+                }
               }
             }
           }
@@ -164,67 +166,73 @@ export function createFluent2MicrosoftDropdownSchema({
       },
       scrollAffordance: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.surface)
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.surface)
+                }
               }
-            }
-          },
-          textColor
+            },
+            textColor
+          }
         }
       },
       item: {
         onSubtle: {
-          boxColor: {
-            neutral: {
-              medium: {
-                rest: transparent,
-                hover: neutralHover,
-                pressed: resolve(recipe.pressed),
-                selected: {
-                  rest: resolve(recipe.selected),
-                  hover: resolve(recipe.selected),
-                  pressed: resolve(recipe.selected)
-                },
-                disabled: transparent
-              }
-            },
-            destructive: {
-              medium: {
-                rest: transparent,
-                hover: resolve(recipe.destructiveHover),
-                pressed: resolve(recipe.destructivePressed),
-                selected: {
-                  rest: resolve(recipe.destructiveSelected),
-                  hover: resolve(recipe.destructiveSelected),
-                  pressed: resolve(recipe.destructiveSelected)
-                },
-                disabled: transparent
+          standard: {
+            boxColor: {
+              neutral: {
+                medium: {
+                  rest: transparent,
+                  hover: neutralHover,
+                  pressed: resolve(recipe.pressed),
+                  selected: {
+                    rest: resolve(recipe.selected),
+                    hover: resolve(recipe.selected),
+                    pressed: resolve(recipe.selected)
+                  },
+                  disabled: transparent
+                }
+              },
+              destructive: {
+                medium: {
+                  rest: transparent,
+                  hover: resolve(recipe.destructiveHover),
+                  pressed: resolve(recipe.destructivePressed),
+                  selected: {
+                    rest: resolve(recipe.destructiveSelected),
+                    hover: resolve(recipe.destructiveSelected),
+                    pressed: resolve(recipe.destructiveSelected)
+                  },
+                  disabled: transparent
+                }
               }
             }
           }
         }
       },
       text: {
-        onSubtle: { textColor }
+        onSubtle: { standard: { textColor } }
       },
       iconText: {
-        onSubtle: { textColor: iconTextColor }
+        onSubtle: { standard: { textColor: iconTextColor } }
       },
       auxiliaryText: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: {
-                rest: resolve(recipe.secondaryText),
-                disabled: { ref: disabledText }
-              }
-            },
-            destructive: {
-              medium: {
-                rest: destructiveText,
-                disabled: { ref: disabledText }
+          standard: {
+            textColor: {
+              neutral: {
+                medium: {
+                  rest: resolve(recipe.secondaryText),
+                  disabled: { ref: disabledText }
+                }
+              },
+              destructive: {
+                medium: {
+                  rest: destructiveText,
+                  disabled: { ref: disabledText }
+                }
               }
             }
           }
@@ -232,17 +240,19 @@ export function createFluent2MicrosoftDropdownSchema({
       },
       endText: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: {
-                rest: neutralEndText,
-                disabled: { ref: disabledText }
-              }
-            },
-            destructive: {
-              medium: {
-                rest: neutralEndText,
-                disabled: { ref: disabledText }
+          standard: {
+            textColor: {
+              neutral: {
+                medium: {
+                  rest: neutralEndText,
+                  disabled: { ref: disabledText }
+                }
+              },
+              destructive: {
+                medium: {
+                  rest: neutralEndText,
+                  disabled: { ref: disabledText }
+                }
               }
             }
           }
@@ -250,17 +260,19 @@ export function createFluent2MicrosoftDropdownSchema({
       },
       groupLabelText: {
         onSubtle: {
-          textColor: {
-            neutral: {
-              medium: {
-                rest: neutralGroupLabelText,
-                disabled: { ref: disabledText }
-              }
-            },
-            destructive: {
-              medium: {
-                rest: destructiveText,
-                disabled: { ref: disabledText }
+          standard: {
+            textColor: {
+              neutral: {
+                medium: {
+                  rest: neutralGroupLabelText,
+                  disabled: { ref: disabledText }
+                }
+              },
+              destructive: {
+                medium: {
+                  rest: destructiveText,
+                  disabled: { ref: disabledText }
+                }
               }
             }
           }

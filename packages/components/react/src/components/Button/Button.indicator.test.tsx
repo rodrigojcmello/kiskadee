@@ -35,18 +35,22 @@ const elements: ButtonClassesMap = {
     rs: { all: 'indicator-square' },
     c: {
       s: {
-        neutral: {
-          h: 'indicator-neutral-high-subtle',
-          m: 'indicator-neutral-medium-subtle',
-          l: 'indicator-neutral-low-subtle'
-        },
-        primary: { h: 'indicator-primary-high-subtle' }
+        s: {
+          neutral: {
+            h: 'indicator-neutral-high-subtle',
+            m: 'indicator-neutral-medium-subtle',
+            l: 'indicator-neutral-low-subtle'
+          },
+          primary: { h: 'indicator-primary-high-subtle' }
+        }
       },
       v: {
-        neutral: {
-          h: 'indicator-neutral-high-vivid',
-          m: 'indicator-neutral-medium-vivid',
-          l: 'indicator-neutral-low-vivid'
+        s: {
+          neutral: {
+            h: 'indicator-neutral-high-vivid',
+            m: 'indicator-neutral-medium-vivid',
+            l: 'indicator-neutral-low-vivid'
+          }
         }
       }
     }
@@ -58,18 +62,22 @@ const elements: ButtonClassesMap = {
     rs: { all: 'outside-indicator-square' },
     c: {
       s: {
-        neutral: {
-          h: 'outside-indicator-neutral-high-subtle',
-          m: 'outside-indicator-neutral-medium-subtle',
-          l: 'outside-indicator-neutral-low-subtle'
-        },
-        primary: { h: 'outside-indicator-primary-high-subtle' }
+        s: {
+          neutral: {
+            h: 'outside-indicator-neutral-high-subtle',
+            m: 'outside-indicator-neutral-medium-subtle',
+            l: 'outside-indicator-neutral-low-subtle'
+          },
+          primary: { h: 'outside-indicator-primary-high-subtle' }
+        }
       },
       v: {
-        neutral: {
-          h: 'outside-indicator-neutral-high-vivid',
-          m: 'outside-indicator-neutral-medium-vivid',
-          l: 'outside-indicator-neutral-low-vivid'
+        s: {
+          neutral: {
+            h: 'outside-indicator-neutral-high-vivid',
+            m: 'outside-indicator-neutral-medium-vivid',
+            l: 'outside-indicator-neutral-low-vivid'
+          }
         }
       }
     }
@@ -86,6 +94,7 @@ const context: KiskadeeContextValue = {
   setTheme: () => {},
   componentArtifacts: {
     button: {
+      formatVersion: 3,
       component: 'button',
       indicator: {
         sizesByRadius,
@@ -406,8 +415,12 @@ describe('Button decorative state indicator', () => {
           contentSurfaceContext: {
             default: {
               light: {
-                onSubtle: { neutral: { high: { rest: 'onVivid' }, low: { rest: 'inherit' } } },
-                onVivid: { neutral: { high: { rest: 'onSubtle' }, low: { rest: 'inherit' } } }
+                onSubtle: {
+                  standard: { neutral: { high: { rest: 'onVivid' }, low: { rest: 'inherit' } } }
+                },
+                onVivid: {
+                  standard: { neutral: { high: { rest: 'onSubtle' }, low: { rest: 'inherit' } } }
+                }
               }
             }
           }
@@ -457,17 +470,21 @@ describe('Button decorative state indicator', () => {
             default: {
               light: {
                 onSubtle: {
-                  neutral: {
-                    medium: {
-                      rest: 'onSubtle',
-                      selected: 'onVivid',
-                      pending: 'onSubtle',
-                      disabled: 'onSubtle'
+                  standard: {
+                    neutral: {
+                      medium: {
+                        rest: 'onSubtle',
+                        selected: 'onVivid',
+                        pending: 'onSubtle',
+                        disabled: 'onSubtle'
+                      }
                     }
                   }
                 },
                 onVivid: {
-                  neutral: { medium: { rest: 'onVivid', selected: 'onSubtle' } }
+                  standard: {
+                    neutral: { medium: { rest: 'onVivid', selected: 'onSubtle' } }
+                  }
                 }
               }
             }
@@ -520,7 +537,11 @@ describe('Button decorative state indicator', () => {
       {
         ...context,
         componentArtifacts: {
-          button: { component: 'button', indicator: { sizesByRadius: { rounded: [] } } }
+          button: {
+            formatVersion: 3,
+            component: 'button',
+            indicator: { sizesByRadius: { rounded: [] } }
+          }
         }
       }
     ] satisfies KiskadeeContextValue[]) {
@@ -612,6 +633,7 @@ describe('Button decorative state indicator', () => {
       classesMap: {},
       loadComponentClassMap: async <T,>(component: string, scope: { kind: string }) =>
         ({
+          formatVersion: 3,
           component,
           classMap:
             scope.kind === 'core'
@@ -666,6 +688,7 @@ describe('Button decorative state indicator', () => {
       },
       componentArtifacts: {
         button: {
+          formatVersion: 3,
           component: 'button',
           density: { c: 'sm:1', r: 'md:1', s: 'lg:1' },
           sizeSupport: { sizes: ['sm:1', 'md:1', 'lg:1'] },
@@ -709,6 +732,7 @@ describe('Button decorative state indicator', () => {
       classesMap: { button: { e1: { s: { a: 'root-adaptive' } } } },
       componentArtifacts: {
         button: {
+          formatVersion: 3,
           component: 'button',
           density: { c: 'md:1', s: 'md:1' },
           sizeSupport: { sizes: ['md:1'] }

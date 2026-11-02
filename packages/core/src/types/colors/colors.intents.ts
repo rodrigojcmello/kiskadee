@@ -56,6 +56,10 @@ export type ExternalButtonIntent = `brand.${string}`;
 /** Public Button intents accepted by component consumers. */
 export type ButtonIntent = SystemButtonIntent | ExternalButtonIntent;
 
+/** Public recipe-qualified system intent. The semantic registry stays unchanged. */
+export type SystemButtonIntentValue = SystemButtonIntent | `${SystemButtonIntent}-alt`;
+export type ButtonIntentValue = SystemButtonIntentValue | ExternalButtonIntent;
+
 /** Qualified role identifier for `button` intents (e.g. `button.primary`). */
 export type RoleButton = `button.${ButtonIntent}`;
 

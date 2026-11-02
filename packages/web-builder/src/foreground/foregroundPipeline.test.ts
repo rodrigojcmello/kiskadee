@@ -133,37 +133,37 @@ describe('foreground Web pipeline', () => {
       | Record<string, ClassNameByElementJSON>
       | undefined;
 
-    expect(text?.e1.c?.s?.neutral).toEqual({
+    expect(text?.e1.c?.s?.s?.neutral).toEqual({
       h: shortenMap['textColor__#333333'],
       m: shortenMap['textColor__#555555'],
       l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#777777']
     });
-    expect(text?.e1.c?.v?.neutral).toEqual({
+    expect(text?.e1.c?.v?.s?.neutral).toEqual({
       h: shortenMap['textColor__#ffffffd6'],
       m: shortenMap['textColor__#ffffffad'],
       l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#ffffff99']
     });
-    expect(text?.e1.c?.s?.red).toEqual({
+    expect(text?.e1.c?.s?.s?.red).toEqual({
       h: shortenMap['textColor__#811819'],
       m: shortenMap['textColor__#811819ad'],
       l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#8118193d']
     });
-    expect(text?.e1.c?.v?.red).toEqual({
+    expect(text?.e1.c?.v?.s?.red).toEqual({
       h: shortenMap['textColor__#ffdbd7'],
       m: shortenMap['textColor__#ffdbd7ad'],
       l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#ffdbd73d']
     });
-    expect(text?.e1.c?.s?.['red-deep']).toEqual({
+    expect(text?.e1.c?.s?.s?.['red-deep']).toEqual({
       h: shortenMap['textColor__#611112'],
       m: shortenMap['textColor__#611112ad'],
       l: shortenMap['textColor__#888888'],
       ll: shortenMap['textColor__#6111123d']
     });
-    expect(text?.e1.c?.v?.['red-deep']).toEqual({
+    expect(text?.e1.c?.v?.s?.['red-deep']).toEqual({
       h: shortenMap['textColor__#fff4f2'],
       m: shortenMap['textColor__#fff4f2c2'],
       l: shortenMap['textColor__#888888'],

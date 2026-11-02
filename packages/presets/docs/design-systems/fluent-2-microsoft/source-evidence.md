@@ -15,6 +15,16 @@ Future Dark/onVivid calibration remains separate; selecting Dark alone does not 
 Windows reproduction. This is a **Kiskadee extension**, with source-exact observations identified
 individually in the decision record. No palette or formula changes accompany this documentation.
 
+## Shared Button color variants - 2026-11-02
+
+Status: **Kiskadee extension**. Button publishes optional onVivid body paint through the shared
+`colorVariant` axis using the already promoted complementary assets. Default and Teams cover
+Light, Dark and Darker for Primary, Positive and Destructive; Neutral inherits Standard and
+has no authored Alternative. The complete existing Standard recipe, including the earlier
+complementary pilot and `e11`/`e12` indicators, remains unchanged. Indicators always consume
+Standard. No generator, asset, global semantic mapping or contrast recalibration is included.
+See the [Button recipe, locator provenance and calibration boundary](components/button.md#shared-color-variants---2026-11-02).
+
 ## Complementary onVivid pilot - 2026-11-01
 
 The approved [Muted Darks and complementary promotion](colors/fluent-tonal-scale-evidence.md#muted-darks-and-complementary-promotion)

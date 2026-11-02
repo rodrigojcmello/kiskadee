@@ -34,6 +34,7 @@ function createResources(
     stylesheetSha256: '0'.repeat(64),
     classMaps: {
       button: {
+        formatVersion: 3,
         component: 'button',
         classMap: {
           e1: {}
@@ -64,6 +65,83 @@ afterEach(() => {
 });
 
 describe('BrandPackBoundary', () => {
+  it.each([
+    ['unversioned', { component: 'button', classMap: { e1: {} } }],
+    ['old-version', { formatVersion: 2, component: 'button', classMap: { e1: {} } }],
+    ['unwrapped', { e1: { c: { s: { 'brand.google': { h: 'legacy' } } } } }]
+  ])('rejects %s class maps before rendering preloaded children', (name, classMap) => {
+    const request: BrandPackLoadRequest = {
+      designSystem: `brand-invalid-preloaded-${name}`,
+      pack: 'auth',
+      segment: 'default',
+      theme: 'light',
+      components: ['button']
+    };
+    const href = `/brand-${name}.css`;
+    addLoadedStylesheet(href);
+    const resources = createResources(request, href);
+    resources.classMaps.button = classMap;
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(
+      h(
+        KiskadeeContext.Provider,
+        {
+          value: createContextValue({
+            designSystem: request.designSystem,
+            preloadedBrandPacks: { [resources.cacheKey]: resources }
+          })
+        },
+        h(
+          BrandPackBoundary,
+          { pack: 'auth', components: ['button'], fallback: h('span', null, 'blocked') },
+          h('span', null, 'must-not-render')
+        )
+      )
+    );
+    expect(screen.queryByText('must-not-render')).toBeNull();
+    expect(screen.getByText('blocked')).toBeTruthy();
+    expect(error).toHaveBeenCalledWith(
+      '[Kiskadee] Invalid preloaded brand-pack resources.',
+      expect.any(Error)
+    );
+  });
+
+  it('reports incompatible loaded class maps through the boundary fallback', async () => {
+    const request: BrandPackLoadRequest = {
+      designSystem: 'brand-invalid-loaded-envelope',
+      pack: 'auth',
+      segment: 'default',
+      theme: 'light',
+      components: ['button']
+    };
+    const resources = createResources(request, '/brand-loaded-incompatible.css');
+    resources.classMaps.button = { component: 'button', classMap: { e1: {} } };
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(
+      h(
+        KiskadeeContext.Provider,
+        {
+          value: createContextValue({
+            designSystem: request.designSystem,
+            brandPackLoader: async () => resources
+          })
+        },
+        h(
+          BrandPackBoundary,
+          { pack: 'auth', components: ['button'], fallback: h('span', null, 'blocked') },
+          h('span', null, 'must-not-render')
+        )
+      )
+    );
+    await waitFor(() =>
+      expect(error).toHaveBeenCalledWith(
+        '[Kiskadee] Unable to load the requested brand pack.',
+        expect.any(Error)
+      )
+    );
+    expect(screen.queryByText('must-not-render')).toBeNull();
+  });
+
   it('creates stable cache keys from deduplicated, ordered components', () => {
     expect(
       createBrandPackResourceKey({

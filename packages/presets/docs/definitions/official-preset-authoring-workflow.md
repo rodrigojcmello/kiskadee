@@ -70,7 +70,7 @@ Before documenting components on preset-owned backgrounds, define continuous Res
 Container and bounded presentations through Card:
 
 1. Author the required Container Rest surfaces under
-   `components.container.elements.e1.palettes[segment][theme].onSubtle.boxColor` and matching
+   `components.container.elements.e1.palettes[segment][theme].onSubtle.standard.boxColor` and matching
    supported contextual branches. Author `components.container.contentSurfaceContext` for the
    context produced for descendants.
 2. Set `components.card.surfaceSource: 'container'` and author Card borders, geometry, effects and
@@ -82,7 +82,7 @@ Container and bounded presentations through Card:
 5. Include a strong Primary entry whose `contentSurfaceContext` is `onVivid` when components will
    be demonstrated on a vivid Primary canvas.
 
-The canonical catalog resolves its surface swatches from the Container `onSubtle` Rest branch via
+The canonical catalog resolves its surface swatches from the Container `onSubtle.standard` Rest branch via
 the resolved Card recipe. At runtime, Card consumes its explicit or inherited `surfaceContext` and
 selects the matching Card palette. The runtime `contentSurfaceContext` map tells descendants which
 palette context to select; the matching field in `canonicalSurfaces` documents the catalog entry
@@ -104,9 +104,19 @@ For each component, author the palettes it can render on the surrounding surface
 
 - `onSubtle` is required for every declared segment and theme;
 - `onVivid` is optional;
-- when `onVivid` exists, it must cover the same color-property, intent, and emphasis pairs as
-  `onSubtle`;
+- each authored surface context contains a required `standard` palette and optional `alternative`;
+- when `onVivid` exists, its Standard palette must cover the same color-property, intent, and
+  emphasis pairs as `onSubtle.standard`;
 - unsupported `onVivid` must remain unsupported and must never fall back silently to `onSubtle`.
+
+The canonical component palette path is
+`segment -> theme -> surfaceContext -> colorVariant -> colorProperty -> intent -> emphasis -> state`.
+The descendant `contentSurfaceContext` maps also include the color-variant level. Alternative
+is sparse at property/intent/emphasis boundaries: an omitted leaf inherits the whole Standard
+state map, while an authored leaf owns all states. Missing states retain that leaf's Rest.
+Do not copy Neutral or another unchanged leaf solely to advertise an Alternative capability.
+Separator profiles share this palette grammar. Foreground and Contour catalogs retain their
+own existing coordinate grammars; `options.border.adaptive` retains its boolean map grammar.
 
 The surrounding canvas and the component treatment are independent contracts:
 
@@ -132,7 +142,8 @@ proves the composition:
 - `components/container.kiskadee.json` must exist for Container surfaces;
 - `components/card.kiskadee.json` must exist when canonical Card surfaces are declared;
 - Card canonical entries must contain resolved Rest colors in authored order;
-- component class maps must contain `c.s` for `onSubtle` and `c.v` for `onVivid` when supported;
+- component class maps use `c.<surfaceContext>.<colorVariant>`, with context `s`/`v` and
+  variant `s`/`a`; `c.v.a` selects Alternative on a vivid surface when authored;
 - every declared segment and theme must have the intended artifacts.
 
 ## 9. Validate In The Showcase

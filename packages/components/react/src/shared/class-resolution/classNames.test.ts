@@ -16,22 +16,26 @@ const element: ClassNameByElementJSON = {
   d: 'base',
   c: {
     s: {
-      primary: {
-        hh: 'primary-highest',
-        h: 'primary-high',
-        m: 'primary-medium',
-        l: 'primary-low',
-        ll: 'primary-lowest'
-      },
-      neutral: {
-        h: 'neutral-high',
-        m: 'neutral-medium'
+      s: {
+        primary: {
+          hh: 'primary-highest',
+          h: 'primary-high',
+          m: 'primary-medium',
+          l: 'primary-low',
+          ll: 'primary-lowest'
+        },
+        neutral: {
+          h: 'neutral-high',
+          m: 'neutral-medium'
+        }
       }
     },
     v: {
-      primary: {
-        h: 'on-vivid-primary-high',
-        m: 'on-vivid-primary-medium'
+      s: {
+        primary: {
+          h: 'on-vivid-primary-high',
+          m: 'on-vivid-primary-medium'
+        }
       }
     }
   },
@@ -84,7 +88,9 @@ describe('class name resolution helpers', () => {
     const defaultOnlyElement: ClassNameByElementJSON = {
       c: {
         s: {
-          primary: { h: 'primary-high' }
+          s: {
+            primary: { h: 'primary-high' }
+          }
         }
       }
     };
@@ -118,8 +124,10 @@ describe('class name resolution helpers', () => {
     const sparseElement: ClassNameByElementJSON = {
       c: {
         s: {
-          primary: {
-            h: 'primary-high'
+          s: {
+            primary: {
+              h: 'primary-high'
+            }
           }
         }
       }
@@ -136,8 +144,10 @@ describe('class name resolution helpers', () => {
     const lowOnlyElement: ClassNameByElementJSON = {
       c: {
         s: {
-          primary: {
-            l: 'primary-low'
+          s: {
+            primary: {
+              l: 'primary-low'
+            }
           }
         }
       }

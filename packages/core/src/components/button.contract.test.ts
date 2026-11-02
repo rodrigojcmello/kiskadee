@@ -24,8 +24,10 @@ function createDivider() {
       default: {
         light: {
           onSubtle: {
-            boxColor: {
-              neutral: { medium: { rest: '#dce0ed' } }
+            standard: {
+              boxColor: {
+                neutral: { medium: { rest: '#dce0ed' } }
+              }
             }
           }
         }
@@ -56,8 +58,10 @@ describe('Button component contract', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      [`border${side}Color`]: {
-                        neutral: { low: { rest: '#dddddd', disabled: '#00000000' } }
+                      standard: {
+                        [`border${side}Color`]: {
+                          neutral: { low: { rest: '#dddddd', disabled: '#00000000' } }
+                        }
                       }
                     }
                   }
@@ -233,7 +237,10 @@ describe('Button component contract', () => {
 
   it('keeps explicit Rest-only intent and emphasis overrides available', () => {
     const divider = createDivider();
-    const boxColor = divider.palettes.default.light.onSubtle.boxColor as Record<string, unknown>;
+    const boxColor = divider.palettes.default.light.onSubtle.standard.boxColor as Record<
+      string,
+      unknown
+    >;
     boxColor.primary = { high: { rest: '#123456' } };
 
     expect(
@@ -259,8 +266,10 @@ describe('Button component contract', () => {
               default: {
                 light: {
                   onSubtle: {
-                    borderColor: {
-                      neutral: { medium: { rest: '#dce0ed' } }
+                    standard: {
+                      borderColor: {
+                        neutral: { medium: { rest: '#dce0ed' } }
+                      }
                     }
                   }
                 }
@@ -273,7 +282,7 @@ describe('Button component contract', () => {
       expect.arrayContaining([
         'components.button.elements.e5.decorations: not allowed for this element',
         'components.button.elements.e5.scales.borderWidth: unrecognized key',
-        'components.button.elements.e5.palettes.default.light.onSubtle.borderColor: unrecognized key'
+        'components.button.elements.e5.palettes.default.light.onSubtle.standard.borderColor: unrecognized key'
       ])
     );
   });
@@ -281,7 +290,7 @@ describe('Button component contract', () => {
   it('rejects non-Rest divider states and invalid divider geometry', () => {
     const divider = createDivider();
     divider.scales.boxWidth['s:md:1'] = 0;
-    divider.palettes.default.light.onSubtle.boxColor.neutral.medium = {
+    divider.palettes.default.light.onSubtle.standard.boxColor.neutral.medium = {
       rest: '#dce0ed',
       hover: '#ffffff'
     } as never;
@@ -296,7 +305,7 @@ describe('Button component contract', () => {
     ).toEqual(
       expect.arrayContaining([
         'components.button.elements.e6.scales.boxWidth.s:md:1: expected finite number greater than 0',
-        'components.button.elements.e6.palettes.default.light.onSubtle.boxColor.neutral.medium.hover: only Rest is allowed for the Button divider'
+        'components.button.elements.e6.palettes.default.light.onSubtle.standard.boxColor.neutral.medium.hover: only Rest is allowed for the Button divider'
       ])
     );
   });

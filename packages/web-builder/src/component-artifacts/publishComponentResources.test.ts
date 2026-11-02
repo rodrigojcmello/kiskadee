@@ -58,7 +58,7 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
   const read = async (path: string) => JSON.parse(await readFile(join(dir, path), 'utf8'));
   try {
     const core = { button: { e1: { s: { 'md:1': 'medium' } } } };
-    const palette = { button: { e1: { c: { s: { primary: { h: 'blue' } } } } } };
+    const palette = { button: { e1: { c: { s: { s: { primary: { h: 'blue' } } } } } } };
     if (withSegments) await write('segments.json', { version: 1, segments: [] });
     await write('manifest.json', {
       ...(withSegments ? { segmentMetadata: 'segments.json' } : {}),
@@ -88,7 +88,7 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
         container: {
           contentSurfaceContext: {
             default: {
-              light: { onSubtle: { neutral: { medium: { rest: 'onSubtle' } } } }
+              light: { onSubtle: { standard: { neutral: { medium: { rest: 'onSubtle' } } } } }
             }
           }
         }
@@ -129,6 +129,10 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
     expect(metadata.sizeSupport).toEqual({ sizes: ['md:1'] });
     expect(metadata.density).toBeUndefined();
     expect(metadata.contentSurfaceContext).toBeUndefined();
+    expect(metadata.capabilities).not.toHaveProperty('surfaceContexts');
+    expect(metadata.capabilities.colorVariants.standard).toEqual({
+      'default.light': { onSubtle: { primary: ['high'] } }
+    });
     const descriptor = await read(metadata.resources.palettes['default.light']);
     expect(descriptor.config.contentSurfaceContext.default.light).toEqual({ onSubtle: {} });
     expect(descriptor.capabilities.surfaceContexts['default.light']).toBeDefined();
@@ -138,7 +142,8 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
     expect(containerMetadata.component).toBe('container');
     const containerDescriptor = await read(containerMetadata.resources.palettes['default.light']);
     expect(
-      containerDescriptor.config.contentSurfaceContext.default.light.onSubtle.neutral.medium
+      containerDescriptor.config.contentSurfaceContext.default.light.onSubtle.standard.neutral
+        .medium
     ).toEqual({
       rest: 'onSubtle'
     });

@@ -33,7 +33,13 @@ function isComponentClassMapArtifact<TClassMap>(
   artifact: ComponentClassMapArtifactJSON<TClassMap> | undefined,
   componentName: string
 ): artifact is ComponentClassMapArtifactJSON<TClassMap> {
-  return artifact?.component === componentName && artifact.classMap !== undefined;
+  if (artifact === undefined) return false;
+  if (!isRecord(artifact) || artifact.formatVersion !== 3)
+    throw new Error('Unsupported component class map format; regenerate version 3 artifacts.');
+  if (artifact.component !== componentName || !isRecord(artifact.classMap)) {
+    throw new Error(`Invalid class map envelope for the requested "${componentName}" component.`);
+  }
+  return true;
 }
 
 function mergeClassElementMaps(
@@ -114,11 +120,8 @@ function unwrapBrandComponentClassMap<TClassMap>(
   componentName: string
 ): TClassMap | undefined {
   if (!value) return undefined;
-  if (isRecord(value) && 'component' in value && 'classMap' in value) {
-    const artifact = value as unknown as ComponentClassMapArtifactJSON<TClassMap>;
-    return isComponentClassMapArtifact(artifact, componentName) ? artifact.classMap : undefined;
-  }
-  return value as TClassMap;
+  const artifact = value as ComponentClassMapArtifactJSON<TClassMap>;
+  return isComponentClassMapArtifact(artifact, componentName) ? artifact.classMap : undefined;
 }
 
 function getComponentClassMapSnapshot<TClassMap>(
@@ -229,16 +232,29 @@ export function useComponentClassMapResolution<TClassMap>(
     const [coreArtifact, paletteArtifact] = await Promise.all([
       loadCachedArtifactOrThrow<ComponentClassMapArtifactJSON<TClassMap>>({
         cacheKey: coreCacheKey,
-        load: () => loadComponentClassMap(componentName, { kind: 'core' })
+        load: async () => {
+          const artifact = await loadComponentClassMap<ComponentClassMapArtifactJSON<TClassMap>>(
+            componentName,
+            { kind: 'core' }
+          );
+          isComponentClassMapArtifact(artifact, componentName);
+          return artifact;
+        }
       }),
       loadCachedArtifactOrThrow<ComponentClassMapArtifactJSON<TClassMap>>({
         cacheKey: paletteCacheKey,
-        load: () =>
-          loadComponentClassMap(componentName, {
-            kind: 'palette',
-            segment,
-            theme
-          })
+        load: async () => {
+          const artifact = await loadComponentClassMap<ComponentClassMapArtifactJSON<TClassMap>>(
+            componentName,
+            {
+              kind: 'palette',
+              segment,
+              theme
+            }
+          );
+          isComponentClassMapArtifact(artifact, componentName);
+          return artifact;
+        }
       })
     ]);
     const coreClassMap = isComponentClassMapArtifact(coreArtifact, componentName)
@@ -326,7 +342,10 @@ export function useComponentClassMapResolution<TClassMap>(
 
   return {
     classMap,
-    error: loadedSnapshot.status === 'error' ? loadedSnapshot.error : undefined,
+    error:
+      enabled && loadComponentClassMap && loadedSnapshot.status === 'error'
+        ? loadedSnapshot.error
+        : undefined,
     retry,
     pending: Boolean(enabled && loadComponentClassMap && loadedSnapshot.status === 'pending')
   };

@@ -33,11 +33,15 @@ const buttonClassMap = {
     },
     c: {
       s: {
-        neutral: { h: 'button-neutral-high', l: 'button-neutral-low' },
-        primary: { h: 'button-primary-high' }
+        s: {
+          neutral: { h: 'button-neutral-high', l: 'button-neutral-low' },
+          primary: { h: 'button-primary-high' }
+        }
       },
       v: {
-        primary: { h: 'button-primary-vivid-high' }
+        s: {
+          primary: { h: 'button-primary-vivid-high' }
+        }
       }
     }
   },
@@ -45,11 +49,15 @@ const buttonClassMap = {
     d: 'button-label',
     c: {
       s: {
-        neutral: { h: 'label-neutral-high', l: 'label-neutral-low' },
-        primary: { h: 'label-primary-high' }
+        s: {
+          neutral: { h: 'label-neutral-high', l: 'label-neutral-low' },
+          primary: { h: 'label-primary-high' }
+        }
       },
       v: {
-        primary: { h: 'label-primary-vivid-high' }
+        s: {
+          primary: { h: 'label-primary-vivid-high' }
+        }
       }
     }
   },
@@ -57,16 +65,16 @@ const buttonClassMap = {
     d: 'button-disclosure',
     s: { all: 'disclosure-scale' },
     c: {
-      s: { neutral: { h: 'disclosure-neutral' } },
-      v: { primary: { h: 'disclosure-primary-vivid' } }
+      s: { s: { neutral: { h: 'disclosure-neutral' } } },
+      v: { s: { primary: { h: 'disclosure-primary-vivid' } } }
     }
   },
   e6: {
     d: 'button-divider',
     s: { all: 'divider-scale-all', 'lg:1': 'divider-scale-large' },
     c: {
-      s: { neutral: { m: 'divider-neutral-medium' } },
-      v: { primary: { h: 'divider-primary-vivid-high' } }
+      s: { s: { neutral: { m: 'divider-neutral-medium' } } },
+      v: { s: { primary: { h: 'divider-primary-vivid-high' } } }
     }
   },
   group: {
@@ -78,40 +86,44 @@ const buttonClassMap = {
       rs: { all: 'frame-square' },
       c: {
         s: {
-          neutral: {
-            m: 'frame-neutral-rest',
-            l: 'frame-neutral-low-rest',
-            h: 'frame-neutral-high-rest'
-          },
-          primary: { h: 'frame-primary-rest', l: 'frame-primary-low-rest' },
-          'brand.google': { h: 'frame-google-rest' }
+          s: {
+            neutral: {
+              m: 'frame-neutral-rest',
+              l: 'frame-neutral-low-rest',
+              h: 'frame-neutral-high-rest'
+            },
+            primary: { h: 'frame-primary-rest', l: 'frame-primary-low-rest' },
+            'brand.google': { h: 'frame-google-rest' }
+          }
         },
-        v: { primary: { h: 'frame-primary-vivid-rest' } }
+        v: { s: { primary: { h: 'frame-primary-vivid-rest' } } }
       }
     },
     member: {
       d: 'member-border-off',
       c: {
         s: {
-          neutral: {
-            m: 'member-neutral-medium',
-            l: 'member-neutral-low',
-            h: 'member-neutral-high'
-          },
-          primary: { h: 'member-primary-high', l: 'member-primary-low' },
-          'brand.google': { h: 'member-google-high' }
+          s: {
+            neutral: {
+              m: 'member-neutral-medium',
+              l: 'member-neutral-low',
+              h: 'member-neutral-high'
+            },
+            primary: { h: 'member-primary-high', l: 'member-primary-low' },
+            'brand.google': { h: 'member-google-high' }
+          }
         },
-        v: { primary: { h: 'member-primary-vivid-high' } }
+        v: { s: { primary: { h: 'member-primary-vivid-high' } } }
       }
     },
     selectionRestMember: {
       d: 'member-border-off',
-      c: { s: { neutral: { h: 'member-neutral-high-normal' } } }
+      c: { s: { s: { neutral: { h: 'member-neutral-high-normal' } } } }
     }
   },
   selectionRest: {
-    e1: { c: { s: { neutral: { h: 'button-neutral-high-normal' } } } },
-    e2: { c: { s: { neutral: { h: 'label-neutral-high-normal' } } } }
+    e1: { c: { s: { s: { neutral: { h: 'button-neutral-high-normal' } } } } },
+    e2: { c: { s: { s: { neutral: { h: 'label-neutral-high-normal' } } } } }
   }
 };
 
@@ -152,7 +164,7 @@ function createContext(options?: {
               s: options?.withDividerGeometry === false ? undefined : buttonClassMap.e6.s,
               c:
                 options?.dividerPaint === 'primary-only'
-                  ? { s: { primary: { h: 'divider-primary-high' } } }
+                  ? { s: { s: { primary: { h: 'divider-primary-high' } } } }
                   : buttonClassMap.e6.c
             }
           : undefined
@@ -167,6 +179,7 @@ function createContext(options?: {
     global: {},
     componentArtifacts: {
       button: {
+        formatVersion: 3,
         component: 'button',
         ...{
           options: {
@@ -651,7 +664,7 @@ describe('Button.Group', () => {
 
 describe('Button Group published frame omissions', () => {
   const frameOmissions: ButtonGroupClassesMap['frameOmissions'] = {
-    s: { neutral: { l: { pressed: true, selected: true } } }
+    s: { s: { neutral: { l: { pressed: true, selected: true } } } }
   };
 
   it('keeps frame pieces stable while selection and projected press change on one member', () => {
@@ -724,7 +737,7 @@ describe('Button Group published frame omissions', () => {
   it('resolves omission against the selected intent without changing the Group base frame', () => {
     const context = createContext({
       groupDivider: true,
-      frameOmissions: { s: { primary: { h: { selected: true } } } }
+      frameOmissions: { s: { s: { primary: { h: { selected: true } } } } }
     });
     const view = (selectionIntent: 'primary' | 'neutral') => (
       <KiskadeeContext.Provider value={context}>

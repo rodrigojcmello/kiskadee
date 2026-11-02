@@ -11,7 +11,9 @@ function palette(
     default: {
       light: {
         onSubtle: {
-          [color]: { [intent]: { medium: states } }
+          standard: {
+            [color]: { [intent]: { medium: states } }
+          }
         }
       }
     }
@@ -65,8 +67,10 @@ function badge(states?: Record<string, string>) {
           default: {
             light: {
               onSubtle: {
-                boxColor: { attention: { medium: states ?? { rest: '#ffffff' } } },
-                borderColor: { attention: { medium: states ?? { rest: '#ffffff' } } }
+                standard: {
+                  boxColor: { attention: { medium: states ?? { rest: '#ffffff' } } },
+                  borderColor: { attention: { medium: states ?? { rest: '#ffffff' } } }
+                }
               }
             }
           }
@@ -90,7 +94,9 @@ function chip() {
       default: {
         light: {
           onSubtle: {
-            neutral: { medium: { rest: 'inherit', selected: 'onVivid' } }
+            standard: {
+              neutral: { medium: { rest: 'inherit', selected: 'onVivid' } }
+            }
           }
         }
       }
@@ -213,7 +219,9 @@ describe('Badge and Chip component contracts', () => {
       default: {
         light: {
           onSubtle: {
-            boxColor: { attention: { lowest: { rest: '#000000' } } }
+            standard: {
+              boxColor: { attention: { lowest: { rest: '#000000' } } }
+            }
           }
         }
       }
@@ -226,8 +234,10 @@ describe('Badge and Chip component contracts', () => {
     const value = badge();
 
     expect(validateBadgeComponentContract(value)).toEqual([]);
-    expect(value.elements.e6.palettes.default.light.onSubtle).toHaveProperty('boxColor');
-    expect(value.elements.e6.palettes.default.light.onSubtle).toHaveProperty('borderColor');
+    expect(value.elements.e6.palettes.default.light.onSubtle.standard).toHaveProperty('boxColor');
+    expect(value.elements.e6.palettes.default.light.onSubtle.standard).toHaveProperty(
+      'borderColor'
+    );
   });
 
   it('accepts Chip interaction states and serialized surface output', () => {
@@ -248,10 +258,8 @@ describe('Badge and Chip component contracts', () => {
     (value.elements as Record<string, unknown>).e8 = { name: 'unknown' };
     const e2 = value.elements.e2 as typeof value.elements.e2;
     e2.palettes = palette('boxColor', { rest: '#ffffff', pending: '#eeeeee' });
-    const map = value.contentSurfaceContext.default.light.onSubtle.neutral.medium as Record<
-      string,
-      unknown
-    >;
+    const map = value.contentSurfaceContext.default.light.onSubtle.standard.neutral
+      .medium as Record<string, unknown>;
     delete map.rest;
 
     expect(validateChipComponentContract(value)).toEqual(

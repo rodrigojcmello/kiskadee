@@ -97,7 +97,7 @@ it('lowers Select dividers through shared separator profiles and diagnoses missi
             palettes: {
               default: {
                 light: {
-                  onSubtle: { boxColor: { neutral: { medium: { rest: '#dddddd' } } } }
+                  onSubtle: { standard: { boxColor: { neutral: { medium: { rest: '#dddddd' } } } } }
                 }
               }
             }
@@ -131,7 +131,7 @@ it('lowers Select dividers through shared separator profiles and diagnoses missi
     expect.arrayContaining(['boxWidth__1', 'boxHeight__20'])
   );
   expect(divider?.palettes).toEqual({
-    default: { light: { onSubtle: { neutral: { rest: ['boxColor__#dddddd'] } } } }
+    default: { light: { onSubtle: { standard: { neutral: { rest: ['boxColor__#dddddd'] } } } } }
   });
   expect(() =>
     convertElementSchemaToStyleKeys({ ...schema, global: {} }, DEFAULT_WEB_STYLE_EMISSION_POLICY)

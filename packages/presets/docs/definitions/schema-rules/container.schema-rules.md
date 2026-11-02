@@ -2,19 +2,19 @@
 
 Container publishes the preset's continuous Rest surfaces. Its `e1` has `boxColor` only: no
 padding, border, radius, shadow, or interaction-state palette. Each published coordinate is
-selected by segment, theme, input surface context, intent and emphasis:
+selected by segment, theme, input surface context, color variant, intent and emphasis:
 
 ```txt
-components.container.elements.e1.palettes[segment][theme][surfaceContext]
+components.container.elements.e1.palettes[segment][theme][surfaceContext][colorVariant]
   .boxColor[intent][emphasis].rest
 ```
 
 `components.container.contentSurfaceContext` publishes the context a selected surface delivers
-to descendants. A transparent Rest can inherit the input context. Missing coordinates remain
+to descendants through the same color-variant coordinate. A transparent Rest can inherit the input context. Missing coordinates remain
 unsupported; neither Core, Builder nor React substitutes a fallback color.
 
 `components.container.options.canonicalSurfaces[segment][theme]` authors the recommended
-surface catalog and its order. Each entry must reference a published Container Rest surface.
+surface catalog and its order. Catalog entries use Standard paint. Each entry must reference a published Container Rest surface.
 The Builder also includes Card-compatible resolved entries in the Card artifact for existing
 consumers. Container-only entries remain in the Container catalog; Card does not become its source.
 

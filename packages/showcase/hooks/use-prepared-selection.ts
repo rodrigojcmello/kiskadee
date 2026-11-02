@@ -13,6 +13,7 @@ import { loadJsonFromBuild } from '@/utils/build-artifacts.client';
 import { prepareComponentResources } from '@/utils/component-resources.client';
 import { mergeMaps } from '@/utils/merge-class-maps';
 import { playWowTransition } from '@/utils/playWowTransition';
+import { loadManifest } from './use-manifest';
 import {
   activateSelectionStylesheets,
   prepareSelectionStylesheets,
@@ -54,7 +55,7 @@ export function usePreparedSelection(
     setError(undefined);
     void Promise.all([
       prepareSelectionStylesheets({ designSystem, segment, theme }),
-      loadJsonFromBuild<Manifest>(`${designSystem}/manifest.json`, { required: true }),
+      loadManifest(designSystem),
       loadJsonFromBuild<KiskadeeGlobalArtifact>(`${designSystem}/global.kiskadee.json`, {
         required: true
       })

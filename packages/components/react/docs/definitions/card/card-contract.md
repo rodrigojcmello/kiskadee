@@ -156,7 +156,7 @@ CSS and not a local tonal-scale JSON:
 
 ```txt
 packages/showcase/public/build/<design-system-key>/schema.json
-components.container.elements.e1.palettes[segment][theme][surfaceContext].boxColor[intent][emphasis].rest
+components.container.elements.e1.palettes[segment][theme][surfaceContext].standard.boxColor[intent][emphasis].rest
 ```
 
 `manifest.json` may be used to check whether a component supports the requested

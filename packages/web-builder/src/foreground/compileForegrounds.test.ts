@@ -58,11 +58,11 @@ describe('expandElementForeground', () => {
     ).toEqual({
       default: {
         light: {
-          onSubtle: { textColor: { neutral: emphases } },
-          onVivid: { textColor: { neutral: emphases } }
+          onSubtle: { standard: { textColor: { neutral: emphases } } },
+          onVivid: { standard: { textColor: { neutral: emphases } } }
         },
         dark: {
-          onSubtle: { textColor: { neutral: emphases } }
+          onSubtle: { standard: { textColor: { neutral: emphases } } }
         }
       }
     });
@@ -80,11 +80,11 @@ describe('expandElementForeground', () => {
     ).toEqual({
       default: {
         light: {
-          onSubtle: { textColor: { neutral: emphases, red: emphases } },
-          onVivid: { textColor: { neutral: emphases, red: emphases } }
+          onSubtle: { standard: { textColor: { neutral: emphases, red: emphases } } },
+          onVivid: { standard: { textColor: { neutral: emphases, red: emphases } } }
         },
         dark: {
-          onSubtle: { textColor: { neutral: emphases, red: emphases } }
+          onSubtle: { standard: { textColor: { neutral: emphases, red: emphases } } }
         }
       }
     });
@@ -103,13 +103,15 @@ describe('expandElementForeground', () => {
       default: {
         light: {
           onSubtle: {
-            textColor: {
-              red: emphases,
-              'red-deep': {
-                high: { rest: '#811819' },
-                medium: { rest: '#811819ad' },
-                low: { rest: '#888888' },
-                lowest: { rest: '#8118193d' }
+            standard: {
+              textColor: {
+                red: emphases,
+                'red-deep': {
+                  high: { rest: '#811819' },
+                  medium: { rest: '#811819ad' },
+                  low: { rest: '#888888' },
+                  lowest: { rest: '#8118193d' }
+                }
               }
             }
           }
@@ -134,7 +136,7 @@ describe('expandElementForeground', () => {
 
     expect(
       expandElementForeground({ neutral: { family: 'neutral', profile: 'standard' } }, stateful)
-        .default?.light?.onSubtle?.textColor?.neutral?.high
+        .default?.light?.onSubtle?.standard.textColor?.neutral?.high
     ).toEqual({ rest: '#333333' });
   });
 });

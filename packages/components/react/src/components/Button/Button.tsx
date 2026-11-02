@@ -9,6 +9,7 @@ import { useControlCursorStyle } from '../../shared/contexts/useControlCursorSty
 import './Button.structural.scss';
 import {
   type ButtonIconTreatment,
+  parseButtonIntentValue,
   resolveButtonStackedRadiusMode,
   type SurfaceContext
 } from '@kiskadee/core';
@@ -483,6 +484,9 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     selectionEmphasis,
     emphasis: common.emphasis ?? DEFAULT_BUTTON_EMPHASIS,
     intent: common.intent,
+    colorVariant: common.colorVariant,
+    variantCoverage:
+      common.colorVariants?.alternative?.[`${segment}.${theme}`]?.[common.surfaceContext],
     selectionIntent: common.selectionIntent,
     supportsSelectionIntent: common.supportsSelectionIntent,
     surfaceContext: common.surfaceContext,
@@ -577,7 +581,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     )
       return;
 
-    if (common.selectionIntent.startsWith('brand.')) {
+    if (common.selectionIntent?.startsWith('brand.')) {
       console.error(
         `[Kiskadee] Button selectionIntent="${common.selectionIntent}" requires a compatible BrandPackBoundary and complete paint coverage. No system intent was substituted.`
       );
@@ -672,6 +676,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     consumedSurfaceContext: common.surfaceContext,
     intent: selectionPaint.intent,
     emphasis: selectionPaint.emphasis,
+    colorVariant: selectionPaint.colorVariant,
     selected: selectionPaint.selectedPaint,
     pending: activationFeedbackController.pending,
     disabled: activationFeedbackController.nativeDisabled
@@ -750,6 +755,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     {
       paintEmphasis: selectionPaint.emphasis,
       paintIntent: selectionPaint.intent,
+      paintColorVariant: selectionPaint.colorVariant,
       selectionRest: paintProjection,
       iconLayoutOverride: activeIconLayout,
       iconTreatmentOverride: activeIconTreatment,
@@ -779,6 +785,7 @@ const ButtonRoot = forwardRef<HTMLButtonElement, ButtonProps>(function ButtonRoo
     emphasis: selectionPaint.emphasis,
     surfaceContext: common.surfaceContext,
     selectedPaint: selectionPaint.selectedPaint,
+    colorVariant: selectionPaint.colorVariant,
     available: !activationFeedbackController.activationBlocked && !feedbackLoadingBlocked
   });
   const runtimeContextValue = useMemo<ButtonRuntimeContextValue>(
@@ -931,7 +938,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
     size,
     radius,
     emphasis = DEFAULT_BUTTON_EMPHASIS,
-    intent = DEFAULT_BUTTON_INTENT,
+    intent: intentValue = DEFAULT_BUTTON_INTENT,
     surfaceContext: surfaceContextProp,
     shadow = false,
     ...props
@@ -940,7 +947,19 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
 ) {
   const scale = useComponentScale('button', size);
   const surfaceContext = useSurfaceContext(surfaceContextProp);
-  const { buttonClassesMap, buttonClassesMapPending, options } = useButtonArtifactConfig();
+  const { segment, theme } = useKiskadee();
+  const { buttonClassesMap, buttonClassesMapPending, options, colorVariants } =
+    useButtonArtifactConfig();
+  const choice = parseButtonIntentValue(intentValue);
+  const intent = choice?.intent ?? DEFAULT_BUTTON_INTENT;
+  const memberIntent = choice ? intentValue : DEFAULT_BUTTON_INTENT;
+  const colorVariant =
+    choice?.colorVariant === 'alternative' &&
+    colorVariants?.alternative?.[`${segment}.${theme}`]?.[surfaceContext]?.[intent]?.includes(
+      emphasis
+    )
+      ? 'alternative'
+      : 'standard';
   const { e1, e6 } = buttonClassesMap ?? {};
   const childArray = flattenFragmentChildren(children);
   const requestedRadius = radius ?? options.radius ?? DEFAULT_BUTTON_RADIUS;
@@ -972,9 +991,10 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
         scale,
         emphasis,
         intent,
-        surfaceContext
+        surfaceContext,
+        colorVariant
       }),
-    [e6, emphasis, intent, scale, surfaceContext]
+    [e6, emphasis, intent, scale, surfaceContext, colorVariant]
   );
   const hasDividerGeometry = Boolean(e6?.s?.all || e6?.s?.[normalizeButtonScaleKey(scale)]);
   const dividerThicknessProjectionClassName = resolveStructuralUtilityProjectionClassName(
@@ -989,11 +1009,15 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
     globalRadius: options.radius,
     emphasis,
     intent,
-    surfaceContext
+    surfaceContext,
+    colorVariant
   });
   const hasMemberPaint = Boolean(
     buttonClassesMap?.group?.member?.d &&
-      resolveIntentClassName(buttonClassesMap.group.member, intent, emphasis, { surfaceContext })
+      resolveIntentClassName(buttonClassesMap.group.member, intent, emphasis, {
+        surfaceContext,
+        colorVariant
+      })
   );
   const hasContinuousFrame = Boolean(
     frameClassName && hasMemberPaint && dividerThicknessProjectionClassName
@@ -1009,7 +1033,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       continuousFrame: hasGroupDivider,
       dividerThicknessProjectionClassName,
       emphasis,
-      intent,
+      intent: memberIntent,
       radius: resolvedRadius,
       size,
       surfaceContext
@@ -1018,7 +1042,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
       hasGroupDivider,
       dividerThicknessProjectionClassName,
       emphasis,
-      intent,
+      memberIntent,
       resolvedRadius,
       size,
       surfaceContext

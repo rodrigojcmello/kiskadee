@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  type ColorVariant,
   componentScaleToSize,
   type ElementSizeValue,
   type RadiusMode,
@@ -17,8 +18,14 @@ import { useState } from 'react';
 import { useShowcaseDensity } from '@/app/ShowcaseDensityContext';
 import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
+import { useButtonColorVariants } from '@/hooks/use-button-color-variants';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from '../Button.module.scss';
+import {
+  ButtonColorVariantControls,
+  getButtonColorVariantSupport,
+  qualifyButtonIntent
+} from './ButtonColorVariantControls';
 import { ButtonUnavailableExample } from './ButtonUnavailableExample';
 
 const INTENTS = ['primary', 'neutral', 'destructive', 'positive'] as const;
@@ -33,6 +40,7 @@ export function ButtonIndicatorExamples({
   scale?: ElementSizeValue;
   surfaceContext: SurfaceContext;
 }) {
+  const colorVariants = useButtonColorVariants();
   const profiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
   const {
@@ -42,10 +50,19 @@ export function ButtonIndicatorExamples({
     stackedOutsideIndicatorSizesByRadius,
     stackedSizesByRadius
   } = useButtonArtifactConfig();
-  const { global } = useKiskadee();
+  const { global, segment, theme } = useKiskadee();
   const { activeDensity } = useShowcaseDensity();
   const metadata = useComponentMetadata('button');
   const [deselected, setDeselected] = useState<string[]>([]);
+  const [requestedColorVariant, setColorVariant] = useState<ColorVariant>('standard');
+  const variantSupport = getButtonColorVariantSupport({
+    colorVariants,
+    segment,
+    theme,
+    contexts: [surfaceContext],
+    emphases: ['low', 'high']
+  });
+  const colorVariant = variantSupport ? requestedColorVariant : 'standard';
   const size = scale ? componentScaleToSize(scale) : undefined;
   const densityMap = metadata?.density ?? global?.density;
   const requestedScale =
@@ -81,6 +98,18 @@ export function ButtonIndicatorExamples({
           the narrow I tests its width limit.
         </Text>
       ) : null}
+      <ShowcaseExampleCard
+        context={surfaceContext}
+        role="group"
+        aria-label="Selection indicator color variants"
+      >
+        <ButtonColorVariantControls
+          colorVariant={requestedColorVariant}
+          onColorVariantChange={setColorVariant}
+          contexts={[surfaceContext]}
+          emphases={['low', 'high']}
+        />
+      </ShowcaseExampleCard>
       {available ? (
         <div className={styles.indicatorGrid}>
           {PLACEMENTS.map((placement) => {
@@ -121,7 +150,7 @@ export function ButtonIndicatorExamples({
                     type="button"
                     size={size}
                     radius={radius}
-                    intent="neutral"
+                    intent={qualifyButtonIntent('neutral', colorVariant)}
                     emphasis="low"
                     selectionEmphasis="low"
                     indicatorPlacement={placement}
@@ -138,7 +167,7 @@ export function ButtonIndicatorExamples({
                     type="button"
                     size={size}
                     radius={radius}
-                    intent="neutral"
+                    intent={qualifyButtonIntent('neutral', colorVariant)}
                     emphasis="low"
                     indicatorPlacement={placement}
                     toggle
@@ -151,7 +180,7 @@ export function ButtonIndicatorExamples({
                     type="button"
                     size={size}
                     radius={radius}
-                    intent="neutral"
+                    intent={qualifyButtonIntent('neutral', colorVariant)}
                     emphasis="low"
                     selectionEmphasis="low"
                     indicatorPlacement={placement}
@@ -177,7 +206,7 @@ export function ButtonIndicatorExamples({
                           type="button"
                           size={size}
                           radius={radius}
-                          intent={intent}
+                          intent={qualifyButtonIntent(intent, colorVariant)}
                           emphasis={emphasis}
                           selectionEmphasis="low"
                           indicatorPlacement={placement}
@@ -197,7 +226,7 @@ export function ButtonIndicatorExamples({
                       type="button"
                       size={stackedSize}
                       radius={stackedRadius}
-                      intent="neutral"
+                      intent={qualifyButtonIntent('neutral', colorVariant)}
                       emphasis="low"
                       iconLayout="stacked"
                       selectionEmphasis="low"
@@ -212,7 +241,12 @@ export function ButtonIndicatorExamples({
                       <Button.Label>Chat</Button.Label>
                     </Button>
                   ) : null}
-                  <Button.Group size={size} radius={radius} intent="neutral" emphasis="low">
+                  <Button.Group
+                    size={size}
+                    radius={radius}
+                    intent={qualifyButtonIntent('neutral', colorVariant)}
+                    emphasis="low"
+                  >
                     {['Day', 'Week', 'Month'].map((label) => {
                       const key = `${placement}-${label}`;
                       return (
@@ -238,7 +272,7 @@ export function ButtonIndicatorExamples({
                   <Button
                     size={size}
                     radius={radius}
-                    intent="neutral"
+                    intent={qualifyButtonIntent('neutral', colorVariant)}
                     emphasis="low"
                     selectionEmphasis="low"
                     indicatorPlacement={placement}
@@ -251,7 +285,7 @@ export function ButtonIndicatorExamples({
                   <Button
                     size={size}
                     radius={radius}
-                    intent="neutral"
+                    intent={qualifyButtonIntent('neutral', colorVariant)}
                     emphasis="low"
                     selectionEmphasis="low"
                     indicatorPlacement={placement}
@@ -264,7 +298,7 @@ export function ButtonIndicatorExamples({
                   <Button
                     size={size}
                     radius={radius}
-                    intent="neutral"
+                    intent={qualifyButtonIntent('neutral', colorVariant)}
                     emphasis="low"
                     selectionEmphasis="low"
                     indicatorPlacement={placement}

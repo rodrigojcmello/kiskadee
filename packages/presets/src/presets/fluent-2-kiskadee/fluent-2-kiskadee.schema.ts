@@ -147,18 +147,20 @@ export const schema: Schema<Segments> = {
               return {
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        high: {
-                          rest: c(segmentName, 'l', 'button.primary', 60),
-                          hover: c(segmentName, 'l', 'button.primary', 70),
-                          focus: c(segmentName, 'l', 'button.primary', 60),
-                          pressed: c(segmentName, 'l', 'button.primary', 90),
-                          disabled: c(segmentName, 'l', 'button.neutral', 6),
-                          selected: {
-                            rest: c(segmentName, 'l', 'button.primary', 80),
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: {
+                            rest: c(segmentName, 'l', 'button.primary', 60),
                             hover: c(segmentName, 'l', 'button.primary', 70),
-                            pressed: c(segmentName, 'l', 'button.primary', 90)
+                            focus: c(segmentName, 'l', 'button.primary', 60),
+                            pressed: c(segmentName, 'l', 'button.primary', 90),
+                            disabled: c(segmentName, 'l', 'button.neutral', 6),
+                            selected: {
+                              rest: c(segmentName, 'l', 'button.primary', 80),
+                              hover: c(segmentName, 'l', 'button.primary', 70),
+                              pressed: c(segmentName, 'l', 'button.primary', 90)
+                            }
                           }
                         }
                       }
@@ -167,18 +169,20 @@ export const schema: Schema<Segments> = {
                 },
                 dark: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        high: {
-                          rest: c(segmentName, 'd', 'button.primary', 70),
-                          hover: c(segmentName, 'd', 'button.primary', 60),
-                          focus: c(segmentName, 'd', 'button.primary', 70),
-                          pressed: c(segmentName, 'd', 'button.primary', 90),
-                          disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
-                          selected: {
-                            rest: c(segmentName, 'd', 'button.primary', 80),
-                            hover: c(segmentName, 'd', 'button.primary', 70),
-                            pressed: c(segmentName, 'd', 'button.primary', 90)
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: {
+                            rest: c(segmentName, 'd', 'button.primary', 70),
+                            hover: c(segmentName, 'd', 'button.primary', 60),
+                            focus: c(segmentName, 'd', 'button.primary', 70),
+                            pressed: c(segmentName, 'd', 'button.primary', 90),
+                            disabled: c(segmentName, 'd', 'button.neutral', 0, 40),
+                            selected: {
+                              rest: c(segmentName, 'd', 'button.primary', 80),
+                              hover: c(segmentName, 'd', 'button.primary', 70),
+                              pressed: c(segmentName, 'd', 'button.primary', 90)
+                            }
                           }
                         }
                       }
@@ -191,18 +195,20 @@ export const schema: Schema<Segments> = {
               modern: (segmentName) => ({
                 light: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        high: {
-                          rest: c(segmentName, 'l', 'button.primary.gradient', 26),
-                          hover: c(segmentName, 'l', 'button.primary.gradient', 20),
-                          focus: c(segmentName, 'l', 'button.primary.gradient', 5),
-                          pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
-                          disabled: c(segmentName, 'l', 'button.neutral.gradient', [8, 6]),
-                          selected: {
-                            rest: c(segmentName, 'l', 'button.primary.gradient', 80),
-                            hover: c(segmentName, 'l', 'button.primary.gradient', 70),
-                            pressed: c(segmentName, 'l', 'button.primary.gradient', 90)
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: {
+                            rest: c(segmentName, 'l', 'button.primary.gradient', 26),
+                            hover: c(segmentName, 'l', 'button.primary.gradient', 20),
+                            focus: c(segmentName, 'l', 'button.primary.gradient', 5),
+                            pressed: c(segmentName, 'l', 'button.primary.gradient', 30),
+                            disabled: c(segmentName, 'l', 'button.neutral.gradient', [8, 6]),
+                            selected: {
+                              rest: c(segmentName, 'l', 'button.primary.gradient', 80),
+                              hover: c(segmentName, 'l', 'button.primary.gradient', 70),
+                              pressed: c(segmentName, 'l', 'button.primary.gradient', 90)
+                            }
                           }
                         }
                       }
@@ -211,17 +217,19 @@ export const schema: Schema<Segments> = {
                 },
                 dark: {
                   onSubtle: {
-                    boxColor: {
-                      primary: {
-                        high: {
-                          rest: c(segmentName, 'd', 'button.primary.gradient', 26),
-                          hover: c(segmentName, 'd', 'button.primary.gradient', 60),
-                          focus: c(segmentName, 'd', 'button.primary.gradient', 70),
-                          pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
-                          selected: {
-                            rest: c(segmentName, 'd', 'button.primary.gradient', 80),
-                            hover: c(segmentName, 'd', 'button.primary.gradient', 70),
-                            pressed: c(segmentName, 'd', 'button.primary.gradient', 90)
+                    standard: {
+                      boxColor: {
+                        primary: {
+                          high: {
+                            rest: c(segmentName, 'd', 'button.primary.gradient', 26),
+                            hover: c(segmentName, 'd', 'button.primary.gradient', 60),
+                            focus: c(segmentName, 'd', 'button.primary.gradient', 70),
+                            pressed: c(segmentName, 'd', 'button.primary.gradient', 90),
+                            selected: {
+                              rest: c(segmentName, 'd', 'button.primary.gradient', 80),
+                              hover: c(segmentName, 'd', 'button.primary.gradient', 70),
+                              pressed: c(segmentName, 'd', 'button.primary.gradient', 90)
+                            }
                           }
                         }
                       }
@@ -245,12 +253,14 @@ export const schema: Schema<Segments> = {
               return {
                 light: {
                   onSubtle: {
-                    textColor: {
-                      primary: {
-                        high: {
-                          rest: c(segmentName, 'l', 'button.neutral', 0),
-                          disabled: {
-                            ref: c(segmentName, 'l', 'button.neutral', 26)
+                    standard: {
+                      textColor: {
+                        primary: {
+                          high: {
+                            rest: c(segmentName, 'l', 'button.neutral', 0),
+                            disabled: {
+                              ref: c(segmentName, 'l', 'button.neutral', 26)
+                            }
                           }
                         }
                       }
@@ -259,12 +269,14 @@ export const schema: Schema<Segments> = {
                 },
                 dark: {
                   onSubtle: {
-                    textColor: {
-                      primary: {
-                        high: {
-                          rest: c(segmentName, 'd', 'button.neutral', 100),
-                          disabled: {
-                            ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+                    standard: {
+                      textColor: {
+                        primary: {
+                          high: {
+                            rest: c(segmentName, 'd', 'button.neutral', 100),
+                            disabled: {
+                              ref: c(segmentName, 'd', 'button.neutral', 100, 25)
+                            }
                           }
                         }
                       }
@@ -277,21 +289,23 @@ export const schema: Schema<Segments> = {
               modern: (segmentName) => ({
                 light: {
                   onSubtle: {
-                    textColor: {
-                      primary: {
-                        high: {
-                          rest: c(segmentName, 'l', 'button.neutral', 0),
-                          hover: {
-                            ref: c(segmentName, 'l', 'button.neutral', 0)
-                          },
-                          focus: {
-                            ref: c(segmentName, 'l', 'primitive.purple.v2', 45)
-                          },
-                          pressed: {
-                            ref: c(segmentName, 'l', 'button.neutral', 0, 80)
-                          },
-                          disabled: {
-                            ref: c(segmentName, 'l', 'button.neutral', 100, 25)
+                    standard: {
+                      textColor: {
+                        primary: {
+                          high: {
+                            rest: c(segmentName, 'l', 'button.neutral', 0),
+                            hover: {
+                              ref: c(segmentName, 'l', 'button.neutral', 0)
+                            },
+                            focus: {
+                              ref: c(segmentName, 'l', 'primitive.purple.v2', 45)
+                            },
+                            pressed: {
+                              ref: c(segmentName, 'l', 'button.neutral', 0, 80)
+                            },
+                            disabled: {
+                              ref: c(segmentName, 'l', 'button.neutral', 100, 25)
+                            }
                           }
                         }
                       }

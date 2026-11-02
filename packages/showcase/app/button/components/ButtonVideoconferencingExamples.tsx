@@ -64,12 +64,16 @@ function MeetingOptionsBar({
   surfaceContext: SurfaceContext;
 }) {
   const profiles = useShowcaseTextProfiles();
-  const presentation = useButtonCompositionControls(classesMap, {
-    intent: 'original',
-    emphasis: 'low',
-    selectionIntent: 'same',
-    selectionEmphasis: layout === 'stacked' ? 'low' : 'medium'
-  });
+  const presentation = useButtonCompositionControls(
+    classesMap,
+    {
+      intent: 'original',
+      emphasis: 'low',
+      selectionIntent: 'same',
+      selectionEmphasis: layout === 'stacked' ? 'low' : 'medium'
+    },
+    surfaceContext
+  );
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     layout === 'stacked' ? ['Share', 'Raise'] : ['React', 'Leave']
   );

@@ -138,6 +138,7 @@ describe('Select presentation and unstyled fallback', () => {
       ...base,
       componentArtifacts: {
         select: {
+          formatVersion: 3,
           component: 'select',
           options: {
             mode: 'outline',
@@ -336,6 +337,7 @@ describe('Select list resource, viewport and portal handoff', () => {
       if (component === 'dropdown' && request.kind === failedKind && failed)
         throw new Error('Map failed');
       return {
+        formatVersion: 3,
         component,
         classMap: component === 'select' ? styled.classesMap.select : styled.classesMap.dropdown
       };
@@ -345,8 +347,8 @@ describe('Select list resource, viewport and portal handoff', () => {
         ...base,
         designSystem: `dropdown-map-failure-${failedKind}`,
         componentArtifacts: {
-          select: { component: 'select', options: {}, modes: ['outline'] },
-          dropdown: { component: 'dropdown' }
+          select: { formatVersion: 3, component: 'select', options: {}, modes: ['outline'] },
+          dropdown: { formatVersion: 3, component: 'dropdown' }
         },
         loadComponentClassMap: load
       })

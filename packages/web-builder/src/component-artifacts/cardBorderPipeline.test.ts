@@ -51,7 +51,8 @@ describe('Card border pipeline', () => {
     ).toBe(true);
     const missingRecipe = structuredClone(resolvedCard);
     Reflect.deleteProperty(
-      missingRecipe.elements.e1!.palettes!.default!.light!.onSubtle.borderColor!.neutral!.medium!,
+      missingRecipe.elements.e1!.palettes!.default!.light!.onSubtle.standard.borderColor!.neutral!
+        .medium!,
       'rest'
     );
     expect(
@@ -100,12 +101,12 @@ describe('Card border pipeline', () => {
           for (const [emphasis, enabled] of Object.entries(levels)) {
             const bucket =
               componentEmphasisBuckets[emphasis as keyof typeof componentEmphasisBuckets];
-            const recipe = element.e1.b![surfaceContextBuckets[context]]![intent]![bucket]!;
+            const recipe = element.e1.b![surfaceContextBuckets[context]]!.s![intent]![bucket]!;
             expect(recipe.adaptive).toBe(enabled);
             expect(recipe.off).toBe(names['borderColor__#00000000']);
             expect(recipe.on).not.toContain('__');
             expect(
-              element.e1.c![surfaceContextBuckets[context]]![intent]![bucket]?.split(' ')
+              element.e1.c![surfaceContextBuckets[context]]!.s![intent]![bucket]?.split(' ')
             ).not.toContain(recipe.on);
           }
         }

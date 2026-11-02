@@ -10,12 +10,16 @@ const e1 = {
   },
   c: {
     s: {
-      neutral: { m: 'neutral-on-subtle' },
-      primary: { m: 'primary-on-subtle' }
+      s: {
+        neutral: { m: 'neutral-on-subtle' },
+        primary: { m: 'primary-on-subtle' }
+      }
     },
     v: {
-      neutral: { m: 'neutral-on-vivid' },
-      primary: { m: 'primary-on-vivid' }
+      s: {
+        neutral: { m: 'neutral-on-vivid' },
+        primary: { m: 'primary-on-vivid' }
+      }
     }
   }
 };
