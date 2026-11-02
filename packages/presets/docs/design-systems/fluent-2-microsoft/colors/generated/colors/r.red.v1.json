@@ -7,7 +7,7 @@
     "sector": "red"
   },
   "colorKind": "chromatic",
-  "formatVersion": 7,
+  "formatVersion": 8,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -56,7 +56,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.19.0"
+    "version": "0.20.1"
   },
   "id": "r.red.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -101,13 +101,13 @@
       "30": "#942625",
       "35": "#a82929",
       "40": "#b6302f",
-      "45": "#be3735",
-      "50": "#c93f3b",
-      "55": "#d64642",
-      "60": "#e14b46",
-      "65": "#ec504b",
-      "70": "#f85650",
-      "75": "#ff746c",
+      "45": "#be3836",
+      "50": "#c7423e",
+      "55": "#d04d47",
+      "60": "#d8564f",
+      "65": "#df5f57",
+      "70": "#e76860",
+      "75": "#f67c73",
       "80": "#ff958b",
       "85": "#ffb0a8",
       "90": "#ffc9c3",
@@ -133,12 +133,12 @@
       "18": "#ff8d84",
       "20": "#ff7f75",
       "22": "#ff6e65",
-      "24": "#ff5b55",
-      "26": "#ff4444",
-      "28": "#f93438",
-      "30": "#ec2f34",
-      "35": "#de292f",
-      "40": "#d12229",
+      "24": "#fa615a",
+      "26": "#f35651",
+      "28": "#ec4c48",
+      "30": "#e4413f",
+      "35": "#da3334",
+      "40": "#d0252b",
       "45": "#c50f1f",
       "50": "#b70419",
       "55": "#a60a18",
@@ -162,6 +162,6 @@
       "light": 50
     }
   },
-  "tonalProfile": "vivid-lights",
+  "tonalProfile": "muted-darks",
   "variant": "v1"
 }

@@ -18,22 +18,26 @@
       {
         "id": "b.blue.v1.c",
         "sourceId": "primary",
-        "strategy": "contrast-complement-v1"
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
       },
       {
         "id": "g.green.v1.c",
         "sourceId": "g.green.v1",
-        "strategy": "contrast-complement-v1"
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
       },
       {
         "id": "pb.indigo.v2.c",
         "sourceId": "pb.indigo.v2",
-        "strategy": "contrast-complement-v1"
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
       },
       {
         "id": "r.red.v1.c",
         "sourceId": "r.red.v1",
-        "strategy": "contrast-complement-v1"
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
       }
     ],
     "neutrals": []
@@ -41,7 +45,7 @@
   "formatVersion": 8,
   "gridContract": "kiskadee-tonal-v1",
   "harmonyContract": "kiskadee-munsell-rest-v1",
-  "tonalProfile": "vivid-lights",
+  "tonalProfile": "muted-darks",
   "overrides": [
     {
       "id": "g.green.v1",

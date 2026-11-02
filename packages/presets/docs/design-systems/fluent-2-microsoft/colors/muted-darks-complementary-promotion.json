@@ -1,0 +1,552 @@
+{
+  "generator": {
+    "package": "@kiskadee/tonal-scale",
+    "version": "0.20.1"
+  },
+  "profile": "muted-darks",
+  "promoted": [
+    "b.blue.v1",
+    "g.green.v1",
+    "n.black.v1",
+    "p.purple.v1",
+    "pb.indigo.v2",
+    "r.red.v1",
+    "y.yellow.v1",
+    "yr.orange.v1",
+    "b.blue.v1.c",
+    "g.green.v1.c",
+    "pb.indigo.v2.c",
+    "r.red.v1.c"
+  ],
+  "changes": [
+    {
+      "id": "b.blue.v1",
+      "lightChanged": 19,
+      "darkChanged": 10,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 50,
+            "hex": "#0064b4",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#e1efff",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 18,
+            "hex": "#76b7ff",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 40,
+            "hex": "#0064b4",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#0b1929",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 16,
+            "hex": "#143a61",
+            "source": "midpoint"
+          }
+        }
+      }
+    },
+    {
+      "id": "g.green.v1",
+      "lightChanged": 15,
+      "darkChanged": 11,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 45,
+            "hex": "#107c10",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#e2f3e0",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 16,
+            "hex": "#86d080",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 40,
+            "hex": "#087209",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#0b1b0a",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 16,
+            "hex": "#164114",
+            "source": "midpoint"
+          }
+        }
+      }
+    },
+    {
+      "id": "n.black.v1",
+      "lightChanged": 0,
+      "darkChanged": 0,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 85,
+            "hex": "#252525",
+            "source": "locked"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#ededed",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 24,
+            "hex": "#9b9b9b",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 90,
+            "hex": "#d7d7d7",
+            "source": "locked"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#191919",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 26,
+            "hex": "#484848",
+            "source": "midpoint"
+          }
+        }
+      }
+    },
+    {
+      "id": "p.purple.v1",
+      "lightChanged": 17,
+      "darkChanged": 30,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 35,
+            "hex": "#c239b3",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#fbe6f6",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 14,
+            "hex": "#fe99ee",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 40,
+            "hex": "#9a348e",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 3,
+            "hex": "#210e1f",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 14,
+            "hex": "#5a1f53",
+            "source": "midpoint"
+          }
+        }
+      }
+    },
+    {
+      "id": "pb.indigo.v2",
+      "lightChanged": 14,
+      "darkChanged": 10,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 45,
+            "hex": "#5b5fc7",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#e9ecff",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 16,
+            "hex": "#aab3ff",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 40,
+            "hex": "#5357b9",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 3,
+            "hex": "#121428",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 14,
+            "hex": "#2f3263",
+            "source": "midpoint"
+          }
+        }
+      }
+    },
+    {
+      "id": "r.red.v1",
+      "lightChanged": 6,
+      "darkChanged": 7,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 45,
+            "hex": "#c50f1f",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#ffe7e4",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 16,
+            "hex": "#ff9a91",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 40,
+            "hex": "#b6302f",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 3,
+            "hex": "#260d0b",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 14,
+            "hex": "#60221f",
+            "source": "midpoint"
+          }
+        }
+      }
+    },
+    {
+      "id": "y.yellow.v1",
+      "lightChanged": 11,
+      "darkChanged": 11,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 18,
+            "hex": "#eaa300",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#faebd7",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 9,
+            "hex": "#f3d19d",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 40,
+            "hex": "#805a15",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#1f170c",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 16,
+            "hex": "#493517",
+            "source": "midpoint"
+          }
+        }
+      }
+    },
+    {
+      "id": "yr.orange.v1",
+      "lightChanged": 13,
+      "darkChanged": 10,
+      "references": {
+        "light": {
+          "vivid": {
+            "tone": 24,
+            "hex": "#f7630c",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#ffe8df",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 10,
+            "hex": "#ffc2a9",
+            "source": "midpoint"
+          }
+        },
+        "dark": {
+          "vivid": {
+            "tone": 40,
+            "hex": "#a5430f",
+            "source": "generated-anchor"
+          },
+          "subtle": {
+            "tone": 4,
+            "hex": "#28140c",
+            "source": "surface-relative"
+          },
+          "medium": {
+            "tone": 16,
+            "hex": "#5e2b15",
+            "source": "midpoint"
+          }
+        }
+      }
+    }
+  ],
+  "complementary": [
+    {
+      "id": "b.blue.v1.c",
+      "origin": {
+        "sourceId": "primary",
+        "referenceHex": "#0064b4",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      },
+      "profile": "balanced",
+      "light": "#40befe",
+      "dark": "#40befe"
+    },
+    {
+      "id": "g.green.v1.c",
+      "origin": {
+        "sourceId": "g.green.v1",
+        "referenceHex": "#09760a",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      },
+      "profile": "balanced",
+      "light": "#5ecd59",
+      "dark": "#5ecd59"
+    },
+    {
+      "id": "pb.indigo.v2.c",
+      "origin": {
+        "sourceId": "pb.indigo.v2",
+        "referenceHex": "#5053b2",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      },
+      "profile": "balanced",
+      "light": "#b5a2f4",
+      "dark": "#b5a2f4"
+    },
+    {
+      "id": "r.red.v1.c",
+      "origin": {
+        "sourceId": "r.red.v1",
+        "referenceHex": "#b70419",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      },
+      "profile": "balanced",
+      "light": "#fe8a80",
+      "dark": "#fe8a80"
+    }
+  ],
+  "reviewIssues": [
+    {
+      "severity": "review",
+      "code": "SOURCE_EXACT_SCALE_REVIEW",
+      "path": "/families/b.blue.v1.c/dark",
+      "message": "b.blue.v1.c dark requires review: gamut chroma loss 0.090.",
+      "familyId": "b.blue.v1.c",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "SOURCE_EXACT_SCALE_REVIEW",
+      "path": "/families/b.blue.v1.c/light",
+      "message": "b.blue.v1.c light requires review: gamut chroma loss 0.090.",
+      "familyId": "b.blue.v1.c",
+      "theme": "light"
+    },
+    {
+      "severity": "review",
+      "code": "SOURCE_EXACT_SCALE_REVIEW",
+      "path": "/families/g.green.v1.c/dark",
+      "message": "g.green.v1.c dark requires review: gamut chroma loss 0.105.",
+      "familyId": "g.green.v1.c",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "SOURCE_EXACT_SCALE_REVIEW",
+      "path": "/families/g.green.v1.c/light",
+      "message": "g.green.v1.c light requires review: gamut chroma loss 0.105.",
+      "familyId": "g.green.v1.c",
+      "theme": "light"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/gy.lime.v1/dark",
+      "message": "gy.lime.v1 dark requires review: harmony score 2.207, source distance 0.197 Delta E OK, vivid peak retention 94.7%, emitted curve continuity, gamut chroma loss 0.280.",
+      "familyId": "gy.lime.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "SURFACE_TRACK_ALIGNMENT_PROTECTED",
+      "path": "/families/gy.lime.v1/dark",
+      "message": "gy.lime.v1 dark preserves exact protected tones 95 above the Primary-relative light-surface chroma cap.",
+      "familyId": "gy.lime.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "SURFACE_TRACK_ALIGNMENT_RELAXED",
+      "path": "/families/gy.lime.v1/dark",
+      "message": "gy.lime.v1 dark restored tones 90 toward their baseline chroma to preserve canonical scale invariants.",
+      "familyId": "gy.lime.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/p.purple.v1/dark",
+      "message": "p.purple.v1 dark requires review: harmony score 1.198, local chroma prominence 0.0127, 1 fully restored profile slots.",
+      "familyId": "p.purple.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/pb.indigo.v1/dark",
+      "message": "pb.indigo.v1 dark requires review: harmony score 4.850, vivid peak retention 56.0%, relaxed emitted spacing, emitted curve continuity.",
+      "familyId": "pb.indigo.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/pb.indigo.v1/light",
+      "message": "pb.indigo.v1 light requires review: harmony score 2.379, gamut chroma loss 0.093.",
+      "familyId": "pb.indigo.v1",
+      "theme": "light"
+    },
+    {
+      "severity": "review",
+      "code": "SOURCE_EXACT_SCALE_REVIEW",
+      "path": "/families/r.red.v1.c/dark",
+      "message": "r.red.v1.c dark requires review: emitted curve continuity.",
+      "familyId": "r.red.v1.c",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/r.red.v1/dark",
+      "message": "r.red.v1 dark requires review: harmony score 1.968.",
+      "familyId": "r.red.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/rp.magenta.v1/dark",
+      "message": "rp.magenta.v1 dark requires review: harmony score 4.027, vivid peak retention 62.0%.",
+      "familyId": "rp.magenta.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/rp.magenta.v1/light",
+      "message": "rp.magenta.v1 light requires review: harmony score 2.836, vivid peak retention 85.9%.",
+      "familyId": "rp.magenta.v1",
+      "theme": "light"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/y.yellow.v1/dark",
+      "message": "y.yellow.v1 dark requires review: source distance 0.276 Delta E OK.",
+      "familyId": "y.yellow.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "HARMONY_REVIEW",
+      "path": "/families/yr.orange.v1/dark",
+      "message": "yr.orange.v1 dark requires review: source distance 0.181 Delta E OK.",
+      "familyId": "yr.orange.v1",
+      "theme": "dark"
+    },
+    {
+      "severity": "review",
+      "code": "MUNSELL_OVERRIDE_NEAR_BOUNDARY",
+      "path": "/overrides/p.purple.v1/seedHex",
+      "message": "p.purple.v1 is valid but lies in the outer 15% of its Munsell sector.",
+      "familyId": "p.purple.v1"
+    },
+    {
+      "severity": "review",
+      "code": "MUNSELL_OVERRIDE_NEAR_BOUNDARY",
+      "path": "/overrides/pb.indigo.v2.c/seedHex",
+      "message": "pb.indigo.v2.c is valid but lies in the outer 15% of its Munsell sector.",
+      "familyId": "pb.indigo.v2.c"
+    },
+    {
+      "severity": "review",
+      "code": "MUNSELL_OVERRIDE_NEAR_BOUNDARY",
+      "path": "/overrides/y.yellow.v1/seedHex",
+      "message": "y.yellow.v1 is valid but lies in the outer 15% of its Munsell sector.",
+      "familyId": "y.yellow.v1"
+    }
+  ]
+}

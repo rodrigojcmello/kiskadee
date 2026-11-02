@@ -43,7 +43,7 @@ describe('Fluent four-strength foreground migration', () => {
       '#0064b475'
     );
     expect(catalog.profiles.blue!.deep!.palettes.default!.light!.onVivid!.low.rest).toBe(
-      '#d2e8ff94'
+      '#d3e7ff94'
     );
   });
 

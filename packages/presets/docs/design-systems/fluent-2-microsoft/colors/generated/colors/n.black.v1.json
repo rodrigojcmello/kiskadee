@@ -7,7 +7,7 @@
     "sector": null
   },
   "colorKind": "achromatic",
-  "formatVersion": 7,
+  "formatVersion": 8,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -56,7 +56,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.19.0"
+    "version": "0.20.1"
   },
   "id": "n.black.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -162,6 +162,6 @@
       "light": 50
     }
   },
-  "tonalProfile": "vivid-lights",
+  "tonalProfile": "muted-darks",
   "variant": "v1"
 }

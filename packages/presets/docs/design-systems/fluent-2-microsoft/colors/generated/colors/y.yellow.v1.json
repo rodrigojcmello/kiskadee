@@ -7,7 +7,7 @@
     "sector": "yellow"
   },
   "colorKind": "chromatic",
-  "formatVersion": 7,
+  "formatVersion": 8,
   "functionalReferences": {
     "dark": {
       "medium": {
@@ -28,12 +28,12 @@
     },
     "light": {
       "medium": {
-        "hex": "#f0d39a",
+        "hex": "#f3d19d",
         "source": "midpoint",
         "tone": 9
       },
       "subtle": {
-        "hex": "#f8ecd6",
+        "hex": "#faebd7",
         "source": "surface-relative",
         "tone": 4
       },
@@ -56,7 +56,7 @@
   },
   "generator": {
     "package": "@kiskadee/tonal-scale",
-    "version": "0.19.0"
+    "version": "0.20.1"
   },
   "id": "y.yellow.v1",
   "kind": "kiskadee.primitive-tonal-family",
@@ -101,17 +101,17 @@
       "30": "#684911",
       "35": "#785208",
       "40": "#805a15",
-      "45": "#89621e",
-      "50": "#926a25",
-      "55": "#9d732b",
-      "60": "#a67a2f",
-      "65": "#af8134",
-      "70": "#b8893a",
-      "75": "#cb994a",
-      "80": "#daac65",
-      "85": "#e7bf83",
-      "90": "#f1d2a4",
-      "95": "#f9e9d3",
+      "45": "#896220",
+      "50": "#916a2a",
+      "55": "#9a7435",
+      "60": "#a27b3e",
+      "65": "#a98347",
+      "70": "#b18b51",
+      "75": "#c19c65",
+      "80": "#d1af7c",
+      "85": "#e0c193",
+      "90": "#eed3ac",
+      "95": "#f9ead3",
       "99": "#fffbf4",
       "100": "#ffffff"
     },
@@ -119,17 +119,17 @@
       "0": "#ffffff",
       "1": "#fffaf3",
       "2": "#fdf5ea",
-      "3": "#fbf1e0",
-      "4": "#f8ecd6",
-      "5": "#f6e7cd",
-      "6": "#f4e3c4",
-      "7": "#f2deb9",
-      "8": "#f0d8ab",
-      "9": "#f0d39a",
-      "10": "#f2cc83",
-      "12": "#f9c150",
-      "14": "#f9b41d",
-      "16": "#f1ab1c",
+      "3": "#fbf0e0",
+      "4": "#faebd7",
+      "5": "#f8e6ce",
+      "6": "#f6e2c4",
+      "7": "#f5ddba",
+      "8": "#f3d6ac",
+      "9": "#f3d19d",
+      "10": "#f5ca89",
+      "12": "#f7c068",
+      "14": "#f6b545",
+      "16": "#f0ac2b",
       "18": "#eaa300",
       "20": "#e09c00",
       "22": "#d69400",
@@ -162,6 +162,6 @@
       "light": 50
     }
   },
-  "tonalProfile": "vivid-lights",
+  "tonalProfile": "muted-darks",
   "variant": "v1"
 }

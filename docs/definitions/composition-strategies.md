@@ -311,7 +311,8 @@ A durable architecture decision should record:
   Badge remains an independent passive component.
 - Surface Context uses a Provider because independent descendants need a subtree-scoped semantic
   runtime input. Presets still author the serialized produced-surface map; the Provider does not
-  replace Schema data.
+  replace Schema data or switch the theme. See
+  [Theme and Surface Context](./theme-and-surface-context.md) for the independent recipe coordinates.
 - Button's indicator and Stacked compositions are the two forms of
   [alternate element recipes for one rendered part](#alternate-element-recipes-for-one-rendered-part).
   The indicator selects a complete inside/outside recipe; Stacked substitutes explicitly declared

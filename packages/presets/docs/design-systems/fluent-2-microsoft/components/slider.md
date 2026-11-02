@@ -74,6 +74,7 @@ The inspected node exposes these relevant variables:
 | `CompoundBrandBackground.Rest` | `#0064b4` | `reference(slider.primary, vivid)` | active rail, Neutral thumb inner and Primary onSubtle outer ring, rest/focus |
 | `CompoundBrandBackground.Hover` | `#0055a4` | `reference(slider.primary, vivid +1)` | active rail, Neutral thumb inner and Primary onSubtle outer ring, hover |
 | `CompoundBrandBackground.Pressed` | `#004694` | `reference(slider.primary, vivid +2)` | active rail, Neutral thumb inner and Primary onSubtle outer ring, pressed |
+| Approved complementary accent | Default `#40BEFE` / Teams `#B5A2F4` | `reference(slider.primary.v2, vivid +0/+1/+2)` | Neutral onVivid active rail and thumb inner, Kiskadee extension |
 | `NeutralBackground1.Rest` | `#ffffff` | `cap(primitive.black.v1, light)` | Neutral outer thumb fill, Primary disabled fill and tick marks |
 | `NeutralStroke1.Rest` | `#ccd1dd` | `exact(slider.neutral, 10, component.slider)` | Neutral outer thumb stroke |
 | `TransparentStrokeDisabled.Rest` | `#ffffff00` | `cap(primitive.black.v1, light, 0%)` | disabled inactive rail |
@@ -102,7 +103,10 @@ resolve Neutral Foreground 1 to `#21242d`, Disabled foreground to `#b6bac6`, Bra
 `#0059a1`/`#045091`, and thumb Rest/Disabled strokes to `#cdd1de`/`#dce0ed`. These are explicit
 nearest-position adaptations, now frozen by the Slider schema test rather than silent literals.
 
-## On-vivid trial (2026-09-26)
+## Historical on-vivid trial (2026-09-26)
+
+The original-family Neutral accent progression below is superseded by the complementary
+pilot. Its inactive, Disabled and inverse Primary relationships remain unchanged.
 
 The [user-supplied Windows 11 quick-settings screenshot](../evidence/slider/windows-11-quick-settings-on-vivid.png)
 is visual evidence for a light-blue selected rail and thumb center over a dark-blue
@@ -152,6 +156,28 @@ follows its own approved Primary scale. White and dark overlays use physical
 `cap(primitive.black.v1)` locators. Geometry, theme coverage, interaction mode
 and element topology remain unchanged; Dark/Darker Slider recipes are still not
 published.
+
+## Complementary accent pilot (2026-11-01)
+
+**Kiskadee extension:** Neutral onVivid now uses the approved complementary Primary family for
+the active rail `e9` and inner thumb `e11`. Both consume
+`reference(slider.primary.v2, vivid)` at Rest, ordinal `+1` at Hover and `+2` at Pressed on the
+physical Light track. This replaces the historical `primary.subtle +10/+12/+14` recipe; the
+offsets are reanchored to the complementary family rather than copied from the original ramp.
+
+The Rest accent is `#40BEFE` in Default Blue and `#B5A2F4` in Teams. These are Kiskadee-generated
+adaptations calibrated from the user-supplied Windows selected-control/Slider evidence, not a
+claim of exact Microsoft tokens. They match the Neutral checked Switch track for the same
+segment and interaction state. The source assets, lineage and semantic mapping are recorded in
+[the promoted tonal evidence](../colors/fluent-tonal-scale-evidence.md).
+The current Rest/Hover/Pressed de-para is listed with the shared
+[Switch accent relationship](./switch.md#complementary-accent-pilot-2026-11-01).
+
+The inactive rail, dark outer thumb and its border, physical-black Neutral thumb icon, Disabled,
+white inverse Primary appearance, tooltips and geometry retain their recipes. OnSubtle remains
+on the original semantic family and only follows the approved base-palette regeneration. The
+pilot keeps the existing Light-only Slider coverage; it does not add Dark/Darker palettes,
+public intents, structural layers or runtime behavior.
 
 ## Primary onSubtle thumb calibration (2026-09-26)
 

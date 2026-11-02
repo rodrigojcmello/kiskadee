@@ -6,11 +6,15 @@ import type {
   SchemaColors
 } from '@kiskadee/core';
 import { classifyPrimitives } from '../../classify-primitives.ts';
+import blueComplementary from './colors/b.blue.v1.c.ts';
 import blueV1 from './colors/b.blue.v1.ts';
+import greenComplementary from './colors/g.green.v1.c.ts';
 import greenV1 from './colors/g.green.v1.ts';
 import blackV1 from './colors/n.black.v1.ts';
 import purpleV1 from './colors/p.purple.v1.ts';
+import indigoComplementary from './colors/pb.indigo.v2.c.ts';
 import indigoV2 from './colors/pb.indigo.v2.ts';
+import redComplementary from './colors/r.red.v1.c.ts';
 import redV1 from './colors/r.red.v1.ts';
 import yellowV1 from './colors/y.yellow.v1.ts';
 import orangeV1 from './colors/yr.orange.v1.ts';
@@ -30,11 +34,14 @@ export const primitiveColors = {
   },
   blue: {
     // Tonal generator asset `b.blue.v1` is addressed by its natural appearance in Core.
-    v1: blueV1
+    v1: blueV1,
+    // Generator provenance remains b.blue.v1.c; Core consumes its existing ordinal slot.
+    v2: blueComplementary
   },
   green: {
     // Tonal generator asset `g.green.v1` preserves Fluent Green.
-    v1: greenV1
+    v1: greenV1,
+    v2: greenComplementary
   },
   orange: {
     // Tonal generator asset `yr.orange.v1` preserves Fluent Orange.
@@ -44,11 +51,14 @@ export const primitiveColors = {
     // Tonal generator asset `p.purple.v1` preserves Fluent Berry.
     v1: purpleV1,
     // Core groups PB/Indigo under purple; generator identity remains pb.indigo.v2.
-    v2: indigoV2
+    v2: indigoV2,
+    // Complementary of Teams Indigo V2, not a new semantic intent.
+    v3: indigoComplementary
   },
   red: {
     // Tonal generator asset `r.red.v1` preserves Fluent Cranberry.
-    v1: redV1
+    v1: redV1,
+    v2: redComplementary
   },
   yellow: {
     // Tonal generator asset `y.yellow.v1` preserves Fluent Marigold.
@@ -62,20 +72,20 @@ export const primitiveColors = {
 
 export const globalSemantics = {
   light: {
-    primary: { v1: 'primitive.blue.v1' },
+    primary: { v1: 'primitive.blue.v1', v2: 'primitive.blue.v2' },
     // All identities share the same achromatic neutral.
     neutral: { v1: 'primitive.black.v1' },
-    redLike: { v1: 'primitive.red.v1' },
+    redLike: { v1: 'primitive.red.v1', v2: 'primitive.red.v2' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
-    greenLike: { v1: 'primitive.green.v1' },
+    greenLike: { v1: 'primitive.green.v1', v2: 'primitive.green.v2' },
     purpleLike: { v1: 'primitive.purple.v1' }
   },
   dark: {
-    primary: { v1: 'primitive.blue.v1' },
+    primary: { v1: 'primitive.blue.v1', v2: 'primitive.blue.v2' },
     neutral: { v1: 'primitive.black.v1' },
-    redLike: { v1: 'primitive.red.v1' },
+    redLike: { v1: 'primitive.red.v1', v2: 'primitive.red.v2' },
     yellowLike: { v1: 'primitive.yellow.v1', v2: 'primitive.orange.v1' },
-    greenLike: { v1: 'primitive.green.v1' },
+    greenLike: { v1: 'primitive.green.v1', v2: 'primitive.green.v2' },
     purpleLike: { v1: 'primitive.purple.v1' }
   }
 } as const satisfies GlobalSemanticsByTheme;
@@ -99,8 +109,8 @@ export const globalSemanticsBySegment = {
   teams: {
     meta: { name: 'Purple - Teams' },
     themes: {
-      light: { primary: { v1: 'primitive.purple.v2' } },
-      dark: { primary: { v1: 'primitive.purple.v2' } }
+      light: { primary: { v1: 'primitive.purple.v2', v2: 'primitive.purple.v3' } },
+      dark: { primary: { v1: 'primitive.purple.v2', v2: 'primitive.purple.v3' } }
     }
   }
 } as const satisfies GlobalSemanticsBySegment;

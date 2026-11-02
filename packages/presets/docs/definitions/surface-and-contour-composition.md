@@ -15,6 +15,10 @@ surfaces, while white alpha commonly suits dark or vivid surfaces. Do not copy o
 preset's alpha percentages into every preset or assume surface context alone proves
 sufficient contrast. Preserve each design system's hierarchy and source evidence.
 
+[Theme and Surface Context](../../../../docs/definitions/theme-and-surface-context.md) remain
+independent: a vivid region does not automatically select Dark recipes. This guidance concerns
+paint authorship within the chosen coordinates.
+
 ## Emphasis and the supporting surface
 
 Use the [surface-relative emphasis guidance](component-intents.md#surface-relative-authoring-guidance)

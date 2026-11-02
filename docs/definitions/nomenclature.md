@@ -164,6 +164,9 @@ The semantic `onSubtle` or `onVivid` surface received by a component. p-react re
 prop, the nearest `SurfaceContextProvider`, and then its portability default in that order. Surface
 Context never carries concrete colors, tokens, or generated classes.
 
+Surface Context and Theme are independent recipe coordinates; `onVivid` does not imply Dark. See
+[Theme and Surface Context](./theme-and-surface-context.md) for the shared decision and ownership.
+
 ### Showcase
 
 The Kiskadee consumer and visual-validation application located at `packages/showcase`. Showcase

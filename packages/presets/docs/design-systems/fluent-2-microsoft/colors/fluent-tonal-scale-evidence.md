@@ -1,5 +1,43 @@
 # Fluent 2 Color Evidence And Kiskadee Tonal Mapping
 
+## Muted Darks and complementary promotion
+
+On 2026-11-01 the user approved the generator 0.20.1 / V8 recipe with Muted Darks for the base palette and
+Balanced for complementary families. The verified current bundle now contains seventeen families:
+twelve promoted assets and five candidate-only automatic families. Black v1 colors and its
+functional reference positions remain unchanged. Earlier promotion records below remain historical.
+
+The base profile change is intentionally shared by every consumer. Only Button, Switch and Slider
+receive new complementary recipes in this pilot; their final rendered acceptance remains user-owned.
+No component behavior, Core color grammar, or React API is added.
+
+| Generator asset | Existing Core primitive slot | Semantic variant |
+| --- | --- | --- |
+| b.blue.v1.c | primitive.blue.v2 | primary.v2 in Default |
+| pb.indigo.v2.c | primitive.purple.v3 | primary.v2 in Teams |
+| r.red.v1.c | primitive.red.v2 | redLike.v2 |
+| g.green.v1.c | primitive.green.v2 | greenLike.v2 |
+
+Both theme tracks and the Teams override explicitly publish these variants. Original component
+intents still point to their semantic families; only the selected onVivid recipes opt into v2.
+The `.c` filenames and JSON origin metadata retain generator lineage without extending Core slots.
+Complementary vivid anchors are L18/D80, resolved through Functional Reference First rather than
+copied as exact lookups. The Default accent is #40BEFE and the Teams accent is #B5A2F4.
+
+The contrast companions are Kiskadee derivations calibrated against the supplied Windows selected
+tile and Slider screenshots, not official Fluent Web tokens or Microsoft's private algorithm.
+The base retains the project's Figma Brand seed #0064B4; current Fluent Web Brand #0F6CBD is a
+different source palette and is not substituted during this promotion.
+
+See the [approved recipe and shared link](generator-link.md),
+[complete promotion differences](muted-darks-complementary-promotion.json), and
+[current official-ramp correspondence](figma-to-kiskadee.muted-darks-complementary.json).
+Historical mapping JSON files retain the generator version and values they originally compared.
+
+Promoted TypeScript modules are copied byte-for-byte from the verified exporter. Biome keeps
+linting these assets but does not format or organize their imports; the scoped exclusion also
+protects the canonical generated bundle. Authored schemas and tests retain normal formatting.
+
 ## Achromatic neutral migration — 2026-09-19
 
 Current generated bundle: 0.19.0. The user authorized application of the shared

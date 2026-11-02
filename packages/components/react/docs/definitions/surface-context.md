@@ -6,6 +6,11 @@ Surface Context tells a component what kind of semantic surface is immediately b
 nested components select the correct authored palette without inspecting concrete colors,
 luminance, generated classes, or DOM ancestry.
 
+[Theme and Surface Context](../../../../../docs/definitions/theme-and-surface-context.md) are
+independent recipe coordinates. `SurfaceContextProvider` changes only the consumed semantic
+surface; it does not select a theme. This definition owns their React resolution and propagation,
+while the cross-package decision owns the distinction between the axes.
+
 ## One Context, Two Roles
 
 There is one React Context and it transports one value: `onSubtle` or `onVivid`. The two names below
@@ -33,6 +38,12 @@ explicit surfaceContext prop
 
 The explicit prop changes what the current component consumes. It does not mutate an ancestor and
 does not automatically prescribe the surface that component creates for its children.
+
+A local theme scope uses the existing `KiskadeeContext.Provider` with resources and generated
+classes compatible with that theme. For example, a Dark vivid region can be composed among Light
+regions when both theme scopes are supplied correctly. Its `SurfaceContextProvider` may publish
+`onVivid`, but does not perform the theme or resource switch; changing only `theme` in the
+Kiskadee context value while retaining incompatible resources is not sufficient.
 
 ## Produced Surface Resolution
 

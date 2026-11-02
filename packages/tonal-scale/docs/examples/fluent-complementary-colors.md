@@ -1,12 +1,14 @@
 # Fluent complementary color candidates
 
 Candidate generator: `@kiskadee/tonal-scale@0.20.1`, format V8.
-Status: experimental generator preview awaiting user visual approval; no preset integration.
+Status: palette approved by the user on 2026-11-01 and promoted for the Fluent three-component pilot.
+Component rendering remains subject to user validation; this approval does not claim official
+Microsoft algorithm parity.
 
 The [reproducible recipe](./fluent-complementary-colors.recipe.json) uses the existing Fluent
 inputs and adds contrast complementarity for Blue, Teams Purple, Red and Green. It keeps the
-base `vivid-lights` profile and uses the strategy's Balanced default for complementary families.
-The original families remain unchanged by these additions.
+base `muted-darks` profile and explicitly selects Balanced for complementary families.
+The base change removes the former light-side boost; adding companions does not recalibrate origins.
 
 Run `pnpm --filter @kiskadee/tonal-scale dev` and open the [local generator](http://localhost:3001).
 Load this recipe or use its encoded Shared Viewer link provided with the implementation handoff.
@@ -37,5 +39,5 @@ the strategy selector does not alter the original family. See the
 [canonical complementary contract](../definitions/tonal-system.md#associated-complementary-colors-0200--v8)
 for the formulas, profile precedence, migration and publication boundaries.
 
-Preset schemas, promoted assets and signed historical manifests are outside this delivery.
-The candidate must be visually approved before a separate Fluent integration.
+The [Fluent pilot evidence](../../../presets/docs/design-systems/fluent-2-microsoft/colors/fluent-tonal-scale-evidence.md)
+records the promotion, three-layer mappings and its bounded use in Button, Switch and Slider.

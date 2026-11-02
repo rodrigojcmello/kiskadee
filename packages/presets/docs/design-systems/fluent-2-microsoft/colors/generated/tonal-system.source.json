@@ -10,13 +10,39 @@
         "seedHex": "#5b5fc7"
       }
     ],
+    "complementaryColors": [
+      {
+        "id": "b.blue.v1.c",
+        "sourceId": "primary",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      },
+      {
+        "id": "g.green.v1.c",
+        "sourceId": "g.green.v1",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      },
+      {
+        "id": "pb.indigo.v2.c",
+        "sourceId": "pb.indigo.v2",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      },
+      {
+        "id": "r.red.v1.c",
+        "sourceId": "r.red.v1",
+        "strategy": "contrast-complement-v1",
+        "tonalProfile": "balanced"
+      }
+    ],
     "names": {
       "pb.indigo.v2": "Teams Purple",
       "primary": "Fluent Blue"
     },
     "neutrals": []
   },
-  "formatVersion": 7,
+  "formatVersion": 8,
   "functionalReferences": [
     {
       "dark": {
@@ -38,6 +64,29 @@
         "vivid": {
           "source": "generated-anchor",
           "tone": 50
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 80
+        }
+      },
+      "id": "b.blue.v1.c",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 18
         }
       }
     },
@@ -84,6 +133,29 @@
         "vivid": {
           "source": "generated-anchor",
           "tone": 45
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 80
+        }
+      },
+      "id": "g.green.v1.c",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 18
         }
       }
     },
@@ -206,6 +278,29 @@
       "dark": {
         "subtle": {
           "source": "surface-relative",
+          "tone": 2
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 80
+        }
+      },
+      "id": "pb.indigo.v2.c",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 18
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
           "tone": 3
         },
         "vivid": {
@@ -222,6 +317,29 @@
         "vivid": {
           "source": "generated-anchor",
           "tone": 45
+        }
+      }
+    },
+    {
+      "dark": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 3
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 80
+        }
+      },
+      "id": "r.red.v1.c",
+      "light": {
+        "subtle": {
+          "source": "surface-relative",
+          "tone": 4
+        },
+        "vivid": {
+          "source": "generated-anchor",
+          "tone": 18
         }
       }
     },
@@ -377,5 +495,5 @@
       "mode": "locked"
     }
   },
-  "tonalProfile": "vivid-lights"
+  "tonalProfile": "muted-darks"
 }

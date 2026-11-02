@@ -3,11 +3,15 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import blueComplementary from './b.blue.v1.c.ts';
 import blueV1 from './b.blue.v1.ts';
+import greenComplementary from './g.green.v1.c.ts';
 import greenV1 from './g.green.v1.ts';
 import blackV1 from './n.black.v1.ts';
 import purpleV1 from './p.purple.v1.ts';
+import indigoComplementary from './pb.indigo.v2.c.ts';
 import indigoV2 from './pb.indigo.v2.ts';
+import redComplementary from './r.red.v1.c.ts';
 import redV1 from './r.red.v1.ts';
 import yellowV1 from './y.yellow.v1.ts';
 import orangeV1 from './yr.orange.v1.ts';
@@ -19,11 +23,15 @@ const GENERATED_ROOT = resolve(
 
 const PROMOTED_ASSETS = {
   'b.blue.v1': blueV1,
+  'b.blue.v1.c': blueComplementary,
   'g.green.v1': greenV1,
+  'g.green.v1.c': greenComplementary,
   'n.black.v1': blackV1,
   'pb.indigo.v2': indigoV2,
+  'pb.indigo.v2.c': indigoComplementary,
   'p.purple.v1': purpleV1,
   'r.red.v1': redV1,
+  'r.red.v1.c': redComplementary,
   'y.yellow.v1': yellowV1,
   'yr.orange.v1': orangeV1
 } as const;

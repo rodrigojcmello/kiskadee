@@ -3,6 +3,43 @@
 This file records source evidence and color decisions for the Button currently authored in
 `packages/presets/src/presets/fluent-2-microsoft/components/button.schema.ts`.
 
+## Complementary Primary Medium on vivid — 2026-11-01
+
+Status: **Kiskadee extension**, approved as a three-component preset pilot after visual
+approval of the generated complementary candidates. The user-supplied
+[Windows 11 quick-settings reference](../evidence/switch/windows-11-quick-settings-on-vivid.png)
+informs the light active accent; it does not define a complete upstream Fluent Button matrix.
+
+Only Primary Medium in `onVivid` adopts the complementary fill, in Microsoft and Teams and
+all three published themes. The strict locator is `reference(button.primary.v2, vivid)` on
+the physical Light track. Layer 2 resolves that variant to the generated Blue complementary
+`b.blue.v1.c` (`L18 #40BEFE`) or Teams complementary `pb.indigo.v2.c` (`L18 #B5A2F4`).
+These are approved Kiskadee derivations, not literal copies of a Microsoft token. The shared
+base families use Muted Darks; the complementary assets retain their own Balanced profile.
+
+Pressed and Selected use that same opaque anchor. Selected Hover explicitly retains the
+complementary fill so the base Hover recipe cannot weaken persistent selection. Rest, Hover,
+Pending and Disabled retain their existing recipes. The previously transparent Medium active
+contour and its geometric border width remain unchanged. The shared portable-brand formula
+is not changed, and no complement is invented for a BrandPack or a Neutral intent.
+
+The directly owned label and icon use `neutral.standard.light.onSubtle.high.rest` through
+parent-state foreground references during Pressed and Selected. Disclosure retains its existing
+inheritance from the label recipe. This dark foreground remains legible over both complementary
+fills. The inside selected indicator uses the same dark polarity for this surface; its external
+recipe stays unchanged. High Rest remains white, and `selectionEmphasis="medium|high"` continues
+to consume normal High paint according to the existing selection contract.
+
+Primary Medium publishes `selected: onSubtle` to descendants. The existing surface-context
+contract has no transient Pressed branch: an unselected Button's nested consumer retains the
+Rest context during a pointer press, although the directly owned label/icon/Disclosure receive
+the authored dark Pressed foreground. This pilot does not extend the Provider or runtime contract.
+Focus, Activation Feedback, availability precedence and geometry keep their existing mechanisms.
+
+This section supersedes the earlier Black10% Medium Pressed/Selected treatment only for this
+Primary/onVivid scope. Other intents, emphases and `onSubtle` recipes retain their authored
+formulas; the globally promoted tonal base update remains a separate color-source change.
+
 ## Canonical Light onVivid hierarchy — 2026-10-31
 
 Status: **Kiskadee extension**, refined through user review of the Surface contexts comparison.

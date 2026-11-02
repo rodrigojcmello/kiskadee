@@ -42,6 +42,7 @@ This file records source evidence and schema decisions for
 | Neutral track/thumb stops | `exact(primitive.black.v1, 50/55/65/10, component.switch)` | Unchecked border/thumb state rhythm | Retained adaptation |
 | White and transparent | `cap(primitive.black.v1, light, 100%/0%)` | Thumb, track, icon, and transparent borders | Physical endpoint |
 | On-vivid overlay family | `cap(primitive.black.v1, light, 8%..88%)` | Unchecked track, border, disabled text, and state overlays | Kiskadee extension |
+| Approved complementary accent | `reference(switch.primary.v2, vivid +0/+1/+2)` on the Light track | Neutral onVivid checked track, Rest/Hover/Pressed | Kiskadee extension |
 
 The fixed stop set is a closed catalog under evidence ID `component.switch`. Those entries preserve
 the established Fluent-adapted state relationships and are not promoted to functional references.
@@ -75,7 +76,10 @@ remains open.
 
 - Revalidation of every fixed stop against the latest upstream Figma component.
 
-## Neutral and Primary on vivid (2026-09-26)
+## Historical Neutral and Primary on vivid (2026-09-26)
+
+The Neutral selected-color progression in this section is superseded by the complementary
+accent pilot below. Its off, disabled, Primary and Polarity relationships remain in force.
 
 The default intent remains Neutral. The previous `accent` onVivid treatment is now
 Neutral: transparent unchecked track, Light-track Primary `subtle +10/+12/+14`
@@ -88,6 +92,37 @@ This remaps an existing Kiskadee experiment to the user's Windows 11 composition
 semantics. It is not an upstream Fluent token mapping. The physical overlays use
 `cap(primitive.black.v1, light/dark)` and the brand colors use functional
 `reference(primary, subtle/vivid + offset)` locators; no new primitive is introduced.
+
+## Complementary accent pilot (2026-11-01)
+
+**Kiskadee extension:** the user-approved Muted Darks base palette and Balanced complementary
+families replace the earlier attempt to obtain the vivid-surface accent from pale positions of
+the original Primary scale. The Windows quick-settings selected tile and Slider supply the usage
+reference; the resulting Switch recipe is not asserted to be an official Microsoft token matrix.
+
+Only the Neutral onVivid checked track (`e2`) adopts the complementary semantic variant. It uses
+`reference(switch.primary.v2, vivid)` at Rest, ordinal `+1` at Hover and `+2` at Pressed, resolving
+against the physical Light track in Light, Dark and Darker. This yields Rest `#40BEFE` for Default
+Blue and `#B5A2F4` for Teams. The same anchor and deltas drive Slider's Neutral filled rail and
+thumb center, so the two controls retain their shared selected-color relationship.
+
+| Selected state | Complementary Light reference | Default Blue | Teams |
+| --- | --- | --- | --- |
+| Rest | `vivid` | `#40BEFE` | `#B5A2F4` |
+| Hover | `vivid +1` | `#2FB8F9` | `#AF9CEF` |
+| Pressed | `vivid +2` | `#0EAFF3` | `#A793E9` |
+
+The component's existing Primary intent still maps through Layer 3 to the Primary semantic.
+Selecting its `v2` variant locally does not replace the original `v1` family or create another
+public intent. Default and Teams publish their complementary mappings separately; see the
+[promoted tonal evidence](../colors/fluent-tonal-scale-evidence.md).
+
+The selected thumb remains physical black. Transparent off Rest, off interaction overlays,
+Disabled, the white inverse Primary treatment, Polarity, foregrounds and geometry retain their
+existing recipes. OnSubtle continues using original-family references and receives only the
+approved base-palette regeneration. Selected border and child-state resets remain explicit so
+unchecked Hover/Pressed cannot repaint a checked control. No new states or runtime behavior are
+introduced.
 
 ## Validation
 

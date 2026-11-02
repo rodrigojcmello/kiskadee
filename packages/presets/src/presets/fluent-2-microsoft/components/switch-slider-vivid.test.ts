@@ -1,5 +1,14 @@
 import { expect, it } from 'vitest';
+import { createStrictPresetColorResolver } from '../../../utils/presetColor.ts';
+import { referenceColor } from '../fluent-2-microsoft.color.ts';
+import { fluent2MicrosoftColorEvidence } from '../fluent-2-microsoft.color-evidence.ts';
+import { schemaColors } from '../fluent-2-microsoft.colors.ts';
 import { schema } from '../fluent-2-microsoft.schema.ts';
+
+const c = createStrictPresetColorResolver({
+  colors: schemaColors,
+  exactEvidence: fluent2MicrosoftColorEvidence
+});
 
 function resolved(value: unknown): unknown {
   return value && typeof value === 'object' && 'ref' in value ? value.ref : value;
@@ -68,6 +77,71 @@ it('publishes both Slider intents on vivid using the Switch selected-color relat
         }
       }
       expect(element.palettes[segment]!.light!.onVivid).toBeDefined();
+    }
+  }
+});
+
+it('uses the complementary vivid anchor and shared state deltas only for the Neutral vivid accent', () => {
+  const switchElements = schema.components.switch!.variants!.standard!.modes!.base!.elements;
+  const sliderElements = schema.components.slider!.variants!.standard!.modes!.base!.elements;
+  for (const segment of ['default', 'teams'] as const) {
+    const expectedRest = segment === 'default' ? '#40befe' : '#b5a2f4';
+    const rest = c.resolve(segment, 'l', referenceColor('primary.v2', 'vivid'));
+    expect(rest).toBe(expectedRest);
+    expect(rest).not.toBe(c.resolve(segment, 'l', referenceColor('primary', 'vivid')));
+    for (const [state, offset] of [
+      ['rest', 0],
+      ['hover', 1],
+      ['pressed', 2]
+    ] as const) {
+      const expected = c.resolve(segment, 'l', referenceColor('primary.v2', 'vivid', offset));
+      for (const theme of ['light', 'dark', 'darker'] as const) {
+        const track = switchElements.e2!.palettes![segment]![theme]!.onVivid!.boxColor!;
+        expect(resolved(track.neutral!.medium!.selected![state])).toBe(expected);
+        expect(resolved(track.primary!.medium!.selected![state])).toBe('#ffffff');
+      }
+      for (const slot of ['e9', 'e11'] as const) {
+        const channel = sliderElements[slot]!.palettes![segment]!.light!.onVivid!.boxColor!;
+        expect(resolved(channel.neutral!.medium![state])).toBe(expected);
+      }
+    }
+    for (const theme of ['light', 'dark', 'darker'] as const) {
+      const track = switchElements.e2!.palettes![segment]![theme]!.onVivid!.boxColor!;
+      const thumb = switchElements.e3!.palettes![segment]![theme]!.onVivid!.boxColor!;
+      expect(track.neutral!.medium!.rest).toBe('#ffffff00');
+      expect(resolved(track.neutral!.medium!.disabled)).toBe('#ffffff1f');
+      expect(resolved(thumb.neutral!.medium!.selected!.rest)).toBe('#000000');
+      expect(resolved(thumb.primary!.medium!.selected!.rest)).toBe(
+        c.resolve(segment, 'l', referenceColor('primary', 'vivid', 2))
+      );
+    }
+  }
+});
+
+it('keeps subtle recipes on the original family and preserves the Slider theme coverage', () => {
+  const switchElements = schema.components.switch!.variants!.standard!.modes!.base!.elements;
+  const sliderElements = schema.components.slider!.variants!.standard!.modes!.base!.elements;
+  for (const segment of ['default', 'teams'] as const) {
+    for (const theme of ['light', 'dark', 'darker'] as const) {
+      const selected =
+        switchElements.e2!.palettes![segment]![theme]!.onSubtle.boxColor!.neutral!.medium!.selected!
+          .rest;
+      expect(resolved(selected)).toBe(
+        c.resolve(
+          segment,
+          theme === 'light' ? 'l' : 'd',
+          referenceColor('primary', 'vivid', theme === 'light' ? 2 : 6)
+        )
+      );
+    }
+    for (const slot of ['e9', 'e11'] as const) {
+      const element = sliderElements[slot]!;
+      const channel = element.palettes![segment]!.light!.onSubtle.boxColor!;
+      expect(channel.neutral!.medium!.rest).toBe(
+        c.resolve(segment, 'l', referenceColor('slider.primary', 'vivid'))
+      );
+      expect(element.palettes![segment]!.dark).toBeUndefined();
+      expect(element.palettes![segment]!.darker).toBeUndefined();
     }
   }
 });

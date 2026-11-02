@@ -117,11 +117,12 @@ describe('Fluent Button Low contextual surface', () => {
     }
   });
 
-  it('darkens the actual vivid host for Medium Light Pressed and persistent selection', () => {
+  it('darkens the actual vivid host for non-primary Medium Light Pressed and persistent selection', () => {
     for (const segment of segments) {
       const base = schema.components.container!.elements.e1.palettes![segment]!.light!.onSubtle
         .boxColor!.primary!.highest!.rest as string;
       for (const intent of intents) {
+        if (intent === 'primary') continue;
         const fill =
           button.elements.e1!.palettes![segment]!.light!.onVivid!.boxColor![intent]!.medium!;
         const text =

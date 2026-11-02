@@ -22,6 +22,10 @@ This is component-level surface authorship, not a global background profile. Nei
 nor Card becomes the source for every background in the design system; other components keep
 their own visual responsibilities.
 
+[Theme and Surface Context](./theme-and-surface-context.md) remain independent recipe coordinates.
+Painting a vivid region does not change its theme; Container and Card publish the semantic context
+of that region through their existing output maps.
+
 ## Schema and handoff
 
 Presets author `components.container.e1` Rest box colors by segment, theme, input surface

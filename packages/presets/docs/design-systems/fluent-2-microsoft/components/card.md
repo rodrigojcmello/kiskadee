@@ -6,6 +6,9 @@
 > Current neutral mapping: [2026-09-19 achromatic calibration](neutral-surface-calibration.md).
 > It supersedes the earlier tinted-neutral and Light contour values below; those sections retain historical provenance.
 
+> Current theme/context decision: [2026-11-01 evidence and preservation boundary](../colors/theme-surface-context-decision.md).
+> The Light vivid blue remains distinct from Dark. Windows' Dark shell beside Light apps does not
+> redefine Light/onVivid; no surface, companion, border or state recipe changes in that decision.
 
 This file records the source evidence and schema decisions for the Fluent 2 Card
 mapping in `packages/presets/src/presets/fluent-2-microsoft/components/card.schema.ts`.

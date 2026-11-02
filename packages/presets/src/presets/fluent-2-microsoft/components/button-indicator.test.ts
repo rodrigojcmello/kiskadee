@@ -118,13 +118,18 @@ describe('Fluent Button selected indicator', () => {
               indicatorRecipes[placement].palettes[segment]![theme]![context]!.boxColor!;
             for (const emphasis of emphases) {
               for (const intent of ['destructive', 'positive'] as const) {
-                expect(colors[intent]![emphasis]).toEqual(colors.primary![emphasis]);
+                const complementaryHost =
+                  placement === 'inside' && context === 'onVivid' && emphasis === 'medium';
+                if (complementaryHost) {
+                  expect(colors[intent]![emphasis]).not.toEqual(colors.primary![emphasis]);
+                } else {
+                  expect(colors[intent]![emphasis]).toEqual(colors.primary![emphasis]);
+                }
               }
               const hasDifferentNeutralPolarity =
                 placement === 'inside' &&
-                context === 'onSubtle' &&
-                emphasis === 'high' &&
-                theme !== 'light';
+                ((context === 'onSubtle' && emphasis === 'high' && theme !== 'light') ||
+                  (context === 'onVivid' && emphasis === 'medium'));
               if (hasDifferentNeutralPolarity) {
                 expect(colors.neutral![emphasis]).not.toEqual(colors.primary![emphasis]);
               } else {

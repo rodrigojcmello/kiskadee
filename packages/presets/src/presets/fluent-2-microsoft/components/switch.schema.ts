@@ -165,9 +165,9 @@ export function createFluent2MicrosoftSwitchSchema({
     trackRest: transparent,
     trackHover: physicalLight(absoluteCap(primitive('black', 'v1'), 'light', 8)),
     trackPressed: onVividColors.trackRest,
-    selectedRest: physicalLight(referenceColor('primary', 'subtle', 10)),
-    selectedHover: physicalLight(referenceColor('primary', 'subtle', 12)),
-    selectedPressed: physicalLight(referenceColor('primary', 'subtle', 14)),
+    selectedRest: physicalLight(referenceColor('switch.primary.v2', 'vivid')),
+    selectedHover: physicalLight(referenceColor('switch.primary.v2', 'vivid', 1)),
+    selectedPressed: physicalLight(referenceColor('switch.primary.v2', 'vivid', 2)),
     selectedThumb: physicalLight(absoluteCap(primitive('black', 'v1'), 'dark'))
   };
 

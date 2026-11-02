@@ -14,7 +14,8 @@ import {
   exactColor,
   type Fluent2MicrosoftColorResolver,
   type Fluent2MicrosoftFamilyColorLocator,
-  familyReferenceColor
+  familyReferenceColor,
+  referenceColor
 } from '../fluent-2-microsoft.color.ts';
 import {
   createFluentButtonOnSubtleIntent,
@@ -196,8 +197,8 @@ export function createFluent2MicrosoftButtonSchema({
     });
   };
 
-  const createOnVividButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) =>
-    createFluentButtonOnVividIntent({
+  const createOnVividButtonIntent = (theme: ButtonRecipeTheme, role: ButtonColorRole) => {
+    const palette = createFluentButtonOnVividIntent({
       theme,
       neutralControlBottom:
         role === 'button.neutral' && theme !== 'darker'
@@ -208,6 +209,24 @@ export function createFluent2MicrosoftButtonSchema({
       canonicalSurface: onVividCanonicalSurface,
       lightBaseSurface: c.resolve('default', 'l', exactColor('card.primary', 50, 'component.card'))
     });
+    if (role !== 'button.primary') return palette;
+    const complementary = c.resolve('default', 'l', referenceColor('button.primary.v2', 'vivid'));
+    return {
+      ...palette,
+      boxColor: {
+        ...palette.boxColor,
+        medium: {
+          ...(palette.boxColor.medium as Record<string, unknown>),
+          pressed: complementary,
+          selected: {
+            rest: complementary,
+            // The base Hover surface must not weaken persistent complementary selection.
+            hover: complementary
+          }
+        }
+      }
+    };
+  };
 
   const onSubtleButtonIntentPalettes = {
     light: {
@@ -405,6 +424,7 @@ export function createFluent2MicrosoftButtonSchema({
       surfaceContext: 'onSubtle' as const,
       emphasis: 'high' as const
     };
+    const complementaryForeground = { ...high, family: 'neutral' as const };
     const lower = {
       family,
       profile: intent === 'neutral' ? ('standard' as const) : ('deep' as const),
@@ -467,7 +487,14 @@ export function createFluent2MicrosoftButtonSchema({
         disabled: parent(disabled, 'disabled'),
         selected: { rest: parent(high, 'pressed') }
       },
-      medium: lowerStates,
+      medium:
+        intent === 'primary'
+          ? {
+              ...lowerStates,
+              pressed: parent(complementaryForeground, 'rest'),
+              selected: { rest: parent(complementaryForeground, 'rest') }
+            }
+          : lowerStates,
       low: inverseStates,
       lowest: theme === 'light' ? inverseStates : lowerStates
     };
@@ -569,6 +596,16 @@ export function createFluent2MicrosoftButtonSchema({
             'rest'
           );
         }
+        if (intent === 'primary' && emphasis === 'medium') {
+          return parentStateForegroundReference(
+            'neutral',
+            'standard',
+            'light',
+            'onSubtle',
+            'high',
+            'rest'
+          );
+        }
         return parentStateForegroundReference(
           'blue',
           emphasis === 'high' ? 'standard' : 'deep',
@@ -642,7 +679,14 @@ export function createFluent2MicrosoftButtonSchema({
                     pending: input === 'onVivid' ? 'onSubtle' : 'onVivid',
                     disabled: 'onSubtle'
                   },
-                  medium: { rest: 'onVivid', pending: 'onVivid', disabled: 'onSubtle' },
+                  medium: {
+                    rest: 'onVivid',
+                    ...(input === 'onVivid' && intent === 'primary'
+                      ? { selected: 'onSubtle' }
+                      : {}),
+                    pending: 'onVivid',
+                    disabled: 'onSubtle'
+                  },
                   low: { rest: input === 'onVivid' && theme !== 'light' ? 'inherit' : input },
                   lowest: { rest: 'inherit' }
                 }

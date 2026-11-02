@@ -3,6 +3,28 @@
 This file records source evidence and preset-level decisions for
 `packages/presets/src/presets/fluent-2-microsoft/`.
 
+## Theme and Surface Context decision - 2026-11-01
+
+The approved [Theme and Surface Context decision](colors/theme-surface-context-decision.md)
+retains the current Fluent palette and independent Light/Dark/Darker and onSubtle/onVivid recipes.
+The Figma composition uses Brand80 `#0064B4` in Light and Brand70 `#0055A4` in Dark; the user's
+Windows captures instead show a Dark shell beside Light apps. Those are distinct source contexts,
+not evidence that Light/onVivid must become Dark. The record preserves the screenshot comparisons,
+Web/WinUI roles, unpromoted fixed-position generator experiment and local-theme alternative.
+Future Dark/onVivid calibration remains separate; selecting Dark alone does not promise exact
+Windows reproduction. This is a **Kiskadee extension**, with source-exact observations identified
+individually in the decision record. No palette or formula changes accompany this documentation.
+
+## Complementary onVivid pilot - 2026-11-01
+
+The approved [Muted Darks and complementary promotion](colors/fluent-tonal-scale-evidence.md#muted-darks-and-complementary-promotion)
+uses generator 0.20.1. Original families use Muted Darks and associated companions use Balanced.
+Layer 2 exposes the companions through existing semantic v2 mappings, including explicit Teams
+coverage. Component recipes opt into those mappings; global intent defaults remain unchanged.
+The pilot is limited to Button Primary Medium Pressed/Selected and Neutral active Switch/Slider
+recipes in onVivid. See each component's evidence for foregrounds, state precedence and limitations.
+All other recipe changes are the expected propagation of the shared approved base scales.
+
 ## Current neutral calibration
 
 The user-authorized [achromatic surface calibration](components/neutral-surface-calibration.md)
