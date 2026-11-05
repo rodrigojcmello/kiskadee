@@ -1,5 +1,7 @@
 import type {
   Color,
+  ColorVariant,
+  ColorVariantPalette,
   HueName,
   SegmentName,
   SurfaceContext,
@@ -21,7 +23,10 @@ export type TextForegroundFamily = 'neutral' | TextChromaticForeground;
 export type TextDeepForegroundName = `${TextChromaticForeground}-deep`;
 
 /** Public foreground vocabulary supported by the standalone Text component contract. */
-export type TextForegroundName = TextForegroundFamily | TextDeepForegroundName;
+export type TextBaseForegroundName = TextForegroundFamily | TextDeepForegroundName;
+export type TextForegroundName =
+  | TextBaseForegroundName
+  | `${Exclude<TextBaseForegroundName, 'neutral'>}-alt`;
 
 const textForegroundFamilyValueByName = {
   neutral: 'neutral',
@@ -41,11 +46,29 @@ export const textForegroundFamilyValues: readonly TextForegroundFamily[] = Objec
   Object.values(textForegroundFamilyValueByName)
 );
 
-export const textForegroundValues: readonly TextForegroundName[] = Object.freeze(
+export const textBaseForegroundValues: readonly TextBaseForegroundName[] = Object.freeze(
   textForegroundFamilyValues.flatMap((family) =>
     family === 'neutral' ? [family] : [family, `${family}-deep` as const]
   )
 );
+
+export const textForegroundValues: readonly TextForegroundName[] = Object.freeze(
+  textBaseForegroundValues.flatMap((name) =>
+    name === 'neutral' ? [name] : [name, `${name}-alt` as const]
+  )
+);
+
+export function parseTextForegroundName(
+  value: unknown
+): { foreground: TextBaseForegroundName; colorVariant: ColorVariant } | undefined {
+  if (typeof value !== 'string' || !textForegroundValues.includes(value as TextForegroundName))
+    return undefined;
+  const alternative = value.endsWith('-alt');
+  return {
+    foreground: (alternative ? value.slice(0, -4) : value) as TextBaseForegroundName,
+    colorVariant: alternative ? 'alternative' : 'standard'
+  };
+}
 
 export type ForegroundFamilyId = string;
 export type ForegroundProfileName = 'standard' | 'deep';
@@ -64,9 +87,24 @@ export type ForegroundStateColorMap = {
 export type ForegroundEmphasisMap = Record<TextEmphasis, ForegroundStateColorMap>;
 
 export type ForegroundSurfaceContextPalette = {
-  onSubtle: ForegroundEmphasisMap;
-  onVivid?: ForegroundEmphasisMap;
+  onSubtle: ForegroundColorVariants;
+  onVivid?: ForegroundColorVariants;
 };
+
+export type ForegroundColorVariants = ColorVariantPalette<
+  ForegroundEmphasisMap,
+  Partial<ForegroundEmphasisMap>
+>;
+
+/** Whole emphasis leaves inherit; authored state maps never borrow Standard interaction states. */
+export function resolveForegroundVariant(
+  variants: ForegroundColorVariants,
+  variant: ColorVariant
+): ForegroundEmphasisMap {
+  return variant === 'alternative'
+    ? { ...variants.standard, ...variants.alternative }
+    : variants.standard;
+}
 
 export type ForegroundProfilePalettes = Partial<
   Record<
@@ -101,12 +139,12 @@ export type ElementForeground = Readonly<Record<string, ForegroundProfileReferen
 /** Text requires neutral and lets each preset publish any supported chromatic family. */
 export type TextElementForeground = Readonly<
   { neutral: ForegroundProfileReference } & Partial<
-    Record<Exclude<TextForegroundName, 'neutral'>, ForegroundProfileReference>
+    Record<Exclude<TextBaseForegroundName, 'neutral'>, ForegroundProfileReference>
   >
 >;
 
 export type ForegroundCoordinate =
-  `${ForegroundFamilyId}.${ForegroundProfileName}.${ThemeMode}.${SurfaceContext}.${TextEmphasis}${
+  `${ForegroundFamilyId}.${ForegroundProfileName}.${ThemeMode}.${SurfaceContext}.${'' | `${ColorVariant}.`}${TextEmphasis}${
     | ''
     | `.${ForegroundState}`}`;
 
@@ -122,6 +160,7 @@ export type ParsedForegroundReference = {
   profile: ForegroundProfileName;
   theme: ThemeMode;
   surfaceContext: SurfaceContext;
+  colorVariant: ColorVariant;
   emphasis: TextEmphasis;
   state: ForegroundState;
 };
@@ -136,9 +175,14 @@ export function parseForegroundReferenceToken(
   value: string
 ): ParsedForegroundReference | undefined {
   if (!isForegroundReferenceCandidate(value)) return undefined;
-  const [family, profile, theme, surfaceContext, emphasis, state = 'rest', ...extra] = value
+  const [family, profile, theme, surfaceContext, ...tail] = value
     .slice(FOREGROUND_REFERENCE_PREFIX.length)
     .split('.');
+  const colorVariant =
+    tail[0] === 'standard' || tail[0] === 'alternative'
+      ? (tail.shift() as ColorVariant)
+      : 'standard';
+  const [emphasis, state = 'rest', ...extra] = tail;
 
   if (
     !family ||
@@ -158,6 +202,7 @@ export function parseForegroundReferenceToken(
     profile,
     theme,
     surfaceContext,
+    colorVariant,
     emphasis: emphasis as TextEmphasis,
     state: state as ForegroundState
   };

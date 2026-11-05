@@ -14,10 +14,14 @@ import { fontFamilyCatalogById } from '@kiskadee/fonts/catalog';
 import type { FontFamilyRole } from '@kiskadee/react-components';
 import {
   SurfaceContextProvider,
+  useComponentMetadata,
   useFontFamilyStatus,
-  useKiskadee
+  useKiskadee,
+  useSurfaceContext
 } from '@kiskadee/react-components/resources';
+import { Switch } from '@kiskadee/react-components/switch';
 import { Text } from '@kiskadee/react-components/text';
+import { useState } from 'react';
 import {
   ShowcaseGlobalSemanticControls,
   ShowcaseIconographyControls
@@ -67,8 +71,8 @@ const PROFILE_SAMPLES: Readonly<Record<TextFontValue, string>> = {
 };
 
 function formatForegroundFamily(foreground: TextForegroundName): string {
-  const family = foreground.replace(/-deep$/, '');
-  return `${family[0]?.toUpperCase() ?? ''}${family.slice(1)}`;
+  const family = foreground.replace(/-alt$/, '').replace(/-deep$/, '');
+  return `${family[0]?.toUpperCase() ?? ''}${family.slice(1)}${foreground.endsWith('-alt') ? ' alt' : ''}`;
 }
 
 function resolveRoleDisplay(
@@ -194,10 +198,14 @@ function RolePreview({
 }
 
 function ChromaticForegroundRows({
+  alternative,
+  supportsAlternative,
   ariaLabel,
   foregrounds,
   textProfiles
 }: {
+  alternative: boolean;
+  supportsAlternative: (foreground: TextForegroundName) => boolean;
   ariaLabel: string;
   foregrounds: readonly TextForegroundName[];
   textProfiles: ShowcaseTextProfiles;
@@ -223,36 +231,56 @@ function ChromaticForegroundRows({
         </tr>
       </thead>
       <tbody>
-        {foregrounds.map((foreground) => (
-          <tr className={styles.chromaticRow} data-text-foreground={foreground} key={foreground}>
-            <Text as="th" foreground={foreground} profile={textProfiles.caption} scope="row">
-              {formatForegroundFamily(foreground)}
-            </Text>
-            {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
-              <Text
-                as="td"
-                data-text-emphasis={emphasis}
-                foreground={foreground}
-                emphasis={emphasis}
-                key={emphasis}
-                profile={textProfiles.body}
-              >
-                <Text as="span" foreground="inherit" profile={textProfiles.bodyStrong}>
-                  Aa
-                </Text>{' '}
-                <Text as="span" foreground="inherit" profile={textProfiles.body}>
-                  Aa
-                </Text>
+        {foregrounds.map((baseForeground) => {
+          const supported = supportsAlternative(baseForeground);
+          const foreground =
+            alternative && supported
+              ? (`${baseForeground}-alt` as TextForegroundName)
+              : baseForeground;
+          return (
+            <tr className={styles.chromaticRow} data-text-foreground={foreground} key={foreground}>
+              <Text as="th" foreground={foreground} profile={textProfiles.caption} scope="row">
+                {formatForegroundFamily(foreground)}
+                {alternative && !supported ? (
+                  <Text
+                    as="span"
+                    foreground="neutral"
+                    emphasis="low"
+                    profile={textProfiles.caption}
+                  >
+                    {' '}
+                    — Alt unavailable
+                  </Text>
+                ) : null}
               </Text>
-            ))}
-          </tr>
-        ))}
+              {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
+                <Text
+                  as="td"
+                  data-text-emphasis={emphasis}
+                  foreground={foreground}
+                  emphasis={emphasis}
+                  key={emphasis}
+                  profile={textProfiles.body}
+                >
+                  <Text as="span" foreground="inherit" profile={textProfiles.bodyStrong}>
+                    Aa
+                  </Text>{' '}
+                  <Text as="span" foreground="inherit" profile={textProfiles.body}>
+                    Aa
+                  </Text>
+                </Text>
+              ))}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
 }
 
 function ChromaticForegroundProfileGroups({
+  alternative,
+  supportsAlternative,
   deepForegrounds,
   standardForegrounds,
   surfaceLabel,
@@ -261,6 +289,8 @@ function ChromaticForegroundProfileGroups({
   deepForegrounds: readonly TextForegroundName[];
   standardForegrounds: readonly TextForegroundName[];
   surfaceLabel: 'subtle' | 'vivid';
+  alternative: boolean;
+  supportsAlternative: (foreground: TextForegroundName) => boolean;
   textProfiles: ShowcaseTextProfiles;
 }) {
   return (
@@ -270,9 +300,13 @@ function ChromaticForegroundProfileGroups({
           Standard
         </Text>
         <Text as="p" emphasis="medium" profile={textProfiles.caption}>
-          family.standard → foreground=&quot;family&quot;
+          family.standard → foreground=&quot;
+          {alternative && standardForegrounds.some(supportsAlternative) ? 'family-alt' : 'family'}
+          &quot;
         </Text>
         <ChromaticForegroundRows
+          alternative={alternative}
+          supportsAlternative={supportsAlternative}
           ariaLabel={`Standard foregrounds on ${surfaceLabel}`}
           foregrounds={standardForegrounds}
           textProfiles={textProfiles}
@@ -285,15 +319,68 @@ function ChromaticForegroundProfileGroups({
             Deep
           </Text>
           <Text as="p" emphasis="medium" profile={textProfiles.caption}>
-            family.deep → foreground=&quot;family-deep&quot;
+            family.deep → foreground=&quot;
+            {alternative && deepForegrounds.some(supportsAlternative)
+              ? 'family-deep-alt'
+              : 'family-deep'}
+            &quot;
           </Text>
           <ChromaticForegroundRows
+            alternative={alternative}
+            supportsAlternative={supportsAlternative}
             ariaLabel={`Deep foregrounds on ${surfaceLabel}`}
             foregrounds={deepForegrounds}
             textProfiles={textProfiles}
           />
         </section>
       ) : null}
+    </div>
+  );
+}
+
+export function ChromaticForegroundCardContent({
+  surfaceLabel,
+  deepForegrounds,
+  standardForegrounds,
+  textProfiles
+}: {
+  surfaceLabel: 'subtle' | 'vivid';
+  deepForegrounds: readonly TextForegroundName[];
+  standardForegrounds: readonly TextForegroundName[];
+  textProfiles: ShowcaseTextProfiles;
+}) {
+  const [requestedAlternative, setAlternative] = useState(false);
+  const { segment, theme } = useKiskadee();
+  const context = useSurfaceContext();
+  const metadata = useComponentMetadata('text');
+  const coverage =
+    metadata?.capabilities?.colorVariants?.alternative?.[`${segment}.${theme}`]?.[context];
+  const supportsAlternative = (foreground: TextForegroundName) =>
+    Boolean(coverage?.[foreground]?.length);
+  const available = [...standardForegrounds, ...deepForegrounds].some(supportsAlternative);
+  return (
+    <div className={styles.foregroundCardContent}>
+      <header className={styles.chromaticCardHeader}>
+        <Text as="h4" profile={textProfiles.groupTitle}>
+          On {surfaceLabel}
+        </Text>
+        <Switch
+          label="Alt"
+          size="sm"
+          emphasis="medium"
+          controlState={available && requestedAlternative}
+          disabled={!available}
+          onControlStateChange={setAlternative}
+        />
+      </header>
+      <ChromaticForegroundProfileGroups
+        deepForegrounds={deepForegrounds}
+        standardForegrounds={standardForegrounds}
+        surfaceLabel={surfaceLabel}
+        textProfiles={textProfiles}
+        alternative={available && requestedAlternative}
+        supportsAlternative={supportsAlternative}
+      />
     </div>
   );
 }
@@ -398,37 +485,28 @@ function TextComponentExamples({
             </Text>
             <Text as="p" emphasis="medium" profile={textProfiles.body}>
               Standard preserves the normal chromatic anchor. Deep is an independent family profile
-              calibrated per theme and surface; the public Text API exposes it with a -deep suffix.
+              calibrated per theme and surface; the public Text API exposes it with a -deep suffix.{' '}
+              Use Alt to compare available complementary text colors.
             </Text>
           </div>
 
           <div className={styles.foregroundMatrix}>
             <ShowcaseExampleCard context="onSubtle" className={`${styles.foregroundCard} k-root`}>
-              <div className={styles.foregroundCardContent}>
-                <Text as="h4" profile={textProfiles.groupTitle}>
-                  On subtle
-                </Text>
-                <ChromaticForegroundProfileGroups
-                  deepForegrounds={deepChromaticForegrounds}
-                  standardForegrounds={standardChromaticForegrounds}
-                  surfaceLabel="subtle"
-                  textProfiles={textProfiles}
-                />
-              </div>
+              <ChromaticForegroundCardContent
+                deepForegrounds={deepChromaticForegrounds}
+                standardForegrounds={standardChromaticForegrounds}
+                surfaceLabel="subtle"
+                textProfiles={textProfiles}
+              />
             </ShowcaseExampleCard>
 
             <ShowcaseExampleCard context="onVivid" className={`${styles.foregroundCard} k-root`}>
-              <div className={styles.foregroundCardContent}>
-                <Text as="h4" profile={textProfiles.groupTitle}>
-                  On vivid
-                </Text>
-                <ChromaticForegroundProfileGroups
-                  deepForegrounds={deepChromaticForegrounds}
-                  standardForegrounds={standardChromaticForegrounds}
-                  surfaceLabel="vivid"
-                  textProfiles={textProfiles}
-                />
-              </div>
+              <ChromaticForegroundCardContent
+                deepForegrounds={deepChromaticForegrounds}
+                standardForegrounds={standardChromaticForegrounds}
+                surfaceLabel="vivid"
+                textProfiles={textProfiles}
+              />
             </ShowcaseExampleCard>
           </div>
         </section>

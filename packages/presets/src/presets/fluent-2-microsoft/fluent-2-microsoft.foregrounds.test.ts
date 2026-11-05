@@ -14,9 +14,9 @@ describe('Fluent four-strength foreground migration', () => {
         for (const segment of ['default', 'teams'] as const) {
           for (const theme of ['light', 'dark', 'darker'] as const) {
             for (const context of ['onSubtle', 'onVivid'] as const) {
-              expect(Object.keys(profile.palettes[segment]![theme]![context]!).sort()).toEqual(
-                [...strengths].sort()
-              );
+              expect(
+                Object.keys(profile.palettes[segment]![theme]![context]!.standard).sort()
+              ).toEqual([...strengths].sort());
             }
           }
         }
@@ -26,23 +26,23 @@ describe('Fluent four-strength foreground migration', () => {
 
   it('preserves the old neutral anchors and authors an intermediate Low independently per track', () => {
     const neutral = catalog.profiles.neutral!.standard.palettes.default!;
-    expect(strengths.map((strength) => neutral.light!.onSubtle[strength].rest)).toEqual([
+    expect(strengths.map((strength) => neutral.light!.onSubtle.standard[strength].rest)).toEqual([
       '#252525',
       '#616161',
       '#9b9b9b',
       '#d1d1d1'
     ]);
-    expect(strengths.map((strength) => neutral.dark!.onSubtle[strength].rest)).toEqual([
+    expect(strengths.map((strength) => neutral.dark!.onSubtle.standard[strength].rest)).toEqual([
       '#ffffff',
       '#b4b4b4',
       '#828282',
       '#5a5a5a'
     ]);
-    expect(neutral.light!.onVivid!.low.rest).toBe('#ffffff75');
-    expect(catalog.profiles.blue!.standard.palettes.default!.light!.onSubtle.low.rest).toBe(
-      '#0064b475'
-    );
-    expect(catalog.profiles.blue!.deep!.palettes.default!.light!.onVivid!.low.rest).toBe(
+    expect(neutral.light!.onVivid!.standard.low.rest).toBe('#ffffff75');
+    expect(
+      catalog.profiles.blue!.standard.palettes.default!.light!.onSubtle.standard.low.rest
+    ).toBe('#0064b475');
+    expect(catalog.profiles.blue!.deep!.palettes.default!.light!.onVivid!.standard.low.rest).toBe(
       '#d3e7ff94'
     );
   });
@@ -62,12 +62,35 @@ describe('Fluent four-strength foreground migration', () => {
       const { family, profile, theme, surfaceContext, emphasis, state } = coordinate;
       for (const segment of ['default', 'teams'] as const) {
         expect(
-          catalog.profiles[family]?.[profile]?.palettes[segment]?.[theme]?.[surfaceContext]?.[
-            emphasis
-          ]?.[state],
+          catalog.profiles[family]?.[profile]?.palettes[segment]?.[theme]?.[surfaceContext]
+            ?.standard?.[emphasis]?.[state],
           `${segment}: ${token}`
         ).toBeDefined();
       }
     }
   });
+});
+
+it('authors only the three common-profile onVivid alternatives and preserves the emphasis hierarchy', () => {
+  const expected = {
+    default: { blue: '#dbf1ff', red: '#ffe7e4', green: '#e2f3e0' },
+    teams: { blue: '#eeeaff', red: '#ffe7e4', green: '#e2f3e0' }
+  };
+  for (const segment of ['default', 'teams'] as const)
+    for (const theme of ['light', 'dark', 'darker'] as const)
+      for (const [family, profiles] of Object.entries(catalog.profiles)) {
+        for (const [profile, entry] of Object.entries(profiles)) {
+          const palette = entry.palettes[segment]![theme]!;
+          expect(palette.onSubtle.alternative).toBeUndefined();
+          if (profile === 'standard' && ['blue', 'red', 'green'].includes(family)) {
+            const high = expected[segment][family as 'blue' | 'red' | 'green'];
+            expect(palette.onVivid!.alternative).toEqual({
+              high: { rest: high },
+              medium: { rest: `${high}c2` },
+              low: { rest: `${high}94` },
+              lowest: { rest: `${high}66` }
+            });
+          } else expect(palette.onVivid!.alternative).toBeUndefined();
+        }
+      }
 });

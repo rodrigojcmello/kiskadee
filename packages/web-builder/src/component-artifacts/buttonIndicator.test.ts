@@ -530,10 +530,12 @@ describe('Button indicator publication', () => {
                 default: {
                   light: {
                     onSubtle: {
-                      high: { rest: '#ffffff' },
-                      medium: { rest: '#888888' },
-                      low: { rest: '#777777' },
-                      lowest: { rest: '#555555' }
+                      standard: {
+                        high: { rest: '#ffffff' },
+                        medium: { rest: '#888888' },
+                        low: { rest: '#777777' },
+                        lowest: { rest: '#555555' }
+                      }
                     }
                   }
                 }

@@ -8,17 +8,14 @@ import {
   type SystemButtonIntent
 } from '@kiskadee/core';
 import { contrastRatio } from '@kiskadee/tonal-scale';
-import { bindPresetColorRole } from '../../../utils/presetColor.ts';
 import {
   absoluteCap,
   exactColor,
   type Fluent2MicrosoftColorResolver,
-  type Fluent2MicrosoftFamilyColorLocator,
   referenceColor
 } from '../fluent-2-microsoft.color.ts';
 import {
   composeOpaqueSurface,
-  createFluentButtonOnVividIntent,
   FLUENT_BUTTON_ON_VIVID_RECIPE,
   FLUENT_BUTTON_PENDING_VISIBILITY,
   type FluentButtonFormulaTheme,
@@ -85,23 +82,16 @@ export function createFluentButtonAlternativeColors(
   c: Fluent2MicrosoftColorResolver
 ) {
   const white = c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light'));
-  const dark = c.resolve('default', 'l', referenceColor('neutral', 'vivid'));
   const whitePending = c.resolve(
     'default',
     'l',
     absoluteCap(primitive('black', 'v1'), 'light', FLUENT_BUTTON_PENDING_VISIBILITY.content)
-  );
-  const darkPending = c.resolve(
-    'default',
-    'l',
-    referenceColor('neutral', 'vivid', 0, FLUENT_BUTTON_PENDING_VISIBILITY.content)
   );
   const canonicalLight = c.resolve(
     'default',
     'l',
     exactColor('card.primary', 50, 'component.card')
   );
-  const canonicalRole = c.resolve('default', 'l', referenceColor('button.primary', 'vivid'));
   const result = structuredClone(button);
 
   const hostSurface = (theme: FluentButtonFormulaTheme) =>
@@ -142,17 +132,6 @@ export function createFluentButtonAlternativeColors(
       const resolve = (reference: 'subtle' | 'vivid', offset = 0, alpha?: number) =>
         c.resolve('default', 'l', referenceColor(role, reference, offset, alpha));
       const complementary = resolve('vivid');
-      const family = {
-        resolve: (_theme: 'light' | 'dark', locator: Fluent2MicrosoftFamilyColorLocator) =>
-          c.resolve('default', 'l', bindPresetColorRole(role, locator))
-      };
-      const formula = createFluentButtonOnVividIntent({
-        theme,
-        family,
-        neutralButtonFamily: family,
-        canonicalSurface: canonicalRole,
-        lightBaseSurface: canonicalLight
-      });
       const light = theme === 'light';
       const hoverAlpha = light
         ? FLUENT_BUTTON_ON_VIVID_RECIPE.low.lightSurfaceAlpha.hover
@@ -163,7 +142,6 @@ export function createFluentButtonAlternativeColors(
       const lowHover = resolve('vivid', 0, hoverAlpha);
       const lowPressed = resolve('vivid', 0, pressedAlpha);
       const base = standardRoot.boxColor![intent]!;
-      const medium = formula.boxColor.medium as InteractionStateColorMap;
 
       rootPaint.boxColor![intent] = {
         high: {
@@ -174,18 +152,7 @@ export function createFluentButtonAlternativeColors(
           pending: resolve('vivid', 0, FLUENT_BUTTON_PENDING_VISIBILITY.surface),
           selected: { rest: resolve('vivid', 3), hover: resolve('vivid', 3) }
         },
-        medium: {
-          ...medium,
-          ...(light
-            ? {
-                rest: resolve('vivid', 0, 14),
-                hover: resolve('vivid', 0, 10),
-                pending: resolve('vivid', 0, (14 * FLUENT_BUTTON_PENDING_VISIBILITY.surface) / 100)
-              }
-            : {}),
-          pressed: complementary,
-          selected: { rest: complementary, hover: complementary }
-        },
+        medium: base.medium!,
         low: {
           ...base.low!,
           hover: light ? composeOpaqueSurface(lowHover, canonicalLight) : lowHover,
@@ -204,13 +171,6 @@ export function createFluentButtonAlternativeColors(
       };
       const borderAlpha = FLUENT_BUTTON_ON_VIVID_RECIPE.low.borderAlpha[theme];
       const lowBorder = resolve('vivid', 0, borderAlpha);
-      if (light) {
-        rootPaint.borderColor![intent]!.medium = {
-          ...rootPaint.borderColor![intent]!.medium!,
-          rest: resolve('vivid', 0, 10),
-          pending: resolve('vivid', 0, (10 * FLUENT_BUTTON_PENDING_VISIBILITY.border) / 100)
-        };
-      }
       rootPaint.borderColor![intent]!.low = {
         rest: lowBorder,
         pending: resolve('vivid', 0, (borderAlpha * FLUENT_BUTTON_PENDING_VISIBILITY.border) / 100),
@@ -239,29 +199,24 @@ export function createFluentButtonAlternativeColors(
         pending: { ref: pending },
         disabled
       });
-      const lowest = resolve('subtle');
+      const lowest = complementary;
       const lowestStates = foreground(
         lowest,
-        resolve('subtle', 0, FLUENT_BUTTON_PENDING_VISIBILITY.content)
+        resolve('vivid', 0, FLUENT_BUTTON_PENDING_VISIBILITY.content)
       );
-      // The Light-track Subtle foreground needs a stronger active polarity over the 30% Dark tint.
+      // The complementary foreground needs a stronger active polarity over the 30% Dark tint.
       const lowestSurface = composeOpaqueSurface(lowPressed, hostSurface(theme));
       if (contrastRatio(lowest, lowestSurface) < 4.5) {
         lowestStates.pressed = { ref: white };
         lowestStates.selected = { rest: { ref: white } };
       }
       labelPaint.textColor![intent] = {
-        high: foreground(dark, darkPending),
-        medium: {
-          ...foreground(white, whitePending),
-          pressed: { ref: dark },
-          selected: { rest: { ref: dark } }
-        },
+        high: foreground(white, whitePending),
+        medium: standardLabel.textColor![intent]!.medium!,
         low: foreground(white, whitePending),
         lowest: lowestStates
       };
       context[intent]!.high = { rest: 'onSubtle', pending: 'onSubtle', disabled: 'onSubtle' };
-      context[intent]!.medium = { ...context[intent]!.medium!, selected: 'onSubtle' };
     }
     result.elements.e1!.palettes!.default![theme]!.onVivid!.alternative = changedStateMaps(
       standardRoot,

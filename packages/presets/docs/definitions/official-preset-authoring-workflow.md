@@ -115,8 +115,9 @@ The descendant `contentSurfaceContext` maps also include the color-variant level
 is sparse at property/intent/emphasis boundaries: an omitted leaf inherits the whole Standard
 state map, while an authored leaf owns all states. Missing states retain that leaf's Rest.
 Do not copy Neutral or another unchanged leaf solely to advertise an Alternative capability.
-Separator profiles share this palette grammar. Foreground and Contour catalogs retain their
-own existing coordinate grammars; `options.border.adaptive` retains its boolean map grammar.
+Separator profiles share this palette grammar. Foreground profiles also carry the variant below
+Surface Context, with inheritance by whole emphasis/state map; their Standard/Deep profile axis
+remains independent. Contour catalogs retain their existing coordinate grammar; `options.border.adaptive` retains its boolean map grammar.
 
 The surrounding canvas and the component treatment are independent contracts:
 

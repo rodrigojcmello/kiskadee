@@ -45,10 +45,10 @@ describe('Fluent TextField internal content', () => {
   it('keeps neutral informational icons legible and subdued on the inspected vivid backgrounds', () => {
     const profiles = schema.global!.foregrounds!.profiles;
     for (const segment of ['default', 'teams'] as const) {
-      const vividIcon = profiles.neutral!.standard.palettes[segment]!.light!.onVivid!.medium
-        .rest as string;
-      const buttonForeground = profiles.neutral!.standard.palettes[segment]!.light!.onVivid!.high
-        .rest as string;
+      const vividIcon = profiles.neutral!.standard.palettes[segment]!.light!.onVivid!.standard
+        .medium.rest as string;
+      const buttonForeground = profiles.neutral!.standard.palettes[segment]!.light!.onVivid!
+        .standard.high.rest as string;
       for (const theme of ['light', 'dark', 'darker'] as const) {
         const background = schema.components.button!.elements!.e1!.palettes![segment]![theme]!
           .onSubtle!.standard.boxColor!.primary!.high!.rest as string;
@@ -81,7 +81,7 @@ describe('Fluent TextField internal content', () => {
             ] as const) {
               const foreground =
                 schema.global!.foregrounds!.profiles[family]!.deep!.palettes[segment]![theme]!
-                  .onSubtle.high.rest;
+                  .onSubtle.standard.high.rest;
               for (const slot of ['e9', 'e10'] as const) {
                 const paint =
                   mode.elements[slot]!.palettes![segment]![theme]![context]!.standard.textColor![

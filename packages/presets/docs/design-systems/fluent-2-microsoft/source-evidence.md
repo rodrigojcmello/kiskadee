@@ -368,3 +368,9 @@ See [Accordion evidence](components/accordion.md). Light-only Low/Medium combine
 Fluent behavior with a Windows-inspired framed composition. The emphasis mapping
 and timing calibration are Kiskadee extensions; existing surface colors remain
 owned by Card/Container.
+
+## Foreground color variants - 2026-11-05
+
+The [foreground alternatives](colors/foreground-alternatives.md) record documents the approved
+Blue/Red/Green onVivid text recipes, existing complementary semantic roles, four emphasis levels,
+and independent Standard/Deep profiles. This is a Kiskadee extension, using existing tonal assets.

@@ -36,7 +36,7 @@ describe('resolveElementPaletteSources', () => {
             standard: {
               palettes: {
                 default: {
-                  light: { onSubtle: foregroundStates }
+                  light: { onSubtle: { standard: foregroundStates } }
                 }
               }
             }

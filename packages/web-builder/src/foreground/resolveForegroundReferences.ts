@@ -2,6 +2,7 @@ import {
   type Color,
   isForegroundReferenceCandidate,
   parseForegroundReferenceToken,
+  resolveForegroundVariant,
   type SchemaForegrounds
 } from '@kiskadee/core';
 
@@ -35,10 +36,9 @@ function resolveForegroundToken(
       `[web-builder] ${path} references unavailable foreground profile "${coordinate.family}.${coordinate.profile}".`
     );
   }
+  const variants = profile.palettes[segment]?.[coordinate.theme]?.[coordinate.surfaceContext];
   const stateMap =
-    profile.palettes[segment]?.[coordinate.theme]?.[coordinate.surfaceContext]?.[
-      coordinate.emphasis
-    ];
+    variants && resolveForegroundVariant(variants, coordinate.colorVariant)[coordinate.emphasis];
   const color = stateMap?.[coordinate.state];
   if (color === undefined) {
     throw new Error(

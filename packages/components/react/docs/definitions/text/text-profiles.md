@@ -141,3 +141,13 @@ Split component class maps are resolved once per design-system, artifact-version
 and component cache key. Every Text instance subscribes to that shared resolution instead of
 creating its own async state/effect pair; later subscribers consume an already resolved map
 synchronously. `foreground="inherit"` does not subscribe or start a Text color-artifact load.
+
+## Optional foreground color variants
+
+`foreground="blue-alt"` selects Alternative for the existing `blue` foreground mapping;
+`blue-deep-alt` selects Alternative within the existing Deep profile. No extra palette intent
+or element mapping is authored. The component resolves the qualified name once and selects the
+published color-variant bucket for its effective Surface Context and emphasis. If that coordinate
+is absent it uses Standard of the same local foreground. Missing families/profiles still inherit
+CSS color; `inherit` continues to bypass foreground paint entirely. Metrics and semantics do not
+change when the variant changes. See the canonical Foreground profiles definition.

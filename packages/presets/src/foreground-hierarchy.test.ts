@@ -17,7 +17,7 @@ describe.each([carbon, apple, material])('$name foreground hierarchy', (schema) 
         if (!profile) continue;
         for (const segment of Object.values(profile.palettes)) {
           for (const theme of Object.values(segment ?? {})) {
-            for (const context of Object.values(theme ?? {})) {
+            for (const context of Object.values(theme ?? {}).map((variants) => variants.standard)) {
               expect(Object.keys(context).sort()).toEqual(['high', 'low', 'lowest', 'medium']);
               expect(context.low.rest).not.toBe(context.medium.rest);
               expect(context.low.rest).not.toBe(context.lowest.rest);
@@ -31,7 +31,8 @@ describe.each([carbon, apple, material])('$name foreground hierarchy', (schema) 
 
 it('preserves Material terminal and pending colors while inserting the intermediate opacity', () => {
   const foreground =
-    material.global?.foregrounds?.profiles?.blue?.standard?.palettes?.default?.light?.onSubtle;
+    material.global?.foregrounds?.profiles?.blue?.standard?.palettes?.default?.light?.onSubtle
+      .standard;
   expect(foreground).toBeDefined();
   if (!foreground) return;
   const base = foreground.high.rest;
@@ -47,7 +48,8 @@ it('preserves Material terminal and pending colors while inserting the intermedi
 
 it('preserves the Carbon link interaction map on High rather than moving it to a weaker color', () => {
   const foreground =
-    carbon.global?.foregrounds?.profiles?.blue?.standard?.palettes?.default?.light?.onSubtle;
+    carbon.global?.foregrounds?.profiles?.blue?.standard?.palettes?.default?.light?.onSubtle
+      .standard;
   expect(foreground?.high.hover).toBeDefined();
   expect(foreground?.high.hover).not.toBe(foreground?.high.rest);
   expect(foreground?.medium.hover).toBeUndefined();

@@ -10,29 +10,35 @@ const foregrounds = {
           default: {
             light: {
               onSubtle: {
-                high: {
-                  rest: '#c50f1f',
-                  hover: '#b70419',
-                  pressed: '#951219',
-                  pending: '#c50f1fb3'
-                },
-                medium: { rest: '#c50f1fad' },
-                low: { rest: '#888888' },
-                lowest: { rest: '#c50f1f3d' }
+                standard: {
+                  high: {
+                    rest: '#c50f1f',
+                    hover: '#b70419',
+                    pressed: '#951219',
+                    pending: '#c50f1fb3'
+                  },
+                  medium: { rest: '#c50f1fad' },
+                  low: { rest: '#888888' },
+                  lowest: { rest: '#c50f1f3d' }
+                }
               },
               onVivid: {
-                high: { rest: '#ffa89f' },
-                medium: { rest: '#ffa89fc2' },
-                low: { rest: '#888888' },
-                lowest: { rest: '#ffa89f66' }
+                standard: {
+                  high: { rest: '#ffa89f' },
+                  medium: { rest: '#ffa89fc2' },
+                  low: { rest: '#888888' },
+                  lowest: { rest: '#ffa89f66' }
+                }
               }
             },
             dark: {
               onSubtle: {
-                high: { rest: '#ff958b' },
-                medium: { rest: '#ff958bad' },
-                low: { rest: '#888888' },
-                lowest: { rest: '#ff958b3d' }
+                standard: {
+                  high: { rest: '#ff958b' },
+                  medium: { rest: '#ff958bad' },
+                  low: { rest: '#888888' },
+                  lowest: { rest: '#ff958b3d' }
+                }
               }
             }
           }

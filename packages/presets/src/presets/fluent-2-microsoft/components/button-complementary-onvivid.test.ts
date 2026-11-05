@@ -19,9 +19,9 @@ function foreground(value: unknown, segment: 'default' | 'teams') {
   const token = typeof value === 'string' ? value : (value as { parentState: string }).parentState;
   const coordinate = parseForegroundReferenceToken(token)!;
   const color = schema.global!.foregrounds!.profiles[coordinate.family]![coordinate.profile]!
-    .palettes[segment]![coordinate.theme]![coordinate.surfaceContext]![coordinate.emphasis][
-    coordinate.state ?? 'rest'
-  ] as string;
+    .palettes[segment]![coordinate.theme]![coordinate.surfaceContext]!.standard[
+    coordinate.emphasis
+  ][coordinate.state ?? 'rest'] as string;
   return { coordinate, color };
 }
 

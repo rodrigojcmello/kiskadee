@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { textForegroundValues } from '../foreground.ts';
+import { textBaseForegroundValues } from '../foreground.ts';
 import { validateTextComponentContract } from './text.ts';
 
 describe('Text component contract', () => {
   it('accepts neutral plus every canonical chromatic foreground reference on e1', () => {
     const foreground = Object.fromEntries(
-      textForegroundValues.map((value) => {
+      textBaseForegroundValues.map((value) => {
         const deep = value.endsWith('-deep');
         return [
           value,

@@ -32,7 +32,7 @@ it('supplies shared foregrounds, contours, separators and focus in every publish
               foregrounds?.[family]?.[profile]?.palettes?.[segment]?.[theme]?.[surface];
             for (const emphasis of ['high', 'medium', 'low', 'lowest'] as const) {
               expect(
-                palette?.[emphasis]?.rest,
+                palette?.standard?.[emphasis]?.rest,
                 `${segment}.${theme}.${surface}.${family}.${profile}.${emphasis}`
               ).toBeTruthy();
             }
@@ -63,7 +63,7 @@ it('keeps standard foregrounds readable on canonical subtle surfaces', () => {
     for (const theme of ['light', 'dark'] as const) {
       const color =
         schema.global?.foregrounds?.profiles?.[family]?.standard?.palettes?.default?.[theme]
-          ?.onSubtle?.high?.rest;
+          ?.onSubtle?.standard.high?.rest;
       expect(typeof color).toBe('string');
       const value = luminance(color as string);
       const background = theme === 'light' ? 1 : 0;

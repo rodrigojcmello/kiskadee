@@ -86,6 +86,44 @@ afterEach(() => {
 });
 
 describe('Text', () => {
+  it('selects Alternative by suffix and falls back within the same foreground and surface', () => {
+    const context = createContextValue();
+    context.classesMap = {
+      text: {
+        e1: {
+          c: {
+            s: TEXT_COLORS.e1.c.s,
+            v: { ...TEXT_COLORS.e1.c.v, a: { red: { h: 'red-alternative-high' } } }
+          }
+        }
+      }
+    };
+    const tree = (
+      surface: 'onSubtle' | 'onVivid',
+      foreground: 'red-alt' | 'red-deep-alt',
+      emphasis: 'high' | 'medium'
+    ) => (
+      <KiskadeeContext.Provider value={context}>
+        <SurfaceContextProvider value={surface}>
+          <Text profile="body-medium" foreground={foreground} emphasis={emphasis}>
+            Variant
+          </Text>
+        </SurfaceContextProvider>
+      </KiskadeeContext.Provider>
+    );
+    const view = render(tree('onVivid', 'red-alt', 'high'));
+    expect(screen.getByText('Variant').className).toContain('red-alternative-high');
+    expect(screen.getByText('Variant').className).not.toContain('fg-vivid-red-high');
+    view.rerender(tree('onSubtle', 'red-alt', 'high'));
+    expect(screen.getByText('Variant').className).toContain('fg-red-high');
+    view.rerender(tree('onVivid', 'red-deep-alt', 'high'));
+    expect(screen.getByText('Variant').className).toContain('fg-vivid-red-deep-high');
+    view.rerender(tree('onVivid', 'red-alt', 'medium'));
+    expect(screen.getByText('Variant').className).toContain('fg-vivid-red-medium');
+    context.classesMap = {};
+    view.rerender(tree('onVivid', 'red-alt', 'high'));
+    expect(screen.getByText('Variant').className).toBe('k-txt font-body text-medium line-medium');
+  });
   it('preserves element semantics, native props, atomic utilities, and consumer classes', () => {
     renderText(
       <Text

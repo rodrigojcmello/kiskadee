@@ -59,24 +59,26 @@ export function expandElementForeground(
         if (!byContext) continue;
         const contexts: Record<string, unknown> = {};
 
-        for (const [context, emphases] of Object.entries(byContext) as [
+        for (const [context, variants] of Object.entries(byContext) as [
           SurfaceContext,
           NonNullable<(typeof byContext)[SurfaceContext]>
         ][]) {
-          if (!emphases) continue;
-          const restOnlyEmphases = Object.fromEntries(
-            Object.entries(emphases).map(([emphasis, stateMap]) => [
-              emphasis,
-              { rest: stateMap.rest }
+          if (!variants) continue;
+          contexts[context] = Object.fromEntries(
+            Object.entries(variants).map(([variant, emphases]) => [
+              variant,
+              {
+                textColor: {
+                  [intent]: Object.fromEntries(
+                    Object.entries(emphases).map(([emphasis, stateMap]) => [
+                      emphasis,
+                      { rest: stateMap.rest }
+                    ])
+                  )
+                }
+              }
             ])
           );
-          contexts[context] = {
-            standard: {
-              textColor: {
-                [intent]: restOnlyEmphases
-              }
-            }
-          };
         }
         themes[theme] = contexts;
       }

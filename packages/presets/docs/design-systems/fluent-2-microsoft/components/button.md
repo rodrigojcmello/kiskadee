@@ -1,5 +1,18 @@
 # Fluent 2 Microsoft Button Evidence
 
+## Alternative paint experiment - 2026-11-05
+
+Status: **Kiskadee extension**, user-requested visual experiment superseding the earlier
+Alternative color choices below. In both segments and all three themes, chromatic onVivid
+High keeps its complementary surface and uses the existing physical light cap for label/icon
+content (including the existing Pending visibility factor). Medium now inherits every Standard
+paint and descendant-context leaf. Lowest Rest uses the same complementary vivid reference as
+High Rest's background, with its existing terminal and active-state rules. No tonal assets change.
+White High content and complementary Lowest content are experimental and do not claim the former
+4.5:1 contrast guarantee; visual acceptance belongs to the user. Tests retain the contrast bound
+for the retained Low recipes and verify Medium inheritance and the new reference relationships.
+
+
 This file records source evidence and color decisions for the Button currently authored in
 `packages/presets/src/presets/fluent-2-microsoft/components/button.schema.ts`.
 
@@ -32,17 +45,16 @@ family; every C lookup is a strict `reference` locator. `C vivid +1/+3` resolves
 
 | Emphasis | Rest and Hover | Pressed and Selected | Label and icon |
 | --- | --- | --- | --- |
-| High | Opaque `C vivid` / `C vivid +1` | Opaque `C vivid +3` | Existing achromatic `reference(neutral, vivid)` on Light, currently L85 `#252525` |
-| Medium | Light: C vivid overlays at 14/10%; Dark/Darker: the existing family-relative `subtle +8/+6` inputs and 0.04/0.032 perceptual-distance targets, using C | Opaque `C vivid` | Physical white in Rest/Hover; the same dark neutral in Pressed/Selected |
+| High | Opaque `C vivid` / `C vivid +1` | Opaque `C vivid +3` | Physical white |
+| Medium | Inherited Standard | Inherited Standard | Inherited Standard |
 | Low | Existing Rest base; C vivid overlays at Light 8%, Dark/Darker 10% for Hover | C vivid overlay at Light 12%, Dark/Darker 30% | Physical white |
-| Lowest | Transparent Rest; the same C overlays as Low for Hover | The same C overlays as Low | `C subtle`; white Pressed/Selected only where the authored canonical-surface contrast check requires it |
+| Lowest | Transparent Rest; the same C overlays as Low for Hover | The same C overlays as Low | `C vivid`; white Pressed/Selected only where the authored canonical-surface contrast check requires it |
 
 Low Light retains its existing opaque `exact(card.primary, L50, component.card)` base and
 flattens C interaction paint over it during authorship. Dark/Darker Low and all Lowest
 interaction paint remain translucent. Low's perimeter uses C at the existing 30/85/85%
 theme alphas; the Light lower contour retains 45% Rest and 50% Hover. Its Light active
-contour uses C at 7%. Dark/Darker lower contours use opaque C. Medium Light substitutes C
-into its existing 10% Rest contour and retains its transparent active contour. Existing
+contour uses C at 7%. Dark/Darker lower contours use opaque C. Medium contours inherit Standard. Existing
 terminal colors remain in their established neutral treatment. Pending keeps the existing
 60% surface/contour and 70% label visibility factors; the icon omits the label's Pending
 delta so spinner artwork keeps its normal strength.
@@ -50,10 +62,9 @@ delta so spinner artwork keeps its normal strength.
 Selected equals Pressed. Every alternative chromatic surface has an explicit Selected Hover
 reset so the weaker base Hover cannot replace persistent selection. No Focus surface or
 content delta is introduced. A white Lowest active foreground is authored only when C
-Subtle would fall below 4.5:1 over the canonical selected surface; the result is static
+vivid would fall below 4.5:1 over the canonical selected surface; the result is static
 schema data, not browser background inspection. Published descendant context follows the
-new surface polarity: High produces `onSubtle`; Medium Selected produces `onSubtle` while
-Rest remains `onVivid`; Low/Lowest preserve their existing publication. The existing context
+new surface polarity: High produces `onSubtle`; Medium inherits Standard output; Low/Lowest preserve their existing publication. The existing context
 contract has no transient Pressed branch, so directly owned Pressed content changes color
 without adding a Provider or runtime context state.
 

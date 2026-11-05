@@ -435,3 +435,10 @@
     border-inline-start: 0;
   }
 }
+
+.chromaticCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}

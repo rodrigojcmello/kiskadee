@@ -10,6 +10,11 @@ import type {
   TextForegroundName,
   TypographyProfileId
 } from '@kiskadee/core';
+import {
+  componentEmphasisBuckets,
+  parseTextForegroundName,
+  surfaceContextBuckets
+} from '@kiskadee/core';
 import type { ElementType, ReactNode } from 'react';
 import { forwardRef } from 'react';
 import {
@@ -62,11 +67,19 @@ const TextRuntime = forwardRef<HTMLElement, TextRuntimeProps>(function TextRunti
   );
   const colorElement = colorResolution.pending ? undefined : colorResolution.classMap?.e1;
   const resolvedEmphasis = emphasis ?? metadata?.options?.emphasis;
+  const parsedForeground = parseTextForegroundName(foreground);
+  const supportsAlternative =
+    parsedForeground?.colorVariant === 'alternative' &&
+    resolvedEmphasis &&
+    colorElement?.c?.[surfaceContextBuckets[resolvedSurfaceContext]]?.a?.[
+      parsedForeground.foreground
+    ]?.[componentEmphasisBuckets[resolvedEmphasis]];
   const foregroundClassName =
     foreground === 'inherit' || !resolvedEmphasis
       ? ''
-      : resolveIntentClassName(colorElement, foreground, resolvedEmphasis, {
-          surfaceContext: resolvedSurfaceContext
+      : resolveIntentClassName(colorElement, parsedForeground?.foreground, resolvedEmphasis, {
+          surfaceContext: resolvedSurfaceContext,
+          colorVariant: supportsAlternative ? 'alternative' : 'standard'
         });
 
   if (typographyElement?.t && !profileClassName && process.env.NODE_ENV !== 'production') {

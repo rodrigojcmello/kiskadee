@@ -46,7 +46,7 @@ function hasAuthoredPaint(value: unknown): boolean {
   return Object.values(value).some(hasAuthoredPaint);
 }
 
-/** Foreground expansion has no alternative authoring axis; Separator retains its source grammar. */
+/** Catalog expansion retains authored alternatives for shared capability discovery. */
 export function getAuthoredElementPaletteSources(
   element: ElementPaletteSource,
   catalogs: ElementPaletteCatalogs
@@ -55,7 +55,11 @@ export function getAuthoredElementPaletteSources(
     element.separator && catalogs.separators
       ? expandElementSeparator(element.separator, catalogs.separators).palettes
       : undefined;
-  return [element.palettes, separatorPalettes].filter(
+  const foregroundPalettes =
+    element.foreground && catalogs.foregrounds
+      ? expandElementForeground(element.foreground, catalogs.foregrounds)
+      : undefined;
+  return [element.palettes, separatorPalettes, foregroundPalettes].filter(
     (palettes): palettes is ElementPalettes<string> => Boolean(palettes)
   );
 }

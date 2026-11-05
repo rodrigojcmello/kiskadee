@@ -123,10 +123,12 @@ describe('shared color variant handoff', () => {
     };
     for (const palette of Object.values(result.maps.palettes)) {
       for (const [component, map] of Object.entries(palette)) {
-        if (component !== 'button') expect(containsAlternative(map), component).toBe(false);
+        if (component !== 'button' && component !== 'text')
+          expect(containsAlternative(map), component).toBe(false);
       }
     }
     expect(containsAlternative(result.maps.palettes['default.light']!.button)).toBe(true);
+    expect(containsAlternative(result.maps.palettes['default.light']!.text)).toBe(true);
     const helper = resolveElementPaletteSources(fixture().components.button!.elements.e2!, {});
     expect(helper.palettes!.default!.light!.onVivid!.alternative).toBeUndefined();
   });

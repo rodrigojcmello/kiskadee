@@ -2,8 +2,8 @@ import { validateElementForegroundContract } from '../foreground.contract.zod.ts
 import {
   type TextElementForeground,
   type TextEmphasis,
-  textEmphasisValues,
-  textForegroundValues
+  textBaseForegroundValues,
+  textEmphasisValues
 } from '../foreground.ts';
 
 export type TextElementName = 'e1';
@@ -77,7 +77,7 @@ export function validateTextComponentContract(value: unknown, path = 'components
   if (isRecord(element.foreground)) {
     validateAllowedKeys(
       element.foreground,
-      textForegroundValues,
+      textBaseForegroundValues,
       `${path}.elements.e1.foreground`,
       issues
     );

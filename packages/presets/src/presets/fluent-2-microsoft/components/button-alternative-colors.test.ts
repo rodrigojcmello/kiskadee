@@ -27,7 +27,7 @@ function resolve(value: unknown, segment: (typeof segments)[number]): string {
   const coordinate = parseForegroundReferenceToken(token)!;
   return schema.global!.foregrounds!.profiles[coordinate.family]![coordinate.profile]!.palettes[
     segment
-  ]![coordinate.theme]![coordinate.surfaceContext]![coordinate.emphasis][
+  ]![coordinate.theme]![coordinate.surfaceContext]!.standard[coordinate.emphasis][
     coordinate.state ?? 'rest'
   ] as string;
 }
@@ -117,17 +117,31 @@ describe('Fluent Button shared color variants', () => {
             context.onVivid!,
             'alternative'
           );
-          expect(effectiveContext[intent]!.medium!.selected).toBe('onSubtle');
-          if (intent !== 'primary') {
-            const standard = context.onVivid!.standard[intent]!.medium!;
-            expect(standard.selected ?? standard.rest).toBe('onVivid');
-            expect(context.onVivid!.alternative![intent]!.medium!.selected).toBe('onSubtle');
+          expect(effectiveContext[intent]!.medium).toEqual(
+            context.onVivid!.standard[intent]!.medium
+          );
+          for (const element of ['e1', 'e2', 'e3'] as const) {
+            const variants = button.elements[element]!.palettes![segment]![theme]!.onVivid!;
+            const effective = resolveColorVariantPalette(variants, 'alternative');
+            for (const [property, value] of Object.entries(variants.standard))
+              expect((effective as any)[property]?.[intent]?.medium).toEqual(
+                (value as any)?.[intent]?.medium
+              );
           }
+          const label = resolveColorVariantPalette(
+            button.elements.e2!.palettes![segment]![theme]!.onVivid!,
+            'alternative'
+          ).textColor![intent]!;
+          expect(resolve(label.high!.rest, segment)).toBe('#ffffff');
+          expect(label.lowest!.rest).toBe(
+            button.elements.e1!.palettes![segment]![theme]!.onVivid!.alternative!.boxColor![intent]!
+              .high!.rest
+          );
           const paint =
             button.elements.e1!.palettes![segment]![theme]!.onVivid!.alternative!.boxColor![
               intent
             ]!;
-          for (const emphasis of emphases) {
+          for (const emphasis of ['high', 'low', 'lowest'] as const) {
             expect(paint[emphasis]).not.toHaveProperty('focus');
             expect(paint[emphasis]!.selected!.hover).toBe(paint[emphasis]!.selected!.rest);
           }
@@ -142,6 +156,8 @@ describe('Fluent Button shared color variants', () => {
           .onSubtle!.standard.boxColor!.primary!.highest!.rest as string;
         for (const intent of intents)
           for (const emphasis of emphases) {
+            // High/Lowest are experimental; Medium is verified above against Standard.
+            if (intent !== 'neutral' && emphasis !== 'low') continue;
             const surfaces = resolveColorVariantPalette(
               button.elements.e1!.palettes![segment]![theme]!.onVivid!,
               'alternative'

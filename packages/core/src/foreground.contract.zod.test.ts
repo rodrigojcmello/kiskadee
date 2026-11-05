@@ -49,8 +49,8 @@ const foregrounds = () => ({
         palettes: {
           default: {
             light: {
-              onSubtle: emphasisMap(),
-              onVivid: emphasisMap()
+              onSubtle: { standard: emphasisMap() },
+              onVivid: { standard: emphasisMap() }
             }
           }
         }
@@ -111,7 +111,7 @@ describe('foreground profile contract', () => {
   });
   it('accepts four strengths, optional foreground states, and optional onVivid', () => {
     const value = foregrounds();
-    value.profiles.neutral.standard.palettes.default.light.onSubtle.medium = {
+    value.profiles.neutral.standard.palettes.default.light.onSubtle.standard.medium = {
       rest: '#333333',
       hover: '#222222',
       pressed: '#111111',
@@ -126,21 +126,22 @@ describe('foreground profile contract', () => {
 
   it('rejects unsupported strengths, incomplete coverage, and unsupported states', () => {
     const value = foregrounds() as any;
-    value.profiles.neutral.standard.palettes.default.light.onSubtle.highest = {
+    value.profiles.neutral.standard.palettes.default.light.onSubtle.standard.highest = {
       rest: '#000000'
     };
-    delete value.profiles.neutral.standard.palettes.default.light.onSubtle.lowest;
-    value.profiles.neutral.standard.palettes.default.light.onVivid.medium.focus = '#222222';
+    delete value.profiles.neutral.standard.palettes.default.light.onSubtle.standard.lowest;
+    value.profiles.neutral.standard.palettes.default.light.onVivid.standard.medium.focus =
+      '#222222';
 
     const issues = validateSchemaForegroundsDefinitionContract(value);
     expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.highest: unrecognized emphasis'
+      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.standard.highest: unrecognized emphasis'
     );
     expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.lowest: required emphasis'
+      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onSubtle.standard.lowest: required emphasis'
     );
     expect(issues).toContain(
-      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onVivid.medium.focus: unrecognized state'
+      'global.foregrounds.profiles.neutral.standard.palettes.default.light.onVivid.standard.medium.focus: unrecognized state'
     );
   });
 
@@ -222,6 +223,7 @@ describe('foreground profile contract', () => {
       profile: 'deep',
       theme: 'dark',
       surfaceContext: 'onVivid',
+      colorVariant: 'standard',
       emphasis: 'low',
       state: 'pending'
     });
@@ -232,7 +234,8 @@ describe('foreground profile contract', () => {
 
   it('validates atomic foreground coordinates and confines them to textColor', () => {
     const value = foregrounds() as any;
-    value.profiles.neutral.standard.palettes.default.light.onSubtle.medium.hover = '#222222';
+    value.profiles.neutral.standard.palettes.default.light.onSubtle.standard.medium.hover =
+      '#222222';
 
     const valid = getSchemaForegroundsContractIssues({
       global: { foregrounds: value },
@@ -296,7 +299,7 @@ describe('foreground profile contract', () => {
                         textColor: {
                           neutral: {
                             medium: {
-                              rest: 'fg:missing.standard.light.onSubtle.medium',
+                              rest: 'fg:missing.standard.light.onSubtle.standard.medium',
                               hover: {
                                 ref: fg('neutral.standard.light.onSubtle.medium.hover')
                               }
@@ -332,8 +335,8 @@ describe('foreground profile contract', () => {
       palettes: {
         default: {
           light: {
-            onSubtle: emphasisMap(),
-            onVivid: emphasisMap()
+            onSubtle: { standard: emphasisMap() },
+            onVivid: { standard: emphasisMap() }
           }
         }
       }
@@ -379,8 +382,8 @@ describe('foreground profile contract', () => {
       deep: value.profiles.neutral.standard
     };
     expect(validateSchemaForegroundsDefinitionContract(value)).toEqual([]);
-    expect(fg('brand-accent.deep.light.onSubtle.high')).toBe(
-      'fg:brand-accent.deep.light.onSubtle.high'
+    expect(fg('brand-accent.deep.light.onSubtle.standard.high')).toBe(
+      'fg:brand-accent.deep.light.onSubtle.standard.high'
     );
   });
 

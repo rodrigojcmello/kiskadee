@@ -21,7 +21,7 @@ function resolveForeground(value: unknown, segment: (typeof segments)[number]): 
   expect(['blue', 'neutral']).toContain(coordinate.family);
   return schema.global!.foregrounds!.profiles[coordinate.family]![coordinate.profile]!.palettes[
     segment
-  ]![coordinate.theme]![coordinate.surfaceContext]![coordinate.emphasis][
+  ]![coordinate.theme]![coordinate.surfaceContext]!.standard[coordinate.emphasis][
     coordinate.state
   ] as string;
 }

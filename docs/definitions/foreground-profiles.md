@@ -29,7 +29,8 @@ A family profile is a complete recipe keyed by segment and theme. `standard` is 
 every family; `deep` is optional for chromatic families and forbidden for `neutral`. When present,
 `deep` is not a modifier applied to `standard`: it
 owns a complete, independently validated recipe. Every published theme contains an `onSubtle`
-branch and may contain an `onVivid` branch. Each branch must contain exactly these strengths:
+branch and may contain an `onVivid` branch. Each context contains required `standard` and optional
+`alternative` color variants. Standard must contain exactly these strengths:
 
 ```text
 high | medium | low | lowest
@@ -69,6 +70,32 @@ Core defines the complete family vocabulary and the possible `-deep` public alia
 preset publishes only the profiles backed by its approved primitive catalog. A missing family or
 profile is an unsupported preset capability: React Text inherits color instead of silently falling
 back to `neutral`, `standard`, or another hue.
+
+## Optional color variants
+
+The canonical catalog coordinate is
+`family.profile.palettes.segment.theme.surfaceContext.colorVariant.emphasis.state`.
+The profile (`standard | deep`) and color variant (`standard | alternative`) are independent.
+Alternative may exist in one context only and override individual emphasis leaves. An omitted leaf
+inherits its whole Standard state map; an authored leaf replaces that map without importing Hover,
+Pressed or terminal states. Standard values are preserved by the structural migration.
+
+Text accepts `blue-alt`, `red-alt`, `green-alt` and the corresponding chromatic family qualifiers,
+including `blue-deep-alt`. Element foreground maps contain only the unqualified base names;
+`-alt` is normalized to the existing local foreground plus Alternative. Invalid/doubled suffixes,
+`neutral-alt` and `inherit-alt` are not public foreground names. No new semantic intent is created.
+Missing Alternative uses Standard of the same foreground and context. A missing base foreground
+continues to inherit CSS color; it never falls back to another family or profile.
+
+The Builder expands authored alternatives into ordinary `textColor` variant buckets, resolves
+inheritance and publishes `capabilities.colorVariants` for discovery. Inherited leaves alone do not
+advertise Alternative. Text keeps typography metrics independent and uses only the published classes.
+
+Atomic references may explicitly select the variant:
+`fg('blue.standard.light.onVivid.alternative.high')` or
+`fg.parentState('blue.standard.light.onVivid.alternative.high.pressed')`.
+Existing coordinates without a variant keep selecting Standard. Alternative lookup inherits whole
+missing emphasis leaves; an explicitly requested state absent from the effective leaf remains an error.
 
 ## Element references
 
@@ -130,7 +157,7 @@ applies to their Standard indicator recipes, without additional anatomy. Alterna
 continue to use these Standard indicator recipes.
 It does not authorize other box-color consumers or duplicate the foreground catalog. Its state-driven
 references use `fg.parentState()` because the Button owns the state. Foreground catalogs and
-coordinates do not gain a color-variant axis. See [State indicators](./state-indicators.md).
+coordinates share the color-variant axis; indicator recipes continue to choose Standard explicitly or by omission. See [State indicators](./state-indicators.md).
 
 Unknown coordinates fail validation; there is
 no profile, theme, context, strength, state, or segment fallback. `parentState` means that the slot

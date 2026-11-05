@@ -53,25 +53,27 @@ function neutralProfile(c: CarbonIbmColorResolver): ForegroundProfile {
             theme,
             {
               onSubtle: {
-                high: { rest, pending: visibility(rest, 70), disabled },
-                medium: {
-                  rest: tokenColor(c, theme, 'text-secondary', 'neutral'),
-                  disabled
-                },
-                low: {
-                  rest: c.resolve(
-                    'default',
-                    theme === 'light' ? 'l' : 'd',
-                    exactColor('neutral', theme === 'light' ? 50 : 75, 'foreground.low')
-                  ),
-                  disabled
-                },
-                lowest: {
-                  rest: tokenColor(c, theme, 'text-helper', 'neutral'),
-                  disabled
+                standard: {
+                  high: { rest, pending: visibility(rest, 70), disabled },
+                  medium: {
+                    rest: tokenColor(c, theme, 'text-secondary', 'neutral'),
+                    disabled
+                  },
+                  low: {
+                    rest: c.resolve(
+                      'default',
+                      theme === 'light' ? 'l' : 'd',
+                      exactColor('neutral', theme === 'light' ? 50 : 75, 'foreground.low')
+                    ),
+                    disabled
+                  },
+                  lowest: {
+                    rest: tokenColor(c, theme, 'text-helper', 'neutral'),
+                    disabled
+                  }
                 }
               },
-              onVivid: onColor(c, theme)
+              onVivid: { standard: onColor(c, theme) }
             }
           ];
         })
@@ -107,17 +109,19 @@ function chromaticProfile(
             theme,
             {
               onSubtle: {
-                high: {
-                  rest,
-                  ...(hover !== undefined && hover !== rest ? { hover } : {}),
-                  pending: visibility(rest, 70),
-                  disabled
-                },
-                medium: { rest: visibility(rest, 68), disabled },
-                low: { rest: visibility(rest, 54), disabled },
-                lowest: { rest: visibility(rest, 40), disabled }
+                standard: {
+                  high: {
+                    rest,
+                    ...(hover !== undefined && hover !== rest ? { hover } : {}),
+                    pending: visibility(rest, 70),
+                    disabled
+                  },
+                  medium: { rest: visibility(rest, 68), disabled },
+                  low: { rest: visibility(rest, 54), disabled },
+                  lowest: { rest: visibility(rest, 40), disabled }
+                }
               },
-              onVivid: onColor(c, theme)
+              onVivid: { standard: onColor(c, theme) }
             }
           ];
         })

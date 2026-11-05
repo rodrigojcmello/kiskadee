@@ -9,6 +9,7 @@ import {
   foregroundStateValues,
   isForegroundReferenceCandidate,
   parseForegroundReferenceToken,
+  resolveForegroundVariant,
   type SchemaForegrounds,
   textEmphasisValues
 } from './foreground.ts';
@@ -45,7 +46,8 @@ function addIssue(ctx: z.core.$RefinementCtx<unknown>, path: PropertyKey[], mess
 function validateEmphasisMap(
   value: unknown,
   path: PropertyKey[],
-  ctx: z.core.$RefinementCtx<unknown>
+  ctx: z.core.$RefinementCtx<unknown>,
+  requireAll = true
 ): void {
   if (!isRecord(value)) {
     addIssue(ctx, path, 'expected object');
@@ -60,6 +62,7 @@ function validateEmphasisMap(
 
   for (const emphasis of textEmphasisValues) {
     const stateMap = value[emphasis];
+    if (!requireAll && !Object.hasOwn(value, emphasis)) continue;
     if (!isRecord(stateMap)) {
       addIssue(ctx, [...path, emphasis], 'required emphasis');
       continue;
@@ -73,6 +76,24 @@ function validateEmphasisMap(
       addIssue(ctx, [...path, emphasis, 'rest'], 'required state');
     }
   }
+}
+
+function validateVariants(
+  value: unknown,
+  path: PropertyKey[],
+  ctx: z.core.$RefinementCtx<unknown>
+): void {
+  if (!isRecord(value)) {
+    addIssue(ctx, path, 'expected object');
+    return;
+  }
+  for (const key of Object.keys(value)) {
+    if (key !== 'standard' && key !== 'alternative')
+      addIssue(ctx, [...path, key], 'unrecognized color variant');
+  }
+  validateEmphasisMap(value.standard, [...path, 'standard'], ctx);
+  if (Object.hasOwn(value, 'alternative'))
+    validateEmphasisMap(value.alternative, [...path, 'alternative'], ctx, false);
 }
 
 const foregroundProfilePalettesContractSchema = z.unknown().superRefine((value, ctx) => {
@@ -110,10 +131,10 @@ const foregroundProfilePalettesContractSchema = z.unknown().superRefine((value, 
       if (!Object.hasOwn(byContext, 'onSubtle')) {
         addIssue(ctx, [segment, theme, 'onSubtle'], 'required surface context');
       } else {
-        validateEmphasisMap(byContext.onSubtle, [segment, theme, 'onSubtle'], ctx);
+        validateVariants(byContext.onSubtle, [segment, theme, 'onSubtle'], ctx);
       }
       if (Object.hasOwn(byContext, 'onVivid')) {
-        validateEmphasisMap(byContext.onVivid, [segment, theme, 'onVivid'], ctx);
+        validateVariants(byContext.onVivid, [segment, theme, 'onVivid'], ctx);
       }
     }
   }
@@ -386,7 +407,7 @@ function validateAtomicForegroundReference(
     );
     return issues;
   }
-  const emphasis = surfaceContext[parsed.emphasis];
+  const emphasis = resolveForegroundVariant(surfaceContext, parsed.colorVariant)[parsed.emphasis];
   if (!emphasis) {
     issues.push(
       `${reference.path}: foreground profile "${parsed.family}.${parsed.profile}" does not publish emphasis "${parsed.emphasis}"`

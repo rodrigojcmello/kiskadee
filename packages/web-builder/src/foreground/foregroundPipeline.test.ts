@@ -34,16 +34,20 @@ const schema = {
               default: {
                 light: {
                   onSubtle: {
-                    high: { rest: '#333333' },
-                    medium: { rest: '#555555' },
-                    low: { rest: '#888888' },
-                    lowest: { rest: '#777777' }
+                    standard: {
+                      high: { rest: '#333333' },
+                      medium: { rest: '#555555' },
+                      low: { rest: '#888888' },
+                      lowest: { rest: '#777777' }
+                    }
                   },
                   onVivid: {
-                    high: { rest: '#ffffffd6' },
-                    medium: { rest: '#ffffffad' },
-                    low: { rest: '#888888' },
-                    lowest: { rest: '#ffffff99' }
+                    standard: {
+                      high: { rest: '#ffffffd6' },
+                      medium: { rest: '#ffffffad' },
+                      low: { rest: '#888888' },
+                      lowest: { rest: '#ffffff99' }
+                    }
                   }
                 }
               }
@@ -56,16 +60,20 @@ const schema = {
               default: {
                 light: {
                   onSubtle: {
-                    high: { rest: '#811819' },
-                    medium: { rest: '#811819ad' },
-                    low: { rest: '#888888' },
-                    lowest: { rest: '#8118193d' }
+                    standard: {
+                      high: { rest: '#811819' },
+                      medium: { rest: '#811819ad' },
+                      low: { rest: '#888888' },
+                      lowest: { rest: '#8118193d' }
+                    }
                   },
                   onVivid: {
-                    high: { rest: '#ffdbd7' },
-                    medium: { rest: '#ffdbd7ad' },
-                    low: { rest: '#888888' },
-                    lowest: { rest: '#ffdbd73d' }
+                    standard: {
+                      high: { rest: '#ffdbd7' },
+                      medium: { rest: '#ffdbd7ad' },
+                      low: { rest: '#888888' },
+                      lowest: { rest: '#ffdbd73d' }
+                    }
                   }
                 }
               }
@@ -76,16 +84,20 @@ const schema = {
               default: {
                 light: {
                   onSubtle: {
-                    high: { rest: '#611112' },
-                    medium: { rest: '#611112ad' },
-                    low: { rest: '#888888' },
-                    lowest: { rest: '#6111123d' }
+                    standard: {
+                      high: { rest: '#611112' },
+                      medium: { rest: '#611112ad' },
+                      low: { rest: '#888888' },
+                      lowest: { rest: '#6111123d' }
+                    }
                   },
                   onVivid: {
-                    high: { rest: '#fff4f2' },
-                    medium: { rest: '#fff4f2c2' },
-                    low: { rest: '#888888' },
-                    lowest: { rest: '#fff4f266' }
+                    standard: {
+                      high: { rest: '#fff4f2' },
+                      medium: { rest: '#fff4f2c2' },
+                      low: { rest: '#888888' },
+                      lowest: { rest: '#fff4f266' }
+                    }
                   }
                 }
               }

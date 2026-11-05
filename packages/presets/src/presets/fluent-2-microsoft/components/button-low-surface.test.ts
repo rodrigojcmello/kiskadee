@@ -12,7 +12,7 @@ function resolveForeground(value: unknown, segment: (typeof segments)[number]) {
   const coordinate = parseForegroundReferenceToken(token)!;
   return schema.global!.foregrounds!.profiles[coordinate.family]![coordinate.profile]!.palettes[
     segment
-  ]![coordinate.theme]![coordinate.surfaceContext]![coordinate.emphasis][
+  ]![coordinate.theme]![coordinate.surfaceContext]!.standard[coordinate.emphasis][
     coordinate.state ?? 'rest'
   ] as string;
 }

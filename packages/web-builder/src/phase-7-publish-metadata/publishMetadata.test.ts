@@ -204,7 +204,7 @@ describe('buildComponentSurfaceContexts', () => {
               standard: {
                 palettes: {
                   default: {
-                    light: { onSubtle: states, onVivid: states }
+                    light: { onSubtle: { standard: states }, onVivid: { standard: states } }
                   }
                 }
               }
@@ -213,14 +213,14 @@ describe('buildComponentSurfaceContexts', () => {
               standard: {
                 palettes: {
                   default: {
-                    light: { onSubtle: states, onVivid: states }
+                    light: { onSubtle: { standard: states }, onVivid: { standard: states } }
                   }
                 }
               },
               deep: {
                 palettes: {
                   default: {
-                    light: { onSubtle: states, onVivid: states }
+                    light: { onSubtle: { standard: states }, onVivid: { standard: states } }
                   }
                 }
               }

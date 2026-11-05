@@ -623,8 +623,9 @@ Decision:
 - `global.foregrounds.profiles` is organized by color family. Every family owns a required complete
   `standard` recipe. Only chromatic families may publish an independent complete `deep` recipe;
   Neutral supports Standard only.
-- Every profile theme publishes exactly `high`, `medium`, `low`, and `lowest` strengths under `onSubtle`;
-  `onVivid` is an optional capability with the same complete emphasis coverage. Every strength
+- Every profile theme publishes `onSubtle.standard` with exactly `high`, `medium`, `low`, and
+  `lowest`; optional `onVivid.standard` has the same complete emphasis coverage. Each context may
+  author sparse `alternative` emphasis leaves, inheriting omitted whole leaves from Standard. Every strength
   requires `rest` and may publish `hover`, `pressed`, `pending`, and `disabled` coordinates.
 - Participating elements map local intents to structured `{ family, profile }` references through
   `foreground`. Profile names are `standard | deep`.
@@ -643,8 +644,8 @@ Decision:
 - React keeps profile selection flat through preset-owned local names: a preset can map `red` to
   `red.standard` and `red-deep` to `red.deep` without introducing a runtime profile lookup.
 - Component text slots may address one coordinate with
-  `fg('family.profile.theme.surfaceContext.strength[.state]')`. The consuming palette supplies the
-  segment; every other axis is explicit and validated.
+  `fg('family.profile.theme.surfaceContext.[colorVariant.]strength[.state]')`. The consuming palette supplies the
+  segment; the omitted color variant is Standard and other axes are explicit and validated.
 - `fg.parentState()` means the slot reacts to the component state scope owner. It is valid only in
   `textColor`, is distinct from tonal references, and replaces legacy `{ ref: ... }` authoring for
   global foreground coordinates.

@@ -20,7 +20,10 @@ export function createMaterial3GoogleForegrounds({ c, segmentNames }: Args): Sch
           low: { rest: withAlpha(value, 53), disabled: withAlpha(value, 38) },
           lowest: { rest: withAlpha(value, 38) }
         });
-        return { onSubtle: foreground(rest), onVivid: foreground(white) };
+        return {
+          onSubtle: { standard: foreground(rest) },
+          onVivid: { standard: foreground(white) }
+        };
       };
       return { light: theme('l'), dark: theme('d') };
     })

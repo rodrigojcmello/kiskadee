@@ -116,12 +116,48 @@ function createChromaticForegroundProfile(
   return {
     palettes: {
       default: {
-        light: { onSubtle: onSubtle('l'), onVivid: onVivid('light') },
-        dark: { onSubtle: onSubtle('d'), onVivid: onVivid('dark') },
-        darker: { onSubtle: onSubtle('d'), onVivid: onVivid('darker') }
+        light: { onSubtle: { standard: onSubtle('l') }, onVivid: { standard: onVivid('light') } },
+        dark: { onSubtle: { standard: onSubtle('d') }, onVivid: { standard: onVivid('dark') } },
+        darker: { onSubtle: { standard: onSubtle('d') }, onVivid: { standard: onVivid('darker') } }
       }
     }
   };
+}
+
+/** Complementary text uses its own light anchor and the existing four-level opacity hierarchy. */
+function createAlternativeChromaticForegroundProfile(
+  c: Fluent2MicrosoftColorResolver,
+  role: PrimitiveRole | 'primary',
+  complementaryRole: 'primary.v2' | 'redLike.v2' | 'greenLike.v2'
+): ForegroundProfile {
+  const profile = createChromaticForegroundProfile(c, role);
+  for (const theme of ['light', 'dark', 'darker'] as const) {
+    profile.palettes.default![theme]!.onVivid!.alternative = {
+      high: { rest: c.resolve('default', 'l', referenceColor(complementaryRole, 'subtle')) },
+      medium: {
+        rest: c.resolve(
+          'default',
+          'l',
+          referenceColor(complementaryRole, 'subtle', 0, CHROMATIC_ON_VIVID_MEDIUM_ALPHA)
+        )
+      },
+      low: {
+        rest: c.resolve(
+          'default',
+          'l',
+          referenceColor(complementaryRole, 'subtle', 0, CHROMATIC_ON_VIVID_LOW_ALPHA)
+        )
+      },
+      lowest: {
+        rest: c.resolve(
+          'default',
+          'l',
+          referenceColor(complementaryRole, 'subtle', 0, CHROMATIC_ON_VIVID_LOWEST_ALPHA)
+        )
+      }
+    };
+  }
+  return profile;
 }
 
 function createDeepChromaticForegroundProfile(
@@ -196,9 +232,9 @@ function createDeepChromaticForegroundProfile(
   return {
     palettes: {
       default: {
-        light: { onSubtle: onSubtle('l'), onVivid: onVivid() },
-        dark: { onSubtle: onSubtle('d'), onVivid: onVivid() },
-        darker: { onSubtle: onSubtle('d'), onVivid: onVivid() }
+        light: { onSubtle: { standard: onSubtle('l') }, onVivid: { standard: onVivid() } },
+        dark: { onSubtle: { standard: onSubtle('d') }, onVivid: { standard: onVivid() } },
+        darker: { onSubtle: { standard: onSubtle('d') }, onVivid: { standard: onVivid() } }
       }
     }
   };
@@ -295,31 +331,39 @@ export function createFluent2MicrosoftForegrounds({
           palettes: {
             default: {
               light: {
-                onSubtle: lightOnSubtle,
-                onVivid: onVivid('l')
+                onSubtle: { standard: lightOnSubtle },
+                onVivid: { standard: onVivid('l') }
               },
               dark: {
-                onSubtle: darkOnSubtle,
-                onVivid: onVivid('d')
+                onSubtle: { standard: darkOnSubtle },
+                onVivid: { standard: onVivid('d') }
               },
               darker: {
-                onSubtle: darkOnSubtle,
-                onVivid: onVivid('d')
+                onSubtle: { standard: darkOnSubtle },
+                onVivid: { standard: onVivid('d') }
               }
             }
           }
         }
       },
       blue: {
-        standard: createChromaticForegroundProfile(c, 'primary'),
+        standard: createAlternativeChromaticForegroundProfile(c, 'primary', 'primary.v2'),
         deep: createDeepChromaticForegroundProfile(c, 'primary')
       },
       red: {
-        standard: createChromaticForegroundProfile(c, primitive('red', 'v1')),
+        standard: createAlternativeChromaticForegroundProfile(
+          c,
+          primitive('red', 'v1'),
+          'redLike.v2'
+        ),
         deep: createDeepChromaticForegroundProfile(c, primitive('red', 'v1'))
       },
       green: {
-        standard: createChromaticForegroundProfile(c, primitive('green', 'v1')),
+        standard: createAlternativeChromaticForegroundProfile(
+          c,
+          primitive('green', 'v1'),
+          'greenLike.v2'
+        ),
         deep: createDeepChromaticForegroundProfile(c, primitive('green', 'v1'))
       },
       purple: {

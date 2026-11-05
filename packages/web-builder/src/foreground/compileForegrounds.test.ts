@@ -15,8 +15,8 @@ const foregrounds = {
       standard: {
         palettes: {
           default: {
-            light: { onSubtle: emphases, onVivid: emphases },
-            dark: { onSubtle: emphases }
+            light: { onSubtle: { standard: emphases }, onVivid: { standard: emphases } },
+            dark: { onSubtle: { standard: emphases } }
           }
         }
       }
@@ -25,8 +25,8 @@ const foregrounds = {
       standard: {
         palettes: {
           default: {
-            light: { onSubtle: emphases, onVivid: emphases },
-            dark: { onSubtle: emphases }
+            light: { onSubtle: { standard: emphases }, onVivid: { standard: emphases } },
+            dark: { onSubtle: { standard: emphases } }
           }
         }
       },
@@ -35,10 +35,12 @@ const foregrounds = {
           default: {
             light: {
               onSubtle: {
-                high: { rest: '#811819' },
-                medium: { rest: '#811819ad' },
-                low: { rest: '#888888' },
-                lowest: { rest: '#8118193d' }
+                standard: {
+                  high: { rest: '#811819' },
+                  medium: { rest: '#811819ad' },
+                  low: { rest: '#888888' },
+                  lowest: { rest: '#8118193d' }
+                }
               }
             }
           }
@@ -131,8 +133,10 @@ describe('expandElementForeground', () => {
 
   it('projects only Rest when a global profile also publishes control states', () => {
     const stateful = structuredClone(foregrounds) as any;
-    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.high.hover = '#222222';
-    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.high.pending = '#333333b3';
+    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.standard.high.hover =
+      '#222222';
+    stateful.profiles.neutral.standard.palettes.default.light.onSubtle.standard.high.pending =
+      '#333333b3';
 
     expect(
       expandElementForeground({ neutral: { family: 'neutral', profile: 'standard' } }, stateful)

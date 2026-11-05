@@ -26,8 +26,8 @@ paint or reconstruct CSS. Color class maps, Card border metadata and connected f
 use `context bucket -> variant bucket -> semantic intent -> emphasis`.
 
 `contentSurfaceContext` has the same segment/theme/context/variant hierarchy, followed by
-intent/emphasis/state, and uses identical whole-leaf inheritance. Foreground and Contour catalogs
-and their reference grammars stay unchanged. Separator palettes use the shared variant grammar.
+intent/emphasis/state, and uses identical whole-leaf inheritance. Foreground profiles now use the same variant coordinate below Surface Context, with whole-emphasis
+leaf inheritance. Their Standard/Deep profile axis stays independent. Contour catalogs remain unchanged. Separator palettes use the shared variant grammar.
 Variants do not duplicate anatomy, dimensions, state, effects, placement or accessibility.
 
 Button exposes `ButtonIntentValue`: `SystemButtonIntent | \`${SystemButtonIntent}-alt\` |

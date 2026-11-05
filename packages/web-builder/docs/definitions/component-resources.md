@@ -11,8 +11,9 @@ missing leaves inherit within that exact context. Inheritance is materialized on
 or referenced Separator authors Alternative in the same component, structural variant, mode,
 segment, theme and context. Standard-only branches publish no Alternative maps or output copies.
 Surface contexts and geometry are independent.
-Foreground and contour catalogs retain their existing grammars; foreground expansion creates a
-`standard` palette, while Separator profiles use the component palette grammar.
+Foreground expansion preserves authored Standard/Alternative branches and projects only Rest for
+standalone Text. Foreground and Separator alternatives participate in capability discovery; Contour
+catalogs retain their separate grammar.
 
 Class maps publish `c.<s|v>.<s|a>.<intent>.<hh|h|m|l|ll>`, where the first compact axis is surface
 context and the second is color variant. Card `b` recipes and Button `group.frameOmissions` carry
