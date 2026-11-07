@@ -171,7 +171,7 @@ function createThemeFormulas(
               lightBaseSurface: c.resolve(
                 'default',
                 'l',
-                exactColor('card.primary', 50, 'component.card')
+                exactColor('card.primary', 55, 'component.card')
               )
             });
 

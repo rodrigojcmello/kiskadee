@@ -27,14 +27,14 @@ const COMPLEMENTARY_SURFACES = {
     neutralLow: neutral(3),
     neutralMedium: neutral(4),
     primaryMedium: primary(4),
-    primaryHighest: primary(55)
+    primaryHighest: primary(60)
   },
   dark: {
     track: 'd',
     neutralLow: neutral(5),
     neutralMedium: neutral(2),
     primaryMedium: primary(9),
-    primaryHighest: primary(30)
+    primaryHighest: primary(65)
   },
   darker: {
     track: 'd',
@@ -100,7 +100,14 @@ export function createFluent2MicrosoftContainerSchema({
               theme === 'light' && context === 'onVivid' ? primary(10) : recipe.primaryMedium
             )
           },
-          highest: { rest: resolveColor(c, segment, recipe.track, recipe.primaryHighest) }
+          highest: {
+            rest: resolveColor(
+              c,
+              segment,
+              theme === 'dark' ? 'l' : recipe.track,
+              recipe.primaryHighest
+            )
+          }
         };
         outputs.neutralComplementary = {
           low: { rest: 'onSubtle' },

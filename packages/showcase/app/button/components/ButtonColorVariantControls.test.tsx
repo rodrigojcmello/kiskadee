@@ -196,7 +196,7 @@ describe('Button color variant controls', () => {
     render();
     expect(control.value).toBe('alternative');
   });
-  it('qualifies only supported comparison coordinates while preserving independent selection', () => {
+  it('qualifies supported coordinates without making sample buttons selectable', () => {
     publish();
     render(true);
     const buttons = Array.from(container.querySelectorAll<HTMLButtonElement>('button'));
@@ -206,7 +206,13 @@ describe('Button color variant controls', () => {
     const subtleHigh = container.querySelector<HTMLButtonElement>(
       '[data-surface="onSubtle"] button'
     )!;
-    act(() => vividHigh.click());
+    act(() => {
+      for (const button of buttons) button.click();
+    });
+    for (const button of buttons) {
+      expect(button.getAttribute('aria-pressed')).toBeNull();
+      expect(button.dataset.selectionEmphasis).toBeUndefined();
+    }
     const alt = container.querySelector<HTMLInputElement>(
       '[data-surface="onVivid"] [role="switch"]'
     )!;
@@ -218,8 +224,8 @@ describe('Button color variant controls', () => {
     expect(alt.disabled).toBe(false);
     act(() => alt.click());
     expect(Array.from(container.querySelectorAll('button'))).toEqual(buttons);
-    expect(vividHigh.getAttribute('aria-pressed')).toBe('true');
-    expect(subtleHigh.getAttribute('aria-pressed')).toBe('false');
+    expect(vividHigh.getAttribute('aria-pressed')).toBeNull();
+    expect(subtleHigh.getAttribute('aria-pressed')).toBeNull();
     expect(vividHigh.dataset.intent).toBe('primary-alt');
     expect(subtleHigh.dataset.intent).toBe('primary');
     artifact.theme = 'dark';
@@ -227,7 +233,7 @@ describe('Button color variant controls', () => {
     expect(alt.disabled).toBe(true);
     expect(alt.checked).toBe(false);
     expect(vividHigh.dataset.intent).toBe('primary');
-    expect(vividHigh.getAttribute('aria-pressed')).toBe('true');
+    expect(vividHigh.getAttribute('aria-pressed')).toBeNull();
     artifact.theme = 'light';
     render(true);
     expect(alt.checked).toBe(true);

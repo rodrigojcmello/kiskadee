@@ -53,7 +53,7 @@ afterEach(() => {
   container?.remove();
   fixture.theme = 'light';
 });
-it('keeps surface switches independent and identifies rows without an authored alternative', () => {
+it('keeps switches independent and labels only rows with an applied alternative', () => {
   const tree = () => (
     <>
       {(['onSubtle', 'onVivid'] as const).map((context) => (
@@ -85,7 +85,20 @@ it('keeps surface switches independent and identifies rows without an authored a
     Array.from(container.querySelectorAll('span')).filter((node) =>
       node.textContent?.includes('Alt unavailable')
     )
-  ).toHaveLength(2);
+  ).toHaveLength(0);
+  expect(container.querySelector('[data-text-foreground="blue-alt"] th')?.textContent).toBe(
+    'Blue (alt)'
+  );
+  expect(
+    Array.from(container.querySelectorAll('[data-text-foreground="green"] th')).map(
+      (node) => node.textContent
+    )
+  ).toEqual(['Green', 'Green']);
+  expect(
+    Array.from(container.querySelectorAll('[data-text-foreground="blue-deep"] th')).map(
+      (node) => node.textContent
+    )
+  ).toEqual(['Blue', 'Blue']);
   fixture.theme = 'dark';
   view.rerender(tree());
   expect(vivid!.disabled).toBe(true);

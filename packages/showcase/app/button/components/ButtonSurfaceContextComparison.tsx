@@ -43,8 +43,7 @@ function ContextComparisonContent({
   scale,
   textAlign,
   colorVariant,
-  onVariantChange,
-  selectionProps
+  onVariantChange
 }: Omit<ComparisonPresentation, 'onVividSupported'> & {
   available: boolean;
   title: string;
@@ -52,12 +51,6 @@ function ContextComparisonContent({
   description: string;
   colorVariant: ColorVariant;
   onVariantChange: (variant: ColorVariant) => void;
-  selectionProps: (emphasis: ComponentEmphasis) => {
-    toggle: boolean;
-    controlState: boolean;
-    selectionEmphasis: 'low';
-    onClick: () => void;
-  };
 }) {
   const textProfiles = useShowcaseTextProfiles();
   const { showDescriptions } = useShowcaseDisplayPreferences();
@@ -117,7 +110,7 @@ function ContextComparisonContent({
                 'primary',
                 supportsAlternative([emphasis]) ? colorVariant : 'standard'
               )}
-              {...selectionProps(emphasis)}
+              type="button"
               emphasis={emphasis}
               radius={radius}
               size={componentScaleToSize(scale)}
@@ -162,16 +155,6 @@ export function SurfaceContextComparison({
     onSubtle: 'standard',
     onVivid: 'standard'
   });
-  const [selected, setSelected] = React.useState<Record<string, boolean>>({});
-  const selectionProps = (context: SurfaceContext, emphasis: ComponentEmphasis) => {
-    const key = `${context}.${emphasis}`;
-    return {
-      toggle: true,
-      controlState: selected[key] ?? false,
-      selectionEmphasis: 'low' as const,
-      onClick: () => setSelected((current) => ({ ...current, [key]: !current[key] }))
-    };
-  };
 
   return (
     <section
@@ -186,8 +169,8 @@ export function SurfaceContextComparison({
         </Text>
         {showDescriptions ? (
           <Text as="p" profile={textProfiles.body}>
-            Toggle the Primary buttons to compare resting and selected states on subtle and vivid
-            surfaces. Color variants preserve each button&apos;s selection.
+            Compare Primary button emphases on subtle and vivid surfaces. Use Alt to explore
+            available color variants.
           </Text>
         ) : null}
       </div>
@@ -212,7 +195,6 @@ export function SurfaceContextComparison({
               onVariantChange={(variant) =>
                 setRequestedVariants((current) => ({ ...current, onSubtle: variant }))
               }
-              selectionProps={(emphasis) => selectionProps('onSubtle', emphasis)}
             />
           </ShowcaseExampleCard>
         </article>
@@ -239,7 +221,6 @@ export function SurfaceContextComparison({
                 onVariantChange={(variant) =>
                   setRequestedVariants((current) => ({ ...current, onVivid: variant }))
                 }
-                selectionProps={(emphasis) => selectionProps('onVivid', emphasis)}
               />
             </Layout>
           </Card>

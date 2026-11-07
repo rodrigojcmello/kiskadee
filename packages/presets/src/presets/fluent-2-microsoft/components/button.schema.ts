@@ -208,7 +208,7 @@ export function createFluent2MicrosoftButtonSchema({
       family: families[role],
       neutralButtonFamily,
       canonicalSurface: onVividCanonicalSurface,
-      lightBaseSurface: c.resolve('default', 'l', exactColor('card.primary', 50, 'component.card'))
+      lightBaseSurface: c.resolve('default', 'l', exactColor('card.primary', 55, 'component.card'))
     });
     if (role !== 'button.primary') return palette;
     const complementary = c.resolve('default', 'l', referenceColor('button.primary.v2', 'vivid'));
@@ -429,7 +429,6 @@ export function createFluent2MicrosoftButtonSchema({
       surfaceContext: 'onSubtle' as const,
       emphasis: 'high' as const
     };
-    const complementaryForeground = { ...high, family: 'neutral' as const };
     const lower = {
       family,
       profile: intent === 'neutral' ? ('standard' as const) : ('deep' as const),
@@ -483,6 +482,22 @@ export function createFluent2MicrosoftButtonSchema({
       disabled: parent(disabled, 'disabled')
     };
 
+    const lowestStates =
+      intent === 'neutral'
+        ? inverseStates
+        : {
+            rest: foregroundReference(family, 'standard', theme, 'onVivid', 'high'),
+            pending: parentStateForegroundReference(
+              family,
+              'standard',
+              theme,
+              'onVivid',
+              'high',
+              'pending'
+            ),
+            disabled: parent(disabled, 'disabled')
+          };
+
     return {
       high: {
         rest: direct(high),
@@ -492,16 +507,18 @@ export function createFluent2MicrosoftButtonSchema({
         disabled: parent(disabled, 'disabled'),
         selected: { rest: parent(high, 'pressed') }
       },
-      medium:
-        intent === 'primary'
+      medium: {
+        ...lowerStates,
+        rest: lowestStates.rest,
+        ...(intent === 'primary'
           ? {
-              ...lowerStates,
-              pressed: parent(complementaryForeground, 'rest'),
-              selected: { rest: parent(complementaryForeground, 'rest') }
+              pressed: parent({ ...high, family: 'neutral' }, 'rest'),
+              selected: { rest: parent({ ...high, family: 'neutral' }, 'rest') }
             }
-          : lowerStates,
-      low: inverseStates,
-      lowest: theme === 'light' ? inverseStates : lowerStates
+          : {})
+      },
+      low: { ...inverseStates, rest: lowestStates.rest },
+      lowest: lowestStates
     };
   };
 

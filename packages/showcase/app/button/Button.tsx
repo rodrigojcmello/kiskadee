@@ -1,11 +1,6 @@
 'use client';
 
-import type {
-  ButtonSelectionEmphasis,
-  ColorVariant,
-  ElementSizeValue,
-  RadiusMode
-} from '@kiskadee/core';
+import type { ElementSizeValue, RadiusMode } from '@kiskadee/core';
 import { componentScaleToSize, resolveButtonStackedRadiusMode } from '@kiskadee/core';
 import { Button as KButton, useButtonArtifactConfig } from '@kiskadee/react-components/button';
 import { FamilyResolvedIcon } from '@kiskadee/react-components/icon';
@@ -24,7 +19,6 @@ import {
   ShowcaseIconographyControls,
   ShowcaseTypographyControls
 } from '@/components/DesignSystemControls/ShowcaseGlobalControls';
-import { ShowcaseExampleCard } from '@/components/ShowcaseBackground/ShowcaseExampleCard';
 import {
   ShowcaseBooleanControl,
   ShowcaseControlGroup,
@@ -34,7 +28,6 @@ import {
   ShowcaseSelectControl
 } from '@/components/ShowcaseControls';
 import { useShowcaseDisplayPreferences } from '@/components/ShowcaseDisplayPreferences';
-import { useButtonColorVariants } from '@/hooks/use-button-color-variants';
 import { useDropdownPresenceControl } from '@/hooks/use-dropdown-presence-control';
 import { useShowcaseBackground } from '@/hooks/use-showcase-background';
 import { useShowcaseMetadata } from '@/hooks/use-showcase-metadata';
@@ -48,11 +41,6 @@ import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import s from './Button.module.scss';
 import { ButtonAsyncExample } from './components/ButtonAsyncExample';
 import { ButtonBadgeExamples } from './components/ButtonBadgeExamples';
-import {
-  ButtonColorVariantControls,
-  getButtonColorVariantSupport,
-  qualifyButtonIntent
-} from './components/ButtonColorVariantControls';
 import { ButtonGroupExamples } from './components/ButtonGroupExamples';
 import { ButtonIconExamples } from './components/ButtonIconExamples';
 import { ButtonIconFormatExamples } from './components/ButtonIconFormatExamples';
@@ -60,7 +48,6 @@ import { ButtonIndicatorExamples } from './components/ButtonIndicatorExamples';
 import { ButtonMenuExamples } from './components/ButtonMenuExamples';
 import { ButtonPaginationExamples } from './components/ButtonPaginationExamples';
 import { ButtonRichTextEditorExample } from './components/ButtonRichTextEditorExample';
-import { ButtonSelectionEmphasisControl } from './components/ButtonSelectionEmphasisControl';
 import { ButtonSelectionExamples } from './components/ButtonSelectionExamples';
 import { ButtonSizeScaleExample } from './components/ButtonSizeScaleExample';
 import { ButtonStackedExamples } from './components/ButtonStackedExamples';
@@ -82,7 +69,6 @@ const BUTTON_SCALE_OPTIONS: Array<{ value: ElementSizeValue; label: string }> = 
 export function Button() {
   const { designSystem, global, segment, theme } = useKiskadee();
   const dropdownMetadata = useComponentMetadata('dropdown');
-  const colorVariants = useButtonColorVariants();
   const buttonMetadata = useComponentMetadata('button');
   const buttonHeightReference = buttonMetadata?.inspection?.elements?.e1?.scales?._boxHeight;
   const stackedButtonHeightReference = buttonMetadata?.inspection?.elements?.e8?.scales?._boxHeight;
@@ -109,9 +95,6 @@ export function Button() {
   const [isSimplified, setIsSimplified] = React.useState(true);
   const [showButtonGroups, setShowButtonGroups] = React.useState(false);
   const [showFocusRing, setShowFocusRing] = React.useState(false);
-  const [selectionEmphasis, setSelectionEmphasis] =
-    React.useState<ButtonSelectionEmphasis>('lowest');
-  const [colorVariant, setColorVariant] = React.useState<ColorVariant>('standard');
   const [radiusOverride, setRadiusOverride] = React.useState<RadiusMode>();
   const buttonRadius = radiusOverride ?? global?.radius ?? 'rounded';
   const stackedRadius = resolveButtonStackedRadiusMode(buttonRadius);
@@ -145,40 +128,24 @@ export function Button() {
   )
     ? activeSurfaceContext
     : 'onSubtle';
-  const [inlineControlsCardIntent, inlineControlsCardEmphasis] = (
+  const [compositionCardIntent, compositionCardEmphasis] = (
     background.cardSurface?.key ?? ''
   ).split('.');
-  const inlineControlsSwitchEmphasis = 'medium';
-  const inlineControlsSurfaceContext =
-    background.cardSurface?.contentSurfaceContext ?? activeSurfaceContext;
-  const intentVariantSupport = getButtonColorVariantSupport({
-    colorVariants,
-    segment,
-    theme,
-    contexts: [inlineControlsSurfaceContext]
-  });
-  const activeIntentColorVariant = intentVariantSupport ? colorVariant : 'standard';
-  const inlineControlsCardState = getManifestComponentState(
+  const compositionCardState = getManifestComponentState(
     cardMeta,
     segment,
     theme,
     activeCardSurfaceContext
   );
-  const inlineControlsCardAvailable = Boolean(
-    inlineControlsCardState?.[inlineControlsCardIntent]?.[inlineControlsCardEmphasis]?.rest
+  const selectionControlsAvailable = Boolean(
+    compositionCardState?.[compositionCardIntent]?.[compositionCardEmphasis]?.rest &&
+      dropdownAvailable
   );
-  const switchState = getManifestComponentState(
-    switchMeta,
-    segment,
-    theme,
-    inlineControlsSurfaceContext
-  );
+  const inlineControlsSwitchEmphasis = 'medium';
+  const switchState = getManifestComponentState(switchMeta, segment, theme, activeSurfaceContext);
   const inlineControlsAvailable = Boolean(
-    inlineControlsCardAvailable && switchState?.neutral?.[inlineControlsSwitchEmphasis]?.rest
+    switchState?.neutral?.[inlineControlsSwitchEmphasis]?.rest
   );
-  // Content Select preserves its unstyled path when the preset has no Select recipe.
-  const selectionControlsAvailable = Boolean(inlineControlsCardAvailable && dropdownAvailable);
-  const activeSelectionEmphasis = selectionControlsAvailable ? selectionEmphasis : 'lowest';
   const availableButtonScaleOptions = BUTTON_SCALE_OPTIONS.filter(
     (option) => !buttonMeta?.scale || Boolean(buttonMeta.scale[option.value])
   );
@@ -193,6 +160,38 @@ export function Button() {
   const sizeSeparatorAvailable = Boolean(
     getManifestComponentState(manifest?.components?.separator, segment, theme, activeSurfaceContext)
       ?.neutral?.low?.rest
+  );
+
+  const intentPresentationControls = inlineControlsAvailable ? (
+    <fieldset aria-label="Intent presentation controls" className={s.intentsInlineControls}>
+      <Switch
+        id="button-rest-only"
+        classNames={{ e4: s.intentControlLabel }}
+        label="Rest only"
+        emphasis={inlineControlsSwitchEmphasis}
+        controlState={isSimplified}
+        onControlStateChange={(value) => {
+          setIsSimplified(value);
+          if (value) {
+            setShowFocusRing(false);
+          }
+        }}
+      />
+      {sizeSeparatorAvailable ? <Separator orientation="vertical" emphasis="low" /> : null}
+      <Switch
+        id="button-focus-ring"
+        classNames={{ e4: s.intentControlLabel }}
+        disabled={isSimplified}
+        label="Focus ring"
+        emphasis={inlineControlsSwitchEmphasis}
+        controlState={showFocusRing}
+        onControlStateChange={setShowFocusRing}
+      />
+    </fieldset>
+  ) : (
+    <Text as="p" emphasis="medium" profile={textProfiles.caption} role="status">
+      Switch controls are not available on this surface.
+    </Text>
   );
 
   const buttonControls = (
@@ -316,66 +315,17 @@ export function Button() {
                 <Text as="h3" id="button-intents-title" profile={textProfiles.sectionTitle}>
                   Intents
                 </Text>
-                {inlineControlsAvailable ? (
-                  <ShowcaseExampleCard
-                    aria-label="Intent presentation controls"
-                    className={s.intentsInlineControlsSurface}
-                    role="group"
-                  >
-                    <div className={s.intentsInlineControls}>
-                      <Switch
-                        id="button-rest-only"
-                        classNames={{ e4: s.intentControlLabel }}
-                        label="Rest only"
-                        emphasis={inlineControlsSwitchEmphasis}
-                        controlState={isSimplified}
-                        onControlStateChange={(value) => {
-                          setIsSimplified(value);
-                          if (value) {
-                            setShowFocusRing(false);
-                            setSelectionEmphasis('lowest');
-                          }
-                        }}
-                      />
-                      <Separator orientation="vertical" emphasis="low" />
-                      <Switch
-                        id="button-focus-ring"
-                        classNames={{ e4: s.intentControlLabel }}
-                        disabled={isSimplified}
-                        label="Focus ring"
-                        emphasis={inlineControlsSwitchEmphasis}
-                        controlState={showFocusRing}
-                        onControlStateChange={setShowFocusRing}
-                      />
-                      <Separator orientation="vertical" emphasis="low" />
-                      {selectionControlsAvailable ? (
-                        <ButtonSelectionEmphasisControl
-                          disabled={isSimplified}
-                          value={selectionEmphasis}
-                          onValueChange={setSelectionEmphasis}
-                        />
-                      ) : null}
-                    </div>
-                  </ShowcaseExampleCard>
-                ) : (
-                  <Text as="p" emphasis="medium" profile={textProfiles.caption} role="status">
-                    Switch controls are not available on this surface.
-                  </Text>
-                )}
+                {!showDescriptions ? intentPresentationControls : null}
               </div>
-              <ShowcaseExampleCard role="group" aria-label="Intent color variants">
-                <ButtonColorVariantControls
-                  colorVariant={colorVariant}
-                  onColorVariantChange={setColorVariant}
-                  contexts={[inlineControlsSurfaceContext]}
-                />
-              </ShowcaseExampleCard>
               {showDescriptions ? (
-                <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
-                  Intent gives an action its semantic role. Primary advances the main task, Neutral
-                  supports support actions, Destructive signals risk, and Positive communicates a
-                  beneficial outcome.
-                </Text>
+                <div className={s.intentsDescriptionRow}>
+                  <Text as="p" profile={textProfiles.body} className={s.intentsDescription}>
+                    Intent gives an action its semantic role. Primary advances the main task,
+                    Neutral supports support actions, Destructive signals risk, and Positive
+                    communicates a beneficial outcome.
+                  </Text>
+                  {intentPresentationControls}
+                </div>
               ) : null}
             </div>
             <div
@@ -384,7 +334,7 @@ export function Button() {
               }`}
             >
               <ButtonStateSection
-                intent={qualifyButtonIntent('primary', activeIntentColorVariant)}
+                intent="primary"
                 title="Primary"
                 description={
                   showDescriptions ? 'The main action that advances the current task.' : undefined
@@ -394,7 +344,6 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -402,7 +351,7 @@ export function Button() {
               />
 
               <ButtonStateSection
-                intent={qualifyButtonIntent('neutral', activeIntentColorVariant)}
+                intent="neutral"
                 title="Neutral"
                 description={
                   showDescriptions ? 'Supporting actions that do not dominate the flow.' : undefined
@@ -412,7 +361,6 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -420,7 +368,7 @@ export function Button() {
               />
 
               <ButtonStateSection
-                intent={qualifyButtonIntent('destructive', activeIntentColorVariant)}
+                intent="destructive"
                 title="Destructive"
                 description={
                   showDescriptions
@@ -432,7 +380,6 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -440,7 +387,7 @@ export function Button() {
               />
 
               <ButtonStateSection
-                intent={qualifyButtonIntent('positive', activeIntentColorVariant)}
+                intent="positive"
                 title="Positive"
                 description={
                   showDescriptions
@@ -452,7 +399,6 @@ export function Button() {
                 stateCapabilities={buttonState}
                 simplified={isSimplified}
                 showFocusRing={showFocusRing}
-                selectionEmphasis={activeSelectionEmphasis}
                 grouped={showButtonGroups}
                 radius={buttonRadius}
                 scale={activeButtonScale}
@@ -473,7 +419,6 @@ export function Button() {
                   stateCapabilities={buttonState}
                   simplified={isSimplified}
                   showFocusRing={showFocusRing}
-                  selectionEmphasis={activeSelectionEmphasis}
                   grouped={showButtonGroups}
                   radius={buttonRadius}
                   scale={activeButtonScale}

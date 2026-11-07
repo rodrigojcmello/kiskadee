@@ -651,6 +651,7 @@ $height: 64px;
 .intentsHeadingRow {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   justify-content: space-between;
 
@@ -659,12 +660,31 @@ $height: 64px;
   }
 }
 
-.intentsInlineControls {
+.intentsDescriptionRow {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  justify-content: space-between;
+
+  > p {
+    flex: 1 1 320px;
+    margin: 0;
+    min-inline-size: 0;
+  }
+}
+
+.intentsInlineControls {
+  align-items: center;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
   justify-content: flex-end;
+  margin: 0;
+  margin-inline-start: auto;
+  min-inline-size: 0;
+  padding: 0;
 }
 
 .colorVariantControls {
@@ -676,10 +696,6 @@ $height: 64px;
 
 .intentsInlineControls .intentControlLabel {
   margin-inline-start: 0;
-}
-
-.intentsInlineControlsSurface {
-  margin-inline-start: auto;
 }
 
 .intentsGrid {

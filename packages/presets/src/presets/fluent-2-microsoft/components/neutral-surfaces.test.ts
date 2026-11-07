@@ -9,12 +9,41 @@ const card = schema.components.card!;
 const container = schema.components.container!;
 
 describe('Fluent achromatic surfaces', () => {
+  it('publishes the calibrated vivid surfaces in both segments and ambient contexts', () => {
+    for (const segment of ['default', 'teams'] as const) {
+      const primary = segment === 'default' ? blue : purple;
+      for (const [theme, main, companion] of [
+        ['light', primary.scales.light[55], primary.scales.light[60]],
+        ['dark', primary.scales.light[60], primary.scales.light[65]],
+        ['darker', primary.scales.dark[18], primary.scales.dark[14]]
+      ] as const)
+        for (const context of ['onSubtle', 'onVivid'] as const) {
+          const surface = container.elements.e1.palettes![segment]![theme]![context]!.standard;
+          expect(surface.boxColor.primary!.highest!.rest).toBe(main);
+          expect(surface.boxColor.primaryComplementary!.highest!.rest).toBe(companion);
+          expect(
+            container.contentSurfaceContext![segment]![theme]![context]!.standard.primary!.highest!
+              .rest
+          ).toBe('onVivid');
+          expect(
+            container.contentSurfaceContext![segment]![theme]![context]!.standard
+              .primaryComplementary!.highest!.rest
+          ).toBe('onVivid');
+          const feedback =
+            card.elements.e1!.palettes![segment]![theme]![context]!.standard.boxColor!.primary!
+              .highest!;
+          expect(feedback.hover).not.toBe(main);
+          expect(feedback.pressed).not.toBe(main);
+          expect(feedback.selected?.rest).not.toBe(main);
+        }
+    }
+  });
   it('publishes complementary Rest surfaces and their descendant contexts in both consumed contexts', () => {
     for (const segment of ['default', 'teams'] as const) {
       const primary = segment === 'default' ? blue : purple;
       for (const [theme, neutralLow, neutralMedium, primaryHighest] of [
-        ['light', black.scales.light[3], black.scales.light[4], primary.scales.light[55]],
-        ['dark', black.scales.dark[5], black.scales.dark[2], primary.scales.dark[30]],
+        ['light', black.scales.light[3], black.scales.light[4], primary.scales.light[60]],
+        ['dark', black.scales.dark[5], black.scales.dark[2], primary.scales.light[65]],
         ['darker', black.scales.dark[1], black.scales.dark[0], primary.scales.dark[14]]
       ] as const)
         for (const context of ['onSubtle', 'onVivid'] as const) {

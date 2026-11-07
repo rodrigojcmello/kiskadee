@@ -129,6 +129,13 @@ describe('shared color variant handoff', () => {
     }
     expect(containsAlternative(result.maps.palettes['default.light']!.button)).toBe(true);
     expect(containsAlternative(result.maps.palettes['default.light']!.text)).toBe(true);
+    const coverage = buildColorVariantCapabilities(schema, 'button', result.maps);
+    for (const segment of ['default', 'teams'])
+      for (const theme of ['light', 'dark', 'darker']) {
+        const palette = coverage!.alternative![`${segment}.${theme}`]!;
+        expect(palette.onVivid!.neutral).toEqual(['high']);
+        expect(palette.onSubtle?.neutral).toBeUndefined();
+      }
     const helper = resolveElementPaletteSources(fixture().components.button!.elements.e2!, {});
     expect(helper.palettes!.default!.light!.onVivid!.alternative).toBeUndefined();
   });

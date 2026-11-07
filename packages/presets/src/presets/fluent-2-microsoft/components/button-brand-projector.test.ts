@@ -137,8 +137,9 @@ it('keeps portable Brand Low solid on subtle surfaces and the canonical Light vi
         schema.components.container!.elements.e1.palettes!.default!.light!.onSubtle!.standard
           .boxColor!.primary!.highest!.rest;
       expect(vivid.rest).toBe(canonical);
-      expect(vivid.hover).toMatch(/^#[a-f0-9]{6}$/);
-      expect(vivid.pressed).toMatch(/^#[a-f0-9]{6}$/);
+      expect(vivid.hover).toBe('#1466a8');
+      expect(vivid.pressed).toBe('#1f6dac');
+      expect(vivid.disabled).toBe('#0a60a5');
       expect(vivid.selected).toEqual({ rest: vivid.pressed, hover: vivid.pressed });
     } else {
       expect(vivid.rest).toBe('#ffffff00');

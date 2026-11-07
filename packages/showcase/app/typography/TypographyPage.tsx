@@ -72,7 +72,7 @@ const PROFILE_SAMPLES: Readonly<Record<TextFontValue, string>> = {
 
 function formatForegroundFamily(foreground: TextForegroundName): string {
   const family = foreground.replace(/-alt$/, '').replace(/-deep$/, '');
-  return `${family[0]?.toUpperCase() ?? ''}${family.slice(1)}${foreground.endsWith('-alt') ? ' alt' : ''}`;
+  return `${family[0]?.toUpperCase() ?? ''}${family.slice(1)}${foreground.endsWith('-alt') ? ' (alt)' : ''}`;
 }
 
 function resolveRoleDisplay(
@@ -241,17 +241,6 @@ function ChromaticForegroundRows({
             <tr className={styles.chromaticRow} data-text-foreground={foreground} key={foreground}>
               <Text as="th" foreground={foreground} profile={textProfiles.caption} scope="row">
                 {formatForegroundFamily(foreground)}
-                {alternative && !supported ? (
-                  <Text
-                    as="span"
-                    foreground="neutral"
-                    emphasis="low"
-                    profile={textProfiles.caption}
-                  >
-                    {' '}
-                    — Alt unavailable
-                  </Text>
-                ) : null}
               </Text>
               {TEXT_FOREGROUND_EMPHASES.map((emphasis) => (
                 <Text

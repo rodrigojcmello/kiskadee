@@ -1,4 +1,4 @@
-import { parseForegroundReferenceToken } from '@kiskadee/core';
+import { parseForegroundReferenceToken, resolveForegroundVariant, withAlpha } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { schema } from './fluent-2-microsoft.schema.ts';
 
@@ -59,11 +59,12 @@ describe('Fluent four-strength foreground migration', () => {
       const coordinate = parseForegroundReferenceToken(token);
       expect(coordinate, token).toBeDefined();
       if (!coordinate) continue;
-      const { family, profile, theme, surfaceContext, emphasis, state } = coordinate;
+      const { family, profile, theme, surfaceContext, colorVariant, emphasis, state } = coordinate;
       for (const segment of ['default', 'teams'] as const) {
+        const variants =
+          catalog.profiles[family]?.[profile]?.palettes[segment]?.[theme]?.[surfaceContext];
         expect(
-          catalog.profiles[family]?.[profile]?.palettes[segment]?.[theme]?.[surfaceContext]
-            ?.standard?.[emphasis]?.[state],
+          variants && resolveForegroundVariant(variants, colorVariant)[emphasis]?.[state],
           `${segment}: ${token}`
         ).toBeDefined();
       }
@@ -73,8 +74,8 @@ describe('Fluent four-strength foreground migration', () => {
 
 it('authors only the three common-profile onVivid alternatives and preserves the emphasis hierarchy', () => {
   const expected = {
-    default: { blue: '#dbf1ff', red: '#ffe7e4', green: '#e2f3e0' },
-    teams: { blue: '#eeeaff', red: '#ffe7e4', green: '#e2f3e0' }
+    default: { blue: '#40befe', red: '#fe8a80', green: '#5ecd59' },
+    teams: { blue: '#b5a2f4', red: '#fe8a80', green: '#5ecd59' }
   };
   for (const segment of ['default', 'teams'] as const)
     for (const theme of ['light', 'dark', 'darker'] as const)
@@ -85,7 +86,7 @@ it('authors only the three common-profile onVivid alternatives and preserves the
           if (profile === 'standard' && ['blue', 'red', 'green'].includes(family)) {
             const high = expected[segment][family as 'blue' | 'red' | 'green'];
             expect(palette.onVivid!.alternative).toEqual({
-              high: { rest: high },
+              high: { rest: high, pending: withAlpha(high, 70) },
               medium: { rest: `${high}c2` },
               low: { rest: `${high}94` },
               lowest: { rest: `${high}66` }

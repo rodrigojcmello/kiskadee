@@ -26,6 +26,7 @@ const CHROMATIC_ON_VIVID_LOW_ALPHA = 58;
 const CHROMATIC_ON_VIVID_LOWEST_ALPHA = 40;
 const STANDARD_ON_VIVID_LIGHT_OFFSET = 8;
 const STANDARD_ON_VIVID_DARK_OFFSET = -2;
+const ALTERNATIVE_ON_VIVID_OFFSET = 0;
 const DEEP_ON_SUBTLE_LIGHT_TONE = 65;
 const DEEP_ON_SUBTLE_DARK_TONE = 75;
 const DEEP_ON_VIVID_OFFSET = 2;
@@ -88,7 +89,13 @@ function createChromaticForegroundProfile(
       theme === 'light' ? STANDARD_ON_VIVID_LIGHT_OFFSET : STANDARD_ON_VIVID_DARK_OFFSET;
 
     return {
-      high: { rest: c.resolve('default', 'l', referenceColor(role, 'subtle', offset)) },
+      high: {
+        rest: c.resolve('default', 'l', referenceColor(role, 'subtle', offset)),
+        pending: applyVisibility(
+          c.resolve('default', 'l', referenceColor(role, 'subtle', offset)),
+          FOREGROUND_PENDING_VISIBILITY
+        )
+      },
       medium: {
         rest: c.resolve(
           'default',
@@ -124,35 +131,58 @@ function createChromaticForegroundProfile(
   };
 }
 
-/** Complementary text uses its own light anchor and the existing four-level opacity hierarchy. */
+/** Complementary text uses its vivid anchor and the existing opacity hierarchy. */
 function createAlternativeChromaticForegroundProfile(
   c: Fluent2MicrosoftColorResolver,
   role: PrimitiveRole | 'primary',
   complementaryRole: 'primary.v2' | 'redLike.v2' | 'greenLike.v2'
 ): ForegroundProfile {
   const profile = createChromaticForegroundProfile(c, role);
+  const high = c.resolve(
+    'default',
+    'l',
+    referenceColor(complementaryRole, 'vivid', ALTERNATIVE_ON_VIVID_OFFSET)
+  );
   for (const theme of ['light', 'dark', 'darker'] as const) {
     profile.palettes.default![theme]!.onVivid!.alternative = {
-      high: { rest: c.resolve('default', 'l', referenceColor(complementaryRole, 'subtle')) },
+      high: {
+        rest: high,
+        pending: applyVisibility(high, FOREGROUND_PENDING_VISIBILITY)
+      },
       medium: {
         rest: c.resolve(
           'default',
           'l',
-          referenceColor(complementaryRole, 'subtle', 0, CHROMATIC_ON_VIVID_MEDIUM_ALPHA)
+          referenceColor(
+            complementaryRole,
+            'vivid',
+            ALTERNATIVE_ON_VIVID_OFFSET,
+            CHROMATIC_ON_VIVID_MEDIUM_ALPHA
+          )
         )
       },
       low: {
         rest: c.resolve(
           'default',
           'l',
-          referenceColor(complementaryRole, 'subtle', 0, CHROMATIC_ON_VIVID_LOW_ALPHA)
+          referenceColor(
+            complementaryRole,
+            'vivid',
+            ALTERNATIVE_ON_VIVID_OFFSET,
+            CHROMATIC_ON_VIVID_LOW_ALPHA
+          )
         )
       },
       lowest: {
         rest: c.resolve(
           'default',
           'l',
-          referenceColor(complementaryRole, 'subtle', 0, CHROMATIC_ON_VIVID_LOWEST_ALPHA)
+          referenceColor(
+            complementaryRole,
+            'vivid',
+            ALTERNATIVE_ON_VIVID_OFFSET,
+            CHROMATIC_ON_VIVID_LOWEST_ALPHA
+          )
         )
       }
     };

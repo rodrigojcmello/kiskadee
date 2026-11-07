@@ -1,15 +1,12 @@
 import {
   type ColorProperty,
+  fg,
   type InteractionStateColorMap,
   interactionStateKeys,
-  primitive,
   type Schema,
-  type SolidColor,
   type SystemButtonIntent
 } from '@kiskadee/core';
-import { contrastRatio } from '@kiskadee/tonal-scale';
 import {
-  absoluteCap,
   exactColor,
   type Fluent2MicrosoftColorResolver,
   referenceColor
@@ -28,8 +25,11 @@ type IntentPaint = Partial<
   Record<SystemButtonIntent, Partial<Record<Emphasis, InteractionStateColorMap>>>
 >;
 type Paint = Partial<Record<ColorProperty, IntentPaint>>;
+type HighForegroundCoordinate =
+  `${string}.standard.${FluentButtonFormulaTheme}.${'onSubtle' | 'onVivid'}.${'' | 'alternative.'}high`;
 
 const themes = ['light', 'dark', 'darker'] as const;
+const LOW_BOTTOM_ALPHA = { light: 70, dark: 90, darker: 90 } as const;
 const intents = ['primary', 'neutral', 'destructive', 'positive'] as const;
 
 const complementaryRoles = {
@@ -37,6 +37,8 @@ const complementaryRoles = {
   positive: 'button.positive.v2',
   destructive: 'button.destructive.v2'
 } as const;
+
+const foregroundFamilies = { primary: 'blue', positive: 'green', destructive: 'red' } as const;
 
 function sameRecipe(left: unknown, right: unknown): boolean {
   if (left === right) return true;
@@ -81,29 +83,12 @@ export function createFluentButtonAlternativeColors(
   button: Button,
   c: Fluent2MicrosoftColorResolver
 ) {
-  const white = c.resolve('default', 'l', absoluteCap(primitive('black', 'v1'), 'light'));
-  const whitePending = c.resolve(
-    'default',
-    'l',
-    absoluteCap(primitive('black', 'v1'), 'light', FLUENT_BUTTON_PENDING_VISIBILITY.content)
-  );
   const canonicalLight = c.resolve(
     'default',
     'l',
-    exactColor('card.primary', 50, 'component.card')
+    exactColor('card.primary', 55, 'component.card')
   );
   const result = structuredClone(button);
-
-  const hostSurface = (theme: FluentButtonFormulaTheme) =>
-    c.resolve(
-      'default',
-      theme === 'light' ? 'l' : 'd',
-      exactColor(
-        'card.primary',
-        theme === 'light' ? 50 : theme === 'dark' ? 35 : 18,
-        'component.card'
-      )
-    );
 
   for (const theme of themes) {
     const standardRoot = standardPaint(button, 'e1', theme);
@@ -112,7 +97,6 @@ export function createFluentButtonAlternativeColors(
     const labelPaint: Paint = { textColor: {} };
     const standardContexts = button.contentSurfaceContext!.default![theme]!.onVivid!.standard;
     const context = structuredClone(standardContexts);
-    delete context.neutral;
 
     for (const intent of intents) {
       if (intent === 'neutral') continue;
@@ -182,42 +166,58 @@ export function createFluentButtonAlternativeColors(
             }
           : {})
       };
+      const bottomAlpha = LOW_BOTTOM_ALPHA[theme];
+      const bottom = resolve('vivid', 0, bottomAlpha);
       rootPaint.borderBottomColor![intent]!.low = {
-        ...rootPaint.borderColor![intent]!.low!,
-        rest: resolve('vivid', 0, light ? 45 : 100),
-        ...(light ? { hover: resolve('vivid', 0, 50) } : {}),
-        pending: resolve(
-          'vivid',
-          0,
-          ((light ? 45 : 100) * FLUENT_BUTTON_PENDING_VISIBILITY.border) / 100
-        )
+        rest: bottom,
+        // Explicit side resets retain the stronger bottom above the active borderColor shorthand.
+        hover: bottom,
+        pressed: bottom,
+        selected: { rest: bottom, hover: bottom },
+        pending: resolve('vivid', 0, (bottomAlpha * FLUENT_BUTTON_PENDING_VISIBILITY.border) / 100),
+        disabled: rootPaint.borderColor![intent]!.low!.disabled
       };
 
       const disabled = standardLabel.textColor![intent]!.high!.disabled;
-      const foreground = (rest: SolidColor, pending: SolidColor): InteractionStateColorMap => ({
-        rest,
-        pending: { ref: pending },
+      const foreground = (coordinate: HighForegroundCoordinate): InteractionStateColorMap => ({
+        rest: fg(coordinate),
+        pending: fg.parentState(`${coordinate}.pending`),
         disabled
       });
-      const lowest = complementary;
-      const lowestStates = foreground(
-        lowest,
-        resolve('vivid', 0, FLUENT_BUTTON_PENDING_VISIBILITY.content)
-      );
-      // The complementary foreground needs a stronger active polarity over the 30% Dark tint.
-      const lowestSurface = composeOpaqueSurface(lowPressed, hostSurface(theme));
-      if (contrastRatio(lowest, lowestSurface) < 4.5) {
-        lowestStates.pressed = { ref: white };
-        lowestStates.selected = { rest: { ref: white } };
-      }
+      const family = foregroundFamilies[intent];
+      const lowestStates = foreground(`${family}.standard.${theme}.onVivid.alternative.high`);
       labelPaint.textColor![intent] = {
-        high: foreground(white, whitePending),
-        medium: standardLabel.textColor![intent]!.medium!,
-        low: foreground(white, whitePending),
+        high: foreground('neutral.standard.light.onSubtle.high'),
+        medium: { ...standardLabel.textColor![intent]!.medium!, rest: lowestStates.rest },
+        low: { ...standardLabel.textColor![intent]!.low!, rest: lowestStates.rest },
         lowest: lowestStates
       };
       context[intent]!.high = { rest: 'onSubtle', pending: 'onSubtle', disabled: 'onSubtle' };
     }
+
+    // Reuse Light's dark Neutral High interaction recipe while retaining onVivid terminals.
+    const neutralSurface =
+      button.elements.e1!.palettes!.default!.light!.onSubtle.standard.boxColor!.neutral!.high!;
+    const neutralStandardSurface = standardRoot.boxColor!.neutral!.high!;
+    rootPaint.boxColor!.neutral = {
+      high: {
+        ...neutralSurface,
+        pending: neutralStandardSurface.pending,
+        disabled: neutralStandardSurface.disabled,
+        selected: { ...neutralSurface.selected, hover: neutralSurface.selected!.rest }
+      }
+    };
+    const neutralLabel =
+      button.elements.e2!.palettes!.default!.light!.onSubtle.standard.textColor!.neutral!.high!;
+    const neutralStandardLabel = standardLabel.textColor!.neutral!.high!;
+    labelPaint.textColor!.neutral = {
+      high: {
+        ...neutralLabel,
+        pending: neutralStandardLabel.pending,
+        disabled: neutralStandardLabel.disabled
+      }
+    };
+    context.neutral!.high = { rest: 'onVivid', pending: 'onSubtle', disabled: 'onSubtle' };
     result.elements.e1!.palettes!.default![theme]!.onVivid!.alternative = changedStateMaps(
       standardRoot,
       rootPaint

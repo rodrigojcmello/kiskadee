@@ -5,18 +5,22 @@ header and content layout as Intents. Titles and descriptions consume the contex
 that Card; descriptions use the active caption profile and Medium emphasis and follow the
 Descriptions preference.
 
-Each of the eight Surface contexts Buttons starts unselected and can be toggled independently,
-using Low selection emphasis to expose the chosen indicator. Selections are stored per
-context and emphasis and survive variant or preset changes, including a temporarily unavailable
-vivid comparison. Initial unselected Standard appearances remain the ordinary Rest recipes.
+The eight Surface contexts samples are ordinary action Buttons. They do not receive `toggle`,
+`controlState`, `selectionEmphasis` or a local selection handler. Clicking them retains the normal
+Hover, Focus and Pressed feedback without persistent selection or a selection indicator.
 
 Surface contexts exposes a compact Alt Switch in each Card header, aligned to the right of its
-title and description. Both start off and independently toggle only their Card's Primary examples.
+title and description. Both start off and independently switch the color variant of their Card's Primary examples.
 Each inherits its Card's produced Surface Context for paint and coverage checks. Without
 Alternative coverage for Primary at any displayed emphasis, that Switch stays visible, disabled
-and off. Each requested choice and each Button's selection survive temporary loss of coverage.
-Intents and Selection indicator retain their Small looping sequential Color variant Selects,
-starting at Standard. Alternative availability comes from
+and off. Each requested variant choice survives temporary loss of coverage.
+Intents also exposes an independent Alt Switch in each intent Card header, initially off.
+Coverage uses the Card-produced context and each emphasis; unsupported rows keep Standard.
+When no displayed intent has Alternative coverage in that context, none of the Alt switches
+render. If any displayed intent has coverage, all cards render a switch and unavailable
+intents remain disabled. Restoring coverage preserves previously requested choices.
+The switches preserve the Selected examples and their independent selection state.
+Selection indicator retains its Small looping sequential Color variant Select, starting at Standard. Alternative availability comes from
 `capabilities.colorVariants` in component metadata, scoped to the current segment, theme, surface,
 intent and emphasis. Metadata discovery shares the JSON cache and does not load CSS or class maps.
 The intent controls use the compact Standard and Alternative coordinate summaries; complete
@@ -24,7 +28,8 @@ per-state availability is consumed only from the active palette's descriptor.
 Unavailable choices display Standard while preserving the requested variant for a supported
 coordinate. The control qualifies the public Button intent (`primary-alt`, for example); there is
 no public variant prop or independent indicator color selector. Indicator paint stays Standard
-while following the effective semantic intent, emphasis and ambient context. Selection stays intact.
+while following the effective semantic intent, emphasis and ambient context. Selections in the
+other demonstrations stay intact.
 
 Rich text, Pagination and Videoconferencing retain their four existing controls. Button intent and
 Selection intent offer qualified choices such as Primary alt when metadata publishes the active
@@ -36,11 +41,12 @@ not to the base Button intent. Metadata requests wait for the matching preset ma
 presets cannot combine the previous preset's resource paths or revision with the new preset.
 Pagination also retains its Radius control alongside the four paint controls.
 
-Intents groups Rest only and Focus ring switches with the Selection emphasis control. Rest only
-disables and resets both visual reinforcement controls. Focus ring projects the Focus sample;
-Selection emphasis chooses the Selected sample's paint and optional public Button indicator,
-without changing its stored selection or the preset's default policy. The two reinforcements remain independent, including in grouped
-examples. Simplified Rest samples do not opt into selection paint.
+Intents places the Rest only and Focus ring switches to the right of its description, vertically
+centered, without a Card. If descriptions are hidden they move alongside the heading. A vertical
+Separator sits between the switches when the current preset publishes it.
+They use the surrounding surface context. Rest only disables and resets Focus ring; when enabled,
+Focus ring projects the Focus sample. Selected examples use the default Lowest selection emphasis,
+including in grouped examples. Simplified Rest samples do not opt into selection paint.
 
 The Button route preserves comparison positions for unpublished sizes and optional interaction
 states. These positions use a route-local `ButtonUnavailableExample` rather than a substitute

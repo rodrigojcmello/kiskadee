@@ -101,7 +101,7 @@ describe('Fluent Button Low contextual surface', () => {
     for (const segment of segments) {
       const base = schema.components.container!.elements.e1.palettes![segment]!.light!.onSubtle!
         .standard.boxColor!.primary!.highest!.rest as string;
-      expect(base).toBe(segment === 'default' ? '#0064b4' : '#5053b2');
+      expect(base).toBe(segment === 'default' ? '#0059a1' : '#494ca1');
       for (const intent of intents) {
         const fill =
           button.elements.e1!.palettes![segment]!.light!.onVivid!.standard.boxColor![intent]!.low!;

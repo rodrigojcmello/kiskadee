@@ -1,5 +1,22 @@
 # Fluent 2 Container surfaces and companion calibration
 
+## Vivid primary surface trial — 2026-11-07
+
+The user approved a Kiskadee calibration trial using the existing `card.primary` family:
+Light Primary Highest uses exact L55 and Primary Complementary Highest L60; Dark uses the
+Light track at L60 and L65 respectively. Darker retains D18 and D14. These are Container Rest
+surfaces for both ambient contexts, also consumed by Card. Microsoft uses `b.blue.v1`; Teams
+uses `pb.indigo.v2`. This supersedes the Primary Highest pair in the historical table below.
+The source locator kinds remain `exact`, with evidence ID `component.container`; no tonal
+assets or semantic mappings change. For the Microsoft segment the resulting pairs are
+`#0059a1` / `#045091` in Light and `#045091` / `#0d477e` in Dark. See the
+[theme/context decision](../colors/theme-surface-context-decision.md) for the Windows evidence
+and the limits of the comparison. Button Low Light/onVivid subsequently adopted this same Card
+base; see [Button evidence](button.md#light-onvivid-low-surface-alignment--2026-11-07). The Slider
+Primary inner thumb can retain the former L50 blue instead of the new Light L55 surface; its
+surface-equality check remains a deferred component calibration. Some Button text contrast checks
+remain below their target. These are not evidence of an exact Windows appearance.
+
 Status: user-approved Kiskadee adaptation, 2026-09-23. The companion colors below are not a
 claim of exact Microsoft Fluent tokens or a complete official Container component. Fine visual
 acceptance remains with the user.

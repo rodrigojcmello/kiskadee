@@ -1,5 +1,11 @@
 # Fluent Theme And Surface Context Decision
 
+> **2026-11-07 update:** the user approved a new surface trial: Light uses L55/L60 and Dark
+> uses L60/L65 for the main/companion vivid surfaces; Darker remains unchanged. The theme and
+> Surface Context axes remain independent. This supersedes only the earlier choice to retain the
+> former Light surface pair; the Windows and Figma evidence and its limitations remain valid.
+> See [Container calibration](../components/container.md#vivid-primary-surface-trial--2026-11-07).
+
 Status: **Kiskadee extension**, approved by the user on 2026-11-01. Keep the current Fluent
 palette and the independent theme/context recipes. This decision records the evidence and the
 limits of the Windows comparison; it does not promote another tonal asset or change a formula.

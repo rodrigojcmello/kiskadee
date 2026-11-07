@@ -1,17 +1,67 @@
 # Fluent 2 Microsoft Button Evidence
 
-## Alternative paint experiment - 2026-11-05
+## Light onVivid Low surface alignment — 2026-11-07
 
-Status: **Kiskadee extension**, user-requested visual experiment superseding the earlier
-Alternative color choices below. In both segments and all three themes, chromatic onVivid
-High keeps its complementary surface and uses the existing physical light cap for label/icon
-content (including the existing Pending visibility factor). Medium now inherits every Standard
-paint and descendant-context leaf. Lowest Rest uses the same complementary vivid reference as
-High Rest's background, with its existing terminal and active-state rules. No tonal assets change.
-White High content and complementary Lowest content are experimental and do not claim the former
-4.5:1 contrast guarantee; visual acceptance belongs to the user. Tests retain the contrast bound
-for the retained Low recipes and verify Medium inheritance and the new reference relationships.
+Status: **Kiskadee extension**, user-approved visual refinement. On the Light theme's vivid
+surface, Low Rest now uses the same `card.primary` exact L55 as the primary vivid Card:
+Microsoft `b.blue.v1` resolves to `#0059a1`, and Teams `pb.indigo.v2` to `#494ca1`.
+The existing white Standard overlays and intent-specific Alternative overlays are composed
+over that new opaque base for Hover, Pressed and Selected; Disabled keeps the same overlay
+policy. Selected Hover explicitly retains the Pressed fill. BrandPack projection uses the
+same segment Card base. This is a fixed reference surface rather than sampling arbitrary hosts.
+Dark/Darker, other emphases, text, borders and interaction semantics are unchanged.
 
+## Neutral High alternative on vivid — 2026-11-07
+
+Status: **Kiskadee extension**, user-approved visual trial. In both segments and all three
+themes, Neutral High onVivid Alternative reuses the existing Light/onSubtle Neutral High body:
+`#252525` Rest, `#353535` Hover and `#464646` Pressed/Selected. These are resolved by the
+existing `button.neutral` family recipe, not new colors or an official Fluent appearance.
+Selected Hover explicitly keeps the Selected body, preventing Hover from replacing it.
+
+Label and icon use the existing `neutral.standard.light.onVivid.high` Foreground (white at
+Rest), with its existing selected-state treatment. Pending and Disabled retain the corresponding
+onVivid Standard body and content recipes; icon Pending remains omitted by the existing contract.
+The dark Rest body produces `onVivid` for descendant content; Pending and Disabled retain
+Standard's `onSubtle` output. Medium, Low and Lowest inherit Neutral Standard. Existing
+indicator recipes remain unchanged. White content passes the current text-contrast checks
+on the dark body; distinction between that body and a blue host, and the existing indicator,
+remain subject to visual review and further contrast calibration.
+
+## Shared foreground calibration - 2026-11-07
+
+Status: **Kiskadee extension**, user-approved visual calibration. This supersedes the white High
+content experiment of 2026-11-05. Both Standard and Alternative onVivid text paints use shared
+Foreground references, including parent-owned interaction/terminal states.
+
+Alternative High label/icon content selects `neutral.standard.light.onSubtle.high` (currently
+#252525), including the existing Pending coordinate. Alternative Lowest selects the corresponding
+`blue|red|green.standard.<theme>.onVivid.alternative.high` recipe, currently the L18 complementary
+anchor. Chromatic High's background remains the complementary Vivid fill. Neutral High has
+the separate dark Alternative trial described above.
+
+Alternative Low's bottom contour uses complementary Vivid at 70% opacity in Light and 90% in
+Dark/Darker for Rest, Hover, Pressed and Selected. This softens the earlier opaque experiment
+while staying stronger than the sides (30% in Light and 85% in Dark/Darker). Rest-equal active bottom-side rules intentionally override the active borderColor
+shorthand, keeping the bottom line stronger than the other sides. Pending retains the 60% border
+visibility rule and Disabled keeps its existing neutral contour. This contour uses the ordinary
+palette resolver, not a Foreground reference in a border property. It shares High's background
+anchor; its equality with Lowest text today follows the current Foreground calibration.
+
+Lowest onVivid uses the family Standard High Foreground in Standard and the family
+Alternative High in Alternative, in the active theme. Primary is Blue, Positive Green and
+Destructive Red; Neutral keeps the inverse white foreground. Enabled interactions retain
+that family instead of switching to white. Pending uses the shared 70% visibility coordinate;
+Disabled preserves the neutral terminal recipe. Medium and Low reuse that same color for each
+intent and variant in Rest, Hover and Focus. Medium Primary retains the neutral dark foreground
+in Pressed and Selected, because those states have a light complementary fill; Alternative
+inherits this override. Pending and Disabled retain the previous Low/Medium recipes. Button
+surfaces, borders, geometry and High remain unchanged.
+
+This is an experimental user-requested visual calibration. Complementary Low foregrounds can
+fall below 4.5:1 against the canonical vivid surface (for example, Primary in Light at about
+3.40:1 in Rest after the L55 alignment); the existing contrast test intentionally continues to report those failures.
+These shared typography colors do not guarantee contrast over every host.
 
 This file records source evidence and color decisions for the Button currently authored in
 `packages/presets/src/presets/fluent-2-microsoft/components/button.schema.ts`.
@@ -45,25 +95,22 @@ family; every C lookup is a strict `reference` locator. `C vivid +1/+3` resolves
 
 | Emphasis | Rest and Hover | Pressed and Selected | Label and icon |
 | --- | --- | --- | --- |
-| High | Opaque `C vivid` / `C vivid +1` | Opaque `C vivid +3` | Physical white |
+| High | Opaque `C vivid` / `C vivid +1` | Opaque `C vivid +3` | Neutral Standard Light onSubtle High |
 | Medium | Inherited Standard | Inherited Standard | Inherited Standard |
-| Low | Existing Rest base; C vivid overlays at Light 8%, Dark/Darker 10% for Hover | C vivid overlay at Light 12%, Dark/Darker 30% | Physical white |
-| Lowest | Transparent Rest; the same C overlays as Low for Hover | The same C overlays as Low | `C vivid`; white Pressed/Selected only where the authored canonical-surface contrast check requires it |
+| Low | Existing Rest base; C vivid overlays at Light 8%, Dark/Darker 10% for Hover | C vivid overlay at Light 12%, Dark/Darker 30% | Inherited Standard foreground |
+| Lowest | Transparent Rest; the same C overlays as Low for Hover | The same C overlays as Low | Shared family Standard Alternative High throughout enabled interactions |
 
 Low Light retains its existing opaque `exact(card.primary, L50, component.card)` base and
 flattens C interaction paint over it during authorship. Dark/Darker Low and all Lowest
 interaction paint remain translucent. Low's perimeter uses C at the existing 30/85/85%
-theme alphas; the Light lower contour retains 45% Rest and 50% Hover. Its Light active
-contour uses C at 7%. Dark/Darker lower contours use opaque C. Medium contours inherit Standard. Existing
+theme alphas; the lower contour uses C at 70% in Light and 90% in Dark/Darker across enabled interaction states. Medium contours inherit Standard. Existing
 terminal colors remain in their established neutral treatment. Pending keeps the existing
 60% surface/contour and 70% label visibility factors; the icon omits the label's Pending
 delta so spinner artwork keeps its normal strength.
 
 Selected equals Pressed. Every alternative chromatic surface has an explicit Selected Hover
 reset so the weaker base Hover cannot replace persistent selection. No Focus surface or
-content delta is introduced. A white Lowest active foreground is authored only when C
-vivid would fall below 4.5:1 over the canonical selected surface; the result is static
-schema data, not browser background inspection. Published descendant context follows the
+content delta is introduced. Lowest retains its shared family foreground across enabled states. Published descendant context follows the
 new surface polarity: High produces `onSubtle`; Medium inherits Standard output; Low/Lowest preserve their existing publication. The existing context
 contract has no transient Pressed branch, so directly owned Pressed content changes color
 without adding a Provider or runtime context state.
@@ -71,7 +118,8 @@ without adding a Provider or runtime context state.
 The shared palette coordinate is
 `palettes[segment][theme][surfaceContext][colorVariant]`. The existing `e1`, `e2` and `e3`
 publish the chromatic alternatives directly in `onVivid.alternative`; their `standard`
-recipes remain unchanged. Neutral has no authored Alternative leaf and inherits Standard.
+recipes remain unchanged. Neutral High has the separately documented dark Alternative; its other
+levels inherit Standard.
 The achromatic divider `e6`, icon region `e4`, and disclosure `e5` need no alternative paint.
 Geometry, effects, typography and icon sizes continue to come from their existing owners.
 

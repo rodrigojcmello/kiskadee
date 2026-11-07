@@ -1,5 +1,11 @@
 # Fluent 2 Card Evidence
 
+> **2026-11-07 trial:** Primary Highest Rest now follows the approved Light L55 / Dark L60
+> Container pair; Darker remains D18. In Light, Hover moves to L60 and Selected to L65 so Hover
+> remains distinct from the new Rest and the previous state ordering is preserved. Pressed stays
+> L75. Dark interaction states retain their D-track recipes. These are Kiskadee adaptations,
+> not official Fluent token equivalences; see [Container calibration](container.md).
+
 > Rest fill ownership and the initial companion pairs: [Container calibration](container.md).
 > The Card mapping below remains the evidence for the migrated base colors, borders and states.
 

@@ -6,6 +6,48 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ButtonStateSection } from './ButtonStateSection';
 
+const scenario = vi.hoisted(() => ({ context: 'onVivid', available: true, other: false }));
+vi.mock('@kiskadee/react-components/resources', () => ({
+  useKiskadee: () => ({ segment: 'default', theme: 'light' }),
+  useSurfaceContext: () => scenario.context
+}));
+vi.mock('@/hooks/use-button-color-variants', () => ({
+  useButtonColorVariants: () =>
+    scenario.available || scenario.other
+      ? {
+          alternative: {
+            'default.light': {
+              onVivid: {
+                ...(scenario.available ? { neutral: ['high', 'low', 'lowest'] } : {}),
+                ...(scenario.other ? { primary: ['high'] } : {})
+              }
+            }
+          }
+        }
+      : undefined
+}));
+vi.mock('@kiskadee/react-components/switch', () => ({
+  Switch: ({
+    controlState,
+    disabled,
+    onControlStateChange
+  }: {
+    controlState: boolean;
+    disabled: boolean;
+    onControlStateChange: (value: boolean) => void;
+  }) => (
+    <input
+      type="checkbox"
+      role="switch"
+      aria-checked={controlState}
+      aria-label="Alt"
+      checked={controlState}
+      disabled={disabled}
+      onChange={(event) => onControlStateChange(event.target.checked)}
+    />
+  )
+}));
+
 vi.mock('@kiskadee/react-components/button', () => ({
   Button: Object.assign(
     ({
@@ -77,6 +119,9 @@ let container: HTMLDivElement | undefined;
 afterEach(() => {
   act(() => root?.unmount());
   root = undefined;
+  scenario.context = 'onVivid';
+  scenario.available = true;
+  scenario.other = false;
   container?.remove();
   container = undefined;
 });
@@ -133,11 +178,71 @@ describe('Button state section selection emphasis control', () => {
     const controls = selectionControls();
     const high = controls.find((button) => button.dataset.emphasis === 'high')!;
     act(() => high.click());
-    render({ selectionEmphasis: 'low', intent: 'neutral-alt' });
+    act(() => container!.querySelector<HTMLInputElement>('[role=switch]')!.click());
     expect(selectionControls()).toEqual(controls);
     expect(high.dataset.controlState).toBe('false');
     expect(high.dataset.selectionEmphasis).toBe('low');
     expect(high.dataset.intent).toBe('neutral-alt');
+  });
+  it('keeps the Alt choice local to each intent card', () => {
+    render();
+    act(() =>
+      root!.render(
+        <>
+          <ButtonStateSection
+            intent="neutral"
+            title="First"
+            fontName="Test"
+            radius="rounded"
+            surfaceContext="onVivid"
+            simplified
+          />
+          <ButtonStateSection
+            intent="neutral"
+            title="Second"
+            fontName="Test"
+            radius="rounded"
+            surfaceContext="onVivid"
+            simplified
+          />
+        </>
+      )
+    );
+    const switches = container!.querySelectorAll<HTMLInputElement>('[role=switch]');
+    act(() => switches[0]!.click());
+    expect(switches[0]!.checked).toBe(true);
+    expect(switches[1]!.checked).toBe(false);
+    const cards = container!.querySelectorAll('article');
+    expect(cards[0]!.querySelector('button')!.getAttribute('data-intent')).toBe('neutral-alt');
+    expect(cards[1]!.querySelector('button')!.getAttribute('data-intent')).toBe('neutral');
+  });
+  it('falls back per emphasis and surface without losing the requested variant', () => {
+    render({ simplified: true });
+    const toggle = () => container!.querySelector<HTMLInputElement>('[role=switch]')!;
+    act(() => toggle().click());
+    expect(
+      container!.querySelector('button[data-emphasis="high"]')!.getAttribute('data-intent')
+    ).toBe('neutral-alt');
+    expect(
+      container!.querySelector('button[data-emphasis="medium"]')!.getAttribute('data-intent')
+    ).toBe('neutral');
+    scenario.context = 'onSubtle';
+    render({ simplified: true });
+    expect(container!.querySelector('[role=switch]')).toBeNull();
+    expect(container!.querySelector('button')!.getAttribute('data-intent')).toBe('neutral');
+    scenario.context = 'onVivid';
+    render({ simplified: true });
+    expect(toggle().checked).toBe(true);
+    scenario.available = false;
+    render({ simplified: true });
+    expect(container!.querySelector('[role=switch]')).toBeNull();
+    scenario.other = true;
+    render({ simplified: true });
+    expect(toggle().disabled).toBe(true);
+    expect(toggle().checked).toBe(false);
+    scenario.available = true;
+    render({ simplified: true });
+    expect(toggle().checked).toBe(true);
   });
   it('changes selection emphasis without changing selected state or replacing the controls', () => {
     render();

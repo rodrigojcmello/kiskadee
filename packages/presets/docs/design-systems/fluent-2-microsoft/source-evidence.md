@@ -1,5 +1,9 @@
 # Fluent 2 Microsoft Source Evidence
 
+The [2026-11-07 vivid surface trial](components/container.md#vivid-primary-surface-trial--2026-11-07)
+supersedes the retained Light surface pair described in the historical decision below. Theme and
+Surface Context remain independent; Darker and the Button recipes are not recalibrated in this trial.
+
 This file records source evidence and preset-level decisions for
 `packages/presets/src/presets/fluent-2-microsoft/`.
 
@@ -19,8 +23,9 @@ individually in the decision record. No palette or formula changes accompany thi
 
 Status: **Kiskadee extension**. Button publishes optional onVivid body paint through the shared
 `colorVariant` axis using the already promoted complementary assets. Default and Teams cover
-Light, Dark and Darker for Primary, Positive and Destructive; Neutral inherits Standard and
-has no authored Alternative. The complete existing Standard recipe, including the earlier
+Light, Dark and Darker for Primary, Positive and Destructive. Neutral High now also has the
+[dark Alternative trial](components/button.md#neutral-high-alternative-on-vivid--2026-11-07);
+its other levels inherit Standard. The complete existing Standard recipe, including the earlier
 complementary pilot and `e11`/`e12` indicators, remains unchanged. Indicators always consume
 Standard. No generator, asset, global semantic mapping or contrast recalibration is included.
 See the [Button recipe, locator provenance and calibration boundary](components/button.md#shared-color-variants---2026-11-02).

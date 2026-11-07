@@ -126,10 +126,10 @@ const LIGHT_RECIPE = {
         disabled: n(3)
       },
       highest: {
-        rest: p(50),
-        hover: p(55),
+        rest: p(55),
+        hover: p(60),
         pressed: p(75),
-        selected: p(60),
+        selected: p(65),
         disabled: n(3)
       }
     }
@@ -200,7 +200,7 @@ const DARK_RECIPE = {
         disabled: n(3)
       },
       highest: {
-        rest: p(35),
+        rest: { ...p(60), track: 'l' },
         hover: p(40),
         pressed: p(14),
         selected: p(28),
