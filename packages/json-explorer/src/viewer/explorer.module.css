@@ -1,0 +1,689 @@
+.app {
+  --canvas: #f7f9fc;
+  --surface: #ffffff;
+  --ink: #1a263a;
+  --muted: #6d7b90;
+  --description: #53617a;
+  --line: #dde4ee;
+  --purple: #6351d6;
+  --tint: #f1eeff;
+  --soft: #f0f3f8;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 600px;
+  min-width: 1000px;
+  background: var(--canvas);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.app h1,
+.app h2,
+.app h3,
+.app p {
+  margin: 0;
+}
+.header {
+  height: 80px;
+  flex: 0 0 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 28px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.brand,
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.brand {
+  white-space: nowrap;
+}
+.brand h1 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+.logo {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--purple);
+  color: white;
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 500;
+}
+.documentName {
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+  color: var(--description);
+  font: 13px / 24px var(--mono);
+}
+.modeControl {
+  margin: 0;
+  border: 0;
+  min-width: 0;
+  display: flex;
+  gap: 4px;
+  background: var(--soft);
+  padding: 4px;
+  border-radius: 11px;
+}
+.modeControl button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 110px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+}
+.modeControl button[aria-pressed="true"] {
+  color: var(--purple);
+  border-color: var(--line);
+  background: var(--surface);
+}
+.referenceControl {
+  position: relative;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: var(--description);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.referenceControl input {
+  position: absolute;
+  right: 0;
+  width: 34px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+.switchTrack {
+  display: block;
+  width: 34px;
+  height: 20px;
+  border-radius: 12px;
+  background: #c2cad8;
+  padding: 3px;
+  transition: background 0.15s;
+}
+.switchTrack::after {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.15s;
+}
+.referenceControl input:checked + .switchTrack {
+  background: var(--purple);
+}
+.referenceControl input:checked + .switchTrack::after {
+  transform: translateX(14px);
+}
+.referenceControl input:focus-visible + .switchTrack {
+  outline: 2px solid var(--purple);
+  outline-offset: 4px;
+}
+.referenceControl input:disabled + .switchTrack {
+  opacity: 0.5;
+}
+.badge,
+.typeBadge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: var(--soft);
+  color: var(--description);
+  font-size: 11px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.typeBadge {
+  background: var(--tint);
+  color: var(--purple);
+  font-family: var(--mono);
+}
+.referenceBadge {
+  background: #eaf5ef;
+  color: #267a61;
+}
+.brand > .badge {
+  align-self: center;
+}
+.graphLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 352px;
+  flex: 1;
+  min-height: 0;
+}
+.mainArea {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.workspace {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.viewHeading {
+  flex: 0 0 auto;
+  padding: 31px 40px 24px;
+}
+.viewHeading h2 {
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -0.7px;
+}
+.viewHeading > p {
+  font-size: 14px;
+  margin-top: 9px;
+  color: var(--description);
+}
+.headingMeta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 16px;
+}
+.breadcrumb {
+  font: 11px / 18px var(--mono);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.graphViewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-color: #c6cfde #e8edf4;
+  scrollbar-width: thin;
+  outline-offset: -3px;
+}
+.graphPlane {
+  position: relative;
+  min-width: 100%;
+  min-height: 100%;
+}
+.graphNode {
+  position: absolute;
+}
+.connections {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  fill: none;
+  stroke-width: 2px;
+}
+.outputPort {
+  position: absolute;
+  z-index: 1;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border: 2px solid #c5cddc;
+  border-radius: 50%;
+  background: var(--surface);
+  pointer-events: none;
+}
+.activePort {
+  border-color: var(--purple);
+}
+.panReady {
+  cursor: grab;
+  user-select: none;
+}
+.panReady:active {
+  cursor: grabbing;
+}
+.card {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.selectedCard {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 1px var(--purple);
+  background: var(--tint);
+}
+.cardBody {
+  border: 0;
+  background: transparent;
+  border-radius: inherit;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 7px;
+  padding: 16px;
+  text-align: left;
+}
+.cardBody:hover {
+  background: #6351d605;
+}
+.keyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 20px;
+}
+.keyRow > svg {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.withToggle {
+  min-height: 24px;
+  padding-right: 30px;
+}
+.nodeKey {
+  font: 500 14px / 20px var(--mono);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.secondary {
+  color: var(--description);
+  font-size: 12px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--muted);
+}
+.cardMeta > :last-child {
+  text-align: right;
+}
+.mono {
+  font-family: var(--mono);
+}
+.compactValue {
+  font: 500 13px / 20px var(--mono);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.expandButton {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  padding: 0;
+  color: var(--muted);
+  background: white;
+}
+.selectedCard .expandButton {
+  color: white;
+  background: var(--purple);
+  border-color: var(--purple);
+}
+.missingText {
+  color: #a26a13;
+}
+.missingBadge {
+  color: #a26a13;
+  background: #fff3d9;
+}
+.inspector {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--line);
+  background: white;
+  padding: 28px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c6cfde transparent;
+}
+.inspectorContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.eyebrow {
+  color: var(--muted);
+  font-size: 11px;
+}
+.inspectorKey {
+  font: 500 24px / 1.4 var(--mono);
+  overflow-wrap: anywhere;
+}
+.inspectorMeta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+.detailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.detailSection h3 {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.description {
+  color: var(--description);
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.micro {
+  font-size: 10px;
+  line-height: 16px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.hint {
+  font-size: 12px;
+  line-height: 19px;
+  color: var(--description);
+  background: var(--canvas);
+  padding: 12px;
+  border-radius: 9px;
+}
+.referenceValue {
+  width: 100%;
+  border: 0;
+  resize: none;
+  margin: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--canvas);
+  color: var(--ink);
+  font: 12px / 20px var(--mono);
+  overflow: auto;
+  max-height: 270px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.childList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font: 11px / 18px var(--mono);
+  color: var(--description);
+  overflow-wrap: anywhere;
+}
+.typeDetails {
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--description);
+}
+.typeDetails summary {
+  cursor: pointer;
+}
+.typeDetails pre {
+  font: 11px / 18px var(--mono);
+  margin: 9px 0 0;
+  max-height: 220px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.source {
+  margin-top: auto;
+  padding-top: 32px;
+  color: var(--muted);
+}
+.source h3 {
+  font-size: 10px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+.source p {
+  font: 10px / 18px var(--mono);
+  overflow-wrap: anywhere;
+}
+.columnsView {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0 32px 22px;
+}
+.columnNavigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 0 0 22px;
+}
+.columnNavigation > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.columnNavigation button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--purple);
+  background: white;
+}
+.columnNavigation button:disabled {
+  color: #c2cad7;
+}
+.columnGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+.column {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  background: #fdfeff;
+  border-radius: 15px;
+}
+.columnHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 64px;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.columnHeading h2 {
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.columnScroll {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 14px;
+  scrollbar-color: #c6cfde #e8edf4;
+  scrollbar-width: thin;
+}
+.columnScroll > .card {
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+.columnFooter {
+  margin-top: auto;
+  padding: 14px 16px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.inlineDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0 16px 16px;
+  padding-top: 10px;
+  border-top: 1px solid #dcd4f8;
+}
+.inlineDetails .description,
+.inlineDetails .muted {
+  font-size: 12px;
+  line-height: 18px;
+}
+.emptyColumn {
+  background: #f9fafd;
+}
+.emptyMessage {
+  padding: 40px 28px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+.emptyMessage > svg {
+  box-sizing: content-box;
+  padding: 12px;
+  background: var(--soft);
+  border-radius: 12px;
+}
+.emptyMessage h3 {
+  margin: 18px 0 10px;
+  color: var(--description);
+  font-size: 16px;
+  font-weight: 500;
+}
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 28px;
+  background: var(--soft);
+  height: 40px;
+  flex: 0 0 40px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.fullColumnValue {
+  margin: 0;
+  padding: 10px;
+  background: #e8e2ff;
+  border-radius: 7px;
+  color: var(--ink);
+  font: 12px / 19px var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.diagnostics {
+  color: #86600e;
+  background: #fff3d9;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+.diagnostics summary {
+  cursor: pointer;
+}
+.graphLayout .workspace {
+  position: relative;
+}
+.graphLayout .viewHeading {
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 auto;
+  background: transparent;
+  pointer-events: none;
+}
+.graphLayout .headingText {
+  background: var(--canvas);
+  border-radius: 4px;
+  padding: 3px 5px;
+  margin: -3px -5px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  pointer-events: auto;
+}
+.graphLayout .headingMeta > .badge {
+  background: var(--canvas);
+  border-radius: 4px;
+  pointer-events: auto;
+}
+.graphLayout .diagnostics {
+  pointer-events: auto;
+}
+.graphLayout .graphViewport {
+  scroll-padding-top: 172px;
+}
+.mainArea .viewHeading {
+  padding: 26px 32px 8px;
+}
+.mainArea .viewHeading h2 {
+  font-size: 25px;
+  line-height: 35px;
+}
+.columnsView .columnNavigation {
+  padding-bottom: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .switchTrack,
+  .switchTrack::after {
+    transition: none;
+  }
+}

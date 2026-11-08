@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "types": ["node"], "lib": ["esnext"] },
+  "include": ["node/**/*.ts", "scripts/**/*.ts", "src/model/**/*.ts"],
+  "exclude": ["**/*.test.ts", "node_modules"]
+}

@@ -65,6 +65,7 @@ Packages that need to emit declaration files override `noEmit` and
 | `@kiskadee/web-builder`  | Node executes TS scripts; emits CSS/JSON artifacts | adopted; no esbuild needed |
 | `@kiskadee/react-components` | Node executes TS scripts; esbuild emits JS; tsc emits `.d.ts`; Sass emits CSS | adopted |
 | `@kiskadee/showcase`     | Next.js app; Node executes local TS dev script; Next.js owns app bundling | adopted; no esbuild needed |
+| `@kiskadee/json-explorer` | Next.js inspection app; Node executes extraction scripts; Next.js owns app bundling | adopted; no esbuild needed |
 | `@kiskadee/react-headless` | Node executes TS scripts; esbuild emits JS; tsc emits `.d.ts` | adopted |
 
 Only packages that emit both runtime `.js` and distributable `.d.ts`

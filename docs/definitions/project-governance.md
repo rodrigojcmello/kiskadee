@@ -238,7 +238,25 @@ the `@kiskadee/runtime` project.
 `packages/components` is an organizational root, not one implementation authority. Cross-platform
 component rules may live in its documentation, while each platform project owns its implementation.
 
-## Inspection project
+## Inspection projects
+
+### `packages/json-explorer` (`@kiskadee/json-explorer`)
+
+- **Authority:** generic type/reference inspection, its derived inspection model, navigation and
+  standalone inspection UI, including that UI's local visual identity.
+- **Consumes/adapts:** TypeScript source contracts and JSDoc through a Node-only extractor, plus
+  an optional JSON reference supplied explicitly. The Fluent Button example reads the authored
+  preset in a separate Node adapter.
+- **Produces:** a derived, browser-safe inspection document and Graph/Columns views. These outputs
+  explain declarations and supplied values; they are not new Schema or preset authoring sources.
+- **Must not own:** Schema grammar, preset values or formulas, component behavior, Web Builder
+  artifacts, complete runtime validation, or proof that a declared field is consumed by a runtime.
+  The tool does not participate in preset, component or Showcase builds.
+
+Its generic model, Node extraction and React UI remain separate. The browser must not import the
+TypeScript compiler, Core or Presets. The example adapter does not transfer preset authority to
+the Explorer. The [inspection contract](../../packages/json-explorer/docs/definitions/inspection-contract.md)
+defines the tool's behavior within this boundary.
 
 ### `packages/showcase` (Showcase)
 
