@@ -8,12 +8,17 @@ description: Review Kiskadee diffs or validate, fix, and close existing CODE-REV
 Choose the mode from the user's request before reading or writing a report. User instructions
 and already-approved scope take precedence over these defaults.
 
+The [Schema contract approval gate](../../AGENTS.md#schema-contract-approval) applies in every
+mode, including existing-report corrections. A finding or report is not user approval. Keep an
+unapproved Schema change pending and continue independent authorized corrections.
+
 ## Handle An Existing Report
 
 Requests to analyze, inspect, review, validate, or correct `CODE-REVIEW.md` authorize the complete
 report workflow: revalidate findings, fix pertinent issues, run relevant checks, and close the
-report. Announce the scope and proceed without another implementation approval, including for
-regression tests. Explicit "analysis only" or "do not edit" instructions override this default.
+report. Announce the scope and proceed without repeating general implementation approval,
+including for regression tests; the Schema contract approval gate above still applies. Explicit
+"analysis only" or "do not edit" instructions override this default.
 
 Read the entire report and verify claims against current code and accepted user decisions.
 Discard unsupported, stale, or contrary-to-approved-behavior findings with a brief explanation;

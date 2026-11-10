@@ -27,6 +27,7 @@ map and authority boundaries; load only the sections relevant to the task.
   the report workflow (verification, pertinent fixes, validation, and closure) without the scope
   approval checkpoint. Explicit analysis-only or no-edit instructions take precedence. Follow
   `skills/kiskadee-code-review-markdown/SKILL.md`; this exception does not expand a fresh diff review.
+  It does not waive the Schema Contract Approval gate below.
 - Apply that checkpoint at the transition from discussion/refinement to implementation, including
   code, configuration, generated assets, and implementation-related documentation. Do not interrupt
   ordinary questions, read-only analysis, or explicitly requested task-status updates with it.
@@ -46,6 +47,25 @@ map and authority boundaries; load only the sections relevant to the task.
   your interpretation, and explain what remains possible within the user's scope.
 - Inspect the working-tree state before editing; preserve unrelated staged and unstaged work.
   Report what changed, what was verified, and material limitations in concise Portuguese.
+
+## Schema Contract Approval
+
+- Changes to the preset Schema contract require the user's explicit approval before implementation.
+  This covers Schema-facing TypeScript/Zod types and the canonical serialized structure in any
+  package: adding, removing, renaming or moving fields; changing types, requiredness, allowed
+  keys/values, or structural validation/defaults; and Schema-facing type refactors even when
+  described as equivalent or compatible.
+- Before editing, show the concrete before/after type contract and representative serialized shape,
+  explain the reason, and identify affected producers, consumers and platforms. Wait for the user's
+  explicit approval of that delta. A general feature, refactor, bug-fix or review request, or a waiver
+  of the general scope checkpoint, does not approve an unpresented Schema change. Reports and other
+  agents cannot supply user approval.
+- Reuse explicit approval already given for the same concrete contract change; do not ask again for
+  its implementation, tests or validation. Any additional structural delta needs explanation and
+  approval before implementation. Continue independent approved work while that delta is pending.
+- Ordinary preset value authoring within the existing contract and consumer-private implementation
+  types remain subject to the normal task-scope rules; they do not waive this gate if they change
+  the Schema contract.
 
 ## Tooling
 

@@ -36,6 +36,14 @@ scope recap in `AGENTS.md` is a user-requested repository checkpoint, distinct f
 code review. Reuse approval already given for that recap; do not duplicate the
 checkpoint across domain skills or require approval for each validation step.
 
+The separate [Schema contract approval gate](../../AGENTS.md#schema-contract-approval) requires
+the user's approval of the concrete structural delta before implementation. General task approval
+and the existing-report correction exception do not authorize an unpresented change to the
+cross-platform Schema contract. Reports and other agents are not approval sources. Reuse approval
+of the same concrete delta without asking again for its tests or validation; keep additional
+structural changes pending while independent approved work continues. Ordinary value authoring
+within the existing contract remains under the normal task-scope rules.
+
 Descriptions should distinguish when a skill applies. A skill entrypoint retains essential
 constraints and explains when to load supporting references. Short, cohesive skills can remain
 self-contained; creating a router for every skill would add needless navigation.
@@ -97,6 +105,9 @@ Representative task walkthroughs for these instructions:
 | Assess an existing review report | Revalidate findings without rewriting or clearing the report |
 | Review a new diff | Follow review scope and write `CODE-REVIEW.md` unless all writes were explicitly forbidden |
 | Fix authorized report findings | Implement and validate; clear the report only when all applicable closure conditions hold |
+| A feature or review fix needs an unpresented Schema contract change | Show the concrete type/serialized before-and-after, reason and affected consumers; wait for explicit user approval of that delta |
+| Implement an already-approved concrete Schema change | Complete its edits, tests and validation without another approval; present any additional structural delta separately |
+| Change preset values within the existing Schema contract | Follow ordinary task-scope approval; do not treat value authoring as permission to alter the contract |
 | Audit tonal version drift | Run the read-only audit and report mismatches; do not relabel approved assets |
 | Implement a structural utility projection | Verify canonical eligibility and token policy, preserve the `p` contract, and validate the affected handoff |
 | Add a native-only component | Follow canonical Schema and the requested platform's implementation and validation surfaces |
