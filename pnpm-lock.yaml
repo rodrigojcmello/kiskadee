@@ -391,6 +391,25 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
+  packages/surface-builder:
+    dependencies:
+      '@kiskadee/core':
+        specifier: workspace:^
+        version: link:../core
+      '@kiskadee/presets':
+        specifier: workspace:^
+        version: link:../presets
+      '@kiskadee/tonal-scale':
+        specifier: workspace:^
+        version: link:../tonal-scale
+    devDependencies:
+      '@types/node':
+        specifier: ^25.9.2
+        version: 25.9.2
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
   packages/tonal-scale:
     dependencies:
       '@kiskadee/core':
@@ -439,6 +458,9 @@ importers:
       '@kiskadee/presets':
         specifier: workspace:^
         version: link:../presets
+      '@kiskadee/surface-builder':
+        specifier: workspace:^
+        version: link:../surface-builder
       '@kiskadee/tonal-scale':
         specifier: workspace:^
         version: link:../tonal-scale

@@ -51,8 +51,10 @@ does not depend on claiming that contextual styling exists only here.
 ## Ownership and related contracts
 
 This definition owns the relationship between the two axes. Presets own their concrete recipes and
-source evidence. Builder and framework code preserve the coordinates rather than inferring them
-from rendered colors.
+source evidence, including any choice to derive the context a component produces.
+[Surface Builder](../../packages/surface-builder/README.md) materializes those outputs in one
+portable artifact per preset. Platform builders publish the relevant maps for runtime consumers.
+Framework code consumes semantic outputs without inspecting rendered colors.
 
 - [Surface Context in p-react](../../packages/components/react/docs/definitions/surface-context.md)
   owns input resolution, produced context, Providers, and recursive propagation.

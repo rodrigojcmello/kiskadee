@@ -1,10 +1,17 @@
+import {
+  COMPONENT_PALETTE_FORMAT_VERSION,
+  decodePaletteSurfaceConfig
+} from '@kiskadee/web-builder/surface-palette';
 import type {
   ComponentPaletteResourceArtifact,
   ComponentResourceArtifact,
   Manifest
 } from '@kiskadee/web-builder/types';
 import { prepareStylesheet } from '@/hooks/use-stylesheet-manager';
-import { loadSelectedComponentArtifact } from './component-artifacts.client';
+import {
+  evictSelectedComponentArtifact,
+  loadSelectedComponentArtifact
+} from './component-artifacts.client';
 
 export type PreparedComponent = {
   metadata: ComponentResourceArtifact;
@@ -46,6 +53,36 @@ function assertClassMap(value: unknown, component: string): void {
     throw new Error(`Invalid component class map: ${component}`);
 }
 
+function mergeSurfaceModes(
+  base: Record<string, { modes?: Record<string, object> }> | undefined,
+  selected: ReturnType<typeof decodePaletteSurfaceConfig>['variants']
+) {
+  if (!selected) return base;
+  return {
+    ...base,
+    ...Object.fromEntries(
+      Object.entries(selected).map(([variant, { modes }]) => {
+        const original = base?.[variant];
+        return [
+          variant,
+          {
+            ...original,
+            modes: {
+              ...original?.modes,
+              ...Object.fromEntries(
+                Object.entries(modes).map(([mode, surface]) => [
+                  mode,
+                  { ...original?.modes?.[mode], ...surface }
+                ])
+              )
+            }
+          }
+        ];
+      })
+    )
+  };
+}
+
 /** A component is ready only after metadata, maps and every declared stylesheet have loaded. */
 export function prepareComponentResources(
   designSystem: string,
@@ -74,8 +111,20 @@ export function prepareComponentResources(
           revision
         )
       : undefined;
-    if (palette && (palette.formatVersion !== 3 || palette.component !== component))
-      throw new Error(`Invalid component palette: ${component}`);
+    let config: ReturnType<typeof decodePaletteSurfaceConfig>;
+    try {
+      if (
+        palettePath &&
+        (!palette ||
+          palette.formatVersion !== COMPONENT_PALETTE_FORMAT_VERSION ||
+          palette.component !== component)
+      )
+        throw new Error(`Invalid component palette: ${component}`);
+      config = decodePaletteSurfaceConfig(palette?.config, segment, theme);
+    } catch (error) {
+      if (palettePath) evictSelectedComponentArtifact(`${designSystem}/${palettePath}`, revision);
+      throw error;
+    }
     const styles = [...metadata.resources.styles, ...(palette?.styles ?? [])].sort(
       (a, b) => a.order - b.order
     );
@@ -99,12 +148,20 @@ export function prepareComponentResources(
     ]);
     assertClassMap(core, component);
     assertClassMap(colors, component);
+    const common = metadata as ComponentResourceArtifact & {
+      options?: Record<string, unknown>;
+      variants?: Record<string, { modes?: Record<string, object> }>;
+    };
+    const variants = mergeSurfaceModes(common.variants, config.variants);
     return {
       metadata: {
         ...metadata,
-        ...palette?.config,
-        ...(palette?.config?.options || (metadata as any).options
-          ? { options: { ...(metadata as any).options, ...palette?.config?.options } }
+        ...(config.contentSurfaceContext
+          ? { contentSurfaceContext: config.contentSurfaceContext }
+          : {}),
+        ...(variants ? { variants } : {}),
+        ...(config.options || common.options
+          ? { options: { ...common.options, ...config.options } }
           : {}),
         capabilities: { ...metadata.capabilities, ...palette?.capabilities }
       },

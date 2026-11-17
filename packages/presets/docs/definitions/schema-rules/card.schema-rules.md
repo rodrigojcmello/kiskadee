@@ -42,9 +42,12 @@ Card uses `e1` as the root surface element.
 - box-color changes and other interaction-state styling for `CardAction`.
 
 Every Card coordinate must have a matching `components.container.e1` Rest surface in the same
-segment, theme, input context, intent and emphasis. Core rejects a missing reference. Web Builder
-combines Container Rest with Card's own recipe before emitting Card classes and artifacts. React
-loads only the resolved Card artifact, and Card keeps one root node.
+segment, theme, input context, intent and emphasis. Core rejects a missing reference. Surface
+Builder combines Container Rest with Card's own recipe. A Card linked to a derived Container
+inherits Rest classification and calculates the contexts for CardAction state deltas from
+effective paint. An authored Card context map is valid only with a manual Container map or
+a separately authored Card surface. Web Builder publishes the resolved result. React loads
+only the Card resource, and Card keeps one root node.
 
 Do not add extra public Card elements only to model local layout wrappers inside
 showcase examples. Internal composition should stay in React/CSS unless the

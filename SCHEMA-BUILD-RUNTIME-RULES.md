@@ -233,8 +233,10 @@ Decision:
   background color, contrast, DOM ancestry, or runtime color measurement.
 - p-react resolves an explicit `surfaceContext` prop first, then the nearest
   `SurfaceContextProvider`, then the `onSubtle` portability default. Components that create a
-  semantic descendant surface resolve their preset-authored `contentSurfaceContext` output and
+  semantic descendant surface resolve their published `contentSurfaceContext` output and
   publish it through a nested Provider.
+- Surface Builder materializes authored output maps and declared derivations in a portable,
+  revision-bound `surface-contexts.json` before platform publication.
 - `contentSurfaceContext` uses the same context/variant axes and whole-state-map inheritance.
   Button normalizes qualified system intents such as `primary-alt` to semantic `primary` and
   `alternative`, while plain intents select `standard`. External `brand.*` names are normalized
@@ -259,7 +261,7 @@ Consequence:
 - Omitted `surfaceContext` resolves to `onSubtle`. An explicitly requested unsupported `onVivid`
   context must not silently fall back to `onSubtle`.
 - Theme and surface-context controls remain independent in inspection tools and consumer APIs.
-- Provider inheritance carries authored semantic context recursively. Automatic color, contrast,
+- Provider inheritance carries the published semantic context recursively. Automatic color, contrast,
   luminance, or DOM-based surface detection remains forbidden.
 
 ### 3.1.6 External brand intent ownership
@@ -465,18 +467,17 @@ Context:
 
 Decision:
 
-- `components.card.options.canonicalSurfaces[segment][theme]` declares an ordered list of
-  `{ intent, emphasis, contentSurfaceContext }` references.
-- The referenced visual value remains in
-  `components.card.elements.e1.palettes[segment][theme].onSubtle.standard.boxColor`.
-- The entry's `contentSurfaceContext` describes the descendant context associated with that
-  catalog surface. It does not change the Card's own consumed palette context and is not the
-  runtime propagation map.
-- `components.card.contentSurfaceContext` separately authors runtime output by segment, theme,
-  consumed context, color variant, intent, emphasis, and relevant state. p-react Card resolves this map and
-  publishes the result to descendants.
-- The Web Builder validates every reference, resolves its `rest` color, and publishes
-  `components/card.kiskadee.json`.
+- `components.container.options.canonicalSurfaces[segment][theme]` declares an ordered list of
+  references to Container `e1` Rest fills in `onSubtle.standard.boxColor`. Each entry has an
+  author-selected intent and emphasis and may mark a compositing backdrop with `referenceFor`.
+- A manual Container declares the catalog entry's `contentSurfaceContext`. A derived Container
+  supplies it from its computed Rest map. Both forms keep the catalog and propagation map as
+  separate outputs.
+- Card uses the Container Rest color and context when `surfaceSource: 'container'` is set.
+  CardAction derives the context of its effective fill deltas when linked to a derived Container.
+  p-react Card and CardAction consume the published map and pass its resolved value to descendants.
+- Surface Builder resolves each reference and its `rest` color. Web Builder publishes the
+  Card-compatible catalog entries in the selected Card palette descriptors.
 - Artifact consumers must preserve the authored order and must not reconstruct the list from
   palette density, luminance, or hardcoded intent/emphasis roles.
 
@@ -484,12 +485,12 @@ Reason:
 
 - The schema remains the preset-owned source of truth while colors remain in the palette taxonomy.
 - The generated artifact gives platform consumers a deterministic, already-resolved catalog.
-- Explicit descendant context avoids turning strong Brand surfaces into a runtime contrast
-  heuristic.
+- The published map keeps surface measurement in the pre-build and runtime resolution semantic.
 
 Consequence:
 
-- Presets without `canonicalSurfaces` publish no Card metadata artifact and remain valid.
+- Manual Containers can omit `canonicalSurfaces`. For derived Containers, the catalog supplies
+  both required opaque compositing references per participating segment and theme.
 - A declared reference that lacks a solid `boxColor.<intent>.<emphasis>.rest` fails the build.
 - A Card can still propagate `contentSurfaceContext` when it is not listed in the canonical catalog;
   the catalog controls recommendation and ordering, not runtime eligibility.

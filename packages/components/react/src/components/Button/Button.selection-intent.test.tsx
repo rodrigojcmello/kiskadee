@@ -326,7 +326,10 @@ describe('Button selection intent', () => {
       <KiskadeeContext.Provider value={makeContext()}>
         <Button.Group intent="neutral" emphasis="medium" size="md">
           <Button toggle controlState selectionIntent="primary" selectionEmphasis="high">
-            Selected
+            <Button.Label>
+              Selected
+              <ContextProbe />
+            </Button.Label>
           </Button>
           <Button toggle controlState={false} selectionIntent="primary">
             Neighbor
@@ -334,12 +337,13 @@ describe('Button selection intent', () => {
         </Button.Group>
       </KiskadeeContext.Provider>
     );
-    const selected = screen.getByRole('button', { name: 'Selected' });
+    const selected = screen.getByRole('button', { name: /Selected/ });
     const neighbor = screen.getByRole('button', { name: 'Neighbor' });
     expect(selected.className).toContain('member-primary-high-normal');
     expect(selected.className).not.toContain('member-neutral-medium');
     expect(selected.classList.contains('k-btn-e1l')).toBe(true);
     expect(selected.classList.contains('-s')).toBe(true);
+    expect(screen.getByTestId('content-context').textContent).toBe('onVivid');
     expect(neighbor.className).toContain('member-neutral-medium');
     expect(neighbor.className).not.toContain('member-primary');
     const group = selected.parentElement!;
@@ -405,10 +409,12 @@ describe('Button selection intent', () => {
     expect(button.querySelector('.k-btn-e9')?.className).toContain('stacked-label-geometry');
     expect(button.querySelector('.k-btn-e10')?.className).toContain('stacked-icon-geometry');
     expect(button.className).toContain('root-primary-high-normal');
+    expect(screen.getByTestId('content-context').textContent).toBe('onVivid');
     rerender(view({ ...props, controlState: false }, value));
     expect(screen.getByRole('button', { name: 'Enable' })).toBe(button);
     for (const name of geometry) expect(button.className).toContain(name);
     expect(button.className).toContain('root-neutral-medium');
+    expect(screen.getByTestId('content-context').textContent).toBe('onSubtle');
   });
 
   it.each([

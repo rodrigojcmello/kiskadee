@@ -1,4 +1,4 @@
-import type { ContainerComponent, KiskadeeTone, SolidColor } from '@kiskadee/core';
+import type { DerivedContainerComponent, KiskadeeTone, SolidColor } from '@kiskadee/core';
 import { primitive } from '@kiskadee/core';
 import {
   absoluteCap,
@@ -65,23 +65,28 @@ function resolveColor(
 
 /** Add the calibrated companion Rest surfaces to the migrated Container schema. */
 export function createFluent2MicrosoftContainerSchema({
-  base,
+  elements,
+  canonicalSurfaces,
   c,
   segmentNames
 }: {
-  base: ContainerComponent<never>;
+  elements: DerivedContainerComponent['elements'];
+  canonicalSurfaces: DerivedContainerComponent['options']['canonicalSurfaces'];
   c: Fluent2MicrosoftColorResolver;
   segmentNames: readonly 'default'[];
-}): ContainerComponent<never> {
-  const container = structuredClone(base);
+}): DerivedContainerComponent {
+  const container: DerivedContainerComponent = {
+    contentSurfaceContext: { derive: { element: 'e1', property: 'boxColor' } },
+    elements: structuredClone(elements),
+    options: { canonicalSurfaces: structuredClone(canonicalSurfaces) }
+  };
 
   for (const segment of segmentNames) {
     for (const theme of ['light', 'dark', 'darker'] as const) {
       const recipe = COMPLEMENTARY_SURFACES[theme];
       for (const context of ['onSubtle', 'onVivid'] as const) {
         const palette = container.elements.e1.palettes[segment]?.[theme]?.[context]?.standard;
-        const outputs = container.contentSurfaceContext[segment]?.[theme]?.[context]?.standard;
-        if (!palette || !outputs) {
+        if (!palette) {
           throw new Error(`Container ${segment}.${theme}.${context}: missing migrated surface`);
         }
         palette.boxColor.neutralComplementary = {
@@ -109,15 +114,6 @@ export function createFluent2MicrosoftContainerSchema({
             )
           }
         };
-        outputs.neutralComplementary = {
-          low: { rest: 'onSubtle' },
-          medium: { rest: 'onSubtle' }
-        };
-        outputs.primaryComplementary = {
-          ...(theme === 'light' ? { low: { rest: 'onSubtle' as const } } : {}),
-          medium: { rest: 'onSubtle' },
-          highest: { rest: 'onVivid' }
-        };
       }
       const canonicalByTheme = container.options?.canonicalSurfaces?.[segment];
       const canonical = canonicalByTheme?.[theme];
@@ -126,8 +122,7 @@ export function createFluent2MicrosoftContainerSchema({
           ...canonical,
           {
             intent: 'primaryComplementary',
-            emphasis: 'highest',
-            contentSurfaceContext: 'onVivid'
+            emphasis: 'highest'
           }
         ];
       }

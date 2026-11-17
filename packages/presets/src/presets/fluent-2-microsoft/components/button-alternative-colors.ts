@@ -95,9 +95,6 @@ export function createFluentButtonAlternativeColors(
     const standardLabel = standardPaint(button, 'e2', theme);
     const rootPaint: Paint = {};
     const labelPaint: Paint = { textColor: {} };
-    const standardContexts = button.contentSurfaceContext!.default![theme]!.onVivid!.standard;
-    const context = structuredClone(standardContexts);
-
     for (const intent of intents) {
       if (intent === 'neutral') continue;
       for (const [property, intentPaint] of Object.entries(standardRoot) as [
@@ -192,7 +189,6 @@ export function createFluentButtonAlternativeColors(
         low: { ...standardLabel.textColor![intent]!.low!, rest: lowestStates.rest },
         lowest: lowestStates
       };
-      context[intent]!.high = { rest: 'onSubtle', pending: 'onSubtle', disabled: 'onSubtle' };
     }
 
     // Reuse Light's dark Neutral High interaction recipe while retaining onVivid terminals.
@@ -217,7 +213,6 @@ export function createFluentButtonAlternativeColors(
         disabled: neutralStandardLabel.disabled
       }
     };
-    context.neutral!.high = { rest: 'onVivid', pending: 'onSubtle', disabled: 'onSubtle' };
     result.elements.e1!.palettes!.default![theme]!.onVivid!.alternative = changedStateMaps(
       standardRoot,
       rootPaint
@@ -229,11 +224,6 @@ export function createFluentButtonAlternativeColors(
     result.elements.e3!.palettes!.default![theme]!.onVivid!.alternative = changedStateMaps(
       standardPaint(button, 'e3', theme),
       { textColor: omitFluentButtonPendingTextState(labelPaint.textColor!) as IntentPaint }
-    );
-    // Divider paint is achromatic and identical to Standard, so it inherits without an override.
-    result.contentSurfaceContext!.default![theme]!.onVivid!.alternative = changedStateMaps(
-      standardContexts,
-      context
     );
   }
   return result;

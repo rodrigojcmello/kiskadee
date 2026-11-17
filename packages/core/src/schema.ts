@@ -7,7 +7,11 @@ import type {
 import type { AccordionComponent } from './components/accordion.ts';
 import type { BadgeEffects, BadgeElements } from './components/badge.ts';
 import type { BottomSheetElements, BottomSheetOptions } from './components/bottom-sheet.ts';
-import type { ButtonElements, ButtonOptions } from './components/button.ts';
+import type {
+  ButtonContentSurfaceContext,
+  ButtonElements,
+  ButtonOptions
+} from './components/button.ts';
 import type { CardContentSurfaceContextMap, CardElements, CardOptions } from './components/card.ts';
 import type { ChipComponent } from './components/chip.ts';
 import type { ContainerComponent } from './components/container.ts';
@@ -22,7 +26,6 @@ import type { SwitchOptions, SwitchVariants } from './components/switch.ts';
 import type { TabsOptions, TabsVariants } from './components/tabs.ts';
 import type { TextElements, TextOptions } from './components/text.ts';
 import type { TextFieldOptions, TextFieldVariants } from './components/text-field.ts';
-import type { ContentSurfaceContextMap } from './content-surface-context.ts';
 import type { SchemaContours } from './contour.ts';
 import type { SchemaInteraction } from './controlCursor.ts';
 import type { DensityScaleMap } from './density.ts';
@@ -41,7 +44,6 @@ import type {
   SolidColor,
   SurfaceContext,
   SurfaceContextBucket,
-  SystemButtonIntent,
   ThemeMode
 } from './types/colors/colors.types.ts';
 import type { DecorationSchema } from './types/decorations/decorations.types.ts';
@@ -234,7 +236,7 @@ type Components<TSegmentName extends SegmentName = never> = Partial<{
     elements: BottomSheetElements<TSegmentName> & Elements<TSegmentName>;
   };
   button: {
-    contentSurfaceContext?: ContentSurfaceContextMap<SystemButtonIntent, TSegmentName>;
+    contentSurfaceContext?: ButtonContentSurfaceContext<TSegmentName>;
     effects?: ComponentEffects;
     options?: ButtonOptions;
     elements: ButtonElements<TSegmentName>;

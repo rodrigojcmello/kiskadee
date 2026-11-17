@@ -1,6 +1,9 @@
 import { breakpointValues, elementSizeValues } from '../breakpoints.ts';
 import { parseButtonIntentValue } from '../color-variant.ts';
-import { validateContentSurfaceContextMap } from '../content-surface-context.ts';
+import {
+  type ContentSurfaceContextMap,
+  validateContentSurfaceContextMap
+} from '../content-surface-context.ts';
 import type { DensityScaleMap } from '../density.ts';
 import type { ElementHeightReference } from '../element-height-reference.ts';
 import { validateElementIconSizeContract } from '../icon-sizes.contract.zod.ts';
@@ -68,6 +71,28 @@ export type ButtonSelectionEmphasis = 'lowest' | 'low' | 'medium' | 'high';
 export type ButtonIconPlacement = 'leading' | 'trailing';
 export type ButtonIconSurfaceCorners = 'edge' | 'all';
 export type ButtonIconTreatment = 'plain' | 'surface';
+
+export type ButtonDerivedContentSurfaceContext = {
+  derive: { element: 'e1'; property: 'boxColor' };
+};
+
+/** Descendant context can be authored directly or derived from the Button surface in every palette theme. */
+export type ButtonContentSurfaceContext<TSegmentName extends SegmentName = never> =
+  | ContentSurfaceContextMap<SystemButtonIntent, TSegmentName>
+  | ButtonDerivedContentSurfaceContext;
+
+export function isButtonDerivedContentSurfaceContext(
+  value: unknown
+): value is ButtonDerivedContentSurfaceContext {
+  if (!isRecord(value) || !Object.hasOwn(value, 'derive') || !isRecord(value.derive)) return false;
+  const { element, property } = value.derive;
+  return (
+    Object.keys(value).length === 1 &&
+    Object.keys(value.derive).length === 2 &&
+    element === 'e1' &&
+    property === 'boxColor'
+  );
+}
 
 export type ButtonOptions = {
   density?: DensityScaleMap;
@@ -476,6 +501,71 @@ function validateAllowedKeys(
   }
 }
 
+const BUTTON_SURFACE_THEME_KEYS = [
+  'light',
+  'dark',
+  'darker'
+] as const satisfies readonly ThemeMode[];
+
+function validateButtonContentSurfaceContext(value: unknown, path: string, issues: string[]): void {
+  if (!isRecord(value) || !Object.hasOwn(value, 'derive')) {
+    issues.push(...validateContentSurfaceContextMap(value, path));
+    return;
+  }
+
+  const derive = value.derive;
+  // A custom segment named "derive" can still carry the existing theme map.
+  if (
+    isRecord(derive) &&
+    Object.keys(derive).every((key) => BUTTON_SURFACE_THEME_KEYS.some((theme) => theme === key))
+  ) {
+    issues.push(...validateContentSurfaceContextMap(value, path));
+    return;
+  }
+
+  validateAllowedKeys(value, ['derive'], path, issues);
+  if (!isRecord(derive)) {
+    issues.push(`${path}.derive: expected object`);
+  } else {
+    validateAllowedKeys(derive, ['element', 'property'], `${path}.derive`, issues);
+    if (derive.element !== 'e1') issues.push(`${path}.derive.element: expected "e1"`);
+    if (derive.property !== 'boxColor') issues.push(`${path}.derive.property: expected "boxColor"`);
+  }
+}
+
+function validateButtonDerivedSurfaceSource(
+  elements: Record<string, unknown>,
+  path: string,
+  issues: string[]
+): void {
+  const palettes = isRecord(elements.e1) ? elements.e1.palettes : undefined;
+  const palettePath = `${path}.elements.e1.palettes`;
+  const themePalettes = Object.entries(isRecord(palettes) ? palettes : {}).flatMap(
+    ([segment, themes]) =>
+      isRecord(themes)
+        ? Object.entries(themes).map(([theme, palette]) => ({ segment, theme, palette }))
+        : []
+  );
+  if (!themePalettes.length) {
+    issues.push(`${palettePath}: boxColor source required for content surface derivation`);
+  }
+  for (const { segment, theme, palette } of themePalettes) {
+    const themePath = `${palettePath}.${segment}.${theme}`;
+    if (!BUTTON_SURFACE_THEME_KEYS.some((key) => key === theme)) {
+      issues.push(`${themePath}: unrecognized theme`);
+      continue;
+    }
+    const onSubtle = isRecord(palette) ? palette.onSubtle : undefined;
+    const standard = isRecord(onSubtle) ? onSubtle.standard : undefined;
+    const boxColor = isRecord(standard) ? standard.boxColor : undefined;
+    if (!isRecord(boxColor) || !Object.keys(boxColor).length) {
+      issues.push(
+        `${themePath}.onSubtle.standard.boxColor: required for content surface derivation`
+      );
+    }
+  }
+}
+
 function validatePalettes(
   value: unknown,
   allowedColorKeys: readonly ColorProperty[],
@@ -858,11 +948,10 @@ export function validateButtonComponentContract(
   validateAllowedKeys(value, BUTTON_COMPONENT_KEYS, path, issues);
 
   if (value.contentSurfaceContext !== undefined) {
-    issues.push(
-      ...validateContentSurfaceContextMap(
-        value.contentSurfaceContext,
-        `${path}.contentSurfaceContext`
-      )
+    validateButtonContentSurfaceContext(
+      value.contentSurfaceContext,
+      `${path}.contentSurfaceContext`,
+      issues
     );
   }
 
@@ -948,6 +1037,10 @@ export function validateButtonComponentContract(
   }
 
   validateAllowedKeys(elements, BUTTON_ELEMENTS_KEYS, `${path}.elements`, issues);
+
+  if (isButtonDerivedContentSurfaceContext(value.contentSurfaceContext)) {
+    validateButtonDerivedSurfaceSource(elements, path, issues);
+  }
 
   for (const key of BUTTON_ELEMENTS_KEYS) {
     const element = elements[key];

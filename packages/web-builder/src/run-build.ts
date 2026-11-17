@@ -1,7 +1,7 @@
 import { mkdir, rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolveCardSurfaceSource, validateSchemaComponentContracts } from '@kiskadee/core';
+import { validateSchemaComponentContracts } from '@kiskadee/core';
 import { validateSchemaContoursContract } from '@kiskadee/core/contour-contract';
 import { validateSchemaInteractionContract } from '@kiskadee/core/control-cursor-contract';
 import { validateSchemaGlobalFontContract } from '@kiskadee/core/font-contract';
@@ -11,6 +11,11 @@ import { validateSchemaIconSizesContract } from '@kiskadee/core/icon-size-contra
 import { validateSchemaPresenceContract } from '@kiskadee/core/presence-contract';
 import { validateSchemaSeparatorsContract } from '@kiskadee/core/separator-contract';
 import { validateSchemaTypographyContract } from '@kiskadee/core/typography-contract';
+import {
+  generateSurfaceContexts,
+  materializeSurfaceContexts,
+  readSurfaceContexts
+} from '@kiskadee/surface-builder';
 import { buildOptionalBrandPacksForPreset } from './brand-packs/buildBrandPacks.ts';
 import { BUTTON_GROUP_BORDER_SUPPRESSION_STYLE_KEY } from './component-artifacts/buttonGroupArtifact.ts';
 import { publishComponentResources } from './component-artifacts/publishComponentResources.ts';
@@ -86,8 +91,7 @@ const __dirname = dirname(__filename);
 const baseBuildDir = resolve(__dirname, '..', 'build');
 
 export async function runBuild(): Promise<void> {
-  const presetsToBuild = await loadPresetsToBuild(__dirname);
-
+  const presetsToBuild = await loadPresetsToBuild();
   for (const t of presetsToBuild) {
     const { schema, schemaPath } = t;
 
@@ -196,13 +200,20 @@ export async function runBuild(): Promise<void> {
     }
   }
 
+  await generateSurfaceContexts(presetsToBuild);
+  const preparedPresets = await Promise.all(
+    presetsToBuild.map(async (preset) => {
+      const artifacts = await readSurfaceContexts(preset);
+      const schema = materializeSurfaceContexts(preset.schema, artifacts);
+      validateSchemaComponentContracts(schema);
+      return { ...preset, schema };
+    })
+  );
+
   await rm(baseBuildDir, { recursive: true, force: true });
   await mkdir(baseBuildDir, { recursive: true });
 
-  for (const t of presetsToBuild) {
-    const { schema: authoredSchema, schemaPath, buildExtensions } = t;
-    const schema = resolveCardSurfaceSource(authoredSchema);
-
+  for (const { schema, schemaPath, buildExtensions, key: outDirSlug } of preparedPresets) {
     // One concise log per preset, e.g. "[web-builder] Material Design 3.0.0 by Google"
     const presetVersion = Array.isArray(schema.version) ? schema.version.join('.') : '';
     const presetAuthor = schema.author ? ` by ${schema.author}` : '';
@@ -285,10 +296,6 @@ export async function runBuild(): Promise<void> {
     );
     cssGenerated.coreCss = appendDensityCss(cssGenerated.coreCss, densityAliases);
     cssGenerated.effectsCss = appendDensityCss(cssGenerated.effectsCss, densityAliases);
-
-    // Compute out dir
-    const major = schema.version[0];
-    const outDirSlug = `${slugifyName(schema.name)}-${major}-${slugifyName(schema.author || '')}`;
 
     // Phase 6 - Persist CSS & maps
     await persistBuildArtifacts(cssGenerated, classNamesMapSplit, outDirSlug);

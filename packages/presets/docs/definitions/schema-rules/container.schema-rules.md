@@ -9,14 +9,23 @@ components.container.elements.e1.palettes[segment][theme][surfaceContext][colorV
   .boxColor[intent][emphasis].rest
 ```
 
-`components.container.contentSurfaceContext` publishes the context a selected surface delivers
-to descendants through the same color-variant coordinate. A transparent Rest can inherit the input context. Missing coordinates remain
-unsupported; neither Core, Builder nor React substitutes a fallback color.
+`components.container.contentSurfaceContext` selects one of two forms. An authored map
+declares the context a surface delivers to descendants, using the same color-variant coordinate.
+`{ derive: { element: 'e1', property: 'boxColor' } }` computes the map from effective Rest
+paint for every declared segment and theme. A transparent Rest inherits the input context.
+Only published coordinates are supported.
 
 `components.container.options.canonicalSurfaces[segment][theme]` authors the recommended
-surface catalog and its order. Catalog entries use Standard paint. Each entry must reference a published Container Rest surface.
-The Builder also includes Card-compatible resolved entries in the Card artifact for existing
-consumers. Container-only entries remain in the Container catalog; Card does not become its source.
+surface catalog and its order. Each entry references a published Container Rest surface in
+`onSubtle.standard` by intent and emphasis. The authored map form requires the classification
+on each catalog entry. The derived form requires the catalog and fills in its classifications
+from the calculated Rest outputs. Only Card-compatible entries are projected into the Card
+catalog.
+
+An entry can mark `referenceFor: 'onSubtle' | 'onVivid'` to select a representative backdrop
+for compositing translucent fills. Surface Builder requires one opaque Standard Rest reference
+for each role in every participating segment and theme. Its contrast comparison uses the
+theme's fixed white or black reference independently of the chosen backdrop.
 
 `neutral` and `primary` are base surface intents. `neutralComplementary` and
 `primaryComplementary` are optional companions for internal regions such as headers or footers.

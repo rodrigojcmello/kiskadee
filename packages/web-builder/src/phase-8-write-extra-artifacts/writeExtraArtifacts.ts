@@ -268,6 +268,7 @@ export async function writeExtraArtifacts(params: {
     textTypographyClassMap?: NonNullable<GlobalClassNameMapJSON['text']>;
   };
   const schema = resolveCardSurfaceSource(authoredSchema);
+  const buttonContentSurfaceContext = schema.components?.button?.contentSurfaceContext;
 
   const buildDir = getBuildDir(outDirSlug);
 
@@ -342,9 +343,13 @@ export async function writeExtraArtifacts(params: {
     getComponentEffects('badge').shadow = schema.components.badge.effects.shadow;
   }
 
-  if (schema.components?.button?.contentSurfaceContext !== undefined) {
+  if (buttonContentSurfaceContext !== undefined) {
+    assertContentSurfaceContextMap(
+      buttonContentSurfaceContext,
+      'components.button.contentSurfaceContext'
+    );
     const buttonArtifact = componentEffectOverrides.button ?? {};
-    buttonArtifact.contentSurfaceContext = schema.components.button.contentSurfaceContext;
+    buttonArtifact.contentSurfaceContext = buttonContentSurfaceContext;
     componentEffectOverrides.button = buttonArtifact;
   }
 
@@ -387,8 +392,10 @@ export async function writeExtraArtifacts(params: {
   }
 
   if (schema.components?.container?.contentSurfaceContext !== undefined) {
+    const containerContext = schema.components.container.contentSurfaceContext;
+    assertContentSurfaceContextMap(containerContext, 'components.container.contentSurfaceContext');
     const containerArtifact = componentEffectOverrides.container ?? {};
-    containerArtifact.contentSurfaceContext = schema.components.container.contentSurfaceContext;
+    containerArtifact.contentSurfaceContext = containerContext;
     componentEffectOverrides.container = containerArtifact;
   }
 

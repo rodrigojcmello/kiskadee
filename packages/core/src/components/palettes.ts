@@ -42,10 +42,11 @@ function getCoveragePairs(
 
 function validateColorMap(
   value: unknown,
-  allowedColorKeys: readonly string[],
+  allowedColorKeys: readonly ColorProperty[],
   path: string[],
   issues: ElementPaletteValidationIssue[],
-  requireRest: boolean
+  requireRest: boolean,
+  inheritedRest: readonly ColorProperty[]
 ): value is Record<string, unknown> {
   if (!isRecord(value)) {
     issues.push({ path, message: 'expected object' });
@@ -53,7 +54,7 @@ function validateColorMap(
   }
 
   for (const key of Object.keys(value)) {
-    if (!allowedColorKeys.includes(key)) {
+    if (!allowedColorKeys.some((property) => property === key)) {
       issues.push({ path: [...path, key], message: 'unrecognized key' });
     }
   }
@@ -69,10 +70,19 @@ function validateColorMap(
     const isDirectStateMap = Object.keys(colorEntry).some((key) =>
       interactionStateKeys.includes(key as never)
     );
-    if (isDirectStateMap) {
-      if (requireRest && colorEntry.rest === undefined) {
-        issues.push({ path: [...path, colorProperty, 'rest'], message: 'required state' });
+    const derivesRest = inheritedRest.includes(colorProperty);
+    const validateRest = (stateMap: Record<string, unknown>, statePath: string[]) => {
+      if (derivesRest && Object.hasOwn(stateMap, 'rest')) {
+        issues.push({
+          path: [...statePath, 'rest'],
+          message: 'Rest comes from the surface source'
+        });
+      } else if (!derivesRest && requireRest && stateMap.rest === undefined) {
+        issues.push({ path: [...statePath, 'rest'], message: 'required state' });
       }
+    };
+    if (isDirectStateMap) {
+      validateRest(colorEntry, [...path, colorProperty]);
       continue;
     }
 
@@ -89,12 +99,7 @@ function validateColorMap(
           });
           continue;
         }
-        if (requireRest && stateMap.rest === undefined) {
-          issues.push({
-            path: [...path, colorProperty, intent, emphasis, 'rest'],
-            message: 'required state'
-          });
-        }
+        validateRest(stateMap, [...path, colorProperty, intent, emphasis]);
       }
     }
   }
@@ -106,7 +111,7 @@ function validateColorMap(
 export function getElementPaletteValidationIssues(
   value: unknown,
   allowedColorKeys: readonly ColorProperty[],
-  options: { requireRest?: boolean } = {}
+  options: { requireRest?: boolean; inheritedRest?: readonly ColorProperty[] } = {}
 ): ElementPaletteValidationIssue[] {
   const issues: ElementPaletteValidationIssue[] = [];
   if (!isRecord(value)) return [{ path: [], message: 'expected object' }];
@@ -148,7 +153,8 @@ export function getElementPaletteValidationIssues(
             allowedColorKeys,
             [...contextPath, variant],
             issues,
-            options.requireRest !== false
+            options.requireRest !== false,
+            options.inheritedRest ?? []
           );
           if (valid && variant === 'standard')
             standards[context as 'onSubtle' | 'onVivid'] = colors;

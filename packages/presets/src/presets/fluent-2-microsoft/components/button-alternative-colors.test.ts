@@ -2,7 +2,6 @@ import {
   type ColorSchema,
   parseForegroundReferenceToken,
   resolveColorVariantPalette,
-  resolveContentSurfaceContextVariant,
   resolveForegroundVariant,
   validateButtonComponentContract,
   withAlpha
@@ -163,10 +162,6 @@ describe('Fluent Button shared color variants', () => {
                   `${segment}/${theme}/${element}/${property}/${intent}/${emphasis}`
                 ).not.toEqual((variants.standard as any)[property]?.[intent]?.[emphasis]);
         }
-        const context = button.contentSurfaceContext![segment]![theme]!.onVivid!;
-        for (const [intent, emphases] of Object.entries(context.alternative!))
-          for (const [emphasis, states] of Object.entries(emphases!))
-            expect(states).not.toEqual((context.standard as any)[intent]?.[emphasis]);
       }
     const variants = structuredClone(button.elements.e1!.palettes!.default!.light!.onVivid!);
     variants.standard.borderColor!.primary!.high = { rest: '#abcdef' };
@@ -210,21 +205,7 @@ describe('Fluent Button shared color variants', () => {
             button.elements[element]!.palettes![segment]![theme]!.onVivid!.alternative
           ).toBeUndefined();
         }
-        const context = button.contentSurfaceContext![segment]![theme]!;
-        expect(context.onSubtle!.alternative).toBeUndefined();
-        expect(context.onVivid!.alternative!.neutral!.high).toEqual({
-          rest: 'onVivid',
-          pending: 'onSubtle',
-          disabled: 'onSubtle'
-        });
         for (const intent of ['primary', 'positive', 'destructive'] as const) {
-          const effectiveContext = resolveContentSurfaceContextVariant(
-            context.onVivid!,
-            'alternative'
-          );
-          expect(effectiveContext[intent]!.medium).toEqual(
-            context.onVivid!.standard[intent]!.medium
-          );
           for (const element of ['e1', 'e2', 'e3'] as const) {
             const variants = button.elements[element]!.palettes![segment]![theme]!.onVivid!;
             const effective = resolveColorVariantPalette<ColorSchema>(variants, 'alternative');

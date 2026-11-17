@@ -695,45 +695,9 @@ export function createFluent2MicrosoftButtonSchema({
     };
   };
 
-  const createContentSurfaceContext = () =>
-    Object.fromEntries(
-      (['light', 'dark', 'darker'] as const).map((theme) => [
-        theme,
-        Object.fromEntries(
-          (['onSubtle', 'onVivid'] as const).map((input) => [
-            input,
-            {
-              standard: Object.fromEntries(
-                (['primary', 'neutral', 'destructive', 'positive'] as const).map((intent) => [
-                  intent,
-                  {
-                    high: {
-                      rest: input === 'onVivid' ? 'onSubtle' : 'onVivid',
-                      pending: input === 'onVivid' ? 'onSubtle' : 'onVivid',
-                      disabled: 'onSubtle'
-                    },
-                    medium: {
-                      rest: 'onVivid',
-                      ...(input === 'onVivid' && intent === 'primary'
-                        ? { selected: 'onSubtle' }
-                        : {}),
-                      pending: 'onVivid',
-                      disabled: 'onSubtle'
-                    },
-                    low: { rest: input === 'onVivid' && theme !== 'light' ? 'inherit' : input },
-                    lowest: { rest: 'inherit' }
-                  }
-                ])
-              )
-            }
-          ])
-        )
-      ])
-    );
-
   const standard: ButtonComponent = {
     contentSurfaceContext: {
-      default: createContentSurfaceContext()
+      derive: { element: 'e1', property: 'boxColor' }
     },
     options: {
       density: { compact: 's:md:1', spacious: 's:lg:1' },

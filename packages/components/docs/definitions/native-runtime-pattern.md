@@ -19,6 +19,11 @@ A smaller payload is an artifact, not a new source of truth. For example,
 `material-3-google.switch.kiskadee-ios.json` or `material-3-google.switch.kiskadee-android.json`
 would be valid future artifacts if they are derived from the same canonical preset schema.
 
+Future native exporters for surface-owning components can take
+[`surface-contexts.json`](../../../surface-builder/README.md) alongside the authored preset and
+validate its revision before narrowing the data for the platform. This preserves the same
+surface classification that the Web publisher consumes.
+
 ## Native runtime layers
 
 Each native platform package should keep the same high-level layers:

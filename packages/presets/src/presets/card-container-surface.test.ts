@@ -1,4 +1,5 @@
 import {
+  isDerivedContainerComponent,
   validateContainerComponentContract,
   validateSchemaComponentContracts
 } from '@kiskadee/core';
@@ -43,7 +44,15 @@ for (const [name, schema] of Object.entries({
 
     const cardPalettes = card.elements.e1?.palettes as unknown as Palettes;
     const containerPalettes = container.elements.e1.palettes as unknown as Palettes;
-    const containerContexts = container.contentSurfaceContext as unknown as Contexts;
+    const containerContexts = isDerivedContainerComponent(container)
+      ? undefined
+      : (container.contentSurfaceContext as unknown as Contexts);
+    if (!containerContexts) {
+      expect(card.contentSurfaceContext).toBeUndefined();
+      expect(container.contentSurfaceContext).toEqual({
+        derive: { element: 'e1', property: 'boxColor' }
+      });
+    }
     for (const [segment, themes] of Object.entries(cardPalettes))
       for (const [theme, contexts] of Object.entries(themes))
         for (const [context, palette] of Object.entries(contexts))
@@ -55,28 +64,34 @@ for (const [name, schema] of Object.entries({
                   emphasis
                 ]?.rest
               ).toEqual(expect.any(String));
-              expect(
-                containerContexts[segment]?.[theme]?.[context]?.standard?.[intent]?.[emphasis]?.rest
-              ).toEqual(expect.any(String));
+              if (containerContexts)
+                expect(
+                  containerContexts[segment]?.[theme]?.[context]?.standard?.[intent]?.[emphasis]
+                    ?.rest
+                ).toEqual(expect.any(String));
             }
   });
 }
 
 it('keeps Card-only descendant context changes for selected and disabled states', () => {
+  const iosContainer = ios.components.container!;
+  const carbonContainer = carbon.components.container!;
+  if (isDerivedContainerComponent(iosContainer) || isDerivedContainerComponent(carbonContainer)) {
+    throw new Error('Expected manual Container contexts');
+  }
   expect(
     ios.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.neutral?.lowest
       ?.selected
   ).toBe('onVivid');
   expect(
-    ios.components.container?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.neutral
-      ?.lowest?.rest
+    iosContainer.contentSurfaceContext?.default?.light?.onSubtle?.standard?.neutral?.lowest?.rest
   ).toBe('onSubtle');
   expect(
     carbon.components.card?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.primary
       ?.highest?.disabled
   ).toBe('onSubtle');
   expect(
-    carbon.components.container?.contentSurfaceContext?.default?.light?.onSubtle?.standard?.primary
-      ?.highest?.rest
+    carbonContainer.contentSurfaceContext?.default?.light?.onSubtle?.standard?.primary?.highest
+      ?.rest
   ).toBe('onVivid');
 });

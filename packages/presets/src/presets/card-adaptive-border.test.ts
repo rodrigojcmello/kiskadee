@@ -1,5 +1,6 @@
 import {
   isContourReferenceCandidate,
+  isDerivedContainerComponent,
   resolveCardSurfaceSource,
   resolveContourReference,
   validateCardComponentContract
@@ -25,9 +26,16 @@ describe('Card border policy migration', () => {
     ['Sandbox 2', sandbox2],
     ['Sandbox 3', sandbox3]
   ] as const)('%s publishes a complete adaptive policy', (_name, schema) => {
-    const card = resolveCardSurfaceSource(schema).components.card;
+    const derived = isDerivedContainerComponent(schema.components.container!);
+    const card = derived
+      ? schema.components.card
+      : resolveCardSurfaceSource(schema).components.card;
     expect(card?.options?.border?.defaultMode).toBe('adaptive');
-    expect(validateCardComponentContract(card)).toEqual([]);
+    expect(
+      validateCardComponentContract(card, 'components.card', {
+        contextFromDerivedContainer: derived
+      })
+    ).toEqual([]);
   });
 
   it('keeps borderless Rest defaults while exposing an existing visible manual recipe', () => {

@@ -1,4 +1,4 @@
-import type { Schema } from '@kiskadee/core';
+import type { ManualContainerComponent, Schema } from '@kiskadee/core';
 
 type Entry = Record<string, unknown>;
 
@@ -11,7 +11,7 @@ export function splitCardSurfaceSchema<TSegment extends string>(card: {
   contentSurfaceContext?: object;
   [key: string]: unknown;
 }): {
-  container: NonNullable<Schema<TSegment>['components']['container']>;
+  container: ManualContainerComponent<TSegment>;
   card: NonNullable<Schema<TSegment>['components']['card']>;
 } {
   const cardPalettes: Entry = {};
@@ -148,7 +148,7 @@ export function splitCardSurfaceSchema<TSegment extends string>(card: {
         : {}),
       ...(canonicalSurfaces ? { options: { canonicalSurfaces } } : {}),
       elements: { e1: { name: 'container', palettes: containerPalettes } }
-    } as NonNullable<Schema<TSegment>['components']['container']>,
+    } as ManualContainerComponent<TSegment>,
     card: {
       ...cardMetadata,
       surfaceSource: 'container',

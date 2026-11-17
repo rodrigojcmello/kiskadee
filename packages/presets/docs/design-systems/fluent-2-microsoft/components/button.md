@@ -1,5 +1,48 @@
 # Fluent 2 Microsoft Button Evidence
 
+## Descendant Surface Context derivation
+
+**Kiskadee extension.** The Fluent Button derives descendant context in Light, Dark and Darker
+for Microsoft and Teams. The `e1.boxColor` recipes supply both the Button fill and the build input
+for classifying that surface. The definition below applies to every theme in the Button palette.
+
+```ts
+contentSurfaceContext: {
+  derive: { element: 'e1', property: 'boxColor' }
+}
+```
+
+Container marks `neutral.lowest` in Light and `neutral.low` in Dark and Darker as the `onSubtle`
+backdrop. It marks `primary.highest` as the `onVivid` backdrop in each theme. Surface Builder
+composites translucent Button fills over these colors. The contrast calculation compares the resulting
+fill against absolute white in Light and absolute black in Dark and Darker, regardless of backdrop.
+A ratio of at least 3:1 produces `onVivid`. A lower ratio produces `onSubtle`.
+
+| Theme | `onSubtle` backdrop, both segments | `onVivid` backdrop, Microsoft | `onVivid` backdrop, Teams | Contrast reference |
+| --- | --- | --- | --- | --- |
+| Light | `#ffffff` | `#0059a1` | `#494ca1` | `#ffffff` |
+| Dark | `#202020` | `#045091` | `#424590` | `#000000` |
+| Darker | `#0e0e0e` | `#133d68` | `#34386f` | `#000000` |
+
+For example, the white Primary High Rest fill on a vivid surface produces `onSubtle` in Light
+and `onVivid` in Dark and Darker. A clear fill inherits the surrounding context. The ratio
+classifies the Button surface for its descendants. Label and icon contrast against that surface
+requires separate checks. In the Microsoft Dark simulation over the vivid backdrop, the new
+context for a Neutral Medium Button in Pending changed the text contrast of a Novelty Low Badge
+from 6.60:1 to 3.74:1. Custom backdrops can differ from the canonical backdrop used to classify
+a translucent fill. The runtime Provider carries only the context label.
+
+The initial Light pilot changed 33 of 192 state lookups in each segment relative to the manual map.
+This includes 4 Rest, 4 Selected, 9 Pending and 16 Disabled lookups. For example, Microsoft
+Primary High Pending on a subtle backdrop now produces `onSubtle` after composition over white.
+The translucent Disabled fill for Primary High on a vivid backdrop now produces `onVivid`.
+
+Surface Builder publishes the readable map in `surface-contexts.json` and Web Builder publishes
+the compact selected palette for React. Inline Badge and Button.Progress read the produced
+surface, while external Badge keeps the surrounding context. Stacked and Group members use the
+resolved Button paint coordinate. Strong selection uses its High Rest coordinate, including the
+active variant. See the [resource contract](../../../../../web-builder/docs/definitions/component-resources.md#palette-surface-configuration).
+
 ## Light onVivid Low surface alignment — 2026-11-07
 
 Status: **Kiskadee extension**, user-approved visual refinement. On the Light theme's vivid
@@ -22,8 +65,8 @@ Selected Hover explicitly keeps the Selected body, preventing Hover from replaci
 Label and icon use the existing `neutral.standard.light.onVivid.high` Foreground (white at
 Rest), with its existing selected-state treatment. Pending and Disabled retain the corresponding
 onVivid Standard body and content recipes; icon Pending remains omitted by the existing contract.
-The dark Rest body produces `onVivid` for descendant content; Pending and Disabled retain
-Standard's `onSubtle` output. Medium, Low and Lowest inherit Neutral Standard. Existing
+The [derivation policy](#descendant-surface-context-derivation) classifies the Rest and terminal
+fills in each theme. Medium, Low and Lowest inherit Neutral Standard. Existing
 indicator recipes remain unchanged. White content passes the current text-contrast checks
 on the dark body; distinction between that body and a blue host, and the existing indicator,
 remain subject to visual review and further contrast calibration.
@@ -110,10 +153,10 @@ delta so spinner artwork keeps its normal strength.
 
 Selected equals Pressed. Every alternative chromatic surface has an explicit Selected Hover
 reset so the weaker base Hover cannot replace persistent selection. No Focus surface or
-content delta is introduced. Lowest retains its shared family foreground across enabled states. Published descendant context follows the
-new surface polarity: High produces `onSubtle`; Medium inherits Standard output; Low/Lowest preserve their existing publication. The existing context
-contract has no transient Pressed branch, so directly owned Pressed content changes color
-without adding a Provider or runtime context state.
+content delta is introduced. Lowest retains its shared family foreground across enabled states.
+Published descendant context follows the [derivation policy](#descendant-surface-context-derivation).
+The context contract has no transient Pressed branch. Directly owned Pressed content changes color
+while descendants consume the context for the current mapped state.
 
 The shared palette coordinate is
 `palettes[segment][theme][surfaceContext][colorVariant]`. The existing `e1`, `e2` and `e3`
@@ -123,11 +166,11 @@ levels inherit Standard.
 The achromatic divider `e6`, icon region `e4`, and disclosure `e5` need no alternative paint.
 Geometry, effects, typography and icon sizes continue to come from their existing owners.
 
-Descendant context uses the same `standard`/`alternative` axis in
-`contentSurfaceContext[segment][theme][surfaceContext][colorVariant]`. A missing alternative property,
-intent or emphasis inherits the entire Standard state map. A present alternative state map
-owns its states: missing Hover keeps its own Rest and does not import Standard Hover.
-Resolution happens during the build, with no runtime palette merge.
+Descendant context uses the same `standard`/`alternative` axis in the published map
+`contentSurfaceContext[segment][theme][surfaceContext][colorVariant]`. An omitted Alternative
+paint leaf inherits the whole Standard state map. An authored leaf owns its states and uses its
+own Rest for absent states. Surface Builder applies the [derivation policy](#descendant-surface-context-derivation)
+to resolved recipes before publishing any theme's map.
 
 The indicator retains only its original inside/outside recipes on `e11`/`e12`. Both always
 consume Standard paint, independently of the Button color variant. No alternative indicator,
@@ -919,11 +962,11 @@ new theme, intent, or emphasis. The surrounding surface remains a consumer decis
 schema nor the React component detects its color.
 
 Button publishes the semantic surface produced for independent inline descendants without
-inspecting rendered color. High is input-sensitive: the filled High appearance on `onSubtle`
-publishes `onVivid`, while the physically white/light High appearance on `onVivid` publishes
-`onSubtle`. Pending follows the same authored output and Disabled remains `onSubtle`. This prevents
-an inline Badge from selecting light `onVivid` content colors while it is actually rendered over
-the white inverse Button surface.
+inspecting rendered color. High is input-sensitive. In Light, the blue Primary High Rest on
+`onSubtle` publishes `onVivid`, while its white Standard High Rest on `onVivid` publishes
+`onSubtle`. This lets an inline Badge pick the appropriate paint for the local Button fill.
+The [derivation policy](#descendant-surface-context-derivation) also classifies
+Selected, Pending and Disabled fills from their own effective paint.
 
 ### On-vivid High
 

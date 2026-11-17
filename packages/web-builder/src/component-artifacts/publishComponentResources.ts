@@ -3,13 +3,15 @@ import { dirname, resolve } from 'node:path';
 import {
   type ComponentEmphasis,
   type ComponentSizeSupport,
+  type ContentSurfaceContextMap,
   compileDensityMap,
   componentEmphasisBuckets,
   elementSizeValues,
   type RadiusMode,
   resolveContentSurfaceContextVariant,
   resolveSupportedSize,
-  type Schema
+  type Schema,
+  type ThemeMode
 } from '@kiskadee/core';
 import { minifyCss } from '@kiskadee/css-build';
 import {
@@ -17,6 +19,7 @@ import {
   collectAlternativePaletteScopes
 } from '../palettes/resolveElementPaletteSources.ts';
 import type { ManifestComponent } from '../phase-7-publish-metadata/manifestTypes.ts';
+import type { CardCanonicalSurfacesPayload } from './cardComponentArtifact.ts';
 import { componentNameToArtifactSlug } from './componentClassMapArtifacts.ts';
 import type {
   ComponentInspectionArtifact,
@@ -24,6 +27,12 @@ import type {
   StylesheetResource
 } from './componentResources.ts';
 import { artifactHash, partitionComponentCss } from './partitionComponentCss.ts';
+import {
+  COMPONENT_PALETTE_FORMAT_VERSION,
+  type CompactPaletteConfig,
+  encodeCanonicalSurfaces,
+  encodeSurfaceContextSlice
+} from './surfacePaletteWire.ts';
 
 const isRecord = (value: unknown): value is Record<string, any> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -416,7 +425,27 @@ export async function publishComponentResources(buildDir: string, schema: Schema
         ])
       );
     delete payload.contentSurfaceContext;
-    const canonicalSurfaces = payload.options?.canonicalSurfaces;
+    const canonicalSurfaces = payload.options?.canonicalSurfaces as
+      | CardCanonicalSurfacesPayload
+      | undefined;
+    const modeSurfaces: {
+      variant: string;
+      mode: string;
+      content?: ContentSurfaceContextMap;
+      region?: ContentSurfaceContextMap;
+    }[] = [];
+    if (name === 'textField' && isRecord(payload.variants)) {
+      for (const [variant, branch] of Object.entries(payload.variants)) {
+        if (!isRecord(branch) || !isRecord(branch.modes)) continue;
+        for (const [mode, config] of Object.entries(branch.modes)) {
+          if (!isRecord(config)) continue;
+          const { contentSurfaceContext: content, contentRegionSurfaceContext: region } = config;
+          if (content || region) modeSurfaces.push({ variant, mode, content, region });
+          delete config.contentSurfaceContext;
+          delete config.contentRegionSurfaceContext;
+        }
+      }
+    }
     if (payload.options) {
       payload.options = { ...payload.options };
       delete payload.options.density;
@@ -424,16 +453,32 @@ export async function publishComponentResources(buildDir: string, schema: Schema
       if (!Object.keys(payload.options).length) delete payload.options;
     }
     for (const palette of paletteNames) {
-      const [segment, theme] = palette.split('.');
+      const [segment, theme] = palette.split('.') as [string, ThemeMode];
       const classMap = artifacts?.classMaps?.palettes?.[palette];
       const surfaceContexts = paletteCapabilities?.[palette];
       const styles = resource.palettes[palette]?.styles ?? [];
-      const context = contentSurfaceContext?.[segment!]?.[theme!];
-      const canonical = canonicalSurfaces?.[segment!]?.[theme!];
-      if (!classMap && !surfaceContexts && !styles.length && !context && !canonical) continue;
+      const context = contentSurfaceContext?.[segment]?.[theme];
+      const canonical = canonicalSurfaces?.[segment]?.[theme];
+      const config: CompactPaletteConfig = {
+        ...(context ? { sc: encodeSurfaceContextSlice(context) } : {}),
+        ...(canonical ? { cs: encodeCanonicalSurfaces(canonical) } : {})
+      };
+      for (const { variant, mode, content, region } of modeSurfaces) {
+        const contentSlice = content?.[segment]?.[theme];
+        const regionSlice = region?.[segment]?.[theme];
+        if (!contentSlice && !regionSlice) continue;
+        config.variants ??= {};
+        config.variants[variant] ??= { modes: {} };
+        config.variants[variant].modes[mode] = {
+          ...(contentSlice ? { sc: encodeSurfaceContextSlice(contentSlice) } : {}),
+          ...(regionSlice ? { sr: encodeSurfaceContextSlice(regionSlice) } : {})
+        };
+      }
+      const hasConfig = Object.keys(config).length > 0;
+      if (!classMap && !surfaceContexts && !styles.length && !hasConfig) continue;
       const palettePath = `components/${palette}/${componentNameToArtifactSlug(name)}.json`;
       const selected = {
-        formatVersion: 3,
+        formatVersion: COMPONENT_PALETTE_FORMAT_VERSION,
         component: name,
         styles,
         ...(classMap ? { classMap } : {}),
@@ -444,18 +489,7 @@ export async function publishComponentResources(buildDir: string, schema: Schema
               }
             }
           : {}),
-        ...(context || canonical
-          ? {
-              config: {
-                ...(context
-                  ? { contentSurfaceContext: { [segment!]: { [theme!]: context } } }
-                  : {}),
-                ...(canonical
-                  ? { options: { canonicalSurfaces: { [segment!]: { [theme!]: canonical } } } }
-                  : {})
-              }
-            }
-          : {})
+        ...(hasConfig ? { config } : {})
       };
       await write(palettePath, selected);
       payload.resources.palettes[palette] = palettePath;

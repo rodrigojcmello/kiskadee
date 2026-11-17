@@ -1,7 +1,7 @@
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { resolveCardSurfaceSource, type Schema } from '@kiskadee/core';
+import type { ContentSurfaceContextMap, Schema } from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import { schema as fluent } from '../../../presets/src/presets/fluent-2-microsoft/fluent-2-microsoft.schema.ts';
 import { resolveElementPaletteSources } from '../palettes/resolveElementPaletteSources.ts';
@@ -17,6 +17,7 @@ import { BUTTON_GROUP_BORDER_SUPPRESSION_STYLE_KEY } from './buttonGroupArtifact
 import { buildColorVariantCapabilities } from './colorVariantCapabilities.ts';
 import { buildComponentClassMapArtifact } from './componentClassMapArtifacts.ts';
 import { publishComponentResources } from './publishComponentResources.ts';
+import { withPrebuiltTestSurfaces } from './surfaceTestFixtures.ts';
 
 function fixture(): Schema {
   const root = {
@@ -35,9 +36,9 @@ function fixture(): Schema {
         contentSurfaceContext: {
           default: {
             light: {
-              onSubtle: { standard: { neutral: { high: { rest: 'onVivid', hover: 'onSubtle' } } } },
+              onSubtle: { standard: { neutral: { high: { rest: 'onVivid' } } } },
               onVivid: {
-                standard: { neutral: { high: { rest: 'onVivid', hover: 'onSubtle' } } },
+                standard: { neutral: { high: { rest: 'onVivid' } } },
                 alternative: { neutral: { high: { rest: 'onSubtle' } } }
               }
             }
@@ -105,7 +106,7 @@ async function compile(schema: Schema) {
 
 describe('shared color variant handoff', () => {
   it('does not advertise alternatives synthesized while projecting another component', () => {
-    const resolved = resolveCardSurfaceSource(fluent);
+    const resolved = withPrebuiltTestSurfaces(fluent);
     expect(buildColorVariantCapabilities(resolved, 'container')).toBeUndefined();
     expect(
       resolved.components.container!.elements.e1.palettes.default!.light!.onSubtle!.alternative
@@ -113,7 +114,7 @@ describe('shared color variant handoff', () => {
   });
 
   it('emits no alternative branch for Standard-only components or isolated palette helpers', async () => {
-    const schema = resolveCardSurfaceSource(fluent);
+    const schema = withPrebuiltTestSurfaces(fluent);
     const result = await compile(schema);
     const containsAlternative = (node: unknown): boolean => {
       if (!node || typeof node !== 'object') return false;
@@ -234,7 +235,8 @@ describe('shared color variant handoff', () => {
 
   it('rejects incomplete effective output and paint without borrowing another context', () => {
     const schema = fixture();
-    const output = schema.components.button!.contentSurfaceContext!.default!.light!.onVivid!;
+    const map = schema.components.button!.contentSurfaceContext as ContentSurfaceContextMap;
+    const output = map.default!.light!.onVivid!;
     delete (output.alternative!.neutral!.high as any).rest;
     expect(buildColorVariantCapabilities(schema, 'button')).toBeUndefined();
     output.alternative!.neutral!.high!.rest = 'onSubtle';
@@ -306,7 +308,7 @@ describe('shared color variant handoff', () => {
     expect(leaf(changed)).toEqual(leaf(standard));
   });
 
-  it('publishes complete coverage in the first metadata fetch and all v3 resource envelopes', async () => {
+  it('publishes complete coverage in common metadata and the v4 palette envelope', async () => {
     const schema = fixture();
     const dir = await mkdtemp(join(tmpdir(), 'kiskadee-color-variant-'));
     const write = (name: string, value: unknown) =>
@@ -339,13 +341,9 @@ describe('shared color variant handoff', () => {
       const resource = JSON.parse(
         await readFile(join(dir, metadata.resources.palettes['default.light']), 'utf8')
       );
-      expect(resource.formatVersion).toBe(3);
-      expect(
-        resource.config.contentSurfaceContext.default.light.onSubtle.alternative
-      ).toBeUndefined();
-      expect(
-        resource.config.contentSurfaceContext.default.light.onVivid.alternative.neutral.high
-      ).toEqual({ rest: 'onSubtle' });
+      expect(resource.formatVersion).toBe(4);
+      expect(resource.config.sc.s.a).toBeUndefined();
+      expect(resource.config.sc.v.a.neutral.h).toEqual({ r: 's' });
       expect(JSON.parse(await readFile(join(dir, 'manifest.json'), 'utf8')).formatVersion).toBe(3);
       expect(buildComponentClassMapArtifact('button', result.maps.core.button).formatVersion).toBe(
         3

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { validateButtonComponentContract } from './button.ts';
+import {
+  type ButtonDerivedContentSurfaceContext,
+  isButtonDerivedContentSurfaceContext,
+  validateButtonComponentContract
+} from './button.ts';
 
 function createButton(options?: unknown, includeIconRegion = false) {
   return {
@@ -361,6 +365,89 @@ describe('Button component contract', () => {
     ).toEqual([
       'components.button.options.disclosureDivider: expected boolean',
       'components.button.options: enabled divider defaults require components.button.elements.e6'
+    ]);
+  });
+});
+
+describe('Button content surface derivation', () => {
+  const contentSurfaceContext = {
+    derive: { element: 'e1', property: 'boxColor' }
+  } as const satisfies ButtonDerivedContentSurfaceContext;
+  const e1 = {
+    name: 'button',
+    palettes: {
+      default: {
+        dark: {
+          onSubtle: { standard: { boxColor: { neutral: { low: { rest: '#202020' } } } } }
+        }
+      }
+    }
+  };
+
+  it('accepts derivation for a Dark-only palette and still accepts manual maps', () => {
+    expect(isButtonDerivedContentSurfaceContext(contentSurfaceContext)).toBe(true);
+    expect(validateButtonComponentContract({ contentSurfaceContext, elements: { e1 } })).toEqual(
+      []
+    );
+    const legacy = {
+      derive: { dark: { onSubtle: { standard: { neutral: { low: { rest: 'onSubtle' } } } } } }
+    };
+    expect(isButtonDerivedContentSurfaceContext(legacy)).toBe(false);
+    expect(
+      validateButtonComponentContract({ contentSurfaceContext: legacy, elements: {} })
+    ).toEqual([]);
+  });
+
+  it('rejects unsupported source coordinates and the removed theme and authored fields', () => {
+    expect(
+      validateButtonComponentContract({
+        contentSurfaceContext: {
+          derive: { theme: 'dark', element: 'e2', property: 'textColor' },
+          authored: {}
+        },
+        elements: { e1 }
+      })
+    ).toEqual([
+      'components.button.contentSurfaceContext.authored: unrecognized key',
+      'components.button.contentSurfaceContext.derive.theme: unrecognized key',
+      'components.button.contentSurfaceContext.derive.element: expected "e1"',
+      'components.button.contentSurfaceContext.derive.property: expected "boxColor"'
+    ]);
+  });
+
+  it('requires a boxColor source for the derivation', () => {
+    expect(
+      validateButtonComponentContract({
+        contentSurfaceContext,
+        elements: { e1: { name: 'button' } }
+      })
+    ).toContain(
+      'components.button.elements.e1.palettes: boxColor source required for content surface derivation'
+    );
+  });
+
+  it('requires a boxColor source in every declared palette theme', () => {
+    expect(
+      validateButtonComponentContract({
+        contentSurfaceContext,
+        elements: {
+          e1: {
+            ...e1,
+            palettes: {
+              default: {
+                ...e1.palettes.default,
+                darker: {
+                  onSubtle: {
+                    standard: { borderColor: { neutral: { low: { rest: '#101010' } } } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
+    ).toEqual([
+      'components.button.elements.e1.palettes.default.darker.onSubtle.standard.boxColor: required for content surface derivation'
     ]);
   });
 });

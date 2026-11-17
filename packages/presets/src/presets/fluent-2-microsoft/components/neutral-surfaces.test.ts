@@ -1,4 +1,8 @@
-import { type ComponentEmphasis, resolveContourReference } from '@kiskadee/core';
+import {
+  type ComponentEmphasis,
+  isDerivedContainerComponent,
+  resolveContourReference
+} from '@kiskadee/core';
 import { describe, expect, it } from 'vitest';
 import blue from '../colors/b.blue.v1.ts';
 import black from '../colors/n.black.v1.ts';
@@ -7,9 +11,38 @@ import { schema } from '../fluent-2-microsoft.schema.ts';
 
 const card = schema.components.card!;
 const container = schema.components.container!;
+if (!isDerivedContainerComponent(container))
+  throw new Error('Fluent Container must derive context');
 
 describe('Fluent achromatic surfaces', () => {
-  it('publishes the calibrated vivid surfaces in both segments and ambient contexts', () => {
+  it('designates both compositing backdrops for every Fluent theme and segment', () => {
+    expect(container.contentSurfaceContext).toEqual({
+      derive: { element: 'e1', property: 'boxColor' }
+    });
+    expect(card).not.toHaveProperty('contentSurfaceContext');
+    for (const segment of ['default', 'teams'] as const) {
+      const canonical = container.options!.canonicalSurfaces![segment]!;
+      for (const theme of ['light', 'dark', 'darker'] as const) {
+        for (const surface of canonical[theme]!) {
+          expect(surface).not.toHaveProperty('contentSurfaceContext');
+        }
+        expect(canonical[theme]!.filter((surface) => surface.referenceFor)).toEqual([
+          {
+            intent: 'neutral',
+            emphasis: theme === 'light' ? 'lowest' : 'low',
+            referenceFor: 'onSubtle'
+          },
+          {
+            intent: 'primary',
+            emphasis: 'highest',
+            referenceFor: 'onVivid'
+          }
+        ]);
+      }
+    }
+  });
+
+  it('preserves primary and companion fills in both segments and ambient contexts', () => {
     for (const segment of ['default', 'teams'] as const) {
       const primary = segment === 'default' ? blue : purple;
       for (const [theme, main, companion] of [
@@ -21,14 +54,6 @@ describe('Fluent achromatic surfaces', () => {
           const surface = container.elements.e1.palettes![segment]![theme]![context]!.standard;
           expect(surface.boxColor.primary!.highest!.rest).toBe(main);
           expect(surface.boxColor.primaryComplementary!.highest!.rest).toBe(companion);
-          expect(
-            container.contentSurfaceContext![segment]![theme]![context]!.standard.primary!.highest!
-              .rest
-          ).toBe('onVivid');
-          expect(
-            container.contentSurfaceContext![segment]![theme]![context]!.standard
-              .primaryComplementary!.highest!.rest
-          ).toBe('onVivid');
           const feedback =
             card.elements.e1!.palettes![segment]![theme]![context]!.standard.boxColor!.primary!
               .highest!;
@@ -38,7 +63,7 @@ describe('Fluent achromatic surfaces', () => {
         }
     }
   });
-  it('publishes complementary Rest surfaces and their descendant contexts in both consumed contexts', () => {
+  it('publishes complementary Rest surfaces in both consumed contexts', () => {
     for (const segment of ['default', 'teams'] as const) {
       const primary = segment === 'default' ? blue : purple;
       for (const [theme, neutralLow, neutralMedium, primaryHighest] of [
@@ -64,21 +89,6 @@ describe('Fluent achromatic surfaces', () => {
             highest: { rest: primaryHighest }
           });
           expect(
-            container.contentSurfaceContext?.[segment]?.[theme]?.[context]?.standard
-              ?.neutralComplementary
-          ).toEqual({
-            low: { rest: 'onSubtle' },
-            medium: { rest: 'onSubtle' }
-          });
-          expect(
-            container.contentSurfaceContext?.[segment]?.[theme]?.[context]?.standard
-              ?.primaryComplementary
-          ).toEqual({
-            ...(theme === 'light' ? { low: { rest: 'onSubtle' } } : {}),
-            medium: { rest: 'onSubtle' },
-            highest: { rest: 'onVivid' }
-          });
-          expect(
             card.elements.e1?.palettes?.[segment]?.[theme]?.[context]?.standard?.boxColor
               ?.neutralComplementary
           ).toBeUndefined();
@@ -86,13 +96,12 @@ describe('Fluent achromatic surfaces', () => {
     }
   });
 
-  it('publishes the vivid companion as a Container canvas in every theme and segment', () => {
+  it('includes the primary companion in the Container catalog in every theme and segment', () => {
     for (const segment of ['default', 'teams'] as const)
       for (const theme of ['light', 'dark', 'darker'] as const)
         expect(container.options?.canonicalSurfaces?.[segment]?.[theme]).toContainEqual({
           intent: 'primaryComplementary',
-          emphasis: 'highest',
-          contentSurfaceContext: 'onVivid'
+          emphasis: 'highest'
         });
   });
 
@@ -109,11 +118,6 @@ describe('Fluent achromatic surfaces', () => {
         })) {
           const emphasis = key as ComponentEmphasis;
           expect(surfaces?.boxColor?.neutral?.[emphasis]?.rest).toBe(color);
-          expect(
-            container.contentSurfaceContext?.[segment]?.light?.[context]?.standard?.neutral?.[
-              emphasis
-            ]?.rest
-          ).toBe('onSubtle');
           const border = palette?.borderColor?.neutral?.[emphasis]?.rest;
           expect(resolveContourReference(border as string, segment, schema.global?.contours)).toBe(
             context === 'onSubtle' ? '#00000018' : '#ffffff26'
@@ -123,8 +127,7 @@ describe('Fluent achromatic surfaces', () => {
       }
       expect(container.options?.canonicalSurfaces?.[segment]?.light).toContainEqual({
         intent: 'neutral',
-        emphasis: 'high',
-        contentSurfaceContext: 'onSubtle'
+        emphasis: 'high'
       });
     }
   });
@@ -184,15 +187,9 @@ describe('Fluent achromatic surfaces', () => {
             container.elements.e1.palettes?.[segment]?.light?.[context]?.standard?.boxColor
               ?.primary?.[emphasis]?.rest
           ).toBe(primary.scales.light[tone]);
-          expect(
-            container.contentSurfaceContext?.[segment]?.light?.[context]?.standard?.primary?.[
-              emphasis
-            ]?.rest
-          ).toBe('onSubtle');
           expect(container.options?.canonicalSurfaces?.[segment]?.light).toContainEqual({
             intent: 'primary',
-            emphasis,
-            contentSurfaceContext: 'onSubtle'
+            emphasis
           });
           for (const theme of ['dark', 'darker'] as const) {
             expect(

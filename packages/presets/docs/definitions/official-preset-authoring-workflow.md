@@ -71,16 +71,18 @@ Container and bounded presentations through Card:
 
 1. Author the required Container Rest surfaces under
    `components.container.elements.e1.palettes[segment][theme].onSubtle.standard.boxColor` and matching
-   supported contextual branches. Author `components.container.contentSurfaceContext` for the
-   context produced for descendants.
+   supported contextual branches. Author `components.container.contentSurfaceContext` as a map
+   or a derivation from `e1.boxColor`.
 2. Set `components.card.surfaceSource: 'container'` and author Card borders, geometry, effects and
    interactive color deltas. Every Card surface must resolve to a Container Rest at the same
-   coordinate. Card keeps its own descendant context map and self-contained generated artifact.
-3. Declare the recommended order and associated descendant context through
-   `components.container.options.canonicalSurfaces[segment][theme]`.
-4. Include at least one entry whose `contentSurfaceContext` is `onSubtle`.
-5. Include a strong Primary entry whose `contentSurfaceContext` is `onVivid` when components will
-   be demonstrated on a vivid Primary canvas.
+   coordinate. A Card linked to a derived Container receives its Rest context and derives the
+   context for state-specific fills in CardAction.
+3. Declare the recommended order through
+   `components.container.options.canonicalSurfaces[segment][theme]`. Assign each entry a
+   `contentSurfaceContext` in the manual form. In the derived form, the build classifies the
+   referenced Rest surface and the preset marks the two compositing backdrops with `referenceFor`.
+4. Include a resolved `onSubtle` entry. For demonstrations that need a vivid Primary canvas,
+   include a suitable Primary entry that resolves to `onVivid`.
 
 The canonical catalog resolves its surface swatches from the Container `onSubtle.standard` Rest branch via
 the resolved Card recipe. At runtime, Card consumes its explicit or inherited `surfaceContext` and
@@ -88,10 +90,9 @@ selects the matching Card palette. The runtime `contentSurfaceContext` map tells
 palette context to select; the matching field in `canonicalSurfaces` documents the catalog entry
 and does not replace that map.
 
-Core validates Card-to-Container and catalog references; Web Builder resolves them before
-publishing `components/container.kiskadee.json` and the self-contained
-`components/card.kiskadee.json`. The latter retains a resolved canonical catalog for existing
-Showcase consumers. Having a Primary color in Layers 1, 2, or 3 is not sufficient to create it.
+Core validates Card-to-Container and catalog references. Surface Builder resolves them in the
+portable `surface-contexts.json` for the preset. Web Builder then publishes scoped Container
+and self-contained Card palette resources. Their resolved catalogs support Showcase selection.
 
 Card is not a universal prerequisite for compiling another component. It becomes a delivery
 prerequisite when the component's documentation or composition needs a preset-owned surrounding
@@ -115,6 +116,10 @@ The descendant `contentSurfaceContext` maps also include the color-variant level
 is sparse at property/intent/emphasis boundaries: an omitted leaf inherits the whole Standard
 state map, while an authored leaf owns all states. Missing states retain that leaf's Rest.
 Do not copy Neutral or another unchanged leaf solely to advertise an Alternative capability.
+Button and Container can declare a source of build-time derivation for every available theme or
+supply an authored map directly. See the [published handoff](../../../web-builder/docs/definitions/component-resources.md#palette-surface-configuration)
+and the [Fluent example](../design-systems/fluent-2-microsoft/components/button.md#descendant-surface-context-derivation)
+for the supported policy and its canonical reference surfaces.
 Separator profiles share this palette grammar. Foreground profiles also carry the variant below
 Surface Context, with inheritance by whole emphasis/state map; their Standard/Deep profile axis
 remains independent. Contour catalogs retain their existing coordinate grammar; `options.border.adaptive` retains its boolean map grammar.

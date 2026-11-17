@@ -159,6 +159,15 @@ The exception does not authorize runtime authorship of geometry, color, or other
 
 ## Build and execution projects
 
+### `packages/surface-builder`
+
+- **Authority:** the portable surface pre-build and its `surface-contexts.json` transport contract.
+- **Consumes/adapts:** Core contracts, authored presets and Tonal Scale color utilities to resolve
+  effective paint and materialize declared Surface Context maps or derivations.
+- **Produces:** one revision-bound surface artifact per preset for Web Builder and future native
+  exporters.
+- **Must not own:** preset color values, Schema authorship, CSS or platform rendering decisions.
+
 ### `packages/css-build`
 
 - **Authority:** shared PostCSS processing mechanics such as prefixing, media-query combination, and
@@ -172,8 +181,8 @@ The exception does not authorize runtime authorship of geometry, color, or other
 
 - **Authority:** Schema-to-Web lowering, Style Keys, Style Emission Policy, deduplication, CSS and
   class-map generation, manifest/metadata formats, and Showcase artifact sync/generation.
-- **Consumes/adapts:** Core contracts, preset instances, and documented optional extensions from
-  Tonal Scale or Brands.
+- **Consumes/adapts:** Core contracts, preset instances, portable Surface Builder output, and
+  documented optional extensions from Tonal Scale or Brands.
 - **Produces:** generated Web CSS, JSON class maps, manifests, metadata, and registries consumed by
   `p-react` and Showcase.
 - **Must not own:** design-system values, preset interpretation, DOM/layout, headless interaction,
@@ -285,6 +294,7 @@ validated instance; they do not repair its meaning.
 
 ```text
 Core + Presets -> Web Builder -> generated artifacts -> p-react -> Showcase/application
+Core + Presets -> Surface Builder -> portable surface artifact -> Web Builder
 Headless React ---------------------------------------> p-react
 Runtime + Fonts + Icons + optional Brands ----------> p-react/application
 ```
@@ -299,7 +309,8 @@ canonical Schema or derived payload -> native loader -> resolver -> native compo
 ```
 
 A derived payload may narrow data for a platform but must remain reproducible from the canonical
-Schema. Native mechanics may diverge; design-system meaning may not.
+Schema. Native exporters can consume the same portable surface artifact as Web Builder. Native
+mechanics may diverge while design-system meaning remains shared.
 
 ### Optional resources
 

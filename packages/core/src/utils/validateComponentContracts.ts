@@ -3,9 +3,15 @@ import { validateBadgeComponentContract } from '../components/badge.ts';
 import { validateBottomSheetComponentContract } from '../components/bottom-sheet.ts';
 import { validateButtonComponentContract } from '../components/button.ts';
 import { validateCardComponentContract } from '../components/card.ts';
-import { resolveCardSurfaceSource } from '../components/card-surface-source.ts';
+import {
+  resolveCardSurfaceSource,
+  validateCardRestSurfaceSource
+} from '../components/card-surface-source.ts';
 import { validateChipComponentContract } from '../components/chip.ts';
-import { validateContainerComponentContract } from '../components/container.ts';
+import {
+  isDerivedContainerSurfaceContext,
+  validateContainerComponentContract
+} from '../components/container.ts';
 import { validateDropdownComponentContract } from '../components/dropdown.ts';
 import { validateIconComponentContract } from '../components/icon.ts';
 import { validateLayoutComponentContract } from '../components/layout.ts';
@@ -87,13 +93,22 @@ export function validateSchemaComponentContracts(schemaLike: {
   }
 
   if (byName.card !== undefined) {
-    const effectiveCard = resolveCardSurfaceSource(schemaLike as Schema).components.card;
-    const issues = validateCardComponentContract(effectiveCard, 'components.card');
+    const schema = schemaLike as Schema;
+    const contextFromDerivedContainer =
+      schema.components.card?.surfaceSource === 'container' &&
+      isDerivedContainerSurfaceContext(schema.components.container?.contentSurfaceContext);
+    const card = contextFromDerivedContainer
+      ? schema.components.card
+      : resolveCardSurfaceSource(schema).components.card;
+    const issues = validateCardComponentContract(card, 'components.card', {
+      contextFromDerivedContainer
+    });
     if (issues.length > 0) {
       throw new Error(
         `Invalid component contract for card. Review element/property mapping.\n${issues.join('\n')}`
       );
     }
+    if (contextFromDerivedContainer) validateCardRestSurfaceSource(schema);
   }
 
   if (byName.chip !== undefined) {

@@ -6,7 +6,7 @@ export * from './components/badge.ts';
 export * from './components/bottom-sheet.ts';
 export * from './components/button.ts';
 export * from './components/card.ts';
-export * from './components/card-surface-source.ts';
+export { resolveCardSurfaceSource } from './components/card-surface-source.ts';
 export * from './components/chip.ts';
 export * from './components/container.ts';
 export * from './components/dropdown.ts';

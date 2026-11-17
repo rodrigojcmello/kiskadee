@@ -125,10 +125,10 @@ describe('expandElementForeground', () => {
   it('fails defensively when a profile reference is unknown', () => {
     expect(() =>
       expandElementForeground({ neutral: { family: 'missing', profile: 'standard' } }, foregrounds)
-    ).toThrow('[web-builder] Foreground family "missing" is not defined.');
+    ).toThrow('[surface-builder] Foreground family "missing" is not defined.');
     expect(() =>
       expandElementForeground({ neutral: { family: 'neutral', profile: 'deep' } }, foregrounds)
-    ).toThrow('[web-builder] Neutral foreground only supports the standard profile.');
+    ).toThrow('[surface-builder] Neutral foreground only supports the standard profile.');
   });
 
   it('projects only Rest when a global profile also publishes control states', () => {

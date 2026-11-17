@@ -8,23 +8,28 @@ component surface-context props and internal providers remain unchanged.
 
 ## Published catalog
 
-The shared canvas control reads the active preset's generated Container metadata artifact:
+The shared canvas control reads the active preset's decoded Container palette configuration:
 
 ```text
-components/container.kiskadee.json
-  options.canonicalSurfaces[segment][theme][]
-    intent
-    emphasis
-    contentSurfaceContext
-    rest
+components/<segment>.<theme>/container.json (config.cs)
+  -> decoded Container metadata
+    options.canonicalSurfaces[segment][theme][]
+      intent
+      emphasis
+      contentSurfaceContext
+      rest
 ```
 
 The preset authors the array order through `components.container.options.canonicalSurfaces`.
-Container owns the referenced Rest colors and descendant contexts. The Web Builder validates the
-references and preserves Card-compatible resolved entries in the Card artifact for other
-consumers. The shared canvas can include a published companion surface; the ordinary
+Container owns the referenced Rest colors and the declared or derived descendant contexts.
+Surface Builder resolves the catalog and Web Builder publishes the selected palette,
+including Card-compatible entries in the Card resource. The shared canvas can include a
+published companion surface; the ordinary
 Card inspection catalog continues to omit companion intents.
 The Showcase neither owns an intent/emphasis list nor sorts colors by luminance.
+
+The global **On vivid** control is available when the selected catalog has a vivid entry.
+Fluent's derived Dark and Darker catalogs currently contain only subtle entries.
 
 When two surface entries resolve to the same normalized color, only the first is retained in the
 base swatch catalog. Background composition opts out of this deduplication to retain same-intent

@@ -10,6 +10,7 @@ import {
 import { SurfaceContextProvider } from '../../shared/contexts/SurfaceContext.tsx';
 import { Badge } from '../Badge/Badge.tsx';
 import { Button } from './Button.tsx';
+import type { ButtonProps } from './Button.types.ts';
 
 const badgeRelationClasses = {
   d: 'button-badge-relation',
@@ -272,5 +273,90 @@ describe('Button.Badge', () => {
 
     expect(result.getByTestId('vivid-overlay-badge').className).toContain('badge-on-vivid');
     expect(result.getByTestId('subtle-inline-badge').className).toContain('badge-on-subtle');
+  });
+
+  it('uses the published Light paint output for inline Badge and pending Progress', () => {
+    const value: KiskadeeContextValue = {
+      ...surfacedContext,
+      classesMap: {
+        ...surfacedContext.classesMap,
+        progress: {
+          e3: {
+            c: {
+              s: { s: { neutral: { m: 'progress-on-subtle' } } },
+              v: { s: { neutral: { m: 'progress-on-vivid' } } }
+            }
+          }
+        }
+      },
+      componentArtifacts: {
+        button: {
+          formatVersion: 3,
+          component: 'button',
+          contentSurfaceContext: {
+            default: {
+              light: {
+                onVivid: {
+                  standard: {
+                    primary: {
+                      medium: { rest: 'onVivid', selected: 'onSubtle' },
+                      high: { rest: 'onSubtle', disabled: 'onVivid' }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    const view = ({
+      controlState,
+      disabled,
+      emphasis = 'medium',
+      pending
+    }: Pick<ButtonProps, 'controlState' | 'disabled' | 'emphasis' | 'pending'>) => (
+      <KiskadeeContext.Provider value={value}>
+        <SurfaceContextProvider value="onVivid">
+          <Button
+            intent="primary"
+            emphasis={emphasis}
+            toggle
+            controlState={controlState}
+            disabled={disabled}
+            pending={pending}
+          >
+            <Button.Label>Export</Button.Label>
+            <Button.Badge placement="inline-end">
+              <Badge data-testid="inline">2</Badge>
+            </Button.Badge>
+            <Button.Badge>
+              <Badge data-testid="overlay">3</Badge>
+            </Button.Badge>
+            {pending && <Button.Progress value={50} />}
+          </Button>
+        </SurfaceContextProvider>
+      </KiskadeeContext.Provider>
+    );
+    const result = render(view({ controlState: false }));
+    expect(screen.getByTestId('inline').classList.contains('badge-on-vivid')).toBe(true);
+
+    result.rerender(view({ controlState: true }));
+    expect(screen.getByTestId('inline').classList.contains('badge-on-subtle')).toBe(true);
+    expect(screen.getByTestId('overlay').classList.contains('badge-on-vivid')).toBe(true);
+
+    result.rerender(view({ controlState: true, pending: true }));
+    expect(screen.getByTestId('inline').classList.contains('badge-on-vivid')).toBe(true);
+    expect(screen.getByTestId('overlay').classList.contains('badge-on-vivid')).toBe(true);
+    expect(screen.getByRole('button').querySelector('.progress-on-vivid')).not.toBeNull();
+
+    result.rerender(view({ controlState: true, pending: true, emphasis: 'high' }));
+    expect(screen.getByTestId('inline').classList.contains('badge-on-subtle')).toBe(true);
+    expect(screen.getByTestId('overlay').classList.contains('badge-on-vivid')).toBe(true);
+    expect(screen.getByRole('button').querySelector('.progress-on-subtle')).not.toBeNull();
+
+    result.rerender(view({ controlState: true, disabled: true, emphasis: 'high' }));
+    expect(screen.getByTestId('inline').classList.contains('badge-on-vivid')).toBe(true);
+    expect(screen.getByTestId('overlay').classList.contains('badge-on-vivid')).toBe(true);
   });
 });

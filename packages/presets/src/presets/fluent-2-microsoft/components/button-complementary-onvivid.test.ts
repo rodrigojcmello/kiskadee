@@ -79,17 +79,9 @@ describe('Fluent Button complementary primary selection on vivid surfaces', () =
       }
   });
 
-  it('publishes selected child context and matching inside-indicator polarity without changing the ambient context', () => {
+  it('uses the selected fill to tune the inside indicator and the ambient context for the outside indicator', () => {
     for (const segment of ['default', 'teams'] as const)
       for (const theme of ['light', 'dark', 'darker'] as const) {
-        const context =
-          button.contentSurfaceContext![segment]![theme]!.onVivid!.standard.primary!.medium!;
-        expect(context).toEqual({
-          rest: 'onVivid',
-          selected: 'onSubtle',
-          pending: 'onVivid',
-          disabled: 'onSubtle'
-        });
         const fill = button.elements.e1!.palettes![segment]![theme]!.onVivid!.standard.boxColor!
           .primary!.medium!.selected!.rest as string;
         const inside =

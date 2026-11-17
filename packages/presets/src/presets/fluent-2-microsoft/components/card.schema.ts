@@ -282,57 +282,56 @@ const CARD_RECIPES = {
   darker: DARKER_RECIPE
 } as const satisfies Record<ThemeName, CardPaletteRecipe>;
 
-function createCardContentSurfaceContext(themeName: ThemeName) {
-  const recipe: CardPaletteRecipe = CARD_RECIPES[themeName];
-  const createContext = () => ({
-    neutral: {
-      lowest: { rest: 'onSubtle' as const },
-      low: { rest: 'onSubtle' as const },
-      medium: { rest: 'onSubtle' as const },
-      ...(recipe.boxColor.neutral.high ? { high: { rest: 'onSubtle' as const } } : undefined),
-      ...(recipe.boxColor.neutral.highest ? { highest: { rest: 'onSubtle' as const } } : undefined)
-    },
-    primary: {
-      lowest: { rest: 'onSubtle' as const },
-      medium: { rest: 'onSubtle' as const },
-      ...(recipe.boxColor.primary.low ? { low: { rest: 'onSubtle' as const } } : undefined),
-      ...(recipe.boxColor.primary.high ? { high: { rest: 'onSubtle' as const } } : undefined),
-      ...(recipe.boxColor.primary.highest ? { highest: { rest: 'onVivid' as const } } : undefined)
-    }
-  });
-
-  return {
-    onSubtle: { standard: createContext() },
-    onVivid: { standard: createContext() }
-  };
-}
-
 const CANONICAL_CARD_SURFACES = {
   default: {
     light: [
-      { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'high', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
+      {
+        intent: 'neutral',
+        emphasis: 'lowest',
+        referenceFor: 'onSubtle'
+      },
+      { intent: 'neutral', emphasis: 'low' },
+      { intent: 'primary', emphasis: 'low' },
+      { intent: 'primary', emphasis: 'high' },
+      { intent: 'primary', emphasis: 'medium' },
+      { intent: 'neutral', emphasis: 'medium' },
+      { intent: 'neutral', emphasis: 'high' },
+      {
+        intent: 'primary',
+        emphasis: 'highest',
+        referenceFor: 'onVivid'
+      }
     ],
     dark: [
-      { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' }
+      { intent: 'neutral', emphasis: 'lowest' },
+      {
+        intent: 'neutral',
+        emphasis: 'low',
+        referenceFor: 'onSubtle'
+      },
+      { intent: 'primary', emphasis: 'medium' },
+      { intent: 'neutral', emphasis: 'medium' },
+      {
+        intent: 'primary',
+        emphasis: 'highest',
+        referenceFor: 'onVivid'
+      }
     ],
     darker: [
-      { intent: 'neutral', emphasis: 'lowest', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'low', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'neutral', emphasis: 'medium', contentSurfaceContext: 'onSubtle' },
-      { intent: 'primary', emphasis: 'highest', contentSurfaceContext: 'onVivid' },
-      { intent: 'neutral', emphasis: 'highest', contentSurfaceContext: 'onSubtle' }
+      { intent: 'neutral', emphasis: 'lowest' },
+      {
+        intent: 'neutral',
+        emphasis: 'low',
+        referenceFor: 'onSubtle'
+      },
+      { intent: 'primary', emphasis: 'medium' },
+      { intent: 'neutral', emphasis: 'medium' },
+      {
+        intent: 'primary',
+        emphasis: 'highest',
+        referenceFor: 'onVivid'
+      },
+      { intent: 'neutral', emphasis: 'highest' }
     ]
   }
 } as const;
@@ -511,13 +510,6 @@ export function createFluent2MicrosoftCardSchema({
   segmentNames
 }: CreateFluent2MicrosoftCardSchemaArgs) {
   const result = splitCardSurfaceSchema<never>({
-    contentSurfaceContext: {
-      default: {
-        light: createCardContentSurfaceContext('light'),
-        dark: createCardContentSurfaceContext('dark'),
-        darker: createCardContentSurfaceContext('darker')
-      }
-    },
     options: {
       border: {
         defaultMode: 'adaptive',
@@ -555,8 +547,7 @@ export function createFluent2MicrosoftCardSchema({
             }
           }
         }
-      },
-      canonicalSurfaces: CANONICAL_CARD_SURFACES
+      }
     },
     effects: {
       shadow: {
@@ -609,6 +600,11 @@ export function createFluent2MicrosoftCardSchema({
 
   return {
     ...result,
-    container: createFluent2MicrosoftContainerSchema({ base: result.container, c, segmentNames })
+    container: createFluent2MicrosoftContainerSchema({
+      elements: result.container.elements,
+      canonicalSurfaces: CANONICAL_CARD_SURFACES,
+      c,
+      segmentNames
+    })
   };
 }

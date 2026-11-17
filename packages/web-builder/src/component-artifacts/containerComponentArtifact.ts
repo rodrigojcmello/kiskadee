@@ -1,8 +1,16 @@
-import type { ContainerCanonicalSurface, Schema, SolidColor, ThemeMode } from '@kiskadee/core';
+import {
+  type ContainerCanonicalSurface,
+  isDerivedContainerComponent,
+  type Schema,
+  type SolidColor,
+  type ThemeMode
+} from '@kiskadee/core';
 
 export const CONTAINER_COMPONENT_ARTIFACT_PATH = 'components/container.kiskadee.json';
 
-export type ResolvedContainerCanonicalSurface = ContainerCanonicalSurface & { rest: SolidColor };
+export type ResolvedContainerCanonicalSurface = Omit<ContainerCanonicalSurface, 'referenceFor'> & {
+  rest: SolidColor;
+};
 export type ContainerCanonicalSurfacesPayload = Record<
   string,
   Partial<Record<ThemeMode, ResolvedContainerCanonicalSurface[]>>
@@ -44,7 +52,11 @@ function readRest(
 export function buildContainerComponentArtifact(
   schema: Schema
 ): ContainerComponentArtifactJSON | null {
-  const canonicalSurfaces = schema.components?.container?.options?.canonicalSurfaces;
+  const container = schema.components?.container;
+  if (!container) return null;
+  if (isDerivedContainerComponent(container))
+    throw new Error('[web-builder] Container requires prebuilt surface contexts.');
+  const canonicalSurfaces = container.options?.canonicalSurfaces;
   if (!canonicalSurfaces) return null;
 
   const resolved: ContainerCanonicalSurfacesPayload = {};
@@ -55,9 +67,11 @@ export function buildContainerComponentArtifact(
       [ThemeMode, readonly ContainerCanonicalSurface[] | undefined]
     >) {
       if (!surfaces) continue;
-      resolvedThemes[theme] = surfaces.map((surface) => ({
-        ...surface,
-        rest: readRest(schema, segment, theme, surface.intent, surface.emphasis)
+      resolvedThemes[theme] = surfaces.map(({ intent, emphasis, contentSurfaceContext }) => ({
+        intent,
+        emphasis,
+        contentSurfaceContext,
+        rest: readRest(schema, segment, theme, intent, emphasis)
       }));
     }
     if (Object.keys(resolvedThemes).length) resolved[segment] = resolvedThemes;

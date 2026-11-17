@@ -83,7 +83,7 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
       components: {
         button: {
           options: { groupDivider: true },
-          contentSurfaceContext: { default: { light: { onSubtle: {} } } }
+          contentSurfaceContext: { default: { light: { onSubtle: { standard: {} } } } }
         },
         container: {
           contentSurfaceContext: {
@@ -134,18 +134,16 @@ it.each([false, true])('publishes lean resources (segment metadata: %s)', async 
       'default.light': { onSubtle: { primary: ['high'] } }
     });
     const descriptor = await read(metadata.resources.palettes['default.light']);
-    expect(descriptor.config.contentSurfaceContext.default.light).toEqual({ onSubtle: {} });
+    expect(descriptor.formatVersion).toBe(4);
+    expect(descriptor.config).toEqual({ sc: { s: { s: {} } } });
     expect(descriptor.capabilities.surfaceContexts['default.light']).toBeDefined();
     expect(descriptor.styles).toHaveLength(1);
     expect(metadata.resources.styles).toHaveLength(1);
     const containerMetadata = await read('components/container.kiskadee.json');
     expect(containerMetadata.component).toBe('container');
     const containerDescriptor = await read(containerMetadata.resources.palettes['default.light']);
-    expect(
-      containerDescriptor.config.contentSurfaceContext.default.light.onSubtle.standard.neutral
-        .medium
-    ).toEqual({
-      rest: 'onSubtle'
+    expect(containerDescriptor.config).toEqual({
+      sc: { s: { s: { neutral: { m: { r: 's' } } } } }
     });
     await expect(readFile(join(dir, 'core.kiskadee.json'))).rejects.toMatchObject({
       code: 'ENOENT'

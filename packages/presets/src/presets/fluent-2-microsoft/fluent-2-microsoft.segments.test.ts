@@ -56,5 +56,8 @@ describe('Fluent Teams shared palette', () => {
     visit(schema, teams);
     expect(checked).toBeGreaterThan(30);
     expect(Object.keys(schema.colors!.globalSemanticsBySegment!)).toEqual(['default', 'teams']);
+    expect(schema.components.button!.contentSurfaceContext).toEqual({
+      derive: { element: 'e1', property: 'boxColor' }
+    });
   });
 });

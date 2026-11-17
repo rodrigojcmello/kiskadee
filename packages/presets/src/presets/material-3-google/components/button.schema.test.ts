@@ -1,3 +1,4 @@
+import { isButtonDerivedContentSurfaceContext } from '@kiskadee/core';
 import { expect, it } from 'vitest';
 import { createPresetColorGetter } from '../../../utils/presetColor.ts';
 import { schemaColors } from '../material-3-google.colors.ts';
@@ -161,6 +162,10 @@ it('keeps selected content stable, publishes matching surface contexts and prese
     segmentNames: ['default', 'dynamic', 'purple'],
     transparent: 'transparent'
   });
+  const contentSurfaceContext = button.contentSurfaceContext;
+  if (isButtonDerivedContentSurfaceContext(contentSurfaceContext)) {
+    throw new Error('Material Button must retain its authored surface context');
+  }
   for (const segment of ['default', 'dynamic', 'purple'] as const)
     for (const theme of ['light', 'dark'] as const)
       for (const surface of ['onSubtle', 'onVivid'] as const)
@@ -189,9 +194,7 @@ it('keeps selected content stable, publishes matching surface contexts and prese
               expect(content?.disabled).toHaveProperty('ref');
             }
             const context =
-              button.contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[intent]?.[
-                emphasis
-              ];
+              contentSurfaceContext?.[segment]?.[theme]?.[surface]?.standard?.[intent]?.[emphasis];
             expect(context?.selected).toBe(
               emphasis === 'high'
                 ? surface === 'onVivid' || theme === 'dark'

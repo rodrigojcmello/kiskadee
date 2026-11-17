@@ -1,0 +1,27 @@
+.page {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.copy {
+  margin: 0;
+}
+
+.tableWindow {
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  inline-size: 100%;
+  min-inline-size: 54rem;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem;
+  text-align: start;
+  vertical-align: top;
+}

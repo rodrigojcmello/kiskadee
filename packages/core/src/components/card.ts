@@ -176,9 +176,11 @@ function validatePalettes(
   value: unknown,
   allowedColorKeys: readonly ColorProperty[],
   path: string,
-  issues: string[]
+  issues: string[],
+  contextFromDerivedContainer: boolean
 ): void {
-  for (const issue of getElementPaletteValidationIssues(value, allowedColorKeys)) {
+  const options = contextFromDerivedContainer ? { inheritedRest: ['boxColor'] as const } : {};
+  for (const issue of getElementPaletteValidationIssues(value, allowedColorKeys, options)) {
     const issuePath = issue.path.length > 0 ? `${path}.${issue.path.join('.')}` : path;
     issues.push(`${issuePath}: ${issue.message}`);
   }
@@ -202,7 +204,8 @@ function validateElementContract(
   value: unknown,
   path: string,
   rules: ElementContractRules,
-  issues: string[]
+  issues: string[],
+  contextFromDerivedContainer: boolean
 ): void {
   if (!isRecord(value)) {
     issues.push(`${path}: expected object`);
@@ -247,7 +250,13 @@ function validateElementContract(
     if (!rules.palettes) {
       issues.push(`${path}.palettes: not allowed for this element`);
     } else {
-      validatePalettes(value.palettes, rules.palettes, `${path}.palettes`, issues);
+      validatePalettes(
+        value.palettes,
+        rules.palettes,
+        `${path}.palettes`,
+        issues,
+        contextFromDerivedContainer
+      );
     }
   }
 }
@@ -391,7 +400,8 @@ function validateComponentOptions(
   value: unknown,
   elements: unknown,
   path: string,
-  issues: string[]
+  issues: string[],
+  contextFromDerivedContainer: boolean
 ): void {
   if (!isRecord(value)) {
     issues.push(`${path}: expected object`);
@@ -428,6 +438,7 @@ function validateComponentOptions(
         if (typeof entry !== 'boolean') issues.push(`${entryPath}: expected boolean`);
         const [segment, theme, context, intent, emphasis] = keys;
         for (const property of ['boxColor', 'borderColor']) {
+          if (contextFromDerivedContainer && property === 'boxColor') continue;
           if (
             read(root.palettes, [
               segment,
@@ -532,7 +543,11 @@ function validateComponentOptions(
   }
 }
 
-export function validateCardComponentContract(value: unknown, path = 'components.card'): string[] {
+export function validateCardComponentContract(
+  value: unknown,
+  path = 'components.card',
+  { contextFromDerivedContainer = false }: { contextFromDerivedContainer?: boolean } = {}
+): string[] {
   const issues: string[] = [];
 
   if (!isRecord(value)) {
@@ -545,12 +560,16 @@ export function validateCardComponentContract(value: unknown, path = 'components
   }
 
   if (value.contentSurfaceContext !== undefined) {
-    issues.push(
-      ...validateContentSurfaceContextMap(
-        value.contentSurfaceContext,
-        `${path}.contentSurfaceContext`
-      )
-    );
+    if (contextFromDerivedContainer) {
+      issues.push(`${path}.contentSurfaceContext: derived Container owns the context`);
+    } else {
+      issues.push(
+        ...validateContentSurfaceContextMap(
+          value.contentSurfaceContext,
+          `${path}.contentSurfaceContext`
+        )
+      );
+    }
   }
 
   if (value.effects !== undefined) {
@@ -564,7 +583,20 @@ export function validateCardComponentContract(value: unknown, path = 'components
   }
 
   if (value.options !== undefined) {
-    validateComponentOptions(value.options, elements, `${path}.options`, issues);
+    if (
+      contextFromDerivedContainer &&
+      isRecord(value.options) &&
+      Object.hasOwn(value.options, 'canonicalSurfaces')
+    ) {
+      issues.push(`${path}.options.canonicalSurfaces: authored catalog belongs to Container`);
+    }
+    validateComponentOptions(
+      value.options,
+      elements,
+      `${path}.options`,
+      issues,
+      contextFromDerivedContainer
+    );
   } else {
     issues.push(`${path}.options.border: required border policy`);
   }
@@ -574,7 +606,13 @@ export function validateCardComponentContract(value: unknown, path = 'components
   for (const key of CARD_ELEMENTS_KEYS) {
     const element = elements[key];
     if (element === undefined) continue;
-    validateElementContract(element, `${path}.elements.${key}`, CARD_RULES[key], issues);
+    validateElementContract(
+      element,
+      `${path}.elements.${key}`,
+      CARD_RULES[key],
+      issues,
+      contextFromDerivedContainer
+    );
   }
 
   return issues;

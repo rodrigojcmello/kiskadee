@@ -131,6 +131,82 @@ it('does not expose metadata until CSS is ready, and retries a rejected resource
   expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);
 });
 
+it('retries invalid palette envelopes and merges selected TextField regions into the common modes', async () => {
+  const manifest = {
+    formatVersion: 3,
+    revision: 'surface-v4',
+    components: { textField: { artifacts: { metadata: 'text-field.json' } } }
+  } as Manifest;
+  const requests: string[] = [];
+  let attempts = 0;
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (url: string) => {
+      requests.push(url);
+      if (url.includes('/text-field.json?')) {
+        return Response.json({
+          formatVersion: 3,
+          component: 'textField',
+          sizeSupport: {},
+          resources: { styles: [], palettes: { 'teams.dark': 'dark.palette.json' } },
+          variants: {
+            standard: {
+              options: { labelPlacement: 'outside' },
+              modes: { outline: { options: { focusRingColorSource: 'field' } }, underline: {} }
+            }
+          }
+        });
+      }
+      attempts++;
+      return Response.json({
+        formatVersion: attempts === 1 ? 3 : 4,
+        component: 'textField',
+        styles: [],
+        config: {
+          variants: {
+            standard: {
+              modes: {
+                outline: {
+                  sc: { s: { s: { neutral: { l: { r: 'i' } } } } },
+                  sr: { v: { s: { neutral: { m: { r: attempts === 2 ? 'invalid' : 'v' } } } } }
+                }
+              }
+            }
+          }
+        }
+      });
+    })
+  );
+  const prepare = () =>
+    prepareComponentResources('surface-v4', manifest, 'textField', 'teams', 'dark');
+  await expect(prepare()).rejects.toThrow('Invalid component palette');
+  await expect(prepare()).rejects.toThrow('Invalid compact surface code');
+  const result = await prepare();
+  expect(result?.metadata).toMatchObject({
+    variants: {
+      standard: {
+        options: { labelPlacement: 'outside' },
+        modes: {
+          outline: {
+            options: { focusRingColorSource: 'field' },
+            contentSurfaceContext: {
+              teams: { dark: { onSubtle: { standard: { neutral: { low: { rest: 'inherit' } } } } } }
+            },
+            contentRegionSurfaceContext: {
+              teams: {
+                dark: { onVivid: { standard: { neutral: { medium: { rest: 'onVivid' } } } } }
+              }
+            }
+          },
+          underline: {}
+        }
+      }
+    }
+  });
+  expect(requests).toHaveLength(4);
+  expect(requests.filter((url) => url.includes('dark.palette.json'))).toHaveLength(3);
+});
+
 it('discovers variant capabilities from metadata without loading class maps or CSS', async () => {
   const { loadComponentMetadata } = await import('./component-resources.client');
   const manifest = {

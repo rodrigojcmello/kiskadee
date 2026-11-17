@@ -1,6 +1,6 @@
 # Component-scoped runtime resources
 
-Status: canonical Web Builder publication contract (format 3).
+Status: canonical Web Builder publication contract.
 
 ## Shared color-variant handoff
 
@@ -31,12 +31,35 @@ inheritance alone does not advertise support. When class maps are supplied, cove
 the effective classes. The summary remains in component metadata for discovery before loading
 palette maps or CSS. `surfaceContexts` continues to describe Standard states.
 
-`contentSurfaceContext` uses the same variant axis and whole state-map inheritance. Effective
-per-palette output lives in `ComponentPaletteResourceArtifact.config.contentSurfaceContext`.
-Manifest, component metadata, class-map envelopes, and palette resource envelopes all require
-`formatVersion: 3`. Consumers reject missing or previous versions; there is no legacy reader.
-Compiled Web Brand Packs use `kiskadee.brand-pack-build.v3` and format 3. Portable seed/catalog
-formats and tonal assets are unchanged.
+## Palette surface configuration
+
+The [Surface Builder](../../../surface-builder/README.md) pre-build emits one readable
+`surface-contexts.json` per preset. Web Builder validates the companion against the authored
+Schema and publishes each selected component, segment and theme as a separate palette resource.
+A palette resource uses `formatVersion: 4`. The manifest, component metadata and class-map
+envelopes use `formatVersion: 3`. Compiled Web Brand Packs use `kiskadee.brand-pack-build.v3`
+and format 3. Consumers require the defined version for each envelope.
+
+The compact surface configuration uses these fields in the selected palette resource:
+
+- `config.sc.<s|v>.<s|a>.<intent>.<hh|h|m|l|ll>` contains the context received, color variant,
+  intent and emphasis. The state codes are `r` Rest, `s` Selected, `p` Pending and `d` Disabled.
+  The output values are `s` for `onSubtle`, `v` for `onVivid` and `i` for `inherit`.
+- `config.cs` contains the ordered canonical surface catalog as
+  `[intent, emphasisCode, contextCode, restColor]` entries.
+- `config.variants.<variant>.modes.<mode>` carries TextField's `sc` content map and `sr` region map
+  for the selected palette. Common mode options remain in component metadata.
+
+The palette descriptor address already identifies the segment and theme. Its decoder restores
+those coordinates and merges mode maps with common variant and mode options before exposing the
+readable `contentSurfaceContext`, `contentRegionSurfaceContext` and `options.canonicalSurfaces`
+to React. Missing states retain Rest and explicit `inherit` retains the consumed context.
+Invalid versions or compact codes fail resource preparation. The browser loads only the selected
+palette descriptor and its existing dependencies.
+
+The same Button map serves standalone, connected and Stacked Buttons, including the High Rest
+paint projection used by stronger selections. React resolves the map with its existing state
+precedence and passes one context value through the Provider.
 
 ## Button indicator handoff
 

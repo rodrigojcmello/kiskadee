@@ -1,0 +1,27 @@
+{
+  "name": "@kiskadee/surface-builder",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Portable preset surface context compilation.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./palettes/expandElementForeground": "./src/palettes/expandElementForeground.ts",
+    "./palettes/expandElementSeparator": "./src/palettes/expandElementSeparator.ts",
+    "./palettes/resolveContourReferences": "./src/palettes/resolveContourReferences.ts",
+    "./palettes/resolveElementPaletteSources": "./src/palettes/resolveElementPaletteSources.ts",
+    "./palettes/resolveForegroundReferences": "./src/palettes/resolveForegroundReferences.ts"
+  },
+  "scripts": {
+    "build": "node ./src/run-build.ts"
+  },
+  "dependencies": {
+    "@kiskadee/core": "workspace:^",
+    "@kiskadee/presets": "workspace:^",
+    "@kiskadee/tonal-scale": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "typescript": "^6.0.3"
+  }
+}

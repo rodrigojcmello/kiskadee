@@ -317,8 +317,10 @@ A durable architecture decision should record:
   headless-react owns the non-nested interaction contract; p-react owns the Web structure; a nested
   Badge remains an independent passive component.
 - Surface Context uses a Provider because independent descendants need a subtree-scoped semantic
-  runtime input. Presets still author the serialized produced-surface map; the Provider does not
-  replace Schema data or switch the theme. See
+  runtime input. The Provider receives the semantic value resolved from the published map.
+  Presets can supply an authored map or declare a Button or Container paint source for the
+  shared pre-build to derive.
+  See
   [Theme and Surface Context](./theme-and-surface-context.md) for the independent recipe coordinates.
 - Button's indicator and Stacked compositions use
   [alternate element recipes for one rendered part](#alternate-element-recipes-for-one-rendered-part).

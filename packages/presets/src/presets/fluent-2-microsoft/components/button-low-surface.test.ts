@@ -65,9 +65,6 @@ describe('Fluent Button Low contextual surface', () => {
           expect(fill.hover).toMatch(/^#[a-f0-9]{6}$/);
           expect(fill.pressed).toMatch(/^#[a-f0-9]{6}$/);
           expect(fill.selected!.rest).toBe(fill.pressed);
-          expect(
-            button.contentSurfaceContext![segment]![theme]!.onSubtle!.standard[intent]!.low!.rest
-          ).toBe('onSubtle');
         }
       }
   });
@@ -227,9 +224,6 @@ describe('Fluent Button Low contextual surface', () => {
             expect(fill.pressed).toBe('#0000004d');
           }
           expect(fill.selected!.rest).toBe(fill.pressed);
-          expect(
-            button.contentSurfaceContext![segment]![theme]!.onVivid!.standard[intent]!.low!.rest
-          ).toBe(theme === 'light' ? 'onVivid' : 'inherit');
           for (const state of ['rest', 'hover', 'pressed', 'selected'] as const) {
             const background = composite(
               (state === 'selected' ? fill.selected!.rest : fill[state]) as string,

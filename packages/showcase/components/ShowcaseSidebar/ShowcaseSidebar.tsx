@@ -6,64 +6,36 @@ import { usePathname } from 'next/navigation';
 import style from './ShowcaseSidebar.module.scss';
 import ShowcaseSidebarIcon from './ShowcaseSidebarIcon';
 
-const navigationGroups = [
-  {
-    label: 'Foundations',
-    entries: [
-      { href: '/colors', label: 'Colors' },
-      { href: '/typography', label: 'Typography / Text' },
-      { href: '/icons', label: 'Icon', icon: 'icons' }
-    ]
-  },
-  {
-    label: 'Composition',
-    entries: [
-      { href: '/layout', label: 'Layout', icon: 'layout' },
-      { href: '/card', label: 'Card', icon: 'card' },
-      { href: '/separator', label: 'Separator', icon: 'separator' }
-    ]
-  },
-  {
-    label: 'Content organization',
-    entries: [
-      { href: '/accordion', label: 'Accordion', icon: 'accordion' },
-      { href: '/tabs', label: 'Tabs', icon: 'tabs' }
-    ]
-  },
-  {
-    label: 'Actions',
-    entries: [
-      { href: '/button', label: 'Button', icon: 'button' },
-      { href: '/brand-buttons', label: 'Brand buttons', icon: 'brand-buttons' }
-    ]
-  },
-  {
-    label: 'Fields and controls',
-    entries: [
-      { href: '/text-field', label: 'TextField', icon: 'text-field' },
-      { href: '/select', label: 'Select', icon: 'select' },
-      { href: '/slider', label: 'Slider', icon: 'slider' },
-      { href: '/switch', label: 'Switch', icon: 'switch' }
-    ]
-  },
-  {
-    label: 'Menus and panels',
-    entries: [
-      { href: '/dropdown', label: 'Dropdown', icon: 'dropdown' },
-      { href: '/bottom-sheet', label: 'BottomSheet', icon: 'bottom-sheet' }
-    ]
-  },
-  {
-    label: 'Labels and indicators',
-    entries: [
-      { href: '/badge', label: 'Badge', icon: 'badge' },
-      { href: '/chip', label: 'Chip', icon: 'chip' },
-      { href: '/progress', label: 'Progress', icon: 'progress' }
-    ]
-  }
+const showcaseEntries = (
+  [
+    { href: '/accordion', label: 'Accordion', icon: 'accordion' },
+    { href: '/badge', label: 'Badge', icon: 'badge' },
+    { href: '/bottom-sheet', label: 'BottomSheet', icon: 'bottom-sheet' },
+    { href: '/brand-buttons', label: 'Brand buttons', icon: 'brand-buttons' },
+    { href: '/button', label: 'Button', icon: 'button' },
+    { href: '/card', label: 'Card', icon: 'card' },
+    { href: '/chip', label: 'Chip', icon: 'chip' },
+    { href: '/colors', label: 'Colors' },
+    { href: '/dropdown', label: 'Dropdown', icon: 'dropdown' },
+    { href: '/icons', label: 'Icon', icon: 'icons' },
+    { href: '/layout', label: 'Layout', icon: 'layout' },
+    { href: '/progress', label: 'Progress', icon: 'progress' },
+    { href: '/select', label: 'Select', icon: 'select' },
+    { href: '/separator', label: 'Separator', icon: 'separator' },
+    { href: '/slider', label: 'Slider', icon: 'slider' },
+    { href: '/switch', label: 'Switch', icon: 'switch' },
+    { href: '/tabs', label: 'Tabs', icon: 'tabs' },
+    { href: '/text-field', label: 'TextField', icon: 'text-field' },
+    { href: '/typography', label: 'Typography / Text' }
+  ] as const
+).toSorted((left, right) => left.label.localeCompare(right.label, 'en'));
+
+const navigationEntries = [
+  { href: '/component-audit', label: 'Component audit' },
+  ...showcaseEntries
 ] as const;
 
-type ShowcaseSidebarEntry = (typeof navigationGroups)[number]['entries'][number];
+type ShowcaseSidebarEntry = (typeof navigationEntries)[number];
 
 function ShowcaseSidebarLinks({
   entries,
@@ -108,20 +80,15 @@ export default function ShowcaseSidebar({
         <p className={style.eyebrow}>Navigation</p>
         <h2 className={style.title}>Showcase</h2>
       </div>
-      {navigationGroups.map((group) => (
-        <div key={group.label} className={style.section}>
-          <h3 className={style.sectionTitle}>{group.label}</h3>
-          <nav className={style.nav} aria-label={group.label}>
-            <ShowcaseSidebarLinks
-              entries={group.entries.filter(
-                (entry) => entry.href !== '/progress' || Boolean(manifest?.components?.progress)
-              )}
-              onNavigate={onNavigate}
-              pathname={pathname}
-            />
-          </nav>
-        </div>
-      ))}
+      <nav className={style.nav} aria-label="Showcase pages">
+        <ShowcaseSidebarLinks
+          entries={navigationEntries.filter(
+            (entry) => entry.href !== '/progress' || Boolean(manifest?.components?.progress)
+          )}
+          onNavigate={onNavigate}
+          pathname={pathname}
+        />
+      </nav>
     </aside>
   );
 }

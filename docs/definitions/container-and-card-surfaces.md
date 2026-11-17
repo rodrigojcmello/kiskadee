@@ -29,15 +29,21 @@ of that region through their existing output maps.
 ## Schema and handoff
 
 Presets author `components.container.e1` Rest box colors by segment, theme, input surface
-context, intent and emphasis. Container also authors the resulting descendant surface context and
-the canonical surface catalog.
-`components.card.surfaceSource: 'container'` declares that Card uses those Rest colors. The Core
-contract rejects a Card coordinate whose Container Rest color is missing. Web Builder resolves
-the relation before generating Card styles, capabilities and metadata, so the Card artifact is
-self-contained at runtime. The Card artifact retains the resolved canonical entries that also
-have a Card recipe for existing consumers; Container-only entries stay in Container's catalog.
-Source authorship is in Container. This does not make Card depend on
-Container's React component or on a second runtime artifact.
+context, intent and emphasis. Container supplies a descendant context map or opts in to
+derivation from `e1.boxColor`. In the derived form, the catalog authors the coordinate and
+backdrop role. Surface Builder fills in each catalog entry's classification from effective
+Standard Rest on `onSubtle`.
+
+`components.card.surfaceSource: 'container'` declares that Card uses Container's Rest color
+and classification. The Core contract rejects a Card coordinate whose Container Rest color is
+missing. The shared [Surface Builder](../../packages/surface-builder/README.md) resolves the
+link after calculating the Container map. A Card linked to a derived Container receives the
+same Rest classification. CardAction then classifies its effective Selected, Pending and
+Disabled fills, using Rest when a state has no fill delta.
+
+Web Builder emits a self-contained Card resource, including the resolved canonical entries that
+also have a Card recipe. Container-only entries stay in Container's catalog. The app loads the
+Card resource directly.
 
 The authored Card schema retains border colors, scales, decorations, effects and the color changes
 of interactive states. Container has no interaction palette. A static Card may select a surface

@@ -25,8 +25,10 @@ for those maps. Runtime consumers choose published recipes; they do not merge
 paint or reconstruct CSS. Color class maps, Card border metadata and connected frame omissions
 use `context bucket -> variant bucket -> semantic intent -> emphasis`.
 
-`contentSurfaceContext` has the same segment/theme/context/variant hierarchy, followed by
-intent/emphasis/state, and uses identical whole-leaf inheritance. Foreground profiles now use the same variant coordinate below Surface Context, with whole-emphasis
+`contentSurfaceContext` maps have the same segment/theme/context/variant hierarchy, followed by
+intent/emphasis/state, and use identical whole-leaf inheritance. Surface Builder derives the
+same map from effective paint for opted-in Button and Container recipes. Foreground profiles
+use the same variant coordinate below Surface Context, with whole-emphasis
 leaf inheritance. Their Standard/Deep profile axis stays independent. Contour catalogs remain unchanged. Separator palettes use the shared variant grammar.
 Variants do not duplicate anatomy, dimensions, state, effects, placement or accessibility.
 

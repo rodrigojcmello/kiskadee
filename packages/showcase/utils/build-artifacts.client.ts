@@ -69,3 +69,7 @@ export function loadJsonFromBuild<T>(
 export function clearBuildArtifactCache() {
   jsonLoads.clear();
 }
+
+export function evictRequiredBuildJson(relativePath: string) {
+  jsonLoads.delete(`${relativePath}|true`);
+}

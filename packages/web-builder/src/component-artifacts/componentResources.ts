@@ -5,6 +5,10 @@ import type {
   RadiusMode
 } from '@kiskadee/core';
 import type { ManifestComponent } from '../phase-7-publish-metadata/manifestTypes.ts';
+import type {
+  COMPONENT_PALETTE_FORMAT_VERSION,
+  CompactPaletteConfig
+} from './surfacePaletteWire.ts';
 
 export type StylesheetResource = { path: string; sha256: string; order: number };
 export type ComponentInspectionArtifact = {
@@ -35,13 +39,10 @@ export type ComponentResourceArtifact = {
 };
 
 export type ComponentPaletteResourceArtifact = {
-  formatVersion: 3;
+  formatVersion: typeof COMPONENT_PALETTE_FORMAT_VERSION;
   component: string;
   styles: StylesheetResource[];
   classMap?: string;
   capabilities?: Omit<ManifestComponent, 'artifacts'>;
-  config?: {
-    options?: Record<string, unknown>;
-    contentSurfaceContext?: unknown;
-  };
+  config?: CompactPaletteConfig;
 };

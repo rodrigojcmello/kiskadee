@@ -6,7 +6,8 @@
   "main": "./src/run-build.ts",
   "exports": {
     ".": "./src/run-build.ts",
-    "./types": "./types.ts"
+    "./types": "./types.ts",
+    "./surface-palette": "./src/component-artifacts/surfacePaletteWire.ts"
   },
   "scripts": {
     "clean": "node ./scripts/clean-generated-artifacts.ts",
@@ -26,6 +27,7 @@
     "@kiskadee/core": "workspace:^",
     "@kiskadee/css-build": "workspace:^",
     "@kiskadee/presets": "workspace:^",
+    "@kiskadee/surface-builder": "workspace:^",
     "@kiskadee/tonal-scale": "workspace:^"
   },
   "devDependencies": {

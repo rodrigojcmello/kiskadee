@@ -19,8 +19,9 @@ in the Provider.
 
 - `surfaceContext` is the semantic surface a component consumes. The prop is an optional explicit
   override for that component.
-- `contentSurfaceContext` is the preset-authored output map used by a surface-owning component to
-  determine what its descendants consume.
+- `contentSurfaceContext` is the published output map used by a surface-owning component to
+  determine what its descendants consume. The build publishes either the authored values or the
+  result of a preset's explicit derivation policy in this same map shape.
 
 `contentSurfaceContext` is serialized configuration, not a Provider value. At runtime the component
 selects one output from that map and publishes the resulting single value through
@@ -54,6 +55,7 @@ serialized map through this path:
 segment
   -> theme
   -> consumed surface context
+  -> color variant
   -> intent
   -> emphasis
   -> state output
@@ -78,7 +80,7 @@ Propagation is recursive because each surface-owning component repeats the same 
 
 This is not an automatic light/dark inversion rule. A vivid surface may produce another vivid
 surface, a subtle surface may produce another subtle surface, and a transparent surface normally
-publishes `inherit`. Presets author each transition according to the surface actually painted.
+publishes `inherit`. Each output follows the preset's authored map or its opted-in derivation policy.
 
 For example, this chain is valid when its active preset authors these outputs:
 
@@ -97,9 +99,9 @@ explicit value only when they intentionally know more than the nearest semantic 
 
 ## Component Boundaries
 
-Button, Chip, and Card publish their authored descendant surface from `contentSurfaceContext`.
-Card's `canonicalSurfaces` catalog documents recommended surface recipes and ordering; it is not
-the runtime propagation map.
+Button, Chip, and Card publish their descendant surface from `contentSurfaceContext`. Card's
+`canonicalSurfaces` catalog documents recommended recipes and ordering. The runtime reads only the
+published output map to propagate Surface Context.
 
 `Button.Badge` routes context by placement. Inline placements remain inside Button's produced
 surface. External placements republish the surface consumed by Button because their Badge renders
@@ -122,8 +124,9 @@ extended deliberately rather than inferred from pixels.
 ## Ownership
 
 - Core owns the semantic vocabulary and serialized map shape.
-- Presets author the output transitions for supported components, intents, emphases, and states.
-- Web Builder serializes those maps into platform artifacts.
+- Presets author the output transitions or opt in to build-time derivation for supported components.
+- Surface Builder materializes the maps for platform publishers. Web Builder packs the selected
+  component palette, and the consumer decodes it into the shared map shape before React uses it.
 - headless-react owns resolved interaction state but has no visual surface policy.
 - p-react consumes artifacts, resolves the current output, and publishes Providers.
 - Consumers declare semantic context only for surfaces they create outside Kiskadee components.

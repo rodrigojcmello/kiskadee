@@ -37,6 +37,7 @@ describe('build contract diagnostics', () => {
   }) => {
     vi.mocked(loadPresetsToBuild).mockResolvedValue([
       {
+        key: 'diagnostic-fixture',
         schema: { name: 'Diagnostic fixture', ...schema } as unknown as Schema,
         schemaPath: '/fixtures/invalid.schema.ts'
       }

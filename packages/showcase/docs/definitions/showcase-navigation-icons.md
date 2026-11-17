@@ -6,31 +6,19 @@ Status: canonical Showcase definition.
 
 These icons identify the 17 component entries in the Showcase navigation. They are Showcase
 application chrome, outside the route-owned `s-content` boundary defined in
-[Showcase Content](./showcase-content.md). Icon retains its local glyph in Foundations;
-Colors and Typography / Text do not use this icon family.
+[Showcase Content](./showcase-content.md). Icon uses its local glyph in the navigation.
+Component audit, Colors, and Typography / Text are text entries.
 
 The artwork is local to Showcase. Presets, the public icon catalog, and the family selected for
-component examples do not own or replace it. The existing conditional visibility of Progress
-remains unchanged.
+component examples do not own or replace it.
 
-## Navigation groups
+## Navigation order
 
-The navigation catalog contains 19 route entries: 17 component entries with local glyphs and
-two entries without glyphs. The groups and their entry order are:
+Component audit appears as the first item. The other 19 entries appear in alphabetical order by
+their visible labels. Progress appears when the active preset manifest lists that component.
 
-| Group | Entries |
-| --- | --- |
-| Foundations | Colors, Typography / Text, Icon |
-| Composition | Layout, Card, Separator |
-| Content organization | Accordion, Tabs |
-| Actions | Button, Brand buttons |
-| Fields and controls | TextField, Select, Slider, Switch |
-| Menus and panels | Dropdown, BottomSheet |
-| Labels and indicators | Badge, Chip, Progress |
-
-Foundations reserves the same 20-pixel icon slot for every entry, leaving it empty for Colors
-and Typography / Text so their labels align with Icon. The group placement does not change
-Icon's artwork or ownership. Progress remains subject to its existing conditional visibility.
+Every entry has a 20-pixel icon slot. Empty slots align the text entries with the entries that
+display glyphs.
 
 ## Artwork source
 

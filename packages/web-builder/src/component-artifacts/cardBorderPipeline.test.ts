@@ -1,6 +1,5 @@
 import {
   componentEmphasisBuckets,
-  resolveCardSurfaceSource,
   surfaceContextBuckets,
   validateCardComponentContract
 } from '@kiskadee/core';
@@ -12,8 +11,9 @@ import { shortenCssClassNames } from '../phase-3-shorten-css-class-names/shorten
 import { generateClassNamesMapSplit } from '../phase-5-generate-class-names-map/generateClassNamesMap.ts';
 import { DEFAULT_WEB_STYLE_EMISSION_POLICY } from '../style-emission/web-build-policy.ts';
 import { buildCardComponentArtifact } from './cardComponentArtifact.ts';
+import { withPrebuiltTestSurfaces } from './surfaceTestFixtures.ts';
 
-const resolvedCard = resolveCardSurfaceSource(schema).components.card!;
+const resolvedCard = withPrebuiltTestSurfaces(schema).components.card!;
 
 describe('Card border pipeline', () => {
   it.each([
@@ -63,11 +63,9 @@ describe('Card border pipeline', () => {
   });
 
   it('publishes the default mode separately from the adaptive decision', () => {
-    const altered = structuredClone(schema);
+    const altered = withPrebuiltTestSurfaces(structuredClone(schema));
     altered.components.card!.options!.border!.defaultMode = 'always';
-    expect(
-      validateCardComponentContract(resolveCardSurfaceSource(altered).components.card)
-    ).toEqual([]);
+    expect(validateCardComponentContract(altered.components.card)).toEqual([]);
     expect(buildCardComponentArtifact(altered)?.options.border?.defaultMode).toBe('always');
     altered.components.card!.options!.border!.defaultMode = 'never';
     expect(

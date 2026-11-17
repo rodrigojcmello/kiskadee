@@ -288,38 +288,29 @@ The Card consumes the ambient `surfaceContext`, while intent and emphasis select
 Rest surface it uses. The Fluent schema publishes the same base Rest recipes under both input
 contexts and uses Card's contextual branch for the boundary adaptation described above.
 
-The authored `contentSurfaceContext` map remains a separate output contract for descendants.
-Container authors Rest outputs; Card retains its selected and other interaction deltas. The
-resolved Card artifact publishes the combined map for both input contexts:
+**Kiskadee extension.** Container opts in to `contentSurfaceContext: { derive: { element: 'e1',
+property: 'boxColor' } }` in Microsoft and Teams. Surface Builder classifies the effective Rest
+fill once and resolves the ordered `canonicalSurfaces` entries from the same map. Card inherits
+the Rest color and classification through `surfaceSource: 'container'`. CardAction derives
+Selected, Pending and Disabled contexts from its own effective fill deltas. Transparent fills
+inherit the consumed context and missing state deltas keep Rest.
 
-- transparent `lowest` surfaces inherit the consumed context;
-- Neutral Low, Medium, High, and Darker Highest produce `onSubtle`;
-- Primary Low and Medium produce `onSubtle`;
-- Primary Highest produces `onVivid`.
+The catalog marks `neutral.lowest` in Light and `neutral.low` in Dark and Darker as subtle
+compositing backdrops. All three themes mark `primary.highest` as the vivid compositing backdrop.
+These roles select the physical color used to composite translucent fills. The derived
+classification compares the resulting fill against white in Light and black in Dark and Darker
+using the [same 3:1 rule as Button](button.md#descendant-surface-context-derivation).
 
-The p-react Card resolves this map and republishes the result with `SurfaceContextProvider`.
-`canonicalSurfaces` remains the recommended surface catalog and is not used as a substitute for
-runtime propagation.
+In Light, the Microsoft and Teams Primary Highest fills remain `onVivid`. In Dark and Darker,
+both `primary.highest` and `primaryComplementary.highest` classify as `onSubtle` in both
+segments. For example, Microsoft Primary Highest is `#045091` in Dark (2.56:1 against black)
+and `#133d68` in Darker (1.90:1). The migration keeps the fills and reference markers. No
+current catalog entry reaches the vivid cutoff in either dark theme, so the global Showcase
+**On vivid** control is unavailable there.
 
-`components.container.options.canonicalSurfaces` publishes the source-backed
-surface catalog in its intended order for every theme:
-
-1. `neutral.low` -> descendant context `onSubtle`;
-2. `neutral.medium` -> descendant context `onSubtle`;
-3. `primary.medium` -> descendant context `onSubtle`;
-4. `neutral.high` -> descendant context `onSubtle`;
-5. `primary.highest` -> descendant context `onVivid`;
-6. `neutral.highest` -> descendant context `onSubtle`, only in Darker.
-
-The Primary vivid Card is therefore explicitly associated with `onVivid` for
-descendants without changing the Card's own palette. The Web Builder validates
-these references and publishes their resolved Rest values in
-`components/card.kiskadee.json`. Consumers use that artifact instead of
-duplicating the order or inferring surface context from luminance.
-
-This keeps Rest surface ownership with Container, Card geometry and interaction with Card, and
-contrast/polarity treatment with the child instead of coupling Card appearance to every
-descendant.
+Web Builder publishes the ordered catalog and context map in the selected Card palette
+resource. React resolves the map and publishes the resulting value through
+`SurfaceContextProvider`.
 
 Kiskadee exposes one Card shadow recipe for the root surface. The Fluent preset
 emits only Rest as `Shadow 04` (`s:md:1`) and Hover as `Shadow 08`
