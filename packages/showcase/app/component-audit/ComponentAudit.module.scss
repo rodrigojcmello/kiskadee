@@ -25,3 +25,24 @@
   text-align: start;
   vertical-align: top;
 }
+
+.surfaceCell {
+  min-inline-size: 15rem;
+  inline-size: 22rem;
+
+  p { margin: 0.25rem 0; }
+
+  summary {
+    cursor: pointer;
+    inline-size: fit-content;
+  }
+
+  ul { margin: 0.5rem 0; padding-inline-start: 1.1rem; }
+  li + li { margin-block-start: 0.35rem; }
+}
+
+.status {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}

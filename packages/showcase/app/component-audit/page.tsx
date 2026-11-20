@@ -1,34 +1,9 @@
 'use client';
 
-import type { ComponentName } from '@kiskadee/core';
 import { Text } from '@kiskadee/react-components/text';
 import { useShowcaseTextProfiles } from '@/utils/showcase-text-profiles';
 import styles from './ComponentAudit.module.scss';
-
-const componentLabels = {
-  accordion: 'Accordion',
-  badge: 'Badge',
-  bottomSheet: 'BottomSheet',
-  button: 'Button',
-  card: 'Card',
-  chip: 'Chip',
-  container: 'Container',
-  dropdown: 'Dropdown',
-  icon: 'Icon',
-  layout: 'Layout',
-  progress: 'Progress',
-  select: 'Select',
-  separator: 'Separator',
-  slider: 'Slider',
-  switch: 'Switch',
-  tabs: 'Tabs',
-  text: 'Text',
-  textField: 'TextField'
-} satisfies Record<ComponentName, string>;
-
-const componentRows = Object.entries(componentLabels).sort(([, left], [, right]) =>
-  left.localeCompare(right, 'en')
-);
+import { componentRows, surfaceStatuses } from './surface-audit';
 
 const criteria = [
   'Accessibility',
@@ -51,18 +26,21 @@ export default function ComponentAuditPage() {
         Component audit
       </Text>
       <Text as="p" profile={profiles.body} id="component-audit-description" className={styles.copy}>
-        Blank cells are awaiting review.
+        Surface context tracks what nested content receives across presets. Blank criteria await
+        review.
       </Text>
       {/* biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard users need to scroll the table in this region. */}
       <section className={styles.tableWindow} aria-label="Audit criteria" tabIndex={0}>
-        <table
+        <Text
+          as="table"
+          profile={profiles.body}
           className={styles.table}
           aria-labelledby="component-audit-title"
           aria-describedby="component-audit-description"
         >
           <thead>
             <tr>
-              {['Component', ...criteria].map((label) => (
+              {['Component', 'Surface context', ...criteria].map((label) => (
                 <th key={label} scope="col">
                   <Text as="span" profile={profiles.bodyStrong}>
                     {label}
@@ -72,20 +50,46 @@ export default function ComponentAuditPage() {
             </tr>
           </thead>
           <tbody>
-            {componentRows.map(([component, label]) => (
-              <tr key={component}>
+            {componentRows.map(({ label, status, summary, details }) => (
+              <tr key={label}>
                 <th scope="row">
                   <Text as="span" profile={profiles.body}>
                     {label}
                   </Text>
                 </th>
+                <td className={styles.surfaceCell}>
+                  <Text
+                    className={styles.status}
+                    profile={profiles.bodyStrong}
+                    foreground="inherit"
+                  >
+                    <span aria-hidden="true">{surfaceStatuses[status].symbol}</span>
+                    {surfaceStatuses[status].label}
+                  </Text>
+                  <p>{summary}</p>
+                  {details && (
+                    <details>
+                      <summary
+                        className="k-foc"
+                        aria-label={`Surface context details for ${label}`}
+                      >
+                        Details
+                      </summary>
+                      <ul>
+                        {details.map((detail) => (
+                          <li key={detail}>{detail}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                </td>
                 {criteria.map((criterion) => (
                   <td key={criterion} />
                 ))}
               </tr>
             ))}
           </tbody>
-        </table>
+        </Text>
       </section>
     </section>
   );
